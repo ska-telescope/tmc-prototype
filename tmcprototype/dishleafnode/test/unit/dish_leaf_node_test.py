@@ -488,59 +488,28 @@ def test_configure_should_raise_exception_when_called_with_invalid_arguments():
         # assert:
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
-def test_scan_should_raise_exception_when_called_with_invalid_arguments():
-    # act
+
+@pytest.fixture(
+    scope="function",
+    params=[
+        ("Scan", "a", const.ERR_EXE_SCAN_CMD),
+        ("EndScan", "a", const.ERR_EXE_END_SCAN_CMD),
+        ("StartCapture", "a", const.ERR_EXE_START_CAPTURE_CMD),
+        ("StopCapture", "a", const.ERR_EXE_STOP_CAPTURE_CMD),
+        ("Slew", "a", const.ERR_EXE_SLEW_CMD),
+    ])
+def invalid_command_call_and_expected_error_msg(request):
+    cmd_name, input_arg, error_msg = request.param
+    return cmd_name, input_arg, error_msg
+
+
+def test_command_should_raise_exception_when_called_with_invalid_arguments(invalid_command_call_and_expected_error_msg):
+    cmd_name, input_arg, error_msg = invalid_command_call_and_expected_error_msg
     with fake_tango_system(DishLeafNode) as tango_context:
-        input_string = "a"
         with pytest.raises(tango.DevFailed):
-            tango_context.device.Scan(input_string)
+            tango_context.device.command_inout(cmd_name, input_arg)
 
-        # assert:
-        assert const.ERR_EXE_SCAN_CMD in tango_context.device.activityMessage
-
-
-def test_end_scan_should_raise_exception_when_called_with_invalid_arguments():
-    # act
-    with fake_tango_system(DishLeafNode) as tango_context:
-        input_string = "a"
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.EndScan(input_string)
-
-        # assert:
-        assert const.ERR_EXE_END_SCAN_CMD in tango_context.device.activityMessage
-
-
-def test_start_capture_should_raise_exception_when_called_with_invalid_arguments():
-    # act
-    with fake_tango_system(DishLeafNode) as tango_context:
-        input_string = "a"
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.StartCapture(input_string)
-
-        # assert:
-        assert const.ERR_EXE_START_CAPTURE_CMD in tango_context.device.activityMessage
-
-
-def test_stop_capture_should_raise_exception_when_called_with_invalid_arguments():
-    # act
-    with fake_tango_system(DishLeafNode) as tango_context:
-        input_string = "a"
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.StopCapture(input_string)
-
-        # assert:
-        assert const.ERR_EXE_STOP_CAPTURE_CMD in tango_context.device.activityMessage
-
-
-def test_slew_should_raise_exception_when_called_with_invalid_arguments():
-    # act
-    with fake_tango_system(DishLeafNode) as tango_context:
-        input_string = "a"
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.Slew(input_string)
-
-        # assert:
-        assert const.ERR_EXE_SLEW_CMD in tango_context.device.activityMessage
+        assert error_msg in tango_context.device.activityMessage
 
 
 def test_track_should_raise_exception_when_called_with_invalid_arguments():
