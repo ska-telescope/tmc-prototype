@@ -576,6 +576,15 @@ def test_msg_in_activity_message_attribute(event_subscription_with_arg, mock_dis
     assert f"Command :-> {command_name}" in tango_context.device.activityMessage
 
 
+def test_msg_in_activity_message_attribute_with_event_error(event_subscription_with_arg, mock_dish_master, command_name_with_args):
+    tango_context, _, _, _ = mock_dish_master
+    command_name, input_args = command_name_with_args
+    tango_context.device.command_inout(command_name, input_args)
+    dummy_event = command_callback_with_event_error(command_name)
+    event_subscription_with_arg[command_name](dummy_event)
+    assert f"Error in invoking command: {command_name}" in tango_context.device.activityMessage
+
+
 # TODO: actual AZ and EL values need to be generated.
 @pytest.mark.xfail
 def test_configure_command_with_callback_method(event_subscription, mock_dish_master):
@@ -606,60 +615,6 @@ def test_track_command_with_callback_method(event_subscription, mock_dish_master
     assert const.STR_COMMAND + const.CMD_TRACK in tango_context.device.activityMessage
 
 
-def test_scan_command_with_callback_method_with_event_error(event_subscription_with_arg, mock_dish_master):
-    # arrange:
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-
-    scan_input = "0"
-    # act
-    tango_context.device.Scan(scan_input)
-    dummy_event = command_callback_with_event_error(const.CMD_DISH_SCAN)
-    event_subscription_with_arg[const.CMD_DISH_SCAN](dummy_event)
-
-    # assert:
-    assert const.ERR_INVOKING_CMD + const.CMD_DISH_SCAN in tango_context.device.activityMessage
-
-
-def test_startcapture_command_with_callback_method_with_event_error(event_subscription_with_arg, mock_dish_master):
-    # arrange:
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    capture_arg = "0"
-
-    # act
-    tango_context.device.StartCapture(capture_arg)
-    dummy_event = command_callback_with_event_error(const.CMD_START_CAPTURE)
-    event_subscription_with_arg[const.CMD_START_CAPTURE](dummy_event)
-
-    # assert:
-    assert const.ERR_INVOKING_CMD + const.CMD_START_CAPTURE in tango_context.device.activityMessage
-
-
-def test_stopcapture_command_with_callback_method_with_event_error(event_subscription_with_arg, mock_dish_master):
-    # arrange:
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    capture_arg = "0"
-    # act
-    tango_context.device.StopCapture(capture_arg)
-    dummy_event = command_callback_with_event_error(const.CMD_STOP_CAPTURE)
-    event_subscription_with_arg[const.CMD_STOP_CAPTURE](dummy_event)
-
-    # assert:
-    assert const.ERR_INVOKING_CMD + const.CMD_STOP_CAPTURE in tango_context.device.activityMessage
-
-
-def test_slew_command_with_callback_method_with_event_error(event_subscription_with_arg, mock_dish_master):
-    # arrange:
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    slew_arg = "0"
-    # act
-    tango_context.device.Slew(slew_arg)
-    dummy_event = command_callback_with_event_error(const.CMD_DISH_SLEW)
-    event_subscription_with_arg[const.CMD_DISH_SLEW](dummy_event)
-
-    # assert:
-    assert const.ERR_INVOKING_CMD + const.CMD_DISH_SLEW in tango_context.device.activityMessage
-
-
 def test_version_id():
     """Test for versionId"""
     with fake_tango_system(DishLeafNode) as tango_context:
@@ -670,7 +625,6 @@ def test_build_state():
     """Test for buildState"""
     with fake_tango_system(DishLeafNode) as tango_context:
         assert tango_context.device.buildState == ('{},{},{}'.format(release.name,release.version,release.description))
-
 
 
 def command_callback(command_name):
