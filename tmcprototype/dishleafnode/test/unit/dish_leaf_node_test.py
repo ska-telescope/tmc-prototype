@@ -299,131 +299,36 @@ def create_dummy_event_for_dishmode(device_fqdn, dish_mode_value, attribute):
     return fake_event
 
 
-def test_dish_leaf_node_dish_mode_is_off_when_dish_is_off(mock_dish_master):
+@pytest.fixture(
+    scope="function",
+    params=[
+        DishMode.OFF,
+        DishMode.STARTUP,
+        DishMode.SHUTDOWN,
+        DishMode.STANDBY_LP,
+        DishMode.STANDBY_FP,
+        DishMode.STOW,
+        DishMode.CONFIG,
+        DishMode.OPERATE,
+        DishMode.MAINTENANCE
+    ])
+def dish_mode(request):
+    return request.param
+
+
+def test_dish_leaf_node_activity_message_reports_correct_dish_master_dish_mode(mock_dish_master,
+                                                                               dish_mode):
     # arrange:
-    dish_master_dishmode_attribute = 'dishMode'
+    attribute_name = 'dishMode'
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
 
     # act:
-    dish_mode_value = DishMode.OFF
-    dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
-                                                  dish_master_dishmode_attribute)
-    event_subscription_map[dish_master_dishmode_attribute](dummy_event)
+    dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode,
+                                                  attribute_name)
+    event_subscription_map[attribute_name](dummy_event)
 
     # assert:
-    assert tango_context.device.activityMessage == f"dishMode is {DishMode.OFF}."
-
-
-def test_dish_leaf_node_dish_mode_is_startup_when_dish_is_startup(mock_dish_master):
-    # arrange:
-    dish_master_dishmode_attribute = 'dishMode'
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    # act:
-    dish_mode_value = DishMode.STARTUP
-    dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
-                                                  dish_master_dishmode_attribute)
-    event_subscription_map[dish_master_dishmode_attribute](dummy_event)
-
-    # assert:
-    assert tango_context.device.activityMessage == f"dishMode is {DishMode.STARTUP}."
-
-
-def test_dish_leaf_node_dish_mode_is_shutdown_when_dish_is_shutdown(mock_dish_master):
-    # arrange:
-    dish_master_dishmode_attribute = 'dishMode'
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    # act:
-    dish_mode_value = DishMode.SHUTDOWN
-    dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
-                                                  dish_master_dishmode_attribute)
-    event_subscription_map[dish_master_dishmode_attribute](dummy_event)
-
-    # assert:
-    assert tango_context.device.activityMessage == f"dishMode is {DishMode.SHUTDOWN}."
-
-
-def test_dish_leaf_node_dish_mode_is_standby_when_dish_is_standby(mock_dish_master):
-    # arrange:
-    dish_master_dishmode_attribute = 'dishMode'
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    # act:
-    dish_mode_value = DishMode.STANDBY_LP
-    dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
-                                                  dish_master_dishmode_attribute)
-    event_subscription_map[dish_master_dishmode_attribute](dummy_event)
-
-    # assert:
-    assert tango_context.device.activityMessage == f"dishMode is {DishMode.STANDBY_LP}."
-
-
-def test_dish_leaf_node_dish_mode_is_stand_by_fp_when_dish_is_stand_by_fp(mock_dish_master):
-    # arrange:
-    dish_master_dishmode_attribute = 'dishMode'
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    # act:
-    dish_mode_value = DishMode.STANDBY_FP
-    dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
-                                                  dish_master_dishmode_attribute)
-    event_subscription_map[dish_master_dishmode_attribute](dummy_event)
-
-    # assert:
-    assert tango_context.device.activityMessage == f"dishMode is {DishMode.STANDBY_FP}."
-
-
-def test_dish_leaf_node_dish_mode_is_maint_when_dish_is_maint(mock_dish_master):
-    # arrange:
-    dish_master_dishmode_attribute = 'dishMode'
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    # act:
-    dish_mode_value = DishMode.MAINTENANCE
-    dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
-                                                  dish_master_dishmode_attribute)
-    event_subscription_map[dish_master_dishmode_attribute](dummy_event)
-
-    # assert:
-    assert tango_context.device.activityMessage == "dishMode is {DishMode.MAINTENANCE}."
-
-
-def test_dish_leaf_node_dish_mode_is_stow_when_dish_is_stow(mock_dish_master):
-    # arrange:
-    dish_master_dishmode_attribute = 'dishMode'
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    # act:
-    dish_mode_value = DishMode.STOW
-    dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
-                                                  dish_master_dishmode_attribute)
-    event_subscription_map[dish_master_dishmode_attribute](dummy_event)
-
-    # assert:
-    assert tango_context.device.activityMessage == f"dishMode is {DishMode.STOW}."
-
-
-def test_dish_leaf_node_dish_mode_is_config_when_dish_is_config(mock_dish_master):
-    # arrange:
-    dish_master_dishmode_attribute = 'dishMode'
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    # act:
-    dish_mode_value = DishMode.CONFIG
-    dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
-                                                  dish_master_dishmode_attribute)
-    event_subscription_map[dish_master_dishmode_attribute](dummy_event)
-
-    # assert:
-    assert tango_context.device.activityMessage == f"dishMode is {DishMode.CONFIG}."
-
-
-def test_dish_leaf_node_dish_mode_is_operate_when_dish_is_operate(mock_dish_master):
-    # arrange:
-    dish_master_dishmode_attribute = 'dishMode'
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    # act:
-    dish_mode_value = DishMode.OPERATE
-    dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode_value,
-                                                  dish_master_dishmode_attribute)
-    event_subscription_map[dish_master_dishmode_attribute](dummy_event)
-
-    # assert:
-    assert tango_context.device.activityMessage == f"dishMode is {DishMode.OPERATE}."
+    assert tango_context.device.activityMessage == f"dishMode is {dish_mode}."
 
 
 def test_dish_leaf_node_dish_mode_with_error_event(mock_dish_master):
