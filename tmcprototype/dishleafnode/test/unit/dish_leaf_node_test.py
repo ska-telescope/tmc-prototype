@@ -97,7 +97,7 @@ def test_start_scan_should_command_dish_to_start_scan_when_it_is_ready(mock_dish
     # assert:
     dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SCAN,
                                                             str(scan_input),
-                                                            any_method(with_name='scan_cmd_ended_cb'))
+                                                            any_method(with_name='cmd_ended_cb'))
 
 
 # TODO: actual AZ and EL values need to be generated.
@@ -129,7 +129,7 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle(mock_dis
 
     dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_CONFIGURE,
                                                              str(dish_str_ip),
-                                                             any_method(with_name='configure_cmd_ended_cb'))
+                                                             any_method(with_name='cmd_ended_cb'))
 
 
 def test_end_scan_should_command_dish_to_end_scan_when_it_is_scanning(mock_dish_master):
@@ -153,7 +153,7 @@ def test_standby_lp_mode_should_command_dish_to_standby(mock_dish_master):
 
     # assert:
     dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_STANDBYLP_MODE,
-                                                                 any_method(with_name='setstandbylpmode_cmd_ended_cb'))
+                                                                 any_method(with_name='cmd_ended_cb'))
 
 
 def test_set_operate_mode_should_command_dish_to_start(mock_dish_master):
@@ -164,7 +164,7 @@ def test_set_operate_mode_should_command_dish_to_start(mock_dish_master):
 
     # assert:
     dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_OPERATE_MODE,
-                                                                 any_method(with_name='setoperatemode_cmd_ended_cb'))
+                                                                 any_method(with_name='cmd_ended_cb'))
 
 
 @pytest.mark.xfail
@@ -189,7 +189,7 @@ def test_stop_track_should_command_dish_to_stop_tracking(mock_dish_master):
 
     # assert:
     dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_TRACK,
-                                                             any_method(with_name='stoptrack_cmd_ended_cb'))
+                                                             any_method(with_name='cmd_ended_cb'))
 
 
 def test_slew_should_command_the_dish_to_slew_towards_the_set_pointing_coordinates(mock_dish_master):
@@ -201,7 +201,7 @@ def test_slew_should_command_the_dish_to_slew_towards_the_set_pointing_coordinat
     # assert:
     dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_DISH_SLEW,
                                                             str(slew_arg),
-                                                            any_method(with_name='slew_cmd_ended_cb'))
+                                                            any_method(with_name='cmd_ended_cb'))
 
 
 def test_start_capture_should_command_dish_to_start_capture_on_the_set_configured_band(mock_dish_master):
@@ -213,7 +213,7 @@ def test_start_capture_should_command_dish_to_start_capture_on_the_set_configure
     # assert:
     dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_START_CAPTURE,
                                                             str(capture_arg),
-                                                                any_method(with_name='startcapture_cmd_ended_cb'))
+                                                                any_method(with_name='cmd_ended_cb'))
 
 
 def test_stop_capture_should_command_dish_to_stop_capture_on_the_set_configured_band(mock_dish_master):
@@ -236,7 +236,7 @@ def test_set_standby_fp_mode_should_command_dish_to_transition_to_standby_fp_mod
 
     # assert:
     dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_STANDBYFP_MODE,
-                                                             any_method(with_name='setstandbyfpmode_cmd_ended_cb'))
+                                                             any_method(with_name='cmd_ended_cb'))
 
 
 def test_set_stow_mode_should_command_dish_to_transit_to_stow_mode(mock_dish_master):
@@ -245,7 +245,7 @@ def test_set_stow_mode_should_command_dish_to_transit_to_stow_mode(mock_dish_mas
 
     # assert:
     dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SET_STOW_MODE,
-                                                             any_method(with_name='setstowmode_cmd_ended_cb'))
+                                                             any_method(with_name='cmd_ended_cb'))
 
 
 def test_abort_should_command_dish_to_abort(mock_dish_master):
@@ -254,7 +254,7 @@ def test_abort_should_command_dish_to_abort(mock_dish_master):
 
     # assert:
     dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
-                                                             any_method(with_name='abort_cmd_ended_cb'))
+                                                             any_method(with_name='cmd_ended_cb'))
 
 
 def test_abort_should_raise_dev_failed(mock_dish_master):
@@ -276,7 +276,7 @@ def test_restart_should_command_dish_to_restart(mock_dish_master):
 
     # assert:
     dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_RESTART,
-                                                             any_method(with_name='restart_cmd_ended_cb'))
+                                                             any_method(with_name='cmd_ended_cb'))
 
 
 def test_restart_should_raise_dev_failed(mock_dish_master):

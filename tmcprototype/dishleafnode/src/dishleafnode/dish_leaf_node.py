@@ -71,12 +71,55 @@ def dmstodd(dish_antenna_latitude):
 
 __all__ = ["DishLeafNode", "main"]
 
+
+class CommandCallBack:
+
+    def __init__(self, device, log):
+        self.device = device
+        self.logger = log
+
+    def cmd_ended_cb(self, event):
+        """
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the command has been successfully invoked on DishMaster.
+
+        :param event: a CmdDoneEvent object. This object is used to pass data
+            to the callback method in asynchronous callback model for command
+            execution.
+        :type: CmdDoneEvent object
+                It has the following members:
+                - device     : (DeviceProxy) The DeviceProxy object on which the
+                                call was executed.
+                - cmd_name   : (str) The command name
+                - argout_raw : (DeviceData) The command argout
+                - argout     : The command argout
+                - err        : (bool) A boolean flag set to true if the command
+                                failed. False otherwise
+                - errors     : (sequence<DevError>) The error stack
+                - ext
+        :return: none
+
+        :raises: Exception if error occurs in command callback method.
+        """
+        if event.err:
+            log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            self.logger.error(log_msg)
+            self.device._read_activity_message = log_msg
+        else:
+            log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+            self.logger.info(log_msg)
+            self.device._read_activity_message = log_msg
+
 # pylint: disable=unused-variable
 class DishLeafNode(SKABaseDevice):
     """
     A Leaf control node for DishMaster.
     """
     # PROTECTED REGION ID(DishLeafNode.class_variable) ENABLED START #
+
+    def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.cmd_ended_cb = CommandCallBack(self, self.logger).cmd_ended_cb
 
     def attribute_event_handler(self, event_data):
         """
@@ -102,37 +145,6 @@ class DishLeafNode(SKABaseDevice):
         log_msg = f"{attr_name} is {event_data.attr_value.value}."
         self._read_activity_message = log_msg
         self.logger.debug(log_msg)
-
-    def cmd_ended_cb(self, event):
-        """
-        Callback function immediately executed when the asynchronous invoked
-        command returns. Checks whether the command has been successfully invoked on DishMaster.
-
-        :param event: a CmdDoneEvent object. This class is used to pass data
-            to the callback method in asynchronous callback model for command
-            execution.
-        :type: CmdDoneEvent object
-             It has the following members:
-                - device     : (DeviceProxy) The DeviceProxy object on which the
-                               call was executed.
-                - cmd_name   : (str) The command name
-                - argout_raw : (DeviceData) The command argout
-                - argout     : The command argout
-                - err        : (bool) A boolean flag set to true if the command
-                               failed. False otherwise
-                - errors     : (sequence<DevError>) The error stack
-                - ext
-        :return: none
-        """
-        # Update logs and activity message attribute with received event
-        if event.err:
-            log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-            self.logger.error(log_msg)
-            self._read_activity_message = log_msg
-        else:
-            log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-            self.logger.info(log_msg)
-            self._read_activity_message = log_msg
 
     def convert_radec_to_azel(self, data):
         """Converts RaDec coordinate in to AzEl coordinate using KATPoint library.
@@ -509,6 +521,11 @@ class DishLeafNode(SKABaseDevice):
         """
         A class for DishLeafNode's SetStowMode() command.
         """
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
+
         def check_allowed(self):
             """
             Checks whether the command is allowed to be run in the current state.
@@ -528,38 +545,6 @@ class DishLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
             return True
 
-        def setstowmode_cmd_ended_cb(self, event):
-            """
-            Callback function immediately executed when the asynchronous invoked
-            command returns. Checks whether the SetStowMode command has been successfully invoked on DishMaster.
-
-            :param event: a CmdDoneEvent object. This class is used to pass data
-                to the callback method in asynchronous callback model for command
-                execution.
-            :type: CmdDoneEvent object
-                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
-                    - cmd_name   : (str) The command name
-                    - argout_raw : (DeviceData) The command argout
-                    - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
-                    - errors     : (sequence<DevError>) The error stack
-                    - ext
-            :return: none
-            """
-            device = self.target
-            # Update logs and activity message attribute with received event
-            if event.err:
-                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-                self.logger.error(log_msg)
-                device._read_activity_message = log_msg
-            else:
-                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-                self.logger.info(log_msg)
-                device._read_activity_message = log_msg
-
         def do(self):
             """
             Invokes SetStowMode command on DishMaster.
@@ -571,7 +556,7 @@ class DishLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            device._dish_proxy.command_inout_asynch(const.CMD_SET_STOW_MODE, self.setstowmode_cmd_ended_cb)
+            device._dish_proxy.command_inout_asynch(const.CMD_SET_STOW_MODE, self.cmd_ended_cb)
             device._read_activity_message = const.STR_SET_STOW_MODE_SUCCESS
             self.logger.info(device._read_activity_message)
             return (ResultCode.OK, device._read_activity_message)
@@ -604,6 +589,11 @@ class DishLeafNode(SKABaseDevice):
         """
         A class for DishLeafNode's SetStandByLPMode() command.
         """
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
+
         def check_allowed(self):
             """
             Checks whether this command is allowed to be run in the current device state.
@@ -624,38 +614,6 @@ class DishLeafNode(SKABaseDevice):
 
             return True
 
-        def setstandbylpmode_cmd_ended_cb(self, event):
-            """
-            Callback function immediately executed when the asynchronous invoked
-            command returns. Checks whether the SetStowMode command has been successfully invoked on DishMaster.
-
-            :param event: a CmdDoneEvent object. This class is used to pass data
-                to the callback method in asynchronous callback model for command
-                execution.
-            :type: CmdDoneEvent object
-                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
-                    - cmd_name   : (str) The command name
-                    - argout_raw : (DeviceData) The command argout
-                    - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
-                    - errors     : (sequence<DevError>) The error stack
-                    - ext
-            :return: none
-            """
-            device = self.target
-            # Update logs and activity message attribute with received event
-            if event.err:
-                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-                self.logger.error(log_msg)
-                device._read_activity_message = log_msg
-            else:
-                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-                self.logger.info(log_msg)
-                device._read_activity_message = log_msg
-
         def do(self):
             """
             Invokes SetStandbyLPMode (i.e. Low Power State) command on DishMaster.
@@ -667,7 +625,7 @@ class DishLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            device._dish_proxy.command_inout_asynch(const.CMD_SET_STANDBYLP_MODE, self.setstandbylpmode_cmd_ended_cb)
+            device._dish_proxy.command_inout_asynch(const.CMD_SET_STANDBYLP_MODE, self.cmd_ended_cb)
             device._read_activity_message = const.STR_SETSTANDBYLP_SUCCESS
             self.logger.info(device._read_activity_message)
             return (ResultCode.OK, device._read_activity_message)
@@ -700,6 +658,10 @@ class DishLeafNode(SKABaseDevice):
         """
         A class for DishLeafNode's SetOperateMode() command.
         """
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
+
         def check_allowed(self):
             """
             Checks whether this command is allowed to be run in the current device state.
@@ -717,41 +679,6 @@ class DishLeafNode(SKABaseDevice):
 
             return True
 
-        def setoperatemode_cmd_ended_cb(self, event):
-            """
-            Callback function immediately executed when the asynchronous invoked
-            command returns. Checks whether the SetStowMode command has been successfully invoked on DishMaster.
-
-            :param event: a CmdDoneEvent object. This class is used to pass data
-                to the callback method in asynchronous callback model for command
-                execution.
-            :type: CmdDoneEvent object
-                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
-                    - cmd_name   : (str) The command name
-                    - argout_raw : (DeviceData) The command argout
-                    - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
-                    - errors     : (sequence<DevError>) The error stack
-                    - ext
-            :return: none
-
-            :raises: Exception if error occurs in SetStowMode command callback method.
-
-            """
-            device = self.target
-            # Update logs and activity message attribute with received event
-            if event.err:
-                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-                self.logger.error(log_msg)
-                device._read_activity_message = log_msg
-            else:
-                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-                self.logger.info(log_msg)
-                device._read_activity_message = log_msg
-
         def do(self):
             """
             Invokes SetOperateMode command on DishMaster.
@@ -763,7 +690,7 @@ class DishLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            device._dish_proxy.command_inout_asynch(const.CMD_SET_OPERATE_MODE, self.setoperatemode_cmd_ended_cb)
+            device._dish_proxy.command_inout_asynch(const.CMD_SET_OPERATE_MODE, self.cmd_ended_cb)
             device._read_activity_message = const.STR_SETOPERATE_SUCCESS
             self.logger.info(device._read_activity_message)
             return (ResultCode.OK, device._read_activity_message)
@@ -796,6 +723,11 @@ class DishLeafNode(SKABaseDevice):
         """
         A class for DishLeafNode's Scan() command.
         """
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
+
         def check_allowed(self):
             """
             Checks whether this command is allowed to be run in the current device state.
@@ -811,38 +743,6 @@ class DishLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
             return True
-
-        def scan_cmd_ended_cb(self, event):
-            """
-            Callback function immediately executed when the asynchronous invoked
-            command returns. Checks whether the SetStowMode command has been successfully invoked on DishMaster.
-
-            :param event: a CmdDoneEvent object. This class is used to pass data
-                to the callback method in asynchronous callback model for command
-                execution.
-            :type: CmdDoneEvent object
-                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
-                    - cmd_name   : (str) The command name
-                    - argout_raw : (DeviceData) The command argout
-                    - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
-                    - errors     : (sequence<DevError>) The error stack
-                    - ext
-            :return: none
-            """
-            device = self.target
-            # Update logs and activity message attribute with received event
-            if event.err:
-                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-                self.logger.error(log_msg)
-                device._read_activity_message = log_msg
-            else:
-                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-                self.logger.info(log_msg)
-                device._read_activity_message = log_msg
 
         def do(self, argin):
             """
@@ -866,7 +766,7 @@ class DishLeafNode(SKABaseDevice):
                 scan_timestamp = float(argin)
                 self.logger.debug(const.STR_IN_SCAN)
                 device._dish_proxy.command_inout_asynch(const.CMD_DISH_SCAN,
-                                                        str(scan_timestamp), self.scan_cmd_ended_cb)
+                                                        str(scan_timestamp), self.cmd_ended_cb)
                 self.logger.debug(const.STR_OUT_SCAN)
                 log_msg = const.STR_SCAN_SUCCESS + " with input argument as "+str(argin)
                 self.logger.info(log_msg)
@@ -992,6 +892,11 @@ class DishLeafNode(SKABaseDevice):
         """
         A class for DishLeafNode's Configure() command.
         """
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
+
         def check_allowed(self):
             """
             Checks whether this command is allowed to be run in the current device state.
@@ -1011,40 +916,6 @@ class DishLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
             return True
-
-
-        def configure_cmd_ended_cb(self, event):
-            """
-            Callback function immediately executed when the asynchronous invoked
-            command returns. Checks whether the SetStowMode command has been successfully invoked on DishMaster.
-
-            :param event: a CmdDoneEvent object. This class is used to pass data
-                to the callback method in asynchronous callback model for command
-                execution.
-            :type: CmdDoneEvent object
-                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
-                    - cmd_name   : (str) The command name
-                    - argout_raw : (DeviceData) The command argout
-                    - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
-                    - errors     : (sequence<DevError>) The error stack
-                    - ext
-            :return: none
-
-            """
-            device = self.target
-            # Update logs and activity message attribute with received event
-            if event.err:
-                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-                self.logger.error(log_msg)
-                device._read_activity_message = log_msg
-            else:
-                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-                self.logger.info(log_msg)
-                device._read_activity_message = log_msg
 
         def do(self, argin):
             """
@@ -1099,7 +970,7 @@ class DishLeafNode(SKABaseDevice):
                 dish_str_ip = json.dumps(arg_list)
                 # Send configure command to Dish Master
                 device._dish_proxy.command_inout_asynch(const.CMD_DISH_CONFIGURE, str(dish_str_ip),
-                                                      self.configure_cmd_ended_cb)
+                                                      self.cmd_ended_cb)
                 device._read_activity_message = const.STR_CONFIGURE_SUCCESS
                 self.logger.info(device._read_activity_message)
                 return (ResultCode.OK, device._read_activity_message)
@@ -1156,6 +1027,10 @@ class DishLeafNode(SKABaseDevice):
         A class for DishLeafNode's StartCapture() command.
         """
 
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
+
         def check_allowed(self):
             """
             Checks whether this command is allowed to be run in the current device state.
@@ -1174,39 +1049,6 @@ class DishLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
             return True
-
-
-        def startcapture_cmd_ended_cb(self, event):
-            """
-            Callback function immediately executed when the asynchronous invoked
-            command returns. Checks whether the SetStowMode command has been successfully invoked on DishMaster.
-
-            :param event: a CmdDoneEvent object. This class is used to pass data
-                to the callback method in asynchronous callback model for command
-                execution.
-            :type: CmdDoneEvent object
-                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
-                    - cmd_name   : (str) The command name
-                    - argout_raw : (DeviceData) The command argout
-                    - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
-                    - errors     : (sequence<DevError>) The error stack
-                    - ext
-            :return: none
-            """
-            device = self.target
-            # Update logs and activity message attribute with received event
-            if event.err:
-                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-                self.logger.error(log_msg)
-                device._read_activity_message = log_msg
-            else:
-                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-                self.logger.info(log_msg)
-                device._read_activity_message = log_msg
 
         def do(self, argin):
             """
@@ -1228,7 +1070,7 @@ class DishLeafNode(SKABaseDevice):
                 start_capture_timestamp = float(argin)
                 device._dish_proxy.command_inout_asynch(const.CMD_START_CAPTURE,
                                                         str(start_capture_timestamp),
-                                                        self.startcapture_cmd_ended_cb)
+                                                        self.cmd_ended_cb)
                 device._read_activity_message = const.STR_STARTCAPTURE_SUCCESS
                 self.logger.info(device._read_activity_message)
                 return (ResultCode.OK, device._read_activity_message)
@@ -1352,6 +1194,10 @@ class DishLeafNode(SKABaseDevice):
         A class for DishLeafNode's SetStandByFPMode() command.
         """
 
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
+
         def check_allowed(self):
             """
             Checks whether this command is allowed to be run in current device state.
@@ -1372,38 +1218,6 @@ class DishLeafNode(SKABaseDevice):
 
             return True
 
-        def setstandbyfpmode_cmd_ended_cb(self, event):
-            """
-            Callback function immediately executed when the asynchronous invoked
-            command returns. Checks whether the SetStowMode command has been successfully invoked on DishMaster.
-
-            :param event: a CmdDoneEvent object. This class is used to pass data
-                to the callback method in asynchronous callback model for command
-                execution.
-            :type: CmdDoneEvent object
-                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
-                    - cmd_name   : (str) The command name
-                    - argout_raw : (DeviceData) The command argout
-                    - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
-                    - errors     : (sequence<DevError>) The error stack
-                    - ext
-            :return: none
-            """
-            device = self.target
-            # Update logs and activity message attribute with received event
-            if event.err:
-                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-                self.logger.error(log_msg)
-                device._read_activity_message = log_msg
-            else:
-                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-                self.logger.info(log_msg)
-                device._read_activity_message = log_msg
-
         def do(self):
             """
             Invokes SetStandbyFPMode command on DishMaster (Standby-Full power) mode.
@@ -1415,7 +1229,7 @@ class DishLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            device._dish_proxy.command_inout_asynch(const.CMD_SET_STANDBYFP_MODE, self.setstandbyfpmode_cmd_ended_cb)
+            device._dish_proxy.command_inout_asynch(const.CMD_SET_STANDBYFP_MODE, self.cmd_ended_cb)
             device._read_activity_message = const.STR_STANDBYFP_SUCCESS
             self.logger.info(device._read_activity_message)
             return (ResultCode.OK, device._read_activity_message)
@@ -1449,6 +1263,10 @@ class DishLeafNode(SKABaseDevice):
         A class for DishLeafNode's SlewCommand() command.
         """
 
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
+
         def check_allowed(self):
             """
             Checks whether this command is allowed to be run in the current device state.
@@ -1467,39 +1285,6 @@ class DishLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
             return True
-
-
-        def slew_cmd_ended_cb(self, event):
-            """
-            Callback function immediately executed when the asynchronous invoked
-            command returns. Checks whether the SetStowMode command has been successfully invoked on DishMaster.
-
-            :param event: a CmdDoneEvent object. This class is used to pass data
-                to the callback method in asynchronous callback model for command
-                execution.
-            :type: CmdDoneEvent object
-                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
-                    - cmd_name   : (str) The command name
-                    - argout_raw : (DeviceData) The command argout
-                    - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
-                    - errors     : (sequence<DevError>) The error stack
-                    - ext
-            :return: none
-            """
-            device = self.target
-            # Update logs and activity message attribute with received event
-            if event.err:
-                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-                self.logger.error(log_msg)
-                device._read_activity_message = log_msg
-            else:
-                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-                self.logger.info(log_msg)
-                device._read_activity_message = log_msg
 
         def do(self, argin):
             """
@@ -1521,7 +1306,7 @@ class DishLeafNode(SKABaseDevice):
                 slew_timestamp = float(argin)
                 device._dish_proxy.command_inout_asynch(const.CMD_DISH_SLEW,
                                                         str(slew_timestamp),
-                                                        self.slew_cmd_ended_cb)
+                                                        self.cmd_ended_cb)
                 device._read_activity_message = const.STR_SLEW_SUCCESS
                 self.logger.info(device._read_activity_message)
                 return (ResultCode.OK, device._read_activity_message)
@@ -1684,6 +1469,10 @@ class DishLeafNode(SKABaseDevice):
         A class for DishLeafNode's StopTrack() command.
         """
 
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
+
         def check_allowed(self):
             """
             Checks whether this command is allowed to be run in the current device state.
@@ -1702,38 +1491,6 @@ class DishLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
             return True
 
-        def stoptrack_cmd_ended_cb(self, event):
-            """
-            Callback function immediately executed when the asynchronous invoked
-            command returns. Checks whether the StopTrack command has been successfully invoked on DishMaster.
-
-            :param event: a CmdDoneEvent object. This class is used to pass data
-                to the callback method in asynchronous callback model for command
-                execution.
-            :type: CmdDoneEvent object
-                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
-                    - cmd_name   : (str) The command name
-                    - argout_raw : (DeviceData) The command argout
-                    - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
-                    - errors     : (sequence<DevError>) The error stack
-                    - ext
-            :return: none
-            """
-            device = self.target
-            # Update logs and activity message attribute with received event
-            if event.err:
-                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-                self.logger.error(log_msg)
-                device._read_activity_message = log_msg
-            else:
-                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-                self.logger.info(log_msg)
-                device._read_activity_message = log_msg
-
         def do(self):
             """
             Invokes StopTrack command on the DishMaster.
@@ -1751,7 +1508,7 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
             try:
                 device.event_track_time.set()
-                device._dish_proxy.command_inout_asynch(const.CMD_STOP_TRACK, self.stoptrack_cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch(const.CMD_STOP_TRACK, self.cmd_ended_cb)
                 device._read_activity_message = const.STR_STOP_TRACK_SUCCESS
                 self.logger.info(device._read_activity_message)
                 return (ResultCode.OK, device._read_activity_message)
@@ -1791,6 +1548,11 @@ class DishLeafNode(SKABaseDevice):
         """
         A class for DishLeafNode's Abort command.
         """
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
+
         def check_allowed(self):
 
             """
@@ -1810,38 +1572,6 @@ class DishLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
             return True
 
-        def abort_cmd_ended_cb(self, event):
-            """
-            Callback function immediately executed when the asynchronous invoked
-            command returns. Checks whether the StopTrack command has been successfully invoked on DishMaster.
-
-            :param event: a CmdDoneEvent object. This class is used to pass data
-                to the callback method in asynchronous callback model for command
-                execution.
-            :type: CmdDoneEvent object
-                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
-                    - cmd_name   : (str) The command name
-                    - argout_raw : (DeviceData) The command argout
-                    - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
-                    - errors     : (sequence<DevError>) The error stack
-                    - ext
-            :return: none
-            """
-            device = self.target
-            # Update logs and activity message attribute with received event
-            if event.err:
-                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-                self.logger.error(log_msg)
-                device._read_activity_message = log_msg
-            else:
-                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-                self.logger.info(log_msg)
-                device._read_activity_message = log_msg
-
         def do(self):
             """
             Invokes Abort command on the DishMaster.
@@ -1856,7 +1586,7 @@ class DishLeafNode(SKABaseDevice):
 
             try:
                 device.event_track_time.set()
-                device._dish_proxy.command_inout_asynch(const.CMD_ABORT, self.abort_cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch(const.CMD_ABORT, self.cmd_ended_cb)
                 device._read_activity_message = const.STR_ABORT_SUCCESS
                 self.logger.info(device._read_activity_message)
                 return (ResultCode.OK, device._read_activity_message)
@@ -1895,6 +1625,11 @@ class DishLeafNode(SKABaseDevice):
         """
         A class for DishLeafNode's Restart command.
         """
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
+
         def check_allowed(self):
 
             """
@@ -1914,38 +1649,6 @@ class DishLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
             return True
 
-        def restart_cmd_ended_cb(self, event):
-            """
-            Callback function immediately executed when the asynchronous invoked
-            command returns. Checks whether the StopTrack command has been successfully invoked on DishMaster.
-
-            :param event: a CmdDoneEvent object. This class is used to pass data
-                to the callback method in asynchronous callback model for command
-                execution.
-            :type: CmdDoneEvent object
-                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
-                    - cmd_name   : (str) The command name
-                    - argout_raw : (DeviceData) The command argout
-                    - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
-                    - errors     : (sequence<DevError>) The error stack
-                    - ext
-            :return: none
-            """
-            device = self.target
-            # Update logs and activity message attribute with received event
-            if event.err:
-                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-                self.logger.error(log_msg)
-                device._read_activity_message = log_msg
-            else:
-                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-                self.logger.info(log_msg)
-                device._read_activity_message = log_msg
-
         def do(self):
             """
             Invokes Restart command on the DishMaster.
@@ -1960,7 +1663,7 @@ class DishLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                device._dish_proxy.command_inout_asynch(const.CMD_RESTART, self.restart_cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch(const.CMD_RESTART, self.cmd_ended_cb)
                 device._read_activity_message = const.STR_RESTART_SUCCESS
                 self.logger.info(device._read_activity_message)
                 return (ResultCode.OK, device._read_activity_message)
