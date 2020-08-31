@@ -134,38 +134,6 @@ class DishLeafNode(SKABaseDevice):
             self.logger.info(log_msg)
             self._read_activity_message = log_msg
 
-
-    def stopcapture_cmd_ended_cb(self, event):
-        """
-        Callback function immediately executed when the asynchronous invoked
-        command returns. Checks whether the SetStowMode command has been successfully invoked on DishMaster.
-
-        :param event: a CmdDoneEvent object. This class is used to pass data
-            to the callback method in asynchronous callback model for command
-            execution.
-        :type: CmdDoneEvent object
-             It has the following members:
-                - device     : (DeviceProxy) The DeviceProxy object on which the
-                               call was executed.
-                - cmd_name   : (str) The command name
-                - argout_raw : (DeviceData) The command argout
-                - argout     : The command argout
-                - err        : (bool) A boolean flag set to true if the command
-                               failed. False otherwise
-                - errors     : (sequence<DevError>) The error stack
-                - ext
-        :return: none
-        """
-        # Update logs and activity message attribute with received event
-        if event.err:
-            log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-            self.logger.error(log_msg)
-            self._read_activity_message = log_msg
-        else:
-            log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-            self.logger.info(log_msg)
-            self._read_activity_message = log_msg
-
     def convert_radec_to_azel(self, data):
         """Converts RaDec coordinate in to AzEl coordinate using KATPoint library.
 
@@ -984,7 +952,7 @@ class DishLeafNode(SKABaseDevice):
                 end_scan_timestamp = float(argin)
                 device._dish_proxy.command_inout_asynch(const.CMD_STOP_CAPTURE,
                                                       str(end_scan_timestamp),
-                                                      device.stopcapture_cmd_ended_cb)
+                                                      device.cmd_ended_cb)
                 return (ResultCode.OK, const.STR_ENDSCAN_SUCCESS)
 
             except ValueError as value_error:
@@ -1342,7 +1310,7 @@ class DishLeafNode(SKABaseDevice):
                 stop_capture_timestamp = float(argin)
                 device._dish_proxy.command_inout_asynch(const.CMD_STOP_CAPTURE,
                                                         str(stop_capture_timestamp),
-                                                        device.stopcapture_cmd_ended_cb)
+                                                        device.cmd_ended_cb)
                 device._read_activity_message = const.STR_STOPCAPTURE_SUCCESS
                 self.logger.info(device._read_activity_message)
                 return (ResultCode.OK, device._read_activity_message)

@@ -142,7 +142,7 @@ def test_end_scan_should_command_dish_to_end_scan_when_it_is_scanning(mock_dish_
     # assert:
     dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_CAPTURE,
                                                             str(scan_input),
-                                                            any_method(with_name='stopcapture_cmd_ended_cb'))
+                                                            any_method(with_name='cmd_ended_cb'))
 
 
 def test_standby_lp_mode_should_command_dish_to_standby(mock_dish_master):
@@ -226,7 +226,7 @@ def test_stop_capture_should_command_dish_to_stop_capture_on_the_set_configured_
     # if type(float(capture_arg)) == float:
     dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STOP_CAPTURE,
                                                             str(capture_arg),
-                                                            any_method(with_name='stopcapture_cmd_ended_cb'))
+                                                            any_method(with_name='cmd_ended_cb'))
 
 
 def test_set_standby_fp_mode_should_command_dish_to_transition_to_standby_fp_mode(mock_dish_master):
