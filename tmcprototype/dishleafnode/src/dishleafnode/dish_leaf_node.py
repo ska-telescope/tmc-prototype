@@ -1614,54 +1614,6 @@ class DishLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
             return True
 
-        # def track_cmd_ended_cb(self, event):
-        #     """
-        #     Callback function immediately executed when the asynchronous invoked
-        #     command returns. Checks whether the SetStowMode command has been successfully invoked on DishMaster.
-        #
-        #     :param event: a CmdDoneEvent object. This class is used to pass data
-        #         to the callback method in asynchronous callback model for command
-        #         execution.
-        #     :type: CmdDoneEvent object
-        #          It has the following members:
-        #             - device     : (DeviceProxy) The DeviceProxy object on which the
-        #                            call was executed.
-        #             - cmd_name   : (str) The command name
-        #             - argout_raw : (DeviceData) The command argout
-        #             - argout     : The command argout
-        #             - err        : (bool) A boolean flag set to true if the command
-        #                            failed. False otherwise
-        #             - errors     : (sequence<DevError>) The error stack
-        #             - ext
-        #     :return: none
-        #
-        #     :raises: Exception if error occurs in SetStowMode command callback method.
-        #
-        #     """
-        #     device = self.target
-        #     exception_count = 0
-        #     exception_message = []
-        #     # Update logs and activity message attribute with received event
-        #     try:
-        #         if event.err:
-        #             log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-        #             self.logger.error(log_msg)
-        #             device._read_activity_message = log_msg
-        #         else:
-        #             log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-        #             self.logger.info(log_msg)
-        #             device._read_activity_message = log_msg
-        #
-        #     except Exception as except_occurred:
-        #         [exception_count, exception_message] = device._handle_generic_exception(except_occurred,
-        #                                                                               exception_message,
-        #                                                                               exception_count,
-        #                                                                               const.ERR_EXCEPT_TRACK_CMD_CB)
-        #
-        #     # Throw Exception
-        #     if exception_count > 0:
-        #         device.throw_exception(exception_message, const.STR_CMD_CALLBK)
-
         def do(self, argin):
             """ Invokes Track command on the DishMaster.
 
