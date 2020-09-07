@@ -1388,56 +1388,47 @@ class DishLeafNode(SKABaseDevice):
 
             :rtype: (ResultCode, str)
 
-            :raises: ValueError if argin is not in valid JSON format, KayError if JSON key is
+            :raises: JSONDecodeError if argin is not a valid JSON format, KeyError if JSON key is
               not present in argin while invoking this command on DishMaster.
 
             """
             device = self.target
+            device.el_limit = False
+
             try:
-                device.el_limit = False
                 jsonArgument = json.loads(argin)
-                ra_value = (jsonArgument["pointing"]["target"]["RA"])
-                dec_value = (jsonArgument["pointing"]["target"]["dec"])
-                radec_value = 'radec' + ',' + str(ra_value) + ',' + str(dec_value)
-                device.radec_value = radec_value
-                device.event_track_time.clear()
-                # TODO: For future reference
-                # self.tracking_time_thread1 = threading.Thread(None, self.tracking_time_thread, const.THREAD_TRACK)
-                # self.tracking_time_thread1.start()
-                # Pass string argument in track_thread in brackets
-                # device.track_thread1 = threading.Thread(None, device.track_thread, const.THREAD_TRACK,
-                #                                         args=(radec_value,))
-                # device.track_thread1.start()
-
-                # Updated logic added to run only one thread for TRACK functionality
-                # Check if it is first Track command in scheduling block
-                if device._dish_proxy.pointingState == PointingState.READY:
-                    self.logger.debug("When pointing state is READY --> Create Track thread")
-                    device.track_thread1 = threading.Thread(None, device.track_thread, const.THREAD_TRACK)
-                    # Check if track thread already exists
-                    if not device.track_thread1.is_alive():
-                        self.logger.debug("When pointing state is READY --> Start Track thread")
-                        device.track_thread1.start()
-                # This elif can be removed once testing of SP-1019 is done.
-                elif device._dish_proxy.pointingState == PointingState.TRACK:
-                    self.logger.debug("When pointing state is TRACK --> Do nothing")
-                device._read_activity_message = const.STR_TRACK_SUCCESS
-                self.logger.info(device._read_activity_message)
-                return (ResultCode.OK, device._read_activity_message)
-
-            except ValueError as value_error:
-                log_msg = const.ERR_INVALID_JSON + str(value_error)
+            except json.JSONDecodeError as jsonerr:
+                log_msg = const.ERR_INVALID_JSON + str(jsonerr)
                 device._read_activity_message = log_msg
-                self.logger.exception(value_error)
+                self.logger.exception(log_msg)
                 tango.Except.throw_exception(const.STR_TRACK_EXEC, log_msg, "DishLeafNode.TrackCommand",
                                              tango.ErrSeverity.ERR)
 
+            try:
+                ra_value = (jsonArgument["pointing"]["target"]["RA"])
+                dec_value = (jsonArgument["pointing"]["target"]["dec"])
             except KeyError as key_error:
                 log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
                 device._read_activity_message = log_msg
                 self.logger.exception(key_error)
                 tango.Except.throw_exception(const.STR_TRACK_EXEC, log_msg, "DishLeafNode.TrackCommand",
                                              tango.ErrSeverity.ERR)
+
+            device.radec_value = f"radec,{ra_value},{dec_value}"
+            device.event_track_time.clear()
+
+            if device._dish_proxy.pointingState == PointingState.READY:
+                self.logger.debug("When pointing state is READY --> Create Track thread")
+                device.track_thread1 = threading.Thread(None, device.track_thread, const.THREAD_TRACK)
+                if not device.track_thread1.is_alive():
+                    self.logger.debug("When pointing state is READY --> Start Track thread")
+                    device.track_thread1.start()
+            # This elif can be removed once testing of SP-1019 is done.
+            elif device._dish_proxy.pointingState == PointingState.TRACK:
+                self.logger.debug("When pointing state is TRACK --> Do nothing")
+            device._read_activity_message = const.STR_TRACK_SUCCESS
+            self.logger.info(device._read_activity_message)
+            return (ResultCode.OK, device._read_activity_message)
 
     def is_Track_allowed(self):
         """
