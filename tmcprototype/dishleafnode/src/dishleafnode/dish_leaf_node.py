@@ -195,15 +195,14 @@ class DishLeafNode(SKABaseDevice):
         """
         start_track_time = time.time()
         end_track_time = start_track_time + self.TrackDuration * 60.0
-        while 1:
+        while True:
             if end_track_time <= time.time():
                 self.event_track_time.set()
                 self._read_activity_message = const.ERR_TIME_LIM
                 self.logger.error(const.ERR_TIME_LIM)
                 break
-            elif self.el_limit == True:
+            elif self.el_limit:
                 break
-
     
     def track_thread(self):
         """This thread invokes Track command on DishMaster at the rate of 20 Hz.
@@ -216,7 +215,7 @@ class DishLeafNode(SKABaseDevice):
             katpoint_arg = []
             katpoint_arg.insert(0, self.radec_value)
             katpoint_arg.insert(1, timestamp_value)
-            
+
             try:
                 self.convert_radec_to_azel(katpoint_arg)
             except ValueError as valuerr:
@@ -366,8 +365,6 @@ class DishLeafNode(SKABaseDevice):
             device.el_limit = False
             device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
             device._version_id = release.version
-            exception_message = []
-            exception_count = 0
             device.radec_value = ""
             device.set_dish_name_number()
             device.set_observer_lat_long_alt()
@@ -375,11 +372,11 @@ class DishLeafNode(SKABaseDevice):
             self.logger.debug(log_msg)
             device._read_activity_message = log_msg
             device.event_track_time = threading.Event()
-            device._health_state = HealthState.OK  # Setting healthState to "OK"
-            device._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
+            device._health_state = HealthState.OK
+            device._simulation_mode = SimulationMode.FALSE
 
             try:
-                device._dish_proxy = DeviceProxy(str(device.DishMasterFQDN))  # Creating proxy to the DishMaster
+                device._dish_proxy = DeviceProxy(str(device.DishMasterFQDN))
             except DevFailed as dev_failed:
                 log_msg = const.ERR_IN_CREATE_PROXY_DM + str(dev_failed)
                 device._read_activity_message = log_msg
@@ -387,7 +384,6 @@ class DishLeafNode(SKABaseDevice):
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "DishLeafNode.InitCommand",
                                              tango.ErrSeverity.ERR)
 
-            # Subscribing to DishMaster Attributes
             try:
                 device._dish_proxy.subscribe_event(const.EVT_DISH_MODE, EventType.CHANGE_EVENT,
                                                    device.attribute_event_handler, stateless=True)
@@ -897,15 +893,12 @@ class DishLeafNode(SKABaseDevice):
                 ra_value = (jsonArgument["pointing"]["target"]["RA"])
                 dec_value = (jsonArgument["pointing"]["target"]["dec"])
                 receiver_band = int(jsonArgument["dish"]["receiverBand"])
-                # timestamp_value = Current system time in UTC
                 timestamp_value = str(datetime.datetime.utcnow())
-                # Convert ra and dec to az and el
                 radec_value = 'radec' + ',' + str(ra_value) + ',' + str(dec_value)
                 katpoint_arg = []
                 katpoint_arg.insert(0, radec_value)
                 katpoint_arg.insert(1, timestamp_value)
                 device.convert_radec_to_azel(katpoint_arg)
-                # Convert calulated AZ-El into JSON string
                 arg_list = {"pointing": {
                     "AZ": device.az,
                     "EL": device.el
@@ -917,9 +910,8 @@ class DishLeafNode(SKABaseDevice):
 
                 }
                 dish_str_ip = json.dumps(arg_list)
-                # Send configure command to Dish Master
                 device._dish_proxy.command_inout_asynch(const.CMD_DISH_CONFIGURE, str(dish_str_ip),
-                                                      self.cmd_ended_cb)
+                                                        self.cmd_ended_cb)
                 device._read_activity_message = const.STR_CONFIGURE_SUCCESS
                 self.logger.info(device._read_activity_message)
                 return (ResultCode.OK, device._read_activity_message)
