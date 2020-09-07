@@ -292,12 +292,6 @@ class DishLeafNode(SKABaseDevice):
 
             time.sleep(0.05)
 
-    def throw_exception(self, except_msg_list, read_actvity_msg):
-        err_msg = ''
-        for item in except_msg_list:
-            err_msg += item + "\n"
-        tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
-
     def set_dish_name_number(self):
         # Find out dish number from DishMasterFQDN property e.g. mid_d0001/elt/master
         dish_name_string = self.DishMasterFQDN.split("/")[0]
