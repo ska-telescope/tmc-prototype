@@ -292,15 +292,6 @@ class DishLeafNode(SKABaseDevice):
 
             time.sleep(0.05)
 
-    # Function for handling all Devfailed exception
-    def _handle_generic_exception(self, exception, except_msg_list, exception_count, read_actvity_msg):
-        log_msg = read_actvity_msg + str(exception)
-        self.logger.error(log_msg)
-        self._read_activity_message = read_actvity_msg + str(exception)
-        except_msg_list.append(self._read_activity_message)
-        exception_count += 1
-        return [except_msg_list, exception_count]
-
     def throw_exception(self, except_msg_list, read_actvity_msg):
         err_msg = ''
         for item in except_msg_list:
