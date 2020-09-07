@@ -312,11 +312,10 @@ class DishLeafNode(SKABaseDevice):
         tango.Except.throw_exception(const.STR_CMD_FAILED, err_msg, read_actvity_msg, tango.ErrSeverity.ERR)
 
     def set_dish_name_number(self):
-        # Find out dish number from DishMasterFQDN property
-        dish_name_string = self.DishMasterFQDN.split("/")
-        dish_num_list = [dish_name_char for dish_name_char in dish_name_string[0] if dish_name_char.isdigit()]
-        self.dish_number = "".join(dish_num_list)
-        self.dish_name = 'd' + self.dish_number
+        # Find out dish number from DishMasterFQDN property e.g. mid_d0001/elt/master
+        dish_name_string = self.DishMasterFQDN.split("/")[0]
+        self.dish_name = dish_name_string.split("_")[1]
+        self.dish_number = self.dish_name[1:]
 
     def set_observer_lat_long_alt(self):
         # Load a set of antenna descriptions (latitude, longitude, altitude, enu coordinates) from text file and
