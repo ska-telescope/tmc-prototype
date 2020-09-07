@@ -239,18 +239,7 @@ class DishLeafNode(SKABaseDevice):
     def track_thread(self):
         """This thread invokes Track command on DishMaster at the rate of 20 Hz.
 
-        :param argin: DevVarStringArray
-
-        For Track thread, argin to be provided is the Ra and Dec values in the following format:
-        radec|21:08:47.92|89:15:51.4 Where first value is tag that is radec, second value is Ra in Hr:Min:Sec,
-        and third value is Dec in Deg:Min:Sec.
-
-        It takes system's current time in UTC as timestamp and converts RaDec to AzEl using
-        convert_radec_to_azel method of class DishLeafNode.
-
         :return: None.
-
-        :raises: Exception if error occurs in RaDec to AzEl conversion.
         """
         self.logger.info(f"print track_thread thread name:{threading.currentThread().getName()}{threading.get_ident()}")
         while self.event_track_time.is_set() is False:
