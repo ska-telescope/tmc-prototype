@@ -890,52 +890,62 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
             try:
                 jsonArgument = json.loads(argin)
+            except json.JSONDecodeError as jsonerr:
+                log_msg = const.ERR_INVALID_JSON + str(value_error)
+                device._read_activity_message = log_msg
+                self.logger.error(value_error)
+                tango.Except.throw_exception(const.STR_CONFIGURE_EXEC, log_msg, "DishLeafNode.ConfigureCommand",
+                                             tango.ErrSeverity.ERR)
+            try:
                 ra_value = (jsonArgument["pointing"]["target"]["RA"])
                 dec_value = (jsonArgument["pointing"]["target"]["dec"])
                 receiver_band = int(jsonArgument["dish"]["receiverBand"])
-                timestamp_value = str(datetime.datetime.utcnow())
-                radec_value = 'radec' + ',' + str(ra_value) + ',' + str(dec_value)
-                katpoint_arg = []
-                katpoint_arg.insert(0, radec_value)
-                katpoint_arg.insert(1, timestamp_value)
-                device.convert_radec_to_azel(katpoint_arg)
-                arg_list = {"pointing": {
-                    "AZ": device.az,
-                    "EL": device.el
-
-                },
-                    "dish": {
-                        "receiverBand": receiver_band
-                    }
-
-                }
-                dish_str_ip = json.dumps(arg_list)
-                device._dish_proxy.command_inout_asynch(const.CMD_DISH_CONFIGURE, str(dish_str_ip),
-                                                        self.cmd_ended_cb)
-                device._read_activity_message = const.STR_CONFIGURE_SUCCESS
-                self.logger.info(device._read_activity_message)
-                return (ResultCode.OK, device._read_activity_message)
-
-            except ValueError as value_error:
-                log_msg = const.ERR_INVALID_JSON + str(value_error)
-                device._read_activity_message = log_msg
-                self.logger.exception(value_error)
-                tango.Except.throw_exception(const.STR_CONFIGURE_EXEC, log_msg, "DishLeafNode.ConfigureCommand",
-                                             tango.ErrSeverity.ERR)
-
             except KeyError as key_error:
                 log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
                 device._read_activity_message = log_msg
-                self.logger.exception(key_error)
+                self.logger.error(log_msg)
                 tango.Except.throw_exception(const.STR_CONFIGURE_EXEC, log_msg, "DishLeafNode.ConfigureCommand",
                                              tango.ErrSeverity.ERR)
 
+            timestamp_value = str(datetime.datetime.utcnow())
+            radec_value = f"radec,{ra_value},{dec_value}"
+            katpoint_arg = []
+            katpoint_arg.insert(0, radec_value)
+            katpoint_arg.insert(1, timestamp_value)
+
+            try:
+                device.convert_radec_to_azel(katpoint_arg)
+            except ValueError as valuerr:
+                log_msg = const.ERR_EXE_CONFIGURE_CMD + str(valuerr)
+                device._read_activity_message = log_msg
+                self.logger.error(log_msg)
+                tango.Except.throw_exception(const.STR_CONFIGURE_EXEC, log_msg, "DishLeafNode.ConfigureCommand",
+                                             tango.ErrSeverity.ERR)
+
+            arg_list = {
+                "pointing": {
+                    "AZ": device.az,
+                    "EL": device.el
+                },
+                "dish": {
+                    "receiverBand": receiver_band
+                }
+            }
+            dish_str_ip = json.dumps(arg_list)
+
+            try:
+                device._dish_proxy.command_inout_asynch(const.CMD_DISH_CONFIGURE, str(dish_str_ip),
+                                                        self.cmd_ended_cb)
             except DevFailed as dev_failed:
                 log_msg = const.ERR_EXE_CONFIGURE_CMD + str(dev_failed)
                 device._read_activity_message = log_msg
-                self.logger.exception(dev_failed)
+                self.logger.exception(log_msg)
                 tango.Except.throw_exception(const.STR_CONFIGURE_EXEC, log_msg, "DishLeafNode.ConfigureCommand",
                                              tango.ErrSeverity.ERR)
+
+            device._read_activity_message = const.STR_CONFIGURE_SUCCESS
+            self.logger.info(device._read_activity_message)
+            return (ResultCode.OK, device._read_activity_message)
 
     def is_Configure_allowed(self):
         """
