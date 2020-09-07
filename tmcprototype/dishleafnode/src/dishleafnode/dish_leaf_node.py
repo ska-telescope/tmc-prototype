@@ -235,6 +235,7 @@ class DishLeafNode(SKABaseDevice):
             elif self.el_limit == True:
                 break
 
+    
     def track_thread(self):
         """This thread invokes Track command on DishMaster at the rate of 20 Hz.
 
@@ -251,50 +252,56 @@ class DishLeafNode(SKABaseDevice):
 
         :raises: Exception if error occurs in RaDec to AzEl conversion.
         """
-        try:
-            log_msg="print track_thread thread name: ", str(threading.currentThread().getName()),str(threading.get_ident())
-            self.logger.info(log_msg)
-            while self.event_track_time.is_set() is False:
-                # timestamp_value = Current system time in UTC
-                timestamp_value = str(datetime.datetime.utcnow())
-                katpoint_arg = []
-                katpoint_arg.insert(0, self.radec_value)
-                katpoint_arg.insert(1, timestamp_value)
-                # Conversion of RaDec to AzEl
+        self.logger.info(f"print track_thread thread name:{threading.currentThread().getName()}{threading.get_ident()}")
+        while self.event_track_time.is_set() is False:
+            timestamp_value = str(datetime.datetime.utcnow())
+            katpoint_arg = []
+            katpoint_arg.insert(0, self.radec_value)
+            katpoint_arg.insert(1, timestamp_value)
+            
+            try:
                 self.convert_radec_to_azel(katpoint_arg)
-                if self.RaDec_AzEl_Conversion is True:
-                    if self.el >= self.ele_min_lim and self.el <= self.ele_max_lim:
-                        if self.az < 0:
-                            self.az = 360 - abs(self.az)
+            except ValueError as valuerr:
+                log_msg = const.ERR_EXE_TRACK + str(valuerr)
+                self.logger.error(log_msg)
+                self._read_activity_message = log_msg
+                return
 
-                        roundoff_az_el = [round(self.az, 12), round(self.el, 12)]
-                        spectrum = [0]
-                        spectrum.extend((roundoff_az_el))
-                        # assign calculated AzEl to desiredPointing attribute of Dishmaster
-                        self._dish_proxy.desiredPointing = spectrum
-                        if self.event_track_time.is_set() is False:
-                            # Invoke Track command of Dish Master
-                            self.logger.info("Invoking Track command on DishMaster.")
-                            self._dish_proxy.command_inout_asynch(const.CMD_TRACK, "0", self.cmd_ended_cb)
-                        else:
-                            log_msg = const.STR_BREAK_LOOP + str(self.event_track_time.is_set())
-                            self.logger.debug(log_msg)
-                            break
-                    else:
-                        self.el_limit = True
-                        self._read_activity_message = const.ERR_ELE_LIM
-                        self.logger.info(const.ERR_ELE_LIM)
-                        self._read_activity_message = const.STR_SRC_NOT_VISIBLE
-                        self.logger.info(const.STR_SRC_NOT_VISIBLE)
-                else:
-                    self._read_activity_message = const.ERR_AZ_EL_CALC
-                    self.logger.info(const.ERR_AZ_EL_CALC)
+            if not self.RaDec_AzEl_Conversion:
+                self._read_activity_message = const.ERR_AZ_EL_CALC
+                self.logger.info(const.ERR_AZ_EL_CALC)
                 time.sleep(0.05)
-                
-        except Exception as except_occurred:
-            log_msg = const.ERR_EXE_TRACK + str(except_occurred)
-            self.logger.error(log_msg)
-            self._handle_generic_exception(except_occurred, [], 0, const.ERR_EXE_TRACK)
+                continue
+
+            if not (self.el >= self.ele_min_lim and self.el <= self.ele_max_lim):
+                self.el_limit = True
+                self._read_activity_message = const.ERR_ELE_LIM
+                self.logger.info(const.ERR_ELE_LIM)
+                self._read_activity_message = const.STR_SRC_NOT_VISIBLE
+                self.logger.info(const.STR_SRC_NOT_VISIBLE)
+                time.sleep(0.05)
+                continue
+
+            if self.az < 0:
+                self.az = 360 - abs(self.az)
+
+            desired_pointing = [0, round(self.az, 12), round(self.el, 12)]
+            self._dish_proxy.desiredPointing = desired_pointing
+            if not self.event_track_time.is_set():
+                log_msg = const.STR_BREAK_LOOP + str(self.event_track_time.is_set())
+                self.logger.debug(log_msg)
+                break
+
+            self.logger.info("Invoking Track command on DishMaster.")
+            try:
+                self._dish_proxy.command_inout_asynch(const.CMD_TRACK, "0", self.cmd_ended_cb)
+            except DevFailed as dev_failed:
+                log_msg = const.ERR_EXE_TRACK + str(dev_failed)
+                self.logger.error(log_msg)
+                self._read_activity_message = log_msg
+                return
+
+            time.sleep(0.05)
 
     # Function for handling all Devfailed exception
     def _handle_generic_exception(self, exception, except_msg_list, exception_count, read_actvity_msg):
