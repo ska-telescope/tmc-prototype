@@ -296,7 +296,7 @@ class DishLeafNode(SKABaseDevice):
         dish_long_dms = obj_unitconverter.rad_to_dms(dish_lat_long_alt_rad[1])
 
         self.observer_location_lat = f"{dish_lat_dms[0]}:{dish_lat_dms[1]}:{dish_lat_dms[2]}"
-        self.observer_location_long = f"{dish_long_dms[0]}:{dish_long_dms[1]}:{dish_long_dms[2]}
+        self.observer_location_long = f"{dish_long_dms[0]}:{dish_long_dms[1]}:{dish_long_dms[2]}"
         self.observer_altitude = dish_ecef_coordinates[2]
 
     # PROTECTED REGION END #    //  DishLeafNode.class_variable
@@ -889,9 +889,9 @@ class DishLeafNode(SKABaseDevice):
             try:
                 jsonArgument = json.loads(argin)
             except json.JSONDecodeError as jsonerr:
-                log_msg = f"{const.ERR_INVALID_JSON}{value_error}
+                log_msg = f"{const.ERR_INVALID_JSON}{jsonerr}
                 device._read_activity_message = log_msg
-                self.logger.error(value_error)
+                self.logger.error(log_msg)
                 tango.Except.throw_exception(const.STR_CONFIGURE_EXEC, log_msg, "DishLeafNode.ConfigureCommand",
                                              tango.ErrSeverity.ERR)
             try:
