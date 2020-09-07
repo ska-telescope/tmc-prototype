@@ -16,23 +16,10 @@ from os.path import dirname, join
 
 # Additional import
 from dishleafnode import DishLeafNode, const, release
+from dishleafnode.utils import DishMode
 from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
 from ska.base.control_model import LoggingLevel
 
-from enum import IntEnum
-
-
-# Enums
-class DishMode(IntEnum):
-    OFF = 0
-    STARTUP = 1
-    SHUTDOWN = 2
-    STANDBY_LP = 3
-    STANDBY_FP = 4
-    STOW = 5
-    CONFIG = 6
-    OPERATE = 7
-    MAINTENANCE = 8
 
 config_input_file = 'command_Config.json'
 path = join(dirname(__file__), 'data', config_input_file)

@@ -24,7 +24,7 @@ from tango.server import run, command, device_property, attribute
 from ska.base.commands import ResultCode, ResponseCommand
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, SimulationMode
-from .utils import PointingState, UnitConverter
+from .utils import PointingState, UnitConverter, DishMode
 
 # Additional import
 import threading
@@ -35,37 +35,6 @@ import datetime
 import time
 import re
 
-from enum import IntEnum
-
-
-# Enums
-class DishMode(IntEnum):
-    OFF = 0
-    STARTUP = 1
-    SHUTDOWN = 2
-    STANDBY_LP = 3
-    STANDBY_FP = 4
-    STOW = 5
-    CONFIG = 6
-    OPERATE = 7
-    MAINTENANCE = 8
-
-
-def dmstodd(dish_antenna_latitude):
-    """Converts latitude from deg:min:sec to decimal degree format.
-
-    :param dish_antenna_latitude: latitude of Dish location in Deg:Min:Sec.
-    Example: 18:31:48.0
-
-    :return: latitude of Dish location in decimal Degree.
-    Example : "18.529999999999998" is the returned value of dmstodd
-    """
-    dd = re.split('[:]+', dish_antenna_latitude)
-    deg_dec = abs(float(dd[0])) + ((float(dd[1])) / 60) + ((float(dd[2])) / 3600)
-    if "-" in dd[0]:
-        return deg_dec * (-1)
-    else:
-        return deg_dec
 
 # PROTECTED REGION END #    //  DishLeafNode.additionnal_import
 

@@ -105,3 +105,15 @@ class UnitConverter:
         except SyntaxError as error:
             log_msg = "Error while converting Deg:Min:Sec to decimal degrees." + str(error)
             self.logger.error(log_msg)
+
+
+class DishMode(enum.IntEnum):
+    OFF = 0
+    STARTUP = 1
+    SHUTDOWN = 2
+    STANDBY_LP = 3
+    STANDBY_FP = 4
+    STOW = 5
+    CONFIG = 6
+    OPERATE = 7
+    MAINTENANCE = 8
