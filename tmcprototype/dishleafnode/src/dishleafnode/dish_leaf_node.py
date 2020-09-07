@@ -764,21 +764,21 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
             try:
                 scan_timestamp = float(argin)
-                self.logger.debug(const.STR_IN_SCAN)
-                device._dish_proxy.command_inout_asynch(const.CMD_DISH_SCAN,
-                                                        str(scan_timestamp), self.cmd_ended_cb)
-                self.logger.debug(const.STR_OUT_SCAN)
-                log_msg = const.STR_SCAN_SUCCESS + " with input argument as "+str(argin)
-                self.logger.info(log_msg)
-                device._read_activity_message = const.STR_SCAN_SUCCESS
-                return (ResultCode.OK, device._read_activity_message)
-
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_SCAN_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
                 device._read_activity_message = log_msg
                 self.logger.exception(value_error)
                 tango.Except.throw_exception(const.STR_SCAN_EXEC, log_msg, "DishLeafNode.ScanCommand",
                                              tango.ErrSeverity.ERR)
+
+            self.logger.debug(const.STR_IN_SCAN)
+            device._dish_proxy.command_inout_asynch(const.CMD_DISH_SCAN,
+                                                    argin, self.cmd_ended_cb)
+            self.logger.debug(const.STR_OUT_SCAN)
+            log_msg = const.STR_SCAN_SUCCESS + " with input argument as "+str(argin)
+            self.logger.info(log_msg)
+            device._read_activity_message = const.STR_SCAN_SUCCESS
+            return (ResultCode.OK, device._read_activity_message)
 
     def is_Scan_allowed(self):
         """
@@ -1302,21 +1302,22 @@ class DishLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            try:
-                slew_timestamp = float(argin)
-                device._dish_proxy.command_inout_asynch(const.CMD_DISH_SLEW,
-                                                        str(slew_timestamp),
-                                                        self.cmd_ended_cb)
-                device._read_activity_message = const.STR_SLEW_SUCCESS
-                self.logger.info(device._read_activity_message)
-                return (ResultCode.OK, device._read_activity_message)
 
+            try:
+                float(argin)
             except ValueError as value_error:
                 log_msg = const.ERR_EXE_SLEW_CMD + const.ERR_INVALID_DATATYPE + str(value_error)
                 device._read_activity_message = log_msg
                 self.logger.exception(value_error)
                 tango.Except.throw_exception(const.STR_STOPCAPTURE_EXEC, log_msg, "DishLeafNode.SlewCommand",
                                              tango.ErrSeverity.ERR)
+
+            device._dish_proxy.command_inout_asynch(const.CMD_DISH_SLEW,
+                                                    argin,
+                                                    self.cmd_ended_cb)
+            device._read_activity_message = const.STR_SLEW_SUCCESS
+            self.logger.info(device._read_activity_message)
+            return (ResultCode.OK, device._read_activity_message)
 
     def is_Slew_allowed(self):
         """
