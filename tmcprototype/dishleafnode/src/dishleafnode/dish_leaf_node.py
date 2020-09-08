@@ -99,7 +99,7 @@ class DishLeafNode(SKABaseDevice):
         :return: None
         """
         if event_data.err:
-            log_msg = f"Event system DevError(s) occured!!! {event_data.errors}"
+            log_msg = f"Event system DevError(s) occured!!! {str(event_data.errors)}"
             self._read_activity_message = log_msg
             self.logger.error(log_msg)
             return
@@ -366,7 +366,7 @@ class DishLeafNode(SKABaseDevice):
             device.radec_value = ""
             device.set_dish_name_number()
             device.set_observer_lat_long_alt()
-            log_msg = f"{const.STR_DISHMASTER_FQDN}{device.DishMasterFQDN}
+            log_msg = f"{const.STR_DISHMASTER_FQDN}{device.DishMasterFQDN}"
             self.logger.debug(log_msg)
             device._read_activity_message = log_msg
             device.event_track_time = threading.Event()
