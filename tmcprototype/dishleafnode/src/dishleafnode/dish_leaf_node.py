@@ -708,7 +708,7 @@ class DishLeafNode(SKABaseDevice):
             try:
                 scan_timestamp = float(argin)
             except ValueError as value_error:
-                log_msg = f"{const.ERR_EXE_SCAN_CMD}{const.ERR_INVALID_DATATYPE}{value_error}
+                log_msg = f"{const.ERR_EXE_SCAN_CMD}{const.ERR_INVALID_DATATYPE}{value_error}"
                 device._read_activity_message = log_msg
                 self.logger.exception(value_error)
                 tango.Except.throw_exception(const.STR_SCAN_EXEC, log_msg, "DishLeafNode.ScanCommand",
@@ -889,7 +889,7 @@ class DishLeafNode(SKABaseDevice):
             try:
                 jsonArgument = json.loads(argin)
             except json.JSONDecodeError as jsonerr:
-                log_msg = f"{const.ERR_INVALID_JSON}{jsonerr}
+                log_msg = f"{const.ERR_INVALID_JSON}{jsonerr}"
                 device._read_activity_message = log_msg
                 self.logger.error(log_msg)
                 tango.Except.throw_exception(const.STR_CONFIGURE_EXEC, log_msg, "DishLeafNode.ConfigureCommand",
@@ -914,7 +914,7 @@ class DishLeafNode(SKABaseDevice):
             try:
                 device.convert_radec_to_azel(katpoint_arg)
             except ValueError as valuerr:
-                log_msg = f"{const.ERR_EXE_CONFIGURE_CMD}{valuerr}
+                log_msg = f"{const.ERR_EXE_CONFIGURE_CMD}{valuerr}"
                 device._read_activity_message = log_msg
                 self.logger.error(log_msg)
                 tango.Except.throw_exception(const.STR_CONFIGURE_EXEC, log_msg, "DishLeafNode.ConfigureCommand",
@@ -1025,7 +1025,7 @@ class DishLeafNode(SKABaseDevice):
                 return (ResultCode.OK, device._read_activity_message)
 
             except ValueError as value_error:
-                log_msg = f"{const.ERR_EXE_START_CAPTURE_CMD}{const.ERR_INVALID_DATATYPE}{value_error}
+                log_msg = f"{const.ERR_EXE_START_CAPTURE_CMD}{const.ERR_INVALID_DATATYPE}{value_error}"
                 device._read_activity_message = log_msg
                 self.logger.exception(value_error)
                 tango.Except.throw_exception(const.STR_CONFIGURE_EXEC, log_msg, "DishLeafNode.StartCaptureCommand",
@@ -1107,7 +1107,7 @@ class DishLeafNode(SKABaseDevice):
                 return (ResultCode.OK, device._read_activity_message)
 
             except ValueError as value_error:
-                log_msg = f"{const.ERR_EXE_STOP_CAPTURE_CMD}{const.ERR_INVALID_DATATYPE}{value_error}
+                log_msg = f"{const.ERR_EXE_STOP_CAPTURE_CMD}{const.ERR_INVALID_DATATYPE}{value_error}"
                 device._read_activity_message = log_msg
                 self.logger.exception(value_error)
                 tango.Except.throw_exception(const.STR_STOPCAPTURE_EXEC, log_msg, "DishLeafNode.StopCaptureCommand",
@@ -1533,7 +1533,7 @@ class DishLeafNode(SKABaseDevice):
                 return (ResultCode.OK, device._read_activity_message)
 
             except DevFailed as dev_failed:
-                log_msg = f"{const.ERR_EXE_ABORT_CMD}{dev_failed}
+                log_msg = f"{const.ERR_EXE_ABORT_CMD}{dev_failed}"
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
                 tango.Except.throw_exception(const.STR_ABORT_EXEC, log_msg, "DishLeafNode.AbortCommand",
