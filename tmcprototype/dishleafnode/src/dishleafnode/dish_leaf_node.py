@@ -376,7 +376,7 @@ class DishLeafNode(SKABaseDevice):
             try:
                 device._dish_proxy = DeviceProxy(str(device.DishMasterFQDN))
             except DevFailed as dev_failed:
-                log_msg = f"{const.ERR_IN_CREATE_PROXY_DM}{dev_failed}
+                log_msg = f"{const.ERR_IN_CREATE_PROXY_DM}{dev_failed}"
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "DishLeafNode.InitCommand",
