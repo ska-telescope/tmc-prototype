@@ -226,7 +226,7 @@ def test_dish_leaf_node_dish_mode_with_error_event(mock_dish_master):
     dummy_event = create_dummy_event_with_error(dish_master1_fqdn, dish_mode_value,
                                                 dish_master_dishmode_attribute)
     event_subscription_map[dish_master_dishmode_attribute](dummy_event)
-    assert const.ERR_ON_SUBS_DISH_MODE_ATTR in tango_context.device.activityMessage
+    assert "Event system DevError(s) occured!!!" in tango_context.device.activityMessage
 
 
 def create_dummy_event_with_error(device_fqdn, attr_value, attribute):
