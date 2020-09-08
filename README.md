@@ -96,18 +96,18 @@ TMC prototype addresses the  following architectural aspects and functionality:
 
 ### 3.1: Install SKA Base classes
 Since the TMC prototype is developed using LMC Base classes, we need to install them prior to running tmc-prototype.
-Follow the steps specified at [this link](https://github.com/ska-telescope/lmc-base-classes) to install LMC Base classes.
+Follow the steps specified at [this link](https://gitlab.com/ska-telescope/lmc-base-classes#installation-steps) to install LMC Base classes.
 
 ### 3.2: Install Elettra Alarm Handler
 Alarm handler is an optional feature and can be installed if desired. Refer [this](https://docs.google.com/document/d/1uGnVrBGs6TvnORsM2m4hbORcAzn_KK2kAO8Roaocxjo/edit?usp=sharing) document for installation guide.
 
 # 4: Testing
-The control hierarchy of TANGO devices are as follows:
-Central Node -> SubarrayNode -> DishLeafNode/DishMaster
-                             -> CspMasterLeafNode/CspMaster
-                             -> CspSubarrayLeafNode/CspSubarray
-                             -> SdpMasterLeafNode/SdpMaster
-                             -> SdpSubarrayLeafNode ->SdpSubarray
+The control hierarchy of TANGO devices are as follows:\
+Central Node -> SubarrayNode -> DishLeafNode/DishMaster\
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;-> CspMasterLeafNode/CspMaster\
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;-> CspSubarrayLeafNode/CspSubarray\
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;-> SdpMasterLeafNode/SdpMaster\
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;-> SdpSubarrayLeafNode ->SdpSubarray
 
 (The flow from left to right depicts the Client -> Server relationship)
 
