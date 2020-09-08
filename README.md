@@ -14,12 +14,13 @@
    * 3.5 - Running the GUI
  * 4   - Testing
    * 4.1 - Unit Testing
+   * 4.2 - Integration Testing
  * 5   - Documentation
 
 # 1: Introduction
 This is the repository for the TMC evolutionary prototype. The prototype aims to realize Telescope Monitoring and Control functionality, and utilizes the platform, tools and technology specified for the SKA construction.
 
-The prototype utilizes the base classes created in-line with the SKA Control System Guidelines and Tango coding standards. Developed in **Python 3.6** (PyTango 9.3.2), it is a single repository consisting eight packages - CentralNode, SubarrayNode, DishLeafNode, CspMasterLeafNode, CspSubarrayLeafNode, SdpMasterLeafNode, SdpSubarrayLeafNode and DishMaster.
+The prototype utilizes the base classes created in-line with the SKA Control System Guidelines and Tango coding standards. Developed in **Python 3.7** (PyTango 9.3.2), it is a single repository consisting eight packages - CentralNode, SubarrayNode, DishLeafNode, CspMasterLeafNode, CspSubarrayLeafNode, SdpMasterLeafNode, SdpSubarrayLeafNode and DishMaster.
 
 TMC prototype addresses the  following architectural aspects and functionality:
 
@@ -35,7 +36,7 @@ TMC prototype addresses the  following architectural aspects and functionality:
 * [x] Use of SKA Logger
 * [x] Source tracking
 * [x] Exception handling guidelines for AssignResources functionality
-* [x] ADR-8 observation state machine
+* [x] Adopted ADR-8 observation state machine
 
 ### 1.2: Functionality
 
@@ -69,6 +70,8 @@ TMC prototype addresses the  following architectural aspects and functionality:
 * [x] Execute Configure command for a Subarray
 * [x] Execute a simple Scan and End the Scan
 * [x] EndSB command on SubarrayNode
+* [x] Configure and execute multiple scans
+* [x] Implement the observation state model and state transitions as per [ADR-8.](https://confluence.skatelescope.org/pages/viewpage.action?pageId=105416556)
 * [x] Calculate Geometric delay values (in seconds) per antenna on CSP Subarray Leaf Node
 * [x] Convert delay values (in seconds) to 5th order polynomial coefficients
 * [x] Abort an ongoing operation, and Restart the control nodes, catch exceptions in the AssignResource workflow, log the exception details and raise them to the calling components.
@@ -99,7 +102,9 @@ Since the TMC prototype is developed using LMC Base classes, we need to install 
 Follow the steps specified at [this link](https://gitlab.com/ska-telescope/lmc-base-classes#installation-steps) to install LMC Base classes.
 
 ### 3.2: Install Elettra Alarm Handler
-Alarm handler is an optional feature and can be installed if desired. Refer [this](https://docs.google.com/document/d/1uGnVrBGs6TvnORsM2m4hbORcAzn_KK2kAO8Roaocxjo/edit?usp=sharing) document for installation guide.
+Alarm handler is an optional feature and can be installed if desired. Refer to 
+[this](https://docs.google.com/document/d/1uGnVrBGs6TvnORsM2m4hbORcAzn_KK2kAO8Roaocxjo/edit?usp=sharing) 
+document for installation guide.
 
 # 4: Testing
 The control hierarchy of TANGO devices are as follows:\
@@ -112,12 +117,17 @@ Central Node -> SubarrayNode -> DishLeafNode/DishMaster\
 (The flow from left to right depicts the Client -> Server relationship)
 
 ## 4.1 Unit Testing
-As depicted above, the higher level of TMC devices are dependent on lower level devices in normal operation. However for better testability, the unit testing is carried out by mocking the dependent devices. This enables us to test each of the nodes independently without setting up the entire hierarchy of control nodes.
+As depicted above, the higher level of TMC devices are dependent on lower level devices in normal operation. 
+However for better testability, the unit testing is carried out by mocking the dependent devices. 
+This enables us to test each of the nodes independently without setting up the entire hierarchy of control nodes.
 In order to execute the entire suit of test cases in the repository, a command in makefile is implemented.
 
 The command to run the unit tests is:
     `make unit-test`
-
+## 4.2 Integration Testing
+Integration Testing is performed on SKA Integration on K8S environment. For this testing TMC image is required to 
+build locally or need to push on Nexus repository. Please refer [this](https://gitlab.com/ska-telescope/skampi#ska-integration-on-kubernetes)
+for detailed information.
 
 # 5: Documentation
 * [ReadTheDocs](https://tmc-prototype.readthedocs.io/en/master/)
