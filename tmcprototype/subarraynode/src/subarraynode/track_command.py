@@ -28,7 +28,7 @@ class TrackCommand(ResponseCommand):
 
         :raises: DevFailed if this command is not allowed to be run in current device state
         """
-        if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
             tango.Except.throw_exception("Command TrackCommand is not allowed in current state.",
                                          "Failed to invoke TrackCommand command on DishLeafNode.",
                                          "SubarrayNode.TrackComamnd()",

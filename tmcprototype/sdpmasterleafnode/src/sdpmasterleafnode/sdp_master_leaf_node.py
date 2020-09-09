@@ -300,7 +300,7 @@ class SdpMasterLeafNode(SKABaseDevice):
              :raises: DevFailed if this command is not allowed to be run
                  in current device state.
             """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.ON]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.ON]:
                 tango.Except.throw_exception("Disable() is not allowed in current state",
                                              "Failed to invoke Disable command on SdpMasterLeafNode.",
                                              "SdpMasterLeafNode.Disable() ",
@@ -473,7 +473,7 @@ class SdpMasterLeafNode(SKABaseDevice):
 
             """
 
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
                 tango.Except.throw_exception("Standby() is not allowed in current state",
                                              "Failed to invoke Standby command on SdpMasterLeafNode.",
                                              "SdpMasterLeafNode.Standby() ",

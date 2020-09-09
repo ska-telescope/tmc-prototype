@@ -202,7 +202,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             """
 
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("ReleaseAllResources() is not allowed in current state",
                                              "Failed to invoke ReleaseAllResources command on "
                                              "SdpSubarrayLeafNode.",
@@ -320,7 +320,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             """
 
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("AssignResources() is not allowed in current state",
                                         "Failed to invoke AssignResources command on SdpSubarrayLeafNode.",
                                         "sdpsubarrayleafnode.AssignResources()",
@@ -484,7 +484,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :raises: Exception if command execution throws any type of exception
 
             """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Configure() is not allowed in current state",
                                              "Failed to invoke Configure command on SdpSubarrayLeafNode.",
                                              "sdpsubarrayleafnode.Configure()",
@@ -605,7 +605,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :raises: Exception if command execution throws any type of exception.
 
             """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Scan() is not allowed in current state",
                                              "Failed to invoke Scan command on SdpSubarrayLeafNode.",
                                              "sdpsubarrayleafnode.Scan()",
@@ -731,7 +731,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :raises: Exception if command execution throws any type of exception.
 
             """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("EndScan() is not allowed in current state",
                                              "Failed to invoke EndScan command on SdpSubarrayLeafNode.",
                                              "sdpsubarrayleafnode.EndScan()",
@@ -847,7 +847,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :raises: Exception if command execution throws any type of exception.
 
             """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("EndSB() is not allowed in current state",
                                              "Failed to invoke EndSB command on SdpSubarrayLeafNode.",
                                              "sdpsubarrayleafnode.EndSB()",
@@ -961,7 +961,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :raises: DevFailed if this command is not allowed to be run in current device state
 
             """
-            if self.state_model.dev_state in [
+            if self.state_model.op_state in [
                 DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
             ]:
                 tango.Except.throw_exception("Abort() is not allowed in current state",
@@ -1084,7 +1084,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :raises: DevFailed if this command is not allowed to be run in current device state
 
             """
-            if self.state_model.dev_state in [
+            if self.state_model.op_state in [
                 DevState.UNKNOWN, DevState.DISABLE,
             ]:
                 tango.Except.throw_exception("Restart() is not allowed in current state",

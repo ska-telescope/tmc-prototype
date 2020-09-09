@@ -679,7 +679,7 @@ class DishLeafNode(SKABaseDevice):
 
             :rtype: boolean
             """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Scan() is not allowed in current state",
                                              "Failed to invoke Scan command on DishLeafNode.",
                                              "DishLeafNode.Scan() ",
@@ -764,7 +764,7 @@ class DishLeafNode(SKABaseDevice):
             :raises: DevFailed if this command is not allowed to be run in current device state.
 
             """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("EndScan() is not allowed in current state",
                                              "Failed to invoke StopCapture command on DishLeafNode.",
                                              "DishLeafNode.EndScan() ",
@@ -851,7 +851,7 @@ class DishLeafNode(SKABaseDevice):
             :raises: DevFailed if this command is not allowed to be run in current device state.
 
             """
-            if self.state_model.dev_state in [
+            if self.state_model.op_state in [
                 DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE, DevState.INIT]:
                 tango.Except.throw_exception("Configure() is not allowed in current state",
                                              "Failed to invoke Configure command on DishLeafNode.",
@@ -991,7 +991,7 @@ class DishLeafNode(SKABaseDevice):
             :raises: DevFailed if this command is not allowed to be run in current device state.
 
             """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE, ]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE, ]:
                 tango.Except.throw_exception("StartCapture() is not allowed in current state",
                                              "Failed to invoke StartCapture command on DishLeafNode.",
                                              "DishLeafNode.StartCapture() ",
@@ -1073,7 +1073,7 @@ class DishLeafNode(SKABaseDevice):
             :raises: DevFailed if this command is not allowed to be run in current device state.
 
             """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("StopCapture() is not allowed in current state",
                                              "Failed to invoke StopCapture command on DishLeafNode.",
                                              "DishLeafNode.StopCapture() ",
@@ -1227,7 +1227,7 @@ class DishLeafNode(SKABaseDevice):
             :raises: DevFailed if this command is not allowed to be run in current device state.
 
             """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Slew() is not allowed in current state",
                                              "Failed to invoke Slew command on DishLeafNode.",
                                              "DishLeafNode.Slew() ",
@@ -1310,7 +1310,7 @@ class DishLeafNode(SKABaseDevice):
             :raises: DevFailed if this command is not allowed to be run in current device state.
 
             """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Track() is not allowed in current state",
                                              "Failed to invoke Track command on DishLeafNode.",
                                              "DishLeafNode.Track() ",
@@ -1425,7 +1425,7 @@ class DishLeafNode(SKABaseDevice):
             :raises: DevFailed if this command is not allowed to be run in current device state.
 
             """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("StopTrack() is not allowed in current state",
                                              "Failed to invoke StopTrack command on DishLeafNode.",
                                              "DishLeafNode.StopTrack() ",
@@ -1506,7 +1506,7 @@ class DishLeafNode(SKABaseDevice):
             :raises: DevFailed if this command is not allowed to be run in current device state
 
             """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Abort() is not allowed in current state",
                                              "Failed to invoke Abort command on DishLeafNode.",
                                              "DishLeafNode.Abort() ",
@@ -1583,7 +1583,7 @@ class DishLeafNode(SKABaseDevice):
             :raises: DevFailed if this command is not allowed to be run in current device state
 
             """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Restart() is not allowed in current state",
                                              "Failed to invoke Restart command on DishLeafNode.",
                                              "DishLeafNode.Restart() ",
