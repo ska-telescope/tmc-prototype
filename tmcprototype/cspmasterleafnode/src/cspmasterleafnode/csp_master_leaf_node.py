@@ -390,7 +390,7 @@ class CspMasterLeafNode(SKABaseDevice):
             :raises: DevFailed if this command is not allowed to be run in current device state.
 
             """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
                 tango.Except.throw_exception("Command Standby is not allowed in current state.",
                                              "Failed to invoke Standby command on CspMasterLeafNode.",
                                              "CspMasterLeafNode.Standby()",
