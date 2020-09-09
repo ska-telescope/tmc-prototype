@@ -15,7 +15,8 @@
  * 4   - Testing
    * 4.1 - Unit Testing
    * 4.2 - Integration Testing
- * 5   - Documentation
+ * 5   - Linting
+ * 6   - Documentation
 
 # 1: Introduction
 This is the repository for the TMC evolutionary prototype. The prototype aims to realize Telescope Monitoring and Control functionality, and utilizes the platform, tools and technology specified for the SKA construction.
@@ -122,14 +123,24 @@ However for better testability, the unit testing is carried out by mocking the d
 This enables us to test each of the nodes independently without setting up the entire hierarchy of control nodes.
 In order to execute the entire suit of test cases in the repository, a command in makefile is implemented.
 
-The command to run the unit tests is:
-    `make unit-test`
+The command to run the unit tests is: `make unit-test`
+
 ## 4.2 Integration Testing
 Integration Testing is performed on SKA Integration on K8S environment. For this testing TMC image is required to 
 build locally or need to push on Nexus repository. Please refer [this](https://gitlab.com/ska-telescope/skampi#ska-integration-on-kubernetes)
 for detailed information.
 
-# 5: Documentation
+# 5: Linting
+[Pylint](http://pylint.pycqa.org/en/stable/), code analysis tool used for the linting in the TMC prototype. 
+ Configuration for linting is provided in *.pylintrc* file. For the code analysis of entire TMC, a command in the
+ makefile is implemented. 
+
+The command used for linting is: `make lint`
+
+After completion of linting job, *linting.xml* file is generated, which is used in generation of *lint errors*, 
+*lint failures* and *lint tests* gitlab badges.
+
+# 6: Documentation
 * [ReadTheDocs](https://tmc-prototype.readthedocs.io/en/master/)
 * [ADR-8: Subarray observation control state machine](https://confluence.skatelescope.org/x/bIdIBg)
 * [TMC Prototype Learnings](https://docs.google.com/document/d/1DMhb_6NM0oaZMhSwEE79_B-MwycwzuH-RJsuOd5Zjlw/edit?usp=sharing)
