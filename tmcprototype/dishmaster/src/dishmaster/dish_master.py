@@ -1038,6 +1038,7 @@ class DishMaster(SKAMaster):
                 self._abort_in_slew = True
                 self._pointing_state = PointingState.READY
             else:
+                self.is_stop_track = True
                 self._pointing_state = PointingState.READY
             self.logger.info(const.STR_DISH_ABORT)
 

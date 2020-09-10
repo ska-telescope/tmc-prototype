@@ -122,6 +122,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         self.register_command_object("EndSB", self.EndSBCommand(*args))
         self.register_command_object("Abort", self.AbortCommand(*args))
         self.register_command_object("Restart", self.RestartCommand(*args))
+        self.register_command_object("ObsReset", self.ObsResetCommand(*args))
+
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.always_executed_hook) ENABLED START #
@@ -202,7 +204,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             """
 
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("ReleaseAllResources() is not allowed in current state",
                                              "Failed to invoke ReleaseAllResources command on "
                                              "SdpSubarrayLeafNode.",
@@ -320,7 +322,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             """
 
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("AssignResources() is not allowed in current state",
                                         "Failed to invoke AssignResources command on SdpSubarrayLeafNode.",
                                         "sdpsubarrayleafnode.AssignResources()",
@@ -484,7 +486,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :raises: Exception if command execution throws any type of exception
 
             """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Configure() is not allowed in current state",
                                              "Failed to invoke Configure command on SdpSubarrayLeafNode.",
                                              "sdpsubarrayleafnode.Configure()",
@@ -605,7 +607,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :raises: Exception if command execution throws any type of exception.
 
             """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Scan() is not allowed in current state",
                                              "Failed to invoke Scan command on SdpSubarrayLeafNode.",
                                              "sdpsubarrayleafnode.Scan()",
@@ -731,7 +733,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :raises: Exception if command execution throws any type of exception.
 
             """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("EndScan() is not allowed in current state",
                                              "Failed to invoke EndScan command on SdpSubarrayLeafNode.",
                                              "sdpsubarrayleafnode.EndScan()",
@@ -847,7 +849,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :raises: Exception if command execution throws any type of exception.
 
             """
-            if self.state_model.dev_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("EndSB() is not allowed in current state",
                                              "Failed to invoke EndSB command on SdpSubarrayLeafNode.",
                                              "sdpsubarrayleafnode.EndSB()",
@@ -961,7 +963,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :raises: DevFailed if this command is not allowed to be run in current device state
 
             """
-            if self.state_model.dev_state in [
+            if self.state_model.op_state in [
                 DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
             ]:
                 tango.Except.throw_exception("Abort() is not allowed in current state",
@@ -1084,7 +1086,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :raises: DevFailed if this command is not allowed to be run in current device state
 
             """
-            if self.state_model.dev_state in [
+            if self.state_model.op_state in [
                 DevState.UNKNOWN, DevState.DISABLE,
             ]:
                 tango.Except.throw_exception("Restart() is not allowed in current state",
@@ -1171,7 +1173,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     @DebugIt()
     def Restart(self):
         """
-        Invoke Abort on SdpSubarrayLeafNode.
+        Invoke Restart command on SdpSubarrayLeafNode.
         """
         handler = self.get_command_object("Restart")
         (result_code, message) = handler()
@@ -1189,6 +1191,129 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         """
         handler = self.get_command_object("Restart")
+        return handler.check_allowed()
+
+    class ObsResetCommand(ResponseCommand):
+        """
+        A class for sdpSubarrayLeafNode's ObsResetCommand() command.
+        """
+
+        def check_allowed(self):
+            """
+            Checks whether this command is allowed to be run in current device state
+
+            :return: True if this command is allowed to be run in current device state
+
+            :rtype: boolean
+
+            :raises: DevFailed if this command is not allowed to be run in current device state
+
+            """
+            if self.state_model.op_state in [
+                DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("ObsResetCommand() is not allowed in current state",
+                                             "Failed to invoke ObsReset command on SdpSubarrayLeafNode.",
+                                             "sdpsubarrayleafnode.ObsResetCommand()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
+        def obsreset_cmd_ended_cb(self, event):
+            """
+            Callback function immediately executed when the asynchronous invoked command returns.
+            Checks whether the ObsResetCommand has been successfully invoked on SDP Subarray.
+
+            :param event: A CmdDoneEvent object.
+            This class is used to pass data to the callback method in asynchronous callback model
+            for command execution.
+
+            :type: CmdDoneEvent object
+
+                It has the following members:
+                    - device     : (DeviceProxy) The DeviceProxy object on which the
+                                   call was executed.
+                    - cmd_name   : (str) The command name
+                    - argout_raw : (DeviceData) The command argout
+                    - argout     : The command argout
+                    - err        : (bool) A boolean flag set to true if the command
+                                   failed. False otherwise
+                    - errors     : (sequence<DevError>) The error stack
+                    - ext
+
+            :return: none
+            """
+            device = self.target
+            if event.err:
+                log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                device._read_activity_message = log
+                self.logger.error(log)
+            else:
+                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                device._read_activity_message = log
+                self.logger.info(log)
+
+        def do(self):
+            """
+            Command to reset the SDP subarray and bring it to its RESETTING state.
+
+            :return: A tuple containing a return code and a string message indicating status. The message is for
+                        information purpose only.
+
+            :rtype: (ReturnCode, str)
+
+            :raises: DevFailed if error occurs while invoking command on SDPSubarray.
+
+            """
+            device = self.target
+            try:
+                if device._sdp_subarray_proxy.obsState in [ObsState.ABORTED, ObsState.FAULT]:
+                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_OBSRESET,
+                                                                    self.obsreset_cmd_ended_cb)
+                    device._read_activity_message = const.STR_OBSRESET_SUCCESS
+                    self.logger.info(const.STR_OBSRESET_SUCCESS)
+                    return (ResultCode.OK, const.STR_OBSRESET_SUCCESS)
+
+                else:
+                    log_msg = "Sdp Subarray is in ObsState " + str(device._sdp_subarray_proxy.obsState) + \
+                              ". Unable to invoke ObsReset command."
+                    device._read_activity_message = log_msg
+                    self.logger.error(log_msg)
+                    return (ResultCode.FAILED, log_msg)
+
+            except DevFailed as dev_failed:
+                log_msg = const.ERR_OBSRESET_INVOKING_CMD + str(dev_failed)
+                device._read_activity_message = log_msg
+                self.logger.exception(dev_failed)
+                tango.Except.throw_exception(const.STR_CONFIG_EXEC, log_msg,
+                                             "SdpSubarrayLeafNode.ObsResetCommand()",
+                                             tango.ErrSeverity.ERR)
+
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def ObsReset(self):
+        """
+        Invoke ObsReset command on SdpSubarrayLeafNode.
+        """
+        handler = self.get_command_object("ObsReset")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
+
+    def is_ObsReset_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state
+
+        :return: True if this command is allowed to be run in current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run in current device state
+
+        """
+        handler = self.get_command_object("ObsReset")
         return handler.check_allowed()
 
     class OnCommand(SKABaseDevice.OnCommand):
