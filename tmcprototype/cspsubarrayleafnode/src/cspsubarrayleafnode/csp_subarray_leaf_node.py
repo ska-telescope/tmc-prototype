@@ -1462,6 +1462,124 @@ class CspSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Restart")
         return handler.check_allowed()
 
+    class ObsResetCommand(ResponseCommand):
+        """
+        A class for CSPSubarrayLeafNode's ObsReset() command.
+        """
+        def check_allowed(self):
+            """
+            Checks whether this command is allowed to be run in current device state
+
+            :return: True if this command is allowed to be run in current device state
+
+            :rtype: boolean
+
+            :raises: DevFailed if this command is not allowed to be run in current device state
+
+            """
+            if self.state_model.op_state in [
+                DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("ObsReset() is not allowed in current state",
+                                             "Failed to invoke ObsReset command on CspSubarrayLeafNode.",
+                                             "cspsubarrayleafnode.ObsReset()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
+        def obsreset_cmd_ended_cb(self, event):
+            """
+            Callback function immediately executed when the asynchronous invoked
+            command returns. Checks whether the ObsReset command has been successfully invoked on CspSubarray.
+
+            :param event: a CmdDoneEvent object. This class is used to pass data
+                to the callback method in asynchronous callback model for command
+                execution.
+
+            :type: CmdDoneEvent object
+                It has the following members:
+                    - device     : (DeviceProxy) The DeviceProxy object on which the
+                                   call was executed.
+                    - cmd_name   : (str) The command name
+                    - argout_raw : (DeviceData) The command argout
+                    - argout     : The command argout
+                    - err        : (bool) A boolean flag set to true if the command
+                                   failed. False otherwise
+                    - errors     : (sequence<DevError>) The error stack
+                    - ext
+
+            :return: none
+            """
+            device = self.target
+            # Update logs and activity message attribute with received event
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                device._read_activity_message = log_msg
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                device._read_activity_message = log_msg
+
+        def do(self):
+            """
+            This command invokes ObsReset command on CSPSubarray.
+
+            :return: A tuple containing a return code and a string message indicating status.
+             The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+
+            :raises: DevFailed if error occurs while invoking the command on CSpSubarray.
+            """
+            device = self.target
+            try:
+                if device.CspSubarrayProxy.obsState in [ObsState.ABORTED, ObsState.FAULT] :
+                    device.CspSubarrayProxy.command_inout_asynch(const.CMD_OBSRESET, self.obsreset_cmd_ended_cb)
+                    device._read_activity_message = const.STR_OBSRESET_SUCCESS
+                    self.logger.info(const.STR_OBSRESET_SUCCESS)
+                    return (ResultCode.OK, const.STR_OBSRESET_SUCCESS)
+                else:
+                    log_msg = "Csp Subarray is in ObsState. " + str(device.CspSubarrayProxy.obsState) + \
+                              "Unable to invoke ObsReset command."
+                    device._read_activity_message = log_msg
+                    self.logger.error(log_msg)
+                    return (ResultCode.FAILED, log_msg)
+
+            except DevFailed as dev_failed:
+                log_msg = const.ERR_OBSRESET_INVOKING_CMD + str(dev_failed)
+                device._read_activity_message = log_msg
+                self.logger.exception(dev_failed)
+                tango.Except.throw_exception(const.ERR_OBSRESET_INVOKING_CMD, log_msg,
+                                             "CspSubarrayLeafNode.ObsResetCommand",
+                                             tango.ErrSeverity.ERR)
+        
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def ObsReset(self):
+        """ Invokes ObsReset command on cspsubarrayleafnode"""
+        handler = self.get_command_object("ObsReset")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
+
+    def is_ObsReset_allowed(self):
+        """
+        Checks whether the command is allowed to be run in the current state
+
+        :return: True if this command is allowed to be run in
+                 current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run
+                 in current device state
+        """
+        handler = self.get_command_object("ObsReset")
+        return handler.check_allowed()
+
 
     def init_command_objects(self):
         """
@@ -1478,6 +1596,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         self.register_command_object("GoToIdle", self.GoToIdleCommand(*args))
         self.register_command_object("Abort", self.AbortCommand(*args))
         self.register_command_object("Restart", self.RestartCommand(*args))
+        self.register_command_object("ObsReset", self.ObsResetCommand(*args))
 
 
 # ----------
