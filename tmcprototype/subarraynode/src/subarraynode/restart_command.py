@@ -40,13 +40,13 @@ class RestartCommand(SKASubarray.RestartCommand):
             device._sb_id = ""
             device.scan_duration = 0
             device._scan_type = ''
-            # Remove the group for receptors.
             device._sdp_subarray_ln_proxy.command_inout(const.CMD_RESTART)
             self.logger.info(const.STR_CMD_RESTART_INV_SDP)
             device._csp_subarray_ln_proxy.command_inout(const.CMD_RESTART)
             self.logger.info(const.STR_CMD_RESTART_INV_CSP)
             device._dish_leaf_node_group.command_inout(const.CMD_RESTART)
             self.logger.info(const.STR_CMD_RESTART_INV_DISH_GROUP)
+            # Remove the group for receptors.
             device.remove_receptors_from_group()
             device._read_activity_message = const.STR_RESTART_SUCCESS
             self.logger.info(const.STR_RESTART_SUCCESS)
