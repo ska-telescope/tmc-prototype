@@ -40,6 +40,7 @@ STR_AZ_THREAD_START= "Starting thread to change azimuth coordinates."
 STR_EL_THREAD_START= "Starting thread to change elevation coordinates."
 STR_DISH_RESTARTED = "Restart command excecuted succesfully."
 STR_DISH_ABORT = "Abort command excecuted succesfully."
+STR_DISH_OBSRESET = "ObsReset command excecuted succesfully."
 
 
 #Error messages
@@ -59,5 +60,6 @@ ERR_JSON_KEY_NOT_FOUND = "JSON key not found."
 ERR_CONFIG_DM = "Error occured in Dish Master."
 ERR_EXE_ABORT_CMD = "Error in executing Abort Command on Dish"
 ERR_EXE_RESTART_CMD = "Error in executing Restart Command on Dish"
+ERR_EXE_OBSRESET_CMD = "Error in executing ObsReset Command on Dish"
 
 THREAD_TRACK = "DishMaster"
