@@ -24,6 +24,7 @@ CMD_TRACK = "Track"
 CMD_STOP_TRACK = "StopTrack"
 CMD_ABORT = "Abort"
 CMD_RESTART = "Restart"
+CMD_OBSRESET = "ObsReset"
 
 #string constants
 STR_DISH_STANDBYLP_MODE = "Dish is in STANDBY-LP mode."
@@ -120,6 +121,7 @@ ERR_TIME_LIM = "Tracking duration is complete."
 ERR_EXE_TRACK = "Exception occured in the execution of Track command."
 ERR_EXE_ABORT_CMD = "Exception occurred in Abort command"
 ERR_EXE_RESTART_CMD = "Exception occurred in Restart command"
+ERR_EXE_OBSRESET_CMD = "Exception occurred in ObsReset command"
 
 # commands success string
 STR_SET_STOW_MODE_SUCCESS = "SETSTOWMODE command invoked on DishLeafNode device."
@@ -136,6 +138,7 @@ STR_TRACK_SUCCESS = "TRACK command invoked on DishLeafNode device."
 STR_STOP_TRACK_SUCCESS = "STOPTRACK command invoked on DishLeafNode device."
 STR_ABORT_SUCCESS = "ABORT command invoked successfully on DishLeafNode device."
 STR_RESTART_SUCCESS = "RESTART command invoked successfully on DishLeafNode device."
+STR_OBSRESET_SUCCESS = "ObsReset command invoked successfully on DishLeafNode device."
 
 STR_CMD_FAILED = "DishLeafNode_Commandfailed"
 STR_SLEW_EXEC = "Slew command execution"
@@ -162,6 +165,7 @@ STR_RESTART_CMD_CALLBK = "DishLeafNode Restart Command Callback"
 
 STR_ABORT_EXEC = "Abort command execution"
 STR_RESTART_EXEC = "Restart command execution"
+STR_OBSRESET_EXEC = "ObsReset command execution"
 STR_SRC_NOT_VISIBLE = "Source is not visible currently."
 
 THREAD_TRACK = "DishLeafNode"
