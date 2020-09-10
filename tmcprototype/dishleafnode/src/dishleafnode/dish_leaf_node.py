@@ -455,6 +455,7 @@ class DishLeafNode(SKABaseDevice):
         self.register_command_object("StopTrack", self.StopTrackCommand(*args))
         self.register_command_object("Abort", self.AbortCommand(*args))
         self.register_command_object("Restart", self.RestartCommand(*args))
+        self.register_command_object("ObsReset", self.ObsResetCommand(*args))
 
     # --------
     # Commands
@@ -1637,6 +1638,83 @@ class DishLeafNode(SKABaseDevice):
         :raises: DevFailed if this command is not allowed to be run in current device state
         """
         handler = self.get_command_object("Restart")
+        return handler.check_allowed()
+
+
+    class ObsResetCommand(ResponseCommand):
+        """
+        A class for DishLeafNode's ObsReset command.
+        """
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
+
+        def check_allowed(self):
+
+            """
+            Checks whether this command is allowed to be run in current device state
+
+            :return: True if this command is allowed to be run in current device state
+
+            :rtype: boolean
+
+            :raises: DevFailed if this command is not allowed to be run in current device state
+
+            """
+            if self.state_model.dev_state in [DevState.UNKNOWN, DevState.DISABLE]:
+                tango.Except.throw_exception("ObsResetCommand() is not allowed in current state",
+                                             "Failed to invoke ObsReset command on DishLeafNode.",
+                                             "DishLeafNode.ObsReset() ",
+                                             tango.ErrSeverity.ERR)
+            return True
+
+        def do(self):
+            """
+            Invokes ObsReset command on the DishMaster.
+
+            :param argin: DevVoid
+
+            :return: None
+
+            :raises: DevFailed if error ocuurs while invoking command on DishMaster.
+            """
+            device = self.target
+
+            try:
+                device._dish_proxy.command_inout_asynch(const.CMD_OBSRESET, self.cmd_ended_cb)
+                device._read_activity_message = const.STR_OBSRESET_SUCCESS
+                self.logger.info(device._read_activity_message)
+                return (ResultCode.OK, device._read_activity_message)
+
+            except DevFailed as dev_failed:
+                log_msg = f"{const.ERR_EXE_OBSRESET_CMD}{dev_failed}"
+                device._read_activity_message = log_msg
+                self.logger.exception(dev_failed)
+                tango.Except.throw_exception(const.STR_OBSRESET_EXEC, log_msg, "DishLeafNode.ObsResetCommand",
+                                             tango.ErrSeverity.ERR)
+
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    def ObsReset(self):
+        """ Invokes ObsReset command on the DishMaster."""
+        handler = self.get_command_object("ObsReset")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
+
+    def is_ObsReset_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state
+
+        :return: True if this command is allowed to be run in current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run in current device state
+        """
+        handler = self.get_command_object("ObsReset")
         return handler.check_allowed()
 
 
