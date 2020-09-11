@@ -32,7 +32,7 @@ class AbortCommand(SKASubarray.AbortCommand):
         device = self.target
         device.is_release_resources = False
         device.is_restart_command = False
-        device.self.is_end_command = False
+        device.is_end_command = False
         device.is_obsreset_command = False
         try:
             if device.scan_thread:
