@@ -21,10 +21,10 @@ import importlib.resources
 import tango
 from tango import DeviceProxy, EventType, ApiUtil, DevState, AttrWriteType, DevFailed
 from tango.server import run, command, device_property, attribute
-from ska.base.commands import ResultCode, ResponseCommand
+from ska.base.commands import ResultCode, ResponseCommand, BaseCommand
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, SimulationMode
-from .utils import PointingState, UnitConverter, DishMode
+from .utils import PointingState, UnitConverter
 
 # Additional import
 import threading
@@ -33,7 +33,6 @@ import math
 import katpoint
 import datetime
 import time
-import re
 
 
 # PROTECTED REGION END #    //  DishLeafNode.additionnal_import
@@ -87,8 +86,8 @@ class DishLeafNode(SKABaseDevice):
     # PROTECTED REGION ID(DishLeafNode.class_variable) ENABLED START #
 
     def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.cmd_ended_cb = CommandCallBack(self, self.logger).cmd_ended_cb
+        super().__init__(*args, **kwargs)
+        self.cmd_ended_cb = CommandCallBack(self, self.logger).cmd_ended_cb
 
     def attribute_event_handler(self, event_data):
         """
@@ -209,7 +208,8 @@ class DishLeafNode(SKABaseDevice):
 
         :return: None.
         """
-        self.logger.info(f"print track_thread thread name:{threading.currentThread().getName()}{threading.get_ident()}")
+        self.logger.info(f"print track_thread thread name:{threading.currentThread().getName()}"
+                         f"{threading.get_ident()}")
         while self.event_track_time.is_set() is False:
             timestamp_value = str(datetime.datetime.utcnow())
             katpoint_arg = []
@@ -1641,7 +1641,7 @@ class DishLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
 
-    class ObsResetCommand(ResponseCommand):
+    class ObsResetCommand(BaseCommand):
         """
         A class for DishLeafNode's ObsReset command.
         """
@@ -1662,7 +1662,7 @@ class DishLeafNode(SKABaseDevice):
             :raises: DevFailed if this command is not allowed to be run in current device state
 
             """
-            if self.state_model.dev_state in [DevState.UNKNOWN, DevState.DISABLE]:
+            if self.state_model.op_state in [DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("ObsResetCommand() is not allowed in current state",
                                              "Failed to invoke ObsReset command on DishLeafNode.",
                                              "DishLeafNode.ObsReset() ",
@@ -1701,8 +1701,7 @@ class DishLeafNode(SKABaseDevice):
     def ObsReset(self):
         """ Invokes ObsReset command on the DishMaster."""
         handler = self.get_command_object("ObsReset")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
+        handler()
 
     def is_ObsReset_allowed(self):
         """
