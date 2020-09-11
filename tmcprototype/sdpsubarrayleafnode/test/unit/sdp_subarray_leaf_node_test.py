@@ -508,6 +508,17 @@ def test_abort_should_command_sdp_subarray_to_abort_when_it_is_idle(mock_sdp_sub
                                                                      any_method(with_name='abort_cmd_ended_cb'))
 
 
+def test_abort_should_command_sdp_subarray_to_abort_when_it_is_resetting(mock_sdp_subarray):
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
+    sdp_subarray1_proxy_mock.obsState = ObsState.RESETTING
+    # act:
+    device_proxy.Abort()
+    # assert:
+    sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
+                                                                     any_method(with_name='abort_cmd_ended_cb'))
+
+
+
 def test_abort_should_raise_devfailed_exception(mock_sdp_subarray):
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.obsState = ObsState.READY
@@ -676,6 +687,60 @@ def test_obsreset_should_raise_devfailed_exception(mock_sdp_subarray):
         device_proxy.ObsReset()
     # assert:
     assert const.ERR_OBSRESET_INVOKING_CMD in device_proxy.activityMessage
+
+
+def test_obsreset_should_failed_when_device_obsstate_is_resourcing(mock_sdp_subarray):
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
+    sdp_subarray1_proxy_mock.obsState = ObsState.RESOURCING
+    # act:
+    device_proxy.ObsReset()
+
+    # assert:
+    assert "Unable to invoke ObsReset command" in device_proxy.activityMessage
+
+def test_obsreset_should_failed_when_device_obsstate_is_scanning(mock_sdp_subarray):
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
+    sdp_subarray1_proxy_mock.obsState = ObsState.SCANNING
+    # act:
+    device_proxy.ObsReset()
+    # assert:
+    assert "Unable to invoke ObsReset command" in device_proxy.activityMessage
+
+
+def test_obsreset_should_failed_when_device_obsstate_is_empty(mock_sdp_subarray):
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
+    sdp_subarray1_proxy_mock.obsState = ObsState.EMPTY
+    # act:
+    device_proxy.ObsReset()
+    # assert:
+    assert "Unable to invoke ObsReset command" in device_proxy.activityMessage
+
+
+def test_obsreset_should_failed_when_device_obsstate_is_configuring(mock_sdp_subarray):
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
+    sdp_subarray1_proxy_mock.obsState = ObsState.CONFIGURING
+     # act:
+    device_proxy.ObsReset()
+    # assert:
+    assert "Unable to invoke ObsReset command" in device_proxy.activityMessage
+
+
+def test_obsreset_should_failed_when_device_obsstate_is_idle(mock_sdp_subarray):
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
+    sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    # act:
+    device_proxy.ObsReset()
+    # assert:
+    assert "Unable to invoke ObsReset command" in device_proxy.activityMessage
+
+
+def test_obsreset_should_failed_when_device_obsstate_is_ready(mock_sdp_subarray):
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
+    sdp_subarray1_proxy_mock.obsState = ObsState.READY
+    # act:
+    device_proxy.ObsReset()
+    # assert:
+    assert "Unable to invoke ObsReset command" in device_proxy.activityMessage
 
 
 def assert_activity_message(device_proxy, expected_message):

@@ -1022,7 +1022,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             try:
                 if device._sdp_subarray_proxy.obsState in [ObsState.READY, ObsState.CONFIGURING,
                                                            ObsState.SCANNING,
-                                                           ObsState.IDLE]:
+                                                           ObsState.IDLE, ObsState.RESETTING]:
                     device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ABORT, self.abort_cmd_ended_cb)
                     device._read_activity_message = const.STR_ABORT_SUCCESS
                     self.logger.info(const.STR_ABORT_SUCCESS)

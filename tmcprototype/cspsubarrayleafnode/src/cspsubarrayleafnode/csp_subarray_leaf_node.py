@@ -24,7 +24,7 @@ import json
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
 from tango.server import run, attribute, command, device_property
-from ska.base.commands import ResultCode, ResponseCommand
+from ska.base.commands import ResultCode, ResponseCommand, BaseCommand
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
 
@@ -1296,7 +1296,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             try:
                 if device.CspSubarrayProxy.obsState in [ObsState.READY, ObsState.CONFIGURING,
                                                         ObsState.SCANNING,
-                                                        ObsState.IDLE]:
+                                                        ObsState.IDLE, ObsState.RESETTING]:
                     device.CspSubarrayProxy.command_inout_asynch(const.CMD_ABORT, self.abort_cmd_ended_cb)
                     device._read_activity_message = const.STR_ABORT_SUCCESS
                     self.logger.info(const.STR_ABORT_SUCCESS)
@@ -1462,7 +1462,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Restart")
         return handler.check_allowed()
 
-    class ObsResetCommand(ResponseCommand):
+    class ObsResetCommand(BaseCommand):
         """
         A class for CSPSubarrayLeafNode's ObsReset() command.
         """
@@ -1525,10 +1525,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             This command invokes ObsReset command on CSPSubarray.
 
-            :return: A tuple containing a return code and a string message indicating status.
-             The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :rtype: None
 
             :raises: DevFailed if error occurs while invoking the command on CSpSubarray.
             """
@@ -1555,15 +1552,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
         
     @command(
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def ObsReset(self):
         """ Invokes ObsReset command on cspsubarrayleafnode"""
         handler = self.get_command_object("ObsReset")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
+        handler()
 
     def is_ObsReset_allowed(self):
         """
