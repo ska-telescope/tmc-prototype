@@ -508,6 +508,17 @@ def test_abort_should_command_sdp_subarray_to_abort_when_it_is_idle(mock_sdp_sub
                                                                      any_method(with_name='abort_cmd_ended_cb'))
 
 
+def test_abort_should_command_sdp_subarray_to_abort_when_it_is_resetting(mock_sdp_subarray):
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
+    sdp_subarray1_proxy_mock.obsState = ObsState.RESETTING
+    # act:
+    device_proxy.Abort()
+    # assert:
+    sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
+                                                                     any_method(with_name='abort_cmd_ended_cb'))
+
+
+
 def test_abort_should_raise_devfailed_exception(mock_sdp_subarray):
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.obsState = ObsState.READY
