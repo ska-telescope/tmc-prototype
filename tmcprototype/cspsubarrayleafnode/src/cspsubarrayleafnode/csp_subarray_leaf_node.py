@@ -1296,7 +1296,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             try:
                 if device.CspSubarrayProxy.obsState in [ObsState.READY, ObsState.CONFIGURING,
                                                         ObsState.SCANNING,
-                                                        ObsState.IDLE]:
+                                                        ObsState.IDLE, ObsState.RESETTING]:
                     device.CspSubarrayProxy.command_inout_asynch(const.CMD_ABORT, self.abort_cmd_ended_cb)
                     device._read_activity_message = const.STR_ABORT_SUCCESS
                     self.logger.info(const.STR_ABORT_SUCCESS)

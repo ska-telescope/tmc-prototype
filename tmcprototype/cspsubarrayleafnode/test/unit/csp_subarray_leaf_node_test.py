@@ -556,7 +556,14 @@ def test_abort_should_command_csp_subarray_to_abort_when_it_is_scanning(mock_csp
                                                                      any_method(with_name = 'abort_cmd_ended_cb'))
     assert_activity_message(device_proxy, const.STR_ABORT_SUCCESS)
 
-
+def test_abort_should_command_csp_subarray_to_abort_when_it_is_resetting(mock_csp_subarray):
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
+    csp_subarray1_proxy_mock.obsState = ObsState.RESETTING
+    device_proxy.Abort()
+    # assert:
+    csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
+                                                                     any_method(with_name = 'abort_cmd_ended_cb'))
+    assert_activity_message(device_proxy, const.STR_ABORT_SUCCESS)
 
 def test_abort_should_command_csp_subarray_to_abort_when_it_is_ready(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
