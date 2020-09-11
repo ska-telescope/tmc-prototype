@@ -244,7 +244,7 @@ class DishLeafNode(SKABaseDevice):
 
             desired_pointing = [0, round(self.az, 12), round(self.el, 12)]
             self._dish_proxy.desiredPointing = desired_pointing
-            if not self.event_track_time.is_set():
+            if self.event_track_time.is_set():
                 log_msg = f"{const.STR_BREAK_LOOP}{self.event_track_time.is_set()}"
                 self.logger.debug(log_msg)
                 break
