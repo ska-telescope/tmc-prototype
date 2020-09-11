@@ -624,6 +624,60 @@ def test_restart_should_failed_when_device_obsstate_is_ready(mock_sdp_subarray):
     assert "Unable to invoke Restart command" in device_proxy.activityMessage
 
 
+def test_obsreset_should_command_sdp_subarray_to_reset_when_obsstate_is_aborted(mock_sdp_subarray):
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
+    sdp_subarray1_proxy_mock.obsState = ObsState.ABORTED
+    # act:
+    device_proxy.ObsReset()
+    # assert:
+    sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OBSRESET,
+                                                                     any_method(with_name='obsreset_cmd_ended_cb'))
+
+
+def test_obsreset_should_command_sdp_subarray_to_reset_when_obsstate_is_fault(mock_sdp_subarray):
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
+    sdp_subarray1_proxy_mock.obsState = ObsState.FAULT
+    # act:
+    device_proxy.ObsReset()
+    # assert:
+    sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OBSRESET,
+                                                                     any_method(with_name='obsreset_cmd_ended_cb'))
+
+
+def test_obsreset_command_with_callback_method(mock_sdp_subarray,event_subscription_without_arg):
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
+    sdp_subarray1_proxy_mock.obsState = ObsState.ABORTED
+    # act
+    device_proxy.ObsReset()
+    dummy_event = command_callback(const.CMD_OBSRESET)
+    event_subscription_without_arg[const.CMD_OBSRESET](dummy_event)
+    # assert:
+    assert const.STR_COMMAND + const.CMD_OBSRESET in device_proxy.activityMessage
+
+
+def test_obsreset_command_with_callback_method_with_event_error(mock_sdp_subarray,event_subscription_without_arg):
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
+    sdp_subarray1_proxy_mock.obsState = ObsState.ABORTED
+
+    # act
+    device_proxy.ObsReset()
+    dummy_event = command_callback_with_event_error(const.CMD_OBSRESET)
+    event_subscription_without_arg[const.CMD_OBSRESET](dummy_event)
+    # assert:
+    assert const.ERR_INVOKING_CMD + const.CMD_OBSRESET in device_proxy.activityMessage
+
+
+def test_obsreset_should_raise_devfailed_exception(mock_sdp_subarray):
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
+    sdp_subarray1_proxy_mock.obsState = ObsState.ABORTED
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_with_arg
+    # act:
+    with pytest.raises(tango.DevFailed):
+        device_proxy.ObsReset()
+    # assert:
+    assert const.ERR_OBSRESET_INVOKING_CMD in device_proxy.activityMessage
+
+
 def assert_activity_message(device_proxy, expected_message):
     assert device_proxy.activityMessage == expected_message  # reads tango attribute
 

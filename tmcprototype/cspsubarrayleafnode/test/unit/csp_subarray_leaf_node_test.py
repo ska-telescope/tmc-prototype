@@ -197,6 +197,17 @@ def test_restart_command_with_callback_method(mock_csp_subarray, event_subscript
     assert const.STR_COMMAND + const.CMD_RESTART in device_proxy.activityMessage
 
 
+def test_obsreset_command_with_callback_method(mock_csp_subarray,event_subscription_without_arg):
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
+    csp_subarray1_proxy_mock.obsState = ObsState.ABORTED
+    # act
+    device_proxy.ObsReset()
+    dummy_event = command_callback(const.CMD_OBSRESET)
+    event_subscription_without_arg[const.CMD_OBSRESET](dummy_event)
+    # assert:
+    assert const.STR_COMMAND + const.CMD_OBSRESET in device_proxy.activityMessage
+
+
 def test_assign_resources_should_raise_devfailed_exception(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
@@ -303,6 +314,18 @@ def test_restart_command_with_callback_method_with_event_error(mock_csp_subarray
     event_subscription_without_arg[const.CMD_RESTART](dummy_event)
     # assert:
     assert const.ERR_INVOKING_CMD + const.CMD_RESTART in device_proxy.activityMessage
+
+
+def test_obsreset_command_with_callback_method_with_event_error(mock_csp_subarray,event_subscription_without_arg):
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
+    csp_subarray1_proxy_mock.obsState = ObsState.ABORTED
+
+    # act
+    device_proxy.ObsReset()
+    dummy_event = command_callback_with_event_error(const.CMD_OBSRESET)
+    event_subscription_without_arg[const.CMD_OBSRESET](dummy_event)
+    # assert:
+    assert const.ERR_INVOKING_CMD + const.CMD_OBSRESET in device_proxy.activityMessage
 
 
 def test_assign_command_with_callback_method(mock_csp_subarray, event_subscription):
@@ -656,7 +679,6 @@ def test_restart_should_command_csp_subarray_to_restart_when_it_is_aborted(mock_
                                                              any_method(with_name='restart_cmd_ended_cb'))
 
 
-
 def test_restart_should_raise_devfailed_exception(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.FAULT
@@ -665,6 +687,26 @@ def test_restart_should_raise_devfailed_exception(mock_csp_subarray):
         device_proxy.Restart()
     # assert
     assert const.ERR_RESTART_INVOKING_CMD in device_proxy.activityMessage
+
+
+def test_obsreset_should_command_sdp_subarray_to_reset_when_obsstate_is_fault(mock_csp_subarray):
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
+    csp_subarray1_proxy_mock.obsState = ObsState.FAULT
+    # act:
+    device_proxy.ObsReset()
+    # assert:
+    csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OBSRESET,
+                                                                     any_method(with_name='obsreset_cmd_ended_cb'))
+
+
+def test_obsreset_should_command_sdp_subarray_to_reset_when_obsstate_is_aborted(mock_csp_subarray):
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
+    csp_subarray1_proxy_mock.obsState = ObsState.ABORTED
+    # act:
+    device_proxy.ObsReset()
+    # assert:
+    csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OBSRESET,
+                                                                     any_method(with_name='obsreset_cmd_ended_cb'))
 
 
 def command_callback(command_name):
