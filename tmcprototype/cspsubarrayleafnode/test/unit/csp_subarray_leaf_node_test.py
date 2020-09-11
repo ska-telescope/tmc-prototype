@@ -696,6 +696,61 @@ def test_restart_should_raise_devfailed_exception(mock_csp_subarray):
     assert const.ERR_RESTART_INVOKING_CMD in device_proxy.activityMessage
 
 
+def test_obsreset_should_failed_when_device_obsstate_is_idle(mock_csp_subarray):
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
+    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    # act:
+    device_proxy.ObsReset()
+    # assert:
+    assert "Unable to invoke ObsReset command" in device_proxy.activityMessage
+
+
+def test_obsreset_should_failed_when_device_obsstate_is_scanning(mock_csp_subarray):
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
+    csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
+    # act:
+    device_proxy.ObsReset()
+    # assert:
+    assert "Unable to invoke ObsReset command" in device_proxy.activityMessage
+
+
+def test_obsreset_should_failed_when_device_obsstate_is_configuring(mock_csp_subarray):
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
+    csp_subarray1_proxy_mock.obsState = ObsState.CONFIGURING
+    # act:
+    device_proxy.ObsReset()
+    # assert:
+    assert "Unable to invoke ObsReset command" in device_proxy.activityMessage
+
+
+def test_obsreset_should_failed_when_device_obsstate_is_ready(mock_csp_subarray):
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
+    csp_subarray1_proxy_mock.obsState = ObsState.READY
+    # act:
+    device_proxy.ObsReset()
+    # assert:
+    assert "Unable to invoke ObsReset command" in device_proxy.activityMessage
+
+
+def test_obsreset_should_failed_when_device_is_in_resourcing(mock_csp_subarray):
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
+    csp_subarray1_proxy_mock.obsState = ObsState.RESOURCING
+    # act:
+    device_proxy.ObsReset()
+    # assert:
+    assert "Unable to invoke ObsReset command" in device_proxy.activityMessage
+
+def test_obsreset_should_raise_devfailed_exception(mock_csp_subarray):
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
+    csp_subarray1_proxy_mock.obsState = ObsState.ABORTED
+    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+    # act:
+    with pytest.raises(tango.DevFailed):
+        device_proxy.ObsReset()
+    # assert:
+    assert const.ERR_OBSRESET_INVOKING_CMD in device_proxy.activityMessage
+
+
 def test_obsreset_should_command_sdp_subarray_to_reset_when_obsstate_is_fault(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.FAULT
