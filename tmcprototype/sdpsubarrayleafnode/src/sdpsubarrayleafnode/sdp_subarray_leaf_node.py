@@ -19,7 +19,7 @@ from tango import DeviceProxy, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
-from ska.base.commands import ResultCode, ResponseCommand
+from ska.base.commands import ResultCode, ResponseCommand, BaseCommand
 # Additional imports
 from . import const, release
 from .exceptions import InvalidObsStateError
@@ -1193,7 +1193,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Restart")
         return handler.check_allowed()
 
-    class ObsResetCommand(ResponseCommand):
+    class ObsResetCommand(BaseCommand):
         """
         A class for sdpSubarrayLeafNode's ObsResetCommand() command.
         """
@@ -1257,10 +1257,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             Command to reset the SDP subarray and bring it to its RESETTING state.
 
-            :return: A tuple containing a return code and a string message indicating status. The message is for
-                        information purpose only.
-
-            :rtype: (ReturnCode, str)
+            :rtype:None
 
             :raises: DevFailed if error occurs while invoking command on SDPSubarray.
 
@@ -1272,14 +1269,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                                                     self.obsreset_cmd_ended_cb)
                     device._read_activity_message = const.STR_OBSRESET_SUCCESS
                     self.logger.info(const.STR_OBSRESET_SUCCESS)
-                    return (ResultCode.OK, const.STR_OBSRESET_SUCCESS)
 
                 else:
                     log_msg = "Sdp Subarray is in ObsState " + str(device._sdp_subarray_proxy.obsState) + \
                               ". Unable to invoke ObsReset command."
                     device._read_activity_message = log_msg
                     self.logger.error(log_msg)
-                    return (ResultCode.FAILED, log_msg)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_OBSRESET_INVOKING_CMD + str(dev_failed)
@@ -1290,8 +1285,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
     @command(
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def ObsReset(self):
@@ -1299,8 +1292,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         Invoke ObsReset command on SdpSubarrayLeafNode.
         """
         handler = self.get_command_object("ObsReset")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
+        handler()
 
     def is_ObsReset_allowed(self):
         """
