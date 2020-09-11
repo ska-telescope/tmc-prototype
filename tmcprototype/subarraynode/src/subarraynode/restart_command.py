@@ -33,6 +33,7 @@ class RestartCommand(SKASubarray.RestartCommand):
         device = self.target
         device.is_release_resources = False
         device.is_abort_command = False
+        device.is_obsreset_command = False
         try:
             self.logger.info("Restart command invoked on SubarrayNode.")
             # As a part of Restart clear the attributes on SubarrayNode

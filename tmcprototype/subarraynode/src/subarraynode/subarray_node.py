@@ -21,7 +21,7 @@ from tango.server import run,attribute, command, device_property
 # Additional import
 from . import const, release, assign_resources_command, release_all_resources_command, configure_command,\
     scan_command, end_scan_command, end_command, on_command, off_command, track_command,\
-    abort_command, restart_command
+    abort_command, restart_command, obsreset_command
 from .const import PointingState
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, ObsMode, ObsState
@@ -30,7 +30,7 @@ from subarraynode.exceptions import InvalidObsStateError
 
 __all__ = ["SubarrayNode", "main", "assign_resources_command", "release_all_resources_command",
            "configure_command", "scan_command", "end_scan_command", "end_command", "on_command",
-           "off_command", "track_command", "abort_command", "restart_command"]
+           "off_command", "track_command", "abort_command", "restart_command", "obsreset_command"]
 
 
 class SubarrayHealthState:
@@ -82,6 +82,7 @@ class SubarrayNode(SKASubarray):
         self.init_obj = self.InitCommand(*args)
         self.on_obj = on_command.OnCommand(*args)
         self.off_obj = off_command.OffCommand(*args)
+        self.obsreset_obj = obsreset_command.ObsResetCommand(*args)
 
     def receive_addresses_cb(self, event):
         """
@@ -219,6 +220,10 @@ class SubarrayNode(SKASubarray):
                     #  TODO: Stop track command will be invoked once tango group command issue gets resolved.
                     # self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
                     self.end_obj.succeeded()
+            elif self.is_obsreset_command:
+                self.logger.info("Calling ObsReset command succeeded() method")
+                self.obsreset_obj.succeeded()             
+
             else:
                 # Assign Resource command success
                 self.logger.info("Calling AssignResource command succeeded() method")
@@ -471,6 +476,7 @@ class SubarrayNode(SKASubarray):
             device.is_scan_completed = False
             device.is_end_command = False
             device.is_restart_command = False
+            device.is_obsreset_command = False
             device.is_release_resources = False
             device.is_abort_command = False
             device._scan_id = ""
