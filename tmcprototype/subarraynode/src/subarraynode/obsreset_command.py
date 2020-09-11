@@ -46,11 +46,10 @@ class ObsResetCommand(SKASubarray.ObsResetCommand):
             self.logger.info(const.STR_CMD_OBSRESET_INV_CSP)
             device._dish_leaf_node_group.command_inout(const.CMD_OBSRESET)
             self.logger.info(const.STR_CMD_OBSRESET_INV_DISH_GROUP)
-        
             device._read_activity_message = const.STR_OBSRESET_SUCCESS
             self.logger.info(const.STR_OBSRESET_SUCCESS)
             device.set_status(const.STR_OBSRESET_SUCCESS)
-            device.is_restart_command = True
+            device.is_obsreset_command = True
             return (ResultCode.STARTED, const.STR_OBSRESET_SUCCESS)
 
         except DevFailed as dev_failed:
