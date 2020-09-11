@@ -24,7 +24,7 @@ from tango.server import run, command, device_property, attribute
 from ska.base.commands import ResultCode, ResponseCommand, BaseCommand
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, SimulationMode
-from .utils import PointingState, UnitConverter, DishMode
+from .utils import PointingState, UnitConverter
 
 # Additional import
 import threading
@@ -33,7 +33,6 @@ import math
 import katpoint
 import datetime
 import time
-import re
 
 
 # PROTECTED REGION END #    //  DishLeafNode.additionnal_import
@@ -87,8 +86,8 @@ class DishLeafNode(SKABaseDevice):
     # PROTECTED REGION ID(DishLeafNode.class_variable) ENABLED START #
 
     def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.cmd_ended_cb = CommandCallBack(self, self.logger).cmd_ended_cb
+        super().__init__(*args, **kwargs)
+        self.cmd_ended_cb = CommandCallBack(self, self.logger).cmd_ended_cb
 
     def attribute_event_handler(self, event_data):
         """
@@ -209,7 +208,8 @@ class DishLeafNode(SKABaseDevice):
 
         :return: None.
         """
-        self.logger.info(f"print track_thread thread name:{threading.currentThread().getName()}{threading.get_ident()}")
+        self.logger.info(f"print track_thread thread name:{threading.currentThread().getName()}"
+                         f"{threading.get_ident()}")
         while self.event_track_time.is_set() is False:
             timestamp_value = str(datetime.datetime.utcnow())
             katpoint_arg = []
