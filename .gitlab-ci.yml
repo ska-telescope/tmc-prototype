@@ -253,6 +253,8 @@ build DishMaster wheel for development: # Executed on a commit
 unit tests:
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
   stage: test
+  tags:
+    - docker-executor
   script:
     - python3 -m pip install tox
     - make unit-test
