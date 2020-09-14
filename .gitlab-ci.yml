@@ -254,9 +254,8 @@ unit tests:
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
   stage: test
   tags:
-    - docker-executor
+    - python3.7
   script:
-    - apt install python3.7
     - python3 -m pip install tox
     - make unit-test
   artifacts:
