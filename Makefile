@@ -128,21 +128,26 @@ test: build up ## test the application
 	  exit $$status
 
 #Report folder/volume is used in docker to save the code coverage report using unit-test job. The report folder is then copied to unit_test_reports folder.
-unit-test: DOCKER_RUN_ARGS = --volumes-from=$(REPORT)
-unit-test: build
-	$(INIT_CACHE)
-	mkdir -p unit_test_reports
-	chmod 777 unit_test_reports
-	docker run -i --rm \
-	   -e TANGO_HOST=$(TANGO_HOST) \
-	   -v $(CACHE_VOLUME):/home/tango/.cache \
-	   -v unit_test_reports:/unit_test_reports \
-	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
-	bash -c "cd /app/tmcprototype && \
-	sudo chown -R tango:tango /report && \
-	./run_unit_test.sh"
-	docker cp $(REPORT):/report ./unit_test_reports
-	docker rm -f -v $(REPORT)
+#unit-test: DOCKER_RUN_ARGS = --volumes-from=$(REPORT)
+#unit-test: build
+#	$(INIT_CACHE)
+#	mkdir -p unit_test_reports
+#	chmod 777 unit_test_reports
+#	docker run -i --rm \
+#	   -e TANGO_HOST=$(TANGO_HOST) \
+#	   -v $(CACHE_VOLUME):/home/tango/.cache \
+#	   -v unit_test_reports:/unit_test_reports \
+#	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
+#	bash -c "cd /app/tmcprototype && \
+#	sudo chown -R tango:tango /report && \
+#	./run_unit_test.sh"
+#	docker cp $(REPORT):/report ./unit_test_reports
+#	docker rm -f -v $(REPORT)
+
+unit-test:
+	cd tmcprototype; \
+	chmod 777 run_tox.sh; \
+	./run_tox.sh;
 
 #Make lint job is perfomred. After lint, the coverage reports from unit-test job are copied into build folder and unit_test_reports folder is removed. All the coverage reports using run test as well as unit-test are saved into build folder.
 lint: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
