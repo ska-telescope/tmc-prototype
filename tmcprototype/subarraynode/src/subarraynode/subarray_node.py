@@ -664,6 +664,7 @@ class SubarrayNode(SKASubarray):
         self.register_command_object("Off", off_command.OffCommand(*args))
         self.register_command_object("Abort", abort_command.AbortCommand(*args))
         self.register_command_object("Restart", restart_command.RestartCommand(*args))
+        self.register_command_object("ObsReset", obsreset_command.ObsResetCommand(*args))
 
 # ----------
 # Run server
