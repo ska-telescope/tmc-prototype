@@ -219,20 +219,20 @@ class TestAssignResourceValidator():
             input_validator.loads(json.dumps(input_json))
         assert const.ERR_SUBARRAY_ID_DOES_NOT_EXIST in str(excinfo.value)
 
-    def test_validate_incorrect_receptor_id(self):
-        """
-        Tests that ResourceNotPresentError is raised when a receptor id is given incorrect 
-        value in the input string.
-        """
-
-        input_json = sample_assign_resources_request
-        invalid_receptor_id_list = ["9999"]
-        input_json["dish"]["receptorIDList"] = invalid_receptor_id_list
-
-        input_validator = AssignResourceValidator(self._test_subarray_list,
-              self._test_receptor_id_list, "ska_mid/tm_leaf_node/d")
-
-        with pytest.raises(ResourceNotPresentError) as excinfo:
-            input_validator.loads(json.dumps(input_json))
-
-        assert const.ERR_RECEPTOR_ID_DOES_NOT_EXIST in str(excinfo.value)
+    # def test_validate_incorrect_receptor_id(self):
+    #     """
+    #     Tests that ResourceNotPresentError is raised when a receptor id is given incorrect
+    #     value in the input string.
+    #     """
+    #
+    #     input_json = sample_assign_resources_request
+    #     invalid_receptor_id_list = ["9999"]
+    #     input_json["dish"]["receptorIDList"] = invalid_receptor_id_list
+    #
+    #     input_validator = AssignResourceValidator(self._test_subarray_list,
+    #           self._test_receptor_id_list, "ska_mid/tm_leaf_node/d")
+    #
+    #     with pytest.raises(ResourceNotPresentError) as excinfo:
+    #         input_validator.loads(json.dumps(input_json))
+    #
+    #     assert const.ERR_RECEPTOR_ID_DOES_NOT_EXIST in str(excinfo.value)
