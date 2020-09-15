@@ -67,7 +67,6 @@ class CommandCallBack:
                 - ext
         :return: none
 
-        :raises: Exception if error occurs in command callback method.
         """
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
@@ -513,8 +512,6 @@ class DishLeafNode(SKABaseDevice):
 
         :rtype: boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state.
-
         """
         handler = self.get_command_object("SetStowMode")
         return handler.check_allowed()
@@ -581,9 +578,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
-
-        :raises: DevFailed if this command is not allowed to be run in current device state.
-
         """
         handler = self.get_command_object("SetStandByLPMode")
         return handler.check_allowed()
@@ -646,8 +640,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
-
-        :raises: DevFailed if this command is not allowed to be run in current device state.
 
         """
         handler = self.get_command_object("SetOperateMode")
@@ -732,8 +724,6 @@ class DishLeafNode(SKABaseDevice):
 
         :rtype: boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state.
-
         """
         handler = self.get_command_object("Scan")
         return handler.check_allowed()
@@ -813,8 +803,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
-
-        :raises: DevFailed if this command is not allowed to be run in current device state.
 
         """
         handler = self.get_command_object("EndScan")
@@ -954,8 +942,6 @@ class DishLeafNode(SKABaseDevice):
 
         :rtype: boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state.
-
         """
         handler = self.get_command_object("Configure")
         return handler.check_allowed()
@@ -1040,8 +1026,6 @@ class DishLeafNode(SKABaseDevice):
 
         :rtype: boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state.
-
         """
         handler = self.get_command_object("StartCapture")
         return handler.check_allowed()
@@ -1121,8 +1105,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
-
-        :raises: DevFailed if this command is not allowed to be run in current device state.
         """
         handler = self.get_command_object("StopCapture")
         return handler.check_allowed()
@@ -1191,8 +1173,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state
 
         :rtype: boolean
-
-        :raises: DevFailed if this command is not allowed to be run in current device state
 
         """
         handler = self.get_command_object("SetStandbyFPMode")
@@ -1276,8 +1256,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
-
-        :raises: DevFailed if this command is not allowed to be run in current device state.
 
         """
         handler = self.get_command_object("Slew")
@@ -1389,8 +1367,6 @@ class DishLeafNode(SKABaseDevice):
 
         :rtype: boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state.
-
         """
         handler = self.get_command_object("Track")
         return handler.check_allowed()
@@ -1469,8 +1445,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
-
-        :raises: DevFailed if this command is not allowed to be run in current device state.
 
         """
         handler = self.get_command_object("StopTrack")
@@ -1557,8 +1531,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state
 
         :rtype: boolean
-
-        :raises: DevFailed if this command is not allowed to be run in current device state
         """
         handler = self.get_command_object("Abort")
         return handler.check_allowed()
@@ -1634,8 +1606,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state
 
         :rtype: boolean
-
-        :raises: DevFailed if this command is not allowed to be run in current device state
         """
         handler = self.get_command_object("Restart")
         return handler.check_allowed()
@@ -1711,7 +1681,6 @@ class DishLeafNode(SKABaseDevice):
 
         :rtype: boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state
         """
         handler = self.get_command_object("ObsReset")
         return handler.check_allowed()
