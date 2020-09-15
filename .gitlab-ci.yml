@@ -1,7 +1,7 @@
 # GitLab CI in conjunction with GitLab Runner can use Docker Engine to test and build any application.
 # Docker, when used with GitLab CI, runs each job in a separate and isolated container using the predefined image that is set up in .gitlab-ci.yml.
 # In this case we use the latest python docker image to build and test this project.
-image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:9.3.2
+image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
 
 variables:
   DOCKER_DRIVER: overlay2
@@ -11,6 +11,10 @@ variables:
 cache:
   paths:
     - build
+
+before_script:
+  - python3 -m pip install -r requirements-dev.txt
+  - python3 -m pip install pipdeptree
 
 # The YAML file defines a set of jobs with constraints stating when they should be run.
 # You can specify an unlimited number of jobs which are defined as top-level elements with an arbitrary name and always have to contain at least the script clause.
@@ -256,7 +260,6 @@ unit tests:
   tags:
     - docker-executor
   script:
-    - python3 -m pip install tox
     - make unit-test
   artifacts:
     paths:
