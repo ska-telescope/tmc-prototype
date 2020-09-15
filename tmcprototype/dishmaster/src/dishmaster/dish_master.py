@@ -1092,23 +1092,16 @@ class DishMaster(SKAMaster):
         """
         Currently this command works similar to the Restart command. It clears Dish configuration parameters.
         """
-        try:
-            if (self._pointing_state == PointingState.READY):
-                pass
-            else:
-                self._pointing_state = PointingState.READY
+        if (self._pointing_state == PointingState.READY):
+            pass
+        else:
+            self._pointing_state = PointingState.READY
 
-            self._desired_pointing = [0, 0, 0]
-            self._capturing = False
-            self._configured_band = None
-            self._abort_in_slew = False
-            self.logger.info(const.STR_DISH_OBSRESET)
-
-        except Exception as except_occurred:
-            log_msg = const.ERR_EXE_OBSRESET_CMD + str(except_occurred)
-            self.logger.error(log_msg)
-            tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
-                                         const.ERR_EXE_OBSRESET_CMD, tango.ErrSeverity.ERR)
+        self._desired_pointing = [0, 0, 0]
+        self._capturing = False
+        self._configured_band = None
+        self._abort_in_slew = False
+        self.logger.info(const.STR_DISH_OBSRESET)
 
         # PROTECTED REGION END #    //  DishMaster.ObsReset
 

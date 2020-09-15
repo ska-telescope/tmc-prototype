@@ -220,6 +220,7 @@ class SubarrayNode(SKASubarray):
                     # self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
                     self.end_obj.succeeded()
             elif self.is_obsreset_command:
+                if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
                 self.logger.info("Calling ObsReset command succeeded() method")
                 self.obsreset_obj.succeeded()             
 

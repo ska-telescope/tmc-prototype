@@ -19,7 +19,7 @@ class ObsResetCommand(SKASubarray.ObsResetCommand):
 
     def do(self):
         """
-        This command invokes ObsReset command on CSPSubarrayLeafNode, SDpSubarrayLeafNode and DishLeafNode.
+        This command invokes ObsReset command on CspSubarrayLeafNode, SdpSubarrayLeafNode and DishLeafNode.
 
         :return: A tuple containing a return code and a string
             message indicating status. The message is for
@@ -27,7 +27,7 @@ class ObsResetCommand(SKASubarray.ObsResetCommand):
 
         :rtype: (ResultCode, str)
 
-        :raises: DevFailed if error occurs while invoking command on CSPSubarrayLeafNode, SDpSubarrayLeafNode or
+        :raises: DevFailed if error occurs while invoking command on CspSubarrayLeafNode, SdpSubarrayLeafNode or
                 DishLeafNode.
         """
         device = self.target

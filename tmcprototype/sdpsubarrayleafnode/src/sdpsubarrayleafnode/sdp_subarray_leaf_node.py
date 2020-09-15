@@ -1300,8 +1300,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         :rtype: boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state
-
         """
         handler = self.get_command_object("ObsReset")
         return handler.check_allowed()
