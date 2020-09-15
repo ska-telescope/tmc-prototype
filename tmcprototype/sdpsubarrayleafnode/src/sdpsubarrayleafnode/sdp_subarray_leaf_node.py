@@ -1029,8 +1029,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     return(ResultCode.OK, const.STR_ABORT_SUCCESS)
 
                 else:
-                    log_msg = "Sdp Subarray is in ObsState " + str(device._sdp_subarray_proxy.obsState) + \
-                              ". Unable to invoke Abort command."
+                    log_msg = "Sdp Subarray is in ObsState {} . Unable to invoke Abort command".format(str(device._sdp_subarray_proxy.obsState))
                     device._read_activity_message = log_msg
                     self.logger.error(log_msg)
                     return(ResultCode.FAILED, log_msg)
@@ -1195,7 +1194,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     class ObsResetCommand(BaseCommand):
         """
-        A class for sdpSubarrayLeafNode's ObsResetCommand() command.
+        A class for SdpSubarrayLeafNode's ObsResetCommand() command.
         """
 
         def check_allowed(self):
@@ -1271,8 +1270,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     self.logger.info(const.STR_OBSRESET_SUCCESS)
 
                 else:
-                    log_msg = "Sdp Subarray is in ObsState " + str(device._sdp_subarray_proxy.obsState) + \
-                              ". Unable to invoke ObsReset command."
+                    log_msg = "Sdp Subarray is in ObsState {} . Unable to invoke ObsReset command".format(str(device._sdp_subarray_proxy.obsState))
                     device._read_activity_message = log_msg
                     self.logger.error(log_msg)
 
