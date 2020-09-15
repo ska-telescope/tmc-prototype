@@ -251,7 +251,7 @@ build DishMaster wheel for development: # Executed on a commit
 #  retry: 2
 
 unit tests:
-  image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
+  image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
   stage: test
   tags:
     - docker-executor
