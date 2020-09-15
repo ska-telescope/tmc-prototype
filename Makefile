@@ -146,8 +146,8 @@ test: build up ## test the application
 
 unit-test:
 	cd tmcprototype; \
-	chmod 777 run_tox.sh; \
-	./run_tox.sh;
+	chmod 755 run_unit_test.sh; \
+	./run_unit_test.sh;
 
 #Make lint job is perfomred. After lint, the coverage reports from unit-test job are copied into build folder and unit_test_reports folder is removed. All the coverage reports using run test as well as unit-test are saved into build folder.
 lint: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
