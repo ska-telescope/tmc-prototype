@@ -1294,9 +1294,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                if device.CspSubarrayProxy.obsState in [ObsState.READY, ObsState.CONFIGURING,
+                if device.CspSubarrayProxy.obsState in [ObsState.READY, 
+                                                        ObsState.CONFIGURING,
                                                         ObsState.SCANNING,
-                                                        ObsState.IDLE, ObsState.RESETTING]:
+                                                        ObsState.IDLE, 
+                                                        ObsState.RESETTING]:
                     device.CspSubarrayProxy.command_inout_asynch(const.CMD_ABORT, self.abort_cmd_ended_cb)
                     device._read_activity_message = const.STR_ABORT_SUCCESS
                     self.logger.info(const.STR_ABORT_SUCCESS)
@@ -1480,7 +1482,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
             if self.state_model.op_state in [
                 DevState.UNKNOWN, DevState.DISABLE,
             ]:
-                tango.Except.throw_exception("ObsReset() is not allowed in current state",
+                log_msg = "ObsReset() is not allowed in " + str(self.state_model.op_state)
+                tango.Except.throw_exception(log_msg ,
                                              "Failed to invoke ObsReset command on CspSubarrayLeafNode.",
                                              "cspsubarrayleafnode.ObsReset()",
                                              tango.ErrSeverity.ERR)
@@ -1535,18 +1538,18 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     device.CspSubarrayProxy.command_inout_asynch(const.CMD_OBSRESET, self.obsreset_cmd_ended_cb)
                     device._read_activity_message = const.STR_OBSRESET_SUCCESS
                     self.logger.info(const.STR_OBSRESET_SUCCESS)
-                    return (ResultCode.OK, const.STR_OBSRESET_SUCCESS)
+                   
                 else:
                     log_msg = "Csp Subarray is in ObsState. " + str(device.CspSubarrayProxy.obsState) + \
                               "Unable to invoke ObsReset command."
                     device._read_activity_message = log_msg
                     self.logger.error(log_msg)
-                    return (ResultCode.FAILED, log_msg)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_OBSRESET_INVOKING_CMD + str(dev_failed)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
+                self.logger.info(log_msg)
                 tango.Except.throw_exception(const.ERR_OBSRESET_INVOKING_CMD, log_msg,
                                              "CspSubarrayLeafNode.ObsResetCommand",
                                              tango.ErrSeverity.ERR)
