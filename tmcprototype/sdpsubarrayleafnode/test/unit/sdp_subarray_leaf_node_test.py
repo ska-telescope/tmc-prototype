@@ -460,7 +460,7 @@ def test_abort_should_failed_when_device_obsstate_is_empty(mock_sdp_subarray):
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.obsState = ObsState.EMPTY
     device_proxy.Abort()
-    assert "'Sdp Subarray is in ObsState ObsState.EMPTY . Unable to invoke Abort command'" in device_proxy.activityMessage
+    assert "Sdp Subarray is in ObsState ObsState.EMPTY . Unable to invoke Abort command" in device_proxy.activityMessage
 
 
 def test_restart_should_command_sdp_subarray_to_restart_when_obsstate_is_aborted(mock_sdp_subarray):
