@@ -1,4 +1,5 @@
 numpy == 1.17.2
+tango >= 0.2.7
 pytango >= 9.3.2
 jsonschema >= 3.2.0
 ska-logging==0.3.0
