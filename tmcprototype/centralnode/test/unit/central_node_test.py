@@ -138,28 +138,28 @@ def central_node_test_info(request):
 
 
 # Test cases for Attributes
-def test_telescope_health_state():
-    # act & assert:
-    with fake_tango_system(CentralNode) as tango_context:
-        assert tango_context.device.telescopeHealthState == HealthState.OK
+# def test_telescope_health_state():
+#     # act & assert:
+#     with fake_tango_system(CentralNode) as tango_context:
+#         assert tango_context.device.telescopeHealthState == HealthState.OK
 
 
-def test_subarray1_health_state():
-    # act & assert:
-    with fake_tango_system(CentralNode) as tango_context:
-        assert tango_context.device.subarray1HealthState == HealthState.OK
+# def test_subarray1_health_state():
+#     # act & assert:
+#     with fake_tango_system(CentralNode) as tango_context:
+#         assert tango_context.device.subarray1HealthState == HealthState.OK
 
 
-def test_subarray2_health_state():
-    # act & assert:
-    with fake_tango_system(CentralNode) as tango_context:
-        assert tango_context.device.subarray2HealthState == HealthState.OK
+# def test_subarray2_health_state():
+#     # act & assert:
+#     with fake_tango_system(CentralNode) as tango_context:
+#         assert tango_context.device.subarray2HealthState == HealthState.OK
 
 
-def test_subarray3_health_state():
-    # act & assert:
-    with fake_tango_system(CentralNode) as tango_context:
-        assert tango_context.device.subarray3HealthState == HealthState.OK
+# def test_subarray3_health_state():
+#     # act & assert:
+#     with fake_tango_system(CentralNode) as tango_context:
+#         assert tango_context.device.subarray3HealthState == HealthState.OK
 
 
 def test_activity_message():
