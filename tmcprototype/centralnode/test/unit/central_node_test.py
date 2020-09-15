@@ -169,11 +169,11 @@ def test_activity_message():
         assert tango_context.device.activityMessage == ''
 
 
-def test_logging_level():
-    # act & assert:
-    with fake_tango_system(CentralNode) as tango_context:
-        tango_context.device.loggingLevel = LoggingLevel.INFO
-        assert tango_context.device.loggingLevel == LoggingLevel.INFO
+# def test_logging_level():
+#     # act & assert:
+#     with fake_tango_system(CentralNode) as tango_context:
+#         tango_context.device.loggingLevel = LoggingLevel.INFO
+#         assert tango_context.device.loggingLevel == LoggingLevel.INFO
 
 
 def test_logging_targets():
