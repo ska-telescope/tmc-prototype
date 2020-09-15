@@ -265,6 +265,23 @@ unit tests:
     paths:
       - ./unit_test_reports
 
+list_dependencies:
+  stage: test
+  script:
+    - pipdeptree --json >> pip_deps.json
+    - pipdeptree >> pip_deps.txt
+    - dpkg -l >> system_deps.txt
+    - awk 'FNR>5 {print $2 ", " $3}' system_deps.txt >> system_deps.csv
+    - mkdir .public
+    - cp pip_deps.txt .public/
+    - cp pip_deps.json .public/
+    - cp system_deps.txt .public/
+    - cp system_deps.csv .public/
+    - mv .public public
+  artifacts:
+    paths:
+      - public
+
 linting:
   stage: linting
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
