@@ -17,8 +17,7 @@ other TM Components (such as OET, Central Node) for a Subarray.
 import tango
 from tango import AttrWriteType, DevFailed, DeviceProxy, EventType
 from tango.server import run,attribute, command, device_property
-
-# Additional import
+7,
 from . import const, release, assign_resources_command, release_all_resources_command, configure_command,\
     scan_command, end_scan_command, end_command, on_command, off_command, track_command,\
     abort_command, restart_command, obsreset_command
@@ -132,12 +131,12 @@ class SubarrayNode(SKASubarray):
         :return: None
         """
         try:
-            log_msg = 'Observation State Attribute change event is: ' + str(evt)
-            self.logger.info(log_msg)
+            # log_msg = 'Observation State Attribute change event is: ' + str(evt)
+            # self.logger.info(log_msg)
             if not evt.err:
                 self._observetion_state = evt.attr_value.value
-                log_msg = 'Observation State Attribute value is: ' + str(self._observetion_state)
-                self.logger.info(log_msg)
+                # log_msg = 'Observation State Attribute value is: ' + str(self._observetion_state)
+                # self.logger.info(log_msg)
                 if const.PROP_DEF_VAL_TMCSP_MID_SALN in evt.attr_name:
                     self._csp_sa_obs_state = self._observetion_state
                     self._read_activity_message = const.STR_CSP_SUBARRAY_OBS_STATE + str(
@@ -164,15 +163,15 @@ class SubarrayNode(SKASubarray):
         """
         Calculates aggregated observation state of Subarray.
         """
-        self.logger.info("\n\n In Calculate observation state method")
+        # self.logger.info("\n\n In Calculate observation state method")
         pointing_state_count_track = 0
         pointing_state_count_slew = 0
         pointing_state_count_ready = 0
         log_msg = "Dish PointingStateMap is :" + str(self.dishPointingStateMap)
         self.logger.info(log_msg)
-        log_msg = "self._csp_sa_obs_state is: " + str(self._csp_sa_obs_state) + str(type(self._csp_sa_obs_state))
+        log_msg = "self._csp_sa_obs_state is: " + str(self._csp_sa_obs_state)
         self.logger.info(log_msg)
-        log_msg = "self._sdp_sa_obs_state is: " + str(self._sdp_sa_obs_state) + str(type(self._sdp_sa_obs_state))
+        log_msg = "self._sdp_sa_obs_state is: " + str(self._sdp_sa_obs_state)
         self.logger.info(log_msg)
         for value in list(self.dishPointingStateMap.values()):
             if value == PointingState.TRACK:
