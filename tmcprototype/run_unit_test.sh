@@ -1,19 +1,15 @@
 #!/bin/bash
 set -eo pipefail
 #Entering into a bash shell script to run unit-test cases and generating reports
-#cd /app/tmcprototype;
-pwd
+cd /app/tmcprototype;
 python3 -m pip install pytest-forked
-sudo python3 -m pip install --extra-index-url https://nexus.engageska-portugal.pt/repository/pypi/simple ska-logging==0.3.0 lmcbaseclasses==0.6.5 cdm-shared-library==2.0.0 ska-telescope-model==0.1.4
 
 #For each node sub-package inside tmc-prototype, coverage report for each device is generated using unit-test job.
 #Coverage report are generated in .coverage, .xml and .html format. Each device's .coverage report is moved in unit_test folder to generate the combine report further.
 for path in $(find ./*/test  -type d -name unit); do
 	export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
 	echo +++ Trying tests for $TMC_ELEMENT;
-#	pytest -v ./${TMC_ELEMENT}/test/unit --forked --cov=/usr/local/lib/python3.7/dist-packages/${TMC_ELEMENT} --cov-report=html:/report/unit_test/${TMC_ELEMENT}_htmlcov --json-report --json-report-file=/report/unit_test/${TMC_ELEMENT}_report.json --junitxml=/report/unit_test/${TMC_ELEMENT}-unit-tests.xml;
-	cd ${TMC_ELEMENT}
-	python3 setup.py test
+	pytest -v ./${TMC_ELEMENT}/test/unit --forked --cov=/usr/local/lib/python3.7/dist-packages/${TMC_ELEMENT} --cov-report=html:/report/unit_test/${TMC_ELEMENT}_htmlcov --json-report --json-report-file=/report/unit_test/${TMC_ELEMENT}_report.json --junitxml=/report/unit_test/${TMC_ELEMENT}-unit-tests.xml;
 	mv /app/tmcprototype/.coverage /report/unit_test/${TMC_ELEMENT}_coverage;
 done
 cd /report/unit_test
