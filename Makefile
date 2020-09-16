@@ -116,33 +116,27 @@ make = tar -c test-harness/ | \
 	   tar x --strip-components 1 --warning=all && \
 	   make TANGO_HOST=$(TANGO_HOST) $1"
 
-test: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
-test: build up ## test the application
-	$(INIT_CACHE)
-	$(call make,test); \
-	  status=$$?; \
-	  rm -fr build; \
-	  docker cp $(BUILD):/build .; \
-	  docker rm -f -v $(BUILD); \
-	  $(MAKE) down; \
-	  exit $$status
-
 #Report folder/volume is used in docker to save the code coverage report using unit-test job. The report folder is then copied to unit_test_reports folder.
-unit-test: DOCKER_RUN_ARGS = --volumes-from=$(REPORT)
-unit-test: build
-	$(INIT_CACHE)
-	mkdir -p unit_test_reports
-	chmod 777 unit_test_reports
-	docker run -i --rm \
-	   -e TANGO_HOST=$(TANGO_HOST) \
-	   -v $(CACHE_VOLUME):/home/tango/.cache \
-	   -v unit_test_reports:/unit_test_reports \
-	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
-	bash -c "cd /app/tmcprototype && \
-	sudo chown -R tango:tango /report && \
-	./run_unit_test.sh"
-	docker cp $(REPORT):/report ./unit_test_reports
-	docker rm -f -v $(REPORT)
+#unit-test: DOCKER_RUN_ARGS = --volumes-from=$(REPORT)
+#unit-test: build
+#	$(INIT_CACHE)
+#	mkdir -p unit_test_reports
+#	chmod 777 unit_test_reports
+#	docker run -i --rm \
+#	   -e TANGO_HOST=$(TANGO_HOST) \
+#	   -v $(CACHE_VOLUME):/home/tango/.cache \
+#	   -v unit_test_reports:/unit_test_reports \
+#	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
+#	bash -c "cd /app/tmcprototype && \
+#	sudo chown -R tango:tango /report && \
+#	./run_unit_test.sh"
+#	docker cp $(REPORT):/report ./unit_test_reports
+#	docker rm -f -v $(REPORT)
+
+unit-test:
+	cd tmcprototype; \
+	chmod 755 run_unit_test.sh; \
+	./run_unit_test.sh;
 
 #Make lint job is perfomred. After lint, the coverage reports from unit-test job are copied into build folder and unit_test_reports folder is removed. All the coverage reports using run test as well as unit-test are saved into build folder.
 lint: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
@@ -162,47 +156,14 @@ endif
 pull:  ## download the application image
 	docker pull $(IMAGE_TO_TEST)
 
-up: build  ## start develop/test environment
-ifneq ($(NETWORK_MODE),host)
-	docker network inspect $(NETWORK_MODE) &> /dev/null || ([ $$? -ne 0 ] && docker network create $(NETWORK_MODE))
-endif
-	$(DOCKER_COMPOSE_ARGS) docker-compose \
-	-f docker-compose/tango-docker-compose.yml \
-	-f docker-compose/mid-csp-lmc.yml \
-	-f docker-compose/mid-cbf-mcs.yml \
-	-f docker-compose/sdp-docker-compose.yml \
-	-f docker-compose/tmc-docker-compose.yml \
-	-f docker-compose/archiver-docker-compose.yml \
-	-f docker-compose/jive.yml \
-	up -d
-
 piplock: build  ## overwrite Pipfile.lock with the image version
 	docker run $(IMAGE_TO_TEST) cat /app/Pipfile.lock > $(CURDIR)/Pipfile.lock
 
-interactive: up
-interactive:  ## start an interactive session using the project image (caution: R/W mounts source directory to /app)
-	docker run --rm -it -p 3000:3000 --name=$(CONTAINER_NAME_PREFIX)dev -e TANGO_HOST=$(TANGO_HOST) --network=$(NETWORK_MODE) \
-	       -v $(CURDIR):/app nexus.engageska-portugal.pt/ska-docker/tango-java:latest /bin/bash
-
-down:  ## stop develop/test environment and any interactive session
-	docker ps | grep $(CONTAINER_NAME_PREFIX)dev && docker stop $(PROJECT)-dev || true
-	$(DOCKER_COMPOSE_ARGS) docker-compose \
-	-f docker-compose/tango-docker-compose.yml \
-	-f docker-compose/mid-csp-lmc.yml \
-	-f docker-compose/mid-cbf-mcs.yml \
-	-f docker-compose/sdp-docker-compose.yml \
-	-f docker-compose/tmc-docker-compose.yml \
-	-f docker-compose/archiver-docker-compose.yml \
-	-f docker-compose/jive.yml \
-	 down
-ifneq ($(NETWORK_MODE),host)
-	docker network inspect $(NETWORK_MODE) &> /dev/null && ([ $$? -eq 0 ] && docker network rm $(NETWORK_MODE)) || true
-endif
 
 help:  ## show this help.
 	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-.PHONY: all test up down help
+.PHONY: all help
 
 # Creates Docker volume for use as a cache, if it doesn't exist already
 INIT_CACHE = \
