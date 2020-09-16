@@ -131,12 +131,8 @@ class SubarrayNode(SKASubarray):
         :return: None
         """
         try:
-            # log_msg = 'Observation State Attribute change event is: ' + str(evt)
-            # self.logger.info(log_msg)
             if not evt.err:
                 self._observetion_state = evt.attr_value.value
-                # log_msg = 'Observation State Attribute value is: ' + str(self._observetion_state)
-                # self.logger.info(log_msg)
                 if const.PROP_DEF_VAL_TMCSP_MID_SALN in evt.attr_name:
                     self._csp_sa_obs_state = self._observetion_state
                     self._read_activity_message = const.STR_CSP_SUBARRAY_OBS_STATE + str(
@@ -163,7 +159,6 @@ class SubarrayNode(SKASubarray):
         """
         Calculates aggregated observation state of Subarray.
         """
-        # self.logger.info("\n\n In Calculate observation state method")
         pointing_state_count_track = 0
         pointing_state_count_slew = 0
         pointing_state_count_ready = 0
