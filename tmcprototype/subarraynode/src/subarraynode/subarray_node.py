@@ -11,6 +11,7 @@
 Provides the monitoring and control interface required by users as well as
 other TM Components (such as OET, Central Node) for a Subarray.
 """
+import os
 
 # PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
 # Tango imports
@@ -18,10 +19,19 @@ import tango
 from tango import AttrWriteType, DevFailed, DeviceProxy, EventType
 from tango.server import run,attribute, command, device_property
 
+print("Hiii")
+print(os.environ["TELESCOPE"])
+
+if os.environ["TELESCOPE"] == "LOW":
+    from subarraynode.low import on_command
+else:
+    from . import on_command
+
 # Additional import
 from . import const, release, assign_resources_command, release_all_resources_command, configure_command,\
-    scan_command, end_scan_command, end_command, on_command, off_command, track_command,\
+    scan_command, end_scan_command, end_command, off_command, track_command,\
     abort_command, restart_command
+
 from .const import PointingState
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, ObsMode, ObsState
@@ -387,6 +397,7 @@ class SubarrayNode(SKASubarray):
         self._pointing_state_event_id.clear()
         self._dish_leaf_node_proxy.clear()
         self._receptor_id_list.clear()
+        self._station_id_list.clear()
         self.logger.info(const.STR_RECEPTORS_REMOVE_SUCCESS)
 
     # PROTECTED REGION END #    //  SubarrayNode.class_variable
@@ -438,11 +449,18 @@ class SubarrayNode(SKASubarray):
         doc="Activity Message",
     )
 
-    receptorIDList = attribute(
-        dtype=('uint16',),
-        max_dim_x=100,
-        doc="ID List of the Receptors assigned in the Subarray",
-    )
+    if os.environ['TELESCOPE'] == 'MID':
+        receptorIDList = attribute(
+            dtype=('uint16',),
+            max_dim_x=100,
+            doc="ID List of the Receptors assigned in the Subarray",
+        )
+    else:
+        stationIDList = attribute(
+            dtype=('uint16',),
+            max_dim_x=100,
+            doc="ID List of the Stations assigned in the Subarray",
+        )
 
     # ---------------
     # General methods
@@ -479,6 +497,7 @@ class SubarrayNode(SKASubarray):
             device._version_id = release.version
             device.scan_duration = 0
             device._receptor_id_list = []
+            device._station_id_list = []
             device.dishPointingStateMap = {}
             device._dish_leaf_node_group = tango.Group(const.GRP_DISH_LEAF_NODE)
             device._dish_leaf_node_proxy = []
@@ -599,12 +618,21 @@ class SubarrayNode(SKASubarray):
         self._read_activity_message = value
         # PROTECTED REGION END #    //  SubarrayNode.activityMessage_write
 
-    def read_receptorIDList(self):
-        """ Internal construct of TANGO. Returns the receptor IDs allocated to the Subarray.
-         """
-        # PROTECTED REGION ID(SubarrayNode.receptorIDList_read) ENABLED START #
-        return self._receptor_id_list
-        # PROTECTED REGION END #    //  SubarrayNode.receptorIDList_read
+    if os.environ['TELESCOPE'] == 'MID':
+        def read_receptorIDList(self):
+            """ Internal construct of TANGO. Returns the receptor IDs allocated to the Subarray.
+            """
+            # PROTECTED REGION ID(SubarrayNode.receptorIDList_read) ENABLED START #
+            return self._receptor_id_list
+            # PROTECTED REGION END #    //  SubarrayNode.receptorIDList_read
+    else:
+        def read_stationIDList(self):
+            """ Internal construct of TANGO. Returns the receptor IDs allocated to the Subarray.
+            """
+            # PROTECTED REGION ID(SubarrayNode.receptorIDList_read) ENABLED START #
+            return self._station_id_list
+            # PROTECTED REGION END #    //  SubarrayNode.receptorIDList_read
+
 
     # --------
     # Commands
