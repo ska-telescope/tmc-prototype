@@ -231,9 +231,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
         delay_update_interval = argin
 
         while not self._stop_delay_model_event.isSet():
-            if (self.CspSubarrayProxy.obsState == ObsState.CONFIGURING
-                    or self.CspSubarrayProxy.obsState == ObsState.READY
-                    or self.CspSubarrayProxy.obsState == ObsState.SCANNING):
+            if (self._csp_subarray_proxy.obsState == ObsState.CONFIGURING
+                    or self._csp_subarray_proxy.obsState == ObsState.READY
+                    or self._csp_subarray_proxy.obsState == ObsState.SCANNING):
                 self.logger.info("Calculating delays.")
                 time_t0 = datetime.today() + timedelta(seconds=self._delay_in_advance)
                 time_t0_utc = (time_t0.astimezone(pytz.UTC)).timestamp()
@@ -299,7 +299,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device = self.target
             try:
                 # create CspSubarray Proxy
-                device.CspSubarrayProxy = DeviceProxy(device.CspSubarrayFQDN)
+                device._csp_subarray_proxy = DeviceProxy(device.CspSubarrayFQDN)
             except DevFailed as dev_failed:
                 log_msg = const.ERR_IN_CREATE_PROXY_CSPSA + str(dev_failed)
                 self.logger.debug(log_msg)
@@ -411,7 +411,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         def configure_cmd_ended_cb(self, event):
             """
             Callback function immediately executed when the asynchronous invoked
-            command returns. Checks whether the Configure command has been successfully invoked on CspSubarray.
+            command returns.
 
             :param event: a CmdDoneEvent object. This class is used to pass data
                 to the callback method in asynchronous callback model for command
@@ -491,7 +491,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     del cspConfiguration["pointing"]
                 log_msg = "Input JSON for CSP Subarray Leaf Node Configure command is: " + argin
                 self.logger.debug(log_msg)
-                device.CspSubarrayProxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(cspConfiguration),
+                device._csp_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(cspConfiguration),
                                                            self.configure_cmd_ended_cb)
                 device._read_activity_message = const.STR_CONFIGURE_SUCCESS
                 self.logger.info(const.STR_CONFIGURE_SUCCESS)
@@ -570,7 +570,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         def startscan_cmd_ended_cb(self, event):
             """
             Callback function immediately executed when the asynchronous invoked
-            command returns. Checks whether the StartScan command has been successfully invoked on CspSubarray.
+            command returns.
 
             :param event: a CmdDoneEvent object. This class is used to pass data
                 to the callback method in asynchronous callback model for command
@@ -625,16 +625,16 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device = self.target
             try:
                 # Check if CspSubarray is in READY state
-                if device.CspSubarrayProxy.obsState == ObsState.READY:
+                if device._csp_subarray_proxy.obsState == ObsState.READY:
                     # Invoke StartScan command on CspSubarray
-                    device.CspSubarrayProxy.command_inout_asynch(const.CMD_STARTSCAN, "0",
+                    device._csp_subarray_proxy.command_inout_asynch(const.CMD_STARTSCAN, "0",
                                                                  self.startscan_cmd_ended_cb)
                     device._read_activity_message = const.STR_STARTSCAN_SUCCESS
                     self.logger.info(const.STR_STARTSCAN_SUCCESS)
                     return (ResultCode.OK, const.STR_STARTSCAN_SUCCESS)
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_READY
-                    log_msg = const.STR_OBS_STATE + str(device.CspSubarrayProxy.obsState)
+                    log_msg = const.STR_OBS_STATE + str(device._csp_subarray_proxy.obsState)
                     self.logger.error(const.ERR_DEVICE_NOT_READY)
                     return (ResultCode.FAILED, const.ERR_DEVICE_NOT_READY)
 
@@ -702,7 +702,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         def endscan_cmd_ended_cb(self, event):
             """
             Callback function immediately executed when the asynchronous invoked
-            command returns. Checks whether the EndScan command has been successfully invoked on CspSubarray.
+            command returns.
 
             :param event: a CmdDoneEvent object. This class is used to pass data
                 to the callback method in asynchronous callback model for command
@@ -748,14 +748,14 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device = self.target
             try:
                 # Invoke EndScan command on CspSubarray
-                if device.CspSubarrayProxy.obsState == ObsState.SCANNING:
-                    device.CspSubarrayProxy.command_inout_asynch(const.CMD_ENDSCAN, self.endscan_cmd_ended_cb)
+                if device._csp_subarray_proxy.obsState == ObsState.SCANNING:
+                    device._csp_subarray_proxy.command_inout_asynch(const.CMD_ENDSCAN, self.endscan_cmd_ended_cb)
                     device._read_activity_message = const.STR_ENDSCAN_SUCCESS
                     self.logger.info(const.STR_ENDSCAN_SUCCESS)
                     return (ResultCode.OK, const.STR_ENDSCAN_SUCCESS)
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_IN_SCAN
-                    log_msg = const.STR_OBS_STATE + str(device.CspSubarrayProxy.obsState)
+                    log_msg = const.STR_OBS_STATE + str(device._csp_subarray_proxy.obsState)
                     self.logger.error(const.ERR_DEVICE_NOT_IN_SCAN)
                     return (ResultCode.FAILED, const.ERR_DEVICE_NOT_IN_SCAN)
 
@@ -819,7 +819,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         def releaseallresources_cmd_ended_cb(self, event):
             """
             Callback function immediately executed when the asynchronous invoked
-            command returns. Checks whether the ReleaseAllResources command has been successfully invoked on CspSubarray.
+            command returns.
 
             :param event: a CmdDoneEvent object. This class is used to pass data
                 to the callback method in asynchronous callback model for command
@@ -869,7 +869,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 device.receptorIDList = []
                 device.fsids_list = []
                 device.update_config_params()
-                device.CspSubarrayProxy.command_inout_asynch(const.CMD_REMOVE_ALL_RECEPTORS,
+                device._csp_subarray_proxy.command_inout_asynch(const.CMD_REMOVE_ALL_RECEPTORS,
                                                              self.releaseallresources_cmd_ended_cb)
                 device._read_activity_message = const.STR_REMOVE_ALL_RECEPTORS_SUCCESS
                 self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
@@ -938,7 +938,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         def add_receptors_ended(self, event):
             """
             Callback function immediately executed when the asynchronous invoked
-            command returns. Checks whether the command has been successfully invoked on CspSubarray.
+            command returns.
 
             :type: CmdDoneEvent object
                 It has the following members:
@@ -1026,7 +1026,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 # Invoke AddReceptors command on CspSubarray
                 self.logger.info("Invoking AddReceptors on CSP subarray")
 
-                device.CspSubarrayProxy.command_inout_asynch(const.CMD_ADD_RECEPTORS, receptorIDList,
+                device._csp_subarray_proxy.command_inout_asynch(const.CMD_ADD_RECEPTORS, receptorIDList,
                                                            self.add_receptors_ended)
 
                 self.logger.info("After invoking AddReceptors on CSP subarray")
@@ -1122,7 +1122,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         def gotoidle_cmd_ended_cb(self, event):
             """
             Callback function immediately executed when the asynchronous invoked
-            command returns. Checks whether the GoToIdle command has been successfully invoked on CspSubarray.
+            command returns.
 
             :param event: a CmdDoneEvent object. This class is used to pass data
                 to the callback method in asynchronous callback model for command
@@ -1166,14 +1166,14 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                if device.CspSubarrayProxy.obsState == ObsState.READY:
-                    device.CspSubarrayProxy.command_inout_asynch(const.CMD_GOTOIDLE, self.gotoidle_cmd_ended_cb)
+                if device._csp_subarray_proxy.obsState == ObsState.READY:
+                    device._csp_subarray_proxy.command_inout_asynch(const.CMD_GOTOIDLE, self.gotoidle_cmd_ended_cb)
                     device._read_activity_message = const.STR_GOTOIDLE_SUCCESS
                     self.logger.info(const.STR_GOTOIDLE_SUCCESS)
                     return (ResultCode.OK, const.STR_GOTOIDLE_SUCCESS)
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_READY
-                    log_msg = const.STR_OBS_STATE + str(device.CspSubarrayProxy.obsState)
+                    log_msg = const.STR_OBS_STATE + str(device._csp_subarray_proxy.obsState)
                     self.logger.error(const.ERR_DEVICE_NOT_READY)
                     return (ResultCode.FAILED, const.ERR_DEVICE_NOT_READY)
 
@@ -1213,7 +1213,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         return [[result_code], [message]]
 
     def validate_obs_state(self):
-        if self.CspSubarrayProxy.obsState == ObsState.EMPTY:
+        if self._csp_subarray_proxy.obsState == ObsState.EMPTY:
             self.logger.info("CSP Subarray is in required obsState, resources will be assigned")
         else:
             self.logger.error("CSP Subarray is not in EMPTY obsState")
@@ -1249,7 +1249,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         def abort_cmd_ended_cb(self, event):
             """
             Callback function immediately executed when the asynchronous invoked
-            command returns. Checks whether the Abort command has been successfully invoked on CspSubarray.
+            command returns.
 
             :param event: a CmdDoneEvent object. This class is used to pass data
                 to the callback method in asynchronous callback model for command
@@ -1294,18 +1294,17 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                if device.CspSubarrayProxy.obsState in [ObsState.READY, 
+                if device._csp_subarray_proxy.obsState in [ObsState.READY, 
                                                         ObsState.CONFIGURING,
                                                         ObsState.SCANNING,
                                                         ObsState.IDLE, 
                                                         ObsState.RESETTING]:
-                    device.CspSubarrayProxy.command_inout_asynch(const.CMD_ABORT, self.abort_cmd_ended_cb)
+                    device._csp_subarray_proxy.command_inout_asynch(const.CMD_ABORT, self.abort_cmd_ended_cb)
                     device._read_activity_message = const.STR_ABORT_SUCCESS
                     self.logger.info(const.STR_ABORT_SUCCESS)
                     return (ResultCode.OK, const.STR_ABORT_SUCCESS)
                 else:
-                    log_msg = "Csp Subarray is in ObsState " + str(device.CspSubarrayProxy.obsState) + \
-                              ". Unable to invoke Abort command."
+                    log_msg = ("Csp Subarray is in ObsState {device._csp_subarray_proxy.obsState.name}.""Unable to invoke Abort command")
                     device._read_activity_message = log_msg
                     self.logger.error(log_msg)
                     return (ResultCode.FAILED, log_msg)
@@ -1374,7 +1373,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         def restart_cmd_ended_cb(self, event):
             """
             Callback function immediately executed when the asynchronous invoked
-            command returns. Checks whether the Restart command has been successfully invoked on CspSubarray.
+            command returns.
 
             :param event: a CmdDoneEvent object. This class is used to pass data
                 to the callback method in asynchronous callback model for command
@@ -1418,14 +1417,13 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                if device.CspSubarrayProxy.obsState in [ObsState.FAULT, ObsState.ABORTED] :
-                    device.CspSubarrayProxy.command_inout_asynch(const.CMD_RESTART, self.restart_cmd_ended_cb)
+                if device._csp_subarray_proxy.obsState in [ObsState.FAULT, ObsState.ABORTED] :
+                    device._csp_subarray_proxy.command_inout_asynch(const.CMD_RESTART, self.restart_cmd_ended_cb)
                     device._read_activity_message = const.STR_RESTART_SUCCESS
                     self.logger.info(const.STR_RESTART_SUCCESS)
                     return (ResultCode.OK, const.STR_RESTART_SUCCESS)
                 else:
-                    log_msg = "Csp Subarray is in ObsState. " + str(device.CspSubarrayProxy.obsState) + \
-                              "Unable to invoke Restart command."
+                    log_msg = ("CSp Subarray is in ObsState {device._csp_subarray_proxy.obsState.name}.""Unable to invoke Restart command")
                     device._read_activity_message = log_msg
                     self.logger.error(log_msg)
                     return (ResultCode.FAILED, log_msg)
@@ -1482,7 +1480,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             if self.state_model.op_state in [
                 DevState.UNKNOWN, DevState.DISABLE,
             ]:
-                log_msg = "ObsReset() is not allowed in " + str(self.state_model.op_state)
+                log_msg= "ObsReset() is not allowed in " + str(self.state_model.op_state)
                 tango.Except.throw_exception(log_msg ,
                                              "Failed to invoke ObsReset command on CspSubarrayLeafNode.",
                                              "cspsubarrayleafnode.ObsReset()",
@@ -1493,7 +1491,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         def obsreset_cmd_ended_cb(self, event):
             """
             Callback function immediately executed when the asynchronous invoked
-            command returns. Checks whether the ObsReset command has been successfully invoked on CspSubarray.
+            command returns. 
 
             :param event: a CmdDoneEvent object. This class is used to pass data
                 to the callback method in asynchronous callback model for command
@@ -1534,22 +1532,19 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                if device.CspSubarrayProxy.obsState in [ObsState.ABORTED, ObsState.FAULT] :
-                    device.CspSubarrayProxy.command_inout_asynch(const.CMD_OBSRESET, self.obsreset_cmd_ended_cb)
+                if device._csp_subarray_proxy.obsState in [ObsState.ABORTED, ObsState.FAULT] :
+                    device._csp_subarray_proxy.command_inout_asynch(const.CMD_OBSRESET, self.obsreset_cmd_ended_cb)
                     device._read_activity_message = const.STR_OBSRESET_SUCCESS
                     self.logger.info(const.STR_OBSRESET_SUCCESS)
-                   
                 else:
-                    log_msg = "Csp Subarray is in ObsState. " + str(device.CspSubarrayProxy.obsState) + \
-                              "Unable to invoke ObsReset command."
+                    log_msg = ("Csp Subarray is in ObsState {device._csp_subarray_proxy.obsState.name}.""Unable to invoke ObsReset command")
                     device._read_activity_message = log_msg
                     self.logger.error(log_msg)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_OBSRESET_INVOKING_CMD + str(dev_failed)
                 device._read_activity_message = log_msg
-                self.logger.exception(dev_failed)
-                self.logger.info(log_msg)
+                self.logger.exception(log_msg)
                 tango.Except.throw_exception(const.ERR_OBSRESET_INVOKING_CMD, log_msg,
                                              "CspSubarrayLeafNode.ObsResetCommand",
                                              tango.ErrSeverity.ERR)
