@@ -38,7 +38,7 @@ class ObsResetCommand(SKASubarray.ObsResetCommand):
             device._scan_id = ""
             device._sb_id = ""
             device.scan_duration = 0
-            device._scan_type = ''
+            device._scan_type = ""
             
             device._sdp_subarray_ln_proxy.command_inout(const.CMD_OBSRESET)
             self.logger.info(const.STR_CMD_OBSRESET_INV_SDP)
