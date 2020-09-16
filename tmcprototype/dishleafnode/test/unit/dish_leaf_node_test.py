@@ -65,12 +65,6 @@ def event_subscription(mock_dish_master):
                **kwargs: event_subscription_map.update({command_name: callback}))
     yield event_subscription_map
 
-# @pytest.fixture(scope="function")
-# def Command_should_raise_dev_failed(mock_dish_master):
-#     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-#     dish1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
-#     with pytest.raises(tango.DevFailed) as  df:
-#         yield tango_context,df
 
 @pytest.fixture(scope="function")
 def event_subscription_with_arg(mock_dish_master):

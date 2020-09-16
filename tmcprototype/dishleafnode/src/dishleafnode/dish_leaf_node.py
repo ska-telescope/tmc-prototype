@@ -19,7 +19,7 @@ import importlib.resources
 # PROTECTED REGION ID(DishLeafNode.additionnal_import) ENABLED START #
 # PyTango imports
 import tango
-from tango import DeviceProxy, EventType, ApiUtil, DevState, AttrWriteType, DevFailed
+from tango import DeviceProxy, EventType, ApiUtil, DevState, AttrWriteType, DevFailed, DebugIt
 from tango.server import run, command, device_property, attribute
 from ska.base.commands import ResultCode, ResponseCommand, BaseCommand
 from ska.base import SKABaseDevice
@@ -1643,8 +1643,6 @@ class DishLeafNode(SKABaseDevice):
             """
             Invokes ObsReset command on the DishMaster.
 
-            :param argin: DevVoid
-
             :return: None
 
             :raises: DevFailed if error ocuurs while invoking command on DishMaster.
@@ -1665,9 +1663,8 @@ class DishLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
     @command(
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
     )
+    @DebugIt()
     def ObsReset(self):
         """ Invokes ObsReset command on the DishMaster."""
         handler = self.get_command_object("ObsReset")
