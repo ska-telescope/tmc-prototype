@@ -231,9 +231,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         delay_update_interval = argin
 
         while not self._stop_delay_model_event.isSet():
-            if (self._csp_subarray_proxy.obsState == ObsState.CONFIGURING
-                    or self._csp_subarray_proxy.obsState == ObsState.READY
-                    or self._csp_subarray_proxy.obsState == ObsState.SCANNING):
+            if self._csp_subarray_proxy.obsState in (ObsState.CONFIGURING, ObsState.READY, ObsState.SCANNING):
                 self.logger.info("Calculating delays.")
                 time_t0 = datetime.today() + timedelta(seconds=self._delay_in_advance)
                 time_t0_utc = (time_t0.astimezone(pytz.UTC)).timestamp()
@@ -624,9 +622,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                # Check if CspSubarray is in READY state
                 if device._csp_subarray_proxy.obsState == ObsState.READY:
-                    # Invoke StartScan command on CspSubarray
                     device._csp_subarray_proxy.command_inout_asynch(const.CMD_STARTSCAN, "0",
                                                                  self.startscan_cmd_ended_cb)
                     device._read_activity_message = const.STR_STARTSCAN_SUCCESS
@@ -747,7 +743,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                # Invoke EndScan command on CspSubarray
                 if device._csp_subarray_proxy.obsState == ObsState.SCANNING:
                     device._csp_subarray_proxy.command_inout_asynch(const.CMD_ENDSCAN, self.endscan_cmd_ended_cb)
                     device._read_activity_message = const.STR_ENDSCAN_SUCCESS
@@ -1423,7 +1418,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     self.logger.info(const.STR_RESTART_SUCCESS)
                     return (ResultCode.OK, const.STR_RESTART_SUCCESS)
                 else:
-                    log_msg = ("CSp Subarray is in ObsState {device._csp_subarray_proxy.obsState.name}.""Unable to invoke Restart command")
+                    log_msg = (f"CSp Subarray is in ObsState {device._csp_subarray_proxy.obsState.name}.""Unable to invoke Restart command")
                     device._read_activity_message = log_msg
                     self.logger.error(log_msg)
                     return (ResultCode.FAILED, log_msg)
