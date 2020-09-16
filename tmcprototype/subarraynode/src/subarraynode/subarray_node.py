@@ -221,8 +221,8 @@ class SubarrayNode(SKASubarray):
                     self.end_obj.succeeded()
             elif self.is_obsreset_command:
                 if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
-                self.logger.info("Calling ObsReset command succeeded() method")
-                self.obsreset_obj.succeeded()             
+                    self.logger.info("Calling ObsReset command succeeded() method")
+                    self.obsreset_obj.succeeded()
 
             else:
                 # Assign Resource command success
