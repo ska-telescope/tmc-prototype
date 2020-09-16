@@ -709,7 +709,7 @@ def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_m
 
     device_under_test = getattr(patched_module, device_under_test.__name__)
 
-    device_test_context = DeviceTestContext(device_under_test, properties=initial_dut_properties)
+    device_test_context = DeviceTestContext(device_under_test, properties=initial_dut_properties, process=True)
     device_test_context.start()
     yield device_test_context
     device_test_context.stop()
