@@ -1056,14 +1056,10 @@ class DishMaster(SKAMaster):
     def Restart(self):
         # PROTECTED REGION ID(DishMaster.Restart) ENABLED START #
         """
-        This command clears Dish configuration parameters.
+        This command restarts the Dish.
         """
         try:
-            if (self._pointing_state == PointingState.READY):
-                pass
-            else:
-                self._pointing_state = PointingState.READY
-
+            self._pointing_state = PointingState.READY
             self._desired_pointing = [0, 0, 0]
             self._capturing = False
             self._configured_band = None
