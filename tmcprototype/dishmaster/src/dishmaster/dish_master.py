@@ -1088,11 +1088,7 @@ class DishMaster(SKAMaster):
         """
         Currently this command works similar to the Restart command. It clears Dish configuration parameters.
         """
-        if (self._pointing_state == PointingState.READY):
-            pass
-        else:
-            self._pointing_state = PointingState.READY
-
+        self._pointing_state = PointingState.READY
         self._desired_pointing = [0, 0, 0]
         self._capturing = False
         self._configured_band = None
