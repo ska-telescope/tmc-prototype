@@ -1539,13 +1539,11 @@ class DishLeafNode(SKABaseDevice):
         """
         A class for DishLeafNode's Restart command.
         """
-
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
 
         def check_allowed(self):
-
             """
             Checks whether this command is allowed to be run in current device state
 
@@ -1615,13 +1613,11 @@ class DishLeafNode(SKABaseDevice):
         """
         A class for DishLeafNode's ObsReset command.
         """
-
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
 
         def check_allowed(self):
-
             """
             Checks whether this command is allowed to be run in current device state
 
