@@ -863,7 +863,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 # Invoke RemoveAllReceptors command on CspSubarray
                 device.receptorIDList = []
                 device.fsids_list = []
-                device.update_config_params()
                 device._csp_subarray_proxy.command_inout_asynch(const.CMD_REMOVE_ALL_RECEPTORS,
                                                              self.releaseallresources_cmd_ended_cb)
                 device._read_activity_message = const.STR_REMOVE_ALL_RECEPTORS_SUCCESS
@@ -1299,7 +1298,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     self.logger.info(const.STR_ABORT_SUCCESS)
                     return (ResultCode.OK, const.STR_ABORT_SUCCESS)
                 else:
-                    log_msg = ("Csp Subarray is in ObsState {device._csp_subarray_proxy.obsState.name}.""Unable to invoke Abort command")
+                    log_msg = (f"Csp Subarray is in ObsState {device._csp_subarray_proxy.obsState.name}.""Unable to invoke Abort command")
                     device._read_activity_message = log_msg
                     self.logger.error(log_msg)
                     return (ResultCode.FAILED, log_msg)
@@ -1527,23 +1526,14 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                var = [ObsState.ABORTED, ObsState.FAULT]
-                assert device._csp_subarray_proxy.obsState , var 
-                # if device._csp_subarray_proxy.obsState in [ObsState.ABORTED, ObsState.FAULT] :
-                device._csp_subarray_proxy.command_inout_asynch(const.CMD_OBSRESET, self.obsreset_cmd_ended_cb)
-                device._read_activity_message = const.STR_OBSRESET_SUCCESS
-                self.logger.info(const.STR_OBSRESET_SUCCESS)
-                # else:
-                #     log_msg = ("Csp Subarray is in ObsState {device._csp_subarray_proxy.obsState.name}.""Unable to invoke ObsReset command")
-                #     device._read_activity_message = log_msg
-                #     self.logger.error(log_msg)
-            except AssertionError as assert_err:
-                log_message = const.ERR_DEVICE_NOT_FAULT_ABORT + str(assert_err)
-                self.logger.error(log_message)
-                device._read_activity_message = log_message
-                tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
-                                         const.ERR_DEVICE_NOT_FAULT_ABORT, tango.ErrSeverity.ERR)
-
+                if device._csp_subarray_proxy.obsState in [ObsState.ABORTED, ObsState.FAULT] :
+                    device._csp_subarray_proxy.command_inout_asynch(const.CMD_OBSRESET, self.obsreset_cmd_ended_cb)
+                    device._read_activity_message = const.STR_OBSRESET_SUCCESS
+                    self.logger.info(const.STR_OBSRESET_SUCCESS)
+                else:
+                    log_msg = (f"Csp Subarray is in ObsState {device._csp_subarray_proxy.obsState.name}.""Unable to invoke ObsReset command")
+                    device._read_activity_message = log_msg
+                    self.logger.error(log_msg)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_OBSRESET_INVOKING_CMD + str(dev_failed)
