@@ -1637,11 +1637,13 @@ class DishLeafNode(SKABaseDevice):
 
         def do(self):
             """
-            Invokes ObsReset command on the DishMaster.
+            Command to reset the Dishleaf Node and bring it to its RESETTING state.
+
+            :param argin: None
 
             :return: None
 
-            :raises: DevFailed if error ocuurs while invoking command on DishMaster.
+            :raises: DevFailed if error occurs while invoking command on Dishleaf Node.
             """
             device = self.target
 
@@ -1662,7 +1664,7 @@ class DishLeafNode(SKABaseDevice):
     )
     @DebugIt()
     def ObsReset(self):
-        """ Invokes ObsReset command on the DishMaster."""
+        """ Invokes ObsReset command on the DishLeafNode."""
         handler = self.get_command_object("ObsReset")
         handler()
 
