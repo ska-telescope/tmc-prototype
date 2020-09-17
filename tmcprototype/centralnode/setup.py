@@ -38,7 +38,7 @@ setup(name=name,
       long_description=long_description,
       url='www.tango-controls.org',
       platforms="All Platforms",
-      install_requires=['pytango==9.3.2', 'mock', 'ska_logging==0.3.0', 'lmcbaseclasses==0.6.5'],
+      install_requires=['pytango==9.3.1', 'mock', 'ska_logging==0.3.0', 'lmcbaseclasses==0.6.5', 'cdm-shared-library==2.0.0', 'ska-telescope-model==0.1.4'],
       # test_suite='test',
       setup_requires=[
           # dependency for `python setup.py test`
@@ -53,6 +53,7 @@ setup(name=name,
           'pytest-json-report',
           'pycodestyle',
           'pytest-forked',
+          'mock',
       ],
       extras_require={
           'dev': ['prospector[with_pyroma]', 'yapf', 'isort']
