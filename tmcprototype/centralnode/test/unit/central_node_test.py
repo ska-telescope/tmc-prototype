@@ -243,7 +243,7 @@ def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
 
     # assert:
         for proxy_mock in proxies_to_mock.values():
-            proxy_mock.command_inout.assert_called_with(CMD_SET_STOW_MODE)
+            proxy_mock.command_inout.assert_called_with("SetStowMode")
 
 
 def test_stow_antennas_should_raise_devfailed_exception():
