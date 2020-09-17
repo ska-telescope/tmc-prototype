@@ -3,7 +3,7 @@ set -eo pipefail
 #Entering into a bash shell script to run unit-test cases and generating reports
 #cd /app/tmcprototype;
 python3 -m pip install pytest-forked
-sudo python3 -m pip install --extra-index-url https://nexus.engageska-portugal.pt/repository/pypi/simple ska-logging==0.3.0 lmcbaseclasses==0.6.5 cdm-shared-library==2.0.0 ska-telescope-model==0.1.4
+python3 -m pip install --index-url https://nexus.engageska-portugal.pt/repository/pypi/simple ska-logging==0.3.0 lmcbaseclasses==0.6.5 cdm-shared-library==2.0.0 ska-telescope-model==0.1.4
 
 #For each node sub-package inside tmc-prototype, coverage report for each device is generated using unit-test job.
 #Coverage report are generated in .coverage, .xml and .html format. Each device's .coverage report is moved in unit_test folder to generate the combine report further.
