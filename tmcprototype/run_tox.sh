@@ -35,15 +35,15 @@ coverage combine centralnode_coverage cspmasterleafnode_coverage \
                   subarraynode_coverage && coverage xml
 
 cd ./tox_report && mv coverage.xml ../report/tox_code-coverage.xml
-
+pwd
 python3 -m pip install junitparser
-junitparser merge centralnode/build/reports/centralnode-unit-tests.xml \
-                cspmasterleafnode/build/reports/cspmasterleafnode-tests.xml \
-                cspsubarrayleafnode/build/reports/cspsubarrayleafnode-unit-tests.xml \
-                dishleafnode/build/reports/dishleafnode-unit-tests.xml \
-                sdpmasterleafnode/build/reports/sdpmasterleafnode-unit-tests.xml \
-                sdpsubarrayleafnode/build/reports/sdpsubarrayleafnode-unit-tests.xml \
-                subarraynode/build/reports/subarraynode-unit-tests.xml \
+junitparser merge ./centralnode/build/reports/centralnode-unit-tests.xml \
+                ./cspmasterleafnode/build/reports/cspmasterleafnode-tests.xml \
+                ./cspsubarrayleafnode/build/reports/cspsubarrayleafnode-unit-tests.xml \
+                ./dishleafnode/build/reports/dishleafnode-unit-tests.xml \
+                ./sdpmasterleafnode/build/reports/sdpmasterleafnode-unit-tests.xml \
+                ./sdpsubarrayleafnode/build/reports/sdpsubarrayleafnode-unit-tests.xml \
+                ./subarraynode/build/reports/subarraynode-unit-tests.xml \
                 ./report/tox_unit-tests.xml
 cd report
 ls
