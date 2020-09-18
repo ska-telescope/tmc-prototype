@@ -7,7 +7,6 @@ marshmallow
 cdm-shared-library
 ska-telescope-model
 katpoint
-math
 datetime
 time
 fire
