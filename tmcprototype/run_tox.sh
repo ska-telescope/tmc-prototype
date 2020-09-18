@@ -14,3 +14,5 @@ cd ../sdpmasterleafnode
 tox -e py37
 cd ../sdpsubarrayleafnode
 tox -e py37
+cd ../subarraynode
+tox -e py37
