@@ -382,7 +382,7 @@ def test_track_should_raise_exception_when_called_with_invalid_json():
 
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
 
-
+@pytest.mark.forked
 def test_activity_message():
     with fake_tango_system(DishLeafNode) as tango_context:
         tango_context.device.activityMessage = const.STR_OK
