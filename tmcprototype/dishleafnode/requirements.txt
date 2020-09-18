@@ -8,5 +8,4 @@ cdm-shared-library
 ska-telescope-model
 katpoint
 datetime
-time
 fire
