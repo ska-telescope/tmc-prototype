@@ -6,4 +6,6 @@ lmcbaseclasses == 0.6.5
 marshmallow
 cdm-shared-library
 ska-telescope-model
+katpoint
+pytz
 fire
