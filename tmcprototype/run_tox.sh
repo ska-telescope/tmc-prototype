@@ -33,9 +33,9 @@ coverage combine centralnode_coverage cspmasterleafnode_coverage \
                   cspsubarrayleafnode_coverage dishleafnode_coverage \
                   sdpmasterleafnode_coverage sdpsubarrayleafnode_coverage \
                   subarraynode_coverage && coverage xml
+cd ..
+cd ./tox_report && mv coverage.xml ./report/tox_code-coverage.xml
 
-cd ./tox_report && mv coverage.xml ../report/tox_code-coverage.xml
-pwd
 python3 -m pip install junitparser
 junitparser merge ./centralnode/build/reports/centralnode-unit-tests.xml \
                 ./cspmasterleafnode/build/reports/cspmasterleafnode-tests.xml \
