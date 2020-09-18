@@ -88,7 +88,7 @@ def command_with_arg(request):
     cmd_name, input_arg, requested_cmd = request.param
     return cmd_name, input_arg, requested_cmd
 
-
+@pytest.mark.forked
 def test_command_cb_is_invoked_when_command_with_arg_is_called_async(mock_dish_master, command_with_arg):
     tango_context, dish1_proxy_mock, _, _ = mock_dish_master
     cmd_name, input_arg, requested_cmd = command_with_arg
@@ -114,7 +114,7 @@ def command_without_arg(request):
     cmd_name, requested_cmd = request.param
     return cmd_name, requested_cmd
 
-
+@pytest.mark.forked
 def test_command_cb_is_invoked_when_command_without_arg_is_called_async(mock_dish_master, command_without_arg):
     tango_context, dish1_proxy_mock, _, _ = mock_dish_master
     cmd_name, requested_cmd = command_without_arg
@@ -126,6 +126,7 @@ def test_command_cb_is_invoked_when_command_without_arg_is_called_async(mock_dis
 
 
 # TODO: actual AZ and EL values need to be generated.
+@pytest.mark.forked
 @pytest.mark.xfail
 def test_configure_to_send_correct_configuration_data_when_dish_is_idle(mock_dish_master):
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
@@ -154,6 +155,7 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle(mock_dis
                                                              any_method(with_name='cmd_ended_cb'))
 
 
+@pytest.mark.forked
 @pytest.mark.xfail
 def test_track_should_command_dish_to_start_tracking(mock_dish_master):
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
@@ -165,7 +167,7 @@ def test_track_should_command_dish_to_start_tracking(mock_dish_master):
     dish1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_TRACK, "0",
                                                                  any_method(with_name='cmd_ended_cb'))
 
-
+@pytest.mark.forked
 def test_abort_should_raise_dev_failed(mock_dish_master):
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
     dish1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
@@ -174,7 +176,7 @@ def test_abort_should_raise_dev_failed(mock_dish_master):
 
     assert const.ERR_EXE_ABORT_CMD in tango_context.device.activityMessage
 
-
+@pytest.mark.forked
 def test_restart_should_raise_dev_failed(mock_dish_master):
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
     dish1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
@@ -208,7 +210,7 @@ def create_dummy_event_for_dishmode(device_fqdn, dish_mode_value, attribute):
 def dish_mode(request):
     return request.param
 
-
+@pytest.mark.forked
 def test_dish_leaf_node_activity_message_reports_correct_dish_master_dish_mode(mock_dish_master,
                                                                                dish_mode):
     attribute_name = 'dishMode'
@@ -218,7 +220,7 @@ def test_dish_leaf_node_activity_message_reports_correct_dish_master_dish_mode(m
     event_subscription_map[attribute_name](dummy_event)
     assert tango_context.device.activityMessage == f"dishMode is {dish_mode}."
 
-
+@pytest.mark.forked
 def test_dish_leaf_node_dish_mode_with_error_event(mock_dish_master):
     dish_master_dishmode_attribute = 'dishMode'
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
@@ -228,7 +230,7 @@ def test_dish_leaf_node_dish_mode_with_error_event(mock_dish_master):
     event_subscription_map[dish_master_dishmode_attribute](dummy_event)
     assert "Event system DevError(s) occured!!!" in tango_context.device.activityMessage
 
-
+@pytest.mark.forked
 def create_dummy_event_with_error(device_fqdn, attr_value, attribute):
     fake_event = Mock()
     fake_event.err = True
@@ -245,7 +247,7 @@ def create_dummy_event_for_dish_capturing(device_fqdn, dish_capturing_value, att
     fake_event.attr_value.value = dish_capturing_value
     return fake_event
 
-
+@pytest.mark.forked
 def test_dish_leaf_node_when_dish_capturing_callback_is_true(mock_dish_master):
     dish_master_capturing_attribute = 'capturing'
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
@@ -255,7 +257,7 @@ def test_dish_leaf_node_when_dish_capturing_callback_is_true(mock_dish_master):
     event_subscription_map[dish_master_capturing_attribute](dummy_event)
     assert tango_context.device.activityMessage == f"capturing is {dish_capturing_value}."
 
-
+@pytest.mark.forked
 def test_dish_leaf_node_when_dish_capturing_callback_is_false(mock_dish_master):
     dish_master_capturing_attribute = 'capturing'
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
@@ -265,7 +267,7 @@ def test_dish_leaf_node_when_dish_capturing_callback_is_false(mock_dish_master):
     event_subscription_map[dish_master_capturing_attribute](dummy_event)
     assert tango_context.device.activityMessage == f"capturing is {dish_capturing_value}."
 
-
+@pytest.mark.forked
 def test_dish_leaf_node_when_dish_capturing_callback_with_error_event(mock_dish_master):
     dish_master_capturing_attribute = 'capturing'
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
@@ -283,7 +285,7 @@ def create_dummy_event(device_fqdn, attribute, attr_value):
     fake_event.attr_value.value = attr_value
     return fake_event
 
-
+@pytest.mark.forked
 def test_dish_leaf_node_when_achieved_pointing_callback_is_true(mock_dish_master):
     dish_master_achieved_pointing_attribute = 'achievedPointing'
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
@@ -293,7 +295,7 @@ def test_dish_leaf_node_when_achieved_pointing_callback_is_true(mock_dish_master
     event_subscription_map[dish_master_achieved_pointing_attribute](dummy_event)
     assert tango_context.device.activityMessage == f"achievedPointing is {value}."
 
-
+@pytest.mark.forked
 def test_dish_leaf_node_when_achieved_pointing_callback_with_error_event(mock_dish_master):
     dish_master_achieved_pointing_attribute = 'achievedPointing'
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
@@ -303,7 +305,7 @@ def test_dish_leaf_node_when_achieved_pointing_callback_with_error_event(mock_di
     event_subscription_map[dish_master_achieved_pointing_attribute](dummy_event)
     assert "Event system DevError(s) occured!!!" in tango_context.device.activityMessage
 
-
+@pytest.mark.forked
 def test_dish_leaf_node_when_desired_pointing_callback_is_true(mock_dish_master):
     dish_master_desired_pointing_attribute = 'desiredPointing'
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
@@ -313,7 +315,7 @@ def test_dish_leaf_node_when_desired_pointing_callback_is_true(mock_dish_master)
     event_subscription_map[dish_master_desired_pointing_attribute](dummy_event)
     assert tango_context.device.activityMessage == f"desiredPointing is {dummy_event.attr_value.value}."
 
-
+@pytest.mark.forked
 def test_dish_leaf_node_when_desired_pointing_callback_with_error_event(mock_dish_master):
     dish_master_desired_pointing_attribute = 'desiredPointing'
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
@@ -323,7 +325,7 @@ def test_dish_leaf_node_when_desired_pointing_callback_with_error_event(mock_dis
     event_subscription_map[dish_master_desired_pointing_attribute](dummy_event)
     assert "Event system DevError(s) occured!!!" in tango_context.device.activityMessage
 
-
+@pytest.mark.forked
 def test_configure_should_raise_exception_when_called_with_invalid_json():
     with fake_tango_system(DishLeafNode) as tango_context:
         with pytest.raises(tango.DevFailed):
@@ -331,7 +333,7 @@ def test_configure_should_raise_exception_when_called_with_invalid_json():
 
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
 
-
+@pytest.mark.forked
 def test_configure_should_raise_exception_when_called_with_invalid_arguments():
     with fake_tango_system(DishLeafNode) as tango_context:
         input_string = []
@@ -355,7 +357,7 @@ def invalid_command_call_and_expected_error_msg(request):
     cmd_name, input_arg, error_msg = request.param
     return cmd_name, input_arg, error_msg
 
-
+@pytest.mark.forked
 def test_command_should_raise_exception_when_called_with_invalid_arguments(invalid_command_call_and_expected_error_msg):
     cmd_name, input_arg, error_msg = invalid_command_call_and_expected_error_msg
     with fake_tango_system(DishLeafNode) as tango_context:
@@ -364,7 +366,7 @@ def test_command_should_raise_exception_when_called_with_invalid_arguments(inval
 
         assert error_msg in tango_context.device.activityMessage
 
-
+@pytest.mark.forked
 def test_track_should_raise_exception_when_called_with_invalid_arguments():
     with fake_tango_system(DishLeafNode) as tango_context:
         with pytest.raises(tango.DevFailed):
@@ -372,7 +374,7 @@ def test_track_should_raise_exception_when_called_with_invalid_arguments():
 
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
-
+@pytest.mark.forked
 def test_track_should_raise_exception_when_called_with_invalid_json():
     with fake_tango_system(DishLeafNode) as tango_context:
         with pytest.raises(tango.DevFailed):
@@ -386,44 +388,45 @@ def test_activity_message():
         tango_context.device.activityMessage = const.STR_OK
         assert tango_context.device.activityMessage == const.STR_OK
 
+@pytest.mark.forked
 def test_status():
     with fake_tango_system(DishLeafNode) as tango_context:
         assert tango_context.device.Status() != const.STR_DISH_INIT_SUCCESS
 
-
+@pytest.mark.forked
 def test_logging_level():
     with fake_tango_system(DishLeafNode) as tango_context:
         tango_context.device.loggingLevel = LoggingLevel.INFO
         assert tango_context.device.loggingLevel == LoggingLevel.INFO
 
-
+@pytest.mark.forked
 def test_logging_targets():
     with fake_tango_system(DishLeafNode) as tango_context:
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
 
-
+@pytest.mark.forked
 def test_test_mode():
     with fake_tango_system(DishLeafNode) as tango_context:
         test_mode = TestMode.NONE
         tango_context.device.testMode = test_mode
         assert tango_context.device.testMode == test_mode
 
-
+@pytest.mark.forked
 def test_simulation_mode():
     with fake_tango_system(DishLeafNode) as tango_context:
         simulation_mode = SimulationMode.FALSE
         tango_context.device.simulationMode = simulation_mode
         assert tango_context.device.simulationMode == simulation_mode
 
-
+@pytest.mark.forked
 def test_control_mode():
     with fake_tango_system(DishLeafNode) as tango_context:
         control_mode = ControlMode.REMOTE
         tango_context.device.controlMode = control_mode
         assert tango_context.device.controlMode == control_mode
 
-
+@pytest.mark.forked
 def test_health_state():
     with fake_tango_system(DishLeafNode) as tango_context:
         assert tango_context.device.healthState == HealthState.OK
@@ -433,7 +436,7 @@ def raise_devfailed_exception(cmd_name, callback):
     tango.Except.throw_exception("DishLeafNode_Commandfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
 
-
+@pytest.mark.forked
 def test_stop_track_should_raise_dev_failed(mock_dish_master):
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
     dish1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
@@ -458,7 +461,7 @@ def command_name(request):
     cmd_name = request.param
     return cmd_name
 
-
+@pytest.mark.forked
 def test_activity_message_attribute_value_contains_command_name(event_subscription, mock_dish_master, command_name):
     tango_context, _, _, _ = mock_dish_master
     tango_context.device.command_inout(command_name)
@@ -466,7 +469,7 @@ def test_activity_message_attribute_value_contains_command_name(event_subscripti
     event_subscription[command_name](dummy_event)
     assert f"Command :-> {command_name}" in tango_context.device.activityMessage
 
-
+@pytest.mark.forked
 def test_activity_message_attribute_value_contains_command_name_with_event_error(event_subscription, mock_dish_master, command_name):
     tango_context, _, _, _ = mock_dish_master
     tango_context.device.command_inout(command_name)
@@ -487,7 +490,7 @@ def command_name_with_args(request):
     cmd_name, input_args = request.param
     return cmd_name, input_args
 
-
+@pytest.mark.forked
 def test_msg_in_activity_message_attribute(event_subscription_with_arg, mock_dish_master, command_name_with_args):
     tango_context, _, _, _ = mock_dish_master
     command_name, input_args = command_name_with_args
@@ -496,7 +499,7 @@ def test_msg_in_activity_message_attribute(event_subscription_with_arg, mock_dis
     event_subscription_with_arg[command_name](dummy_event)
     assert f"Command :-> {command_name}" in tango_context.device.activityMessage
 
-
+@pytest.mark.forked
 def test_msg_in_activity_message_attribute_with_event_error(event_subscription_with_arg, mock_dish_master, command_name_with_args):
     tango_context, _, _, _ = mock_dish_master
     command_name, input_args = command_name_with_args
@@ -507,6 +510,7 @@ def test_msg_in_activity_message_attribute_with_event_error(event_subscription_w
 
 
 # TODO: actual AZ and EL values need to be generated.
+@pytest.mark.forked
 @pytest.mark.xfail
 def test_configure_command_with_callback_method(event_subscription, mock_dish_master):
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
@@ -518,6 +522,7 @@ def test_configure_command_with_callback_method(event_subscription, mock_dish_ma
 
 
 # TODO: actual AZ and EL values need to be generated.
+@pytest.mark.forked
 @pytest.mark.xfail
 def test_track_command_with_callback_method(event_subscription, mock_dish_master):
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
@@ -526,13 +531,13 @@ def test_track_command_with_callback_method(event_subscription, mock_dish_master
     event_subscription[const.CMD_TRACK](dummy_event)
     assert const.STR_COMMAND + const.CMD_TRACK in tango_context.device.activityMessage
 
-
+@pytest.mark.forked
 def test_version_id():
     """Test for versionId"""
     with fake_tango_system(DishLeafNode) as tango_context:
         assert tango_context.device.versionId == release.version
 
-
+@pytest.mark.forked
 def test_build_state():
     """Test for buildState"""
     with fake_tango_system(DishLeafNode) as tango_context:

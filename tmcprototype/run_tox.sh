@@ -4,9 +4,9 @@ set -eo pipefail
 echo "In run_tox file...."
 cd centralnode;
 tox -e py37
-cd ..
-cd cspmasterleafnode
+cd ../cspmasterleafnode
 tox -e py37
-cd ..
-cd cspsubarrayleafnode
+cd ../cspsubarrayleafnode
+tox -e py37
+cd ../dishleafnode
 tox -e py37
