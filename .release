@@ -12,9 +12,9 @@ copyright = """"""
 
 release=0.2.11
 tag=0.2.11
-tag_description=Fixed issues in Abort and Restart functionality.
-release_notes=This release Contains: <br/><ul><li>Updated tmc-prototype to resolve issues faced during the testing of Abort and Restart functionality.</li><li>Refactored SubarrayNode i.e. separate module is created for each command class.</li></ul><br/>
-gitlab_username=JayantKumbhar
-private_token=n7iNe9yjbuQPq6yzzD_4
+tag_description=Implement obsReset functionality.
+release_notes=This release Contains: <br/><ul><li>Implemented obsReset functionality.</li><li>Utilized lmc-base-classes version 0.6.5</li><li>Refactored SubarrayNode i.e. separate module is created for each command class.</li><li>Refactored the code base for DishLeafNode.</li><li>Investigated the high resource consumption during linting.</li></ul><br/>
+gitlab_username=apurvapatkar
+private_token=TzkAi8cLAnPVCAyJx2fR
 
 
