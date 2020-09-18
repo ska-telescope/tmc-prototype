@@ -1256,7 +1256,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             Command to reset the SDP subarray and bring it to its RESETTING state.
 
-            :rtype:None
+            :param argin: None
+            
+            :return: None
 
             :raises: DevFailed if error occurs while invoking command on SDPSubarray.
 

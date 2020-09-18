@@ -1518,9 +1518,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         def do(self):
             """
-            This command invokes ObsReset command on CSPSubarray.
+            Command to reset the CSP subarray and bring it to its RESETTING state.
 
-            :rtype: None
+            :param argin: None
+
+            :return: None
 
             :raises: DevFailed if error occurs while invoking the command on CSpSubarray.
             """
