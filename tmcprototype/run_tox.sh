@@ -39,7 +39,7 @@ cd ..
 pwd
 python3 -m pip install junitparser
 junitparser merge ./centralnode/build/reports/centralnode-unit-tests.xml \
-                ./cspmasterleafnode/build/reports/cspmasterleafnode-tests.xml \
+                ./cspmasterleafnode/build/reports/cspmasterleafnode-unit-tests.xml \
                 ./cspsubarrayleafnode/build/reports/cspsubarrayleafnode-unit-tests.xml \
                 ./dishleafnode/build/reports/dishleafnode-unit-tests.xml \
                 ./sdpmasterleafnode/build/reports/sdpmasterleafnode-unit-tests.xml \
