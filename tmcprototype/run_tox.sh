@@ -34,3 +34,6 @@ coverage combine centralnode_coverage cspmasterleafnode_coverage \
                   subarraynode_coverage && coverage xml
 
 ls
+
+mv coverage.xml ../report/code-coverage.xml
+pwd
