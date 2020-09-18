@@ -742,7 +742,7 @@ def test_read_activity_message():
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assert tango_context.device.activityMessage == " "
 
-
+@pytest.mark.forked
 def test_write_activity_message():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
