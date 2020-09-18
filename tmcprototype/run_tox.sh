@@ -38,7 +38,7 @@ ls
 cd ..
 pwd
 ls
-cd /tox_report && mv coverage.xml ../report/code-coverage.xml
+cd ./tox_report && mv coverage.xml ../report/code-coverage.xml
 
 #python3 -m pip install junitparser
 #junitparser merge centralnode/build/reports/centralnode-unit-tests.xml \
