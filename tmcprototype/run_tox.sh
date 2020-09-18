@@ -26,3 +26,12 @@ tox -e py37
 mv build/reports/subarraynode-code-coverage.xml ../tox_report/subarraynode-code-coverage.xml
 cd ../tox_report
 ls
+
+# Combine coverage reports
+python3 -m pip install junitparser
+junitparser merge centralnode-code-coverage.xml cspmasterleafnode-code-coverage.xml \
+                  cspsubarrayleafnode-code-coverage.xml dishleafnode-code-coverage.xml \
+                  sdpmasterleafnode-code-coverage.xml sdpsubarrayleafnode-code-coverage.xml \
+                  subarraynode-code-coverage.xml code-coverage.xml
+
+ls
