@@ -34,7 +34,7 @@ coverage combine centralnode_coverage cspmasterleafnode_coverage \
                   sdpmasterleafnode_coverage sdpsubarrayleafnode_coverage \
                   subarraynode_coverage && coverage xml
 
-cd..
+cd ..
 mv /build/reports/coverage.xml /report/unit-tests.xml
 
 python3 -m pip install junitparser
