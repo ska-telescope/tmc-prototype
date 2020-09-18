@@ -17,8 +17,11 @@ tox -e py37
 #tox -e py37
 #cd ../subarraynode
 #tox -e py37
+pwd
+ls
 cd ..
-
+pwd
+ls
 mv ./build/reports/centralnode-code-coverage.xml tox_report/centralnode-code-coverage.xml
 #mv build/reports/cspmasterleafnode-code-coverage.xml tox_report/cspmasterleafnode-code-coverage.xml
 #mv build/reports/cspsubarrayleafnode-code-coverage.xml tox_report/cspsubarrayleafnode-code-coverage.xml
