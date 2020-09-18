@@ -33,6 +33,7 @@ class EndScanCommand(SKASubarray.EndScanCommand):
         device.is_release_resources = False
         device.is_restart_command = False
         device.is_abort_command = False
+        device.is_obsreset_command = False
         try:
             if device.scan_thread:
                 if device.scan_thread.is_alive():

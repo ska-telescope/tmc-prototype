@@ -40,6 +40,7 @@ CMD_ENDSB = "EndSB"
 CMD_GOTOIDLE = "GoToIdle"
 CMD_RESTART = "Restart"
 CMD_ABORT = "Abort"
+CMD_OBSRESET = "ObsReset"
 
 # GROUPS
 GRP_DISH_LEAF_NODE = "DishLeafNode_Group"
@@ -53,6 +54,9 @@ STR_CMD_GOTOIDLE_INV_CSP = "Command GoToIdle is invoked on CSP Subarray Leaf Nod
 STR_CMD_RESTART_INV_SDP = "Command Restart is invoked on SDP Subarray Leaf Node."
 STR_CMD_RESTART_INV_CSP = "Command Restart is invoked on CSP Subarray Leaf Node."
 STR_CMD_RESTART_INV_DISH_GROUP = "Command Restart is invoked on group of Dishes."
+STR_CMD_OBSRESET_INV_SDP = "Command ObsReset is invoked on SDP Subarray Leaf Node."
+STR_CMD_OBSRESET_INV_CSP = "Command ObsReset is invoked on CSP Subarray Leaf Node."
+STR_CMD_OBSRESET_INV_DISH_GROUP = "Command ObsReset is invoked on group of Dishes."
 STR_CMD_ABORT_INV_SDP = "Command Abort is invoked on SDP Subarray Leaf Node."
 STR_CMD_ABORT_INV_CSP = "Command Abort is invoked on CSP Subarray Leaf Node."
 STR_ASSIGN_RESOURCES_INV_CSP_SALN = "Assign Resources is invoked on CSPSubarrayLeafNode"
@@ -143,7 +147,9 @@ STR_ENDSB_SUCCESS = "EndSB command invoked successfully on SDP Subarray Leaf Nod
 STR_ABORT_SUCCESS = "Abort command invoked successfully on SDP Subarray Leaf Node and CSP Subarray Leaf Node and Dish Leaf Node."
 STR_ENDSB_EXEC = "EndSB command execution."
 STR_RESTART_EXEC = "Restart command execution."
-STR_RESTART_SUCCESS = "Restart command invoked successfully on SDP Subarray Leaf Node and CSP Subarray Leaf Node and Dish Leaf Node."
+STR_OBSRESET_EXEC = "ObsReset command execution."
+STR_RESTART_SUCCESS = "Restart command invoked successfully on SDP Subarray Leaf Node, CSP Subarray Leaf Node and Dish Leaf Node."
+STR_OBSRESET_SUCCESS = "ObsReset command invoked successfully on SDP Subarray Leaf Node, CSP Subarray Leaf Node and Dish Leaf Node."
 
 # Error messages
 ERR_SCAN_CMD = "Exception in Scan command: "
@@ -183,6 +189,7 @@ ERR_ENDSB_INVOKING_CMD = "Error while invoking EndSB command on Subarray Node."
 ERR_INVOKING_ON_CMD = "Error while invoking ON command on Subarray Node."
 ERR_INVOKING_OFF_CMD = "Error while invoking OFF command on Subarray Node."
 ERR_RESTART_INVOKING_CMD = "Error while invoking Restart command on Subarray Node."
+ERR_OBSRESET_INVOKING_CMD = "Error while invoking ObsReset command on Subarray Node."
 ERR_ABORT_INVOKING_CMD = "Error while invoking ABORT command on Subarray Node."
 ERR_CSPSDP_SUBARRAY_OBS_STATE = "Key Error occurred while setting CSP/SDP Subarray obsState"
 ERR_SUBSR_CSPSDPSA_OBS_STATE = "Error in subscribing CSP/SDP Subarray obsState on respective " \

@@ -19,12 +19,12 @@ import importlib.resources
 # PROTECTED REGION ID(DishLeafNode.additionnal_import) ENABLED START #
 # PyTango imports
 import tango
-from tango import DeviceProxy, EventType, ApiUtil, DevState, AttrWriteType, DevFailed
+from tango import DeviceProxy, EventType, ApiUtil, DevState, AttrWriteType, DevFailed, DebugIt
 from tango.server import run, command, device_property, attribute
-from ska.base.commands import ResultCode, ResponseCommand
+from ska.base.commands import ResultCode, ResponseCommand, BaseCommand
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, SimulationMode
-from .utils import PointingState, UnitConverter, DishMode
+from .utils import PointingState, UnitConverter
 
 # Additional import
 import threading
@@ -33,7 +33,6 @@ import math
 import katpoint
 import datetime
 import time
-import re
 
 
 # PROTECTED REGION END #    //  DishLeafNode.additionnal_import
@@ -68,7 +67,6 @@ class CommandCallBack:
                 - ext
         :return: none
 
-        :raises: Exception if error occurs in command callback method.
         """
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
@@ -87,8 +85,8 @@ class DishLeafNode(SKABaseDevice):
     # PROTECTED REGION ID(DishLeafNode.class_variable) ENABLED START #
 
     def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.cmd_ended_cb = CommandCallBack(self, self.logger).cmd_ended_cb
+        super().__init__(*args, **kwargs)
+        self.cmd_ended_cb = CommandCallBack(self, self.logger).cmd_ended_cb
 
     def attribute_event_handler(self, event_data):
         """
@@ -209,7 +207,8 @@ class DishLeafNode(SKABaseDevice):
 
         :return: None.
         """
-        self.logger.info(f"print track_thread thread name:{threading.currentThread().getName()}{threading.get_ident()}")
+        self.logger.info(f"print track_thread thread name:{threading.currentThread().getName()}"
+                         f"{threading.get_ident()}")
         while self.event_track_time.is_set() is False:
             timestamp_value = str(datetime.datetime.utcnow())
             katpoint_arg = []
@@ -244,7 +243,7 @@ class DishLeafNode(SKABaseDevice):
 
             desired_pointing = [0, round(self.az, 12), round(self.el, 12)]
             self._dish_proxy.desiredPointing = desired_pointing
-            if not self.event_track_time.is_set():
+            if self.event_track_time.is_set():
                 log_msg = f"{const.STR_BREAK_LOOP}{self.event_track_time.is_set()}"
                 self.logger.debug(log_msg)
                 break
@@ -455,6 +454,7 @@ class DishLeafNode(SKABaseDevice):
         self.register_command_object("StopTrack", self.StopTrackCommand(*args))
         self.register_command_object("Abort", self.AbortCommand(*args))
         self.register_command_object("Restart", self.RestartCommand(*args))
+        self.register_command_object("ObsReset", self.ObsResetCommand(*args))
 
     # --------
     # Commands
@@ -511,8 +511,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
-
-        :raises: DevFailed if this command is not allowed to be run in current device state.
 
         """
         handler = self.get_command_object("SetStowMode")
@@ -580,9 +578,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
-
-        :raises: DevFailed if this command is not allowed to be run in current device state.
-
         """
         handler = self.get_command_object("SetStandByLPMode")
         return handler.check_allowed()
@@ -645,8 +640,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
-
-        :raises: DevFailed if this command is not allowed to be run in current device state.
 
         """
         handler = self.get_command_object("SetOperateMode")
@@ -731,8 +724,6 @@ class DishLeafNode(SKABaseDevice):
 
         :rtype: boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state.
-
         """
         handler = self.get_command_object("Scan")
         return handler.check_allowed()
@@ -812,8 +803,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
-
-        :raises: DevFailed if this command is not allowed to be run in current device state.
 
         """
         handler = self.get_command_object("EndScan")
@@ -953,8 +942,6 @@ class DishLeafNode(SKABaseDevice):
 
         :rtype: boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state.
-
         """
         handler = self.get_command_object("Configure")
         return handler.check_allowed()
@@ -1039,8 +1026,6 @@ class DishLeafNode(SKABaseDevice):
 
         :rtype: boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state.
-
         """
         handler = self.get_command_object("StartCapture")
         return handler.check_allowed()
@@ -1120,8 +1105,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
-
-        :raises: DevFailed if this command is not allowed to be run in current device state.
         """
         handler = self.get_command_object("StopCapture")
         return handler.check_allowed()
@@ -1190,8 +1173,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state
 
         :rtype: boolean
-
-        :raises: DevFailed if this command is not allowed to be run in current device state
 
         """
         handler = self.get_command_object("SetStandbyFPMode")
@@ -1275,8 +1256,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
-
-        :raises: DevFailed if this command is not allowed to be run in current device state.
 
         """
         handler = self.get_command_object("Slew")
@@ -1388,8 +1367,6 @@ class DishLeafNode(SKABaseDevice):
 
         :rtype: boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state.
-
         """
         handler = self.get_command_object("Track")
         return handler.check_allowed()
@@ -1468,8 +1445,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
-
-        :raises: DevFailed if this command is not allowed to be run in current device state.
 
         """
         handler = self.get_command_object("StopTrack")
@@ -1556,8 +1531,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state
 
         :rtype: boolean
-
-        :raises: DevFailed if this command is not allowed to be run in current device state
         """
         handler = self.get_command_object("Abort")
         return handler.check_allowed()
@@ -1566,13 +1539,11 @@ class DishLeafNode(SKABaseDevice):
         """
         A class for DishLeafNode's Restart command.
         """
-
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
 
         def check_allowed(self):
-
             """
             Checks whether this command is allowed to be run in current device state
 
@@ -1633,10 +1604,80 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state
 
         :rtype: boolean
-
-        :raises: DevFailed if this command is not allowed to be run in current device state
         """
         handler = self.get_command_object("Restart")
+        return handler.check_allowed()
+
+
+    class ObsResetCommand(BaseCommand):
+        """
+        A class for DishLeafNode's ObsReset command.
+        """
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
+
+        def check_allowed(self):
+            """
+            Checks whether this command is allowed to be run in current device state
+
+            :return: True if this command is allowed to be run in current device state
+
+            :rtype: boolean
+
+            :raises: DevFailed if this command is not allowed to be run in current device state
+
+            """
+            if self.state_model.op_state in [DevState.UNKNOWN, DevState.DISABLE]:
+                tango.Except.throw_exception("ObsResetCommand() is not allowed in current state",
+                                             "Failed to invoke ObsReset command on DishLeafNode.",
+                                             "DishLeafNode.ObsReset() ",
+                                             tango.ErrSeverity.ERR)
+            return True
+
+        def do(self):
+            """
+            Command to reset the Dishleaf Node and bring it to its RESETTING state.
+
+            :param argin: None
+
+            :return: None
+
+            :raises: DevFailed if error occurs while invoking command on Dishleaf Node.
+            """
+            device = self.target
+
+            try:
+                device._dish_proxy.command_inout_asynch(const.CMD_OBSRESET, self.cmd_ended_cb)
+                device._read_activity_message = const.STR_OBSRESET_SUCCESS
+                self.logger.info(device._read_activity_message)
+                return (ResultCode.OK, device._read_activity_message)
+
+            except DevFailed as dev_failed:
+                log_msg = f"{const.ERR_EXE_OBSRESET_CMD}{dev_failed}"
+                device._read_activity_message = log_msg
+                self.logger.exception(dev_failed)
+                tango.Except.throw_exception(const.STR_OBSRESET_EXEC, log_msg, "DishLeafNode.ObsResetCommand",
+                                             tango.ErrSeverity.ERR)
+
+    @command(
+    )
+    @DebugIt()
+    def ObsReset(self):
+        """ Invokes ObsReset command on the DishLeafNode."""
+        handler = self.get_command_object("ObsReset")
+        handler()
+
+    def is_ObsReset_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state
+
+        :return: True if this command is allowed to be run in current device state
+
+        :rtype: boolean
+
+        """
+        handler = self.get_command_object("ObsReset")
         return handler.check_allowed()
 
 
