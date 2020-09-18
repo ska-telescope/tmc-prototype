@@ -10,3 +10,5 @@ cd ../cspsubarrayleafnode
 tox -e py37
 cd ../dishleafnode
 tox -e py37
+cd ../sdpmasterleafnode
+tox -e py37
