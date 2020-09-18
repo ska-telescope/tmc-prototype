@@ -263,7 +263,8 @@ unit tests:
     - make unit-test
   artifacts:
     paths:
-      - ./unit_test_reports
+      - ./build
+      - ./report
 
 linting:
   stage: linting
