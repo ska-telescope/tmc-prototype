@@ -5,33 +5,32 @@ echo "In run_tox file...."
 mkdir tox_report
 cd centralnode;
 tox -e py37
-mv build/reports/centralnode-code-coverage.xml ../tox_report/centralnode-code-coverage.xml
+mv centralnode_coverage ../tox_report/centralnode_coverage
 cd ../cspmasterleafnode
 tox -e py37
-mv build/reports/cspmasterleafnode-code-coverage.xml ../tox_report/cspmasterleafnode-code-coverage.xml
+mv cspmasterleafnode_coverage ../tox_report/cspmasterleafnode_coverage
 cd ../cspsubarrayleafnode
 tox -e py37
-mv build/reports/cspsubarrayleafnode-code-coverage.xml ../tox_report/cspsubarrayleafnode-code-coverage.xml
+mv cspsubarrayleafnode_coverage ../tox_report/cspsubarrayleafnode_coverage
 cd ../dishleafnode
 tox -e py37
-mv build/reports/dishleafnode-code-coverage.xml ../tox_report/dishleafnode-code-coverage.xml
+mv dishleafnode_coverage ../tox_report/dishleafnode_coverage
 cd ../sdpmasterleafnode
 tox -e py37
-mv build/reports/sdpmasterleafnode-code-coverage.xml ../tox_report/sdpmasterleafnode-code-coverage.xml
+mv sdpmasterleafnode_coverage ../tox_report/sdpmasterleafnode_coverage
 cd ../sdpsubarrayleafnode
 tox -e py37
-mv build/reports/sdpsubarrayleafnode-code-coverage.xml ../tox_report/sdpsubarrayleafnode-code-coverage.xml
+mv sdpsubarrayleafnode_coverage ../tox_report/sdpsubarrayleafnode_coverage
 cd ../subarraynode
 tox -e py37
-mv build/reports/subarraynode-code-coverage.xml ../tox_report/subarraynode-code-coverage.xml
+mv subarraynode_coverage ../tox_report/subarraynode_coverage
 cd ../tox_report
 ls
 
 # Combine coverage reports
-python3 -m pip install junitparser
-junitparser merge centralnode-code-coverage.xml cspmasterleafnode-code-coverage.xml \
-                  cspsubarrayleafnode-code-coverage.xml dishleafnode-code-coverage.xml \
-                  sdpmasterleafnode-code-coverage.xml sdpsubarrayleafnode-code-coverage.xml \
-                  subarraynode-code-coverage.xml code-coverage.xml
+coverage combine centralnode_coverage cspmasterleafnode_coverage \
+                  cspsubarrayleafnode_coverage dishleafnode_coverage \
+                  sdpmasterleafnode_coverage sdpsubarrayleafnode_coverage \
+                  subarraynode_coverage && coverage xml
 
 ls
