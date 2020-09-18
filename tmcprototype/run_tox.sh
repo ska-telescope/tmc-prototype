@@ -7,3 +7,6 @@ tox -e py37
 cd ..
 cd cspmasterleafnode
 tox -e py37
+cd ..
+cd cspsubarrayleafnode
+tox -e py37
