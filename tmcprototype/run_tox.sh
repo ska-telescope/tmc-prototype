@@ -33,7 +33,5 @@ coverage combine centralnode_coverage cspmasterleafnode_coverage \
                   sdpmasterleafnode_coverage sdpsubarrayleafnode_coverage \
                   subarraynode_coverage && coverage xml
 
-ls
-
-mv coverage.xml ../report/code-coverage.xml
+mv coverage.xml ./build/reports/tox_code-coverage.xml
 pwd

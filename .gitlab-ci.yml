@@ -263,7 +263,7 @@ unit tests:
     - make unit-test
   artifacts:
     paths:
-      - ./tox_report
+      - ./build
 
 linting:
   stage: linting
