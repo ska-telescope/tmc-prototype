@@ -5,11 +5,6 @@ echo "In run_tox file...."
 mkdir tox_report
 cd centralnode;
 tox -e py37
-echo "In central node "
-ls
-cd build/reports
-echo "In central node build"
-ls
 mv centralnode_coverage ../tox_report/centralnode_coverage
 cd ../cspmasterleafnode
 tox -e py37
