@@ -38,7 +38,7 @@ coverage combine centralnode_coverage cspmasterleafnode_coverage \
 pwd
 cd ..
 cd ./tox_report && mv coverage.xml ../tox_code-coverage.xml
-cd ../../
+cd ../../../
 echo "In tmc-proto"
 pwd
 ls
