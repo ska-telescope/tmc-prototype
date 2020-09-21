@@ -51,5 +51,5 @@ junitparser merge ./centralnode/build/reports/centralnode-unit-tests.xml \
                 ./sdpmasterleafnode/build/reports/sdpmasterleafnode-unit-tests.xml \
                 ./sdpsubarrayleafnode/build/reports/sdpsubarrayleafnode-unit-tests.xml \
                 ./subarraynode/build/reports/subarraynode-unit-tests.xml \
-                ./reports/tox_unit-tests.xml
+                ../build/reports/tox_unit-tests.xml
 ls
