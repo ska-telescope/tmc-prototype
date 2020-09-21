@@ -34,6 +34,7 @@ ls
 cd build/reports
 echo "In tox file...."
 ls
+cd tox_report
 
 # # Combine coverage reports
 coverage combine centralnode_coverage cspmasterleafnode_coverage \

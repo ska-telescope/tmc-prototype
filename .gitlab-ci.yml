@@ -268,7 +268,7 @@ unit tests:
 
 linting:
   stage: linting
-  image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
+  image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
   tags:
     - docker-executor
   script:
