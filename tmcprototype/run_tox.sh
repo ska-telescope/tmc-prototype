@@ -6,10 +6,14 @@ echo "In run_tox file...."
 #mkdir reports
 cd centralnode;
 tox -e py37
+mv centralnode_coverage ../tox_report/centralnode_coverage
+cd build
+echo "In build..."
 ls
-cd centralnode_coverage
+cd reports
+echo "In reports..."
 ls
-# mv centralnode_coverage ../tox_report/centralnode_coverage
+
 # cd ../cspmasterleafnode
 # tox -e py37
 # mv cspmasterleafnode_coverage ../tox_report/cspmasterleafnode_coverage
@@ -28,8 +32,9 @@ ls
 # cd ../subarraynode
 # tox -e py37
 # mv subarraynode_coverage ../tox_report/subarraynode_coverage
-# cd ../tox_report
-# ls
+echo "In tox file...."
+cd ../tox_report
+ls
 
 # # Combine coverage reports
 # coverage combine centralnode_coverage cspmasterleafnode_coverage \
