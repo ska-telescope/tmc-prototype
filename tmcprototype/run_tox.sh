@@ -5,6 +5,11 @@ echo "In run_tox file...."
 mkdir tox_report
 cd centralnode;
 tox -e py37
+echo "In central node "
+ls
+cd build/reports
+echo "In central node build"
+ls
 mv centralnode_coverage ../tox_report/centralnode_coverage
 cd ../cspmasterleafnode
 tox -e py37
@@ -25,15 +30,9 @@ cd ../subarraynode
 tox -e py37
 mv subarraynode_coverage ../tox_report/subarraynode_coverage
 cd ../
-echo "moving tox folder into build folder"
-ls
 mv tox_report ../build/reports
 cd ../
-echo "In build file...."
-ls
 cd build/reports
-echo "In tox file...."
-ls
 cd tox_report
 
 # # Combine coverage reports
@@ -44,9 +43,11 @@ coverage combine centralnode_coverage cspmasterleafnode_coverage \
 pwd
 cd ..
 cd ./tox_report && mv coverage.xml ../tox_code-coverage.xml
-cd ..
+cd ../../
+echo "In tmc-proto"
 pwd
 ls
+
 python3 -m pip install junitparser
 junitparser merge ./centralnode/build/reports/centralnode-unit-tests.xml \
                 ./cspmasterleafnode/build/reports/cspmasterleafnode-unit-tests.xml \
