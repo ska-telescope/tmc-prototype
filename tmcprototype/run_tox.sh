@@ -27,8 +27,8 @@ mv subarraynode_coverage ../tox_report/subarraynode_coverage
 cd ../
 echo "moving tox folder into build folder"
 ls
-mv tox_report ../../build/reports
-cd ../../
+mv tox_report ../build/reports
+cd ../
 echo "In build file...."
 ls
 cd build/reports
