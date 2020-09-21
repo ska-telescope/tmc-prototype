@@ -3,7 +3,7 @@ set -eo pipefail
 #Entering into a bash shell script to run unit-test cases and generating reports
 echo "In run_tox file...."
 mkdir tox_report
-mkdir report
+mkdir reports
 cd centralnode;
 tox -e py37
 mv centralnode_coverage ../tox_report/centralnode_coverage
@@ -34,7 +34,7 @@ coverage combine centralnode_coverage cspmasterleafnode_coverage \
                   sdpmasterleafnode_coverage sdpsubarrayleafnode_coverage \
                   subarraynode_coverage && coverage xml
 cd ..
-cd ./tox_report && mv coverage.xml ../report/tox_code-coverage.xml
+cd ./tox_report && mv coverage.xml ../reports/tox_code-coverage.xml
 cd ..
 pwd
 python3 -m pip install junitparser
@@ -45,6 +45,6 @@ junitparser merge ./centralnode/build/reports/centralnode-unit-tests.xml \
                 ./sdpmasterleafnode/build/reports/sdpmasterleafnode-unit-tests.xml \
                 ./sdpsubarrayleafnode/build/reports/sdpsubarrayleafnode-unit-tests.xml \
                 ./subarraynode/build/reports/subarraynode-unit-tests.xml \
-                ./report/tox_unit-tests.xml
-cd report
+                ./reports/tox_unit-tests.xml
+cd reports
 ls
