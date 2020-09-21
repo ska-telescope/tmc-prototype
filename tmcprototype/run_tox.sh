@@ -2,8 +2,8 @@
 set -eo pipefail
 #Entering into a bash shell script to run unit-test cases and generating reports
 echo "In run_tox file...."
-#mkdir tox_report
-#mkdir reports
+mkdir tox_report
+mkdir reports
 cd centralnode;
 tox -e py37
 mv centralnode_coverage ../tox_report/centralnode_coverage
