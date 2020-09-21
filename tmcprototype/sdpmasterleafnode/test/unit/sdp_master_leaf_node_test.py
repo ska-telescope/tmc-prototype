@@ -43,7 +43,7 @@ def mock_sdp_master():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         yield tango_context.device, sdp_master_proxy_mock
 
-
+@pytest.mark.forked
 def test_on_should_command_sdp_master_leaf_node_to_start(mock_sdp_master):
     device_proxy,sdp_master_proxy_mock = mock_sdp_master
     # act:
@@ -52,7 +52,7 @@ def test_on_should_command_sdp_master_leaf_node_to_start(mock_sdp_master):
     sdp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON,
                                                            any_method(with_name='on_cmd_ended_cb'))
 
-
+@pytest.mark.forked
 def test_off_should_command_sdp_master_leaf_node_to_stop(mock_sdp_master):
     # arrange:
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
@@ -64,7 +64,7 @@ def test_off_should_command_sdp_master_leaf_node_to_stop(mock_sdp_master):
     sdp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF,
                                                                any_method(with_name='off_cmd_ended_cb'))
 
-
+@pytest.mark.forked
 def test_standby_should_command_sdp_master_leaf_node_to_standby(mock_sdp_master):
     # arrange:
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
@@ -74,7 +74,7 @@ def test_standby_should_command_sdp_master_leaf_node_to_standby(mock_sdp_master)
     sdp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STANDBY,
                                                            any_method(with_name='standby_cmd_ended_cb'))
 
-
+@pytest.mark.forked
 def test_disable_should_command_sdp_master_leaf_node_to_disable(mock_sdp_master):
     # arrange:
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
@@ -85,7 +85,7 @@ def test_disable_should_command_sdp_master_leaf_node_to_disable(mock_sdp_master)
     sdp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_Disable,
                                                            any_method(with_name='disable_cmd_ended_cb'))
 
-
+@pytest.mark.forked
 def test_disable_should_command_sdp_master_leaf_node_to_disable_devfailed(mock_sdp_master):
     # arrange:
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
@@ -97,6 +97,7 @@ def test_disable_should_command_sdp_master_leaf_node_to_disable_devfailed(mock_s
     # assert:
     assert "Failed to invoke Disable command on SdpMasterLeafNode." in str(df)
 
+@pytest.mark.forked
 def test_on_should_command_with_callback_method(mock_sdp_master, event_subscription):
     # arrange:
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
@@ -107,6 +108,7 @@ def test_on_should_command_with_callback_method(mock_sdp_master, event_subscript
     # assert:
     assert const.STR_COMMAND + const.CMD_ON in device_proxy.activityMessage
 
+@pytest.mark.forked
 def test_off_should_command_with_callback_method(mock_sdp_master, event_subscription):
     # arrange:
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
@@ -118,6 +120,7 @@ def test_off_should_command_with_callback_method(mock_sdp_master, event_subscrip
     # assert:
     assert const.STR_COMMAND + const.CMD_OFF in device_proxy.activityMessage
 
+@pytest.mark.forked
 def test_disable_should_command_with_callback_method(mock_sdp_master, event_subscription):
     # arrange:
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
@@ -128,7 +131,7 @@ def test_disable_should_command_with_callback_method(mock_sdp_master, event_subs
     # assert:
     assert const.STR_COMMAND + const.CMD_Disable in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_standby_should_command_with_callback_method(mock_sdp_master, event_subscription):
     # arrange:
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
@@ -139,7 +142,7 @@ def test_standby_should_command_with_callback_method(mock_sdp_master, event_subs
     # assert:
     assert const.STR_COMMAND + const.CMD_STANDBY in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_on_should_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription):
     # arrange:
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
@@ -150,7 +153,7 @@ def test_on_should_command_with_callback_method_with_event_error(mock_sdp_master
     # assert:
     assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_off_should_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription):
     # arrange:
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
@@ -162,7 +165,7 @@ def test_off_should_command_with_callback_method_with_event_error(mock_sdp_maste
     # assert:
     assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_disable_should_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription):
     # arrange:
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
@@ -173,7 +176,7 @@ def test_disable_should_command_with_callback_method_with_event_error(mock_sdp_m
     # assert:
     assert const.ERR_INVOKING_CMD + const.CMD_Disable in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_standby_should_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription):
     # arrange:
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
@@ -203,70 +206,70 @@ def command_callback_with_event_error(command_name):
 def command_callback_with_command_exception():
     return Exception("Exception in Command callback")
 
-
+@pytest.mark.forked
 def test_activity_message(tango_context):
     # act & assert:
     tango_context.device.activityMessage = "text"
     assert tango_context.device.activityMessage == "text"
 
-
+@pytest.mark.forked
 def test_version_info(tango_context):
     # act & assert:
     assert tango_context.device.versionInfo == '1.0'
 
-
+@pytest.mark.forked
 def test_processing_block_list(tango_context):
     # act & assert:
     assert tango_context.device.ProcessingBlockList
 
-
+@pytest.mark.forked
 def test_status(tango_context):
     # act & assert:
     assert tango_context.device.Status() != const.STR_INIT_SUCCESS
 
-
+@pytest.mark.forked
 def test_logging_level(tango_context):
     # act & assert:
     tango_context.device.loggingLevel = LoggingLevel.INFO
     assert tango_context.device.loggingLevel == LoggingLevel.INFO
 
-
+@pytest.mark.forked
 def test_logging_targets(tango_context):
     # act & assert:
     tango_context.device.loggingTargets = ['console::cout']
     assert 'console::cout' in tango_context.device.loggingTargets
 
-
+@pytest.mark.forked
 def test_test_mode(tango_context):
     # act & assert:
     test_mode = TestMode.NONE
     tango_context.device.testMode = test_mode
     assert tango_context.device.testMode == test_mode
 
-
+@pytest.mark.forked
 def test_simulation_mode(tango_context):
     # act & assert:
     tango_context.device.simulationMode = SimulationMode.FALSE
     assert tango_context.device.simulationMode == SimulationMode.FALSE
 
-
+@pytest.mark.forked
 def test_control_mode(tango_context):
     # act & assert:
     control_mode = ControlMode.REMOTE
     tango_context.device.controlMode = control_mode
     assert tango_context.device.controlMode == control_mode
 
-
+@pytest.mark.forked
 def test_health_state(tango_context):
     # act & assert:
     assert tango_context.device.healthState == HealthState.OK
 
-
+@pytest.mark.forked
 def test_version_id(tango_context):
     """Test for versionId"""
     assert tango_context.device.versionId == release.version
 
-
+@pytest.mark.forked
 def test_build_state(tango_context):
     """Test for buildState"""
     assert tango_context.device.buildState == ('{},{},{}'.format(release.name,release.version,release.description))

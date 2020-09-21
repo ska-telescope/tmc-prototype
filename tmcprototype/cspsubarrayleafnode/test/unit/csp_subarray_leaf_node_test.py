@@ -74,7 +74,7 @@ def mock_csp_subarray():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         yield tango_context.device, csp_subarray1_proxy_mock
 
-
+@pytest.mark.forked
 def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list(mock_csp_subarray):
     #arrange
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
@@ -92,7 +92,7 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
                                                                      any_method(with_name='add_receptors_ended'))
     assert_activity_message(device_proxy, const.STR_ADD_RECEPTORS_SUCCESS)
 
-
+@pytest.mark.forked
 def test_configure_command_when_obstate_is_idle_with_callback_method(mock_csp_subarray, event_subscription):
     # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
@@ -101,7 +101,7 @@ def test_configure_command_when_obstate_is_idle_with_callback_method(mock_csp_su
     event_subscription[const.CMD_CONFIGURE](dummy_event)
     assert const.STR_COMMAND + const.CMD_CONFIGURE in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_configure_command_when_obstate_is_ready_with_callback_method(mock_csp_subarray, event_subscription):
     # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
@@ -110,6 +110,7 @@ def test_configure_command_when_obstate_is_ready_with_callback_method(mock_csp_s
     event_subscription[const.CMD_CONFIGURE](dummy_event)
     assert const.STR_COMMAND + const.CMD_CONFIGURE in device_proxy.activityMessage
 
+@pytest.mark.forked
 def test_startscan_command_with_callback_method(mock_csp_subarray, event_subscription):
     # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
@@ -119,7 +120,7 @@ def test_startscan_command_with_callback_method(mock_csp_subarray, event_subscri
     event_subscription[const.CMD_STARTSCAN](dummy_event)
     assert const.STR_COMMAND + const.CMD_STARTSCAN in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_endscan_command_with_callback_method(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
@@ -129,7 +130,7 @@ def test_endscan_command_with_callback_method(mock_csp_subarray, event_subscript
     event_subscription_without_arg[const.CMD_ENDSCAN](dummy_event)
     assert const.STR_COMMAND + const.CMD_ENDSCAN in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_releaseallresources_command_with_callback_method(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
@@ -139,7 +140,7 @@ def test_releaseallresources_command_with_callback_method(mock_csp_subarray, eve
     event_subscription_without_arg[const.CMD_REMOVE_ALL_RECEPTORS](dummy_event)
     assert const.STR_COMMAND + const.CMD_REMOVE_ALL_RECEPTORS in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_gotoidle_command_with_callback_method(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
@@ -149,7 +150,7 @@ def test_gotoidle_command_with_callback_method(mock_csp_subarray, event_subscrip
     event_subscription_without_arg[const.CMD_GOTOIDLE](dummy_event)
     assert const.STR_COMMAND + const.CMD_GOTOIDLE in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_abort_command_with_callback_method(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
@@ -159,7 +160,7 @@ def test_abort_command_with_callback_method(mock_csp_subarray, event_subscriptio
     event_subscription_without_arg[const.CMD_ABORT](dummy_event)
     assert const.STR_COMMAND + const.CMD_ABORT in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_restart_command_with_callback_method(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
@@ -170,6 +171,7 @@ def test_restart_command_with_callback_method(mock_csp_subarray, event_subscript
     assert const.STR_COMMAND + const.CMD_RESTART in device_proxy.activityMessage
 
 
+@pytest.mark.forked
 def test_obsreset_command_with_callback_method(mock_csp_subarray,event_subscription_without_arg):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.ABORTED
@@ -179,6 +181,8 @@ def test_obsreset_command_with_callback_method(mock_csp_subarray,event_subscript
     assert const.STR_COMMAND + const.CMD_OBSRESET in device_proxy.activityMessage
 
 
+
+@pytest.mark.forked
 def test_assign_resources_should_raise_devfailed_exception(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
@@ -188,7 +192,7 @@ def test_assign_resources_should_raise_devfailed_exception(mock_csp_subarray):
         device_proxy.AssignResources(assign_input_str)
     assert const.ERR_DEVFAILED_MSG in str(df.value)
 
-
+@pytest.mark.forked
 def test_configure_command_with_callback_method_with_event_error(mock_csp_subarray, event_subscription ):
     # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
@@ -199,7 +203,7 @@ def test_configure_command_with_callback_method_with_event_error(mock_csp_subarr
     event_subscription[const.CMD_CONFIGURE](dummy_event)
     assert const.ERR_INVOKING_CMD + const.CMD_CONFIGURE in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_startscan_command_with_callback_method_with_event_error(mock_csp_subarray, event_subscription ):
     # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
@@ -209,7 +213,7 @@ def test_startscan_command_with_callback_method_with_event_error(mock_csp_subarr
     event_subscription[const.CMD_STARTSCAN](dummy_event)
     assert const.ERR_INVOKING_CMD + const.CMD_STARTSCAN in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_endscan_command_with_callback_method_with_event_error(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
@@ -219,7 +223,7 @@ def test_endscan_command_with_callback_method_with_event_error(mock_csp_subarray
     event_subscription_without_arg[const.CMD_ENDSCAN](dummy_event)
     assert const.ERR_INVOKING_CMD + const.CMD_ENDSCAN in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_releaseallresources_command_with_callback_method_with_event_error(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
@@ -229,7 +233,7 @@ def test_releaseallresources_command_with_callback_method_with_event_error(mock_
     event_subscription_without_arg[const.CMD_REMOVE_ALL_RECEPTORS](dummy_event)
     assert const.ERR_INVOKING_CMD + const.CMD_REMOVE_ALL_RECEPTORS in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_gotoidle_command_with_callback_method_with_event_error(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
@@ -239,7 +243,7 @@ def test_gotoidle_command_with_callback_method_with_event_error(mock_csp_subarra
     event_subscription_without_arg[const.CMD_GOTOIDLE](dummy_event)
     assert const.ERR_INVOKING_CMD + const.CMD_GOTOIDLE in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_abort_command_with_callback_method_with_event_error(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
@@ -249,7 +253,7 @@ def test_abort_command_with_callback_method_with_event_error(mock_csp_subarray, 
     event_subscription_without_arg[const.CMD_ABORT](dummy_event)
     assert const.ERR_INVOKING_CMD + const.CMD_ABORT in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_restart_command_with_callback_method_with_event_error(mock_csp_subarray, event_subscription_without_arg):
     # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
@@ -260,6 +264,7 @@ def test_restart_command_with_callback_method_with_event_error(mock_csp_subarray
     assert const.ERR_INVOKING_CMD + const.CMD_RESTART in device_proxy.activityMessage
 
 
+@pytest.mark.forked
 def test_obsreset_command_with_callback_method_with_event_error(mock_csp_subarray,event_subscription_without_arg):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.ABORTED
@@ -269,6 +274,7 @@ def test_obsreset_command_with_callback_method_with_event_error(mock_csp_subarra
     assert const.ERR_INVOKING_CMD + const.CMD_OBSRESET in device_proxy.activityMessage
 
 
+@pytest.mark.forked
 def test_assign_command_with_callback_method(mock_csp_subarray, event_subscription):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
@@ -278,7 +284,7 @@ def test_assign_command_with_callback_method(mock_csp_subarray, event_subscripti
     event_subscription[const.CMD_ADD_RECEPTORS](dummy_event)
     assert const.STR_INVOKE_SUCCESS in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_assign_command_with_callback_method_with_event_error(mock_csp_subarray, event_subscription):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
@@ -288,7 +294,7 @@ def test_assign_command_with_callback_method_with_event_error(mock_csp_subarray,
     event_subscription[const.CMD_ADD_RECEPTORS](dummy_event)
     assert const.ERR_INVOKING_CMD + const.CMD_ADD_RECEPTORS in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_assign_command_with_callback_method_with_devfailed_error(mock_csp_subarray, event_subscription):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
@@ -299,7 +305,7 @@ def test_assign_command_with_callback_method_with_devfailed_error(mock_csp_subar
         event_subscription[const.CMD_ADD_RECEPTORS](dummy_event)
     assert const.ERR_CALLBACK_CMD_FAILED in str(df.value)
 
-
+@pytest.mark.forked
 def test_release_resource_should_command_csp_subarray_to_release_all_resources(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
@@ -310,7 +316,7 @@ def test_release_resource_should_command_csp_subarray_to_release_all_resources(m
                                                             any_method(with_name = 'releaseallresources_cmd_ended_cb'))
     assert_activity_message(device_proxy, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
-
+@pytest.mark.forked
 def test_release_resource_should_raise_devfail_exception(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.IDLE
@@ -319,7 +325,7 @@ def test_release_resource_should_raise_devfail_exception(mock_csp_subarray):
         device_proxy.ReleaseAllResources()
     assert const.ERR_RELEASE_ALL_RESOURCES in str(df.value)
 
-
+@pytest.mark.forked
 def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
@@ -333,7 +339,7 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
     csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_CONFIGURE,
                                 json.dumps(cspConfiguration), any_method(with_name='configure_cmd_ended_cb'))
 
-
+@pytest.mark.forked
 def test_configure_to_raise_devfailed_exception(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
@@ -344,14 +350,14 @@ def test_configure_to_raise_devfailed_exception(mock_csp_subarray):
         device_proxy.Configure(configure_str)
     assert const.ERR_DEVFAILED_MSG in str(df.value)
 
-
+@pytest.mark.forked
 def test_configure_should_raise_exception_when_called_invalid_json():
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         with pytest.raises(tango.DevFailed) as df:
             tango_context.device.Configure(invalid_key_str)
         assert const.ERR_INVALID_JSON_CONFIG in str(df.value)
 
-
+@pytest.mark.forked
 def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_ready(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.READY
@@ -359,14 +365,14 @@ def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_rea
     csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STARTSCAN, '0',
                                                                     any_method(with_name='startscan_cmd_ended_cb'))
 
-
+@pytest.mark.forked
 def test_start_scan_should_not_command_csp_subarray_to_start_scan_when_it_is_idle(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.IDLE
     device_proxy.StartScan(scan_input_str)
     assert_activity_message(device_proxy , const.ERR_DEVICE_NOT_READY)
 
-
+@pytest.mark.forked
 def test_start_scan_should_raise_devfailed_exception(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.READY
@@ -375,7 +381,7 @@ def test_start_scan_should_raise_devfailed_exception(mock_csp_subarray):
         device_proxy.StartScan(scan_input_str)
     assert const.ERR_STARTSCAN_RESOURCES in str(df.value)
 
-
+@pytest.mark.forked
 def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_scanning(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
@@ -383,13 +389,14 @@ def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_scanning(mo
     csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with (const.CMD_ENDSCAN, any_method(with_name='endscan_cmd_ended_cb'))
     assert_activity_message(device_proxy, const.STR_ENDSCAN_SUCCESS)
 
+@pytest.mark.forked
 def test_end_scan_should_not_command_csp_subarray_to_end_scan_when_it_is_not_scanning(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.READY
     device_proxy.EndScan()
     assert_activity_message(device_proxy, const.ERR_DEVICE_NOT_IN_SCAN)
 
-
+@pytest.mark.forked
 def test_end_scan_should_raise_devfailed_exception(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
@@ -398,7 +405,7 @@ def test_end_scan_should_raise_devfailed_exception(mock_csp_subarray):
         device_proxy.EndScan()
     assert const.ERR_ENDSCAN_INVOKING_CMD in str(df.value)
 
-
+@pytest.mark.forked
 def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.READY
@@ -410,14 +417,14 @@ def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready(mock_c
     assert_activity_message(device_proxy, const.STR_GOTOIDLE_SUCCESS)
 
 
-
+@pytest.mark.forked
 def test_goto_idle_should_not_command_csp_subarray_to_end_sb_when_it_is_idle(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.IDLE
     device_proxy.GoToIdle()
     assert_activity_message(device_proxy, const.ERR_DEVICE_NOT_READY)
 
-
+@pytest.mark.forked
 def test_goto_idle_should_raise_devfailed_exception(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.READY
@@ -426,7 +433,7 @@ def test_goto_idle_should_raise_devfailed_exception(mock_csp_subarray):
         device_proxy.GoToIdle()
     assert const.ERR_GOTOIDLE_INVOKING_CMD in str(df.value)
 
-
+@pytest.mark.forked
 def test_add_receptors_ended_should_raise_dev_failed_exception_for_invalid_obs_state(mock_csp_subarray, event_subscription):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.READY
@@ -434,7 +441,7 @@ def test_add_receptors_ended_should_raise_dev_failed_exception_for_invalid_obs_s
         device_proxy.AssignResources(json.dumps(assign_input_file))
     assert const.ERR_RAISED_EXCEPTION in str(df.value)
 
-
+@pytest.mark.forked
 def test_assign_resource_should_raise_exception_when_key_not_found():
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         with pytest.raises(tango.DevFailed) as df:
@@ -450,7 +457,7 @@ def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):
     fake_event.device = proxy_mock
     return fake_event
 
-
+@pytest.mark.forked
 def test_abort_should_command_csp_subarray_to_abort_when_it_is_scanning(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
@@ -459,6 +466,8 @@ def test_abort_should_command_csp_subarray_to_abort_when_it_is_scanning(mock_csp
                                                                      any_method(with_name = 'abort_cmd_ended_cb'))
     assert_activity_message(device_proxy, const.STR_ABORT_SUCCESS)
 
+
+@pytest.mark.forked
 def test_abort_should_command_csp_subarray_to_abort_when_it_is_resetting(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.RESETTING
@@ -467,6 +476,8 @@ def test_abort_should_command_csp_subarray_to_abort_when_it_is_resetting(mock_cs
                                                                      any_method(with_name = 'abort_cmd_ended_cb'))
     assert_activity_message(device_proxy, const.STR_ABORT_SUCCESS)
 
+
+@pytest.mark.forked
 def test_abort_should_command_csp_subarray_to_abort_when_it_is_ready(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.READY
@@ -474,7 +485,7 @@ def test_abort_should_command_csp_subarray_to_abort_when_it_is_ready(mock_csp_su
     csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
                                                                      any_method(with_name = 'abort_cmd_ended_cb'))
 
-
+@pytest.mark.forked
 def test_abort_should_command_csp_subarray_to_abort_when_it_is_configuring(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.CONFIGURING
@@ -482,7 +493,7 @@ def test_abort_should_command_csp_subarray_to_abort_when_it_is_configuring(mock_
     csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
                                                          any_method(with_name='abort_cmd_ended_cb'))
 
-
+@pytest.mark.forked
 def test_abort_should_command_csp_subarray_to_abort_when_it_is_idle(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.IDLE
@@ -490,7 +501,7 @@ def test_abort_should_command_csp_subarray_to_abort_when_it_is_idle(mock_csp_sub
     csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
                                                              any_method(with_name='abort_cmd_ended_cb'))
 
-
+@pytest.mark.forked
 def test_abort_should_raise_devfailed_exception(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.READY
@@ -499,49 +510,49 @@ def test_abort_should_raise_devfailed_exception(mock_csp_subarray):
         device_proxy.Abort()
     assert const.ERR_ABORT_INVOKING_CMD in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_abort_should_failed_when_device_is_in_resourcing(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.RESOURCING
     device_proxy.Abort()
     assert "Unable to invoke Abort command" in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_abort_should_failed_when_device_is_in_empty(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
     device_proxy.Abort()
     assert "Unable to invoke Abort command" in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_restart_should_failed_when_device_obsstate_is_idle(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.IDLE
     device_proxy.Restart()
     assert const.ERR_UNABLE_RESTART_CMD in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_restart_should_failed_when_device_obsstate_is_scanning(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
     device_proxy.Restart()
     assert const.ERR_UNABLE_RESTART_CMD in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_restart_should_failed_when_device_obsstate_is_configuring(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.CONFIGURING
     device_proxy.Restart()
     assert const.ERR_UNABLE_RESTART_CMD in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_restart_should_failed_when_device_obsstate_is_ready(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.READY
     device_proxy.Restart()
     assert const.ERR_UNABLE_RESTART_CMD in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_restart_should_command_csp_subarray_to_restart_when_it_is_in_fault(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.FAULT
@@ -549,7 +560,7 @@ def test_restart_should_command_csp_subarray_to_restart_when_it_is_in_fault(mock
     csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_RESTART,
                                                              any_method(with_name='restart_cmd_ended_cb'))
 
-
+@pytest.mark.forked
 def test_restart_should_command_csp_subarray_to_restart_when_it_is_aborted(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.ABORTED
@@ -558,6 +569,7 @@ def test_restart_should_command_csp_subarray_to_restart_when_it_is_aborted(mock_
                                                              any_method(with_name='restart_cmd_ended_cb'))
 
 
+@pytest.mark.forked
 def test_restart_should_raise_devfailed_exception(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.FAULT
@@ -566,42 +578,42 @@ def test_restart_should_raise_devfailed_exception(mock_csp_subarray):
         device_proxy.Restart()
     assert const.ERR_RESTART_INVOKING_CMD in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_obsreset_should_failed_when_device_obsstate_is_idle(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.IDLE
     device_proxy.ObsReset()
     assert "Unable to invoke ObsReset command" in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_obsreset_should_failed_when_device_obsstate_is_scanning(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
     device_proxy.ObsReset()
     assert "Unable to invoke ObsReset command" in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_obsreset_should_failed_when_device_obsstate_is_configuring(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.CONFIGURING
     device_proxy.ObsReset()
     assert "Unable to invoke ObsReset command" in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_obsreset_should_failed_when_device_obsstate_is_ready(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.READY
     device_proxy.ObsReset()
     assert "Unable to invoke ObsReset command" in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_obsreset_should_failed_when_device_is_in_resourcing(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.RESOURCING
     device_proxy.ObsReset()
     assert "Unable to invoke ObsReset command" in device_proxy.activityMessage
 
-
+@pytest.mark.forked
 def test_obsreset_should_raise_devfailed_exception(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.ABORTED
@@ -610,7 +622,7 @@ def test_obsreset_should_raise_devfailed_exception(mock_csp_subarray):
         device_proxy.ObsReset()
     assert const.ERR_OBSRESET_INVOKING_CMD in str(df)
 
-
+@pytest.mark.forked
 def test_obsreset_should_command_sdp_subarray_to_reset_when_obsstate_is_fault(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.FAULT
@@ -618,7 +630,7 @@ def test_obsreset_should_command_sdp_subarray_to_reset_when_obsstate_is_fault(mo
     csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OBSRESET,
                                                                      any_method(with_name='obsreset_cmd_ended_cb'))
 
-
+@pytest.mark.forked
 def test_obsreset_should_command_sdp_subarray_to_reset_when_obsstate_is_aborted(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.ABORTED
@@ -669,70 +681,71 @@ def raise_devfailed_exception_for_scan(cmd_name, inp_str, cmd_cb):
     tango.Except.throw_exception("CspSubarrayLeafNode_CommandFailed", const.ERR_DEVFAILED_MSG,
                                  " ", tango.ErrSeverity.ERR)
 
-
+@pytest.mark.forked
 def test_status():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assert tango_context.device.Status() != const.STR_CSPSALN_INIT_SUCCESS
 
-
+@pytest.mark.forked
 def test_read_delay_model():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assert tango_context.device.delayModel == " "
 
-
+@pytest.mark.forked
 def test_write_delay_model():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         tango_context.device.delayModel = " "
         assert tango_context.device.delayModel == " "
 
-
+@pytest.mark.forked
 def test_health_state():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assert tango_context.device.healthState == HealthState.OK
 
-
+@pytest.mark.forked
 def test_read_activity_message():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assert tango_context.device.activityMessage == " "
 
-
+@pytest.mark.forked
 def test_write_activity_message():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         tango_context.device.activityMessage = "test"
         assert tango_context.device.activityMessage == "test"
 
-
+@pytest.mark.forked
 def test_logging_level():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         tango_context.device.loggingLevel = LoggingLevel.INFO
         assert tango_context.device.loggingLevel == LoggingLevel.INFO
 
-
+@pytest.mark.forked
 def test_read_version_info():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assert tango_context.device.versionInfo == " "
 
-
+@pytest.mark.forked
 def test_logging_targets():
     # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
 
+@pytest.mark.forked
 def test_version_id():
     """Test for versionId"""
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assert tango_context.device.versionId == release.version
 
-
+@pytest.mark.forked
 def test_build_state():
     """Test for buildState"""
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
