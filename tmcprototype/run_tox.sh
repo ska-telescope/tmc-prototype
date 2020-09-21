@@ -24,11 +24,15 @@ mv sdpsubarrayleafnode_coverage ../tox_report/sdpsubarrayleafnode_coverage
 cd ../subarraynode
 tox -e py37
 mv subarraynode_coverage ../tox_report/subarraynode_coverage
+cd ../
 echo "moving tox folder into build folder"
 ls
-mv ../tox_report ../../build/reports
+mv tox_report ../../build/reports
+cd ../../
+echo "In build file...."
+ls
+cd build/reports
 echo "In tox file...."
-cd ../../build/reports/tox_report
 ls
 
 # # Combine coverage reports
