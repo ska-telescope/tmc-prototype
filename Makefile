@@ -170,6 +170,7 @@ lint:
 	# cd tmcprototype; \
 	# chmod 755 run_lint_tox.sh; \
 	# ./run_lint_tox.sh;
+	python3 -m pip install pylint2junit junitparser; \
 	pylint --rcfile=.pylintrc --output-format=parseable tmcprototype | tee /build/reports/linting.stdout; \
     pylint --rcfile=.pylintrc --output-format=pylint2junit.JunitReporter tmcprototype > /build/reports/linting.xml;
     

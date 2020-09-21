@@ -41,8 +41,9 @@ coverage combine centralnode_coverage cspmasterleafnode_coverage \
                   cspsubarrayleafnode_coverage dishleafnode_coverage \
                   sdpmasterleafnode_coverage sdpsubarrayleafnode_coverage \
                   subarraynode_coverage && coverage xml
+pwd
 cd ..
-cd ./tox_report && mv coverage.xml ../reports/tox_code-coverage.xml
+cd ./tox_report && mv coverage.xml ../tox_code-coverage.xml
 cd ..
 pwd
 ls
