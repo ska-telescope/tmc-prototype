@@ -26,7 +26,7 @@ cd ../subarraynode
 tox -e py37
 mv subarraynode_coverage ../tox_report/subarraynode_coverage
 cd ../
-mv -r ./tox_report ../build/reports
+mv ./tox_report ../build/reports
 cd ../
 cd build/reports
 cd tox_report
