@@ -5,7 +5,7 @@ pwd
 ls
 export working_dir=../build/reports/tox_report
 echo "moving back to a check build dir "
-cd ../build
+cd ../build/reports/
 ls
 #Entering into a bash shell script to run unit-test cases and generating reports
 echo "In run_tox file...."
