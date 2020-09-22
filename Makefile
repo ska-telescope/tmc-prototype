@@ -107,14 +107,14 @@ DOCKER_COMPOSE_ARGS := DISPLAY=$(DISPLAY) XAUTHORITY=$(XAUTHORITY) TANGO_HOST=$(
 #      and test output can be written in the container and subsequently copied
 #      to the host
 #
-make = tar -c test-harness/ | \
-	   docker run -i --rm --network=$(NETWORK_MODE) \
-	   -e TANGO_HOST=$(TANGO_HOST) \
-	   -v $(CACHE_VOLUME):/home/tango/.cache \
-	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
-	   bash -c "sudo chown -R tango:tango /build && \
-	   tar x --strip-components 1 --warning=all && \
-	   make TANGO_HOST=$(TANGO_HOST) $1"
+# make = tar -c test-harness/ | \
+# 	   docker run -i --rm --network=$(NETWORK_MODE) \
+# 	   -e TANGO_HOST=$(TANGO_HOST) \
+# 	   -v $(CACHE_VOLUME):/home/tango/.cache \
+# 	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
+# 	   bash -c "sudo chown -R tango:tango /build && \
+# 	   tar x --strip-components 1 --warning=all && \
+# 	   make TANGO_HOST=$(TANGO_HOST) $1"
 
 test: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
 test: build up ## test the application
@@ -144,6 +144,15 @@ test: build up ## test the application
 #	docker cp $(REPORT):/report ./unit_test_reports
 #	docker rm -f -v $(REPORT)
 
+#Report folder/volume is used in docker to save the code coverage report using unit-test job. The report folder is then copied to unit_test_reports folder.
+#unit-test: DOCKER_RUN_ARGS = --volumes-from=$(REPORT)
+# unit-test:
+# 	cd tmcprototype; \
+# 	mkdir -p unit_test_reports; \
+# 	chmod 777 unit_test_reports; \
+# 	chmod 755 run_unit_test.sh; \
+# 	./run_unit_test.sh;
+
 unit-test:
 	cd tmcprototype; \
 	chmod 755 run_tox.sh; \
@@ -171,7 +180,8 @@ lint:
 	# chmod 755 run_lint_tox.sh; \
 	# ./run_lint_tox.sh;
 	python3 -m pip install pylint2junit junitparser; \
-	python3 -m pip install --index-url https://nexus.engageska-portugal.pt/repository/pypi/simple ska-logging==0.3.0 lmcbaseclasses==0.6.5 cdm-shared-library==2.0.0 ska-telescope-model==0.1.4
+	cd tmcprototype/centralnode; \
+	python3 -m pip install .; \
 	mkdir -p /build/reports; \
 	pylint --rcfile=.pylintrc --output-format=parseable tmcprototype | tee /build/reports/linting.stdout; \
     pylint --rcfile=.pylintrc --output-format=pylint2junit.JunitReporter tmcprototype > /build/reports/linting.xml;
