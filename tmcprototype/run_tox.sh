@@ -5,6 +5,7 @@ export working_dir=./build/reports/tox_report
 echo "In run_tox file...."
 mkdir -p tox_report
 echo "Check reports if tox_reports already exists...."
+ls 
 ls ./build/reports/
 
 if [ -d "$working_dir" ]; then rm -rf $working_dir; fi
