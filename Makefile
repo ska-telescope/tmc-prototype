@@ -171,6 +171,8 @@ lint:
 	# chmod 755 run_lint_tox.sh; \
 	# ./run_lint_tox.sh;
 	python3 -m pip install pylint2junit junitparser; \
+	python3 -m pip install --index-url https://nexus.engageska-portugal.pt/repository/pypi/simple ska-logging==0.3.0 lmcbaseclasses==0.6.5 cdm-shared-library==2.0.0 ska-telescope-model==0.1.4
+	mkdir -p /build/reports; \
 	pylint --rcfile=.pylintrc --output-format=parseable tmcprototype | tee /build/reports/linting.stdout; \
     pylint --rcfile=.pylintrc --output-format=pylint2junit.JunitReporter tmcprototype > /build/reports/linting.xml;
     

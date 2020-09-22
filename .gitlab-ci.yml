@@ -264,7 +264,6 @@ unit tests:
   artifacts:
     paths:
       - ./build
-      - ./report
 
 linting:
   stage: linting
