@@ -3,7 +3,7 @@ set -eo pipefail
 #Entering into a bash shell script to run unit-test cases and generating reports
 echo "In run_tox file...."
 mkdir -p tox_report
-if [ -d "/build/reports/tox_report" ]; then rm -Rf /build/reports/tox_report; fi
+if [ -d "./build/reports/tox_report" ]; then rm -Rf ./build/reports/tox_report; fi
 cd centralnode
 tox -e py37
 mv centralnode_coverage ../tox_report/centralnode_coverage
@@ -26,7 +26,7 @@ cd ../subarraynode
 tox -e py37
 mv subarraynode_coverage ../tox_report/subarraynode_coverage
 cd ../
-mv tox_report ../build/reports
+mv -r ./tox_report ../build/reports
 cd ../
 cd build/reports
 cd tox_report
