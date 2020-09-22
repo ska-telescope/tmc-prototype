@@ -1056,14 +1056,10 @@ class DishMaster(SKAMaster):
     def Restart(self):
         # PROTECTED REGION ID(DishMaster.Restart) ENABLED START #
         """
-        This command Restart the Track or Scan operation when invoked.
+        This command restarts the Dish.
         """
         try:
-            if (self._pointing_state == PointingState.READY):
-                pass
-            else:
-                self._pointing_state = PointingState.READY
-
+            self._pointing_state = PointingState.READY
             self._desired_pointing = [0, 0, 0]
             self._capturing = False
             self._configured_band = None
@@ -1083,6 +1079,23 @@ class DishMaster(SKAMaster):
                                          const.ERR_EXE_RESTART_CMD, tango.ErrSeverity.ERR)
 
         # PROTECTED REGION END #    //  DishMaster.Restart
+
+    @command(
+    )
+    @DebugIt()
+    def ObsReset(self):
+        # PROTECTED REGION ID(DishMaster.ObsReset) ENABLED START #
+        """
+        Currently this command works similar to the Restart command. It clears Dish configuration parameters.
+        """
+        self._pointing_state = PointingState.READY
+        self._desired_pointing = [0, 0, 0]
+        self._capturing = False
+        self._configured_band = None
+        self._abort_in_slew = False
+        self.logger.info(const.STR_DISH_OBSRESET)
+
+        # PROTECTED REGION END #    //  DishMaster.ObsReset
 
 # pylint: enable=unused-argument
 

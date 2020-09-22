@@ -72,6 +72,7 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
         device.is_release_resources = False
         device.is_restart_command = False
         device.is_abort_command = False
+        device.is_obsreset_command = False
         # Validate if Subarray is in IDLE obsState
         # TODO: Need to get idea if this is required?
         # try:

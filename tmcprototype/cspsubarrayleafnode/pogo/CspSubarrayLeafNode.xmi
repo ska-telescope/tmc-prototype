@@ -136,6 +136,15 @@
       </argout>
       <status abstract="false" inherited="true" concrete="true" concreteHere="true"/>
     </commands>
+    <commands name="ObsReset" description="Command to reset the current operation being done on the CSP subarray after abort or fault state." execMethod="obsReset" displayLevel="OPERATOR" polledPeriod="0">
+      <argin description="">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argin>
+      <argout description="">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argout>
+      <status abstract="false" inherited="true" concrete="true" concreteHere="true"/>
+    </commands>
     <attributes name="buildState" attType="Scalar" rwType="READ" displayLevel="OPERATOR" polledPeriod="60000" maxX="" maxY="" allocReadMember="true">
       <dataType xsi:type="pogoDsl:StringType"/>
       <status abstract="false" inherited="true" concrete="true"/>

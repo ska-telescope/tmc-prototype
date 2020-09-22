@@ -17,11 +17,9 @@ other TM Components (such as OET, Central Node) for a Subarray.
 import tango
 from tango import AttrWriteType, DevFailed, DeviceProxy, EventType
 from tango.server import run,attribute, command, device_property
-
-# Additional import
 from . import const, release, assign_resources_command, release_all_resources_command, configure_command,\
     scan_command, end_scan_command, end_command, on_command, off_command, track_command,\
-    abort_command, restart_command
+    abort_command, restart_command, obsreset_command
 from .const import PointingState
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, ObsMode, ObsState
@@ -30,7 +28,7 @@ from subarraynode.exceptions import InvalidObsStateError
 
 __all__ = ["SubarrayNode", "main", "assign_resources_command", "release_all_resources_command",
            "configure_command", "scan_command", "end_scan_command", "end_command", "on_command",
-           "off_command", "track_command", "abort_command", "restart_command"]
+           "off_command", "track_command", "abort_command", "restart_command", "obsreset_command"]
 
 
 class SubarrayHealthState:
@@ -82,6 +80,7 @@ class SubarrayNode(SKASubarray):
         self.init_obj = self.InitCommand(*args)
         self.on_obj = on_command.OnCommand(*args)
         self.off_obj = off_command.OffCommand(*args)
+        self.obsreset_obj = obsreset_command.ObsResetCommand(*args)
 
     def receive_addresses_cb(self, event):
         """
@@ -131,12 +130,8 @@ class SubarrayNode(SKASubarray):
         :return: None
         """
         try:
-            log_msg = 'Observation State Attribute change event is: ' + str(evt)
-            self.logger.info(log_msg)
             if not evt.err:
                 self._observetion_state = evt.attr_value.value
-                log_msg = 'Observation State Attribute value is: ' + str(self._observetion_state)
-                self.logger.info(log_msg)
                 if const.PROP_DEF_VAL_TMCSP_MID_SALN in evt.attr_name:
                     self._csp_sa_obs_state = self._observetion_state
                     self._read_activity_message = const.STR_CSP_SUBARRAY_OBS_STATE + str(
@@ -163,15 +158,14 @@ class SubarrayNode(SKASubarray):
         """
         Calculates aggregated observation state of Subarray.
         """
-        self.logger.info("\n\n In Calculate observation state method")
         pointing_state_count_track = 0
         pointing_state_count_slew = 0
         pointing_state_count_ready = 0
         log_msg = "Dish PointingStateMap is :" + str(self.dishPointingStateMap)
         self.logger.info(log_msg)
-        log_msg = "self._csp_sa_obs_state is: " + str(self._csp_sa_obs_state) + str(type(self._csp_sa_obs_state))
+        log_msg = "self._csp_sa_obs_state is: " + str(self._csp_sa_obs_state)
         self.logger.info(log_msg)
-        log_msg = "self._sdp_sa_obs_state is: " + str(self._sdp_sa_obs_state) + str(type(self._sdp_sa_obs_state))
+        log_msg = "self._sdp_sa_obs_state is: " + str(self._sdp_sa_obs_state)
         self.logger.info(log_msg)
         for value in list(self.dishPointingStateMap.values()):
             if value == PointingState.TRACK:
@@ -219,6 +213,11 @@ class SubarrayNode(SKASubarray):
                     #  TODO: Stop track command will be invoked once tango group command issue gets resolved.
                     # self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
                     self.end_obj.succeeded()
+            elif self.is_obsreset_command:
+                if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
+                    self.logger.info("Calling ObsReset command succeeded() method")
+                    self.obsreset_obj.succeeded()
+
             else:
                 # Assign Resource command success
                 self.logger.info("Calling AssignResource command succeeded() method")
@@ -471,6 +470,7 @@ class SubarrayNode(SKASubarray):
             device.is_scan_completed = False
             device.is_end_command = False
             device.is_restart_command = False
+            device.is_obsreset_command = False
             device.is_release_resources = False
             device.is_abort_command = False
             device._scan_id = ""
@@ -658,6 +658,7 @@ class SubarrayNode(SKASubarray):
         self.register_command_object("Off", off_command.OffCommand(*args))
         self.register_command_object("Abort", abort_command.AbortCommand(*args))
         self.register_command_object("Restart", restart_command.RestartCommand(*args))
+        self.register_command_object("ObsReset", obsreset_command.ObsResetCommand(*args))
 
 # ----------
 # Run server
