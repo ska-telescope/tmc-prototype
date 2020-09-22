@@ -1029,7 +1029,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     return(ResultCode.OK, const.STR_ABORT_SUCCESS)
 
                 else:
-                    # log_msg = ("Sdp Subarray is in ObsState {device._sdp_subarray_proxy.obsState.name}.""Unable to invoke Abort command")
+                    #log_msg = ("Sdp Subarray is in ObsState {device._sdp_subarray_proxy.obsState.name}.""Unable to invoke Abort command")
+                    log_msg = ("Sdp Subarray is in ObsState. Unable to invoke Abort command")
                     device._read_activity_message = log_msg
                     self.logger.error(log_msg)
                     return(ResultCode.FAILED, log_msg)
