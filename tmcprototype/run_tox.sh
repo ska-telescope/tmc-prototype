@@ -27,13 +27,15 @@ cd ../subarraynode
 tox -e py37
 mv subarraynode_coverage ../tox_report/subarraynode_coverage
 cd ../
-mv ./tox_report ../build/reports
+echo "check for tox_report"
+ls
+mv ./tox_report/ ../build/reports
 cd ../
 cd ./build/reports/
 ls
 
 # # Combine coverage reports
-coverage combine centralnode_coverage cspmasterleafnode_coverage \
+coverage combine cspmasterleafnode_coverage \
                   cspsubarrayleafnode_coverage dishleafnode_coverage \
                   sdpmasterleafnode_coverage sdpsubarrayleafnode_coverage \
                   subarraynode_coverage && coverage xml
