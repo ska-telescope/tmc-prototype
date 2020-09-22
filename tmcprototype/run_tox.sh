@@ -7,7 +7,7 @@ mkdir -p tox_report
 if [ -d "$working_dir" ]; then rm -rf $working_dir; fi
 cd centralnode
 tox -e py37
-mv centralnode_coverage ../tox_report/centralnode_coverage
+# mv centralnode_coverage ../tox_report/centralnode_coverage
 cd ../cspmasterleafnode
 tox -e py37
 mv cspmasterleafnode_coverage ../tox_report/cspmasterleafnode_coverage
