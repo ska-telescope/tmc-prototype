@@ -38,7 +38,7 @@ echo "Checking content from tox_report"
 ls tox_report
 echo "check build/reports before moving tox_report"
 ls ../build/reports
-mv ./tox_report ../../build/reports
+mv ./tox_report ../build/reports
 echo "check if tox_report is moved"
 ls ../build/reports
 # cd ../
