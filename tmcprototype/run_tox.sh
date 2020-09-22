@@ -5,41 +5,40 @@ pwd
 ls
 export working_dir=../build/reports/tox_report
 echo "moving back to a check build dir "
-cd ../build/reports/
-ls
+ls ../build/reports/
 #Entering into a bash shell script to run unit-test cases and generating reports
 echo "In run_tox file...."
 mkdir -p tox_report
 if [ -d "$working_dir" ]; then rm -rf $working_dir; fi
-# cd centralnode
-# tox -e py37
-# mv centralnode_coverage ../tox_report/centralnode_coverage
-# cd ../cspmasterleafnode
-# tox -e py37
-# mv cspmasterleafnode_coverage ../tox_report/cspmasterleafnode_coverage
-# cd ../cspsubarrayleafnode
-# tox -e py37
-# mv cspsubarrayleafnode_coverage ../tox_report/cspsubarrayleafnode_coverage
-# cd ../dishleafnode
-# tox -e py37
-# mv dishleafnode_coverage ../tox_report/dishleafnode_coverage
-# cd ../sdpmasterleafnode
-# tox -e py37
-# mv sdpmasterleafnode_coverage ../tox_report/sdpmasterleafnode_coverage
-# cd ../sdpsubarrayleafnode
-# tox -e py37
-# mv sdpsubarrayleafnode_coverage ../tox_report/sdpsubarrayleafnode_coverage
-# cd ../subarraynode
-# tox -e py37
-# mv subarraynode_coverage ../tox_report/subarraynode_coverage
-# cd ../
-# echo "check for tox_report"
-# ls
-# echo "Checking content from tox_report"
-# ls tox_report
-# echo "check build/reports before moving tox_report"
-# ls ../../build/reports
-# cp -R ./tox_report ../../build/reports
+cd centralnode
+tox -e py37
+mv centralnode_coverage ../tox_report/centralnode_coverage
+cd ../cspmasterleafnode
+tox -e py37
+mv cspmasterleafnode_coverage ../tox_report/cspmasterleafnode_coverage
+cd ../cspsubarrayleafnode
+tox -e py37
+mv cspsubarrayleafnode_coverage ../tox_report/cspsubarrayleafnode_coverage
+cd ../dishleafnode
+tox -e py37
+mv dishleafnode_coverage ../tox_report/dishleafnode_coverage
+cd ../sdpmasterleafnode
+tox -e py37
+mv sdpmasterleafnode_coverage ../tox_report/sdpmasterleafnode_coverage
+cd ../sdpsubarrayleafnode
+tox -e py37
+mv sdpsubarrayleafnode_coverage ../tox_report/sdpsubarrayleafnode_coverage
+cd ../subarraynode
+tox -e py37
+mv subarraynode_coverage ../tox_report/subarraynode_coverage
+cd ../
+echo "check for tox_report"
+ls
+echo "Checking content from tox_report"
+ls tox_report
+echo "check build/reports before moving tox_report"
+ls ../build/reports
+mv -R ./tox_report ../../build/reports
 # cd ../
 # cd ./build/reports/
 # echo "Checking tox_report is present or not?"
