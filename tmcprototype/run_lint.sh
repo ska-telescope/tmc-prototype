@@ -21,9 +21,9 @@ python3 -m pip install .; \
 
 cd ../../
 ls
-mkdir -p /build/reports; \
-pylint --rcfile=.pylintrc --output-format=parseable tmcprototype | tee /build/reports/linting.stdout; \
-pylint --rcfile=.pylintrc --output-format=pylint2junit.JunitReporter tmcprototype > /build/reports/linting.xml;
+mkdir -p ./build/reports; \
+pylint --rcfile=.pylintrc --output-format=parseable tmcprototype | tee ./build/reports/linting.stdout; \
+pylint --rcfile=.pylintrc --output-format=pylint2junit.JunitReporter tmcprototype > ./build/reports/linting.xml;
     
 
 # cd centralnode
