@@ -6,7 +6,7 @@ echo "In run_tox file...."
 mkdir -p tox_report
 if [ -d "$working_dir" ]; then rm -rf $working_dir; fi
 cd centralnode
-tox -e py36
+tox -e py37
 mv centralnode_coverage ../tox_report/centralnode_coverage
 cd ../cspmasterleafnode
 tox -e py37
