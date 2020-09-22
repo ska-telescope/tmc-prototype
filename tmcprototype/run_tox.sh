@@ -1,9 +1,13 @@
 #!/bin/bash
 set -eo pipefail
+export working_dir=./build/reports/tox_report
 #Entering into a bash shell script to run unit-test cases and generating reports
 echo "In run_tox file...."
 mkdir -p tox_report
-if [ -d "./build/reports/tox_report" ]; then rm -Rf ./build/reports/tox_report; fi
+echo "Check reports if tox_reports already exists...."
+ls ./build/reports/
+
+if [ -d "$working_dir" ]; then rm -rf $working_dir; fi
 cd centralnode
 tox -e py37
 mv centralnode_coverage ../tox_report/centralnode_coverage
