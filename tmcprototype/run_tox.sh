@@ -57,7 +57,8 @@ cd ../../../tmcprototype
 echo "In tmcprototype"
 pwd
 ls
-
+echo "check content present in each tmc package build folder"
+ls ./centralnode/build/reports/
 python3 -m pip install junitparser
 junitparser merge ./centralnode/build/reports/centralnode-unit-tests.xml \
                 ./cspmasterleafnode/build/reports/cspmasterleafnode-unit-tests.xml \
