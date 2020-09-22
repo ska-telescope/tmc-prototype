@@ -32,8 +32,8 @@ ls
 echo "Checking content from tox_report"
 ls tox_report
 echo "check build/reports before moving tox_report"
-ls ../build/reports
-cp -R ./tox_report ../build/reports
+ls ../../build/reports
+cp -R ./tox_report ../../build/reports
 cd ../
 cd ./build/reports/
 echo "Checking tox_report is present or not?"
