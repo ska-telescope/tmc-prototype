@@ -84,11 +84,11 @@ TANGO_HOST := $(CONTAINER_NAME_PREFIX)databaseds:10000
 MYSQL_HOST := $(CONTAINER_NAME_PREFIX)tangodb:3306
 endif
 
-
-DOCKER_COMPOSE_ARGS := DISPLAY=$(DISPLAY) XAUTHORITY=$(XAUTHORITY) TANGO_HOST=$(TANGO_HOST) \
-		NETWORK_MODE=$(NETWORK_MODE) XAUTHORITY_MOUNT=$(XAUTHORITY_MOUNT) MYSQL_HOST=$(MYSQL_HOST) \
-		DOCKER_REGISTRY_HOST=$(DOCKER_REGISTRY_HOST) DOCKER_REGISTRY_USER=$(DOCKER_REGISTRY_USER) \
-		CONTAINER_NAME_PREFIX=$(CONTAINER_NAME_PREFIX) COMPOSE_IGNORE_ORPHANS=true
+# TODO: For future use
+#DOCKER_COMPOSE_ARGS := DISPLAY=$(DISPLAY) XAUTHORITY=$(XAUTHORITY) TANGO_HOST=$(TANGO_HOST) \
+#		NETWORK_MODE=$(NETWORK_MODE) XAUTHORITY_MOUNT=$(XAUTHORITY_MOUNT) MYSQL_HOST=$(MYSQL_HOST) \
+#		DOCKER_REGISTRY_HOST=$(DOCKER_REGISTRY_HOST) DOCKER_REGISTRY_USER=$(DOCKER_REGISTRY_USER) \
+#		CONTAINER_NAME_PREFIX=$(CONTAINER_NAME_PREFIX) COMPOSE_IGNORE_ORPHANS=true
 
 #
 # Defines a default make target so that help is printed if make is called
@@ -115,17 +115,6 @@ make = tar -c test-harness/ | \
 	   bash -c "sudo chown -R tango:tango /build && \
 	   tar x --strip-components 1 --warning=all && \
 	   make TANGO_HOST=$(TANGO_HOST) $1"
-
-test: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
-test: build up ## test the application
-	$(INIT_CACHE)
-	$(call make,test); \
-	  status=$$?; \
-	  rm -fr build; \
-	  docker cp $(BUILD):/build .; \
-	  docker rm -f -v $(BUILD); \
-	  $(MAKE) down; \
-	  exit $$status
 
 #Report folder/volume is used in docker to save the code coverage report using unit-test job. The report folder is then copied to unit_test_reports folder.
 unit-test: DOCKER_RUN_ARGS = --volumes-from=$(REPORT)
@@ -162,47 +151,10 @@ endif
 pull:  ## download the application image
 	docker pull $(IMAGE_TO_TEST)
 
-up: build  ## start develop/test environment
-ifneq ($(NETWORK_MODE),host)
-	docker network inspect $(NETWORK_MODE) &> /dev/null || ([ $$? -ne 0 ] && docker network create $(NETWORK_MODE))
-endif
-	$(DOCKER_COMPOSE_ARGS) docker-compose \
-	-f docker-compose/tango-docker-compose.yml \
-	-f docker-compose/mid-csp-lmc.yml \
-	-f docker-compose/mid-cbf-mcs.yml \
-	-f docker-compose/sdp-docker-compose.yml \
-	-f docker-compose/tmc-docker-compose.yml \
-	-f docker-compose/archiver-docker-compose.yml \
-	-f docker-compose/jive.yml \
-	up -d
-
-piplock: build  ## overwrite Pipfile.lock with the image version
-	docker run $(IMAGE_TO_TEST) cat /app/Pipfile.lock > $(CURDIR)/Pipfile.lock
-
-interactive: up
-interactive:  ## start an interactive session using the project image (caution: R/W mounts source directory to /app)
-	docker run --rm -it -p 3000:3000 --name=$(CONTAINER_NAME_PREFIX)dev -e TANGO_HOST=$(TANGO_HOST) --network=$(NETWORK_MODE) \
-	       -v $(CURDIR):/app nexus.engageska-portugal.pt/ska-docker/tango-java:latest /bin/bash
-
-down:  ## stop develop/test environment and any interactive session
-	docker ps | grep $(CONTAINER_NAME_PREFIX)dev && docker stop $(PROJECT)-dev || true
-	$(DOCKER_COMPOSE_ARGS) docker-compose \
-	-f docker-compose/tango-docker-compose.yml \
-	-f docker-compose/mid-csp-lmc.yml \
-	-f docker-compose/mid-cbf-mcs.yml \
-	-f docker-compose/sdp-docker-compose.yml \
-	-f docker-compose/tmc-docker-compose.yml \
-	-f docker-compose/archiver-docker-compose.yml \
-	-f docker-compose/jive.yml \
-	 down
-ifneq ($(NETWORK_MODE),host)
-	docker network inspect $(NETWORK_MODE) &> /dev/null && ([ $$? -eq 0 ] && docker network rm $(NETWORK_MODE)) || true
-endif
-
 help:  ## show this help.
 	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-.PHONY: all test up down help
+.PHONY: all help
 
 # Creates Docker volume for use as a cache, if it doesn't exist already
 INIT_CACHE = \
