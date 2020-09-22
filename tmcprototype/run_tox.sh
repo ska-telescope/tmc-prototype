@@ -6,9 +6,9 @@ echo "In run_tox file...."
 mkdir -p tox_report
 echo "Check reports if tox_reports already exists...."
 ls 
-ls ./build/reports/
-
+ls ../build/reports/
 if [ -d "$working_dir" ]; then rm -rf $working_dir; fi
+
 cd centralnode
 tox -e py37
 mv centralnode_coverage ../tox_report/centralnode_coverage
