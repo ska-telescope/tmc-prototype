@@ -113,7 +113,7 @@ class AssignResourceValidator():
             exception_message = "Malformed input string. Please check the JSON format." + \
                 "Full exception info: " + \
                 str(json_error)
-            raise InvalidJSONError(exception_message)
+            from json_error raise InvalidJSONError(exception_message)
 
         ## Validate subarray ID
         # TODO: Use the object returned by cdm library instead of parsing 

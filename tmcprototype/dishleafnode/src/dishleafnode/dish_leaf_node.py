@@ -207,8 +207,8 @@ class DishLeafNode(SKABaseDevice):
 
         :return: None.
         """
-        self.logger.info(f"print track_thread thread name:{threading.currentThread().getName()}"
-                         f"{threading.get_ident()}")
+        # self.logger.info(f"print track_thread thread name:{threading.currentThread().getName()}"
+        #                 f"{threading.get_ident()}")
         while self.event_track_time.is_set() is False:
             timestamp_value = str(datetime.datetime.utcnow())
             katpoint_arg = []
