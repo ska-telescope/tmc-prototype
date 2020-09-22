@@ -6,8 +6,8 @@ echo "In run_tox file...."
 mkdir -p tox_report
 if [ -d "$working_dir" ]; then rm -rf $working_dir; fi
 cd centralnode
-tox -e py37
-# mv centralnode_coverage ../tox_report/centralnode_coverage
+tox -e py36
+mv centralnode_coverage ../tox_report/centralnode_coverage
 cd ../cspmasterleafnode
 tox -e py37
 mv cspmasterleafnode_coverage ../tox_report/cspmasterleafnode_coverage
@@ -29,13 +29,18 @@ mv subarraynode_coverage ../tox_report/subarraynode_coverage
 cd ../
 echo "check for tox_report"
 ls
-mv ./tox_report/ ../build/reports
+echo "Checking content from tox_report"
+ls tox_report
+echo "check build/reports before moving tox_report"
+ls ../build/reports
+cp -R ./tox_report ../build/reports
 cd ../
 cd ./build/reports/
+echo "Checking tox_report is present or not?"
 ls
 
 # # Combine coverage reports
-coverage combine cspmasterleafnode_coverage \
+coverage combine centralnode_coverage cspmasterleafnode_coverage \
                   cspsubarrayleafnode_coverage dishleafnode_coverage \
                   sdpmasterleafnode_coverage sdpsubarrayleafnode_coverage \
                   subarraynode_coverage && coverage xml
