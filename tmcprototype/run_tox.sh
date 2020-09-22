@@ -58,13 +58,13 @@ echo "In tmcprototype"
 pwd
 ls
 
-# python3 -m pip install junitparser
-# junitparser merge ./centralnode/build/reports/centralnode-unit-tests.xml \
-#                 ./cspmasterleafnode/build/reports/cspmasterleafnode-unit-tests.xml \
-#                 ./cspsubarrayleafnode/build/reports/cspsubarrayleafnode-unit-tests.xml \
-#                 ./dishleafnode/build/reports/dishleafnode-unit-tests.xml \
-#                 ./sdpmasterleafnode/build/reports/sdpmasterleafnode-unit-tests.xml \
-#                 ./sdpsubarrayleafnode/build/reports/sdpsubarrayleafnode-unit-tests.xml \
-#                 ./subarraynode/build/reports/subarraynode-unit-tests.xml \
-#                 ../build/reports/tox_unit-tests.xml
-# ls
+python3 -m pip install junitparser
+junitparser merge ./centralnode/build/reports/centralnode-unit-tests.xml \
+                ./cspmasterleafnode/build/reports/cspmasterleafnode-unit-tests.xml \
+                ./cspsubarrayleafnode/build/reports/cspsubarrayleafnode-unit-tests.xml \
+                ./dishleafnode/build/reports/dishleafnode-unit-tests.xml \
+                ./sdpmasterleafnode/build/reports/sdpmasterleafnode-unit-tests.xml \
+                ./sdpsubarrayleafnode/build/reports/sdpsubarrayleafnode-unit-tests.xml \
+                ./subarraynode/build/reports/subarraynode-unit-tests.xml \
+                ../build/reports/tox_unit-tests.xml
+ls
