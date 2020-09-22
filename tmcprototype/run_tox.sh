@@ -29,7 +29,8 @@ mv subarraynode_coverage ../tox_report/subarraynode_coverage
 cd ../
 mv ./tox_report ../build/reports
 cd ../
-cd ./build/reports/tox_report
+cd ./build/reports/
+ls
 
 # # Combine coverage reports
 coverage combine centralnode_coverage cspmasterleafnode_coverage \
