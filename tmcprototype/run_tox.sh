@@ -13,24 +13,24 @@ if [ -d "$working_dir" ]; then rm -rf $working_dir; fi
 cd centralnode
 tox -e py37
 mv centralnode_coverage ../tox_report/centralnode_coverage
-# cd ../cspmasterleafnode
-# tox -e py37
-# mv cspmasterleafnode_coverage ../tox_report/cspmasterleafnode_coverage
-# cd ../cspsubarrayleafnode
-# tox -e py37
-# mv cspsubarrayleafnode_coverage ../tox_report/cspsubarrayleafnode_coverage
-# cd ../dishleafnode
-# tox -e py37
-# mv dishleafnode_coverage ../tox_report/dishleafnode_coverage
-# cd ../sdpmasterleafnode
-# tox -e py37
-# mv sdpmasterleafnode_coverage ../tox_report/sdpmasterleafnode_coverage
-# cd ../sdpsubarrayleafnode
-# tox -e py37
-# mv sdpsubarrayleafnode_coverage ../tox_report/sdpsubarrayleafnode_coverage
-# cd ../subarraynode
-# tox -e py37
-# mv subarraynode_coverage ../tox_report/subarraynode_coverage
+cd ../cspmasterleafnode
+tox -e py37
+mv cspmasterleafnode_coverage ../tox_report/cspmasterleafnode_coverage
+cd ../cspsubarrayleafnode
+tox -e py37
+mv cspsubarrayleafnode_coverage ../tox_report/cspsubarrayleafnode_coverage
+cd ../dishleafnode
+tox -e py37
+mv dishleafnode_coverage ../tox_report/dishleafnode_coverage
+cd ../sdpmasterleafnode
+tox -e py37
+mv sdpmasterleafnode_coverage ../tox_report/sdpmasterleafnode_coverage
+cd ../sdpsubarrayleafnode
+tox -e py37
+mv sdpsubarrayleafnode_coverage ../tox_report/sdpsubarrayleafnode_coverage
+cd ../subarraynode
+tox -e py37
+mv subarraynode_coverage ../tox_report/subarraynode_coverage
 cd ../
 echo "check for tox_report"
 ls
@@ -41,23 +41,22 @@ ls ../build/reports
 mv ./tox_report ../build/reports
 echo "check if tox_report is moved"
 ls ../build/reports
-# cd ../
-# cd ./build/reports/
-# echo "Checking tox_report is present or not?"
-# ls
+cd ../build/reports/tox_report
+echo "Checking tox_report is present or not?"
+ls
 
 # # # Combine coverage reports
-# coverage combine centralnode_coverage cspmasterleafnode_coverage \
-#                   cspsubarrayleafnode_coverage dishleafnode_coverage \
-#                   sdpmasterleafnode_coverage sdpsubarrayleafnode_coverage \
-#                   subarraynode_coverage && coverage xml
-# pwd
-# cd ..
-# cd ./tox_report && mv coverage.xml ../tox_code-coverage.xml
-# cd ../../../tmcprototype
-# echo "In tmcprototype"
-# pwd
-# ls
+coverage combine centralnode_coverage cspmasterleafnode_coverage \
+                  cspsubarrayleafnode_coverage dishleafnode_coverage \
+                  sdpmasterleafnode_coverage sdpsubarrayleafnode_coverage \
+                  subarraynode_coverage && coverage xml
+pwd
+cd ..
+cd ./tox_report && mv coverage.xml ../tox_code-coverage.xml
+cd ../../../tmcprototype
+echo "In tmcprototype"
+pwd
+ls
 
 # python3 -m pip install junitparser
 # junitparser merge ./centralnode/build/reports/centralnode-unit-tests.xml \
