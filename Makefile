@@ -176,17 +176,9 @@ unit-test:
 # Make lint job is perfomred. After lint, the coverage reports from unit-test job are copied into build folder and unit_test_reports folder is removed. All the coverage reports using run test as well as unit-test are saved into build folder.
 
 lint:
-	# cd tmcprototype; \
-	# chmod 755 run_lint_tox.sh; \
-	# ./run_lint_tox.sh;
-	python3 -m pip install pylint2junit junitparser; \
-	cd tmcprototype/centralnode; \
-	python3 -m pip install .; \
-	mkdir -p /build/reports; \
-	pylint --rcfile=.pylintrc --output-format=parseable tmcprototype | tee /build/reports/linting.stdout; \
-    pylint --rcfile=.pylintrc --output-format=pylint2junit.JunitReporter tmcprototype > /build/reports/linting.xml;
-    
-
+	cd tmcprototype; \
+	chmod 755 run_lint.sh; \
+	./run_lint.sh;
 
 
 pull:  ## download the application image
