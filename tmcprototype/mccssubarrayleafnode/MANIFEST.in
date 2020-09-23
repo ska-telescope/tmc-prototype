@@ -1,0 +1,9 @@
+recursive-include MCCSSubarrayLeafNode *.py
+recursive-include test *.py
+include *.rst
+include MCCSSubarrayLeafNode.xmi
+include *.txt
+graft docs
+
+global-exclude *.pyc
+global-exclude *.pyo
