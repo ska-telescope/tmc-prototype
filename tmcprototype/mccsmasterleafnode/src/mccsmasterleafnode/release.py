@@ -10,11 +10,12 @@
 """Release information for Python Package"""
 
 name = """tangods-mccsmasterleafnode"""
-version = "1.0.0"
+version = "0.2.11"
 version_info = version.split(".")
-description = """"""
+description = """MCCSMasterLeafNode - Leaf Node to monitor and control MCCS Master"""
 author = "jayant.ska"
 author_email = "jayant.ska at gmail.com"
-license = """GPL"""
+license = """BSD-3-Clause"""
 url = """www.tango-controls.org"""
 copyright = """"""
+
