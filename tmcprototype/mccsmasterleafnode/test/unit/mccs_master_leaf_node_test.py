@@ -49,7 +49,7 @@ def event_subscription(mock_mccs_master):
 
 @pytest.fixture(scope="function")
 def mock_mccs_master():
-    mccs_master_fqdn = 'mid_csp/elt/subarray_01' ?????????
+    mccs_master_fqdn = 'low_mccs/elt/master'
     dut_properties = {
         'MccsmasterFQDN': mccs_master_fqdn
     }
@@ -207,22 +207,22 @@ class MCCSMasterLeafNodeDeviceTestCase(DeviceTestCase):
         # PROTECTED REGION END #    //  MCCSMasterLeafNode.test_loggingTargets
 
 
-    def test_assign_resources_should_send_mccs_master_with_correct_??????_list(mock_mccs_master):
-        #arrange
-        device_proxy, mccs_master_proxy_mock = mock_mccs_master
-        mccs_master_proxy_mock.obsState = ObsState.EMPTY
-        device_proxy.On()
-        device_proxy.AssignResource(assign_input_str)
-        receptorIDList = [] ????????
-        json_argument = json.loads(assign_input_str)
-        receptorIDList_str = json_argument[const.STR_DISH][const.STR_RECEPTORID_LIST] ???????????
-        # convert receptorIDList from list of string to list of int
-        for receptor in receptorIDList_str: ???????
-            receptorIDList.append(int(receptor)) ???????
-        mccs_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ALLOCATE,
-                                                                        ????????,
-                                                                        any_method(with_name='allocate_ended'))
-        assert_activity_message(device_proxy, const.STR_ALLOCATE_SUCCESS)
+    # def test_assign_resources_should_send_mccs_master_with_correct_stationiDList_list(mock_mccs_master):
+    #     #arrange
+    #     device_proxy, mccs_master_proxy_mock = mock_mccs_master
+    #     mccs_master_proxy_mock.obsState = ObsState.EMPTY
+    #     device_proxy.On()
+    #     device_proxy.AssignResource(assign_input_str)
+    #     stationiDList = [] 
+    #     json_argument = json.loads(assign_input_str)
+    #     stationiDList_str = json_argument[const.STR_DISH][const.STR_RECEPTORID_LIST] ???????????
+    #     # convert receptorIDList from list of string to list of int
+    #     for receptor in receptorIDList_str: ???????
+    #         receptorIDList.append(int(receptor)) ???????
+    #     mccs_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ALLOCATE,
+    #                                                                     ????????,
+    #                                                                     any_method(with_name='allocate_ended'))
+    #     assert_activity_message(device_proxy, const.STR_ALLOCATE_SUCCESS)
     
     def test_assign_resources_should_raise_devfailed_exception(mock_mccs_master):
         device_proxy, mccs_master_proxy_mock = mock_mccs_master

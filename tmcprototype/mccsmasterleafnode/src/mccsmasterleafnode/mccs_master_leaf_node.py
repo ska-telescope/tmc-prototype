@@ -351,44 +351,6 @@ class MCCSMasterLeafNode(SKABaseDevice):
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
 
-
-    # @command(
-    # dtype_in='str', 
-    # dtype_out='str', 
-    # )
-    # @DebugIt()
-    # def AssignResource(self, argin):
-    #     # PROTECTED REGION ID(MCCSMasterLeafNode.AssignResource) ENABLED START #
-    #     return ""
-    #     # PROTECTED REGION END #    //  MCCSMasterLeafNode.AssignResource
-
-    # @command(
-    # dtype_in='str', 
-    # dtype_out='str', 
-    # )
-
-    @DebugIt()
-    def ReleaseResources(self, argin):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.ReleaseResources) ENABLED START #
-        return ""
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.ReleaseResources
-
-    @command(
-    )
-    @DebugIt()
-    def On(self):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.On) ENABLED START #
-        pass
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.On
-
-    @command(
-    )
-    @DebugIt()
-    def Off(self):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.Off) ENABLED START #
-        pass
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.Off
-
     def init_command_objects(self):
         """
         Initialises the command handlers for commands supported by this
