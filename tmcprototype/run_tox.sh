@@ -17,7 +17,6 @@ for path in $(find ./*/test  -type d -name unit); do
 	cd $TMC_ELEMENT
 	tox -e py37
   mv ${TMC_ELEMENT}_coverage ../tox_report/${TMC_ELEMENT}_coverage
-  pwd
   cd ..
 done
 
@@ -47,7 +46,6 @@ echo "Came out of Loop..."
 pwd
 ls
 echo "-----------------------------------------------------"
-cd ../
 echo "check for tox_report"
 ls
 echo "Checking content from tox_report"
