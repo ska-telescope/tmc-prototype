@@ -2,7 +2,7 @@
 set -eo pipefail
 
 export working_dir=../build/reports/tox_report
-echo "moving back to a check build dir "
+
 #ls ../build/reports/  <- gives error sometimes: No such file or directory
 #Entering into a bash shell script to run unit-test cases and generating reports
 echo "In run_tox file...."
@@ -12,9 +12,9 @@ if [ -d "$working_dir" ]; then rm -rf $working_dir; fi
 for path in $(find ./*/test  -type d -name unit); do
 	export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
 	echo +++ Trying tests for $TMC_ELEMENT;
-	cd $TMC_ELEMENT
+	cd $TMC_ELEMENT;
 	tox -e py37
-  mv ${TMC_ELEMENT}_coverage ../tox_report/${TMC_ELEMENT}_coverage
+  mv ${TMC_ELEMENT}_coverage ../tox_report/${TMC_ELEMENT}_coverage;
   cd ..
 done
 mv ./tox_report ../build/reports

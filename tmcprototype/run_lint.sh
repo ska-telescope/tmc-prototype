@@ -4,22 +4,31 @@ set -eo pipefail
 echo "In run_lint file...."
 python3 -m pip install pylint2junit junitparser; \
 python3 -m pip install --index-url https://nexus.engageska-portugal.pt/repository/pypi/simple ska-logging==0.3.0 lmcbaseclasses==0.6.5 cdm-shared-library==2.0.0 ska-telescope-model==0.1.4 
-cd centralnode; \
-python3 -m pip install .; \
-cd ../cspmasterleafnode
-python3 -m pip install .; \
-cd ../cspsubarrayleafnode
-python3 -m pip install .; \
-cd ../dishleafnode
-python3 -m pip install .; \
-cd ../sdpmasterleafnode
-python3 -m pip install .; \
-cd ../sdpsubarrayleafnode
-python3 -m pip install .; \
-cd ../subarraynode
-python3 -m pip install .; \
 
-cd ../../
+for path in $(find ./*/test  -type d -name unit); do
+	export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
+	echo +++ Trying tests for $TMC_ELEMENT;
+	cd $TMC_ELEMENT;
+	python3 -m pip install .;
+  cd ..
+done
+
+#cd centralnode; \
+#python3 -m pip install .; \
+#cd ../cspmasterleafnode
+#python3 -m pip install .; \
+#cd ../cspsubarrayleafnode
+#python3 -m pip install .; \
+#cd ../dishleafnode
+#python3 -m pip install .; \
+#cd ../sdpmasterleafnode
+#python3 -m pip install .; \
+#cd ../sdpsubarrayleafnode
+#python3 -m pip install .; \
+#cd ../subarraynode
+#python3 -m pip install .; \
+
+cd ../
 ls
 mkdir -p ./build/reports; \
 pylint --rcfile=.pylintrc --output-format=parseable tmcprototype | tee ./build/reports/linting.stdout; \
