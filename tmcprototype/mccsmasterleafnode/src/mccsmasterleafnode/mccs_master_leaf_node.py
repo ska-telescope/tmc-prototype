@@ -84,7 +84,7 @@ class MCCSMasterLeafNode(SKABaseDevice):
 
             :rtype: (ResultCode, str)
 
-            :raises: DevFailed if error occurs while creating the device proxy for CSP Master or
+            :raises: DevFailed if error occurs while creating the device proxy for MCCS Master or
                     subscribing the evennts.
             """
             super().do()
@@ -97,7 +97,7 @@ class MCCSMasterLeafNode(SKABaseDevice):
             device._read_activity_message = const.STR_MCCS_INIT_LEAF_NODE
             try:
                 device._read_activity_message = const.STR_MCCSMASTER_FQDN + str(device.MCCSMasterFQDN)
-                # Creating proxy to the CSPMaster
+                # Creating proxy to the MCCSMaster
                 log_msg = "MCCS Master name: " + str(device.MCCSMasterFQDN)
                 self.logger.debug(log_msg)
                 device._mccs_master_proxy = DeviceProxy(str(device.MCCSMasterFQDN))
@@ -166,6 +166,66 @@ class MCCSMasterLeafNode(SKABaseDevice):
         return ""
         # PROTECTED REGION END #    //  MCCSMasterLeafNode.ReleaseResources
 
+
+    class OnCommand(SKABaseDevice.OnCommand):
+        """
+        A class for MCCSMasterLeafNode's On() command.
+        """
+
+        def on_cmd_ended_cb(self, event):
+            """
+            Callback function immediately executed when the asynchronous invoked
+            command returns.
+
+            :param event: a CmdDoneEvent object. This class is used to pass data
+                to the callback method in asynchronous callback model for command
+                execution.
+            :type: CmdDoneEvent object
+                It has the following members:
+                    - device     : (DeviceProxy) The DeviceProxy object on which the
+                                   call was executed.
+                    - cmd_name   : (str) The command name
+                    - argout_raw : (DeviceData) The command argout
+                    - argout     : The command argout
+                    - err        : (bool) A boolean flag set to true if the command
+                                   failed. False otherwise
+                    - errors     : (sequence<DevError>) The error stack
+                    - ext
+            :return: none
+
+            """
+            device = self.target
+            # Update logs and activity message attribute with received event
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                device._read_activity_message = log_msg
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                device._read_activity_message = log_msg
+
+        def do(self):
+            """
+            Invokes On command on the MCCS Element.
+
+            :param argin: None
+
+            :return: A tuple containing a return code and a string message indicating status.
+             The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+
+            """
+            device = self.target
+            # Pass argin to mccs master .
+            # If the array length is 0, the command applies to the whole MCCS Element.
+            # If the array length is > 1 each array element specifies the FQDN of the MCCS SubElement to switch ON.
+            argin = []
+            device._mccs_master_proxy.command_inout_asynch(const.CMD_ON, argin, self.on_cmd_ended_cb)
+            self.logger.debug(const.STR_ON_CMD_ISSUED)
+            return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
+
     @command(
     )
     @DebugIt()
@@ -173,6 +233,66 @@ class MCCSMasterLeafNode(SKABaseDevice):
         # PROTECTED REGION ID(MCCSMasterLeafNode.On) ENABLED START #
         pass
         # PROTECTED REGION END #    //  MCCSMasterLeafNode.On
+    
+    class OffCommand(SKABaseDevice.OffCommand):
+        """
+        A class for MCCSMasterLeafNode's Off() command.
+        """
+
+        def off_cmd_ended_cb(self, event):
+            """
+            Callback function immediately executed when the asynchronous invoked
+            command returns.
+
+            :param event: a CmdDoneEvent object. This class is used to pass data
+                to the callback method in asynchronous callback model for command
+                execution.
+            :type: CmdDoneEvent object
+                It has the following members:
+                    - device     : (DeviceProxy) The DeviceProxy object on which the
+                                   call was executed.
+                    - cmd_name   : (str) The command name
+                    - argout_raw : (DeviceData) The command argout
+                    - argout     : The command argout
+                    - err        : (bool) A boolean flag set to true if the command
+                                   failed. False otherwise
+                    - errors     : (sequence<DevError>) The error stack
+                    - ext
+            :return: none
+
+            """
+            device = self.target
+            # Update logs and activity message attribute with received event
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                device._read_activity_message = log_msg
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                device._read_activity_message = log_msg
+
+        def do(self):
+            """
+            Invokes Off command on the MCCS Element.
+
+            :param argin: None.
+
+            :return: A tuple containing a return code and a string message indicating status.
+             The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+
+            """
+            device = self.target
+            # pass argin to mccs master.
+            # If the array length is 0, the command applies to the whole MCCS Element.
+            # If the array length is >, each array element specifies the FQDN of the MCCS SubElement to switch OFF.
+            # argin = []
+            # device._mccs_master_proxy.command_inout_asynch(const.CMD_OFF, argin, self.off_cmd_ended_cb)
+            self.logger.debug(const.STR_OFF_CMD_ISSUED)
+            device._read_activity_message = const.STR_OFF_CMD_ISSUED
+            return (ResultCode.OK, const.STR_OFF_CMD_ISSUED)
 
     @command(
     )
