@@ -64,9 +64,10 @@ def test_End_command_with_callback_method(mock_mccs_subarray, event_subscription
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.READY
     device_proxy.End()
-    dummy_event = command_callback(const.CMD_GOTOIDLE)
-    event_subscription_without_arg[const.CMD_GOTOIDLE](dummy_event)
-    assert const.STR_COMMAND + const.CMD_GOTOIDLE in device_proxy.activityMessage
+    dummy_event = command_callback(const.CMD_END)
+    event_subscription_without_arg[const.CMD_END](dummy_event)
+    assert const.STR_COMMAND + const.CMD_END in device_proxy.activityMessage
+    assert mccs_subarray1_proxy_mock.obsState == ObsState.IDLE
 
 
 @contextlib.contextmanager
