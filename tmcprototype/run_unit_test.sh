@@ -9,9 +9,8 @@ python3 -m pip install pytest-forked
 for path in $(find ./*/test  -type d -name unit); do
 	export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
 	echo +++ Trying tests for $TMC_ELEMENT;
-	#pytest -v ./${TMC_ELEMENT}/test/unit --forked --cov=/usr/local/lib/python3.7/dist-packages/${TMC_ELEMENT} --cov-report=html:/report/unit_test/${TMC_ELEMENT}_htmlcov --json-report --json-report-file=/report/unit_test/${TMC_ELEMENT}_report.json --junitxml=/report/unit_test/${TMC_ELEMENT}-unit-tests.xml;
-	tox -e py37;
-    # mv /app/tmcprototype/.coverage /report/unit_test/${TMC_ELEMENT}_coverage;
+	pytest -v ./${TMC_ELEMENT}/test/unit --forked --cov=/usr/local/lib/python3.7/dist-packages/${TMC_ELEMENT} --cov-branch --cov-report=html:/report/unit_test/${TMC_ELEMENT}_htmlcov --json-report --json-report-file=/report/unit_test/${TMC_ELEMENT}_report.json --junitxml=/report/unit_test/${TMC_ELEMENT}-unit-tests.xml;
+	mv /app/tmcprototype/.coverage /report/unit_test/${TMC_ELEMENT}_coverage;
 done
 cd /report/unit_test
 #Combine the individual report in combine converage report in xml and html format.
