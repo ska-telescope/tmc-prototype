@@ -26,7 +26,7 @@ coverage combine centralnode_coverage cspmasterleafnode_coverage \
                   sdpmasterleafnode_coverage sdpsubarrayleafnode_coverage \
                   subarraynode_coverage && coverage xml
 
-cd ../tox_report && mv coverage.xml ../tox_code-coverage.xml
+cd ../tox_report && mv coverage.xml ../JK_tox_code-coverage.xml
 cd ../../../tmcprototype
 
 python3 -m pip install junitparser
@@ -37,4 +37,4 @@ junitparser merge ./centralnode/build/reports/centralnode-unit-tests.xml \
                 ./sdpmasterleafnode/build/reports/sdpmasterleafnode-unit-tests.xml \
                 ./sdpsubarrayleafnode/build/reports/sdpsubarrayleafnode-unit-tests.xml \
                 ./subarraynode/build/reports/subarraynode-unit-tests.xml \
-                ../build/reports/tox_unit-tests.xml
+                ../build/reports/JK_tox_unit-tests.xml
