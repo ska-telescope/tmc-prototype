@@ -10,27 +10,41 @@ ls ../build/reports/
 echo "In run_tox file...."
 mkdir -p tox_report
 if [ -d "$working_dir" ]; then rm -rf $working_dir; fi
-cd centralnode
-tox -e py37
-mv centralnode_coverage ../tox_report/centralnode_coverage
-cd ../cspmasterleafnode
-tox -e py37
-mv cspmasterleafnode_coverage ../tox_report/cspmasterleafnode_coverage
-cd ../cspsubarrayleafnode
-tox -e py37
-mv cspsubarrayleafnode_coverage ../tox_report/cspsubarrayleafnode_coverage
-cd ../dishleafnode
-tox -e py37
-mv dishleafnode_coverage ../tox_report/dishleafnode_coverage
-cd ../sdpmasterleafnode
-tox -e py37
-mv sdpmasterleafnode_coverage ../tox_report/sdpmasterleafnode_coverage
-cd ../sdpsubarrayleafnode
-tox -e py37
-mv sdpsubarrayleafnode_coverage ../tox_report/sdpsubarrayleafnode_coverage
-cd ../subarraynode
-tox -e py37
-mv subarraynode_coverage ../tox_report/subarraynode_coverage
+
+for path in $(find ./*/test  -type d -name unit); do
+	export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
+	echo +++ Trying tests for $TMC_ELEMENT;
+	cd $TMC_ELEMENT
+	tox -e py37
+  mv ${TMC_ELEMENT}_coverage ../tox_report/${TMC_ELEMENT}_coverage
+done
+
+#cd centralnode
+#tox -e py37
+#mv centralnode_coverage ../tox_report/centralnode_coverage
+#cd ../cspmasterleafnode
+#tox -e py37
+#mv cspmasterleafnode_coverage ../tox_report/cspmasterleafnode_coverage
+#cd ../cspsubarrayleafnode
+#tox -e py37
+#mv cspsubarrayleafnode_coverage ../tox_report/cspsubarrayleafnode_coverage
+#cd ../dishleafnode
+#tox -e py37
+#mv dishleafnode_coverage ../tox_report/dishleafnode_coverage
+#cd ../sdpmasterleafnode
+#tox -e py37
+#mv sdpmasterleafnode_coverage ../tox_report/sdpmasterleafnode_coverage
+#cd ../sdpsubarrayleafnode
+#tox -e py37
+#mv sdpsubarrayleafnode_coverage ../tox_report/sdpsubarrayleafnode_coverage
+#cd ../subarraynode
+#tox -e py37
+#mv subarraynode_coverage ../tox_report/subarraynode_coverage
+
+echo "Came out of Loop..."
+pwd
+ls
+echo "-----------------------------------------------------"
 cd ../
 echo "check for tox_report"
 ls
