@@ -109,7 +109,7 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
             device.set_status(const.STR_MCCSSALN_INIT_SUCCESS)
             device._mccs_subarray_health_state = HealthState.OK
             self.logger.info(const.STR_MCCSSALN_INIT_SUCCESS)
-            return (ResultCode.OK, const.STR_CSPSALN_INIT_SUCCESS)
+            return (ResultCode.OK, const.STR_MCCSSALN_INIT_SUCCESS)
         # PROTECTED REGION ID(MCCSSubarrayLeafNode.init_device) ENABLED START #
         # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.init_device
 
