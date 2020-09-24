@@ -16,4 +16,4 @@ done
 cd ../
 mkdir -p ./build/reports; \
 pylint --rcfile=.pylintrc --output-format=parseable tmcprototype | tee ./build/reports/linting.stdout; \
-pylint --rcfile=.pylintrc --output-format=pylint2junit.JunitReporter tmcprototype > ./build/reports/JK_tox_linting.xml;
+pylint --rcfile=.pylintrc --output-format=pylint2junit.JunitReporter tmcprototype > ./build/reports/linting.xml;
