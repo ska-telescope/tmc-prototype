@@ -11,17 +11,16 @@
 
 """
 
-# PyTango imports
-import PyTango
-from PyTango import DebugIt
-from PyTango.server import run
-from PyTango.server import Device, DeviceMeta
-from PyTango.server import attribute, command
-from PyTango.server import device_property
-from PyTango import AttrQuality, DispLevel, DevState
-from PyTango import AttrWriteType, PipeWriteType
-from SKABaseDevice import SKABaseDevice
+# Tango imports
+import tango
+from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
+from tango.server import run, attribute, command, device_property, Device, DeviceMeta
+from ska.base.commands import ResultCode, ResponseCommand, BaseCommand
+from ska.base import SKABaseDevice
+from ska.base.control_model import HealthState, ObsState
+
 # Additional import
+from . import const, release
 # PROTECTED REGION ID(MCCSSubarrayLeafNode.additionnal_import) ENABLED START #
 # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.additionnal_import
 
@@ -65,31 +64,72 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
     )
 
 
-    mccssubarrayHealthState = attribute(label="mccssubarrayHealthState",
+    mccssubarrayHealthState = attribute(name="mccssubarrayHealthState", label="mccssubarrayHealthState",
         forwarded=True
     )
-    mccsSubarrayObsState = attribute(label="mccsSubarrayObsState",
+    mccsSubarrayObsState = attribute(name="mccsSubarrayObsState", label="mccsSubarrayObsState",
         forwarded=True
     )
     # ---------------
     # General methods
     # ---------------
 
-    def init_device(self):
-        SKABaseDevice.init_device(self)
-        self.set_change_event("adminMode", True, True)
-        self.set_archive_event("adminMode", True, True)
+    class InitCommand(SKABaseDevice.InitCommand):
+        """
+        A class for the MCCSSubarrayLeafNode's init_device() method"
+        """
+
+        def do(self):
+            """
+            Initializes the attributes and properties of the MCCSSubarrayLeafNode.
+
+            :return: A tuple containing a return code and a string message indicating status. The message is
+            for information purpose only.
+
+            :rtype: (ReturnCode, str)
+
+            :raises: DevFailed if error occurs in creating proxy for MCCSSubarray.
+            """
+            super().do()
+            device = self.target
+            try:
+                # create MCCSSubarray Proxy
+                device._mccs_subarray_proxy = DeviceProxy(device.MCCSSubarrayFQDN)
+            except DevFailed as dev_failed:
+                log_msg = const.ERR_IN_CREATE_PROXY_MCCSSA + str(dev_failed)
+                self.logger.debug(log_msg)
+                return (ResultCode.FAILED, log_msg)
+            #TODO
+            # self.set_change_event("adminMode", True, True)
+            # self.set_archive_event("adminMode", True, True)
+            device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
+            device._version_id = release.version
+            device._read_activity_message = " "
+            device._versioninfo = " "
+            device.set_status(const.STR_MCCSSALN_INIT_SUCCESS)
+            device._mccs_subarray_health_state = HealthState.OK
+            self.logger.info(const.STR_MCCSSALN_INIT_SUCCESS)
+            return (ResultCode.OK, const.STR_CSPSALN_INIT_SUCCESS)
         # PROTECTED REGION ID(MCCSSubarrayLeafNode.init_device) ENABLED START #
         # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.init_device
 
+    def init_command_objects(self):
+        """
+        Initialises the command handlers for commands supported by this
+        device.
+        """
+        super().init_command_objects()
+        args = (self, self.state_model, self.logger)
+        # self.register_command_object("AssignResources", self.AssignResourcesCommand(*args))
+
     def always_executed_hook(self):
         # PROTECTED REGION ID(MCCSSubarrayLeafNode.always_executed_hook) ENABLED START #
-        pass
+        """ Internal construct of TANGO. """
         # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.always_executed_hook
 
     def delete_device(self):
         # PROTECTED REGION ID(MCCSSubarrayLeafNode.delete_device) ENABLED START #
-        pass
+        """ Internal construct of TANGO. """
         # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.delete_device
 
     # ------------------
@@ -98,12 +138,12 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
 
     def read_activitymessage(self):
         # PROTECTED REGION ID(MCCSSubarrayLeafNode.activitymessage_read) ENABLED START #
-        return ''
+        return self._read_activity_message
         # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.activitymessage_read
 
     def write_activitymessage(self, value):
         # PROTECTED REGION ID(MCCSSubarrayLeafNode.activitymessage_write) ENABLED START #
-        pass
+        self._read_activity_message = value
         # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.activitymessage_write
 
 
