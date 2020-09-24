@@ -113,15 +113,6 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
         # PROTECTED REGION ID(MCCSSubarrayLeafNode.init_device) ENABLED START #
         # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.init_device
 
-    def init_command_objects(self):
-        """
-        Initialises the command handlers for commands supported by this
-        device.
-        """
-        super().init_command_objects()
-        args = (self, self.state_model, self.logger)
-        # self.register_command_object("AssignResources", self.AssignResourcesCommand(*args))
-
     def always_executed_hook(self):
         # PROTECTED REGION ID(MCCSSubarrayLeafNode.always_executed_hook) ENABLED START #
         """ Internal construct of TANGO. """
@@ -151,83 +142,142 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
     # Commands
     # --------
 
-    @command(
-    dtype_in='str', 
-    dtype_out='str', 
-    )
-    @DebugIt()
-    def AssignResources(self, argin):
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.AssignResources) ENABLED START #
-        return ""
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.AssignResources
+    class ConfigureCommand(ResponseCommand):
+        """
+        A class for MccsSubarrayLeafNode's Configure() command.
+        """
+
+        def check_allowed(self):
+            """
+            Checks whether the command is allowed to be run in the current state
+
+            :return: True if this command is allowed to be run in
+                current device state
+
+            :rtype: boolean
+
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+
+            """
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+                tango.Except.throw_exception("Configure() is not allowed in current state",
+                                             "Failed to invoke Configure command on mccssubarrayleafnode.",
+                                             "mccssubarrayleafnode.Configure()",
+                                             tango.ErrSeverity.ERR)
+            return True
+
+        def configure_cmd_ended_cb(self, event):
+            """
+            Callback function immediately executed when the asynchronous invoked
+            command returns.
+
+            :param event: a CmdDoneEvent object. This class is used to pass data
+                to the callback method in asynchronous callback model for command
+                execution.
+
+            :type: CmdDoneEvent object
+                It has the following members:
+                    - device     : (DeviceProxy) The DeviceProxy object on which the
+                                   call was executed.
+                    - cmd_name   : (str) The command name
+                    - argout_raw : (DeviceData) The command argout
+                    - argout     : The command argout
+                    - err        : (bool) A boolean flag set to true if the command
+                                   failed. False otherwise
+                    - errors     : (sequence<DevError>) The error stack
+                    - ext
+
+            :return: none
+            """
+            device = self.target
+            # Update logs and activity message attribute with received event
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                device._read_activity_message = log_msg
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                device._read_activity_message = log_msg
+
+        def do(self, argin):
+            """
+            This command configures a scan. It accepts configuration information in JSON string format and
+            invokes Configure command on MccsSubarray.
+
+            :param argin:DevString. The string in JSON format. The JSON contains following values:
+
+            Example:
+            {"stationBeamList":[{"beamId":1,"skyCoordinateSet":[0.0,180.0,0.004,45.0,0.004],"updateRate":1.0,"channels":[1,2,3,4,5,6,7,8]}]}
+
+            Note: Enter the json string without spaces as a input.
+
+            :return: A tuple containing a return code and a string message indicating status.
+             The message is for information purpose only.
+
+            :rtype: (ReturnCode, str)
+
+            :raises: DevFailed if the command execution is not successful
+                     ValueError if input argument json string contains invalid value
+            """
+            device = self.target
+            try:
+                log_msg = "Input JSON for MCCS Subarray Leaf Node Configure command is: " + argin
+                self.logger.debug(log_msg)
+                device._mccs_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, argin,
+                                                           self.configure_cmd_ended_cb)
+                device._read_activity_message = const.STR_CONFIGURE_SUCCESS
+                self.logger.info(const.STR_CONFIGURE_SUCCESS)
+                return (ResultCode.OK, const.STR_CONFIGURE_SUCCESS)
+
+            except DevFailed as dev_failed:
+                log_msg = const.ERR_CONFIGURE_INVOKING_CMD + str(dev_failed)
+                device._read_activity_message = log_msg
+                self.logger.exception(dev_failed)
+                tango.Except.throw_exception(const.ERR_CONFIGURE_INVOKING_CMD, log_msg,
+                                             "MccsSubarrayLeafNode.ConfigureCommand",
+                                             tango.ErrSeverity.ERR)
+
+    def is_Configure_allowed(self):
+        """
+        Checks whether the command is allowed to be run in the current state
+
+        :return: True if this command is allowed to be run in
+        current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+
+        """
+        handler = self.get_command_object("Configure")
+        return handler.check_allowed()
 
     @command(
-    dtype_in='str', 
-    dtype_out='str', 
-    )
-    @DebugIt()
-    def ReleaseResources(self, argin):
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.ReleaseResources) ENABLED START #
-        return ""
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.ReleaseResources
-
-    @command(
-    dtype_in='str', 
+        dtype_in=('str'),
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def Configure(self, argin):
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.Configure) ENABLED START #
-        pass
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.Configure
+        """ Invokes Configure command on MccsSubarrayLeafNode """
+        handler = self.get_command_object("Configure")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
 
-    @command(
-    dtype_in=('str',), 
-    )
-    @DebugIt()
-    def Scan(self, argin):
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.Scan) ENABLED START #
-        pass
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.Scan
+    def init_command_objects(self):
+            """
+            Initialises the command handlers for commands supported by this
+            device.
+            """
+            super().init_command_objects()
+            args = (self, self.state_model, self.logger)
+            self.register_command_object("Configure", self.ConfigureCommand(*args))
+            # self.register_command_object("AssignResources", self.AssignResourcesCommand(*args))
 
-    @command(
-    )
-    @DebugIt()
-    def EndScan(self):
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.EndScan) ENABLED START #
-        pass
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.EndScan
 
-    @command(
-    )
-    @DebugIt()
-    def End(self):
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.End) ENABLED START #
-        pass
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.End
-
-    @command(
-    )
-    @DebugIt()
-    def Abort(self):
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.Abort) ENABLED START #
-        pass
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.Abort
-
-    @command(
-    )
-    @DebugIt()
-    def Restart(self):
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.Restart) ENABLED START #
-        pass
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.Restart
-
-    @command(
-    )
-    @DebugIt()
-    def obsReset(self):
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.obsReset) ENABLED START #
-        pass
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.obsReset
 
 # ----------
 # Run server
