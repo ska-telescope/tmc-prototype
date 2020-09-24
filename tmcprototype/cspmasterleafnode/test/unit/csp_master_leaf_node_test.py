@@ -136,7 +136,6 @@ def test_on_should_command_with_callback_method_with_event_error(mock_csp_master
 
 
 #TODO: FOR FUTURE USE
-
 @pytest.mark.xfail(reason="Off command is not generating event error in current implementation. "
                           "Will be updated later.")
 def test_off_should_command_with_callback_method_with_event_error(mock_csp_master ,event_subscription):

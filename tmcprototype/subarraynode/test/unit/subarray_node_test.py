@@ -210,7 +210,6 @@ class TestElementDeviceData:
 
 
 # Test cases for Attributes
-
 def test_status():
     """Test for Status"""
     with fake_tango_system(SubarrayNode) as tango_context:
@@ -291,7 +290,6 @@ def test_receptor_id_list():
 
 
 # Test cases for Commands
-
 def test_on_command_should_change_subarray_device_state_to_on():
     with fake_tango_system(SubarrayNode) as tango_context:
         tango_context.device.On()
@@ -934,7 +932,6 @@ def test_track_command_subarray(mock_lower_devices):
 
 
 # Test Observation State Callback
-
 def test_obs_state_is_with_event_error(mock_lower_devices):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
@@ -964,7 +961,6 @@ def test_endsb_command_subarray_when_in_invalid_state():
         assert tango_context.device.activityMessage == const.ERR_DEVICE_NOT_READY
 
 # Test Pointing State Callback
-
 def test_pointing_state_is_slew(mock_lower_devices):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
     dish_pointing_state_attribute = "dishPointingState"
@@ -1014,7 +1010,6 @@ def test_pointing_state_with_error_event(mock_lower_devices):
 
 
 # Test Health State Callback
-
 def test_subarray_health_state_is_degraded_when_csp_subarray1_ln_is_degraded_after_start(mock_lower_devices):
     csp_subarray1_ln_health_attribute = 'cspsubarrayHealthState'
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
@@ -1079,7 +1074,6 @@ def test_subarray_health_state_with_error_event(mock_lower_devices):
 
 
 # Test case for event subscribtion
-
 def test_subarray_health_state_event_to_raise_devfailed_exception_for_csp_subarray_ln():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_ln_health_attribute = 'cspsubarrayHealthState'
@@ -1695,7 +1689,6 @@ def create_dummy_event_custom_exception(proxy_mock, device_fqdn, attribute, attr
     fake_event.attr_value = "Subarray is not in IDLE obsState, please check the subarray obsState"
     fake_event.device = proxy_mock
     return fake_event
-
 
 
 def create_dummy_event_sdp_receiceAddresses(proxy_mock, device_fqdn, attribute, attr_value):

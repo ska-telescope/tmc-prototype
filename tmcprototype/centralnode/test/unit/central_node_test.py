@@ -138,7 +138,6 @@ def central_node_test_info(request):
 
 
 # Test cases for Attributes
-
 def test_telescope_health_state():
     # act & assert:
     with fake_tango_system(CentralNode) as tango_context:
@@ -215,7 +214,6 @@ def test_health_state():
 
 
 # Need to check the failure
-
 def test_activity_message_attribute_captures_the_last_received_command():
     # act & assert:
     with fake_tango_system(CentralNode)as tango_context:
@@ -228,7 +226,6 @@ def test_activity_message_attribute_captures_the_last_received_command():
 
 
 # Test cases for commands
-
 def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
     # arrange:
     dish_device_ids = [str(i).zfill(4) for i in range(1, 4)]
@@ -549,7 +546,6 @@ def test_startup_should_raise_devfailed_exception(mock_central_lower_devices):
 
 
 # Test cases for Telescope Health State
-
 def test_telescope_health_state_matches_csp_master_leaf_node_health_state_after_start(
     central_node_test_info):
     initial_dut_properties = central_node_test_info['initial_dut_properties']

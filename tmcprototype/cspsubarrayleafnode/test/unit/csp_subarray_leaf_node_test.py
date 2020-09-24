@@ -181,8 +181,6 @@ def test_obsreset_command_with_callback_method(mock_csp_subarray,event_subscript
     assert const.STR_COMMAND + const.CMD_OBSRESET in device_proxy.activityMessage
 
 
-
-
 def test_assign_resources_should_raise_devfailed_exception(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
@@ -264,7 +262,6 @@ def test_restart_command_with_callback_method_with_event_error(mock_csp_subarray
     assert const.ERR_INVOKING_CMD + const.CMD_RESTART in device_proxy.activityMessage
 
 
-
 def test_obsreset_command_with_callback_method_with_event_error(mock_csp_subarray,event_subscription_without_arg):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.ABORTED
@@ -272,7 +269,6 @@ def test_obsreset_command_with_callback_method_with_event_error(mock_csp_subarra
     dummy_event = command_callback_with_event_error(const.CMD_OBSRESET)
     event_subscription_without_arg[const.CMD_OBSRESET](dummy_event)
     assert const.ERR_INVOKING_CMD + const.CMD_OBSRESET in device_proxy.activityMessage
-
 
 
 def test_assign_command_with_callback_method(mock_csp_subarray, event_subscription):
@@ -417,7 +413,6 @@ def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready(mock_c
     assert_activity_message(device_proxy, const.STR_GOTOIDLE_SUCCESS)
 
 
-
 def test_goto_idle_should_not_command_csp_subarray_to_end_sb_when_it_is_idle(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.IDLE
@@ -467,7 +462,6 @@ def test_abort_should_command_csp_subarray_to_abort_when_it_is_scanning(mock_csp
     assert_activity_message(device_proxy, const.STR_ABORT_SUCCESS)
 
 
-
 def test_abort_should_command_csp_subarray_to_abort_when_it_is_resetting(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.RESETTING
@@ -475,7 +469,6 @@ def test_abort_should_command_csp_subarray_to_abort_when_it_is_resetting(mock_cs
     csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
                                                                      any_method(with_name = 'abort_cmd_ended_cb'))
     assert_activity_message(device_proxy, const.STR_ABORT_SUCCESS)
-
 
 
 def test_abort_should_command_csp_subarray_to_abort_when_it_is_ready(mock_csp_subarray):
@@ -567,7 +560,6 @@ def test_restart_should_command_csp_subarray_to_restart_when_it_is_aborted(mock_
     device_proxy.Restart()
     csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_RESTART,
                                                              any_method(with_name='restart_cmd_ended_cb'))
-
 
 
 def test_restart_should_raise_devfailed_exception(mock_csp_subarray):

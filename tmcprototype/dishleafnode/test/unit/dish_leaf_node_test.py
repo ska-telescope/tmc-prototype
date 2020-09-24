@@ -126,7 +126,6 @@ def test_command_cb_is_invoked_when_command_without_arg_is_called_async(mock_dis
 
 
 # TODO: actual AZ and EL values need to be generated.
-
 @pytest.mark.xfail
 def test_configure_to_send_correct_configuration_data_when_dish_is_idle(mock_dish_master):
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
@@ -516,7 +515,6 @@ def test_msg_in_activity_message_attribute_with_event_error(event_subscription_w
 
 
 # TODO: actual AZ and EL values need to be generated.
-
 @pytest.mark.xfail
 def test_configure_command_with_callback_method(event_subscription, mock_dish_master):
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
@@ -528,7 +526,6 @@ def test_configure_command_with_callback_method(event_subscription, mock_dish_ma
 
 
 # TODO: actual AZ and EL values need to be generated.
-
 @pytest.mark.xfail
 def test_track_command_with_callback_method(event_subscription, mock_dish_master):
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
