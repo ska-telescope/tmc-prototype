@@ -11,16 +11,14 @@
 
 """
 
-# PyTango imports
-import PyTango
-from PyTango import DebugIt
-from PyTango.server import run
-from PyTango.server import Device, DeviceMeta
-from PyTango.server import attribute, command
-from PyTango.server import device_property
-from PyTango import AttrQuality, DispLevel, DevState
-from PyTango import AttrWriteType, PipeWriteType
-from SKABaseDevice import SKABaseDevice
+# Tango imports
+import tango
+from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
+from tango.server import run, command, device_property, attribute, Device, DeviceMeta
+from ska.base import SKABaseDevice
+from ska.base.commands import ResultCode, ResponseCommand
+from ska.base.control_model import HealthState, SimulationMode, TestMode
+
 # Additional import
 # PROTECTED REGION ID(MCCSMasterLeafNode.additionnal_import) ENABLED START #
 # PROTECTED REGION END #    //  MCCSMasterLeafNode.additionnal_import
