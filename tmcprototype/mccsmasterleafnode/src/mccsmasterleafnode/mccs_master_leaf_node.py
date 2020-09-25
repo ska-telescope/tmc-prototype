@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 #
-# This file is part of the MCCSMasterLeafNode project
+# This file is part of the MccsMasterLeafNode project
 #
 #
 #
-# Distributed under the terms of the GPL license.
+# Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 
-""" 
+# PROTECTED REGION ID(MccsMasterLeafNode.import) ENABLED START #
 
 """
 from __future__ import print_function
@@ -22,18 +22,26 @@ from ska.base.commands import ResultCode, ResponseCommand
 from ska.base.control_model import HealthState, SimulationMode, TestMode
 
 # Additional import
-# PROTECTED REGION ID(MCCSMasterLeafNode.additionnal_import) ENABLED START #
-# PROTECTED REGION END #    //  MCCSMasterLeafNode.additionnal_import
+from . import const, release
 
-__all__ = ["MCCSMasterLeafNode", "main"]
+# PROTECTED REGION END #    //  MccsMasterLeafNode imports
 
+__all__ = ["MccsMasterLeafNode", "main"]
 
-class MCCSMasterLeafNode(SKABaseDevice):
+class MccsMasterLeafNode(SKABaseDevice):
     """
+    **Properties:**
+
+    - MccsMasterFQDN   - Property to provide FQDN of MCCS Master Device
+
+    **Attributes:**
+
+    - mccsHealthState  - Forwarded attribute to provide MCCS Master Health State
+    - activityMessage - Attribute to provide activity message
+
     """
-    __metaclass__ = DeviceMeta
-    # PROTECTED REGION ID(MCCSMasterLeafNode.class_variable) ENABLED START #
-    # PROTECTED REGION END #    //  MCCSMasterLeafNode.class_variable
+    # PROTECTED REGION ID(MccsMasterLeafNode.class_variable) ENABLED START #
+    # PROTECTED REGION END #    //  MccsMasterLeafNode.class_variable
 
     # -----------------
     # Device Properties
@@ -43,25 +51,25 @@ class MCCSMasterLeafNode(SKABaseDevice):
 
 
 
-    MCCSMasterFQDN = device_property(
+    MccsMasterFQDN = device_property(
         dtype='str', default_value="low_mccs/elt/master"
     )
+
+    
+
+
+
+
+
 
     # ----------
     # Attributes
     # ----------
 
-
-
-
-
-
-
-
-
-    activitymessage = attribute(
+    activityMessage = attribute(
         dtype='str',
         access=AttrWriteType.READ_WRITE,
+        doc="Activity Message",
     )
 
 
@@ -84,7 +92,7 @@ class MCCSMasterLeafNode(SKABaseDevice):
 
             :rtype: (ResultCode, str)
 
-            :raises: DevFailed if error occurs while creating the device proxy for MCCS Master or
+            :raises: DevFailed if error occurs while creating the device proxy for CSP Master or
                     subscribing the evennts.
             """
             super().do()
@@ -96,13 +104,13 @@ class MCCSMasterLeafNode(SKABaseDevice):
             device._version_id = release.version
             device._read_activity_message = const.STR_MCCS_INIT_LEAF_NODE
             try:
-                device._read_activity_message = const.STR_MCCSMASTER_FQDN + str(device.MCCSMasterFQDN)
-                # Creating proxy to the MCCSMaster
-                log_msg = "MCCS Master name: " + str(device.MCCSMasterFQDN)
+                device._read_activity_message = const.STR_MCCSMASTER_FQDN + str(device.MccsMasterFQDN)
+                # Creating proxy to the CSPMaster
+                log_msg = "MCCS Master name: " + str(device.MccsMasterFQDN)
                 self.logger.debug(log_msg)
-                device._mccs_master_proxy = DeviceProxy(str(device.MCCSMasterFQDN))
+                device._mccs_master_proxy = DeviceProxy(str(device.MccsMasterFQDN))
             except DevFailed as dev_failed:
-                log_msg = const.ERR_IN_CREATE_PROXY + str(device.MCCSMasterFQDN)
+                log_msg = const.ERR_IN_CREATE_PROXY + str(device.MccsMasterFQDN)
                 self.logger.debug(log_msg)
                 self.logger.exception(dev_failed)
                 device._read_activity_message = log_msg
@@ -118,28 +126,28 @@ class MCCSMasterLeafNode(SKABaseDevice):
             return (ResultCode.OK, device._read_activity_message)
 
     def always_executed_hook(self):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.always_executed_hook) ENABLED START #
+        # PROTECTED REGION ID(MccsMasterLeafNode.always_executed_hook) ENABLED START #
         """ Internal construct of TANGO. """
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.always_executed_hook
+        # PROTECTED REGION END #    //  MccsMasterLeafNode.always_executed_hook
 
     def delete_device(self):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.delete_device) ENABLED START #
+        # PROTECTED REGION ID(MccsMasterLeafNode.delete_device) ENABLED START #
         """ Internal construct of TANGO. """
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.delete_device
+        # PROTECTED REGION END #    //  MccsMasterLeafNode.delete_device
 
     # ------------------
     # Attributes methods
     # ------------------
 
-    def read_activitymessage(self):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.activitymessage_read) ENABLED START #
+    def read_activityMessage(self):
+        # PROTECTED REGION ID(MccsMasterLeafNode.activityMessage_read) ENABLED START #
         return self._read_activity_message
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.activitymessage_read
+        # PROTECTED REGION END #    //  MccsMasterLeafNode.activityMessage_read
 
-    def write_activitymessage(self, value):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.activitymessage_write) ENABLED START #
+    def write_activityMessage(self, value):
+        # PROTECTED REGION ID(MccsMasterLeafNode.activityMessage_write) ENABLED START #
         self._read_activity_message = value
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.activitymessage_write
+        # PROTECTED REGION END #    //  MccsMasterLeafNode.activityMessage_write
 
 
     # --------
@@ -316,6 +324,20 @@ class MCCSMasterLeafNode(SKABaseDevice):
 # Run server
 # ----------
 
+
+def main(args=None, **kwargs):
+    # PROTECTED REGION ID(MccsMasterLeafNode.main) ENABLED START #
+    """
+    Runs the MccsMasterLeafNode.
+
+    :param args: Arguments internal to TANGO
+
+    :param kwargs: Arguments internal to TANGO
+
+    :return: MccsMasterLeafNode TANGO object.
+    """
+    return run((MccsMasterLeafNode,), args=args, **kwargs)
+    # PROTECTED REGION END #    //  MccsMasterLeafNode.main
 
 if __name__ == '__main__':
     main()
