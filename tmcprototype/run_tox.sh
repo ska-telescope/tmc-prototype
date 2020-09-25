@@ -1,11 +1,13 @@
 #!/bin/bash
 set -eo pipefail
 
+# Clear report directory
+rm -rfv ../build/reports/
+
 export working_dir=../build/reports/tox_report
 
-#ls ../build/reports/  <- gives error sometimes: No such file or directory
 #Entering into a bash shell script to run unit-test cases and generating reports
-echo "In run_tox file...."
+echo "Unit test cases will be executed shortly..."
 mkdir -p tox_report
 if [ -d "$working_dir" ]; then rm -rf $working_dir; fi
 
