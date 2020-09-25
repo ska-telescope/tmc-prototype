@@ -146,7 +146,7 @@
       <status abstract="false" inherited="true" concrete="true"/>
       <properties description="The test mode of the device. &#xA;Either no test mode or an indication of the test mode." label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
     </attributes>
-    <attributes name="activitymessage" attType="Scalar" rwType="READ_WRITE" displayLevel="OPERATOR" polledPeriod="1000" maxX="" maxY="" allocReadMember="true" isDynamic="false">
+    <attributes name="activityMessage" attType="Scalar" rwType="READ_WRITE" displayLevel="OPERATOR" polledPeriod="1000" maxX="" maxY="" allocReadMember="true" isDynamic="false">
       <dataType xsi:type="pogoDsl:StringType"/>
       <changeEvent fire="false" libCheckCriteria="false"/>
       <archiveEvent fire="false" libCheckCriteria="false"/>
