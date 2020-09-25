@@ -268,8 +268,8 @@ class MccsSubarrayLeafNode(SKABaseDevice):
     def Configure(self, argin):
         """ Invokes Configure command on MccsSubarrayLeafNode """
         handler = self.get_command_object("Configure")
-        (result_code, message) = handler(argin)
-        return [[result_code], [message]]
+        handler(argin)
+    
 
     def init_command_objects(self):
             """

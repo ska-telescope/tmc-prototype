@@ -31,7 +31,7 @@ setup(name=name,
       package_dir={'': 'src'},
       package_data={'': ['ska_antennas.txt']},
       test_suite="test",
-      entry_points={'console_scripts': ['MccsSubarrayLeafNode=mccssubarrayleafnode.mccs_subarray_leaf_node:main']},
+      entry_points={'console_scripts': ['MccsSubarrayLeafNodeDS=mccssubarrayleafnode.mccs_subarray_leaf_node:main']},
       author='jayant.ska',
       author_email='jayant.ska at gmail.com',
       license='BSD-3-Clause',
@@ -56,5 +56,5 @@ setup(name=name,
       ],
       extras_require={
           'dev': ['prospector[with_pyroma]', 'yapf', 'isort']
-      }
-      )
+    }
+)

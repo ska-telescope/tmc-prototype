@@ -1,0 +1,25 @@
+{
+    "stationBeamList": [
+      {
+        "beamId": 1,
+        "skyCoordinateSet": [
+          0.0,
+          180.0,
+          0.004,
+          45.0,
+          0.004
+        ],
+        "updateRate": 1.0,
+        "channels": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      }
+    ]
+  }

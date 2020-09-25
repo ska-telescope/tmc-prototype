@@ -22,7 +22,8 @@ RUN python3 -m pip install \
     /app/tmcprototype/dishmaster \
     /app/tmcprototype/sdpmasterleafnode \
     /app/tmcprototype/sdpsubarrayleafnode \
-    /app/tmcprototype/subarraynode
+    /app/tmcprototype/subarraynode \
+    /app/tmcprototype/mccssubarrayleafnode
 
 USER tango
 
