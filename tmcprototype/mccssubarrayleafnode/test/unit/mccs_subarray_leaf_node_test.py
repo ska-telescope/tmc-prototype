@@ -1,34 +1,57 @@
-# Path
+# Standard Python imports
 import contextlib
 import importlib
 import sys
-import os
+import json
 import types
 import pytest
 import tango
-path = os.path.join(os.path.dirname(__file__), os.pardir)
-sys.path.insert(0, os.path.abspath(path))
-
-# Imports
-from time import sleep
 import mock
 from mock import Mock
 from mock import MagicMock
-from PyTango import DevFailed, DevState
-from devicetest import DeviceTestCase, main
-from MCCSMasterLeafNode import MCCSMasterLeafNode,const, release
-from ska.base.control_model import HealthState, ObsState, LoggingLevel
+from os.path import dirname, join
+
+# Tango imports
 from tango.test_context import DeviceTestContext
 
+# Additional import
+from mccssubarrayleafnode import MCCSSubarrayLeafNode, const, release
+from ska.base.control_model import HealthState, ObsState, LoggingLevel
+
+
+# Standard Python imports
+import contextlib
+import importlib
+import sys
+import json
+import types
+import pytest
+import tango
+import mock
+from mock import Mock
+from mock import MagicMock
+from os.path import dirname, join
+
+# Tango imports
+from tango.test_context import DeviceTestContext
+
+# Additional import
+from mccssubarrayleafnode import MCCSSubarrayLeafNode, const, release
+from ska.base.control_model import HealthState, ObsState, LoggingLevel
+
+#
+# scan_input_file= 'command_Scan.json'
+# path= join(dirname(__file__), 'data', scan_input_file)
+# with open(path, 'r') as f:
+#     scan_input_str=f.read()
 
 @pytest.fixture(scope="function")
-def event_subscription_with_arg(mock_mccs_subarray):
+def event_subscription(mock_mccs_subarray):
     event_subscription_map = {}
     mock_mccs_subarray[1].command_inout_asynch.side_effect = (
         lambda command_name, argument, callback, *args,
                **kwargs: event_subscription_map.update({command_name: callback}))
     yield event_subscription_map
-
 
 @pytest.fixture(scope="function")
 def event_subscription_without_arg(mock_mccs_subarray):
@@ -49,10 +72,20 @@ def mock_mccs_subarray():
     proxies_to_mock = {
         mccs_subarray1_fqdn: mccs_subarray1_proxy_mock
     }
-    with fake_tango_system(MCCSMasterLeafNode, initial_dut_properties=dut_properties,
+    with fake_tango_system(MCCSSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         yield tango_context.device, mccs_subarray1_proxy_mock
 
+
+def test_start_scan_should_command_mccs_subarray_to_start_its_scan_when_it_is_ready(mock_mccs_subarray):
+    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+    mccs_subarray1_proxy_mock.obsState = ObsState.READY
+    scan_input_str = '{"id":1}'
+    device_proxy.Scan(scan_input_str)
+    # device_proxy.StartScan(scan_input_str)
+    # mccs_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STARTSCAN, scan_input_str,
+    #                                                                 any_method(with_name='scan_cmd_ended_cb'))
+    assert const.STR_STARTSCAN_SUCCESS in device_proxy.activityMessage
 
 def any_method(with_name=None):
     class AnyMethod():
@@ -61,7 +94,6 @@ def any_method(with_name=None):
                 return False
             return other.__func__.__name__ == with_name if with_name else True
     return AnyMethod()
-
 
 def command_callback(command_name):
     fake_event = MagicMock()
@@ -117,6 +149,10 @@ def test_end_should_raise_devfailed_exception(mock_mccs_subarray):
         device_proxy.End()
     assert const.ERR_END_INVOKING_CMD in device_proxy.activityMessage
 
+def assert_activity_message(device_proxy, expected_message):
+    assert device_proxy.activityMessage == expected_message  # reads tango attribute
+
+
 
 @contextlib.contextmanager
 def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
@@ -131,5 +167,3 @@ def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_m
     device_test_context.start()
     yield device_test_context
     device_test_context.stop()
-
-

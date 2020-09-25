@@ -120,7 +120,7 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
         """
         super().init_command_objects()
         args = (self, self.state_model, self.logger)
-        # self.register_command_object("AssignResources", self.AssignResourcesCommand(*args))
+        self.register_command_object("Scan", self.ScanCommand(*args))
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(MCCSSubarrayLeafNode.always_executed_hook) ENABLED START #
@@ -180,14 +180,136 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
         pass
         # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.Configure
 
+    class ScanCommand(ResponseCommand):
+        """
+        A class for MCCSSubarrayLeafNode's StartScan() command.
+        """
+
+        def check_allowed(self):
+            """
+            Checks whether the command is allowed to be run in the current state
+
+            :return: True if this command is allowed to be run in
+                current device state
+
+            :rtype: boolean
+
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+
+            """
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+                tango.Except.throw_exception("Scan() is not allowed in current state",
+                                             "Failed to invoke Scan command on mccssubarrayleafnode.",
+                                             "mccssubarrayleafnode.Scan()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
+        def scan_cmd_ended_cb(self, event):
+            """
+            Callback function immediately executed when the asynchronous invoked
+            command returns.
+
+            :param event: a CmdDoneEvent object. This class is used to pass data
+                to the callback method in asynchronous callback model for command
+                execution.
+
+            :type: CmdDoneEvent object
+                It has the following members:
+                    - device     : (DeviceProxy) The DeviceProxy object on which the
+                                   call was executed.
+                    - cmd_name   : (str) The command name
+                    - argout_raw : (DeviceData) The command argout
+                    - argout     : The command argout
+                    - err        : (bool) A boolean flag set to true if the command
+                                   failed. False otherwise
+                    - errors     : (sequence<DevError>) The error stack
+                    - ext
+
+            :return: none
+            """
+            device = self.target
+            # Update logs and activity message attribute with received event
+            # TODO: This code does not generate exception so refactoring is required
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                device._read_activity_message = log_msg
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                device._read_activity_message = log_msg
+
+
+        def do(self, argin):
+            """
+            This command invokes Scan command on CspSubarray. It is allowed only when CspSubarray is in
+            ObsState READY.
+
+            :param argin: JSON string consists of scan id (int).
+
+            Example:
+            {"id":1}
+
+            Note: Enter the json string without spaces as a input.
+
+            :return: A tuple containing a return code and a string message indicating status.
+             The message is for information purpose only.
+
+            :rtype: (ReturnCode, str)
+
+            :raises: DevFailed if the command execution is not successful
+            """
+            device = self.target
+            try:
+                if device._mccs_subarray_proxy.obsState == ObsState.READY:
+                    device._mccs_subarray_proxy.command_inout_asynch(const.CMD_STARTSCAN, argin,
+                                                                 self.scan_cmd_ended_cb)
+                    device._read_activity_message = const.STR_STARTSCAN_SUCCESS
+                    self.logger.info(const.STR_STARTSCAN_SUCCESS)
+                    return (ResultCode.OK, const.STR_STARTSCAN_SUCCESS)
+                else:
+                    device._read_activity_message = const.ERR_DEVICE_NOT_READY
+                    log_msg = const.STR_OBS_STATE + str(device._csp_subarray_proxy.obsState)
+                    self.logger.error(const.ERR_DEVICE_NOT_READY)
+                    return (ResultCode.FAILED, const.ERR_DEVICE_NOT_READY)
+
+            except DevFailed as dev_failed:
+                log_msg = const.ERR_STARTSCAN_RESOURCES + str(dev_failed)
+                device._read_activity_message = log_msg
+                self.logger.exception(dev_failed)
+                tango.Except.throw_exception(const.STR_START_SCAN_EXEC, log_msg,
+                                             "MCCSSubarrayLeafNode.ScanCommand",
+                                             tango.ErrSeverity.ERR)
+
     @command(
-    dtype_in=('str',), 
+        dtype_in=('str',),
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def Scan(self, argin):
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.Scan) ENABLED START #
-        pass
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.Scan
+        """ Invokes StartScan command on cspsubarrayleafnode"""
+        handler = self.get_command_object("Scan")
+        (result_code, message) = handler(argin)
+        return [[result_code], [message]]
+
+    def is_Scan_allowed(self):
+        """
+        Checks whether the command is allowed to be run in the current state
+
+        :return: True if this command is allowed to be run in
+        current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+
+        """
+        handler = self.get_command_object("Scan")
+        return handler.check_allowed()
 
     @command(
     )
