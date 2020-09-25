@@ -18,31 +18,10 @@ from tango.test_context import DeviceTestContext
 from mccssubarrayleafnode import MccsSubarrayLeafNode, const, release
 from ska.base.control_model import HealthState, ObsState, LoggingLevel
 
-assign_input_file = 'command_AssignResources.json'
-path = join(dirname(__file__), 'data', assign_input_file)
-with open(path, 'r') as f:
-    assign_input_str = f.read()
-
-scan_input_file = 'command_Scan.json'
-path = join(dirname(__file__), 'data', scan_input_file)
-with open(path, 'r') as f:
-    scan_input_str = f.read()
-
 configure_input_file = 'command_Configure.json'
 path = join(dirname(__file__), 'data', configure_input_file)
 with open(path, 'r') as f:
     configure_str = f.read()
-
-invalid_json_assign_config_file = 'invalid_json_Assign_Resources_Configure.json'
-path = join(dirname(__file__), 'data', invalid_json_assign_config_file)
-with open(path, 'r') as f:
-    invalid_key_str = f.read()
-
-assign_invalid_key_file = 'invalid_key_AssignResources.json'
-path = join(dirname(__file__), 'data', assign_invalid_key_file)
-with open(path, 'r') as f:
-    assign_invalid_key = f.read()
-
 
 @pytest.fixture(scope="function")
 def event_subscription(mock_mccs_subarray):
@@ -73,6 +52,19 @@ def mock_mccs_subarray():
     with fake_tango_system(MccsSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         yield tango_context.device, mccs_subarray1_proxy_mock
+
+
+def test_configure_command_when_obstate_is_idle_with_callback_method(mock_mccs_subarray, event_subscription):
+    # arrange:
+    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+    device_proxy.Configure(configure_str)
+    dummy_event = command_callback(const.CMD_CONFIGURE)
+    event_subscription[const.CMD_CONFIGURE](dummy_event)
+    assert const.STR_COMMAND + const.CMD_CONFIGURE in device_proxy.activityMessage
+
+
+
+
 
 
 def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):

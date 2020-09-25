@@ -142,7 +142,7 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
     # Commands
     # --------
 
-    class ConfigureCommand(ResponseCommand):
+    class ConfigureCommand(BaseCommand):
         """
         A class for MccsSubarrayLeafNode's Configure() command.
         """
@@ -223,13 +223,19 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                log_msg = "Input JSON for MCCS Subarray Leaf Node Configure command is: " + argin
-                self.logger.debug(log_msg)
-                device._mccs_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, argin,
-                                                           self.configure_cmd_ended_cb)
-                device._read_activity_message = const.STR_CONFIGURE_SUCCESS
-                self.logger.info(const.STR_CONFIGURE_SUCCESS)
-                return (ResultCode.OK, const.STR_CONFIGURE_SUCCESS)
+                if device._mccs_subarray_proxy.obsState in (ObsState.IDLE, ObsState.READY):
+                    log_msg = "Input JSON for MCCS Subarray Leaf Node Configure command is: " + argin
+                    self.logger.debug(log_msg)
+                    device._mccs_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, argin,
+                                                            self.configure_cmd_ended_cb)
+                    device._read_activity_message = const.STR_CONFIGURE_SUCCESS
+                    self.logger.info(const.STR_CONFIGURE_SUCCESS)
+
+                else:
+                    log_msg = (f"Mccs Subarray is in ObsState {device._mccs_subarray_proxy.obsState.name}.""Unable to invoke Configure command")
+                    device._read_activity_message = log_msg
+                    self.logger.error(log_msg)
+
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_CONFIGURE_INVOKING_CMD + str(dev_failed)
@@ -256,9 +262,7 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in=('str'),
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
+        dtype_in=('str')
     )
     @DebugIt()
     def Configure(self, argin):
