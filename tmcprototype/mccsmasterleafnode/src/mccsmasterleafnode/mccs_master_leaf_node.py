@@ -21,15 +21,17 @@ from tango.server import run, command, device_property, attribute, Device, Devic
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode, ResponseCommand , BaseCommand
 from ska.base.control_model import HealthState, SimulationMode, TestMode
+import json
+
 
 # Additional import
-# PROTECTED REGION ID(MCCSMasterLeafNode.additionnal_import) ENABLED START #
-# PROTECTED REGION END #    //  MCCSMasterLeafNode.additionnal_import
+# PROTECTED REGION ID(MccsMasterLeafNode.additionnal_import) ENABLED START #
+# PROTECTED REGION END #    //  MccsMasterLeafNode.additionnal_import
 from . import const, release
 
 # PROTECTED REGION END #    //  MccsMasterLeafNode imports
 
-__all__ = ["MCCSMasterLeafNode", "main"]
+__all__ = ["MccsMasterLeafNode", "main"]
 
 
 class MccsMasterLeafNode(SKABaseDevice):
@@ -98,7 +100,7 @@ class MccsMasterLeafNode(SKABaseDevice):
             device._version_id = release.version
             device._read_activity_message = const.STR_MCCS_INIT_LEAF_NODE
             try:
-                device._read_activity_message = const.STR_MccsMASTER_FQDN + str(device.MccsSMasterFQDN)
+                #device._read_activity_message = const.STR_MccsMASTER_FQDN + str(device.MccsMasterFQDN)
                 # Creating proxy to the CSPMaster
                 log_msg = "MCCS Master name: " + str(device.MccsMasterFQDN)
                 self.logger.debug(log_msg)
@@ -379,7 +381,7 @@ def main(args=None, **kwargs):
 
     :return: MccsMasterLeafNode TANGO object.
     """
-    return run((MCCSMasterLeafNode,), args=args, **kwargs)
+    return run((MccsMasterLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  MCCSMasterLeafNode.main
 
 if __name__ == '__main__':
