@@ -311,14 +311,117 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Scan")
         return handler.check_allowed()
 
-    @command(
-    )
-    @DebugIt()
-    def EndScan(self):
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.EndScan) ENABLED START #
-        pass
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.EndScan
+    class EndScanCommand(BaseCommand):
+        """
+        A class for MCCSSubarrayLeafNode's EndScan() command.
+        """
 
+        def check_allowed(self):
+            """
+            Checks whether the command is allowed to be run in the current state
+
+            :return: True if this command is allowed to be run in
+                current device state
+
+            :rtype: boolean
+
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+
+            """
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+                tango.Except.throw_exception("EndScan() is not allowed in current state",
+                                             "Failed to invoke EndScan command on mccssubarrayleafnode.",
+                                             "mccssubarrayleafnode.EndScan()",
+                                             tango.ErrSeverity.ERR)
+
+            return True
+
+        def endscan_cmd_ended_cb(self, event):
+            """
+            Callback function immediately executed when the asynchronous invoked
+            command returns.
+
+            :param event: a CmdDoneEvent object. This class is used to pass data
+                to the callback method in asynchronous callback model for command
+                execution.
+
+            :type: CmdDoneEvent object
+                It has the following members:
+                    - device     : (DeviceProxy) The DeviceProxy object on which the
+                                   call was executed.
+                    - cmd_name   : (str) The command name
+                    - argout_raw : (DeviceData) The command argout
+                    - argout     : The command argout
+                    - err        : (bool) A boolean flag set to true if the command
+                                   failed. False otherwise
+                    - errors     : (sequence<DevError>) The error stack
+                    - ext
+
+            :return: none
+            """
+            device = self.target
+            # Update logs and activity message attribute with received event
+            # TODO: This code does not generate exception so refactoring is required
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                device._read_activity_message = log_msg
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                device._read_activity_message = log_msg
+
+        def do(self):
+            """
+            This command invokes EndScan command on MccsSubarray. It is allowed only when MccsSubarray is in
+            ObsState SCANNING.
+
+            :raises: DevFailed if the command execution is not successful.
+                     AssertionError if MccsSubarray is not in SCANNING obsState.
+            """
+            device = self.target
+            try:
+                assert device._mccs_subarray_proxy.obsState == ObsState.SCANNING
+                device._mccs_subarray_proxy.command_inout_asynch(const.CMD_ENDSCAN,
+                                                                 self.endscan_cmd_ended_cb)
+                device._read_activity_message = const.STR_ENDSCAN_SUCCESS
+                self.logger.info(const.STR_ENDSCAN_SUCCESS)
+
+            except AssertionError:
+                device._read_activity_message = const.ERR_DEVICE_NOT_SCANNING
+                self.logger.error(const.ERR_DEVICE_NOT_SCANNING)
+
+            except DevFailed as dev_failed:
+                log_msg = const.ERR_ENDSCAN_RESOURCES + str(dev_failed)
+                device._read_activity_message = log_msg
+                self.logger.exception(dev_failed)
+                tango.Except.throw_exception(const.STR_END_SCAN_EXEC, log_msg,
+                                             "MCCSSubarrayLeafNode.EndScanCommand",
+                                             tango.ErrSeverity.ERR)
+
+    @command()
+    def EndScan(self):
+        """ Invokes EndScan command on MccsSubarray."""
+        handler = self.get_command_object("EndScan")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
+
+    def is_EndScan_allowed(self):
+        """
+        Checks whether the command is allowed to be run in the current state.
+
+        :return: True if this command is allowed to be run in
+        current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+
+        """
+        handler = self.get_command_object("EndScan")
+        return handler.check_allowed()
 
     class EndCommand(ResponseCommand):
         """
