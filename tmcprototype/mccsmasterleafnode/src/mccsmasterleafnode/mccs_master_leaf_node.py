@@ -50,7 +50,7 @@ class MccsMasterLeafNode(SKABaseDevice):
 
 
 
-    MCCSMasterFQDN = device_property(
+    MccsMasterFQDN = device_property(
         dtype='str', default_value="low_mccs/elt/master"
     )
 
@@ -103,13 +103,13 @@ class MccsMasterLeafNode(SKABaseDevice):
             device._version_id = release.version
             device._read_activity_message = const.STR_MCCS_INIT_LEAF_NODE
             try:
-                device._read_activity_message = const.STR_MCCSMASTER_FQDN + str(device.MCCSMasterFQDN)
+                device._read_activity_message = const.STR_MCCSMASTER_FQDN + str(device.MccsMasterFQDN)
                 # Creating proxy to the CSPMaster
-                log_msg = "MCCS Master name: " + str(device.MCCSMasterFQDN)
+                log_msg = "MCCS Master name: " + str(device.MccsMasterFQDN)
                 self.logger.debug(log_msg)
-                device._mccs_master_proxy = DeviceProxy(str(device.MCCSMasterFQDN))
+                device._mccs_master_proxy = DeviceProxy(str(device.MccsMasterFQDN))
             except DevFailed as dev_failed:
-                log_msg = const.ERR_IN_CREATE_PROXY + str(device.MCCSMasterFQDN)
+                log_msg = const.ERR_IN_CREATE_PROXY + str(device.MccsMasterFQDN)
                 self.logger.debug(log_msg)
                 self.logger.exception(dev_failed)
                 device._read_activity_message = log_msg
@@ -138,13 +138,13 @@ class MccsMasterLeafNode(SKABaseDevice):
     # Attributes methods
     # ------------------
 
-    def read_activitymessage(self):
+    def read_activityMessage(self):
         # PROTECTED REGION ID(MccsMasterLeafNode.activityMessage_read) ENABLED START #
         return self._read_activity_message
         # PROTECTED REGION END #    //  MccsMasterLeafNode.activityMessage_read
 
-    def write_activitymessage(self, value):
-        # PROTECTED REGION ID(MccsMasterLeafNode.activitymessage_write) ENABLED START #
+    def write_activityMessage(self, value):
+        # PROTECTED REGION ID(MccsMasterLeafNode.activityMessage_write) ENABLED START #
         self._read_activity_message = value
         # PROTECTED REGION END #    //  MccsMasterLeafNode.activityMessage_write
 

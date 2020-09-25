@@ -1,16 +1,17 @@
+"""
+MCCS Subarray Leaf node monitors the MCCS Subarray and issues control actions during an observation.
+It also acts as a MCCS contact point for Subarray Node for observation execution for TMC.
+"""
 # -*- coding: utf-8 -*-
 #
-# This file is part of the MCCSSubarrayLeafNode project
+# This file is part of the MccsSubarrayLeafNode project
 #
 #
 #
-# Distributed under the terms of the GPL license.
+# Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 
-""" 
-
-"""
-
+# PROTECTED REGION ID(MccSubarrayLeafNode.additional_import) ENABLED START #
 # Tango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
@@ -21,18 +22,17 @@ from ska.base.control_model import HealthState, ObsState
 
 # Additional import
 from . import const, release
-# PROTECTED REGION ID(MCCSSubarrayLeafNode.additionnal_import) ENABLED START #
-# PROTECTED REGION END #    //  MCCSSubarrayLeafNode.additionnal_import
+# PROTECTED REGION END #    //  MccsSubarrayLeafNode.additional_import
 
-__all__ = ["MCCSSubarrayLeafNode", "main"]
+__all__ = ["MccsSubarrayLeafNode", "main"]
 
 
-class MCCSSubarrayLeafNode(SKABaseDevice):
+class MccsSubarrayLeafNode(SKABaseDevice):
     """
+    MCCS Subarray Leaf node monitors the MCCS Subarray and issues control actions during an observation.
     """
-    __metaclass__ = DeviceMeta
-    # PROTECTED REGION ID(MCCSSubarrayLeafNode.class_variable) ENABLED START #
-    # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.class_variable
+    # PROTECTED REGION ID(MccsSubarrayLeafNode.class_variable) ENABLED START #
+    # PROTECTED REGION END #    //  MccsSubarrayLeafNode.class_variable
 
     # -----------------
     # Device Properties
@@ -42,7 +42,7 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
 
 
 
-    MCCSSubarrayFQDN = device_property(
+    MccsSubarrayFQDN = device_property(
         dtype='str', default_value="low_mccs/elt/subarray_01"
     )
 
@@ -58,7 +58,7 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
 
 
 
-    activitymessage = attribute(
+    activityMessage = attribute(
         dtype='str',
         access=AttrWriteType.READ_WRITE,
     )
@@ -76,12 +76,12 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
-        A class for the MCCSSubarrayLeafNode's init_device() method"
+        A class for the MccsSubarrayLeafNode's init_device() method"
         """
 
         def do(self):
             """
-            Initializes the attributes and properties of the MCCSSubarrayLeafNode.
+            Initializes the attributes and properties of the MccsSubarrayLeafNode.
 
             :return: A tuple containing a return code and a string message indicating status. The message is
             for information purpose only.
@@ -93,8 +93,8 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
             super().do()
             device = self.target
             try:
-                # create MCCSSubarray Proxy
-                device._mccs_subarray_proxy = DeviceProxy(device.MCCSSubarrayFQDN)
+                # create MccsSubarray Proxy
+                device._mccs_subarray_proxy = DeviceProxy(device.MccsSubarrayFQDN)
             except DevFailed as dev_failed:
                 log_msg = const.ERR_IN_CREATE_PROXY_MCCSSA + str(dev_failed)
                 self.logger.debug(log_msg)
@@ -114,28 +114,28 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
         # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.init_device
 
     def always_executed_hook(self):
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.always_executed_hook) ENABLED START #
+        # PROTECTED REGION ID(MccsSubarrayLeafNode.always_executed_hook) ENABLED START #
         """ Internal construct of TANGO. """
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.always_executed_hook
+        # PROTECTED REGION END #    //  MccsSubarrayLeafNode.always_executed_hook
 
     def delete_device(self):
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.delete_device) ENABLED START #
+        # PROTECTED REGION ID(MccsSubarrayLeafNode.delete_device) ENABLED START #
         """ Internal construct of TANGO. """
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.delete_device
+        # PROTECTED REGION END #    //  MccsSubarrayLeafNode.delete_device
 
     # ------------------
     # Attributes methods
     # ------------------
 
-    def read_activitymessage(self):
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.activitymessage_read) ENABLED START #
+    def read_activityMessage(self):
+        # PROTECTED REGION ID(MccsSubarrayLeafNode.activityMessage_read) ENABLED START #
         return self._read_activity_message
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.activitymessage_read
+        # PROTECTED REGION END #    //  MccsSubarrayLeafNode.activityMessage_read
 
-    def write_activitymessage(self, value):
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.activitymessage_write) ENABLED START #
+    def write_activityMessage(self, value):
+        # PROTECTED REGION ID(MccsSubarrayLeafNode.activityMessage_write) ENABLED START #
         self._read_activity_message = value
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.activitymessage_write
+        # PROTECTED REGION END #    //  MccsSubarrayLeafNode.activityMessage_write
 
 
     # --------
@@ -289,9 +289,9 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
 
 
 def main(args=None, **kwargs):
-    # PROTECTED REGION ID(MCCSSubarrayLeafNode.main) ENABLED START #
-    return run((MCCSSubarrayLeafNode,), args=args, **kwargs)
-    # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.main
+    # PROTECTED REGION ID(MccsSubarrayLeafNode.main) ENABLED START #
+    return run((MccsSubarrayLeafNode,), args=args, **kwargs)
+    # PROTECTED REGION END #    //  MccsSubarrayLeafNode.main
 
 if __name__ == '__main__':
     main()
