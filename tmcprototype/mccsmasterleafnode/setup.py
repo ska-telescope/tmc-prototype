@@ -10,7 +10,7 @@
 
 import os
 import sys
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -21,7 +21,8 @@ readme_filename = os.path.join(setup_dir, 'README.rst')
 with open(readme_filename) as file:
     long_description = file.read()
 
-release_filename = os.path.join(setup_dir, 'src', 'MCCSMasterLeafNode', 'release.py')
+release_filename = os.path.join(setup_dir, 'src', 'mccsmasterleafnode', 'release.py')
+print(release_filename)
 exec(open(release_filename).read())
 
 setup(name=name,

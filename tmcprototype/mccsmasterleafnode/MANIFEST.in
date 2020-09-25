@@ -1,9 +1,8 @@
-recursive-include MCCSMasterLeafNode *.py
+recursive-include src/mccsmasterleafnode *.py
 recursive-include test *.py
 include *.rst
-include MCCSMasterLeafNode.xmi
+recursive-include pogo MCCSMasterLeafNode.xmi
 include *.txt
 graft docs
-
 global-exclude *.pyc
 global-exclude *.pyo

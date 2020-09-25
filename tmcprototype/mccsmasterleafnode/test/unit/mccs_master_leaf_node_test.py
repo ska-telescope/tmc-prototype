@@ -20,7 +20,9 @@ from time import sleep
 from mock import MagicMock
 from PyTango import DevFailed, DevState
 from devicetest import DeviceTestCase, main
-from MCCSMasterLeafNode import MCCSMasterLeafNode
+from mccsmasterleafnode import MCCSMasterLeafNode
+
+
 
 # Note:
 #
