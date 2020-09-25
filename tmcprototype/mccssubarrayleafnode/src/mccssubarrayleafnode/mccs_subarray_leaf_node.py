@@ -197,13 +197,127 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
         pass
         # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.EndScan
 
+
+    class EndCommand(ResponseCommand):
+        """
+        A class for MCCSSubarrayLeafNode's End() command.
+        """
+
+        def check_allowed(self):
+            """
+            Checks whether the command is allowed to be run in the current state
+
+            :return: True if this command is allowed to be run in
+                current device state
+
+            :rtype: boolean
+
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+
+            """
+            if self.state_model.op_state in [
+                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception("End() is not allowed in current state",
+                                             "Failed to invoke End command on MCCSSubarrayLeafNode.",
+                                             "Mccssubarrayleafnode.End()",
+                                             tango.ErrSeverity.ERR)
+            return True
+
+        def end_cmd_ended_cb(self, event):
+            """
+            Callback function immediately executed when the asynchronous invoked
+            command returns.
+
+            :param event: a CmdDoneEvent object. This class is used to pass data
+                to the callback method in asynchronous callback model for command
+                execution.
+
+            :type: CmdDoneEvent object
+                It has the following members:
+                    - device     : (DeviceProxy) The DeviceProxy object on which the
+                                   call was executed.
+                    - cmd_name   : (str) The command name
+                    - argout_raw : (DeviceData) The command argout
+                    - argout     : The command argout
+                    - err        : (bool) A boolean flag set to true if the command
+                                   failed. False otherwise
+                    - errors     : (sequence<DevError>) The error stack
+                    - ext
+
+            :return: none
+            """
+            device = self.target
+            # Update logs and activity message attribute with received event
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                device._read_activity_message = log_msg
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                device._read_activity_message = log_msg
+
+        def do(self):
+            """
+            This command invokes End command on MCCS Subarray in order to end current scheduling block.
+
+            :return: A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+
+            :raises: DevFailed if the command execution is not successful
+            """
+            device = self.target
+            try:
+                if device._mccs_subarray_proxy.obsState == ObsState.READY:
+                    device._mccs_subarray_proxy.command_inout_asynch(const.CMD_END,
+                                                                    self.end_cmd_ended_cb)
+                    device._read_activity_message = const.STR_END_SUCCESS
+                    self.logger.info(const.STR_END_SUCCESS)
+                    return (ResultCode.OK, const.STR_END_SUCCESS)
+                else:
+                    device._read_activity_message = const.ERR_DEVICE_NOT_READY
+                    log_msg = const.STR_OBS_STATE + str(device._mccs_subarray_proxy.obsState)
+                    self.logger.error(const.ERR_DEVICE_NOT_READY)
+                    return (ResultCode.FAILED, const.ERR_DEVICE_NOT_READY)
+
+            except DevFailed as dev_failed:
+                log_msg = const.ERR_END_INVOKING_CMD + str(dev_failed)
+                device._read_activity_message = log_msg
+                self.logger.exception(dev_failed)
+                tango.Except.throw_exception(const.ERR_END_INVOKING_CMD, log_msg,
+                                             "MccsSubarrayLeafNode.EndCommand",
+                                             tango.ErrSeverity.ERR)
+
+    def is_End_allowed(self):
+        """
+        Checks whether the command is allowed to be run in the current state
+
+        :return: True if this command is allowed to be run in
+        current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+
+        """
+        handler = self.get_command_object("End")
+        return handler.check_allowed()
+
     @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def End(self):
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.End) ENABLED START #
-        pass
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.End
+        """ Invokes End command on MccsSubarrayLeafNode. """
+        handler = self.get_command_object("End")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
 
     @command(
     )
