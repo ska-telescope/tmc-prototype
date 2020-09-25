@@ -18,8 +18,9 @@ import tango
 from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run, command, device_property, attribute, Device, DeviceMeta
 from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode, ResponseCommand
+from ska.base.commands import ResultCode, ResponseCommand, BaseCommand
 from ska.base.control_model import HealthState, SimulationMode, TestMode
+from . import const,release
 
 # Additional import
 # PROTECTED REGION ID(MCCSMasterLeafNode.additionnal_import) ENABLED START #
@@ -348,7 +349,115 @@ class MCCSMasterLeafNode(SKABaseDevice):
         (result_code, message) = handler(argin)
         return [[result_code], [message]]
 
-    def init_command_objects(self):
+
+    class ReleaseResourcesCommand(BaseCommand):
+        """
+        A class for MccsMasterLeafNode's ReleaseResources() command.
+        """
+
+        def check_allowed(self):
+            """
+            Checks whether the command is allowed to be run in the current state
+
+            :return: True if this command is allowed to be run in current device state
+
+            :rtype: boolean
+
+            :raises: DevFailed if this command is not allowed to be run
+                in current device state
+
+            """
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+                tango.Except.throw_exception("ReleaseResources() is not allowed in current state",
+                                             "Failed to invoke ReleaseResources command on "
+                                             "mccsmasterleafnode.",
+                                             "mccsmasterleafnode.ReleaseResources()",
+                                             tango.ErrSeverity.ERR)
+            return True
+
+        def releaseresources_cmd_ended_cb(self, event):
+            """
+            Callback function immediately executed when the asynchronous invoked
+            command returns.
+
+            :param event: a CmdDoneEvent object. This class is used to pass data
+                to the callback method in asynchronous callback model for command
+                execution.
+
+            :type: CmdDoneEvent object
+                It has the following members:
+                    - device     : (DeviceProxy) The DeviceProxy object on which the
+                                   call was executed.
+                    - cmd_name   : (str) The command name
+                    - argout_raw : (DeviceData) The command argout
+                    - argout     : The command argout
+                    - err        : (bool) A boolean flag set to true if the command
+                                   failed. False otherwise
+                    - errors     : (sequence<DevError>) The error stack
+                    - ext
+
+            :return: none
+            """
+            device = self.target
+            # Update logs and activity message attribute with received event
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                device._read_activity_message = log_msg
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                device._read_activity_message = log_msg
+
+        def do(self):
+            """
+            It invokes ReleaseResources command on MccsMaster and releases all the resources assigned to
+            MccsMaster.
+
+            :return: None.
+
+            :raises: DevFailed if the command execution is not successful
+
+            """
+            device = self.target
+            try:
+                device._csp_subarray_proxy.command_inout_asynch(const.CMD_Release,
+                                                             self.releaseresources_cmd_ended_cb)
+                device._read_activity_message = const.STR_REMOVE_ALL_RECEPTORS_SUCCESS
+                self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
+
+            except DevFailed as dev_failed:
+                log_msg = const.ERR_RELEASE_ALL_RESOURCES + str(dev_failed)
+                device._read_activity_message = log_msg
+                self.logger.exception(dev_failed)
+                tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, log_msg,
+                                             "MccsMasterLeafNode.ReleaseAllResourcesCommand",
+                                             tango.ErrSeverity.ERR)
+    @command(
+    )
+    @DebugIt()
+    def ReleaseResources(self):
+        """ Invokes ReleaseResources command on MccsMasterLeafNode"""
+        handler = self.get_command_object("ReleaseResources")
+        handler()
+
+    def is_ReleaseResources_allowed(self):
+        """
+        Checks whether the command is allowed to be run in the current state
+
+        :return: True if this command is allowed to be run in
+                 current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run
+                 in current device state
+        """
+        handler = self.get_command_object("ReleaseResources")
+        return handler.check_allowed()
+
+
+def init_command_objects(self):
         """
         Initialises the command handlers for commands supported by this
         device.
@@ -356,6 +465,8 @@ class MCCSMasterLeafNode(SKABaseDevice):
         super().init_command_objects()
         args = (self, self.state_model, self.logger)
         self.register_command_object("AssignResource", self.AssignResourceCommand(*args))
+        self.register_command_object("ReleaseResources", self.ReleaseResourcesCommand(*args))
+
 
 # ----------
 # Run server
