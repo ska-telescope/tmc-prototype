@@ -298,6 +298,19 @@ publish to nexus:
       - $CI_COMMIT_MESSAGE =~ /^.+$/ # Confirm tag message exists
       - $CI_COMMIT_TAG =~ /^((([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)$/ # Confirm semantic versioning of tag
 
+publish_chart:
+  variables:
+    CHARTS_TO_PUBLISH: tmc-low tmc-mid # name from te charts folder
+  stage: publish
+  tags:
+    - docker-executor
+  image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest # /deploy:0.4.2 - as per ska-docker file
+  script:
+    - curl -s https://gitlab.com/ska-telescope/stupid/raw/master/scripts/publish-charts.sh | bash
+  artifacts:
+    paths:
+      - ./build
+
 pages:
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
   before_script:
