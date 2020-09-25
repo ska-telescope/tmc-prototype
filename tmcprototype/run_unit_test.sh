@@ -12,7 +12,7 @@ export TMC_ELEMENT=mccssubarrayleafnode;
 echo +++ Trying tests for $TMC_ELEMENT;
 pytest -v ./${TMC_ELEMENT}/test/unit --forked --cov=/usr/local/lib/python3.7/dist-packages/${TMC_ELEMENT} --cov-branch --cov-report=html:/report/unit_test/${TMC_ELEMENT}_htmlcov --json-report --json-report-file=/report/unit_test/${TMC_ELEMENT}_report.json --junitxml=/report/unit_test/${TMC_ELEMENT}-unit-tests.xml;
 mv /app/tmcprototype/.coverage /report/unit_test/${TMC_ELEMENT}_coverage;
-done
+#done
 cd /report/unit_test
 #Combine the individual report in combine converage report in xml and html format.
 coverage combine dishleafnode_coverage cspmasterleafnode_coverage \
