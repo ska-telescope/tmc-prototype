@@ -317,19 +317,5 @@ class MCCSMasterLeafNode(SKABaseDevice):
 # ----------
 
 
-def main(args=None, **kwargs):
-    # PROTECTED REGION ID(MCCSMasterLeafNode.main) ENABLED START #
-    """
-    Runs the MccsMasterLeafNode.
-
-    :param args: Arguments internal to TANGO
-
-    :param kwargs: Arguments internal to TANGO
-
-    :return: MccsMasterLeafNode TANGO object.
-    """
-    return run((MCCSMasterLeafNode,), args=args, **kwargs)
-    # PROTECTED REGION END #    //  MCCSMasterLeafNode.main
-
 if __name__ == '__main__':
     main()
