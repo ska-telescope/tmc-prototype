@@ -28,7 +28,7 @@ from .exceptions import InvalidObsStateError
 __all__ = ["SdpSubarrayLeafNode", "main"]
 
 
-# pylint: disable=unused-argument,unused-variable
+# pylint: disable=unused-argument,unused-variable, implicit-str-concat
 class SdpSubarrayLeafNode(SKABaseDevice):
     """
     SDP Subarray Leaf node is to monitor the SDP Subarray and issue control actions during an observation.
@@ -1029,8 +1029,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     return(ResultCode.OK, const.STR_ABORT_SUCCESS)
 
                 else:
-                    #log_msg = ("Sdp Subarray is in ObsState {device._sdp_subarray_proxy.obsState.name}.""Unable to invoke Abort command")
-                    log_msg = ("Sdp Subarray is in ObsState. Unable to invoke Abort command")
+                    log_msg = ("Sdp Subarray is in ObsState {device._sdp_subarray_proxy.obsState.name}.""Unable to invoke Abort command")
                     device._read_activity_message = log_msg
                     self.logger.error(log_msg)
                     return(ResultCode.FAILED, log_msg)
@@ -1420,7 +1419,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             return (ResultCode.OK, const.STR_OFF_CMD_SUCCESS)
 
 
-# pylint: enable=unused-argument,unused-variable
+# pylint: enable=unused-argument,unused-variable, implicit-str-concat
 
 # ----------
 # Run server

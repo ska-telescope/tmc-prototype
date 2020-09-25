@@ -106,15 +106,6 @@ endif
 #   3. uses a transient volume as a working directory, in which untarred files
 #      and test output can be written in the container and subsequently copied
 #      to the host
-#
-# make = tar -c test-harness/ | \
-# 	   docker run -i --rm --network=$(NETWORK_MODE) \
-# 	   -e TANGO_HOST=$(TANGO_HOST) \
-# 	   -v $(CACHE_VOLUME):/home/tango/.cache \
-# 	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
-# 	   bash -c "sudo chown -R tango:tango /build && \
-# 	   tar x --strip-components 1 --warning=all && \
-# 	   make TANGO_HOST=$(TANGO_HOST) $1"
 
 unit-test:
 	cd tmcprototype; \
