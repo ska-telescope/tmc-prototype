@@ -2,7 +2,7 @@
 set -eo pipefail
 
 # Clear report directory
-rm -rfv ../build/reports/
+#rm -rfv ../build/reports/
 
 export working_dir=../build/reports/tox_report
 
