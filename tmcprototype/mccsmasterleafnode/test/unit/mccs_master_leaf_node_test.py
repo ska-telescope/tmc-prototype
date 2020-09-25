@@ -154,10 +154,3 @@ def mock_mccs_master():
         device_test_context.start()
         yield device_test_context
         device_test_context.stop()
-
-
- 
-
-# Main execution
-if __name__ == "__main__":
-    main()
