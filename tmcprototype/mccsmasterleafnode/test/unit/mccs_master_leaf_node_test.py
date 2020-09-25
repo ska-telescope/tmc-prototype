@@ -1,9 +1,10 @@
+# PROTECTED REGION ID(MccsMasterLeafNode.import) ENABLED START #
+
 # Standard Python imports
 import contextlib
 import importlib
-import sys
-import json
 import types
+
 import pytest
 import tango
 import mock
@@ -15,7 +16,7 @@ from os.path import dirname, join
 from tango.test_context import DeviceTestContext
 
 # Additional import
-from mccsmasterleafnode import MccsMasterLeafNode, const, release
+from mccsmasterleafnode import MCCSMasterLeafNode, const, release
 from ska.base.control_model import HealthState, ObsState, LoggingLevel
 
 assign_input_file = 'command_AssignResources.json'

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# This file is part of the MCCSMasterLeafNode project
+# This file is part of the MccsMasterLeafNode project
 #
 #
 #
@@ -10,7 +10,7 @@
 
 import os
 import sys
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -21,16 +21,17 @@ readme_filename = os.path.join(setup_dir, 'README.rst')
 with open(readme_filename) as file:
     long_description = file.read()
 
-release_filename = os.path.join(setup_dir, 'src', 'MCCSMasterLeafNode', 'release.py')
+release_filename = os.path.join(setup_dir, 'src', 'mccsmasterleafnode', 'release.py')
 exec(open(release_filename).read())
 
 setup(name=name,
       version=version,
-      description='',
+      description='MCCS Master Leaf Node is the component what interfaces with MCCS Master.',
       packages=find_packages(where='src'),
+      package_dir={'': 'src'},
       include_package_data=True,
       test_suite="test",
-      entry_points={'console_scripts':['MCCSMasterLeafNode = mccsmasterleafnode.mccs_master_leaf_node:main']},
+      entry_points={'console_scripts':['MccsMasterLeafNodeDS=mccsmasterleafnode.mccs_master_leaf_node:main']},
       author='jayant.ska',
       author_email='jayant.ska at gmail.com',
       license='BSD-3-Clause',
