@@ -12,6 +12,7 @@ ERR_INVOKING_CMD = "Error in invoking command: "
 ERR_CONFIGURE_INVOKING_CMD = "Error while invoking Configure command on MCCS Subarray."
 ERR_DEVFAILED_MSG = "This is error message for devfailed"
 ERR_CALLBACK_CMD_FAILED = "MccsSubarrayLeafNode_Commandfailed in callback"
+ERR_INVALID_JSON_CONFIG = "Invalid JSON format while invoking Configure command on MccsSubarray."
 
 
 #strings

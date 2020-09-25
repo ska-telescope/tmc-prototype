@@ -23,6 +23,11 @@ path = join(dirname(__file__), 'data', configure_input_file)
 with open(path, 'r') as f:
     configure_str = f.read()
 
+invalid_json_file = 'invalid_json.json'
+path = join(dirname(__file__), 'data', invalid_json_file)
+with open(path, 'r') as f:
+    invalid_json_str = f.read()
+
 @pytest.fixture(scope="function")
 def event_subscription(mock_mccs_subarray):
     event_subscription_map = {}
@@ -62,9 +67,58 @@ def test_configure_command_when_obstate_is_idle_with_callback_method(mock_mccs_s
     event_subscription[const.CMD_CONFIGURE](dummy_event)
     assert const.STR_COMMAND + const.CMD_CONFIGURE in device_proxy.activityMessage
 
+def test_configure_command_when_obstate_is_ready_with_callback_method(mock_mccs_subarray, event_subscription):
+    # arrange:
+    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+    device_proxy.Configure(configure_str)
+    dummy_event = command_callback(const.CMD_CONFIGURE)
+    event_subscription[const.CMD_CONFIGURE](dummy_event)
+    assert const.STR_COMMAND + const.CMD_CONFIGURE in device_proxy.activityMessage
 
 
+def test_configure_to_send_correct_configuration_data_when_mccs_subarray_is_idle(mock_mccs_subarray):
+    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+    # How to bring MCCS Subarray to a state after AssignResources?
+    mccs_subarray1_proxy_mock.obsState = ObsState.IDLE
+    # device_proxy.On()
+    # device_proxy.AssignResources(assign_input_str)
+    device_proxy.Configure(configure_str)
+    mccs_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_CONFIGURE,
+                                argin, any_method(with_name='configure_cmd_ended_cb'))
 
+
+def test_configure_should_failed_when_device_obsstate_is_empty(mock_mccs_subarray):
+    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+    mccs_subarray1_proxy_mock.obsState = ObsState.IDLE
+    device_proxy.Configure(configure_str)
+    assert "Unable to invoke Configure command" in device_proxy.activityMessage
+
+
+def test_configure_command_with_callback_method_with_event_error(mock_mccs_subarray, event_subscription ):
+    # arrange:
+    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+    mccs_subarray1_proxy_mock.obsState = ObsState.IDLE
+    device_proxy.On()
+    device_proxy.Configure(configure_str)
+    dummy_event = command_callback_with_event_error(const.CMD_CONFIGURE)
+    event_subscription[const.CMD_CONFIGURE](dummy_event)
+    assert const.ERR_INVOKING_CMD + const.CMD_CONFIGURE in device_proxy.activityMessage
+
+
+def test_configure_to_raise_devfailed_exception(mock_mccs_subarray):
+    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+    mccs_subarray1_proxy_mock.obsState = ObsState.IDLE
+    mccs_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_with_arg
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.Configure(configure_str)
+    assert const.ERR_DEVFAILED_MSG in str(df.value)
+
+
+def test_configure_should_raise_exception_when_called_invalid_json():
+    with fake_tango_system(MccsSubarrayLeafNode) as tango_context:
+        with pytest.raises(tango.DevFailed) as df:
+            tango_context.device.Configure(invalid_json_str)
+        assert const.ERR_INVALID_JSON_CONFIG in str(df.value)
 
 
 def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):
