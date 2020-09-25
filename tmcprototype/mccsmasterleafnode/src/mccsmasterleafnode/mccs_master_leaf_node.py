@@ -8,8 +8,6 @@
 # See LICENSE.txt for more info.
 
 # PROTECTED REGION ID(MccsMasterLeafNode.import) ENABLED START #
-
-"""
 from __future__ import print_function
 from __future__ import absolute_import
 
@@ -160,9 +158,9 @@ class MccsMasterLeafNode(SKABaseDevice):
     )
     @DebugIt()
     def AssignResource(self, argin):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.AssignResource) ENABLED START #
+        # PROTECTED REGION ID(MccsMasterLeafNode.AssignResource) ENABLED START #
         return ""
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.AssignResource
+        # PROTECTED REGION END #    //  MccsMasterLeafNode.AssignResource
 
     @command(
     dtype_in='str', 
@@ -170,14 +168,14 @@ class MccsMasterLeafNode(SKABaseDevice):
     )
     @DebugIt()
     def ReleaseResources(self, argin):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.ReleaseResources) ENABLED START #
+        # PROTECTED REGION ID(MccsMasterLeafNode.ReleaseResources) ENABLED START #
         return ""
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.ReleaseResources
+        # PROTECTED REGION END #    //  MccsMasterLeafNode.ReleaseResources
 
 
     class OnCommand(SKABaseDevice.OnCommand):
         """
-        A class for MCCSMasterLeafNode's On() command.
+        A class for MccsMasterLeafNode's On() command.
         """
 
         def on_cmd_ended_cb(self, event):
@@ -229,22 +227,14 @@ class MccsMasterLeafNode(SKABaseDevice):
             # Pass argin to mccs master .
             # If the array length is 0, the command applies to the whole MCCS Element.
             # If the array length is > 1 each array element specifies the FQDN of the MCCS SubElement to switch ON.
-            argin = []
-            device._mccs_master_proxy.command_inout_asynch(const.CMD_ON, argin, self.on_cmd_ended_cb)
+            device._mccs_master_proxy.command_inout_asynch(const.CMD_ON, self.on_cmd_ended_cb)
             self.logger.debug(const.STR_ON_CMD_ISSUED)
             return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
 
-    @command(
-    )
-    @DebugIt()
-    def On(self):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.On) ENABLED START #
-        pass
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.On
-    
+
     class OffCommand(SKABaseDevice.OffCommand):
         """
-        A class for MCCSMasterLeafNode's Off() command.
+        A class for MccsMasterLeafNode's Off() command.
         """
 
         def off_cmd_ended_cb(self, event):
@@ -296,19 +286,11 @@ class MccsMasterLeafNode(SKABaseDevice):
             # pass argin to mccs master.
             # If the array length is 0, the command applies to the whole MCCS Element.
             # If the array length is >, each array element specifies the FQDN of the MCCS SubElement to switch OFF.
-            argin = []
-            device._mccs_master_proxy.command_inout_asynch(const.CMD_OFF, argin, self.off_cmd_ended_cb)
+            device._mccs_master_proxy.command_inout_asynch(const.CMD_OFF, self.off_cmd_ended_cb)
             self.logger.debug(const.STR_OFF_CMD_ISSUED)
             device._read_activity_message = const.STR_OFF_CMD_ISSUED
             return (ResultCode.OK, const.STR_OFF_CMD_ISSUED)
 
-    @command(
-    )
-    @DebugIt()
-    def Off(self):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.Off) ENABLED START #
-        pass
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.Off
 
     def init_command_objects(self):
         """
@@ -317,8 +299,6 @@ class MccsMasterLeafNode(SKABaseDevice):
         """
         super().init_command_objects()
         args = (self, self.state_model, self.logger)
-        # self.register_command_object("Disable",self.DisableCommand(*args))
-        # self.register_command_object("Standby",self.StandbyCommand(*args))
         
 # ----------
 # Run server
