@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 #
-# This file is part of the MCCSMasterLeafNode project
+# This file is part of the MccsMasterLeafNode project
 #
 #
 #
-# Distributed under the terms of the GPL license.
+# Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 
 """ 
+# PROTECTED REGION ID(MccsMasterLeafNode.import) ENABLED START #
 
 """
 from __future__ import print_function
@@ -18,33 +19,40 @@ import tango
 from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run, command, device_property, attribute, Device, DeviceMeta
 from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode, ResponseCommand, BaseCommand
+import json
+from ska.base.commands import ResultCode, ResponseCommand , BaseCommand
 from ska.base.control_model import HealthState, SimulationMode, TestMode
-from . import const,release
 
 # Additional import
 # PROTECTED REGION ID(MCCSMasterLeafNode.additionnal_import) ENABLED START #
 # PROTECTED REGION END #    //  MCCSMasterLeafNode.additionnal_import
+from . import const, release
 
-__all__ = ["MCCSMasterLeafNode", "main"]
+# PROTECTED REGION END #    //  MccsMasterLeafNode imports
+
+__all__ = ["MccsMasterLeafNode", "main"]
 
 
-class MCCSMasterLeafNode(SKABaseDevice):
+class MccsMasterLeafNode(SKABaseDevice):
     """
+    **Properties:**
+
+    - MccsMasterFQDN   - Property to provide FQDN of MCCS Master Device
+
+    **Attributes:**
+
+    - mccsHealthState  - Forwarded attribute to provide MCCS Master Health State
+    - activityMessage - Attribute to provide activity message
+
     """
-    __metaclass__ = DeviceMeta
-    # PROTECTED REGION ID(MCCSMasterLeafNode.class_variable) ENABLED START #
-    # PROTECTED REGION END #    //  MCCSMasterLeafNode.class_variable
+    # PROTECTED REGION ID(MccsMasterLeafNode.class_variable) ENABLED START #
+    # PROTECTED REGION END #    //  MccsMasterLeafNode.class_variable
 
     # -----------------
     # Device Properties
     # -----------------
 
-
-
-
-
-    MCCSMasterFQDN = device_property(
+    MccsMasterFQDN = device_property(
         dtype='str', default_value="low_mccs/elt/master"
     )
 
@@ -52,17 +60,11 @@ class MCCSMasterLeafNode(SKABaseDevice):
     # Attributes
     # ----------
 
-
-
-
-
-
-
-
-
-    activitymessage = attribute(
+    activityMessage = attribute(
         dtype='str',
         access=AttrWriteType.READ_WRITE,
+        doc="Activity Message",
+
     )
 
 
@@ -85,7 +87,7 @@ class MCCSMasterLeafNode(SKABaseDevice):
 
             :rtype: (ResultCode, str)
 
-            :raises: DevFailed if error occurs while creating the device proxy for CSP Master or
+            :raises: DevFailed if error occurs while creating the device proxy for Mccs Master or
                     subscribing the evennts.
             """
             super().do()
@@ -97,13 +99,13 @@ class MCCSMasterLeafNode(SKABaseDevice):
             device._version_id = release.version
             device._read_activity_message = const.STR_MCCS_INIT_LEAF_NODE
             try:
-                device._read_activity_message = const.STR_MCCSMASTER_FQDN + str(device.MCCSMasterFQDN)
-                # Creating proxy to the CSPMaster
-                log_msg = "MCCS Master name: " + str(device.MCCSMasterFQDN)
+                device._read_activity_message = const.STR_MccsMASTER_FQDN + str(device.MccsSMasterFQDN)
+                # Creating proxy to the MccsMaster
+                log_msg = "MCCS Master name: " + str(device.MccsMasterFQDN)
                 self.logger.debug(log_msg)
-                device._mccs_master_proxy = DeviceProxy(str(device.MCCSMasterFQDN))
+                device._mccs_master_proxy = DeviceProxy(str(device.MccsMasterFQDN))
             except DevFailed as dev_failed:
-                log_msg = const.ERR_IN_CREATE_PROXY + str(device.MCCSMasterFQDN)
+                log_msg = const.ERR_IN_CREATE_PROXY + str(device.MccsMasterFQDN)
                 self.logger.debug(log_msg)
                 self.logger.exception(dev_failed)
                 device._read_activity_message = log_msg
@@ -119,35 +121,35 @@ class MCCSMasterLeafNode(SKABaseDevice):
             return (ResultCode.OK, device._read_activity_message)
 
     def always_executed_hook(self):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.always_executed_hook) ENABLED START #
+        # PROTECTED REGION ID(MccsMasterLeafNode.always_executed_hook) ENABLED START #
         """ Internal construct of TANGO. """
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.always_executed_hook
+        # PROTECTED REGION END #    //  MccsMasterLeafNode.always_executed_hook
 
     def delete_device(self):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.delete_device) ENABLED START #
+        # PROTECTED REGION ID(MccsMasterLeafNode.delete_device) ENABLED START #
         """ Internal construct of TANGO. """
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.delete_device
+        # PROTECTED REGION END #    //  MccsMasterLeafNode.delete_device
 
     # ------------------
     # Attributes methods
     # ------------------
 
-    def read_activitymessage(self):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.activitymessage_read) ENABLED START #
+    def read_activityMessage(self):
+        # PROTECTED REGION ID(MccsMasterLeafNode.activitymessage_read) ENABLED START #
         return self._read_activity_message
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.activitymessage_read
+        # PROTECTED REGION END #    //  MccsMasterLeafNode.activitymessage_read
 
-    def write_activitymessage(self, value):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.activitymessage_write) ENABLED START #
+    def write_activityMessage(self, value):
+        # PROTECTED REGION ID(MccsMasterLeafNode.activitymessage_write) ENABLED START #
         self._read_activity_message = value
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.activitymessage_write
+        # PROTECTED REGION END #    //  MccsMasterLeafNode.activitymessage_write
 
 
     # --------
     # Commands
     # --------
     
-    class AssignResourceCommand(ResponseCommand):
+    class AssignResourceCommand(BaseCommand):
         """
         A class for MccsMasterLeafNode's AssignResource() command.
         """
@@ -279,17 +281,21 @@ class MCCSMasterLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                json_argument = json.loads(argin)
-                log_msg = "Input JSON for MCCS master leaf node AssignResource command is: " + argin
-                self.logger.debug(log_msg)
-                self.logger.info("Invoking Allocate on MCCS master")
-                device._mccs_master_proxy.command_inout_asynch(const.CMD_ALLOCATE, json.dumps(json_argument),
-                                                           self.allocate_ended)
-
-                self.logger.info("After invoking Allocate on MCCS master")
-                device._read_activity_message = const.STR_ALLOCATE_SUCCESS
-                self.logger.info(const.STR_ALLOCATE_SUCCESS)
-                return (ResultCode.OK, const.STR_ALLOCATE_SUCCESS)
+                if device._mccs_subarray_proxy.obsState in (ObsState.EMPTY):
+                    json_argument = json.loads(argin)
+                    log_msg = "Input JSON for MCCS master leaf node AssignResource command is: " + argin
+                    self.logger.debug(log_msg)
+                    self.logger.info("Invoking Allocate on MCCS master")
+                    device._mccs_master_proxy.command_inout_asynch(const.CMD_ALLOCATE, json.dumps(json_argument),
+                                                            self.allocate_ended)
+                    self.logger.info("After invoking Allocate on MCCS master")
+                    device._read_activity_message = const.STR_ALLOCATE_SUCCESS
+                    self.logger.info(const.STR_ALLOCATE_SUCCESS)
+                    return (ResultCode.OK, const.STR_ALLOCATE_SUCCESS)
+                else:
+                    log_msg = (f"Mccs Master is in ObsState {device._mccs_master_proxy.obsState.name}.""Unable to invoke Configure command")
+                    device._read_activity_message = log_msg
+                    self.logger.error(log_msg)
 
             except ValueError as value_error:
                 log_msg = const.ERR_INVALID_JSON_ASSIGN_RES_MCCS + str(value_error)
@@ -421,7 +427,7 @@ class MCCSMasterLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                device._csp_subarray_proxy.command_inout_asynch(const.CMD_Release,
+                device._mccs_subarray_proxy.command_inout_asynch(const.CMD_Release,
                                                              self.releaseresources_cmd_ended_cb)
                 device._read_activity_message = const.STR_REMOVE_ALL_RECEPTORS_SUCCESS
                 self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
@@ -484,7 +490,7 @@ def main(args=None, **kwargs):
 
     :return: MccsMasterLeafNode TANGO object.
     """
-    return run((MCCSMasterLeafNode,), args=args, **kwargs)
+    return run((MccsMasterLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  MCCSMasterLeafNode.main
 
 if __name__ == '__main__':
