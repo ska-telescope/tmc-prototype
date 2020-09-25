@@ -215,8 +215,8 @@ class MCCSMasterLeafNode(SKABaseDevice):
 
         def do(self, argin):
             """
-            It accepts stationiDList list in JSON string format and invokes allocate command on MccsMaster
-            with stationiDList as an input argument.
+            It accepts stationiDList list, channels and stationBeamiDList in JSON string format and invokes allocate command on MccsMaster
+            with JSON string as an input argument.
 
             :param argin:StringType. The string in JSON format. The JSON contains following values:
                
@@ -279,13 +279,10 @@ class MCCSMasterLeafNode(SKABaseDevice):
             device = self.target
             try:
                 json_argument = json.loads(argin)
-                mccsmasterallocate = json_argument.copy()
-                if "subarrayID" in mccsmasterallocate:
-                    del mccsmasterallocate["subarrayID"]
                 log_msg = "Input JSON for MCCS master leaf node AssignResource command is: " + argin
                 self.logger.debug(log_msg)
                 self.logger.info("Invoking Allocate on MCCS master")
-                device._mccs_master_proxy.command_inout_asynch(const.CMD_ALLOCATE, json.dumps(mccsmasterallocate),
+                device._mccs_master_proxy.command_inout_asynch(const.CMD_ALLOCATE, json.dumps(json_argument),
                                                            self.allocate_ended)
 
                 self.logger.info("After invoking Allocate on MCCS master")
@@ -358,9 +355,8 @@ class MCCSMasterLeafNode(SKABaseDevice):
         """
         super().init_command_objects()
         args = (self, self.state_model, self.logger)
-        # self.register_command_object("Disable",self.DisableCommand(*args))
-        # self.register_command_object("Standby",self.StandbyCommand(*args))
-        
+        self.register_command_object("AssignResource", self.AssignResourceCommand(*args))
+
 # ----------
 # Run server
 # ----------
