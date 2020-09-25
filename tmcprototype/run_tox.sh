@@ -1,9 +1,6 @@
 #!/bin/bash
 set -eo pipefail
 
-# Clear report directory
-rm -rfv ../build/reports/*
-
 export working_dir=../build/reports/tox_report
 
 #Entering into a bash shell script to run unit-test cases and generating reports
