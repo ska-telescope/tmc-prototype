@@ -288,8 +288,8 @@ class MCCSMasterLeafNode(SKABaseDevice):
             # pass argin to mccs master.
             # If the array length is 0, the command applies to the whole MCCS Element.
             # If the array length is >, each array element specifies the FQDN of the MCCS SubElement to switch OFF.
-            # argin = []
-            # device._mccs_master_proxy.command_inout_asynch(const.CMD_OFF, argin, self.off_cmd_ended_cb)
+            argin = []
+            device._mccs_master_proxy.command_inout_asynch(const.CMD_OFF, argin, self.off_cmd_ended_cb)
             self.logger.debug(const.STR_OFF_CMD_ISSUED)
             device._read_activity_message = const.STR_OFF_CMD_ISSUED
             return (ResultCode.OK, const.STR_OFF_CMD_ISSUED)
