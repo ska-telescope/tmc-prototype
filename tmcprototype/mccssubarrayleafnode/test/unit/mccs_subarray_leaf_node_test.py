@@ -19,31 +19,11 @@ from mccssubarrayleafnode import MCCSSubarrayLeafNode, const, release
 from ska.base.control_model import HealthState, ObsState, LoggingLevel
 
 
-# Standard Python imports
-import contextlib
-import importlib
-import sys
-import json
-import types
-import pytest
-import tango
-import mock
-from mock import Mock
-from mock import MagicMock
-from os.path import dirname, join
-
-# Tango imports
-from tango.test_context import DeviceTestContext
-
-# Additional import
-from mccssubarrayleafnode import MCCSSubarrayLeafNode, const, release
-from ska.base.control_model import HealthState, ObsState, LoggingLevel
-
-#
 # scan_input_file= 'command_Scan.json'
 # path= join(dirname(__file__), 'data', scan_input_file)
 # with open(path, 'r') as f:
 #     scan_input_str=f.read()
+
 
 @pytest.fixture(scope="function")
 def event_subscription(mock_mccs_subarray):
@@ -122,7 +102,7 @@ def test_End_command_with_callback_method(mock_mccs_subarray, event_subscription
     dummy_event = command_callback(const.CMD_END)
     event_subscription_without_arg[const.CMD_END](dummy_event)
     assert const.STR_COMMAND + const.CMD_END in device_proxy.activityMessage
-    assert mccs_subarray1_proxy_mock.obsState == ObsState.IDLE
+
 
 def test_end_command_with_callback_method_with_event_error(mock_mccs_subarray,event_subscription_without_arg):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray

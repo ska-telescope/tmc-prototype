@@ -56,8 +56,6 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
 
 
 
-
-
     activitymessage = attribute(
         dtype='str',
         access=AttrWriteType.READ_WRITE,
@@ -113,6 +111,7 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
         # PROTECTED REGION ID(MCCSSubarrayLeafNode.init_device) ENABLED START #
         # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.init_device
 
+
     def init_command_objects(self):
         """
         Initialises the command handlers for commands supported by this
@@ -121,6 +120,7 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
         super().init_command_objects()
         args = (self, self.state_model, self.logger)
         self.register_command_object("Scan", self.ScanCommand(*args))
+        self.register_command_object("End", self.EndCommand(*args))
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(MCCSSubarrayLeafNode.always_executed_hook) ENABLED START #
@@ -423,11 +423,10 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("EndScan")
         return handler.check_allowed()
 
-    class EndCommand(ResponseCommand):
+    class EndCommand(BaseCommand):
         """
         A class for MCCSSubarrayLeafNode's End() command.
         """
-
         def check_allowed(self):
             """
             Checks whether the command is allowed to be run in the current state
@@ -502,12 +501,11 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
                                                                     self.end_cmd_ended_cb)
                     device._read_activity_message = const.STR_END_SUCCESS
                     self.logger.info(const.STR_END_SUCCESS)
-                    return (ResultCode.OK, const.STR_END_SUCCESS)
+
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_READY
                     log_msg = const.STR_OBS_STATE + str(device._mccs_subarray_proxy.obsState)
                     self.logger.error(const.ERR_DEVICE_NOT_READY)
-                    return (ResultCode.FAILED, const.ERR_DEVICE_NOT_READY)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_END_INVOKING_CMD + str(dev_failed)
@@ -533,16 +531,15 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("End")
         return handler.check_allowed()
 
+
     @command(
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def End(self):
         """ Invokes End command on MccsSubarrayLeafNode. """
         handler = self.get_command_object("End")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
+        handler()
+
 
     @command(
     )
