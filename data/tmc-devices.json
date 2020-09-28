@@ -1420,7 +1420,98 @@
                 }
             }
         },
-
+        "MccsSubarrayLeafNodeDS": {
+            "01": {
+                "MccsSubarrayLeafNode": {
+                    "ska_low/tm_leaf_node/mccs_subarray01": {
+                        "attribute_properties": {
+                            "adminMode": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
+                            "mccssubarrayHealthState": {
+                                "__root_att": [
+                                    "low_mccs/elt/subarray_01/healthState"
+                                ]
+                            },
+                            "mccsSubarrayObsState": {
+                                "__root_att": [
+                                    "low_mccs/elt/subarray_01/obsState"
+                                ]
+                            },
+                            "healthState": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            }
+                        },
+                        "properties": {
+                            "MccsSubarrayFQDN": [
+                                "low_mccs/elt/subarray_01"],
+                            "SkaLevel": [
+                                "3"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ],
+                            "LoggingLevelDefault": [
+                                "5"
+                            ],
+                            "polled_attr": [
+                                "adminmode",
+                                "1000",
+                                "healthstate",
+                                "1000"
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "MccsMasterLeafNodeDS": {
+            "01": {
+                "MccsMasterLeafNode": {
+                    "ska_low/tm_leaf_node/mccs_master": {
+                        "attribute_properties": {
+                            "cspHealthState": {
+                                "__root_att": [
+                                    "low_mccs/elt/master/healthState"
+                                ]
+                            },
+                            "healthState": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            }
+                        },
+                        "properties": {
+                            "MccsMasterFQDN": [
+                                "low_mccs/elt/master"
+                            ],
+                            "SkaLevel": [
+                                "3"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ],
+                            "LoggingLevelDefault": [
+                                "5"
+                            ],
+                            "polled_attr": [
+                                "activitymessage",
+                                "1000",
+                                "healthstate",
+                                "1000"
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "TangoAccessControl": {
             "1": {
                 "TangoAccessControl": {

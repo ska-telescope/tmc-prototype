@@ -14,10 +14,10 @@ from __future__ import absolute_import
 
 # Tango imports
 import tango
-from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
-from tango.server import run, command, device_property, attribute, Device, DeviceMeta
+from tango import DeviceProxy, ApiUtil, DebugIt, AttrWriteType, DevFailed
+from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode, ResponseCommand
+from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, SimulationMode, TestMode
 
 # Additional import
@@ -152,50 +152,15 @@ class MccsMasterLeafNode(SKABaseDevice):
     # --------
     # Commands
     # --------
-
-    @command(
-    dtype_in='str', 
-    dtype_out='str', 
-    )
-    @DebugIt()
-    def AssignResource(self, argin):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.AssignResource) ENABLED START #
-        return ""
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.AssignResource
-
-    @command(
-    dtype_in='str', 
-    dtype_out='str', 
-    )
-    @DebugIt()
-    def ReleaseResources(self, argin):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.ReleaseResources) ENABLED START #
-        return ""
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.ReleaseResources
-
-    @command(
-    )
-    @DebugIt()
-    def On(self):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.On) ENABLED START #
-        pass
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.On
-
-    @command(
-    )
-    @DebugIt()
-    def Off(self):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.Off) ENABLED START #
-        pass
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.Off
-
-    def init_command_objects(self):
-        """
-        Initialises the command handlers for commands supported by this
-        device.
-        """
-        super().init_command_objects()
-        args = (self, self.state_model, self.logger)
+    
+    # TODO: Commenting out for now to resolve pylint warnings.
+    # def init_command_objects(self):
+    #     """
+    #     Initialises the command handlers for commands supported by this
+    #     device.
+    #     """
+    #     super().init_command_objects()
+    #     args = (self, self.state_model, self.logger)
         # self.register_command_object("Disable",self.DisableCommand(*args))
         # self.register_command_object("Standby",self.StandbyCommand(*args))
         

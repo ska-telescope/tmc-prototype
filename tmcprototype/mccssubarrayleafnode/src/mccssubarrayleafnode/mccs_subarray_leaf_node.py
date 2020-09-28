@@ -15,8 +15,8 @@ It also acts as a MCCS contact point for Subarray Node for observation execution
 # Tango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
-from tango.server import run, attribute, command, device_property, Device, DeviceMeta
-from ska.base.commands import ResultCode, ResponseCommand, BaseCommand
+from tango.server import run, attribute, command, device_property
+from ska.base.commands import ResultCode, BaseCommand
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
 
@@ -272,14 +272,14 @@ class MccsSubarrayLeafNode(SKABaseDevice):
     
 
     def init_command_objects(self):
-            """
-            Initialises the command handlers for commands supported by this
-            device.
-            """
-            super().init_command_objects()
-            args = (self, self.state_model, self.logger)
-            self.register_command_object("Configure", self.ConfigureCommand(*args))
-            # self.register_command_object("AssignResources", self.AssignResourcesCommand(*args))
+        """
+        Initialises the command handlers for commands supported by this
+        device.
+        """
+        super().init_command_objects()
+        args = (self, self.state_model, self.logger)
+        self.register_command_object("Configure", self.ConfigureCommand(*args))
+        # self.register_command_object("AssignResources", self.AssignResourcesCommand(*args))
 
 
 

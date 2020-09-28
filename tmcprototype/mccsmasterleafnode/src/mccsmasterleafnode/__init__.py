@@ -14,9 +14,9 @@
 
 from . import release
 from . import const
-from .mccs_master_leaf_node import MCCSMasterLeafNode
+from .mccs_master_leaf_node import MccsMasterLeafNode
 
-__all__ = ["release", "const", "MCCSMasterLeafNode"]
+__all__ = ["release", "const", "MccsMasterLeafNode"]
 
 __version__ = release.version
 __version_info__ = release.version_info
