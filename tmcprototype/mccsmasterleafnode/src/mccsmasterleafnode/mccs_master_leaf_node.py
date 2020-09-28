@@ -14,8 +14,8 @@ from __future__ import absolute_import
 
 # Tango imports
 import tango
-from tango import DeviceProxy, ApiUtil, DebugIt, AttrWriteType, DevFailed
-from tango.server import run, command, device_property, attribute
+from tango import DeviceProxy, ApiUtil, AttrWriteType, DevFailed
+from tango.server import run, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, SimulationMode, TestMode
