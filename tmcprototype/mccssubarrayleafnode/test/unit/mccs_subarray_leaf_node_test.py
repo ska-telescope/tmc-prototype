@@ -19,10 +19,10 @@ from mccssubarrayleafnode import MccsSubarrayLeafNode, const, release
 from ska.base.control_model import HealthState, ObsState, LoggingLevel
 
 
-# scan_input_file= 'command_Scan.json'
-# path= join(dirname(__file__), 'data', scan_input_file)
-# with open(path, 'r') as f:
-#     scan_input_str=f.read()
+scan_input_file= 'command_Scan.json'
+path= join(dirname(__file__), 'data', scan_input_file)
+with open(path, 'r') as f:
+    scan_input_str=f.read()
 
 
 @pytest.fixture(scope="function")
@@ -60,7 +60,7 @@ def mock_mccs_subarray():
 def test_start_scan_should_command_mccs_subarray_to_start_its_scan_when_it_is_ready(mock_mccs_subarray):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.READY
-    scan_input_str = '{"id":1}'
+    # scan_input_str = '{"id":1}'
     device_proxy.Scan(scan_input_str)
     assert const.STR_STARTSCAN_SUCCESS in device_proxy.activityMessage
 
@@ -69,7 +69,6 @@ def test_startscan_command_with_callback_method(mock_mccs_subarray , event_subsc
     # arrange:
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.READY
-    scan_input_str = '{"id":1}'
     device_proxy.Scan(scan_input_str)
     dummy_event = command_callback(const.CMD_STARTSCAN)
     event_subscription[const.CMD_STARTSCAN](dummy_event)
@@ -80,7 +79,6 @@ def test_startscan_command_with_callback_method_with_event_error(mock_mccs_subar
     # arrange:
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.READY
-    scan_input_str = '{"id":1}'
     device_proxy.Scan(scan_input_str)
     dummy_event = command_callback_with_event_error(const.CMD_STARTSCAN)
     event_subscription[const.CMD_STARTSCAN](dummy_event)
@@ -90,7 +88,6 @@ def test_startscan_command_with_callback_method_with_event_error(mock_mccs_subar
 def test_start_scan_should_not_command_mccs_subarray_to_start_scan_when_it_is_idle(mock_mccs_subarray):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.IDLE
-    scan_input_str = '{"id":1}'
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.Scan(scan_input_str)
     # assert_activity_message(device_proxy , const.ERR_DEVICE_NOT_READY)
@@ -101,7 +98,6 @@ def test_Scan_should_raise_devfailed_exception(mock_mccs_subarray):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.READY
     mccs_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_with_arg
-    scan_input_str = '{"id":1}'
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.Scan(scan_input_str)
     assert "raise_devfailed_exception" in str(df)
