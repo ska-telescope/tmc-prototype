@@ -498,17 +498,19 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                if device._mccs_subarray_proxy.obsState == ObsState.READY:
-                    device._mccs_subarray_proxy.command_inout_asynch(const.CMD_END,
-                                                                    self.end_cmd_ended_cb)
-                    device._read_activity_message = const.STR_END_SUCCESS
-                    self.logger.info(const.STR_END_SUCCESS)
+                assert device._mccs_subarray_proxy.obsState == ObsState.READY
+                device._mccs_subarray_proxy.command_inout_asynch(const.CMD_END,
+                                                                self.end_cmd_ended_cb)
+                device._read_activity_message = const.STR_END_SUCCESS
+                self.logger.info(const.STR_END_SUCCESS)
 
-                else:
-                    device._read_activity_message = const.ERR_DEVICE_NOT_READY
-                    log_msg = const.STR_OBS_STATE + str(device._mccs_subarray_proxy.obsState)
-                    self.logger.error(const.ERR_DEVICE_NOT_READY)
-
+            except AssertionError:
+                device._read_activity_message = const.ERR_DEVICE_NOT_READY
+                log_msg = const.STR_OBS_STATE + str(device._mccs_subarray_proxy.obsState)
+                self.logger.error(const.ERR_DEVICE_NOT_READY + log_msg)
+                tango.Except.throw_exception(const.STR_END_EXEC, const.ERR_DEVICE_NOT_READY,
+                                             "MCCSSubarrayLeafNode.EndCommand",
+                                             tango.ErrSeverity.ERR)
             except DevFailed as dev_failed:
                 log_msg = const.ERR_END_INVOKING_CMD + str(dev_failed)
                 device._read_activity_message = log_msg

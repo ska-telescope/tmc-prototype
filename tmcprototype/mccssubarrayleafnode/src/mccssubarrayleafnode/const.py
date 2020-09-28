@@ -28,6 +28,7 @@ STR_STARTSCAN_SUCCESS = "Scan command is executed successfully."
 STR_START_SCAN_EXEC = "StartScan command execution"
 STR_ENDSCAN_SUCCESS = "EndScan command is executed successfully."
 STR_END_SCAN_EXEC = "EndScan command execution"
+STR_END_EXEC = "End command execution"
 
 
 

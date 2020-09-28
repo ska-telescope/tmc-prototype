@@ -107,7 +107,7 @@ def test_Scan_should_raise_devfailed_exception(mock_mccs_subarray):
     assert "raise_devfailed_exception" in str(df)
 
 
-def test_End_command_with_callback_method(mock_mccs_subarray, event_subscription_without_arg):
+def test_end_command_with_callback_method(mock_mccs_subarray, event_subscription_without_arg):
     # arrange:
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.READY
@@ -134,6 +134,14 @@ def test_end_should_command_mccs_subarray_to_reset_when_it_is_ready(mock_mccs_su
                                                                 any_method(with_name='end_cmd_ended_cb'))
 
 
+def test_end_should_command_mccs_subarray_should_not_reset_when_it_is_idle(mock_mccs_subarray):
+    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+    mccs_subarray1_proxy_mock.obsState = ObsState.IDLE
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.End()
+    assert const.ERR_DEVICE_NOT_READY in str(df)
+
+
 def test_end_should_raise_devfailed_exception(mock_mccs_subarray):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.READY
@@ -151,13 +159,13 @@ def test_endscan_should_command_mccs_subarray_to_end_scan_when_it_is_scanning(mo
                                                                 any_method(with_name='endscan_cmd_ended_cb'))
 
 
-def test_endscan_command_with_callback_method(mock_mccs_subarray , event_subscription):
+def test_endscan_command_with_callback_method(mock_mccs_subarray , event_subscription_without_arg):
     # arrange:
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.SCANNING
     device_proxy.EndScan()
     dummy_event = command_callback(const.CMD_ENDSCAN)
-    event_subscription[const.CMD_ENDSCAN](dummy_event)
+    event_subscription_without_arg[const.CMD_ENDSCAN](dummy_event)
     assert const.STR_COMMAND + const.CMD_ENDSCAN in device_proxy.activityMessage
 
 
