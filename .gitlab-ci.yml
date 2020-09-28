@@ -304,12 +304,13 @@ publish_chart:
   stage: publish
   tags:
     - docker-executor
-  image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest # /deploy:0.4.2 - as per ska-docker file
+  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.2 # as per ska-docker file
   script:
     - curl -s https://gitlab.com/ska-telescope/stupid/raw/master/scripts/publish-charts.sh | bash
-  artifacts:
-    paths:
-      - ./build
+  # when: manual
+  # only:
+  #   refs:
+  #     - master
 
 pages:
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
