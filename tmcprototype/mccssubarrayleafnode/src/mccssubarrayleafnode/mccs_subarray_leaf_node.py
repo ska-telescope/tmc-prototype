@@ -12,12 +12,11 @@
 """
 
 # Tango imports
-import tango
-from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
-from tango.server import run, attribute, command, device_property, Device, DeviceMeta
-from ska.base.commands import ResultCode, ResponseCommand, BaseCommand
+from tango import AttrWriteType, DeviceProxy, DevFailed
+from tango.server import run, attribute, device_property
+from ska.base.commands import ResultCode
 from ska.base import SKABaseDevice
-from ska.base.control_model import HealthState, ObsState
+from ska.base.control_model import HealthState
 
 # Additional import
 from . import const, release
@@ -123,14 +122,14 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         """ Internal construct of TANGO. """
         # PROTECTED REGION END #    //  MccsSubarrayLeafNode.delete_device
 
-    def init_command_objects(self):
-        """
-        Initialises the command handlers for commands supported by this
-        device.
-        """
-        super().init_command_objects()
-        args = (self, self.state_model, self.logger)
-        # self.register_command_object("AssignResources", self.AssignResourcesCommand(*args))
+    # TODO: Commented out for now to resolve pylint warnings.
+    # def init_command_objects(self):
+    #     """
+    #     Initialises the command handlers for commands supported by this
+    #     device.
+    #     """
+    #     super().init_command_objects()
+        # args = (self, self.state_model, self.logger)
 
 
     # ------------------
