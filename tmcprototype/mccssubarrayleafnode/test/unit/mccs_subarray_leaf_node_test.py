@@ -143,7 +143,7 @@ def test_end_command_with_callback_method_with_event_error(mock_mccs_subarray,ev
     assert const.ERR_INVOKING_CMD + const.CMD_END in device_proxy.activityMessage
 
 
-def test_end_should_command_sdp_subarray_to_reset_when_it_is_ready(mock_mccs_subarray):
+def test_end_should_command_mccs_subarray_to_reset_when_it_is_ready(mock_mccs_subarray):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.READY
     device_proxy.End()
@@ -158,6 +158,33 @@ def test_end_should_raise_devfailed_exception(mock_mccs_subarray):
     with pytest.raises(tango.DevFailed):
         device_proxy.End()
     assert const.ERR_END_INVOKING_CMD in device_proxy.activityMessage
+
+
+def test_endscan_should_command_mccs_subarray_to_end_scan_when_it_is_scanning(mock_mccs_subarray):
+    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+    mccs_subarray1_proxy_mock.obsState = ObsState.SCANNING
+    device_proxy.EndScan()
+    mccs_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ENDSCAN,
+                                                                any_method(with_name='endscan_cmd_ended_cb'))
+
+
+def test_endscan_should_raise_devfailed_exception(mock_mccs_subarray):
+    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+    mccs_subarray1_proxy_mock.obsState = ObsState.SCANNING
+    mccs_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_with_arg
+    with pytest.raises(tango.DevFailed):
+        device_proxy.EndScan()
+    assert const.ERR_ENDSCAN_COMMAND in device_proxy.activityMessage
+
+
+def test_endscan_command_with_callback_method_with_event_error(mock_mccs_subarray, event_subscription_without_arg):
+    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+    mccs_subarray1_proxy_mock.obsState = ObsState.SCANNING
+    device_proxy.EndScan()
+    dummy_event = command_callback_with_event_error(const.CMD_ENDSCAN)
+    event_subscription_without_arg[const.CMD_ENDSCAN](dummy_event)
+    assert const.ERR_INVOKING_CMD + const.CMD_ENDSCAN in device_proxy.activityMessage
+
 
 def assert_activity_message(device_proxy, expected_message):
     assert device_proxy.activityMessage == expected_message  # reads tango attribute

@@ -121,6 +121,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         args = (self, self.state_model, self.logger)
         self.register_command_object("Scan", self.ScanCommand(*args))
         self.register_command_object("End", self.EndCommand(*args))
+        self.register_command_object("EndScan", self.EndScanCommand(*args))
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(MccsSubarrayLeafNode.always_executed_hook) ENABLED START #
@@ -309,6 +310,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Scan")
         return handler.check_allowed()
 
+
     class EndScanCommand(BaseCommand):
         """
         A class for MccsSubarrayLeafNode's EndScan() command.
@@ -389,9 +391,12 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             except AssertionError:
                 device._read_activity_message = const.ERR_DEVICE_NOT_SCANNING
                 self.logger.error(const.ERR_DEVICE_NOT_SCANNING)
+                tango.Except.throw_exception(const.STR_END_SCAN_EXEC, const.ERR_DEVICE_NOT_SCANNING,
+                                             "MCCSSubarrayLeafNode.EndScanCommand",
+                                             tango.ErrSeverity.ERR)
 
             except DevFailed as dev_failed:
-                log_msg = const.ERR_ENDSCAN_RESOURCES + str(dev_failed)
+                log_msg = const.ERR_ENDSCAN_COMMAND + str(dev_failed)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
                 tango.Except.throw_exception(const.STR_END_SCAN_EXEC, log_msg,
@@ -402,8 +407,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
     def EndScan(self):
         """ Invokes EndScan command on MccsSubarray."""
         handler = self.get_command_object("EndScan")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
+        handler()
 
     def is_EndScan_allowed(self):
         """
@@ -420,6 +424,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("EndScan")
         return handler.check_allowed()
+
 
     class EndCommand(BaseCommand):
         """
