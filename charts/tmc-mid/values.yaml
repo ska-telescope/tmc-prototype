@@ -33,8 +33,7 @@ global:
       registry: nexus.engageska-portugal.pt/tango-example
       image: tmcprototype
       tag: 0.2.11
-      pullPolicy: IfNotPresent
-  
+      pullPolicy: IfNotPresent 
   resources:
     requests:
       cpu: 150m     # 100m = 0.1 CPU
