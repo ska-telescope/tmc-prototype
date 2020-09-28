@@ -90,6 +90,16 @@ def test_startscan_command_with_callback_method_with_event_error(mock_mccs_subar
     assert const.ERR_INVOKING_CMD + const.CMD_STARTSCAN in device_proxy.activityMessage
 
 
+def test_start_scan_should_not_command_csp_subarray_to_start_scan_when_it_is_idle(mock_mccs_subarray):
+    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+    mccs_subarray1_proxy_mock.obsState = ObsState.IDLE
+    scan_input_str = '{"id":1}'
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.Scan(scan_input_str)
+    # assert_activity_message(device_proxy , const.ERR_DEVICE_NOT_READY)
+    assert const.ERR_DEVICE_NOT_READY in str(df)
+
+
 def any_method(with_name=None):
     class AnyMethod():
         def __eq__(self, other):
