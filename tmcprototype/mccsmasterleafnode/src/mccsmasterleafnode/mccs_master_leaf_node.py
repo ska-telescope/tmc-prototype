@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 #
-# This file is part of the MCCSMasterLeafNode project
+# This file is part of the MccsMasterLeafNode project
 #
 #
 #
-# Distributed under the terms of the GPL license.
+# Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 
-""" 
-
-"""
+# PROTECTED REGION ID(MccsMasterLeafNode.import) ENABLED START #
 from __future__ import print_function
 from __future__ import absolute_import
 
@@ -22,18 +20,26 @@ from ska.base.commands import ResultCode, ResponseCommand
 from ska.base.control_model import HealthState, SimulationMode, TestMode
 
 # Additional import
-# PROTECTED REGION ID(MCCSMasterLeafNode.additionnal_import) ENABLED START #
-# PROTECTED REGION END #    //  MCCSMasterLeafNode.additionnal_import
+from . import const, release
 
-__all__ = ["MCCSMasterLeafNode", "main"]
+# PROTECTED REGION END #    //  MccsMasterLeafNode imports
 
+__all__ = ["MccsMasterLeafNode", "main"]
 
-class MCCSMasterLeafNode(SKABaseDevice):
+class MccsMasterLeafNode(SKABaseDevice):
     """
+    **Properties:**
+
+    - MccsMasterFQDN   - Property to provide FQDN of MCCS Master Device
+
+    **Attributes:**
+
+    - mccsHealthState  - Forwarded attribute to provide MCCS Master Health State
+    - activityMessage - Attribute to provide activity message
+
     """
-    __metaclass__ = DeviceMeta
-    # PROTECTED REGION ID(MCCSMasterLeafNode.class_variable) ENABLED START #
-    # PROTECTED REGION END #    //  MCCSMasterLeafNode.class_variable
+    # PROTECTED REGION ID(MccsMasterLeafNode.class_variable) ENABLED START #
+    # PROTECTED REGION END #    //  MccsMasterLeafNode.class_variable
 
     # -----------------
     # Device Properties
@@ -43,25 +49,25 @@ class MCCSMasterLeafNode(SKABaseDevice):
 
 
 
-    MCCSMasterFQDN = device_property(
+    MccsMasterFQDN = device_property(
         dtype='str', default_value="low_mccs/elt/master"
     )
+
+    
+
+
+
+
+
 
     # ----------
     # Attributes
     # ----------
 
-
-
-
-
-
-
-
-
-    activitymessage = attribute(
+    activityMessage = attribute(
         dtype='str',
         access=AttrWriteType.READ_WRITE,
+        doc="Activity Message",
     )
 
 
@@ -84,7 +90,7 @@ class MCCSMasterLeafNode(SKABaseDevice):
 
             :rtype: (ResultCode, str)
 
-            :raises: DevFailed if error occurs while creating the device proxy for CSP Master or
+            :raises: DevFailed if error occurs while creating the device proxy for Mccs Master or
                     subscribing the evennts.
             """
             super().do()
@@ -96,13 +102,13 @@ class MCCSMasterLeafNode(SKABaseDevice):
             device._version_id = release.version
             device._read_activity_message = const.STR_MCCS_INIT_LEAF_NODE
             try:
-                device._read_activity_message = const.STR_MCCSMASTER_FQDN + str(device.MCCSMasterFQDN)
+                device._read_activity_message = const.STR_MCCSMASTER_FQDN + str(device.MccsMasterFQDN)
                 # Creating proxy to the CSPMaster
-                log_msg = "MCCS Master name: " + str(device.MCCSMasterFQDN)
+                log_msg = "MCCS Master name: " + str(device.MccsMasterFQDN)
                 self.logger.debug(log_msg)
-                device._mccs_master_proxy = DeviceProxy(str(device.MCCSMasterFQDN))
+                device._mccs_master_proxy = DeviceProxy(str(device.MccsMasterFQDN))
             except DevFailed as dev_failed:
-                log_msg = const.ERR_IN_CREATE_PROXY + str(device.MCCSMasterFQDN)
+                log_msg = const.ERR_IN_CREATE_PROXY + str(device.MccsMasterFQDN)
                 self.logger.debug(log_msg)
                 self.logger.exception(dev_failed)
                 device._read_activity_message = log_msg
@@ -118,28 +124,28 @@ class MCCSMasterLeafNode(SKABaseDevice):
             return (ResultCode.OK, device._read_activity_message)
 
     def always_executed_hook(self):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.always_executed_hook) ENABLED START #
+        # PROTECTED REGION ID(MccsMasterLeafNode.always_executed_hook) ENABLED START #
         """ Internal construct of TANGO. """
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.always_executed_hook
+        # PROTECTED REGION END #    //  MccsMasterLeafNode.always_executed_hook
 
     def delete_device(self):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.delete_device) ENABLED START #
+        # PROTECTED REGION ID(MccsMasterLeafNode.delete_device) ENABLED START #
         """ Internal construct of TANGO. """
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.delete_device
+        # PROTECTED REGION END #    //  MccsMasterLeafNode.delete_device
 
     # ------------------
     # Attributes methods
     # ------------------
 
-    def read_activitymessage(self):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.activitymessage_read) ENABLED START #
+    def read_activityMessage(self):
+        # PROTECTED REGION ID(MccsMasterLeafNode.activityMessage_read) ENABLED START #
         return self._read_activity_message
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.activitymessage_read
+        # PROTECTED REGION END #    //  MccsMasterLeafNode.activityMessage_read
 
-    def write_activitymessage(self, value):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.activitymessage_write) ENABLED START #
+    def write_activityMessage(self, value):
+        # PROTECTED REGION ID(MccsMasterLeafNode.activityMessage_write) ENABLED START #
         self._read_activity_message = value
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.activitymessage_write
+        # PROTECTED REGION END #    //  MccsMasterLeafNode.activityMessage_write
 
 
     # --------
@@ -152,9 +158,9 @@ class MCCSMasterLeafNode(SKABaseDevice):
     )
     @DebugIt()
     def AssignResource(self, argin):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.AssignResource) ENABLED START #
+        # PROTECTED REGION ID(MccsMasterLeafNode.AssignResource) ENABLED START #
         return ""
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.AssignResource
+        # PROTECTED REGION END #    //  MccsMasterLeafNode.AssignResource
 
     @command(
     dtype_in='str', 
@@ -162,25 +168,129 @@ class MCCSMasterLeafNode(SKABaseDevice):
     )
     @DebugIt()
     def ReleaseResources(self, argin):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.ReleaseResources) ENABLED START #
+        # PROTECTED REGION ID(MccsMasterLeafNode.ReleaseResources) ENABLED START #
         return ""
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.ReleaseResources
+        # PROTECTED REGION END #    //  MccsMasterLeafNode.ReleaseResources
 
-    @command(
-    )
-    @DebugIt()
-    def On(self):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.On) ENABLED START #
-        pass
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.On
 
-    @command(
-    )
-    @DebugIt()
-    def Off(self):
-        # PROTECTED REGION ID(MCCSMasterLeafNode.Off) ENABLED START #
-        pass
-        # PROTECTED REGION END #    //  MCCSMasterLeafNode.Off
+    class OnCommand(SKABaseDevice.OnCommand):
+        """
+        A class for MccsMasterLeafNode's On() command.
+        """
+
+        def on_cmd_ended_cb(self, event):
+            """
+            Callback function immediately executed when the asynchronous invoked
+            command returns.
+
+            :param event: a CmdDoneEvent object. This class is used to pass data
+                to the callback method in asynchronous callback model for command
+                execution.
+            :type: CmdDoneEvent object
+                It has the following members:
+                    - device     : (DeviceProxy) The DeviceProxy object on which the
+                                   call was executed.
+                    - cmd_name   : (str) The command name
+                    - argout_raw : (DeviceData) The command argout
+                    - argout     : The command argout
+                    - err        : (bool) A boolean flag set to true if the command
+                                   failed. False otherwise
+                    - errors     : (sequence<DevError>) The error stack
+                    - ext
+            :return: none
+
+            """
+            device = self.target
+            # Update logs and activity message attribute with received event
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                device._read_activity_message = log_msg
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                device._read_activity_message = log_msg
+
+        def do(self):
+            """
+            Invokes On command on the MCCS Element.
+
+            :param argin: None
+
+            :return: A tuple containing a return code and a string message indicating status.
+             The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+
+            """
+            device = self.target
+            # Pass argin to mccs master .
+            # If the array length is 0, the command applies to the whole MCCS Element.
+            # If the array length is > 1 each array element specifies the FQDN of the MCCS SubElement to switch ON.
+            device._mccs_master_proxy.command_inout_asynch(const.CMD_ON, self.on_cmd_ended_cb)
+            self.logger.debug(const.STR_ON_CMD_ISSUED)
+            return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
+
+
+    class OffCommand(SKABaseDevice.OffCommand):
+        """
+        A class for MccsMasterLeafNode's Off() command.
+        """
+
+        def off_cmd_ended_cb(self, event):
+            """
+            Callback function immediately executed when the asynchronous invoked
+            command returns.
+
+            :param event: a CmdDoneEvent object. This class is used to pass data
+                to the callback method in asynchronous callback model for command
+                execution.
+            :type: CmdDoneEvent object
+                It has the following members:
+                    - device     : (DeviceProxy) The DeviceProxy object on which the
+                                   call was executed.
+                    - cmd_name   : (str) The command name
+                    - argout_raw : (DeviceData) The command argout
+                    - argout     : The command argout
+                    - err        : (bool) A boolean flag set to true if the command
+                                   failed. False otherwise
+                    - errors     : (sequence<DevError>) The error stack
+                    - ext
+            :return: none
+
+            """
+            device = self.target
+            # Update logs and activity message attribute with received event
+            if event.err:
+                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+                self.logger.error(log_msg)
+                device._read_activity_message = log_msg
+            else:
+                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+                self.logger.info(log_msg)
+                device._read_activity_message = log_msg
+
+        def do(self):
+            """
+            Invokes Off command on the MCCS Element.
+
+            :param argin: None.
+
+            :return: A tuple containing a return code and a string message indicating status.
+             The message is for information purpose only.
+
+            :rtype: (ResultCode, str)
+
+            """
+            device = self.target
+            # pass argin to mccs master.
+            # If the array length is 0, the command applies to the whole MCCS Element.
+            # If the array length is >, each array element specifies the FQDN of the MCCS SubElement to switch OFF.
+            device._mccs_master_proxy.command_inout_asynch(const.CMD_OFF, self.off_cmd_ended_cb)
+            self.logger.debug(const.STR_OFF_CMD_ISSUED)
+            device._read_activity_message = const.STR_OFF_CMD_ISSUED
+            return (ResultCode.OK, const.STR_OFF_CMD_ISSUED)
+
 
     def init_command_objects(self):
         """
@@ -189,8 +299,6 @@ class MCCSMasterLeafNode(SKABaseDevice):
         """
         super().init_command_objects()
         args = (self, self.state_model, self.logger)
-        # self.register_command_object("Disable",self.DisableCommand(*args))
-        # self.register_command_object("Standby",self.StandbyCommand(*args))
         
 # ----------
 # Run server
@@ -198,7 +306,7 @@ class MCCSMasterLeafNode(SKABaseDevice):
 
 
 def main(args=None, **kwargs):
-    # PROTECTED REGION ID(MCCSMasterLeafNode.main) ENABLED START #
+    # PROTECTED REGION ID(MccsMasterLeafNode.main) ENABLED START #
     """
     Runs the MccsMasterLeafNode.
 
@@ -208,8 +316,8 @@ def main(args=None, **kwargs):
 
     :return: MccsMasterLeafNode TANGO object.
     """
-    return run((MCCSMasterLeafNode,), args=args, **kwargs)
-    # PROTECTED REGION END #    //  MCCSMasterLeafNode.main
+    return run((MccsMasterLeafNode,), args=args, **kwargs)
+    # PROTECTED REGION END #    //  MccsMasterLeafNode.main
 
 if __name__ == '__main__':
     main()

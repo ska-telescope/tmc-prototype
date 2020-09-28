@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
 #
-# This file is part of the MCCSSubarrayLeafNode project
+# This file is part of the MccsSubarrayLeafNode project
 #
 #
 #
-# Distributed under the terms of the GPL license.
+# Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 
 """Release information for Python Package"""
 
-name = """tangods-mccssubarrayleafnode"""
-version = "1.0.0"
+name = """mccssubarrayleafnode"""
+version = "0.2.11"
 version_info = version.split(".")
 description = """"""
 author = "jayant.ska"
 author_email = "jayant.ska at gmail.com"
-license = """GPL"""
+license = """BSD-3-Clause"""
 url = """www.tango-controls.org"""
 copyright = """"""
+

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ASCII"?>
 <pogoDsl:PogoSystem xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pogoDsl="http://www.esrf.fr/tango/pogo/PogoDsl">
-  <classes name="MCCSSubarrayLeafNode" pogoRevision="9.6">
-    <description description="" title="" sourcePath="/home/user/Desktop/TMC-LOW_MCCSSLN" language="PythonHL" filestogenerate="XMI   file,Code files,Python Package,Protected Regions,Sphinx,html Pages" license="GPL" copyright="" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false" descriptionHtmlExists="false">
+  <classes name="MccsMasterLeafNode" pogoRevision="9.6">
+    <description description="" title="" sourcePath="/home/user/Desktop/TMC-LOW" language="PythonHL" filestogenerate="XMI   file,Code files,Python Package,Protected Regions,Sphinx,html Pages" license="GPL" copyright="" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false" descriptionHtmlExists="false">
       <inheritances classname="Device_Impl" sourcePath=""/>
       <inheritances classname="SKABaseDevice" sourcePath="../../projects/lmc-base-classes/pogo"/>
       <identification contact="at gmail.com - jayant.ska" author="jayant.ska" emailDomain="gmail.com" classFamily="Training" siteSpecific="" platform="All Platforms" bus="Not Applicable" manufacturer="none" reference=""/>
@@ -25,10 +25,10 @@
       <status abstract="false" inherited="true" concrete="true"/>
       <DefaultPropValue>tango::logger</DefaultPropValue>
     </deviceProperties>
-    <deviceProperties name="MCCSSubarrayFQDN" description="">
+    <deviceProperties name="MccsMasterFQDN" description="">
       <type xsi:type="pogoDsl:StringType"/>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-      <DefaultPropValue>low_mccs/elt/subarray_01</DefaultPropValue>
+      <DefaultPropValue>low_mccs/elt/master</DefaultPropValue>
     </deviceProperties>
     <commands name="State" description="This command gets the device state (stored in its device_state data member) and returns it to the caller." execMethod="dev_state" displayLevel="OPERATOR" polledPeriod="0">
       <argin description="none">
@@ -66,7 +66,7 @@
       </argout>
       <status abstract="false" inherited="true" concrete="true"/>
     </commands>
-    <commands name="AssignResources" description="" execMethod="assign_resources" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
+    <commands name="AssignResource" description="" execMethod="assign_resource" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
       <argin description="">
         <type xsi:type="pogoDsl:StringType"/>
       </argin>
@@ -84,25 +84,7 @@
       </argout>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </commands>
-    <commands name="Configure" description="" execMethod="configure" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
-      <argin description="">
-        <type xsi:type="pogoDsl:StringType"/>
-      </argin>
-      <argout description="">
-        <type xsi:type="pogoDsl:VoidType"/>
-      </argout>
-      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-    </commands>
-    <commands name="Scan" description="" execMethod="scan" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
-      <argin description="">
-        <type xsi:type="pogoDsl:StringArrayType"/>
-      </argin>
-      <argout description="">
-        <type xsi:type="pogoDsl:VoidType"/>
-      </argout>
-      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-    </commands>
-    <commands name="EndScan" description="" execMethod="end_scan" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
+    <commands name="On" description="" execMethod="on" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
       <argin description="">
         <type xsi:type="pogoDsl:VoidType"/>
       </argin>
@@ -111,34 +93,7 @@
       </argout>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </commands>
-    <commands name="End" description="" execMethod="end" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
-      <argin description="">
-        <type xsi:type="pogoDsl:VoidType"/>
-      </argin>
-      <argout description="">
-        <type xsi:type="pogoDsl:VoidType"/>
-      </argout>
-      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-    </commands>
-    <commands name="Abort" description="" execMethod="abort" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
-      <argin description="">
-        <type xsi:type="pogoDsl:VoidType"/>
-      </argin>
-      <argout description="">
-        <type xsi:type="pogoDsl:VoidType"/>
-      </argout>
-      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-    </commands>
-    <commands name="Restart" description="" execMethod="restart" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
-      <argin description="">
-        <type xsi:type="pogoDsl:VoidType"/>
-      </argin>
-      <argout description="">
-        <type xsi:type="pogoDsl:VoidType"/>
-      </argout>
-      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-    </commands>
-    <commands name="obsReset" description="" execMethod="obs_reset" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
+    <commands name="Off" description="" execMethod="off" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
       <argin description="">
         <type xsi:type="pogoDsl:VoidType"/>
       </argin>
@@ -191,7 +146,7 @@
       <status abstract="false" inherited="true" concrete="true"/>
       <properties description="The test mode of the device. &#xA;Either no test mode or an indication of the test mode." label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
     </attributes>
-    <attributes name="activitymessage" attType="Scalar" rwType="READ_WRITE" displayLevel="OPERATOR" polledPeriod="1000" maxX="" maxY="" allocReadMember="true" isDynamic="false">
+    <attributes name="activityMessage" attType="Scalar" rwType="READ_WRITE" displayLevel="OPERATOR" polledPeriod="1000" maxX="" maxY="" allocReadMember="true" isDynamic="false">
       <dataType xsi:type="pogoDsl:StringType"/>
       <changeEvent fire="false" libCheckCriteria="false"/>
       <archiveEvent fire="false" libCheckCriteria="false"/>
@@ -206,10 +161,7 @@
       <status abstract="false" inherited="true" concrete="true"/>
       <properties description="Logging targets for this device, excluding ska_logging defaults - &#xA;initialises to LoggingTargetsDefault on startup" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
     </attributes>
-    <forwardedAttributes name="mccssubarrayHealthState" label="mccssubarrayHealthState">
-      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-    </forwardedAttributes>
-    <forwardedAttributes name="mccsSubarrayObsState" label="mccsSubarrayObsState">
+    <forwardedAttributes name="mccsHealthState" label="mccsHealthState">
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </forwardedAttributes>
     <states name="ON" description="This state could have been called OK or OPERATIONAL. It means that the device is in its operational state. (E.g. the power supply is giving its nominal current, th motor is ON and ready to move, the instrument is operating). This state is modified by the Attribute alarm checking of the DeviceImpl:dev_state method. i.e. if the State is ON and one attribute has its quality factor to ATTR_WARNING or ATTR_ALARM, then the State is modified to ALARM.">
