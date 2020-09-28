@@ -18,7 +18,7 @@ from tango.server import run, command, device_property, attribute, Device, Devic
 from ska.base import SKABaseDevice
 import json
 from ska.base.commands import ResultCode, ResponseCommand, BaseCommand
-from ska.base.control_model import HealthState, SimulationMode, TestMode
+from ska.base.control_model import HealthState, SimulationMode, TestMode, ObsState
 
 # Additional import
 from . import const, release
@@ -153,9 +153,9 @@ class MccsMasterLeafNode(SKABaseDevice):
     # Commands
     # --------
     
-    class AssignResourceCommand(BaseCommand):
+    class AssignResourcesCommand(BaseCommand):
         """
-        A class for MccsMasterLeafNode's AssignResource() command.
+        A class for MccsMasterLeafNode's AssignResources() command.
         """
 
         def check_allowed(self):
@@ -171,10 +171,10 @@ class MccsMasterLeafNode(SKABaseDevice):
 
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception("AssignResource() is not allowed in current state",
-                                             "Failed to invoke AssignResource command on "
+                tango.Except.throw_exception("AssignResources() is not allowed in current state",
+                                             "Failed to invoke AssignResources command on "
                                              "mccsmasterleafnode.",
-                                             "mccsmasterleafnode.AssignResource()",
+                                             "mccsmasterleafnode.AssignResources()",
                                              tango.ErrSeverity.ERR)
             return True
 
@@ -287,28 +287,27 @@ class MccsMasterLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                if device._mccs_subarray_proxy.obsState in (ObsState.EMPTY):
-                    json_argument = json.loads(argin)
-                    log_msg = "Input JSON for MCCS master leaf node AssignResource command is: " + argin
-                    self.logger.debug(log_msg)
-                    self.logger.info("Invoking Allocate on MCCS master")
-                    device._mccs_master_proxy.command_inout_asynch(const.CMD_ALLOCATE, json.dumps(json_argument),
-                                                            self.allocate_ended)
-                    self.logger.info("After invoking Allocate on MCCS master")
-                    device._read_activity_message = const.STR_ALLOCATE_SUCCESS
-                    self.logger.info(const.STR_ALLOCATE_SUCCESS)
-                    return (ResultCode.OK, const.STR_ALLOCATE_SUCCESS)
-                else:
-                    log_msg = (f"Mccs Master is in ObsState {device._mccs_master_proxy.obsState.name}.""Unable to invoke Configure command")
-                    device._read_activity_message = log_msg
-                    self.logger.error(log_msg)
+                #if device._mccs_master_proxy.obsState in (ObsState.EMPTY):
+                    # json_argument = json.loads(argin)
+                log_msg = "Input JSON for MCCS master leaf node AssignResources command is: " + argin
+                self.logger.debug(log_msg)
+                self.logger.info("Invoking Allocate on MCCS master")
+                device._mccs_master_proxy.command_inout_asynch(const.CMD_ALLOCATE, argin,
+                                                        self.allocate_ended)
+                self.logger.info("After invoking Allocate on MCCS master")
+                device._read_activity_message = const.STR_ALLOCATE_SUCCESS
+                self.logger.info(const.STR_ALLOCATE_SUCCESS)
+                # else:
+                #     log_msg = (f"Mccs Master is in ObsState {device._mccs_master_proxy.obsState.name}.""Unable to invoke Configure command")
+                #     device._read_activity_message = log_msg
+                #     self.logger.error(log_msg)
 
             except ValueError as value_error:
                 log_msg = const.ERR_INVALID_JSON_ASSIGN_RES_MCCS + str(value_error)
                 device._read_activity_message = const.ERR_INVALID_JSON_ASSIGN_RES_MCCS + str(value_error)
                 self.logger.exception(value_error)
                 tango.Except.throw_exception(const.STR_ASSIGN_RES_EXEC, log_msg,
-                                             "MccsMasterLeafNode.AssignResourceCommand",
+                                             "MccsMasterLeafNode.AssignResourcesCommand",
                                              tango.ErrSeverity.ERR)
 
             except KeyError as key_error:
@@ -316,14 +315,14 @@ class MccsMasterLeafNode(SKABaseDevice):
                 device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
                 self.logger.exception(key_error)
                 tango.Except.throw_exception(const.STR_ASSIGN_RES_EXEC, log_msg,
-                                             "MccsMasterLeafNode.AssignResourceCommand",
+                                             "MccsMasterLeafNode.AssignResourcesCommand",
                                              tango.ErrSeverity.ERR)
             except DevFailed as dev_failed:
                 log_msg = const.ERR_ASSGN_RESOURCE_MCCS + str(dev_failed)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
                 tango.Except.throw_exception(const.STR_ASSIGN_RES_EXEC, log_msg,
-                                             "MccsMasterLeafNode.AssignResourceCommand",
+                                             "MccsMasterLeafNode.AssignResourcesCommand",
                                              tango.ErrSeverity.ERR)
 
     def is_AssignResources_allowed(self):
@@ -337,7 +336,7 @@ class MccsMasterLeafNode(SKABaseDevice):
         :raises: DevFailed if this command is not allowed to be run in current device state
 
         """
-        handler = self.get_command_object("AssignResource")
+        handler = self.get_command_object("AssignResources")
         return handler.check_allowed()
 
     @command(
@@ -346,9 +345,9 @@ class MccsMasterLeafNode(SKABaseDevice):
         doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
-    def AssignResource(self, argin):
-        """ Invokes AssignResource command on MccsMasterLeafNode. """
-        handler = self.get_command_object("AssignResource")
+    def AssignResources(self, argin):
+        """ Invokes AssignResources command on MccsMasterLeafNode. """
+        handler = self.get_command_object("AssignResources")
         try:
             self.validate_obs_state()
 
@@ -475,7 +474,7 @@ def init_command_objects(self):
         """
         super().init_command_objects()
         args = (self, self.state_model, self.logger)
-        self.register_command_object("AssignResource", self.AssignResourceCommand(*args))
+        self.register_command_object("AssignResources", self.AssignResourcesCommand(*args))
         self.register_command_object("ReleaseResources", self.ReleaseResourcesCommand(*args))
 
 

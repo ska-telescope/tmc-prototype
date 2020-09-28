@@ -32,6 +32,8 @@ STR_CMD_FAILED = "MccsMasterLeafNode_Commandfailed"
 STR_SETTING_CB_MODEL = "Setting CallBack Model as :-> "
 STR_INVOKE_SUCCESS = " invoked successfully."
 STR_COMMAND = "Command :-> "
+STR_ASSIGN_RES_EXEC = "AssignResources command execution"
+
 
 
 #PROPERTIES DEFAULT VALUES
