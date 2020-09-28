@@ -1,5 +1,5 @@
 apiVersion: v2
-name: mvp-mid
+name: test-tmc
 description: A Helm chart for Kubernetes MVP Mid 
 type: application
 version: 0.1.0
@@ -22,7 +22,7 @@ dependencies:
   version: 0.4.0
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: tmc-mid
-  version: 0.0.1
+  version: 0.0.2
   repository: file://../tmc-mid 
 - name: webjive
   version: 0.1.0

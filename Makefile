@@ -24,11 +24,11 @@ HELM_RELEASE ?= test
 
 # HELM_CHART the chart name
 # Can we run two charts a same time for tmc-mid, tmc-low
-HELM_CHART ?= tmc-mid
+HELM_CHART ?= test-tmc
 
 # UMBRELLA_CHART_PATH Path of the umbrella chart to work with
 # Do we need to have it right now? 
-UMBRELLA_CHART_PATH ?= charts/tmc-mid/
+UMBRELLA_CHART_PATH ?= charts/test-tmc/
 
 # Fixed variables
 # Timeout for gitlab-runner when run locally
