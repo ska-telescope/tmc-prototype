@@ -210,6 +210,57 @@ build SdpSubarrayLeafNode wheel for development: # Executed on a commit
     paths:
       - ./tmcprototype/sdpsubarrayleafnode/dist/
 
+build MccsMasterLeafNode wheel for publication: # Executed on a tag
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/mccsmasterleafnode
+    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  only:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/mccsmasterleafnode/dist/
+
+build MccsMasterLeafNode wheel for development: # Executed on a commit
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/mccsmasterleafnode
+    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  except:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/mccsmasterleafnode/dist/
+
+build MccsSubarrayLeafNode wheel for publication: # Executed on a tag
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/mccssubarrayleafnode
+    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  only:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/mccssubarrayleafnode/dist/
+
+build MccsSubarrayLeafNode wheel for development: # Executed on a commit
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/mccssubarrayleafnode
+    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  except:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/mccssubarrayleafnode/dist/
 
 build DishMaster wheel for publication: # Executed on a tag
   stage: build
