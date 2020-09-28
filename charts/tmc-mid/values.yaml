@@ -1,0 +1,485 @@
+display: ":0"
+xauthority: "~/.Xauthority"
+minikube: true
+
+enabled: true
+
+system: SW-infrastructure
+subsystem: TMC-mid
+telescope: SKA-mid
+
+global:
+  labels:
+    app: tmc-mid
+  annotations:
+    app.gitlab.com/app: CI_PROJECT_PATH_SLUG
+    app.gitlab.com/env: CI_ENVIRONMENT_SLUG
+  tango_host: databaseds-tango-base-test:10000
+  environment_variables: []
+  dsconfig:
+    image:
+      registry: nexus.engageska-portugal.pt/ska-docker
+      image: tango-dsconfig
+      tag: 1.5.0
+      pullPolicy: IfNotPresent
+  itango:
+    image:
+      registry: nexus.engageska-portugal.pt/ska-docker
+      image: tango-itango
+      tag: 9.3.1
+      pullPolicy: IfNotPresent
+  tmcprototype:
+    image:
+      registry: nexus.engageska-portugal.pt/tango-example
+      image: tmcprototype
+      tag: 0.2.11
+      pullPolicy: IfNotPresent
+  
+  resources:
+    requests:
+      cpu: 150m     # 100m = 0.1 CPU
+      memory: 55Mi # 128Mi = 0.125 GB mem
+    limits:
+      cpu: 200m     # 200m = 0.2 CPU
+      memory: 65Mi # 256Mi = 0.25 GB mem
+
+dsconfig:
+  configuration_file: data/configuration.json
+
+deviceServers:
+  - name: dishmaster1
+    subsystem: enabling
+    function: receptor-simulation
+    domain: sensing
+    image: "{{ .Values.global.tmcprototype.image.registry }}/{{ .Values.global.tmcprototype.image.image }}:{{ .Values.global.tmcprototype.image.tag }}"
+    imagePullPolicy: "{{ .Values.global.tmcprototype.image.pullPolicy }}"
+    command:
+      - sh
+    args:
+      - -c
+      - "/usr/local/bin/DishMasterDS 01"
+    resources:
+      requests:
+        cpu: {{ .Values.global.resources.requests.cpu }}
+        memory: {{ .Values.global.resources.requests.memory }}
+      limits:
+        cpu: {{ .Values.global.resources.limits.cpu }}
+        memory: {{ .Values.global.resources.limits.memory }}
+  
+  - name: dishmaster2
+    subsystem: enabling
+    function: receptor-simulation
+    domain: sensing
+    image: "{{ .Values.global.tmcprototype.image.registry }}/{{ .Values.global.tmcprototype.image.image }}:{{ .Values.global.tmcprototype.image.tag }}"
+    imagePullPolicy: "{{ .Values.global.tmcprototype.image.pullPolicy }}"
+    command:
+      - sh
+    args:
+      - -c
+      - "/usr/local/bin/DishMasterDS 02"
+    resources:
+      requests:
+        cpu: {{ .Values.global.resources.requests.cpu }}
+        memory: {{ .Values.global.resources.requests.memory }}
+      limits:
+        cpu: {{ .Values.global.resources.limits.cpu }}
+        memory: {{ .Values.global.resources.limits.memory }}
+
+  - name: dishmaster3
+    subsystem: enabling
+    function: receptor-simulation
+    domain: sensing
+    image: "{{ .Values.global.tmcprototype.image.registry }}/{{ .Values.global.tmcprototype.image.image }}:{{ .Values.global.tmcprototype.image.tag }}"
+    imagePullPolicy: "{{ .Values.global.tmcprototype.image.pullPolicy }}"
+    command:
+      - sh
+    args:
+      - -c
+      - "/usr/local/bin/DishMasterDS 01"
+    resources:
+      requests:
+        cpu: {{ .Values.global.resources.requests.cpu }}
+        memory: {{ .Values.global.resources.requests.memory }}
+      limits:
+        cpu: {{ .Values.global.resources.limits.cpu }}
+        memory: {{ .Values.global.resources.limits.memory }}
+  
+  - name: dishmaster4
+    subsystem: enabling
+    function: receptor-simulation
+    domain: sensing
+    image: "{{ .Values.global.tmcprototype.image.registry }}/{{ .Values.global.tmcprototype.image.image }}:{{ .Values.global.tmcprototype.image.tag }}"
+    imagePullPolicy: "{{ .Values.global.tmcprototype.image.pullPolicy }}"
+    command:
+      - sh
+    args:
+      - -c
+      - "/usr/local/bin/DishMasterDS 04"
+    resources:
+      requests:
+        cpu: {{ .Values.global.resources.requests.cpu }}
+        memory: {{ .Values.global.resources.requests.memory }}
+      limits:
+        cpu: {{ .Values.global.resources.limits.cpu }}
+        memory: {{ .Values.global.resources.limits.memory }}
+
+  - name: dishleafnode1
+    subsystem: general-monitoring
+    function: dish-monitoring
+    domain: general-monitoring
+    image: "{{ .Values.tmcprototype.image.registry }}/{{ .Values.tmcprototype.image.image }}:{{ .Values.tmcprototype.image.tag }}"
+    imagePullPolicy: "{{ .Values.tmcprototype.image.pullPolicy }}"
+    command:
+      - sh
+    args:
+      - -c
+      - "retry --max=10 -- tango_admin --ping-device mid_d0001/elt/master && /usr/local/bin/DishLeafNodeDS 01"
+    resources:
+      requests:
+        cpu: {{ .Values.global.resources.requests.cpu }}
+        memory: {{ .Values.global.resources.requests.memory }}
+      limits:
+        cpu: {{ .Values.global.resources.limits.cpu }}
+        memory: {{ .Values.global.resources.limits.memory }}
+
+  - name: dishleafnode2
+    subsystem: general-monitoring
+    function: dish-monitoring
+    domain: general-monitoring
+    image: "{{ .Values.tmcprototype.image.registry }}/{{ .Values.tmcprototype.image.image }}:{{ .Values.tmcprototype.image.tag }}"
+    imagePullPolicy: "{{ .Values.tmcprototype.image.pullPolicy }}"
+    command:
+      - sh
+    args:
+      - -c
+      - " retry --max=10 -- tango_admin --ping-device mid_d0002/elt/master && /usr/local/bin/DishLeafNodeDS 02"
+    resources:
+      requests:
+        cpu: {{ .Values.global.resources.requests.cpu }}
+        memory: {{ .Values.global.resources.requests.memory }}
+      limits:
+        cpu: {{ .Values.global.resources.limits.cpu }}
+        memory: {{ .Values.global.resources.limits.memory }}
+
+  - name: dishleafnode3
+    subsystem: general-monitoring
+    function: dish-monitoring
+    domain: general-monitoring
+    image: "{{ .Values.tmcprototype.image.registry }}/{{ .Values.tmcprototype.image.image }}:{{ .Values.tmcprototype.image.tag }}"
+    imagePullPolicy: "{{ .Values.tmcprototype.image.pullPolicy }}"
+    command:
+      - sh
+    args:
+      - -c
+      - "retry --max=10 -- tango_admin --ping-device mid_d0003/elt/master && /usr/local/bin/DishLeafNodeDS 03"
+    resources:
+      requests:
+        cpu: {{ .Values.global.resources.requests.cpu }}
+        memory: {{ .Values.global.resources.requests.memory }}
+      limits:
+        cpu: {{ .Values.global.resources.limits.cpu }}
+        memory: {{ .Values.global.resources.limits.memory }}
+
+  - name: dishleafnode4
+    subsystem: general-monitoring
+    function: dish-monitoring
+    domain: general-monitoring
+    image: "{{ .Values.tmcprototype.image.registry }}/{{ .Values.tmcprototype.image.image }}:{{ .Values.tmcprototype.image.tag }}"
+    imagePullPolicy: "{{ .Values.tmcprototype.image.pullPolicy }}"
+    command:
+      - sh
+    args:
+      - -c
+      - "retry --max=10 -- tango_admin --ping-device mid_d0004/elt/master && /usr/local/bin/DishLeafNodeDS 04"
+    resources:
+      requests:
+        cpu: {{ .Values.global.resources.requests.cpu }}
+        memory: {{ .Values.global.resources.requests.memory }}
+      limits:
+        cpu: {{ .Values.global.resources.limits.cpu }}
+        memory: {{ .Values.global.resources.limits.memory }}
+
+  - name: cspsubarrayleafnode1
+    subsystem: subarray1
+    function: observation-execution
+    domain: subarray
+    image: "{{ .Values.tmcprototype.image.registry }}/{{ .Values.tmcprototype.image.image }}:{{ .Values.tmcprototype.image.tag }}"
+    imagePullPolicy: "{{ .Values.tmcprototype.image.pullPolicy }}"
+    command:
+      - sh
+    args:
+      - -c
+      - "retry --max=10 -- tango_admin --ping-device mid_csp/elt/subarray_01 && /usr/local/bin/CspSubarrayLeafNodeDS 01"
+    resources:
+      requests:
+        cpu: {{ .Values.global.resources.requests.cpu }}
+        memory: {{ .Values.global.resources.requests.memory }}
+      limits:
+        cpu: {{ .Values.global.resources.limits.cpu }}
+        memory: {{ .Values.global.resources.limits.memory }}
+
+  - name: cspsubarrayleafnode2
+    subsystem: subarray2
+    function: observation-execution
+    domain: subarray
+    image: "{{ .Values.tmcprototype.image.registry }}/{{ .Values.tmcprototype.image.image }}:{{ .Values.tmcprototype.image.tag }}"
+    imagePullPolicy: "{{ .Values.tmcprototype.image.pullPolicy }}"
+    command:
+      - sh
+    args:
+      - -c
+      - "retry --max=10 -- tango_admin --ping-device mid_csp/elt/subarray_02 && /usr/local/bin/CspSubarrayLeafNodeDS 02"
+    resources:
+      requests:
+        cpu: {{ .Values.global.resources.requests.cpu }}
+        memory: {{ .Values.global.resources.requests.memory }}
+      limits:
+        cpu: {{ .Values.global.resources.limits.cpu }}
+        memory: {{ .Values.global.resources.limits.memory }}
+
+  - name: cspsubarrayleafnode3
+    subsystem: subarray3
+    function: observation-execution
+    domain: subarray
+    image: "{{ .Values.tmcprototype.image.registry }}/{{ .Values.tmcprototype.image.image }}:{{ .Values.tmcprototype.image.tag }}"
+    imagePullPolicy: "{{ .Values.tmcprototype.image.pullPolicy }}"
+    command:
+      - sh
+    args:
+      - -c
+      - "retry --max=10 -- tango_admin --ping-device mid_csp/elt/subarray_03 && /usr/local/bin/CspSubarrayLeafNodeDS 03"
+    resources:
+      requests:
+        cpu: {{ .Values.global.resources.requests.cpu }}
+        memory: {{ .Values.global.resources.requests.memory }}
+      limits:
+        cpu: {{ .Values.global.resources.limits.cpu }}
+        memory: {{ .Values.global.resources.limits.memory }}
+
+  - name: cspmasterleafnode
+    subsystem: monitoring
+    function: csp-monitoring
+    domain: general-monitoring
+    image: "{{ .Values.tmcprototype.image.registry }}/{{ .Values.tmcprototype.image.image }}:{{ .Values.tmcprototype.image.tag }}"
+    imagePullPolicy: "{{ .Values.tmcprototype.image.pullPolicy }}"
+    command:
+      - sh
+    args:
+      - -c
+      - "retry --max=10 -- tango_admin --ping-device mid_csp/elt/master && /usr/local/bin/CspMasterLeafNodeDS 01"
+    resources:
+      requests:
+        cpu: {{ .Values.global.resources.requests.cpu }}
+        memory: {{ .Values.global.resources.requests.memory }}
+      limits:
+        cpu: {{ .Values.global.resources.limits.cpu }}
+        memory: {{ .Values.global.resources.limits.memory }}
+
+  - name: sdpsubarrayleafnode1
+    subsystem: subarray1
+    function: observation-execution
+    domain: subarray
+    image: "{{ .Values.tmcprototype.image.registry }}/{{ .Values.tmcprototype.image.image }}:{{ .Values.tmcprototype.image.tag }}"
+    imagePullPolicy: "{{ .Values.tmcprototype.image.pullPolicy }}"
+    command:
+      - sh
+    args:
+      - -c
+      - "retry --max=10 -- tango_admin --ping-device mid_sdp/elt/subarray_1 && /usr/local/bin/SdpSubarrayLeafNodeDS 01"
+    resources:
+      requests:
+        cpu: {{ .Values.global.resources.requests.cpu }}
+        memory: {{ .Values.global.resources.requests.memory }}
+      limits:
+        cpu: {{ .Values.global.resources.limits.cpu }}
+        memory: {{ .Values.global.resources.limits.memory }}
+
+  - name: sdpsubarrayleafnode2
+    subsystem: subarray2
+    function: observation-execution
+    domain: subarray
+    image: "{{ .Values.tmcprototype.image.registry }}/{{ .Values.tmcprototype.image.image }}:{{ .Values.tmcprototype.image.tag }}"
+    imagePullPolicy: "{{ .Values.tmcprototype.image.pullPolicy }}"
+    command:
+      - sh
+    args:
+      - -c
+      - "retry --max=10 -- tango_admin --ping-device mid_sdp/elt/subarray_2 && /usr/local/bin/SdpSubarrayLeafNodeDS 02"
+    resources:
+      requests:
+        cpu: {{ .Values.global.resources.requests.cpu }}
+        memory: {{ .Values.global.resources.requests.memory }}
+      limits:
+        cpu: {{ .Values.global.resources.limits.cpu }}
+        memory: {{ .Values.global.resources.limits.memory }}
+
+  - name: sdpsubarrayleafnode3
+    subsystem: subarray3
+    function: observation-execution
+    domain: subarray
+    image: "{{ .Values.tmcprototype.image.registry }}/{{ .Values.tmcprototype.image.image }}:{{ .Values.tmcprototype.image.tag }}"
+    imagePullPolicy: "{{ .Values.tmcprototype.image.pullPolicy }}"
+    command:
+      - sh
+    args:
+      - -c
+      - "retry --max=10 -- tango_admin --ping-device mid_sdp/elt/subarray_3 && /usr/local/bin/SdpSubarrayLeafNodeDS 03"
+    resources:
+      requests:
+        cpu: {{ .Values.global.resources.requests.cpu }}
+        memory: {{ .Values.global.resources.requests.memory }}
+      limits:
+        cpu: {{ .Values.global.resources.limits.cpu }}
+        memory: {{ .Values.global.resources.limits.memory }}
+
+  - name: sdpmasterleafnode
+    subsystem: monitoring
+    function: sdp-monitoring
+    domain: general-monitoring
+    image: "{{ .Values.tmcprototype.image.registry }}/{{ .Values.tmcprototype.image.image }}:{{ .Values.tmcprototype.image.tag }}"
+    imagePullPolicy: "{{ .Values.tmcprototype.image.pullPolicy }}"
+    command:
+      - sh
+    args:
+      - -c
+      - "retry --max=10 -- tango_admin --ping-device mid_sdp/elt/master && /usr/local/bin/SdpMasterLeafNodeDS 01"
+    resources:
+      requests:
+        cpu: {{ .Values.global.resources.requests.cpu }}
+        memory: {{ .Values.global.resources.requests.memory }}
+      limits:
+        cpu: {{ .Values.global.resources.limits.cpu }}
+        memory: {{ .Values.global.resources.limits.memory }}
+
+  - name: subarraynode1
+    subsystem: subarray1
+    function: observation-execution
+    domain: subarray
+    image: "{{ .Values.tmcprototype.image.registry }}/{{ .Values.tmcprototype.image.image }}:{{ .Values.tmcprototype.image.tag }}"
+    imagePullPolicy: "{{ .Values.tmcprototype.image.pullPolicy }}"
+    command:
+      - sh
+    args:
+      - -c
+      - "retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0001 &&\
+              retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0002 &&\
+              retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0003 &&\
+              retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0004 &&\
+              retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray01 &&\
+              retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray01 &&\
+              /usr/local/bin/SubarrayNodeDS sa1"
+    resources:
+      requests:
+        cpu: {{ .Values.global.resources.requests.cpu }}
+        memory: {{ .Values.global.resources.requests.memory }}
+      limits:
+        cpu: {{ .Values.global.resources.limits.cpu }}
+        memory: {{ .Values.global.resources.limits.memory }}
+
+  - name: subarraynode2
+    subsystem: subarray2
+    function: observation-execution
+    domain: subarray
+    image: "{{ .Values.tmcprototype.image.registry }}/{{ .Values.tmcprototype.image.image }}:{{ .Values.tmcprototype.image.tag }}"
+    imagePullPolicy: "{{ .Values.tmcprototype.image.pullPolicy }}"
+    command:
+      - sh
+    args:
+      - -c
+      - "retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0001 &&\
+              retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0002 &&\
+              retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0003 &&\
+              retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0004 &&\
+              retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray02 &&\
+              retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray02 &&\
+              /usr/local/bin/SubarrayNodeDS sa2"
+    resources:
+      requests:
+        cpu: {{ .Values.global.resources.requests.cpu }}
+        memory: {{ .Values.global.resources.requests.memory }}
+      limits:
+        cpu: {{ .Values.global.resources.limits.cpu }}
+        memory: {{ .Values.global.resources.limits.memory }}
+
+  - name: subarraynode3
+    subsystem: subarray3
+    function: observation-execution
+    domain: subarray
+    image: "{{ .Values.tmcprototype.image.registry }}/{{ .Values.tmcprototype.image.image }}:{{ .Values.tmcprototype.image.tag }}"
+    imagePullPolicy: "{{ .Values.tmcprototype.image.pullPolicy }}"
+    command:
+      - sh
+    args:
+      - -c
+      - "retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0001 &&\
+              retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0002 &&\
+              retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0003 &&\
+              retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/d0004 &&\
+              retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/csp_subarray03 &&\
+              retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/sdp_subarray03 &&\
+              /usr/local/bin/SubarrayNodeDS sa3"
+    resources:
+      requests:
+        cpu: {{ .Values.global.resources.requests.cpu }}
+        memory: {{ .Values.global.resources.requests.memory }}
+      limits:
+        cpu: {{ .Values.global.resources.limits.cpu }}
+        memory: {{ .Values.global.resources.limits.memory }}
+
+  - name: centralnode
+    subsystem: monitoring
+    function: telescope-monitoring
+    domain: general-monitoring
+    image: "{{ .Values.tmcprototype.image.registry }}/{{ .Values.tmcprototype.image.image }}:{{ .Values.tmcprototype.image.tag }}"
+    imagePullPolicy: "{{ .Values.tmcprototype.image.pullPolicy }}"
+    command:
+      - sh
+    args:
+      - -c
+      - "retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/csp_master &&\
+              retry --max=10 -- tango_admin --ping-device ska_mid/tm_leaf_node/sdp_master &&\
+              retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/1 &&\
+              retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/2 &&\
+              retry --max=10 -- tango_admin --ping-device ska_mid/tm_subarray_node/3 &&\
+              /usr/local/bin/CentralNodeDS 01"
+    resources:
+      requests:
+        cpu: {{ .Values.global.resources.requests.cpu }}
+        memory: {{ .Values.global.resources.requests.memory }}
+      limits:
+        cpu: {{ .Values.global.resources.limits.cpu }}
+        memory: {{ .Values.global.resources.limits.memory }}
+
+  - name: tm-alarmhandler
+    subsystem: alarm-management
+    function: alarm-management
+    domain: general-monitoring
+    image: "{{ .Values.tmalarmhandler.image.registry }}/{{ .Values.tmalarmhandler.image.image }}:{{ .Values.tmalarmhandler.image.tag }}"
+    imagePullPolicy: "{{ .Values.tmalarmhandler.image.pullPolicy }}"
+    command:
+      - sh
+    args:
+      - -c
+      - "./app/alarmhandler-srv 01"
+    resources:
+      requests:
+        cpu: {{ .Values.global.resources.requests.cpu }}
+        memory: {{ .Values.global.resources.requests.memory }}
+      limits:
+        cpu: {{ .Values.global.resources.limits.cpu }}
+        memory: {{ .Values.global.resources.limits.memory }}
+
+
+nodeSelector: {}
+
+affinity: {}
+
+tolerations: []
+
+# resources:
+#   requests:
+#     cpu: 150m     # 100m = 0.1 CPU
+#     memory: 55Mi # 128Mi = 0.125 GB mem
+#   limits:
+#     cpu: 200m     # 200m = 0.2 CPU
+#     memory: 65Mi # 256Mi = 0.25 GB mem
