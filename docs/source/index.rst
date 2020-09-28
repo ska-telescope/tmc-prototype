@@ -18,6 +18,8 @@ Welcome to TMC Prototype's documentation!
    SDP Subarray Leaf Node<SdpSubarrayLeafNode>
    CSP Subarray Leaf Node<CspSubarrayLeafNode>
    SDP Master Leaf Node<SdpMasterLeafNode>
+   MCCS Master Leaf Node<MccsMasterLeafNode>
+   MCCS Subarray Leaf Node<MccsSubarrayLeafNode>
 
 
 Indices and tables
