@@ -292,6 +292,14 @@ smoketest: ## check that the number of waiting containers is zero (10 attempts, 
 		fi; \
 		n=`expr $$n - 1`; \
 	done
+
+#this is so that you can load dashboards previously saved, TODO: make the name of the pod variable
+dump_dashboards: # @param: name of the dashborad
+	kubectl exec -i pod/mongodb-webjive-test-0 -n $(KUBE_NAMESPACE) -- mongodump --archive > dashboards/$(DASHBOARD)
+
+load_dashboards: # @param: name of the dashborad
+	kubectl exec -i pod/mongodb-webjive-test-0 -n $(KUBE_NAMESPACE) -- mongorestore --archive < dashboards/$(DASHBOARD)
+
 # How to test unit-test cases
 unit-test:
 	cd tmcprototype; \
