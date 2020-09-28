@@ -180,7 +180,7 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
         pass
         # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.Configure
 
-    class ScanCommand(ResponseCommand):
+    class ScanCommand(BaseCommand):
         """
         A class for MCCSSubarrayLeafNode's StartScan() command.
         """
