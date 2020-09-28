@@ -13,157 +13,68 @@
 DOCKER_REGISTRY_USER:=tango-example
 PROJECT = tmcprototype
 
+# KUBE_NAMESPACE defines the Kubernetes Namespace that will be deployed to
+# using Helm.  If this does not already exist it will be created
+KUBE_NAMESPACE ?= tmcprototype
+KUBE_NAMESPACE_SDP ?= $(KUBE_NAMESPACE)-sdp#namespace to be used
+
+# HELM_RELEASE is the release that all Kubernetes resources will be labelled
+# with
+HELM_RELEASE ?= test
+
+# HELM_CHART the chart name
+# Can we run two charts a same time for tmc-mid, tmc-low
+HELM_CHART ?= mvp-mid
+
+# UMBRELLA_CHART_PATH Path of the umbrella chart to work with
+# Do we need to have it right now? 
+UMBRELLA_CHART_PATH ?= charts/mvp-mid/
+
+# Fixed variables
+# Timeout for gitlab-runner when run locally
+TIMEOUT = 86400
+# Helm version
+HELM_VERSION = v3.3.1
+# kubectl version
+KUBERNETES_VERSION = v1.19.2
+
+# Docker, K8s and Gitlab CI variables
+# gitlab-runner debug mode - turn on with non-empty value
+RDEBUG ?=
+# gitlab-runner executor - shell or docker
+EXECUTOR ?= shell
+# DOCKER_HOST connector to gitlab-runner - local domain socket for shell exec
+DOCKER_HOST ?= unix:///var/run/docker.sock
+# DOCKER_VOLUMES pass in local domain socket for DOCKER_HOST
+DOCKER_VOLUMES ?= /var/run/docker.sock:/var/run/docker.sock
+# registry credentials - user/pass/registry - set these in PrivateRules.mak
+DOCKER_REGISTRY_USER_LOGIN ?=  ## registry credentials - user - set in PrivateRules.mak
+CI_REGISTRY_PASS_LOGIN ?=  ## registry credentials - pass - set in PrivateRules.mak
+CI_REGISTRY ?= gitlab.com/ska-telescope/tmc-prototype
+
+CI_PROJECT_DIR ?= .
+
+KUBE_CONFIG_BASE64 ?=  ## base64 encoded kubectl credentials for KUBECONFIG
+KUBECONFIG ?= /etc/deploy/config ## KUBECONFIG location
+
+XAUTHORITYx ?= ${XAUTHORITY}
+THIS_HOST := $(shell ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n1)
+DISPLAY := $(THIS_HOST):0
+
+# define private overrides for above variables in here
+-include PrivateRules.mak
+
+# Test runner - run to completion job in K8s
+# name of the pod running the k8s_tests
+TEST_RUNNER = test-makefile-runner-$(CI_JOB_ID)-$(KUBE_NAMESPACE)-$(HELM_RELEASE)
+
 #
 # include makefile to pick up the standard Make targets, e.g., 'make build'
 # build, 'make push' docker push procedure, etc. The other Make targets
 # ('make interactive', 'make test', etc.) are defined in this file.
 #
-include .make/Makefile.mk
+include .make/release.mk
+include .make/docker.mk
+include .make/k8s.mk
 
-#
-# IMAGE_TO_TEST defines the tag of the Docker image to test
-#
-IMAGE_TO_TEST = $(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/$(PROJECT):latest
-
-#
-# CACHE_VOLUME is the name of the Docker volume used to cache eggs and wheels
-# used during the test procedure. The volume is not used during the build
-# procedure
-#
-CACHE_VOLUME = $(PROJECT)-test-cache
-
-# optional docker run-time arguments
-DOCKER_RUN_ARGS =
-
-#
-# Never use the network=host mode when running CI jobs, and add extra
-# distinguishing identifiers to the network name and container names to
-# prevent collisions with jobs from the same project running at the same
-# time.
-#
-ifneq ($(CI_JOB_ID),)
-NETWORK_MODE := tangonet-$(CI_JOB_ID)
-CONTAINER_NAME_PREFIX := $(PROJECT)-$(CI_JOB_ID)-
-else
-CONTAINER_NAME_PREFIX := $(PROJECT)-
-endif
-
-ifeq ($(OS),Windows_NT)
-    $(error Sorry, Windows is not supported yet)
-else
-	UNAME_S := $(shell uname -s)
-	ifeq ($(UNAME_S),Linux)
-		DISPLAY ?= :0.0
-		NETWORK_MODE ?= host
-		XAUTHORITY_MOUNT := /tmp/.X11-unix:/tmp/.X11-unix
-		XAUTHORITY ?= /hosthome/.Xauthority
-		# /bin/sh (=dash) does not evaluate 'docker network' conditionals correctly
-		SHELL := /bin/bash
-	endif
-	ifeq ($(UNAME_S),Darwin)
-		IF_INTERFACE := $(shell netstat -nr -f inet | awk '{ if ($$1 ~/default/ && $$4 ~/en/) { print $$4} }')
-		DISPLAY := $(shell ifconfig $(IF_INTERFACE) | awk '{ if ($$1 ~/inet$$/) { print $$2} }'):0
-		# network_mode = host doesn't work on MacOS, so fix to the internal network
-		NETWORK_MODE := tangonet
-		XAUTHORITY_MOUNT := $(HOME):/hosthome:ro
-		XAUTHORITY := /hosthome/.Xauthority
-	endif
-endif
-
-#
-# When running in network=host mode, point devices at a port on the host
-# machine rather than at the container.
-#
-ifeq ($(NETWORK_MODE),host)
-TANGO_HOST := $(shell hostname):10000
-MYSQL_HOST := $(shell hostname):3306
-else
-# distinguish the bridge network from others by adding the project name
-NETWORK_MODE := $(NETWORK_MODE)-$(PROJECT)
-TANGO_HOST := $(CONTAINER_NAME_PREFIX)databaseds:10000
-MYSQL_HOST := $(CONTAINER_NAME_PREFIX)tangodb:3306
-endif
-
-# TODO: For future use
-#DOCKER_COMPOSE_ARGS := DISPLAY=$(DISPLAY) XAUTHORITY=$(XAUTHORITY) TANGO_HOST=$(TANGO_HOST) \
-#		NETWORK_MODE=$(NETWORK_MODE) XAUTHORITY_MOUNT=$(XAUTHORITY_MOUNT) MYSQL_HOST=$(MYSQL_HOST) \
-#		DOCKER_REGISTRY_HOST=$(DOCKER_REGISTRY_HOST) DOCKER_REGISTRY_USER=$(DOCKER_REGISTRY_USER) \
-#		CONTAINER_NAME_PREFIX=$(CONTAINER_NAME_PREFIX) COMPOSE_IGNORE_ORPHANS=true
-
-#
-# Defines a default make target so that help is printed if make is called
-# without a target
-#
-.DEFAULT_GOAL := help
-
-#
-# defines a function to copy the ./test-harness directory into the container
-# and then runs the requested make target in the container. The container is:
-#
-#   1. attached to the network of the docker-compose test system
-#   2. uses a persistent volume to cache Python eggs and wheels so that fewer
-#      downloads are required
-#   3. uses a transient volume as a working directory, in which untarred files
-#      and test output can be written in the container and subsequently copied
-#      to the host
-#
-make = tar -c test-harness/ | \
-	   docker run -i --rm --network=$(NETWORK_MODE) \
-	   -e TANGO_HOST=$(TANGO_HOST) \
-	   -v $(CACHE_VOLUME):/home/tango/.cache \
-	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
-	   bash -c "sudo chown -R tango:tango /build && \
-	   tar x --strip-components 1 --warning=all && \
-	   make TANGO_HOST=$(TANGO_HOST) $1"
-
-#Report folder/volume is used in docker to save the code coverage report using unit-test job. The report folder is then copied to unit_test_reports folder.
-unit-test: DOCKER_RUN_ARGS = --volumes-from=$(REPORT)
-unit-test: build
-	$(INIT_CACHE)
-	mkdir -p unit_test_reports
-	chmod 777 unit_test_reports
-	docker run -i --rm \
-	   -e TANGO_HOST=$(TANGO_HOST) \
-	   -v $(CACHE_VOLUME):/home/tango/.cache \
-	   -v unit_test_reports:/unit_test_reports \
-	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
-	bash -c "cd /app/tmcprototype && \
-	sudo chown -R tango:tango /report && \
-	./run_unit_test.sh"
-	docker cp $(REPORT):/report ./unit_test_reports
-	docker rm -f -v $(REPORT)
-
-#Make lint job is perfomred. After lint, the coverage reports from unit-test job are copied into build folder and unit_test_reports folder is removed. All the coverage reports using run test as well as unit-test are saved into build folder.
-lint: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
-lint: build  ##lint the application (static code analysis)
-ifneq ($(NETWORK_MODE),host)
-	docker network inspect $(NETWORK_MODE) &> /dev/null || ([ $$? -ne 0 ] && docker network create $(NETWORK_MODE))
-endif
-	$(INIT_CACHE)
-	$(call make,lint); \
-	status=$$?; \
-	docker cp $(BUILD):/build .; \
-	cp ./unit_test_reports/report/code-coverage.xml ./build/reports
-	cp ./unit_test_reports/report/unit-tests.xml ./build/reports
-	cp -r ./unit_test_reports/report/unit_test ./build
-	exit $$status
-
-pull:  ## download the application image
-	docker pull $(IMAGE_TO_TEST)
-
-help:  ## show this help.
-	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
-
-.PHONY: all help
-
-# Creates Docker volume for use as a cache, if it doesn't exist already
-INIT_CACHE = \
-	docker volume ls | grep $(CACHE_VOLUME) || \
-	docker create --name $(CACHE_VOLUME) -v $(CACHE_VOLUME):/cache $(IMAGE_TO_TEST)
-# http://cakoose.com/wiki/gnu_make_thunks
-BUILD_GEN = $(shell docker create -v /build $(IMAGE_TO_TEST))
-BUILD = $(eval BUILD := $(BUILD_GEN))$(BUILD)
-
-#Docker volume to store unit test reports
-REPORT_GEN = $(shell docker create -v /report $(IMAGE_TO_TEST))
-REPORT = $(eval REPORT := $(REPORT_GEN))$(REPORT)
+.PHONY: all test up down help k8s show lint deploy delete logs describe mkcerts localip namespace delete_namespace ingress_check kubeconfig kubectl_dependencies helm_dependencies rk8s_test k8s_test rlint
