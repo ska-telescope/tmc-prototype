@@ -16,6 +16,7 @@ ERR_DEVICE_NOT_READY = "MCCS subarray is not in READY obsState."
 ERR_STARTSCAN_RESOURCES = "Error while invoking StartScan command on MCCS Subarray."
 ERR_DEVICE_NOT_SCANNING = "MCCS subarray is not in SCANNING obsState."
 ERR_ENDSCAN_COMMAND = "Error while invoking EndScan command on MCCS Subarray."
+STR_END_EXEC = "End command execution"
 
 #strings
 #General strings
