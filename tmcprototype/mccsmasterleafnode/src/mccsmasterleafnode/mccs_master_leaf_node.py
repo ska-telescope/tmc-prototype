@@ -90,7 +90,7 @@ class MccsMasterLeafNode(SKABaseDevice):
 
             :rtype: (ResultCode, str)
 
-            :raises: DevFailed if error occurs while creating the device proxy for CSP Master or
+            :raises: DevFailed if error occurs while creating the device proxy for Mccs Master or
                     subscribing the evennts.
             """
             super().do()
