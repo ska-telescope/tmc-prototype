@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-# This file is part of the MCCSSubarrayLeafNode project
+# This file is part of the MccsSubarrayLeafNode project
 #
 #
 #
-# Distributed under the terms of the GPL license.
+# Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 
 """ 
@@ -21,18 +21,18 @@ from ska.base.control_model import HealthState, ObsState
 
 # Additional import
 from . import const, release
-# PROTECTED REGION ID(MCCSSubarrayLeafNode.additionnal_import) ENABLED START #
-# PROTECTED REGION END #    //  MCCSSubarrayLeafNode.additionnal_import
+# PROTECTED REGION ID(MccsSubarrayLeafNode.additionnal_import) ENABLED START #
+# PROTECTED REGION END #    //  MccsSubarrayLeafNode.additionnal_import
 
-__all__ = ["MCCSSubarrayLeafNode", "main"]
+__all__ = ["MccsSubarrayLeafNode", "main"]
 
 
-class MCCSSubarrayLeafNode(SKABaseDevice):
+class MccsSubarrayLeafNode(SKABaseDevice):
     """
     """
     __metaclass__ = DeviceMeta
-    # PROTECTED REGION ID(MCCSSubarrayLeafNode.class_variable) ENABLED START #
-    # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.class_variable
+    # PROTECTED REGION ID(MccsSubarrayLeafNode.class_variable) ENABLED START #
+    # PROTECTED REGION END #    //  MccsSubarrayLeafNode.class_variable
 
     # -----------------
     # Device Properties
@@ -42,7 +42,7 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
 
 
 
-    MCCSSubarrayFQDN = device_property(
+    MccsSubarrayFQDN = device_property(
         dtype='str', default_value="low_mccs/elt/subarray_01"
     )
 
@@ -56,7 +56,7 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
 
 
 
-    activitymessage = attribute(
+    activityMessage = attribute(
         dtype='str',
         access=AttrWriteType.READ_WRITE,
     )
@@ -74,7 +74,7 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
-        A class for the MCCSSubarrayLeafNode's init_device() method"
+        A class for the MccsSubarrayLeafNode's init_device() method"
         """
 
         def do(self):
@@ -91,8 +91,8 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
             super().do()
             device = self.target
             try:
-                # create MCCSSubarray Proxy
-                device._mccs_subarray_proxy = DeviceProxy(device.MCCSSubarrayFQDN)
+                # create MccsSubarray Proxy
+                device._mccs_subarray_proxy = DeviceProxy(device.MccsSubarrayFQDN)
             except DevFailed as dev_failed:
                 log_msg = const.ERR_IN_CREATE_PROXY_MCCSSA + str(dev_failed)
                 self.logger.debug(log_msg)
@@ -108,8 +108,8 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
             device._mccs_subarray_health_state = HealthState.OK
             self.logger.info(const.STR_MCCSSALN_INIT_SUCCESS)
             return (ResultCode.OK, const.STR_MCCSSALN_INIT_SUCCESS)
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.init_device) ENABLED START #
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.init_device
+        # PROTECTED REGION ID(MccsSubarrayLeafNode.init_device) ENABLED START #
+        # PROTECTED REGION END #    //  MccsSubarrayLeafNode.init_device
 
 
     def init_command_objects(self):
@@ -123,28 +123,28 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
         self.register_command_object("End", self.EndCommand(*args))
 
     def always_executed_hook(self):
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.always_executed_hook) ENABLED START #
+        # PROTECTED REGION ID(MccsSubarrayLeafNode.always_executed_hook) ENABLED START #
         """ Internal construct of TANGO. """
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.always_executed_hook
+        # PROTECTED REGION END #    //  MccsSubarrayLeafNode.always_executed_hook
 
     def delete_device(self):
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.delete_device) ENABLED START #
+        # PROTECTED REGION ID(MccsSubarrayLeafNode.delete_device) ENABLED START #
         """ Internal construct of TANGO. """
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.delete_device
+        # PROTECTED REGION END #    //  MccsSubarrayLeafNode.delete_device
 
     # ------------------
     # Attributes methods
     # ------------------
 
-    def read_activitymessage(self):
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.activitymessage_read) ENABLED START #
+    def read_activityMessage(self):
+        # PROTECTED REGION ID(MccsSubarrayLeafNode.activitymessage_read) ENABLED START #
         return self._read_activity_message
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.activitymessage_read
+        # PROTECTED REGION END #    //  MccsSubarrayLeafNode.activitymessage_read
 
-    def write_activitymessage(self, value):
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.activitymessage_write) ENABLED START #
+    def write_activityMessage(self, value):
+        # PROTECTED REGION ID(MccsSubarrayLeafNode.activitymessage_write) ENABLED START #
         self._read_activity_message = value
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.activitymessage_write
+        # PROTECTED REGION END #    //  MccsSubarrayLeafNode.activitymessage_write
 
 
     # --------
@@ -157,9 +157,9 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
     )
     @DebugIt()
     def AssignResources(self, argin):
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.AssignResources) ENABLED START #
+        # PROTECTED REGION ID(MccsSubarrayLeafNode.AssignResources) ENABLED START #
         return ""
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.AssignResources
+        # PROTECTED REGION END #    //  MccsSubarrayLeafNode.AssignResources
 
     @command(
     dtype_in='str', 
@@ -167,9 +167,9 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
     )
     @DebugIt()
     def ReleaseResources(self, argin):
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.ReleaseResources) ENABLED START #
+        # PROTECTED REGION ID(MccsSubarrayLeafNode.ReleaseResources) ENABLED START #
         return ""
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.ReleaseResources
+        # PROTECTED REGION END #    //  MccsSubarrayLeafNode.ReleaseResources
 
     @command(
     dtype_in='str', 
@@ -182,7 +182,7 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
 
     class ScanCommand(BaseCommand):
         """
-        A class for MCCSSubarrayLeafNode's StartScan() command.
+        A class for MccsSubarrayLeafNode's StartScan() command.
         """
 
         def check_allowed(self):
@@ -229,9 +229,9 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
 
             :return: none
             """
+
             device = self.target
             # Update logs and activity message attribute with received event
-            # TODO: This code does not generate exception so refactoring is required
             if event.err:
                 log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
                 self.logger.error(log_msg)
@@ -241,10 +241,9 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
                 self.logger.info(log_msg)
                 device._read_activity_message = log_msg
 
-
         def do(self, argin):
             """
-            This command invokes Scan command on CspSubarray. It is allowed only when CspSubarray is in
+            This command invokes Scan command on MccsSubarray. It is allowed only when MccsSubarray is in
             ObsState READY.
 
             :param argin: JSON string consists of scan id (int).
@@ -268,40 +267,31 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
                                                              self.scan_cmd_ended_cb)
                 device._read_activity_message = const.STR_STARTSCAN_SUCCESS
                 self.logger.info(const.STR_STARTSCAN_SUCCESS)
-                return (ResultCode.OK, const.STR_STARTSCAN_SUCCESS)
+
             except AssertionError as assertion_error:
                 log_msg = const.ERR_DEVICE_NOT_READY + str(assertion_error)
                 device._read_activity_message = log_msg
                 self.logger.exception(log_msg)
                 tango.Except.throw_exception(const.STR_START_SCAN_EXEC, log_msg,
-                                             "MCCSSubarrayLeafNode.ScanCommand",
+                                             "MccsSubarrayLeafNode.ScanCommand",
                                              tango.ErrSeverity.ERR)
-                #
-                # else:
-                #     device._read_activity_message = const.ERR_DEVICE_NOT_READY
-                #     log_msg = const.STR_OBS_STATE + str(device._csp_subarray_proxy.obsState)
-                #     self.logger.error(const.ERR_DEVICE_NOT_READY)
-                #     return (ResultCode.FAILED, const.ERR_DEVICE_NOT_READY)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_STARTSCAN_RESOURCES + str(dev_failed)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
                 tango.Except.throw_exception(const.STR_START_SCAN_EXEC, log_msg,
-                                             "MCCSSubarrayLeafNode.ScanCommand",
+                                             "MccsSubarrayLeafNode.ScanCommand",
                                              tango.ErrSeverity.ERR)
 
     @command(
-        dtype_in=('str',),
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
+        dtype_in=('str',)
     )
     @DebugIt()
     def Scan(self, argin):
-        """ Invokes StartScan command on cspsubarrayleafnode"""
+        """ Invokes StartScan command on mccssubarrayleafnode"""
         handler = self.get_command_object("Scan")
-        (result_code, message) = handler(argin)
-        return [[result_code], [message]]
+        handler(argin)
 
     def is_Scan_allowed(self):
         """
@@ -321,7 +311,7 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
 
     class EndScanCommand(BaseCommand):
         """
-        A class for MCCSSubarrayLeafNode's EndScan() command.
+        A class for MccsSubarrayLeafNode's EndScan() command.
         """
 
         def check_allowed(self):
@@ -405,7 +395,7 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
                 tango.Except.throw_exception(const.STR_END_SCAN_EXEC, log_msg,
-                                             "MCCSSubarrayLeafNode.EndScanCommand",
+                                             "MccsSubarrayLeafNode.EndScanCommand",
                                              tango.ErrSeverity.ERR)
 
     @command()
@@ -433,7 +423,7 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
 
     class EndCommand(BaseCommand):
         """
-        A class for MCCSSubarrayLeafNode's End() command.
+        A class for MccsSubarrayLeafNode's End() command.
         """
         def check_allowed(self):
             """
@@ -452,7 +442,7 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
                 DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
             ]:
                 tango.Except.throw_exception("End() is not allowed in current state",
-                                             "Failed to invoke End command on MCCSSubarrayLeafNode.",
+                                             "Failed to invoke End command on MccsSubarrayLeafNode.",
                                              "Mccssubarrayleafnode.End()",
                                              tango.ErrSeverity.ERR)
             return True
@@ -553,25 +543,25 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
     )
     @DebugIt()
     def Abort(self):
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.Abort) ENABLED START #
+        # PROTECTED REGION ID(MccsSubarrayLeafNode.Abort) ENABLED START #
         pass
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.Abort
+        # PROTECTED REGION END #    //  MccsSubarrayLeafNode.Abort
 
     @command(
     )
     @DebugIt()
     def Restart(self):
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.Restart) ENABLED START #
+        # PROTECTED REGION ID(MccsSubarrayLeafNode.Restart) ENABLED START #
         pass
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.Restart
+        # PROTECTED REGION END #    //  MccsSubarrayLeafNode.Restart
 
     @command(
     )
     @DebugIt()
     def obsReset(self):
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.obsReset) ENABLED START #
+        # PROTECTED REGION ID(MccsSubarrayLeafNode.obsReset) ENABLED START #
         pass
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.obsReset
+        # PROTECTED REGION END #    //  MccsSubarrayLeafNode.obsReset
 
 # ----------
 # Run server
@@ -579,9 +569,9 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
 
 
 def main(args=None, **kwargs):
-    # PROTECTED REGION ID(MCCSSubarrayLeafNode.main) ENABLED START #
-    return run((MCCSSubarrayLeafNode,), args=args, **kwargs)
-    # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.main
+    # PROTECTED REGION ID(MccsSubarrayLeafNode.main) ENABLED START #
+    return run((MccsSubarrayLeafNode,), args=args, **kwargs)
+    # PROTECTED REGION END #    //  MccsSubarrayLeafNode.main
 
 if __name__ == '__main__':
     main()

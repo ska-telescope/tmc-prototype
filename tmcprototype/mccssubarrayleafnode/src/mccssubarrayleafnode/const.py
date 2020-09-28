@@ -1,5 +1,5 @@
 """
-const file for MCCSSubarrayLeafNode
+const file for MccsSubarrayLeafNode
 """
 # In/Out command constants
 CMD_END = "End"

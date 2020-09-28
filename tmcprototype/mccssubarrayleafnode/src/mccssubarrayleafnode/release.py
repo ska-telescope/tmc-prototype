@@ -9,12 +9,12 @@
 
 """Release information for Python Package"""
 
-name = """tangods-mccssubarrayleafnode"""
-version = "1.0.0"
+name = """mccssubarrayleafnode"""
+version = "0.2.11"
 version_info = version.split(".")
 description = """"""
 author = "jayant.ska"
 author_email = "jayant.ska at gmail.com"
-license = """GPL"""
+license = """BSD-3-Clause"""
 url = """www.tango-controls.org"""
 copyright = """"""

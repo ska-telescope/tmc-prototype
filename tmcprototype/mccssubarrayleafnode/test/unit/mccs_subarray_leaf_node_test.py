@@ -15,7 +15,7 @@ from os.path import dirname, join
 from tango.test_context import DeviceTestContext
 
 # Additional import
-from mccssubarrayleafnode import MCCSSubarrayLeafNode, const, release
+from mccssubarrayleafnode import MccsSubarrayLeafNode, const, release
 from ska.base.control_model import HealthState, ObsState, LoggingLevel
 
 
@@ -46,13 +46,13 @@ def event_subscription_without_arg(mock_mccs_subarray):
 def mock_mccs_subarray():
     mccs_subarray1_fqdn = "low_mccs/elt/subarray_01"
     dut_properties = {
-        'MCCSSubarrayFQDN': mccs_subarray1_fqdn
+        'MccsSubarrayFQDN': mccs_subarray1_fqdn
     }
     mccs_subarray1_proxy_mock = Mock()
     proxies_to_mock = {
         mccs_subarray1_fqdn: mccs_subarray1_proxy_mock
     }
-    with fake_tango_system(MCCSSubarrayLeafNode, initial_dut_properties=dut_properties,
+    with fake_tango_system(MccsSubarrayLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         yield tango_context.device, mccs_subarray1_proxy_mock
 
@@ -62,9 +62,6 @@ def test_start_scan_should_command_mccs_subarray_to_start_its_scan_when_it_is_re
     mccs_subarray1_proxy_mock.obsState = ObsState.READY
     scan_input_str = '{"id":1}'
     device_proxy.Scan(scan_input_str)
-    # device_proxy.StartScan(scan_input_str)
-    # mccs_subarray_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_STARTSCAN, scan_input_str,
-    #                                                                 any_method(with_name='scan_cmd_ended_cb'))
     assert const.STR_STARTSCAN_SUCCESS in device_proxy.activityMessage
 
 
