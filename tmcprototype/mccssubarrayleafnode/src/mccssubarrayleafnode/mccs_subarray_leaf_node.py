@@ -12,27 +12,25 @@
 """
 
 # Tango imports
-import tango
-from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
-from tango.server import run, attribute, command, device_property, Device, DeviceMeta
-from ska.base.commands import ResultCode, ResponseCommand, BaseCommand
+from tango import DebugIt, AttrWriteType, DeviceProxy, DevFailed
+from tango.server import run, attribute, command, device_property, DeviceMeta
+from ska.base.commands import ResultCode
 from ska.base import SKABaseDevice
-from ska.base.control_model import HealthState, ObsState
-
+from ska.base.control_model import HealthState
 # Additional import
 from . import const, release
-# PROTECTED REGION ID(MCCSSubarrayLeafNode.additionnal_import) ENABLED START #
-# PROTECTED REGION END #    //  MCCSSubarrayLeafNode.additionnal_import
+# PROTECTED REGION ID(MccsSubarrayLeafNode.additionnal_import) ENABLED START #
+# PROTECTED REGION END #    //  MccsSubarrayLeafNode.additionnal_import
 
-__all__ = ["MCCSSubarrayLeafNode", "main"]
+__all__ = ["MccsSubarrayLeafNode", "main"]
 
 
-class MCCSSubarrayLeafNode(SKABaseDevice):
+class MccsSubarrayLeafNode(SKABaseDevice):
     """
     """
     __metaclass__ = DeviceMeta
-    # PROTECTED REGION ID(MCCSSubarrayLeafNode.class_variable) ENABLED START #
-    # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.class_variable
+    # PROTECTED REGION ID(MccsSubarrayLeafNode.class_variable) ENABLED START #
+    # PROTECTED REGION END #    //  MccsSubarrayLeafNode.class_variable
 
     # -----------------
     # Device Properties
@@ -112,14 +110,15 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
             return (ResultCode.OK, const.STR_CSPSALN_INIT_SUCCESS)
         # PROTECTED REGION ID(MCCSSubarrayLeafNode.init_device) ENABLED START #
         # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.init_device
-
-    def init_command_objects(self):
-        """
-        Initialises the command handlers for commands supported by this
-        device.
-        """
-        super().init_command_objects()
-        args = (self, self.state_model, self.logger)
+    
+    #TODO: Commenting for now to resolve pylint warnings
+    # def init_command_objects(self):
+    #     """
+    #     Initialises the command handlers for commands supported by this
+    #     device.
+    #     """
+    #     super().init_command_objects()
+    #     args = (self, self.state_model, self.logger)
         # self.register_command_object("AssignResources", self.AssignResourcesCommand(*args))
 
     def always_executed_hook(self):
@@ -156,7 +155,7 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
     dtype_out='str', 
     )
     @DebugIt()
-    def AssignResources(self, argin):
+    def AssignResources(self):
         # PROTECTED REGION ID(MCCSSubarrayLeafNode.AssignResources) ENABLED START #
         return ""
         # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.AssignResources
@@ -166,7 +165,7 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
     dtype_out='str', 
     )
     @DebugIt()
-    def ReleaseResources(self, argin):
+    def ReleaseResources(self):
         # PROTECTED REGION ID(MCCSSubarrayLeafNode.ReleaseResources) ENABLED START #
         return ""
         # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.ReleaseResources
@@ -235,9 +234,9 @@ class MCCSSubarrayLeafNode(SKABaseDevice):
 
 
 def main(args=None, **kwargs):
-    # PROTECTED REGION ID(MCCSSubarrayLeafNode.main) ENABLED START #
-    return run((MCCSSubarrayLeafNode,), args=args, **kwargs)
-    # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.main
+    # PROTECTED REGION ID(MccsSubarrayLeafNode.main) ENABLED START #
+    return run((MccsSubarrayLeafNode,), args=args, **kwargs)
+    # PROTECTED REGION END #    //  MccsSubarrayLeafNode.main
 
 if __name__ == '__main__':
     main()

@@ -13,11 +13,10 @@ from __future__ import absolute_import
 
 # Tango imports
 import tango
-from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
-from tango.server import run, command, device_property, attribute, Device, DeviceMeta
+from tango import DeviceProxy, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
+from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
-import json
-from ska.base.commands import ResultCode, ResponseCommand, BaseCommand
+from ska.base.commands import ResultCode, BaseCommand
 from ska.base.control_model import HealthState, SimulationMode, TestMode, ObsState
 
 # Additional import
@@ -121,7 +120,6 @@ class MccsMasterLeafNode(SKABaseDevice):
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
             self.logger.debug(log_msg)
-
             device._read_activity_message = const.STR_INIT_SUCCESS
             self.logger.info(device._read_activity_message)
             return (ResultCode.OK, device._read_activity_message)
