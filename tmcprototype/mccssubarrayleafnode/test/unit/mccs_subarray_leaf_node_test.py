@@ -33,6 +33,7 @@ def event_subscription(mock_mccs_subarray):
                **kwargs: event_subscription_map.update({command_name: callback}))
     yield event_subscription_map
 
+
 @pytest.fixture(scope="function")
 def event_subscription_without_arg(mock_mccs_subarray):
     event_subscription_map = {}
@@ -60,7 +61,6 @@ def mock_mccs_subarray():
 def test_start_scan_should_command_mccs_subarray_to_start_its_scan_when_it_is_ready(mock_mccs_subarray):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.READY
-    # scan_input_str = '{"id":1}'
     device_proxy.Scan(scan_input_str)
     assert const.STR_STARTSCAN_SUCCESS in device_proxy.activityMessage
 
@@ -90,7 +90,6 @@ def test_start_scan_should_not_command_mccs_subarray_to_start_scan_when_it_is_id
     mccs_subarray1_proxy_mock.obsState = ObsState.IDLE
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.Scan(scan_input_str)
-    # assert_activity_message(device_proxy , const.ERR_DEVICE_NOT_READY)
     assert const.ERR_DEVICE_NOT_READY in str(df)
 
 
@@ -188,7 +187,6 @@ def test_end_scan_should_not_command_mccs_subarray_to_end_scan_when_it_is_idle(m
     mccs_subarray1_proxy_mock.obsState = ObsState.IDLE
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.EndScan()
-    # assert_activity_message(device_proxy , const.ERR_DEVICE_NOT_READY)
     assert const.ERR_DEVICE_NOT_SCANNING in str(df)
 
 
@@ -223,7 +221,6 @@ def raise_devfailed_exception_with_arg(cmd_name, input_str):
 
 def assert_activity_message(device_proxy, expected_message):
     assert device_proxy.activityMessage == expected_message  # reads tango attribute
-
 
 
 @contextlib.contextmanager
