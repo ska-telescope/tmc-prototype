@@ -25,7 +25,6 @@ RUN python3 -m pip install \
     /app/tmcprototype/subarraynode \
     /app/tmcprototype/mccsmasterleafnode 
 
-
 USER tango
 
 CMD ["/usr/local/bin/CentralNodeDS"]

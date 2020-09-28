@@ -28,6 +28,7 @@ TMC prototype addresses the  following architectural aspects and functionality:
 ### 1.1: Architecture
 * [x] Use of LMC base classes for development of TMC control nodes and element simulator such as Dish Master
 * [x] Hierarchy of control nodes - Central Node, Subarray Node, Leaf Node
+* [x] Interface between the TMC and Element LMC (Dish Master(simulator), CSP LMC, SDP LMC)
 * [x] Interface between the CentralNode/SubarrayNode and OET
 * [x] Interface between the TMC and Dish(Master simulator)
 * [x] Interface between the TMC and CSP (CSP Master and Csp Subarray devices)

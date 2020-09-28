@@ -1,25 +1,37 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# This file is part of the MccsMasterLeafNode project
+#
+#
+#
+# Distributed under the terms of the GPL license.
+# See LICENSE.txt for more info.
+"""Contain the tests for the ."""
+
 # PROTECTED REGION ID(MccsMasterLeafNode.import) ENABLED START #
 
 # Standard Python imports
 import contextlib
 import importlib
 import types
-
-import pytest
-import tango
 import sys
 import mock
-from mock import Mock
-from mock import MagicMock
+from mock import Mock, MagicMock
 from os.path import dirname, join
 
 # Tango imports
+import pytest
+import tango
+from tango import DevState
 from tango.test_context import DeviceTestContext
 
 # Additional import
 from mccsmasterleafnode import MccsMasterLeafNode, const, release
-from ska.base.control_model import HealthState, ObsState, LoggingLevel
+from ska.base.control_model import HealthState
+from ska.base.control_model import LoggingLevel
 
+# PROTECTED REGION END #    //  MccsMasterLeafNode imports
 assign_input_file = 'command_AssignResources.json'
 path = join(dirname(__file__), 'data', assign_input_file)
 with open(path, 'r') as f:
@@ -31,29 +43,41 @@ path = join(dirname(__file__), 'data', assign_invalid_key_file)
 with open(path, 'r') as f:
     assign_invalid_key = f.read()
 
+@pytest.fixture(scope="function")
+def mock_mccs_master():
+    mccs_master_fqdn = 'low_mccs/elt/master'
+    dut_properties = {'MccsMasterFQDN': mccs_master_fqdn}
+    event_subscription_map = {}
+    mccs_master_proxy_mock = Mock()
+    mccs_master_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+            **kwargs: event_subscription_map.update({attr_name: callback}))
+    proxies_to_mock = {mccs_master_fqdn: mccs_master_proxy_mock}
+    with fake_tango_system(MccsMasterLeafNode, initial_dut_properties=dut_properties,
+                        proxies_to_mock=proxies_to_mock) as tango_context:
+        yield mccs_master_proxy_mock, tango_context.device, mccs_master_fqdn, event_subscription_map
 
 @pytest.fixture(scope="function")
 def event_subscription(mock_mccs_master):
     event_subscription_map = {}
-    mock_mccs_master[1].command_inout_asynch.side_effect = (
-        lambda command_name, argument, callback, *args,
-               **kwargs: event_subscription_map.update({command_name: callback}))
+    mock_mccs_master[0].command_inout_asynch.side_effect = (
+        lambda command_name, arg, callback, *args,
+            **kwargs: event_subscription_map.update({command_name: callback}))
+    yield event_subscription_map
+
+@pytest.fixture(scope="function")
+def event_subscription_without_arg(mock_mccs_master):
+    event_subscription_map = {}
+    mock_mccs_master[0].command_inout_asynch.side_effect = (
+        lambda command_name, callback, *args,
+            **kwargs: event_subscription_map.update({command_name: callback}))
     yield event_subscription_map
 
 
 @pytest.fixture(scope="function")
-def mock_mccs_master():
-    mccs_master_fqdn = 'low_mccs/elt/master'
-    dut_properties = {
-        'MccsmasterFQDN': mccs_master_fqdn
-    }
-    mccs_master_proxy_mock = Mock()
-    proxies_to_mock = {
-        mccs_master_fqdn: mccs_master_proxy_mock
-    }
-    with fake_tango_system(MccsMasterLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        yield tango_context.device, mccs_master_proxy_mock
+def tango_context():
+    with fake_tango_system(MccsMasterLeafNode) as tango_context:
+        yield tango_context
 
 def test_assign_resources_should_raise_devfailed_exception(mock_mccs_master):
     device_proxy, mccs_master_proxy_mock = mock_mccs_master
@@ -160,6 +184,7 @@ def command_callback(command_name):
     fake_event.cmd_name = f"{command_name}"
     return fake_event
 
+
 def command_callback_with_event_error(command_name):
     fake_event = MagicMock()
     fake_event.err = True
@@ -178,7 +203,9 @@ def any_method(with_name=None):
         def __eq__(self, other):
             if not isinstance(other, types.MethodType):
                 return False
+
             return other.__func__.__name__ == with_name if with_name else True
+
     return AnyMethod()
 
 
@@ -188,7 +215,7 @@ def assert_activity_message(device_proxy, expected_message):
 
 @contextlib.contextmanager
 def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
-                    device_proxy_import_path='tango.DeviceProxy'):
+                      device_proxy_import_path='tango.DeviceProxy'):
     with mock.patch(device_proxy_import_path) as patched_constructor:
         patched_constructor.side_effect = lambda device_fqdn: proxies_to_mock.get(device_fqdn, Mock())
         patched_module = importlib.reload(sys.modules[device_under_test.__module__])
