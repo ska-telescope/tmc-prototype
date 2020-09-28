@@ -23,7 +23,6 @@ STR_OFF_CMD_ISSUED = "OFF command invoked successfully from MCCS Master leaf nod
 
 
 #PROPERTIES DEFAULT VALUES
-STR_INVOKE_SUCCESS
 
 
 #INTEGERS
