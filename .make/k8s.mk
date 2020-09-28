@@ -106,7 +106,7 @@ chart_lint: ## lint check the helm chart
 		--namespace $(KUBE_NAMESPACE) 
 
 describe: ## describe Pods executed from Helm chart
-	@for i in `kubectl -n $(KUBE_NAMESPACE) get pods -l app.kubernetes.io/instance=$(HELM_RELEASE) -o=name`; \
+	@for i in `kubectl -n $(KUBE_NAMESPACE) get pods -l release=$(HELM_RELEASE) -o=name`; \
 	do echo "---------------------------------------------------"; \
 	echo "Describe for $${i}"; \
 	echo kubectl -n $(KUBE_NAMESPACE) describe $${i}; \
@@ -117,7 +117,7 @@ describe: ## describe Pods executed from Helm chart
 	done
 
 logs: ## show Helm chart POD logs
-	@for i in `kubectl -n $(KUBE_NAMESPACE) get pods -l app.kubernetes.io/instance=$(HELM_RELEASE) -o=name`; \
+	@for i in `kubectl -n $(KUBE_NAMESPACE) get pods -l release=$(HELM_RELEASE) -o=name`; \
 	do \
 	echo "---------------------------------------------------"; \
 	echo "Logs for $${i}"; \
