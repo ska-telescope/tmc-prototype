@@ -1125,7 +1125,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 self.logger.error(log)
             else:
                 log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-                device._read_activity_message = logW1404(
+                device._read_activity_message = log
                 self.logger.info(log)
 
         def do(self):
