@@ -98,75 +98,74 @@ def test_assign_command_with_callback_method(mock_mccs_master, event_subscriptio
     event_subscription[const.CMD_ALLOCATE](dummy_event)
     assert const.STR_INVOKE_SUCCESS in device_proxy.activityMessage
 
-# def test_assign_command_with_callback_method_with_event_error(mock_mccs_master, event_subscription):
-#     mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
-#     mccs_master_proxy_mock.obsState = ObsState.EMPTY
-#     device_proxy.On()
-#     device_proxy.AssignResources(assign_input_str)
-#     dummy_event = command_callback_with_event_error(const.CMD_ALLOCATE)
-#     event_subscription[const.CMD_ALLOCATE](dummy_event)
-#     assert const.ERR_INVOKING_CMD + const.CMD_ALLOCATE in device_proxy.activityMessage
+def test_assign_command_with_callback_method_with_event_error(mock_mccs_master, event_subscription):
+    mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
+    mccs_master_proxy_mock.obsState = ObsState.EMPTY
+    device_proxy.On()
+    device_proxy.AssignResources(assign_input_str)
+    dummy_event = command_callback_with_event_error(const.CMD_ALLOCATE)
+    event_subscription[const.CMD_ALLOCATE](dummy_event)
+    assert const.ERR_INVOKING_CMD + const.CMD_ALLOCATE in device_proxy.activityMessage
 
-# def test_assign_command_with_callback_method_with_devfailed_error(mock_mccs_master, event_subscription):
-#     mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
-#     mccs_master_proxy_mock.obsState = ObsState.EMPTY
-#     device_proxy.On()
-#     with pytest.raises(tango.DevFailed) as df:
-#         device_proxy.AssignResources(assign_input_str)
-#         dummy_event = command_callback_with_devfailed_exception()
-#         event_subscription[const.CMD_ALLOCATE](dummy_event)
-#     assert const.ERR_CALLBACK_CMD_FAILED in str(df.value)
+def test_assign_command_with_callback_method_with_devfailed_error(mock_mccs_master, event_subscription):
+    mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
+    mccs_master_proxy_mock.obsState = ObsState.EMPTY
+    device_proxy.On()
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.AssignResources(assign_input_str)
+        dummy_event = command_callback_with_devfailed_exception()
+        event_subscription[const.CMD_ALLOCATE](dummy_event)
+    assert const.ERR_CALLBACK_CMD_FAILED in str(df.value)
 
-# def test_allocate_ended_should_raise_dev_failed_exception_for_invalid_obs_state(mock_mccs_master, event_subscription):
-#     mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
-#     mccs_master_proxy_mock.obsState = ObsState.READY
-#     with pytest.raises(tango.DevFailed) as df:
-#         device_proxy.AssignResources(json.dumps(assign_input_file))
-#     assert const.ERR_RAISED_EXCEPTION in str(df.value)
+def test_allocate_ended_should_raise_dev_failed_exception_for_invalid_obs_state(mock_mccs_master, event_subscription):
+    mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
+    mccs_master_proxy_mock.obsState = ObsState.READY
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.AssignResources(json.dumps(assign_input_file))
+    assert const.ERR_RAISED_EXCEPTION in str(df.value)
 
-# def test_assign_resource_should_raise_exception_when_key_not_found():
-#     with fake_tango_system(MccsMasterLeafNode) as tango_context:
-#         with pytest.raises(tango.DevFailed) as df:
-#             device_proxy.AssignResources(json.dumps(assign_input_file))
-#         assert const.ERR_RAISED_EXCEPTION in str(df.value)
-
+def test_assign_resource_should_raise_exception_when_key_not_found():
+    with fake_tango_system(MccsMasterLeafNode) as tango_context:
+        with pytest.raises(tango.DevFailed) as df:
+            tango_context.device.AssignResources(assign_invalid_key)
+        assert const.ERR_RAISED_EXCEPTION in str(df)
    
-# def test_release_resource_should_command_mccs_master_to_release_all_resources(mock_mccs_master):
-#     device_proxy, mccs_master_proxy_mock = mock_mccs_master
-#     mccs_master_proxy_mock.obsState = ObsState.EMPTY
-#     device_proxy.On()
-#     device_proxy.AssignResources(assign_input_str)
-#     device_proxy.ReleaseResources()
-#     mccs_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_Release,
-#                                                                         any_method(
-#                                                                             with_name='releaseresources_cmd_ended_cb'))
-#     assert_activity_message(device_proxy, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
+def test_release_resource_should_command_mccs_master_to_release_all_resources(mock_mccs_master):
+    mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
+    mccs_master_proxy_mock.obsState = ObsState.EMPTY
+    device_proxy.On()
+    device_proxy.AssignResources(assign_input_str)
+    device_proxy.ReleaseResources()
+    mccs_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_Release,
+                                                                        any_method(
+                                                                            with_name='releaseresources_cmd_ended_cb'))
+    assert_activity_message(device_proxy, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
-# def test_release_resource_should_raise_devfail_exception(mock_mccs_master):
-#     device_proxy, mccs_master_proxy_mock = mock_mccs_master
-#     mccs_master_proxy_mock.obsState = ObsState.IDLE
-#     mccs_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
-#     with pytest.raises(tango.DevFailed) as df:
-#         device_proxy.ReleaseResources()
-#     assert const.ERR_RELEASE_ALL_RESOURCES in str(df.value)
+def test_release_resource_should_raise_devfail_exception(mock_mccs_master):
+    mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
+    mccs_master_proxy_mock.obsState = ObsState.IDLE
+    mccs_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.ReleaseResources()
+    assert const.ERR_RELEASE_ALL_RESOURCES in str(df.value)
 
-# def test_releaseresources_command_with_callback_method(mock_mccs_master, event_subscription):
-#     # arrange:
-#     device_proxy, mccs_master_proxy_mock = mock_mccs_master
-#     mccs_master_proxy_mock.obsState = ObsState.IDLE
-#     device_proxy.ReleaseResources()
-#     dummy_event = command_callback(const.CMD_Release)
-#     event_subscription[const.CMD_Release](dummy_event)
-#     assert const.STR_COMMAND + const.CMD_Release in device_proxy.activityMessage
+def test_releaseresources_command_with_callback_method(mock_mccs_master, event_subscription_without_arg):
+    # arrange:
+    mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
+    mccs_master_proxy_mock.obsState = ObsState.IDLE
+    device_proxy.ReleaseResources()
+    dummy_event = command_callback(const.CMD_Release)
+    event_subscription_without_arg[const.CMD_Release](dummy_event)
+    assert const.STR_COMMAND + const.CMD_Release in device_proxy.activityMessage
 
-# def test_releaseresources_command_with_callback_method_with_event_error(mock_mccs_master, event_subscription):
-#     # arrange:
-#     device_proxy, mock_mccs_master = mock_mccs_master
-#     mccs_master_proxy_mock.obsState = ObsState.IDLE
-#     device_proxy.ReleaseResources()
-#     dummy_event = command_callback_with_event_error(const.CMD_Release)
-#     event_subscription[const.CMD_Release](dummy_event)
-#     assert const.ERR_INVOKING_CMD + const.CMD_Release in device_proxy.activityMessage
+def test_releaseresources_command_with_callback_method_with_event_error(mock_mccs_master, event_subscription_without_arg):
+    # arrange:
+    mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
+    mccs_master_proxy_mock.obsState = ObsState.IDLE
+    device_proxy.ReleaseResources()
+    dummy_event = command_callback_with_event_error(const.CMD_Release)
+    event_subscription_without_arg[const.CMD_Release](dummy_event)
+    assert const.ERR_INVOKING_CMD + const.CMD_Release in device_proxy.activityMessage
 
 
 def raise_devfailed_with_arg(cmd_name, input_arg1, input_arg2):

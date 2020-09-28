@@ -22,6 +22,8 @@ from ska.base.control_model import HealthState, SimulationMode, TestMode, ObsSta
 
 # Additional import
 from . import const, release
+from .exceptions import InvalidObsStateError
+
 
 # PROTECTED REGION END #    //  MccsMasterLeafNode imports
 
@@ -152,6 +154,15 @@ class MccsMasterLeafNode(SKABaseDevice):
     # --------
     # Commands
     # --------
+
+    def validate_obs_state(self):
+        if self._mccs_master_proxy.obsState == ObsState.EMPTY:
+            self.logger.info("Mccs Master is in required obsState, resources will be assigned")
+        else:
+            self.logger.error("Mccs Master is not in EMPTY obsState")
+            self._read_activity_message = "Error in device obsState"
+            raise InvalidObsStateError("Mccs Master is not in EMPTY obsState")
+
     
     class AssignResourcesCommand(BaseCommand):
         """
@@ -286,9 +297,8 @@ class MccsMasterLeafNode(SKABaseDevice):
                      DevFailed if the command execution is not successful
             """
             device = self.target
+            self.logger.info("In a do method for AssignResources")
             try:
-                #if device._mccs_master_proxy.obsState in (ObsState.EMPTY):
-                    # json_argument = json.loads(argin)
                 log_msg = "Input JSON for MCCS master leaf node AssignResources command is: " + argin
                 self.logger.debug(log_msg)
                 self.logger.info("Invoking Allocate on MCCS master")
@@ -297,10 +307,6 @@ class MccsMasterLeafNode(SKABaseDevice):
                 self.logger.info("After invoking Allocate on MCCS master")
                 device._read_activity_message = const.STR_ALLOCATE_SUCCESS
                 self.logger.info(const.STR_ALLOCATE_SUCCESS)
-                # else:
-                #     log_msg = (f"Mccs Master is in ObsState {device._mccs_master_proxy.obsState.name}.""Unable to invoke Configure command")
-                #     device._read_activity_message = log_msg
-                #     self.logger.error(log_msg)
 
             except ValueError as value_error:
                 log_msg = const.ERR_INVALID_JSON_ASSIGN_RES_MCCS + str(value_error)
@@ -324,6 +330,24 @@ class MccsMasterLeafNode(SKABaseDevice):
                 tango.Except.throw_exception(const.STR_ASSIGN_RES_EXEC, log_msg,
                                              "MccsMasterLeafNode.AssignResourcesCommand",
                                              tango.ErrSeverity.ERR)
+    @command(
+        dtype_in='str',
+    )
+    @DebugIt()
+    def AssignResources(self, argin):
+        """ Invokes AssignResources command on Mcccs Master"""
+        handler = self.get_command_object("AssignResources")
+        try:
+            self.validate_obs_state()
+
+        except InvalidObsStateError as error:
+            self.logger.exception(error)
+            tango.Except.throw_exception("ObsState is not in EMPTY state",
+                                         "Mccs master node raised exception",
+                                         "MccsMaster.Allocate",
+                                         tango.ErrSeverity.ERR)
+        handler(argin)
+    
 
     def is_AssignResources_allowed(self):
         """
@@ -338,28 +362,6 @@ class MccsMasterLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("AssignResources")
         return handler.check_allowed()
-
-    @command(
-        dtype_in=('str'),
-        dtype_out="str",
-        doc_out="[ResultCode, information-only string]",
-    )
-    @DebugIt()
-    def AssignResources(self, argin):
-        """ Invokes AssignResources command on MccsMasterLeafNode. """
-        handler = self.get_command_object("AssignResources")
-        try:
-            self.validate_obs_state()
-
-        except InvalidObsStateError as error:
-            self.logger.exception(error)
-            tango.Except.throw_exception("ObsState is not in EMPTY state",
-                                         "MCCS master leaf node raised exception",
-                                         "MCCS.Allocate",
-                                         tango.ErrSeverity.ERR)
-        (result_code, message) = handler(argin)
-        return [[result_code], [message]]
-
 
     class ReleaseResourcesCommand(BaseCommand):
         """
@@ -431,7 +433,7 @@ class MccsMasterLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                device._mccs_subarray_proxy.command_inout_asynch(const.CMD_Release,
+                device._mccs_master_proxy.command_inout_asynch(const.CMD_Release,
                                                              self.releaseresources_cmd_ended_cb)
                 device._read_activity_message = const.STR_REMOVE_ALL_RECEPTORS_SUCCESS
                 self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
@@ -467,7 +469,7 @@ class MccsMasterLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
 
-def init_command_objects(self):
+    def init_command_objects(self):
         """
         Initialises the command handlers for commands supported by this
         device.

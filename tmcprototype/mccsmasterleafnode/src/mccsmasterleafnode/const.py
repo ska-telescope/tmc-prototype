@@ -14,7 +14,7 @@ ERR_ASSGN_RESOURCE_MCCS = "Error occurred while assigning resource to the Mccs M
 ERR_INVOKING_CMD = "Error in invoking command: "
 ERR_DEVFAILED_MSG = "This is error message for devfailed"
 ERR_CALLBACK_CMD_FAILED = "MccsMasterLeafNode_Commandfailed in callback"
-ERR_RAISED_EXCEPTION = "MCCS master leaf node raised exception"
+ERR_RAISED_EXCEPTION =  "Mccs master node raised exception"
 
 
 
@@ -25,7 +25,7 @@ ERR_RAISED_EXCEPTION = "MCCS master leaf node raised exception"
 STR_ALLOCATE_SUCCESS = "Resources are assigned successfully on MccsMaster."
 STR_REMOVE_ALL_RECEPTORS_SUCCESS = "All resources assigned to MccsMaster are removed successfully."
 STR_MCCS_INIT_LEAF_NODE = "Initializing MCCS Master Leaf Node ...."
-STR_INIT_SUCCESS = "MCCS Master Leaf Node is initialized successfully."
+STR_INIT_SUCCESS = "Mccs Master Leaf Node is initialized successfully."
 STR_RELEASE_RES_EXEC = "ReleaseResources command execution"
 STR_MCCSMASTER_FQDN = "MccsMasterFQDN :-> "
 STR_CMD_FAILED = "MccsMasterLeafNode_Commandfailed"
