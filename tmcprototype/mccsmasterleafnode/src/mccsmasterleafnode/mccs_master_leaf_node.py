@@ -13,10 +13,10 @@ from __future__ import absolute_import
 
 # Tango imports
 import tango
-from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
-from tango.server import run, command, device_property, attribute, Device, DeviceMeta
+from tango import DeviceProxy, ApiUtil, AttrWriteType, DevFailed
+from tango.server import run, device_property, attribute
 from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode, ResponseCommand
+from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, SimulationMode, TestMode
 
 # Additional import
@@ -152,27 +152,6 @@ class MccsMasterLeafNode(SKABaseDevice):
     # Commands
     # --------
 
-    @command(
-    dtype_in='str', 
-    dtype_out='str', 
-    )
-    @DebugIt()
-    def AssignResource(self, argin):
-        # PROTECTED REGION ID(MccsMasterLeafNode.AssignResource) ENABLED START #
-        return ""
-        # PROTECTED REGION END #    //  MccsMasterLeafNode.AssignResource
-
-    @command(
-    dtype_in='str', 
-    dtype_out='str', 
-    )
-    @DebugIt()
-    def ReleaseResources(self, argin):
-        # PROTECTED REGION ID(MccsMasterLeafNode.ReleaseResources) ENABLED START #
-        return ""
-        # PROTECTED REGION END #    //  MccsMasterLeafNode.ReleaseResources
-
-
     class OnCommand(SKABaseDevice.OnCommand):
         """
         A class for MccsMasterLeafNode's On() command.
@@ -291,14 +270,14 @@ class MccsMasterLeafNode(SKABaseDevice):
             device._read_activity_message = const.STR_OFF_CMD_ISSUED
             return (ResultCode.OK, const.STR_OFF_CMD_ISSUED)
 
-
-    def init_command_objects(self):
-        """
-        Initialises the command handlers for commands supported by this
-        device.
-        """
-        super().init_command_objects()
-        args = (self, self.state_model, self.logger)
+    #TODO : Commented out for now to resolve pylint warnings
+    # def init_command_objects(self):
+    #     """
+    #     Initialises the command handlers for commands supported by this
+    #     device.
+    #     """
+    #     super().init_command_objects()
+    #     args = (self, self.state_model, self.logger)
         
 # ----------
 # Run server
