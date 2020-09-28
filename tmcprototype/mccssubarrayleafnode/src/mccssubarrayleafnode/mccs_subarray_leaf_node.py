@@ -362,7 +362,6 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             # Update logs and activity message attribute with received event
-            # TODO: This code does not generate exception so refactoring is required
             if event.err:
                 log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
                 self.logger.error(log_msg)

@@ -87,7 +87,7 @@ def test_startscan_command_with_callback_method_with_event_error(mock_mccs_subar
     assert const.ERR_INVOKING_CMD + const.CMD_STARTSCAN in device_proxy.activityMessage
 
 
-def test_start_scan_should_not_command_csp_subarray_to_start_scan_when_it_is_idle(mock_mccs_subarray):
+def test_start_scan_should_not_command_mccs_subarray_to_start_scan_when_it_is_idle(mock_mccs_subarray):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.IDLE
     scan_input_str = '{"id":1}'
@@ -97,32 +97,15 @@ def test_start_scan_should_not_command_csp_subarray_to_start_scan_when_it_is_idl
     assert const.ERR_DEVICE_NOT_READY in str(df)
 
 
-def any_method(with_name=None):
-    class AnyMethod():
-        def __eq__(self, other):
-            if not isinstance(other, types.MethodType):
-                return False
-            return other.__func__.__name__ == with_name if with_name else True
-    return AnyMethod()
+def test_Scan_should_raise_devfailed_exception(mock_mccs_subarray):
+    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+    mccs_subarray1_proxy_mock.obsState = ObsState.READY
+    mccs_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_with_arg
+    scan_input_str = '{"id":1}'
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.Scan(scan_input_str)
+    assert "raise_devfailed_exception" in str(df)
 
-def command_callback(command_name):
-    fake_event = MagicMock()
-    fake_event.err = False
-    fake_event.cmd_name = f"{command_name}"
-    return fake_event
-
-
-def command_callback_with_event_error(command_name):
-    fake_event = MagicMock()
-    fake_event.err = True
-    fake_event.errors = 'Event error in Command Callback'
-    fake_event.cmd_name = f"{command_name}"
-    return fake_event
-
-
-def raise_devfailed_exception_with_arg(cmd_name, input_str):
-    tango.Except.throw_exception("MccsSubarrayLeafNode_Commandfailed", "This is error message for devfailed",
-                                 " ", tango.ErrSeverity.ERR)
 
 def test_End_command_with_callback_method(mock_mccs_subarray, event_subscription_without_arg):
     # arrange:
@@ -155,9 +138,9 @@ def test_end_should_raise_devfailed_exception(mock_mccs_subarray):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.READY
     mccs_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_with_arg
-    with pytest.raises(tango.DevFailed):
+    with pytest.raises(tango.DevFailed) as df:
         device_proxy.End()
-    assert const.ERR_END_INVOKING_CMD in device_proxy.activityMessage
+    assert const.ERR_END_INVOKING_CMD in str(df)
 
 
 def test_endscan_should_command_mccs_subarray_to_end_scan_when_it_is_scanning(mock_mccs_subarray):
@@ -168,13 +151,23 @@ def test_endscan_should_command_mccs_subarray_to_end_scan_when_it_is_scanning(mo
                                                                 any_method(with_name='endscan_cmd_ended_cb'))
 
 
+def test_endscan_command_with_callback_method(mock_mccs_subarray , event_subscription):
+    # arrange:
+    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+    mccs_subarray1_proxy_mock.obsState = ObsState.SCANNING
+    device_proxy.EndScan()
+    dummy_event = command_callback(const.CMD_ENDSCAN)
+    event_subscription[const.CMD_ENDSCAN](dummy_event)
+    assert const.STR_COMMAND + const.CMD_ENDSCAN in device_proxy.activityMessage
+
+
 def test_endscan_should_raise_devfailed_exception(mock_mccs_subarray):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.SCANNING
     mccs_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_with_arg
-    with pytest.raises(tango.DevFailed):
+    with pytest.raises(tango.DevFailed) as df:
         device_proxy.EndScan()
-    assert const.ERR_ENDSCAN_COMMAND in device_proxy.activityMessage
+    assert const.ERR_ENDSCAN_COMMAND in str(df)
 
 
 def test_endscan_command_with_callback_method_with_event_error(mock_mccs_subarray, event_subscription_without_arg):
@@ -184,6 +177,44 @@ def test_endscan_command_with_callback_method_with_event_error(mock_mccs_subarra
     dummy_event = command_callback_with_event_error(const.CMD_ENDSCAN)
     event_subscription_without_arg[const.CMD_ENDSCAN](dummy_event)
     assert const.ERR_INVOKING_CMD + const.CMD_ENDSCAN in device_proxy.activityMessage
+
+
+def test_end_scan_should_not_command_mccs_subarray_to_end_scan_when_it_is_idle(mock_mccs_subarray):
+    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+    mccs_subarray1_proxy_mock.obsState = ObsState.IDLE
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.EndScan()
+    # assert_activity_message(device_proxy , const.ERR_DEVICE_NOT_READY)
+    assert const.ERR_DEVICE_NOT_SCANNING in str(df)
+
+
+def any_method(with_name=None):
+    class AnyMethod():
+        def __eq__(self, other):
+            if not isinstance(other, types.MethodType):
+                return False
+            return other.__func__.__name__ == with_name if with_name else True
+    return AnyMethod()
+
+
+def command_callback(command_name):
+    fake_event = MagicMock()
+    fake_event.err = False
+    fake_event.cmd_name = f"{command_name}"
+    return fake_event
+
+
+def command_callback_with_event_error(command_name):
+    fake_event = MagicMock()
+    fake_event.err = True
+    fake_event.errors = 'Event error in Command Callback'
+    fake_event.cmd_name = f"{command_name}"
+    return fake_event
+
+
+def raise_devfailed_exception_with_arg(cmd_name, input_str):
+    tango.Except.throw_exception("MccsSubarrayLeafNode_Commandfailed", "This is error message for devfailed",
+                                 " ", tango.ErrSeverity.ERR)
 
 
 def assert_activity_message(device_proxy, expected_message):
