@@ -14,8 +14,8 @@
 # Tango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
-from tango.server import run, attribute, command, device_property, Device, DeviceMeta
-from ska.base.commands import ResultCode, ResponseCommand, BaseCommand
+from tango.server import run, attribute, command, device_property, DeviceMeta
+from ska.base.commands import ResultCode, BaseCommand
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
 
@@ -505,9 +505,9 @@ class MccsSubarrayLeafNode(SKABaseDevice):
                 self.logger.info(const.STR_END_SUCCESS)
 
             except AssertionError:
+                log_msg = const.STR_OBS_STATE
                 device._read_activity_message = const.ERR_DEVICE_NOT_READY
-                log_msg = const.STR_OBS_STATE + str(device._mccs_subarray_proxy.obsState)
-                self.logger.error(const.ERR_DEVICE_NOT_READY + log_msg)
+                self.logger.error(log_msg)
                 tango.Except.throw_exception(const.STR_END_EXEC, const.ERR_DEVICE_NOT_READY,
                                              "MCCSSubarrayLeafNode.EndCommand",
                                              tango.ErrSeverity.ERR)
