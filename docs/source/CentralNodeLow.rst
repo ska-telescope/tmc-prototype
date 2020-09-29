@@ -5,6 +5,6 @@
 
 Central Node
 ************
-.. automodule:: tmcprototype.centralnodelow.src.centralnodelow.central_node
+.. automodule:: tmcprototype.centralnodelow.src.centralnodelow.central_node_low
    :members:
    :undoc-members:

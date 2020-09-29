@@ -6,6 +6,6 @@
 Subarray Node
 ======================================
 
-.. automodule:: tmcprototype.subarraynodelow.src.subarraynodelow.subarray_node
+.. automodule:: tmcprototype.subarraynodelow.src.subarraynodelow.subarray_node_low
    :members:
    :undoc-members:
