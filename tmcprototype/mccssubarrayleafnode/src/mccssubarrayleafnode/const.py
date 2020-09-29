@@ -22,6 +22,7 @@ STR_COMMAND = "Command :-> "
 STR_INVOKE_SUCCESS = " invoked successfully."
 STR_CONFIGURE_SUCCESS = "Configure command invoked successfully on MccsSubarray from " \
                             "MccsSubarrayLeafNode."
+STR_CONFIGURE_EXEC = "Configure command execution"
 STR_CMD_FAILED = "MccsSubarrayLeafNode_CommandFailed"
 
 #INTEGERS

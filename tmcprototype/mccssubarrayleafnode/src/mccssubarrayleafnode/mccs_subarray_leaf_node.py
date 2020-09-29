@@ -169,8 +169,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
 
         def configure_cmd_ended_cb(self, event):
             """
-            Callback function immediately executed when the asynchronous invoked
-            command returns.
+            Callback function immediately executed when the asynchronous invoked command returns.
 
             :param event: a CmdDoneEvent object. This class is used to pass data
                 to the callback method in asynchronous callback model for command
@@ -178,13 +177,11 @@ class MccsSubarrayLeafNode(SKABaseDevice):
 
             :type: CmdDoneEvent object
                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
+                    - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
                     - cmd_name   : (str) The command name
                     - argout_raw : (DeviceData) The command argout
                     - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
+                    - err        : (bool) A boolean flag set to true if the command failed. False otherwise
                     - errors     : (sequence<DevError>) The error stack
                     - ext
 
@@ -209,7 +206,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             :param argin:DevString. The string in JSON format. The JSON contains following values:
 
             Example:
-            {"stationBeamList":[{"beamId":1,"skyCoordinateSet":[0.0,180.0,0.004,45.0,0.004],"updateRate":1.0,"channels":[1,2,3,4,5,6,7,8]}]}
+            {"stations":[{"station_id":1,"tile_ids":[1,2],},{"station_id":2,"tile_ids":[3,4]},],"station_beam_pointings":[{"station_beam_id":1,"target":{"system":"HORIZON","name":"DriftScan","Az":180.0,"El":45.0},"update_rate":0.0,"channels":[1,2,3,4,5,6,7,8]}]}
 
             Note: Enter the json string without spaces as a input.
 
@@ -223,19 +220,21 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                if device._mccs_subarray_proxy.obsState in (ObsState.IDLE, ObsState.READY):
-                    log_msg = "Input JSON for MCCS Subarray Leaf Node Configure command is: " + argin
-                    self.logger.debug(log_msg)
-                    device._mccs_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, argin,
-                                                            self.configure_cmd_ended_cb)
-                    device._read_activity_message = const.STR_CONFIGURE_SUCCESS
-                    self.logger.info(const.STR_CONFIGURE_SUCCESS)
+                assert (device._mccs_subarray_proxy.obsState in (ObsState.IDLE, ObsState.READY))
+                log_msg = "Input JSON for MCCS Subarray Leaf Node Configure command is: " + argin
+                self.logger.debug(log_msg)
+                device._mccs_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, argin,
+                                                        self.configure_cmd_ended_cb)
+                device._read_activity_message = const.STR_CONFIGURE_SUCCESS
+                self.logger.info(const.STR_CONFIGURE_SUCCESS)
 
-                else:
-                    log_msg = (f"Mccs Subarray is in ObsState {device._mccs_subarray_proxy.obsState.name}.""Unable to invoke Configure command")
-                    device._read_activity_message = log_msg
-                    self.logger.error(log_msg)
-
+            except AssertionError:
+                log_msg = (f"Mccs Subarray is in ObsState {device._mccs_subarray_proxy.obsState.name}.""Unable to invoke Configure command")
+                device._read_activity_message = log_msg
+                self.logger.exception(log_msg)
+                tango.Except.throw_exception(const.STR_CONFIGURE_EXEC, log_msg,
+                                            "MccsSubarrayLeafNode.ConfigureCommand",
+                                            tango.ErrSeverity.ERR)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_CONFIGURE_INVOKING_CMD + str(dev_failed)

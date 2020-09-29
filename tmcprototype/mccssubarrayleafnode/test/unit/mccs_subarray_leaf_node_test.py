@@ -93,8 +93,9 @@ def test_configure_to_send_correct_configuration_data_when_mccs_subarray_is_idle
 def test_configure_should_failed_when_device_obsstate_is_empty(mock_mccs_subarray):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.EMPTY
-    device_proxy.Configure(configure_str)
-    assert "Unable to invoke Configure command" in device_proxy.activityMessage
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.Configure(configure_str)
+    assert "Unable to invoke Configure command" in str(df)
 
 
 def test_configure_command_with_callback_method_with_event_error(mock_mccs_subarray, event_subscription ):
