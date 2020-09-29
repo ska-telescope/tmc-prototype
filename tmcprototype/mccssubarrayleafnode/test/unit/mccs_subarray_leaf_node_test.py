@@ -129,14 +129,6 @@ def test_end_should_command_mccs_subarray_to_reset_when_it_is_ready(mock_mccs_su
                                                                 any_method(with_name='end_cmd_ended_cb'))
 
 
-def test_end_should_command_mccs_subarray_should_not_reset_when_it_is_idle(mock_mccs_subarray):
-    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
-    mccs_subarray1_proxy_mock.obsState = ObsState.IDLE
-    with pytest.raises(tango.DevFailed) as df:
-        device_proxy.End()
-    assert const.ERR_DEVICE_NOT_READY in str(df)
-
-
 def test_end_should_raise_devfailed_exception(mock_mccs_subarray):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.READY
