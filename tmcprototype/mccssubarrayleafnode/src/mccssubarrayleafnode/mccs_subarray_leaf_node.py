@@ -29,9 +29,6 @@ __all__ = ["MccsSubarrayLeafNode", "main"]
 class MccsSubarrayLeafNode(SKABaseDevice):
     """
     """
-   
-    # PROTECTED REGION ID(MCCSSubarrayLeafNode.class_variable) ENABLED START #
-    # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.class_variable
 
     # -----------------
     # Device Properties
@@ -51,7 +48,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
     )
 
 
-    mccssubarrayHealthState = attribute(name="mccssubarrayHealthState", label="mccssubarrayHealthState",
+    mccssubarrayHealthState = attribute(name="mccsSubarrayHealthState", label="mccsSubarrayHealthState",
         forwarded=True
     )
     mccsSubarrayObsState = attribute(name="mccsSubarrayObsState", label="mccsSubarrayObsState",
@@ -86,7 +83,9 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             except DevFailed as dev_failed:
                 log_msg = const.ERR_IN_CREATE_PROXY_MCCSSA + str(dev_failed)
                 self.logger.debug(log_msg)
-                return (ResultCode.FAILED, log_msg)
+                tango.Except.throw_exception(const.ERR_IN_CREATE_PROXY_MCCSSA, log_msg,
+                                             "MccsSubarrayLeafNode.Init()",
+                                             tango.ErrSeverity.ERR)
             #TODO
             # self.set_change_event("adminMode", True, True)
             # self.set_archive_event("adminMode", True, True)
@@ -98,8 +97,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             device._mccs_subarray_health_state = HealthState.OK
             self.logger.info(const.STR_MCCSSALN_INIT_SUCCESS)
             return (ResultCode.OK, const.STR_MCCSSALN_INIT_SUCCESS)
-        # PROTECTED REGION ID(MCCSSubarrayLeafNode.init_device) ENABLED START #
-        # PROTECTED REGION END #    //  MCCSSubarrayLeafNode.init_device
+
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(MccsSubarrayLeafNode.always_executed_hook) ENABLED START #
@@ -134,9 +132,6 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         # PROTECTED REGION ID(MccsSubarrayLeafNode.activityMessage_write) ENABLED START #
         self._read_activity_message = value
         # PROTECTED REGION END #    //  MccsSubarrayLeafNode.activityMessage_write
-
-
-
 
     # --------
     # Commands

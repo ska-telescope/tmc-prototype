@@ -1432,7 +1432,7 @@
                                     "1"
                                 ]
                             },
-                            "mccssubarrayHealthState": {
+                            "mccsSubarrayHealthState": {
                                 "__root_att": [
                                     "low_mccs/elt/subarray_01/healthState"
                                 ]
