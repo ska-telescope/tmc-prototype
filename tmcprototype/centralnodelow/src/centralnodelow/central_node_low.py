@@ -42,6 +42,7 @@ class CentralNode(SKABaseDevice):
     """
 
     # PROTECTED REGION ID(CentralNode.class_variable) ENABLED START #
+    # Not required for CN-low
     @DebugIt()
     def _check_receptor_reassignment(self, input_receptors_list):
         """
@@ -160,6 +161,7 @@ class CentralNode(SKABaseDevice):
             log_msg = const.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
             self.logger.critical(log_msg)
 
+    # Not required for CN-low
     def obs_state_cb(self, evt):
         """
         Retrieves the subscribed Subarray observation state. When the Subarray obsState is EMPTY, the resource
@@ -220,20 +222,20 @@ class CentralNode(SKABaseDevice):
         dtype=('str',), doc="List of TM Mid Subarray Node devices",
         default_value=tuple()
     )
-
+    # Not required for CN-low
     NumDishes = device_property(
         dtype='uint', default_value=1,
         doc="Number of Dishes",
     )
-
+    # Not required for CN-low
     DishLeafNodePrefix = device_property(
         dtype='str', default_value='', doc="Device name prefix for Dish Leaf Node"
     )
-
+    # Not required for CN-low , modify it for MCCSMasterLeafNode
     CspMasterLeafNodeFQDN = device_property(
         dtype='str'
     )
-
+    # Not required for CN-low
     SdpMasterLeafNodeFQDN = device_property(
         dtype='str'
     )
@@ -251,11 +253,12 @@ class CentralNode(SKABaseDevice):
         dtype=HealthState,
         doc="Health state of Subarray1",
     )
-
+    # Not required for CN-low
     subarray2HealthState = attribute(
         dtype=HealthState,
         doc="Health state of Subarray2",
     )
+    # Not required for CN-low
     subarray3HealthState = attribute(
         dtype=HealthState,
     )
@@ -453,107 +456,7 @@ class CentralNode(SKABaseDevice):
     # --------
     # Commands
     # --------
-
-    class StowAntennasCommand(ResponseCommand):
-        """
-        A class for CentralNode's StowAntennas() command.
-        """
-
-        def check_allowed(self):
-
-            """
-            Checks whether this command is allowed to be run in current device state
-
-            :return: True if this command is allowed to be run in current device state
-
-            :rtype: boolean
-
-            :raises: DevFailed if this command is not allowed to be run in current device state
-
-            """
-            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception("Command StowAntennas is not allowed in current state.",
-                                             "Failed to invoke StowAntennas command on CentralNode.",
-                                             "CentralNode.StowAntennas()",
-                                             tango.ErrSeverity.ERR)
-            return True
-
-        def do(self, argin):
-            """
-            Invokes the command SetStowMode on the specified receptors.
-
-            :param argin: List of Receptors to be stowed.
-
-            :return: None
-
-            :raises: DevFailed if error occurs while invoking command of DishLeafNode
-                    ValueError if error occurs if input argument json string contains invalid value
-            """
-            device = self.target
-            try:
-                for leafId in range(0, len(argin)):
-                    if type(float(argin[leafId])) == float:
-                        pass
-                log_msg = const.STR_STOW_CMD_ISSUED_CN
-                self.logger.info(log_msg)
-                device._read_activity_message = log_msg
-                for i in range(0, len(argin)):
-                    device_name = device.DishLeafNodePrefix + argin[i]
-                    try:
-                        device_proxy = DeviceProxy(device_name)
-                        device_proxy.command_inout(const.CMD_SET_STOW_MODE)
-                    except DevFailed as dev_failed:
-                        log_msg = const.ERR_EXE_STOW_CMD + str(dev_failed)
-                        self.logger.exception(dev_failed)
-                        device._read_activity_message = const.ERR_EXE_STOW_CMD
-                        tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
-                                                     "CentralNode.StowAntennasCommand",
-                                                     tango.ErrSeverity.ERR)
-
-            except ValueError as value_error:
-                log_msg = const.ERR_STOW_ARGIN + str(value_error)
-                self.logger.exception(value_error)
-                device._read_activity_message = const.ERR_STOW_ARGIN
-                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
-                                             "CentralNode.StowAntennasCommand",
-                                             tango.ErrSeverity.ERR)
-            except DevFailed as dev_failed:
-                log_msg = const.ERR_EXE_STOW_CMD + str(dev_failed)
-                self.logger.exception(dev_failed)
-                device._read_activity_message = const.ERR_EXE_STOW_CMD
-                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
-                                             "CentralNode.StowAntennasCommand",
-                                             tango.ErrSeverity.ERR)
-            return (ResultCode.OK, device._read_activity_message)
-
-    def is_StowAntennas_allowed(self):
-        """
-        Checks whether this command is allowed to be run in current device state.
-
-        :return: True if this command is allowed to be run in current device state.
-
-        :rtype: boolean
-
-        :raises: DevFailed if this command is not allowed to be run in current device state.
-
-        """
-        handler = self.get_command_object("StowAntennas")
-        return handler.check_allowed()
-
-    @command(
-        dtype_in=('str',),
-        doc_in="List of Receptors to be stowed",
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
-    )
-    def StowAntennas(self, argin):
-        """
-        This command stows the specified receptors.
-        """
-        handler = self.get_command_object("StowAntennas")
-        (result_code, message) = handler(argin)
-        return [[result_code], [message]]
-
+    
     class StandByTelescopeCommand(SKABaseDevice.OffCommand):
         """
         A class for CentralNode's StandByTelescope() command.
@@ -594,7 +497,7 @@ class CentralNode(SKABaseDevice):
             log_msg = const.STR_STANDBY_CMD_ISSUED
             self.logger.info(log_msg)
             device._read_activity_message = log_msg
-
+            # Not required for CN-low
             for name in range(0, len(device._dish_leaf_node_devices)):
                 try:
                     device._leaf_device_proxy[name].command_inout(const.CMD_SET_STANDBY_MODE)
@@ -608,7 +511,7 @@ class CentralNode(SKABaseDevice):
                     tango.Except.throw_exception(const.STR_STANDBY_EXEC, log_msg,
                                                  "CentralNode.StandByTelescopeCommand",
                                                  tango.ErrSeverity.ERR)
-
+            # Not required for CN-low , replace with mccsmasterleafnode
             try:
                 device._csp_master_leaf_proxy.command_inout(const.CMD_OFF)
                 device._csp_master_leaf_proxy.command_inout(const.CMD_STANDBY, [])
@@ -620,7 +523,7 @@ class CentralNode(SKABaseDevice):
                 tango.Except.throw_exception(const.STR_STANDBY_EXEC, log_msg,
                                              "CentralNode.StandByTelescopeCommand",
                                              tango.ErrSeverity.ERR)
-
+            # Not required for CN-low
             try:
                 device._sdp_master_leaf_proxy.command_inout(const.CMD_OFF)
                 device._sdp_master_leaf_proxy.command_inout(const.CMD_STANDBY)
@@ -717,7 +620,7 @@ class CentralNode(SKABaseDevice):
             log_msg = const.STR_ON_CMD_ISSUED
             self.logger.info(log_msg)
             device._read_activity_message = log_msg
-
+            # Not required for CN-low
             for name in range(0, len(device._dish_leaf_node_devices)):
                 try:
                     device._leaf_device_proxy[name].command_inout(const.CMD_ON)
@@ -742,6 +645,7 @@ class CentralNode(SKABaseDevice):
                 tango.Except.throw_exception(const.STR_ON_EXEC, log_msg,
                                              "CentralNode.StartUpTelescopeCommand",
                                              tango.ErrSeverity.ERR)
+            # Not required for CN-low
             try:
                 device._sdp_master_leaf_proxy.command_inout(const.CMD_ON)
                 self.logger.info(const.STR_CMD_ON_SDP_DEV)
@@ -926,6 +830,7 @@ class CentralNode(SKABaseDevice):
 
             ## Validate the input JSON string.
             try:
+                # Not required for CN-low
                 self.logger.info("Validating input string.")
                 input_validator = AssignResourceValidator(device.TMMidSubarrayNodes, device._dish_leaf_node_devices,
                                                           device.DishLeafNodePrefix, self.logger)
@@ -936,6 +841,7 @@ class CentralNode(SKABaseDevice):
                 subarrayProxy = device.subarray_FQDN_dict[subarrayID]
                 ## check for duplicate allocation
                 self.logger.info("Checking for resource reallocation.")
+                # Not required for CN-low
                 device._check_receptor_reassignment(json_argument["dish"]["receptorIDList"])
 
                 ## Allocate resources to subarray
@@ -1068,7 +974,7 @@ class CentralNode(SKABaseDevice):
                                              "CentralNode.ReleaseResources()",
                                              tango.ErrSeverity.ERR)
             return True
-
+        # No need to send argin for ReleaseResources command
         def do(self, argin):
             """
             Release all the resources assigned to the given Subarray. It accepts the subarray id, releaseALL flag and
@@ -1199,7 +1105,7 @@ class CentralNode(SKABaseDevice):
         """
         handler = self.get_command_object("ReleaseResources")
         return handler.check_allowed()
-
+    # No need to send argin to releaseResources command
     @command(
         dtype_in="str",
         doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
@@ -1223,7 +1129,6 @@ class CentralNode(SKABaseDevice):
         """
         super().init_command_objects()
         args = (self, self.state_model, self.logger)
-        self.register_command_object("StowAntennas", self.StowAntennasCommand(*args))
         self.register_command_object("StartUpTelescope", self.StartUpTelescopeCommand(*args))
         self.register_command_object("StandByTelescope", self.StandByTelescopeCommand(*args))
         self.register_command_object("AssignResources", self.AssignResourcesCommand(*args))

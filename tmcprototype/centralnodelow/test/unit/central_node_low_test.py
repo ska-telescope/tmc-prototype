@@ -150,18 +150,6 @@ def test_subarray1_health_state():
         assert tango_context.device.subarray1HealthState == HealthState.OK
 
 
-def test_subarray2_health_state():
-    # act & assert:
-    with fake_tango_system(CentralNode) as tango_context:
-        assert tango_context.device.subarray2HealthState == HealthState.OK
-
-
-def test_subarray3_health_state():
-    # act & assert:
-    with fake_tango_system(CentralNode) as tango_context:
-        assert tango_context.device.subarray3HealthState == HealthState.OK
-
-
 def test_activity_message():
     # act & assert:
     with fake_tango_system(CentralNode) as tango_context:
@@ -212,6 +200,16 @@ def test_health_state():
     with fake_tango_system(CentralNode) as tango_context:
         assert tango_context.device.healthState == HealthState.OK
 
+def test_version_id():
+    """Test for versionId"""
+    with fake_tango_system(CentralNode) as tango_context:
+        assert tango_context.device.versionId == release.version
+
+
+def test_build_state():
+    """Test for buildState"""
+    with fake_tango_system(CentralNode) as tango_context:
+        assert tango_context.device.buildState == ('{},{},{}'.format(release.name,release.version,release.description))
 
 # Need to check the failure
 def test_activity_message_attribute_captures_the_last_received_command():
@@ -226,59 +224,6 @@ def test_activity_message_attribute_captures_the_last_received_command():
 
 
 # Test cases for commands
-def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
-    # arrange:
-    dish_device_ids = [str(i).zfill(4) for i in range(1, 4)]
-    fqdn_prefix = "ska_mid/tm_leaf_node/d"
-    initial_dut_properties = {
-        'DishLeafNodePrefix': fqdn_prefix,
-        'NumDishes': len(dish_device_ids)
-    }
-
-    proxies_to_mock = { fqdn_prefix + device_id : Mock() for device_id in dish_device_ids }
-
-    # act:
-    with fake_tango_system(CentralNode, initial_dut_properties, proxies_to_mock) as tango_context:
-        tango_context.device.StowAntennas(dish_device_ids)
-
-    # assert:
-        for proxy_mock in proxies_to_mock.values():
-            proxy_mock.command_inout.assert_called_with(CMD_SET_STOW_MODE)
-
-
-def test_stow_antennas_should_raise_devfailed_exception():
-    # arrange:
-    dish_device_ids = [str(i).zfill(4) for i in range(1, 4)]
-    fqdn_prefix = "ska_mid/tm_leaf_node/d"
-    initial_dut_properties = {
-        'DishLeafNodePrefix': fqdn_prefix,
-        'NumDishes': len(dish_device_ids)
-    }
-
-    proxies_to_mock = {fqdn_prefix + device_id: Mock() for device_id in dish_device_ids}
-    # mock command_inout method to throw devfailed exception
-    for proxy_mock in proxies_to_mock.values():
-        proxy_mock.command_inout.side_effect = raise_devfailed_exception
-    # act:
-    with fake_tango_system(CentralNode, initial_dut_properties, proxies_to_mock) as tango_context:
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.StowAntennas(dish_device_ids)
-    # assert:
-        assert const.ERR_EXE_STOW_CMD in tango_context.device.activityMessage
-
-
-def test_stow_antennas_invalid_value():
-    """Negative Test for StowAntennas"""
-    # act
-    with fake_tango_system(CentralNode) \
-            as tango_context:
-        argin = ["invalid_antenna", ]
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.StowAntennas(argin)
-
-        # assert:
-        assert const.ERR_STOW_ARGIN in tango_context.device.activityMessage
-
 
 # Mocking AssignResources command success response from SubarrayNode
 def mock_subarray_call_assign_resources_success(arg1, arg2):
@@ -360,7 +305,7 @@ def test_assign_resources_invalid_key():
         # assert:
         assert 'test' in result
 
-
+# Not required for CN-low
 def test_assign_resources_raise_devfailed_when_reseource_reallocation():
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
     subarray2_fqdn = 'ska_mid/tm_subarray_node/2'
@@ -563,6 +508,7 @@ def test_telescope_health_state_matches_csp_master_leaf_node_health_state_after_
         # assert:
         assert tango_context.device.telescopeHealthState == csp_master_ln_health_state
 
+# Not required for CN-low
 def test_telescope_health_state_is_ok_when_sdp_master_leaf_node_is_ok_after_start():
     # arrange:
     sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
@@ -600,7 +546,7 @@ def test_telescope_health_state_is_ok_when_subarray_leaf_node_is_ok_after_start(
     # assert:
     assert device_proxy.telescopeHealthState == HealthState.OK
 
-
+# Not required for CN-low
 def test_telescope_health_state_is_ok_when_subarray2_leaf_node_is_ok_after_start():
     # arrange:
     subarray2_fqdn = 'ska_mid/tm_subarray_node/2'
@@ -627,7 +573,7 @@ def test_telescope_health_state_is_ok_when_subarray2_leaf_node_is_ok_after_start
         # assert:
         assert tango_context.device.telescopeHealthState == HealthState.OK
 
-
+# Not required for CN-low
 def test_telescope_health_state_is_ok_when_subarray3_leaf_node_is_ok_after_start():
     # arrange:
     subarray3_fqdn = 'ska_mid/tm_subarray_node/3'
@@ -677,18 +623,6 @@ def raise_devfailed_exception(cmd_name):
 def raise_devfailed_exception_with_args(cmd_name, input_args):
     tango.Except.throw_exception("CentralNode_Commandfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
-
-def test_version_id():
-    """Test for versionId"""
-    with fake_tango_system(CentralNode) as tango_context:
-        assert tango_context.device.versionId == release.version
-
-
-def test_build_state():
-    """Test for buildState"""
-    with fake_tango_system(CentralNode) as tango_context:
-        assert tango_context.device.buildState == ('{},{},{}'.format(release.name,release.version,release.description))
-
 
 def any_method(with_name=None):
     class AnyMethod():
