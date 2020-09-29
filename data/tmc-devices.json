@@ -99,10 +99,10 @@
                         },
                         "properties": {
                             "MCCSMasterLeafNodeFQDN": [
-                                "ska_mid/tm_leaf_node/mccs_master"
+                                "ska_low/tm_leaf_node/mccs_master"
                             ],
-                            "TMMidSubarrayNodes": [
-                                "ska_mid/tm_subarray_node/1"
+                            "TMLowSubarrayNodes": [
+                                "ska_low/tm_subarray_node/1"
                             ],
                             "SkaLevel": [
                                 "1"
@@ -413,7 +413,7 @@
                         },
                         "properties": {
                             "MccsSubarrayLNFQDN": [
-                                "ska_mid/tm_leaf_node/mccs_subarray01"
+                                "ska_low/tm_leaf_node/mccs_subarray01"
                             ],
                             "MCCSSubarrayFQDN": [
                                 "low_mccs/elt/subarray_01"
