@@ -28,10 +28,10 @@ TMC prototype addresses the  following architectural aspects and functionality:
 ### 1.1: Architecture
 * [x] Use of LMC base classes for development of TMC control nodes and element simulator such as Dish Master
 * [x] Hierarchy of control nodes - Central Node, Subarray Node, Leaf Node
-* [x] Interface between the TMC and Element LMC (Dish Master(simulator), CSP LMC, SDP LMC)
 * [x] Interface between the CentralNode/SubarrayNode and OET
-* [x] Interface between the TMC and CSP CspSubarray
-* [x] Interface between the TMC and SDP SdpSubarray
+* [x] Interface between the TMC and Dish(Master simulator)
+* [x] Interface between the TMC and CSP (CSP Master and Csp Subarray devices)
+* [x] Interface between the TMC and SDP (SDP Master and SDP Subarray devices)
 * [x] Integration of KATPoint library for pointing and delay calculation 
 * [x] Use of Alarm Handler
 * [x] Use of SKA Logger
@@ -64,18 +64,20 @@ TMC prototype addresses the  following architectural aspects and functionality:
    * [x] Use of SDP Subarray health to calculate Subarray Node health state
    * [x] StartUpTelescope command on Central Node to change SDP Master device and SDP Subarray device state to ON
    * [x] Configure the SDP for a simple scan
-* [x] Telescope Startup and Standby
-* [x] Accept configuration as strings (JSON) from OET for following commands:
-  * [x] AssignResources
-  * [x] ReleaseResources
-* [x] Execute Configure command for a Subarray
-* [x] Execute a simple Scan and End the Scan
-* [x] EndSB command on SubarrayNode
+* [x] TMC commands/functionality to execute entire obsevation cycle
+   * [x] Telescope Startup
+   * [x] AssignResources command to allocate resources to the SubarrayNode
+   * [x] Execute Configure command for a Subarray
+   * [x] Execute Scan and End the Scan
+   * [x] End command on SubarrayNode to end the scheduling block
+   * [x] ReleaseResources commands to deallocate resources from the SubarrayNode
+   * [x] Telescope Standby 
 * [x] Configure and execute multiple scans
 * [x] Implement the observation state model and state transitions as per [ADR-8.](https://confluence.skatelescope.org/pages/viewpage.action?pageId=105416556)
 * [x] Calculate Geometric delay values (in seconds) per antenna on CSP Subarray Leaf Node
 * [x] Convert delay values (in seconds) to 5th order polynomial coefficients
 * [x] Abort an ongoing operation, and Restart the control nodes, catch exceptions in the AssignResource workflow, log the exception details and raise them to the calling components.
+* [x] Implementation of obsReset functinality (as per ADR-8) in which resource allocation in Subarray is retained and only the scan configuration parameters are cleared. 
 
 **NOTE:** Refer to the Demo link provided in the [Documentation](#6-documentation) section for more details.
 
