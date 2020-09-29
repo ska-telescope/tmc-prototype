@@ -79,6 +79,53 @@
                 }
             }
         },
+        "CentralNodeLowDS": {
+            "01": {
+                "CentralNode": {
+                    "ska_low/tm_central/central_node": {
+                        "attribute_properties": {
+                            "subarray1HealthState": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
+                            "telescopeHealthState": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            }
+                        },
+                        "properties": {
+                            "MCCSMasterLeafNodeFQDN": [
+                                "ska_mid/tm_leaf_node/mccs_master"
+                            ],
+                            "TMMidSubarrayNodes": [
+                                "ska_mid/tm_subarray_node/1"
+                            ],
+                            "SkaLevel": [
+                                "1"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ],
+                            "LoggingLevelDefault": [
+                                "5"
+                            ],
+                            "polled_attr": [
+                                "subarray1healthstate",
+                                "1000",
+                                "activitymessage",
+                                "1000",
+                                "telescopehealthstate",
+                                "1000"
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "SubarrayNodeDS": {
             "sa1": {
                 "SubarrayNode": {
