@@ -12,7 +12,7 @@
 name = """mccssubarrayleafnode"""
 version = "0.2.11"
 version_info = version.split(".")
-description = """"""
+description = """MccsSubarrayeafNode - Leaf Node to monitor and control MCCS Subarray"""
 author = "jayant.ska"
 author_email = "jayant.ska at gmail.com"
 license = """BSD-3-Clause"""

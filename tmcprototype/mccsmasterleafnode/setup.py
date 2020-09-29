@@ -26,7 +26,7 @@ exec(open(release_filename).read())
 
 setup(name=name,
       version=version,
-      description='MCCS Master Leaf Node is the component what interfaces with MCCS Master.',
+      description='MCCS Master Leaf Node is the component that interfaces with MCCS Master.',
       packages=find_packages(where='src'),
       package_dir={'': 'src'},
       include_package_data=True,
