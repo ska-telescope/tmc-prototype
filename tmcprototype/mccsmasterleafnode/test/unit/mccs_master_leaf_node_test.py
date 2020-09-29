@@ -27,7 +27,7 @@ from tango.test_context import DeviceTestContext
 
 # Additional import
 from mccsmasterleafnode import MccsMasterLeafNode, const, release
-from ska.base.control_model import HealthState
+from ska.base.control_model import HealthState , ObsState
 from ska.base.control_model import LoggingLevel
 
 # PROTECTED REGION END #    //  MccsMasterLeafNode imports
@@ -105,6 +105,15 @@ def test_on_should_command_with_callback_method_with_event_error(mock_mccs_maste
     assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
 
 
+def test_on_should_raise_devfailed_exception(mock_mccs_master):
+    mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
+    mccs_master_proxy_mock.obsState = ObsState.EMPTY
+    mccs_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.On()
+    assert const.ERR_DEVFAILED_MSG in str(df.value)
+
+
 def test_off_should_command_to_off_with_callback_method(mock_mccs_master):
 # arrange:
     device_proxy=mock_mccs_master[1]
@@ -128,6 +137,16 @@ def test_off_should_command_with_callback_method_with_event_error(mock_mccs_mast
     event_subscription_without_arg[const.CMD_OFF](dummy_event)
     # assert:
     assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
+
+
+def test_off_should_raise_devfailed_exception(mock_mccs_master):
+    mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
+    mccs_master_proxy_mock.obsState = ObsState.EMPTY
+    mccs_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.On()
+        device_proxy.Off()
+    assert const.ERR_DEVFAILED_MSG in str(df.value)
 
 
 def command_callback(command_name):
@@ -155,6 +174,11 @@ def any_method(with_name=None):
 
     return AnyMethod()
 
+
+def raise_devfailed_exception(cmd_name, inp_str):
+    # "This function is called to raise DevFailed exception."
+    tango.Except.throw_exception("MccsMasterLeafNode_CommandFailed", const.ERR_DEVFAILED_MSG,
+    " ", tango.ErrSeverity.ERR)
 
 @contextlib.contextmanager
 def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},

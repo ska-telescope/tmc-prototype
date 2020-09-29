@@ -194,9 +194,18 @@ class MccsMasterLeafNode(SKABaseDevice):
             # Pass argin to mccs master .
             # If the array length is 0, the command applies to the whole MCCS Element.
             # If the array length is > 1 each array element specifies the FQDN of the MCCS SubElement to switch ON.
-            device._mccs_master_proxy.command_inout_asynch(const.CMD_ON, self.on_cmd_ended_cb)
-            self.logger.debug(const.STR_ON_CMD_ISSUED)
-            return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
+            try:
+                device._mccs_master_proxy.command_inout_asynch(const.CMD_ON, self.on_cmd_ended_cb)
+                self.logger.debug(const.STR_ON_CMD_ISSUED)
+                return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
+
+            except DevFailed as dev_failed:
+                log_msg = const.ERR_ON_RESOURCES + str(dev_failed)
+                device._read_activity_message = log_msg
+                self.logger.exception(dev_failed)
+                tango.Except.throw_exception(const.STR_ON_EXEC, log_msg,
+                                             "MccsMasterLeafNode.On",
+                                             tango.ErrSeverity.ERR)
 
 
     class OffCommand(SKABaseDevice.OffCommand):
@@ -251,12 +260,21 @@ class MccsMasterLeafNode(SKABaseDevice):
             # pass argin to mccs master.
             # If the array length is 0, the command applies to the whole MCCS Element.
             # If the array length is >, each array element specifies the FQDN of the MCCS SubElement to switch OFF.
-            device._mccs_master_proxy.command_inout_asynch(const.CMD_OFF, self.off_cmd_ended_cb)
-            self.logger.debug(const.STR_OFF_CMD_ISSUED)
-            device._read_activity_message = const.STR_OFF_CMD_ISSUED
-            return (ResultCode.OK, const.STR_OFF_CMD_ISSUED)
+            try:
+                device._mccs_master_proxy.command_inout_asynch(const.CMD_OFF, self.off_cmd_ended_cb)
+                self.logger.debug(const.STR_OFF_CMD_ISSUED)
+                device._read_activity_message = const.STR_OFF_CMD_ISSUED
+                return (ResultCode.OK, const.STR_OFF_CMD_ISSUED)
 
-    #TODO : Commented out for now to resolve pylint warnings
+            except DevFailed as dev_failed:
+                log_msg = const.ERR_OFF_RESOURCES + str(dev_failed)
+                device._read_activity_message = log_msg
+                self.logger.exception(dev_failed)
+                tango.Except.throw_exception(const.STR_OFF_EXEC, log_msg,
+                                             "MccsMasterLeafNode.Off",
+                                             tango.ErrSeverity.ERR)
+
+    #TODO : Commented out for now to resolve pylint warnings    
     # def init_command_objects(self):
     #     """
     #     Initialises the command handlers for commands supported by this
