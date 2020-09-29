@@ -38,8 +38,6 @@ class MccsMasterLeafNode(SKABaseDevice):
     - activityMessage - Attribute to provide activity message
 
     """
-    # PROTECTED REGION ID(MccsMasterLeafNode.class_variable) ENABLED START #
-    # PROTECTED REGION END #    //  MccsMasterLeafNode.class_variable
 
     # -----------------
     # Device Properties
@@ -257,7 +255,6 @@ class MccsMasterLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            # pass argin to mccs master.
             # If the array length is 0, the command applies to the whole MCCS Element.
             # If the array length is >, each array element specifies the FQDN of the MCCS SubElement to switch OFF.
             try:
