@@ -1,6 +1,6 @@
 apiVersion: v2
 name: test-tmc
-description: A Helm chart for Kubernetes MVP Mid 
+description: A Combined Helm chart for MVP Mid and MVP Low for TMC testing
 type: application
 version: 0.1.0
 appVersion: 0.1.0
@@ -23,10 +23,16 @@ dependencies:
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: tmc-mid
   version: 0.0.2
-  repository: file://../tmc-mid 
+  repository: file://../tmc-mid
 - name: webjive
   version: 0.1.0
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: logging
   version: 0.1.0
+  repository: https://nexus.engageska-portugal.pt/repository/helm-chart
+- name: tmc-low
+  version: 0.0.2
+  repository: file://../tmc-low
+- name: mccs
+  version: 0.0.2
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
