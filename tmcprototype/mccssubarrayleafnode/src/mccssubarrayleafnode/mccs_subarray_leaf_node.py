@@ -97,9 +97,6 @@ class MccsSubarrayLeafNode(SKABaseDevice):
                 log_msg = const.ERR_IN_CREATE_PROXY_MCCSSA + str(dev_failed)
                 self.logger.debug(log_msg)
                 return (ResultCode.FAILED, log_msg)
-            #TODO
-            # self.set_change_event("adminMode", True, True)
-            # self.set_archive_event("adminMode", True, True)
             device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
             device._version_id = release.version
             device._read_activity_message = " "

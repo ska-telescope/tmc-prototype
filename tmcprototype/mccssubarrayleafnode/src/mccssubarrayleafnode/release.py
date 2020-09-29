@@ -10,7 +10,7 @@
 """Release information for Python Package"""
 
 name = """tangods-mccssubarrayleafnode"""
-version = "1.0.0"
+version = "0.2.11"
 version_info = version.split(".")
 description = """"""
 author = "jayant.ska"

@@ -50,9 +50,6 @@ def mock_mccs_master():
     dut_properties = {'MccsMasterFQDN': mccs_master_fqdn}
     event_subscription_map = {}
     mccs_master_proxy_mock = Mock()
-    # mccs_master_proxy_mock.subscribe_event.side_effect = (
-    #     lambda attr_name, event_type, callback, *args,
-    #         **kwargs: event_subscription_map.update({attr_name: callback}))
     proxies_to_mock = {mccs_master_fqdn: mccs_master_proxy_mock}
     with fake_tango_system(MccsMasterLeafNode, initial_dut_properties=dut_properties,
                         proxies_to_mock=proxies_to_mock) as tango_context:
