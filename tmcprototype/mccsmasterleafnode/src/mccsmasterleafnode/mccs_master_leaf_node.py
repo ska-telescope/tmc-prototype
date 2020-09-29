@@ -45,21 +45,11 @@ class MccsMasterLeafNode(SKABaseDevice):
     # Device Properties
     # -----------------
 
-
-
-
-
     MccsMasterFQDN = device_property(
         dtype='str', default_value="low_mccs/elt/master"
     )
 
     
-
-
-
-
-
-
     # ----------
     # Attributes
     # ----------

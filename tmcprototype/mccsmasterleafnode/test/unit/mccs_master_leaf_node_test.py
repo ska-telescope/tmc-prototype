@@ -105,17 +105,6 @@ def test_on_should_command_with_callback_method_with_event_error(mock_mccs_maste
     assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
 
 
-def test_off_should_command_mccs_master_leaf_node_to_stop(mock_mccs_master):
-# arrange:
-    device_proxy=mock_mccs_master[1]
-
-    # act:
-    device_proxy.On()
-    device_proxy.Off()
-    # assert:
-    assert device_proxy.activityMessage in const.STR_OFF_CMD_ISSUED
-
-
 def test_off_should_command_to_off_with_callback_method(mock_mccs_master):
 # arrange:
     device_proxy=mock_mccs_master[1]
