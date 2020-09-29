@@ -16,7 +16,7 @@ RUN python3 -m pip install ska-telescope-model==0.1.4
 # install all local TMC packages
 RUN python3 -m pip install \
     /app/tmcprototype/centralnode \
-    /app/tmcprototype/centralnode-low \
+    /app/tmcprototype/centralnodelow \
     /app/tmcprototype/cspmasterleafnode \
     /app/tmcprototype/cspsubarrayleafnode \
     /app/tmcprototype/dishleafnode \

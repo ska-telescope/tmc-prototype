@@ -1,4 +1,4 @@
-## CentralNode-low
+## CentralNodelow
 
 Central Node Low is a coordinator of the complete M&C system.
 
