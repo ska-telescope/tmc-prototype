@@ -58,34 +58,34 @@ def mock_mccs_subarray():
         yield tango_context.device, mccs_subarray1_proxy_mock
 
 
-def test_start_scan_should_command_mccs_subarray_to_start_its_scan_when_it_is_ready(mock_mccs_subarray):
+def test_scan_should_command_mccs_subarray_to_start_its_scan_when_it_is_ready(mock_mccs_subarray):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.READY
     device_proxy.Scan(scan_input_str)
-    assert const.STR_STARTSCAN_SUCCESS in device_proxy.activityMessage
+    assert const.STR_SCAN_SUCCESS in device_proxy.activityMessage
 
 
-def test_startscan_command_with_callback_method(mock_mccs_subarray , event_subscription):
+def test_scan_command_with_callback_method(mock_mccs_subarray , event_subscription):
     # arrange:
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.READY
     device_proxy.Scan(scan_input_str)
-    dummy_event = command_callback(const.CMD_STARTSCAN)
-    event_subscription[const.CMD_STARTSCAN](dummy_event)
-    assert const.STR_COMMAND + const.CMD_STARTSCAN in device_proxy.activityMessage
+    dummy_event = command_callback(const.CMD_SCAN)
+    event_subscription[const.CMD_SCAN](dummy_event)
+    assert const.STR_COMMAND + const.CMD_SCAN in device_proxy.activityMessage
 
 
-def test_startscan_command_with_callback_method_with_event_error(mock_mccs_subarray, event_subscription ):
+def test_scan_command_with_callback_method_with_event_error(mock_mccs_subarray, event_subscription ):
     # arrange:
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.READY
     device_proxy.Scan(scan_input_str)
-    dummy_event = command_callback_with_event_error(const.CMD_STARTSCAN)
-    event_subscription[const.CMD_STARTSCAN](dummy_event)
-    assert const.ERR_INVOKING_CMD + const.CMD_STARTSCAN in device_proxy.activityMessage
+    dummy_event = command_callback_with_event_error(const.CMD_SCAN)
+    event_subscription[const.CMD_SCAN](dummy_event)
+    assert const.ERR_INVOKING_CMD + const.CMD_SCAN in device_proxy.activityMessage
 
 
-def test_start_scan_should_not_command_mccs_subarray_to_start_scan_when_it_is_idle(mock_mccs_subarray):
+def test_scan_should_not_command_mccs_subarray_to_start_scan_when_it_is_idle(mock_mccs_subarray):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.IDLE
     with pytest.raises(tango.DevFailed) as df:
