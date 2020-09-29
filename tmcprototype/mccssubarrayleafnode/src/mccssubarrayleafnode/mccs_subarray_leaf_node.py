@@ -245,22 +245,14 @@ class MccsSubarrayLeafNode(SKABaseDevice):
                 # Append Elevation and Elevation_rate into sky_coordinates set
                 device._sky_coordinates.append(elevation_coord)
                 device._sky_coordinates.append(0.0)
-                log_msg = "--------------device._sky_coordinates ------------- ", device._sky_coordinates
-                self.logger.info(log_msg)
 
                 # Add in sky_coordinates set in station_beam_pointings
                 station_beam_pointings["sky_coordinates"] = device._sky_coordinates
                 # Remove target block from station_beam_pointings
                 station_beam_pointings.pop("target", None)
-                log_msg = "--------------station_beam_pointings ------------- ", station_beam_pointings
-                self.logger.info(log_msg)
 
                 argin_json["station_beam_pointings"][0] = station_beam_pointings
-                log_msg = "--------------argin_json ------------- ", argin_json
-                self.logger.info(log_msg)
-
-                log_msg = "--------------json.dumps(argin_json) ------------- ", json.dumps(argin_json)
-                self.logger.info(log_msg)
+                
                 device._mccs_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(argin_json),
                                                         self.configure_cmd_ended_cb)
                 device._read_activity_message = const.STR_CONFIGURE_SUCCESS
