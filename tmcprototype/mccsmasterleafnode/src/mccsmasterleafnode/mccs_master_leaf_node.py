@@ -428,7 +428,7 @@ def main(args=None, **kwargs):
 
     :param kwargs: Arguments internal to TANGO
 
-    :return: MccsMasterLeafNode TANGO object.
+    :return: An object of CompletedProcess class returned by the subprocess.
     """
     return run((MccsMasterLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  MccsMasterLeafNode.main
