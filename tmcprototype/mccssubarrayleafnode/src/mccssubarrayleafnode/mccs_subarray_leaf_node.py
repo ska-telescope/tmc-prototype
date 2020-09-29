@@ -213,10 +213,9 @@ class MccsSubarrayLeafNode(SKABaseDevice):
 
             Note: Enter the json string without spaces as a input.
 
-            :return: A tuple containing a return code and a string message indicating status.
-             The message is for information purpose only.
+            :return: None
 
-            :rtype: (ReturnCode, str)
+            :rtype: Void
 
             :raises: DevFailed if the command execution is not successful
             """
@@ -444,10 +443,9 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             """
             This command invokes End command on MCCS Subarray in order to end current scheduling block.
 
-            :return: A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
+            :return: None
 
-            :rtype: (ResultCode, str)
+            :rtype: Void
 
             :raises: DevFailed if the command execution is not successful
             """
