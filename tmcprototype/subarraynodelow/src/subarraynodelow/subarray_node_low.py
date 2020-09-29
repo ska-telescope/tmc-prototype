@@ -394,27 +394,14 @@ class SubarrayNode(SKASubarray):
     # Device Properties
     # -----------------
 
-    DishLeafNodePrefix = device_property(
-        dtype='str', doc="Device name prefix for the Dish Leaf Node",
+    MccsSubarrayLNFQDN = device_property(
+        dtype='str', doc="This property contains the FQDN of the MCCS Subarray Leaf Node associated with the "
+            "Subarray Node."
     )
 
-    CspSubarrayLNFQDN = device_property(
-
-        dtype='str', doc="This property contains the FQDN of the CSP Subarray Leaf Node associated with the "
-            "Subarray Node.",
-    )
-
-    SdpSubarrayLNFQDN = device_property(
-        dtype='str', doc="This property contains the FQDN of the SDP Subarray Leaf Node associated with the "
-            "Subarray Node.",
-    )
-
-    CspSubarrayFQDN = device_property(
-        dtype='str',
-    )
-
-    SdpSubarrayFQDN = device_property(
-        dtype='str',
+    MccsSubarrayFQDN = device_property(
+        dtype='str', doc="This property contains the FQDN of the MCCS Subarray associated with the "
+            "Subarray Node."
     )
 
     # ----------
@@ -423,24 +410,11 @@ class SubarrayNode(SKASubarray):
 
     scanID = attribute(
         dtype='str',
-        doc="ID of ongoing SCAN",
-    )
-
-    sbID = attribute(
-        dtype='str',
-        doc="ID of ongoing Scheduling Block",
     )
 
     activityMessage = attribute(
         dtype='str',
         access=AttrWriteType.READ_WRITE,
-        doc="Activity Message",
-    )
-
-    receptorIDList = attribute(
-        dtype=('uint16',),
-        max_dim_x=100,
-        doc="ID List of the Receptors assigned in the Subarray",
     )
 
     # ---------------
