@@ -21,7 +21,7 @@
 # 1: Introduction
 This is the repository for the TMC evolutionary prototype. The prototype aims to realize Telescope Monitoring and Control functionality, and utilizes the platform, tools and technology specified for the SKA construction.
 
-The prototype utilizes the base classes created in-line with the SKA Control System Guidelines and Tango coding standards. Developed in **Python 3.7** (PyTango 9.3.2), it is a single repository consisting eight packages - CentralNode, SubarrayNode, DishLeafNode, CspMasterLeafNode, CspSubarrayLeafNode, SdpMasterLeafNode, SdpSubarrayLeafNode and DishMaster.
+The prototype utilizes the base classes created in-line with the SKA Control System Guidelines and Tango coding standards. Developed in **Python 3.7** (PyTango 9.3.2), it is a single repository consisting eight packages - CentralNode, SubarrayNode, DishLeafNode, CspMasterLeafNode, CspSubarrayLeafNode, SdpMasterLeafNode, SdpSubarrayLeafNode, MccsMasterLeafNode, MccsSubarrayLeafNode and DishMaster.
 
 TMC prototype addresses the  following architectural aspects and functionality:
 
@@ -39,6 +39,8 @@ TMC prototype addresses the  following architectural aspects and functionality:
 * [x] Source tracking
 * [x] Exception handling guidelines for AssignResources functionality
 * [x] Adopted ADR-8 observation state machine
+* [x] Introduction of MccsMasterLeafNode and MccsSubarrayLeafNode
+
 
 ### 1.2: Functionality
 
@@ -78,7 +80,11 @@ TMC prototype addresses the  following architectural aspects and functionality:
 * [x] Calculate Geometric delay values (in seconds) per antenna on CSP Subarray Leaf Node
 * [x] Convert delay values (in seconds) to 5th order polynomial coefficients
 * [x] Abort an ongoing operation, and Restart the control nodes, catch exceptions in the AssignResource workflow, log the exception details and raise them to the calling components.
-* [x] Implementation of obsReset functinality (as per ADR-8) in which resource allocation in Subarray is retained and only the scan configuration parameters are cleared. 
+* [x] Implementation of obsReset functinality (as per ADR-8) in which resource allocation in Subarray is retained and only the scan configuration parameters are cleared.
+* [x] Introduction of MccsMasterLeafNode and MccsSubarrayLeafNode 
+* [x] Implement On and Off functionality on MccsMasterLeafNode
+* [x] Implement AssignResources and ReleaseResources functionality on MccsMasterLeafNode
+* [x] Implement Configure functionality on MccsSubarrayLeafNode
 
 **NOTE:** Refer to the Demo link provided in the [Documentation](#6-documentation) section for more details.
 
