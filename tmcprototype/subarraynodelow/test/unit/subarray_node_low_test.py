@@ -17,11 +17,11 @@ from tango import DevState, DeviceData, DevString, DevVarStringArray
 from tango.test_context import DeviceTestContext
 
 # Additional import
-from subarraynode import SubarrayNode, const, ElementDeviceData, release
-from subarraynode.const import PointingState
+from subarraynodelow import SubarrayNode, const, ElementDeviceData, release
+from subarraynodelow.const import PointingState
 from ska.base.control_model import AdminMode, HealthState, ObsState, ObsMode, TestMode, SimulationMode, \
     LoggingLevel
-from subarraynode.exceptions import InvalidObsStateError
+from subarraynodelow.exceptions import InvalidObsStateError
 
 # Command wait timeout:
 assign_input_file = 'command_AssignResources.json'

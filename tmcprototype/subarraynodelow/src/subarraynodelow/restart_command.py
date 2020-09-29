@@ -1,5 +1,5 @@
 """
-RestartCommand for SubarrayNode.
+RestartCommand for SubarrayNode Low.
 """
 
 # Tango imports

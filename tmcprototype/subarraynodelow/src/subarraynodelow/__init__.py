@@ -15,7 +15,7 @@ other TM Components (such as OET, Central Node) for a SKA Low Subarray.
 
 from . import release
 from . import const
-from .subarray_node import SubarrayNode, SubarrayHealthState
+from .subarray_node_low import SubarrayNode, SubarrayHealthState
 from .configure_command import ElementDeviceData
 
 __all__ = ["SubarrayNode", "ElementDeviceData", "SubarrayHealthState", "const", "release"]

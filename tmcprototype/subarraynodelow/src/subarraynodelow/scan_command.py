@@ -1,5 +1,5 @@
 """
-ScanCommand class for SubarrayNode
+ScanCommand class for SubarrayNode Low
 """
 
 import threading

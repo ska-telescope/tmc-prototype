@@ -1,4 +1,4 @@
-recursive-include src/subarraynode *.py
+recursive-include src/subarraynodelow *.py
 recursive-include test *.py
 recursive-include pogo SubarrayNode.xmi
 include *.rst

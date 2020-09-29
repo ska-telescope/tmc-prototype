@@ -1,7 +1,7 @@
-## Subarray Node
+## SubarrayNode-low
 
-Provides the monitoring and control interface required by users as well as 
-other TM Components (such as OET, Central Node) for a Subarray.
+Provides the monitoring and control interface required by users as well as
+other TM Components (such as OET, Central Node Low) for a Subarraylow.
 
 ## Requirement
 
@@ -16,7 +16,7 @@ Run python setup.py install
 If you want to build sphinx documentation,
 run python setup.py build_sphinx
 
-If you want to pass the tests, 
+If you want to pass the tests,
 run python setup.py test
 
 ## Usage
@@ -24,4 +24,4 @@ run python setup.py test
 Now you can start your device server in any
 Terminal or console by calling it :
 
-SubarrayNodeDS instance_name
+SubarrayNodeLowDS instance_name

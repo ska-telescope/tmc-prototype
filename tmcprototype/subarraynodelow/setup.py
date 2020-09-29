@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# This file is part of the SubarrayNode project
+# This file is part of the SubarrayNodeLow project
 #
 #
 #
@@ -21,7 +21,7 @@ readme_filename = os.path.join(setup_dir, 'README.rst')
 with open(readme_filename) as file:
     long_description = file.read()
 
-release_filename = os.path.join(setup_dir, 'src', 'subarraynode', 'release.py')
+release_filename = os.path.join(setup_dir, 'src', 'subarraynodelow', 'release.py')
 exec(open(release_filename).read())
 
 setup(
@@ -33,7 +33,7 @@ setup(
     package_dir={'': 'src'},
     include_package_data=True,
     test_suite="test",
-    entry_points={'console_scripts':['SubarrayNodeDS = subarraynode.subarray_node:main']},
+    entry_points={'console_scripts':['SubarrayNodeLowDS = subarraynodelow.subarray_node_low:main']},
     author='jyotin.ska',
     author_email='jyotin.ska at gmail.com',
     license='BSD-3-Clause',

@@ -376,6 +376,74 @@
                 }
             }
         },
+        "SubarrayNodeLowDS": {
+            "sa1": {
+                "SubarrayNode": {
+                    "ska_low/tm_subarray_node/1": {
+                        "attribute_properties": {
+                            "adminMode": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
+                            "healthState": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
+                            "obsMode": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
+                            "obsState": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
+                            "simulationMode": {
+                                "__value": [
+                                    "false"
+                                ]
+                            }
+                        },
+                        "properties": {
+                            "MccsSubarrayLNFQDN": [
+                                "ska_mid/tm_leaf_node/mccs_subarray01"
+                            ],
+                            "MCCSSubarrayFQDN": [
+                                "low_mccs/elt/subarray_01"
+                            ],
+                            "SkaLevel": [
+                                "2"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ],
+                            "LoggingLevelDefault": [
+                                "5"
+                            ],
+                            "polled_attr": [
+                                "activitymessage",
+                                "1000",
+                                "adminmode",
+                                "1000",
+                                "healthstate",
+                                "1000",
+                                "obsmode",
+                                "1000",
+                                "obsstate",
+                                "1000"
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "DishLeafNodeDS": {
             "01": {
                 "DishLeafNode": {
