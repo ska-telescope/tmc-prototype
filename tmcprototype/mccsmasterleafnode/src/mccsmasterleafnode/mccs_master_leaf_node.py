@@ -236,59 +236,21 @@ class MccsMasterLeafNode(SKABaseDevice):
             It accepts stationiDList list, channels and stationBeamiDList in JSON string format and invokes allocate command on MccsMaster
             with JSON string as an input argument.
 
-            :param argin:StringType. The string in JSON format. The JSON contains following values:
+            :param argin:StringType. The string in JSON format.
                
-            {
-            "subarrayID": 1,
-            "stationiDList": [
-                "0001",
-                "0002"
-            ],
-            "channels": [
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8
-            ],
-            "stationBeamiDList": [
-                1
-            ],
-            
-            }
-
             Example:
             {
-            "subarrayID": 1,
-            "stationiDList": [
-                "0001",
-                "0002"
-            ],
-            "channels": [
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8
-            ],
-            "stationBeamiDList": [
-                1
-            ],
-            
+                "subarray_id": 1,
+                "station_ids": [1,2],
+                "channels": [1,2,3,4,5,6,7,8],
+                "station_beam_ids": [1],
+                "tile_ids": [1,2,3,4]
+        
             }
 
+            :return: None
+
             Note: Enter the json string without spaces as an input.
-
-            :return: A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
 
             :raises: ValueError if input argument json string contains invalid value
                      KeyError if input argument json string contains invalid key
