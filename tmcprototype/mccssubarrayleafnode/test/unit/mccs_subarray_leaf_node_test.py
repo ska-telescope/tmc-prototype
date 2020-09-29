@@ -138,6 +138,13 @@ def test_end_should_raise_devfailed_exception(mock_mccs_subarray):
     assert const.ERR_END_INVOKING_CMD in str(df)
 
 
+def test_end_should_command_mccs_subarray_should_not_reset_when_it_is_not_idle_or_ready(mock_mccs_subarray):
+    device_proxy = mock_mccs_subarray[0]
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.End()
+    assert const.ERR_DEVICE_NOT_READY in str(df)
+
+
 def test_endscan_should_command_mccs_subarray_to_end_scan_when_it_is_scanning(mock_mccs_subarray):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.SCANNING
