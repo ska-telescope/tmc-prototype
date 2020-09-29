@@ -8,9 +8,6 @@
 # See LICENSE.txt for more info.
 
 # PROTECTED REGION ID(MccsMasterLeafNode.import) ENABLED START #
-from __future__ import print_function
-from __future__ import absolute_import
-
 # Tango imports
 import tango
 from tango import DeviceProxy, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
@@ -22,7 +19,6 @@ from ska.base.control_model import HealthState, SimulationMode, TestMode, ObsSta
 # Additional import
 from . import const, release
 from .exceptions import InvalidObsStateError
-
 
 # PROTECTED REGION END #    //  MccsMasterLeafNode imports
 
@@ -47,20 +43,9 @@ class MccsMasterLeafNode(SKABaseDevice):
     # Device Properties
     # -----------------
 
-
-
-
-
     MccsMasterFQDN = device_property(
         dtype='str', default_value="low_mccs/elt/master"
     )
-
-    
-
-
-
-
-
 
     # ----------
     # Attributes
@@ -71,7 +56,6 @@ class MccsMasterLeafNode(SKABaseDevice):
         access=AttrWriteType.READ_WRITE,
         doc="Activity Message",
     )
-
 
     mccsHealthState = attribute(name="mccsHealthState", label="mccsHealthState", forwarded=True)
     # ---------------

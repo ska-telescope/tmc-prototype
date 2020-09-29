@@ -23,14 +23,13 @@ def tango_context():
     with fake_tango_system(MccsSubarrayLeafNode) as tango_context:
         yield tango_context
 
+#test case for method read_activityMessage
 def test_read_activity_message(tango_context):
-    # act & assert:
     tango_context.device.activityMessage = 'test'
     assert tango_context.device.activityMessage == 'test'
 
-
+#test case for method write_activityMessage
 def test_write_activity_message(tango_context):
-    # act & assert:
     tango_context.device.activityMessage = 'test'
     assert tango_context.device.activityMessage == 'test'
 
