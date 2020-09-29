@@ -94,19 +94,13 @@ class CentralNode(SKABaseDevice):
             self.logger.info(log_msg)
             if not evt.err:
                 health_state = evt.attr_value.value
+                self.logger.info("healthstate:" + str(health_state))
                 if const.PROP_DEF_VAL_TM_MID_SA1 in evt.attr_name:
                     self._subarray1_health_state = health_state
                     self.subarray_health_state_map[evt.device] = health_state
-                elif const.PROP_DEF_VAL_TM_MID_SA2 in evt.attr_name:
-                    self._subarray2_health_state = health_state
-                    self.subarray_health_state_map[evt.device] = health_state
-                elif const.PROP_DEF_VAL_TM_MID_SA3 in evt.attr_name:
-                    self._subarray3_health_state = health_state
-                    self.subarray_health_state_map[evt.device] = health_state
-                elif self.CspMasterLeafNodeFQDN in evt.attr_name:
-                    self._csp_master_leaf_health = health_state
-                elif self.SdpMasterLeafNodeFQDN in evt.attr_name:
-                    self._sdp_master_leaf_health = health_state
+                elif self.MCCSMasterLeafNodeFQDN in evt.attr_name:
+                    self._mccs_master_leaf_health = health_state
+                    self.logger.info("In MCCSMasterLeafNodeFQDN")
                 else:
                     self.logger.debug(const.EVT_UNKNOWN)
                     # TODO: For future reference
@@ -119,15 +113,16 @@ class CentralNode(SKABaseDevice):
                     HealthState.UNKNOWN: 0
                 }
 
-                for subsystem_health_field_name in ['csp_master_leaf_health', 'sdp_master_leaf_health']:
+                for subsystem_health_field_name in ['mccs_master_leaf_health']:
                     health_state = getattr(self, f"_{subsystem_health_field_name}")
                     counts[health_state] += 1
 
                 for subarray_health_state in list(self.subarray_health_state_map.values()):
                     counts[subarray_health_state] += 1
-
-                # Calculating health_state for SubarrayNode, CspMasterLeafNode, SdpMasterLeafNode
-                if counts[HealthState.OK] == len(list(self.subarray_health_state_map.values())) + 2:
+                self.logger.info("Count of health state Ok :" + str(counts[HealthState.OK]))
+                self.logger.info("Count of health state Ok :" + str(len(list(self.subarray_health_state_map.values()))))
+                # Calculating health_state for SubarrayNode, MCCSMasterLeafNode
+                if counts[HealthState.OK] == len(list(self.subarray_health_state_map.values())) + 1:
                     self._telescope_health_state = HealthState.OK
                     str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_OK
                     self.logger.info(str_log)
@@ -235,6 +230,9 @@ class CentralNode(SKABaseDevice):
     CspMasterLeafNodeFQDN = device_property(
         dtype='str'
     )
+    MCCSMasterLeafNodeFQDN = device_property(
+        dtype='str'
+    )
     # Not required for CN-low
     SdpMasterLeafNodeFQDN = device_property(
         dtype='str'
@@ -252,15 +250,6 @@ class CentralNode(SKABaseDevice):
     subarray1HealthState = attribute(
         dtype=HealthState,
         doc="Health state of Subarray1",
-    )
-    # Not required for CN-low
-    subarray2HealthState = attribute(
-        dtype=HealthState,
-        doc="Health state of Subarray2",
-    )
-    # Not required for CN-low
-    subarray3HealthState = attribute(
-        dtype=HealthState,
     )
 
     activityMessage = attribute(
@@ -296,10 +285,7 @@ class CentralNode(SKABaseDevice):
             try:
                 self.logger.info("Device initialisating...")
                 device._subarray1_health_state = HealthState.OK
-                device._subarray2_health_state = HealthState.OK
-                device._subarray3_health_state = HealthState.OK
-                device._sdp_master_leaf_health = HealthState.OK
-                device._csp_master_leaf_health = HealthState.OK
+                device._mccs_master_leaf_health = HealthState.OK
                 # Initialise Attributes
                 device._health_state = HealthState.OK
                 device._telescope_health_state = HealthState.OK
@@ -349,10 +335,10 @@ class CentralNode(SKABaseDevice):
                     device._read_activity_message = const.ERR_IN_CREATE_PROXY
                     tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand",
                                                  tango.ErrSeverity.ERR)
-            # Create device proxy for CSP Master Leaf Node
+            # Create device proxy for MCCS Master Leaf Node
             try:
-                device._csp_master_leaf_proxy = DeviceProxy(device.CspMasterLeafNodeFQDN)
-                device._csp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_CSP_MASTER_HEALTH,
+                device._mccs_master_leaf_proxy = DeviceProxy(device.MCCSMasterLeafNodeFQDN)
+                device._mccs_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_MCCS_MASTER_HEALTH,
                                                            EventType.CHANGE_EVENT,
                                                            device.health_state_cb, stateless=True)
             except DevFailed as dev_failed:
@@ -361,18 +347,12 @@ class CentralNode(SKABaseDevice):
                 device._read_activity_message = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand",
                                              tango.ErrSeverity.ERR)
+            # Create device proxy for CSP Master Leaf Node
+            device._csp_master_leaf_proxy = DeviceProxy(device.CspMasterLeafNodeFQDN)
+            
             # Create device proxy for SDP Master Leaf Node
-            try:
-                device._sdp_master_leaf_proxy = DeviceProxy(device.SdpMasterLeafNodeFQDN)
-                device._sdp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_SDP_MASTER_HEALTH,
-                                                           EventType.CHANGE_EVENT,
-                                                           device.health_state_cb, stateless=True)
-            except DevFailed as dev_failed:
-                log_msg = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH + str(dev_failed)
-                self.logger.exception(dev_failed)
-                device._read_activity_message = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH
-                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand",
-                                             tango.ErrSeverity.ERR)
+            
+            device._sdp_master_leaf_proxy = DeviceProxy(device.SdpMasterLeafNodeFQDN)
 
             # Create device proxy for Subarray Node
             for subarray in range(0, len(device.TMMidSubarrayNodes)):
@@ -428,18 +408,6 @@ class CentralNode(SKABaseDevice):
         """ Internal construct of TANGO. Returns Subarray1 health state. """
         return self._subarray1_health_state
         # PROTECTED REGION END #    //  CentralNode.subarray1_healthstate_read
-
-    def read_subarray2HealthState(self):
-        # PROTECTED REGION ID(CentralNode.subarray2_healthstate_read) ENABLED START #
-        """ Internal construct of TANGO. Returns Subarray2 health state. """
-        return self._subarray2_health_state
-        # PROTECTED REGION END #    //  CentralNode.subarray2_healthstate_read
-
-    def read_subarray3HealthState(self):
-        # PROTECTED REGION ID(CentralNode.subarray3HealthState_read) ENABLED START #
-        """ Internal construct of TANGO. Returns Subarray3 health state. """
-        return self._subarray3_health_state
-        # PROTECTED REGION END #    //  CentralNode.subarray3HealthState_read
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(CentralNode.activity_message_read) ENABLED START #
