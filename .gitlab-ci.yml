@@ -52,7 +52,7 @@ build CentralNode wheel for development: # Executed on a commit
     paths:
       - ./tmcprototype/centralnode/dist/
 
-  build CentralNodeLow wheel for publication: # Executed on a tag
+  build CentralNode wheel for publication: # Executed on a tag
   stage: build
   tags:
     - docker-executor
@@ -65,7 +65,7 @@ build CentralNode wheel for development: # Executed on a commit
     paths:
       - ./tmcprototype/centralnodelow/dist/
 
-build CentralNodeLow wheel for development: # Executed on a commit
+build CentralNode wheel for development: # Executed on a commit
   stage: build
   tags:
     - docker-executor
