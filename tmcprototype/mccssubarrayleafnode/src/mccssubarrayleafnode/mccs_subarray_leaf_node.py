@@ -37,10 +37,6 @@ class MccsSubarrayLeafNode(SKABaseDevice):
     # Device Properties
     # -----------------
 
-
-
-
-
     MccsSubarrayFQDN = device_property(
         dtype='str', default_value="low_mccs/elt/subarray_01"
     )
@@ -48,14 +44,6 @@ class MccsSubarrayLeafNode(SKABaseDevice):
     # ----------
     # Attributes
     # ----------
-
-
-
-
-
-
-
-
 
     activityMessage = attribute(
         dtype='str',
@@ -94,6 +82,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             try:
                 # create MccsSubarray Proxy
                 device._mccs_subarray_proxy = DeviceProxy(device.MccsSubarrayFQDN)
+                self.logger.info("Mccs Subarray device proxy created successfully.")
             except DevFailed as dev_failed:
                 log_msg = const.ERR_IN_CREATE_PROXY_MCCSSA + str(dev_failed)
                 self.logger.debug(log_msg)
