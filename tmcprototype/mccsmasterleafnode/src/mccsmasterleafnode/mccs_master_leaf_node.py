@@ -39,28 +39,13 @@ class MccsMasterLeafNode(SKABaseDevice):
     - activityMessage - Attribute to provide activity message
 
     """
-    # PROTECTED REGION ID(MccsMasterLeafNode.class_variable) ENABLED START #
-    # PROTECTED REGION END #    //  MccsMasterLeafNode.class_variable
-
     # -----------------
     # Device Properties
     # -----------------
 
-
-
-
-
     MccsMasterFQDN = device_property(
         dtype='str', default_value="low_mccs/elt/master"
     )
-
-    
-
-
-
-
-
-
     # ----------
     # Attributes
     # ----------

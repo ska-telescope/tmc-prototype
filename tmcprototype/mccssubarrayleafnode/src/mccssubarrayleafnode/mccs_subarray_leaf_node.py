@@ -34,16 +34,9 @@ class MccsSubarrayLeafNode(SKABaseDevice):
     """
     MCCS Subarray Leaf node monitors the MCCS Subarray and issues control actions during an observation.
     """
-    # PROTECTED REGION ID(MccsSubarrayLeafNode.class_variable) ENABLED START #
-    # PROTECTED REGION END #    //  MccsSubarrayLeafNode.class_variable
-
     # -----------------
     # Device Properties
     # -----------------
-
-
-
-
 
     MccsSubarrayFQDN = device_property(
         dtype='str', default_value="low_mccs/elt/subarray_01"
@@ -52,15 +45,6 @@ class MccsSubarrayLeafNode(SKABaseDevice):
     # ----------
     # Attributes
     # ----------
-
-
-
-
-
-
-
-
-
     activityMessage = attribute(
         dtype='str',
         access=AttrWriteType.READ_WRITE,
@@ -91,7 +75,6 @@ class MccsSubarrayLeafNode(SKABaseDevice):
 
             :rtype: (ReturnCode, str)
 
-            :raises: DevFailed if error occurs in creating proxy for MCCSSubarray.
             """
             super().do()
             device = self.target
@@ -221,6 +204,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
 
             :raises: DevFailed if the command execution is not successful
                      ValueError if input argument json string contains invalid value
+                     KeyError if input argument json string contains invalid key
             """
             device = self.target
             try:
@@ -273,6 +257,21 @@ class MccsSubarrayLeafNode(SKABaseDevice):
                 tango.Except.throw_exception(const.STR_CONFIGURE_EXEC, log_msg,
                                             "MccsSubarrayLeafNode.ConfigureCommand",
                                             tango.ErrSeverity.ERR)
+            except ValueError as value_error:
+                log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
+                device._read_activity_message = log_msg
+                self.logger.exception(value_error)
+                tango.Except.throw_exception(const.ERR_CONFIGURE_INVOKING_CMD, log_msg,
+                                             "CspSubarrayLeafNode.ConfigureCommand",
+                                             tango.ErrSeverity.ERR)
+
+            except KeyError as key_error:
+                log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+                device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+                self.logger.exception(key_error)
+                tango.Except.throw_exception(const.ERR_CONFIGURE_INVOKING_CMD, log_msg,
+                                             "CspSubarrayLeafNode.AssignResourcesCommand",
+                                             tango.ErrSeverity.ERR)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_CONFIGURE_INVOKING_CMD + str(dev_failed)
@@ -316,9 +315,6 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         super().init_command_objects()
         args = (self, self.state_model, self.logger)
         self.register_command_object("Configure", self.ConfigureCommand(*args))
-        # self.register_command_object("AssignResources", self.AssignResourcesCommand(*args))
-
-
 
 # ----------
 # Run server

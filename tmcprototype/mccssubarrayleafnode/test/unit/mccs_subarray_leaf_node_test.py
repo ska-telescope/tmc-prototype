@@ -62,18 +62,14 @@ def mock_mccs_subarray():
 
 
 def test_configure_command_when_obstate_is_idle_with_callback_method(mock_mccs_subarray, event_subscription):
-    # arrange:
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.IDLE
-
-    
     device_proxy.Configure(configure_str)
     dummy_event = command_callback(const.CMD_CONFIGURE)
     event_subscription[const.CMD_CONFIGURE](dummy_event)
     assert const.STR_COMMAND + const.CMD_CONFIGURE in device_proxy.activityMessage
 
 def test_configure_command_when_obstate_is_ready_with_callback_method(mock_mccs_subarray, event_subscription):
-    # arrange:
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.IDLE
     device_proxy.Configure(configure_str)
@@ -124,7 +120,6 @@ def test_configure_should_failed_when_device_obsstate_is_empty(mock_mccs_subarra
 
 
 def test_configure_command_with_callback_method_with_event_error(mock_mccs_subarray, event_subscription ):
-    # arrange:
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     device_proxy.On()
     mccs_subarray1_proxy_mock.obsState = ObsState.IDLE

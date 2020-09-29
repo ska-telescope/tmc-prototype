@@ -66,24 +66,6 @@
       </argout>
       <status abstract="false" inherited="true" concrete="true"/>
     </commands>
-    <commands name="AssignResource" description="" execMethod="assign_resource" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
-      <argin description="">
-        <type xsi:type="pogoDsl:StringType"/>
-      </argin>
-      <argout description="">
-        <type xsi:type="pogoDsl:StringType"/>
-      </argout>
-      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-    </commands>
-    <commands name="ReleaseResources" description="" execMethod="release_resources" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
-      <argin description="">
-        <type xsi:type="pogoDsl:StringType"/>
-      </argin>
-      <argout description="">
-        <type xsi:type="pogoDsl:StringType"/>
-      </argout>
-      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-    </commands>
     <commands name="On" description="" execMethod="on" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
       <argin description="">
         <type xsi:type="pogoDsl:VoidType"/>
