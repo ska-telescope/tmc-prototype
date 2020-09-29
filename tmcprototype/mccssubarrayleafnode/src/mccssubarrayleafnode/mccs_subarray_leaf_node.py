@@ -22,6 +22,9 @@ from ska.base.control_model import HealthState, ObsState
 
 # Additional import
 from . import const, release
+import json
+from datetime import datetime, timedelta
+import pytz
 # PROTECTED REGION END #    //  MccsSubarrayLeafNode.additional_import
 
 __all__ = ["MccsSubarrayLeafNode", "main"]
@@ -106,6 +109,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             device._version_id = release.version
             device._read_activity_message = " "
             device._versioninfo = " "
+            device._sky_coordinates = []
             device.set_status(const.STR_MCCSSALN_INIT_SUCCESS)
             device._mccs_subarray_health_state = HealthState.OK
             self.logger.info(const.STR_MCCSSALN_INIT_SUCCESS)
@@ -222,8 +226,42 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             try:
                 assert (device._mccs_subarray_proxy.obsState in (ObsState.IDLE, ObsState.READY))
                 log_msg = "Input JSON for MCCS Subarray Leaf Node Configure command is: " + argin
-                self.logger.debug(log_msg)
-                device._mccs_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, argin,
+                self.logger.info(log_msg)
+               
+                argin_json = json.loads(argin)
+                station_beam_pointings = argin_json["station_beam_pointings"][0]
+                azimuth_coord = station_beam_pointings["target"]["Az"]
+                elevation_coord = station_beam_pointings["target"]["El"]
+
+                # Append current timestamp into sky_coordinates set
+                time_t0 = datetime.today() + timedelta(seconds=0)
+                time_t0_utc = (time_t0.astimezone(pytz.UTC)).timestamp()
+                device._sky_coordinates.append(time_t0_utc)
+
+                # Append Azimuth and Azimuth_rate into sky_coordinates set
+                device._sky_coordinates.append(azimuth_coord)
+                device._sky_coordinates.append(0.0)
+
+                # Append Elevation and Elevation_rate into sky_coordinates set
+                device._sky_coordinates.append(elevation_coord)
+                device._sky_coordinates.append(0.0)
+                log_msg = "--------------device._sky_coordinates ------------- ", device._sky_coordinates
+                self.logger.info(log_msg)
+
+                # Add in sky_coordinates set in station_beam_pointings
+                station_beam_pointings["sky_coordinates"] = device._sky_coordinates
+                # Remove target block from station_beam_pointings
+                station_beam_pointings.pop("target", None)
+                log_msg = "--------------station_beam_pointings ------------- ", station_beam_pointings
+                self.logger.info(log_msg)
+
+                argin_json["station_beam_pointings"][0] = station_beam_pointings
+                log_msg = "--------------argin_json ------------- ", argin_json
+                self.logger.info(log_msg)
+
+                log_msg = "--------------json.dumps(argin_json) ------------- ", json.dumps(argin_json)
+                self.logger.info(log_msg)
+                device._mccs_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(argin_json),
                                                         self.configure_cmd_ended_cb)
                 device._read_activity_message = const.STR_CONFIGURE_SUCCESS
                 self.logger.info(const.STR_CONFIGURE_SUCCESS)

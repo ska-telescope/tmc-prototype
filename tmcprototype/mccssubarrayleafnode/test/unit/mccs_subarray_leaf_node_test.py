@@ -10,6 +10,8 @@ import mock
 from mock import Mock
 from mock import MagicMock
 from os.path import dirname, join
+from datetime import datetime, timedelta
+import pytz
 
 # Tango imports
 from tango.test_context import DeviceTestContext
@@ -63,11 +65,12 @@ def test_configure_command_when_obstate_is_idle_with_callback_method(mock_mccs_s
     # arrange:
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.IDLE
+
+    
     device_proxy.Configure(configure_str)
     dummy_event = command_callback(const.CMD_CONFIGURE)
     event_subscription[const.CMD_CONFIGURE](dummy_event)
     assert const.STR_COMMAND + const.CMD_CONFIGURE in device_proxy.activityMessage
-
 
 def test_configure_command_when_obstate_is_ready_with_callback_method(mock_mccs_subarray, event_subscription):
     # arrange:
@@ -81,13 +84,35 @@ def test_configure_command_when_obstate_is_ready_with_callback_method(mock_mccs_
 
 def test_configure_to_send_correct_configuration_data_when_mccs_subarray_is_idle(mock_mccs_subarray):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
-    # How to bring MCCS Subarray to a state after AssignResources?
     mccs_subarray1_proxy_mock.obsState = ObsState.IDLE
-    # device_proxy.On()
-    # device_proxy.AssignResources(assign_input_str)
     device_proxy.Configure(configure_str)
+
+    sky_coordinates = []
+    argin_json = json.loads(configure_str)
+    station_beam_pointings = argin_json["station_beam_pointings"][0]
+    azimuth_coord = station_beam_pointings["target"]["Az"]
+    elevation_coord = station_beam_pointings["target"]["El"]
+
+    # Append current timestamp into sky_coordinates set
+    time_t0 = datetime.today() + timedelta(seconds=0)
+    time_t0_utc = (time_t0.astimezone(pytz.UTC)).timestamp()
+    sky_coordinates.append(time_t0_utc)
+
+    # Append Azimuth and Azimuth_rate into sky_coordinates set
+    sky_coordinates.append(azimuth_coord)
+    sky_coordinates.append(0.0)
+
+    # Append Elevation and Elevation_rate into sky_coordinates set
+    sky_coordinates.append(elevation_coord)
+    sky_coordinates.append(0.0)
+
+    # Add in sky_coordinates set in station_beam_pointings
+    station_beam_pointings["sky_coordinates"] = sky_coordinates
+    # Remove target block from station_beam_pointings
+    station_beam_pointings.pop("target", None)
+    argin_json["station_beam_pointings"][0] = station_beam_pointings
     mccs_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_CONFIGURE,
-                                configure_str, any_method(with_name='configure_cmd_ended_cb'))
+                                json.dumps(argin_json), any_method(with_name='configure_cmd_ended_cb'))
 
 
 def test_configure_should_failed_when_device_obsstate_is_empty(mock_mccs_subarray):

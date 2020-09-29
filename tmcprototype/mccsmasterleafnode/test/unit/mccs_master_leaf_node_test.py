@@ -27,13 +27,13 @@ def tango_context():
         yield tango_context
 
 def test_read_activity_message(tango_context):
-    # act & assert:
+    # test case for method read_activityMessage
     tango_context.device.activityMessage = 'test'
     assert tango_context.device.activityMessage == 'test'
 
 
 def test_write_activity_message(tango_context):
-    # act & assert:
+    # test case for method write_activityMessage
     tango_context.device.activityMessage = 'test'
     assert tango_context.device.activityMessage == 'test'
 
