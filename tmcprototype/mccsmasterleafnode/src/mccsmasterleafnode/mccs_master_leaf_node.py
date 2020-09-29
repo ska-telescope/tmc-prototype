@@ -255,7 +255,6 @@ class MccsMasterLeafNode(SKABaseDevice):
                      DevFailed if the command execution is not successful
             """
             device = self.target
-            self.logger.info("In a do method for AssignResources")
             try:
                 log_msg = "Input JSON for MCCS master leaf node AssignResources command is: " + argin
                 self.logger.debug(log_msg)
@@ -270,7 +269,7 @@ class MccsMasterLeafNode(SKABaseDevice):
                 log_msg = const.ERR_INVALID_JSON_ASSIGN_RES_MCCS + str(value_error)
                 device._read_activity_message = const.ERR_INVALID_JSON_ASSIGN_RES_MCCS + str(value_error)
                 self.logger.exception(value_error)
-                tango.Except.throw_exception(const.STR_ASSIGN_RES_EXEC, log_msg,
+                tango.Except.re_throw_exception(value_error, const.STR_ASSIGN_RES_EXEC, log_msg,
                                              "MccsMasterLeafNode.AssignResourcesCommand",
                                              tango.ErrSeverity.ERR)
 
@@ -278,14 +277,14 @@ class MccsMasterLeafNode(SKABaseDevice):
                 log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
                 device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
                 self.logger.exception(key_error)
-                tango.Except.throw_exception(const.STR_ASSIGN_RES_EXEC, log_msg,
+                tango.Except.re_throw_exception(key_error,const.STR_ASSIGN_RES_EXEC, log_msg,
                                              "MccsMasterLeafNode.AssignResourcesCommand",
                                              tango.ErrSeverity.ERR)
             except DevFailed as dev_failed:
                 log_msg = const.ERR_ASSGN_RESOURCE_MCCS + str(dev_failed)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
-                tango.Except.throw_exception(const.STR_ASSIGN_RES_EXEC, log_msg,
+                tango.Except.re_throw_exception(dev_failed, const.STR_ASSIGN_RES_EXEC, log_msg,
                                              "MccsMasterLeafNode.AssignResourcesCommand",
                                              tango.ErrSeverity.ERR)
     @command(
@@ -314,9 +313,6 @@ class MccsMasterLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state
 
         :rtype: boolean
-
-        :raises: DevFailed if this command is not allowed to be run in current device state
-
         """
         handler = self.get_command_object("AssignResources")
         return handler.check_allowed()
@@ -398,7 +394,7 @@ class MccsMasterLeafNode(SKABaseDevice):
                 log_msg = const.ERR_RELEASE_ALL_RESOURCES + str(dev_failed)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
-                tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, log_msg,
+                tango.Except.re_throw_exception(dev_failed, const.STR_RELEASE_RES_EXEC, log_msg,
                                              "MccsMasterLeafNode.ReleaseAllResourcesCommand",
                                              tango.ErrSeverity.ERR)
     @command(
@@ -418,8 +414,6 @@ class MccsMasterLeafNode(SKABaseDevice):
 
         :rtype: boolean
 
-        :raises: DevFailed if this command is not allowed to be run
-                 in current device state
         """
         handler = self.get_command_object("ReleaseResources")
         return handler.check_allowed()
