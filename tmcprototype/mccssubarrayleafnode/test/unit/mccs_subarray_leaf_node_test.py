@@ -129,6 +129,14 @@ def test_end_should_command_mccs_subarray_to_reset_when_it_is_ready(mock_mccs_su
                                                                 any_method(with_name='end_cmd_ended_cb'))
 
 
+def test_end_should_command_mccs_subarray_to_reset_when_it_is_idle(mock_mccs_subarray):
+    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+    mccs_subarray1_proxy_mock.obsState = ObsState.IDLE
+    device_proxy.End()
+    mccs_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_END,
+                                                                any_method(with_name='end_cmd_ended_cb'))
+
+
 def test_end_should_raise_devfailed_exception(mock_mccs_subarray):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.READY
