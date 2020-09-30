@@ -213,28 +213,12 @@ class CentralNode(SKABaseDevice):
         doc="Device name of TMAlarmHandler ",
     )
 
-    TMMidSubarrayNodes = device_property(
+    TMLowSubarrayNodes = device_property(
         dtype=('str',), doc="List of TM Mid Subarray Node devices",
         default_value=tuple()
     )
-    # Not required for CN-low
-    NumDishes = device_property(
-        dtype='uint', default_value=1,
-        doc="Number of Dishes",
-    )
-    # Not required for CN-low
-    DishLeafNodePrefix = device_property(
-        dtype='str', default_value='', doc="Device name prefix for Dish Leaf Node"
-    )
-    # Not required for CN-low , modify it for MCCSMasterLeafNode
-    CspMasterLeafNodeFQDN = device_property(
-        dtype='str'
-    )
+
     MCCSMasterLeafNodeFQDN = device_property(
-        dtype='str'
-    )
-    # Not required for CN-low
-    SdpMasterLeafNodeFQDN = device_property(
         dtype='str'
     )
 
@@ -267,7 +251,7 @@ class CentralNode(SKABaseDevice):
         """
         def do(self):
             """
-            Initializes the attributes and properties of the Central Node.
+            Initializes the attributes and properties of the Central Node Low.
 
             :return: A tuple containing a return code and a string message indicating status.
              The message is for information purpose only.
@@ -275,8 +259,7 @@ class CentralNode(SKABaseDevice):
             :rtype: (ReturnCode, str)
 
             :raises: DevFailed if error occurs while initializing the CentralNode device or if error occurs while
-                    creating device proxy for any of the devices like SubarrayNode, DishLeafNode, CSPMasterLeafNode
-                    or SDPMasterLeafNode.
+                    creating device proxy for any of the devices like SubarrayNodeLow or MccsMasterLeafNode.
 
             """
             super().do()
@@ -290,10 +273,8 @@ class CentralNode(SKABaseDevice):
                 device._health_state = HealthState.OK
                 device._telescope_health_state = HealthState.OK
                 device.subarray_health_state_map = {}
-                device._dish_leaf_node_devices = []
-                device._leaf_device_proxy = []
                 device.subarray_FQDN_dict = {}
-                device._subarray_allocation = {}
+                #device._subarray_allocation = {}
                 device._read_activity_message = ""
                 device._build_state = '{},{},{}'.format(release.name,release.version,release.description)
                 device._version_id = release.version
@@ -315,26 +296,7 @@ class CentralNode(SKABaseDevice):
                 #     device._dish_leaf_node_devices.extend(device.dev_bdatum.value_string)
                 #     print device._dish_leaf_node_devices
 
-            # Creating proxies for lower level devices
-            for dish in range(1, (device.NumDishes + 1)):
-                # Update device._dish_leaf_node_devices variable
-                device._dish_leaf_node_devices.append(device.DishLeafNodePrefix + "000" + str(dish))
 
-                # Initialize device._subarray_allocation variable (map of Dish Id and allocation status)
-                # to indicate availability of the dishes
-                dish_ID = "dish000" + str(dish)
-                device._subarray_allocation[dish_ID] = "NOT_ALLOCATED"
-
-            # Create proxies of Dish Leaf Node devices
-            for name in range(0, len(device._dish_leaf_node_devices)):
-                try:
-                    device._leaf_device_proxy.append(DeviceProxy(device._dish_leaf_node_devices[name]))
-                except (DevFailed, KeyError) as except_occurred:
-                    log_msg = const.ERR_IN_CREATE_PROXY + str(except_occurred)
-                    self.logger.exception(except_occurred)
-                    device._read_activity_message = const.ERR_IN_CREATE_PROXY
-                    tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand",
-                                                 tango.ErrSeverity.ERR)
             # Create device proxy for MCCS Master Leaf Node
             try:
                 device._mccs_master_leaf_proxy = DeviceProxy(device.MCCSMasterLeafNodeFQDN)
@@ -347,28 +309,22 @@ class CentralNode(SKABaseDevice):
                 device._read_activity_message = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand",
                                              tango.ErrSeverity.ERR)
-            # Create device proxy for CSP Master Leaf Node
-            device._csp_master_leaf_proxy = DeviceProxy(device.CspMasterLeafNodeFQDN)
-            
-            # Create device proxy for SDP Master Leaf Node
-            
-            device._sdp_master_leaf_proxy = DeviceProxy(device.SdpMasterLeafNodeFQDN)
 
             # Create device proxy for Subarray Node
-            for subarray in range(0, len(device.TMMidSubarrayNodes)):
+            for subarray in range(0, len(device.TMLowSubarrayNodes)):
                 try:
-                    subarray_proxy = DeviceProxy(device.TMMidSubarrayNodes[subarray])
+                    subarray_proxy = DeviceProxy(device.TMLowSubarrayNodes[subarray])
                     device.subarray_health_state_map[subarray_proxy] = -1
                     subarray_proxy.subscribe_event(const.EVT_SUBSR_HEALTH_STATE,
                                                   EventType.CHANGE_EVENT,
                                                   device.health_state_cb, stateless=True)
 
-                    subarray_proxy.subscribe_event(const.EVT_SUBSR_OBS_STATE,
-                                                   EventType.CHANGE_EVENT,
-                                                   device.obs_state_cb, stateless=True)
+                    # subarray_proxy.subscribe_event(const.EVT_SUBSR_OBS_STATE,
+                    #                                EventType.CHANGE_EVENT,
+                    #                                device.obs_state_cb, stateless=True)
 
                     # populate subarrayID-subarray proxy map
-                    tokens = device.TMMidSubarrayNodes[subarray].split('/')
+                    tokens = device.TMLowSubarrayNodes[subarray].split('/')
                     subarrayID = int(tokens[2])
                     device.subarray_FQDN_dict[subarrayID] = subarray_proxy
                 except DevFailed as dev_failed:
