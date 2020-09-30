@@ -7,8 +7,8 @@
 # Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 
-"""MccsMasterLeafNode - Leaf Node to monitor and control MCCS Master
-
+"""
+MccsMasterLeafNode - Leaf Node to monitor and control MCCS Master
 
 """
 
