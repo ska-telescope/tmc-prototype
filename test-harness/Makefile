@@ -81,6 +81,8 @@ test:
 							 /build/reports/mccs-master-leaf-node-unit-tests.xml \
                              /build/reports/mccs-subarray-leaf-node-unit-tests.xml \
                              /build/reports/subarraynode-unit-tests.xml \
+							 /build/reports/mccs-master-leaf-node-unit-tests.xml \
+                             /build/reports/mccs-subarray-leaf-node-unit-tests.xml \
                              /build/reports/runtest-unit-tests.xml
 	cd /build/reports && rm dish-leaf-node-unit-tests.xml dish-master-unit-tests.xml mccs-master-leaf-node-unit-tests.xml \
 	 central-node-unit-tests.xml csp-master-leaf-node-unit-tests.xml csp-subarray-leaf-node-unit-tests.xml mccs-subarray-leaf-node-unit-tests.xml \

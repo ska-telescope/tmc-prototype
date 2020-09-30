@@ -48,7 +48,6 @@ class MccsMasterLeafNode(SKABaseDevice):
     MccsMasterFQDN = device_property(
         dtype='str', default_value="low_mccs/elt/master"
     )
-
     # ----------
     # Attributes
     # ----------
@@ -534,16 +533,6 @@ class MccsMasterLeafNode(SKABaseDevice):
                 tango.Except.throw_exception(const.STR_OFF_EXEC, log_msg,
                                              "MccsMasterLeafNode.Off",
                                              tango.ErrSeverity.ERR)
-
-    #TODO : Commented out for now to resolve pylint warnings    
-    # def init_command_objects(self):
-    #     """
-    #     Initialises the command handlers for commands supported by this
-    #     device.
-    #     """
-    #     super().init_command_objects()
-    #     args = (self, self.state_model, self.logger)
-        
 
     def init_command_objects(self):
         """
