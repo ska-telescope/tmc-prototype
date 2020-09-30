@@ -247,7 +247,7 @@ def test_assign_resources_should_raise_devfailed_exception_when_subarray_node_th
 
 def test_assign_resources_invalid_json_value(mock_central_lower_devices):
     # arrange
-    device_proxy = mock_central_lower_devices
+    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock = mock_central_lower_devices
     # act
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.AssignResources(assign_release_invalid_str)

@@ -42,70 +42,31 @@ class CentralNode(SKABaseDevice):
     """
 
     # PROTECTED REGION ID(CentralNode.class_variable) ENABLED START #
-    # Not required for CN-low
-    @DebugIt()
-    def _check_receptor_reassignment(self, input_receptors_list):
-        """
-        Checks if any of the receptors are already allocated to other subarray when AssignResources command is called.
-
-        :param: argin: The input receptor list
-
-        :return: None
-
-        :throws:
-            ResourceReassignmentError: Thrown when an already assigned resource is received
-            in Assignresources command.
-
-        """
-
-        self.logger.info("Checking for duplicate allocation of dishes.")
-        duplicate_allocation_count = 0
-        duplicate_allocation_dish_ids = []
-        self.logger.info(self._subarray_allocation)
-
-        for receptor in input_receptors_list:
-            dish_ID = "dish" + receptor
-            self.logger.info("Checking allocation status of dish %s.", dish_ID)
-            if self._subarray_allocation[dish_ID] != "NOT_ALLOCATED":
-                self.logger.info("Dish %s is already allocated.", dish_ID)
-                # duplicate_allocation_dish_ids.append(dish_ID)
-                duplicate_allocation_dish_ids.append(receptor)
-                duplicate_allocation_count = duplicate_allocation_count + 1
-        self.logger.info("No of dishes already allocated: %d", duplicate_allocation_count)
-        self.logger.info("List of dishes already allocated: %s", str(duplicate_allocation_dish_ids))
-
-        if duplicate_allocation_count > 0:
-            exception_message = const.ERR_RECEPTOR_ID_REALLOCATION + (str(duplicate_allocation_dish_ids))
-            raise ResourceReassignmentError(exception_message)
-
     def health_state_cb(self, evt):
         """
-        Retrieves the subscribed Subarray health state, aggregates them to calculate the
-        telescope health state.
+        Retrieves the subscribed Subarray health state and MCCS Master Leaf Node health state, 
+        aggregates them to calculate the telescope health state.
 
-        :param evt: A TANGO_CHANGE event on Subarray healthState.
+        :param evt: A TANGO_CHANGE event on Subarray healthState and MCCSMasterLeafNode healthstate.
 
         :return: None
 
-        :raises: KeyError if error occurs while setting Subarray healthState
+        :raises: KeyError if error occurs while setting telescope healthState
         """
         try:
             log_msg = 'Health state attribute change event is : ' + str(evt)
             self.logger.info(log_msg)
             if not evt.err:
                 health_state = evt.attr_value.value
+                self.logger.info("healthstate for device:" + str(evt.attr_name))
                 self.logger.info("healthstate:" + str(health_state))
-                self.logger.info("healthstate device:" + str(evt.attr_name))
                 if const.PROP_DEF_VAL_TM_MID_SA1 in evt.attr_name:
                     self._subarray1_health_state = health_state
                     self.subarray_health_state_map[evt.device] = health_state
                 elif self.MCCSMasterLeafNodeFQDN in evt.attr_name:
                     self._mccs_master_leaf_health = health_state
-                    self.logger.info("In MCCSMasterLeafNodeFQDN")
                 else:
                     self.logger.debug(const.EVT_UNKNOWN)
-                    # TODO: For future reference
-                    # self._read_activity_message = const.EVT_UNKNOWN
 
                 counts = {
                     HealthState.OK: 0,
@@ -120,8 +81,7 @@ class CentralNode(SKABaseDevice):
 
                 for subarray_health_state in list(self.subarray_health_state_map.values()):
                     counts[subarray_health_state] += 1
-                self.logger.info("Count of health state Ok :" + str(counts[HealthState.OK]))
-                self.logger.info("Count of health state Ok :" + str(len(list(self.subarray_health_state_map.values()))))
+                
                 # Calculating health_state for SubarrayNode, MCCSMasterLeafNode
                 if counts[HealthState.OK] == len(list(self.subarray_health_state_map.values())) + 1:
                     self._telescope_health_state = HealthState.OK
@@ -148,56 +108,12 @@ class CentralNode(SKABaseDevice):
                     self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
                                                                                ) + const.STR_UNKNOWN
             else:
-                # TODO: For future reference
                 self._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(evt)
                 self.logger.critical(const.ERR_SUBSR_SA_HEALTH_STATE)
         except KeyError as key_error:
-            # TODO: For future reference
             self._read_activity_message = const.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
             log_msg = const.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
             self.logger.critical(log_msg)
-
-    # Not required for CN-low
-    def obs_state_cb(self, evt):
-        """
-        Retrieves the subscribed Subarray observation state. When the Subarray obsState is EMPTY, the resource
-        allocation list gets cleared.
-
-        :param evt: A TANGO_CHANGE event on Subarray obsState.
-
-        :return: None
-
-        :raises: KeyError in Subarray obsState callback
-        """
-        try:
-            log_msg = 'Observation state attribute change event is : ' + str(evt)
-            self.logger.info(log_msg)
-            if not evt.err:
-                obs_state = evt.attr_value.value
-                subarray_device = evt.device
-                subarray_device_list = list(str(subarray_device))
-                # Identify the Subarray ID
-                for index in range(0, len(subarray_device_list)):
-                    if subarray_device_list[index].isdigit():
-                        id = subarray_device_list[index]
-
-                subarray_id = "SA" + str(id)
-                self.logger.info(log_msg)
-                if obs_state == ObsState.EMPTY or obs_state == ObsState.RESTARTING:
-                    for dish, subarray in self._subarray_allocation.items():
-                        if subarray == subarray_id:
-                            self._subarray_allocation[dish] = "NOT_ALLOCATED"
-                log_msg = "Subarray_allocation is: " + str(self._subarray_allocation)
-                self.logger.info(log_msg)
-            else:
-                # TODO: For future reference
-                self._read_activity_message = const.ERR_SUBSR_SA_OBS_STATE + str(evt)
-                self.logger.critical(const.ERR_SUBSR_SA_OBS_STATE)
-        except KeyError as key_error:
-            self._read_activity_message = const.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
-            log_msg = const.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
-            self.logger.critical(log_msg)
-        
 
     # PROTECTED REGION END #    //  CentralNode.class_variable
 
@@ -215,7 +131,7 @@ class CentralNode(SKABaseDevice):
     )
 
     TMLowSubarrayNodes = device_property(
-        dtype=('str',), doc="List of TM Mid Subarray Node devices",
+        dtype=('str',), doc="List of TM Low Subarray Node devices",
         default_value=tuple()
     )
 
@@ -275,11 +191,9 @@ class CentralNode(SKABaseDevice):
                 device._telescope_health_state = HealthState.OK
                 device.subarray_health_state_map = {}
                 device.subarray_FQDN_dict = {}
-                #device._subarray_allocation = {}
                 device._read_activity_message = ""
                 device._build_state = '{},{},{}'.format(release.name,release.version,release.description)
                 device._version_id = release.version
-
                 self.logger.debug(const.STR_INIT_SUCCESS)
 
             except DevFailed as dev_failed:
@@ -288,15 +202,6 @@ class CentralNode(SKABaseDevice):
                 device._read_activity_message = const.ERR_INIT_PROP_ATTR_CN
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand.do()",
                                              tango.ErrSeverity.ERR)
-
-                #  Get Dish Leaf Node devices List
-                # TODO: Getting DishLeafNode devices list from TANGO DB
-                # device.tango_db = PyTango.Database()
-                # try:
-                #     device.dev_dbdatum = device.tango_db.get_device_exported(const.GET_DEVICE_LIST_TANGO_DB)
-                #     device._dish_leaf_node_devices.extend(device.dev_bdatum.value_string)
-                #     print device._dish_leaf_node_devices
-
 
             # Create device proxy for MCCS Master Leaf Node
             try:
@@ -319,10 +224,6 @@ class CentralNode(SKABaseDevice):
                     subarray_proxy.subscribe_event(const.EVT_SUBSR_HEALTH_STATE,
                                                   EventType.CHANGE_EVENT,
                                                   device.health_state_cb, stateless=True)
-
-                    # subarray_proxy.subscribe_event(const.EVT_SUBSR_OBS_STATE,
-                    #                                EventType.CHANGE_EVENT,
-                    #                                device.obs_state_cb, stateless=True)
 
                     # populate subarrayID-subarray proxy map
                     tokens = device.TMLowSubarrayNodes[subarray].split('/')
@@ -660,7 +561,7 @@ class CentralNode(SKABaseDevice):
 
             :return: None
 
-            :raises: DevFailed when the API fails to allocate resources.
+            :raises: DevFailed if error occurs while invoking command on any of the devices like SubarrayNode, MCCSMasterLeafNode
 
             Note: Enter input without spaces as:{"subarray_id":1,"station_ids":[1,2],"channels":[1,2,3,4,5,6,7,8],"station_beam_ids":[1],"tile_ids":[1,2,3,4],}
 
