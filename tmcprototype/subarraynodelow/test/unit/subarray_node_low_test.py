@@ -79,6 +79,14 @@ def test_off_command_should_change_subarray_device_state_to_off():
         assert tango_context.device.obsState == ObsState.EMPTY
 
 
+def test_off_should_raise_devfailed_exception(mock_lower_devices):
+    tango_context, mccs_subarray1_ln_proxy_mock = mock_lower_devices[:2]
+    mccs_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
+    with pytest.raises(tango.DevFailed) as df:
+        tango_context.device.Off()
+    assert "Error executing command OffCommand" in str(df.value)
+
+
 @pytest.fixture(scope="function")
 def mock_lower_devices():
     mccs_subarray1_ln_fqdn = 'ska_low/tm_leaf_node/mccs_subarray01'
@@ -99,11 +107,11 @@ def mock_lower_devices():
 
     event_subscription_map = {}
 
-    mccs_subarray1_ln_fqdn.subscribe_event.side_effect = (
+    mccs_subarray1_ln_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
             update({attr_name: callback}))
 
-    mccs_subarray1_fqdn.subscribe_event.side_effect = (
+    mccs_subarray1_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
             update({attr_name: callback}))
 
