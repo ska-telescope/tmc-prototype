@@ -519,8 +519,8 @@ class CentralNode(SKABaseDevice):
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Command StartUpTelescope is not allowed in current state.",
-                                             "Failed to invoke StartUpTelescope command on CentralNode.",
-                                             "CentralNode.StartUpTelescope()",
+                                             "Failed to invoke StartUpTelescope command on CentralNodeLow.",
+                                             "CentralNodeLow.StartUpTelescope()",
                                              tango.ErrSeverity.ERR)
             return True
 
@@ -544,52 +544,29 @@ class CentralNode(SKABaseDevice):
             log_msg = const.STR_ON_CMD_ISSUED
             self.logger.info(log_msg)
             device._read_activity_message = log_msg
-            # Not required for CN-low
-            for name in range(0, len(device._dish_leaf_node_devices)):
-                try:
-                    device._leaf_device_proxy[name].command_inout(const.CMD_ON)
-                    device._leaf_device_proxy[name].command_inout(const.CMD_SET_OPERATE_MODE)
-                    log_msg = const.CMD_SET_OPERATE_MODE + 'invoked on' + str(device._leaf_device_proxy[name])
-                    self.logger.info(log_msg)
-                except DevFailed as dev_failed:
-                    log_msg = const.ERR_EXE_ON_CMD + str(dev_failed)
-                    self.logger.exception(dev_failed)
-                    device._read_activity_message = const.ERR_EXE_ON_CMD
-                    tango.Except.throw_exception(const.STR_ON_EXEC, log_msg,
-                                                 "CentralNode.StartUpTelescopeCommand",
-                                                 tango.ErrSeverity.ERR)
+
             try:
-                device._csp_master_leaf_proxy.command_inout(const.CMD_ON)
-                self.logger.info(const.STR_CMD_ON_CSP_DEV)
+                device._mccs_master_leaf_proxy.command_inout(const.CMD_ON)
+                self.logger.info(const.STR_CMD_ON_MCCS_DEV)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_EXE_ON_CMD + str(dev_failed)
                 self.logger.exception(dev_failed)
                 device._read_activity_message = const.ERR_EXE_ON_CMD
                 tango.Except.throw_exception(const.STR_ON_EXEC, log_msg,
-                                             "CentralNode.StartUpTelescopeCommand",
+                                             "CentralNodeLow.StartUpTelescopeCommand",
                                              tango.ErrSeverity.ERR)
-            # Not required for CN-low
+
             try:
-                device._sdp_master_leaf_proxy.command_inout(const.CMD_ON)
-                self.logger.info(const.STR_CMD_ON_SDP_DEV)
-            except DevFailed as dev_failed:
-                log_msg = const.ERR_EXE_ON_CMD + str(dev_failed)
-                self.logger.exception(dev_failed)
-                device._read_activity_message = const.ERR_EXE_ON_CMD
-                tango.Except.throw_exception(const.STR_ON_EXEC, log_msg,
-                                             "CentralNode.StartUpTelescopeCommand",
-                                             tango.ErrSeverity.ERR)
-            try:
-                for subarrayID in range(1, len(device.TMMidSubarrayNodes) + 1):
+                for subarrayID in range(1, len(device.TMLowSubarrayNodes) + 1):
                     device.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_ON)
-                    self.logger.info(const.STR_CMD_ON_SA_DEV)
+                    self.logger.info(const.STR_CMD_ON_SA_LOW_DEV)
             except DevFailed as dev_failed:
                 log_msg = const.ERR_EXE_ON_CMD + str(dev_failed)
                 self.logger.exception(dev_failed)
                 device._read_activity_message = const.ERR_EXE_ON_CMD
                 tango.Except.throw_exception(const.STR_ON_EXEC, log_msg,
-                                             "CentralNode.StartUpTelescopeCommand",
+                                             "CentralNodeLow.StartUpTelescopeCommand",
                                              tango.ErrSeverity.ERR)
             return (ResultCode.OK, device._read_activity_message)
 
