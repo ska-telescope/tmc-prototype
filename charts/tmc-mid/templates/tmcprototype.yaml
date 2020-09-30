@@ -165,18 +165,18 @@ spec:
         - name: TANGO_HOST
           value: {{ if $global.Values.tangoDatabaseDS -}} {{ $global.Values.tangoDatabaseDS }}:10000 {{- else -}} databaseds-tango-base-{{ $global.Release.Name }}:10000 {{- end }}
         resources:
-# {{ toYaml $global.Values.resources | indent 10 }}
-# {{- with $global.Values.nodeSelector }}
-#       nodeSelector:
-# {{ toYaml . | indent 8 }}
-# {{- end }}
-# {{- with $global.Values.affinity }}
-#       affinity:
-# {{ toYaml . | indent 8 }}
-# {{- end }}
-# {{- with $global.Values.tolerations }}
-#       tolerations:
-# {{ toYaml . | indent 8 }}
-# {{- end }}
+{{ toYaml $global.Values.resources | indent 10 }}
+{{- with $global.Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with $global.Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with $global.Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
 
 {{- end }} # end of range
