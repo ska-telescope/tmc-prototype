@@ -322,14 +322,14 @@ class TestCentralNode(object):
         assert 'a' in result
 
     def test_ReleaseResources(self, tango_context, create_subarray1_proxy):
-        test_input = '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
+        test_input = '{"subarrayID":1,"releaseALL":true}'
         time.sleep(2)
         tango_context.device.ReleaseResources(test_input)
         time.sleep(3)
         assert create_subarray1_proxy.State() == DevState.OFF
 
     def test_ReleaseResources_FalseTag(self, tango_context):
-        test_input = '{"subarrayID":1,"releaseALL":false,"receptorIDList":[]}'
+        test_input = '{"subarrayID":1,"releaseALL":false}'
         tango_context.device.ReleaseResources(test_input)
         time.sleep(1)
         assert tango_context.device.activityMessage == const.STR_FALSE_TAG
@@ -342,7 +342,7 @@ class TestCentralNode(object):
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
 
     def test_ReleaseResources_key_not_found(self, tango_context):
-        test_input = '{"releaseALL":true,"receptorIDList":[]}'
+        test_input = '{"releaseALL":true}'
         with pytest.raises(tango.DevFailed):
             tango_context.device.ReleaseResources(test_input)
         time.sleep(1)

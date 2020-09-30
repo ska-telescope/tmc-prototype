@@ -764,9 +764,9 @@ class CentralNode(SKABaseDevice):
                 subarrayID = int(json_argument['subarrayID'])
                 subarrayProxy = device.subarray_FQDN_dict[subarrayID]
                 ## check for duplicate allocation
-                self.logger.info("Checking for resource reallocation.")
+                # self.logger.info("Checking for resource reallocation.")
                 # Not required for CN-low
-                device._check_receptor_reassignment(json_argument["dish"]["receptorIDList"])
+                # device._check_receptor_reassignment(json_argument["dish"]["receptorIDList"])
 
                 ## Allocate resources to subarray
                 # Remove Subarray Id key from input json argument and send the json with
@@ -898,17 +898,12 @@ class CentralNode(SKABaseDevice):
                                              "CentralNode.ReleaseResources()",
                                              tango.ErrSeverity.ERR)
             return True
-        # No need to send argin for ReleaseResources command
+        
         def do(self, argin):
             """
-            Release all the resources assigned to the given Subarray. It accepts the subarray id, releaseALL flag and
-            receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
-            is invoked on the respective SubarrayNode. In this case, the receptorIDList tag is empty as all
-            the resources of the Subarray are to be released.
-            When releaseALL is False, ReleaseResources will be invoked on the SubarrayNode and the resources provided
-            in receptorIDList tag, are to be released from the Subarray. The selective release of the resources when
-            releaseALL Flag is False is not yet supported.
-
+            Release all the resources assigned to the given Subarray. It accepts the subarray id, releaseALL flag in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
+            is invoked on the respective SubarrayNode. 
+            
             :param argin: The string in JSON format. The JSON contains following values:
 
                 subarrayID:
@@ -917,38 +912,14 @@ class CentralNode(SKABaseDevice):
                 releaseALL:
                     Boolean(True or False). Mandatory. True when all the resources to be released from Subarray.
 
-                receptorIDList:
-                    DevVarStringArray. Empty when releaseALL tag is True.
-
                 Example:
                     {
                         "subarrayID": 1,
                         "releaseALL": true,
-                        "receptorIDList": []
                     }
 
                 Note: From Jive, enter input as:
-                    {"subarrayID":1,"releaseALL":true,"receptorIDList":[]} without any space.
-
-            :return: A tuple containing a return code and a string in josn format on successful release
-             of all the resources. The JSON string contains following values:
-
-                releaseALL:
-                    Boolean(True or False). If True, all the resources are successfully released from the
-                    Subarray.
-
-                receptorIDList:
-                    DevVarStringArray. If releaseALL is True, receptorIDList is empty. Else list returns
-                    resources (device names) that are noe released from the subarray.
-
-                Example:
-                    argout =
-                    {
-                        "ReleaseAll" : True,
-                        "receptorIDList" : []
-                    }
-
-             :rtype: (ResultCode, str)
+                    {"subarrayID":1,"releaseALL":true} without any space.
 
              :raises: ValueError if input argument json string contains invalid value
                     KeyError if input argument json string contains invalid key
@@ -964,28 +935,11 @@ class CentralNode(SKABaseDevice):
                 subarray_name = "SA" + str(subarrayID)
                 if jsonArgument['releaseALL'] == True:
                     # Invoke "ReleaseAllResources" on SubarrayNode
-                    return_val = subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
-                    res_not_released = ast.literal_eval(return_val[1][0])
+                    subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
+                    device._mccs_master_leaf_proxy.command_inout(const.CMD_RELEASE_RESOURCES)
                     log_msg = const.STR_REL_RESOURCES
                     self.logger.info(log_msg)
                     device._read_activity_message = log_msg
-                    if not res_not_released:
-                        release_success = True
-                        for Dish_ID, Dish_Status in device._subarray_allocation.items():
-                            if Dish_Status == subarray_name:
-                                device._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
-                        argout = {
-                            "ReleaseAll": release_success,
-                            "receptorIDList": res_not_released
-                        }
-                        message = json.dumps(argout)
-                        self.logger.info(message)
-                        return message
-                    else:
-                        log_msg = const.STR_LIST_RES_NOT_REL + str(res_not_released)
-                        device._read_activity_message = log_msg
-                        self.logger.info(log_msg)
-                        # release_success = False
                 else:
                     device._read_activity_message = const.STR_FALSE_TAG
                     self.logger.info(const.STR_FALSE_TAG)
@@ -1029,13 +983,11 @@ class CentralNode(SKABaseDevice):
         """
         handler = self.get_command_object("ReleaseResources")
         return handler.check_allowed()
-    # No need to send argin to releaseResources command
+    
     @command(
         dtype_in="str",
         doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
                "releaseALL boolean as true and receptorIDList.",
-        dtype_out="str",
-        doc_out="information-only string",
     )
     @DebugIt()
     def ReleaseResources(self, argin):
@@ -1044,8 +996,7 @@ class CentralNode(SKABaseDevice):
         """
         handler = self.get_command_object("ReleaseResources")
 
-        message = handler(argin)
-        return message
+        handler(argin)
 
     def init_command_objects(self):
         """
