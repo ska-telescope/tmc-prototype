@@ -364,8 +364,7 @@ def test_start_scan_should_not_command_csp_subarray_to_start_scan_when_it_is_idl
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.IDLE
     device_proxy.StartScan(scan_input_str)
-    assert_activity_message(device_proxy , const.ERR_DEVICE_NOT_READY)
-    
+    assert_activity_message(device_proxy , const.ERR_DEVICE_NOT_READY) 
 
 
 def test_start_scan_should_raise_devfailed_exception(mock_csp_subarray):
@@ -409,7 +408,6 @@ def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready(mock_c
         (const.CMD_GOTOIDLE, any_method(with_name='gotoidle_cmd_ended_cb'))
 
     assert_activity_message(device_proxy, const.STR_GOTOIDLE_SUCCESS)
-
 
 
 def test_goto_idle_should_not_command_csp_subarray_to_end_sb_when_it_is_idle(mock_csp_subarray):
@@ -460,6 +458,7 @@ def test_abort_should_command_csp_subarray_to_abort_when_it_is_scanning(mock_csp
                                                                      any_method(with_name = 'abort_cmd_ended_cb'))
     assert_activity_message(device_proxy, const.STR_ABORT_SUCCESS)
 
+
 def test_abort_should_command_csp_subarray_to_abort_when_it_is_resetting(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.RESETTING
@@ -467,6 +466,7 @@ def test_abort_should_command_csp_subarray_to_abort_when_it_is_resetting(mock_cs
     csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
                                                                      any_method(with_name = 'abort_cmd_ended_cb'))
     assert_activity_message(device_proxy, const.STR_ABORT_SUCCESS)
+
 
 def test_abort_should_command_csp_subarray_to_abort_when_it_is_ready(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
@@ -740,7 +740,6 @@ def test_build_state():
         assert tango_context.device.buildState == ('{},{},{}'.format(release.name,release.version,release.description))
 
 
-
 def any_method(with_name=None):
     class AnyMethod():
         def __eq__(self, other):
@@ -767,3 +766,4 @@ def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_m
     device_test_context.start()
     yield device_test_context
     device_test_context.stop()
+    
