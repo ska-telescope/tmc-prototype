@@ -8,7 +8,8 @@
 # See LICENSE.txt for more info.
 
 """
-MccsSubarrayLeafNode - Leaf Node to monitor and control MCCS Subarray
+MccsMasterLeafNode - Leaf Node to monitor and control MCCS Master
+
 """
 
 from . import release

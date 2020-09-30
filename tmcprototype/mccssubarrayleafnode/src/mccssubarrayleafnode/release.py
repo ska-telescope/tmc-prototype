@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# This file is part of the MCCSSubarrayLeafNode project
+# This file is part of the MccsSubarrayLeafNode project
 #
 #
 #
@@ -9,12 +9,13 @@
 
 """Release information for Python Package"""
 
-name = """tangods-mccssubarrayleafnode"""
+name = """mccssubarrayleafnode"""
 version = "0.2.11"
 version_info = version.split(".")
-description = """"""
+description = """MccsSubarrayeafNode - Leaf Node to monitor and control MCCS Subarray Leaf Node"""
 author = "jayant.ska"
 author_email = "jayant.ska at gmail.com"
 license = """BSD-3-Clause"""
 url = """www.tango-controls.org"""
 copyright = """"""
+

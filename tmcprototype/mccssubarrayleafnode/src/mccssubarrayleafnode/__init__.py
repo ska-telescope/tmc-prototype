@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 #
-# This file is part of the mccssubarrayleafnode project
+# This file is part of the MccsSubarrayLeafNode project
 #
 #
 #
 # Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 
-"""CentralNode
-
-Central Node is a coordinator of the complete M&C system.
+"""
+MccsSubarrayLeafNode - Leaf Node to monitor and control MCCS Subarray Leaf Node
 """
 
 from . import release

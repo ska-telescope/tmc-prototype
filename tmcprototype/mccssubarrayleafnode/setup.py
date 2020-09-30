@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# This file is part of the MCCSSubarrayLeafNode project
+# This file is part of the MccsSubarrayLeafNode project
 #
 #
 #
@@ -29,17 +29,15 @@ setup(name=name,
       description=' ',
       packages=find_packages(where='src'),
       package_dir={'': 'src'},
-      include_package_data=True,
       test_suite="test",
-      entry_points={'console_scripts': ['MCCSSubarrayLeafNode=mccssubarrayleafnode.mccs_subarray_leaf_node:main']},
+      entry_points={'console_scripts': ['MccsSubarrayLeafNodeDS=mccssubarrayleafnode.mccs_subarray_leaf_node:main']},
       author='jayant.ska',
       author_email='jayant.ska at gmail.com',
       license='BSD-3-Clause',
       long_description=long_description,
       url='www.tango-controls.org',
       platforms="All Platforms",
-      install_requires=['pytango==9.3.2', 'mock', 'ska_logging==0.3.0', 'lmcbaseclasses==0.6.5'],
-      # test_suite='test',
+      install_requires=['pytango==9.3.2', 'mock', 'katpoint', 'ska_logging==0.3.0', 'lmcbaseclasses==0.6.5'],
       setup_requires=[
           # dependency for `python setup.py test`
           'pytest-runner',
@@ -56,5 +54,5 @@ setup(name=name,
       ],
       extras_require={
           'dev': ['prospector[with_pyroma]', 'yapf', 'isort']
-      }
-      )
+    }
+)

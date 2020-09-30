@@ -12,7 +12,7 @@
 name = """mccsmasterleafnode"""
 version = "0.2.11"
 version_info = version.split(".")
-description = """MccsMasterLeafNode - Leaf Node to monitor and control MCCS Master"""
+description = """Leaf Node to monitor and control MCCS Master"""
 author = "jayant.ska"
 author_email = "jayant.ska at gmail.com"
 license = """BSD-3-Clause"""
