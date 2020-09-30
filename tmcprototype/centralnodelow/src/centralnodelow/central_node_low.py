@@ -60,7 +60,7 @@ class CentralNode(SKABaseDevice):
                 health_state = evt.attr_value.value
                 self.logger.info("healthstate for device:" + str(evt.attr_name))
                 self.logger.info("healthstate:" + str(health_state))
-                if const.PROP_DEF_VAL_TM_MID_SA1 in evt.attr_name:
+                if const.PROP_DEF_VAL_TM_LOW_SA1 in evt.attr_name:
                     self._subarray1_health_state = health_state
                     self.subarray_health_state_map[evt.device] = health_state
                 elif self.MCCSMasterLeafNodeFQDN in evt.attr_name:
@@ -285,7 +285,7 @@ class CentralNode(SKABaseDevice):
     
     class StandByTelescopeCommand(SKABaseDevice.OffCommand):
         """
-        A class for CentralNode's StandByTelescope() command.
+        A class for Low CentralNode's StandByTelescope() command.
         """
 
         def check_allowed(self):
@@ -301,77 +301,51 @@ class CentralNode(SKABaseDevice):
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Command StandByTelescope is not allowed in current state.",
-                                             "Failed to invoke StandByTelescope command on CentralNode.",
-                                             "CentralNode.StandByTelescope()",
+                                             "Failed to invoke StandByTelescope command on CentralNodeLow.",
+                                             "CentralNodeLow.StandByTelescope()",
                                              tango.ErrSeverity.ERR)
             return True
 
         def do(self):
             """
-            Sets the CentralNode into OFF state. Invokes the respective command on lower level nodes adn devices.
+            Sets the CentralNodeLow into OFF state. Invokes the respective command on lower level nodes and devices.
 
             :return: A tuple containing a return code and a string message indicating status.
             The message is for information purpose only.
 
             :rtype: (ResultCode, str)
 
-            :raises: DevFailed if error occurs while invoking command on any of the devices like SubarrayNode,
-                    DishLeafNode, CSPMasterLeafNode or SDpMasterLeafNode
+            :raises: DevFailed if error occurs while invoking command on any of the devices like SubarrayNode or
+                     MccsMasterLeafNode.
 
             """
             device = self.target
             log_msg = const.STR_STANDBY_CMD_ISSUED
             self.logger.info(log_msg)
             device._read_activity_message = log_msg
-            # Not required for CN-low
-            for name in range(0, len(device._dish_leaf_node_devices)):
-                try:
-                    device._leaf_device_proxy[name].command_inout(const.CMD_SET_STANDBY_MODE)
-                    log_msg = const.CMD_SET_STANDBY_MODE + "invoked on" + str(device._leaf_device_proxy[name])
-                    self.logger.info(log_msg)
-                    device._leaf_device_proxy[name].command_inout(const.CMD_OFF)
-                except DevFailed as dev_failed:
-                    log_msg = const.ERR_EXE_STANDBY_CMD + str(dev_failed)
-                    self.logger.exception(dev_failed)
-                    device._read_activity_message = const.ERR_EXE_STANDBY_CMD
-                    tango.Except.throw_exception(const.STR_STANDBY_EXEC, log_msg,
-                                                 "CentralNode.StandByTelescopeCommand",
-                                                 tango.ErrSeverity.ERR)
-            # Not required for CN-low , replace with mccsmasterleafnode
+
             try:
-                device._csp_master_leaf_proxy.command_inout(const.CMD_OFF)
-                device._csp_master_leaf_proxy.command_inout(const.CMD_STANDBY, [])
-                self.logger.info(const.STR_CMD_STANDBY_CSP_DEV)
+                device._mccs_master_leaf_proxy.command_inout(const.CMD_OFF)
+                self.logger.info(const.STR_CMD_OFF_MCCSMLN_DEV)
             except DevFailed as dev_failed:
-                log_msg = const.ERR_EXE_STANDBY_CMD + str(dev_failed)
+                log_msg = const.ERR_EXE_OFF_CMD + str(dev_failed)
                 self.logger.exception(dev_failed)
-                device._read_activity_message = const.ERR_EXE_STANDBY_CMD
+                device._read_activity_message = const.ERR_EXE_OFF_CMD
                 tango.Except.throw_exception(const.STR_STANDBY_EXEC, log_msg,
-                                             "CentralNode.StandByTelescopeCommand",
+                                             "CentralNodeLow.StandByTelescopeCommand",
                                              tango.ErrSeverity.ERR)
-            # Not required for CN-low
+
             try:
-                device._sdp_master_leaf_proxy.command_inout(const.CMD_OFF)
-                device._sdp_master_leaf_proxy.command_inout(const.CMD_STANDBY)
-                self.logger.info(const.STR_CMD_STANDBY_SDP_DEV)
-            except DevFailed as dev_failed:
-                log_msg = const.ERR_EXE_STANDBY_CMD + str(dev_failed)
-                self.logger.exception(dev_failed)
-                device._read_activity_message = const.ERR_EXE_STANDBY_CMD
-                tango.Except.throw_exception(const.STR_STANDBY_EXEC, log_msg,
-                                             "CentralNode.StandByTelescopeCommand",
-                                             tango.ErrSeverity.ERR)
-            try:
-                for subarrayID in range(1, len(device.TMMidSubarrayNodes) + 1):
+                for subarrayID in range(1, len(device.TMLowSubarrayNodes) + 1):
                     device.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_OFF)
-                    self.logger.info(const.STR_CMD_STANDBY_SA_DEV)
+                    self.logger.info(const.STR_CMD_OFF_SA_LOW_DEV)
 
             except DevFailed as dev_failed:
-                log_msg = const.ERR_EXE_STANDBY_CMD + str(dev_failed)
+                log_msg = const.ERR_EXE_OFF(dev_failed)
                 self.logger.exception(dev_failed)
-                device._read_activity_message = const.ERR_EXE_STANDBY_CMD
+                device._read_activity_message = const.ERR_EXE_OFF_CMD
                 tango.Except.throw_exception(const.STR_STANDBY_EXEC, log_msg,
-                                             "CentralNode.StandByTelescopeCommand",
+                                             "CentralNodeLow.StandByTelescopeCommand",
                                              tango.ErrSeverity.ERR)
             return (ResultCode.OK, device._read_activity_message)
 
@@ -405,7 +379,7 @@ class CentralNode(SKABaseDevice):
 
     class StartUpTelescopeCommand(SKABaseDevice.OnCommand):
         """
-        A class for CentralNode's StartupCommand() command.
+        A class for Low CentralNode's StartupCommand() command.
         """
         def check_allowed(self):
 
@@ -438,8 +412,8 @@ class CentralNode(SKABaseDevice):
 
             :rtype: (ResultCode, str)
 
-            :raises: DevFailed if error occurs while invoking command on any of the devices like SubarrayNode,
-                    DishLeafNode, CSPMasterLeafNode or SDpMasterLeafNode
+            :raises: DevFailed if error occurs while invoking command on any of the devices like SubarrayNode or
+                    MccsMasterLeafNode.
 
             """
             device = self.target
