@@ -114,7 +114,6 @@ def test_configure_with_correct_configuration_data_when_mccs_subarray_is_idle(mo
     argin_json["station_beams"] = argin_json["station_beam_pointings"]
     argin_json.pop("station_beam_pointings", None)
     
-    # argin_json["station_beam_pointings"][0] = station_beam_pointings
     mccs_subarray1_proxy_mock.command_inout_asynch.assert_any_call(const.CMD_CONFIGURE,
                                 json.dumps(argin_json), any_method(with_name='configure_cmd_ended_cb'))
 
