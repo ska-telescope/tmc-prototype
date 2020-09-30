@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# This file is part of the SubarrayNode Low project
+# This file is part of the SubarrayNode project
 #
 #
 #
@@ -9,7 +9,7 @@
 
 """ Subarray Node
 Provides the monitoring and control interface required by users as well as
-other TM Components (such as OET, Central Node) for a Low Subarray.
+other TM Components (such as OET, Central Node) for a Subarray.
 """
 
 # PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
@@ -24,7 +24,7 @@ from .const import PointingState
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, ObsMode, ObsState
 from ska.base import SKASubarray
-from subarraynodelow.exceptions import InvalidObsStateError
+from subarraynode.exceptions import InvalidObsStateError
 
 __all__ = ["SubarrayNode", "main", "assign_resources_command", "release_all_resources_command",
            "configure_command", "scan_command", "end_scan_command", "end_command", "on_command",
@@ -394,14 +394,27 @@ class SubarrayNode(SKASubarray):
     # Device Properties
     # -----------------
 
-    MccsSubarrayLNFQDN = device_property(
-        dtype='str', doc="This property contains the FQDN of the MCCS Subarray Leaf Node associated with the "
-            "Subarray Node."
+    DishLeafNodePrefix = device_property(
+        dtype='str', doc="Device name prefix for the Dish Leaf Node",
     )
 
-    MccsSubarrayFQDN = device_property(
-        dtype='str', doc="This property contains the FQDN of the MCCS Subarray associated with the "
-            "Subarray Node."
+    CspSubarrayLNFQDN = device_property(
+
+        dtype='str', doc="This property contains the FQDN of the CSP Subarray Leaf Node associated with the "
+            "Subarray Node.",
+    )
+
+    SdpSubarrayLNFQDN = device_property(
+        dtype='str', doc="This property contains the FQDN of the SDP Subarray Leaf Node associated with the "
+            "Subarray Node.",
+    )
+
+    CspSubarrayFQDN = device_property(
+        dtype='str',
+    )
+
+    SdpSubarrayFQDN = device_property(
+        dtype='str',
     )
 
     # ----------
@@ -410,11 +423,24 @@ class SubarrayNode(SKASubarray):
 
     scanID = attribute(
         dtype='str',
+        doc="ID of ongoing SCAN",
+    )
+
+    sbID = attribute(
+        dtype='str',
+        doc="ID of ongoing Scheduling Block",
     )
 
     activityMessage = attribute(
         dtype='str',
         access=AttrWriteType.READ_WRITE,
+        doc="Activity Message",
+    )
+
+    receptorIDList = attribute(
+        dtype=('uint16',),
+        max_dim_x=100,
+        doc="ID List of the Receptors assigned in the Subarray",
     )
 
     # ---------------
