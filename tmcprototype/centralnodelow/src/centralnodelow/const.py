@@ -11,9 +11,8 @@ STR_CMD_STANDBY_SDP_DEV = "STANDBY command invoked on SdpMasterleafNode device "
 STR_CMD_STANDBY_SA_DEV = "STANDBY command invoked on SubarrayNode device"
 CMD_ON = "On"
 CMD_OFF = "Off"
-STR_CMD_ON_CSP_DEV = "ON command invoked on CspMasterLeafNode device"
-STR_CMD_ON_SDP_DEV = "ON command invoked on SdpMasterLeafNode device"
-STR_CMD_ON_SA_DEV = "ON command invoked on SubarrayNode device"
+STR_CMD_ON_MCCS_DEV = "ON command invoked on MccsMasterLeafNode device"
+STR_CMD_ON_SA_LOW_DEV = "ON command invoked on SubarrayNodeLow device"
 
 #Event messages
 EVT_UNKNOWN = "Event from the Unknown device!"
