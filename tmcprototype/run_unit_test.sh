@@ -27,6 +27,8 @@ junitparser merge /report/unit_test/dishleafnode-unit-tests.xml \
                 /report/unit_test/cspsubarrayleafnode-unit-tests.xml \
                 /report/unit_test/sdpmasterleafnode-unit-tests.xml \
                 /report/unit_test/sdpsubarrayleafnode-unit-tests.xml \
+                /report/unit_test/mccsmasterleafnode-unit-tests.xml \
+                /report/unit_test/mccssubarrayleafnode-unit-tests.xml \
                 /report/unit_test/subarraynode-unit-tests.xml \
                 /report/unit_test/mccsmasterleafnode-unit-tests.xml \
                 /report/unit_test/mccssubarrayleafnode-unit-tests.xml \
