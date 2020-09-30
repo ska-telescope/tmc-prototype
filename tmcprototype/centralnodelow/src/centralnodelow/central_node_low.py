@@ -578,7 +578,7 @@ class CentralNode(SKABaseDevice):
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
                                              "CentralNode.AssignResourcesCommand",
                                              tango.ErrSeverity.ERR)
-            # PROTECTED REGION END #    //  CentralNode.AssignResources
+
 
     def is_AssignResources_allowed(self):
         """
