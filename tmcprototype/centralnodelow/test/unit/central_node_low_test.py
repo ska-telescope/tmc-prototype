@@ -18,8 +18,8 @@ from tango.test_context import DeviceTestContext
 # Additional import
 
 from centralnodelow import CentralNode, const, release
-from centralnodelow.const import CMD_SET_STOW_MODE, STR_ON_CMD_ISSUED, STR_STOW_CMD_ISSUED_CN, STR_STANDBY_CMD_ISSUED
-from ska.base.control_model import HealthState, AdminMode, SimulationMode, ControlMode, TestMode
+from centralnodelow.const import STR_ON_CMD_ISSUED, STR_STANDBY_CMD_ISSUED
+from ska.base.control_model import HealthState
 from ska.base.control_model import LoggingLevel
 from ska.base.commands import ResultCode
 
@@ -192,13 +192,7 @@ def test_activity_message_attribute_captures_the_last_received_command():
         assert_activity_message(dut, STR_STANDBY_CMD_ISSUED)
 
 
-# Test cases for commands
-# Mocking ReleaseResources command success response from SubarrayNode
-def mock_subarray_call_release_resources_success(arg1):
-    argout = ["[]"]
-    return [ResultCode.STARTED, argout]
-
-
+# Test cases for command
 def test_assign_resources(mock_central_lower_devices):
     # arrange
     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock = mock_central_lower_devices
@@ -360,7 +354,6 @@ def create_dummy_event(device_fqdn, health_state):
     fake_event.err = False
     fake_event.attr_name = f"{device_fqdn}/healthState"
     fake_event.attr_value.value = health_state
-    print(fake_event)
     return fake_event
 
 

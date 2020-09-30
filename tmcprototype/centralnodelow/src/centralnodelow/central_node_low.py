@@ -20,16 +20,11 @@ import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
 from tango.server import run, attribute, command, device_property
 from ska.base import SKABaseDevice
-from ska.base.commands import ResponseCommand, ResultCode, BaseCommand
-from ska.base.control_model import HealthState, ObsState
+from ska.base.commands import ResultCode, BaseCommand
+from ska.base.control_model import HealthState
 # Additional import
 from . import const, release
-from centralnodelow.input_validator import AssignResourceValidator
-from centralnodelow.exceptions import ResourceReassignmentError, ResourceNotPresentError
-from centralnodelow.exceptions import SubarrayNotPresentError, InvalidJSONError
-
 import json
-import ast
 
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
@@ -58,8 +53,6 @@ class CentralNode(SKABaseDevice):
             self.logger.info(log_msg)
             if not evt.err:
                 health_state = evt.attr_value.value
-                self.logger.info("healthstate for device:" + str(evt.attr_name))
-                self.logger.info("healthstate:" + str(health_state))
                 if const.PROP_DEF_VAL_TM_LOW_SA1 in evt.attr_name:
                     self._subarray1_health_state = health_state
                     self.subarray_health_state_map[evt.device] = health_state
@@ -210,9 +203,9 @@ class CentralNode(SKABaseDevice):
                                                            EventType.CHANGE_EVENT,
                                                            device.health_state_cb, stateless=True)
             except DevFailed as dev_failed:
-                log_msg = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH + str(dev_failed)
+                log_msg = const.ERR_SUBSR_MCCS_MASTER_LEAF_HEALTH + str(dev_failed)
                 self.logger.exception(dev_failed)
-                device._read_activity_message = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH
+                device._read_activity_message = const.ERR_SUBSR_MCCS_MASTER_LEAF_HEALTH
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand",
                                              tango.ErrSeverity.ERR)
 
@@ -225,10 +218,10 @@ class CentralNode(SKABaseDevice):
                                                   EventType.CHANGE_EVENT,
                                                   device.health_state_cb, stateless=True)
 
-                    # populate subarrayID-subarray proxy map
+                    # populate subarray_id-subarray proxy map
                     tokens = device.TMLowSubarrayNodes[subarray].split('/')
-                    subarrayID = int(tokens[2])
-                    device.subarray_FQDN_dict[subarrayID] = subarray_proxy
+                    subarray_id = int(tokens[2])
+                    device.subarray_FQDN_dict[subarray_id] = subarray_proxy
                 except DevFailed as dev_failed:
                     log_msg = const.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
                     self.logger.exception(dev_failed)
@@ -336,8 +329,8 @@ class CentralNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
             try:
-                for subarrayID in range(1, len(device.TMLowSubarrayNodes) + 1):
-                    device.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_OFF)
+                for subarray_id in range(1, len(device.TMLowSubarrayNodes) + 1):
+                    device.subarray_FQDN_dict[subarray_id].command_inout(const.CMD_OFF)
                     self.logger.info(const.STR_CMD_OFF_SA_LOW_DEV)
 
             except DevFailed as dev_failed:
@@ -369,8 +362,7 @@ class CentralNode(SKABaseDevice):
     )
     def StandByTelescope(self):
         """
-        This command invokes SetStandbyLPMode() command on DishLeafNode, StandBy() command on CspMasterLeafNode and
-        SdpMasterLeafNode and Off() command on SubarrayNode and sets CentralNode into OFF state.
+        This command invokes Off() command on SubarrayNode, MCCSMasterLeafNode and sets CentralNode into OFF state.
 
         """
         handler = self.get_command_object("StandByTelescope")
@@ -434,8 +426,8 @@ class CentralNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
             try:
-                for subarrayID in range(1, len(device.TMLowSubarrayNodes) + 1):
-                    device.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_ON)
+                for subarray_id in range(1, len(device.TMLowSubarrayNodes) + 1):
+                    device.subarray_FQDN_dict[subarray_id].command_inout(const.CMD_ON)
                     self.logger.info(const.STR_CMD_ON_SA_LOW_DEV)
             except DevFailed as dev_failed:
                 log_msg = const.ERR_EXE_ON_CMD + str(dev_failed)
@@ -467,8 +459,8 @@ class CentralNode(SKABaseDevice):
     @DebugIt()
     def StartUpTelescope(self):
         """
-        This command invokes SetOperateMode() command on DishLeadNode, On() command on CspMasterLeafNode,
-        SdpMasterLeafNode and SubarrayNode and sets the Central Node into ON state.
+        This command invokes On() command on SubarrayNode, MCCSMasterLeafNode 
+        and sets the Central Node into ON state.
         """
         handler = self.get_command_object("StartUpTelescope")
         (result_code, message) = handler()
@@ -604,10 +596,7 @@ class CentralNode(SKABaseDevice):
 
     @command(
         dtype_in='str',
-        doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
-               "DevShort\ndish: JSON object consisting\n- receptorIDList: DevVarStringArray. "
-               "The individual string should contain dish numbers in string format with "
-               "preceding zeroes upto 3 digits. E.g. 0001, 0002",
+        doc_in="It accepts the subarray id, station ids, station beam id, tile ids list and channels in JSON string format",
     )
     @DebugIt()
     def AssignResources(self, argin):
@@ -647,7 +636,7 @@ class CentralNode(SKABaseDevice):
             
             :param argin: The string in JSON format. The JSON contains following values:
 
-                subarrayID:
+                subarray_id:
                     DevShort. Mandatory.
 
                 releaseALL:
@@ -655,12 +644,12 @@ class CentralNode(SKABaseDevice):
 
                 Example:
                     {
-                        "subarrayID": 1,
+                        "subarray_id": 1,
                         "releaseALL": true,
                     }
 
                 Note: From Jive, enter input as:
-                    {"subarrayID":1,"releaseALL":true} without any space.
+                    {"subarray_id":1,"releaseALL":true} without any space.
 
              :raises: ValueError if input argument json string contains invalid value
                     KeyError if input argument json string contains invalid key
@@ -670,13 +659,12 @@ class CentralNode(SKABaseDevice):
             device = self.target
             try:
                 jsonArgument = json.loads(argin)
-                subarrayID = jsonArgument['subarrayID']
-                subarrayProxy = device.subarray_FQDN_dict[subarrayID]
-                subarray_name = "SA" + str(subarrayID)
+                subarray_id = jsonArgument['subarray_id']
+                subarrayProxy = device.subarray_FQDN_dict[subarray_id]
                 if jsonArgument['releaseALL'] == True:
-                    # Invoke "ReleaseAllResources" on SubarrayNode
+                    # Invoke ReleaseAllResources on SubarrayNode
                     subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
-                     # Invoke "ReleaseAllResources" on MCCS Master Leaf Node
+                    # Invoke ReleaseAllResources on MCCS Master Leaf Node
                     device._mccs_master_leaf_proxy.command_inout(const.CMD_RELEASE_RESOURCES)
                     log_msg = const.STR_REL_RESOURCES
                     self.logger.info(log_msg)
@@ -727,7 +715,7 @@ class CentralNode(SKABaseDevice):
     
     @command(
         dtype_in="str",
-        doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
+        doc_in="The string in JSON format. The JSON contains following values:\nsubarray_id: "
                "releaseALL boolean as true and receptorIDList.",
     )
     @DebugIt()
