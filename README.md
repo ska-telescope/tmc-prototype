@@ -84,6 +84,7 @@ TMC prototype addresses the  following architectural aspects and functionality:
 * [x] Implement On and Off functionality on MccsMasterLeafNode
 * [x] Implement AssignResources and ReleaseResources functionality on MccsMasterLeafNode
 * [x] Implement Configure functionality on MccsSubarrayLeafNode
+* [x] Implement Scan, EndScan and End functionality on MccsSubarrayLeafNode
 
 **NOTE:** Refer to the Demo link provided in the [Documentation](#6-documentation) section for more details.
 

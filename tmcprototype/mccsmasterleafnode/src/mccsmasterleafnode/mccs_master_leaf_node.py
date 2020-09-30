@@ -38,8 +38,6 @@ class MccsMasterLeafNode(SKABaseDevice):
     - activityMessage - Attribute to provide activity message
 
     """
-    # PROTECTED REGION ID(MccsMasterLeafNode.class_variable) ENABLED START #
-    # PROTECTED REGION END #    //  MccsMasterLeafNode.class_variable
 
     # -----------------
     # Device Properties
@@ -534,6 +532,8 @@ class MccsMasterLeafNode(SKABaseDevice):
                                              "MccsMasterLeafNode.Off",
                                              tango.ErrSeverity.ERR)
 
+            
+
     def init_command_objects(self):
         """
         Initialises the command handlers for commands supported by this
@@ -543,8 +543,6 @@ class MccsMasterLeafNode(SKABaseDevice):
         args = (self, self.state_model, self.logger)
         self.register_command_object("AssignResources", self.AssignResourcesCommand(*args))
         self.register_command_object("ReleaseResources", self.ReleaseResourcesCommand(*args))
-
-
 # ----------
 # Run server
 # ----------
