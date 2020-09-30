@@ -365,6 +365,7 @@ def test_start_scan_should_not_command_csp_subarray_to_start_scan_when_it_is_idl
     csp_subarray1_proxy_mock.obsState = ObsState.IDLE
     device_proxy.StartScan(scan_input_str)
     assert_activity_message(device_proxy , const.ERR_DEVICE_NOT_READY)
+    
 
 
 def test_start_scan_should_raise_devfailed_exception(mock_csp_subarray):
