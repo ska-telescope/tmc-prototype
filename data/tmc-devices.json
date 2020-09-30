@@ -1535,7 +1535,6 @@
                 }
             }
         },
-
         "MccsSubarrayLeafNodeDS": {
             "01": {
                 "MccsSubarrayLeafNode": {
@@ -1547,7 +1546,7 @@
                                     "1"
                                 ]
                             },
-                            "mccsSubarrayHealthState": {
+                            "mccssubarrayHealthState": {
                                 "__root_att": [
                                     "low_mccs/elt/subarray_01/healthState"
                                 ]
