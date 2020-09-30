@@ -260,24 +260,22 @@ def test_release_resources(mock_central_lower_devices):
     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock = mock_central_lower_devices
     # mocking subarray device state as ON as per new state model
     subarray1_proxy_mock.DevState = DevState.ON
-
     # act:
     device_proxy.ReleaseResources(release_input_str)
     #assert
-    subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES, release_input_str)
-    mccs_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES, release_input_str)
+    subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
+    mccs_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
 
 
 def test_release_resources_should_raise_devfailed_exception_when_subarray_node_throws_devfailed_exception(mock_subarraynode_device):
     # arrange
     device_proxy, subarray1_proxy_mock, subarray1_fqdn, event_subscription_map = mock_subarraynode_device
     subarray1_proxy_mock.DevState = DevState.OFF
-    subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
+    subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
    
     # act:
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.ReleaseResources(release_input_str)
-
     # assert:
     assert "Error occurred while releasing resources from the Subarray" in str(df.value)
 
