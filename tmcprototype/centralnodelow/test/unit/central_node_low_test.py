@@ -255,65 +255,31 @@ def test_assign_resources_invalid_json_value(mock_central_lower_devices):
     # assert
     assert const.STR_RESOURCE_ALLOCATION_FAILED in str(df.value)
 
-def test_release_resources():
+def test_release_resources(mock_central_lower_devices):
     # arrange
-    subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
-    tm_subarrays = []
-    tm_subarrays.append(subarray1_fqdn)
-    dut_properties = {
-        'TMMidSubarrayNodes': tm_subarrays,
-        'NumDishes': 4
-    }
-    # For subarray node proxy creation MagicMock is used instead of Mock because when subarray proxy inout
-    # is called it returns list of resources allocated where length of list need to be evaluated but Mock
-    # does not support len function for returned object. Hence MagicMock which is a superset of Mock is used
-    # which supports this facility.
-    subarray1_proxy_mock = MagicMock()
+    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock = mock_central_lower_devices
     # mocking subarray device state as ON as per new state model
     subarray1_proxy_mock.DevState = DevState.ON
-    proxies_to_mock = {
-        subarray1_fqdn: subarray1_proxy_mock
-    }
 
-    release_all_success = {"ReleaseAll": True, "receptorIDList": []}
-
-    # arrange:
-    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        device_proxy = tango_context.device
-        subarray1_proxy_mock.command_inout.side_effect = mock_subarray_call_release_resources_success
-        message = device_proxy.ReleaseResources(release_input_str)
-
-        #assert
-        assert json.dumps(release_all_success) in message
+    # act:
+    device_proxy.ReleaseResources(release_input_str)
+    #assert
+    subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES, release_input_str)
+    mccs_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES, release_input_str)
 
 
-def test_release_resources_should_raise_devfailed_exception():
+def test_release_resources_should_raise_devfailed_exception_when_subarray_node_throws_devfailed_exception(mock_subarraynode_device):
     # arrange
-    subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
-    dut_properties = {
-        'TMMidSubarrayNodes': subarray1_fqdn
-    }
+    device_proxy, subarray1_proxy_mock, subarray1_fqdn, event_subscription_map = mock_subarraynode_device
+    subarray1_proxy_mock.DevState = DevState.OFF
+    subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
+   
+    # act:
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.ReleaseResources(release_input_str)
 
-    # For subarray node proxy creation MagicMock is used instead of Mock because when subarray proxy inout
-    # is called it returns list of resources allocated where length of list need to be evaluated but Mock
-    # does not support len function for returned object. Hence MagicMock which is a superset of Mock is used
-    # which supports this facility.
-    subarray1_proxy_mock = MagicMock()
-    subarray1_proxy_mock.DevState = DevState.ON
-    subarray1_proxy_mock.receptorIDList = [1]
-    proxies_to_mock = {
-        subarray1_fqdn: subarray1_proxy_mock
-    }
-    subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
-    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        # act:
-        with pytest.raises(tango.DevFailed) as df:
-            tango_context.device.ReleaseResources(release_input_str)
-
-        # assert:
-        assert "Error occurred while releasing resources from the Subarray" in str(df.value)
+    # assert:
+    assert "Error occurred while releasing resources from the Subarray" in str(df.value)
 
 
 def test_release_resources_invalid_json_value():
