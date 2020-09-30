@@ -121,7 +121,7 @@ def test_end_command_with_callback_method_with_event_error(mock_mccs_subarray,ev
     assert const.ERR_INVOKING_CMD + const.CMD_END in device_proxy.activityMessage
 
 
-def test_end_should_command_mccs_subarray_to_reset_when_it_is_ready(mock_mccs_subarray):
+def test_end_should_command_mccs_subarray_to_end_when_it_is_ready(mock_mccs_subarray):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.READY
     device_proxy.End()
@@ -129,7 +129,7 @@ def test_end_should_command_mccs_subarray_to_reset_when_it_is_ready(mock_mccs_su
                                                                 any_method(with_name='end_cmd_ended_cb'))
 
 
-def test_end_should_command_mccs_subarray_to_reset_when_it_is_idle(mock_mccs_subarray):
+def test_end_should_command_mccs_subarray_to_end_when_it_is_idle(mock_mccs_subarray):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.IDLE
     device_proxy.End()
@@ -146,7 +146,7 @@ def test_end_should_raise_devfailed_exception(mock_mccs_subarray):
     assert const.ERR_END_INVOKING_CMD in str(df)
 
 
-def test_end_should_command_mccs_subarray_should_not_reset_when_it_is_not_idle_or_ready(mock_mccs_subarray):
+def test_end_should_command_mccs_subarray_should_not_end_when_it_is_not_idle_or_ready(mock_mccs_subarray):
     device_proxy = mock_mccs_subarray[0]
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.End()
