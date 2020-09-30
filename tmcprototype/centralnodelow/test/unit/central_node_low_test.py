@@ -28,28 +28,28 @@ path = join(dirname(__file__), 'data', assign_input_file)
 with open(path, 'r') as f:
     assign_input_str = f.read()
 
-release_input_file='command_ReleaseResources.json'
-path= join(dirname(__file__), 'data' , release_input_file)
+release_input_file = 'command_ReleaseResources.json'
+path = join(dirname(__file__), 'data', release_input_file)
 with open(path, 'r') as f:
-    release_input_str= f.read()
+    release_input_str = f.read()
 
-invalid_json_Assign_Release_file='invalid_json_Assign_Release_Resources.json'
-path= join(dirname(__file__), 'data', invalid_json_Assign_Release_file)
+invalid_json_Assign_Release_file = 'invalid_json_Assign_Release_Resources.json'
+path = join(dirname(__file__), 'data', invalid_json_Assign_Release_file)
 with open(path, 'r') as f:
-    assign_release_invalid_str= f.read()
+    assign_release_invalid_str = f.read()
 
-assign_invalid_key_file='invalid_key_AssignResources.json'
-path= join(dirname(__file__), 'data', assign_invalid_key_file)
+assign_invalid_key_file = 'invalid_key_AssignResources.json'
+path = join(dirname(__file__), 'data', assign_invalid_key_file)
 with open(path, 'r') as f:
-    assign_invalid_key=f.read()
+    assign_invalid_key = f.read()
 
-release_invalid_key_file='invalid_key_ReleaseResources.json'
-path= join(dirname(__file__), 'data', release_invalid_key_file)
+release_invalid_key_file = 'invalid_key_ReleaseResources.json'
+path = join(dirname(__file__), 'data', release_invalid_key_file)
 with open(path, 'r') as f:
-    release_invalid_key=f.read()
+    release_invalid_key = f.read()
 
 
-@pytest.fixture(scope = 'function')
+@pytest.fixture(scope='function')
 def mock_subarraynode_device():
     subarray1_fqdn = 'ska_low/tm_subarray_node/1'
     initial_dut_properties = {
@@ -74,7 +74,7 @@ def mock_subarraynode_device():
 def mock_central_lower_devices():
     mccs_master_ln_fqdn = 'ska_low/tm_leaf_node/mccs_master'
     subarray1_fqdn = 'ska_low/tm_subarray_node/1'
-    
+
     dut_properties = {
         'MCCSMasterLeafNodeFQDN': mccs_master_ln_fqdn,
         'TMLowSubarrayNodes': subarray1_fqdn
@@ -94,8 +94,8 @@ def mock_central_lower_devices():
         yield tango_context.device, subarray1_proxy_mock, mccs_master_ln_proxy_mock
 
 
-@pytest.fixture( scope="function",
-    params=[HealthState.DEGRADED, HealthState.OK, HealthState.UNKNOWN, HealthState.FAILED])
+@pytest.fixture(scope="function",
+                params=[HealthState.DEGRADED, HealthState.OK, HealthState.UNKNOWN, HealthState.FAILED])
 def central_node_test_info(request):
     # arrange:
     device_under_test = CentralNode
@@ -190,6 +190,7 @@ def test_health_state():
     with fake_tango_system(CentralNode) as tango_context:
         assert tango_context.device.healthState == HealthState.OK
 
+
 def test_version_id():
     """Test for versionId"""
     with fake_tango_system(CentralNode) as tango_context:
@@ -199,7 +200,9 @@ def test_version_id():
 def test_build_state():
     """Test for buildState"""
     with fake_tango_system(CentralNode) as tango_context:
-        assert tango_context.device.buildState == ('{},{},{}'.format(release.name,release.version,release.description))
+        assert tango_context.device.buildState == (
+            '{},{},{}'.format(release.name, release.version, release.description))
+
 
 # Need to check the failure
 def test_activity_message_attribute_captures_the_last_received_command():
@@ -233,7 +236,8 @@ def test_assign_resources(mock_central_lower_devices):
     mccs_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, assign_input_str)
 
 
-def test_assign_resources_should_raise_devfailed_exception_when_subarray_node_throws_devfailed_exception(mock_subarraynode_device):
+def test_assign_resources_should_raise_devfailed_exception_when_subarray_node_throws_devfailed_exception(
+        mock_subarraynode_device):
     # arrange
     device_proxy, subarray1_proxy_mock, subarray1_fqdn, event_subscription_map = mock_subarraynode_device
     subarray1_proxy_mock.DevState = DevState.OFF
@@ -255,6 +259,7 @@ def test_assign_resources_invalid_json_value(mock_central_lower_devices):
     # assert
     assert const.STR_RESOURCE_ALLOCATION_FAILED in str(df.value)
 
+
 def test_release_resources(mock_central_lower_devices):
     # arrange
     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock = mock_central_lower_devices
@@ -263,17 +268,18 @@ def test_release_resources(mock_central_lower_devices):
 
     # act:
     device_proxy.ReleaseResources(release_input_str)
-    #assert
+    # assert
     subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES, release_input_str)
     mccs_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES, release_input_str)
 
 
-def test_release_resources_should_raise_devfailed_exception_when_subarray_node_throws_devfailed_exception(mock_subarraynode_device):
+def test_release_resources_should_raise_devfailed_exception_when_subarray_node_throws_devfailed_exception(
+        mock_subarraynode_device):
     # arrange
     device_proxy, subarray1_proxy_mock, subarray1_fqdn, event_subscription_map = mock_subarraynode_device
     subarray1_proxy_mock.DevState = DevState.OFF
     subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
-   
+
     # act:
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.ReleaseResources(release_input_str)
@@ -303,25 +309,21 @@ def test_release_resources_invalid_key():
 
 def test_standby(mock_central_lower_devices):
     # arrange:
-    device_proxy, subarray1_proxy_mock, dish_ln1_proxy_mock, csp_master_ln_proxy_mock, sdp_master_ln_proxy_mock = mock_central_lower_devices
+    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock = mock_central_lower_devices
     # act:
     device_proxy.StartUpTelescope()
     assert device_proxy.state() == DevState.ON
     device_proxy.StandByTelescope()
 
     # assert:
-    dish_ln1_proxy_mock.command_inout.assert_called_with(const.CMD_OFF)
-    csp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY, [])
-    sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STANDBY)
+    mccs_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_OFF)
     subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_OFF)
     assert device_proxy.state() == DevState.OFF
 
 
 def test_standby_should_raise_devfailed_exception(mock_central_lower_devices):
-    device_proxy, subarray1_proxy_mock, dish_ln1_proxy_mock, csp_master_ln_proxy_mock, sdp_master_ln_proxy_mock = mock_central_lower_devices
-    dish_ln1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
-    csp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
-    sdp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
+    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock = mock_central_lower_devices
+    mccs_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
 
     with pytest.raises(tango.DevFailed):
@@ -332,22 +334,18 @@ def test_standby_should_raise_devfailed_exception(mock_central_lower_devices):
 
 
 def test_startup(mock_central_lower_devices):
-    device_proxy, subarray1_proxy_mock, dish_ln1_proxy_mock, csp_master_ln_proxy_mock, sdp_master_ln_proxy_mock = mock_central_lower_devices
+    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock = mock_central_lower_devices
     # act:
     device_proxy.StartUpTelescope()
     # assert:
-    dish_ln1_proxy_mock.command_inout.assert_called_with(const.CMD_SET_OPERATE_MODE)
-    csp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ON)
-    sdp_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ON)
+    mccs_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ON)
     subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_ON)
     assert device_proxy.state() == DevState.ON
 
 
 def test_startup_should_raise_devfailed_exception(mock_central_lower_devices):
-    device_proxy, subarray1_proxy_mock, dish_ln1_proxy_mock, csp_master_ln_proxy_mock, sdp_master_ln_proxy_mock = mock_central_lower_devices
-    dish_ln1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
-    csp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
-    sdp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
+    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock = mock_central_lower_devices
+    mccs_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed):
         device_proxy.StartUpTelescope()
@@ -358,7 +356,7 @@ def test_startup_should_raise_devfailed_exception(mock_central_lower_devices):
 
 # Test cases for Telescope Health State
 def test_telescope_health_state_matches_mccs_master_leaf_node_health_state_after_start(
-    central_node_test_info):
+        central_node_test_info):
     initial_dut_properties = central_node_test_info['initial_dut_properties']
     proxies_to_mock = central_node_test_info['proxies_to_mock']
     mccs_master_ln_fqdn = central_node_test_info['mccs_master_ln_fqdn']
@@ -375,9 +373,8 @@ def test_telescope_health_state_matches_mccs_master_leaf_node_health_state_after
         assert tango_context.device.telescopeHealthState == mccs_master_ln_health_state
 
 
-
 def test_telescope_health_state_is_ok_when_subarray_node_is_ok_after_start(mock_subarraynode_device):
-    device_proxy , subarray1_device_proxy_mock, subarray1_fqdn, event_subscription_map = mock_subarraynode_device
+    device_proxy, subarray1_device_proxy_mock, subarray1_fqdn, event_subscription_map = mock_subarraynode_device
     subarray1_health_attribute = 'healthState'
     dummy_event = create_dummy_event(subarray1_fqdn, HealthState.OK)
     event_subscription_map[subarray1_health_attribute](dummy_event)
@@ -390,12 +387,12 @@ def create_dummy_event(device_fqdn, health_state):
     fake_event.err = False
     fake_event.attr_name = f"{device_fqdn}/healthState"
     fake_event.attr_value.value = health_state
-    print (fake_event)
+    print(fake_event)
     return fake_event
 
 
 def assert_activity_message(dut, expected_message):
-    assert dut.activityMessage == expected_message # reads tango attribute
+    assert dut.activityMessage == expected_message  # reads tango attribute
 
 
 # Throw Devfailed exception for command without argument
@@ -409,19 +406,20 @@ def raise_devfailed_exception_with_args(cmd_name, input_args):
     tango.Except.throw_exception("CentralNode_Commandfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
 
+
 def any_method(with_name=None):
     class AnyMethod():
         def __eq__(self, other):
             if not isinstance(other, types.MethodType):
                 return False
             return other.__func__.__name__ == with_name if with_name else True
+
     return AnyMethod()
 
 
 @contextlib.contextmanager
 def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
                       device_proxy_import_path='tango.DeviceProxy'):
-
     with mock.patch(device_proxy_import_path) as patched_constructor:
         patched_constructor.side_effect = lambda device_fqdn: proxies_to_mock.get(device_fqdn, Mock())
         patched_module = importlib.reload(sys.modules[device_under_test.__module__])
