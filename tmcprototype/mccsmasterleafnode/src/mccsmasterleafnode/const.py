@@ -33,3 +33,7 @@ STR_OFF_CMD_ISSUED = "OFF command invoked successfully from MCCS Master leaf nod
 STR_ON_EXEC = "On command execution"
 STR_OFF_EXEC = "Off command execution"
 
+#PROPERTIES DEFAULT VALUES
+
+#INTEGERS
+

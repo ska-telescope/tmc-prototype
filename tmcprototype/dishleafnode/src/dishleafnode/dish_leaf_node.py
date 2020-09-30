@@ -77,7 +77,7 @@ class CommandCallBack:
             self.logger.info(log_msg)
             self.device._read_activity_message = log_msg
 
-# pylint: disable=unused-variable
+# pylint: disable=unused-variable, logging-fstring-interpolation
 class DishLeafNode(SKABaseDevice):
     """
     A Leaf control node for DishMaster.
@@ -1680,6 +1680,7 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("ObsReset")
         return handler.check_allowed()
 
+# pylint: enable=unused-variable, logging-fstring-interpolation
 
 # ----------
 # Run server

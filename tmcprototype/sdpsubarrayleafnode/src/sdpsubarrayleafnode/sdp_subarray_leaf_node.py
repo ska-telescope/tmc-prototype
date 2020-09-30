@@ -28,7 +28,7 @@ from .exceptions import InvalidObsStateError
 __all__ = ["SdpSubarrayLeafNode", "main"]
 
 
-# pylint: disable=unused-argument,unused-variable
+# pylint: disable=unused-argument,unused-variable, implicit-str-concat
 class SdpSubarrayLeafNode(SKABaseDevice):
     """
     SDP Subarray Leaf node is to monitor the SDP Subarray and issue control actions during an observation.
@@ -1418,7 +1418,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             return (ResultCode.OK, const.STR_OFF_CMD_SUCCESS)
 
 
-# pylint: enable=unused-argument,unused-variable
+# pylint: enable=unused-argument,unused-variable, implicit-str-concat
 
 # ----------
 # Run server
