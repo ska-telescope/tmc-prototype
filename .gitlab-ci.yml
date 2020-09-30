@@ -210,6 +210,57 @@ build SdpSubarrayLeafNode wheel for development: # Executed on a commit
     paths:
       - ./tmcprototype/sdpsubarrayleafnode/dist/
 
+build MccsMasterLeafNode wheel for publication: # Executed on a tag
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/mccsmasterleafnode
+    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  only:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/mccsmasterleafnode/dist/
+
+build MccsMasterLeafNode wheel for development: # Executed on a commit
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/mccsmasterleafnode
+    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  except:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/mccsmasterleafnode/dist/
+
+build MccsSubarrayLeafNode wheel for publication: # Executed on a tag
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/mccssubarrayleafnode
+    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  only:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/mccssubarrayleafnode/dist/
+
+build MccsSubarrayLeafNode wheel for development: # Executed on a commit
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/mccssubarrayleafnode
+    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  except:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/mccssubarrayleafnode/dist/
 
 build DishMaster wheel for publication: # Executed on a tag
   stage: build
@@ -289,9 +340,11 @@ publish to nexus:
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/dishleafnode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/cspmasterleafnode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/sdpmasterleafnode/dist/*
+    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/mccsmasterleafnode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/dishmaster/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/sdpsubarrayleafnode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/cspsubarrayleafnode/dist/*
+    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/mccssubarrayleafnode/dist/*
 
   only:
     variables:
@@ -312,6 +365,8 @@ pages:
     - mv public/unit_test/cspmasterleafnode_htmlcov/* public
     - mv public/unit_test/cspsubarrayleafnode_htmlcov/* public
     - mv public/unit_test/sdpsubarrayleafnode_htmlcov/* public
+    - mv public/unit_test/mccssubarrayleafnode_htmlcov/* public
+    - mv public/unit_test/mccsmasterleafnode_htmlcov/* public
     - mv public/unit_test/sdpmasterleafnode_htmlcov/* public
     - mv public/unit_test/dishleafnode_htmlcov/* public
     - mv public/unit_test/subarraynode_htmlcov/* public

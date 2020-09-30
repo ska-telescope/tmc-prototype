@@ -1,0 +1,8 @@
+recursive-include src/mccsmasterleafnode *.py
+recursive-include test *.py
+recursive-include pogo MccsMasterLeafNode.xmi
+include *.rst
+include *.txt
+graft docs
+global-exclude *.pyc
+global-exclude *.pyo
