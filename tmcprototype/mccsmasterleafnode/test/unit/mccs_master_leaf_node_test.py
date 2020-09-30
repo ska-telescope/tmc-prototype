@@ -1,14 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-#
-# This file is part of the MccsMasterLeafNode project
-#
-#
-#
-# Distributed under the terms of the GPL license.
-# See LICENSE.txt for more info.
-"""Contain the tests for the ."""
-
 # PROTECTED REGION ID(MccsMasterLeafNode.import) ENABLED START #
 
 # Standard Python imports
@@ -147,7 +136,6 @@ def test_release_resource_should_raise_devfail_exception(mock_mccs_master):
     assert const.ERR_RELEASE_ALL_RESOURCES in str(df.value)
 
 def test_releaseresources_command_with_callback_method(mock_mccs_master, event_subscription_without_arg):
-    # arrange:
     mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
     mccs_master_proxy_mock.obsState = ObsState.IDLE
     device_proxy.ReleaseResources()
@@ -156,7 +144,6 @@ def test_releaseresources_command_with_callback_method(mock_mccs_master, event_s
     assert const.STR_COMMAND + const.CMD_Release in device_proxy.activityMessage
 
 def test_releaseresources_command_with_callback_method_with_event_error(mock_mccs_master, event_subscription_without_arg):
-    # arrange:
     mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
     mccs_master_proxy_mock.obsState = ObsState.IDLE
     device_proxy.ReleaseResources()
@@ -176,37 +163,25 @@ def raise_devfailed_exception(cmd_name, inp_str):
                                     " ", tango.ErrSeverity.ERR)
 
 def test_on_should_command_mccs_master_leaf_node_to_start(mock_mccs_master):
-# arrange:
     mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
-
-    # act:
     device_proxy.On()
-    # assert:
     mccs_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON,
                                                                 any_method(with_name='on_cmd_ended_cb'))
 
 
 def test_on_should_command_to_on_with_callback_method(mock_mccs_master, event_subscription_without_arg):
-# arrange:
     device_proxy=mock_mccs_master[1]
-
-    # act:
     device_proxy.On()
     dummy_event = command_callback(const.CMD_ON)
     event_subscription_without_arg[const.CMD_ON](dummy_event)
-    # assert:
     assert const.STR_COMMAND + const.CMD_ON in device_proxy.activityMessage
 
 
 def test_on_should_command_with_callback_method_with_event_error(mock_mccs_master, event_subscription_without_arg):
-# arrange:
     device_proxy=mock_mccs_master[1]
-
-#act
     device_proxy.On()
     dummy_event = command_callback_with_event_error(const.CMD_ON)
     event_subscription_without_arg[const.CMD_ON](dummy_event)
-    # assert:
     assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
 
 
@@ -220,27 +195,18 @@ def test_on_should_raise_devfailed_exception(mock_mccs_master):
 
 
 def test_off_should_command_to_off_with_callback_method(mock_mccs_master):
-# arrange:
     device_proxy=mock_mccs_master[1]
-
-    # act:
     device_proxy.On()
     device_proxy.Off()
-
-    # assert:
     assert device_proxy.activityMessage in const.STR_OFF_CMD_ISSUED
 
 
 def test_off_should_command_with_callback_method_with_event_error(mock_mccs_master ,event_subscription_without_arg):
-# arrange:
     device_proxy=mock_mccs_master[1]
-
-    # act:
     device_proxy.On()
     device_proxy.Off()
     dummy_event = command_callback_with_event_error(const.CMD_OFF)
     event_subscription_without_arg[const.CMD_OFF](dummy_event)
-    # assert:
     assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
 
 
@@ -252,6 +218,20 @@ def test_off_should_raise_devfailed_exception(mock_mccs_master):
         device_proxy.On()
         device_proxy.Off()
     assert const.ERR_DEVFAILED_MSG in str(df.value)
+
+
+def test_read_activity_message(tango_context):
+    # test case for method read_activityMessage
+    tango_context.device.activityMessage = 'test'
+    assert_activity_message(tango_context.device, 'test')
+    # assert tango_context.device.activityMessage == 'test'
+
+
+def test_write_activity_message(tango_context):
+    # test case for method write_activityMessage
+    tango_context.device.activityMessage = 'test'
+    assert_activity_message(tango_context.device, 'test')
+    # assert tango_context.device.activityMessage == 'test'
 
 
 def command_callback(command_name):
@@ -293,6 +273,7 @@ def raise_devfailed_exception(cmd_name, inp_str):
     # "This function is called to raise DevFailed exception."
     tango.Except.throw_exception("MccsMasterLeafNode_CommandFailed", const.ERR_DEVFAILED_MSG,
     " ", tango.ErrSeverity.ERR)
+
 
 @contextlib.contextmanager
 def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
