@@ -28,6 +28,11 @@ path = join(dirname(__file__), 'data', assign_input_file)
 with open(path, 'r') as f:
     assign_input_str = f.read()
 
+assign_input_file_to_subarray = 'command_AssignResources_subarray.json'
+path = join(dirname(__file__), 'data', assign_input_file_to_subarray)
+with open(path, 'r') as f:
+    assign_input_str_to_subarray = f.read()
+
 release_input_file='command_ReleaseResources.json'
 path= join(dirname(__file__), 'data' , release_input_file)
 with open(path, 'r') as f:
@@ -37,11 +42,6 @@ invalid_json_Assign_Release_file='invalid_json_Assign_Release_Resources.json'
 path= join(dirname(__file__), 'data', invalid_json_Assign_Release_file)
 with open(path, 'r') as f:
     assign_release_invalid_str= f.read()
-
-assign_invalid_key_file='invalid_key_AssignResources.json'
-path= join(dirname(__file__), 'data', assign_invalid_key_file)
-with open(path, 'r') as f:
-    assign_invalid_key=f.read()
 
 release_invalid_key_file='invalid_key_ReleaseResources.json'
 path= join(dirname(__file__), 'data', release_invalid_key_file)
@@ -161,34 +161,11 @@ def test_logging_targets():
         assert 'console::cout' in tango_context.device.loggingTargets
 
 
-def test_test_mode():
-    # act & assert:
-    with fake_tango_system(CentralNode) as tango_context:
-        test_mode = TestMode.NONE
-        tango_context.device.testMode = test_mode
-        assert tango_context.device.testMode == test_mode
-
-
-def test_simulation_mode():
-    # act & assert:
-    with fake_tango_system(CentralNode) as tango_context:
-        simulation_mode = SimulationMode.FALSE
-        tango_context.device.simulationMode = simulation_mode
-        assert tango_context.device.simulationMode == simulation_mode
-
-
-def test_control_mode():
-    # act & assert:
-    with fake_tango_system(CentralNode) as tango_context:
-        control_mode = ControlMode.REMOTE
-        tango_context.device.controlMode = control_mode
-        assert tango_context.device.controlMode == control_mode
-
-
 def test_health_state():
     # act & assert:
     with fake_tango_system(CentralNode) as tango_context:
         assert tango_context.device.healthState == HealthState.OK
+
 
 def test_version_id():
     """Test for versionId"""
@@ -226,10 +203,9 @@ def test_assign_resources(mock_central_lower_devices):
     # mocking subarray device state as ON as per new state model
     subarray1_proxy_mock.DevState = DevState.ON
     # act
-    # Need to start the telescope
     device_proxy.AssignResources(assign_input_str)
     # assert
-    subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, assign_input_str)
+    subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, assign_input_str_to_subarray)
     mccs_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, assign_input_str)
 
 

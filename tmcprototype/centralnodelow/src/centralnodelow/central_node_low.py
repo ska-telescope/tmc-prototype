@@ -533,8 +533,8 @@ class CentralNode(SKABaseDevice):
             :param argin: The string in JSON format. The JSON contains following values:
 
                subarray_id:
-                   DevShort. Mandatory.
-                   the Sub-Array to allocate resources
+                    DevShort. Mandatory.
+                    Sub-Array to allocate resources to
                station_ids:
                     DevArray. Mandatory
                     list of stations contributing beams to the data set
@@ -573,11 +573,14 @@ class CentralNode(SKABaseDevice):
                 subarray_id = int(json_argument['subarray_id'])
                 subarrayProxy = device.subarray_FQDN_dict[subarray_id]
                 
+                # Remove subarray_id key from input json argument and send the json to subarray node
+                input_json_subarray = json_argument.copy()
+                del input_json_subarray["subarray_id"]
+                input_to_sa = json.dumps(input_json_subarray)
                 # Allocate resources to subarray
                 self.logger.info("Allocating resource to subarray %d", subarray_id)
-                input_to_sa = json.dumps(json_argument)
-                # TODO: Need to think if anything will be returned from SubarrayNode
                 subarrayProxy.command_inout(const.CMD_ASSIGN_RESOURCES, input_to_sa)
+                
                 # Invoke command on MCCS Master leaf node
                 self.logger.info("Invoking AssignResources command on MCCS Master Leaf Node")
                 input_to_mccs = json.dumps(json_argument)
@@ -586,7 +589,15 @@ class CentralNode(SKABaseDevice):
                 # Allocation successful
                 device._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
                 self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
-
+            
+            except KeyError as key_error:
+                self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
+                device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+                log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+                self.logger.exception(key_error)
+                tango.Except.throw_exception(const.STR_RESOURCE_ALLOCATION_FAILED, log_msg,
+                                             "CentralNode.AssignResourcesCommand",
+                                             tango.ErrSeverity.ERR)
             except ValueError as val_error:
                 self.logger.exception("Exception in AssignResources command: %s", str(val_error))
                 device._read_activity_message = "Invalid value in input: " + str(val_error)
