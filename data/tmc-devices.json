@@ -79,6 +79,53 @@
                 }
             }
         },
+        "CentralNodeLowDS": {
+            "01": {
+                "CentralNode": {
+                    "ska_low/tm_central/central_node": {
+                        "attribute_properties": {
+                            "subarray1HealthState": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
+                            "telescopeHealthState": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            }
+                        },
+                        "properties": {
+                            "MCCSMasterLeafNodeFQDN": [
+                                "ska_low/tm_leaf_node/mccs_master"
+                            ],
+                            "TMLowSubarrayNodes": [
+                                "ska_low/tm_subarray_node/1"
+                            ],
+                            "SkaLevel": [
+                                "1"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ],
+                            "LoggingLevelDefault": [
+                                "5"
+                            ],
+                            "polled_attr": [
+                                "subarray1healthstate",
+                                "1000",
+                                "activitymessage",
+                                "1000",
+                                "telescopehealthstate",
+                                "1000"
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "SubarrayNodeDS": {
             "sa1": {
                 "SubarrayNode": {
@@ -322,6 +369,74 @@
                                 "obsstate",
                                 "1000",
                                 "receptoridlist",
+                                "1000"
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "SubarrayNodeLowDS": {
+            "sa1": {
+                "SubarrayNode": {
+                    "ska_low/tm_subarray_node/1": {
+                        "attribute_properties": {
+                            "adminMode": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
+                            "healthState": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
+                            "obsMode": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
+                            "obsState": {
+                                "abs_change": [
+                                    "-1",
+                                    "1"
+                                ]
+                            },
+                            "simulationMode": {
+                                "__value": [
+                                    "false"
+                                ]
+                            }
+                        },
+                        "properties": {
+                            "MccsSubarrayLNFQDN": [
+                                "ska_low/tm_leaf_node/mccs_subarray01"
+                            ],
+                            "MCCSSubarrayFQDN": [
+                                "low_mccs/elt/subarray_01"
+                            ],
+                            "SkaLevel": [
+                                "2"
+                            ],
+                            "LoggingTargetsDefault": [
+                                "tango::logger"
+                            ],
+                            "LoggingLevelDefault": [
+                                "5"
+                            ],
+                            "polled_attr": [
+                                "activitymessage",
+                                "1000",
+                                "adminmode",
+                                "1000",
+                                "healthstate",
+                                "1000",
+                                "obsmode",
+                                "1000",
+                                "obsstate",
                                 "1000"
                             ]
                         }
