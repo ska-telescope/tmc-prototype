@@ -170,6 +170,14 @@ def test_start_scan_should_raise_devfailed_exception(mock_lower_devices):
     assert "Failed to invoke StartScan command on subarraynode." in str(df.value)
 
 
+def test_off_should_raise_devfailed_exception(mock_lower_devices):
+    tango_context, mccs_subarray1_ln_proxy_mock = mock_lower_devices[:2]
+    mccs_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
+    with pytest.raises(tango.DevFailed) as df:
+        tango_context.device.Off()
+    assert "Error executing command OffCommand" in str(df.value)
+
+
 @pytest.fixture(scope="function")
 def mock_lower_devices():
     mccs_subarray1_ln_fqdn = 'ska_low/tm_leaf_node/mccs_subarray01'

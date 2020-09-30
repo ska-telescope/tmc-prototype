@@ -92,6 +92,8 @@ STR_OBSRESET_SUCCESS = "ObsReset command invoked successfully on SDP Subarray Le
 ERR_SUBS_MCCS_SA_LEAF_ATTR = "Exception occurred while subscribing to MCCS Subarray attribute"
 ERR_SUBSR_MCCSSA_OBS_STATE = "Error in subscribing MCCS Subarray obsState on MCCSSALN LeafNodes."
 ERR_MCCS_SUBARRAY_OBS_STATE = "Key Error occurred while setting MCCS Subarray obsState"
+ERR_INVOKING_ON_CMD = "Error while invoking ON command on Subarray Node."
+ERR_INVOKING_OFF_CMD = "Error while invoking OFF command on Subarray Node."
 
 
 
