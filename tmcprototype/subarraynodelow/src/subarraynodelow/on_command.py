@@ -29,19 +29,14 @@ class OnCommand(SKASubarray.OnCommand):
         :raises: DevFailed if the command execution is not successful
         """
         device = self.target
-        # device.is_restart_command = False
-        # device.is_release_resources = False
-        # device.is_abort_command = False
-        # device.is_obsreset_command = False
         try:
             device._mccs_subarray_ln_proxy.On()
-            # device._sdp_subarray_ln_proxy.On()
             message = "On command completed OK"
             self.logger.info(message)
             return (ResultCode.OK, message)
         except DevFailed as dev_failed:
-            # log_msg = const.ERR_INVOKING_ON_CMD + str(dev_failed)
-            # self.logger.error(log_msg)
-            # self._read_activity_message = log_msg
+            log_msg = const.ERR_INVOKING_ON_CMD + str(dev_failed)
+            self.logger.error(log_msg)
+            self._read_activity_message = log_msg
             tango.Except.throw_exception(dev_failed[0].desc, "Failed to invoke On command on SubarrayNode.",
                                          "SubarrayNode.On()", tango.ErrSeverity.ERR)

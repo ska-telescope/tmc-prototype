@@ -39,9 +39,6 @@ STR_MCCS_SA_LEAF_INIT_SUCCESS = "Subscribed MCCS Subarray attributes successfull
 STR_SA_INIT_SUCCESS = "Subarray node is initialized successfully."
 STR_MCCS_SUBARRAY_OBS_STATE= "MCCS Subarray obsState is:"
 STR_SA_INIT = "Initializing SubarrayNode..."
-
-
-# STR_CONFIGURE_CMD_INVOKED_SA = "Configure command invoked on Subarray"
 STR_CONFIGURE_CMD_INVOKED_SA_LOW = "Configure command invoked on Subarray Low"
 STR_TRACK_CMD_INVOKED_SA = "Track command invoked on Subarray"
 SCAN_ALREADY_IN_PROGRESS = "Scan is already in progress"
@@ -50,7 +47,6 @@ SCAN_NOT_EXECUTED = "Scan can not be executed as Subarray.obsState is not READY.
 RESOURCE_ALREADY_RELEASED = "Resources are already released from Subarray"
 STR_FALSE = "False"
 STR_TRACK_EXEC = "Track command execution"
-# STR_CMD_FAILED = "SubarrayNode_Commandfailed"
 STR_CMD_FAILED = "SubarrayNodeLow_Commandfailed"
 STR_CONFIGURE_EXEC = "Configure command execution"
 STR_RELEASE_ALL_RES_EXEC = "ReleaseAllResources command execution"
@@ -72,8 +68,7 @@ STR_CSP_SA_HEALTH_FAILED = "CSP SA health is FAILED."
 STR_CSP_SA_HEALTH_UNKNOWN = "CSP SA health is UNKNOWN."
 STR_CSP_SUBARRAY_OBS_STATE= "CSP Subarray obsState is:"
 STR_SDP_SUBARRAY_OBS_STATE= "SDP Subarray obsState is:"
-STR_SDP_SCAN_INIT = "SDP Scan is initiated."
-STR_CSP_SCAN_INIT = "CSP Scan is initiated."
+STR_MCCS_SCAN_INIT = "MCCS Subarray Leaf Node Scan is initiated."
 STR_SDP_END_SCAN_INIT = "SDP EndScan is initiated."
 STR_CSP_END_SCAN_INIT = "CSP EndScan is initiated."
 STR_CSP_SA_LEAF_INIT_SUCCESS = "Subscribed Csp Subarray attributes successfully."
@@ -95,6 +90,8 @@ STR_OBSRESET_SUCCESS = "ObsReset command invoked successfully on SDP Subarray Le
 ERR_SUBS_MCCS_SA_LEAF_ATTR = "Exception occurred while subscribing to MCCS Subarray attribute"
 ERR_SUBSR_MCCSSA_OBS_STATE = "Error in subscribing MCCS Subarray obsState on MCCSSALN LeafNodes."
 ERR_MCCS_SUBARRAY_OBS_STATE = "Key Error occurred while setting MCCS Subarray obsState"
+ERR_INVOKING_ON_CMD = "Error while invoking ON command on Subarray Node."
+ERR_INVOKING_OFF_CMD = "Error while invoking OFF command on Subarray Node."
 
 
 

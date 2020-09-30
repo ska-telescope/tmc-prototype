@@ -17,7 +17,7 @@ other TM Components (such as OET, Central Node) for a Subarray.
 import tango
 from tango import AttrWriteType, DevFailed, DeviceProxy, EventType
 from tango.server import run,attribute, command, device_property
-from . import const, release, on_command, off_command, end_scan_command
+from . import const, release, on_command, off_command, scan_command, configure_command ,end_scan_command
 from .const import PointingState
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, ObsMode, ObsState
@@ -44,6 +44,8 @@ class SubarrayNode(SKASubarray):
         self.on_obj = on_command.OnCommand(*args)
         self.off_obj = off_command.OffCommand(*args)
         self.endscan_obj = end_scan_command.EndScanCommand(*args)
+        self.scan_obj = scan_command.ScanCommand(*args)
+        self.configure_obj = configure_command.ConfigureCommand(*args)
 
     def observation_state_cb(self, evt):
         """
@@ -279,6 +281,7 @@ class SubarrayNode(SKASubarray):
         self.register_command_object("On", on_command.OnCommand(*args))
         self.register_command_object("Off", off_command.OffCommand(*args))
         self.register_command_object("Configure", configure_command.ConfigureCommand(*args))
+        self.register_command_object("Scan", scan_command.ScanCommand(*args))
 
 
 # ----------

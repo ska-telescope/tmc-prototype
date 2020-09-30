@@ -6,8 +6,9 @@ python3 -m pip install pytest-forked
 
 #For each node sub-package inside tmc-prototype, coverage report for each device is generated using unit-test job.
 #Coverage report are generated in .coverage, .xml and .html format. Each device's .coverage report is moved in unit_test folder to generate the combine report further.
-for path in $(find ./*/test  -type d -name unit); do
-	export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
+# for path in $(find ./*/test  -type d -name unit); do
+# 	export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
+  export TMC_ELEMENT=subarraynodelow;
   echo +++ Trying tests for $TMC_ELEMENT;
   pytest -v ./${TMC_ELEMENT}/test/unit --forked --cov=/usr/local/lib/python3.7/dist-packages/${TMC_ELEMENT} --cov-branch --cov-report=html:/report/unit_test/${TMC_ELEMENT}_htmlcov --json-report --json-report-file=/report/unit_test/${TMC_ELEMENT}_report.json --junitxml=/report/unit_test/${TMC_ELEMENT}-unit-tests.xml;
   mv /app/tmcprototype/.coverage /report/unit_test/${TMC_ELEMENT}_coverage;
@@ -29,6 +30,8 @@ junitparser merge /report/unit_test/dishleafnode-unit-tests.xml \
                 /report/unit_test/cspsubarrayleafnode-unit-tests.xml \
                 /report/unit_test/sdpmasterleafnode-unit-tests.xml \
                 /report/unit_test/sdpsubarrayleafnode-unit-tests.xml \
+                /report/unit_test/mccsmasterleafnode-unit-tests.xml \
+                /report/unit_test/mccssubarrayleafnode-unit-tests.xml \
                 /report/unit_test/subarraynode-unit-tests.xml \
                 /report/unit_test/mccsmasterleafnode-unit-tests.xml \
                 /report/unit_test/mccssubarrayleafnode-unit-tests.xml \
