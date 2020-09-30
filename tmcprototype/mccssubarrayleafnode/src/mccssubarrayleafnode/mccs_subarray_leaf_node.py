@@ -232,10 +232,18 @@ class MccsSubarrayLeafNode(SKABaseDevice):
 
                 # Add in sky_coordinates set in station_beam_pointings
                 station_beam_pointings["sky_coordinates"] = device._sky_coordinates
+                # Add station_id in station_beam_pointings
+                station_beam_pointings["station_id"] = 1
                 # Remove target block from station_beam_pointings
                 station_beam_pointings.pop("target", None)
 
+                # argin_json["station_beam_pointings"][0] = station_beam_pointings
                 argin_json["station_beam_pointings"][0] = station_beam_pointings
+                argin_json["station_beams"] = argin_json["station_beam_pointings"]
+                argin_json.pop("station_beam_pointings", None)
+
+                log_msg = "Input JSON for MCCS Subarray Leaf Node Configure command is: " + json.dumps(argin_json)
+                self.logger.info(log_msg)
                 
                 device._mccs_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(argin_json),
                                                         self.configure_cmd_ended_cb)
