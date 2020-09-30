@@ -35,8 +35,8 @@ class OffCommand(SKASubarray.OffCommand):
             return (ResultCode.OK, message)
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_INVOKING_OFF_CMD + str(dev_failed)
-            self.logger.error(log_msg)
-            self._read_activity_message = log_msg
+            # log_msg = const.ERR_INVOKING_OFF_CMD + str(dev_failed)
+            # self.logger.error(log_msg)
+            # self._read_activity_message = log_msg
             tango.Except.throw_exception(dev_failed[0].desc, "Failed to invoke Off command on SubarrayNode.",
                                          "SubarrayNode.Off()", tango.ErrSeverity.ERR)

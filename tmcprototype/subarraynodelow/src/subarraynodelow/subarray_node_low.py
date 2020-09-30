@@ -22,10 +22,11 @@ from .const import PointingState
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, ObsMode, ObsState
 from ska.base import SKASubarray
-from subarraynode.exceptions import InvalidObsStateError
+from subarraynodelow.exceptions import InvalidObsStateError
 
-__all__ = ["SubarrayNode", "main", "on_command", "off_command"]
-
+__all__ = ["SubarrayNode", "main", "assign_resources_command", "release_all_resources_command",
+           "configure_command", "scan_command", "end_scan_command", "end_command", "on_command",
+           "off_command"]
 
 class SubarrayNode(SKASubarray):
     """
@@ -43,6 +44,81 @@ class SubarrayNode(SKASubarray):
         self.on_obj = on_command.OnCommand(*args)
         self.off_obj = off_command.OffCommand(*args)
 
+    def observation_state_cb(self, evt):
+        """
+        Retrieves the subscribed CSP_Subarray AND SDP_Subarray  obsState.
+
+        :param evt: A TANGO_CHANGE event on CSP and SDP Subarray obsState.
+
+        :return: None
+        """
+        try:
+            if not evt.err:
+                self._observetion_state = evt.attr_value.value
+                if const.PROP_DEF_VAL_TMMCCS_MID_SALN in evt.attr_name:
+                    self._mccs_sa_obs_state = self._observetion_state
+                    self._read_activity_message = const.STR_MCCS_SUBARRAY_OBS_STATE + str(
+                        self._mccs_sa_obs_state)
+                else:
+                    self.logger.debug(const.EVT_UNKNOWN)
+                    self._read_activity_message = const.EVT_UNKNOWN
+                self.calculate_observation_state()
+
+            else:
+                log_msg = const.ERR_SUBSR_MCCSSA_OBS_STATE + str(evt)
+                self.logger.debug(log_msg)
+                self._read_activity_message = log_msg
+        except KeyError as key_error:
+            log_msg = const.ERR_MCCS_SUBARRAY_OBS_STATE + str(key_error)
+            self.logger.error(log_msg)
+            self._read_activity_message = const.ERR_MCCS_SUBARRAY_OBS_STATE + str(key_error)
+
+    def calculate_observation_state(self):
+        """
+        Calculates aggregated observation state of Subarray.
+        """
+        log_msg = "self._mccs_sa_obs_state is: " + str(self._mccs_sa_obs_state)
+        self.logger.info(log_msg)
+        if self._mccs_sa_obs_state == ObsState.EMPTY:
+            print(" ") # Refer below code and do changes according to the story
+            # if self.is_release_resources:
+            #     self.logger.info("Calling ReleaseAllResource command succeeded() method")
+            #     self.release_obj.succeeded()
+            # elif self.is_restart_command:
+            #     self.logger.info("Calling Restart command succeeded() method")
+            #     self.restart_obj.succeeded()
+
+        elif self._mccs_sa_obs_state == ObsState.READY:
+            if self.is_scan_completed:
+                self.logger.info("Calling EndScan command succeeded() method")
+                self.endscan_obj.succeeded()
+            else:
+                # Configure command success
+                self.logger.info("Calling Configure command succeeded() method")
+                self.configure_obj.succeeded()
+        elif self._mccs_sa_obs_state == ObsState.IDLE:
+            if self.is_end_command:
+                # End command success
+                self.logger.info("Calling End command succeeded() method")
+
+    def _unsubscribe_resource_events(self, proxy_event_id_map):
+        """
+        This function unsubscribes all events given by the event ids and their
+        corresponding DeviceProxy objects.
+
+        :param proxy_event_id_map: dict
+            A mapping of '<DeviceProxy>': <event_id>.
+
+        :return: None
+
+        """
+        for device_proxy, event_id in proxy_event_id_map.items():
+            try:
+                device_proxy.unsubscribe_event(event_id)
+            except DevFailed as dev_failed:
+                log_message = "Failed to unsubscribe event {}.".format(dev_failed)
+                self.logger.error(log_message )
+                self._read_activity_message = log_message
 
     def get_deviceproxy(self, device_fqdn):
         """
@@ -68,27 +144,14 @@ class SubarrayNode(SKASubarray):
     # Device Properties
     # -----------------
 
-    DishLeafNodePrefix = device_property(
-        dtype='str', doc="Device name prefix for the Dish Leaf Node",
+    MccsSubarrayLNFQDN = device_property(
+        dtype='str', doc="This property contains the FQDN of the MCCS Subarray Leaf Node associated with the "
+                         "Subarray Node."
     )
 
-    CspSubarrayLNFQDN = device_property(
-
-        dtype='str', doc="This property contains the FQDN of the CSP Subarray Leaf Node associated with the "
-            "Subarray Node.",
-    )
-
-    SdpSubarrayLNFQDN = device_property(
-        dtype='str', doc="This property contains the FQDN of the SDP Subarray Leaf Node associated with the "
-            "Subarray Node.",
-    )
-
-    CspSubarrayFQDN = device_property(
-        dtype='str',
-    )
-
-    SdpSubarrayFQDN = device_property(
-        dtype='str',
+    MccsSubarrayFQDN = device_property(
+        dtype='str', doc="This property contains the FQDN of the MCCS Subarray associated with the "
+                         "Subarray Node."
     )
 
     # ----------
@@ -97,24 +160,11 @@ class SubarrayNode(SKASubarray):
 
     scanID = attribute(
         dtype='str',
-        doc="ID of ongoing SCAN",
-    )
-
-    sbID = attribute(
-        dtype='str',
-        doc="ID of ongoing Scheduling Block",
     )
 
     activityMessage = attribute(
         dtype='str',
         access=AttrWriteType.READ_WRITE,
-        doc="Activity Message",
-    )
-
-    receptorIDList = attribute(
-        dtype=('uint16',),
-        max_dim_x=100,
-        doc="ID List of the Receptors assigned in the Subarray",
     )
 
     # ---------------
@@ -144,13 +194,33 @@ class SubarrayNode(SKASubarray):
             device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
             device._version_id = release.version
             device._health_event_id = []
+            device._mccs_sa_obs_state = None
             device.subarray_ln_health_state_map = {}
             device._subarray_health_state = HealthState.OK  #Aggregated Subarray Health State
 
             # Create proxy for CSP Subarray Leaf Node
             device._mccs_subarray_ln_proxy = None
+            device._mccs_subarray_proxy = None
             device._mccs_subarray_ln_proxy = device.get_deviceproxy(device.MccsSubarrayLNFQDN)
+            device._mccs_subarray_proxy = device.get_deviceproxy(device.MccsSubarrayFQDN)
             device.command_class_object()
+
+            try:
+                # Subscribe mccsSubarrayObsState (forwarded attribute) of MccsSubarray
+                device._mccs_subarray_ln_proxy.subscribe_event(const.EVT_MCCSSA_OBS_STATE, EventType.CHANGE_EVENT,
+                                                              device.observation_state_cb, stateless=True)
+                device.set_status(const.STR_MCCS_SA_LEAF_INIT_SUCCESS)
+                self.logger.info(const.STR_MCCS_SA_LEAF_INIT_SUCCESS)
+            except DevFailed as dev_failed:
+                log_msg = const.ERR_SUBS_MCCS_SA_LEAF_ATTR + str(dev_failed)
+                device._read_activity_message = log_msg
+                device.set_status(const.ERR_SUBS_MCCS_SA_LEAF_ATTR)
+                self.logger.exception(dev_failed)
+                tango.Except.throw_exception(const.ERR_SUBS_MCCS_SA_LEAF_ATTR,
+                                             log_msg,
+                                             "SubarrayNode.InitCommand",
+                                             tango.ErrSeverity.ERR)
+
             device._read_activity_message = const.STR_SA_INIT_SUCCESS
             self.logger.info(device._read_activity_message)
             return (ResultCode.OK, device._read_activity_message)
@@ -193,13 +263,6 @@ class SubarrayNode(SKASubarray):
         # PROTECTED REGION ID(SubarrayNode.activityMessage_write) ENABLED START #
         self._read_activity_message = value
         # PROTECTED REGION END #    //  SubarrayNode.activityMessage_write
-
-    def read_receptorIDList(self):
-        """ Internal construct of TANGO. Returns the receptor IDs allocated to the Subarray.
-         """
-        # PROTECTED REGION ID(SubarrayNode.receptorIDList_read) ENABLED START #
-        return self._receptor_id_list
-        # PROTECTED REGION END #    //  SubarrayNode.receptorIDList_read
 
     # --------
     # Commands

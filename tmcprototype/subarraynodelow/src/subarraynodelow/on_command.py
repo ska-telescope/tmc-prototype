@@ -40,8 +40,8 @@ class OnCommand(SKASubarray.OnCommand):
             self.logger.info(message)
             return (ResultCode.OK, message)
         except DevFailed as dev_failed:
-            log_msg = const.ERR_INVOKING_ON_CMD + str(dev_failed)
-            self.logger.error(log_msg)
-            self._read_activity_message = log_msg
+            # log_msg = const.ERR_INVOKING_ON_CMD + str(dev_failed)
+            # self.logger.error(log_msg)
+            # self._read_activity_message = log_msg
             tango.Except.throw_exception(dev_failed[0].desc, "Failed to invoke On command on SubarrayNode.",
                                          "SubarrayNode.On()", tango.ErrSeverity.ERR)
