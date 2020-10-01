@@ -43,8 +43,10 @@ STR_CONFIGURE_CMD_INVOKED_SA_LOW = "Configure command invoked on Subarray Low"
 STR_TRACK_CMD_INVOKED_SA = "Track command invoked on Subarray"
 SCAN_ALREADY_IN_PROGRESS = "Scan is already in progress"
 SCAN_ALREADY_COMPLETED = "Scan is already completed"
+STR_SCAN_COMPLETE = "Scan is completed"
 SCAN_NOT_EXECUTED = "Scan can not be executed as Subarray.obsState is not READY."
 RESOURCE_ALREADY_RELEASED = "Resources are already released from Subarray"
+STR_MCCS_END_SCAN_INIT = "MCCS EndScan is initiated."
 STR_FALSE = "False"
 STR_TRACK_EXEC = "Track command execution"
 STR_CMD_FAILED = "SubarrayNodeLow_Commandfailed"
@@ -67,6 +69,7 @@ ERR_MCCS_SUBARRAY_OBS_STATE = "Key Error occurred while setting MCCS Subarray ob
 ERR_INVOKING_ON_CMD = "Error while invoking ON command on Subarray Node."
 ERR_INVOKING_OFF_CMD = "Error while invoking OFF command on Subarray Node."
 ERR_END_INVOKING_CMD = "Error while invoking End command on Subarray Node low."
+ERR_END_SCAN_CMD_ON_MCCS="Error invoking EndScan command on MccsSubarrayLeafNode"
 ERR_DEVICE_NOT_READY = "Subarray Node low is not in Ready observation state."
 
 

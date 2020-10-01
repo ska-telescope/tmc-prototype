@@ -43,9 +43,9 @@ class SubarrayNode(SKASubarray):
         self.init_obj = self.InitCommand(*args)
         self.on_obj = on_command.OnCommand(*args)
         self.off_obj = off_command.OffCommand(*args)
-        self.endscan_obj = end_scan_command.EndScanCommand(*args)
         self.end_obj = end_command.EndCommand(*args)
         self.scan_obj = scan_command.ScanCommand(*args)
+        self.endscan_obj = end_scan_command.EndScanCommand(*args)
         self.configure_obj = configure_command.ConfigureCommand(*args)
         self.release_obj = release_all_resources_command.ReleaseAllResourcesCommand(*args)
 
@@ -288,6 +288,7 @@ class SubarrayNode(SKASubarray):
         self.register_command_object("Configure", configure_command.ConfigureCommand(*args))
         self.register_command_object("Scan", scan_command.ScanCommand(*args))
         self.register_command_object("End", end_command.EndCommand(*args))
+        self.register_command_object("EndScan", end_scan_command.EndScanCommand(*args))
 
 # ----------
 # Run server
