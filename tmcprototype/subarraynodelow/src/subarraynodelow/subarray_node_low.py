@@ -17,7 +17,7 @@ other TM Components (such as OET, Central Node) for a Subarray.
 import tango
 from tango import AttrWriteType, DevFailed, DeviceProxy, EventType
 from tango.server import run,attribute, command, device_property
-from . import const, release, on_command, off_command, scan_command, configure_command ,end_scan_command
+from . import const, release, on_command, off_command, scan_command, configure_command ,end_scan_command, end_command
 from .const import PointingState
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, ObsMode, ObsState
@@ -44,8 +44,10 @@ class SubarrayNode(SKASubarray):
         self.on_obj = on_command.OnCommand(*args)
         self.off_obj = off_command.OffCommand(*args)
         self.endscan_obj = end_scan_command.EndScanCommand(*args)
+        self.end_obj = end_command.EndCommand(*args)
         self.scan_obj = scan_command.ScanCommand(*args)
         self.configure_obj = configure_command.ConfigureCommand(*args)
+        self.release_obj = release_all_resources_command.ReleaseAllResourcesCommand(*args)
 
     def observation_state_cb(self, evt):
         """
@@ -103,6 +105,7 @@ class SubarrayNode(SKASubarray):
             if self.is_end_command:
                 # End command success
                 self.logger.info("Calling End command succeeded() method")
+                self.end_obj.succeeded()
 
     def _unsubscribe_resource_events(self, proxy_event_id_map):
         """
@@ -194,6 +197,8 @@ class SubarrayNode(SKASubarray):
             device.set_status(const.STR_SA_INIT)
             device._obs_mode = ObsMode.IDLE
             device._scan_id = ""
+            device.is_end_command = False
+            device.is_release_resources = False
             device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
             device._version_id = release.version
             device._health_event_id = []
@@ -282,7 +287,7 @@ class SubarrayNode(SKASubarray):
         self.register_command_object("Off", off_command.OffCommand(*args))
         self.register_command_object("Configure", configure_command.ConfigureCommand(*args))
         self.register_command_object("Scan", scan_command.ScanCommand(*args))
-
+        self.register_command_object("End", end_command.EndCommand(*args))
 
 # ----------
 # Run server
