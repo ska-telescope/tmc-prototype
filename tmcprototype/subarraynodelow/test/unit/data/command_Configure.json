@@ -2,11 +2,11 @@
   "mccs": {
     "stations": [
       {
-        "station_id": 1,
+        "station_id": 1
 
       },
       {
-        "station_id": 2,
+        "station_id": 2
 
       }
     ],

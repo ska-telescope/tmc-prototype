@@ -94,7 +94,7 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
         # # self._configure_sdp(scan_configuration)
         try:
             scan_configuration.pop("tmc", None)
-            scan_configuration = scan_configuration("mccs", {})
+            scan_configuration = scan_configuration["mccs"]
             device._mccs_subarray_ln_proxy.command_inout(const.CMD_CONFIGURE, scan_configuration)
             message = "Configure command invoked"
             self.logger.info(message)
