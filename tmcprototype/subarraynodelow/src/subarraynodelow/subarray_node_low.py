@@ -17,6 +17,7 @@ other TM Components (such as OET, Central Node) for a Subarray.
 import tango
 from tango import AttrWriteType, DevFailed, DeviceProxy, EventType
 from tango.server import run,attribute, command, device_property
+
 from . import const, release, on_command, off_command, scan_command, configure_command ,end_scan_command, end_command, assign_resources_command, release_all_resources_command
 from .const import PointingState
 from ska.base.commands import ResultCode
@@ -164,6 +165,11 @@ class SubarrayNode(SKASubarray):
         dtype='str', doc="This property contains the FQDN of the MCCS Subarray associated with the "
                          "Subarray Node."
     )
+
+    MccsSubarrayFQDN = device_property(
+        dtype='str',
+    )
+
 
     # ----------
     # Attributes
