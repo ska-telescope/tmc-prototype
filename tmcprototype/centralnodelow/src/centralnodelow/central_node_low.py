@@ -303,6 +303,8 @@ class CentralNode(SKABaseDevice):
             """
             Sets the CentralNodeLow into OFF state. Invokes the respective command on lower level nodes and devices.
 
+            param argin: None.
+
             :return: A tuple containing a return code and a string message indicating status.
             The message is for information purpose only.
 
