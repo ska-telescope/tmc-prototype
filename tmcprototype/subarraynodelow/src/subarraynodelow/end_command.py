@@ -44,6 +44,7 @@ class EndCommand(SKASubarray.EndCommand):
         except DevFailed as dev_failed:
             log_msg = const.ERR_END_INVOKING_CMD + str(dev_failed)
             self.logger.exception(log_msg)
+            device.set_status(const.ERR_END_INVOKING_CMD)
             tango.Except.throw_exception(const.STR_END_EXEC,
                                          log_msg,
                                          "SubarrayNodelow.EndCommand",
