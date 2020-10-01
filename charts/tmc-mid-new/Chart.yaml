@@ -1,5 +1,5 @@
 apiVersion: v2
-name: tmc-mid-new-original
+name: tmc-mid
 description: A Helm chart for TMC-Mid deployment
 type: application
 version: 0.0.2
