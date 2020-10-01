@@ -195,6 +195,18 @@ class SubarrayNode(SKASubarray):
                 continue
         return device_proxy
 
+     def __len__(self):
+        """
+        Returns the number of resources currently assigned. Note that
+        this also functions as a boolean method for whether there are
+        any assigned resources: ``if len()``.
+
+        :return: number of resources assigned
+        :rtype: int
+        """
+
+        return len(self._resource_list)
+
     # -----------------
     # Device Properties
     # -----------------
@@ -251,6 +263,7 @@ class SubarrayNode(SKASubarray):
             device.set_status(const.STR_SA_INIT)
             device._obs_mode = ObsMode.IDLE
             device._scan_id = ""
+            device._resource_list = [1]
             device.is_end_command = False
             device.is_release_resources = False
             device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
