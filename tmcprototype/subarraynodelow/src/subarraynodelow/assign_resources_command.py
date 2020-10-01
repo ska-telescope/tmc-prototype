@@ -1,5 +1,5 @@
 """
-AssignResourcesCommand class for SubarrayNode.
+AssignResourcesCommand class for SubarrayNodelow.
 """
 
 import json
@@ -14,7 +14,7 @@ from ska.base import SKASubarray
 
 class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
     """
-    A class for SubarrayNode's AssignResources() command.
+    A class for SubarrayNodelow's AssignResources() command.
     """
     def do(self, argin):
         """

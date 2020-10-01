@@ -7,7 +7,7 @@
 # Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 
-""" Subarray Node
+""" Subarray Node low
 Provides the monitoring and control interface required by users as well as
 other TM Components (such as OET, Central Node) for a Subarray.
 """
@@ -40,7 +40,7 @@ class SubarrayHealthState:
     @staticmethod
     def calculate_health_state(health_states):
         """
-        Calculates aggregated health state of Subarray.
+        Calculates aggregated health state of Subarraylow.
         """
         unique_states = set(health_states)
         if unique_states == set([HealthState.OK]):

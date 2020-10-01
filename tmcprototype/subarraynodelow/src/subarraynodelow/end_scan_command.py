@@ -1,5 +1,5 @@
 """
-EndScanCommand class for SubarrayNode.
+EndScanCommand class for SubarrayNodelow.
 """
 
 # Tango imports

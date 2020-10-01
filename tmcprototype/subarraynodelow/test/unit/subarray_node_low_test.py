@@ -326,7 +326,6 @@ def test_assign_resource_should_raise_exception_when_called_when_device_state_of
         assert tango_context.device.obsState == ObsState.EMPTY
         assert "Error executing command AssignResourcesCommand" in str(df.value)
 
-
 def test_configure_command_obsstate_changes_from_configuring_to_ready(mock_lower_devices):
     tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
     mccs_subarray1_obsstate_attribute = "mccsSubarrayObsState"
