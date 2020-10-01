@@ -16,17 +16,41 @@ other TM Components (such as OET, Central Node) for a Subarray.
 # Tango imports
 import tango
 from tango import AttrWriteType, DevFailed, DeviceProxy, EventType
-from tango.server import run,attribute, command, device_property
+from tango.server import run,attribute, device_property
 from . import const, release, on_command, off_command, scan_command, configure_command ,end_scan_command, end_command, assign_resources_command, release_all_resources_command
-
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, ObsMode, ObsState
 from ska.base import SKASubarray
-from subarraynodelow.exceptions import InvalidObsStateError
 
 __all__ = ["SubarrayNode", "main", "assign_resources_command", "release_all_resources_command",
            "configure_command", "scan_command", "end_scan_command", "end_command", "on_command",
            "off_command"]
+
+
+class SubarrayHealthState:
+
+    @staticmethod
+    def generate_health_state_log_msg(health_state, device_name, event):
+        if isinstance(health_state, HealthState):
+            return (
+                const.STR_HEALTH_STATE + str(device_name) + const.STR_ARROW + str(health_state.name.upper()))
+        else:
+            return const.STR_HEALTH_STATE_UNKNOWN_VAL + str(event)
+
+    @staticmethod
+    def calculate_health_state(health_states):
+        """
+        Calculates aggregated health state of Subarray.
+        """
+        unique_states = set(health_states)
+        if unique_states == set([HealthState.OK]):
+            return HealthState.OK
+        elif HealthState.FAILED in unique_states:
+            return HealthState.FAILED
+        elif HealthState.DEGRADED in unique_states:
+            return HealthState.DEGRADED
+        else:
+            return HealthState.UNKNOWN
 
 class SubarrayNode(SKASubarray):
     """
@@ -49,6 +73,30 @@ class SubarrayNode(SKASubarray):
         self.configure_obj = configure_command.ConfigureCommand(*args)
         self.release_obj = release_all_resources_command.ReleaseAllResourcesCommand(*args)
         self.assign_obj = assign_resources_command.AssignResourcesCommand(*args)
+
+    def health_state_cb(self, event):
+        """
+        Retrieves the subscribed health states, aggregates them
+        to calculate the overall subarray health state.
+
+        :param event: A TANGO_CHANGE event on Subarray healthState.
+
+        :return: None
+        """
+
+        device_name = event.device.dev_name()
+        if not event.err:
+            event_health_state = event.attr_value.value
+            self.subarray_ln_health_state_map[device_name] = event_health_state
+
+            log_message = SubarrayHealthState.generate_health_state_log_msg(
+                event_health_state, device_name, event)
+            self._read_activity_message = log_message
+            self._health_state = SubarrayHealthState.calculate_health_state(
+                self.subarray_ln_health_state_map.values())
+        else:
+            log_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(device_name) + str(event)
+            self._read_activity_message = log_message
 
     def observation_state_cb(self, evt):
         """
@@ -220,6 +268,12 @@ class SubarrayNode(SKASubarray):
             device.command_class_object()
 
             try:
+                device.subarray_ln_health_state_map[device._mccs_subarray_ln_proxy.dev_name()] = (
+                    HealthState.UNKNOWN)
+                # Subscribe mccssubarrayHealthState (forwarded attribute) of MccsSubarray
+                device._mccs_subarray_ln_proxy.subscribe_event(const.EVT_MCCSSA_HEALTH, EventType.CHANGE_EVENT,
+                                                              device.health_state_cb, stateless=True)
+
                 # Subscribe mccsSubarrayObsState (forwarded attribute) of MccsSubarray
                 device._mccs_subarray_ln_proxy.subscribe_event(const.EVT_MCCSSA_OBS_STATE, EventType.CHANGE_EVENT,
                                                               device.observation_state_cb, stateless=True)
@@ -234,6 +288,8 @@ class SubarrayNode(SKASubarray):
                                              log_msg,
                                              "SubarrayNode.InitCommand",
                                              tango.ErrSeverity.ERR)
+
+
 
             device._read_activity_message = const.STR_SA_INIT_SUCCESS
             self.logger.info(device._read_activity_message)

@@ -18,6 +18,7 @@ class PointingState(IntEnum):
 
 # Events
 EVT_MCCSSA_OBS_STATE = "mccsSubarrayObsState"
+EVT_MCCSSA_HEALTH = "mccssubarrayHealthState"
 EVT_UNKNOWN = "Event from the Unknown device!"
 
 # Commands
@@ -66,9 +67,9 @@ STR_END_SUCCESS = "End command invoked successfully on Mccs Subarray Leaf Node."
 STR_END_EXEC = "End command execution."
 STR_CMD_END_INV_MCCS = "End command is invoked on MccsSubarrayLeafNode."
 STR_RELEASE_SUCCESS = "RELEASEALLRESOURCES command invoked successfully."
-
-
-
+STR_HEALTH_STATE = "healthState of "
+STR_ARROW = " :-> "
+STR_HEALTH_STATE_UNKNOWN_VAL = "Subarray healthState event returned unknown value  \n"
 
 # Error messages
 ERR_SUBS_MCCS_SA_LEAF_ATTR = "Exception occurred while subscribing to MCCS Subarray attribute"
@@ -80,7 +81,7 @@ ERR_END_INVOKING_CMD = "Error while invoking End command on Subarray Node low."
 ERR_END_SCAN_CMD_ON_MCCS="Error invoking EndScan command on MccsSubarrayLeafNode"
 ERR_DEVICE_NOT_READY = "Subarray Node low is not in Ready observation state."
 ERR_MCCS_CMD = "Failed to send command to MCCS Subarray Leaf Node."
-
+ERR_SUBSR_SA_HEALTH_STATE = "Error in subscribing Subarray healthState \n"
 
 
 # JSON keys
