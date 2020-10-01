@@ -79,11 +79,12 @@ class CentralNode(SKABaseDevice):
                     HealthState.UNKNOWN: 0
                 }
 
+                # TODO: For Future use
                 for subsystem_health_field_name in ['mccs_master_leaf_health']:
                     health_state = getattr(self, f"_{subsystem_health_field_name}")
                     counts[health_state] += 1
 
-                for subarray_health_state in list(self.subarray_health_state_map.values()):
+                for subarray_health_state in self.subarray_health_state_map.values():
                     counts[subarray_health_state] += 1
                 
                 # Calculating health_state for SubarrayNode, MCCSMasterLeafNode

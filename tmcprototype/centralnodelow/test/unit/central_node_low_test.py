@@ -16,7 +16,6 @@ from tango import DevState
 from tango.test_context import DeviceTestContext
 
 # Additional import
-
 from centralnodelow import CentralNode, const, release
 from centralnodelow.const import STR_ON_CMD_ISSUED, STR_STANDBY_CMD_ISSUED
 from ska.base.control_model import HealthState
