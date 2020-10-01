@@ -13,10 +13,6 @@ from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from ska_telmodel.csp import interface
 
-csp_interface_version = 0
-sdp_interface_version = 0
-
-
 class ConfigureCommand(SKASubarray.ConfigureCommand):
     """
     A class for SubarrayNodeLow's Configure() command.
@@ -29,46 +25,45 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
         :param argin: DevString.
 
         JSON string example is:
-                {
+                        {
+          "mccs": {
             "stations": [
-                {
+              {
                 "station_id": 1,
-                "tile_ids": [
-                    1,
-                    2
-                ]
-                },
-                {
+
+              },
+              {
                 "station_id": 2,
-                "tile_ids": [
-                    3,
-                    4
-                ]
-                }
+
+              }
             ],
             "station_beam_pointings": [
-                {
+              {
                 "station_beam_id": 1,
                 "target": {
-                    "system": "HORIZON",
-                    "name": "DriftScan",
-                    "Az": 180.0,
-                    "El": 45.0
+                  "system": "HORIZON",
+                  "name": "DriftScan",
+                  "Az": 180.0,
+                  "El": 45.0
                 },
                 "update_rate": 0.0,
                 "channels": [
-                    1,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6,
-                    7,
-                    8
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  8
                 ]
-                }
+              }
             ]
-            }
+          },
+          "tmc": {
+            "scanDuration": 10.0
+          }
+        }
         :return: A tuple containing a return code and a string message indicating status.
          The message is for information purpose only.
 
@@ -84,21 +79,23 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
         self.logger.info(log_msg)
         device.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA_LOW)
         device._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA_LOW
-        # try:
-        #     scan_configuration = json.loads(argin)
-        # except json.JSONDecodeError as jerror:
-        #     log_message = const.ERR_INVALID_JSON + str(jerror)
-        #     self.logger.error(log_message)
-        #     device._read_activity_message = log_message
-        #     tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
-        #                                  const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
-        # tmc_configure = scan_configuration["tmc"]
-        # device.scan_duration = int(tmc_configure["scanDuration"])
+        try:
+            scan_configuration = json.loads(argin)
+        except json.JSONDecodeError as jerror:
+            log_message = const.ERR_INVALID_JSON + str(jerror)
+            self.logger.error(log_message)
+            device._read_activity_message = log_message
+            tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
+                                         const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
+        tmc_configure = scan_configuration["tmc"]
+        device.scan_duration = int(tmc_configure["scanDuration"])
         # # self._configure_dsh(scan_configuration)
         # # self._configure_csp(scan_configuration)
         # # self._configure_sdp(scan_configuration)
         try:
-            device._mccs_subarray_ln_proxy.command_inout(const.CMD_CONFIGURE, argin)
+            scan_configuration.pop("tmc", None)
+            scan_configuration = scan_configuration("mccs", {})
+            device._mccs_subarray_ln_proxy.command_inout(const.CMD_CONFIGURE, scan_configuration)
             message = "Configure command invoked"
             self.logger.info(message)
             return (ResultCode.STARTED, message)

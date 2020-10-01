@@ -77,6 +77,7 @@ STR_SA_SCANNING = "Subarray is scanning at the desired pointing coordinates."
 
 
 # Error messages
+ERR_INVALID_JSON = "Invalid JSON format"
 ERR_SCAN_CMD = "Exception in Scan command: "
 ERR_SUBS_MCCS_SA_LEAF_ATTR = "Exception occurred while subscribing to MCCS Subarray attribute"
 ERR_SUBSR_MCCSSA_OBS_STATE = "Error in subscribing MCCS Subarray obsState on MCCSSALN LeafNodes."
