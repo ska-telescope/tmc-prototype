@@ -1,5 +1,5 @@
 """
-OffCommand class for SubarrayNode
+OffCommand class for SubarrayNodeLow
 """
 
 # Tango imports
@@ -17,7 +17,7 @@ class OffCommand(SKASubarray.OffCommand):
     """
     def do(self):
         """
-        This command invokes Off Command on CSPSubarray and SDPSubarray through respective leaf nodes. This comamnd
+        This command invokes Off Command on MCCSSubarray through mccs subarray leaf node. This comamnd
         changes Subaray device state from ON to OFF.
 
         :return: A tuple containing a return code and a string message indicating status.

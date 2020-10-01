@@ -1,5 +1,5 @@
 """
-ScanCommand class for SubarrayNode
+ScanCommand class for SubarrayNodeLow
 """
 
 import threading
@@ -15,7 +15,7 @@ from ska.base import SKASubarray
 
 class ScanCommand(SKASubarray.ScanCommand):
     """
-    A class for SubarrayNode's Scan() command.
+    A class for SubarrayNodeLow's Scan() command.
     """
 
     def do(self, argin):
@@ -43,9 +43,6 @@ class ScanCommand(SKASubarray.ScanCommand):
         device = self.target
         device.is_scan_completed = False
         device.is_release_resources = False
-        # device.is_restart_command = False
-        # device.is_abort_command = False
-        # device.is_obsreset_command = False
         try:
             log_msg = const.STR_SCAN_IP_ARG + str(argin)
             self.logger.info(log_msg)
