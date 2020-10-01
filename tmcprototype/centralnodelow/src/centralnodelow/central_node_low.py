@@ -432,7 +432,7 @@ class CentralNode(SKABaseDevice):
                 log_msg = const.ERR_EXE_ON_CMD + str(dev_failed)
                 self.logger.exception(dev_failed)
                 device._read_activity_message = const.ERR_EXE_ON_CMD
-                tango.Except.throw_exception(const.STR_ON_EXEC, log_msg,
+                tango.Except.re_throw_exception(dev_failed, const.STR_ON_EXEC, log_msg,
                                              "CentralNodeLow.StartUpTelescopeCommand",
                                              tango.ErrSeverity.ERR)
 
@@ -444,7 +444,7 @@ class CentralNode(SKABaseDevice):
                 log_msg = const.ERR_EXE_ON_CMD + str(dev_failed)
                 self.logger.exception(dev_failed)
                 device._read_activity_message = const.ERR_EXE_ON_CMD
-                tango.Except.throw_exception(const.STR_ON_EXEC, log_msg,
+                tango.Except.re_throw_exception(dev_failed, const.STR_ON_EXEC, log_msg,
                                              "CentralNodeLow.StartUpTelescopeCommand",
                                              tango.ErrSeverity.ERR)
             return (ResultCode.OK, device._read_activity_message)
@@ -456,8 +456,6 @@ class CentralNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
-
-        :raises: DevFailed if this command is not allowed to be run in current device state.
 
         """
         handler = self.get_command_object("StartUpTelescope")
@@ -598,8 +596,6 @@ class CentralNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state
 
         :rtype: boolean
-
-        :raises: DevFailed if this command is not allowed to be run in current device state
 
         """
         handler = self.get_command_object("AssignResources")
