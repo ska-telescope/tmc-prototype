@@ -32,7 +32,6 @@ setup(
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
     include_package_data=True,
-    test_suite="test",
     entry_points={'console_scripts':['SubarrayNodeLowDS = subarraynodelow.subarray_node_low:main']},
     author='jyotin.ska',
     author_email='jyotin.ska at gmail.com',
