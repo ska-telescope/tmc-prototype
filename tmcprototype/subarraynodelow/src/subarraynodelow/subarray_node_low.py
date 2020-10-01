@@ -195,7 +195,7 @@ class SubarrayNode(SKASubarray):
                 continue
         return device_proxy
 
-     def __len__(self):
+    def __len__(self):
         """
         Returns the number of resources currently assigned. Note that
         this also functions as a boolean method for whether there are
