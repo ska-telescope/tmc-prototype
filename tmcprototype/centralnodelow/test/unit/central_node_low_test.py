@@ -50,27 +50,6 @@ with open(path, 'r') as f:
 
 
 @pytest.fixture(scope='function')
-def mock_subarraynode_device():
-    subarray1_fqdn = 'ska_low/tm_subarray_node/1'
-    initial_dut_properties = {
-        'TMLowSubarrayNodes': subarray1_fqdn
-    }
-
-    event_subscription_map = {}
-    subarray1_device_proxy_mock = Mock()
-    subarray1_device_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args,
-               **kwargs: event_subscription_map.update({attr_name: callback}))
-
-    proxies_to_mock = {
-        subarray1_fqdn: subarray1_device_proxy_mock
-    }
-
-    with fake_tango_system(CentralNode, initial_dut_properties, proxies_to_mock) as tango_context:
-        yield tango_context.device, subarray1_device_proxy_mock, subarray1_fqdn, event_subscription_map
-
-
-@pytest.fixture(scope='function')
 def mock_central_lower_devices():
     mccs_master_ln_fqdn = 'ska_low/tm_leaf_node/mccs_master'
     subarray1_fqdn = 'ska_low/tm_subarray_node/1'
@@ -85,18 +64,24 @@ def mock_central_lower_devices():
     # Mock is used which supports this facility.
     mccs_master_ln_proxy_mock = Mock()
     subarray1_proxy_mock = MagicMock()
+
+    event_subscription_map = {}
+    subarray1_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+
     proxies_to_mock = {
         mccs_master_ln_fqdn: mccs_master_ln_proxy_mock,
         subarray1_fqdn: subarray1_proxy_mock
     }
     with fake_tango_system(CentralNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        yield tango_context.device, subarray1_proxy_mock, mccs_master_ln_proxy_mock
+        yield tango_context.device, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map
 
 
 @pytest.fixture(scope="function",
                 params=[HealthState.DEGRADED, HealthState.OK, HealthState.UNKNOWN, HealthState.FAILED])
-def central_node_test_info(request):
+def central_node_test_health_state(request):
     # arrange:
     device_under_test = CentralNode
     mccs_master_ln_fqdn = 'ska_low/tm_leaf_node/mccs_master'
@@ -195,7 +180,7 @@ def test_activity_message_attribute_captures_the_last_received_command():
 # Test cases for command
 def test_assign_resources(mock_central_lower_devices):
     # arrange
-    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock = mock_central_lower_devices
+    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     # mocking subarray device state as ON as per new state model
     subarray1_proxy_mock.DevState = DevState.ON
     # act
@@ -206,9 +191,9 @@ def test_assign_resources(mock_central_lower_devices):
 
 
 def test_assign_resources_should_raise_devfailed_exception_when_subarray_node_throws_devfailed_exception(
-        mock_subarraynode_device):
+        mock_central_lower_devices):
     # arrange
-    device_proxy, subarray1_proxy_mock, subarray1_fqdn, event_subscription_map = mock_subarraynode_device
+    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     subarray1_proxy_mock.DevState = DevState.OFF
     subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
     # act
@@ -220,7 +205,7 @@ def test_assign_resources_should_raise_devfailed_exception_when_subarray_node_th
 
 def test_assign_resources_invalid_json_value(mock_central_lower_devices):
     # arrange
-    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock = mock_central_lower_devices
+    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     # act
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.AssignResources(assign_release_invalid_str)
@@ -231,7 +216,7 @@ def test_assign_resources_invalid_json_value(mock_central_lower_devices):
 
 def test_release_resources(mock_central_lower_devices):
     # arrange
-    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock = mock_central_lower_devices
+    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     # mocking subarray device state as ON as per new state model
     subarray1_proxy_mock.DevState = DevState.ON
     # act:
@@ -242,9 +227,9 @@ def test_release_resources(mock_central_lower_devices):
 
 
 def test_release_resources_should_raise_devfailed_exception_when_subarray_node_throws_devfailed_exception(
-        mock_subarraynode_device):
+        mock_central_lower_devices):
     # arrange
-    device_proxy, subarray1_proxy_mock, subarray1_fqdn, event_subscription_map = mock_subarraynode_device
+    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     subarray1_proxy_mock.DevState = DevState.OFF
     subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
    
@@ -276,7 +261,7 @@ def test_release_resources_invalid_key():
 
 def test_standby(mock_central_lower_devices):
     # arrange:
-    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock = mock_central_lower_devices
+    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     # act:
     device_proxy.StartUpTelescope()
     assert device_proxy.state() == DevState.ON
@@ -289,7 +274,7 @@ def test_standby(mock_central_lower_devices):
 
 
 def test_standby_should_raise_devfailed_exception(mock_central_lower_devices):
-    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock = mock_central_lower_devices
+    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     mccs_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
 
@@ -301,7 +286,7 @@ def test_standby_should_raise_devfailed_exception(mock_central_lower_devices):
 
 
 def test_startup(mock_central_lower_devices):
-    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock = mock_central_lower_devices
+    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     # act:
     device_proxy.StartUpTelescope()
     # assert:
@@ -311,7 +296,7 @@ def test_startup(mock_central_lower_devices):
 
 
 def test_startup_should_raise_devfailed_exception(mock_central_lower_devices):
-    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock = mock_central_lower_devices
+    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     mccs_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed):
@@ -323,13 +308,13 @@ def test_startup_should_raise_devfailed_exception(mock_central_lower_devices):
 
 # Test cases for Telescope Health State
 def test_telescope_health_state_matches_mccs_master_leaf_node_health_state_after_start(
-        central_node_test_info):
-    initial_dut_properties = central_node_test_info['initial_dut_properties']
-    proxies_to_mock = central_node_test_info['proxies_to_mock']
-    mccs_master_ln_fqdn = central_node_test_info['mccs_master_ln_fqdn']
-    event_subscription_map = central_node_test_info['event_subscription_map']
-    mccs_master_ln_health_state = central_node_test_info['mccs_master_ln_health_state']
-    mccs_master_ln_health_attribute = central_node_test_info['mccs_master_ln_health_attribute']
+        central_node_test_health_state):
+    initial_dut_properties = central_node_test_health_state['initial_dut_properties']
+    proxies_to_mock = central_node_test_health_state['proxies_to_mock']
+    mccs_master_ln_fqdn = central_node_test_health_state['mccs_master_ln_fqdn']
+    event_subscription_map = central_node_test_health_state['event_subscription_map']
+    mccs_master_ln_health_state = central_node_test_health_state['mccs_master_ln_health_state']
+    mccs_master_ln_health_attribute = central_node_test_health_state['mccs_master_ln_health_attribute']
 
     with fake_tango_system(CentralNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
@@ -340,8 +325,8 @@ def test_telescope_health_state_matches_mccs_master_leaf_node_health_state_after
         assert tango_context.device.telescopeHealthState == mccs_master_ln_health_state
 
 
-def test_telescope_health_state_is_ok_when_subarray_node_is_ok_after_start(mock_subarraynode_device):
-    device_proxy, subarray1_device_proxy_mock, subarray1_fqdn, event_subscription_map = mock_subarraynode_device
+def test_telescope_health_state_is_ok_when_subarray_node_is_ok_after_start(mock_central_lower_devices):
+    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     subarray1_health_attribute = 'healthState'
     dummy_event = create_dummy_event(subarray1_fqdn, HealthState.OK)
     event_subscription_map[subarray1_health_attribute](dummy_event)
