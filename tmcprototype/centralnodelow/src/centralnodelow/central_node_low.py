@@ -35,10 +35,25 @@ class CentralNode(SKABaseDevice):
     # PROTECTED REGION ID(CentralNode.class_variable) ENABLED START #
     def health_state_cb(self, evt):
         """
-        Retrieves the subscribed Subarray health state and MCCS Master Leaf Node health state, 
+        Receives the subscribed Subarray health state and MCCS Master Leaf Node health state, 
         aggregates them to calculate the telescope health state.
 
-        :param evt: A TANGO_CHANGE event on Subarray healthState and MCCSMasterLeafNode healthstate.
+        :param evt: A event on Subarray healthState and MCCSMasterLeafNode healthstate.
+
+        :type: Event object
+            It has the following members:
+                    
+                - date (event timestamp)
+
+                - reception_date (event reception timestamp)
+
+                - type (event type)
+
+                - dev_name (device name)
+
+                - name (attribute name)
+
+                - value (event value)
 
         :return: None
 
@@ -120,8 +135,8 @@ class CentralNode(SKABaseDevice):
     )
 
     TMLowSubarrayNodes = device_property(
-        dtype=('str',), doc="List of TM Low Subarray Node devices",
-        default_value=tuple()
+        dtype=('str',), 
+        doc="List of TM Low Subarray Node devices",
     )
 
     MCCSMasterLeafNodeFQDN = device_property(

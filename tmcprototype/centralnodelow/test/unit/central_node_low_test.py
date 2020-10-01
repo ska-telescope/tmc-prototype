@@ -43,6 +43,11 @@ path = join(dirname(__file__), 'data', invalid_json_Assign_Release_file)
 with open(path, 'r') as f:
     assign_release_invalid_str = f.read()
 
+assign_invalid_key_file='invalid_key_AssignResources.json'
+path= join(dirname(__file__), 'data', assign_invalid_key_file)
+with open(path, 'r') as f:
+    assign_invalid_key=f.read()
+
 release_invalid_key_file='invalid_key_ReleaseResources.json'
 path= join(dirname(__file__), 'data', release_invalid_key_file)
 with open(path, 'r') as f:
@@ -225,13 +230,14 @@ def test_assign_resources_invalid_json_value(mock_central_lower_devices):
     assert const.STR_RESOURCE_ALLOCATION_FAILED in str(df.value)
 
 
-def test_release_resources_invalid_key(mock_central_lower_devices):
+def test_assign_resources_invalid_key(mock_central_lower_devices):
+    # arrange
     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     subarray1_proxy_mock.DevState = DevState.ON
     mccs_master_ln_proxy_mock.DevState = DevState.ON
     # act
     with pytest.raises(tango.DevFailed) as df:
-        device_proxy.ReleaseResources(release_invalid_key)
+        device_proxy.AssignResources(assign_invalid_key)
     # assert:
     assert "JSON key not found" in str(df.value)
 
