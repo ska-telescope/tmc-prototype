@@ -17,9 +17,8 @@ other TM Components (such as OET, Central Node) for a Subarray.
 import tango
 from tango import AttrWriteType, DevFailed, DeviceProxy, EventType
 from tango.server import run,attribute, command, device_property
-
 from . import const, release, on_command, off_command, scan_command, configure_command ,end_scan_command, end_command, assign_resources_command, release_all_resources_command
-from .const import PointingState
+
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, ObsMode, ObsState
 from ska.base import SKASubarray
@@ -87,13 +86,9 @@ class SubarrayNode(SKASubarray):
         log_msg = "self._mccs_sa_obs_state is: " + str(self._mccs_sa_obs_state)
         self.logger.info(log_msg)
         if self._mccs_sa_obs_state == ObsState.EMPTY:
-            print(" ") # Refer below code and do changes according to the story
-            # if self.is_release_resources:
-            #     self.logger.info("Calling ReleaseAllResource command succeeded() method")
-            #     self.release_obj.succeeded()
-            # elif self.is_restart_command:
-            #     self.logger.info("Calling Restart command succeeded() method")
-            #     self.restart_obj.succeeded()
+            if self.is_release_resources:
+                self.logger.info("Calling ReleaseAllResource command succeeded() method")
+                self.release_obj.succeeded()
 
         elif self._mccs_sa_obs_state == ObsState.READY:
             if self.is_scan_completed:
@@ -302,6 +297,8 @@ class SubarrayNode(SKASubarray):
         self.register_command_object("Scan", scan_command.ScanCommand(*args))
         self.register_command_object("End", end_command.EndCommand(*args))
         self.register_command_object("EndScan", end_scan_command.EndScanCommand(*args))
+        self.register_command_object("ReleaseAllResources", release_all_resources_command.ReleaseAllResourcesCommand(*args))
+
 
 # ----------
 # Run server
