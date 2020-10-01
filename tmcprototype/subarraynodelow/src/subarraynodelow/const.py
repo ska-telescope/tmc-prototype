@@ -65,8 +65,6 @@ STR_END_SCAN_SUCCESS = "EndScan command is executed successfully."
 STR_END_SUCCESS = "End command invoked successfully on Mccs Subarray Leaf Node."
 STR_END_EXEC = "End command execution."
 STR_CMD_END_INV_MCCS = "End command is invoked on MccsSubarrayLeafNode."
-STR_RELEASE_ALL_RESOURCES_MCCS_SALN = "ReleaseAllResources command is invoked on MCCSSubarrayLeafNode"
-STR_MCCS_RELEASE = "Releasing MCCS resources"
 STR_RELEASE_SUCCESS = "RELEASEALLRESOURCES command invoked successfully."
 
 
@@ -80,7 +78,6 @@ ERR_INVOKING_ON_CMD = "Error while invoking ON command on Subarray Node."
 ERR_INVOKING_OFF_CMD = "Error while invoking OFF command on Subarray Node."
 ERR_END_INVOKING_CMD = "Error while invoking End command on Subarray Node low."
 ERR_END_SCAN_CMD_ON_MCCS="Error invoking EndScan command on MccsSubarrayLeafNode"
-ERR_RELEASE_CMD="Error invoking RELEASE RESOURCES command"
 ERR_DEVICE_NOT_READY = "Subarray Node low is not in Ready observation state."
 ERR_MCCS_CMD = "Failed to send command to MCCS Subarray Leaf Node."
 
