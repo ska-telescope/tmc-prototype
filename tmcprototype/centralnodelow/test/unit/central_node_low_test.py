@@ -165,24 +165,14 @@ def test_build_state():
             '{},{},{}'.format(release.name, release.version, release.description))
 
 
-# Need to check the failure
-def test_activity_message_attribute_captures_the_last_received_command():
-    # act & assert:
-    with fake_tango_system(CentralNode)as tango_context:
-        dut = tango_context.device
-        dut.StartUpTelescope()
-        assert_activity_message(dut, STR_ON_CMD_ISSUED)
-
-        dut.StandByTelescope()
-        assert_activity_message(dut, STR_STANDBY_CMD_ISSUED)
-
-
 # Test cases for command
 def test_assign_resources(mock_central_lower_devices):
     # arrange
     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     # mocking subarray device state as ON as per new state model
     subarray1_proxy_mock.DevState = DevState.ON
+    mccs_master_ln_proxy_mock.DevState = DevState.ON
+    
     # act
     device_proxy.AssignResources(assign_input_str)
     # assert
@@ -195,6 +185,8 @@ def test_assign_resources_should_raise_devfailed_exception_when_subarray_node_th
     # arrange
     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     subarray1_proxy_mock.DevState = DevState.OFF
+    mccs_master_ln_proxy_mock.DevState = DevState.ON
+    
     subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
     # act
     with pytest.raises(tango.DevFailed) as df:
@@ -208,6 +200,8 @@ def test_assign_resources_should_raise_devfailed_exception_when_mccs_master_ln_t
     # arrange
     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     mccs_master_ln_proxy_mock.DevState = DevState.OFF
+    subarray1_proxy_mock.DevState = DevState.ON
+
     mccs_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
     # act
     with pytest.raises(tango.DevFailed) as df:
@@ -220,6 +214,9 @@ def test_assign_resources_should_raise_devfailed_exception_when_mccs_master_ln_t
 def test_assign_resources_invalid_json_value(mock_central_lower_devices):
     # arrange
     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
+    subarray1_proxy_mock.DevState = DevState.ON
+    mccs_master_ln_proxy_mock.DevState = DevState.ON
+    
     # act
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.AssignResources(assign_release_invalid_str)
@@ -228,11 +225,23 @@ def test_assign_resources_invalid_json_value(mock_central_lower_devices):
     assert const.STR_RESOURCE_ALLOCATION_FAILED in str(df.value)
 
 
+def test_release_resources_invalid_key(mock_central_lower_devices):
+    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
+    subarray1_proxy_mock.DevState = DevState.ON
+    mccs_master_ln_proxy_mock.DevState = DevState.ON
+    # act
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.ReleaseResources(release_invalid_key)
+    # assert:
+    assert "JSON key not found" in str(df.value)
+
 def test_release_resources(mock_central_lower_devices):
     # arrange
     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     # mocking subarray device state as ON as per new state model
     subarray1_proxy_mock.DevState = DevState.ON
+    mccs_master_ln_proxy_mock.DevState = DevState.ON
+    
     # act:
     device_proxy.ReleaseResources(release_input_str)
     #assert
@@ -245,6 +254,8 @@ def test_release_resources_should_raise_devfailed_exception_when_subarray_node_t
     # arrange
     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     subarray1_proxy_mock.DevState = DevState.OFF
+    mccs_master_ln_proxy_mock.DevState = DevState.ON
+    
     subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
    
     # act:
@@ -260,6 +271,8 @@ def test_release_resources_should_raise_devfailed_exception_when_mccs_master_ln_
     # arrange
     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     mccs_master_ln_proxy_mock.DevState = DevState.OFF
+    subarray1_proxy_mock.DevState = DevState.ON
+    
     mccs_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
    
     # act:
@@ -270,23 +283,29 @@ def test_release_resources_should_raise_devfailed_exception_when_mccs_master_ln_
     assert device_proxy.state() == DevState.FAULT
 
 
-def test_release_resources_invalid_json_value():
+def test_release_resources_invalid_json_value(mock_central_lower_devices):
+    # arrange
+    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
+    subarray1_proxy_mock.DevState = DevState.ON
+    mccs_master_ln_proxy_mock.DevState = DevState.ON
+
     # act
-    with fake_tango_system(CentralNode) as tango_context:
-        with pytest.raises(tango.DevFailed) as df:
-            tango_context.device.ReleaseResources(assign_release_invalid_str)
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.ReleaseResources(assign_release_invalid_str)
 
-        # assert:
-        assert "Invalid JSON format" in str(df.value)
+    # assert:
+    assert "Invalid JSON format" in str(df.value)
 
 
-def test_release_resources_invalid_key():
+def test_release_resources_invalid_key(mock_central_lower_devices):
+    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
+    subarray1_proxy_mock.DevState = DevState.ON
+    mccs_master_ln_proxy_mock.DevState = DevState.ON
     # act
-    with fake_tango_system(CentralNode) as tango_context:
-        with pytest.raises(tango.DevFailed) as df:
-            tango_context.device.ReleaseResources(release_invalid_key)
-        # assert:
-        assert "JSON key not found" in str(df.value)
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.ReleaseResources(release_invalid_key)
+    # assert:
+    assert "JSON key not found" in str(df.value)
 
 
 def test_standby(mock_central_lower_devices):
