@@ -17,7 +17,7 @@ other TM Components (such as OET, Central Node) for a Subarray.
 import tango
 from tango import AttrWriteType, DevFailed, DeviceProxy, EventType
 from tango.server import run,attribute, command, device_property
-from . import const, release, on_command, off_command, scan_command, configure_command ,end_scan_command, end_command
+from . import const, release, on_command, off_command, scan_command, configure_command ,end_scan_command, end_command, assign_resources_command, release_all_resources_command
 from .const import PointingState
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, ObsMode, ObsState
@@ -48,6 +48,7 @@ class SubarrayNode(SKASubarray):
         self.endscan_obj = end_scan_command.EndScanCommand(*args)
         self.configure_obj = configure_command.ConfigureCommand(*args)
         self.release_obj = release_all_resources_command.ReleaseAllResourcesCommand(*args)
+        self.assign_obj = assign_resources_command.AssignResourcesCommand(*args)
 
     def observation_state_cb(self, evt):
         """
@@ -106,6 +107,10 @@ class SubarrayNode(SKASubarray):
                 # End command success
                 self.logger.info("Calling End command succeeded() method")
                 self.end_obj.succeeded()
+            else:
+                # Assign Resource command success
+                self.logger.info("Calling AssignResource command succeeded() method")
+                self.assign_obj.succeeded()
 
     def _unsubscribe_resource_events(self, proxy_event_id_map):
         """
@@ -283,6 +288,8 @@ class SubarrayNode(SKASubarray):
         """
         super().init_command_objects()
         args = (self, self.state_model, self.logger)
+        self.register_command_object("AssignResources", assign_resources_command.AssignResourcesCommand(*args))
+        self.register_command_object("ReleaseAllResources", release_all_resources_command.ReleaseAllResourcesCommand(*args))
         self.register_command_object("On", on_command.OnCommand(*args))
         self.register_command_object("Off", off_command.OffCommand(*args))
         self.register_command_object("Configure", configure_command.ConfigureCommand(*args))

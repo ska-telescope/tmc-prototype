@@ -318,6 +318,15 @@ def mock_lower_devices():
         yield tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map
 
 
+def test_assign_resource_should_raise_exception_when_called_when_device_state_off():
+    with fake_tango_system(SubarrayNode) as tango_context:
+        with pytest.raises(tango.DevFailed) as df:
+            tango_context.device.AssignResources(assign_input_str)
+        assert tango_context.device.State() == DevState.OFF
+        assert tango_context.device.obsState == ObsState.EMPTY
+        assert "Error executing command AssignResourcesCommand" in str(df.value)
+
+
 def test_configure_command_obsstate_changes_from_configuring_to_ready(mock_lower_devices):
     tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, event_subscription_map = mock_lower_devices
     mccs_subarray1_obsstate_attribute = "mccsSubarrayObsState"
