@@ -201,6 +201,20 @@ def test_assign_resources_should_raise_devfailed_exception_when_subarray_node_th
         device_proxy.AssignResources(assign_input_str)
     # assert
     assert "Error occurred while assigning resources to the Subarray" in str(df)
+    assert device_proxy.state() == DevState.FAULT
+
+def test_assign_resources_should_raise_devfailed_exception_when_mccs_master_ln_throws_devfailed_exception(
+        mock_central_lower_devices):
+    # arrange
+    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
+    mccs_master_ln_proxy_mock.DevState = DevState.OFF
+    mccs_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
+    # act
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.AssignResources(assign_input_str)
+    # assert
+    assert "Error occurred while assigning resources to the Subarray" in str(df)
+    assert device_proxy.state() == DevState.FAULT
 
 
 def test_assign_resources_invalid_json_value(mock_central_lower_devices):
@@ -238,6 +252,22 @@ def test_release_resources_should_raise_devfailed_exception_when_subarray_node_t
         device_proxy.ReleaseResources(release_input_str)
     # assert:
     assert "Error occurred while releasing resources from the Subarray" in str(df.value)
+    assert device_proxy.state() == DevState.FAULT
+
+
+def test_release_resources_should_raise_devfailed_exception_when_mccs_master_ln_throws_devfailed_exception(
+        mock_central_lower_devices):
+    # arrange
+    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
+    mccs_master_ln_proxy_mock.DevState = DevState.OFF
+    mccs_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
+   
+    # act:
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.ReleaseResources(release_input_str)
+    # assert:
+    assert "Error occurred while releasing resources from the Subarray" in str(df.value)
+    assert device_proxy.state() == DevState.FAULT
 
 
 def test_release_resources_invalid_json_value():
