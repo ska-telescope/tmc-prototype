@@ -344,7 +344,6 @@ def test_configure_command_obsstate_changes_from_configuring_to_ready(mock_lower
     mccs_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, configure_str)
     assert tango_context.device.obsState == ObsState.READY
 
-
 def test_configure_command_subarray_with_invalid_configure_input(mock_lower_devices):
     tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
     mccs_subarray1_obsstate_attribute = "mccsSubarrayObsState"
@@ -361,7 +360,7 @@ def test_configure_command_subarray_with_invalid_configure_input(mock_lower_devi
     assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
 
 def test_end_scan_should_command_subarray_to_end_scan_when_it_is_scanning(mock_lower_devices):
-    tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, event_subscription_map= mock_lower_devices
+    tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
     mccs_subarray1_obsstate_attribute = "mccsSubarrayObsState"
     tango_context.device.On()
     tango_context.device.AssignResources(assign_input_str)

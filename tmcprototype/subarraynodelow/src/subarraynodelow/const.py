@@ -71,10 +71,13 @@ STR_HEALTH_STATE = "healthState of "
 STR_ARROW = " :-> "
 STR_HEALTH_STATE_UNKNOWN_VAL = "Subarray healthState event returned unknown value  \n"
 STR_MCCS_SUBARRAY_OBS_STATE = "MCCS Subarray obsState is:"
+STR_SCAN_IP_ARG = "Scan inputs Arguments :-> "
+STR_SA_SCANNING = "Subarray is scanning at the desired pointing coordinates."
 
 
 
 # Error messages
+ERR_SCAN_CMD = "Exception in Scan command: "
 ERR_SUBS_MCCS_SA_LEAF_ATTR = "Exception occurred while subscribing to MCCS Subarray attribute"
 ERR_SUBSR_MCCSSA_OBS_STATE = "Error in subscribing MCCS Subarray obsState on MCCSSALN LeafNodes."
 ERR_MCCS_SUBARRAY_OBS_STATE = "Key Error occurred while setting MCCS Subarray obsState"
