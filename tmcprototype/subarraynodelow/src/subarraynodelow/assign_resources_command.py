@@ -1,11 +1,7 @@
 """
-AssignResourcesCommand class for SubarrayNode.
+AssignResourcesCommand class for SubarrayNodelow.
 """
 
-import json
-# Tango imports
-import tango
-from tango import DevFailed
 # Additional import
 from . import const
 from ska.base.commands import ResultCode
@@ -14,7 +10,7 @@ from ska.base import SKASubarray
 
 class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
     """
-    A class for SubarrayNode's AssignResources() command.
+    A class for SubarrayNodelow's AssignResources() command.
     """
     def do(self, argin):
         """

@@ -1,11 +1,6 @@
 """
-ReleaseAllResourcesCommand for SubarrayNode
+ReleaseAllResourcesCommand for SubarrayNodelow
 """
-
-# Tango imports
-import tango
-from tango import DevFailed
-
 # Additional import
 from . import const
 from ska.base.commands import ResultCode
@@ -18,9 +13,7 @@ class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
     """
     def do(self):
         """
-        It checks whether all resources are already released. If yes then it throws error while
-        executing command. If not it Releases all the resources from the subarray i.e. Releases
-        resources from TMC Subarray Node.
+        It invokes ReleaseAllResources command on Subarraylow.
 
         :return: A tuple containing a return code and "[]" as a string on successful release all resources.
         Example: "[]" as string on successful release all resources.
@@ -32,4 +25,3 @@ class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
         device.is_release_resources = True
         self.logger.debug(const.STR_RELEASE_SUCCESS)
         return (ResultCode.STARTED,const.STR_RELEASE_SUCCESS )
-

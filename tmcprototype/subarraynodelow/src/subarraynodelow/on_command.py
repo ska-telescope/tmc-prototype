@@ -1,5 +1,5 @@
 """
-OnCommand class for SubarrayNode
+OnCommand class for SubarrayNodeLow
 """
 # Tango imports
 import tango
@@ -13,12 +13,12 @@ from ska.base import SKASubarray
 
 class OnCommand(SKASubarray.OnCommand):
     """
-    A class for the SubarrayNode's On() command.
+    A class for the SubarrayNodeLow's On() command.
     """
 
     def do(self):
         """
-        This command invokes On Command on CSPSubarray and SDPSubarray through respective leaf nodes. This comamnd
+        This command invokes On Command on MCCSSubarray through mccs subarray leaf node. This comamnd
         changes Subaray device state from OFF to ON.
 
         :return: A tuple containing a return code and a string message indicating status. The message is for
