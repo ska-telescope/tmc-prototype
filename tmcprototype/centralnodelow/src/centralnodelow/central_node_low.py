@@ -6,15 +6,13 @@
 #
 # Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
-
 """
 Central Node is a coordinator of the complete M&C system. Central Node implements the standard set
 of state and mode attributes defined by the SKA Control Model.
 """
-from __future__ import print_function
-from __future__ import absolute_import
 
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
+import json
 # Tango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
@@ -24,8 +22,6 @@ from ska.base.commands import ResultCode, BaseCommand
 from ska.base.control_model import HealthState
 # Additional import
 from . import const, release
-import json
-
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 __all__ = ["CentralNode", "main"]
@@ -106,7 +102,7 @@ class CentralNode(SKABaseDevice):
         except KeyError as key_error:
             self._read_activity_message = const.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
             log_msg = const.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
-            self.logger.critical(log_msg)
+            self.logger.error(log_msg)
 
     # PROTECTED REGION END #    //  CentralNode.class_variable
 
@@ -351,8 +347,6 @@ class CentralNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
-
-        :raises: DevFailed if this command is not allowed to be run in current device state.
         
         """
         handler = self.get_command_object("StandByTelescope")
@@ -718,7 +712,7 @@ class CentralNode(SKABaseDevice):
     @command(
         dtype_in="str",
         doc_in="The string in JSON format. The JSON contains following values:\nsubarray_id: "
-               "releaseALL boolean as true and receptorIDList.",
+               "and releaseALL boolean as true.",
     )
     @DebugIt()
     def ReleaseResources(self, argin):

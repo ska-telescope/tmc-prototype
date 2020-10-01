@@ -4,11 +4,6 @@ CMD_RELEASE_RESOURCES = "ReleaseAllResources"
 CMD_ON = "On"
 CMD_OFF = "Off"
 
-STR_CMD_OFF_MCCSMLN_DEV = "OFF command invoked on MccsMasterLeafNode device "
-STR_CMD_OFF_SA_LOW_DEV = "OFF command invoked on SubarrayNode device"
-STR_CMD_ON_MCCS_DEV = "ON command invoked on MccsMasterLeafNode device"
-STR_CMD_ON_SA_LOW_DEV = "ON command invoked on SubarrayNode device"
-
 #Event messages
 EVT_UNKNOWN = "Event from the Unknown device!"
 EVT_SUBSR_HEALTH_STATE = "healthState"
@@ -30,7 +25,6 @@ ERR_ASSGN_RESOURCES = "Error occurred while assigning resources to the Subarray 
 ERR_RELEASE_RESOURCES = "Error occurred while releasing resources from the Subarray \n"
 ERR_HEALTH_STATE_CB = "Error handling healthState callback for evt: %s"
 
-#strings
 #General strings
 STR_HEALTH_STATE = "healthState of "
 STR_OK = " :-> OK"
@@ -52,6 +46,10 @@ STR_ASSIGN_RES_EXEC = "ASSIGNRESOURCES command execution"
 STR_ON_EXEC = "STARTUPTELESCOPE (ON) command execution"
 STR_STANDBY_EXEC = "STANDBYTELESCOPE command execution"
 STR_RESOURCE_ALLOCATION_FAILED = "Resource allocation failed."
+STR_CMD_OFF_MCCSMLN_DEV = "OFF command invoked on MccsMasterLeafNode device "
+STR_CMD_OFF_SA_LOW_DEV = "OFF command invoked on SubarrayNode device"
+STR_CMD_ON_MCCS_DEV = "ON command invoked on MccsMasterLeafNode device"
+STR_CMD_ON_SA_LOW_DEV = "ON command invoked on SubarrayNode device"
 
 #PROPERTIES DEFAULT VALUES
 PROP_DEF_VAL_TM_LOW_SA1 = "ska_low/tm_subarray_node/1"
