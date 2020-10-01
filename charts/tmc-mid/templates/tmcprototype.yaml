@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{ template "tmc-mid-new-original.name" . }}-configuration"
+  name: "{{ template "tmc-mid.name" . }}-configuration"
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "tmc-mid-new-original.labels" . | indent 4 }}
+    {{- include "tmc-mid.labels" . | indent 4 }}
     component: configurator
     subsystem: enabling-system
     function: deployment
@@ -35,10 +35,10 @@ data:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "tmc-mid-new-original.name" . }}-configurator
+  name: {{ template "tmc-mid.name" . }}-configurator
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "tmc-mid-new-original.labels" . | indent 4 }}
+    {{- include "tmc-mid.labels" . | indent 4 }}
     component: configurator
     subsystem: enabling-system
     function: deployment
@@ -76,7 +76,7 @@ spec:
       volumes:
         - name: configuration
           configMap:
-            name: "{{ template "tmc-mid-new-original.name" . }}-configuration"
+            name: "{{ template "tmc-mid.name" . }}-configuration"
       restartPolicy: Never
 
 {{- $global := . }}
@@ -87,10 +87,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "tmc-mid-new-original.name" $global }}-{{ $deviceserver.name }}
+  name: {{ template "tmc-mid.name" $global }}-{{ $deviceserver.name }}
   namespace: {{ $global.Release.Namespace }}
   labels:
-    {{- include "tmc-mid-new-original.labels" $global | indent 4 }}
+    {{- include "tmc-mid.labels" $global | indent 4 }}
     component: {{ $deviceserver.name }}
     subsystem: {{ $deviceserver.subsystem }}
     intent: production
@@ -110,10 +110,10 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ template "tmc-mid-new-original.name" $global }}-{{ $deviceserver.name }}
+  name: {{ template "tmc-mid.name" $global }}-{{ $deviceserver.name }}
   namespace: {{ $global.Release.Namespace }}
   labels:
-    {{- include "tmc-mid-new-original.labels" $global | indent 4 }}
+    {{- include "tmc-mid.labels" $global | indent 4 }}
     component: {{ $deviceserver.name }}
     subsystem: {{ $deviceserver.subsystem }}
     function: {{ $deviceserver.function }}
@@ -125,12 +125,12 @@ spec:
     matchLabels:
       component: {{ $deviceserver.name }}
       subsystem: {{ $deviceserver.subsystem }}
-  serviceName: {{ template "tmc-mid-new-original.name" $global }}-{{ $deviceserver.name }}
+  serviceName: {{ template "tmc-mid.name" $global }}-{{ $deviceserver.name }}
   replicas: 1
   template:
     metadata:
       labels:
-        {{- include "tmc-mid-new-original.labels" $global | indent 8 }}
+        {{- include "tmc-mid.labels" $global | indent 8 }}
         component: {{ $deviceserver.name }}
         subsystem: {{ $deviceserver.subsystem }}
         function: {{ $deviceserver.function }}
