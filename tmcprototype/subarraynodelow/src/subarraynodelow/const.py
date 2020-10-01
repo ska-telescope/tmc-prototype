@@ -70,6 +70,9 @@ STR_RELEASE_SUCCESS = "RELEASEALLRESOURCES command invoked successfully."
 STR_HEALTH_STATE = "healthState of "
 STR_ARROW = " :-> "
 STR_HEALTH_STATE_UNKNOWN_VAL = "Subarray healthState event returned unknown value  \n"
+STR_MCCS_SUBARRAY_OBS_STATE = "MCCS Subarray obsState is:"
+
+
 
 # Error messages
 ERR_SUBS_MCCS_SA_LEAF_ATTR = "Exception occurred while subscribing to MCCS Subarray attribute"
