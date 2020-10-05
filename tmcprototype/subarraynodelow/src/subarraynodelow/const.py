@@ -2,28 +2,13 @@
 """
 This file is part of the SubarrayNode project and defines variables used
 """
-
-# ENUMS
-from enum import IntEnum, unique
-
-
-@unique
-class PointingState(IntEnum):
-    READY = 0
-    SLEW = 1
-    TRACK = 2
-    SCAN = 3
-    RESERVED = 4
-
-
 # Events
 EVT_MCCSSA_OBS_STATE = "mccsSubarrayObsState"
-EVT_MCCSSA_HEALTH = "mccssubarrayHealthState"
+EVT_MCCSSA_HEALTH = "mccsSubarrayHealthState"
 EVT_UNKNOWN = "Event from the Unknown device!"
 
 # Commands
 CMD_SCAN = "Scan"
-CMD_START_SCAN= "StartScan"
 CMD_CONFIGURE = "Configure"
 CMD_END_SCAN = "EndScan"
 CMD_ON = "On"
@@ -32,8 +17,6 @@ CMD_ASSIGN_RESOURCES = "AssignResources"
 CMD_RELEASE_ALL_RESOURCES = "ReleaseAllResources"
 CMD_END = "End"
 
-# GROUPS
-GRP_DISH_LEAF_NODE = "DishLeafNode_Group"
 
 # strings
 STR_MCCS_SA_LEAF_INIT_SUCCESS = "Subscribed MCCS Subarray attributes successfully."

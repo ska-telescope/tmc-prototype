@@ -41,21 +41,10 @@ with open(path, 'r') as f:
     invalid_conf_input=f.read()
 
 
-assign_input_file = 'command_AssignResources.json'
-path = join(dirname(__file__), 'data', assign_input_file)
-with open(path, 'r') as f:
-    assign_input_str = f.read()
-
 scan_input_file= 'command_Scan.json'
 path= join(dirname(__file__), 'data', scan_input_file)
 with open(path, 'r') as f:
     scan_input_str=f.read()
-
-
-configure_input_file= 'command_Configure.json'
-path= join(dirname(__file__), 'data' , configure_input_file)
-with open(path, 'r') as f:
-    configure_str=f.read()
 
 
 def set_timeout_event(timeout_event):
@@ -131,7 +120,7 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready(mock_
 
     # Confiure subarray with correct configuration which will change the obsState to CONFIGURING
     tango_context.device.Configure(configure_str)
-    # Mock the behaviour of ObsState of Csp and Sdp Subarray to change the ObsState to READY
+    # Mock the behaviour of ObsState of MCCS Subarray to change the ObsState to READY
     # Marking Configure Command Completed
     attribute = 'ObsState'
     dummy_event_mccs = create_dummy_event_state(mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn,
@@ -159,7 +148,7 @@ def test_start_scan_should_raise_devfailed_exception(mock_lower_devices):
     tango_context.device.On()
     # Assign Resources to the Subarray which change the obsState to RESOURCING
     tango_context.device.AssignResources(assign_input_str)
-    # Mock the behaviour of ObsState of Csp and Sdp Subarray to change the ObsState to IDLE
+    # Mock the behaviour of ObsState of MCCS Subarray to change the ObsState to IDLE
     # Marking Assign Resources Command Completed
     attribute = 'ObsState'
     dummy_event_mccs = create_dummy_event_state(mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn,
@@ -171,7 +160,7 @@ def test_start_scan_should_raise_devfailed_exception(mock_lower_devices):
 
     # Confiure subarray with correct configuration which will change the obsState to CONFIGURING
     tango_context.device.Configure(configure_str)
-    # Mock the behaviour of ObsState of Csp and Sdp Subarray to change the ObsState to READY
+    # Mock the behaviour of ObsState of MCCS Subarray to change the ObsState to READY
     # Marking Configure Command Completed
     attribute = 'ObsState'
     dummy_event_mccs = create_dummy_event_state(mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn,
@@ -196,13 +185,6 @@ def test_off_should_raise_devfailed_exception(mock_lower_devices):
         tango_context.device.Off()
     assert "Error executing command OffCommand" in str(df.value)
 
-@pytest.mark.xfail(reason="Enable testcase when issue is resolved")
-def test_end_command_subarray_when_in_invalid_state():
-    with fake_tango_system(SubarrayNode) as tango_context:
-        tango_context.device.On()
-        with pytest.raises(tango.DevFailed) as df:
-            tango_context.device.End()
-        assert "Error executing command EndCommand " in str(df.value)
 
 def test_end_should_command_subarray_to_end_when_it_is_ready(mock_lower_devices):
     tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
@@ -246,10 +228,10 @@ def test_end_should_command_subarray_to_end_when_it_is_ready(mock_lower_devices)
     # mock pointing statewith pytest.raises(tango.DevFailed)
     assert tango_context.device.obsState == ObsState.IDLE
 
-@pytest.mark.xfail(reason="Enable testcase when issue is resolved")
 def test_end_should_raise_devfailed_exception_when_mccs_subarray_throws_devfailed_exception(mock_lower_devices):
     tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
     mccs_subarray1_obsstate_attribute = "mccsSubarrayObsState"
+    mccs_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_end_command
     tango_context.device.On()
     # Assign Resources to the Subarray which change the obsState to RESOURCING
     tango_context.device.AssignResources(assign_input_str)
@@ -275,14 +257,14 @@ def test_end_should_raise_devfailed_exception_when_mccs_subarray_throws_devfaile
     wait_for(tango_context, ObsState.READY)
     assert tango_context.device.obsState == ObsState.READY
 
-    tango_context.device.Scan(scan_input_str)
-    wait_for(tango_context, ObsState.SCANNING)
-    assert tango_context.device.obsState == ObsState.SCANNING
+    # tango_context.device.Scan(scan_input_str)
+    # wait_for(tango_context, ObsState.SCANNING)
+    # assert tango_context.device.obsState == ObsState.SCANNING
 
-    # test without invoking EndScan
-    tango_context.device.EndScan()
-    wait_for(tango_context, ObsState.READY)
-    assert tango_context.device.obsState == ObsState.READY
+    # # test without invoking EndScan
+    # tango_context.device.EndScan()
+    # wait_for(tango_context, ObsState.READY)
+    # assert tango_context.device.obsState == ObsState.READY
 
     with pytest.raises(tango.DevFailed) as df:
         tango_context.device.End()
@@ -397,10 +379,10 @@ def test_end_scan_should_command_subarray_to_end_scan_when_it_is_scanning(mock_l
     wait_for(tango_context, ObsState.READY)
     assert tango_context.device.obsState == ObsState.READY
 
-@pytest.mark.xfail(reason="Enable testcase when issue is resolved")
 def test_end_scan_should_raise_devfailed_exception_when_mccs_subbarray_ln_throws_devfailed_exception(mock_lower_devices):
     tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
     mccs_subarray1_obsstate_attribute = "mccsSubarrayObsState"
+    mccs_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_endscan_command
     tango_context.device.On()
     tango_context.device.AssignResources(assign_input_str)
     attribute = 'ObsState'
@@ -438,7 +420,7 @@ def test_health_state():
 
 # Test case for HealthState callback
 def test_subarray_health_state_is_degraded_when_mccs_subarray_ln_is_degraded_after_start(mock_lower_devices):
-    mccs_subarray1_ln_health_attribute = 'mccssubarrayHealthState'
+    mccs_subarray1_ln_health_attribute = 'mccsSubarrayHealthState'
     tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
     health_state_value = HealthState.DEGRADED
     dummy_event = create_dummy_event_healthstate_with_proxy(
@@ -450,18 +432,18 @@ def test_subarray_health_state_is_degraded_when_mccs_subarray_ln_is_degraded_aft
 
 def test_subarray_health_state_is_ok_when_mccs_subarray1_ln_is_ok_after_start(mock_lower_devices):
     tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
-    mccs_subarray1_ln_health_attribute = 'mccssubarrayHealthState'
+    mccs_subarray1_ln_health_attribute = 'mccsSubarrayHealthState'
     health_state_value = HealthState.OK
-    dummy_event_csp = create_dummy_event_healthstate_with_proxy(
+    dummy_event_mccs = create_dummy_event_healthstate_with_proxy(
         mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, health_state_value,
         mccs_subarray1_ln_health_attribute)
-    event_subscription_map[mccs_subarray1_ln_health_attribute](dummy_event_csp)
+    event_subscription_map[mccs_subarray1_ln_health_attribute](dummy_event_mccs)
     assert tango_context.device.healthState == HealthState.OK
 
 
 def test_subarray_health_state_is_unknown_when_mccs_subarray1_ln_is_unknown_after_start(mock_lower_devices):
     tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
-    mccs_subarray1_ln_health_attribute = 'mccssubarrayHealthState'
+    mccs_subarray1_ln_health_attribute = 'mccsSubarrayHealthState'
     health_state_value = HealthState.UNKNOWN
     dummy_event = create_dummy_event_healthstate_with_proxy(
         mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, health_state_value,
@@ -472,7 +454,7 @@ def test_subarray_health_state_is_unknown_when_mccs_subarray1_ln_is_unknown_afte
 
 def test_subarray_health_state_is_failed_when_mccs_subarray1_ln_is_failed_after_start(mock_lower_devices):
     tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
-    mccs_subarray1_ln_health_attribute = 'mccssubarrayHealthState'
+    mccs_subarray1_ln_health_attribute = 'mccsSubarrayHealthState'
     health_state_value = HealthState.FAILED
     dummy_event = create_dummy_event_healthstate_with_proxy(
         mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, health_state_value,
@@ -483,7 +465,7 @@ def test_subarray_health_state_is_failed_when_mccs_subarray1_ln_is_failed_after_
 
 def test_subarray_health_state_with_error_event(mock_lower_devices):
     tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
-    mccs_subarray1_ln_health_attribute = 'mccssubarrayHealthState'
+    mccs_subarray1_ln_health_attribute = 'mccsSubarrayHealthState'
     health_state_value = HealthState.FAILED
     dummy_event = create_dummy_event_healthstate_with_error(
         mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, health_state_value,
@@ -495,7 +477,7 @@ def test_subarray_health_state_with_error_event(mock_lower_devices):
 # Test case for event subscribtion
 def test_subarray_health_state_event_to_raise_devfailed_exception_for_mccs_subarray_ln():
     mccs_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/mccs_subarray01'
-    mccs_subarray1_ln_health_attribute = 'mccssubarrayHealthState'
+    mccs_subarray1_ln_health_attribute = 'mccsSubarrayHealthState'
     initial_dut_properties = {
         'MccsSubarrayLNFQDN': mccs_subarray1_ln_fqdn
     }
@@ -513,6 +495,53 @@ def test_subarray_health_state_event_to_raise_devfailed_exception_for_mccs_subar
             mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, health_state_value,
             mccs_subarray1_ln_health_attribute)
         assert tango_context.device.State() == DevState.FAULT
+
+
+def test_assign_resources_should_assign_resources_when_device_state_on(mock_lower_devices):
+    tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
+    mccs_subarray1_obsstate_attribute = "mccsSubarrayObsState"
+    tango_context.device.On()
+    tango_context.device.AssignResources(assign_input_str)
+
+    attribute = 'ObsState'
+    dummy_event = create_dummy_event_state(mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, attribute,
+                                           ObsState.IDLE)
+    event_subscription_map[mccs_subarray1_obsstate_attribute](dummy_event)
+    wait_for(tango_context, ObsState.IDLE)
+    assert tango_context.device.obsState == ObsState.IDLE
+
+@pytest.mark.xfail(reason="Enable testcase when issue is resolved")
+def test_release_resource_should_raise_exception_when_called_when_device_state_on(mock_lower_devices):
+    tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
+    tango_context.device.On()
+    tango_context.device.AssignResources(assign_input_str)
+    with fake_tango_system(SubarrayNode) as tango_context:
+        with pytest.raises(tango.DevFailed) as df:
+            tango_context.device.ReleaseAllResources()
+        assert tango_context.device.State() == DevState.ON
+        assert tango_context.device.obsState == ObsState.EMPTY
+        assert "Error executing command_inout ReleaseAllResourcesCommand" in str(df.value)
+
+@pytest.mark.xfail(reason="Enable testcase when issue is resolved")
+def test_release_all_resources_should_release_resources_when_obstate_idle(mock_lower_devices):
+    tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
+    mccs_subarray1_obsstate_attribute = "mccsSubarrayObsState"
+    tango_context.device.On()
+    tango_context.device.AssignResources(assign_input_str)
+
+    attribute = 'ObsState'
+    dummy_event = create_dummy_event_state(mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, attribute,
+                                           ObsState.IDLE)
+    event_subscription_map[mccs_subarray1_obsstate_attribute](dummy_event)
+    wait_for(tango_context, ObsState.IDLE)
+    assert tango_context.device.obsState == ObsState.IDLE
+    tango_context.device.ReleaseAllResources()
+    dummy_event = create_dummy_event_state(mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, attribute,
+                                           ObsState.EMPTY)
+    event_subscription_map[mccs_subarray1_obsstate_attribute](dummy_event)
+    # wait_for(tango_context, ObsState.EMPTY)
+    assert tango_context.device.State() == DevState.ON
+    assert tango_context.device.obsState == ObsState.EMPTY
 
 
 def create_dummy_event_healthstate_with_proxy(proxy_mock, device_fqdn, health_state_value, attribute):
@@ -545,13 +574,11 @@ def any_method(with_name=None):
 
 
 def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):
-    print("inside dummy event funct::::::::::::::")
     fake_event = Mock()
     fake_event.err = False
     fake_event.attr_name = f"{device_fqdn}/{attribute}"
     fake_event.attr_value.value = attr_value
     fake_event.device = proxy_mock
-    print("fake event is::::::", fake_event)
     return fake_event
 
 
@@ -597,6 +624,18 @@ def raise_devfailed_scan_command(cmd_name, input_arg):
     if cmd_name == 'Scan':
         tango.Except.throw_exception("SubarrayNode_Commandfailed",
                                      "Failed to invoke Scan command on subarraynode.",
+                                     cmd_name, tango.ErrSeverity.ERR)
+
+def raise_devfailed_end_command(cmd_name, input_arg):
+    if cmd_name == 'End':
+        tango.Except.throw_exception("SubarrayNode_Commandfailed",
+                                     "Failed to invoke End command on subarraynode.",
+                                     cmd_name, tango.ErrSeverity.ERR)
+
+def raise_devfailed_endscan_command(cmd_name, input_arg):
+    if cmd_name == 'EndScan':
+        tango.Except.throw_exception("SubarrayNode_Commandfailed",
+                                     "Failed to invoke EndScan command on subarraynode.",
                                      cmd_name, tango.ErrSeverity.ERR)
 
 

@@ -287,7 +287,7 @@ class SubarrayNode(SKASubarray):
             device.subarray_ln_health_state_map = {}
             device._subarray_health_state = HealthState.OK  #Aggregated Subarray Health State
 
-            # Create proxy for CSP Subarray Leaf Node
+            # Create proxy for MCCS Subarray Leaf Node
             device._mccs_subarray_ln_proxy = None
             device._mccs_subarray_proxy = None
             device._mccs_subarray_ln_proxy = device.get_deviceproxy(device.MccsSubarrayLNFQDN)
