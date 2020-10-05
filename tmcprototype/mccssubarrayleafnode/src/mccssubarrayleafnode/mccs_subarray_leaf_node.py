@@ -99,6 +99,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             device._read_activity_message = " "
             device._versioninfo = " "
             device._sky_coordinates = []
+            device._station_ids = []
             device.set_status(const.STR_MCCSSALN_INIT_SUCCESS)
             device._mccs_subarray_health_state = HealthState.OK
             self.logger.info(const.STR_MCCSSALN_INIT_SUCCESS)
@@ -235,11 +236,17 @@ class MccsSubarrayLeafNode(SKABaseDevice):
 
                 # Add in sky_coordinates set in station_beam_pointings
                 station_beam_pointings["sky_coordinates"] = device._sky_coordinates
-                # Add station_id in station_beam_pointings
-                station_beam_pointings["station_id"] = 1
+
+                # Add station_ids in station_beam_pointings
+                for station in argin_json["stations"]:
+                    log_msg = "Station is: " + str(station)
+                    self.logger.info(log_msg)
+                    device._station_ids.append(station["station_id"])
+                station_beam_pointings["station_id"] = device._station_ids
                 # Remove target block from station_beam_pointings
                 station_beam_pointings.pop("target", None)
 
+                # Update station_beam_pointings into output Configure JSON
                 argin_json["station_beam_pointings"][0] = station_beam_pointings
                 argin_json["station_beams"] = argin_json["station_beam_pointings"]
                 argin_json.pop("station_beam_pointings", None)
