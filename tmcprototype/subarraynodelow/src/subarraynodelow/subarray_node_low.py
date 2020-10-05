@@ -7,7 +7,7 @@
 # Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 
-""" Subarray Node low
+""" Subarray Node Low
 Provides the monitoring and control interface required by users as well as
 other TM Components (such as OET, Central Node) for a Subarray.
 """
@@ -17,7 +17,7 @@ other TM Components (such as OET, Central Node) for a Subarray.
 import tango
 from tango import AttrWriteType, DevFailed, DeviceProxy, EventType
 from tango.server import run,attribute, device_property
-from . import const, release, on_command, off_command, scan_command, configure_command ,end_scan_command, end_command, assign_resources_command, release_all_resources_command
+from . import const, release, on_command, assign_resources_command, configure_command, scan_command, end_scan_command, end_command, release_all_resources_command, off_command
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, ObsMode, ObsState
 from ska.base import SKASubarray
@@ -40,7 +40,7 @@ class SubarrayHealthState:
     @staticmethod
     def calculate_health_state(health_states):
         """
-        Calculates aggregated health state of Subarraylow.
+        Calculates aggregated health state of SubarrayLow.
         """
         unique_states = set(health_states)
         if unique_states == set([HealthState.OK]):
@@ -79,7 +79,7 @@ class SubarrayNode(SKASubarray):
         Receives the subscribed health states, aggregates them
         to calculate the overall subarray health state.
 
-        :param evt: A event on Subarray healthState.
+        :param evt: A event on MCCS Subarray healthState.
 
         :type: Event object
             It has the following members:
@@ -304,8 +304,8 @@ class SubarrayNode(SKASubarray):
                 # Subscribe mccsSubarrayObsState (forwarded attribute) of MccsSubarray
                 device._mccs_subarray_ln_proxy.subscribe_event(const.EVT_MCCSSA_OBS_STATE, EventType.CHANGE_EVENT,
                                                               device.observation_state_cb, stateless=True)
-                device.set_status(const.STR_MCCS_SA_LEAF_INIT_SUCCESS)
-                self.logger.info(const.STR_MCCS_SA_LEAF_INIT_SUCCESS)
+                device.set_status(const.STR_SUB_ATTR_MCCS_SALN_SUCCESS)
+                self.logger.info(const.STR_SUB_ATTR_MCCS_SALN_SUCCESS)
             except DevFailed as dev_failed:
                 log_msg = const.ERR_SUBS_MCCS_SA_LEAF_ATTR + str(dev_failed)
                 device._read_activity_message = log_msg

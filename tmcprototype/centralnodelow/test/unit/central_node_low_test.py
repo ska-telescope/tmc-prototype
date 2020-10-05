@@ -251,7 +251,7 @@ def test_release_resources(mock_central_lower_devices):
     device_proxy.ReleaseResources(release_input_str)
     #assert
     subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
-    mccs_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
+    mccs_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES, release_input_str)
 
 
 def test_release_resources_should_raise_devfailed_exception_when_subarray_node_throws_devfailed_exception(
@@ -278,7 +278,7 @@ def test_release_resources_should_raise_devfailed_exception_when_mccs_master_ln_
     mccs_master_ln_proxy_mock.DevState = DevState.OFF
     subarray1_proxy_mock.DevState = DevState.ON
     
-    mccs_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
+    mccs_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
    
     # act:
     with pytest.raises(tango.DevFailed) as df:

@@ -206,7 +206,7 @@
       <status abstract="false" inherited="true" concrete="true"/>
       <properties description="Logging targets for this device, excluding ska_logging defaults - &#xA;initialises to LoggingTargetsDefault on startup" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
     </attributes>
-    <forwardedAttributes name="mccssubarrayHealthState" label="mccssubarrayHealthState">
+    <forwardedAttributes name="mccsSubarrayHealthState" label="mccsSubarrayHealthState">
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </forwardedAttributes>
     <forwardedAttributes name="mccsSubarrayObsState" label="mccsSubarrayObsState">

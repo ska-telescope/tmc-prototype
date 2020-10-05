@@ -18,7 +18,7 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
         Assigns the resources to the subarray. It accepts station ids, channels, station beam ids, and tile ids
 
         :param argin: DevString in JSON form containing following fields:
-            station_ids: list of DevInt
+            station_ids: list of integers
 
             channels: list of integers
 
