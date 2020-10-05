@@ -99,6 +99,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             device._read_activity_message = " "
             device._versioninfo = " "
             device._sky_coordinates = []
+            device._station_ids = []
             device.set_status(const.STR_MCCSSALN_INIT_SUCCESS)
             device._mccs_subarray_health_state = HealthState.OK
             self.logger.info(const.STR_MCCSSALN_INIT_SUCCESS)
@@ -196,7 +197,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             :param argin:DevString. The string in JSON format. The JSON contains following values:
 
             Example:
-            {"stations":[{"station_id":1,"tile_ids":[1,2],},{"station_id":2,"tile_ids":[3,4]},],"station_beam_pointings":[{"station_beam_id":1,"target":{"system":"HORIZON","name":"DriftScan","Az":180.0,"El":45.0},"update_rate":0.0,"channels":[1,2,3,4,5,6,7,8]}]}
+            {"stations":[{"station_id":1},{"station_id":2}],"station_beam_pointings":[{"station_beam_id":1,"target":{"system":"HORIZON","name":"DriftScan","Az":180.0,"El":45.0},"update_rate":0.0,"channels":[1,2,3,4,5,6,7,8]}]}
 
             Note: Enter the json string without spaces as a input.
 
@@ -235,16 +236,25 @@ class MccsSubarrayLeafNode(SKABaseDevice):
 
                 # Add in sky_coordinates set in station_beam_pointings
                 station_beam_pointings["sky_coordinates"] = device._sky_coordinates
-                # Add station_id in station_beam_pointings
-                station_beam_pointings["station_id"] = 1
+
+                # Add station_ids in station_beam_pointings
+                for station in argin_json["stations"]:
+                    log_msg = "Station is: " + str(station)
+                    self.logger.info(log_msg)
+                    device._station_ids.append(station["station_id"])
+                station_beam_pointings["station_id"] = device._station_ids
                 # Remove target block from station_beam_pointings
                 station_beam_pointings.pop("target", None)
 
+                # Update station_beam_pointings into output Configure JSON
                 argin_json["station_beam_pointings"][0] = station_beam_pointings
                 argin_json["station_beams"] = argin_json["station_beam_pointings"]
                 argin_json.pop("station_beam_pointings", None)
                 
-                device._mccs_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, json.dumps(argin_json),
+                input_mccs_subarray = json.dumps(argin_json)
+                log_msg = "Output Configure JSON is: " + input_mccs_subarray
+                self.logger.info(log_msg)
+                device._mccs_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, input_mccs_subarray,
                                                         self.configure_cmd_ended_cb)
                 device._read_activity_message = const.STR_CONFIGURE_SUCCESS
                 self.logger.info(const.STR_CONFIGURE_SUCCESS)

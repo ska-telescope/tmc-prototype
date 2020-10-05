@@ -96,6 +96,7 @@ def test_configure_with_correct_configuration_data_when_mccs_subarray_is_idle(mo
     device_proxy.Configure(configure_str)
 
     sky_coordinates = []
+    station_ids = []
     argin_json = json.loads(configure_str)
     station_beam_pointings = argin_json["station_beam_pointings"][0]
     azimuth_coord = station_beam_pointings["target"]["Az"]
@@ -117,7 +118,10 @@ def test_configure_with_correct_configuration_data_when_mccs_subarray_is_idle(mo
     # Add in sky_coordinates set in station_beam_pointings
     station_beam_pointings["sky_coordinates"] = sky_coordinates
     # Add station_id in station_beam_pointings
-    station_beam_pointings["station_id"] = 1
+    for station in argin_json["stations"]:
+        station_ids.append(station["station_id"])
+    station_beam_pointings["station_id"] = station_ids
+
     # Remove target block from station_beam_pointings
     station_beam_pointings.pop("target", None)
 
