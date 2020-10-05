@@ -13,7 +13,7 @@ Welcome to TMC Prototype's documentation!
    Central Node<CentralNode>
    Low Central Node<CentralNodeLow>
    Subarray Node<SubarrayNode>
-   Low Subarray Node<SubarrayNodeLow>
+   Subarray Node Low<SubarrayNodeLow>
    Dish Leaf Node<DishLeafNode>
    Dish Master<DishMaster>
    CSP Master Leaf Node<CspMasterLeafNode>
