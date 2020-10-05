@@ -26,11 +26,10 @@ exec(open(release_filename).read())
 
 setup(name=name,
       version=version,
-      description='Central Node is a coordinator of the complete M&C system.',
+      description='Central Node is a coordinator of the complete M&C system for SKA Low.',
       packages=find_packages(where='src'),
       package_dir={'': 'src'},
       include_package_data=True,
-      test_suite="test",
       entry_points={'console_scripts': ['CentralNodeLowDS=centralnodelow.central_node_low:main']},
       author='apurva.ska',
       author_email='apurva.ska at gmail.com',
@@ -39,7 +38,6 @@ setup(name=name,
       url='www.tango-controls.org',
       platforms="All Platforms",
       install_requires=['pytango==9.3.2', 'mock', 'ska_logging==0.3.0', 'lmcbaseclasses==0.6.5'],
-      # test_suite='test',
       setup_requires=[
           # dependency for `python setup.py test`
           'pytest-runner',
