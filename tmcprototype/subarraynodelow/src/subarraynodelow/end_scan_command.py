@@ -36,7 +36,7 @@ class EndScanCommand(SKASubarray.EndScanCommand):
                     device.scan_thread.cancel()  # stop timer when EndScan command is called
             device.isScanRunning = False
             device.is_scan_completed = True
-            device._mccs_sa_proxy.command_inout(const.CMD_END_SCAN)
+            device._mccs_subarray_ln_proxy.command_inout(const.CMD_END_SCAN)
             self.logger.debug(const.STR_MCCS_END_SCAN_INIT)
             device._read_activity_message = const.STR_MCCS_END_SCAN_INIT
             device._scan_id = ""
