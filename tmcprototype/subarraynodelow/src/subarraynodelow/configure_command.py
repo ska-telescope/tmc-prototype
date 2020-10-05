@@ -47,23 +47,31 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
         device.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA_LOW)
         device._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA_LOW
         try:
-            scan_configuration = json.loads(argin)
+          scan_configuration = json.loads(argin)
         except json.JSONDecodeError as jerror:
-            log_message = const.ERR_INVALID_JSON + str(jerror)
-            self.logger.error(log_message)
-            device._read_activity_message = log_message
-            tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
-                                         const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
+          log_message = const.ERR_INVALID_JSON + str(jerror)
+          self.logger.error(log_message)
+          device._read_activity_message = log_message
+          tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
+          const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
         tmc_configure = scan_configuration["tmc"]
         device.scan_duration = int(tmc_configure["scanDuration"])
+        scan_configuration = self._configure_mccs_subarray(scan_configuration)
+
         try:
-            device._mccs_subarray_ln_proxy.command_inout(const.CMD_CONFIGURE,
-                                                         json.dumps(scan_configuration['mccs']))
-            message = "Configure command is invoked on SubarrayNode."
-            self.logger.info(message)
-            return (ResultCode.STARTED, message)
+          device._mccs_subarray_ln_proxy.command_inout(const.CMD_CONFIGURE, scan_configuration)
+          message = "Configure command invoked"
+          self.logger.info(message)
+          return (ResultCode.STARTED, message)
         except DevFailed as df:
-            log_message = df[0].desc
-            device._read_activity_message = log_message
-            self.logger.error(log_msg)
-            raise
+          log_message = df[0].desc
+          device._read_activity_message = log_message
+          self.logger.error(log_msg)
+          raise
+
+    def _configure_mccs_subarray(self, scan_configuration):
+      device = self.target
+      scan_configuration = scan_configuration["mccs"]
+      if not scan_configuration:
+        raise KeyError("MCCS configuration must be given. Aborting MCCS configuration.")
+      return json.dumps(scan_configuration)
