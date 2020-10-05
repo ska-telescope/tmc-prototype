@@ -18,8 +18,8 @@ class OnCommand(SKASubarray.OnCommand):
 
     def do(self):
         """
-        This command invokes On Command on MCCSSubarray through mccs subarray leaf node. This comamnd
-        changes Subaray device state from OFF to ON.
+        This command invokes On Command on MCCSSubarray through MCCS Subarray Leaf node. This comamnd
+        changes Subarray device state from OFF to ON.
 
         :return: A tuple containing a return code and a string message indicating status. The message is for
                 information purpose only.

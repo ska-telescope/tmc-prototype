@@ -14,11 +14,11 @@ from ska.base import SKASubarray
 
 class EndCommand(SKASubarray.EndCommand):
     """
-    A class for SubarrayNodelow's End() command.
+    A class for SubarrayNodeLow's End() command.
     """
     def do(self):
         """
-        This command on Subarray Node low invokes End command on Mccs Subarray Leaf Node.
+        This command on Subarray Node Low invokes End command on Mccs Subarray Leaf Node.
 
         :return: A tuple containing a return code and a string message indicating status.
         The message is for information purpose only.
@@ -32,7 +32,7 @@ class EndCommand(SKASubarray.EndCommand):
         device.is_release_resources = False
 
         try:
-            self.logger.info("End command invoked on SubarrayNodelow.")
+            self.logger.info(const.STR_END_CMD_INVOKED_SA_LOW)
             device._mccs_subarray_ln_proxy.command_inout(const.CMD_END)
             self.logger.info(const.STR_CMD_END_INV_MCCS)
             device._read_activity_message = const.STR_END_SUCCESS
@@ -47,5 +47,5 @@ class EndCommand(SKASubarray.EndCommand):
             device.set_status(const.ERR_END_INVOKING_CMD)
             tango.Except.throw_exception(const.STR_END_EXEC,
                                          log_msg,
-                                         "SubarrayNodelow.EndCommand",
+                                         "SubarrayNodeLow.EndCommand",
                                          tango.ErrSeverity.ERR)

@@ -13,11 +13,11 @@ from ska.base import SKASubarray
 
 class EndScanCommand(SKASubarray.EndScanCommand):
     """
-    A class for SubarrayNodelow's EndScan() command.
+    A class for SubarrayNodeLow's EndScan() command.
     """
     def do(self):
         """
-        Ends the scan. It is invoked on subarraylow after completion of the scan duration. It can
+        Ends the scan. It is invoked on subarrayLow after completion of the scan duration. It can
         also be invoked by an external client while a scan is in progress, Which stops the scan
         immediately irrespective of the provided scan duration.
 
