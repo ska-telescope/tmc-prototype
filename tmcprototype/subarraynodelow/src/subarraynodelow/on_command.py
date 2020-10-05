@@ -1,25 +1,25 @@
 """
-OnCommand class for SubarrayNode
+OnCommand class for SubarrayNodeLow
 """
 # Tango imports
 import tango
 from tango import DevFailed
 
 # Additional import
-from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+from . import const
 
 
 class OnCommand(SKASubarray.OnCommand):
     """
-    A class for the SubarrayNode's On() command.
+    A class for the SubarrayNodeLow's On() command.
     """
 
     def do(self):
         """
-        This command invokes On Command on CSPSubarray and SDPSubarray through respective leaf nodes. This comamnd
-        changes Subaray device state from OFF to ON.
+        This command invokes On Command on MCCSSubarray through MCCS Subarray Leaf node. This comamnd
+        changes Subarray device state from OFF to ON.
 
         :return: A tuple containing a return code and a string message indicating status. The message is for
                 information purpose only.
@@ -29,13 +29,9 @@ class OnCommand(SKASubarray.OnCommand):
         :raises: DevFailed if the command execution is not successful
         """
         device = self.target
-        device.is_restart_command = False
         device.is_release_resources = False
-        device.is_abort_command = False
-        device.is_obsreset_command = False
         try:
-            device._csp_subarray_ln_proxy.On()
-            device._sdp_subarray_ln_proxy.On()
+            device._mccs_subarray_ln_proxy.On()
             message = "On command completed OK"
             self.logger.info(message)
             return (ResultCode.OK, message)

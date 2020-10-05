@@ -59,7 +59,7 @@ def event_subscription_without_arg(mock_mccs_subarray):
 
 @pytest.fixture(scope="function")
 def mock_mccs_subarray():
-    mccs_subarray1_fqdn = 'low_mccs/elt/subarray_01'
+    mccs_subarray1_fqdn = 'low-mccs/subarray/01'
     dut_properties = {
         'MccsSubarrayFQDN': mccs_subarray1_fqdn
     }
@@ -96,6 +96,7 @@ def test_configure_with_correct_configuration_data_when_mccs_subarray_is_idle(mo
     device_proxy.Configure(configure_str)
 
     sky_coordinates = []
+    station_ids = []
     argin_json = json.loads(configure_str)
     station_beam_pointings = argin_json["station_beam_pointings"][0]
     azimuth_coord = station_beam_pointings["target"]["Az"]
@@ -117,7 +118,10 @@ def test_configure_with_correct_configuration_data_when_mccs_subarray_is_idle(mo
     # Add in sky_coordinates set in station_beam_pointings
     station_beam_pointings["sky_coordinates"] = sky_coordinates
     # Add station_id in station_beam_pointings
-    station_beam_pointings["station_id"] = 1
+    for station in argin_json["stations"]:
+        station_ids.append(station["station_id"])
+    station_beam_pointings["station_id"] = station_ids
+
     # Remove target block from station_beam_pointings
     station_beam_pointings.pop("target", None)
 
@@ -241,14 +245,6 @@ def test_end_command_with_callback_method_with_event_error(mock_mccs_subarray,ev
 def test_end_should_command_mccs_subarray_to_end_when_it_is_ready(mock_mccs_subarray):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.READY
-    device_proxy.End()
-    mccs_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_END,
-                                                                any_method(with_name='end_cmd_ended_cb'))
-
-
-def test_end_should_command_mccs_subarray_to_end_when_it_is_idle(mock_mccs_subarray):
-    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
-    mccs_subarray1_proxy_mock.obsState = ObsState.IDLE
     device_proxy.End()
     mccs_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_END,
                                                                 any_method(with_name='end_cmd_ended_cb'))

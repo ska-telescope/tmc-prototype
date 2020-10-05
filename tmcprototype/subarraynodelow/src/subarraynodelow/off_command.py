@@ -1,14 +1,14 @@
 """
-OffCommand class for SubarrayNode
+OffCommand class for SubarrayNodeLow
 """
 
 # Tango imports
 import tango
 from tango import DevFailed
 # Additional import
-from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+from . import const
 
 
 class OffCommand(SKASubarray.OffCommand):
@@ -17,7 +17,7 @@ class OffCommand(SKASubarray.OffCommand):
     """
     def do(self):
         """
-        This command invokes Off Command on CSPSubarray and SDPSubarray through respective leaf nodes. This comamnd
+        This command invokes Off Command on MCCSSubarray through mccs subarray leaf node. This comamnd
         changes Subaray device state from ON to OFF.
 
         :return: A tuple containing a return code and a string message indicating status.
@@ -28,13 +28,9 @@ class OffCommand(SKASubarray.OffCommand):
         :raises: DevFailed if the command execution is not successful
         """
         device = self.target
-        device.is_restart_command = False
         device.is_release_resources = False
-        device.is_abort_command = False
-        device.is_obsreset_command = False
         try:
-            device._csp_subarray_ln_proxy.Off()
-            device._sdp_subarray_ln_proxy.Off()
+            device._mccs_subarray_ln_proxy.Off()
             message = "Off command completed OK"
             self.logger.info(message)
             return (ResultCode.OK, message)

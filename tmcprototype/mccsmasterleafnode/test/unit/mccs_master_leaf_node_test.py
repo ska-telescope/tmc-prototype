@@ -27,15 +27,19 @@ path = join(dirname(__file__), 'data', assign_input_file)
 with open(path, 'r') as f:
     assign_input_str = f.read()
 
-
 assign_invalid_key_file = 'invalid_key_AssignResources.json'
 path = join(dirname(__file__), 'data', assign_invalid_key_file)
 with open(path, 'r') as f:
     assign_invalid_key = f.read()
 
+release_input_file = 'command_ReleaseResources.json'
+path = join(dirname(__file__), 'data', release_input_file)
+with open(path, 'r') as f:
+    release_input_str = f.read() 
+
 @pytest.fixture(scope="function")
 def mock_mccs_master():
-    mccs_master_fqdn = 'low_mccs/elt/master'
+    mccs_master_fqdn = 'low-mccs/control/control'
     dut_properties = {'MccsMasterFQDN': mccs_master_fqdn}
     event_subscription_map = {}
     mccs_master_proxy_mock = Mock()
@@ -121,8 +125,8 @@ def test_release_resource_should_command_mccs_master_to_release_all_resources(mo
     mccs_master_proxy_mock.obsState = ObsState.EMPTY
     device_proxy.On()
     device_proxy.AssignResources(assign_input_str)
-    device_proxy.ReleaseResources()
-    mccs_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_Release,
+    device_proxy.ReleaseResources(release_input_str)
+    mccs_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_Release, release_input_str,
                                                                         any_method(
                                                                             with_name='releaseresources_cmd_ended_cb'))
     assert_activity_message(device_proxy, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
@@ -130,25 +134,26 @@ def test_release_resource_should_command_mccs_master_to_release_all_resources(mo
 def test_release_resource_should_raise_devfail_exception(mock_mccs_master):
     mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
     mccs_master_proxy_mock.obsState = ObsState.IDLE
-    mccs_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+    mccs_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_with_arg
     with pytest.raises(tango.DevFailed) as df:
-        device_proxy.ReleaseResources()
+        device_proxy.ReleaseResources(release_input_str)
     assert const.ERR_RELEASE_ALL_RESOURCES in str(df.value)
 
-def test_releaseresources_command_with_callback_method(mock_mccs_master, event_subscription_without_arg):
+def test_releaseresources_command_with_callback_method(mock_mccs_master, event_subscription):
     mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
     mccs_master_proxy_mock.obsState = ObsState.IDLE
-    device_proxy.ReleaseResources()
+    device_proxy.ReleaseResources(release_input_str)
     dummy_event = command_callback(const.CMD_Release)
-    event_subscription_without_arg[const.CMD_Release](dummy_event)
+    event_subscription[const.CMD_Release](dummy_event)
+    assert const.STR_INVOKE_SUCCESS in device_proxy.activityMessage
     assert const.STR_COMMAND + const.CMD_Release in device_proxy.activityMessage
 
-def test_releaseresources_command_with_callback_method_with_event_error(mock_mccs_master, event_subscription_without_arg):
+def test_releaseresources_command_with_callback_method_with_event_error(mock_mccs_master, event_subscription):
     mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
     mccs_master_proxy_mock.obsState = ObsState.IDLE
-    device_proxy.ReleaseResources()
+    device_proxy.ReleaseResources(release_input_str)
     dummy_event = command_callback_with_event_error(const.CMD_Release)
-    event_subscription_without_arg[const.CMD_Release](dummy_event)
+    event_subscription[const.CMD_Release](dummy_event)
     assert const.ERR_INVOKING_CMD + const.CMD_Release in device_proxy.activityMessage
 
 

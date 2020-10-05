@@ -28,7 +28,7 @@
     <deviceProperties name="MccsSubarrayFQDN" description="">
       <type xsi:type="pogoDsl:StringType"/>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
-      <DefaultPropValue>low_mccs/elt/subarray_01</DefaultPropValue>
+      <DefaultPropValue>low-mccs/subarray/01</DefaultPropValue>
     </deviceProperties>
     <commands name="State" description="This command gets the device state (stored in its device_state data member) and returns it to the caller." execMethod="dev_state" displayLevel="OPERATOR" polledPeriod="0">
       <argin description="none">
@@ -206,7 +206,7 @@
       <status abstract="false" inherited="true" concrete="true"/>
       <properties description="Logging targets for this device, excluding ska_logging defaults - &#xA;initialises to LoggingTargetsDefault on startup" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
     </attributes>
-    <forwardedAttributes name="mccssubarrayHealthState" label="mccssubarrayHealthState">
+    <forwardedAttributes name="mccsSubarrayHealthState" label="mccsSubarrayHealthState">
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
     </forwardedAttributes>
     <forwardedAttributes name="mccsSubarrayObsState" label="mccsSubarrayObsState">
