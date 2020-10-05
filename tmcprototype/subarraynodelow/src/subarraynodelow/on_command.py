@@ -29,6 +29,7 @@ class OnCommand(SKASubarray.OnCommand):
         :raises: DevFailed if the command execution is not successful
         """
         device = self.target
+        device.is_release_resources = False
         try:
             device._mccs_subarray_ln_proxy.On()
             message = "On command completed OK"
