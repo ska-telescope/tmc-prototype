@@ -76,5 +76,6 @@ TEST_RUNNER = test-makefile-runner-$(CI_JOB_ID)-$(KUBE_NAMESPACE)-$(HELM_RELEASE
 include .make/release.mk
 include .make/docker.mk
 include .make/k8s.mk
+include .make/test.mk
 
 .PHONY: all test up down help k8s show lint deploy delete logs describe mkcerts localip namespace delete_namespace ingress_check kubeconfig kubectl_dependencies helm_dependencies rk8s_test k8s_test rlint
