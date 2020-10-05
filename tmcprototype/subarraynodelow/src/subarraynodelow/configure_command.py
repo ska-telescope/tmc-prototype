@@ -1,16 +1,17 @@
 """
 ConfigureCommand class for SubarrayNodeLow.
 """
-
+# Standard Python imports
 import json
+
 # Tango imports
 import tango
 from tango import DevFailed
 
 # Additional import
-from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+from . import const
 
 
 class ConfigureCommand(SKASubarray.ConfigureCommand):

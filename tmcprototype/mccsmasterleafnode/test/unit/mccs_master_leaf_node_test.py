@@ -37,11 +37,6 @@ path = join(dirname(__file__), 'data', release_input_file)
 with open(path, 'r') as f:
     release_input_str = f.read() 
 
-release_invalid_key_file = 'invalid_key_ReleaseResources.json'
-path = join(dirname(__file__), 'data', release_invalid_key_file)
-with open(path, 'r') as f:
-    release_invalid_key = f.read()  
-
 @pytest.fixture(scope="function")
 def mock_mccs_master():
     mccs_master_fqdn = 'low-mccs/control/control'

@@ -12,15 +12,16 @@ Provides the monitoring and control interface required by users as well as
 other TM Components (such as OET, Central Node) for a Subarray.
 """
 
-# PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
 # Tango imports
 import tango
 from tango import AttrWriteType, DevFailed, DeviceProxy, EventType
 from tango.server import run,attribute, device_property
-from . import const, release, on_command, assign_resources_command, configure_command, scan_command, end_scan_command, end_command, release_all_resources_command, off_command
+
+# Additional imports
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, ObsMode, ObsState
 from ska.base import SKASubarray
+from . import const, release, on_command, assign_resources_command, configure_command, scan_command, end_scan_command, end_command, release_all_resources_command, off_command
 
 __all__ = ["SubarrayNode", "main", "assign_resources_command", "release_all_resources_command",
            "configure_command", "scan_command", "end_scan_command", "end_command", "on_command",
@@ -57,7 +58,6 @@ class SubarrayNode(SKASubarray):
     Provides the monitoring and control interface required by users as well as
     other TM Components (such as OET, Central Node) for a Subarray.
     """
-    # PROTECTED REGION ID(SubarrayNode.class_variable) ENABLED START #
     def command_class_object(self):
         """
         Sets up the command objects
@@ -283,7 +283,7 @@ class SubarrayNode(SKASubarray):
             device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
             device._version_id = release.version
             device._health_event_id = []
-            device._mccs_sa_obs_state = None
+            device._mccs_sa_obs_state = ObsState.EMPTY
             device.subarray_ln_health_state_map = {}
             device._subarray_health_state = HealthState.OK  #Aggregated Subarray Health State
 

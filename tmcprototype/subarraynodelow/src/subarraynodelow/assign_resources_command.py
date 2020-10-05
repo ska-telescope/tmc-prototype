@@ -3,10 +3,10 @@ AssignResourcesCommand class for SubarrayNodeLow.
 """
 
 # Additional import
-from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 import json
+from . import const
 
 
 class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
