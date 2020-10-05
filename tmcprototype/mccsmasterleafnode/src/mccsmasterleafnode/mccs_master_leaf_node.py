@@ -270,6 +270,7 @@ class MccsMasterLeafNode(SKABaseDevice):
                 tango.Except.re_throw_exception(dev_failed, const.STR_ASSIGN_RES_EXEC, log_msg,
                                              "MccsMasterLeafNode.AssignResourcesCommand",
                                              tango.ErrSeverity.ERR)
+                                             
     @command(
         dtype_in='str',
     )

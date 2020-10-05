@@ -673,7 +673,8 @@ class CentralNode(SKABaseDevice):
                     # Invoke ReleaseAllResources on SubarrayNode
                     subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
                     # Invoke ReleaseAllResources on MCCS Master Leaf Node
-                    device._mccs_master_leaf_proxy.command_inout(const.CMD_RELEASE_RESOURCES)
+                    # Send same input argument to MCCS Master for ReleaseResource Command
+                    device._mccs_master_leaf_proxy.command_inout(const.CMD_RELEASE_RESOURCES, argin)
                     log_msg = const.STR_REL_RESOURCES
                     self.logger.info(log_msg)
                     device._read_activity_message = log_msg
