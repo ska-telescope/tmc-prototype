@@ -11,7 +11,7 @@ Welcome to TMC Prototype's documentation!
    :caption: Contents:
 
    Central Node<CentralNode>
-   Low Central Node<CentralNodeLow>
+   Central Node Low<CentralNodeLow>
    Subarray Node<SubarrayNode>
    Subarray Node Low<SubarrayNodeLow>
    Dish Leaf Node<DishLeafNode>
