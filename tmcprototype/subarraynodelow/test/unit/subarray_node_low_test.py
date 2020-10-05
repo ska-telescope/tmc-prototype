@@ -511,7 +511,7 @@ def test_assign_resources_should_assign_resources_when_device_state_on(mock_lowe
     assert tango_context.device.obsState == ObsState.IDLE
 
 
-def test_release_resource_should_raise_exception_when_called_when_device_state_on(mock_lower_devices):
+def test_release_resource_should_raise_exception_when_call_before_assign_resources(mock_lower_devices):
     tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
     tango_context.device.On()
     with pytest.raises(tango.DevFailed) as df:
