@@ -283,7 +283,7 @@ class SubarrayNode(SKASubarray):
             device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
             device._version_id = release.version
             device._health_event_id = []
-            device._mccs_sa_obs_state = None
+            device._mccs_sa_obs_state = ObsState.EMPTY
             device.subarray_ln_health_state_map = {}
             device._subarray_health_state = HealthState.OK  #Aggregated Subarray Health State
 
