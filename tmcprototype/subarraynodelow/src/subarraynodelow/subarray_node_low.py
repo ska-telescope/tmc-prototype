@@ -277,7 +277,7 @@ class SubarrayNode(SKASubarray):
             device.set_status(const.STR_SA_INIT)
             device._obs_mode = ObsMode.IDLE
             device._scan_id = ""
-            device._resource_list = [1]
+            device._resource_list = []
             device.is_end_command = False
             device.is_release_resources = False
             device._build_state = '{},{},{}'.format(release.name, release.version, release.description)

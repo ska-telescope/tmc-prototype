@@ -510,19 +510,17 @@ def test_assign_resources_should_assign_resources_when_device_state_on(mock_lowe
     wait_for(tango_context, ObsState.IDLE)
     assert tango_context.device.obsState == ObsState.IDLE
 
-@pytest.mark.xfail(reason="Enable testcase when issue is resolved")
+# @pytest.mark.xfail(reason="Enable testcase when issue is resolved")
 def test_release_resource_should_raise_exception_when_called_when_device_state_on(mock_lower_devices):
     tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
     tango_context.device.On()
-    tango_context.device.AssignResources(assign_input_str)
-    with fake_tango_system(SubarrayNode) as tango_context:
-        with pytest.raises(tango.DevFailed) as df:
-            tango_context.device.ReleaseAllResources()
-        assert tango_context.device.State() == DevState.ON
-        assert tango_context.device.obsState == ObsState.EMPTY
-        assert "Error executing command_inout ReleaseAllResourcesCommand" in str(df.value)
+    # tango_context.device.AssignResources(assign_input_str)
+    with pytest.raises(tango.DevFailed) as df:
+        tango_context.device.ReleaseAllResources()
+    assert tango_context.device.State() == DevState.ON
+    assert tango_context.device.obsState == ObsState.EMPTY
+    assert "Error executing command ReleaseAllResourcesCommand" in str(df.value)
 
-@pytest.mark.xfail(reason="Enable testcase when issue is resolved")
 def test_release_all_resources_should_release_resources_when_obstate_idle(mock_lower_devices):
     tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
     mccs_subarray1_obsstate_attribute = "mccsSubarrayObsState"
@@ -539,7 +537,7 @@ def test_release_all_resources_should_release_resources_when_obstate_idle(mock_l
     dummy_event = create_dummy_event_state(mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, attribute,
                                            ObsState.EMPTY)
     event_subscription_map[mccs_subarray1_obsstate_attribute](dummy_event)
-    # wait_for(tango_context, ObsState.EMPTY)
+    wait_for(tango_context, ObsState.EMPTY)
     assert tango_context.device.State() == DevState.ON
     assert tango_context.device.obsState == ObsState.EMPTY
 
