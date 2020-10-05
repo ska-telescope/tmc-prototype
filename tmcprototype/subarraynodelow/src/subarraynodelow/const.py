@@ -4,7 +4,7 @@ This file is part of the SubarrayNode project and defines variables used
 """
 # Events
 EVT_MCCSSA_OBS_STATE = "mccsSubarrayObsState"
-EVT_MCCSSA_HEALTH = "mccssubarrayHealthState"
+EVT_MCCSSA_HEALTH = "mccsSubarrayHealthState"
 EVT_UNKNOWN = "Event from the Unknown device!"
 
 # Commands
