@@ -344,6 +344,8 @@ def test_configure_command_subarray_with_invalid_configure_input(mock_lower_devi
     dummy_event_mccs = create_dummy_event_state(mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn,
                                                attribute, ObsState.IDLE)
     event_subscription_map[mccs_subarray1_obsstate_attribute](dummy_event_mccs)
+    wait_for(tango_context, ObsState.IDLE)
+    assert tango_context.device.obsState == ObsState.IDLE 
     with pytest.raises(tango.DevFailed):
         tango_context.device.Configure(invalid_conf_input)
     assert tango_context.device.obsState == ObsState.FAULT
@@ -510,19 +512,16 @@ def test_assign_resources_should_assign_resources_when_device_state_on(mock_lowe
     wait_for(tango_context, ObsState.IDLE)
     assert tango_context.device.obsState == ObsState.IDLE
 
-@pytest.mark.xfail(reason="Enable testcase when issue is resolved")
-def test_release_resource_should_raise_exception_when_called_when_device_state_on(mock_lower_devices):
+
+def test_release_resource_should_raise_exception_when_call_before_assign_resources(mock_lower_devices):
     tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
     tango_context.device.On()
-    tango_context.device.AssignResources(assign_input_str)
-    with fake_tango_system(SubarrayNode) as tango_context:
-        with pytest.raises(tango.DevFailed) as df:
-            tango_context.device.ReleaseAllResources()
-        assert tango_context.device.State() == DevState.ON
-        assert tango_context.device.obsState == ObsState.EMPTY
-        assert "Error executing command_inout ReleaseAllResourcesCommand" in str(df.value)
+    with pytest.raises(tango.DevFailed) as df:
+        tango_context.device.ReleaseAllResources()
+    assert tango_context.device.State() == DevState.ON
+    assert tango_context.device.obsState == ObsState.EMPTY
+    assert "Error executing command ReleaseAllResourcesCommand" in str(df.value)
 
-@pytest.mark.xfail(reason="Enable testcase when issue is resolved")
 def test_release_all_resources_should_release_resources_when_obstate_idle(mock_lower_devices):
     tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
     mccs_subarray1_obsstate_attribute = "mccsSubarrayObsState"
@@ -539,7 +538,7 @@ def test_release_all_resources_should_release_resources_when_obstate_idle(mock_l
     dummy_event = create_dummy_event_state(mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, attribute,
                                            ObsState.EMPTY)
     event_subscription_map[mccs_subarray1_obsstate_attribute](dummy_event)
-    # wait_for(tango_context, ObsState.EMPTY)
+    wait_for(tango_context, ObsState.EMPTY)
     assert tango_context.device.State() == DevState.ON
     assert tango_context.device.obsState == ObsState.EMPTY
 
@@ -595,7 +594,7 @@ def create_dummy_event_state_with_error(proxy_mock, device_fqdn, attribute, attr
 def create_dummy_event_custom_exception(proxy_mock, device_fqdn, attribute, attr_value):
     fake_event = MagicMock()
     fake_event.err = True
-    fake_event.errors = 'Invalid Value'
+    fake_event.errors = 'Custom Exception'
     fake_event.attr_name = "{device_fqdn}/{attribute}"
     fake_event.attr_value = "Subarray is not in IDLE obsState, please check the subarray obsState"
     fake_event.device = proxy_mock
@@ -616,7 +615,7 @@ def raise_devfailed_with_arg(cmd_name, input_arg):
 
 def raise_devfailed_for_event_subscription(evt_name,evt_type,callaback, stateless=True):
     tango.Except.throw_exception("SubarrayNode_CommandCallbackfailed",
-                                 "This is error message for devfailed",
+                                 "This is error message for devfailed in event subscription",
                                  "From function test devfailed", tango.ErrSeverity.ERR)
 
 

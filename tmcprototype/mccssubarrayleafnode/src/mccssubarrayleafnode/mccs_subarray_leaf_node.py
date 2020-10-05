@@ -52,7 +52,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
     )
 
 
-    mccssubarrayHealthState = attribute(name="mccsSubarrayHealthState", label="mccsSubarrayHealthState",
+    mccsSubarrayHealthState = attribute(name="mccsSubarrayHealthState", label="mccsSubarrayHealthState",
         forwarded=True
     )
     mccsSubarrayObsState = attribute(name="mccsSubarrayObsState", label="mccsSubarrayObsState",

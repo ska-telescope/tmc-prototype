@@ -21,7 +21,7 @@ class ScanCommand(SKASubarray.ScanCommand):
     def do(self, argin):
         """
         This command accepts id as input. And it Schedule scan on subarray
-        from where scan command is invoked on mccs subarray leaf node for the
+        from where scan command is invoked on MCCS subarray Leaf Node for the
         provided interval of time. It checks whether the scan is already in progress. If yes it
         throws error showing duplication of command.
 
@@ -48,7 +48,7 @@ class ScanCommand(SKASubarray.ScanCommand):
             self.logger.info(log_msg)
             device._read_activity_message = log_msg
             device.isScanRunning = True
-            # Invoke scan command on Mccs Subarray Leaf Node with input argument as scan id
+            # Invoke scan command on MCCS Subarray Leaf Node with input argument as scan id
             device._mccs_subarray_ln_proxy.command_inout(const.CMD_SCAN, argin)
             self.logger.info(const.STR_MCCS_SCAN_INIT)
             device._read_activity_message = const.STR_MCCS_SCAN_INIT

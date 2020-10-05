@@ -17,7 +17,7 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
         Assigns the resources to the subarray. It accepts station ids, channels, station beam ids, and tile ids
 
         :param argin: DevString in JSON form containing following fields:
-            station_ids: list of DevInt
+            station_ids: list of integers
 
             channels: list of integers
 
@@ -36,7 +36,7 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
         device = self.target
         device.is_end_command = False
         device.is_release_resources = False
-    
+        device._resource_list = [1]
         log_msg = const.STR_ASSIGN_RES_EXEC + "STARTED"
         self.logger.debug(log_msg)
         device._read_activity_message = log_msg
