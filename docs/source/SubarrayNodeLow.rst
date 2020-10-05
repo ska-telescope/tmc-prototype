@@ -9,3 +9,27 @@ Subarray Node
 .. automodule:: tmcprototype.subarraynodelow.src.subarraynodelow.subarray_node_low
    :members:
    :undoc-members:
+.. automodule:: tmcprototype.subarraynodelow.src.subarraynodelow.assign_resources_command
+  :members:
+  :undoc-members:
+.. automodule:: tmcprototype.subarraynodelow.src.subarraynodelow.configure_command
+  :members:
+  :undoc-members:
+.. automodule:: tmcprototype.subarraynodelow.src.subarraynodelow.end_command
+  :members:
+  :undoc-members:
+.. automodule:: tmcprototype.subarraynodelow.src.subarraynodelow.end_scan_command
+  :members:
+  :undoc-members:
+.. automodule:: tmcprototype.subarraynodelow.src.subarraynodelow.off_command
+  :members:
+  :undoc-members:
+.. automodule:: tmcprototype.subarraynodelow.src.subarraynodelow.on_command
+  :members:
+  :undoc-members:
+.. automodule:: tmcprototype.subarraynodelow.src.subarraynodelow.release_all_resources_command
+  :members:
+  :undoc-members:
+.. automodule:: tmcprototype.subarraynodelow.src.subarraynodelow.scan_command
+  :members:
+  :undoc-members:
