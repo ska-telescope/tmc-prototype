@@ -2,37 +2,6 @@ apiVersion: v2
 name: test-tmc
 description: A Combined Helm chart for MVP Mid and MVP Low for TMC testing
 type: application
-version: 0.1.0
-appVersion: 0.1.0
+version: 0.0.2
+appVersion: 1.16.0
 icon: https://www.skatelescope.org/wp-content/uploads/2016/07/09545_NEW_LOGO_2014.png
-dependencies:
-- name: etcd-operator
-  version: 0.11.0
-  repository: https://nexus.engageska-portugal.pt/repository/helm-chart
-- name: tango-base
-  version: 0.1.2
-  repository: https://nexus.engageska-portugal.pt/repository/helm-chart
-- name: cbf-proto
-  version: 0.4.0
-  repository: https://nexus.engageska-portugal.pt/repository/helm-chart
-- name: csp-proto
-  version: 0.5.3
-  repository: https://nexus.engageska-portugal.pt/repository/helm-chart
-- name: sdp-prototype
-  version: 0.4.0
-  repository: https://nexus.engageska-portugal.pt/repository/helm-chart
-- name: tmc-mid
-  version: 0.0.2
-  repository: file://../tmc-mid
-- name: webjive
-  version: 0.1.0
-  repository: https://nexus.engageska-portugal.pt/repository/helm-chart
-- name: logging
-  version: 0.1.0
-  repository: https://nexus.engageska-portugal.pt/repository/helm-chart
-# - name: tmc-low
-#   version: 0.0.2
-#   repository: file://../tmc-low
-# - name: mccs
-#   version: 0.0.2
-#   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
