@@ -120,7 +120,7 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready(mock_
 
     # Confiure subarray with correct configuration which will change the obsState to CONFIGURING
     tango_context.device.Configure(configure_str)
-    # Mock the behaviour of ObsState of Csp and Sdp Subarray to change the ObsState to READY
+    # Mock the behaviour of ObsState of MCCS Subarray to change the ObsState to READY
     # Marking Configure Command Completed
     attribute = 'ObsState'
     dummy_event_mccs = create_dummy_event_state(mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn,
@@ -148,7 +148,7 @@ def test_start_scan_should_raise_devfailed_exception(mock_lower_devices):
     tango_context.device.On()
     # Assign Resources to the Subarray which change the obsState to RESOURCING
     tango_context.device.AssignResources(assign_input_str)
-    # Mock the behaviour of ObsState of Csp and Sdp Subarray to change the ObsState to IDLE
+    # Mock the behaviour of ObsState of MCCS Subarray to change the ObsState to IDLE
     # Marking Assign Resources Command Completed
     attribute = 'ObsState'
     dummy_event_mccs = create_dummy_event_state(mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn,
@@ -160,7 +160,7 @@ def test_start_scan_should_raise_devfailed_exception(mock_lower_devices):
 
     # Confiure subarray with correct configuration which will change the obsState to CONFIGURING
     tango_context.device.Configure(configure_str)
-    # Mock the behaviour of ObsState of Csp and Sdp Subarray to change the ObsState to READY
+    # Mock the behaviour of ObsState of MCCS Subarray to change the ObsState to READY
     # Marking Configure Command Completed
     attribute = 'ObsState'
     dummy_event_mccs = create_dummy_event_state(mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn,
@@ -434,10 +434,10 @@ def test_subarray_health_state_is_ok_when_mccs_subarray1_ln_is_ok_after_start(mo
     tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
     mccs_subarray1_ln_health_attribute = 'mccssubarrayHealthState'
     health_state_value = HealthState.OK
-    dummy_event_csp = create_dummy_event_healthstate_with_proxy(
+    dummy_event_mccs = create_dummy_event_healthstate_with_proxy(
         mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, health_state_value,
         mccs_subarray1_ln_health_attribute)
-    event_subscription_map[mccs_subarray1_ln_health_attribute](dummy_event_csp)
+    event_subscription_map[mccs_subarray1_ln_health_attribute](dummy_event_mccs)
     assert tango_context.device.healthState == HealthState.OK
 
 
@@ -527,13 +527,11 @@ def any_method(with_name=None):
 
 
 def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):
-    print("inside dummy event funct::::::::::::::")
     fake_event = Mock()
     fake_event.err = False
     fake_event.attr_name = f"{device_fqdn}/{attribute}"
     fake_event.attr_value.value = attr_value
     fake_event.device = proxy_mock
-    print("fake event is::::::", fake_event)
     return fake_event
 
 

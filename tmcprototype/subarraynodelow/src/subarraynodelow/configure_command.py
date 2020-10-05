@@ -70,6 +70,7 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
         :rtype: (ReturnCode, str)
 
         :raises: JSONDecodeError if input argument json string contains invalid value
+                 DevFailed if the command execution is not successful.
         """
         device = self.target
         device.is_scan_completed = False
