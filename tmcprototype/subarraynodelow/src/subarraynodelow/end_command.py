@@ -18,7 +18,7 @@ class EndCommand(SKASubarray.EndCommand):
     """
     def do(self):
         """
-        This command on Subarray Node Low invokes End command on Mccs Subarray Leaf Node.
+        This command on Subarray Node Low invokes End command on MCCS Subarray Leaf Node.
 
         :return: A tuple containing a return code and a string message indicating status.
         The message is for information purpose only.
@@ -45,7 +45,7 @@ class EndCommand(SKASubarray.EndCommand):
             log_msg = const.ERR_END_INVOKING_CMD + str(dev_failed)
             self.logger.exception(log_msg)
             device.set_status(const.ERR_END_INVOKING_CMD)
-            tango.Except.throw_exception(const.STR_END_EXEC,
+            tango.Except.re_throw_exception(const.STR_END_EXEC,
                                          log_msg,
-                                         "SubarrayNodeLow.EndCommand",
+                                         "SubarrayNode.EndCommand",
                                          tango.ErrSeverity.ERR)
