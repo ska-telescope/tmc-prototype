@@ -88,7 +88,7 @@ class CentralNode(SKABaseDevice):
                     counts[subarray_health_state] += 1
                 
                 # Calculating health_state for SubarrayNode, MCCSMasterLeafNode
-                if counts[HealthState.OK] == len(list(self.subarray_health_state_map.values())) + 1:
+                if counts[HealthState.OK] == len(self.subarray_health_state_map.values()) + 1:
                     self._telescope_health_state = HealthState.OK
                     str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_OK
                     self.logger.info(str_log)
