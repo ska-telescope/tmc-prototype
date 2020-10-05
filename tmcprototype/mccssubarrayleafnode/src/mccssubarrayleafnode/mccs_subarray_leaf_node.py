@@ -620,9 +620,8 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             :raises: DevFailed if the command execution is not successful
             """
             device = self.target
-            allowed_obstate = [ObsState.READY,ObsState.IDLE]
             try:
-                assert device._mccs_subarray_proxy.obsState in allowed_obstate
+                assert device._mccs_subarray_proxy.obsState == ObsState.READY
                 device._mccs_subarray_proxy.command_inout_asynch(const.CMD_END,
                                                                 self.end_cmd_ended_cb)
                 device._read_activity_message = const.STR_END_SUCCESS

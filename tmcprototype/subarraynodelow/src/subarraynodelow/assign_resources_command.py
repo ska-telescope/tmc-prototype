@@ -1,5 +1,5 @@
 """
-AssignResourcesCommand class for SubarrayNodelow.
+AssignResourcesCommand class for SubarrayNodeLow.
 """
 
 # Additional import
