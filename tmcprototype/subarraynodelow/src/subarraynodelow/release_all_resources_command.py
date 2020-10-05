@@ -23,6 +23,7 @@ class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
         """
         device = self.target
         device.is_release_resources = True
+        # TODO: Clearing the assigned resources
         device._resource_list = []
         self.logger.debug(const.STR_RELEASE_SUCCESS)
         return (ResultCode.STARTED,const.STR_RELEASE_SUCCESS )

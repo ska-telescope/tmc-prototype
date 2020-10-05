@@ -6,6 +6,7 @@ AssignResourcesCommand class for SubarrayNodeLow.
 from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+import json
 
 
 class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
@@ -36,7 +37,9 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
         device = self.target
         device.is_end_command = False
         device.is_release_resources = False
-        device._resource_list = [1]
+        # TODO: For now storing resources as station ids
+        input_str = json.loads(argin)
+        device._resource_list = input_str["station_ids"]
         log_msg = const.STR_ASSIGN_RES_EXEC + "STARTED"
         self.logger.debug(log_msg)
         device._read_activity_message = log_msg
