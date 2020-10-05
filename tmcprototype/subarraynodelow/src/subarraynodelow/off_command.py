@@ -6,9 +6,9 @@ OffCommand class for SubarrayNodeLow
 import tango
 from tango import DevFailed
 # Additional import
-from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+from . import const
 
 
 class OffCommand(SKASubarray.OffCommand):
