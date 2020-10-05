@@ -274,7 +274,7 @@ def test_end_should_raise_devfailed_exception_when_mccs_subarray_throws_devfaile
 @pytest.fixture(scope="function")
 def mock_lower_devices():
     mccs_subarray1_ln_fqdn = 'ska_low/tm_leaf_node/mccs_subarray01'
-    mccs_subarray1_fqdn = 'low_mccs/elt/subarray_01'
+    mccs_subarray1_fqdn = 'low-mccs/subarray/01'
 
     dut_properties = {
         'MccsSubarrayLNFQDN': mccs_subarray1_ln_fqdn,

@@ -416,7 +416,7 @@
                                 "ska_low/tm_leaf_node/mccs_subarray01"
                             ],
                             "MCCSSubarrayFQDN": [
-                                "low_mccs/elt/subarray_01"
+                                "low-mccs/subarray/01"
                             ],
                             "SkaLevel": [
                                 "2"
@@ -1548,12 +1548,12 @@
                             },
                             "mccsSubarrayHealthState": {
                                 "__root_att": [
-                                    "low_mccs/elt/subarray_01/healthState"
+                                    "low-mccs/subarray/01/healthState"
                                 ]
                             },
                             "mccsSubarrayObsState": {
                                 "__root_att": [
-                                    "low_mccs/elt/subarray_01/obsState"
+                                    "low-mccs/subarray/01/obsState"
                                 ]
                             },
                             "healthState": {
@@ -1565,7 +1565,7 @@
                         },
                         "properties": {
                             "MccsSubarrayFQDN": [
-                                "low_mccs/elt/subarray_01"],
+                                "low-mccs/subarray/01"],
                             "SkaLevel": [
                                 "3"
                             ],
@@ -1593,7 +1593,7 @@
                         "attribute_properties": {
                             "cspHealthState": {
                                 "__root_att": [
-                                    "low_mccs/elt/master/healthState"
+                                    "low-mccs/control/control/healthState"
                                 ]
                             },
                             "healthState": {
@@ -1605,7 +1605,7 @@
                         },
                         "properties": {
                             "MccsMasterFQDN": [
-                                "low_mccs/elt/master"
+                                "low-mccs/control/control"
                             ],
                             "SkaLevel": [
                                 "3"

@@ -44,7 +44,7 @@ with open(path, 'r') as f:
 
 @pytest.fixture(scope="function")
 def mock_mccs_master():
-    mccs_master_fqdn = 'low_mccs/elt/master'
+    mccs_master_fqdn = 'low-mccs/control/control'
     dut_properties = {'MccsMasterFQDN': mccs_master_fqdn}
     event_subscription_map = {}
     mccs_master_proxy_mock = Mock()

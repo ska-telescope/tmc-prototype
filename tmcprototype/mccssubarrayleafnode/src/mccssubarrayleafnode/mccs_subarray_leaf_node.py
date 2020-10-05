@@ -39,7 +39,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
     # -----------------
 
     MccsSubarrayFQDN = device_property(
-        dtype='str', default_value="low_mccs/elt/subarray_01"
+        dtype='str', default_value="low-mccs/subarray/01"
     )
 
     # ----------

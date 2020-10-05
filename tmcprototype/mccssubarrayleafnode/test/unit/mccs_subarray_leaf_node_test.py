@@ -59,7 +59,7 @@ def event_subscription_without_arg(mock_mccs_subarray):
 
 @pytest.fixture(scope="function")
 def mock_mccs_subarray():
-    mccs_subarray1_fqdn = 'low_mccs/elt/subarray_01'
+    mccs_subarray1_fqdn = 'low-mccs/subarray/01'
     dut_properties = {
         'MccsSubarrayFQDN': mccs_subarray1_fqdn
     }
