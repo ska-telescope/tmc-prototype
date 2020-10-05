@@ -2,9 +2,7 @@
 import contextlib
 import importlib
 import sys
-import json
 import types
-import time
 import pytest
 import mock
 from mock import Mock, MagicMock
@@ -13,14 +11,12 @@ import threading
 
 # Tango imports
 import tango
-from tango import DevState, DeviceData, DevString, DevVarStringArray
+from tango import DevState
 from tango.test_context import DeviceTestContext
 
 # Additional import
 from subarraynodelow import SubarrayNode, const, release
-from ska.base.control_model import AdminMode, HealthState, ObsState, ObsMode, TestMode, SimulationMode, \
-    LoggingLevel
-from subarraynodelow.exceptions import InvalidObsStateError
+from ska.base.control_model import HealthState, ObsState
 
 assign_input_file = 'command_AssignResources.json'
 path = join(dirname(__file__), 'data', assign_input_file)

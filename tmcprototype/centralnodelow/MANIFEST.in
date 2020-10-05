@@ -1,6 +1,6 @@
 recursive-include src/centralnodelow *.py
 recursive-include test *.py
-recursive-include pogo CentralNode.xmi
+recursive-include pogo CentralNodeLow.xmi
 include *.rst
 include *.txt
 graft docs

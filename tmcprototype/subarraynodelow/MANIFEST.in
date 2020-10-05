@@ -1,6 +1,6 @@
 recursive-include src/subarraynodelow *.py
 recursive-include test *.py
-recursive-include pogo SubarrayNode.xmi
+recursive-include pogo SubarrayNodeLow.xmi
 include *.rst
 include *.txt
 graft docs

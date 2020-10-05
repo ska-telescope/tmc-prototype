@@ -76,10 +76,25 @@ class SubarrayNode(SKASubarray):
 
     def health_state_cb(self, event):
         """
-        Retrieves the subscribed health states, aggregates them
+        Receives the subscribed health states, aggregates them
         to calculate the overall subarray health state.
 
-        :param event: A TANGO_CHANGE event on Subarray healthState.
+        :param evt: A event on Subarray healthState.
+
+        :type: Event object
+            It has the following members:
+                    
+                - date (event timestamp)
+
+                - reception_date (event reception timestamp)
+
+                - type (event type)
+
+                - dev_name (device name)
+
+                - name (attribute name)
+
+                - value (event value)
 
         :return: None
         """
@@ -100,11 +115,28 @@ class SubarrayNode(SKASubarray):
 
     def observation_state_cb(self, evt):
         """
-        Retrieves the subscribed CSP_Subarray AND SDP_Subarray  obsState.
+        Receives the subscribed MCCS Subarray obsState.
 
-        :param evt: A TANGO_CHANGE event on CSP and SDP Subarray obsState.
+        :param evt: A event on MCCS Subarray ObsState.
+
+        :type: Event object
+            It has the following members:
+                    
+                - date (event timestamp)
+
+                - reception_date (event reception timestamp)
+
+                - type (event type)
+
+                - dev_name (device name)
+
+                - name (attribute name)
+
+                - value (event value)
 
         :return: None
+
+        :raises: KeyError if error occurs while setting SubarrayNode's ObsState.
         """
         try:
             if not evt.err:
@@ -156,24 +188,6 @@ class SubarrayNode(SKASubarray):
                 self.logger.info("Calling AssignResource command succeeded() method")
                 self.assign_obj.succeeded()
 
-    def _unsubscribe_resource_events(self, proxy_event_id_map):
-        """
-        This function unsubscribes all events given by the event ids and their
-        corresponding DeviceProxy objects.
-
-        :param proxy_event_id_map: dict
-            A mapping of '<DeviceProxy>': <event_id>.
-
-        :return: None
-
-        """
-        for device_proxy, event_id in proxy_event_id_map.items():
-            try:
-                device_proxy.unsubscribe_event(event_id)
-            except DevFailed as dev_failed:
-                log_message = "Failed to unsubscribe event {}.".format(dev_failed)
-                self.logger.error(log_message )
-                self._read_activity_message = log_message
 
     def get_deviceproxy(self, device_fqdn):
         """
