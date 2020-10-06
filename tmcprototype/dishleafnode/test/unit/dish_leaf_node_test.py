@@ -166,28 +166,41 @@ def test_track_should_command_dish_to_start_tracking(mock_dish_master):
                                                                  any_method(with_name='cmd_ended_cb'))
 
 
-def test_abort_should_raise_dev_failed(mock_dish_master):
+@pytest.fixture(
+    scope="function",
+    params=[
+        ("Abort","", const.ERR_EXE_ABORT_CMD),
+        ("Restart","",const.ERR_EXE_RESTART_CMD),
+        ("ObsReset","", const.ERR_EXE_OBSRESET_CMD),
+    ])
+def command_without_arg_for_devfailed(request):
+    cmd_name, cmd_arg, error_msg = request.param
+    return cmd_name, cmd_arg, error_msg
+
+
+def test_command_without_arg_should_raise_dev_failed(mock_dish_master, command_without_arg_for_devfailed):
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
+    cmd_name, cmd_arg, error_msg = command_without_arg_for_devfailed
     dish1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as  df:
-        tango_context.device.Abort()
-    assert const.ERR_EXE_ABORT_CMD in str(df)
+        tango_context.device.command_inout(cmd_name)
+    assert error_msg in str(df)
 
 
-def test_restart_should_raise_dev_failed(mock_dish_master):
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    dish1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
-    with pytest.raises(tango.DevFailed) as df:
-        tango_context.device.Restart()
-    assert const.ERR_EXE_RESTART_CMD in str(df)
+# def test_restart_should_raise_dev_failed(mock_dish_master):
+#     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
+#     dish1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+#     with pytest.raises(tango.DevFailed) as df:
+#         tango_context.device.Restart()
+#     assert const.ERR_EXE_RESTART_CMD in str(df)
 
 
-def test_obsreset_should_raise_dev_failed(mock_dish_master):
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    dish1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
-    with pytest.raises(tango.DevFailed) as df:
-        tango_context.device.ObsReset()
-    assert const.ERR_EXE_OBSRESET_CMD in str(df)
+# def test_obsreset_should_raise_dev_failed(mock_dish_master):
+#     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
+#     dish1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+#     with pytest.raises(tango.DevFailed) as df:
+#         tango_context.device.ObsReset()
+#     assert const.ERR_EXE_OBSRESET_CMD in str(df)
 
 
 def create_dummy_event_for_dishmode(device_fqdn, dish_mode_value, attribute):
