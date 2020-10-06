@@ -32,9 +32,6 @@ IMAGE_TO_TEST = $(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/$(PROJECT):lates
 #
 CACHE_VOLUME = $(PROJECT)-test-cache
 
-# optional docker run-time arguments
-DOCKER_RUN_ARGS =
-
 #
 # Never use the network=host mode when running CI jobs, and add extra
 # distinguishing identifiers to the network name and container names to

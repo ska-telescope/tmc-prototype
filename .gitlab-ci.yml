@@ -344,19 +344,6 @@ build DishMaster wheel for development: # Executed on a commit
     paths:
       - ./tmcprototype/dishmaster/dist/
 
-# CSP, SDP images are not available as per new implementation(SP-985 and SP-1039). Because of that Test cases are failing
-#run tests:
-#  image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
-#  stage: test
-#  before_script:
-#  - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD $DOCKER_REGISTRY_HOST
-#  tags:
-#    - docker-executor
-#  script:
-#    - make test
-#    - make push
-#  retry: 2
-
 unit tests:
   image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
   stage: test

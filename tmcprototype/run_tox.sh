@@ -3,7 +3,7 @@ set -eo pipefail
 
 export working_dir=../build/reports/tox_report
 
-#Entering into a bash shell script to run unit-test cases and generating reports
+# Entering into a bash shell script to run unit-test cases and generating reports
 echo "Unit test cases will be executed shortly..."
 mkdir -p tox_report
 if [ -d "$working_dir" ]; then rm -rf $working_dir; fi
@@ -19,11 +19,11 @@ done
 mv ./tox_report ../build/reports
 
 cd ../build/reports/tox_report
-# # # Combine coverage reports
+# Combine coverage reports
 coverage combine centralnode_coverage cspmasterleafnode_coverage \
                   cspsubarrayleafnode_coverage dishleafnode_coverage \
                   sdpmasterleafnode_coverage sdpsubarrayleafnode_coverage \
-                  subarraynode_coverage centralnodelow_coverage \
+                  subarraynode_coverage subarraynodelow_coverage centralnodelow_coverage \
                   mccsmasterleafnode_coverage mccssubarrayleafnode_coverage && coverage xml
 
 cd ../tox_report && mv coverage.xml ../code-coverage.xml
