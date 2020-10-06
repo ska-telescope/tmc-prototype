@@ -353,7 +353,7 @@ publish to nexus:
 
 publish_chart:
   variables:
-    CHARTS_TO_PUBLISH: tmc-low tmc-mid # name from te charts folder
+    CHARTS_TO_PUBLISH: tmc-low-new-original tmc-mid-new-original # name from te charts folder
   stage: publish
   tags:
     - docker-executor
