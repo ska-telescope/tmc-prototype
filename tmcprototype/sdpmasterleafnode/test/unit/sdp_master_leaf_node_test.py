@@ -183,51 +183,65 @@ def test_command_should_command_with_callback_method(mock_sdp_master, event_subs
 #     event_subscription[const.CMD_STANDBY](dummy_event)
 #     # assert:
 #     assert const.STR_COMMAND + const.CMD_STANDBY in device_proxy.activityMessage
-
-
-def test_on_should_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription):
+def test_command_should_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription, command_with_arg):
     # arrange:
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
+    cmd_name, cmd_arg, requested_cmd, requested_cmd_arg = command_with_arg
+    if cmd_name == "Off":
+        device_proxy.On()
+
     # act:
-    device_proxy.On()
-    dummy_event = command_callback_with_event_error(const.CMD_ON)
-    event_subscription[const.CMD_ON](dummy_event)
+    device_proxy.command_inout(cmd_name)
+    dummy_event = command_callback_with_event_error(requested_cmd)
+    event_subscription[requested_cmd](dummy_event)
+
     # assert:
-    assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
+    assert const.ERR_INVOKING_CMD + requested_cmd in device_proxy.activityMessage
 
 
-def test_off_should_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription):
-    # arrange:
-    device_proxy, sdp_master_proxy_mock = mock_sdp_master
-    device_proxy.On()
-    # act:
-    device_proxy.Off()
-    dummy_event = command_callback_with_event_error(const.CMD_OFF)
-    event_subscription[const.CMD_OFF](dummy_event)
-    # assert:
-    assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
+# def test_on_should_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription):
+#     # arrange:
+#     device_proxy, sdp_master_proxy_mock = mock_sdp_master
+#     # act:
+#     device_proxy.On()
+#     dummy_event = command_callback_with_event_error(const.CMD_ON)
+#     event_subscription[const.CMD_ON](dummy_event)
+#     # assert:
+#     assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
 
 
-def test_disable_should_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription):
-    # arrange:
-    device_proxy, sdp_master_proxy_mock = mock_sdp_master
-    # act:
-    device_proxy.Disable()
-    dummy_event = command_callback_with_event_error(const.CMD_Disable)
-    event_subscription[const.CMD_Disable](dummy_event)
-    # assert:
-    assert const.ERR_INVOKING_CMD + const.CMD_Disable in device_proxy.activityMessage
+# def test_off_should_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription):
+#     # arrange:
+#     device_proxy, sdp_master_proxy_mock = mock_sdp_master
+#     device_proxy.On()
+#     # act:
+#     device_proxy.Off()
+#     dummy_event = command_callback_with_event_error(const.CMD_OFF)
+#     event_subscription[const.CMD_OFF](dummy_event)
+#     # assert:
+#     assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
 
 
-def test_standby_should_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription):
-    # arrange:
-    device_proxy, sdp_master_proxy_mock = mock_sdp_master
-    # act:
-    device_proxy.Standby()
-    dummy_event = command_callback_with_event_error(const.CMD_STANDBY)
-    event_subscription[const.CMD_STANDBY](dummy_event)
-    # assert:
-    assert const.ERR_INVOKING_CMD + const.CMD_STANDBY in device_proxy.activityMessage
+# def test_disable_should_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription):
+#     # arrange:
+#     device_proxy, sdp_master_proxy_mock = mock_sdp_master
+#     # act:
+#     device_proxy.Disable()
+#     dummy_event = command_callback_with_event_error(const.CMD_Disable)
+#     event_subscription[const.CMD_Disable](dummy_event)
+#     # assert:
+#     assert const.ERR_INVOKING_CMD + const.CMD_Disable in device_proxy.activityMessage
+
+
+# def test_standby_should_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription):
+#     # arrange:
+#     device_proxy, sdp_master_proxy_mock = mock_sdp_master
+#     # act:
+#     device_proxy.Standby()
+#     dummy_event = command_callback_with_event_error(const.CMD_STANDBY)
+#     event_subscription[const.CMD_STANDBY](dummy_event)
+#     # assert:
+#     assert const.ERR_INVOKING_CMD + const.CMD_STANDBY in device_proxy.activityMessage
 
 
 def command_callback(command_name):
