@@ -5,6 +5,7 @@ pytest-mock
 pytest-xdist == 1.34.0
 coverage
 pylint
+pytz
 pylint2junit
 junitparser
 flake8
