@@ -366,7 +366,7 @@ def test_start_scan_should_not_command_csp_subarray_to_start_scan_when_it_is_idl
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.IDLE
     device_proxy.StartScan(scan_input_str)
-    assert_activity_message(device_proxy , const.ERR_DEVICE_NOT_READY)
+    assert_activity_message(device_proxy , const.ERR_DEVICE_NOT_READY) 
 
 
 def test_start_scan_should_raise_devfailed_exception(mock_csp_subarray):
@@ -744,7 +744,6 @@ def test_build_state():
         assert tango_context.device.buildState == ('{},{},{}'.format(release.name,release.version,release.description))
 
 
-
 def any_method(with_name=None):
     class AnyMethod():
         def __eq__(self, other):
@@ -771,3 +770,4 @@ def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_m
     device_test_context.start()
     yield device_test_context
     device_test_context.stop()
+    

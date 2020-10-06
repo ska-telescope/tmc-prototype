@@ -14,8 +14,12 @@ init-hook='
     sys.path.append("./tmcprototype/cspmasterleafnode");
     sys.path.append("./tmcprototype/sdpsubarrayleafnode");
     sys.path.append("./tmcprototype/sdpmasterleafnode");
+    sys.path.append("./tmcprototype/mccssubarrayleafnode");
+    sys.path.append("./tmcprototype/mccsmasterleafnode");
     sys.path.append("./tmcprototype/subarraynode");
+    sys.path.append("./tmcprototype/subarraynodelow");
     sys.path.append("./tmcprototype/centralnode");
+    sys.path.append("./tmcprototype/centralnodelow");
     sys.path.append("/usr/local/lib/python3.5/dist-packages");
     sys.path.append("/venv/lib/python3.5/site-packages")'
 

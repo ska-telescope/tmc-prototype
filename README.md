@@ -21,22 +21,23 @@
 # 1: Introduction
 This is the repository for the TMC evolutionary prototype. The prototype aims to realize Telescope Monitoring and Control functionality, and utilizes the platform, tools and technology specified for the SKA construction.
 
-The prototype utilizes the base classes created in-line with the SKA Control System Guidelines and Tango coding standards. Developed in **Python 3.7** (PyTango 9.3.2), it is a single repository consisting eight packages - CentralNode, SubarrayNode, DishLeafNode, CspMasterLeafNode, CspSubarrayLeafNode, SdpMasterLeafNode, SdpSubarrayLeafNode and DishMaster.
+The prototype utilizes the base classes created in-line with the SKA Control System Guidelines and Tango coding standards. Developed in **Python 3.7** (PyTango 9.3.2), it is a single repository consisting twelve packages - CentralNode, CentralNodeLow, SubarrayNode, SubarrayNodeLow, DishLeafNode, CspMasterLeafNode, CspSubarrayLeafNode, SdpMasterLeafNode, SdpSubarrayLeafNode, MccsMasterLeafNode, MccsSubarrayLeafNode and DishMaster.
 
 TMC prototype addresses the  following architectural aspects and functionality:
 
 ### 1.1: Architecture
 * [x] Use of LMC base classes for development of TMC control nodes and element simulator such as Dish Master
-* [x] Hierarchy of control nodes - Central Node, Subarray Node, Leaf Node
-* [x] Interface between the TMC and Element LMC (Dish Master(simulator), CSP LMC, SDP LMC)
+* [x] Hierarchy of control nodes for Mid and Low- Central Node, Subarray Node, Leaf Node
 * [x] Interface between the CentralNode/SubarrayNode and OET
-* [x] Interface between the TMC and CSP CspSubarray
-* [x] Interface between the TMC and SDP SdpSubarray
-* [x] Integration of KATPoint library for pointing and delay calculation 
+* [x] Interface between the TMC and Dish(Master simulator)
+* [x] Interface between the TMC and CSP (CSP Master and Csp Subarray devices)
+* [x] Interface between the TMC and SDP (SDP Master and SDP Subarray devices)
+* [x] Interface between the TMC and MCCS (MCCS Master and MCCS Subarray devices)
+* [x] Integration of KATPoint library for pointing and delay calculation for TMC-Mid
 * [x] Use of Alarm Handler
 * [x] Use of SKA Logger
-* [x] Source tracking
-* [x] Exception handling guidelines for AssignResources functionality
+* [x] Source tracking for TMC-Mid
+* [x] Exception handling guidelines for AssignResources functionality in TMC-Mid
 * [x] Adopted ADR-8 observation state machine
 
 ### 1.2: Functionality
@@ -47,12 +48,12 @@ TMC prototype addresses the  following architectural aspects and functionality:
 * [x] Allocation and Deallocation of receptors to a Subarray
 * [x] Commands and Events propagation
 * [x] TANGO group commands
-* [x] Conversion of Ra-Dec to Az-El coordinates using KATPoint
+* [x] Conversion of Ra-Dec to Az-El coordinates using KATPoint for TMC-Mid
 * [x] Calculate Az-El periodically in Dish Leaf Node and implement tracking functionality in the Dish simulator
 * [x] Interface between the TMC and CSP:
    * [x] Implementation of CSP Master Leaf Node and CSP Subarray Leaf Node
    * [x] Monitor/subscribe CSP Master and CSP Subarray attributes from CSP Master Leaf Node and CSP Subarray Leaf Node respectively
-   * [x] Use of CSP Master health to calculate overall Telescope Health (in Central Node)
+   * [x] Use of CSP Master health to calculate overall Telescope Health (in Central Node Mid)
    * [x] Use of CSP Subarray health to calculate Subarray Node health state
    * [x] StartUpTelescope command on Central Node to change CSP Master device and CSP Subarray device state to ON
    * [x] Configure the CSP for a simple scan
@@ -60,32 +61,45 @@ TMC prototype addresses the  following architectural aspects and functionality:
 * [x] Interface between the TMC and SDP:
    * [x] Implementation of SDP Master Leaf Node and SDP Subarray Leaf Node
    * [x] Monitor/subscribe SDP Master and SDP Subarray attributes from SDP Master Leaf Node and SDP Subarray Leaf Node respectively
-   * [x] Use of SDP Master health to calculate overall Telescope Health (in Central Node)
+   * [x] Use of SDP Master health to calculate overall Telescope Health (in Central Node Mid)
    * [x] Use of SDP Subarray health to calculate Subarray Node health state
    * [x] StartUpTelescope command on Central Node to change SDP Master device and SDP Subarray device state to ON
    * [x] Configure the SDP for a simple scan
-* [x] Telescope Startup and Standby
-* [x] Accept configuration as strings (JSON) from OET for following commands:
-  * [x] AssignResources
-  * [x] ReleaseResources
-* [x] Execute Configure command for a Subarray
-* [x] Execute a simple Scan and End the Scan
-* [x] EndSB command on SubarrayNode
-* [x] Configure and execute multiple scans
+* [x] Interface between the TMC and MCCS:
+   * [x] Implementation of MCCS Master Leaf Node and MCCS Subarray Leaf Node
+   * [x] Monitor/subscribe MCCS Master and MCCS Subarray attributes from MCCS Master Leaf Node and MCCS Subarray Leaf Node respectively
+   * [x] Use of MCCS Master health to calculate overall Telescope Health (in Central Node Low)
+   * [x] Use of MCCS Subarray health to calculate Subarray Node health state
+   * [x] StartUpTelescope command on Central Node Low to change MCCS Master device state to ON
+   * [X] AssignResources command on Central Node Low to change MCCS Subarray device state to ON and allocates resources to MCCS Subarray through MCCS Master
+   * [x] Configure the MCCS for a simple scan
+* [x] TMC commands/functionality to execute entire obsevation cycle
+   * [x] Telescope Startup
+   * [x] AssignResources command to allocate resources to the SubarrayNode
+   * [x] Execute Configure command for a Subarray
+   * [x] Execute Scan and End the Scan
+   * [x] End command on SubarrayNode to end the scheduling block
+   * [x] ReleaseResources commands to deallocate resources from the SubarrayNode
+   * [x] Telescope Standby 
+* [x] Configure and execute multiple scans for TMC-Mid
 * [x] Implement the observation state model and state transitions as per [ADR-8.](https://confluence.skatelescope.org/pages/viewpage.action?pageId=105416556)
 * [x] Calculate Geometric delay values (in seconds) per antenna on CSP Subarray Leaf Node
-* [x] Convert delay values (in seconds) to 5th order polynomial coefficients
-* [x] Abort an ongoing operation, and Restart the control nodes, catch exceptions in the AssignResource workflow, log the exception details and raise them to the calling components.
+* [x] Convert delay values (in seconds) to 5th order polynomial coefficients for TMC-Mid
+* [x] Abort an ongoing operation, and Restart the control nodes, catch exceptions in the AssignResource workflow, log the exception details and raise them to the calling components for TMC-Mid.
+* [x] Implementation of obsReset functinality (as per ADR-8) in which resource allocation in Subarray is retained and only the scan configuration parameters are cleared for TMC-Mid.
 
 **NOTE:** Refer to the Demo link provided in the [Documentation](#6-documentation) section for more details.
 
 # 2: Prerequisites
 * Linux/Ubuntu (18.04 LTS) 
-* Python 3.6
+* Python 3.7
 * [python3-pip](https://packages.ubuntu.com/xenial/python3-pip)
 * [Tango (9.3.4-rc2)](https://docs.google.com/document/d/1TMp5n380YMvaeqeKZvRHHXa7yVxT8oBn5xsEymyNFC4/edit?usp=sharing)
 * [PyTango (9.3.2)](https://docs.google.com/document/d/1DtuIs1PeYGHlDXx8RyOzZyRQ-_Eiup-ncqeDDCtcNxk/edit?usp=sharing)
 * skabase (LMC Base classes for SKA): Refer Section 3.1 for installation guide
+* [ska-logging](https://gitlab.com/ska-telescope/ska-logging)
+* [cdm-shared-library](https://gitlab.com/ska-telescope/cdm-shared-library)
+* [telescope-model](https://gitlab.com/ska-telescope/telescope-model)
 * [Elettra Alarm Handler](https://docs.google.com/document/d/1uGnVrBGs6TvnORsM2m4hbORcAzn_KK2kAO8Roaocxjo/edit?usp=sharing)
 * [KATPoint](https://pypi.org/project/katpoint/)
 * [pytest](https://pypi.org/project/pytest/)
@@ -108,14 +122,6 @@ Alarm handler is an optional feature and can be installed if desired. Refer to
 document for installation guide.
 
 # 4: Testing
-The control hierarchy of TANGO devices are as follows:\
-Central Node -> SubarrayNode -> DishLeafNode/DishMaster\
-&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;-> CspMasterLeafNode/CspMaster\
-&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;-> CspSubarrayLeafNode/CspSubarray\
-&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;-> SdpMasterLeafNode/SdpMaster\
-&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;-> SdpSubarrayLeafNode ->SdpSubarray
-
-(The flow from left to right depicts the Client -> Server relationship)
 
 ## 4.1 Unit Testing
 As depicted above, the higher level of TMC devices are dependent on lower level devices in normal operation. 

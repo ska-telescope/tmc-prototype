@@ -99,9 +99,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             device._version_id = release.version
             # Initialise Device status
             device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
-            log_msg = const.STR_SDPSALN_INIT_SUCCESS
-            self.logger.info(log_msg)
-            device._read_activity_message = log_msg
+            self.logger.info(const.STR_SDPSALN_INIT_SUCCESS)
+            device._read_activity_message = const.STR_SDPSALN_INIT_SUCCESS
 
             # Create Device proxy for Sdp Subarray using SdpSubarrayFQDN property
             device._sdp_subarray_proxy = DeviceProxy(device.SdpSubarrayFQDN)

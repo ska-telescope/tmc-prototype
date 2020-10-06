@@ -33,7 +33,6 @@ STR_OFF_CMD_ISSUED = "OFF command invoked successfully from CSP Master leaf node
 STR_COMMAND = "Command :-> "
 STR_INVOKE_SUCCESS = "Command invoked successfully."
 STR_SETTING_CB_MODEL = "Setting CallBack Model as :-> "
-STR_CSP_MASTER_LEAF_INIT_SUCCESS = "Csp Master Leaf Node initialized successfully."
 STR_CSP_INIT_LEAF_NODE = "Initializing CSP Master Leaf Node ...."
 STR_CSPMASTER_FQDN = "CspMasterFQDN :-> "
 STR_FALSE = "False"
