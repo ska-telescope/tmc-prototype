@@ -144,7 +144,7 @@ def test_configure_should_failed_when_device_obsstate_is_empty(mock_mccs_subarra
 @pytest.fixture(
     scope="function",
     params=[
-        ("End", const.CMD_RESET, ObsState.READY),
+        ("End", const.CMD_END, ObsState.READY),
         ("EndScan", const.CMD_ENDSCAN, ObsState.SCANNING)
     ])
 def command_event_error_without_arg(request):
