@@ -417,13 +417,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :type: CmdDoneEvent object
                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
+                    - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
                     - cmd_name   : (str) The command name
                     - argout_raw : (DeviceData) The command argout
                     - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
+                    - err        : (bool) A boolean flag set to true if the command failed. False otherwise
                     - errors     : (sequence<DevError>) The error stack
                     - ext
 
@@ -576,13 +574,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :type: CmdDoneEvent object
                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
+                    - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
                     - cmd_name   : (str) The command name
                     - argout_raw : (DeviceData) The command argout
                     - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
+                    - err        : (bool) A boolean flag set to true if the command failed. False otherwise
                     - errors     : (sequence<DevError>) The error stack
                     - ext
 
@@ -706,13 +702,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :type: CmdDoneEvent object
                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
+                    - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
                     - cmd_name   : (str) The command name
                     - argout_raw : (DeviceData) The command argout
                     - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
+                    - err        : (bool) A boolean flag set to true if the command failed. False otherwise
                     - errors     : (sequence<DevError>) The error stack
                     - ext
 
@@ -822,13 +816,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :type: CmdDoneEvent object
                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
+                    - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
                     - cmd_name   : (str) The command name
                     - argout_raw : (DeviceData) The command argout
                     - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
+                    - err        : (bool) A boolean flag set to true if the command failed. False otherwise
                     - errors     : (sequence<DevError>) The error stack
                     - ext
 
@@ -936,13 +928,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :type: CmdDoneEvent object
                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
+                    - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
                     - cmd_name   : (str) The command name
                     - argout_raw : (DeviceData) The command argout
                     - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
+                    - err        : (bool) A boolean flag set to true if the command failed. False otherwise
                     - errors     : (sequence<DevError>) The error stack
                     - ext
 
@@ -1124,13 +1114,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :type: CmdDoneEvent object
                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
+                    - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
                     - cmd_name   : (str) The command name
                     - argout_raw : (DeviceData) The command argout
                     - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
+                    - err        : (bool) A boolean flag set to true if the command failed. False otherwise
                     - errors     : (sequence<DevError>) The error stack
                     - ext
 
@@ -1251,13 +1239,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :type: CmdDoneEvent object
                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
+                    - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
                     - cmd_name   : (str) The command name
                     - argout_raw : (DeviceData) The command argout
                     - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
+                    - err        : (bool) A boolean flag set to true if the command failed. False otherwise
                     - errors     : (sequence<DevError>) The error stack
                     - ext
 
@@ -1375,13 +1361,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :type: CmdDoneEvent object
                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
+                    - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
                     - cmd_name   : (str) The command name
                     - argout_raw : (DeviceData) The command argout
                     - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
+                    - err        : (bool) A boolean flag set to true if the command failed. False otherwise
                     - errors     : (sequence<DevError>) The error stack
                     - ext
 
@@ -1493,13 +1477,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             :type: CmdDoneEvent object
                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
+                    - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
                     - cmd_name   : (str) The command name
                     - argout_raw : (DeviceData) The command argout
                     - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
+                    - err        : (bool) A boolean flag set to true if the command failed. False otherwise
                     - errors     : (sequence<DevError>) The error stack
                     - ext
 
