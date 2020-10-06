@@ -35,6 +35,7 @@ def mock_csp_master():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         yield csp_master_proxy_mock, tango_context.device, csp_master_fqdn, event_subscription_map
 
+
 @pytest.fixture(scope="function")
 def event_subscription(mock_csp_master):
     event_subscription_map = {}
@@ -43,10 +44,12 @@ def event_subscription(mock_csp_master):
                **kwargs: event_subscription_map.update({command_name: callback}))
     yield event_subscription_map
 
+
 @pytest.fixture(scope="function")
 def tango_context():
     with fake_tango_system(CspMasterLeafNode) as tango_context:
         yield tango_context
+
 
 @pytest.fixture(
     scope="function",
@@ -57,6 +60,7 @@ def tango_context():
 def command_with_arg(request):
     cmd_name, cmd_arg, requested_cmd, requested_cmd_arg = request.param
     return cmd_name, cmd_arg, requested_cmd, requested_cmd_arg
+
 
 @pytest.fixture(
     scope="function",
@@ -91,6 +95,7 @@ def test_off_should_command_csp_master_leaf_node_to_stop(mock_csp_master):
     # assert:
     assert device_proxy.activityMessage in const.STR_OFF_CMD_ISSUED
 
+
 def test_command_cb_is_invoked_when_command_is_called_async(mock_csp_master, event_subscription, command_with_arg):
     # arrange:
     device_proxy=mock_csp_master[1]
@@ -108,30 +113,6 @@ def test_command_cb_is_invoked_when_command_is_called_async(mock_csp_master, eve
     assert const.STR_COMMAND + requested_cmd in device_proxy.activityMessage
 
 
-# def test_standby_should_command_to_standby_with_callback_method(mock_csp_master, event_subscription):
-#     # arrange:
-#     device_proxy=mock_csp_master[1]
-
-#     # act:
-#     device_proxy.Standby([])
-#     dummy_event = command_callback(const.CMD_STANDBY)
-#     event_subscription[const.CMD_STANDBY](dummy_event)
-#     # assert:
-#     assert const.STR_COMMAND + const.CMD_STANDBY in device_proxy.activityMessage
-
-
-# def test_on_should_command_to_on_with_callback_method(mock_csp_master, event_subscription):
-#     # arrange:
-#     device_proxy=mock_csp_master[1]
-
-#     # act:
-#     device_proxy.On()
-#     dummy_event = command_callback(const.CMD_ON)
-#     event_subscription[const.CMD_ON](dummy_event)
-#     # assert:
-#     assert const.STR_COMMAND + const.CMD_ON in device_proxy.activityMessage
-
-
 def test_command_should_command_with_callback_method_with_event_error(mock_csp_master, event_subscription, command_with_arg):
     # arrange:
     device_proxy=mock_csp_master[1]
@@ -147,30 +128,6 @@ def test_command_should_command_with_callback_method_with_event_error(mock_csp_m
 
     # assert:
     assert const.ERR_INVOKING_CMD + requested_cmd in device_proxy.activityMessage
-
-
-# def test_standby_should_command_with_callback_method_with_event_error(mock_csp_master, event_subscription):
-#     # arrange:
-#     device_proxy=mock_csp_master[1]
-
-#     # act:
-#     device_proxy.Standby([])
-#     dummy_event = command_callback_with_event_error(const.CMD_STANDBY)
-#     event_subscription[const.CMD_STANDBY](dummy_event)
-#     # assert:
-#     assert const.ERR_INVOKING_CMD + const.CMD_STANDBY in device_proxy.activityMessage
-
-
-# def test_on_should_command_with_callback_method_with_event_error(mock_csp_master, event_subscription ):
-#     # arrange:
-#     device_proxy=mock_csp_master[1]
-
-#    #act
-#     device_proxy.On()
-#     dummy_event = command_callback_with_event_error(const.CMD_ON)
-#     event_subscription[const.CMD_ON](dummy_event)
-#     # assert:
-#     assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
 
 
 def test_off_should_command_to_off_with_callback_method(mock_csp_master):
@@ -241,63 +198,6 @@ def test_attribute_csp_cbf_health_state_of_csp_master(mock_csp_master, health_st
     assert health_state_value.name in device_proxy.activityMessage
 
 
-# def test_attribute_csp_cbf_health_state_of_csp_master_is_ok(mock_csp_master):
-#     # arrange:
-#     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-#     csp_cbf_health_state_attribute = 'cspCbfHealthState'
-
-#     # act:
-#     health_state_value = HealthState.OK
-#     dummy_event = \
-#         create_dummy_event_for_health_state \
-#             (csp_master_fqdn, health_state_value, csp_cbf_health_state_attribute)
-#     event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
-#     # assert:
-#     assert device_proxy.activityMessage == const.STR_CSP_CBF_HEALTH_OK
-
-
-# def test_attribute_csp_cbf_health_state_of_csp_master_is_degraded(mock_csp_master):
-#     # arrange:
-#     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-#     csp_cbf_health_state_attribute = 'cspCbfHealthState'
-
-#     # act:
-#     health_state_value = HealthState.DEGRADED
-#     dummy_event = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
-#                                                       csp_cbf_health_state_attribute)
-#     event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
-#     # assert:
-#     assert device_proxy.activityMessage == const.STR_CSP_CBF_HEALTH_DEGRADED
-
-
-# def test_attribute_csp_cbf_health_state_of_csp_master_is_failed(mock_csp_master):
-#     # arrange:
-#     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-#     csp_cbf_health_state_attribute = 'cspCbfHealthState'
-
-#     # act:
-#     health_state_value = HealthState.FAILED
-#     dummy_event = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
-#                                                       csp_cbf_health_state_attribute)
-#     event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
-#     # assert:
-#     assert device_proxy.activityMessage == const.STR_CSP_CBF_HEALTH_FAILED
-
-
-# def test_attribute_csp_cbf_health_state_of_csp_master_is_unknown(mock_csp_master):
-#     # arrange:
-#     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-#     csp_cbf_health_state_attribute = 'cspCbfHealthState'
-
-#     # act:
-#     health_state_value = HealthState.UNKNOWN
-#     dummy_event = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
-#                                                       csp_cbf_health_state_attribute)
-#     event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
-#     # assert:
-#     assert device_proxy.activityMessage == const.STR_CSP_CBF_HEALTH_UNKNOWN
-
-
 def test_attribute_csp_cbf_health_state_of_csp_master_with_error_event(mock_csp_master):
     # arrange:
     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
@@ -330,61 +230,6 @@ def test_attribute_csp_pss_health_state_of_csp_master(mock_csp_master, health_st
     assert health_state_value.name in device_proxy.activityMessage
 
 
-# def test_attribute_csp_pss_health_callback_of_csp_master_is_ok(mock_csp_master):
-#     # arrange:
-#     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-#     csp_pss_health_state_attribute = 'cspPssHealthState'
-#     # act:
-#     health_state_value = HealthState.OK
-#     dummy_event = \
-#         create_dummy_event_for_health_state \
-#             (csp_master_fqdn, health_state_value, csp_pss_health_state_attribute)
-#     event_subscription_map[csp_pss_health_state_attribute](dummy_event)
-#     # assert:
-#     assert device_proxy.activityMessage ==  const.STR_CSP_PSS_HEALTH_OK
-
-
-# def test_attribute_csp_pss_health_callback_of_csp_master_is_degraded(mock_csp_master):
-#     # arrange:
-#     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-#     csp_pss_health_state_attribute = 'cspPssHealthState'
-
-#     # act:
-#     health_state_value = HealthState.DEGRADED
-#     dummy_event = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
-#                                                       csp_pss_health_state_attribute)
-#     event_subscription_map[csp_pss_health_state_attribute](dummy_event)
-#     # assert:
-#     assert device_proxy.activityMessage == const.STR_CSP_PSS_HEALTH_DEGRADED
-
-
-# def test_attribute_csp_pss_health_callback_of_csp_master_is_failed(mock_csp_master):
-#     # arrange:
-#     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-#     csp_pss_health_state_attribute = 'cspPssHealthState'
-#     # act:
-#     health_state_value = HealthState.FAILED
-#     dummy_event = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
-#                                                       csp_pss_health_state_attribute)
-#     event_subscription_map[csp_pss_health_state_attribute](dummy_event)
-#     # assert:
-#     assert device_proxy.activityMessage == const.STR_CSP_PSS_HEALTH_FAILED
-
-
-# def test_attribute_csp_pss_health_callback_of_csp_master_is_unknown(mock_csp_master):
-#     # arrange:
-#     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-#     csp_pss_health_state_attribute = 'cspPssHealthState'
-
-#     # act:
-#     health_state_value = HealthState.UNKNOWN
-#     dummy_event = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
-#                                                       csp_pss_health_state_attribute)
-#     event_subscription_map[csp_pss_health_state_attribute](dummy_event)
-#     # assert:
-#     assert device_proxy.activityMessage == const.STR_CSP_PSS_HEALTH_UNKNOWN
-
-
 def test_attribute_csp_pss_health_callback_of_csp_master_with_error_event(mock_csp_master):
     # arrange:
     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
@@ -415,63 +260,6 @@ def test_attribute_csp_pst_health_state_of_csp_master(mock_csp_master, health_st
     # assert:
     assert "CSP PST health is" in device_proxy.activityMessage
     assert health_state_value.name in device_proxy.activityMessage
-
-
-# def test_attribute_csp_pst_health_callback_of_csp_master_is_ok(mock_csp_master):
-#     # arrange:
-#     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-#     csp_pst_health_state_attribute = 'cspPstHealthState'
-
-#     # act:
-#     health_state_value = HealthState.OK
-#     dummy_event = \
-#         create_dummy_event_for_health_state \
-#             (csp_master_fqdn, health_state_value, csp_pst_health_state_attribute)
-#     event_subscription_map[csp_pst_health_state_attribute](dummy_event)
-#     # assert:
-#     assert device_proxy.activityMessage == const.STR_CSP_PST_HEALTH_OK
-
-
-# def test_attribute_csp_pst_health_callback_of_csp_master_is_degraded(mock_csp_master):
-#     # arrange:
-#     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-#     csp_pst_health_state_attribute = 'cspPstHealthState'
-
-#     # act:
-#     health_state_value = HealthState.DEGRADED
-#     dummy_event = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
-#                                                       csp_pst_health_state_attribute)
-#     event_subscription_map[csp_pst_health_state_attribute](dummy_event)
-#     # assert:
-#     assert device_proxy.activityMessage == const.STR_CSP_PST_HEALTH_DEGRADED
-
-
-# def test_attribute_csp_pst_health_callback_of_csp_master_is_failed(mock_csp_master):
-#     # arrange:
-#     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-#     csp_pst_health_state_attribute = 'cspPstHealthState'
-
-#     # act:
-#     health_state_value = HealthState.FAILED
-#     dummy_event = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
-#                                                       csp_pst_health_state_attribute)
-#     event_subscription_map[csp_pst_health_state_attribute](dummy_event)
-#     # assert:
-#     assert device_proxy.activityMessage == const.STR_CSP_PST_HEALTH_FAILED
-
-
-# def test_attribute_csp_pst_health_callback_of_csp_master_is_unknown(mock_csp_master):
-#     # arrange:
-#     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-#     csp_pst_health_state_attribute = 'cspPstHealthState'
-
-#     # act:
-#     health_state_value = HealthState.UNKNOWN
-#     dummy_event = create_dummy_event_for_health_state(csp_master_fqdn, health_state_value,
-#                                                       csp_pst_health_state_attribute)
-#     event_subscription_map[csp_pst_health_state_attribute](dummy_event)
-#     # assert:
-#     assert device_proxy.activityMessage == const.STR_CSP_PST_HEALTH_UNKNOWN
 
 
 def test_attribute_csp_pst_health_callback_of_csp_master_with_error_event(mock_csp_master):
