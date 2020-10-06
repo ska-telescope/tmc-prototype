@@ -355,6 +355,29 @@ unit tests:
     paths:
       - ./build
 
+test:
+  stage: test
+  tags:
+    - docker-executor
+  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.2
+  script:
+    - kubectl version
+    - make install-chart
+    - make wait
+    - make smoketest
+    - make test
+  after_script:
+    - make uninstall-chart
+    - make delete_namespace
+  environment:
+    name: test
+  artifacts:
+    name: "$CI_PROJECT_NAME-$CI_JOB_ID"
+    paths:
+      - "charts/build"
+    reports:
+      junit: charts/build/report.xml
+
 linting:
   stage: linting
   image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
