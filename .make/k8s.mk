@@ -3,9 +3,8 @@ MINIKUBE ?= true## Minikube or not
 MARK ?= all
 IMAGE_TO_TEST ?= $(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/$(PROJECT):latest## docker image that will be run for testing purpose
 TANGO_HOST=$(shell helm get values ${HELM_RELEASE} -a -n ${KUBE_NAMESPACE} | grep tango_host | head -1 | cut -d':' -f2 | cut -d' ' -f2):10000
-TESTING_ACCOUNT = testing-pod ## this is the service acount name that is used by testing pod enabling it roles to manipulate k8 
-TANGO_HOST = databaseds-tango-base-$(HELM_RELEASE):10000
-CHART_TO_PUB ?= tmc-mid tmc-low## list of charts to be published on gitlab -- umbrella charts for testing purpose
+
+CHARTS ?= tmc-mid tmc-low tmc-proto ## list of charts to be published on gitlab -- umbrella charts for testing purpose
 
 CI_PROJECT_PATH_SLUG ?= tmcprototype
 CI_ENVIRONMENT_SLUG ?= tmcprototype	
@@ -48,21 +47,27 @@ delete_namespace: ## delete the kubernetes namespace
 	else \
 	kubectl describe namespace $(KUBE_NAMESPACE) && kubectl delete namespace $(KUBE_NAMESPACE); \
 	fi
-# What is purpose of this job?
-# => package a chart directory into a chart archive
+
+# To package a chart directory into a chart archive
 package: ## package charts
 	@echo "Packaging helm charts. Any existing file won't be overwritten."; \
 	mkdir -p ../tmp
-	@for i in $(CHART_TO_PUB); do \
+	@for i in $(CHARTS); do \
 	helm package charts/$${i} --destination ../tmp > /dev/null; \
 	done; \
 	mkdir -p ../repository && cp -n ../tmp/* ../repository; \
 	cd ../repository && helm repo index .; \
 	rm -rf ../tmp
 
+dep-up: ## update dependencies for every charts in the env var CHARTS
+	@cd charts; \
+	for i in $(CHARTS); do \
+	helm dependency update $${i}; \
+	done;
+
 # This job is used to create a deployment of tmc-mid charts
-# Currently umbreall chart for tmc-mid path is given, issues in values.yaml during running
-install-chart: namespace namespace_sdp ## install the helm chart with name HELM_RELEASE and path UMBRELLA_CHART_PATH on the namespace KUBE_NAMESPACE 
+# Currently umbreall chart for tmc-mid path is given
+install-chart: dep-up namespace namespace_sdp ## install the helm chart with name HELM_RELEASE and path UMBRELLA_CHART_PATH on the namespace KUBE_NAMESPACE 
 	# Understand this better
 	@sed -e 's/CI_PROJECT_PATH_SLUG/$(CI_PROJECT_PATH_SLUG)/' $(UMBRELLA_CHART_PATH)values.yaml > generated_values.yaml; \
 	sed -e 's/CI_ENVIRONMENT_SLUG/$(CI_ENVIRONMENT_SLUG)/' generated_values.yaml > values.yaml; \
@@ -76,7 +81,7 @@ install-chart: namespace namespace_sdp ## install the helm chart with name HELM_
 	 rm values.yaml
 
 # This job is used to delete a deployment of tmc-mid charts
-# Currently umbreall chart for tmc-mid path is given, issues in values.yaml during running
+# Currently umbreall chart for tmc-mid path is given
 uninstall-chart: ## uninstall the tmc-mid helm chart on the namespace tmcprototype
 	helm template  $(HELM_RELEASE) $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE)  | kubectl delete -f - ; \
 	helm uninstall  $(HELM_RELEASE) --namespace $(KUBE_NAMESPACE) 
