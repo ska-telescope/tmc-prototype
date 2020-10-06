@@ -28,7 +28,7 @@ from .exceptions import InvalidObsStateError
 __all__ = ["SdpSubarrayLeafNode", "main"]
 
 
-# pylint: disable=unused-argument,unused-variable
+# pylint: disable=unused-argument,unused-variable, implicit-str-concat
 class SdpSubarrayLeafNode(SKABaseDevice):
     """
     SDP Subarray Leaf node is to monitor the SDP Subarray and issue control actions during an observation.
@@ -222,13 +222,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :type: CmdDoneEvent object
 
                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
+                    - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
                     - cmd_name   : (str) The command name
                     - argout_raw : (DeviceData) The command argout
                     - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
+                    - err        : (bool) A boolean flag set to true if the command failed. False otherwise
                     - errors     : (sequence<DevError>) The error stack
                     - ext
 
@@ -503,13 +501,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :type: CmdDoneEvent object
 
                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
+                    - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
                     - cmd_name   : (str) The command name
                     - argout_raw : (DeviceData) The command argout
                     - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
+                    - err        : (bool) A boolean flag set to true if the command failed. False otherwise
                     - errors     : (sequence<DevError>) The error stack
                     - ext
 
@@ -625,13 +621,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :type: CmdDoneEvent object
 
                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
+                    - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
                     - cmd_name   : (str) The command name
                     - argout_raw : (DeviceData) The command argout
                     - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
+                    - err        : (bool) A boolean flag set to true if the command failed. False otherwise
                     - errors     : (sequence<DevError>) The error stack
                     - ext
 
@@ -751,13 +745,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :type: CmdDoneEvent object
 
                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
+                    - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
                     - cmd_name   : (str) The command name
                     - argout_raw : (DeviceData) The command argout
                     - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
+                    - err        : (bool) A boolean flag set to true if the command failed. False otherwise
                     - errors     : (sequence<DevError>) The error stack
                     - ext
 
@@ -868,13 +860,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :type: CmdDoneEvent object
 
                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
+                    - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
                     - cmd_name   : (str) The command name
                     - argout_raw : (DeviceData) The command argout
                     - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
+                    - err        : (bool) A boolean flag set to true if the command failed. False otherwise
                     - errors     : (sequence<DevError>) The error stack
                     - ext
 
@@ -983,13 +973,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :type: CmdDoneEvent object
 
                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
+                    - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
                     - cmd_name   : (str) The command name
                     - argout_raw : (DeviceData) The command argout
                     - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
+                    - err        : (bool) A boolean flag set to true if the command failed. False otherwise
                     - errors     : (sequence<DevError>) The error stack
                     - ext
 
@@ -1106,13 +1094,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :type: CmdDoneEvent object
 
                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
+                    - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
                     - cmd_name   : (str) The command name
                     - argout_raw : (DeviceData) The command argout
                     - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
+                    - err        : (bool) A boolean flag set to true if the command failed. False otherwise
                     - errors     : (sequence<DevError>) The error stack
                     - ext
 
@@ -1229,13 +1215,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :type: CmdDoneEvent object
 
                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
+                    - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
                     - cmd_name   : (str) The command name
                     - argout_raw : (DeviceData) The command argout
                     - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
+                    - err        : (bool) A boolean flag set to true if the command failed. False otherwise
                     - errors     : (sequence<DevError>) The error stack
                     - ext
 
@@ -1321,13 +1305,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :type: CmdDoneEvent object
 
                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
+                    - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
                     - cmd_name   : (str) The command name
                     - argout_raw : (DeviceData) The command argout
                     - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
+                    - err        : (bool) A boolean flag set to true if the command failed. False otherwise
                     - errors     : (sequence<DevError>) The error stack
                     - ext
 
@@ -1377,13 +1359,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :type: CmdDoneEvent object
 
                 It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the
-                                   call was executed.
+                    - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
                     - cmd_name   : (str) The command name
                     - argout_raw : (DeviceData) The command argout
                     - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command
-                                   failed. False otherwise
+                    - err        : (bool) A boolean flag set to true if the command failed. False otherwise
                     - errors     : (sequence<DevError>) The error stack
                     - ext
 
@@ -1418,7 +1398,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             return (ResultCode.OK, const.STR_OFF_CMD_SUCCESS)
 
 
-# pylint: enable=unused-argument,unused-variable
+# pylint: enable=unused-argument,unused-variable, implicit-str-concat
 
 # ----------
 # Run server

@@ -1,0 +1,8 @@
+recursive-include src/subarraynodelow *.py
+recursive-include test *.py
+recursive-include pogo SubarrayNodeLow.xmi
+include *.rst
+include *.txt
+graft docs
+global-exclude *.pyc
+global-exclude *.pyo

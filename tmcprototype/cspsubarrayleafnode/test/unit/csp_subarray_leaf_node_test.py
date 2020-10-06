@@ -110,6 +110,7 @@ def test_configure_command_when_obstate_is_ready_with_callback_method(mock_csp_s
     event_subscription[const.CMD_CONFIGURE](dummy_event)
     assert const.STR_COMMAND + const.CMD_CONFIGURE in device_proxy.activityMessage
 
+
 def test_startscan_command_with_callback_method(mock_csp_subarray, event_subscription):
     # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
@@ -168,6 +169,7 @@ def test_restart_command_with_callback_method(mock_csp_subarray, event_subscript
     dummy_event = command_callback(const.CMD_RESTART)
     event_subscription_without_arg[const.CMD_RESTART](dummy_event)
     assert const.STR_COMMAND + const.CMD_RESTART in device_proxy.activityMessage
+
 
 
 def test_obsreset_command_with_callback_method(mock_csp_subarray,event_subscription_without_arg):
@@ -364,7 +366,7 @@ def test_start_scan_should_not_command_csp_subarray_to_start_scan_when_it_is_idl
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.IDLE
     device_proxy.StartScan(scan_input_str)
-    assert_activity_message(device_proxy , const.ERR_DEVICE_NOT_READY)
+    assert_activity_message(device_proxy , const.ERR_DEVICE_NOT_READY) 
 
 
 def test_start_scan_should_raise_devfailed_exception(mock_csp_subarray):
@@ -382,6 +384,7 @@ def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_scanning(mo
     device_proxy.EndScan()
     csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with (const.CMD_ENDSCAN, any_method(with_name='endscan_cmd_ended_cb'))
     assert_activity_message(device_proxy, const.STR_ENDSCAN_SUCCESS)
+
 
 def test_end_scan_should_not_command_csp_subarray_to_end_scan_when_it_is_not_scanning(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
@@ -408,7 +411,6 @@ def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready(mock_c
         (const.CMD_GOTOIDLE, any_method(with_name='gotoidle_cmd_ended_cb'))
 
     assert_activity_message(device_proxy, const.STR_GOTOIDLE_SUCCESS)
-
 
 
 def test_goto_idle_should_not_command_csp_subarray_to_end_sb_when_it_is_idle(mock_csp_subarray):
@@ -459,6 +461,7 @@ def test_abort_should_command_csp_subarray_to_abort_when_it_is_scanning(mock_csp
                                                                      any_method(with_name = 'abort_cmd_ended_cb'))
     assert_activity_message(device_proxy, const.STR_ABORT_SUCCESS)
 
+
 def test_abort_should_command_csp_subarray_to_abort_when_it_is_resetting(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.RESETTING
@@ -466,6 +469,7 @@ def test_abort_should_command_csp_subarray_to_abort_when_it_is_resetting(mock_cs
     csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
                                                                      any_method(with_name = 'abort_cmd_ended_cb'))
     assert_activity_message(device_proxy, const.STR_ABORT_SUCCESS)
+
 
 def test_abort_should_command_csp_subarray_to_abort_when_it_is_ready(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
@@ -727,6 +731,7 @@ def test_logging_targets():
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
 
+
 def test_version_id():
     """Test for versionId"""
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
@@ -737,7 +742,6 @@ def test_build_state():
     """Test for buildState"""
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assert tango_context.device.buildState == ('{},{},{}'.format(release.name,release.version,release.description))
-
 
 
 def any_method(with_name=None):
@@ -766,3 +770,4 @@ def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_m
     device_test_context.start()
     yield device_test_context
     device_test_context.stop()
+    

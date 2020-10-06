@@ -4,7 +4,7 @@ MARK ?= all
 IMAGE_TO_TEST ?= $(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/$(PROJECT):latest## docker image that will be run for testing purpose
 TANGO_HOST=$(shell helm get values ${HELM_RELEASE} -a -n ${KUBE_NAMESPACE} | grep tango_host | head -1 | cut -d':' -f2 | cut -d' ' -f2):10000
 
-CHARTS ?= tmc-mid tmc-low tmc-proto ## list of charts to be published on gitlab -- umbrella charts for testing purpose
+CHARTS ?= tmc-mid-umbrella tmc-low-umbrella tmc-proto ## list of charts to be published on gitlab -- umbrella charts for testing purpose
 
 CI_PROJECT_PATH_SLUG ?= tmcprototype
 CI_ENVIRONMENT_SLUG ?= tmcprototype	

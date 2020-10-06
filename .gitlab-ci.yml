@@ -12,6 +12,10 @@ cache:
   paths:
     - build
 
+before_script:
+  - python3 -m pip install -r requirements-dev.txt
+  - python3 -m pip install pipdeptree
+
 # The YAML file defines a set of jobs with constraints stating when they should be run.
 # You can specify an unlimited number of jobs which are defined as top-level elements with an arbitrary name and always have to contain at least the script clause.
 # In this case we have only the test job which produce an artifacts (it must be placed into a directory called "public")
@@ -52,6 +56,32 @@ build CentralNode wheel for development: # Executed on a commit
     paths:
       - ./tmcprototype/centralnode/dist/
 
+build CentralNodeLow wheel for publication: # Executed on a tag
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/centralnodelow
+    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  only:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/centralnodelow/dist/
+
+build CentralNodeLow wheel for development: # Executed on a commit
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/centralnodelow
+    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  except:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/centralnodelow/dist/
+
 build SubarrayNode wheel for publication: # Executed on a tag
   stage: build
   tags:
@@ -77,6 +107,32 @@ build SubarrayNode wheel for development: # Executed on a commit
   artifacts:
     paths:
       - ./tmcprototype/subarraynode/dist/
+
+build SubarrayNodeLow wheel for publication: # Executed on a tag
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/subarraynodelow
+    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  only:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/subarraynodelow/dist/
+
+build SubarrayNodeLow wheel for development: # Executed on a commit
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - cd ./tmcprototype/subarraynodelow
+    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+  except:
+    - tags
+  artifacts:
+    paths:
+      - ./tmcprototype/subarraynodelow/dist/
 
 build DishLeafNode wheel for publication: # Executed on a tag
   stage: build
@@ -288,35 +344,20 @@ build DishMaster wheel for development: # Executed on a commit
     paths:
       - ./tmcprototype/dishmaster/dist/
 
-# CSP, SDP images are not available as per new implementation(SP-985 and SP-1039). Because of that Test cases are failing
-#run tests:
-#  image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
-#  stage: test
-#  before_script:
-#  - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD $DOCKER_REGISTRY_HOST
-#  tags:
-#    - docker-executor
-#  script:
-#    - make test
-#    - make push
-#  retry: 2
-
 unit tests:
-  image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
+  image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
   stage: test
-  before_script:
-  - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD $DOCKER_REGISTRY_HOST
   tags:
     - docker-executor
   script:
     - make unit-test
   artifacts:
     paths:
-      - ./unit_test_reports
+      - ./build
 
 linting:
   stage: linting
-  image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
+  image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
   tags:
     - docker-executor
   script:
@@ -336,7 +377,9 @@ publish to nexus:
   script:
     - python3 -m pip install twine
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/centralnode/dist/*
+    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/centralnodelow/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/subarraynode/dist/*
+    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/subarraynodelow/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/dishleafnode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/cspmasterleafnode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/sdpmasterleafnode/dist/*
@@ -385,6 +428,8 @@ pages:
     - mv public/unit_test/dishleafnode_htmlcov/* public
     - mv public/unit_test/subarraynode_htmlcov/* public
     - mv public/unit_test/centralnode_htmlcov/* public
+    - mv public/unit_test/subarraynodelow_htmlcov/* public
+    - mv public/unit_test/centralnodelow_htmlcov/* public
     - make push
   artifacts:
     paths:
