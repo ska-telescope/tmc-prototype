@@ -1,0 +1,35 @@
+
+display: ":0"
+xauthority: "~/.Xauthority"
+minikube: true
+
+system: TM-low
+telescope: SKA-low
+
+tango-base:
+  vnc:
+    enabled: true
+  tangorest:
+    enabled: true
+  tangotest:
+    enabled: true
+  ingress:
+    enabled: true
+  tangodb:
+    use_pv: false
+
+logging:
+  elastic:
+    enabled: false
+  fluentd:
+    enabled: false
+  kibana:
+    enabled: false
+  tests:
+    enabled: false
+
+webjive:
+  ingress:
+    enabled: true
+    nginx: false
+    hostname: integration.engageska-portugal.pt

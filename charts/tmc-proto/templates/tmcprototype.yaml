@@ -12,9 +12,9 @@ metadata:
     domain: self-configuration
 data:
 {{ if SOME_CONDITION == "LOW"}}
-{{ $config_file := "data/configuration_low.json" | indent 2 }}
+{{ $config_file := "data/tmc-low-config.json" | indent 2 }}
 {{ else }}
-{{ $config_file := "data/configuration_mid.json" | indent 2 }}
+{{ $config_file := "data/tmc-mid-config.json" | indent 2 }}
 {{ end }}
   configuration.json:
 {{ (tpl (.Files.Glob $config_file).AsConfig . ) | indent 2  }}
