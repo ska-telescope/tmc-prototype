@@ -173,13 +173,13 @@ def command_event_error_with_arg(request):
     return cmd_name, requested_cmd, ObsState
 
 
-def test_command_with_callback_method_with_event_error_with_arg(mock_mccs_subarray,event_subscription_with_arg, command_event_error_with_arg):
+def test_command_with_callback_method_with_event_error_with_arg(mock_mccs_subarray,event_subscription, command_event_error_with_arg):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     cmd_name, requested_cmd, ObsState = command_event_error_with_arg
     mccs_subarray1_proxy_mock.obsState = ObsState
     device_proxy.command_inout(cmd_name)
     dummy_event = command_callback_with_event_error(requested_cmd)
-    event_subscription_with_arg[requested_cmd](dummy_event)
+    event_subscription[requested_cmd](dummy_event)
     assert const.ERR_INVOKING_CMD + requested_cmd in device_proxy.activityMessage
 
 
