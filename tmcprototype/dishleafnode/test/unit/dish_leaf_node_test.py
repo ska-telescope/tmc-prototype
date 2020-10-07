@@ -264,25 +264,45 @@ def create_dummy_event_for_dish_capturing(device_fqdn, dish_capturing_value, att
     fake_event.attr_value.value = dish_capturing_value
     return fake_event
 
+@pytest.fixture(
+    scope="function",
+    params=[
+        'True',
+        'False'
+    ])
+def dish_capturing_callback_flag(request):
+    flag = request.param
+    return flag
 
-def test_dish_leaf_node_when_dish_capturing_callback_is_true(mock_dish_master):
+def test_dish_leaf_node_when_dish_capturing_callback_flag(mock_dish_master, dish_capturing_callback_flag):
+    flag = dish_capturing_callback_flag
     dish_master_capturing_attribute = 'capturing'
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    dish_capturing_value = True
+    dish_capturing_value = flag
     dummy_event = create_dummy_event_for_dish_capturing(dish_master1_fqdn, dish_capturing_value,
                                                         dish_master_capturing_attribute)
     event_subscription_map[dish_master_capturing_attribute](dummy_event)
     assert tango_context.device.activityMessage == f"capturing is {dish_capturing_value}."
 
 
-def test_dish_leaf_node_when_dish_capturing_callback_is_false(mock_dish_master):
-    dish_master_capturing_attribute = 'capturing'
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    dish_capturing_value = False
-    dummy_event = create_dummy_event_for_dish_capturing(dish_master1_fqdn, dish_capturing_value,
-                                                        dish_master_capturing_attribute)
-    event_subscription_map[dish_master_capturing_attribute](dummy_event)
-    assert tango_context.device.activityMessage == f"capturing is {dish_capturing_value}."
+# def test_dish_leaf_node_when_dish_capturing_callback_is_true(mock_dish_master):
+#     dish_master_capturing_attribute = 'capturing'
+#     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
+#     dish_capturing_value = True
+#     dummy_event = create_dummy_event_for_dish_capturing(dish_master1_fqdn, dish_capturing_value,
+#                                                         dish_master_capturing_attribute)
+#     event_subscription_map[dish_master_capturing_attribute](dummy_event)
+#     assert tango_context.device.activityMessage == f"capturing is {dish_capturing_value}."
+
+
+# def test_dish_leaf_node_when_dish_capturing_callback_is_false(mock_dish_master):
+#     dish_master_capturing_attribute = 'capturing'
+#     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
+#     dish_capturing_value = False
+#     dummy_event = create_dummy_event_for_dish_capturing(dish_master1_fqdn, dish_capturing_value,
+#                                                         dish_master_capturing_attribute)
+#     event_subscription_map[dish_master_capturing_attribute](dummy_event)
+#     assert tango_context.device.activityMessage == f"capturing is {dish_capturing_value}."
 
 @pytest.fixture(
     scope="function",
@@ -295,14 +315,6 @@ def attribute_callback_with_event_error(request):
     attribute, value = request.param
     return attribute, value
 
-# def test_dish_leaf_node_when_dish_capturing_callback_with_error_event(mock_dish_master):
-#     dish_master_capturing_attribute = 'capturing'
-#     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-#     dish_capturing_value = 'Invalid_value'
-#     dummy_event = create_dummy_event_with_error(dish_master1_fqdn, dish_capturing_value,
-#                                                 dish_master_capturing_attribute)
-#     event_subscription_map[dish_master_capturing_attribute](dummy_event)
-#     assert "Event system DevError(s) occured!!!" in tango_context.device.activityMessage
 
 def test_dish_leaf_node_attribute_callback_with_event_error(mock_dish_master, attribute_callback_with_event_error):
     attribute, value = attribute_callback_with_event_error
@@ -315,22 +327,14 @@ def test_dish_leaf_node_attribute_callback_with_event_error(mock_dish_master, at
     assert "Event system DevError(s) occured!!!" in tango_context.device.activityMessage
 
 
-def create_dummy_event(device_fqdn, attribute, attr_value):
-    fake_event = Mock()
-    fake_event.err = False
-    fake_event.attr_name = f"{device_fqdn}/{attribute}"
-    fake_event.attr_value.value = attr_value
-    return fake_event
-
-
-def test_dish_leaf_node_when_achieved_pointing_callback_is_true(mock_dish_master):
-    dish_master_achieved_pointing_attribute = 'achievedPointing'
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    attribute = 'achievedPointing'
-    value = 0.0
-    dummy_event = create_dummy_event(dish_master1_fqdn, attribute, value)
-    event_subscription_map[dish_master_achieved_pointing_attribute](dummy_event)
-    assert tango_context.device.activityMessage == f"achievedPointing is {value}."
+# def test_dish_leaf_node_when_dish_capturing_callback_with_error_event(mock_dish_master):
+#     dish_master_capturing_attribute = 'capturing'
+#     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
+#     dish_capturing_value = 'Invalid_value'
+#     dummy_event = create_dummy_event_with_error(dish_master1_fqdn, dish_capturing_value,
+#                                                 dish_master_capturing_attribute)
+#     event_subscription_map[dish_master_capturing_attribute](dummy_event)
+#     assert "Event system DevError(s) occured!!!" in tango_context.device.activityMessage
 
 
 # def test_dish_leaf_node_when_achieved_pointing_callback_with_error_event(mock_dish_master):
@@ -343,16 +347,6 @@ def test_dish_leaf_node_when_achieved_pointing_callback_is_true(mock_dish_master
 #     assert "Event system DevError(s) occured!!!" in tango_context.device.activityMessage
 
 
-def test_dish_leaf_node_when_desired_pointing_callback_is_true(mock_dish_master):
-    dish_master_desired_pointing_attribute = 'desiredPointing'
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    attribute = 'desiredPointing'
-    value = 0.0
-    dummy_event = create_dummy_event(dish_master1_fqdn, attribute, value)
-    event_subscription_map[dish_master_desired_pointing_attribute](dummy_event)
-    assert tango_context.device.activityMessage == f"desiredPointing is {dummy_event.attr_value.value}."
-
-
 # def test_dish_leaf_node_when_desired_pointing_callback_with_error_event(mock_dish_master):
 #     dish_master_desired_pointing_attribute = 'desiredPointing'
 #     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
@@ -361,6 +355,56 @@ def test_dish_leaf_node_when_desired_pointing_callback_is_true(mock_dish_master)
 #     dummy_event = create_dummy_event_with_error(dish_master1_fqdn, attribute, value)
 #     event_subscription_map[dish_master_desired_pointing_attribute](dummy_event)
 #     assert "Event system DevError(s) occured!!!" in tango_context.device.activityMessage
+
+
+def create_dummy_event(device_fqdn, attribute, attr_value):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{device_fqdn}/{attribute}"
+    fake_event.attr_value.value = attr_value
+    return fake_event
+
+
+@pytest.fixture(
+    scope="function",
+    params=[
+        ('achievedPointing'),
+        ('desiredPointing'),
+    ])
+
+def attribute_pointing_callback_is_true(request):
+    attribute = request.param
+    return attribute
+
+def test_dish_leaf_node_when_attribute_pointing_callback_is_true(mock_dish_master, attribute_pointing_callback_is_true):
+    attribute = attribute_pointing_callback_is_true
+    dish_master_pointing_attribute = attribute
+    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
+    attribute_pointing = attribute
+    value = 0.0
+    dummy_event = create_dummy_event(dish_master1_fqdn, attribute_pointing, value)
+    event_subscription_map[dish_master_pointing_attribute](dummy_event)
+    assert tango_context.device.activityMessage == f"{attribute} is {value}."
+
+
+# def test_dish_leaf_node_when_achieved_pointing_callback_is_true(mock_dish_master):
+#     dish_master_achieved_pointing_attribute = 'achievedPointing'
+#     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
+#     attribute = 'achievedPointing'
+#     value = 0.0
+#     dummy_event = create_dummy_event(dish_master1_fqdn, attribute, value)
+#     event_subscription_map[dish_master_achieved_pointing_attribute](dummy_event)
+#     assert tango_context.device.activityMessage == f"achievedPointing is {value}."
+
+
+# def test_dish_leaf_node_when_desired_pointing_callback_is_true(mock_dish_master):
+#     dish_master_desired_pointing_attribute = 'desiredPointing'
+#     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
+#     attribute = 'desiredPointing'
+#     value = 0.0
+#     dummy_event = create_dummy_event(dish_master1_fqdn, attribute, value)
+#     event_subscription_map[dish_master_desired_pointing_attribute](dummy_event)
+#     assert tango_context.device.activityMessage == f"desiredPointing is {dummy_event.attr_value.value}."
 
 
 def test_configure_should_raise_exception_when_called_with_invalid_json():
