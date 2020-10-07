@@ -284,14 +284,34 @@ def test_dish_leaf_node_when_dish_capturing_callback_is_false(mock_dish_master):
     event_subscription_map[dish_master_capturing_attribute](dummy_event)
     assert tango_context.device.activityMessage == f"capturing is {dish_capturing_value}."
 
+@pytest.fixture(
+    scope="function",
+    params=[
+        ('capturing','Invalid_value'),
+        ('achievedPointing',0.0),
+        ('desiredPointing',0.0),
+    ])
+def attribute_callback_with_event_error(request):
+    attribute, value = request.param
+    return attribute, value
 
-def test_dish_leaf_node_when_dish_capturing_callback_with_error_event(mock_dish_master):
-    dish_master_capturing_attribute = 'capturing'
+# def test_dish_leaf_node_when_dish_capturing_callback_with_error_event(mock_dish_master):
+#     dish_master_capturing_attribute = 'capturing'
+#     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
+#     dish_capturing_value = 'Invalid_value'
+#     dummy_event = create_dummy_event_with_error(dish_master1_fqdn, dish_capturing_value,
+#                                                 dish_master_capturing_attribute)
+#     event_subscription_map[dish_master_capturing_attribute](dummy_event)
+#     assert "Event system DevError(s) occured!!!" in tango_context.device.activityMessage
+
+def test_dish_leaf_node_attribute_callback_with_event_error(mock_dish_master, attribute_callback_with_event_error):
+    attribute, value = attribute_callback_with_event_error
+    dish_master_attribute = attribute
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    dish_capturing_value = 'Invalid_value'
-    dummy_event = create_dummy_event_with_error(dish_master1_fqdn, dish_capturing_value,
-                                                dish_master_capturing_attribute)
-    event_subscription_map[dish_master_capturing_attribute](dummy_event)
+    dish_attribute_value = value
+    dummy_event = create_dummy_event_with_error(dish_master1_fqdn, dish_attribute_value,
+                                                dish_master_attribute)
+    event_subscription_map[dish_master_attribute](dummy_event)
     assert "Event system DevError(s) occured!!!" in tango_context.device.activityMessage
 
 
@@ -313,14 +333,14 @@ def test_dish_leaf_node_when_achieved_pointing_callback_is_true(mock_dish_master
     assert tango_context.device.activityMessage == f"achievedPointing is {value}."
 
 
-def test_dish_leaf_node_when_achieved_pointing_callback_with_error_event(mock_dish_master):
-    dish_master_achieved_pointing_attribute = 'achievedPointing'
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    attribute = 'achievedPointing'
-    value = 0.0
-    dummy_event = create_dummy_event_with_error(dish_master1_fqdn, attribute, value)
-    event_subscription_map[dish_master_achieved_pointing_attribute](dummy_event)
-    assert "Event system DevError(s) occured!!!" in tango_context.device.activityMessage
+# def test_dish_leaf_node_when_achieved_pointing_callback_with_error_event(mock_dish_master):
+#     dish_master_achieved_pointing_attribute = 'achievedPointing'
+#     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
+#     attribute = 'achievedPointing'
+#     value = 0.0
+#     dummy_event = create_dummy_event_with_error(dish_master1_fqdn, attribute, value)
+#     event_subscription_map[dish_master_achieved_pointing_attribute](dummy_event)
+#     assert "Event system DevError(s) occured!!!" in tango_context.device.activityMessage
 
 
 def test_dish_leaf_node_when_desired_pointing_callback_is_true(mock_dish_master):
@@ -333,14 +353,14 @@ def test_dish_leaf_node_when_desired_pointing_callback_is_true(mock_dish_master)
     assert tango_context.device.activityMessage == f"desiredPointing is {dummy_event.attr_value.value}."
 
 
-def test_dish_leaf_node_when_desired_pointing_callback_with_error_event(mock_dish_master):
-    dish_master_desired_pointing_attribute = 'desiredPointing'
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    attribute = 'desiredPointing'
-    value = 0.0
-    dummy_event = create_dummy_event_with_error(dish_master1_fqdn, attribute, value)
-    event_subscription_map[dish_master_desired_pointing_attribute](dummy_event)
-    assert "Event system DevError(s) occured!!!" in tango_context.device.activityMessage
+# def test_dish_leaf_node_when_desired_pointing_callback_with_error_event(mock_dish_master):
+#     dish_master_desired_pointing_attribute = 'desiredPointing'
+#     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
+#     attribute = 'desiredPointing'
+#     value = 0.0
+#     dummy_event = create_dummy_event_with_error(dish_master1_fqdn, attribute, value)
+#     event_subscription_map[dish_master_desired_pointing_attribute](dummy_event)
+#     assert "Event system DevError(s) occured!!!" in tango_context.device.activityMessage
 
 
 def test_configure_should_raise_exception_when_called_with_invalid_json():
