@@ -54,6 +54,7 @@ def event_subscription_without_arg(mock_sdp_subarray):
                **kwargs: event_subscription_map.update({command_name: callback}))
     yield event_subscription_map
 
+
 @pytest.fixture(scope="function")
 def mock_sdp_subarray():
     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_01'
@@ -161,11 +162,11 @@ def test_command_with_callback_method_with_arg(mock_sdp_subarray, event_subscrip
         ("EndScan", const.CMD_ENDSCAN, ObsState.SCANNING),
         ("Abort", const.CMD_ABORT, ObsState.READY),
         ("Restart", const.CMD_RESTART, ObsState.ABORTED),
+        ("ObsReset", const.CMD_OBSRESET, ObsState.ABORTED),
     ])
 def command_without_arg(request):
     cmd_name, requested_cmd, ObsState = request.param
     return cmd_name, requested_cmd, ObsState
-
 
 def test_command_with_callback_method_without_arg(mock_sdp_subarray, event_subscription_without_arg, command_without_arg):
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
@@ -176,7 +177,7 @@ def test_command_with_callback_method_without_arg(mock_sdp_subarray, event_subsc
     event_subscription_without_arg[requested_cmd](dummy_event)
     assert const.STR_COMMAND + requested_cmd in device_proxy.activityMessage
 
-
+    
 @pytest.fixture(
     scope="function",
     params=[
@@ -184,7 +185,8 @@ def test_command_with_callback_method_without_arg(mock_sdp_subarray, event_subsc
         ("ReleaseAllResources", const.CMD_RELEASE_RESOURCES, ObsState.IDLE),
         ("EndScan", const.CMD_ENDSCAN, ObsState.SCANNING),
         ("Abort", const.CMD_ABORT, ObsState.SCANNING),
-        ("Restart", const.CMD_RESTART, ObsState.ABORTED),   
+        ("Restart", const.CMD_RESTART, ObsState.ABORTED), 
+        ("ObsReset", const.CMD_OBSRESET, ObsState.ABORTED),  
     ])
 def command_event_error_without_arg(request):
     cmd_name, requested_cmd, ObsState = request.param
@@ -210,7 +212,6 @@ def test_command_with_callback_method_without_arg_with_event_error(mock_sdp_suba
 def command_with_arg_with_event_error(request):
     cmd_name, input_arg, requested_cmd, ObsState = request.param
     return cmd_name, input_arg, requested_cmd, ObsState
-
 
 def test_command_with_callback_method_with_arg_with_event_error(mock_sdp_subarray, event_subscription_with_arg, command_with_arg_with_event_error):
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
@@ -331,7 +332,9 @@ def test_assign_resources_should_raise_devfailed_for_invalid_obstate(mock_sdp_su
         ("EndScan", const.CMD_ENDSCAN, ObsState.SCANNING, const.ERR_ENDSCAN_INVOKING_CMD),
         ("Abort", const.CMD_ABORT, ObsState.SCANNING, const.ERR_ABORT_INVOKING_CMD),
         ("Restart", const.CMD_RESTART, ObsState.ABORTED, const.ERR_RESTART_INVOKING_CMD),   
+        ("ObsReset", const.CMD_OBSRESET, ObsState.ABORTED, const.ERR_OBSRESET_INVOKING_CMD),
     ])
+
 def command_raise_devfailed_without_arg(request):
     cmd_name, requested_cmd, ObsState, Error_msg = request.param
     return cmd_name, requested_cmd, ObsState, Error_msg
@@ -353,10 +356,10 @@ def test_command_without_arg_should_raise_devfailed_exception(mock_sdp_subarray,
         ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.READY, const.ERR_CONFIGURE),
         ("AssignResources", assign_input_str, const.CMD_ASSIGN_RESOURCES, ObsState.EMPTY, const.ERR_ASSGN_RESOURCES),
     ])
+
 def command_with_arg_with_devfailed_exception(request):
     cmd_name, input_arg, requested_cmd, ObsState, Error_msg = request.param
     return cmd_name, input_arg, requested_cmd, ObsState, Error_msg
-
 
 def test_command_with_arg_should_raise_devfailed_exception(mock_sdp_subarray, event_subscription_with_arg, command_with_arg_with_devfailed_exception):
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
@@ -368,191 +371,130 @@ def test_command_with_arg_should_raise_devfailed_exception(mock_sdp_subarray, ev
     assert Error_msg in device_proxy.activityMessage
 
 
-def test_abort_should_command_sdp_subarray_to_abort_when_it_is_scanning(mock_sdp_subarray):
+@pytest.fixture(
+    scope="function",
+    params=[
+        ( ObsState.SCANNING),
+        ( ObsState.CONFIGURING),
+        ( ObsState.IDLE),
+        ( ObsState.RESETTING),
+    ])
+
+def abort_command_should_allowed_in_obstate(request):
+    ObsState = request.param
+    return ObsState
+
+def test_abort_should_command_sdp_subarray_to_abort_when_it_is_in_required_obstate(mock_sdp_subarray, abort_command_should_allowed_in_obstate):
+    ObsState = abort_command_should_allowed_in_obstate
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.SCANNING
+    sdp_subarray1_proxy_mock.obsState = ObsState
     device_proxy.Abort()
     sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
                                                                      any_method(with_name='abort_cmd_ended_cb'))
 
 
-def test_abort_should_command_sdp_subarray_to_abort_when_it_is_configuring(mock_sdp_subarray):
+@pytest.fixture(
+    scope="function",
+    params=[
+        ( ObsState.RESOURCING),
+        ( ObsState.EMPTY),
+    ])
+
+def abort_command_should_not_allowed_in_obstate(request):
+    ObsState = request.param
+    return ObsState
+
+def test_abort_should_failed_when_device_is_not_in_required_obstate(mock_sdp_subarray, abort_command_should_not_allowed_in_obstate):
+    ObsState = abort_command_should_not_allowed_in_obstate
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.CONFIGURING
-    device_proxy.Abort()
-    sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
-                                                                     any_method(with_name='abort_cmd_ended_cb'))
-
-
-def test_abort_should_command_sdp_subarray_to_abort_when_it_is_idle(mock_sdp_subarray):
-    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
-    device_proxy.Abort()
-    sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
-                                                                     any_method(with_name='abort_cmd_ended_cb'))
-
-
-def test_abort_should_command_sdp_subarray_to_abort_when_it_is_resetting(mock_sdp_subarray):
-    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.RESETTING
-    device_proxy.Abort()
-    sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ABORT,
-                                                                     any_method(with_name='abort_cmd_ended_cb'))
-
-
-def test_abort_should_failed_when_device_obsstate_is_resourcing(mock_sdp_subarray):
-    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.RESOURCING
+    sdp_subarray1_proxy_mock.obsState = ObsState
     device_proxy.Abort()
     assert "Unable to invoke Abort command" in device_proxy.activityMessage
 
 
-def test_abort_should_failed_when_device_obsstate_is_empty(mock_sdp_subarray):
-    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.EMPTY
-    device_proxy.Abort()
-    assert "Unable to invoke Abort command" in device_proxy.activityMessage
+@pytest.fixture(
+    scope="function",
+    params=[
+        ( ObsState.ABORTED),
+        ( ObsState.FAULT),
+    ])
+
+def restart_command_should_allowed_in_obstate(request):
+    ObsState = request.param
+    return ObsState
 
 
-def test_restart_should_command_sdp_subarray_to_restart_when_obsstate_is_aborted(mock_sdp_subarray):
+def test_restart_should_command_sdp_subarray_to_restart_when_in_required_obstate(mock_sdp_subarray, restart_command_should_allowed_in_obstate):
+    ObsState = restart_command_should_allowed_in_obstate
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.ABORTED
+    sdp_subarray1_proxy_mock.obsState = ObsState
     device_proxy.Restart()
     sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_RESTART,
                                                                      any_method(with_name='restart_cmd_ended_cb'))
 
 
-def test_restart_should_command_sdp_subarray_to_restart_when_obsstate_is_fault(mock_sdp_subarray):
+@pytest.fixture(
+    scope="function",
+    params=[
+        ( ObsState.SCANNING),
+        ( ObsState.EMPTY),
+        ( ObsState.CONFIGURING),
+        ( ObsState.IDLE),
+        ( ObsState.READY),
+        ( ObsState.RESOURCING),
+    ])
+
+def restart_command_should_not_allowed_in_obstate(request):
+    ObsState = request.param
+    return ObsState
+
+def test_restart_should_failed_when_device_is_not_in_required_obstate(mock_sdp_subarray, restart_command_should_not_allowed_in_obstate):
+    ObsState = restart_command_should_not_allowed_in_obstate
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.FAULT
-    device_proxy.Restart()
-    sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_RESTART,
-                                                                     any_method(with_name='restart_cmd_ended_cb'))
-
-
-def test_restart_should_failed_when_device_obsstate_is_resourcing(mock_sdp_subarray):
-    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.RESOURCING
-    device_proxy.Restart()
-    assert "Unable to invoke Restart command" in device_proxy.activityMessage
-
-
-def test_restart_should_failed_when_device_obsstate_is_scanning(mock_sdp_subarray):
-    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.SCANNING
-    device_proxy.Restart()
-    assert "Unable to invoke Restart command" in device_proxy.activityMessage
-
-
-def test_restart_should_failed_when_device_obsstate_is_empty(mock_sdp_subarray):
-    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.EMPTY
+    sdp_subarray1_proxy_mock.obsState = ObsState
     device_proxy.Restart()
     assert "Unable to invoke Restart command" in device_proxy.activityMessage
 
 
-def test_restart_should_failed_when_device_obsstate_is_configuring(mock_sdp_subarray):
+@pytest.fixture(
+    scope="function",
+    params=[
+        ( ObsState.ABORTED),
+        ( ObsState.FAULT),
+    ])
+
+def obsreset_command_should_allowed_in_obstate(request):
+    ObsState = request.param
+    return ObsState
+
+def test_obsreset_should_command_sdp_subarray_to_restart_when_in_required_obstate(mock_sdp_subarray, obsreset_command_should_allowed_in_obstate):
+    ObsState = obsreset_command_should_allowed_in_obstate
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.CONFIGURING
-    device_proxy.Restart()
-    assert "Unable to invoke Restart command" in device_proxy.activityMessage
-
-
-def test_restart_should_failed_when_device_obsstate_is_idle(mock_sdp_subarray):
-    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
-    device_proxy.Restart()
-    assert "Unable to invoke Restart command" in device_proxy.activityMessage
-
-
-def test_restart_should_failed_when_device_obsstate_is_ready(mock_sdp_subarray):
-    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.READY
-    device_proxy.Restart()
-    assert "Unable to invoke Restart command" in device_proxy.activityMessage
-
-
-def test_obsreset_should_command_sdp_subarray_to_reset_when_obsstate_is_aborted(mock_sdp_subarray):
-    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.ABORTED
+    sdp_subarray1_proxy_mock.obsState = ObsState
     device_proxy.ObsReset()
     sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OBSRESET,
                                                                      any_method(with_name='obsreset_cmd_ended_cb'))
 
 
-def test_obsreset_should_command_sdp_subarray_to_reset_when_obsstate_is_fault(mock_sdp_subarray):
+@pytest.fixture(
+    scope="function",
+    params=[
+        ( ObsState.SCANNING),
+        ( ObsState.EMPTY),
+        ( ObsState.CONFIGURING),
+        ( ObsState.IDLE),
+        ( ObsState.READY),
+        ( ObsState.RESOURCING),
+    ])
+    
+def obsreset_command_should_not_allowed_in_obstate(request):
+    ObsState = request.param
+    return ObsState
+
+def test_obsreset_should_failed_when_device_is_not_in_required_obstate(mock_sdp_subarray, obsreset_command_should_not_allowed_in_obstate):
+    ObsState = obsreset_command_should_not_allowed_in_obstate
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.FAULT
-    device_proxy.ObsReset()
-    sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OBSRESET,
-                                                                     any_method(with_name='obsreset_cmd_ended_cb'))
-
-
-def test_obsreset_command_with_callback_method(mock_sdp_subarray,event_subscription_without_arg):
-    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.ABORTED
-    device_proxy.ObsReset()
-    dummy_event = command_callback(const.CMD_OBSRESET)
-    event_subscription_without_arg[const.CMD_OBSRESET](dummy_event)
-    assert const.STR_COMMAND + const.CMD_OBSRESET in device_proxy.activityMessage
-
-
-def test_obsreset_command_with_callback_method_with_event_error(mock_sdp_subarray,event_subscription_without_arg):
-    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.ABORTED
-    device_proxy.ObsReset()
-    dummy_event = command_callback_with_event_error(const.CMD_OBSRESET)
-    event_subscription_without_arg[const.CMD_OBSRESET](dummy_event)
-    assert const.ERR_INVOKING_CMD + const.CMD_OBSRESET in device_proxy.activityMessage
-
-
-def test_obsreset_should_raise_devfailed_exception(mock_sdp_subarray):
-    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.ABORTED
-    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_with_arg
-    with pytest.raises(tango.DevFailed) as df:
-        device_proxy.ObsReset()
-    assert const.ERR_OBSRESET_INVOKING_CMD in str(df.value)
-
-
-def test_obsreset_should_failed_when_device_obsstate_is_resourcing(mock_sdp_subarray):
-    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.RESOURCING
-    device_proxy.ObsReset()
-    assert "Unable to invoke ObsReset command" in device_proxy.activityMessage
-
-
-def test_obsreset_should_failed_when_device_obsstate_is_scanning(mock_sdp_subarray):
-    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.SCANNING
-    device_proxy.ObsReset()
-    assert "Unable to invoke ObsReset command" in device_proxy.activityMessage
-
-
-def test_obsreset_should_failed_when_device_obsstate_is_empty(mock_sdp_subarray):
-    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.EMPTY
-    device_proxy.ObsReset()
-    assert "Unable to invoke ObsReset command" in device_proxy.activityMessage
-
-
-def test_obsreset_should_failed_when_device_obsstate_is_configuring(mock_sdp_subarray):
-    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.CONFIGURING
-    device_proxy.ObsReset()
-    assert "Unable to invoke ObsReset command" in device_proxy.activityMessage
-
-
-def test_obsreset_should_failed_when_device_obsstate_is_idle(mock_sdp_subarray):
-    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.IDLE
-    device_proxy.ObsReset()
-    assert "Unable to invoke ObsReset command" in device_proxy.activityMessage
-
-
-def test_obsreset_should_failed_when_device_obsstate_is_ready(mock_sdp_subarray):
-    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.READY
+    sdp_subarray1_proxy_mock.obsState = ObsState
     device_proxy.ObsReset()
     assert "Unable to invoke ObsReset command" in device_proxy.activityMessage
 
