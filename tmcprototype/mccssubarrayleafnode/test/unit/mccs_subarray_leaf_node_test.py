@@ -85,7 +85,7 @@ def test_command_without_arg_in_allowed_obsstate_with_callback_method(mock_mccs_
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     cmd_name, requested_cmd, ObsState = command_without_arg
     mccs_subarray1_proxy_mock.obsState = ObsState
-    device_proxy.command_inout(cmd_name,cmd_arg)
+    device_proxy.command_inout(cmd_name)
     dummy_event = command_callback(requested_cmd)
     event_subscription_without_arg[requested_cmd](dummy_event)
     assert const.STR_COMMAND + requested_cmd in device_proxy.activityMessage
@@ -188,7 +188,7 @@ def test_command_with_callback_method_with_event_error_with_arg(mock_mccs_subarr
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     cmd_name, cmd_arg, requested_cmd, ObsState = command_with_arg
     mccs_subarray1_proxy_mock.obsState = ObsState
-    device_proxy.command_inout(cmd_name, configure_str)
+    device_proxy.command_inout(cmd_name, cmd_arg)
     dummy_event = command_callback_with_event_error(requested_cmd)
     event_subscription[requested_cmd](dummy_event)
     assert const.ERR_INVOKING_CMD + requested_cmd in device_proxy.activityMessage
