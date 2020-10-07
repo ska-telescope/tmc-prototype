@@ -8,13 +8,13 @@ telescope: SKA-low
 
 tango-base:
   vnc:
-    enabled: true
+    enabled: false
   tangorest:
-    enabled: true
+    enabled: false
   tangotest:
-    enabled: true
+    enabled: false
   ingress:
-    enabled: true
+    enabled: false
   tangodb:
     use_pv: false
 
@@ -33,3 +33,18 @@ webjive:
     enabled: true
     nginx: false
     hostname: integration.engageska-portugal.pt
+
+mccs:
+  mccs:
+    enabled: true
+  cli:
+    enabled: true
+
+  project:
+    name: mccs
+    image:
+      registry: nexus.engageska-portugal.pt/ska-docker
+      image: ska-low-mccs
+      tag: latest
+      pullPolicy: IfNotPresent
+    

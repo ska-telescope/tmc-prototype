@@ -24,10 +24,10 @@ DASHBOARD ?= webjive-dash.dump
 HELM_RELEASE ?= test
 
 # HELM_CHART the chart name
-HELM_CHART ?= tmc-mid-umbrella
+HELM_CHART ?= tmc-low-umbrella
 
 # UMBRELLA_CHART_PATH Path of the umbrella chart to work with
-UMBRELLA_CHART_PATH ?= charts/tmc-mid-umbrella/
+UMBRELLA_CHART_PATH ?= charts/tmc-low-umbrella/
 
 # Fixed variables
 # Timeout for gitlab-runner when run locally
