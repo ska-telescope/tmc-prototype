@@ -103,9 +103,9 @@ def test_command_cb_is_invoked_when_command_is_called_async(mock_csp_master, eve
 
     # act:
     if cmd_name == "Standby":
-        device_proxy.Standby([])
+        device_proxy.command_inout(cmd_name, cmd_arg)
     elif cmd_name == "On":
-        device_proxy.On()
+        device_proxy.command_inout(cmd_name)   
     dummy_event = command_callback(requested_cmd)
     event_subscription[requested_cmd](dummy_event)
 
@@ -113,16 +113,16 @@ def test_command_cb_is_invoked_when_command_is_called_async(mock_csp_master, eve
     assert const.STR_COMMAND + requested_cmd in device_proxy.activityMessage
 
 
-def test_command_should_command_with_callback_method_with_event_error(mock_csp_master, event_subscription, command_with_arg):
+def test_command_with_callback_method_with_event_error(mock_csp_master, event_subscription, command_with_arg):
     # arrange:
     device_proxy=mock_csp_master[1]
     cmd_name, cmd_arg, requested_cmd, requested_cmd_arg = command_with_arg
 
     # act:
     if cmd_name == "Standby":
-        device_proxy.Standby([])
+        device_proxy.command_inout(cmd_name, cmd_arg)
     elif cmd_name == "On":
-        device_proxy.On()
+        device_proxy.command_inout(cmd_name)
     dummy_event = command_callback_with_event_error(requested_cmd)
     event_subscription[requested_cmd](dummy_event)
 

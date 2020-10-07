@@ -100,7 +100,7 @@ def test_command_should_command_with_callback_method(mock_sdp_master, event_subs
     assert const.STR_COMMAND + requested_cmd in device_proxy.activityMessage
 
 
-def test_command_should_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription, command_with_arg):
+def test_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription, command_with_arg):
     # arrange:
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
     cmd_name, cmd_arg, requested_cmd, requested_cmd_arg = command_with_arg
