@@ -88,7 +88,7 @@ def test_command_without_arg_in_allowed_obsstate_with_callback_method(mock_mccs_
     device_proxy.command_inout(cmd_name,cmd_arg)
     dummy_event = command_callback(requested_cmd)
     event_subscription_without_arg[requested_cmd](dummy_event)
-    assert
+    assert const.STR_COMMAND + requested_cmd in device_proxy.activityMessage
 
 
 # def test_configure_command_when_obstate_is_idle_with_callback_method(mock_mccs_subarray, event_subscription):
