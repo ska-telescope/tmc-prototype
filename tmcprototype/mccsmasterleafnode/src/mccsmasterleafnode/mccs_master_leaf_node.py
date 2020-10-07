@@ -38,17 +38,14 @@ class MccsMasterLeafNode(SKABaseDevice):
     - activityMessage - Attribute to provide activity message
 
     """
-    # PROTECTED REGION ID(MccsMasterLeafNode.class_variable) ENABLED START #
-    # PROTECTED REGION END #    //  MccsMasterLeafNode.class_variable
 
     # -----------------
     # Device Properties
     # -----------------
 
     MccsMasterFQDN = device_property(
-        dtype='str', default_value="low_mccs/elt/master"
+        dtype='str', default_value="low-mccs/control/control"
     )
-
     # ----------
     # Attributes
     # ----------
@@ -273,6 +270,7 @@ class MccsMasterLeafNode(SKABaseDevice):
                 tango.Except.re_throw_exception(dev_failed, const.STR_ASSIGN_RES_EXEC, log_msg,
                                              "MccsMasterLeafNode.AssignResourcesCommand",
                                              tango.ErrSeverity.ERR)
+                                             
     @command(
         dtype_in='str',
     )
@@ -316,8 +314,8 @@ class MccsMasterLeafNode(SKABaseDevice):
 
             :rtype: boolean
 
-            :raises: DevFailed if this command is not allowed to be run
-                in current device state
+            :raises: ValueError if input argument json string contains invalid value
+                    DevFailed if this command is not allowed to be run in current device state
 
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
@@ -359,23 +357,44 @@ class MccsMasterLeafNode(SKABaseDevice):
                 self.logger.info(log_msg)
                 device._read_activity_message = log_msg
 
-        def do(self):
+        def do(self, argin):
             """
             It invokes ReleaseResources command on MccsMaster and releases all the resources assigned to
             MccsMaster.
+
+            :param argin:StringType. The string in JSON format.
+
+            Example: 
+                {
+                    "subarray_id": 1,
+                    "release_all": true,
+                }
 
             :return: None.
 
             :raises: DevFailed if the command execution is not successful
 
+
             """
             device = self.target
+            log_msg = "Input JSON for MCCS master leaf node Release command is: " + argin
+            self.logger.debug(log_msg)
+            self.logger.info("Invoking Release on MCCS master")
+
             try:
-                device._mccs_master_proxy.command_inout_asynch(const.CMD_Release,
-                                                             self.releaseresources_cmd_ended_cb)
+                device._mccs_master_proxy.command_inout_asynch(const.CMD_Release, argin,
+                                                        self.releaseresources_cmd_ended_cb)
                 device._read_activity_message = const.STR_REMOVE_ALL_RECEPTORS_SUCCESS
                 self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
+            except ValueError as value_error:
+                log_msg = const.ERR_INVALID_JSON_RELEASE_RES_MCCS + str(value_error)
+                device._read_activity_message = const.ERR_INVALID_JSON_RELEASE_RES_MCCS + str(value_error)
+                self.logger.exception(value_error)
+                tango.Except.re_throw_exception(value_error, const.STR_RELEASE_RES_EXEC, log_msg,
+                                             "MccsMasterLeafNode.ReleaseResourcesCommand",
+                                             tango.ErrSeverity.ERR)
+            
             except DevFailed as dev_failed:
                 log_msg = const.ERR_RELEASE_ALL_RESOURCES + str(dev_failed)
                 device._read_activity_message = log_msg
@@ -384,12 +403,13 @@ class MccsMasterLeafNode(SKABaseDevice):
                                              "MccsMasterLeafNode.ReleaseAllResourcesCommand",
                                              tango.ErrSeverity.ERR)
     @command(
+        dtype_in='str',
     )
     @DebugIt()
-    def ReleaseResources(self):
+    def ReleaseResources(self, argin):
         """ Invokes ReleaseResources command on MccsMasterLeafNode"""
         handler = self.get_command_object("ReleaseResources")
-        handler()
+        handler(argin)
 
     def is_ReleaseResources_allowed(self):
         """
@@ -535,15 +555,7 @@ class MccsMasterLeafNode(SKABaseDevice):
                                              "MccsMasterLeafNode.Off",
                                              tango.ErrSeverity.ERR)
 
-    #TODO : Commented out for now to resolve pylint warnings    
-    # def init_command_objects(self):
-    #     """
-    #     Initialises the command handlers for commands supported by this
-    #     device.
-    #     """
-    #     super().init_command_objects()
-    #     args = (self, self.state_model, self.logger)
-        
+            
 
     def init_command_objects(self):
         """
@@ -554,8 +566,6 @@ class MccsMasterLeafNode(SKABaseDevice):
         args = (self, self.state_model, self.logger)
         self.register_command_object("AssignResources", self.AssignResourcesCommand(*args))
         self.register_command_object("ReleaseResources", self.ReleaseResourcesCommand(*args))
-
-
 # ----------
 # Run server
 # ----------

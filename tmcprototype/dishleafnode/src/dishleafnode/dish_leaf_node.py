@@ -56,13 +56,11 @@ class CommandCallBack:
             execution.
         :type: CmdDoneEvent object
                 It has the following members:
-                - device     : (DeviceProxy) The DeviceProxy object on which the
-                                call was executed.
+                - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
                 - cmd_name   : (str) The command name
                 - argout_raw : (DeviceData) The command argout
                 - argout     : The command argout
-                - err        : (bool) A boolean flag set to true if the command
-                                failed. False otherwise
+                - err        : (bool) A boolean flag set to true if the command failed. False otherwise
                 - errors     : (sequence<DevError>) The error stack
                 - ext
         :return: none
@@ -77,7 +75,7 @@ class CommandCallBack:
             self.logger.info(log_msg)
             self.device._read_activity_message = log_msg
 
-# pylint: disable=unused-variable
+# pylint: disable=unused-variable, logging-fstring-interpolation
 class DishLeafNode(SKABaseDevice):
     """
     A Leaf control node for DishMaster.
@@ -208,7 +206,7 @@ class DishLeafNode(SKABaseDevice):
         :return: None.
         """
         self.logger.info(f"print track_thread thread name:{threading.currentThread().getName()}"
-                         f"{threading.get_ident()}")
+                        f"{threading.get_ident()}")
         while self.event_track_time.is_set() is False:
             timestamp_value = str(datetime.datetime.utcnow())
             katpoint_arg = []
@@ -1680,6 +1678,7 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("ObsReset")
         return handler.check_allowed()
 
+# pylint: enable=unused-variable, logging-fstring-interpolation
 
 # ----------
 # Run server

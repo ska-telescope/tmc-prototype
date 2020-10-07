@@ -563,6 +563,7 @@ def test_telescope_health_state_matches_csp_master_leaf_node_health_state_after_
         # assert:
         assert tango_context.device.telescopeHealthState == csp_master_ln_health_state
 
+
 def test_telescope_health_state_is_ok_when_sdp_master_leaf_node_is_ok_after_start():
     # arrange:
     sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'

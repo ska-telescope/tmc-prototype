@@ -226,6 +226,7 @@ def test_end_scan_command_with_callback_method_with_event_error(mock_sdp_subarra
     event_subscription_without_arg[const.CMD_ENDSCAN](dummy_event)
     assert const.ERR_INVOKING_CMD + const.CMD_ENDSCAN in device_proxy.activityMessage
 
+
 def test_configure_command_with_callback_method_with_event_error(mock_sdp_subarray,event_subscription_with_arg):
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.obsState = ObsState.SCANNING
@@ -293,6 +294,7 @@ def raise_devfailed_exception_with_arg(cmd_name, input_str):
 def raise_devfailed_exception_with_args(cmd_name, input_str, callback):
     tango.Except.throw_exception("SdpSubarrayLeafNode_Commandfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
+
 
 def test_start_scan_should_command_sdp_subarray_to_start_scan_when_it_is_ready(mock_sdp_subarray):
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray

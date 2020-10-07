@@ -6,6 +6,7 @@ CMD_OFF = "Off"
 #Error messages
 ERR_IN_CREATE_PROXY = "Error in creating proxy of the device "
 ERR_INVALID_JSON_ASSIGN_RES_MCCS = "Invalid JSON format while invoking Allocate command on MccsMaster."
+ERR_INVALID_JSON_RELEASE_RES_MCCS = "Invalid JSON format while invoking Release command on MccsMaster."
 ERR_RELEASE_ALL_RESOURCES = "Error while invoking ReleaseAllResources command on MccsMaster"
 ERR_ASSGN_RESOURCE_MCCS = "Error occurred while assigning resource to the Mccs Master \n"
 ERR_INVOKING_CMD = "Error in invoking command: "
@@ -32,4 +33,8 @@ STR_ON_CMD_ISSUED = "ON command invoked successfully from MCCS Master leaf node.
 STR_OFF_CMD_ISSUED = "OFF command invoked successfully from MCCS Master leaf node."
 STR_ON_EXEC = "On command execution"
 STR_OFF_EXEC = "Off command execution"
+
+#PROPERTIES DEFAULT VALUES
+
+#INTEGERS
 

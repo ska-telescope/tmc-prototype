@@ -97,6 +97,7 @@ def test_disable_should_command_sdp_master_leaf_node_to_disable_devfailed(mock_s
     # assert:
     assert "Failed to invoke Disable command on SdpMasterLeafNode." in str(df)
 
+
 def test_on_should_command_with_callback_method(mock_sdp_master, event_subscription):
     # arrange:
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
@@ -106,6 +107,7 @@ def test_on_should_command_with_callback_method(mock_sdp_master, event_subscript
     event_subscription[const.CMD_ON](dummy_event)
     # assert:
     assert const.STR_COMMAND + const.CMD_ON in device_proxy.activityMessage
+
 
 def test_off_should_command_with_callback_method(mock_sdp_master, event_subscription):
     # arrange:
@@ -117,6 +119,7 @@ def test_off_should_command_with_callback_method(mock_sdp_master, event_subscrip
     event_subscription[const.CMD_OFF](dummy_event)
     # assert:
     assert const.STR_COMMAND + const.CMD_OFF in device_proxy.activityMessage
+
 
 def test_disable_should_command_with_callback_method(mock_sdp_master, event_subscription):
     # arrange:

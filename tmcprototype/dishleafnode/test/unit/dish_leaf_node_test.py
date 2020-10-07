@@ -154,6 +154,7 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle(mock_dis
                                                              any_method(with_name='cmd_ended_cb'))
 
 
+
 @pytest.mark.xfail
 def test_track_should_command_dish_to_start_tracking(mock_dish_master):
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
@@ -468,6 +469,7 @@ def test_activity_message():
     with fake_tango_system(DishLeafNode) as tango_context:
         tango_context.device.activityMessage = const.STR_OK
         assert tango_context.device.activityMessage == const.STR_OK
+
 
 def test_status():
     with fake_tango_system(DishLeafNode) as tango_context:
