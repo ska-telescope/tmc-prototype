@@ -162,6 +162,26 @@ def test_command_with_callback_method_with_event_error(mock_mccs_subarray,event_
     assert const.ERR_INVOKING_CMD + requested_cmd in device_proxy.activityMessage
 
 
+@pytest.fixture(
+    scope="function",
+    params=[
+        ("Configure", const.CMD_CONFIGURE, ObsState.IDLE),
+        ("Scan", const.CMD_SCAN, ObsState.READY)
+    ])
+def command_event_error_with_arg(request):
+    cmd_name, requested_cmd, ObsState = request.param
+    return cmd_name, requested_cmd, ObsState
+
+
+def test_command_with_callback_method_with_event_error_with_arg(mock_mccs_subarray,event_subscription_with_arg, command_event_error_with_arg):
+    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+    cmd_name, requested_cmd, ObsState = command_event_error_with_arg
+    mccs_subarray1_proxy_mock.obsState = ObsState
+    device_proxy.command_inout(cmd_name)
+    dummy_event = command_callback_with_event_error(requested_cmd)
+    event_subscription_with_arg[requested_cmd](dummy_event)
+    assert const.ERR_INVOKING_CMD + requested_cmd in device_proxy.activityMessage
+
 
 # def test_configure_command_with_callback_method_with_event_error(mock_mccs_subarray, event_subscription ):
 #     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
