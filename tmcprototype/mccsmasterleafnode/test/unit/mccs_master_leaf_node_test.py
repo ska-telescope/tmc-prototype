@@ -128,18 +128,6 @@ def test_assign_command_with_callback_method_with_devfailed_error(mock_mccs_mast
         event_subscription[const.CMD_ALLOCATE](dummy_event)
     assert const.ERR_CALLBACK_CMD_FAILED in str(df.value)
 
-def test_allocate_ended_should_raise_dev_failed_exception_for_invalid_obs_state(mock_mccs_master, event_subscription):
-    mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
-    mccs_master_proxy_mock.obsState = ObsState.READY
-    with pytest.raises(tango.DevFailed) as df:
-        device_proxy.AssignResources(json.dumps(assign_input_file))
-    assert const.ERR_RAISED_EXCEPTION in str(df.value)
-
-def test_assign_resource_should_raise_exception_when_key_not_found():
-    with fake_tango_system(MccsMasterLeafNode) as tango_context:
-        with pytest.raises(tango.DevFailed) as df:
-            tango_context.device.AssignResources(assign_invalid_key)
-        assert const.ERR_RAISED_EXCEPTION in str(df)
         
 def test_release_resource_should_command_mccs_master_to_release_all_resources(mock_mccs_master):
     mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
