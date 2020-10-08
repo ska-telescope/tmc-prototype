@@ -1054,8 +1054,8 @@ def test_subarray_health_state_with_error_event(mock_lower_devices):
 @pytest.mark.parametrize(
     "device_fqdn, attribute_name",
     [
-        ("ska_mid/tm_leaf_node/csp_subarray01", cspsubarrayHealthState),
-        ("ska_mid/tm_leaf_node/sdp_subarray01", sdpSubarrayHealthState),
+        ("ska_mid/tm_leaf_node/csp_subarray01", 'cspsubarrayHealthState'),
+        ("ska_mid/tm_leaf_node/sdp_subarray01", 'sdpSubarrayHealthState'),
     ]
 )
 
