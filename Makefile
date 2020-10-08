@@ -32,9 +32,6 @@ IMAGE_TO_TEST = $(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/$(PROJECT):lates
 #
 CACHE_VOLUME = $(PROJECT)-test-cache
 
-# optional docker run-time arguments
-DOCKER_RUN_ARGS =
-
 #
 # Never use the network=host mode when running CI jobs, and add extra
 # distinguishing identifiers to the network name and container names to
@@ -106,47 +103,17 @@ endif
 #   3. uses a transient volume as a working directory, in which untarred files
 #      and test output can be written in the container and subsequently copied
 #      to the host
-#
-make = tar -c test-harness/ | \
-	   docker run -i --rm --network=$(NETWORK_MODE) \
-	   -e TANGO_HOST=$(TANGO_HOST) \
-	   -v $(CACHE_VOLUME):/home/tango/.cache \
-	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
-	   bash -c "sudo chown -R tango:tango /build && \
-	   tar x --strip-components 1 --warning=all && \
-	   make TANGO_HOST=$(TANGO_HOST) $1"
 
-#Report folder/volume is used in docker to save the code coverage report using unit-test job. The report folder is then copied to unit_test_reports folder.
-unit-test: DOCKER_RUN_ARGS = --volumes-from=$(REPORT)
-unit-test: build
-	$(INIT_CACHE)
-	mkdir -p unit_test_reports
-	chmod 777 unit_test_reports
-	docker run -i --rm \
-	   -e TANGO_HOST=$(TANGO_HOST) \
-	   -v $(CACHE_VOLUME):/home/tango/.cache \
-	   -v unit_test_reports:/unit_test_reports \
-	   -v /build -w /build -u tango $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
-	bash -c "cd /app/tmcprototype && \
-	sudo chown -R tango:tango /report && \
-	./run_unit_test.sh"
-	docker cp $(REPORT):/report ./unit_test_reports
-	docker rm -f -v $(REPORT)
+unit-test:
+	cd tmcprototype; \
+	chmod 755 run_tox.sh; \
+	./run_tox.sh;
 
-#Make lint job is perfomred. After lint, the coverage reports from unit-test job are copied into build folder and unit_test_reports folder is removed. All the coverage reports using run test as well as unit-test are saved into build folder.
-lint: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
-lint: build  ##lint the application (static code analysis)
-ifneq ($(NETWORK_MODE),host)
-	docker network inspect $(NETWORK_MODE) &> /dev/null || ([ $$? -ne 0 ] && docker network create $(NETWORK_MODE))
-endif
-	$(INIT_CACHE)
-	$(call make,lint); \
-	status=$$?; \
-	docker cp $(BUILD):/build .; \
-	cp ./unit_test_reports/report/code-coverage.xml ./build/reports
-	cp ./unit_test_reports/report/unit-tests.xml ./build/reports
-	cp -r ./unit_test_reports/report/unit_test ./build
-	exit $$status
+lint:
+	cd tmcprototype; \
+	chmod 755 run_lint.sh; \
+	./run_lint.sh;
+
 
 pull:  ## download the application image
 	docker pull $(IMAGE_TO_TEST)

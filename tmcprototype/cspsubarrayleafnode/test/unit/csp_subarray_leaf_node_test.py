@@ -110,6 +110,7 @@ def test_configure_command_when_obstate_is_ready_with_callback_method(mock_csp_s
     event_subscription[const.CMD_CONFIGURE](dummy_event)
     assert const.STR_COMMAND + const.CMD_CONFIGURE in device_proxy.activityMessage
 
+
 def test_startscan_command_with_callback_method(mock_csp_subarray, event_subscription):
     # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
@@ -168,6 +169,7 @@ def test_restart_command_with_callback_method(mock_csp_subarray, event_subscript
     dummy_event = command_callback(const.CMD_RESTART)
     event_subscription_without_arg[const.CMD_RESTART](dummy_event)
     assert const.STR_COMMAND + const.CMD_RESTART in device_proxy.activityMessage
+
 
 
 def test_obsreset_command_with_callback_method(mock_csp_subarray,event_subscription_without_arg):
@@ -382,6 +384,7 @@ def test_end_scan_should_command_csp_subarray_to_end_scan_when_it_is_scanning(mo
     device_proxy.EndScan()
     csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with (const.CMD_ENDSCAN, any_method(with_name='endscan_cmd_ended_cb'))
     assert_activity_message(device_proxy, const.STR_ENDSCAN_SUCCESS)
+
 
 def test_end_scan_should_not_command_csp_subarray_to_end_scan_when_it_is_not_scanning(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
@@ -727,6 +730,7 @@ def test_logging_targets():
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
+
 
 def test_version_id():
     """Test for versionId"""

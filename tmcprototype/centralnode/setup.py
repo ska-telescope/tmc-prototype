@@ -53,6 +53,7 @@ setup(name=name,
           'pytest-json-report',
           'pycodestyle',
           'pytest-forked',
+          'numpy',
       ],
       extras_require={
           'dev': ['prospector[with_pyroma]', 'yapf', 'isort']
