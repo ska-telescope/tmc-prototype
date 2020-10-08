@@ -62,7 +62,7 @@ def test_command_should_be_relayed_to_sdp_master(mock_sdp_master, command_withou
     
     device_proxy.command_inout(cmd_name)
 
-    callback_name = f"{reqeusted_command.lower()}_cmd_ended_cb"
+    callback_name = reqeusted_command.lower() + "_cmd_ended_cb"
     sdp_master_proxy_mock.command_inout_asynch.assert_called_with(requested_cmd,
                                                            any_method(with_name= callback_name))
 
