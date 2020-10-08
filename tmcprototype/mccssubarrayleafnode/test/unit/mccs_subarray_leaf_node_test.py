@@ -218,9 +218,7 @@ def test_command_with_callback_method_with_event_error_with_arg(mock_mccs_subarr
     params=[
         ("Configure", configure_str,  ObsState.IDLE, const.ERR_DEVFAILED_MSG),
         ("Scan", scan_input_str,  ObsState.READY, const.ERR_DEVFAILED_MSG),
-        # ("Scan", scan_input_str,  ObsState.READY, const.STR_SCAN_SUCCESS),
-        ("Configure", configure_str,  ObsState.EMPTY, "Unable to invoke Configure command"),
-        ("Scan", scan_input_str,  ObsState.IDLE, const.ERR_DEVICE_NOT_READY)
+        ("Scan", scan_input_str,  ObsState.READY, const.STR_SCAN_SUCCESS)
         
     ])
 def command_with_arg_incorrect_obstate_raise_devfailed(request):
@@ -238,20 +236,34 @@ def test_command_with_arg_to_raise_devfailed_exception(mock_mccs_subarray,comman
     assert error_msg in str(df.value)
 
 
-def test_command_incorrect_obsstate_with_arg(mock_mccs_subarray, command_with_arg_incorrect_obstate_raise_devfailed):
+def test_command_correct_obsstate(mock_mccs_subarray, command_with_arg_incorrect_obstate_raise_devfailed):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     cmd_name, cmd_arg, ObsState , error_msg = command_with_arg_incorrect_obstate_raise_devfailed
+    mccs_subarray1_proxy_mock.obsState = ObsState
+    device_proxy.command_inout(cmd_name, cmd_arg)
+    assert const.STR_SCAN_SUCCESS in device_proxy.activityMessage
+
+
+@pytest.fixture(
+    scope="function",
+    params=[
+        ("Configure", configure_str,  ObsState.EMPTY, "Unable to invoke Configure command"),
+        ("Scan", scan_input_str,  ObsState.IDLE, const.ERR_DEVICE_NOT_READY)
+        
+    ])
+def command_with_arg_incorrect_obstate(request):
+    cmd_name, cmd_arg, ObsState , error_msg = request.param
+    return cmd_name, cmd_arg, ObsState, error_msg
+
+
+def test_command_incorrect_obsstate_with_arg(mock_mccs_subarray, command_with_arg_incorrect_obstate):
+    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+    cmd_name, cmd_arg, ObsState , error_msg = command_with_arg_incorrect_obstate
     mccs_subarray1_proxy_mock.obsState = ObsState
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name,cmd_arg)
     assert error_msg in str(df)
 
-# def test_command_correct_obsstate(mock_mccs_subarray, command_with_arg_incorrect_obstate_raise_devfailed):
-#     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
-#     cmd_name, cmd_arg, ObsState , error_msg = command_with_arg_incorrect_obstate_raise_devfailed
-#     mccs_subarray1_proxy_mock.obsState = ObsState
-#     device_proxy.command_inout(cmd_name, cmd_arg)
-#     assert const.STR_SCAN_SUCCESS in device_proxy.activityMessage
 
 
 @pytest.fixture(
