@@ -62,17 +62,16 @@ def test_command_should_be_relayed_to_sdp_master(mock_sdp_master, command_withou
     
     device_proxy.command_inout(cmd_name)
 
-    callback_name = f"{requested_command.lower()}_cmd_ended_cb"
+    callback_name = f"{requested_cmd.lower()}_cmd_ended_cb"
     sdp_master_proxy_mock.command_inout_asynch.assert_called_with(requested_cmd,
                                                            any_method(with_name= callback_name))
 
 def test_off_should_command_sdp_master_leaf_node_to_stop(mock_sdp_master):
-    # arrange:
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
     device_proxy.On()
-    # act:
+
     device_proxy.Off()
-    # assert:
+
     assert const.STR_OFF_CMD_SUCCESS in device_proxy.activityMessage
     sdp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF,
                                                                any_method(with_name='off_cmd_ended_cb'))
@@ -101,14 +100,13 @@ def test_command_should_command_with_callback_method(mock_sdp_master, event_subs
 
 
 def test_off_should_command_with_callback_method(mock_sdp_master, event_subscription):
-    # arrange:
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
     device_proxy.On()
-    # act:
+    
     device_proxy.Off()
     dummy_event = command_callback(const.CMD_OFF)
     event_subscription[const.CMD_OFF](dummy_event)
-    # assert:
+    
     assert const.STR_COMMAND + const.CMD_OFF in device_proxy.activityMessage
 
 
@@ -125,14 +123,13 @@ def test_command_with_callback_method_with_event_error(mock_sdp_master, event_su
 
 
 def test_off_should_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription):
-    # arrange:
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
     device_proxy.On()
-    # act:
+    
     device_proxy.Off()
     dummy_event = command_callback_with_event_error(const.CMD_OFF)
     event_subscription[const.CMD_OFF](dummy_event)
-    # assert:
+   
     assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
 
 
