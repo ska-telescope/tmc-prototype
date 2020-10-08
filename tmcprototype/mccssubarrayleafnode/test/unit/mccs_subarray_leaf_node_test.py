@@ -101,6 +101,7 @@ def test_command_with_arg_in_allowed_obsstate_with_callback_method(mock_mccs_sub
     dummy_event = command_callback(requested_cmd)
     event_subscription[requested_cmd](dummy_event)
     assert const.STR_COMMAND + requested_cmd in device_proxy.activityMessage
+    
 
 def test_command_without_arg_in_allowed_obsstate_with_callback_method(mock_mccs_subarray, event_subscription_without_arg,command_without_arg):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
