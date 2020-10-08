@@ -303,12 +303,31 @@ help:  ## show this help.
 # 		n=`expr $$n - 1`; \
 # 	done
 
+traefik: ## install the helm chart for traefik (in the kube-system namespace). @param: EXTERNAL_IP (i.e. private ip of the master node).
+	@TMP=`mktemp -d`; \
+	$(helm_add_stable_repo) && \
+	helm fetch stable/traefik --untar --untardir $$TMP && \
+	helm template $(helm_install_shim) $$TMP/traefik -n traefik0 --namespace kube-system \
+		--set externalIP="$(EXTERNAL_IP)" \
+		| kubectl apply -n kube-system -f - && \
+		rm -rf $$TMP ; \
+
+
+delete_traefik: ## delete the helm chart for traefik. @param: EXTERNAL_IP
+	@TMP=`mktemp -d`; \
+	$(helm_add_stable_repo) && \
+	helm fetch stable/traefik --untar --untardir $$TMP && \
+	helm template $(helm_install_shim) $$TMP/traefik -n traefik0 --namespace kube-system \
+		--set externalIP="$(EXTERNAL_IP)" \
+		| kubectl delete -n kube-system -f - && \
+		rm -rf $$TMP
+
 #this is so that you can load dashboards previously saved, TODO: make the name of the pod variable
 dump_dashboards: # @param: name of the dashborad
-	kubectl exec -i pod/mongodb-webjive-test-0 -n $(KUBE_NAMESPACE) -- mongodump --archive > dashboards/$(DASHBOARD)
+	kubectl exec -i pod/mongodb-webjive-test-0 -n $(KUBE_NAMESPACE) -- mongodump --archive > $(DASHBOARD)
 
 load_dashboards: # @param: name of the dashborad
-	kubectl exec -i pod/mongodb-webjive-test-0 -n $(KUBE_NAMESPACE) -- mongorestore --archive < dashboards/$(DASHBOARD)
+	kubectl exec -i pod/mongodb-webjive-test-0 -n $(KUBE_NAMESPACE) -- mongorestore --archive < $(DASHBOARD)
 
 # How to test unit-test cases
 unit-test:

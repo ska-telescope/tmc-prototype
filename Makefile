@@ -17,7 +17,7 @@ PROJECT = tmcprototype
 # using Helm.  If this does not already exist it will be created
 KUBE_NAMESPACE ?= tmcprototype
 KUBE_NAMESPACE_SDP ?= $(KUBE_NAMESPACE)-sdp#namespace to be used
-DASHBOARD ?= webjive-dash.dump
+DASHBOARD ?= dashboards/webjive-dash.dump
 
 # HELM_RELEASE is the release that all Kubernetes resources will be labelled
 # with
