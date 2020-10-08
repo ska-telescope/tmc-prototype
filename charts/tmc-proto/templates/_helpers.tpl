@@ -2,15 +2,15 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "tmc-mid.name" }}
+{{- define "tmc-proto.name" }}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end }}
 {{/*
 Common labels
 */}}
-{{- define "tmc-mid.labels" }}
-app: {{ template "tmc-mid.name" . }}
-chart: {{ template "tmc-mid.chart" . }}
+{{- define "tmc-proto.labels" }}
+app: {{ template "tmc-proto.name" . }}
+chart: {{ template "tmc-proto.chart" . }}
 release: {{ .Release.Name }}
 heritage: {{ .Release.Service }}
 system: {{ .Values.system }}
@@ -21,7 +21,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "tmc-mid.fullname" -}}
+{{- define "tmc-proto.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -37,6 +37,6 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "tmc-mid.chart" -}}
+{{- define "tmc-proto.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
