@@ -209,9 +209,9 @@ def test_off_should_command_with_callback_method_with_event_error(mock_mccs_mast
 def test_off_should_raise_devfailed_exception(mock_mccs_master):
     mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
     mccs_master_proxy_mock.obsState = ObsState.EMPTY
+    device_proxy.On()
     mccs_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
-        device_proxy.On()
         device_proxy.Off()
     assert const.ERR_DEVFAILED_MSG in str(df.value)
 
