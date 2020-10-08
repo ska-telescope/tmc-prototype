@@ -291,13 +291,13 @@ def test_command_without_arg_to_raise_devfailed_exception(mock_mccs_subarray,com
         ("End", ObsState.READY, const.ERR_DEVICE_NOT_READY),
         ("Endscan", ObsState.IDLE, const.ERR_DEVICE_NOT_SCANNING)
     ])
-def command_without_arg_incorrect_obstate_raise_devfailed(request):
+def command_without_arg_raise_devfailed(request):
     cmd_name, ObsState , error_msg = request.param
     return cmd_name, ObsState, error_msg
 
-def test_command_incorrect_obsstate_without_arg(mock_mccs_subarray, command_without_arg_incorrect_obstate_raise_devfailed):
+def test_command_incorrect_obsstate_without_arg(mock_mccs_subarray, command_without_arg_raise_devfailed):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
-    cmd_name, ObsState , error_msg = command_without_arg_incorrect_obstate_raise_devfailed
+    cmd_name, ObsState , error_msg = command_without_arg_raise_devfailed
     mccs_subarray1_proxy_mock.obsState = ObsState
     mccs_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_with_arg
     with pytest.raises(tango.DevFailed) as df:
