@@ -1,0 +1,15 @@
+pytest
+pytest-cov
+pytest-json-report
+pytest-mock
+pytest-xdist == 1.34.0
+coverage
+pylint
+pylint2junit
+junitparser
+flake8
+flake8_formatter_junit_xml
+flake8-rst-docstrings
+docstr-coverage
+darglint
+mock

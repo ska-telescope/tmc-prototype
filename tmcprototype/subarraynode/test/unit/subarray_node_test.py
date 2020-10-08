@@ -227,6 +227,7 @@ def test_activation_time():
     with fake_tango_system(SubarrayNode) as tango_context:
         assert tango_context.device.activationTime == 0.0
 
+
 def test_version_id():
     """Test for versionId"""
     with fake_tango_system(SubarrayNode) as tango_context:
@@ -1688,7 +1689,6 @@ def create_dummy_event_custom_exception(proxy_mock, device_fqdn, attribute, attr
     fake_event.attr_value = "Subarray is not in IDLE obsState, please check the subarray obsState"
     fake_event.device = proxy_mock
     return fake_event
-
 
 
 def create_dummy_event_sdp_receiceAddresses(proxy_mock, device_fqdn, attribute, attr_value):
