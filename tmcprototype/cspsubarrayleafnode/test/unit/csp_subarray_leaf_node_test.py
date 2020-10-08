@@ -86,14 +86,14 @@ def mock_csp_subarray():
         ("AssignResources", assign_input_str, const.CMD_ADD_RECEPTORS, ObsState.EMPTY),
     ])
 def command_with_arg(request):
-    cmd_name, input_arg, requested_cmd, ObsState = request.param
-    return cmd_name, input_arg, requested_cmd, ObsState
+    cmd_name, input_arg, requested_cmd, obs_state = request.param
+    return cmd_name, input_arg, requested_cmd, obs_state
 
 
 def test_command_cb_is_invoked_when_command_with_arg_is_called_async(mock_csp_subarray, event_subscription, command_with_arg):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
-    cmd_name, input_arg, requested_cmd, ObsState = command_with_arg
-    csp_subarray1_proxy_mock.obsState = ObsState
+    cmd_name, input_arg, requested_cmd, obs_state = command_with_arg
+    csp_subarray1_proxy_mock.obsState = obs_state
     device_proxy.command_inout(cmd_name, input_arg)
     dummy_event = command_callback(requested_cmd)
     event_subscription[requested_cmd](dummy_event)
@@ -111,14 +111,14 @@ def test_command_cb_is_invoked_when_command_with_arg_is_called_async(mock_csp_su
         ("ObsReset", const.CMD_OBSRESET, ObsState.ABORTED),
     ])
 def command_without_arg(request):
-    cmd_name, requested_cmd, ObsState = request.param
-    return cmd_name, requested_cmd, ObsState
+    cmd_name, requested_cmd, obs_state = request.param
+    return cmd_name, requested_cmd, obs_state
 
 
 def test_command_cb_is_invoked_when_command_without_arg_is_called_async(mock_csp_subarray, event_subscription_without_arg, command_without_arg):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
-    cmd_name, requested_cmd, ObsState = command_without_arg
-    csp_subarray1_proxy_mock.obsState = ObsState
+    cmd_name, requested_cmd, obs_state = command_without_arg
+    csp_subarray1_proxy_mock.obsState = obs_state
     device_proxy.command_inout(cmd_name)
     dummy_event = command_callback(requested_cmd)
     event_subscription_without_arg[requested_cmd](dummy_event)
@@ -134,14 +134,14 @@ def test_command_cb_is_invoked_when_command_without_arg_is_called_async(mock_csp
         ("AssignResources", assign_input_str, const.CMD_ADD_RECEPTORS, ObsState.EMPTY),
     ])
 def command_with_event_error(request):
-    cmd_name, input_str, requested_cmd, ObsState = request.param
-    return cmd_name, input_str, requested_cmd, ObsState
+    cmd_name, input_str, requested_cmd, obs_state = request.param
+    return cmd_name, input_str, requested_cmd, obs_state
 
 
 def test_command_cb_is_invoked_when_command_with_event_error_is_called_async(mock_csp_subarray, event_subscription, command_with_event_error):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
-    cmd_name, input_str, requested_cmd, ObsState = command_with_event_error
-    csp_subarray1_proxy_mock.obsState = ObsState
+    cmd_name, input_str, requested_cmd, obs_state = command_with_event_error
+    csp_subarray1_proxy_mock.obsState = obs_state
     device_proxy.command_inout(cmd_name, input_str)
     dummy_event = command_callback_with_event_error(requested_cmd)
     event_subscription[requested_cmd](dummy_event)
@@ -159,14 +159,14 @@ def test_command_cb_is_invoked_when_command_with_event_error_is_called_async(moc
         ("ObsReset", const.CMD_OBSRESET, ObsState.ABORTED),
     ])
 def command_with_event_error_without_arg(request):
-    cmd_name, requested_cmd, ObsState = request.param
-    return cmd_name, requested_cmd, ObsState
+    cmd_name, requested_cmd, obs_state = request.param
+    return cmd_name, requested_cmd, obs_state
 
 
 def test_command_cb_is_invoked_when_command_with_event_error_without_arg_is_called_async(mock_csp_subarray, event_subscription_without_arg, command_with_event_error_without_arg):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
-    cmd_name, requested_cmd, ObsState = command_with_event_error_without_arg
-    csp_subarray1_proxy_mock.obsState = ObsState
+    cmd_name, requested_cmd, obs_state = command_with_event_error_without_arg
+    csp_subarray1_proxy_mock.obsState = obs_state
     device_proxy.command_inout(cmd_name)
     dummy_event = command_callback_with_event_error(requested_cmd)
     event_subscription_without_arg[requested_cmd](dummy_event)
@@ -181,14 +181,14 @@ def test_command_cb_is_invoked_when_command_with_event_error_without_arg_is_call
         ("AssignResources", assign_input_str, const.CMD_ADD_RECEPTORS, ObsState.EMPTY, const.ERR_DEVFAILED_MSG),
     ])
 def command_with_devfailed(request):
-    cmd_name, input_str, requested_cmd, ObsState, error_msg = request.param
-    return cmd_name, input_str, requested_cmd, ObsState, error_msg
+    cmd_name, input_str, requested_cmd, obs_state, error_msg = request.param
+    return cmd_name, input_str, requested_cmd, obs_state, error_msg
 
 
 def test_command_devfailed(mock_csp_subarray, event_subscription, command_with_devfailed):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
-    cmd_name, input_str, requested_cmd, ObsState, error_msg = command_with_devfailed
-    csp_subarray1_proxy_mock.obsState = ObsState
+    cmd_name, input_str, requested_cmd, obs_state, error_msg = command_with_devfailed
+    csp_subarray1_proxy_mock.obsState = obs_state
     csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_with_arg
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name, input_str)
@@ -206,14 +206,14 @@ def test_command_devfailed(mock_csp_subarray, event_subscription, command_with_d
         ("ObsReset", const.CMD_OBSRESET, ObsState.ABORTED, const.ERR_OBSRESET_INVOKING_CMD),
     ])
 def command_input_void_with_devfailed(request):
-    cmd_name, requested_cmd, ObsState, error_msg = request.param
-    return cmd_name, requested_cmd, ObsState, error_msg
+    cmd_name, requested_cmd, obs_state, error_msg = request.param
+    return cmd_name, requested_cmd, obs_state, error_msg
 
 
 def test_command_input_void_devfailed(mock_csp_subarray, event_subscription, command_input_void_with_devfailed):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
-    cmd_name, requested_cmd, ObsState, error_msg = command_input_void_with_devfailed
-    csp_subarray1_proxy_mock.obsState = ObsState
+    cmd_name, requested_cmd, obs_state, error_msg = command_input_void_with_devfailed
+    csp_subarray1_proxy_mock.obsState = obs_state
     csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name)
@@ -236,14 +236,14 @@ def test_command_input_void_devfailed(mock_csp_subarray, event_subscription, com
         ("ObsReset", const.CMD_OBSRESET, ObsState.FAULT, "obsreset_cmd_ended_cb", const.STR_OBSRESET_SUCCESS),
     ])
 def command_with_correct_obsstate(request):
-    cmd_name, requested_cmd, ObsState, cmd_callback, activity_msg = request.param
-    return cmd_name, requested_cmd, ObsState, cmd_callback, activity_msg
+    cmd_name, requested_cmd, obs_state, cmd_callback, activity_msg = request.param
+    return cmd_name, requested_cmd, obs_state, cmd_callback, activity_msg
 
 
 def test_command_correct_obsstate(mock_csp_subarray, command_with_correct_obsstate):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
-    cmd_name, requested_cmd, ObsState, cmd_callback, activity_msg = command_with_correct_obsstate
-    csp_subarray1_proxy_mock.obsState = ObsState
+    cmd_name, requested_cmd, obs_state, cmd_callback, activity_msg = command_with_correct_obsstate
+    csp_subarray1_proxy_mock.obsState = obs_state
     device_proxy.command_inout(cmd_name)
     csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with (requested_cmd, any_method(with_name=cmd_callback))
     assert_activity_message(device_proxy, activity_msg)
@@ -270,14 +270,14 @@ def test_command_correct_obsstate(mock_csp_subarray, command_with_correct_obssta
         ("ObsReset", const.CMD_OBSRESET, ObsState.READY, "Unable to invoke ObsReset command"),
     ])
 def command_with_incorrect_obsstate(request):
-    cmd_name, requested_cmd, ObsState, activity_msg = request.param
-    return cmd_name, requested_cmd, ObsState, activity_msg
+    cmd_name, requested_cmd, obs_state, activity_msg = request.param
+    return cmd_name, requested_cmd, obs_state, activity_msg
 
 
 def test_command_incorrect_obsstate(mock_csp_subarray, command_with_incorrect_obsstate):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
-    cmd_name, requested_cmd, ObsState, activity_msg = command_with_incorrect_obsstate
-    csp_subarray1_proxy_mock.obsState = ObsState
+    cmd_name, requested_cmd, obs_state, activity_msg = command_with_incorrect_obsstate
+    csp_subarray1_proxy_mock.obsState = obs_state
     device_proxy.command_inout(cmd_name)
     assert activity_msg in device_proxy.activityMessage
 
