@@ -16,11 +16,10 @@ from tango import DeviceProxy, ApiUtil, DebugIt, DevState, AttrWriteType, DevFai
 from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode, BaseCommand
-from ska.base.control_model import HealthState, SimulationMode, TestMode, ObsState
+from ska.base.control_model import HealthState, SimulationMode, TestMode
 
 # Additional import
 from . import const, release
-from .exceptions import InvalidObsStateError
 
 # PROTECTED REGION END #    //  MccsMasterLeafNode imports
 
