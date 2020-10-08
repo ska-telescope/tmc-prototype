@@ -5,7 +5,7 @@
 display: ":0"
 xauthority: "~/.Xauthority"
 
-system: TM-low
+system: TMC-low
 telescope: SKA-low
 
 tmcprototype:
@@ -15,14 +15,6 @@ tmcprototype:
     image: tmcprototype
     tag: 0.2.12-dirty
     pullPolicy: IfNotPresent
-
-tmalarmhandler:
-  enabled: true
-  image:
-    registry: nexus.engageska-portugal.pt/tango-example
-    image: tmalarmhandler
-    tag: latest
-    pullPolicy: Always
 
 dsconfig:
   image:
