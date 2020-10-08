@@ -71,6 +71,26 @@ def mock_mccs_subarray():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         yield tango_context.device, mccs_subarray1_proxy_mock
 
+@pytest.fixture(
+    scope="function",
+    params=[
+        ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.IDLE),
+        ("Scan", scan_input_str, const.CMD_SCAN, ObsState.READY)
+    ])
+def command_with_arg(request):
+    cmd_name, cmd_arg, requested_cmd, ObsState = request.param
+    return cmd_name, cmd_arg, requested_cmd, ObsState
+
+@pytest.fixture(
+    scope="function",
+    params=[
+        ("End", const.CMD_END, ObsState.READY),
+        ("EndScan", const.CMD_ENDSCAN, ObsState.SCANNING)
+    ])
+def command_without_arg(request):
+    cmd_name, requested_cmd, ObsState = request.param
+    return cmd_name, requested_cmd, ObsState
+
 
 def test_command_with_arg_in_allowed_obsstate_with_callback_method(mock_mccs_subarray, event_subscription,command_with_arg):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
@@ -94,6 +114,15 @@ def test_command_without_arg_in_allowed_obsstate_with_callback_method(mock_mccs_
 # def test_configure_command_when_obstate_is_idle_with_callback_method(mock_mccs_subarray, event_subscription):
 #     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
 #     mccs_subarray1_proxy_mock.obsState = ObsState.IDLE
+#     device_proxy.Configure(configure_str)
+#     dummy_event = command_callback(const.CMD_CONFIGURE)
+#     event_subscription[const.CMD_CONFIGURE](dummy_event)
+#     assert const.STR_COMMAND + const.CMD_CONFIGURE in device_proxy.activityMessage
+
+
+# def test_configure_command_when_obstate_is_ready_with_callback_method(mock_mccs_subarray, event_subscription):
+#     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+#     mccs_subarray1_proxy_mock.obsState = ObsState.READY
 #     device_proxy.Configure(configure_str)
 #     dummy_event = command_callback(const.CMD_CONFIGURE)
 #     event_subscription[const.CMD_CONFIGURE](dummy_event)
@@ -152,17 +181,6 @@ def test_configure_should_failed_when_device_obsstate_is_empty(mock_mccs_subarra
     assert "Unable to invoke Configure command" in str(df)
 
 
-@pytest.fixture(
-    scope="function",
-    params=[
-        ("End", const.CMD_END, ObsState.READY),
-        ("EndScan", const.CMD_ENDSCAN, ObsState.SCANNING)
-    ])
-def command_without_arg(request):
-    cmd_name, requested_cmd, ObsState = request.param
-    return cmd_name, requested_cmd, ObsState
-
-
 def test_command_with_callback_method_with_event_error(mock_mccs_subarray,event_subscription_without_arg, command_without_arg):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     cmd_name, requested_cmd, ObsState = command_without_arg
@@ -171,17 +189,6 @@ def test_command_with_callback_method_with_event_error(mock_mccs_subarray,event_
     dummy_event = command_callback_with_event_error(requested_cmd)
     event_subscription_without_arg[requested_cmd](dummy_event)
     assert const.ERR_INVOKING_CMD + requested_cmd in device_proxy.activityMessage
-
-
-@pytest.fixture(
-    scope="function",
-    params=[
-        ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.IDLE),
-        ("Scan", scan_input_str, const.CMD_SCAN, ObsState.READY)
-    ])
-def command_with_arg(request):
-    cmd_name, cmd_arg, requested_cmd, ObsState = request.param
-    return cmd_name, cmd_arg, requested_cmd, ObsState
 
 
 def test_command_with_callback_method_with_event_error_with_arg(mock_mccs_subarray,event_subscription, command_with_arg):
@@ -194,6 +201,9 @@ def test_command_with_callback_method_with_event_error_with_arg(mock_mccs_subarr
     assert const.ERR_INVOKING_CMD + requested_cmd in device_proxy.activityMessage
 
 
+
+
+
 # def test_configure_command_with_callback_method_with_event_error(mock_mccs_subarray, event_subscription ):
 #     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
 #     device_proxy.On()
@@ -204,13 +214,55 @@ def test_command_with_callback_method_with_event_error_with_arg(mock_mccs_subarr
 #     assert const.ERR_INVOKING_CMD + const.CMD_CONFIGURE in device_proxy.activityMessage
 
 
-def test_configure_to_raise_devfailed_exception(mock_mccs_subarray):
+# def test_configure_to_raise_devfailed_exception(mock_mccs_subarray):
+#     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+#     mccs_subarray1_proxy_mock.obsState = ObsState.IDLE
+#     mccs_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_with_arg
+#     with pytest.raises(tango.DevFailed) as df:
+#         device_proxy.Configure(configure_str)
+#     assert const.ERR_DEVFAILED_MSG in str(df.value)
+
+
+@pytest.fixture(
+    scope="function",
+    params=[
+        ("Configure", configure_str,  ObsState.IDLE, const.ERR_DEVFAILED_MSG),
+        ("Scan", scan_input_str,  ObsState.READY, "raise_devfailed_exception")
+    ])
+def command_with_arg_raise_devfailed(request):
+    cmd_name, cmd_arg, ObsState , error_msg = request.param
+    return cmd_name, cmd_arg, ObsState, error_msg
+
+
+
+def test_command_with_arg_to_raise_devfailed_exception(mock_mccs_subarray,command_with_arg_raise_devfailed):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
-    mccs_subarray1_proxy_mock.obsState = ObsState.IDLE
+    cmd_name, cmd_arg, ObsState, error_msg = command_with_arg_raise_devfailed
+    mccs_subarray1_proxy_mock.obsState = ObsState
     mccs_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_with_arg
     with pytest.raises(tango.DevFailed) as df:
-        device_proxy.Configure(configure_str)
-    assert const.ERR_DEVFAILED_MSG in str(df.value)
+        device_proxy.command_inout(cmd_name, cmd_arg)
+    assert error_msg in str(df.value)
+
+
+@pytest.fixture(
+    scope="function",
+    params=[
+        ("End", ObsState.READY, const.ERR_END_INVOKING_CMD),
+        ("Endscan", ObsState.SCANNING, const.ERR_ENDSCAN_COMMAND)
+    ])
+def command_without_arg_raise_devfailed(request):
+    cmd_name, ObsState , error_msg = request.param
+    return cmd_name, ObsState, error_msg
+
+def test_command_without_arg_to_raise_devfailed_exception(mock_mccs_subarray,command_without_arg_raise_devfailed):
+    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+    cmd_name, ObsState, error_msg = command_without_arg_raise_devfailed
+    mccs_subarray1_proxy_mock.obsState = ObsState
+    mccs_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_with_arg
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.command_inout(cmd_name)
+    assert error_msg in str(df)
 
 
 def test_read_activity_message(tango_context):
@@ -267,23 +319,23 @@ def test_scan_should_not_command_mccs_subarray_to_start_scan_when_it_is_idle(moc
     assert const.ERR_DEVICE_NOT_READY in str(df)
 
 
-def test_Scan_should_raise_devfailed_exception(mock_mccs_subarray):
-    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
-    mccs_subarray1_proxy_mock.obsState = ObsState.READY
-    mccs_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_with_arg
-    with pytest.raises(tango.DevFailed) as df:
-        device_proxy.Scan(scan_input_str)
-    assert "raise_devfailed_exception" in str(df)
+# def test_Scan_should_raise_devfailed_exception(mock_mccs_subarray):
+#     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+#     mccs_subarray1_proxy_mock.obsState = ObsState.READY
+#     mccs_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_with_arg
+#     with pytest.raises(tango.DevFailed) as df:
+#         device_proxy.Scan(scan_input_str)
+#     assert "raise_devfailed_exception" in str(df)
 
 
-def test_end_command_with_callback_method(mock_mccs_subarray, event_subscription_without_arg):
-    # arrange:
-    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
-    mccs_subarray1_proxy_mock.obsState = ObsState.READY
-    device_proxy.End()
-    dummy_event = command_callback(const.CMD_END)
-    event_subscription_without_arg[const.CMD_END](dummy_event)
-    assert const.STR_COMMAND + const.CMD_END in device_proxy.activityMessage
+# def test_end_command_with_callback_method(mock_mccs_subarray, event_subscription_without_arg):
+#     # arrange:
+#     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+#     mccs_subarray1_proxy_mock.obsState = ObsState.READY
+#     device_proxy.End()
+#     dummy_event = command_callback(const.CMD_END)
+#     event_subscription_without_arg[const.CMD_END](dummy_event)
+#     assert const.STR_COMMAND + const.CMD_END in device_proxy.activityMessage
 
 
 # def test_end_command_with_callback_method_with_event_error(mock_mccs_subarray,event_subscription_without_arg):
@@ -303,13 +355,13 @@ def test_end_should_command_mccs_subarray_to_end_when_it_is_ready(mock_mccs_suba
                                                                 any_method(with_name='end_cmd_ended_cb'))
 
 
-def test_end_should_raise_devfailed_exception(mock_mccs_subarray):
-    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
-    mccs_subarray1_proxy_mock.obsState = ObsState.READY
-    mccs_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_with_arg
-    with pytest.raises(tango.DevFailed) as df:
-        device_proxy.End()
-    assert const.ERR_END_INVOKING_CMD in str(df)
+# def test_end_should_raise_devfailed_exception(mock_mccs_subarray):
+#     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+#     mccs_subarray1_proxy_mock.obsState = ObsState.READY
+#     mccs_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_with_arg
+#     with pytest.raises(tango.DevFailed) as df:
+#         device_proxy.End()
+#     assert const.ERR_END_INVOKING_CMD in str(df)
 
 
 def test_end_should_command_mccs_subarray_should_not_end_when_it_is_not_idle_or_ready(mock_mccs_subarray):
@@ -327,23 +379,23 @@ def test_endscan_should_command_mccs_subarray_to_end_scan_when_it_is_scanning(mo
                                                                 any_method(with_name='endscan_cmd_ended_cb'))
 
 
-def test_endscan_command_with_callback_method(mock_mccs_subarray , event_subscription_without_arg):
-    # arrange:
-    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
-    mccs_subarray1_proxy_mock.obsState = ObsState.SCANNING
-    device_proxy.EndScan()
-    dummy_event = command_callback(const.CMD_ENDSCAN)
-    event_subscription_without_arg[const.CMD_ENDSCAN](dummy_event)
-    assert const.STR_COMMAND + const.CMD_ENDSCAN in device_proxy.activityMessage
+# def test_endscan_command_with_callback_method(mock_mccs_subarray , event_subscription_without_arg):
+#     # arrange:
+#     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+#     mccs_subarray1_proxy_mock.obsState = ObsState.SCANNING
+#     device_proxy.EndScan()
+#     dummy_event = command_callback(const.CMD_ENDSCAN)
+#     event_subscription_without_arg[const.CMD_ENDSCAN](dummy_event)
+#     assert const.STR_COMMAND + const.CMD_ENDSCAN in device_proxy.activityMessage
 
 
-def test_endscan_should_raise_devfailed_exception(mock_mccs_subarray):
-    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
-    mccs_subarray1_proxy_mock.obsState = ObsState.SCANNING
-    mccs_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_with_arg
-    with pytest.raises(tango.DevFailed) as df:
-        device_proxy.EndScan()
-    assert const.ERR_ENDSCAN_COMMAND in str(df)
+# def test_endscan_should_raise_devfailed_exception(mock_mccs_subarray):
+#     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+#     mccs_subarray1_proxy_mock.obsState = ObsState.SCANNING
+#     mccs_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_with_arg
+#     with pytest.raises(tango.DevFailed) as df:
+#         device_proxy.EndScan()
+#     assert const.ERR_ENDSCAN_COMMAND in str(df)
 
 
 # def test_endscan_command_with_callback_method_with_event_error(mock_mccs_subarray, event_subscription_without_arg):
