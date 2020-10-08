@@ -227,7 +227,7 @@ def test_command_with_callback_method_with_event_error_with_arg(mock_mccs_subarr
     scope="function",
     params=[
         ("Configure", configure_str,  ObsState.IDLE, const.ERR_DEVFAILED_MSG),
-        ("Scan", scan_input_str,  ObsState.READY, const.ERR_DEVFAILED_MSG))
+        ("Scan", scan_input_str,  ObsState.READY, const.ERR_DEVFAILED_MSG)
     ])
 def command_with_arg_raise_devfailed(request):
     cmd_name, cmd_arg, ObsState , error_msg = request.param
