@@ -47,73 +47,93 @@ def mock_sdp_master():
 @pytest.fixture(
     scope="function",
     params=[
-        ("On", "" , const.CMD_ON, ""),
-        ("Off", "" , const.CMD_OFF, ""),
-        ("Standby", "", const.CMD_STANDBY, ""),
-        ("Disable", "", const.CMD_Disable, "")
+        ("On", const.CMD_ON),
+        ("Standby", const.CMD_STANDBY),
+        ("Disable", const.CMD_Disable)
     ])
-def command_with_arg(request):
-    cmd_name, cmd_arg, requested_cmd, requested_cmd_arg = request.param
-    return cmd_name, cmd_arg, requested_cmd, requested_cmd_arg
+def command_without_args(request):
+    cmd_name, requested_cmd = request.param
+    return cmd_name, requested_cmd
 
 
-def test_command_should_be_relayed_to_sdp_master(mock_sdp_master, command_with_arg):
-    # arrange:
+def test_command_should_be_relayed_to_sdp_master(mock_sdp_master, command_without_args):
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
-    cmd_name, cmd_arg, requested_cmd, requested_cmd_arg = command_with_arg
-    if cmd_name == "Off":
-        device_proxy.On()
+    cmd_name, requested_cmd = command_without_args
     
-    # act:
     device_proxy.command_inout(cmd_name)
 
-    # assert:
+    callback_name = f"{reqeusted_command.lower()}_cmd_ended_cb"
     sdp_master_proxy_mock.command_inout_asynch.assert_called_with(requested_cmd,
-                                                           any_method(with_name= requested_cmd.lower() + '_cmd_ended_cb'))
+                                                           any_method(with_name= callback_name))
 
-
-def test_disable_should_command_sdp_master_leaf_node_to_disable_devfailed(mock_sdp_master):
+def test_off_should_command_sdp_master_leaf_node_to_stop(mock_sdp_master):
     # arrange:
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
     device_proxy.On()
-    device_proxy.DevState = DevState.FAULT
     # act:
+    device_proxy.Off()
+    # assert:
+    assert const.STR_OFF_CMD_SUCCESS in device_proxy.activityMessage
+    sdp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF,
+                                                               any_method(with_name='off_cmd_ended_cb'))
+
+
+def test_disable_should_command_sdp_master_leaf_node_to_disable_devfailed(mock_sdp_master):
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
+    device_proxy.On()
+    device_proxy.DevState = DevState.FAULT
+
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.Disable()
-    # assert:
+    
     assert "Failed to invoke Disable command on SdpMasterLeafNode." in str(df)
 
 
-def test_command_should_command_with_callback_method(mock_sdp_master, event_subscription, command_with_arg):
-    # arrange:
+def test_command_should_command_with_callback_method(mock_sdp_master, event_subscription, command_without_args):
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
-    cmd_name, cmd_arg, requested_cmd, requested_cmd_arg = command_with_arg
-    if cmd_name == "Off":
-        device_proxy.On()
+    cmd_name, requested_cmd = command_without_args
     
-    # act:
     device_proxy.command_inout(cmd_name)
     dummy_event = command_callback(requested_cmd)
     event_subscription[requested_cmd](dummy_event)
 
-    # assert:
     assert const.STR_COMMAND + requested_cmd in device_proxy.activityMessage
 
 
-def test_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription, command_with_arg):
+def test_off_should_command_with_callback_method(mock_sdp_master, event_subscription):
     # arrange:
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
-    cmd_name, cmd_arg, requested_cmd, requested_cmd_arg = command_with_arg
-    if cmd_name == "Off":
-        device_proxy.On()
-
+    device_proxy.On()
     # act:
+    device_proxy.Off()
+    dummy_event = command_callback(const.CMD_OFF)
+    event_subscription[const.CMD_OFF](dummy_event)
+    # assert:
+    assert const.STR_COMMAND + const.CMD_OFF in device_proxy.activityMessage
+
+
+
+def test_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription, command_without_args):
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
+    cmd_name, requested_cmd = command_without_args
+
     device_proxy.command_inout(cmd_name)
     dummy_event = command_callback_with_event_error(requested_cmd)
     event_subscription[requested_cmd](dummy_event)
 
-    # assert:
     assert const.ERR_INVOKING_CMD + requested_cmd in device_proxy.activityMessage
+
+
+def test_off_should_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription):
+    # arrange:
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
+    device_proxy.On()
+    # act:
+    device_proxy.Off()
+    dummy_event = command_callback_with_event_error(const.CMD_OFF)
+    event_subscription[const.CMD_OFF](dummy_event)
+    # assert:
+    assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
 
 
 def command_callback(command_name):
@@ -136,60 +156,50 @@ def command_callback_with_command_exception():
 
 
 def test_activity_message(tango_context):
-    # act & assert:
     tango_context.device.activityMessage = "text"
     assert tango_context.device.activityMessage == "text"
 
 
 def test_version_info(tango_context):
-    # act & assert:
     assert tango_context.device.versionInfo == '1.0'
 
 
 def test_processing_block_list(tango_context):
-    # act & assert:
     assert tango_context.device.ProcessingBlockList
 
 
 def test_status(tango_context):
-    # act & assert:
     assert tango_context.device.Status() != const.STR_INIT_SUCCESS
 
 
 def test_logging_level(tango_context):
-    # act & assert:
     tango_context.device.loggingLevel = LoggingLevel.INFO
     assert tango_context.device.loggingLevel == LoggingLevel.INFO
 
 
 def test_logging_targets(tango_context):
-    # act & assert:
     tango_context.device.loggingTargets = ['console::cout']
     assert 'console::cout' in tango_context.device.loggingTargets
 
 
 def test_test_mode(tango_context):
-    # act & assert:
     test_mode = TestMode.NONE
     tango_context.device.testMode = test_mode
     assert tango_context.device.testMode == test_mode
 
 
 def test_simulation_mode(tango_context):
-    # act & assert:
     tango_context.device.simulationMode = SimulationMode.FALSE
     assert tango_context.device.simulationMode == SimulationMode.FALSE
 
 
 def test_control_mode(tango_context):
-    # act & assert:
     control_mode = ControlMode.REMOTE
     tango_context.device.controlMode = control_mode
     assert tango_context.device.controlMode == control_mode
 
 
 def test_health_state(tango_context):
-    # act & assert:
     assert tango_context.device.healthState == HealthState.OK
 
 
