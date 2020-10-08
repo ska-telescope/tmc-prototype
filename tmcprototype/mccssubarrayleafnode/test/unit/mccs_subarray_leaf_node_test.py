@@ -218,7 +218,7 @@ def test_command_with_callback_method_with_event_error_with_arg(mock_mccs_subarr
     params=[
         ("Configure", configure_str,  ObsState.IDLE, const.ERR_DEVFAILED_MSG),
         ("Scan", scan_input_str,  ObsState.READY, const.ERR_DEVFAILED_MSG),
-        "Configure", configure_str,  ObsState.EMPTY, "Unable to invoke Configure command"),
+        ("Configure", configure_str,  ObsState.EMPTY, "Unable to invoke Configure command"),
         ("Scan", scan_input_str,  ObsState.IDLE, const.ERR_DEVICE_NOT_READY)
     ])
 def command_with_arg_incorrect_obstate_raise_devfailed(request):
