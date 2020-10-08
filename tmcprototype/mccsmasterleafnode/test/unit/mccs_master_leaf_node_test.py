@@ -75,26 +75,16 @@ def tango_context():
 @pytest.fixture(
     scope="function",
     params= [
-        ("AssignResources",const.CMD_ALLOCATE,assign_input_str,ObsState.EMPTY),
-        ("ReleaseResources",const.CMD_Release,release_input_str,ObsState.IDLE)
+        ("AssignResources",const.CMD_ALLOCATE,assign_input_str,ObsState.EMPTY,const.ERR_DEVFAILED_MSG),
+        ("ReleaseResources",const.CMD_Release,release_input_str,ObsState.IDLE,const.ERR_RELEASE_ALL_RESOURCES)
     ])
 def command_with_arg(request):
-    cmd_name, requested_cmd, input_str, obs_state=request.param
-    return cmd_name, requested_cmd, input_str, obs_state
+    cmd_name, requested_cmd, input_str, obs_state, error_msg=request.param
+    return cmd_name, requested_cmd, input_str, obs_state, error_msg
 
-@pytest.fixture(
-    scope="function",
-    params= [
-        ("AssignResources",assign_input_str,ObsState.EMPTY,const.ERR_DEVFAILED_MSG),
-        ("ReleaseResources",release_input_str,ObsState.IDLE,const.ERR_RELEASE_ALL_RESOURCES)
-])
-def command_raise_devfailed_exception(request):
-    cmd_name,input_str,obs_state,error_msg= request.param
-    return cmd_name,input_str,obs_state,error_msg
-
-def test_command_raise_devfailed_exception(mock_mccs_master,command_raise_devfailed_exception):
+def test_command_raise_devfailed_exception(mock_mccs_master,command_with_arg):
      mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
-     cmd_name, input_str, obs_state, error_msg = command_raise_devfailed_exception
+     cmd_name, requested_cmd, input_str, obs_state, error_msg = command_with_arg
      mccs_master_proxy_mock.obsState = obs_state
      mccs_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_with_arg
      with pytest.raises(tango.DevFailed) as df:
@@ -103,7 +93,7 @@ def test_command_raise_devfailed_exception(mock_mccs_master,command_raise_devfai
 
 def test_command_invoke_with_command_callback_method(mock_mccs_master,event_subscription,command_with_arg):
     mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
-    cmd_name, requested_cmd, input_str, obs_state = command_with_arg
+    cmd_name, requested_cmd, input_str, obs_state, error_msg= command_with_arg
     mccs_master_proxy_mock.obsState = obs_state
     device_proxy.command_inout(cmd_name,input_str)
     dummy_event = command_callback(requested_cmd)
@@ -112,7 +102,7 @@ def test_command_invoke_with_command_callback_method(mock_mccs_master,event_subs
 
 def test_command_with_command_callback_event_error(mock_mccs_master,event_subscription,command_with_arg):
     mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
-    cmd_name, requested_cmd, input_str, obs_state = command_with_arg
+    cmd_name, requested_cmd, input_str, obs_state, error_msg = command_with_arg
     mccs_master_proxy_mock.obsState = obs_state
     device_proxy.command_inout(cmd_name, input_str)
     dummy_event = command_callback_with_event_error(requested_cmd)
