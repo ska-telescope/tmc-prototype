@@ -600,17 +600,13 @@ def test_telescope_health_state_is_ok_when_subarray1_is_ok_after_start(mock_suba
     assert device_proxy.telescopeHealthState == HealthState.OK
 
 
-@pytest.fixture(
-    scope="function",
-    params=[
+@pytest.mark.parametrize(
+    "subarray_node_fqdn",
+    [
         ("ska_mid/tm_subarray_node/2"),
         ("ska_mid/tm_subarray_node/3")
-    ])
-def subarray_node_fqdn(request):
-    subarray_node_fqdn = request.param
-    return subarray_node_fqdn
-
-
+    ]
+)
 def test_telescope_health_state_is_ok_when_subarray_is_ok_after_start(subarray_node_fqdn):
     subarray_health_attribute = 'healthState'
     initial_dut_properties = {
