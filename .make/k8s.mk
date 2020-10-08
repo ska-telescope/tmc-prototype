@@ -146,6 +146,9 @@ logs: ## show Helm chart POD logs
 	echo ""; echo ""; echo ""; \
 	done
 
+log: 	# get the logs of pods @param: $POD_NAME
+	kubectl logs -n $(KUBE_NAMESPACE) $(POD_NAME)
+
 # Utility target to install Helm dependencies
 helm_dependencies:
 	@which helm ; rc=$$?; \
