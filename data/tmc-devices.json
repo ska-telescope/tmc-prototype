@@ -1591,7 +1591,7 @@
                 "MccsMasterLeafNode": {
                     "ska_low/tm_leaf_node/mccs_master": {
                         "attribute_properties": {
-                            "cspHealthState": {
+                            "mccsHealthState": {
                                 "__root_att": [
                                     "low-mccs/control/control/healthState"
                                 ]
