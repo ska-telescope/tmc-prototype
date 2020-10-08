@@ -217,8 +217,7 @@ def test_command_with_callback_method_with_event_error_with_arg(mock_mccs_subarr
     scope="function",
     params=[
         ("Configure", configure_str,  ObsState.IDLE, const.ERR_DEVFAILED_MSG),
-        ("Scan", scan_input_str,  ObsState.READY, const.ERR_DEVFAILED_MSG),
-        ("Scan", scan_input_str,  ObsState.READY, const.STR_SCAN_SUCCESS)
+        ("Scan", scan_input_str,  ObsState.READY, const.ERR_DEVFAILED_MSG)
         
     ])
 def command_with_arg_incorrect_obstate_raise_devfailed(request):
@@ -241,7 +240,7 @@ def test_command_correct_obsstate(mock_mccs_subarray, command_with_arg_incorrect
     cmd_name, cmd_arg, ObsState , error_msg = command_with_arg_incorrect_obstate_raise_devfailed
     mccs_subarray1_proxy_mock.obsState = ObsState
     device_proxy.command_inout(cmd_name, cmd_arg)
-    assert const.STR_SCAN_SUCCESS in device_proxy.activityMessage
+    assert error_msg in device_proxy.activityMessage
 
 
 @pytest.fixture(
