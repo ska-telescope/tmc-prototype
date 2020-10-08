@@ -960,41 +960,54 @@ def test_endsb_command_subarray_when_in_invalid_state():
         assert tango_context.device.obsState == ObsState.IDLE
         assert tango_context.device.activityMessage == const.ERR_DEVICE_NOT_READY
 
+
+@pytest.fixture(
+    scope = "function",
+    params=[
+        PointingState.SLEW,
+        PointingState.SCAN,
+        PointingState.READY,
+    ])
+def pointing_state_param(request):
+    pointing_state = request.param
+    return pointing_state
+
 # Test Pointing State Callback
-def test_pointing_state_is_slew(mock_lower_devices):
+def test_pointing_state_is_pointing_state_param(mock_lower_devices, pointing_state_param):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
+    pointing_state = pointing_state_param
     dish_pointing_state_attribute = "dishPointingState"
     tango_context.device.On()
     tango_context.device.AssignResources(assign_input_str)
     attribute = 'dishPointingState'
     dummy_event_dish = create_dummy_event_state(dish_ln_proxy_mock, dish_ln_prefix + "0001", attribute,
-                                                PointingState.SLEW)
+                                                pointing_state_param)
     dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
     assert tango_context.device.obsState == ObsState.RESOURCING
 
 
-def test_pointing_state_is_scan(mock_lower_devices):
-    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
-    dish_pointing_state_attribute = "dishPointingState"
-    tango_context.device.On()
-    tango_context.device.AssignResources(assign_input_str)
-    attribute = 'dishPointingState'
-    dummy_event_dish = create_dummy_event_state(dish_ln_proxy_mock, dish_ln_prefix + "0001", attribute,
-                                                PointingState.SCAN)
-    dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
-    assert tango_context.device.obsState == ObsState.RESOURCING
+# def test_pointing_state_is_scan(mock_lower_devices):
+#     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
+#     dish_pointing_state_attribute = "dishPointingState"
+#     tango_context.device.On()
+#     tango_context.device.AssignResources(assign_input_str)
+#     attribute = 'dishPointingState'
+#     dummy_event_dish = create_dummy_event_state(dish_ln_proxy_mock, dish_ln_prefix + "0001", attribute,
+#                                                 PointingState.SCAN)
+#     dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
+#     assert tango_context.device.obsState == ObsState.RESOURCING
 
 
-def test_pointing_state_is_ready(mock_lower_devices):
-    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
-    dish_pointing_state_attribute = "dishPointingState"
-    tango_context.device.On()
-    tango_context.device.AssignResources(assign_input_str)
-    attribute = 'dishPointingState'
-    dummy_event_dish = create_dummy_event_state(dish_ln_proxy_mock, dish_ln_prefix + "0001", attribute,
-                                                PointingState.READY)
-    dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
-    assert tango_context.device.obsState == ObsState.RESOURCING
+# def test_pointing_state_is_ready(mock_lower_devices):
+#     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
+#     dish_pointing_state_attribute = "dishPointingState"
+#     tango_context.device.On()
+#     tango_context.device.AssignResources(assign_input_str)
+#     attribute = 'dishPointingState'
+#     dummy_event_dish = create_dummy_event_state(dish_ln_proxy_mock, dish_ln_prefix + "0001", attribute,
+#                                                 PointingState.READY)
+#     dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
+#     assert tango_context.device.obsState == ObsState.RESOURCING
 
 
 def test_pointing_state_with_error_event(mock_lower_devices):
@@ -1009,16 +1022,28 @@ def test_pointing_state_with_error_event(mock_lower_devices):
     assert tango_context.device.activityMessage == const.ERR_SUBSR_DSH_POINTING_STATE + str(dummy_event_dish.errors)
 
 
+@pytest.fixture(
+    scope = "function",
+    params=[
+        HealthState.DEGRADED,
+        HealthState.UNKNOWN,
+        HealthState.FAILED,
+    ])
+def csubarray1_ln_is_in_health_state_after_start(request):
+    health_state = request.param
+    return csp_health_state
+
 # Test Health State Callback
-def test_subarray_health_state_is_degraded_when_csp_subarray1_ln_is_degraded_after_start(mock_lower_devices):
+def test_subarray_health_state_when_csubarray1_ln_is_in_health_state_after_start(mock_lower_devices,csubarray1_ln_is_in_health_state_after_start):
     csp_subarray1_ln_health_attribute = 'cspsubarrayHealthState'
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
-    health_state_value = HealthState.DEGRADED
+    csp_health_state = csubarray1_ln_is_in_health_state_after_start
+    health_state_value = csp_health_state
     dummy_event = create_dummy_event_healthstate_with_proxy(
         csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn, health_state_value,
         csp_subarray1_ln_health_attribute)
     event_subscription_map[csp_subarray1_ln_health_attribute](dummy_event)
-    assert tango_context.device.healthState == HealthState.DEGRADED
+    assert tango_context.device.healthState == csp_health_state
 
 
 def test_subarray_health_state_is_ok_when_csp_and_sdp_subarray1_ln_is_ok_after_start(mock_lower_devices):
@@ -1040,26 +1065,26 @@ def test_subarray_health_state_is_ok_when_csp_and_sdp_subarray1_ln_is_ok_after_s
     assert tango_context.device.healthState == HealthState.OK
 
 
-def test_subarray_health_state_is_unknown_when_csp_subarray1_ln_is_unknown_after_start(mock_lower_devices):
-    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
-    csp_subarray1_ln_health_attribute = 'cspsubarrayHealthState'
-    health_state_value = HealthState.UNKNOWN
-    dummy_event = create_dummy_event_healthstate_with_proxy(
-        csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn, health_state_value,
-        csp_subarray1_ln_health_attribute)
-    event_subscription_map[csp_subarray1_ln_health_attribute](dummy_event)
-    assert tango_context.device.healthState == HealthState.UNKNOWN
+# def test_subarray_health_state_is_unknown_when_csp_subarray1_ln_is_unknown_after_start(mock_lower_devices):
+#     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
+#     csp_subarray1_ln_health_attribute = 'cspsubarrayHealthState'
+#     health_state_value = HealthState.UNKNOWN
+#     dummy_event = create_dummy_event_healthstate_with_proxy(
+#         csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn, health_state_value,
+#         csp_subarray1_ln_health_attribute)
+#     event_subscription_map[csp_subarray1_ln_health_attribute](dummy_event)
+#     assert tango_context.device.healthState == HealthState.UNKNOWN
 
 
-def test_subarray_health_state_is_failed_when_csp_subarray1_ln_is_failed_after_start(mock_lower_devices):
-    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
-    csp_subarray1_ln_health_attribute = 'cspsubarrayHealthState'
-    health_state_value = HealthState.FAILED
-    dummy_event = create_dummy_event_healthstate_with_proxy(
-        csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn, health_state_value,
-        csp_subarray1_ln_health_attribute)
-    event_subscription_map[csp_subarray1_ln_health_attribute](dummy_event)
-    assert tango_context.device.healthState == HealthState.FAILED
+# def test_subarray_health_state_is_failed_when_csp_subarray1_ln_is_failed_after_start(mock_lower_devices):
+#     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
+#     csp_subarray1_ln_health_attribute = 'cspsubarrayHealthState'
+#     health_state_value = HealthState.FAILED
+#     dummy_event = create_dummy_event_healthstate_with_proxy(
+#         csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn, health_state_value,
+#         csp_subarray1_ln_health_attribute)
+#     event_subscription_map[csp_subarray1_ln_health_attribute](dummy_event)
+#     assert tango_context.device.healthState == HealthState.FAILED
 
 
 def test_subarray_health_state_with_error_event(mock_lower_devices):
