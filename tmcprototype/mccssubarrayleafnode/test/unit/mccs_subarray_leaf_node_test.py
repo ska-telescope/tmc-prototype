@@ -274,25 +274,6 @@ def test_command_without_arg_to_raise_devfailed_exception(mock_mccs_subarray,com
         device_proxy.command_inout(cmd_name)
     assert error_msg in str(df)
 
-@pytest.fixture(
-    scope="function",
-    params=[
-        ("End", ObsState.READY, const.ERR_DEVICE_NOT_READY),
-        ("Endscan", ObsState.IDLE, const.ERR_DEVICE_NOT_SCANNING)
-    ])
-def command_without_arg_raise_devfailed(request):
-    cmd_name, ObsState , error_msg = request.param
-    return cmd_name, ObsState, error_msg
-
-def test_command_incorrect_obsstate_without_arg(mock_mccs_subarray, command_without_arg_raise_devfailed):
-    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
-    cmd_name, ObsState , error_msg = command_without_arg_raise_devfailed
-    mccs_subarray1_proxy_mock.obsState = ObsState
-    mccs_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_with_arg
-    with pytest.raises(tango.DevFailed) as df:
-        device_proxy.command_inout(cmd_name)
-    assert error_msg in str(df)
-
 
 # def test_configure_should_failed_when_device_obsstate_is_empty(mock_mccs_subarray):
 #     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
@@ -422,11 +403,11 @@ def test_scan_should_command_mccs_subarray_to_start_its_scan_when_it_is_ready(mo
 #     assert const.ERR_END_INVOKING_CMD in str(df)
 
 
-# def test_end_should_command_mccs_subarray_should_not_end_when_it_is_not_idle_or_ready(mock_mccs_subarray):
-#     device_proxy = mock_mccs_subarray[0]
-#     with pytest.raises(tango.DevFailed) as df:
-#         device_proxy.End()
-#     assert const.ERR_DEVICE_NOT_READY in str(df)
+def test_end_should_command_mccs_subarray_should_not_end_when_it_is_not_idle_or_ready(mock_mccs_subarray):
+    device_proxy = mock_mccs_subarray[0]
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.End()
+    assert const.ERR_DEVICE_NOT_READY in str(df)
 
 
 # def test_endscan_should_command_mccs_subarray_to_end_scan_when_it_is_scanning(mock_mccs_subarray):
@@ -465,12 +446,12 @@ def test_scan_should_command_mccs_subarray_to_start_its_scan_when_it_is_ready(mo
 #     assert const.ERR_INVOKING_CMD + const.CMD_ENDSCAN in device_proxy.activityMessage
 
 
-# def test_end_scan_should_not_command_mccs_subarray_to_end_scan_when_it_is_idle(mock_mccs_subarray):
-#     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
-#     mccs_subarray1_proxy_mock.obsState = ObsState.IDLE
-#     with pytest.raises(tango.DevFailed) as df:
-#         device_proxy.EndScan()
-#     assert const.ERR_DEVICE_NOT_SCANNING in str(df)
+def test_end_scan_should_not_command_mccs_subarray_to_end_scan_when_it_is_idle(mock_mccs_subarray):
+    device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
+    mccs_subarray1_proxy_mock.obsState = ObsState.IDLE
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.EndScan()
+    assert const.ERR_DEVICE_NOT_SCANNING in str(df)
 
 
 def any_method(with_name=None):
