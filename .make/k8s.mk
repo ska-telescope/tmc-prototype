@@ -21,6 +21,9 @@ k8s: ## Which kubernetes are we connected to
 	@echo "Helm version:"
 	@helm version --client
 
+clean: ## clean out references to chart tgz's
+	@rm -f ./charts/*/charts/*.tgz ./charts/*/Chart.lock ./charts/*/requirements.lock ./repository/*
+
 watch:
 	watch kubectl get all,pv,pvc,ingress -n $(KUBE_NAMESPACE)
 
@@ -71,7 +74,6 @@ install-chart: dep-up namespace namespace_sdp ## install the helm chart with nam
 	# Understand this better
 	@sed -e 's/CI_PROJECT_PATH_SLUG/$(CI_PROJECT_PATH_SLUG)/' $(UMBRELLA_CHART_PATH)values.yaml > generated_values.yaml; \
 	sed -e 's/CI_ENVIRONMENT_SLUG/$(CI_ENVIRONMENT_SLUG)/' generated_values.yaml > values.yaml; \
-	helm dependency update $(UMBRELLA_CHART_PATH); \
 	helm install $(HELM_RELEASE) \
 	--set minikube=$(MINIKUBE) \
 	--values values.yaml \
@@ -96,7 +98,7 @@ wait:## wait for pods to be ready
 	@date
 	@kubectl -n $(KUBE_NAMESPACE) get pods
 	@jobs=$$(kubectl get job --output=jsonpath={.items..metadata.name} -n $(KUBE_NAMESPACE)); kubectl wait job --for=condition=complete --timeout=120s $$jobs -n $(KUBE_NAMESPACE)
-	@kubectl -n $(KUBE_NAMESPACE) wait --for=condition=ready -l app=tmcprototype --timeout=120s pods || exit 1
+	@kubectl -n $(KUBE_NAMESPACE) wait --for=condition=ready -l subsystem=enabling --timeout=120s pods || exit 1
 	@date
 
 # Error in --set

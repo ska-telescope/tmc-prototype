@@ -11,16 +11,10 @@ metadata:
     intent: enabling
     domain: self-configuration
 data:
-{{ if SOME_CONDITION == "LOW"}}
-{{ $config_file := "data/tmc-low-config.json" | indent 2 }}
-{{ else }}
-{{ $config_file := "data/tmc-mid-config.json" | indent 2 }}
-{{ end }}
-  configuration.json:
-{{ (tpl (.Files.Glob $config_file).AsConfig . ) | indent 2  }}
+{{ (tpl (.Files.Glob .Values.global.dsconfig_file).AsConfig . ) | indent 2  }}
   bootstrap.sh: |
     #/bin/sh
-    json2tango -w -a -u $config_file
+    json2tango -w -a -u {{.Values.global.dsconfig_file}}
     rc=$?
     if [ $rc -eq 0 ]; then
       echo "finished normally."

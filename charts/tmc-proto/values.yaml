@@ -8,6 +8,11 @@ xauthority: "~/.Xauthority"
 system: TM-mid
 telescope: SKA-mid
 
+global:
+  system: TM-mid
+  telescope: SKA-mid
+  dsconfig_file: data/tmc-mid-config.json
+
 tmcprototype:
   enabled: true
   image:

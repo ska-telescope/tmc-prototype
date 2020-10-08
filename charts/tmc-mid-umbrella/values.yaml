@@ -3,8 +3,10 @@ display: ":0"
 xauthority: "~/.Xauthority"
 minikube: true
 
-system: TM-mid
-telescope: SKA-mid
+global:
+  system: TM-mid
+  telescope: SKA-mid
+  dsconfig_file: data/tmc-mid-config.json
 
 tango-base:
   vnc:
