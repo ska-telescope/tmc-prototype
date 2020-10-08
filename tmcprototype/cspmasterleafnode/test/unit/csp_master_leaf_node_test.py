@@ -180,19 +180,6 @@ def test_activity_message_attribute_reports_correct_csp_cbf_health_state(mock_cs
     assert device_proxy.activityMessage == f"CSP CBF health is {health_state.name}."
 
 
-def test_attribute_csp_cbf_health_state_of_csp_master_with_error_event(mock_csp_master):
-    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-    csp_cbf_health_state_attribute = 'cspCbfHealthState'
-
-    health_state_value = HealthState.UNKNOWN
-    dummy_event = create_dummy_event_for_health_state_with_error(csp_master_fqdn, health_state_value,
-                                                                 csp_cbf_health_state_attribute)
-    event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
-   
-    assert device_proxy.activityMessage == const.ERR_ON_SUBS_CSP_CBF_HEALTH + str(
-        dummy_event.errors)
-
-
 def test_activity_message_attribute_reports_correct_csp_pss_health_state(mock_csp_master, health_state):
     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
     csp_pss_health_state_attribute = 'cspPssHealthState'
@@ -203,19 +190,6 @@ def test_activity_message_attribute_reports_correct_csp_pss_health_state(mock_cs
     event_subscription_map[csp_pss_health_state_attribute](dummy_event)
 
     assert device_proxy.activityMessage == f"CSP PSS health is {health_state.name}."
-
-
-def test_attribute_csp_pss_health_callback_of_csp_master_with_error_event(mock_csp_master):
-    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-    csp_pss_health_state_attribute = 'cspPssHealthState'
-
-    health_state_value = HealthState.UNKNOWN
-    dummy_event = create_dummy_event_for_health_state_with_error(csp_master_fqdn, health_state_value,
-                                                                 csp_pss_health_state_attribute)
-    event_subscription_map[csp_pss_health_state_attribute](dummy_event)
-
-    assert device_proxy.activityMessage == const.ERR_ON_SUBS_CSP_PSS_HEALTH + str(
-        dummy_event.errors)
 
 
 def test_activity_message_attribute_reports_correct_csp_pst_health_state(mock_csp_master, health_state):
@@ -230,17 +204,63 @@ def test_activity_message_attribute_reports_correct_csp_pst_health_state(mock_cs
     assert device_proxy.activityMessage == f"CSP PST health is {health_state.name}."
 
 
-def test_attribute_csp_pst_health_callback_of_csp_master_with_error_event(mock_csp_master):
+@pytest.mark.parametrize(
+    "attribute_name,error_message",
+    [
+        ("cspCbfHealthState", const.ERR_ON_SUBS_CSP_CBF_HEALTH),
+        ("cspPssHealthState", const.ERR_ON_SUBS_CSP_PSS_HEALTH),
+        ("cspPstHealthState", const.ERR_ON_SUBS_CSP_PST_HEALTH )
+    ]
+)
+def test_activity_message_reports_correct_health_state_when_attribute_event_has_error(mock_csp_master, attribute_name, error_message):
     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-    csp_pst_health_state_attribute = 'cspPstHealthState'
 
     health_state_value = HealthState.UNKNOWN
     dummy_event = create_dummy_event_for_health_state_with_error(csp_master_fqdn, health_state_value,
-                                                                 csp_pst_health_state_attribute)
-    event_subscription_map[csp_pst_health_state_attribute](dummy_event)
-    
-    assert device_proxy.activityMessage == const.ERR_ON_SUBS_CSP_PST_HEALTH + str(
+                                                                 attribute_name)
+    event_subscription_map[attribute_name](dummy_event)
+   
+    assert device_proxy.activityMessage == error_message + str(
         dummy_event.errors)
+
+
+# def test_attribute_csp_cbf_health_state_of_csp_master_with_error_event(mock_csp_master):
+#     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
+#     csp_cbf_health_state_attribute = 'cspCbfHealthState'
+
+#     health_state_value = HealthState.UNKNOWN
+#     dummy_event = create_dummy_event_for_health_state_with_error(csp_master_fqdn, health_state_value,
+#                                                                  csp_cbf_health_state_attribute)
+#     event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
+   
+#     assert device_proxy.activityMessage == const.ERR_ON_SUBS_CSP_CBF_HEALTH + str(
+#         dummy_event.errors)
+
+
+# def test_attribute_csp_pss_health_callback_of_csp_master_with_error_event(mock_csp_master):
+#     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
+#     csp_pss_health_state_attribute = 'cspPssHealthState'
+
+#     health_state_value = HealthState.UNKNOWN
+#     dummy_event = create_dummy_event_for_health_state_with_error(csp_master_fqdn, health_state_value,
+#                                                                  csp_pss_health_state_attribute)
+#     event_subscription_map[csp_pss_health_state_attribute](dummy_event)
+
+#     assert device_proxy.activityMessage == const.ERR_ON_SUBS_CSP_PSS_HEALTH + str(
+#         dummy_event.errors)
+
+
+# def test_attribute_csp_pst_health_callback_of_csp_master_with_error_event(mock_csp_master):
+#     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
+#     csp_pst_health_state_attribute = 'cspPstHealthState'
+
+#     health_state_value = HealthState.UNKNOWN
+#     dummy_event = create_dummy_event_for_health_state_with_error(csp_master_fqdn, health_state_value,
+#                                                                  csp_pst_health_state_attribute)
+#     event_subscription_map[csp_pst_health_state_attribute](dummy_event)
+    
+#     assert device_proxy.activityMessage == const.ERR_ON_SUBS_CSP_PST_HEALTH + str(
+#         dummy_event.errors)
 
 
 def create_dummy_event_for_health_state(device_fqdn, health_state_value, attribute):
