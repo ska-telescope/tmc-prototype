@@ -1030,7 +1030,7 @@ def test_pointing_state_with_error_event(mock_lower_devices):
         HealthState.FAILED,
     ])
 def csubarray1_ln_is_in_health_state_after_start(request):
-    health_state = request.param
+    csp_health_state = request.param
     return csp_health_state
 
 # Test Health State Callback
