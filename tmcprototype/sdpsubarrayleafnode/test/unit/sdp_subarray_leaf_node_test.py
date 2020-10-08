@@ -138,7 +138,7 @@ def test_command_with_callback_method_with_arg_with_event_error(mock_sdp_subarra
     event_subscription_with_arg[requested_cmd](dummy_event)
     assert const.STR_COMMAND + requested_cmd in device_proxy.activityMessage
 
-def test_command_for_positive_scenarios_with_arg(mock_sdp_subarray, command_with_arg):
+def test_command_for_allowed_Obstate_with_arg(mock_sdp_subarray, command_with_arg):
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     cmd_name, input_arg, requested_cmd, obs_state, callback_str, _ = command_with_arg    
     sdp_subarray1_proxy_mock.obsState = obs_state
@@ -195,7 +195,7 @@ def test_command_with_callback_method_without_arg_with_event_error(mock_sdp_suba
     event_subscription_without_arg[requested_cmd](dummy_event)
     assert const.ERR_INVOKING_CMD + requested_cmd in device_proxy.activityMessage
 
-def test_command_for_positive_scenarios_without_arg(mock_sdp_subarray, command_without_arg):
+def test_command_for_allowed_Obstate_without_arg(mock_sdp_subarray, command_without_arg):
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     cmd_name, requested_cmd, obs_state, callback_str, _ = command_without_arg    
     sdp_subarray1_proxy_mock.obsState = obs_state
