@@ -85,12 +85,12 @@ def command_with_arg(request):
 @pytest.fixture(
     scope="function",
     params=[
-        ("End", const.CMD_END, ObsState.READY),
-        ("EndScan", const.CMD_ENDSCAN, ObsState.SCANNING)
+        ("End", const.CMD_END, ObsState.READY, const.ERR_END_INVOKING_CMD),
+        ("EndScan", const.CMD_ENDSCAN, ObsState.SCANNING, const.ERR_ENDSCAN_COMMAND)
     ])
 def command_without_arg(request):
-    cmd_name, requested_cmd, ObsState = request.param
-    return cmd_name, requested_cmd, ObsState
+    cmd_name, requested_cmd, ObsState, error_msg = request.param
+    return cmd_name, requested_cmd, ObsState, error_msg
 
 
 def test_command_with_arg_in_allowed_obsstate_with_callback_method(mock_mccs_subarray, event_subscription,command_with_arg):
@@ -105,7 +105,7 @@ def test_command_with_arg_in_allowed_obsstate_with_callback_method(mock_mccs_sub
 
 def test_command_without_arg_in_allowed_obsstate_with_callback_method(mock_mccs_subarray, event_subscription_without_arg,command_without_arg):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
-    cmd_name, requested_cmd, ObsState = command_without_arg
+    cmd_name, requested_cmd, ObsState, _ = command_without_arg
     mccs_subarray1_proxy_mock.obsState = ObsState
     device_proxy.command_inout(cmd_name)
     dummy_event = command_callback(requested_cmd)
@@ -159,7 +159,7 @@ def test_configure_with_correct_configuration_data_when_mccs_subarray_is_idle(mo
 
 def test_command_with_callback_method_with_event_error(mock_mccs_subarray,event_subscription_without_arg, command_without_arg):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
-    cmd_name, requested_cmd, ObsState = command_without_arg
+    cmd_name, requested_cmd, ObsState, _ = command_without_arg
     mccs_subarray1_proxy_mock.obsState = ObsState
     device_proxy.command_inout(cmd_name)
     dummy_event = command_callback_with_event_error(requested_cmd)
@@ -219,19 +219,19 @@ def test_command_incorrect_obsstate_with_arg(mock_mccs_subarray, command_with_ar
     assert error_msg in str(df)
 
 
-@pytest.fixture(
-    scope="function",
-    params=[
-        ("End", ObsState.READY, const.ERR_END_INVOKING_CMD),
-        ("Endscan", ObsState.SCANNING, const.ERR_ENDSCAN_COMMAND)
-    ])
-def command_without_arg_incorrect_obstate_raise_devfailed(request):
-    cmd_name, ObsState , error_msg = request.param
-    return cmd_name, ObsState, error_msg
+# @pytest.fixture(
+#     scope="function",
+#     params=[
+#         ("End", ObsState.READY, const.ERR_END_INVOKING_CMD),
+#         ("Endscan", ObsState.SCANNING, const.ERR_ENDSCAN_COMMAND)
+#     ])
+# def command_without_arg_incorrect_obstate_raise_devfailed(request):
+#     cmd_name, ObsState , error_msg = request.param
+#     return cmd_name, ObsState, error_msg
 
-def test_command_without_arg_to_raise_devfailed_exception(mock_mccs_subarray,command_without_arg_incorrect_obstate_raise_devfailed):
+def test_command_without_arg_to_raise_devfailed_exception(mock_mccs_subarray,command_without_arg):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
-    cmd_name, ObsState, error_msg = command_without_arg_incorrect_obstate_raise_devfailed
+    cmd_name, _ , ObsState, error_msg = command_without_arg
     mccs_subarray1_proxy_mock.obsState = ObsState
     mccs_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_with_arg
     with pytest.raises(tango.DevFailed) as df:
