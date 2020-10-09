@@ -1062,23 +1062,23 @@ def test_subarray_health_state_with_error_event(mock_lower_devices):
 # Test case for event subscribtion
 def test_subarray_health_state_event_to_raise_devfailed_exception_for_csp_subarray_ln(device_fqdn, attribute_name):
     subarray_ln_fqdn = device_fqdn
-    subarray1_ln_health_attribute = attribute_name
+    subarray_ln_health_attribute = attribute_name
     initial_dut_properties = {
         'SubarrayLNFQDN': subarray_ln_fqdn
     }
 
-    subarray1_ln_proxy_mock = Mock()
-    subarray1_ln_proxy_mock.subscribe_event.side_effect = raise_devfailed_for_event_subscription
+    subarray_ln_proxy_mock = Mock()
+    subarray_ln_proxy_mock.subscribe_event.side_effect = raise_devfailed_for_event_subscription
 
     proxies_to_mock = {
-        subarray1_ln_fqdn: subarray1_ln_proxy_mock
+        subarray_ln_fqdn: subarray_ln_proxy_mock
     }
 
     with fake_tango_system(SubarrayNode, initial_dut_properties, proxies_to_mock) as tango_context:
         health_state_value = HealthState.FAILED
         dummy_event = create_dummy_event_healthstate_with_proxy(
-            subarray1_ln_proxy_mock, subarray1_ln_fqdn, health_state_value,
-            subarray1_ln_health_attribute)
+            subarray_ln_proxy_mock, subarray_ln_fqdn, health_state_value,
+            subarray_ln_health_attribute)
         assert tango_context.device.State() == DevState.FAULT
 
 
