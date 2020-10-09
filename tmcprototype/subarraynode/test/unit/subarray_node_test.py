@@ -1013,7 +1013,7 @@ def csp_health_state(request):
 def test_subarray_health_state_when_csubarray1_ln_is_in_health_state_after_start(mock_lower_devices,csp_health_state):
     csp_subarray1_ln_health_attribute = 'cspsubarrayHealthState'
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
-    csp_health_state = csubarray1_ln_is_in_health_state_after_start
+    csp_health_state = csp_health_state
     # health_state_value = csp_health_state
     dummy_event = create_dummy_event_healthstate_with_proxy(
         csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_health_state,
