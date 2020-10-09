@@ -344,7 +344,6 @@ def test_assign_resources_invalid_json_value():
     with fake_tango_system(CentralNode) as tango_context:
         with pytest.raises(tango.DevFailed) as df:
             tango_context.device.AssignResources(assign_release_invalid_str)
-
         # assert:
         assert const.STR_RESOURCE_ALLOCATION_FAILED in str(df.value)
 
@@ -356,7 +355,6 @@ def test_assign_resources_invalid_key():
         result = 'test'
         with pytest.raises(tango.DevFailed):
             result = tango_context.device.AssignResources(assign_invalid_key)
-
         # assert:
         assert 'test' in result
 
@@ -399,13 +397,11 @@ def test_assign_resources_raise_devfailed_when_reseource_reallocation():
         subarray1_proxy_mock.command_inout.side_effect = mock_subarray_call_assign_resources_success
         message = device_proxy.AssignResources(assign_input_str)
         assert json.loads(message) == success_response
-
+        reallocation_request = json.loads(assign_input_str)
+        reallocation_request["subarrayID"] = 2
     # act:
         with pytest.raises(tango.DevFailed) as df:
-            reallocation_request = json.loads(assign_input_str)
-            reallocation_request["subarrayID"] = 2
             device_proxy.AssignResources(json.dumps(reallocation_request))
-
     # assert:
     assert const.ERR_RECEPTOR_ID_REALLOCATION in str(df.value)
 
@@ -466,7 +462,6 @@ def test_release_resources_should_raise_devfailed_exception():
         # act:
         with pytest.raises(tango.DevFailed) as df:
             tango_context.device.ReleaseResources(release_input_str)
-
         # assert:
         assert "Error occurred while releasing resources from the Subarray" in str(df.value)
 
@@ -476,7 +471,6 @@ def test_release_resources_invalid_json_value():
     with fake_tango_system(CentralNode) as tango_context:
         with pytest.raises(tango.DevFailed) as df:
             tango_context.device.ReleaseResources(assign_release_invalid_str)
-
         # assert:
         assert "Invalid JSON format" in str(df.value)
 
@@ -536,10 +530,8 @@ def test_command_without_arg_should_raise_devfailed_exception(mock_central_lower
     csp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
     sdp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
-
     with pytest.raises(tango.DevFailed):
         device_proxy.command_inout(cmd_name)
-
     assert device_proxy.state() == DevState.FAULT
 
 

@@ -319,10 +319,8 @@ def test_command_should_raise_devfailed_exception(mock_central_lower_devices,com
     cmd_name= command_with_devfailed_error
     mccs_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
-
     with pytest.raises(tango.DevFailed):
         device_proxy.command_inout(cmd_name)
-
     # assert:
     assert device_proxy.state() == DevState.FAULT
 

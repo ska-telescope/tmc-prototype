@@ -327,7 +327,6 @@ def test_configure_should_raise_exception_when_called_with_invalid_json():
     with fake_tango_system(DishLeafNode) as tango_context:
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(config_track_invalid_str)
-
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
 
 
@@ -337,7 +336,6 @@ def test_configure_should_raise_exception_when_called_with_invalid_arguments():
         input_string.append(configure_invalid_arg)
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(input_string[0])
-
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
 
@@ -360,7 +358,6 @@ def test_command_should_raise_exception_when_called_with_invalid_arguments(inval
     with fake_tango_system(DishLeafNode) as tango_context:
         with pytest.raises(tango.DevFailed):
             tango_context.device.command_inout(cmd_name, input_arg)
-
         assert error_msg in tango_context.device.activityMessage
 
 
@@ -368,7 +365,6 @@ def test_track_should_raise_exception_when_called_with_invalid_arguments():
     with fake_tango_system(DishLeafNode) as tango_context:
         with pytest.raises(tango.DevFailed):
             tango_context.device.Track(track_invalid_arg)
-
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
 
@@ -439,7 +435,6 @@ def test_stop_track_should_raise_dev_failed(mock_dish_master):
     dish1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed):
         tango_context.device.StopTrack()
-
     assert const.ERR_EXE_STOP_TRACK_CMD in tango_context.device.activityMessage
 
 

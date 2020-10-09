@@ -861,17 +861,8 @@ def test_end_sb_should_command_subarray_to_end_sb_when_it_is_ready(mock_lower_de
     sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ENDSB)
     csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_GOTOIDLE)
     dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STOP_TRACK)
-    # mock pointing statewith pytest.raises(tango.DevFailed)
+    # mock pointing state
     assert tango_context.device.obsState == ObsState.IDLE
-
-
-@pytest.mark.skip("Fix test cases")
-def test_endsb_command_subarray_when_in_invalid_state():
-    with fake_tango_system(SubarrayNode) as tango_context:
-        tango_context.device.On()
-        tango_context.device.EndSB()
-        assert tango_context.device.obsState == ObsState.IDLE
-        assert tango_context.device.activityMessage == const.ERR_DEVICE_NOT_READY
 
 
 def test_end_sb_should_raise_devfailed_exception_when_csp_subarray_throws_devfailed_exception(mock_lower_devices):
@@ -1622,13 +1613,11 @@ def create_dummy_event_healthstate_with_error(proxy_mock, device_fqdn, health_st
 
 
 def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):
-    print("inside dummy event funct::::::::::::::")
     fake_event = Mock()
     fake_event.err = False
     fake_event.attr_name = f"{device_fqdn}/{attribute}"
     fake_event.attr_value.value = attr_value
     fake_event.device = proxy_mock
-    print("fake event is::::::", fake_event)
     return fake_event
 
 

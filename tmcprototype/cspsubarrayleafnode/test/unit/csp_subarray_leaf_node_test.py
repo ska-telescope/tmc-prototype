@@ -406,10 +406,8 @@ def test_goto_idle_should_command_csp_subarray_to_end_sb_when_it_is_ready(mock_c
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.READY
     device_proxy.GoToIdle()
-
     csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with\
         (const.CMD_GOTOIDLE, any_method(with_name='gotoidle_cmd_ended_cb'))
-
     assert_activity_message(device_proxy, const.STR_GOTOIDLE_SUCCESS)
 
 
