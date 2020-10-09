@@ -26,15 +26,9 @@ global:
       tag: 9.3.1
       pullPolicy: IfNotPresent
 
-mccs: 
-  tango-base:
-    enabled: false
-
 tmc-proto: 
   dsconfig:
     configuration_file: data/tmc-low-config.json
-
-  ## this list is now updated
   deviceServers:
   - name: subarraynode1
     function: observation-execution
@@ -117,18 +111,9 @@ tmc-proto:
         cpu: 100m
         memory: 128Mi 
 
-
-tango-base:
-  vnc:
-    enabled: true
-  tangorest:
-    enabled: true
-  tangotest:
-    enabled: true
-  ingress:
-    enabled: true
-  tangodb:
-    use_pv: false
+mccs: 
+  tango-base:
+    enabled: false
 
 webjive:
   ingress:
