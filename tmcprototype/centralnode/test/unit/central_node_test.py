@@ -506,20 +506,6 @@ def test_standby(mock_central_lower_devices):
     assert device_proxy.state() == DevState.OFF
 
 
-def test_standby_should_raise_devfailed_exception(mock_central_lower_devices):
-    device_proxy, subarray1_proxy_mock, dish_ln1_proxy_mock, csp_master_ln_proxy_mock, sdp_master_ln_proxy_mock = mock_central_lower_devices
-    dish_ln1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
-    csp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
-    sdp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
-    subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
-
-    with pytest.raises(tango.DevFailed):
-        device_proxy.StandByTelescope()
-
-    # assert:
-    assert device_proxy.state() == DevState.FAULT
-
-
 def test_startup(mock_central_lower_devices):
     device_proxy, subarray1_proxy_mock, dish_ln1_proxy_mock, csp_master_ln_proxy_mock, sdp_master_ln_proxy_mock = mock_central_lower_devices
     # act:
@@ -532,16 +518,28 @@ def test_startup(mock_central_lower_devices):
     assert device_proxy.state() == DevState.ON
 
 
-def test_startup_should_raise_devfailed_exception(mock_central_lower_devices):
+@pytest.fixture(
+    scope="function",
+    params=[
+        ("StandByTelescope"),
+        ("StartUpTelescope")
+    ])
+def command_without_arg_devfailed(request):
+    cmd_name = request.param
+    return cmd_name
+
+
+def test_command_without_arg_should_raise_devfailed_exception(mock_central_lower_devices, command_without_arg_devfailed):
     device_proxy, subarray1_proxy_mock, dish_ln1_proxy_mock, csp_master_ln_proxy_mock, sdp_master_ln_proxy_mock = mock_central_lower_devices
+    cmd_name = command_without_arg_devfailed
     dish_ln1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     csp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
     sdp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
-    with pytest.raises(tango.DevFailed):
-        device_proxy.StartUpTelescope()
 
-    # assert:
+    with pytest.raises(tango.DevFailed):
+        device_proxy.command_inout(cmd_name)
+
     assert device_proxy.state() == DevState.FAULT
 
 
@@ -593,7 +591,7 @@ def test_telescope_health_state_is_ok_when_sdp_master_leaf_node_is_ok_after_star
         assert tango_context.device.telescopeHealthState == HealthState.OK
 
 
-def test_telescope_health_state_is_ok_when_subarray_leaf_node_is_ok_after_start(mock_subarraynode_device):
+def test_telescope_health_state_is_ok_when_subarray1_is_ok_after_start(mock_subarraynode_device):
     device_proxy , subarray1_device_proxy_mock, subarray1_fqdn, event_subscription_map = mock_subarraynode_device
     subarray1_health_attribute = 'healthState'
     dummy_event = create_dummy_event(subarray1_fqdn, HealthState.OK)
@@ -602,55 +600,33 @@ def test_telescope_health_state_is_ok_when_subarray_leaf_node_is_ok_after_start(
     assert device_proxy.telescopeHealthState == HealthState.OK
 
 
-def test_telescope_health_state_is_ok_when_subarray2_leaf_node_is_ok_after_start():
-    # arrange:
-    subarray2_fqdn = 'ska_mid/tm_subarray_node/2'
-    subarray2_health_attribute = 'healthState'
+@pytest.mark.parametrize(
+    "subarray_node_fqdn",
+    [
+        ("ska_mid/tm_subarray_node/2"),
+        ("ska_mid/tm_subarray_node/3")
+    ]
+)
+def test_telescope_health_state_is_ok_when_subarray_is_ok_after_start(subarray_node_fqdn):
+    subarray_health_attribute = 'healthState'
     initial_dut_properties = {
-        'TMMidSubarrayNodes': subarray2_fqdn
+        'TMMidSubarrayNodes': subarray_node_fqdn
     }
 
     event_subscription_map = {}
-    subarray2_device_proxy_mock = Mock()
-    subarray2_device_proxy_mock.subscribe_event.side_effect = (
+    subarray_device_proxy_mock = Mock()
+    subarray_device_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args,
                **kwargs: event_subscription_map.update({attr_name: callback}))
 
     proxies_to_mock = {
-        subarray2_fqdn: subarray2_device_proxy_mock
+        subarray_node_fqdn: subarray_device_proxy_mock
     }
 
     with fake_tango_system(CentralNode, initial_dut_properties, proxies_to_mock) as tango_context:
         # act:
-        dummy_event = create_dummy_event(subarray2_fqdn, HealthState.OK)
-        event_subscription_map[subarray2_health_attribute](dummy_event)
-
-        # assert:
-        assert tango_context.device.telescopeHealthState == HealthState.OK
-
-
-def test_telescope_health_state_is_ok_when_subarray3_leaf_node_is_ok_after_start():
-    # arrange:
-    subarray3_fqdn = 'ska_mid/tm_subarray_node/3'
-    subarray3_health_attribute = 'healthState'
-    initial_dut_properties = {
-        'TMMidSubarrayNodes': subarray3_fqdn
-    }
-
-    event_subscription_map = {}
-    subarray3_device_proxy_mock = Mock()
-    subarray3_device_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args,
-               **kwargs: event_subscription_map.update({attr_name: callback}))
-
-    proxies_to_mock = {
-        subarray3_fqdn: subarray3_device_proxy_mock
-    }
-
-    with fake_tango_system(CentralNode, initial_dut_properties, proxies_to_mock) as tango_context:
-        # act:
-        dummy_event = create_dummy_event(subarray3_fqdn, HealthState.OK)
-        event_subscription_map[subarray3_health_attribute](dummy_event)
+        dummy_event = create_dummy_event(subarray_node_fqdn, HealthState.OK)
+        event_subscription_map[subarray_health_attribute](dummy_event)
 
         # assert:
         assert tango_context.device.telescopeHealthState == HealthState.OK
