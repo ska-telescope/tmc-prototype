@@ -439,8 +439,8 @@ def test_assign_resource_should_raise_exception_when_sdp_subarray_ln_throws_devf
     sdp_subarray1_proxy_mock.subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
             update({attr_name: callback}))
-    sdp_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_with_arg
     tango_context.device.On()
+    sdp_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_with_arg
     with pytest.raises(tango.DevFailed) as df:
         tango_context.device.AssignResources(assign_input_str)
     assert tango_context.device.State() == DevState.ON
