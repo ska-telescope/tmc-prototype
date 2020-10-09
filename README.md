@@ -127,9 +127,9 @@ document for installation guide.
 As depicted above, the higher level of TMC devices are dependent on lower level devices in normal operation. 
 However for better testability, the unit testing is carried out by mocking the dependent devices. 
 This enables us to test each of the nodes independently without setting up the entire hierarchy of control nodes.
-In order to execute the entire suit of test cases in the repository, a command in makefile is implemented.
-
-The command to run the unit tests is: `make unit-test`
+In order to execute the entire suit of test cases in the repository, a command in makefile is implemented. \
+The command to run the unit tests is: `make unit-test` \
+In 'make unit-test' job, *tox* based on Python3.7 is used to create testing environment.
 
 ## 4.2 Integration Testing
 Integration Testing is performed on SKA Integration on K8S environment. For this testing TMC image is required to 

@@ -16,11 +16,10 @@ from tango import DeviceProxy, ApiUtil, DebugIt, DevState, AttrWriteType, DevFai
 from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode, BaseCommand
-from ska.base.control_model import HealthState, SimulationMode, TestMode, ObsState
+from ska.base.control_model import HealthState, SimulationMode, TestMode
 
 # Additional import
 from . import const, release
-from .exceptions import InvalidObsStateError
 
 # PROTECTED REGION END #    //  MccsMasterLeafNode imports
 
@@ -136,15 +135,6 @@ class MccsMasterLeafNode(SKABaseDevice):
     # Commands
     # --------
 
-    def validate_obs_state(self):
-        if self._mccs_master_proxy.obsState == ObsState.EMPTY:
-            self.logger.info("Mccs Master is in required obsState, resources will be assigned")
-        else:
-            self.logger.error("Mccs Master is not in EMPTY obsState")
-            self._read_activity_message = "Error in device obsState"
-            raise InvalidObsStateError("Mccs Master is not in EMPTY obsState")
-
-    
     class AssignResourcesCommand(BaseCommand):
         """
         A class for MccsMasterLeafNode's AssignResources() command.
@@ -224,9 +214,7 @@ class MccsMasterLeafNode(SKABaseDevice):
                 "subarray_id": 1,
                 "station_ids": [1,2],
                 "channels": [1,2,3,4,5,6,7,8],
-                "station_beam_ids": [1],
-                "tile_ids": [1,2,3,4]
-        
+                "station_beam_ids": [1]
             }
 
             :return: None
@@ -278,15 +266,6 @@ class MccsMasterLeafNode(SKABaseDevice):
     def AssignResources(self, argin):
         """ Invokes AssignResources command on Mcccs Master"""
         handler = self.get_command_object("AssignResources")
-        try:
-            self.validate_obs_state()
-
-        except InvalidObsStateError as error:
-            self.logger.exception(error)
-            tango.Except.throw_exception("ObsState is not in EMPTY state",
-                                         "Mccs master node raised exception",
-                                         "MccsMaster.Allocate",
-                                         tango.ErrSeverity.ERR)
         handler(argin)
     
 

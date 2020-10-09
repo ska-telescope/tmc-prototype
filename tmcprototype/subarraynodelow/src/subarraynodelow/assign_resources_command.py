@@ -15,7 +15,7 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
     """
     def do(self, argin):
         """
-        Assigns the resources to the subarray. It accepts station ids, channels, station beam ids, and tile ids
+        Assigns the resources to the subarray. It accepts station ids, channels, station beam ids
 
         :param argin: DevString in JSON form containing following fields:
             station_ids: list of integers
@@ -24,11 +24,10 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
 
             station_beam_ids: list of integers
 
-            tile_ids: list of integers
 
         Example:
 
-        {"station_ids": [1, 2], "channels": [1, 2, 3, 4, 5, 6, 7, 8], "station_beam_ids": [1], "tile_ids": [1, 2, 3, 4]}
+        {"station_ids": [1, 2], "channels": [1, 2, 3, 4, 5, 6, 7, 8], "station_beam_ids": [1]}
 
         :return: A tuple containing ResultCode and string.
 
