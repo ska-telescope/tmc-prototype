@@ -975,7 +975,6 @@ def pointing_state(request):
 # Test Pointing State Callback
 def test_pointing_state_is_pointing_state(mock_lower_devices, pointing_state):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
-    # pointing_state = pointing_state
     dish_pointing_state_attribute = "dishPointingState"
     tango_context.device.On()
     tango_context.device.AssignResources(assign_input_str)
@@ -1013,8 +1012,6 @@ def csp_health_state(request):
 def test_subarray_health_state_when_csubarray1_ln_is_in_health_state_after_start(mock_lower_devices,csp_health_state):
     csp_subarray1_ln_health_attribute = 'cspsubarrayHealthState'
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
-    csp_health_state = csp_health_state
-    # health_state_value = csp_health_state
     dummy_event = create_dummy_event_healthstate_with_proxy(
         csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_health_state,
         csp_subarray1_ln_health_attribute)
@@ -1052,33 +1049,33 @@ def test_subarray_health_state_with_error_event(mock_lower_devices):
     assert const.ERR_SUBSR_SA_HEALTH_STATE in tango_context.device.activityMessage
 
 
-# @pytest.mark.parametrize(
-#     "device_fqdn, attribute_name",
-#     [
-#         ("ska_mid/tm_leaf_node/csp_subarray01", 'cspsubarrayHealthState'),
-#         ("ska_mid/tm_leaf_node/sdp_subarray01", 'sdpSubarrayHealthState'),
-#     ]
-# )
 
 
-@pytest.fixture(
-    scope = "function",
-    params=[
-        ('ska_mid/tm_leaf_node/csp_subarray01', 'cspsubarrayHealthState'),
-        ('ska_mid/tm_leaf_node/sdp_subarray01', 'sdpSubarrayHealthState'),
-    ])
-def subarray_fqdn_and_health_state_attribute(request):
-    device_fqdn, attribute_name = request.param
-    return device_fqdn, attribute_name
 
+# @pytest.fixture(
+#     scope = "function",
+#     params=[
+#         ('ska_mid/tm_leaf_node/csp_subarray01', 'cspsubarrayHealthState'),
+#         ('ska_mid/tm_leaf_node/sdp_subarray01', 'sdpSubarrayHealthState'),
+#     ])
+# def subarray_fqdn_and_health_state_attribute(request):
+#     device_fqdn, attribute_name = request.param
+#     return device_fqdn, attribute_name
 
+@pytest.mark.parametrize(
+    "subarray_ln_fqdn, subarray_ln_health_attribute, fqdn_property",
+    [
+        ("ska_mid/tm_leaf_node/csp_subarray01", 'cspsubarrayHealthState','CspSubarrayLNFQDN'),
+        ("ska_mid/tm_leaf_node/sdp_subarray01", 'sdpSubarrayHealthState','SdpSubarrayLNFQDN'),
+    ]
+)
 # Test case for event subscribtion
-def test_subarray_health_state_event_to_raise_devfailed_exception_for_csp_subarray_ln(subarray_fqdn_and_health_state_attribute):
-    device_fqdn, attribute_name = subarray_fqdn_and_health_state_attribute
-    subarray_ln_fqdn = device_fqdn
-    subarray_ln_health_attribute = attribute_name
+def test_subarray_health_state_event_to_raise_devfailed_exception_for_csp_subarray_ln(subarray_ln_fqdn, subarray_ln_health_attribute, fqdn_property):
+    # device_fqdn, attribute_name = subarray_fqdn_and_health_state_attribute
+    # subarray_ln_fqdn = device_fqdn
+    # subarray_ln_health_attribute = attribute_name
     initial_dut_properties = {
-        'SubarrayLNFQDN': subarray_ln_fqdn
+        fqdn_property: subarray_ln_fqdn
     }
 
     subarray_ln_proxy_mock = Mock()
@@ -1535,7 +1532,7 @@ def test_restart_should_command_subarray_to_restart_when_it_is_Fault(mock_lower_
     assert tango_context.device.obsState == ObsState.EMPTY
 
 
-def test_restart_should_restart_subarray_when_it_is_invalid_state(mock_lower_devices):
+def test_restart_should_not_restart_subarray_when_it_is_invalid_state(mock_lower_devices):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
     tango_context.device.On()
     with pytest.raises(tango.DevFailed) as df:
@@ -1644,7 +1641,7 @@ def test_obsreset_should_command_subarray_to_obsreset_when_it_is_Fault(mock_lowe
     assert tango_context.device.obsState == ObsState.IDLE
 
 
-def test_obsreset_should_command_subarray_to_restart_when_it_is_invalid_state(mock_lower_devices):
+def test_obsreset_should_not_command_subarray_to_Obsreset_when_it_is_invalid_state(mock_lower_devices):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
     tango_context.device.On()
     with pytest.raises(tango.DevFailed) as df:
