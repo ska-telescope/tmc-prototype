@@ -120,7 +120,7 @@ def central_node_test_health_state(request):
     scope="function",
     params= [
         ("AssignResources",const.STR_RESOURCE_ALLOCATION_FAILED, assign_invalid_key),
-        ("ReleaseResources","Invalid JSON format", release_invalid_key)
+        ("ReleaseResources",const.ERR_INVALID_JSON, release_invalid_key)
 ])
 def command_raise_error(request):
     cmd_name,error_msg,input_str= request.param
@@ -204,15 +204,12 @@ def test_assign_resources(mock_central_lower_devices):
     subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, assign_input_str_to_subarray)
     mccs_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, assign_input_str)
 
-
-
 def test_assign_resources_should_raise_devfailed_exception_when_mccs_master_ln_throws_devfailed_exception(
         mock_central_lower_devices):
     # arrange
     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     mccs_master_ln_proxy_mock.DevState = DevState.OFF
     subarray1_proxy_mock.DevState = DevState.ON
-
     mccs_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
     # act
     with pytest.raises(tango.DevFailed) as df:
@@ -227,7 +224,6 @@ def test_assign_resources_should_raise_devfailed_exception_when_subarray_node_th
     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     subarray1_proxy_mock.DevState = DevState.OFF
     mccs_master_ln_proxy_mock.DevState = DevState.ON
-
     subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
     # act
     with pytest.raises(tango.DevFailed) as df:
