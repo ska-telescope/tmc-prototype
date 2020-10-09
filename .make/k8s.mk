@@ -20,6 +20,8 @@ k8s: ## Which kubernetes are we connected to
 	@echo ""
 	@echo "Helm version:"
 	@helm version --client
+clean: ## clean out references to chart tgz's
+	@rm -f ./charts/*/charts/*.tgz ./charts/*/Chart.lock ./charts/*/requirements.lock ./repository/*
 
 watch:
 	watch kubectl get all,pv,pvc,ingress -n $(KUBE_NAMESPACE)
@@ -82,7 +84,7 @@ install-chart: namespace namespace_sdp ## install the helm chart with name HELM_
 
 # This job is used to delete a deployment of tmc-mid charts
 # Currently umbreall chart for tmc-mid path is given
-uninstall-chart: ## uninstall the tmc-mid helm chart on the namespace tmcprototype
+uninstall-chart: clean ## uninstall the tmc-mid helm chart on the namespace tmcprototype
 	helm template  $(HELM_RELEASE) $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE)  | kubectl delete -f - ; \
 	helm uninstall  $(HELM_RELEASE) --namespace $(KUBE_NAMESPACE) 
 
