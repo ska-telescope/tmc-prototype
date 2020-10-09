@@ -34,45 +34,89 @@ tmc-proto:
   dsconfig:
     configuration_file: data/tmc-low-config.json
 
-  ## this list has to change 
+  ## this list is now updated
   deviceServers:
-    - name: subarraynode1
-      subsystem: subarray1
-      function: observation-execution
-      domain: subarray
-      image: "{{ .Values.tmcprototype.image.registry }}/{{ .Values.tmcprototype.image.image }}:{{ .Values.tmcprototype.image.tag }}"
-      imagePullPolicy: "{{ .Values.tmcprototype.image.pullPolicy }}"
-      command:
-        - sh
-      args:
-        - -c
-        - "retry --max=10 -- tango_admin --ping-device ska_low/tm_leaf_node/mccs_subarray01 &&\
-              /usr/local/bin/SubarrayNodeLowDS sa1"
+  - name: subarraynode1
+    function: observation-execution
+    domain: subarray
+    args:
+      - -c
+      - "/usr/local/bin/SubarrayNodeLowDS sa1"
+    depends_on:
+      - device: ska_low/tm_leaf_node/mccs_subarray01
+    image:
+      registry: nexus.engageska-portugal.pt/tango-example
+      image: tmcprototype
+      tag: 0.2.11
+      pullPolicy: IfNotPresent
+    resources:
+      limits:
+        cpu: 300m
+        memory: 500Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi 
+  - name: centralnode
+    function: telescope-monitoring
+    domain: general-monitoring
+    args:
+      - -c
+      - "/usr/local/bin/CentralNodeLowDS 01"
+    depends_on:
+      - device: ska_low/tm_subarray_node/1
+    image:
+      registry: nexus.engageska-portugal.pt/tango-example
+      image: tmcprototype
+      tag: 0.2.11
+      pullPolicy: IfNotPresent
+    resources:
+      limits:
+        cpu: 300m
+        memory: 500Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+  - name: mccssmasterleafnode
+    function: observation-execution
+    domain: general-monitoring
+    args:
+      - -c
+      - "/usr/local/bin/MccsMasterLeafNodeDS 01"
+    depends_on:
+      - device: low-mccs/control/control
+    image:
+      registry: nexus.engageska-portugal.pt/tango-example
+      image: tmcprototype
+      tag: 0.2.11
+      pullPolicy: IfNotPresent
+    resources:
+      limits:
+        cpu: 300m
+        memory: 500Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi  
+  - name: mccssubarrayleafnode1
+    function: observation-execution
+    domain: subarray
+    args:
+      - -c
+      - "/usr/local/bin/MccsSubarrayLeafNodeDS 01"
+    depends_on:
+      - device: low-mccs/subarray/01
+    image:
+      registry: nexus.engageska-portugal.pt/tango-example
+      image: tmcprototype
+      tag: 0.2.11
+      pullPolicy: IfNotPresent
+    resources:
+      limits:
+        cpu: 300m
+        memory: 500Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi 
 
-    - name: centralnode
-      subsystem: monitoring
-      function: telescope-monitoring
-      domain: general-monitoring
-      image: "{{ .Values.tmcprototype.image.registry }}/{{ .Values.tmcprototype.image.image }}:{{ .Values.tmcprototype.image.tag }}"
-      imagePullPolicy: "{{ .Values.tmcprototype.image.pullPolicy }}"
-      command:
-        - sh
-      args:
-        - -c
-        - "retry --max=10 -- tango_admin --ping-device ska_low/tm_subarray_node/1 &&\
-              /usr/local/bin/CentralNodeLowDS 01"
-
-    - name: tm-alarmhandler
-      subsystem: alarm-management
-      function: alarm-management
-      domain: general-monitoring
-      image: "{{ .Values.tmalarmhandler.image.registry }}/{{ .Values.tmalarmhandler.image.image }}:{{ .Values.tmalarmhandler.image.tag }}"
-      imagePullPolicy: "{{ .Values.tmalarmhandler.image.pullPolicy }}"
-      command:
-        - sh
-      args:
-        - -c
-        - "./app/alarmhandler-srv 01"
 
 tango-base:
   vnc:
@@ -85,16 +129,6 @@ tango-base:
     enabled: true
   tangodb:
     use_pv: false
-
-logging:
-  elastic:
-    enabled: false
-  fluentd:
-    enabled: false
-  kibana:
-    enabled: false
-  tests:
-    enabled: false
 
 webjive:
   ingress:
