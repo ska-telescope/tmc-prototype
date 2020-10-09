@@ -1,0 +1,86 @@
+# Default values for tmc-proto.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+display: ":0"
+xauthority: "~/.Xauthority"
+
+system: TM-low
+telescope: SKA-low
+
+tmcprototype:
+  enabled: true
+  image:
+    registry: nexus.engageska-portugal.pt/tango-example
+    image: tmcprototype
+    tag: 0.2.11
+    pullPolicy: IfNotPresent
+
+tmalarmhandler:
+  enabled: true
+  image:
+    registry: nexus.engageska-portugal.pt/tango-example
+    image: tmalarmhandler
+    tag: latest
+    pullPolicy: Always
+
+dsconfig:
+  image:
+    registry: nexus.engageska-portugal.pt/ska-docker
+    image: tango-dsconfig
+    tag: 1.2.5.1
+    pullPolicy: IfNotPresent
+
+deviceServers:
+  - name: subarraynode1
+    subsystem: subarray1
+    function: observation-execution
+    domain: subarray
+    image: "{{ .Values.tmcprototype.image.registry }}/{{ .Values.tmcprototype.image.image }}:{{ .Values.tmcprototype.image.tag }}"
+    imagePullPolicy: "{{ .Values.tmcprototype.image.pullPolicy }}"
+    command:
+      - sh
+    args:
+      - -c
+      - "retry --max=10 -- tango_admin --ping-device ska_low/tm_leaf_node/mccs_subarray01 &&\
+             /usr/local/bin/SubarrayNodeLowDS sa1"
+
+  - name: centralnode
+    subsystem: monitoring
+    function: telescope-monitoring
+    domain: general-monitoring
+    image: "{{ .Values.tmcprototype.image.registry }}/{{ .Values.tmcprototype.image.image }}:{{ .Values.tmcprototype.image.tag }}"
+    imagePullPolicy: "{{ .Values.tmcprototype.image.pullPolicy }}"
+    command:
+      - sh
+    args:
+      - -c
+      - "retry --max=10 -- tango_admin --ping-device ska_low/tm_subarray_node/1 &&\
+             /usr/local/bin/CentralNodeLowDS 01"
+
+  - name: tm-alarmhandler
+    subsystem: alarm-management
+    function: alarm-management
+    domain: general-monitoring
+    image: "{{ .Values.tmalarmhandler.image.registry }}/{{ .Values.tmalarmhandler.image.image }}:{{ .Values.tmalarmhandler.image.tag }}"
+    imagePullPolicy: "{{ .Values.tmalarmhandler.image.pullPolicy }}"
+    command:
+      - sh
+    args:
+      - -c
+      - "./app/alarmhandler-srv 01"
+
+
+nodeSelector: {}
+
+affinity: {}
+
+tolerations: []
+
+# resources:
+#   requests:
+#     cpu: 150m     # 100m = 0.1 CPU
+#     memory: 55Mi # 128Mi = 0.125 GB mem
+#   limits:
+#     cpu: 200m     # 200m = 0.2 CPU
+#     memory: 65Mi # 256Mi = 0.25 GB mem
