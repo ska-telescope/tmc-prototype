@@ -1051,16 +1051,30 @@ def test_subarray_health_state_with_error_event(mock_lower_devices):
     event_subscription_map[csp_subarray1_ln_health_attribute](dummy_event)
     assert const.ERR_SUBSR_SA_HEALTH_STATE in tango_context.device.activityMessage
 
-@pytest.mark.parametrize(
-    "device_fqdn, attribute_name",
-    [
-        ("ska_mid/tm_leaf_node/csp_subarray01", 'cspsubarrayHealthState'),
-        ("ska_mid/tm_leaf_node/sdp_subarray01", 'sdpSubarrayHealthState'),
-    ]
-)
+
+# @pytest.mark.parametrize(
+#     "device_fqdn, attribute_name",
+#     [
+#         ("ska_mid/tm_leaf_node/csp_subarray01", 'cspsubarrayHealthState'),
+#         ("ska_mid/tm_leaf_node/sdp_subarray01", 'sdpSubarrayHealthState'),
+#     ]
+# )
+
+
+@pytest.fixture(
+    scope = "function",
+    params=[
+        ('ska_mid/tm_leaf_node/csp_subarray01', 'cspsubarrayHealthState'),
+        ('ska_mid/tm_leaf_node/sdp_subarray01', 'sdpSubarrayHealthState'),
+    ])
+def subarray_fqdn_and_health_state_attribute(request):
+    device_fqdn, attribute_name = request.param
+    return device_fqdn, attribute_name
+
 
 # Test case for event subscribtion
-def test_subarray_health_state_event_to_raise_devfailed_exception_for_csp_subarray_ln(device_fqdn, attribute_name):
+def test_subarray_health_state_event_to_raise_devfailed_exception_for_csp_subarray_ln(subarray_fqdn_and_health_state_attribute):
+    device_fqdn, attribute_name = subarray_fqdn_and_health_state_attribute
     subarray_ln_fqdn = device_fqdn
     subarray_ln_health_attribute = attribute_name
     initial_dut_properties = {
@@ -1080,7 +1094,6 @@ def test_subarray_health_state_event_to_raise_devfailed_exception_for_csp_subarr
             subarray_ln_proxy_mock, subarray_ln_fqdn, health_state_value,
             subarray_ln_health_attribute)
         assert tango_context.device.State() == DevState.FAULT
-
 
 # def test_subarray_health_state_event_to_raise_devfailed_exception_for_csp_subarray_ln():
 #     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
