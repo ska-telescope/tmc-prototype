@@ -5,6 +5,13 @@ type: application
 version: 0.0.2
 appVersion: 1.16.0
 icon: https://www.skatelescope.org/wp-content/uploads/2016/07/09545_NEW_LOGO_2014.png
+maintainers:
+  - name: Aditya Dange
+    email: adityadange.ska@gmail.com
+  - name: Snehal Nakave
+    email: snehal.ska@gmail.com
+  - name: Kalyani Thigale
+    email: kalyanit.ska@gmail.com
 dependencies:
 - name: tango-base
   version: 0.2.2
