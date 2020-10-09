@@ -1,6 +1,7 @@
 # In/Out command constants
 CMD_ASSIGN_RESOURCES = "AssignResources"
 CMD_RELEASE_RESOURCES = "ReleaseAllResources"
+CMD_RELEASE_MCCS_RESOURCES = "ReleaseResources"
 CMD_ON = "On"
 CMD_OFF = "Off"
 
