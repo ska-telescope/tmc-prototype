@@ -365,7 +365,7 @@ test:
     - make install-chart
     - make wait
     - make smoketest
-    - make test
+    #- make test
   after_script:
     - make uninstall-chart
     - make delete_namespace
