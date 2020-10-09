@@ -51,6 +51,14 @@ delete_namespace: ## delete the kubernetes namespace
 	kubectl describe namespace $(KUBE_NAMESPACE) && kubectl delete namespace $(KUBE_NAMESPACE); \
 	fi
 
+delete_namespace-sdp: ## delete the kubernetes namespace
+	@if [ "default" == "$(KUBE_NAMESPACE_SDP)" ] || [ "kube-system" == "$(KUBE_NAMESPACE_SDP)" ]; then \
+	echo "You cannot delete Namespace: $(KUBE_NAMESPACE_SDP)"; \
+	exit 1; \
+	else \
+	kubectl describe namespace $(KUBE_NAMESPACE_SDP) && kubectl delete namespace $(KUBE_NAMESPACE_SDP); \
+	fi
+
 # To package a chart directory into a chart archive
 package: ## package charts
 	@echo "Packaging helm charts. Any existing file won't be overwritten."; \

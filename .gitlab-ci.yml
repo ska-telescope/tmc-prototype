@@ -369,6 +369,7 @@ test:
   after_script:
     - make uninstall-chart
     - make delete_namespace
+    - make delete_namespace-sdp
   environment:
     name: test
   artifacts:
