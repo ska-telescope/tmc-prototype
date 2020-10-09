@@ -880,8 +880,6 @@ def test_end_sb_should_raise_devfailed_exception_when_csp_subarray_throws_devfai
     sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
     dish_pointing_state_attribute = "dishPointingState"
     csp_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_end_command
-    # with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
-    #                        proxies_to_mock=proxies_to_mock) as tango_context:
     tango_context.device.On()
     tango_context.device.AssignResources(assign_input_str)
     attribute = 'ObsState'
@@ -1049,19 +1047,6 @@ def test_subarray_health_state_with_error_event(mock_lower_devices):
     assert const.ERR_SUBSR_SA_HEALTH_STATE in tango_context.device.activityMessage
 
 
-
-
-
-# @pytest.fixture(
-#     scope = "function",
-#     params=[
-#         ('ska_mid/tm_leaf_node/csp_subarray01', 'cspsubarrayHealthState'),
-#         ('ska_mid/tm_leaf_node/sdp_subarray01', 'sdpSubarrayHealthState'),
-#     ])
-# def subarray_fqdn_and_health_state_attribute(request):
-#     device_fqdn, attribute_name = request.param
-#     return device_fqdn, attribute_name
-
 @pytest.mark.parametrize(
     "subarray_ln_fqdn, subarray_ln_health_attribute, fqdn_property",
     [
@@ -1071,9 +1056,7 @@ def test_subarray_health_state_with_error_event(mock_lower_devices):
 )
 # Test case for event subscribtion
 def test_subarray_health_state_event_to_raise_devfailed_exception_for_csp_subarray_ln(subarray_ln_fqdn, subarray_ln_health_attribute, fqdn_property):
-    # device_fqdn, attribute_name = subarray_fqdn_and_health_state_attribute
-    # subarray_ln_fqdn = device_fqdn
-    # subarray_ln_health_attribute = attribute_name
+    
     initial_dut_properties = {
         fqdn_property: subarray_ln_fqdn
     }
@@ -1091,47 +1074,6 @@ def test_subarray_health_state_event_to_raise_devfailed_exception_for_csp_subarr
             subarray_ln_proxy_mock, subarray_ln_fqdn, health_state_value,
             subarray_ln_health_attribute)
         assert tango_context.device.State() == DevState.FAULT
-
-# def test_subarray_health_state_event_to_raise_devfailed_exception_for_csp_subarray_ln():
-#     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
-#     csp_subarray1_ln_health_attribute = 'cspsubarrayHealthState'
-#     initial_dut_properties = {
-#         'CspSubarrayLNFQDN': csp_subarray1_ln_fqdn
-#     }
-
-#     csp_subarray1_ln_proxy_mock = Mock()
-#     csp_subarray1_ln_proxy_mock.subscribe_event.side_effect = raise_devfailed_for_event_subscription
-
-#     proxies_to_mock = {
-#         csp_subarray1_ln_fqdn: csp_subarray1_ln_proxy_mock
-#     }
-
-#     with fake_tango_system(SubarrayNode, initial_dut_properties, proxies_to_mock) as tango_context:
-#         health_state_value = HealthState.FAILED
-#         dummy_event = create_dummy_event_healthstate_with_proxy(
-#             csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn, health_state_value,
-#             csp_subarray1_ln_health_attribute)
-#         assert tango_context.device.State() == DevState.FAULT
-
-
-# def test_subarray_health_state_event_to_raise_devfailed_exception_for_sdp_subarray_ln():
-#     sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
-#     sdp_subarray1_ln_health_attribute = 'sdpSubarrayHealthState'
-#     initial_dut_properties = {
-#         'SdpSubarrayLNFQDN': sdp_subarray1_ln_fqdn
-#     }
-#     sdp_subarray1_ln_proxy_mock = Mock()
-#     sdp_subarray1_ln_proxy_mock.subscribe_event.side_effect = raise_devfailed_for_event_subscription
-#     proxies_to_mock = {
-#         sdp_subarray1_ln_fqdn: sdp_subarray1_ln_proxy_mock
-#     }
-
-#     with fake_tango_system(SubarrayNode, initial_dut_properties, proxies_to_mock) as tango_context:
-#         health_state_value = HealthState.FAILED
-#         dummy_event = create_dummy_event_healthstate_with_proxy(
-#             sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn, health_state_value,
-#             sdp_subarray1_ln_health_attribute)
-#         assert tango_context.device.State() == DevState.FAULT
 
 
 @pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
