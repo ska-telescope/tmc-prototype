@@ -362,14 +362,13 @@ test:
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.2
   script:
     - kubectl version
-    #- make delete_namespace
-    - make delete_namespace-sdp
-    #- make install-chart
-    #- make wait
-    #- make smoketest
+    - make install-chart
+    - make wait
+    - make smoketest
     #- make test
   after_script:
-    #- make uninstall-chart
+    - make uninstall-chart
+    - make delete_namespace
     - make delete_namespace-sdp
   environment:
     name: test
