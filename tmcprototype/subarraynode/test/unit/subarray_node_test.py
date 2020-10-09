@@ -1535,7 +1535,7 @@ def test_restart_should_command_subarray_to_restart_when_it_is_Fault(mock_lower_
     assert tango_context.device.obsState == ObsState.EMPTY
 
 
-def test_restart_should_command_subarray_to_restart_when_it_is_invalid_state(mock_lower_devices):
+def test_restart_should_restart_subarray_when_it_is_invalid_state(mock_lower_devices):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
     tango_context.device.On()
     with pytest.raises(tango.DevFailed) as df:
