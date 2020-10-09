@@ -169,7 +169,7 @@ def test_command_with_callback_method_with_event_error(mock_mccs_subarray,event_
 
 def test_command_with_callback_method_with_event_error_with_arg(mock_mccs_subarray,event_subscription, command_with_arg):
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
-    cmd_name, cmd_arg, requested_cmd, ObsState = command_with_arg
+    cmd_name, cmd_arg, requested_cmd, ObsState, _ = command_with_arg
     mccs_subarray1_proxy_mock.obsState = ObsState
     device_proxy.command_inout(cmd_name, cmd_arg)
     dummy_event = command_callback_with_event_error(requested_cmd)
