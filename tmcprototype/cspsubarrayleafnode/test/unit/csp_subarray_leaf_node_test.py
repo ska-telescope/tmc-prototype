@@ -184,8 +184,8 @@ def test_obsreset_command_with_callback_method(mock_csp_subarray,event_subscript
 def test_assign_resources_should_raise_devfailed_exception(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
-    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_with_arg
     device_proxy.On()
+    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_with_arg
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.AssignResources(assign_input_str)
     assert const.ERR_DEVFAILED_MSG in str(df.value)
