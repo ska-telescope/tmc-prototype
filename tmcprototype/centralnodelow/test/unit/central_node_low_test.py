@@ -258,6 +258,19 @@ def test_command_invalid_json_value(mock_central_lower_devices,command_raise_err
     # assert
     assert error_msg in str(df.value)
 
+def test_release_resources(mock_central_lower_devices):
+    # arrange
+    device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
+    # mocking subarray device state as ON as per new state model
+    subarray1_proxy_mock.DevState = DevState.ON
+    mccs_master_ln_proxy_mock.DevState = DevState.ON
+    
+    # act:
+    device_proxy.ReleaseResources(release_input_str)
+    #assert
+    subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
+    mccs_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_MCCS_RESOURCES, release_input_str)
+
 def test_release_resources_should_raise_devfailed_exception_when_subarray_node_throws_devfailed_exception(
         mock_central_lower_devices):
     # arrange
