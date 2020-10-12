@@ -24,4 +24,7 @@ dependencies:
   repository: file://../tmc-proto
 - name: mccs
   version: 0.0.2
-  repository: https://nexus.engageska-portugal.pt/repository/helm-chart
+  repository: file://../../../ska-low-mccs/charts/mccs
+- name: tango-util
+  version: 0.0.1
+  repository: file://../../../ska-low-mccs/charts/tango-util

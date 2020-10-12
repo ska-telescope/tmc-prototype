@@ -503,7 +503,7 @@ class CentralNode(SKABaseDevice):
 
         def do(self, argin):
             """
-            Assigns resources to given subarray. It accepts the subarray id, station ids, station beam id, tile ids list and channels 
+            Assigns resources to given subarray. It accepts the subarray id, station ids, station beam id and channels 
             in JSON string format.
 
             :param argin: The string in JSON format. The JSON contains following values:
@@ -520,17 +520,13 @@ class CentralNode(SKABaseDevice):
                station_beam_ids:
                     DevArray. Mandatory
                     logical ID of beam
-               tile_ids:
-                    DevArray. Mandatory
-                    the list of tiles that should be allocated to the Sub-Array
 
             Example:
                 {
                     "subarray_id": 1,
                     "station_ids": [1,2],
                     "channels": [1,2,3,4,5,6,7,8],
-                    "station_beam_ids": [1],
-                    "tile_ids": [1,2,3,4],
+                    "station_beam_ids": [1]
                 }
 
             Note: From Jive, enter above input string without any space.
@@ -539,7 +535,7 @@ class CentralNode(SKABaseDevice):
 
             :raises: DevFailed if error occurs while invoking command on any of the devices like SubarrayNode, MCCSMasterLeafNode
 
-            Note: Enter input without spaces as:{"subarray_id":1,"station_ids":[1,2],"channels":[1,2,3,4,5,6,7,8],"station_beam_ids":[1],"tile_ids":[1,2,3,4],}
+            Note: Enter input without spaces as:{"subarray_id":1,"station_ids":[1,2],"channels":[1,2,3,4,5,6,7,8],"station_beam_ids":[1]}
 
             """
             device = self.target
@@ -604,7 +600,7 @@ class CentralNode(SKABaseDevice):
 
     @command(
         dtype_in='str',
-        doc_in="It accepts the subarray id, station ids, station beam id, tile ids list and channels in JSON string format",
+        doc_in="It accepts the subarray id, station ids, station beam id and channels in JSON string format",
     )
     @DebugIt()
     def AssignResources(self, argin):

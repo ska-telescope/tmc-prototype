@@ -46,10 +46,10 @@
               }
           }
       }
-  },
+    },
     "SubarrayNodeLowDS": {
-  "sa1": {
-      "SubarrayNode": {
+      "sa1": {
+        "SubarrayNode": {
           "ska_low/tm_subarray_node/1": {
               "attribute_properties": {
                   "adminMode": {
@@ -112,9 +112,9 @@
                   ]
               }
           }
+        }
       }
-  }
-  },
+    },
     "MccsMasterLeafNodeDS": {
       "01": {
         "MccsMasterLeafNode": {

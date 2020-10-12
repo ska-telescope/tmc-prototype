@@ -2,9 +2,6 @@ display: ":0"
 xauthority: "~/.Xauthority"
 minikube: true
 
-system: TM-low
-telescope: SKA-low
-
 global:
   labels:
     app: tmc-prototype
@@ -58,6 +55,7 @@ tmc-proto:
       - "/usr/local/bin/CentralNodeLowDS 01"
     depends_on:
       - device: ska_low/tm_subarray_node/1
+      - device: ska_low/tm_leaf_node/mccs_master
     image:
       registry: nexus.engageska-portugal.pt/tango-example
       image: tmcprototype
