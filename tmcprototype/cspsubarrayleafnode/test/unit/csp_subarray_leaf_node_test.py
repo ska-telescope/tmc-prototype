@@ -189,7 +189,7 @@ def test_command_correct_obsstate(mock_csp_subarray, command_with_correct_obssta
     cmd_name, requested_cmd, obs_state, cmd_callback, activity_msg = command_with_correct_obsstate
     csp_subarray1_proxy_mock.obsState = obs_state
     device_proxy.command_inout(cmd_name)
-    csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with (requested_cmd, any_method(with_name=cmd_callback))
+    csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with (cmd_name, any_method(with_name=cmd_callback))
     assert_activity_message(device_proxy, activity_msg)
 
 
