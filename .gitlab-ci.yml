@@ -420,11 +420,11 @@ publish to nexus:
 
 publish_chart:
   variables:
-    CHARTS_TO_PUBLISH: tmc-low-new-original tmc-mid-new-original # name from te charts folder
+    CHARTS_TO_PUBLISH: tmc-low-umbrella tmc-mid-umbrella tmc-proto
   stage: publish
   tags:
     - docker-executor
-  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.2 # as per ska-docker file
+  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.2
   script:
     - curl -s https://gitlab.com/ska-telescope/stupid/raw/master/scripts/publish-charts.sh | bash
   # when: manual
