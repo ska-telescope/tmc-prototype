@@ -252,10 +252,10 @@ def test_stow_antennas_invalid_value():
     with fake_tango_system(CentralNode) \
             as tango_context:
         argin = ["invalid_antenna", ]
-        with pytest.raises(tango.DevFailed):
+        with pytest.raises(tango.DevFailed) as df:
             tango_context.device.StowAntennas(argin)
 
-        assert const.ERR_STOW_ARGIN in tango_context.device.activityMessage
+        assert const.ERR_STOW_ARGIN in str(df.value)
 
 
 # Mocking AssignResources command success response from SubarrayNode
