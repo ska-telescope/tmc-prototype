@@ -196,31 +196,31 @@ def test_command_correct_obsstate(mock_csp_subarray, command_with_correct_obssta
 @pytest.fixture(
     scope="function",
     params=[
-        ("EndScan", const.CMD_ENDSCAN, ObsState.READY, const.ERR_DEVICE_NOT_IN_SCAN),
-        ("GoToIdle", const.CMD_GOTOIDLE, ObsState.IDLE, const.ERR_DEVICE_NOT_READY),
-        ("Abort", const.CMD_ABORT, ObsState.RESOURCING, const.ERR_UNABLE_ABORT_CMD),
-        ("Abort", const.CMD_ABORT, ObsState.EMPTY, const.ERR_UNABLE_ABORT_CMD),
-        ("Restart", const.CMD_RESTART, ObsState.EMPTY, const.ERR_UNABLE_RESTART_CMD),
-        ("Restart", const.CMD_RESTART, ObsState.RESOURCING, const.ERR_UNABLE_RESTART_CMD),
-        ("Restart", const.CMD_RESTART, ObsState.IDLE, const.ERR_UNABLE_RESTART_CMD),
-        ("Restart", const.CMD_RESTART, ObsState.CONFIGURING, const.ERR_UNABLE_RESTART_CMD),
-        ("Restart", const.CMD_RESTART, ObsState.SCANNING, const.ERR_UNABLE_RESTART_CMD),
-        ("Restart", const.CMD_RESTART, ObsState.READY, const.ERR_UNABLE_RESTART_CMD),
-        ("ObsReset", const.CMD_OBSRESET, ObsState.EMPTY, const.ERR_UNABLE_OBSRESET_CMD),
-        ("ObsReset", const.CMD_OBSRESET, ObsState.RESOURCING, const.ERR_UNABLE_OBSRESET_CMD),
-        ("ObsReset", const.CMD_OBSRESET, ObsState.IDLE, const.ERR_UNABLE_OBSRESET_CMD),
-        ("ObsReset", const.CMD_OBSRESET, ObsState.CONFIGURING, const.ERR_UNABLE_OBSRESET_CMD),
-        ("ObsReset", const.CMD_OBSRESET, ObsState.SCANNING, const.ERR_UNABLE_OBSRESET_CMD),
-        ("ObsReset", const.CMD_OBSRESET, ObsState.READY, const.ERR_UNABLE_OBSRESET_CMD),
+        ("EndScan", ObsState.READY, const.ERR_DEVICE_NOT_IN_SCAN),
+        ("GoToIdle", ObsState.IDLE, const.ERR_DEVICE_NOT_READY),
+        ("Abort", ObsState.RESOURCING, const.ERR_UNABLE_ABORT_CMD),
+        ("Abort", ObsState.EMPTY, const.ERR_UNABLE_ABORT_CMD),
+        ("Restart", ObsState.EMPTY, const.ERR_UNABLE_RESTART_CMD),
+        ("Restart", ObsState.RESOURCING, const.ERR_UNABLE_RESTART_CMD),
+        ("Restart", ObsState.IDLE, const.ERR_UNABLE_RESTART_CMD),
+        ("Restart", ObsState.CONFIGURING, const.ERR_UNABLE_RESTART_CMD),
+        ("Restart", ObsState.SCANNING, const.ERR_UNABLE_RESTART_CMD),
+        ("Restart", ObsState.READY, const.ERR_UNABLE_RESTART_CMD),
+        ("ObsReset", ObsState.EMPTY, const.ERR_UNABLE_OBSRESET_CMD),
+        ("ObsReset", ObsState.RESOURCING, const.ERR_UNABLE_OBSRESET_CMD),
+        ("ObsReset", ObsState.IDLE, const.ERR_UNABLE_OBSRESET_CMD),
+        ("ObsReset", ObsState.CONFIGURING, const.ERR_UNABLE_OBSRESET_CMD),
+        ("ObsReset", ObsState.SCANNING, const.ERR_UNABLE_OBSRESET_CMD),
+        ("ObsReset", ObsState.READY, const.ERR_UNABLE_OBSRESET_CMD),
     ])
 def command_with_incorrect_obsstate(request):
-    cmd_name, requested_cmd, obs_state, activity_msg = request.param
-    return cmd_name, requested_cmd, obs_state, activity_msg
+    cmd_name, obs_state, activity_msg = request.param
+    return cmd_name, obs_state, activity_msg
 
 
 def test_command_fails_when_device_in_invalid_obstate(mock_csp_subarray, command_with_incorrect_obsstate):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
-    cmd_name, _, obs_state, activity_msg = command_with_incorrect_obsstate
+    cmd_name, obs_state, activity_msg = command_with_incorrect_obsstate
     csp_subarray1_proxy_mock.obsState = obs_state
     device_proxy.command_inout(cmd_name)
     assert activity_msg in device_proxy.activityMessage
