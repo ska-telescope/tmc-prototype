@@ -94,7 +94,6 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
 
 
 def test_configure_command_when_obstate_is_idle_with_callback_method(mock_csp_subarray, event_subscription):
-    # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     device_proxy.Configure(configure_str)
     dummy_event = command_callback(const.CMD_CONFIGURE)
@@ -103,7 +102,6 @@ def test_configure_command_when_obstate_is_idle_with_callback_method(mock_csp_su
 
 
 def test_configure_command_when_obstate_is_ready_with_callback_method(mock_csp_subarray, event_subscription):
-    # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     device_proxy.Configure(configure_str)
     dummy_event = command_callback(const.CMD_CONFIGURE)
@@ -112,7 +110,6 @@ def test_configure_command_when_obstate_is_ready_with_callback_method(mock_csp_s
 
 
 def test_startscan_command_with_callback_method(mock_csp_subarray, event_subscription):
-    # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.READY
     device_proxy.StartScan(scan_input_str)
@@ -122,7 +119,6 @@ def test_startscan_command_with_callback_method(mock_csp_subarray, event_subscri
 
 
 def test_endscan_command_with_callback_method(mock_csp_subarray, event_subscription_without_arg):
-    # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
     device_proxy.EndScan()
@@ -132,7 +128,6 @@ def test_endscan_command_with_callback_method(mock_csp_subarray, event_subscript
 
 
 def test_releaseallresources_command_with_callback_method(mock_csp_subarray, event_subscription_without_arg):
-    # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.IDLE
     device_proxy.ReleaseAllResources()
@@ -142,7 +137,6 @@ def test_releaseallresources_command_with_callback_method(mock_csp_subarray, eve
 
 
 def test_gotoidle_command_with_callback_method(mock_csp_subarray, event_subscription_without_arg):
-    # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.READY
     device_proxy.GoToIdle()
@@ -152,7 +146,6 @@ def test_gotoidle_command_with_callback_method(mock_csp_subarray, event_subscrip
 
 
 def test_abort_command_with_callback_method(mock_csp_subarray, event_subscription_without_arg):
-    # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
     device_proxy.Abort()
@@ -162,7 +155,6 @@ def test_abort_command_with_callback_method(mock_csp_subarray, event_subscriptio
 
 
 def test_restart_command_with_callback_method(mock_csp_subarray, event_subscription_without_arg):
-    # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.ABORTED
     device_proxy.Restart()
@@ -192,7 +184,6 @@ def test_assign_resources_should_raise_devfailed_exception(mock_csp_subarray):
 
 
 def test_configure_command_with_callback_method_with_event_error(mock_csp_subarray, event_subscription ):
-    # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.IDLE
     device_proxy.On()
@@ -203,7 +194,6 @@ def test_configure_command_with_callback_method_with_event_error(mock_csp_subarr
 
 
 def test_startscan_command_with_callback_method_with_event_error(mock_csp_subarray, event_subscription ):
-    # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.READY
     device_proxy.StartScan(scan_input_str)
@@ -213,7 +203,6 @@ def test_startscan_command_with_callback_method_with_event_error(mock_csp_subarr
 
 
 def test_endscan_command_with_callback_method_with_event_error(mock_csp_subarray, event_subscription_without_arg):
-    # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
     device_proxy.EndScan()
@@ -223,7 +212,6 @@ def test_endscan_command_with_callback_method_with_event_error(mock_csp_subarray
 
 
 def test_releaseallresources_command_with_callback_method_with_event_error(mock_csp_subarray, event_subscription_without_arg):
-    # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.IDLE
     device_proxy.ReleaseAllResources()
@@ -233,7 +221,6 @@ def test_releaseallresources_command_with_callback_method_with_event_error(mock_
 
 
 def test_gotoidle_command_with_callback_method_with_event_error(mock_csp_subarray, event_subscription_without_arg):
-    # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.READY
     device_proxy.GoToIdle()
@@ -243,7 +230,6 @@ def test_gotoidle_command_with_callback_method_with_event_error(mock_csp_subarra
 
 
 def test_abort_command_with_callback_method_with_event_error(mock_csp_subarray, event_subscription_without_arg):
-    # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.SCANNING
     device_proxy.Abort()
@@ -253,7 +239,6 @@ def test_abort_command_with_callback_method_with_event_error(mock_csp_subarray, 
 
 
 def test_restart_command_with_callback_method_with_event_error(mock_csp_subarray, event_subscription_without_arg):
-    # arrange:
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.ABORTED
     device_proxy.Restart()
@@ -673,58 +658,49 @@ def raise_devfailed_exception_for_scan(cmd_name, inp_str, cmd_cb):
 
 
 def test_status():
-    # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assert tango_context.device.Status() != const.STR_CSPSALN_INIT_SUCCESS
 
 
 def test_read_delay_model():
-    # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assert tango_context.device.delayModel == " "
 
 
 def test_write_delay_model():
-    # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         tango_context.device.delayModel = " "
         assert tango_context.device.delayModel == " "
 
 
 def test_health_state():
-    # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assert tango_context.device.healthState == HealthState.OK
 
 
 def test_read_activity_message():
-    # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assert tango_context.device.activityMessage == " "
 
 
 def test_write_activity_message():
-    # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         tango_context.device.activityMessage = "test"
         assert tango_context.device.activityMessage == "test"
 
 
 def test_logging_level():
-    # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         tango_context.device.loggingLevel = LoggingLevel.INFO
         assert tango_context.device.loggingLevel == LoggingLevel.INFO
 
 
 def test_read_version_info():
-    # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assert tango_context.device.versionInfo == " "
 
 
 def test_logging_targets():
-    # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
