@@ -21,6 +21,9 @@ k8s: ## Which kubernetes are we connected to
 	@echo "Helm version:"
 	@helm version --client
 
+clean: ## clean out references to chart tgz's
+	@rm -f ./charts/*/charts/*.tgz ./charts/*/Chart.lock ./charts/*/requirements.lock ./repository/*
+
 watch:
 	watch kubectl get all,pv,pvc,ingress -n $(KUBE_NAMESPACE)
 
