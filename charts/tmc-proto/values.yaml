@@ -5,8 +5,8 @@
 display: ":0"
 xauthority: "~/.Xauthority"
 
-system: TM-low
-telescope: SKA-low
+system: TM-mid
+telescope: SKA-mid
 subsystem: sw-infrastructure
 
 global:
