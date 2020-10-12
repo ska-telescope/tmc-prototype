@@ -807,7 +807,7 @@ def test_end_scan_should_raise_devfailed_exception_when_csp_subbarray_ln_throws_
 
 
 @pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
-def test_end_sb_should_command_subarray_to_end_sb_when_it_is_ready(mock_lower_devices):
+def test_end_should_command_subarray_to_end_when_it_is_ready(mock_lower_devices):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
     sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
@@ -858,14 +858,14 @@ def test_end_sb_should_command_subarray_to_end_sb_when_it_is_ready(mock_lower_de
     assert tango_context.device.obsState == ObsState.READY
 
     tango_context.device.End()
-    sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ENDSB)
+    sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_END)
     csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_GOTOIDLE)
     dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STOP_TRACK)
     # mock pointing state
     assert tango_context.device.obsState == ObsState.IDLE
 
 
-def test_end_sb_should_raise_devfailed_exception_when_csp_subarray_throws_devfailed_exception(mock_lower_devices):
+def test_end_should_raise_devfailed_exception_when_csp_subarray_throws_devfailed_exception(mock_lower_devices):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
     sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
@@ -939,15 +939,6 @@ def test_obs_state_is_with_unknown_attribute(mock_lower_devices):
                                                attribute, ObsState.EMPTY)
     event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
     assert tango_context.device.activityMessage in const.EVT_UNKNOWN
-
-
-@pytest.mark.skip("Fix test cases")
-def test_endsb_command_subarray_when_in_invalid_state():
-    with fake_tango_system(SubarrayNode) as tango_context:
-        tango_context.device.On()
-        tango_context.device.EndSB()
-        assert tango_context.device.obsState == ObsState.IDLE
-        assert tango_context.device.activityMessage == const.ERR_DEVICE_NOT_READY
 
 
 @pytest.fixture(
