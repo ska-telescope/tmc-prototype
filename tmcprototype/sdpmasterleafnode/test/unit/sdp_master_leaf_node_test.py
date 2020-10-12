@@ -81,10 +81,8 @@ def test_disable_should_command_sdp_master_leaf_node_to_disable_devfailed(mock_s
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
     device_proxy.On()
     device_proxy.DevState = DevState.FAULT
-
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.Disable()
-    
     assert "Failed to invoke Disable command on SdpMasterLeafNode." in str(df)
 
 
