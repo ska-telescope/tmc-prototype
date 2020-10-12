@@ -5,12 +5,9 @@
 display: ":0"
 xauthority: "~/.Xauthority"
 
-system: TM-mid
-telescope: SKA-mid
-
-system: SW-infrastructure
-subsystem: tango-example
-telescope: SKA-mid
+system: TM-low
+telescope: SKA-low
+subsystem: sw-infrastructure
 
 global:
   labels:
