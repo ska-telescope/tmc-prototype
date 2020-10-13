@@ -1,0 +1,21 @@
+dependencies:
+- name: tango-base
+  repository: https://nexus.engageska-portugal.pt/repository/helm-chart
+  version: 0.2.2
+- name: webjive
+  repository: file://../../../skampi/charts/skampi/charts/webjive
+  version: 0.1.0
+- name: logging
+  repository: https://nexus.engageska-portugal.pt/repository/helm-chart
+  version: 0.1.0
+- name: tmc-low
+  repository: file://../tmc-low
+  version: 0.0.2
+- name: tango-util
+  repository: file://../../../ska-low-mccs/charts/tango-util
+  version: 0.0.1
+- name: mccs
+  repository: file://../../../ska-low-mccs/charts/mccs
+  version: 0.0.2
+digest: sha256:a1b55a638417507e702f9c42563b29929544fe40d9bc00af2f6745baa27f1866
+generated: "2020-10-12T11:21:13.100400312Z"
