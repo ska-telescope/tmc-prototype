@@ -5,6 +5,9 @@ image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:9.3.2
 
 variables:
   DOCKER_DRIVER: overlay2
+  KUBE_NAMESPACE: tmclow
+  HELM_CHART: tmc-low-umbrella 
+  UMBRELLA_CHART_PATH: charts/tmc-low-umbrella/
 
 # cache is used to specify a list of files and directories which should be cached between jobs. You can only use paths that are within the project workspace.
 # If cache is defined outside the scope of jobs, it means it is set globally and all jobs will use that definition
@@ -29,6 +32,7 @@ stages:
   - pages
   - release
   - trigger
+  - clean
 
 build CentralNode wheel for publication: # Executed on a tag
   stage: build
@@ -360,9 +364,9 @@ test:
   tags:
     - docker-executor
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.2
-  # before_script:
-  #   - make delete_namespace-sdp
-  #   - make delete_namespace
+  before_script:
+    - make delete_namespace-sdp
+    - make delete_namespace
   script:
     - kubectl version
     - make install-chart
@@ -372,8 +376,8 @@ test:
   after_script:
     - make uninstall-chart
     - make clean
-    - make delete_namespace-sdp
     - make delete_namespace
+    - make delete_namespace-sdp
   environment:
     name: test
   artifacts:
@@ -382,6 +386,50 @@ test:
       - "charts/build"
     reports:
       junit: charts/build/report.xml
+
+test-low:
+  stage: test
+  tags:
+    - docker-executor
+  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.2
+  script:
+    - kubectl version
+    - make install-chart $KUBE_NAMESPACE $HELM_CHART $UMBRELLA_CHART_PATH
+    - make wait $KUBE_NAMESPACE
+    - make smoketest $KUBE_NAMESPACE
+    #- make test $KUBE_NAMESPACE
+  after_script:
+    - make uninstall-chart $KUBE_NAMESPACE $HELM_CHART $UMBRELLA_CHART_PATH
+    - make clean $KUBE_NAMESPACE
+    - make delete_namespace-sdp $KUBE_NAMESPACE
+    - make delete_namespace $KUBE_NAMESPACE
+  environment:
+    name: test
+  artifacts:
+    name: "$CI_PROJECT_NAME-$CI_JOB_ID"
+    paths:
+      - "charts/build"
+    reports:
+      junit: charts/build/report.xml
+  when: manual
+
+clean:
+  stage: clean
+  tags:
+    - docker-executor
+  allow_failure: true
+  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.2
+  script:
+    - kubectl version
+    - make uninstall-chart
+    - kubectl -n tmcprototype delete pods,svc,daemonsets,deployments,replicasets,statefulsets,cronjobs,jobs,ingresses,etcd,configmaps --all
+    - make clean
+    - make delete_namespace
+    - make delete_namespace-sdp
+  environment:
+    name: test
+  when: manual
+
 
 linting:
   stage: linting
