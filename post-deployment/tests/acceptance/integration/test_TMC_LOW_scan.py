@@ -3,7 +3,7 @@ from datetime import date,datetime
 import pytest
 import os
 import logging
-from resources.test_support.tmc_helpers_low import waiter,watch,resource
+from resources.test_support.helpers_low import waiter,watch,resource
 from resources.test_support.controls_low import telescope_is_in_standby
 from resources.test_support.state_checking import StateChecker
 from resources.test_support.log_helping import DeviceLogging
