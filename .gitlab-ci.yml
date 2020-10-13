@@ -373,8 +373,8 @@ test:
   after_script:
     - make uninstall-chart
     - make clean
-    - make delete_namespace-sdp
     - make delete_namespace
+    - make delete_namespace-sdp
   environment:
     name: test
   artifacts:
@@ -389,9 +389,9 @@ test-low:
   tags:
     - docker-executor
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.2
-  before_script:
-    - make delete_namespace-sdp $KUBE_NAMESPACE=tmclow
-    - make delete_namespace $KUBE_NAMESPACE=tmclow
+  # before_script:
+  #   - make delete_namespace-sdp $KUBE_NAMESPACE=tmclow
+  #   - make delete_namespace $KUBE_NAMESPACE=tmclow
   script:
     - kubectl version
     - make install-chart $KUBE_NAMESPACE=tmclow $HELM_CHART=tmc-low-umbrella $UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
