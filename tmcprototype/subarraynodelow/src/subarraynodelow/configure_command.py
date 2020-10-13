@@ -12,6 +12,8 @@ from tango import DevFailed
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from . import const
+from .input_validator import ConfigureValidator
+from .exceptions import InvalidJSONError
 
 
 class ConfigureCommand(SKASubarray.ConfigureCommand):
@@ -48,8 +50,12 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
         device.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA_LOW)
         device._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA_LOW
         try:
+            # Validate input JSON (Added in CDM work)
+            input_validator = ConfigureValidator(self.logger)
+            json_argument = input_validator.loads(argin)
+
             scan_configuration = json.loads(argin)
-        except json.JSONDecodeError as jerror:
+        except (json.JSONDecodeError, InvalidJSONError) as jerror:
             log_message = const.ERR_INVALID_JSON + str(jerror)
             self.logger.error(log_message)
             device._read_activity_message = log_message
