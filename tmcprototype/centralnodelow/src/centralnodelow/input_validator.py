@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# This file is part of the centralnode project
+# This file is part of the centralnodelow project
 #
 #
 #
@@ -13,7 +13,7 @@ from json import JSONDecodeError
 import logging
 
 # SKA specific imports
-from centralnode.exceptions import ResourceNotPresentError
+#from centralnodelow.exceptions import ResourceNotPresentError
 from centralnodelow.exceptions import SubarrayNotPresentError, InvalidJSONError
 from ska.cdm.schemas import CODEC
 from ska.cdm.messages.central_node.assign_resources import AssignResourcesRequest
