@@ -356,7 +356,7 @@ unit tests:
     paths:
       - ./build
 
-test:
+test-mid:
   stage: test
   tags:
     - docker-executor
@@ -479,10 +479,10 @@ publish_chart:
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.2
   script:
     - curl -s https://gitlab.com/ska-telescope/stupid/raw/master/scripts/publish-charts.sh | bash
-  # when: manual
-  # only:
-  #   refs:
-  #     - master
+  when: manual
+  only:
+    refs:
+      - master
 
 pages:
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
