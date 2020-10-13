@@ -8,7 +8,7 @@ from resources.test_support.controls_low import telescope_is_in_standby
 from resources.test_support.state_checking import StateChecker
 from resources.test_support.log_helping import DeviceLogging
 from resources.test_support.persistance_helping import load_config_from_file,update_scan_config_file,update_resource_config_file
-from resources.test_support.sync_decorators import sync_start_up_telescope,sync_assign_resources,sync_configure,sync_end_sb,sync_release_resources,\
+from resources.test_support.sync_decorators_low import sync_start_up_telescope,sync_assign_resources,sync_configure,sync_end,sync_release_resources,\
     sync_set_to_standby,time_it,sync_scan
 from resources.test_support.logging_decorators import log_it
 import resources.test_support.tmc_helpers_low as tmc
@@ -66,16 +66,16 @@ def test_scan():
         @log_it('TMC_int_scan',devices_to_log)
         @sync_scan(200)
         def scan():
-            SubarrayNode = DeviceProxy('ska_low/tm_subarray_node/1')
-            SubarrayNode.Scan('{"id":1}')
+            SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
+            SubarrayNodeLow.Scan('{"id":1}')
         scan()
         LOGGER.info('Scan complete')
         fixture['state'] = 'Subarray Configured for SCAN'
         
         #tear down
         LOGGER.info('TMC-Scan tests complete: tearing down...')
-        tmc.end_sb()
-        LOGGER.info('Invoked EndSB on Subarray')
+        tmc.end()
+        LOGGER.info('Invoked End on Subarray')
         tmc.release_resources()
         LOGGER.info('Invoked ReleaseResources on Subarray')
         tmc.set_to_standby()
@@ -89,7 +89,7 @@ def test_scan():
             tmc.release_resources()
             tmc.set_to_standby()
         elif fixture['state'] == 'Subarray Configured for SCAN':
-            tmc.end_sb()
+            tmc.end()
             tmc.release_resources()
             tmc.set_to_standby()
         elif fixture['state'] == 'Subarray SCANNING':

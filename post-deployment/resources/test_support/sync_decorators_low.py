@@ -12,8 +12,8 @@ def check_going_out_of_empty():
 
 def check_going_into_configure():
     ##Can ony configure a subarray that is in IDLE/ON
-    resource('ska_mid/tm_subarray_node/1').assert_attribute('obsState').equals(['IDLE','READY'])
-    resource('ska_mid/tm_subarray_node/1').assert_attribute('State').equals('ON')
+    resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals(['IDLE','READY'])
+    resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('ON')
 
 
 def check_coming_out_of_standby():
@@ -22,7 +22,7 @@ def check_coming_out_of_standby():
 
 def check_going_out_of_configured():
     ##Can only return to ON/IDLE if in READY
-    resource('ska_mid/tm_subarray_node/1').assert_attribute('obsState').equals('READY')
+    resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('READY')
 
 
 def check_going_into_empty():
@@ -40,7 +40,7 @@ def check_going_into_standby():
 class WaitConfigure():
 
     def __init__(self):
-        self.w  = watch(resource('ska_mid/tm_subarray_node/1')).for_a_change_on("obsState")
+        self.w  = watch(resource('ska_low/tm_subarray_node/1')).for_a_change_on("obsState")
         self.w1  = watch(resource('mid_csp/elt/subarray_01')).for_a_change_on("obsState")
         self.w2 = watch(resource('mid_sdp/elt/subarray_1')).for_a_change_on("obsState")
 
@@ -57,7 +57,7 @@ class WaitConfigure():
 class WaitAbort():
 
     def __init__(self):
-        self.the_watch  = watch(resource('ska_mid/tm_subarray_node/1')).for_a_change_on("obsState")
+        self.the_watch  = watch(resource('ska_low/tm_subarray_node/1')).for_a_change_on("obsState")
 
     def wait(self,timeout):
         logging.info("Abort command dispatched, checking that the state transitioned to ABORTING")
@@ -68,7 +68,7 @@ class WaitAbort():
 class WaitRestart():
 
     def __init__(self):
-        self.the_watch  = watch(resource('ska_mid/tm_subarray_node/1')).for_a_change_on("obsState")
+        self.the_watch  = watch(resource('ska_low/tm_subarray_node/1')).for_a_change_on("obsState")
 
     def wait(self,timeout):
         logging.info("Restart command dispatched, checking that the state transitioned to RESTARTING")
@@ -79,7 +79,7 @@ class WaitRestart():
 class WaitObsReset():
 
     def __init__(self):
-        self.the_watch  = watch(resource('ska_mid/tm_subarray_node/1')).for_a_change_on("obsState")
+        self.the_watch  = watch(resource('ska_low/tm_subarray_node/1')).for_a_change_on("obsState")
 
     def wait(self,timeout):
         logging.info("ObsReset command dispatched, checking that the state transitioned to RESETTING")
@@ -90,7 +90,7 @@ class WaitObsReset():
 class WaitObsReset():
 
     def __init__(self):
-        self.the_watch  = watch(resource('ska_mid/tm_subarray_node/1')).for_a_change_on("obsState")
+        self.the_watch  = watch(resource('ska_low/tm_subarray_node/1')).for_a_change_on("obsState")
 
     def wait(self,timeout):
         logging.info("ObsReset command dispatched, checking that the state transitioned to RESETTING")
@@ -100,7 +100,7 @@ class WaitObsReset():
 
 class WaitScanning():
     def __init__(self):
-        self.the_watch = watch(resource('ska_mid/tm_subarray_node/1')).for_a_change_on('obsState')
+        self.the_watch = watch(resource('ska_low/tm_subarray_node/1')).for_a_change_on('obsState')
 
     def wait(self,timeout):
         logging.info("scan command dispatched, checking that the state transitioned to SCANNING")
@@ -141,9 +141,9 @@ def sync_configure(func):
     def wrapper(*args, **kwargs):
         ##Can ony configure a subarray that is in IDLE/ON
         # Branch changes
-        # resource('ska_mid/tm_subarray_node/1').assert_attribute('obsState').equals(['IDLE','READY'])
-        # resource('ska_mid/tm_subarray_node/1').assert_attribute('State').equals('ON')
-        # w  = watch(resource('ska_mid/tm_subarray_node/1')).for_a_change_on("obsState")
+        # resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals(['IDLE','READY'])
+        # resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('ON')
+        # w  = watch(resource('ska_low/tm_subarray_node/1')).for_a_change_on("obsState")
         # ################
         # result = func(*args, **kwargs)
         # ################
@@ -237,7 +237,7 @@ def sync_telescope_starting_up(timeout=50):
     yield
     the_waiter.wait(timeout)
 
-def sync_end_sb(func):
+def sync_end(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         check_going_out_of_configured()
