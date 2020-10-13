@@ -61,9 +61,8 @@ def set_to_standby():
     LOGGER.info('Standby the Telescope')
 
 @sync_configure
-def configure_sub(mccs_block, configure_file):
+def configure_sub(configure_file):
     #resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('ON')
-    update_scan_config_file(configure_file, mccs_block)
     config = load_config_from_file(configure_file)
     SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
     SubarrayNodeLow.Configure(config)

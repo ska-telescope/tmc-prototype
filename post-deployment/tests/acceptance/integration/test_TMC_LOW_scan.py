@@ -3,7 +3,7 @@ from datetime import date,datetime
 import pytest
 import os
 import logging
-from resources.test_support.helpers import waiter,watch,resource
+from resources.test_support.tmc_helpers_low import waiter,watch,resource
 from resources.test_support.controls_low import telescope_is_in_standby
 from resources.test_support.state_checking import StateChecker
 from resources.test_support.log_helping import DeviceLogging
@@ -22,13 +22,6 @@ else:
 devices_to_log = [
     'ska_low/tm_subarray_node/1',
     'low-mccs/subarray/01']
-    # 'mid_csp/elt/subarray_01',
-    # 'mid_csp_cbf/sub_elt/subarray_01']
-# non_default_states_to_check = {
-#     'mid_d0001/elt/master' : 'pointingState',
-#     'mid_d0002/elt/master' : 'pointingState',
-#     'mid_d0003/elt/master' : 'pointingState',
-#     'mid_d0004/elt/master' : 'pointingState'}
 
 LOGGER = logging.getLogger(__name__)
 
@@ -49,14 +42,14 @@ def test_scan():
         
         # and a subarray composed of two resources configured as perTMC_integration/mccs_assign_resources.json
         LOGGER.info('Composing the Subarray')
-        mccs_block = tmc.compose_sub()
+        tmc.compose_sub()
         fixture['state'] = 'Subarray Assigned'
 
         #and a subarray configured to perform a scan as per 'TMC_integration/configure1.json'
         LOGGER.info('Configuring the Subarray')
         fixture['state'] = 'Subarray CONFIGURING'
         configure_file = 'resources/test_data/TMC_integration/mccs_configure.json'
-        tmc.configure_sub(mccs_block, configure_file)
+        tmc.configure_sub(configure_file)
         fixture['state'] = 'Subarray Configured for SCAN'
       
         #When I run a scan of 4 seconds based on previos configuration
