@@ -5,9 +5,6 @@ image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:9.3.2
 
 variables:
   DOCKER_DRIVER: overlay2
-  KUBE_NAMESPACE: tmclow
-  HELM_CHART: tmc-low-umbrella 
-  UMBRELLA_CHART_PATH: charts/tmc-low-umbrella/
 
 # cache is used to specify a list of files and directories which should be cached between jobs. You can only use paths that are within the project workspace.
 # If cache is defined outside the scope of jobs, it means it is set globally and all jobs will use that definition
@@ -394,15 +391,15 @@ test-low:
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.2
   script:
     - kubectl version
-    - make install-chart $KUBE_NAMESPACE $HELM_CHART $UMBRELLA_CHART_PATH
-    - make wait $KUBE_NAMESPACE
-    - make smoketest $KUBE_NAMESPACE
-    #- make test $KUBE_NAMESPACE
+    - make install-chart $KUBE_NAMESPACE=tmclow $HELM_CHART=tmc-low-umbrella $UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
+    - make wait $KUBE_NAMESPACE=tmclow
+    - make smoketest $KUBE_NAMESPACE=tmclow
+    #- make test $KUBE_NAMESPACE=tmclow
   after_script:
-    - make uninstall-chart $KUBE_NAMESPACE $HELM_CHART $UMBRELLA_CHART_PATH
-    - make clean $KUBE_NAMESPACE
-    - make delete_namespace-sdp $KUBE_NAMESPACE
-    - make delete_namespace $KUBE_NAMESPACE
+    - make uninstall-chart $KUBE_NAMESPACE=tmclow $HELM_CHART=tmc-low-umbrella $UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
+    - make clean $KUBE_NAMESPACE=tmclow
+    - make delete_namespace-sdp $KUBE_NAMESPACE=tmclow
+    - make delete_namespace $KUBE_NAMESPACE=tmclow
   environment:
     name: test
   artifacts:
