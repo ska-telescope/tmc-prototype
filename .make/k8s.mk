@@ -36,11 +36,11 @@ namespace: ## create the kubernetes namespace
 		fi
 
 namespace_sdp: ## create the kubernetes namespace for SDP dynamic deployments
-	@kubectl describe namespace $(KUBE_NAMESPACE_SDP) > /dev/null 2>&1 ; \
+	@kubectl describe namespace $(SDP_KUBE_NAMESPACE) > /dev/null 2>&1 ; \
  	K_DESC=$$? ; \
 	if [ $$K_DESC -eq 0 ] ; \
-	then kubectl describe namespace $(KUBE_NAMESPACE_SDP) ; \
-	else kubectl create namespace $(KUBE_NAMESPACE_SDP); \
+	then kubectl describe namespace $(SDP_KUBE_NAMESPACE) ; \
+	else kubectl create namespace $(SDP_KUBE_NAMESPACE); \
 	fi
 
 delete_namespace: ## delete the kubernetes namespace
@@ -52,11 +52,11 @@ delete_namespace: ## delete the kubernetes namespace
 	fi
 
 delete_namespace-sdp: ## delete the kubernetes namespace
-	@if [ "default" == "$(KUBE_NAMESPACE_SDP)" ] || [ "kube-system" == "$(KUBE_NAMESPACE_SDP)" ]; then \
-	echo "You cannot delete Namespace: $(KUBE_NAMESPACE_SDP)"; \
+	@if [ "default" == "$(SDP_KUBE_NAMESPACE)" ] || [ "kube-system" == "$(SDP_KUBE_NAMESPACE)" ]; then \
+	echo "You cannot delete Namespace: $(SDP_KUBE_NAMESPACE)"; \
 	exit 1; \
 	else \
-	kubectl describe namespace $(KUBE_NAMESPACE_SDP) && kubectl delete namespace $(KUBE_NAMESPACE_SDP); \
+	kubectl describe namespace $(SDP_KUBE_NAMESPACE) && kubectl delete namespace $(SDP_KUBE_NAMESPACE); \
 	fi
 
 # To package a chart directory into a chart archive
@@ -86,7 +86,7 @@ install-chart: namespace namespace_sdp ## install the helm chart with name HELM_
 	helm install $(HELM_RELEASE) \
 	--set minikube=$(MINIKUBE) \
 	--values values.yaml \
-	--set sdp-prototype.helm_deploy.namespace=$(KUBE_NAMESPACE_SDP) \
+	--set sdp-prototype.helm_deploy.namespace=$(SDP_KUBE_NAMESPACE) \
 	 $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE); \
 	 rm generated_values.yaml; \
 	 rm values.yaml
