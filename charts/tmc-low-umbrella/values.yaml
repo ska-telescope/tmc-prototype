@@ -113,8 +113,8 @@ mccs:
   tango-base:
     enabled: false
 
-webjive:
-  ingress:
-    enabled: true
-    nginx: false
-    hostname: integration.engageska-portugal.pt
+# webjive:
+#   ingress:
+#     enabled: true
+#     nginx: false
+#     hostname: integration.engageska-portugal.pt
