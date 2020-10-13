@@ -366,14 +366,14 @@ test-mid:
   #   - make delete_namespace
   script:
     - kubectl version
-    - make install-chart
-    - make wait
-    - make smoketest
+    - make install-chart $KUBE_NAMESPACE=tmcmid $HELM_CHART=tmc-mid-umbrella $UMBRELLA_CHART_PATH=charts/tmc-mid-umbrella/
+    - make wait $KUBE_NAMESPACE=tmcmid
+    - make smoketest $KUBE_NAMESPACE=tmcmid
     #- make test
   after_script:
-    - make uninstall-chart
-    - make clean
-    - make delete_namespace
+    - make uninstall-chart $KUBE_NAMESPACE=tmcmid $HELM_CHART=tmc-mid-umbrella $UMBRELLA_CHART_PATH=charts/tmc-mid-umbrella/
+    - make clean $KUBE_NAMESPACE=tmcmid
+    - make delete_namespace $KUBE_NAMESPACE=tmcmid
     - make delete_namespace-sdp
   environment:
     name: test
