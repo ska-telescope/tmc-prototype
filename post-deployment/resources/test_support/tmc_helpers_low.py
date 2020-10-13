@@ -1,4 +1,4 @@
-from resources.test_support.sync_decorators import sync_start_up_telescope,sync_assign_resources,sync_configure,sync_end_sb,sync_release_resources,sync_set_to_standby,time_it,sync_abort,sync_restart,sync_obsreset
+from resources.test_support.sync_decorators import sync_start_up_telescope,sync_assign_resources,sync_configure,sync_end_sb,sync_release_resources,sync_set_to_standby,time_it,sync_abort,sync_restart,sync_obsreset,sync_assign_resources_low
 from resources.test_support.logging_decorators import log_it
 from tango import DeviceProxy   
 from resources.test_support.helpers_low import waiter,watch,resource
@@ -17,20 +17,18 @@ def start_up():
     LOGGER.info("Before Sending StartupTelescope command on CentralNodeLow state :" + str(CentralNodeLow.State()))   
     CentralNodeLow.StartUpTelescope()
 
-@sync_assign_resources(2,300)
+@sync_assign_resources_low(300)
 def compose_sub():
     resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('ON')
     resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('EMPTY')
     assign_resources_file = 'resources/test_data/TMC_integration/mccs_assign_resources.json'
-    mccs_block = update_resource_config_file(assign_resources_file)
-    LOGGER.info("_______mccs_block________" + str(mccs_block))
     config = load_config_from_file(assign_resources_file)
-    CentralNodeLow = DeviceProxy('ska_low/tm_central/central_node')
-    CentralNodeLow.AssignResources(config)
+    CentralNode = DeviceProxy('ska_low/tm_central/central_node')
+    CentralNode.AssignResources(config)
     the_waiter = waiter()
     the_waiter.wait()
-    LOGGER.info('Invoked AssignResources on CentralNodeLow')
-    return mccs_block
+    LOGGER.info('Invoked AssignResources on CentralNode')
+
 
 @sync_end_sb
 def end_sb():
@@ -46,20 +44,20 @@ def end_sb():
 @sync_release_resources
 def release_resources():
     resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('IDLE')
-    CentralNodeLow = DeviceProxy('ska_low/tm_central/central_node')
-    CentralNodeLow.ReleaseResources('{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}')
-    SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
-    LOGGER.info('After Release Resource SubarrayNodeLow State and ObsState:' + str(SubarrayNodeLow.State()) + str(SubarrayNodeLow.ObsState))
+    CentralNode = DeviceProxy('ska_low/tm_central/central_node')
+    CentralNode.ReleaseResources('{"subarray_id":1,"release_all":true}')
+    SubarrayNode = DeviceProxy('ska_low/tm_subarray_node/1')
+    LOGGER.info('After Release Resource SubarrayNode State and ObsState:' + str(SubarrayNode.State()) + str(SubarrayNode.ObsState))
     LOGGER.info('Invoked ReleaseResources on Subarray')
 
 
 @sync_set_to_standby
 def set_to_standby():
-    CentralNodeLow = DeviceProxy('ska_low/tm_central/central_node')
-    CentralNodeLow.StandByTelescope()
-    SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
-    LOGGER.info('After Standby SubarrayNodeLow State and ObsState:' + str(SubarrayNodeLow.State()) + str(SubarrayNodeLow.ObsState))
-    LOGGER.info('After Standby CentralNodeLow State:' + str(CentralNodeLow.State()))
+    CentralNode = DeviceProxy('ska_low/tm_central/central_node')
+    CentralNode.StandByTelescope()
+    SubarrayNode = DeviceProxy('ska_low/tm_subarray_node/1')
+    LOGGER.info('After Standby SubarrayNode State and ObsState:' + str(SubarrayNode.State()) + str(SubarrayNode.ObsState))
+    LOGGER.info('After Standby CentralNode State:' + str(CentralNode.State()))
     LOGGER.info('Standby the Telescope')
 
 @sync_configure

@@ -275,47 +275,16 @@ class waiter():
         self.waits.append(watch(resource('low-mccs/subarray/01')).to_become("obsState",changed_to='IDLE'))
 
 
-    def set_wait_for_assign_resources(self,nr_of_receptors=None):
-        ### the following is a hack to wait for items taht are not worked into the state variable
-        # if nr_of_receptors is not None:
-        #     def predicate_sum(current,expected):
-        #         return (sum(current) == sum(expected))
-        #     def predicate_set_eq(current,expected):
-        #         if current is None:
-        #             return False
-        #         else:
-        #             return (set(current) == set(expected))
-        #     IDlist_ones = tuple([1 for i in range(0,nr_of_receptors)])
-        #     IDlist_inc = tuple([i for i in range(1,nr_of_receptors+1)])
-        #     self.waits.append(watch(resource('ska_mid/tm_subarray_node/1'))
-        #         .for_a_change_on(
-        #             "receptorIDList",
-        #             changed_to=IDlist_inc,
-        #             predicate=predicate_set_eq))
-        #     self.waits.append(watch(resource('mid_csp/elt/subarray_01'))
-        #         .for_a_change_on(
-        #             "assignedReceptors",
-        #             changed_to=IDlist_inc,
-        #             predicate=predicate_set_eq))
-        #     self.waits.append(watch(resource('mid_csp/elt/master'))
-        #         .for_a_change_on("receptorMembership",
-        #             changed_to=IDlist_ones,
-        #             predicate=predicate_sum))
-        # else:
-        self.waits.append(watch(resource('ska_mid/tm_subarray_node/1')).for_any_change_on("receptorIDList"))
-        self.waits.append(watch(resource('mid_csp/elt/subarray_01')).for_any_change_on("assignedReceptors"))
-        self.waits.append(watch(resource('mid_csp/elt/master')).for_any_change_on("receptorMembership"))
-        #self.waits.append(watch(resource('ska_mid/tm_subarray_node/1')).to_become("State",changed_to='ON'))
-        #self.waits.append(watch(resource('ska_mid/tm_subarray_node/1')).to_become("obsState",changed_to='RESOURCING'))
-        self.waits.append(watch(resource('mid_csp/elt/subarray_01')).to_become("obsState",changed_to='IDLE'))
-        self.waits.append(watch(resource('mid_csp_cbf/sub_elt/subarray_01')).to_become("obsState",changed_to='IDLE'))
-        self.waits.append(watch(resource('mid_sdp/elt/subarray_1')).to_become("obsState",changed_to='IDLE'))
-        self.waits.append(watch(resource('ska_mid/tm_subarray_node/1')).to_become("obsState",changed_to='IDLE'))
-        
+    def set_wait_for_assign_resources(self):
+        self.waits.append(watch(resource('ska_low/tm_subarray_node/1')).to_become("State",changed_to='ON'))
+        self.waits.append(watch(resource('low-mccs/control/control')).to_become("State",changed_to='ON'))
+        self.waits.append(watch(resource('low-mccs/subarray/01')).to_become("obsState",changed_to='IDLE'))
+
+     
     def set_wait_for_tearing_down_subarray(self):
         # self.waits.append(watch(resource('ska_low/tm_subarray_node/1')).for_any_change_on("receptorIDList"))
         self.waits.append(watch(resource('ska_low/tm_subarray_node/1')).to_become("State",changed_to='ON'))
-        self.waits.append(watch(resource('low-mccs/control/control')).to_become("obsState",changed_to='EMPTY'))
+        self.waits.append(watch(resource('low-mccs/subarray/01')).to_become("obsState",changed_to='EMPTY'))
         print ("In set_wait_for_tearing_down_subarray")
        
 
