@@ -600,8 +600,39 @@ def idle_subarray_context(empty_subarray_context:SubarrayContext)->SubarrayConte
     c.csp_subarray1_ln.generate_event('ObsState',ObsState.IDLE)
     c.sdp_subarray1_ln.generate_event('ObsState',ObsState.IDLE)
     wait_for(c.tango_context, ObsState.IDLE)
-    assert c.tango_context.device.obsState == ObsState.IDLE
     return c
+
+class AssertLogMessage():
+    
+    def __init__(self,message:str) -> None:
+        self.message = message
+
+    def logged_in(self,module:str,func:str,caplog):
+
+        def selected(record)->bool:
+            if record.module == module:
+                if record.funcName == func:
+                    return True
+            return False
+        filtered_logs = [record.message for record in caplog.records if selected(record)]
+
+def assert_message(message):
+    return AssertLogMessage(message)
+
+
+def test_log_transaction_with_assign(empty_subarray_context:SubarrayContext,caplog):
+    c = empty_subarray_context
+    c.tango_context.device.AssignResources(assign_input_str)
+    # Mock the behaviour of Csp asnd SDP subarray ObsState
+    assert_message('dummy').logged_in('assign_resources_command','do',caplog)
+    
+
+
+def test_log_transaction_with_config(idle_subarray_context:SubarrayContext,caplog):
+    c = idle_subarray_context
+    c.sdp_subarray1.generate_event("receiveAddresses",receive_addresses_map)
+    c.tango_context.device.Configure(configure_str)
+    assert_message('dummy').logged_in('configure_command','do',caplog)
 
 def test_configure_command_obsstate_changes_from_configuring_to_ready(mock_lower_devices):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
