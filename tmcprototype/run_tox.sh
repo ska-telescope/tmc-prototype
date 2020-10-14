@@ -42,8 +42,8 @@ done
 
 # check if build folder is present
 echo "Check 4"
-# cd ..
-ls -l $REPORTS_DIR
+cd $REPORTS_DIR
+ls -l 
 # cd -
 
 # mv ./tox_report ../build/reports
