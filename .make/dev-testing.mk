@@ -1,8 +1,8 @@
-##the following section is for developers requiring the testing pod to be instantiated with a volume mappig to skampi
+##the following section is for developers requiring the testing pod to be instantiated with a volume mappig to tmcprototype
 location:= $(shell pwd)
 kube_path ?= $(shell echo ~/.kube)
 k8_path ?= $(shell echo ~/.minikube)
-PYTHONPATH=/home/tango/skampi/:/home/tango/skampi/post-deployment/:
+PYTHONPATH=/home/tango/tmc-prototype/:/home/tango/tmc-prototype/post-deployment/:
 testing-pod?=dev-testing-0
 #the port mapping to host
 hostPort ?= 2020
@@ -11,7 +11,7 @@ testing-config := '{ "apiVersion": "v1","spec":{\
 						"image":"$(IMAGE_TO_TEST)",\
 						"name":"testing-container",\
 						"volumeMounts":[{\
-							"mountPath":"/home/tango/skampi/",\
+							"mountPath":"/home/tango/tmc-prototype/",\
 							"name":"testing-volume"}],\
 						"env":[{\
           			 		"name": "TANGO_HOST",\
@@ -67,7 +67,7 @@ tp_run_wait: tp_run tp_wait
 tp_pip:
 	@echo "Installing Python packages";
 	@echo "##########################";
-	kubectl exec -it $(testing-pod) --namespace $(KUBE_NAMESPACE) -- bash -c "/usr/bin/python3 -m pip install -r /home/tango/skampi/post-deployment/test_requirements.txt"
+	kubectl exec -it $(testing-pod) --namespace $(KUBE_NAMESPACE) -- bash -c "/usr/bin/python3 -m pip install -r /home/tango/tmc-prototype/post-deployment/test_requirements.txt"
 
 tp_cp_kube:
 	@kubectl exec -it --namespace $(KUBE_NAMESPACE) $(testing-pod) -- bash -c " rm -rf /home/tango/.kube "
@@ -138,7 +138,7 @@ set_up_dev_testing: install_testing_pod test_as_ssh_client tp_cp tp_config tp_ba
 install_web_dependencies:
 	@echo "Installing Python packages on web container";
 	@echo "##########################";
-	kubectl exec -it $(testing-pod) --namespace $(KUBE_NAMESPACE) -c web-pytest -- bash -c "/usr/bin/python3 -m pip install -r /home/tango/skampi/post-deployment/test_requirements.txt"	
+	kubectl exec -it $(testing-pod) --namespace $(KUBE_NAMESPACE) -c web-pytest -- bash -c "/usr/bin/python3 -m pip install -r /home/tango/tmc-prototype/post-deployment/test_requirements.txt"	
 
 describe_dev_testing:
 	kubectl get all -l releaseName=$(RELEASE_NAME)
@@ -153,7 +153,7 @@ attach_testing_pod: # open a shell inside the testing pod
 	@kubectl exec -it $(testing-pod) --namespace $(KUBE_NAMESPACE) /bin/bash
 
 
-clean_skampi: # remove any cache or build files on repo created during testing and build jobs
+clean_tmcprototype: # remove any cache or build files on repo created during testing and build jobs
 	 git ls-files . --ignored --exclude-standard --others --directory | xargs rm -R -f
 
 ssh_config = 'Host kube-host\n\tHostName $(THIS_HOST) \n\tUser ubuntu'
@@ -168,7 +168,7 @@ test_as_ssh_client: # set up the  testing pod so that one can ssh back into the 
 
 get_web_shell:
 	kubectl attach -it $(testing-pod) --namespace $(KUBE_NAMESPACE) -c web-pytest
-	#-- bash -c "cd /home/tango/skampi/post-deployment/exploration/web_pytest/ && python3 web_pytest.py"
+	#-- bash -c "cd /home/tango/tmc-prototype/post-deployment/exploration/web_pytest/ && python3 web_pytest.py"
 
 check_log_consumer_running: 
 	ps aux | awk 
