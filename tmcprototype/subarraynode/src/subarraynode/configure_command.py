@@ -2,7 +2,9 @@
 ConfigureCommand class for SubarrayNode.
 """
 
+import functools
 import json
+from typing import Dict
 # Tango imports
 import tango
 from tango import DevFailed
@@ -12,16 +14,31 @@ from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from ska_telmodel.csp import interface
+from ska.log_transactions import transaction
 
 csp_interface_version = 0
 sdp_interface_version = 0
+
+def identify_with_id(name:str):
+    def wrapper(func):
+        @functools.wraps(func)
+        def wrap(obj,argin):
+            parameters = json.loads(argin)
+            with transaction(name, parameters,logger=obj.logger) as transaction_id:
+                obj.transaction_id = transaction_id
+                return func(obj,argin)
+        return wrap
+    return wrapper
+
+def inject_transaction_id(paramater:Dict,id:str):
+    paramater['transaction_id'] = id
 
 
 class ConfigureCommand(SKASubarray.ConfigureCommand):
     """
     A class for SubarrayNode's Configure() command.
     """
-
+    @identify_with_id('configure')
     def do(self, argin):
         """
         Configures the resources assigned to the Subarray.The configuration data for SDP, CSP and Dish is
@@ -75,7 +92,16 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
         self.logger.info(message)
         return (ResultCode.STARTED, message)
 
+    def _inject_id(self,data:str):
+        parameters = json.loads(data)
+        id = getattr(self,"transaction_id",None)
+        if id:
+            inject_transaction_id(parameters,id)
+        return json.dumps(parameters)
+
+
     def _configure_leaf_node(self, device_proxy, cmd_name, cmd_data):
+        cmd_data = self._inject_id(cmd_data)
         device = self.target
         try:
             device_proxy.command_inout(cmd_name, cmd_data)
@@ -132,6 +158,7 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
             device._read_activity_message = df[0].desc
             self.logger.error(df)
             raise
+
 
 
 class ElementDeviceData:
