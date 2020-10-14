@@ -6,7 +6,21 @@ export working_dir=../build/reports/tox_report
 # Entering into a bash shell script to run unit-test cases and generating reports
 echo "Unit test cases will be executed shortly..."
 mkdir -p tox_report
+
+# check if build folder is present
+echo "Check 1"
+cd ..
+ls -l
+cd -
+
+
 if [ -d "$working_dir" ]; then rm -rf $working_dir; fi
+
+# check if build folder is present
+echo "Check 2"
+cd ..
+ls -l
+cd -
 
 for path in $(find ./*/test  -type d -name unit); do
 	export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
@@ -16,6 +30,13 @@ for path in $(find ./*/test  -type d -name unit); do
   mv ${TMC_ELEMENT}_coverage ../tox_report/${TMC_ELEMENT}_coverage;
   cd ..
 done
+
+# check if build folder is present
+echo "Check 3"
+cd ..
+ls -l
+cd -
+
 mv ./tox_report ../build/reports
 
 cd ../build/reports/tox_report
