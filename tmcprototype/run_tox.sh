@@ -28,8 +28,8 @@ mkdir -p $REPORTS_DIR
 echo "Check 3"
 ls -l
 
-reports_dir_path := $(abspath $REPORTS_DIR)
-export REPORTS_DIR_PATH=$reports_dir_path
+# reports_dir_path := $(abspath $REPORTS_DIR)
+# export REPORTS_DIR_PATH=$reports_dir_path
 
 for path in $(find ./*/test  -type d -name unit); do
 	export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
