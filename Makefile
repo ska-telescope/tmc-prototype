@@ -15,7 +15,7 @@ PROJECT = tmcprototype
 
 # KUBE_NAMESPACE defines the Kubernetes Namespace that will be deployed to
 # using Helm.  If this does not already exist it will be created
-KUBE_NAMESPACE ?= tmcprototype
+KUBE_NAMESPACE ?= tmcmid
 SDP_KUBE_NAMESPACE ?= sdp#namespace to be used
 DASHBOARD ?= webjive-dash.dump
 
