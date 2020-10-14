@@ -24,9 +24,12 @@ echo "Check 2"
 ls -l
 # cd -
 
-mkdir -p ./$REPORTS_DIR
+mkdir -p $REPORTS_DIR
 echo "Check 3"
 ls -l
+
+reports_dir_path := $(abspath $REPORTS_DIR)
+export REPORTS_DIR_PATH=$reports_dir_path
 
 for path in $(find ./*/test  -type d -name unit); do
 	export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
@@ -46,9 +49,9 @@ ls -l $REPORTS_DIR
 # mv ./tox_report ../build/reports
 
 # cd ../build/reports/tox_report
-cd $REPORTS_DIR
-echo "Check 5"
-ls -l
+# cd $REPORTS_DIR
+# echo "Check 5"
+# ls -l
 # Combine coverage reports
 coverage combine centralnode_coverage cspmasterleafnode_coverage \
                   cspsubarrayleafnode_coverage dishleafnode_coverage \
