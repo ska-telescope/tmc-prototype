@@ -190,7 +190,7 @@ class SubarrayNode(SKASubarray):
 
 
     def get_deviceproxy(self, device_fqdn):
-        """
+        """fqdn
         Returns device proxy for given FQDN.
         """
         retry = 0

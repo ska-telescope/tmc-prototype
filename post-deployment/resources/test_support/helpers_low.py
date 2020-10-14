@@ -21,16 +21,9 @@ obsState = {"IDLE": 0}
 
 ####typical device sets
 subarray_devices = [
-        'ska_mid/tm_subarray_node/1',
-        'mid_csp/elt/subarray_01',
-        'mid_csp_cbf/sub_elt/subarray_01',
-        'mid_sdp/elt/subarray_1']
+        'ska_low/tm_subarray_node/1',
+        'low-mccs/subarray/01']
 
-
-def map_dish_nr_to_device_name(dish_nr):
-    digits = str(10000 + dish_nr)[1::]
-    return "mid_d" + digits + "/elt/master"
-    
 def handle_timeout(par1,par2):
     print("operation timeout")
     raise Exception("operation timeout")
@@ -88,8 +81,6 @@ class ObjectComparison():
         except:
             raise Exception("{} is asserted to be {} but was instead {}".format(self.object,value,self.value))
 
-
-####time keepers based on above resources
 class monitor(object):
     '''
     Montitors an attribte of a given resource and allows a user to block/wait on a specific condition:
@@ -197,7 +188,6 @@ class monitor(object):
             self._update()
         return count_down
 
-
 class subscriber:
 
     def __init__(self, resource,implementation='polling'):
@@ -267,6 +257,7 @@ class state_checker:
 def wait_for(device, timeout=80):
     return state_checker(device, timeout)
 
+
 ### this is a composite type of waiting based on a set of predefined pre conditions expected to be true
 class waiter():
     
@@ -280,79 +271,37 @@ class waiter():
         self.waits = []
 
     def set_wait_for_ending_SB(self):
-        self.waits.append(watch(resource('ska_mid/tm_subarray_node/1')).to_become("obsState",changed_to='IDLE'))
-        self.waits.append(watch(resource('mid_d0001/elt/master')).to_become("pointingState",changed_to='READY'))
-        self.waits.append(watch(resource('mid_d0002/elt/master')).to_become("pointingState",changed_to='READY'))
-        self.waits.append(watch(resource('mid_d0003/elt/master')).to_become("pointingState",changed_to='READY'))
-        self.waits.append(watch(resource('mid_d0004/elt/master')).to_become("pointingState",changed_to='READY'))
-        self.waits.append(watch(resource('mid_csp/elt/subarray_01')).to_become("obsState",changed_to='IDLE'))
-        self.waits.append(watch(resource('mid_csp_cbf/sub_elt/subarray_01')).to_become("obsState",changed_to='IDLE'))
-        self.waits.append(watch(resource('mid_sdp/elt/subarray_1')).to_become("obsState",changed_to='IDLE'))
+        self.waits.append(watch(resource('ska_low/tm_subarray_node/1')).to_become("obsState",changed_to='IDLE'))
+        self.waits.append(watch(resource('low-mccs/subarray/01')).to_become("obsState",changed_to='IDLE'))
 
-    def set_wait_for_assign_resources(self,nr_of_receptors=None):
-        ### the following is a hack to wait for items taht are not worked into the state variable
-        if nr_of_receptors is not None:
-            def predicate_sum(current,expected):
-                return (sum(current) == sum(expected))
-            def predicate_set_eq(current,expected):
-                if current is None:
-                    return False
-                else:
-                    return (set(current) == set(expected))
-            IDlist_ones = tuple([1 for i in range(0,nr_of_receptors)])
-            IDlist_inc = tuple([i for i in range(1,nr_of_receptors+1)])
-            self.waits.append(watch(resource('ska_mid/tm_subarray_node/1'))
-                .for_a_change_on(
-                    "receptorIDList",
-                    changed_to=IDlist_inc,
-                    predicate=predicate_set_eq))
-            self.waits.append(watch(resource('mid_csp/elt/subarray_01'))
-                .for_a_change_on(
-                    "assignedReceptors",
-                    changed_to=IDlist_inc,
-                    predicate=predicate_set_eq))
-            self.waits.append(watch(resource('mid_csp/elt/master'))
-                .for_a_change_on("receptorMembership",
-                    changed_to=IDlist_ones,
-                    predicate=predicate_sum))
-        else:
-            self.waits.append(watch(resource('ska_mid/tm_subarray_node/1')).for_any_change_on("receptorIDList"))
-            self.waits.append(watch(resource('mid_csp/elt/subarray_01')).for_any_change_on("assignedReceptors"))
-            self.waits.append(watch(resource('mid_csp/elt/master')).for_any_change_on("receptorMembership"))
-        #self.waits.append(watch(resource('ska_mid/tm_subarray_node/1')).to_become("State",changed_to='ON'))
-        #self.waits.append(watch(resource('ska_mid/tm_subarray_node/1')).to_become("obsState",changed_to='RESOURCING'))
-        self.waits.append(watch(resource('mid_csp/elt/subarray_01')).to_become("obsState",changed_to='IDLE'))
-        self.waits.append(watch(resource('mid_csp_cbf/sub_elt/subarray_01')).to_become("obsState",changed_to='IDLE'))
-        self.waits.append(watch(resource('mid_sdp/elt/subarray_1')).to_become("obsState",changed_to='IDLE'))
-        self.waits.append(watch(resource('ska_mid/tm_subarray_node/1')).to_become("obsState",changed_to='IDLE'))
-        
+
+    def set_wait_for_assign_resources(self):
+        self.waits.append(watch(resource('ska_low/tm_subarray_node/1')).to_become("State",changed_to='ON'))
+        self.waits.append(watch(resource('low-mccs/control/control')).to_become("State",changed_to='ON'))
+        self.waits.append(watch(resource('low-mccs/subarray/01')).to_become("obsState",changed_to='IDLE'))
+
+     
     def set_wait_for_tearing_down_subarray(self):
-        self.waits.append(watch(resource('ska_mid/tm_subarray_node/1')).for_any_change_on("receptorIDList"))
-        self.waits.append(watch(resource('ska_mid/tm_subarray_node/1')).to_become("State",changed_to='ON'))
-        self.waits.append(watch(resource('ska_mid/tm_subarray_node/1')).to_become("obsState",changed_to='EMPTY'))
+        # self.waits.append(watch(resource('ska_low/tm_subarray_node/1')).for_any_change_on("receptorIDList"))
+        self.waits.append(watch(resource('ska_low/tm_subarray_node/1')).to_become("State",changed_to='ON'))
+        self.waits.append(watch(resource('low-mccs/subarray/01')).to_become("obsState",changed_to='EMPTY'))
         print ("In set_wait_for_tearing_down_subarray")
-        # self.waits.append(watch(resource('mid_csp/elt/subarray_01')).to_become("State",changed_to='OFF'))
-        # self.waits.append(watch(resource('mid_csp_cbf/sub_elt/subarray_01')).to_become("State",changed_to='OFF'))
-        # self.waits.append(watch(resource('mid_sdp/elt/subarray_1')).to_become("State",changed_to='OFF'))
+       
 
     def set_wait_for_going_to_standby(self):
         self.waits.append(watch(resource('ska_low/tm_subarray_node/1')).to_become("State",changed_to='OFF'))
-        self.waits.append(watch(resource('low-mccs/control/control')).to_become("State",changed_to='OFF'))
-        self.waits.append(watch(resource('')).to_become("State",changed_to='OFF'))
-        self.waits.append(watch(resource('mid_csp/elt/master')).to_become("State",changed_to='STANDBY'))
+        self.waits.append(watch(resource('low-mccs/subarray/01')).to_become("State",changed_to='OFF'))
+        self.waits.append(watch(resource('low-mccs/control/control')).to_become("State",changed_to='OFF')) 
         # at the moment sdb does not go to standby
-        # self.waits.append(watch(resource('mid_sdp/elt/subarray_1')).for_a_change_on("State"))
 
     def set_wait_for_going_into_scanning(self):
-        self.waits.append(watch(resource('ska_mid/tm_subarray_node/1')).to_become('obsState',changed_to='SCANNING'))  
-        # self.waits.append(watch(resource('mid_csp/elt/subarray_01')).to_become('obsState',changed_to='SCANNING'))
-        # self.waits.append(watch(resource('mid_sdp/elt/subarray_1')).to_become('obsState',changed_to='SCANNING'))
+        self.waits.append(watch(resource('ska_low/tm_subarray_node/1'')).to_become('obsState',changed_to='SCANNING'))  
 
 
     def set_wait_for_starting_up(self):
-        self.waits.append(watch(resource('low-mccs/control/control')).to_become("State",changed_to='ON'))
         self.waits.append(watch(resource('ska_low/tm_subarray_node/1')).to_become("State",changed_to='ON'))
-      
+        self.waits.append(watch(resource('low-mccs/control/control')).to_become("State",changed_to='ON'))
+       
 
     def wait(self, timeout=30,resolution=0.1):
         self.logs = ""
@@ -392,9 +341,6 @@ class waiter():
                 self.error_logs,
                 self.logs
         ))
-
-#####Waiters based on tango DevicProxy's abilitu to subscribe to events
-
 
 class AttributeWatcher():
     '''listens to events in a device and enables waiting until a predicate is true or publish to a subscriber
@@ -509,7 +455,13 @@ class AttributeWatcher():
 
 
 
-        
+
+
+
+
+
+
+
 
 
     
