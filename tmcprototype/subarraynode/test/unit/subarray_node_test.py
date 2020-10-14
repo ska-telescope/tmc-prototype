@@ -5,6 +5,7 @@ import sys
 import json
 import types
 import time
+from typing import Any, Callable, Dict,  NamedTuple, Tuple
 import pytest
 import mock
 from mock import Mock, MagicMock
@@ -488,6 +489,119 @@ def test_release_resource_should_raise_exception_when_called_before_assign_resou
     assert tango_context.device.obsState == ObsState.EMPTY
     assert "Error executing command ReleaseAllResourcesCommand" in str(df.value)
 
+
+class ProxyContext():
+
+
+    def __init__(self,
+            proxy_mock:Mock,
+            map:Dict[str,Callable],
+            fqdn:str = '',
+            *att_maps:Tuple[str,str])-> None:
+        
+        self.proxy_mock =proxy_mock
+        self.map = map
+        self.fqdn = fqdn
+        self._att_map = {}
+        for att_map in att_maps:
+            event_attr, device_attr = att_map
+            self._att_map[event_attr] = device_attr
+
+
+    def generate_event(self,attr:str,val:Any):
+        event = create_dummy_event_state(self.proxy_mock,self.fqdn,attr,val)
+        device_attr = self._att_map.get(attr,attr)
+        self.map[device_attr](event)
+
+
+class DishProxyContext(ProxyContext):
+
+    def __init__(self,
+            proxy_mock:Mock,
+            map:Dict[str,Callable],
+            name:str,
+            fqdn:str = '',
+            *att_maps:Tuple[str,str]) -> None:
+
+        self.name = name
+        super(DishProxyContext,self).__init__(proxy_mock,map,fqdn,*att_maps)
+
+
+
+class SubarrayProxyContext(ProxyContext):
+
+    def __init__(self,
+            proxy_mock:Mock,
+            map:Dict[str,Callable],
+            fqdn:str = '',
+            *att_maps:Tuple[str,str]) -> None:
+
+        super(SubarrayProxyContext,self).__init__(proxy_mock,map,fqdn,*att_maps) 
+
+
+class SubarrayContext(NamedTuple):
+    sdp_subarray1: SubarrayProxyContext
+    csp_subarray1: SubarrayProxyContext
+    event_subscription_map:Any
+    tango_context:Any
+    sdp_subarray1_ln: SubarrayProxyContext
+    csp_subarray1_ln: SubarrayProxyContext
+    dish_ln: DishProxyContext
+
+
+@pytest.fixture()
+def empty_subarray_context(mock_lower_devices)->SubarrayContext:
+    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
+    sdp_obs_state_mapping = ("ObsState","sdpSubarrayObsState")
+    csp_obs_state_mapping = ("ObsState","cspSubarrayObsState")
+    dish_pointing_state_mapping = ("PointingState","dishPointingState")
+    csp_subarray1= SubarrayProxyContext(
+        csp_subarray1_proxy_mock,
+        event_subscription_map,
+        csp_subarray1_fqdn,
+        csp_obs_state_mapping)
+    sdp_subarray1 = SubarrayProxyContext(
+        sdp_subarray1_proxy_mock,
+        event_subscription_map,
+        sdp_subarray1_fqdn,
+        sdp_obs_state_mapping)
+    csp_subarray1_ln=SubarrayProxyContext(
+        csp_subarray1_ln_proxy_mock,
+        event_subscription_map,
+        csp_subarray1_ln_fqdn,
+        csp_obs_state_mapping)
+    sdp_subarray1_ln=SubarrayProxyContext(
+        sdp_subarray1_ln_proxy_mock,
+        event_subscription_map,
+        sdp_subarray1_ln_fqdn,
+        sdp_obs_state_mapping)
+    dish_ln=DishProxyContext(
+        dish_ln_proxy_mock,
+        dish_pointing_state_map,
+        (dish_ln_prefix+"0001"),
+        '',
+        dish_pointing_state_mapping)
+    context = SubarrayContext(
+        sdp_subarray1,
+        csp_subarray1,
+        event_subscription_map,
+        tango_context,
+        sdp_subarray1_ln,
+        csp_subarray1_ln,
+        dish_ln)
+    context.tango_context.device.On()
+    return context
+
+@pytest.fixture()
+def idle_subarray_context(empty_subarray_context:SubarrayContext)->SubarrayContext:
+    c = empty_subarray_context
+    c.tango_context.device.AssignResources(assign_input_str)
+    # Mock the behaviour of Csp asnd SDP subarray ObsState
+    c.csp_subarray1_ln.generate_event('ObsState',ObsState.IDLE)
+    c.sdp_subarray1_ln.generate_event('ObsState',ObsState.IDLE)
+    wait_for(c.tango_context, ObsState.IDLE)
+    assert c.tango_context.device.obsState == ObsState.IDLE
+    return c
 
 def test_configure_command_obsstate_changes_from_configuring_to_ready(mock_lower_devices):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
