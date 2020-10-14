@@ -68,6 +68,7 @@ def test_scan():
         #tear down
         LOGGER.info('TMC-Scan tests complete: tearing down...')
         tmc.end()
+        resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('IDLE')
         LOGGER.info('Invoked End on Subarray')
         tmc.release_resources()
         LOGGER.info('Invoked ReleaseResources on Subarray')
