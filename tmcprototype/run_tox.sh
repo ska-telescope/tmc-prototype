@@ -1,45 +1,51 @@
 #!/bin/bash
 set -eo pipefail
 
-export working_dir=../build/reports/tox_report
-
+# export working_dir=../build/reports/tox_report
+REPORTS_DIR=reports/unit-tests
+# export reports_dir=./$REPORTS_DIR
+# echo $reports_dir
 # Entering into a bash shell script to run unit-test cases and generating reports
 echo "Unit test cases will be executed shortly..."
-mkdir -p tox_report
+mkdir -p ./REPORTS_DIR
 
 # check if build folder is present
 echo "Check 1"
-cd ..
+# cd ..
 ls -l
-cd -
+# cd -
 
 
-if [ -d "$working_dir" ]; then rm -rf $working_dir; fi
+# if [ -d "$working_dir" ]; then rm -rf $working_dir; fi
+if [ -d "./$REPORTS_DIR" ]; then rm -rf ./$REPORTS_DIR; fi
 
 # check if build folder is present
 echo "Check 2"
-cd ..
+# cd ..
 ls -l
-cd -
+# cd -
 
 for path in $(find ./*/test  -type d -name unit); do
 	export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
 	echo +++ Trying tests for $TMC_ELEMENT;
 	cd $TMC_ELEMENT;
 	tox -e py37
-  mv ${TMC_ELEMENT}_coverage ../tox_report/${TMC_ELEMENT}_coverage;
+  mv ${TMC_ELEMENT}_coverage ../$REPORTS_DIR/${TMC_ELEMENT}_coverage;
   cd ..
 done
 
 # check if build folder is present
 echo "Check 3"
-cd ..
+# cd ..
 ls -l
-cd -
+# cd -
 
-mv ./tox_report ../build/reports
+# mv ./tox_report ../build/reports
 
-cd ../build/reports/tox_report
+# cd ../build/reports/tox_report
+cd $REPORTS_DIR
+echo "Check 4"
+ls -l
 # Combine coverage reports
 coverage combine centralnode_coverage cspmasterleafnode_coverage \
                   cspsubarrayleafnode_coverage dishleafnode_coverage \

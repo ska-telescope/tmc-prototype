@@ -351,9 +351,9 @@ unit tests:
     - docker-executor
   script:
     - make unit-test
-  artifacts:
+  artifacts: reports
     paths:
-      - ./build
+      - ./tmcprototype/reports/unit-tests
 
 linting:
   stage: linting
