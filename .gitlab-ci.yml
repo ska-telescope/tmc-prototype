@@ -366,14 +366,14 @@ test-mid:
   #   - kubectl delete namespace tmcprototype
   script:
     - kubectl version
-    - make install-chart $KUBE_NAMESPACE=tmcmid $HELM_CHART=tmc-mid-umbrella $UMBRELLA_CHART_PATH=charts/tmc-mid-umbrella/
-    - make wait $KUBE_NAMESPACE=tmcmid
-    - make smoketest $KUBE_NAMESPACE=tmcmid
+    - make install-chart KUBE_NAMESPACE=tmcmid HELM_CHART=tmc-mid-umbrella UMBRELLA_CHART_PATH=charts/tmc-mid-umbrella/
+    - make wait KUBE_NAMESPACE=tmcmid
+    - make smoketest KUBE_NAMESPACE=tmcmid
     #- make test
   after_script:
-    - make uninstall-chart $KUBE_NAMESPACE=tmcmid $HELM_CHART=tmc-mid-umbrella $UMBRELLA_CHART_PATH=charts/tmc-mid-umbrella/
-    - make clean $KUBE_NAMESPACE=tmcmid
-    - make delete_namespace $KUBE_NAMESPACE=tmcmid
+    - make uninstall-chart KUBE_NAMESPACE=tmcmid HELM_CHART=tmc-mid-umbrella UMBRELLA_CHART_PATH=charts/tmc-mid-umbrella/
+    - make clean KUBE_NAMESPACE=tmcmid
+    - make delete_namespace KUBE_NAMESPACE=tmcmid
     - make delete_namespace-sdp
   environment:
     name: test
@@ -394,15 +394,15 @@ test-low:
   #   - make delete_namespace $KUBE_NAMESPACE=tmclow
   script:
     - kubectl version
-    - make install-chart $KUBE_NAMESPACE=tmclow $HELM_CHART=tmc-low-umbrella $UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
-    - make wait $KUBE_NAMESPACE=tmclow
-    - make smoketest $KUBE_NAMESPACE=tmclow
+    - make install-chart KUBE_NAMESPACE=tmclow HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
+    - make wait KUBE_NAMESPACE=tmclow
+    - make smoketest KUBE_NAMESPACE=tmclow
     #- make test $KUBE_NAMESPACE=tmclow
   after_script:
-    - make uninstall-chart $KUBE_NAMESPACE=tmclow $HELM_CHART=tmc-low-umbrella $UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
-    - make clean $KUBE_NAMESPACE=tmclow
-    - make delete_namespace-sdp $KUBE_NAMESPACE=tmclow
-    - make delete_namespace $KUBE_NAMESPACE=tmclow
+    - make uninstall-chart KUBE_NAMESPACE=tmclow HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
+    - make clean KUBE_NAMESPACE=tmclow
+    - make delete_namespace-sdp KUBE_NAMESPACE=tmclow
+    - make delete_namespace KUBE_NAMESPACE=tmclow
   environment:
     name: test
   artifacts:
