@@ -11,12 +11,14 @@ from tango import DevFailed
 from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+from .transaction_id import identify_with_id, inject_id,inject_with_id
 
 
 class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
     """
     A class for SubarrayNode's AssignResources() command.
     """
+    @identify_with_id('assign','argin')
     def do(self, argin):
         """
         Assigns resources to the subarray. It accepts receptor id list as well as SDP resources string
@@ -299,6 +301,8 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
         self.logger.debug(log_msg)
         return allocation_success
 
+
+
     def assign_csp_resources(self, argin):
         """
         This function accepts the receptor IDs list as input and invokes the assign resources command on
@@ -324,6 +328,10 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
         try:
             dish[const.STR_KEY_RECEPTOR_ID_LIST] = argin
             json_argument[const.STR_KEY_DISH] = dish
+
+            #inject transaction id for logging purpose
+            inject_id(self,json_argument)
+
             arg_list.append(json.dumps(json_argument))
             device._csp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, json.dumps(json_argument))
             self.logger.info(const.STR_ASSIGN_RESOURCES_INV_CSP_SALN)
@@ -345,7 +353,7 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
         self.logger.debug(log_msg)
         return argout
 
-
+    @inject_with_id(0,'argin')
     def assign_sdp_resources(self, argin):
         """
         This function accepts the receptor ID list as input and assigns SDP resources to SDP Subarray
