@@ -123,14 +123,14 @@ help:  ## show this help.
 
 .PHONY: all help
 
-# Creates Docker volume for use as a cache, if it doesn't exist already
-INIT_CACHE = \
-	docker volume ls | grep $(CACHE_VOLUME) || \
-	docker create --name $(CACHE_VOLUME) -v $(CACHE_VOLUME):/cache $(IMAGE_TO_TEST)
-# http://cakoose.com/wiki/gnu_make_thunks
-BUILD_GEN = $(shell docker create -v /build $(IMAGE_TO_TEST))
-BUILD = $(eval BUILD := $(BUILD_GEN))$(BUILD)
+# # Creates Docker volume for use as a cache, if it doesn't exist already
+# INIT_CACHE = \
+# 	docker volume ls | grep $(CACHE_VOLUME) || \
+# 	docker create --name $(CACHE_VOLUME) -v $(CACHE_VOLUME):/cache $(IMAGE_TO_TEST)
+# # http://cakoose.com/wiki/gnu_make_thunks
+# BUILD_GEN = $(shell docker create -v /build $(IMAGE_TO_TEST))
+# BUILD = $(eval BUILD := $(BUILD_GEN))$(BUILD)
 
-#Docker volume to store unit test reports
-REPORT_GEN = $(shell docker create -v /report $(IMAGE_TO_TEST))
-REPORT = $(eval REPORT := $(REPORT_GEN))$(REPORT)
+# #Docker volume to store unit test reports
+# REPORT_GEN = $(shell docker create -v /report $(IMAGE_TO_TEST))
+# REPORT = $(eval REPORT := $(REPORT_GEN))$(REPORT)
