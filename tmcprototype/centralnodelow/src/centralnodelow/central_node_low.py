@@ -20,6 +20,7 @@ from tango.server import run, attribute, command, device_property
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode, BaseCommand
 from ska.base.control_model import HealthState
+from centralnodelow.input_validator import AssignResourceValidator
 # Additional import
 from . import const, release
 # PROTECTED REGION END #    //  CentralNode.additional_import
@@ -540,7 +541,12 @@ class CentralNode(SKABaseDevice):
             """
             device = self.target
             try:
-                json_argument = json.loads(argin)
+                # Validate input JSON string
+                self.logger.info("Validating input string.")
+                input_validator = AssignResourceValidator(device.TMLowSubarrayNodes, self.logger)
+                json_argument = input_validator.loads(argin)
+
+                #json_argument = json_argument.loads(argin)
                 # Create subarray proxy
                 subarray_id = int(json_argument['subarray_id'])
                 subarrayProxy = device.subarray_FQDN_dict[subarray_id]

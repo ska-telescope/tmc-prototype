@@ -57,8 +57,7 @@ STR_HEALTH_STATE_UNKNOWN_VAL = "Subarray healthState event returned unknown valu
 STR_MCCS_SUBARRAY_OBS_STATE = "MCCS Subarray obsState is:"
 STR_SCAN_IP_ARG = "Scan inputs Arguments :-> "
 STR_SA_SCANNING = "Subarray is scanning at the desired pointing coordinates."
-
-
+STR_SCAN_FAILED = "Scan command failed."
 
 # Error messages
 ERR_INVALID_JSON = "Invalid JSON format"

@@ -11,6 +11,8 @@ from tango import DevFailed
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from . import const
+from .input_validator import ScanValidator
+from .exceptions import InvalidJSONError
 
 
 class ScanCommand(SKASubarray.ScanCommand):
@@ -44,6 +46,10 @@ class ScanCommand(SKASubarray.ScanCommand):
         device.is_scan_completed = False
         device.is_release_resources = False
         try:
+            # Validate input JSON
+            input_validator = ScanValidator(self.logger)
+            json_argument = input_validator.loads(argin)
+
             log_msg = const.STR_SCAN_IP_ARG + str(argin)
             self.logger.info(log_msg)
             device._read_activity_message = log_msg
@@ -67,6 +73,15 @@ class ScanCommand(SKASubarray.ScanCommand):
             tango.Except.throw_exception(const.STR_SCAN_EXEC,
                                          log_msg,
                                          "SubarrayNode.ScanCommand",
+                                         tango.ErrSeverity.ERR)
+
+        except InvalidJSONError as error:
+            self.logger.exception("Exception in Scan(): %s", str(error))
+            device._read_activity_message = "Exception in validating input: " + str(error)
+            log_msg = const.STR_SCAN_EXEC + str(error)
+            self.logger.exception(error)
+            tango.Except.throw_exception(const.STR_SCAN_FAILED, log_msg,
+                                         "SubarrayNodeLow.ScanCommand",
                                          tango.ErrSeverity.ERR)
 
     def call_end_scan_command(self):

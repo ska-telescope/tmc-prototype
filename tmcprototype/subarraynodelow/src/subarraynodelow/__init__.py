@@ -14,11 +14,11 @@ other TM Components (such as OET, Central Node) for a SKA Low Subarray.
 """
 
 from . import release
-from . import const
+from . import const, input_validator
 from .subarray_node_low import SubarrayNode, SubarrayHealthState
 # from .configure_command import ElementDeviceData
 
-__all__ = ["SubarrayNode", "SubarrayHealthState", "const", "release"]
+__all__ = ["SubarrayNode", "SubarrayHealthState", "const", "release", "input_validator"]
 
 __version__ = release.version
 __version_info__ = release.version_info
