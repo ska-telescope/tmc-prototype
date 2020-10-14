@@ -20,7 +20,8 @@ from tango.server import run, attribute, command, device_property
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode, BaseCommand
 from ska.base.control_model import HealthState
-from centralnodelow.input_validator import AssignResourceValidator
+from centralnodelow.input_validator import AssignResourceValidator, ReleaseResourceValidator
+from centralnodelow.exceptions import SubarrayNotPresentError, InvalidJSONError
 # Additional import
 from . import const, release
 # PROTECTED REGION END #    //  CentralNode.additional_import
@@ -584,6 +585,16 @@ class CentralNode(SKABaseDevice):
                 tango.Except.throw_exception(const.STR_RESOURCE_ALLOCATION_FAILED, log_msg,
                                              "CentralNode.AssignResourcesCommand",
                                              tango.ErrSeverity.ERR)
+
+            except (InvalidJSONError, SubarrayNotPresentError) as error:
+                self.logger.exception("Exception in AssignResource(): %s", str(error))
+                device._read_activity_message = "Exception in validating input: " + str(error)
+                log_msg = const.STR_ASSIGN_RES_EXEC + str(error)
+                self.logger.exception(error)
+                tango.Except.throw_exception(const.STR_RESOURCE_ALLOCATION_FAILED, log_msg,
+                                             "CentralNode.AssignResourcesCommand",
+                                             tango.ErrSeverity.ERR)
+
             except DevFailed as dev_failed:
                 log_msg = const.ERR_ASSGN_RESOURCES + str(dev_failed)
                 self.logger.exception(dev_failed)
@@ -668,7 +679,12 @@ class CentralNode(SKABaseDevice):
             """
             device = self.target
             try:
-                jsonArgument = json.loads(argin)
+                # Validate input JSON string
+                self.logger.info("Validating input string.")
+                input_validator = ReleaseResourceValidator(device.TMLowSubarrayNodes, self.logger)
+                jsonArgument = input_validator.loads(argin)
+
+                #jsonArgument = json.loads(argin)
                 subarray_id = jsonArgument['subarray_id']
                 subarrayProxy = device.subarray_FQDN_dict[subarray_id]
                 if jsonArgument['release_all'] == True:
@@ -699,6 +715,15 @@ class CentralNode(SKABaseDevice):
                 log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
                 self.logger.exception(key_error)
                 tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, log_msg,
+                                             "CentralNode.ReleaseResourcesCommand",
+                                             tango.ErrSeverity.ERR)
+
+            except (InvalidJSONError, SubarrayNotPresentError) as error:
+                self.logger.exception("Exception in ReleaseResource(): %s", str(error))
+                device._read_activity_message = "Exception in validating input: " + str(error)
+                log_msg = const.STR_RELEASE_RES_EXEC + str(error)
+                self.logger.exception(error)
+                tango.Except.throw_exception(const.STR_RELEASE_RESOURCES_FAILED, log_msg,
                                              "CentralNode.ReleaseResourcesCommand",
                                              tango.ErrSeverity.ERR)
 

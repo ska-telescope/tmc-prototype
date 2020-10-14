@@ -11,31 +11,15 @@ from os.path import dirname, join
 
 
 # Sample 'good' JSON
-sample_assign_resources_request = {
-  "subarray_id": 1,
-  "station_ids": [
-    1,
-    2
-  ],
-  "channels": [
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8
-  ],
-  "station_beam_ids": [
-    1
-  ]
-}
+assign_input_file = 'command_AssignResources.json'
+path = join(dirname(__file__), 'data', assign_input_file)
+with open(path, 'r') as f:
+    sample_assign_resources_request = f.read()
 
 release_input_file='command_ReleaseResources.json'
 path= join(dirname(__file__), 'data' , release_input_file)
 with open(path, 'r') as f:
-    release_input_str = f.read()
+    sample_release_resources_request = f.read()
 
 class TestAssignResourceValidator():
     """Class to test the AssignResourceValidator class methods"""
@@ -56,7 +40,7 @@ class TestAssignResourceValidator():
 
         # Set wrong subarray id.
         input_json = sample_assign_resources_request
-        input_json["subarrayID"] = 99
+        input_json["subarray_id"] = 999
 
         input_validator = AssignResourceValidator(self._test_subarray_list)
 
@@ -73,8 +57,8 @@ class TestReleaseResourceValidator():
         """This function tests the validate method when good formatted json is provided"""
 
         input_validator = ReleaseResourceValidator(self._test_subarray_list)
-        output_config = input_validator.loads(json.dumps(release_input_str))
-        assert output_config == release_input_str
+        output_config = input_validator.loads(json.dumps(sample_release_resources_request))
+        assert output_config == sample_release_resources_request
 
     def test_validate_wrong_subarray_id(self):
         """
@@ -83,8 +67,8 @@ class TestReleaseResourceValidator():
         """
 
         # Set wrong subarray id.
-        input_json = release_input_str
-        input_json["subarrayID"] = 99
+        input_json = sample_release_resources_request
+        input_json["subarray_id"] = 999
 
         input_validator = ReleaseResourceValidator(self._test_subarray_list)
 

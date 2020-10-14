@@ -26,6 +26,7 @@ ERR_ASSGN_RESOURCES = "Error occurred while assigning resources to the Subarray 
 ERR_RELEASE_RESOURCES = "Error occurred while releasing resources from the Subarray \n"
 ERR_HEALTH_STATE_CB = "Error handling healthState callback for evt: %s"
 ERR_SUBARRAY_ID_DOES_NOT_EXIST = "The Subarray '99' does not exist."
+STR_RELEASE_RESOURCES_FAILED = "Release resources failed."
 
 #General strings
 STR_HEALTH_STATE = "healthState of "
