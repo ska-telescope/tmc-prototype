@@ -7,7 +7,6 @@ REPORTS_DIR=reports
 # echo $reports_dir
 # Entering into a bash shell script to run unit-test cases and generating reports
 echo "Unit test cases will be executed shortly..."
-mkdir -p ./$REPORTS_DIR
 
 # check if build folder is present
 echo "Check 1"
@@ -25,26 +24,30 @@ echo "Check 2"
 ls -l
 # cd -
 
+mkdir -p ./$REPORTS_DIR
+echo "Check 3"
+ls -l
+
 for path in $(find ./*/test  -type d -name unit); do
 	export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
 	echo +++ Trying tests for $TMC_ELEMENT;
 	cd $TMC_ELEMENT;
 	tox -e py37
-  mv ${TMC_ELEMENT}_coverage ../$REPORTS_DIR/${TMC_ELEMENT}_coverage;
+  mv ${TMC_ELEMENT}_coverage ../$REPORTS_DIR;
   cd ..
 done
 
 # check if build folder is present
-echo "Check 3"
+echo "Check 4"
 # cd ..
-ls -l
+ls -l $REPORTS_DIR
 # cd -
 
 # mv ./tox_report ../build/reports
 
 # cd ../build/reports/tox_report
 cd $REPORTS_DIR
-echo "Check 4"
+echo "Check 5"
 ls -l
 # Combine coverage reports
 coverage combine centralnode_coverage cspmasterleafnode_coverage \
@@ -56,7 +59,7 @@ coverage combine centralnode_coverage cspmasterleafnode_coverage \
 # cd ../tox_report && mv coverage.xml ../code-coverage.xml
 # cd ../../../tmcprototype
 mv coverage.xml code-coverage.xml
-echo "Check 5"
+echo "Check 6"
 ls -l
 
 python3 -m pip install junitparser
