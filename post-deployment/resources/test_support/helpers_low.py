@@ -278,7 +278,9 @@ class waiter():
     def set_wait_for_assign_resources(self):
         self.waits.append(watch(resource('ska_low/tm_subarray_node/1')).to_become("State",changed_to='ON'))
         self.waits.append(watch(resource('low-mccs/control/control')).to_become("State",changed_to='ON'))
+        self.waits.append(watch(resource('low-mccs/subarray/01')).to_become("State",changed_to='ON'))
         self.waits.append(watch(resource('low-mccs/subarray/01')).to_become("obsState",changed_to='IDLE'))
+        self.waits.append(watch(resource('ska_low/tm_subarray_node/1')).to_become("obsState",changed_to='IDLE'))
 
      
     def set_wait_for_tearing_down_subarray(self):

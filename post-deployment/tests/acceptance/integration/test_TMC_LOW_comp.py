@@ -50,7 +50,6 @@ def test_assign_resources():
             CentralNode = DeviceProxy('ska_low/tm_central/central_node')
             CentralNode.AssignResources(config)
             LOGGER.info('Invoked AssignResources on CentralNode')
-            resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('IDLE')
         compose_sub()
     
     

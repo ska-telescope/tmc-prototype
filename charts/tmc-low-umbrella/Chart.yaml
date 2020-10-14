@@ -16,12 +16,9 @@ dependencies:
 - name: tango-base
   version: 0.2.2
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
-# - name: webjive
-#   version: 0.1.0
-#   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: webjive
-  version: 0.1.0
-  repository: file://../../../skampi/charts/skampi/charts/webjive
+  version: 0.1.1
+  repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: logging
   version: 0.1.0
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
