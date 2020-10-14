@@ -361,9 +361,9 @@ test-mid:
   tags:
     - docker-executor
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.2
-  # before_script:
-  #   - kubectl delete namespace tmcprototype-sdp
-  #   - kubectl delete namespace tmcprototype
+  before_script:
+    - kubectl delete namespace tmcmid
+    - kubectl delete namespace sdp
   script:
     - kubectl version
     - make install-chart KUBE_NAMESPACE=tmcmid HELM_CHART=tmc-mid-umbrella UMBRELLA_CHART_PATH=charts/tmc-mid-umbrella/
