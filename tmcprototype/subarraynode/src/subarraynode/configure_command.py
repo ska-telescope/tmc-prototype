@@ -4,7 +4,8 @@ ConfigureCommand class for SubarrayNode.
 
 import functools
 import json
-from typing import Dict
+from typing import Any, Dict, Union
+#from typing import Dict
 # Tango imports
 import tango
 from tango import DevFailed
@@ -15,30 +16,17 @@ from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from ska_telmodel.csp import interface
 from ska.log_transactions import transaction
+from .transaction_id import identify_with_id,inject_with_id
 
 csp_interface_version = 0
 sdp_interface_version = 0
-
-def identify_with_id(name:str):
-    def wrapper(func):
-        @functools.wraps(func)
-        def wrap(obj,argin):
-            parameters = json.loads(argin)
-            with transaction(name, parameters,logger=obj.logger) as transaction_id:
-                obj.transaction_id = transaction_id
-                return func(obj,argin)
-        return wrap
-    return wrapper
-
-def inject_transaction_id(paramater:Dict,id:str):
-    paramater['transaction_id'] = id
-
+            
 
 class ConfigureCommand(SKASubarray.ConfigureCommand):
     """
     A class for SubarrayNode's Configure() command.
     """
-    @identify_with_id('configure')
+    @identify_with_id('configure','argin')
     def do(self, argin):
         """
         Configures the resources assigned to the Subarray.The configuration data for SDP, CSP and Dish is
@@ -92,16 +80,8 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
         self.logger.info(message)
         return (ResultCode.STARTED, message)
 
-    def _inject_id(self,data:str):
-        parameters = json.loads(data)
-        id = getattr(self,"transaction_id",None)
-        if id:
-            inject_transaction_id(parameters,id)
-        return json.dumps(parameters)
-
-
+    @inject_with_id(2,'cmd_data')
     def _configure_leaf_node(self, device_proxy, cmd_name, cmd_data):
-        cmd_data = self._inject_id(cmd_data)
         device = self.target
         try:
             device_proxy.command_inout(cmd_name, cmd_data)
@@ -140,6 +120,7 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
             "build_up_csp_cmd_data", scan_configuration, attr_name_map, device._receive_addresses_map)
         self._configure_leaf_node(device._csp_subarray_ln_proxy, "Configure", cmd_data)
 
+    @inject_with_id(0,'scan_configuration')
     def _configure_dsh(self, scan_configuration):
         device = self.target
         config_keys = scan_configuration.keys()
