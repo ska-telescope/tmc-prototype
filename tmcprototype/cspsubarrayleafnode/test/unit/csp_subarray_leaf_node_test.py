@@ -414,58 +414,49 @@ def raise_devfailed_exception_for_scan(cmd_name, inp_str, cmd_cb):
 
 
 def test_status():
-    # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assert tango_context.device.Status() != const.STR_CSPSALN_INIT_SUCCESS
 
 
 def test_read_delay_model():
-    # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assert tango_context.device.delayModel == " "
 
 
 def test_write_delay_model():
-    # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         tango_context.device.delayModel = " "
         assert tango_context.device.delayModel == " "
 
 
 def test_health_state():
-    # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assert tango_context.device.healthState == HealthState.OK
 
 
 def test_read_activity_message():
-    # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assert tango_context.device.activityMessage == " "
 
 
 def test_write_activity_message():
-    # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         tango_context.device.activityMessage = "test"
         assert tango_context.device.activityMessage == "test"
 
 
 def test_logging_level():
-    # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         tango_context.device.loggingLevel = LoggingLevel.INFO
         assert tango_context.device.loggingLevel == LoggingLevel.INFO
 
 
 def test_read_version_info():
-    # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         assert tango_context.device.versionInfo == " "
 
 
 def test_logging_targets():
-    # act & assert:
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets

@@ -23,7 +23,6 @@ path = join(dirname(__file__), 'data', assign_input_file)
 with open(path, 'r') as f:
     assign_input_str = f.read()
 
-
 configure_mccs_input_file= 'command_mccs_configure.json'
 path= join(dirname(__file__), 'data' , configure_mccs_input_file)
 with open(path, 'r') as f:
@@ -34,18 +33,15 @@ path= join(dirname(__file__), 'data' , configure_input_file)
 with open(path, 'r') as f:
     configure_str=f.read()
 
-
 configure_invalid_input_file='invalid_input_Configure.json'
 path= join(dirname(__file__), 'data' , configure_invalid_input_file)
 with open(path, 'r') as f:
     invalid_conf_input=f.read()
 
-
 scan_input_file= 'command_Scan.json'
 path= join(dirname(__file__), 'data', scan_input_file)
 with open(path, 'r') as f:
     scan_input_str=f.read()
-
 
 def set_timeout_event(timeout_event):
     timeout_event.set()
@@ -101,6 +97,7 @@ def test_off_command_should_change_subarray_device_state_to_off():
         tango_context.device.Off()
         assert tango_context.device.state() == DevState.OFF
         assert tango_context.device.obsState == ObsState.EMPTY
+
 
 def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready(mock_lower_devices):
     tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
@@ -225,7 +222,7 @@ def test_end_should_command_subarray_to_end_when_it_is_ready(mock_lower_devices)
 
     tango_context.device.End()
     mccs_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_END)
-    # mock pointing statewith pytest.raises(tango.DevFailed)
+    # mock pointing state
     assert tango_context.device.obsState == ObsState.IDLE
 
 def test_end_should_raise_devfailed_exception_when_mccs_subarray_throws_devfailed_exception(mock_lower_devices):
@@ -256,15 +253,6 @@ def test_end_should_raise_devfailed_exception_when_mccs_subarray_throws_devfaile
     # Check the ObsState changes to READY
     wait_for(tango_context, ObsState.READY)
     assert tango_context.device.obsState == ObsState.READY
-
-    # tango_context.device.Scan(scan_input_str)
-    # wait_for(tango_context, ObsState.SCANNING)
-    # assert tango_context.device.obsState == ObsState.SCANNING
-
-    # # test without invoking EndScan
-    # tango_context.device.EndScan()
-    # wait_for(tango_context, ObsState.READY)
-    # assert tango_context.device.obsState == ObsState.READY
 
     with pytest.raises(tango.DevFailed) as df:
         tango_context.device.End()
@@ -409,7 +397,6 @@ def test_end_scan_should_raise_devfailed_exception_when_mccs_subbarray_ln_throws
     assert tango_context.device.obsState == ObsState.SCANNING
     with pytest.raises(tango.DevFailed) as df:
         tango_context.device.EndScan()
-
     assert tango_context.device.obsState == ObsState.FAULT
 
 
@@ -420,49 +407,27 @@ def test_health_state():
         assert tango_context.device.healthState == HealthState.OK
 
 
+@pytest.fixture(scope="function",
+    params=[
+        HealthState.DEGRADED,
+        HealthState.OK,
+        HealthState.UNKNOWN,
+        HealthState.FAILED,
+    ])
+def health_state(request):
+    health_state = request.param
+    return health_state
+
+
 # Test case for HealthState callback
-def test_subarray_health_state_is_degraded_when_mccs_subarray_ln_is_degraded_after_start(mock_lower_devices):
+def test_subarray_health_state_changes_as_per_mccs_subarray_ln_healthstate(mock_lower_devices, health_state):
     mccs_subarray1_ln_health_attribute = 'mccsSubarrayHealthState'
     tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
-    health_state_value = HealthState.DEGRADED
     dummy_event = create_dummy_event_healthstate_with_proxy(
-        mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, health_state_value,
+        mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, health_state,
         mccs_subarray1_ln_health_attribute)
     event_subscription_map[mccs_subarray1_ln_health_attribute](dummy_event)
-    assert tango_context.device.healthState == HealthState.DEGRADED
-
-
-def test_subarray_health_state_is_ok_when_mccs_subarray1_ln_is_ok_after_start(mock_lower_devices):
-    tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
-    mccs_subarray1_ln_health_attribute = 'mccsSubarrayHealthState'
-    health_state_value = HealthState.OK
-    dummy_event_mccs = create_dummy_event_healthstate_with_proxy(
-        mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, health_state_value,
-        mccs_subarray1_ln_health_attribute)
-    event_subscription_map[mccs_subarray1_ln_health_attribute](dummy_event_mccs)
-    assert tango_context.device.healthState == HealthState.OK
-
-
-def test_subarray_health_state_is_unknown_when_mccs_subarray1_ln_is_unknown_after_start(mock_lower_devices):
-    tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
-    mccs_subarray1_ln_health_attribute = 'mccsSubarrayHealthState'
-    health_state_value = HealthState.UNKNOWN
-    dummy_event = create_dummy_event_healthstate_with_proxy(
-        mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, health_state_value,
-        mccs_subarray1_ln_health_attribute)
-    event_subscription_map[mccs_subarray1_ln_health_attribute](dummy_event)
-    assert tango_context.device.healthState == HealthState.UNKNOWN
-
-
-def test_subarray_health_state_is_failed_when_mccs_subarray1_ln_is_failed_after_start(mock_lower_devices):
-    tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
-    mccs_subarray1_ln_health_attribute = 'mccsSubarrayHealthState'
-    health_state_value = HealthState.FAILED
-    dummy_event = create_dummy_event_healthstate_with_proxy(
-        mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, health_state_value,
-        mccs_subarray1_ln_health_attribute)
-    event_subscription_map[mccs_subarray1_ln_health_attribute](dummy_event)
-    assert tango_context.device.healthState == HealthState.FAILED
+    assert tango_context.device.healthState == health_state
 
 
 def test_subarray_health_state_with_error_event(mock_lower_devices):
