@@ -371,8 +371,7 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
     assign_input_dict = json.loads(assign_input_str)
     tango_context.device.AssignResources(assign_input_str)
     str_json_arg = json.dumps(assign_input_dict.get("sdp"))
-    sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, str_json_arg)
-
+    verify_called_correctly(sdp_subarray1_ln_proxy_mock,const.CMD_ASSIGN_RESOURCES,str_json_arg)
     arg_list = []
     json_argument = {}
     dish = {}
@@ -380,7 +379,7 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
     dish[const.STR_KEY_RECEPTOR_ID_LIST] = receptor_list
     json_argument[const.STR_KEY_DISH] = dish
     arg_list.append(json.dumps(json_argument))
-    csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, json.dumps(json_argument))
+    verify_called_correctly(csp_subarray1_ln_proxy_mock,const.CMD_ASSIGN_RESOURCES,json.dumps(json_argument))
     assert tango_context.device.obsState == ObsState.RESOURCING
 
 
@@ -613,15 +612,12 @@ def assert_that_log_contains(name:str,caplog):
                 break
         if not found:
             raise AssertionError(f'pattern ({pattern}) not found in expected log messages')
-        
 
 
 def test_log_transaction_with_assign(empty_subarray_context:SubarrayContext,caplog):
     c = empty_subarray_context
     c.tango_context.device.AssignResources(assign_input_str)
-    # Mock the behaviour of Csp asnd SDP subarray ObsState
     assert_that_log_contains('assign',caplog)
-    
 
 
 def test_log_transaction_with_config(idle_subarray_context:SubarrayContext,caplog):
@@ -629,6 +625,41 @@ def test_log_transaction_with_config(idle_subarray_context:SubarrayContext,caplo
     c.sdp_subarray1.generate_event("receiveAddresses",receive_addresses_map)
     c.tango_context.device.Configure(configure_str)
     assert_that_log_contains('configure',caplog)
+
+@pytest.fixture()
+def mock_transaction_id():
+    with mock.patch('subarraynode.transaction_id.transaction') as transaction_mock:
+        dummy_id = 'dummy id'
+        context_manager_mock = transaction_mock.return_value
+        context_manager_mock.__enter__.return_value = 'dummy id'
+        yield json.dumps({'transaction_id':dummy_id})
+
+def test_transaction_id_injected_in_config_command(idle_subarray_context:SubarrayContext,mock_transaction_id):
+    c = idle_subarray_context
+    c.sdp_subarray1.generate_event("receiveAddresses",receive_addresses_map)
+    #with patch.object(Foo, 'f', new_callable=PropertyMock) as mock:
+    c.tango_context.device.Configure(configure_str)
+    verify_called_correctly(c.sdp_subarray1_ln.proxy_mock,const.CMD_CONFIGURE,mock_transaction_id)
+    verify_called_correctly(c.csp_subarray1_ln.proxy_mock,const.CMD_CONFIGURE,mock_transaction_id)
+   #verify_called_correctly(c.dish_ln.proxy_mock,const.CMD_CONFIGURE,mock_transaction_id)
+
+def test_transaction_id_injected_in_assign_command(empty_subarray_context:SubarrayContext,mock_transaction_id):
+    c = empty_subarray_context
+    c.tango_context.device.AssignResources(assign_input_str)
+    verify_called_correctly(c.sdp_subarray1_ln.proxy_mock,const.CMD_ASSIGN_RESOURCES,mock_transaction_id)
+    verify_called_correctly(c.csp_subarray1_ln.proxy_mock,const.CMD_ASSIGN_RESOURCES,mock_transaction_id)
+
+def assert_data_is_subsisted_by(data:Dict,sub:Dict):
+    for key,val in sub.items():
+        assert(key in data.keys())
+        assert(data[key] == val)
+
+def verify_called_correctly(agent:Mock,command,data):
+    agent.command_inout.assert_called_with(command, mock.ANY)
+    args = json.loads(agent.command_inout.call_args.args[1])
+    subsisted_data = json.loads(data)
+    assert_data_is_subsisted_by(args,subsisted_data)
+
 
 def test_configure_command_obsstate_changes_from_configuring_to_ready(mock_lower_devices):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
@@ -654,8 +685,8 @@ def test_configure_command_obsstate_changes_from_configuring_to_ready(mock_lower
                                            receive_addresses_map)
     event_subscription_map[attribute](dummy_event)
     tango_context.device.Configure(configure_str)
-    sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, sdp_conf_str)
-    csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, csp_conf_str)
+    verify_called_correctly(sdp_subarray1_ln_proxy_mock,const.CMD_CONFIGURE,sdp_conf_str)
+    verify_called_correctly(csp_subarray1_ln_proxy_mock,const.CMD_CONFIGURE,csp_conf_str)
     assert tango_context.device.obsState == ObsState.CONFIGURING
 
     # Mock the behaviour of Csp and SDP subarray ObsState
