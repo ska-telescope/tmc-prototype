@@ -66,16 +66,16 @@ echo "Check 6"
 ls -l
 
 python3 -m pip install junitparser
-junitparser merge ./centralnode/build/reports/centralnode-unit-tests.xml \
-                 ./centralnodelow/build/reports/centralnodelow-unit-tests.xml \
-                ./cspmasterleafnode/build/reports/cspmasterleafnode-unit-tests.xml \
-                ./cspsubarrayleafnode/build/reports/cspsubarrayleafnode-unit-tests.xml \
-                ./dishleafnode/build/reports/dishleafnode-unit-tests.xml \
-                ./sdpmasterleafnode/build/reports/sdpmasterleafnode-unit-tests.xml \
-                ./sdpsubarrayleafnode/build/reports/sdpsubarrayleafnode-unit-tests.xml \
-                ./mccsmasterleafnode/build/reports/mccsmasterleafnode-unit-tests.xml \
-                ./mccssubarrayleafnode/build/reports/mccssubarrayleafnode-unit-tests.xml \
-                ./subarraynode/build/reports/subarraynode-unit-tests.xml \
-                ./subarraynodelow/build/reports/subarraynodelow-unit-tests.xml \
-                $REPORTS_DIR/unit-tests.xml
+junitparser merge centralnode-unit-tests.xml \
+                  centralnodelow-unit-tests.xml \
+                  cspmasterleafnode-unit-tests.xml \
+                  cspsubarrayleafnode-unit-tests.xml \
+                  dishleafnode-unit-tests.xml \
+                  sdpmasterleafnode-unit-tests.xml \
+                  sdpsubarrayleafnode-unit-tests.xml \
+                  mccsmasterleafnode-unit-tests.xml \
+                  mccssubarrayleafnode-unit-tests.xml \
+                  subarraynode-unit-tests.xml \
+                  subarraynodelow-unit-tests.xml \
+                  $REPORTS_DIR/unit-tests.xml
                 # ../build/reports/unit-tests.xml
