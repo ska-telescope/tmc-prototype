@@ -87,7 +87,7 @@ tmc-proto:
         memory: 500Mi
       requests:
         cpu: 100m
-        memory: 128Mi  
+        memory: 128Mi
   - name: mccssubarrayleafnode1
     function: observation-execution
     domain: subarray
@@ -107,14 +107,9 @@ tmc-proto:
         memory: 500Mi
       requests:
         cpu: 100m
-        memory: 128Mi 
+        memory: 128Mi
 
 mccs: 
   tango-base:
     enabled: false
 
-# webjive:
-#   ingress:
-#     enabled: true
-#     nginx: false
-#     hostname: integration.engageska-portugal.pt

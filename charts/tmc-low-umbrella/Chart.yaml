@@ -1,6 +1,6 @@
 apiVersion: v2
 name: tmc-low-umbrella
-description: An umbrella Helm chart for TMC-Low deployment.
+description: An umbrella Helm chart for TMC-Low prototype deployment.
 type: application
 version: 0.0.2
 appVersion: 1.16.0
@@ -17,7 +17,6 @@ dependencies:
   version: 0.2.2
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 # For deploying tmc-mid and tmc-low at the same time, webjive should be referred for a single deployment.
-# Hence, webjive is referred only in tmc-mid chart. So webjive pv is bound to tmc-mid namespace. 
 - name: webjive
   version: 0.1.1
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
@@ -26,7 +25,4 @@ dependencies:
   repository: file://../tmc-proto
 - name: mccs
   version: 0.0.2
-  repository: file://../../../../ska-low-mccs/charts/mccs
-- name: tango-util
-  version: 0.0.1
-  repository: file://../../../../ska-low-mccs/charts/tango-util
+  repository: https://nexus.engageska-portugal.pt/repository/helm-chart

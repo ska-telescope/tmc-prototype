@@ -356,7 +356,7 @@ unit tests:
     paths:
       - ./build
 
-test:
+test-mid:
   stage: test
   tags:
     - docker-executor
@@ -366,14 +366,14 @@ test:
   #   - make delete_namespace
   script:
     - kubectl version
-    - make install-chart
-    - make wait
-    - make smoketest
+    - make install-chart $KUBE_NAMESPACE=tmcmid $HELM_CHART=tmc-mid-umbrella $UMBRELLA_CHART_PATH=charts/tmc-mid-umbrella/
+    - make wait $KUBE_NAMESPACE=tmcmid
+    - make smoketest $KUBE_NAMESPACE=tmcmid
     #- make test
   after_script:
-    - make uninstall-chart
-    - make clean
-    - make delete_namespace
+    - make uninstall-chart $KUBE_NAMESPACE=tmcmid $HELM_CHART=tmc-mid-umbrella $UMBRELLA_CHART_PATH=charts/tmc-mid-umbrella/
+    - make clean $KUBE_NAMESPACE=tmcmid
+    - make delete_namespace $KUBE_NAMESPACE=tmcmid
     - make delete_namespace-sdp
   environment:
     name: test
@@ -479,10 +479,10 @@ publish_chart:
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.2
   script:
     - curl -s https://gitlab.com/ska-telescope/stupid/raw/master/scripts/publish-charts.sh | bash
-  # when: manual
-  # only:
-  #   refs:
-  #     - master
+  when: manual
+  only:
+    refs:
+      - master
 
 pages:
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
