@@ -25,8 +25,8 @@ devices_to_log = [
 
 LOGGER = logging.getLogger(__name__)
 
-# @pytest.mark.select
-@pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
+@pytest.mark.low
+# @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_scan():
     
     try:
@@ -56,7 +56,7 @@ def test_scan():
         resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('READY')
         LOGGER.info('Starting a scan of 4 seconds')
         fixture['state'] = 'Subarray SCANNING'
-        @log_it('TMC_int_scan',devices_to_log)
+        # @log_it('TMC_int_scan',devices_to_log)
         @sync_scan(200)
         def scan():
             SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
