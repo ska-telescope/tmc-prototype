@@ -3,12 +3,12 @@ from datetime import date,datetime
 import os
 import pytest
 import logging
-from resources.test_support.helpers import waiter,watch,resource
-from resources.test_support.controls import telescope_is_in_standby
+from resources.test_support.helpers_low import waiter,watch,resource
+from resources.test_support.controls_low import telescope_is_in_standby
 from resources.test_support.state_checking import StateChecker
 from resources.test_support.log_helping import DeviceLogging
 from resources.test_support.persistance_helping import load_config_from_file
-from resources.test_support.sync_decorators import sync_configure,time_it
+from resources.test_support.sync_decorators_low import sync_configure,time_it
 from resources.test_support.logging_decorators import log_it
 import resources.test_support.tmc_helpers_low as tmc
 import time
@@ -26,8 +26,8 @@ devices_to_log = [
 
 LOGGER = logging.getLogger(__name__)
 
-@pytest.mark.select
-#@pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
+@pytest.mark.low
+# @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_configure_scan():
     
     try:
@@ -47,11 +47,11 @@ def test_configure_scan():
         fixture['state'] = 'Subarray Assigned'
 
         #then when I configure a subarray to perform a scan as per 'TMC_integration/configure1.json'
-        @log_it('TMC_int_configure',devices_to_log)
+        # @log_it('TMC_int_configure',devices_to_log)
         @sync_configure
         @time_it(90)
         def configure_sub():
-            configure1_file = 'resources/test_data/TMC_integration/configure1.json'
+            configure1_file = 'resources/test_data/TMC_integration/mccs_configure.json'
             config = load_config_from_file(configure1_file)
             LOGGER.info('Configuring a scan for subarray 1')
             fixture['state'] = 'Subarray CONFIGURING'
