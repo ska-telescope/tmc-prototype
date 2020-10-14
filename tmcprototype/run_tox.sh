@@ -77,5 +77,5 @@ junitparser merge centralnode-unit-tests.xml \
                   mccssubarrayleafnode-unit-tests.xml \
                   subarraynode-unit-tests.xml \
                   subarraynodelow-unit-tests.xml \
-                  $REPORTS_DIR/unit-tests.xml
+                  dishmaster-unit-tests.xml
                 # ../build/reports/unit-tests.xml
