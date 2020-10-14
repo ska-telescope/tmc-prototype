@@ -29,7 +29,6 @@ stages:
   - pages
   - release
   - trigger
-  - clean
 
 build CentralNode wheel for publication: # Executed on a tag
   stage: build
@@ -412,24 +411,6 @@ test-low:
     reports:
       junit: charts/build/report.xml
   when: manual
-
-clean:
-  stage: clean
-  tags:
-    - docker-executor
-  allow_failure: true
-  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.2
-  script:
-    - kubectl version
-    - make uninstall-chart
-    - kubectl -n tmcprototype delete pods,svc,daemonsets,deployments,replicasets,statefulsets,cronjobs,jobs,ingresses,etcd,configmaps --all
-    - make clean
-    - make delete_namespace
-    - make delete_namespace-sdp
-  environment:
-    name: test
-  when: manual
-
 
 linting:
   stage: linting

@@ -26,3 +26,4 @@ dependencies:
 - name: mccs
   version: 0.0.2
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
+  condition: tango-base.enabled
