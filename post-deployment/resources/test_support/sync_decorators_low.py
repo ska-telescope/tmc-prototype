@@ -41,14 +41,15 @@ class WaitConfigure():
 
     def __init__(self):
         self.w  = watch(resource('ska_low/tm_subarray_node/1')).for_a_change_on("obsState")
-        self.w1  = watch(resource('mid_csp/elt/subarray_01')).for_a_change_on("obsState")
-        self.w2 = watch(resource('mid_sdp/elt/subarray_1')).for_a_change_on("obsState")
+        self.w1  = watch(resource('low-mccs/subarray/01')).for_a_change_on("obsState")
+        # self.w1  = watch(resource('mid_csp/elt/subarray_01')).for_a_change_on("obsState")
+        # self.w2 = watch(resource('mid_sdp/elt/subarray_1')).for_a_change_on("obsState")
 
     def wait(self):
         # self.w.wait_until_value_changed_to('CONFIGURING')
         self.w.wait_until_value_changed_to('READY',timeout=200)
         self.w1.wait_until_value_changed_to('READY',timeout=200)
-        self.w2.wait_until_value_changed_to('READY',timeout=200)
+        # self.w2.wait_until_value_changed_to('READY',timeout=200)
 
     def wait_oet(self):
         self.w.wait_until_value_changed_to('READY',timeout=200)
@@ -224,7 +225,7 @@ def sync_start_up_telescope(func):
         the_waiter = waiter()
         the_waiter.set_wait_for_starting_up()
         result = func(*args, **kwargs)
-        the_waiter.wait(50)
+        the_waiter.wait(200)
         return result
     return wrapper
 

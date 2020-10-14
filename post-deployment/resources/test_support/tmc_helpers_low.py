@@ -18,10 +18,10 @@ def start_up():
     CentralNodeLow.StartUpTelescope()
 
 @sync_assign_resources(300)
-def compose_sub(assign_resources_file):
+def compose_sub():
     resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('ON')
     resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('EMPTY')
-    # assign_resources_file = 'resources/test_data/TMC_integration/mccs_assign_resources.json'
+    assign_resources_file = 'resources/test_data/TMC_integration/mccs_assign_resources.json'
     config = load_config_from_file(assign_resources_file)
     CentralNodeLow = DeviceProxy('ska_low/tm_central/central_node')
     CentralNodeLow.AssignResources(config)
@@ -41,7 +41,7 @@ def end():
     SubarrayNodeLow.End()
     LOGGER.info('Invoked End on Subarray')
 
-# @sync_release_resources
+@sync_release_resources
 def release_resources():
     resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('IDLE')
     CentralNodeLow = DeviceProxy('ska_low/tm_central/central_node')

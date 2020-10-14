@@ -285,8 +285,8 @@ class waiter():
      
     def set_wait_for_tearing_down_subarray(self):
         # self.waits.append(watch(resource('ska_low/tm_subarray_node/1')).for_any_change_on("receptorIDList"))
-        self.waits.append(watch(resource('ska_low/tm_subarray_node/1')).to_become("State",changed_to='ON'))
-        self.waits.append(watch(resource('low-mccs/subarray/01')).to_become("obsState",changed_to='EMPTY'))
+        self.waits.append(watch(resource('ska_low/tm_subarray_node/1')).to_become("obsState",changed_to='EMPTY'))
+        # self.waits.append(watch(resource('low-mccs/subarray/01')).to_become("obsState",changed_to='EMPTY'))
         print ("In set_wait_for_tearing_down_subarray")
        
 
