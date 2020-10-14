@@ -25,8 +25,8 @@ devices_to_log = [
 
 LOGGER = logging.getLogger(__name__)
 
-@pytest.mark.select
-#@pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
+# @pytest.mark.select
+@pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_scan():
     
     try:
