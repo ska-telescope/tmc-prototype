@@ -2,7 +2,7 @@
 set -eo pipefail
 
 # export working_dir=../build/reports/tox_report
-REPORTS_DIR=reports/unit-tests
+REPORTS_DIR=reports
 # export reports_dir=./$REPORTS_DIR
 # echo $reports_dir
 # Entering into a bash shell script to run unit-test cases and generating reports
@@ -53,8 +53,11 @@ coverage combine centralnode_coverage cspmasterleafnode_coverage \
                   subarraynode_coverage subarraynodelow_coverage centralnodelow_coverage \
                   mccsmasterleafnode_coverage mccssubarrayleafnode_coverage && coverage xml
 
-cd ../tox_report && mv coverage.xml ../code-coverage.xml
-cd ../../../tmcprototype
+# cd ../tox_report && mv coverage.xml ../code-coverage.xml
+# cd ../../../tmcprototype
+mv coverage.xml code-coverage.xml
+echo "Check 5"
+ls -l
 
 python3 -m pip install junitparser
 junitparser merge ./centralnode/build/reports/centralnode-unit-tests.xml \
@@ -68,4 +71,5 @@ junitparser merge ./centralnode/build/reports/centralnode-unit-tests.xml \
                 ./mccssubarrayleafnode/build/reports/mccssubarrayleafnode-unit-tests.xml \
                 ./subarraynode/build/reports/subarraynode-unit-tests.xml \
                 ./subarraynodelow/build/reports/subarraynodelow-unit-tests.xml \
-                ../build/reports/unit-tests.xml
+                $REPORTS_DIR/unit-tests.xml
+                # ../build/reports/unit-tests.xml
