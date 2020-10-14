@@ -22,11 +22,7 @@ else:
 devices_to_log = [
     'ska_low/tm_subarray_node/1',
     'ska_low/tm_leaf_node/mccs_subarray01',
-    'ska_low/tm_leaf_node/mccs_master'
-    'mid_d0001/elt/master',
-    'mid_d0002/elt/master',
-    'mid_d0003/elt/master',
-    'mid_d0004/elt/master']
+    'ska_low/tm_leaf_node/mccs_master']
 
 LOGGER = logging.getLogger(__name__)
 
@@ -67,7 +63,7 @@ def test_configure_scan():
 
         #tear down
         LOGGER.info('TMC-configure tests complete: tearing down...')
-        tmc.end_sb()
+        tmc.end()
         LOGGER.info('Invoked EndSB on Subarray')
 
         tmc.release_resources()
