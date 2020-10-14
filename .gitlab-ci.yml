@@ -351,7 +351,7 @@ unit tests:
     - docker-executor
   script:
     - make unit-test
-  artifacts: reports
+  artifacts:
     paths:
       - ./tmcprototype/reports/unit-tests
 
