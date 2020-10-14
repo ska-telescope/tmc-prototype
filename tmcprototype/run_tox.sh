@@ -7,7 +7,7 @@ REPORTS_DIR=reports/unit-tests
 # echo $reports_dir
 # Entering into a bash shell script to run unit-test cases and generating reports
 echo "Unit test cases will be executed shortly..."
-mkdir -p ./REPORTS_DIR
+mkdir -p ./$REPORTS_DIR
 
 # check if build folder is present
 echo "Check 1"
