@@ -81,4 +81,12 @@ class ConfigureValidator():
                                 "Full exception info: " + \
                                 str(json_error)
             raise InvalidJSONError(exception_message)
+
+        # Validate scan duration
+        try:
+            scan_duration = json.loads(["tmc"]["scanDuration"])
+            assert scan_duration != 0
+        except AssertionError as ae:
+            raise ValueError("Invalid Scan Duration") from ae
+
         return json.loads(input_string)

@@ -1,50 +1,20 @@
 # standard python imports
 import json
-
+import pytest
+from os.path import dirname, join
 # other imports
 from subarraynodelow.input_validator import ScanValidator, ConfigureValidator
 
 # Sample 'good' JSON
-sample_scan_request = {
-  "id": 1
-}
-sample_configure_request = {
-  "mccs": {
-    "stations": [
-      {
-        "station_id": 1
-      },
-      {
-        "station_id": 2
-      }
-    ],
-    "station_beam_pointings": [
-      {
-        "station_beam_id": 1,
-        "target": {
-          "system": "HORIZON",
-          "name": "DriftScan",
-          "Az": 180.0,
-          "El": 45.0
-        },
-        "update_rate": 0.0,
-        "channels": [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8
-        ]
-      }
-    ]
-  },
-  "tmc": {
-    "scanDuration": 10.0
-  }
-}
+scan_input_file= 'command_Scan.json'
+path= join(dirname(__file__), 'data', scan_input_file)
+with open(path, 'r') as f:
+    sample_scan_request=f.read()
+
+configure_input_file= 'command_Configure.json'
+path= join(dirname(__file__), 'data' , configure_input_file)
+with open(path, 'r') as f:
+    sample_configure_request=f.read()
 
 
 class TestScanValidator():
@@ -67,4 +37,18 @@ class TestConfigureValidator():
         input_validator = ConfigureValidator()
         output_config = input_validator.loads(json.dumps(sample_configure_request))
         assert output_config == sample_configure_request
+
+    def test_validate_invalid_scan_duration(self):
+        """
+        Tests that ValueError is raised when a invalid scan duration is given
+        in the input string.
+        """
+
+        # Set invalid scan duration.
+        input_json = sample_configure_request
+        input_json["tmc"]["scanDuration"] = 0
+        input_validator = ConfigureValidator()
+        with pytest.raises(ValueError) as excinfo:
+            input_validator.loads(json.dumps(input_json))
+        assert "Invalid Scan Duration" in str(excinfo.value)
 

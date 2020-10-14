@@ -60,7 +60,16 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
             self.logger.error(log_message)
             device._read_activity_message = log_message
             tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
-            const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
+                                         "SubarrayNodeLow.ConfigureCommand",
+                                         tango.ErrSeverity.ERR)
+        except ValueError as ve:
+            self.logger.exception("Exception in Configure command: %s", str(ve))
+            device._read_activity_message = "Invalid value in input: " + str(ve)
+            log_msg = const.STR_CONFIGURE_EXEC + str(ve)
+            self.logger.exception(ve)
+            tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
+                                         "SubarrayNodeLow.ConfigureCommand",
+                                         tango.ErrSeverity.ERR)
         tmc_configure = scan_configuration["tmc"]
         device.scan_duration = int(tmc_configure["scanDuration"])
         self._configure_mccs_subarray(scan_configuration)
