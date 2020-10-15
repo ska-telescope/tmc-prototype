@@ -12,6 +12,8 @@ RUN python3 -m pip install lmcbaseclasses==0.6.5
 RUN python3 -m pip install cdm-shared-library==2.0.0
 #install ska-telescope-model
 RUN python3 -m pip install ska-telescope-model==0.1.4
+# install transaction id
+RUN python3 -m pip install install ska-log-transactions
 
 # install all local TMC packages
 RUN python3 -m pip install \
