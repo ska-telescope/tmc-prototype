@@ -52,7 +52,7 @@ ls -l
 # ls -l
 # Combine coverage reports
 coverage combine centralnode_coverage cspmasterleafnode_coverage \
-                  cspsubarrayleafnode_coverage dishleafnode_coverage dishmaster_coverage\
+                  cspsubarrayleafnode_coverage dishleafnode_coverage \
                   sdpmasterleafnode_coverage sdpsubarrayleafnode_coverage \
                   subarraynode_coverage subarraynodelow_coverage centralnodelow_coverage \
                   mccsmasterleafnode_coverage mccssubarrayleafnode_coverage && coverage xml
