@@ -118,7 +118,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         self.register_command_object("Configure", self.ConfigureCommand(*args))
         self.register_command_object("Scan", self.ScanCommand(*args))
         self.register_command_object("EndScan", self.EndScanCommand(*args))
-        self.register_command_object("EndSB", self.EndSBCommand(*args))
+        self.register_command_object("End", self.EndCommand(*args))
         self.register_command_object("Abort", self.AbortCommand(*args))
         self.register_command_object("Restart", self.RestartCommand(*args))
         self.register_command_object("ObsReset", self.ObsResetCommand(*args))
@@ -259,8 +259,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             device = self.target
             try:
                 # Call SDP Subarray Command asynchronously
-                device.response = device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RELEASE_RESOURCES,
-                                                                                 self.releaseallresources_cmd_ended_cb)
+                device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RELEASE_RESOURCES,
+                                                                self.releaseallresources_cmd_ended_cb)
                 # Update the status of command execution status in activity message
                 device._read_activity_message = const.STR_REL_RESOURCES
                 self.logger.info(const.STR_REL_RESOURCES)
@@ -415,8 +415,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 device.validate_obs_state()
 
                 # Call SDP Subarray Command asynchronously
-                device.response = device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ASSIGN_RESOURCES, argin,
-                                                                                  self.AssignResources_ended)
+                device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ASSIGN_RESOURCES, argin,
+                                                                self.AssignResources_ended)
                 # Update the status of command execution status in activity message
                 device._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
                 self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
@@ -680,7 +680,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 log_msg = const.ERR_SCAN + str(dev_failed)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
-                tango.Except.throw_exception(const.STR_CONFIG_EXEC, log_msg,
+                tango.Except.throw_exception(const.STR_SCAN_EXEC, log_msg,
                                              "SdpSubarrayLeafNode.ScanCommand()",
                                              tango.ErrSeverity.ERR)
 
@@ -796,7 +796,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 log_msg = const.ERR_ENDSCAN_INVOKING_CMD + str(dev_failed)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
-                tango.Except.throw_exception(const.STR_CONFIG_EXEC, log_msg,
+                tango.Except.throw_exception(const.STR_ENDSCAN_EXEC, log_msg,
                                              "SdpSubarrayLeafNode.EndScanCommand()",
                                              tango.ErrSeverity.ERR)
 
@@ -824,9 +824,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         (result_code, message) = handler()
         return [[result_code], [message]]
 
-    class EndSBCommand(ResponseCommand):
+    class EndCommand(ResponseCommand):
         """
-        A class for SdpSubarrayLeafNode's EndSB() command.
+        A class for SdpSubarrayLeafNode's End() command.
         """
 
         def check_allowed(self):
@@ -841,17 +841,17 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception("EndSB() is not allowed in current state",
-                                             "Failed to invoke EndSB command on SdpSubarrayLeafNode.",
-                                             "sdpsubarrayleafnode.EndSB()",
+                tango.Except.throw_exception("End() is not allowed in current state",
+                                             "Failed to invoke End command on SdpSubarrayLeafNode.",
+                                             "sdpsubarrayleafnode.End()",
                                              tango.ErrSeverity.ERR)
 
             return True
 
-        def endsb_cmd_ended_cb(self, event):
+        def end_cmd_ended_cb(self, event):
             """
             Callback function immediately executed when the asynchronous invoked command returns.
-            Checks whether the endsb command has been successfully invoked on SDP Subarray.
+            Checks whether the end command has been successfully invoked on SDP Subarray.
 
             :param event: A CmdDoneEvent object.
             This class is used to pass data to the callback method in asynchronous callback model
@@ -882,7 +882,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         def do(self):
             """
-            This command invokes EndSB command on SDP subarray to end the current Scheduling block.
+            This command invokes End command on SDP subarray to end the current Scheduling block.
 
             :return: A tuple containing a return code and a string message indicating status.
                      The message is for information purpose only.
@@ -894,24 +894,24 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             device = self.target
             try:
                 if device._sdp_subarray_proxy.obsState == ObsState.READY:
-                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESET, self.endsb_cmd_ended_cb)
-                    device._read_activity_message = const.STR_ENDSB_SUCCESS
-                    self.logger.info(const.STR_ENDSB_SUCCESS)
-                    return(ResultCode.OK, const.STR_ENDSB_SUCCESS)
+                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_END, self.end_cmd_ended_cb)
+                    device._read_activity_message = const.STR_END_SUCCESS
+                    self.logger.info(const.STR_END_SUCCESS)
+                    return(ResultCode.OK, const.STR_END_SUCCESS)
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_READY
                     self.logger.error(const.ERR_DEVICE_NOT_READY)
                     return(ResultCode.FAILED, const.ERR_DEVICE_NOT_READY)
 
             except DevFailed as dev_failed:
-                log_msg = const.ERR_ENDSB_INVOKING_CMD + str(dev_failed)
+                log_msg = const.ERR_END_INVOKING_CMD + str(dev_failed)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
-                tango.Except.throw_exception(const.STR_CONFIG_EXEC, log_msg,
-                                             "SdpSubarrayLeafNode.EndSBCommand()",
+                tango.Except.throw_exception(const.STR_END_EXEC, log_msg,
+                                             "SdpSubarrayLeafNode.EndCommand()",
                                              tango.ErrSeverity.ERR)
 
-    def is_EndSB_allowed(self):
+    def is_End_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state.
 
@@ -921,7 +921,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         """
 
-        handler = self.get_command_object("EndSB")
+        handler = self.get_command_object("End")
         return handler.check_allowed()
 
     @command(
@@ -929,10 +929,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
-    def EndSB(self):
-        """ This command invokes EndSB command on SDP subarray to end the current Scheduling block.
+    def End(self):
+        """ This command invokes End command on SDP subarray to end the current Scheduling block.
         """
-        handler = self.get_command_object("EndSB")
+        handler = self.get_command_object("End")
         (result_code, message) = handler()
         return [[result_code], [message]]
 
@@ -1025,7 +1025,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 log_msg = const.ERR_ABORT_INVOKING_CMD + str(dev_failed)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
-                tango.Except.throw_exception(const.STR_CONFIG_EXEC, log_msg,
+                tango.Except.throw_exception(const.STR_ABORT_EXEC, log_msg,
                                              "SdpSubarrayLeafNode.AbortCommand()",
                                              tango.ErrSeverity.ERR)
 
@@ -1146,7 +1146,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 log_msg = const.ERR_RESTART_INVOKING_CMD + str(dev_failed)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
-                tango.Except.throw_exception(const.STR_CONFIG_EXEC, log_msg,
+                tango.Except.throw_exception(const.STR_RESTART_EXEC, log_msg,
                                              "SdpSubarrayLeafNode.RestartCommand()",
                                              tango.ErrSeverity.ERR)
 
@@ -1263,7 +1263,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 log_msg = const.ERR_OBSRESET_INVOKING_CMD + str(dev_failed)
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
-                tango.Except.throw_exception(const.STR_CONFIG_EXEC, log_msg,
+                tango.Except.throw_exception(const.STR_OBSRESET_EXEC, log_msg,
                                              "SdpSubarrayLeafNode.ObsResetCommand()",
                                              tango.ErrSeverity.ERR)
 
@@ -1336,11 +1336,20 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :rtype: (ResultCode, str)
 
             """
-            device = self.target
-            device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ON, self.on_cmd_ended_cb)
-            log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
-            self.logger.debug(log_msg)
-            return (ResultCode.OK, log_msg)
+            try:
+                device = self.target
+                device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ON, self.on_cmd_ended_cb)
+                log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+                self.logger.debug(log_msg)
+                return (ResultCode.OK, log_msg)
+
+            except DevFailed as dev_failed:
+                log_msg = const.ERR_INVOKING_ON_CMD + str(dev_failed)
+                device._read_activity_message = log_msg
+                self.logger.exception(dev_failed)
+                tango.Except.throw_exception(const.STR_ON_EXEC, log_msg,
+                                             "SdpSubarrayLeafNode.OnCommand()",
+                                             tango.ErrSeverity.ERR)
 
     class OffCommand(SKABaseDevice.OffCommand):
         """
@@ -1391,11 +1400,20 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :rtype: (ResultCode, str)
 
             """
-            device = self.target
-            device._sdp_subarray_proxy.command_inout_asynch(const.CMD_OFF, self.off_cmd_ended_cb)
-            self.logger.debug(const.STR_OFF_CMD_SUCCESS)
-            device._read_activity_message = const.STR_OFF_CMD_SUCCESS
-            return (ResultCode.OK, const.STR_OFF_CMD_SUCCESS)
+            try:
+                device = self.target
+                device._sdp_subarray_proxy.command_inout_asynch(const.CMD_OFF, self.off_cmd_ended_cb)
+                self.logger.debug(const.STR_OFF_CMD_SUCCESS)
+                device._read_activity_message = const.STR_OFF_CMD_SUCCESS
+                return (ResultCode.OK, const.STR_OFF_CMD_SUCCESS)
+
+            except DevFailed as dev_failed:
+                log_msg = const.ERR_INVOKING_OFF_CMD + str(dev_failed)
+                device._read_activity_message = log_msg
+                self.logger.exception(dev_failed)
+                tango.Except.throw_exception(const.STR_OFF_EXEC, log_msg,
+                                             "SdpSubarrayLeafNode.OffCommand()",
+                                             tango.ErrSeverity.ERR)
 
 
 # pylint: enable=unused-argument,unused-variable, implicit-str-concat
