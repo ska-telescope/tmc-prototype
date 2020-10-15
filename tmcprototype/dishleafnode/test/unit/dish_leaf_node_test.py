@@ -442,12 +442,6 @@ def command_name_to_raise_devfailed(request):
     cmd_name, error_msg = request.param
     return cmd_name, error_msg
 
-# def test_stop_track_should_raise_dev_failed(mock_dish_master):
-#     tango_context, dish1_proxy_mock, _, _ = mock_dish_master
-#     dish1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
-#     with pytest.raises(tango.DevFailed):
-#         tango_context.device.StopTrack()
-#     assert const.ERR_EXE_STOP_TRACK_CMD in tango_context.device.activityMessage
 
 def test_command_should_raise_exception(mock_dish_master, command_name_to_raise_devfailed):
     tango_context, dish1_proxy_mock, _, _ = mock_dish_master
