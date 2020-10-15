@@ -10,10 +10,6 @@ def check_going_out_of_empty():
     ##verify once for obstate = EMPTY
     resource('ska_mid/tm_subarray_node/1').assert_attribute('obsState').equals('EMPTY')
 
-def check_going_out_of_empty_low():
-    ##verify once for obstate = EMPTY
-    resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('EMPTY')
-
 def check_going_into_configure():
     ##Can ony configure a subarray that is in IDLE/ON
     resource('ska_mid/tm_subarray_node/1').assert_attribute('obsState').equals(['IDLE','READY'])
@@ -158,33 +154,7 @@ def sync_assigned_resources(nr_of_receptors=4):
     yield
     the_waiter.wait(timeout=60)
     
-
-def sync_assign_resources_low(timeout=60):
-# defined as a decorator
-    def decorator_sync_assign_resources_low(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            check_going_out_of_empty_low()
-            the_waiter = waiter()
-            the_waiter.set_wait_for_assign_resources_low()
-            ################ 
-            result = func(*args, **kwargs)
-            ################ 
-            the_waiter.wait(timeout=timeout)
-            return result
-        return wrapper
-    return decorator_sync_assign_resources_low
-
-# defined as a context manager
-@contextmanager
-def sync_assigned_resources_low():
-    check_going_out_of_empty_low()
-    the_waiter = waiter()
-    the_waiter.set_wait_for_assign_resources_low()
-    yield
-    the_waiter.wait(timeout=60)
-
-
+    
 ##this is only in the case of using TMC device proxies, OET command is blocking for the entire duration
 def sync_configure(func):
     @functools.wraps(func)

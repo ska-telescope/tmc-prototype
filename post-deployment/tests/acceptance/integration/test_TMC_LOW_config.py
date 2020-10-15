@@ -31,8 +31,6 @@ LOGGER = logging.getLogger(__name__)
 def test_configure_scan():
     
     try:
-        # the_waiter = waiter()
-        # the_waiter.wait(600)
         # given an interface to TMC to interact with a subarray node and a central node
         fixture = {}
         fixture['state'] = 'Unknown'
@@ -48,7 +46,7 @@ def test_configure_scan():
         tmc.compose_sub()
         fixture['state'] = 'Subarray Assigned'
 
-        #then when I configure a subarray to perform a scan as per 'TMC_integration/configure1.json'
+        #then when I configure a subarray to perform a scan as per 'TMC_integration/mccs_configure.json'
         # @log_it('TMC_int_configure',devices_to_log)
         @sync_configure
         @time_it(90)
