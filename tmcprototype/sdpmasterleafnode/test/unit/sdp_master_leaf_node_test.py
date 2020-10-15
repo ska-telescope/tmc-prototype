@@ -90,7 +90,8 @@ def test_on_command_should_raise_dev_failed(mock_sdp_master):
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
     sdp_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_without_arg
     with pytest.raises(tango.DevFailed) as df:
-        device_proxy.On()
+        device_proxy.On()    
+    print("Value of DF in on command::::",str(df))
     assert const.ERR_DEVFAILED_MSG in str(df)
 
 @pytest.fixture(
@@ -111,9 +112,10 @@ def test_command_should_raise_exception(mock_sdp_master, command_name_to_raise_d
     cmd_name, error_msg = command_name_to_raise_devfailed
     sdp_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_without_arg
     device_proxy.On()
-    with pytest.raises(tango.DevFailed):
+    with pytest.raises(tango.DevFailed) as df:
         tango_context.device.command_inout(cmd_name)
-    assert error_msg in tango_context.device.activityMessage
+    print("Value of DF in other commands::::",str(df))
+    assert error_msg in str(df)
 
 
 def raise_devfailed_without_arg(cmd_name, input_arg1):
