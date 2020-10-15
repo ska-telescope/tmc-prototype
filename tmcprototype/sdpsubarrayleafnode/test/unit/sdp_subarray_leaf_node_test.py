@@ -117,6 +117,7 @@ def test_on_command_should_raise_dev_failed(mock_sdp_subarray):
 
 def test_off_command_should_raise_dev_failed(mock_sdp_subarray):
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
+    device_proxy.On()
     sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_without_arg
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.Off()
