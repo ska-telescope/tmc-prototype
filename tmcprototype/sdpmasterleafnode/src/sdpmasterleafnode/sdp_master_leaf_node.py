@@ -220,11 +220,19 @@ class SdpMasterLeafNode(SKABaseDevice):
             :rtype: (ResultCode, str)
 
             """
-            device=self.target
-            device._sdp_proxy.command_inout_asynch(const.CMD_ON, self.on_cmd_ended_cb)
-            log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
-            self.logger.debug(log_msg)
-            return (ResultCode.OK, log_msg)
+            try:
+                device=self.target
+                device._sdp_proxy.command_inout_asynch(const.CMD_ON, self.on_cmd_ended_cb)
+                log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+                self.logger.debug(log_msg)
+                return (ResultCode.OK, log_msg)
+            
+            except DevFailed as dev_failed:
+                self.logger.exception(dev_failed)
+                log_msg = const.ERR_ON_CMD_FAIL + str(dev_failed)
+                device.throw_exception(const.ERR_INVOKING_CMD,log_msg,
+                                       "SdpMasterLeafNode.OnCommand()", const.ERR_ON_CMD_FAIL)
+
 
     class OffCommand(SKABaseDevice.OffCommand):
         """
@@ -275,11 +283,18 @@ class SdpMasterLeafNode(SKABaseDevice):
             :rtype: (ResultCode, str)
 
             """
-            device=self.target
-            device._sdp_proxy.command_inout_asynch(const.CMD_OFF, self.off_cmd_ended_cb)
-            self.logger.debug(const.STR_OFF_CMD_SUCCESS)
-            device._read_activity_message = const.STR_OFF_CMD_SUCCESS
-            return (ResultCode.OK, const.STR_OFF_CMD_SUCCESS)
+            try:
+                device=self.target
+                device._sdp_proxy.command_inout_asynch(const.CMD_OFF, self.off_cmd_ended_cb)
+                self.logger.debug(const.STR_OFF_CMD_SUCCESS)
+                device._read_activity_message = const.STR_OFF_CMD_SUCCESS
+                return (ResultCode.OK, const.STR_OFF_CMD_SUCCESS)
+            
+            except DevFailed as dev_failed:
+                self.logger.exception(dev_failed)
+                log_msg = const.ERR_OFF_CMD_FAIL + str(dev_failed)
+                device.throw_exception(const.ERR_INVOKING_CMD,log_msg,
+                                       "SdpMasterLeafNode.OffCommand()", const.ERR_OFF_CMD_FAIL)
 
     class DisableCommand(ResponseCommand):
         """
@@ -347,11 +362,18 @@ class SdpMasterLeafNode(SKABaseDevice):
             :rtype: (ResultCode, str)
 
             """
-            device = self.target
-            device._sdp_proxy.command_inout_asynch(const.CMD_Disable, self.disable_cmd_ended_cb)
-            self.logger.debug(const.STR_DISABLE_CMS_SUCCESS)
-            device._read_activity_message = const.STR_DISABLE_CMS_SUCCESS
-            return (ResultCode.OK, const.STR_DISABLE_CMS_SUCCESS)
+            try:
+                device = self.target
+                device._sdp_proxy.command_inout_asynch(const.CMD_Disable, self.disable_cmd_ended_cb)
+                self.logger.debug(const.STR_DISABLE_CMS_SUCCESS)
+                device._read_activity_message = const.STR_DISABLE_CMS_SUCCESS
+                return (ResultCode.OK, const.STR_DISABLE_CMS_SUCCESS)
+
+            except DevFailed as dev_failed:
+                self.logger.exception(dev_failed)
+                log_msg = const.ERR_DISABLE_CMD_FAIL + str(dev_failed)
+                device.throw_exception(const.ERR_INVOKING_CMD,log_msg,
+                                       "SdpMasterLeafNode.DisableCommand()", const.ERR_DISABLE_CMD_FAIL)
 
     def is_Disable_allowed(self):
         """
@@ -446,11 +468,18 @@ class SdpMasterLeafNode(SKABaseDevice):
             :rtype: (ResultCode, str)
 
             """
-            device= self.target
-            device._sdp_proxy.command_inout_asynch(const.CMD_STANDBY, self.standby_cmd_ended_cb)
-            log_msg = const.CMD_STANDBY + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
-            self.logger.debug(log_msg)
-            return (ResultCode.OK, log_msg)
+            try:
+                device= self.target
+                device._sdp_proxy.command_inout_asynch(const.CMD_STANDBY, self.standby_cmd_ended_cb)
+                log_msg = const.CMD_STANDBY + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+                self.logger.debug(log_msg)
+                return (ResultCode.OK, log_msg)
+
+            except DevFailed as dev_failed:
+                self.logger.exception(dev_failed)
+                log_msg = const.ERR_STANDBY_CMD_FAIL + str(dev_failed)
+                device.throw_exception(const.ERR_INVOKING_CMD,log_msg,
+                                       "SdpMasterLeafNode.StandbyCommand()", const.ERR_STANDBY_CMD_FAIL)
 
         def check_allowed(self):
             """

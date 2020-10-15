@@ -159,7 +159,7 @@ def test_command_with_arg_should_raise_devfailed_exception(mock_sdp_subarray, ev
 @pytest.fixture(
     scope="function",
     params=[
-        ("EndSB", const.CMD_RESET, ObsState.READY,"endsb_cmd_ended_cb",const.ERR_ENDSB_INVOKING_CMD),
+        ("End", const.CMD_END, ObsState.READY,"end_cmd_ended_cb",const.ERR_END_INVOKING_CMD),
         ("ReleaseAllResources", const.CMD_RELEASE_RESOURCES, ObsState.IDLE,"releaseallresources_cmd_ended_cb", const.ERR_RELEASE_RESOURCES),
         ("EndScan", const.CMD_ENDSCAN, ObsState.SCANNING, "endscan_cmd_ended_cb", const.ERR_ENDSCAN_INVOKING_CMD),
         ("Abort", const.CMD_ABORT, ObsState.SCANNING, "abort_cmd_ended_cb", const.ERR_ABORT_INVOKING_CMD),
@@ -374,9 +374,9 @@ def test_scan_device_not_ready():
         assert const.ERR_DEVICE_NOT_READY in tango_context.device.activityMessage
 
 
-def test_endsb_device_not_ready():
+def test_end_device_not_ready():
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        tango_context.device.EndSB()
+        tango_context.device.End()
         assert tango_context.device.activityMessage == const.ERR_DEVICE_NOT_READY
 
 

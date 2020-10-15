@@ -305,8 +305,8 @@ class CspMasterLeafNode(SKABaseDevice):
             :raises: DevFailed on communication failure with CspMaster or CspMaster is in error state.
 
             """
+            device = self.target
             try:
-                device = self.target
                 # Pass argin to csp master .
                 # If the array length is 0, the command applies to the whole CSP Element.
                 # If the array length is > 1 each array element specifies the FQDN of the CSP SubElement to switch ON.
@@ -370,27 +370,17 @@ class CspMasterLeafNode(SKABaseDevice):
 
             :rtype: (ResultCode, str)
 
-            :raises: DevFailed on communication failure with CspMaster or CspMaster is in error state.
-
             """
-            try:
-                device = self.target
-                # pass argin to csp master.
-                # If the array length is 0, the command applies to the whole CSP Element.
-                # If the array length is >, each array element specifies the FQDN of the CSP SubElement to switch OFF.
-                # argin = []
-                # device._csp_proxy.command_inout_asynch(const.CMD_OFF, argin, device.cmd_ended_cb)
-                self.logger.debug(const.STR_OFF_CMD_ISSUED)
-                device._read_activity_message = const.STR_OFF_CMD_ISSUED
-                return (ResultCode.OK, const.STR_OFF_CMD_ISSUED)
+            device = self.target
+            # pass argin to csp master.
+            # If the array length is 0, the command applies to the whole CSP Element.
+            # If the array length is >, each array element specifies the FQDN of the CSP SubElement to switch OFF.
+            # argin = []
+            # device._csp_proxy.command_inout_asynch(const.CMD_OFF, argin, device.cmd_ended_cb)
+            self.logger.debug(const.STR_OFF_CMD_ISSUED)
+            device._read_activity_message = const.STR_OFF_CMD_ISSUED
+            return (ResultCode.OK, const.STR_OFF_CMD_ISSUED)
 
-            except DevFailed as dev_failed:
-                log_msg = const.ERR_EXE_OFF_CMD + str(dev_failed)
-                self.logger.exception(dev_failed)
-                device._read_activity_message = const.ERR_EXE_OFF_CMD
-                tango.Except.re_throw_exception(dev_failed, const.STR_OFF_EXEC, log_msg,
-                                             "CspMasterLeafNode.OffCommand",
-                                             tango.ErrSeverity.ERR)
 
     class StandbyCommand(ResponseCommand):
         """
