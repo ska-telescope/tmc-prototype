@@ -2,7 +2,7 @@
 set -eo pipefail
 
 # export working_dir=../build/reports/tox_report
-REPORTS_DIR=reports
+REPORTS_DIR=../build/reports
 # export reports_dir=./$REPORTS_DIR
 # echo $reports_dir
 # Entering into a bash shell script to run unit-test cases and generating reports
@@ -14,9 +14,7 @@ echo "Check 1"
 ls -l
 # cd -
 
-
-# if [ -d "$working_dir" ]; then rm -rf $working_dir; fi
-if [ -d "./$REPORTS_DIR" ]; then rm -rf ./$REPORTS_DIR; fi
+if [ -d "$REPORTS_DIR" ]; then rm -rf $REPORTS_DIR; fi
 
 # check if build folder is present
 echo "Check 2"
@@ -78,4 +76,5 @@ junitparser merge centralnode-unit-tests.xml \
                   subarraynode-unit-tests.xml \
                   subarraynodelow-unit-tests.xml \
                   dishmaster-unit-tests.xml
+                  unit-tests.xml
                 # ../build/reports/unit-tests.xml

@@ -353,7 +353,7 @@ unit tests:
     - make unit-test
   artifacts:
     paths:
-      - ./tmcprototype/reports
+      - ./build
 
 linting:
   stage: linting
