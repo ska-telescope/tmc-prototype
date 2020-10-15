@@ -432,22 +432,16 @@ def raise_devfailed_exception(cmd_name, callback):
 @pytest.fixture(
     scope="function",
     params=[
-        ("SetStowMode", ERR_EXE_SET_STOW_MODE_CMD),
-        ("SetStandbyLPMode", ERR_EXE_SET_STANDBYLP_MODE_CMD),
-        ("SetOperateMode", ERR_EXE_SET_OPERATE_MODE_CMD),
-        ("SetStandbyFPMode", ERR_EXE_SET_STANDBYFP_MODE_CMD),
-        ("StopTrack", ERR_EXE_STOP_TRACK_CMD),
+        ("SetStowMode", const.ERR_EXE_SET_STOW_MODE_CMD),
+        ("SetStandbyLPMode", const.ERR_EXE_SET_STANDBYLP_MODE_CMD),
+        ("SetOperateMode", const.ERR_EXE_SET_OPERATE_MODE_CMD),
+        ("SetStandbyFPMode", const.ERR_EXE_SET_STANDBYFP_MODE_CMD),
+        ("StopTrack", const.ERR_EXE_STOP_TRACK_CMD),
         ])
 def command_name_to_raise_devfailed(request):
     cmd_name, error_msg = request.param
     return cmd_name, error_msg
 
-# def test_stop_track_should_raise_dev_failed(mock_dish_master):
-#     tango_context, dish1_proxy_mock, _, _ = mock_dish_master
-#     dish1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
-#     with pytest.raises(tango.DevFailed):
-#         tango_context.device.StopTrack()
-#     assert const.ERR_EXE_STOP_TRACK_CMD in tango_context.device.activityMessage
 
 def test_command_should_raise_exception(mock_dish_master, command_name_to_raise_devfailed):
     tango_context, dish1_proxy_mock, _, _ = mock_dish_master

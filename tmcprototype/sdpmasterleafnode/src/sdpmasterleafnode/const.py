@@ -34,4 +34,4 @@ ERR_OFF_CMD_FAIL = "Error in invoking off command."
 ERR_ON_CMD_FAIL = "Error in invoking on command."
 ERR_DISABLE_CMD_FAIL = "Error in invoking disable command."
 ERR_STANDBY_CMD_FAIL = "Error in invoking standby command."
-
+ERR_DEVFAILED_MSG = "Devfailed occur while invoking command."

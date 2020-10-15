@@ -86,6 +86,42 @@ def test_disable_should_command_sdp_master_leaf_node_to_disable_devfailed(mock_s
     assert "Failed to invoke Disable command on SdpMasterLeafNode." in str(df)
 
 
+def test_on_command_should_raise_dev_failed(mock_sdp_master):
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
+    sdp_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_without_arg
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.On()
+    assert const.ERR_ON_CMD_FAIL in str(df.value)
+
+@pytest.fixture(
+    scope="function",
+    params=[
+        ("Off", const.ERR_OFF_CMD_FAIL),
+        ("Disable", const.ERR_DISABLE_CMD_FAIL),
+        ("Standby", const.ERR_STANDBY_CMD_FAIL),
+        ])
+
+def command_name_to_raise_devfailed(request):
+    cmd_name, error_msg = request.param
+    return cmd_name, error_msg
+
+
+def test_command_should_raise_exception(mock_sdp_master, command_name_to_raise_devfailed):
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
+    cmd_name, error_msg = command_name_to_raise_devfailed
+    sdp_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_without_arg
+    device_proxy.On()
+    with pytest.raises(tango.DevFailed):
+        tango_context.device.command_inout(cmd_name)
+    assert error_msg in tango_context.device.activityMessage
+
+
+def raise_devfailed_without_arg(cmd_name, input_arg1):
+    # "This function is called to raise DevFailed exception with arguments."
+    tango.Except.throw_exception(const.STR_CMD_FAILED, const.ERR_DEVFAILED_MSG,
+                                 cmd_name, tango.ErrSeverity.ERR)
+
+
 def test_command_should_command_with_callback_method(mock_sdp_master, event_subscription, command_without_args):
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
     cmd_name, requested_cmd = command_without_args
