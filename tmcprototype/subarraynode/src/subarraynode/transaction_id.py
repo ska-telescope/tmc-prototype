@@ -2,6 +2,7 @@ import functools
 import json
 from typing import Any, Dict, Union
 from ska.log_transactions import transaction
+import logging
 
 def identify_with_id(name:str,arg_name:str):
     def wrapper(func):
@@ -11,7 +12,11 @@ def identify_with_id(name:str,arg_name:str):
                 argin = args[0]
             elif kwargs:
                 argin = kwargs[arg_name]
-            parameters = json.loads(argin)
+            try:
+                parameters = json.loads(argin)
+            except Exception:
+                logging.warning(f'unable to use transaction id as not able to parse input arguments into a dictionary ')
+                return func(obj,argin)
             with transaction(name, parameters,logger=obj.logger) as transaction_id:
                 obj.transaction_id = transaction_id
                 return func(obj,argin)
