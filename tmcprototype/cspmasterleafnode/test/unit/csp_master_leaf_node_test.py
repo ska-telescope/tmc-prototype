@@ -160,7 +160,7 @@ def test_standby_command_should_raise_dev_failed(mock_csp_master):
     assert const.ERR_DEVFAILED_MSG in str(df.value)
 
 
-def raise_devfailed_exception(cmd_name):
+def raise_devfailed_exception(cmd_name, inp_str, cmd_cb):
     tango.Except.throw_exception("CspMasterLeafNode_Commandfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
 
