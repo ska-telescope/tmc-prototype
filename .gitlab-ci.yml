@@ -401,8 +401,8 @@ pages:
   tags:
     - docker-executor
   stage: pages
-  only:
-    - master
+  # only:
+  #   - master
   script:
     - mv build public
     - mv public/unit_test/cspmasterleafnode_htmlcov/* public
