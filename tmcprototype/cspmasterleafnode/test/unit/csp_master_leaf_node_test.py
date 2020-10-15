@@ -136,7 +136,7 @@ def test_on_should_command_with_callback_method_with_event_error(mock_csp_master
 
 
 def test_on_command_should_raise_dev_failed(mock_csp_master):
-    device_proxy = mock_csp_master
+    device_proxy = mock_csp_master[1]
     device_proxy.command_inout_asynch.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.On()
@@ -144,7 +144,7 @@ def test_on_command_should_raise_dev_failed(mock_csp_master):
 
 
 def test_off_command_should_raise_dev_failed(mock_csp_master):
-    device_proxy = mock_csp_master
+    device_proxy = mock_csp_master[1]
     device_proxy.command_inout_asynch.side_effect = raise_devfailed_exception
     device_proxy.On()
     with pytest.raises(tango.DevFailed) as df:
@@ -153,7 +153,7 @@ def test_off_command_should_raise_dev_failed(mock_csp_master):
 
 
 def test_standby_command_should_raise_dev_failed(mock_csp_master):
-    device_proxy = mock_csp_master
+    device_proxy = mock_csp_master[1]
     device_proxy.command_inout_asynch.side_effect = raise_devfailed_with_arg
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.standby([])
