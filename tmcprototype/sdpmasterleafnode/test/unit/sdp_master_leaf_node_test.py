@@ -106,14 +106,14 @@ def command_name_to_raise_devfailed(request):
     return cmd_name, error_msg
 
 
-def test_command_should_raise_exception(mock_sdp_master, command_name_to_raise_devfailed):
-    device_proxy, sdp_master_proxy_mock = mock_sdp_master
-    cmd_name, error_msg = command_name_to_raise_devfailed
-    sdp_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_without_arg
-    device_proxy.On()
-    with pytest.raises(tango.DevFailed):
-        tango_context.device.command_inout(cmd_name)
-    assert error_msg in tango_context.device.activityMessage
+# def test_command_should_raise_exception(mock_sdp_master, command_name_to_raise_devfailed):
+#     device_proxy, sdp_master_proxy_mock = mock_sdp_master
+#     cmd_name, error_msg = command_name_to_raise_devfailed
+#     sdp_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_without_arg
+#     device_proxy.On()
+#     with pytest.raises(tango.DevFailed):
+#         tango_context.device.command_inout(cmd_name)
+#     assert error_msg in tango_context.device.activityMessage
 
 
 def raise_devfailed_without_arg(cmd_name, input_arg1):
