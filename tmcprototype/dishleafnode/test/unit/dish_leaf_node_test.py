@@ -432,11 +432,11 @@ def raise_devfailed_exception(cmd_name, callback):
 @pytest.fixture(
     scope="function",
     params=[
-        ("SetStowMode", ERR_EXE_SET_STOW_MODE_CMD),
-        ("SetStandbyLPMode", ERR_EXE_SET_STANDBYLP_MODE_CMD),
-        ("SetOperateMode", ERR_EXE_SET_OPERATE_MODE_CMD),
-        ("SetStandbyFPMode", ERR_EXE_SET_STANDBYFP_MODE_CMD),
-        ("StopTrack", ERR_EXE_STOP_TRACK_CMD),
+        ("SetStowMode", const.ERR_EXE_SET_STOW_MODE_CMD),
+        ("SetStandbyLPMode", const.ERR_EXE_SET_STANDBYLP_MODE_CMD),
+        ("SetOperateMode", const.ERR_EXE_SET_OPERATE_MODE_CMD),
+        ("SetStandbyFPMode", const.ERR_EXE_SET_STANDBYFP_MODE_CMD),
+        ("StopTrack", const.ERR_EXE_STOP_TRACK_CMD),
         ])
 def command_name_to_raise_devfailed(request):
     cmd_name, error_msg = request.param
