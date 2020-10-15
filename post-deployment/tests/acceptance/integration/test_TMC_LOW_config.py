@@ -66,7 +66,7 @@ def test_configure_scan():
         #tear down
         LOGGER.info('TMC-configure tests complete: tearing down...')
         tmc.end()
-        LOGGER.info('Invoked EndSB on Subarray')
+        LOGGER.info('Invoked End on Subarray')
 
         tmc.release_resources()
         LOGGER.info('Invoked ReleaseResources on Subarray')
@@ -84,7 +84,7 @@ def test_configure_scan():
             tmc.set_to_standby()
         elif fixture['state'] == 'Subarray Configured for SCAN':
             LOGGER.info('Tearing down in , state = {}'.format(fixture['state']))
-            tmc.end_sb()
+            tmc.end()
             tmc.release_resources()
             tmc.set_to_standby()
         elif fixture['state'] == 'Subarray SCANNING':

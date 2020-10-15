@@ -295,8 +295,11 @@ class waiter():
 
     def set_wait_for_going_to_standby(self):
         self.waits.append(watch(resource('ska_low/tm_subarray_node/1')).to_become("State",changed_to='OFF'))
-        # self.waits.append(watch(resource('low-mccs/subarray/01')).to_become("State",changed_to='OFF'))
-        self.waits.append(watch(resource('low-mccs/control/control')).to_become("State",changed_to='OFF')) 
+        # self.waits.append(watch(resource('low-mccs/control/control')).to_become("State",changed_to='OFF')) 
+        # self.waits.append(watch(resource('low-mccs/tile/0001')).to_become("State",changed_to='OFF')) 
+        # self.waits.append(watch(resource('low-mccs/tile/0002')).to_become("State",changed_to='OFF')) 
+        # self.waits.append(watch(resource('low-mccs/tile/0003')).to_become("State",changed_to='OFF')) 
+        # self.waits.append(watch(resource('low-mccs/tile/0004')).to_become("State",changed_to='OFF')) 
         # at the moment sdb does not go to standby
 
     def set_wait_for_going_into_scanning(self):
@@ -305,7 +308,7 @@ class waiter():
 
     def set_wait_for_starting_up(self):
         self.waits.append(watch(resource('ska_low/tm_subarray_node/1')).to_become("State",changed_to='ON'))
-        self.waits.append(watch(resource('low-mccs/control/control')).to_become("State",changed_to='ON'))
+        # self.waits.append(watch(resource('low-mccs/control/control')).to_become("State",changed_to='ON'))
        
 
     def wait(self, timeout=30,resolution=0.1):
