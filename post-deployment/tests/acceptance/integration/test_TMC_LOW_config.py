@@ -3,7 +3,7 @@ from datetime import date,datetime
 import os
 import pytest
 import logging
-from resources.test_support.helpers_low import waiter,watch,resource
+from resources.test_support.helpers_low import waiter,watch,resource, wait_before_test
 from resources.test_support.controls_low import telescope_is_in_standby
 from resources.test_support.state_checking import StateChecker
 from resources.test_support.log_helping import DeviceLogging
@@ -31,12 +31,12 @@ LOGGER = logging.getLogger(__name__)
 def test_configure_scan():
     
     try:
-        the_waiter = waiter()
-        the_waiter.wait(300)
+        # the_waiter = waiter()
+        # the_waiter.wait(600)
         # given an interface to TMC to interact with a subarray node and a central node
         fixture = {}
         fixture['state'] = 'Unknown'
-
+        wait_before_test(timeout=10)
         # given a started up telescope
         assert(telescope_is_in_standby())
         LOGGER.info('Staring up the Telescope')

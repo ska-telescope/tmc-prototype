@@ -24,6 +24,9 @@ subarray_devices = [
         'ska_low/tm_subarray_node/1',
         'low-mccs/subarray/01']
 
+def wait_before_test(timeout=1):
+    sleep(timeout)
+
 def handle_timeout(par1,par2):
     print("operation timeout")
     raise Exception("operation timeout")

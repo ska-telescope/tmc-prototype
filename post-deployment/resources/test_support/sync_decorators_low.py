@@ -19,6 +19,7 @@ def check_going_into_configure():
 def check_coming_out_of_standby():
     ##Can  only start up a disabled telescope
     resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('OFF')
+    resource('low-mccs/control/control').assert_attribute('State').equals('OFF')
 
 def check_going_out_of_configured():
     ##Can only return to ON/IDLE if in READY
