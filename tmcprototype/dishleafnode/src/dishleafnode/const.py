@@ -105,6 +105,12 @@ ERR_DISH_INIT = "Error occured in Dish Leaf Node initialization "
 ERR_EXE_STOW_CMD = "Exception in executing STOW command "
 ERR_EXE_STANDBYLP_CMD = "Exception occurred in SetStandByLPMode command."
 ERR_EXE_SET_OPER_MODE_CMD = "Exception in SetOperateMode command:\n"
+ERR_EXE_SET_STOW_MODE_CMD = "Exception in SetStowMode command:"
+ERR_EXE_SET_STANDBYLP_MODE_CMD = "Exception in SetStandByLPMode command:"
+ERR_EXE_SET_OPERATE_MODE_CMD = "Exception in SetOperateMode command:"
+ERR_EXE_SET_STANDBYFP_MODE_CMD = "Exception in SetStandByLPMode command:"
+
+
 ERR_EXE_SCAN_CMD = "Exception in executing SCAN command"
 ERR_EXE_END_SCAN_CMD = "Exception in EndScan command"
 ERR_EXE_CONFIGURE_CMD = "Exception occurred in Configure command"
@@ -143,6 +149,12 @@ STR_OBSRESET_SUCCESS = "ObsReset command invoked successfully on DishLeafNode de
 STR_CMD_FAILED = "DishLeafNode_Commandfailed"
 STR_SLEW_EXEC = "Slew command execution"
 STR_STOPCAPTURE_EXEC = "StopCapture command execution"
+STR_SETSTOWMODE_EXEC = "SetStowMode command execution"
+STR_SETSTANDBYLPMODE_EXEC = "SetStandByLPMode command execution"
+STR_SETOPERATEMODE_EXEC = "SetOperateMode command execution"
+STR_SETSTANDBYFPMODE_EXEC = "SetStandByFPMode command execution"
+
+
 STR_TRACK_EXEC = "Track command execution"
 STR_STOPTRACK_EXEC = "StopTrack command execution"
 STR_STARTCAPTURE_EXEC = "StartCapture command execution"
