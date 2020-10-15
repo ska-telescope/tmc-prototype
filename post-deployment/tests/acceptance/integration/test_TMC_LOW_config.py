@@ -31,6 +31,8 @@ LOGGER = logging.getLogger(__name__)
 def test_configure_scan():
     
     try:
+        the_waiter = waiter()
+        the_waiter.wait(300)
         # given an interface to TMC to interact with a subarray node and a central node
         fixture = {}
         fixture['state'] = 'Unknown'

@@ -49,6 +49,9 @@ def release_resources():
     SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
     LOGGER.info('After Release Resource SubarrayNodeLow State and ObsState:' + str(SubarrayNodeLow.State()) + str(SubarrayNodeLow.ObsState))
     LOGGER.info('Invoked ReleaseResources on Subarray')
+    the_waiter = waiter()
+    the_waiter.wait()
+    LOGGER.info('finished ReleaseResources on CentralNodeLow')
 
 
 @sync_set_to_standby
