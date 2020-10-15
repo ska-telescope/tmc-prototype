@@ -86,6 +86,46 @@ def test_disable_should_command_sdp_master_leaf_node_to_disable_devfailed(mock_s
     assert "Failed to invoke Disable command on SdpMasterLeafNode." in str(df)
 
 
+def test_on_command_should_raise_dev_failed(mock_sdp_master):
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
+    sdp_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_with_arg
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.On()
+    assert const.ERR_ON_CMD_FAIL in str(df.value)
+
+
+def test_off_command_should_raise_dev_failed(mock_sdp_master):
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
+    sdp_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_with_arg
+    device_proxy.On()
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.Off()
+    assert const.ERR_OFF_CMD_FAIL in str(df.value)
+
+
+def test_disable_command_should_raise_dev_failed(mock_sdp_master):
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
+    sdp_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_with_arg
+    device_proxy.On()
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.Disable()
+    assert const.ERR_DISABLE_CMD_FAIL in str(df.value)
+
+def test_standby_command_should_raise_dev_failed(mock_sdp_master):
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
+    sdp_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_with_arg
+    device_proxy.On()
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.Standby()
+    assert const.ERR_STANDBY_CMD_FAIL in str(df.value)
+
+
+def raise_devfailed_with_arg(cmd_name, input_arg1, input_arg2):
+    # "This function is called to raise DevFailed exception with arguments."
+    tango.Except.throw_exception(const.STR_CMD_FAILED, const.ERR_DEVFAILED_MSG,
+                                 cmd_name, tango.ErrSeverity.ERR)
+
+
 def test_command_should_command_with_callback_method(mock_sdp_master, event_subscription, command_without_args):
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
     cmd_name, requested_cmd = command_without_args
