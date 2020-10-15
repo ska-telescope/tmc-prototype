@@ -112,7 +112,7 @@ def test_on_command_should_raise_dev_failed(mock_sdp_subarray):
     sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_without_arg
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.On()
-    assert const.ERR_INVOKING_ON_CMD in str(df.value)
+    assert "This is error message for devfailed" in str(df.value)
 
 
 def test_off_command_should_raise_dev_failed(mock_sdp_subarray):
@@ -120,7 +120,7 @@ def test_off_command_should_raise_dev_failed(mock_sdp_subarray):
     sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_without_arg
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.Off()
-    assert const.ERR_INVOKING_OFF_CMD in str(df.value)
+    assert "This is error message for devfailed" in str(df.value)
 
 
 @pytest.fixture(
@@ -221,11 +221,11 @@ def test_command_for_allowed_Obstate_without_arg(mock_sdp_subarray, command_with
 def test_command_without_arg_should_raise_devfailed_exception(mock_sdp_subarray,event_subscription_without_arg, command_without_arg):
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     cmd_name, requested_cmd, obs_state, _, Error_msg = command_without_arg
-    sdp_subarray1_proxy_mock.obsState = obs_stateraise_devfailed_exception_without_arg
-    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = 
+    sdp_subarray1_proxy_mock.obsState = obs_state
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_without_arg
     with pytest.raises(tango.DevFailed):
         device_proxy.command_inout(cmd_name)
-    assert  Error_msg in device_proxy.activityMessage
+    assert Error_msg in device_proxy.activityMessage
 
 
 def command_callback(command_name):
