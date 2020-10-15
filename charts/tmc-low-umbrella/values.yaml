@@ -22,92 +22,9 @@ global:
       image: tango-itango
       tag: 9.3.1
       pullPolicy: IfNotPresent
-
-tmc-proto: 
-  dsconfig:
-    configuration_file: data/tmc-low-config.json
-  deviceServers:
-  - name: subarraynode1
-    function: observation-execution
-    domain: subarray
-    args:
-      - -c
-      - "/usr/local/bin/SubarrayNodeLowDS sa1"
-    depends_on:
-      - device: ska_low/tm_leaf_node/mccs_subarray01
-    image:
-      registry: nexus.engageska-portugal.pt/tango-example
-      image: tmcprototype
-      tag: 0.2.11
-      pullPolicy: IfNotPresent
-    resources:
-      limits:
-        cpu: 300m
-        memory: 500Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi 
-  - name: centralnode
-    function: telescope-monitoring
-    domain: general-monitoring
-    args:
-      - -c
-      - "/usr/local/bin/CentralNodeLowDS 01"
-    depends_on:
-      - device: ska_low/tm_subarray_node/1
-      - device: ska_low/tm_leaf_node/mccs_master
-    image:
-      registry: nexus.engageska-portugal.pt/tango-example
-      image: tmcprototype
-      tag: 0.2.11
-      pullPolicy: IfNotPresent
-    resources:
-      limits:
-        cpu: 300m
-        memory: 500Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
-  - name: mccssmasterleafnode
-    function: observation-execution
-    domain: general-monitoring
-    args:
-      - -c
-      - "/usr/local/bin/MccsMasterLeafNodeDS 01"
-    depends_on:
-      - device: low-mccs/control/control
-    image:
-      registry: nexus.engageska-portugal.pt/tango-example
-      image: tmcprototype
-      tag: 0.2.11
-      pullPolicy: IfNotPresent
-    resources:
-      limits:
-        cpu: 300m
-        memory: 500Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
-  - name: mccssubarrayleafnode1
-    function: observation-execution
-    domain: subarray
-    args:
-      - -c
-      - "/usr/local/bin/MccsSubarrayLeafNodeDS 01"
-    depends_on:
-      - device: low-mccs/subarray/01
-    image:
-      registry: nexus.engageska-portugal.pt/tango-example
-      image: tmcprototype
-      tag: 0.2.11
-      pullPolicy: IfNotPresent
-    resources:
-      limits:
-        cpu: 300m
-        memory: 500Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
+  sub-system:
+    tango-base:
+      enabled: false
 
 mccs: 
   tango-base:

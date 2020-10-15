@@ -23,6 +23,7 @@ before_script:
 
 stages:
   - build
+  - unit-test
   - test
   - linting
   - publish
@@ -346,7 +347,7 @@ build DishMaster wheel for development: # Executed on a commit
 
 unit tests:
   image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
-  stage: test
+  stage: unit-test
   tags:
     - docker-executor
   script:
@@ -451,19 +452,19 @@ publish to nexus:
       - $CI_COMMIT_MESSAGE =~ /^.+$/ # Confirm tag message exists
       - $CI_COMMIT_TAG =~ /^((([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)$/ # Confirm semantic versioning of tag
 
-publish_chart:
-  variables:
-    CHARTS_TO_PUBLISH: tmc-low-umbrella tmc-mid-umbrella tmc-proto
-  stage: publish
-  tags:
-    - docker-executor
-  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.2
-  script:
-    - curl -s https://gitlab.com/ska-telescope/stupid/raw/master/scripts/publish-charts.sh | bash
-  when: manual
-  only:
-    refs:
-      - master
+# publish_chart:
+#   variables:
+#     CHARTS_TO_PUBLISH: tmc-low-umbrella tmc-mid-umbrella tmc-proto
+#   stage: publish
+#   tags:
+#     - docker-executor
+#   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.2
+#   script:
+#     - curl -s https://gitlab.com/ska-telescope/stupid/raw/master/scripts/publish-charts.sh | bash
+#   when: manual
+#   only:
+#     refs:
+#       - master
 
 pages:
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
@@ -529,3 +530,12 @@ release tmc:
   only:
     refs:
       - master
+
+# Standardised included jobs
+variables:
+  CHARTS_TO_PUBLISH: tmc-low-umbrella tmc-mid-umbrella tmc-proto
+include:
+# Helm Chart Publish
+# https://developer.skatelescope.org/en/latest/development/software_package_release_procedure.html#package-and-publish-helm-charts-to-the-ska-helm-chart-repository
+- project: 'ska-telescope/templates-repository'
+  file: 'gitlab-ci/includes/helm_publish.yml'
