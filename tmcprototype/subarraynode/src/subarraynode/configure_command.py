@@ -2,9 +2,7 @@
 ConfigureCommand class for SubarrayNode.
 """
 
-import functools
 import json
-from typing import Any, Dict, Union
 #from typing import Dict
 # Tango imports
 import tango
@@ -15,7 +13,6 @@ from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from ska_telmodel.csp import interface
-from ska.log_transactions import transaction
 from .transaction_id import identify_with_id,inject_with_id
 
 csp_interface_version = 0
