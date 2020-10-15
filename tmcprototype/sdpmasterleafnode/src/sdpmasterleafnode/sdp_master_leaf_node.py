@@ -100,7 +100,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_msg = const.ERR_INIT_PROP_ATTR + str(dev_failed)
-                device.throw_exception(const.ERR_INVOKING_CMD,log_msg,
+                tango.Except.throw_exception(const.ERR_INVOKING_CMD,log_msg,
                                        "SdpMasterLeafNode.InitCommand()", const.ERR_INIT_PROP_ATTR)
 
             try:
@@ -230,7 +230,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_msg = const.ERR_ON_CMD_FAIL + str(dev_failed)
-                device.throw_exception(const.ERR_INVOKING_CMD,log_msg,
+                tango.Except.throw_exception(const.ERR_INVOKING_CMD,log_msg,
                                        "SdpMasterLeafNode.OnCommand()", const.ERR_ON_CMD_FAIL)
 
 
@@ -293,7 +293,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_msg = const.ERR_OFF_CMD_FAIL + str(dev_failed)
-                device.throw_exception(const.ERR_INVOKING_CMD,log_msg,
+                tango.Except.throw_exception(const.ERR_INVOKING_CMD,log_msg,
                                        "SdpMasterLeafNode.OffCommand()", const.ERR_OFF_CMD_FAIL)
 
     class DisableCommand(ResponseCommand):
@@ -372,7 +372,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_msg = const.ERR_DISABLE_CMD_FAIL + str(dev_failed)
-                device.throw_exception(const.ERR_INVOKING_CMD,log_msg,
+                tango.Except.throw_exception(const.ERR_INVOKING_CMD,log_msg,
                                        "SdpMasterLeafNode.DisableCommand()", const.ERR_DISABLE_CMD_FAIL)
 
     def is_Disable_allowed(self):
@@ -478,7 +478,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_msg = const.ERR_STANDBY_CMD_FAIL + str(dev_failed)
-                device.throw_exception(const.ERR_INVOKING_CMD,log_msg,
+                tango.Except.throw_exception(const.ERR_INVOKING_CMD,log_msg,
                                        "SdpMasterLeafNode.StandbyCommand()", const.ERR_STANDBY_CMD_FAIL)
 
         def check_allowed(self):

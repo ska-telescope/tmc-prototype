@@ -506,7 +506,7 @@ class DishLeafNode(SKABaseDevice):
                 log_msg = f"{const.ERR_EXE_SET_STOW_MODE_CMD}{dev_failed}"
                 device._read_activity_message = log_msg
                 self.logger.exception(log_msg)
-                tango.Except.throw_exception(const.STR_SETSTOWMODE_EXEC, log_msg, "DishLeafNode.SetStowModeCommand",
+                tango.Except.re_throw_exception(dev_failed,const.STR_SETSTOWMODE_EXEC, log_msg, "DishLeafNode.SetStowModeCommand",
                                              tango.ErrSeverity.ERR)
 
 
@@ -581,7 +581,7 @@ class DishLeafNode(SKABaseDevice):
                 log_msg = f"{const.ERR_EXE_SET_STANDBYLP_MODE_CMD}{dev_failed}"
                 device._read_activity_message = log_msg
                 self.logger.exception(log_msg)
-                tango.Except.throw_exception(const.STR_SETSTANDBYLPMODE_EXEC, log_msg, "DishLeafNode.SetStandByLPModeCommand",
+                tango.Except.re_throw_exception(dev_failed, const.STR_SETSTANDBYLPMODE_EXEC, log_msg, "DishLeafNode.SetStandByLPModeCommand",
                                              tango.ErrSeverity.ERR)
 
     def is_SetStandByLPMode_allowed(self):
@@ -650,7 +650,7 @@ class DishLeafNode(SKABaseDevice):
                 log_msg = f"{const.ERR_EXE_SET_OPERATE_MODE_CMD}{dev_failed}"
                 device._read_activity_message = log_msg
                 self.logger.exception(log_msg)
-                tango.Except.throw_exception(const.STR_SETOPERATEMODE_EXEC, log_msg, "DishLeafNode.SetOperateModeCommand",
+                tango.Except.re_throw_exception(dev_failed, const.STR_SETOPERATEMODE_EXEC, log_msg, "DishLeafNode.SetOperateModeCommand",
                                              tango.ErrSeverity.ERR)
 
 
@@ -1191,7 +1191,7 @@ class DishLeafNode(SKABaseDevice):
                 log_msg = f"{const.ERR_EXE_SET_STANDBYFP_MODE_CMD}{dev_failed}"
                 device._read_activity_message = log_msg
                 self.logger.exception(log_msg)
-                tango.Except.throw_exception(const.STR_SETSTANDBYLPMODE_EXEC, log_msg, "DishLeafNode.SetStandByFPModeCommand",
+                tango.Except.re_throw_exception(dev_failed, const.STR_SETSTANDBYLPMODE_EXEC, log_msg, "DishLeafNode.SetStandByFPModeCommand",
                                              tango.ErrSeverity.ERR)
             
     def is_SetStandbyFPMode_allowed(self):
