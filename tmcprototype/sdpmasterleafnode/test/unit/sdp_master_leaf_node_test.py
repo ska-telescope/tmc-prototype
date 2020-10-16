@@ -97,9 +97,9 @@ def test_on_command_should_raise_dev_failed(mock_sdp_master):
 @pytest.fixture(
     scope="function",
     params=[
-        ("Off", const.ERR_DEVFAILED_MSG),
-        ("Disable", const.ERR_DEVFAILED_MSG),
-        ("Standby", const.ERR_DEVFAILED_MSG),
+        ("Off", const.ERR_OFF_CMD_FAIL),
+        ("Disable", const.ERR_DISABLE_CMD_FAIL),
+        ("Standby", const.ERR_STANDBY_CMD_FAIL),
         ])
 
 def command_name_to_raise_devfailed(request):
@@ -110,8 +110,8 @@ def command_name_to_raise_devfailed(request):
 def test_command_should_raise_exception(mock_sdp_master, command_name_to_raise_devfailed):
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
     cmd_name, error_msg = command_name_to_raise_devfailed
-    sdp_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_without_arg
     device_proxy.On()
+    sdp_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_without_arg
     with pytest.raises(tango.DevFailed) as df:
         tango_context.device.command_inout(cmd_name)
     print("Value of DF in other commands::::",str(df))
@@ -119,7 +119,7 @@ def test_command_should_raise_exception(mock_sdp_master, command_name_to_raise_d
 
 
 def raise_devfailed_without_arg(cmd_name, input_arg1):
-    # "This function is called to raise DevFailed exception with arguments."
+    # "This function is called to raise DevFailed exception without arguments."
     tango.Except.throw_exception(const.STR_CMD_FAILED, const.ERR_DEVFAILED_MSG,
                                  cmd_name, tango.ErrSeverity.ERR)
 
