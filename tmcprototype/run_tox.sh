@@ -16,7 +16,7 @@ if [ -d "$working_dir" ]; then rm -rf $working_dir; fi
 #   mv ${TMC_ELEMENT}_coverage ../tox_report/${TMC_ELEMENT}_coverage;
 #   cd ..
 # done
-cd sdpsubarrayleafnode;
+cd sdpmasterleafnode;
 tox -e py37
 # mv ./tox_report ../build/reports
 
