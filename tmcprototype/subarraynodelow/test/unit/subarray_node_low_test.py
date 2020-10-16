@@ -222,7 +222,7 @@ def test_end_should_command_subarray_to_end_when_it_is_ready(mock_lower_devices)
 
     tango_context.device.End()
     mccs_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_END)
-    # mock pointing statewith pytest.raises(tango.DevFailed)
+    # mock pointing state
     assert tango_context.device.obsState == ObsState.IDLE
 
 def test_end_should_raise_devfailed_exception_when_mccs_subarray_throws_devfailed_exception(mock_lower_devices):
@@ -397,7 +397,6 @@ def test_end_scan_should_raise_devfailed_exception_when_mccs_subbarray_ln_throws
     assert tango_context.device.obsState == ObsState.SCANNING
     with pytest.raises(tango.DevFailed) as df:
         tango_context.device.EndScan()
-
     assert tango_context.device.obsState == ObsState.FAULT
 
 
