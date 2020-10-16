@@ -100,7 +100,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_msg = const.ERR_INIT_PROP_ATTR + str(dev_failed)
-                tango.Except.throw_exception(const.ERR_INVOKING_CMD,log_msg,
+                tango.Except.re_throw_exception(dev_failed, const.ERR_INVOKING_CMD, log_msg,
                                        "SdpMasterLeafNode.InitCommand()", const.ERR_INIT_PROP_ATTR)
 
             try:
