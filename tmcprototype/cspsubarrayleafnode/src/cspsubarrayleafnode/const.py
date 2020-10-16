@@ -51,6 +51,8 @@ ERR_IN_CREATE_PROXY_CSPSA = "Error in creating proxy of the CSP Subarray device.
 ERR_DEVFAILED_MSG = "This is error message for devfailed"
 ERR_CALLBACK_CMD_FAILED = "CspSubarrayLeafNode_Commandfailed in callback"
 ERR_UNABLE_RESTART_CMD = "Unable to invoke Restart command"
+ERR_UNABLE_ABORT_CMD = "Unable to invoke Abort command"
+ERR_UNABLE_OBSRESET_CMD = "Unable to invoke ObsReset command"
 ERR_RAISED_EXCEPTION = "CSP subarray leaf node raised exception"
 #strings
 #General strings

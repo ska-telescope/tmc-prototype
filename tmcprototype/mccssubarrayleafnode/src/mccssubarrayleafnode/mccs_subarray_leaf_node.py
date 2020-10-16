@@ -417,7 +417,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
     @command(
-        dtype_in=('str',)
+        dtype_in=('str')
     )
     @DebugIt()
     def Scan(self, argin):

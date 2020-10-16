@@ -95,7 +95,7 @@
     </commands>
     <commands name="Scan" description="" execMethod="scan" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
       <argin description="">
-        <type xsi:type="pogoDsl:StringArrayType"/>
+        <type xsi:type="pogoDsl:StringType"/>
       </argin>
       <argout description="">
         <type xsi:type="pogoDsl:VoidType"/>
