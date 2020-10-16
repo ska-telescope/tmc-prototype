@@ -243,14 +243,14 @@ def command_callback_with_event_error(command_name):
     fake_event.cmd_name = f"{command_name}"
     return fake_event
 
+# TODO: FOR FUTURE REFERENCE
+def command_callback_with_command_exception():
+    return Exception("Exception in Command callback")
 
-# def command_callback_with_command_exception():
-#     return Exception("Exception in Command callback")
-
-
-# def command_callback_with_devfailed_exception():
-#     tango.Except.throw_exception("SdpSubarrayLeafNode_Commandfailed in callback", "This is error message for devfailed",
-#                                  " ", tango.ErrSeverity.ERR)
+# TODO: FOR FUTURE REFERENCE
+def command_callback_with_devfailed_exception():
+    tango.Except.throw_exception("SdpSubarrayLeafNode_Commandfailed in callback", "This is error message for devfailed",
+                                 " ", tango.ErrSeverity.ERR)
 
 def raise_devfailed_exception_without_arg(cmd_name, callback):
     tango.Except.throw_exception("SdpSubarrayLeafNode_Commandfailed", "This is error message for devfailed",
