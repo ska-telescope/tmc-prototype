@@ -44,7 +44,7 @@ deviceServers:
   image:
     registry: nexus.engageska-portugal.pt/tango-example
     image: tmcprototype
-    tag: 0.2.11
+    tag: 0.2.12
     pullPolicy: IfNotPresent
   resources:
     limits:
@@ -65,7 +65,7 @@ deviceServers:
   image:
     registry: nexus.engageska-portugal.pt/tango-example
     image: tmcprototype
-    tag: 0.2.11
+    tag: 0.2.12
     pullPolicy: IfNotPresent
   resources:
     limits:
@@ -85,7 +85,7 @@ deviceServers:
   image:
     registry: nexus.engageska-portugal.pt/tango-example
     image: tmcprototype
-    tag: 0.2.11
+    tag: 0.2.12
     pullPolicy: IfNotPresent
   resources:
     limits:
@@ -105,7 +105,7 @@ deviceServers:
   image:
     registry: nexus.engageska-portugal.pt/tango-example
     image: tmcprototype
-    tag: 0.2.11
+    tag: 0.2.12
     pullPolicy: IfNotPresent
   resources:
     limits:

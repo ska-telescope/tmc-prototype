@@ -345,16 +345,16 @@ build DishMaster wheel for development: # Executed on a commit
     paths:
       - ./tmcprototype/dishmaster/dist/
 
-# unit tests:
-#   image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
-#   stage: unit-test
-#   tags:
-#     - docker-executor
-#   script:
-#     - make unit-test
-#   artifacts:
-#     paths:
-#       - ./build
+unit tests:
+  image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
+  stage: unit-test
+  tags:
+    - docker-executor
+  script:
+    - make unit-test
+  artifacts:
+    paths:
+      - ./build
 
 test-mid:
   stage: test
@@ -384,36 +384,6 @@ test-mid:
       - build
     reports:
       junit: build/report.xml
-
-
-# test-mid:
-#   stage: test
-#   tags:
-#     - docker-executor
-#   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.2
-#   # before_script:
-#   #   - kubectl get namespace 
-#   #   - helm ls --all-namespaces
-#   script:
-#     - kubectl version
-#     - make clean KUBE_NAMESPACE=tmcmid
-#     - make install-chart KUBE_NAMESPACE=tmcmid HELM_CHART=tmc-mid-umbrella UMBRELLA_CHART_PATH=charts/tmc-mid-umbrella/
-#     - make wait KUBE_NAMESPACE=tmcmid
-#     - make smoketest KUBE_NAMESPACE=tmcmid
-#     #- make test
-#   after_script:
-#     - make uninstall-chart KUBE_NAMESPACE=tmcmid HELM_CHART=tmc-mid-umbrella UMBRELLA_CHART_PATH=charts/tmc-mid-umbrella/
-#     - make clean KUBE_NAMESPACE=tmcmid
-#     - make delete_namespace KUBE_NAMESPACE=tmcmid
-#     - make delete_namespace-sdp
-#   environment:
-#     name: test
-#   artifacts:
-#     name: "$CI_PROJECT_NAME-$CI_JOB_ID"
-#     paths:
-#       - "charts/build"
-#     reports:
-#       junit: charts/build/report.xml
 
 test-low:
   stage: test

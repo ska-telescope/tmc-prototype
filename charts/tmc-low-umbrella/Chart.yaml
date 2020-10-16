@@ -16,13 +16,12 @@ dependencies:
 - name: tango-base
   version: 0.2.2
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
-# For deploying tmc-mid and tmc-low at the same time, webjive should be referred for a single deployment.
 - name: webjive
   version: 0.1.1
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: tmc-low
   version: 0.0.2
-  repository: file://../tmc-mid
+  repository: file://../tmc-low
 - name: mccs
   version: 0.0.2
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
