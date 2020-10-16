@@ -44,37 +44,55 @@ def mock_sdp_master():
         yield tango_context.device, sdp_master_proxy_mock
 
 
+def raise_devfailed_without_arg(cmd_name, input_arg1):
+    # "This function is called to raise DevFailed exception without arguments."
+    tango.Except.throw_exception(const.STR_CMD_FAILED, const.ERR_DEVFAILED_MSG,
+                                 cmd_name, tango.ErrSeverity.ERR)
+
+
 @pytest.fixture(
     scope="function",
     params=[
-        ("On", const.CMD_ON),
-        ("Standby", const.CMD_STANDBY),
-        ("Disable", const.CMD_Disable)
+        ("On", const.CMD_ON,const.ERR_DEVFAILED_MSG),
+        ("Standby", const.CMD_STANDBY,const.ERR_DEVFAILED_MSG),
+        ("Disable", const.CMD_Disable,const.ERR_DEVFAILED_MSG)
     ])
 def command_without_args(request):
-    cmd_name, requested_cmd = request.param
-    return cmd_name, requested_cmd
+    cmd_name, requested_cmd , Err_msg= request.param
+    return cmd_name, requested_cmd, Err_msg
 
 
 def test_command_should_be_relayed_to_sdp_master(mock_sdp_master, command_without_args):
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
-    cmd_name, requested_cmd = command_without_args
-    
+    cmd_name, requested_cmd, _ = command_without_args
     device_proxy.command_inout(cmd_name)
-
     callback_name = f"{requested_cmd.lower()}_cmd_ended_cb"
     sdp_master_proxy_mock.command_inout_asynch.assert_called_with(requested_cmd,
                                                            any_method(with_name= callback_name))
 
+def test_command_should_raise_exception(mock_sdp_master, command_without_args):
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
+    cmd_name, _, error_msg = command_without_args
+    sdp_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_without_arg
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.command_inout(cmd_name)
+    assert error_msg in str(df)
+
 def test_off_should_command_sdp_master_leaf_node_to_stop(mock_sdp_master):
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
     device_proxy.On()
-
     device_proxy.Off()
-
     assert const.STR_OFF_CMD_SUCCESS in device_proxy.activityMessage
     sdp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF,
                                                                any_method(with_name='off_cmd_ended_cb'))
+
+def test_off_command_should_raise_dev_failed(mock_sdp_master):
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
+    device_proxy.On()
+    sdp_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_without_arg
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.Off()    
+    assert const.ERR_DEVFAILED_MSG in str(df)
 
 
 def test_disable_should_command_sdp_master_leaf_node_to_disable_devfailed(mock_sdp_master):
@@ -88,7 +106,7 @@ def test_disable_should_command_sdp_master_leaf_node_to_disable_devfailed(mock_s
 
 def test_command_should_command_with_callback_method(mock_sdp_master, event_subscription, command_without_args):
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
-    cmd_name, requested_cmd = command_without_args
+    cmd_name, requested_cmd, _ = command_without_args
     
     device_proxy.command_inout(cmd_name)
     dummy_event = command_callback(requested_cmd)
@@ -100,7 +118,6 @@ def test_command_should_command_with_callback_method(mock_sdp_master, event_subs
 def test_off_should_command_with_callback_method(mock_sdp_master, event_subscription):
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
     device_proxy.On()
-    
     device_proxy.Off()
     dummy_event = command_callback(const.CMD_OFF)
     event_subscription[const.CMD_OFF](dummy_event)
@@ -111,12 +128,10 @@ def test_off_should_command_with_callback_method(mock_sdp_master, event_subscrip
 
 def test_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription, command_without_args):
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
-    cmd_name, requested_cmd = command_without_args
-
+    cmd_name, requested_cmd, _ = command_without_args
     device_proxy.command_inout(cmd_name)
     dummy_event = command_callback_with_event_error(requested_cmd)
     event_subscription[requested_cmd](dummy_event)
-
     assert const.ERR_INVOKING_CMD + requested_cmd in device_proxy.activityMessage
 
 
