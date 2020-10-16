@@ -405,17 +405,17 @@ pages:
     - master
   script:
     - mv build public
-    - mv public/unit_test/cspmasterleafnode_htmlcov/* public
-    - mv public/unit_test/cspsubarrayleafnode_htmlcov/* public
-    - mv public/unit_test/sdpsubarrayleafnode_htmlcov/* public
-    - mv public/unit_test/mccssubarrayleafnode_htmlcov/* public
-    - mv public/unit_test/mccsmasterleafnode_htmlcov/* public
-    - mv public/unit_test/sdpmasterleafnode_htmlcov/* public
-    - mv public/unit_test/dishleafnode_htmlcov/* public
-    - mv public/unit_test/subarraynode_htmlcov/* public
-    - mv public/unit_test/centralnode_htmlcov/* public
-    - mv public/unit_test/subarraynodelow_htmlcov/* public
-    - mv public/unit_test/centralnodelow_htmlcov/* public
+    - mv public/reports/cspmasterleafnode_htmlcov/* public
+    - mv public/reports/cspsubarrayleafnode_htmlcov/* public
+    - mv public/reports/sdpsubarrayleafnode_htmlcov/* public
+    - mv public/reports/mccssubarrayleafnode_htmlcov/* public
+    - mv public/reports/mccsmasterleafnode_htmlcov/* public
+    - mv public/reports/sdpmasterleafnode_htmlcov/* public
+    - mv public/reports/dishleafnode_htmlcov/* public
+    - mv public/reports/subarraynode_htmlcov/* public
+    - mv public/reports/centralnode_htmlcov/* public
+    - mv public/reports/subarraynodelow_htmlcov/* public
+    - mv public/reports/centralnodelow_htmlcov/* public
     - make push
   artifacts:
     paths:
