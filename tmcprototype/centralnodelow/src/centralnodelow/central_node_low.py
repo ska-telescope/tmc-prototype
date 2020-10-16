@@ -635,7 +635,7 @@ class CentralNode(SKABaseDevice):
         
         def do(self, argin):
             """
-            Release all the resources assigned to the given Subarray. It accepts the subarray id, releaseALL flag in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
+            Release all the resources assigned to the given Subarray. It accepts the subarray id, release_all flag in JSON string format. When the release_all flag is True, ReleaseAllResources command
             is invoked on the respective SubarrayNode. 
             
             :param argin: The string in JSON format. The JSON contains following values:
@@ -643,17 +643,17 @@ class CentralNode(SKABaseDevice):
                 subarray_id:
                     DevShort. Mandatory.
 
-                releaseALL:
+                release_all:
                     Boolean(True or False). Mandatory. True when all the resources to be released from Subarray.
 
                 Example:
                     {
                         "subarray_id": 1,
-                        "releaseALL": true,
+                        "release_all": true,
                     }
 
                 Note: From Jive, enter input as:
-                    {"subarray_id":1,"releaseALL":true} without any space.
+                    {"subarray_id":1,"release_all":true} without any space.
 
              :raises: ValueError if input argument json string contains invalid value
                     KeyError if input argument json string contains invalid key
@@ -665,12 +665,12 @@ class CentralNode(SKABaseDevice):
                 jsonArgument = json.loads(argin)
                 subarray_id = jsonArgument['subarray_id']
                 subarrayProxy = device.subarray_FQDN_dict[subarray_id]
-                if jsonArgument['releaseALL'] == True:
+                if jsonArgument['release_all'] == True:
                     # Invoke ReleaseAllResources on SubarrayNode
                     subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
                     # Invoke ReleaseAllResources on MCCS Master Leaf Node
                     # Send same input argument to MCCS Master for ReleaseResource Command
-                    device._mccs_master_leaf_proxy.command_inout(const.CMD_RELEASE_RESOURCES, argin)
+                    device._mccs_master_leaf_proxy.command_inout(const.CMD_RELEASE_MCCS_RESOURCES, argin)
                     log_msg = const.STR_REL_RESOURCES
                     self.logger.info(log_msg)
                     device._read_activity_message = log_msg
@@ -721,7 +721,7 @@ class CentralNode(SKABaseDevice):
     @command(
         dtype_in="str",
         doc_in="The string in JSON format. The JSON contains following values:\nsubarray_id: "
-               "and releaseALL boolean as true.",
+               "and release_all boolean as true.",
     )
     @DebugIt()
     def ReleaseResources(self, argin):
