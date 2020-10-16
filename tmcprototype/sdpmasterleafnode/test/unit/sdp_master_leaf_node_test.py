@@ -97,9 +97,9 @@ def test_on_command_should_raise_dev_failed(mock_sdp_master):
 @pytest.fixture(
     scope="function",
     params=[
-        ("Off", const.ERR_OFF_CMD_FAIL),
-        ("Disable", const.ERR_DISABLE_CMD_FAIL),
-        ("Standby", const.ERR_STANDBY_CMD_FAIL),
+        ("Off", const.ERR_DEVFAILED_MSG),
+        ("Disable", const.ERR_DEVFAILED_MSG),
+        ("Standby", const.ERR_DEVFAILED_MSG),
         ])
 
 def command_name_to_raise_devfailed(request):
@@ -114,7 +114,6 @@ def test_command_should_raise_exception(mock_sdp_master, command_name_to_raise_d
     sdp_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_without_arg
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name)
-    print("Value of DF in other commands::::",str(df))
     assert error_msg in str(df)
 
 
