@@ -437,7 +437,7 @@ def raise_devfailed_exception(cmd_name, callback):
         ("SetStandbyLPMode", const.ERR_DEVFAILED_MSG),
         ("SetOperateMode", const.ERR_DEVFAILED_MSG),
         ("SetStandbyFPMode", const.ERR_DEVFAILED_MSG),
-        ("StopTrack", const.const.ERR_EXE_STOP_TRACK_CMD),
+        ("StopTrack", const.ERR_EXE_STOP_TRACK_CMD),
         ])
 def command_name_to_raise_devfailed(request):
     cmd_name, error_msg = request.param
