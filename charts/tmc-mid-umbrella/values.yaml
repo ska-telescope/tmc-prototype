@@ -25,12 +25,14 @@ global:
   sub-system:
     tango-base:
       enabled: false
+    webjive:
+      enabled: false
 
-webjive:
-  ingress:
-    enabled: true
-    nginx: false
-    hostname: integration.engageska-portugal.pt
+# webjive:
+#   ingress:
+#     enabled: true
+#     nginx: false
+#     hostname: integration.engageska-portugal.pt
 
 etcd-operator:
   deployments:
