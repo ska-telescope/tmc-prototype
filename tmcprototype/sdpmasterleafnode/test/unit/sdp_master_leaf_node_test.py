@@ -136,7 +136,6 @@ def test_command_should_command_with_callback_method(mock_sdp_master, event_subs
 def test_off_should_command_with_callback_method(mock_sdp_master, event_subscription):
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
     device_proxy.On()
-    
     device_proxy.Off()
     dummy_event = command_callback(const.CMD_OFF)
     event_subscription[const.CMD_OFF](dummy_event)
