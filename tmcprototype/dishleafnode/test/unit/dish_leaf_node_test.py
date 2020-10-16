@@ -430,7 +430,7 @@ def raise_devfailed_exception(cmd_name, callback):
                                  " ", tango.ErrSeverity.ERR)
 
 def raise_re_throw_devfailed_exception(cmd_name, callback):
-    tango.Except.re_throw_exception("","DishLeafNode_Commandfailed", "This is error message for devfailed",
+    tango.Except.re_throw_exception(devfailed,"DishLeafNode_Commandfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
 
 
