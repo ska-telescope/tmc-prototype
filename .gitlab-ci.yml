@@ -363,7 +363,7 @@ test-mid:
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.2
   before_script:
       - kubectl get namespace
-      - kubectl delete namespace tmc-mid
+      - kubectl delete namespace tmcmid
       - kubectl delete namespace sdp
       - kubectl get namespace 
       - helm ls --all-namespaces
