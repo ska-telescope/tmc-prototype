@@ -429,6 +429,11 @@ def raise_devfailed_exception(cmd_name, callback):
     tango.Except.throw_exception("DishLeafNode_Commandfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
 
+def raise_re_throw_devfailed_exception(cmd_name, callback):
+    tango.Except.re_throw_exception("","DishLeafNode_Commandfailed", "This is error message for devfailed",
+                                 " ", tango.ErrSeverity.ERR)
+
+
 @pytest.fixture(
     scope="function",
     params=[
@@ -446,7 +451,7 @@ def command_name_to_raise_devfailed(request):
 def test_command_should_raise_exception(mock_dish_master, command_name_to_raise_devfailed):
     tango_context, dish1_proxy_mock, _, _ = mock_dish_master
     cmd_name, error_msg = command_name_to_raise_devfailed
-    dish1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+    dish1_proxy_mock.command_inout_asynch.side_effect = raise_re_throw_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         tango_context.device.command_inout(cmd_name)
     assert error_msg in str(df)
