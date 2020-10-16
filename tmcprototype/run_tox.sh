@@ -19,6 +19,8 @@ mkdir -p $REPORTS_DIR
 #   cd ..
 # done
 cd sdpmasterleafnode;
+tox -e py37
+
 # Combine coverage reports
 cd $REPORTS_DIR
 coverage combine centralnode_coverage cspmasterleafnode_coverage \
