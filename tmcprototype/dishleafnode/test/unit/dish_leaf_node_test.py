@@ -429,19 +429,19 @@ def raise_devfailed_exception(cmd_name, callback):
     tango.Except.throw_exception("DishLeafNode_Commandfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
 
-def raise_re_throw_devfailed_exception(cmd_name, callback):
-    tango.Except.re_throw_exception(devfailed,"DishLeafNode_Commandfailed", "This is error message for devfailed",
-                                 " ", tango.ErrSeverity.ERR)
+# def raise_re_throw_devfailed_exception(cmd_name, callback):
+#     tango.Except.re_throw_exception(devfailed,"DishLeafNode_Commandfailed", "This is error message for devfailed",
+#                                  " ", tango.ErrSeverity.ERR)
 
 
 @pytest.fixture(
     scope="function",
     params=[
-        ("SetStowMode", const.ERR_EXE_SET_STOW_MODE_CMD),
-        ("SetStandbyLPMode", const.ERR_EXE_SET_STANDBYLP_MODE_CMD),
-        ("SetOperateMode", const.ERR_EXE_SET_OPERATE_MODE_CMD),
-        ("SetStandbyFPMode", const.ERR_EXE_SET_STANDBYFP_MODE_CMD),
-        ("StopTrack", const.ERR_EXE_STOP_TRACK_CMD),
+        ("SetStowMode", const.ERR_DEVFAILED_MSG),
+        ("SetStandbyLPMode", const.ERR_DEVFAILED_MSG),
+        ("SetOperateMode", const.ERR_DEVFAILED_MSG),
+        ("SetStandbyFPMode", const.ERR_DEVFAILED_MSG),
+        ("StopTrack", const.ERR_DEVFAILED_MSG),
         ])
 def command_name_to_raise_devfailed(request):
     cmd_name, error_msg = request.param
@@ -451,7 +451,7 @@ def command_name_to_raise_devfailed(request):
 def test_command_should_raise_exception(mock_dish_master, command_name_to_raise_devfailed):
     tango_context, dish1_proxy_mock, _, _ = mock_dish_master
     cmd_name, error_msg = command_name_to_raise_devfailed
-    dish1_proxy_mock.command_inout_asynch.side_effect = raise_re_throw_devfailed_exception
+    dish1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         tango_context.device.command_inout(cmd_name)
     assert error_msg in str(df)

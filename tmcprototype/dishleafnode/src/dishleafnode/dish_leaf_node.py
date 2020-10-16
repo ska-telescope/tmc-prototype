@@ -640,8 +640,8 @@ class DishLeafNode(SKABaseDevice):
             :rtype: (ResultCode, str)
 
             """
+            device = self.target
             try:
-                device = self.target
                 device._dish_proxy.command_inout_asynch(const.CMD_SET_OPERATE_MODE, self.cmd_ended_cb)
                 device._read_activity_message = const.STR_SETOPERATE_SUCCESS
                 self.logger.info(device._read_activity_message)
