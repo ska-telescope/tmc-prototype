@@ -107,6 +107,22 @@ def test_off_should_command_with_callback_method_with_event_error(mock_sdp_subar
     event_subscription_without_arg[const.CMD_OFF](dummy_event)
     assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
 
+def test_on_command_should_raise_dev_failed(mock_sdp_subarray):
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_without_arg
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.On()
+    assert "This is error message for devfailed" in str(df.value)
+
+
+def test_off_command_should_raise_dev_failed(mock_sdp_subarray):
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
+    device_proxy.On()
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_without_arg
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.Off()
+    assert "This is error message for devfailed" in str(df.value)
+
 
 @pytest.fixture(
     scope="function",
@@ -159,7 +175,7 @@ def test_command_with_arg_should_raise_devfailed_exception(mock_sdp_subarray, ev
 @pytest.fixture(
     scope="function",
     params=[
-        ("EndSB", const.CMD_RESET, ObsState.READY,"endsb_cmd_ended_cb",const.ERR_ENDSB_INVOKING_CMD),
+        ("End", const.CMD_END, ObsState.READY,"end_cmd_ended_cb",const.ERR_END_INVOKING_CMD),
         ("ReleaseAllResources", const.CMD_RELEASE_RESOURCES, ObsState.IDLE,"releaseallresources_cmd_ended_cb", const.ERR_RELEASE_RESOURCES),
         ("EndScan", const.CMD_ENDSCAN, ObsState.SCANNING, "endscan_cmd_ended_cb", const.ERR_ENDSCAN_INVOKING_CMD),
         ("Abort", const.CMD_ABORT, ObsState.SCANNING, "abort_cmd_ended_cb", const.ERR_ABORT_INVOKING_CMD),
@@ -170,7 +186,7 @@ def test_command_with_arg_should_raise_devfailed_exception(mock_sdp_subarray, ev
         ("Restart", const.CMD_RESTART, ObsState.ABORTED,"restart_cmd_ended_cb", const.ERR_RESTART_INVOKING_CMD), 
         ("Restart", const.CMD_RESTART, ObsState.FAULT,"restart_cmd_ended_cb", const.ERR_RESTART_INVOKING_CMD), 
         ("ObsReset", const.CMD_OBSRESET, ObsState.ABORTED, "obsreset_cmd_ended_cb", const.ERR_OBSRESET_INVOKING_CMD), 
-        ("ObsReset", const.CMD_OBSRESET, ObsState.FAULT, "obsreset_cmd_ended_cb", const.ERR_OBSRESET_INVOKING_CMD),   
+        ("ObsReset", const.CMD_OBSRESET, ObsState.FAULT, "obsreset_cmd_ended_cb", const.ERR_OBSRESET_INVOKING_CMD),
     ])
 
 def command_without_arg(request):
@@ -207,10 +223,10 @@ def test_command_without_arg_should_raise_devfailed_exception(mock_sdp_subarray,
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     cmd_name, requested_cmd, obs_state, _, Error_msg = command_without_arg
     sdp_subarray1_proxy_mock.obsState = obs_state
-    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_with_arg
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_without_arg
     with pytest.raises(tango.DevFailed):
         device_proxy.command_inout(cmd_name)
-    assert  Error_msg in device_proxy.activityMessage
+    assert Error_msg in device_proxy.activityMessage
 
 
 def command_callback(command_name):
@@ -228,15 +244,15 @@ def command_callback_with_event_error(command_name):
     return fake_event
 
 
-def command_callback_with_command_exception():
-    return Exception("Exception in Command callback")
+# def command_callback_with_command_exception():
+#     return Exception("Exception in Command callback")
 
 
-def command_callback_with_devfailed_exception():
-    tango.Except.throw_exception("SdpSubarrayLeafNode_Commandfailed in callback", "This is error message for devfailed",
-                                 " ", tango.ErrSeverity.ERR)
+# def command_callback_with_devfailed_exception():
+#     tango.Except.throw_exception("SdpSubarrayLeafNode_Commandfailed in callback", "This is error message for devfailed",
+#                                  " ", tango.ErrSeverity.ERR)
 
-def raise_devfailed_exception_with_arg(cmd_name, input_str):
+def raise_devfailed_exception_without_arg(cmd_name, callback):
     tango.Except.throw_exception("SdpSubarrayLeafNode_Commandfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
 
@@ -275,6 +291,7 @@ def test_assign_resources_should_raise_devfailed_for_invalid_obstate(mock_sdp_su
 def command_should_not_allowed_in_obstate(request):
     cmd_name, obs_state = request.param
     return cmd_name, obs_state
+
 
 def test_command_should_failed_when_device_is_not_in_required_obstate(mock_sdp_subarray, command_should_not_allowed_in_obstate):
     cmd_name, obs_state = command_should_not_allowed_in_obstate
@@ -374,9 +391,9 @@ def test_scan_device_not_ready():
         assert const.ERR_DEVICE_NOT_READY in tango_context.device.activityMessage
 
 
-def test_endsb_device_not_ready():
+def test_end_device_not_ready():
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        tango_context.device.EndSB()
+        tango_context.device.End()
         assert tango_context.device.activityMessage == const.ERR_DEVICE_NOT_READY
 
 
