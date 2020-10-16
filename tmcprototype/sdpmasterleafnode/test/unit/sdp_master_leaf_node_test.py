@@ -106,7 +106,7 @@ def test_disable_should_command_sdp_master_leaf_node_to_disable_devfailed(mock_s
 
 def test_command_should_command_with_callback_method(mock_sdp_master, event_subscription, command_without_args):
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
-    cmd_name, requested_cmd = command_without_args
+    cmd_name, requested_cmd, _ = command_without_args
     
     device_proxy.command_inout(cmd_name)
     dummy_event = command_callback(requested_cmd)
@@ -128,12 +128,10 @@ def test_off_should_command_with_callback_method(mock_sdp_master, event_subscrip
 
 def test_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription, command_without_args):
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
-    cmd_name, requested_cmd = command_without_args
-
+    cmd_name, requested_cmd, _ = command_without_args
     device_proxy.command_inout(cmd_name)
     dummy_event = command_callback_with_event_error(requested_cmd)
     event_subscription[requested_cmd](dummy_event)
-
     assert const.ERR_INVOKING_CMD + requested_cmd in device_proxy.activityMessage
 
 
