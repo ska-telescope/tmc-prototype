@@ -220,8 +220,8 @@ class SdpMasterLeafNode(SKABaseDevice):
             :rtype: (ResultCode, str)
 
             """
+            device=self.target
             try:
-                device=self.target
                 device._sdp_proxy.command_inout_asynch(const.CMD_ON, self.on_cmd_ended_cb)
                 log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
                 self.logger.debug(log_msg)
@@ -284,8 +284,8 @@ class SdpMasterLeafNode(SKABaseDevice):
             :rtype: (ResultCode, str)
 
             """
+            device=self.target
             try:
-                device=self.target
                 device._sdp_proxy.command_inout_asynch(const.CMD_OFF, self.off_cmd_ended_cb)
                 self.logger.debug(const.STR_OFF_CMD_SUCCESS)
                 device._read_activity_message = const.STR_OFF_CMD_SUCCESS
@@ -365,8 +365,8 @@ class SdpMasterLeafNode(SKABaseDevice):
             :rtype: (ResultCode, str)
 
             """
+            device=self.target
             try:
-                device = self.target
                 device._sdp_proxy.command_inout_asynch(const.CMD_Disable, self.disable_cmd_ended_cb)
                 self.logger.debug(const.STR_DISABLE_CMS_SUCCESS)
                 device._read_activity_message = const.STR_DISABLE_CMS_SUCCESS
@@ -473,8 +473,8 @@ class SdpMasterLeafNode(SKABaseDevice):
             :rtype: (ResultCode, str)
 
             """
+            device=self.target
             try:
-                device= self.target
                 device._sdp_proxy.command_inout_asynch(const.CMD_STANDBY, self.standby_cmd_ended_cb)
                 log_msg = const.CMD_STANDBY + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
                 self.logger.debug(log_msg)
