@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name = """tmcprototype"""
-version = "0.2.11"
+version = "0.2.12"
 version_info = version.split(".")
 description = """TMC Prototype"""
 author = "apurva.ska"
@@ -10,11 +10,11 @@ license = """BSD-3-Clause"""
 url = """www.tango-controls.org"""
 copyright = """"""
 
-release=0.2.11
-tag=0.2.11
-tag_description=Implement obsReset functionality.
-release_notes=This release Contains: <br/><ul><li>Implemented obsReset functionality.</li><li>Utilized lmc-base-classes version 0.6.5</li><li>Refactored SubarrayNode i.e. separate module is created for each command class.</li><li>Refactored the code base for DishLeafNode.</li><li>Investigated the high resource consumption during linting.</li></ul><br/>
-gitlab_username=apurvapatkar
-private_token=TzkAi8cLAnPVCAyJx2fR
+release=0.2.12
+tag=0.2.12
+tag_description=Implemented first version of TMC-LOW. 
+release_notes=This release Contains: <br/><ul><li>Implemented MCCS Master Leaf Node.</li><li>Implemented MCCS Subarray Leaf Node.</li><li>Implemneted Central Node for TMC-Low.</li><li>Implemented Subarray Node for TMC-LOW.</li></ul><br/>
+gitlab_username=mesnehal
+private_token=KSjjD6QL9aaTdh_Rxpc9
 
 
