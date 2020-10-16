@@ -23,6 +23,7 @@ before_script:
 
 stages:
   - build
+  - unit-test
   - test
   - linting
   - publish
@@ -346,7 +347,7 @@ build DishMaster wheel for development: # Executed on a commit
 
 unit tests:
   image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
-  stage: test
+  stage: unit-test
   tags:
     - docker-executor
   script:
@@ -354,6 +355,63 @@ unit tests:
   artifacts:
     paths:
       - ./build
+
+test-mid:
+  stage: test
+  tags:
+    - k8srunner
+  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
+  script:
+    - kubectl version
+    - make install-chart
+    - make wait
+    - make smoketest
+    # - make test
+  after_script:
+    - make uninstall-chart
+    - make delete_namespace
+    - make delete_namespace-sdp
+    - mkdir -p build
+    - cp -rf charts/build/* build/
+    - ls -la build
+  environment:
+    name: test
+    kubernetes:
+      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA
+  artifacts:
+    name: "$CI_PROJECT_NAME-$CI_JOB_ID"
+    paths:
+      - build
+    reports:
+      junit: build/report.xml
+
+test-low:
+  stage: test
+  tags:
+    - k8srunner
+  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
+  script:
+    - kubectl version
+    - make install-chart HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
+    - make wait
+    - make smoketest
+    #- make test
+  after_script:
+    - make uninstall-chart HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
+    - make clean
+    - make delete_namespace-sdp
+    - make delete_namespace
+  environment:
+    name: test
+    kubernetes:
+      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA
+  artifacts:
+    name: "$CI_PROJECT_NAME-$CI_JOB_ID"
+    paths:
+      - build
+    reports:
+      junit: build/report.xml
+  when: manual
 
 linting:
   stage: linting
@@ -393,6 +451,20 @@ publish to nexus:
     variables:
       - $CI_COMMIT_MESSAGE =~ /^.+$/ # Confirm tag message exists
       - $CI_COMMIT_TAG =~ /^((([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)$/ # Confirm semantic versioning of tag
+
+# publish_chart:
+#   variables:
+#     CHARTS_TO_PUBLISH: tmc-low-umbrella tmc-mid-umbrella tmc-proto
+#   stage: publish
+#   tags:
+#     - docker-executor
+#   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.2
+#   script:
+#     - curl -s https://gitlab.com/ska-telescope/stupid/raw/master/scripts/publish-charts.sh | bash
+#   when: manual
+#   only:
+#     refs:
+#       - master
 
 pages:
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
@@ -458,3 +530,12 @@ release tmc:
   only:
     refs:
       - master
+
+# Standardised included jobs
+variables:
+  CHARTS_TO_PUBLISH: tmc-low tmc-mid
+include:
+# Helm Chart Publish
+# https://developer.skatelescope.org/en/latest/development/software_package_release_procedure.html#package-and-publish-helm-charts-to-the-ska-helm-chart-repository
+- project: 'ska-telescope/templates-repository'
+  file: 'gitlab-ci/includes/helm_publish.yml'
