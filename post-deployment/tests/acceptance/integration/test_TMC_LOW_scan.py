@@ -3,11 +3,8 @@ from datetime import date,datetime
 import pytest
 import os
 import logging
-from resources.test_support.helpers_low import waiter,watch,resource
+from resources.test_support.helpers_low import waiter,watch,resource, wait_before_test
 from resources.test_support.controls_low import telescope_is_in_standby
-from resources.test_support.state_checking import StateChecker
-from resources.test_support.log_helping import DeviceLogging
-# from resources.test_support.persistance_helping import load_config_from_file,,update_resource_config_file
 from resources.test_support.sync_decorators_low import sync_start_up_telescope,sync_assign_resources,sync_configure,sync_end,sync_release_resources,\
     sync_set_to_standby,time_it,sync_scan
 from resources.test_support.logging_decorators import log_it
@@ -25,12 +22,13 @@ devices_to_log = [
 
 LOGGER = logging.getLogger(__name__)
 
-@pytest.mark.low
+# @pytest.mark.low
 # @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_scan():
     
     try:
         # given an interface to TMC to interact with a subarray node and a central node
+        wait_before_test(timeout=10)
         fixture = {}
         fixture['state'] = 'Unknown'
 
