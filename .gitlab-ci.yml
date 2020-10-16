@@ -418,30 +418,29 @@ test-mid:
 test-low:
   stage: test
   tags:
-    - docker-executor
-  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.2
-  # before_script:
-  #   - make delete_namespace-sdp $KUBE_NAMESPACE=tmclow
-  #   - make delete_namespace $KUBE_NAMESPACE=tmclow
+    - k8srunner
+  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
   script:
     - kubectl version
-    - make install-chart KUBE_NAMESPACE=tmclow HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
-    - make wait KUBE_NAMESPACE=tmclow
-    - make smoketest KUBE_NAMESPACE=tmclow
-    #- make test $KUBE_NAMESPACE=tmclow
+    - make install-chart HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
+    - make wait
+    - make smoketest
+    #- make test
   after_script:
-    - make uninstall-chart KUBE_NAMESPACE=tmclow HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
-    - make clean KUBE_NAMESPACE=tmclow
-    - make delete_namespace-sdp KUBE_NAMESPACE=tmclow
-    - make delete_namespace KUBE_NAMESPACE=tmclow
+    - make uninstall-chart HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
+    - make clean
+    - make delete_namespace-sdp
+    - make delete_namespace
   environment:
     name: test
+    kubernetes:
+      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA
   artifacts:
     name: "$CI_PROJECT_NAME-$CI_JOB_ID"
     paths:
-      - "charts/build"
+      - build
     reports:
-      junit: charts/build/report.xml
+      junit: build/report.xml
   when: manual
 
 linting:
