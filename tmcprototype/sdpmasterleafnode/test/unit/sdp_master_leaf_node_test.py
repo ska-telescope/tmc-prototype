@@ -76,7 +76,6 @@ def test_command_should_raise_exception(mock_sdp_master, command_without_args):
     sdp_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_without_arg
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name)
-    print("disable value :::::",str(df))
     assert error_msg in str(df)
 
 def test_off_should_command_sdp_master_leaf_node_to_stop(mock_sdp_master):
