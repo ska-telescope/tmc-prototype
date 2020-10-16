@@ -363,21 +363,20 @@ test-mid:
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.2
   before_script:
       - kubectl get namespace
-      # - kubectl delete namespace tmcmid
-      # - kubectl delete namespace sdp
-      - kubectl delete namespace tmc-prototype-10749136-test-sdp
+      - kubectl delete namespace tmcmid
+      - kubectl delete namespace sdp
       - kubectl get namespace 
   script:
     - kubectl version
-    - make install-chart KUBE_NAMESPACE=tmcmid HELM_CHART=tmc-mid-umbrella UMBRELLA_CHART_PATH=charts/tmc-mid-umbrella/
-    - make wait KUBE_NAMESPACE=tmcmid
-    - make smoketest KUBE_NAMESPACE=tmcmid
+    # - make install-chart KUBE_NAMESPACE=tmcmid HELM_CHART=tmc-mid-umbrella UMBRELLA_CHART_PATH=charts/tmc-mid-umbrella/
+    # - make wait KUBE_NAMESPACE=tmcmid
+    # - make smoketest KUBE_NAMESPACE=tmcmid
     #- make test
-  after_script:
-    - make uninstall-chart KUBE_NAMESPACE=tmcmid HELM_CHART=tmc-mid-umbrella UMBRELLA_CHART_PATH=charts/tmc-mid-umbrella/
-    - make clean KUBE_NAMESPACE=tmcmid
-    - make delete_namespace KUBE_NAMESPACE=tmcmid
-    - make delete_namespace-sdp
+  # after_script:
+  #   - make uninstall-chart KUBE_NAMESPACE=tmcmid HELM_CHART=tmc-mid-umbrella UMBRELLA_CHART_PATH=charts/tmc-mid-umbrella/
+  #   - make clean KUBE_NAMESPACE=tmcmid
+  #   - make delete_namespace KUBE_NAMESPACE=tmcmid
+  #   - make delete_namespace-sdp
   environment:
     name: test
   artifacts:
