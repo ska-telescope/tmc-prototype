@@ -55,7 +55,7 @@ def raise_devfailed_without_arg(cmd_name, input_arg1):
     params=[
         ("On", const.CMD_ON,const.ERR_DEVFAILED_MSG),
         ("Standby", const.CMD_STANDBY,const.ERR_DEVFAILED_MSG),
-        ("Disable", const.CMD_Disable,const.ERR_DISABLE_CMD_FAIL)
+        ("Disable", const.CMD_Disable,const.ERR_DEVFAILED_MSG)
     ])
 def command_without_args(request):
     cmd_name, requested_cmd , Err_msg= request.param
@@ -76,6 +76,7 @@ def test_command_should_raise_exception(mock_sdp_master, command_without_args):
     sdp_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_without_arg
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name)
+    print("disable value :::::",str(df))
     assert error_msg in str(df)
 
 def test_off_should_command_sdp_master_leaf_node_to_stop(mock_sdp_master):
