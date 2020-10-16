@@ -8,15 +8,15 @@ echo "Unit test cases will be executed shortly..."
 mkdir -p tox_report
 if [ -d "$working_dir" ]; then rm -rf $working_dir; fi
 
-# for path in $(find ./*/test  -type d -name unit); do
-# 	export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
-# 	echo +++ Trying tests for $TMC_ELEMENT;
-# 	cd $TMC_ELEMENT;
-# 	tox -e py37
-#   mv ${TMC_ELEMENT}_coverage ../tox_report/${TMC_ELEMENT}_coverage;
-#   cd ..
-# done
-cd sdpmasterleafnode;
+for path in $(find ./*/test  -type d -name unit); do
+	export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
+	echo +++ Trying tests for $TMC_ELEMENT;
+	cd $TMC_ELEMENT;
+	tox -e py37
+  mv ${TMC_ELEMENT}_coverage ../tox_report/${TMC_ELEMENT}_coverage;
+  cd ..
+done
+
 tox -e py37
 # mv ./tox_report ../build/reports
 

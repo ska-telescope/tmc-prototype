@@ -91,14 +91,13 @@ def test_on_command_should_raise_dev_failed(mock_sdp_master):
     sdp_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_without_arg
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.On()    
-    print("Value of DF in on command::::",str(df))
     assert const.ERR_DEVFAILED_MSG in str(df)
 
 @pytest.fixture(
     scope="function",
     params=[
         ("Off", const.ERR_DEVFAILED_MSG),
-        ("Disable", const.ERR_DEVFAILED_MSG),
+        ("Disable", const.ERR_DISABLE_CMD_FAIL),
         ("Standby", const.ERR_DEVFAILED_MSG),
         ])
 
