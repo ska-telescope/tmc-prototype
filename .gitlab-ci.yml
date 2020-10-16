@@ -365,7 +365,7 @@ test-mid:
       - kubectl get namespace
       - kubectl delete namespace tmcmid
       - kubectl delete namespace sdp
-      - kubectl delete namespace tmcprototype
+      - kubectl delete namespace tmc-prototype-10749136-test-sdp
       - kubectl get namespace 
   script:
     - kubectl version
