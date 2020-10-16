@@ -310,8 +310,7 @@ class CspMasterLeafNode(SKABaseDevice):
                 # Pass argin to csp master .
                 # If the array length is 0, the command applies to the whole CSP Element.
                 # If the array length is > 1 each array element specifies the FQDN of the CSP SubElement to switch ON.
-                argin = []
-                device._csp_proxy.command_inout_asynch(const.CMD_ON, argin, self.on_cmd_ended_cb)
+                device._csp_proxy.command_inout_asynch(const.CMD_ON, [], self.on_cmd_ended_cb)
                 self.logger.debug(const.STR_ON_CMD_ISSUED)
                 return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
 
