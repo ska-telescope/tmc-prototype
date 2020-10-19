@@ -53,6 +53,7 @@ class TestReleaseResourceValidator():
     """Class to test the AssignResourceValidator class methods"""
     _test_subarray_list = ["test/subarray/1"]
 
+    pytest.mark.skip(reason="This test case will be enabled after implementation of JSON string validation for Low")
     def test_validate_correct_json(self):
         """This function tests the validate method when good formatted json is provided"""
 
@@ -60,6 +61,7 @@ class TestReleaseResourceValidator():
         output_config = input_validator.loads(json.dumps(sample_release_resources_request))
         assert output_config == sample_release_resources_request
 
+    pytest.mark.skip(reason="This test case will be enabled after implementation of JSON string validation for Low")
     def test_validate_wrong_subarray_id(self):
         """
         Tests that InvalidJSONError is raised when a wrong subarray id is given

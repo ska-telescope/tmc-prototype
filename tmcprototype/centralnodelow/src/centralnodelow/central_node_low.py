@@ -679,12 +679,13 @@ class CentralNode(SKABaseDevice):
             """
             device = self.target
             try:
+                # TODO: For future use
                 # Validate input JSON string
-                self.logger.info("Validating input string.")
-                input_validator = ReleaseResourceValidator(device.TMLowSubarrayNodes, self.logger)
-                jsonArgument = input_validator.loads(argin)
+                # self.logger.info("Validating input string.")
+                # input_validator = ReleaseResourceValidator(device.TMLowSubarrayNodes, self.logger)
+                # jsonArgument = input_validator.loads(argin)
 
-                #jsonArgument = json.loads(argin)
+                jsonArgument = json.loads(argin)
                 subarray_id = jsonArgument['subarray_id']
                 subarrayProxy = device.subarray_FQDN_dict[subarray_id]
                 if jsonArgument['release_all'] == True:

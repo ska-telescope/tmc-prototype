@@ -50,9 +50,10 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
         device.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA_LOW)
         device._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA_LOW
         try:
-            # Validate input JSON (Added in CDM work)
-            input_validator = ConfigureValidator(self.logger)
-            json_argument = input_validator.loads(argin)
+            # TODO: For future use
+            # # Validate input JSON (Added in CDM work)
+            # input_validator = ConfigureValidator(self.logger)
+            # json_argument = input_validator.loads(argin)
 
             scan_configuration = json.loads(argin)
         except (json.JSONDecodeError, InvalidJSONError) as jerror:

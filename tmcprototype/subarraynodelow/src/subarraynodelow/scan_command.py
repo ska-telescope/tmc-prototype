@@ -46,9 +46,10 @@ class ScanCommand(SKASubarray.ScanCommand):
         device.is_scan_completed = False
         device.is_release_resources = False
         try:
-            # Validate input JSON
-            input_validator = ScanValidator(self.logger)
-            json_argument = input_validator.loads(argin)
+            # TODO: For future use
+            # # Validate input JSON
+            # input_validator = ScanValidator(self.logger)
+            # json_argument = input_validator.loads(argin)
 
             log_msg = const.STR_SCAN_IP_ARG + str(argin)
             self.logger.info(log_msg)

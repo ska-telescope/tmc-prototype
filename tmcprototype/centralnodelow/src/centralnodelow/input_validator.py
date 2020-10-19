@@ -15,8 +15,9 @@ import logging
 # SKA specific imports
 from centralnodelow.exceptions import SubarrayNotPresentError, InvalidJSONError
 from ska.cdm.schemas import CODEC
-from ska.cdm.messages.central_node.assign_resources import AssignResourcesRequest
+#from ska.cdm.messages.central_node.assign_resources import AssignResourcesRequest
 from ska.cdm.messages.central_node.release_resources import ReleaseResourcesRequest
+from ska.cdm.messages.central_node.mccs import MCCSAllocate
 from marshmallow import ValidationError
 
 module_logger = logging.getLogger(__name__)
@@ -74,7 +75,7 @@ class AssignResourceValidator():
         # Check if JSON is correct
         self.logger.info("Checking JSON format.")
         try:
-            assign_request = CODEC.loads(AssignResourcesRequest, input_string)
+            assign_request = CODEC.loads(MCCSAllocate, input_string)
         except(ValidationError, JSONDecodeError) as json_error:
             self.logger.exception("Exception: %s", str(json_error))
             exception_message = "Malformed input string. Please check the JSON format." + \
