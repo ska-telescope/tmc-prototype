@@ -345,73 +345,73 @@ build DishMaster wheel for development: # Executed on a commit
     paths:
       - ./tmcprototype/dishmaster/dist/
 
-unit tests:
-  image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
-  stage: unit-test
-  tags:
-    - docker-executor
-  script:
-    - make unit-test
-  artifacts:
-    paths:
-      - ./build
+# unit tests:
+#   image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
+#   stage: unit-test
+#   tags:
+#     - docker-executor
+#   script:
+#     - make unit-test
+#   artifacts:
+#     paths:
+#       - ./build
 
-test-mid:
-  stage: test
-  tags:
-    - k8srunner
-  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
-  script:
-    - kubectl version
-    - make install-chart
-    - make wait
-    - make smoketest
-    # - make test
-  after_script:
-    - make uninstall-chart
-    - make delete_namespace
-    - make delete_namespace-sdp
-    - mkdir -p build
-    - cp -rf charts/build/* build/
-    - ls -la build
-  environment:
-    name: test
-    kubernetes:
-      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA
-  artifacts:
-    name: "$CI_PROJECT_NAME-$CI_JOB_ID"
-    paths:
-      - build
-    reports:
-      junit: build/report.xml
+# test-mid:
+#   stage: test
+#   tags:
+#     - k8srunner
+#   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
+#   script:
+#     - kubectl version
+#     - make install-chart
+#     - make wait
+#     - make smoketest
+#     # - make test
+#   after_script:
+#     - make uninstall-chart
+#     - make delete_namespace
+#     - make delete_namespace-sdp
+#     - mkdir -p build
+#     - cp -rf charts/build/* build/
+#     - ls -la build
+#   environment:
+#     name: test
+#     kubernetes:
+#       namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA
+#   artifacts:
+#     name: "$CI_PROJECT_NAME-$CI_JOB_ID"
+#     paths:
+#       - build
+#     reports:
+#       junit: build/report.xml
 
-test-low:
-  stage: test
-  tags:
-    - k8srunner
-  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
-  script:
-    - kubectl version
-    - make install-chart HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
-    - make wait
-    - make smoketest
-    #- make test
-  after_script:
-    - make uninstall-chart HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
-    - make clean
-    - make delete_namespace-sdp
-    - make delete_namespace
-  environment:
-    name: test
-    kubernetes:
-      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA
-  artifacts:
-    name: "$CI_PROJECT_NAME-$CI_JOB_ID"
-    paths:
-      - build
-    reports:
-      junit: build/report.xml
-  when: manual
+# test-low:
+#   stage: test
+#   tags:
+#     - k8srunner
+#   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
+#   script:
+#     - kubectl version
+#     - make install-chart HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
+#     - make wait
+#     - make smoketest
+#     #- make test
+#   after_script:
+#     - make uninstall-chart HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
+#     - make clean
+#     - make delete_namespace-sdp
+#     - make delete_namespace
+#   environment:
+#     name: test
+#     kubernetes:
+#       namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA
+#   artifacts:
+#     name: "$CI_PROJECT_NAME-$CI_JOB_ID"
+#     paths:
+#       - build
+#     reports:
+#       junit: build/report.xml
+#   when: manual
 
 linting:
   stage: linting
