@@ -86,7 +86,6 @@ def mock_central_lower_devices():
 @pytest.fixture(scope="function",
                 params=[HealthState.DEGRADED, HealthState.OK, HealthState.UNKNOWN, HealthState.FAILED])
 def central_node_test_health_state(request):
-    # arrange:
     device_under_test = CentralNode
     mccs_master_ln_fqdn = 'ska_low/tm_leaf_node/mccs_master'
     mccs_master_ln_health_attribute = 'mccsHealthState'
@@ -139,40 +138,34 @@ def command_with_devfailed_error(request):
 
 # Test cases for Attributes
 def test_telescope_health_state():
-    # act & assert:
     with fake_tango_system(CentralNode) as tango_context:
         assert tango_context.device.telescopeHealthState == HealthState.OK
 
 
 def test_subarray1_health_state():
-    # act & assert:
     with fake_tango_system(CentralNode) as tango_context:
         assert tango_context.device.subarray1HealthState == HealthState.OK
 
 
 def test_activity_message():
-    # act & assert:
     with fake_tango_system(CentralNode) as tango_context:
         tango_context.device.activityMessage = ''
         assert tango_context.device.activityMessage == ''
 
 
 def test_logging_level():
-    # act & assert:
     with fake_tango_system(CentralNode) as tango_context:
         tango_context.device.loggingLevel = LoggingLevel.INFO
         assert tango_context.device.loggingLevel == LoggingLevel.INFO
 
 
 def test_logging_targets():
-    # act & assert:
     with fake_tango_system(CentralNode) as tango_context:
         tango_context.device.loggingTargets = ['console::cout']
         assert 'console::cout' in tango_context.device.loggingTargets
 
 
 def test_health_state():
-    # act & assert:
     with fake_tango_system(CentralNode) as tango_context:
         assert tango_context.device.healthState == HealthState.OK
 
@@ -192,127 +185,99 @@ def test_build_state():
 
 # Test cases for command
 def test_assign_resources(mock_central_lower_devices):
-    # arrange
     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     # mocking subarray device state as ON as per new state model
     subarray1_proxy_mock.DevState = DevState.ON
     mccs_master_ln_proxy_mock.DevState = DevState.ON
-    
-    # act
     device_proxy.AssignResources(assign_input_str)
-    # assert
+
     subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, assign_input_str_to_subarray)
     mccs_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, assign_input_str)
 
 def test_assign_resources_should_raise_devfailed_exception_when_mccs_master_ln_throws_devfailed_exception(
         mock_central_lower_devices):
-    # arrange
     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     mccs_master_ln_proxy_mock.DevState = DevState.OFF
     subarray1_proxy_mock.DevState = DevState.ON
     mccs_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
-    # act
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.AssignResources(assign_input_str)
-    # assert
     assert "Error occurred while assigning resources to the Subarray" in str(df)
     assert device_proxy.state() == DevState.FAULT
 
 def test_assign_resources_should_raise_devfailed_exception_when_subarray_node_throws_devfailed_exception(
         mock_central_lower_devices):
-    # arrange
     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     subarray1_proxy_mock.DevState = DevState.OFF
     mccs_master_ln_proxy_mock.DevState = DevState.ON
     subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
-    # act
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.AssignResources(assign_input_str)
-    # assert
     assert "Error occurred while assigning resources to the Subarray" in str(df)
     assert device_proxy.state() == DevState.FAULT
 
 def test_command_invalid_key(mock_central_lower_devices, command_raise_error):
-    # arrange
     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     cmd_name,error_msg,input_str= command_raise_error
     subarray1_proxy_mock.DevState = DevState.ON
     mccs_master_ln_proxy_mock.DevState = DevState.ON
-    # act
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name,input_str)
-    # assert:
     assert "JSON key not found" in str(df.value)
 
 def test_command_invalid_json_value(mock_central_lower_devices,command_raise_error):
-    # arrange
     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     cmd_name,error_msg,input_str= command_raise_error
     subarray1_proxy_mock.DevState = DevState.ON
     mccs_master_ln_proxy_mock.DevState = DevState.ON
 
-    # act
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name,assign_release_invalid_str)
-
-    # assert
     assert error_msg in str(df.value)
 
 def test_release_resources(mock_central_lower_devices):
-    # arrange
     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     # mocking subarray device state as ON as per new state model
     subarray1_proxy_mock.DevState = DevState.ON
     mccs_master_ln_proxy_mock.DevState = DevState.ON
-    
-    # act:
+
     device_proxy.ReleaseResources(release_input_str)
-    #assert
     subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_RESOURCES)
     mccs_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RELEASE_MCCS_RESOURCES, release_input_str)
 
 def test_release_resources_should_raise_devfailed_exception_when_subarray_node_throws_devfailed_exception(
         mock_central_lower_devices):
-    # arrange
     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     subarray1_proxy_mock.DevState = DevState.OFF
     mccs_master_ln_proxy_mock.DevState = DevState.ON
 
     subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
 
-    # act:
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.ReleaseResources(release_input_str)
-    # assert:
     assert "Error occurred while releasing resources from the Subarray" in str(df.value)
     assert device_proxy.state() == DevState.FAULT
 
 def test_release_resources_should_raise_devfailed_exception_when_mccs_master_ln_throws_devfailed_exception(
         mock_central_lower_devices):
-    # arrange
     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     mccs_master_ln_proxy_mock.DevState = DevState.OFF
     subarray1_proxy_mock.DevState = DevState.ON
     
     mccs_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
    
-    # act:
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.ReleaseResources(release_input_str)
-    # assert:
     assert "Error occurred while releasing resources from the Subarray" in str(df.value)
     assert device_proxy.state() == DevState.FAULT
 
 
 def test_standby(mock_central_lower_devices):
-    # arrange:
     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
-    # act:
     device_proxy.StartUpTelescope()
     assert device_proxy.state() == DevState.ON
     device_proxy.StandByTelescope()
 
-    # assert:
     mccs_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_OFF)
     subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_OFF)
     assert device_proxy.state() == DevState.OFF
@@ -320,9 +285,7 @@ def test_standby(mock_central_lower_devices):
 
 def test_startup(mock_central_lower_devices):
     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
-    # act:
     device_proxy.StartUpTelescope()
-    # assert:
     mccs_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ON)
     subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_ON)
     assert device_proxy.state() == DevState.ON
@@ -332,11 +295,8 @@ def test_command_should_raise_devfailed_exception(mock_central_lower_devices,com
     cmd_name= command_with_devfailed_error
     mccs_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
-
     with pytest.raises(tango.DevFailed):
         device_proxy.command_inout(cmd_name)
-
-    # assert:
     assert device_proxy.state() == DevState.FAULT
 
 # Test cases for Telescope Health State
@@ -350,11 +310,8 @@ def test_telescope_health_state_matches_mccs_master_leaf_node_health_state_after
     mccs_master_ln_health_attribute = central_node_test_health_state['mccs_master_ln_health_attribute']
 
     with fake_tango_system(CentralNode, initial_dut_properties, proxies_to_mock) as tango_context:
-        # act:
         dummy_event = create_dummy_event(mccs_master_ln_fqdn, mccs_master_ln_health_state)
         event_subscription_map[mccs_master_ln_health_attribute](dummy_event)
-
-        # assert:
         assert tango_context.device.telescopeHealthState == mccs_master_ln_health_state
 
 def test_telescope_health_state_is_ok_when_subarray_node_is_ok_after_start(mock_central_lower_devices):
@@ -362,7 +319,6 @@ def test_telescope_health_state_is_ok_when_subarray_node_is_ok_after_start(mock_
     subarray1_health_attribute = 'healthState'
     dummy_event = create_dummy_event(subarray1_fqdn, HealthState.OK)
     event_subscription_map[subarray1_health_attribute](dummy_event)
-    # assert:
     assert device_proxy.telescopeHealthState == HealthState.OK
 
 def create_dummy_event(device_fqdn, health_state):

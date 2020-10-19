@@ -496,11 +496,19 @@ class DishLeafNode(SKABaseDevice):
             :rtype: (ResultCode, str)
 
             """
-            device = self.target
-            device._dish_proxy.command_inout_asynch(const.CMD_SET_STOW_MODE, self.cmd_ended_cb)
-            device._read_activity_message = const.STR_SET_STOW_MODE_SUCCESS
-            self.logger.info(device._read_activity_message)
-            return (ResultCode.OK, device._read_activity_message)
+            try:
+                device = self.target
+                device._dish_proxy.command_inout_asynch(const.CMD_SET_STOW_MODE, self.cmd_ended_cb)
+                device._read_activity_message = const.STR_SET_STOW_MODE_SUCCESS
+                self.logger.info(device._read_activity_message)
+                return (ResultCode.OK, device._read_activity_message)
+            except DevFailed as dev_failed:
+                log_msg = f"{const.ERR_EXE_SET_STOW_MODE_CMD}{dev_failed}"
+                device._read_activity_message = log_msg
+                self.logger.exception(log_msg)
+                tango.Except.re_throw_exception(dev_failed,const.STR_SETSTOWMODE_EXEC, log_msg, "DishLeafNode.SetStowModeCommand",
+                                             tango.ErrSeverity.ERR)
+
 
     def is_SetStowMode_allowed(self):
         """
@@ -563,11 +571,18 @@ class DishLeafNode(SKABaseDevice):
             :rtype: (ResultCode, str)
 
             """
-            device = self.target
-            device._dish_proxy.command_inout_asynch(const.CMD_SET_STANDBYLP_MODE, self.cmd_ended_cb)
-            device._read_activity_message = const.STR_SETSTANDBYLP_SUCCESS
-            self.logger.info(device._read_activity_message)
-            return (ResultCode.OK, device._read_activity_message)
+            try:
+                device = self.target
+                device._dish_proxy.command_inout_asynch(const.CMD_SET_STANDBYLP_MODE, self.cmd_ended_cb)
+                device._read_activity_message = const.STR_SETSTANDBYLP_SUCCESS
+                self.logger.info(device._read_activity_message)
+                return (ResultCode.OK, device._read_activity_message)
+            except DevFailed as dev_failed:
+                log_msg = f"{const.ERR_EXE_SET_STANDBYLP_MODE_CMD}{dev_failed}"
+                device._read_activity_message = log_msg
+                self.logger.exception(log_msg)
+                tango.Except.re_throw_exception(dev_failed, const.STR_SETSTANDBYLPMODE_EXEC, log_msg, "DishLeafNode.SetStandByLPModeCommand",
+                                             tango.ErrSeverity.ERR)
 
     def is_SetStandByLPMode_allowed(self):
         """
@@ -626,10 +641,18 @@ class DishLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            device._dish_proxy.command_inout_asynch(const.CMD_SET_OPERATE_MODE, self.cmd_ended_cb)
-            device._read_activity_message = const.STR_SETOPERATE_SUCCESS
-            self.logger.info(device._read_activity_message)
-            return (ResultCode.OK, device._read_activity_message)
+            try:
+                device._dish_proxy.command_inout_asynch(const.CMD_SET_OPERATE_MODE, self.cmd_ended_cb)
+                device._read_activity_message = const.STR_SETOPERATE_SUCCESS
+                self.logger.info(device._read_activity_message)
+                return (ResultCode.OK, device._read_activity_message)
+            except DevFailed as dev_failed:
+                log_msg = f"{const.ERR_EXE_SET_OPERATE_MODE_CMD}{dev_failed}"
+                device._read_activity_message = log_msg
+                self.logger.exception(log_msg)
+                tango.Except.re_throw_exception(dev_failed, const.STR_SETOPERATEMODE_EXEC, log_msg, "DishLeafNode.SetOperateModeCommand",
+                                             tango.ErrSeverity.ERR)
+
 
     def is_SetOperateMode_allowed(self):
         """
@@ -1158,12 +1181,19 @@ class DishLeafNode(SKABaseDevice):
             :rtype: (ResultCode, str)
 
             """
-            device = self.target
-            device._dish_proxy.command_inout_asynch(const.CMD_SET_STANDBYFP_MODE, self.cmd_ended_cb)
-            device._read_activity_message = const.STR_STANDBYFP_SUCCESS
-            self.logger.info(device._read_activity_message)
-            return (ResultCode.OK, device._read_activity_message)
-
+            try:
+                device = self.target
+                device._dish_proxy.command_inout_asynch(const.CMD_SET_STANDBYFP_MODE, self.cmd_ended_cb)
+                device._read_activity_message = const.STR_STANDBYFP_SUCCESS
+                self.logger.info(device._read_activity_message)
+                return (ResultCode.OK, device._read_activity_message)
+            except DevFailed as dev_failed:
+                log_msg = f"{const.ERR_EXE_SET_STANDBYFP_MODE_CMD}{dev_failed}"
+                device._read_activity_message = log_msg
+                self.logger.exception(log_msg)
+                tango.Except.re_throw_exception(dev_failed, const.STR_SETSTANDBYLPMODE_EXEC, log_msg, "DishLeafNode.SetStandByFPModeCommand",
+                                             tango.ErrSeverity.ERR)
+            
     def is_SetStandbyFPMode_allowed(self):
         """
         Checks whether this command is allowed to be run in the current device state.

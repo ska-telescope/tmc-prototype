@@ -327,7 +327,6 @@ def test_configure_should_raise_exception_when_called_with_invalid_json():
     with fake_tango_system(DishLeafNode) as tango_context:
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(config_track_invalid_str)
-
         assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
 
 
@@ -337,7 +336,6 @@ def test_configure_should_raise_exception_when_called_with_invalid_arguments():
         input_string.append(configure_invalid_arg)
         with pytest.raises(tango.DevFailed):
             tango_context.device.Configure(input_string[0])
-
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
 
@@ -360,7 +358,6 @@ def test_command_should_raise_exception_when_called_with_invalid_arguments(inval
     with fake_tango_system(DishLeafNode) as tango_context:
         with pytest.raises(tango.DevFailed):
             tango_context.device.command_inout(cmd_name, input_arg)
-
         assert error_msg in tango_context.device.activityMessage
 
 
@@ -368,7 +365,6 @@ def test_track_should_raise_exception_when_called_with_invalid_arguments():
     with fake_tango_system(DishLeafNode) as tango_context:
         with pytest.raises(tango.DevFailed):
             tango_context.device.Track(track_invalid_arg)
-
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
 
@@ -434,13 +430,27 @@ def raise_devfailed_exception(cmd_name, callback):
                                  " ", tango.ErrSeverity.ERR)
 
 
-def test_stop_track_should_raise_dev_failed(mock_dish_master):
-    tango_context, dish1_proxy_mock, _, _ = mock_dish_master
-    dish1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
-    with pytest.raises(tango.DevFailed):
-        tango_context.device.StopTrack()
+@pytest.fixture(
+    scope="function",
+    params=[
+        ("SetStowMode", const.ERR_DEVFAILED_MSG),
+        ("SetStandbyLPMode", const.ERR_DEVFAILED_MSG),
+        ("SetOperateMode", const.ERR_DEVFAILED_MSG),
+        ("SetStandbyFPMode", const.ERR_DEVFAILED_MSG),
+        ("StopTrack", const.ERR_EXE_STOP_TRACK_CMD),
+        ])
+def command_name_to_raise_devfailed(request):
+    cmd_name, error_msg = request.param
+    return cmd_name, error_msg
 
-    assert const.ERR_EXE_STOP_TRACK_CMD in tango_context.device.activityMessage
+
+def test_command_should_raise_exception(mock_dish_master, command_name_to_raise_devfailed):
+    tango_context, dish1_proxy_mock, _, _ = mock_dish_master
+    cmd_name, error_msg = command_name_to_raise_devfailed
+    dish1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+    with pytest.raises(tango.DevFailed) as df:
+        tango_context.device.command_inout(cmd_name)
+    assert error_msg in str(df)
 
 
 @pytest.fixture(
