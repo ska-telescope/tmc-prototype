@@ -15,19 +15,19 @@ PROJECT = tmcprototype
 
 # KUBE_NAMESPACE defines the Kubernetes Namespace that will be deployed to
 # using Helm.  If this does not already exist it will be created
-KUBE_NAMESPACE ?= tmcprototype
-KUBE_NAMESPACE_SDP ?= $(KUBE_NAMESPACE)-sdp#namespace to be used
-DASHBOARD ?= dashboards/webjive-dash.dump
+KUBE_NAMESPACE ?= tmcmid
+SDP_KUBE_NAMESPACE ?= sdp#namespace to be used
+DASHBOARD ?= webjive-dash.dump
 
 # HELM_RELEASE is the release that all Kubernetes resources will be labelled
 # with
 HELM_RELEASE ?= test
 
 # HELM_CHART the chart name
-HELM_CHART ?= tmc-low-umbrella
+HELM_CHART ?= tmc-mid-umbrella
 
 # UMBRELLA_CHART_PATH Path of the umbrella chart to work with
-UMBRELLA_CHART_PATH ?= charts/tmc-low-umbrella/
+UMBRELLA_CHART_PATH ?= charts/tmc-mid-umbrella/
 
 # Fixed variables
 # Timeout for gitlab-runner when run locally

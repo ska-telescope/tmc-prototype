@@ -24,7 +24,7 @@ devices_to_log = [
 
 LOGGER = logging.getLogger(__name__)
 
-# @pytest.mark.low
+@pytest.mark.low
 # @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_configure_scan():
     
@@ -32,18 +32,18 @@ def test_configure_scan():
         # given an interface to TMC to interact with a subarray node and a central node
         fixture = {}
         fixture['state'] = 'Unknown'
-        wait_before_test(timeout=10)
+        wait_before_test(timeout=15)
         # given a started up telescope
         assert(telescope_is_in_standby())
         LOGGER.info('Staring up the Telescope')
         tmc.start_up()
         fixture['state'] = 'Telescope On'
-        
+        wait_before_test(timeout=15)
         # and a subarray composed of two resources configured as perTMC_integration/assign_resources.json
         LOGGER.info('Composing the Subarray')
         tmc.compose_sub()
         fixture['state'] = 'Subarray Assigned'
-
+        wait_before_test(timeout=10)
         #then when I configure a subarray to perform a scan as per 'TMC_integration/mccs_configure.json'
         # @log_it('TMC_int_configure',devices_to_log)
         @sync_configure
@@ -58,18 +58,18 @@ def test_configure_scan():
             LOGGER.info('Invoked Configure on Subarray')
         configure_sub()
         fixture['state'] = 'Subarray Configured for SCAN'
-
+        wait_before_test(timeout=10)
         #tear down
         LOGGER.info('TMC-configure tests complete: tearing down...')
         tmc.end()
         LOGGER.info('Invoked End on Subarray')
-
+        wait_before_test(timeout=10)
         tmc.release_resources()
         LOGGER.info('Invoked ReleaseResources on Subarray')
-
+        wait_before_test(timeout=10)
         tmc.set_to_standby()
         LOGGER.info('Invoked StandBy on Subarray')
-
+        wait_before_test(timeout=10)
 
     except:        
         LOGGER.info('Tearing down failed test, state = {}'.format(fixture['state']))

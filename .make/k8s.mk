@@ -4,7 +4,7 @@ MARK ?= all
 IMAGE_TO_TEST ?= $(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/$(PROJECT):latest## docker image that will be run for testing purpose
 TANGO_HOST=$(shell helm get values ${HELM_RELEASE} -a -n ${KUBE_NAMESPACE} | grep tango_host | head -1 | cut -d':' -f2 | cut -d' ' -f2):10000
 
-CHARTS ?= tmc-low-umbrella tmc-low ## list of charts to be published on gitlab -- umbrella charts for testing purpose
+CHARTS ?= tmc-mid-umbrella tmc-low-umbrella tmc-proto ## list of charts to be published on gitlab -- umbrella charts for testing purpose
 
 CI_PROJECT_PATH_SLUG ?= tmcprototype
 CI_ENVIRONMENT_SLUG ?= tmcprototype	
@@ -24,7 +24,6 @@ k8s: ## Which kubernetes are we connected to
 clean: ## clean out references to chart tgz's
 	@rm -f ./charts/*/charts/*.tgz ./charts/*/Chart.lock ./charts/*/requirements.lock ./repository/*
 
-
 watch:
 	watch kubectl get all,pv,pvc,ingress -n $(KUBE_NAMESPACE)
 
@@ -37,11 +36,11 @@ namespace: ## create the kubernetes namespace
 		fi
 
 namespace_sdp: ## create the kubernetes namespace for SDP dynamic deployments
-	@kubectl describe namespace $(KUBE_NAMESPACE_SDP) > /dev/null 2>&1 ; \
+	@kubectl describe namespace $(SDP_KUBE_NAMESPACE) > /dev/null 2>&1 ; \
  	K_DESC=$$? ; \
 	if [ $$K_DESC -eq 0 ] ; \
-	then kubectl describe namespace $(KUBE_NAMESPACE_SDP) ; \
-	else kubectl create namespace $(KUBE_NAMESPACE_SDP); \
+	then kubectl describe namespace $(SDP_KUBE_NAMESPACE) ; \
+	else kubectl create namespace $(SDP_KUBE_NAMESPACE); \
 	fi
 
 delete_namespace: ## delete the kubernetes namespace
@@ -50,6 +49,14 @@ delete_namespace: ## delete the kubernetes namespace
 	exit 1; \
 	else \
 	kubectl describe namespace $(KUBE_NAMESPACE) && kubectl delete namespace $(KUBE_NAMESPACE); \
+	fi
+
+delete_namespace-sdp: ## delete the kubernetes namespace
+	@if [ "default" == "$(SDP_KUBE_NAMESPACE)" ] || [ "kube-system" == "$(SDP_KUBE_NAMESPACE)" ]; then \
+	echo "You cannot delete Namespace: $(SDP_KUBE_NAMESPACE)"; \
+	exit 1; \
+	else \
+	kubectl describe namespace $(SDP_KUBE_NAMESPACE) && kubectl delete namespace $(SDP_KUBE_NAMESPACE); \
 	fi
 
 # To package a chart directory into a chart archive
@@ -79,7 +86,7 @@ install-chart: namespace namespace_sdp ## install the helm chart with name HELM_
 	helm install $(HELM_RELEASE) \
 	--set minikube=$(MINIKUBE) \
 	--values values.yaml \
-	--set sdp-prototype.helm_deploy.namespace=$(KUBE_NAMESPACE_SDP) \
+	--set sdp-prototype.helm_deploy.namespace=$(SDP_KUBE_NAMESPACE) \
 	 $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE); \
 	 rm generated_values.yaml; \
 	 rm values.yaml
@@ -100,7 +107,7 @@ wait:## wait for pods to be ready
 	@date
 	@kubectl -n $(KUBE_NAMESPACE) get pods
 	@jobs=$$(kubectl get job --output=jsonpath={.items..metadata.name} -n $(KUBE_NAMESPACE)); kubectl wait job --for=condition=complete --timeout=120s $$jobs -n $(KUBE_NAMESPACE)
-	@kubectl -n $(KUBE_NAMESPACE) wait --for=condition=ready -l app=tmcprototype --timeout=120s pods || exit 1
+	@kubectl -n $(KUBE_NAMESPACE) wait --for=condition=ready -l app=tmc-prototype --timeout=120s pods || exit 1
 	@date
 
 # Error in --set
@@ -149,9 +156,9 @@ logs: ## show Helm chart POD logs
 	echo "---------------------------------------------------"; \
 	echo ""; echo ""; echo ""; \
 	done
-
 log: 	# get the logs of pods @param: $POD_NAME
 	kubectl logs -n $(KUBE_NAMESPACE) $(POD_NAME)
+
 
 # Utility target to install Helm dependencies
 helm_dependencies:
@@ -309,7 +316,6 @@ help:  ## show this help.
 # 		fi; \
 # 		n=`expr $$n - 1`; \
 # 	done
-
 traefik: ## install the helm chart for traefik (in the kube-system namespace). @param: EXTERNAL_IP (i.e. private ip of the master node).
 	@TMP=`mktemp -d`; \
 	$(helm_add_stable_repo) && \

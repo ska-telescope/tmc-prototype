@@ -22,13 +22,13 @@ devices_to_log = [
 
 LOGGER = logging.getLogger(__name__)
 
-# @pytest.mark.low
+@pytest.mark.low
 # @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_scan():
     
     try:
         # given an interface to TMC to interact with a subarray node and a central node
-        wait_before_test(timeout=10)
+        wait_before_test(timeout=15)
         fixture = {}
         fixture['state'] = 'Unknown'
 
@@ -37,19 +37,19 @@ def test_scan():
         LOGGER.info('Starting up the Telescope')
         tmc.start_up()
         fixture['state'] = 'Telescope On'
-        
+        wait_before_test(timeout=15)
         # and a subarray composed of two resources configured as perTMC_integration/mccs_assign_resources.json
         LOGGER.info('Composing the Subarray')
         tmc.compose_sub()
         fixture['state'] = 'Subarray Assigned'
-
+        wait_before_test(timeout=10)
         #and a subarray configured to perform a scan as per 'TMC_integration/configure1.json'
         LOGGER.info('Configuring the Subarray')
         fixture['state'] = 'Subarray CONFIGURING'
         configure_file = 'resources/test_data/TMC_integration/mccs_configure.json'
         tmc.configure_sub(configure_file)
         fixture['state'] = 'Subarray Configured for SCAN'
-      
+        wait_before_test(timeout=10)
         #When I run a scan of 4 seconds based on previos configuration
         resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('READY')
         LOGGER.info('Starting a scan of 4 seconds')
@@ -62,16 +62,19 @@ def test_scan():
         scan()
         LOGGER.info('Scan complete')
         fixture['state'] = 'Subarray Configured for SCAN'
-        
+        wait_before_test(timeout=10)
         #tear down
         LOGGER.info('TMC-Scan tests complete: tearing down...')
         tmc.end()
         resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('IDLE')
         LOGGER.info('Invoked End on Subarray')
+        wait_before_test(timeout=10)
         tmc.release_resources()
         LOGGER.info('Invoked ReleaseResources on Subarray')
+        wait_before_test(timeout=10)
         tmc.set_to_standby()
         LOGGER.info('Invoked StandBy on Subarray')
+        wait_before_test(timeout=10)
    
     except:        
         LOGGER.info('Tearing down failed test, state = {}'.format(fixture['state']))

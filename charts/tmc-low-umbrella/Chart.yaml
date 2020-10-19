@@ -1,6 +1,6 @@
 apiVersion: v2
 name: tmc-low-umbrella
-description: An umbrella Helm chart for TMC-Low deployment.
+description: An umbrella Helm chart for TMC-Low prototype deployment.
 type: application
 version: 0.0.2
 appVersion: 1.16.0
@@ -19,9 +19,6 @@ dependencies:
 - name: webjive
   version: 0.1.1
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
-- name: logging
-  version: 0.1.0
-  repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: tmc-low
   version: 0.0.2
   repository: file://../tmc-low
@@ -30,7 +27,7 @@ dependencies:
 #   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: tango-util
   version: 0.0.1
-  repository: file://../../../ska-low-mccs/charts/tango-util
+  repository: file://../../../../ska-low-mccs/charts/tango-util
 - name: mccs
   version: 0.0.2
-  repository: file://../../../ska-low-mccs/charts/mccs
+  repository: file://../../../../ska-low-mccs/charts/mccs
