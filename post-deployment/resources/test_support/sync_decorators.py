@@ -145,6 +145,7 @@ def sync_assign_resources(nr_of_receptors=4,timeout=60):
         return wrapper
     return decorator_sync_assign_resources
 
+
 # defined as a context manager
 @contextmanager
 def sync_assigned_resources(nr_of_receptors=4):
@@ -154,7 +155,7 @@ def sync_assigned_resources(nr_of_receptors=4):
     yield
     the_waiter.wait(timeout=60)
     
-    
+
 ##this is only in the case of using TMC device proxies, OET command is blocking for the entire duration
 def sync_configure(func):
     @functools.wraps(func)
