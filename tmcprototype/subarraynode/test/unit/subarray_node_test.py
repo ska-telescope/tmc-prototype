@@ -5,7 +5,7 @@ import sys
 import json
 import types
 import time
-from typing import Any, Callable, Dict, List,  NamedTuple, Tuple
+from typing import Any, Callable, Dict, List, NamedTuple, Tuple
 import pytest
 import mock
 from mock import Mock, MagicMock
@@ -637,11 +637,9 @@ def mock_transaction_id():
 def test_transaction_id_injected_in_config_command(idle_subarray_context:SubarrayContext,mock_transaction_id):
     c = idle_subarray_context
     c.sdp_subarray1.generate_event("receiveAddresses",receive_addresses_map)
-    #with patch.object(Foo, 'f', new_callable=PropertyMock) as mock:
     c.tango_context.device.Configure(configure_str)
     verify_called_correctly(c.sdp_subarray1_ln.proxy_mock,const.CMD_CONFIGURE,mock_transaction_id)
     verify_called_correctly(c.csp_subarray1_ln.proxy_mock,const.CMD_CONFIGURE,mock_transaction_id)
-   #verify_called_correctly(c.dish_ln.proxy_mock,const.CMD_CONFIGURE,mock_transaction_id)
 
 def test_transaction_id_injected_in_assign_command(empty_subarray_context:SubarrayContext,mock_transaction_id):
     c = empty_subarray_context

@@ -16,7 +16,7 @@ def identify_with_id(name:str,arg_name:str):
                     argin = args[0]
                 elif kwargs:
                     argin = kwargs[arg_name]
-                else: raise Exception("no arguments provided for wrapping with transaction ids")
+                else: raise ValueError("no arguments provided for wrapping with transaction ids")
                 try:
                     parameters = json.loads(argin)
                 except Exception:

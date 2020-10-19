@@ -3,7 +3,6 @@ ConfigureCommand class for SubarrayNode.
 """
 
 import json
-#from typing import Dict
 # Tango imports
 import tango
 from tango import DevFailed
