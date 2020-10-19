@@ -135,7 +135,7 @@ config-git:
 	git config --global user.email $(EMAILID)
 	git config --global user.name $(USERNAME)
 
-release-tmc-prototype: config-git push-versioned-image create-publish-tag release-tmc-if-no-error
+release-tmc-prototype: config-git docker-build push-versioned-image create-publish-tag release-tmc-if-no-error
 
 release-tmc: .release
 	@. $(RELEASE_SUPPORT) ; releaseTMC

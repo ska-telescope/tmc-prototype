@@ -100,7 +100,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_msg = const.ERR_INIT_PROP_ATTR + str(dev_failed)
-                device.throw_exception(const.ERR_INVOKING_CMD,log_msg,
+                tango.Except.re_throw_exception(dev_failed, const.ERR_INVOKING_CMD, log_msg,
                                        "SdpMasterLeafNode.InitCommand()", const.ERR_INIT_PROP_ATTR)
 
             try:
@@ -111,9 +111,9 @@ class SdpMasterLeafNode(SKABaseDevice):
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_msg = const.ERR_IN_CREATE_PROXY_SDP_MASTER + str(dev_failed)
-                device.throw_exception(const.ERR_INVOKING_CMD, log_msg,
-                                "SdpMasterLeafNode.InitCommand()", const.ERR_IN_CREATE_PROXY_SDP_MASTER)
-
+                tango.Except.re_throw_exception(dev_failed, const.ERR_INVOKING_CMD, log_msg,
+                                             "SdpMasterLeafNode.InitCommand()",
+                                             tango.ErrSeverity.ERR)
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             device._read_activity_message = const.STR_SETTING_CB_MODEL + str(
                 ApiUtil.instance().get_asynch_cb_sub_model())
@@ -221,10 +221,19 @@ class SdpMasterLeafNode(SKABaseDevice):
 
             """
             device=self.target
-            device._sdp_proxy.command_inout_asynch(const.CMD_ON, self.on_cmd_ended_cb)
-            log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
-            self.logger.debug(log_msg)
-            return (ResultCode.OK, log_msg)
+            try:
+                device._sdp_proxy.command_inout_asynch(const.CMD_ON, self.on_cmd_ended_cb)
+                log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+                self.logger.debug(log_msg)
+                return (ResultCode.OK, log_msg)
+            
+            except DevFailed as dev_failed:
+                self.logger.exception(dev_failed)
+                log_msg = const.ERR_ON_CMD_FAIL + str(dev_failed)
+                tango.Except.re_throw_exception(dev_failed, const.ERR_INVOKING_CMD, log_msg,
+                                             "SdpMasterLeafNode.OnCommand()",
+                                             tango.ErrSeverity.ERR)
+
 
     class OffCommand(SKABaseDevice.OffCommand):
         """
@@ -276,10 +285,19 @@ class SdpMasterLeafNode(SKABaseDevice):
 
             """
             device=self.target
-            device._sdp_proxy.command_inout_asynch(const.CMD_OFF, self.off_cmd_ended_cb)
-            self.logger.debug(const.STR_OFF_CMD_SUCCESS)
-            device._read_activity_message = const.STR_OFF_CMD_SUCCESS
-            return (ResultCode.OK, const.STR_OFF_CMD_SUCCESS)
+            try:
+                device._sdp_proxy.command_inout_asynch(const.CMD_OFF, self.off_cmd_ended_cb)
+                self.logger.debug(const.STR_OFF_CMD_SUCCESS)
+                device._read_activity_message = const.STR_OFF_CMD_SUCCESS
+                return (ResultCode.OK, const.STR_OFF_CMD_SUCCESS)
+            
+            except DevFailed as dev_failed:
+                self.logger.exception(dev_failed)
+                log_msg = const.ERR_OFF_CMD_FAIL + str(dev_failed)
+                tango.Except.re_throw_exception(dev_failed, const.ERR_INVOKING_CMD, log_msg,
+                                             "SdpMasterLeafNode.OffCommand()",
+                                             tango.ErrSeverity.ERR)
+
 
     class DisableCommand(ResponseCommand):
         """
@@ -347,11 +365,20 @@ class SdpMasterLeafNode(SKABaseDevice):
             :rtype: (ResultCode, str)
 
             """
-            device = self.target
-            device._sdp_proxy.command_inout_asynch(const.CMD_Disable, self.disable_cmd_ended_cb)
-            self.logger.debug(const.STR_DISABLE_CMS_SUCCESS)
-            device._read_activity_message = const.STR_DISABLE_CMS_SUCCESS
-            return (ResultCode.OK, const.STR_DISABLE_CMS_SUCCESS)
+            device=self.target
+            try:
+                device._sdp_proxy.command_inout_asynch(const.CMD_Disable, self.disable_cmd_ended_cb)
+                self.logger.debug(const.STR_DISABLE_CMS_SUCCESS)
+                device._read_activity_message = const.STR_DISABLE_CMS_SUCCESS
+                return (ResultCode.OK, const.STR_DISABLE_CMS_SUCCESS)
+
+            except DevFailed as dev_failed:
+                self.logger.exception(dev_failed)
+                log_msg = const.ERR_DISABLE_CMD_FAIL + str(dev_failed)
+                tango.Except.re_throw_exception(dev_failed, const.ERR_INVOKING_CMD, log_msg,
+                                             "SdpMasterLeafNode.DisableCommand()",
+                                             tango.ErrSeverity.ERR)
+
 
     def is_Disable_allowed(self):
         """
@@ -446,12 +473,19 @@ class SdpMasterLeafNode(SKABaseDevice):
             :rtype: (ResultCode, str)
 
             """
-            device= self.target
-            device._sdp_proxy.command_inout_asynch(const.CMD_STANDBY, self.standby_cmd_ended_cb)
-            log_msg = const.CMD_STANDBY + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
-            self.logger.debug(log_msg)
-            return (ResultCode.OK, log_msg)
+            device=self.target
+            try:
+                device._sdp_proxy.command_inout_asynch(const.CMD_STANDBY, self.standby_cmd_ended_cb)
+                log_msg = const.CMD_STANDBY + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+                self.logger.debug(log_msg)
+                return (ResultCode.OK, log_msg)
 
+            except DevFailed as dev_failed:
+                self.logger.exception(dev_failed)
+                log_msg = const.ERR_STANDBY_CMD_FAIL + str(dev_failed)
+                tango.Except.re_throw_exception(dev_failed, const.ERR_INVOKING_CMD, log_msg,
+                                             "SdpMasterLeafNode.StandbyCommand()",
+                                             tango.ErrSeverity.ERR)
         def check_allowed(self):
             """
             Check Whether this command is allowed to be run in current device
