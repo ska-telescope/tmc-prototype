@@ -32,13 +32,13 @@ def test_assign_resources():
         # given an interface to TMC to interact with a subarray node and a central node
         fixture = {}
         fixture['state'] = 'Unknown'
-        wait_before_test(10)
+        wait_before_test(20)
         # given a started up telescope
         assert(telescope_is_in_standby())
         LOGGER.info('Staring up the Telescope')
         tmc.start_up()
         fixture['state'] = 'Telescope On'
-        wait_before_test(10)
+        wait_before_test(20)
         #when I assign resources to subarray
         #@log_it('TMC_int_comp',devices_to_log)
         @sync_assign_resources(150)

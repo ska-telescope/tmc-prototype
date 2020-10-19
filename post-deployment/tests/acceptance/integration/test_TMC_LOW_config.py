@@ -32,13 +32,13 @@ def test_configure_scan():
         # given an interface to TMC to interact with a subarray node and a central node
         fixture = {}
         fixture['state'] = 'Unknown'
-        wait_before_test(timeout=15)
+        wait_before_test(timeout=20)
         # given a started up telescope
         assert(telescope_is_in_standby())
         LOGGER.info('Staring up the Telescope')
         tmc.start_up()
         fixture['state'] = 'Telescope On'
-        wait_before_test(timeout=15)
+        wait_before_test(timeout=20)
         # and a subarray composed of two resources configured as perTMC_integration/assign_resources.json
         LOGGER.info('Composing the Subarray')
         tmc.compose_sub()

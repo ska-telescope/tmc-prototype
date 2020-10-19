@@ -344,7 +344,7 @@ build DishMaster wheel for development: # Executed on a commit
   artifacts:
     paths:
       - ./tmcprototype/dishmaster/dist/
-
+# TODO: Uncomment the jobs once review is done
 # unit tests:
 #   image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
 #   stage: unit-test
