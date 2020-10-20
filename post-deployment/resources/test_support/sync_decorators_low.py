@@ -236,6 +236,17 @@ def sync_resources_releasing(timeout=100):
     yield
     the_waiter.wait(timeout)
 
+def sync_end(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        check_going_out_of_configure()
+        the_waiter = waiter()
+        the_waiter.set_wait_for_ending_SB()
+        result = func(*args, **kwargs)
+        the_waiter.wait(100)
+        return result
+    return wrapper
+
 
 def sync_set_to_standby(func):
     @functools.wraps(func)
