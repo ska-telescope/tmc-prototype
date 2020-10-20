@@ -106,7 +106,7 @@ class K8_env():
         self.v1 = client.CoreV1Api()
         self.extensions_v1_beta1 = client.ExtensionsV1beta1Api()
         self.env = run_context
-        self.clean_config_etcd()
+        # self.clean_config_etcd()
 
     def _lookup_by(self,item,key: str,value: str) -> bool:
         if item.metadata.labels is not None:
