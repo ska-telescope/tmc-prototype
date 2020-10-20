@@ -345,16 +345,16 @@ build DishMaster wheel for development: # Executed on a commit
     paths:
       - ./tmcprototype/dishmaster/dist/
 
-# unit tests:
-#   image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
-#   stage: unit-test
-#   tags:
-#     - docker-executor
-#   script:
-#     - make unit-test
-#   artifacts:
-#     paths:
-#       - ./build
+unit tests:
+  image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
+  stage: unit-test
+  tags:
+    - docker-executor
+  script:
+    - make unit-test
+  artifacts:
+    paths:
+      - ./build
 
 test-mid:
   stage: test
@@ -362,7 +362,6 @@ test-mid:
     - k8srunner
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
   before_script:
-    - make delete_namespace KUBE_NAMESPACE=ci-tmc-prototype-23086cb0
     - kubectl get namespace
   script:
     - kubectl version
