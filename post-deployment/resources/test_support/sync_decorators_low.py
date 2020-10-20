@@ -48,12 +48,11 @@ class WaitConfigure():
         # self.w.wait_until_value_changed_to('CONFIGURING')
         self.w.wait_until_value_changed_to('READY',timeout=200)
         self.w1.wait_until_value_changed_to('READY',timeout=200)
-        # self.w2.wait_until_value_changed_to('READY',timeout=200)
 
     def wait_oet(self):
         self.w.wait_until_value_changed_to('READY',timeout=200)
 
-
+#TODO : Abort, Restart and Obsreset implementation is updated for Low devices. Therefore need to keep it for further use.
 class WaitAbort():
 
     def __init__(self):
@@ -61,7 +60,6 @@ class WaitAbort():
 
     def wait(self,timeout):
         logging.info("Abort command dispatched, checking that the state transitioned to ABORTING")
-        # self.the_watch.wait_until_value_changed_to('ABORTING',timeout)
         logging.info("state transitioned to ABORTING, waiting for it to return to ABORTED")
         self.the_watch.wait_until_value_changed_to('ABORTED',timeout=200)
 
@@ -75,17 +73,6 @@ class WaitRestart():
         # self.the_watch.wait_until_value_changed_to('RESTARTING',timeout)
         logging.info("state transitioned to RESTARTING, waiting for it to return to EMPTY")
         self.the_watch.wait_until_value_changed_to('EMPTY',timeout=200)
-
-class WaitObsReset():
-
-    def __init__(self):
-        self.the_watch  = watch(resource('ska_low/tm_subarray_node/1')).for_a_change_on("obsState")
-
-    def wait(self,timeout):
-        logging.info("ObsReset command dispatched, checking that the state transitioned to RESETTING")
-        logging.info("state transitioned to RESETTING, waiting for it to return to IDLE")
-        self.the_watch.wait_until_value_changed_to('IDLE',timeout=200)
-
 
 class WaitObsReset():
 
@@ -139,16 +126,6 @@ def sync_assigned_resources():
 def sync_configure(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        ##Can ony configure a subarray that is in IDLE/ON
-        # Branch changes
-        # resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals(['IDLE','READY'])
-        # resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('ON')
-        # w  = watch(resource('ska_low/tm_subarray_node/1')).for_a_change_on("obsState")
-        # ################
-        # result = func(*args, **kwargs)
-        # ################
-        # #w.wait_until_value_changed_to('CONFIGURING')
-        # w.wait_until_value_changed_to('READY',timeout=200)
         check_going_into_configure()
         w  = WaitConfigure()
         ################ 
@@ -237,27 +214,8 @@ def sync_telescope_starting_up(timeout=50):
     yield
     the_waiter.wait(timeout)
 
-def sync_end(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        check_going_out_of_configured()
-        the_waiter = waiter()
-        the_waiter.set_wait_for_ending_SB()
-        result = func(*args, **kwargs)
-        the_waiter.wait(100)
-        return result
-    return wrapper
-
 
 # defined as a context manager
-@contextmanager
-def sync_sb_ending():
-    check_going_out_of_configured()
-    the_waiter = waiter()
-    the_waiter.set_wait_for_ending_SB()
-    yield
-    the_waiter.wait()
-
 def sync_release_resources(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -303,7 +261,7 @@ def sync_scan(timeout=200):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            check_going_out_of_configured()
+            check_going_out_of_configure()
             w = WaitScanning()
             result = func(*args, **kwargs)
             w.wait(timeout)

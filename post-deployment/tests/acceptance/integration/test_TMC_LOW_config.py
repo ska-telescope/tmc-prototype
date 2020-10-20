@@ -7,7 +7,6 @@ from resources.test_support.helpers_low import waiter,watch,resource, wait_befor
 from resources.test_support.controls_low import telescope_is_in_standby
 from resources.test_support.persistance_helping import load_config_from_file
 from resources.test_support.sync_decorators_low import sync_configure,time_it
-from resources.test_support.logging_decorators import log_it
 import resources.test_support.tmc_helpers_low as tmc
 import time
 

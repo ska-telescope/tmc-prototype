@@ -32,8 +32,6 @@ def compose_sub():
 @sync_end
 def end():
     resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('READY')
-    # resource('mid_csp/elt/subarray_01').assert_attribute('obsState').equals('READY')
-    # resource('mid_sdp/elt/subarray_1').assert_attribute('obsState').equals('READY')
     resource('low-mccs/subarray/01').assert_attribute('obsState').equals('READY')
     LOGGER.info('Before invoking End Command all the devices obsstate is ready')
     SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
