@@ -361,6 +361,9 @@ test-mid:
   tags:
     - k8srunner
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
+  before_script:
+    - kubectl delele namespace ci-tmc-prototype-23086cb0
+    - kubectl get namespace
   script:
     - kubectl version
     - make install-chart
