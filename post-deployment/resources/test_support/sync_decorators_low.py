@@ -11,7 +11,7 @@ def check_going_out_of_empty():
     resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('EMPTY')
 
 def check_going_into_configure():
-    ##Can ony configure a subarray that is in IDLE/ON
+    ##Can ony configure a subarray that is in IDLE/ON/READY
     resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals(['IDLE','READY'])
     resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('ON')
 
