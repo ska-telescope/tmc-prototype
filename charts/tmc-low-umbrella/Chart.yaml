@@ -22,13 +22,13 @@ dependencies:
 - name: tmc-low
   version: 0.0.2
   repository: file://../tmc-low
-# TODO: Uncomment this portion once review is done
-# - name: mccs
-#   version: 0.0.2
-#   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
-- name: tango-util
-  version: 0.0.1
-  repository: file://../../../ska-low-mccs/charts/tango-util
 - name: mccs
   version: 0.0.2
-  repository: file://../../../ska-low-mccs/charts/mccs
+  repository: https://nexus.engageska-portugal.pt/repository/helm-chart
+# Uncomment below lines when need to use local mccs subcharts
+# - name: tango-util
+#   version: 0.0.1
+#   repository: file://../../../ska-low-mccs/charts/tango-util
+# - name: mccs
+#   version: 0.0.2
+#   repository: file://../../../ska-low-mccs/charts/mccs
