@@ -46,8 +46,7 @@ def release_resources():
     CentralNodeLow = DeviceProxy('ska_low/tm_central/central_node')
     CentralNodeLow.ReleaseResources('{"subarray_id":1,"release_all":true}')
     SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
-    LOGGER.info('After Release Resource SubarrayNodeLow State and ObsState:' + str(SubarrayNodeLow.State()) + str(SubarrayNodeLow.ObsState))
-    LOGGER.info('Invoked ReleaseResources on Subarray')
+    LOGGER.info('After Invoking Release Resource on Subarray, SubarrayNodeLow State and ObsState:' + str(SubarrayNodeLow.State()) + str(SubarrayNodeLow.ObsState))
     the_waiter = waiter()
     the_waiter.wait()
     LOGGER.info('finished ReleaseResources on CentralNodeLow')
@@ -63,8 +62,9 @@ def set_to_standby():
     LOGGER.info('Standby the Telescope')
 
 @sync_configure
-def configure_sub(configure_file):
+def configure_sub():
     #resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('ON')
+    configure_file = 'resources/test_data/TMC_integration/mccs_configure.json'
     config = load_config_from_file(configure_file)
     SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
     SubarrayNodeLow.Configure(config)

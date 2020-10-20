@@ -21,7 +21,7 @@ def check_coming_out_of_standby():
     resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('OFF')
     # resource('low-mccs/control/control').assert_attribute('State').equals('OFF')
 
-def check_going_out_of_configured():
+def check_going_out_of_configure():
     ##Can only return to ON/IDLE if in READY
     resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('READY')
 

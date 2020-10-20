@@ -46,8 +46,7 @@ def test_scan():
         #and a subarray configured to perform a scan as per 'TMC_integration/configure1.json'
         LOGGER.info('Configuring the Subarray')
         fixture['state'] = 'Subarray CONFIGURING'
-        configure_file = 'resources/test_data/TMC_integration/mccs_configure.json'
-        tmc.configure_sub(configure_file)
+        tmc.configure_sub()
         fixture['state'] = 'Subarray Configured for SCAN'
         wait_before_test(timeout=10)
         #When I run a scan of 4 seconds based on previos configuration
