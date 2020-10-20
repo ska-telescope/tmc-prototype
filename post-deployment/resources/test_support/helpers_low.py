@@ -17,8 +17,6 @@ from tango import DeviceProxy, DevState, CmdArgType, EventType
 
 LOGGER = logging.getLogger(__name__)
 
-obsState = {"IDLE": 0}
-
 ####typical device sets
 subarray_devices = [
         'ska_low/tm_subarray_node/1',
@@ -295,7 +293,7 @@ class waiter():
 
     def set_wait_for_going_to_standby(self):
         self.waits.append(watch(resource('ska_low/tm_subarray_node/1')).to_become("State",changed_to='OFF'))
-        # self.waits.append(watch(resource('low-mccs/control/control')).to_become("State",changed_to='OFF')) 
+        self.waits.append(watch(resource('low-mccs/control/control')).to_become("State",changed_to='OFF')) 
 
     def set_wait_for_going_into_scanning(self):
         self.waits.append(watch(resource('ska_low/tm_subarray_node/1')).to_become('obsState',changed_to='SCANNING'))  
