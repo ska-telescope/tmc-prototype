@@ -362,6 +362,7 @@ test-mid:
     - k8srunner
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
   before_script:
+    - make delete_namespace KUBE_NAMESPACE=ci-tmc-prototype-0c1f0f20
     - kubectl get namespace
   script:
     - kubectl version
@@ -371,8 +372,8 @@ test-mid:
     # - make test
   after_script:
     - make uninstall-chart
-    - make delete_namespace
     - make delete_namespace-sdp
+    - make delete_namespace
     - mkdir -p build
     - cp -rf charts/build/* build/
     - ls -la build
