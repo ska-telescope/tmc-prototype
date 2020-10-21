@@ -41,6 +41,7 @@ ERR_INVALID_JSON_CONFIG = "Invalid JSON format while invoking Configure command 
 ERR_INVALID_JSON_ASSIGN_RES = "Invalid JSON format while invoking AddReceptors command on CspSubarray."
 ERR_STARTSCAN_RESOURCES = "Error while invoking StartScan command on CSP Subarray."
 ERR_DEVICE_NOT_READY = "Csp subarray is not in READY obsState."
+ERR_DEVICE_NOT_READY_OR_IDLE = "Csp subarray is not in READY or IDLE obsState."
 ERR_DEVICE_NOT_FAULT_ABORT = "Csp subarray is not in FAULT, ABORTED obsState."
 ERR_DEVICE_NOT_IN_SCAN = "CspSubarray is not in SCANNING obsState."
 ERR_GOTOIDLE_INVOKING_CMD = "Error while invoking GoToIdle command on CSP Subarray."

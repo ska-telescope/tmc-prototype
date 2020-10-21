@@ -329,6 +329,13 @@ def test_configure_should_raise_exception_when_called_invalid_json():
             tango_context.device.Configure(invalid_key_str)
         assert const.ERR_INVALID_JSON_CONFIG in str(df.value)
 
+def test_configure_should_raise_assertion_exception_when_called_invalid_obsstate(mock_csp_subarray):
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
+    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
+    device_proxy.On()
+    device_proxy.Configure(configure_str)
+    print("Asserion error is:::::::::::", device_proxy.activityMessage)
+    assert 0
 
 def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_ready(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray

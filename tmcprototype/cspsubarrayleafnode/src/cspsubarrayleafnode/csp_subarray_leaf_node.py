@@ -470,6 +470,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             target_Ra = ""
             target_Dec = ""
             try:
+                assert (device._csp_subarray_proxy.obsState in (ObsState.IDLE, ObsState.READY))
                 argin_json = json.loads(argin)
                 # Used to extract FSP IDs
                 device.fsp_ids_object = argin_json["fsp"]
@@ -492,6 +493,14 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 device._read_activity_message = const.STR_CONFIGURE_SUCCESS
                 self.logger.info(const.STR_CONFIGURE_SUCCESS)
                 return (ResultCode.OK, const.STR_CONFIGURE_SUCCESS)
+
+            except AssertionError as AE:
+                log_msg = const.ERR_DEVICE_NOT_READY_OR_IDLE + str(AE)
+                device._read_activity_message = log_msg
+                self.logger.exception(AE)
+                tango.Except.re_throw_exception(AE, const.ERR_CONFIGURE_INVOKING_CMD, log_msg,
+                                             "CspSubarrayLeafNode.ConfigureCommand",
+                                             tango.ErrSeverity.ERR)
 
             except ValueError as value_error:
                 log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
