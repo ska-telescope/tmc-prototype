@@ -362,6 +362,8 @@ test-mid:
     - k8srunner
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
   before_script:
+    - make delete_namespace KUBE_NAMESPACE=integration-sdp
+    - make delete_namespace KUBE_NAMESPACE=integration
     - kubectl get namespace
   script:
     - kubectl version
