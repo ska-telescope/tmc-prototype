@@ -314,6 +314,7 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
     device_proxy.On()
     device_proxy.AssignResources(assign_input_str)
+    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
     device_proxy.Configure(configure_str)
     argin_json = json.loads(configure_str)
     cspConfiguration = argin_json.copy()
@@ -323,18 +324,21 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
                                 json.dumps(cspConfiguration), any_method(with_name='configure_cmd_ended_cb'))
 
 
-def test_configure_should_raise_exception_when_called_invalid_json():
-    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        with pytest.raises(tango.DevFailed) as df:
-            tango_context.device.Configure(invalid_key_str)
-        assert const.ERR_INVALID_JSON_CONFIG in str(df.value)
+def test_configure_should_raise_exception_when_called_invalid_json(mock_csp_subarray):
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
+    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.Configure(invalid_key_str)
+    assert const.ERR_INVALID_JSON_CONFIG in str(df.value)
 
 def test_configure_should_raise_assertion_exception_when_called_invalid_obsstate(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
     device_proxy.On()
-    device_proxy.Configure(configure_str)
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.Configure(configure_str)
     print("Asserion error is:::::::::::", device_proxy.activityMessage)
+    print("DevFailde error is:::::::::::", str(df))
     assert 0
 
 def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_ready(mock_csp_subarray):
