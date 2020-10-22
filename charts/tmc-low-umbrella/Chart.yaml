@@ -14,7 +14,7 @@ maintainers:
     email: kalyanit.ska@gmail.com
 dependencies:
 - name: tango-base
-  version: 0.2.2
+  version: 0.2.5
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: webjive
   version: 0.1.1

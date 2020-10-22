@@ -36,9 +36,8 @@ deviceServers:
 - name: dishmaster1
   function: receptor-simulation
   domain: sensing
-  args:
-    - -c
-    - "/usr/local/bin/DishMasterDS 01"
+  command: "/usr/local/bin/DishMasterDS "
+  instances: ["01"]
   depends_on:
     - device: sys/database/2
   image:
@@ -56,9 +55,8 @@ deviceServers:
 - name: dishmaster2
   function: receptor-simulation
   domain: sensing
-  args:
-    - -c
-    - "/usr/local/bin/DishMasterDS 02"
+  command: "/usr/local/bin/DishMasterDS "
+  instances: ["02"]
   depends_on:
     - device: sys/database/2
   image:
@@ -76,9 +74,8 @@ deviceServers:
 - name: dishmaster3
   function: receptor-simulation
   domain: sensing
-  args:
-    - -c
-    - "/usr/local/bin/DishMasterDS 03"
+  command: "/usr/local/bin/DishMasterDS "
+  instances: ["03"]
   depends_on:
     - device: sys/database/2
   image:
@@ -96,9 +93,8 @@ deviceServers:
 - name: dishmaster4
   function: receptor-simulation
   domain: sensing
-  args:
-    - -c
-    - "/usr/local/bin/DishMasterDS 04"
+  command: "/usr/local/bin/DishMasterDS "
+  instances: ["04"]
   depends_on:
     - device: sys/database/2
   image:
@@ -116,12 +112,10 @@ deviceServers:
 - name: dishleafnode1
   function: dish-monitoring
   domain: general-monitoring
-  args:
-    - -c
-    - "/usr/local/bin/DishLeafNodeDS 01"
+  command: "/usr/local/bin/DishLeafNodeDS"
+  instances: ["01"]
   depends_on:
     - device: mid_d0001/elt/master
-
   image:
     registry: nexus.engageska-portugal.pt/tango-example
     image: tmcprototype
@@ -137,11 +131,10 @@ deviceServers:
 - name: dishleafnode2
   function: dish-monitoring
   domain: general-monitoring
-  args:
-    - -c
-    - "/usr/local/bin/DishLeafNodeDS 02"
+  command: "/usr/local/bin/DishLeafNodeDS"
+  instances: ["02"]
   depends_on:
-    - device: mid_d0001/elt/master
+    - device: mid_d0002/elt/master
   image:
     registry: nexus.engageska-portugal.pt/tango-example
     image: tmcprototype
@@ -157,11 +150,10 @@ deviceServers:
 - name: dishleafnode3
   function: dish-monitoring
   domain: general-monitoring
-  args:
-    - -c
-    - "/usr/local/bin/DishLeafNodeDS 03"
+  command: "/usr/local/bin/DishLeafNodeDS"
+  instances: ["03"]
   depends_on:
-    - device: mid_d0001/elt/master
+    - device: mid_d0003/elt/master
   image:
     registry: nexus.engageska-portugal.pt/tango-example
     image: tmcprototype
@@ -177,11 +169,10 @@ deviceServers:
 - name: dishleafnode4
   function: dish-monitoring
   domain: general-monitoring
-  args:
-    - -c
-    - "/usr/local/bin/DishLeafNodeDS 04"
+  command: "/usr/local/bin/DishLeafNodeDS"
+  instances: ["01"]
   depends_on:
-    - device: mid_d0001/elt/master
+    - device: mid_d0004/elt/master
   image:
     registry: nexus.engageska-portugal.pt/tango-example
     image: tmcprototype
@@ -197,9 +188,8 @@ deviceServers:
 - name: cspsubarrayleafnode1
   function: observation-execution
   domain: subarray
-  args:
-    - -c
-    - "/usr/local/bin/CspSubarrayLeafNodeDS 01"
+  command: "/usr/local/bin/CspSubarrayLeafNodeDS"
+  instances: ["01"]
   depends_on:
     - device: mid_csp/elt/subarray_01
   image:
@@ -217,9 +207,8 @@ deviceServers:
 - name: cspsubarrayleafnode2
   function: observation-execution
   domain: subarray
-  args:
-    - -c
-    - "/usr/local/bin/CspSubarrayLeafNodeDS 02"
+  command: "/usr/local/bin/CspSubarrayLeafNodeDS"
+  instances: ["02"]
   depends_on:
     - device: mid_csp/elt/subarray_02
   image:
@@ -237,9 +226,8 @@ deviceServers:
 - name: cspsubarrayleafnode3
   function: observation-execution
   domain: subarray
-  args:
-    - -c
-    - "/usr/local/bin/CspSubarrayLeafNodeDS 03"
+  command: "/usr/local/bin/CspSubarrayLeafNodeDS"
+  instances: ["03"]
   depends_on:
     - device: mid_csp/elt/subarray_03
   image:
@@ -257,9 +245,8 @@ deviceServers:
 - name: cspmasterleafnode
   function: csp-monitoring
   domain: general-monitoring
-  args:
-    - -c
-    - "/usr/local/bin/CspMasterLeafNodeDS 01"
+  command: "/usr/local/bin/CspMasterLeafNodeDS"
+  instances: ["01"]
   depends_on:
     - device: mid_csp/elt/master
   image:
@@ -277,9 +264,8 @@ deviceServers:
 - name: sdpsubarrayleafnode1
   function: observation-execution
   domain: subarray
-  args:
-    - -c
-    - "/usr/local/bin/SdpSubarrayLeafNodeDS 01"
+  command: "/usr/local/bin/SdpSubarrayLeafNodeDS"
+  instances: ["01"]
   depends_on:
     - device: mid_sdp/elt/subarray_1
   image:
@@ -297,9 +283,8 @@ deviceServers:
 - name: sdpsubarrayleafnode2
   function: observation-execution
   domain: subarray
-  args:
-    - -c
-    - "/usr/local/bin/SdpSubarrayLeafNodeDS 02"
+  command: "/usr/local/bin/SdpSubarrayLeafNodeDS"
+  instances: ["02"]
   depends_on:
     - device: mid_sdp/elt/subarray_2
   image:
@@ -317,9 +302,8 @@ deviceServers:
 - name: sdpsubarrayleafnode3
   function: observation-execution
   domain: subarray
-  args:
-    - -c
-    - "/usr/local/bin/SdpSubarrayLeafNodeDS 03"
+  command: "/usr/local/bin/SdpSubarrayLeafNodeDS"
+  instances: ["03"]
   depends_on:
     - device: mid_sdp/elt/subarray_3
   image:
@@ -337,9 +321,8 @@ deviceServers:
 - name: sdpmasterleafnode
   function: observation-execution
   domain: subarray
-  args:
-    - -c
-    - "/usr/local/bin/SdpMasterLeafNodeDS 01"
+  command: "/usr/local/bin/SdpMasterLeafNodeDS"
+  instances: ["01"]
   depends_on:
     - device: mid_sdp/elt/master
   image:
@@ -357,14 +340,9 @@ deviceServers:
 - name: subarraynode1
   function: observation-execution
   domain: subarray
-  args:
-    - -c
-    - "/usr/local/bin/SubarrayNodeDS sa1"
+  command: "/usr/local/bin/SubarrayNodeDS"
+  instances: ["sa1"]
   depends_on:
-    - device: ska_mid/tm_leaf_node/d0001
-    - device: ska_mid/tm_leaf_node/d0002
-    - device: ska_mid/tm_leaf_node/d0003
-    - device: ska_mid/tm_leaf_node/d0004
     - device: ska_mid/tm_leaf_node/csp_subarray01
     - device: ska_mid/tm_leaf_node/sdp_subarray01
   image:
@@ -382,14 +360,9 @@ deviceServers:
 - name: subarraynode2
   function: observation-execution
   domain: subarray
-  args:
-    - -c
-    - "/usr/local/bin/SubarrayNodeDS sa2"
+  command: "/usr/local/bin/SubarrayNodeDS"
+  instances: ["sa2"]
   depends_on:
-    - device: ska_mid/tm_leaf_node/d0001
-    - device: ska_mid/tm_leaf_node/d0002
-    - device: ska_mid/tm_leaf_node/d0003
-    - device: ska_mid/tm_leaf_node/d0004
     - device: ska_mid/tm_leaf_node/csp_subarray02
     - device: ska_mid/tm_leaf_node/sdp_subarray02
   image:
@@ -407,14 +380,9 @@ deviceServers:
 - name: subarraynode3
   function: observation-execution
   domain: subarray
-  args:
-    - -c
-    - "/usr/local/bin/SubarrayNodeDS sa3"
+  command: "/usr/local/bin/SubarrayNodeDS"
+  instances: ["sa3"]
   depends_on:
-    - device: ska_mid/tm_leaf_node/d0001
-    - device: ska_mid/tm_leaf_node/d0002
-    - device: ska_mid/tm_leaf_node/d0003
-    - device: ska_mid/tm_leaf_node/d0004
     - device: ska_mid/tm_leaf_node/csp_subarray03
     - device: ska_mid/tm_leaf_node/sdp_subarray03
   image:
@@ -432,9 +400,8 @@ deviceServers:
 - name: centralnode
   function: telescope-monitoring
   domain: general-monitoring
-  args:
-    - -c
-    - "/usr/local/bin/CentralNodeDS 01"
+  command: "/usr/local/bin/CentralNodeDS"
+  instances: ["01"]
   depends_on:
     - device: ska_mid/tm_leaf_node/csp_master
     - device: ska_mid/tm_leaf_node/sdp_master
@@ -456,9 +423,8 @@ deviceServers:
 - name: tm-alarmhandler
   function: alarm-management
   domain: general-monitoring
-  args:
-    - -c
-    - "./app/alarmhandler-srv 01"
+  command: "./app/alarmhandler-srv"
+  instances: ["01"]
   depends_on:
     - device: sys/database/2
   image:
