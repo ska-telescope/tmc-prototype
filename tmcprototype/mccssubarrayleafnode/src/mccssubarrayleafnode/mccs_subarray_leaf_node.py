@@ -12,6 +12,11 @@ It also acts as a MCCS contact point for Subarray Node for observation execution
 # See LICENSE.txt for more info.
 
 # PROTECTED REGION ID(MccSubarrayLeafNode.additional_import) ENABLED START #
+# Standard python imports
+import json
+from datetime import datetime, timedelta
+import pytz
+
 # Tango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
@@ -22,9 +27,6 @@ from ska.base.control_model import HealthState, ObsState
 
 # Additional import
 from . import const, release
-import json
-from datetime import datetime, timedelta
-import pytz
 # PROTECTED REGION END #    //  MccsSubarrayLeafNode.additional_import
 
 __all__ = ["MccsSubarrayLeafNode", "main"]

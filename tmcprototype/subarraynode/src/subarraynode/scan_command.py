@@ -1,7 +1,7 @@
 """
 ScanCommand class for SubarrayNode
 """
-
+# Standard python imports
 import threading
 # Tango imports
 import tango

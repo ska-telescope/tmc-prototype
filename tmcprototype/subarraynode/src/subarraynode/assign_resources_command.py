@@ -1,7 +1,7 @@
 """
 AssignResourcesCommand class for SubarrayNode.
 """
-
+# Standard python imports
 from concurrent.futures import ThreadPoolExecutor
 import json
 # Tango imports

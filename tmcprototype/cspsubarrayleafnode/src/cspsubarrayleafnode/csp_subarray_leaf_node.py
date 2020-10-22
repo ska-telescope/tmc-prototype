@@ -10,6 +10,9 @@ It also acts as a CSP contact point for Subarray Node for observation execution 
 #
 # Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
+
+# PROTECTED REGION ID(CspSubarrayLeafNode.additional_import) ENABLED START #
+# Standard python imports
 import datetime
 import importlib.resources
 import threading
@@ -19,7 +22,6 @@ import katpoint
 import numpy as np
 import json
 
-# PROTECTED REGION ID(CspSubarrayLeafNode.additional_import) ENABLED START #
 # PyTango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
@@ -31,7 +33,6 @@ from ska.base.control_model import HealthState, ObsState
 # Additional import
 from . import const, release
 from .exceptions import InvalidObsStateError
-
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additional_import
 
 __all__ = ["CspSubarrayLeafNode", "main"]

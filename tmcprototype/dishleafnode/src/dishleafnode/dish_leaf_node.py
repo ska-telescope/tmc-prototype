@@ -10,13 +10,16 @@
 """
 A Leaf control node for DishMaster.
 """
-from __future__ import print_function
-from __future__ import absolute_import
-
+# PROTECTED REGION ID(DishLeafNode.additionnal_import) ENABLED START #
+# Standard python imports
 import json
 import importlib.resources
+import math
+import katpoint
+import datetime
+import time
+import threading
 
-# PROTECTED REGION ID(DishLeafNode.additionnal_import) ENABLED START #
 # PyTango imports
 import tango
 from tango import DeviceProxy, EventType, ApiUtil, DevState, AttrWriteType, DevFailed, DebugIt
@@ -27,14 +30,7 @@ from ska.base.control_model import HealthState, SimulationMode
 from .utils import PointingState, UnitConverter
 
 # Additional import
-import threading
 from . import const, release
-import math
-import katpoint
-import datetime
-import time
-
-
 # PROTECTED REGION END #    //  DishLeafNode.additionnal_import
 
 __all__ = ["DishLeafNode", "main"]

@@ -8,8 +8,6 @@
 # See LICENSE.txt for more info.
 
 # PROTECTED REGION ID(MccsMasterLeafNode.import) ENABLED START #
-from __future__ import print_function
-from __future__ import absolute_import
 # Tango imports
 import tango
 from tango import DeviceProxy, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed

@@ -11,10 +11,11 @@
 Central Node is a coordinator of the complete M&C system. Central Node implements the standard set
 of state and mode attributes defined by the SKA Control Model.
 """
-from __future__ import print_function
-from __future__ import absolute_import
-
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
+# Standard Python imports
+import json
+import ast
+
 # Tango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
@@ -22,15 +23,12 @@ from tango.server import run, attribute, command, device_property
 from ska.base import SKABaseDevice
 from ska.base.commands import ResponseCommand, ResultCode, BaseCommand
 from ska.base.control_model import HealthState, ObsState
+
 # Additional import
 from . import const, release
 from centralnode.input_validator import AssignResourceValidator
 from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
 from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
-
-import json
-import ast
-
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 __all__ = ["CentralNode", "main"]

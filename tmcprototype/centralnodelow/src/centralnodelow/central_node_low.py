@@ -12,6 +12,7 @@ of state and mode attributes defined by the SKA Control Model.
 """
 
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
+# Standard Python imports
 import json
 # Tango imports
 import tango

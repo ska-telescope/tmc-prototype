@@ -1,9 +1,9 @@
 import functools
 import json
 from typing import Any, Dict, Union
-from ska.log_transactions import transaction
 import logging
 import os
+from ska.log_transactions import transaction
 
 ENABLE_TRANSACTION_IDS = os.getenv('ENABLE_TRANSACTION_IDS')
 

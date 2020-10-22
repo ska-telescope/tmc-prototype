@@ -13,9 +13,6 @@ actions during an observation. It also acts as a SDP contact point for Subarray 
 execution. There is one to one mapping between SDP Subarray Leaf Node and SDP subarray.
 """
 
-from __future__ import print_function
-from __future__ import absolute_import
-
 # PROTECTED REGION ID(SdpMasterLeafNode.additionnal_import) ENABLED START #
 import tango
 from tango import DeviceProxy, ApiUtil, DevState, AttrWriteType, DevFailed

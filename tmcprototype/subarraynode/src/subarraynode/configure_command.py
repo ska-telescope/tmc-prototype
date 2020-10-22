@@ -1,7 +1,7 @@
 """
 ConfigureCommand class for SubarrayNode.
 """
-
+# Standard python imports
 import json
 # Tango imports
 import tango

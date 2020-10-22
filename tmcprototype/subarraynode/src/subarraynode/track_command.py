@@ -1,7 +1,7 @@
 """
 TrackCommand class for SubarrayNode.
 """
-
+# Standard python imports
 import random
 import string
 # Tango imports
