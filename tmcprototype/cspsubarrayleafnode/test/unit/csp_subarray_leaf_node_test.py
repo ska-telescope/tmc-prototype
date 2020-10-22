@@ -339,7 +339,9 @@ def test_configure_should_raise_assertion_exception_when_called_invalid_obsstate
         device_proxy.Configure(configure_str)
     print("Asserion error is:::::::::::", device_proxy.activityMessage)
     print("DevFailde error is:::::::::::", str(df))
-    assert 0
+    assert const.ERR_DEVICE_NOT_READY_OR_IDLE in device_proxy.activityMessage
+    assert const.ERR_DEVICE_NOT_READY_OR_IDLE in str(df.value)
+
 
 def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_ready(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
