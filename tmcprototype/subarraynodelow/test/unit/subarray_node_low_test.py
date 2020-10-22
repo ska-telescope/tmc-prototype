@@ -569,7 +569,7 @@ def create_dummy_event_custom_exception(proxy_mock, device_fqdn, attribute, attr
 
 
 def raise_devfailed_exception_off_command():
-    cmd_name == 'Off'
+    cmd_name = 'Off'
     tango.Except.throw_exception("SubarrayNode_Commandfailed",
                                  "This is error message for devfailed",
                                  cmd_name, tango.ErrSeverity.ERR)
