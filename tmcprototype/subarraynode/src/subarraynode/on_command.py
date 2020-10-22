@@ -48,7 +48,6 @@ class OnCommand(SKASubarray.OnCommand):
             self.logger.info(log_msg)
             device._csp_sa_proxy = device.get_deviceproxy(device.CspSubarrayFQDN)
             device._sdp_sa_proxy = device.get_deviceproxy(device.SdpSubarrayFQDN)
-            return true
         except DevFailed as dev_failed:
             log_msg = const.ERR_PROXY_CREATE
             self.logger.debug(log_msg)
