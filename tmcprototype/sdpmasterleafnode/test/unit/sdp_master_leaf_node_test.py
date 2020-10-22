@@ -47,7 +47,7 @@ def mock_sdp_master():
 def raise_devfailed_exception(*args):
     # "This function is called to raise DevFailed exception without arguments."
     tango.Except.throw_exception(const.STR_CMD_FAILED, const.ERR_DEVFAILED_MSG,
-                                 cmd_name, tango.ErrSeverity.ERR)
+                                 "", tango.ErrSeverity.ERR)
 
 
 @pytest.fixture(
