@@ -184,7 +184,7 @@ def test_off_should_raise_devfailed_exception(mock_lower_devices):
         tango_context.device.Off()
         print("devfailed exception is -------------", str(df))
         print("devfailed exception value is -------------", str(df.value))
-    assert "Error executing command OffCommand" in str(df.value)
+    assert "This is error message for devfailed" in str(df.value)
 
 
 def test_end_should_command_subarray_to_end_when_it_is_ready(mock_lower_devices):
