@@ -303,10 +303,21 @@ def test_release_resource_should_command_csp_subarray_to_release_all_resources(m
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
     device_proxy.On()
     device_proxy.AssignResources(assign_input_str)
+    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
     device_proxy.ReleaseAllResources()
     csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_REMOVE_ALL_RECEPTORS,
                                                             any_method(with_name = 'releaseallresources_cmd_ended_cb'))
     assert_activity_message(device_proxy, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
+
+
+def test_release_resource_should_raise_exception_when_not_idle_obsstate(mock_csp_subarray):
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
+    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
+    device_proxy.On()
+    device_proxy.AssignResources(assign_input_str)
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.ReleaseAllResources()
+    assert const.ERR_DEVICE_NOT_IDLE in str(df.value)
 
 
 def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(mock_csp_subarray):
