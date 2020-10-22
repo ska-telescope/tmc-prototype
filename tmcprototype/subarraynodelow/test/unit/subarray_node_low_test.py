@@ -178,11 +178,9 @@ def test_start_scan_should_raise_devfailed_exception(mock_lower_devices):
 def test_off_should_raise_devfailed_exception(mock_lower_devices):
     tango_context, mccs_subarray1_ln_proxy_mock = mock_lower_devices[:2]
     mccs_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
-    print("State is : -------------------", str(tango_context.device.State()))
     with pytest.raises(tango.DevFailed) as df:
         tango_context.device.Off()
     assert "Error executing command OffCommand" in str(df.value)
-    assert 0
 
 
 def test_end_should_command_subarray_to_end_when_it_is_ready(mock_lower_devices):
