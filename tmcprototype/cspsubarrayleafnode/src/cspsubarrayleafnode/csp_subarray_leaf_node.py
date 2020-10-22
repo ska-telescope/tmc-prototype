@@ -498,7 +498,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 log_msg = const.ERR_DEVICE_NOT_READY_OR_IDLE + str(AE)
                 device._read_activity_message = log_msg
                 self.logger.exception(AE)
-                tango.Except.re_throw_exception(AE, const.ERR_CONFIGURE_INVOKING_CMD, log_msg,
+                tango.Except.throw_exception(const.ERR_CONFIGURE_INVOKING_CMD, log_msg,
                                              "CspSubarrayLeafNode.ConfigureCommand",
                                              tango.ErrSeverity.ERR)
 
