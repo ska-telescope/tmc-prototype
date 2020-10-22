@@ -314,26 +314,26 @@ deviceServers:
     requests:
       cpu: 100m
       memory: 128Mi
-- name: sdpsubarrayleafnode3
-  function: observation-execution
-  domain: subarray
-  args:
-    - -c
-    - "/usr/local/bin/SdpSubarrayLeafNodeDS 03"
-  depends_on:
-    - device: mid_sdp/elt/subarray_3
-  image:
-    registry: nexus.engageska-portugal.pt/tango-example
-    image: tmcprototype
-    tag: 0.2.11
-    pullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+# - name: sdpsubarrayleafnode3
+#   function: observation-execution
+#   domain: subarray
+#   args:
+#     - -c
+#     - "/usr/local/bin/SdpSubarrayLeafNodeDS 03"
+#   depends_on:
+#     - device: mid_sdp/elt/subarray_3
+#   image:
+#     registry: nexus.engageska-portugal.pt/tango-example
+#     image: tmcprototype
+#     tag: 0.2.11
+#     pullPolicy: IfNotPresent
+#   resources:
+#     limits:
+#       cpu: 300m
+#       memory: 500Mi
+#     requests:
+#       cpu: 100m
+#       memory: 128Mi
 - name: sdpmasterleafnode
   function: observation-execution
   domain: subarray

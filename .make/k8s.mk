@@ -80,7 +80,7 @@ dep-up: ## update dependencies for every charts in the env var CHARTS
 
 # This job is used to create a deployment of tmc-mid charts
 # Currently umbrealla chart for tmc-mid path is given
-install-chart: dep-up namespace namespace_sdp ## install the helm chart with name HELM_RELEASE and path UMBRELLA_CHART_PATH on the namespace KUBE_NAMESPACE 
+install-chart: dep-up namespace #namespace_sdp ## install the helm chart with name HELM_RELEASE and path UMBRELLA_CHART_PATH on the namespace KUBE_NAMESPACE 
 	# Understand this better
 	@sed -e 's/CI_PROJECT_PATH_SLUG/$(CI_PROJECT_PATH_SLUG)/' $(UMBRELLA_CHART_PATH)values.yaml > generated_values.yaml; \
 	sed -e 's/CI_ENVIRONMENT_SLUG/$(CI_ENVIRONMENT_SLUG)/' generated_values.yaml > values.yaml; \

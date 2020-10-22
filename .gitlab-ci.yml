@@ -387,6 +387,8 @@ test-mid:
       - build
     reports:
       junit: build/report.xml
+  when: manual
+
 
 test-low:
   stage: test
