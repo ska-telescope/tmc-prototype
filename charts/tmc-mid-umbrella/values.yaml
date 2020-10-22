@@ -3,7 +3,6 @@ xauthority: "~/.Xauthority"
 minikube: true
 
 global:
-  minikube: false
   labels:
     app: tmc-prototype
   annotations:
@@ -25,8 +24,6 @@ global:
       pullPolicy: IfNotPresent
   sub-system:
     tango-base:
-      enabled: false
-    webjive:
       enabled: false
 
 webjive:
