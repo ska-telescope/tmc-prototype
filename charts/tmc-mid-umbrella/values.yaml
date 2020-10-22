@@ -1,6 +1,6 @@
 display: ":0"
 xauthority: "~/.Xauthority"
-# minikube: true
+minikube: true
 
 global:
   minikube: false
@@ -30,11 +30,7 @@ global:
       enabled: false
 
 webjive:
-  hostname: tango-base.minikube.local
-  ingress:
-    enabled: true
-    nginx: false
-    hostname: tango-base.minikube.local
+  minikube: false
 
 etcd-operator:
   deployments:
