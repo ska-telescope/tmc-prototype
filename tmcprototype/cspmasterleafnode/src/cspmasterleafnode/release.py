@@ -16,5 +16,5 @@ description = """CspMasterLeafNode - Leaf Node to monitor and control CSP Master
 author = "apurva.ska"
 author_email = "apurva.ska at gmail.com"
 license = """BSD-3-Clause"""
-url = """www.tango-controls.org"""
+url = """https://www.skatelescope.org"""
 copyright = """"""

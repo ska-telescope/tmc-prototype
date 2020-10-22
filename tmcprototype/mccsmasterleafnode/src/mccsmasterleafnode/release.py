@@ -16,6 +16,6 @@ description = """MCCS Master Leaf Node monitors and controls the MCCS Master dev
 author = "jayant.ska"
 author_email = "jayant.ska at gmail.com"
 license = """BSD-3-Clause"""
-url = """www.tango-controls.org"""
+url = """https://www.skatelescope.org"""
 copyright = """"""
 

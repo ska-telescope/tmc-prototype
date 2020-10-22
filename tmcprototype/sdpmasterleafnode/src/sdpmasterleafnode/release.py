@@ -18,7 +18,7 @@ description = """ The primary responsibility of the SDP Subarray
 author = "vinodnsathe.ska"
 author_email = "vinodnsathe.ska at gmail.com"
 license = """BSD-3-Clause"""
-url = """www.tango-controls.org"""
+url = """https://www.skatelescope.org"""
 copyright = """"""
 
 

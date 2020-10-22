@@ -16,6 +16,6 @@ description = """MCCS Subarray Leaf Node monitors and controls the MCCS Subarray
 author = "jayant.ska"
 author_email = "jayant.ska at gmail.com"
 license = """BSD-3-Clause"""
-url = """www.tango-controls.org"""
+url = """https://www.skatelescope.org"""
 copyright = """"""
 
