@@ -337,8 +337,6 @@ def test_configure_should_raise_assertion_exception_when_called_invalid_obsstate
     device_proxy.On()
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.Configure(configure_str)
-    print("Asserion error is:::::::::::", device_proxy.activityMessage)
-    print("DevFailde error is:::::::::::", str(df))
     assert const.ERR_DEVICE_NOT_READY_OR_IDLE in device_proxy.activityMessage
     assert const.ERR_DEVICE_NOT_READY_OR_IDLE in str(df.value)
 

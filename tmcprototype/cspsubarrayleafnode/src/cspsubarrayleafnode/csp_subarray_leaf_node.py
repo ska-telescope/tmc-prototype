@@ -627,17 +627,20 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                if device._csp_subarray_proxy.obsState == ObsState.READY:
-                    device._csp_subarray_proxy.command_inout_asynch(const.CMD_STARTSCAN, "0",
-                                                                 self.startscan_cmd_ended_cb)
-                    device._read_activity_message = const.STR_STARTSCAN_SUCCESS
-                    self.logger.info(const.STR_STARTSCAN_SUCCESS)
-                    return (ResultCode.OK, const.STR_STARTSCAN_SUCCESS)
-                else:
-                    device._read_activity_message = const.ERR_DEVICE_NOT_READY
-                    log_msg = const.STR_OBS_STATE + str(device._csp_subarray_proxy.obsState)
-                    self.logger.error(const.ERR_DEVICE_NOT_READY)
-                    return (ResultCode.FAILED, const.ERR_DEVICE_NOT_READY)
+                assert device._csp_subarray_proxy.obsState == ObsState.READY
+                device._csp_subarray_proxy.command_inout_asynch(const.CMD_STARTSCAN, "0",
+                                                             self.startscan_cmd_ended_cb)
+                device._read_activity_message = const.STR_STARTSCAN_SUCCESS
+                self.logger.info(const.STR_STARTSCAN_SUCCESS)
+                return (ResultCode.OK, const.STR_STARTSCAN_SUCCESS)
+
+            except AssertionError as AE:
+                device._read_activity_message = const.ERR_DEVICE_NOT_READY
+                log_msg = const.STR_OBS_STATE + str(device._csp_subarray_proxy.obsState)
+                self.logger.error(const.ERR_DEVICE_NOT_READY)
+                tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, log_msg,
+                                             "CspSubarrayLeafNode.StartScanCommand",
+                                             tango.ErrSeverity.ERR)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_STARTSCAN_RESOURCES + str(dev_failed)
@@ -746,16 +749,19 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                if device._csp_subarray_proxy.obsState == ObsState.SCANNING:
-                    device._csp_subarray_proxy.command_inout_asynch(const.CMD_ENDSCAN, self.endscan_cmd_ended_cb)
-                    device._read_activity_message = const.STR_ENDSCAN_SUCCESS
-                    self.logger.info(const.STR_ENDSCAN_SUCCESS)
-                    return (ResultCode.OK, const.STR_ENDSCAN_SUCCESS)
-                else:
-                    device._read_activity_message = const.ERR_DEVICE_NOT_IN_SCAN
-                    log_msg = const.STR_OBS_STATE + str(device._csp_subarray_proxy.obsState)
-                    self.logger.error(const.ERR_DEVICE_NOT_IN_SCAN)
-                    return (ResultCode.FAILED, const.ERR_DEVICE_NOT_IN_SCAN)
+                assert device._csp_subarray_proxy.obsState == ObsState.SCANNING
+                device._csp_subarray_proxy.command_inout_asynch(const.CMD_ENDSCAN, self.endscan_cmd_ended_cb)
+                device._read_activity_message = const.STR_ENDSCAN_SUCCESS
+                self.logger.info(const.STR_ENDSCAN_SUCCESS)
+                return (ResultCode.OK, const.STR_ENDSCAN_SUCCESS)
+
+            except AssertionError as AE:
+                device._read_activity_message = const.ERR_DEVICE_NOT_IN_SCAN
+                log_msg = const.STR_OBS_STATE + str(device._csp_subarray_proxy.obsState) + str(AE)
+                self.logger.error(const.ERR_DEVICE_NOT_IN_SCAN)
+                tango.Except.throw_exception(const.STR_ENDSCAN_EXEC, log_msg,
+                                             "CspSubarrayLeafNode.EndScanCommand",
+                                             tango.ErrSeverity.ERR)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_ENDSCAN_INVOKING_CMD + str(dev_failed)
