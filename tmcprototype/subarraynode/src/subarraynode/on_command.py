@@ -3,12 +3,13 @@ OnCommand class for SubarrayNode
 """
 # Tango imports
 import tango
-from tango import DevFailed
+from tango import DevFailed, DeviceProxy, EventType
 
 # Additional import
 from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+from ska.base.control_model import HealthState, ObsMode, ObsState
 
 
 class OnCommand(SKASubarray.OnCommand):
