@@ -365,7 +365,6 @@ test-mid:
     - kubectl get namespace
   script:
     - kubectl version
-    - make clean
     - make install-chart MINIKUBE=false
     - make wait
     - make smoketest
