@@ -38,16 +38,17 @@ class OnCommand(SKASubarray.OnCommand):
 
         try:
             device._csp_subarray_ln_proxy = None
-            log_msg = const.STR_SA_PROXY_INIT + device.CspSubarrayLNFQDN
+            log_msg = const.STR_SA_PROXY_INIT # + str(device.CspSubarrayLNFQDN)
             device._csp_subarray_ln_proxy = device.get_deviceproxy(device.CspSubarrayLNFQDN)
             self.logger.info(log_msg)
             # Create proxy for SDP Subarray Leaf Node
             device._sdp_subarray_ln_proxy = None
-            log_msg = const.STR_SA_PROXY_INIT + device.CspSubarrayLNFQDN
+            log_msg = const.STR_SA_PROXY_INIT # + str(device.CspSubarrayLNFQDN)
             device._sdp_subarray_ln_proxy = device.get_deviceproxy(device.SdpSubarrayLNFQDN)
             self.logger.info(log_msg)
             device._csp_sa_proxy = device.get_deviceproxy(device.CspSubarrayFQDN)
             device._sdp_sa_proxy = device.get_deviceproxy(device.SdpSubarrayFQDN)
+    
         except DevFailed as dev_failed:
             log_msg = const.ERR_PROXY_CREATE
             self.logger.debug(log_msg)
