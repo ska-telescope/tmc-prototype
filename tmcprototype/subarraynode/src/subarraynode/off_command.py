@@ -37,6 +37,8 @@ class OffCommand(SKASubarray.OffCommand):
             device._sdp_subarray_ln_proxy.Off()
             message = "Off command completed OK"
             self.logger.info(message)
+
+            # TODO unsubscribe health obsState events from CSP and SDP
             return (ResultCode.OK, message)
 
         except DevFailed as dev_failed:

@@ -94,6 +94,7 @@ STR_POINTING_STATE_UNKNOWN_VAL = "Subarray pointingState event returned unknown 
 STR_ARROW = " :-> "
 STR_SA_INIT = "Initializing SubarrayNode..."
 STR_SA_INIT_SUCCESS = "Subarray node is initialized successfully."
+STR_SA_PROXY_INIT = "Creating proxy for -> "
 
 STR_CONFIGURE_IP_ARG = "Input Arguments for Configure command :-> "
 STR_GRP_DEF_CONFIGURE_FN = "Group devices during Configure command :-> "
@@ -196,6 +197,7 @@ ERR_SUBS_SDP_SA_LEAF_ATTR = "Exception occurred while subscribing to SDP Subarra
 ERR_SDP_SA_LEAF_INIT = "Error occured in SDP Subarray Leaf Node initialization "
 ERR_SUBSR_RECEIVE_ADDRESSES_SDP_SA = "Error in subscribing receive addresses of SDP Subarray"
 ERR_SA_INIT = "Subarray node initialization failed."
+ERR_PROXY_CREATE = "Proxy creaton failed on Subarray Node"
 
 
 # JSON keys
