@@ -223,15 +223,15 @@ def test_command_correct_obsstate(mock_csp_subarray, command_with_correct_obssta
     scope="function",
     params=[
         ("EndScan", ObsState.READY, const.ERR_DEVICE_NOT_IN_SCAN),
-        # ("GoToIdle", ObsState.IDLE, const.ERR_DEVICE_NOT_READY),
-        # ("Abort", ObsState.RESOURCING, const.ERR_UNABLE_ABORT_CMD),
-        # ("Abort", ObsState.EMPTY, const.ERR_UNABLE_ABORT_CMD),
-        # ("Restart", ObsState.EMPTY, const.ERR_UNABLE_RESTART_CMD),
-        # ("Restart", ObsState.RESOURCING, const.ERR_UNABLE_RESTART_CMD),
-        # ("Restart", ObsState.IDLE, const.ERR_UNABLE_RESTART_CMD),
-        # ("Restart", ObsState.CONFIGURING, const.ERR_UNABLE_RESTART_CMD),
-        # ("Restart", ObsState.SCANNING, const.ERR_UNABLE_RESTART_CMD),
-        # ("Restart", ObsState.READY, const.ERR_UNABLE_RESTART_CMD),
+        ("GoToIdle", ObsState.IDLE, const.ERR_DEVICE_NOT_READY),
+        ("Abort", ObsState.RESOURCING, const.ERR_UNABLE_ABORT_CMD),
+        ("Abort", ObsState.EMPTY, const.ERR_UNABLE_ABORT_CMD),
+        ("Restart", ObsState.EMPTY, const.ERR_UNABLE_RESTART_CMD),
+        ("Restart", ObsState.RESOURCING, const.ERR_UNABLE_RESTART_CMD),
+        ("Restart", ObsState.IDLE, const.ERR_UNABLE_RESTART_CMD),
+        ("Restart", ObsState.CONFIGURING, const.ERR_UNABLE_RESTART_CMD),
+        ("Restart", ObsState.SCANNING, const.ERR_UNABLE_RESTART_CMD),
+        ("Restart", ObsState.READY, const.ERR_UNABLE_RESTART_CMD),
     ])
 def command_with_incorrect_obsstate(request):
     cmd_name, obs_state, activity_msg = request.param
