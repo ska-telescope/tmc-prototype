@@ -25,14 +25,10 @@ global:
   sub-system:
     tango-base:
       enabled: false
-    webjive:
-      enabled: false
 
-# webjive:
-#   ingress:
-#     enabled: true
-#     nginx: false
-#     hostname: integration.engageska-portugal.pt
+# Set minikube=true when deploying on minikube
+webjive:
+  minikube: false
 
 etcd-operator:
   deployments:
