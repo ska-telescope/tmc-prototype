@@ -140,7 +140,7 @@ def test_on_command_should_raise_dev_failed(mock_csp_master):
     csp_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.On()
-    assert const.ERR_EXE_ON_CMD in str(df.value)
+    assert const.ERR_DEVFAILED_MSG in str(df.value)
 
 
 def test_standby_command_should_raise_dev_failed(mock_csp_master):
@@ -154,7 +154,7 @@ def test_standby_command_should_raise_dev_failed(mock_csp_master):
 def raise_devfailed_exception(*args):
     # "This function is called to raise DevFailed exception with arguments."
     tango.Except.throw_exception(const.STR_CMD_FAILED, const.ERR_DEVFAILED_MSG,
-                                 cmd_name, tango.ErrSeverity.ERR)
+                                 "", tango.ErrSeverity.ERR)
 
 
 #TODO: FOR FUTURE USE
