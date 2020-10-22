@@ -365,12 +365,14 @@ test-mid:
     - kubectl get namespace
   script:
     - kubectl version
+    - make clean
     - make install-chart MINIKUBE=false
     - make wait
     - make smoketest
     # - make test
   after_script:
     - make uninstall-chart
+    - make clean
     - make delete_namespace-sdp
     - make delete_namespace
     - mkdir -p build
