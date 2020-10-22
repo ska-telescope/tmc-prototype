@@ -452,6 +452,7 @@ class CentralNode(SKABaseDevice):
     # Commands
     # --------
 
+    # pylint: disable=unused-variable
     class StowAntennasCommand(ResponseCommand):
         """
         A class for CentralNode's StowAntennas() command.
@@ -524,6 +525,8 @@ class CentralNode(SKABaseDevice):
                                              "CentralNode.StowAntennasCommand",
                                              tango.ErrSeverity.ERR)
             return (ResultCode.OK, device._read_activity_message)
+
+    # pylint: enable=unused-variable
 
     def is_StowAntennas_allowed(self):
         """

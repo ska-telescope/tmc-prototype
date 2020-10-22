@@ -635,7 +635,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 self.logger.info(const.STR_STARTSCAN_SUCCESS)
                 return (ResultCode.OK, const.STR_STARTSCAN_SUCCESS)
 
-            except AssertionError as AE:
+            except AssertionError:
                 device._read_activity_message = const.ERR_DEVICE_NOT_READY
                 log_msg = const.STR_OBS_STATE + str(device._csp_subarray_proxy.obsState)
                 self.logger.error(const.ERR_DEVICE_NOT_READY)
