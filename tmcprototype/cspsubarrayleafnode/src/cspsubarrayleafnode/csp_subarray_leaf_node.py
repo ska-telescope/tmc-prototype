@@ -638,7 +638,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 device._read_activity_message = const.ERR_DEVICE_NOT_READY
                 log_msg = const.STR_OBS_STATE + str(device._csp_subarray_proxy.obsState)
                 self.logger.error(const.ERR_DEVICE_NOT_READY)
-                tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, log_msg,
+                tango.Except.throw_exception(const.STR_START_SCAN_EXEC, log_msg,
                                              "CspSubarrayLeafNode.StartScanCommand",
                                              tango.ErrSeverity.ERR)
 
