@@ -1,8 +1,9 @@
 display: ":0"
 xauthority: "~/.Xauthority"
-minikube: true
+# minikube: true
 
 global:
+  minikube: false
   labels:
     app: tmc-prototype
   annotations:
@@ -28,11 +29,12 @@ global:
     webjive:
       enabled: false
 
-# webjive:
-#   ingress:
-#     enabled: true
-#     nginx: false
-#     hostname: integration.engageska-portugal.pt
+webjive:
+  hostname: tango-base.minikube.local
+  ingress:
+    enabled: true
+    nginx: false
+    hostname: tango-base.minikube.local
 
 etcd-operator:
   deployments:
