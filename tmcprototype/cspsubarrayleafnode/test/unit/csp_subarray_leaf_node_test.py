@@ -165,7 +165,7 @@ def test_command_with_arg_devfailed(mock_csp_subarray, event_subscription, comma
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     cmd_name, input_str, requested_cmd, obs_state, error_msg = command_with_arg
     csp_subarray1_proxy_mock.obsState = obs_state
-    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_with_arg
+    csp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name, input_str)
     assert error_msg in str(df.value)
@@ -390,24 +390,12 @@ def command_callback_with_devfailed_exception():
                                  const.ERR_CALLBACK_CMD_FAILED, " ", tango.ErrSeverity.ERR)
 
 
-def raise_devfailed_with_arg(cmd_name, input_arg1, input_arg2):
-    # "This function is called to raise DevFailed exception with arguments."
-    tango.Except.throw_exception(const.STR_CMD_FAILED, const.ERR_DEVFAILED_MSG,
-                                 cmd_name, tango.ErrSeverity.ERR)
-
-
 def command_callback_with_command_exception():
     # "This function is called when there is exception in command calling."
     return Exception("Exception in command callback")
 
 
-def raise_devfailed_exception(cmd_name, inp_str):
-    # "This function is called to raise DevFailed exception."
-    tango.Except.throw_exception("CspSubarrayLeafNode_CommandFailed", const.ERR_DEVFAILED_MSG,
-                                 " ", tango.ErrSeverity.ERR)
-
-
-def raise_devfailed_exception_for_scan(cmd_name, inp_str, cmd_cb):
+def raise_devfailed_exception(*args):
     # "This function is called to raise DevFailed exception."
     tango.Except.throw_exception("CspSubarrayLeafNode_CommandFailed", const.ERR_DEVFAILED_MSG,
                                  " ", tango.ErrSeverity.ERR)

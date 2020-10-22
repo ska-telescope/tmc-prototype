@@ -44,7 +44,7 @@ def mock_sdp_master():
         yield tango_context.device, sdp_master_proxy_mock
 
 
-def raise_devfailed_without_arg(cmd_name, input_arg1):
+def raise_devfailed_exception(*args):
     # "This function is called to raise DevFailed exception without arguments."
     tango.Except.throw_exception(const.STR_CMD_FAILED, const.ERR_DEVFAILED_MSG,
                                  cmd_name, tango.ErrSeverity.ERR)
@@ -73,7 +73,7 @@ def test_command_should_be_relayed_to_sdp_master(mock_sdp_master, command_withou
 def test_command_should_raise_exception(mock_sdp_master, command_without_args):
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
     cmd_name, _, error_msg = command_without_args
-    sdp_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_without_arg
+    sdp_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name)
     assert error_msg in str(df)
@@ -89,7 +89,7 @@ def test_off_should_command_sdp_master_leaf_node_to_stop(mock_sdp_master):
 def test_off_command_should_raise_dev_failed(mock_sdp_master):
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
     device_proxy.On()
-    sdp_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_without_arg
+    sdp_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.Off()    
     assert const.ERR_DEVFAILED_MSG in str(df)
