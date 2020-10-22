@@ -182,6 +182,8 @@ def test_off_should_raise_devfailed_exception(mock_lower_devices):
     print("State is : -------------------", str(tango_context.device.State()))
     with pytest.raises(tango.DevFailed) as df:
         tango_context.device.Off()
+        print("devfailed exception is -------------", str(df))
+        print("devfailed exception value is -------------", str(df.value))
     assert "Error executing command OffCommand" in str(df.value)
 
 
