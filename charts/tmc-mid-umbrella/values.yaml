@@ -26,6 +26,7 @@ global:
     tango-base:
       enabled: false
 
+# Set minikube=true when deploying on minikube
 webjive:
   minikube: false
 
