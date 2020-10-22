@@ -37,7 +37,7 @@ setup(
     author_email='jyotin.ska at gmail.com',
     license='BSD-3-Clause',
     long_description=long_description,
-    url='www.tango-controls.org',
+    url='https://www.skatelescope.org',
     platforms="All Platforms",
     install_requires=['pytango==9.3.2', 'mock', 'katpoint', 'ska_logging==0.3.0', 'lmcbaseclasses==0.6.5'],
     #test_suite='test',
