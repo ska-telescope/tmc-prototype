@@ -178,7 +178,7 @@ def test_start_scan_should_raise_devfailed_exception(mock_lower_devices):
 def test_off_should_raise_devfailed_exception(mock_lower_devices):
     tango_context, mccs_subarray1_ln_proxy_mock = mock_lower_devices[:2]
     # mccs_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
-    mccs_subarray1_ln_proxy_mock.Off.side_effect = raise_devfailed_exception
+    mccs_subarray1_ln_proxy_mock.Off.side_effect = raise_devfailed_exception_off_command
     print("State is : -------------------", str(tango_context.device.State()))
     with pytest.raises(tango.DevFailed) as df:
         tango_context.device.Off()
@@ -568,7 +568,8 @@ def create_dummy_event_custom_exception(proxy_mock, device_fqdn, attribute, attr
     return fake_event
 
 
-def raise_devfailed_exception(cmd_name):
+def raise_devfailed_exception_off_command():
+    cmd_name == 'Off'
     tango.Except.throw_exception("SubarrayNode_Commandfailed",
                                  "This is error message for devfailed",
                                  cmd_name, tango.ErrSeverity.ERR)
