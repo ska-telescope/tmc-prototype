@@ -55,6 +55,7 @@ ERR_UNABLE_RESTART_CMD = "Unable to invoke Restart command"
 ERR_UNABLE_ABORT_CMD = "Unable to invoke Abort command"
 ERR_UNABLE_OBSRESET_CMD = "Unable to invoke ObsReset command"
 ERR_RAISED_EXCEPTION = "CSP subarray leaf node raised exception"
+ERR_DEVICE_NOT_IDLE = "CspSubarray is not in IDLE obsState."
 #strings
 #General strings
 STR_RECEPTORID_LIST = "receptorIDList"

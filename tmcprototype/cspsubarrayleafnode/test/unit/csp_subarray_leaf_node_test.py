@@ -223,15 +223,21 @@ def test_command_correct_obsstate(mock_csp_subarray, command_with_correct_obssta
     scope="function",
     params=[
         ("EndScan", ObsState.READY, const.ERR_DEVICE_NOT_IN_SCAN),
-        # ("GoToIdle", ObsState.IDLE, const.ERR_DEVICE_NOT_READY),
-        # ("Abort", ObsState.RESOURCING, const.ERR_UNABLE_ABORT_CMD),
-        # ("Abort", ObsState.EMPTY, const.ERR_UNABLE_ABORT_CMD),
-        # ("Restart", ObsState.EMPTY, const.ERR_UNABLE_RESTART_CMD),
-        # ("Restart", ObsState.RESOURCING, const.ERR_UNABLE_RESTART_CMD),
-        # ("Restart", ObsState.IDLE, const.ERR_UNABLE_RESTART_CMD),
-        # ("Restart", ObsState.CONFIGURING, const.ERR_UNABLE_RESTART_CMD),
-        # ("Restart", ObsState.SCANNING, const.ERR_UNABLE_RESTART_CMD),
-        # ("Restart", ObsState.READY, const.ERR_UNABLE_RESTART_CMD),
+        ("GoToIdle", ObsState.IDLE, const.ERR_DEVICE_NOT_READY),
+        ("Abort", ObsState.RESOURCING, const.ERR_UNABLE_ABORT_CMD),
+        ("Abort", ObsState.EMPTY, const.ERR_UNABLE_ABORT_CMD),
+        ("Restart", ObsState.EMPTY, const.ERR_UNABLE_RESTART_CMD),
+        ("Restart", ObsState.RESOURCING, const.ERR_UNABLE_RESTART_CMD),
+        ("Restart", ObsState.IDLE, const.ERR_UNABLE_RESTART_CMD),
+        ("Restart", ObsState.CONFIGURING, const.ERR_UNABLE_RESTART_CMD),
+        ("Restart", ObsState.SCANNING, const.ERR_UNABLE_RESTART_CMD),
+        ("Restart", ObsState.READY, const.ERR_UNABLE_RESTART_CMD),
+        ("ObsReset", ObsState.EMPTY, const.ERR_UNABLE_OBSRESET_CMD),
+        ("ObsReset", ObsState.RESOURCING, const.ERR_UNABLE_OBSRESET_CMD),
+        ("ObsReset", ObsState.IDLE, const.ERR_UNABLE_OBSRESET_CMD),
+        ("ObsReset", ObsState.CONFIGURING, const.ERR_UNABLE_OBSRESET_CMD),
+        ("ObsReset", ObsState.SCANNING, const.ERR_UNABLE_OBSRESET_CMD),
+        ("ObsReset", ObsState.READY, const.ERR_UNABLE_OBSRESET_CMD),
     ])
 def command_with_incorrect_obsstate(request):
     cmd_name, obs_state, activity_msg = request.param
@@ -245,30 +251,6 @@ def test_command_fails_when_device_in_invalid_obstate(mock_csp_subarray, command
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name)
     assert activity_msg in str(df.value)
-
-
-@pytest.fixture(
-    scope="function",
-    params=[
-        (ObsState.EMPTY, const.ERR_UNABLE_OBSRESET_CMD, None),
-        (ObsState.RESOURCING, const.ERR_UNABLE_OBSRESET_CMD, None),
-        (ObsState.IDLE, const.ERR_UNABLE_OBSRESET_CMD, None),
-        (ObsState.CONFIGURING, const.ERR_UNABLE_OBSRESET_CMD, None),
-        (ObsState.SCANNING, const.ERR_UNABLE_OBSRESET_CMD, None),
-        (ObsState.READY, const.ERR_UNABLE_OBSRESET_CMD, None),
-    ])
-def obsreset_command_with_incorrect_obsstate(request):
-    obs_state, activity_msg, return_value = request.param
-    return obs_state, activity_msg, return_value
-
-
-def test_command_obsreset_fails_when_device_in_invalid_obstate(mock_csp_subarray, obsreset_command_with_incorrect_obsstate):
-    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
-    obs_state, activity_msg, return_value = obsreset_command_with_incorrect_obsstate
-    csp_subarray1_proxy_mock.obsState = obs_state
-    result = device_proxy.ObsReset()
-    assert activity_msg in device_proxy.activityMessage
-    assert result == return_value
 
 
 def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list(mock_csp_subarray):
@@ -303,10 +285,21 @@ def test_release_resource_should_command_csp_subarray_to_release_all_resources(m
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
     device_proxy.On()
     device_proxy.AssignResources(assign_input_str)
+    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
     device_proxy.ReleaseAllResources()
     csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_REMOVE_ALL_RECEPTORS,
                                                             any_method(with_name = 'releaseallresources_cmd_ended_cb'))
     assert_activity_message(device_proxy, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
+
+
+def test_release_resource_should_raise_exception_when_not_idle_obsstate(mock_csp_subarray):
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
+    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
+    device_proxy.On()
+    device_proxy.AssignResources(assign_input_str)
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.ReleaseAllResources()
+    assert const.ERR_DEVICE_NOT_IDLE in str(df.value)
 
 
 def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(mock_csp_subarray):
