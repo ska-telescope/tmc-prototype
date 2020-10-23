@@ -21,7 +21,7 @@ import tango
 from tango import DeviceProxy, ApiUtil, DevState, AttrWriteType, DevFailed
 from tango.server import run,command, device_property, attribute
 from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode, ResponseCommand
+from ska.base.commands import ResultCode, BaseCommand
 
 # Additional import
 from . import const, release
@@ -299,7 +299,7 @@ class SdpMasterLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
 
-    class DisableCommand(ResponseCommand):
+    class DisableCommand(BaseCommand):
         """
         A class for SDP master's Disable() command.
         """
@@ -370,7 +370,6 @@ class SdpMasterLeafNode(SKABaseDevice):
                 device._sdp_proxy.command_inout_asynch(const.CMD_Disable, self.disable_cmd_ended_cb)
                 self.logger.debug(const.STR_DISABLE_CMS_SUCCESS)
                 device._read_activity_message = const.STR_DISABLE_CMS_SUCCESS
-                return (ResultCode.OK, const.STR_DISABLE_CMS_SUCCESS)
 
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
@@ -395,8 +394,6 @@ class SdpMasterLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
     )
     def Disable(self):
         """
@@ -408,10 +405,9 @@ class SdpMasterLeafNode(SKABaseDevice):
 
         """
         handler = self.get_command_object("Disable")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
+        handler()
 
-    class StandbyCommand(ResponseCommand):
+    class StandbyCommand(BaseCommand):
         """
         A class for SDP Master's Standby() command.
         """
@@ -478,7 +474,6 @@ class SdpMasterLeafNode(SKABaseDevice):
                 device._sdp_proxy.command_inout_asynch(const.CMD_STANDBY, self.standby_cmd_ended_cb)
                 log_msg = const.CMD_STANDBY + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
                 self.logger.debug(log_msg)
-                return (ResultCode.OK, log_msg)
 
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
@@ -486,6 +481,7 @@ class SdpMasterLeafNode(SKABaseDevice):
                 tango.Except.re_throw_exception(dev_failed, const.ERR_INVOKING_CMD, log_msg,
                                              "SdpMasterLeafNode.StandbyCommand()",
                                              tango.ErrSeverity.ERR)
+
         def check_allowed(self):
             """
             Check Whether this command is allowed to be run in current device
@@ -507,8 +503,6 @@ class SdpMasterLeafNode(SKABaseDevice):
             return True
 
     @command(
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
     )
     def Standby(self):
         """
@@ -520,8 +514,7 @@ class SdpMasterLeafNode(SKABaseDevice):
 
         """
         handler = self.get_command_object("Standby")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
+        handler()
 
     def init_command_objects(self):
         """
