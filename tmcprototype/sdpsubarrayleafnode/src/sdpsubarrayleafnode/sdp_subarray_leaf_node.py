@@ -251,10 +251,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             :param argin: None.
 
-            :return: A tuple containing a return code and a string message indicating status.
-                     The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: DevFailed if the command execution is not successful.
             """
@@ -266,7 +263,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 # Update the status of command execution status in activity message
                 device._read_activity_message = const.STR_REL_RESOURCES
                 self.logger.info(const.STR_REL_RESOURCES)
-                # return(ResultCode.OK, const.STR_REL_RESOURCES)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_RELEASE_RESOURCES + str(dev_failed)
@@ -401,10 +397,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             Note: Enter input without spaces
 
-            :return: A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: ValueError if input argument json string contains invalid value.
                      DevFailed if the command execution is not successful.
@@ -528,10 +521,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             { "scan_type": "science_A" }
 
-            :return: A tuple containing a return code and a string message indicating status.
-                     The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: ValueError if input argument json string contains invalid value.
                      KeyError if input argument json string contains invalid key.
@@ -644,10 +634,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             Note: Enter input as without spaces:{“id”:1}
 
-            :return: A tuple containing a return code and a string message indicating status.
-                     The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: DevFailed if the command execution is not successful.
             """
@@ -760,10 +747,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             :param argin: None
 
-            :return: A tuple containing a return code and a string message indicating status.
-                     The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: DevFailed if the command execution is not successful.
             """
@@ -867,10 +851,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             This command invokes End command on SDP subarray to end the current Scheduling block.
 
-            :return: A tuple containing a return code and a string message indicating status.
-                     The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: DevFailed if the command execution is not successful.
             """
@@ -975,10 +956,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             Command to abort the current operation being done on the SDP subarray.
 
-            :return: A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
-
-            :rtype: (ReturnCode, str)
+            :return: None
 
             :raises: DevFailed if error occurs while invoking command on CSPSubarray.
 
@@ -1091,10 +1069,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             Command to restart the SDP subarray and bring it to its ON state.
 
-            :return: A tuple containing a return code and a string message indicating status. The message is for
-                        information purpose only.
-
-            :rtype: (ReturnCode, str)
+            :return: None
 
             :raises: DevFailed if error occurs while invoking command on SDPSubarray.
 
