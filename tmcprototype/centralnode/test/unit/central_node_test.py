@@ -242,9 +242,9 @@ def test_stow_antennas_should_raise_devfailed_exception():
         proxy_mock.command_inout.side_effect = raise_devfailed_exception
 
     with fake_tango_system(CentralNode, initial_dut_properties, proxies_to_mock) as tango_context:
-        with pytest.raises(tango.DevFailed):
+        with pytest.raises(tango.DevFailed) as df:
             tango_context.device.StowAntennas(dish_device_ids)
-        assert const.ERR_EXE_STOW_CMD in tango_context.device.activityMessage
+        assert const.ERR_EXE_STOW_CMD in str(df.value)
 
 
 def test_stow_antennas_invalid_value():
