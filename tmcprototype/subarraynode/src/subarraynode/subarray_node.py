@@ -265,7 +265,7 @@ class SubarrayNode(SKASubarray):
                 _ = self.subarray_ln_health_state_map.pop(dev_name)
 
     # todo for unsubscribing health and obsState events on CSP and SDP
-    def _unsubscribe_csp_sdp_health_events(self, proxy_event_id_map):
+    def _unsubscribe_csp_sdp_state_events(self, proxy_event_id_map):
         """
         This function unsubscribes all events given by the event ids and their
         corresponding DeviceProxy objects.
@@ -369,8 +369,6 @@ class SubarrayNode(SKASubarray):
             self._read_activity_message = "Error in device obsState."
             raise InvalidObsStateError("Subarray is not in EMPTY obsState, \
                 please check the subarray obsState")
-
-    def 
 
     def remove_receptors_from_group(self):
         """

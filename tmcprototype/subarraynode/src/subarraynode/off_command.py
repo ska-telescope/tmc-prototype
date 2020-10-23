@@ -40,8 +40,8 @@ class OffCommand(SKASubarray.OffCommand):
 
             # TODO unsubscribe health obsState events from CSP and SDP
             # decide if unsubscription is required
-            # device._unsubscribe_csp_sdp_health_events(device._cspSdpLnHealthEventID)
-            # device._unsubscribe_csp_sdp_health_events(device._cspSdpLnObsStateEventID)
+            # device._unsubscribe_csp_sdp_state_events(device._cspSdpLnHealthEventID)
+            # device._unsubscribe_csp_sdp_obs_state_events(device._cspSdpLnObsStateEventID)
             return (ResultCode.OK, message)
 
         except DevFailed as dev_failed:
