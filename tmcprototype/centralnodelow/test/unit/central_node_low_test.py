@@ -210,7 +210,7 @@ def test_assign_resources_should_raise_devfailed_exception_when_subarray_node_th
     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     subarray1_proxy_mock.DevState = DevState.OFF
     mccs_master_ln_proxy_mock.DevState = DevState.ON
-    subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
+    subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.AssignResources(assign_input_str)
     assert "Error occurred while assigning resources to the Subarray" in str(df)
@@ -264,7 +264,7 @@ def test_release_resources_should_raise_devfailed_exception_when_mccs_master_ln_
     mccs_master_ln_proxy_mock.DevState = DevState.OFF
     subarray1_proxy_mock.DevState = DevState.ON
     
-    mccs_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
+    mccs_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
    
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.ReleaseResources(release_input_str)
@@ -333,12 +333,12 @@ def assert_activity_message(dut, expected_message):
 
 
 # Throw Devfailed exception for command without argument
-def raise_devfailed_exception(cmd_name):
-    tango.Except.throw_exception("CentralNode_Commandfailed", "This is error message for devfailed",
-                                 " ", tango.ErrSeverity.ERR)
+# def raise_devfailed_exception(cmd_name):
+#     tango.Except.throw_exception("CentralNode_Commandfailed", "This is error message for devfailed",
+#                                  " ", tango.ErrSeverity.ERR)
 
 # Throw Devfailed exception for command with argument
-def raise_devfailed_exception_with_args(cmd_name, input_args):
+def raise_devfailed_exception(*args):
     tango.Except.throw_exception("CentralNode_Commandfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
 
