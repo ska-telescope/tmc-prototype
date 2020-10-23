@@ -64,14 +64,20 @@ class OnCommand(SKASubarray.OnCommand):
             device.subarray_ln_health_state_map[device._csp_subarray_ln_proxy.dev_name()] = (
                 HealthState.UNKNOWN)
             # Subscribe cspsubarrayHealthState (forwarded attribute) of CspSubarray
-            device._csp_subarray_ln_proxy.subscribe_event(
+            self._event_id = device._csp_subarray_ln_proxy.subscribe_event(
                 const.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,device.health_state_cb,
                 stateless=True)
-            
-            # device._cspSdpLnHealthEventID[device._csp_subarray_ln_proxy] = self.event_id
+            device._cspSdpLnHealthEventID[device._csp_subarray_ln_proxy] = self._event_id
+            log_msg = const.STR_CSP_LN_VS_HEALTH_EVT_ID + str(device._cspSdpLnHealthEventID)
+            self.logger.debug(log_msg)
+
             # Subscribe cspSubarrayObsState (forwarded attribute) of CspSubarray
-            device._csp_subarray_ln_proxy.subscribe_event(const.EVT_CSPSA_OBS_STATE, EventType.CHANGE_EVENT,
+            self._event_id = device._csp_subarray_ln_proxy.subscribe_event(const.EVT_CSPSA_OBS_STATE, EventType.CHANGE_EVENT,
                                                             device.observation_state_cb, stateless=True)
+            device._cspSdpLnObsStateEventID[device._csp_subarray_ln_proxy] = self._event_id
+            log_msg = const.STR_CSP_LN_VS_HEALTH_EVT_ID + str(device._cspSdpLnObsStateEventID)
+            self.logger.debug(log_msg)
+
             device.set_status(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
             self.logger.info(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
         except DevFailed as dev_failed:
@@ -88,18 +94,22 @@ class OnCommand(SKASubarray.OnCommand):
             device.subarray_ln_health_state_map[device._sdp_subarray_ln_proxy.dev_name()] = (
                 HealthState.UNKNOWN)
             # Subscribe sdpSubarrayHealthState (forwarded attribute) of SdpSubarray
-            device._sdp_subarray_ln_proxy.subscribe_event(const.EVT_SDPSA_HEALTH, EventType.CHANGE_EVENT,
+            self._event_id = device._sdp_subarray_ln_proxy.subscribe_event(const.EVT_SDPSA_HEALTH, EventType.CHANGE_EVENT,
                                                         device.health_state_cb, stateless=True)
-                                                        
+            device._cspSdpLnHealthEventID[device._sdp_subarray_ln_proxy] = self._event_id   
+            log_msg = const.STR_SDP_LN_VS_HEALTH_EVT_ID + str(device._cspSdpLnHealthEventID)
+            self.logger.debug(log_msg)
+
             # Subscribe sdpSubarrayObsState (forwarded attribute) of SdpSubarray
-            device._sdp_subarray_ln_proxy.subscribe_event(const.EVT_SDPSA_OBS_STATE, EventType.CHANGE_EVENT,
+            self._event_id = device._sdp_subarray_ln_proxy.subscribe_event(const.EVT_SDPSA_OBS_STATE, EventType.CHANGE_EVENT,
                                                         device.observation_state_cb, stateless=True)
-            # device._sdp_sa_proxy.subscribe_event('state', EventType.CHANGE_EVENT,
-            #                                    device.device_state_cb, stateless=True)
+            device._cspSdpLnObsStateEventID[device._sdp_subarray_ln_proxy] = self._event_id 
+            log_msg = const.STR_SDP_LN_VS_HEALTH_EVT_ID + str(device._cspSdpLnObsStateEventID)
+            self.logger.debug(log_msg)                                           
+
             # Subscribe ReceiveAddresses of SdpSubarray
             device._sdp_sa_proxy.subscribe_event("receiveAddresses", EventType.CHANGE_EVENT,
                                                 device.receive_addresses_cb, stateless=True)
-
             device.set_status(const.STR_SDP_SA_LEAF_INIT_SUCCESS)
         except DevFailed as dev_failed:
             log_msg = const.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed)

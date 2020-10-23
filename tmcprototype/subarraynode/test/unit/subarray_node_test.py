@@ -1227,6 +1227,7 @@ def test_subarray_health_state_event_to_raise_devfailed_exception_for_csp_subarr
 
     with fake_tango_system(SubarrayNode, initial_dut_properties, proxies_to_mock) as tango_context:
         tango_context.device.On()
+        print("After On Command Invoke")
         health_state_value = HealthState.FAILED
         dummy_event = create_dummy_event_healthstate_with_proxy(
             subarray_ln_proxy_mock, subarray_ln_fqdn, health_state_value,

@@ -265,24 +265,25 @@ class SubarrayNode(SKASubarray):
                 _ = self.subarray_ln_health_state_map.pop(dev_name)
 
     # todo for unsubscribing health and obsState events on CSP and SDP
-    # def _unsubscribe_health_obsState_events(self, device_proxy, proxy_event_id):
-    #     """
-    #     This function unsubscribes all events given by the event ids and their
-    #     corresponding DeviceProxy objects.
+    def _unsubscribe_csp_sdp_health_events(self, proxy_event_id_map):
+        """
+        This function unsubscribes all events given by the event ids and their
+        corresponding DeviceProxy objects.
 
-    #     :param 
-    #         device_proxy: Device Proxy
-    #         proxy_event_id: <event_id>
+        :param 
+            device_proxy: Device Proxy
+            proxy_event_id: <event_id>
 
-    #     :return: None
+        :return: None
 
-    #     """
-    #     try:
-    #         device_proxy.unsubscribe_event(event_id)
-    #     except DevFailed as dev_failed:
-    #         log_message = "Failed to unsubscribe event {}.".format(dev_failed)
-    #         self.logger.error(log_message )
-    #         self._read_activity_message = log_message
+        """
+        for device_proxy, event_id in proxy_event_id_map.items():
+            try:
+                device_proxy.unsubscribe_event(event_id)
+            except DevFailed as dev_failed:
+                log_message = "Failed to unsubscribe health state event {}.".format(dev_failed)
+                self.logger.error(log_message )
+                self._read_activity_message = log_message
 
     def _unsubscribe_resource_events(self, proxy_event_id_map):
         """
@@ -368,6 +369,8 @@ class SubarrayNode(SKASubarray):
             self._read_activity_message = "Error in device obsState."
             raise InvalidObsStateError("Subarray is not in EMPTY obsState, \
                 please check the subarray obsState")
+
+    def 
 
     def remove_receptors_from_group(self):
         """
@@ -506,7 +509,8 @@ class SubarrayNode(SKASubarray):
             device._pointing_state_event_id = []
             device._dishLnVsHealthEventID = {}
             device._dishLnVsPointingStateEventID = {}
-            # device._cspSdpLnHealthObsStateEventID = {}
+            device._cspSdpLnHealthEventID = {}
+            device._cspSdpLnObsStateEventID = {}
             device.subarray_ln_health_state_map = {}
             device._subarray_health_state = HealthState.OK  #Aggregated Subarray Health State
             device._csp_sa_obs_state = None
