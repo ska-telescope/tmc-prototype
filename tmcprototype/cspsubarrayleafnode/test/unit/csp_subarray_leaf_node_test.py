@@ -292,7 +292,7 @@ def test_release_resource_should_command_csp_subarray_to_release_all_resources(m
     assert_activity_message(device_proxy, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
 
-def test_release_resource_should_raise_exception_when_not_idle_obsstate(mock_csp_subarray):
+def test_release_resource_should_raise_exception_when_not_in_idle_obsstate(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
     device_proxy.On()
