@@ -653,7 +653,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
     def StartScan(self, argin):
         """ Invokes StartScan command on cspsubarrayleafnode"""
         handler = self.get_command_object("StartScan")
-        handler()
+        handler(argin)
 
     def is_StartScan_allowed(self):
         """
