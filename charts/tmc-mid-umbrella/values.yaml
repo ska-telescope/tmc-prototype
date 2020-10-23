@@ -30,30 +30,69 @@ global:
 webjive:
   minikube: false
 
-# etcd-operator:
-#   deployments:
-#     backupOperator: false
-#     restoreOperator: false
+etcd-operator:
+  deployments:
+    backupOperator: false
+    restoreOperator: false
 
 # Need to identify the dependencies from lower level devices which are common and referred in TMC as well.
 # The same dependencies should be only referred in one chart at a time. 
 # This is handled by making the enable : true/false the dependency.
 
-csp-proto:
-  tango-base:
-    enabled: false
-
+csp-proto:      
+  csplmc:
+     enabled: true
 cbf-proto:
-  tango-base:
-    enabled: false
+  midcbfmcs:
+     enabled: true
+
+# csp-proto:
+#   tango-base:
+#     enabled: false
+
+# cbf-proto:
+#   tango-base:
+#     enabled: false
 
 sdp-prototype:
-  etcd:
-    enbaled: true
-  tango-base:
-    tangodb:
-      enabled: false
-    databaseds:
-      enabled: false
+  # tango-base:
+  #   tangodb:
+  #     enabled: false
+  #   databaseds:
+  #     enabled: false
+
+  # ds config
+  dsconfig:
+    image:
+      registry: nexus.engageska-portugal.pt/ska-docker
+      image: tango-dsconfig
+      tag: 1.2.5.1
+      pullPolicy: IfNotPresent
+
+  # Processing controller
+  processing_controller:
+    image: nexus.engageska-portugal.pt/sdp-prototype/processing-controller
+    version: 0.6.0
+    replicas: 1
+    resources: {}
+    imagePullPolicy: IfNotPresent
+    workflows:
+      url: https://gitlab.com/ska-telescope/sdp-prototype/-/raw/master/src/workflows/workflows.json
+      refresh: 300
+
+  # Tango devices
+  tangods:
+    component: subarray-controller
+    subsystem: execution-control
+    function: sdp-monitoring-and-control
+    domain: subarray
+    master:
+      image: nexus.engageska-portugal.pt/sdp-prototype/tangods_sdp_master
+      version: 0.3.3
+      imagePullPolicy: IfNotPresent
+    subarray:
+      image: nexus.engageska-portugal.pt/sdp-prototype/tangods_sdp_subarray
+      version: 0.11.0
+      imagePullPolicy: IfNotPresent
 
 
