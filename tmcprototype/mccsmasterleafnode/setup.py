@@ -37,7 +37,7 @@ setup(name=name,
       license='BSD-3-Clause',
       long_description=long_description,
       url='https://www.skatelescope.org',
-      platforms="All Platforms",
+      platforms="Linux",
       install_requires=['pytango==9.3.2', 'mock', 'ska_logging==0.3.0', 'lmcbaseclasses==0.6.5'],
       # test_suite='test',
       setup_requires=[
