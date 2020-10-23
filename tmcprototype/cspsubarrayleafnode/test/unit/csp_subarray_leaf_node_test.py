@@ -319,6 +319,7 @@ def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(
 
 def test_configure_should_raise_exception_when_called_invalid_json(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
+    device_proxy.On()
     csp_subarray1_proxy_mock.obsState = ObsState.IDLE
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.Configure(invalid_key_str)
