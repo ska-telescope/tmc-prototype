@@ -491,15 +491,7 @@ class CentralNode(SKABaseDevice):
             device = self.target
             try:
                 for leafId in range(0, len(argin)):
-                    try:
-                        input_type_check = float(argin[leafId])
-                    except ValueError as value_error:
-                        log_msg = const.ERR_STOW_ARGIN + str(value_error)
-                        self.logger.exception(value_error)
-                        device._read_activity_message = const.ERR_STOW_ARGIN
-                        tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
-                                                     "CentralNode.StowAntennasCommand",
-                                                     tango.ErrSeverity.ERR)
+                    input_type_check = float(argin[leafId])
 
                 log_msg = const.STR_STOW_CMD_ISSUED_CN
                 self.logger.info(log_msg)
@@ -516,6 +508,14 @@ class CentralNode(SKABaseDevice):
                         tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
                                                      "CentralNode.StowAntennasCommand",
                                                      tango.ErrSeverity.ERR)
+
+            except ValueError as value_error:
+                log_msg = const.ERR_STOW_ARGIN + str(value_error)
+                self.logger.exception(value_error)
+                device._read_activity_message = const.ERR_STOW_ARGIN
+                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
+                                             "CentralNode.StowAntennasCommand",
+                                             tango.ErrSeverity.ERR)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_EXE_STOW_CMD + str(dev_failed)
