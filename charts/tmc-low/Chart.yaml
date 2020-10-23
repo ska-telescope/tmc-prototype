@@ -2,7 +2,7 @@ apiVersion: v2
 name: tmc-low
 description: A subchart for TMC-Low prototype deployment.
 type: application
-version: 0.0.2
+version: 0.1.2
 appVersion: 1.16.0
 icon: https://www.skatelescope.org/wp-content/uploads/2016/07/09545_NEW_LOGO_2014.png
 maintainers:
