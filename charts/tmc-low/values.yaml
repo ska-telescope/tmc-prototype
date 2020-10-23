@@ -36,9 +36,8 @@ deviceServers:
 - name: subarraynode1
   function: observation-execution
   domain: subarray
-  args:
-    - -c
-    - "/usr/local/bin/SubarrayNodeLowDS sa1"
+  command: "/usr/local/bin/SubarrayNodeLowDS"
+  instances: ["sa1"]
   depends_on:
     - device: ska_low/tm_leaf_node/mccs_subarray01
   image:
@@ -56,9 +55,8 @@ deviceServers:
 - name: centralnode
   function: telescope-monitoring
   domain: general-monitoring
-  args:
-    - -c
-    - "/usr/local/bin/CentralNodeLowDS 01"
+  command: "/usr/local/bin/CentralNodeLowDS"
+  instances: ["01"]
   depends_on:
     - device: ska_low/tm_subarray_node/1
     - device: ska_low/tm_leaf_node/mccs_master
@@ -77,9 +75,8 @@ deviceServers:
 - name: mccssmasterleafnode
   function: observation-execution
   domain: general-monitoring
-  args:
-    - -c
-    - "/usr/local/bin/MccsMasterLeafNodeDS 01"
+  command: "/usr/local/bin/MccsMasterLeafNodeDS"
+  instances: ["01"]
   depends_on:
     - device: low-mccs/control/control
   image:
@@ -97,9 +94,8 @@ deviceServers:
 - name: mccssubarrayleafnode1
   function: observation-execution
   domain: subarray
-  args:
-    - -c
-    - "/usr/local/bin/MccsSubarrayLeafNodeDS 01"
+  command: "/usr/local/bin/MccsSubarrayLeafNodeDS"
+  instances: ["01"]
   depends_on:
     - device: low-mccs/subarray/01
   image:

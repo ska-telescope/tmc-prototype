@@ -28,12 +28,7 @@ global:
 
 # Set minikube=true when deploying on minikube
 webjive:
-  minikube: false
-
-etcd-operator:
-  deployments:
-    backupOperator: false
-    restoreOperator: false
+  minikube: true
 
 # Need to identify the dependencies from lower level devices which are common and referred in TMC as well.
 # The same dependencies should be only referred in one chart at a time. 
@@ -43,8 +38,8 @@ etcd-operator:
 #   tango-base:
 #     enabled: false
 
-# sdp:
-#   etcd:
-#     enbaled: false
-#   tango-base:
-#     enabled: false
+sdp:
+  etcd:
+    enbaled: false
+  tango-base:
+    enabled: false
