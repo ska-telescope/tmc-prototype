@@ -121,7 +121,7 @@ def test_off_should_command_with_callback_method(mock_sdp_master, event_subscrip
     device_proxy.Off()
     dummy_event = command_callback(const.CMD_OFF)
     event_subscription[const.CMD_OFF](dummy_event)
-    
+    # assert device_proxy.state() == DevState.OFF
     assert const.STR_COMMAND + const.CMD_OFF in device_proxy.activityMessage
 
 

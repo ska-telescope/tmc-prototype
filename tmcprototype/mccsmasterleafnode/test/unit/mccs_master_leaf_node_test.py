@@ -128,7 +128,6 @@ def test_release_resource_should_command_mccs_master_to_release_all_resources(mo
     mccs_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_Release, release_input_str,
                                                                         any_method(
                                                                             with_name='releaseresources_cmd_ended_cb'))
-    assert_activity_message(device_proxy, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
 def raise_devfailed_with_arg(cmd_name, input_arg1, inout_arg2):
     # "This function is called to raise DevFailed exception with arguments."
