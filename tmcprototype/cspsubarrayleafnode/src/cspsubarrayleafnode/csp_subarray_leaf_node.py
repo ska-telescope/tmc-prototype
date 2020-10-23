@@ -383,7 +383,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
     # --------
     # Commands
     # --------
-    class ConfigureCommand(ResponseCommand):
+    class ConfigureCommand(BaseCommand):
         """
         A class for CspSubarrayLeafNode's Configure() command.
         """
@@ -494,7 +494,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                                            self.configure_cmd_ended_cb)
                 device._read_activity_message = const.STR_CONFIGURE_SUCCESS
                 self.logger.info(const.STR_CONFIGURE_SUCCESS)
-                return (ResultCode.OK, const.STR_CONFIGURE_SUCCESS)
 
             except AssertionError as assertion_error:
                 log_msg = const.ERR_DEVICE_NOT_READY_OR_IDLE + str(assertion_error)
@@ -538,17 +537,14 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     @command(
         dtype_in=('str'),
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def Configure(self, argin):
         """ Invokes Configure command on CspSubarrayLeafNode """
         handler = self.get_command_object("Configure")
-        (result_code, message) = handler(argin)
-        return [[result_code], [message]]
+        handler(argin)
 
-    class StartScanCommand(ResponseCommand):
+    class StartScanCommand(BaseCommand):
         """
         A class for CspSubarrayLeafNode's StartScan() command.
         """
@@ -607,7 +603,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 self.logger.info(log_msg)
                 device._read_activity_message = log_msg
 
-
         def do(self, argin):
             """
             This command invokes Scan command on CspSubarray. It is allowed only when CspSubarray is in
@@ -634,7 +629,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                                              self.startscan_cmd_ended_cb)
                 device._read_activity_message = const.STR_STARTSCAN_SUCCESS
                 self.logger.info(const.STR_STARTSCAN_SUCCESS)
-                return (ResultCode.OK, const.STR_STARTSCAN_SUCCESS)
 
             except AssertionError as assertion_error:
                 device._read_activity_message = const.ERR_DEVICE_NOT_READY
@@ -654,15 +648,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     @command(
         dtype_in=('str',),
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def StartScan(self, argin):
         """ Invokes StartScan command on cspsubarrayleafnode"""
         handler = self.get_command_object("StartScan")
-        (result_code, message) = handler(argin)
-        return [[result_code], [message]]
+        handler()
 
     def is_StartScan_allowed(self):
         """
@@ -680,7 +671,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("StartScan")
         return handler.check_allowed()
 
-    class EndScanCommand(ResponseCommand):
+    class EndScanCommand(BaseCommand):
         """
         A class for CspSubarrayLeafNode's EndScan() command.
         """
@@ -755,7 +746,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 device._csp_subarray_proxy.command_inout_asynch(const.CMD_ENDSCAN, self.endscan_cmd_ended_cb)
                 device._read_activity_message = const.STR_ENDSCAN_SUCCESS
                 self.logger.info(const.STR_ENDSCAN_SUCCESS)
-                return (ResultCode.OK, const.STR_ENDSCAN_SUCCESS)
 
             except AssertionError as assertion_error:
                 device._read_activity_message = const.ERR_DEVICE_NOT_IN_SCAN
@@ -788,17 +778,14 @@ class CspSubarrayLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def EndScan(self):
         """ Invokes EndScan command on CspSubarrayLeafNode"""
         handler = self.get_command_object("EndScan")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
+        handler()
 
-    class ReleaseAllResourcesCommand(ResponseCommand):
+    class ReleaseAllResourcesCommand(BaseCommand):
         """
         A class for CspSubarrayLeafNode's ReleaseAllResources() command.
         """
@@ -877,7 +864,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                                              self.releaseallresources_cmd_ended_cb)
                 device._read_activity_message = const.STR_REMOVE_ALL_RECEPTORS_SUCCESS
                 self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
-                return (ResultCode.OK, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
             except AssertionError as assertion_error:
                 log_msg = const.ERR_DEVICE_NOT_IDLE + str(assertion_error)
@@ -912,17 +898,14 @@ class CspSubarrayLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def ReleaseAllResources(self):
         """ Invokes ReleaseAllResources command on CspSubarrayLeafNode"""
         handler = self.get_command_object("ReleaseAllResources")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
+        handler()
 
-    class AssignResourcesCommand(ResponseCommand):
+    class AssignResourcesCommand(BaseCommand):
         """
         A class for CspSubarrayLeafNode's AssignResources() command.
         """
@@ -1042,7 +1025,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 self.logger.info("After invoking AddReceptors on CSP subarray")
                 device._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
                 self.logger.info(const.STR_ADD_RECEPTORS_SUCCESS)
-                return (ResultCode.OK, const.STR_ADD_RECEPTORS_SUCCESS)
 
             except ValueError as value_error:
                 log_msg = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
@@ -1059,6 +1041,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 tango.Except.throw_exception(const.STR_ASSIGN_RES_EXEC, log_msg,
                                              "CspSubarrayLeafNode.AssignResourcesCommand",
                                              tango.ErrSeverity.ERR)
+
             except DevFailed as dev_failed:
                 log_msg = const.ERR_ASSGN_RESOURCES + str(dev_failed)
                 device._read_activity_message = log_msg
@@ -1083,8 +1066,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     @command(
         dtype_in=('str'),
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def AssignResources(self, argin):
@@ -1099,10 +1080,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                          "CSP subarray leaf node raised exception",
                                          "CSP.AddReceptors",
                                          tango.ErrSeverity.ERR)
-        (result_code, message) = handler(argin)
-        return [[result_code], [message]]
+        handler(argin)
 
-    class GoToIdleCommand(ResponseCommand):
+    class GoToIdleCommand(BaseCommand):
         """
         A class for CspSubarrayLeafNode's GoToIdle() command.
         """
@@ -1178,7 +1158,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 device._csp_subarray_proxy.command_inout_asynch(const.CMD_GOTOIDLE, self.gotoidle_cmd_ended_cb)
                 device._read_activity_message = const.STR_GOTOIDLE_SUCCESS
                 self.logger.info(const.STR_GOTOIDLE_SUCCESS)
-                return (ResultCode.OK, const.STR_GOTOIDLE_SUCCESS)
 
             except AssertionError as assertion_error:
                 device._read_activity_message = const.ERR_DEVICE_NOT_READY
@@ -1213,15 +1192,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def GoToIdle(self):
         """ Invokes GoToIdle command on CspSubarrayLeafNode. """
         handler = self.get_command_object("GoToIdle")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
+        handler()
 
     def validate_obs_state(self):
         if self._csp_subarray_proxy.obsState == ObsState.EMPTY:
@@ -1231,7 +1207,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self._read_activity_message = "Error in device obsState"
             raise InvalidObsStateError("CSP Subarray is not in EMPTY obsState")
 
-    class AbortCommand(ResponseCommand):
+    class AbortCommand(BaseCommand):
         """
         A class for CSPSubarrayLeafNode's Abort() command.
         """
@@ -1308,7 +1284,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 device._csp_subarray_proxy.command_inout_asynch(const.CMD_ABORT, self.abort_cmd_ended_cb)
                 device._read_activity_message = const.STR_ABORT_SUCCESS
                 self.logger.info(const.STR_ABORT_SUCCESS)
-                return (ResultCode.OK, const.STR_ABORT_SUCCESS)
 
             except AssertionError as assertion_error:
                 log_msg = (f"Csp Subarray is in ObsState {device._csp_subarray_proxy.obsState.name}.""Unable to invoke Abort command")
@@ -1327,15 +1302,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
     @command(
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def Abort(self):
         """ Invokes Abort command on CspSubarrayLeafNode"""
         handler = self.get_command_object("Abort")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
+        handler()
 
     def is_Abort_allowed(self):
         """
@@ -1352,7 +1324,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Abort")
         return handler.check_allowed()
 
-    class RestartCommand(ResponseCommand):
+    class RestartCommand(BaseCommand):
         """
         A class for CSPSubarrayLeafNode's Restart() command.
         """
@@ -1428,7 +1400,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 device._csp_subarray_proxy.command_inout_asynch(const.CMD_RESTART, self.restart_cmd_ended_cb)
                 device._read_activity_message = const.STR_RESTART_SUCCESS
                 self.logger.info(const.STR_RESTART_SUCCESS)
-                return (ResultCode.OK, const.STR_RESTART_SUCCESS)
+
             except AssertionError as assertion_error:
                 log_msg = (f"CSp Subarray is in ObsState {device._csp_subarray_proxy.obsState.name}.""Unable to invoke Restart command")
                 device._read_activity_message = log_msg
@@ -1446,15 +1418,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
     @command(
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def Restart(self):
         """ Invokes Restart command on cspsubarrayleafnode"""
         handler = self.get_command_object("Restart")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
+        handler()
 
     def is_Restart_allowed(self):
         """
