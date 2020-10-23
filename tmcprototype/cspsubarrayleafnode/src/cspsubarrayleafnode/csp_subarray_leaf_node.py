@@ -1119,6 +1119,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 in current device state
 
             """
+            device = self.target
             if self.state_model.op_state in [
                 DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
             ]:
@@ -1126,6 +1127,15 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                              "Failed to invoke GoToIdle command on cspsubarrayleafnode.",
                                              "cspsubarrayleafnode.GoToIdle()",
                                              tango.ErrSeverity.ERR)
+            try:
+                assert device._csp_subarray_proxy.obsState != ObsState.READY
+            except AssertionError as assertion_error:
+                log_msg = const.STR_OBS_STATE + str(self._csp_subarray_proxy.obsState) +str(assertion_error)
+                self.logger.error(assertion_error)
+                tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, log_msg,
+                                             "CspSubarrayLeafNode.GoToIdleCommand",
+                                             tango.ErrSeverity.ERR)
+
             return True
 
         def gotoidle_cmd_ended_cb(self, event):
@@ -1173,19 +1183,19 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                assert device._csp_subarray_proxy.obsState == ObsState.READY
+                # assert device._csp_subarray_proxy.obsState == ObsState.READY
                 device._csp_subarray_proxy.command_inout_asynch(const.CMD_GOTOIDLE, self.gotoidle_cmd_ended_cb)
                 device._read_activity_message = const.STR_GOTOIDLE_SUCCESS
                 self.logger.info(const.STR_GOTOIDLE_SUCCESS)
                 return (ResultCode.OK, const.STR_GOTOIDLE_SUCCESS)
 
-            except AssertionError as assertion_error:
-                device._read_activity_message = const.ERR_DEVICE_NOT_READY
-                log_msg = const.STR_OBS_STATE + str(device._csp_subarray_proxy.obsState) +str(assertion_error)
-                self.logger.error(assertion_error)
-                tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, log_msg,
-                                             "CspSubarrayLeafNode.GoToIdleCommand",
-                                             tango.ErrSeverity.ERR)
+            # except AssertionError as assertion_error:
+            #     device._read_activity_message = const.ERR_DEVICE_NOT_READY
+            #     log_msg = const.STR_OBS_STATE + str(device._csp_subarray_proxy.obsState) +str(assertion_error)
+            #     self.logger.error(assertion_error)
+            #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, log_msg,
+            #                                  "CspSubarrayLeafNode.GoToIdleCommand",
+            #                                  tango.ErrSeverity.ERR)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_GOTOIDLE_INVOKING_CMD + str(dev_failed)
@@ -1302,11 +1312,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                assert (device._csp_subarray_proxy.obsState in [ObsState.READY,
-                                                        ObsState.CONFIGURING,
-                                                        ObsState.SCANNING,
-                                                        ObsState.IDLE, 
-                                                        ObsState.RESETTING])
+                assert (device._csp_subarray_proxy.obsState in [ObsState.READY, ObsState.CONFIGURING, ObsState.SCANNING,
+                                                                ObsState.IDLE, ObsState.RESETTING])
                 device._csp_subarray_proxy.command_inout_asynch(const.CMD_ABORT, self.abort_cmd_ended_cb)
                 device._read_activity_message = const.STR_ABORT_SUCCESS
                 self.logger.info(const.STR_ABORT_SUCCESS)
