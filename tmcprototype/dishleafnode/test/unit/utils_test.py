@@ -3,8 +3,8 @@ Test cases for DishLeafNode's utils module.
 """
 
 # import statements
-from dishleafnode.utils import UnitConverter
 import math
+from dishleafnode.utils import UnitConverter
 
 
 class TestUnitConverter:

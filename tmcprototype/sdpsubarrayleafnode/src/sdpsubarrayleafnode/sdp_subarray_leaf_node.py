@@ -13,18 +13,20 @@ It also acts as a SDP contact point for Subarray Node for observation execution.
 
 """
 # PROTECTED REGION ID(SdpSubarrayLeafNode.additionnal_import) ENABLED START #
+# Third party imports
 # PyTango imports
 import tango
 from tango import DeviceProxy, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run, command, device_property, attribute
+
+# Additional imports
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
 from ska.base.commands import ResultCode, ResponseCommand, BaseCommand
-# Additional imports
 from . import const, release
 from .exceptions import InvalidObsStateError
-
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
+
 __all__ = ["SdpSubarrayLeafNode", "main"]
 
 
