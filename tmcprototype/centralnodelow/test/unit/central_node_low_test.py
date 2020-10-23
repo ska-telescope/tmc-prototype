@@ -332,11 +332,6 @@ def assert_activity_message(dut, expected_message):
     assert dut.activityMessage == expected_message  # reads tango attribute
 
 
-# Throw Devfailed exception for command without argument
-# def raise_devfailed_exception(cmd_name):
-#     tango.Except.throw_exception("CentralNode_Commandfailed", "This is error message for devfailed",
-#                                  " ", tango.ErrSeverity.ERR)
-
 # Throw Devfailed exception for command with argument
 def raise_devfailed_exception(*args):
     tango.Except.throw_exception("CentralNode_Commandfailed", "This is error message for devfailed",
