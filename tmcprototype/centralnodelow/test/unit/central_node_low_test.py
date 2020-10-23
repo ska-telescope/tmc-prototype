@@ -199,7 +199,7 @@ def test_assign_resources_should_raise_devfailed_exception_when_mccs_master_ln_t
     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
     mccs_master_ln_proxy_mock.DevState = DevState.OFF
     subarray1_proxy_mock.DevState = DevState.ON
-    mccs_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
+    mccs_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.AssignResources(assign_input_str)
     assert "Error occurred while assigning resources to the Subarray" in str(df)
