@@ -1127,7 +1127,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                              "cspsubarrayleafnode.GoToIdle()",
                                              tango.ErrSeverity.ERR)
             try:
-                assert self._csp_subarray_proxy.obsState == ObsState.READY
+                assert self._csp_subarray_proxy.obsState != ObsState.READY
             except AssertionError as assertion_error:
                 log_msg = const.STR_OBS_STATE + str(self._csp_subarray_proxy.obsState) +str(assertion_error)
                 self.logger.error(assertion_error)
