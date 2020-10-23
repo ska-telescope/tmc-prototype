@@ -170,7 +170,7 @@ deviceServers:
   function: dish-monitoring
   domain: general-monitoring
   command: "/usr/local/bin/DishLeafNodeDS"
-  instances: ["01"]
+  instances: ["04"]
   depends_on:
     - device: mid_d0004/elt/master
   image:
