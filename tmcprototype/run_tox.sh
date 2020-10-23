@@ -14,7 +14,7 @@ for path in $(find ./*/test  -type d -name unit); do
 	export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
 	echo +++ Trying tests for $TMC_ELEMENT;
 	cd $TMC_ELEMENT;
-	tox -e py36
+	tox -e py37
   mv ${TMC_ELEMENT}_coverage ../$REPORTS_DIR;
   cd ..
 done
