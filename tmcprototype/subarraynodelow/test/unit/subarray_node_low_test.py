@@ -566,16 +566,16 @@ def create_dummy_event_custom_exception(proxy_mock, device_fqdn, attribute, attr
     return fake_event
 
 
-def raise_devfailed_exception(cmd_name):
+def raise_devfailed_exception(*args):
     tango.Except.throw_exception("SubarrayNode_Commandfailed",
                                  "This is error message for devfailed",
                                  cmd_name, tango.ErrSeverity.ERR)
 
 
-def raise_devfailed_with_arg(cmd_name, input_arg):
-    tango.Except.throw_exception("SubarrayNode_Commandfailed",
-                                 "This is error message for devfailed",
-                                 cmd_name, tango.ErrSeverity.ERR)
+# def raise_devfailed_with_arg(cmd_name, input_arg):
+#     tango.Except.throw_exception("SubarrayNode_Commandfailed",
+#                                  "This is error message for devfailed",
+#                                  cmd_name, tango.ErrSeverity.ERR)
 
 
 def raise_devfailed_for_event_subscription(evt_name,evt_type,callaback, stateless=True):
