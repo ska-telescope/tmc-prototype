@@ -3,6 +3,7 @@ AssignResourcesCommand class for SubarrayNodeLow.
 """
 # Standard python imports
 import json
+
 # Additional import
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray

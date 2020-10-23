@@ -18,19 +18,20 @@ import importlib.resources
 import threading
 from datetime import datetime, timedelta
 import pytz
-import katpoint
 import numpy as np
 import json
 
+# Third Party imports
 # PyTango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
 from tango.server import run, attribute, command, device_property
+import katpoint
+
+# Additional import
 from ska.base.commands import ResultCode, ResponseCommand, BaseCommand
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
-
-# Additional import
 from . import const, release
 from .exceptions import InvalidObsStateError
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additional_import

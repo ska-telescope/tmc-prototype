@@ -15,21 +15,22 @@ A Leaf control node for DishMaster.
 import json
 import importlib.resources
 import math
-import katpoint
 import datetime
 import time
 import threading
 
+# Third Party imports
 # PyTango imports
 import tango
 from tango import DeviceProxy, EventType, ApiUtil, DevState, AttrWriteType, DevFailed, DebugIt
 from tango.server import run, command, device_property, attribute
+import katpoint
+
+# Additional import
 from ska.base.commands import ResultCode, ResponseCommand, BaseCommand
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, SimulationMode
 from .utils import PointingState, UnitConverter
-
-# Additional import
 from . import const, release
 # PROTECTED REGION END #    //  DishLeafNode.additionnal_import
 

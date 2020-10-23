@@ -14,15 +14,16 @@ execution. There is one to one mapping between SDP Subarray Leaf Node and SDP su
 """
 
 # PROTECTED REGION ID(SdpMasterLeafNode.additionnal_import) ENABLED START #
+# Third party imports
+# Tango imports
 import tango
 from tango import DeviceProxy, ApiUtil, DevState, AttrWriteType, DevFailed
 from tango.server import run,command, device_property, attribute
-from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode, ResponseCommand
 
 # Additional import
+from ska.base import SKABaseDevice
+from ska.base.commands import ResultCode, ResponseCommand
 from . import const, release
-
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additionnal_import
 
 __all__ = ["SdpMasterLeafNode", "main"]

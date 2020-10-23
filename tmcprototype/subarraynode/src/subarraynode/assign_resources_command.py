@@ -4,9 +4,12 @@ AssignResourcesCommand class for SubarrayNode.
 # Standard python imports
 from concurrent.futures import ThreadPoolExecutor
 import json
+
+# Third party imports
 # Tango imports
 import tango
 from tango import DevFailed
+
 # Additional import
 from . import const
 from ska.base.commands import ResultCode

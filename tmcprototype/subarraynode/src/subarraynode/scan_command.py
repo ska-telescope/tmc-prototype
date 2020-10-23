@@ -3,6 +3,8 @@ ScanCommand class for SubarrayNode
 """
 # Standard python imports
 import threading
+
+# Third party imports
 # Tango imports
 import tango
 from tango import DevFailed
