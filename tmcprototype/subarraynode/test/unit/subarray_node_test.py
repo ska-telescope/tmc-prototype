@@ -4,8 +4,7 @@ import importlib
 import sys
 import json
 import types
-import time
-from typing import Any, Callable, Dict, List, NamedTuple, Tuple
+from typing import Any, Callable, Dict, NamedTuple, Tuple
 import pytest
 import mock
 from mock import Mock, MagicMock
@@ -23,7 +22,6 @@ from subarraynode import SubarrayNode, const, ElementDeviceData, release
 from subarraynode.const import PointingState
 from ska.base.control_model import AdminMode, HealthState, ObsState, ObsMode, TestMode, SimulationMode, \
     LoggingLevel
-from subarraynode.exceptions import InvalidObsStateError
 
 # Command wait timeout:
 assign_input_file = 'command_AssignResources.json'

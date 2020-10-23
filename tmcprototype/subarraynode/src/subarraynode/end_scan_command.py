@@ -2,6 +2,7 @@
 EndScanCommand class for SubarrayNode.
 """
 
+# Third party imports
 # Tango imports
 import tango
 from tango import DevFailed

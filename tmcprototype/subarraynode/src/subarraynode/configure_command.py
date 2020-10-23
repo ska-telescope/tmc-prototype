@@ -1,8 +1,10 @@
 """
 ConfigureCommand class for SubarrayNode.
 """
-
+# Standard python imports
 import json
+
+# Third party imports
 # Tango imports
 import tango
 from tango import DevFailed
