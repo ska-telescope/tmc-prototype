@@ -1162,6 +1162,7 @@ def csp_health_state(request):
 def test_subarray_health_state_when_csubarray1_ln_is_in_health_state_after_start(mock_lower_devices,csp_health_state):
     csp_subarray1_ln_health_attribute = 'cspsubarrayHealthState'
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
+    tango_context.ON()
     dummy_event = create_dummy_event_healthstate_with_proxy(
         csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_health_state,
         csp_subarray1_ln_health_attribute)
@@ -1171,6 +1172,7 @@ def test_subarray_health_state_when_csubarray1_ln_is_in_health_state_after_start
 
 def test_subarray_health_state_is_ok_when_csp_and_sdp_subarray1_ln_is_ok_after_start(mock_lower_devices):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
+    tango_context.ON()
     csp_subarray1_ln_health_attribute = 'cspsubarrayHealthState'
     sdp_subarray1_ln_health_attribute = 'sdpSubarrayHealthState'
     health_state_value = HealthState.OK
@@ -1190,6 +1192,7 @@ def test_subarray_health_state_is_ok_when_csp_and_sdp_subarray1_ln_is_ok_after_s
 
 def test_subarray_health_state_with_error_event(mock_lower_devices):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
+    tango_context.ON()
     csp_subarray1_ln_health_attribute = 'cspsubarrayHealthState'
     health_state_value = HealthState.FAILED
     dummy_event = create_dummy_event_healthstate_with_error(
@@ -1221,6 +1224,7 @@ def test_subarray_health_state_event_to_raise_devfailed_exception_for_csp_subarr
     }
 
     with fake_tango_system(SubarrayNode, initial_dut_properties, proxies_to_mock) as tango_context:
+        tango_context.ON()
         health_state_value = HealthState.FAILED
         dummy_event = create_dummy_event_healthstate_with_proxy(
             subarray_ln_proxy_mock, subarray_ln_fqdn, health_state_value,
