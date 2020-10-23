@@ -23,7 +23,7 @@ from tango.server import run, attribute, command, device_property
 
 # Additional import
 from ska.base import SKABaseDevice
-from ska.base.commands import BaseCommand
+from ska.base.commands import ResultCode, BaseCommand
 from ska.base.control_model import HealthState, ObsState
 from . import const, release
 from centralnode.input_validator import AssignResourceValidator

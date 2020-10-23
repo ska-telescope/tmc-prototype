@@ -29,7 +29,7 @@ from tango.server import run, attribute, command, device_property
 import katpoint
 
 # Additional import
-from ska.base.commands import ResultCode, ResponseCommand, BaseCommand
+from ska.base.commands import ResultCode, BaseCommand
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
 from . import const, release
