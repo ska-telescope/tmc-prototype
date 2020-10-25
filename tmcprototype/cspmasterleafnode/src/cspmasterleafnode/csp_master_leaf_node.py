@@ -442,10 +442,7 @@ class CspMasterLeafNode(SKABaseDevice):
             , each array element specifies the FQDN of the CSP SubElement to put in STANDBY mode.
 
 
-            :return: A tuple containing a return code and a string message indicating status.
-             The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: DevFailed on communication failure with CspMaster or CspMaster is in error state.
 

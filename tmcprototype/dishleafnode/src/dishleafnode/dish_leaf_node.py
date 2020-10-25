@@ -487,10 +487,7 @@ class DishLeafNode(SKABaseDevice):
             """
             Invokes SetStowMode command on DishMaster.
 
-            :return: A tuple containing a return code and a string message indicating status.
-             The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             """
             try:
@@ -559,10 +556,7 @@ class DishLeafNode(SKABaseDevice):
             """
             Invokes SetStandbyLPMode (i.e. Low Power State) command on DishMaster.
 
-            :return: A tuple containing a return code and a string message indicating status.
-             The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             """
             try:
@@ -625,11 +619,7 @@ class DishLeafNode(SKABaseDevice):
             """
             Invokes SetOperateMode command on DishMaster.
 
-            :return: A tuple containing a return code and a string message indicating status.
-             The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
-
+            :return: None
             """
             device = self.target
             try:
@@ -694,10 +684,7 @@ class DishLeafNode(SKABaseDevice):
 
             :param argin: timestamp
 
-            :return: A tuple containing a return code and a string message indicating status.
-             The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             Example: 10.0
 
@@ -774,10 +761,7 @@ class DishLeafNode(SKABaseDevice):
 
             :param argin: timestamp
 
-            :return: A tuple containing a return code and a string message indicating status.
-             The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             Example: 10.0
 
@@ -864,10 +848,7 @@ class DishLeafNode(SKABaseDevice):
                 {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},
                 "dish":{"receiverBand":"1"}}
 
-            :return: A tuple containing a return code and a string message indicating status.
-             The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: DevFailed if error occurs while invoking this command on DishMaster.
                      ValueError if argin is not in valid JSON format.
@@ -989,10 +970,7 @@ class DishLeafNode(SKABaseDevice):
 
             :param argin: timestamp
 
-            :return: A tuple containing a return code and a string message indicating status.
-             The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: ValueError if argin is not in valid JSON format while invoking this
              command on DishMaster.
@@ -1065,10 +1043,7 @@ class DishLeafNode(SKABaseDevice):
 
             :param argin: timestamp
 
-            :return: A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: ValueError if argin is not in valid JSON format while invoking this
              command on DishMaster.
@@ -1143,10 +1118,7 @@ class DishLeafNode(SKABaseDevice):
             """
             Invokes SetStandbyFPMode command on DishMaster (Standby-Full power) mode.
 
-            :return: A tuple containing a return code and a string message indicating status.
-             The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return:None
 
             """
             try:
@@ -1215,10 +1187,7 @@ class DishLeafNode(SKABaseDevice):
 
             :param argin: timestamp
 
-            :return: A tuple containing a return code and a string message indicating status.
-             The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: ValueError if argin is not in valid JSON format while invoking this
              command on DishMaster.
@@ -1301,10 +1270,7 @@ class DishLeafNode(SKABaseDevice):
             {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},
             "dish":{"receiverBand":"1"}}
 
-            :return: A tuple containing a return code and a string message indicating status.
-             The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: JSONDecodeError if argin is not a valid JSON format, KeyError if JSON key is
               not present in argin while invoking this command on DishMaster.
@@ -1400,10 +1366,7 @@ class DishLeafNode(SKABaseDevice):
 
             :param argin: None.
 
-            :return: A tuple containing a return code and a string message indicating status.
-             The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: DevFailed if error occurs while invoking this command on DishMaster.
 

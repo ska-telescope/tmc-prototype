@@ -846,10 +846,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             It invokes RemoveAllReceptors command on CspSubarray and releases all the resources assigned to
             CspSubarray.
 
-            :return: A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: DevFailed if the command execution is not successful
 
@@ -996,10 +993,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             Note: Enter the json string without spaces as an input.
 
-            :return: A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: ValueError if input argument json string contains invalid value
                      KeyError if input argument json string contains invalid key
@@ -1145,10 +1139,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             This command invokes GoToIdle command on CSP Subarray in order to end current scheduling block.
 
-            :return: A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: DevFailed if the command execution is not successful
             """
@@ -1269,10 +1260,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             This command invokes Abort command on CSP Subarray.
 
-            :return: A tuple containing a return code and a string message indicating status.
-             The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: DevFailed if error occurs while invoking command on CSPSubarray.
 
@@ -1387,10 +1375,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             This command invokes Restart command on CSPSubarray.
 
-            :return: A tuple containing a return code and a string message indicating status.
-             The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: DevFailed if error occurs while invoking the command on CSpSubarray.
             """
