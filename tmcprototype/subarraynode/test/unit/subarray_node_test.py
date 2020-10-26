@@ -1,4 +1,4 @@
-# Standard Python imports
+# # Standard Python imports
 import contextlib
 import importlib
 import sys
@@ -1515,130 +1515,130 @@ def test_abort_should_raise_devfailed_exception_when_obsstate_is_empty(mock_lowe
     assert df in tango_context.device.activityMessage
 
 
-@pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
-def test_abort_should_raise_devfailed_exception_when_obsstate_is_resourcing(mock_lower_devices):
-    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
-    csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
-    sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
-    tango_context.device.On()
+# @pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
+# def test_abort_should_raise_devfailed_exception_when_obsstate_is_resourcing(mock_lower_devices):
+#     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
+#     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
+#     sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
+#     tango_context.device.On()
 
-    tango_context.device.AssignResources(assign_input_str)
-    attribute = 'ObsState'
-    dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
-                                               attribute, ObsState.RESOURCING)
-    event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
+#     tango_context.device.AssignResources(assign_input_str)
+#     attribute = 'ObsState'
+#     dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.RESOURCING)
+#     event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
 
-    dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
-                                               attribute, ObsState.RESOURCING)
-    event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
-    assert tango_context.device.obsState == ObsState.RESOURCING
-    csp_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
+#     dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.RESOURCING)
+#     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
+#     assert tango_context.device.obsState == ObsState.RESOURCING
+#     csp_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
 
-    with pytest.raises(tango.DevFailed):
-        tango_context.device.Abort()
-    assert tango_context.device.obsState == ObsState.FAULT
-    assert const.ERR_ABORT_INVOKING_CMD in tango_context.device.activityMessage
-
-
-@pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
-def test_restart_should_command_subarray_to_restart_when_it_is_aborted(mock_lower_devices):
-    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
-    csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
-    sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
-    dish_pointing_state_attribute = "dishPointingState"
-    tango_context.device.On()
-    tango_context.device.AssignResources(assign_input_str)
-    attribute = 'ObsState'
-    dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
-                                               attribute, ObsState.IDLE)
-    event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
-
-    dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
-                                               attribute, ObsState.IDLE)
-    event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
-    tango_context.device.Abort()
-    attribute = 'ObsState'
-    dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
-                                               attribute, ObsState.ABORTED)
-    event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
-
-    dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
-                                               attribute, ObsState.ABORTED)
-    event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
-
-    wait_for(tango_context, ObsState.ABORTED)
-    assert tango_context.device.obsState == ObsState.ABORTED
-    tango_context.device.Restart()
-    attribute = 'ObsState'
-    dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
-                                               attribute, ObsState.RESTARTING)
-    event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
-
-    dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
-                                               attribute, ObsState.RESTARTING)
-    event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
-
-    assert tango_context.device.obsState == ObsState.RESTARTING
-    attribute = 'ObsState'
-    dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
-                                               attribute, ObsState.EMPTY)
-    event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
-
-    dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
-                                               attribute, ObsState.EMPTY)
-    event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
-
-    sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RESTART)
-    csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RESTART)
-    dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RESTART)
-    assert tango_context.device.obsState == ObsState.EMPTY
+#     with pytest.raises(tango.DevFailed):
+#         tango_context.device.Abort()
+#     assert tango_context.device.obsState == ObsState.FAULT
+#     assert const.ERR_ABORT_INVOKING_CMD in tango_context.device.activityMessage
 
 
-@pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
-def test_restart_should_command_subarray_to_restart_when_it_is_Fault(mock_lower_devices):
-    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
-    csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
-    sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
-    dish_pointing_state_attribute = "dishPointingState"
-    tango_context.device.On()
-    with pytest.raises(tango.DevFailed):
-        tango_context.device.AssignResources(assign_invalid_key)
+# @pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
+# def test_restart_should_command_subarray_to_restart_when_it_is_aborted(mock_lower_devices):
+#     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
+#     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
+#     sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
+#     dish_pointing_state_attribute = "dishPointingState"
+#     tango_context.device.On()
+#     tango_context.device.AssignResources(assign_input_str)
+#     attribute = 'ObsState'
+#     dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.IDLE)
+#     event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
 
-    attribute = 'ObsState'
-    dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
-                                               attribute, ObsState.FAULT)
-    event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
+#     dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.IDLE)
+#     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
+#     tango_context.device.Abort()
+#     attribute = 'ObsState'
+#     dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.ABORTED)
+#     event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
 
-    dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
-                                               attribute, ObsState.FAULT)
-    event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
-    assert tango_context.device.obsState == ObsState.FAULT
+#     dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.ABORTED)
+#     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
 
-    tango_context.device.Restart()
-    attribute = 'ObsState'
-    dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
-                                               attribute, ObsState.RESTARTING)
-    event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
+#     wait_for(tango_context, ObsState.ABORTED)
+#     assert tango_context.device.obsState == ObsState.ABORTED
+#     tango_context.device.Restart()
+#     attribute = 'ObsState'
+#     dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.RESTARTING)
+#     event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
 
-    dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
-                                               attribute, ObsState.RESTARTING)
-    event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
+#     dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.RESTARTING)
+#     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
 
-    assert tango_context.device.obsState == ObsState.RESTARTING
-    attribute = 'ObsState'
-    dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
-                                               attribute, ObsState.EMPTY)
-    event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
+#     assert tango_context.device.obsState == ObsState.RESTARTING
+#     attribute = 'ObsState'
+#     dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.EMPTY)
+#     event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
 
-    dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
-                                               attribute, ObsState.EMPTY)
-    event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
+#     dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.EMPTY)
+#     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
 
-    sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RESTART)
-    csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RESTART)
-    dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RESTART)
+#     sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RESTART)
+#     csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RESTART)
+#     dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RESTART)
+#     assert tango_context.device.obsState == ObsState.EMPTY
 
-    assert tango_context.device.obsState == ObsState.EMPTY
+
+# @pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
+# def test_restart_should_command_subarray_to_restart_when_it_is_Fault(mock_lower_devices):
+#     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
+#     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
+#     sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
+#     dish_pointing_state_attribute = "dishPointingState"
+#     tango_context.device.On()
+#     with pytest.raises(tango.DevFailed):
+#         tango_context.device.AssignResources(assign_invalid_key)
+
+#     attribute = 'ObsState'
+#     dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.FAULT)
+#     event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
+
+#     dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.FAULT)
+#     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
+#     assert tango_context.device.obsState == ObsState.FAULT
+
+#     tango_context.device.Restart()
+#     attribute = 'ObsState'
+#     dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.RESTARTING)
+#     event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
+
+#     dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.RESTARTING)
+#     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
+
+#     assert tango_context.device.obsState == ObsState.RESTARTING
+#     attribute = 'ObsState'
+#     dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.EMPTY)
+#     event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
+
+#     dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.EMPTY)
+#     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
+
+#     sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RESTART)
+#     csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RESTART)
+#     dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RESTART)
+
+#     assert tango_context.device.obsState == ObsState.EMPTY
 
 
 def test_restart_should_not_restart_subarray_when_it_is_invalid_state(mock_lower_devices):
@@ -1649,105 +1649,105 @@ def test_restart_should_not_restart_subarray_when_it_is_invalid_state(mock_lower
     assert "Error executing command RestartCommand" in str(df)
 
 
-@pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
-def test_obsreset_should_command_subarray_to_obsreset_when_it_is_aborted(mock_lower_devices):
-    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
-    csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
-    sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
-    dish_pointing_state_attribute = "dishPointingState"
-    tango_context.device.On()
-    tango_context.device.AssignResources(assign_input_str)
-    attribute = 'ObsState'
-    dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
-                                               attribute, ObsState.IDLE)
-    event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
+# @pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
+# def test_obsreset_should_command_subarray_to_obsreset_when_it_is_aborted(mock_lower_devices):
+#     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
+#     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
+#     sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
+#     dish_pointing_state_attribute = "dishPointingState"
+#     tango_context.device.On()
+#     tango_context.device.AssignResources(assign_input_str)
+#     attribute = 'ObsState'
+#     dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.IDLE)
+#     event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
 
-    dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
-                                               attribute, ObsState.IDLE)
-    event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
-    tango_context.device.Abort()
-    attribute = 'ObsState'
-    dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
-                                               attribute, ObsState.ABORTED)
-    event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
+#     dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.IDLE)
+#     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
+#     tango_context.device.Abort()
+#     attribute = 'ObsState'
+#     dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.ABORTED)
+#     event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
 
-    dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
-                                               attribute, ObsState.ABORTED)
-    event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
+#     dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.ABORTED)
+#     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
 
-    wait_for(tango_context, ObsState.ABORTED)
-    assert tango_context.device.obsState == ObsState.ABORTED
-    tango_context.device.ObsReset()
-    attribute = 'ObsState'
-    dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
-                                               attribute, ObsState.RESETTING)
-    event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
+#     wait_for(tango_context, ObsState.ABORTED)
+#     assert tango_context.device.obsState == ObsState.ABORTED
+#     tango_context.device.ObsReset()
+#     attribute = 'ObsState'
+#     dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.RESETTING)
+#     event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
 
-    dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
-                                               attribute, ObsState.RESETTING)
-    event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
+#     dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.RESETTING)
+#     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
 
-    assert tango_context.device.obsState == ObsState.RESETTING
-    attribute = 'ObsState'
-    dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
-                                               attribute, ObsState.IDLE)
-    event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
+#     assert tango_context.device.obsState == ObsState.RESETTING
+#     attribute = 'ObsState'
+#     dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.IDLE)
+#     event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
 
-    dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
-                                               attribute, ObsState.IDLE)
-    event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
+#     dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.IDLE)
+#     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
 
-    sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_OBSRESET)
-    csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_OBSRESET)
-    dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_OBSRESET)
-    assert tango_context.device.obsState == ObsState.IDLE
+#     sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_OBSRESET)
+#     csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_OBSRESET)
+#     dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_OBSRESET)
+#     assert tango_context.device.obsState == ObsState.IDLE
 
 
-@pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
-def test_obsreset_should_command_subarray_to_obsreset_when_it_is_Fault(mock_lower_devices):
-    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
-    csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
-    sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
-    dish_pointing_state_attribute = "dishPointingState"
-    tango_context.device.On()
-    with pytest.raises(tango.DevFailed):
-        tango_context.device.AssignResources(assign_invalid_key)
+# @pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
+# def test_obsreset_should_command_subarray_to_obsreset_when_it_is_Fault(mock_lower_devices):
+#     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
+#     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
+#     sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
+#     dish_pointing_state_attribute = "dishPointingState"
+#     tango_context.device.On()
+#     with pytest.raises(tango.DevFailed):
+#         tango_context.device.AssignResources(assign_invalid_key)
 
-    attribute = 'ObsState'
-    dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
-                                               attribute, ObsState.FAULT)
-    event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
+#     attribute = 'ObsState'
+#     dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.FAULT)
+#     event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
 
-    dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
-                                               attribute, ObsState.FAULT)
-    event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
-    assert tango_context.device.obsState == ObsState.FAULT
+#     dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.FAULT)
+#     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
+#     assert tango_context.device.obsState == ObsState.FAULT
 
-    tango_context.device.ObsReset()
-    attribute = 'ObsState'
-    dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
-                                               attribute, ObsState.RESETTING)
-    event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
+#     tango_context.device.ObsReset()
+#     attribute = 'ObsState'
+#     dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.RESETTING)
+#     event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
 
-    dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
-                                               attribute, ObsState.RESETTING)
-    event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
+#     dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.RESETTING)
+#     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
 
-    assert tango_context.device.obsState == ObsState.RESETTING
-    attribute = 'ObsState'
-    dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
-                                               attribute, ObsState.IDLE)
-    event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
+#     assert tango_context.device.obsState == ObsState.RESETTING
+#     attribute = 'ObsState'
+#     dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.IDLE)
+#     event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
 
-    dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
-                                               attribute, ObsState.IDLE)
-    event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
+#     dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+#                                                attribute, ObsState.IDLE)
+#     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
 
-    sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_OBSRESET)
-    csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_OBSRESET)
-    dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_OBSRESET)
+#     sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_OBSRESET)
+#     csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_OBSRESET)
+#     dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_OBSRESET)
 
-    assert tango_context.device.obsState == ObsState.IDLE
+#     assert tango_context.device.obsState == ObsState.IDLE
 
 
 def test_obsreset_should_not_command_subarray_to_Obsreset_when_it_is_invalid_state(mock_lower_devices):
