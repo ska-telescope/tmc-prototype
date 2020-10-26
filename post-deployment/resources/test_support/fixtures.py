@@ -76,7 +76,8 @@ def is_subarray_configured(id) -> bool:
 ENV_VARS = [
     'HELM_RELEASE',
     'KUBE_NAMESPACE',
-    'TANGO_HOST']
+    'TANGO_HOST',
+    'HELM_CHART']
 RunContext = namedtuple('RunContext', ENV_VARS)
 
 @pytest.fixture(scope="session")
@@ -106,7 +107,9 @@ class K8_env():
         self.v1 = client.CoreV1Api()
         self.extensions_v1_beta1 = client.ExtensionsV1beta1Api()
         self.env = run_context
-        self.clean_config_etcd()
+        # TODO: Only run this block of code in case of TMC mid deployment
+        if 'mid' in self.env.HELM_CHART:
+            self.clean_config_etcd()
 
     def _lookup_by(self,item,key: str,value: str) -> bool:
         if item.metadata.labels is not None:
