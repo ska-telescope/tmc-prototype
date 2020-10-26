@@ -41,7 +41,13 @@ etcd-operator:
 
 csp-proto:      
   csplmc:
-     enabled: true
+    enabled: true
+    image:
+      registry: nexus.engageska-portugal.pt/ska-docker
+      image: mid-csp-lmc
+      tag: 0.6.8-6ec0c11
+      pullPolicy: IfNotPresent
+      
 cbf-proto:
   midcbfmcs:
      enabled: true

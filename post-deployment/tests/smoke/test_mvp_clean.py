@@ -15,7 +15,7 @@ LOGGER = logging.getLogger(__name__)
 #         'mid_csp_cbf/sub_elt/subarray_01',
 #         'mid_sdp/elt/subarray_1']
 
-@pytest.mark.select
+@pytest.mark.mid
 @pytest.mark.first
 @pytest.mark.last
 def test_smell_mvp(pre_or_post="#PRE"):
