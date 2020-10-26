@@ -69,6 +69,10 @@ STR_GRP_DEF_END_SCAN_FN = "Group Definitions in EndScan function :-> "
 STR_SCAN_COMPLETE = "Scan is completed"
 STR_DISH_LN_VS_HEALTH_EVT_ID = "self._dishLnVsHealthEventID "
 STR_DISH_LN_VS_POINTING_STATE_EVT_ID = "self._dishLnVsPointingStateEventID "
+STR_CSP_LN_VS_HEALTH_EVT_ID = "self._cspLnVsHealthEventID "
+STR_CSP_LN_VS_OBS_STATE_EVT_ID = "self._cspLnVsObsStateEventID "
+STR_SDP_LN_VS_HEALTH_EVT_ID = "self._sdpLnVsHealthEventID "
+STR_SDP_LN_VS_OBS_STATE_EVT_ID = "self._sdpLnVsObsStateEventID "
 STR_GRP_DEF = "Receptors in the Group :-> "
 STR_LN_PROXIES = "LeafNode proxies :-> "
 STR_SUBS_ATTRS_LN = "Subscribing attributes of Leaf Nodes..."
@@ -94,6 +98,7 @@ STR_POINTING_STATE_UNKNOWN_VAL = "Subarray pointingState event returned unknown 
 STR_ARROW = " :-> "
 STR_SA_INIT = "Initializing SubarrayNode..."
 STR_SA_INIT_SUCCESS = "Subarray node is initialized successfully."
+STR_SA_PROXY_INIT = "Creating proxy for -> "
 
 STR_CONFIGURE_IP_ARG = "Input Arguments for Configure command :-> "
 STR_GRP_DEF_CONFIGURE_FN = "Group devices during Configure command :-> "
@@ -196,6 +201,7 @@ ERR_SUBS_SDP_SA_LEAF_ATTR = "Exception occurred while subscribing to SDP Subarra
 ERR_SDP_SA_LEAF_INIT = "Error occured in SDP Subarray Leaf Node initialization "
 ERR_SUBSR_RECEIVE_ADDRESSES_SDP_SA = "Error in subscribing receive addresses of SDP Subarray"
 ERR_SA_INIT = "Subarray node initialization failed."
+ERR_PROXY_CREATE = "Proxy creaton failed on Subarray Node"
 
 
 # JSON keys
