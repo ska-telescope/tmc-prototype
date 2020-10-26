@@ -1220,7 +1220,6 @@ def test_subarray_health_state_event_to_raise_devfailed_exception_for_csp_subarr
     }
 
     subarray_ln_proxy_mock = Mock()
-    subarray_ln_proxy_mock.subscribe_event.side_effect = raise_devfailed_exception
 
     proxies_to_mock = {
         subarray_ln_fqdn: subarray_ln_proxy_mock
@@ -1228,12 +1227,13 @@ def test_subarray_health_state_event_to_raise_devfailed_exception_for_csp_subarr
 
     with fake_tango_system(SubarrayNode, initial_dut_properties, proxies_to_mock) as tango_context:
         tango_context.device.On()
-        print("After On Command Invoke")
         health_state_value = HealthState.FAILED
+        subarray_ln_proxy_mock.subscribe_event.side_effect = raise_devfailed_for_event_subscription
         dummy_event = create_dummy_event_healthstate_with_proxy(
             subarray_ln_proxy_mock, subarray_ln_fqdn, health_state_value,
             subarray_ln_health_attribute)
-        assert tango_context.device.State() == DevState.FAULT
+        assert tango_context.device.State() == DevState.ON
+
 
 @pytest.mark.skip(reason= "Fix test case")
 def test_end_command_subarray_when_in_invalid_state():
