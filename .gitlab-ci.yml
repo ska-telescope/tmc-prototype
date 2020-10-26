@@ -370,7 +370,6 @@ test-mid:
     - make clean
     - make install-chart MINIKUBE=false
     - make wait
-    - make watch
     - make smoketest
     - make test MARK=mid
   after_script:
