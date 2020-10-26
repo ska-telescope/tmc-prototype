@@ -23,7 +23,7 @@ from tango.server import run, attribute, command, device_property
 
 # Additional import
 from ska.base import SKABaseDevice
-from ska.base.commands import ResponseCommand, ResultCode, BaseCommand
+from ska.base.commands import ResultCode, BaseCommand
 from ska.base.control_model import HealthState, ObsState
 from . import const, release
 from centralnode.input_validator import AssignResourceValidator
@@ -453,7 +453,7 @@ class CentralNode(SKABaseDevice):
     # --------
 
     # pylint: disable=unused-variable
-    class StowAntennasCommand(ResponseCommand):
+    class StowAntennasCommand(BaseCommand):
         """
         A class for CentralNode's StowAntennas() command.
         """
@@ -524,7 +524,6 @@ class CentralNode(SKABaseDevice):
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
                                              "CentralNode.StowAntennasCommand",
                                              tango.ErrSeverity.ERR)
-            return (ResultCode.OK, device._read_activity_message)
 
     # pylint: enable=unused-variable
 
@@ -545,16 +544,13 @@ class CentralNode(SKABaseDevice):
     @command(
         dtype_in=('str',),
         doc_in="List of Receptors to be stowed",
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
     )
     def StowAntennas(self, argin):
         """
         This command stows the specified receptors.
         """
         handler = self.get_command_object("StowAntennas")
-        (result_code, message) = handler(argin)
-        return [[result_code], [message]]
+        handler(argin)
 
     class StandByTelescopeCommand(SKABaseDevice.OffCommand):
         """
