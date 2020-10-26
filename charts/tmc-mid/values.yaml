@@ -194,12 +194,32 @@ deviceServers:
     requests:
       cpu: 100m
       memory: 128Mi
+- name: cspmasterleafnode
+  function: csp-monitoring
+  domain: general-monitoring
+  args:
+    - -c
+    - "retry --max=10 -- tango_admin --ping-device mid_csp/elt/master && /usr/local/bin/CspMasterLeafNodeDS 01"
+  depends_on:
+    - device: mid_csp/elt/master
+  image:
+    registry: nexus.engageska-portugal.pt/tango-example
+    image: tmcprototype
+    tag: 0.2.11
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 300m
+      memory: 500Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
 - name: cspsubarrayleafnode1
   function: observation-execution
   domain: subarray
   args:
     - -c
-    - "/usr/local/bin/CspSubarrayLeafNodeDS 01"
+    - "retry --max=10 -- tango_admin --ping-device mid_csp/elt/subarray_01 && /usr/local/bin/CspSubarrayLeafNodeDS 01"
   depends_on:
     - device: mid_csp/elt/subarray_01
   image:
@@ -219,7 +239,7 @@ deviceServers:
   domain: subarray
   args:
     - -c
-    - "/usr/local/bin/CspSubarrayLeafNodeDS 02"
+    - "retry --max=10 -- tango_admin --ping-device mid_csp/elt/subarray_02 && /usr/local/bin/CspSubarrayLeafNodeDS 02"
   depends_on:
     - device: mid_csp/elt/subarray_02
   image:
@@ -239,7 +259,7 @@ deviceServers:
   domain: subarray
   args:
     - -c
-    - "/usr/local/bin/CspSubarrayLeafNodeDS 03"
+    - "retry --max=10 -- tango_admin --ping-device mid_csp/elt/subarray_03 && /usr/local/bin/CspSubarrayLeafNodeDS 03"
   depends_on:
     - device: mid_csp/elt/subarray_03
   image:
@@ -254,14 +274,14 @@ deviceServers:
     requests:
       cpu: 100m
       memory: 128Mi
-- name: cspmasterleafnode
-  function: csp-monitoring
-  domain: general-monitoring
+- name: sdpmasterleafnode
+  function: observation-execution
+  domain: subarray
   args:
     - -c
-    - "/usr/local/bin/CspMasterLeafNodeDS 01"
+    - "/usr/local/bin/SdpMasterLeafNodeDS 01"
   depends_on:
-    - device: mid_csp/elt/master
+    - device: mid_sdp/elt/master
   image:
     registry: nexus.engageska-portugal.pt/tango-example
     image: tmcprototype
@@ -314,34 +334,14 @@ deviceServers:
     requests:
       cpu: 100m
       memory: 128Mi
-# - name: sdpsubarrayleafnode3
-#   function: observation-execution
-#   domain: subarray
-#   args:
-#     - -c
-#     - "/usr/local/bin/SdpSubarrayLeafNodeDS 03"
-#   depends_on:
-#     - device: mid_sdp/elt/subarray_3
-#   image:
-#     registry: nexus.engageska-portugal.pt/tango-example
-#     image: tmcprototype
-#     tag: 0.2.11
-#     pullPolicy: IfNotPresent
-#   resources:
-#     limits:
-#       cpu: 300m
-#       memory: 500Mi
-#     requests:
-#       cpu: 100m
-#       memory: 128Mi
-- name: sdpmasterleafnode
+- name: sdpsubarrayleafnode3
   function: observation-execution
   domain: subarray
   args:
     - -c
-    - "/usr/local/bin/SdpMasterLeafNodeDS 01"
+    - "/usr/local/bin/SdpSubarrayLeafNodeDS 03"
   depends_on:
-    - device: mid_sdp/elt/master
+    - device: mid_sdp/elt/subarray_3
   image:
     registry: nexus.engageska-portugal.pt/tango-example
     image: tmcprototype
