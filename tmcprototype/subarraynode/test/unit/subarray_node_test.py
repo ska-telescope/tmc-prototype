@@ -722,7 +722,6 @@ def test_configure_command_subarray_with_invalid_configure_input(mock_lower_devi
     with pytest.raises(tango.DevFailed):
         tango_context.device.Configure(invalid_conf_input)
     assert tango_context.device.obsState == ObsState.FAULT
-    assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
 
 
 def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready(mock_lower_devices):
@@ -1529,7 +1528,6 @@ def test_abort_should_raise_devfailed_exception_when_obsstate_is_resourcing(mock
     with pytest.raises(tango.DevFailed):
         tango_context.device.Abort()
     assert tango_context.device.obsState == ObsState.FAULT
-    assert const.ERR_ABORT_INVOKING_CMD in tango_context.device.activityMessage
 
 
 @pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")

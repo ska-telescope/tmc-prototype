@@ -334,10 +334,10 @@ def test_configure_command_subarray_with_invalid_configure_input(mock_lower_devi
     event_subscription_map[mccs_subarray1_obsstate_attribute](dummy_event_mccs)
     wait_for(tango_context, ObsState.IDLE)
     assert tango_context.device.obsState == ObsState.IDLE 
-    with pytest.raises(tango.DevFailed):
+    with pytest.raises(tango.DevFailed) as df:
         tango_context.device.Configure(invalid_conf_input)
     assert tango_context.device.obsState == ObsState.FAULT
-    assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
+    assert const.ERR_INVALID_JSON in  str(df.value)
 
 def test_end_scan_should_command_subarray_to_end_scan_when_it_is_scanning(mock_lower_devices):
     tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
