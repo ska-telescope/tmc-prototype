@@ -19,7 +19,7 @@
 * 5   - Linting
 * 6   - Documentation
 
-# 1: Introduction
+# 1 Introduction
 
 This is the repository for the TMC evolutionary prototype. The prototype aims to realize Telescope Monitoring and Control functionality, and utilizes the platform, tools and technology specified for the SKA construction.
 
@@ -27,7 +27,7 @@ The prototype utilizes the base classes created in-line with the SKA Control Sys
 
 TMC prototype addresses the  following architectural aspects and functionality:
 
-## 1.1: Architecture
+## 1.1 Architecture
 
 * [x] Use of LMC base classes for development of TMC control nodes and element simulator such as Dish Master
 * [x] Hierarchy of control nodes for Mid and Low- Central Node, Subarray Node, Leaf Node
@@ -44,7 +44,7 @@ TMC prototype addresses the  following architectural aspects and functionality:
 * [x] Exception handling guidelines for AssignResources functionality in TMC-Mid
 * [x] Adopted ADR-8 observation state machine
 
-## 1.2: Functionality
+## 1.2 Functionality
 
 * [x] Monitoring and control functionality with hierarchy of nodes
 * [x] Automatic control actions on Alerts using Elettra Alarm Handler
@@ -94,7 +94,7 @@ TMC prototype addresses the  following architectural aspects and functionality:
 
 **NOTE:** Refer to the Demo link provided in the [Documentation](#6-documentation) section for more details.
 
-# 2: Prerequisites
+# 2 Prerequisites
 
 * Linux/Ubuntu (18.04 LTS)
 * Python 3.7
@@ -115,20 +115,20 @@ TMC prototype addresses the  following architectural aspects and functionality:
 * [Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/) (for running the prototype in a containerised environment)
 * [Kubernetes (K8s)/Minikube](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/)
 
-# 3: Installing, configuring and running the prototype
+# 3 Installing, configuring and running the prototype
 
-## 3.1: Install SKA Base classes
+## 3.1 Install SKA Base classes
 
 Since the TMC prototype is developed using LMC Base classes, we need to install them prior to running tmc-prototype.
 Follow the steps specified at [this link](https://gitlab.com/ska-telescope/lmc-base-classes#installation-steps) to install LMC Base classes.
 
-## 3.2: Install Elettra Alarm Handler
+## 3.2 Install Elettra Alarm Handler
 
 Alarm handler is an optional feature and can be installed if desired. Refer to
 [this](https://docs.google.com/document/d/1uGnVrBGs6TvnORsM2m4hbORcAzn_KK2kAO8Roaocxjo/edit?usp=sharing)
 document for installation guide.
 
-# 4: Testing
+# 4 Testing
 
 ## 4.1 Unit Testing
 
@@ -179,7 +179,7 @@ Once, the deployment is done, Webjive can be accessed from browser with url:
 The command `make uninstall-chart` deletes the deployment from kubernetes cluster.
 The command `make clean` performs cleanup like deleting the kubernetes namespace. This is optional.
 
-# 5: Linting
+# 5 Linting
 
 [Pylint](http://pylint.pycqa.org/en/stable/), code analysis tool used for the linting in the TMC prototype.
  Configuration for linting is provided in *.pylintrc* file. For the code analysis of entire TMC, a command in the
@@ -190,7 +190,7 @@ The command used for linting is: `make lint`
 After completion of linting job, *linting.xml* file is generated, which is used in generation of *lint errors*,
 *lint failures* and *lint tests* gitlab badges.
 
-# 6: Documentation
+# 6 Documentation
 
 * [ReadTheDocs](https://tmc-prototype.readthedocs.io/en/master/)
 * [ADR-8: Subarray observation control state machine](https://confluence.skatelescope.org/x/bIdIBg)
