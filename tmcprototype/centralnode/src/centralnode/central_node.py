@@ -23,7 +23,7 @@ from tango.server import run, attribute, command, device_property
 
 # Additional import
 from ska.base import SKABaseDevice
-from ska.base.commands import ResponseCommand, ResultCode, BaseCommand
+from ska.base.commands import ResultCode, BaseCommand
 from ska.base.control_model import HealthState, ObsState
 from . import const, release
 from centralnode.input_validator import AssignResourceValidator
@@ -453,7 +453,7 @@ class CentralNode(SKABaseDevice):
     # --------
 
     # pylint: disable=unused-variable
-    class StowAntennasCommand(ResponseCommand):
+    class StowAntennasCommand(BaseCommand):
         """
         A class for CentralNode's StowAntennas() command.
         """
@@ -524,7 +524,6 @@ class CentralNode(SKABaseDevice):
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
                                              "CentralNode.StowAntennasCommand",
                                              tango.ErrSeverity.ERR)
-            return (ResultCode.OK, device._read_activity_message)
 
     # pylint: enable=unused-variable
 
@@ -545,16 +544,13 @@ class CentralNode(SKABaseDevice):
     @command(
         dtype_in=('str',),
         doc_in="List of Receptors to be stowed",
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
     )
     def StowAntennas(self, argin):
         """
         This command stows the specified receptors.
         """
         handler = self.get_command_object("StowAntennas")
-        (result_code, message) = handler(argin)
-        return [[result_code], [message]]
+        handler(argin)
 
     class StandByTelescopeCommand(SKABaseDevice.OffCommand):
         """
@@ -896,26 +892,7 @@ class CentralNode(SKABaseDevice):
 
             Note: From Jive, enter above input string without any space.
 
-            :return: A tuple containing a return code and a string in JSON format on successful assignment
-             of given resources. The JSON string contains following values:
-
-                dish:
-                    Mandatory JSON object consisting of
-
-                    receptorIDList_success:
-                        DevVarStringArray
-                        Contains ids of the receptors which are successfully allocated. Empty on unsuccessful
-                        allocation.
-
-
-                Example:
-                    {
-                    "dish": {
-                    "receptorIDList_success": ["0001", "0002"]
-                    }
-                    }
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: DevFailed when the API fails to allocate resources.
 
@@ -1102,25 +1079,7 @@ class CentralNode(SKABaseDevice):
                 Note: From Jive, enter input as:
                     {"subarrayID":1,"releaseALL":true,"receptorIDList":[]} without any space.
 
-            :return: A tuple containing a return code and a string in josn format on successful release
-             of all the resources. The JSON string contains following values:
-
-                releaseALL:
-                    Boolean(True or False). If True, all the resources are successfully released from the
-                    Subarray.
-
-                receptorIDList:
-                    DevVarStringArray. If releaseALL is True, receptorIDList is empty. Else list returns
-                    resources (device names) that are noe released from the subarray.
-
-                Example:
-                    argout =
-                    {
-                        "ReleaseAll" : True,
-                        "receptorIDList" : []
-                    }
-
-             :rtype: (ResultCode, str)
+            :return: None
 
              :raises: ValueError if input argument json string contains invalid value
                     KeyError if input argument json string contains invalid key
