@@ -1,5 +1,5 @@
 {
-    "class_name": "DishElementMaster",
+    "class_name": "DishMaster",
     "class_overrides": [
       {
         "override_class": {

@@ -11383,13 +11383,13 @@
     },
     "class_properties": {
         "Description": [
-            "DishElementMaster"
+            "DishMaster"
         ],
         "InheritedFrom": [
             "TANGO_BASE_CLASS"
         ],
         "ProjectTitle": [
-            "DishElementMaster"
+            "DishMaster"
         ]
     },
     "commands": {
@@ -12945,7 +12945,7 @@
             "out_type_desc": "Uninitialised"
         }
     },
-    "dev_class": "DishElementMaster",
+    "dev_class": "DishMaster",
     "host": "ska-dish-lmc",
     "level": "5",
     "name": "mid_dsh_0000/elt/master",
@@ -13459,5 +13459,5 @@
             "10000"
         ]
     },
-    "server": "DishElementMaster/1"
+    "server": "DishMaster/1"
 }
