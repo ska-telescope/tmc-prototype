@@ -537,6 +537,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     @command(
         dtype_in=('str'),
+        doc_in="The string in JSON format, contains scan id, frequencyBand, fsp, delayModelSubscriptionPoint"
+               " and pointing information.",
     )
     @DebugIt()
     def Configure(self, argin):
@@ -648,6 +650,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     @command(
         dtype_in=('str',),
+        doc_in="The string in JSON format, consists of scan id.",
     )
     @DebugIt()
     def StartScan(self, argin):
@@ -1060,6 +1063,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     @command(
         dtype_in=('str'),
+        doc_in="The input string in JSON format consists of receptorIDList.",
     )
     @DebugIt()
     def AssignResources(self, argin):

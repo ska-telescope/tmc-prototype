@@ -892,7 +892,26 @@ class CentralNode(SKABaseDevice):
 
             Note: From Jive, enter above input string without any space.
 
-            :return: None
+            :return: A tuple containing a return code and a string in JSON format on successful assignment
+             of given resources. The JSON string contains following values:
+
+                dish:
+                    Mandatory JSON object consisting of
+
+                    receptorIDList_success:
+                        DevVarStringArray
+                        Contains ids of the receptors which are successfully allocated. Empty on unsuccessful
+                        allocation.
+
+
+                Example:
+                    {
+                    "dish": {
+                    "receptorIDList_success": ["0001", "0002"]
+                    }
+                    }
+
+            :rtype: (ResultCode, str)
 
             :raises: DevFailed when the API fails to allocate resources.
 
@@ -1079,7 +1098,25 @@ class CentralNode(SKABaseDevice):
                 Note: From Jive, enter input as:
                     {"subarrayID":1,"releaseALL":true,"receptorIDList":[]} without any space.
 
-            :return: None
+            :return: A tuple containing a return code and a string in josn format on successful release
+             of all the resources. The JSON string contains following values:
+
+                releaseALL:
+                    Boolean(True or False). If True, all the resources are successfully released from the
+                    Subarray.
+
+                receptorIDList:
+                    DevVarStringArray. If releaseALL is True, receptorIDList is empty. Else list returns
+                    resources (device names) that are noe released from the subarray.
+
+                Example:
+                    argout =
+                    {
+                        "ReleaseAll" : True,
+                        "receptorIDList" : []
+                    }
+
+             :rtype: (ResultCode, str)
 
              :raises: ValueError if input argument json string contains invalid value
                     KeyError if input argument json string contains invalid key

@@ -709,7 +709,6 @@ class DishLeafNode(SKABaseDevice):
             log_msg = f"{const.STR_SCAN_SUCCESS} with input argument as {argin}"
             self.logger.info(log_msg)
             device._read_activity_message = const.STR_SCAN_SUCCESS
-            return (ResultCode.OK, device._read_activity_message)
 
     def is_Scan_allowed(self):
         """
@@ -1327,6 +1326,7 @@ class DishLeafNode(SKABaseDevice):
 
     @command(
         dtype_in='str',
+        doc_in="The JSON input string contains dish and pointing information.",
     )
     def Track(self, argin):
         """ Invokes Track command on the DishMaster. """

@@ -22,7 +22,7 @@ from tango.server import run, command, device_property, attribute
 # Additional imports
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
-from ska.base.commands import ResultCode, ResponseCommand, BaseCommand
+from ska.base.commands import ResultCode, BaseCommand
 from . import const, release
 from .exceptions import InvalidObsStateError
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
@@ -435,6 +435,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     @command(
         dtype_in=('str'),
+        doc_in="The input JSON string consists of information related to id, max_length, scan_types"
+               " and processing_blocks.",
     )
     @DebugIt()
     def AssignResources(self, argin):
@@ -559,6 +561,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     @command(
         dtype_in=('str'),
+        doc_in="The JSON input string consists of scan type.",
     )
     @DebugIt()
     def Configure(self, argin):
@@ -676,6 +679,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     @command(
         dtype_in=('str'),
+        doc_in="The JSON input string consists of id.",
     )
     @DebugIt()
     def Scan(self, argin):
