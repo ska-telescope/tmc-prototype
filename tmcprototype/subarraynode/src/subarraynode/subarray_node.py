@@ -267,6 +267,27 @@ class SubarrayNode(SKASubarray):
             if dev_name.startswith(const.PROP_DEF_VAL_LEAF_NODE_PREFIX):
                 _ = self.subarray_ln_health_state_map.pop(dev_name)
 
+    # todo for unsubscribing health and obsState events on CSP and SDP
+    def _unsubscribe_csp_sdp_state_events(self, proxy_event_id_map):
+        """
+        This function unsubscribes all events given by the event ids and their
+        corresponding DeviceProxy objects.
+
+        :param 
+            device_proxy: Device Proxy
+            proxy_event_id: <event_id>
+
+        :return: None
+
+        """
+        for device_proxy, event_id in proxy_event_id_map.items():
+            try:
+                device_proxy.unsubscribe_event(event_id)
+            except DevFailed as dev_failed:
+                log_message = "Failed to unsubscribe health state event {}.".format(dev_failed)
+                self.logger.error(log_message )
+                self._read_activity_message = log_message
+
     def _unsubscribe_resource_events(self, proxy_event_id_map):
         """
         This function unsubscribes all events given by the event ids and their
@@ -489,69 +510,74 @@ class SubarrayNode(SKASubarray):
             device._pointing_state_event_id = []
             device._dishLnVsHealthEventID = {}
             device._dishLnVsPointingStateEventID = {}
+            device._cspSdpLnHealthEventID = {}
+            device._cspSdpLnObsStateEventID = {}
             device.subarray_ln_health_state_map = {}
             device._subarray_health_state = HealthState.OK  #Aggregated Subarray Health State
             device._csp_sa_obs_state = None
             device._sdp_sa_obs_state = None
             device.only_dishconfig_flag = False
             device.scan_thread = None
-
-            # Create proxy for CSP Subarray Leaf Node
-            device._csp_subarray_ln_proxy = None
-            device._csp_subarray_ln_proxy = device.get_deviceproxy(device.CspSubarrayLNFQDN)
-            # Create proxy for SDP Subarray Leaf Node
-            device._sdp_subarray_ln_proxy = None
-            device._sdp_subarray_ln_proxy = device.get_deviceproxy(device.SdpSubarrayLNFQDN)
-            device._csp_sa_proxy = device.get_deviceproxy(device.CspSubarrayFQDN)
-            device._sdp_sa_proxy = device.get_deviceproxy(device.SdpSubarrayFQDN)
             device.command_class_object()
-            try:
-                device.subarray_ln_health_state_map[device._csp_subarray_ln_proxy.dev_name()] = (
-                    HealthState.UNKNOWN)
-                # Subscribe cspsubarrayHealthState (forwarded attribute) of CspSubarray
-                device._csp_subarray_ln_proxy.subscribe_event(
-                    const.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,device.health_state_cb,
-                    stateless=True)
-                # Subscribe cspSubarrayObsState (forwarded attribute) of CspSubarray
-                device._csp_subarray_ln_proxy.subscribe_event(const.EVT_CSPSA_OBS_STATE, EventType.CHANGE_EVENT,
-                                                              device.observation_state_cb, stateless=True)
-                device.set_status(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
-                self.logger.info(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
-            except DevFailed as dev_failed:
-                log_msg = const.ERR_SUBS_CSP_SA_LEAF_ATTR + str(dev_failed)
-                device._read_activity_message = log_msg
-                device.set_status(const.ERR_SUBS_CSP_SA_LEAF_ATTR)
-                self.logger.exception(dev_failed)
-                tango.Except.throw_exception(const.ERR_SUBS_CSP_SA_LEAF_ATTR,
-                                             log_msg,
-                                             "SubarrayNode.InitCommand",
-                                             tango.ErrSeverity.ERR)
 
-            try:
-                device.subarray_ln_health_state_map[device._sdp_subarray_ln_proxy.dev_name()] = (
-                    HealthState.UNKNOWN)
-                # Subscribe sdpSubarrayHealthState (forwarded attribute) of SdpSubarray
-                device._sdp_subarray_ln_proxy.subscribe_event(const.EVT_SDPSA_HEALTH, EventType.CHANGE_EVENT,
-                                                            device.health_state_cb, stateless=True)
-                # Subscribe sdpSubarrayObsState (forwarded attribute) of SdpSubarray
-                device._sdp_subarray_ln_proxy.subscribe_event(const.EVT_SDPSA_OBS_STATE, EventType.CHANGE_EVENT,
-                                                            device.observation_state_cb, stateless=True)
-                # device._sdp_sa_proxy.subscribe_event('state', EventType.CHANGE_EVENT,
-                #                                    device.device_state_cb, stateless=True)
-                # Subscribe ReceiveAddresses of SdpSubarray
-                device._sdp_sa_proxy.subscribe_event("receiveAddresses", EventType.CHANGE_EVENT,
-                                                   device.receive_addresses_cb, stateless=True)
 
-                device.set_status(const.STR_SDP_SA_LEAF_INIT_SUCCESS)
-            except DevFailed as dev_failed:
-                log_msg = const.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed)
-                device._read_activity_message = log_msg
-                device.set_status(const.ERR_SUBS_SDP_SA_LEAF_ATTR)
-                self.logger.exception(log_msg)
-                tango.Except.throw_exception(const.ERR_SUBS_SDP_SA_LEAF_ATTR,
-                                             log_msg,
-                                             "SubarrayNode.InitCommand",
-                                             tango.ErrSeverity.ERR)
+        # # moved in On Command do() method
+        #     # Create proxy for CSP Subarray Leaf Node
+        #     device._csp_subarray_ln_proxy = None
+        #     device._csp_subarray_ln_proxy = device.get_deviceproxy(device.CspSubarrayLNFQDN)
+        #     # Create proxy for SDP Subarray Leaf Node
+        #     device._sdp_subarray_ln_proxy = None
+        #     device._sdp_subarray_ln_proxy = device.get_deviceproxy(device.SdpSubarrayLNFQDN)
+        #     device._csp_sa_proxy = device.get_deviceproxy(device.CspSubarrayFQDN)
+        #     device._sdp_sa_proxy = device.get_deviceproxy(device.SdpSubarrayFQDN)        
+
+        #     try:
+        #         device.subarray_ln_health_state_map[device._csp_subarray_ln_proxy.dev_name()] = (
+        #             HealthState.UNKNOWN)
+        #         # Subscribe cspsubarrayHealthState (forwarded attribute) of CspSubarray
+        #         device._csp_subarray_ln_proxy.subscribe_event(
+        #             const.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,device.health_state_cb,
+        #             stateless=True)
+        #         # Subscribe cspSubarrayObsState (forwarded attribute) of CspSubarray
+        #         device._csp_subarray_ln_proxy.subscribe_event(const.EVT_CSPSA_OBS_STATE, EventType.CHANGE_EVENT,
+        #                                                       device.observation_state_cb, stateless=True)
+        #         device.set_status(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
+        #         self.logger.info(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
+        #     except DevFailed as dev_failed:
+        #         log_msg = const.ERR_SUBS_CSP_SA_LEAF_ATTR + str(dev_failed)
+        #         device._read_activity_message = log_msg
+        #         device.set_status(const.ERR_SUBS_CSP_SA_LEAF_ATTR)
+        #         self.logger.exception(dev_failed)
+        #         tango.Except.throw_exception(const.ERR_SUBS_CSP_SA_LEAF_ATTR,
+        #                                      log_msg,
+        #                                      "SubarrayNode.InitCommand",
+        #                                      tango.ErrSeverity.ERR)
+
+        #     try:
+        #         device.subarray_ln_health_state_map[device._sdp_subarray_ln_proxy.dev_name()] = (
+        #             HealthState.UNKNOWN)
+        #         # Subscribe sdpSubarrayHealthState (forwarded attribute) of SdpSubarray
+        #         device._sdp_subarray_ln_proxy.subscribe_event(const.EVT_SDPSA_HEALTH, EventType.CHANGE_EVENT,
+        #                                                     device.health_state_cb, stateless=True)
+        #         # Subscribe sdpSubarrayObsState (forwarded attribute) of SdpSubarray
+        #         device._sdp_subarray_ln_proxy.subscribe_event(const.EVT_SDPSA_OBS_STATE, EventType.CHANGE_EVENT,
+        #                                                     device.observation_state_cb, stateless=True)
+        #         # device._sdp_sa_proxy.subscribe_event('state', EventType.CHANGE_EVENT,
+        #         #                                    device.device_state_cb, stateless=True)
+        #         # Subscribe ReceiveAddresses of SdpSubarray
+        #         device._sdp_sa_proxy.subscribe_event("receiveAddresses", EventType.CHANGE_EVENT,
+        #                                            device.receive_addresses_cb, stateless=True)
+
+        #         device.set_status(const.STR_SDP_SA_LEAF_INIT_SUCCESS)
+        #     except DevFailed as dev_failed:
+        #         log_msg = const.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed)
+        #         device._read_activity_message = log_msg
+        #         device.set_status(const.ERR_SUBS_SDP_SA_LEAF_ATTR)
+        #         self.logger.exception(log_msg)
+        #         tango.Except.throw_exception(const.ERR_SUBS_SDP_SA_LEAF_ATTR,
+        #                                      log_msg,
+        #                                      "SubarrayNode.InitCommand",
+        #                                      tango.ErrSeverity.ERR)
 
             device._read_activity_message = const.STR_SA_INIT_SUCCESS
             self.logger.info(device._read_activity_message)
