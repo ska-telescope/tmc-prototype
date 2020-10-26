@@ -20,7 +20,7 @@ from tango.server import run, command, device_property, attribute
 
 # Additional import
 from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode, ResponseCommand
+from ska.base.commands import ResultCode, BaseCommand
 from ska.base.control_model import HealthState, SimulationMode, TestMode
 from . import const, release
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
@@ -377,7 +377,7 @@ class CspMasterLeafNode(SKABaseDevice):
             return (ResultCode.OK, const.STR_OFF_CMD_ISSUED)
 
 
-    class StandbyCommand(ResponseCommand):
+    class StandbyCommand(BaseCommand):
         """
         A class for CspMasterLeafNode's Standby() command.
         """
@@ -442,10 +442,7 @@ class CspMasterLeafNode(SKABaseDevice):
             , each array element specifies the FQDN of the CSP SubElement to put in STANDBY mode.
 
 
-            :return: A tuple containing a return code and a string message indicating status.
-             The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: DevFailed on communication failure with CspMaster or CspMaster is in error state.
 
@@ -454,7 +451,6 @@ class CspMasterLeafNode(SKABaseDevice):
                 device = self.target
                 device._csp_proxy.command_inout_asynch(const.CMD_STANDBY, argin, self.standby_cmd_ended_cb)
                 self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
-                return (ResultCode.OK, const.STR_STANDBY_CMD_ISSUED)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_EXE_STANDBY_CMD + str(dev_failed)
@@ -483,15 +479,12 @@ class CspMasterLeafNode(SKABaseDevice):
         doc_in="If the array length is 0, the command applies to the whole\nCSP Element.\nIf the array "
                "length is > 1, each array element specifies the FQDN of the\nCSP SubElement to put in "
                "STANDBY mode.",
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def Standby(self, argin):
         """ Sets Standby Mode on the CSP Element. """
         handler = self.get_command_object("Standby")
-        (result_code, message) = handler(argin)
-        return [[result_code], [message]]
+        handler(argin)
 
     def init_command_objects(self):
         """
