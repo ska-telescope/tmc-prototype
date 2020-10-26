@@ -17,7 +17,7 @@ dependencies:
   version: 0.11.0
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: tango-base
-  version: 0.2.7
+  version: 0.2.8
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: cbf-proto
   version: 0.1.1
@@ -26,7 +26,7 @@ dependencies:
   version: 0.2.0
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: sdp-prototype
-  version: 0.4.0
+  version: 0.4.1
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: tmc-mid
   version: 0.1.2
