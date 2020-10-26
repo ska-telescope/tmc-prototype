@@ -10,7 +10,6 @@ import tango
 import pytest
 
 # Tango imports
-from tango import DevState
 from tango.test_context import DeviceTestContext
 from os.path import dirname, join
 

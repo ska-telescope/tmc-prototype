@@ -5,7 +5,6 @@ import contextlib
 import importlib
 import types
 import sys
-import json
 import mock
 from mock import Mock, MagicMock
 from os.path import dirname, join
@@ -13,13 +12,11 @@ from os.path import dirname, join
 # Tango imports
 import pytest
 import tango
-from tango import DevState
 from tango.test_context import DeviceTestContext
 
 # Additional import
 from mccsmasterleafnode import MccsMasterLeafNode, const, release
 from ska.base.control_model import HealthState, ObsState
-from ska.base.control_model import LoggingLevel
 
 # PROTECTED REGION END #    //  MccsMasterLeafNode imports
 assign_input_file = 'command_AssignResources.json'

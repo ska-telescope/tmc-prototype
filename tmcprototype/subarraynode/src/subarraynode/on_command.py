@@ -1,6 +1,8 @@
 """
 OnCommand class for SubarrayNode
 """
+
+# Third party imports
 # Tango imports
 import tango
 from tango import DevFailed, DeviceProxy, EventType
@@ -64,9 +66,10 @@ class OnCommand(SKASubarray.OnCommand):
             device.subarray_ln_health_state_map[device._csp_subarray_ln_proxy.dev_name()] = (
                 HealthState.UNKNOWN)
             # Subscribe cspsubarrayHealthState (forwarded attribute) of CspSubarray
-            self._event_id = device._csp_subarray_ln_proxy.subscribe_event(
-                const.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,device.health_state_cb,
-                stateless=True)
+            self._event_id = device._csp_subarray_ln_proxy.subscribe_event(const.EVT_CSPSA_HEALTH,
+                                                          tango.EventType.CHANGE_EVENT,
+                                                          device.health_state_cb,
+                                                          stateless=True)
             device._cspSdpLnHealthEventID[device._csp_subarray_ln_proxy] = self._event_id
             log_msg = const.STR_CSP_LN_VS_HEALTH_EVT_ID + str(device._cspSdpLnHealthEventID)
             self.logger.debug(log_msg)

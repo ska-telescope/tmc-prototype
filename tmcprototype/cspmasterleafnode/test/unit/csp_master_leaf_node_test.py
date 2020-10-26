@@ -11,14 +11,12 @@ from mock import Mock, MagicMock
 # Tango imports
 import pytest
 import tango
-from tango import DevState
 from tango.test_context import DeviceTestContext
 
 # Additional import
 from cspmasterleafnode import CspMasterLeafNode, const, release
 from ska.base.control_model import HealthState
 from ska.base.control_model import LoggingLevel
-
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
 
 @pytest.fixture(scope="function")
