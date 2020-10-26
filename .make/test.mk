@@ -73,7 +73,7 @@ clear_sdp_config:
 	kubectl exec -n $(KUBE_NAMESPACE) sdp-proto-console-0 -- sdpcfg delete -R /
 
 smoketest: ## check that the number of waiting containers is zero (10 attempts, wait time 30s).
-	@kubectl -n $(KUBE_NAMESPACE) wait --for=condition=ready --all --timeout=120s pods
+	@kubectl -n $(KUBE_NAMESPACE) wait --for=condition=ready --all --timeout=240s pods
 
 disable_test_auth = helm delete testing-auth
 
