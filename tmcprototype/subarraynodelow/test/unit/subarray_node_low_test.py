@@ -177,7 +177,7 @@ def test_start_scan_should_raise_devfailed_exception(mock_lower_devices):
 
 def test_off_should_raise_devfailed_exception(mock_lower_devices):
     tango_context, mccs_subarray1_ln_proxy_mock = mock_lower_devices[:2]
-    mccs_subarray1_ln_proxy_mock.Off.side_effect = raise_devfailed_exception_off_command
+    mccs_subarray1_ln_proxy_mock.Off.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         tango_context.device.Off()
     assert "This is error message for devfailed" in str(df.value)
