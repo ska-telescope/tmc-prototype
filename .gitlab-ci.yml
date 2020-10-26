@@ -363,8 +363,6 @@ test-mid:
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
   before_script:
     - kubectl get namespace
-    - make delete_namespace KUBE_NAMESPACE=ci-tmc-prototype-e6a2ad96
-    - make delete_namespace KUBE_NAMESPACE=ci-tmc-prototype-e6a2ad96-sdp
   script:
     - kubectl version
     - make clean
