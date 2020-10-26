@@ -46,13 +46,13 @@ deviceServers:
     image: tmcprototype
     tag: 0.2.11
     pullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+  # resources:
+  #   limits:
+  #     cpu: 300m
+  #     memory: 500Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
 - name: dishmaster2
   function: receptor-simulation
   domain: sensing
@@ -66,13 +66,13 @@ deviceServers:
     image: tmcprototype
     tag: 0.2.11
     pullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+  # resources:
+  #   limits:
+  #     cpu: 300m
+  #     memory: 500Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
 - name: dishmaster3
   function: receptor-simulation
   domain: sensing
@@ -86,13 +86,13 @@ deviceServers:
     image: tmcprototype
     tag: 0.2.11
     pullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+  # resources:
+  #   limits:
+  #     cpu: 300m
+  #     memory: 500Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
 - name: dishmaster4
   function: receptor-simulation
   domain: sensing
@@ -106,19 +106,19 @@ deviceServers:
     image: tmcprototype
     tag: 0.2.11
     pullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+  # resources:
+  #   limits:
+  #     cpu: 300m
+  #     memory: 500Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
 - name: dishleafnode1
   function: dish-monitoring
   domain: general-monitoring
   args:
     - -c
-    - "/usr/local/bin/DishLeafNodeDS 01"
+    - "retry --max=10 -- tango_admin --ping-device mid_d0001/elt/master && /usr/local/bin/DishLeafNodeDS 01"
   depends_on:
     - device: mid_d0001/elt/master
 
@@ -127,19 +127,19 @@ deviceServers:
     image: tmcprototype
     tag: 0.2.11
     pullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+  # resources:
+  #   limits:
+  #     cpu: 300m
+  #     memory: 500Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
 - name: dishleafnode2
   function: dish-monitoring
   domain: general-monitoring
   args:
     - -c
-    - "/usr/local/bin/DishLeafNodeDS 02"
+    - "retry --max=10 -- tango_admin --ping-device mid_d0002/elt/master && /usr/local/bin/DishLeafNodeDS 02"
   depends_on:
     - device: mid_d0001/elt/master
   image:
@@ -147,19 +147,19 @@ deviceServers:
     image: tmcprototype
     tag: 0.2.11
     pullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+  # resources:
+  #   limits:
+  #     cpu: 300m
+  #     memory: 500Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
 - name: dishleafnode3
   function: dish-monitoring
   domain: general-monitoring
   args:
     - -c
-    - "/usr/local/bin/DishLeafNodeDS 03"
+    - "retry --max=10 -- tango_admin --ping-device mid_d0003/elt/master && /usr/local/bin/DishLeafNodeDS 03"
   depends_on:
     - device: mid_d0001/elt/master
   image:
@@ -167,19 +167,19 @@ deviceServers:
     image: tmcprototype
     tag: 0.2.11
     pullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+  # resources:
+  #   limits:
+  #     cpu: 300m
+  #     memory: 500Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
 - name: dishleafnode4
   function: dish-monitoring
   domain: general-monitoring
   args:
     - -c
-    - "/usr/local/bin/DishLeafNodeDS 04"
+    - "retry --max=10 -- tango_admin --ping-device mid_d0004/elt/master && /usr/local/bin/DishLeafNodeDS 04"
   depends_on:
     - device: mid_d0001/elt/master
   image:
@@ -187,13 +187,13 @@ deviceServers:
     image: tmcprototype
     tag: 0.2.11
     pullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+  # resources:
+  #   limits:
+  #     cpu: 300m
+  #     memory: 500Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
 - name: cspmasterleafnode
   function: csp-monitoring
   domain: general-monitoring
@@ -207,13 +207,13 @@ deviceServers:
     image: tmcprototype
     tag: 0.2.11
     pullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+  # resources:
+  #   limits:
+  #     cpu: 300m
+  #     memory: 500Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
 - name: cspsubarrayleafnode1
   function: observation-execution
   domain: subarray
@@ -227,13 +227,13 @@ deviceServers:
     image: tmcprototype
     tag: 0.2.11
     pullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+  # resources:
+  #   limits:
+  #     cpu: 300m
+  #     memory: 500Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
 - name: cspsubarrayleafnode2
   function: observation-execution
   domain: subarray
@@ -247,13 +247,13 @@ deviceServers:
     image: tmcprototype
     tag: 0.2.11
     pullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+  # resources:
+  #   limits:
+  #     cpu: 300m
+  #     memory: 500Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
 - name: cspsubarrayleafnode3
   function: observation-execution
   domain: subarray
@@ -267,19 +267,19 @@ deviceServers:
     image: tmcprototype
     tag: 0.2.11
     pullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+  # resources:
+  #   limits:
+  #     cpu: 300m
+  #     memory: 500Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
 - name: sdpmasterleafnode
   function: observation-execution
   domain: subarray
   args:
     - -c
-    - "/usr/local/bin/SdpMasterLeafNodeDS 01"
+    - "retry --max=10 -- tango_admin --ping-device mid_sdp/elt/master && /usr/local/bin/SdpMasterLeafNodeDS 01"
   depends_on:
     - device: mid_sdp/elt/master
   image:
@@ -287,19 +287,19 @@ deviceServers:
     image: tmcprototype
     tag: 0.2.11
     pullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+  # resources:
+  #   limits:
+  #     cpu: 300m
+  #     memory: 500Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
 - name: sdpsubarrayleafnode1
   function: observation-execution
   domain: subarray
   args:
     - -c
-    - "/usr/local/bin/SdpSubarrayLeafNodeDS 01"
+    - "retry --max=10 -- tango_admin --ping-device mid_sdp/elt/subarray_1 && /usr/local/bin/SdpSubarrayLeafNodeDS 01"
   depends_on:
     - device: mid_sdp/elt/subarray_1
   image:
@@ -307,19 +307,19 @@ deviceServers:
     image: tmcprototype
     tag: 0.2.11
     pullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+  # resources:
+  #   limits:
+  #     cpu: 300m
+  #     memory: 500Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
 - name: sdpsubarrayleafnode2
   function: observation-execution
   domain: subarray
   args:
     - -c
-    - "/usr/local/bin/SdpSubarrayLeafNodeDS 02"
+    - "retry --max=10 -- tango_admin --ping-device mid_sdp/elt/subarray_2 && /usr/local/bin/SdpSubarrayLeafNodeDS 02"
   depends_on:
     - device: mid_sdp/elt/subarray_2
   image:
@@ -327,19 +327,19 @@ deviceServers:
     image: tmcprototype
     tag: 0.2.11
     pullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+  # resources:
+  #   limits:
+  #     cpu: 300m
+  #     memory: 500Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
 - name: sdpsubarrayleafnode3
   function: observation-execution
   domain: subarray
   args:
     - -c
-    - "/usr/local/bin/SdpSubarrayLeafNodeDS 03"
+    - "retry --max=10 -- tango_admin --ping-device mid_sdp/elt/subarray_3 && /usr/local/bin/SdpSubarrayLeafNodeDS 03"
   depends_on:
     - device: mid_sdp/elt/subarray_3
   image:
@@ -347,13 +347,13 @@ deviceServers:
     image: tmcprototype
     tag: 0.2.11
     pullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+  # resources:
+  #   limits:
+  #     cpu: 300m
+  #     memory: 500Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
 - name: subarraynode1
   function: observation-execution
   domain: subarray
@@ -372,13 +372,13 @@ deviceServers:
     image: tmcprototype
     tag: 0.2.11
     pullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+  # resources:
+  #   limits:
+  #     cpu: 300m
+  #     memory: 500Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
 - name: subarraynode2
   function: observation-execution
   domain: subarray
@@ -397,13 +397,13 @@ deviceServers:
     image: tmcprototype
     tag: 0.2.11
     pullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+  # resources:
+  #   limits:
+  #     cpu: 300m
+  #     memory: 500Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
 - name: subarraynode3
   function: observation-execution
   domain: subarray
@@ -422,13 +422,13 @@ deviceServers:
     image: tmcprototype
     tag: 0.2.11
     pullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+  # resources:
+  #   limits:
+  #     cpu: 300m
+  #     memory: 500Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
 - name: centralnode
   function: telescope-monitoring
   domain: general-monitoring
@@ -446,13 +446,13 @@ deviceServers:
     image: tmcprototype
     tag: 0.2.11
     pullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+  # resources:
+  #   limits:
+  #     cpu: 300m
+  #     memory: 500Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
 - name: tm-alarmhandler
   function: alarm-management
   domain: general-monitoring
@@ -466,10 +466,10 @@ deviceServers:
     image: tmalarmhandler
     tag: latest
     pullPolicy: Always
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+  # resources:
+  #   limits:
+  #     cpu: 300m
+  #     memory: 500Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
