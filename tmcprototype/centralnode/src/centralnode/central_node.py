@@ -11,26 +11,24 @@
 Central Node is a coordinator of the complete M&C system. Central Node implements the standard set
 of state and mode attributes defined by the SKA Control Model.
 """
-from __future__ import print_function
-from __future__ import absolute_import
-
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
+# Standard Python imports
+import json
+import ast
+
 # Tango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
 from tango.server import run, attribute, command, device_property
-from ska.base import SKABaseDevice
-from ska.base.commands import ResponseCommand, ResultCode, BaseCommand
-from ska.base.control_model import HealthState, ObsState
+
 # Additional import
+from ska.base import SKABaseDevice
+from ska.base.commands import ResultCode, BaseCommand
+from ska.base.control_model import HealthState, ObsState
 from . import const, release
 from centralnode.input_validator import AssignResourceValidator
 from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
 from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
-
-import json
-import ast
-
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 __all__ = ["CentralNode", "main"]
@@ -454,7 +452,8 @@ class CentralNode(SKABaseDevice):
     # Commands
     # --------
 
-    class StowAntennasCommand(ResponseCommand):
+    # pylint: disable=unused-variable
+    class StowAntennasCommand(BaseCommand):
         """
         A class for CentralNode's StowAntennas() command.
         """
@@ -492,8 +491,8 @@ class CentralNode(SKABaseDevice):
             device = self.target
             try:
                 for leafId in range(0, len(argin)):
-                    if type(float(argin[leafId])) == float:
-                        pass
+                    input_type_check = float(argin[leafId])
+
                 log_msg = const.STR_STOW_CMD_ISSUED_CN
                 self.logger.info(log_msg)
                 device._read_activity_message = log_msg
@@ -517,6 +516,7 @@ class CentralNode(SKABaseDevice):
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
                                              "CentralNode.StowAntennasCommand",
                                              tango.ErrSeverity.ERR)
+
             except DevFailed as dev_failed:
                 log_msg = const.ERR_EXE_STOW_CMD + str(dev_failed)
                 self.logger.exception(dev_failed)
@@ -524,7 +524,8 @@ class CentralNode(SKABaseDevice):
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
                                              "CentralNode.StowAntennasCommand",
                                              tango.ErrSeverity.ERR)
-            return (ResultCode.OK, device._read_activity_message)
+
+    # pylint: enable=unused-variable
 
     def is_StowAntennas_allowed(self):
         """
@@ -543,16 +544,13 @@ class CentralNode(SKABaseDevice):
     @command(
         dtype_in=('str',),
         doc_in="List of Receptors to be stowed",
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
     )
     def StowAntennas(self, argin):
         """
         This command stows the specified receptors.
         """
         handler = self.get_command_object("StowAntennas")
-        (result_code, message) = handler(argin)
-        return [[result_code], [message]]
+        handler(argin)
 
     class StandByTelescopeCommand(SKABaseDevice.OffCommand):
         """

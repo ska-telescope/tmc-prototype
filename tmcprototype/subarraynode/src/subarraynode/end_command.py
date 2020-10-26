@@ -2,6 +2,7 @@
 EndCommand class for SubarrayNode.
 """
 
+# Third party imports
 # Tango imports
 import tango
 from tango import DevFailed
@@ -37,7 +38,7 @@ class EndCommand(SKASubarray.EndCommand):
         try:
             self.logger.info("End command invoked on SubarrayNode.")
             device._sdp_subarray_ln_proxy.command_inout(const.CMD_END)
-            self.logger.info(const.STR_CMD_ENDSB_INV_SDP)
+            self.logger.info(const.STR_CMD_END_INV_SDP)
             device._csp_subarray_ln_proxy.command_inout(const.CMD_GOTOIDLE)
             self.logger.info(const.STR_CMD_GOTOIDLE_INV_CSP)
             # TODO: Uncomment this after resolving issues

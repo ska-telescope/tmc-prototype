@@ -14,8 +14,8 @@ version = "0.2.11"
 version_info = version.split(".")
 description = """Provides the monitoring and control interface required by users as well as
 other TM Components (such as OET, Central Node) for a Subarray."""
-author = "jyotin.ska"
-author_email = "jyotin.ska at gmail.com"
+author = "Apurva Patkar"
+author_email = "apurva.ska at gmail.com"
 license = """BSD-3-Clause"""
-url = """www.tango-controls.org"""
+url = """https://www.skatelescope.org"""
 copyright = """"""

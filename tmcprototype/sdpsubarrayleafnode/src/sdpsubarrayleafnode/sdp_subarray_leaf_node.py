@@ -13,18 +13,20 @@ It also acts as a SDP contact point for Subarray Node for observation execution.
 
 """
 # PROTECTED REGION ID(SdpSubarrayLeafNode.additionnal_import) ENABLED START #
+# Third party imports
 # PyTango imports
 import tango
 from tango import DeviceProxy, DebugIt, DevState, AttrWriteType, DevFailed
 from tango.server import run, command, device_property, attribute
+
+# Additional imports
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
-from ska.base.commands import ResultCode, ResponseCommand, BaseCommand
-# Additional imports
+from ska.base.commands import ResultCode, BaseCommand
 from . import const, release
 from .exceptions import InvalidObsStateError
-
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
+
 __all__ = ["SdpSubarrayLeafNode", "main"]
 
 
@@ -186,7 +188,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # Commands
     # --------
 
-    class ReleaseAllResourcesCommand(ResponseCommand):
+    class ReleaseAllResourcesCommand(BaseCommand):
         """
         A class for SdpSubarayLeafNode's ReleaseAllResources() command.
         """
@@ -249,10 +251,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             :param argin: None.
 
-            :return: A tuple containing a return code and a string message indicating status.
-                     The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: DevFailed if the command execution is not successful.
             """
@@ -264,7 +263,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 # Update the status of command execution status in activity message
                 device._read_activity_message = const.STR_REL_RESOURCES
                 self.logger.info(const.STR_REL_RESOURCES)
-                return(ResultCode.OK, const.STR_REL_RESOURCES)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_RELEASE_RESOURCES + str(dev_failed)
@@ -290,8 +288,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def ReleaseAllResources(self):
@@ -299,10 +295,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         Invokes ReleaseAllResources command on SdpSubarrayLeafNode.
         """
         handler = self.get_command_object("ReleaseAllResources")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
+        handler()
 
-    class AssignResourcesCommand(ResponseCommand):
+    class AssignResourcesCommand(BaseCommand):
         """
         A class for SdpSubarayLeafNode's AssignResources() command.
         """
@@ -402,10 +397,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             Note: Enter input without spaces
 
-            :return: A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: ValueError if input argument json string contains invalid value.
                      DevFailed if the command execution is not successful.
@@ -420,7 +412,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 # Update the status of command execution status in activity message
                 device._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
                 self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
-                return ResultCode.OK, const.STR_ASSIGN_RESOURCES_SUCCESS
+
             except InvalidObsStateError as error:
                 self.logger.exception(error)
                 tango.Except.throw_exception("obstate is not in EMPTY state", str(error),
@@ -443,8 +435,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     @command(
         dtype_in=('str'),
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
+        doc_in="The input JSON string consists of information related to id, max_length, scan_types"
+               " and processing_blocks.",
     )
     @DebugIt()
     def AssignResources(self, argin):
@@ -452,8 +444,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         Assigns resources to given SDP subarray.
         """
         handler = self.get_command_object("AssignResources")
-        (result_code, message) = handler(argin)
-        return [[result_code], [message]]
+        handler(argin)
 
     def is_AssignResources_allowed(self):
         """
@@ -467,7 +458,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("AssignResources")
         return handler.check_allowed()
 
-    class ConfigureCommand(ResponseCommand):
+    class ConfigureCommand(BaseCommand):
         """
         A class for SdpSubarrayLeafNode's Configure() command.
         """
@@ -532,10 +523,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             { "scan_type": "science_A" }
 
-            :return: A tuple containing a return code and a string message indicating status.
-                     The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: ValueError if input argument json string contains invalid value.
                      KeyError if input argument json string contains invalid key.
@@ -549,7 +537,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                                               self.configure_cmd_ended_cb)
                 device._read_activity_message = const.STR_CONFIGURE_SUCCESS
                 self.logger.info(const.STR_CONFIGURE_SUCCESS)
-                return(ResultCode.OK, const.STR_CONFIGURE_SUCCESS)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_CONFIGURE + str(dev_failed)
@@ -574,8 +561,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     @command(
         dtype_in=('str'),
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
+        doc_in="The JSON input string consists of scan type.",
     )
     @DebugIt()
     def Configure(self, argin):
@@ -583,10 +569,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         Invokes Configure on SdpSubarrayLeafNode.
         """
         handler = self.get_command_object("Configure")
-        (result_code, message) = handler(argin)
-        return [[result_code], [message]]
+        handler(argin)
 
-    class ScanCommand(ResponseCommand):
+    class ScanCommand(BaseCommand):
         """
         A class for SdpSubarrayLeafNode's Scan() command.
         """
@@ -652,10 +637,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             Note: Enter input as without spaces:{“id”:1}
 
-            :return: A tuple containing a return code and a string message indicating status.
-                     The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: DevFailed if the command execution is not successful.
             """
@@ -674,7 +656,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_READY
                     self.logger.error(const.ERR_DEVICE_NOT_READY)
-                    return(ResultCode.FAILED, const.ERR_SCAN)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_SCAN + str(dev_failed)
@@ -698,18 +679,16 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     @command(
         dtype_in=('str'),
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
+        doc_in="The JSON input string consists of SB ID.",
     )
     @DebugIt()
     def Scan(self, argin):
         """Invoke Scan command to SDP subarray. """
 
         handler = self.get_command_object("Scan")
-        (result_code, message) = handler(argin)
-        return [[result_code], [message]]
+        handler(argin)
 
-    class EndScanCommand(ResponseCommand):
+    class EndScanCommand(BaseCommand):
         """
         A class for SdpSubarrayLeafNode's EndScan() command.
         """
@@ -772,10 +751,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             :param argin: None
 
-            :return: A tuple containing a return code and a string message indicating status.
-                     The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: DevFailed if the command execution is not successful.
             """
@@ -786,11 +762,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                                                     self.endscan_cmd_ended_cb)
                     device._read_activity_message = const.STR_ENDSCAN_SUCCESS
                     self.logger.info(const.STR_ENDSCAN_SUCCESS)
-                    return(ResultCode.OK, const.STR_ENDSCAN_SUCCESS)
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_IN_SCAN
                     self.logger.error(const.ERR_DEVICE_NOT_IN_SCAN)
-                    return(ResultCode.FAILED, const.ERR_ENDSCAN_INVOKING_CMD)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_ENDSCAN_INVOKING_CMD + str(dev_failed)
@@ -811,8 +785,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def EndScan(self):
@@ -821,10 +793,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         """
         handler = self.get_command_object("EndScan")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
+        handler()
 
-    class EndCommand(ResponseCommand):
+    class EndCommand(BaseCommand):
         """
         A class for SdpSubarrayLeafNode's End() command.
         """
@@ -884,10 +855,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             This command invokes End command on SDP subarray to end the current Scheduling block.
 
-            :return: A tuple containing a return code and a string message indicating status.
-                     The message is for information purpose only.
-
-            :rtype: (ResultCode, str)
+            :return: None
 
             :raises: DevFailed if the command execution is not successful.
             """
@@ -897,11 +865,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     device._sdp_subarray_proxy.command_inout_asynch(const.CMD_END, self.end_cmd_ended_cb)
                     device._read_activity_message = const.STR_END_SUCCESS
                     self.logger.info(const.STR_END_SUCCESS)
-                    return(ResultCode.OK, const.STR_END_SUCCESS)
                 else:
                     device._read_activity_message = const.ERR_DEVICE_NOT_READY
                     self.logger.error(const.ERR_DEVICE_NOT_READY)
-                    return(ResultCode.FAILED, const.ERR_DEVICE_NOT_READY)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_END_INVOKING_CMD + str(dev_failed)
@@ -925,18 +891,15 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def End(self):
         """ This command invokes End command on SDP subarray to end the current Scheduling block.
         """
         handler = self.get_command_object("End")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
+        handler()
 
-    class AbortCommand(ResponseCommand):
+    class AbortCommand(BaseCommand):
         """
         A class for sdpSubarrayLeafNode's Abort() command.
         """
@@ -997,10 +960,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             Command to abort the current operation being done on the SDP subarray.
 
-            :return: A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
-
-            :rtype: (ReturnCode, str)
+            :return: None
 
             :raises: DevFailed if error occurs while invoking command on CSPSubarray.
 
@@ -1013,13 +973,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ABORT, self.abort_cmd_ended_cb)
                     device._read_activity_message = const.STR_ABORT_SUCCESS
                     self.logger.info(const.STR_ABORT_SUCCESS)
-                    return(ResultCode.OK, const.STR_ABORT_SUCCESS)
 
                 else:
                     log_msg = ("Sdp Subarray is in ObsState {device._sdp_subarray_proxy.obsState.name}.""Unable to invoke Abort command")
                     device._read_activity_message = log_msg
                     self.logger.error(log_msg)
-                    return(ResultCode.FAILED, log_msg)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_ABORT_INVOKING_CMD + str(dev_failed)
@@ -1030,8 +988,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
     @command(
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def Abort(self):
@@ -1039,8 +995,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         Invoke Abort on SdpSubarrayLeafNode.
         """
         handler = self.get_command_object("Abort")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
+        handler()
 
     def is_Abort_allowed(self):
         """
@@ -1056,7 +1011,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Abort")
         return handler.check_allowed()
 
-    class RestartCommand(ResponseCommand):
+    class RestartCommand(BaseCommand):
         """
         A class for sdpSubarrayLeafNode's Restart() command.
         """
@@ -1118,10 +1073,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             Command to restart the SDP subarray and bring it to its ON state.
 
-            :return: A tuple containing a return code and a string message indicating status. The message is for
-                        information purpose only.
-
-            :rtype: (ReturnCode, str)
+            :return: None
 
             :raises: DevFailed if error occurs while invoking command on SDPSubarray.
 
@@ -1133,14 +1085,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                                                     self.restart_cmd_ended_cb)
                     device._read_activity_message = const.STR_RESTART_SUCCESS
                     self.logger.info(const.STR_RESTART_SUCCESS)
-                    return(ResultCode.OK, const.STR_RESTART_SUCCESS)
 
                 else:
                     log_msg = "Sdp Subarray is in ObsState " + str(device._sdp_subarray_proxy.obsState) + \
                               ". Unable to invoke Restart command."
                     device._read_activity_message = log_msg
                     self.logger.error(log_msg)
-                    return(ResultCode.FAILED, log_msg)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_RESTART_INVOKING_CMD + str(dev_failed)
@@ -1151,8 +1101,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
     @command(
-        dtype_out="DevVarLongStringArray",
-        doc_out="[ResultCode, information-only string]",
     )
     @DebugIt()
     def Restart(self):
@@ -1160,8 +1108,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         Invoke Restart command on SdpSubarrayLeafNode.
         """
         handler = self.get_command_object("Restart")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
+        handler()
 
     def is_Restart_allowed(self):
         """
