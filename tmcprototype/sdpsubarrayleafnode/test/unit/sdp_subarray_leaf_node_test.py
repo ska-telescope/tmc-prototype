@@ -2,7 +2,6 @@
 import contextlib
 import importlib
 import sys
-import json
 import types
 import pytest
 import tango
@@ -11,9 +10,7 @@ from mock import Mock
 from mock import MagicMock
 from os.path import dirname, join
 
-
 # Tango imports
-from tango import DevState
 from tango.test_context import DeviceTestContext
 
 # Additional import
@@ -109,7 +106,7 @@ def test_off_should_command_with_callback_method_with_event_error(mock_sdp_subar
 
 def test_on_command_should_raise_dev_failed(mock_sdp_subarray):
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_without_arg
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.On()
     assert "This is error message for devfailed" in str(df.value)
@@ -118,7 +115,7 @@ def test_on_command_should_raise_dev_failed(mock_sdp_subarray):
 def test_off_command_should_raise_dev_failed(mock_sdp_subarray):
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     device_proxy.On()
-    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_without_arg
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.Off()
     assert "This is error message for devfailed" in str(df.value)
@@ -167,7 +164,7 @@ def test_command_with_arg_should_raise_devfailed_exception(mock_sdp_subarray, ev
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     cmd_name, input_arg, requested_cmd, obs_state, _, Error_msg = command_with_arg
     sdp_subarray1_proxy_mock.obsState = obs_state
-    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_with_args
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name, input_arg)
     assert Error_msg in str(df.value)
@@ -223,7 +220,7 @@ def test_command_without_arg_should_raise_devfailed_exception(mock_sdp_subarray,
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     cmd_name, requested_cmd, obs_state, _, Error_msg = command_without_arg
     sdp_subarray1_proxy_mock.obsState = obs_state
-    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_without_arg
+    sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name)
     assert Error_msg in str(df.value)
@@ -252,11 +249,7 @@ def command_callback_with_devfailed_exception():
     tango.Except.throw_exception("SdpSubarrayLeafNode_Commandfailed in callback", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
 
-def raise_devfailed_exception_without_arg(cmd_name, callback):
-    tango.Except.throw_exception("SdpSubarrayLeafNode_Commandfailed", "This is error message for devfailed",
-                                 " ", tango.ErrSeverity.ERR)
-
-def raise_devfailed_exception_with_args(cmd_name, input_str, callback):
+def raise_devfailed_exception(*args):
     tango.Except.throw_exception("SdpSubarrayLeafNode_Commandfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
 

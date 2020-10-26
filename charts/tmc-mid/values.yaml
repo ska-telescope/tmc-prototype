@@ -473,9 +473,3 @@ deviceServers:
     requests:
       cpu: 100m
       memory: 128Mi
-
-webjive:
-  ingress:
-    enabled: true
-    nginx: false
-    hostname: integration.engageska-portugal.pt

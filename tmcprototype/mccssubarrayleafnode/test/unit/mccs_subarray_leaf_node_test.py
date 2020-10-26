@@ -181,7 +181,7 @@ def test_command_with_arg_to_raise_devfailed_exception(mock_mccs_subarray,comman
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     cmd_name, cmd_arg, _ , obs_state, error_msg = command_with_arg
     mccs_subarray1_proxy_mock.obsState = obs_state
-    mccs_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_with_arg
+    mccs_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name, cmd_arg)
     assert error_msg in str(df.value)
@@ -212,7 +212,7 @@ def test_command_without_arg_to_raise_devfailed_exception(mock_mccs_subarray,com
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     cmd_name, _ , obs_state, error_msg = command_without_arg
     mccs_subarray1_proxy_mock.obsState = obs_state
-    mccs_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception_with_arg
+    mccs_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name)
     assert error_msg in str(df)
@@ -310,26 +310,16 @@ def command_callback_with_devfailed_exception():
                                  const.ERR_CALLBACK_CMD_FAILED, " ", tango.ErrSeverity.ERR)
 
 
-def raise_devfailed_with_arg(cmd_name, input_arg1, input_arg2):
-    # "This function is called to raise DevFailed exception with arguments."
-    tango.Except.throw_exception(const.STR_CMD_FAILED, const.ERR_DEVFAILED_MSG,
-                                 cmd_name, tango.ErrSeverity.ERR)
-
 def command_callback_with_command_exception():
     # "This function is called when there is exception in command calling."
     return Exception("Exception in command callback")
 
 
-def raise_devfailed_exception(cmd_name, inp_str):
+def raise_devfailed_exception(*args):
     # "This function is called to raise DevFailed exception."
     tango.Except.throw_exception("CspSubarrayLeafNode_CommandFailed", const.ERR_DEVFAILED_MSG,
                                  " ", tango.ErrSeverity.ERR)
-
-
-def raise_devfailed_exception_with_arg(cmd_name, input_str):
-    tango.Except.throw_exception("MccsSubarrayLeafNode_Commandfailed", "This is error message for devfailed",
-                                 " ", tango.ErrSeverity.ERR)
-
+                                 
 
 def assert_activity_message(device_proxy, expected_message):
     assert device_proxy.activityMessage == expected_message  # reads tango attribute

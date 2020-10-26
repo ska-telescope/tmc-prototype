@@ -2,9 +2,11 @@ HELM_HOST ?= https://nexus.engageska-portugal.pt## helm host url https
 MINIKUBE ?= true## Minikube or not
 MARK ?= all
 IMAGE_TO_TEST ?= $(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/$(PROJECT):latest## docker image that will be run for testing purpose
-TANGO_HOST=$(shell helm get values ${HELM_RELEASE} -a -n ${KUBE_NAMESPACE} | grep tango_host | head -1 | cut -d':' -f2 | cut -d' ' -f2):10000
+TANGO_DATABASE_DS ?= tango-host-databaseds-from-makefile-$(RELEASE_NAME) ## Stable name for the Tango DB
+TANGO_HOST ?= $(TANGO_DATABASE_DS):10000## TANGO_HOST is an input!
 
-CHARTS ?= tmc-mid tmc-low ## list of charts to be published on gitlab -- umbrella charts for testing purpose
+
+CHARTS ?= tmc-mid tmc-low tmc-mid-umbrella tmc-low-umbrella ## list of charts to be published on gitlab -- umbrella charts for testing purpose
 
 CI_PROJECT_PATH_SLUG ?= tmcprototype
 CI_ENVIRONMENT_SLUG ?= tmcprototype	
@@ -73,20 +75,38 @@ package: ## package charts
 dep-up: ## update dependencies for every charts in the env var CHARTS
 	@cd charts; \
 	for i in $(CHARTS); do \
+	echo "+++ Updating $${i} chart +++"; \
 	helm dependency update $${i}; \
 	done;
 
 # This job is used to create a deployment of tmc-mid charts
-# Currently umbreall chart for tmc-mid path is given
-install-chart: namespace namespace_sdp ## install the helm chart with name HELM_RELEASE and path UMBRELLA_CHART_PATH on the namespace KUBE_NAMESPACE 
+# Currently umbrealla chart for tmc-mid path is given
+install-chart: dep-up namespace namespace_sdp ## install the helm chart with name HELM_RELEASE and path UMBRELLA_CHART_PATH on the namespace KUBE_NAMESPACE 
 	# Understand this better
 	@sed -e 's/CI_PROJECT_PATH_SLUG/$(CI_PROJECT_PATH_SLUG)/' $(UMBRELLA_CHART_PATH)values.yaml > generated_values.yaml; \
 	sed -e 's/CI_ENVIRONMENT_SLUG/$(CI_ENVIRONMENT_SLUG)/' generated_values.yaml > values.yaml; \
-	helm dependency update $(UMBRELLA_CHART_PATH); \
 	helm install $(HELM_RELEASE) \
 	--set minikube=$(MINIKUBE) \
-	--values values.yaml \
+	--set global.minikube=$(MINIKUBE) \
+	--set global.tango_host=$(TANGO_HOST) \
+	--set tangoDatabaseDS=$(TANGO_DATABASE_DS) \
 	--set sdp-prototype.helm_deploy.namespace=$(SDP_KUBE_NAMESPACE) \
+	--values values.yaml \
+	 $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE); \
+	 rm generated_values.yaml; \
+	 rm values.yaml
+
+template-chart: clean dep-up## install the helm chart with name RELEASE_NAME and path UMBRELLA_CHART_PATH on the namespace KUBE_NAMESPACE
+	@sed -e 's/CI_PROJECT_PATH_SLUG/$(CI_PROJECT_PATH_SLUG)/' $(UMBRELLA_CHART_PATH)values.yaml > generated_values.yaml; \
+	sed -e 's/CI_ENVIRONMENT_SLUG/$(CI_ENVIRONMENT_SLUG)/' generated_values.yaml > values.yaml; \
+	helm template $(RELEASE_NAME) \
+	--set minikube=$(MINIKUBE) \
+	--set global.minikube=$(MINIKUBE) \
+	--set global.tango_host=$(TANGO_HOST) \
+	--set tangoDatabaseDS=$(TANGO_DATABASE_DS) \
+	--set sdp-prototype.helm_deploy.namespace=$(SDP_KUBE_NAMESPACE) \
+	--values values.yaml \
+	--debug \
 	 $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE); \
 	 rm generated_values.yaml; \
 	 rm values.yaml

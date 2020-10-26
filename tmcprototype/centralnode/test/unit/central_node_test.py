@@ -16,7 +16,6 @@ from tango import DevState
 from tango.test_context import DeviceTestContext
 
 # Additional import
-
 from centralnode import CentralNode, const, release
 from centralnode.const import CMD_SET_STOW_MODE, STR_ON_CMD_ISSUED, STR_STOW_CMD_ISSUED_CN, STR_STANDBY_CMD_ISSUED
 from ska.base.control_model import HealthState, AdminMode, SimulationMode, ControlMode, TestMode
@@ -308,7 +307,7 @@ def test_assign_resources():
 def test_assign_resources_should_raise_devfailed_exception_when_subarray_node_throws_devfailed_exception(mock_subarraynode_device):
     device_proxy, subarray1_proxy_mock, subarray1_fqdn, event_subscription_map = mock_subarraynode_device
     subarray1_proxy_mock.DevState = DevState.OFF
-    subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
+    subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.AssignResources(assign_input_str)
     assert "Error occurred while assigning resources to the Subarray" in str(df)
@@ -479,7 +478,7 @@ def test_command_without_arg_should_raise_devfailed_exception(mock_central_lower
     device_proxy, subarray1_proxy_mock, dish_ln1_proxy_mock, csp_master_ln_proxy_mock, sdp_master_ln_proxy_mock = mock_central_lower_devices
     cmd_name = command_without_arg_devfailed
     dish_ln1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
-    csp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception_with_args
+    csp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     sdp_master_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     subarray1_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed):
@@ -578,14 +577,8 @@ def assert_activity_message(dut, expected_message):
     assert dut.activityMessage == expected_message # reads tango attribute
 
 
-# Throw Devfailed exception for command without argument
-def raise_devfailed_exception(cmd_name):
-    tango.Except.throw_exception("CentralNode_Commandfailed", "This is error message for devfailed",
-                                 " ", tango.ErrSeverity.ERR)
-
-
 # Throw Devfailed exception for command with argument
-def raise_devfailed_exception_with_args(cmd_name, input_args):
+def raise_devfailed_exception(*args):
     tango.Except.throw_exception("CentralNode_Commandfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
 

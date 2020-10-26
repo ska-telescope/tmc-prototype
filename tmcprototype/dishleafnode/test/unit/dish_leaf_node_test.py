@@ -10,7 +10,6 @@ import tango
 import pytest
 
 # Tango imports
-from tango import DevState
 from tango.test_context import DeviceTestContext
 from os.path import dirname, join
 
@@ -424,7 +423,7 @@ def test_health_state():
         assert tango_context.device.healthState == HealthState.OK
 
 
-def raise_devfailed_exception(cmd_name, callback):
+def raise_devfailed_exception(*args):
     tango.Except.throw_exception("DishLeafNode_Commandfailed", "This is error message for devfailed",
                                  " ", tango.ErrSeverity.ERR)
 
