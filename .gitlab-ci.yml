@@ -368,7 +368,7 @@ test-mid:
     - make install-chart MINIKUBE=false
     - make wait
     - make smoketest
-    # - make test
+    - make test MARK=mid
   after_script:
     - make uninstall-chart
     - make clean
@@ -387,7 +387,7 @@ test-mid:
       - build
     reports:
       junit: build/report.xml
-  when: manual
+  # when: manual
 
 
 test-low:

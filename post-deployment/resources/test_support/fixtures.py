@@ -77,7 +77,7 @@ ENV_VARS = [
     'HELM_RELEASE',
     'KUBE_NAMESPACE',
     'TANGO_HOST',
-    'HELM_CHART']
+    'MARK']
 RunContext = namedtuple('RunContext', ENV_VARS)
 
 @pytest.fixture(scope="session")
@@ -108,7 +108,7 @@ class K8_env():
         self.extensions_v1_beta1 = client.ExtensionsV1beta1Api()
         self.env = run_context
         # TODO: Only run this block of code in case of TMC mid deployment
-        if 'mid' in self.env.HELM_CHART:
+        if 'mid' in self.env.MARK:
             self.clean_config_etcd()
 
     def _lookup_by(self,item,key: str,value: str) -> bool:
