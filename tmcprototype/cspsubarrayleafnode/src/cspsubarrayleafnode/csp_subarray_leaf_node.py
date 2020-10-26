@@ -537,8 +537,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     @command(
         dtype_in=('str'),
-        doc_in="The string in JSON format, contains scan id, frequencyBand, fsp, delayModelSubscriptionPoint"
-               " and pointing information.",
+        doc_in="The string in JSON format, contains CSP configuration id, frequencyBand, fsp,"
+               " delayModelSubscriptionPoint and pointing information.",
     )
     @DebugIt()
     def Configure(self, argin):

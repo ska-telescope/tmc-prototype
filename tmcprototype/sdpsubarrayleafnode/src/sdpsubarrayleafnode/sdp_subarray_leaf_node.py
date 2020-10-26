@@ -679,7 +679,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     @command(
         dtype_in=('str'),
-        doc_in="The JSON input string consists of id.",
+        doc_in="The JSON input string consists of SB ID.",
     )
     @DebugIt()
     def Scan(self, argin):
