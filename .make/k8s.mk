@@ -313,9 +313,6 @@ help:  ## show this help.
 	@grep -hE '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 	@echo ""; echo "make vars (+defaults):"
 	@grep -hE '^[0-9a-zA-Z_-]+ \?=.*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = " \?\= "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' | sed -e 's/\#\#/  \#/'
-
-smoketest: ## check that the number of waiting containers is zero (10 attempts, wait time 30s).
-	@kubectl -n $(KUBE_NAMESPACE) wait --for=condition=ready --all --timeout=120s pods
 	
 traefik: ## install the helm chart for traefik (in the kube-system namespace). @param: EXTERNAL_IP (i.e. private ip of the master node).
 	@TMP=`mktemp -d`; \
