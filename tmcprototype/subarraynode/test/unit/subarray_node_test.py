@@ -304,6 +304,7 @@ def test_off_command_should_change_subarray_device_state_to_off():
         result = tango_context.device.Off()
         assert tango_context.device.state() == DevState.OFF
         assert tango_context.device.obsState == ObsState.EMPTY
+        # Here, in the return value we are receiving 0 as ResultCode.OK
         assert 0 in result[0]
 
 
@@ -1396,6 +1397,7 @@ def test_abort_should_command_subarray_to_abort_when_it_is_READY(mock_lower_devi
     csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ABORT)
     dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ABORT)
     assert tango_context.device.obsState == ObsState.ABORTED
+    #Here, in the return value we are receiving 0 as ResultCode.OK
     assert 1 in result[0]
 
 
@@ -1476,6 +1478,7 @@ def test_abort_should_command_subarray_to_abort_when_it_is_scanning(mock_lower_d
     csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ABORT)
     dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ABORT)
     assert tango_context.device.obsState == ObsState.ABORTED
+    #Here, in the return value we are receiving 0 as ResultCode.OK
     assert 1 in result[0]
 
 
