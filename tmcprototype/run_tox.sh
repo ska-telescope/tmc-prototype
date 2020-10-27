@@ -15,8 +15,8 @@ for path in $(find ./*/test  -type d -name unit); do
 	echo +++ Trying tests for $TMC_ELEMENT;
 	cd $TMC_ELEMENT;
 	tox -e py37
-	mv ${TMC_ELEMENT}_coverage ../$REPORTS_DIR;
-	cd ..
+mv ${TMC_ELEMENT}_coverage ../$REPORTS_DIR;
+cd ..
 done
 
 # Combine coverage reports

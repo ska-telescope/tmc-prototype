@@ -111,7 +111,6 @@ class SubarrayNode(SKASubarray):
         """
 
         device_name = event.device.dev_name()
-        print("Device name is : "+ str(device_name))
         log_msg= "Device name is : " + str(device_name)
         self.logger.debug(log_msg)
         if not event.err:
@@ -270,7 +269,7 @@ class SubarrayNode(SKASubarray):
             if dev_name.startswith(const.PROP_DEF_VAL_LEAF_NODE_PREFIX):
                 _ = self.subarray_ln_health_state_map.pop(dev_name)
 
-    # todo for unsubscribing health and obsState events on CSP and SDP
+    # TODO for unsubscribing health and obsState events on CSP and SDP
     def _unsubscribe_csp_sdp_state_events(self, proxy_event_id_map):
         """
         This function unsubscribes all events given by the event ids and their
