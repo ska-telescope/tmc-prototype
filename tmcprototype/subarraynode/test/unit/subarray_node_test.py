@@ -1230,7 +1230,8 @@ def test_subarray_health_state_event_to_raise_devfailed_exception_for_csp_subarr
         subarray_ln_proxy_mock.subscribe_event.side_effect = raise_devfailed_for_event_subscription
         with pytest.raises(tango.DevFailed) as df:
             tango_context.device.On() 
-        assert tango_context.device.State() == DevState.ON
+        assert tango_context.device.State() == DevState.FAULT
+        assert "Exception occurred while subscribing " in str(df)
 
 
 @pytest.mark.skip(reason= "Fix test case")

@@ -522,66 +522,6 @@ class SubarrayNode(SKASubarray):
             device.only_dishconfig_flag = False
             device.scan_thread = None
             device.command_class_object()
-
-
-        # # moved in On Command do() method
-        #     # Create proxy for CSP Subarray Leaf Node
-        #     device._csp_subarray_ln_proxy = None
-        #     device._csp_subarray_ln_proxy = device.get_deviceproxy(device.CspSubarrayLNFQDN)
-        #     # Create proxy for SDP Subarray Leaf Node
-        #     device._sdp_subarray_ln_proxy = None
-        #     device._sdp_subarray_ln_proxy = device.get_deviceproxy(device.SdpSubarrayLNFQDN)
-        #     device._csp_sa_proxy = device.get_deviceproxy(device.CspSubarrayFQDN)
-        #     device._sdp_sa_proxy = device.get_deviceproxy(device.SdpSubarrayFQDN)        
-
-        #     try:
-        #         device.subarray_ln_health_state_map[device._csp_subarray_ln_proxy.dev_name()] = (
-        #             HealthState.UNKNOWN)
-        #         # Subscribe cspsubarrayHealthState (forwarded attribute) of CspSubarray
-        #         device._csp_subarray_ln_proxy.subscribe_event(
-        #             const.EVT_CSPSA_HEALTH, EventType.CHANGE_EVENT,device.health_state_cb,
-        #             stateless=True)
-        #         # Subscribe cspSubarrayObsState (forwarded attribute) of CspSubarray
-        #         device._csp_subarray_ln_proxy.subscribe_event(const.EVT_CSPSA_OBS_STATE, EventType.CHANGE_EVENT,
-        #                                                       device.observation_state_cb, stateless=True)
-        #         device.set_status(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
-        #         self.logger.info(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
-        #     except DevFailed as dev_failed:
-        #         log_msg = const.ERR_SUBS_CSP_SA_LEAF_ATTR + str(dev_failed)
-        #         device._read_activity_message = log_msg
-        #         device.set_status(const.ERR_SUBS_CSP_SA_LEAF_ATTR)
-        #         self.logger.exception(dev_failed)
-        #         tango.Except.throw_exception(const.ERR_SUBS_CSP_SA_LEAF_ATTR,
-        #                                      log_msg,
-        #                                      "SubarrayNode.InitCommand",
-        #                                      tango.ErrSeverity.ERR)
-
-        #     try:
-        #         device.subarray_ln_health_state_map[device._sdp_subarray_ln_proxy.dev_name()] = (
-        #             HealthState.UNKNOWN)
-        #         # Subscribe sdpSubarrayHealthState (forwarded attribute) of SdpSubarray
-        #         device._sdp_subarray_ln_proxy.subscribe_event(const.EVT_SDPSA_HEALTH, EventType.CHANGE_EVENT,
-        #                                                     device.health_state_cb, stateless=True)
-        #         # Subscribe sdpSubarrayObsState (forwarded attribute) of SdpSubarray
-        #         device._sdp_subarray_ln_proxy.subscribe_event(const.EVT_SDPSA_OBS_STATE, EventType.CHANGE_EVENT,
-        #                                                     device.observation_state_cb, stateless=True)
-        #         # device._sdp_sa_proxy.subscribe_event('state', EventType.CHANGE_EVENT,
-        #         #                                    device.device_state_cb, stateless=True)
-        #         # Subscribe ReceiveAddresses of SdpSubarray
-        #         device._sdp_sa_proxy.subscribe_event("receiveAddresses", EventType.CHANGE_EVENT,
-        #                                            device.receive_addresses_cb, stateless=True)
-
-        #         device.set_status(const.STR_SDP_SA_LEAF_INIT_SUCCESS)
-        #     except DevFailed as dev_failed:
-        #         log_msg = const.ERR_SUBS_SDP_SA_LEAF_ATTR + str(dev_failed)
-        #         device._read_activity_message = log_msg
-        #         device.set_status(const.ERR_SUBS_SDP_SA_LEAF_ATTR)
-        #         self.logger.exception(log_msg)
-        #         tango.Except.throw_exception(const.ERR_SUBS_SDP_SA_LEAF_ATTR,
-        #                                      log_msg,
-        #                                      "SubarrayNode.InitCommand",
-        #                                      tango.ErrSeverity.ERR)
-
             device._read_activity_message = const.STR_SA_INIT_SUCCESS
             self.logger.info(device._read_activity_message)
             return (ResultCode.OK, device._read_activity_message)
