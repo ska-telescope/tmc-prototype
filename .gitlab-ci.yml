@@ -370,7 +370,6 @@ test-mid:
     - make wait
     - make smoketest
     - kubectl get all,pv,pvc,ingress -n ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA
-    - docker images | grep nexus.engageska-portugal.pt/tango-example/tmcprototype
     - make test MARK=mid && [ -f "build/report.xml" ]
   after_script:
     - make uninstall-chart
