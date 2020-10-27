@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import logging
 import sys
+import pkg_resources
 
 from ska.logging import configure_logging
 
@@ -9,10 +10,11 @@ from tango_simlib.tango_sim_generator import (configure_device_model, get_tango_
 
 
 def main():
-    sim_data_files = ['dish_master.fgo',
-                      'dish_master_SimDD.json']
-    # TODO (SamT 2018-05-18) install these files as part of package instead of abs path
-
+    sim_data_files = [
+        pkg_resources.resource_filename('dishmaster', 'dish_master.fgo'),
+        pkg_resources.resource_filename('dishmaster', 'dish_master_SimDD.json')
+    ]
+    
     # set up Python logging
     configure_logging()
     log_name = 'kat.{}'.format(get_instance_name())
