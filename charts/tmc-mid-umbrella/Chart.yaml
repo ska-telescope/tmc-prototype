@@ -17,19 +17,19 @@ dependencies:
   version: 0.11.0
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: tango-base
-  version: 0.2.2
+  version: 0.2.8
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: cbf-proto
-  version: 0.4.0
+  version: 0.1.1
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: csp-proto
-  version: 0.5.3
+  version: 0.2.0
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: sdp-prototype
-  version: 0.4.0
+  version: 0.4.1
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: tmc-mid
-  version: 0.0.2
+  version: 0.1.2
   repository: file://../tmc-mid
 - name: webjive
   version: 0.1.1

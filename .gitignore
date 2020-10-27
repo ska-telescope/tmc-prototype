@@ -219,3 +219,7 @@ doc_html/
 .devcontainer
 .vscode
 */tox_report
+
+# Helm Charts
+charts/tmc-mid-umbrella/Chart.lock
+charts/tmc-mid-umbrella/charts/

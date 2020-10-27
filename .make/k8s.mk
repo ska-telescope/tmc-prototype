@@ -126,8 +126,9 @@ wait:## wait for pods to be ready
 	@echo "Waiting for pods to be ready"
 	@date
 	@kubectl -n $(KUBE_NAMESPACE) get pods
-	@jobs=$$(kubectl get job --output=jsonpath={.items..metadata.name} -n $(KUBE_NAMESPACE)); kubectl wait job --for=condition=complete --timeout=120s $$jobs -n $(KUBE_NAMESPACE)
-	@kubectl -n $(KUBE_NAMESPACE) wait --for=condition=ready -l app=tmc-prototype --timeout=120s pods || exit 1
+	@jobs=$$(kubectl get job --output=jsonpath={.items..metadata.name} -n $(KUBE_NAMESPACE)); kubectl wait job --for=condition=complete --timeout=240s $$jobs -n $(KUBE_NAMESPACE)
+	@kubectl -n $(KUBE_NAMESPACE) wait --for=condition=ready -l app=tmc-prototype --timeout=240s pods
+	@kubectl get pods -n $(KUBE_NAMESPACE)
 	@date
 
 # Error in --set
@@ -312,30 +313,7 @@ help:  ## show this help.
 	@grep -hE '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 	@echo ""; echo "make vars (+defaults):"
 	@grep -hE '^[0-9a-zA-Z_-]+ \?=.*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = " \?\= "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' | sed -e 's/\#\#/  \#/'
-
-# smoketest: ## check that the number of waiting containers is zero (10 attempts, wait time 30s).
-# 	@echo "Smoke test START"; \
-# 	n=10; \
-# 	while [ $$n -gt 0 ]; do \
-# 		waiting=`kubectl get pods -n $(KUBE_NAMESPACE) -o=jsonpath='{.items[*].status.containerStatuses[*].state.waiting.reason}' | wc -w`; \
-# 		echo "Waiting containers=$$waiting"; \
-# 		if [ $$waiting -ne 0 ]; then \
-# 			echo "Waiting 30s for pods to become running...#$$n"; \
-# 			sleep 30s; \
-# 		fi; \
-# 		if [ $$waiting -eq 0 ]; then \
-# 			echo "Smoke test SUCCESS"; \
-# 			exit 0; \
-# 		fi; \
-# 		if [ $$n -eq 1 ]; then \
-# 			waiting=`kubectl get pods -n $(KUBE_NAMESPACE) -o=jsonpath='{.items[*].status.containerStatuses[*].state.waiting.reason}' | wc -w`; \
-# 			echo "Smoke test FAILS"; \
-# 			echo "Found $$waiting waiting containers: "; \
-# 			kubectl get pods -n $(KUBE_NAMESPACE) -o=jsonpath='{range .items[*].status.containerStatuses[?(.state.waiting)]}{.state.waiting.message}{"\n"}{end}'; \
-# 			exit 1; \
-# 		fi; \
-# 		n=`expr $$n - 1`; \
-# 	done
+	
 traefik: ## install the helm chart for traefik (in the kube-system namespace). @param: EXTERNAL_IP (i.e. private ip of the master node).
 	@TMP=`mktemp -d`; \
 	$(helm_add_stable_repo) && \
