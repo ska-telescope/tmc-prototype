@@ -1,6 +1,8 @@
 recursive-include src/dishmaster *.py
 recursive-include test *.py
 recursive-include pogo DishMaster.xmi
+recursive-include src/dishmaster dish_master.fgo
+recursive-include src/dishmaster dish_master_SimDD.json
 include *.rst
 include *.txt
 graft docs
