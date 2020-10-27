@@ -33,12 +33,12 @@ setup(
     include_package_data=True,
     package_data={
         "dish_master": [
-            "src/ska_mpi_dsh_lmc_SIMDD.json",
-            "src/ska_mpi_dsh_lmc.fgo",
+            "src/*.json",
+            "src/*.fgo",
         ]
     },
     test_suite="test",
-    entry_points={'console_scripts':['DishMasterDS = dishmaster.dish_master:main']},
+    entry_points={'console_scripts':['DishMasterDS = dishmaster.DishMasterDS:main']},
     author='apurva.ska',
     author_email='apurva.ska at gmail.com',
     license='BSD-3-Clause',

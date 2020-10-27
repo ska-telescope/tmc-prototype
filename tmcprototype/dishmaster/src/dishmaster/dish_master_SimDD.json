@@ -5,7 +5,7 @@
         "override_class": {
           "name": "Sim_dsh_lmc_override",
           "module_directory": "dish_master",
-          "module_name": "ska_mpi_dsh_lmc_override",
+          "module_name": "dish_master_override",
           "class_name": "OverrideDish"
         }
       }

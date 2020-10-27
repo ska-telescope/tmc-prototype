@@ -11,10 +11,9 @@
 
 SKA Dish Master TANGO device server
 """
-from . import release, const, ska_mpi_dsh_lmc_override
-from .dish_master import DishMaster
+from . import release, const, ska_mpi_dsh_lmc_override, DishMasterDS
 
-__all__ = ["const", "release", "DishMaster", "ska_mpi_dsh_lmc_override"]
+__all__ = ["const", "release", "DishMasterDS", "ska_mpi_dsh_lmc_override"]
 
 __version__ = release.version
 __version_info__ = release.version_info

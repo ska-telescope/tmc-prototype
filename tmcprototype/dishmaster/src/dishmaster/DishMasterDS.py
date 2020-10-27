@@ -9,8 +9,8 @@ from tango_simlib.tango_sim_generator import (configure_device_model, get_tango_
 
 
 def main():
-    sim_data_files = ['ska_mpi_dsh_lmc.fgo',
-                      'ska_mpi_dsh_lmc_SIMDD.json']
+    sim_data_files = ['dish_master.fgo',
+                      'dish_master_SimDD.json']
     # TODO (SamT 2018-05-18) install these files as part of package instead of abs path
 
     # set up Python logging
