@@ -8,6 +8,8 @@ from contextlib import contextmanager
 # pre cheks
 def check_going_out_of_empty():
     ##verify once for obstate = EMPTY
+    resource('mid_csp/elt/subarray_01').assert_attribute('obsState').equals('EMPTY')
+    resource('mid_sdp/elt/subarray_1').assert_attribute('obsState').equals('EMPTY')
     resource('ska_mid/tm_subarray_node/1').assert_attribute('obsState').equals('EMPTY')
 
 def check_going_into_configure():
