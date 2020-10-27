@@ -718,7 +718,7 @@ def test_configure_command_subarray_with_invalid_configure_input(mock_lower_devi
     dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
                                                attribute, ObsState.IDLE)
     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
-    with pytest.raises(tango.DevFailed):
+    with pytest.raises(tango.DevFailed) as df:
         tango_context.device.Configure(invalid_conf_input)
     assert tango_context.device.obsState == ObsState.FAULT
 
@@ -972,8 +972,8 @@ def test_end_scan_should_raise_devfailed_exception_when_csp_subbarray_ln_throws_
 
     with pytest.raises(tango.DevFailed) as df:
         tango_context.device.EndScan()
-
     assert tango_context.device.obsState == ObsState.FAULT
+    assert "This is error message for devfailed" in str(df.value)
 
 
 @pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
@@ -1079,6 +1079,7 @@ def test_end_should_raise_devfailed_exception_when_csp_subarray_throws_devfailed
     with pytest.raises(tango.DevFailed) as df:
         tango_context.device.End()
     assert tango_context.device.obsState == ObsState.FAULT
+    assert const.ERR_ENDSB_INVOKING_CMD in str(df.value)
 
 
 def test_track_command_subarray(mock_lower_devices):
@@ -1481,6 +1482,7 @@ def test_abort_should_raise_devfailed_exception(mock_lower_devices):
     with pytest.raises(tango.DevFailed) as df:
         tango_context.device.Abort()
     assert tango_context.device.obsState == ObsState.FAULT
+    assert "This is error message for devfailed" in str(df.value)
 
 
 @pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
@@ -1504,7 +1506,7 @@ def test_abort_should_raise_devfailed_exception_when_obsstate_is_empty(mock_lowe
     with pytest.raises(tango.DevFailed) as df:
         tango_context.device.Abort()
     assert tango_context.device.obsState == ObsState.FAULT
-    assert df in tango_context.device.activityMessage
+    assert "This is error message for devfailed" in str(df.value)
 
 
 @pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
@@ -1526,9 +1528,10 @@ def test_abort_should_raise_devfailed_exception_when_obsstate_is_resourcing(mock
     assert tango_context.device.obsState == ObsState.RESOURCING
     csp_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
 
-    with pytest.raises(tango.DevFailed):
+    with pytest.raises(tango.DevFailed) as df:
         tango_context.device.Abort()
     assert tango_context.device.obsState == ObsState.FAULT
+    assert "This is error message for devfailed" in str(df.value)
 
 
 @pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
