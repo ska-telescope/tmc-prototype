@@ -389,7 +389,7 @@ test-mid:
       - build
     reports:
       junit: build/report.xml
-  # when: manual
+  when: manual
 
 
 test-low:
