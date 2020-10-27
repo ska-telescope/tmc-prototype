@@ -1,4 +1,4 @@
-# # Standard Python imports
+# Standard Python imports
 import contextlib
 import importlib
 import sys

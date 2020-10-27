@@ -46,7 +46,7 @@ class OnCommand(SKASubarray.OnCommand):
             self.logger.info(log_msg)
             # Create proxy for SDP Subarray Leaf Node
             device._sdp_subarray_ln_proxy = None
-            log_msg = const.STR_SA_PROXY_INIT  + str(device.CspSubarrayLNFQDN)
+            log_msg = const.STR_SA_PROXY_INIT  + str(device.SdpSubarrayLNFQDN)
             device._sdp_subarray_ln_proxy = device.get_deviceproxy(device.SdpSubarrayLNFQDN)
             self.logger.info(log_msg)
             device._csp_sa_proxy = device.get_deviceproxy(device.CspSubarrayFQDN)
