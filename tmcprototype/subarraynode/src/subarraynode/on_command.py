@@ -36,7 +36,7 @@ class OnCommand(SKASubarray.OnCommand):
         device.is_release_resources = False
         device.is_abort_command = False
         device.is_obsreset_command = False
-        device.resultVal = False
+        device.resultval = False
 
         try:
             # Create proxy for CSP Subarray Leaf Node
