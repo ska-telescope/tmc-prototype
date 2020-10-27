@@ -345,16 +345,16 @@ build DishMaster wheel for development: # Executed on a commit
     paths:
       - ./tmcprototype/dishmaster/dist/
 
-unit tests:
-  image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
-  stage: unit-test
-  tags:
-    - docker-executor
-  script:
-    - make unit-test
-  artifacts:
-    paths:
-      - ./build
+# unit tests:
+#   image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
+#   stage: unit-test
+#   tags:
+#     - docker-executor
+#   script:
+#     - make unit-test
+#   artifacts:
+#     paths:
+#       - ./build
 
 test-mid:
   stage: test
@@ -365,10 +365,12 @@ test-mid:
     - kubectl get namespace
   script:
     - kubectl version
+    - make clean
     - make install-chart MINIKUBE=false
     - make wait
     - make smoketest
-    # - make test
+    - kubectl get all,pv,pvc,ingress -n ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA
+    - make test MARK=mid
   after_script:
     - make uninstall-chart
     - make clean
@@ -387,6 +389,8 @@ test-mid:
       - build
     reports:
       junit: build/report.xml
+  # when: manual
+
 
 test-low:
   stage: test

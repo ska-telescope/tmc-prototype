@@ -39,12 +39,60 @@ etcd-operator:
 # The same dependencies should be only referred in one chart at a time. 
 # This is handled by making the enable : true/false the dependency.
 
-# mid-csp:
-#   tango-base:
-#     enabled: false
+csp-proto:      
+  csplmc:
+    enabled: true
+    image:
+      registry: nexus.engageska-portugal.pt/ska-docker
+      image: mid-csp-lmc
+      tag: 0.6.8-6ec0c11
+      pullPolicy: IfNotPresent
+      
+cbf-proto:
+  midcbfmcs:
+     enabled: true
 
-# sdp:
-#   etcd:
-#     enbaled: false
-#   tango-base:
-#     enabled: false
+sdp-prototype:
+  helm_deploy:
+    image: nexus.engageska-portugal.pt/sdp-prototype/helm-deploy
+    version: 0.5.1
+    imagePullPolicy: IfNotPresent
+    replicas: 1
+    namespace: sdp
+    chart_repo:
+      url: https://gitlab.com/ska-telescope/sdp-prototype.git
+      ref: master
+      path: src/helm_deploy/charts
+      refresh: 300
+
+  # ds config
+  dsconfig:
+    image:
+      registry: nexus.engageska-portugal.pt/ska-docker
+      image: tango-dsconfig
+      tag: 1.2.5.1
+      pullPolicy: IfNotPresent
+
+  # Processing controller
+  processing_controller:
+    image: nexus.engageska-portugal.pt/sdp-prototype/processing-controller
+    version: 0.6.0
+    replicas: 1
+    resources: {}
+    imagePullPolicy: IfNotPresent
+    workflows:
+      url: https://gitlab.com/ska-telescope/sdp-prototype/-/raw/master/src/workflows/workflows.json
+      refresh: 300
+
+  # Tango devices
+  tangods:
+    master:
+      image: nexus.engageska-portugal.pt/sdp-prototype/tangods_sdp_master
+      version: 0.3.3
+      imagePullPolicy: IfNotPresent
+    subarray:
+      image: nexus.engageska-portugal.pt/sdp-prototype/tangods_sdp_subarray
+      version: 0.11.0
+      imagePullPolicy: IfNotPresent
+
+
