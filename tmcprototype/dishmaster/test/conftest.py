@@ -4,8 +4,14 @@ tests.
 """
 import mock
 import pytest
-import importlib
+import pkg_resources
+import tempfile
+
+from tango import Database
 from tango.test_context import DeviceTestContext
+
+from tango_simlib import tango_sim_generator
+from tango_simlib.utilities import helper_module
 
 @pytest.fixture(scope="class")
 def tango_context(request):
@@ -16,19 +22,24 @@ def tango_context(request):
     request: _pytest.fixtures.SubRequest
         A request object gives access to the requesting test context.
     """
-    # TODO: package_name and class_name can be used in future
-    # fq_test_class_name = request.cls.__module__
-    # fq_test_class_name_details = fq_test_class_name.split(".")
-    # package_name = fq_test_class_name_details[1]
-    # class_name = module_name = fq_test_class_name_details[1]
-    # module = importlib.import_module("{}.{}".format(package_name, module_name))
-    # klass = getattr(module, class_name)
-    dishmaster_module = importlib.import_module('dishmaster')
-    klass = getattr(dishmaster_module, 'DishMaster')
     properties = {'GroupDefinitions': ''}
-    tango_context = DeviceTestContext(klass, process=False, properties=properties)
+    tango_db = tempfile.mkstemp(prefix='tango')
+    data_descr_files = []
+    data_descr_files.append(
+        pkg_resources.resource_filename('dishmaster', 'dish_master.fgo'))
+    data_descr_files.append(
+        pkg_resources.resource_filename(
+            'dishmaster', 'dish_master_SimDD.json'))
+    device_name = 'test/nodb/dishelementmaster'
+    model = tango_sim_generator.configure_device_model(data_descr_files,
+                                                       device_name)
+    TangoDeviceServer = tango_sim_generator.get_tango_device_server(
+        model, data_descr_files)[0]
+    tango_context = DeviceTestContext(TangoDeviceServer, db=tango_db,
+                                      process=False, properties=properties)
+    mock_get_db = mock.Mock(return_value=Database(tango_context.db))
+    helper_module.get_database = mock_get_db
     tango_context.start()
-    klass.get_name = mock.Mock(side_effect=tango_context.get_device_access)
     yield tango_context
     tango_context.stop()
 
