@@ -55,7 +55,7 @@ class OnCommand(SKASubarray.OnCommand):
         except DevFailed as dev_failed:
             log_msg = const.ERR_PROXY_CREATE
             self.logger.debug(log_msg)
-            tango.Except.throw_exception(dev_failed[0].desc, ERR_CREATE_PROXY,
+            tango.Except.throw_exception(dev_failed[0].desc, const.ERR_CREATE_PROXY,
                                          "SubarrayNode.On()", tango.ErrSeverity.ERR)
 
         try:
@@ -129,8 +129,8 @@ class OnCommand(SKASubarray.OnCommand):
             return (ResultCode.OK, message)
         except DevFailed as dev_failed:
             log_msg = const.ERR_INVOKING_ON_CMD + str(dev_failed)
-            self.logger.debug(log_msg)
+            self.logger.exception(log_msg)
             self._read_activity_message = log_msg
-            tango.Except.throw_exception(dev_failed[0].desc, ERR_INVOKE_ON_CMD_ON_SA,
+            tango.Except.throw_exception(dev_failed[0].desc, const.ERR_INVOKE_ON_CMD_ON_SA,
                                         "SubarrayNode.On()", tango.ErrSeverity.ERR)
 
