@@ -17,9 +17,9 @@ def main():
     
     # set up Python logging
     configure_logging()
-    log_name = 'kat.{}'.format(get_instance_name())
+    log_name = 'dish-master.{}'.format(get_instance_name())
     logger = logging.getLogger(log_name)
-    logger.info("Logging started for Example application")
+    logger.info("Logging started for DishMaster application")
 
     model = configure_device_model(sim_data_files, logger=logger)
     TangoDeviceServers = get_tango_device_server(model, sim_data_files)
