@@ -23,7 +23,7 @@ dependencies:
   version: 0.0.2
   repository: file://../tmc-low
 - name: mccs
-  version: 0.0.2
+  version: 0.2.1
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 # Uncomment below lines when need to use local mccs subcharts
 # - name: tango-util
