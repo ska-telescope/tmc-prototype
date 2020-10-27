@@ -47,7 +47,7 @@ GRP_DISH_LEAF_NODE = "DishLeafNode_Group"
 
 # strings
 STR_CMD_STOP_TRACK_INV_DLN = "StopTrack command is invoked on DishLeafNodesGroup"
-STR_CMD_ENDSB_INV_SDP = "EndSB command is invoked on SdpSubarrayLeafNode."
+STR_CMD_END_INV_SDP = "End command is invoked on SdpSubarrayLeafNode."
 STR_CMD_GOTOIDLE_INV_CSP = "GoToIdle command is invoked on CspSubarrayLeafNode."
 STR_CMD_RESTART_INV_SDP = "Command Restart is invoked on SDP Subarray Leaf Node."
 STR_CMD_RESTART_INV_CSP = "Command Restart is invoked on CSP Subarray Leaf Node."
