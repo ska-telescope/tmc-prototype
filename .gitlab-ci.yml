@@ -377,7 +377,6 @@ test-mid:
     - make delete_namespace-sdp
     - make delete_namespace
     - mkdir -p build
-    - cp -rf charts/build/* build/
     - ls -la build
   environment:
     name: test
