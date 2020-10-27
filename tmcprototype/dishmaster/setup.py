@@ -32,7 +32,7 @@ setup(
     package_dir={'': 'src'},
     include_package_data=True,
     package_data={
-        "dish_master": [
+        "dishmaster": [
             "src/*.json",
             "src/*.fgo",
         ]
