@@ -36,8 +36,7 @@ class OnCommand(SKASubarray.OnCommand):
         device.is_release_resources = False
         device.is_abort_command = False
         device.is_obsreset_command = False
-
-        # device.resultVal = device._proxy_creation()
+        device.resultVal = False
 
         try:
             device._csp_subarray_ln_proxy = None
@@ -58,18 +57,14 @@ class OnCommand(SKASubarray.OnCommand):
             tango.Except.throw_exception(dev_failed[0].desc, "Failed to create proxy on SubarrayNode.",
                                          "SubarrayNode.On()", tango.ErrSeverity.ERR)
 
-        # if(device.resultVal):
-        #     log_msg = "=====result of proxy is true"
-        #     self.logger.info(log_msg)
-
         try:
             device.subarray_ln_health_state_map[device._csp_subarray_ln_proxy.dev_name()] = (
                 HealthState.UNKNOWN)
             # Subscribe cspsubarrayHealthState (forwarded attribute) of CspSubarray
             self._event_id = device._csp_subarray_ln_proxy.subscribe_event(const.EVT_CSPSA_HEALTH,
-                                                          tango.EventType.CHANGE_EVENT,
-                                                          device.health_state_cb,
-                                                          stateless=True)
+                                                        tango.EventType.CHANGE_EVENT,
+                                                        device.health_state_cb,
+                                                        stateless=True)
             device._cspSdpLnHealthEventID[device._csp_subarray_ln_proxy] = self._event_id
             log_msg = const.STR_CSP_LN_VS_HEALTH_EVT_ID + str(device._cspSdpLnHealthEventID)
             self.logger.debug(log_msg)
@@ -124,6 +119,7 @@ class OnCommand(SKASubarray.OnCommand):
                                             "SubarrayNode.InitCommand",
                                             tango.ErrSeverity.ERR)
 
+        # Invoke ON command on lower level devices
         try:
             device._csp_subarray_ln_proxy.On()
             device._sdp_subarray_ln_proxy.On()
@@ -136,27 +132,4 @@ class OnCommand(SKASubarray.OnCommand):
             self._read_activity_message = log_msg
             tango.Except.throw_exception(dev_failed[0].desc, "Failed to invoke On command on SubarrayNode.",
                                         "SubarrayNode.On()", tango.ErrSeverity.ERR)
-
-            
-    # def _proxy_creation(self):
-    #     device =self.target
-    #      # Create proxy for CSP Subarray Leaf Node
-    #     try:
-    #         device._csp_subarray_ln_proxy = None
-    #         log_msg = const.STR_SA_PROXY_INIT + device.CspSubarrayLNFQDN
-    #         device._csp_subarray_ln_proxy = device.get_deviceproxy(device.CspSubarrayLNFQDN)
-    #         self.logger.info(log_msg)
-    #         # Create proxy for SDP Subarray Leaf Node
-    #         device._sdp_subarray_ln_proxy = None
-    #         log_msg = const.STR_SA_PROXY_INIT + device.CspSubarrayLNFQDN
-    #         device._sdp_subarray_ln_proxy = device.get_deviceproxy(device.SdpSubarrayLNFQDN)
-    #         self.logger.info(log_msg)
-    #         device._csp_sa_proxy = device.get_deviceproxy(device.CspSubarrayFQDN)
-    #         device._sdp_sa_proxy = device.get_deviceproxy(device.SdpSubarrayFQDN)
-    #         return true
-    #     except DevFailed as dev_failed:
-    #         log_msg = const.ERR_PROXY_CREATE
-    #         self.logger.debug(log_msg)
-    #         tango.Except.throw_exception(dev_failed[0].desc, "Failed to create proxy on SubarrayNode.",
-    #                                      "SubarrayNode.On()", tango.ErrSeverity.ERR)
 
