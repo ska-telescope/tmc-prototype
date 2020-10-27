@@ -134,9 +134,11 @@ def raise_devfailed_exception(*args):
 
 def test_on_should_command_mccs_master_leaf_node_to_start(mock_mccs_master):
     mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
-    device_proxy.On()
+    result = device_proxy.On()
     mccs_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON,
                                                                 any_method(with_name='on_cmd_ended_cb'))
+    # 0 resultcode means 'OK', as we receive 0 as part of returncode we are asserting with the same
+    assert 0 in result[0]
 
 
 def test_on_should_command_to_on_with_callback_method(mock_mccs_master, event_subscription_without_arg):
@@ -162,11 +164,21 @@ def test_on_should_raise_devfailed_exception(mock_mccs_master):
         device_proxy.On()
     assert const.ERR_DEVFAILED_MSG in str(df.value)
 
-def test_off_should_command_to_off_with_callback_method(mock_mccs_master):
+def test_off_should_command_mccs_master_leaf_node_to_stop(mock_mccs_master):
+    device_proxy=mock_mccs_master[1]
+    device_proxy.On()
+    result = device_proxy.Off()
+    # 0 resultcode means 'OK', as we receive 0 as part of returncode we are asserting with the same
+    assert 0 in result[0]
+
+def test_off_should_command_to_off_with_callback_method(mock_mccs_master ,event_subscription_without_arg):
     device_proxy=mock_mccs_master[1]
     device_proxy.On()
     device_proxy.Off()
-    assert device_proxy.activityMessage in const.STR_OFF_CMD_ISSUED
+    dummy_event = command_callback(const.CMD_OFF)
+    event_subscription_without_arg[const.CMD_OFF](dummy_event)
+    assert const.STR_COMMAND + const.CMD_OFF in device_proxy.activityMessage
+
 
 def test_off_should_command_with_callback_method_with_event_error(mock_mccs_master ,event_subscription_without_arg):
     device_proxy=mock_mccs_master[1]

@@ -64,19 +64,20 @@ def health_state(request):
 def test_on_should_command_csp_master_leaf_node_to_start(mock_csp_master):
     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
 
-    device_proxy.On()
-    
+    result = device_proxy.On()
     csp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON, [],
                                                                   any_method(with_name='on_cmd_ended_cb'))
+    #0 resultcode means 'OK', as we receive 0 as part of returncode we are asserting with the same
+    assert 0 in result[0]
 
 
 def test_off_should_command_csp_master_leaf_node_to_stop(mock_csp_master):
     device_proxy=mock_csp_master[1]
 
     device_proxy.On()
-    device_proxy.Off()
-
-    assert device_proxy.activityMessage in const.STR_OFF_CMD_ISSUED
+    result = device_proxy.Off()
+    # 0 resultcode means 'OK', as we receive 0 as part of returncode we are asserting with the same
+    assert 0 in result[0]
 
 
 def test_standby_should_command_to_standby_with_callback_method(mock_csp_master, event_subscription):
