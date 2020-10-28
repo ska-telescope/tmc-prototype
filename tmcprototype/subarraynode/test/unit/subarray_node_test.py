@@ -371,6 +371,7 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
     assign_input_dict = json.loads(assign_input_str)
     assert tango_context.device.AssignResources(assign_input_str) == [[ResultCode.STARTED], ["['0001']"]]
 
+    result = tango_context.device.AssignResources(assign_input_str)
     str_json_arg = json.dumps(assign_input_dict.get("sdp"))
     verify_called_correctly(sdp_subarray1_ln_proxy_mock,const.CMD_ASSIGN_RESOURCES,str_json_arg)
     arg_list = []
