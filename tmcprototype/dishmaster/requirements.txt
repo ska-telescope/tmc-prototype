@@ -1,0 +1,4 @@
+pytango == 9.3.2
+ska-logging==0.3.0
+tango_simlib>=0.8.0
+lmcbaseclasses == 0.7.1
