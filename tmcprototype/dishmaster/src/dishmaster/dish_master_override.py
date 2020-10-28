@@ -10,6 +10,9 @@ from collections import namedtuple
 
 from tango import Except, ErrSeverity
 
+from ska.logging import configure_logging
+
+configure_logging()
 MODULE_LOGGER = logging.getLogger(__name__)
 
 AzEl = namedtuple("AzEl", ["azim", "elev"])
