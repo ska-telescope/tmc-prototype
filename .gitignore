@@ -221,5 +221,5 @@ doc_html/
 */tox_report
 
 # Helm Charts
-charts/tmc-mid-umbrella/Chart.lock
-charts/tmc-mid-umbrella/charts/
+Chart.lock
+charts/*/charts/*
