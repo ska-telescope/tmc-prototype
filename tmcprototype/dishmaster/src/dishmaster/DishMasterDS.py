@@ -16,7 +16,7 @@ def main():
     ]
 
     # add a filter with this device's name
-    device_name = 'mid_d{get_instance_name().zfill(4)}/elt/master'
+    device_name = f'mid_d{get_instance_name().zfill(4)}/elt/master'
     device_name_tag = f'tango-device:{device_name}'
     class TangoDeviceTagsFilter(logging.Filter):
         def filter(self, record):
@@ -25,9 +25,9 @@ def main():
 
     # set up Python logging
     configure_logging(tags_filter=TangoDeviceTagsFilter)
-    log_name = 'dish-master-{get_instance_name()}'
+    log_name = f'dish-master-{get_instance_name()}'
     logger = logging.getLogger(log_name)
-    logger.info('Logging started for {device_name}')
+    logger.info(f'Logging started for {device_name}')
 
     model = configure_device_model(sim_data_files, logger=logger)
     TangoDeviceServers = get_tango_device_server(model, sim_data_files)
