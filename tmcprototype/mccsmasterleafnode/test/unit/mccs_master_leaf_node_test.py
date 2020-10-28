@@ -167,8 +167,7 @@ def test_off_should_command_mccs_master_leaf_node_to_stop(mock_mccs_master):
     device_proxy=mock_mccs_master[1]
     device_proxy.On()
     assert device_proxy.Off() == [[ResultCode.OK], ["OFF command invoked successfully from MCCS Master leaf node."]]
-    # 0 resultcode means 'OK', as we receive 0 as part of returncode we are asserting with the same
-    # assert 0 in result[0]
+
 
 def test_off_should_command_to_off_with_callback_method(mock_mccs_master ,event_subscription_without_arg):
     device_proxy=mock_mccs_master[1]
