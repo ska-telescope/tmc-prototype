@@ -49,7 +49,7 @@ class OnCommand(SKASubarray.OnCommand):
             log_msg = const.ERR_CSP_PROXY_CREATE
             self.logger.debug(log_msg)
             tango.Except.throw_exception(dev_failed[0].desc, const.ERR_CREATE_PROXY,
-                                         "SubarrayNode.On()", tango.ErrSeverity.ERR)
+                                         "SubarrayNode.OnCommand()", tango.ErrSeverity.ERR)
 
         try:
             # Create proxy for SDP Subarray Leaf Node
@@ -63,7 +63,7 @@ class OnCommand(SKASubarray.OnCommand):
             log_msg = const.ERR_SDP_PROXY_CREATE
             self.logger.debug(log_msg)
             tango.Except.throw_exception(dev_failed[0].desc, const.ERR_CREATE_PROXY,
-                                         "SubarrayNode.On()", tango.ErrSeverity.ERR)
+                                         "SubarrayNode.OnCommand()", tango.ErrSeverity.ERR)
 
         try:
             device.subarray_ln_health_state_map[device._csp_subarray_ln_proxy.dev_name()] = (
@@ -93,7 +93,7 @@ class OnCommand(SKASubarray.OnCommand):
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(const.ERR_SUBS_CSP_SA_LEAF_ATTR,
                                             log_msg,
-                                            "SubarrayNode.InitCommand",
+                                            "SubarrayNode.OnCommand()",
                                             tango.ErrSeverity.ERR)
 
         try:
@@ -124,7 +124,7 @@ class OnCommand(SKASubarray.OnCommand):
             self.logger.exception(log_msg)
             tango.Except.throw_exception(const.ERR_SUBS_SDP_SA_LEAF_ATTR,
                                             log_msg,
-                                            "SubarrayNode.InitCommand",
+                                            "SubarrayNode.OnCommand()",
                                             tango.ErrSeverity.ERR)
 
         # Invoke ON command on lower level devices
@@ -139,5 +139,5 @@ class OnCommand(SKASubarray.OnCommand):
             self.logger.exception(log_msg)
             self._read_activity_message = log_msg
             tango.Except.throw_exception(dev_failed[0].desc, const.ERR_INVOKE_ON_CMD_ON_SA,
-                                        "SubarrayNode.On()", tango.ErrSeverity.ERR)
+                                        "SubarrayNode.OnCommand()", tango.ErrSeverity.ERR)
 
