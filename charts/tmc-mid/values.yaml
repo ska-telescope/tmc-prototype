@@ -5,7 +5,7 @@ enabled: true
 
 system: TM-mid
 telescope: SKA-mid
-subsystem: sw-infrastructure
+subsystem: tmc-mid
 
 labels:
   app: tmc-prototype
