@@ -1,117 +1,99 @@
 display: ":0"
 xauthority: "~/.Xauthority"
-minikube: true
-
 enabled: true
 
 system: TM-low
 telescope: SKA-low
-subsystem: sw-infrastructure
+subsystem: tmc-low
+
+labels:
+  app: tmc-prototype
+annotations:
+  app.gitlab.com/app: CI_PROJECT_PATH_SLUG
+  app.gitlab.com/env: CI_ENVIRONMENT_SLUG
 
 global:
-  labels:
-    app: tmc-prototype
-  annotations:
-    app.gitlab.com/app: CI_PROJECT_PATH_SLUG
-    app.gitlab.com/env: CI_ENVIRONMENT_SLUG
+  minikube: true
   tango_host: databaseds-tango-base-test:10000
-  environment_variables: []
-  dsconfig:
-    image:
-      registry: nexus.engageska-portugal.pt/ska-docker
-      image: tango-dsconfig
-      tag: 1.5.0
-      pullPolicy: IfNotPresent
-  itango:
-    image:
-      registry: nexus.engageska-portugal.pt/ska-docker
-      image: tango-itango
-      tag: 9.3.1
-      pullPolicy: IfNotPresent
- 
+
 dsconfig:
   configuration_file: data/tmc-low-config.json
+  image:
+    registry: nexus.engageska-portugal.pt/ska-docker
+    image: tango-dsconfig
+    tag: 1.5.0
+    pullPolicy: IfNotPresent
+
+itango:
+  image:
+    registry: nexus.engageska-portugal.pt/ska-docker
+    image: tango-itango
+    tag: 9.3.1
+    pullPolicy: IfNotPresent
+
+tmcprototype:
+  image:
+    registry: nexus.engageska-portugal.pt/tango-example
+    image: tmcprototype
+    tag: 0.2.12
+    pullPolicy: IfNotPresent
+
+resources:
+  limits:
+    cpu: 300m
+    memory: 500Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
 
 deviceServers:
 - name: subarraynode1
   function: observation-execution
   domain: subarray
-  args:
-    - -c
-    - "/usr/local/bin/SubarrayNodeLowDS sa1"
+  command: "/usr/local/bin/SubarrayNodeLowDS"
+  instances: ["sa1"]
   depends_on:
     - device: ska_low/tm_leaf_node/mccs_subarray01
   image:
-    registry: nexus.engageska-portugal.pt/tango-example
-    image: tmcprototype
-    tag: 0.2.12
-    pullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi 
+    registry: "{{.Values.tmcprototype.image.registry}}"
+    image: "{{.Values.tmcprototype.image.image}}"
+    tag: "{{.Values.tmcprototype.image.tag}}"
+    pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
 - name: centralnode
   function: telescope-monitoring
   domain: general-monitoring
-  args:
-    - -c
-    - "/usr/local/bin/CentralNodeLowDS 01"
+  command: "/usr/local/bin/CentralNodeLowDS"
+  instances: ["01"]
   depends_on:
     - device: ska_low/tm_subarray_node/1
     - device: ska_low/tm_leaf_node/mccs_master
   image:
-    registry: nexus.engageska-portugal.pt/tango-example
-    image: tmcprototype
-    tag: 0.2.12
-    pullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+    registry: "{{.Values.tmcprototype.image.registry}}"
+    image: "{{.Values.tmcprototype.image.image}}"
+    tag: "{{.Values.tmcprototype.image.tag}}"
+    pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
 - name: mccssmasterleafnode
   function: observation-execution
   domain: general-monitoring
-  args:
-    - -c
-    - "/usr/local/bin/MccsMasterLeafNodeDS 01"
+  command: "/usr/local/bin/MccsMasterLeafNodeDS"
+  instances: ["01"]
   depends_on:
     - device: low-mccs/control/control
   image:
-    registry: nexus.engageska-portugal.pt/tango-example
-    image: tmcprototype
-    tag: 0.2.12
-    pullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+    registry: "{{.Values.tmcprototype.image.registry}}"
+    image: "{{.Values.tmcprototype.image.image}}"
+    tag: "{{.Values.tmcprototype.image.tag}}"
+    pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
 - name: mccssubarrayleafnode1
   function: observation-execution
   domain: subarray
-  args:
-    - -c
-    - "/usr/local/bin/MccsSubarrayLeafNodeDS 01"
+  command: "/usr/local/bin/MccsSubarrayLeafNodeDS"
+  instances: ["01"]
   depends_on:
     - device: low-mccs/subarray/01
   image:
-    registry: nexus.engageska-portugal.pt/tango-example
-    image: tmcprototype
-    tag: 0.2.12
-    pullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 300m
-      memory: 500Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+    registry: "{{.Values.tmcprototype.image.registry}}"
+    image: "{{.Values.tmcprototype.image.image}}"
+    tag: "{{.Values.tmcprototype.image.tag}}"
+    pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
 

@@ -11,14 +11,12 @@ from mock import Mock, MagicMock
 # Tango imports
 import pytest
 import tango
-from tango import DevState
 from tango.test_context import DeviceTestContext
 
 # Additional import
 from cspmasterleafnode import CspMasterLeafNode, const, release
 from ska.base.control_model import HealthState
 from ska.base.control_model import LoggingLevel
-
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
 
 @pytest.fixture(scope="function")
@@ -66,19 +64,20 @@ def health_state(request):
 def test_on_should_command_csp_master_leaf_node_to_start(mock_csp_master):
     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
 
-    device_proxy.On()
-    
+    result = device_proxy.On()
     csp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON, [],
                                                                   any_method(with_name='on_cmd_ended_cb'))
+    #0 resultcode means 'OK', as we receive 0 as part of returncode we are asserting with the same
+    assert 0 in result[0]
 
 
 def test_off_should_command_csp_master_leaf_node_to_stop(mock_csp_master):
     device_proxy=mock_csp_master[1]
 
     device_proxy.On()
-    device_proxy.Off()
-
-    assert device_proxy.activityMessage in const.STR_OFF_CMD_ISSUED
+    result = device_proxy.Off()
+    # 0 resultcode means 'OK', as we receive 0 as part of returncode we are asserting with the same
+    assert 0 in result[0]
 
 
 def test_standby_should_command_to_standby_with_callback_method(mock_csp_master, event_subscription):
@@ -137,24 +136,24 @@ def test_on_should_command_with_callback_method_with_event_error(mock_csp_master
 
 def test_on_command_should_raise_dev_failed(mock_csp_master):
     csp_proxy_mock, device_proxy = mock_csp_master[:2]
-    csp_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_with_arg
+    csp_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.On()
-    assert const.ERR_EXE_ON_CMD in str(df.value)
+    assert const.ERR_DEVFAILED_MSG in str(df.value)
 
 
 def test_standby_command_should_raise_dev_failed(mock_csp_master):
     csp_proxy_mock, device_proxy = mock_csp_master[:2]
-    csp_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_with_arg
+    csp_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.standby([])
     assert const.ERR_DEVFAILED_MSG in str(df.value)
 
 
-def raise_devfailed_with_arg(cmd_name, input_arg1, input_arg2):
+def raise_devfailed_exception(*args):
     # "This function is called to raise DevFailed exception with arguments."
     tango.Except.throw_exception(const.STR_CMD_FAILED, const.ERR_DEVFAILED_MSG,
-                                 cmd_name, tango.ErrSeverity.ERR)
+                                 "", tango.ErrSeverity.ERR)
 
 
 #TODO: FOR FUTURE USE

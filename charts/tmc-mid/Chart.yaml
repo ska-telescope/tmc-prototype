@@ -2,7 +2,7 @@ apiVersion: v2
 name: tmc-mid
 description: A subchart for TMC-Mid prototype deployment.
 type: application
-version: 0.0.2
+version: 0.1.4
 appVersion: 1.16.0
 icon: https://www.skatelescope.org/wp-content/uploads/2016/07/09545_NEW_LOGO_2014.png
 maintainers:
@@ -13,10 +13,11 @@ maintainers:
   - name: Kalyani Thigale
     email: kalyanit.ska@gmail.com
 dependencies:
-- name: tango-util
-  version: 0.2.0
-  repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: tango-base
-  version: 0.2.2
+  version: 0.2.8
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
   condition: tango-base.enabled,global.sub-system.tango-base.enabled
+- name: tango-util
+  version: 0.2.5
+  repository: https://nexus.engageska-portugal.pt/repository/helm-chart
+

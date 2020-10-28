@@ -38,9 +38,9 @@ setup(
     author_email='jyotin.ska at gmail.com',
     license='BSD-3-Clause',
     long_description=long_description,
-    url='www.tango-controls.org',
-    platforms="All Platforms",
-    install_requires=['pytango==9.3.2', 'mock', 'ska_logging==0.3.0', 'lmcbaseclasses==0.6.5','ska-log-transactions == 0.1.0'],
+    url='https://www.skatelescope.org',
+    platforms="Linux",
+    install_requires=['pytango==9.3.2', 'mock', 'ska_logging==0.3.0', 'lmcbaseclasses==0.7.1','ska-log-transactions == 0.1.0'],
     #test_suite='test',
     setup_requires=[
         # dependency for `python setup.py test`

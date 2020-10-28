@@ -7,7 +7,7 @@ RUN ipython profile create
 #install lmc-base-classes
 USER root
 RUN python3 -m pip install ska-logging==0.3.0
-RUN python3 -m pip install lmcbaseclasses==0.6.5
+RUN python3 -m pip install lmcbaseclasses==0.7.1
 # install cdm-shared-library
 RUN python3 -m pip install cdm-shared-library==2.0.0
 #install ska-telescope-model
