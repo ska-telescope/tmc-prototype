@@ -423,8 +423,8 @@ def test_assign_resource_should_raise_exception_when_called_with_invalid_input(m
 def test_assign_resource_should_raise_exception_when_csp_subarray_ln_throws_devfailed_exception(mock_lower_devices):
     # # Generate dummy devFailed exception raised by Csp Subarray Leaf Node
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
-    csp_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
     tango_context.device.On()
+    csp_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
 
     with pytest.raises(tango.DevFailed) as df:
         tango_context.device.AssignResources(assign_input_str)
