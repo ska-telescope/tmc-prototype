@@ -78,7 +78,7 @@ class OverrideDish(object):
                                    "ConfigureBand{}()".format(band_number),
                                    ErrSeverity.WARN)
 
-    def action_configureband1(self, model, tango_dev=None, data_input=None):
+    def action_configureband1(self, model, tango_dev=None, data_input=None): # pylint: disable=W0613
         """This command triggers the Dish to transition to the CONFIGURE Dish Element
         Mode, and returns to the caller. To configure the Dish to operate in frequency
         band 1. On completion of the band configuration, Dish will automatically
@@ -89,7 +89,7 @@ class OverrideDish(object):
         """
         self._configureband(model, data_input, '1')
 
-    def action_configureband2(self, model, tango_dev=None, data_input=None):
+    def action_configureband2(self, model, tango_dev=None, data_input=None): # pylint: disable=W0613
         """This command triggers the Dish to transition to the CONFIGURE Dish Element
         Mode, and returns to the caller. To configure the Dish to operate in frequency
         band 2. On completion of the band configuration, Dish will automatically
@@ -100,7 +100,7 @@ class OverrideDish(object):
         """
         self._configureband(model, data_input, '2')
 
-    def action_configureband3(self, model, tango_dev=None, data_input=None):
+    def action_configureband3(self, model, tango_dev=None, data_input=None): # pylint: disable=W0613
         """This command triggers the Dish to transition to the CONFIGURE Dish Element
         Mode, and returns to the caller. To configure the Dish to operate in frequency
         band 3. On completion of the band configuration, Dish will automatically
@@ -111,7 +111,7 @@ class OverrideDish(object):
         """
         self._configureband(model, data_input, '3')
 
-    def action_configureband4(self, model, tango_dev=None, data_input=None):
+    def action_configureband4(self, model, tango_dev=None, data_input=None): # pylint: disable=W0613
         """This command triggers the Dish to transition to the CONFIGURE Dish Element
         Mode, and returns to the caller. To configure the Dish to operate in frequency
         band 4. On completion of the band configuration, Dish will automatically
@@ -122,7 +122,7 @@ class OverrideDish(object):
         """
         self._configureband(model, data_input, '4')
 
-    def action_configureband5a(self, model, tango_dev=None, data_input=None):
+    def action_configureband5a(self, model, tango_dev=None, data_input=None): # pylint: disable=W0613
         """This command triggers the Dish to transition to the CONFIGURE Dish Element
         Mode, and returns to the caller. To configure the Dish to operate in frequency
         band 5a. On completion of the band configuration, Dish will automatically
@@ -133,7 +133,7 @@ class OverrideDish(object):
         """
         self._configureband(model, data_input, '5a')
 
-    def action_configureband5b(self, model, tango_dev=None, data_input=None):
+    def action_configureband5b(self, model, tango_dev=None, data_input=None): # pylint: disable=W0613
         """This command triggers the Dish to transition to the CONFIGURE Dish Element
         Mode, and returns to the caller. To configure the Dish to operate in frequency
         band 5b. On completion of the band configuration, Dish will automatically
@@ -144,7 +144,7 @@ class OverrideDish(object):
         """
         self._configureband(model, data_input, '5b')
 
-    def action_configureband5c(self, model, tango_dev=None, data_input=None):
+    def action_configureband5c(self, model, tango_dev=None, data_input=None): # pylint: disable=W0613
         """This command triggers the Dish to transition to the CONFIGURE Dish Element
         Mode, and returns to the caller. To configure the Dish to operate in frequency
         band 5c. On completion of the band configuration, Dish will automatically
@@ -161,7 +161,7 @@ class OverrideDish(object):
                                "{}()".format(command),
                                ErrSeverity.WARN)
 
-    def action_lowpower(self, model, tango_dev=None, data_input=None):
+    def action_lowpower(self, model, tango_dev=None, data_input=None): # pylint: disable=W0613
         """This command triggers the Dish to transition to the LOW power
         state. All subsystems go into a low power state to power only the
         essential equipment. Specifically the Helium compressor will be set
@@ -197,7 +197,7 @@ class OverrideDish(object):
             model.logger.warning("pointingState is already '{}'."
                                  .format(action))
 
-    def action_setmaintenancemode(self, model, tango_dev=None, data_input=None):
+    def action_setmaintenancemode(self, model, tango_dev=None, data_input=None): # pylint: disable=W0613
         """This command triggers the Dish to transition to the MAINTENANCE
         Dish Element Mode, and returns to the caller. To go into a state that
         is safe to approach the Dish by a maintainer, and to enable the
@@ -231,7 +231,7 @@ class OverrideDish(object):
             self._throw_exception('SetMaintenanceMode', _allowed_modes)
         return [[self.OK], ["Dish transitioned to 'MAINTENANCE' Mode"]]
 
-    def action_setoperatemode(self, model, tango_dev=None, data_input=None):
+    def action_setoperatemode(self, model, tango_dev=None, data_input=None): # pylint: disable=W0613
         """This command triggers the Dish to transition to the OPERATE Dish
         Element Mode, and returns to the caller. This mode fulfils the main
         purpose of the Dish, which is to point to designated directions while
@@ -264,7 +264,7 @@ class OverrideDish(object):
             self._throw_exception('SetOperateMode', _allowed_modes)
         return [[self.OK], ["Dish transitioned to 'OPERATE' Mode"]]
 
-    def action_setstandbyfpmode(self, model, tango_dev=None, data_input=None):
+    def action_setstandbyfpmode(self, model, tango_dev=None, data_input=None): # pylint: disable=W0613
         """This command triggers the Dish to transition to the STANDBY-FP Dish
         Element Mode, and returns to the caller. To prepare all subsystems
         for active observation, once a command is received by TM to go to the
@@ -288,7 +288,7 @@ class OverrideDish(object):
             self._throw_exception('SetStandbyFPMode', _allowed_modes)
         return [[self.OK], ["Dish transitioned to 'STANDBY-FP' mode"]]
 
-    def action_setstandbylpmode(self, model, tango_dev=None, data_input=None):
+    def action_setstandbylpmode(self, model, tango_dev=None, data_input=None): # pylint: disable=W0613
         """This command triggers the Dish to transition to the STANDBY-LP Dish Element
         Mode, and returns to the caller. Standby_LP is the default mode when the Dish
         is configured for low power consumption, and is the mode wherein Dish ends after
@@ -313,7 +313,7 @@ class OverrideDish(object):
             self._throw_exception('SetStandbyLPMode', _allowed_modes)
         return [[self.OK], ["Dish transitioned to 'STANDBY-LP' mode"]]
 
-    def action_setstowmode(self, model, tango_dev=None, data_input=None):
+    def action_setstowmode(self, model, tango_dev=None, data_input=None): # pylint: disable=W0613
         """This command triggers the Dish to transition to the STOW Dish
         Element Mode, and returns to the caller. To point the dish in a
         direction that minimises the wind loads on the structure, for survival
@@ -371,7 +371,7 @@ class OverrideDish(object):
             model.logger.warning("pointingState is already '{}'."
                                  .format(action))
 
-    def action_track(self, model, tango_dev=None, data_input=None):
+    def action_track(self, model, tango_dev=None, data_input=None): # pylint: disable=W0613
         """The Dish is tracking the commanded pointing positions within the
         specified TRACK pointing accuracy.
 
@@ -381,7 +381,7 @@ class OverrideDish(object):
         self._change_pointing_state(model, data_input, 'TRACK', ('OPERATE',))
         model.logger.info("'Track' command executed successfully.")
 
-    def action_trackstop(self, model, tango_dev=None, data_input=None):
+    def action_trackstop(self, model, tango_dev=None, data_input=None): # pylint: disable=W0613
         """The Dish will stop tracking but will not apply brakes.
         Stops movement, but doesn't clear tables/queues.
 
@@ -401,7 +401,7 @@ class OverrideDish(object):
         now = float('%.2f' % model.time_func())
         set_enum(pointing_state, 'READY', now)
 
-    def action_resettracktable(self, model, tango_dev=None, data_input=None):
+    def action_resettracktable(self, model, tango_dev=None, data_input=None): # pylint: disable=W0613
         """Resets the coordinates in the queue. Clear ACU's table (should show number of
         coordinates drops to zero)
 
@@ -413,14 +413,14 @@ class OverrideDish(object):
         default_values = [0.0] * track_table_size
         model.sim_quantities['programTrackTable'].set_val(default_values, now)
 
-    def action_resettracktablebuffer(self, model, tango_dev=None, data_input=None):
+    def action_resettracktablebuffer(self, model, tango_dev=None, data_input=None): # pylint: disable=W0613
         """Resets the Dish LMC's buffer. (In our case it's desired_pointings)
 
         data_input: None
         """
         self.desired_pointings = []
 
-    def action_slew(self, model, tango_dev=None, data_input=None):
+    def action_slew(self, model, tango_dev=None, data_input=None):  # pylint: disable=W0613
         """The Dish moves to the commanded pointing angle at the maximum
         speed, as defined by the specified slew rate.
 
@@ -430,7 +430,7 @@ class OverrideDish(object):
         self._change_pointing_state(model, data_input, 'SLEW', ('OPERATE',))
         model.logger.info("'Slew' command executed successfully.")
 
-    def action_scan(self, model, tango_dev=None, data_input=None):
+    def action_scan(self, model, tango_dev=None, data_input=None):  # pylint: disable=W0613
         """ The Dish is tracking the commanded pointing positions within the
         specified SCAN pointing accuracy.
 
