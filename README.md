@@ -141,10 +141,12 @@ In 'make unit-test' job, *tox* based on Python3.7 is used to create testing envi
 
 ## 4.2 Integration Testing
 
+_Note: This section will soon be updated._
+
 Integration Testing is performed on SKA Integration on K8S environment. For this testing TMC image is required to
 build locally or need to push on Nexus repository. Please refer [this](https://gitlab.com/ska-telescope/skampi#ska-integration-on-kubernetes)
 for detailed information.
-TBD: The command to run the unit tests is: `make test` \
+The command to run the unit tests is: `make test` \
 
 ## 4.3 Manual Testing
 
