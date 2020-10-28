@@ -460,20 +460,6 @@ publish to nexus:
       - $CI_COMMIT_MESSAGE =~ /^.+$/ # Confirm tag message exists
       - $CI_COMMIT_TAG =~ /^((([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)$/ # Confirm semantic versioning of tag
 
-# publish_chart:
-#   variables:
-#     CHARTS_TO_PUBLISH: tmc-low-umbrella tmc-mid-umbrella tmc-proto
-#   stage: publish
-#   tags:
-#     - docker-executor
-#   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.2
-#   script:
-#     - curl -s https://gitlab.com/ska-telescope/stupid/raw/master/scripts/publish-charts.sh | bash
-#   when: manual
-#   only:
-#     refs:
-#       - master
-
 pages:
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
   before_script:
@@ -501,30 +487,6 @@ pages:
     paths:
       - public
 
-create ci metrics:
-  stage: .post
-  image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
-  when: always
-  tags:
-    - docker-executor
-  script:
-    # Gitlab CI badges creation: START
-    - apt-get -y update
-    - apt-get install -y curl --no-install-recommends
-    - curl -s https://gitlab.com/ska-telescope/ci-metrics-utilities/raw/master/scripts/ci-badges-func.sh | sh
-    # Gitlab CI badges creation: END
-  artifacts:
-    paths:
-      - ./build
-
-#trigger:
-#  image: appropriate/curl
-#  stage: trigger
-#  tags:
-#  - docker-executor
-#  script:
-#  - curl -X POST -F token=$K8S_INTEGRATION_TOKEN -F ref=$K8S_INTEGRATION_TARGET_BRANCH -F "variables[HELM_CHART]=tmc-proto" https://gitlab.com/api/v4/projects/$K8S_INTEGRATION_PROJ_ID/trigger/pipeline
-
 release tmc:
   stage: release
   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
@@ -547,3 +509,8 @@ include:
 # https://developer.skatelescope.org/en/latest/development/software_package_release_procedure.html#package-and-publish-helm-charts-to-the-ska-helm-chart-repository
 - project: 'ska-telescope/templates-repository'
   file: 'gitlab-ci/includes/helm_publish.yml'
+
+# Create Gitlab CI badges from CI metrics
+# https://developer.skatelescope.org/en/latest/tools/continuousintegration.html#automated-collection-of-ci-health-metrics-as-part-of-the-ci-pipeline
+- project: 'ska-telescope/templates-repository'
+  file: 'gitlab-ci/includes/post_step.yml'
