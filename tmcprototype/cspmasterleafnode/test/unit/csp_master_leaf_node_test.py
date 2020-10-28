@@ -17,6 +17,7 @@ from tango.test_context import DeviceTestContext
 from cspmasterleafnode import CspMasterLeafNode, const, release
 from ska.base.control_model import HealthState
 from ska.base.control_model import LoggingLevel
+from ska.base.commands import ResultCode
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
 
 @pytest.fixture(scope="function")
@@ -63,21 +64,16 @@ def health_state(request):
 
 def test_on_should_command_csp_master_leaf_node_to_start(mock_csp_master):
     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-
-    result = device_proxy.On()
+    assert device_proxy.On() == [[ResultCode.OK], ["ON command invoked successfully from CSP Master leaf node."]]
     csp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON, [],
                                                                   any_method(with_name='on_cmd_ended_cb'))
-    #0 resultcode means 'OK', as we receive 0 as part of returncode we are asserting with the same
-    assert 0 in result[0]
 
 
 def test_off_should_command_csp_master_leaf_node_to_stop(mock_csp_master):
     device_proxy=mock_csp_master[1]
 
     device_proxy.On()
-    result = device_proxy.Off()
-    # 0 resultcode means 'OK', as we receive 0 as part of returncode we are asserting with the same
-    assert 0 in result[0]
+    assert device_proxy.Off() == [[ResultCode.OK], ["OFF command invoked successfully from CSP Master leaf node."]]
 
 
 def test_standby_should_command_to_standby_with_callback_method(mock_csp_master, event_subscription):

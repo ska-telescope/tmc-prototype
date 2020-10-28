@@ -221,7 +221,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             device=self.target
             try:
                 device._sdp_proxy.command_inout_asynch(const.CMD_ON, self.on_cmd_ended_cb)
-                log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+                log_msg = const.STR_ON_CMD_SUCCESS
                 self.logger.debug(log_msg)
                 return (ResultCode.OK, log_msg)
             
