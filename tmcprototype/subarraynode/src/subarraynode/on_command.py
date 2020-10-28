@@ -36,7 +36,6 @@ class OnCommand(SKASubarray.OnCommand):
         device.is_release_resources = False
         device.is_abort_command = False
         device.is_obsreset_command = False
-        device.resultval = False
 
         try:
             # Create proxy for CSP Subarray Leaf Node
@@ -44,16 +43,24 @@ class OnCommand(SKASubarray.OnCommand):
             log_msg = const.STR_SA_PROXY_INIT  + str(device.CspSubarrayLNFQDN)
             device._csp_subarray_ln_proxy = device.get_deviceproxy(device.CspSubarrayLNFQDN)
             self.logger.info(log_msg)
+            device._csp_sa_proxy = device.get_deviceproxy(device.CspSubarrayFQDN)
+
+        except DevFailed as dev_failed:
+            log_msg = const.ERR_CSP_PROXY_CREATE
+            self.logger.debug(log_msg)
+            tango.Except.throw_exception(dev_failed[0].desc, const.ERR_CREATE_PROXY,
+                                         "SubarrayNode.On()", tango.ErrSeverity.ERR)
+
+        try:
             # Create proxy for SDP Subarray Leaf Node
             device._sdp_subarray_ln_proxy = None
             log_msg = const.STR_SA_PROXY_INIT  + str(device.SdpSubarrayLNFQDN)
             device._sdp_subarray_ln_proxy = device.get_deviceproxy(device.SdpSubarrayLNFQDN)
-            self.logger.info(log_msg)
-            device._csp_sa_proxy = device.get_deviceproxy(device.CspSubarrayFQDN)
+            self.logger.info(log_msg)            
             device._sdp_sa_proxy = device.get_deviceproxy(device.SdpSubarrayFQDN)
     
         except DevFailed as dev_failed:
-            log_msg = const.ERR_PROXY_CREATE
+            log_msg = const.ERR_SDP_PROXY_CREATE
             self.logger.debug(log_msg)
             tango.Except.throw_exception(dev_failed[0].desc, const.ERR_CREATE_PROXY,
                                          "SubarrayNode.On()", tango.ErrSeverity.ERR)

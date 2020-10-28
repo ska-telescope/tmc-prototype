@@ -203,8 +203,8 @@ ERR_SUBS_SDP_SA_LEAF_ATTR = "Exception occurred while subscribing to SDP Subarra
 ERR_SDP_SA_LEAF_INIT = "Error occured in SDP Subarray Leaf Node initialization "
 ERR_SUBSR_RECEIVE_ADDRESSES_SDP_SA = "Error in subscribing receive addresses of SDP Subarray"
 ERR_SA_INIT = "Subarray node initialization failed."
-ERR_PROXY_CREATE = "Proxy creaton failed on Subarray Node"
-
+ERR_CSP_PROXY_CREATE = "CSP Proxy creaton failed on Subarray Node"
+ERR_SDP_PROXY_CREATE = "SDP Proxy creaton failed on Subarray Node"
 
 # JSON keys
 STR_KEY_DISH = "dish"
