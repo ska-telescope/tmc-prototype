@@ -2,7 +2,7 @@ numpy == 1.17.2
 pytango >= 9.3.2
 jsonschema >= 3.2.0
 ska-logging==0.3.0
-lmcbaseclasses == 0.6.5
+lmcbaseclasses == 0.7.1
 marshmallow
 cdm-shared-library
 ska-telescope-model

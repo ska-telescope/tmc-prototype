@@ -83,7 +83,7 @@ def test_command_raise_devfailed_exception(mock_mccs_master,command_with_arg):
      mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
      cmd_name, requested_cmd, input_str, obs_state, error_msg = command_with_arg
      mccs_master_proxy_mock.obsState = obs_state
-     mccs_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_with_arg
+     mccs_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
      with pytest.raises(tango.DevFailed) as df:
          device_proxy.command_inout(cmd_name, input_str)
      assert error_msg in str(df.value)
@@ -125,23 +125,20 @@ def test_release_resource_should_command_mccs_master_to_release_all_resources(mo
     mccs_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_Release, release_input_str,
                                                                         any_method(
                                                                             with_name='releaseresources_cmd_ended_cb'))
-    assert_activity_message(device_proxy, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
-def raise_devfailed_with_arg(cmd_name, input_arg1, inout_arg2):
-    # "This function is called to raise DevFailed exception with arguments."
-    tango.Except.throw_exception(const.STR_CMD_FAILED, const.ERR_DEVFAILED_MSG,
-                                cmd_name, tango.ErrSeverity.ERR)
 
-def raise_devfailed_exception(cmd_name, inp_str):
+def raise_devfailed_exception(*args):
     # "This function is called to raise DevFailed exception."
     tango.Except.throw_exception("MccsMasterLeafNode_CommandFailed", const.ERR_DEVFAILED_MSG,
                                     " ", tango.ErrSeverity.ERR)
 
 def test_on_should_command_mccs_master_leaf_node_to_start(mock_mccs_master):
     mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master
-    device_proxy.On()
+    result = device_proxy.On()
     mccs_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON,
                                                                 any_method(with_name='on_cmd_ended_cb'))
+    # 0 resultcode means 'OK', as we receive 0 as part of returncode we are asserting with the same
+    assert 0 in result[0]
 
 
 def test_on_should_command_to_on_with_callback_method(mock_mccs_master, event_subscription_without_arg):
@@ -167,11 +164,21 @@ def test_on_should_raise_devfailed_exception(mock_mccs_master):
         device_proxy.On()
     assert const.ERR_DEVFAILED_MSG in str(df.value)
 
-def test_off_should_command_to_off_with_callback_method(mock_mccs_master):
+def test_off_should_command_mccs_master_leaf_node_to_stop(mock_mccs_master):
+    device_proxy=mock_mccs_master[1]
+    device_proxy.On()
+    result = device_proxy.Off()
+    # 0 resultcode means 'OK', as we receive 0 as part of returncode we are asserting with the same
+    assert 0 in result[0]
+
+def test_off_should_command_to_off_with_callback_method(mock_mccs_master ,event_subscription_without_arg):
     device_proxy=mock_mccs_master[1]
     device_proxy.On()
     device_proxy.Off()
-    assert device_proxy.activityMessage in const.STR_OFF_CMD_ISSUED
+    dummy_event = command_callback(const.CMD_OFF)
+    event_subscription_without_arg[const.CMD_OFF](dummy_event)
+    assert const.STR_COMMAND + const.CMD_OFF in device_proxy.activityMessage
+
 
 def test_off_should_command_with_callback_method_with_event_error(mock_mccs_master ,event_subscription_without_arg):
     device_proxy=mock_mccs_master[1]
@@ -230,11 +237,6 @@ def any_method(with_name=None):
 
 def assert_activity_message(device_proxy, expected_message):
     assert device_proxy.activityMessage == expected_message  # reads tango attribute
-
-def raise_devfailed_exception(cmd_name, inp_str):
-    # "This function is called to raise DevFailed exception."
-    tango.Except.throw_exception("MccsMasterLeafNode_CommandFailed", const.ERR_DEVFAILED_MSG,
-    " ", tango.ErrSeverity.ERR)
 
 @contextlib.contextmanager
 def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
