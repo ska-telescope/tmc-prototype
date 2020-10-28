@@ -371,7 +371,7 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
     assign_input_dict = json.loads(assign_input_str)
     assert tango_context.device.AssignResources(assign_input_str) == [[ResultCode.STARTED], ["['0001']"]]
 
-    # result = tango_context.device.AssignResources(assign_input_str)
+    result = tango_context.device.AssignResources(assign_input_str)
     str_json_arg = json.dumps(assign_input_dict.get("sdp"))
     verify_called_correctly(sdp_subarray1_ln_proxy_mock,const.CMD_ASSIGN_RESOURCES,str_json_arg)
     arg_list = []
@@ -382,8 +382,8 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
     json_argument[const.STR_KEY_DISH] = dish
     arg_list.append(json.dumps(json_argument))
     verify_called_correctly(csp_subarray1_ln_proxy_mock,const.CMD_ASSIGN_RESOURCES,json.dumps(json_argument))
-    # assert tango_context.device.obsState == ObsState.RESOURCING
-    # assert "['0001']" in result[1][0]
+    assert tango_context.device.obsState == ObsState.RESOURCING
+    assert "['0001']" in result[1][0]
 
 
 def test_assign_resource_is_completed_when_csp_and_sdp_is_idle(mock_lower_devices):
