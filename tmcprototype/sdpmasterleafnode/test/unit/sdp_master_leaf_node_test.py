@@ -16,6 +16,7 @@ from tango import DevState, DevFailed
 from sdpmasterleafnode import SdpMasterLeafNode, const, release
 from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
 from ska.base.control_model import LoggingLevel
+from ska.base.commands import ResultCode
 
 
 @pytest.fixture(scope="function")
@@ -81,10 +82,9 @@ def test_command_should_raise_exception(mock_sdp_master, command_without_args):
 def test_on_should_command_sdp_master_leaf_node_to_start(mock_sdp_master):
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
     result = device_proxy.On()
+    assert device_proxy.On() == [[ResultCode.OK], ["OnCommand :->  invoked successfully."]]
     sdp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON,
                                                                any_method(with_name='on_cmd_ended_cb'))
-    # 0 resultcode means 'OK', as we receive 0 as part of returncode we are asserting with the same
-    assert 0 in result[0]
 
 
 def test_on_command_should_raise_dev_failed(mock_sdp_master):
@@ -114,12 +114,10 @@ def test_on_should_command_with_callback_method_with_event_error(mock_sdp_master
 def test_off_should_command_sdp_master_leaf_node_to_stop(mock_sdp_master):
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
     device_proxy.On()
-    result = device_proxy.Off()
+    assert device_proxy.Off() == [[ResultCode.OK], ['Off command executed successfully.']]
     assert const.STR_OFF_CMD_SUCCESS in device_proxy.activityMessage
     sdp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF,
                                                                any_method(with_name='off_cmd_ended_cb'))
-    # 0 resultcode means 'OK', as we receive 0 as part of returncode we are asserting with the same
-    assert 0 in result[0]
 
 
 def test_off_command_should_raise_dev_failed(mock_sdp_master):
