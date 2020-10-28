@@ -10,7 +10,7 @@ global:
 
 # Set minikube=true when deploying on minikube
 webjive:
-  minikube: true
+  minikube: false
 
 etcd-operator:
   deployments:
@@ -23,11 +23,6 @@ etcd-operator:
 
 mid-csp:
   enabled: true
-    # image:
-    #   registry: nexus.engageska-portugal.pt/ska-docker
-    #   image: mid-csp-lmc
-    #   tag: 0.6.8-6ec0c11
-    #   pullPolicy: IfNotPresent
       
 mid-cbf:
   enabled: true
