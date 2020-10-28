@@ -21,6 +21,16 @@ def main():
     logger = logging.getLogger(log_name)
     logger.info("Logging started for DishMaster application")
 
+    # add a filter with this device's name
+    device_name_tag = "tango-device:mid_d00{}/elt/master".format(get_instance_name())
+
+    class TangoDeviceTagsFilter(logging.Filter):
+        def filter(self, record):
+            record.tags = device_name_tag
+            return True
+
+    logger.addFilter(TangoDeviceTagsFilter())
+
     model = configure_device_model(sim_data_files, logger=logger)
     TangoDeviceServers = get_tango_device_server(model, sim_data_files)
     server_run(TangoDeviceServers)
