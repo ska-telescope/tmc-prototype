@@ -19,7 +19,6 @@ import tango
 from tango import DevState
 
 # Additional import
-from dishmaster import DishMaster, const
 from ska.base.control_model import HealthState, AdminMode, TestMode, ControlMode, SimulationMode, LoggingLevel
 
 # Note:
@@ -34,12 +33,10 @@ from ska.base.control_model import HealthState, AdminMode, TestMode, ControlMode
 
 # Device test case
 @pytest.mark.usefixtures("tango_context")
-
 class TestDishMaster(object):
     """Test case for packet generation."""
     # PROTECTED REGION ID(DishMaster.test_additionnal_import) ENABLED START #
     # PROTECTED REGION END #    //  DishMaster.test_additionnal_import
-    device = DishMaster
     properties = {'SkaLevel': '4', 'MetricList': 'healthState', 'GroupDefinitions': '',
                   'LoggingLevelDefault': '4', 'LoggingTargetsDefault':'console::cout',
                   'NrSubarrays': '16', 'CapabilityTypes': '', 'MaxCapabilities': '', 'ReceptorNumber': '',
@@ -63,7 +60,7 @@ class TestDishMaster(object):
     def test_Status(self, tango_context):
         """Test for Status"""
         # PROTECTED REGION ID(DishMaster.test_Status) ENABLED START #
-        assert tango_context.device.Status() == const.STR_DISH_INIT_SUCCESS
+        assert tango_context.device.Status() == "Dish Master is initialised successfully."
         # PROTECTED REGION END #    //  DishMaster.test_Status
 
     def test_Reset(self, tango_context):
@@ -124,7 +121,7 @@ class TestDishMaster(object):
         assert tango_context.device.capturing is True
         # Testing if the Scan is already in progress
         tango_context.device.Scan("0")
-        assert tango_context.device.Status() == const.STR_DISH_NOT_READY
+        assert tango_context.device.Status() == "Dish Pointing State is not READY."
         # PROTECTED REGION END #    //  DishMaster.test_Scan
 
     def test_StopCapture(self, tango_context):
@@ -142,7 +139,7 @@ class TestDishMaster(object):
         assert tango_context.device.pointingState == 0
         # Testing if data capturing is already stopped
         tango_context.device.StopCapture("0")
-        assert tango_context.device.Status() == const.STR_DATA_CAPTURE_ALREADY_STOPPED
+        assert tango_context.device.Status() == "Data Capuring is already stopped."
         # PROTECTED REGION END #    //  DishMaster.test_StopCapture
 
     def test_StartCapture(self, tango_context):
@@ -160,7 +157,7 @@ class TestDishMaster(object):
         assert tango_context.device.capturing is True
         # Testing if data capturing is already started
         tango_context.device.StartCapture("0")
-        assert tango_context.device.Status() == const.STR_DATA_CAPTURE_ALREADY_STARTED
+        assert tango_context.device.Status() == "Data Capuring is already in progress."
         # PROTECTED REGION END #    //  DishMaster.test_StartCapture
 
     def test_Slew(self, tango_context):
