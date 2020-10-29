@@ -27,7 +27,7 @@ def main():
     configure_logging(tags_filter=TangoDeviceTagsFilter)
     log_name = f'dish-master-{get_instance_name()}'
     logger = logging.getLogger(log_name)
-    logger.info(f'Logging started for {device_name}')
+    logger.info('Logging started for %s.', device_name)
 
     model = configure_device_model(sim_data_files, logger=logger)
     TangoDeviceServers = get_tango_device_server(model, sim_data_files)
