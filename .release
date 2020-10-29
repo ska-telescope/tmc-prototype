@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name = """tmcprototype"""
-version = "0.2.12"
+version = "0.2.13"
 version_info = version.split(".")
 description = """TMC Prototype"""
 author = "apurva.ska"
@@ -10,11 +10,11 @@ license = """BSD-3-Clause"""
 url = """https://www.skatelescope.org"""
 copyright = """"""
 
-release=0.2.12
-tag=0.2.12
-tag_description=Implemented first version of TMC-LOW. 
-release_notes=This release Contains: <br/><ul><li>Implemented MCCS Master Leaf Node.</li><li>Implemented MCCS Subarray Leaf Node.</li><li>Implemneted Central Node for TMC-Low.</li><li>Implemented Subarray Node for TMC-LOW.</li></ul><br/>
-gitlab_username=mesnehal
-private_token=KSjjD6QL9aaTdh_Rxpc9
+release=0.2.13
+tag=0.2.13
+tag_description=Update TMC MID and LOW to utilise LMC Base Classes 0.7.1
+release_notes=This release Contains: <br/><ul><li>Updated TMC MID and LOW to use 0.7.1 version of LMC Base Classes.</li><li>Includes work related to the technical debt items.</li></ul><br/>
+gitlab_username=apurvapatkar
+private_token=UUrxvA9bfSzMMy3VrpCn
 
 
