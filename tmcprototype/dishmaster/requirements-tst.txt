@@ -4,10 +4,5 @@ pytest-json-report
 pytest-mock
 pytest-xdist == 1.34.0
 coverage
-flake8
-flake8_formatter_junit_xml
-flake8-rst-docstrings
-docstr-coverage
-darglint
 mock
 unittest2
