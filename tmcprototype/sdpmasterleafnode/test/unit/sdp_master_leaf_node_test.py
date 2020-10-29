@@ -16,6 +16,7 @@ from tango import DevState, DevFailed
 from sdpmasterleafnode import SdpMasterLeafNode, const, release
 from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
 from ska.base.control_model import LoggingLevel
+from ska.base.commands import ResultCode
 
 
 @pytest.fixture(scope="function")
@@ -78,13 +79,46 @@ def test_command_should_raise_exception(mock_sdp_master, command_without_args):
         device_proxy.command_inout(cmd_name)
     assert error_msg in str(df)
 
+def test_on_should_command_sdp_master_leaf_node_to_start(mock_sdp_master):
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
+    result = device_proxy.On()
+    assert device_proxy.On() == [[ResultCode.OK], ["ON command invoked successfully from SDP Master leaf node."]]
+    sdp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON,
+                                                               any_method(with_name='on_cmd_ended_cb'))
+
+
+def test_on_command_should_raise_dev_failed(mock_sdp_master):
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
+    sdp_master_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.On()
+    assert const.ERR_DEVFAILED_MSG in str(df)
+
+def test_on_should_command_with_callback_method(mock_sdp_master, event_subscription):
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
+    device_proxy.On()
+    dummy_event = command_callback(const.CMD_ON)
+    event_subscription[const.CMD_ON](dummy_event)
+    assert const.STR_COMMAND + const.CMD_ON in device_proxy.activityMessage
+
+
+def test_on_should_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription):
+    device_proxy, sdp_master_proxy_mock = mock_sdp_master
+    device_proxy.On()
+
+    dummy_event = command_callback_with_event_error(const.CMD_ON)
+    event_subscription[const.CMD_ON](dummy_event)
+
+    assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
+
 def test_off_should_command_sdp_master_leaf_node_to_stop(mock_sdp_master):
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
     device_proxy.On()
-    device_proxy.Off()
+    assert device_proxy.Off() == [[ResultCode.OK], ['OFF command invoked successfully from SDP Master leaf node.']]
     assert const.STR_OFF_CMD_SUCCESS in device_proxy.activityMessage
     sdp_master_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF,
                                                                any_method(with_name='off_cmd_ended_cb'))
+
 
 def test_off_command_should_raise_dev_failed(mock_sdp_master):
     device_proxy, sdp_master_proxy_mock = mock_sdp_master
@@ -121,9 +155,7 @@ def test_off_should_command_with_callback_method(mock_sdp_master, event_subscrip
     device_proxy.Off()
     dummy_event = command_callback(const.CMD_OFF)
     event_subscription[const.CMD_OFF](dummy_event)
-    
     assert const.STR_COMMAND + const.CMD_OFF in device_proxy.activityMessage
-
 
 
 def test_command_with_callback_method_with_event_error(mock_sdp_master, event_subscription, command_without_args):

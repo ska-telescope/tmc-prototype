@@ -262,7 +262,8 @@ def test_scan_should_command_mccs_subarray_to_start_its_scan_when_it_is_ready(mo
     device_proxy, mccs_subarray1_proxy_mock = mock_mccs_subarray
     mccs_subarray1_proxy_mock.obsState = ObsState.READY
     device_proxy.Scan(scan_input_str)
-    assert const.STR_SCAN_SUCCESS in device_proxy.activityMessage
+    mccs_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_SCAN,scan_input_str,
+                                                                      any_method(with_name='scan_cmd_ended_cb'))
 
 
 def test_end_should_command_mccs_subarray_should_not_end_when_it_is_not_idle_or_ready(mock_mccs_subarray):

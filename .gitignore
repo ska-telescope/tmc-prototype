@@ -219,3 +219,7 @@ doc_html/
 .devcontainer
 .vscode
 */tox_report
+
+# Helm Charts
+Chart.lock
+charts/*/charts/*
