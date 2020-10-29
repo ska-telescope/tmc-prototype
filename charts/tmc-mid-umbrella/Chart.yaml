@@ -34,3 +34,6 @@ dependencies:
 - name: webjive
   version: 1.0.3
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
+- name: tango-util
+  version: 0.2.7
+  repository: https://nexus.engageska-portugal.pt/repository/helm-chart
