@@ -2,7 +2,7 @@ pytest
 pytest-cov
 pytest-json-report
 pytest-mock
-pytest-xdist == 1.34.0
+pytest-xdist==1.34.0
 coverage
 mock
 unittest2
