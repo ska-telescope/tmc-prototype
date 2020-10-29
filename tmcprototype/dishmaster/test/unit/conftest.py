@@ -33,9 +33,9 @@ def tango_context(request):
     device_name = 'test/nodb/dishelementmaster'
     model = tango_sim_generator.configure_device_model(data_descr_files,
                                                        device_name)
-    TangoDeviceServer = tango_sim_generator.get_tango_device_server(
+    DishMaster = tango_sim_generator.get_tango_device_server(
         model, data_descr_files)[0]
-    tango_context = DeviceTestContext(TangoDeviceServer, db=tango_db,
+    tango_context = DeviceTestContext(DishMaster, db=tango_db,
                                       process=False, properties=properties)
     mock_get_db = mock.Mock(return_value=Database(tango_context.db))
     helper_module.get_database = mock_get_db

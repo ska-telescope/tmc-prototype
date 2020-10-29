@@ -30,8 +30,8 @@ def main():
     logger.info('Logging started for %s.', device_name)
 
     model = configure_device_model(sim_data_files, logger=logger)
-    TangoDeviceServers = get_tango_device_server(model, sim_data_files)
-    run(TangoDeviceServers)
+    DishMaster, _ = get_tango_device_server(model, sim_data_files)
+    run((DishMaster,))
 
 
 def get_instance_name():
