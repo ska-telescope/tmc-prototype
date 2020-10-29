@@ -5,7 +5,7 @@ import pkg_resources
 
 from ska.logging import configure_logging
 
-from tango.server import server_run
+from tango.server import run
 from tango_simlib.tango_sim_generator import (configure_device_model, get_tango_device_server)
 
 
@@ -31,7 +31,7 @@ def main():
 
     model = configure_device_model(sim_data_files, logger=logger)
     TangoDeviceServers = get_tango_device_server(model, sim_data_files)
-    server_run(TangoDeviceServers)
+    run(TangoDeviceServers)
 
 
 def get_instance_name():
