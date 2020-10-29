@@ -73,6 +73,7 @@ clear_sdp_config:
 smoketest: ## check that the number of waiting containers is zero (10 attempts, wait time 30s).
 	@echo "Smoke test START"; \
 	n=10; \
+	init_configurator=3; \
 	while [ $$n -gt 0 ]; do \
 		waiting=`kubectl get pods -n $(KUBE_NAMESPACE) -o=jsonpath='{.items[*].status.containerStatuses[*].state.waiting.reason}' | wc -w`; \
 		echo "Waiting containers=$$waiting"; \
@@ -80,7 +81,7 @@ smoketest: ## check that the number of waiting containers is zero (10 attempts, 
 			echo "Waiting $(SLEEPTIME) for pods to become running...#$$n"; \
 			sleep $(SLEEPTIME); \
 		fi; \
-		if [ $$waiting -eq 0 ]; then \
+		if [ $$waiting -eq 3 ] || [ $$waiting -eq 0 ]; then \
 			echo "Smoke test SUCCESS"; \
 			exit 0; \
 		fi; \
