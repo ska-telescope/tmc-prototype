@@ -81,7 +81,7 @@ smoketest: ## check that the number of waiting containers is zero (10 attempts, 
 			echo "Waiting $(SLEEPTIME) for pods to become running...#$$n"; \
 			sleep $(SLEEPTIME); \
 		fi; \
-		if [ $$waiting -eq 3 ] || [ $$waiting -eq 0 ]; then \
+		if [ $$waiting -eq 0 ]; then \
 			echo "Smoke test SUCCESS"; \
 			exit 0; \
 		fi; \
