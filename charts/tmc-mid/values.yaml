@@ -39,13 +39,13 @@ tmcprototype:
     tag: 0.2.11
     pullPolicy: IfNotPresent
 
-# resources:
-#   limits:
-#     cpu: 300m
-#     memory: 500Mi
-#   requests:
-#     cpu: 100m
-#     memory: 128Mi
+resources:
+  limits:
+    cpu: 300m
+    memory: 500Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
 
 deviceServers:
   - name: dishmaster1
