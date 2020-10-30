@@ -20,8 +20,11 @@ from tango import DeviceProxy, DevState
 from resources.test_support.helpers_low import resource, watch, waiter, wait_before_test
 from resources.test_support.logging_decorators import log_it
 import logging
+from resources.test_support.controls_low import telescope_is_in_standby
+
 from resources.test_support.persistance_helping import load_config_from_file
-from resources.test_support.controls_low import set_telescope_to_standby,set_telescope_to_running,telescope_is_in_standby,restart_subarray,sync_assign_resources
+# from resources.test_support.controls_low import set_telescope_to_standby,set_telescope_to_running,telescope_is_in_standby,restart_subarray,sync_assign_resources
+from resources.test_support.sync_decorators_low import sync_start_up_telescope,sync_assign_resources,sync_release_resources,sync_set_to_standby,time_it
 from resources.test_support.tmc_helpers_low import compose_sub
 import resources.test_support.tmc_helpers_low as tmc
 
@@ -61,7 +64,8 @@ def test_assign_resources():
     LOGGER.info("Given A running telescope for executing observations on a subarray")
     assert(telescope_is_in_standby())
     LOGGER.info("Starting up telescope")
-    set_telescope_to_running()
+    tmc.start_up()
+
 
 # @when("I allocate 4 dishes to subarray 1")
 # def allocate_four_dishes():
@@ -98,6 +102,7 @@ def test_assign_resources():
         tmc.release_resources()
         LOGGER.info("ResourceIdList is empty for Subarray 1 ")
     LOGGER.info("Put Telescope back to standby")
-    set_telescope_to_standby()
+    # set_telescope_to_standby()
+    tmc.set_to_standby
     LOGGER.info("Telescope is in standby")
 
