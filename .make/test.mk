@@ -28,8 +28,6 @@ k8s_test = tar -c post-deployment/ | \
 		--namespace $(KUBE_NAMESPACE) -i --wait --restart=Never \
 		--image-pull-policy=IfNotPresent \
 		--image=$(IMAGE_TO_TEST) \
-		--limits='cpu=1000m,memory=500Mi' \
-		--requests='cpu=900m,memory=400Mi' \
 		--serviceaccount=$(TESTING_ACCOUNT) -- \
 		/bin/bash -c "mkdir tmc-prototype && tar xv --directory tmc-prototype --strip-components 1 --warning=all && cd tmc-prototype && \
 		make KUBE_NAMESPACE=$(KUBE_NAMESPACE) HELM_RELEASE=$(HELM_RELEASE) TANGO_HOST=$(TANGO_HOST) MARK=$(MARK) TEST_RUN_SPEC=$(TEST_RUN_SPEC) $1 && \

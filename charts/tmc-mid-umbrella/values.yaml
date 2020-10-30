@@ -21,12 +21,17 @@ etcd-operator:
 # The same dependencies should be only referred in one chart at a time. 
 # This is handled by making the enable : true/false the dependency.
 
-# mid-csp:
-#   tango-base:
-#     enabled: false
+mid-csp:
+  enabled: true
+      
+mid-cbf:
+  enabled: true
 
 sdp:
-  etcd:
-    enabled: false
   tango-base:
     enabled: false
+  lmc:
+    enabled: true
+
+
+

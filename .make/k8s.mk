@@ -90,7 +90,7 @@ install-chart: dep-up namespace namespace_sdp ## install the helm chart with nam
 	--set global.minikube=$(MINIKUBE) \
 	--set global.tango_host=$(TANGO_HOST) \
 	--set tangoDatabaseDS=$(TANGO_DATABASE_DS) \
-	--set sdp-prototype.helm_deploy.namespace=$(SDP_KUBE_NAMESPACE) \
+	--set sdp.helmdeploy.namespace=$(SDP_KUBE_NAMESPACE) \
 	--values values.yaml \
 	 $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE); \
 	 rm generated_values.yaml; \
@@ -104,7 +104,7 @@ template-chart: clean dep-up## install the helm chart with name RELEASE_NAME and
 	--set global.minikube=$(MINIKUBE) \
 	--set global.tango_host=$(TANGO_HOST) \
 	--set tangoDatabaseDS=$(TANGO_DATABASE_DS) \
-	--set sdp-prototype.helm_deploy.namespace=$(SDP_KUBE_NAMESPACE) \
+	--set sdp.helmdeploy.namespace=$(SDP_KUBE_NAMESPACE) \
 	--values values.yaml \
 	--debug \
 	 $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE); \
