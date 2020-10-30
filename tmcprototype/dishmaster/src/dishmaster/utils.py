@@ -39,7 +39,7 @@ def get_tango_server_class(device_name):
     configure_args = {"logger": logger}
     # test/nodb/dishmaster is used for testing
     if device_name == "test/nodb/dishmaster":
-        configure_args = {"test_device_name": device_name}
+        configure_args["test_device_name"] = device_name
     model = configure_device_model(data_descr_files, **configure_args)
     DishMaster, _ = get_tango_device_server(model, data_descr_files)
     return DishMaster
