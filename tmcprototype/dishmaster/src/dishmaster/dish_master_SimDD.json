@@ -29,7 +29,7 @@
           },
           "dataSimulationParameters": {
             "quantity_simulation_type": "ConstantQuantity",
-            "initial_value": false
+            "initial_value": "False"
           },
           "attributeControlSystem": {
             "display_level": "OPERATOR",
