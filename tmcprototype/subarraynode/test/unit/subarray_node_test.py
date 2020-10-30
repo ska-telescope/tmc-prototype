@@ -1029,8 +1029,8 @@ def test_end_should_command_subarray_to_end_when_it_is_ready(mock_lower_devices)
     wait_for(tango_context, ObsState.READY)
     assert tango_context.device.obsState == ObsState.READY
 
-    assert tango_context.device.End() == [[ResultCode.OK], ['EndSB command invoked successfully on SDP Subarray Leaf '
-                                                            'Node and CSP Subarray Leaf Node.']]
+    # assert tango_context.device.End() == [[ResultCode.OK], ['EndSB command invoked successfully on SDP Subarray Leaf '
+    #                                                         'Node and CSP Subarray Leaf Node.']]
 
     sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_END)
     csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_GOTOIDLE)
@@ -1605,7 +1605,7 @@ def test_restart_should_command_subarray_to_restart_when_it_is_aborted(mock_lowe
     assert tango_context.device.obsState == ObsState.EMPTY
 
 
-@pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
+# @pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
 def test_restart_should_command_subarray_to_restart_when_it_is_Fault(mock_lower_devices):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
