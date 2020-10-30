@@ -1031,11 +1031,13 @@ def test_end_should_command_subarray_to_end_when_it_is_ready(mock_lower_devices)
 
     # assert tango_context.device.End() == [[ResultCode.OK], ['EndSB command invoked successfully on SDP Subarray Leaf '
     #                                                         'Node and CSP Subarray Leaf Node.']]
+    tango_context.device.End()
+    wait_for(tango_context, ObsState.IDLE)
+    assert tango_context.device.obsState == ObsState.IDLE
 
     sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_END)
     csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_GOTOIDLE)
     dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STOP_TRACK)
-    assert tango_context.device.obsState == ObsState.IDLE
 
 
 def test_end_should_raise_devfailed_exception_when_csp_subarray_throws_devfailed_exception(mock_lower_devices):
@@ -1648,7 +1650,7 @@ def test_restart_should_command_subarray_to_restart_when_it_is_Fault(mock_lower_
 
     sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RESTART)
     csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RESTART)
-    dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RESTART)
+    dish_ln_proxy_mock.command_inout.side_effect = group_command_method
 
     assert tango_context.device.obsState == ObsState.EMPTY
 
@@ -1837,6 +1839,11 @@ def create_dummy_event_sdp_receiceAddresses(proxy_mock, device_fqdn, attribute, 
     fake_event.attr_value.value = attr_value
     fake_event.device = proxy_mock
     return fake_event
+
+def group_command_method(*args):
+    tango.Except.throw_exception("SubarrayNode_Commandfailed",
+                                 "This is error message for group_command",
+                                 "", tango.ErrSeverity.ERR)
 
 
 def raise_devfailed_exception(*args):
