@@ -9,7 +9,7 @@ import time
 import unittest2 as unittest
 
 from tango_simlib import tango_sim_generator
-from dishmaster.dish_master_override import OverrideDish
+from dishmaster.dish_master_behaviour import OverrideDish
 
 FGO_FILE_PATH = pkg_resources.resource_filename("dishmaster", "dish_master.fgo")
 JSON_FILE_PATH = pkg_resources.resource_filename("dishmaster", "dish_master_SimDD.json")

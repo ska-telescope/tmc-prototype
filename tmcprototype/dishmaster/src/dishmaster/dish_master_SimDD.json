@@ -3,9 +3,9 @@
     "class_overrides": [
       {
         "override_class": {
-          "name": "Sim_dish_master_override",
+          "name": "Sim_dish_master_behaviour",
           "module_directory": "None",
-          "module_name": "dishmaster.dish_master_override",
+          "module_name": "dishmaster.dish_master_behaviour",
           "class_name": "OverrideDish"
         }
       }
