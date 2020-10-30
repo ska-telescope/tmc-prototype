@@ -26,19 +26,8 @@ def tango_context(request):
 
     DishMaster = get_tango_server_class("test/nodb/dishmaster")
     _, tango_db_path = tempfile.mkstemp(prefix="tango")
-    properties = {
-        "SkaLevel": "4",
-        "MetricList": "healthState",
-        "GroupDefinitions": "",
-        "LoggingLevelDefault": "4",
-        "LoggingTargetsDefault": "console::cout",
-        "NrSubarrays": "16",
-        "CapabilityTypes": "",
-        "MaxCapabilities": "",
-        "ReceptorNumber": "",
-    }
     tango_context = DeviceTestContext(
-        DishMaster, db=tango_db_path, process=False, properties=properties
+        DishMaster, db=tango_db_path, process=False, properties={}
     )
     mock_get_db = mock.Mock(return_value=Database(tango_context.db))
     helper_module.get_database = mock_get_db
