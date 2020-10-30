@@ -11,9 +11,9 @@
 
 SKA Dish Master TANGO device server
 """
-from . import release, dish_master_override, DishMasterDS
+from . import release, dish_master_override, DishMasterDS, utils
 
-__all__ = ["release", "DishMasterDS", "dish_master_override"]
+__all__ = ["release", "DishMasterDS", "dish_master_override", "utils"]
 
 __version__ = release.version
 __version_info__ = release.version_info
