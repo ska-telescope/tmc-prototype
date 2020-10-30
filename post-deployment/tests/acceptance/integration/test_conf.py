@@ -18,11 +18,12 @@ from pytest_bdd import scenario, given, when, then
 import pytest
 # from oet.domain import SKAMid, SubArray, ResourceAllocation, Dish
 from tango import DeviceProxy, DevState
-# from resources.test_support.helpers import  obsState, resource, watch, waiter, map_dish_nr_to_device_name
+from resources.test_support.helpers import  obsState, resource, watch, waiter, map_dish_nr_to_device_name
 from resources.test_support.helpers_low import resource, watch, waiter, wait_before_test
 from resources.test_support.logging_decorators import log_it
 import logging
 from resources.test_support.controls_low import telescope_is_in_standby
+from resources.test_support.sync_decorators_low import sync_configure,time_it
 
 from resources.test_support.persistance_helping import load_config_from_file
 # from resources.test_support.controls_low import set_telescope_to_standby,set_telescope_to_running,telescope_is_in_standby,restart_subarray,sync_assign_resources
@@ -54,7 +55,7 @@ non_default_states_to_check = {}
 def result():
     return {}
 
-@pytest.mark.low
+@pytest.mark.low_conf
 #@pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 # TODO: Need to change when feature file will be created.
 # @scenario("1_XR-13_XTP-494.feature", "A2-Test, Sub-array transitions from IDLE to READY state")
@@ -66,7 +67,7 @@ def test_configure_subarray():
     LOGGER.info("Check whether telescope is in StandBy")
     assert(telescope_is_in_standby())
     LOGGER.info("Starting up telescope")
-    set_telescope_to_running()
+    tmc.start_up()
     wait_before_test(timeout=20)
     LOGGER.info("Telescope is in ON state")
 
@@ -77,17 +78,17 @@ def test_configure_subarray():
     compose_sub()
     LOGGER.info("Subarray 1 is ready and composed out of 2 dishes")
 
-# TODO: Need to update when clause
-# @when("I call the configure scan execution instruction")
-    def config(result):
-        @log_it('AX-13_A2',devices_to_log,non_default_states_to_check)
-        @sync_configure_oet
-        @time_it(120)
-        def test_SUT():
-            configure_sub()
-        test_SUT()
+    @sync_configure
+    @time_it(120)
+    def conf():
+        configure1_file = 'resources/test_data/TMC_integration/mccs_configure.json'    
+        config = load_config_from_file(configure1_file)
+        SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
+        SubarrayNodeLow.Configure(config)
+        LOGGER.info("Subarray obsState is: " + str(SubarrayNodeLow.obsState))
+        LOGGER.info('Invoked Configure on Subarray')
         LOGGER.info("Configure command on Subarray 1 is successful")
-
+    conf()
 # TODO: Need to update then clause
 # @then("sub-array is in READY state for which subsequent scan commands can be directed to deliver a basic imaging outcome")
 # def check_state():
@@ -111,15 +112,15 @@ def test_configure_subarray():
     if (resource('ska_low/tm_subarray_node/1').get('obsState') == "READY"):
         #this means test must have passed
         LOGGER.info("tearing down configured subarray (READY)")
-        end()
-        release_resources()
+        tmc.end()
+        tmc.release_resources()
         LOGGER.info("EndSb and ReleaseResources is involked on Subarray 1")
-    if (resource('ska_low/tm_subarray_node/1').get('obsState') == "CONFIGURING"):
-        LOGGER.warn("Subarray is still in configuring! Please restart MVP manualy to complete tear down")
-        restart_subarray(1)
-        #raise exception since we are unable to continue with tear down
-        raise Exception("Unable to tear down test setup")
+    # if (resource('ska_low/tm_subarray_node/1').get('obsState') == "CONFIGURING"):
+    #     LOGGER.warn("Subarray is still in configuring! Please restart MVP manualy to complete tear down")
+    #     restart_subarray(1)
+    #     #raise exception since we are unable to continue with tear down
+        # raise Exception("Unable to tear down test setup")
     LOGGER.info("Put Telescope back to standby")
-    set_telescope_to_standby()
+    tmc.set_to_standby()
     LOGGER.info("Telescope is in standby")
 

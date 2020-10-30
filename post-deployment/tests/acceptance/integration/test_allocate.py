@@ -86,12 +86,12 @@ def test_assign_resources():
 # @then("the subarray is in the condition that allows scan configurations to take place")
 # def check_subarry_state():
     #check that the TMC report SubarrayLow as being in the ON state and obsState = IDLE
-    assert_that(resource('ska_low/tm_subarray_node/1').get("State")).is_equal_to("ON")
-    assert_that(resource('ska_low/tm_subarray_node/1').get('obsState')).is_equal_to('IDLE')
+    # assert_that(resource('ska_low/tm_subarray_node/1').get("State")).is_equal_to("ON")
+    # assert_that(resource('ska_low/tm_subarray_node/1').get('obsState')).is_equal_to('IDLE')
     #check that the MCCS report subarray as being in the ON state and obsState = IDLE
-    assert_that(resource('low-mccs/subarray/01').get('State')).is_equal_to('ON')
-    assert_that(resource('low-mccs/subarray/01').get('obsState')).is_equal_to('IDLE')
-    LOGGER.info("Then the subarray is in the condition that allows scan configurations to take place: PASSED")
+    # assert_that(resource('low-mccs/subarray/01').get('State')).is_equal_to('ON')
+    # assert_that(resource('low-mccs/subarray/01').get('obsState')).is_equal_to('IDLE')
+    # LOGGER.info("Then the subarray is in the condition that allows scan configurations to take place: PASSED")
 
 # def teardown_function(function):
     """ teardown any state that was previously setup with a setup_function
