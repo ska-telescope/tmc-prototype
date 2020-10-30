@@ -393,6 +393,26 @@ class OverrideDish(object):
             self._throw_exception("SetStowMode", _allowed_modes)
         return [[self.OK], [f"Dish transitioned to '{stow}' mode."]]
 
+    def action_startcapture(self, model, tango_dev=None, data_input=None):  # pylint: disable=W0613
+        """Triggers the dish to start capturing the data on the configured band.
+
+        data_input: None
+        """
+        if not model.sim_quantities["capturing"]:
+            now = float("%.2f" % model.time_func())
+            model.sim_quantities["capturing"].set_val(True, now)
+            self._change_pointing_state(model, data_input, "SCAN", ("OPERATE",))
+
+    def action_stopcapture(self, model, tango_dev=None, data_input=None):  # pylint: disable=W0613
+        """Triggers the dish to stop capturing the data on the configured band.
+
+        data_input: None
+        """
+        if model.sim_quantities["capturing"]:
+            now = float("%.2f" % model.time_func())
+            model.sim_quantities["capturing"].set_val(False, now)
+            self._change_pointing_state(model, data_input, "READY", ("OPERATE",))
+
     def _change_pointing_state(self, model, data_input, action, allowed_modes):
         dish_mode_quantity = model.sim_quantities["dishMode"]
         dish_mode = get_enum_str(dish_mode_quantity)

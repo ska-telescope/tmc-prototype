@@ -9,5 +9,33 @@
           "class_name": "OverrideDish"
         }
       }
+    ],
+    "dynamicAttributes": [
+      {
+        "basicAttributeData": {
+          "name": "capturing",
+          "unit": "",
+          "label": "Data capturing",
+          "description": "Indicates whether Dish is capturing data in the configured band or not.",
+          "data_type": "Boolean",
+          "data_format": "Scalar",
+          "format": "",
+          "data_shape": {
+            "max_dim_x": 1,
+            "max_dim_y": 0
+          },
+          "attributeInterlocks": {
+            "writable": "READ"
+          },
+          "dataSimulationParameters": {
+            "quantity_simulation_type": "ConstantQuantity",
+            "initial_value": false
+          },
+          "attributeControlSystem": {
+            "display_level": "OPERATOR",
+            "period": 1000
+          }
+        }
+      }
     ]
   }
