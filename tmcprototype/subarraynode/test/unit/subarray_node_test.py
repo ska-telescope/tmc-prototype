@@ -364,6 +364,66 @@ def mock_lower_devices():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         yield tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map
 
+@pytest.fixture(scope="function")
+def mock_lower_devices_group():
+    csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dish_ln_prefix = 'ska_mid/tm_leaf_node/d'
+    dish_group = 'DishLeafNode_Group'
+    
+    dut_properties = {
+        'CspSubarrayLNFQDN': csp_subarray1_ln_fqdn,
+        'CspSubarrayFQDN': csp_subarray1_fqdn,
+        'SdpSubarrayLNFQDN': sdp_subarray1_ln_fqdn,
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn,
+        'DishLeafNodePrefix': dish_ln_prefix
+    }
+
+    csp_subarray1_ln_proxy_mock = Mock()
+    csp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_ln_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock = Mock()
+    dish_ln_proxy_mock = Mock()
+    group_mock = Mock()
+
+    proxies_to_mock = {
+        csp_subarray1_ln_fqdn: csp_subarray1_ln_proxy_mock,
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock,
+        sdp_subarray1_ln_fqdn: sdp_subarray1_ln_proxy_mock,
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock,
+        dish_ln_prefix + "0001": dish_ln_proxy_mock
+
+    }
+
+    event_subscription_map = {}
+    dish_pointing_state_map = {}
+
+    sdp_subarray1_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    csp_subarray1_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    csp_subarray1_ln_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    sdp_subarray1_ln_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    dish_ln_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: dish_pointing_state_map.
+            update({attr_name: callback}))
+    with fake_tango_system_with_group(SubarrayNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock,group_to_mock=group_mock) as tango_context:
+        yield tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map, group_mock
+
+
 @pytest.mark.xfail()
 def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_resources(mock_lower_devices):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
@@ -979,11 +1039,12 @@ def test_end_scan_should_raise_devfailed_exception_when_csp_subbarray_ln_throws_
 
 
 # @pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
-def test_end_should_command_subarray_to_end_when_it_is_ready(mock_lower_devices):
-    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
+def test_end_should_command_subarray_to_end_when_it_is_ready(mock_lower_devices_group):
+    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map,tango_group = mock_lower_devices_group
     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
     sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
     dish_pointing_state_attribute = "dishPointingState"
+    
     tango_context.device.On()
     tango_context.device.AssignResources(assign_input_str)
     attribute = 'ObsState'
@@ -1015,8 +1076,7 @@ def test_end_should_command_subarray_to_end_when_it_is_ready(mock_lower_devices)
     attribute = 'PointingState'
     dummy_event_dish = create_dummy_event_state(dish_ln_proxy_mock, dish_ln_prefix + "0001", attribute,
                                                 PointingState.TRACK)
-    dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
-
+    dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)  
     wait_for(tango_context, ObsState.READY)
     assert tango_context.device.obsState == ObsState.READY
 
@@ -1031,6 +1091,7 @@ def test_end_should_command_subarray_to_end_when_it_is_ready(mock_lower_devices)
 
     # assert tango_context.device.End() == [[ResultCode.OK], ['EndSB command invoked successfully on SDP Subarray Leaf '
     #                                                         'Node and CSP Subarray Leaf Node.']]
+    tango_group.command_inout.side_effect = group_command_method
     tango_context.device.End()
     wait_for(tango_context, ObsState.IDLE)
     assert tango_context.device.obsState == ObsState.IDLE
@@ -1841,9 +1902,8 @@ def create_dummy_event_sdp_receiceAddresses(proxy_mock, device_fqdn, attribute, 
     return fake_event
 
 def group_command_method(*args):
-    tango.Except.throw_exception("SubarrayNode_Commandfailed",
-                                 "This is error message for group_command",
-                                 "", tango.ErrSeverity.ERR)
+    cmd_name = Mock()
+    return cmd_name
 
 
 def raise_devfailed_exception(*args):
@@ -1887,3 +1947,23 @@ def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_m
     device_test_context.start()
     yield device_test_context
     device_test_context.stop()
+
+@contextlib.contextmanager
+def fake_tango_system_with_group(device_under_test, initial_dut_properties={}, proxies_to_mock={},group_to_mock = None,
+                      device_proxy_import_path='tango.DeviceProxy',device_group_import_path='tango.Group'):
+
+    with mock.patch(device_proxy_import_path) as patched_constructor:
+        patched_constructor.side_effect = lambda device_fqdn: proxies_to_mock.get(device_fqdn, Mock())
+        patched_module = importlib.reload(sys.modules[device_under_test.__module__])
+
+    with mock.patch(device_group_import_path) as patched_constructor:
+            patched_constructor.side_effect = lambda group_to_mock: Mock()
+            patched_module = importlib.reload(sys.modules[device_under_test.__module__])
+
+    device_under_test = getattr(patched_module, device_under_test.__name__)
+
+    device_test_context = DeviceTestContext(device_under_test, properties=initial_dut_properties)
+    device_test_context.start()
+    yield device_test_context
+    device_test_context.stop()
+
