@@ -38,7 +38,7 @@ setup(
         ]
     },
     test_suite="test",
-    entry_points={"console_scripts": ["DishMasterDS = dishmaster.DishMasterDS:main"]},
+    entry_points={"console_scripts": ["DishMasterDS = dishmaster.dish_master:main"]},
     author="Team Karoo",
     author_email="cam+karoo@ska.ac.za",
     license="BSD-3-Clause",
