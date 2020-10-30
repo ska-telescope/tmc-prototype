@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Tests for the SKA MPI Dish simulator.
+Tests for the SKA Dish simulator.
 """
 
 import pkg_resources
