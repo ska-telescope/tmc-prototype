@@ -399,9 +399,9 @@ class OverrideDish(object):
         data_input: None
         """
         if not model.sim_quantities["capturing"]:
+            self._change_pointing_state(model, data_input, "SCAN", ("OPERATE",))
             now = float("%.2f" % model.time_func())
             model.sim_quantities["capturing"].set_val(True, now)
-            self._change_pointing_state(model, data_input, "SCAN", ("OPERATE",))
 
     def action_stopcapture(self, model, tango_dev=None, data_input=None):  # pylint: disable=W0613
         """Triggers the dish to stop capturing the data on the configured band.
@@ -409,9 +409,9 @@ class OverrideDish(object):
         data_input: None
         """
         if model.sim_quantities["capturing"]:
+            self._change_pointing_state(model, data_input, "READY", ("OPERATE",))
             now = float("%.2f" % model.time_func())
             model.sim_quantities["capturing"].set_val(False, now)
-            self._change_pointing_state(model, data_input, "READY", ("OPERATE",))
 
     def _change_pointing_state(self, model, data_input, action, allowed_modes):
         dish_mode_quantity = model.sim_quantities["dishMode"]
