@@ -24,7 +24,8 @@ before_script:
 stages:
   - build
   - unit-test
-  - test
+  - integration-test-mid
+  - integration-test-low
   - linting
   - publish
   - pages
@@ -357,7 +358,7 @@ unit tests:
       - ./build
 
 test-mid:
-  stage: test
+  stage: integration-test-mid
   tags:
     - k8srunner
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
@@ -388,9 +389,8 @@ test-mid:
     reports:
       junit: build/report.xml
 
-
 test-low:
-  stage: test
+  stage: integration-test-low
   tags:
     - k8srunner
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
@@ -399,7 +399,7 @@ test-low:
     - make install-chart MINIKUBE=false HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
     - make wait
     - make smoketest
-    #- make test
+    - make test MARK=low && [ -f "build/report.xml" ]
   after_script:
     - make uninstall-chart HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
     - make clean
@@ -417,7 +417,6 @@ test-low:
       - build
     reports:
       junit: build/report.xml
-  when: manual
 
 linting:
   stage: linting
@@ -511,5 +510,5 @@ include:
 # Create Gitlab CI badges from CI metrics
 # https://developer.skatelescope.org/en/latest/tools/continuousintegration.html#automated-collection-of-ci-health-metrics-as-part-of-the-ci-pipeline
 include:
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/post_step.yml'
+- project: 'ska-telescope/templates-repository'
+  file: 'gitlab-ci/includes/post_step.yml'
