@@ -431,8 +431,10 @@ class OverrideDish(object):
                         "{}()".format(action),
                         ErrSeverity.WARN,
                     )
-            except TypeError:
-                pass
+            except ValueError:
+                model.logger.error(
+                    "data_input value '{}' cannot be converted into a float.".format(data_input)
+                )
             set_enum(pointing_state_quantity, action, now)
             model.logger.info("Dish pointingState set to {}.".format(action))
         else:

@@ -26,9 +26,7 @@ def tango_context(request):
 
     DishMaster = get_tango_server_class("test/nodb/dishmaster")
     _, tango_db_path = tempfile.mkstemp(prefix="tango")
-    tango_context = DeviceTestContext(
-        DishMaster, db=tango_db_path, process=False, properties={}
-    )
+    tango_context = DeviceTestContext(DishMaster, db=tango_db_path, process=False, properties={})
     mock_get_db = mock.Mock(return_value=Database(tango_context.db))
     helper_module.get_database = mock_get_db
     tango_context.start()
