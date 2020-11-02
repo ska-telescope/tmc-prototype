@@ -28,8 +28,7 @@
             "writable": "READ"
           },
           "dataSimulationParameters": {
-            "quantity_simulation_type": "ConstantQuantity",
-            "initial_value": "False"
+            "quantity_simulation_type": "ConstantQuantity"
           },
           "attributeControlSystem": {
             "display_level": "OPERATOR",
