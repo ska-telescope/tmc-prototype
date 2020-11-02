@@ -24,8 +24,7 @@ before_script:
 stages:
   - build
   - unit-test
-  - integration-test-mid
-  - integration-test-low
+  - test
   - linting
   - publish
   - pages
@@ -358,7 +357,7 @@ unit tests:
       - ./build
 
 test-mid:
-  stage: integration-test-mid
+  stage: test
   tags:
     - k8srunner
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
@@ -390,7 +389,7 @@ test-mid:
       junit: build/report.xml
 
 test-low:
-  stage: integration-test-low
+  stage: test
   tags:
     - k8srunner
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
@@ -410,7 +409,7 @@ test-low:
   environment:
     name: test
     kubernetes:
-      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA
+      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-low
   artifacts:
     name: "$CI_PROJECT_NAME-$CI_JOB_ID"
     paths:
