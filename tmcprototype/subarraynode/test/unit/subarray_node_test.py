@@ -15,7 +15,7 @@ import re
 # Tango imports
 import tango
 from tango import DevState, DeviceData, DevString, DevVarStringArray
-from tango.test_context import DeviceTestContext
+from tango.test_context import DeviceTestContext, MultiDeviceTestContext
 
 # Additional import
 from subarraynode import SubarrayNode, const, ElementDeviceData, release
@@ -397,6 +397,10 @@ def mock_lower_devices_group():
 
     }
 
+    groups_to_mock = {
+        dish_group: group_mock
+    }    
+
     event_subscription_map = {}
     dish_pointing_state_map = {}
 
@@ -421,7 +425,7 @@ def mock_lower_devices_group():
             update({attr_name: callback}))
     # with fake_tango_system_with_group(SubarrayNode, initial_dut_properties=dut_properties,
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock,group_to_mock=group_mock) as tango_context:
+                           proxies_to_mock=proxies_to_mock,group_to_mock=groups_to_mock) as tango_context:
         yield tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map, group_mock
 
 
