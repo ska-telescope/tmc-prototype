@@ -3,7 +3,7 @@ from datetime import date,datetime
 import pytest
 import os
 import logging
-from resources.test_support.helpers_low import waiter,watch,resource, wait_before_test
+from resources.test_support.helpers_low import waiter,watch,resource
 from resources.test_support.controls_low import telescope_is_in_standby
 from resources.test_support.sync_decorators_low import sync_start_up_telescope,sync_assign_resources,sync_configure,sync_end,sync_release_resources,\
     sync_set_to_standby,time_it,sync_scan
@@ -28,7 +28,6 @@ def test_scan():
     
     try:
         # given an interface to TMC to interact with a subarray node and a central node
-        wait_before_test(timeout=20)
         fixture = {}
         fixture['state'] = 'Unknown'
 
@@ -37,18 +36,15 @@ def test_scan():
         LOGGER.info('Starting up the Telescope')
         tmc.start_up()
         fixture['state'] = 'Telescope On'
-        wait_before_test(timeout=20)
         # and a subarray composed of two resources configured as perTMC_integration/mccs_assign_resources.json
         LOGGER.info('Composing the Subarray')
         tmc.compose_sub()
         fixture['state'] = 'Subarray Assigned'
-        wait_before_test(timeout=10)
         #and a subarray configured to perform a scan as per 'TMC_integration/configure1.json'
         LOGGER.info('Configuring the Subarray')
         fixture['state'] = 'Subarray CONFIGURING'
         tmc.configure_sub()
         fixture['state'] = 'Subarray Configured for SCAN'
-        wait_before_test(timeout=10)
         #When I run a scan of 4 seconds based on previos configuration
         resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('READY')
         LOGGER.info('Starting a scan of 4 seconds')
@@ -61,19 +57,15 @@ def test_scan():
         scan()
         LOGGER.info('Scan complete')
         fixture['state'] = 'Subarray Configured for SCAN'
-        wait_before_test(timeout=10)
         #tear down
         LOGGER.info('TMC-Scan tests complete: tearing down...')
         tmc.end()
         resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('IDLE')
         LOGGER.info('Invoked End on Subarray')
-        wait_before_test(timeout=10)
         tmc.release_resources()
         LOGGER.info('Invoked ReleaseResources on Subarray')
-        wait_before_test(timeout=10)
         tmc.set_to_standby()
         LOGGER.info('Invoked StandBy on Subarray')
-        wait_before_test(timeout=10)
    
     except:        
         LOGGER.info('Tearing down failed test, state = {}'.format(fixture['state']))
