@@ -398,10 +398,24 @@ class OverrideDish(object):
 
         data_input: None
         """
-        if not model.sim_quantities["capturing"]:
-            self._change_pointing_state(model, data_input, "SCAN", ("OPERATE",))
+        _allowed_modes = ("OPERATE",)
+        dish_mode_quantity = model.sim_quantities["dishMode"]
+        dish_mode = get_enum_str(dish_mode_quantity)
+
+        if dish_mode in _allowed_modes:
+            configuredBand = model.sim_quantities["configuredBand"]
+            band_error_labels = ["NONE", "UNKNOWN", "ERROR", "UNDEFINED"]
+            if configuredBand in band_error_labels:
+                Except.throw_exception(
+                    "DISH Command Failed",
+                    "configuredBand is {}.".format(configuredBand),
+                    "StartCapture()",
+                    ErrSeverity.WARN,
+                )
             now = float("%.2f" % model.time_func())
             model.sim_quantities["capturing"].set_val(True, now)
+        else:
+            self._throw_exception("StartCapture", _allowed_modes)
 
     def action_stopcapture(self, model, tango_dev=None, data_input=None):  # pylint: disable=W0613
         """Triggers the dish to stop capturing the data on the configured band.
@@ -409,7 +423,6 @@ class OverrideDish(object):
         data_input: None
         """
         if model.sim_quantities["capturing"]:
-            self._change_pointing_state(model, data_input, "READY", ("OPERATE",))
             now = float("%.2f" % model.time_func())
             model.sim_quantities["capturing"].set_val(False, now)
 
