@@ -14,5 +14,5 @@ mccs:
 
 # Set minikube=true when deploying on minikube
 webjive:
-  minikube: true
+  minikube: false
 

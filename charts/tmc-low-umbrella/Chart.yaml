@@ -14,7 +14,7 @@ maintainers:
     email: kalyanit.ska@gmail.com
 dependencies:
 - name: tango-base
-  version: 0.2.8
+  version: 0.2.10
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: webjive
   version: 1.0.3
@@ -24,4 +24,7 @@ dependencies:
   repository: file://../tmc-low
 - name: ska-low-mccs
   version: 0.3.0
+  repository: https://nexus.engageska-portugal.pt/repository/helm-chart
+- name: tango-util
+  version: 0.2.7
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
