@@ -14,9 +14,9 @@ maintainers:
     email: kalyanit.ska@gmail.com
 dependencies:
 - name: tango-base
-  version: 0.2.8
+  version: 0.2.10
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
   condition: tango-base.enabled,global.sub-system.tango-base.enabled
 - name: tango-util
-  version: 0.2.5
+  version: 0.2.7
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
