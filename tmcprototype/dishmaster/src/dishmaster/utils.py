@@ -1,6 +1,5 @@
 import pkg_resources
 import logging
-import sys
 
 from tango_simlib.tango_sim_generator import configure_device_model, get_tango_device_server
 from ska.logging import configure_logging
