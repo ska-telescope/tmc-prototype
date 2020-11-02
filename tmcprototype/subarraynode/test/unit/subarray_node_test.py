@@ -1307,11 +1307,8 @@ def test_end_command_subarray_when_in_invalid_state():
         with pytest.raises(tango.DevFailed) as df:
             tango_context.device.End()
         assert "Error executing command EndCommand" in str(df)
-        # assert tango_context.device.obsState == ObsState.IDLE
-        # assert tango_context.device.activityMessage == const.ERR_DEVICE_NOT_READY
+       
 
-
-# @pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
 def test_abort_should_command_subarray_to_abort_when_it_is_configuring(mock_lower_devices):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
@@ -1341,9 +1338,7 @@ def test_abort_should_command_subarray_to_abort_when_it_is_configuring(mock_lowe
     tango_context.device.Configure(configure_str)
     assert tango_context.device.obsState == ObsState.CONFIGURING
 
-    assert tango_context.device.Abort() == [[ResultCode.STARTED], ['Abort command invoked successfully on SDP Subarray '
-                                                                   'Leaf Node and CSP Subarray Leaf Node and Dish Leaf Node.']]
-
+    tango_context.device.Abort()
     wait_for(tango_context, ObsState.ABORTING)
     assert tango_context.device.obsState == ObsState.ABORTING
     attribute = 'ObsState'
@@ -1359,7 +1354,6 @@ def test_abort_should_command_subarray_to_abort_when_it_is_configuring(mock_lowe
     dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
     sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ABORT)
     csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ABORT)
-    #dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ABORT)
     assert tango_context.device.obsState == ObsState.ABORTED
 
 
@@ -1401,7 +1395,6 @@ def test_abort_should_command_subarray_to_abort_scan_when_it_is_idle(mock_lower_
     dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
     sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ABORT)
     csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ABORT)
-    #dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ABORT)
     wait_for(tango_context, ObsState.ABORTED)
     assert tango_context.device.obsState == ObsState.ABORTED
 
@@ -1457,7 +1450,6 @@ def test_abort_should_command_subarray_to_abort_when_it_is_READY(mock_lower_devi
     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
     sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ABORT)
     csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ABORT)
-    #dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ABORT)
     assert tango_context.device.obsState == ObsState.ABORTED
 
 
@@ -1537,7 +1529,6 @@ def test_abort_should_command_subarray_to_abort_when_it_is_scanning(mock_lower_d
     dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
     sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ABORT)
     csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ABORT)
-    #dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_ABORT)
     assert tango_context.device.obsState == ObsState.ABORTED
 
 
