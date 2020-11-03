@@ -1050,6 +1050,8 @@ def test_end_should_command_subarray_to_end_when_it_is_ready(mock_lower_devices_
     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
     sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
     dish_pointing_state_attribute = "dishPointingState"
+
+    tango_group.command_inout.side_effect = group_command_method
     
     tango_context.device.On()
     tango_context.device.AssignResources(assign_input_str)
@@ -1097,7 +1099,7 @@ def test_end_should_command_subarray_to_end_when_it_is_ready(mock_lower_devices_
 
     # assert tango_context.device.End() == [[ResultCode.OK], ['EndSB command invoked successfully on SDP Subarray Leaf '
     #                                                         'Node and CSP Subarray Leaf Node.']]
-    tango_group.command_inout.side_effect = group_command_method
+    # tango_group.command_inout.side_effect = group_command_method
     tango_context.device.End()
     wait_for(tango_context, ObsState.IDLE)
     assert tango_context.device.obsState == ObsState.IDLE
