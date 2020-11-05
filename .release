@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name = """tmcprototype"""
-version = "9.9.9"
+version = "9.9.1"
 version_info = version.split(".")
 description = """TMC Prototype"""
 author = "apurva.ska"
@@ -10,8 +10,8 @@ license = """BSD-3-Clause"""
 url = """https://www.skatelescope.org"""
 copyright = """"""
 
-release=9.9.9
-tag=9.9.9
+release=9.9.1
+tag=9.9.1
 tag_description=Update TMC MID and LOW to utilise LMC Base Classes 0.7.1
 release_notes=This release Contains: <br/><ul><li>Updated TMC MID and LOW to use 0.7.1 version of LMC Base Classes.</li><li>Includes work related to the technical debt items.</li></ul><br/>
 gitlab_username=JayantKumbhar

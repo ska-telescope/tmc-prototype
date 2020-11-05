@@ -121,14 +121,14 @@ function createGitTag(){
 function getSha(){
   tag=$(awk -F= '/^tag=/{print $2}' .release)
   images="$(docker images --format {{.Repository}}:{{.Tag}}:{{.Digest}})"
-  sha=$(docker images --format {{.Repository}}_{{.Tag}}_{{.Digest}} | grep tmcprototype | grep $tag | awk -F_ '/nexus.engageska-portugal.pt/tango-example/tmcprototype_$tag_ {print $3}')
+  sha=$(docker images --format {{.Repository}}_{{.Tag}}_{{.Digest}} | grep tmcprototype | grep $tag | awk -F_ '/nexus.engageska-portugal.pt/ska-telescope/tmcprototype_$tag_ {print $3}')
   echo $sha
 }
 
 # Delete docker image from nexus repo using sha
 function deleteImageFromNexus(){
   sha=$(getSha)
-  result=$(curl -X "DELETE" -u $RAW_USER:$RAW_PASS https://nexus.engageska-portugal.pt/v2/ska-docker/tmcprototype/manifests/"$sha" --verbose)
+  result=$(curl -X "DELETE" -u $RAW_USER:$RAW_PASS https://nexus.engageska-portugal.pt/v2/ska-telescope/tmcprototype/manifests/"$sha" --verbose)
 }
 
 # Publish tag. (If there is error while publishing tag, docker image with same tag will be deleted.)

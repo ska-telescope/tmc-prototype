@@ -34,7 +34,7 @@ itango:
 
 tmcprototype:
   image:
-    registry: nexus.engageska-portugal.pt/tango-example
+    registry: nexus.engageska-portugal.pt/ska-telescope
     image: tmcprototype
     tag: 0.2.11
     pullPolicy: IfNotPresent
@@ -303,7 +303,7 @@ deviceServers:
     depends_on:
       - device: sys/database/2
     image:
-      registry: nexus.engageska-portugal.pt/tango-example
+      registry: nexus.engageska-portugal.pt/ska-telescope
       image: tmalarmhandler
       tag: latest
       pullPolicy: Always
