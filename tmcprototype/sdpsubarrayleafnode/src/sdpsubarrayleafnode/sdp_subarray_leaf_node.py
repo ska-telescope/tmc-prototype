@@ -474,6 +474,16 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :raises: Exception if command execution throws any type of exception
 
             """
+            device = self.target
+            try:
+                sdp_subarray_obs_state = device._sdp_subarray_proxy.obsState
+                assert (device._sdp_subarray_proxy.obsState in (ObsState.IDLE, ObsState.READY))
+            except AssertionError as assert_error:
+			    self.logger.exception(assert_error)
+                tango.Except.throw_exception(const.STR_CONFIG_EXEC, log_msg,
+                                             "SdpSubarrayLeafNode.ConfigureCommand()",
+                                             tango.ErrSeverity.ERR)
+
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Configure() is not allowed in current state",
                                              "Failed to invoke Configure command on SdpSubarrayLeafNode.",
