@@ -395,10 +395,11 @@ def test_end_device_not_ready():
 
 def test_endscan_invalid_state():
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        tango_context.device.EndScan()
-        assert const.ERR_DEVICE_NOT_IN_SCAN in tango_context.device.activityMessage
-
-
+        with pytest.raises(tango.DevFailed) as df:
+            tango_context.device.EndScan()
+        # assert const.ERR_DEVICE_NOT_IN_SCAN in tango_context.device.activityMessage
+        assert const.ERR_DEVICE_NOT_IN_SCAN in str(df.value)
+ 
 @contextlib.contextmanager
 def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
                       device_proxy_import_path='tango.DeviceProxy'):

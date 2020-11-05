@@ -490,7 +490,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 assert (device._sdp_subarray_proxy.obsState in (ObsState.IDLE, ObsState.READY))
             except AssertionError as assert_error:
                 self.logger.exception(assert_error)
-                tango.Except.throw_exception(const.STR_CONFIG_EXEC, log_msg,
+                tango.Except.throw_exception(const.STR_CONFIG_EXEC, "Failed to invoke Configure command on SdpSubarrayLeafNode.",
                                              "SdpSubarrayLeafNode.ConfigureCommand()",
                                              tango.ErrSeverity.ERR)
 
@@ -844,6 +844,16 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :raises: Exception if command execution throws any type of exception.
 
             """
+            device = self.target
+            try:
+                sdp_subarray_obs_state = device._sdp_subarray_proxy.obsState
+                assert sdp_subarray_obs_state == ObsState.READY
+            except AssertionError as assert_error:
+                self.logger.exception(assert_error)
+                tango.Except.throw_exception(const.STR_END_EXEC, "Failed to invoke End command on SdpSubarrayLeafNode.",
+                                             "SdpSubarrayLeafNode.EndCommand()",
+                                             tango.ErrSeverity.ERR)
+
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("End() is not allowed in current state",
                                              "Failed to invoke End command on SdpSubarrayLeafNode.",
