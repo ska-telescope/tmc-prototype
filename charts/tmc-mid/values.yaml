@@ -36,7 +36,7 @@ tmcprototype:
   image:
     registry: nexus.engageska-portugal.pt/tango-example
     image: tmcprototype
-    tag: 0.2.11
+    tag: 0.2.13
     pullPolicy: IfNotPresent
 
 resources:
