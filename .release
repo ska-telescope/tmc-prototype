@@ -14,7 +14,7 @@ release=9.9.9
 tag=9.9.9
 tag_description=Update TMC MID and LOW to utilise LMC Base Classes 0.7.1
 release_notes=This release Contains: <br/><ul><li>Updated TMC MID and LOW to use 0.7.1 version of LMC Base Classes.</li><li>Includes work related to the technical debt items.</li></ul><br/>
-gitlab_username=apurvapatkar
-private_token=UUrxvA9bfSzMMy3VrpCn
+gitlab_username=JayantKumbhar
+private_token=3DUtKbUKw6py335qH3-b
 
 
