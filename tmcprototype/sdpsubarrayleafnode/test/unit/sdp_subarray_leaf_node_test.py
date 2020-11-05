@@ -387,8 +387,10 @@ def test_scan_device_not_ready():
 
 def test_end_device_not_ready():
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        tango_context.device.End()
-        assert tango_context.device.activityMessage == const.ERR_DEVICE_NOT_READY
+        with pytest.raises(tango.DevFailed) as df:
+            tango_context.device.End()
+        # assert tango_context.device.activityMessage == const.ERR_DEVICE_NOT_READY
+        assert const.ERR_DEVICE_NOT_READY in str(df.value)
 
 
 def test_endscan_invalid_state():
