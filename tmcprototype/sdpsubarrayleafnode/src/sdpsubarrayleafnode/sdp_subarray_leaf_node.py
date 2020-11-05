@@ -642,20 +642,36 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :raises: DevFailed if the command execution is not successful.
             """
             device = self.target
+            # try:
+            #     sdp_subarray_obs_state = device._sdp_subarray_proxy.obsState
+            #     # Check if SDP Subarray obsState is READY
+            #     if sdp_subarray_obs_state == ObsState.READY:
+            #         log_msg = "Input JSON for SDP Subarray Leaf Node Scan command is: " + argin
+            #         self.logger.debug(log_msg)
+            #         device._sdp_subarray_proxy.command_inout_asynch(const.CMD_SCAN, argin,
+            #                                                         self.scan_cmd_ended_cb)
+            #         device._read_activity_message = const.STR_SCAN_SUCCESS
+            #         self.logger.info(const.STR_SCAN_SUCCESS)
+            #         return(ResultCode.OK, const.STR_SCAN_SUCCESS)
+            #     else:
+            #         device._read_activity_message = const.ERR_DEVICE_NOT_READY
+            #         self.logger.error(const.ERR_DEVICE_NOT_READY)
+
             try:
-                sdp_subarray_obs_state = device._sdp_subarray_proxy.obsState
-                # Check if SDP Subarray obsState is READY
-                if sdp_subarray_obs_state == ObsState.READY:
-                    log_msg = "Input JSON for SDP Subarray Leaf Node Scan command is: " + argin
-                    self.logger.debug(log_msg)
-                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_SCAN, argin,
+                assert device._sdp_subarray_proxy.obsState == ObsState.READY:
+        	    log_msg = "Input JSON for SDP Subarray Leaf Node Scan command is: " + argin
+                self.logger.debug(log_msg)
+                device._sdp_subarray_proxy.command_inout_asynch(const.CMD_SCAN, argin,
                                                                     self.scan_cmd_ended_cb)
-                    device._read_activity_message = const.STR_SCAN_SUCCESS
-                    self.logger.info(const.STR_SCAN_SUCCESS)
-                    return(ResultCode.OK, const.STR_SCAN_SUCCESS)
-                else:
-                    device._read_activity_message = const.ERR_DEVICE_NOT_READY
-                    self.logger.error(const.ERR_DEVICE_NOT_READY)
+                device._read_activity_message = const.STR_SCAN_SUCCESS
+                self.logger.info(const.STR_SCAN_SUCCESS)
+                    
+            except AssertionError as assertion_error:
+                device._read_activity_message = const.ERR_DEVICE_NOT_READY
+                self.logger.error(assertion_error)
+		        tango.Except.throw_exception(const.STR_SCAN_EXEC, log_msg,
+                                             "SdpSubarrayLeafNode.ScanCommand()",
+                                             tango.ErrSeverity.ERR)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_SCAN + str(dev_failed)
