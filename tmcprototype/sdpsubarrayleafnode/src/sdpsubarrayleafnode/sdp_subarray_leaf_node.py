@@ -658,7 +658,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             #         self.logger.error(const.ERR_DEVICE_NOT_READY)
 
             try:
-                assert device._sdp_subarray_proxy.obsState == ObsState.READY:
+                assert device._sdp_subarray_proxy.obsState == ObsState.READY
                 log_msg = "Input JSON for SDP Subarray Leaf Node Scan command is: " + argin
                 self.logger.debug(log_msg)
                 device._sdp_subarray_proxy.command_inout_asynch(const.CMD_SCAN, argin,

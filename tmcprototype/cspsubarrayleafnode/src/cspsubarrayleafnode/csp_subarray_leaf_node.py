@@ -626,7 +626,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                assert device._csp_subarray_proxy.obsState == ObsState.READY:
+                assert device._csp_subarray_proxy.obsState == ObsState.READY
                 device._csp_subarray_proxy.command_inout_asynch(const.CMD_STARTSCAN, "0",
                                                              self.startscan_cmd_ended_cb)
                 device._read_activity_message = const.STR_STARTSCAN_SUCCESS
