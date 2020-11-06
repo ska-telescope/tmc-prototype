@@ -11,6 +11,7 @@ from mock import Mock, MagicMock
 from os.path import dirname, join
 import threading
 import re
+import time
 
 # Tango imports
 import tango
@@ -1656,7 +1657,8 @@ def test_restart_should_command_subarray_to_restart_when_it_is_aborted(mock_lowe
                                                attribute, ObsState.ABORTED)
     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
 
-    wait_for(tango_context, ObsState.ABORTED)
+    #wait_for(tango_context, ObsState.ABORTED)
+    time.sleep(10)
     assert tango_context.device.obsState == ObsState.ABORTED
 
     # print("Before Restart Command")
