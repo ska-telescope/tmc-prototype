@@ -946,6 +946,17 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :raises: DevFailed if this command is not allowed to be run in current device state
 
             """
+            device = self.target
+            try:
+                assert device._sdp_subarray_proxy.obsState in (ObsState.READY, ObsState.CONFIGURING,
+                                                           ObsState.SCANNING,
+                                                           ObsState.IDLE, ObsState.RESETTING)
+            except AssertionError as assert_error:
+                self.logger.exception(assert_error)
+                tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_IDLE_CONFIG_SCAN_RESET, "Failed to invoke Abort command on SdpSubarrayLeafNode." ,
+                                             "SdpSubarrayLeafNode.AbortCommand()",
+                                             tango.ErrSeverity.ERR)
+
             if self.state_model.op_state in [
                 DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
             ]:
@@ -998,17 +1009,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                if device._sdp_subarray_proxy.obsState in [ObsState.READY, ObsState.CONFIGURING,
-                                                           ObsState.SCANNING,
-                                                           ObsState.IDLE, ObsState.RESETTING]:
-                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ABORT, self.abort_cmd_ended_cb)
-                    device._read_activity_message = const.STR_ABORT_SUCCESS
-                    self.logger.info(const.STR_ABORT_SUCCESS)
-
-                else:
-                    log_msg = ("Sdp Subarray is in ObsState {device._sdp_subarray_proxy.obsState.name}.""Unable to invoke Abort command")
-                    device._read_activity_message = log_msg
-                    self.logger.error(log_msg)
+                device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ABORT, self.abort_cmd_ended_cb)
+                device._read_activity_message = const.STR_ABORT_SUCCESS
+                self.logger.info(const.STR_ABORT_SUCCESS)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_ABORT_INVOKING_CMD + str(dev_failed)
