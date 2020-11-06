@@ -10,7 +10,7 @@
 """Release information for Python Package"""
 
 name = """centralnode"""
-version = "0.2.13"
+version = "0.2.14"
 version_info = version.split(".")
 description = """Central Node is a coordinator of the complete M&C system."""
 author = "Team NCRA"

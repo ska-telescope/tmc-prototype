@@ -10,7 +10,7 @@
 """Release information for Python Package"""
 
 name = """dishleafnode"""
-version = "0.2.13"
+version = "0.2.14"
 version_info = version.split(".")
 description = """A Leaf control node for DishMaster."""
 author = "Team NCRA"

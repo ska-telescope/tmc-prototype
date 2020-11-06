@@ -344,89 +344,89 @@ build DishMaster wheel for development: # Executed on a commit
     paths:
       - ./tmcprototype/dishmaster/dist/
 
-# unit tests:
-#   image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
-#   stage: unit-test
-#   tags:
-#     - docker-executor
-#   script:
-#     - make unit-test
-#   artifacts:
-#     paths:
-#       - ./build
+unit tests:
+  image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
+  stage: unit-test
+  tags:
+    - docker-executor
+  script:
+    - make unit-test
+  artifacts:
+    paths:
+      - ./build
 
-# test-mid:
-#   stage: test
-#   tags:
-#     - k8srunner
-#   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
-#   before_script:
-#     - kubectl get namespace
-#   script:
-#     - kubectl version
-#     - make clean
-#     - make install-chart MINIKUBE=false
-#     - make wait
-#     - make smoketest
-#     - make test MARK=mid && [ -f "build/report.xml" ]
-#   after_script:
-#     - make uninstall-chart
-#     - make clean
-#     - make delete_namespace-sdp
-#     - make delete_namespace
-#     - mkdir -p build
-#     - ls -la build
-#   environment:
-#     name: test
-#     kubernetes:
-#       namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA
-#   artifacts:
-#     name: "$CI_PROJECT_NAME-$CI_JOB_ID"
-#     paths:
-#       - build
-#     reports:
-#       junit: build/report.xml
+test-mid:
+  stage: test
+  tags:
+    - k8srunner
+  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
+  before_script:
+    - kubectl get namespace
+  script:
+    - kubectl version
+    - make clean
+    - make install-chart MINIKUBE=false
+    - make wait
+    - make smoketest
+    - make test MARK=mid && [ -f "build/report.xml" ]
+  after_script:
+    - make uninstall-chart
+    - make clean
+    - make delete_namespace-sdp
+    - make delete_namespace
+    - mkdir -p build
+    - ls -la build
+  environment:
+    name: test
+    kubernetes:
+      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA
+  artifacts:
+    name: "$CI_PROJECT_NAME-$CI_JOB_ID"
+    paths:
+      - build
+    reports:
+      junit: build/report.xml
 
-# test-low:
-#   stage: test
-#   tags:
-#     - k8srunner
-#   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
-#   script:
-#     - kubectl version
-#     - make install-chart MINIKUBE=false HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
-#     - make wait
-#     - make smoketest
-#     - make test MARK=low && [ -f "build/report.xml" ]
-#   after_script:
-#     - make uninstall-chart HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
-#     - make clean
-#     - make delete_namespace-sdp
-#     - make delete_namespace
-#     - mkdir -p build
-#     - ls -la build
-#   environment:
-#     name: test
-#     kubernetes:
-#       namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-low
-#   artifacts:
-#     name: "$CI_PROJECT_NAME-$CI_JOB_ID"
-#     paths:
-#       - build
-#     reports:
-#       junit: build/report.xml
+test-low:
+  stage: test
+  tags:
+    - k8srunner
+  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
+  script:
+    - kubectl version
+    - make install-chart MINIKUBE=false HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
+    - make wait
+    - make smoketest
+    - make test MARK=low && [ -f "build/report.xml" ]
+  after_script:
+    - make uninstall-chart HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
+    - make clean
+    - make delete_namespace-sdp
+    - make delete_namespace
+    - mkdir -p build
+    - ls -la build
+  environment:
+    name: test
+    kubernetes:
+      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-low
+  artifacts:
+    name: "$CI_PROJECT_NAME-$CI_JOB_ID"
+    paths:
+      - build
+    reports:
+      junit: build/report.xml
 
-# linting:
-#   stage: linting
-#   image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
-#   tags:
-#     - docker-executor
-#   script:
-#     - make lint
-#   allow_failure: true
-#   artifacts:
-#     paths:
-#       - ./build
+linting:
+  stage: linting
+  image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
+  tags:
+    - docker-executor
+  script:
+    - make lint
+  allow_failure: true
+  artifacts:
+    paths:
+      - ./build
 
 publish to nexus:
   stage: publish
@@ -492,9 +492,9 @@ release tmc:
   script:
     - make release-tmc-prototype USERNAME=$GITLAB_USER_NAME EMAILID=$GITLAB_USER_EMAIL # Publish tag on the gitlab and tagged image on Nexus
   when: manual
-  # only:
-  #   refs:
-  #     - master
+  only:
+    refs:
+      - master
 
 
 # Standardised included jobs

@@ -10,7 +10,7 @@
 """Release information for Python Package"""
 
 name = """dishmaster"""
-version = "0.2.13"
+version = "0.2.14"
 version_info = version.split(".")
 description = """SKA Dish Master TANGO device server"""
 author = "apurva.ska"

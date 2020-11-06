@@ -10,7 +10,7 @@
 """Release information for Python Package"""
 
 name = """mccsmasterleafnode"""
-version = "0.2.13"
+version = "0.2.14"
 version_info = version.split(".")
 description = """MCCS Master Leaf Node monitors and controls the MCCS Master device."""
 author = "Team NCRA"
