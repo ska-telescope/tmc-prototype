@@ -949,8 +949,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             device = self.target
             try:
                 assert device._sdp_subarray_proxy.obsState in (ObsState.READY, ObsState.CONFIGURING,
-                                                           ObsState.SCANNING,
-                                                           ObsState.IDLE, ObsState.RESETTING)
+                                                           ObsState.SCANNING, ObsState.IDLE, ObsState.RESETTING)
             except AssertionError as assert_error:
                 self.logger.exception(assert_error)
                 tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_IDLE_CONFIG_SCAN_RESET, "Failed to invoke Abort command on SdpSubarrayLeafNode." ,
@@ -1061,6 +1060,15 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :raises: DevFailed if this command is not allowed to be run in current device state
 
             """
+            device = self.target
+            try:
+                assert device._sdp_subarray_proxy.obsState in (ObsState.ABORTED, ObsState.FAULT)
+            except AssertionError as assert_error:
+                self.logger.exception(assert_error)
+                tango.Except.throw_exception(const.ERR_DEVICE_NOT_ABORTED_FAULT, "Failed to invoke Restart command on SdpSubarrayLeafNode.",
+                                             "SdpSubarrayLeafNode.RestartCommand()",
+                                             tango.ErrSeverity.ERR)
+
             if self.state_model.op_state in [
                 DevState.UNKNOWN, DevState.DISABLE,
             ]:
@@ -1114,17 +1122,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                if device._sdp_subarray_proxy.obsState in [ObsState.ABORTED, ObsState.FAULT]:
-                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESTART,
-                                                                    self.restart_cmd_ended_cb)
-                    device._read_activity_message = const.STR_RESTART_SUCCESS
-                    self.logger.info(const.STR_RESTART_SUCCESS)
-
-                else:
-                    log_msg = "Sdp Subarray is in ObsState " + str(device._sdp_subarray_proxy.obsState) + \
-                              ". Unable to invoke Restart command."
-                    device._read_activity_message = log_msg
-                    self.logger.error(log_msg)
+                device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RESTART,
+                                                                self.restart_cmd_ended_cb)
+                device._read_activity_message = const.STR_RESTART_SUCCESS
+                self.logger.info(const.STR_RESTART_SUCCESS)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_RESTART_INVOKING_CMD + str(dev_failed)
@@ -1174,6 +1175,15 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :raises: DevFailed if this command is not allowed to be run in current device state
 
             """
+            device = self.target
+            try:
+                assert device._sdp_subarray_proxy.obsState in (ObsState.ABORTED, ObsState.FAULT)
+            except AssertionError as assert_error:
+                self.logger.exception(assert_error)
+                tango.Except.throw_exception(const.ERR_DEVICE_NOT_ABORTED_FAULT, "Failed to invoke ObsReset command on SdpSubarrayLeafNode.",
+                                             "SdpSubarrayLeafNode.ObsResetCommand()",
+                                             tango.ErrSeverity.ERR)
+
             if self.state_model.op_state in [
                 DevState.UNKNOWN, DevState.DISABLE,
             ]:
@@ -1229,16 +1239,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                if device._sdp_subarray_proxy.obsState in [ObsState.ABORTED, ObsState.FAULT]:
-                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_OBSRESET,
-                                                                    self.obsreset_cmd_ended_cb)
-                    device._read_activity_message = const.STR_OBSRESET_SUCCESS
-                    self.logger.info(const.STR_OBSRESET_SUCCESS)
-
-                else:
-                    log_msg = "Sdp Subarray is in ObsState {} . Unable to invoke ObsReset command".format(str(device._sdp_subarray_proxy.obsState))
-                    device._read_activity_message = log_msg
-                    self.logger.error(log_msg)
+                device._sdp_subarray_proxy.command_inout_asynch(const.CMD_OBSRESET,
+                                                                self.obsreset_cmd_ended_cb)
+                device._read_activity_message = const.STR_OBSRESET_SUCCESS
+                self.logger.info(const.STR_OBSRESET_SUCCESS)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_OBSRESET_INVOKING_CMD + str(dev_failed)
