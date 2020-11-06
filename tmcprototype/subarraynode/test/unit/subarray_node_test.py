@@ -1632,7 +1632,6 @@ def test_restart_should_command_subarray_to_restart_when_it_is_aborted(mock_lowe
     dish_pointing_state_attribute = "dishPointingState"
     tango_group.command_inout.side_effect = group_command_method
 
-    print("Before On Command")
     tango_context.device.On()
     tango_context.device.AssignResources(assign_input_str)
     attribute = 'ObsState'
@@ -1664,10 +1663,9 @@ def test_restart_should_command_subarray_to_restart_when_it_is_aborted(mock_lowe
     wait_for(tango_context, ObsState.ABORTED)
     assert tango_context.device.obsState == ObsState.ABORTED
 
-    # print("Before Restart Command")
-    # assert tango_context.device.Restart() == [[ResultCode.STARTED], ['Restart command invoked successfully on SDP'
-    #                                                                ' Subarray Leaf Node, CSP Subarray Leaf Node and Dish Leaf Node.']]
-    #
+    assert tango_context.device.Restart() == [[ResultCode.STARTED], ['Restart command invoked successfully on SDP'
+                                                                   ' Subarray Leaf Node, CSP Subarray Leaf Node and Dish Leaf Node.']]
+
     # attribute = 'ObsState'
     # dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
     #                                            attribute, ObsState.RESTARTING)
