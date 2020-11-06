@@ -1409,14 +1409,16 @@ def test_abort_should_command_subarray_to_abort_scan_when_it_is_idle(mock_lower_
 
 
 # @pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
-@pytest.mark.skip()
-def test_abort_should_command_subarray_to_abort_when_it_is_READY(mock_lower_devices):
-    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
+#@pytest.mark.skip()
+def test_abort_should_command_subarray_to_abort_when_it_is_READY(mock_lower_devices_group):
+    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map tango_group = mock_lower_devices_group
     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
     sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
     dish_pointing_state_attribute = "dishPointingState"
-    tango_context.device.On()
 
+    tango_group.command_inout.side_effect = group_command_method
+
+    tango_context.device.On()
     tango_context.device.AssignResources(assign_input_str)
     attribute = 'ObsState'
     dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
