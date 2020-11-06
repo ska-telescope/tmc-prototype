@@ -206,8 +206,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                sdp_subarray_obs_state = device._sdp_subarray_proxy.obsState
-                assert sdp_subarray_obs_state == ObsState.IDLE
+                assert device._sdp_subarray_proxy.obsState == ObsState.IDLE
             except AssertionError as assert_error:
                 self.logger.exception(assert_error)
                 tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, "Failed to invoke ReleaseAllResources command on "

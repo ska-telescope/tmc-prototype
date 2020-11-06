@@ -297,7 +297,6 @@ def test_command_should_failed_when_device_is_not_in_required_obstate(mock_sdp_s
     sdp_subarray1_proxy_mock.obsState = obs_state
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name)
-    # assert "Unable to invoke " + cmd_name in device_proxy.activityMessage
     assert "Failed to invoke " + cmd_name in str(df.value)
 
 
@@ -389,14 +388,12 @@ def test_scan_device_not_ready():
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         with pytest.raises(tango.DevFailed) as df:
             tango_context.device.Scan(scan_input_str)
-        # assert const.ERR_DEVICE_NOT_READY in tango_context.device.activityMessage
         assert const.ERR_DEVICE_NOT_READY in str(df.value)
 
 def test_end_device_not_ready():
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         with pytest.raises(tango.DevFailed) as df:
             tango_context.device.End()
-        # assert tango_context.device.activityMessage == const.ERR_DEVICE_NOT_READY
         assert const.ERR_DEVICE_NOT_READY in str(df.value)
 
 
@@ -404,7 +401,6 @@ def test_endscan_invalid_state():
     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
         with pytest.raises(tango.DevFailed) as df:
             tango_context.device.EndScan()
-        # assert const.ERR_DEVICE_NOT_IN_SCAN in tango_context.device.activityMessage
         assert const.ERR_DEVICE_NOT_IN_SCAN in str(df.value)
  
 @contextlib.contextmanager
