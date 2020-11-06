@@ -127,6 +127,7 @@ def test_off_command_should_raise_dev_failed(mock_sdp_subarray):
     params=[
         ("Scan", scan_input_str, const.CMD_SCAN, ObsState.READY,"scan_cmd_ended_cb", const.ERR_SCAN),
         ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.READY,"configure_cmd_ended_cb", const.ERR_CONFIGURE),
+        ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.IDLE,"configure_cmd_ended_cb", const.ERR_CONFIGURE),
         ("AssignResources", assign_input_str, const.CMD_ASSIGN_RESOURCES, ObsState.EMPTY,"AssignResources_ended", const.ERR_ASSGN_RESOURCES),
     ])
 
