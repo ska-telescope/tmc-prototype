@@ -1409,7 +1409,7 @@ def test_abort_should_command_subarray_to_abort_scan_when_it_is_idle(mock_lower_
 
 
 # @pytest.mark.xfail(reason="Enable test case once tango group command issue gets resolved")
-#@pytest.mark.skip()
+@pytest.mark.skip()
 def test_abort_should_command_subarray_to_abort_when_it_is_READY(mock_lower_devices_group):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map, tango_group = mock_lower_devices_group
     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
@@ -1632,6 +1632,7 @@ def test_restart_should_command_subarray_to_restart_when_it_is_aborted(mock_lowe
     dish_pointing_state_attribute = "dishPointingState"
     tango_group.command_inout.side_effect = group_command_method
 
+    print("Before On Command")
     tango_context.device.On()
     tango_context.device.AssignResources(assign_input_str)
     attribute = 'ObsState'
@@ -1642,6 +1643,8 @@ def test_restart_should_command_subarray_to_restart_when_it_is_aborted(mock_lowe
     dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
                                                attribute, ObsState.IDLE)
     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
+
+    print("Before Abort command")
     tango_context.device.Abort()
     wait_for(tango_context, ObsState.ABORTING)
     assert tango_context.device.obsState == ObsState.ABORTING
@@ -1656,6 +1659,8 @@ def test_restart_should_command_subarray_to_restart_when_it_is_aborted(mock_lowe
 
     wait_for(tango_context, ObsState.ABORTED)
     assert tango_context.device.obsState == ObsState.ABORTED
+
+    print("Before Restart Command")
     assert tango_context.device.Restart() == [[ResultCode.STARTED], ['Restart command invoked successfully on SDP'
                                                                    ' Subarray Leaf Node, CSP Subarray Leaf Node and Dish Leaf Node.']]
 
