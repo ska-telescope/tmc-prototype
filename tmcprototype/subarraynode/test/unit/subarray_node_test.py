@@ -1052,7 +1052,7 @@ def test_end_should_command_subarray_to_end_when_it_is_ready(mock_lower_devices_
     dish_pointing_state_attribute = "dishPointingState"
 
     tango_group.command_inout.side_effect = group_command_method
-    
+
     tango_context.device.On()
     tango_context.device.AssignResources(assign_input_str)
     attribute = 'ObsState'
@@ -1961,13 +1961,13 @@ def command_callback_with_devfailed_exception():
 #     device_test_context.stop()
 
 @contextlib.contextmanager
-def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},group_to_mock = None,
+def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={}, group_to_mock={},
                       device_proxy_import_path='tango.DeviceProxy',device_group_import_path='tango.Group'):
 
     with mock.patch(device_proxy_import_path) as patched_constructor:
         with mock.patch(device_group_import_path) as group_constructor:
             patched_constructor.side_effect = lambda device_fqdn: proxies_to_mock.get(device_fqdn, Mock())
-            group_constructor.side_effect = lambda group_to_mock: Mock()
+            group_constructor.side_effect = lambda group_mock : group_to_mock.get(group, Mock()) #group_to_mock: Mock()
             patched_module = importlib.reload(sys.modules[device_under_test.__module__])
 
     device_under_test = getattr(patched_module, device_under_test.__name__)
