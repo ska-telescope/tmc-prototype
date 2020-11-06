@@ -11,7 +11,6 @@ from mock import Mock, MagicMock
 from os.path import dirname, join
 import threading
 import re
-import time
 
 # Tango imports
 import tango
@@ -1657,8 +1656,12 @@ def test_restart_should_command_subarray_to_restart_when_it_is_aborted(mock_lowe
                                                attribute, ObsState.ABORTED)
     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
 
-    #wait_for(tango_context, ObsState.ABORTED)
-    time.sleep(10)
+    attribute = 'PointingState'
+    dummy_event_dish = create_dummy_event_state(dish_ln_proxy_mock, dish_ln_prefix + "0001", attribute,
+                                                PointingState.READY)
+    dish_pointing_state_map[dish_pointing_state_attribute](dummy_event_dish)
+
+    wait_for(tango_context, ObsState.ABORTED)
     assert tango_context.device.obsState == ObsState.ABORTED
 
     # print("Before Restart Command")
