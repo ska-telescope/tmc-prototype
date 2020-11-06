@@ -14,8 +14,8 @@ version = "0.2.13"
 version_info = version.split(".")
 description = """Provides the monitoring and control interface required by users as well as
 other TM Components (such as OET, Central Node) for a SKA Low Subarray."""
-author = "Digvijay Mali"
-author_email = "digvijay.ska at gmail.com"
+author = "Team NCRA"
+author_email = "telmgt-internal@googlegroups.com"
 license = """BSD-3-Clause"""
 url = """https://www.skatelescope.org"""
 copyright = """"""

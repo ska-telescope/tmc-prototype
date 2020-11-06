@@ -4,7 +4,7 @@
     <description description="Central Node is a coordinator of the complete M&amp;C system." title="CentralNode" sourcePath="/home/apurva/projects/tmc-prototype/tmcprototype/CentralNode" language="PythonHL" filestogenerate="XMI   file,Code files,Protected Regions" license="BSD-3-Clause" copyright="" hasMandatoryProperty="false" hasConcreteProperty="true" hasAbstractCommand="false" hasAbstractAttribute="false">
       <inheritances classname="Device_Impl" sourcePath=""/>
       <inheritances classname="SKABaseDevice" sourcePath="../../../lmc-base-classes/skabase/SKABaseDevice"/>
-      <identification contact="at gmail.com - apurva.ska" author="apurva.ska" emailDomain="gmail.com" classFamily="Training" siteSpecific="" platform="All Platforms" bus="Not Applicable" manufacturer="none" reference=""/>
+      <identification contact="telmgt-internal@googlegroups.com" author="Team NCRA" emailDomain="googlegroups.com" classFamily="Training" siteSpecific="" platform="All Platforms" bus="Not Applicable" manufacturer="none" reference=""/>
     </description>
     <deviceProperties name="SkaLevel" description="Indication of importance of the device in the SKA hierarchy &#xA;to support drill-down navigation: 1..6, with 1 highest.&#xA;Default is 4, making provision for &#xA;EltMaster, EltAlarms, EltTelState = 1&#xA;SubEltMaster = 2&#xA;Subarray, Capability = 2/3&#xA;Others = 4 (or 5 or 6)">
       <type xsi:type="pogoDsl:ShortType"/>
