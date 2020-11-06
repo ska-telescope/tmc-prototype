@@ -104,6 +104,7 @@ def test_off_should_command_with_callback_method_with_event_error(mock_sdp_subar
     event_subscription_without_arg[const.CMD_OFF](dummy_event)
     assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
 
+
 def test_on_command_should_raise_dev_failed(mock_sdp_subarray):
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
@@ -133,6 +134,7 @@ def command_with_arg(request):
     cmd_name, input_arg, requested_cmd, obs_state, callback_str, Error_msg = request.param
     return cmd_name, input_arg, requested_cmd, obs_state, callback_str, Error_msg
 
+
 def test_command_with_callback_method_with_arg(mock_sdp_subarray, event_subscription_with_arg, command_with_arg):
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     cmd_name, input_arg, requested_cmd, obs_state, _, _ = command_with_arg
@@ -142,6 +144,7 @@ def test_command_with_callback_method_with_arg(mock_sdp_subarray, event_subscrip
     event_subscription_with_arg[requested_cmd](dummy_event)
     assert const.STR_COMMAND + requested_cmd in device_proxy.activityMessage
 
+
 def test_command_with_callback_method_with_arg_with_event_error(mock_sdp_subarray, event_subscription_with_arg, command_with_arg):
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     cmd_name, input_arg, requested_cmd, obs_state, _, _ = command_with_arg
@@ -150,6 +153,7 @@ def test_command_with_callback_method_with_arg_with_event_error(mock_sdp_subarra
     dummy_event = command_callback(requested_cmd)
     event_subscription_with_arg[requested_cmd](dummy_event)
     assert const.STR_COMMAND + requested_cmd in device_proxy.activityMessage
+
 
 def test_command_for_allowed_Obstate_with_arg(mock_sdp_subarray, command_with_arg):
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray

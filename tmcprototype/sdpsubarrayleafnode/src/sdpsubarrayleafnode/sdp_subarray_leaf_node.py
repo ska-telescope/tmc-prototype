@@ -486,11 +486,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                sdp_subarray_obs_state = device._sdp_subarray_proxy.obsState
-                assert (device._sdp_subarray_proxy.obsState in (ObsState.IDLE, ObsState.READY))
+                assert device._sdp_subarray_proxy.obsState in (ObsState.IDLE, ObsState.READY)
             except AssertionError as assert_error:
                 self.logger.exception(assert_error)
-                tango.Except.throw_exception(const.STR_CONFIG_EXEC, "Failed to invoke Configure command on SdpSubarrayLeafNode.",
+                tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_IDLE, "Failed to invoke Configure command on SdpSubarrayLeafNode.",
                                              "SdpSubarrayLeafNode.ConfigureCommand()",
                                              tango.ErrSeverity.ERR)
 
@@ -609,8 +608,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                sdp_subarray_obs_state = device._sdp_subarray_proxy.obsState
-                assert sdp_subarray_obs_state == ObsState.READY
+                assert device._sdp_subarray_proxy.obsState == ObsState.READY
             except AssertionError as assert_error:
                 self.logger.exception(assert_error)
                 tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, "Failed to invoke Scan command on SdpSubarrayLeafNode.",
@@ -730,11 +728,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                sdp_subarray_obs_state = device._sdp_subarray_proxy.obsState
-                assert sdp_subarray_obs_state == ObsState.SCANNING
+                assert device._sdp_subarray_proxy.obsState == ObsState.SCANNING
             except AssertionError as assert_error:
                 self.logger.exception(assert_error)
-                tango.Except.throw_exception(const.STR_ENDSCAN_EXEC, "Failed to invoke EndScan command on SdpSubarrayLeafNode.",
+                tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_SCAN, "Failed to invoke EndScan command on SdpSubarrayLeafNode.",
                                              "SdpSubarrayLeafNode.EndScanCommand()",
                                              tango.ErrSeverity.ERR)
 
@@ -790,14 +787,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                if device._sdp_subarray_proxy.obsState == ObsState.SCANNING:
-                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ENDSCAN,
-                                                                    self.endscan_cmd_ended_cb)
-                    device._read_activity_message = const.STR_ENDSCAN_SUCCESS
-                    self.logger.info(const.STR_ENDSCAN_SUCCESS)
-                else:
-                    device._read_activity_message = const.ERR_DEVICE_NOT_IN_SCAN
-                    self.logger.error(const.ERR_DEVICE_NOT_IN_SCAN)
+                device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ENDSCAN,
+                                                                self.endscan_cmd_ended_cb)
+                device._read_activity_message = const.STR_ENDSCAN_SUCCESS
+                self.logger.info(const.STR_ENDSCAN_SUCCESS)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_ENDSCAN_INVOKING_CMD + str(dev_failed)
@@ -846,11 +839,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                sdp_subarray_obs_state = device._sdp_subarray_proxy.obsState
-                assert sdp_subarray_obs_state == ObsState.READY
+                assert device._sdp_subarray_proxy.obsState == ObsState.READY
             except AssertionError as assert_error:
                 self.logger.exception(assert_error)
-                tango.Except.throw_exception(const.STR_END_EXEC, "Failed to invoke End command on SdpSubarrayLeafNode.",
+                tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, "Failed to invoke End command on SdpSubarrayLeafNode.",
                                              "SdpSubarrayLeafNode.EndCommand()",
                                              tango.ErrSeverity.ERR)
 
@@ -904,13 +896,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                if device._sdp_subarray_proxy.obsState == ObsState.READY:
-                    device._sdp_subarray_proxy.command_inout_asynch(const.CMD_END, self.end_cmd_ended_cb)
-                    device._read_activity_message = const.STR_END_SUCCESS
-                    self.logger.info(const.STR_END_SUCCESS)
-                else:
-                    device._read_activity_message = const.ERR_DEVICE_NOT_READY
-                    self.logger.error(const.ERR_DEVICE_NOT_READY)
+                device._sdp_subarray_proxy.command_inout_asynch(const.CMD_END, self.end_cmd_ended_cb)
+                device._read_activity_message = const.STR_END_SUCCESS
+                self.logger.info(const.STR_END_SUCCESS)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_END_INVOKING_CMD + str(dev_failed)
