@@ -295,8 +295,10 @@ def test_command_should_failed_when_device_is_not_in_required_obstate(mock_sdp_s
     cmd_name, obs_state = command_should_not_allowed_in_obstate
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.obsState = obs_state
-    device_proxy.command_inout(cmd_name)
-    assert "Unable to invoke " + cmd_name in device_proxy.activityMessage
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.command_inout(cmd_name)
+    # assert "Unable to invoke " + cmd_name in device_proxy.activityMessage
+    assert "Unable to invoke " + cmd_name in str(df.value)
 
 
 def assert_activity_message(device_proxy, expected_message):
