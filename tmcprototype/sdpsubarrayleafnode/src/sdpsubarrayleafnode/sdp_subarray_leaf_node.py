@@ -24,7 +24,6 @@ from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
 from ska.base.commands import ResultCode, BaseCommand
 from . import const, release
-from .exceptions import InvalidObsStateError
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
 
 __all__ = ["SdpSubarrayLeafNode", "main"]
