@@ -262,6 +262,7 @@ def raise_devfailed_exception(*args):
 def test_assign_resources_should_raise_devfailed_for_invalid_obstate(mock_sdp_subarray):
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.obsState = ObsState.READY
+    device_proxy.On()
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.AssignResources(assign_input_str)
     assert const.ERR_DEVICE_NOT_EMPTY in str(df)
