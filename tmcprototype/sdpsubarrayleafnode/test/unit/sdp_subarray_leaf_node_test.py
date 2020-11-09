@@ -264,7 +264,7 @@ def test_assign_resources_should_raise_devfailed_for_invalid_obstate(mock_sdp_su
     sdp_subarray1_proxy_mock.obsState = ObsState.READY
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.AssignResources(assign_input_str)
-    assert "SDP subarray is not in EMPTY obstate." in str(df)
+    assert const.ERR_DEVICE_NOT_EMPTY in str(df)
 
 
 @pytest.fixture(
