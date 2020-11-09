@@ -212,7 +212,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                              "SdpSubarrayLeafNode.ReleaseAllResources()",
                                              tango.ErrSeverity.ERR)
           
-            if device._sdp_subarray_proxy.obsState != ObsState.IDLE
+            if device._sdp_subarray_proxy.obsState != ObsState.IDLE:
                 tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, "Failed to invoke ReleaseAllResources command on "
                                              "SdpSubarrayLeafNode.",
                                              "SdpSubarrayLeafNode.ReleaseAllResourcesCommand()",
