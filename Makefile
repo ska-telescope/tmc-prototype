@@ -10,7 +10,7 @@
 # DOCKER_REGISTRY_USER and PROJECT to give a final Docker tag of
 # nexus.engageska-portugal.pt/tmc-prototype/tmcprototype
 #
-DOCKER_REGISTRY_USER:=tango-example
+DOCKER_REGISTRY_USER:=ska-telescope
 PROJECT = tmcprototype
 
 # KUBE_NAMESPACE defines the Kubernetes Namespace that will be deployed to

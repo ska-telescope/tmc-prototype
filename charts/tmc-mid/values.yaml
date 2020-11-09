@@ -34,7 +34,7 @@ itango:
 
 tmcprototype:
   image:
-    registry: nexus.engageska-portugal.pt/tango-example
+    registry: nexus.engageska-portugal.pt/ska-telescope
     image: tmcprototype
     tag: 0.2.13
     pullPolicy: IfNotPresent

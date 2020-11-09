@@ -365,7 +365,7 @@ test-mid:
   script:
     - kubectl version
     - make clean
-    - make install-chart MINIKUBE=false 
+    - make install-chart MINIKUBE=false
     - make wait
     - make smoketest
     - make test MARK=mid && [ -f "build/report.xml" ]
