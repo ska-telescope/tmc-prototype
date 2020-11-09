@@ -1216,11 +1216,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                              "cspsubarrayleafnode.Abort()",
                                              tango.ErrSeverity.ERR)
 
-                if device._csp_subarray_proxy.obsState not in [ObsState.READY, ObsState.CONFIGURING, ObsState.SCANNING,
-                                                                ObsState.IDLE, ObsState.RESETTING]:
-                    tango.Except.throw_exception(const.ERR_UNABLE_ABORT_CMD, const.ERR_ABORT_INVOKING_CMD,
-                                             "CspSubarrayLeafNode.AbortCommand",
-                                             tango.ErrSeverity.ERR)
+            if device._csp_subarray_proxy.obsState not in [ObsState.READY, ObsState.CONFIGURING, ObsState.SCANNING,
+                                                            ObsState.IDLE, ObsState.RESETTING]:
+                tango.Except.throw_exception(const.ERR_UNABLE_ABORT_CMD, const.ERR_ABORT_INVOKING_CMD,
+                                         "CspSubarrayLeafNode.AbortCommand",
+                                         tango.ErrSeverity.ERR)
 
             return True
 
