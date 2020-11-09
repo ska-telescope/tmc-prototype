@@ -1644,7 +1644,6 @@ def test_restart_should_command_subarray_to_restart_when_it_is_Fault(mock_lower_
 
     sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RESTART)
     csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RESTART)
-    #dish_ln_proxy_mock.command_inout.side_effect = group_command_method
 
     assert tango_context.device.obsState == ObsState.EMPTY
 
@@ -1836,10 +1835,6 @@ def create_dummy_event_sdp_receiceAddresses(proxy_mock, device_fqdn, attribute, 
     fake_event.device = proxy_mock
     return fake_event
 
-def group_command_method(*args):
-    cmd_name = Mock()
-    return cmd_name
-
 
 def raise_devfailed_exception(*args):
     tango.Except.throw_exception("SubarrayNode_Commandfailed",
@@ -1867,21 +1862,6 @@ def command_callback_with_devfailed_exception():
                                  "From function test devfailed", tango.ErrSeverity.ERR)
     return fake_event
 
-
-# @contextlib.contextmanager
-# def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
-#                       device_proxy_import_path='tango.DeviceProxy'):
-
-#     with mock.patch(device_proxy_import_path) as patched_constructor:
-#         patched_constructor.side_effect = lambda device_fqdn: proxies_to_mock.get(device_fqdn, Mock())
-#         patched_module = importlib.reload(sys.modules[device_under_test.__module__])
-
-#     device_under_test = getattr(patched_module, device_under_test.__name__)
-
-#     device_test_context = DeviceTestContext(device_under_test, properties=initial_dut_properties)
-#     device_test_context.start()
-#     yield device_test_context
-#     device_test_context.stop()
 
 @contextlib.contextmanager
 def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={}, group_to_mock={},
