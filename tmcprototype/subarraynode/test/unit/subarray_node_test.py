@@ -15,8 +15,7 @@ import re
 # Tango imports
 import tango
 from tango import DevState, DeviceData, DevString, DevVarStringArray
-from tango.test_context import DeviceTestContext, MultiDeviceTestContext
-
+from tango.test_context import DeviceTestContext 
 # Additional import
 from subarraynode import SubarrayNode, const, ElementDeviceData, release
 from subarraynode.const import PointingState
@@ -1557,7 +1556,7 @@ def test_restart_should_command_subarray_to_restart_when_it_is_aborted(mock_lowe
 
     tango_context.device.Abort()
     wait_for(tango_context, ObsState.ABORTING)
-    assert tango_context.device.obsState == ObsState.ABORTING    # Till this no issues
+    assert tango_context.device.obsState == ObsState.ABORTING
     attribute = 'ObsState'
     dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
                                                attribute, ObsState.ABORTED)
@@ -1645,7 +1644,7 @@ def test_restart_should_command_subarray_to_restart_when_it_is_Fault(mock_lower_
 
     sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RESTART)
     csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_RESTART)
-    dish_ln_proxy_mock.command_inout.side_effect = group_command_method
+    #dish_ln_proxy_mock.command_inout.side_effect = group_command_method
 
     assert tango_context.device.obsState == ObsState.EMPTY
 
