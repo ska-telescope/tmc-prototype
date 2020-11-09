@@ -15,8 +15,8 @@ version_info = version.split(".")
 description = """ The primary responsibility of the SDP Subarray 
                   Leaf node is to monitor the SDP Subarray 
                   and issue control actions during an observation."""
-author = "Vinod Sathe"
-author_email = "vinodnsathe.ska at gmail.com"
+author = "Team NCRA"
+author_email = "telmgt-internal@googlegroups.com"
 license = """BSD-3-Clause"""
 url = """https://www.skatelescope.org"""
 copyright = """"""

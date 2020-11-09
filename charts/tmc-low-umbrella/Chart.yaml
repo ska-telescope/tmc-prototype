@@ -17,10 +17,10 @@ dependencies:
   version: 0.2.10
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: webjive
-  version: 1.0.3
+  version: 1.0.4
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: tmc-low
-  version: 0.1.4
+  version: 0.1.5
   repository: file://../tmc-low
 - name: ska-low-mccs
   version: 0.3.0

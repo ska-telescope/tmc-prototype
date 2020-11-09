@@ -10,7 +10,7 @@
 # DOCKER_REGISTRY_USER and PROJECT to give a final Docker tag of
 # nexus.engageska-portugal.pt/tmc-prototype/tmcprototype
 #
-DOCKER_REGISTRY_USER:=tango-example
+DOCKER_REGISTRY_USER:=ska-telescope
 PROJECT = tmcprototype
 
 # KUBE_NAMESPACE defines the Kubernetes Namespace that will be deployed to
@@ -65,7 +65,7 @@ DISPLAY := $(THIS_HOST):0
 
 # Test runner - run to completion job in K8s
 # name of the pod running the k8s_tests
-TEST_RUNNER = test-makefile-runner-$(CI_JOB_ID)-$(KUBE_NAMESPACE)-$(HELM_RELEASE)
+TEST_RUNNER = test-runner-$(CI_JOB_ID)-$(KUBE_NAMESPACE)-$(HELM_RELEASE)
 
 #
 # include makefile to pick up the standard Make targets, e.g., 'make build'
