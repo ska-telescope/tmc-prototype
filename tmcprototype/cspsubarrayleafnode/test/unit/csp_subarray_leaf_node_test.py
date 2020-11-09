@@ -364,7 +364,7 @@ def test_assign_resource_should_raise_exception_when_key_not_found(mock_csp_suba
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.AssignResources(assign_invalid_key)
-    assert const.ERR_INVALID_JSON_ASSIGN_RES in str(df)
+    assert const.ERR_JSON_KEY_NOT_FOUND in str(df)
 
 
 def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):
