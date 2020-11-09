@@ -1023,7 +1023,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 log_msg = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
                 device._read_activity_message = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
                 self.logger.exception(value_error)
-                tango.Except.throw_exception(const.STR_ASSIGN_RES_EXEC, log_msg,
+                tango.Except.throw_exception(const.ERR_INVALID_JSON_ASSIGN_RES, log_msg,
                                              "CspSubarrayLeafNode.AssignResourcesCommand",
                                              tango.ErrSeverity.ERR)
 
