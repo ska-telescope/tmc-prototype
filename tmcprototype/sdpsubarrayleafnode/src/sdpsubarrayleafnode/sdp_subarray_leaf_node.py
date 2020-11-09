@@ -1066,8 +1066,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                              "sdpsubarrayleafnode.Restart()",
                                              tango.ErrSeverity.ERR)
 
-            if device._sdp_subarray_proxy.obsState not in [ObsState.ABORTED, ObsState.FAULT]
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_ABORTED_FAULT, "Failed to invoke Restart command on SdpSubarrayLeafNode.",
+            if device._sdp_subarray_proxy.obsState not in [ObsState.ABORTED, ObsState.FAULT]:
+                tango.Except.throw_exception(const.ERR_DEVICE_NOT_ABORTED_FAULT, "Failed to invoke Restart command on SdpSubarrayLeafNode.",
                                             "SdpSubarrayLeafNode.RestartCommand()",
                                             tango.ErrSeverity.ERR)
             return True
