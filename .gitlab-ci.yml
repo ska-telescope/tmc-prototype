@@ -365,7 +365,7 @@ test-mid:
   script:
     - kubectl version
     - make clean
-    - make install-chart MINIKUBE=false 
+    - make install-chart MINIKUBE=false
     - make wait
     - make smoketest
     - make test MARK=mid && [ -f "build/report.xml" ]
@@ -477,6 +477,7 @@ pages:
     - mv public/reports/centralnode_htmlcov/* public
     - mv public/reports/subarraynodelow_htmlcov/* public
     - mv public/reports/centralnodelow_htmlcov/* public
+    - make build
     - make push
   artifacts:
     paths:
