@@ -1684,12 +1684,12 @@ def test_restart_should_command_subarray_to_restart_when_it_is_aborted(mock_lowe
     assert tango_context.device.obsState == ObsState.EMPTY
 
 
-def test_restart_should_command_subarray_to_restart_when_it_is_Fault(mock_lower_devices_group):
-    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map, tango_group = mock_lower_devices_group
+def test_restart_should_command_subarray_to_restart_when_it_is_Fault(mock_lower_devices):
+    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
     sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
     dish_pointing_state_attribute = "dishPointingState"
-    tango_group.command_inout.side_effect = group_command_method
+    #tango_group.command_inout.side_effect = group_command_method
 
     tango_context.device.On()
     with pytest.raises(tango.DevFailed):
@@ -1741,12 +1741,12 @@ def test_restart_should_not_restart_subarray_when_it_is_invalid_state(mock_lower
     assert "Error executing command RestartCommand" in str(df)
 
 
-def test_obsreset_should_command_subarray_to_obsreset_when_it_is_aborted(mock_lower_devices_group):
-    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map, tango_group = mock_lower_devices_group
+def test_obsreset_should_command_subarray_to_obsreset_when_it_is_aborted(mock_lower_devices):
+    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
     sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
     dish_pointing_state_attribute = "dishPointingState"
-    tango_group.command_inout.side_effect = group_command_method
+    #tango_group.command_inout.side_effect = group_command_method
 
     tango_context.device.On()
     tango_context.device.AssignResources(assign_input_str)
@@ -1803,12 +1803,12 @@ def test_obsreset_should_command_subarray_to_obsreset_when_it_is_aborted(mock_lo
     assert tango_context.device.obsState == ObsState.IDLE
 
 
-def test_obsreset_should_command_subarray_to_obsreset_when_it_is_Fault(mock_lower_devices_group):
-    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map, tango_group = mock_lower_devices_group
+def test_obsreset_should_command_subarray_to_obsreset_when_it_is_Fault(mock_lower_devices):
+    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
     sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
     dish_pointing_state_attribute = "dishPointingState"
-    tango_group.command_inout.side_effect = group_command_method
+    #tango_group.command_inout.side_effect = group_command_method
 
     tango_context.device.On()
     with pytest.raises(tango.DevFailed):
