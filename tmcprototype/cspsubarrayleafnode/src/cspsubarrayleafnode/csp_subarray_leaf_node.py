@@ -402,20 +402,15 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            try:
-                assert (device._csp_subarray_proxy.obsState in (ObsState.IDLE, ObsState.READY))
-            except AssertionError as assertion_error:
-                log_msg = const.ERR_DEVICE_NOT_READY_OR_IDLE + str(assertion_error)
-                device._read_activity_message = log_msg
-                self.logger.exception(assertion_error)
-                tango.Except.throw_exception(const.ERR_CONFIGURE_INVOKING_CMD, log_msg,
-                                             "CspSubarrayLeafNode.ConfigureCommand",
-                                             tango.ErrSeverity.ERR)
-
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Configure() is not allowed in current state",
                                              "Failed to invoke Configure command on cspsubarrayleafnode.",
                                              "cspsubarrayleafnode.Configure()",
+                                             tango.ErrSeverity.ERR)
+
+            if device._csp_subarray_proxy.obsState not in [ObsState.IDLE, ObsState.READY]:
+                tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_OR_IDLE, const.ERR_CONFIGURE_INVOKING_CMD,
+                                             "CspSubarrayLeafNode.ConfigureCommand",
                                              tango.ErrSeverity.ERR)
             return True
 
@@ -567,20 +562,15 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            try:
-                assert device._csp_subarray_proxy.obsState == ObsState.READY
-            except AssertionError as assertion_error:
-                device._read_activity_message = const.ERR_DEVICE_NOT_READY
-                log_msg = const.STR_OBS_STATE + str(device._csp_subarray_proxy.obsState)
-                self.logger.error(assertion_error)
-                tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, log_msg,
-                                             "CspSubarrayLeafNode.StartScanCommand",
-                                             tango.ErrSeverity.ERR)
-
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("StartScan() is not allowed in current state",
                                              "Failed to invoke StartScan command on cspsubarrayleafnode.",
                                              "cspsubarrayleafnode.StartScan()",
+                                             tango.ErrSeverity.ERR)
+
+            if device._csp_subarray_proxy.obsState != ObsState.READY:
+                tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, const.STR_OBS_STATE,
+                                             "CspSubarrayLeafNode.StartScanCommand",
                                              tango.ErrSeverity.ERR)
 
             return True
@@ -697,21 +687,17 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            try:
-                assert device._csp_subarray_proxy.obsState == ObsState.SCANNING
-            except AssertionError as assertion_error:
-                device._read_activity_message = const.ERR_DEVICE_NOT_IN_SCAN
-                log_msg = const.STR_OBS_STATE + str(device._csp_subarray_proxy.obsState) + str(assertion_error)
-                self.logger.error(assertion_error)
-                tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_SCAN, log_msg,
-                                             "CspSubarrayLeafNode.EndScanCommand",
-                                             tango.ErrSeverity.ERR)
-
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("EndScan() is not allowed in current state",
                                              "Failed to invoke EndScan command on cspsubarrayleafnode.",
                                              "cspsubarrayleafnode.EndScan()",
                                              tango.ErrSeverity.ERR)
+
+            if device._csp_subarray_proxy.obsState != ObsState.SCANNING:
+                tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_SCAN, "Failed to invoke EndScan command on cspsubarrayleafnode.",
+                                             "CspSubarrayLeafNode.EndScanCommand",
+                                             tango.ErrSeverity.ERR)
+
             return True
 
         def endscan_cmd_ended_cb(self, event):
@@ -811,22 +797,18 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            try:
-                assert device._csp_subarray_proxy.obsState == ObsState.IDLE
-            except AssertionError as assertion_error:
-                log_msg = const.ERR_DEVICE_NOT_IDLE + str(assertion_error)
-                device._read_activity_message = log_msg
-                self.logger.exception(assertion_error)
-                tango.Except.throw_exception(const.ERR_DEVICE_NOT_IDLE, log_msg,
-                                             "CspSubarrayLeafNode.ReleaseAllResourcesCommand",
-                                             tango.ErrSeverity.ERR)
-
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("ReleaseAllResources() is not allowed in current state",
                                              "Failed to invoke ReleaseAllResources command on "
                                              "cspsubarrayleafnode.",
                                              "cspsubarrayleafnode.ReleaseAllResources()",
                                              tango.ErrSeverity.ERR)
+
+            if device._csp_subarray_proxy.obsState != ObsState.IDLE:
+                tango.Except.throw_exception(const.ERR_DEVICE_NOT_IDLE, "Failed to invoke ReleaseAllResourcesCommand command on cspsubarrayleafnode.",
+                                             "CspSubarrayLeafNode.ReleaseAllResourcesCommand",
+                                             tango.ErrSeverity.ERR)
+
             return True
 
         def releaseallresources_cmd_ended_cb(self, event):
@@ -1107,22 +1089,15 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            try:
-                assert device._csp_subarray_proxy.obsState == ObsState.READY
-            except AssertionError as assertion_error:
-                device._read_activity_message = const.ERR_DEVICE_NOT_READY
-                log_msg = const.STR_OBS_STATE + str(device._csp_subarray_proxy.obsState) +str(assertion_error)
-                self.logger.error(assertion_error)
-                tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, log_msg,
-                                             "CspSubarrayLeafNode.GoToIdleCommand",
-                                             tango.ErrSeverity.ERR)
-
-            if self.state_model.op_state in [
-                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
-            ]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("GoToIdle() is not allowed in current state",
                                              "Failed to invoke GoToIdle command on cspsubarrayleafnode.",
                                              "cspsubarrayleafnode.GoToIdle()",
+                                             tango.ErrSeverity.ERR)
+
+            if device._csp_subarray_proxy.obsState != ObsState.READY:
+                tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, "Failed to invoke GoToIdle command on cspsubarrayleafnode.",
+                                             "CspSubarrayLeafNode.GoToIdleCommand",
                                              tango.ErrSeverity.ERR)
             return True
 
@@ -1229,23 +1204,16 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            try:
-                assert (device._csp_subarray_proxy.obsState in [ObsState.READY, ObsState.CONFIGURING, ObsState.SCANNING,
-                                                                ObsState.IDLE, ObsState.RESETTING])
-            except AssertionError as assertion_error:
-                log_msg = (f"Csp Subarray is in ObsState {device._csp_subarray_proxy.obsState.name}.""Unable to invoke Abort command")
-                device._read_activity_message = log_msg
-                self.logger.error(assertion_error)
-                tango.Except.throw_exception(log_msg, const.ERR_ABORT_INVOKING_CMD,
-                                             "CspSubarrayLeafNode.AbortCommand",
-                                             tango.ErrSeverity.ERR)
-
-            if self.state_model.op_state in [
-                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
-            ]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Abort() is not allowed in current state",
                                              "Failed to invoke Abort command on CspSubarrayLeafNode.",
                                              "cspsubarrayleafnode.Abort()",
+                                             tango.ErrSeverity.ERR)
+
+                if device._csp_subarray_proxy.obsState not in [ObsState.READY, ObsState.CONFIGURING, ObsState.SCANNING,
+                                                                ObsState.IDLE, ObsState.RESETTING]:
+                    tango.Except.throw_exception("Unable to invoke Abort command", const.ERR_ABORT_INVOKING_CMD,
+                                             "CspSubarrayLeafNode.AbortCommand",
                                              tango.ErrSeverity.ERR)
 
             return True
@@ -1345,22 +1313,15 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            try:
-                assert (device._csp_subarray_proxy.obsState in [ObsState.FAULT, ObsState.ABORTED])
-            except AssertionError as assertion_error:
-                log_msg = (f"CSp Subarray is in ObsState {device._csp_subarray_proxy.obsState.name}.""Unable to invoke Restart command")
-                device._read_activity_message = log_msg
-                self.logger.error(assertion_error)
-                tango.Except.throw_exception(log_msg, const.ERR_RESTART_INVOKING_CMD,
-                                             "CspSubarrayLeafNode.RestartCommand",
-                                             tango.ErrSeverity.ERR)
-
-            if self.state_model.op_state in [
-                DevState.UNKNOWN, DevState.DISABLE,
-            ]:
+            if self.state_model.op_state in [DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Restart() is not allowed in current state",
                                              "Failed to invoke Restart command on CspSubarrayLeafNode.",
                                              "cspsubarrayleafnode.Restart()",
+                                             tango.ErrSeverity.ERR)
+
+            if device._csp_subarray_proxy.obsState not in [ObsState.FAULT, ObsState.ABORTED]:
+                tango.Except.throw_exception("Unable to invoke Abort command", const.ERR_RESTART_INVOKING_CMD,
+                                             "CspSubarrayLeafNode.RestartCommand",
                                              tango.ErrSeverity.ERR)
 
             return True
@@ -1459,23 +1420,16 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            try:
-                assert (device._csp_subarray_proxy.obsState in [ObsState.ABORTED, ObsState.FAULT])
-            except AssertionError as assertion_error:
-                log_msg = (f"Csp Subarray is in ObsState {device._csp_subarray_proxy.obsState.name}.""Unable to invoke ObsReset command")
-                device._read_activity_message = log_msg
-                self.logger.error(assertion_error)
-                tango.Except.throw_exception(log_msg, const.ERR_OBSRESET_INVOKING_CMD,
-                                             "CspSubarrayLeafNode.ObsResetCommand",
-                                             tango.ErrSeverity.ERR)
-
-            if self.state_model.op_state in [
-                DevState.UNKNOWN, DevState.DISABLE,
-            ]:
+            if self.state_model.op_state in [DevState.UNKNOWN, DevState.DISABLE]:
                 log_msg= "ObsReset() is not allowed in " + str(self.state_model.op_state)
                 tango.Except.throw_exception(log_msg ,
                                              "Failed to invoke ObsReset command on CspSubarrayLeafNode.",
                                              "cspsubarrayleafnode.ObsReset()",
+                                             tango.ErrSeverity.ERR)
+
+            if device._csp_subarray_proxy.obsState not in [ObsState.ABORTED, ObsState.FAULT]:
+                tango.Except.throw_exception("Unable to invoke ObsReset command", const.ERR_OBSRESET_INVOKING_CMD,
+                                             "CspSubarrayLeafNode.ObsResetCommand",
                                              tango.ErrSeverity.ERR)
 
             return True
