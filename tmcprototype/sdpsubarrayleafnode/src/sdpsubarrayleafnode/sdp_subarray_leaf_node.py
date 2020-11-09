@@ -1175,22 +1175,16 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            try:
-                assert device._sdp_subarray_proxy.obsState in (ObsState.ABORTED, ObsState.FAULT)
-            except AssertionError as assert_error:
-                self.logger.exception(assert_error)
-                tango.Except.throw_exception(const.ERR_DEVICE_NOT_ABORTED_FAULT, "Failed to invoke ObsReset command on SdpSubarrayLeafNode.",
-                                             "SdpSubarrayLeafNode.ObsResetCommand()",
-                                             tango.ErrSeverity.ERR)
-
-            if self.state_model.op_state in [
-                DevState.UNKNOWN, DevState.DISABLE,
-            ]:
+            if self.state_model.op_state in [DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("ObsResetCommand() is not allowed in current state",
                                              "Failed to invoke ObsReset command on SdpSubarrayLeafNode.",
                                              "sdpsubarrayleafnode.ObsResetCommand()",
                                              tango.ErrSeverity.ERR)
 
+            if device._sdp_subarray_proxy.obsState not in [ObsState.ABORTED, ObsState.FAULT]:
+                tango.Except.throw_exception(const.ERR_DEVICE_NOT_ABORTED_FAULT, "Failed to invoke ObsReset command on SdpSubarrayLeafNode.",
+                                             "SdpSubarrayLeafNode.ObsResetCommand()",
+                                             tango.ErrSeverity.ERR)
             return True
 
         def obsreset_cmd_ended_cb(self, event):
