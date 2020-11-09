@@ -1212,7 +1212,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
                 if device._csp_subarray_proxy.obsState not in [ObsState.READY, ObsState.CONFIGURING, ObsState.SCANNING,
                                                                 ObsState.IDLE, ObsState.RESETTING]:
-                    tango.Except.throw_exception("Unable to invoke Abort command", const.ERR_ABORT_INVOKING_CMD,
+                    tango.Except.throw_exception(const.ERR_UNABLE_ABORT_CMD, const.ERR_ABORT_INVOKING_CMD,
                                              "CspSubarrayLeafNode.AbortCommand",
                                              tango.ErrSeverity.ERR)
 
@@ -1320,7 +1320,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
             if device._csp_subarray_proxy.obsState not in [ObsState.FAULT, ObsState.ABORTED]:
-                tango.Except.throw_exception("Unable to invoke Abort command", const.ERR_RESTART_INVOKING_CMD,
+                tango.Except.throw_exception(const.ERR_UNABLE_RESTART_CMD, const.ERR_RESTART_INVOKING_CMD,
                                              "CspSubarrayLeafNode.RestartCommand",
                                              tango.ErrSeverity.ERR)
 
@@ -1428,7 +1428,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
             if device._csp_subarray_proxy.obsState not in [ObsState.ABORTED, ObsState.FAULT]:
-                tango.Except.throw_exception("Unable to invoke ObsReset command", const.ERR_OBSRESET_INVOKING_CMD,
+                tango.Except.throw_exception(const.ERR_UNABLE_OBSRESET_CMD, const.ERR_OBSRESET_INVOKING_CMD,
                                              "CspSubarrayLeafNode.ObsResetCommand",
                                              tango.ErrSeverity.ERR)
 
