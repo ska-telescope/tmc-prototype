@@ -477,6 +477,7 @@ pages:
     - mv public/reports/centralnode_htmlcov/* public
     - mv public/reports/subarraynodelow_htmlcov/* public
     - mv public/reports/centralnodelow_htmlcov/* public
+    - make build
     - make push
   artifacts:
     paths:
