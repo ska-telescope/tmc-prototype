@@ -205,20 +205,17 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            try:
-                assert device._sdp_subarray_proxy.obsState == ObsState.IDLE
-            except AssertionError as assert_error:
-                self.logger.exception(assert_error)
-                tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, "Failed to invoke ReleaseAllResources command on "
-                                             "SdpSubarrayLeafNode.",
-                                             "SdpSubarrayLeafNode.ReleaseAllResourcesCommand()",
-                                             tango.ErrSeverity.ERR)
-
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("ReleaseAllResources() is not allowed in current state",
                                              "Failed to invoke ReleaseAllResources command on "
                                              "SdpSubarrayLeafNode.",
                                              "SdpSubarrayLeafNode.ReleaseAllResources()",
+                                             tango.ErrSeverity.ERR)
+          
+            if device._sdp_subarray_proxy.obsState != ObsState.IDLE
+                tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, "Failed to invoke ReleaseAllResources command on "
+                                             "SdpSubarrayLeafNode.",
+                                             "SdpSubarrayLeafNode.ReleaseAllResourcesCommand()",
                                              tango.ErrSeverity.ERR)
             return True
 
@@ -322,13 +319,17 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :raises: Exception if command execution throws any type of exception.
 
             """
-
+            device = self.target
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("AssignResources() is not allowed in current state",
                                         "Failed to invoke AssignResources command on SdpSubarrayLeafNode.",
                                         "sdpsubarrayleafnode.AssignResources()",
                                         tango.ErrSeverity.ERR)
 
+            if device._sdp_subarray_proxy.obsState not in [ObsState.IDLE, ObsState.EMPTY]:
+                tango.Except.throw_exception(const.ERR_DEVICE_NOT_IDLE_EMPTY, "Failed to invoke AssignResources command on SdpSubarrayLeafNode.",
+                                             "SdpSubarrayLeafNode.ConfigureCommand()",
+                                             tango.ErrSeverity.ERR)
             return True
 
         def AssignResources_ended(self, event):
@@ -484,18 +485,15 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            try:
-                assert device._sdp_subarray_proxy.obsState in (ObsState.IDLE, ObsState.READY)
-            except AssertionError as assert_error:
-                self.logger.exception(assert_error)
-                tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_IDLE, "Failed to invoke Configure command on SdpSubarrayLeafNode.",
-                                             "SdpSubarrayLeafNode.ConfigureCommand()",
-                                             tango.ErrSeverity.ERR)
-
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Configure() is not allowed in current state",
                                              "Failed to invoke Configure command on SdpSubarrayLeafNode.",
                                              "sdpsubarrayleafnode.Configure()",
+                                            tango.ErrSeverity.ERR)
+
+            if device._sdp_subarray_proxy.obsState not in [ObsState.IDLE, ObsState.READY]:
+                tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_IDLE, "Failed to invoke Configure command on SdpSubarrayLeafNode.",
+                                             "SdpSubarrayLeafNode.ConfigureCommand()",
                                              tango.ErrSeverity.ERR)
             return True
 
@@ -606,18 +604,15 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            try:
-                assert device._sdp_subarray_proxy.obsState == ObsState.READY
-            except AssertionError as assert_error:
-                self.logger.exception(assert_error)
-                tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, "Failed to invoke Scan command on SdpSubarrayLeafNode.",
-                                             "SdpSubarrayLeafNode.ScanCommand()",
-                                             tango.ErrSeverity.ERR)
-
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Scan() is not allowed in current state",
                                              "Failed to invoke Scan command on SdpSubarrayLeafNode.",
                                              "sdpsubarrayleafnode.Scan()",
+                                             tango.ErrSeverity.ERR)
+
+            if device._sdp_subarray_proxy.obsState != ObsState.READY:
+                tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, "Failed to invoke Scan command on SdpSubarrayLeafNode.",
+                                             "SdpSubarrayLeafNode.ScanCommand()",
                                              tango.ErrSeverity.ERR)
             return True
 
@@ -726,18 +721,15 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            try:
-                assert device._sdp_subarray_proxy.obsState == ObsState.SCANNING
-            except AssertionError as assert_error:
-                self.logger.exception(assert_error)
-                tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_SCAN, "Failed to invoke EndScan command on SdpSubarrayLeafNode.",
-                                             "SdpSubarrayLeafNode.EndScanCommand()",
-                                             tango.ErrSeverity.ERR)
-
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("EndScan() is not allowed in current state",
                                              "Failed to invoke EndScan command on SdpSubarrayLeafNode.",
                                              "sdpsubarrayleafnode.EndScan()",
+                                             tango.ErrSeverity.ERR)
+           
+            if device._sdp_subarray_proxy.obsState != ObsState.SCANNING:
+                tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_SCAN, "Failed to invoke EndScan command on SdpSubarrayLeafNode.",
+                                             "SdpSubarrayLeafNode.EndScanCommand()",
                                              tango.ErrSeverity.ERR)
             return True
 
@@ -837,20 +829,16 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            try:
-                assert device._sdp_subarray_proxy.obsState == ObsState.READY
-            except AssertionError as assert_error:
-                self.logger.exception(assert_error)
-                tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, "Failed to invoke End command on SdpSubarrayLeafNode.",
-                                             "SdpSubarrayLeafNode.EndCommand()",
-                                             tango.ErrSeverity.ERR)
-
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("End() is not allowed in current state",
                                              "Failed to invoke End command on SdpSubarrayLeafNode.",
                                              "sdpsubarrayleafnode.End()",
                                              tango.ErrSeverity.ERR)
 
+            if device._sdp_subarray_proxy.obsState != ObsState.READY:
+                tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, "Failed to invoke End command on SdpSubarrayLeafNode.",
+                                             "SdpSubarrayLeafNode.EndCommand()",
+                                             tango.ErrSeverity.ERR)
             return True
 
         def end_cmd_ended_cb(self, event):
@@ -946,21 +934,16 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            try:
-                assert device._sdp_subarray_proxy.obsState in (ObsState.READY, ObsState.CONFIGURING,
-                                                           ObsState.SCANNING, ObsState.IDLE, ObsState.RESETTING)
-            except AssertionError as assert_error:
-                self.logger.exception(assert_error)
-                tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_IDLE_CONFIG_SCAN_RESET, "Failed to invoke Abort command on SdpSubarrayLeafNode." ,
-                                             "SdpSubarrayLeafNode.AbortCommand()",
-                                             tango.ErrSeverity.ERR)
-
-            if self.state_model.op_state in [
-                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
-            ]:
+            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception("Abort() is not allowed in current state",
                                              "Failed to invoke Abort command on SdpSubarrayLeafNode.",
                                              "sdpsubarrayleafnode.Abort()",
+                                             tango.ErrSeverity.ERR)
+    
+            if device._sdp_subarray_proxy.obsState not in [ObsState.READY, ObsState.CONFIGURING,
+                                                           ObsState.SCANNING, ObsState.IDLE, ObsState.RESETTING]:
+                tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_IDLE_CONFIG_SCAN_RESET, "Failed to invoke Abort command on SdpSubarrayLeafNode." ,
+                                             "SdpSubarrayLeafNode.AbortCommand()",
                                              tango.ErrSeverity.ERR)
             return True
 
