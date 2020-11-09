@@ -326,7 +326,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                         "sdpsubarrayleafnode.AssignResources()",
                                         tango.ErrSeverity.ERR)
 
-            if device._sdp_subarray_proxy.obsState !== ObsState.EMPTY:
+            if device._sdp_subarray_proxy.obsState != ObsState.EMPTY:
                 tango.Except.throw_exception(const.ERR_DEVICE_NOT_EMPTY, "Failed to invoke AssignResources command on SdpSubarrayLeafNode.",
                                              "SdpSubarrayLeafNode.ConfigureCommand()",
                                              tango.ErrSeverity.ERR)
