@@ -10,17 +10,14 @@ if [ -d "$REPORTS_DIR" ]; then rm -rf $REPORTS_DIR; fi
 
 mkdir -p $REPORTS_DIR
 
-#for path in $(find ./*/test  -type d -name unit); do
-#	export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
-#	echo +++ Trying tests for $TMC_ELEMENT;
-#	cd $TMC_ELEMENT;
-#	tox -e py37
-#mv ${TMC_ELEMENT}_coverage ../$REPORTS_DIR;
-#cd ..
-#done
-
-cd subarraynode
-tox -e py37
+for path in $(find ./*/test  -type d -name unit); do
+	export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
+	echo +++ Trying tests for $TMC_ELEMENT;
+	cd $TMC_ELEMENT;
+	tox -e py37
+mv ${TMC_ELEMENT}_coverage ../$REPORTS_DIR;
+cd ..
+done
 
 # Combine coverage reports
 cd $REPORTS_DIR
