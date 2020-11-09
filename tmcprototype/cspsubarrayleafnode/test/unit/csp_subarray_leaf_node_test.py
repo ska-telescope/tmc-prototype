@@ -359,19 +359,12 @@ def test_start_scan_should_not_command_csp_subarray_to_start_scan_when_it_is_idl
     assert const.ERR_DEVICE_NOT_READY in str(df.value)
 
 
-def test_add_receptors_ended_should_raise_dev_failed_exception_for_invalid_obs_state(mock_csp_subarray, event_subscription):
+def test_assign_resource_should_raise_exception_when_key_not_found(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
-    csp_subarray1_proxy_mock.obsState = ObsState.READY
+    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
     with pytest.raises(tango.DevFailed) as df:
-        device_proxy.AssignResources(json.dumps(assign_input_file))
-    assert const.ERR_RAISED_EXCEPTION in str(df.value)
-
-
-def test_assign_resource_should_raise_exception_when_key_not_found():
-    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        with pytest.raises(tango.DevFailed) as df:
-            tango_context.device.AssignResources(assign_invalid_key)
-        assert const.ERR_RAISED_EXCEPTION in str(df)
+        device_proxy.AssignResources(assign_invalid_key)
+    assert const.ERR_JSON_KEY_NOT_FOUND in str(df)
 
 
 def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):
