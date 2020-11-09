@@ -10,7 +10,7 @@
 """Release information for Python Package"""
 
 name = """cspsubarrayleafnode"""
-version = "0.2.14"
+version = "0.2.13"
 version_info = version.split(".")
 description = """"""
 author = "Team NCRA"

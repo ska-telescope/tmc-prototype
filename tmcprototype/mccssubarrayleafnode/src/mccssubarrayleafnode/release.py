@@ -10,7 +10,7 @@
 """Release information for Python Package"""
 
 name = """mccssubarrayleafnode"""
-version = "0.2.14"
+version = "0.2.13"
 version_info = version.split(".")
 description = """MCCS Subarray Leaf Node monitors and controls the MCCS Subarray device."""
 author = "Team NCRA"
