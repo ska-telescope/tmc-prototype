@@ -367,11 +367,12 @@ def test_add_receptors_ended_should_raise_dev_failed_exception_for_invalid_obs_s
     assert const.ERR_RAISED_EXCEPTION in str(df.value)
 
 
-def test_assign_resource_should_raise_exception_when_key_not_found():
-    with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        with pytest.raises(tango.DevFailed) as df:
-            tango_context.device.AssignResources(assign_invalid_key)
-        assert const.ERR_RAISED_EXCEPTION in str(df)
+def test_assign_resource_should_raise_exception_when_key_not_found(mock_csp_subarray):
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
+    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.device.AssignResources(assign_invalid_key)
+    assert const.ERR_RAISED_EXCEPTION in str(df)
 
 
 def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):
