@@ -302,6 +302,15 @@ def test_release_resource_should_raise_exception_when_not_in_idle_obsstate(mock_
     assert const.ERR_DEVICE_NOT_IDLE in str(df.value)
 
 
+def test_assign_resource_should_raise_exception_when_not_in_empty_obsstate(mock_csp_subarray):
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
+    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
+    device_proxy.On()
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.AssignResources(assign_input_str)
+    assert "AssignResources() is not allowed in current state" in str(df.value)
+
+
 def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
