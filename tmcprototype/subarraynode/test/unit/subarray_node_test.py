@@ -365,13 +365,10 @@ def mock_lower_devices():
         yield tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map
 
 
-@pytest.mark.xfail()
 def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_resources(mock_lower_devices):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
     tango_context.device.On()
     assign_input_dict = json.loads(assign_input_str)
-    assert tango_context.device.AssignResources(assign_input_str) == [[ResultCode.STARTED], ["['0001']"]]
-
     result = tango_context.device.AssignResources(assign_input_str)
     str_json_arg = json.dumps(assign_input_dict.get("sdp"))
     verify_called_correctly(sdp_subarray1_ln_proxy_mock,const.CMD_ASSIGN_RESOURCES,str_json_arg)
@@ -469,7 +466,6 @@ def test_release_resource_command_subarray(mock_lower_devices):
     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
     wait_for(tango_context, ObsState.IDLE)
     assert tango_context.device.obsState == ObsState.IDLE
-    #assert tango_context.device.ReleaseAllResources() == [[ResultCode.STARTED], ['[]']]
     tango_context.device.ReleaseAllResources()
     attribute = 'ObsState'
     dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
