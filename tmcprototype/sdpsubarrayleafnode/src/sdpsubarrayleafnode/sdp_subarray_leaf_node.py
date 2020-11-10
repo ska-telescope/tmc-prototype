@@ -24,6 +24,7 @@ from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
 from ska.base.commands import ResultCode, BaseCommand
 from . import const, release
+from .exceptions import InvalidObsStateError
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
 
 __all__ = ["SdpSubarrayLeafNode", "main"]
@@ -174,6 +175,15 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         return self._active_processing_block
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.activeProcessingBlocks_read
 
+    def validate_obs_state(self):
+        sdp_subarray_obs_state = self._sdp_subarray_proxy.obsState
+        if sdp_subarray_obs_state == ObsState.EMPTY:
+            self.logger.info("SDP subarray is in required obstate,Hence resources to SDP can be assign.")
+        else:
+            self.logger.error("Subarray is not in EMPTY obstate")
+            self._read_activity_message = "Error in device obstate."
+            raise InvalidObsStateError("SDP subarray is not in EMPTY obstate.")
+
     # --------
     # Commands
     # --------
@@ -316,9 +326,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                         "sdpsubarrayleafnode.AssignResources()",
                                         tango.ErrSeverity.ERR)
 
-            if device._sdp_subarray_proxy.obsState not in [ObsState.EMPTY, ObsState.IDLE]:
-                tango.Except.throw_exception("Failed to invoke AssignResources command on SdpSubarrayLeafNode.", const.ERR_DEVICE_NOT_EMPTY,
-                                             "SdpSubarrayLeafNode.AssignResources()", tango.ErrSeverity.ERR)
             return True
 
         def AssignResources_ended(self, event):
@@ -403,12 +410,18 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
+                device.validate_obs_state()
                 # Call SDP Subarray Command asynchronously
                 device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ASSIGN_RESOURCES, argin,
                                                                 self.AssignResources_ended)
                 # Update the status of command execution status in activity message
                 device._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
                 self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
+
+            except InvalidObsStateError as error:
+                self.logger.exception(error)
+                tango.Except.throw_exception(const.ERR_DEVICE_NOT_EMPTY_OR_IDLE, str(error),
+                                             "SDP.AssignResources", tango.ErrSeverity.ERR)
 
             except ValueError as value_error:
                 log_msg = const.ERR_INVALID_JSON + str(value_error)
