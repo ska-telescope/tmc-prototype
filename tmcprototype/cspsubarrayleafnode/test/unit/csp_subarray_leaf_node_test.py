@@ -138,6 +138,7 @@ def test_command_cb_is_invoked_when_command_with_event_error_is_called_async(moc
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     cmd_name, input_str, requested_cmd, obs_state, _ = command_with_arg
     csp_subarray1_proxy_mock.obsState = obs_state
+    device_proxy.On()
     device_proxy.command_inout(cmd_name, input_str)
     dummy_event = command_callback_with_event_error(requested_cmd)
     event_subscription[requested_cmd](dummy_event)
