@@ -1311,7 +1311,6 @@ def test_end_command_subarray_when_in_invalid_state(mock_lower_devices):
                                                attribute, ObsState.EMPTY)
     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
     assert tango_context.device.obsState == ObsState.EMPTY
-    #csp_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
 
     with pytest.raises(tango.DevFailed) as df:
         tango_context.device.End()
@@ -1749,7 +1748,6 @@ def test_restart_should_not_restart_subarray_when_it_is_invalid_state(mock_lower
                                                attribute, ObsState.EMPTY)
     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
     assert tango_context.device.obsState == ObsState.EMPTY
-    csp_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
 
     with pytest.raises(tango.DevFailed) as df:
         tango_context.device.Restart()
@@ -1879,7 +1877,6 @@ def test_obsreset_should_not_command_subarray_to_Obsreset_when_it_is_invalid_sta
                                                attribute, ObsState.EMPTY)
     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
     assert tango_context.device.obsState == ObsState.EMPTY
-    csp_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
 
     with pytest.raises(tango.DevFailed) as df:
         tango_context.device.ObsReset()
