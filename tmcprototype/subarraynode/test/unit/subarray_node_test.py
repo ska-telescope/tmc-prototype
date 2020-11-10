@@ -432,7 +432,7 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
     tango_context.device.On()
     assign_input_dict = json.loads(assign_input_str)
-    result = tango_context.device.AssignResources(assign_input_str)
+    assert tango_context.device.AssignResources(assign_input_str) == [[ResultCode.STARTED], ["['0001']"]]
     str_json_arg = json.dumps(assign_input_dict.get("sdp"))
     verify_called_correctly(sdp_subarray1_ln_proxy_mock,const.CMD_ASSIGN_RESOURCES,str_json_arg)
     arg_list = []
@@ -444,7 +444,6 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
     arg_list.append(json.dumps(json_argument))
     verify_called_correctly(csp_subarray1_ln_proxy_mock,const.CMD_ASSIGN_RESOURCES,json.dumps(json_argument))
     assert tango_context.device.obsState == ObsState.RESOURCING
-    assert "['0001']" in result[1][0]
 
 
 def test_assign_resource_is_completed_when_csp_and_sdp_is_idle(mock_lower_devices):
@@ -1086,9 +1085,11 @@ def test_end_should_command_subarray_to_end_when_it_is_ready(mock_lower_devices_
     tango_context.device.EndScan()
     wait_for(tango_context, ObsState.READY)
     assert tango_context.device.obsState == ObsState.READY
+    assert tango_context.device.End() == [[ResultCode.OK], ['EndSB command invoked successfully on SDP Subarray Leaf '
+                                                           'Node and CSP Subarray Leaf Node.']]
 
-    tango_context.device.End()
     wait_for(tango_context, ObsState.IDLE)
+    
     assert tango_context.device.obsState == ObsState.IDLE
 
     sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_END)
@@ -1345,7 +1346,9 @@ def test_abort_should_command_subarray_to_abort_when_it_is_configuring(mock_lowe
     tango_context.device.Configure(configure_str)
     assert tango_context.device.obsState == ObsState.CONFIGURING
 
-    tango_context.device.Abort()
+    assert tango_context.device.Abort() == [[ResultCode.STARTED], ['Abort command invoked successfully on SDP Subarray '
+                                                                   'Leaf Node and CSP Subarray Leaf Node and Dish Leaf Node.']]
+
     wait_for(tango_context, ObsState.ABORTING)
     assert tango_context.device.obsState == ObsState.ABORTING
     attribute = 'ObsState'
@@ -1385,7 +1388,8 @@ def test_abort_should_command_subarray_to_abort_scan_when_it_is_idle(mock_lower_
     wait_for(tango_context, ObsState.IDLE)
     assert tango_context.device.obsState == ObsState.IDLE
 
-    tango_context.device.Abort()
+    assert tango_context.device.Abort() == [[ResultCode.STARTED], ['Abort command invoked successfully on SDP Subarray '
+                                                                   'Leaf Node and CSP Subarray Leaf Node and Dish Leaf Node.']]
     wait_for(tango_context, ObsState.ABORTING)
     assert tango_context.device.obsState == ObsState.ABORTING
     attribute = 'ObsState'
