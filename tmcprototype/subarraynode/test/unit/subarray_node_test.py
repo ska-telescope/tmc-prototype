@@ -364,6 +364,73 @@ def mock_lower_devices():
         yield tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map
 
 
+@pytest.fixture(scope="function")
+def mock_lower_devices_group():
+    csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dish_ln_prefix = 'ska_mid/tm_leaf_node/d'
+    dish_group = 'DishLeafNode_Group'
+    
+    dut_properties = {
+        'CspSubarrayLNFQDN': csp_subarray1_ln_fqdn,
+        'CspSubarrayFQDN': csp_subarray1_fqdn,
+        'SdpSubarrayLNFQDN': sdp_subarray1_ln_fqdn,
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn,
+        'DishLeafNodePrefix': dish_ln_prefix
+    }
+
+    csp_subarray1_ln_proxy_mock = Mock()
+    csp_subarray1_proxy_mock = Mock()
+    sdp_subarray1_ln_proxy_mock = Mock()
+    sdp_subarray1_proxy_mock = Mock()
+    dish_ln_proxy_mock = Mock()
+    group_mock = Mock()
+
+    proxies_to_mock = {
+        csp_subarray1_ln_fqdn: csp_subarray1_ln_proxy_mock,
+        csp_subarray1_fqdn: csp_subarray1_proxy_mock,
+        sdp_subarray1_ln_fqdn: sdp_subarray1_ln_proxy_mock,
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock,
+        dish_ln_prefix + "0001": dish_ln_proxy_mock
+
+    }
+
+    groups_to_mock = {
+        dish_group: group_mock
+    }    
+
+    event_subscription_map = {}
+    dish_pointing_state_map = {}
+
+    sdp_subarray1_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    csp_subarray1_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    csp_subarray1_ln_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    sdp_subarray1_ln_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    dish_ln_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: dish_pointing_state_map.
+            update({attr_name: callback}))
+    # with fake_tango_system_with_group(SubarrayNode, initial_dut_properties=dut_properties,
+    with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock,group_to_mock=groups_to_mock) as tango_context:
+        yield tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map, group_mock
+
+
+
+
 def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_resources(mock_lower_devices):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
     tango_context.device.On()
@@ -975,8 +1042,8 @@ def test_end_scan_should_raise_devfailed_exception_when_csp_subbarray_ln_throws_
     assert "This is error message for devfailed" in str(df.value)
 
 
-def test_end_should_command_subarray_to_end_when_it_is_ready(mock_lower_devices):
-    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
+def test_end_should_command_subarray_to_end_when_it_is_ready(mock_lower_devices_group):
+    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map, group_mock = mock_lower_devices_group
     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
     sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
     dish_pointing_state_attribute = "dishPointingState"
@@ -1031,7 +1098,8 @@ def test_end_should_command_subarray_to_end_when_it_is_ready(mock_lower_devices)
 
     sdp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_END)
     csp_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_GOTOIDLE)
-    #dish_ln_proxy_mock.command_inout.assert_called_with(const.CMD_STOP_TRACK)
+    group_mock.command_inout.assert_called_with(const.CMD_STOP_TRACK)
+    #dish_leaf_node_group.command_inout.assert_called_with(const.CMD_STOP_TRACK)
 
 
 def test_end_should_raise_devfailed_exception_when_csp_subarray_throws_devfailed_exception(mock_lower_devices):
