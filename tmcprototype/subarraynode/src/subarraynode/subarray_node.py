@@ -16,7 +16,7 @@ other TM Components (such as OET, Central Node) for a Subarray.
 # Third party imports
 # Tango imports
 import tango
-from tango import AttrWriteType, DevFailed, DeviceProxy
+from tango import AttrWriteType, DevFailed, DeviceProxy, Group
 from tango.server import run,attribute, command, device_property
 
 # Additional imports
@@ -506,7 +506,7 @@ class SubarrayNode(SKASubarray):
             device.scan_duration = 0
             device._receptor_id_list = []
             device.dishPointingStateMap = {}
-            device._dish_leaf_node_group = tango.Group(const.GRP_DISH_LEAF_NODE)
+            device._dish_leaf_node_group = Group(const.GRP_DISH_LEAF_NODE)
             device._dish_leaf_node_proxy = []
             device._health_event_id = []
             device._pointing_state_event_id = []
