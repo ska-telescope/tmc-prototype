@@ -316,9 +316,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                                         "sdpsubarrayleafnode.AssignResources()",
                                         tango.ErrSeverity.ERR)
 
-            if device._sdp_subarray_proxy.obsState != ObsState.EMPTY:
-                tango.Except.throw_exception("Failed to invoke AssignResources command on SdpSubarrayLeafNode.",const.ERR_DEVICE_NOT_EMPTY,
-                                             "SdpSubarrayLeafNode.ConfigureCommand()", tango.ErrSeverity.ERR)
+            if device._sdp_subarray_proxy.obsState not in [ObsState.EMPTY, ObsState.IDLE]:
+                tango.Except.throw_exception("Failed to invoke AssignResources command on SdpSubarrayLeafNode.", const.ERR_DEVICE_NOT_EMPTY,
+                                             "SdpSubarrayLeafNode.AssignResources()", tango.ErrSeverity.ERR)
             return True
 
         def AssignResources_ended(self, event):
