@@ -1295,6 +1295,7 @@ def test_subarray_health_state_event_to_raise_devfailed_exception_for_csp_subarr
         assert tango_context.device.State() == DevState.FAULT
         assert "Exception occurred while subscribing " in str(df)
 
+
 def test_end_command_subarray_when_in_invalid_state(mock_lower_devices):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
@@ -1310,7 +1311,7 @@ def test_end_command_subarray_when_in_invalid_state(mock_lower_devices):
                                                attribute, ObsState.EMPTY)
     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
     assert tango_context.device.obsState == ObsState.EMPTY
-    csp_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
+    #csp_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
 
     with pytest.raises(tango.DevFailed) as df:
         tango_context.device.End()
