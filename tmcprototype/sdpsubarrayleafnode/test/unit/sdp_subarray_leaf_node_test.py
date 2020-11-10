@@ -296,33 +296,25 @@ def test_command_should_failed_when_device_is_not_in_required_obstate(mock_sdp_s
 @pytest.fixture(
     scope="function",
     params=[
-        ("Scan", scan_input_str,  ObsState.IDLE, const.ERR_DEVICE_NOT_READY),
-        ("Configure", configure_str, ObsState.SCANNING, const.ERR_DEVICE_NOT_READY_IDLE),
-        ("Configure", configure_str, ObsState.EMPTY, const.ERR_DEVICE_NOT_READY_IDLE),
-        ("AssignResources", assign_input_str, ObsState.READY, const.ERR_DEVICE_NOT_EMPTY),
+        ("Scan", scan_input_str,  ObsState.IDLE),
+        ("Configure", configure_str, ObsState.SCANNING),
+        ("Configure", configure_str, ObsState.EMPTY),
+        ("AssignResources", assign_input_str, ObsState.READY),
     ])
 
 def command_with_argin_should_not_allowed_in_obstate(request):
-    cmd_name, input_str, obs_state, error_message = request.param
-    return cmd_name, input_str, obs_state, error_message
+    cmd_name, input_str, obs_state = request.param
+    return cmd_name, input_str, obs_state
 
 
 def test_command_with_argin_should_failed_when_device_is_not_in_required_obstate(mock_sdp_subarray, command_with_argin_should_not_allowed_in_obstate):
-    cmd_name, input_str, obs_state, error_message = command_with_argin_should_not_allowed_in_obstate
+    cmd_name, input_str, obs_state = command_with_argin_should_not_allowed_in_obstate
     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
     sdp_subarray1_proxy_mock.obsState = obs_state
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name, input_str)
     assert "Failed to invoke " + cmd_name in str(df.value)
 
-
-def test_assign_resources_should_raise_devfailed_for_invalid_obstate(mock_sdp_subarray):
-    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = ObsState.READY
-    device_proxy.On()
-    with pytest.raises(tango.DevFailed) as df:
-        device_proxy.AssignResources(assign_input_str)
-    assert const.ERR_DEVICE_NOT_EMPTY in str(df)
 
 def assert_activity_message(device_proxy, expected_message):
     assert device_proxy.activityMessage == expected_message  # reads tango attribute

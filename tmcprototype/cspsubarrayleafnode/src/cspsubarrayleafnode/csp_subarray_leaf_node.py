@@ -920,8 +920,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                              "cspsubarrayleafnode.AssignResources()",
                                              tango.ErrSeverity.ERR)
 
-            if device._csp_subarray_proxy.obsState != ObsState.EMPTY :
-                tango.Except.throw_exception("AssignResources() is not allowed in current state", "Failed to invoke AssignResources command.",
+            if device._csp_subarray_proxy.obsState not in [ObsState.EMPTY, ObsState.IDLE] :
+                tango.Except.throw_exception(const.ERR_DEVICE_NOT_EMPTY, "Failed to invoke AssignResources command.",
                                              "CspSubarrayLeafNode.AssignResources()",
                                              tango.ErrSeverity.ERR)
             return True

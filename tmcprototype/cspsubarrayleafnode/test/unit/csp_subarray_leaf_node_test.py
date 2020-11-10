@@ -81,8 +81,10 @@ def mock_csp_subarray():
     scope="function",
     params=[
         ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.READY, const.ERR_DEVFAILED_MSG),
+        ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.IDLE, const.ERR_DEVFAILED_MSG),
         ("StartScan", scan_input_str, const.CMD_STARTSCAN, ObsState.READY, const.ERR_STARTSCAN_RESOURCES),
         ("AssignResources", assign_input_str, const.CMD_ADD_RECEPTORS, ObsState.EMPTY, const.ERR_DEVFAILED_MSG),
+        ("AssignResources", assign_input_str, const.CMD_ADD_RECEPTORS, ObsState.IDLE, const.ERR_DEVFAILED_MSG),
     ])
 def command_with_arg(request):
     cmd_name, input_arg, requested_cmd, obs_state, error_msg = request.param
@@ -238,6 +240,7 @@ def test_command_correct_obsstate(mock_csp_subarray, command_with_correct_obssta
         ("ObsReset", ObsState.CONFIGURING, const.ERR_UNABLE_OBSRESET_CMD),
         ("ObsReset", ObsState.SCANNING, const.ERR_UNABLE_OBSRESET_CMD),
         ("ObsReset", ObsState.READY, const.ERR_UNABLE_OBSRESET_CMD),
+        ("ReleaseAllResources", ObsState.EMPTY , const.ERR_DEVICE_NOT_IDLE),
     ])
 def command_with_incorrect_obsstate(request):
     cmd_name, obs_state, activity_msg = request.param
@@ -248,6 +251,7 @@ def test_command_fails_when_device_in_invalid_obstate(mock_csp_subarray, command
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     cmd_name, obs_state, activity_msg = command_with_incorrect_obsstate
     csp_subarray1_proxy_mock.obsState = obs_state
+    device_proxy.On()
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name)
     assert activity_msg in str(df.value)
@@ -292,23 +296,27 @@ def test_release_resource_should_command_csp_subarray_to_release_all_resources(m
     assert_activity_message(device_proxy, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
 
-def test_release_resource_should_raise_exception_when_not_in_idle_obsstate(mock_csp_subarray):
-    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
-    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
-    device_proxy.On()
-    device_proxy.AssignResources(assign_input_str)
-    with pytest.raises(tango.DevFailed) as df:
-        device_proxy.ReleaseAllResources()
-    assert const.ERR_DEVICE_NOT_IDLE in str(df.value)
+@pytest.fixture(
+    scope="function",
+    params=[
+        ("Scan", scan_input_str,  ObsState.IDLE, const.ERR_DEVICE_NOT_READY),
+        ("Configure", configure_str, ObsState.SCANNING, const.ERR_DEVICE_NOT_READY_OR_IDLE),
+        ("Configure", configure_str, ObsState.EMPTY, const.ERR_DEVICE_NOT_READY_OR_IDLE),
+        ("AssignResources", assign_input_str, ObsState.READY, const.ERR_DEVICE_NOT_EMPTY),
+    ])
+
+def command_with_argin_should_not_allowed_in_obstate(request):
+    cmd_name, input_str, obs_state, error_message = request.param
+    return cmd_name, input_str, obs_state, error_message
 
 
-def test_assign_resource_should_raise_exception_when_not_in_empty_obsstate(mock_csp_subarray):
-    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
-    csp_subarray1_proxy_mock.obsState = ObsState.IDLE
-    device_proxy.On()
+def test_command_with_argin_should_failed_when_device_is_not_in_required_obstate(mock_sdp_subarray, command_with_argin_should_not_allowed_in_obstate):
+    cmd_name, input_str, obs_state, error_message = command_with_argin_should_not_allowed_in_obstate
+    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
+    sdp_subarray1_proxy_mock.obsState = obs_state
     with pytest.raises(tango.DevFailed) as df:
-        device_proxy.AssignResources(assign_input_str)
-    assert "AssignResources() is not allowed in current state" in str(df.value)
+        device_proxy.command_inout(cmd_name, input_str)
+    assert error_message in str(df.value)
 
 
 def test_configure_to_send_correct_configuration_data_when_csp_subarray_is_idle(mock_csp_subarray):
@@ -333,6 +341,7 @@ def test_configure_should_raise_exception_when_called_invalid_json(mock_csp_suba
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.Configure(invalid_key_str)
     assert const.ERR_INVALID_JSON_CONFIG in str(df.value)
+
 
 def test_configure_should_raise_assertion_exception_when_called_invalid_obsstate(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
