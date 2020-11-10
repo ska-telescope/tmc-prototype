@@ -175,6 +175,7 @@ def test_command_with_arg_should_raise_devfailed_exception(mock_sdp_subarray, ev
         device_proxy.command_inout(cmd_name, input_arg)
     assert Error_msg in str(df.value)
 
+
 @pytest.fixture(
     scope="function",
     params=[
