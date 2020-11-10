@@ -177,7 +177,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     def validate_obs_state(self):
         sdp_subarray_obs_state = self._sdp_subarray_proxy.obsState
-        if sdp_subarray_obs_state == ObsState.EMPTY:
+        if sdp_subarray_obs_state in [ObsState.EMPTY, ObsState.IDLE]:
             self.logger.info("SDP subarray is in required obstate,Hence resources to SDP can be assign.")
         else:
             self.logger.error("Subarray is not in EMPTY obstate")
