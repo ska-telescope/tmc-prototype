@@ -311,10 +311,10 @@ def command_with_argin_should_not_allowed_in_obstate(request):
     return cmd_name, input_str, obs_state, error_message
 
 
-def test_command_with_argin_should_failed_when_device_is_not_in_required_obstate(mock_sdp_subarray, command_with_argin_should_not_allowed_in_obstate):
+def test_command_with_argin_should_failed_when_device_is_not_in_required_obstate(mock_csp_subarray, command_with_argin_should_not_allowed_in_obstate):
     cmd_name, input_str, obs_state, error_message = command_with_argin_should_not_allowed_in_obstate
-    device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-    sdp_subarray1_proxy_mock.obsState = obs_state
+    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
+    csp_subarray1_proxy_mock.obsState = obs_state
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name, input_str)
     assert error_message in str(df.value)
