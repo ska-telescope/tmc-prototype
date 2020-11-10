@@ -83,7 +83,7 @@ def mock_csp_subarray():
         ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.READY, const.ERR_DEVFAILED_MSG),
         ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.IDLE, const.ERR_DEVFAILED_MSG),
         ("StartScan", scan_input_str, const.CMD_STARTSCAN, ObsState.READY, const.ERR_STARTSCAN_RESOURCES),
-        # ("AssignResources", assign_input_str, const.CMD_ADD_RECEPTORS, ObsState.IDLE, const.ERR_RAISED_EXCEPTION),
+        ("AssignResources", assign_input_str, const.CMD_ADD_RECEPTORS, ObsState.IDLE, const.ERR_RAISED_EXCEPTION),
         ("AssignResources", assign_input_str, const.CMD_ADD_RECEPTORS, ObsState.EMPTY, const.ERR_DEVFAILED_MSG),
     ])
 def command_with_arg(request):
