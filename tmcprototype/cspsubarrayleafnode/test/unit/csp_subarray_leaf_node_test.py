@@ -303,7 +303,7 @@ def test_release_resource_should_command_csp_subarray_to_release_all_resources(m
         ("StartScan", scan_input_str,  ObsState.IDLE, const.ERR_DEVICE_NOT_READY),
         ("Configure", configure_str, ObsState.SCANNING, const.ERR_DEVICE_NOT_READY_OR_IDLE),
         ("Configure", configure_str, ObsState.EMPTY, const.ERR_DEVICE_NOT_READY_OR_IDLE),
-        ("AssignResources", assign_input_str, ObsState.READY, const.ERR_DEVICE_NOT_EMPTY),
+        ("AssignResources", assign_input_str, ObsState.READY, const.ERR_DEVICE_NOT_EMPTY_OR_IDLE),
     ])
 
 def command_with_argin_should_not_allowed_in_obstate(request):

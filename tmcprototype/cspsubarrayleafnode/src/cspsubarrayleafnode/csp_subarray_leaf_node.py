@@ -920,10 +920,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                              "cspsubarrayleafnode.AssignResources()",
                                              tango.ErrSeverity.ERR)
 
-            if device._csp_subarray_proxy.obsState not in [ObsState.EMPTY, ObsState.IDLE] :
-                tango.Except.throw_exception(const.ERR_DEVICE_NOT_EMPTY, "Failed to invoke AssignResources command.",
-                                             "CspSubarrayLeafNode.AssignResources()",
-                                             tango.ErrSeverity.ERR)
             return True
 
         def add_receptors_ended(self, event):
@@ -1070,7 +1066,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         except InvalidObsStateError as error:
             self.logger.exception(error)
-            tango.Except.throw_exception("ObsState is not in EMPTY state",
+            tango.Except.throw_exception(const.ERR_DEVICE_NOT_EMPTY_OR_IDLE,
                                          "CSP subarray leaf node raised exception",
                                          "CSP.AddReceptors",
                                          tango.ErrSeverity.ERR)
@@ -1186,12 +1182,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
         handler()
 
     def validate_obs_state(self):
-        if self._csp_subarray_proxy.obsState == ObsState.EMPTY:
+        if self._csp_subarray_proxy.obsState in [ObsState.EMPTY, ObsState.IDLE]:
             self.logger.info("CSP Subarray is in required obsState, resources will be assigned")
         else:
-            self.logger.error("CSP Subarray is not in EMPTY obsState")
+            self.logger.error("CSP Subarray is not in EMPTY/IDLE obsState")
             self._read_activity_message = "Error in device obsState"
-            raise InvalidObsStateError("CSP Subarray is not in EMPTY obsState")
+            raise InvalidObsStateError("CSP Subarray is not in EMPTY/IDLE obsState")
 
     class AbortCommand(BaseCommand):
         """
