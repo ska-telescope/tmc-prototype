@@ -420,7 +420,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             except InvalidObsStateError as error:
                 self.logger.exception(error)
-                tango.Except.throw_exception(const.ERR_DEVICE_NOT_EMPTY_OR_IDLE, str(error),
+                tango.Except.throw_exception(const.ERR_DEVICE_NOT_EMPTY_OR_IDLE, "Failed to invoke AssignResources command on ",
                                              "SDP.AssignResources", tango.ErrSeverity.ERR)
 
             except ValueError as value_error:
