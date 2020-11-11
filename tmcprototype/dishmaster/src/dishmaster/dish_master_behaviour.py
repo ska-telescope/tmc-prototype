@@ -553,6 +553,13 @@ class OverrideDish(object):
             model.logger.info("Attribute 'targetLock' set to %s.", target_reached)
 
     def set_achieved_pointing_attribute(self, model, sim_time, position):
+        # This ensures that the model quantity doesn't get updated when its only the
+        # timestamp that has changed.
+        current_azim = model.sim_quantities["achievedPointing"].last_val[self.AZIM_IDX]
+        current_elev = model.sim_quantities["achievedPointing"].last_val[self.ELEV_IDX]
+        if (current_azim == position.azim and current_elev == position.elev):
+            return
+
         # use millisecond timestamp
         sim_time *= 1000
         achievedPointing = [0, 0, 0]
