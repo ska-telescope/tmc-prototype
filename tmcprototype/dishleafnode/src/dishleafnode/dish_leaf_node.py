@@ -10,8 +10,6 @@
 """
 A Leaf control node for DishMaster.
 """
-# PROTECTED REGION ID(DishLeafNode.additionnal_import) ENABLED START #
-# Standard python imports
 import json
 import importlib.resources
 import math
@@ -19,26 +17,21 @@ import datetime
 import time
 import threading
 
-# Third Party imports
-# PyTango imports
 import tango
 from tango import DeviceProxy, EventType, ApiUtil, DevState, AttrWriteType, DevFailed, DebugIt
 from tango.server import run, command, device_property, attribute
 import katpoint
 
-# Additional import
 from ska.base.commands import ResultCode, BaseCommand
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, SimulationMode
 from .utils import PointingState, UnitConverter
 from . import const, release
-# PROTECTED REGION END #    //  DishLeafNode.additionnal_import
 
 __all__ = ["DishLeafNode", "main"]
 
 
 class CommandCallBack:
-
     def __init__(self, device, log):
         self.device = device
         self.logger = log
@@ -72,16 +65,39 @@ class CommandCallBack:
             self.logger.info(log_msg)
             self.device._read_activity_message = log_msg
 
+
 # pylint: disable=unused-variable, logging-fstring-interpolation
 class DishLeafNode(SKABaseDevice):
     """
     A Leaf control node for DishMaster.
     """
-    # PROTECTED REGION ID(DishLeafNode.class_variable) ENABLED START #
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.cmd_ended_cb = CommandCallBack(self, self.logger).cmd_ended_cb
+
+    def init_command_objects(self):
+        """
+        Initialises the command handlers for commands supported by this
+        device.
+        """
+        super().init_command_objects()
+        args = (self, self.state_model, self.logger)
+        self.register_command_object("SetStowMode", self.SetStowModeCommand(*args))
+        self.register_command_object("SetStandByLPMode", self.SetStandByLPModeCommand(*args))
+        self.register_command_object("SetOperateMode", self.SetOperateModeCommand(*args))
+        self.register_command_object("Scan", self.ScanCommand(*args))
+        self.register_command_object("EndScan", self.EndScanCommand(*args))
+        self.register_command_object("Configure", self.ConfigureCommand(*args))
+        self.register_command_object("StartCapture", self.StartCaptureCommand(*args))
+        self.register_command_object("StopCapture", self.StopCaptureCommand(*args))
+        self.register_command_object("SetStandbyFPMode", self.SetStandbyFPModeCommand(*args))
+        self.register_command_object("Slew", self.SlewCommand(*args))
+        self.register_command_object("Track", self.TrackCommand(*args))
+        self.register_command_object("StopTrack", self.StopTrackCommand(*args))
+        self.register_command_object("Abort", self.AbortCommand(*args))
+        self.register_command_object("Restart", self.RestartCommand(*args))
+        self.register_command_object("ObsReset", self.ObsResetCommand(*args))
 
     def attribute_event_handler(self, event_data):
         """
@@ -123,10 +139,12 @@ class DishLeafNode(SKABaseDevice):
 
         """
         try:
-            dish_antenna = katpoint.Antenna(name=self.dish_name,
-                                            latitude=self.observer_location_lat,
-                                            longitude=self.observer_location_long,
-                                            altitude=self.observer_altitude)
+            dish_antenna = katpoint.Antenna(
+                name=self.dish_name,
+                latitude=self.observer_location_lat,
+                longitude=self.observer_location_long,
+                altitude=self.observer_altitude,
+            )
         except ValueError as value_err:
             self.RaDec_AzEl_Conversion = False
             raise value_err
@@ -146,7 +164,8 @@ class DishLeafNode(SKABaseDevice):
 
         try:
             target_apparnt_radec = katpoint.Target.apparent_radec(
-                desired_target, timestamp=timestamp, antenna=dish_antenna)
+                desired_target, timestamp=timestamp, antenna=dish_antenna
+            )
         except ValueError as value_err:
             self.RaDec_AzEl_Conversion = False
             raise value_err
@@ -196,14 +215,16 @@ class DishLeafNode(SKABaseDevice):
                 break
             elif self.el_limit:
                 break
-    
+
     def track_thread(self):
         """This thread invokes Track command on DishMaster at the rate of 20 Hz.
 
         :return: None.
         """
-        self.logger.info(f"print track_thread thread name:{threading.currentThread().getName()}"
-                        f"{threading.get_ident()}")
+        self.logger.info(
+            f"print track_thread thread name:{threading.currentThread().getName()}"
+            f"{threading.get_ident()}"
+        )
         while self.event_track_time.is_set() is False:
             timestamp_value = str(datetime.datetime.utcnow())
             katpoint_arg = []
@@ -279,12 +300,18 @@ class DishLeafNode(SKABaseDevice):
 
         # Find latitude, longitude and altitude of Dish antenna
         # Convert enu to ecef coordinates for dish
-        dish_ecef_coordinates = katpoint.enu_to_ecef(ref_ant_lat_rad, ref_ant_long_rad, ref_ant_altitude,
-                                                     ant_delay_model[0], ant_delay_model[1],
-                                                     ant_delay_model[2])
+        dish_ecef_coordinates = katpoint.enu_to_ecef(
+            ref_ant_lat_rad,
+            ref_ant_long_rad,
+            ref_ant_altitude,
+            ant_delay_model[0],
+            ant_delay_model[1],
+            ant_delay_model[2],
+        )
         # Convert ecef to lla coordinates for dish (in radians)
-        dish_lat_long_alt_rad = katpoint.ecef_to_lla(dish_ecef_coordinates[0], dish_ecef_coordinates[1],
-                                                     dish_ecef_coordinates[2])
+        dish_lat_long_alt_rad = katpoint.ecef_to_lla(
+            dish_ecef_coordinates[0], dish_ecef_coordinates[1], dish_ecef_coordinates[2]
+        )
         # Convert lla coordinates from rad to dms
         dish_lat_dms = obj_unitconverter.rad_to_dms(dish_lat_long_alt_rad[0])
         dish_long_dms = obj_unitconverter.rad_to_dms(dish_lat_long_alt_rad[1])
@@ -293,36 +320,39 @@ class DishLeafNode(SKABaseDevice):
         self.observer_location_long = f"{dish_long_dms[0]}:{dish_long_dms[1]}:{dish_long_dms[2]}"
         self.observer_altitude = dish_ecef_coordinates[2]
 
-    # PROTECTED REGION END #    //  DishLeafNode.class_variable
-
     # -----------------
     # Device Properties
     # -----------------
     DishMasterFQDN = device_property(
-        dtype='str', default_value="mid_d0001/elt/master",
+        dtype="str",
+        default_value="mid_d0001/elt/master",
         doc="FQDN of Dish Master Device",
     )
 
-    TrackDuration = device_property(
-        dtype='int', default_value=0.5
-    )
+    TrackDuration = device_property(dtype="int", default_value=0.5)
 
     # ----------
     # Attributes
     # ----------
     activityMessage = attribute(
-        dtype='str',
+        dtype="str",
         access=AttrWriteType.READ_WRITE,
         doc="Activity Message",
     )
 
+    def read_activityMessage(self):
+        """ Returns the activityMessage """
+        return self._read_activity_message
+
+    def write_activityMessage(self, value):
+        """ Internal construct of TANGO. Sets the activityMessage """
+        self._read_activity_message = value
+
     dishHealthState = attribute(name="dishHealthState", label="dishHealthState", forwarded=True)
 
-    dishPointingState = attribute(name="dishPointingState", label="dishPointingState", forwarded=True)
-
-    # ---------------
-    # General methods
-    # ---------------
+    dishPointingState = attribute(
+        name="dishPointingState", label="dishPointingState", forwarded=True
+    )
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
@@ -355,7 +385,9 @@ class DishLeafNode(SKABaseDevice):
             device.ele_max_lim = 90
             device.ele_min_lim = 17.5
             device.el_limit = False
-            device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
+            device._build_state = "{},{},{}".format(
+                release.name, release.version, release.description
+            )
             device._version_id = release.version
             device.radec_value = ""
             device.set_dish_name_number()
@@ -373,25 +405,35 @@ class DishLeafNode(SKABaseDevice):
                 log_msg = f"{const.ERR_IN_CREATE_PROXY_DM}{dev_failed}"
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
-                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "DishLeafNode.InitCommand",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    const.STR_CMD_FAILED, log_msg, "DishLeafNode.InitCommand", tango.ErrSeverity.ERR
+                )
 
-            try:
-                device._dish_proxy.subscribe_event(const.EVT_DISH_MODE, EventType.CHANGE_EVENT,
-                                                   device.attribute_event_handler, stateless=True)
-                device._dish_proxy.subscribe_event(const.EVT_DISH_CAPTURING, EventType.CHANGE_EVENT,
-                                                   device.attribute_event_handler, stateless=True)
-                device._dish_proxy.subscribe_event(const.EVT_ACHVD_POINT, EventType.CHANGE_EVENT,
-                                                   device.attribute_event_handler, stateless=True)
-                device._dish_proxy.subscribe_event(const.EVT_DESIRED_POINT, EventType.CHANGE_EVENT,
-                                                   device.attribute_event_handler, stateless=True)
-            except DevFailed as dev_failed:
-                log_msg = f"{const.ERR_SUBS_DISH_ATTR}{dev_failed}"
-                device.set_status(const.ERR_DISH_INIT)
-                device._read_activity_message = log_msg
-                self.logger.exception(dev_failed)
-                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "DishLeafNode.InitCommand",
-                                             tango.ErrSeverity.ERR)
+            attributes_to_subscribe_to = (
+                "dishMode",
+                "capturing",
+                "achievedPointing",
+                "desiredPointing",
+            )
+            for attribute_name in attributes_to_subscribe_to:
+                try:
+                    device._dish_proxy.subscribe_event(
+                        attribute_name,
+                        EventType.CHANGE_EVENT,
+                        device.attribute_event_handler,
+                        stateless=True,
+                    )
+                except DevFailed as dev_failed:
+                    log_msg = f"{const.ERR_SUBS_DISH_ATTR}{dev_failed}"
+                    device.set_status(const.ERR_DISH_INIT)
+                    device._read_activity_message = log_msg
+                    self.logger.exception(dev_failed)
+                    tango.Except.throw_exception(
+                        const.STR_CMD_FAILED,
+                        log_msg,
+                        "DishLeafNode.InitCommand",
+                        tango.ErrSeverity.ERR,
+                    )
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
@@ -401,59 +443,6 @@ class DishLeafNode(SKABaseDevice):
             device._read_activity_message = const.STR_DISH_INIT_SUCCESS
             self.logger.info(device._read_activity_message)
             return (ResultCode.OK, device._read_activity_message)
-
-    def always_executed_hook(self):
-        # PROTECTED REGION ID(DishLeafNode.always_executed_hook) ENABLED START #
-        """ Internal construct of TANGO. """
-        # PROTECTED REGION END #    //  DishLeafNode.always_executed_hook
-
-    def delete_device(self):
-        # PROTECTED REGION ID(DishLeafNode.delete_device) ENABLED START #
-        """ Internal construct of TANGO. """
-        # PROTECTED REGION END #    //  DishLeafNode.delete_device
-
-    # ------------------
-    # Attributes methods
-    # ------------------
-
-    def read_activityMessage(self):
-        # PROTECTED REGION ID(DishLeafNode.activityMessage_read) ENABLED START #
-        """ Returns the activityMessage """
-        return self._read_activity_message
-        # PROTECTED REGION END #    //  DishLeafNode.activityMessage_read
-
-    def write_activityMessage(self, value):
-        # PROTECTED REGION ID(DishLeafNode.activityMessage_write) ENABLED START #
-        """ Internal construct of TANGO. Sets the activityMessage """
-        self._read_activity_message = value
-        # PROTECTED REGION END #    //  DishLeafNode.activityMessage_write
-
-    def init_command_objects(self):
-        """
-        Initialises the command handlers for commands supported by this
-        device.
-        """
-        super().init_command_objects()
-        args = (self, self.state_model, self.logger)
-        self.register_command_object("SetStowMode", self.SetStowModeCommand(*args))
-        self.register_command_object("SetStandByLPMode", self.SetStandByLPModeCommand(*args))
-        self.register_command_object("SetOperateMode", self.SetOperateModeCommand(*args))
-        self.register_command_object("Scan", self.ScanCommand(*args))
-        self.register_command_object("EndScan", self.EndScanCommand(*args))
-        self.register_command_object("Configure", self.ConfigureCommand(*args))
-        self.register_command_object("StartCapture", self.StartCaptureCommand(*args))
-        self.register_command_object("StopCapture", self.StopCaptureCommand(*args))
-        self.register_command_object("SetStandbyFPMode", self.SetStandbyFPModeCommand(*args))
-        self.register_command_object("Slew", self.SlewCommand(*args))
-        self.register_command_object("Track", self.TrackCommand(*args))
-        self.register_command_object("StopTrack", self.StopTrackCommand(*args))
-        self.register_command_object("Abort", self.AbortCommand(*args))
-        self.register_command_object("Restart", self.RestartCommand(*args))
-        self.register_command_object("ObsReset", self.ObsResetCommand(*args))
-
-    # --------
-    # Commands
-    # --------
 
     class SetStowModeCommand(BaseCommand):
         """
@@ -477,10 +466,12 @@ class DishLeafNode(SKABaseDevice):
             """
             device = self.target
             if device._dish_proxy.state() in [DevState.ON, DevState.ALARM]:
-                tango.Except.throw_exception("Command SetStowMode is not allowed in current state.",
-                                             "Failed to invoke SetStowMode command on DishLeafNode.",
-                                             "DishLeafNode.SetStowMode()",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    "Command SetStowMode is not allowed in current state.",
+                    "Failed to invoke SetStowMode command on DishLeafNode.",
+                    "DishLeafNode.SetStowMode()",
+                    tango.ErrSeverity.ERR,
+                )
             return True
 
         def do(self):
@@ -490,19 +481,23 @@ class DishLeafNode(SKABaseDevice):
             :return: None
 
             """
+            device = self.target
             try:
-                device = self.target
-                device._dish_proxy.command_inout_asynch(const.CMD_SET_STOW_MODE, self.cmd_ended_cb)
-                device._read_activity_message = const.STR_SET_STOW_MODE_SUCCESS
-                self.logger.info(device._read_activity_message)
-
+                device._dish_proxy.command_inout_asynch("SetStowMode", self.cmd_ended_cb)
             except DevFailed as dev_failed:
                 log_msg = f"{const.ERR_EXE_SET_STOW_MODE_CMD}{dev_failed}"
                 device._read_activity_message = log_msg
                 self.logger.exception(log_msg)
-                tango.Except.re_throw_exception(dev_failed,const.STR_SETSTOWMODE_EXEC, log_msg, "DishLeafNode.SetStowModeCommand",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.re_throw_exception(
+                    dev_failed,
+                    const.STR_SETSTOWMODE_EXEC,
+                    log_msg,
+                    "DishLeafNode.SetStowModeCommand",
+                    tango.ErrSeverity.ERR,
+                )
 
+            device._read_activity_message = const.STR_SET_STOW_MODE_SUCCESS
+            self.logger.info(device._read_activity_message)
 
     def is_SetStowMode_allowed(self):
         """
@@ -516,8 +511,7 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("SetStowMode")
         return handler.check_allowed()
 
-    @command(
-    )
+    @command()
     def SetStowMode(self):
         """ Invokes SetStowMode command on DishMaster. """
         handler = self.get_command_object("SetStowMode")
@@ -544,11 +538,17 @@ class DishLeafNode(SKABaseDevice):
 
             """
             device = self.target
-            if device._dish_proxy.pointingState in [PointingState.SLEW, PointingState.TRACK, PointingState.SCAN]:
-                tango.Except.throw_exception("SetStandByLPMode() is not allowed in current state",
-                                             "Failed to invoke SetStandByLpMode command on DishLeafNode.",
-                                             "DishLeafNode.SetStandByLPMode() ",
-                                             tango.ErrSeverity.ERR)
+            if device._dish_proxy.pointingState in [
+                PointingState.SLEW,
+                PointingState.TRACK,
+                PointingState.SCAN,
+            ]:
+                tango.Except.throw_exception(
+                    "SetStandByLPMode() is not allowed in current state",
+                    "Failed to invoke SetStandByLpMode command on DishLeafNode.",
+                    "DishLeafNode.SetStandByLPMode() ",
+                    tango.ErrSeverity.ERR,
+                )
 
             return True
 
@@ -561,7 +561,7 @@ class DishLeafNode(SKABaseDevice):
             """
             try:
                 device = self.target
-                device._dish_proxy.command_inout_asynch(const.CMD_SET_STANDBYLP_MODE, self.cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch("SetStandbyLPMode", self.cmd_ended_cb)
                 device._read_activity_message = const.STR_SETSTANDBYLP_SUCCESS
                 self.logger.info(device._read_activity_message)
 
@@ -569,8 +569,13 @@ class DishLeafNode(SKABaseDevice):
                 log_msg = f"{const.ERR_EXE_SET_STANDBYLP_MODE_CMD}{dev_failed}"
                 device._read_activity_message = log_msg
                 self.logger.exception(log_msg)
-                tango.Except.re_throw_exception(dev_failed, const.STR_SETSTANDBYLPMODE_EXEC, log_msg, "DishLeafNode.SetStandByLPModeCommand",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.re_throw_exception(
+                    dev_failed,
+                    const.STR_SETSTANDBYLPMODE_EXEC,
+                    log_msg,
+                    "DishLeafNode.SetStandByLPModeCommand",
+                    tango.ErrSeverity.ERR,
+                )
 
     def is_SetStandByLPMode_allowed(self):
         """
@@ -583,8 +588,7 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("SetStandByLPMode")
         return handler.check_allowed()
 
-    @command(
-    )
+    @command()
     def SetStandByLPMode(self):
         """ Invokes SetStandbyLPMode (i.e. Low Power State) command on DishMaster. """
         handler = self.get_command_object("SetStandByLPMode")
@@ -594,6 +598,7 @@ class DishLeafNode(SKABaseDevice):
         """
         A class for DishLeafNode's SetOperateMode() command.
         """
+
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
@@ -608,10 +613,12 @@ class DishLeafNode(SKABaseDevice):
             """
             device = self.target
             if device._dish_proxy.state() in [DevState.ON, DevState.ALARM, DevState.DISABLE]:
-                tango.Except.throw_exception("SetOperateMode() is not allowed in current state",
-                                             "Failed to invoke SetOperateMode command on DishLeafNode.",
-                                             "DishLeafNode.SetOperateMode() ",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    "SetOperateMode() is not allowed in current state",
+                    "Failed to invoke SetOperateMode command on DishLeafNode.",
+                    "DishLeafNode.SetOperateMode() ",
+                    tango.ErrSeverity.ERR,
+                )
 
             return True
 
@@ -623,7 +630,7 @@ class DishLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                device._dish_proxy.command_inout_asynch(const.CMD_SET_OPERATE_MODE, self.cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch("SetOperateMode", self.cmd_ended_cb)
                 device._read_activity_message = const.STR_SETOPERATE_SUCCESS
                 self.logger.info(device._read_activity_message)
 
@@ -631,8 +638,13 @@ class DishLeafNode(SKABaseDevice):
                 log_msg = f"{const.ERR_EXE_SET_OPERATE_MODE_CMD}{dev_failed}"
                 device._read_activity_message = log_msg
                 self.logger.exception(log_msg)
-                tango.Except.re_throw_exception(dev_failed, const.STR_SETOPERATEMODE_EXEC, log_msg, "DishLeafNode.SetOperateModeCommand",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.re_throw_exception(
+                    dev_failed,
+                    const.STR_SETOPERATEMODE_EXEC,
+                    log_msg,
+                    "DishLeafNode.SetOperateModeCommand",
+                    tango.ErrSeverity.ERR,
+                )
 
     def is_SetOperateMode_allowed(self):
         """
@@ -646,8 +658,7 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("SetOperateMode")
         return handler.check_allowed()
 
-    @command(
-    )
+    @command()
     def SetOperateMode(self):
         """ Invokes SetOperateMode command on DishMaster. """
         handler = self.get_command_object("SetOperateMode")
@@ -671,10 +682,12 @@ class DishLeafNode(SKABaseDevice):
             :rtype: boolean
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception("Scan() is not allowed in current state",
-                                             "Failed to invoke Scan command on DishLeafNode.",
-                                             "DishLeafNode.Scan() ",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    "Scan() is not allowed in current state",
+                    "Failed to invoke Scan command on DishLeafNode.",
+                    "DishLeafNode.Scan() ",
+                    tango.ErrSeverity.ERR,
+                )
 
             return True
 
@@ -699,12 +712,12 @@ class DishLeafNode(SKABaseDevice):
                 log_msg = f"{const.ERR_EXE_SCAN_CMD}{const.ERR_INVALID_DATATYPE}{value_error}"
                 device._read_activity_message = log_msg
                 self.logger.exception(value_error)
-                tango.Except.throw_exception(const.STR_SCAN_EXEC, log_msg, "DishLeafNode.ScanCommand",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    const.STR_SCAN_EXEC, log_msg, "DishLeafNode.ScanCommand", tango.ErrSeverity.ERR
+                )
 
             self.logger.debug(const.STR_IN_SCAN)
-            device._dish_proxy.command_inout_asynch(const.CMD_DISH_SCAN,
-                                                    argin, self.cmd_ended_cb)
+            device._dish_proxy.command_inout_asynch("Scan", argin, self.cmd_ended_cb)
             self.logger.debug(const.STR_OUT_SCAN)
             log_msg = f"{const.STR_SCAN_SUCCESS} with input argument as {argin}"
             self.logger.info(log_msg)
@@ -723,7 +736,7 @@ class DishLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in='str',
+        dtype_in="str",
         doc_in="Timestamp",
     )
     def Scan(self, argin):
@@ -735,6 +748,7 @@ class DishLeafNode(SKABaseDevice):
         """
         A class for DishLeafNode's EndScan() command.
         """
+
         def check_allowed(self):
             """
             Checks whether this command is allowed to be run in the current device state.
@@ -747,10 +761,12 @@ class DishLeafNode(SKABaseDevice):
 
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception("EndScan() is not allowed in current state",
-                                             "Failed to invoke StopCapture command on DishLeafNode.",
-                                             "DishLeafNode.EndScan() ",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    "EndScan() is not allowed in current state",
+                    "Failed to invoke StopCapture command on DishLeafNode.",
+                    "DishLeafNode.EndScan() ",
+                    tango.ErrSeverity.ERR,
+                )
 
             return True
 
@@ -772,16 +788,20 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
             try:
                 end_scan_timestamp = float(argin)
-                device._dish_proxy.command_inout_asynch(const.CMD_STOP_CAPTURE,
-                                                      str(end_scan_timestamp),
-                                                      device.cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch(
+                    "StopCapture", str(end_scan_timestamp), device.cmd_ended_cb
+                )
 
             except ValueError as value_error:
                 log_msg = f"{const.ERR_EXE_END_SCAN_CMD}{const.ERR_INVALID_DATATYPE}{value_error}"
                 device._read_activity_message = log_msg
                 self.logger.exception(value_error)
-                tango.Except.throw_exception(const.STR_ENDSCAN_EXEC, log_msg, "DishLeafNode.EndScanCommand",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    const.STR_ENDSCAN_EXEC,
+                    log_msg,
+                    "DishLeafNode.EndScanCommand",
+                    tango.ErrSeverity.ERR,
+                )
 
     def is_EndScan_allowed(self):
         """
@@ -796,7 +816,7 @@ class DishLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in='str',
+        dtype_in="str",
         doc_in="Timestamp",
     )
     def EndScan(self, argin):
@@ -825,11 +845,17 @@ class DishLeafNode(SKABaseDevice):
 
             """
             if self.state_model.op_state in [
-                DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE, DevState.INIT]:
-                tango.Except.throw_exception("Configure() is not allowed in current state",
-                                             "Failed to invoke Configure command on DishLeafNode.",
-                                             "DishLeafNode.Configure() ",
-                                             tango.ErrSeverity.ERR)
+                DevState.FAULT,
+                DevState.UNKNOWN,
+                DevState.DISABLE,
+                DevState.INIT,
+            ]:
+                tango.Except.throw_exception(
+                    "Configure() is not allowed in current state",
+                    "Failed to invoke Configure command on DishLeafNode.",
+                    "DishLeafNode.Configure() ",
+                    tango.ErrSeverity.ERR,
+                )
 
             return True
 
@@ -862,18 +888,26 @@ class DishLeafNode(SKABaseDevice):
                 log_msg = f"{const.ERR_INVALID_JSON}{jsonerr}"
                 device._read_activity_message = log_msg
                 self.logger.error(log_msg)
-                tango.Except.throw_exception(const.STR_CONFIGURE_EXEC, log_msg, "DishLeafNode.ConfigureCommand",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    const.STR_CONFIGURE_EXEC,
+                    log_msg,
+                    "DishLeafNode.ConfigureCommand",
+                    tango.ErrSeverity.ERR,
+                )
             try:
-                ra_value = (jsonArgument["pointing"]["target"]["RA"])
-                dec_value = (jsonArgument["pointing"]["target"]["dec"])
+                ra_value = jsonArgument["pointing"]["target"]["RA"]
+                dec_value = jsonArgument["pointing"]["target"]["dec"]
                 receiver_band = int(jsonArgument["dish"]["receiverBand"])
             except KeyError as key_error:
                 log_msg = f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}"
                 device._read_activity_message = log_msg
                 self.logger.error(log_msg)
-                tango.Except.throw_exception(const.STR_CONFIGURE_EXEC, log_msg, "DishLeafNode.ConfigureCommand",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    const.STR_CONFIGURE_EXEC,
+                    log_msg,
+                    "DishLeafNode.ConfigureCommand",
+                    tango.ErrSeverity.ERR,
+                )
 
             timestamp_value = str(datetime.datetime.utcnow())
             radec_value = f"radec,{ra_value},{dec_value}"
@@ -887,29 +921,33 @@ class DishLeafNode(SKABaseDevice):
                 log_msg = f"{const.ERR_EXE_CONFIGURE_CMD}{valuerr}"
                 device._read_activity_message = log_msg
                 self.logger.error(log_msg)
-                tango.Except.throw_exception(const.STR_CONFIGURE_EXEC, log_msg, "DishLeafNode.ConfigureCommand",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    const.STR_CONFIGURE_EXEC,
+                    log_msg,
+                    "DishLeafNode.ConfigureCommand",
+                    tango.ErrSeverity.ERR,
+                )
 
             arg_list = {
-                "pointing": {
-                    "AZ": device.az,
-                    "EL": device.el
-                },
-                "dish": {
-                    "receiverBand": receiver_band
-                }
+                "pointing": {"AZ": device.az, "EL": device.el},
+                "dish": {"receiverBand": receiver_band},
             }
             dish_str_ip = json.dumps(arg_list)
 
             try:
-                device._dish_proxy.command_inout_asynch(const.CMD_DISH_CONFIGURE, str(dish_str_ip),
-                                                        self.cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch(
+                    const.CMD_DISH_CONFIGURE, str(dish_str_ip), self.cmd_ended_cb
+                )
             except DevFailed as dev_failed:
                 log_msg = f"{const.ERR_EXE_CONFIGURE_CMD}{dev_failed}"
                 device._read_activity_message = log_msg
                 self.logger.exception(log_msg)
-                tango.Except.throw_exception(const.STR_CONFIGURE_EXEC, log_msg, "DishLeafNode.ConfigureCommand",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    const.STR_CONFIGURE_EXEC,
+                    log_msg,
+                    "DishLeafNode.ConfigureCommand",
+                    tango.ErrSeverity.ERR,
+                )
 
             device._read_activity_message = const.STR_CONFIGURE_SUCCESS
             self.logger.info(device._read_activity_message)
@@ -927,7 +965,7 @@ class DishLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in='str',
+        dtype_in="str",
         doc_in="Pointing parameter of Dish",
     )
     def Configure(self, argin):
@@ -955,11 +993,17 @@ class DishLeafNode(SKABaseDevice):
             :raises: DevFailed if this command is not allowed to be run in current device state.
 
             """
-            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE, ]:
-                tango.Except.throw_exception("StartCapture() is not allowed in current state",
-                                             "Failed to invoke StartCapture command on DishLeafNode.",
-                                             "DishLeafNode.StartCapture() ",
-                                             tango.ErrSeverity.ERR)
+            if self.state_model.op_state in [
+                DevState.FAULT,
+                DevState.UNKNOWN,
+                DevState.DISABLE,
+            ]:
+                tango.Except.throw_exception(
+                    "StartCapture() is not allowed in current state",
+                    "Failed to invoke StartCapture command on DishLeafNode.",
+                    "DishLeafNode.StartCapture() ",
+                    tango.ErrSeverity.ERR,
+                )
 
             return True
 
@@ -978,18 +1022,24 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
             try:
                 start_capture_timestamp = float(argin)
-                device._dish_proxy.command_inout_asynch(const.CMD_START_CAPTURE,
-                                                        str(start_capture_timestamp),
-                                                        self.cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch(
+                    "StartCapture", str(start_capture_timestamp), self.cmd_ended_cb
+                )
                 device._read_activity_message = const.STR_STARTCAPTURE_SUCCESS
                 self.logger.info(device._read_activity_message)
 
             except ValueError as value_error:
-                log_msg = f"{const.ERR_EXE_START_CAPTURE_CMD}{const.ERR_INVALID_DATATYPE}{value_error}"
+                log_msg = (
+                    f"{const.ERR_EXE_START_CAPTURE_CMD}{const.ERR_INVALID_DATATYPE}{value_error}"
+                )
                 device._read_activity_message = log_msg
                 self.logger.exception(value_error)
-                tango.Except.throw_exception(const.STR_CONFIGURE_EXEC, log_msg, "DishLeafNode.StartCaptureCommand",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    const.STR_CONFIGURE_EXEC,
+                    log_msg,
+                    "DishLeafNode.StartCaptureCommand",
+                    tango.ErrSeverity.ERR,
+                )
 
     def is_StartCapture_allowed(self):
         """
@@ -1004,7 +1054,7 @@ class DishLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in='str',
+        dtype_in="str",
         doc_in="The timestamp indicates the time, in UTC, at which command execution should start.",
     )
     def StartCapture(self, argin):
@@ -1029,10 +1079,12 @@ class DishLeafNode(SKABaseDevice):
 
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception("StopCapture() is not allowed in current state",
-                                             "Failed to invoke StopCapture command on DishLeafNode.",
-                                             "DishLeafNode.StopCapture() ",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    "StopCapture() is not allowed in current state",
+                    "Failed to invoke StopCapture command on DishLeafNode.",
+                    "DishLeafNode.StopCapture() ",
+                    tango.ErrSeverity.ERR,
+                )
 
             return True
 
@@ -1051,18 +1103,24 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
             try:
                 stop_capture_timestamp = float(argin)
-                device._dish_proxy.command_inout_asynch(const.CMD_STOP_CAPTURE,
-                                                        str(stop_capture_timestamp),
-                                                        device.cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch(
+                    "StopCapture", str(stop_capture_timestamp), device.cmd_ended_cb
+                )
                 device._read_activity_message = const.STR_STOPCAPTURE_SUCCESS
                 self.logger.info(device._read_activity_message)
 
             except ValueError as value_error:
-                log_msg = f"{const.ERR_EXE_STOP_CAPTURE_CMD}{const.ERR_INVALID_DATATYPE}{value_error}"
+                log_msg = (
+                    f"{const.ERR_EXE_STOP_CAPTURE_CMD}{const.ERR_INVALID_DATATYPE}{value_error}"
+                )
                 device._read_activity_message = log_msg
                 self.logger.exception(value_error)
-                tango.Except.throw_exception(const.STR_STOPCAPTURE_EXEC, log_msg, "DishLeafNode.StopCaptureCommand",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    const.STR_STOPCAPTURE_EXEC,
+                    log_msg,
+                    "DishLeafNode.StopCaptureCommand",
+                    tango.ErrSeverity.ERR,
+                )
 
     def is_StopCapture_allowed(self):
         """
@@ -1076,7 +1134,7 @@ class DishLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in='str',
+        dtype_in="str",
         doc_in="The timestamp indicates the time, in UTC, at which command execution should start.",
     )
     def StopCapture(self, argin):
@@ -1106,10 +1164,12 @@ class DishLeafNode(SKABaseDevice):
             """
             device = self.target
             if device._dish_proxy.state() in [DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception("SetStandbyFPMode() is not allowed in current state",
-                                             "Failed to invoke SetStandbyFPMode command on DishLeafNode.",
-                                             "DishLeafNode.SetStandbyFPMode() ",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    "SetStandbyFPMode() is not allowed in current state",
+                    "Failed to invoke SetStandbyFPMode command on DishLeafNode.",
+                    "DishLeafNode.SetStandbyFPMode() ",
+                    tango.ErrSeverity.ERR,
+                )
 
             return True
 
@@ -1120,19 +1180,24 @@ class DishLeafNode(SKABaseDevice):
             :return:None
 
             """
+            device = self.target
             try:
-                device = self.target
-                device._dish_proxy.command_inout_asynch(const.CMD_SET_STANDBYFP_MODE, self.cmd_ended_cb)
-                device._read_activity_message = const.STR_STANDBYFP_SUCCESS
-                self.logger.info(device._read_activity_message)
-
+                device._dish_proxy.command_inout_asynch("SetStandByFPMode", self.cmd_ended_cb)
             except DevFailed as dev_failed:
                 log_msg = f"{const.ERR_EXE_SET_STANDBYFP_MODE_CMD}{dev_failed}"
                 device._read_activity_message = log_msg
                 self.logger.exception(log_msg)
-                tango.Except.re_throw_exception(dev_failed, const.STR_SETSTANDBYLPMODE_EXEC, log_msg, "DishLeafNode.SetStandByFPModeCommand",
-                                             tango.ErrSeverity.ERR)
-            
+                tango.Except.re_throw_exception(
+                    dev_failed,
+                    const.STR_SETSTANDBYLPMODE_EXEC,
+                    log_msg,
+                    "DishLeafNode.SetStandByFPModeCommand",
+                    tango.ErrSeverity.ERR,
+                )
+
+            device._read_activity_message = const.STR_STANDBYFP_SUCCESS
+            self.logger.info(device._read_activity_message)
+
     def is_SetStandbyFPMode_allowed(self):
         """
         Checks whether this command is allowed to be run in the current device state.
@@ -1145,8 +1210,7 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("SetStandbyFPMode")
         return handler.check_allowed()
 
-    @command(
-    )
+    @command()
     def SetStandbyFPMode(self):
         """ Invokes SetStandbyFPMode command on DishMaster (Standby-Full power) mode. """
         handler = self.get_command_object("SetStandbyFPMode")
@@ -1173,10 +1237,12 @@ class DishLeafNode(SKABaseDevice):
 
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception("Slew() is not allowed in current state",
-                                             "Failed to invoke Slew command on DishLeafNode.",
-                                             "DishLeafNode.Slew() ",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    "Slew() is not allowed in current state",
+                    "Failed to invoke Slew command on DishLeafNode.",
+                    "DishLeafNode.Slew() ",
+                    tango.ErrSeverity.ERR,
+                )
 
             return True
 
@@ -1200,12 +1266,14 @@ class DishLeafNode(SKABaseDevice):
                 log_msg = f"{const.ERR_EXE_SLEW_CMD}{const.ERR_INVALID_DATATYPE}{value_error}"
                 device._read_activity_message = log_msg
                 self.logger.exception(value_error)
-                tango.Except.throw_exception(const.STR_STOPCAPTURE_EXEC, log_msg, "DishLeafNode.SlewCommand",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    const.STR_STOPCAPTURE_EXEC,
+                    log_msg,
+                    "DishLeafNode.SlewCommand",
+                    tango.ErrSeverity.ERR,
+                )
 
-            device._dish_proxy.command_inout_asynch(const.CMD_DISH_SLEW,
-                                                    argin,
-                                                    self.cmd_ended_cb)
+            device._dish_proxy.command_inout_asynch("Slew", argin, self.cmd_ended_cb)
             device._read_activity_message = const.STR_SLEW_SUCCESS
             self.logger.info(device._read_activity_message)
 
@@ -1222,7 +1290,7 @@ class DishLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in='str',
+        dtype_in="str",
         doc_in="Timestamp at which command should be executed.",
     )
     def Slew(self, argin):
@@ -1247,14 +1315,16 @@ class DishLeafNode(SKABaseDevice):
 
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception("Track() is not allowed in current state",
-                                             "Failed to invoke Track command on DishLeafNode.",
-                                             "DishLeafNode.Track() ",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    "Track() is not allowed in current state",
+                    "Failed to invoke Track command on DishLeafNode.",
+                    "DishLeafNode.Track() ",
+                    tango.ErrSeverity.ERR,
+                )
             return True
 
         def do(self, argin):
-            """ Invokes Track command on the DishMaster.
+            """Invokes Track command on the DishMaster.
 
             :param argin: DevString
 
@@ -1284,25 +1354,35 @@ class DishLeafNode(SKABaseDevice):
                 log_msg = f"{const.ERR_INVALID_JSON}{jsonerr}"
                 device._read_activity_message = log_msg
                 self.logger.exception(log_msg)
-                tango.Except.throw_exception(const.STR_TRACK_EXEC, log_msg, "DishLeafNode.TrackCommand",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    const.STR_TRACK_EXEC,
+                    log_msg,
+                    "DishLeafNode.TrackCommand",
+                    tango.ErrSeverity.ERR,
+                )
 
             try:
-                ra_value = (jsonArgument["pointing"]["target"]["RA"])
-                dec_value = (jsonArgument["pointing"]["target"]["dec"])
+                ra_value = jsonArgument["pointing"]["target"]["RA"]
+                dec_value = jsonArgument["pointing"]["target"]["dec"]
             except KeyError as key_error:
                 log_msg = f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}"
                 device._read_activity_message = log_msg
                 self.logger.exception(key_error)
-                tango.Except.throw_exception(const.STR_TRACK_EXEC, log_msg, "DishLeafNode.TrackCommand",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    const.STR_TRACK_EXEC,
+                    log_msg,
+                    "DishLeafNode.TrackCommand",
+                    tango.ErrSeverity.ERR,
+                )
 
             device.radec_value = f"radec,{ra_value},{dec_value}"
             device.event_track_time.clear()
 
             if device._dish_proxy.pointingState == PointingState.READY:
                 self.logger.debug("When pointing state is READY --> Create Track thread")
-                device.track_thread1 = threading.Thread(None, device.track_thread, const.THREAD_TRACK)
+                device.track_thread1 = threading.Thread(
+                    None, device.track_thread, const.THREAD_TRACK
+                )
                 if not device.track_thread1.is_alive():
                     self.logger.debug("When pointing state is READY --> Start Track thread")
                     device.track_thread1.start()
@@ -1325,7 +1405,7 @@ class DishLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in='str',
+        dtype_in="str",
         doc_in="The JSON input string contains dish and pointing information.",
     )
     def Track(self, argin):
@@ -1354,10 +1434,12 @@ class DishLeafNode(SKABaseDevice):
 
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception("StopTrack() is not allowed in current state",
-                                             "Failed to invoke StopTrack command on DishLeafNode.",
-                                             "DishLeafNode.StopTrack() ",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    "StopTrack() is not allowed in current state",
+                    "Failed to invoke StopTrack command on DishLeafNode.",
+                    "DishLeafNode.StopTrack() ",
+                    tango.ErrSeverity.ERR,
+                )
             return True
 
         def do(self):
@@ -1374,16 +1456,20 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
             try:
                 device.event_track_time.set()
-                device._dish_proxy.command_inout_asynch(const.CMD_STOP_TRACK, self.cmd_ended_cb)
-                device._read_activity_message = const.STR_STOP_TRACK_SUCCESS
-                self.logger.info(device._read_activity_message)
-
+                device._dish_proxy.command_inout_asynch("TrackStop", self.cmd_ended_cb)
             except DevFailed as dev_failed:
                 log_msg = f"{const.ERR_EXE_STOP_TRACK_CMD}{dev_failed}"
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
-                tango.Except.throw_exception(const.STR_STOPTRACK_EXEC, log_msg, "DishLeafNode.StopTrackCommand",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    const.STR_STOPTRACK_EXEC,
+                    log_msg,
+                    "DishLeafNode.StopTrackCommand",
+                    tango.ErrSeverity.ERR,
+                )
+
+            device._read_activity_message = const.STR_STOP_TRACK_SUCCESS
+            self.logger.info(device._read_activity_message)
 
     def is_StopTrack_allowed(self):
         """
@@ -1397,8 +1483,7 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("StopTrack")
         return handler.check_allowed()
 
-    @command(
-    )
+    @command()
     def StopTrack(self):
         """ Invokes StopTrack command on the DishMaster."""
         handler = self.get_command_object("StopTrack")
@@ -1426,10 +1511,12 @@ class DishLeafNode(SKABaseDevice):
 
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception("Abort() is not allowed in current state",
-                                             "Failed to invoke Abort command on DishLeafNode.",
-                                             "DishLeafNode.Abort() ",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    "Abort() is not allowed in current state",
+                    "Failed to invoke Abort command on DishLeafNode.",
+                    "DishLeafNode.Abort() ",
+                    tango.ErrSeverity.ERR,
+                )
             return True
 
         def do(self):
@@ -1446,19 +1533,22 @@ class DishLeafNode(SKABaseDevice):
 
             try:
                 device.event_track_time.set()
-                device._dish_proxy.command_inout_asynch(const.CMD_ABORT, self.cmd_ended_cb)
-                device._read_activity_message = const.STR_ABORT_SUCCESS
-                self.logger.info(device._read_activity_message)
-
+                device._dish_proxy.command_inout_asynch("TrackStop", self.cmd_ended_cb)
             except DevFailed as dev_failed:
                 log_msg = f"{const.ERR_EXE_ABORT_CMD}{dev_failed}"
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
-                tango.Except.throw_exception(const.STR_ABORT_EXEC, log_msg, "DishLeafNode.AbortCommand",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    const.STR_ABORT_EXEC,
+                    log_msg,
+                    "DishLeafNode.AbortCommand",
+                    tango.ErrSeverity.ERR,
+                )
 
-    @command(
-    )
+            device._read_activity_message = const.STR_ABORT_SUCCESS
+            self.logger.info(device._read_activity_message)
+
+    @command()
     def Abort(self):
         """ Invokes Abort command on the DishMaster."""
         handler = self.get_command_object("Abort")
@@ -1479,6 +1569,7 @@ class DishLeafNode(SKABaseDevice):
         """
         A class for DishLeafNode's Restart command.
         """
+
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
@@ -1495,10 +1586,12 @@ class DishLeafNode(SKABaseDevice):
 
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception("Restart() is not allowed in current state",
-                                             "Failed to invoke Restart command on DishLeafNode.",
-                                             "DishLeafNode.Restart() ",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    "Restart() is not allowed in current state",
+                    "Failed to invoke Restart command on DishLeafNode.",
+                    "DishLeafNode.Restart() ",
+                    tango.ErrSeverity.ERR,
+                )
             return True
 
         def do(self):
@@ -1515,19 +1608,22 @@ class DishLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                device._dish_proxy.command_inout_asynch(const.CMD_RESTART, self.cmd_ended_cb)
-                device._read_activity_message = const.STR_RESTART_SUCCESS
-                self.logger.info(device._read_activity_message)
-
+                device._dish_proxy.command_inout_asynch("SetStandbyLPMode", self.cmd_ended_cb)
             except DevFailed as dev_failed:
                 log_msg = f"{const.ERR_EXE_RESTART_CMD}{dev_failed}"
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
-                tango.Except.throw_exception(const.STR_RESTART_EXEC, log_msg, "DishLeafNode.RestartCommand",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    const.STR_RESTART_EXEC,
+                    log_msg,
+                    "DishLeafNode.RestartCommand",
+                    tango.ErrSeverity.ERR,
+                )
 
-    @command(
-    )
+            device._read_activity_message = const.STR_RESTART_SUCCESS
+            self.logger.info(device._read_activity_message)
+
+    @command()
     def Restart(self):
         """ Invokes Restart command on the DishMaster."""
         handler = self.get_command_object("Restart")
@@ -1544,11 +1640,11 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("Restart")
         return handler.check_allowed()
 
-
     class ObsResetCommand(BaseCommand):
         """
         A class for DishLeafNode's ObsReset command.
         """
+
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
@@ -1565,10 +1661,12 @@ class DishLeafNode(SKABaseDevice):
 
             """
             if self.state_model.op_state in [DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception("ObsResetCommand() is not allowed in current state",
-                                             "Failed to invoke ObsReset command on DishLeafNode.",
-                                             "DishLeafNode.ObsReset() ",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    "ObsResetCommand() is not allowed in current state",
+                    "Failed to invoke ObsReset command on DishLeafNode.",
+                    "DishLeafNode.ObsReset() ",
+                    tango.ErrSeverity.ERR,
+                )
             return True
 
         def do(self):
@@ -1584,19 +1682,22 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
 
             try:
-                device._dish_proxy.command_inout_asynch(const.CMD_OBSRESET, self.cmd_ended_cb)
-                device._read_activity_message = const.STR_OBSRESET_SUCCESS
-                self.logger.info(device._read_activity_message)
-
+                device._dish_proxy.command_inout_asynch("SetStandbyFPMode", self.cmd_ended_cb)
             except DevFailed as dev_failed:
                 log_msg = f"{const.ERR_EXE_OBSRESET_CMD}{dev_failed}"
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
-                tango.Except.throw_exception(const.STR_OBSRESET_EXEC, log_msg, "DishLeafNode.ObsResetCommand",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    const.STR_OBSRESET_EXEC,
+                    log_msg,
+                    "DishLeafNode.ObsResetCommand",
+                    tango.ErrSeverity.ERR,
+                )
 
-    @command(
-    )
+            device._read_activity_message = const.STR_OBSRESET_SUCCESS
+            self.logger.info(device._read_activity_message)
+
+    @command()
     @DebugIt()
     def ObsReset(self):
         """ Invokes ObsReset command on the DishLeafNode."""
@@ -1615,12 +1716,8 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("ObsReset")
         return handler.check_allowed()
 
+
 # pylint: enable=unused-variable, logging-fstring-interpolation
-
-# ----------
-# Run server
-# ----------
-
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(DishLeafNode.main) ENABLED START #
     """
@@ -1633,5 +1730,5 @@ def main(args=None, **kwargs):
     # PROTECTED REGION END #    //  DishLeafNode.main
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
