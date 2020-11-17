@@ -477,19 +477,10 @@ class DishLeafNode(SKABaseDevice):
             try:
                 device._dish_proxy.command_inout_asynch("SetStowMode", self.cmd_ended_cb)
             except DevFailed as dev_failed:
-                log_msg = f"{const.ERR_EXE_SET_STOW_MODE_CMD}{dev_failed}"
+                self.logger.exception(dev_failed)
+                log_msg = "Exception in SetStowMode command"
                 device._read_activity_message = log_msg
-                self.logger.exception(log_msg)
-                tango.Except.re_throw_exception(
-                    dev_failed,
-                    const.STR_SETSTOWMODE_EXEC,
-                    log_msg,
-                    "DishLeafNode.SetStowModeCommand",
-                    tango.ErrSeverity.ERR,
-                )
-
-            device._read_activity_message = const.STR_SET_STOW_MODE_SUCCESS
-            self.logger.info(device._read_activity_message)
+                self._throw_exception("SetStowMode", log_msg)
 
     def is_SetStowMode_allowed(self):
         """
