@@ -1630,12 +1630,7 @@ class DishLeafNode(SKABaseDevice):
 
             """
             if self.state_model.op_state in [DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception(
-                    "ObsResetCommand() is not allowed in current state",
-                    "Failed to invoke ObsReset command on DishLeafNode.",
-                    "DishLeafNode.ObsReset() ",
-                    tango.ErrSeverity.ERR,
-                )
+                return False
             return True
 
         def do(self):
@@ -1653,18 +1648,10 @@ class DishLeafNode(SKABaseDevice):
             try:
                 device._dish_proxy.command_inout_asynch("SetStandbyFPMode", self.cmd_ended_cb)
             except DevFailed as dev_failed:
-                log_msg = f"{const.ERR_EXE_OBSRESET_CMD}{dev_failed}"
+                log_msg = "Exception occurred in ObsReset command"
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
-                tango.Except.throw_exception(
-                    const.STR_OBSRESET_EXEC,
-                    log_msg,
-                    "DishLeafNode.ObsResetCommand",
-                    tango.ErrSeverity.ERR,
-                )
-
-            device._read_activity_message = const.STR_OBSRESET_SUCCESS
-            self.logger.info(device._read_activity_message)
+                self._throw_exception("ObsReset", log_msg)
 
     @command()
     @DebugIt()
