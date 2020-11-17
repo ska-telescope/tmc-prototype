@@ -1025,31 +1025,15 @@ class DishLeafNode(SKABaseDevice):
 
             :return: None
 
-            :raises: ValueError if argin is not in valid JSON format while invoking this
-             command on DishMaster.
-
             """
             device = self.target
             try:
-                stop_capture_timestamp = float(argin)
-                device._dish_proxy.command_inout_asynch(
-                    "StopCapture", str(stop_capture_timestamp), device.cmd_ended_cb
-                )
-                device._read_activity_message = const.STR_STOPCAPTURE_SUCCESS
-                self.logger.info(device._read_activity_message)
-
-            except ValueError as value_error:
-                log_msg = (
-                    f"{const.ERR_EXE_STOP_CAPTURE_CMD}{const.ERR_INVALID_DATATYPE}{value_error}"
-                )
+                device._dish_proxy.command_inout_asynch("StopCapture", device.cmd_ended_cb)
+            except DevFailed as dev_failed:
+                self.logger.exception(dev_failed)
+                log_msg = "Exception occurred in StopCapture command"
                 device._read_activity_message = log_msg
-                self.logger.exception(value_error)
-                tango.Except.throw_exception(
-                    const.STR_STOPCAPTURE_EXEC,
-                    log_msg,
-                    "DishLeafNode.StopCaptureCommand",
-                    tango.ErrSeverity.ERR,
-                )
+                self._throw_exception("StopCapture", log_msg)
 
     def is_StopCapture_allowed(self):
         """
