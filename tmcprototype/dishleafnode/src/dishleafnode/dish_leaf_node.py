@@ -1485,12 +1485,7 @@ class DishLeafNode(SKABaseDevice):
 
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception(
-                    "Abort() is not allowed in current state",
-                    "Failed to invoke Abort command on DishLeafNode.",
-                    "DishLeafNode.Abort() ",
-                    tango.ErrSeverity.ERR,
-                )
+                return False
             return True
 
         def do(self):
@@ -1509,18 +1504,22 @@ class DishLeafNode(SKABaseDevice):
                 device.event_track_time.set()
                 device._dish_proxy.command_inout_asynch("TrackStop", self.cmd_ended_cb)
             except DevFailed as dev_failed:
-                log_msg = f"{const.ERR_EXE_ABORT_CMD}{dev_failed}"
-                device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
-                tango.Except.throw_exception(
-                    const.STR_ABORT_EXEC,
-                    log_msg,
-                    "DishLeafNode.AbortCommand",
-                    tango.ErrSeverity.ERR,
-                )
+                log_msg = f"Exception occurred in Abort command"
+                device._read_activity_message = log_msg
+                self._throw_exception("Abort", log_msg)
 
-            device._read_activity_message = const.STR_ABORT_SUCCESS
+            device._read_activity_message = "Abort command invoked successfully on DishLeafNode device."
             self.logger.info(device._read_activity_message)
+    
+    @staticmethod
+    def _throw_exception(command_name, log_message):
+        tango.Except.throw_exception(
+            "{} command execution".format(command_name),
+            log_message,
+            "DishLeafNode.{}Command".format(command_name),
+            tango.ErrSeverity.ERR,
+        )
 
     @command()
     def Abort(self):
