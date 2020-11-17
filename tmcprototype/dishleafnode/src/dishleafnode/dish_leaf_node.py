@@ -708,17 +708,9 @@ class DishLeafNode(SKABaseDevice):
 
             :rtype: boolean
 
-            :raises: DevFailed if this command is not allowed to be run in current device state.
-
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception(
-                    "EndScan() is not allowed in current state",
-                    "Failed to invoke StopCapture command on DishLeafNode.",
-                    "DishLeafNode.EndScan() ",
-                    tango.ErrSeverity.ERR,
-                )
-
+                return False
             return True
 
         def do(self, argin):
@@ -729,30 +721,16 @@ class DishLeafNode(SKABaseDevice):
 
             :return: None
 
-            Example: 10.0
-
-            :raises: ValueError if argin is of invalid (other than float) data type while
-             invoking this command.
-
             """
 
             device = self.target
             try:
-                end_scan_timestamp = float(argin)
-                device._dish_proxy.command_inout_asynch(
-                    "StopCapture", str(end_scan_timestamp), device.cmd_ended_cb
-                )
-
-            except ValueError as value_error:
-                log_msg = f"{const.ERR_EXE_END_SCAN_CMD}{const.ERR_INVALID_DATATYPE}{value_error}"
+                device._dish_proxy.command_inout_asynch("StopCapture", device.cmd_ended_cb)
+            except DevFailed as dev_failed:
+                self.logger.exception(dev_failed)
+                log_msg = "Exception in EndScan command"
                 device._read_activity_message = log_msg
-                self.logger.exception(value_error)
-                tango.Except.throw_exception(
-                    const.STR_ENDSCAN_EXEC,
-                    log_msg,
-                    "DishLeafNode.EndScanCommand",
-                    tango.ErrSeverity.ERR,
-                )
+                self._throw_exception("EndScan", log_msg)
 
     def is_EndScan_allowed(self):
         """
