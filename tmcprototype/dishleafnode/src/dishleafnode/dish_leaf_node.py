@@ -1128,8 +1128,6 @@ class DishLeafNode(SKABaseDevice):
 
             :rtype: boolean
 
-            :raises: DevFailed if this command is not allowed to be run in current device state.
-
             """
             return True
 
@@ -1144,19 +1142,10 @@ class DishLeafNode(SKABaseDevice):
             try:
                 device._dish_proxy.command_inout_asynch("SetStandbyFPMode", self.cmd_ended_cb)
             except DevFailed as dev_failed:
-                log_msg = f"{const.ERR_EXE_SET_STANDBYFP_MODE_CMD}{dev_failed}"
+                log_msg = "Exception in SetStandbyFPMode command"
                 device._read_activity_message = log_msg
-                self.logger.exception(log_msg)
-                tango.Except.re_throw_exception(
-                    dev_failed,
-                    const.STR_SETSTANDBYLPMODE_EXEC,
-                    log_msg,
-                    "DishLeafNode.SetStandbyFPModeCommand",
-                    tango.ErrSeverity.ERR,
-                )
-
-            device._read_activity_message = const.STR_STANDBYFP_SUCCESS
-            self.logger.info(device._read_activity_message)
+                self.logger.exception(dev_failed)
+                self._throw_exception("SetStandbyFPMode", log_msg)
 
     def is_SetStandbyFPMode_allowed(self):
         """
