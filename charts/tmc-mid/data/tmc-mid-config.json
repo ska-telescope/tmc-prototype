@@ -1054,6 +1054,12 @@
               ],
               "min_update_period": [
                 "0.2"
+              ],
+              "polled_attr": [
+                "capturing",
+                "1000",
+                "desiredPointing",
+                "1000"
               ]
             }
           }
@@ -1074,6 +1080,12 @@
               ],
               "min_update_period": [
                 "0.2"
+              ],
+              "polled_attr": [
+                "capturing",
+                "1000",
+                "desiredPointing",
+                "1000"
               ]
             }
           }
@@ -1094,6 +1106,12 @@
               ],
               "update_period": [
                 "0.2"
+              ],
+              "polled_attr": [
+                "capturing",
+                "1000",
+                "desiredPointing",
+                "1000"
               ]
             }
           }
@@ -1114,6 +1132,12 @@
               ],
               "min_update_period": [
                 "0.2"
+              ],
+              "polled_attr": [
+                "capturing",
+                "1000",
+                "desiredPointing",
+                "1000"
               ]
             }
           }
