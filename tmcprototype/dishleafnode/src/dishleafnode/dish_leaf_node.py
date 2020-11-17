@@ -633,12 +633,7 @@ class DishLeafNode(SKABaseDevice):
             :rtype: boolean
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception(
-                    "Scan() is not allowed in current state",
-                    "Failed to invoke Scan command on DishLeafNode.",
-                    "DishLeafNode.Scan() ",
-                    tango.ErrSeverity.ERR,
-                )
+                return False
 
             return True
 
@@ -650,29 +645,15 @@ class DishLeafNode(SKABaseDevice):
 
             :return: None
 
-            Example: 10.0
-
-            :raises: ValurError if argin is of invalid (other than float) data type while
-             invoking this command.
-
             """
             device = self.target
             try:
-                scan_timestamp = float(argin)
-            except ValueError as value_error:
-                log_msg = f"{const.ERR_EXE_SCAN_CMD}{const.ERR_INVALID_DATATYPE}{value_error}"
+                device._dish_proxy.command_inout_asynch("Scan", self.cmd_ended_cb)
+            except DevFailed as dev_failed:
+                self.logger.exception(dev_failed)
+                log_msg = "Exception in executing Scan command"
                 device._read_activity_message = log_msg
-                self.logger.exception(value_error)
-                tango.Except.throw_exception(
-                    const.STR_SCAN_EXEC, log_msg, "DishLeafNode.ScanCommand", tango.ErrSeverity.ERR
-                )
-
-            self.logger.debug(const.STR_IN_SCAN)
-            device._dish_proxy.command_inout_asynch("Scan", argin, self.cmd_ended_cb)
-            self.logger.debug(const.STR_OUT_SCAN)
-            log_msg = f"{const.STR_SCAN_SUCCESS} with input argument as {argin}"
-            self.logger.info(log_msg)
-            device._read_activity_message = const.STR_SCAN_SUCCESS
+                self._throw("Scan", log_msg)
 
     def is_Scan_allowed(self):
         """
