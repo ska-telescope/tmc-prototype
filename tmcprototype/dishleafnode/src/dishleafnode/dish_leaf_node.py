@@ -1499,9 +1499,8 @@ class DishLeafNode(SKABaseDevice):
             :raises: DevFailed if error ocuurs while invoking command on DishMaster.
             """
             device = self.target
-
+            device.event_track_time.set()
             try:
-                device.event_track_time.set()
                 device._dish_proxy.command_inout_asynch("TrackStop", self.cmd_ended_cb)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
@@ -1509,9 +1508,6 @@ class DishLeafNode(SKABaseDevice):
                 device._read_activity_message = log_msg
                 self._throw_exception("Abort", log_msg)
 
-            device._read_activity_message = "Abort command invoked successfully on DishLeafNode device."
-            self.logger.info(device._read_activity_message)
-    
     @staticmethod
     def _throw_exception(command_name, log_message):
         tango.Except.throw_exception(
