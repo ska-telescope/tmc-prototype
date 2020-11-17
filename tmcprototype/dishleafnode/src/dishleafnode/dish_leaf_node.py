@@ -535,13 +535,7 @@ class DishLeafNode(SKABaseDevice):
                 PointingState.TRACK,
                 PointingState.SCAN,
             ]:
-                tango.Except.throw_exception(
-                    "SetStandbyLPMode() is not allowed in current state",
-                    "Failed to invoke SetStandbyLpMode command on DishLeafNode.",
-                    "DishLeafNode.SetStandbyLPMode() ",
-                    tango.ErrSeverity.ERR,
-                )
-
+                return False
             return True
 
         def do(self):
@@ -551,23 +545,15 @@ class DishLeafNode(SKABaseDevice):
             :return: None
 
             """
-            try:
-                device = self.target
-                device._dish_proxy.command_inout_asynch("SetStandbyLPMode", self.cmd_ended_cb)
-                device._read_activity_message = const.STR_SETSTANDBYLP_SUCCESS
-                self.logger.info(device._read_activity_message)
+            device = self.target
 
+            try:
+                device._dish_proxy.command_inout_asynch("SetStandbyLPMode", self.cmd_ended_cb)
             except DevFailed as dev_failed:
-                log_msg = f"{const.ERR_EXE_SET_STANDBYLP_MODE_CMD}{dev_failed}"
+                log_msg = "Exception in SetStandbyLPMode command"
                 device._read_activity_message = log_msg
                 self.logger.exception(log_msg)
-                tango.Except.re_throw_exception(
-                    dev_failed,
-                    const.STR_SETSTANDBYLPMODE_EXEC,
-                    log_msg,
-                    "DishLeafNode.SetStandbyLPModeCommand",
-                    tango.ErrSeverity.ERR,
-                )
+                self._throw_exception("SetStandbyLPMode", log_msg)
 
     def is_SetStandbyLPMode_allowed(self):
         """
