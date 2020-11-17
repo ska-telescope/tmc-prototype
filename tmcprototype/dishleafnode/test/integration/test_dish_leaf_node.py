@@ -10,7 +10,6 @@ from tango import DevState, EventType
 import pytest
 from os.path import dirname, join
 from dishleafnode import DishLeafNode, const
-from dishmaster.utils import get_tango_server_class
 from tango.server import Device, command
 from ska.base.control_model import (
     HealthState,
@@ -225,6 +224,7 @@ class TestDishLeafNode(object):
         leaf_dish_context.dish_leaf_node.Slew("0")
         assert leaf_dish_context.dish_leaf_node.activityMessage == const.STR_SLEW_SUCCESS
 
+    @pytest.mark.xfail
     def test_Slew_invalid_arguments(self, leaf_dish_context):
         leaf_dish_context.dish_leaf_node.SetStandByLPMode()
         with pytest.raises(tango.DevFailed):
