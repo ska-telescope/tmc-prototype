@@ -597,7 +597,6 @@ class DishLeafNode(SKABaseDevice):
                 device._read_activity_message = log_msg
                 self._throw_exception("SetOperateMode", log_msg)
 
-
     def is_SetOperateMode_allowed(self):
         """
         Checks whether this command is allowed to be run in the current device state.
@@ -1362,16 +1361,9 @@ class DishLeafNode(SKABaseDevice):
 
             :rtype: boolean
 
-            :raises: DevFailed if this command is not allowed to be run in current device state.
-
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception(
-                    "StopTrack() is not allowed in current state",
-                    "Failed to invoke StopTrack command on DishLeafNode.",
-                    "DishLeafNode.StopTrack() ",
-                    tango.ErrSeverity.ERR,
-                )
+                return False
             return True
 
         def do(self):
@@ -1386,22 +1378,14 @@ class DishLeafNode(SKABaseDevice):
 
             """
             device = self.target
+            device.event_track_time.set()
             try:
-                device.event_track_time.set()
                 device._dish_proxy.command_inout_asynch("TrackStop", self.cmd_ended_cb)
             except DevFailed as dev_failed:
-                log_msg = f"{const.ERR_EXE_STOP_TRACK_CMD}{dev_failed}"
-                device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
-                tango.Except.throw_exception(
-                    const.STR_STOPTRACK_EXEC,
-                    log_msg,
-                    "DishLeafNode.StopTrackCommand",
-                    tango.ErrSeverity.ERR,
-                )
-
-            device._read_activity_message = const.STR_STOP_TRACK_SUCCESS
-            self.logger.info(device._read_activity_message)
+                log_msg = "Exception occurred in StopTrack command"
+                device._read_activity_message = log_msg
+                self._throw_exception("StopTrack", log_msg)
 
     def is_StopTrack_allowed(self):
         """
