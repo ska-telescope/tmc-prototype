@@ -99,6 +99,32 @@ class DishLeafNode(SKABaseDevice):
         self.register_command_object("Restart", self.RestartCommand(*args))
         self.register_command_object("ObsReset", self.ObsResetCommand(*args))
 
+    @staticmethod
+    def _throw_exception(command_name, log_message):
+        tango.Except.throw_exception(
+            "{} command execution".format(command_name),
+            log_message,
+            "DishLeafNode.{}Command".format(command_name),
+            tango.ErrSeverity.ERR,
+        )
+
+    def _subscribe_to_attribute_events(self, device, attributes):
+        for attribute_name in attributes:
+            try:
+                device._dish_proxy.subscribe_event(
+                    attribute_name,
+                    EventType.CHANGE_EVENT,
+                    device.attribute_event_handler,
+                    stateless=True,
+                )
+            except DevFailed as dev_failed:
+                self.logger.exception(dev_failed)
+                log_msg = (
+                    f"Exception occurred while subscribing to Dish attribute: {attribute_name}"
+                )
+                device.set_status(const.ERR_DISH_INIT)
+                device._read_activity_message = log_msg
+
     def attribute_event_handler(self, event_data):
         """
         Retrieves the subscribed attribute of DishMaster.
@@ -378,23 +404,21 @@ class DishLeafNode(SKABaseDevice):
             super().do()
             device = self.target
 
-            self.logger.info(const.STR_INIT_LEAF_NODE)
-            device.el = 50.0
-            device.az = 0
+            self.logger.info("Initializing DishLeafNode...")
+            device.el = 30.0
+            device.az = 0.0
             device.RaDec_AzEl_Conversion = False
             device.ele_max_lim = 90
             device.ele_min_lim = 17.5
             device.el_limit = False
-            device._build_state = "{},{},{}".format(
-                release.name, release.version, release.description
-            )
+            device._build_state = f"{release.name},{release.version},{release.description}"
             device._version_id = release.version
             device.radec_value = ""
             device.set_dish_name_number()
             device.set_observer_lat_long_alt()
-            log_msg = f"{const.STR_DISHMASTER_FQDN}{device.DishMasterFQDN}"
-            self.logger.debug(log_msg)
-            device._read_activity_message = log_msg
+            log_message = f"DishMasterFQDN :-> {device.DishMasterFQDN}"
+            self.logger.debug(log_message)
+            device._read_activity_message = log_message
             device.event_track_time = threading.Event()
             device._health_state = HealthState.OK
             device._simulation_mode = SimulationMode.FALSE
@@ -402,12 +426,10 @@ class DishLeafNode(SKABaseDevice):
             try:
                 device._dish_proxy = DeviceProxy(str(device.DishMasterFQDN))
             except DevFailed as dev_failed:
-                log_msg = f"{const.ERR_IN_CREATE_PROXY_DM}{dev_failed}"
-                device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
-                tango.Except.throw_exception(
-                    const.STR_CMD_FAILED, log_msg, "DishLeafNode.InitCommand", tango.ErrSeverity.ERR
-                )
+                log_message = "Error in creating proxy to the Dish Master"
+                device._read_activity_message = log_message
+                self._throw_exception("Init", log_message)
 
             attributes_to_subscribe_to = (
                 "dishMode",
@@ -415,33 +437,19 @@ class DishLeafNode(SKABaseDevice):
                 "achievedPointing",
                 "desiredPointing",
             )
-            for attribute_name in attributes_to_subscribe_to:
-                try:
-                    device._dish_proxy.subscribe_event(
-                        attribute_name,
-                        EventType.CHANGE_EVENT,
-                        device.attribute_event_handler,
-                        stateless=True,
-                    )
-                except DevFailed as dev_failed:
-                    log_msg = f"{const.ERR_SUBS_DISH_ATTR}{dev_failed}"
-                    device.set_status(const.ERR_DISH_INIT)
-                    device._read_activity_message = log_msg
-                    self.logger.exception(dev_failed)
-                    tango.Except.throw_exception(
-                        const.STR_CMD_FAILED,
-                        log_msg,
-                        "DishLeafNode.InitCommand",
-                        tango.ErrSeverity.ERR,
-                    )
+
+            self._subscribe_to_attribute_events(device, attributes_to_subscribe_to)
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
-            log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
-            self.logger.debug(log_msg)
-            device._read_activity_message = log_msg
-            device.set_status(const.STR_DISH_INIT_SUCCESS)
-            device._read_activity_message = const.STR_DISH_INIT_SUCCESS
-            self.logger.info(device._read_activity_message)
+            log_message = (
+                f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
+            )
+            self.logger.debug(log_message)
+            device._read_activity_message = log_message
+            log_message = "Dish Leaf Node initialized successfully."
+            device.set_status(log_message)
+            device._read_activity_message = log_message
+            self.logger.info(log_message)
             return (ResultCode.OK, device._read_activity_message)
 
     class SetStowModeCommand(BaseCommand):
@@ -1162,8 +1170,6 @@ class DishLeafNode(SKABaseDevice):
 
             :rtype: boolean
 
-            :raises: DevFailed if this command is not allowed to be run in current device state.
-
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 tango.Except.throw_exception(
@@ -1369,15 +1375,6 @@ class DishLeafNode(SKABaseDevice):
                 log_msg = f"Exception occurred in Abort command"
                 device._read_activity_message = log_msg
                 self._throw_exception("Abort", log_msg)
-
-    @staticmethod
-    def _throw_exception(command_name, log_message):
-        tango.Except.throw_exception(
-            "{} command execution".format(command_name),
-            log_message,
-            "DishLeafNode.{}Command".format(command_name),
-            tango.ErrSeverity.ERR,
-        )
 
     @command()
     def Abort(self):
