@@ -552,7 +552,7 @@ class DishLeafNode(SKABaseDevice):
             except DevFailed as dev_failed:
                 log_msg = "Exception in SetStandbyLPMode command"
                 device._read_activity_message = log_msg
-                self.logger.exception(log_msg)
+                self.logger.exception(dev_failed)
                 self._throw_exception("SetStandbyLPMode", log_msg)
 
     def is_SetStandbyLPMode_allowed(self):
@@ -600,20 +600,12 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
             try:
                 device._dish_proxy.command_inout_asynch("SetOperateMode", self.cmd_ended_cb)
-                device._read_activity_message = const.STR_SETOPERATE_SUCCESS
-                self.logger.info(device._read_activity_message)
-
             except DevFailed as dev_failed:
-                log_msg = f"{const.ERR_EXE_SET_OPERATE_MODE_CMD}{dev_failed}"
+                self.logger.exception(dev_failed)
+                log_msg = "Exception in SetOperateMode command"
                 device._read_activity_message = log_msg
-                self.logger.exception(log_msg)
-                tango.Except.re_throw_exception(
-                    dev_failed,
-                    const.STR_SETOPERATEMODE_EXEC,
-                    log_msg,
-                    "DishLeafNode.SetOperateModeCommand",
-                    tango.ErrSeverity.ERR,
-                )
+                self._throw_exception("SetOperateMode", log_msg)
+
 
     def is_SetOperateMode_allowed(self):
         """
