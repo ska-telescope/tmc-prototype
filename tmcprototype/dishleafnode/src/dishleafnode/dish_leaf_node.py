@@ -1541,12 +1541,7 @@ class DishLeafNode(SKABaseDevice):
 
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception(
-                    "Restart() is not allowed in current state",
-                    "Failed to invoke Restart command on DishLeafNode.",
-                    "DishLeafNode.Restart() ",
-                    tango.ErrSeverity.ERR,
-                )
+                return False
             return True
 
         def do(self):
@@ -1565,18 +1560,10 @@ class DishLeafNode(SKABaseDevice):
             try:
                 device._dish_proxy.command_inout_asynch("SetStandbyLPMode", self.cmd_ended_cb)
             except DevFailed as dev_failed:
-                log_msg = f"{const.ERR_EXE_RESTART_CMD}{dev_failed}"
+                log_msg = "Exception occurred in Restart command"
                 device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
-                tango.Except.throw_exception(
-                    const.STR_RESTART_EXEC,
-                    log_msg,
-                    "DishLeafNode.RestartCommand",
-                    tango.ErrSeverity.ERR,
-                )
-
-            device._read_activity_message = const.STR_RESTART_SUCCESS
-            self.logger.info(device._read_activity_message)
+                self._throw_exception("Restart", log_msg)
 
     @command()
     def Restart(self):
