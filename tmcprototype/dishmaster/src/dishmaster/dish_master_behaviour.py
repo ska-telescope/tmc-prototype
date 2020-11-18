@@ -512,9 +512,13 @@ class OverrideDish(object):
         """The Dish is tracking the commanded pointing positions within the
         specified SCAN pointing accuracy.
 
-        data_input: str
-            Timestamp in UTC at which command execution should start
+        data_input: None
         """
+        # TODO (KM: 17-11-2020) Track takes no inputs, however at the moment the current
+        # of the DishMaster simulator expects an input (timestamp), which is uses in the
+        # `_change_pointing_state` method. Will need to change that later.
+        COMMAND_TIME_OFFSET = 5
+        data_input = time.time() + COMMAND_TIME_OFFSET
         self._change_pointing_state(model, data_input, "SCAN", ("OPERATE",))
         model.logger.info("'Scan' command executed successfully.")
 
