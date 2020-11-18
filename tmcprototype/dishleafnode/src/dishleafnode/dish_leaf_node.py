@@ -54,7 +54,6 @@ class CommandCallBack:
                 - errors     : (sequence<DevError>) The error stack
                 - ext
         :return: none
-
         """
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
@@ -136,38 +135,27 @@ class DishLeafNode(SKABaseDevice):
     def convert_radec_to_azel(self, data):
         """Converts RaDec coordinate in to AzEl coordinate using KATPoint library.
 
-        :param data: DevVarStringArray
+        :param data: list
         Argin to be provided is the Ra and Dec values in the following format:
-        radec|21:08:47.92|89:15:51.4
-        Where first value is tag that is radec, second value is Ra in Hr:Min:Sec,and third value is Dec in
-        Deg:Min:Sec.
+        [0] = radec,21:08:47.92,89:15:51.4
+        [1] = timestamp
 
         :return: None.
 
-        :raises: Exception if error occurs in Ra-Dec to Az-El conversion
-
+        :raises: ValueError if error occurs in Ra-Dec to Az-El conversion
         """
-        try:
-            dish_antenna = katpoint.Antenna(
-                name=self.dish_name,
-                latitude=self.observer_location_lat,
-                longitude=self.observer_location_long,
-                altitude=self.observer_altitude,
-            )
-        except ValueError as value_err:
-            self.RaDec_AzEl_Conversion = False
-            raise value_err
+        dish_antenna = katpoint.Antenna(
+            name=self.dish_name,
+            latitude=self.observer_location_lat,
+            longitude=self.observer_location_long,
+            altitude=self.observer_altitude,
+        )
 
         dish_antenna_latitude = dish_antenna.ref_observer.lat
 
         # Compute Target Coordinates
         target_radec = data[0]
-
-        try:
-            desired_target = katpoint.Target(str(target_radec))
-        except ValueError as value_err:
-            self.RaDec_AzEl_Conversion = False
-            raise value_err
+        desired_target = katpoint.Target(str(target_radec))
 
         timestamp = katpoint.Timestamp(timestamp=data[1])
 
@@ -176,7 +164,6 @@ class DishLeafNode(SKABaseDevice):
                 desired_target, timestamp=timestamp, antenna=dish_antenna
             )
         except ValueError as value_err:
-            self.RaDec_AzEl_Conversion = False
             raise value_err
 
         # TODO: Conversion of apparent ra and dec using katpoint library for future refererence.
@@ -201,18 +188,13 @@ class DishLeafNode(SKABaseDevice):
         enu_array = katpoint.hadec_to_enu(hour_angle, target_apparnt_radec[1], latitude_radian)
 
         # Calculate Az El coordinates
-        self.az_el_coordinates = katpoint.enu_to_azel(enu_array[0], enu_array[1], enu_array[2])
-        self.az = katpoint.rad2deg(self.az_el_coordinates[0])
-        self.el = katpoint.rad2deg(self.az_el_coordinates[1])
-        self.RaDec_AzEl_Conversion = True
-
-        return self.az_el_coordinates
+        az_el_coordinates = katpoint.enu_to_azel(enu_array[0], enu_array[1], enu_array[2])
+        return az_el_coordinates
 
     def tracking_time_thread(self):
         """This thread allows the dish to track the source for a specified Duration.
 
         :return: None.
-
         """
         start_track_time = time.time()
         end_track_time = start_track_time + self.TrackDuration * 60.0
@@ -237,30 +219,13 @@ class DishLeafNode(SKABaseDevice):
         while self.event_track_time.is_set() is False:
             now = datetime.datetime.utcnow()
             timestamp_value = str(now)
-            katpoint_arg = []
-            katpoint_arg.insert(0, self.radec_value)
-            katpoint_arg.insert(1, timestamp_value)
+            katpoint_arg = [self.radec_value, timestamp_value]
 
-            try:
-                self.convert_radec_to_azel(katpoint_arg)
-            except ValueError as valuerr:
-                log_msg = f"{const.ERR_EXE_TRACK}{valuerr}"
-                self.logger.error(log_msg)
-                self._read_activity_message = log_msg
-                return
+            az_el_coordinates = self.convert_radec_to_azel(katpoint_arg)
+            self.az = katpoint.rad2deg(az_el_coordinates[0])
+            self.el = katpoint.rad2deg(az_el_coordinates[1])
 
-            if not self.RaDec_AzEl_Conversion:
-                self._read_activity_message = const.ERR_AZ_EL_CALC
-                self.logger.info(const.ERR_AZ_EL_CALC)
-                time.sleep(0.05)
-                continue
-
-            if not (self.el >= self.ele_min_lim and self.el <= self.ele_max_lim):
-                self.el_limit = True
-                self._read_activity_message = const.ERR_ELE_LIM
-                self.logger.info(const.ERR_ELE_LIM)
-                self._read_activity_message = const.STR_SRC_NOT_VISIBLE
-                self.logger.info(const.STR_SRC_NOT_VISIBLE)
+            if not self._is_elevation_within_mechanical_limits():
                 time.sleep(0.05)
                 continue
 
@@ -332,10 +297,10 @@ class DishLeafNode(SKABaseDevice):
         self.observer_location_long = f"{dish_long_dms[0]}:{dish_long_dms[1]}:{dish_long_dms[2]}"
         self.observer_altitude = dish_ecef_coordinates[2]
 
-    def _get_targets(self, jsonArgument):
+    def _get_targets(self, json_argument):
         try:
-            ra_value = jsonArgument["pointing"]["target"]["RA"]
-            dec_value = jsonArgument["pointing"]["target"]["dec"]
+            ra_value = json_argument["pointing"]["target"]["RA"]
+            dec_value = json_argument["pointing"]["target"]["dec"]
         except KeyError as key_error:
             self.logger.exception(key_error)
             log_message = "JSON key not found."
@@ -346,14 +311,14 @@ class DishLeafNode(SKABaseDevice):
 
     def _load_config_string(self, argin):
         try:
-            jsonArgument = json.loads(argin)
+            json_argument = json.loads(argin)
         except json.JSONDecodeError as jsonerr:
             self.logger.exception(jsonerr)
             log_message = "Invalid JSON format."
             self._read_activity_message = log_message
             self._throw_exception("Track", log_message)
 
-        return jsonArgument
+        return json_argument
 
     # -----------------
     # Device Properties
@@ -403,7 +368,7 @@ class DishLeafNode(SKABaseDevice):
 
             :rtype: (ResultCode, str)
 
-            :raises: DevFailed if error occurs in creating proxy for DishMaster or in subscribing the event on DishMaster
+            :raises: DevFailed if error occurs in creating proxy for DishMaster
             """
             # TODO: The code is implemented such way that even in case of exception,
             #  the execution will continue. It is possible that due to this,
@@ -416,7 +381,6 @@ class DishLeafNode(SKABaseDevice):
             self.logger.info("Initializing DishLeafNode...")
             device.el = 30.0
             device.az = 0.0
-            device.RaDec_AzEl_Conversion = False
             device.ele_max_lim = 90
             device.ele_min_lim = 17.5
             device.el_limit = False
@@ -476,7 +440,7 @@ class DishLeafNode(SKABaseDevice):
                     log_msg = (
                         f"Exception occurred while subscribing to Dish attribute: {attribute_name}"
                     )
-                    device.set_status(const.ERR_DISH_INIT)
+                    device.set_status("Error occured in Dish Leaf Node initialization")
                     device._read_activity_message = log_msg
 
     class SetStowModeCommand(BaseCommand):
@@ -495,9 +459,6 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
-
-            :raises: DevFailed if this command is not allowed to be run in current device state.
-
             """
             return True
 
@@ -506,7 +467,6 @@ class DishLeafNode(SKABaseDevice):
             Invokes SetStowMode command on DishMaster.
 
             :return: None
-
             """
             device = self.target
             try:
@@ -524,7 +484,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
-
         """
         handler = self.get_command_object("SetStowMode")
         return handler.check_allowed()
@@ -551,9 +510,6 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
-
-            :raises: DevFailed if this command is not allowed to be run in current device state.
-
             """
             device = self.target
             if device._dish_proxy.pointingState in [
@@ -569,7 +525,6 @@ class DishLeafNode(SKABaseDevice):
             Invokes SetStandbyLPMode (i.e. Low Power State) command on DishMaster.
 
             :return: None
-
             """
             device = self.target
 
@@ -639,7 +594,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
-
         """
         handler = self.get_command_object("SetOperateMode")
         return handler.check_allowed()
@@ -679,7 +633,6 @@ class DishLeafNode(SKABaseDevice):
             :param argin: timestamp
 
             :return: None
-
             """
             device = self.target
             try:
@@ -697,7 +650,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
-
         """
         handler = self.get_command_object("Scan")
         return handler.check_allowed()
@@ -723,10 +675,10 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
-
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 return False
+
             return True
 
         def do(self, argin):
@@ -736,9 +688,7 @@ class DishLeafNode(SKABaseDevice):
             :param argin: timestamp
 
             :return: None
-
             """
-
             device = self.target
             try:
                 device._dish_proxy.command_inout_asynch("StopCapture", device.cmd_ended_cb)
@@ -755,7 +705,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
-
         """
         handler = self.get_command_object("EndScan")
         return handler.check_allowed()
@@ -765,7 +714,7 @@ class DishLeafNode(SKABaseDevice):
         doc_in="Timestamp",
     )
     def EndScan(self, argin):
-        """ Invokes StopCapture command on DishMaster. """
+        """Invokes StopCapture command on DishMaster. """
         handler = self.get_command_object("EndScan")
         handler(argin)
 
@@ -785,9 +734,6 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
-
-            :raises: DevFailed if this command is not allowed to be run in current device state.
-
             """
             if self.state_model.op_state in [
                 DevState.FAULT,
@@ -816,23 +762,17 @@ class DishLeafNode(SKABaseDevice):
             :return: None
 
             :raises: DevFailed if error occurs while invoking this command on DishMaster.
-                     ValueError if argin is not in valid JSON format.
-                     KeyError if JSON key is not present in argin
-
             """
 
             device = self.target
-            jsonArgument = device._load_config_string(argin)
-            ra_value, dec_value = device._get_targets(jsonArgument)
+            json_argument = device._load_config_string(argin)
+            ra_value, dec_value = device._get_targets(json_argument)
             device.radec_value = f"radec,{ra_value},{dec_value}"
-            receiver_band = int(jsonArgument["dish"]["receiverBand"])
+            receiver_band = json_argument["dish"]["receiverBand"]
             now = datetime.datetime.utcnow()
             timestamp_value = str(now)
 
-            katpoint_arg = []
-            katpoint_arg.insert(0, device.radec_value)
-            katpoint_arg.insert(1, timestamp_value)
-
+            katpoint_arg = [device.radec_value, timestamp_value]
             try:
                 device.convert_radec_to_azel(katpoint_arg)
             except ValueError as valuerr:
@@ -863,7 +803,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
-
         """
         handler = self.get_command_object("Configure")
         return handler.check_allowed()
@@ -873,7 +812,7 @@ class DishLeafNode(SKABaseDevice):
         doc_in="Pointing parameter of Dish",
     )
     def Configure(self, argin):
-        """ Configures the Dish by setting pointing coordinates for a given observation. """
+        """Configures the Dish by setting pointing coordinates for a given observation."""
         handler = self.get_command_object("Configure")
         handler(argin)
 
@@ -893,7 +832,6 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
-
             """
             if self.state_model.op_state in [
                 DevState.FAULT,
@@ -911,7 +849,6 @@ class DishLeafNode(SKABaseDevice):
             :param argin: timestamp
 
             :return: None
-
             """
             device = self.target
             try:
@@ -955,17 +892,9 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
-
-            :raises: DevFailed if this command is not allowed to be run in current device state.
-
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-                tango.Except.throw_exception(
-                    "StopCapture() is not allowed in current state",
-                    "Failed to invoke StopCapture command on DishLeafNode.",
-                    "DishLeafNode.StopCapture() ",
-                    tango.ErrSeverity.ERR,
-                )
+                return False
 
             return True
 
@@ -976,7 +905,6 @@ class DishLeafNode(SKABaseDevice):
             :param argin: timestamp
 
             :return: None
-
             """
             device = self.target
             try:
@@ -1003,7 +931,7 @@ class DishLeafNode(SKABaseDevice):
         doc_in="The timestamp indicates the time, in UTC, at which command execution should start.",
     )
     def StopCapture(self, argin):
-        """ Invokes StopCapture command on DishMaster on the set configured band. """
+        """Invokes StopCapture command on DishMaster on the set configured band."""
         handler = self.get_command_object("StopCapture")
         handler(argin)
 
@@ -1023,7 +951,6 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
-
             """
             return True
 
@@ -1032,7 +959,6 @@ class DishLeafNode(SKABaseDevice):
             Invokes SetStandbyFPMode command on DishMaster (Standby-Full power) mode.
 
             :return:None
-
             """
             device = self.target
             try:
@@ -1050,14 +976,13 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state
 
         :rtype: boolean
-
         """
         handler = self.get_command_object("SetStandbyFPMode")
         return handler.check_allowed()
 
     @command()
     def SetStandbyFPMode(self):
-        """ Invokes SetStandbyFPMode command on DishMaster (Standby-Full power) mode. """
+        """Invokes SetStandbyFPMode command on DishMaster (Standby-Full power) mode."""
         handler = self.get_command_object("SetStandbyFPMode")
         handler()
 
@@ -1077,9 +1002,6 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
-
-            :raises: DevFailed if this command is not allowed to be run in current device state.
-
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 return False
@@ -1093,7 +1015,6 @@ class DishLeafNode(SKABaseDevice):
             :param argin: timestamp
 
             :return: None
-
             """
             device = self.target
             dummy_coordinates = [0.0, 0.0]
@@ -1114,7 +1035,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
-
         """
         handler = self.get_command_object("Slew")
         return handler.check_allowed()
@@ -1124,7 +1044,7 @@ class DishLeafNode(SKABaseDevice):
         doc_in="Timestamp at which command should be executed.",
     )
     def Slew(self, argin):
-        """ Invokes Slew command on DishMaster to slew the dish towards the set pointing coordinates. """
+        """Invokes Slew command on DishMaster to slew the dish towards the set pointing coordinates."""
         handler = self.get_command_object("Slew")
         handler(argin)
 
@@ -1144,7 +1064,6 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
-
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 return False
@@ -1169,9 +1088,7 @@ class DishLeafNode(SKABaseDevice):
 
             :return: None
 
-            :raises: JSONDecodeError if argin is not a valid JSON format, KeyError if JSON key is
-              not present in argin while invoking this command on DishMaster.
-
+            :raises: DevFailed if error occurs while invoking this command on DishMaster.
             """
             device = self.target
             device.el_limit = False
@@ -1179,11 +1096,11 @@ class DishLeafNode(SKABaseDevice):
             json_argin = device._load_config_string(argin)
             ra_value, dec_value = device._get_targets(json_argin)
             device.radec_value = f"radec,{ra_value},{dec_value}"
-            self.logger.debug("Radec value: {}".format(device.radec_value))
+            self.logger.debug("Radec value: %s", device.radec_value)
             self.logger.info(
                 "Track command ignores RA dec coordinates passed in: %s. "
                 "Uses coordinates from Configure command instead.",
-                device.radec_value
+                device.radec_value,
             )
 
             # Invoke Track command on Dish Master
@@ -1194,34 +1111,11 @@ class DishLeafNode(SKABaseDevice):
                 log_message = "Exception occured in the execution of Track command."
                 self._read_activity_message = log_message
                 self._throw_exception("Track", log_message)
-           
+
             device.event_track_time.clear()
 
-            device.track_thread1 = threading.Thread(
-                None, device.track_thread, const.THREAD_TRACK
-            )
-            device.track_thread1.start()
-
-        def _track_command_callback(self, event):
-            device = self.target
-            if event.err:
-                log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
-                self.logger.error(log_msg)
-                self.device._read_activity_message = log_msg
-            else:
-                self.logger.debug("pointingState: {}".format(device._dish_proxy.pointingState))
-                if device._dish_proxy.pointingState == PointingState.TRACK:
-                    self.logger.debug("Creating a tracking thread")
-                    device.tracking_thread = threading.Thread(
-                        None, device.track_thread, "DishLeafNode"
-                    )
-                    if not device.tracking_thread.is_alive():
-                        self.logger.debug("Starting tracking thread")
-                        device.tracking_thread.start()
-                        self.logger.debug("Started tracking thread")
-                log_msg = f"Command :-> {event.cmd_name} invoked successfully."
-                self.logger.info(log_msg)
-                self.device._read_activity_message = log_msg
+            device.tracking_thread = threading.Thread(None, device.track_thread, "DishLeafNode")
+            device.tracking_thread.start()
 
     def is_Track_allowed(self):
         """
@@ -1230,7 +1124,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
-
         """
         handler = self.get_command_object("Track")
         return handler.check_allowed()
@@ -1240,7 +1133,7 @@ class DishLeafNode(SKABaseDevice):
         doc_in="The JSON input string contains dish and pointing information.",
     )
     def Track(self, argin):
-        """ Invokes Track command on the DishMaster. """
+        """Invokes Track command on the DishMaster."""
         handler = self.get_command_object("Track")
         handler(argin)
 
@@ -1260,22 +1153,19 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
-
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 return False
+
             return True
 
         def do(self):
             """
-            Invokes StopTrack command on the DishMaster.
-
-            :param argin: None.
+            Invokes TrackStop command on the DishMaster.
 
             :return: None
 
             :raises: DevFailed if error occurs while invoking this command on DishMaster.
-
             """
             device = self.target
             device.event_track_time.set()
@@ -1294,7 +1184,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
-
         """
         handler = self.get_command_object("StopTrack")
         return handler.check_allowed()
@@ -1315,26 +1204,21 @@ class DishLeafNode(SKABaseDevice):
             self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
 
         def check_allowed(self):
-
             """
             Checks whether this command is allowed to be run in current device state
 
             :return: True if this command is allowed to be run in current device state
 
             :rtype: boolean
-
-            :raises: DevFailed if this command is not allowed to be run in current device state
-
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 return False
+
             return True
 
         def do(self):
             """
-            Invokes Abort command on the DishMaster.
-
-            :param argin: DevVoid
+            Invokes TrackStop command on the DishMaster.
 
             :return: None
 
@@ -1352,7 +1236,7 @@ class DishLeafNode(SKABaseDevice):
 
     @command()
     def Abort(self):
-        """ Invokes Abort command on the DishMaster."""
+        """Invokes Abort command on the DishMaster."""
         handler = self.get_command_object("Abort")
         handler()
 
@@ -1383,25 +1267,19 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state
 
             :rtype: boolean
-
-            :raises: DevFailed if this command is not allowed to be run in current device state
-
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 return False
+
             return True
 
         def do(self):
             """
-            Invokes Restart command on the DishMaster.
-
-            :param argin: DevVoid
+            Invokes SetStandbyLPMode command on the DishMaster.
 
             :return: None
 
             raises: DevFailed if error occurs while invoking command on DishMaster
-                    Exception if error occurs while executing the command
-
             """
             device = self.target
             try:
@@ -1414,7 +1292,7 @@ class DishLeafNode(SKABaseDevice):
 
     @command()
     def Restart(self):
-        """ Invokes Restart command on the DishMaster."""
+        """Invokes Restart command on the DishMaster."""
         handler = self.get_command_object("Restart")
         handler()
 
@@ -1445,19 +1323,15 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state
 
             :rtype: boolean
-
-            :raises: DevFailed if this command is not allowed to be run in current device state
-
             """
             if self.state_model.op_state in [DevState.UNKNOWN, DevState.DISABLE]:
                 return False
+
             return True
 
         def do(self):
             """
             Command to reset the Dishleaf Node and bring it to its RESETTING state.
-
-            :param argin: None
 
             :return: None
 
@@ -1474,9 +1348,8 @@ class DishLeafNode(SKABaseDevice):
                 self._throw_exception("ObsReset", log_msg)
 
     @command()
-    @DebugIt()
     def ObsReset(self):
-        """ Invokes ObsReset command on the DishLeafNode."""
+        """Invokes ObsReset command on the DishLeafNode."""
         handler = self.get_command_object("ObsReset")
         handler()
 
@@ -1487,7 +1360,6 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state
 
         :rtype: boolean
-
         """
         handler = self.get_command_object("ObsReset")
         return handler.check_allowed()
