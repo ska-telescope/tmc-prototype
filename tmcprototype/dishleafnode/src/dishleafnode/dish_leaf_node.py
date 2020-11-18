@@ -108,23 +108,6 @@ class DishLeafNode(SKABaseDevice):
             tango.ErrSeverity.ERR,
         )
 
-    def _subscribe_to_attribute_events(self, device, attributes):
-        for attribute_name in attributes:
-            try:
-                device._dish_proxy.subscribe_event(
-                    attribute_name,
-                    EventType.CHANGE_EVENT,
-                    device.attribute_event_handler,
-                    stateless=True,
-                )
-            except DevFailed as dev_failed:
-                self.logger.exception(dev_failed)
-                log_msg = (
-                    f"Exception occurred while subscribing to Dish attribute: {attribute_name}"
-                )
-                device.set_status(const.ERR_DISH_INIT)
-                device._read_activity_message = log_msg
-
     def attribute_event_handler(self, event_data):
         """
         Retrieves the subscribed attribute of DishMaster.
@@ -418,6 +401,25 @@ class DishLeafNode(SKABaseDevice):
             device._read_activity_message = log_message
             self.logger.info(log_message)
             return (ResultCode.OK, device._read_activity_message)
+
+        def _subscribe_to_attribute_events(self, attributes):
+            device = self.target
+            for attribute_name in attributes:
+                try:
+                    device._dish_proxy.subscribe_event(
+                        attribute_name,
+                        EventType.CHANGE_EVENT,
+                        device.attribute_event_handler,
+                        stateless=True,
+                    )
+                except DevFailed as dev_failed:
+                    self.logger.exception(dev_failed)
+                    log_msg = (
+                        f"Exception occurred while subscribing to Dish attribute: {attribute_name}"
+                    )
+                    device.set_status(const.ERR_DISH_INIT)
+                    device._read_activity_message = log_msg
+
 
     class SetStowModeCommand(BaseCommand):
         """
