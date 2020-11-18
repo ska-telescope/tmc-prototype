@@ -388,7 +388,7 @@ class DishLeafNode(SKABaseDevice):
                 "desiredPointing",
             )
 
-            self._subscribe_to_attribute_events(device, attributes_to_subscribe_to)
+            self._subscribe_to_attribute_events(attributes_to_subscribe_to)
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_message = (
