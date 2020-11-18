@@ -216,6 +216,7 @@ class DishLeafNode(SKABaseDevice):
             katpoint_arg = [self.radec_value, timestamp_value]
 
             try:
+                self.logger.debug("Converting radec '{}' to azel".format(katpoint_arg[0]))
                 az_el_coordinates = self.convert_radec_to_azel(katpoint_arg)
             except ValueError as valuerr:
                 log_msg = f"Exception occured in the execution of Track command. {valuerr}"
