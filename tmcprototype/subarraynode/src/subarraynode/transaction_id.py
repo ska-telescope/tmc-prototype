@@ -45,7 +45,7 @@ def update_with_id(obj,parameters:Any)->Union[Dict,str]:
         inject_id(obj,parameters)
         return parameters
     else: raise Exception(f'arg {parameters} is of not type dict or string')
-    return parameters
+    
 
 def inject_with_id(arg_position:int,arg_name:str):
     def wrapper(func):
@@ -59,5 +59,5 @@ def inject_with_id(arg_position:int,arg_name:str):
                 kwargs[arg_name] = update_with_id(obj,kwargs[arg_name])
             else: raise Exception('arguments not matching wrap function')
             return func(obj,*args,**kwargs)
-        return func
+        return wrap
     return wrapper
