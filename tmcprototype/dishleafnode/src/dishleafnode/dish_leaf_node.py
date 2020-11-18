@@ -1155,7 +1155,7 @@ class DishLeafNode(SKABaseDevice):
             device.event_track_time.clear()
 
             try:
-                device._dish_proxy.command_inout_asynch("Track", self.cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch("Track", self._track_command_callback)
             except DevFailed as dev_failed:
                 self.logger.error(dev_failed)
                 log_message = "Exception occured in the execution of Track command."
@@ -1169,6 +1169,7 @@ class DishLeafNode(SKABaseDevice):
                 self.logger.error(log_msg)
                 self.device._read_activity_message = log_msg
             else:
+                self.logger.debug("pointingState: {}".format(device._dish_proxy.pointingState))
                 if device._dish_proxy.pointingState == PointingState.TRACK:
                     self.logger.debug("Creating a tracking thread")
                     device.tracking_thread = threading.Thread(
