@@ -1181,7 +1181,7 @@ class DishLeafNode(SKABaseDevice):
             device.event_track_time.clear()
 
             try:
-                device._dish_proxy.command_inout_asynch("Track", self.cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch("Track", self._track_command_callback)
             except DevFailed as dev_failed:
                 self.logger.error(dev_failed)
                 log_message = "Exception occured in the execution of Track command."
@@ -1192,6 +1192,21 @@ class DishLeafNode(SKABaseDevice):
                 device.tracking_thread = threading.Thread(None, device.track_thread, "DishLeafNode")
                 if not device.tracking_thread.is_alive():
                     device.tracking_thread.start()
+
+        def _track_command_callback(self, event):
+            device = self.target
+            if event.err:
+                log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+                self.logger.error(log_msg)
+                self.device._read_activity_message = log_msg
+            else:
+                if device._dish_proxy.pointingState == PointingState.TRACK:
+                    device.tracking_thread = threading.Thread(None, device.track_thread, "DishLeafNode")
+                    if not device.tracking_thread.is_alive():
+                        device.tracking_thread.start()
+                log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
+                self.logger.info(log_msg)
+                self.device._read_activity_message = log_msg
 
         def _get_targets(self, jsonArgument):
             device = self.target
