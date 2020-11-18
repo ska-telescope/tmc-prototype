@@ -158,7 +158,11 @@ class DishLeafNode(SKABaseDevice):
 
         # Compute Target Coordinates
         target_radec = data[0]
-        desired_target = katpoint.Target(str(target_radec))
+        try:
+            desired_target = katpoint.Target(str(target_radec))
+        except Exception as e:
+            self.logger.debug(str(e))
+
         timestamp = katpoint.Timestamp(timestamp=data[1])
 
         try:
@@ -1179,6 +1183,7 @@ class DishLeafNode(SKABaseDevice):
             jsonArgument = self._load_config_string(argin)
             ra_value, dec_value = self._get_targets(jsonArgument)
             device.radec_value = f"radec,{ra_value},{dec_value}"
+            self.logger.debug("Radec value: {}".format(device.radec_value))
             device.event_track_time.clear()
 
             try:
