@@ -267,20 +267,12 @@ class DishLeafNode(SKABaseDevice):
                 self.az = 360 - abs(self.az)
 
             desired_pointing = [0, round(self.az, 12), round(self.el, 12)]
+            self.logger.debug("desiredPointing coordinates: {}".format(desired_pointing))
             self._dish_proxy.desiredPointing = desired_pointing
             if self.event_track_time.is_set():
                 log_msg = f"{const.STR_BREAK_LOOP}{self.event_track_time.is_set()}"
                 self.logger.debug(log_msg)
                 break
-
-            self.logger.info("Invoking Track command on DishMaster.")
-            try:
-                self._dish_proxy.command_inout_asynch(const.CMD_TRACK, "0", self.cmd_ended_cb)
-            except DevFailed as dev_failed:
-                log_msg = f"{const.ERR_EXE_TRACK}{dev_failed}"
-                self.logger.error(log_msg)
-                self._read_activity_message = log_msg
-                return
 
             time.sleep(0.05)
 
