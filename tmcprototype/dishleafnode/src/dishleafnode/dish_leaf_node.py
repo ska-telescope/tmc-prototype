@@ -302,6 +302,29 @@ class DishLeafNode(SKABaseDevice):
         self.observer_location_lat = f"{dish_lat_dms[0]}:{dish_lat_dms[1]}:{dish_lat_dms[2]}"
         self.observer_location_long = f"{dish_long_dms[0]}:{dish_long_dms[1]}:{dish_long_dms[2]}"
         self.observer_altitude = dish_ecef_coordinates[2]
+    
+    def _get_targets(self, jsonArgument):
+        try:
+            ra_value = jsonArgument["pointing"]["target"]["RA"]
+            dec_value = jsonArgument["pointing"]["target"]["dec"]
+        except KeyError as key_error:
+            self.logger.exception(key_error)
+            log_message = "JSON key not found."
+            self._read_activity_message = log_message
+            self._throw_exception("Track", log_message)
+
+        return (ra_value, dec_value)
+
+    def _load_config_string(self, argin):
+        try:
+            jsonArgument = json.loads(argin)
+        except json.JSONDecodeError as jsonerr:
+            self.logger.exception(jsonerr)
+            log_message = "Invalid JSON format."
+            self._read_activity_message = log_message
+            self._throw_exception("Track", log_message)
+
+        return jsonArgument
 
     # -----------------
     # Device Properties
@@ -743,12 +766,7 @@ class DishLeafNode(SKABaseDevice):
                 DevState.DISABLE,
                 DevState.INIT,
             ]:
-                tango.Except.throw_exception(
-                    "Configure() is not allowed in current state",
-                    "Failed to invoke Configure command on DishLeafNode.",
-                    "DishLeafNode.Configure() ",
-                    tango.ErrSeverity.ERR,
-                )
+                return False
 
             return True
 
@@ -775,75 +793,40 @@ class DishLeafNode(SKABaseDevice):
             """
 
             device = self.target
-            try:
-                jsonArgument = json.loads(argin)
-            except json.JSONDecodeError as jsonerr:
-                log_msg = f"{const.ERR_INVALID_JSON}{jsonerr}"
-                device._read_activity_message = log_msg
-                self.logger.error(log_msg)
-                tango.Except.throw_exception(
-                    const.STR_CONFIGURE_EXEC,
-                    log_msg,
-                    "DishLeafNode.ConfigureCommand",
-                    tango.ErrSeverity.ERR,
-                )
-            try:
-                ra_value = jsonArgument["pointing"]["target"]["RA"]
-                dec_value = jsonArgument["pointing"]["target"]["dec"]
-                receiver_band = int(jsonArgument["dish"]["receiverBand"])
-            except KeyError as key_error:
-                log_msg = f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}"
-                device._read_activity_message = log_msg
-                self.logger.error(log_msg)
-                tango.Except.throw_exception(
-                    const.STR_CONFIGURE_EXEC,
-                    log_msg,
-                    "DishLeafNode.ConfigureCommand",
-                    tango.ErrSeverity.ERR,
-                )
+            jsonArgument = device._load_config_string(argin)
+            ra_value, dec_value = device._get_targets(jsonArgument)
+            device.radec_value = f"radec,{ra_value},{dec_value}"
+            receiver_band = int(jsonArgument["dish"]["receiverBand"])
+            now = datetime.datetime.utcnow()
+            timestamp_value = str(now)
 
-            timestamp_value = str(datetime.datetime.utcnow())
-            radec_value = f"radec,{ra_value},{dec_value}"
+
             katpoint_arg = []
-            katpoint_arg.insert(0, radec_value)
+            katpoint_arg.insert(0, device.radec_value)
             katpoint_arg.insert(1, timestamp_value)
 
             try:
                 device.convert_radec_to_azel(katpoint_arg)
             except ValueError as valuerr:
-                log_msg = f"{const.ERR_EXE_CONFIGURE_CMD}{valuerr}"
+                self.logger.exception(valuerr)
+                log_msg = "Exception occurred in Configure command"
                 device._read_activity_message = log_msg
-                self.logger.error(log_msg)
-                tango.Except.throw_exception(
-                    const.STR_CONFIGURE_EXEC,
-                    log_msg,
-                    "DishLeafNode.ConfigureCommand",
-                    tango.ErrSeverity.ERR,
-                )
+                self._throw("Configure", log_msg)
 
-            arg_list = {
-                "pointing": {"AZ": device.az, "EL": device.el},
-                "dish": {"receiverBand": receiver_band},
-            }
-            dish_str_ip = json.dumps(arg_list)
+            # Set desiredPointing on Dish Master (it won't move until asked to
+            # track or scan, but provide initial coordinates for interest)
+            time_az_el = [now.timestamp(), device.az, device.el]
+            device._dish_proxy.desiredPointing = time_az_el
 
+            # Send configure band command to Dish Master
+            command = f"ConfigureBand{receiver_band}"
             try:
-                device._dish_proxy.command_inout_asynch(
-                    const.CMD_DISH_CONFIGURE, str(dish_str_ip), self.cmd_ended_cb
-                )
+                device._dish_proxy.command_inout_asynch(command, device.cmd_ended_cb)
             except DevFailed as dev_failed:
-                log_msg = f"{const.ERR_EXE_CONFIGURE_CMD}{dev_failed}"
+                self.logger.exception(dev_failed)
+                log_msg = "Exception occurred in Configure command"
                 device._read_activity_message = log_msg
-                self.logger.exception(log_msg)
-                tango.Except.throw_exception(
-                    const.STR_CONFIGURE_EXEC,
-                    log_msg,
-                    "DishLeafNode.ConfigureCommand",
-                    tango.ErrSeverity.ERR,
-                )
-
-            device._read_activity_message = const.STR_CONFIGURE_SUCCESS
-            self.logger.info(device._read_activity_message)
+                self._throw("Configure", log_msg)
 
     def is_Configure_allowed(self):
         """
@@ -1180,8 +1163,8 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
             device.el_limit = False
 
-            jsonArgument = self._load_config_string(argin)
-            ra_value, dec_value = self._get_targets(jsonArgument)
+            jsonArgument = device._load_config_string(argin)
+            ra_value, dec_value = device._get_targets(jsonArgument)
             device.radec_value = f"radec,{ra_value},{dec_value}"
             self.logger.debug("Radec value: {}".format(device.radec_value))
             device.event_track_time.clear()
@@ -1212,30 +1195,6 @@ class DishLeafNode(SKABaseDevice):
                 self.logger.info(log_msg)
                 self.device._read_activity_message = log_msg
 
-        def _get_targets(self, jsonArgument):
-            device = self.target
-            try:
-                ra_value = jsonArgument["pointing"]["target"]["RA"]
-                dec_value = jsonArgument["pointing"]["target"]["dec"]
-            except KeyError as key_error:
-                self.logger.exception(key_error)
-                log_message = "JSON key not found."
-                device._read_activity_message = log_message
-                self._throw_exception("Track", log_message)
-
-            return (ra_value, dec_value)
-
-        def _load_config_string(self, argin):
-            device = self.target
-            try:
-                jsonArgument = json.loads(argin)
-            except json.JSONDecodeError as jsonerr:
-                self.logger.exception(jsonerr)
-                log_message = "Invalid JSON format."
-                device._read_activity_message = log_message
-                self._throw_exception("Track", log_message)
-
-            return jsonArgument
 
     def is_Track_allowed(self):
         """
