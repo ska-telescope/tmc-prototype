@@ -7,6 +7,7 @@ from __future__ import print_function
 
 import pkg_resources
 import mock
+import time
 
 import tango
 import pytest
@@ -98,6 +99,22 @@ def leaf_dish_context(tango_context):
 
 
 class TestDishLeafNode(object):
+    def delay_successful_message_check(self, activityMessage):
+        """When doing multiple commands on the device it may take a while to update the
+        activityMessage. This method gives the commands at most a couple minutes to finish
+        and update the activityMessage.
+
+        Parameters
+        ----------
+        activityMessage : String
+            The dishleafnode activitymessage
+
+        """
+        for _ in range(5):
+            time.sleep(0.5)
+            if "successfully" in activityMessage:
+                return
+
     def test_State(self, leaf_dish_context):
         assert leaf_dish_context.dish_leaf_node.State() == DevState.ALARM
 
@@ -151,6 +168,7 @@ class TestDishLeafNode(object):
         leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
         leaf_dish_context.dish_leaf_node.SetOperateMode()
         leaf_dish_context.dish_leaf_node.Scan("0")
+        self.delay_successful_message_check(leaf_dish_context.dish_leaf_node.activityMessage)
         assert "Scan invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
 
     def test_EndScan(self, leaf_dish_context):
@@ -158,6 +176,7 @@ class TestDishLeafNode(object):
         leaf_dish_context.dish_leaf_node.SetOperateMode()
         leaf_dish_context.dish_leaf_node.Scan("0")
         leaf_dish_context.dish_leaf_node.EndScan("0")
+        self.delay_successful_message_check(leaf_dish_context.dish_leaf_node.activityMessage)
         assert (
             "StopCapture invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
         )
@@ -166,6 +185,7 @@ class TestDishLeafNode(object):
         leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
         leaf_dish_context.dish_leaf_node.SetOperateMode()
         leaf_dish_context.dish_leaf_node.StartCapture("0")
+        self.delay_successful_message_check(leaf_dish_context.dish_leaf_node.activityMessage)
         assert (
             "StartCapture invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
         )
@@ -175,6 +195,7 @@ class TestDishLeafNode(object):
         leaf_dish_context.dish_leaf_node.SetOperateMode()
         leaf_dish_context.dish_leaf_node.StartCapture("0")
         leaf_dish_context.dish_leaf_node.StopCapture("0")
+        self.delay_successful_message_check(leaf_dish_context.dish_leaf_node.activityMessage)
         assert (
             "StopCapture invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
         )
@@ -182,6 +203,7 @@ class TestDishLeafNode(object):
     def test_SetStowMode(self, leaf_dish_context):
         leaf_dish_context.dish_leaf_node.SetStandByLPMode()
         leaf_dish_context.dish_leaf_node.SetStowMode()
+        self.delay_successful_message_check(leaf_dish_context.dish_leaf_node.activityMessage)
         assert (
             "SetStowMode invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
         )
@@ -252,6 +274,7 @@ class TestDishLeafNode(object):
         eid = leaf_dish_context.dish_master.subscribe_event(
             const.EVT_DISH_MODE, EventType.CHANGE_EVENT, mock_cb
         )
+        self.delay_successful_message_check(leaf_dish_context.dish_leaf_node.activityMessage)
         assert (
             "SetOperateMode invoked successfully"
             in leaf_dish_context.dish_leaf_node.activityMessage
