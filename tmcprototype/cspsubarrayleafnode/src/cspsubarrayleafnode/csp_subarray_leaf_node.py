@@ -32,6 +32,7 @@ import katpoint
 from ska.base.commands import ResultCode, BaseCommand
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
+from .transaction_id import identify_with_id
 from . import const, release
 from .exceptions import InvalidObsStateError
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additional_import
@@ -446,6 +447,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 self.logger.info(log_msg)
                 device._read_activity_message = log_msg
 
+        @identify_with_id('configure','argin')
         def do(self, argin):
             """
             This command configures a scan. It accepts configuration information in JSON string format and
@@ -961,6 +963,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                                 "CSP subarray threw error in AddReceptors CSP LMC_CommandFailed",
                                                 "AddReceptors", tango.ErrSeverity.ERR)
 
+       @identify_with_id('assign','argin') 
         def do(self, argin):
             """
             It accepts receptor id list in JSON string format and invokes AddReceptors command on CspSubarray
