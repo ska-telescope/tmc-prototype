@@ -227,7 +227,7 @@ class DishLeafNode(SKABaseDevice):
                 self.logger.error(log_msg)
                 self._read_activity_message = log_msg
                 return
-            
+
             self.az = katpoint.rad2deg(az_el_coordinates[0])
             self.el = katpoint.rad2deg(az_el_coordinates[1])
 
@@ -242,7 +242,9 @@ class DishLeafNode(SKABaseDevice):
             self._dish_proxy.desiredPointing = desired_pointing
             self.logger.debug("desiredPointing set to: {}".format(desired_pointing))
             if self.event_track_time.is_set():
-                log_msg = f"Exiting thread loop. Event track time set: {self.event_track_time.is_set()}"
+                log_msg = (
+                    f"Exiting thread loop. Event track time set: {self.event_track_time.is_set()}"
+                )
                 self.logger.debug(log_msg)
                 break
 
@@ -257,7 +259,7 @@ class DishLeafNode(SKABaseDevice):
             self.logger.info(const.STR_SRC_NOT_VISIBLE)
             return False
         return True
-            
+
     def set_dish_name_number(self):
         # Find out dish number from DishMasterFQDN property e.g. mid_d0001/elt/master
         dish_name_string = self.DishMasterFQDN.split("/")[0]
@@ -302,7 +304,7 @@ class DishLeafNode(SKABaseDevice):
         self.observer_location_lat = f"{dish_lat_dms[0]}:{dish_lat_dms[1]}:{dish_lat_dms[2]}"
         self.observer_location_long = f"{dish_long_dms[0]}:{dish_long_dms[1]}:{dish_long_dms[2]}"
         self.observer_altitude = dish_ecef_coordinates[2]
-    
+
     def _get_targets(self, jsonArgument):
         try:
             ra_value = jsonArgument["pointing"]["target"]["RA"]
@@ -448,7 +450,6 @@ class DishLeafNode(SKABaseDevice):
                     )
                     device.set_status(const.ERR_DISH_INIT)
                     device._read_activity_message = log_msg
-
 
     class SetStowModeCommand(BaseCommand):
         """
@@ -800,7 +801,6 @@ class DishLeafNode(SKABaseDevice):
             now = datetime.datetime.utcnow()
             timestamp_value = str(now)
 
-
             katpoint_arg = []
             katpoint_arg.insert(0, device.radec_value)
             katpoint_arg.insert(1, timestamp_value)
@@ -1070,7 +1070,9 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
             dummy_coordinates = [0.0, 0.0]
             try:
-                device._dish_proxy.command_inout_asynch("Slew", dummy_coordinates, self.cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch(
+                    "Slew", dummy_coordinates, self.cmd_ended_cb
+                )
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_msg = "Exception in executing Slew command"
@@ -1169,7 +1171,9 @@ class DishLeafNode(SKABaseDevice):
             else:
                 if device._dish_proxy.pointingState == PointingState.TRACK:
                     self.logger.debug("Creating a tracking thread")
-                    device.tracking_thread = threading.Thread(None, device.track_thread, "DishLeafNode")
+                    device.tracking_thread = threading.Thread(
+                        None, device.track_thread, "DishLeafNode"
+                    )
                     if not device.tracking_thread.is_alive():
                         self.logger.debug("Starting tracking thread")
                         device.tracking_thread.start()
@@ -1177,7 +1181,6 @@ class DishLeafNode(SKABaseDevice):
                 log_msg = f"Command :-> {event.cmd_name} invoked successfully."
                 self.logger.info(log_msg)
                 self.device._read_activity_message = log_msg
-
 
     def is_Track_allowed(self):
         """

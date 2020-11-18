@@ -570,7 +570,7 @@ class OverrideDish(object):
         # timestamp that has changed.
         current_azim = model.sim_quantities["achievedPointing"].last_val[self.AZIM_IDX]
         current_elev = model.sim_quantities["achievedPointing"].last_val[self.ELEV_IDX]
-        if (current_azim == position.azim and current_elev == position.elev):
+        if current_azim == position.azim and current_elev == position.elev:
             return
         # use millisecond timestamp
         sim_time *= 1000
