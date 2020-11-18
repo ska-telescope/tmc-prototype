@@ -1182,7 +1182,7 @@ class DishLeafNode(SKABaseDevice):
             device.event_track_time.clear()
 
             try:
-                device._dish_proxy.command_inout_asynch("Track", self._track_command_callback)
+                device._dish_proxy.command_inout_asynch("Track", self.cmd_ended_cb)
             except DevFailed as dev_failed:
                 self.logger.error(dev_failed)
                 log_message = "Exception occured in the execution of Track command."
