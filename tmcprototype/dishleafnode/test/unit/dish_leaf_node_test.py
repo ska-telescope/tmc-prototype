@@ -197,31 +197,6 @@ def test_track_should_command_dish_to_start_tracking(mock_dish_master):
         const.CMD_TRACK, "0", any_method(with_name="cmd_ended_cb")
     )
 
-
-@pytest.fixture(
-    scope="function",
-    params=[
-        ("Abort", const.ERR_EXE_ABORT_CMD),
-        ("Restart", const.ERR_EXE_RESTART_CMD),
-        ("ObsReset", const.ERR_EXE_OBSRESET_CMD),
-    ],
-)
-def command_without_arg_for_devfailed(request):
-    cmd_name, error_msg = request.param
-    return cmd_name, error_msg
-
-
-def test_command_without_arg_should_raise_dev_failed(
-    mock_dish_master, command_without_arg_for_devfailed
-):
-    tango_context, dish1_proxy_mock, _, _ = mock_dish_master
-    cmd_name, error_msg = command_without_arg_for_devfailed
-    dish1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
-    with pytest.raises(tango.DevFailed) as df:
-        tango_context.device.command_inout(cmd_name)
-    assert error_msg in str(df)
-
-
 def create_dummy_event_for_dishmode(device_fqdn, dish_mode_value, attribute):
     fake_event = Mock()
     fake_event.err = False
@@ -381,32 +356,6 @@ def test_configure_should_raise_exception_when_called_with_invalid_arguments():
             tango_context.device.Configure(input_string[0])
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
-
-@pytest.fixture(
-    scope="function",
-    params=[
-        ("Scan", "a", const.ERR_EXE_SCAN_CMD),
-        ("EndScan", "a", const.ERR_EXE_END_SCAN_CMD),
-        ("StartCapture", "a", const.ERR_EXE_START_CAPTURE_CMD),
-        ("StopCapture", "a", const.ERR_EXE_STOP_CAPTURE_CMD),
-        ("Slew", "a", const.ERR_EXE_SLEW_CMD),
-    ],
-)
-def invalid_command_call_and_expected_error_msg(request):
-    cmd_name, input_arg, error_msg = request.param
-    return cmd_name, input_arg, error_msg
-
-
-def test_command_should_raise_exception_when_called_with_invalid_arguments(
-    invalid_command_call_and_expected_error_msg,
-):
-    cmd_name, input_arg, error_msg = invalid_command_call_and_expected_error_msg
-    with fake_tango_system(DishLeafNode) as tango_context:
-        with pytest.raises(tango.DevFailed):
-            tango_context.device.command_inout(cmd_name, input_arg)
-        assert error_msg in tango_context.device.activityMessage
-
-
 def test_track_should_raise_exception_when_called_with_invalid_arguments():
     with fake_tango_system(DishLeafNode) as tango_context:
         with pytest.raises(tango.DevFailed):
@@ -479,31 +428,6 @@ def raise_devfailed_exception(*args):
         tango.ErrSeverity.ERR,
     )
 
-
-@pytest.fixture(
-    scope="function",
-    params=[
-        ("SetStowMode", const.ERR_DEVFAILED_MSG),
-        ("SetStandbyLPMode", const.ERR_DEVFAILED_MSG),
-        ("SetOperateMode", const.ERR_DEVFAILED_MSG),
-        ("SetStandbyFPMode", const.ERR_DEVFAILED_MSG),
-        ("StopTrack", const.ERR_EXE_STOP_TRACK_CMD),
-    ],
-)
-def command_name_to_raise_devfailed(request):
-    cmd_name, error_msg = request.param
-    return cmd_name, error_msg
-
-
-def test_command_should_raise_exception(mock_dish_master, command_name_to_raise_devfailed):
-    tango_context, dish1_proxy_mock, _, _ = mock_dish_master
-    cmd_name, error_msg = command_name_to_raise_devfailed
-    dish1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
-    with pytest.raises(tango.DevFailed) as df:
-        tango_context.device.command_inout(cmd_name)
-    assert error_msg in str(df)
-
-
 @pytest.fixture(
     scope="function",
     params=[
@@ -511,9 +435,6 @@ def test_command_should_raise_exception(mock_dish_master, command_name_to_raise_
         "SetStandbyLPMode",
         "SetOperateMode",
         "SetStandbyFPMode",
-        "StopTrack",
-        "Abort",
-        "Restart",
     ],
 )
 def command_name(request):
@@ -543,7 +464,7 @@ def test_activity_message_attribute_value_contains_command_name_with_event_error
 
 @pytest.fixture(
     scope="function",
-    params=[("Slew", "0"), ("StopCapture", "0"), ("StartCapture", "0"), ("Scan", "0")],
+    params=[("Slew", "0")],
 )
 def command_name_with_args(request):
     cmd_name, input_args = request.param
@@ -587,7 +508,7 @@ def test_configure_command_with_callback_method(event_subscription, mock_dish_ma
 @pytest.mark.xfail
 def test_track_command_with_callback_method(event_subscription, mock_dish_master):
     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    tango_context.device.Track()
+    tango_context.device.Track("0")
     dummy_event = command_callback(const.CMD_TRACK)
     event_subscription[const.CMD_TRACK](dummy_event)
     assert const.STR_COMMAND + const.CMD_TRACK in tango_context.device.activityMessage
