@@ -147,21 +147,27 @@ class DishLeafNode(SKABaseDevice):
         :raises: Exception if error occurs in Ra-Dec to Az-El conversion
 
         """
-        dish_antenna = katpoint.Antenna(
-            name=self.dish_name,
-            latitude=self.observer_location_lat,
-            longitude=self.observer_location_long,
-            altitude=self.observer_altitude,
-        )
+        try:
+            dish_antenna = katpoint.Antenna(
+                name=self.dish_name,
+                latitude=self.observer_location_lat,
+                longitude=self.observer_location_long,
+                altitude=self.observer_altitude,
+            )
+        except ValueError as value_err:
+            self.RaDec_AzEl_Conversion = False
+            raise value_err
 
         dish_antenna_latitude = dish_antenna.ref_observer.lat
 
         # Compute Target Coordinates
         target_radec = data[0]
+
         try:
             desired_target = katpoint.Target(str(target_radec))
-        except Exception as e:
-            self.logger.debug(str(e))
+        except ValueError as value_err:
+            self.RaDec_AzEl_Conversion = False
+            raise value_err
 
         timestamp = katpoint.Timestamp(timestamp=data[1])
 
@@ -170,15 +176,24 @@ class DishLeafNode(SKABaseDevice):
                 desired_target, timestamp=timestamp, antenna=dish_antenna
             )
         except ValueError as value_err:
+            self.RaDec_AzEl_Conversion = False
             raise value_err
+
+        # TODO: Conversion of apparent ra and dec using katpoint library for future refererence.
+        # target_apparnt_ra = katpoint._ephem_extra.angle_from_hours(target_apparnt_radec[0])
+        # target_apparnt_dec = katpoint._ephem_extra.angle_from_degrees(target_apparnt_radec[1])
 
         sidereal_time = dish_antenna.local_sidereal_time(timestamp=timestamp)
         sidereal_time_radian = katpoint.deg2rad(math.degrees(sidereal_time))
 
         # converting ra to ha
         hour_angle = sidereal_time_radian - target_apparnt_radec[0]
+        # TODO: Conversion of hour angle from radian to HH:MM:SS for future refererence.
+        # print("Hour angle in hours: ", katpoint._ephem_extra.angle_from_hours(hour_angle))
 
         # Geodetic latitude of the observer
+        # TODO: For refererence
+        # latitude_degree_decimal = float(18) + float(31) / 60 + float(48) / (60 * 60)
         latitude_degree_decimal = UnitConverter().dms_to_dd(str(dish_antenna_latitude))
         latitude_radian = katpoint.deg2rad(latitude_degree_decimal)
 
@@ -186,8 +201,12 @@ class DishLeafNode(SKABaseDevice):
         enu_array = katpoint.hadec_to_enu(hour_angle, target_apparnt_radec[1], latitude_radian)
 
         # Calculate Az El coordinates
-        az_el_coordinates = katpoint.enu_to_azel(enu_array[0], enu_array[1], enu_array[2])
-        return az_el_coordinates
+        self.az_el_coordinates = katpoint.enu_to_azel(enu_array[0], enu_array[1], enu_array[2])
+        self.az = katpoint.rad2deg(self.az_el_coordinates[0])
+        self.el = katpoint.rad2deg(self.az_el_coordinates[1])
+        self.RaDec_AzEl_Conversion = True
+
+        return self.az_el_coordinates
 
     def tracking_time_thread(self):
         """This thread allows the dish to track the source for a specified Duration.
@@ -217,21 +236,30 @@ class DishLeafNode(SKABaseDevice):
         )
         while self.event_track_time.is_set() is False:
             timestamp_value = str(datetime.datetime.utcnow())
-            katpoint_arg = [self.radec_value, timestamp_value]
+            katpoint_arg = []
+            katpoint_arg.insert(0, self.radec_value)
+            katpoint_arg.insert(1, timestamp_value)
 
             try:
-                self.logger.debug("Converting radec '{}' to azel".format(katpoint_arg[0]))
-                az_el_coordinates = self.convert_radec_to_azel(katpoint_arg)
+                self.convert_radec_to_azel(katpoint_arg)
             except ValueError as valuerr:
-                log_msg = f"Exception occured in the execution of Track command. {valuerr}"
+                log_msg = f"{const.ERR_EXE_TRACK}{valuerr}"
                 self.logger.error(log_msg)
                 self._read_activity_message = log_msg
                 return
 
-            self.az = katpoint.rad2deg(az_el_coordinates[0])
-            self.el = katpoint.rad2deg(az_el_coordinates[1])
+            if not self.RaDec_AzEl_Conversion:
+                self._read_activity_message = const.ERR_AZ_EL_CALC
+                self.logger.info(const.ERR_AZ_EL_CALC)
+                time.sleep(0.05)
+                continue
 
-            if not self._is_elevation_within_mechanical_limits():
+            if not (self.el >= self.ele_min_lim and self.el <= self.ele_max_lim):
+                self.el_limit = True
+                self._read_activity_message = const.ERR_ELE_LIM
+                self.logger.info(const.ERR_ELE_LIM)
+                self._read_activity_message = const.STR_SRC_NOT_VISIBLE
+                self.logger.info(const.STR_SRC_NOT_VISIBLE)
                 time.sleep(0.05)
                 continue
 
@@ -240,13 +268,19 @@ class DishLeafNode(SKABaseDevice):
 
             desired_pointing = [0, round(self.az, 12), round(self.el, 12)]
             self._dish_proxy.desiredPointing = desired_pointing
-            self.logger.debug("desiredPointing set to: {}".format(desired_pointing))
             if self.event_track_time.is_set():
-                log_msg = (
-                    f"Exiting thread loop. Event track time set: {self.event_track_time.is_set()}"
-                )
+                log_msg = f"{const.STR_BREAK_LOOP}{self.event_track_time.is_set()}"
                 self.logger.debug(log_msg)
                 break
+
+            self.logger.info("Invoking Track command on DishMaster.")
+            try:
+                self._dish_proxy.command_inout_asynch(const.CMD_TRACK, "0", self.cmd_ended_cb)
+            except DevFailed as dev_failed:
+                log_msg = f"{const.ERR_EXE_TRACK}{dev_failed}"
+                self.logger.error(log_msg)
+                self._read_activity_message = log_msg
+                return
 
             time.sleep(0.05)
 
@@ -389,6 +423,7 @@ class DishLeafNode(SKABaseDevice):
             self.logger.info("Initializing DishLeafNode...")
             device.el = 30.0
             device.az = 0.0
+            device.RaDec_AzEl_Conversion = False
             device.ele_max_lim = 90
             device.ele_min_lim = 17.5
             device.el_limit = False
@@ -1155,12 +1190,21 @@ class DishLeafNode(SKABaseDevice):
             device.event_track_time.clear()
 
             try:
-                device._dish_proxy.command_inout_asynch("Track", self._track_command_callback)
+                device._dish_proxy.command_inout_asynch("Track", self.cmd_ended_cb)
             except DevFailed as dev_failed:
                 self.logger.error(dev_failed)
                 log_message = "Exception occured in the execution of Track command."
                 self._read_activity_message = log_message
                 self._throw_exception("Track", log_message)
+
+            if device._dish_proxy.pointingState == PointingState.READY:
+                self.logger.debug("When pointing state is READY --> Create Track thread")
+                device.track_thread1 = threading.Thread(
+                    None, device.track_thread, const.THREAD_TRACK
+                )
+                if not device.track_thread1.is_alive():
+                    self.logger.debug("When pointing state is READY --> Start Track thread")
+                    device.track_thread1.start()
 
         def _track_command_callback(self, event):
             device = self.target
