@@ -235,7 +235,8 @@ class DishLeafNode(SKABaseDevice):
             f"{threading.get_ident()}"
         )
         while self.event_track_time.is_set() is False:
-            timestamp_value = str(datetime.datetime.utcnow())
+            now = datetime.datetime.utcnow()
+            timestamp_value = str(now)
             katpoint_arg = []
             katpoint_arg.insert(0, self.radec_value)
             katpoint_arg.insert(1, timestamp_value)
@@ -266,7 +267,7 @@ class DishLeafNode(SKABaseDevice):
             if self.az < 0:
                 self.az = 360 - abs(self.az)
 
-            desired_pointing = [0, round(self.az, 12), round(self.el, 12)]
+            desired_pointing = [now.timestamp(), round(self.az, 12), round(self.el, 12)]
             self.logger.debug("desiredPointing coordinates: {}".format(desired_pointing))
             self._dish_proxy.desiredPointing = desired_pointing
             if self.event_track_time.is_set():
@@ -1175,12 +1176,17 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
             device.el_limit = False
 
-            jsonArgument = device._load_config_string(argin)
-            ra_value, dec_value = device._get_targets(jsonArgument)
+            json_argin = device._load_config_string(argin)
+            ra_value, dec_value = device._get_targets(json_argin)
             device.radec_value = f"radec,{ra_value},{dec_value}"
             self.logger.debug("Radec value: {}".format(device.radec_value))
-            device.event_track_time.clear()
+            self.logger.info(
+                "Track command ignores RA dec coordinates passed in: %s. "
+                "Uses coordinates from Configure command instead.",
+                device.radec_value
+            )
 
+            # Invoke Track command on Dish Master
             try:
                 device._dish_proxy.command_inout_asynch("Track", self.cmd_ended_cb)
             except DevFailed as dev_failed:
@@ -1188,15 +1194,13 @@ class DishLeafNode(SKABaseDevice):
                 log_message = "Exception occured in the execution of Track command."
                 self._read_activity_message = log_message
                 self._throw_exception("Track", log_message)
+           
+            device.event_track_time.clear()
 
-            if device._dish_proxy.pointingState == PointingState.READY:
-                self.logger.debug("When pointing state is READY --> Create Track thread")
-                device.track_thread1 = threading.Thread(
-                    None, device.track_thread, const.THREAD_TRACK
-                )
-                if not device.track_thread1.is_alive():
-                    self.logger.debug("When pointing state is READY --> Start Track thread")
-                    device.track_thread1.start()
+            device.track_thread1 = threading.Thread(
+                None, device.track_thread, const.THREAD_TRACK
+            )
+            device.track_thread1.start()
 
         def _track_command_callback(self, event):
             device = self.target
