@@ -963,7 +963,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                                                 "CSP subarray threw error in AddReceptors CSP LMC_CommandFailed",
                                                 "AddReceptors", tango.ErrSeverity.ERR)
 
-       @identify_with_id('assign','argin') 
+        @identify_with_id('assign','argin') 
         def do(self, argin):
             """
             It accepts receptor id list in JSON string format and invokes AddReceptors command on CspSubarray
