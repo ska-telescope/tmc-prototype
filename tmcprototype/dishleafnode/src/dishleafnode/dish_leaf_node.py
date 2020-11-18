@@ -1188,11 +1188,6 @@ class DishLeafNode(SKABaseDevice):
                 self._read_activity_message = log_message
                 self._throw_exception("Track", log_message)
 
-            if device._dish_proxy.pointingState == PointingState.TRACK:
-                device.tracking_thread = threading.Thread(None, device.track_thread, "DishLeafNode")
-                if not device.tracking_thread.is_alive():
-                    device.tracking_thread.start()
-
         def _track_command_callback(self, event):
             device = self.target
             if event.err:
