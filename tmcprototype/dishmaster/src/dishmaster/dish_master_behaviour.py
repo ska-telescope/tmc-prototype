@@ -502,9 +502,14 @@ class OverrideDish(object):
         """The Dish moves to the commanded pointing angle at the maximum
         speed, as defined by the specified slew rate.
 
-        data_input: str
-            Timestamp in UTC at which command execution should start
+        data_input: list
+            "[0]: Azimuth\n[1]: Elevation"
         """
+        # TODO (KM: 18-11-2020) Slew takes no inputs, however at the moment the current
+        # of the DishMaster simulator expects an input (timestamp), which is uses in the
+        # `_change_pointing_state` method. Will need to change that later.
+        COMMAND_TIME_OFFSET = 5
+        data_input = time.time() + COMMAND_TIME_OFFSET
         self._change_pointing_state(model, data_input, "SLEW", ("OPERATE",))
         model.logger.info("'Slew' command executed successfully.")
 
