@@ -18,15 +18,15 @@ import time
 import threading
 
 import tango
-from tango import DeviceProxy, EventType, ApiUtil, DevState, AttrWriteType, DevFailed, DebugIt
+from tango import DeviceProxy, EventType, ApiUtil, DevState, AttrWriteType, DevFailed
 from tango.server import run, command, device_property, attribute
 import katpoint
 
 from ska.base.commands import ResultCode, BaseCommand
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, SimulationMode
-from .utils import PointingState, UnitConverter
-from . import const, release
+from .utils import UnitConverter
+from . import release
 
 __all__ = ["DishLeafNode", "main"]
 
@@ -50,19 +50,20 @@ class CommandCallBack:
                 - cmd_name   : (str) The command name
                 - argout_raw : (DeviceData) The command argout
                 - argout     : The command argout
-                - err        : (bool) A boolean flag set to true if the command failed. False otherwise
+                - err        : (bool) A boolean flag set to true if the command failed.
+                                False otherwise
                 - errors     : (sequence<DevError>) The error stack
                 - ext
         :return: none
         """
         if event.err:
-            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
-            self.logger.error(log_msg)
-            self.device._read_activity_message = log_msg
+            log_message = f"Error in invoking command: {event.cmd_name}\n{event.errors}"
+            self.logger.error(log_message)
+            self.device._read_activity_message = log_message
         else:
-            log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
-            self.logger.info(log_msg)
-            self.device._read_activity_message = log_msg
+            log_message = f"Command :-> {event.cmd_name} invoked successfully."
+            self.logger.info(log_message)
+            self.device._read_activity_message = log_message
 
 
 # pylint: disable=unused-variable, logging-fstring-interpolation
@@ -116,9 +117,9 @@ class DishLeafNode(SKABaseDevice):
         :return: None
         """
         if event_data.err:
-            log_msg = f"Event system DevError(s) occured!!! {str(event_data.errors)}"
-            self._read_activity_message = log_msg
-            self.logger.error(log_msg)
+            log_message = f"Event system DevError(s) occured!!! {str(event_data.errors)}"
+            self._read_activity_message = log_message
+            self.logger.error(log_message)
             return
 
         fqdn_attr_name = event_data.attr_name
@@ -128,9 +129,9 @@ class DishLeafNode(SKABaseDevice):
         # attribute name. Also handle the issue with the attribute name being
         # converted to lowercase in subsequent callbacks.
         attr_name = fqdn_attr_name.split("/")[-1].split("#")[0]
-        log_msg = f"{attr_name} is {event_data.attr_value.value}."
-        self._read_activity_message = log_msg
-        self.logger.debug(log_msg)
+        log_message = f"{attr_name} is {event_data.attr_value.value}."
+        self._read_activity_message = log_message
+        self.logger.debug(log_message)
 
     def convert_radec_to_azel(self, data):
         """Converts RaDec coordinate in to AzEl coordinate using KATPoint library.
@@ -166,21 +167,13 @@ class DishLeafNode(SKABaseDevice):
         except ValueError as value_err:
             raise value_err
 
-        # TODO: Conversion of apparent ra and dec using katpoint library for future refererence.
-        # target_apparnt_ra = katpoint._ephem_extra.angle_from_hours(target_apparnt_radec[0])
-        # target_apparnt_dec = katpoint._ephem_extra.angle_from_degrees(target_apparnt_radec[1])
-
         sidereal_time = dish_antenna.local_sidereal_time(timestamp=timestamp)
         sidereal_time_radian = katpoint.deg2rad(math.degrees(sidereal_time))
 
         # converting ra to ha
         hour_angle = sidereal_time_radian - target_apparnt_radec[0]
-        # TODO: Conversion of hour angle from radian to HH:MM:SS for future refererence.
-        # print("Hour angle in hours: ", katpoint._ephem_extra.angle_from_hours(hour_angle))
 
         # Geodetic latitude of the observer
-        # TODO: For refererence
-        # latitude_degree_decimal = float(18) + float(31) / 60 + float(48) / (60 * 60)
         latitude_degree_decimal = UnitConverter().dms_to_dd(str(dish_antenna_latitude))
         latitude_radian = katpoint.deg2rad(latitude_degree_decimal)
 
@@ -201,8 +194,9 @@ class DishLeafNode(SKABaseDevice):
         while True:
             if end_track_time <= time.time():
                 self.event_track_time.set()
-                self._read_activity_message = const.ERR_TIME_LIM
-                self.logger.error(const.ERR_TIME_LIM)
+                log_message = "Tracking duration is complete."
+                self._read_activity_message = log_message
+                self.logger.error(log_message)
                 break
             elif self.el_limit:
                 break
@@ -236,8 +230,8 @@ class DishLeafNode(SKABaseDevice):
             self.logger.debug("desiredPointing coordinates: {}".format(desired_pointing))
             self._dish_proxy.desiredPointing = desired_pointing
             if self.event_track_time.is_set():
-                log_msg = f"{const.STR_BREAK_LOOP}{self.event_track_time.is_set()}"
-                self.logger.debug(log_msg)
+                log_message = f"Break loop: {self.event_track_time.is_set()}"
+                self.logger.debug(log_message)
                 break
 
             time.sleep(0.05)
@@ -245,11 +239,14 @@ class DishLeafNode(SKABaseDevice):
     def _is_elevation_within_mechanical_limits(self):
         if not (self.el >= self.ele_min_lim and self.el <= self.ele_max_lim):
             self.el_limit = True
-            self._read_activity_message = const.ERR_ELE_LIM
-            self.logger.info(const.ERR_ELE_LIM)
-            self._read_activity_message = const.STR_SRC_NOT_VISIBLE
-            self.logger.info(const.STR_SRC_NOT_VISIBLE)
+            log_message = "Minimum elevation limit has been reached."
+            self._read_activity_message = log_message
+            self.logger.info(log_message)
+            log_message = "Source is not visible currently."
+            self._read_activity_message = log_message
+            self.logger.info(log_message)
             return False
+
         return True
 
     def set_dish_name_number(self):
@@ -259,8 +256,9 @@ class DishLeafNode(SKABaseDevice):
         self.dish_number = self.dish_name[1:]
 
     def set_observer_lat_long_alt(self):
-        # Load a set of antenna descriptions (latitude, longitude, altitude, enu coordinates) from text file and
-        # construct Antenna objects from them. Currently the text file contains Meerkat Antenna parameters.
+        # Load a set of antenna descriptions (latitude, longitude, altitude, enu coordinates)
+        # from text file and construct Antenna objects from them. Currently the text file
+        # contains Meerkat Antenna parameters.
         with importlib.resources.open_text("dishleafnode", "ska_antennas.txt") as f:
             descriptions = f.readlines()
         antennas = [katpoint.Antenna(line) for line in descriptions]
@@ -415,7 +413,7 @@ class DishLeafNode(SKABaseDevice):
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_message = (
-                f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
+                f"Setting CallBack Model as :-> {ApiUtil.instance().get_asynch_cb_sub_model()}"
             )
             self.logger.debug(log_message)
             device._read_activity_message = log_message
@@ -437,11 +435,11 @@ class DishLeafNode(SKABaseDevice):
                     )
                 except DevFailed as dev_failed:
                     self.logger.exception(dev_failed)
-                    log_msg = (
+                    log_message = (
                         f"Exception occurred while subscribing to Dish attribute: {attribute_name}"
                     )
                     device.set_status("Error occured in Dish Leaf Node initialization")
-                    device._read_activity_message = log_msg
+                    device._read_activity_message = log_message
 
     class SetStowModeCommand(BaseCommand):
         """
@@ -473,9 +471,9 @@ class DishLeafNode(SKABaseDevice):
                 device._dish_proxy.command_inout_asynch("SetStowMode", self.cmd_ended_cb)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
-                log_msg = "Exception in SetStowMode command"
-                device._read_activity_message = log_msg
-                self._throw_exception("SetStowMode", log_msg)
+                log_message = "Exception in SetStowMode command"
+                device._read_activity_message = log_message
+                self._throw_exception("SetStowMode", log_message)
 
     def is_SetStowMode_allowed(self):
         """
@@ -511,13 +509,6 @@ class DishLeafNode(SKABaseDevice):
 
             :rtype: boolean
             """
-            device = self.target
-            if device._dish_proxy.pointingState in [
-                PointingState.SLEW,
-                PointingState.TRACK,
-                PointingState.SCAN,
-            ]:
-                return False
             return True
 
         def do(self):
@@ -527,14 +518,13 @@ class DishLeafNode(SKABaseDevice):
             :return: None
             """
             device = self.target
-
             try:
                 device._dish_proxy.command_inout_asynch("SetStandbyLPMode", self.cmd_ended_cb)
             except DevFailed as dev_failed:
-                log_msg = "Exception in SetStandbyLPMode command"
-                device._read_activity_message = log_msg
+                log_message = "Exception in SetStandbyLPMode command"
+                device._read_activity_message = log_message
                 self.logger.exception(dev_failed)
-                self._throw_exception("SetStandbyLPMode", log_msg)
+                self._throw_exception("SetStandbyLPMode", log_message)
 
     def is_SetStandbyLPMode_allowed(self):
         """
@@ -583,9 +573,9 @@ class DishLeafNode(SKABaseDevice):
                 device._dish_proxy.command_inout_asynch("SetOperateMode", self.cmd_ended_cb)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
-                log_msg = "Exception in SetOperateMode command"
-                device._read_activity_message = log_msg
-                self._throw_exception("SetOperateMode", log_msg)
+                log_message = "Exception in SetOperateMode command"
+                device._read_activity_message = log_message
+                self._throw_exception("SetOperateMode", log_message)
 
     def is_SetOperateMode_allowed(self):
         """
@@ -639,9 +629,9 @@ class DishLeafNode(SKABaseDevice):
                 device._dish_proxy.command_inout_asynch("Scan", self.cmd_ended_cb)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
-                log_msg = "Exception in executing Scan command"
-                device._read_activity_message = log_msg
-                self._throw("Scan", log_msg)
+                log_message = "Exception in executing Scan command"
+                device._read_activity_message = log_message
+                self._throw("Scan", log_message)
 
     def is_Scan_allowed(self):
         """
@@ -694,9 +684,9 @@ class DishLeafNode(SKABaseDevice):
                 device._dish_proxy.command_inout_asynch("StopCapture", device.cmd_ended_cb)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
-                log_msg = "Exception in EndScan command"
-                device._read_activity_message = log_msg
-                self._throw_exception("EndScan", log_msg)
+                log_message = "Exception in EndScan command"
+                device._read_activity_message = log_message
+                self._throw_exception("EndScan", log_message)
 
     def is_EndScan_allowed(self):
         """
@@ -777,9 +767,9 @@ class DishLeafNode(SKABaseDevice):
                 device.convert_radec_to_azel(katpoint_arg)
             except ValueError as valuerr:
                 self.logger.exception(valuerr)
-                log_msg = "Exception occurred in Configure command"
-                device._read_activity_message = log_msg
-                self._throw("Configure", log_msg)
+                log_message = "Exception occurred in Configure command"
+                device._read_activity_message = log_message
+                self._throw("Configure", log_message)
 
             # Set desiredPointing on Dish Master (it won't move until asked to
             # track or scan, but provide initial coordinates for interest)
@@ -792,9 +782,9 @@ class DishLeafNode(SKABaseDevice):
                 device._dish_proxy.command_inout_asynch(command, device.cmd_ended_cb)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
-                log_msg = "Exception occurred in Configure command"
-                device._read_activity_message = log_msg
-                self._throw("Configure", log_msg)
+                log_message = "Exception occurred in Configure command"
+                device._read_activity_message = log_message
+                self._throw("Configure", log_message)
 
     def is_Configure_allowed(self):
         """
@@ -855,9 +845,9 @@ class DishLeafNode(SKABaseDevice):
                 device._dish_proxy.command_inout_asynch("StartCapture", self.cmd_ended_cb)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
-                log_msg = "Exception occurred in StartCapture command"
-                device._read_activity_message = log_msg
-                self._throw_exception("StartCapture", log_msg)
+                log_message = "Exception occurred in StartCapture command"
+                device._read_activity_message = log_message
+                self._throw_exception("StartCapture", log_message)
 
     def is_StartCapture_allowed(self):
         """
@@ -911,9 +901,9 @@ class DishLeafNode(SKABaseDevice):
                 device._dish_proxy.command_inout_asynch("StopCapture", device.cmd_ended_cb)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
-                log_msg = "Exception occurred in StopCapture command"
-                device._read_activity_message = log_msg
-                self._throw_exception("StopCapture", log_msg)
+                log_message = "Exception occurred in StopCapture command"
+                device._read_activity_message = log_message
+                self._throw_exception("StopCapture", log_message)
 
     def is_StopCapture_allowed(self):
         """
@@ -964,10 +954,10 @@ class DishLeafNode(SKABaseDevice):
             try:
                 device._dish_proxy.command_inout_asynch("SetStandbyFPMode", self.cmd_ended_cb)
             except DevFailed as dev_failed:
-                log_msg = "Exception in SetStandbyFPMode command"
-                device._read_activity_message = log_msg
+                log_message = "Exception in SetStandbyFPMode command"
+                device._read_activity_message = log_message
                 self.logger.exception(dev_failed)
-                self._throw_exception("SetStandbyFPMode", log_msg)
+                self._throw_exception("SetStandbyFPMode", log_message)
 
     def is_SetStandbyFPMode_allowed(self):
         """
@@ -1017,6 +1007,8 @@ class DishLeafNode(SKABaseDevice):
             :return: None
             """
             device = self.target
+            # TODO (KM 19-11-2020) argin should be a list of coordinates az & el.
+            # dummy_coordinates should be discarded then.
             dummy_coordinates = [0.0, 0.0]
             try:
                 device._dish_proxy.command_inout_asynch(
@@ -1024,9 +1016,9 @@ class DishLeafNode(SKABaseDevice):
                 )
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
-                log_msg = "Exception in executing Slew command"
-                device._read_activity_message = log_msg
-                self._throw("Slew", log_msg)
+                log_message = "Exception in executing Slew command"
+                device._read_activity_message = log_message
+                self._throw("Slew", log_message)
 
     def is_Slew_allowed(self):
         """
@@ -1113,7 +1105,6 @@ class DishLeafNode(SKABaseDevice):
                 self._throw_exception("Track", log_message)
 
             device.event_track_time.clear()
-
             device.tracking_thread = threading.Thread(None, device.track_thread, "DishLeafNode")
             device.tracking_thread.start()
 
@@ -1173,9 +1164,9 @@ class DishLeafNode(SKABaseDevice):
                 device._dish_proxy.command_inout_asynch("TrackStop", self.cmd_ended_cb)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
-                log_msg = "Exception occurred in StopTrack command"
-                device._read_activity_message = log_msg
-                self._throw_exception("StopTrack", log_msg)
+                log_message = "Exception occurred in StopTrack command"
+                device._read_activity_message = log_message
+                self._throw_exception("StopTrack", log_message)
 
     def is_StopTrack_allowed(self):
         """
@@ -1230,9 +1221,9 @@ class DishLeafNode(SKABaseDevice):
                 device._dish_proxy.command_inout_asynch("TrackStop", self.cmd_ended_cb)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
-                log_msg = f"Exception occurred in Abort command"
-                device._read_activity_message = log_msg
-                self._throw_exception("Abort", log_msg)
+                log_message = "Exception occurred in Abort command"
+                device._read_activity_message = log_message
+                self._throw_exception("Abort", log_message)
 
     @command()
     def Abort(self):
@@ -1285,10 +1276,10 @@ class DishLeafNode(SKABaseDevice):
             try:
                 device._dish_proxy.command_inout_asynch("SetStandbyLPMode", self.cmd_ended_cb)
             except DevFailed as dev_failed:
-                log_msg = "Exception occurred in Restart command"
-                device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
-                self._throw_exception("Restart", log_msg)
+                log_message = "Exception occurred in Restart command"
+                device._read_activity_message = log_message
+                self._throw_exception("Restart", log_message)
 
     @command()
     def Restart(self):
@@ -1338,14 +1329,13 @@ class DishLeafNode(SKABaseDevice):
             :raises: DevFailed if error occurs while invoking command on Dishleaf Node.
             """
             device = self.target
-
             try:
                 device._dish_proxy.command_inout_asynch("SetStandbyFPMode", self.cmd_ended_cb)
             except DevFailed as dev_failed:
-                log_msg = "Exception occurred in ObsReset command"
-                device._read_activity_message = log_msg
                 self.logger.exception(dev_failed)
-                self._throw_exception("ObsReset", log_msg)
+                log_message = "Exception occurred in ObsReset command"
+                device._read_activity_message = log_message
+                self._throw_exception("ObsReset", log_message)
 
     @command()
     def ObsReset(self):
