@@ -405,7 +405,7 @@ class OverrideDish(object):
         if model.sim_quantities["capturing"]:
             model.sim_quantities["capturing"].set_val(False, model.time_func())
 
-    def _change_pointing_state(self, model, data_input, action, allowed_modes):
+    def _change_pointing_state(self, model, action, allowed_modes):
         dish_mode_quantity = model.sim_quantities["dishMode"]
         dish_mode = get_enum_str(dish_mode_quantity)
         if dish_mode not in allowed_modes:
@@ -414,18 +414,6 @@ class OverrideDish(object):
         pointing_state_quantity = model.sim_quantities["pointingState"]
         pointing_state = get_enum_str(pointing_state_quantity)
         if pointing_state != action:
-            try:
-                if model.time_func() > float(data_input):
-                    Except.throw_exception(
-                        "DISH Command Failed",
-                        "Requested timestamp has expired.",
-                        "{}()".format(action),
-                        ErrSeverity.WARN,
-                    )
-            except ValueError:
-                model.logger.error(
-                    "data_input value '{}' cannot be converted into a float.".format(data_input)
-                )
             set_enum(pointing_state_quantity, action, model.time_func())
             model.logger.info("Dish pointingState set to {}.".format(action))
         else:
@@ -437,12 +425,7 @@ class OverrideDish(object):
 
         data_input: None
         """
-        # TODO (KM: 17-11-2020) Track takes no inputs, however at the moment the current
-        # of the DishMaster simulator expects an input (timestamp), which is uses in the
-        # `_change_pointing_state` method. Will need to change that later.
-        COMMAND_TIME_OFFSET = 5
-        data_input = time.time() + COMMAND_TIME_OFFSET
-        self._change_pointing_state(model, data_input, "TRACK", ("OPERATE",))
+        self._change_pointing_state(model, "TRACK", ("OPERATE",))
         model.logger.info("'Track' command executed successfully.")
 
     def action_trackstop(self, model, tango_dev=None, data_input=None):  # pylint: disable=W0613
@@ -493,14 +476,11 @@ class OverrideDish(object):
         speed, as defined by the specified slew rate.
 
         data_input: list
-            "[0]: Azimuth\n[1]: Elevation"
+            [0]: Azimuth
+            [1]: Elevation
         """
-        # TODO (KM: 18-11-2020) Slew takes no inputs, however at the moment the current
-        # of the DishMaster simulator expects an input (timestamp), which is uses in the
-        # `_change_pointing_state` method. Will need to change that later.
-        COMMAND_TIME_OFFSET = 5
-        data_input = time.time() + COMMAND_TIME_OFFSET
-        self._change_pointing_state(model, data_input, "SLEW", ("OPERATE",))
+        # TODO (KM 19-11-2020) Set the data_input to desiredPointing
+        self._change_pointing_state(model, "SLEW", ("OPERATE",))
         model.logger.info("'Slew' command executed successfully.")
 
     def action_scan(self, model, tango_dev=None, data_input=None):  # pylint: disable=W0613
@@ -509,12 +489,7 @@ class OverrideDish(object):
 
         data_input: None
         """
-        # TODO (KM: 17-11-2020) Track takes no inputs, however at the moment the current
-        # of the DishMaster simulator expects an input (timestamp), which is uses in the
-        # `_change_pointing_state` method. Will need to change that later.
-        COMMAND_TIME_OFFSET = 5
-        data_input = time.time() + COMMAND_TIME_OFFSET
-        self._change_pointing_state(model, data_input, "SCAN", ("OPERATE",))
+        self._change_pointing_state(model, "SCAN", ("OPERATE",))
         model.logger.info("'Scan' command executed successfully.")
 
     def find_next_position(self, desired_pointings, sim_time):
