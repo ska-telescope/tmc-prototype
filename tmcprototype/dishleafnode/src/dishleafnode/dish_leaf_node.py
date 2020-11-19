@@ -1002,17 +1002,16 @@ class DishLeafNode(SKABaseDevice):
             """
             Invokes Slew command on DishMaster to slew the dish towards the set pointing coordinates.
 
-            :param argin: timestamp
+            :param argin: list
+                [0] = Azimuth
+                [1] = Elevation
 
             :return: None
             """
             device = self.target
-            # TODO (KM 19-11-2020) argin should be a list of coordinates az & el.
-            # dummy_coordinates should be discarded then.
-            dummy_coordinates = [0.0, 0.0]
             try:
                 device._dish_proxy.command_inout_asynch(
-                    "Slew", dummy_coordinates, self.cmd_ended_cb
+                    "Slew", argin, self.cmd_ended_cb
                 )
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
