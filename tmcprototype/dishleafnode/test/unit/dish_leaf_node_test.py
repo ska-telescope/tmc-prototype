@@ -99,9 +99,10 @@ def test_command_cb_is_invoked_when_command_with_arg_is_called_async(
     cmd_name, input_arg, requested_cmd = command_with_arg
 
     tango_context.device.command_inout(cmd_name, input_arg)
-
+    # Use some dummy coordinates for now since Slew command on DishMaster expects a list of [az, el]
+    dummy_coordinates = [0.0, 0.0]
     dish1_proxy_mock.command_inout_asynch.assert_called_with(
-        requested_cmd, input_arg, any_method(with_name="cmd_ended_cb")
+        requested_cmd, dummy_coordinates, any_method(with_name="cmd_ended_cb")
     )
 
 
