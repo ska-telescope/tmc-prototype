@@ -84,7 +84,7 @@ def event_subscription_with_arg(mock_dish_master):
 @pytest.fixture(
     scope="function",
     params=[
-        ("Slew", "0.0", "Slew"),
+        ("Slew", [10.0, 20.0], "Slew"),
     ],
 )
 def command_with_arg(request):
@@ -463,7 +463,7 @@ def test_activity_message_attribute_value_contains_command_name_with_event_error
 
 @pytest.fixture(
     scope="function",
-    params=[("Slew", "0")],
+    params=[("Slew", [10.0, 20.0])],
 )
 def command_name_with_args(request):
     cmd_name, input_args = request.param
@@ -481,7 +481,7 @@ def test_msg_in_activity_message_attribute(
     assert f"Command :-> {command_name}" in tango_context.device.activityMessage
 
 
-def test_msg_in_activity_message_attribute_with_event_error(
+def test_activity_message_attribute_when_command_callback_is_called_with_error_event(
     event_subscription_with_arg, mock_dish_master, command_name_with_args
 ):
     tango_context, _, _, _ = mock_dish_master
