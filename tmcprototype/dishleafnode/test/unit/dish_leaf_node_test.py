@@ -1,4 +1,3 @@
-# Standard Python imports
 import contextlib
 import importlib
 import types
@@ -6,14 +5,13 @@ import sys
 import json
 import mock
 from mock import Mock, MagicMock
+import numpy as np
 import tango
 import pytest
 
-# Tango imports
 from tango.test_context import DeviceTestContext
 from os.path import dirname, join
 
-# Additional import
 from dishleafnode import DishLeafNode, const, release
 from dishleafnode.utils import DishMode
 from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
@@ -100,7 +98,7 @@ def test_command_cb_is_invoked_when_command_with_arg_is_called_async(
 
     tango_context.device.command_inout(cmd_name, input_arg)
     dish1_proxy_mock.command_inout_asynch.assert_called_with(
-        requested_cmd, input_arg, any_method(with_name="cmd_ended_cb")
+        requested_cmd, np.array(input_arg), any_method(with_name="cmd_ended_cb")
     )
 
 
