@@ -23,7 +23,10 @@ from ska.base.control_model import (
     ControlMode,
     LoggingLevel,
 )
-from tango_simlib.tango_sim_generator import configure_device_model, get_tango_device_server
+from tango_simlib.tango_sim_generator import (
+    configure_device_model,
+    get_tango_device_server,
+)
 
 DISH_DEVICE_NAME = "mid_d0001/nodb/master"
 LEAF_NODE_DEVICE_NAME = "test/tm_leaf_node/d0001"
@@ -99,21 +102,53 @@ def leaf_dish_context(tango_context):
 
 
 class TestDishLeafNode(object):
-    def delay_successful_message_check(self, activityMessage):
-        """When doing multiple commands on the device it may take a while to update the
-        activityMessage. This method gives the commands at most a couple minutes to finish
-        and update the activityMessage.
+    def delay_successful_message_check(self, command_name, activityMessage):
+        """Wait for the activity_message to contain the command name
 
         Parameters
         ----------
+        command_name: String
+            The command name like `Scan`
+
         activityMessage : String
             The dishleafnode activitymessage
 
         """
         for _ in range(5):
             time.sleep(0.5)
-            if "successfully" in activityMessage:
+            if command_name in activityMessage:
                 return
+
+    def wait_for_attribute_change(self, original_value, attribute_to_check):
+        """Keep checking for an attribute to change for a maximum of a few minutes
+
+        Parameters
+        ----------
+        original_value : Any
+            The original value that should change to something else in time
+        attribute_to_check: Any
+            The attribute to check
+        """
+        for _ in range(10):
+            time.sleep(0.5)
+            if original_value != attribute_to_check:
+                return
+
+    def wait_for_dish_mode(self, mode, dish):
+        """Wait for dishmaster dishMode to get to `mode` for a few minutes at most
+
+        Parameters
+        ----------
+        mode : String
+            Like OPERATE
+        dish : DeviceProxy
+            dishmaster DeviceProxy
+        """
+        for _ in range(20):
+            time.sleep(0.5)
+            if mode in str(dish.dishMode):
+                return
+        assert 0, f"dishmaster did not go to mode {mode}, currently {str(dish.dishMode)}"
 
     def test_State(self, leaf_dish_context):
         assert leaf_dish_context.dish_leaf_node.State() == DevState.ALARM
@@ -128,126 +163,115 @@ class TestDishLeafNode(object):
         ) or (const.STR_DISH_STANDBYLP_MODE)
 
     def test_SetOperateMode(self, leaf_dish_context):
+        leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
+        self.wait_for_dish_mode("STANDBY-FP", leaf_dish_context.dish_master)
         leaf_dish_context.dish_leaf_node.SetOperateMode()
+        self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
         assert leaf_dish_context.dish_leaf_node.activityMessage == (
             const.STR_SETOPERATE_SUCCESS
         ) or (const.STR_DISH_OPERATE_MODE)
 
-    # @pytest.mark.xfail
-    # def test_Configure(self, leaf_dish_context):
-    #     input_string = '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiverBand":"1"}}'
-    #     leaf_dish_context.dish_leaf_node.Configure(input_string)
-    #     assert leaf_dish_context.dish_leaf_node.activityMessage == (
-    #         const.STR_CONFIGURE_SUCCESS
-    #     ) or (const.STR_DISH_POINT_STATE_READY)
-
-    # def test_Configure_invalid_JSON(self, leaf_dish_context):
-    #     input_string = '{"Invalid Key"}'
-    #     with pytest.raises(tango.DevFailed):
-    #         leaf_dish_context.dish_leaf_node.Configure(input_string)
-    #     assert const.ERR_INVALID_JSON in leaf_dish_context.dish_leaf_node.activityMessage
-
-    # def test_Configure_invalid_arguments(self, leaf_dish_context):
-    #     """Test for Configure_invalid_arguments  (Negative test case)"""
-    #     input_string = []
-    #     input_string.append(
-    #         '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","":"21:08:47.92","":"-88:5.7:22.9"}},"dish":{"receiverBand":"1"}}'
-    #     )
-    #     with pytest.raises(tango.DevFailed):
-    #         leaf_dish_context.dish_leaf_node.Configure(input_string[0])
-    #     assert const.ERR_JSON_KEY_NOT_FOUND in leaf_dish_context.dish_leaf_node.activityMessage
-
-    # @pytest.mark.xfail
-    # def test_Configure_generic_exception(self, leaf_dish_context):
-    #     Configure_input = "[123]"
-    #     with pytest.raises(tango.DevFailed):
-    #         leaf_dish_context.dish_leaf_node.Configure(Configure_input)
-    #     assert const.ERR_EXE_CONFIGURE_CMD in leaf_dish_context.dish_leaf_node.activityMessage
+    def test_Configure(self, leaf_dish_context):
+        desiredPointing_before = leaf_dish_context.dish_master.desiredPointing
+        configuredBand_before = leaf_dish_context.dish_master.configuredBand
+        leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
+        self.wait_for_dish_mode("STANDBY-FP", leaf_dish_context.dish_master)
+        input_string = '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiverBand":"1"}}'
+        leaf_dish_context.dish_leaf_node.Configure(input_string)
+        self.wait_for_attribute_change(
+            configuredBand_before, leaf_dish_context.dish_master.configuredBand
+        )
+        assert desiredPointing_before[0] != leaf_dish_context.dish_master.desiredPointing[0]
+        assert configuredBand_before != leaf_dish_context.dish_master.configuredBand
 
     def test_Scan(self, leaf_dish_context):
         leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
+        self.wait_for_dish_mode("STANDBY-FP", leaf_dish_context.dish_master)
         leaf_dish_context.dish_leaf_node.SetOperateMode()
+        self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
         leaf_dish_context.dish_leaf_node.Scan("0")
-        self.delay_successful_message_check(leaf_dish_context.dish_leaf_node.activityMessage)
+        self.delay_successful_message_check(
+            "Scan", leaf_dish_context.dish_leaf_node.activityMessage
+        )
         assert "Scan invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
 
     def test_EndScan(self, leaf_dish_context):
         leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
         leaf_dish_context.dish_leaf_node.SetOperateMode()
+        self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
         leaf_dish_context.dish_leaf_node.Scan("0")
         leaf_dish_context.dish_leaf_node.EndScan("0")
-        self.delay_successful_message_check(leaf_dish_context.dish_leaf_node.activityMessage)
+        self.delay_successful_message_check(
+            "StopCapture", leaf_dish_context.dish_leaf_node.activityMessage
+        )
         assert (
             "StopCapture invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
         )
 
     def test_StartCapture(self, leaf_dish_context):
         leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
+        self.wait_for_dish_mode("STANDBY-FP", leaf_dish_context.dish_master)
         leaf_dish_context.dish_leaf_node.SetOperateMode()
+        self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
         leaf_dish_context.dish_leaf_node.StartCapture("0")
-        self.delay_successful_message_check(leaf_dish_context.dish_leaf_node.activityMessage)
+        self.delay_successful_message_check(
+            "StartCapture", leaf_dish_context.dish_leaf_node.activityMessage
+        )
         assert (
             "StartCapture invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
         )
 
     def test_StopCapture(self, leaf_dish_context):
         leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
+        self.wait_for_dish_mode("STANDBY-FP", leaf_dish_context.dish_master)
         leaf_dish_context.dish_leaf_node.SetOperateMode()
+        self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
         leaf_dish_context.dish_leaf_node.StartCapture("0")
         leaf_dish_context.dish_leaf_node.StopCapture("0")
-        self.delay_successful_message_check(leaf_dish_context.dish_leaf_node.activityMessage)
+        self.delay_successful_message_check(
+            "StopCapture", leaf_dish_context.dish_leaf_node.activityMessage
+        )
         assert (
             "StopCapture invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
         )
 
     def test_SetStowMode(self, leaf_dish_context):
-        leaf_dish_context.dish_leaf_node.SetStandByLPMode()
         leaf_dish_context.dish_leaf_node.SetStowMode()
-        self.delay_successful_message_check(leaf_dish_context.dish_leaf_node.activityMessage)
+        self.delay_successful_message_check(
+            "SetStowMode", leaf_dish_context.dish_leaf_node.activityMessage
+        )
         assert (
             "SetStowMode invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
         )
 
-    # @pytest.mark.xfail
     # def test_Slew(self, leaf_dish_context):
-    #     leaf_dish_context.dish_leaf_node.SetStandByLPMode()
-    #     leaf_dish_context.dish_leaf_node.Slew("0")
-    #     assert leaf_dish_context.dish_leaf_node.activityMessage == const.STR_SLEW_SUCCESS
-
-    # @pytest.mark.xfail
-    # def test_Slew_invalid_arguments(self, leaf_dish_context):
-    #     leaf_dish_context.dish_leaf_node.SetStandByLPMode()
-    #     with pytest.raises(tango.DevFailed):
-    #         leaf_dish_context.dish_leaf_node.Slew("a")
-    #     assert const.ERR_EXE_SLEW_CMD in leaf_dish_context.dish_leaf_node.activityMessage
-
-    # def test_Track_invalid_arg(self, leaf_dish_context):
-    #     input_string = '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","":"21:08:47.92","":"-88:57:22.9"}},"dish":{"receiverBand":"1"}}'
-    #     with pytest.raises(tango.DevFailed):
-    #         leaf_dish_context.dish_leaf_node.Track(input_string)
-    #     assert const.ERR_JSON_KEY_NOT_FOUND in leaf_dish_context.dish_leaf_node.activityMessage
-    #     leaf_dish_context.dish_leaf_node.SetStandByLPMode()
-
-    # def test_Track_invalid_JSON(self, leaf_dish_context):
-    #     input_string = '{"Invalid Key"}'
-    #     with pytest.raises(tango.DevFailed):
-    #         leaf_dish_context.dish_leaf_node.Track(input_string)
-    #     assert const.ERR_INVALID_JSON in leaf_dish_context.dish_leaf_node.activityMessage
-
-    # @pytest.mark.xfail
-    # def test_Track(self, leaf_dish_context):
-    #     input_string = '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiverBand":"1"}}'
-    #     leaf_dish_context.dish_leaf_node.Track(input_string)
+    #     leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
+    #     self.wait_for_dish_mode("STANDBY-FP", leaf_dish_context.dish_master)
+    #     leaf_dish_context.dish_leaf_node.SetOperateMode()
+    #     self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
+    #     leaf_dish_context.dish_leaf_node.Slew("[10.0, 20.0]")
+    #     self.delay_successful_message_check(
+    #         "Slew", leaf_dish_context.dish_leaf_node.activityMessage)
     #     assert (
-    #         leaf_dish_context.dish_master.pointingState == 1
-    #         or leaf_dish_context.dish_master.pointingState == 2
+    #         "Slew invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
     #     )
-    #     leaf_dish_context.dish_master.TrackStop()
 
-    # @pytest.mark.xfail
-    # def test_TrackStop(self, leaf_dish_context):
-    #     leaf_dish_context.dish_leaf_node.TrackStop()
-    #     assert leaf_dish_context.dish_master.pointingState == 0
+    def test_Track(self, leaf_dish_context):
+        leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
+        leaf_dish_context.dish_leaf_node.SetOperateMode()
+        self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
+
+        input_string = '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiverBand":"1"}}'
+        leaf_dish_context.dish_leaf_node.Track(input_string)
+        self.delay_successful_message_check(
+            "Track", leaf_dish_context.dish_leaf_node.activityMessage
+        )
+        assert "Track invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
+        leaf_dish_context.dish_leaf_node.StopTrack()
+        self.delay_successful_message_check(
+            "StopTrack", leaf_dish_context.dish_leaf_node.activityMessage
+        )
+        assert "TrackStop invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
 
     def test_healthState(self, leaf_dish_context):
         assert leaf_dish_context.dish_leaf_node.healthState == HealthState.OK
@@ -269,12 +293,13 @@ class TestDishLeafNode(object):
 
     def test_dishMode_change_event(self, leaf_dish_context):
         leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
+        self.wait_for_dish_mode("STANDBY-FP", leaf_dish_context.dish_master)
         leaf_dish_context.dish_leaf_node.SetOperateMode()
+        self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
         mock_cb = mock.MagicMock()
         eid = leaf_dish_context.dish_master.subscribe_event(
             const.EVT_DISH_MODE, EventType.CHANGE_EVENT, mock_cb
         )
-        self.delay_successful_message_check(leaf_dish_context.dish_leaf_node.activityMessage)
         assert (
             "SetOperateMode invoked successfully"
             in leaf_dish_context.dish_leaf_node.activityMessage
@@ -282,21 +307,6 @@ class TestDishLeafNode(object):
         assert leaf_dish_context.dish_master.dishMode == "OPERATE" or 8
         mock_cb.assert_called()
         leaf_dish_context.dish_master.unsubscribe_event(eid)
-
-    # @pytest.mark.xfail
-    # def test_capturing_change_event(self, leaf_dish_context):
-    #     mock_cb = mock.MagicMock()
-    #     eid = leaf_dish_context.dish_master.subscribe_event(
-    #         const.EVT_DISH_CAPTURING, EventType.CHANGE_EVENT, mock_cb
-    #     )
-    #     leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
-    #     leaf_dish_context.dish_leaf_node.SetOperateMode()
-    #     leaf_dish_context.dish_leaf_node.StartCapture("0")
-    #     leaf_dish_context.dish_leaf_node.StopCapture("0")
-    #     assert "StopCapture invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
-    #     assert leaf_dish_context.dish_master.capturing == False
-    #     mock_cb.assert_called()
-    #     leaf_dish_context.dish_master.unsubscribe_event(eid)
 
     def test_loggingLevel(self, leaf_dish_context):
         leaf_dish_context.dish_leaf_node.loggingLevel = LoggingLevel.INFO
