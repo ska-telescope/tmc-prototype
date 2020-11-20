@@ -244,17 +244,17 @@ class TestDishLeafNode(object):
             "SetStowMode invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
         )
 
-    # def test_Slew(self, leaf_dish_context):
-    #     leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
-    #     self.wait_for_dish_mode("STANDBY-FP", leaf_dish_context.dish_master)
-    #     leaf_dish_context.dish_leaf_node.SetOperateMode()
-    #     self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
-    #     leaf_dish_context.dish_leaf_node.Slew("[10.0, 20.0]")
-    #     self.delay_successful_message_check(
-    #         "Slew", leaf_dish_context.dish_leaf_node.activityMessage)
-    #     assert (
-    #         "Slew invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
-    #     )
+    def test_Slew(self, leaf_dish_context):
+        leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
+        self.wait_for_dish_mode("STANDBY-FP", leaf_dish_context.dish_master)
+        leaf_dish_context.dish_leaf_node.SetOperateMode()
+        self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
+        leaf_dish_context.dish_leaf_node.Slew([10.0, 20.0])
+        self.delay_successful_message_check(
+            "Slew", leaf_dish_context.dish_leaf_node.activityMessage)
+        assert (
+            "Slew invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
+        )
 
     def test_Track(self, leaf_dish_context):
         leaf_dish_context.dish_leaf_node.SetStandbyFPMode()

@@ -1031,8 +1031,8 @@ class DishLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in="str",
-        doc_in="Timestamp at which command should be executed.",
+        dtype_in="DevVarDoubleArray",
+        doc_in="[Azimuth, Elevation]",
     )
     def Slew(self, argin):
         """Invokes Slew command on DishMaster to slew the dish towards the set pointing coordinates."""
