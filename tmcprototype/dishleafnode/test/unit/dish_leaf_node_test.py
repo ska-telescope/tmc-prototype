@@ -97,8 +97,14 @@ def test_command_cb_is_invoked_when_command_with_arg_is_called_async(
     cmd_name, input_arg, requested_cmd = command_with_arg
 
     tango_context.device.command_inout(cmd_name, input_arg)
-    dish1_proxy_mock.command_inout_asynch.assert_called_with(
-        requested_cmd, np.array(input_arg), any_method(with_name="cmd_ended_cb")
+    # Comparing np.arrys behaves differently, so it is suggested to use the
+    # np.testing.assert_equal method.
+    # See https://stackoverflow.com/questions/27781394/mock-assert-called-once-with-a-numpy-array-as-argument
+    np.testing.assert_array_equal(
+        dish1_proxy_mock.command_inout_asynch.call_args[0][0], np.array(input_arg)
+    )
+    assert dish1_proxy_mock.command_inout_asynch.call_args[0][1] == any_method(
+        with_name="cmd_ended_cb"
     )
 
 
@@ -193,6 +199,7 @@ def test_track_should_command_dish_to_start_tracking(mock_dish_master):
     dish1_proxy_mock.command_inout_asynch.assert_called_with(
         const.CMD_TRACK, "0", any_method(with_name="cmd_ended_cb")
     )
+
 
 def create_dummy_event_for_dishmode(device_fqdn, dish_mode_value, attribute):
     fake_event = Mock()
@@ -353,6 +360,7 @@ def test_configure_should_raise_exception_when_called_with_invalid_arguments():
             tango_context.device.Configure(input_string[0])
         assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
 
+
 def test_track_should_raise_exception_when_called_with_invalid_arguments():
     with fake_tango_system(DishLeafNode) as tango_context:
         with pytest.raises(tango.DevFailed):
@@ -424,6 +432,7 @@ def raise_devfailed_exception(*args):
         " ",
         tango.ErrSeverity.ERR,
     )
+
 
 @pytest.fixture(
     scope="function",
