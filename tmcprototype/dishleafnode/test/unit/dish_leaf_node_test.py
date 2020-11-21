@@ -101,9 +101,9 @@ def test_command_cb_is_invoked_when_command_with_arg_is_called_async(
     # np.testing.assert_equal method.
     # See https://stackoverflow.com/questions/27781394/mock-assert-called-once-with-a-numpy-array-as-argument
     np.testing.assert_array_equal(
-        dish1_proxy_mock.command_inout_asynch.call_args[0][0], np.array(input_arg)
+        dish1_proxy_mock.command_inout_asynch.call_args[0][1], np.array(input_arg)
     )
-    assert dish1_proxy_mock.command_inout_asynch.call_args[0][1] == any_method(
+    assert dish1_proxy_mock.command_inout_asynch.call_args[0][2] == any_method(
         with_name="cmd_ended_cb"
     )
 
