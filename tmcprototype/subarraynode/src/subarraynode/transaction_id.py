@@ -1,6 +1,5 @@
 import functools
 import json
-import os
 from typing import Any, Dict, Union
 import logging
 from ska.log_transactions import transaction
