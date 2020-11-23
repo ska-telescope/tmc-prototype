@@ -55,6 +55,7 @@ class CommandCallBack:
                 - errors     : (sequence<DevError>) The error stack
                 - ext
         :return: none
+
         """
         if event.err:
             log_message = f"Error in invoking command: {event.cmd_name}\n{event.errors}"
@@ -80,6 +81,7 @@ class DishLeafNode(SKABaseDevice):
         """
         Initialises the command handlers for commands supported by this
         device.
+
         """
         super().init_command_objects()
         args = (self, self.state_model, self.logger)
@@ -115,6 +117,7 @@ class DishLeafNode(SKABaseDevice):
         :param evt: A TANGO_CHANGE event on attribute.
 
         :return: None
+
         """
         if event_data.err:
             log_message = f"Event system DevError(s) occured!!! {str(event_data.errors)}"
@@ -137,13 +140,15 @@ class DishLeafNode(SKABaseDevice):
         """Converts RaDec coordinate in to AzEl coordinate using KATPoint library.
 
         :param data: list
-        Argin to be provided is the Ra and Dec values in the following format:
-        [0] = radec,21:08:47.92,89:15:51.4
-        [1] = timestamp
+            Argin to be provided is the Ra and Dec values in the following format:
+            [0] = radec,21:08:47.92,89:15:51.4
+            [1] = timestamp
 
-        :return: None.
+        :return: list
+            Azimuth and elevation angle, in radians
 
         :raises: ValueError if error occurs in Ra-Dec to Az-El conversion
+
         """
         dish_antenna = katpoint.Antenna(
             name=self.dish_name,
@@ -187,7 +192,8 @@ class DishLeafNode(SKABaseDevice):
     def tracking_time_thread(self):
         """This thread allows the dish to track the source for a specified Duration.
 
-        :return: None.
+        :return: None
+
         """
         start_track_time = time.time()
         end_track_time = start_track_time + self.TrackDuration * 60.0
@@ -199,12 +205,14 @@ class DishLeafNode(SKABaseDevice):
                 self.logger.error(log_message)
                 break
             elif self.el_limit:
+                self.logger.debug("Elevation limit reached.")
                 break
 
     def track_thread(self):
-        """This thread invokes Track command on DishMaster at the rate of 20 Hz.
+        """This thread writes coordinates to desiredPointing on DishMaster at the rate of 20 Hz.
 
-        :return: None.
+        :return: None
+
         """
         self.logger.info(
             f"print track_thread thread name:{threading.currentThread().getName()}"
@@ -361,12 +369,13 @@ class DishLeafNode(SKABaseDevice):
             """
             Initializes the attributes and properties of the DishLeafNode.
 
-            :return: A tuple containing a return code and a string message indicating status. The message is for
-                information purpose only.
+            :return: A tuple containing a return code and a string message indicating status.
+                The message is for information purpose only.
 
             :rtype: (ResultCode, str)
 
             :raises: DevFailed if error occurs in creating proxy for DishMaster
+
             """
             # TODO: The code is implemented such way that even in case of exception,
             #  the execution will continue. It is possible that due to this,
@@ -457,6 +466,7 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
+
             """
             return True
 
@@ -465,6 +475,7 @@ class DishLeafNode(SKABaseDevice):
             Invokes SetStowMode command on DishMaster.
 
             :return: None
+
             """
             device = self.target
             try:
@@ -482,13 +493,14 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
+
         """
         handler = self.get_command_object("SetStowMode")
         return handler.check_allowed()
 
     @command()
     def SetStowMode(self):
-        """ Invokes SetStowMode command on DishMaster. """
+        """Invokes SetStowMode command on DishMaster."""
         handler = self.get_command_object("SetStowMode")
         handler()
 
@@ -508,6 +520,7 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
+
             """
             return True
 
@@ -516,6 +529,7 @@ class DishLeafNode(SKABaseDevice):
             Invokes SetStandbyLPMode (i.e. Low Power State) command on DishMaster.
 
             :return: None
+
             """
             device = self.target
             try:
@@ -533,13 +547,14 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
+
         """
         handler = self.get_command_object("SetStandbyLPMode")
         return handler.check_allowed()
 
     @command()
     def SetStandbyLPMode(self):
-        """ Invokes SetStandbyLPMode (i.e. Low Power State) command on DishMaster. """
+        """Invokes SetStandbyLPMode (i.e. Low Power State) command on DishMaster."""
         handler = self.get_command_object("SetStandbyLPMode")
         handler()
 
@@ -559,6 +574,7 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
+
             """
             return True
 
@@ -567,6 +583,7 @@ class DishLeafNode(SKABaseDevice):
             Invokes SetOperateMode command on DishMaster.
 
             :return: None
+
             """
             device = self.target
             try:
@@ -584,13 +601,14 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
+
         """
         handler = self.get_command_object("SetOperateMode")
         return handler.check_allowed()
 
     @command()
     def SetOperateMode(self):
-        """ Invokes SetOperateMode command on DishMaster. """
+        """Invokes SetOperateMode command on DishMaster."""
         handler = self.get_command_object("SetOperateMode")
         handler()
 
@@ -610,6 +628,7 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
+
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 return False
@@ -623,6 +642,7 @@ class DishLeafNode(SKABaseDevice):
             :param argin: timestamp
 
             :return: None
+
             """
             device = self.target
             try:
@@ -640,6 +660,7 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
+
         """
         handler = self.get_command_object("Scan")
         return handler.check_allowed()
@@ -649,7 +670,7 @@ class DishLeafNode(SKABaseDevice):
         doc_in="Timestamp",
     )
     def Scan(self, argin):
-        """ Invokes Scan command on DishMaster. """
+        """Invokes Scan command on DishMaster."""
         handler = self.get_command_object("Scan")
         handler(argin)
 
@@ -665,6 +686,7 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
+
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 return False
@@ -678,6 +700,7 @@ class DishLeafNode(SKABaseDevice):
             :param argin: timestamp
 
             :return: None
+
             """
             device = self.target
             try:
@@ -695,6 +718,7 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
+
         """
         handler = self.get_command_object("EndScan")
         return handler.check_allowed()
@@ -704,7 +728,7 @@ class DishLeafNode(SKABaseDevice):
         doc_in="Timestamp",
     )
     def EndScan(self, argin):
-        """Invokes StopCapture command on DishMaster. """
+        """Invokes StopCapture command on DishMaster."""
         handler = self.get_command_object("EndScan")
         handler(argin)
 
@@ -724,6 +748,7 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
+
             """
             if self.state_model.op_state in [
                 DevState.FAULT,
@@ -743,7 +768,8 @@ class DishLeafNode(SKABaseDevice):
             dish master.
 
             :param argin:
-            A String in a JSON format that includes pointing parameters of Dish- Azimuth and Elevation Angle.
+            A String in a JSON format that includes pointing parameters of Dish- Azimuth and
+            Elevation Angle.
 
                 Example:
                 {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},
@@ -752,6 +778,7 @@ class DishLeafNode(SKABaseDevice):
             :return: None
 
             :raises: DevFailed if error occurs while invoking this command on DishMaster.
+
             """
 
             device = self.target
@@ -822,6 +849,7 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
+
             """
             if self.state_model.op_state in [
                 DevState.FAULT,
@@ -839,6 +867,7 @@ class DishLeafNode(SKABaseDevice):
             :param argin: timestamp
 
             :return: None
+
             """
             device = self.target
             try:
@@ -866,7 +895,7 @@ class DishLeafNode(SKABaseDevice):
         doc_in="The timestamp indicates the time, in UTC, at which command execution should start.",
     )
     def StartCapture(self, argin):
-        """ Triggers the DishMaster to Start capture on the set configured band. """
+        """Triggers the DishMaster to Start capture on the set configured band."""
         handler = self.get_command_object("StartCapture")
         handler(argin)
 
@@ -882,6 +911,7 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
+
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 return False
@@ -895,6 +925,7 @@ class DishLeafNode(SKABaseDevice):
             :param argin: timestamp
 
             :return: None
+
             """
             device = self.target
             try:
@@ -912,6 +943,7 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
+
         """
         handler = self.get_command_object("StopCapture")
         return handler.check_allowed()
@@ -941,6 +973,7 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
+
             """
             return True
 
@@ -949,6 +982,7 @@ class DishLeafNode(SKABaseDevice):
             Invokes SetStandbyFPMode command on DishMaster (Standby-Full power) mode.
 
             :return:None
+
             """
             device = self.target
             try:
@@ -966,6 +1000,7 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state
 
         :rtype: boolean
+
         """
         handler = self.get_command_object("SetStandbyFPMode")
         return handler.check_allowed()
@@ -992,6 +1027,7 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
+
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 return False
@@ -1000,13 +1036,15 @@ class DishLeafNode(SKABaseDevice):
 
         def do(self, argin):
             """
-            Invokes Slew command on DishMaster to slew the dish towards the set pointing coordinates.
+            Invokes Slew command on DishMaster to slew the dish towards the set pointing
+            coordinates.
 
             :param argin: list
                 [0] = Azimuth
                 [1] = Elevation
 
             :return: None
+
             """
             device = self.target
             try:
@@ -1026,6 +1064,7 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
+
         """
         handler = self.get_command_object("Slew")
         return handler.check_allowed()
@@ -1035,7 +1074,9 @@ class DishLeafNode(SKABaseDevice):
         doc_in="[Azimuth, Elevation]",
     )
     def Slew(self, argin):
-        """Invokes Slew command on DishMaster to slew the dish towards the set pointing coordinates."""
+        """
+        Invokes Slew command on DishMaster to slew the dish towards the set pointing coordinates.
+        """
         handler = self.get_command_object("Slew")
         handler(argin)
 
@@ -1055,6 +1096,7 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
+
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 return False
@@ -1080,6 +1122,7 @@ class DishLeafNode(SKABaseDevice):
             :return: None
 
             :raises: DevFailed if error occurs while invoking this command on DishMaster.
+
             """
             device = self.target
             device.el_limit = False
@@ -1114,6 +1157,7 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
+
         """
         handler = self.get_command_object("Track")
         return handler.check_allowed()
@@ -1143,6 +1187,7 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state.
 
             :rtype: boolean
+
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 return False
@@ -1156,6 +1201,7 @@ class DishLeafNode(SKABaseDevice):
             :return: None
 
             :raises: DevFailed if error occurs while invoking this command on DishMaster.
+
             """
             device = self.target
             device.event_track_time.set()
@@ -1174,13 +1220,14 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
+
         """
         handler = self.get_command_object("StopTrack")
         return handler.check_allowed()
 
     @command()
     def StopTrack(self):
-        """ Invokes StopTrack command on the DishMaster."""
+        """Invokes StopTrack command on the DishMaster."""
         handler = self.get_command_object("StopTrack")
         handler()
 
@@ -1200,6 +1247,7 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state
 
             :rtype: boolean
+
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 return False
@@ -1213,6 +1261,7 @@ class DishLeafNode(SKABaseDevice):
             :return: None
 
             :raises: DevFailed if error ocuurs while invoking command on DishMaster.
+
             """
             device = self.target
             device.event_track_time.set()
@@ -1237,6 +1286,7 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state
 
         :rtype: boolean
+
         """
         handler = self.get_command_object("Abort")
         return handler.check_allowed()
@@ -1257,6 +1307,7 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state
 
             :rtype: boolean
+
             """
             if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
                 return False
@@ -1270,6 +1321,7 @@ class DishLeafNode(SKABaseDevice):
             :return: None
 
             raises: DevFailed if error occurs while invoking command on DishMaster
+
             """
             device = self.target
             try:
@@ -1293,6 +1345,7 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state
 
         :rtype: boolean
+
         """
         handler = self.get_command_object("Restart")
         return handler.check_allowed()
@@ -1313,6 +1366,7 @@ class DishLeafNode(SKABaseDevice):
             :return: True if this command is allowed to be run in current device state
 
             :rtype: boolean
+
             """
             if self.state_model.op_state in [DevState.UNKNOWN, DevState.DISABLE]:
                 return False
@@ -1326,6 +1380,7 @@ class DishLeafNode(SKABaseDevice):
             :return: None
 
             :raises: DevFailed if error occurs while invoking command on Dishleaf Node.
+
             """
             device = self.target
             try:
@@ -1349,6 +1404,7 @@ class DishLeafNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state
 
         :rtype: boolean
+
         """
         handler = self.get_command_object("ObsReset")
         return handler.check_allowed()
@@ -1362,6 +1418,7 @@ def main(args=None, **kwargs):
     :param args: Arguments internal to TANGO
     :param kwargs: Arguments internal to TANGO
     :return: DishLeafNode TANGO object.
+
     """
     return run((DishLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  DishLeafNode.main
