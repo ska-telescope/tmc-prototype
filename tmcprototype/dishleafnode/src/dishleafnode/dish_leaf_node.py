@@ -235,7 +235,7 @@ class DishLeafNode(SKABaseDevice):
                 self.az = 360 - abs(self.az)
 
             desired_pointing = [now.timestamp(), round(self.az, 12), round(self.el, 12)]
-            self.logger.debug("desiredPointing coordinates: {}".format(desired_pointing))
+            self.logger.debug("desiredPointing coordinates: %s", desired_pointing)
             self._dish_proxy.desiredPointing = desired_pointing
             if self.event_track_time.is_set():
                 log_message = f"Break loop: {self.event_track_time.is_set()}"
@@ -804,9 +804,9 @@ class DishLeafNode(SKABaseDevice):
             device._dish_proxy.desiredPointing = time_az_el
 
             # Send configure band command to Dish Master
-            command = f"ConfigureBand{receiver_band}"
+            command_name = f"ConfigureBand{receiver_band}"
             try:
-                device._dish_proxy.command_inout_asynch(command, device.cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_message = "Exception occurred in Configure command"
