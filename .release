@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name = """tmcprototype"""
-version = "0.2.14"
+version = "0.2.15"
 version_info = version.split(".")
 description = """TMC Prototype"""
 author = "Team NCRA"
@@ -10,8 +10,8 @@ license = """BSD-3-Clause"""
 url = """https://www.skatelescope.org"""
 copyright = """"""
 
-release=0.2.14
-tag=0.2.14
+release=0.2.15
+tag=0.2.15
 tag_description=Implement logging transaction ids on leaf nodes
 release_notes=This release Contains: <br/><ul><li>Logging the transaction ids on Leaf Nodes.</li></ul><br/>
 gitlab_username=AdityaDange
