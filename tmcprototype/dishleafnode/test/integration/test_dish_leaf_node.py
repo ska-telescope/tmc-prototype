@@ -85,7 +85,20 @@ devices_info = [
                     "TrackDuration": ["1"],
                     "LoggingTargetsDefault": ["tango::logger"],
                     "LoggingLevelDefault": ["5"],
-                    "polled_attr": ["activitymessage", "1000", "healthstate", "1000"],
+                    "polled_attr": [
+                        "activitymessage",
+                        "1000",
+                        "healthstate",
+                        "1000",
+                        "capturing",
+                        "1000",
+                        "achievedPointing",
+                        "1000",
+                        "desiredPointing",
+                        "1000",
+                        "dishMode",
+                        "1000",
+                    ],
                 },
             },
         ),
@@ -101,7 +114,7 @@ def leaf_dish_context(tango_context):
     return tango_context
 
 
-class TestDishLeafNode(object):
+class TestDishLeafNode:
     def delay_successful_message_check(self, command_name, activityMessage):
         """Wait for the activity_message to contain the command name
 
@@ -150,17 +163,11 @@ class TestDishLeafNode(object):
                 return
         assert 0, f"dishmaster did not go to mode {mode}, currently {str(dish.dishMode)}"
 
-    def test_State(self, leaf_dish_context):
-        assert leaf_dish_context.dish_leaf_node.State() == DevState.ALARM
-
-    def test_Status(self, leaf_dish_context):
-        assert leaf_dish_context.dish_leaf_node.Status() != const.STR_DISH_INIT_SUCCESS
-
     def test_SetStandByLPMode(self, leaf_dish_context):
-        leaf_dish_context.dish_leaf_node.SetStandByLPMode()
         assert leaf_dish_context.dish_leaf_node.activityMessage == (
             const.STR_SETSTANDBYLP_SUCCESS
         ) or (const.STR_DISH_STANDBYLP_MODE)
+        assert leaf_dish_context.dish_master.dishmode.name == "STANDBY-LP"
 
     def test_SetOperateMode(self, leaf_dish_context):
         leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
@@ -170,19 +177,21 @@ class TestDishLeafNode(object):
         assert leaf_dish_context.dish_leaf_node.activityMessage == (
             const.STR_SETOPERATE_SUCCESS
         ) or (const.STR_DISH_OPERATE_MODE)
+        assert leaf_dish_context.dish_master.dishmode.name == "OPERATE"
 
     def test_Configure(self, leaf_dish_context):
-        desiredPointing_before = leaf_dish_context.dish_master.desiredPointing
-        configuredBand_before = leaf_dish_context.dish_master.configuredBand
+        previous_timestamp = leaf_dish_context.dish_master.desiredPointing[0]
+        previous_configuredBand = leaf_dish_context.dish_master.configuredBand
         leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
         self.wait_for_dish_mode("STANDBY-FP", leaf_dish_context.dish_master)
         input_string = '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiverBand":"1"}}'
         leaf_dish_context.dish_leaf_node.Configure(input_string)
         self.wait_for_attribute_change(
-            configuredBand_before, leaf_dish_context.dish_master.configuredBand
+            previous_configuredBand, leaf_dish_context.dish_master.configuredBand
         )
-        assert desiredPointing_before[0] != leaf_dish_context.dish_master.desiredPointing[0]
-        assert configuredBand_before != leaf_dish_context.dish_master.configuredBand
+        assert leaf_dish_context.dish_master.desiredPointing[0] != previous_timestamp
+        assert leaf_dish_context.dish_master.configuredBand != previous_configuredBand
+        assert leaf_dish_context.dish_master.dsIndexerPosition != previous_configuredBand
 
     def test_Scan(self, leaf_dish_context):
         leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
@@ -194,6 +203,7 @@ class TestDishLeafNode(object):
             "Scan", leaf_dish_context.dish_leaf_node.activityMessage
         )
         assert "Scan invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
+        assert leaf_dish_context.dish_master.pointingState.name == "SCAN"
 
     def test_EndScan(self, leaf_dish_context):
         leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
@@ -220,13 +230,16 @@ class TestDishLeafNode(object):
         assert (
             "StartCapture invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
         )
+        assert leaf_dish_context.dish_master.rxCapturingData
 
+    @pytest.mark.xfail
     def test_StopCapture(self, leaf_dish_context):
         leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
         self.wait_for_dish_mode("STANDBY-FP", leaf_dish_context.dish_master)
         leaf_dish_context.dish_leaf_node.SetOperateMode()
         self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
         leaf_dish_context.dish_leaf_node.StartCapture("0")
+        previous_rxCapturingData = leaf_dish_context.dish_master.rxCapturingData
         leaf_dish_context.dish_leaf_node.StopCapture("0")
         self.delay_successful_message_check(
             "StopCapture", leaf_dish_context.dish_leaf_node.activityMessage
@@ -234,6 +247,10 @@ class TestDishLeafNode(object):
         assert (
             "StopCapture invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
         )
+        self.wait_for_attribute_change(
+            previous_rxCapturingData, leaf_dish_context.dish_master.rxCapturingData
+        )
+        assert not leaf_dish_context.dish_master.rxCapturingData
 
     def test_SetStowMode(self, leaf_dish_context):
         leaf_dish_context.dish_leaf_node.SetStowMode()
@@ -243,6 +260,7 @@ class TestDishLeafNode(object):
         assert (
             "SetStowMode invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
         )
+        assert leaf_dish_context.dish_master.dishmode.name == "STOW"
 
     def test_Slew(self, leaf_dish_context):
         leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
@@ -251,10 +269,10 @@ class TestDishLeafNode(object):
         self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
         leaf_dish_context.dish_leaf_node.Slew([10.0, 20.0])
         self.delay_successful_message_check(
-            "Slew", leaf_dish_context.dish_leaf_node.activityMessage)
-        assert (
-            "Slew invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
+            "Slew", leaf_dish_context.dish_leaf_node.activityMessage
         )
+        assert "Slew invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
+        assert leaf_dish_context.dish_master.pointingState.name == "SLEW"
 
     def test_Track(self, leaf_dish_context):
         leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
@@ -267,29 +285,14 @@ class TestDishLeafNode(object):
             "Track", leaf_dish_context.dish_leaf_node.activityMessage
         )
         assert "Track invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
+        assert leaf_dish_context.dish_master.pointingState.name == "TRACK"
+
         leaf_dish_context.dish_leaf_node.StopTrack()
         self.delay_successful_message_check(
             "StopTrack", leaf_dish_context.dish_leaf_node.activityMessage
         )
         assert "TrackStop invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
-
-    def test_healthState(self, leaf_dish_context):
-        assert leaf_dish_context.dish_leaf_node.healthState == HealthState.OK
-
-    def test_adminMode(self, leaf_dish_context):
-        assert leaf_dish_context.dish_leaf_node.adminMode == AdminMode.MAINTENANCE
-
-    def test_controlMode(self, leaf_dish_context):
-        leaf_dish_context.dish_leaf_node.controlMode = ControlMode.REMOTE
-        assert leaf_dish_context.dish_leaf_node.controlMode == ControlMode.REMOTE
-
-    def test_simulationMode(self, leaf_dish_context):
-        leaf_dish_context.dish_leaf_node.simulationMode = SimulationMode.FALSE
-        assert leaf_dish_context.dish_leaf_node.simulationMode == SimulationMode.FALSE
-
-    def test_testMode(self, leaf_dish_context):
-        leaf_dish_context.dish_leaf_node.testMode = TestMode.NONE
-        assert leaf_dish_context.dish_leaf_node.testMode == TestMode.NONE
+        assert leaf_dish_context.dish_master.pointingState.name == "READY"
 
     def test_dishMode_change_event(self, leaf_dish_context):
         leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
@@ -304,14 +307,6 @@ class TestDishLeafNode(object):
             "SetOperateMode invoked successfully"
             in leaf_dish_context.dish_leaf_node.activityMessage
         )
-        assert leaf_dish_context.dish_master.dishMode == "OPERATE" or 8
+        assert leaf_dish_context.dish_master.dishMode.name == "OPERATE"
         mock_cb.assert_called()
         leaf_dish_context.dish_master.unsubscribe_event(eid)
-
-    def test_loggingLevel(self, leaf_dish_context):
-        leaf_dish_context.dish_leaf_node.loggingLevel = LoggingLevel.INFO
-        assert leaf_dish_context.dish_leaf_node.loggingLevel == LoggingLevel.INFO
-
-    def test_loggingTargets(self, leaf_dish_context):
-        leaf_dish_context.dish_leaf_node.loggingTargets = ["tango::logger"]
-        assert "tango::logger" in leaf_dish_context.dish_leaf_node.loggingTargets
