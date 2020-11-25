@@ -230,16 +230,15 @@ class TestDishLeafNode:
         assert (
             "StartCapture invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
         )
-        assert leaf_dish_context.dish_master.rxCapturingData
+        assert leaf_dish_context.dish_master.capturing
 
-    @pytest.mark.xfail
     def test_StopCapture(self, leaf_dish_context):
         leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
         self.wait_for_dish_mode("STANDBY-FP", leaf_dish_context.dish_master)
         leaf_dish_context.dish_leaf_node.SetOperateMode()
         self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
         leaf_dish_context.dish_leaf_node.StartCapture("0")
-        previous_rxCapturingData = leaf_dish_context.dish_master.rxCapturingData
+        previous_capturing = leaf_dish_context.dish_master.rxCapturingData
         leaf_dish_context.dish_leaf_node.StopCapture("0")
         self.delay_successful_message_check(
             "StopCapture", leaf_dish_context.dish_leaf_node.activityMessage
@@ -248,9 +247,9 @@ class TestDishLeafNode:
             "StopCapture invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
         )
         self.wait_for_attribute_change(
-            previous_rxCapturingData, leaf_dish_context.dish_master.rxCapturingData
+            previous_capturing, leaf_dish_context.dish_master.capturing
         )
-        assert not leaf_dish_context.dish_master.rxCapturingData
+        assert not leaf_dish_context.dish_master.capturing
 
     def test_SetStowMode(self, leaf_dish_context):
         leaf_dish_context.dish_leaf_node.SetStowMode()
