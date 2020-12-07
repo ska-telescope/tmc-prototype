@@ -553,16 +553,11 @@ class OverrideDish(object):
             model.logger.info("Attribute 'targetLock' set to %s.", target_reached)
 
     def set_achieved_pointing_attribute(self, model, sim_time, position):
-        # use millisecond timestamp
-        sim_time *= 1000
         achievedPointing = [0, 0, 0]
-        achievedPointing[self.TS_IDX] = sim_time
+        achievedPointing[self.TS_IDX] = sim_time * 1000.0  # millisecond timestamp
         achievedPointing[self.AZIM_IDX] = position.azim
         achievedPointing[self.ELEV_IDX] = position.elev
         model.sim_quantities["achievedPointing"].set_val(achievedPointing, sim_time)
-        model.logger.info(
-            "Attribute 'achievedPointing' updated to: val: {!r}".format(achievedPointing)
-        )
 
     def get_rate_limited_position(self, current_pos, next_pos, dt):
         # calc required deltas in az and el
