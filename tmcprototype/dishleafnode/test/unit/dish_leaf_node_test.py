@@ -172,10 +172,10 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle(mock_dis
     dish_config = config_input_str
     tango_context.device.Configure(json.dumps(dish_config))
 
-    jsonArgument = dish_config
-    # ra_value = (jsonArgument["pointing"]["target"]["RA"])
-    # dec_value = (jsonArgument["pointing"]["target"]["dec"])
-    receiver_band = int(jsonArgument["dish"]["receiverBand"])
+    json_argument = dish_config
+    # ra_value = (json_argument["pointing"]["target"]["RA"])
+    # dec_value = (json_argument["pointing"]["target"]["dec"])
+    receiver_band = int(json_argument["dish"]["receiverBand"])
 
     arg_list = {
         "pointing": {"AZ": 181.6281105048956, "EL": 27.336666294459825},
@@ -192,9 +192,9 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle(mock_dis
 def test_track_should_command_dish_to_start_tracking(mock_dish_master):
     tango_context, dish1_proxy_mock, _, _ = mock_dish_master
     tango_context.device.Track(config_input_str)
-    jsonArgument = config_input_str
-    ra_value = jsonArgument["pointing"]["target"]["RA"]
-    dec_value = jsonArgument["pointing"]["target"]["dec"]
+    json_argument = config_input_str
+    ra_value = json_argument["pointing"]["target"]["RA"]
+    dec_value = json_argument["pointing"]["target"]["dec"]
     radec_value = "radec" + "," + str(ra_value) + "," + str(dec_value)
     dish1_proxy_mock.command_inout_asynch.assert_called_with(
         const.CMD_TRACK, "0", any_method(with_name="cmd_ended_cb")
