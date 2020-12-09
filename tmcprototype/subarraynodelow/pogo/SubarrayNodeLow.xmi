@@ -5,7 +5,7 @@
       <inheritances classname="Device_Impl" sourcePath=""/>
       <inheritances classname="SKAObsDevice" sourcePath="./lmc-base-classes/pogo"/>
       <inheritances classname="SKASubarray" sourcePath="/home/user/projects/lmc-base-classes/pogo"/>
-      <identification contact="at gmail.com - digvijay.ska" author="digvijay.ska" emailDomain="gmail.com" classFamily="Training" siteSpecific="" platform="All Platforms" bus="Not Applicable" manufacturer="none" reference=""/>
+      <identification contact="telmgt-internal@googlegroups.com" author="Team NCRA" emailDomain="googlegroups.com" classFamily="Training" siteSpecific="" platform="All Platforms" bus="Not Applicable" manufacturer="none" reference=""/>
     </description>
     <deviceProperties name="CapabilityTypes" description="List of Capability types e.g. capCorr, capPss,&#xA;capPstBf, capVlbi, this will be used to dynamically&#xA;define groups for subarray.">
       <type xsi:type="pogoDsl:StringVectorType"/>

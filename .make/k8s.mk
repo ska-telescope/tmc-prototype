@@ -90,7 +90,7 @@ install-chart: dep-up namespace namespace_sdp ## install the helm chart with nam
 	--set global.minikube=$(MINIKUBE) \
 	--set global.tango_host=$(TANGO_HOST) \
 	--set tangoDatabaseDS=$(TANGO_DATABASE_DS) \
-	--set sdp-prototype.helm_deploy.namespace=$(SDP_KUBE_NAMESPACE) \
+	--set sdp.helmdeploy.namespace=$(SDP_KUBE_NAMESPACE) \
 	--values values.yaml \
 	 $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE); \
 	 rm generated_values.yaml; \
@@ -104,7 +104,7 @@ template-chart: clean dep-up## install the helm chart with name RELEASE_NAME and
 	--set global.minikube=$(MINIKUBE) \
 	--set global.tango_host=$(TANGO_HOST) \
 	--set tangoDatabaseDS=$(TANGO_DATABASE_DS) \
-	--set sdp-prototype.helm_deploy.namespace=$(SDP_KUBE_NAMESPACE) \
+	--set sdp.helmdeploy.namespace=$(SDP_KUBE_NAMESPACE) \
 	--values values.yaml \
 	--debug \
 	 $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE); \
@@ -126,8 +126,9 @@ wait:## wait for pods to be ready
 	@echo "Waiting for pods to be ready"
 	@date
 	@kubectl -n $(KUBE_NAMESPACE) get pods
-	@jobs=$$(kubectl get job --output=jsonpath={.items..metadata.name} -n $(KUBE_NAMESPACE)); kubectl wait job --for=condition=complete --timeout=120s $$jobs -n $(KUBE_NAMESPACE)
-	@kubectl -n $(KUBE_NAMESPACE) wait --for=condition=ready -l app=tmc-prototype --timeout=120s pods || exit 1
+	@jobs=$$(kubectl get job --output=jsonpath={.items..metadata.name} -n $(KUBE_NAMESPACE)); kubectl wait job --for=condition=complete --timeout=240s $$jobs -n $(KUBE_NAMESPACE)
+	@kubectl -n $(KUBE_NAMESPACE) wait --for=condition=ready -l app=tmc-prototype --timeout=240s pods
+	@kubectl get pods -n $(KUBE_NAMESPACE)
 	@date
 
 # Error in --set
@@ -215,44 +216,6 @@ kubeconfig: ## export current KUBECONFIG as base64 ready for KUBE_CONFIG_BASE64
 	echo "appended to: PrivateRules.mak"; \
 	echo -e "\n\n# base64 encoded from: kubectl config view --flatten\nKUBE_CONFIG_BASE64 = $${KUBE_CONFIG_BASE64}" >> PrivateRules.mak
 
-
-#
-# defines a function to copy the ./test-harness directory into the K8s TEST_RUNNER
-# and then runs the requested make target in the container.
-# capture the output of the test in a tar file
-# stream the tar file base64 encoded to the Pod logs
-# 
-# k8s_test = tar -c post-deployment/ | \
-# 		kubectl run $(TEST_RUNNER) \
-# 		--namespace $(KUBE_NAMESPACE) -i --wait --restart=Never \
-# 		--image-pull-policy=IfNotPresent \
-# 		--image=$(IMAGE_TO_TEST) -- \
-# 		/bin/bash -c "mkdir testing && tar xv --directory testing --strip-components 1 --warning=all && cd testing && \
-# 		make KUBE_NAMESPACE=$(KUBE_NAMESPACE) HELM_RELEASE=$(HELM_RELEASE) TANGO_HOST=$(TANGO_HOST) MARK=$(MARK) $1 && \
-# 		tar -czvf /tmp/build.tgz build && \
-# 		echo '~~~~BOUNDARY~~~~' && \
-# 		cat /tmp/build.tgz | base64 && \
-# 		echo '~~~~BOUNDARY~~~~'" \
-# 		2>&1
-
-# run the test function
-# save the status
-# clean out build dir
-# print the logs minus the base64 encoded payload
-# pull out the base64 payload and unpack build/ dir
-# base64 payload is given a boundary "~~~~BOUNDARY~~~~" and extracted using perl
-# clean up the run to completion container
-# exit the saved status
-# test: ## test the application on K8s
-# 	$(call k8s_test,test); \
-# 		status=$$?; \
-# 		rm -fr build; \
-# 		kubectl --namespace $(KUBE_NAMESPACE) logs $(TEST_RUNNER) | \
-# 		perl -ne 'BEGIN {$$on=0;}; if (index($$_, "~~~~BOUNDARY~~~~")!=-1){$$on+=1;next;}; print if $$on % 2;' | \
-# 		base64 -d | tar -xzf -; \
-# 		kubectl --namespace $(KUBE_NAMESPACE) delete pod $(TEST_RUNNER); \
-# 		exit $$status
-
 # enable_test_auth:
 # 	@helm upgrade --install testing-auth post-deployment/resources/testing_auth \
 # 		--namespace $(KUBE_NAMESPACE) \
@@ -312,30 +275,7 @@ help:  ## show this help.
 	@grep -hE '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 	@echo ""; echo "make vars (+defaults):"
 	@grep -hE '^[0-9a-zA-Z_-]+ \?=.*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = " \?\= "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' | sed -e 's/\#\#/  \#/'
-
-# smoketest: ## check that the number of waiting containers is zero (10 attempts, wait time 30s).
-# 	@echo "Smoke test START"; \
-# 	n=10; \
-# 	while [ $$n -gt 0 ]; do \
-# 		waiting=`kubectl get pods -n $(KUBE_NAMESPACE) -o=jsonpath='{.items[*].status.containerStatuses[*].state.waiting.reason}' | wc -w`; \
-# 		echo "Waiting containers=$$waiting"; \
-# 		if [ $$waiting -ne 0 ]; then \
-# 			echo "Waiting 30s for pods to become running...#$$n"; \
-# 			sleep 30s; \
-# 		fi; \
-# 		if [ $$waiting -eq 0 ]; then \
-# 			echo "Smoke test SUCCESS"; \
-# 			exit 0; \
-# 		fi; \
-# 		if [ $$n -eq 1 ]; then \
-# 			waiting=`kubectl get pods -n $(KUBE_NAMESPACE) -o=jsonpath='{.items[*].status.containerStatuses[*].state.waiting.reason}' | wc -w`; \
-# 			echo "Smoke test FAILS"; \
-# 			echo "Found $$waiting waiting containers: "; \
-# 			kubectl get pods -n $(KUBE_NAMESPACE) -o=jsonpath='{range .items[*].status.containerStatuses[?(.state.waiting)]}{.state.waiting.message}{"\n"}{end}'; \
-# 			exit 1; \
-# 		fi; \
-# 		n=`expr $$n - 1`; \
-# 	done
+	
 traefik: ## install the helm chart for traefik (in the kube-system namespace). @param: EXTERNAL_IP (i.e. private ip of the master node).
 	@TMP=`mktemp -d`; \
 	$(helm_add_stable_repo) && \

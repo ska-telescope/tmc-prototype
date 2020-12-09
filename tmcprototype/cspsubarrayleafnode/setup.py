@@ -34,8 +34,8 @@ setup(
     test_suite="test",
     entry_points={
         'console_scripts': ['CspSubarrayLeafNodeDS=cspsubarrayleafnode.csp_subarray_leaf_node:main']},
-    author='jayant.ska',
-    author_email='jayant.ska at gmail.com',
+    author='Team NCRA',
+    author_email='telmgt-internal@googlegroups.com',
     license='BSD-3-Clause',
     long_description=long_description,
     url='https://www.skatelescope.org',

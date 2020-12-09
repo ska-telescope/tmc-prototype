@@ -10,11 +10,11 @@
 """Release information for Python Package"""
 
 name = """sdpsubarrayleafnode"""
-version = "0.2.11"
+version = "0.2.13"
 version_info = version.split(".")
 description = """"""
-author = "Kalyani Thigale"
-author_email = "kalyanit.ska at gmail.com"
+author = "Team NCRA"
+author_email = "telmgt-internal@googlegroups.com"
 license = """BSD-3-Clause"""
 url = """https://www.skatelescope.org"""
 copyright = """"""

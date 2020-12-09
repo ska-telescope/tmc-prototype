@@ -1,0 +1,1100 @@
+{
+  "id": "5fabbeacd2d0c1001749f760",
+  "name": "MCCS_Dashboard",
+  "version": "1.0.4",
+  "user": "user1",
+  "insertTime": "2020-11-11T10:36:28.738Z",
+  "updateTime": "2020-11-11T11:00:25.736Z",
+  "group": null,
+  "groupWriteAccess": false,
+  "lastUpdatedBy": "user1",
+  "widget": [
+    {
+      "id": "7",
+      "x": 34,
+      "y": 3,
+      "canvas": "0",
+      "width": 9,
+      "height": 2,
+      "type": "LABEL",
+      "inputs": {
+        "text": "MCCS Subarray 1",
+        "backgroundColor": "#f0b5d1",
+        "textColor": "#000",
+        "size": 1,
+        "borderWidth": 0.001,
+        "borderColor": "#010101",
+        "font": "Helvetica",
+        "linkTo": "",
+        "customCss": ""
+      },
+      "order": 0
+    },
+    {
+      "id": "9",
+      "x": 20,
+      "y": 3,
+      "canvas": "0",
+      "width": 8,
+      "height": 2,
+      "type": "LABEL",
+      "inputs": {
+        "text": "MCCS Controller",
+        "backgroundColor": "#f0b5d1",
+        "textColor": "#000",
+        "size": 1,
+        "borderWidth": 0.001,
+        "borderColor": "#000000",
+        "font": "Helvetica",
+        "linkTo": "",
+        "customCss": ""
+      },
+      "order": 1
+    },
+    {
+      "id": "10",
+      "x": 2,
+      "y": 23,
+      "canvas": "0",
+      "width": 16,
+      "height": 2,
+      "type": "ATTRIBUTE_DISPLAY",
+      "inputs": {
+        "attribute": {
+          "device": "ska_low/tm_subarray_node/1",
+          "attribute": "obsstate",
+          "label": "obsState"
+        },
+        "precision": 2,
+        "showDevice": false,
+        "showAttribute": "Label",
+        "scientificNotation": false,
+        "showEnumLabels": true,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 2
+    },
+    {
+      "id": "11",
+      "x": 34,
+      "y": 5,
+      "canvas": "0",
+      "width": 14,
+      "height": 2,
+      "type": "ATTRIBUTE_DISPLAY",
+      "inputs": {
+        "attribute": {
+          "device": "low-mccs/subarray/01",
+          "attribute": "healthstate",
+          "label": "healthState"
+        },
+        "precision": 2,
+        "showDevice": false,
+        "showAttribute": "Label",
+        "scientificNotation": false,
+        "showEnumLabels": true,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 3
+    },
+    {
+      "id": "17",
+      "x": 2,
+      "y": 11,
+      "canvas": "0",
+      "width": 16,
+      "height": 3,
+      "type": "COMMAND_WRITER",
+      "inputs": {
+        "title": "ABC",
+        "command": {
+          "device": "ska_low/tm_central/central_node",
+          "command": "AssignResources",
+          "acceptedType": "DevString"
+        },
+        "showDevice": false,
+        "showCommand": true,
+        "requireConfirmation": false,
+        "displayOutput": false,
+        "cooldown": 0,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 4
+    },
+    {
+      "id": "18",
+      "x": 2,
+      "y": 14,
+      "canvas": "0",
+      "width": 16,
+      "height": 3,
+      "type": "COMMAND_WRITER",
+      "inputs": {
+        "command": {
+          "device": "ska_low/tm_central/central_node",
+          "command": "ReleaseResources",
+          "acceptedType": "DevString"
+        },
+        "showDevice": false,
+        "showCommand": true,
+        "requireConfirmation": false,
+        "displayOutput": false,
+        "cooldown": 0,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 5
+    },
+    {
+      "id": "22",
+      "x": 2,
+      "y": 3,
+      "canvas": "0",
+      "width": 9,
+      "height": 2,
+      "type": "LABEL",
+      "inputs": {
+        "text": "Central Node",
+        "textColor": "#000",
+        "backgroundColor": "#b6e3f5",
+        "size": 1,
+        "borderWidth": 0.001,
+        "borderColor": "#000000",
+        "font": "Helvetica",
+        "linkTo": "",
+        "customCss": ""
+      },
+      "order": 6
+    },
+    {
+      "id": "23",
+      "x": 2,
+      "y": 19,
+      "canvas": "0",
+      "width": 9,
+      "height": 2,
+      "type": "LABEL",
+      "inputs": {
+        "text": "TMC Subarray 1",
+        "textColor": "#000",
+        "backgroundColor": "#b6e3f5",
+        "size": 1,
+        "borderWidth": 0.001,
+        "borderColor": "#000000",
+        "font": "Helvetica",
+        "linkTo": "",
+        "customCss": ""
+      },
+      "order": 7
+    },
+    {
+      "id": "24",
+      "x": 2,
+      "y": 0,
+      "canvas": "0",
+      "width": 16,
+      "height": 2,
+      "type": "LABEL",
+      "inputs": {
+        "text": "Observation Control",
+        "textColor": "#000",
+        "backgroundColor": "#f7f2ba",
+        "size": 1,
+        "borderWidth": 0.001,
+        "borderColor": "#000000",
+        "font": "Helvetica",
+        "linkTo": "",
+        "customCss": ""
+      },
+      "order": 8
+    },
+    {
+      "id": "25",
+      "x": 20,
+      "y": 0,
+      "canvas": "0",
+      "width": 43,
+      "height": 2,
+      "type": "LABEL",
+      "inputs": {
+        "text": "Observation Monitoring",
+        "textColor": "#11110f",
+        "backgroundColor": "#f7f2ba",
+        "size": 1,
+        "borderWidth": 0.001,
+        "borderColor": "#000000",
+        "font": "Helvetica",
+        "linkTo": "",
+        "customCss": ""
+      },
+      "order": 9
+    },
+    {
+      "id": "39",
+      "x": 43,
+      "y": 3,
+      "canvas": "0",
+      "width": 5,
+      "height": 2,
+      "type": "DEVICE_STATUS",
+      "inputs": {
+        "device": "low-mccs/subarray/01",
+        "state": {
+          "device": null,
+          "attribute": null
+        },
+        "showDeviceName": false,
+        "showStateString": true,
+        "showStateLED": true,
+        "LEDSize": 1,
+        "textSize": 1
+      },
+      "order": 10
+    },
+    {
+      "id": "40",
+      "x": 28,
+      "y": 3,
+      "canvas": "0",
+      "width": 5,
+      "height": 2,
+      "type": "DEVICE_STATUS",
+      "inputs": {
+        "device": "low-mccs/control/control",
+        "state": {
+          "device": null,
+          "attribute": null
+        },
+        "showDeviceName": false,
+        "showStateString": true,
+        "showStateLED": true,
+        "LEDSize": 1,
+        "textSize": 1
+      },
+      "order": 11
+    },
+    {
+      "id": "63",
+      "x": 11,
+      "y": 3,
+      "canvas": "0",
+      "width": 7,
+      "height": 2,
+      "type": "DEVICE_STATUS",
+      "inputs": {
+        "device": "ska_low/tm_central/central_node",
+        "state": {
+          "device": null,
+          "attribute": null
+        },
+        "showDeviceName": false,
+        "showStateString": true,
+        "showStateLED": true,
+        "LEDSize": 1,
+        "textSize": 1
+      },
+      "order": 14
+    },
+    {
+      "id": "65",
+      "x": 2,
+      "y": 21,
+      "canvas": "0",
+      "width": 16,
+      "height": 2,
+      "type": "ATTRIBUTE_DISPLAY",
+      "inputs": {
+        "attribute": {
+          "device": "ska_low/tm_subarray_node/1",
+          "attribute": "healthstate",
+          "label": "healthState"
+        },
+        "precision": 2,
+        "showDevice": false,
+        "showAttribute": "Label",
+        "scientificNotation": false,
+        "showEnumLabels": true,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 12
+    },
+    {
+      "id": "66",
+      "x": 20,
+      "y": 5,
+      "canvas": "0",
+      "width": 13,
+      "height": 2,
+      "type": "ATTRIBUTE_DISPLAY",
+      "inputs": {
+        "attribute": {
+          "device": "low-mccs/control/control",
+          "attribute": "healthstate",
+          "label": "healthState"
+        },
+        "precision": 2,
+        "showDevice": false,
+        "showAttribute": "Label",
+        "scientificNotation": false,
+        "showEnumLabels": true,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 13
+    },
+    {
+      "id": "67",
+      "x": 34,
+      "y": 7,
+      "canvas": "0",
+      "width": 14,
+      "height": 2,
+      "type": "ATTRIBUTE_DISPLAY",
+      "inputs": {
+        "attribute": {
+          "device": "low-mccs/subarray/01",
+          "attribute": "obsstate",
+          "label": "obsState"
+        },
+        "precision": 2,
+        "showDevice": false,
+        "showAttribute": "Label",
+        "scientificNotation": false,
+        "showEnumLabels": true,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 15
+    },
+    {
+      "id": "80",
+      "x": 11,
+      "y": 19,
+      "canvas": "0",
+      "width": 7,
+      "height": 2,
+      "type": "DEVICE_STATUS",
+      "inputs": {
+        "device": "ska_low/tm_subarray_node/1",
+        "state": {
+          "device": null,
+          "attribute": null
+        },
+        "showDeviceName": false,
+        "showStateString": true,
+        "showStateLED": true,
+        "LEDSize": 1,
+        "textSize": 1
+      },
+      "order": 16
+    },
+    {
+      "id": "86",
+      "x": 34,
+      "y": 10,
+      "canvas": "0",
+      "width": 9,
+      "height": 2,
+      "type": "LABEL",
+      "inputs": {
+        "text": "Tile 001",
+        "backgroundColor": "#f0b5d1",
+        "textColor": "#000",
+        "size": 1,
+        "borderWidth": 0.001,
+        "borderColor": "#010101",
+        "font": "Helvetica",
+        "linkTo": "",
+        "customCss": ""
+      },
+      "order": 17
+    },
+    {
+      "id": "87",
+      "x": 43,
+      "y": 10,
+      "canvas": "0",
+      "width": 5,
+      "height": 2,
+      "type": "DEVICE_STATUS",
+      "inputs": {
+        "device": "low-mccs/tile/0001",
+        "state": {
+          "device": null,
+          "attribute": null
+        },
+        "showDeviceName": false,
+        "showStateString": true,
+        "showStateLED": true,
+        "LEDSize": 1,
+        "textSize": 1
+      },
+      "order": 18
+    },
+    {
+      "id": "88",
+      "x": 34,
+      "y": 19,
+      "canvas": "0",
+      "width": 9,
+      "height": 2,
+      "type": "LABEL",
+      "inputs": {
+        "text": "Tile 003",
+        "backgroundColor": "#f0b5d1",
+        "textColor": "#000",
+        "size": 1,
+        "borderWidth": 0.001,
+        "borderColor": "#010101",
+        "font": "Helvetica",
+        "linkTo": "",
+        "customCss": ""
+      },
+      "order": 19
+    },
+    {
+      "id": "89",
+      "x": 43,
+      "y": 19,
+      "canvas": "0",
+      "width": 5,
+      "height": 2,
+      "type": "DEVICE_STATUS",
+      "inputs": {
+        "device": "low-mccs/tile/0003",
+        "state": {
+          "device": null,
+          "attribute": null
+        },
+        "showDeviceName": false,
+        "showStateString": true,
+        "showStateLED": true,
+        "LEDSize": 1,
+        "textSize": 1
+      },
+      "order": 21
+    },
+    {
+      "id": "90",
+      "x": 49,
+      "y": 10,
+      "canvas": "0",
+      "width": 8,
+      "height": 2,
+      "type": "LABEL",
+      "inputs": {
+        "text": "Tile 002",
+        "backgroundColor": "#f0b5d1",
+        "textColor": "#000",
+        "size": 1,
+        "borderWidth": 0.001,
+        "borderColor": "#010101",
+        "font": "Helvetica",
+        "linkTo": "",
+        "customCss": ""
+      },
+      "order": 20
+    },
+    {
+      "id": "91",
+      "x": 57,
+      "y": 10,
+      "canvas": "0",
+      "width": 6,
+      "height": 2,
+      "type": "DEVICE_STATUS",
+      "inputs": {
+        "device": "low-mccs/tile/0002",
+        "state": {
+          "device": null,
+          "attribute": null
+        },
+        "showDeviceName": false,
+        "showStateString": true,
+        "showStateLED": true,
+        "LEDSize": 1,
+        "textSize": 1
+      },
+      "order": 22
+    },
+    {
+      "id": "92",
+      "x": 49,
+      "y": 19,
+      "canvas": "0",
+      "width": 8,
+      "height": 2,
+      "type": "LABEL",
+      "inputs": {
+        "text": "Tile 004",
+        "backgroundColor": "#f0b5d1",
+        "textColor": "#000",
+        "size": 1,
+        "borderWidth": 0.001,
+        "borderColor": "#010101",
+        "font": "Helvetica",
+        "linkTo": "",
+        "customCss": ""
+      },
+      "order": 26
+    },
+    {
+      "id": "93",
+      "x": 57,
+      "y": 19,
+      "canvas": "0",
+      "width": 6,
+      "height": 2,
+      "type": "DEVICE_STATUS",
+      "inputs": {
+        "device": "low-mccs/tile/0004",
+        "state": {
+          "device": null,
+          "attribute": null
+        },
+        "showDeviceName": false,
+        "showStateString": true,
+        "showStateLED": true,
+        "LEDSize": 1,
+        "textSize": 1
+      },
+      "order": 28
+    },
+    {
+      "id": "94",
+      "x": 20,
+      "y": 10,
+      "canvas": "0",
+      "width": 8,
+      "height": 2,
+      "type": "LABEL",
+      "inputs": {
+        "text": "Station 001",
+        "backgroundColor": "#f0b5d1",
+        "textColor": "#000",
+        "size": 1,
+        "borderWidth": 0.001,
+        "borderColor": "#010101",
+        "font": "Helvetica",
+        "linkTo": "",
+        "customCss": ""
+      },
+      "order": 23
+    },
+    {
+      "id": "95",
+      "x": 28,
+      "y": 10,
+      "canvas": "0",
+      "width": 5,
+      "height": 2,
+      "type": "DEVICE_STATUS",
+      "inputs": {
+        "device": "low-mccs/station/001",
+        "state": {
+          "device": null,
+          "attribute": null
+        },
+        "showDeviceName": false,
+        "showStateString": true,
+        "showStateLED": true,
+        "LEDSize": 1,
+        "textSize": 1
+      },
+      "order": 24
+    },
+    {
+      "id": "96",
+      "x": 20,
+      "y": 19,
+      "canvas": "0",
+      "width": 8,
+      "height": 2,
+      "type": "LABEL",
+      "inputs": {
+        "text": "Station 002",
+        "backgroundColor": "#f0b5d1",
+        "textColor": "#000",
+        "size": 1,
+        "borderWidth": 0.001,
+        "borderColor": "#010101",
+        "font": "Helvetica",
+        "linkTo": "",
+        "customCss": ""
+      },
+      "order": 27
+    },
+    {
+      "id": "97",
+      "x": 28,
+      "y": 19,
+      "canvas": "0",
+      "width": 5,
+      "height": 2,
+      "type": "DEVICE_STATUS",
+      "inputs": {
+        "device": "low-mccs/station/002",
+        "state": {
+          "device": null,
+          "attribute": null
+        },
+        "showDeviceName": false,
+        "showStateString": true,
+        "showStateLED": true,
+        "LEDSize": 1,
+        "textSize": 1
+      },
+      "order": 25
+    },
+    {
+      "id": "112",
+      "x": 20,
+      "y": 12,
+      "canvas": "0",
+      "width": 13,
+      "height": 2,
+      "type": "ATTRIBUTE_DISPLAY",
+      "inputs": {
+        "attribute": {
+          "device": "low-mccs/station/001",
+          "attribute": "healthstate",
+          "label": "healthState"
+        },
+        "precision": 2,
+        "showDevice": false,
+        "showAttribute": "Label",
+        "scientificNotation": false,
+        "showEnumLabels": true,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 29
+    },
+    {
+      "id": "113",
+      "x": 20,
+      "y": 21,
+      "canvas": "0",
+      "width": 13,
+      "height": 2,
+      "type": "ATTRIBUTE_DISPLAY",
+      "inputs": {
+        "attribute": {
+          "device": "low-mccs/station/002",
+          "attribute": "healthstate",
+          "label": "healthState"
+        },
+        "precision": 2,
+        "showDevice": false,
+        "showAttribute": "Label",
+        "scientificNotation": false,
+        "showEnumLabels": true,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 30
+    },
+    {
+      "id": "120",
+      "x": 2,
+      "y": 8,
+      "canvas": "0",
+      "width": 8,
+      "height": 2,
+      "type": "COMMAND_EXECUTOR",
+      "inputs": {
+        "command": {
+          "device": "ska_low/tm_central/central_node",
+          "command": "StartUpTelescope",
+          "acceptedType": "DevVoid"
+        },
+        "title": "",
+        "requireConfirmation": false,
+        "displayOutput": false,
+        "cooldown": 0,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 31
+    },
+    {
+      "id": "121",
+      "x": 10,
+      "y": 8,
+      "canvas": "0",
+      "width": 8,
+      "height": 2,
+      "type": "COMMAND_EXECUTOR",
+      "inputs": {
+        "command": {
+          "device": "ska_low/tm_central/central_node",
+          "command": "StandByTelescope",
+          "acceptedType": "DevVoid"
+        },
+        "title": "",
+        "requireConfirmation": false,
+        "displayOutput": false,
+        "cooldown": 0,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 32
+    },
+    {
+      "id": "144",
+      "x": 34,
+      "y": 12,
+      "canvas": "0",
+      "width": 14,
+      "height": 2,
+      "type": "ATTRIBUTE_DISPLAY",
+      "inputs": {
+        "attribute": {
+          "device": "low-mccs/tile/0001",
+          "attribute": "healthstate",
+          "label": "healthState"
+        },
+        "precision": 2,
+        "showDevice": false,
+        "showAttribute": "Label",
+        "scientificNotation": false,
+        "showEnumLabels": true,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 33
+    },
+    {
+      "id": "145",
+      "x": 49,
+      "y": 12,
+      "canvas": "0",
+      "width": 14,
+      "height": 2,
+      "type": "ATTRIBUTE_DISPLAY",
+      "inputs": {
+        "attribute": {
+          "device": "low-mccs/tile/0002",
+          "attribute": "healthstate",
+          "label": "healthState"
+        },
+        "precision": 2,
+        "showDevice": false,
+        "showAttribute": "Label",
+        "scientificNotation": false,
+        "showEnumLabels": true,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 35
+    },
+    {
+      "id": "146",
+      "x": 49,
+      "y": 21,
+      "canvas": "0",
+      "width": 14,
+      "height": 2,
+      "type": "ATTRIBUTE_DISPLAY",
+      "inputs": {
+        "attribute": {
+          "device": "low-mccs/tile/0004",
+          "attribute": "healthstate",
+          "label": "healthState"
+        },
+        "precision": 2,
+        "showDevice": false,
+        "showAttribute": "Label",
+        "scientificNotation": false,
+        "showEnumLabels": true,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 36
+    },
+    {
+      "id": "147",
+      "x": 34,
+      "y": 21,
+      "canvas": "0",
+      "width": 14,
+      "height": 2,
+      "type": "ATTRIBUTE_DISPLAY",
+      "inputs": {
+        "attribute": {
+          "device": "low-mccs/tile/0003",
+          "attribute": "healthstate",
+          "label": "healthState"
+        },
+        "precision": 2,
+        "showDevice": false,
+        "showAttribute": "Label",
+        "scientificNotation": false,
+        "showEnumLabels": true,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 34
+    },
+    {
+      "id": "156",
+      "x": 20,
+      "y": 14,
+      "canvas": "0",
+      "width": 13,
+      "height": 2,
+      "type": "ATTRIBUTE_DISPLAY",
+      "inputs": {
+        "attribute": {
+          "device": "low-mccs/station/001",
+          "attribute": "subarrayid",
+          "label": "subarrayId"
+        },
+        "precision": 0,
+        "showDevice": false,
+        "showAttribute": "Label",
+        "scientificNotation": false,
+        "showEnumLabels": true,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 37
+    },
+    {
+      "id": "157",
+      "x": 20,
+      "y": 23,
+      "canvas": "0",
+      "width": 13,
+      "height": 2,
+      "type": "ATTRIBUTE_DISPLAY",
+      "inputs": {
+        "attribute": {
+          "device": "low-mccs/station/002",
+          "attribute": "subarrayid",
+          "label": "subarrayId"
+        },
+        "precision": 0,
+        "showDevice": false,
+        "showAttribute": "Label",
+        "scientificNotation": false,
+        "showEnumLabels": true,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 38
+    },
+    {
+      "id": "158",
+      "x": 2,
+      "y": 5,
+      "canvas": "0",
+      "width": 16,
+      "height": 2,
+      "type": "ATTRIBUTE_DISPLAY",
+      "inputs": {
+        "attribute": {
+          "device": "ska_low/tm_central/central_node",
+          "attribute": "telescopehealthstate",
+          "label": "telescopeHealthState"
+        },
+        "precision": 2,
+        "showDevice": false,
+        "showAttribute": "Label",
+        "scientificNotation": false,
+        "showEnumLabels": true,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 39
+    },
+    {
+      "id": "159",
+      "x": 41,
+      "y": 14,
+      "canvas": "0",
+      "width": 7,
+      "height": 2,
+      "type": "COMMAND_EXECUTOR",
+      "inputs": {
+        "command": {
+          "device": "low-mccs/tile/0001",
+          "command": "PutOnline",
+          "acceptedType": "DevVoid"
+        },
+        "title": "",
+        "requireConfirmation": false,
+        "displayOutput": false,
+        "cooldown": 0,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 40
+    },
+    {
+      "id": "160",
+      "x": 34,
+      "y": 14,
+      "canvas": "0",
+      "width": 7,
+      "height": 2,
+      "type": "COMMAND_EXECUTOR",
+      "inputs": {
+        "command": {
+          "device": "low-mccs/tile/0001",
+          "command": "TakeOffline",
+          "acceptedType": "DevVoid"
+        },
+        "title": "",
+        "requireConfirmation": false,
+        "displayOutput": false,
+        "cooldown": 0,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 41
+    },
+    {
+      "id": "161",
+      "x": 34,
+      "y": 16,
+      "canvas": "0",
+      "width": 14,
+      "height": 3,
+      "type": "COMMAND_ARRAY",
+      "inputs": {
+        "title": "",
+        "command": {
+          "device": "low-mccs/tile/0001",
+          "command": "SimulateConnectionFailure",
+          "acceptedType": "DevBoolean"
+        },
+        "showDevice": false,
+        "showCommand": false,
+        "requireConfirmation": false,
+        "displayOutput": false,
+        "timeDisplayOutput": 3000,
+        "cooldown": 0,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica",
+        "buttonText": "SimulateFault"
+      },
+      "order": 42
+    },
+    {
+      "id": "162",
+      "x": 49,
+      "y": 3,
+      "canvas": "0",
+      "width": 9,
+      "height": 2,
+      "type": "LABEL",
+      "inputs": {
+        "text": "MCCS Subarray 2",
+        "backgroundColor": "#f0b5d1",
+        "textColor": "#000",
+        "size": 1,
+        "borderWidth": 0.001,
+        "borderColor": "#010101",
+        "font": "Helvetica",
+        "linkTo": "",
+        "customCss": ""
+      },
+      "order": 43
+    },
+    {
+      "id": "163",
+      "x": 49,
+      "y": 5,
+      "canvas": "0",
+      "width": 14,
+      "height": 2,
+      "type": "ATTRIBUTE_DISPLAY",
+      "inputs": {
+        "attribute": {
+          "device": "low-mccs/subarray/02",
+          "attribute": "healthstate",
+          "label": "healthState"
+        },
+        "precision": 2,
+        "showDevice": false,
+        "showAttribute": "Label",
+        "scientificNotation": false,
+        "showEnumLabels": true,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 44
+    },
+    {
+      "id": "164",
+      "x": 58,
+      "y": 3,
+      "canvas": "0",
+      "width": 5,
+      "height": 2,
+      "type": "DEVICE_STATUS",
+      "inputs": {
+        "device": "low-mccs/subarray/02",
+        "state": {
+          "device": null,
+          "attribute": null
+        },
+        "showDeviceName": false,
+        "showStateString": true,
+        "showStateLED": true,
+        "LEDSize": 1,
+        "textSize": 1
+      },
+      "order": 45
+    }
+  ]
+}

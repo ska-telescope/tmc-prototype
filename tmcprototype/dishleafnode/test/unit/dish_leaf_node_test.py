@@ -347,33 +347,32 @@ def test_activity_message_reports_correct_pointing_attribute_values(
 
 def test_configure_should_raise_exception_when_called_with_invalid_json():
     with fake_tango_system(DishLeafNode) as tango_context:
-        with pytest.raises(tango.DevFailed):
+        with pytest.raises(tango.DevFailed) as df:
             tango_context.device.Configure(config_track_invalid_str)
-        assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
+        assert const.ERR_INVALID_JSON in str(df.value)
 
 
 def test_configure_should_raise_exception_when_called_with_invalid_arguments():
     with fake_tango_system(DishLeafNode) as tango_context:
         input_string = []
         input_string.append(configure_invalid_arg)
-        with pytest.raises(tango.DevFailed):
+        with pytest.raises(tango.DevFailed) as df:
             tango_context.device.Configure(input_string[0])
-        assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
+        assert const.ERR_JSON_KEY_NOT_FOUND in str(df.value)
 
 
 def test_track_should_raise_exception_when_called_with_invalid_arguments():
     with fake_tango_system(DishLeafNode) as tango_context:
-        with pytest.raises(tango.DevFailed):
+        with pytest.raises(tango.DevFailed) as df:
             tango_context.device.Track(track_invalid_arg)
-        assert const.ERR_JSON_KEY_NOT_FOUND in tango_context.device.activityMessage
+        assert const.ERR_JSON_KEY_NOT_FOUND in str(df.value)
 
 
 def test_track_should_raise_exception_when_called_with_invalid_json():
     with fake_tango_system(DishLeafNode) as tango_context:
-        with pytest.raises(tango.DevFailed):
+        with pytest.raises(tango.DevFailed) as df:
             tango_context.device.Track(config_track_invalid_str)
-
-        assert const.ERR_INVALID_JSON in tango_context.device.activityMessage
+        assert const.ERR_INVALID_JSON in str(df.value)
 
 
 def test_activity_message():

@@ -1,20 +1,20 @@
 """Release information for Python Package"""
 
 name = """tmcprototype"""
-version = "0.2.12"
+version = "0.2.15"
 version_info = version.split(".")
 description = """TMC Prototype"""
-author = "apurva.ska"
-author_email = "apurva.ska at gmail.com"
+author = "Team NCRA"
+author_email = "telmgt-internal@googlegroups.com"
 license = """BSD-3-Clause"""
 url = """https://www.skatelescope.org"""
 copyright = """"""
 
-release=0.2.12
-tag=0.2.12
-tag_description=Implemented first version of TMC-LOW. 
-release_notes=This release Contains: <br/><ul><li>Implemented MCCS Master Leaf Node.</li><li>Implemented MCCS Subarray Leaf Node.</li><li>Implemneted Central Node for TMC-Low.</li><li>Implemented Subarray Node for TMC-LOW.</li></ul><br/>
-gitlab_username=mesnehal
-private_token=KSjjD6QL9aaTdh_Rxpc9
+release=0.2.15
+tag=0.2.15
+tag_description=Implement logging transaction ids on leaf nodes
+release_notes=This release Contains: <br/><ul><li>Logging the transaction ids on Leaf Nodes.</li></ul><br/>
+gitlab_username=AdityaDange
+private_token=T-QnRqsjQgqga_BRsz_i
 
 

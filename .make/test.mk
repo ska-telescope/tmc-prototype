@@ -6,7 +6,7 @@
 #nexus.engageska-portugal.pt/ska-docker/tango-vscode:0.2.6-dirty
 IMAGE_TO_TEST ?= nexus.engageska-portugal.pt/ska-docker/tango-vscode:0.2.7## docker image that will be run for testing purpose
 # Test runner - run to completion job in K8s
-TEST_RUNNER = test-makefile-runner-$(CI_JOB_ID)-$(KUBE_NAMESPACE)-$(HELM_RELEASE)##name of the pod running the k8s_tests
+TEST_RUNNER = test-runner-$(CI_JOB_ID)-$(KUBE_NAMESPACE)-$(HELM_RELEASE)##name of the pod running the k8s_tests
 #
 # defines a function to copy the ./test-harness directory into the K8s TEST_RUNNER
 # and then runs the requested make target in the container.
@@ -28,8 +28,6 @@ k8s_test = tar -c post-deployment/ | \
 		--namespace $(KUBE_NAMESPACE) -i --wait --restart=Never \
 		--image-pull-policy=IfNotPresent \
 		--image=$(IMAGE_TO_TEST) \
-		--limits='cpu=1000m,memory=500Mi' \
-		--requests='cpu=900m,memory=400Mi' \
 		--serviceaccount=$(TESTING_ACCOUNT) -- \
 		/bin/bash -c "mkdir tmc-prototype && tar xv --directory tmc-prototype --strip-components 1 --warning=all && cd tmc-prototype && \
 		make KUBE_NAMESPACE=$(KUBE_NAMESPACE) HELM_RELEASE=$(HELM_RELEASE) TANGO_HOST=$(TANGO_HOST) MARK=$(MARK) TEST_RUN_SPEC=$(TEST_RUN_SPEC) $1 && \
@@ -95,6 +93,7 @@ smoketest: ## check that the number of waiting containers is zero (10 attempts, 
 		fi; \
 		n=`expr $$n - 1`; \
 	done
+
 
 disable_test_auth = helm delete testing-auth
 

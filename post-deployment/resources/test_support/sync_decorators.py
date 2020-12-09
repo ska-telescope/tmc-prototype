@@ -8,6 +8,8 @@ from contextlib import contextmanager
 # pre cheks
 def check_going_out_of_empty():
     ##verify once for obstate = EMPTY
+    resource('mid_csp/elt/subarray_01').assert_attribute('obsState').equals('EMPTY')
+    resource('mid_sdp/elt/subarray_1').assert_attribute('obsState').equals('EMPTY')
     resource('ska_mid/tm_subarray_node/1').assert_attribute('obsState').equals('EMPTY')
 
 def check_going_into_configure():
@@ -32,6 +34,8 @@ def check_coming_out_of_standby():
 
 def check_going_out_of_configured():
     ##Can only return to ON/IDLE if in READY
+    resource('mid_csp/elt/subarray_01').assert_attribute('obsState').equals('READY')
+    resource('mid_sdp/elt/subarray_1').assert_attribute('obsState').equals('READY')
     resource('ska_mid/tm_subarray_node/1').assert_attribute('obsState').equals('READY')
 
 def check_going_out_of_aborted():
@@ -77,45 +81,63 @@ class WaitConfigure():
 class WaitAbort():
 
     def __init__(self):
-        self.the_watch  = watch(resource('ska_mid/tm_subarray_node/1')).for_a_change_on("obsState")
+        self.w  = watch(resource('ska_mid/tm_subarray_node/1')).for_a_change_on("obsState")
+        self.w1  = watch(resource('mid_csp/elt/subarray_01')).for_a_change_on("obsState")
+        self.w2 = watch(resource('mid_sdp/elt/subarray_1')).for_a_change_on("obsState")
 
     def wait(self,timeout):
         logging.info("Abort command dispatched, checking that the state transitioned to ABORTING")
         # self.the_watch.wait_until_value_changed_to('ABORTING',timeout)
         logging.info("state transitioned to ABORTING, waiting for it to return to ABORTED")
-        self.the_watch.wait_until_value_changed_to('ABORTED',timeout=200)
+        self.w.wait_until_value_changed_to('ABORTED',timeout=200)
+        self.w1.wait_until_value_changed_to('ABORTED',timeout=200)
+        self.w2.wait_until_value_changed_to('ABORTED',timeout=200)
 
 class WaitRestart():
 
     def __init__(self):
-        self.the_watch  = watch(resource('ska_mid/tm_subarray_node/1')).for_a_change_on("obsState")
+        self.w  = watch(resource('ska_mid/tm_subarray_node/1')).for_a_change_on("obsState")
+        self.w1  = watch(resource('mid_csp/elt/subarray_01')).for_a_change_on("obsState")
+        self.w2 = watch(resource('mid_sdp/elt/subarray_1')).for_a_change_on("obsState")
 
     def wait(self,timeout):
         logging.info("Restart command dispatched, checking that the state transitioned to RESTARTING")
         # self.the_watch.wait_until_value_changed_to('RESTARTING',timeout)
         logging.info("state transitioned to RESTARTING, waiting for it to return to EMPTY")
-        self.the_watch.wait_until_value_changed_to('EMPTY',timeout=200)
+        self.w.wait_until_value_changed_to('EMPTY',timeout=200)
+        self.w1.wait_until_value_changed_to('EMPTY',timeout=200)
+        self.w2.wait_until_value_changed_to('EMPTY',timeout=200)
 
 class WaitObsReset():
 
     def __init__(self):
-        self.the_watch  = watch(resource('ska_mid/tm_subarray_node/1')).for_a_change_on("obsState")
+        self.w  = watch(resource('ska_mid/tm_subarray_node/1')).for_a_change_on("obsState")
+        self.w1  = watch(resource('mid_csp/elt/subarray_01')).for_a_change_on("obsState")
+        self.w2 = watch(resource('mid_sdp/elt/subarray_1')).for_a_change_on("obsState")
 
     def wait(self,timeout):
         logging.info("ObsReset command dispatched, checking that the state transitioned to RESETTING")
         logging.info("state transitioned to RESETTING, waiting for it to return to IDLE")
-        self.the_watch.wait_until_value_changed_to('IDLE',timeout=200)
+        self.w.wait_until_value_changed_to('IDLE',timeout=200)
+        self.w1.wait_until_value_changed_to('IDLE',timeout=200)
+        self.w2.wait_until_value_changed_to('IDLE',timeout=200)
 
 
 class WaitScanning():
     def __init__(self):
-        self.the_watch = watch(resource('ska_mid/tm_subarray_node/1')).for_a_change_on('obsState')
+        self.w  = watch(resource('ska_mid/tm_subarray_node/1')).for_a_change_on("obsState")
+        self.w1  = watch(resource('mid_csp/elt/subarray_01')).for_a_change_on("obsState")
+        self.w2 = watch(resource('mid_sdp/elt/subarray_1')).for_a_change_on("obsState")
 
     def wait(self,timeout):
         logging.info("scan command dispatched, checking that the state transitioned to SCANNING")
-        self.the_watch.wait_until_value_changed_to('SCANNING',timeout)
+        self.w.wait_until_value_changed_to('SCANNING',timeout)
+        self.w1.wait_until_value_changed_to('SCANNING',timeout)
+        self.w2.wait_until_value_changed_to('SCANNING',timeout)
         logging.info("state transitioned to SCANNING, waiting for it to return to READY")
-        self.the_watch.wait_until_value_changed_to('READY',timeout)
+        self.w.wait_until_value_changed_to('READY',timeout)
+        self.w1.wait_until_value_changed_to('READY',timeout)
+        self.w2.wait_until_value_changed_to('READY',timeout)
 
 
 def sync_assign_resources(nr_of_receptors=4,timeout=60):
