@@ -146,7 +146,7 @@ class DishLeafNode(SKABaseDevice):
             2020-12-11 10:06:34.970731
 
         :return: list
-            Azimuth and elevation angle, in radians
+            Azimuth and elevation angle, in degrees
 
         :raises: ValueError if error occurs in Ra-Dec to Az-El conversion
 
@@ -183,6 +183,8 @@ class DishLeafNode(SKABaseDevice):
 
         # Calculate Az El coordinates
         az_el_coordinates = katpoint.enu_to_azel(enu_array[0], enu_array[1], enu_array[2])
+        az_el_coordinates[0] = katpoint.rad2deg(az_el_coordinates[0])
+        az_el_coordinates[1] = katpoint.rad2deg(az_el_coordinates[1])
         return az_el_coordinates
 
     def track_thread(self):
@@ -198,11 +200,8 @@ class DishLeafNode(SKABaseDevice):
         while self.event_track_time.is_set() is False:
             now = datetime.datetime.utcnow()
             timestamp = str(now)
-
-            az_el_coordinates = self.convert_radec_to_azel(self.radec_value, timestamp)
-            self.az = katpoint.rad2deg(az_el_coordinates[0])
-            self.el = katpoint.rad2deg(az_el_coordinates[1])
-
+            self.az, self.el = self.convert_radec_to_azel(self.radec_value, timestamp)
+            
             if not self._is_elevation_within_mechanical_limits():
                 time.sleep(0.05)
                 continue
@@ -698,7 +697,7 @@ class DishLeafNode(SKABaseDevice):
             timestamp = str(now)
 
             try:
-                device.convert_radec_to_azel(device.radec_value, timestamp)
+                self.az, self.el = device.convert_radec_to_azel(device.radec_value, timestamp)
             except ValueError as valuerr:
                 self.logger.exception(valuerr)
                 log_message = "Exception occurred in Configure command"
