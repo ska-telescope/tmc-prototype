@@ -201,6 +201,7 @@ class DishLeafNode(SKABaseDevice):
             if self.az < 0:
                 self.az = 360 - abs(self.az)
 
+            # TODO (kmadisa 11-12-2020) Add a pointing lead time to the current time (like we do on MeerKAT)
             desired_pointing = [now.timestamp(), round(self.az, 12), round(self.el, 12)]
             self.logger.debug("desiredPointing coordinates: %s", desired_pointing)
             self._dish_proxy.desiredPointing = desired_pointing
