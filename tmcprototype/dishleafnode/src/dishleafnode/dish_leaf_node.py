@@ -424,6 +424,7 @@ class DishLeafNode(SKABaseDevice):
                     )
                     device.set_status("Error occured in Dish Leaf Node initialization")
                     device._read_activity_message = log_message
+                    self._throw_exception("Init", log_message)
 
     class SetStowModeCommand(BaseCommand):
         """
