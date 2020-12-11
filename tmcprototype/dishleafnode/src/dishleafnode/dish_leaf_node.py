@@ -159,10 +159,9 @@ class DishLeafNode(SKABaseDevice):
         )
 
         dish_antenna_latitude = dish_antenna.ref_observer.lat
-        desired_target = katpoint.Target(str(target_radec))
-        timestamp = katpoint.Timestamp(timestamp=timestamp)
-
         try:
+            desired_target = katpoint.Target(str(target_radec))
+            timestamp = katpoint.Timestamp(timestamp=timestamp)
             target_apparnt_radec = katpoint.Target.apparent_radec(
                 desired_target, timestamp=timestamp, antenna=dish_antenna
             )
