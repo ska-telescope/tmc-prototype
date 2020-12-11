@@ -280,7 +280,7 @@ class DishLeafNode(SKABaseDevice):
         self.observer_location_long = f"{dish_long_dms[0]}:{dish_long_dms[1]}:{dish_long_dms[2]}"
         self.observer_altitude = dish_ecef_coordinates[2]
 
-    def _get_targets(self, json_argument):
+    def _get_targets(self, command_name, json_argument):
         try:
             ra_value = json_argument["pointing"]["target"]["RA"]
             dec_value = json_argument["pointing"]["target"]["dec"]
@@ -288,18 +288,18 @@ class DishLeafNode(SKABaseDevice):
             self.logger.exception(key_error)
             log_message = "JSON key not found."
             self._read_activity_message = log_message
-            self._throw_exception("Track", log_message)
+            self._throw_exception(command_name, log_message)
 
         return (ra_value, dec_value)
 
-    def _load_config_string(self, argin):
+    def _load_config_string(self, command_name, argin):
         try:
             json_argument = json.loads(argin)
         except json.JSONDecodeError as jsonerr:
             self.logger.exception(jsonerr)
             log_message = "Invalid JSON format."
             self._read_activity_message = log_message
-            self._throw_exception("Track", log_message)
+            self._throw_exception(command_name, log_message)
 
         return json_argument
 
@@ -759,8 +759,9 @@ class DishLeafNode(SKABaseDevice):
             """
 
             device = self.target
-            json_argument = device._load_config_string(argin)
-            ra_value, dec_value = device._get_targets(json_argument)
+            command_name = "Configure"
+            json_argument = device._load_config_string(command_name, argin)
+            ra_value, dec_value = device._get_targets(command_name, json_argument)
             device.radec_value = f"radec,{ra_value},{dec_value}"
             receiver_band = json_argument["dish"]["receiverBand"]
             now = datetime.datetime.utcnow()
@@ -772,7 +773,7 @@ class DishLeafNode(SKABaseDevice):
                 self.logger.exception(valuerr)
                 log_message = "Exception occurred in Configure command"
                 device._read_activity_message = log_message
-                self._throw("Configure", log_message)
+                self._throw(command_name, log_message)
 
             # Set desiredPointing on Dish Master (it won't move until asked to
             # track or scan, but provide initial coordinates for interest)
@@ -787,7 +788,7 @@ class DishLeafNode(SKABaseDevice):
                 self.logger.exception(dev_failed)
                 log_message = "Exception occurred in Configure command"
                 device._read_activity_message = log_message
-                self._throw("Configure", log_message)
+                self._throw(command_name, log_message)
 
     def is_Configure_allowed(self):
         """
@@ -1100,9 +1101,10 @@ class DishLeafNode(SKABaseDevice):
             """
             device = self.target
             device.el_limit = False
+            command_name = "Track"
 
-            json_argin = device._load_config_string(argin)
-            ra_value, dec_value = device._get_targets(json_argin)
+            json_argin = device._load_config_string(command_name, argin)
+            ra_value, dec_value = device._get_targets(command_name, json_argin)
             device.radec_value = f"radec,{ra_value},{dec_value}"
             self.logger.debug("Radec value: %s", device.radec_value)
             self.logger.info(
@@ -1113,12 +1115,12 @@ class DishLeafNode(SKABaseDevice):
 
             # Invoke Track command on Dish Master
             try:
-                device._dish_proxy.command_inout_asynch("Track", self.cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch(command_name, self.cmd_ended_cb)
             except DevFailed as dev_failed:
                 self.logger.error(dev_failed)
                 log_message = "Exception occured in the execution of Track command."
                 self._read_activity_message = log_message
-                self._throw_exception("Track", log_message)
+                self._throw_exception(command_name, log_message)
 
             device.event_track_time.clear()
             device.tracking_thread = threading.Thread(None, device.track_thread, "DishLeafNode")
