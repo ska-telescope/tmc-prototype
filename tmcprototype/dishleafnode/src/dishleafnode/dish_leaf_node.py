@@ -101,15 +101,6 @@ class DishLeafNode(SKABaseDevice):
         self.register_command_object("Restart", self.RestartCommand(*args))
         self.register_command_object("ObsReset", self.ObsResetCommand(*args))
 
-    @staticmethod
-    def _throw_exception(command_name, log_message):
-        tango.Except.throw_exception(
-            "{} command execution".format(command_name),
-            log_message,
-            "DishLeafNode.{}Command".format(command_name),
-            tango.ErrSeverity.ERR,
-        )
-
     def attribute_event_handler(self, event_data):
         """
         Retrieves the subscribed attribute of DishMaster.
@@ -201,7 +192,7 @@ class DishLeafNode(SKABaseDevice):
             now = datetime.datetime.utcnow()
             timestamp = str(now)
             self.az, self.el = self.convert_radec_to_azel(self.radec_value, timestamp)
-            
+
             if not self._is_elevation_within_mechanical_limits():
                 time.sleep(0.05)
                 continue
@@ -287,7 +278,12 @@ class DishLeafNode(SKABaseDevice):
             self.logger.exception(key_error)
             log_message = "JSON key not found."
             self._read_activity_message = log_message
-            self._throw_exception(command_name, log_message)
+            tango.Except.re_throw_exception(
+                key_error,
+                log_message,
+                "DishLeafNode.{}Command".format(command_name),
+                tango.ErrSeverity.ERR,
+            )
 
         return (ra_value, dec_value)
 
@@ -298,7 +294,12 @@ class DishLeafNode(SKABaseDevice):
             self.logger.exception(jsonerr)
             log_message = "Invalid JSON format."
             self._read_activity_message = log_message
-            self._throw_exception(command_name, log_message)
+            tango.Except.re_throw_exception(
+                jsonerr,
+                log_message,
+                "DishLeafNode.{}Command".format(command_name),
+                tango.ErrSeverity.ERR,
+            )
 
         return json_argument
 
@@ -383,7 +384,12 @@ class DishLeafNode(SKABaseDevice):
                 self.logger.exception(dev_failed)
                 log_message = "Error in creating proxy to the Dish Master"
                 device._read_activity_message = log_message
-                self._throw_exception("Init", log_message)
+                tango.Except.re_throw_exception(
+                    dev_failed,
+                    log_message,
+                    "DishLeafNode.{}Command".format("Init"),
+                    tango.ErrSeverity.ERR,
+                )
 
             attributes_to_subscribe_to = (
                 "dishMode",
@@ -423,7 +429,12 @@ class DishLeafNode(SKABaseDevice):
                     )
                     device.set_status("Error occured in Dish Leaf Node initialization")
                     device._read_activity_message = log_message
-                    self._throw_exception("Init", log_message)
+                    tango.Except.re_throw_exception(
+                        dev_failed,
+                        log_message,
+                        "DishLeafNode.{}Command".format("Init"),
+                        tango.ErrSeverity.ERR,
+                    )
 
     class SetStowModeCommand(BaseCommand):
         """
@@ -448,7 +459,12 @@ class DishLeafNode(SKABaseDevice):
                 self.logger.exception(dev_failed)
                 log_message = "Exception in SetStowMode command"
                 device._read_activity_message = log_message
-                self._throw_exception("SetStowMode", log_message)
+                tango.Except.re_throw_exception(
+                    dev_failed,
+                    log_message,
+                    "DishLeafNode.{}Command".format("SetStowMode"),
+                    tango.ErrSeverity.ERR,
+                )
 
     @command()
     def SetStowMode(self):
@@ -479,7 +495,12 @@ class DishLeafNode(SKABaseDevice):
                 log_message = "Exception in SetStandbyLPMode command"
                 device._read_activity_message = log_message
                 self.logger.exception(dev_failed)
-                self._throw_exception("SetStandbyLPMode", log_message)
+                tango.Except.re_throw_exception(
+                    dev_failed,
+                    log_message,
+                    "DishLeafNode.{}Command".format("SetStandbyLPMode"),
+                    tango.ErrSeverity.ERR,
+                )
 
     @command()
     def SetStandbyLPMode(self):
@@ -510,7 +531,12 @@ class DishLeafNode(SKABaseDevice):
                 self.logger.exception(dev_failed)
                 log_message = "Exception in SetOperateMode command"
                 device._read_activity_message = log_message
-                self._throw_exception("SetOperateMode", log_message)
+                tango.Except.re_throw_exception(
+                    dev_failed,
+                    log_message,
+                    "DishLeafNode.{}Command".format("SetOperateMode"),
+                    tango.ErrSeverity.ERR,
+                )
 
     @command()
     def SetOperateMode(self):
@@ -615,7 +641,12 @@ class DishLeafNode(SKABaseDevice):
                 self.logger.exception(dev_failed)
                 log_message = "Exception in EndScan command"
                 device._read_activity_message = log_message
-                self._throw_exception("EndScan", log_message)
+                tango.Except.re_throw_exception(
+                    dev_failed,
+                    log_message,
+                    "DishLeafNode.{}Command".format("EndScan"),
+                    tango.ErrSeverity.ERR,
+                )
 
     def is_EndScan_allowed(self):
         """
@@ -782,7 +813,12 @@ class DishLeafNode(SKABaseDevice):
                 self.logger.exception(dev_failed)
                 log_message = "Exception occurred in StartCapture command"
                 device._read_activity_message = log_message
-                self._throw_exception("StartCapture", log_message)
+                tango.Except.re_throw_exception(
+                    dev_failed,
+                    log_message,
+                    "DishLeafNode.{}Command".format("StartCapture"),
+                    tango.ErrSeverity.ERR,
+                )
 
     def is_StartCapture_allowed(self):
         """
@@ -840,7 +876,12 @@ class DishLeafNode(SKABaseDevice):
                 self.logger.exception(dev_failed)
                 log_message = "Exception occurred in StopCapture command"
                 device._read_activity_message = log_message
-                self._throw_exception("StopCapture", log_message)
+                tango.Except.re_throw_exception(
+                    dev_failed,
+                    log_message,
+                    "DishLeafNode.{}Command".format("StopCapture"),
+                    tango.ErrSeverity.ERR,
+                )
 
     def is_StopCapture_allowed(self):
         """
@@ -886,7 +927,12 @@ class DishLeafNode(SKABaseDevice):
                 log_message = "Exception in SetStandbyFPMode command"
                 device._read_activity_message = log_message
                 self.logger.exception(dev_failed)
-                self._throw_exception("SetStandbyFPMode", log_message)
+                tango.Except.re_throw_exception(
+                    dev_failed,
+                    log_message,
+                    "DishLeafNode.{}Command".format("SetStandbyFPMode"),
+                    tango.ErrSeverity.ERR,
+                )
 
     @command()
     def SetStandbyFPMode(self):
@@ -1026,7 +1072,12 @@ class DishLeafNode(SKABaseDevice):
                 self.logger.error(dev_failed)
                 log_message = "Exception occured in the execution of Track command."
                 self._read_activity_message = log_message
-                self._throw_exception(command_name, log_message)
+                tango.Except.re_throw_exception(
+                    dev_failed,
+                    log_message,
+                    "DishLeafNode.{}Command".format(command_name),
+                    tango.ErrSeverity.ERR,
+                )
 
             device.event_track_time.clear()
             device.tracking_thread = threading.Thread(None, device.track_thread, "DishLeafNode")
@@ -1093,7 +1144,12 @@ class DishLeafNode(SKABaseDevice):
                 self.logger.exception(dev_failed)
                 log_message = "Exception occurred in StopTrack command"
                 device._read_activity_message = log_message
-                self._throw_exception("StopTrack", log_message)
+                tango.Except.re_throw_exception(
+                    dev_failed,
+                    log_message,
+                    "DishLeafNode.{}Command".format("StopTrack"),
+                    tango.ErrSeverity.ERR,
+                )
 
     def is_StopTrack_allowed(self):
         """
@@ -1153,7 +1209,12 @@ class DishLeafNode(SKABaseDevice):
                 self.logger.exception(dev_failed)
                 log_message = "Exception occurred in Abort command"
                 device._read_activity_message = log_message
-                self._throw_exception("Abort", log_message)
+                tango.Except.re_throw_exception(
+                    dev_failed,
+                    log_message,
+                    "DishLeafNode.{}Command".format("Abort"),
+                    tango.ErrSeverity.ERR,
+                )
 
     @command()
     def Abort(self):
@@ -1212,7 +1273,12 @@ class DishLeafNode(SKABaseDevice):
                 self.logger.exception(dev_failed)
                 log_message = "Exception occurred in Restart command"
                 device._read_activity_message = log_message
-                self._throw_exception("Restart", log_message)
+                tango.Except.re_throw_exception(
+                    dev_failed,
+                    log_message,
+                    "DishLeafNode.{}Command".format("Restart"),
+                    tango.ErrSeverity.ERR,
+                )
 
     @command()
     def Restart(self):
@@ -1271,7 +1337,12 @@ class DishLeafNode(SKABaseDevice):
                 self.logger.exception(dev_failed)
                 log_message = "Exception occurred in ObsReset command"
                 device._read_activity_message = log_message
-                self._throw_exception("ObsReset", log_message)
+                tango.Except.re_throw_exception(
+                    dev_failed,
+                    log_message,
+                    "DishLeafNode.{}Command".format("ObsReset"),
+                    tango.ErrSeverity.ERR,
+                )
 
     @command()
     def ObsReset(self):
