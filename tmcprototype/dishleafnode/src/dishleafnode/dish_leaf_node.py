@@ -279,9 +279,8 @@ class DishLeafNode(SKABaseDevice):
             self.logger.exception(key_error)
             log_message = "JSON key not found."
             self._read_activity_message = log_message
-            tango.Except.re_throw_exception(
+            tango.Except.throw_exception(
                 key_error,
-                "Exception in {} command".format(command_name),
                 log_message,
                 "DishLeafNode.{}Command".format(command_name),
                 tango.ErrSeverity.ERR,
@@ -296,9 +295,8 @@ class DishLeafNode(SKABaseDevice):
             self.logger.exception(jsonerr)
             log_message = "Invalid JSON format."
             self._read_activity_message = log_message
-            tango.Except.re_throw_exception(
+            tango.Except.throw_exception(
                 jsonerr,
-                "Exception in {} command".format(command_name),
                 log_message,
                 "DishLeafNode.{}Command".format(command_name),
                 tango.ErrSeverity.ERR,
