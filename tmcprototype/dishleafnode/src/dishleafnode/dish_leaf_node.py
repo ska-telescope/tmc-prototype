@@ -450,7 +450,7 @@ class DishLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                device._dish_proxy.command_inout_asynch("SetStowMode", self.cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch("SetStowMode", device.cmd_ended_cb)
                 self.logger.info("SetStowMode request sent succesfully to DishMaster")
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
@@ -483,7 +483,7 @@ class DishLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                device._dish_proxy.command_inout_asynch("SetStandbyLPMode", self.cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch("SetStandbyLPMode", device.cmd_ended_cb)
                 self.logger.info("SetStandbyLPMode request sent succesfully to DishMaster")
             except DevFailed as dev_failed:
                 log_message = "Exception in SetStandbyLPMode command"
@@ -516,7 +516,7 @@ class DishLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                device._dish_proxy.command_inout_asynch("SetOperateMode", self.cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch("SetOperateMode", device.cmd_ended_cb)
                 self.logger.info("SetOperateMode request sent succesfully to DishMaster")
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
@@ -565,7 +565,7 @@ class DishLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                device._dish_proxy.command_inout_asynch("Scan", self.cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch("Scan", device.cmd_ended_cb)
                 self.logger.info("Scan request sent succesfully to DishMaster")
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
@@ -790,7 +790,7 @@ class DishLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                device._dish_proxy.command_inout_asynch("StartCapture", self.cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch("StartCapture", device.cmd_ended_cb)
                 self.logger.info("StartCapture request sent succesfully to DishMaster")
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
@@ -902,7 +902,7 @@ class DishLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                device._dish_proxy.command_inout_asynch("SetStandbyFPMode", self.cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch("SetStandbyFPMode", device.cmd_ended_cb)
                 self.logger.info("SetStandbyFPMode request sent succesfully to DishMaster")
             except DevFailed as dev_failed:
                 log_message = "Exception in SetStandbyFPMode command"
@@ -954,7 +954,7 @@ class DishLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                device._dish_proxy.command_inout_asynch("Slew", argin, self.cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch("Slew", argin, device.cmd_ended_cb)
                 self.logger.info("Slew request sent succesfully to DishMaster")
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
@@ -1041,7 +1041,7 @@ class DishLeafNode(SKABaseDevice):
 
             # Invoke Track command on Dish Master
             try:
-                device._dish_proxy.command_inout_asynch(command_name, self.cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
                 self.logger.info("%s request sent succesfully to DishMaster", command_name)
             except DevFailed as dev_failed:
                 self.logger.error(dev_failed)
@@ -1110,7 +1110,7 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
             device.event_track_time.set()
             try:
-                device._dish_proxy.command_inout_asynch("TrackStop", self.cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch("TrackStop", device.cmd_ended_cb)
                 self.logger.info("TrackStop request sent succesfully to DishMaster")
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
@@ -1172,7 +1172,7 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
             device.event_track_time.set()
             try:
-                device._dish_proxy.command_inout_asynch("TrackStop", self.cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch("TrackStop", device.cmd_ended_cb)
                 self.logger.info("TrackStop request sent succesfully to DishMaster")
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
@@ -1233,7 +1233,7 @@ class DishLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                device._dish_proxy.command_inout_asynch("SetStandbyLPMode", self.cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch("SetStandbyLPMode", device.cmd_ended_cb)
                 self.logger.info("SetStandbyLPMode request sent succesfully to DishMaster")
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
@@ -1294,7 +1294,7 @@ class DishLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                device._dish_proxy.command_inout_asynch("SetStandbyFPMode", self.cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch("SetStandbyFPMode", device.cmd_ended_cb)
                 self.logger.info("SetStandbyFPMode request sent succesfully to DishMaster")
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
