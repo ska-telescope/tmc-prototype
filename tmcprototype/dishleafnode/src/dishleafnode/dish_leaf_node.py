@@ -312,8 +312,6 @@ class DishLeafNode(SKABaseDevice):
         doc="FQDN of Dish Master Device",
     )
 
-    TrackDuration = device_property(dtype="int", default_value=0.5)
-
     # ----------
     # Attributes
     # ----------
