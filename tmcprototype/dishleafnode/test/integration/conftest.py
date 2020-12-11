@@ -3,7 +3,7 @@ A module defining pytest fixtures for testing with MultiDeviceTestContext
 Requires pytest and pytest-mock
 """
 import socket
-import mock
+from unittest import mock
 
 import pytest
 import tango

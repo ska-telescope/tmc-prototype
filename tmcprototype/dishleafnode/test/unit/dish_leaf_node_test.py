@@ -3,8 +3,8 @@ import importlib
 import types
 import sys
 import json
-import mock
-from mock import Mock, MagicMock
+from unittest import mock
+from unittest.mock import Mock, MagicMock
 import numpy as np
 import tango
 import pytest

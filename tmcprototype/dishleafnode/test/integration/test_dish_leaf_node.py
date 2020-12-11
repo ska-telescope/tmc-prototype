@@ -6,7 +6,7 @@
 from __future__ import print_function
 
 import pkg_resources
-import mock
+from unittest import mock
 import time
 
 import tango
