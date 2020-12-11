@@ -923,8 +923,8 @@ class DishLeafNode(SKABaseDevice):
             coordinates.
 
             :param argin: list
-                [0] = Azimuth
-                [1] = Elevation
+                [0] = Azimuth, in degrees
+                [1] = Elevation, in degrees
 
             :return: None
 
@@ -952,7 +952,7 @@ class DishLeafNode(SKABaseDevice):
 
     @command(
         dtype_in="DevVarDoubleArray",
-        doc_in="[Azimuth, Elevation]",
+        doc_in="[Azimuth, Elevation] all in degrees",
     )
     def Slew(self, argin):
         """
