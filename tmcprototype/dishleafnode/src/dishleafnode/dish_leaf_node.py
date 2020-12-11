@@ -221,9 +221,9 @@ class DishLeafNode(SKABaseDevice):
             time.sleep(0.05)
 
     def _is_elevation_within_mechanical_limits(self):
-        if not (self.el >= self.ele_min_lim and self.el <= self.ele_max_lim):
+        if not (self.el_min_lim <= self.el <= self.el_max_lim):
             self.el_limit = True
-            log_message = "Minimum elevation limit has been reached."
+            log_message = "Minimum/maximum elevation limit has been reached."
             self._read_activity_message = log_message
             self.logger.info(log_message)
             log_message = "Source is not visible currently."
@@ -231,6 +231,7 @@ class DishLeafNode(SKABaseDevice):
             self.logger.info(log_message)
             return False
 
+        self.el_limit = False
         return True
 
     def set_dish_name_number(self):
