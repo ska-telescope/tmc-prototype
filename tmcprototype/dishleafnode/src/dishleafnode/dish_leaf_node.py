@@ -441,10 +441,6 @@ class DishLeafNode(SKABaseDevice):
         A class for DishLeafNode's SetStowMode() command.
         """
 
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
-
         def do(self):
             """
             Invokes SetStowMode command on DishMaster.
@@ -477,10 +473,6 @@ class DishLeafNode(SKABaseDevice):
         """
         A class for DishLeafNode's SetStandbyLPMode() command.
         """
-
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
 
         def do(self):
             """
@@ -515,10 +507,6 @@ class DishLeafNode(SKABaseDevice):
         A class for DishLeafNode's SetOperateMode() command.
         """
 
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
-
         def do(self):
             """
             Invokes SetOperateMode command on DishMaster.
@@ -551,10 +539,6 @@ class DishLeafNode(SKABaseDevice):
         """
         A class for DishLeafNode's Scan() command.
         """
-
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
 
         def check_allowed(self):
             """
@@ -679,10 +663,6 @@ class DishLeafNode(SKABaseDevice):
         A class for DishLeafNode's Configure() command.
         """
 
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
-
         def check_allowed(self):
             """
             Checks whether this command is allowed to be run in the current device state.
@@ -780,10 +760,6 @@ class DishLeafNode(SKABaseDevice):
         """
         A class for DishLeafNode's StartCapture() command.
         """
-
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
 
         def check_allowed(self):
             """
@@ -917,10 +893,6 @@ class DishLeafNode(SKABaseDevice):
         A class for DishLeafNode's SetStandbyFPMode() command.
         """
 
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
-
         def do(self):
             """
             Invokes SetStandbyFPMode command on DishMaster (Standby-Full power) mode.
@@ -953,10 +925,6 @@ class DishLeafNode(SKABaseDevice):
         """
         A class for DishLeafNode's SlewCommand() command.
         """
-
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
 
         def check_allowed(self):
             """
@@ -1021,10 +989,6 @@ class DishLeafNode(SKABaseDevice):
         """
         A class for DishLeafNode's Track() command.
         """
-
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
 
         def check_allowed(self):
             """
@@ -1120,10 +1084,6 @@ class DishLeafNode(SKABaseDevice):
         A class for DishLeafNode's StopTrack() command.
         """
 
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
-
         def check_allowed(self):
             """
             Checks whether this command is allowed to be run in the current device state.
@@ -1185,10 +1145,6 @@ class DishLeafNode(SKABaseDevice):
         """
         A class for DishLeafNode's Abort command.
         """
-
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
 
         def check_allowed(self):
             """
@@ -1252,10 +1208,6 @@ class DishLeafNode(SKABaseDevice):
         A class for DishLeafNode's Restart command.
         """
 
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
-
         def check_allowed(self):
             """
             Checks whether this command is allowed to be run in current device state
@@ -1316,10 +1268,6 @@ class DishLeafNode(SKABaseDevice):
         """
         A class for DishLeafNode's ObsReset command.
         """
-
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
 
         def check_allowed(self):
             """
