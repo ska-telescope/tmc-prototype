@@ -455,6 +455,7 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
             try:
                 device._dish_proxy.command_inout_asynch("SetStowMode", self.cmd_ended_cb)
+                self.logger.info("SetStowMode request sent succesfully to DishMaster")
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_message = "Exception in SetStowMode command"
@@ -491,6 +492,7 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
             try:
                 device._dish_proxy.command_inout_asynch("SetStandbyLPMode", self.cmd_ended_cb)
+                self.logger.info("SetStandbyLPMode request sent succesfully to DishMaster")
             except DevFailed as dev_failed:
                 log_message = "Exception in SetStandbyLPMode command"
                 device._read_activity_message = log_message
@@ -527,6 +529,7 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
             try:
                 device._dish_proxy.command_inout_asynch("SetOperateMode", self.cmd_ended_cb)
+                self.logger.info("SetOperateMode request sent succesfully to DishMaster")
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_message = "Exception in SetOperateMode command"
@@ -579,6 +582,7 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
             try:
                 device._dish_proxy.command_inout_asynch("Scan", self.cmd_ended_cb)
+                self.logger.info("Scan request sent succesfully to DishMaster")
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_message = "Exception in executing Scan command"
@@ -637,6 +641,7 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
             try:
                 device._dish_proxy.command_inout_asynch("StopCapture", device.cmd_ended_cb)
+                self.logger.info("StopCapture request sent succesfully to DishMaster")
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_message = "Exception in EndScan command"
@@ -744,6 +749,7 @@ class DishLeafNode(SKABaseDevice):
             command_name = f"ConfigureBand{receiver_band}"
             try:
                 device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
+                self.logger.info("%s request sent succesfully to DishMaster", command_name)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_message = "Exception occurred in Configure command"
@@ -809,6 +815,7 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
             try:
                 device._dish_proxy.command_inout_asynch("StartCapture", self.cmd_ended_cb)
+                self.logger.info("StartCapture request sent succesfully to DishMaster")
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_message = "Exception occurred in StartCapture command"
@@ -872,6 +879,7 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
             try:
                 device._dish_proxy.command_inout_asynch("StopCapture", device.cmd_ended_cb)
+                self.logger.info("StopCapture request sent succesfully to DishMaster")
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_message = "Exception occurred in StopCapture command"
@@ -923,6 +931,7 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
             try:
                 device._dish_proxy.command_inout_asynch("SetStandbyFPMode", self.cmd_ended_cb)
+                self.logger.info("SetStandbyFPMode request sent succesfully to DishMaster")
             except DevFailed as dev_failed:
                 log_message = "Exception in SetStandbyFPMode command"
                 device._read_activity_message = log_message
@@ -978,6 +987,7 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
             try:
                 device._dish_proxy.command_inout_asynch("Slew", argin, self.cmd_ended_cb)
+                self.logger.info("Slew request sent succesfully to DishMaster")
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_message = "Exception in executing Slew command"
@@ -1068,6 +1078,7 @@ class DishLeafNode(SKABaseDevice):
             # Invoke Track command on Dish Master
             try:
                 device._dish_proxy.command_inout_asynch(command_name, self.cmd_ended_cb)
+                self.logger.info("%s request sent succesfully to DishMaster", command_name)
             except DevFailed as dev_failed:
                 self.logger.error(dev_failed)
                 log_message = "Exception occured in the execution of Track command."
@@ -1140,6 +1151,7 @@ class DishLeafNode(SKABaseDevice):
             device.event_track_time.set()
             try:
                 device._dish_proxy.command_inout_asynch("TrackStop", self.cmd_ended_cb)
+                self.logger.info("TrackStop request sent succesfully to DishMaster")
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_message = "Exception occurred in StopTrack command"
@@ -1205,6 +1217,7 @@ class DishLeafNode(SKABaseDevice):
             device.event_track_time.set()
             try:
                 device._dish_proxy.command_inout_asynch("TrackStop", self.cmd_ended_cb)
+                self.logger.info("TrackStop request sent succesfully to DishMaster")
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_message = "Exception occurred in Abort command"
@@ -1269,6 +1282,7 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
             try:
                 device._dish_proxy.command_inout_asynch("SetStandbyLPMode", self.cmd_ended_cb)
+                self.logger.info("SetStandbyLPMode request sent succesfully to DishMaster")
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_message = "Exception occurred in Restart command"
@@ -1333,6 +1347,7 @@ class DishLeafNode(SKABaseDevice):
             device = self.target
             try:
                 device._dish_proxy.command_inout_asynch("SetStandbyFPMode", self.cmd_ended_cb)
+                self.logger.info("SetStandbyFPMode request sent succesfully to DishMaster")
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_message = "Exception occurred in ObsReset command"
