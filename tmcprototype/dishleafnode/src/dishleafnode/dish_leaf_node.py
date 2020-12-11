@@ -186,25 +186,6 @@ class DishLeafNode(SKABaseDevice):
         az_el_coordinates = katpoint.enu_to_azel(enu_array[0], enu_array[1], enu_array[2])
         return az_el_coordinates
 
-    def tracking_time_thread(self):
-        """This thread allows the dish to track the source for a specified Duration.
-
-        :return: None
-
-        """
-        start_track_time = time.time()
-        end_track_time = start_track_time + self.TrackDuration * 60.0
-        while True:
-            if end_track_time <= time.time():
-                self.event_track_time.set()
-                log_message = "Tracking duration is complete."
-                self._read_activity_message = log_message
-                self.logger.error(log_message)
-                break
-            elif self.el_limit:
-                self.logger.debug("Elevation limit reached.")
-                break
-
     def track_thread(self):
         """This thread writes coordinates to desiredPointing on DishMaster at the rate of 20 Hz.
 
