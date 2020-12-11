@@ -1042,12 +1042,11 @@ class DishLeafNode(SKABaseDevice):
 
             json_argin = device._load_config_string(command_name, argin)
             ra_value, dec_value = device._get_targets(command_name, json_argin)
-            device.radec_value = f"radec,{ra_value},{dec_value}"
-            self.logger.debug("Radec value: %s", device.radec_value)
+            radec_value = f"radec,{ra_value},{dec_value}"
             self.logger.info(
                 "Track command ignores RA dec coordinates passed in: %s. "
                 "Uses coordinates from Configure command instead.",
-                device.radec_value,
+                radec_value,
             )
 
             # Invoke Track command on Dish Master
