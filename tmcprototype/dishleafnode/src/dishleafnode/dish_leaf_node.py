@@ -136,13 +136,14 @@ class DishLeafNode(SKABaseDevice):
         self._read_activity_message = log_message
         self.logger.debug(log_message)
 
-    def convert_radec_to_azel(self, data):
+    def convert_radec_to_azel(self, target_radec, timestamp):
         """Converts RaDec coordinate in to AzEl coordinate using KATPoint library.
 
-        :param data: list
+        :param target: str
             Argin to be provided is the Ra and Dec values in the following format:
-            [0] = radec,21:08:47.92,89:15:51.4
-            [1] = timestamp
+            radec,21:08:47.92,89:15:51.4
+        :param timestamp: str
+            2020-12-11 10:06:34.970731
 
         :return: list
             Azimuth and elevation angle, in radians
@@ -158,12 +159,8 @@ class DishLeafNode(SKABaseDevice):
         )
 
         dish_antenna_latitude = dish_antenna.ref_observer.lat
-
-        # Compute Target Coordinates
-        target_radec = data[0]
         desired_target = katpoint.Target(str(target_radec))
-
-        timestamp = katpoint.Timestamp(timestamp=data[1])
+        timestamp = katpoint.Timestamp(timestamp=timestamp)
 
         try:
             target_apparnt_radec = katpoint.Target.apparent_radec(
@@ -220,10 +217,9 @@ class DishLeafNode(SKABaseDevice):
         )
         while self.event_track_time.is_set() is False:
             now = datetime.datetime.utcnow()
-            timestamp_value = str(now)
-            katpoint_arg = [self.radec_value, timestamp_value]
+            timestamp = str(now)
 
-            az_el_coordinates = self.convert_radec_to_azel(katpoint_arg)
+            az_el_coordinates = self.convert_radec_to_azel(self.radec_value, timestamp)
             self.az = katpoint.rad2deg(az_el_coordinates[0])
             self.el = katpoint.rad2deg(az_el_coordinates[1])
 
@@ -787,11 +783,10 @@ class DishLeafNode(SKABaseDevice):
             device.radec_value = f"radec,{ra_value},{dec_value}"
             receiver_band = json_argument["dish"]["receiverBand"]
             now = datetime.datetime.utcnow()
-            timestamp_value = str(now)
+            timestamp = str(now)
 
-            katpoint_arg = [device.radec_value, timestamp_value]
             try:
-                device.convert_radec_to_azel(katpoint_arg)
+                device.convert_radec_to_azel(device.radec_value, timestamp)
             except ValueError as valuerr:
                 self.logger.exception(valuerr)
                 log_message = "Exception occurred in Configure command"
@@ -1048,9 +1043,7 @@ class DishLeafNode(SKABaseDevice):
             """
             device = self.target
             try:
-                device._dish_proxy.command_inout_asynch(
-                    "Slew", argin, self.cmd_ended_cb
-                )
+                device._dish_proxy.command_inout_asynch("Slew", argin, self.cmd_ended_cb)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_message = "Exception in executing Slew command"
