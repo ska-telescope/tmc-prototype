@@ -602,7 +602,7 @@ class DishLeafNode(SKABaseDevice):
 
         def do(self, argin):
             """
-            Invokes EndScan command on DishMaster.
+            Invokes StopCapture command on DishMaster.
 
             :param argin: timestamp
 
