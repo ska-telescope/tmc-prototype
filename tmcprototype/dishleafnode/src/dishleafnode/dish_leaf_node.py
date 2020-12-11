@@ -435,17 +435,6 @@ class DishLeafNode(SKABaseDevice):
             super().__init__(*args, **kwargs)
             self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
 
-        def check_allowed(self):
-            """
-            Checks whether the command is allowed to be run in the current state.
-
-            :return: True if this command is allowed to be run in current device state.
-
-            :rtype: boolean
-
-            """
-            return True
-
         def do(self):
             """
             Invokes SetStowMode command on DishMaster.
@@ -462,18 +451,6 @@ class DishLeafNode(SKABaseDevice):
                 device._read_activity_message = log_message
                 self._throw_exception("SetStowMode", log_message)
 
-    def is_SetStowMode_allowed(self):
-        """
-        Checks whether the command is allowed to be run in the current state.
-
-        :return: True if this command is allowed to be run in current device state.
-
-        :rtype: boolean
-
-        """
-        handler = self.get_command_object("SetStowMode")
-        return handler.check_allowed()
-
     @command()
     def SetStowMode(self):
         """Invokes SetStowMode command on DishMaster."""
@@ -488,17 +465,6 @@ class DishLeafNode(SKABaseDevice):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
-
-        def check_allowed(self):
-            """
-            Checks whether this command is allowed to be run in the current device state.
-
-            :return: True if this command is allowed to be run in current device state.
-
-            :rtype: boolean
-
-            """
-            return True
 
         def do(self):
             """
@@ -516,18 +482,6 @@ class DishLeafNode(SKABaseDevice):
                 self.logger.exception(dev_failed)
                 self._throw_exception("SetStandbyLPMode", log_message)
 
-    def is_SetStandbyLPMode_allowed(self):
-        """
-        Checks whether this command is allowed to be run in the current device state.
-
-        :return: True if this command is allowed to be run in current device state.
-
-        :rtype: boolean
-
-        """
-        handler = self.get_command_object("SetStandbyLPMode")
-        return handler.check_allowed()
-
     @command()
     def SetStandbyLPMode(self):
         """Invokes SetStandbyLPMode (i.e. Low Power State) command on DishMaster."""
@@ -542,17 +496,6 @@ class DishLeafNode(SKABaseDevice):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
-
-        def check_allowed(self):
-            """
-            Checks whether this command is allowed to be run in the current device state.
-
-            :return: True if this command is allowed to be run in current device state.
-
-            :rtype: boolean
-
-            """
-            return True
 
         def do(self):
             """
@@ -569,18 +512,6 @@ class DishLeafNode(SKABaseDevice):
                 log_message = "Exception in SetOperateMode command"
                 device._read_activity_message = log_message
                 self._throw_exception("SetOperateMode", log_message)
-
-    def is_SetOperateMode_allowed(self):
-        """
-        Checks whether this command is allowed to be run in the current device state.
-
-        :return: True if this command is allowed to be run in current device state.
-
-        :rtype: boolean
-
-        """
-        handler = self.get_command_object("SetOperateMode")
-        return handler.check_allowed()
 
     @command()
     def SetOperateMode(self):
@@ -942,17 +873,6 @@ class DishLeafNode(SKABaseDevice):
             super().__init__(*args, **kwargs)
             self.cmd_ended_cb = CommandCallBack(self.target, self.logger).cmd_ended_cb
 
-        def check_allowed(self):
-            """
-            Checks whether this command is allowed to be run in current device state.
-
-            :return: True if this command is allowed to be run in current device state.
-
-            :rtype: boolean
-
-            """
-            return True
-
         def do(self):
             """
             Invokes SetStandbyFPMode command on DishMaster (Standby-Full power) mode.
@@ -968,18 +888,6 @@ class DishLeafNode(SKABaseDevice):
                 device._read_activity_message = log_message
                 self.logger.exception(dev_failed)
                 self._throw_exception("SetStandbyFPMode", log_message)
-
-    def is_SetStandbyFPMode_allowed(self):
-        """
-        Checks whether this command is allowed to be run in the current device state.
-
-        :return: True if this command is allowed to be run in current device state
-
-        :rtype: boolean
-
-        """
-        handler = self.get_command_object("SetStandbyFPMode")
-        return handler.check_allowed()
 
     @command()
     def SetStandbyFPMode(self):
