@@ -23,6 +23,7 @@ from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
 from ska.base.commands import ResultCode, BaseCommand
+from .transaction_id import identify_with_id
 from . import const, release
 from .exceptions import InvalidObsStateError
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
@@ -250,6 +251,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 device._read_activity_message = log
                 self.logger.info(log)
 
+
         def do(self):
             """
             Releases all the resources of given SDPSubarrayLeafNode. It accepts the subarray id,
@@ -355,6 +357,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 device._read_activity_message = log
                 self.logger.debug(log)
 
+        @identify_with_id('assign','argin')
         def do(self, argin):
             """
             Assigns resources to given SDP subarray.
@@ -408,6 +411,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             :raises: ValueError if input argument json string contains invalid value.
                      DevFailed if the command execution is not successful.
             """
+
             device = self.target
             try:
                 device.validate_obs_state()
@@ -523,6 +527,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 device._read_activity_message = log
                 self.logger.info(log)
 
+        @identify_with_id('configure','argin')
         def do(self, argin):
             """
             Configures the SDP Subarray device by providing the SDP PB
