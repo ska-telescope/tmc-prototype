@@ -1042,6 +1042,28 @@
       "01": {
         "DishMaster": {
           "mid_d0001/elt/master": {
+            "attribute_properties": {
+              "achievedPointing": {
+                "abs_change": [
+                  "0.001",
+                  "-0.001"
+                ],
+                "rel_change": [
+                  "1",
+                  "-1"
+                ]
+              },
+              "desiredPointing": {
+                "abs_change": [
+                  "0.001",
+                  "-0.001"
+                ],
+                "rel_change": [
+                  "1",
+                  "-1"
+                ]
+              }
+            },
             "properties": {
               "SkaLevel": [
                 "1"
@@ -1072,6 +1094,28 @@
       "02": {
         "DishMaster": {
           "mid_d0002/elt/master": {
+            "attribute_properties": {
+              "achievedPointing": {
+                "abs_change": [
+                  "0.001",
+                  "-0.001"
+                ],
+                "rel_change": [
+                  "1",
+                  "-1"
+                ]
+              },
+              "desiredPointing": {
+                "abs_change": [
+                  "0.001",
+                  "-0.001"
+                ],
+                "rel_change": [
+                  "1",
+                  "-1"
+                ]
+              }
+            },
             "properties": {
               "SkaLevel": [
                 "1"
@@ -1102,6 +1146,28 @@
       "03": {
         "DishMaster": {
           "mid_d0003/elt/master": {
+            "attribute_properties": {
+              "achievedPointing": {
+                "abs_change": [
+                  "0.001",
+                  "-0.001"
+                ],
+                "rel_change": [
+                  "1",
+                  "-1"
+                ]
+              },
+              "desiredPointing": {
+                "abs_change": [
+                  "0.001",
+                  "-0.001"
+                ],
+                "rel_change": [
+                  "1",
+                  "-1"
+                ]
+              }
+            },
             "properties": {
               "SkaLevel": [
                 "1"
@@ -1132,6 +1198,28 @@
       "04": {
         "DishMaster": {
           "mid_d0004/elt/master": {
+            "attribute_properties": {
+              "achievedPointing": {
+                "abs_change": [
+                  "0.001",
+                  "-0.001"
+                ],
+                "rel_change": [
+                  "1",
+                  "-1"
+                ]
+              },
+              "desiredPointing": {
+                "abs_change": [
+                  "0.001",
+                  "-0.001"
+                ],
+                "rel_change": [
+                  "1",
+                  "-1"
+                ]
+              }
+            },
             "properties": {
               "SkaLevel": [
                 "1"
