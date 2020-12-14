@@ -173,8 +173,7 @@ class DishLeafNode(SKABaseDevice):
         enu_array = katpoint.hadec_to_enu(hour_angle, target_apparnt_radec[1], latitude_radian)
 
         # Calculate Az El coordinates
-        az_el_coordinates = katpoint.enu_to_azel(enu_array[0], enu_array[1], enu_array[2])
-        az_el_coordinates = list(az_el_coordinates)
+        az_el_coordinates = list(katpoint.enu_to_azel(enu_array[0], enu_array[1], enu_array[2]))
         az_el_coordinates[0] = katpoint.rad2deg(az_el_coordinates[0])
         az_el_coordinates[1] = katpoint.rad2deg(az_el_coordinates[1])
         return az_el_coordinates
@@ -192,6 +191,7 @@ class DishLeafNode(SKABaseDevice):
         while self.event_track_time.is_set() is False:
             now = datetime.datetime.utcnow()
             timestamp = str(now)
+            # pylint: disable=unbalanced-tuple-unpacking
             self.az, self.el = self.convert_radec_to_azel(self.radec_value, timestamp)
 
             if not self._is_elevation_within_mechanical_limits():
