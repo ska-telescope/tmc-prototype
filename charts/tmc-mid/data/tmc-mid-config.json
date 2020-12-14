@@ -1056,9 +1056,13 @@
                 "0.2"
               ],
               "polled_attr": [
+                "achievedPointing",
+                "1000",
                 "capturing",
                 "1000",
                 "desiredPointing",
+                "1000",
+                "dishMode",
                 "1000"
               ]
             }
@@ -1082,9 +1086,13 @@
                 "0.2"
               ],
               "polled_attr": [
+                "achievedPointing",
+                "1000",
                 "capturing",
                 "1000",
                 "desiredPointing",
+                "1000",
+                "dishMode",
                 "1000"
               ]
             }
@@ -1108,9 +1116,13 @@
                 "0.2"
               ],
               "polled_attr": [
+                "achievedPointing",
+                "1000",
                 "capturing",
                 "1000",
                 "desiredPointing",
+                "1000",
+                "dishMode",
                 "1000"
               ]
             }
@@ -1134,9 +1146,13 @@
                 "0.2"
               ],
               "polled_attr": [
+                "achievedPointing",
+                "1000",
                 "capturing",
                 "1000",
                 "desiredPointing",
+                "1000",
+                "dishMode",
                 "1000"
               ]
             }
