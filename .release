@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name = """tmcprototype"""
-version = "0.2.15"
+version = "0.2.16"
 version_info = version.split(".")
 description = """TMC Prototype"""
 author = "Team NCRA"
@@ -10,10 +10,10 @@ license = """BSD-3-Clause"""
 url = """https://www.skatelescope.org"""
 copyright = """"""
 
-release=0.2.15
-tag=0.2.15
-tag_description=Implement logging transaction ids on leaf nodes
-release_notes=This release Contains: <br/><ul><li>Logging the transaction ids on Leaf Nodes.</li></ul><br/>
+release=0.2.16
+tag=0.2.16
+tag_description=Utilized updated version of LMC base class version 0.7.2
+release_notes=This release Contains: <br/><ul><li> Updated TMC Mid and Low to use 0.7.2 version of lmc base classes.</li></ul><br/>
 gitlab_username=AdityaDange
 private_token=T-QnRqsjQgqga_BRsz_i
 
