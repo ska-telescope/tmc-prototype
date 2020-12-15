@@ -277,13 +277,10 @@ class DishLeafNode(SKABaseDevice):
             ra_value = json_argument["pointing"]["target"]["RA"]
             dec_value = json_argument["pointing"]["target"]["dec"]
         except KeyError as key_error:
-            self.logger.exception(key_error)
-            log_message = "JSON key not found."
-            self._read_activity_message = log_message
             tango.Except.throw_exception(
                 str(key_error),
-                log_message,
-                "DishLeafNode.{}Command".format(command_name),
+                "JSON key not found.",
+                "_get_targets",
                 tango.ErrSeverity.ERR,
             )
 
@@ -293,13 +290,10 @@ class DishLeafNode(SKABaseDevice):
         try:
             json_argument = json.loads(argin)
         except json.JSONDecodeError as jsonerr:
-            self.logger.exception(jsonerr)
-            log_message = "Invalid JSON format."
-            self._read_activity_message = log_message
             tango.Except.throw_exception(
                 str(jsonerr),
-                log_message,
-                "DishLeafNode.{}Command".format(command_name),
+                "Invalid JSON format.",
+                "_load_config_string",
                 tango.ErrSeverity.ERR,
             )
 
@@ -730,16 +724,25 @@ class DishLeafNode(SKABaseDevice):
 
             device = self.target
             command_name = "Configure"
-            json_argument = device._load_config_string(command_name, argin)
-            ra_value, dec_value = device._get_targets(command_name, json_argument)
-            device.radec_value = f"radec,{ra_value},{dec_value}"
-            receiver_band = json_argument["dish"]["receiverBand"]
 
             try:
+                json_argument = device._load_config_string(command_name, argin)
+                ra_value, dec_value = device._get_targets(command_name, json_argument)
+                device.radec_value = f"radec,{ra_value},{dec_value}"
+                receiver_band = json_argument["dish"]["receiverBand"]
                 self._set_desired_pointing(device.radec_value)
                 self._configure_band(receiver_band)
             except DevFailed as dev_failed:
-                raise dev_failed
+                self.logger.exception(dev_failed)
+                log_message = f"Exception occured while executing the '{command_name}' command."
+                device._read_activity_message = log_message
+                tango.Except.re_throw_exception(
+                    dev_failed,
+                    f"Exception in '{command_name}' command.",
+                    log_message,
+                    f"DishLeafNode.{command_name}Command",
+                    tango.ErrSeverity.ERR,
+                )
 
             self.logger.info("'%s' command executed successfully.", command_name)
 
@@ -751,16 +754,7 @@ class DishLeafNode(SKABaseDevice):
             try:
                 device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
             except DevFailed as dev_failed:
-                self.logger.exception(dev_failed)
-                log_message = "Exception occured while executing the 'Configure' command."
-                device._read_activity_message = log_message
-                tango.Except.re_throw_exception(
-                    dev_failed,
-                    "Exception in 'Configure' command.",
-                    log_message,
-                    "DishLeafNode.ConfigureCommand",
-                    tango.ErrSeverity.ERR,
-                )
+                raise dev_failed
 
         def _set_desired_pointing(self, radec):
             device = self.target
@@ -770,13 +764,10 @@ class DishLeafNode(SKABaseDevice):
             try:
                 device.az, device.el = device.convert_radec_to_azel(radec, timestamp)
             except ValueError as valuerr:
-                self.logger.exception(valuerr)
-                log_message = f"Exception occured while executing the 'Configure' command."
-                device._read_activity_message = log_message
                 tango.Except.throw_exception(
                     str(valuerr),
-                    log_message,
-                    "DishLeafNode.ConfigureCommand",
+                    f"Error converting radec '{radec}' to az and el coordinates, respectively.",
+                    "_set_desired_pointing",
                     tango.ErrSeverity.ERR,
                 )
 
@@ -1093,17 +1084,15 @@ class DishLeafNode(SKABaseDevice):
             device.el_limit = False
             command_name = "Track"
 
-            json_argin = device._load_config_string(command_name, argin)
-            ra_value, dec_value = device._get_targets(command_name, json_argin)
-            radec_value = f"radec,{ra_value},{dec_value}"
-            self.logger.info(
-                "Track command ignores RA dec coordinates passed in: %s. "
-                "Uses coordinates from Configure command instead.",
-                radec_value,
-            )
-
-            # Invoke Track command on Dish Master
             try:
+                json_argin = device._load_config_string(command_name, argin)
+                ra_value, dec_value = device._get_targets(command_name, json_argin)
+                radec_value = f"radec,{ra_value},{dec_value}"
+                self.logger.info(
+                    "Track command ignores RA dec coordinates passed in: %s. "
+                    "Uses coordinates from Configure command instead.",
+                    radec_value,
+                )
                 device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
                 self.logger.info("'%s' command executed successfully.", command_name)
             except DevFailed as dev_failed:
