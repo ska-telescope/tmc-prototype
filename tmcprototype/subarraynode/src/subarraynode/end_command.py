@@ -33,21 +33,21 @@ class EndCommand(SKASubarray.EndCommand):
         :raises: DevFailed if the command execution is not successful.
         """
         self.logger.info(type(self.target))
-        self.this_device_data = self.target
-        self.this_device_data.is_end_command = False
-        self.this_device_data.is_release_resources = False
-        self.this_device_data.is_restart_command = False
-        self.this_device_data.is_abort_command = False
-        self.this_device_data.is_obsreset_command = False
-        dsh_leaf_node_client = TangoClient(this_device_data._dish_leaf_node_group)
+        self.device_data = self.target
+        self.device_data.is_end_command = False
+        self.device_data.is_release_resources = False
+        self.device_data.is_restart_command = False
+        self.device_data.is_abort_command = False
+        self.device_data.is_obsreset_command = False
+        dsh_leaf_node_client = TangoClient(device_data._dish_leaf_node_group)
         try:
             self.logger.info("End command invoked on SubarrayNode.")
             # device._sdp_subarray_ln_proxy.command_inout(const.CMD_END)
-            sdp_saln_client = TangoClient(this_device_data.sdp_subarray_ln_fqdn)
+            sdp_saln_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
             sdp_saln_client.send_command(const.CMD_END)
             self.logger.info(const.STR_CMD_END_INV_SDP)
             # device._csp_subarray_ln_proxy.command_inout(const.CMD_GOTOIDLE)
-            csp_saln_client = TangoClient(this_device_data.csp_subarray_ln_fqdn)
+            csp_saln_client = TangoClient(device_data.csp_subarray_ln_fqdn)
             csp_saln_client.send_command(const.CMD_GOTOIDLE)
             self.logger.info(const.STR_CMD_GOTOIDLE_INV_CSP)
             # TODO: Uncomment this after resolving issues
@@ -67,7 +67,7 @@ class EndCommand(SKASubarray.EndCommand):
 
     def stop_dish_tracking(self, dsh_leaf_node_client):
         # TODO: Getting exception while running test cases using device mocking
-        self.this_device_data = self.target
+        self.device_data = self.target
         # device._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
         dsh_leaf_node_client.send_command(const.CMD_STOP_TRACK)
         self.logger.info(const.STR_CMD_STOP_TRACK_INV_DLN)
