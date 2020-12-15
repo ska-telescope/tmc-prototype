@@ -735,8 +735,12 @@ class DishLeafNode(SKABaseDevice):
             device.radec_value = f"radec,{ra_value},{dec_value}"
             receiver_band = json_argument["dish"]["receiverBand"]
 
-            self._set_desired_pointing(device.radec_value)
-            self._configure_band(receiver_band)
+            try:
+                self._set_desired_pointing(device.radec_value)
+                self._configure_band(receiver_band)
+            except DevFailed as dev_failed:
+                raise dev_failed
+
             self.logger.info("'%s' command executed successfully.", command_name)
 
         def _configure_band(self, band):
