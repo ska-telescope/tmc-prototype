@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# This file is part of the CentralNode project
+# This file is part of the SubarrayNode project
 #
 #
 #
@@ -13,18 +13,19 @@
 # Tango imports
 import tango
 from tango import AttrWriteType, DevFailed, DeviceProxy, EventType
-from tango.server import run,attribute, command, device_property
+from tango.server import run, attribute, command, device_property
 from .const import GRP_DISH_LEAF_NODE
 import logging
 
+
 class TangoServer:
     """
-    
+
     """
     __instance = None
 
     def __init__(self):
-        """Private constructor of the class""" 
+        """Private constructor of the class"""
         if TangoServer.__instance != None:
             raise Exception("This is singletone class")
         else:
@@ -37,7 +38,6 @@ class TangoServer:
             TangoServer()
         return TangoServer.__instance
 
-    
     def get_attribute(self):
         """
         """
@@ -47,4 +47,3 @@ class TangoServer:
         """
         """
         pass
-        
