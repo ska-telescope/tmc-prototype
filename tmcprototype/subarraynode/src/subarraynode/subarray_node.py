@@ -27,11 +27,15 @@ from .const import PointingState
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, ObsMode, ObsState
 from ska.base import SKASubarray
+from subarraynode.subarray_model import SubarrayModel
+from subarraynode.tango_client import TangoClient
+from subarraynode.tango_server import TangoServer
 from subarraynode.exceptions import InvalidObsStateError
 
 __all__ = ["SubarrayNode", "main", "assign_resources_command", "release_all_resources_command",
            "configure_command", "scan_command", "end_scan_command", "end_command", "on_command",
-           "off_command", "track_command", "abort_command", "restart_command", "obsreset_command"]
+           "off_command", "track_command", "abort_command", "restart_command", "obsreset_command",
+           "SubarrayModel","TangoClient"]
 
 
 class SubarrayHealthState:
@@ -73,7 +77,8 @@ class SubarrayNode(SKASubarray):
         """
         args = (self, self.state_model, self.logger)
         self.configure_obj = configure_command.ConfigureCommand(*args)
-        self.assign_obj = assign_resources_command.AssignResourcesCommand(*args)
+        assign_args = (self, self.state_model, self.logger)
+        self.assign_obj = assign_resources_command.AssignResourcesCommand(*assign_args)
         self.release_obj = release_all_resources_command.ReleaseAllResourcesCommand(*args)
         self.scan_obj = scan_command.ScanCommand(*args)
         self.endscan_obj = end_scan_command.EndScanCommand(*args)
@@ -94,7 +99,8 @@ class SubarrayNode(SKASubarray):
         :return: None
         """
         if not event.err:
-            self._receive_addresses_map = event.attr_value.value
+            # self._receive_addresses_map = event.attr_value.value
+            self.this_device_data._receive_addresses_map = event.attr_value.value
         else:
             log_msg = const.ERR_SUBSR_RECEIVE_ADDRESSES_SDP_SA + str(event)
             self.logger.debug(log_msg)
@@ -119,12 +125,14 @@ class SubarrayNode(SKASubarray):
 
             log_message = SubarrayHealthState.generate_health_state_log_msg(
                 event_health_state, device_name, event)
-            self._read_activity_message = log_message
+            # self._read_activity_message = log_message
+            self.activityMessage = log_message
             self._health_state = SubarrayHealthState.calculate_health_state(
                 self.subarray_ln_health_state_map.values())
         else:
             log_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(device_name) + str(event)
-            self._read_activity_message = log_message
+            # self._read_activity_message = log_message
+            self.activityMessage = log_message
 
     def observation_state_cb(self, evt):
         """
@@ -135,8 +143,12 @@ class SubarrayNode(SKASubarray):
         :return: None
         """
         try:
+            log_msg = 'Observation State Attribute change event is: ' + str(evt)
+            self.logger.info(log_msg)
             if not evt.err:
                 self._observetion_state = evt.attr_value.value
+                log_msg = 'Observation State Attribute value is: ' + str(self._observetion_state)
+                self.logger.info(log_msg)
                 if const.PROP_DEF_VAL_TMCSP_MID_SALN in evt.attr_name:
                     self._csp_sa_obs_state = self._observetion_state
                     self._read_activity_message = const.STR_CSP_SUBARRAY_OBS_STATE + str(
@@ -490,6 +502,10 @@ class SubarrayNode(SKASubarray):
             """
             super().do()
             device = self.target
+            # TODO: get Tangoserver instance 
+            this_server = TangoServer.get_instance()
+            this_server.device = device
+
             device.set_status(const.STR_SA_INIT)
             device._obs_mode = ObsMode.IDLE
             device.isScanRunning = False
@@ -506,7 +522,8 @@ class SubarrayNode(SKASubarray):
             device.scan_duration = 0
             device._receptor_id_list = []
             device.dishPointingStateMap = {}
-            device._dish_leaf_node_group = Group(const.GRP_DISH_LEAF_NODE)
+            device._dish_leaf_node_group = tango.Group(const.GRP_DISH_LEAF_NODE)
+            
             device._dish_leaf_node_proxy = []
             device._health_event_id = []
             device._pointing_state_event_id = []
@@ -520,9 +537,24 @@ class SubarrayNode(SKASubarray):
             device._sdp_sa_obs_state = None
             device.only_dishconfig_flag = False
             device.scan_thread = None
+             # Create proxy for CSP Subarray Leaf Node
+            device._csp_subarray_ln_proxy = None
+            device._csp_subarray_ln_proxy = device.get_deviceproxy(device.CspSubarrayLNFQDN)
+            # Create proxy for SDP Subarray Leaf Node
+            device._sdp_subarray_ln_proxy = None
+            device._sdp_subarray_ln_proxy = device.get_deviceproxy(device.SdpSubarrayLNFQDN)
+            device._csp_sa_proxy = device.get_deviceproxy(device.CspSubarrayFQDN)
+            device._sdp_sa_proxy = device.get_deviceproxy(device.SdpSubarrayFQDN)
+
             device.command_class_object()
             device._read_activity_message = const.STR_SA_INIT_SUCCESS
             self.logger.info(device._read_activity_message)
+            # Step 1: Create object of configuration model
+            device.this_device_data = SubarrayModel.get_instance()
+            device.this_device_data.sdp_subarray_ln_fqdn = device.SdpSubarrayLNFQDN
+            device.this_device_data.csp_subarray_ln_fqdn = device.CspSubarrayLNFQDN
+            
+            # device.configuration_model = configure_command.configuration_model()
             return (ResultCode.OK, device._read_activity_message)
 
     def always_executed_hook(self):
@@ -561,13 +593,15 @@ class SubarrayNode(SKASubarray):
         //result occured after initialization of device.
         """
         # PROTECTED REGION ID(SubarrayNode.activityMessage_read) ENABLED START #
-        return self._read_activity_message
+        # return self._read_activity_message
+        return self.this_device_data._read_activity_message
         # PROTECTED REGION END #    //  SubarrayNode.activityMessage_read
 
     def write_activityMessage(self, value):
         """ Internal construct of TANGO. Sets the activityMessage. """
         # PROTECTED REGION ID(SubarrayNode.activityMessage_write) ENABLED START #
-        self._read_activity_message = value
+        # self._read_activity_message = value
+        self.this_device_data._read_activity_message = value
         # PROTECTED REGION END #    //  SubarrayNode.activityMessage_write
 
     def read_receptorIDList(self):
@@ -615,13 +649,16 @@ class SubarrayNode(SKASubarray):
         device.
         """
         super().init_command_objects()
+        self.this_device_data = SubarrayModel.get_instance()
         args = (self, self.state_model, self.logger)
+        assign_args = (self.this_device_data, self.state_model, self.logger)
+        config_args = (self.this_device_data, self.state_model, self.logger)
         self.register_command_object("Track", track_command.TrackCommand(*args))
         # In order to pass self = subarray node as target device, the assign and release resource commands
         # are registered and inherited from SKASubarray
         self.register_command_object("AssignResources", assign_resources_command.AssignResourcesCommand(*args))
         self.register_command_object("ReleaseAllResources", release_all_resources_command.ReleaseAllResourcesCommand(*args))
-        self.register_command_object("Configure", configure_command.ConfigureCommand(*args))
+        self.register_command_object("Configure", configure_command.ConfigureCommand(*config_args))
         self.register_command_object("Scan", scan_command.ScanCommand(*args))
         self.register_command_object("EndScan", end_scan_command.EndScanCommand(*args))
         self.register_command_object("End", end_command.EndCommand(*args))
