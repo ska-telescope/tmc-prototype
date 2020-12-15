@@ -739,47 +739,47 @@ class DishLeafNode(SKABaseDevice):
             self._configure_band(receiver_band)
             self.logger.info("'%s' command executed successfully.", command_name)
 
-    def _configure_band(self, band):
-        """"Send the ConfigureBand<band-number> command to Dish Master"""
-        device = self.target
-        command_name = f"ConfigureBand{band}"
+        def _configure_band(self, band):
+            """"Send the ConfigureBand<band-number> command to Dish Master"""
+            device = self.target
+            command_name = f"ConfigureBand{band}"
 
-        try:
-            device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
-        except DevFailed as dev_failed:
-            self.logger.exception(dev_failed)
-            log_message = "Exception occured while executing the 'Configure' command."
-            device._read_activity_message = log_message
-            tango.Except.re_throw_exception(
-                dev_failed,
-                "Exception in 'Configure' command.",
-                log_message,
-                "DishLeafNode.ConfigureCommand",
-                tango.ErrSeverity.ERR,
-            )
+            try:
+                device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
+            except DevFailed as dev_failed:
+                self.logger.exception(dev_failed)
+                log_message = "Exception occured while executing the 'Configure' command."
+                device._read_activity_message = log_message
+                tango.Except.re_throw_exception(
+                    dev_failed,
+                    "Exception in 'Configure' command.",
+                    log_message,
+                    "DishLeafNode.ConfigureCommand",
+                    tango.ErrSeverity.ERR,
+                )
 
-    def _set_desired_pointing(self, radec):
-        device = self.target
-        now = datetime.datetime.utcnow()
-        timestamp = str(now)
+        def _set_desired_pointing(self, radec):
+            device = self.target
+            now = datetime.datetime.utcnow()
+            timestamp = str(now)
 
-        try:
-            device.az, device.el = device.convert_radec_to_azel(radec, timestamp)
-        except ValueError as valuerr:
-            self.logger.exception(valuerr)
-            log_message = f"Exception occured while executing the 'Configure' command."
-            device._read_activity_message = log_message
-            tango.Except.throw_exception(
-                str(valuerr),
-                log_message,
-                "DishLeafNode.ConfigureCommand",
-                tango.ErrSeverity.ERR,
-            )
+            try:
+                device.az, device.el = device.convert_radec_to_azel(radec, timestamp)
+            except ValueError as valuerr:
+                self.logger.exception(valuerr)
+                log_message = f"Exception occured while executing the 'Configure' command."
+                device._read_activity_message = log_message
+                tango.Except.throw_exception(
+                    str(valuerr),
+                    log_message,
+                    "DishLeafNode.ConfigureCommand",
+                    tango.ErrSeverity.ERR,
+                )
 
-        # Set desiredPointing on Dish Master (it won't move until asked to
-        # track or scan, but provide initial coordinates for interest)
-        time_az_el = [now.timestamp(), device.az, device.el]
-        device._dish_proxy.desiredPointing = time_az_el
+            # Set desiredPointing on Dish Master (it won't move until asked to
+            # track or scan, but provide initial coordinates for interest)
+            time_az_el = [now.timestamp(), device.az, device.el]
+            device._dish_proxy.desiredPointing = time_az_el
 
     def is_Configure_allowed(self):
         """
