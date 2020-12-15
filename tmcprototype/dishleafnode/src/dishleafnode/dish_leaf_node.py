@@ -680,8 +680,8 @@ class DishLeafNode(SKABaseDevice):
             command_name = "Configure"
 
             try:
-                json_argument = device._load_config_string(command_name, argin)
-                ra_value, dec_value = device._get_targets(command_name, json_argument)
+                json_argument = device._load_config_string(argin)
+                ra_value, dec_value = device._get_targets(json_argument)
                 device.radec_value = f"radec,{ra_value},{dec_value}"
                 receiver_band = json_argument["dish"]["receiverBand"]
                 self._set_desired_pointing(device.radec_value)
@@ -1010,8 +1010,8 @@ class DishLeafNode(SKABaseDevice):
             command_name = "Track"
 
             try:
-                json_argin = device._load_config_string(command_name, argin)
-                ra_value, dec_value = device._get_targets(command_name, json_argin)
+                json_argin = device._load_config_string(argin)
+                ra_value, dec_value = device._get_targets(json_argin)
                 radec_value = f"radec,{ra_value},{dec_value}"
                 self.logger.info(
                     "Track command ignores RA dec coordinates passed in: %s. "
