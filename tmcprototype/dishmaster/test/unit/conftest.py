@@ -4,7 +4,7 @@ tests.
 """
 import tempfile
 
-import mock
+from unittest import mock
 import pytest
 
 from tango import Database
@@ -18,9 +18,7 @@ from dishmaster.utils import get_tango_server_class
 def tango_context(request):
     """Creates and returns a TANGO DeviceTestContext object.
 
-    Parameters
-    ----------
-    request: _pytest.fixtures.SubRequest
+    :param request: _pytest.fixtures.SubRequest
         A request object gives access to the requesting test context.
     """
 
@@ -38,9 +36,7 @@ def tango_context(request):
 def initialize_device(tango_context):
     """Re-initializes the device.
 
-    Parameters
-    ----------
-    tango_context_init: tango.test_context.DeviceTestContext
+    :param tango_context: tango.test_context.DeviceTestContext
         Context to run a device without a database.
     """
     yield tango_context.device.Init()

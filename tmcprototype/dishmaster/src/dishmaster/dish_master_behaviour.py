@@ -84,7 +84,9 @@ class OverrideDish(object):
         band 1. On completion of the band configuration, Dish will automatically
         revert to the previous Dish mode (OPERATE or STANDBY-FP).
 
-        data_input: None
+        :param model: tango_simlib.model.Model
+        :param data_input: None
+        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY-FP, OPERATE, STOW).
         """
         self._configureband(model, "1")
 
@@ -96,7 +98,9 @@ class OverrideDish(object):
         band 2. On completion of the band configuration, Dish will automatically
         revert to the previous Dish mode (OPERATE or STANDBY-FP).
 
-        data_input: None
+        :param model: tango_simlib.model.Model
+        :param data_input: None
+        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY-FP, OPERATE, STOW).
         """
         self._configureband(model, "2")
 
@@ -108,7 +112,9 @@ class OverrideDish(object):
         band 3. On completion of the band configuration, Dish will automatically
         revert to the previous Dish mode (OPERATE or STANDBY-FP).
 
-        data_input: None
+        :param model: tango_simlib.model.Model
+        :param data_input: None
+        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY-FP, OPERATE, STOW).
         """
         self._configureband(model, "3")
 
@@ -120,7 +126,9 @@ class OverrideDish(object):
         band 4. On completion of the band configuration, Dish will automatically
         revert to the previous Dish mode (OPERATE or STANDBY-FP).
 
-        data_input: None
+        :param model: tango_simlib.model.Model
+        :param data_input: None
+        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY-FP, OPERATE, STOW).
         """
         self._configureband(model, "4")
 
@@ -132,7 +140,9 @@ class OverrideDish(object):
         band 5a. On completion of the band configuration, Dish will automatically
         revert to the previous Dish mode (OPERATE or STANDBY-FP).
 
-        data_input: None
+        :param model: tango_simlib.model.Model
+        :param data_input: None
+        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY-FP, OPERATE, STOW).
         """
         self._configureband(model, "5a")
 
@@ -144,7 +154,9 @@ class OverrideDish(object):
         band 5b. On completion of the band configuration, Dish will automatically
         revert to the previous Dish mode (OPERATE or STANDBY-FP).
 
-        data_input: None
+        :param model: tango_simlib.model.Model
+        :param data_input: None
+        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY-FP, OPERATE, STOW).
         """
         self._configureband(model, "5b")
 
@@ -156,7 +168,9 @@ class OverrideDish(object):
         band 5c. On completion of the band configuration, Dish will automatically
         revert to the previous Dish mode (OPERATE or STANDBY-FP).
 
-        data_input: None
+        :param model: tango_simlib.model.Model
+        :param data_input: None
+        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY-FP, OPERATE, STOW).
         """
         self._configureband(model, "5c")
 
@@ -179,7 +193,9 @@ class OverrideDish(object):
         observatory to perform power management (load curtailment), and
         also to conserve energy for non-operating dishes.
 
-        data_input: None
+        :param model: tango_simlib.model.Model
+        :param data_input: None
+        :raises DevFailed: dishMode is not in any of the allowed modes (STOW, MAINTENANCE).
         """
         _allowed_modes = ("STOW", "MAINTENANCE")
         dish_mode = get_enum_str(model.sim_quantities["dishMode"])
@@ -211,7 +227,9 @@ class OverrideDish(object):
         engineers and maintainers to upgrade SW and FW. Dish also enters
         this mode when an emergency stop button is pressed.
 
-        data_input: None
+        :param model: tango_simlib.model.Model
+        :param data_input: None
+        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY-LP, STANDBY-FP).
         """
         maintenance = "MAINTENANCE"
         _allowed_modes = ("STANDBY-LP", "STANDBY-FP")
@@ -243,7 +261,9 @@ class OverrideDish(object):
         purpose of the Dish, which is to point to designated directions while
         capturing data and transmitting it to CSP.
 
-        data_input: None
+        :param model: tango_simlib.model.Model
+        :param data_input: None
+        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY-FP).
         """
         operate = "OPERATE"
         _allowed_modes = ("STANDBY-FP",)
@@ -280,7 +300,9 @@ class OverrideDish(object):
         for active observation, once a command is received by TM to go to the
         FULL_POWER mode.
 
-        data_input: None
+        :param model: tango_simlib.model.Model
+        :param data_input: None
+        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY-LP, STOW, OPERATE, MAINTENANCE).
         """
         standby_fp = "STANDBY-FP"
         _allowed_modes = ("STANDBY-LP", "STOW", "OPERATE", "MAINTENANCE")
@@ -306,7 +328,10 @@ class OverrideDish(object):
         is configured for low power consumption, and is the mode wherein Dish ends after
         a start up procedure.
 
-        data_input: None
+        :param model: tango_simlib.model.Model
+        :param data_input: None
+        :raises DevFailed: dishMode is not in any of the allowed modes
+            (OFF, STARTUP, SHUTDOWN, STANDBY-FP, MAINTENANCE, STOW, CONFIG, OPERATE).
         """
         standby_lp = "STANDBY-LP"
         _allowed_modes = (
@@ -340,7 +365,10 @@ class OverrideDish(object):
         in strong wind conditions. The Dish is able to observe in the stow
         position, for the purpose of transient detection.
 
-        data_input: None
+        :param model: tango_simlib.model.Model
+        :param data_input: None
+        :raises DevFailed: dishMode is not in any of the allowed modes
+            (OFF, STARTUP, SHUTDOWN, STANDBY-LP, STANDBY-FP, MAINTENANCE, CONFIG, OPERATE).
         """
         stow = "STOW"
         _allowed_modes = (
@@ -377,7 +405,10 @@ class OverrideDish(object):
     def action_startcapture(self, model, tango_dev=None, data_input=None):  # pylint: disable=W0613
         """Triggers the dish to start capturing the data on the configured band.
 
-        data_input: None
+        :param model: tango_simlib.model.Model
+        :param data_input: None
+        :raises DevFailed: dishMode is not in any of the allowed modes (OPERATE) or
+            configuredBand is (NONE, UNKNOWN, ERROR, UNDEFINED).
         """
         _allowed_modes = ("OPERATE",)
         dish_mode_quantity = model.sim_quantities["dishMode"]
@@ -400,7 +431,8 @@ class OverrideDish(object):
     def action_stopcapture(self, model, tango_dev=None, data_input=None):  # pylint: disable=W0613
         """Triggers the dish to stop capturing the data on the configured band.
 
-        data_input: None
+        :param model: tango_simlib.model.Model
+        :param data_input: None
         """
         if model.sim_quantities["capturing"]:
             model.sim_quantities["capturing"].set_val(False, model.time_func())
@@ -423,7 +455,9 @@ class OverrideDish(object):
         """The Dish is tracking the commanded pointing positions within the
         specified TRACK pointing accuracy.
 
-        data_input: None
+        :param model: tango_simlib.model.Model
+        :param data_input: None
+        :raises DevFailed: dishMode is not in any of the allowed modes (OPERATE).
         """
         self._change_pointing_state(model, "TRACK", ("OPERATE",))
         model.logger.info("'Track' command executed successfully.")
@@ -432,7 +466,9 @@ class OverrideDish(object):
         """The Dish will stop tracking but will not apply brakes.
         Stops movement, but doesn't clear tables/queues.
 
-        data_input: None
+        :param model: tango_simlib.model.Model
+        :param data_input: None
+        :raises DevFailed: dishMode is not in any of the allowed modes (OPERATE).
         """
         dish_mode = model.sim_quantities["dishMode"]
         dish_mode = get_enum_str(dish_mode)
@@ -455,7 +491,8 @@ class OverrideDish(object):
         """Resets the coordinates in the queue. Clear ACU's table (should show number of
         coordinates drops to zero)
 
-        data_input: None
+        :param model: tango_simlib.model.Model
+        :param data_input: None
         """
         program_track_quantity = model.sim_quantities["programTrackTable"]
         track_table_size = len(program_track_quantity.last_val)
@@ -467,7 +504,8 @@ class OverrideDish(object):
     ):  # pylint: disable=W0613
         """Resets the Dish LMC's buffer. (In our case it's desired_pointings)
 
-        data_input: None
+        :param model: tango_simlib.model.Model
+        :param data_input: None
         """
         self.desired_pointings = []
 
@@ -475,9 +513,11 @@ class OverrideDish(object):
         """The Dish moves to the commanded pointing angle at the maximum
         speed, as defined by the specified slew rate.
 
-        data_input: list
+        :param model: tango_simlib.model.Model
+        :param data_input: list
             [0]: Azimuth
             [1]: Elevation
+        :raises DevFailed: dishMode is not in any of the allowed modes (OPERATE).
         """
         # TODO (KM 19-11-2020) Set the data_input to desiredPointing
         self._change_pointing_state(model, "SLEW", ("OPERATE",))
@@ -487,7 +527,9 @@ class OverrideDish(object):
         """The Dish is tracking the commanded pointing positions within the
         specified SCAN pointing accuracy.
 
-        data_input: None
+        :param model: tango_simlib.model.Model
+        :param data_input: None
+        :raises DevFailed: dishMode is not in any of the allowed modes (OPERATE).
         """
         self._change_pointing_state(model, "SCAN", ("OPERATE",))
         model.logger.info("'Scan' command executed successfully.")
@@ -590,14 +632,10 @@ class OverrideDish(object):
     def get_new_unverified_pointings(self, model):
         """Return the latest list of coordinates
 
-        Parameters
-        ----------
-        model : Model
+        :param model: Model
             The device Model
 
-        Returns
-        -------
-        List
+        :return: list
             - Empty if no updates have occured since the last time
             - 1 entry of desiredPointing if it is the latest
             - All the entries of programTrackTable if it is the latest (7 in testing)
@@ -651,14 +689,9 @@ class OverrideDish(object):
 def get_enum_str(quantity):
     """Returns the enum label of an enumerated data type
 
-    Parameters
-    ----------
-    quantity : object
+    :param quantity: object
         The quantity object of a DevEnum attribute
-
-    Returns
-    -------
-    return_value : str
+    :return: str
         Current string value of a DevEnum attribute
     """
     EnumClass = enum.IntEnum("EnumLabels", quantity.meta["enum_labels"], start=0)
@@ -668,13 +701,11 @@ def get_enum_str(quantity):
 def set_enum(quantity, label, timestamp):
     """Sets the quantity last_val attribute to index of label
 
-    Parameters
-    ----------
-    quantity : object
+    :param quantity: object
         The quantity object from model
-    label : str
+    :param label: str
         The desired label from enum list
-    timestamp : float
+    :param timestamp: float
         The time now
     """
     value = quantity.meta["enum_labels"].index(label)

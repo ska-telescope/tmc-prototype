@@ -8,14 +8,9 @@ from ska.logging import configure_logging
 def get_tango_server_class(device_name):
     """Build and return the Tango device class for DishMaster
 
-    Parameters
-    ----------
-    device_name: string
+    :param device_name: str
         The Tango device name
-
-    Returns
-    -------
-    DishMaster: tango.server.Device
+    :return DishMaster: tango.server.Device
         The Tango device class for dishmaster
     """
     data_descr_files = []

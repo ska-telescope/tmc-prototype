@@ -8,21 +8,10 @@ from __future__ import print_function
 import pkg_resources
 from unittest import mock
 import time
-
-import tango
 import pytest
 
-from tango import DevState, EventType
+from tango import EventType
 from dishleafnode import DishLeafNode, const
-from tango.server import Device, command
-from ska.base.control_model import (
-    HealthState,
-    AdminMode,
-    SimulationMode,
-    TestMode,
-    ControlMode,
-    LoggingLevel,
-)
 from tango_simlib.tango_sim_generator import (
     configure_device_model,
     get_tango_device_server,
@@ -37,14 +26,9 @@ JSON_FILE_PATH = pkg_resources.resource_filename("dishmaster", "dish_master_SimD
 def get_dishmaster_server_class(DISH_DEVICE_NAME):
     """Build and return the Tango device class for DishMaster
 
-    Parameters
-    ----------
-    DISH_DEVICE_NAME: string
+    :param DISH_DEVICE_NAME: string
         The Tango device name
-
-    Returns
-    -------
-    DishMaster: tango.server.Device
+    :return DishMaster: tango.server.Device
         The Tango device class for dishmaster
     """
     data_descr_files = []
@@ -118,14 +102,10 @@ class TestDishLeafNode:
     def delay_successful_message_check(self, command_name, activityMessage):
         """Wait for the activity_message to contain the command name
 
-        Parameters
-        ----------
-        command_name: String
+        :param command_name: String
             The command name like `Scan`
-
-        activityMessage : String
+        :param activityMessage: String
             The dishleafnode activitymessage
-
         """
         for _ in range(5):
             time.sleep(0.5)
@@ -135,11 +115,9 @@ class TestDishLeafNode:
     def wait_for_attribute_change(self, original_value, attribute_to_check):
         """Keep checking for an attribute to change for a maximum of a few minutes
 
-        Parameters
-        ----------
-        original_value : Any
+        :param original_value: Any
             The original value that should change to something else in time
-        attribute_to_check: Any
+        :param attribute_to_check: Any
             The attribute to check
         """
         for _ in range(10):
@@ -150,11 +128,9 @@ class TestDishLeafNode:
     def wait_for_dish_mode(self, mode, dish):
         """Wait for dishmaster dishMode to get to `mode` for a few minutes at most
 
-        Parameters
-        ----------
-        mode : String
+        :param mode : String
             Like OPERATE
-        dish : DeviceProxy
+        :param dish : DeviceProxy
             dishmaster DeviceProxy
         """
         for _ in range(20):
@@ -246,9 +222,7 @@ class TestDishLeafNode:
         assert (
             "StopCapture invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
         )
-        self.wait_for_attribute_change(
-            previous_capturing, leaf_dish_context.dish_master.capturing
-        )
+        self.wait_for_attribute_change(previous_capturing, leaf_dish_context.dish_master.capturing)
         assert not leaf_dish_context.dish_master.capturing
 
     def test_SetStowMode(self, leaf_dish_context):
