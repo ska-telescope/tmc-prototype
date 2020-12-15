@@ -451,20 +451,23 @@ class DishLeafNode(SKABaseDevice):
 
             :return: None
 
+            :raises: DevFailed if error occurs while invoking this command on DishMaster.
+
             """
             device = self.target
+            command_name = "SetStowMode"
             try:
-                device._dish_proxy.command_inout_asynch("SetStowMode", device.cmd_ended_cb)
-                self.logger.info("SetStowMode request sent succesfully to DishMaster")
+                device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
+                self.logger.info("'%s' command executed successfully.", command_name)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
-                log_message = "Exception in SetStowMode command"
+                log_message = f"Exception occured while executing the '{command_name}' command."
                 device._read_activity_message = log_message
                 tango.Except.re_throw_exception(
                     dev_failed,
-                    "Exception in SetStowMode command",
+                    f"Exception in '{command_name}' command.",
                     log_message,
-                    "DishLeafNode.{}Command".format("SetStowMode"),
+                    f"DishLeafNode.{command_name}Command",
                     tango.ErrSeverity.ERR,
                 )
 
@@ -485,20 +488,23 @@ class DishLeafNode(SKABaseDevice):
 
             :return: None
 
+            :raises: DevFailed if error occurs while invoking this command on DishMaster.
+
             """
             device = self.target
+            command_name = "SetStandbyLPMode"
             try:
-                device._dish_proxy.command_inout_asynch("SetStandbyLPMode", device.cmd_ended_cb)
-                self.logger.info("SetStandbyLPMode request sent succesfully to DishMaster")
+                device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
+                self.logger.info("'%s' command executed successfully.", command_name)
             except DevFailed as dev_failed:
-                log_message = "Exception in SetStandbyLPMode command"
-                device._read_activity_message = log_message
                 self.logger.exception(dev_failed)
+                log_message = f"Exception occured while executing the '{command_name}' command."
+                device._read_activity_message = log_message
                 tango.Except.re_throw_exception(
                     dev_failed,
-                    "Exception in SetStandbyLPMode command",
+                    f"Exception in '{command_name}' command.",
                     log_message,
-                    "DishLeafNode.{}Command".format("SetStandbyLPMode"),
+                    f"DishLeafNode.{command_name}Command",
                     tango.ErrSeverity.ERR,
                 )
 
@@ -519,20 +525,23 @@ class DishLeafNode(SKABaseDevice):
 
             :return: None
 
+            :raises: DevFailed if error occurs while invoking this command on DishMaster.
+
             """
             device = self.target
+            command_name = "SetOperateMode"
             try:
-                device._dish_proxy.command_inout_asynch("SetOperateMode", device.cmd_ended_cb)
-                self.logger.info("SetOperateMode request sent succesfully to DishMaster")
+                device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
+                self.logger.info("'%s' command executed successfully.", command_name)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
-                log_message = "Exception in SetOperateMode command"
+                log_message = f"Exception occured while executing the '{command_name}' command."
                 device._read_activity_message = log_message
                 tango.Except.re_throw_exception(
                     dev_failed,
-                    "Exception in SetOperateMode command",
+                    f"Exception in '{command_name}' command.",
                     log_message,
-                    "DishLeafNode.{}Command".format("SetOperateMode"),
+                    f"DishLeafNode.{command_name}Command",
                     tango.ErrSeverity.ERR,
                 )
 
@@ -571,14 +580,21 @@ class DishLeafNode(SKABaseDevice):
 
             """
             device = self.target
+            command_name = "Scan"
             try:
-                device._dish_proxy.command_inout_asynch("Scan", device.cmd_ended_cb)
-                self.logger.info("Scan request sent succesfully to DishMaster")
+                device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
+                self.logger.info("'%s' command executed successfully.", command_name)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
-                log_message = "Exception in executing Scan command"
+                log_message = f"Exception occured while executing the '{command_name}' command."
                 device._read_activity_message = log_message
-                self._throw("Scan", log_message)
+                tango.Except.re_throw_exception(
+                    dev_failed,
+                    f"Exception in '{command_name}' command.",
+                    log_message,
+                    f"DishLeafNode.{command_name}Command",
+                    tango.ErrSeverity.ERR,
+                )
 
     def is_Scan_allowed(self):
         """
@@ -630,18 +646,19 @@ class DishLeafNode(SKABaseDevice):
 
             """
             device = self.target
+            command_name = "EndScan"
             try:
                 device._dish_proxy.command_inout_asynch("StopCapture", device.cmd_ended_cb)
-                self.logger.info("StopCapture request sent succesfully to DishMaster")
+                self.logger.info("'%s' command executed successfully.", command_name)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
-                log_message = "Exception in EndScan command"
+                log_message = f"Exception occured while executing the '{command_name}' command."
                 device._read_activity_message = log_message
                 tango.Except.re_throw_exception(
                     dev_failed,
-                    "Exception in EndScan command",
+                    f"Exception in '{command_name}' command.",
                     log_message,
-                    "DishLeafNode.{}Command".format("EndScan"),
+                    f"DishLeafNode.{command_name}Command",
                     tango.ErrSeverity.ERR,
                 )
 
@@ -724,9 +741,14 @@ class DishLeafNode(SKABaseDevice):
                 self.az, self.el = device.convert_radec_to_azel(device.radec_value, timestamp)
             except ValueError as valuerr:
                 self.logger.exception(valuerr)
-                log_message = "Exception occurred in Configure command"
+                log_message = f"Exception occured while executing the '{command_name}' command."
                 device._read_activity_message = log_message
-                self._throw(command_name, log_message)
+                tango.Except.throw_exception(
+                    str(valuerr),
+                    log_message,
+                    "DishLeafNode.{}Command".format(command_name),
+                    tango.ErrSeverity.ERR,
+                )
 
             # Set desiredPointing on Dish Master (it won't move until asked to
             # track or scan, but provide initial coordinates for interest)
@@ -734,15 +756,22 @@ class DishLeafNode(SKABaseDevice):
             device._dish_proxy.desiredPointing = time_az_el
 
             # Send configure band command to Dish Master
-            command_name = f"ConfigureBand{receiver_band}"
+            dish_command_name = f"ConfigureBand{receiver_band}"
+
             try:
-                device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
-                self.logger.info("%s request sent succesfully to DishMaster", command_name)
+                device._dish_proxy.command_inout_asynch(dish_command_name, device.cmd_ended_cb)
+                self.logger.info("'%s' command executed successfully.", command_name)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
-                log_message = "Exception occurred in Configure command"
+                log_message = f"Exception occured while executing the '{command_name}' command."
                 device._read_activity_message = log_message
-                self._throw(command_name, log_message)
+                tango.Except.re_throw_exception(
+                    dev_failed,
+                    f"Exception in '{command_name}' command.",
+                    log_message,
+                    f"DishLeafNode.{command_name}Command",
+                    tango.ErrSeverity.ERR,
+                )
 
     def is_Configure_allowed(self):
         """
@@ -797,18 +826,19 @@ class DishLeafNode(SKABaseDevice):
 
             """
             device = self.target
+            command_name = "StartCapture"
             try:
-                device._dish_proxy.command_inout_asynch("StartCapture", device.cmd_ended_cb)
-                self.logger.info("StartCapture request sent succesfully to DishMaster")
+                device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
+                self.logger.info("'%s' command executed successfully.", command_name)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
-                log_message = "Exception occurred in StartCapture command"
+                log_message = f"Exception occured while executing the '{command_name}' command."
                 device._read_activity_message = log_message
                 tango.Except.re_throw_exception(
                     dev_failed,
-                    "Exception in StartCapture command",
+                    f"Exception in '{command_name}' command.",
                     log_message,
-                    "DishLeafNode.{}Command".format("StartCapture"),
+                    f"DishLeafNode.{command_name}Command",
                     tango.ErrSeverity.ERR,
                 )
 
@@ -862,18 +892,19 @@ class DishLeafNode(SKABaseDevice):
 
             """
             device = self.target
+            command_name = "StopCapture"
             try:
-                device._dish_proxy.command_inout_asynch("StopCapture", device.cmd_ended_cb)
-                self.logger.info("StopCapture request sent succesfully to DishMaster")
+                device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
+                self.logger.info("'%s' command executed succesfully.", command_name)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
-                log_message = "Exception occurred in StopCapture command"
+                log_message = f"Exception occured while executing the '{command_name}' command."
                 device._read_activity_message = log_message
                 tango.Except.re_throw_exception(
                     dev_failed,
-                    "Exception in StopCapture command",
+                    f"Exception in '{command_name}' command.",
                     log_message,
-                    "DishLeafNode.{}Command".format("StopCapture"),
+                    f"DishLeafNode.{command_name}Command",
                     tango.ErrSeverity.ERR,
                 )
 
@@ -909,20 +940,23 @@ class DishLeafNode(SKABaseDevice):
 
             :return:None
 
+            :raises: DevFailed if error occurs while invoking this command on DishMaster.
+
             """
             device = self.target
+            command_name = "SetStandbyFPMode"
             try:
-                device._dish_proxy.command_inout_asynch("SetStandbyFPMode", device.cmd_ended_cb)
-                self.logger.info("SetStandbyFPMode request sent succesfully to DishMaster")
+                device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
+                self.logger.info("'%s' command executed successfully.", command_name)
             except DevFailed as dev_failed:
-                log_message = "Exception in SetStandbyFPMode command"
-                device._read_activity_message = log_message
                 self.logger.exception(dev_failed)
+                log_message = f"Exception occured while executing the '{command_name}' command."
+                device._read_activity_message = log_message
                 tango.Except.re_throw_exception(
                     dev_failed,
-                    "Exception in SetStandbyFPMode command",
+                    f"Exception in '{command_name}' command.",
                     log_message,
-                    "DishLeafNode.{}Command".format("SetStandbyFPMode"),
+                    f"DishLeafNode.{command_name}Command",
                     tango.ErrSeverity.ERR,
                 )
 
@@ -964,14 +998,21 @@ class DishLeafNode(SKABaseDevice):
 
             """
             device = self.target
+            command_name = "Slew"
             try:
-                device._dish_proxy.command_inout_asynch("Slew", argin, device.cmd_ended_cb)
-                self.logger.info("Slew request sent succesfully to DishMaster")
+                device._dish_proxy.command_inout_asynch(command_name, argin, device.cmd_ended_cb)
+                self.logger.info("'%s' command executed successfully.", command_name)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
-                log_message = "Exception in executing Slew command"
+                log_message = f"Exception occured while executing the '{command_name}' command."
                 device._read_activity_message = log_message
-                self._throw("Slew", log_message)
+                tango.Except.re_throw_exception(
+                    dev_failed,
+                    f"Exception in '{command_name}' command.",
+                    log_message,
+                    f"DishLeafNode.{command_name}Command",
+                    tango.ErrSeverity.ERR,
+                )
 
     def is_Slew_allowed(self):
         """
@@ -1052,16 +1093,16 @@ class DishLeafNode(SKABaseDevice):
             # Invoke Track command on Dish Master
             try:
                 device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
-                self.logger.info("%s request sent succesfully to DishMaster", command_name)
+                self.logger.info("'%s' command executed successfully.", command_name)
             except DevFailed as dev_failed:
-                self.logger.error(dev_failed)
-                log_message = "Exception occured in the execution of Track command."
-                self._read_activity_message = log_message
+                self.logger.exception(dev_failed)
+                log_message = f"Exception occured while executing the '{command_name}' command."
+                device._read_activity_message = log_message
                 tango.Except.re_throw_exception(
                     dev_failed,
-                    "Exception in {} command".format(command_name),
+                    f"Exception in '{command_name}' command.",
                     log_message,
-                    "DishLeafNode.{}Command".format(command_name),
+                    f"DishLeafNode.{command_name}Command",
                     tango.ErrSeverity.ERR,
                 )
 
@@ -1119,19 +1160,20 @@ class DishLeafNode(SKABaseDevice):
 
             """
             device = self.target
+            command_name = "StopTrack"
             device.event_track_time.set()
             try:
                 device._dish_proxy.command_inout_asynch("TrackStop", device.cmd_ended_cb)
-                self.logger.info("TrackStop request sent succesfully to DishMaster")
+                self.logger.info("'%s' command executed successfully.", command_name)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
-                log_message = "Exception occurred in StopTrack command"
+                log_message = f"Exception occured while executing the '{command_name}' command."
                 device._read_activity_message = log_message
                 tango.Except.re_throw_exception(
                     dev_failed,
-                    "Exception in StopTrack command",
+                    f"Exception in '{command_name}' command.",
                     log_message,
-                    "DishLeafNode.{}Command".format("StopTrack"),
+                    f"DishLeafNode.{command_name}Command",
                     tango.ErrSeverity.ERR,
                 )
 
@@ -1178,23 +1220,24 @@ class DishLeafNode(SKABaseDevice):
 
             :return: None
 
-            :raises: DevFailed if error ocuurs while invoking command on DishMaster.
+            :raises: DevFailed if error occurs while invoking this command on DishMaster.
 
             """
             device = self.target
+            command_name = "Abort"
             device.event_track_time.set()
             try:
                 device._dish_proxy.command_inout_asynch("TrackStop", device.cmd_ended_cb)
-                self.logger.info("TrackStop request sent succesfully to DishMaster")
+                self.logger.info("'%s' command executed successfully.", command_name)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
-                log_message = "Exception occurred in Abort command"
+                log_message = f"Exception occured while executing the '{command_name}' command."
                 device._read_activity_message = log_message
                 tango.Except.re_throw_exception(
                     dev_failed,
-                    "Exception in Abort command",
+                    f"Exception in '{command_name}' command.",
                     log_message,
-                    "DishLeafNode.{}Command".format("Abort"),
+                    f"DishLeafNode.{command_name}Command",
                     tango.ErrSeverity.ERR,
                 )
 
@@ -1241,22 +1284,23 @@ class DishLeafNode(SKABaseDevice):
 
             :return: None
 
-            raises: DevFailed if error occurs while invoking command on DishMaster
+            :raises: DevFailed if error occurs while invoking this command on DishMaster.
 
             """
             device = self.target
+            command_name = "Restart"
             try:
                 device._dish_proxy.command_inout_asynch("SetStandbyLPMode", device.cmd_ended_cb)
-                self.logger.info("SetStandbyLPMode request sent succesfully to DishMaster")
+                self.logger.info("'%s' command executed successfully.", command_name)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
-                log_message = "Exception occurred in Restart command"
+                log_message = f"Exception occured while executing the '{command_name}' command."
                 device._read_activity_message = log_message
                 tango.Except.re_throw_exception(
                     dev_failed,
-                    "Exception in Restart command",
+                    f"Exception in '{command_name}' command.",
                     log_message,
-                    "DishLeafNode.{}Command".format("Restart"),
+                    f"DishLeafNode.{command_name}Command",
                     tango.ErrSeverity.ERR,
                 )
 
@@ -1299,26 +1343,27 @@ class DishLeafNode(SKABaseDevice):
 
         def do(self):
             """
-            Command to reset the Dishleaf Node and bring it to its RESETTING state.
+            Invokes SetStandbyFPMode command on the DishMaster.
 
             :return: None
 
-            :raises: DevFailed if error occurs while invoking command on Dishleaf Node.
+            :raises: DevFailed if error occurs while invoking this command on DishMaster.
 
             """
             device = self.target
+            command_name = "ObsReset"
             try:
                 device._dish_proxy.command_inout_asynch("SetStandbyFPMode", device.cmd_ended_cb)
-                self.logger.info("SetStandbyFPMode request sent succesfully to DishMaster")
+                self.logger.info("'%s' command executed successfully.", command_name)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
-                log_message = "Exception occurred in ObsReset command"
+                log_message = f"Exception occured while executing the '{command_name}' command."
                 device._read_activity_message = log_message
                 tango.Except.re_throw_exception(
                     dev_failed,
-                    "Exception in ObsReset command",
+                    f"Exception in '{command_name}' command.",
                     log_message,
-                    "DishLeafNode.{}Command".format("ObsReset"),
+                    f"DishLeafNode.{command_name}Command",
                     tango.ErrSeverity.ERR,
                 )
 
