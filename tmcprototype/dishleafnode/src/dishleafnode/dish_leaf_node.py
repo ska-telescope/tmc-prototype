@@ -734,44 +734,52 @@ class DishLeafNode(SKABaseDevice):
             ra_value, dec_value = device._get_targets(command_name, json_argument)
             device.radec_value = f"radec,{ra_value},{dec_value}"
             receiver_band = json_argument["dish"]["receiverBand"]
-            now = datetime.datetime.utcnow()
-            timestamp = str(now)
 
-            try:
-                self.az, self.el = device.convert_radec_to_azel(device.radec_value, timestamp)
-            except ValueError as valuerr:
-                self.logger.exception(valuerr)
-                log_message = f"Exception occured while executing the '{command_name}' command."
-                device._read_activity_message = log_message
-                tango.Except.throw_exception(
-                    str(valuerr),
-                    log_message,
-                    "DishLeafNode.{}Command".format(command_name),
-                    tango.ErrSeverity.ERR,
-                )
+            self._set_desired_pointing(device.radec_value)
+            self._configure_band(receiver_band)
+            self.logger.info("'%s' command executed successfully.", command_name)
 
-            # Set desiredPointing on Dish Master (it won't move until asked to
-            # track or scan, but provide initial coordinates for interest)
-            time_az_el = [now.timestamp(), device.az, device.el]
-            device._dish_proxy.desiredPointing = time_az_el
+    def _configure_band(self, band):
+        """"Send the ConfigureBand<band-number> command to Dish Master"""
+        device = self.target
+        command_name = f"ConfigureBand{band}"
 
-            # Send configure band command to Dish Master
-            dish_command_name = f"ConfigureBand{receiver_band}"
+        try:
+            device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
+        except DevFailed as dev_failed:
+            self.logger.exception(dev_failed)
+            log_message = "Exception occured while executing the 'Configure' command."
+            device._read_activity_message = log_message
+            tango.Except.re_throw_exception(
+                dev_failed,
+                "Exception in 'Configure' command.",
+                log_message,
+                "DishLeafNode.ConfigureCommand",
+                tango.ErrSeverity.ERR,
+            )
 
-            try:
-                device._dish_proxy.command_inout_asynch(dish_command_name, device.cmd_ended_cb)
-                self.logger.info("'%s' command executed successfully.", command_name)
-            except DevFailed as dev_failed:
-                self.logger.exception(dev_failed)
-                log_message = f"Exception occured while executing the '{command_name}' command."
-                device._read_activity_message = log_message
-                tango.Except.re_throw_exception(
-                    dev_failed,
-                    f"Exception in '{command_name}' command.",
-                    log_message,
-                    f"DishLeafNode.{command_name}Command",
-                    tango.ErrSeverity.ERR,
-                )
+    def _set_desired_pointing(self, radec):
+        device = self.target
+        now = datetime.datetime.utcnow()
+        timestamp = str(now)
+
+        try:
+            device.az, device.el = device.convert_radec_to_azel(radec, timestamp)
+        except ValueError as valuerr:
+            self.logger.exception(valuerr)
+            log_message = f"Exception occured while executing the 'Configure' command."
+            device._read_activity_message = log_message
+            tango.Except.throw_exception(
+                str(valuerr),
+                log_message,
+                "DishLeafNode.ConfigureCommand",
+                tango.ErrSeverity.ERR,
+            )
+
+        # Set desiredPointing on Dish Master (it won't move until asked to
+        # track or scan, but provide initial coordinates for interest)
+        time_az_el = [now.timestamp(), device.az, device.el]
+        device._dish_proxy.desiredPointing = time_az_el
 
     def is_Configure_allowed(self):
         """
