@@ -28,7 +28,7 @@ class DeviceData:
         else:
             DeviceData.__instance = self
 
-        self._subarray1_health_state = HealthState.OK
+        self._subarray1_health_state = None
         self._subarray2_health_state = HealthState.OK
         self._subarray3_health_state = HealthState.OK
         self._sdp_master_leaf_health = HealthState.OK
@@ -42,9 +42,10 @@ class DeviceData:
         self._subarray_allocation = {}
         self.sdp_master_ln_fqdn = ""
         self.csp_master_ln_fqdn = ""
-        self.subarray1 = ""
-        self.subarray2 = ""
-        self.subarray3 = ""
+        self.dln_prefix = ""
+        self.tm_mid_subarray = ""
+        # self.subarray2 = ""
+        # self.subarray3 = ""
 
     @staticmethod
     def get_instance():
