@@ -241,10 +241,18 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
 
         for leafId in range(0, len(argin)):
             try:
+
                 str_leafId = argin[leafId]
+
+                #TODO: Need to access DishLeafNodePrefix from DeviceData
                 device_data._dish_leaf_node_group.add(device_data.DishLeafNodePrefix + str_leafId)
                 devProxy = device_data.get_deviceproxy(device_data.DishLeafNodePrefix + str_leafId)
                 device_data._dish_leaf_node_proxy.append(devProxy)
+                # dish_devices = ["ska_mid/tm_leaf_node/d0001", "ska_mid/tm_leaf_node/d0002"]
+                dish_group_client = TangoGroupClient(device_data.DishLeafNodePrefix)
+                dish_group_client.add_device(device_data._dish_leaf_node_proxy)
+                dish_group_client.send_command(const.CMD_CONFIGURE, cmd_data)
+
                 # Update the list allocation_success with the dishes allocated successfully to subarray
                 allocation_success.append(str_leafId)
                 # Subscribe Dish Health State
