@@ -37,6 +37,8 @@ class DeviceData:
         self.sdp_subarray_ln_fqdn = ""
         self.csp_subarray_ln_fqdn = ""
         self._receive_addresses_map = ""
+        self._cspSdpLnHealthEventID = ""
+        self._cspSdpLnObsStateEventID = ""
 
         # TODO: For future use
         self.receptor_id_list = []
