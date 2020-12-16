@@ -91,29 +91,3 @@ class StandbyCommand(BaseCommand):
             tango.Except.re_throw_exception(dev_failed, const.STR_STANDBY_EXEC, log_msg,
                                             "CspMasterLeafNode.StandbyCommand",
                                             tango.ErrSeverity.ERR)
-
-def is_Standby_allowed(self):
-    """
-    Checks whether this command is allowed to be run in current device state
-
-    :return: True if this command is allowed to be run in current device state
-
-    :rtype: boolean
-
-    :raises: DevFailed if this command is not allowed to be run in current device state
-
-    """
-    handler = self.get_command_object("Standby")
-    return handler.check_allowed()
-
-@command(
-    dtype_in=('str',),
-    doc_in="If the array length is 0, the command applies to the whole\nCSP Element.\nIf the array "
-            "length is > 1, each array element specifies the FQDN of the\nCSP SubElement to put in "
-            "STANDBY mode.",
-)
-@DebugIt()
-def Standby(self, argin):
-    """ Sets Standby Mode on the CSP Element. """
-    handler = self.get_command_object("Standby")
-    handler(argin)
