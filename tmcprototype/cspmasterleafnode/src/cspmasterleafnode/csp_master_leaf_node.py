@@ -22,10 +22,10 @@ from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode, BaseCommand
 from ska.base.control_model import HealthState, SimulationMode, TestMode
-from . import const, release
+from . import const, release, On, Off, StandBy
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
 
-__all__ = ["CspMasterLeafNode", "main"]
+__all__ = ["CspMasterLeafNode", "main", "On", "Off", "StandBy"]
 
 
 class CspMasterLeafNode(SKABaseDevice):
@@ -251,247 +251,249 @@ class CspMasterLeafNode(SKABaseDevice):
     # Commands
     # --------
 
-    class OnCommand(SKABaseDevice.OnCommand):
-        """
-        A class for CspMasterLeafNode's On() command.
-        """
+    # class OnCommand(SKABaseDevice.OnCommand):
+    #     """
+    #     A class for CspMasterLeafNode's On() command.
+    #     """
 
-        def on_cmd_ended_cb(self, event):
-            """
-            Callback function immediately executed when the asynchronous invoked
-            command returns. Checks whether the On command has been successfully invoked on CSPMaster.
+    #     def on_cmd_ended_cb(self, event):
+    #         """
+    #         Callback function immediately executed when the asynchronous invoked
+    #         command returns. Checks whether the On command has been successfully invoked on CSPMaster.
 
-            :param event: a CmdDoneEvent object. This class is used to pass data
-                to the callback method in asynchronous callback model for command
-                execution.
-            :type: CmdDoneEvent object
-                It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
-                    - cmd_name   : (str) The command name
-                    - argout_raw : (DeviceData) The command argout
-                    - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command failed. False otherwise
-                    - errors     : (sequence<DevError>) The error stack
-                    - ext
-            :return: none
+    #         :param event: a CmdDoneEvent object. This class is used to pass data
+    #             to the callback method in asynchronous callback model for command
+    #             execution.
+    #         :type: CmdDoneEvent object
+    #             It has the following members:
+    #                 - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
+    #                 - cmd_name   : (str) The command name
+    #                 - argout_raw : (DeviceData) The command argout
+    #                 - argout     : The command argout
+    #                 - err        : (bool) A boolean flag set to true if the command failed. False otherwise
+    #                 - errors     : (sequence<DevError>) The error stack
+    #                 - ext
+    #         :return: none
 
-            """
-            device = self.target
-            # Update logs and activity message attribute with received event
-            if event.err:
-                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-                self.logger.error(log_msg)
-                device._read_activity_message = log_msg
-            else:
-                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-                self.logger.info(log_msg)
-                device._read_activity_message = log_msg
+    #         """
+    #         device = self.target
+    #         # Update logs and activity message attribute with received event
+    #         if event.err:
+    #             log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+    #             self.logger.error(log_msg)
+    #             device._read_activity_message = log_msg
+    #         else:
+    #             log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+    #             self.logger.info(log_msg)
+    #             device._read_activity_message = log_msg
 
-        def do(self):
-            """
-            Invokes On command on the CSP Element.
+    #     def do(self):
+    #         """
+    #         Invokes On command on the CSP Element.
 
-            :param argin: None
+    #         :param argin: None
 
-            :return: A tuple containing a return code and a string message indicating status.
-             The message is for information purpose only.
+    #         :return: A tuple containing a return code and a string message indicating status.
+    #          The message is for information purpose only.
 
-            :rtype: (ResultCode, str)
+    #         :rtype: (ResultCode, str)
 
-            :raises: DevFailed on communication failure with CspMaster or CspMaster is in error state.
+    #         :raises: DevFailed on communication failure with CspMaster or CspMaster is in error state.
 
-            """
-            device = self.target
-            try:
-                # Pass argin to csp master .
-                # If the array length is 0, the command applies to the whole CSP Element.
-                # If the array length is > 1 each array element specifies the FQDN of the CSP SubElement to switch ON.
-                device._csp_proxy.command_inout_asynch(const.CMD_ON, [], self.on_cmd_ended_cb)
-                self.logger.debug(const.STR_ON_CMD_ISSUED)
-                return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
+    #         """
+    #         device = self.target
+    #         try:
+    #             # Pass argin to csp master .
+    #             # If the array length is 0, the command applies to the whole CSP Element.
+    #             # If the array length is > 1 each array element specifies the FQDN of the CSP SubElement to switch ON.
+    #             device._csp_proxy.command_inout_asynch(const.CMD_ON, [], self.on_cmd_ended_cb)
+    #             self.logger.debug(const.STR_ON_CMD_ISSUED)
+    #             return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
 
-            except DevFailed as dev_failed:
-                log_msg = const.ERR_EXE_ON_CMD + str(dev_failed)
-                self.logger.exception(dev_failed)
-                device._read_activity_message = const.ERR_EXE_ON_CMD
-                tango.Except.re_throw_exception(dev_failed, const.STR_ON_EXEC, log_msg,
-                                             "CspMasterLeafNode.OnCommand",
-                                             tango.ErrSeverity.ERR)
+    #         except DevFailed as dev_failed:
+    #             log_msg = const.ERR_EXE_ON_CMD + str(dev_failed)
+    #             self.logger.exception(dev_failed)
+    #             device._read_activity_message = const.ERR_EXE_ON_CMD
+    #             tango.Except.re_throw_exception(dev_failed, const.STR_ON_EXEC, log_msg,
+    #                                          "CspMasterLeafNode.OnCommand",
+    #                                          tango.ErrSeverity.ERR)
 
-    class OffCommand(SKABaseDevice.OffCommand):
-        """
-        A class for CspMasterLeafNode's Off() command.
-        """
+    # class OffCommand(SKABaseDevice.OffCommand):
+    #     """
+    #     A class for CspMasterLeafNode's Off() command.
+    #     """
 
-        def off_cmd_ended_cb(self, event):
-            """
-            Callback function immediately executed when the asynchronous invoked
-            command returns. Checks whether the Off command has been successfully invoked on CSPMaster.
+    #     def off_cmd_ended_cb(self, event):
+    #         """
+    #         Callback function immediately executed when the asynchronous invoked
+    #         command returns. Checks whether the Off command has been successfully invoked on CSPMaster.
 
-            :param event: a CmdDoneEvent object. This class is used to pass data
-                to the callback method in asynchronous callback model for command
-                execution.
-            :type: CmdDoneEvent object
-                It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
-                    - cmd_name   : (str) The command name
-                    - argout_raw : (DeviceData) The command argout
-                    - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command failed. False otherwise
-                    - errors     : (sequence<DevError>) The error stack
-                    - ext
-            :return: none
+    #         :param event: a CmdDoneEvent object. This class is used to pass data
+    #             to the callback method in asynchronous callback model for command
+    #             execution.
+    #         :type: CmdDoneEvent object
+    #             It has the following members:
+    #                 - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
+    #                 - cmd_name   : (str) The command name
+    #                 - argout_raw : (DeviceData) The command argout
+    #                 - argout     : The command argout
+    #                 - err        : (bool) A boolean flag set to true if the command failed. False otherwise
+    #                 - errors     : (sequence<DevError>) The error stack
+    #                 - ext
+    #         :return: none
 
-            """
-            device = self.target
-            # Update logs and activity message attribute with received event
-            if event.err:
-                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-                self.logger.error(log_msg)
-                device._read_activity_message = log_msg
-            else:
-                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-                self.logger.info(log_msg)
-                device._read_activity_message = log_msg
+    #         """
+    #         device = self.target
+    #         # Update logs and activity message attribute with received event
+    #         if event.err:
+    #             log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+    #             self.logger.error(log_msg)
+    #             device._read_activity_message = log_msg
+    #         else:
+    #             log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+    #             self.logger.info(log_msg)
+    #             device._read_activity_message = log_msg
 
-        def do(self):
-            """
-            Invokes Off command on the CSP Element.
+    #     def do(self):
+    #         """
+    #         Invokes Off command on the CSP Element.
 
-            :param argin: None.
+    #         :param argin: None.
 
-            :return: A tuple containing a return code and a string message indicating status.
-             The message is for information purpose only.
+    #         :return: A tuple containing a return code and a string message indicating status.
+    #          The message is for information purpose only.
 
-            :rtype: (ResultCode, str)
+    #         :rtype: (ResultCode, str)
 
-            """
-            device = self.target
-            # pass argin to csp master.
-            # If the array length is 0, the command applies to the whole CSP Element.
-            # If the array length is >, each array element specifies the FQDN of the CSP SubElement to switch OFF.
-            # argin = []
-            # device._csp_proxy.command_inout_asynch(const.CMD_OFF, argin, device.cmd_ended_cb)
-            self.logger.debug(const.STR_OFF_CMD_ISSUED)
-            device._read_activity_message = const.STR_OFF_CMD_ISSUED
-            return (ResultCode.OK, const.STR_OFF_CMD_ISSUED)
-
-
-    class StandbyCommand(BaseCommand):
-        """
-        A class for CspMasterLeafNode's Standby() command.
-        """
-
-        def check_allowed(self):
-            """
-            Checks whether this command is allowed to be run in current device state.
-
-            :return: True if this command is allowed to be run in current device state.
-
-            :rtype: boolean
-
-            :raises: DevFailed if this command is not allowed to be run in current device state.
-
-            """
-            if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
-                tango.Except.throw_exception("Command Standby is not allowed in current state.",
-                                             "Failed to invoke Standby command on CspMasterLeafNode.",
-                                             "CspMasterLeafNode.Standby()",
-                                             tango.ErrSeverity.ERR)
-
-            return True
-
-        def standby_cmd_ended_cb(self, event):
-            """
-            Callback function immediately executed when the asynchronous invoked
-            command returns. Checks whether the StandBy command has been successfully invoked on CSPMaster.
-
-            :param event: a CmdDoneEvent object. This class is used to pass data
-                to the callback method in asynchronous callback model for command
-                execution.
-            :type: CmdDoneEvent object
-                It has the following members:
-                    - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
-                    - cmd_name   : (str) The command name
-                    - argout_raw : (DeviceData) The command argout
-                    - argout     : The command argout
-                    - err        : (bool) A boolean flag set to true if the command failed. False otherwise
-                    - errors     : (sequence<DevError>) The error stack
-                    - ext
-            :return: none
-
-            """
-            device = self.target
-            # Update logs and activity message attribute with received event
-            if event.err:
-                log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-                self.logger.error(log_msg)
-                device._read_activity_message = log_msg
-            else:
-                log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
-                self.logger.info(log_msg)
-                device._read_activity_message = log_msg
-
-        def do(self, argin):
-            """
-            It invokes the STANDBY command on CSP Master.
-
-            :param argin: DevStringArray.
-
-            If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1
-            , each array element specifies the FQDN of the CSP SubElement to put in STANDBY mode.
+    #         """
+    #         device = self.target
+    #         # pass argin to csp master.
+    #         # If the array length is 0, the command applies to the whole CSP Element.
+    #         # If the array length is >, each array element specifies the FQDN of the CSP SubElement to switch OFF.
+    #         # argin = []
+    #         # device._csp_proxy.command_inout_asynch(const.CMD_OFF, argin, device.cmd_ended_cb)
+    #         self.logger.debug(const.STR_OFF_CMD_ISSUED)
+    #         device._read_activity_message = const.STR_OFF_CMD_ISSUED
+    #         return (ResultCode.OK, const.STR_OFF_CMD_ISSUED)
 
 
-            :return: None
+    # class StandbyCommand(BaseCommand):
+    #     """
+    #     A class for CspMasterLeafNode's Standby() command.
+    #     """
 
-            :raises: DevFailed on communication failure with CspMaster or CspMaster is in error state.
+    #     def check_allowed(self):
+    #         """
+    #         Checks whether this command is allowed to be run in current device state.
 
-            """
-            try:
-                device = self.target
-                device._csp_proxy.command_inout_asynch(const.CMD_STANDBY, argin, self.standby_cmd_ended_cb)
-                self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
+    #         :return: True if this command is allowed to be run in current device state.
 
-            except DevFailed as dev_failed:
-                log_msg = const.ERR_EXE_STANDBY_CMD + str(dev_failed)
-                self.logger.exception(dev_failed)
-                device._read_activity_message = const.ERR_EXE_STANDBY_CMD
-                tango.Except.re_throw_exception(dev_failed, const.STR_STANDBY_EXEC, log_msg,
-                                             "CspMasterLeafNode.StandbyCommand",
-                                             tango.ErrSeverity.ERR)
+    #         :rtype: boolean
 
-    def is_Standby_allowed(self):
-        """
-        Checks whether this command is allowed to be run in current device state
+    #         :raises: DevFailed if this command is not allowed to be run in current device state.
 
-        :return: True if this command is allowed to be run in current device state
+    #         """
+    #         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
+    #             tango.Except.throw_exception("Command Standby is not allowed in current state.",
+    #                                          "Failed to invoke Standby command on CspMasterLeafNode.",
+    #                                          "CspMasterLeafNode.Standby()",
+    #                                          tango.ErrSeverity.ERR)
 
-        :rtype: boolean
+    #         return True
 
-        :raises: DevFailed if this command is not allowed to be run in current device state
+    #     def standby_cmd_ended_cb(self, event):
+    #         """
+    #         Callback function immediately executed when the asynchronous invoked
+    #         command returns. Checks whether the StandBy command has been successfully invoked on CSPMaster.
 
-        """
-        handler = self.get_command_object("Standby")
-        return handler.check_allowed()
+    #         :param event: a CmdDoneEvent object. This class is used to pass data
+    #             to the callback method in asynchronous callback model for command
+    #             execution.
+    #         :type: CmdDoneEvent object
+    #             It has the following members:
+    #                 - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
+    #                 - cmd_name   : (str) The command name
+    #                 - argout_raw : (DeviceData) The command argout
+    #                 - argout     : The command argout
+    #                 - err        : (bool) A boolean flag set to true if the command failed. False otherwise
+    #                 - errors     : (sequence<DevError>) The error stack
+    #                 - ext
+    #         :return: none
 
-    @command(
-        dtype_in=('str',),
-        doc_in="If the array length is 0, the command applies to the whole\nCSP Element.\nIf the array "
-               "length is > 1, each array element specifies the FQDN of the\nCSP SubElement to put in "
-               "STANDBY mode.",
-    )
-    @DebugIt()
-    def Standby(self, argin):
-        """ Sets Standby Mode on the CSP Element. """
-        handler = self.get_command_object("Standby")
-        handler(argin)
+    #         """
+    #         device = self.target
+    #         # Update logs and activity message attribute with received event
+    #         if event.err:
+    #             log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+    #             self.logger.error(log_msg)
+    #             device._read_activity_message = log_msg
+    #         else:
+    #             log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+    #             self.logger.info(log_msg)
+    #             device._read_activity_message = log_msg
+
+    #     def do(self, argin):
+    #         """
+    #         It invokes the STANDBY command on CSP Master.
+
+    #         :param argin: DevStringArray.
+
+    #         If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1
+    #         , each array element specifies the FQDN of the CSP SubElement to put in STANDBY mode.
+
+
+    #         :return: None
+
+    #         :raises: DevFailed on communication failure with CspMaster or CspMaster is in error state.
+
+    #         """
+    #         try:
+    #             device = self.target
+    #             device._csp_proxy.command_inout_asynch(const.CMD_STANDBY, argin, self.standby_cmd_ended_cb)
+    #             self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
+
+    #         except DevFailed as dev_failed:
+    #             log_msg = const.ERR_EXE_STANDBY_CMD + str(dev_failed)
+    #             self.logger.exception(dev_failed)
+    #             device._read_activity_message = const.ERR_EXE_STANDBY_CMD
+    #             tango.Except.re_throw_exception(dev_failed, const.STR_STANDBY_EXEC, log_msg,
+    #                                          "CspMasterLeafNode.StandbyCommand",
+    #                                          tango.ErrSeverity.ERR)
+
+    # def is_Standby_allowed(self):
+    #     """
+    #     Checks whether this command is allowed to be run in current device state
+
+    #     :return: True if this command is allowed to be run in current device state
+
+    #     :rtype: boolean
+
+    #     :raises: DevFailed if this command is not allowed to be run in current device state
+
+    #     """
+    #     handler = self.get_command_object("Standby")
+    #     return handler.check_allowed()
+
+    # @command(
+    #     dtype_in=('str',),
+    #     doc_in="If the array length is 0, the command applies to the whole\nCSP Element.\nIf the array "
+    #            "length is > 1, each array element specifies the FQDN of the\nCSP SubElement to put in "
+    #            "STANDBY mode.",
+    # )
+    # @DebugIt()
+    # def Standby(self, argin):
+    #     """ Sets Standby Mode on the CSP Element. """
+    #     handler = self.get_command_object("Standby")
+    #     handler(argin)
 
     def init_command_objects(self):
         """
         Initialises the command handlers for commands supported by this device.
         """
         super().init_command_objects()
-        self.register_command_object("Standby", self.StandbyCommand(self, self.state_model, self.logger))
+        self.register_command_object("Off", Off.OffCommand(self, self.state_model, self.logger))
+        self.register_command_object("On", On.OnCommand(self, self.state_model, self.logger))
+        self.register_command_object("Standby", StandBy.StandbyCommand(self, self.state_model, self.logger))
 
 
 # ----------
