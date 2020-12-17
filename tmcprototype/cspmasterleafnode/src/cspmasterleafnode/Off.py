@@ -7,7 +7,7 @@ from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode, BaseCommand
 from ska.base.control_model import HealthState, SimulationMode, TestMode
-from . import const, release
+from . import const, release, tango_client, device_data
 
 
 class OffCommand(SKABaseDevice.OffCommand):
@@ -64,6 +64,7 @@ class OffCommand(SKABaseDevice.OffCommand):
         # If the array length is >, each array element specifies the FQDN of the CSP SubElement to switch OFF.
         # argin = []
         # device._csp_proxy.command_inout_asynch(const.CMD_OFF, argin, device.cmd_ended_cb)
+        # tango_client.send_command(const.CMD_OFF, self.off_cmd_ended_cb)
         self.logger.debug(const.STR_OFF_CMD_ISSUED)
         device._read_activity_message = const.STR_OFF_CMD_ISSUED
         return (ResultCode.OK, const.STR_OFF_CMD_ISSUED)
