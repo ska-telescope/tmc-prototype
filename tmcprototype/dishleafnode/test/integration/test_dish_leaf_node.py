@@ -103,19 +103,6 @@ def dish_master_dp(tango_context):
 
 
 class TestDishLeafNode:
-    def delay_successful_message_check(self, command_name, activityMessage):
-        """Wait for the activity_message to contain the command name
-
-        :param command_name: String
-            The command name like `Scan`
-        :param activityMessage: String
-            The dishleafnode activitymessage
-        """
-        for _ in range(5):
-            time.sleep(0.5)
-            if command_name in activityMessage:
-                return
-
     def wait_for_attribute_change(self, original_value, attribute_to_check):
         """Keep checking for an attribute to change for a maximum of a few minutes
 
@@ -160,9 +147,7 @@ class TestDishLeafNode:
         self.wait_for_dish_mode("STANDBY-FP", dish_master_dp)
         input_string = '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiverBand":"1"}}'
         dish_leaf_node_dp.Configure(input_string)
-        self.wait_for_attribute_change(
-            previous_configuredBand, dish_master_dp.configuredBand
-        )
+        self.wait_for_attribute_change(previous_configuredBand, dish_master_dp.configuredBand)
         assert dish_master_dp.desiredPointing[0] != previous_timestamp
         assert dish_master_dp.configuredBand != previous_configuredBand
         assert dish_master_dp.dsIndexerPosition != previous_configuredBand
@@ -232,9 +217,7 @@ class TestDishLeafNode:
         dish_leaf_node_dp.SetOperateMode()
         self.wait_for_dish_mode("OPERATE", dish_master_dp)
         mock_cb = mock.MagicMock()
-        eid = dish_master_dp.subscribe_event(
-            const.EVT_DISH_MODE, EventType.CHANGE_EVENT, mock_cb
-        )
+        eid = dish_master_dp.subscribe_event(const.EVT_DISH_MODE, EventType.CHANGE_EVENT, mock_cb)
         assert dish_master_dp.dishMode.name == "OPERATE"
         mock_cb.assert_called()
         dish_master_dp.unsubscribe_event(eid)
