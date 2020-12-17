@@ -11,13 +11,13 @@ import time
 import pytest
 
 from tango import EventType
-from dishleafnode import DishLeafNode, const
+from dishleafnode import DishLeafNode
+from dishleafnode.utils import PointingState
 from tango_simlib.tango_sim_generator import (
     configure_device_model,
     get_tango_device_server,
 )
 
-from .utils import PointingState
 
 DISH_DEVICE_NAME = "mid_d0001/nodb/master"
 LEAF_NODE_DEVICE_NAME = "test/tm_leaf_node/d0001"
@@ -223,7 +223,7 @@ class TestDishLeafNode:
         dish_leaf_node_dp.SetOperateMode()
         self.wait_until_dish_mode_equals("OPERATE", dish_master_dp)
         mock_cb = mock.MagicMock()
-        eid = dish_master_dp.subscribe_event(const.EVT_DISH_MODE, EventType.CHANGE_EVENT, mock_cb)
+        eid = dish_master_dp.subscribe_event("dishMode", EventType.CHANGE_EVENT, mock_cb)
         assert dish_master_dp.dishMode.name == "OPERATE"
         mock_cb.assert_called()
         dish_master_dp.unsubscribe_event(eid)
