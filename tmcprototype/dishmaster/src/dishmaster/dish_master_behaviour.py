@@ -472,20 +472,7 @@ class OverrideDish(object):
         :param data_input: None
         :raises DevFailed: dishMode is not in any of the allowed modes (OPERATE).
         """
-        dish_mode = model.sim_quantities["dishMode"]
-        dish_mode = get_enum_str(dish_mode)
-        _allowed_mode = "OPERATE"
-
-        if dish_mode != _allowed_mode:
-            Except.throw_exception(
-                "DISH Command Failed",
-                "DISH is not in {} mode.".format(_allowed_mode),
-                "TrackStop",
-                ErrSeverity.WARN,
-            )
-
-        pointing_state = model.sim_quantities["pointingState"]
-        set_enum(pointing_state, "READY", model.time_func())
+        self._change_pointing_state(model, "READY", ("OPERATE",))
 
     def action_resettracktable(
         self, model, tango_dev=None, data_input=None
