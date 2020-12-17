@@ -13,8 +13,6 @@ from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from subarraynode.tango_group_client import TangoGroupClient
 from subarraynode.tango_client import TangoClient
-from subarraynode.subarray_model import SubarrayModel
-
 
 class EndCommand(SKASubarray.EndCommand):
     """
