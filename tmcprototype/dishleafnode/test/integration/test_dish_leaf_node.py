@@ -178,7 +178,6 @@ class TestDishLeafNode:
         leaf_dish_context.dish_leaf_node.Scan("0")
         leaf_dish_context.dish_leaf_node.EndScan("0")
         assert not leaf_dish_context.dish_master.capturing
-        assert leaf_dish_context.dish_master.pointingState.name == "READY"
 
     def test_StartCapture(self, leaf_dish_context):
         leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
