@@ -299,12 +299,6 @@ class CentralNode(SKABaseDevice):
                 # Initialise Attributes
                 device._health_state = HealthState.OK
                 device._telescope_health_state = HealthState.OK
-                device.subarray_health_state_map = {}
-                device._dish_leaf_node_devices = []
-                device._leaf_device_proxy = []
-                device.subarray_FQDN_dict = {}
-                device._subarray_allocation = {}
-                device._read_activity_message = ""
                 device._build_state = '{},{},{}'.format(release.name,release.version,release.description)
                 device._version_id = release.version
                 device_data = DeviceData.get_instance()
@@ -312,6 +306,7 @@ class CentralNode(SKABaseDevice):
                 device_data.csp_master_ln_fqdn = device.CspMasterLeafNodeFQDN
                 device_data.sdp_master_ln_fqdn = device.SdpMasterLeafNodeFQDN
                 device_data.tm_mid_subarray = device.TMMidSubarrayNodes
+                device_data.num_dishes = device.NumDishes
 
 
                 self.logger.debug(const.STR_INIT_SUCCESS)

@@ -29,11 +29,11 @@ class DeviceData:
             DeviceData.__instance = self
 
         self._subarray1_health_state = None
-        self._subarray2_health_state = HealthState.OK
-        self._subarray3_health_state = HealthState.OK
-        self._sdp_master_leaf_health = HealthState.OK
-        self._csp_master_leaf_health = HealthState.OK
-        self._telescope_health_state = HealthState.OK
+        self._subarray2_health_state = None
+        self._subarray3_health_state = None
+        self._sdp_master_leaf_health = None
+        self._csp_master_leaf_health = None
+        self._telescope_health_state = None
         self.receptorIDList = []
         self.subarray_health_state_map = {}
         self._dish_leaf_node_devices = []
@@ -44,6 +44,9 @@ class DeviceData:
         self.csp_master_ln_fqdn = ""
         self.dln_prefix = ""
         self.tm_mid_subarray = ""
+        self._read_activity_message = ""
+        self.num_dishes = ""
+
         # self.subarray2 = ""
         # self.subarray3 = ""
 
