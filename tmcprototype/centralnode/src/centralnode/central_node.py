@@ -1221,6 +1221,7 @@ class CentralNode(SKABaseDevice):
         """
         Initialises the command handlers for commands supported by this device.
         """
+        obj = HealthState_agreegator()
         super().init_command_objects()
         args = (self, self.state_model, self.logger)
         self.register_command_object("StowAntennas", self.StowAntennasCommand(*args))
