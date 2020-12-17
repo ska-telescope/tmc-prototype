@@ -140,9 +140,6 @@ class TestDishLeafNode:
         assert 0, f"dishmaster did not go to mode {mode}, currently {str(dish.dishMode)}"
 
     def test_SetStandByLPMode(self, leaf_dish_context):
-        assert leaf_dish_context.dish_leaf_node.activityMessage == (
-            const.STR_SETSTANDBYLP_SUCCESS
-        ) or (const.STR_DISH_STANDBYLP_MODE)
         assert leaf_dish_context.dish_master.dishmode.name == "STANDBY-LP"
 
     def test_SetOperateMode(self, leaf_dish_context):
@@ -150,9 +147,6 @@ class TestDishLeafNode:
         self.wait_for_dish_mode("STANDBY-FP", leaf_dish_context.dish_master)
         leaf_dish_context.dish_leaf_node.SetOperateMode()
         self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
-        assert leaf_dish_context.dish_leaf_node.activityMessage == (
-            const.STR_SETOPERATE_SUCCESS
-        ) or (const.STR_DISH_OPERATE_MODE)
         assert leaf_dish_context.dish_master.dishmode.name == "OPERATE"
 
     def test_Configure(self, leaf_dish_context):
@@ -175,10 +169,6 @@ class TestDishLeafNode:
         leaf_dish_context.dish_leaf_node.SetOperateMode()
         self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
         leaf_dish_context.dish_leaf_node.Scan("0")
-        self.delay_successful_message_check(
-            "Scan", leaf_dish_context.dish_leaf_node.activityMessage
-        )
-        assert "Scan invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
         assert leaf_dish_context.dish_master.pointingState.name == "SCAN"
 
     def test_EndScan(self, leaf_dish_context):
@@ -187,12 +177,8 @@ class TestDishLeafNode:
         self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
         leaf_dish_context.dish_leaf_node.Scan("0")
         leaf_dish_context.dish_leaf_node.EndScan("0")
-        self.delay_successful_message_check(
-            "StopCapture", leaf_dish_context.dish_leaf_node.activityMessage
-        )
-        assert (
-            "StopCapture invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
-        )
+        assert not leaf_dish_context.dish_master.capturing
+        assert leaf_dish_context.dish_master.pointingState.name == "READY"
 
     def test_StartCapture(self, leaf_dish_context):
         leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
@@ -200,12 +186,6 @@ class TestDishLeafNode:
         leaf_dish_context.dish_leaf_node.SetOperateMode()
         self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
         leaf_dish_context.dish_leaf_node.StartCapture("0")
-        self.delay_successful_message_check(
-            "StartCapture", leaf_dish_context.dish_leaf_node.activityMessage
-        )
-        assert (
-            "StartCapture invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
-        )
         assert leaf_dish_context.dish_master.capturing
 
     def test_StopCapture(self, leaf_dish_context):
@@ -214,25 +194,13 @@ class TestDishLeafNode:
         leaf_dish_context.dish_leaf_node.SetOperateMode()
         self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
         leaf_dish_context.dish_leaf_node.StartCapture("0")
-        previous_capturing = leaf_dish_context.dish_master.rxCapturingData
+        previous_capturing = leaf_dish_context.dish_master.capturing
         leaf_dish_context.dish_leaf_node.StopCapture("0")
-        self.delay_successful_message_check(
-            "StopCapture", leaf_dish_context.dish_leaf_node.activityMessage
-        )
-        assert (
-            "StopCapture invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
-        )
         self.wait_for_attribute_change(previous_capturing, leaf_dish_context.dish_master.capturing)
         assert not leaf_dish_context.dish_master.capturing
 
     def test_SetStowMode(self, leaf_dish_context):
         leaf_dish_context.dish_leaf_node.SetStowMode()
-        self.delay_successful_message_check(
-            "SetStowMode", leaf_dish_context.dish_leaf_node.activityMessage
-        )
-        assert (
-            "SetStowMode invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
-        )
         assert leaf_dish_context.dish_master.dishmode.name == "STOW"
 
     def test_Slew(self, leaf_dish_context):
@@ -241,10 +209,6 @@ class TestDishLeafNode:
         leaf_dish_context.dish_leaf_node.SetOperateMode()
         self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
         leaf_dish_context.dish_leaf_node.Slew([10.0, 20.0])
-        self.delay_successful_message_check(
-            "Slew", leaf_dish_context.dish_leaf_node.activityMessage
-        )
-        assert "Slew invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
         assert leaf_dish_context.dish_master.pointingState.name == "SLEW"
 
     def test_Track(self, leaf_dish_context):
@@ -254,17 +218,9 @@ class TestDishLeafNode:
 
         input_string = '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiverBand":"1"}}'
         leaf_dish_context.dish_leaf_node.Track(input_string)
-        self.delay_successful_message_check(
-            "Track", leaf_dish_context.dish_leaf_node.activityMessage
-        )
-        assert "Track invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
         assert leaf_dish_context.dish_master.pointingState.name == "TRACK"
 
         leaf_dish_context.dish_leaf_node.StopTrack()
-        self.delay_successful_message_check(
-            "StopTrack", leaf_dish_context.dish_leaf_node.activityMessage
-        )
-        assert "TrackStop invoked successfully" in leaf_dish_context.dish_leaf_node.activityMessage
         assert leaf_dish_context.dish_master.pointingState.name == "READY"
 
     def test_dishMode_change_event(self, leaf_dish_context):
@@ -275,10 +231,6 @@ class TestDishLeafNode:
         mock_cb = mock.MagicMock()
         eid = leaf_dish_context.dish_master.subscribe_event(
             const.EVT_DISH_MODE, EventType.CHANGE_EVENT, mock_cb
-        )
-        assert (
-            "SetOperateMode invoked successfully"
-            in leaf_dish_context.dish_leaf_node.activityMessage
         )
         assert leaf_dish_context.dish_master.dishMode.name == "OPERATE"
         mock_cb.assert_called()
