@@ -553,6 +553,7 @@ class SubarrayNode(SKASubarray):
             device.this_device_data = SubarrayModel.get_instance()
             device.this_device_data.sdp_subarray_ln_fqdn = device.SdpSubarrayLNFQDN
             device.this_device_data.csp_subarray_ln_fqdn = device.CspSubarrayLNFQDN
+
             
             # device.configuration_model = configure_command.configuration_model()
             return (ResultCode.OK, device._read_activity_message)
