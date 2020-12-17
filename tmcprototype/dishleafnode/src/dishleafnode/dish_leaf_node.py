@@ -148,6 +148,7 @@ class DishLeafNode(SKABaseDevice):
                 desired_target, timestamp=timestamp, antenna=dish_antenna
             )
         except ValueError as value_err:
+            self.logger.error("Error creating instances of katpoint Target/Timestamp from target: '%s' and timestamp: '%s'.", target, timestamp)
             raise value_err
 
         sidereal_time = dish_antenna.local_sidereal_time(timestamp=timestamp)
@@ -188,14 +189,15 @@ class DishLeafNode(SKABaseDevice):
             if self.az < 0:
                 self.az = 360 - abs(self.az)
 
-            # TODO (kmadisa 11-12-2020) Add a pointing lead time to the current time (like we do on MeerKAT)
-            desired_pointing = [now.timestamp(), round(self.az, 12), round(self.el, 12)]
-            self.logger.debug("desiredPointing coordinates: %s", desired_pointing)
-            self._dish_proxy.desiredPointing = desired_pointing
             if self.event_track_time.is_set():
                 log_message = f"Break loop: {self.event_track_time.is_set()}"
                 self.logger.debug(log_message)
                 break
+
+            # TODO (kmadisa 11-12-2020) Add a pointing lead time to the current time (like we do on MeerKAT)
+            desired_pointing = [now.timestamp(), round(self.az, 12), round(self.el, 12)]
+            self.logger.debug("desiredPointing coordinates: %s", desired_pointing)
+            self._dish_proxy.desiredPointing = desired_pointing
 
             time.sleep(0.05)
 

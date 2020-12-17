@@ -43,7 +43,7 @@ setup(
     author_email="cam+karoo@ska.ac.za",
     license="BSD-3-Clause",
     long_description=long_description,
-    url="www.tango-controls.org",
+    url="https://www.skatelescope.org",
     platforms="All Platforms",
     install_requires=["pytango>=9.3.2", "mock", "ska-logging>=0.3.0", "tango-simlib>=0.9.0"],
     setup_requires=[

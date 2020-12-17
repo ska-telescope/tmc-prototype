@@ -173,8 +173,6 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle(mock_dis
     tango_context.device.Configure(json.dumps(dish_config))
 
     json_argument = dish_config
-    # ra_value = (json_argument["pointing"]["target"]["RA"])
-    # dec_value = (json_argument["pointing"]["target"]["dec"])
     receiver_band = int(json_argument["dish"]["receiverBand"])
 
     arg_list = {
