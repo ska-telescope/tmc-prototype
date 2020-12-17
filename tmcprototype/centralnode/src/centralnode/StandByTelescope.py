@@ -20,7 +20,7 @@ from . import const, release
 # from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
 # from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
 from centralnode.DeviceData import DeviceData
-from centralnode.tango_client import tango_client
+from centralnode.tango_client import TangoClient
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 class StandByTelescope(SKABaseDevice.OffCommand):
@@ -64,85 +64,14 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         log_msg = const.STR_STANDBY_CMD_ISSUED
         self.logger.info(log_msg)
         device_data._read_activity_message = log_msg
-        device_data._read_activity_message = log_msg
-        dln_prefix_client = TangoClient(device_data.dln_prefix)
-
-        for dish in range(1, (device_data.num_dishes + 1)):
-            # Update device._dish_leaf_node_devices variable
-            device_data._dish_leaf_node_devices.append(dln_prefix_client + "000" + str(dish))
-
-            # Initialize device._subarray_allocation variable (map of Dish Id and allocation status)
-            # to indicate availability of the dishes
-            dish_ID = "dish000" + str(dish)
-            device_data._subarray_allocation[dish_ID] = "NOT_ALLOCATED"
-
-        # Create proxies of Dish Leaf Node devices
-        for name in range(0, len(device_data._dish_leaf_node_devices)):
-            try:
-                device_data._leaf_device_proxy.append(DeviceProxy(device_data._dish_leaf_node_devices[name]))
-            except (DevFailed, KeyError) as except_occurred:
-                log_msg = const.ERR_IN_CREATE_PROXY + str(except_occurred)
-                self.logger.exception(except_occurred)
-                device_data._read_activity_message = const.ERR_IN_CREATE_PROXY
-                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.StartUpCommand",
-                                             tango.ErrSeverity.ERR)
-        # Create device proxy for CSP Master Leaf Node
-        try:
-            csp_mln_client = TangoClient(device_data.csp_master_ln_fqdn)
-            csp_mln_client.subscribe_event(const.EVT_SUBSR_CSP_MASTER_HEALTH,
-                                                          EventType.CHANGE_EVENT,
-                                                          device.health_state_cb, stateless=True)
-        except DevFailed as dev_failed:
-            log_msg = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH + str(dev_failed)
-            self.logger.exception(dev_failed)
-            device_data._read_activity_message = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH
-            tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand",
-                                         tango.ErrSeverity.ERR)
-        # Create device proxy for SDP Master Leaf Node
-        try:
-            sdp_mln_client = TangoClient(device_data.sdp_master_ln_fqdn)
-            sdp_mln_client.subscribe_event(const.EVT_SUBSR_SDP_MASTER_HEALTH,
-                                                          EventType.CHANGE_EVENT,
-                                                          device.health_state_cb, stateless=True)
-        except DevFailed as dev_failed:
-            log_msg = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH + str(dev_failed)
-            self.logger.exception(dev_failed)
-            device_data._read_activity_message = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH
-            tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand",
-                                         tango.ErrSeverity.ERR)
-
-        # Create device proxy for Subarray Node
-        tm_subarray_client = TangoClient(device_data.tm_mid_subarray)
-        for subarray in range(0, len(tm_subarray_client)):
-            try:
-                subarray_proxy = DeviceProxy(tm_subarray_client[subarray])
-                device_data.subarray_health_state_map[subarray_proxy] = -1
-                subarray_proxy.subscribe_event(const.EVT_SUBSR_HEALTH_STATE,
-                                               EventType.CHANGE_EVENT,
-                                               device.health_state_cb, stateless=True)
-
-                subarray_proxy.subscribe_event(const.EVT_SUBSR_OBS_STATE,
-                                               EventType.CHANGE_EVENT,
-                                               device.obs_state_cb, stateless=True)
-
-                # populate subarrayID-subarray proxy map
-                tokens = tm_subarray_client[subarray].split('/')
-                subarrayID = int(tokens[2])
-                device_data.subarray_FQDN_dict[subarrayID] = subarray_proxy
-            except DevFailed as dev_failed:
-                log_msg = const.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
-                self.logger.exception(dev_failed)
-                device_data._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE
-                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.StartupCommand",
-                                             tango.ErrSeverity.ERR)
-
 
         for name in range(0, len(device_data._dish_leaf_node_devices)):
             try:
-                device_data._leaf_device_proxy[name].command_inout(const.CMD_SET_STANDBY_MODE)
-                log_msg = const.CMD_SET_STANDBY_MODE + "invoked on" + str(device_data._leaf_device_proxy[name])
+                dish_ln_client = TangoClient(device_data._dish_leaf_node_devices[name])
+                dish_ln_client.send_command(const.CMD_SET_STANDBY_MODE)
+                log_msg = const.CMD_SET_STANDBY_MODE + "invoked on" + str(dish_local_proxy)
                 self.logger.info(log_msg)
-                device_data._leaf_device_proxy[name].command_inout(const.CMD_OFF)
+                dish_ln_client.send_command(const.CMD_OFF)
             except DevFailed as dev_failed:
                 log_msg = const.ERR_EXE_STANDBY_CMD + str(dev_failed)
                 self.logger.exception(dev_failed)
@@ -152,8 +81,9 @@ class StandByTelescope(SKABaseDevice.OffCommand):
                                              tango.ErrSeverity.ERR)
 
         try:
-            csp_mln_client.command_inout(const.CMD_OFF)
-            csp_mln_client.command_inout(const.CMD_STANDBY, [])
+            csp_mln_client = TangoClient(device_data.csp_master_ln_fqdn)
+            csp_mln_client.send_command(const.CMD_OFF)
+            csp_mln_client.send_command(const.CMD_STANDBY, [])
             self.logger.info(const.STR_CMD_STANDBY_CSP_DEV)
         except DevFailed as dev_failed:
             log_msg = const.ERR_EXE_STANDBY_CMD + str(dev_failed)
@@ -164,8 +94,9 @@ class StandByTelescope(SKABaseDevice.OffCommand):
                                          tango.ErrSeverity.ERR)
 
         try:
-            sdp_mln_client.command_inout(const.CMD_OFF)
-            sdp_mln_client.command_inout(const.CMD_STANDBY)
+            sdp_mln_client = TangoClient(device_data.sdp_master_ln_fqdn)
+            sdp_mln_client.send_command(const.CMD_OFF)
+            sdp_mln_client.send_command(const.CMD_STANDBY)
             self.logger.info(const.STR_CMD_STANDBY_SDP_DEV)
         except DevFailed as dev_failed:
             log_msg = const.ERR_EXE_STANDBY_CMD + str(dev_failed)
@@ -175,8 +106,9 @@ class StandByTelescope(SKABaseDevice.OffCommand):
                                          "CentralNode.StandByTelescopeCommand",
                                          tango.ErrSeverity.ERR)
         try:
-            for subarrayID in range(1, len(tm_subarray_client) + 1):
-                device_data.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_OFF)
+            for subarrayID in range(1, len(device_data.tm_mid_subarray) + 1):
+                subarray_client = TangoClient(subarrayID)
+                subarray_client.send_command(const.CMD_OFF)
                 self.logger.info(const.STR_CMD_STANDBY_SA_DEV)
 
         except DevFailed as dev_failed:
