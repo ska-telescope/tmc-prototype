@@ -27,7 +27,7 @@ from .const import PointingState
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, ObsMode, ObsState
 from ska.base import SKASubarray
-from subarraynode.DeviceData import DeviceData
+from subarraynode.device_data import DeviceData
 from subarraynode.tango_client import TangoClient
 from subarraynode.tango_server import TangoServer
 from subarraynode.exceptions import InvalidObsStateError
@@ -524,7 +524,7 @@ class SubarrayNode(SKASubarray):
             device.scan_duration = 0
             device._receptor_id_list = []
             device.dishPointingStateMap = {}
-            device._dish_leaf_node_group = tango.Group(const.GRP_DISH_LEAF_NODE)
+            # device._dish_leaf_node_group = tango.Group(const.GRP_DISH_LEAF_NODE)
             
             device._dish_leaf_node_proxy = []
             device._health_event_id = []

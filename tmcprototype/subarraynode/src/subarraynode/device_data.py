@@ -7,8 +7,8 @@
 # Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 
-""" Subarray Model
-This module defines the SubarrayModel class, which represents of the functional Subarray device.
+""" Device Data
+This module defines the Device Data class, which represents the functional Subarray device.
 """
 
 class DeviceData:
@@ -39,6 +39,8 @@ class DeviceData:
         self._receive_addresses_map = ""
         self._cspSdpLnHealthEventID = ""
         self._cspSdpLnObsStateEventID = ""
+        self.scan_configuration = ""
+        self._dish_leaf_node_group = tango.Group(const.GRP_DISH_LEAF_NODE)
 
         # TODO: For future use
         self.receptor_id_list = []

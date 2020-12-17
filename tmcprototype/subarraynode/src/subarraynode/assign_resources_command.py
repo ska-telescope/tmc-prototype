@@ -17,7 +17,7 @@ from ska.base import SKASubarray
 from .transaction_id import identify_with_id, inject_id,inject_with_id
 from subarraynode.tango_group_client import TangoGroupClient
 from subarraynode.tango_client import TangoClient
-from subarraynode.DeviceData import DeviceData
+from subarraynode.device_data import DeviceData
 
 
 class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):

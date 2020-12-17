@@ -14,7 +14,7 @@ from ska.base import SKASubarray
 from ska.base.control_model import HealthState
 from subarraynode.tango_group_client import TangoGroupClient
 from subarraynode.tango_client import TangoClient
-from subarraynode.DeviceData import DeviceData
+from subarraynode.device_data import DeviceData
 
 
 class OnCommand(SKASubarray.OnCommand):
@@ -45,6 +45,8 @@ class OnCommand(SKASubarray.OnCommand):
             device_data._csp_subarray_ln_proxy = None
             log_msg = const.STR_SA_PROXY_INIT  + str(device_data.CspSubarrayLNFQDN)
             device_data._csp_subarray_ln_proxy = device_data.get_deviceproxy(device_data.CspSubarrayLNFQDN)
+            # csp_client = TangoClient(device_data.csp_subarray_ln_fqdn)
+            # csp_client.send_command(device_data.csp_subarray_ln_fqdn)
             self.logger.info(log_msg)
             device_data._csp_sa_proxy = device_data.get_deviceproxy(device_data.CspSubarrayFQDN)
 

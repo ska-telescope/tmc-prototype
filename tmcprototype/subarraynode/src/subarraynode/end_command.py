@@ -13,7 +13,7 @@ from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from subarraynode.tango_group_client import TangoGroupClient
 from subarraynode.tango_client import TangoClient
-from subarraynode.subarray_model import SubarrayModel
+from subarraynode.device_data import DeviceData
 
 
 class EndCommand(SKASubarray.EndCommand):
@@ -33,29 +33,27 @@ class EndCommand(SKASubarray.EndCommand):
         :raises: DevFailed if the command execution is not successful.
         """
         self.logger.info(type(self.target))
-        self.device_data = self.target
-        self.device_data.is_end_command = False
-        self.device_data.is_release_resources = False
-        self.device_data.is_restart_command = False
-        self.device_data.is_abort_command = False
-        self.device_data.is_obsreset_command = False
-        dsh_leaf_node_client = TangoClient(device_data._dish_leaf_node_group)
+        device_data = DeviceData.get_instance()
+        device_data = self.target
+        device_data.is_end_command = False
+        device_data.is_release_resources = False
+        device_data.is_restart_command = False
+        device_data.is_abort_command = False
+        device_data.is_obsreset_command = False
+        
         try:
             self.logger.info("End command invoked on SubarrayNode.")
-            # device._sdp_subarray_ln_proxy.command_inout(const.CMD_END)
-            sdp_saln_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
-            sdp_saln_client.send_command(const.CMD_END)
+            #To read device proxy from device.SdpSubarrayLNFQDN
+            self.sdp()
             self.logger.info(const.STR_CMD_END_INV_SDP)
-            # device._csp_subarray_ln_proxy.command_inout(const.CMD_GOTOIDLE)
-            csp_saln_client = TangoClient(device_data.csp_subarray_ln_fqdn)
-            csp_saln_client.send_command(const.CMD_GOTOIDLE)
+            #To read device proxy from device.CspSubarrayLNFQDN
+            self.end_csp()
             self.logger.info(const.STR_CMD_GOTOIDLE_INV_CSP)
-            # TODO: Uncomment this after resolving issues
             self.stop_dish_tracking()
-            device._read_activity_message = const.STR_ENDSB_SUCCESS
+            device_data._read_activity_message = const.STR_ENDSB_SUCCESS
             self.logger.info(const.STR_ENDSB_SUCCESS)
-            device.set_status(const.STR_ENDSB_SUCCESS)
-            device.is_end_command = True
+            device_data.set_status(const.STR_ENDSB_SUCCESS)
+            device_data.is_end_command = True
             return (ResultCode.OK, const.STR_ENDSB_SUCCESS)
         except DevFailed as dev_failed:
             log_msg = const.ERR_ENDSB_INVOKING_CMD + str(dev_failed)
@@ -65,9 +63,24 @@ class EndCommand(SKASubarray.EndCommand):
                                          "SubarrayNode.EndCommand",
                                          tango.ErrSeverity.ERR)
 
+    def end_sdp(self):
+        device_data = self.target
+        sdp_saln_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
+        sdp_saln_client.send_command(const.CMD_END)
+
+    def end_csp(self):
+        device_data = self.target
+        csp_saln_client = TangoClient(device_data.csp_subarray_ln_fqdn)
+        csp_saln_client.send_command(const.CMD_GOTOIDLE)
+
     def stop_dish_tracking(self, dsh_leaf_node_client):
         # TODO: Getting exception while running test cases using device mocking
-        self.device_data = self.target
+        # self.device_data = self.target
         # device._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
+        device_data = self.target
+        dsh_leaf_node_client = TangoGroupClient(device_data._dish_leaf_node_group)
+        # dsh_leaf_node_client.add_device()
         dsh_leaf_node_client.send_command(const.CMD_STOP_TRACK)
         self.logger.info(const.STR_CMD_STOP_TRACK_INV_DLN)
+
+    
