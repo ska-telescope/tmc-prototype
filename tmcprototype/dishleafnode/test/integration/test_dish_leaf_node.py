@@ -91,11 +91,15 @@ devices_info = [
 
 
 @pytest.fixture(scope="function")
-def leaf_dish_context(tango_context):
-    tango_context.dish_leaf_node = tango_context.get_device(LEAF_NODE_DEVICE_NAME)
-    tango_context.dish_master = tango_context.get_device(DISH_DEVICE_NAME)
+def dish_leaf_node_dp(tango_context):
+    dish_leaf_node = tango_context.get_device(LEAF_NODE_DEVICE_NAME)
+    return dish_leaf_node
 
-    return tango_context
+
+@pytest.fixture(scope="function")
+def dish_master_dp(tango_context):
+    dish_master = tango_context.get_device(DISH_DEVICE_NAME)
+    return dish_master
 
 
 class TestDishLeafNode:
@@ -139,98 +143,98 @@ class TestDishLeafNode:
                 return
         assert 0, f"dishmaster did not go to mode {mode}, currently {str(dish.dishMode)}"
 
-    def test_SetStandByLPMode(self, leaf_dish_context):
-        assert leaf_dish_context.dish_master.dishmode.name == "STANDBY-LP"
+    def test_SetStandByLPMode(self, dish_master_dp):
+        assert dish_master_dp.dishMode.name == "STANDBY-LP"
 
-    def test_SetOperateMode(self, leaf_dish_context):
-        leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
-        self.wait_for_dish_mode("STANDBY-FP", leaf_dish_context.dish_master)
-        leaf_dish_context.dish_leaf_node.SetOperateMode()
-        self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
-        assert leaf_dish_context.dish_master.dishmode.name == "OPERATE"
+    def test_SetOperateMode(self, dish_leaf_node_dp, dish_master_dp):
+        dish_leaf_node_dp.SetStandbyFPMode()
+        self.wait_for_dish_mode("STANDBY-FP", dish_master_dp)
+        dish_leaf_node_dp.SetOperateMode()
+        self.wait_for_dish_mode("OPERATE", dish_master_dp)
+        assert dish_master_dp.dishMode.name == "OPERATE"
 
-    def test_Configure(self, leaf_dish_context):
-        previous_timestamp = leaf_dish_context.dish_master.desiredPointing[0]
-        previous_configuredBand = leaf_dish_context.dish_master.configuredBand
-        leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
-        self.wait_for_dish_mode("STANDBY-FP", leaf_dish_context.dish_master)
+    def test_Configure(self, dish_leaf_node_dp, dish_master_dp):
+        previous_timestamp = dish_master_dp.desiredPointing[0]
+        previous_configuredBand = dish_master_dp.configuredBand
+        dish_leaf_node_dp.SetStandbyFPMode()
+        self.wait_for_dish_mode("STANDBY-FP", dish_master_dp)
         input_string = '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiverBand":"1"}}'
-        leaf_dish_context.dish_leaf_node.Configure(input_string)
+        dish_leaf_node_dp.Configure(input_string)
         self.wait_for_attribute_change(
-            previous_configuredBand, leaf_dish_context.dish_master.configuredBand
+            previous_configuredBand, dish_master_dp.configuredBand
         )
-        assert leaf_dish_context.dish_master.desiredPointing[0] != previous_timestamp
-        assert leaf_dish_context.dish_master.configuredBand != previous_configuredBand
-        assert leaf_dish_context.dish_master.dsIndexerPosition != previous_configuredBand
+        assert dish_master_dp.desiredPointing[0] != previous_timestamp
+        assert dish_master_dp.configuredBand != previous_configuredBand
+        assert dish_master_dp.dsIndexerPosition != previous_configuredBand
 
-    def test_Scan(self, leaf_dish_context):
-        leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
-        self.wait_for_dish_mode("STANDBY-FP", leaf_dish_context.dish_master)
-        leaf_dish_context.dish_leaf_node.SetOperateMode()
-        self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
-        leaf_dish_context.dish_leaf_node.Scan("0")
-        assert leaf_dish_context.dish_master.pointingState.name == "SCAN"
+    def test_Scan(self, dish_leaf_node_dp, dish_master_dp):
+        dish_leaf_node_dp.SetStandbyFPMode()
+        self.wait_for_dish_mode("STANDBY-FP", dish_master_dp)
+        dish_leaf_node_dp.SetOperateMode()
+        self.wait_for_dish_mode("OPERATE", dish_master_dp)
+        dish_leaf_node_dp.Scan("0")
+        assert dish_master_dp.pointingState.name == "SCAN"
 
-    def test_EndScan(self, leaf_dish_context):
-        leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
-        leaf_dish_context.dish_leaf_node.SetOperateMode()
-        self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
-        leaf_dish_context.dish_leaf_node.Scan("0")
-        leaf_dish_context.dish_leaf_node.EndScan("0")
-        assert not leaf_dish_context.dish_master.capturing
+    def test_EndScan(self, dish_leaf_node_dp, dish_master_dp):
+        dish_leaf_node_dp.SetStandbyFPMode()
+        dish_leaf_node_dp.SetOperateMode()
+        self.wait_for_dish_mode("OPERATE", dish_master_dp)
+        dish_leaf_node_dp.Scan("0")
+        dish_leaf_node_dp.EndScan("0")
+        assert not dish_master_dp.capturing
 
-    def test_StartCapture(self, leaf_dish_context):
-        leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
-        self.wait_for_dish_mode("STANDBY-FP", leaf_dish_context.dish_master)
-        leaf_dish_context.dish_leaf_node.SetOperateMode()
-        self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
-        leaf_dish_context.dish_leaf_node.StartCapture("0")
-        assert leaf_dish_context.dish_master.capturing
+    def test_StartCapture(self, dish_leaf_node_dp, dish_master_dp):
+        dish_leaf_node_dp.SetStandbyFPMode()
+        self.wait_for_dish_mode("STANDBY-FP", dish_master_dp)
+        dish_leaf_node_dp.SetOperateMode()
+        self.wait_for_dish_mode("OPERATE", dish_master_dp)
+        dish_leaf_node_dp.StartCapture("0")
+        assert dish_master_dp.capturing
 
-    def test_StopCapture(self, leaf_dish_context):
-        leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
-        self.wait_for_dish_mode("STANDBY-FP", leaf_dish_context.dish_master)
-        leaf_dish_context.dish_leaf_node.SetOperateMode()
-        self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
-        leaf_dish_context.dish_leaf_node.StartCapture("0")
-        previous_capturing = leaf_dish_context.dish_master.capturing
-        leaf_dish_context.dish_leaf_node.StopCapture("0")
-        self.wait_for_attribute_change(previous_capturing, leaf_dish_context.dish_master.capturing)
-        assert not leaf_dish_context.dish_master.capturing
+    def test_StopCapture(self, dish_leaf_node_dp, dish_master_dp):
+        dish_leaf_node_dp.SetStandbyFPMode()
+        self.wait_for_dish_mode("STANDBY-FP", dish_master_dp)
+        dish_leaf_node_dp.SetOperateMode()
+        self.wait_for_dish_mode("OPERATE", dish_master_dp)
+        dish_leaf_node_dp.StartCapture("0")
+        previous_capturing = dish_master_dp.capturing
+        dish_leaf_node_dp.StopCapture("0")
+        self.wait_for_attribute_change(previous_capturing, dish_master_dp.capturing)
+        assert not dish_master_dp.capturing
 
-    def test_SetStowMode(self, leaf_dish_context):
-        leaf_dish_context.dish_leaf_node.SetStowMode()
-        assert leaf_dish_context.dish_master.dishmode.name == "STOW"
+    def test_SetStowMode(self, dish_leaf_node_dp, dish_master_dp):
+        dish_leaf_node_dp.SetStowMode()
+        assert dish_master_dp.dishmode.name == "STOW"
 
-    def test_Slew(self, leaf_dish_context):
-        leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
-        self.wait_for_dish_mode("STANDBY-FP", leaf_dish_context.dish_master)
-        leaf_dish_context.dish_leaf_node.SetOperateMode()
-        self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
-        leaf_dish_context.dish_leaf_node.Slew([10.0, 20.0])
-        assert leaf_dish_context.dish_master.pointingState.name == "SLEW"
+    def test_Slew(self, dish_leaf_node_dp, dish_master_dp):
+        dish_leaf_node_dp.SetStandbyFPMode()
+        self.wait_for_dish_mode("STANDBY-FP", dish_master_dp)
+        dish_leaf_node_dp.SetOperateMode()
+        self.wait_for_dish_mode("OPERATE", dish_master_dp)
+        dish_leaf_node_dp.Slew([10.0, 20.0])
+        assert dish_master_dp.pointingState.name == "SLEW"
 
-    def test_Track(self, leaf_dish_context):
-        leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
-        leaf_dish_context.dish_leaf_node.SetOperateMode()
-        self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
+    def test_Track(self, dish_leaf_node_dp, dish_master_dp):
+        dish_leaf_node_dp.SetStandbyFPMode()
+        dish_leaf_node_dp.SetOperateMode()
+        self.wait_for_dish_mode("OPERATE", dish_master_dp)
 
         input_string = '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiverBand":"1"}}'
-        leaf_dish_context.dish_leaf_node.Track(input_string)
-        assert leaf_dish_context.dish_master.pointingState.name == "TRACK"
+        dish_leaf_node_dp.Track(input_string)
+        assert dish_master_dp.pointingState.name == "TRACK"
 
-        leaf_dish_context.dish_leaf_node.StopTrack()
-        assert leaf_dish_context.dish_master.pointingState.name == "READY"
+        dish_leaf_node_dp.StopTrack()
+        assert dish_master_dp.pointingState.name == "READY"
 
-    def test_dishMode_change_event(self, leaf_dish_context):
-        leaf_dish_context.dish_leaf_node.SetStandbyFPMode()
-        self.wait_for_dish_mode("STANDBY-FP", leaf_dish_context.dish_master)
-        leaf_dish_context.dish_leaf_node.SetOperateMode()
-        self.wait_for_dish_mode("OPERATE", leaf_dish_context.dish_master)
+    def test_dishMode_change_event(self, dish_leaf_node_dp, dish_master_dp):
+        dish_leaf_node_dp.SetStandbyFPMode()
+        self.wait_for_dish_mode("STANDBY-FP", dish_master_dp)
+        dish_leaf_node_dp.SetOperateMode()
+        self.wait_for_dish_mode("OPERATE", dish_master_dp)
         mock_cb = mock.MagicMock()
-        eid = leaf_dish_context.dish_master.subscribe_event(
+        eid = dish_master_dp.subscribe_event(
             const.EVT_DISH_MODE, EventType.CHANGE_EVENT, mock_cb
         )
-        assert leaf_dish_context.dish_master.dishMode.name == "OPERATE"
+        assert dish_master_dp.dishMode.name == "OPERATE"
         mock_cb.assert_called()
-        leaf_dish_context.dish_master.unsubscribe_event(eid)
+        dish_master_dp.unsubscribe_event(eid)
