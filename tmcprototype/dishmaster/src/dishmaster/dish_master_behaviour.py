@@ -436,7 +436,8 @@ class OverrideDish(object):
         """
         if model.sim_quantities["capturing"]:
             model.sim_quantities["capturing"].set_val(False, model.time_func())
-            self._change_pointing_state(model, "READY", ("OPERATE",))
+
+        self._change_pointing_state(model, "READY", ("OPERATE",))
 
     def _change_pointing_state(self, model, action, allowed_modes):
         dish_mode_quantity = model.sim_quantities["dishMode"]
