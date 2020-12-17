@@ -17,7 +17,7 @@ from ska_telmodel.csp import interface
 from .transaction_id import identify_with_id,inject_with_id
 from subarraynode.tango_group_client import TangoGroupClient
 from subarraynode.tango_client import TangoClient
-from subarraynode.subarray_model import SubarrayModel
+from subarraynode.DeviceData import DeviceData
 
 csp_interface_version = 0
 sdp_interface_version = 0
@@ -27,7 +27,7 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
     """
     A class for SubarrayNode's Configure() command.
     """
-    @identify_with_id('configure','argin')
+    # @identify_with_id('configure','argin')
     def do(self, argin):
         """
         Configures the resources assigned to the Subarray.The configuration data for SDP, CSP and Dish is
@@ -54,29 +54,29 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
         :raises: JSONDecodeError if input argument json string contains invalid value
         """
         self.logger.info(type(self.target))
-        self.device_data = self.target
-        self.device_data.is_scan_completed = False
-        self.device_data.is_release_resources = False
-        self.device_data.is_restart_command = False
-        self.device_data.is_abort_command = False
-        self.device_data.is_obsreset_command = False
+        device_data = DeviceData.get_instance()
+        device_data.is_scan_completed = False
+        device_data.is_release_resources = False
+        device_data.is_restart_command = False
+        device_data.is_abort_command = False
+        device_data.is_obsreset_command = False
         # TODO: How to use logger. Currenly logger is passed from do() method
         self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
         log_msg = const.STR_CONFIGURE_IP_ARG + str(argin)
         self.logger.info(log_msg)
         # TODO: how to access TANGO specific attributes (read-write)
-        device.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA)
-        self.device_data._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA
+        device_data.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA)
+        device_data._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA
         try:
             scan_configuration = json.loads(argin)
         except json.JSONDecodeError as jerror:
             log_message = const.ERR_INVALID_JSON + str(jerror)
             self.logger.error(log_message)
-            self.device_data._read_activity_message = log_message
+            device_data._read_activity_message = log_message
             tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
                                          const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
         tmc_configure = scan_configuration["tmc"]
-        self.device_data.scan_duration = int(tmc_configure["scanDuration"])
+        device_data.scan_duration = int(tmc_configure["scanDuration"])
         self._configure_dsh(scan_configuration)
         self._configure_csp(scan_configuration)
         self._configure_sdp(scan_configuration)
@@ -90,10 +90,10 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
             tango_client.send_command(cmd_name, cmd_data)
             log_msg = "%s configured succesfully." % tango_client.get_device_fqdn()
             self.logger.debug(log_msg)
-            self.device_data._read_activity_message = log_msg
+            device_data._read_activity_message = log_msg
         except DevFailed as df:
             log_message = df[0].desc
-            self.device_data._read_activity_message = log_message
+            device_data._read_activity_message = log_message
             log_msg = "Failed to configure %s. %s" % (tango_client.get_device_fqdn(), df)
             self.logger.error(log_msg)
             raise
@@ -104,20 +104,20 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
             cmd_data = method(scan_config, *args)
         except KeyError as kerr:
             log_message = kerr.args[0]
-            device._read_activity_message = log_message
+            device_data._read_activity_message = log_message
             self.logger.debug(log_message)
             raise
         return cmd_data
 
     def _configure_sdp(self, scan_configuration):
-        device_data = self.target
+        device_data = DeviceData.get_instance()
         cmd_data = self._create_cmd_data("build_up_sdp_cmd_data", scan_configuration)
         # TODO : How to read device property device.SdpSubarrayLNFQDN
         sdp_saln_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
         self._configure_leaf_node(sdp_saln_client, "Configure", cmd_data)
 
     def _configure_csp(self, scan_configuration):
-        device_data = self.target
+        device_data = DeviceData.get_instance()
         attr_name_map = {
             const.STR_DELAY_MODEL_SUB_POINT: device_data.csp_subarray_ln_fqdn + "/delayModel",
         }
@@ -131,7 +131,7 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
         device_data = self.target
         config_keys = scan_configuration.keys()
         if not set(["sdp", "csp"]).issubset(config_keys) and "dish" in config_keys:
-            self.device_data.only_dishconfig_flag = True
+            device_data.only_dishconfig_flag = True
 
         cmd_data = self._create_cmd_data(
             "build_up_dsh_cmd_data", scan_configuration, device_data.only_dishconfig_flag)
@@ -147,7 +147,7 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
             dish_group_client.send_command(const.CMD_TRACK, cmd_data)
             self.logger.info('TRACK command is invoked on the Dish Leaf Node Group')
         except DevFailed as df:
-            device._read_activity_message = df[0].desc
+            device_data._read_activity_message = df[0].desc
             self.logger.error(df)
             raise
 

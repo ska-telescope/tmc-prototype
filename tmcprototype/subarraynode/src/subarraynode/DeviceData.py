@@ -11,7 +11,7 @@
 This module defines the SubarrayModel class, which represents of the functional Subarray device.
 """
 
-class SubarrayModel:
+class DeviceData:
     """
     This class represents the Subarray as functional device. It mainly comprise the data common
     across various functions of a subarray.
@@ -21,7 +21,7 @@ class SubarrayModel:
 
     def __init__(self):
         """Private constructor of the class""" 
-        if SubarrayModel.__instance != None:
+        if DeviceData.__instance != None:
             raise Exception("This is singletone class")
         else:
             SubarrayModel.__instance = self
@@ -37,12 +37,14 @@ class SubarrayModel:
         self.sdp_subarray_ln_fqdn = ""
         self.csp_subarray_ln_fqdn = ""
         self._receive_addresses_map = ""
+        self._cspSdpLnHealthEventID = ""
+        self._cspSdpLnObsStateEventID = ""
 
         # TODO: For future use
         self.receptor_id_list = []
 
     @staticmethod
     def get_instance():
-        if SubarrayModel.__instance == None:
-            SubarrayModel()
-        return SubarrayModel.__instance
+        if DeviceData.__instance == None:
+            DeviceData()
+        return DeviceData.__instance
