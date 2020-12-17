@@ -170,7 +170,7 @@ class TestDishLeafNode:
         dish_leaf_node_dp.Scan("0")
         assert dish_master_dp.pointingState == PointingState.SCAN
         dish_leaf_node_dp.EndScan("0")
-        self.wait_for_attribute_change(PointingState.SCAN, dish_master_dp.pointingState)
+        self.wait_for_attribute_change(PointingState.READY, dish_master_dp.pointingState)
         assert not dish_master_dp.capturing
         assert dish_master_dp.pointingState == PointingState.READY
 
