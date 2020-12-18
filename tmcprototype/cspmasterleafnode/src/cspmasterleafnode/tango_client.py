@@ -24,19 +24,20 @@ class TangoClient:
     def __init__(self, fqdn):
         self.device_fqdn = fqdn
         self.deviceproxy = None
-        retry = 0
-        while retry < 3:
-            try:
-                self.deviceproxy = DeviceProxy(self.device_fqdn)
-                break
-            except DevFailed as df:
-                # self.logger.exception(df)
-                if retry >= 2:
-                    tango.Except.re_throw_exception(df, "Retries exhausted while creating device proxy.",
-                                                    "Failed to create DeviceProxy of " + str(self.device_fqdn),
-                                                    "SubarrayNode.get_deviceproxy()", tango.ErrSeverity.ERR)
-                retry += 1
-                continue
+        self.deviceproxy = self.get_deviceproxy()
+        # retry = 0
+        # while retry < 3:
+        #     try:
+        #         self.deviceproxy = DeviceProxy(self.device_fqdn)
+        #         break
+        #     except DevFailed as df:
+        #         # self.logger.exception(df)
+        #         if retry >= 2:
+        #             tango.Except.re_throw_exception(df, "Retries exhausted while creating device proxy.",
+        #                                             "Failed to create DeviceProxy of " + str(self.device_fqdn),
+        #                                             "SubarrayNode.get_deviceproxy()", tango.ErrSeverity.ERR)
+        #         retry += 1
+        #         continue
         
 
     def get_deviceproxy(self):
@@ -77,7 +78,7 @@ class TangoClient:
         except DevFailed as dev_failed:
             print("inside devFailed of tango client ::::::::::::::::::::::::")
             log_msg = "Error in invoking command " + command_name + str(dev_failed)
-            # self.logger.exception(dev_failed)
+            print("devf in tango client is::::::::::::",dev_failed)
             tango.Except.throw_exception("Error in invoking command " + command_name,
                                          log_msg,
                                          "TangoClient.send_command_async",

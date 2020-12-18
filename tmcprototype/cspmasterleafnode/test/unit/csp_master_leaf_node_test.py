@@ -33,6 +33,9 @@ def mock_csp_master():
     proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
+        with mock.patch.object(TangoClient, 'get_deviceproxy', return_value=Mock()) as mock_obj:
+            tango_client_obj = TangoClient(csp_master_fqdn)
+            device_proxy = tango_client_obj.get_deviceproxy()
         yield csp_master_proxy_mock, tango_context.device, csp_master_fqdn, event_subscription_map
 
 
