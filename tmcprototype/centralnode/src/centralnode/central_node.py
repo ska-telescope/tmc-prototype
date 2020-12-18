@@ -223,11 +223,9 @@ class CentralNode(SKABaseDevice):
                 device._build_state = '{},{},{}'.format(release.name,release.version,release.description)
                 device._version_id = release.version
                 device_data = DeviceData.get_instance()
-                device_data.dln_prefix = device.DishLeafNodePrefix
                 device_data.csp_master_ln_fqdn = device.CspMasterLeafNodeFQDN
                 device_data.sdp_master_ln_fqdn = device.SdpMasterLeafNodeFQDN
                 device_data.tm_mid_subarray = device.TMMidSubarrayNodes
-                device_data.num_dishes = device.NumDishes
                 self.logger.debug(const.STR_INIT_SUCCESS)
 
             except DevFailed as dev_failed:

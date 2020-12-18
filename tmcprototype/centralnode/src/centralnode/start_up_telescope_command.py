@@ -58,7 +58,6 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         The message is for information purpose only.
 
         :rtype: (ResultCode, str)
-
         """
         device_data = self.target
         self.logger.info(type(self.target))
@@ -76,24 +75,57 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
 
 
     def startup_csp(self):
+        """
+        Create TangoClient for CspMasterLeaf node and call
+        startup method.
+
+        :return: None
+        """
         csp_mln_client = TangoClient(device_data.csp_master_ln_fqdn)
         self.startup_leaf_node(csp_mln_client)
 
     def startup_sdp(self):
+        """
+        Create TangoClient for SdpMasterLeaf node and call
+        startup method.
+
+        :return: None
+        """
         sdp_mln_client = TangoClient(device_data.sdp_master_ln_fqdn)
         self.startup_leaf_node(sdp_mln_client)
 
     def startup_dish(self):
+        """
+        Create TangoClient for DishLeaf node and call
+        startup method.
+
+        :return: None
+        """
         for name in range(0, len(device_data._dish_leaf_node_devices)):
             dish_ln_client = TangoClient(device_data._dish_leaf_node_devices[name])
             self.startup_leaf_node(dish_ln_client)
 
     def startup_subarray(self):
+        """
+        Create TangoClient for Subarray node and call
+        startup method.
+
+        :return: None
+        """
         for subarrayID in range(1, len(device_data.tm_mid_subarray) + 1):
             subarray_client = TangoClient(subarrayID)
             self.startup_leaf_node(subarray_client)
 
     def startup_leaf_node(self, tango_client):
+        """
+        Invoke On command on leaf nodes.
+
+        :param tango_client: Proxy of corresponding node.
+
+        :return: None
+
+        :raises: Devfailed exception if error occures while  executing On command on leaf node.
+        """
         try:
             tango_client.send_command(const.CMD_ON)
             log_msg = 'ON command invoked successfully on {}'.format(tango_client.get_device_fqdn)
