@@ -511,12 +511,7 @@ class SubarrayNode(SKASubarray):
             device.set_status(const.STR_SA_INIT)
             device._obs_mode = ObsMode.IDLE
             device.isScanRunning = False
-            device.is_scan_completed = False
             device.is_end_command = False
-            device.is_restart_command = False
-            device.is_obsreset_command = False
-            device.is_release_resources = False
-            device.is_abort_command = False
             device._scan_id = ""
             device._sb_id = ""
             device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
@@ -524,15 +519,13 @@ class SubarrayNode(SKASubarray):
             device.scan_duration = 0
             device._receptor_id_list = []
             device.dishPointingStateMap = {}
-            # device._dish_leaf_node_group = tango.Group(const.GRP_DISH_LEAF_NODE)
-            
             device._dish_leaf_node_proxy = []
             device._health_event_id = []
             device._pointing_state_event_id = []
             device._dishLnVsHealthEventID = {}
             device._dishLnVsPointingStateEventID = {}
-            device._cspSdpLnHealthEventID = {}
-            device._cspSdpLnObsStateEventID = {}
+            # device._cspSdpLnHealthEventID = {}
+            # device._cspSdpLnObsStateEventID = {}
             device.subarray_ln_health_state_map = {}
             device._subarray_health_state = HealthState.OK  #Aggregated Subarray Health State
             device._csp_sa_obs_state = None

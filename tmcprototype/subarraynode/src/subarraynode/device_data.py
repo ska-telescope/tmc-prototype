@@ -24,21 +24,23 @@ class DeviceData:
         if DeviceData.__instance != None:
             raise Exception("This is singletone class")
         else:
-            SubarrayModel.__instance = self
+            DeviceData.__instance = self
 
         self.is_scan_completed = False
         self.is_release_resources = False
         self.is_restart_command = False
         self.is_abort_command = False
+        self.is_obsreset_command = False
         self.scan_duration = 0.0
+        self.isScanRunning = False
         self.only_dishconfig_flag = False
         # TODO : Tango server class variables
         self._read_activity_message = ""
         self.sdp_subarray_ln_fqdn = ""
         self.csp_subarray_ln_fqdn = ""
         self._receive_addresses_map = ""
-        self._cspSdpLnHealthEventID = ""
-        self._cspSdpLnObsStateEventID = ""
+        self._cspSdpLnHealthEventID = {}
+        self._cspSdpLnObsStateEventID = {}
         self.scan_configuration = ""
         self._dish_leaf_node_group = tango.Group(const.GRP_DISH_LEAF_NODE)
 

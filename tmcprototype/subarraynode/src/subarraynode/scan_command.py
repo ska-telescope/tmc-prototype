@@ -57,17 +57,10 @@ class ScanCommand(SKASubarray.ScanCommand):
             device_data._read_activity_message = log_msg
             device_data.isScanRunning = True
             # Invoke scan command on Sdp Subarray Leaf Node with input argument as scan id
-            sdp_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
-            sdp_client.send_command(const.CMD_SCAN, argin)
-            # self.device_data._sdp_subarray_ln_proxy.command_inout(const.CMD_SCAN, argin)
-            self.logger.info(const.STR_SDP_SCAN_INIT)
+            self.scan_sdp()
             device_data._read_activity_message = const.STR_SDP_SCAN_INIT
             # Invoke Scan command on CSP Subarray Leaf Node
-            csp_argin = [argin]
-            csp_client = TangoClient(device_data.csp_subarray_ln_fqdn)
-            csp_client.send_command(const.CMD_START_SCAN, csp_argin)
-            # device._csp_subarray_ln_proxy.command_inout(const.CMD_START_SCAN, csp_argin)
-            self.logger.info(const.STR_CSP_SCAN_INIT)
+            self.scan_csp()
             device_data._read_activity_message = const.STR_CSP_SCAN_INIT
             # TODO: Update observation state aggregation logic
             # if self._csp_sa_obs_state == ObsState.IDLE and self._sdp_sa_obs_state ==\
@@ -77,6 +70,7 @@ class ScanCommand(SKASubarray.ScanCommand):
             device_data.set_status(const.STR_SA_SCANNING)
             self.logger.info(const.STR_SA_SCANNING)
             device_data._read_activity_message = const.STR_SCAN_SUCCESS
+
             # Once Scan Duration is complete call EndScan Command
             self.logger.info("Starting Scan Thread")
             device_data.scan_thread = threading.Timer(self.device_data.scan_duration, self.call_end_scan_command)
@@ -91,6 +85,19 @@ class ScanCommand(SKASubarray.ScanCommand):
                                          "SubarrayNode.ScanCommand",
                                          tango.ErrSeverity.ERR)
 
+    def scan_sdp(self, argin):
+        device_data = self.target
+        sdp_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
+        sdp_client.send_command(const.CMD_SCAN, argin)
+        self.logger.info(const.STR_SDP_SCAN_INIT)
+
+    def scan_csp(self, argin):
+        device_data = self.target
+        csp_argin = [argin]
+        csp_client = TangoClient(device_data.csp_subarray_ln_fqdn)
+        csp_client.send_command(const.CMD_START_SCAN, csp_argin)
+        self.logger.info(const.STR_CSP_SCAN_INIT)
+
     def call_end_scan_command(self):
         device_data = self.target
-        device_data.endscan_obj.do()
+        device_data.endscan_obj.do())
