@@ -425,8 +425,11 @@ class OverrideDish(object):
                     ErrSeverity.WARN,
                 )
             model.sim_quantities["capturing"].set_val(True, model.time_func())
+            model.logger.info("Attribute 'capturing' set to True.")
         else:
             self._throw_exception("StartCapture", _allowed_modes)
+
+        model.logger.info("'StartCapture' command executed successfully.")
 
     def action_stopcapture(self, model, tango_dev=None, data_input=None):  # pylint: disable=W0613
         """Triggers the dish to stop capturing the data on the configured band.
@@ -436,8 +439,10 @@ class OverrideDish(object):
         """
         if model.sim_quantities["capturing"]:
             model.sim_quantities["capturing"].set_val(False, model.time_func())
+            model.logger.info("Attribute 'capturing' set to False.")
 
         self._change_pointing_state(model, "READY", ("OPERATE",))
+        model.logger.info("'StopCapture' command executed successfully.")
 
     def _change_pointing_state(self, model, action, allowed_modes):
         dish_mode_quantity = model.sim_quantities["dishMode"]
@@ -473,6 +478,7 @@ class OverrideDish(object):
         :raises DevFailed: dishMode is not in any of the allowed modes (OPERATE).
         """
         self._change_pointing_state(model, "READY", ("OPERATE",))
+        model.logger.info("'TrackStop' command executed successfully.")
 
     def action_resettracktable(
         self, model, tango_dev=None, data_input=None
@@ -487,6 +493,7 @@ class OverrideDish(object):
         track_table_size = len(program_track_quantity.last_val)
         default_values = [0.0] * track_table_size
         model.sim_quantities["programTrackTable"].set_val(default_values, model.time_func())
+        model.logger.info("'ResetTrackTable' command executed successfully.")
 
     def action_resettracktablebuffer(
         self, model, tango_dev=None, data_input=None
@@ -497,6 +504,7 @@ class OverrideDish(object):
         :param data_input: None
         """
         self.desired_pointings = []
+        model.logger.info("'ResetTrackTableBuffer' command executed successfully.")
 
     def action_slew(self, model, tango_dev=None, data_input=None):  # pylint: disable=W0613
         """The Dish moves to the commanded pointing angle at the maximum
