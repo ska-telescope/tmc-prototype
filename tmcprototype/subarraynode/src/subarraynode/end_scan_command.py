@@ -44,19 +44,9 @@ class EndScanCommand(SKASubarray.EndScanCommand):
                     device_data.scan_thread.cancel()  # stop timer when EndScan command is called
             device_data.isScanRunning = False
             device_data.is_scan_completed = True
-            # Invoke EndScan command on SDP Subarray Leaf Node
-            sdp_client = (device_data.sdp_subarray_ln_fqdn)
-            sdp_client.send_command(const.CMD_END_SCAN)
-            # device._sdp_subarray_ln_proxy.command_inout(const.CMD_END_SCAN)
-            self.logger.debug(const.STR_SDP_END_SCAN_INIT)
-            device_data._read_activity_message = const.STR_SDP_END_SCAN_INIT
-
-            # Invoke EndScan command on CSP Subarray Leaf Node
-            csp_client = (device_data.csp_subarray_ln_fqdn)
-            csp_client.send_command(const.CMD_END_SCAN)
-            # device._csp_subarray_ln_proxy.command_inout(const.CMD_END_SCAN)
-            self.logger.debug(const.STR_CSP_END_SCAN_INIT)
-            device_data._read_activity_message = const.STR_CSP_END_SCAN_INIT
+            
+            self.endscan_sdp()
+            self.endscan_csp()
             device_data._scan_id = ""
             # TODO: For Future Use
             # if device._csp_sa_obs_state == ObsState.IDLE and device._sdp_sa_obs_state ==\
@@ -75,3 +65,23 @@ class EndScanCommand(SKASubarray.EndScanCommand):
                                          log_msg,
                                          "SubarrayNode.EndScanCommand",
                                          tango.ErrSeverity.ERR)
+
+    def endscan_sdp(self, device_data):
+        """
+        set up sdp devices
+        """
+        # Invoke EndScan command on SDP Subarray Leaf Node
+        sdp_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
+        sdp_client.send_command(const.CMD_END_SCAN)
+        self.logger.debug(const.STR_SDP_END_SCAN_INIT)
+        device_data._read_activity_message = const.STR_SDP_END_SCAN_INIT
+
+    def endscan_csp(self, device_data):
+        """
+        set up csp devices
+        """
+        # Invoke EndScan command on CSP Subarray Leaf Node
+        csp_client = TangoClient(device_data.csp_subarray_ln_fqdn)
+        csp_client.send_command(const.CMD_END_SCAN)
+        self.logger.debug(const.STR_CSP_END_SCAN_INIT)
+        device_data._read_activity_message = const.STR_CSP_END_SCAN_INIT
