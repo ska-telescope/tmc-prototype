@@ -63,13 +63,13 @@ class TangoClient:
     def get_device_fqdn(self):
         return self.device_fqdn
 
-    def send_command_async(self, command_name, callback):
+    def send_command_async(self, command_name, callback, argin=None):
         """
         Here, as per the device proxy this function is invoking commands on respective nodes. This command invocation
         is on other than the TMC elements as it is asynchronous command execution.
         """
         try:
-            self.deviceproxy.command_inout_asynch(command_name, [], callback)
+            self.deviceproxy.command_inout_asynch(command_name, argin, callback)
             return True
         except DevFailed as dev_failed:
             log_msg = "Error in invoking command " + command_name + str(dev_failed)
