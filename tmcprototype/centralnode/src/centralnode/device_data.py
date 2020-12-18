@@ -43,12 +43,11 @@ class DeviceData:
         self._subarray_allocation = {}
         self.sdp_master_ln_fqdn = ""
         self.csp_master_ln_fqdn = ""
-        self.dln_prefix = ""
         self.tm_mid_subarray = ""
         self._read_activity_message = ""
-        self.num_dishes = ""
         self.sdp_event_id = ""
         self.csp_event_id = ""
+        self.subarray_event_id = ""
         self.health_aggreegator = HealthStateAggreegator()
 
     @staticmethod

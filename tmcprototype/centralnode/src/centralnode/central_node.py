@@ -223,11 +223,9 @@ class CentralNode(SKABaseDevice):
                 device._build_state = '{},{},{}'.format(release.name,release.version,release.description)
                 device._version_id = release.version
                 device_data = DeviceData.get_instance()
-                device_data.dln_prefix = device.DishLeafNodePrefix
                 device_data.csp_master_ln_fqdn = device.CspMasterLeafNodeFQDN
                 device_data.sdp_master_ln_fqdn = device.SdpMasterLeafNodeFQDN
                 device_data.tm_mid_subarray = device.TMMidSubarrayNodes
-                device_data.num_dishes = device.NumDishes
                 self.logger.debug(const.STR_INIT_SUCCESS)
 
             except DevFailed as dev_failed:
@@ -236,83 +234,6 @@ class CentralNode(SKABaseDevice):
                 device._read_activity_message = const.ERR_INIT_PROP_ATTR_CN
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand.do()",
                                              tango.ErrSeverity.ERR)
-
-                #  Get Dish Leaf Node devices List
-                # TODO: Getting DishLeafNode devices list from TANGO DB
-                # device.tango_db = PyTango.Database()
-                # try:
-                #     device.dev_dbdatum = device.tango_db.get_device_exported(const.GET_DEVICE_LIST_TANGO_DB)
-                #     device._dish_leaf_node_devices.extend(device.dev_bdatum.value_string)
-                #     print device._dish_leaf_node_devices
-
-            # Creating proxies for lower level devices
-            for dish in range(1, (device.NumDishes + 1)):
-                # Update device._dish_leaf_node_devices variable
-                device._dish_leaf_node_devices.append(device.DishLeafNodePrefix + "000" + str(dish))
-
-                # Initialize device._subarray_allocation variable (map of Dish Id and allocation status)
-                # to indicate availability of the dishes
-                dish_ID = "dish000" + str(dish)
-                device._subarray_allocation[dish_ID] = "NOT_ALLOCATED"
-
-            # Create proxies of Dish Leaf Node devices
-            for name in range(0, len(device._dish_leaf_node_devices)):
-                try:
-                    device._leaf_device_proxy.append(DeviceProxy(device._dish_leaf_node_devices[name]))
-                except (DevFailed, KeyError) as except_occurred:
-                    log_msg = const.ERR_IN_CREATE_PROXY + str(except_occurred)
-                    self.logger.exception(except_occurred)
-                    device._read_activity_message = const.ERR_IN_CREATE_PROXY
-                    tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand",
-                                                 tango.ErrSeverity.ERR)
-            # Create device proxy for CSP Master Leaf Node
-            try:
-                device._csp_master_leaf_proxy = DeviceProxy(device.CspMasterLeafNodeFQDN)
-                device._csp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_CSP_MASTER_HEALTH,
-                                                           EventType.CHANGE_EVENT,
-                                                           device.health_state_cb, stateless=True)
-            except DevFailed as dev_failed:
-                log_msg = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH + str(dev_failed)
-                self.logger.exception(dev_failed)
-                device._read_activity_message = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH
-                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand",
-                                             tango.ErrSeverity.ERR)
-            # Create device proxy for SDP Master Leaf Node
-            try:
-                device._sdp_master_leaf_proxy = DeviceProxy(device.SdpMasterLeafNodeFQDN)
-                device._sdp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_SDP_MASTER_HEALTH,
-                                                           EventType.CHANGE_EVENT,
-                                                           device.health_state_cb, stateless=True)
-            except DevFailed as dev_failed:
-                log_msg = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH + str(dev_failed)
-                self.logger.exception(dev_failed)
-                device._read_activity_message = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH
-                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand",
-                                             tango.ErrSeverity.ERR)
-
-            # Create device proxy for Subarray Node
-            for subarray in range(0, len(device.TMMidSubarrayNodes)):
-                try:
-                    subarray_proxy = DeviceProxy(device.TMMidSubarrayNodes[subarray])
-                    device.subarray_health_state_map[subarray_proxy] = -1
-                    subarray_proxy.subscribe_event(const.EVT_SUBSR_HEALTH_STATE,
-                                                  EventType.CHANGE_EVENT,
-                                                  device.health_state_cb, stateless=True)
-
-                    subarray_proxy.subscribe_event(const.EVT_SUBSR_OBS_STATE,
-                                                   EventType.CHANGE_EVENT,
-                                                   device.obs_state_cb, stateless=True)
-
-                    # populate subarrayID-subarray proxy map
-                    tokens = device.TMMidSubarrayNodes[subarray].split('/')
-                    subarrayID = int(tokens[2])
-                    device.subarray_FQDN_dict[subarrayID] = subarray_proxy
-                except DevFailed as dev_failed:
-                    log_msg = const.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
-                    self.logger.exception(dev_failed)
-                    device._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE
-                    tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand",
-                                                 tango.ErrSeverity.ERR)
 
             device._read_activity_message = "Central Node initialised successfully."
             self.logger.info(device._read_activity_message)
