@@ -652,17 +652,14 @@ class SubarrayNode(SKASubarray):
         """
         super().init_command_objects()
         device_data = DeviceData.get_instance()
-        args = (self, self.state_model, self.logger)
-        assign_args = (device_data, self.state_model, self.logger)
-        config_args = (device_data, self.state_model, self.logger)
-        scan_args = (device_data, self.state_model, self.logger)
+        args = (device_data, self.state_model, self.logger)
         self.register_command_object("Track", track_command.TrackCommand(*args))
         # In order to pass self = subarray node as target device, the assign and release resource commands
         # are registered and inherited from SKASubarray
-        self.register_command_object("AssignResources", assign_resources_command.AssignResourcesCommand(*assign_args))
+        self.register_command_object("AssignResources", assign_resources_command.AssignResourcesCommand(*args))
         self.register_command_object("ReleaseAllResources", release_all_resources_command.ReleaseAllResourcesCommand(*args))
-        self.register_command_object("Configure", configure_command.ConfigureCommand(*config_args))
-        self.register_command_object("Scan", scan_command.ScanCommand(*scan_args))
+        self.register_command_object("Configure", configure_command.ConfigureCommand(*args))
+        self.register_command_object("Scan", scan_command.ScanCommand(*args))
         self.register_command_object("EndScan", end_scan_command.EndScanCommand(*args))
         self.register_command_object("End", end_command.EndCommand(*args))
         self.register_command_object("On", on_command.OnCommand(*args))
