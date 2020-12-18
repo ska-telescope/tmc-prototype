@@ -179,14 +179,32 @@ class CspMasterLeafNode(SKABaseDevice):
             """
             super().do()
             device = self.target
-            device_data = DeviceData.get_instance()
+            # device_data = DeviceData.get_instance()
             device._health_state = HealthState.OK  # Setting healthState to "OK"
             device._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
             device._test_mode = TestMode.NONE
             device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
             device._version_id = release.version
             device_data._read_activity_message = const.STR_CSP_INIT_LEAF_NODE
-            device_data.csp_master_ln_fqdn = device.CspMasterFQDN
+            # device_data.csp_master_ln_fqdn = device.CspMasterFQDN
+            device.device_proxy = None
+            if device.device_proxy == None:
+                retry = 0
+                while retry < 3:
+                    try:
+                        device.device_proxy = DeviceProxy(device.CspMasterFQDN)
+                        break
+                    except DevFailed as df:
+                        # self.logger.exception(df)
+                        if retry >= 2:
+                            tango.Except.re_throw_exception(df, "Retries exhausted while creating device proxy.",
+                                                            "Failed to create DeviceProxy of " + str(self.device_fqdn),
+                                                            "CspMasterLeafNode.get_deviceproxy()",
+                                                            tango.ErrSeverity.ERR)
+                        retry += 1
+                        continue
+            # return self.deviceproxy
+
             try:
                 device_data._read_activity_message = const.STR_CSPMASTER_FQDN + str(device.CspMasterFQDN)
                 # Creating proxy to the CSPMaster
