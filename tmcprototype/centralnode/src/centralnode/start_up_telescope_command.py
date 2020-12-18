@@ -21,7 +21,7 @@ from . import const, release
 # from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
 from centralnode.device_data import DeviceData
 from centralnode.HealthStateCb import HealthStateCb
-from centralnode.tango_client import tango_client
+from centralnode.tango_client import TangoClient
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 class StartUpTelescope(SKABaseDevice.OnCommand):
@@ -59,7 +59,50 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
 
         :rtype: (ResultCode, str)
 
-        :raises: DevFailed if error occurs while invoking command on any of the devices like SubarrayNode,
-                DishLeafNode, CSPMasterLeafNode or SDpMasterLeafNode
-
         """
+        device_data = self.target
+        self.logger.info(type(self.target))
+        device_data.health_aggreegator.csp_health_subscribe_event()
+        device_data.health_aggreegator.sdp_health_subscribe_event()
+        device_data.health_aggreegator.subarray_health_subscribe_event()
+        log_msg = const.STR_ON_CMD_ISSUED
+        self.logger.info(log_msg)
+        device_data._read_activity_message = log_msg
+        self.startup_dish()
+        self.startup_csp()
+        self.startup_sdp()
+        self.startup_subarray()
+        return (ResultCode.OK, device._read_activity_message)
+
+
+    def startup_csp(self):
+        csp_mln_client = TangoClient(device_data.csp_master_ln_fqdn)
+        self.startup_leaf_node(csp_mln_client)
+
+    def startup_sdp(self):
+        sdp_mln_client = TangoClient(device_data.sdp_master_ln_fqdn)
+        self.startup_leaf_node(sdp_mln_client)
+
+    def startup_dish(self):
+        for name in range(0, len(device_data._dish_leaf_node_devices)):
+            dish_ln_client = TangoClient(device_data._dish_leaf_node_devices[name])
+            self.startup_leaf_node(dish_ln_client)
+
+    def startup_subarray(self):
+        for subarrayID in range(1, len(device_data.tm_mid_subarray) + 1):
+            subarray_client = TangoClient(subarrayID)
+            self.startup_leaf_node(subarray_client)
+
+    def startup_leaf_node(self, tango_client):
+        try:
+            tango_client.send_command(const.CMD_ON)
+            log_msg = 'ON command invoked successfully on {}'.format(tango_client.get_device_fqdn)
+            self.logger.debug(log_msg)
+            device_data._read_activity_message = log_msg
+        except:
+            log_msg = const.ERR_EXE_ON_CMD + str(dev_failed)
+            self.logger.exception(dev_failed)
+            device_data._read_activity_message = const.ERR_EXE_ON_CMD
+            tango.Except.throw_exception(const.STR_ON_EXEC, log_msg,
+                                         "CentralNode.StartUpTelescopeCommand",
+                                         tango.ErrSeverity.ERR)
