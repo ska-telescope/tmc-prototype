@@ -34,7 +34,9 @@ class DeviceData:
         self.is_release_resources = False
         self.is_restart_command = False
         self.is_abort_command = False
+        self.is_obsreset_command = False
         self.scan_duration = 0.0
+        self.isScanRunning = False
         self.only_dishconfig_flag = False
         # TODO : Tango server class variables
         self._read_activity_message = ""
