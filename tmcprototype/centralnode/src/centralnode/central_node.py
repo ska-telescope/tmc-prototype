@@ -226,6 +226,7 @@ class CentralNode(SKABaseDevice):
                 device_data.csp_master_ln_fqdn = device.CspMasterLeafNodeFQDN
                 device_data.sdp_master_ln_fqdn = device.SdpMasterLeafNodeFQDN
                 device_data.tm_mid_subarray = device.TMMidSubarrayNodes
+                device_data.dln_prefix = device.DishLeafNodePrefix
                 self.logger.debug(const.STR_INIT_SUCCESS)
 
             except DevFailed as dev_failed:
@@ -377,7 +378,7 @@ class CentralNode(SKABaseDevice):
     # Commands
     # --------
 
-    pylint: disable=unused-variable
+    # pylint: disable=unused-variable
     # class StowAntennasCommand(BaseCommand):
     #     """
     #     A class for CentralNode's StowAntennas() command.

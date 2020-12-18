@@ -1,4 +1,29 @@
-class StowAntennasCommand(BaseCommand):
+"""
+StowAntennas class for CentralNode.
+"""
+# PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
+# Standard Python imports
+
+
+# Tango imports
+import tango
+from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
+from tango.server import run, attribute, command, device_property
+
+# Additional import
+from ska.base import SKABaseDevice
+from ska.base.commands import ResultCode, BaseCommand
+from ska.base.control_model import HealthState, ObsState
+from . import const, release
+# from centralnode.input_validator import AssignResourceValidator
+# from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
+# from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
+from centralnode.DeviceData import DeviceData
+from centralnode.tango_client import TangoClient
+# PROTECTED REGION END #    //  CentralNode.additional_import
+
+
+class StowAntennas(BaseCommand):
     """
     A class for CentralNode's StowAntennas() command.
     """
@@ -33,23 +58,25 @@ class StowAntennasCommand(BaseCommand):
         :raises: DevFailed if error occurs while invoking command of DishLeafNode
                 ValueError if error occurs if input argument json string contains invalid value
         """
-        device = self.target
+        device_data = self.target
+        self.logger.info(type(self.target))
         try:
             for leafId in range(0, len(argin)):
                 input_type_check = float(argin[leafId])
 
             log_msg = const.STR_STOW_CMD_ISSUED_CN
             self.logger.info(log_msg)
-            device._read_activity_message = log_msg
+            device_data._read_activity_message = log_msg
             for i in range(0, len(argin)):
-                device_name = device.DishLeafNodePrefix + argin[i]
+                device_name = device_data.dln_prefix + argin[i]
                 try:
-                    device_proxy = DeviceProxy(device_name)
-                    device_proxy.command_inout(const.CMD_SET_STOW_MODE)
+                    device_proxy = TangoClient(device_name)
+                    device_proxy.send_command(const.CMD_SET_STOW_MODE)
+
                 except DevFailed as dev_failed:
                     log_msg = const.ERR_EXE_STOW_CMD + str(dev_failed)
                     self.logger.exception(dev_failed)
-                    device._read_activity_message = const.ERR_EXE_STOW_CMD
+                    device_data._read_activity_message = const.ERR_EXE_STOW_CMD
                     tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
                                                  "CentralNode.StowAntennasCommand",
                                                  tango.ErrSeverity.ERR)
@@ -57,7 +84,7 @@ class StowAntennasCommand(BaseCommand):
         except ValueError as value_error:
             log_msg = const.ERR_STOW_ARGIN + str(value_error)
             self.logger.exception(value_error)
-            device._read_activity_message = const.ERR_STOW_ARGIN
+            device_data._read_activity_message = const.ERR_STOW_ARGIN
             tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
                                          "CentralNode.StowAntennasCommand",
                                          tango.ErrSeverity.ERR)
@@ -65,36 +92,9 @@ class StowAntennasCommand(BaseCommand):
         except DevFailed as dev_failed:
             log_msg = const.ERR_EXE_STOW_CMD + str(dev_failed)
             self.logger.exception(dev_failed)
-            device._read_activity_message = const.ERR_EXE_STOW_CMD
+            device_data._read_activity_message = const.ERR_EXE_STOW_CMD
             tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
                                          "CentralNode.StowAntennasCommand",
                                          tango.ErrSeverity.ERR)
 
-    # pylint: enable=unused-variable
 
-
-def is_StowAntennas_allowed(self):
-    """
-    Checks whether this command is allowed to be run in current device state.
-
-    :return: True if this command is allowed to be run in current device state.
-
-    :rtype: boolean
-
-    :raises: DevFailed if this command is not allowed to be run in current device state.
-
-    """
-    handler = self.get_command_object("StowAntennas")
-    return handler.check_allowed()
-
-
-@command(
-    dtype_in=('str',),
-    doc_in="List of Receptors to be stowed",
-)
-def StowAntennas(self, argin):
-    """
-    This command stows the specified receptors.
-    """
-    handler = self.get_command_object("StowAntennas")
-    handler(argin)

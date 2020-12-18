@@ -46,6 +46,7 @@ class DeviceData:
         self.dln_prefix = ""
         self.tm_mid_subarray = "" # initialization is correct? it is array ('str',)
         self._read_activity_message = ""
+        self.sln_prefix = ""
         self.sdp_event_id = ""
         self.csp_event_id = ""
         self.subarray_event_id = ""
