@@ -42,17 +42,12 @@ class AbortCommand(SKASubarray.AbortCommand):
             if device_data.scan_thread:
                 if device_data.scan_thread.is_alive():
                     device_data.scan_thread.cancel()  # stop timer when EndScan command is called
-            sdp_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
-            sdp_client.send_command(CMD_ABORT)
-            # device._sdp_subarray_ln_proxy.command_inout(const.CMD_ABORT)
-            self.logger.info(const.STR_CMD_ABORT_INV_SDP)
-            csp_client = TangoClient(device_data.csp_subarray_ln_fqdn)
-            csp_client.send_command(CMD_ABORT)
-            # device._csp_subarray_ln_proxy.command_inout(const.CMD_ABORT)
-            self.logger.info(const.STR_CMD_ABORT_INV_CSP)
-            device_data._dish_leaf_node_group.command_inout(const.CMD_ABORT)
-            device_data._read_activity_message = const.STR_ABORT_SUCCESS
+            self.abort_sdp(device_data)
+            self.abort_csp(device_data)
+            self.abort_dish_grp(device_data)
             self.logger.info(const.STR_ABORT_SUCCESS)
+            device_data._read_activity_message = const.STR_ABORT_SUCCESS
+            
             device_data.set_status(const.STR_ABORT_SUCCESS)
             device_data.is_abort_command = True
             return (ResultCode.STARTED, const.STR_ABORT_SUCCESS)
@@ -65,3 +60,25 @@ class AbortCommand(SKASubarray.AbortCommand):
                                          "SubarrayNode.AbortCommand",
                                          tango.ErrSeverity.ERR)
 
+    def abort_sdp(self, device_data):
+        """
+        set up sdp devices
+        """
+        #Invoke Abort command on SDP Subarray Leaf Node.
+        sdp_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
+        sdp_client.send_command(CMD_ABORT)
+        self.logger.info(const.STR_CMD_ABORT_INV_SDP)
+
+    def abort_csp(self, device_data):
+        """
+        set up csp devices
+        """
+         #Invoke Abort command on CSP Subarray Leaf Node.
+        csp_client = TangoClient(device_data.csp_subarray_ln_fqdn)
+        csp_client.send_command(CMD_ABORT)
+        self.logger.info(const.STR_CMD_ABORT_INV_CSP)
+
+    def abort_dish_grp(self, device_data):
+         # Create proxy for Dish Leaf Node Group 
+        dsh_ln_grp_client = TangoGroupClient(device_data._dish_leaf_node_group)
+        dsh_ln_grp_client.send_command(const.CMD_ABORT)

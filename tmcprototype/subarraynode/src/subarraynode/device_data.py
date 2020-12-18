@@ -38,6 +38,7 @@ class DeviceData:
         self.scan_duration = 0.0
         self.isScanRunning = False
         self.only_dishconfig_flag = False
+        self.scan_thread = None
         # TODO : Tango server class variables
         self._read_activity_message = ""
         self.sdp_subarray_ln_fqdn = ""
@@ -47,6 +48,9 @@ class DeviceData:
         self.csp_sdp_ln_health_event_id = ""
         self.csp_sdp_ln_obs_state_event_id = ""
         self.scan_configuration = ""
+        self._scan_id = ""
+        self._sb_id = ""
+        self._scan_type = ""
         self._dish_leaf_node_group = tango.Group(const.GRP_DISH_LEAF_NODE)
         self.health_state_aggr = HealthStateAggregator()
         self.obs_state_aggr = ObsStateAggregator()

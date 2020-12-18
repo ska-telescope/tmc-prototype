@@ -228,10 +228,9 @@ class SubarrayNode(SKASubarray):
             device.isScanRunning = False
             device.is_end_command = False
             device._scan_id = ""
-            device._sb_id = ""
+            # device._sb_id = ""
             device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
             device._version_id = release.version
-            device.scan_duration = 0
             device._receptor_id_list = []
             device.dishPointingStateMap = {}
             device._dish_leaf_node_proxy = []

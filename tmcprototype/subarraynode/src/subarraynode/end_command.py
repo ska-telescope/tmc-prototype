@@ -43,12 +43,8 @@ class EndCommand(SKASubarray.EndCommand):
         
         try:
             self.logger.info("End command invoked on SubarrayNode.")
-            #To read device proxy from device.SdpSubarrayLNFQDN
-            self.sdp()
-            self.logger.info(const.STR_CMD_END_INV_SDP)
-            #To read device proxy from device.CspSubarrayLNFQDN
-            self.end_csp()
-            self.logger.info(const.STR_CMD_GOTOIDLE_INV_CSP)
+            self.end_sdp(device_data)
+            self.end_csp(device_data)
             self.stop_dish_tracking()
             device_data._read_activity_message = const.STR_ENDSB_SUCCESS
             self.logger.info(const.STR_ENDSB_SUCCESS)
@@ -63,23 +59,27 @@ class EndCommand(SKASubarray.EndCommand):
                                          "SubarrayNode.EndCommand",
                                          tango.ErrSeverity.ERR)
 
-    def end_sdp(self):
-        device_data = self.target
+    def end_sdp(self, device_data):
+        """
+        set up sdp devices
+        """
+        #To read device proxy from device.SdpSubarrayLNFQDN
         sdp_saln_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
         sdp_saln_client.send_command(const.CMD_END)
+        self.logger.info(const.STR_CMD_END_INV_SDP)
 
-    def end_csp(self):
-        device_data = self.target
+    def end_csp(self, device_data):
+        """
+        set up csp devices
+        """
+        #To read device proxy from device.CspSubarrayLNFQDN
         csp_saln_client = TangoClient(device_data.csp_subarray_ln_fqdn)
         csp_saln_client.send_command(const.CMD_GOTOIDLE)
+        self.logger.info(const.STR_CMD_GOTOIDLE_INV_CSP)
 
-    def stop_dish_tracking(self, dsh_leaf_node_client):
+    def stop_dish_tracking(self, device_data):
         # TODO: Getting exception while running test cases using device mocking
-        # self.device_data = self.target
-        # device._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
-        device_data = self.target
         dsh_leaf_node_client = TangoGroupClient(device_data._dish_leaf_node_group)
-        # dsh_leaf_node_client.add_device()
         dsh_leaf_node_client.send_command(const.CMD_STOP_TRACK)
         self.logger.info(const.STR_CMD_STOP_TRACK_INV_DLN)
 
