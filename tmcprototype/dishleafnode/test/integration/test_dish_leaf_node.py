@@ -149,7 +149,6 @@ class TestDishLeafNode:
         self.wait_until_dish_mode_equals("STANDBY-FP", dish_master_dp)
         input_string = '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiverBand":"1"}}'
         dish_leaf_node_dp.Configure(input_string)
-        self.wait_for_attribute_change(previous_configuredBand, dish_master_dp.configuredBand)
         assert dish_master_dp.desiredPointing[0] != previous_timestamp
         assert dish_master_dp.configuredBand != previous_configuredBand
         assert dish_master_dp.dsIndexerPosition != previous_configuredBand
@@ -162,7 +161,6 @@ class TestDishLeafNode:
         dish_leaf_node_dp.Scan("0")
         assert dish_master_dp.pointingState == PointingState.SCAN
 
-    @pytest.mark.xfail
     def test_EndScan(self, dish_leaf_node_dp, dish_master_dp):
         dish_leaf_node_dp.SetStandbyFPMode()
         self.wait_until_dish_mode_equals("STANDBY-FP", dish_master_dp)
@@ -171,7 +169,6 @@ class TestDishLeafNode:
         dish_leaf_node_dp.Scan("0")
         assert dish_master_dp.pointingState == PointingState.SCAN
         dish_leaf_node_dp.EndScan("0")
-        self.wait_for_attribute_change(PointingState.READY, dish_master_dp.pointingState)
         assert not dish_master_dp.capturing
         assert dish_master_dp.pointingState == PointingState.READY
 
@@ -191,7 +188,6 @@ class TestDishLeafNode:
         dish_leaf_node_dp.StartCapture("0")
         previous_capturing = dish_master_dp.capturing
         dish_leaf_node_dp.StopCapture("0")
-        self.wait_for_attribute_change(previous_capturing, dish_master_dp.capturing)
         assert not dish_master_dp.capturing
 
     def test_SetStowMode(self, dish_leaf_node_dp, dish_master_dp):
