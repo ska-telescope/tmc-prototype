@@ -1,4 +1,19 @@
-class AssignResourcesCommand(BaseCommand):
+import json
+import ast
+
+# Tango imports
+import tango
+from tango import DevFailed
+
+from ska.base.commands import ResultCode, BaseCommand
+from . import const, release
+from centralnode.check_receptor_reassignment import CheckReceptorReassignment
+from centralnode.input_validator import AssignResourceValidator
+from centralnode.tango_client import TangoClient
+from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
+from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
+
+class AssignResources(BaseCommand):
     """
     A class for CentralNode's AssignResources() command.
     """
@@ -125,23 +140,24 @@ class AssignResourcesCommand(BaseCommand):
         Note: Enter input without spaces as:{"dish":{"receptorIDList_success":["0001","0002"]}}
 
         """
-        receptorIDList = []
-        argout = []
-        device = self.target
-
+        device_data = self.target 
+        device_data.receptorIDList = []
+        self.argout = []
+        
+        
         ## Validate the input JSON string.
         try:
             self.logger.info("Validating input string.")
-            input_validator = AssignResourceValidator(device.TMMidSubarrayNodes, device._dish_leaf_node_devices,
-                                                      device.DishLeafNodePrefix, self.logger)
+            input_validator = AssignResourceValidator(device_data.tm_mid_subarray, device_data._dish_leaf_node_devices,
+                                                      device_data.dln_prefix, self.logger)
             json_argument = input_validator.loads(argin)
 
             # Create subarray proxy
             subarrayID = int(json_argument['subarrayID'])
-            subarrayProxy = device.subarray_FQDN_dict[subarrayID]
+            subarrayFqdn = device_data.subarray_FQDN_dict[subarrayID]
             ## check for duplicate allocation
             self.logger.info("Checking for resource reallocation.")
-            device._check_receptor_reassignment(json_argument["dish"]["receptorIDList"])
+            check_receptor_reassignment.CheckReceptorReassignment(json_argument["dish"]["receptorIDList"])
 
             ## Allocate resources to subarray
             # Remove Subarray Id key from input json argument and send the json with
@@ -150,8 +166,9 @@ class AssignResourcesCommand(BaseCommand):
             input_json_subarray = json_argument.copy()
             del input_json_subarray["subarrayID"]
             input_to_sa = json.dumps(input_json_subarray)
-
-            resources_allocated_return = subarrayProxy.command_inout(
+            subarray_client = TangoClient(subarrayFqdn)
+         
+            resources_allocated_return = subarray_client.send_command(
                 const.CMD_ASSIGN_RESOURCES, input_to_sa)
 
             # Note: resources_allocated_return[1] contains the JSON string containing
@@ -167,11 +184,11 @@ class AssignResourcesCommand(BaseCommand):
             # Also append the allocated dish to out argument.
             for dish in range(0, len(resources_allocated)):
                 dish_ID = "dish" + (resources_allocated[dish])
-                device._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
+                device_data._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
                 receptorIDList.append(resources_allocated[dish])
 
             # Allocation successful
-            device._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
+            device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
 
             # Prepare output argument
@@ -183,7 +200,7 @@ class AssignResourcesCommand(BaseCommand):
             self.logger.debug(argout)
         except (InvalidJSONError, ResourceNotPresentError, SubarrayNotPresentError) as error:
             self.logger.exception("Exception in AssignResource(): %s", str(error))
-            device._read_activity_message = "Exception in validating input: " + str(error)
+            device_data._read_activity_message = "Exception in validating input: " + str(error)
             log_msg = const.STR_ASSIGN_RES_EXEC + str(error)
             self.logger.exception(error)
             tango.Except.throw_exception(const.STR_RESOURCE_ALLOCATION_FAILED, log_msg,
@@ -193,7 +210,7 @@ class AssignResourcesCommand(BaseCommand):
         except ResourceReassignmentError as resource_error:
             self.logger.exception("List of the dishes that are already allocated: %s", \
                                   str(resource_error.resources_reallocation))
-            device._read_activity_message = const.STR_DISH_DUPLICATE + str(resource_error.resources_reallocation)
+            device_data._read_activity_message = const.STR_DISH_DUPLICATE + str(resource_error.resources_reallocation)
             log_msg = const.STR_DISH_DUPLICATE + str(resource_error)
             self.logger.exception(resource_error)
             tango.Except.throw_exception(const.STR_RESOURCE_ALLOCATION_FAILED, log_msg,
@@ -201,7 +218,7 @@ class AssignResourcesCommand(BaseCommand):
                                          tango.ErrSeverity.ERR)
         except ValueError as ve:
             self.logger.exception("Exception in AssignResources command: %s", str(ve))
-            device._read_activity_message = "Invalid value in input: " + str(ve)
+            device_data._read_activity_message = "Invalid value in input: " + str(ve)
             log_msg = const.STR_ASSIGN_RES_EXEC + str(ve)
             self.logger.exception(ve)
             tango.Except.throw_exception(const.STR_RESOURCE_ALLOCATION_FAILED, log_msg,
@@ -219,36 +236,3 @@ class AssignResourcesCommand(BaseCommand):
 
         # PROTECTED REGION END #    //  CentralNode.AssignResources
 
-
-def is_AssignResources_allowed(self):
-    """
-    Checks whether this command is allowed to be run in current device state.
-
-    :return: True if this command is allowed to be run in current device state
-
-    :rtype: boolean
-
-    :raises: DevFailed if this command is not allowed to be run in current device state
-
-    """
-    handler = self.get_command_object("AssignResources")
-    return handler.check_allowed()
-
-
-@command(
-    dtype_in='str',
-    doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
-           "DevShort\ndish: JSON object consisting\n- receptorIDList: DevVarStringArray. "
-           "The individual string should contain dish numbers in string format with "
-           "preceding zeroes upto 3 digits. E.g. 0001, 0002",
-    dtype_out='str',
-    doc_out="information-only string",
-)
-@DebugIt()
-def AssignResources(self, argin):
-    """
-    AssignResources command invokes the AssignResources command on lower level devices.
-    """
-    handler = self.get_command_object("AssignResources")
-    message = handler(argin)
-    return message
