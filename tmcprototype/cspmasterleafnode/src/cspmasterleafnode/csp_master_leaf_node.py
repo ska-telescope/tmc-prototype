@@ -179,17 +179,16 @@ class CspMasterLeafNode(SKABaseDevice):
             """
             super().do()
             device = self.target
-            device.device_data = DeviceData.get_instance()
+            device_data = DeviceData.get_instance()
             device._health_state = HealthState.OK  # Setting healthState to "OK"
             device._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
             device._test_mode = TestMode.NONE
             device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
             device._version_id = release.version
-            device._read_activity_message = const.STR_CSP_INIT_LEAF_NODE
-            # device.device_data_obj = DeviceData.get_instance()
-            device.device_data.csp_master_ln_fqdn = device.CspMasterFQDN
+            device_data._read_activity_message = const.STR_CSP_INIT_LEAF_NODE
+            device_data.csp_master_ln_fqdn = device.CspMasterFQDN
             try:
-                device._read_activity_message = const.STR_CSPMASTER_FQDN + str(device.CspMasterFQDN)
+                device_data._read_activity_message = const.STR_CSPMASTER_FQDN + str(device.CspMasterFQDN)
                 # Creating proxy to the CSPMaster
                 log_msg = "CSP Master name: " + str(device.CspMasterFQDN)
                 self.logger.debug(log_msg)
@@ -198,7 +197,7 @@ class CspMasterLeafNode(SKABaseDevice):
                 log_msg = const.ERR_IN_CREATE_PROXY + str(device.CspMasterFQDN)
                 self.logger.debug(log_msg)
                 self.logger.exception(dev_failed)
-                device._read_activity_message = log_msg
+                device_data._read_activity_message = log_msg
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CspMasterLeafNode.InitCommand.do()",
                                              tango.ErrSeverity.ERR)
 
@@ -215,7 +214,7 @@ class CspMasterLeafNode(SKABaseDevice):
                 log_msg = const.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
                 self.logger.debug(log_msg)
                 device.set_status(const.ERR_CSP_MASTER_LEAF_INIT)
-                device._read_activity_message = log_msg
+                device_data._read_activity_message = log_msg
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CspMasterLeafNode.InitCommand.do()",
                                              tango.ErrSeverity.ERR)
 
@@ -223,9 +222,9 @@ class CspMasterLeafNode(SKABaseDevice):
             log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
             self.logger.debug(log_msg)
 
-            device._read_activity_message = const.STR_INIT_SUCCESS
-            self.logger.info(device._read_activity_message)
-            return (ResultCode.OK, device._read_activity_message)
+            device_data._read_activity_message = const.STR_INIT_SUCCESS
+            self.logger.info(device_data._read_activity_message)
+            return (ResultCode.OK, device_data._read_activity_message)
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(CspMasterLeafNode.always_executed_hook) ENABLED START #

@@ -35,7 +35,7 @@ class TangoClient:
         #         if retry >= 2:
         #             tango.Except.re_throw_exception(df, "Retries exhausted while creating device proxy.",
         #                                             "Failed to create DeviceProxy of " + str(self.device_fqdn),
-        #                                             "SubarrayNode.get_deviceproxy()", tango.ErrSeverity.ERR)
+        #                                             "CspMasterLeafNode.get_deviceproxy()", tango.ErrSeverity.ERR)
         #         retry += 1
         #         continue
         
@@ -56,7 +56,7 @@ class TangoClient:
                     if retry >= 2:
                         tango.Except.re_throw_exception(df, "Retries exhausted while creating device proxy.",
                                                         "Failed to create DeviceProxy of " + str(self.device_fqdn),
-                                                        "SubarrayNode.get_deviceproxy()", tango.ErrSeverity.ERR)
+                                                        "CspMasterLeafNode.get_deviceproxy()", tango.ErrSeverity.ERR)
                     retry += 1
                     continue
         return self.deviceproxy
@@ -72,7 +72,7 @@ class TangoClient:
         try:
             print("Inside send command aync:::::::::::::::::::::::::::")
             print("device proxy in tango client is ::::::::::::::::::",self.deviceproxy)
-            self.deviceproxy.command_inout_asynch(command_name, callback)
+            self.deviceproxy.command_inout_asynch(command_name, [], callback)
             print("after command invocation in tango client::::::::::::::::::::::::")
             # return True
         except DevFailed as dev_failed:
