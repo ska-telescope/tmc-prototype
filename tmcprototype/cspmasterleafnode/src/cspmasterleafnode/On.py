@@ -67,11 +67,15 @@ class OnCommand(SKABaseDevice.OnCommand):
             # If the array length is > 1 each array element specifies the FQDN of the CSP SubElement to switch ON.
             # device._csp_proxy.command_inout_asynch(const.CMD_ON, [], self.on_cmd_ended_cb)
             csp_mln_client_obj = TangoClient(device.csp_master_ln_fqdn)
-            csp_mln_client_obj.send_command_async(const.CMD_ON, "on_cmd_ended_cb",[])
+            print("device proxy ::::::::::::::::::::::", csp_mln_client_obj.get_deviceproxy())
+            print("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii::::::::::::")
+            csp_mln_client_obj.send_command_async(const.CMD_ON, "on_cmd_ended_cb")
+            print("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii@@@@@@@@@@@@@@@@@@@@@@@@")
             self.logger.debug(const.STR_ON_CMD_ISSUED)
             return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
 
         except DevFailed as dev_failed:
+            print("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii!!!!!!!!!!!!!!!!!!!!!!")
             log_msg = const.ERR_EXE_ON_CMD + str(dev_failed)
             self.logger.exception(dev_failed)
             device._read_activity_message = const.ERR_EXE_ON_CMD

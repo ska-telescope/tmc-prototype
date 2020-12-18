@@ -69,9 +69,13 @@ class TangoClient:
         is on other than the TMC elements as it is asynchronous command execution.
         """
         try:
-            self.deviceproxy.command_inout_asynch(command_name, argin, callback)
-            return True
+            print("Inside send command aync:::::::::::::::::::::::::::")
+            print("device proxy in tango client is ::::::::::::::::::",self.deviceproxy)
+            self.deviceproxy.command_inout_asynch(command_name, callback)
+            print("after command invocation in tango client::::::::::::::::::::::::")
+            # return True
         except DevFailed as dev_failed:
+            print("inside devFailed of tango client ::::::::::::::::::::::::")
             log_msg = "Error in invoking command " + command_name + str(dev_failed)
             # self.logger.exception(dev_failed)
             tango.Except.throw_exception("Error in invoking command " + command_name,
