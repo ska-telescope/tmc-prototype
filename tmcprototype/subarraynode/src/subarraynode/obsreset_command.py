@@ -43,15 +43,10 @@ class ObsResetCommand(SKASubarray.ObsResetCommand):
             device_data._sb_id = ""
             device_data.scan_duration = 0
             device_data._scan_type = ""
+            self.obsreset_sdp(device_data)
+            self.obsreset_csp(device_data)
+            self.obsreset_dsh_grp(device_data)
             
-            # device._sdp_subarray_ln_proxy.command_inout(const.CMD_OBSRESET)
-            sdp_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
-            sdp_client.send_command(const.CMD_OBSRESET)
-            self.logger.info(const.STR_CMD_OBSRESET_INV_SDP)
-            # device._csp_subarray_ln_proxy.command_inout(const.CMD_OBSRESET)
-            csp_client = TangoClient(device_data.csp_subarray_ln_fqdn)
-            csp_client.send_command(const.CMD_OBSRESET)
-            self.logger.info(const.STR_CMD_OBSRESET_INV_CSP)
             #TODO:
             # device._dish_leaf_node_group.command_inout(const.CMD_OBSRESET)
             self.logger.info(const.STR_CMD_OBSRESET_INV_DISH_GROUP)
@@ -69,3 +64,27 @@ class ObsResetCommand(SKASubarray.ObsResetCommand):
                                          log_msg,
                                          "SKASubarray.ObsResetCommand",
                                          tango.ErrSeverity.ERR)
+
+    def obsreset_sdp(self, device_data):
+        """
+        set up sdp devices
+        """
+        #Invoke ObsReset command on SDP Subarray Leaf Node.
+        sdp_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
+        sdp_client.send_command(const.CMD_OBSRESET)
+        self.logger.info(const.STR_CMD_OBSRESET_INV_SDP)
+
+    def obsreset_csp(self, device_data):
+        """
+        set up csp devices
+        """
+        #Invoke ObsReset command on CSP Subarray Leaf Node.
+        csp_client = TangoClient(device_data.csp_subarray_ln_fqdn)
+        csp_client.send_command(const.CMD_OBSRESET)
+        self.logger.info(const.STR_CMD_OBSRESET_INV_CSP)
+
+    def obsreset_dsh_grp(self, device_data):
+        # Invoke ObsReset command on group of Dishes.
+        dsh_leaf_node_client = TangoGroupClient(device_data._dish_leaf_node_group)
+        dsh_leaf_node_client.send_command(const.CMD_OBSRESET)
+        self.logger.info(const.STR_CMD_OBSRESET_INV_DISH_GROUP)
