@@ -533,21 +533,21 @@ class SubarrayNode(SKASubarray):
             device.only_dishconfig_flag = False
             device.scan_thread = None
              # Create proxy for CSP Subarray Leaf Node
-            device._csp_subarray_ln_proxy = None
-            device._csp_subarray_ln_proxy = device.get_deviceproxy(device.CspSubarrayLNFQDN)
-            # Create proxy for SDP Subarray Leaf Node
-            device._sdp_subarray_ln_proxy = None
-            device._sdp_subarray_ln_proxy = device.get_deviceproxy(device.SdpSubarrayLNFQDN)
-            device._csp_sa_proxy = device.get_deviceproxy(device.CspSubarrayFQDN)
-            device._sdp_sa_proxy = device.get_deviceproxy(device.SdpSubarrayFQDN)
+            # device._csp_subarray_ln_proxy = None
+            # device._csp_subarray_ln_proxy = device.get_deviceproxy(device.CspSubarrayLNFQDN)
+            # # Create proxy for SDP Subarray Leaf Node
+            # device._sdp_subarray_ln_proxy = None
+            # device._sdp_subarray_ln_proxy = device.get_deviceproxy(device.SdpSubarrayLNFQDN)
+            # device._csp_sa_proxy = device.get_deviceproxy(device.CspSubarrayFQDN)
+            # device._sdp_sa_proxy = device.get_deviceproxy(device.SdpSubarrayFQDN)
 
             device.command_class_object()
             device._read_activity_message = const.STR_SA_INIT_SUCCESS
             self.logger.info(device._read_activity_message)
             # Step 1: Create object of configuration model
-            device.device_data = DeviceData.get_instance()
-            device.device_data.sdp_subarray_ln_fqdn = device.SdpSubarrayLNFQDN
-            device.device_data.csp_subarray_ln_fqdn = device.CspSubarrayLNFQDN
+            device_data = DeviceData.get_instance()
+            device_data.sdp_subarray_ln_fqdn = device.SdpSubarrayLNFQDN
+            device_data.csp_subarray_ln_fqdn = device.CspSubarrayLNFQDN
             
             # device.configuration_model = configure_command.configuration_model()
             return (ResultCode.OK, device._read_activity_message)

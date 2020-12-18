@@ -16,6 +16,7 @@ from ska.base import SKASubarray
 from subarraynode.tango_group_client import TangoGroupClient
 from subarraynode.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
+from subarraynode.end_scan_command import EndScan
 
 
 class ScanCommand(SKASubarray.ScanCommand):
@@ -100,4 +101,5 @@ class ScanCommand(SKASubarray.ScanCommand):
 
     def call_end_scan_command(self):
         device_data = self.target
-        device_data.endscan_obj.do())
+        end_scan_obj = EndScan()
+        device_data.end_scan_obj.do()
