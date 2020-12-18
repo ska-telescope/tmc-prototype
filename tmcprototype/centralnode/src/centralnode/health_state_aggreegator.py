@@ -2,20 +2,9 @@
 health_state_aggreegator class for CentralNode.
 """
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
-# Standard Python imports
-# import json
-# import ast
-
-# Tango imports
-import tango
-from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
-from tango.server import run, attribute, command, device_property
-
 # Additional import
-from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode, BaseCommand
-from ska.base.control_model import HealthState, ObsState
-from . import const, release
+from ska.base.control_model import HealthState
+from . import const
 from centralnode.device_data import DeviceData
 from centralnode.tango_client import tango_client
 # PROTECTED REGION END #    //  CentralNode.additional_import
@@ -32,12 +21,11 @@ class HealthStateAggreegator:
         :raises: Devfailed exception if erroe occures while subscribing event.
         """
         self.logger.info(type(self.target))
-        device_data = self.target
+        device_data = DeviceData.get_instance()
         csp_mln_client = TangoClient(device_data.csp_master_ln_fqdn)
         try:
-            device_data.sdp_event_id = csp_mln_client.subscribe_event(const.EVT_SUBSR_CSP_MASTER_HEALTH,
-                                                                       EventType.CHANGE_EVENT,
-                                                                       self.health_state_cb, stateless=True)
+            device_data.csp_event_id = csp_mln_client.subscribe_attribute(const.EVT_SUBSR_CSP_MASTER_HEALTH,
+                                                                    self.health_state_cb)
         except DevFailed as dev_failed:
             log_msg = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH + str(dev_failed)
             self.logger.exception(dev_failed)
@@ -54,9 +42,8 @@ class HealthStateAggreegator:
         device_data = self.target
         sdp_mln_client = TangoClient(device_data.csp_master_ln_fqdn)
         try:
-            device_data.sdp_event_id = sdp_mln_client.subscribe_event(const.EVT_SUBSR_SDP_MASTER_HEALTH,
-                                                                       EventType.CHANGE_EVENT,
-                                                                       self.health_state_cb, stateless=True)
+            device_data.sdp_event_id = sdp_mln_client.subscribe_attribute(const.EVT_SUBSR_SDP_MASTER_HEALTH,
+                                                                       self.health_state_cb)
         except DevFailed as dev_failed:
             log_msg = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH + str(dev_failed)
             self.logger.exception(dev_failed)
@@ -73,9 +60,8 @@ class HealthStateAggreegator:
         for subarrayID in range(1, len(device_data.tm_mid_subarray) + 1):
             subarray_client = TangoClient(subarrayID)
             try:
-                device_data.subarray_event_id = subarray_client.subscribe_event(const.EVT_SUBSR_HEALTH_STATE,
-                                           EventType.CHANGE_EVENT,
-                                           self.health_state_cb, stateless=True)
+                device_data.subarray_event_id = subarray_client.subscribe_attribute(const.EVT_SUBSR_HEALTH_STATE,
+                                           self.health_state_cb)
             except DevFailed as dev_failed:
                 log_msg = const.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
                 self.logger.exception(dev_failed)

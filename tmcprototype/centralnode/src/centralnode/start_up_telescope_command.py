@@ -2,23 +2,12 @@
 StartUpTelescope class for CentralNode.
 """
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
-# Standard Python imports
-import json
-import ast
-
-# Tango imports
-import tango
-from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
-from tango.server import run, attribute, command, device_property
 
 # Additional import
 from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode, BaseCommand
-from ska.base.control_model import HealthState, ObsState
-from . import const, release
-# from centralnode.input_validator import AssignResourceValidator
-# from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
-# from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
+from ska.base.commands import ResultCode
+from ska.base.control_model import HealthState
+from . import const
 from centralnode.device_data import DeviceData
 from centralnode.HealthStateCb import HealthStateCb
 from centralnode.tango_client import TangoClient
