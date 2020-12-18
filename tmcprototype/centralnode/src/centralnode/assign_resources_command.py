@@ -142,7 +142,7 @@ class AssignResources(BaseCommand):
         """
         device_data = self.target 
         device_data.receptorIDList = []
-        self.argout = []
+        argout = []
         
         
         ## Validate the input JSON string.
