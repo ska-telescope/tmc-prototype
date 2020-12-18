@@ -136,8 +136,9 @@ class ObsStateAggregator:
                 # Assign Resource command success
                 self.logger.info("Calling AssignResource command succeeded() method")
                 self.this_server.assign_obj.succeeded()
+
     def receive_addresses_cb(self, event):
-            """
+        """
         Retrieves the receiveAddresses attribute of SDP Subarray.
 
         :param event: A TANGO_CHANGE event on SDP Subarray receiveAddresses attribute.
