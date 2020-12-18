@@ -32,7 +32,10 @@ from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
 from centralnode.DeviceData import DeviceData
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
-__all__ = ["CentralNode", "main"]
+__all__ = ["CentralNode", "main", "assign_resources_command","check_receptor_reassignment", "const", "device_data"
+           "exceptions.py", "health_state_aggreegator", "input_validator", "release", "release_resources_command"
+           "stand_by_telescope_command.py", "start_up_telescope_command.py", "stow_antennas_command", "tango_client"
+           "tango_server.py"]
 
 
 class CentralNode(SKABaseDevice):
@@ -76,88 +79,6 @@ class CentralNode(SKABaseDevice):
             exception_message = const.ERR_RECEPTOR_ID_REALLOCATION + (str(duplicate_allocation_dish_ids))
             raise ResourceReassignmentError(exception_message)
 
-    def health_state_cb(self, evt):
-        """
-        Retrieves the subscribed Subarray health state, aggregates them to calculate the
-        telescope health state.
-
-        :param evt: A TANGO_CHANGE event on Subarray healthState.
-
-        :return: None
-
-        :raises: KeyError if error occurs while setting Subarray healthState
-        """
-        try:
-            log_msg = 'Health state attribute change event is : ' + str(evt)
-            self.logger.info(log_msg)
-            if not evt.err:
-                health_state = evt.attr_value.value
-                if const.PROP_DEF_VAL_TM_MID_SA1 in evt.attr_name:
-                    self._subarray1_health_state = health_state
-                    self.subarray_health_state_map[evt.device] = health_state
-                elif const.PROP_DEF_VAL_TM_MID_SA2 in evt.attr_name:
-                    self._subarray2_health_state = health_state
-                    self.subarray_health_state_map[evt.device] = health_state
-                elif const.PROP_DEF_VAL_TM_MID_SA3 in evt.attr_name:
-                    self._subarray3_health_state = health_state
-                    self.subarray_health_state_map[evt.device] = health_state
-                elif self.CspMasterLeafNodeFQDN in evt.attr_name:
-                    self._csp_master_leaf_health = health_state
-                elif self.SdpMasterLeafNodeFQDN in evt.attr_name:
-                    self._sdp_master_leaf_health = health_state
-                else:
-                    self.logger.debug(const.EVT_UNKNOWN)
-                    # TODO: For future reference
-                    # self._read_activity_message = const.EVT_UNKNOWN
-
-                counts = {
-                    HealthState.OK: 0,
-                    HealthState.DEGRADED: 0,
-                    HealthState.FAILED: 0,
-                    HealthState.UNKNOWN: 0
-                }
-
-                for subsystem_health_field_name in ['csp_master_leaf_health', 'sdp_master_leaf_health']:
-                    health_state = getattr(self, f"_{subsystem_health_field_name}")
-                    counts[health_state] += 1
-
-                for subarray_health_state in list(self.subarray_health_state_map.values()):
-                    counts[subarray_health_state] += 1
-
-                # Calculating health_state for SubarrayNode, CspMasterLeafNode, SdpMasterLeafNode
-                if counts[HealthState.OK] == len(list(self.subarray_health_state_map.values())) + 2:
-                    self._telescope_health_state = HealthState.OK
-                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_OK
-                    self.logger.info(str_log)
-                    self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
-                                                                               ) + const.STR_OK
-                elif counts[HealthState.FAILED] != 0:
-                    self._telescope_health_state = HealthState.FAILED
-                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_FAILED
-                    self.logger.info(str_log)
-                    self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
-                                                                               ) + const.STR_FAILED
-                elif counts[HealthState.DEGRADED] != 0:
-                    self._telescope_health_state = HealthState.DEGRADED
-                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_DEGRADED
-                    self.logger.info(str_log)
-                    self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
-                                                                               ) + const.STR_DEGRADED
-                else:
-                    self._telescope_health_state = HealthState.UNKNOWN
-                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_UNKNOWN
-                    self.logger.info(str_log)
-                    self._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
-                                                                               ) + const.STR_UNKNOWN
-            else:
-                # TODO: For future reference
-                self._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(evt)
-                self.logger.critical(const.ERR_SUBSR_SA_HEALTH_STATE)
-        except KeyError as key_error:
-            # TODO: For future reference
-            self._read_activity_message = const.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
-            log_msg = const.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
-            self.logger.critical(log_msg)
 
     def obs_state_cb(self, evt):
         """
@@ -307,8 +228,6 @@ class CentralNode(SKABaseDevice):
                 device_data.sdp_master_ln_fqdn = device.SdpMasterLeafNodeFQDN
                 device_data.tm_mid_subarray = device.TMMidSubarrayNodes
                 device_data.num_dishes = device.NumDishes
-
-
                 self.logger.debug(const.STR_INIT_SUCCESS)
 
             except DevFailed as dev_failed:
@@ -454,7 +373,7 @@ class CentralNode(SKABaseDevice):
     # Commands
     # --------
 
-    # pylint: disable=unused-variable
+    pylint: disable=unused-variable
     # class StowAntennasCommand(BaseCommand):
     #     """
     #     A class for CentralNode's StowAntennas() command.
@@ -527,272 +446,90 @@ class CentralNode(SKABaseDevice):
     #                                          "CentralNode.StowAntennasCommand",
     #                                          tango.ErrSeverity.ERR)
     #
-    # # pylint: enable=unused-variable
-    #
-    # def is_StowAntennas_allowed(self):
-    #     """
-    #     Checks whether this command is allowed to be run in current device state.
-    #
-    #     :return: True if this command is allowed to be run in current device state.
-    #
-    #     :rtype: boolean
-    #
-    #     :raises: DevFailed if this command is not allowed to be run in current device state.
-    #
-    #     """
-    #     handler = self.get_command_object("StowAntennas")
-    #     return handler.check_allowed()
-    #
-    # @command(
-    #     dtype_in=('str',),
-    #     doc_in="List of Receptors to be stowed",
-    # )
-    # def StowAntennas(self, argin):
-    #     """
-    #     This command stows the specified receptors.
-    #     """
-    #     handler = self.get_command_object("StowAntennas")
-    #     handler(argin)
+    # pylint: enable=unused-variable
 
-    # class StandByTelescopeCommand(SKABaseDevice.OffCommand):
-    #     """
-    #     A class for CentralNode's StandByTelescope() command.
-    #     """
-    #
-    #     def check_allowed(self):
-    #
-    #         """
-    #         Checks whether this command is allowed to be run in current device state
-    #
-    #         :return: True if this command is allowed to be run in current device state
-    #
-    #         :rtype: boolean
-    #
-    #         :raises: DevFailed if this command is not allowed to be run in current device state
-    #         """
-    #         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-    #             tango.Except.throw_exception("Command StandByTelescope is not allowed in current state.",
-    #                                          "Failed to invoke StandByTelescope command on CentralNode.",
-    #                                          "CentralNode.StandByTelescope()",
-    #                                          tango.ErrSeverity.ERR)
-    #         return True
-    #
-    #     def do(self):
-    #         """
-    #         Sets the CentralNode into OFF state. Invokes the respective command on lower level nodes adn devices.
-    #
-    #         :return: A tuple containing a return code and a string message indicating status.
-    #         The message is for information purpose only.
-    #
-    #         :rtype: (ResultCode, str)
-    #
-    #         :raises: DevFailed if error occurs while invoking command on any of the devices like SubarrayNode,
-    #                 DishLeafNode, CSPMasterLeafNode or SDpMasterLeafNode
-    #
-    #         """
-    #         device = self.target
-    #         log_msg = const.STR_STANDBY_CMD_ISSUED
-    #         self.logger.info(log_msg)
-    #         device._read_activity_message = log_msg
-    #
-    #         for name in range(0, len(device._dish_leaf_node_devices)):
-    #             try:
-    #                 device._leaf_device_proxy[name].command_inout(const.CMD_SET_STANDBY_MODE)
-    #                 log_msg = const.CMD_SET_STANDBY_MODE + "invoked on" + str(device._leaf_device_proxy[name])
-    #                 self.logger.info(log_msg)
-    #                 device._leaf_device_proxy[name].command_inout(const.CMD_OFF)
-    #             except DevFailed as dev_failed:
-    #                 log_msg = const.ERR_EXE_STANDBY_CMD + str(dev_failed)
-    #                 self.logger.exception(dev_failed)
-    #                 device._read_activity_message = const.ERR_EXE_STANDBY_CMD
-    #                 tango.Except.throw_exception(const.STR_STANDBY_EXEC, log_msg,
-    #                                              "CentralNode.StandByTelescopeCommand",
-    #                                              tango.ErrSeverity.ERR)
-    #
-    #         try:
-    #             device._csp_master_leaf_proxy.command_inout(const.CMD_OFF)
-    #             device._csp_master_leaf_proxy.command_inout(const.CMD_STANDBY, [])
-    #             self.logger.info(const.STR_CMD_STANDBY_CSP_DEV)
-    #         except DevFailed as dev_failed:
-    #             log_msg = const.ERR_EXE_STANDBY_CMD + str(dev_failed)
-    #             self.logger.exception(dev_failed)
-    #             device._read_activity_message = const.ERR_EXE_STANDBY_CMD
-    #             tango.Except.throw_exception(const.STR_STANDBY_EXEC, log_msg,
-    #                                          "CentralNode.StandByTelescopeCommand",
-    #                                          tango.ErrSeverity.ERR)
-    #
-    #         try:
-    #             device._sdp_master_leaf_proxy.command_inout(const.CMD_OFF)
-    #             device._sdp_master_leaf_proxy.command_inout(const.CMD_STANDBY)
-    #             self.logger.info(const.STR_CMD_STANDBY_SDP_DEV)
-    #         except DevFailed as dev_failed:
-    #             log_msg = const.ERR_EXE_STANDBY_CMD + str(dev_failed)
-    #             self.logger.exception(dev_failed)
-    #             device._read_activity_message = const.ERR_EXE_STANDBY_CMD
-    #             tango.Except.throw_exception(const.STR_STANDBY_EXEC, log_msg,
-    #                                          "CentralNode.StandByTelescopeCommand",
-    #                                          tango.ErrSeverity.ERR)
-    #         try:
-    #             for subarrayID in range(1, len(device.TMMidSubarrayNodes) + 1):
-    #                 device.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_OFF)
-    #                 self.logger.info(const.STR_CMD_STANDBY_SA_DEV)
-    #
-    #         except DevFailed as dev_failed:
-    #             log_msg = const.ERR_EXE_STANDBY_CMD + str(dev_failed)
-    #             self.logger.exception(dev_failed)
-    #             device._read_activity_message = const.ERR_EXE_STANDBY_CMD
-    #             tango.Except.throw_exception(const.STR_STANDBY_EXEC, log_msg,
-    #                                          "CentralNode.StandByTelescopeCommand",
-    #                                          tango.ErrSeverity.ERR)
-    #         return (ResultCode.OK, device._read_activity_message)
-    #
-    # def is_StandByTelescope_allowed(self):
-    #     """
-    #     Checks whether this command is allowed to be run in current device state.
-    #
-    #     :return: True if this command is allowed to be run in current device state.
-    #
-    #     :rtype: boolean
-    #
-    #     :raises: DevFailed if this command is not allowed to be run in current device state.
-    #
-    #     """
-    #     handler = self.get_command_object("StandByTelescope")
-    #     return handler.check_allowed()
-    #
-    # @command(
-    #     dtype_out="DevVarLongStringArray",
-    #     doc_out="[ResultCode, information-only string]",
-    # )
-    # def StandByTelescope(self):
-    #     """
-    #     This command invokes SetStandbyLPMode() command on DishLeafNode, StandBy() command on CspMasterLeafNode and
-    #     SdpMasterLeafNode and Off() command on SubarrayNode and sets CentralNode into OFF state.
-    #
-    #     """
-    #     handler = self.get_command_object("StandByTelescope")
-    #     (result_code, message) = handler()
-    #     return [[result_code], [message]]
-    #
-    # class StartUpTelescopeCommand(SKABaseDevice.OnCommand):
-    #     """
-    #     A class for CentralNode's StartupCommand() command.
-    #     """
-    #     def check_allowed(self):
-    #
-    #         """
-    #         Checks whether this command is allowed to be run in current device state
-    #
-    #         :return: True if this command is allowed to be run in current device state
-    #
-    #         :rtype: boolean
-    #
-    #         :raises: DevFailed if this command is not allowed to be run in current device state
-    #
-    #         """
-    #         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-    #             tango.Except.throw_exception("Command StartUpTelescope is not allowed in current state.",
-    #                                          "Failed to invoke StartUpTelescope command on CentralNode.",
-    #                                          "CentralNode.StartUpTelescope()",
-    #                                          tango.ErrSeverity.ERR)
-    #         return True
-    #
-    #     def do(self):
-    #         """
-    #         Setting the startup state to TRUE enables the telescope to accept subarray commands as per the subarray
-    #         model. Set the CentralNode into ON state.
-    #
-    #         :param argin: None.
-    #
-    #         :return: A tuple containing a return code and a string message indicating status.
-    #         The message is for information purpose only.
-    #
-    #         :rtype: (ResultCode, str)
-    #
-    #         :raises: DevFailed if error occurs while invoking command on any of the devices like SubarrayNode,
-    #                 DishLeafNode, CSPMasterLeafNode or SDpMasterLeafNode
-    #
-    #         """
-    #         device = self.target
-    #         log_msg = const.STR_ON_CMD_ISSUED
-    #         self.logger.info(log_msg)
-    #         device._read_activity_message = log_msg
-    #
-    #         for name in range(0, len(device._dish_leaf_node_devices)):
-    #             try:
-    #                 device._leaf_device_proxy[name].command_inout(const.CMD_ON)
-    #                 device._leaf_device_proxy[name].command_inout(const.CMD_SET_OPERATE_MODE)
-    #                 log_msg = const.CMD_SET_OPERATE_MODE + 'invoked on' + str(device._leaf_device_proxy[name])
-    #                 self.logger.info(log_msg)
-    #             except DevFailed as dev_failed:
-    #                 log_msg = const.ERR_EXE_ON_CMD + str(dev_failed)
-    #                 self.logger.exception(dev_failed)
-    #                 device._read_activity_message = const.ERR_EXE_ON_CMD
-    #                 tango.Except.throw_exception(const.STR_ON_EXEC, log_msg,
-    #                                              "CentralNode.StartUpTelescopeCommand",
-    #                                              tango.ErrSeverity.ERR)
-    #         try:
-    #             device._csp_master_leaf_proxy.command_inout(const.CMD_ON)
-    #             self.logger.info(const.STR_CMD_ON_CSP_DEV)
-    #
-    #         except DevFailed as dev_failed:
-    #             log_msg = const.ERR_EXE_ON_CMD + str(dev_failed)
-    #             self.logger.exception(dev_failed)
-    #             device._read_activity_message = const.ERR_EXE_ON_CMD
-    #             tango.Except.throw_exception(const.STR_ON_EXEC, log_msg,
-    #                                          "CentralNode.StartUpTelescopeCommand",
-    #                                          tango.ErrSeverity.ERR)
-    #         try:
-    #             device._sdp_master_leaf_proxy.command_inout(const.CMD_ON)
-    #             self.logger.info(const.STR_CMD_ON_SDP_DEV)
-    #         except DevFailed as dev_failed:
-    #             log_msg = const.ERR_EXE_ON_CMD + str(dev_failed)
-    #             self.logger.exception(dev_failed)
-    #             device._read_activity_message = const.ERR_EXE_ON_CMD
-    #             tango.Except.throw_exception(const.STR_ON_EXEC, log_msg,
-    #                                          "CentralNode.StartUpTelescopeCommand",
-    #                                          tango.ErrSeverity.ERR)
-    #         try:
-    #             for subarrayID in range(1, len(device.TMMidSubarrayNodes) + 1):
-    #                 device.subarray_FQDN_dict[subarrayID].command_inout(const.CMD_ON)
-    #                 self.logger.info(const.STR_CMD_ON_SA_DEV)
-    #         except DevFailed as dev_failed:
-    #             log_msg = const.ERR_EXE_ON_CMD + str(dev_failed)
-    #             self.logger.exception(dev_failed)
-    #             device._read_activity_message = const.ERR_EXE_ON_CMD
-    #             tango.Except.throw_exception(const.STR_ON_EXEC, log_msg,
-    #                                          "CentralNode.StartUpTelescopeCommand",
-    #                                          tango.ErrSeverity.ERR)
-    #         return (ResultCode.OK, device._read_activity_message)
-    #
-    # def is_StartUpTelescope_allowed(self):
-    #     """
-    #     Checks whether this command is allowed to be run in current device state.
-    #
-    #     :return: True if this command is allowed to be run in current device state.
-    #
-    #     :rtype: boolean
-    #
-    #     :raises: DevFailed if this command is not allowed to be run in current device state.
-    #
-    #     """
-    #     handler = self.get_command_object("StartUpTelescope")
-    #     return handler.check_allowed()
-    #
-    # @command(
-    #     dtype_out="DevVarLongStringArray",
-    #     doc_out="[ResultCode, information-only string]",
-    # )
-    # @DebugIt()
-    # def StartUpTelescope(self):
-    #     """
-    #     This command invokes SetOperateMode() command on DishLeadNode, On() command on CspMasterLeafNode,
-    #     SdpMasterLeafNode and SubarrayNode and sets the Central Node into ON state.
-    #     """
-    #     handler = self.get_command_object("StartUpTelescope")
-    #     (result_code, message) = handler()
-    #     return [[result_code], [message]]
-    #
+    def is_StowAntennas_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state.
+
+        :return: True if this command is allowed to be run in current device state.
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run in current device state.
+
+        """
+        handler = self.get_command_object("StowAntennas")
+        return handler.check_allowed()
+
+    @command(
+        dtype_in=('str',),
+        doc_in="List of Receptors to be stowed",
+    )
+    def StowAntennas(self, argin):
+        """
+        This command stows the specified receptors.
+        """
+        handler = self.get_command_object("StowAntennas")
+        handler(argin)
+
+    def is_StandByTelescope_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state.
+
+        :return: True if this command is allowed to be run in current device state.
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run in current device state.
+
+        """
+        handler = self.get_command_object("StandByTelescope")
+        return handler.check_allowed()
+
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    def StandByTelescope(self):
+        """
+        This command invokes SetStandbyLPMode() command on DishLeafNode, StandBy() command on CspMasterLeafNode and
+        SdpMasterLeafNode and Off() command on SubarrayNode and sets CentralNode into OFF state.
+
+        """
+        handler = self.get_command_object("StandByTelescope")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
+
+
+    def is_StartUpTelescope_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state.
+
+        :return: True if this command is allowed to be run in current device state.
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run in current device state.
+
+        """
+        handler = self.get_command_object("StartUpTelescope")
+        return handler.check_allowed()
+
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="[ResultCode, information-only string]",
+    )
+    @DebugIt()
+    def StartUpTelescope(self):
+        """
+        This command invokes SetOperateMode() command on DishLeadNode, On() command on CspMasterLeafNode,
+        SdpMasterLeafNode and SubarrayNode and sets the Central Node into ON state.
+        """
+        handler = self.get_command_object("StartUpTelescope")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
+
     # class AssignResourcesCommand(BaseCommand):
     #     """
     #     A class for CentralNode's AssignResources() command.
@@ -1221,14 +958,14 @@ class CentralNode(SKABaseDevice):
         """
         Initialises the command handlers for commands supported by this device.
         """
-        obj = HealthState_agreegator()
         super().init_command_objects()
-        args = (self, self.state_model, self.logger)
-        self.register_command_object("StowAntennas", self.StowAntennasCommand(*args))
-        self.register_command_object("StartUpTelescope", self.StartUpTelescopeCommand(*args))
-        self.register_command_object("StandByTelescope", self.StandByTelescopeCommand(*args))
-        self.register_command_object("AssignResources", self.AssignResourcesCommand(*args))
-        self.register_command_object("ReleaseResources", self.ReleaseResourcesCommand(*args))
+        device_data = DeviceData.get_instance()
+        args = (device_data, device_data.state_model, device_data.logger)
+        self.register_command_object("AssignResources", assign_resources_command.AssignResources(*args))
+        self.register_command_object("StowAntennas", stow_antennas_command.StowAntennas(*args))
+        self.register_command_object("StartUpTelescope", start_up_telescope_command.StartUpTelescope(*args))
+        self.register_command_object("StandByTelescope", stand_by_telescope_command.StandByTelescope(*args))
+        self.register_command_object("ReleaseResources", release_resources_command.ReleaseResources(*args))
 
 # ----------
 # Run server

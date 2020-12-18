@@ -3,8 +3,8 @@ health_state_aggreegator class for CentralNode.
 """
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 # Standard Python imports
-import json
-import ast
+# import json
+# import ast
 
 # Tango imports
 import tango
@@ -25,76 +25,63 @@ class HealthStateAggreegator:
     Aggrergator class for health state event supscription and health state
     callback.
     """
-    def do(self):
-        """
-        Create proxy of sdp,csp and HealthState event subscription.
-
-        :return: None
-        """
-        self.logger.info(type(self.target))
-        self.csp_proxy()
-        self.csp_health_subscribe_event()
-        self.sdp_proxy()
-        self.sdp_health_subscribe_event()
-
-    def csp_proxy(self):
-        """
-        Crate CspMasterLeafNode proxy
-
-        :return: None
-
-        :raises: DevFailed if error occurs while creating proxy.
-        """
-        device_data = self.target
-        try:
-            self.csp_mln_client = TangoClient(device_data.csp_master_ln_fqdn)
-
-        except DevFailed as dev_failed:
-            log_msg = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH + str(dev_failed)
-            self.logger.exception(dev_failed)
-            device_data._read_activity_message = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH
-            tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand",
-                                         tango.ErrSeverity.ERR)
-
     def csp_health_subscribe_event(self):
         """
         Method for event subscription on CspMasterLeafNode.
 
-        :return: None
+        :raises: Devfailed exception if erroe occures while subscribing event.
         """
+        self.logger.info(type(self.target))
         device_data = self.target
-        device_data.sdp_event_id = self.sdp_mln_client.subscribe_event(const.EVT_SUBSR_SDP_MASTER_HEALTH,
+        csp_mln_client = TangoClient(device_data.csp_master_ln_fqdn)
+        try:
+            device_data.sdp_event_id = csp_mln_client.subscribe_event(const.EVT_SUBSR_CSP_MASTER_HEALTH,
                                                                        EventType.CHANGE_EVENT,
                                                                        self.health_state_cb, stateless=True)
-
-    def sdp_proxy(self):
-        """
-       Crate SdpMasterLeafNode proxy
-
-       :return: None
-
-       :raises: DevFailed if error occurs while creating proxy.
-       """
-        try:
-            self.sdp_mln_client = TangoClient(device_data.sdp_master_ln_fqdn)
-
         except DevFailed as dev_failed:
-            log_msg = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH + str(dev_failed)
+            log_msg = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH + str(dev_failed)
             self.logger.exception(dev_failed)
-            device_data._read_activity_message = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH
-            tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand",
+            device_data._read_activity_message = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH
+            tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.HealthStateSubscribeEvent",
                                          tango.ErrSeverity.ERR)
 
     def sdp_health_subscribe_event(self):
         """
         Method for event subscription on SdpMasterLeafNode.
 
-        :return: None
+        :raises: Devfailed exception if erroe occures while subscribing event.
         """
         device_data = self.target
-        device_data.sdp_event_id = self.sdp_mln_client.subscribe_event(const.EVT_SUBSR_SDP_MASTER_HEALTH,
+        sdp_mln_client = TangoClient(device_data.csp_master_ln_fqdn)
+        try:
+            device_data.sdp_event_id = sdp_mln_client.subscribe_event(const.EVT_SUBSR_SDP_MASTER_HEALTH,
                                                                        EventType.CHANGE_EVENT,
                                                                        self.health_state_cb, stateless=True)
+        except DevFailed as dev_failed:
+            log_msg = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH + str(dev_failed)
+            self.logger.exception(dev_failed)
+            device_data._read_activity_message = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH
+            tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.HealthStateSubscribeEvent",
+                                         tango.ErrSeverity.ERR)
+
+    def subarray_health_subscribe_event(self):
+        """
+        Method for event subscription on SubarrayNode.
+
+        :raises: Devfailed exception if erroe occures while subscribing event.
+        """
+        for subarrayID in range(1, len(device_data.tm_mid_subarray) + 1):
+            subarray_client = TangoClient(subarrayID)
+            try:
+                device_data.subarray_event_id = subarray_client.subscribe_event(const.EVT_SUBSR_HEALTH_STATE,
+                                           EventType.CHANGE_EVENT,
+                                           self.health_state_cb, stateless=True)
+            except DevFailed as dev_failed:
+                log_msg = const.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
+                self.logger.exception(dev_failed)
+                device._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE
+                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.HealthStateSubscribeEvent",
+                                         tango.ErrSeverity.ERR)
 
     def health_state_cb(self, evt):
         """

@@ -51,11 +51,6 @@ class DeviceData:
         self.csp_event_id = ""
         self.health_aggreegator = HealthStateAggreegator()
 
-
-
-        # self.subarray2 = ""
-        # self.subarray3 = ""
-
     @staticmethod
     def get_instance():
         if DeviceData.__instance == None:
