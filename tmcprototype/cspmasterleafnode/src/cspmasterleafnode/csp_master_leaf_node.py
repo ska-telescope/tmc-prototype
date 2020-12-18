@@ -179,7 +179,7 @@ class CspMasterLeafNode(SKABaseDevice):
             """
             super().do()
             device = self.target
-            # device_data = device_data.get_instance()
+            device_data = DeviceData.get_instance()
             device._health_state = HealthState.OK  # Setting healthState to "OK"
             device._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
             device._test_mode = TestMode.NONE
@@ -187,7 +187,7 @@ class CspMasterLeafNode(SKABaseDevice):
             device._version_id = release.version
             device._read_activity_message = const.STR_CSP_INIT_LEAF_NODE
             # device.device_data_obj = DeviceData.get_instance()
-            device.csp_master_ln_fqdn = device.CspMasterFQDN
+            device.device_data.csp_master_ln_fqdn = device.CspMasterFQDN
             try:
                 device._read_activity_message = const.STR_CSPMASTER_FQDN + str(device.CspMasterFQDN)
                 # Creating proxy to the CSPMaster
