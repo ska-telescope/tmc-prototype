@@ -38,244 +38,12 @@ __all__ = ["SubarrayNode", "main", "assign_resources_command", "release_all_reso
            "DeviceData","TangoClient"]
 
 
-class SubarrayHealthState:
-
-    @staticmethod
-    def generate_health_state_log_msg(health_state, device_name, event):
-        if isinstance(health_state, HealthState):
-            return (
-                const.STR_HEALTH_STATE + str(device_name) + const.STR_ARROW + str(health_state.name.upper()))
-        else:
-            return const.STR_HEALTH_STATE_UNKNOWN_VAL + str(event)
-
-    @staticmethod
-    def calculate_health_state(health_states):
-        """
-        Calculates aggregated health state of Subarray.
-        """
-        unique_states = set(health_states)
-        if unique_states == set([HealthState.OK]):
-            return HealthState.OK
-        elif HealthState.FAILED in unique_states:
-            return HealthState.FAILED
-        elif HealthState.DEGRADED in unique_states:
-            return HealthState.DEGRADED
-        else:
-            return HealthState.UNKNOWN
-
-
 class SubarrayNode(SKASubarray):
     """
     Provides the monitoring and control interface required by users as well as
     other TM Components (such as OET, Central Node) for a Subarray.
     """
-    # PROTECTED REGION ID(SubarrayNode.class_variable) ENABLED START #
-    def command_class_object(self):
-        """
-        Sets up the command objects
-        :return: None
-        """
-        args = (self, self.state_model, self.logger)
-        assign_args = (self, self.state_model, self.logger)
-        config_args = (self, self.state_model, self.logger)
-        scan_args = (self, self.state_model, self.logger)
-        self.configure_obj = configure_command.ConfigureCommand(*config_args)
-        self.assign_obj = assign_resources_command.AssignResourcesCommand(*assign_args)
-        self.release_obj = release_all_resources_command.ReleaseAllResourcesCommand(*args)
-        self.scan_obj = scan_command.ScanCommand(*scan_args)
-        self.endscan_obj = end_scan_command.EndScanCommand(*args)
-        self.end_obj = end_command.EndCommand(*args)
-        self.restart_obj = restart_command.RestartCommand(*args)
-        self.abort_obj = abort_command.AbortCommand(*args)
-        self.init_obj = self.InitCommand(*args)
-        self.on_obj = on_command.OnCommand(*args)
-        self.off_obj = off_command.OffCommand(*args)
-        self.obsreset_obj = obsreset_command.ObsResetCommand(*args)
-
-    def receive_addresses_cb(self, event):
-        """
-        Retrieves the receiveAddresses attribute of SDP Subarray.
-
-        :param event: A TANGO_CHANGE event on SDP Subarray receiveAddresses attribute.
-
-        :return: None
-        """
-        if not event.err:
-            # self._receive_addresses_map = event.attr_value.value
-            self.device_data._receive_addresses_map = event.attr_value.value
-        else:
-            log_msg = const.ERR_SUBSR_RECEIVE_ADDRESSES_SDP_SA + str(event)
-            self.logger.debug(log_msg)
-            self._read_activity_message = log_msg
-
-    def health_state_cb(self, event):
-        """
-        Retrieves the subscribed health states, aggregates them
-        to calculate the overall subarray health state.
-
-        :param event: A TANGO_CHANGE event on Subarray healthState.
-
-        :return: None
-        """
-
-        device_name = event.device.dev_name()
-        log_msg= "Device name is : " + str(device_name)
-        self.logger.debug(log_msg)
-        if not event.err:
-            event_health_state = event.attr_value.value
-            self.subarray_ln_health_state_map[device_name] = event_health_state
-
-            log_message = SubarrayHealthState.generate_health_state_log_msg(
-                event_health_state, device_name, event)
-            # self._read_activity_message = log_message
-            self.activityMessage = log_message
-            self._health_state = SubarrayHealthState.calculate_health_state(
-                self.subarray_ln_health_state_map.values())
-        else:
-            log_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(device_name) + str(event)
-            # self._read_activity_message = log_message
-            self.activityMessage = log_message
-
-    def observation_state_cb(self, evt):
-        """
-        Retrieves the subscribed CSP_Subarray AND SDP_Subarray  obsState.
-
-        :param evt: A TANGO_CHANGE event on CSP and SDP Subarray obsState.
-
-        :return: None
-        """
-        try:
-            log_msg = 'Observation State Attribute change event is: ' + str(evt)
-            self.logger.info(log_msg)
-            if not evt.err:
-                self._observetion_state = evt.attr_value.value
-                log_msg = 'Observation State Attribute value is: ' + str(self._observetion_state)
-                self.logger.info(log_msg)
-                if const.PROP_DEF_VAL_TMCSP_MID_SALN in evt.attr_name:
-                    self._csp_sa_obs_state = self._observetion_state
-                    self._read_activity_message = const.STR_CSP_SUBARRAY_OBS_STATE + str(
-                        self._csp_sa_obs_state)
-                elif const.PROP_DEF_VAL_TMSDP_MID_SALN in evt.attr_name:
-                    self._sdp_sa_obs_state = self._observetion_state
-                    self._read_activity_message = const.STR_SDP_SUBARRAY_OBS_STATE + str(
-                        self._sdp_sa_obs_state)
-                else:
-                    self.logger.debug(const.EVT_UNKNOWN)
-                    self._read_activity_message = const.EVT_UNKNOWN
-                self.calculate_observation_state()
-
-            else:
-                log_msg = const.ERR_SUBSR_CSPSDPSA_OBS_STATE + str(evt)
-                self.logger.debug(log_msg)
-                self._read_activity_message = log_msg
-        except KeyError as key_error:
-            log_msg = const.ERR_CSPSDP_SUBARRAY_OBS_STATE + str(key_error)
-            self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_CSPSDP_SUBARRAY_OBS_STATE + str(key_error)
-
-    def calculate_observation_state(self):
-        """
-        Calculates aggregated observation state of Subarray.
-        """
-        pointing_state_count_track = 0
-        pointing_state_count_slew = 0
-        pointing_state_count_ready = 0
-        log_msg = "Dish PointingStateMap is :" + str(self.dishPointingStateMap)
-        self.logger.info(log_msg)
-        log_msg = "self._csp_sa_obs_state is: " + str(self._csp_sa_obs_state)
-        self.logger.info(log_msg)
-        log_msg = "self._sdp_sa_obs_state is: " + str(self._sdp_sa_obs_state)
-        self.logger.info(log_msg)
-        for value in list(self.dishPointingStateMap.values()):
-            if value == PointingState.TRACK:
-                pointing_state_count_track = pointing_state_count_track + 1
-            elif value == PointingState.SLEW:
-                pointing_state_count_slew = pointing_state_count_slew + 1
-            elif value == PointingState.READY:
-                pointing_state_count_ready = pointing_state_count_ready + 1
-        if ((self._csp_sa_obs_state == ObsState.EMPTY) and (self._sdp_sa_obs_state ==\
-                ObsState.EMPTY)):
-            if self.is_release_resources:
-                self.logger.info("Calling ReleaseAllResource command succeeded() method")
-                self.release_obj.succeeded()
-            elif self.is_restart_command:
-                self.logger.info("Calling Restart command succeeded() method")
-                self.restart_obj.succeeded()
-                # TODO: As a action for Restart command invoke ReleaseResources command on SubarrayNode
-
-        elif ((self._csp_sa_obs_state == ObsState.ABORTED) and (self._sdp_sa_obs_state == ObsState.ABORTED)):
-            if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
-                if self.is_abort_command:
-                    self.logger.info("Calling ABORT command succeeded() method")
-                    self.abort_obj.succeeded()
-        elif ((self._csp_sa_obs_state == ObsState.READY) and (self._sdp_sa_obs_state == ObsState.READY)):
-            log_msg = "Pointing state in track counts = " + str(pointing_state_count_track)
-            self.logger.debug(log_msg)
-            log_msg = "No of dished being checked =" + str(len(self.dishPointingStateMap.values()))
-            self.logger.debug(log_msg)
-            if pointing_state_count_track == len(self.dishPointingStateMap.values()):
-                if not self.is_abort_command:
-                    if self.is_scan_completed:
-                        self.logger.info("Calling EndScan command succeeded() method")
-                        self.endscan_obj.succeeded()
-                    else:
-                        # Configure command success
-                        self.logger.info("Calling Configure command succeeded() method")
-                        self.configure_obj.succeeded()
-        elif ((self._csp_sa_obs_state == ObsState.IDLE) and (self._sdp_sa_obs_state ==\
-                ObsState.IDLE)):
-            if self.is_end_command:
-                if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
-                    # End command success
-                    self.logger.info("Calling End command succeeded() method")
-                    # As a part of end command send Stop track command on dish leaf node
-                    #  TODO: Stop track command will be invoked once tango group command issue gets resolved.
-                    # self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
-                    self.end_obj.succeeded()
-            elif self.is_obsreset_command:
-                if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
-                    self.logger.info("Calling ObsReset command succeeded() method")
-                    self.obsreset_obj.succeeded()
-
-            else:
-                # Assign Resource command success
-                self.logger.info("Calling AssignResource command succeeded() method")
-                self.assign_obj.succeeded()
-            # TODO: For future use
-            # if len(self.dishPointingStateMap.values()) != 0:
-            #     if pointing_state_count_track == len(self.dishPointingStateMap.values()):
-            #         if self.only_dishconfig_flag == True:
-            #             if not self.isScanRunning:
-            #
-            #                 self._obs_state = ObsState.READY
-            #         else:
-            #             self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
-            #             self._obs_state = ObsState.IDLE
-            #     else:
-            #         # Assign Resource command success
-            #         # self._obs_state = ObsState.IDLE
-            #         print("Calling AssignResource command succeeded() method")
-            #         self.assign_obj.succeeded()
-
-    def get_deviceproxy(self, device_fqdn):
-        """
-        Returns device proxy for given FQDN.
-        """
-        retry = 0
-        device_proxy = None
-        while retry < 3:
-            try:
-                device_proxy = DeviceProxy(device_fqdn)
-                break
-            except DevFailed as df:
-                self.logger.exception(df)
-                if retry >= 2:
-                    tango.Except.re_throw_exception(df, "Retries exhausted while creating device proxy.",
-                                                    "Failed to create DeviceProxy of " + str(device_fqdn),
-                                                    "SubarrayNode.get_deviceproxy()", tango.ErrSeverity.ERR)
-                retry += 1
-                continue
-        return device_proxy
+    # PROTECTED REGION ID(SubarrayNode.class_variable) ENABLED START 
 
     def _remove_subarray_dish_lns_health_states(self):
         subarray_ln_health_state_map_copy = self.subarray_ln_health_state_map.copy()
@@ -335,60 +103,7 @@ class SubarrayNode(SKASubarray):
 
         return len(self._receptor_id_list)
 
-    def pointing_state_cb(self, evt):
-        """
-        Retrieves the subscribed DishMaster health state, aggregate them to evaluate
-        health state of the Subarray.
-
-        :param evt: A TANGO_CHANGE event on DishMaster healthState.
-
-        :return: None
-
-        """
-        try:
-            log_msg= 'Pointing state Attribute change event is : ' + str(evt)
-            self.logger.info(log_msg)
-            if not evt.err:
-                self._dish_pointing_state = evt.attr_value.value
-                self.dishPointingStateMap[evt.device] = self._dish_pointing_state
-                if self._dish_pointing_state == PointingState.READY:
-                    str_log = const.STR_POINTING_STATE + str(evt.device) + const.STR_READY
-                    self.logger.debug(str_log)
-                    self._read_activity_message = str_log
-                elif self._dish_pointing_state == PointingState.SLEW:
-                    str_log = const.STR_POINTING_STATE + str(evt.device) + const.STR_SLEW
-                    self.logger.debug(str_log)
-                    self._read_activity_message = str_log
-                elif self._dish_pointing_state == PointingState.TRACK:
-                    str_log = const.STR_POINTING_STATE + str(evt.device) + const.STR_TRACK
-                    self.logger.debug(str_log)
-                    self._read_activity_message = str_log
-                elif self._dish_pointing_state == PointingState.SCAN:
-                    str_log = const.STR_POINTING_STATE + str(evt.device) + const.STR_SCAN
-                    self.logger.debug(str_log)
-                    self._read_activity_message = str_log
-                else:
-                    self.logger.debug(const.STR_HEALTH_STATE_UNKNOWN_VAL, evt)
-                    self._read_activity_message = const.STR_POINTING_STATE_UNKNOWN_VAL + str(evt)
-                self.calculate_observation_state()
-            else:
-                log_msg = const.ERR_SUBSR_DSH_POINTING_STATE + str(evt.errors)
-                self.logger.debug(log_msg)
-                self._read_activity_message = const.ERR_SUBSR_DSH_POINTING_STATE + str(evt.errors)
-        except KeyError as key_err:
-            log_msg = const.ERR_SETPOINTING_CALLBK + str(key_err)
-            self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_SETPOINTING_CALLBK + str(key_err)
-
-    def validate_obs_state(self):
-        if self._obs_state == ObsState.EMPTY:
-            self.logger.info("Subarray is in required obsstate, hence resources will be assigned.")
-        else:
-            self.logger.error("Subarray is not in EMPTY obsState")
-            self._read_activity_message = "Error in device obsState."
-            raise InvalidObsStateError("Subarray is not in EMPTY obsState, \
-                please check the subarray obsState")
-
+    
     def remove_receptors_from_group(self):
         """
         Deletes tango group of the resources allocated in the subarray.
@@ -524,34 +239,15 @@ class SubarrayNode(SKASubarray):
             device._pointing_state_event_id = []
             device._dishLnVsHealthEventID = {}
             device._dishLnVsPointingStateEventID = {}
-            # device._cspSdpLnHealthEventID = {}
-            # device._cspSdpLnObsStateEventID = {}
-            # device.subarray_ln_health_state_map = {}
-            device._subarray_health_state = HealthState.OK  #Aggregated Subarray Health State
-            device._csp_sa_obs_state = None
-            device._sdp_sa_obs_state = None
             device.only_dishconfig_flag = False
             device.scan_thread = None
-            # Create proxy for CSP Subarray Leaf Node
-            # device._csp_subarray_ln_proxy = None
-            # device._csp_subarray_ln_proxy = device.get_deviceproxy(device.CspSubarrayLNFQDN)
-            # Create proxy for SDP Subarray Leaf Node
-            # device._sdp_subarray_ln_proxy = None
-            # device._sdp_subarray_ln_proxy = device.get_deviceproxy(device.SdpSubarrayLNFQDN)
-            # device._csp_sa_proxy = device.get_deviceproxy(device.CspSubarrayFQDN)
-            # device._sdp_sa_proxy = device.get_deviceproxy(device.SdpSubarrayFQDN)
-
-            device.command_class_object()
             device._read_activity_message = const.STR_SA_INIT_SUCCESS
-            self.logger.info(device._read_activity_message)
             # Step 1: Create object of configuration model
             device.device_data = DeviceData.get_instance()
             device.device_data.sdp_subarray_ln_fqdn = device.SdpSubarrayLNFQDN
             device.device_data.csp_subarray_ln_fqdn = device.CspSubarrayLNFQDN
-            device.device_data.csp_sa_proxy = device.CspSubarrayFQDN
-            device.device_data.sdp_sa_proxy = device.SdpSubarrayFQDN
-            
-            # device.configuration_model = configure_command.configuration_model()
+            device.device_data.csp_sa_fqdn = device.CspSubarrayFQDN
+            device.device_data.sdp_sa_fqdn = device.SdpSubarrayFQDN
             return (ResultCode.OK, device._read_activity_message)
 
     def always_executed_hook(self):
@@ -648,20 +344,33 @@ class SubarrayNode(SKASubarray):
         super().init_command_objects()
         device_data = DeviceData.get_instance()
         args = (device_data, self.state_model, self.logger)
+        self.configure_obj = configure_command.ConfigureCommand(*args)
+        self.assign_obj = assign_resources_command.AssignResourcesCommand(*args)
+        self.release_obj = release_all_resources_command.ReleaseAllResourcesCommand(*args)
+        self.scan_obj = scan_command.ScanCommand(*args)
+        self.endscan_obj = end_scan_command.EndScanCommand(*args)
+        self.end_obj = end_command.EndCommand(*args)
+        self.restart_obj = restart_command.RestartCommand(*args)
+        self.abort_obj = abort_command.AbortCommand(*args)
+        self.init_obj = self.InitCommand(*args)
+        self.on_obj = on_command.OnCommand(*args)
+        self.off_obj = off_command.OffCommand(*args)
+        self.obsreset_obj = obsreset_command.ObsResetCommand(*args)
+
         self.register_command_object("Track", track_command.TrackCommand(*args))
         # In order to pass self = subarray node as target device, the assign and release resource commands
         # are registered and inherited from SKASubarray
-        self.register_command_object("AssignResources", assign_resources_command.AssignResourcesCommand(*args))
-        self.register_command_object("ReleaseAllResources", release_all_resources_command.ReleaseAllResourcesCommand(*args))
-        self.register_command_object("Configure", configure_command.ConfigureCommand(*args))
-        self.register_command_object("Scan", scan_command.ScanCommand(*args))
-        self.register_command_object("EndScan", end_scan_command.EndScanCommand(*args))
-        self.register_command_object("End", end_command.EndCommand(*args))
-        self.register_command_object("On", on_command.OnCommand(*args))
-        self.register_command_object("Off", off_command.OffCommand(*args))
-        self.register_command_object("Abort", abort_command.AbortCommand(*args))
-        self.register_command_object("Restart", restart_command.RestartCommand(*args))
-        self.register_command_object("ObsReset", obsreset_command.ObsResetCommand(*args))
+        self.register_command_object("AssignResources", self.assign_obj)
+        self.register_command_object("ReleaseAllResources", self.release_obj)
+        self.register_command_object("Configure", self.configure_obj)
+        self.register_command_object("Scan", self.scan_obj)
+        self.register_command_object("EndScan", self.endscan_obj)
+        self.register_command_object("End", self.end_obj)
+        self.register_command_object("On", self.on_obj)
+        self.register_command_object("Off", self.off_obj)
+        self.register_command_object("Abort", self.abort_obj)
+        self.register_command_object("Restart", self.restart_obj)
+        self.register_command_object("ObsReset", self.obsreset_obj)
 
 # ----------
 # Run server

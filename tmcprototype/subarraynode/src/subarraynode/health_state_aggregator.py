@@ -2,6 +2,8 @@
 from . import const
 from subarraynode.device_data import DeviceData
 from ska.base.control_model import HealthState
+from subarraynode.tango_client import TangoClient
+from subarraynode.tango_server_helper import TangoServerHelper
 
 class HealthStateAggregator:
     """
@@ -9,12 +11,34 @@ class HealthStateAggregator:
     """
     def __init__(self):
         self.subarray_ln_health_state_map = {}
+        self.device_data = DeviceData()
+        self.csp_client = TangoClient(self.device_data.csp_subarray_ln_fqdn)
+        self.sdp_client = TangoClient(self.device_data.sdp_subarray_ln_fqdn)
+        self.this_server = TangoServerHelper.get_instance()
+    
+    def subscribe(self):
+        # TODO: dev_name() where to keep this API?
+        self.subarray_ln_health_state_map[self.csp_client.dev_name()] = (HealthState.UNKNOWN)
+        # Subscribe cspsubarrayHealthState (forwarded attribute) of CspSubarray
+        csp_event_id = self.csp_client.subscribe_attribute(const.EVT_CSPSA_HEALTH, self.health_state_cb)
+        self.device_data.csp_sdp_ln_health_event_id[self.csp_client] = csp_event_id
+        log_msg = const.STR_CSP_LN_VS_HEALTH_EVT_ID + str(self.device_data.csp_sdp_ln_health_event_id)
+        self.logger.debug(log_msg)
+        self.this_server.set_status(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
+        self.logger.info(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
+
+        self.subarray_ln_health_state_map[self.sdp_client.dev_name()] = (HealthState.UNKNOWN)
+        # Subscribe sdpSubarrayHealthState (forwarded attribute) of SdpSubarray
+        sdp_event_id = self.sdp_client.subscribe_attribute(const.EVT_SDPSA_HEALTH, self.health_state_cb)   
+        self.device_data.csp_sdp_ln_health_event_id[self.sdp_client] = sdp_event_id
+        log_msg = const.STR_SDP_LN_VS_HEALTH_EVT_ID + str(self.device_data.csp_sdp_ln_health_event_id)
+        self.logger.debug(log_msg)
+        self.this_server.set_status(const.STR_SDP_SA_LEAF_INIT_SUCCESS)
 
     def health_state_cb(self, event):
         """
         Retrieves the subscribed health states, aggregates them
         to calculate the overall subarray health state.
-
         :param event: A TANGO_CHANGE event on Subarray healthState.
 
         :return: None
@@ -30,8 +54,10 @@ class HealthStateAggregator:
                 event_health_state, device_name, event)
             # self._read_activity_message = log_message
             self.activityMessage = log_message
-            self._health_state = self.calculate_health_state(
+            health_state = self.calculate_health_state(
                 self.subarray_ln_health_state_map.values())
+
+            self.this_server._health_state = health_state
         else:
             log_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(device_name) + str(event)
             # self._read_activity_message = log_message
@@ -57,3 +83,17 @@ class HealthStateAggregator:
             return HealthState.DEGRADED
         else:
             return HealthState.UNKNOWN
+
+    def unsubscribe(self):
+        """
+        This function unsubscribes all health state events given by the event ids and their
+        corresponding DeviceProxy objects.
+
+        :param proxy_event_id_map: dict
+            A mapping of '<DeviceProxy>': <event_id>.
+
+        :return: None
+
+        """
+        for tango_client, event_id in self.device_data.csp_sdp_ln_health_event_id.items():
+            tango_client.unsubscribe_attr(event_id)

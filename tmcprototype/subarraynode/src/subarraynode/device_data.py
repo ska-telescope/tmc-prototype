@@ -42,6 +42,7 @@ class DeviceData:
         self._read_activity_message = ""
         self.sdp_subarray_ln_fqdn = ""
         self.csp_subarray_ln_fqdn = ""
+        self.sdp_sa_fqdn = ""
         self._receive_addresses_map = ""
         self.csp_sdp_ln_health_event_id = ""
         self.csp_sdp_ln_obs_state_event_id = ""
@@ -49,7 +50,8 @@ class DeviceData:
         self._dish_leaf_node_group = tango.Group(const.GRP_DISH_LEAF_NODE)
         self.health_state_aggr = HealthStateAggregator()
         self.obs_state_aggr = ObsStateAggregator()
-
+        self.csp_sa_obs_state = None
+        self.sdp_sa_obs_state = None
         # TODO: For future use
         self.receptor_id_list = []
 
@@ -59,18 +61,4 @@ class DeviceData:
             DeviceData()
         return DeviceData.__instance
     
-    def receive_addresses_cb(self, event):
-        """
-        Retrieves the receiveAddresses attribute of SDP Subarray.
 
-        :param event: A TANGO_CHANGE event on SDP Subarray receiveAddresses attribute.
-
-        :return: None
-        """
-        if not event.err:
-            # self._receive_addresses_map = event.attr_value.value
-            self._receive_addresses_map = event.attr_value.value
-        else:
-            log_msg = const.ERR_SUBSR_RECEIVE_ADDRESSES_SDP_SA + str(event)
-            self.logger.debug(log_msg)
-            self._read_activity_message = log_msg
