@@ -23,6 +23,7 @@ from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode, BaseCommand
 from ska.base.control_model import HealthState, SimulationMode, TestMode
 from . import const, release, On, Off, StandBy, tango_client, device_data
+from .device_data import DeviceData
 
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
 
@@ -185,7 +186,8 @@ class CspMasterLeafNode(SKABaseDevice):
             device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
             device._version_id = release.version
             device._read_activity_message = const.STR_CSP_INIT_LEAF_NODE
-
+            # device.device_data_obj = DeviceData.get_instance()
+            device.csp_master_ln_fqdn = device.CspMasterFQDN
             try:
                 device._read_activity_message = const.STR_CSPMASTER_FQDN + str(device.CspMasterFQDN)
                 # Creating proxy to the CSPMaster

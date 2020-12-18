@@ -10,7 +10,6 @@ from ska.base.control_model import HealthState, SimulationMode, TestMode
 from . import const, release, tango_client, device_data
 from .tango_client import TangoClient
 from .device_data import DeviceData
-
 class OnCommand(SKABaseDevice.OnCommand):
     """
     A class for CspMasterLeafNode's On() command.

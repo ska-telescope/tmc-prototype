@@ -96,74 +96,74 @@ def test_on_should_command_to_on_with_callback_method(mock_csp_master, event_sub
     assert const.STR_COMMAND + const.CMD_ON in device_proxy.activityMessage
 
 
-def test_off_should_command_to_off_with_callback_method(mock_csp_master):
-    device_proxy=mock_csp_master[1]
-
-    device_proxy.On()
-    device_proxy.Off()
-    
-    #TODO: Off command is not generating event error in current implementation. Will be updated later.
-    # dummy_event = command_callback(const.CMD_OFF)
-    # event_subscription_map[const.CMD_OFF](dummy_event)
-    # assert const.STR_COMMAND + const.CMD_OFF in tango_context.device.activityMessage
-    
-    assert device_proxy.activityMessage in const.STR_OFF_CMD_ISSUED
-
-
-def test_standby_should_command_with_callback_method_with_event_error(mock_csp_master, event_subscription):
-    device_proxy=mock_csp_master[1]
-
-    device_proxy.Standby([])
-    dummy_event = command_callback_with_event_error(const.CMD_STANDBY)
-    event_subscription[const.CMD_STANDBY](dummy_event)
-    
-    assert const.ERR_INVOKING_CMD + const.CMD_STANDBY in device_proxy.activityMessage
-
-
-def test_on_should_command_with_callback_method_with_event_error(mock_csp_master, event_subscription ):
-    device_proxy=mock_csp_master[1]
-
-    device_proxy.On()
-    dummy_event = command_callback_with_event_error(const.CMD_ON)
-    event_subscription[const.CMD_ON](dummy_event)
-    
-    assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
-
-
-def test_on_command_should_raise_dev_failed(mock_csp_master):
-    csp_proxy_mock, device_proxy = mock_csp_master[:2]
-    csp_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
-    with pytest.raises(tango.DevFailed) as df:
-        device_proxy.On()
-    assert const.ERR_DEVFAILED_MSG in str(df.value)
-
-
-def test_standby_command_should_raise_dev_failed(mock_csp_master):
-    csp_proxy_mock, device_proxy = mock_csp_master[:2]
-    csp_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
-    with pytest.raises(tango.DevFailed) as df:
-        device_proxy.standby([])
-    assert const.ERR_DEVFAILED_MSG in str(df.value)
-
-
-def raise_devfailed_exception(*args):
-    # "This function is called to raise DevFailed exception with arguments."
-    tango.Except.throw_exception(const.STR_CMD_FAILED, const.ERR_DEVFAILED_MSG,
-                                 "", tango.ErrSeverity.ERR)
-
-
-#TODO: FOR FUTURE USE
-@pytest.mark.xfail(reason="Off command is not generating event error in current implementation. "
-                          "Will be updated later.")
-def test_off_should_command_with_callback_method_with_event_error(mock_csp_master ,event_subscription):
-    device_proxy=mock_csp_master[1]
-
-    device_proxy.On()
-    device_proxy.Off()
-    dummy_event = command_callback_with_event_error(const.CMD_OFF)
-    event_subscription[const.CMD_OFF](dummy_event)
-    
-    assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
+# def test_off_should_command_to_off_with_callback_method(mock_csp_master):
+#     device_proxy=mock_csp_master[1]
+#
+#     device_proxy.On()
+#     device_proxy.Off()
+#
+#     #TODO: Off command is not generating event error in current implementation. Will be updated later.
+#     # dummy_event = command_callback(const.CMD_OFF)
+#     # event_subscription_map[const.CMD_OFF](dummy_event)
+#     # assert const.STR_COMMAND + const.CMD_OFF in tango_context.device.activityMessage
+#
+#     assert device_proxy.activityMessage in const.STR_OFF_CMD_ISSUED
+#
+#
+# def test_standby_should_command_with_callback_method_with_event_error(mock_csp_master, event_subscription):
+#     device_proxy=mock_csp_master[1]
+#
+#     device_proxy.Standby([])
+#     dummy_event = command_callback_with_event_error(const.CMD_STANDBY)
+#     event_subscription[const.CMD_STANDBY](dummy_event)
+#
+#     assert const.ERR_INVOKING_CMD + const.CMD_STANDBY in device_proxy.activityMessage
+#
+#
+# def test_on_should_command_with_callback_method_with_event_error(mock_csp_master, event_subscription ):
+#     device_proxy=mock_csp_master[1]
+#
+#     device_proxy.On()
+#     dummy_event = command_callback_with_event_error(const.CMD_ON)
+#     event_subscription[const.CMD_ON](dummy_event)
+#
+#     assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
+#
+#
+# def test_on_command_should_raise_dev_failed(mock_csp_master):
+#     csp_proxy_mock, device_proxy = mock_csp_master[:2]
+#     csp_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+#     with pytest.raises(tango.DevFailed) as df:
+#         device_proxy.On()
+#     assert const.ERR_DEVFAILED_MSG in str(df.value)
+#
+#
+# def test_standby_command_should_raise_dev_failed(mock_csp_master):
+#     csp_proxy_mock, device_proxy = mock_csp_master[:2]
+#     csp_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+#     with pytest.raises(tango.DevFailed) as df:
+#         device_proxy.standby([])
+#     assert const.ERR_DEVFAILED_MSG in str(df.value)
+#
+#
+# def raise_devfailed_exception(*args):
+#     # "This function is called to raise DevFailed exception with arguments."
+#     tango.Except.throw_exception(const.STR_CMD_FAILED, const.ERR_DEVFAILED_MSG,
+#                                  "", tango.ErrSeverity.ERR)
+#
+#
+# #TODO: FOR FUTURE USE
+# @pytest.mark.xfail(reason="Off command is not generating event error in current implementation. "
+#                           "Will be updated later.")
+# def test_off_should_command_with_callback_method_with_event_error(mock_csp_master ,event_subscription):
+#     device_proxy=mock_csp_master[1]
+#
+#     device_proxy.On()
+#     device_proxy.Off()
+#     dummy_event = command_callback_with_event_error(const.CMD_OFF)
+#     event_subscription[const.CMD_OFF](dummy_event)
+#
+#     assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
 
 
 def command_callback(command_name):
