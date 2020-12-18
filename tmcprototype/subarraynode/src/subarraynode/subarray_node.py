@@ -531,7 +531,7 @@ class SubarrayNode(SKASubarray):
             device._pointing_state_event_id = []
             device._dishLnVsHealthEventID = {}
             device._dishLnVsPointingStateEventID = {}
-            device._cspSdpLnHealthEventID = {}
+            # device._cspSdpLnHealthEventID = {}
             device._cspSdpLnObsStateEventID = {}
             device.subarray_ln_health_state_map = {}
             device._subarray_health_state = HealthState.OK  #Aggregated Subarray Health State
@@ -539,14 +539,14 @@ class SubarrayNode(SKASubarray):
             device._sdp_sa_obs_state = None
             device.only_dishconfig_flag = False
             device.scan_thread = None
-             # Create proxy for CSP Subarray Leaf Node
-            device._csp_subarray_ln_proxy = None
-            device._csp_subarray_ln_proxy = device.get_deviceproxy(device.CspSubarrayLNFQDN)
+            # Create proxy for CSP Subarray Leaf Node
+            # device._csp_subarray_ln_proxy = None
+            # device._csp_subarray_ln_proxy = device.get_deviceproxy(device.CspSubarrayLNFQDN)
             # Create proxy for SDP Subarray Leaf Node
-            device._sdp_subarray_ln_proxy = None
-            device._sdp_subarray_ln_proxy = device.get_deviceproxy(device.SdpSubarrayLNFQDN)
-            device._csp_sa_proxy = device.get_deviceproxy(device.CspSubarrayFQDN)
-            device._sdp_sa_proxy = device.get_deviceproxy(device.SdpSubarrayFQDN)
+            # device._sdp_subarray_ln_proxy = None
+            # device._sdp_subarray_ln_proxy = device.get_deviceproxy(device.SdpSubarrayLNFQDN)
+            # device._csp_sa_proxy = device.get_deviceproxy(device.CspSubarrayFQDN)
+            # device._sdp_sa_proxy = device.get_deviceproxy(device.SdpSubarrayFQDN)
 
             device.command_class_object()
             device._read_activity_message = const.STR_SA_INIT_SUCCESS
@@ -555,6 +555,8 @@ class SubarrayNode(SKASubarray):
             device.device_data = DeviceData.get_instance()
             device.device_data.sdp_subarray_ln_fqdn = device.SdpSubarrayLNFQDN
             device.device_data.csp_subarray_ln_fqdn = device.CspSubarrayLNFQDN
+            device.device_data.csp_sa_proxy = device.CspSubarrayFQDN
+            device.device_data.sdp_sa_proxy = device.SdpSubarrayFQDN
             
             # device.configuration_model = configure_command.configuration_model()
             return (ResultCode.OK, device._read_activity_message)
