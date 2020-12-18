@@ -6,7 +6,7 @@ health_state_aggreegator class for CentralNode.
 from ska.base.control_model import HealthState
 from . import const
 from centralnode.device_data import DeviceData
-from centralnode.tango_client import tango_client
+from centralnode.tango_client import TangoClient
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 class HealthStateAggreegator:
@@ -39,7 +39,7 @@ class HealthStateAggreegator:
 
         :raises: Devfailed exception if erroe occures while subscribing event.
         """
-        device_data = self.target
+        device_data = DeviceData.get_instance()
         sdp_mln_client = TangoClient(device_data.csp_master_ln_fqdn)
         try:
             device_data.sdp_event_id = sdp_mln_client.subscribe_attribute(const.EVT_SUBSR_SDP_MASTER_HEALTH,
@@ -59,6 +59,8 @@ class HealthStateAggreegator:
         """
         for subarrayID in range(1, len(device_data.tm_mid_subarray) + 1):
             subarray_client = TangoClient(subarrayID)
+            #updating the subarray_health_state_map with device name (as ska_mid/tm_subarray_node/1) and its value which is required in callback
+            device_data.subarray_health_state_map[device_data.tm_mid_subarray(subarrayID-1)] = -1
             try:
                 device_data.subarray_event_id = subarray_client.subscribe_attribute(const.EVT_SUBSR_HEALTH_STATE,
                                            self.health_state_cb)
@@ -88,13 +90,13 @@ class HealthStateAggreegator:
                 health_state = evt.attr_value.value
                 if const.PROP_DEF_VAL_TM_MID_SA1 in evt.attr_name:
                     device_data._subarray1_health_state = health_state
-                    device_data.subarray_health_state_map[evt.device] = health_state
+                    device_data.subarray_health_state_map[evt.attr_name] = health_state
                 elif const.PROP_DEF_VAL_TM_MID_SA2 in evt.attr_name:
                     device_data._subarray2_health_state = health_state
-                    device_data.subarray_health_state_map[evt.device] = health_state
+                    device_data.subarray_health_state_map[evt.attr_name] = health_state
                 elif const.PROP_DEF_VAL_TM_MID_SA3 in evt.attr_name:
                     device_data._subarray3_health_state = health_state
-                    device_data.subarray_health_state_map[evt.device] = health_state
+                    device_data.subarray_health_state_map[evt.attr_name] = health_state
                 elif device_data.CspMasterLeafNodeFQDN in evt.attr_name:
                     device_data._csp_master_leaf_health = health_state
                 elif device_data.SdpMasterLeafNodeFQDN in evt.attr_name:
@@ -115,11 +117,11 @@ class HealthStateAggreegator:
                     health_state = getattr(self, f"_{subsystem_health_field_name}")
                     counts[health_state] += 1
 
-                for subarray_health_state in list(self.subarray_health_state_map.values()):
+                for subarray_health_state in list(device_data.subarray_health_state_map.values()):
                     counts[subarray_health_state] += 1
 
                 # Calculating health_state for SubarrayNode, CspMasterLeafNode, SdpMasterLeafNode
-                if counts[HealthState.OK] == len(list(self.subarray_health_state_map.values())) + 2:
+                if counts[HealthState.OK] == len(list(device_data.subarray_health_state_map.values())) + 2:
                     device_data._telescope_health_state = HealthState.OK
                     str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_OK
                     self.logger.info(str_log)
