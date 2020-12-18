@@ -179,7 +179,7 @@ class CspMasterLeafNode(SKABaseDevice):
             """
             super().do()
             device = self.target
-            device_data = DeviceData.get_instance()
+            device.device_data = DeviceData.get_instance()
             device._health_state = HealthState.OK  # Setting healthState to "OK"
             device._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
             device._test_mode = TestMode.NONE
