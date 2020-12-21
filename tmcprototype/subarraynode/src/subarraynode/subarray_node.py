@@ -240,7 +240,7 @@ class SubarrayNode(SKASubarray):
             device._dishLnVsPointingStateEventID = {}
             device.only_dishconfig_flag = False
             device.scan_thread = None
-            device._read_activity_message = const.STR_SA_INIT_SUCCESS
+            device.device_data._read_activity_message = const.STR_SA_INIT_SUCCESS
             # Step 1: Create object of configuration model
             device.device_data = DeviceData.get_instance()
             device.device_data.sdp_subarray_ln_fqdn = device.SdpSubarrayLNFQDN
@@ -276,7 +276,7 @@ class SubarrayNode(SKASubarray):
     def read_sbID(self):
         """ Internal construct of TANGO. Returns the scheduling block ID. """
         # PROTECTED REGION ID(SubarrayNode.sbID_read) ENABLED START #
-        return self._sb_id
+        return self.device_data._sb_id
         # PROTECTED REGION END #    //  SubarrayNode.sbID_read
 
     def read_activityMessage(self):
