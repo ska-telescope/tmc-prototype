@@ -50,7 +50,7 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         """
         device_data = self.target
         self.logger.info(type(self.target))
-        device_data.health_aggreegator.subscribe_event()
+        # device_data.health_aggreegator.subscribe_event()
         # device_data.health_aggreegator.csp_health_subscribe_event()
         # device_data.health_aggreegator.sdp_health_subscribe_event()
         # device_data.health_aggreegator.subarray_health_subscribe_event()

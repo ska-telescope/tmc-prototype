@@ -29,7 +29,7 @@ from . import const, release
 from centralnode.input_validator import AssignResourceValidator
 from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
 from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
-# from centralnode.device_data import DeviceData
+from centralnode.device_data import DeviceData
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 __all__ = ["CentralNode", "main", "assign_resources_command","check_receptor_reassignment", "const", "device_data"
@@ -493,7 +493,7 @@ class CentralNode(SKABaseDevice):
         """
         super().init_command_objects()
         device_data = DeviceData.get_instance()
-        args = (device_data, device_data.state_model, device_data.logger)
+        args = (device_data, self.state_model, self.logger)
         self.register_command_object("AssignResources", assign_resources_command.AssignResources(*args))
         self.register_command_object("StowAntennas", stow_antennas_command.StowAntennas(*args))
         self.register_command_object("StartUpTelescope", start_up_telescope_command.StartUpTelescope(*args))

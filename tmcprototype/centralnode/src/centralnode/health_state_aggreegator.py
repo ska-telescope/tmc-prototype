@@ -6,6 +6,7 @@ health_state_aggreegator class for CentralNode.
 from ska.base.control_model import HealthState
 from . import const
 from centralnode.tango_client import TangoClient
+from centralnode.tango_server import TangoServerHelper
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 class HealthStateAggreegator:
