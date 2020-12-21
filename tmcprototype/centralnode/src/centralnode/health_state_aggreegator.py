@@ -42,7 +42,7 @@ class HealthStateAggreegator:
         self.sdp_health_subscribe_event()
         self.subarray_health_subscribe_event() 
 
-   def unsubscribe_event(self):
+    def unsubscribe_event(self):
         """
         Method for event subscription. Calls separate subscribe event methods for CSP Master, SDP Master and
         Subarray health state attribute subscription.
@@ -73,7 +73,7 @@ class HealthStateAggreegator:
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.HealthStateSubscribeEvent",
                                             tango.ErrSeverity.ERR)
         else:
-            csp_mln_client.unsubscribe_attr(self.csp_event_id)
+            csp_mln_client.unsubscribe_attribute(self.csp_event_id)
 
 
     def sdp_health_subscribe_event(self):
@@ -94,7 +94,7 @@ class HealthStateAggreegator:
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.HealthStateSubscribeEvent",
                                             tango.ErrSeverity.ERR)
         else:
-            sdp_mln_client.unsubscribe_attr(self.sdp_event_id)
+            sdp_mln_client.unsubscribe_attribute(self.sdp_event_id)
 
     def subarray_health_subscribe_event(self):
         """
@@ -118,7 +118,7 @@ class HealthStateAggreegator:
                     tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.HealthStateSubscribeEvent",
                                             tango.ErrSeverity.ERR)
             else:
-                subarray_client.unsubscribe_attr(self.subarray_event_id_list[subarrayID-1])
+                subarray_client.unsubscribe_attribute(self.subarray_event_id_list[subarrayID-1])
 
     def health_state_cb(self, evt):
         """

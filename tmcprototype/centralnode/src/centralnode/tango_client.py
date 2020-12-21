@@ -69,6 +69,23 @@ class TangoClient:
                                          "TangoClient.send_command",
                                          tango.ErrSeverity.ERR)
 
+    def send_command_with_return(self, command_name, command_data = None):
+        """
+        Here, as per the command name and command parameters this function is invoking the commands on respective nodes of TMC elements
+        as it is synchronous command execution.
+        """
+        try:
+            return_value = self.deviceproxy.command_inout(command_name, command_data)
+            return return_value
+        except DevFailed as dev_failed:
+            self.logger.exception("Failed to execute command .")
+            tango.Except.re_throw_exception(dev_failed,
+                "Failed to execute command .",
+                str(dev_failed),
+                "TangoGroupClient.send_command_with_return()",
+                tango.ErrSeverity.ERR)  
+
+
     def send_command_async(self, command_name, command_data=None, callback_method=None):
         """
         Here, as per the command name and command parameters this function is invoking the commands on respective nodes of TMC elements
@@ -125,7 +142,7 @@ class TangoClient:
                                          "TangoClient.subscribe_attribute",
                                          tango.ErrSeverity.ERR)
 
-    def unsubscribe_attr(self, event_id):
+    def unsubscribe_attribute(self, event_id):
         """
         Unsubscribes the attribute change event
         """

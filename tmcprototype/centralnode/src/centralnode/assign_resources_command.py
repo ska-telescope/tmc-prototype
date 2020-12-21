@@ -170,7 +170,7 @@ class AssignResources(BaseCommand):
             input_to_sa = json.dumps(input_json_subarray)
             subarray_client = TangoClient(subarrayFqdn)
          
-            resources_allocated_return = subarray_client.send_command(
+            resources_allocated_return = subarray_client.send_command_with_return(
                 const.CMD_ASSIGN_RESOURCES, input_to_sa)
 
             # Note: resources_allocated_return[1] contains the JSON string containing
