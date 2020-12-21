@@ -139,9 +139,9 @@ class TestDishLeafNode:
 
     def test_SetOperateMode(self, dish_leaf_node_dp, dish_master_dp):
         dish_leaf_node_dp.SetStandbyFPMode()
-        self.wait_until_dish_mode_equals("STANDBY-FP", dish_master_dp)
+        self.wait_until_dish_attribute_equals(DishMode.STANDBY_FP, "dishMode", dish_master_dp)
         dish_leaf_node_dp.SetOperateMode()
-        self.wait_until_dish_mode_equals("OPERATE", dish_master_dp)
+        self.wait_until_dish_attribute_equals(DishMode.OPERATE, "dishMode", dish_master_dp)
         assert dish_master_dp.dishMode.name == "OPERATE"
 
     def test_Configure(self, dish_leaf_node_dp, dish_master_dp):
