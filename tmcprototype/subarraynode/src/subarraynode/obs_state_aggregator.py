@@ -1,5 +1,4 @@
 from . import const
-from subarraynode.device_data import DeviceData
 from ska.base.control_model import ObsState
 from subarraynode.tango_client import TangoClient
 from subarraynode.tango_server_helper import TangoServerHelper
@@ -9,27 +8,32 @@ class ObsStateAggregator:
     Observation State Aggregator class
     """
     def __init__(self):
-        self.device_data = DeviceData()
-        self.csp_client = TangoClient(self.device_data.csp_subarray_ln_fqdn)
-        self.sdp_client = TangoClient(self.device_data.sdp_subarray_ln_fqdn)
-        self.sdp_sa_client = TangoClient(self.device_data.sdp_sa_fqdn)
+        self.csp_sdp_ln_obs_state_event_id = {}
+        self.csp_sa_obs_state = None
+        self.sdp_sa_obs_state = None
+        # self.csp_client = TangoClient(self.device_data.csp_subarray_ln_fqdn)
+        # self.sdp_client = TangoClient(self.device_data.sdp_subarray_ln_fqdn)
+        # self.sdp_sa_client = TangoClient(self.device_data.sdp_sa_fqdn)
+        self.csp_client = TangoClient("")
+        self.sdp_client = TangoClient("")
+        self.sdp_sa_client = TangoClient("")
         self.this_server = TangoServerHelper.get_instance()
     
     def subscribe(self):
         # Subscribe cspSubarrayObsState (forwarded attribute) of CspSubarray
         csp_event_id = self.csp_client.subscribe_attribute(const.EVT_CSPSA_OBS_STATE, self.observation_state_cb)
-        self.device_data.csp_sdp_ln_obs_state_event_id[self.csp_client] = csp_event_id
-        log_msg = const.STR_CSP_LN_VS_HEALTH_EVT_ID + str(self.device_data.csp_sdp_ln_obs_state_event_id)
+        self.csp_sdp_ln_obs_state_event_id[self.csp_client] = csp_event_id
+        log_msg = const.STR_CSP_LN_VS_HEALTH_EVT_ID + str(self.csp_sdp_ln_obs_state_event_id)
         self.logger.debug(log_msg)
 
         # Subscribe sdpSubarrayObsState (forwarded attribute) of SdpSubarray
         sdp_event_id = self.sdp_client.subscribe_attribute(const.EVT_SDPSA_OBS_STATE, self.observation_state_cb)
-        self.device_data.csp_sdp_ln_obs_state_event_id[self.sdp_client] = sdp_event_id
-        log_msg = const.STR_SDP_LN_VS_HEALTH_EVT_ID + str(self.device_data.csp_sdp_ln_obs_state_event_id)
+        self.csp_sdp_ln_obs_state_event_id[self.sdp_client] = sdp_event_id
+        log_msg = const.STR_SDP_LN_VS_HEALTH_EVT_ID + str(self.csp_sdp_ln_obs_state_event_id)
         self.logger.debug(log_msg) 
 
         # Subscribe ReceiveAddresses of SdpSubarray
-        sdp_receive_addr_event_id = self.sdp_sa_client.subscribe_attribute("receiveAddresses", device_data.receive_addresses_cb)
+        sdp_receive_addr_event_id = self.sdp_sa_client.subscribe_attribute("receiveAddresses", self.receive_addresses_cb)
        
     def observation_state_cb(self, evt):
         """
@@ -47,13 +51,13 @@ class ObsStateAggregator:
                 log_msg = 'Observation State Attribute value is: ' + str(observetion_state)
                 self.logger.info(log_msg)
                 if const.PROP_DEF_VAL_TMCSP_MID_SALN in evt.attr_name:
-                    self.device_data.csp_sa_obs_state = observetion_state
+                    self.csp_sa_obs_state = observetion_state
                     self._read_activity_message = const.STR_CSP_SUBARRAY_OBS_STATE + str(
-                        self.device_data.csp_sa_obs_state)
+                        self.csp_sa_obs_state)
                 elif const.PROP_DEF_VAL_TMSDP_MID_SALN in evt.attr_name:
-                    self.device_data.sdp_sa_obs_state = observetion_state
+                    self.sdp_sa_obs_state = observetion_state
                     self._read_activity_message = const.STR_SDP_SUBARRAY_OBS_STATE + str(
-                        self.device_data.sdp_sa_obs_state)
+                        self.sdp_sa_obs_state)
                 else:
                     self.logger.debug(const.EVT_UNKNOWN)
                     self._read_activity_message = const.EVT_UNKNOWN
@@ -77,9 +81,9 @@ class ObsStateAggregator:
         pointing_state_count_ready = 0
         log_msg = "Dish PointingStateMap is :" + str(self.dishPointingStateMap)
         self.logger.info(log_msg)
-        log_msg = "self._csp_sa_obs_state is: " + str(self.device_data.csp_sa_obs_state)
+        log_msg = "self._csp_sa_obs_state is: " + str(self.csp_sa_obs_state)
         self.logger.info(log_msg)
-        log_msg = "self._sdp_sa_obs_state is: " + str(self.device_data.sdp_sa_obs_state)
+        log_msg = "self._sdp_sa_obs_state is: " + str(self.sdp_sa_obs_state)
         self.logger.info(log_msg)
         for value in list(self.dishPointingStateMap.values()):
             if value == PointingState.TRACK:
@@ -88,7 +92,7 @@ class ObsStateAggregator:
                 pointing_state_count_slew = pointing_state_count_slew + 1
             elif value == PointingState.READY:
                 pointing_state_count_ready = pointing_state_count_ready + 1
-        if ((self.device_data.csp_sa_obs_state == ObsState.EMPTY) and (self.device_data.sdp_sa_obs_state ==\
+        if ((self.csp_sa_obs_state == ObsState.EMPTY) and (self.sdp_sa_obs_state ==\
                 ObsState.EMPTY)):
             if self.is_release_resources:
                 self.logger.info("Calling ReleaseAllResource command succeeded() method")
@@ -98,12 +102,12 @@ class ObsStateAggregator:
                 self.this_server.restart_obj.succeeded()
                 # TODO: As a action for Restart command invoke ReleaseResources command on SubarrayNode
 
-        elif ((self.device_data.csp_sa_obs_state == ObsState.ABORTED) and (self.device_data.sdp_sa_obs_state == ObsState.ABORTED)):
+        elif ((self.csp_sa_obs_state == ObsState.ABORTED) and (self.sdp_sa_obs_state == ObsState.ABORTED)):
             if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
                 if self.is_abort_command:
                     self.logger.info("Calling ABORT command succeeded() method")
                     self.this_server.abort_obj.succeeded()
-        elif ((self.device_data.csp_sa_obs_state == ObsState.READY) and (self.device_data.sdp_sa_obs_state == ObsState.READY)):
+        elif ((self.csp_sa_obs_state == ObsState.READY) and (self.sdp_sa_obs_state == ObsState.READY)):
             log_msg = "Pointing state in track counts = " + str(pointing_state_count_track)
             self.logger.debug(log_msg)
             log_msg = "No of dished being checked =" + str(len(self.dishPointingStateMap.values()))
@@ -117,7 +121,7 @@ class ObsStateAggregator:
                         # Configure command success
                         self.logger.info("Calling Configure command succeeded() method")
                         self.this_server.configure_obj.succeeded()
-        elif ((self.device_data.csp_sa_obs_state == ObsState.IDLE) and (self.device_data.sdp_sa_obs_state ==\
+        elif ((self.csp_sa_obs_state == ObsState.IDLE) and (self.sdp_sa_obs_state ==\
                 ObsState.IDLE)):
             if self.is_end_command:
                 if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
