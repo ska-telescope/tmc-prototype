@@ -47,7 +47,10 @@ class TangoClient:
                     retry += 1
                     continue
         yield self.deviceproxy
-
+    
+    def get_dev_name(self):
+        return self.deviceproxy.dev_name()
+    
     def get_device_fqdn(self):
         """
         Returns device FQDN.
