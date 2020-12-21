@@ -13,7 +13,7 @@ from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from subarraynode.tango_group_client import TangoGroupClient
 from subarraynode.tango_client import TangoClient
-from subarraynode.DeviceData import DeviceData
+from subarraynode.device_data import DeviceData
 
 
 class AbortCommand(SKASubarray.AbortCommand):
