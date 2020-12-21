@@ -1,4 +1,18 @@
-class ReleaseResourcesCommand(BaseCommand):
+"""
+ReleaseResources class for CentralNode.
+"""
+# PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
+# Standard Python imports
+import json
+import ast
+
+# Additional import
+from ska.base import SKABaseDevice
+from ska.base.commands import ResultCode, BaseCommand
+from . import const
+from centralnode.device_data import DeviceData
+
+class ReleaseResources(BaseCommand):
     """
     A class for CentralNode's ReleaseResources() command.
     """
@@ -78,23 +92,25 @@ class ReleaseResourcesCommand(BaseCommand):
                 DevFailed if the command execution or command invocation on SubarrayNode is not successful
 
         """
-        device = self.target
+        device_data = self.target
+        self.logger.info(type(self.target))
+
         try:
             release_success = False
             jsonArgument = json.loads(argin)
             subarrayID = jsonArgument['subarrayID']
-            subarrayProxy = device.subarray_FQDN_dict[subarrayID]
+            subarrayProxy = device_data.subarray_FQDN_dict[subarrayID]
             subarray_name = "SA" + str(subarrayID)
             if jsonArgument['releaseALL'] == True:
                 # Invoke "ReleaseAllResources" on SubarrayNode
-                return_val = subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
+                return_val = subarrayProxy.send_command(const.CMD_RELEASE_RESOURCES)
                 res_not_released = ast.literal_eval(return_val[1][0])
                 log_msg = const.STR_REL_RESOURCES
                 self.logger.info(log_msg)
-                device._read_activity_message = log_msg
+                device_data._read_activity_message = log_msg
                 if not res_not_released:
                     release_success = True
-                    for Dish_ID, Dish_Status in device._subarray_allocation.items():
+                    for Dish_ID, Dish_Status in device_data._subarray_allocation.items():
                         if Dish_Status == subarray_name:
                             device._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
                     argout = {
@@ -106,16 +122,16 @@ class ReleaseResourcesCommand(BaseCommand):
                     return message
                 else:
                     log_msg = const.STR_LIST_RES_NOT_REL + str(res_not_released)
-                    device._read_activity_message = log_msg
+                    device_data._read_activity_message = log_msg
                     self.logger.info(log_msg)
                     # release_success = False
             else:
-                device._read_activity_message = const.STR_FALSE_TAG
+                device_data._read_activity_message = const.STR_FALSE_TAG
                 self.logger.info(const.STR_FALSE_TAG)
 
         except ValueError as value_error:
             self.logger.error(const.ERR_INVALID_JSON)
-            device._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
+            device_data._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
             log_msg = const.ERR_INVALID_JSON + str(value_error)
             self.logger.exception(value_error)
             tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, log_msg,
@@ -124,7 +140,7 @@ class ReleaseResourcesCommand(BaseCommand):
 
         except KeyError as key_error:
             self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
-            device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            device_data._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             self.logger.exception(key_error)
             tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, log_msg,
@@ -140,34 +156,3 @@ class ReleaseResourcesCommand(BaseCommand):
                                          tango.ErrSeverity.ERR)
 
 
-def is_ReleaseResources_allowed(self):
-    """
-    Checks whether this command is allowed to be run in current device state.
-
-    :return: True if this command is allowed to be run in current device state.
-
-    :rtype: boolean
-
-    :raises: DevFailed if this command is not allowed to be run in current device state
-
-    """
-    handler = self.get_command_object("ReleaseResources")
-    return handler.check_allowed()
-
-
-@command(
-    dtype_in="str",
-    doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
-           "releaseALL boolean as true and receptorIDList.",
-    dtype_out="str",
-    doc_out="information-only string",
-)
-@DebugIt()
-def ReleaseResources(self, argin):
-    """
-    Release all the resources assigned to the given Subarray.
-    """
-    handler = self.get_command_object("ReleaseResources")
-
-    message = handler(argin)
-    return message

@@ -7,7 +7,7 @@ StowAntennas class for CentralNode.
 # Additional import
 from ska.base.commands import ResultCode, BaseCommand
 from . import const
-from centralnode.DeviceData import DeviceData
+from centralnode.device_data import DeviceData
 from centralnode.tango_client import TangoClient
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
