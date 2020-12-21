@@ -105,24 +105,12 @@ def dish_master_dp(tango_context):
 
 
 class TestDishLeafNode:
-    def wait_for_attribute_change(self, original_value, attribute_to_check):
-        """Keep checking for an attribute to change for a maximum of a few minutes
-
-        :param original_value: Any
-            The original value that should change to something else in time
-        :param attribute_to_check: Any
-            The attribute to check
-        """
-        for _ in range(10):
-            time.sleep(0.5)
-            if original_value != attribute_to_check:
-                return
-
     def wait_until_dish_attribute_equals(self, attribute_value, attribute_name, dish_proxy):
-        """Wait for dishmaster dishMode to get to `mode` for a few minutes at most
+        """Wait for dishmaster attribute to get to change to a different value for a few minutes at most
 
-        :param mode : String
+        :param attribute_value : any
             Like OPERATE
+        :param attribute_name : String
         :param dish : DeviceProxy
             dishmaster DeviceProxy
         """
@@ -171,6 +159,7 @@ class TestDishLeafNode:
         dish_leaf_node_dp.SetOperateMode()
         self.wait_until_dish_attribute_equals(DishMode.OPERATE, "dishMode", dish_master_dp)
         dish_leaf_node_dp.Scan("0")
+        self.wait_until_dish_attribute_equals(PointingState.SCAN, "pointingState", dish_master_dp)
         assert dish_master_dp.pointingState == PointingState.SCAN
         dish_leaf_node_dp.EndScan("0")
         self.wait_until_dish_attribute_equals(PointingState.READY, "pointingState", dish_master_dp)
