@@ -29,7 +29,7 @@ from ska.base.control_model import HealthState, ObsMode, ObsState
 from ska.base import SKASubarray
 from subarraynode.device_data import DeviceData
 from subarraynode.tango_client import TangoClient
-from subarraynode.tango_server import TangoServer
+from subarraynode.tango_server_helper import TangoServerHelper
 from subarraynode.exceptions import InvalidObsStateError
 
 __all__ = ["SubarrayNode", "main", "assign_resources_command", "release_all_resources_command",
