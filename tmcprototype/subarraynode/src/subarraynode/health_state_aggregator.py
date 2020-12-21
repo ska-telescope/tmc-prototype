@@ -2,6 +2,7 @@
 from . import const
 from ska.base.control_model import HealthState
 from subarraynode.tango_client import TangoClient
+from subarraynode.tango_group_client import TangoGroupClient
 from subarraynode.tango_server_helper import TangoServerHelper
 
 class HealthStateAggregator:
@@ -98,3 +99,8 @@ class HealthStateAggregator:
         """
         for tango_client, event_id in self.csp_sdp_ln_health_event_id.items():
             tango_client.unsubscribe_attr(event_id)
+
+    def subscribe_dish_health_state(self, dish_ln_client):
+        dish_event_id = dish_ln_client.subscribe_attribute(EVT_DISH_HEALTH_STATE, self.health_state_cb)
+
+

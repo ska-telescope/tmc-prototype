@@ -245,6 +245,7 @@ class SubarrayNode(SKASubarray):
             device.device_data._read_activity_message = const.STR_SA_INIT_SUCCESS
             device.device_data.sdp_subarray_ln_fqdn = device.SdpSubarrayLNFQDN
             device.device_data.csp_subarray_ln_fqdn = device.CspSubarrayLNFQDN
+            device.device_data.dish_leaf_node_prefix = device.DishLeafNodePrefix
             device.device_data.csp_sa_fqdn = device.CspSubarrayFQDN
             device.device_data.sdp_sa_fqdn = device.SdpSubarrayFQDN
             return (ResultCode.OK, device.device_data._read_activity_message)

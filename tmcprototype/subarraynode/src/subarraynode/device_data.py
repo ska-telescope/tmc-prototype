@@ -51,9 +51,12 @@ class DeviceData:
         self._scan_id = ""
         self._sb_id = ""
         self._scan_type = ""
-        self._dish_leaf_node_group = tango.Group(const.GRP_DISH_LEAF_NODE)
-        # self.health_state_aggr = HealthStateAggregator()
-        # self.obs_state_aggr = ObsStateAggregator()
+        # self._dish_leaf_node_group = tango.Group(const.GRP_DISH_LEAF_NODE)
+        self._dish_leaf_node_group = TangoGroupClient(const.GRP_DISH_LEAF_NODE) 
+        self.health_state_aggr = HealthStateAggregator()
+        self.obs_state_aggr = ObsStateAggregator()
+        self.dish_leaf_node_prefix = 0
+        self._dish_leaf_node_proxy = ""
         self.csp_sa_obs_state = None
         self.sdp_sa_obs_state = None
         # TODO: For future use

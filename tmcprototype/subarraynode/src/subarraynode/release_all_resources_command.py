@@ -108,5 +108,5 @@ class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
 
     def remove_receptors_when_release_resources(self, device_data):
         # Remove the group for receptors.
-        subaraynode_obj = SubarrayNode()
-        device_data.subaraynode_obj.remove_receptors_from_group()
+        # subaraynode_obj = SubarrayNode()
+        # device_data.subaraynode_obj.remove_receptors_from_group()

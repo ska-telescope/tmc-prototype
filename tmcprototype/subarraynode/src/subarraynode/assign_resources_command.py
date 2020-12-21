@@ -239,45 +239,50 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
         device_data = DeviceData.get_instance()
         # Add each dish into the tango group
 
+        
         for leafId in range(0, len(argin)):
             try:
 
                 str_leafId = argin[leafId]
 
-                #TODO: Need to access DishLeafNodePrefix from DeviceData
-                device_data._dish_leaf_node_group.add(device_data.DishLeafNodePrefix + str_leafId)
-                devProxy = device_data.get_deviceproxy(device_data.DishLeafNodePrefix + str_leafId)
-                device_data._dish_leaf_node_proxy.append(devProxy)
+                #TODO: Need to access dish_leaf_node_prefix from DeviceData
+                device_data._dish_leaf_node_group.add(device_data.dish_leaf_node_prefix + str_leafId)
+                dish_ln_client = TangoClient(device_data.dish_leaf_node_prefix + str_leafId)
+                device_data._dish_leaf_node_proxy.append(dish_ln_client)
+                # devProxy = device_data.get_deviceproxy(device_data.dish_leaf_node_prefix + str_leafId)
+                # device_data._dish_leaf_node_proxy.append(devProxy)
                 # dish_devices = ["ska_mid/tm_leaf_node/d0001", "ska_mid/tm_leaf_node/d0002"]
-                dish_group_client = TangoGroupClient(device_data.DishLeafNodePrefix)
-                dish_group_client.add_device(device_data._dish_leaf_node_proxy)
-                dish_group_client.send_command(const.CMD_CONFIGURE, cmd_data)
 
                 # Update the list allocation_success with the dishes allocated successfully to subarray
                 allocation_success.append(str_leafId)
                 # Subscribe Dish Health State
-                self._event_id = devProxy.subscribe_event(const.EVT_DISH_HEALTH_STATE,
-                                                          tango.EventType.CHANGE_EVENT,
-                                                          device_data.health_state_cb,
-                                                          stateless=True)
-                device_data._dishLnVsHealthEventID[devProxy] = self._event_id
-                device_data._health_event_id.append(self._event_id)
-                log_msg = const.STR_DISH_LN_VS_HEALTH_EVT_ID + str(device_data._dishLnVsHealthEventID)
-                self.logger.debug(log_msg)
+                
+                # device_data._event_id = devProxy.subscribe_event(const.EVT_DISH_HEALTH_STATE,
+                #                                           tango.EventType.CHANGE_EVENT,
+                #                                           device.health_state_cb,
+                #                                           stateless=True)
+                # device_data._dishLnVsHealthEventID[devProxy] = self._event_id
+                # device_data._health_event_id.append(self._event_id)
+                # log_msg = const.STR_DISH_LN_VS_HEALTH_EVT_ID + str(device_data._dishLnVsHealthEventID)
+                # self.logger.debug(log_msg)
+                
+                #TODo: To subscribe health state method in HealthState Aggregator Class
+                device_data.health_state_aggr.subscribe_dish_health_state(dish_ln_client)
 
                 # Subscribe Dish Pointing State
-                device_data.dishPointingStateMap[devProxy] = -1
-                self._event_id = devProxy.subscribe_event(const.EVT_DISH_POINTING_STATE,
-                                                          tango.EventType.CHANGE_EVENT,
-                                                          device_data.pointing_state_cb,
-                                                          stateless=True)
-                device_data._dishLnVsPointingStateEventID[devProxy] = self._event_id
-                device_data._pointing_state_event_id.append(self._event_id)
-                log_msg = const.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(device_data._dishLnVsPointingStateEventID)
-                self.logger.debug(log_msg)
+                device_data.health_state_aggr.subscribe_dish_pointing_state(dish_ln_client)
+
+                # device_data.dishPointingStateMap[devProxy] = -1
+                # self._event_id = devProxy.subscribe_event(const.EVT_DISH_POINTING_STATE,
+                #                                           tango.EventType.CHANGE_EVENT,
+                #                                           device_data.pointing_state_cb,
+                #                                           stateless=True)
+                # device_data._dishLnVsPointingStateEventID[devProxy] = self._event_id
+                # device_data._pointing_state_event_id.append(self._event_id)
+                # log_msg = const.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(device_data._dishLnVsPointingStateEventID)
+                # self.logger.debug(log_msg)
                 device_data._receptor_id_list.append(int(str_leafId))
-                device_data._read_activity_message = const.STR_GRP_DEF + str(
-                    device_data._dish_leaf_node_group.get_device_list(True))
+                device_data._read_activity_message = const.STR_GRP_DEF + str(device_data._dish_leaf_node_group.get_group_device_list(True))
                 device_data._read_activity_message = const.STR_LN_PROXIES + str(device_data._dish_leaf_node_proxy)
                 self.logger.debug(const.STR_SUBS_ATTRS_LN)
                 device_data._read_activity_message = const.STR_SUBS_ATTRS_LN
@@ -293,9 +298,9 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
                                                 )
                 allocation_failure.append(str_leafId)
                 # Exception Logic to remove Id from subarray group
-                group_dishes = device_data._dish_leaf_node_group.get_device_list()
-                if group_dishes.contains(device_data.DishLeafNodePrefix + str_leafId):
-                    device_data._dish_leaf_node_group.remove(device_data.DishLeafNodePrefix + str_leafId)
+                group_dishes = device_data._dish_leaf_node_group.get_group_device_list(True)
+                if group_dishes.contains(device_data.dish_leaf_node_prefix + str_leafId):
+                    device_data._dish_leaf_node_group.remove(device_data.dish_leaf_node_prefix + str_leafId)
                 # unsubscribe event
                 if device_data._dishLnVsHealthEventID[devProxy]:
                     devProxy.unsubscribe_event(device_data._dishLnVsHealthEventID[devProxy])
