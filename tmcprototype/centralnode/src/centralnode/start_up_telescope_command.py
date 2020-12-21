@@ -71,6 +71,7 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
 
         :return: None
         """
+        device_data = DeviceData.get_instance()
         csp_mln_client = TangoClient(device_data.csp_master_ln_fqdn)
         self.startup_leaf_node(csp_mln_client)
 
@@ -81,6 +82,7 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
 
         :return: None
         """
+        device_data = DeviceData.get_instance()
         sdp_mln_client = TangoClient(device_data.sdp_master_ln_fqdn)
         self.startup_leaf_node(sdp_mln_client)
 
@@ -91,6 +93,7 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
 
         :return: None
         """
+        device_data = DeviceData.get_instance()
         for name in range(0, len(device_data._dish_leaf_node_devices)):
             dish_ln_client = TangoClient(device_data._dish_leaf_node_devices[name])
             self.startup_leaf_node(dish_ln_client)
@@ -102,6 +105,7 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
 
         :return: None
         """
+        device_data = DeviceData.get_instance()
         for subarrayID in range(1, len(device_data.tm_mid_subarray) + 1):
             subarray_client = TangoClient(subarrayID)
             self.startup_leaf_node(subarray_client)
@@ -116,6 +120,7 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
 
         :raises: Devfailed exception if error occures while  executing On command on leaf node.
         """
+        device_data = DeviceData.get_instance()
         try:
             tango_client.send_command(const.CMD_ON)
             log_msg = 'ON command invoked successfully on {}'.format(tango_client.get_device_fqdn)
