@@ -240,9 +240,9 @@ class SubarrayNode(SKASubarray):
             device._dishLnVsPointingStateEventID = {}
             device.only_dishconfig_flag = False
             device.scan_thread = None
-            device.device_data._read_activity_message = const.STR_SA_INIT_SUCCESS
             # Step 1: Create object of configuration model
             device.device_data = DeviceData.get_instance()
+            device.device_data._read_activity_message = const.STR_SA_INIT_SUCCESS
             device.device_data.sdp_subarray_ln_fqdn = device.SdpSubarrayLNFQDN
             device.device_data.csp_subarray_ln_fqdn = device.CspSubarrayLNFQDN
             device.device_data.csp_sa_fqdn = device.CspSubarrayFQDN
