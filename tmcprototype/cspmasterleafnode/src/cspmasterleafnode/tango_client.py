@@ -24,6 +24,7 @@ class TangoClient:
 
     def __init__(self, fqdn):
         self.device_fqdn = fqdn
+        self.deviceproxy = None
         self.deviceproxy = self.get_deviceproxy()
         # retry = 0
         # while retry < 3:
@@ -70,7 +71,7 @@ class TangoClient:
         is on other than the TMC elements as it is asynchronous command execution.
         """
         try:
-            self.deviceproxy.command_inout_asynch(command_name, [], callback)
+            self.deviceproxy.command_inout_asynch(command_name, argin, callback)
         except DevFailed as dev_failed:
             log_msg = "Error in invoking command " + command_name + str(dev_failed)
             tango.Except.throw_exception("Error in invoking command " + command_name,

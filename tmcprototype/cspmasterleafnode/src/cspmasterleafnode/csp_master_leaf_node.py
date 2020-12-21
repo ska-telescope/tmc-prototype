@@ -204,7 +204,6 @@ class CspMasterLeafNode(SKABaseDevice):
 
             # Subscribing to CSPMaster Attributes
             try:
-                # csp_sa_client = TangoClient(device.CspMasterFQDN)
                 device._csp_proxy.subscribe_event(const.EVT_CBF_HEALTH, EventType.CHANGE_EVENT,
                                                   device.csp_cbf_health_state_cb, stateless=True)
                 device._csp_proxy.subscribe_event(const.EVT_PSS_HEALTH, EventType.CHANGE_EVENT,

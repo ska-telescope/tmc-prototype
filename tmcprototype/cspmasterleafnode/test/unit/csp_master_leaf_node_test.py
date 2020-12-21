@@ -16,6 +16,7 @@ from tango.test_context import DeviceTestContext
 # Additional import
 from cspmasterleafnode import CspMasterLeafNode, const, release
 from cspmasterleafnode.tango_client import TangoClient
+from cspmasterleafnode.tango_client import TangoClient
 from ska.base.control_model import HealthState
 from ska.base.control_model import LoggingLevel
 from ska.base.commands import ResultCode
@@ -34,6 +35,14 @@ def mock_csp_master():
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         yield csp_master_proxy_mock, tango_context.device, csp_master_fqdn, event_subscription_map
+
+@pytest.fixture(scope="function")
+def mock_csp_master_proxy():
+    dut_properties = {'CspMasterFQDN': 'mid_csp/elt/master'}
+    with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties) as tango_context:
+        with mock.patch.object(TangoClient, 'get_deviceproxy', return_value=Mock()) as mock_obj:
+            tango_client_obj = TangoClient(dut_properties['CspMasterFQDN'])
+            yield tango_context.device, tango_client_obj
 
 
 @pytest.fixture(scope="function")
@@ -63,12 +72,15 @@ def health_state(request):
     return request.param
 
 
-def test_on_should_command_csp_master_leaf_node_to_start(mock_csp_master):
-    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-    # assert device_proxy.On() == [[ResultCode.OK], ["ON command invoked successfully from CSP Master leaf node."]]
-    device_proxy.On()
-    csp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON, [],
-                                                                  any_method(with_name='on_cmd_ended_cb'))
+def test_on(mock_csp_master_proxy):
+    device_proxy, tango_client_obj = mock_csp_master_proxy
+    assert device_proxy.On() == [[ResultCode.OK],
+                                 ["ON command invoked successfully from CSP Master leaf node."]]
+    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(const.CMD_ON, [],
+                                                           any_method(with_name='on_cmd_ended_cb'))
+    # tangoclient_device_proxy.command_inout_asynch.assert_called_with(const.CMD_ON, [],
+    #                                                        any_method(with_name='on_cmd_ended_cb'))
+
 
 #
 # def test_off_should_command_csp_master_leaf_node_to_stop(mock_csp_master):
@@ -238,7 +250,7 @@ def test_activity_message_reports_correct_health_state_when_attribute_event_has_
     dummy_event = create_dummy_event_for_health_state_with_error(csp_master_fqdn, health_state_value,
                                                                  attribute_name)
     event_subscription_map[attribute_name](dummy_event)
-   
+
     assert device_proxy.activityMessage == error_message + str(
         dummy_event.errors)
 
