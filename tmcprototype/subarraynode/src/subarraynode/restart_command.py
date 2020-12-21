@@ -91,5 +91,5 @@ class RestartCommand(SKASubarray.RestartCommand):
 
     def remove_receptors_when_restart(self, device_data):
         # Remove the group for receptors.
-        subaraynode_obj = SubarrayNode()
+        # subaraynode_obj = SubarrayNode()
         device_data.subaraynode_obj.remove_receptors_from_group()
