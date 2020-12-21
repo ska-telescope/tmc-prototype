@@ -177,11 +177,6 @@ class CentralNode(SKABaseDevice):
             device = self.target
             try:
                 self.logger.info("Device initialisating...")
-                device._subarray1_health_state = HealthState.OK
-                device._subarray2_health_state = HealthState.OK
-                device._subarray3_health_state = HealthState.OK
-                device._sdp_master_leaf_health = HealthState.OK
-                device._csp_master_leaf_health = HealthState.OK
                 # Initialise Attributes
                 device._health_state = HealthState.OK
                 device._telescope_health_state = HealthState.OK

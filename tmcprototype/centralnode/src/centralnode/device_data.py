@@ -29,14 +29,14 @@ class DeviceData:
         else:
             DeviceData.__instance = self
 
-        self._subarray1_health_state = None
-        self._subarray2_health_state = None
-        self._subarray3_health_state = None
+        # self._subarray1_health_state = None
+        # self._subarray2_health_state = None
+        # self._subarray3_health_state = None
         self._sdp_master_leaf_health = None
         self._csp_master_leaf_health = None
         self._telescope_health_state = None
         self.receptorIDList = []
-        self.subarray_health_state_map = {}
+        # self.subarray_health_state_map = {}
         self._dish_leaf_node_devices = []
         self._leaf_device_proxy = []
         self.subarray_FQDN_dict = {}
@@ -47,11 +47,7 @@ class DeviceData:
         self.tm_mid_subarray = "" # initialization is correct? it is array ('str',)
         self._read_activity_message = ""
         self.sln_prefix = ""
-        self.sdp_event_id = ""
-        self.csp_event_id = ""
-        self.subarray_event_id_list = []
         self.health_aggreegator = HealthStateAggreegator()
-        self.unsubscribe_flag = False
 
     @staticmethod
     def get_instance():
