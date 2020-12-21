@@ -10,4 +10,4 @@ flake8-rst-docstrings
 docstr-coverage
 darglint
 tango-simlib
-git+https://gitlab.com/ska-telescope/tmc-prototype.git@SAR-157/Update-DishLeafNode-to-work-with-new-DishMaster#egg=dishmaster&subdirectory=tmcprototype/dishmaster
+git+https://gitlab.com/ska-telescope/tmc-prototype.git@SAR-156/Replace-TMC-DishMaster-with-tango-simlib-simulator#egg=dishmaster&subdirectory=tmcprototype/dishmaster

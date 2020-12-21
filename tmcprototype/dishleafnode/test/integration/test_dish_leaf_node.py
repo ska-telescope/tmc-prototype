@@ -154,7 +154,6 @@ class TestDishLeafNode:
         dish_leaf_node_dp.Scan("0")
         assert dish_master_dp.pointingState == PointingState.SCAN
 
-    @pytest.mark.xfail
     def test_EndScan(self, dish_leaf_node_dp, dish_master_dp):
         dish_leaf_node_dp.SetStandbyFPMode()
         self.wait_until_dish_attribute_equals(DishMode.STANDBY_FP, "dishMode", dish_master_dp)
