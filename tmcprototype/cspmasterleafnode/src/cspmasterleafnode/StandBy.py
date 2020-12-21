@@ -80,11 +80,13 @@ class StandbyCommand(BaseCommand):
         :raises: DevFailed on communication failure with CspMaster or CspMaster is in error state.
 
         """
+        device = self.target
+
         try:
-            device = self.target
-            device._csp_proxy.command_inout_asynch(const.CMD_STANDBY, argin, self.standby_cmd_ended_cb)
-            # TangoClient.send_command(const.CMD_STANDBY, self.standby_cmd_ended_cb)
+            csp_mln_client_obj = TangoClient(device_data.csp_master_ln_fqdn)
+            csp_mln_client_obj.send_command_async(const.CMD_STANDBY, self.standby_cmd_ended_cb, argin)
             self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
+            return (ResultCode.OK, "STANDBY command successful")
 
         except DevFailed as dev_failed:
             log_msg = const.ERR_EXE_STANDBY_CMD + str(dev_failed)

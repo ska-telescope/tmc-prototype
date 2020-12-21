@@ -17,6 +17,8 @@ from tango.test_context import DeviceTestContext
 from cspmasterleafnode import CspMasterLeafNode, const, release
 from cspmasterleafnode.tango_client import TangoClient
 from cspmasterleafnode.tango_client import TangoClient
+from cspmasterleafnode.device_data import DeviceData
+
 from ska.base.control_model import HealthState
 from ska.base.control_model import LoggingLevel
 from ska.base.commands import ResultCode
@@ -55,6 +57,14 @@ def event_subscription(mock_csp_master):
 
 
 @pytest.fixture(scope="function")
+def event_subscription_mock(mock_csp_master_proxy):
+    event_subscription_map = {}
+    mock_csp_master_proxy[1].deviceproxy.command_inout_asynch.side_effect = (
+        lambda command_name, arg, callback, *args,
+               **kwargs: event_subscription_map.update({command_name: callback}))
+    yield event_subscription_map
+
+@pytest.fixture(scope="function")
 def tango_context():
     with fake_tango_system(CspMasterLeafNode) as tango_context:
         yield tango_context
@@ -83,31 +93,31 @@ def test_on(mock_csp_master_proxy):
 
 
 #
-# def test_off_should_command_csp_master_leaf_node_to_stop(mock_csp_master):
-#     device_proxy=mock_csp_master[1]
-#
-#     device_proxy.On()
-#     assert device_proxy.Off() == [[ResultCode.OK], ["OFF command invoked successfully from CSP Master leaf node."]]
-#
-#
-# def test_standby_should_command_to_standby_with_callback_method(mock_csp_master, event_subscription):
-#     device_proxy=mock_csp_master[1]
+def test_off_should_command_csp_master_leaf_node_to_stop(mock_csp_master_proxy):
+    device_proxy, tango_client_obj = mock_csp_master_proxy
+
+    device_proxy.On()
+    assert device_proxy.Off() == [[ResultCode.OK], ["OFF command invoked successfully from CSP Master leaf node."]]
+
+
+# def test_standby_should_command_to_standby_with_callback_method(mock_csp_master, event_subscription_mock):
+#     device_proxy, tango_client_obj = mock_csp_master_proxy
 #
 #     device_proxy.Standby([])
 #     dummy_event = command_callback(const.CMD_STANDBY)
-#     event_subscription[const.CMD_STANDBY](dummy_event)
+#     event_subscription_mock[const.CMD_STANDBY](dummy_event)
 #
 #     assert const.STR_COMMAND + const.CMD_STANDBY in device_proxy.activityMessage
 #
 #
-# def test_on_should_command_to_on_with_callback_method(mock_csp_master, event_subscription):
-#     device_proxy=mock_csp_master[1]
-#
-#     device_proxy.On()
-#     dummy_event = command_callback(const.CMD_ON)
-#     event_subscription[const.CMD_ON](dummy_event)
-#
-#     assert const.STR_COMMAND + const.CMD_ON in device_proxy.activityMessage
+def test_on_should_command_to_on_with_callback_method(mock_csp_master_proxy, event_subscription_mock):
+    device_proxy, tango_client_obj = mock_csp_master_proxy
+
+    device_proxy.On()
+    dummy_event = command_callback(const.CMD_ON)
+    event_subscription_mock[const.CMD_ON](dummy_event)
+    device_data = DeviceData.get_instance()
+    assert const.STR_COMMAND + const.CMD_ON in device_data._read_activity_message
 
 
 # def test_off_should_command_to_off_with_callback_method(mock_csp_master):
