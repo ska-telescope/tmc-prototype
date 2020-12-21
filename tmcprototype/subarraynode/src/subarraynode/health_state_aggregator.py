@@ -13,8 +13,8 @@ class HealthStateAggregator:
         self.csp_sdp_ln_health_event_id = {}
         self.this_server = TangoServerHelper.get_instance()
         # How to pass fqdn here? 
-        self.csp_client = TangoClient("")
-        self.sdp_client = TangoClient("")
+        self.csp_client = TangoClient("ska_mid/tm_leaf_node/csp_subarray01")
+        self.sdp_client = TangoClient("ska_mid/tm_leaf_node/sdp_subarray01")
         
     
     def subscribe(self):
