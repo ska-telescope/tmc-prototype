@@ -12,6 +12,7 @@ A Leaf control node for DishMaster.
 """
 import json
 import importlib.resources
+from logging import raiseExceptions
 import math
 import datetime
 import time
@@ -148,7 +149,11 @@ class DishLeafNode(SKABaseDevice):
                 desired_target, timestamp=timestamp, antenna=dish_antenna
             )
         except ValueError as value_err:
-            self.logger.error("Error creating instances of katpoint Target/Timestamp from target: '%s' and timestamp: '%s'.", target, timestamp)
+            self.logger.error(
+                "Error creating instances of katpoint Target/Timestamp from target: '%s' and timestamp: '%s'.",
+                target,
+                timestamp,
+            )
             raise value_err
 
         sidereal_time = dish_antenna.local_sidereal_time(timestamp=timestamp)
@@ -225,15 +230,30 @@ class DishLeafNode(SKABaseDevice):
         # Load a set of antenna descriptions (latitude, longitude, altitude, enu coordinates)
         # from text file and construct Antenna objects from them. Currently the text file
         # contains Meerkat Antenna parameters.
-        with importlib.resources.open_text("dishleafnode", "ska_antennas.txt") as f:
-            descriptions = f.readlines()
-        antennas = [katpoint.Antenna(line) for line in descriptions]
+        try:
+            with importlib.resources.open_text("dishleafnode", "ska_antennas.txt") as f:
+                descriptions = f.readlines()
+            antennas = [katpoint.Antenna(line) for line in descriptions]
+        except OSError as err:
+            self.logger.error(err)
+            raise err
+        except ValueError as verr:
+            self.logger.error(verr)
+            raise verr
+
+        antenna_exist = False
         for ant in antennas:
             if ant.name == self.dish_number:
                 ref_ant_lat = ant.ref_observer.lat
                 ref_ant_long = ant.ref_observer.long
                 ref_ant_altitude = ant.ref_observer.elevation
                 ant_delay_model = ant.delay_model.values()
+                antenna_exist = True
+                break
+
+        if not antenna_exist:
+            raise Exception("Antenna '%s' not in the ska_antennas.txt file", self.dish_number)
+
         # Convert reference antenna lat and long into radian
         obj_unitconverter = UnitConverter()
         ref_ant_lat_rad = obj_unitconverter.dms_to_rad(str(ref_ant_lat).split(":"))
