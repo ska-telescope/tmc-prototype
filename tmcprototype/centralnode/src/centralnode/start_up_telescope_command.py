@@ -50,9 +50,10 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         """
         device_data = self.target
         self.logger.info(type(self.target))
-        device_data.health_aggreegator.csp_health_subscribe_event()
-        device_data.health_aggreegator.sdp_health_subscribe_event()
-        device_data.health_aggreegator.subarray_health_subscribe_event()
+        device_data.health_aggreegator.subscribe_event()
+        # device_data.health_aggreegator.csp_health_subscribe_event()
+        # device_data.health_aggreegator.sdp_health_subscribe_event()
+        # device_data.health_aggreegator.subarray_health_subscribe_event()
         log_msg = const.STR_ON_CMD_ISSUED
         self.logger.info(log_msg)
         device_data._read_activity_message = log_msg

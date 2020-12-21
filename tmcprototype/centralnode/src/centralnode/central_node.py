@@ -29,7 +29,7 @@ from . import const, release
 from centralnode.input_validator import AssignResourceValidator
 from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
 from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
-from centralnode.device_data import DeviceData
+# from centralnode.device_data import DeviceData
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 __all__ = ["CentralNode", "main", "assign_resources_command","check_receptor_reassignment", "const", "device_data"
@@ -44,42 +44,7 @@ class CentralNode(SKABaseDevice):
     """
 
     # PROTECTED REGION ID(CentralNode.class_variable) ENABLED START #
-    @DebugIt()
-    def _check_receptor_reassignment(self, input_receptors_list):
-        """
-        Checks if any of the receptors are already allocated to other subarray when AssignResources command is called.
-
-        :param: argin: The input receptor list
-
-        :return: None
-
-        :throws:
-            ResourceReassignmentError: Thrown when an already assigned resource is received
-            in Assignresources command.
-
-        """
-
-        self.logger.info("Checking for duplicate allocation of dishes.")
-        duplicate_allocation_count = 0
-        duplicate_allocation_dish_ids = []
-        self.logger.info(self._subarray_allocation)
-
-        for receptor in input_receptors_list:
-            dish_ID = "dish" + receptor
-            self.logger.info("Checking allocation status of dish %s.", dish_ID)
-            if self._subarray_allocation[dish_ID] != "NOT_ALLOCATED":
-                self.logger.info("Dish %s is already allocated.", dish_ID)
-                # duplicate_allocation_dish_ids.append(dish_ID)
-                duplicate_allocation_dish_ids.append(receptor)
-                duplicate_allocation_count = duplicate_allocation_count + 1
-        self.logger.info("No of dishes already allocated: %d", duplicate_allocation_count)
-        self.logger.info("List of dishes already allocated: %s", str(duplicate_allocation_dish_ids))
-
-        if duplicate_allocation_count > 0:
-            exception_message = const.ERR_RECEPTOR_ID_REALLOCATION + (str(duplicate_allocation_dish_ids))
-            raise ResourceReassignmentError(exception_message)
-
-
+   
     def obs_state_cb(self, evt):
         """
         Retrieves the subscribed Subarray observation state. When the Subarray obsState is EMPTY, the resource
@@ -379,78 +344,7 @@ class CentralNode(SKABaseDevice):
     # --------
 
     # pylint: disable=unused-variable
-    # class StowAntennasCommand(BaseCommand):
-    #     """
-    #     A class for CentralNode's StowAntennas() command.
-    #     """
-    #
-    #     def check_allowed(self):
-    #
-    #         """
-    #         Checks whether this command is allowed to be run in current device state
-    #
-    #         :return: True if this command is allowed to be run in current device state
-    #
-    #         :rtype: boolean
-    #
-    #         :raises: DevFailed if this command is not allowed to be run in current device state
-    #
-    #         """
-    #         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-    #             tango.Except.throw_exception("Command StowAntennas is not allowed in current state.",
-    #                                          "Failed to invoke StowAntennas command on CentralNode.",
-    #                                          "CentralNode.StowAntennas()",
-    #                                          tango.ErrSeverity.ERR)
-    #         return True
-    #
-    #     def do(self, argin):
-    #         """
-    #         Invokes the command SetStowMode on the specified receptors.
-    #
-    #         :param argin: List of Receptors to be stowed.
-    #
-    #         :return: None
-    #
-    #         :raises: DevFailed if error occurs while invoking command of DishLeafNode
-    #                 ValueError if error occurs if input argument json string contains invalid value
-    #         """
-    #         device = self.target
-    #         try:
-    #             for leafId in range(0, len(argin)):
-    #                 input_type_check = float(argin[leafId])
-    #
-    #             log_msg = const.STR_STOW_CMD_ISSUED_CN
-    #             self.logger.info(log_msg)
-    #             device._read_activity_message = log_msg
-    #             for i in range(0, len(argin)):
-    #                 device_name = device.DishLeafNodePrefix + argin[i]
-    #                 try:
-    #                     device_proxy = DeviceProxy(device_name)
-    #                     device_proxy.command_inout(const.CMD_SET_STOW_MODE)
-    #                 except DevFailed as dev_failed:
-    #                     log_msg = const.ERR_EXE_STOW_CMD + str(dev_failed)
-    #                     self.logger.exception(dev_failed)
-    #                     device._read_activity_message = const.ERR_EXE_STOW_CMD
-    #                     tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
-    #                                                  "CentralNode.StowAntennasCommand",
-    #                                                  tango.ErrSeverity.ERR)
-    #
-    #         except ValueError as value_error:
-    #             log_msg = const.ERR_STOW_ARGIN + str(value_error)
-    #             self.logger.exception(value_error)
-    #             device._read_activity_message = const.ERR_STOW_ARGIN
-    #             tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
-    #                                          "CentralNode.StowAntennasCommand",
-    #                                          tango.ErrSeverity.ERR)
-    #
-    #         except DevFailed as dev_failed:
-    #             log_msg = const.ERR_EXE_STOW_CMD + str(dev_failed)
-    #             self.logger.exception(dev_failed)
-    #             device._read_activity_message = const.ERR_EXE_STOW_CMD
-    #             tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
-    #                                          "CentralNode.StowAntennasCommand",
-    #                                          tango.ErrSeverity.ERR)
-    #
+   
     # pylint: enable=unused-variable
 
     def is_StowAntennas_allowed(self):
@@ -567,176 +461,36 @@ class CentralNode(SKABaseDevice):
         message = handler(argin)
         return message
 
-    # class ReleaseResourcesCommand(BaseCommand):
-    #     """
-    #     A class for CentralNode's ReleaseResources() command.
-    #     """
-    #     def check_allowed(self):
-    #         """
-    #         Checks whether this command is allowed to be run in current device state
-    #
-    #         :return: True if this command is allowed to be run in current device state
-    #
-    #         :rtype: boolean
-    #
-    #         :raises: DevFailed if this command is not allowed to be run in current device state
-    #
-    #         """
-    #
-    #         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,]:
-    #             tango.Except.throw_exception("Command ReleaseResources is not allowed in current state.",
-    #                                          "Failed to invoke ReleaseResources command on CentralNode.",
-    #                                          "CentralNode.ReleaseResources()",
-    #                                          tango.ErrSeverity.ERR)
-    #         return True
-    #
-    #     def do(self, argin):
-    #         """
-    #         Release all the resources assigned to the given Subarray. It accepts the subarray id, releaseALL flag and
-    #         receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
-    #         is invoked on the respective SubarrayNode. In this case, the receptorIDList tag is empty as all
-    #         the resources of the Subarray are to be released.
-    #         When releaseALL is False, ReleaseResources will be invoked on the SubarrayNode and the resources provided
-    #         in receptorIDList tag, are to be released from the Subarray. The selective release of the resources when
-    #         releaseALL Flag is False is not yet supported.
-    #
-    #         :param argin: The string in JSON format. The JSON contains following values:
-    #
-    #             subarrayID:
-    #                 DevShort. Mandatory.
-    #
-    #             releaseALL:
-    #                 Boolean(True or False). Mandatory. True when all the resources to be released from Subarray.
-    #
-    #             receptorIDList:
-    #                 DevVarStringArray. Empty when releaseALL tag is True.
-    #
-    #             Example:
-    #                 {
-    #                     "subarrayID": 1,
-    #                     "releaseALL": true,
-    #                     "receptorIDList": []
-    #                 }
-    #
-    #             Note: From Jive, enter input as:
-    #                 {"subarrayID":1,"releaseALL":true,"receptorIDList":[]} without any space.
-    #
-    #         :return: A tuple containing a return code and a string in josn format on successful release
-    #          of all the resources. The JSON string contains following values:
-    #
-    #             releaseALL:
-    #                 Boolean(True or False). If True, all the resources are successfully released from the
-    #                 Subarray.
-    #
-    #             receptorIDList:
-    #                 DevVarStringArray. If releaseALL is True, receptorIDList is empty. Else list returns
-    #                 resources (device names) that are noe released from the subarray.
-    #
-    #             Example:
-    #                 argout =
-    #                 {
-    #                     "ReleaseAll" : True,
-    #                     "receptorIDList" : []
-    #                 }
-    #
-    #          :rtype: (ResultCode, str)
-    #
-    #          :raises: ValueError if input argument json string contains invalid value
-    #                 KeyError if input argument json string contains invalid key
-    #                 DevFailed if the command execution or command invocation on SubarrayNode is not successful
-    #
-    #         """
-    #         device = self.target
-    #         try:
-    #             release_success = False
-    #             jsonArgument = json.loads(argin)
-    #             subarrayID = jsonArgument['subarrayID']
-    #             subarrayProxy = device.subarray_FQDN_dict[subarrayID]
-    #             subarray_name = "SA" + str(subarrayID)
-    #             if jsonArgument['releaseALL'] == True:
-    #                 # Invoke "ReleaseAllResources" on SubarrayNode
-    #                 return_val = subarrayProxy.command_inout(const.CMD_RELEASE_RESOURCES)
-    #                 res_not_released = ast.literal_eval(return_val[1][0])
-    #                 log_msg = const.STR_REL_RESOURCES
-    #                 self.logger.info(log_msg)
-    #                 device._read_activity_message = log_msg
-    #                 if not res_not_released:
-    #                     release_success = True
-    #                     for Dish_ID, Dish_Status in device._subarray_allocation.items():
-    #                         if Dish_Status == subarray_name:
-    #                             device._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
-    #                     argout = {
-    #                         "ReleaseAll": release_success,
-    #                         "receptorIDList": res_not_released
-    #                     }
-    #                     message = json.dumps(argout)
-    #                     self.logger.info(message)
-    #                     return message
-    #                 else:
-    #                     log_msg = const.STR_LIST_RES_NOT_REL + str(res_not_released)
-    #                     device._read_activity_message = log_msg
-    #                     self.logger.info(log_msg)
-    #                     # release_success = False
-    #             else:
-    #                 device._read_activity_message = const.STR_FALSE_TAG
-    #                 self.logger.info(const.STR_FALSE_TAG)
-    #
-    #         except ValueError as value_error:
-    #             self.logger.error(const.ERR_INVALID_JSON)
-    #             device._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
-    #             log_msg = const.ERR_INVALID_JSON + str(value_error)
-    #             self.logger.exception(value_error)
-    #             tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, log_msg,
-    #                                          "CentralNode.ReleaseResourcesCommand",
-    #                                          tango.ErrSeverity.ERR)
-    #
-    #         except KeyError as key_error:
-    #             self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
-    #             device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-    #             log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-    #             self.logger.exception(key_error)
-    #             tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, log_msg,
-    #                                          "CentralNode.ReleaseResourcesCommand",
-    #                                          tango.ErrSeverity.ERR)
-    #
-    #         except DevFailed as dev_failed:
-    #             log_msg = const.ERR_RELEASE_RESOURCES + str(dev_failed)
-    #             device._read_activity_message = const.ERR_RELEASE_RESOURCES
-    #             self.logger.exception(dev_failed)
-    #             tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, log_msg,
-    #                                          "CentralNode.ReleaseResourcesCommand",
-    #                                          tango.ErrSeverity.ERR)
-    #
-    # def is_ReleaseResources_allowed(self):
-    #     """
-    #     Checks whether this command is allowed to be run in current device state.
-    #
-    #     :return: True if this command is allowed to be run in current device state.
-    #
-    #     :rtype: boolean
-    #
-    #     :raises: DevFailed if this command is not allowed to be run in current device state
-    #
-    #     """
-    #     handler = self.get_command_object("ReleaseResources")
-    #     return handler.check_allowed()
-    #
-    # @command(
-    #     dtype_in="str",
-    #     doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
-    #            "releaseALL boolean as true and receptorIDList.",
-    #     dtype_out="str",
-    #     doc_out="information-only string",
-    # )
-    # @DebugIt()
-    # def ReleaseResources(self, argin):
-    #     """
-    #     Release all the resources assigned to the given Subarray.
-    #     """
-    #     handler = self.get_command_object("ReleaseResources")
-    #
-    #     message = handler(argin)
-    #     return message
+    def is_ReleaseResources_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state.
+    
+        :return: True if this command is allowed to be run in current device state.
+    
+        :rtype: boolean
+    
+        :raises: DevFailed if this command is not allowed to be run in current device state
+    
+        """
+        handler = self.get_command_object("ReleaseResources")
+        return handler.check_allowed()
+    
+    @command(
+        dtype_in="str",
+        doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
+               "releaseALL boolean as true and receptorIDList.",
+        dtype_out="str",
+        doc_out="information-only string",
+    )
+    @DebugIt()
+    def ReleaseResources(self, argin):
+        """
+        Release all the resources assigned to the given Subarray.
+        """
+        handler = self.get_command_object("ReleaseResources")
+    
+        message = handler(argin)
+        return message
 
     def init_command_objects(self):
         """

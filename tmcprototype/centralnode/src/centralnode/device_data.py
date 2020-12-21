@@ -49,8 +49,9 @@ class DeviceData:
         self.sln_prefix = ""
         self.sdp_event_id = ""
         self.csp_event_id = ""
-        self.subarray_event_id = ""
+        self.subarray_event_id_list = []
         self.health_aggreegator = HealthStateAggreegator()
+        self.unsubscribe_flag = False
 
     @staticmethod
     def get_instance():

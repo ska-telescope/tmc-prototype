@@ -50,6 +50,7 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         self.standby_csp()
         self.standby_sdp()
         self.standby_subarray()
+        device_data.health_aggreegator.unsubscribe_event()
         return (ResultCode.OK, device_data._read_activity_message)
 
     def standby_csp(self):
