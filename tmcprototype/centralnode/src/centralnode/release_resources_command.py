@@ -5,7 +5,7 @@ ReleaseResources class for CentralNode.
 # Standard Python imports
 import json
 import ast
-
+from tango import DevState, DevFailed
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode, BaseCommand

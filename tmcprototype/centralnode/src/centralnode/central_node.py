@@ -25,7 +25,11 @@ from tango.server import run, attribute, command, device_property
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode, BaseCommand
 from ska.base.control_model import HealthState, ObsState
-from . import const, release
+from . import const, release, assign_resources_command, release_resources_command, \
+    tango_client, tango_server, stow_antennas_command, stand_by_telescope_command, start_up_telescope_command, \
+        health_state_aggreegator, check_receptor_reassignment
+
+
 from centralnode.input_validator import AssignResourceValidator
 from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
 from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
@@ -33,9 +37,9 @@ from centralnode.device_data import DeviceData
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 __all__ = ["CentralNode", "main", "assign_resources_command","check_receptor_reassignment", "const", "device_data"
-           "exceptions.py", "health_state_aggreegator", "input_validator", "release", "release_resources_command"
-           "stand_by_telescope_command.py", "start_up_telescope_command.py", "stow_antennas_command", "tango_client"
-           "tango_server.py"]
+           "exceptions", "health_state_aggreegator", "input_validator", "release", "release_resources_command"
+           "stand_by_telescope_command", "start_up_telescope_command", "stow_antennas_command", "tango_client"
+           "tango_server"]
 
 
 class CentralNode(SKABaseDevice):

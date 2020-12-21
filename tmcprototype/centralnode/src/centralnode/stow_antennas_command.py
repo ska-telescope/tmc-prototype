@@ -3,7 +3,7 @@ StowAntennas class for CentralNode.
 """
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 # Standard Python imports
-
+from tango import DevState, DevFailed
 # Additional import
 from ska.base.commands import ResultCode, BaseCommand
 from . import const

@@ -4,7 +4,7 @@ CheckReceptorReassignment class for CentralNode.
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 # Standard Python imports
 import json
-
+from tango import DevFailed
 # Additional import
 from . import const
 from centralnode.exceptions import ResourceReassignmentError
@@ -12,7 +12,6 @@ from centralnode.device_data import DeviceData
 from centralnode.tango_client import TangoClient
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
-@DebugIt()
 class CheckReceptorReassignment:
     """
     Checks if any of the receptors are already allocated to other subarray when AssignResources command is called.

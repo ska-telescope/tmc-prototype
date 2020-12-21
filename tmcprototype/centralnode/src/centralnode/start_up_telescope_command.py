@@ -2,14 +2,14 @@
 StartUpTelescope class for CentralNode.
 """
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
-
+from tango import DevState, DevFailed
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState
 from . import const
 from centralnode.device_data import DeviceData
-from centralnode.health_state_cb import HealthStateCb
+# from centralnode.health_state_agreegator import HealthStateAggreegator
 from centralnode.tango_client import TangoClient
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
