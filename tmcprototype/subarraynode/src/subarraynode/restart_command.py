@@ -14,7 +14,7 @@ from ska.base import SKASubarray
 from subarraynode.tango_group_client import TangoGroupClient
 from subarraynode.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
-from subarraynode.subarray_node import SubarrayNode
+# from subarraynode.subarray_node import SubarrayNode
 
 
 class RestartCommand(SKASubarray.RestartCommand):
