@@ -38,16 +38,20 @@ class OffCommand(SKASubarray.OffCommand):
         device_data.is_abort_command = False
         device_data.is_obsreset_command = False
         try:
+            #TODO
             device_data._csp_subarray_ln_proxy.Off()
             device_data._sdp_subarray_ln_proxy.Off()
+            
             message = "Off command completed OK"
             self.logger.info(message)
 
             # TODO unsubscribe health obsState events from CSP and SDP
-            device_data._unsubscribe_csp_sdp_state_events(device_data._cspSdpLnHealthEventID)
-            device_data._unsubscribe_csp_sdp_state_events(device_data._cspSdpLnObsStateEventID)
-            device_data._cspSdpLnHealthEventID.clear()  # Clear eventID dictionary
-            device_data._cspSdpLnObsStateEventID.clear()
+            device_data.health_state_aggr.unsubscribe()
+            device_data.obs_state_aggr.unsubscribe()
+            # device_data._unsubscribe_csp_sdp_state_events(device_data._cspSdpLnHealthEventID)
+            # device_data._unsubscribe_csp_sdp_state_events(device_data._cspSdpLnObsStateEventID)
+            device_data.csp_sdp_ln_health_event_id.clear()  # Clear eventID dictionary
+            device_data.csp_sdp_ln_obs_state_event_id.clear()
             return (ResultCode.OK, message)
 
         except DevFailed as dev_failed:
