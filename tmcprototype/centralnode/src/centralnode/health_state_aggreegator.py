@@ -101,7 +101,7 @@ class HealthStateAggreegator:
                     tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.HealthStateSubscribeEvent",
                                             tango.ErrSeverity.ERR)
             else:
-                subarray_client.unsubscribe_attr(event_id)
+                subarray_client.unsubscribe_attr(device_data.subarray_event_id_list[subarrayID-1])
 
     def health_state_cb(self, evt):
         """
