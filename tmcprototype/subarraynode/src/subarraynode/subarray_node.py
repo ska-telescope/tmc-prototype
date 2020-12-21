@@ -220,7 +220,7 @@ class SubarrayNode(SKASubarray):
             super().do()
             device = self.target
             # TODO: get Tangoserver instance
-            this_server = TangoServer.get_instance()
+            this_server = TangoServerHelper.get_instance()
             this_server.device = device
 
             device.set_status(const.STR_SA_INIT)
