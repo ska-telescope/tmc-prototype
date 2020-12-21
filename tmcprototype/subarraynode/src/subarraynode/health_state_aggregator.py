@@ -19,7 +19,7 @@ class HealthStateAggregator:
     
     def subscribe(self):
         # TODO: dev_name() where to keep this API?
-        self.subarray_ln_health_state_map[self.csp_client.get_dev_name()] = (HealthState.UNKNOWN)
+        self.subarray_ln_health_state_map[self.csp_client.get_device_fqdn()] = (HealthState.UNKNOWN)
         # Subscribe cspsubarrayHealthState (forwarded attribute) of CspSubarray
         csp_event_id = self.csp_client.subscribe_attribute(const.EVT_CSPSA_HEALTH, self.health_state_cb)
         self.csp_sdp_ln_health_event_id[self.csp_client] = csp_event_id
@@ -28,7 +28,7 @@ class HealthStateAggregator:
         self.this_server.set_status(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
         self.logger.info(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
 
-        self.subarray_ln_health_state_map[self.sdp_client.get_dev_name()] = (HealthState.UNKNOWN)
+        self.subarray_ln_health_state_map[self.sdp_client.get_device_fqdn()] = (HealthState.UNKNOWN)
         # Subscribe sdpSubarrayHealthState (forwarded attribute) of SdpSubarray
         sdp_event_id = self.sdp_client.subscribe_attribute(const.EVT_SDPSA_HEALTH, self.health_state_cb)   
         self.csp_sdp_ln_health_event_id[self.sdp_client] = sdp_event_id
