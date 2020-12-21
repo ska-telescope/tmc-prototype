@@ -211,6 +211,15 @@ class TestDishLeafNode:
         dish_leaf_node_dp.StopTrack()
         assert dish_master_dp.pointingState == PointingState.READY
 
+    def test_Restart(self, dish_leaf_node_dp, dish_master_dp):
+        dish_leaf_node_dp.SetStandbyFPMode()
+        self.wait_until_dish_attribute_equals(DishMode.STANDBY_FP, "dishMode", dish_master_dp)
+        dish_leaf_node_dp.SetOperateMode()
+        self.wait_until_dish_attribute_equals(DishMode.OPERATE, "dishMode", dish_master_dp)
+        dish_leaf_node_dp.Restart()
+        assert dish_master_dp.pointingState.name == "READY"
+        assert not dish_master_dp.capturing
+
     def test_dishMode_change_event(self, dish_leaf_node_dp, dish_master_dp):
         dish_leaf_node_dp.SetStandbyFPMode()
         self.wait_until_dish_attribute_equals(DishMode.STANDBY_FP, "dishMode", dish_master_dp)

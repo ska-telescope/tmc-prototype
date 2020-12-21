@@ -1211,14 +1211,14 @@ class DishLeafNode(SKABaseDevice):
 
         def do(self):
             """
-            Invokes SetStandbyLPMode command on the DishMaster.
+            Invokes StopCapture command on the DishMaster.
 
-            :raises DevFailed: If error occurs while invoking SetStandbyLPMode command on DishMaster.
+            :raises DevFailed: If error occurs while invoking StopCapture command on DishMaster.
             """
             device = self.target
             command_name = "Restart"
             try:
-                device._dish_proxy.command_inout_asynch("SetStandbyLPMode", device.cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch("StopCapture", device.cmd_ended_cb)
                 self.logger.info("'%s' command executed successfully.", command_name)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)

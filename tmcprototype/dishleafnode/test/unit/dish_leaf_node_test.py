@@ -144,7 +144,7 @@ def test_dish_master_command_is_called_with_the_no_inputs_when_leaf_node_command
         ("SetStandbyFPMode", "SetStandbyFPMode"),
         ("SetStowMode", "SetStowMode"),
         ("Abort", "TrackStop"),
-        ("Restart", "SetStandbyLPMode"),
+        ("Restart", "StopCapture"),
     ],
 )
 def command_without_arg(request):
