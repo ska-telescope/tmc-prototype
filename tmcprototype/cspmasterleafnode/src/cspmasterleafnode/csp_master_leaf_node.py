@@ -36,106 +36,106 @@ class CspMasterLeafNode(SKABaseDevice):
 
     - CspMasterFQDN   - Property to provide FQDN of CSP Master Device
 
-    **Attributes:**
+    # **Attributes:**
 
-    - cspHealthState  - Forwarded attribute to provide CSP Master Health State
-    - activityMessage - Attribute to provide activity message
+    # - cspHealthState  - Forwarded attribute to provide CSP Master Health State
+    # - activityMessage - Attribute to provide activity message
 
-    """
+    # """
 
-    # PROTECTED REGION ID(CspMasterLeafNode.class_variable) ENABLED START #\
-    def csp_cbf_health_state_cb(self, evt):
-        """
-        Retrieves the subscribed cspCbfHealthState attribute of CSPMaster.
+    # # PROTECTED REGION ID(CspMasterLeafNode.class_variable) ENABLED START #\
+    # def csp_cbf_health_state_cb(self, evt):
+    #     """
+    #     Retrieves the subscribed cspCbfHealthState attribute of CSPMaster.
 
-        :param evt: A TANGO_CHANGE event on cspCbfHealthState attribute.
+    #     :param evt: A TANGO_CHANGE event on cspCbfHealthState attribute.
 
-        :return: None
+    #     :return: None
 
-        """
-        log_msg = 'CspCbfHealthState attribute change event is : ' + str(evt)
-        self.logger.info(log_msg)
-        if not evt.err:
-            self._csp_cbf_health = evt.attr_value.value
-            if self._csp_cbf_health == HealthState.OK:
-                self.logger.debug(const.STR_CSP_CBF_HEALTH_OK)
-                self._read_activity_message = const.STR_CSP_CBF_HEALTH_OK
-            elif self._csp_cbf_health == HealthState.DEGRADED:
-                self.logger.debug(const.STR_CSP_CBF_HEALTH_DEGRADED)
-                self._read_activity_message = const.STR_CSP_CBF_HEALTH_DEGRADED
-            elif self._csp_cbf_health == HealthState.FAILED:
-                self.logger.debug(const.STR_CSP_CBF_HEALTH_FAILED)
-                self._read_activity_message = const.STR_CSP_CBF_HEALTH_FAILED
-            else:
-                self.logger.debug(const.STR_CSP_CBF_HEALTH_UNKNOWN)
-                self._read_activity_message = const.STR_CSP_CBF_HEALTH_UNKNOWN
-        else:
-            log_msg = const.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
-            self.logger.error(log_msg)
-            self._read_activity_message = log_msg
-            self.logger.error(const.ERR_ON_SUBS_CSP_CBF_HEALTH)
+    #     """
+    #     log_msg = 'CspCbfHealthState attribute change event is : ' + str(evt)
+    #     self.logger.info(log_msg)
+    #     if not evt.err:
+    #         self._csp_cbf_health = evt.attr_value.value
+    #         if self._csp_cbf_health == HealthState.OK:
+    #             self.logger.debug(const.STR_CSP_CBF_HEALTH_OK)
+    #             self._read_activity_message = const.STR_CSP_CBF_HEALTH_OK
+    #         elif self._csp_cbf_health == HealthState.DEGRADED:
+    #             self.logger.debug(const.STR_CSP_CBF_HEALTH_DEGRADED)
+    #             self._read_activity_message = const.STR_CSP_CBF_HEALTH_DEGRADED
+    #         elif self._csp_cbf_health == HealthState.FAILED:
+    #             self.logger.debug(const.STR_CSP_CBF_HEALTH_FAILED)
+    #             self._read_activity_message = const.STR_CSP_CBF_HEALTH_FAILED
+    #         else:
+    #             self.logger.debug(const.STR_CSP_CBF_HEALTH_UNKNOWN)
+    #             self._read_activity_message = const.STR_CSP_CBF_HEALTH_UNKNOWN
+    #     else:
+    #         log_msg = const.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
+    #         self.logger.error(log_msg)
+    #         self._read_activity_message = log_msg
+    #         self.logger.error(const.ERR_ON_SUBS_CSP_CBF_HEALTH)
 
-    def csp_pss_health_state_cb(self, evt):
-        """
-        Retrieves the subscribed cspPssHealthState attribute of CSPMaster.
+    # def csp_pss_health_state_cb(self, evt):
+    #     """
+    #     Retrieves the subscribed cspPssHealthState attribute of CSPMaster.
 
-        :param evt: A TANGO_CHANGE event on cspPssHealthState attribute.
+    #     :param evt: A TANGO_CHANGE event on cspPssHealthState attribute.
 
-        :return: None
+    #     :return: None
 
-        """
-        log_msg = 'CspPssHealthState Attribute change event is : ' + str(evt)
-        self.logger.info(log_msg)
-        if not evt.err:
-            self._csp_pss_health = evt.attr_value.value
-            if self._csp_pss_health == HealthState.OK:
-                self.logger.debug(const.STR_CSP_PSS_HEALTH_OK)
-                self._read_activity_message = const.STR_CSP_PSS_HEALTH_OK
-            elif self._csp_pss_health == HealthState.DEGRADED:
-                self.logger.debug(const.STR_CSP_PSS_HEALTH_DEGRADED)
-                self._read_activity_message = const.STR_CSP_PSS_HEALTH_DEGRADED
-            elif self._csp_pss_health == HealthState.FAILED:
-                self.logger.debug(const.STR_CSP_PSS_HEALTH_FAILED)
-                self._read_activity_message = const.STR_CSP_PSS_HEALTH_FAILED
-            else:
-                self.logger.debug(const.STR_CSP_PSS_HEALTH_UNKNOWN)
-                self._read_activity_message = const.STR_CSP_PSS_HEALTH_UNKNOWN
-        else:
-            log_msg = const.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors)
-            self.logger.error(log_msg)
-            self._read_activity_message = log_msg
+    #     """
+    #     log_msg = 'CspPssHealthState Attribute change event is : ' + str(evt)
+    #     self.logger.info(log_msg)
+    #     if not evt.err:
+    #         self._csp_pss_health = evt.attr_value.value
+    #         if self._csp_pss_health == HealthState.OK:
+    #             self.logger.debug(const.STR_CSP_PSS_HEALTH_OK)
+    #             self._read_activity_message = const.STR_CSP_PSS_HEALTH_OK
+    #         elif self._csp_pss_health == HealthState.DEGRADED:
+    #             self.logger.debug(const.STR_CSP_PSS_HEALTH_DEGRADED)
+    #             self._read_activity_message = const.STR_CSP_PSS_HEALTH_DEGRADED
+    #         elif self._csp_pss_health == HealthState.FAILED:
+    #             self.logger.debug(const.STR_CSP_PSS_HEALTH_FAILED)
+    #             self._read_activity_message = const.STR_CSP_PSS_HEALTH_FAILED
+    #         else:
+    #             self.logger.debug(const.STR_CSP_PSS_HEALTH_UNKNOWN)
+    #             self._read_activity_message = const.STR_CSP_PSS_HEALTH_UNKNOWN
+    #     else:
+    #         log_msg = const.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors)
+    #         self.logger.error(log_msg)
+    #         self._read_activity_message = log_msg
 
-    def csp_pst_health_state_cb(self, evt):
-        """
-        Retrieves the subscribed cspPstHealthState attribute of CSPMaster.
+    # def csp_pst_health_state_cb(self, evt):
+    #     """
+    #     Retrieves the subscribed cspPstHealthState attribute of CSPMaster.
 
-        :param evt: A TANGO_CHANGE event on cspPstHealthState attribute.
+    #     :param evt: A TANGO_CHANGE event on cspPstHealthState attribute.
 
-        :return: None
+    #     :return: None
 
-        """
-        log_msg = 'CspPstHealthState Attribute change event is : ' + str(evt)
-        self.logger.info(log_msg)
-        if not evt.err:
-            self._csp_pst_health = evt.attr_value.value
-            if self._csp_pst_health == HealthState.OK:
-                self.logger.debug(const.STR_CSP_PST_HEALTH_OK)
-                self._read_activity_message = const.STR_CSP_PST_HEALTH_OK
-            elif self._csp_pst_health == HealthState.DEGRADED:
-                self.logger.debug(const.STR_CSP_PST_HEALTH_DEGRADED)
-                self._read_activity_message = const.STR_CSP_PST_HEALTH_DEGRADED
-            elif self._csp_pst_health == HealthState.FAILED:
-                self.logger.debug(const.STR_CSP_PST_HEALTH_FAILED)
-                self._read_activity_message = const.STR_CSP_PST_HEALTH_FAILED
-            else:
-                self.logger.debug(const.STR_CSP_PST_HEALTH_UNKNOWN)
-                self._read_activity_message = const.STR_CSP_PST_HEALTH_UNKNOWN
-        else:
-            log_msg = const.ERR_ON_SUBS_CSP_PST_HEALTH + str(evt.errors)
-            self.logger.error(log_msg)
-            self._read_activity_message = log_msg
+    #     """
+    #     log_msg = 'CspPstHealthState Attribute change event is : ' + str(evt)
+    #     self.logger.info(log_msg)
+    #     if not evt.err:
+    #         self._csp_pst_health = evt.attr_value.value
+    #         if self._csp_pst_health == HealthState.OK:
+    #             self.logger.debug(const.STR_CSP_PST_HEALTH_OK)
+    #             self._read_activity_message = const.STR_CSP_PST_HEALTH_OK
+    #         elif self._csp_pst_health == HealthState.DEGRADED:
+    #             self.logger.debug(const.STR_CSP_PST_HEALTH_DEGRADED)
+    #             self._read_activity_message = const.STR_CSP_PST_HEALTH_DEGRADED
+    #         elif self._csp_pst_health == HealthState.FAILED:
+    #             self.logger.debug(const.STR_CSP_PST_HEALTH_FAILED)
+    #             self._read_activity_message = const.STR_CSP_PST_HEALTH_FAILED
+    #         else:
+    #             self.logger.debug(const.STR_CSP_PST_HEALTH_UNKNOWN)
+    #             self._read_activity_message = const.STR_CSP_PST_HEALTH_UNKNOWN
+    #     else:
+    #         log_msg = const.ERR_ON_SUBS_CSP_PST_HEALTH + str(evt.errors)
+    #         self.logger.error(log_msg)
+    #         self._read_activity_message = log_msg
 
-    # PROTECTED REGION END #    //  CspMasterLeafNode.class_variable
+    # # PROTECTED REGION END #    //  CspMasterLeafNode.class_variable
 
     # -----------------
     # Device Properties
@@ -188,35 +188,35 @@ class CspMasterLeafNode(SKABaseDevice):
             device_data._read_activity_message = const.STR_CSP_INIT_LEAF_NODE
             device_data.csp_master_ln_fqdn = device.CspMasterFQDN
 
-            try:
-                device_data._read_activity_message = const.STR_CSPMASTER_FQDN + str(device.CspMasterFQDN)
-                # Creating proxy to the CSPMaster
-                log_msg = "CSP Master name: " + str(device.CspMasterFQDN)
-                self.logger.debug(log_msg)
-                device._csp_proxy = DeviceProxy(str(device.CspMasterFQDN))
-            except DevFailed as dev_failed:
-                log_msg = const.ERR_IN_CREATE_PROXY + str(device.CspMasterFQDN)
-                self.logger.debug(log_msg)
-                self.logger.exception(dev_failed)
-                device_data._read_activity_message = log_msg
-                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CspMasterLeafNode.InitCommand.do()",
-                                             tango.ErrSeverity.ERR)
+            # try:
+            #     device_data._read_activity_message = const.STR_CSPMASTER_FQDN + str(device.CspMasterFQDN)
+            #     # Creating proxy to the CSPMaster
+            #     log_msg = "CSP Master name: " + str(device.CspMasterFQDN)
+            #     self.logger.debug(log_msg)
+            #     device._csp_proxy = DeviceProxy(str(device.CspMasterFQDN))
+            # except DevFailed as dev_failed:
+            #     log_msg = const.ERR_IN_CREATE_PROXY + str(device.CspMasterFQDN)
+            #     self.logger.debug(log_msg)
+            #     self.logger.exception(dev_failed)
+            #     device_data._read_activity_message = log_msg
+            #     tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CspMasterLeafNode.InitCommand.do()",
+            #                                  tango.ErrSeverity.ERR)
 
-            # Subscribing to CSPMaster Attributes
-            try:
-                device._csp_proxy.subscribe_event(const.EVT_CBF_HEALTH, EventType.CHANGE_EVENT,
-                                                  device.csp_cbf_health_state_cb, stateless=True)
-                device._csp_proxy.subscribe_event(const.EVT_PSS_HEALTH, EventType.CHANGE_EVENT,
-                                                  device.csp_pss_health_state_cb, stateless=True)
-                device._csp_proxy.subscribe_event(const.EVT_PST_HEALTH, EventType.CHANGE_EVENT,
-                                                  device.csp_pst_health_state_cb, stateless=True)
-            except DevFailed as dev_failed:
-                log_msg = const.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
-                self.logger.debug(log_msg)
-                device.set_status(const.ERR_CSP_MASTER_LEAF_INIT)
-                device_data._read_activity_message = log_msg
-                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CspMasterLeafNode.InitCommand.do()",
-                                             tango.ErrSeverity.ERR)
+            # # Subscribing to CSPMaster Attributes
+            # try:
+            #     device._csp_proxy.subscribe_event(const.EVT_CBF_HEALTH, EventType.CHANGE_EVENT,
+            #                                       device.csp_cbf_health_state_cb, stateless=True)
+            #     device._csp_proxy.subscribe_event(const.EVT_PSS_HEALTH, EventType.CHANGE_EVENT,
+            #                                       device.csp_pss_health_state_cb, stateless=True)
+            #     device._csp_proxy.subscribe_event(const.EVT_PST_HEALTH, EventType.CHANGE_EVENT,
+            #                                       device.csp_pst_health_state_cb, stateless=True)
+            # except DevFailed as dev_failed:
+            #     log_msg = const.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
+            #     self.logger.debug(log_msg)
+            #     device.set_status(const.ERR_CSP_MASTER_LEAF_INIT)
+            #     device_data._read_activity_message = log_msg
+            #     tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CspMasterLeafNode.InitCommand.do()",
+            #                                  tango.ErrSeverity.ERR)
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
