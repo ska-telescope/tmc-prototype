@@ -268,7 +268,7 @@ def mock_lower_devices():
         yield tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map
 
 @pytest.fixture(scope="function")
-def mock_csp_subarray_ln_proxy():
+def mock_device_proxy():
     csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
     sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
@@ -352,15 +352,15 @@ def mock_lower_devices_group():
                            proxies_to_mock=proxies_to_mock,group_to_mock=groups_to_mock) as tango_context:
         yield tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map, dish_group_mock
 
-
+'''
 # Test cases for Attributes
-def test_status(mock_csp_subarray_ln_proxy):
+def test_status(mock_device_proxy):
     """Test for Status"""
-    device_proxy, tango_client_obj = mock_csp_subarray_ln_proxy
+    device_proxy, tango_client_obj = mock_device_proxy
     assert device_proxy.Status() == "The device is in OFF state."
 
 
-'''
+
 def test_health_state():
     """Test for healthState"""
     with fake_tango_system(SubarrayNode) as tango_context:
@@ -433,15 +433,16 @@ def test_receptor_id_list():
     with fake_tango_system(SubarrayNode) as tango_context:
         assert tango_context.device.receptorIDList is None
 
-
+'''
 # Test cases for Commands
-def test_on_command_should_change_subarray_device_state_to_on():
-    with fake_tango_system(SubarrayNode) as tango_context:
-        assert tango_context.device.On() == [[ResultCode.OK], ['On command completed OK']]
-        assert tango_context.device.state() == DevState.ON
-        assert tango_context.device.obsState == ObsState.EMPTY
+def test_on_command_should_change_subarray_device_state_to_on(mock_device_proxy):
+    # with fake_tango_system(SubarrayNode) as tango_context:
+    device_proxy, tango_client_obj = mock_device_proxy
+    assert device_proxy.On() == [[ResultCode.OK], ['On command completed OK']]
+    assert device_proxy.device.state() == DevState.ON
+    assert device_proxy.device.obsState == ObsState.EMPTY
 
-
+'''
 def test_off_command_should_change_subarray_device_state_to_off():
     with fake_tango_system(SubarrayNode) as tango_context:
         tango_context.device.On()
