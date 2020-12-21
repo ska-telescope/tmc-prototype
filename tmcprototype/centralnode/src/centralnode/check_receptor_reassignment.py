@@ -6,10 +6,10 @@ CheckReceptorReassignment class for CentralNode.
 import json
 
 # Additional import
-from . import const, release, 
+from . import const
 from centralnode.exceptions import ResourceReassignmentError
-from centralnode.DeviceData import DeviceData
-from centralnode.tango_client import tango_client
+from centralnode.device_data import DeviceData
+from centralnode.tango_client import TangoClient
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 @DebugIt()

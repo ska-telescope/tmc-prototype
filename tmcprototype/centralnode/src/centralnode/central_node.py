@@ -29,7 +29,7 @@ from . import const, release
 from centralnode.input_validator import AssignResourceValidator
 from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
 from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
-from centralnode.DeviceData import DeviceData
+from centralnode.device_data import DeviceData
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 __all__ = ["CentralNode", "main", "assign_resources_command","check_receptor_reassignment", "const", "device_data"

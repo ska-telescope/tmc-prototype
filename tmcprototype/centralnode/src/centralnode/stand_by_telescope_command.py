@@ -6,7 +6,7 @@ StandByTelescope class for CentralNode.
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from . import const
-from centralnode.DeviceData import DeviceData
+from centralnode.device_data import DeviceData
 from centralnode.tango_client import TangoClient
 # PROTECTED REGION END #    //  CentralNode.additional_import
 

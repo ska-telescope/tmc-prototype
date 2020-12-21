@@ -9,7 +9,7 @@ from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState
 from . import const
 from centralnode.device_data import DeviceData
-from centralnode.HealthStateCb import HealthStateCb
+from centralnode.health_state_cb import HealthStateCb
 from centralnode.tango_client import TangoClient
 # PROTECTED REGION END #    //  CentralNode.additional_import
 

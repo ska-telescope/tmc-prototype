@@ -10,6 +10,8 @@ from . import const, release
 from centralnode.check_receptor_reassignment import CheckReceptorReassignment
 from centralnode.input_validator import AssignResourceValidator
 from centralnode.tango_client import TangoClient
+from centralnode.device_data import DeviceData
+
 from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
 from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
 

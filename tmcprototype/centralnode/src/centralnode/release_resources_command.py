@@ -11,6 +11,7 @@ from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode, BaseCommand
 from . import const
 from centralnode.device_data import DeviceData
+from centralnode.tango_client import TangoClient
 
 class ReleaseResources(BaseCommand):
     """
@@ -99,11 +100,12 @@ class ReleaseResources(BaseCommand):
             release_success = False
             jsonArgument = json.loads(argin)
             subarrayID = jsonArgument['subarrayID']
-            subarrayProxy = device_data.subarray_FQDN_dict[subarrayID]
+            subarray_fqdn = device_data.subarray_FQDN_dict[subarrayID]
+            subarray_client = TangoClient(subarray_fqdn)
             subarray_name = "SA" + str(subarrayID)
             if jsonArgument['releaseALL'] == True:
                 # Invoke "ReleaseAllResources" on SubarrayNode
-                return_val = subarrayProxy.send_command(const.CMD_RELEASE_RESOURCES)
+                return_val = subarray_client.send_command(const.CMD_RELEASE_RESOURCES)
                 res_not_released = ast.literal_eval(return_val[1][0])
                 log_msg = const.STR_REL_RESOURCES
                 self.logger.info(log_msg)
@@ -112,7 +114,7 @@ class ReleaseResources(BaseCommand):
                     release_success = True
                     for Dish_ID, Dish_Status in device_data._subarray_allocation.items():
                         if Dish_Status == subarray_name:
-                            device._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
+                            device_data._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
                     argout = {
                         "ReleaseAll": release_success,
                         "receptorIDList": res_not_released
@@ -149,7 +151,7 @@ class ReleaseResources(BaseCommand):
 
         except DevFailed as dev_failed:
             log_msg = const.ERR_RELEASE_RESOURCES + str(dev_failed)
-            device._read_activity_message = const.ERR_RELEASE_RESOURCES
+            device_data._read_activity_message = const.ERR_RELEASE_RESOURCES
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, log_msg,
                                          "CentralNode.ReleaseResourcesCommand",
