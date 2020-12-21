@@ -60,13 +60,13 @@ class OnCommand(SKABaseDevice.OnCommand):
         :raises: DevFailed on communication failure with CspMaster or CspMaster is in error state.
 
         """
-        device = self.target
+        device_data = self.target
         try:
             # Pass argin to csp master .
             # If the array length is 0, the command applies to the whole CSP Element.
             # If the array length is > 1 each array element specifies the FQDN of the CSP SubElement to switch ON.
-            device._csp_proxy.command_inout_asynch(const.CMD_ON, [], self.on_cmd_ended_cb)
-            device_data = DeviceData.get_instance()
+            # device._csp_proxy.command_inout_asynch(const.CMD_ON, [], self.on_cmd_ended_cb)
+            # device_data = DeviceData.get_instance()
             csp_mln_client_obj = TangoClient(device_data.csp_master_ln_fqdn)
             csp_mln_client_obj.send_command_async(const.CMD_ON, self.on_cmd_ended_cb)
             self.logger.debug(const.STR_ON_CMD_ISSUED)
@@ -75,7 +75,7 @@ class OnCommand(SKABaseDevice.OnCommand):
         except DevFailed as dev_failed:
             log_msg = const.ERR_EXE_ON_CMD + str(dev_failed)
             self.logger.exception(dev_failed)
-            device._read_activity_message = const.ERR_EXE_ON_CMD
+            device_data._read_activity_message = const.ERR_EXE_ON_CMD
             tango.Except.re_throw_exception(dev_failed, const.STR_ON_EXEC, log_msg,
                                             "CspMasterLeafNode.OnCommand",
                                             tango.ErrSeverity.ERR)

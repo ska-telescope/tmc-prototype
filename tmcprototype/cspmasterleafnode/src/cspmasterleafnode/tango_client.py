@@ -15,6 +15,7 @@ import tango
 from tango import AttrWriteType, DevFailed, DeviceProxy, EventType
 from tango.server import run,attribute, command, device_property
 import logging
+LOGGER = logging.getLogger(__name__)
 
 class TangoClient:
     """
@@ -69,15 +70,9 @@ class TangoClient:
         is on other than the TMC elements as it is asynchronous command execution.
         """
         try:
-            print("Inside send command aync:::::::::::::::::::::::::::")
-            print("device proxy in tango client is ::::::::::::::::::",self.deviceproxy)
             self.deviceproxy.command_inout_asynch(command_name, [], callback)
-            print("after command invocation in tango client::::::::::::::::::::::::")
-            # return True
         except DevFailed as dev_failed:
-            print("inside devFailed of tango client ::::::::::::::::::::::::")
             log_msg = "Error in invoking command " + command_name + str(dev_failed)
-            print("devf in tango client is::::::::::::",dev_failed)
             tango.Except.throw_exception("Error in invoking command " + command_name,
                                          log_msg,
                                          "TangoClient.send_command_async",

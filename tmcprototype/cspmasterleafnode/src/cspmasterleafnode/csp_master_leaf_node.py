@@ -285,9 +285,10 @@ class CspMasterLeafNode(SKABaseDevice):
         Initialises the command handlers for commands supported by this device.
         """
         super().init_command_objects()
-        self.register_command_object("Off", Off.OffCommand(self, self.state_model, self.logger))
-        self.register_command_object("On", On.OnCommand(self, self.state_model, self.logger))
-        self.register_command_object("Standby", StandBy.StandbyCommand(self, self.state_model, self.logger))
+        device_data = DeviceData.get_instance()
+        self.register_command_object("Off", Off.OffCommand(device_data, self.state_model, self.logger))
+        self.register_command_object("On", On.OnCommand(device_data, self.state_model, self.logger))
+        self.register_command_object("Standby", StandBy.StandbyCommand(device_data, self.state_model, self.logger))
 
 
 # ----------
