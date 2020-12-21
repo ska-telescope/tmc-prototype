@@ -124,6 +124,12 @@ class TestDishLeafNode:
             0
         ), f"dishmaster attribute '{attribute_name}' did not change to {attribute_value}, currently {current_value}"
 
+    def _set_dish_to_operate_mode(self, leaf_proxy, dish_proxy):
+        leaf_proxy.SetStandbyFPMode()
+        self.wait_until_dish_attribute_equals(DishMode.STANDBY_FP, "dishMode", dish_proxy)
+        leaf_proxy.SetOperateMode()
+        self.wait_until_dish_attribute_equals(DishMode.OPERATE, "dishMode", dish_proxy)
+
     def test_SetStandByLPMode(self, dish_master_dp):
         assert dish_master_dp.dishMode.name == "STANDBY-LP"
 
@@ -147,18 +153,12 @@ class TestDishLeafNode:
         assert dish_master_dp.dsIndexerPosition.name == "B1"
 
     def test_Scan(self, dish_leaf_node_dp, dish_master_dp):
-        dish_leaf_node_dp.SetStandbyFPMode()
-        self.wait_until_dish_attribute_equals(DishMode.STANDBY_FP, "dishMode", dish_master_dp)
-        dish_leaf_node_dp.SetOperateMode()
-        self.wait_until_dish_attribute_equals(DishMode.OPERATE, "dishMode", dish_master_dp)
+        self._set_dish_to_operate_mode(dish_leaf_node_dp, dish_master_dp)
         dish_leaf_node_dp.Scan("0")
         assert dish_master_dp.pointingState == PointingState.SCAN
 
     def test_EndScan(self, dish_leaf_node_dp, dish_master_dp):
-        dish_leaf_node_dp.SetStandbyFPMode()
-        self.wait_until_dish_attribute_equals(DishMode.STANDBY_FP, "dishMode", dish_master_dp)
-        dish_leaf_node_dp.SetOperateMode()
-        self.wait_until_dish_attribute_equals(DishMode.OPERATE, "dishMode", dish_master_dp)
+        self._set_dish_to_operate_mode(dish_leaf_node_dp, dish_master_dp)
         dish_leaf_node_dp.Scan("0")
         self.wait_until_dish_attribute_equals(PointingState.SCAN, "pointingState", dish_master_dp)
         assert dish_master_dp.pointingState == PointingState.SCAN
@@ -168,18 +168,12 @@ class TestDishLeafNode:
         assert dish_master_dp.pointingState == PointingState.READY
 
     def test_StartCapture(self, dish_leaf_node_dp, dish_master_dp):
-        dish_leaf_node_dp.SetStandbyFPMode()
-        self.wait_until_dish_attribute_equals(DishMode.STANDBY_FP, "dishMode", dish_master_dp)
-        dish_leaf_node_dp.SetOperateMode()
-        self.wait_until_dish_attribute_equals(DishMode.OPERATE, "dishMode", dish_master_dp)
+        self._set_dish_to_operate_mode(dish_leaf_node_dp, dish_master_dp)
         dish_leaf_node_dp.StartCapture("0")
         assert dish_master_dp.capturing
 
     def test_StopCapture(self, dish_leaf_node_dp, dish_master_dp):
-        dish_leaf_node_dp.SetStandbyFPMode()
-        self.wait_until_dish_attribute_equals(DishMode.STANDBY_FP, "dishMode", dish_master_dp)
-        dish_leaf_node_dp.SetOperateMode()
-        self.wait_until_dish_attribute_equals(DishMode.OPERATE, "dishMode", dish_master_dp)
+        self._set_dish_to_operate_mode(dish_leaf_node_dp, dish_master_dp)
         dish_leaf_node_dp.StartCapture("0")
         assert dish_master_dp.capturing
         dish_leaf_node_dp.StopCapture("0")
@@ -190,40 +184,26 @@ class TestDishLeafNode:
         assert dish_master_dp.dishmode.name == "STOW"
 
     def test_Slew(self, dish_leaf_node_dp, dish_master_dp):
-        dish_leaf_node_dp.SetStandbyFPMode()
-        self.wait_until_dish_attribute_equals(DishMode.STANDBY_FP, "dishMode", dish_master_dp)
-        dish_leaf_node_dp.SetOperateMode()
-        self.wait_until_dish_attribute_equals(DishMode.OPERATE, "dishMode", dish_master_dp)
+        self._set_dish_to_operate_mode(dish_leaf_node_dp, dish_master_dp)
         dish_leaf_node_dp.Slew([10.0, 20.0])
         assert dish_master_dp.pointingState.name == "SLEW"
 
     def test_Track(self, dish_leaf_node_dp, dish_master_dp):
-        dish_leaf_node_dp.SetStandbyFPMode()
-        self.wait_until_dish_attribute_equals(DishMode.STANDBY_FP, "dishMode", dish_master_dp)
-        dish_leaf_node_dp.SetOperateMode()
-        self.wait_until_dish_attribute_equals(DishMode.OPERATE, "dishMode", dish_master_dp)
-
+        self._set_dish_to_operate_mode(dish_leaf_node_dp, dish_master_dp)
         input_string = '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiverBand":"1"}}'
         dish_leaf_node_dp.Track(input_string)
         assert dish_master_dp.pointingState == PointingState.TRACK
-
         dish_leaf_node_dp.StopTrack()
         assert dish_master_dp.pointingState == PointingState.READY
 
     def test_Restart(self, dish_leaf_node_dp, dish_master_dp):
-        dish_leaf_node_dp.SetStandbyFPMode()
-        self.wait_until_dish_attribute_equals(DishMode.STANDBY_FP, "dishMode", dish_master_dp)
-        dish_leaf_node_dp.SetOperateMode()
-        self.wait_until_dish_attribute_equals(DishMode.OPERATE, "dishMode", dish_master_dp)
+        self._set_dish_to_operate_mode(dish_leaf_node_dp, dish_master_dp)
         dish_leaf_node_dp.Restart()
         assert dish_master_dp.pointingState.name == "READY"
         assert not dish_master_dp.capturing
 
     def test_dishMode_change_event(self, dish_leaf_node_dp, dish_master_dp):
-        dish_leaf_node_dp.SetStandbyFPMode()
-        self.wait_until_dish_attribute_equals(DishMode.STANDBY_FP, "dishMode", dish_master_dp)
-        dish_leaf_node_dp.SetOperateMode()
-        self.wait_until_dish_attribute_equals(DishMode.OPERATE, "dishMode", dish_master_dp)
+        self._set_dish_to_operate_mode(dish_leaf_node_dp, dish_master_dp)
         mock_cb = mock.MagicMock()
         eid = dish_master_dp.subscribe_event("dishMode", EventType.CHANGE_EVENT, mock_cb)
         assert dish_master_dp.dishMode.name == "OPERATE"
