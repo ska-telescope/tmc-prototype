@@ -70,7 +70,7 @@ class SubarrayNode(SKASubarray):
             except DevFailed as dev_failed:
                 log_message = "Failed to unsubscribe health state event {}.".format(dev_failed)
                 self.logger.error(log_message )
-                self._read_activity_message = log_message
+                self.device_data._read_activity_message = log_message
 
     def _unsubscribe_resource_events(self, proxy_event_id_map):
         """
@@ -89,7 +89,7 @@ class SubarrayNode(SKASubarray):
             except DevFailed as dev_failed:
                 log_message = "Failed to unsubscribe event {}.".format(dev_failed)
                 self.logger.error(log_message )
-                self._read_activity_message = log_message
+                self.device_data._read_activity_message = log_message
 
     def __len__(self):
         """
@@ -121,12 +121,12 @@ class SubarrayNode(SKASubarray):
             self._dish_leaf_node_group.remove_all()
             log_message = const.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True))
             self.logger.debug(log_message)
-            self._read_activity_message = log_message
+            self.device_data._read_activity_message = log_message
             self.logger.info(const.RECEPTORS_REMOVE_SUCCESS)
         except DevFailed as dev_failed:
             log_message = "Failed to remove receptors from the group. {}".format(dev_failed)
             self.logger.error(log_message)
-            self._read_activity_message = log_message
+            self.device_data._read_activity_message = log_message
             return
 
         self._unsubscribe_resource_events(self._dishLnVsHealthEventID)
@@ -247,7 +247,7 @@ class SubarrayNode(SKASubarray):
             device.device_data.csp_subarray_ln_fqdn = device.CspSubarrayLNFQDN
             device.device_data.csp_sa_fqdn = device.CspSubarrayFQDN
             device.device_data.sdp_sa_fqdn = device.SdpSubarrayFQDN
-            return (ResultCode.OK, device._read_activity_message)
+            return (ResultCode.OK, device.device_data._read_activity_message)
 
     def always_executed_hook(self):
         """ Internal construct of TANGO. """
