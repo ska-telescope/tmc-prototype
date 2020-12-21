@@ -136,7 +136,6 @@ class TestDishLeafNode:
 
     def test_Configure(self, dish_leaf_node_dp, dish_master_dp):
         previous_timestamp = dish_master_dp.desiredPointing[0]
-        previous_configuredBand = dish_master_dp.configuredBand
         dish_leaf_node_dp.SetStandbyFPMode()
         self.wait_until_dish_attribute_equals(DishMode.STANDBY_FP, "dishMode", dish_master_dp)
         input_string = '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiverBand":"1"}}'
@@ -183,7 +182,7 @@ class TestDishLeafNode:
         dish_leaf_node_dp.SetOperateMode()
         self.wait_until_dish_attribute_equals(DishMode.OPERATE, "dishMode", dish_master_dp)
         dish_leaf_node_dp.StartCapture("0")
-        previous_capturing = dish_master_dp.capturing
+        assert dish_master_dp.capturing
         dish_leaf_node_dp.StopCapture("0")
         assert not dish_master_dp.capturing
 

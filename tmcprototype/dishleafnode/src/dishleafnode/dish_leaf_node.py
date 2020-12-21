@@ -12,7 +12,6 @@ A Leaf control node for DishMaster.
 """
 import json
 import importlib.resources
-from logging import raiseExceptions
 import math
 import datetime
 import time
@@ -252,7 +251,7 @@ class DishLeafNode(SKABaseDevice):
                 break
 
         if not antenna_exist:
-            raise Exception("Antenna '%s' not in the ska_antennas.txt file", self.dish_number)
+            raise Exception(f"Antenna '{self.dish_number}' not in the ska_antennas.txt file.")
 
         # Convert reference antenna lat and long into radian
         obj_unitconverter = UnitConverter()
