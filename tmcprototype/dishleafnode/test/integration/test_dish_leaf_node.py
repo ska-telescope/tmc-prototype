@@ -151,6 +151,8 @@ class TestDishLeafNode:
         self.wait_until_dish_attribute_equals(DishMode.STANDBY_FP, "dishMode", dish_master_dp)
         input_string = '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiverBand":"1"}}'
         dish_leaf_node_dp.Configure(input_string)
+        # '1' here represents 'B1' in the configuredBand enum labels
+        self.wait_until_dish_attribute_equals(1, "configuredBand", dish_master_dp)
         assert dish_master_dp.desiredPointing[0] != previous_timestamp
         assert dish_master_dp.configuredBand.name == "B1"
         assert dish_master_dp.dsIndexerPosition.name == "B1"
