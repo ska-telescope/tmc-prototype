@@ -73,4 +73,7 @@ class OffCommand(SKABaseDevice.OffCommand):
         csp_mln_client_obj = TangoClient(device_data.csp_master_ln_fqdn)
         csp_mln_client_obj.send_command_async(const.CMD_OFF, self.off_cmd_ended_cb)
         self.logger.debug(const.STR_ON_CMD_ISSUED)
+
+        device_data.cbf_health_updator.stop()
+
         return (ResultCode.OK, const.STR_OFF_CMD_ISSUED)

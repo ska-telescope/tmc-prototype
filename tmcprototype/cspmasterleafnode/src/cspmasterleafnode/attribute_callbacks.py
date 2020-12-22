@@ -11,6 +11,48 @@ from .tango_client import TangoClient
 import logging
 LOGGER = logging.getLogger(__name__)
 
+class CbfHealthStateAttributeUpdator:
+    def __init__(self, logger =None):
+        if logger == None:
+            self.logger = logging.getLogger(__name__)
+        else:
+            self.logger = logger
+        
+        self.device_data = DeviceData.get_instance()
+        self.this_server = TangoServer.get_instance()
+        self.event_id = None
+        self.csp_master = None
+
+    def start(self, attribute):
+        try:
+            self.csp_master = TangoClient(self.device_data.csp_master_ln_fqdn)
+            self.event_id = self.csp_master.subscribe_attribute("cspCbfHealthState", callback)
+        except tango.DevFailed as df:
+            self.logger.exception("Exception in attribute subscription")
+    
+    def stop(self):
+        try:
+            self.csp_master.unsubscribe_attr(self.event_id)
+        except tango.DevFailed as df:
+            self.logger.exception("Exception in unsubscribing the attribute.")
+
+    def callback(self, evt):
+        log_msg = 'CspCbfHealthState attribute change event is : ' + str(evt)
+        self.logger.debug(log_msg)
+        if not evt.err:
+            log_message = "CBF Health state: {}".format(evt.attr_value.value)
+            self.device_data._csp_cbf_health = evt.attr_value.value
+            self.logger.debug(log_message)
+            self.device_data._read_activity_message = log_message
+        else:
+            log_msg = const.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
+            self.logger.error(log_msg)
+            self.device_data._read_activity_message = log_msg
+            self.logger.error(const.ERR_ON_SUBS_CSP_CBF_HEALTH)
+
+
+
+
 class AttributeCallbacks:
     
     """
