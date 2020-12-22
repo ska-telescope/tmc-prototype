@@ -9,7 +9,7 @@ from tango import DevFailed
 from . import const
 from centralnode.exceptions import ResourceReassignmentError
 from centralnode.device_data import DeviceData
-from centralnode.tango_client import TangoClient
+# from centralnode.tango_client import TangoClient
 import logging
 
 
