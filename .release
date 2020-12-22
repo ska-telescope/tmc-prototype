@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""tmcprototype"""
-version="0.3.0"
+version="0.3.1"
 version_info=version.split(".")
 description="""TMC Prototype"""
 author="Team NCRA"
@@ -10,8 +10,8 @@ license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
 
-release=0.3.0
-tag=0.3.0
+release=0.3.1
+tag=0.3.1
 tag_description=New DishMaster interface
 release_notes=This release Contains:
     <br/>
