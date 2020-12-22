@@ -3,7 +3,7 @@ import ast
 
 # Tango imports
 import tango
-from tango import DevFailed
+from tango import DevState, DevFailed
 
 from ska.base.commands import ResultCode, BaseCommand
 from . import const, release
@@ -159,7 +159,8 @@ class AssignResources(BaseCommand):
             subarrayFqdn = device_data.subarray_FQDN_dict[subarrayID]
             ## check for duplicate allocation
             self.logger.info("Checking for resource reallocation.")
-            check_receptor_reassignment.CheckReceptorReassignment(json_argument["dish"]["receptorIDList"])
+            check_res = CheckReceptorReassignment()
+            check_res.do(json_argument["dish"]["receptorIDList"])
 
             ## Allocate resources to subarray
             # Remove Subarray Id key from input json argument and send the json with
@@ -187,7 +188,7 @@ class AssignResources(BaseCommand):
             for dish in range(0, len(resources_allocated)):
                 dish_ID = "dish" + (resources_allocated[dish])
                 device_data._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
-                receptorIDList.append(resources_allocated[dish])
+                device_data.receptorIDList.append(resources_allocated[dish])
 
             # Allocation successful
             device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
@@ -196,7 +197,7 @@ class AssignResources(BaseCommand):
             # Prepare output argument
             argout = {
                 "dish": {
-                    "receptorIDList_success": receptorIDList
+                    "receptorIDList_success": device_data.receptorIDList
                 }
             }
             self.logger.debug(argout)

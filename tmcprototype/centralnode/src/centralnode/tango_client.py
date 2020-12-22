@@ -16,7 +16,6 @@ from tango import AttrWriteType, DevFailed, DeviceProxy, EventType
 from tango.server import run, attribute, command, device_property
 import logging
 
-LOGGER = logging.getLogger(__name__)
 
 
 class TangoClient:
@@ -28,6 +27,8 @@ class TangoClient:
         self.device_fqdn = fqdn
         self.deviceproxy = None
         self.deviceproxy = self._get_deviceproxy()
+        self.logger = logging.getLogger(__name__)
+
 
     def _get_deviceproxy(self):
         """
