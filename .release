@@ -1,20 +1,23 @@
 """Release information for Python Package"""
 
-name = """tmcprototype"""
-version = "0.2.16"
-version_info = version.split(".")
-description = """TMC Prototype"""
-author = "Team NCRA"
-author_email = "telmgt-internal@googlegroups.com"
-license = """BSD-3-Clause"""
-url = """https://www.skatelescope.org"""
-copyright = """"""
+name="""tmcprototype"""
+version="0.3.0"
+version_info=version.split(".")
+description="""TMC Prototype"""
+author="Team NCRA"
+author_email="telmgt-internal@googlegroups.com"
+license="""BSD-3-Clause"""
+url="""https://www.skatelescope.org"""
+copyright=""""""
 
-release=0.2.16
-tag=0.2.16
-tag_description=Utilized updated version of LMC base class version 0.7.2
-release_notes=This release Contains: <br/><ul><li> Updated TMC Mid and Low to use 0.7.2 version of lmc base classes.</li></ul><br/>
-gitlab_username=AdityaDange
-private_token=T-QnRqsjQgqga_BRsz_i
-
-
+release=0.3.0
+tag=0.3.0
+tag_description=New DishMaster interface
+release_notes=This release Contains:
+    <br/>
+        <ul>
+            <li>A DishMaster simulator implementing the latest interface and behaviour as the DSH LMC software that is running on the SKA dish prototype in the Karoo, South Africa.</li>
+        </ul>
+    <br/>
+gitlab_username=kmadisa
+private_token=VVrEs7agmneL8-L7SYkS
