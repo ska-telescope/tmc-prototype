@@ -5,6 +5,7 @@ ReleaseResources class for CentralNode.
 # Standard Python imports
 import json
 import ast
+import tango
 from tango import DevState, DevFailed
 # Additional import
 from ska.base import SKABaseDevice
@@ -101,11 +102,12 @@ class ReleaseResources(BaseCommand):
             jsonArgument = json.loads(argin)
             subarrayID = jsonArgument['subarrayID']
             subarray_fqdn = device_data.subarray_FQDN_dict[subarrayID]
-            subarray_client = TangoClient(subarray_fqdn)
+            #subarray_client = TangoClient(subarray_fqdn)
             subarray_name = "SA" + str(subarrayID)
             if jsonArgument['releaseALL'] == True:
                 # Invoke "ReleaseAllResources" on SubarrayNode
-                return_val = subarray_client.send_command(const.CMD_RELEASE_RESOURCES)
+                subarray_client = TangoClient(subarray_fqdn)
+                return_val = subarray_client.send_command_with_return(const.CMD_RELEASE_RESOURCES)
                 res_not_released = ast.literal_eval(return_val[1][0])
                 log_msg = const.STR_REL_RESOURCES
                 self.logger.info(log_msg)
@@ -137,7 +139,7 @@ class ReleaseResources(BaseCommand):
             log_msg = const.ERR_INVALID_JSON + str(value_error)
             self.logger.exception(value_error)
             tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, log_msg,
-                                         "CentralNode.ReleaseResourcesCommand",
+                                         "CentralNode.ReleaseResources",
                                          tango.ErrSeverity.ERR)
 
         except KeyError as key_error:
@@ -146,7 +148,7 @@ class ReleaseResources(BaseCommand):
             log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             self.logger.exception(key_error)
             tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, log_msg,
-                                         "CentralNode.ReleaseResourcesCommand",
+                                         "CentralNode.ReleaseResources",
                                          tango.ErrSeverity.ERR)
 
         except DevFailed as dev_failed:
@@ -154,7 +156,7 @@ class ReleaseResources(BaseCommand):
             device_data._read_activity_message = const.ERR_RELEASE_RESOURCES
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, log_msg,
-                                         "CentralNode.ReleaseResourcesCommand",
+                                         "CentralNode.ReleaseResources",
                                          tango.ErrSeverity.ERR)
 
 

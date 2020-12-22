@@ -80,11 +80,11 @@ class TangoClient:
             return_value = self.deviceproxy.command_inout(command_name, command_data)
             return return_value
         except DevFailed as dev_failed:
-            self.logger.exception("Failed to execute command .")
+            #self.logger.exception("Failed to execute command .")
             tango.Except.re_throw_exception(dev_failed,
                                             "Failed to execute command .",
                                             str(dev_failed),
-                                            "TangoGroupClient.send_command_with_return()",
+                                            "TangoClient.send_command_with_return()",
                                             tango.ErrSeverity.ERR)
 
     def send_command_async(self, command_name, command_data=None, callback_method=None):
@@ -151,7 +151,7 @@ class TangoClient:
             self.deviceproxy.unsubscribe_event(event_id)
         except DevFailed as dev_failed:
             log_message = "Failed to unsubscribe event {}.".format(dev_failed)
-            self.logger.error(log_message)
+            #self.logger.error(log_message)
 
     def main(args=None, **kwargs):
         """ Main function of the TangoClient module. :param args: None :param kwargs: """
