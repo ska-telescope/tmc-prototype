@@ -38,13 +38,18 @@ def mock_csp_master():
                            proxies_to_mock=proxies_to_mock) as tango_context:
         yield csp_master_proxy_mock, tango_context.device, csp_master_fqdn, event_subscription_map
 
+
 @pytest.fixture(scope="function")
 def mock_csp_master_proxy():
     dut_properties = {'CspMasterFQDN': 'mid_csp/elt/master'}
+    event_subscription_map = {}
+    Mock().subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties) as tango_context:
         with mock.patch.object(TangoClient, 'get_deviceproxy', return_value=Mock()) as mock_obj:
             tango_client_obj = TangoClient(dut_properties['CspMasterFQDN'])
-            yield tango_context.device, tango_client_obj
+            yield tango_context.device, tango_client_obj, dut_properties['CspMasterFQDN'], event_subscription_map
 
 
 @pytest.fixture(scope="function")
@@ -83,35 +88,32 @@ def health_state(request):
 
 
 def test_on(mock_csp_master_proxy):
-    device_proxy, tango_client_obj = mock_csp_master_proxy
+    device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
     assert device_proxy.On() == [[ResultCode.OK],
                                  ["ON command invoked successfully from CSP Master leaf node."]]
     tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(const.CMD_ON, [],
                                                            any_method(with_name='on_cmd_ended_cb'))
-    # tangoclient_device_proxy.command_inout_asynch.assert_called_with(const.CMD_ON, [],
-    #                                                        any_method(with_name='on_cmd_ended_cb'))
 
 
-#
 def test_off_should_command_csp_master_leaf_node_to_stop(mock_csp_master_proxy):
-    device_proxy, tango_client_obj = mock_csp_master_proxy
+    device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
 
     device_proxy.On()
     assert device_proxy.Off() == [[ResultCode.OK], ["OFF command invoked successfully from CSP Master leaf node."]]
 
 
-# def test_standby_should_command_to_standby_with_callback_method(mock_csp_master, event_subscription_mock):
-#     device_proxy, tango_client_obj = mock_csp_master_proxy
-#
-#     device_proxy.Standby([])
-#     dummy_event = command_callback(const.CMD_STANDBY)
-#     event_subscription_mock[const.CMD_STANDBY](dummy_event)
-#
-#     assert const.STR_COMMAND + const.CMD_STANDBY in device_proxy.activityMessage
-#
-#
+def test_standby_should_command_to_standby_with_callback_method(mock_csp_master_proxy, event_subscription_mock):
+    device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
+
+    device_proxy.Standby([])
+    dummy_event = command_callback(const.CMD_STANDBY)
+    event_subscription_mock[const.CMD_STANDBY](dummy_event)
+    device_data = DeviceData.get_instance()
+    assert const.STR_COMMAND + const.CMD_STANDBY in device_data._read_activity_message
+
+
 def test_on_should_command_to_on_with_callback_method(mock_csp_master_proxy, event_subscription_mock):
-    device_proxy, tango_client_obj = mock_csp_master_proxy
+    device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
 
     device_proxy.On()
     dummy_event = command_callback(const.CMD_ON)
@@ -120,8 +122,8 @@ def test_on_should_command_to_on_with_callback_method(mock_csp_master_proxy, eve
     assert const.STR_COMMAND + const.CMD_ON in device_data._read_activity_message
 
 
-# def test_off_should_command_to_off_with_callback_method(mock_csp_master):
-#     device_proxy=mock_csp_master[1]
+# def test_off_should_command_to_off_with_callback_method(mock_csp_master_proxy):
+#     device_proxy, tango_client_obj = mock_csp_master_proxy
 #
 #     device_proxy.On()
 #     device_proxy.Off()
@@ -130,64 +132,63 @@ def test_on_should_command_to_on_with_callback_method(mock_csp_master_proxy, eve
 #     # dummy_event = command_callback(const.CMD_OFF)
 #     # event_subscription_map[const.CMD_OFF](dummy_event)
 #     # assert const.STR_COMMAND + const.CMD_OFF in tango_context.device.activityMessage
-#
-#     assert device_proxy.activityMessage in const.STR_OFF_CMD_ISSUED
-#
-#
-# def test_standby_should_command_with_callback_method_with_event_error(mock_csp_master, event_subscription):
-#     device_proxy=mock_csp_master[1]
-#
-#     device_proxy.Standby([])
-#     dummy_event = command_callback_with_event_error(const.CMD_STANDBY)
-#     event_subscription[const.CMD_STANDBY](dummy_event)
-#
-#     assert const.ERR_INVOKING_CMD + const.CMD_STANDBY in device_proxy.activityMessage
-#
-#
-# def test_on_should_command_with_callback_method_with_event_error(mock_csp_master, event_subscription ):
-#     device_proxy=mock_csp_master[1]
-#
-#     device_proxy.On()
-#     dummy_event = command_callback_with_event_error(const.CMD_ON)
-#     event_subscription[const.CMD_ON](dummy_event)
-#
-#     assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
-#
-#
-# def test_on_command_should_raise_dev_failed(mock_csp_master):
-#     csp_proxy_mock, device_proxy = mock_csp_master[:2]
-#     csp_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
-#     with pytest.raises(tango.DevFailed) as df:
-#         device_proxy.On()
-#     assert const.ERR_DEVFAILED_MSG in str(df.value)
-#
-#
-# def test_standby_command_should_raise_dev_failed(mock_csp_master):
-#     csp_proxy_mock, device_proxy = mock_csp_master[:2]
-#     csp_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
-#     with pytest.raises(tango.DevFailed) as df:
-#         device_proxy.standby([])
-#     assert const.ERR_DEVFAILED_MSG in str(df.value)
-#
-#
-# def raise_devfailed_exception(*args):
-#     # "This function is called to raise DevFailed exception with arguments."
-#     tango.Except.throw_exception(const.STR_CMD_FAILED, const.ERR_DEVFAILED_MSG,
-#                                  "", tango.ErrSeverity.ERR)
-#
-#
-# #TODO: FOR FUTURE USE
-# @pytest.mark.xfail(reason="Off command is not generating event error in current implementation. "
-#                           "Will be updated later.")
-# def test_off_should_command_with_callback_method_with_event_error(mock_csp_master ,event_subscription):
-#     device_proxy=mock_csp_master[1]
-#
-#     device_proxy.On()
-#     device_proxy.Off()
-#     dummy_event = command_callback_with_event_error(const.CMD_OFF)
-#     event_subscription[const.CMD_OFF](dummy_event)
-#
-#     assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
+#     device_data = DeviceData.get_instance()
+#     assert device_data._read_activity_message in const.STR_OFF_CMD_ISSUED
+
+device_data = DeviceData.get_instance()
+def test_standby_should_command_with_callback_method_with_event_error(mock_csp_master_proxy, event_subscription_mock):
+    device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
+
+    device_proxy.Standby([])
+    dummy_event = command_callback_with_event_error(const.CMD_STANDBY)
+    event_subscription_mock[const.CMD_STANDBY](dummy_event)
+
+    assert const.ERR_INVOKING_CMD + const.CMD_STANDBY in device_data._read_activity_message
+
+
+def test_on_should_command_with_callback_method_with_event_error(mock_csp_master_proxy, event_subscription_mock):
+    device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
+    device_proxy.On()
+    dummy_event = command_callback_with_event_error(const.CMD_ON)
+    event_subscription_mock[const.CMD_ON](dummy_event)
+
+    assert const.ERR_INVOKING_CMD + const.CMD_ON in device_data._read_activity_message
+
+
+def test_on_command_should_raise_dev_failed(mock_csp_master_proxy):
+    device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
+    tango_client_obj.deviceproxy.command_inout_asynch.side_effect = raise_devfailed_exception
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.On()
+    assert const.ERR_DEVFAILED_MSG in str(df.value)
+
+
+def test_standby_command_should_raise_dev_failed(mock_csp_master_proxy):
+    device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
+    tango_client_obj.deviceproxy.command_inout_asynch.side_effect = raise_devfailed_exception
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.standby([])
+    assert const.ERR_DEVFAILED_MSG in str(df.value)
+
+
+def raise_devfailed_exception(*args):
+    # "This function is called to raise DevFailed exception with arguments."
+    tango.Except.throw_exception(const.STR_CMD_FAILED, const.ERR_DEVFAILED_MSG,
+                                 "", tango.ErrSeverity.ERR)
+
+
+#TODO: FOR FUTURE USE
+@pytest.mark.xfail(reason="Off command is not generating event error in current implementation. "
+                           "Will be updated later.")
+def test_off_should_command_with_callback_method_with_event_error(mock_csp_master ,event_subscription):
+    device_proxy=mock_csp_master[1]
+
+    device_proxy.On()
+    device_proxy.Off()
+    dummy_event = command_callback_with_event_error(const.CMD_OFF)
+    event_subscription[const.CMD_OFF](dummy_event)
+
+    assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
 
 
 def command_callback(command_name):
@@ -209,16 +210,16 @@ def command_callback_with_command_exception():
     return Exception("Exception in Command Callback")
 
 
-def test_activity_message_attribute_reports_correct_csp_cbf_health_state(mock_csp_master, health_state):
-    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-    csp_cbf_health_state_attribute = 'cspCbfHealthState'
-
-    dummy_event = \
-        create_dummy_event_for_health_state \
-            (csp_master_fqdn, health_state, csp_cbf_health_state_attribute)
-    event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
-
-    assert device_proxy.activityMessage == f"CSP CBF health is {health_state.name}."
+# def test_activity_message_attribute_reports_correct_csp_cbf_health_state(mock_csp_master_proxy, health_state):
+#     device_proxy, tango_client_obj, csp_master_fqdn, event_subscription_map = mock_csp_master_proxy
+#     csp_cbf_health_state_attribute = 'cspCbfHealthState'
+#
+#     dummy_event = \
+#         create_dummy_event_for_health_state \
+#             (csp_master_fqdn, health_state, csp_cbf_health_state_attribute)
+#     event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
+#
+#     assert device_data._read_activity_message == f"CSP CBF health is {health_state.name}."
 
 
 def test_activity_message_attribute_reports_correct_csp_pss_health_state(mock_csp_master, health_state):

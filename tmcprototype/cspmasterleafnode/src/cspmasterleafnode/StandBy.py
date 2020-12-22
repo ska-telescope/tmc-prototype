@@ -80,18 +80,17 @@ class StandbyCommand(BaseCommand):
         :raises: DevFailed on communication failure with CspMaster or CspMaster is in error state.
 
         """
-        device = self.target
+        device_data = self.target
 
         try:
             csp_mln_client_obj = TangoClient(device_data.csp_master_ln_fqdn)
             csp_mln_client_obj.send_command_async(const.CMD_STANDBY, self.standby_cmd_ended_cb, argin)
             self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
-            return (ResultCode.OK, "STANDBY command successful")
 
         except DevFailed as dev_failed:
             log_msg = const.ERR_EXE_STANDBY_CMD + str(dev_failed)
             self.logger.exception(dev_failed)
-            device._read_activity_message = const.ERR_EXE_STANDBY_CMD
+            device_data._read_activity_message = const.ERR_EXE_STANDBY_CMD
             tango.Except.re_throw_exception(dev_failed, const.STR_STANDBY_EXEC, log_msg,
                                             "CspMasterLeafNode.StandbyCommand",
                                             tango.ErrSeverity.ERR)
