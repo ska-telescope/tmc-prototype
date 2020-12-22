@@ -20,7 +20,6 @@ mkdir -p $REPORTS_DIR
 # done
 
 cd centralnode;
-
 tox -e py37
 
 # Combine coverage reports
