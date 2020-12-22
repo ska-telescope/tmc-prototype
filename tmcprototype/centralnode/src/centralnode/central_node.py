@@ -49,46 +49,7 @@ class CentralNode(SKABaseDevice):
 
     # PROTECTED REGION ID(CentralNode.class_variable) ENABLED START #
    
-    def obs_state_cb(self, evt):
-        """
-        Retrieves the subscribed Subarray observation state. When the Subarray obsState is EMPTY, the resource
-        allocation list gets cleared.
-
-        :param evt: A TANGO_CHANGE event on Subarray obsState.
-
-        :return: None
-
-        :raises: KeyError in Subarray obsState callback
-        """
-        try:
-            log_msg = 'Observation state attribute change event is : ' + str(evt)
-            self.logger.info(log_msg)
-            if not evt.err:
-                obs_state = evt.attr_value.value
-                subarray_device = evt.device
-                subarray_device_list = list(str(subarray_device))
-                # Identify the Subarray ID
-                for index in range(0, len(subarray_device_list)):
-                    if subarray_device_list[index].isdigit():
-                        id = subarray_device_list[index]
-
-                subarray_id = "SA" + str(id)
-                self.logger.info(log_msg)
-                if obs_state == ObsState.EMPTY or obs_state == ObsState.RESTARTING:
-                    for dish, subarray in self._subarray_allocation.items():
-                        if subarray == subarray_id:
-                            self._subarray_allocation[dish] = "NOT_ALLOCATED"
-                log_msg = "Subarray_allocation is: " + str(self._subarray_allocation)
-                self.logger.info(log_msg)
-            else:
-                # TODO: For future reference
-                self._read_activity_message = const.ERR_SUBSR_SA_OBS_STATE + str(evt)
-                self.logger.critical(const.ERR_SUBSR_SA_OBS_STATE)
-        except KeyError as key_error:
-            self._read_activity_message = const.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
-            log_msg = const.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
-            self.logger.critical(log_msg)
-        
+    # obs_state_cb and health_state_cb moved into separate classes.
 
     # PROTECTED REGION END #    //  CentralNode.class_variable
 
@@ -508,7 +469,7 @@ class CentralNode(SKABaseDevice):
         self.register_command_object("StowAntennas", self.stow_object)
         self.register_command_object("StartUpTelescope", self.startup_object)
         self.register_command_object("StandByTelescope", self.standby_object)
-        self.register_command_object("ReleaseResources", selfrelease_object)
+        self.register_command_object("ReleaseResources", self.release_object)
 
 # ----------
 # Run server
