@@ -222,48 +222,48 @@ def command_callback_with_command_exception():
 #     assert device_data._read_activity_message == f"CSP CBF health is {health_state.name}."
 
 
-def test_activity_message_attribute_reports_correct_csp_pss_health_state(mock_csp_master, health_state):
-    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-    csp_pss_health_state_attribute = 'cspPssHealthState'
-
-    dummy_event = \
-        create_dummy_event_for_health_state \
-            (csp_master_fqdn, health_state, csp_pss_health_state_attribute)
-    event_subscription_map[csp_pss_health_state_attribute](dummy_event)
-
-    assert device_proxy.activityMessage == f"CSP PSS health is {health_state.name}."
-
-
-def test_activity_message_attribute_reports_correct_csp_pst_health_state(mock_csp_master, health_state):
-    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-    csp_pst_health_state_attribute = 'cspPstHealthState'
-
-    dummy_event = \
-        create_dummy_event_for_health_state \
-            (csp_master_fqdn, health_state, csp_pst_health_state_attribute)
-    event_subscription_map[csp_pst_health_state_attribute](dummy_event)
-
-    assert device_proxy.activityMessage == f"CSP PST health is {health_state.name}."
-
-
-@pytest.mark.parametrize(
-    "attribute_name,error_message",
-    [
-        ("cspCbfHealthState", const.ERR_ON_SUBS_CSP_CBF_HEALTH),
-        ("cspPssHealthState", const.ERR_ON_SUBS_CSP_PSS_HEALTH),
-        ("cspPstHealthState", const.ERR_ON_SUBS_CSP_PST_HEALTH )
-    ]
-)
-def test_activity_message_reports_correct_health_state_when_attribute_event_has_error(mock_csp_master, attribute_name, error_message):
-    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-
-    health_state_value = HealthState.UNKNOWN
-    dummy_event = create_dummy_event_for_health_state_with_error(csp_master_fqdn, health_state_value,
-                                                                 attribute_name)
-    event_subscription_map[attribute_name](dummy_event)
-
-    assert device_proxy.activityMessage == error_message + str(
-        dummy_event.errors)
+# def test_activity_message_attribute_reports_correct_csp_pss_health_state(mock_csp_master, health_state):
+#     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
+#     csp_pss_health_state_attribute = 'cspPssHealthState'
+#
+#     dummy_event = \
+#         create_dummy_event_for_health_state \
+#             (csp_master_fqdn, health_state, csp_pss_health_state_attribute)
+#     event_subscription_map[csp_pss_health_state_attribute](dummy_event)
+#
+#     assert device_proxy.activityMessage == f"CSP PSS health is {health_state.name}."
+#
+#
+# def test_activity_message_attribute_reports_correct_csp_pst_health_state(mock_csp_master, health_state):
+#     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
+#     csp_pst_health_state_attribute = 'cspPstHealthState'
+#
+#     dummy_event = \
+#         create_dummy_event_for_health_state \
+#             (csp_master_fqdn, health_state, csp_pst_health_state_attribute)
+#     event_subscription_map[csp_pst_health_state_attribute](dummy_event)
+#
+#     assert device_proxy.activityMessage == f"CSP PST health is {health_state.name}."
+#
+#
+# @pytest.mark.parametrize(
+#     "attribute_name,error_message",
+#     [
+#         ("cspCbfHealthState", const.ERR_ON_SUBS_CSP_CBF_HEALTH),
+#         ("cspPssHealthState", const.ERR_ON_SUBS_CSP_PSS_HEALTH),
+#         ("cspPstHealthState", const.ERR_ON_SUBS_CSP_PST_HEALTH )
+#     ]
+# )
+# def test_activity_message_reports_correct_health_state_when_attribute_event_has_error(mock_csp_master, attribute_name, error_message):
+#     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
+#
+#     health_state_value = HealthState.UNKNOWN
+#     dummy_event = create_dummy_event_for_health_state_with_error(csp_master_fqdn, health_state_value,
+#                                                                  attribute_name)
+#     event_subscription_map[attribute_name](dummy_event)
+#
+#     assert device_proxy.activityMessage == error_message + str(
+#         dummy_event.errors)
 
 
 def create_dummy_event_for_health_state(device_fqdn, health_state_value, attribute):
