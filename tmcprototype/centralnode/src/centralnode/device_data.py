@@ -47,7 +47,7 @@ class DeviceData:
         self.tm_mid_subarray = "" # initialization is correct? it is array ('str',)
         self._read_activity_message = ""
         self.sln_prefix = ""
-        self.health_aggreegator = HealthStateAggreegator()
+        # self.health_aggreegator = HealthStateAggreegator()
 
     @staticmethod
     def get_instance():

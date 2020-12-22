@@ -54,14 +54,14 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         # device_data.health_aggreegator.csp_health_subscribe_event()
         # device_data.health_aggreegator.sdp_health_subscribe_event()
         # device_data.health_aggreegator.subarray_health_subscribe_event()
+        self.startup_sdp()
+        self.startup_dish()
+        self.startup_csp()
+        self.startup_subarray()
         log_msg = const.STR_ON_CMD_ISSUED
         self.logger.info(log_msg)
         device_data._read_activity_message = log_msg
-        self.startup_dish()
-        self.startup_csp()
-        self.startup_sdp()
-        self.startup_subarray()
-        return (ResultCode.OK, device._read_activity_message)
+        return (ResultCode.OK,const.STR_ON_CMD_ISSUED)
 
 
     def startup_csp(self):

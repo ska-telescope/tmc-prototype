@@ -44,17 +44,17 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         """
         self.logger.info(type(self.target))
         device_data = self.target
+        self.standby_dish(device_data)
+        self.standby_csp(device_data)
+        self.standby_sdp(device_data)
+        self.standby_subarray(device_data)
+        # device_data.health_aggreegator.unsubscribe_event()
         log_msg = const.STR_STANDBY_CMD_ISSUED
         self.logger.info(log_msg)
         device_data._read_activity_message = log_msg
-        self.standby_dish()
-        self.standby_csp()
-        self.standby_sdp()
-        self.standby_subarray()
-        device_data.health_aggreegator.unsubscribe_event()
-        return (ResultCode.OK, device_data._read_activity_message)
+        return (ResultCode.OK,const.STR_STANDBY_CMD_ISSUED)
 
-    def standby_csp(self):
+    def standby_csp(self,device_data):
         """
         Create TangoClient for CspMasterLeaf node and call
         standby method.
@@ -66,7 +66,7 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         self.standby_leaf_node(csp_mln_client, const.CMD_OFF)
         self.standby_leaf_node(csp_mln_client, const.CMD_STANDBY, [])
 
-    def standby_sdp(self):
+    def standby_sdp(self,device_data):
         """
         Create TangoClient for SdpMasterLeaf node and call
         standby method.
@@ -79,7 +79,7 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         self.standby_leaf_node(sdp_mln_client, const.CMD_STANDBY)
 
 
-    def standby_dish(self):
+    def standby_dish(self,device_data):
         """
         Create TangoClient for DishLeaf node node and call
         standby method.
@@ -91,7 +91,7 @@ class StandByTelescope(SKABaseDevice.OffCommand):
             dish_ln_client = TangoClient(device_data._dish_leaf_node_devices[name])
             self.standby_leaf_node(dish_ln_client, const.CMD_SET_STANDBY_MODE)
 
-    def standby_subarray(self):
+    def standby_subarray(self,device_data):
         """
         Create TangoClient for Subarray node and call
         standby method.

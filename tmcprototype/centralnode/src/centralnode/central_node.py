@@ -496,13 +496,19 @@ class CentralNode(SKABaseDevice):
         Initialises the command handlers for commands supported by this device.
         """
         super().init_command_objects()
+
         device_data = DeviceData.get_instance()
         args = (device_data, self.state_model, self.logger)
-        self.register_command_object("AssignResources", assign_resources_command.AssignResources(*args))
-        self.register_command_object("StowAntennas", stow_antennas_command.StowAntennas(*args))
-        self.register_command_object("StartUpTelescope", start_up_telescope_command.StartUpTelescope(*args))
-        self.register_command_object("StandByTelescope", stand_by_telescope_command.StandByTelescope(*args))
-        self.register_command_object("ReleaseResources", release_resources_command.ReleaseResources(*args))
+        self.startup_object = start_up_telescope_command.StartUpTelescope(*args)
+        self.standby_object = stand_by_telescope_command.StandByTelescope(*args)
+        self.assign_object  = assign_resources_command.AssignResources(*args)
+        self.release_object = release_resources_command.ReleaseResources(*args)
+        self.stow_object = stow_antennas_command.StowAntennas(*args)
+        self.register_command_object("AssignResources", self.assign_object)
+        self.register_command_object("StowAntennas", self.stow_object)
+        self.register_command_object("StartUpTelescope", self.startup_object)
+        self.register_command_object("StandByTelescope", self.standby_object)
+        self.register_command_object("ReleaseResources", selfrelease_object)
 
 # ----------
 # Run server
