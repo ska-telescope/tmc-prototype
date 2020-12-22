@@ -508,7 +508,7 @@ class CentralNode(SKABaseDevice):
         self.register_command_object("StowAntennas", self.stow_object)
         self.register_command_object("StartUpTelescope", self.startup_object)
         self.register_command_object("StandByTelescope", self.standby_object)
-        self.register_command_object("ReleaseResources", selfrelease_object)
+        self.register_command_object("ReleaseResources", self.release_object)
 
 # ----------
 # Run server
