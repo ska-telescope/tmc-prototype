@@ -154,6 +154,11 @@ class CentralNode(SKABaseDevice):
                 device_data.dln_prefix = device.DishLeafNodePrefix
                 self.logger.debug(const.STR_INIT_SUCCESS)
 
+                # Initialization of ObsState aggregator object
+                device_data.obs_state_aggregator = ObsStateAggregator(
+                    device_data.tm_mid_subarray,
+                    self.logger)
+
             except DevFailed as dev_failed:
                 log_msg = const.ERR_INIT_PROP_ATTR_CN + str(dev_failed)
                 self.logger.exception(dev_failed)

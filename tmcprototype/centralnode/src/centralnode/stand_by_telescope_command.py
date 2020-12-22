@@ -52,6 +52,10 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         log_msg = const.STR_STANDBY_CMD_ISSUED
         self.logger.info(log_msg)
         device_data._read_activity_message = log_msg
+
+        # stop obs state aggregation
+        device_data.obs_state_aggregator.stop_aggregation()
+
         return (ResultCode.OK,const.STR_STANDBY_CMD_ISSUED)
 
     def standby_csp(self,device_data):

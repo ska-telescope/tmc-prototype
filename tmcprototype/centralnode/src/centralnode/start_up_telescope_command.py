@@ -58,9 +58,16 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         self.startup_dish()
         self.startup_csp()
         self.startup_subarray()
+        
         log_msg = const.STR_ON_CMD_ISSUED
         self.logger.info(log_msg)
         device_data._read_activity_message = log_msg
+        
+        # start obs state aggregation
+        device_data.obs_state_aggregator.start_aggregation()
+
+        # TODO: start healthState aggregation
+
         return (ResultCode.OK,const.STR_ON_CMD_ISSUED)
 
 

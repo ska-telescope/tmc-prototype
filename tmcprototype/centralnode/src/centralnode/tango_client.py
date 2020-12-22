@@ -151,11 +151,4 @@ class TangoClient:
             self.deviceproxy.unsubscribe_event(event_id)
         except DevFailed as dev_failed:
             log_message = "Failed to unsubscribe event {}.".format(dev_failed)
-            #self.logger.error(log_message)
-
-    def main(args=None, **kwargs):
-        """ Main function of the TangoClient module. :param args: None :param kwargs: """
-
-        return run((TangoClient,), args=args, **kwargs)
-    if __name__ == '__main__': main()
 
