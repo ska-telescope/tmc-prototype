@@ -218,21 +218,53 @@ def test_standby(mock_central_lower_devices):
 #
 #
 # # Test cases for commands
-# def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
-#     dish_device_ids = [str(i).zfill(4) for i in range(1, 4)]
-#     fqdn_prefix = "ska_mid/tm_leaf_node/d"
-#     initial_dut_properties = {
-#         'DishLeafNodePrefix': fqdn_prefix,
-#         'NumDishes': len(dish_device_ids)
-#     }
-#     proxies_to_mock = { fqdn_prefix + device_id : Mock() for device_id in dish_device_ids }
-#
-#     with fake_tango_system(CentralNode, initial_dut_properties, proxies_to_mock) as tango_context:
-#         tango_context.device.StowAntennas(dish_device_ids)
-#         for proxy_mock in proxies_to_mock.values():
-#             proxy_mock.command_inout.assert_called_with(CMD_SET_STOW_MODE)
-#
-#
+def test_stow_antennas_should_set_stow_mode_on_leaf_nodes():
+    dish_device_ids = [str(i).zfill(4) for i in range(1, 4)]
+    fqdn_prefix = "ska_mid/tm_leaf_node/d"
+    initial_dut_properties = {
+        'DishLeafNodePrefix': fqdn_prefix,
+        'NumDishes': len(dish_device_ids)
+    }
+    # proxies_to_mock = { fqdn_prefix + device_id : Mock() for device_id in dish_device_ids }
+
+    with fake_tango_system(CentralNode, initial_dut_properties) as tango_context:
+        with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
+            tango_client_obj = TangoClient(initial_dut_properties['DishLeafNodePrefix'] + dish_device_ids[0])
+            tango_context.device.StowAntennas(dish_device_ids)
+            # for proxy_mock in proxies_to_mock.values():
+            tango_client_obj.deviceproxy.command_inout.assert_called_with(CMD_SET_STOW_MODE, None)
+
+def test_stow_antennas_should_raise_devfailed_exception():
+    dish_device_ids = [str(i).zfill(4) for i in range(1, 4)]
+    fqdn_prefix = "ska_mid/tm_leaf_node/d"
+    initial_dut_properties = {
+        'DishLeafNodePrefix': fqdn_prefix,
+        'NumDishes': len(dish_device_ids)
+    }
+
+    # proxies_to_mock = {fqdn_prefix + device_id: Mock() for device_id in dish_device_ids}
+    # mock command_inout method to throw devfailed exception
+    # for proxy_mock in proxies_to_mock.values():
+        # mock_obj.command_inout.side_effect = raise_devfailed_exception
+
+    with fake_tango_system(CentralNode, initial_dut_properties) as tango_context:
+        with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
+            tango_client_obj = TangoClient(initial_dut_properties['DishLeafNodePrefix'] + dish_device_ids[0])
+            tango_client_obj.deviceproxy.command_inout.side_effect = raise_devfailed_exception
+            with pytest.raises(tango.DevFailed) as df:
+                tango_context.device.StowAntennas(dish_device_ids)
+            assert const.ERR_EXE_STOW_CMD in str(df.value)
+
+def test_stow_antennas_invalid_value():
+#     """Negative Test for StowAntennas"""
+    with fake_tango_system(CentralNode) \
+            as tango_context:
+        argin = ["invalid_antenna", ]
+        with pytest.raises(tango.DevFailed) as df:
+            tango_context.device.StowAntennas(argin)
+
+        assert const.ERR_STOW_ARGIN in str(df.value)
+
 # def test_stow_antennas_should_raise_devfailed_exception():
 #     dish_device_ids = [str(i).zfill(4) for i in range(1, 4)]
 #     fqdn_prefix = "ska_mid/tm_leaf_node/d"
@@ -378,12 +410,12 @@ def mock_subarray_call_release_resources_success(arg1):
 #     assert const.ERR_RECEPTOR_ID_REALLOCATION in str(df.value)
 #
 #
-def test_release_resources(mock_central_lower_devices):
-    device_proxy, tango_client_obj = mock_central_lower_devices
-    subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
-    dut_properties = {
-        'TMMidSubarrayNodes': subarray1_fqdn,
-    }
+# def test_release_resources(mock_central_lower_devices):
+#     device_proxy, tango_client_obj = mock_central_lower_devices
+#     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
+#     dut_properties = {
+#         'TMMidSubarrayNodes': subarray1_fqdn,
+#     }
     # subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
     # tm_subarrays = []
     # tm_subarrays.append(subarray1_fqdn)
@@ -569,9 +601,9 @@ def test_release_resources(mock_central_lower_devices):
 #
 #
 # # Throw Devfailed exception for command with argument
-# def raise_devfailed_exception(*args):
-#     tango.Except.throw_exception("CentralNode_Commandfailed", "This is error message for devfailed",
-#                                  " ", tango.ErrSeverity.ERR)
+def raise_devfailed_exception(*args):
+    tango.Except.throw_exception("CentralNode_Commandfailed", "This is error message for devfailed",
+                                 " ", tango.ErrSeverity.ERR)
 #
 # def test_version_id():
 #     """Test for versionId"""
