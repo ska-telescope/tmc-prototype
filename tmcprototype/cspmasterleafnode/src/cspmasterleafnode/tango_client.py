@@ -78,3 +78,53 @@ class TangoClient:
                                          log_msg,
                                          "TangoClient.send_command_async",
                                          tango.ErrSeverity.ERR)
+
+    def get_attribute(self, attribute_name):
+        """
+        Here, as per the attribute name this function will read the attribute of perticular device.
+        """
+        try:
+            self.deviceproxy.read_attribute(attribute_name)
+            return True
+        except AttributeError as attribute_error:
+            log_msg = attribute_name + "Attribute not found" + str(attribute_error)
+            tango.Except.throw_exception(attribute + "Attribute not found",
+                                         log_msg,
+                                         "TangoClient.get_attribute",
+                                         tango.ErrSeverity.ERR)
+
+    def set_attribute(self, attribute_name, value):
+        """
+        Here, as per the attribute name this function will read the attribute of perticular device.
+        """
+        try:
+            self.deviceproxy.write_attribute(attribute_name, value)
+        except AttributeError as attribute_error:
+            log_msg = attribute_name + "Attribute not found" + str(attribute_error)
+            tango.Except.throw_exception(attribute + "Attribute not found",
+                                         log_msg,
+                                         "TangoClient.set_attribute",
+                                         tango.ErrSeverity.ERR)
+
+    def subscribe_attribute(self, attr_name, callback_method):
+        """
+        Subscribes the attribute on Change event
+        """
+        try:
+            event_id = self.deviceproxy.subscribe_event(attr_name, EventType.CHANGE_EVENT, callback_method, stateless=True)
+            return event_id
+        except DevFailed as dev_failed:
+            tango.Except.throw_exception("Error is subscribing event",
+                                         dev_failed,
+                                         "TangoClient.subscribe_attribute",
+                                         tango.ErrSeverity.ERR)
+
+    def unsubscribe_attr(self, event_id):
+        """
+        Unsubscribes the attribute change event
+        """
+        try:
+            self.deviceproxy.unsubscribe_event(event_id)
+        except DevFailed as dev_failed:
+            log_message = "Failed to unsubscribe event {}.".format(dev_failed)
+            self.logger.error(log_message)

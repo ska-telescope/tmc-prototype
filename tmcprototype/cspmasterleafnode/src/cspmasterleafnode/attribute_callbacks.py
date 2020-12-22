@@ -1,8 +1,15 @@
 # Additional import
+import tango
+from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
+from tango.server import run, command, device_property, attribute
+
 from ska.base.control_model import HealthState
-from centralnode.tango_server import TangoServerHelper
+from .tango_server import TangoServer
 from . import const, release, On, Off, StandBy, tango_client, device_data
 from .device_data import DeviceData
+from .tango_client import TangoClient
+import logging
+LOGGER = logging.getLogger(__name__)
 
 class AttributeCallbacks:
     
@@ -15,10 +22,10 @@ class AttributeCallbacks:
     """
     
     def __init__(self):
-        self.device_data = DeviceData.get_instance
-        self.this_server = TangoServerHelper.get_instance()
+        self.device_data = DeviceData.get_instance()
+        self.this_server = TangoServer.get_instance()
         # How to pass fqdn here? 
-        self.csp_master_fqdn = TangoClient("ska_mid/tm_leaf_node/csp_master")
+        # self.csp_master_fqdn = TangoClient("ska_mid/tm_leaf_node/csp_master")
         self.csp_event_id = ""
         self.unsubscribe_flag = False
         
@@ -28,7 +35,7 @@ class AttributeCallbacks:
         Subarray health state attribute subscription.
         """
         self.unsubscribe_flag = False
-        subscribe_event()
+        self.csp_subscribe_event()
 
 
     def unsubscribe_event(self):
@@ -37,17 +44,17 @@ class AttributeCallbacks:
         Subarray health state attribute subscription.
         """
         self.unsubscribe_flag=True
-        self.subscribe_event()
+        self.csp_subscribe_event()
         
 
-    def subscribe_event(self):
+    def csp_subscribe_event(self):
         """
         Method for event subscription on CSP Master.
 
         :raises: Devfailed exception if error occures while subscribing event.
         """
 
-        csp_mln_client = TangoClient(self.csp_master_ln_fqdn)
+        csp_mln_client = TangoClient(self.device_data.csp_master_ln_fqdn)
         if not self.unsubscribe_flag:
             # Subscribing to CSPMaster Attributes
             try:
@@ -61,13 +68,13 @@ class AttributeCallbacks:
             except DevFailed as dev_failed:
                 log_msg = const.ERR_SUBS_CSP_MASTER_LEAF_ATTR + str(dev_failed)
                 self.logger.debug(log_msg)
-                device.set_status(const.ERR_CSP_MASTER_LEAF_INIT)
+                # device.set_status(const.ERR_CSP_MASTER_LEAF_INIT)
                 device_data._read_activity_message = log_msg
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CspMasterLeafNode.InitCommand.do()",
                                                 tango.ErrSeverity.ERR)
 
         else:
-            csp_mln_client.unsubscribe_attribute(self.csp_event_id)
+            csp_mln_client.unsubscribe_attr(self.csp_event_id)
 
         
     # PROTECTED REGION ID(CspMasterLeafNode.class_variable) ENABLED START #\

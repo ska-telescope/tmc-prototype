@@ -222,17 +222,17 @@ def command_callback_with_command_exception():
 #     assert device_data._read_activity_message == f"CSP CBF health is {health_state.name}."
 
 
-# def test_activity_message_attribute_reports_correct_csp_pss_health_state(mock_csp_master, health_state):
-#     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-#     csp_pss_health_state_attribute = 'cspPssHealthState'
-#
-#     dummy_event = \
-#         create_dummy_event_for_health_state \
-#             (csp_master_fqdn, health_state, csp_pss_health_state_attribute)
-#     event_subscription_map[csp_pss_health_state_attribute](dummy_event)
-#
-#     assert device_proxy.activityMessage == f"CSP PSS health is {health_state.name}."
-#
+def test_activity_message_attribute_reports_correct_csp_pss_health_state(mock_csp_master, health_state):
+    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
+    csp_pss_health_state_attribute = 'cspPssHealthState'
+
+    dummy_event = \
+        create_dummy_event_for_health_state \
+            (csp_master_fqdn, health_state, csp_pss_health_state_attribute)
+    event_subscription_map[csp_pss_health_state_attribute](dummy_event)
+
+    assert device_data._read_activity_message == f"CSP PSS health is {health_state.name}."
+
 #
 # def test_activity_message_attribute_reports_correct_csp_pst_health_state(mock_csp_master, health_state):
 #     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
