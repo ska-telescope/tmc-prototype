@@ -23,6 +23,7 @@ mkdir -p $REPORTS_DIR
 cd centralnode;
 tox -e py37
 mv centralnode_coverage ../$REPORTS_DIR;
+cd ..
 
 # Combine coverage reports
 cd $REPORTS_DIR
