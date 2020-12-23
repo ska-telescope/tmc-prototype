@@ -19,8 +19,10 @@ mkdir -p $REPORTS_DIR
 # cd ..
 # done
 
+# For testing purpose
 cd centralnode;
 tox -e py37
+mv centralnode_coverage ../$REPORTS_DIR;
 
 # Combine coverage reports
 cd $REPORTS_DIR
