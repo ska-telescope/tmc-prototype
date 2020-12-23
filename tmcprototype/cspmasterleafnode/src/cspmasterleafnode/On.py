@@ -71,7 +71,7 @@ class OnCommand(SKABaseDevice.OnCommand):
             csp_mln_client_obj.send_command_async(const.CMD_ON, self.on_cmd_ended_cb, [])
             self.logger.debug(const.STR_ON_CMD_ISSUED)
 
-            device_data.cbf_health_updator.start()
+            device_data.cbf_health_updator.start("cspCbfHealthState")
             return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
 
         except DevFailed as dev_failed:

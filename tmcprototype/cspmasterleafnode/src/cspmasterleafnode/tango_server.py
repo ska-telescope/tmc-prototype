@@ -14,7 +14,7 @@
 import tango
 from tango import AttrWriteType, DevFailed, DeviceProxy, EventType
 from tango.server import run,attribute, command, device_property
-from .const import GRP_DISH_LEAF_NODE
+# from .const import GRP_DISH_LEAF_NODE
 import logging
 
 class TangoServer:

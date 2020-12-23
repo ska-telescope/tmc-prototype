@@ -26,7 +26,7 @@ class CbfHealthStateAttributeUpdator:
     def start(self, attribute):
         try:
             self.csp_master = TangoClient(self.device_data.csp_master_ln_fqdn)
-            self.event_id = self.csp_master.subscribe_attribute("cspCbfHealthState", callback)
+            self.event_id = self.csp_master.subscribe_attribute(attribute, self.callback)
         except tango.DevFailed as df:
             self.logger.exception("Exception in attribute subscription")
     
