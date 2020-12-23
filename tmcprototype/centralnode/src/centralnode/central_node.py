@@ -34,12 +34,13 @@ from centralnode.input_validator import AssignResourceValidator
 from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
 from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
 from centralnode.device_data import DeviceData
+from centralnode.obs_state_check import ObsStateAggregator
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 __all__ = ["CentralNode", "main", "assign_resources_command","check_receptor_reassignment", "const", "device_data"
            "exceptions", "health_state_aggreegator", "input_validator", "release", "release_resources_command"
            "stand_by_telescope_command", "start_up_telescope_command", "stow_antennas_command", "tango_client"
-           "tango_server"]
+           "tango_server", "ObsStateAggregator"]
 
 
 class CentralNode(SKABaseDevice):
