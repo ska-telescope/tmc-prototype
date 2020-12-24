@@ -11,9 +11,6 @@ from tango import DevFailed
 from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
-from subarraynode.tango_group_client import TangoGroupClient
-from subarraynode.tango_client import TangoClient
-from subarraynode.DeviceData import DeviceData
 
 
 class AbortCommand(SKASubarray.AbortCommand):
@@ -33,28 +30,24 @@ class AbortCommand(SKASubarray.AbortCommand):
         :raises: DevFailed if error occurs in invoking command on any of the devices like CSPSubarrayLeafNode,
                 SDPSubarrayLeafNode or DishLeafNode
         """
-        device_data = DeviceData.get_instance()
-        device_data.is_release_resources = False
-        device_data.is_restart_command = False
-        device_data.is_end_command = False
-        device_data.is_obsreset_command = False
+        device = self.target
+        device.is_release_resources = False
+        device.is_restart_command = False
+        device.is_end_command = False
+        device.is_obsreset_command = False
         try:
-            if device_data.scan_thread:
-                if device_data.scan_thread.is_alive():
-                    device_data.scan_thread.cancel()  # stop timer when EndScan command is called
-            sdp_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
-            sdp_client.send_command(CMD_ABORT)
-            # device._sdp_subarray_ln_proxy.command_inout(const.CMD_ABORT)
+            if device.scan_thread:
+                if device.scan_thread.is_alive():
+                    device.scan_thread.cancel()  # stop timer when EndScan command is called
+            device._sdp_subarray_ln_proxy.command_inout(const.CMD_ABORT)
             self.logger.info(const.STR_CMD_ABORT_INV_SDP)
-            csp_client = TangoClient(device_data.csp_subarray_ln_fqdn)
-            csp_client.send_command(CMD_ABORT)
-            # device._csp_subarray_ln_proxy.command_inout(const.CMD_ABORT)
+            device._csp_subarray_ln_proxy.command_inout(const.CMD_ABORT)
             self.logger.info(const.STR_CMD_ABORT_INV_CSP)
-            device_data._dish_leaf_node_group.command_inout(const.CMD_ABORT)
-            device_data._read_activity_message = const.STR_ABORT_SUCCESS
+            device._dish_leaf_node_group.command_inout(const.CMD_ABORT)
+            device._read_activity_message = const.STR_ABORT_SUCCESS
             self.logger.info(const.STR_ABORT_SUCCESS)
-            device_data.set_status(const.STR_ABORT_SUCCESS)
-            device_data.is_abort_command = True
+            device.set_status(const.STR_ABORT_SUCCESS)
+            device.is_abort_command = True
             return (ResultCode.STARTED, const.STR_ABORT_SUCCESS)
 
         except DevFailed as dev_failed:

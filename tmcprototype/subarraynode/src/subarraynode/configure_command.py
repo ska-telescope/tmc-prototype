@@ -14,20 +14,18 @@ from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from ska_telmodel.csp import interface
-from .transaction_id import identify_with_id,inject_with_id
-from subarraynode.tango_group_client import TangoGroupClient
-from subarraynode.tango_client import TangoClient
-from subarraynode.DeviceData import DeviceData
+from .transaction_id import identify_with_id, inject_with_id
 
 csp_interface_version = 0
 sdp_interface_version = 0
-            
+
 
 class ConfigureCommand(SKASubarray.ConfigureCommand):
     """
     A class for SubarrayNode's Configure() command.
     """
-    # @identify_with_id('configure','argin')
+
+    @identify_with_id('configure', 'argin')
     def do(self, argin):
         """
         Configures the resources assigned to the Subarray.The configuration data for SDP, CSP and Dish is
@@ -53,30 +51,27 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
 
         :raises: JSONDecodeError if input argument json string contains invalid value
         """
-        self.logger.info(type(self.target))
-        device_data = DeviceData.get_instance()
-        device_data.is_scan_completed = False
-        device_data.is_release_resources = False
-        device_data.is_restart_command = False
-        device_data.is_abort_command = False
-        device_data.is_obsreset_command = False
-        # TODO: How to use logger. Currenly logger is passed from do() method
+        device = self.target
+        device.is_scan_completed = False
+        device.is_release_resources = False
+        device.is_restart_command = False
+        device.is_abort_command = False
+        device.is_obsreset_command = False
         self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
         log_msg = const.STR_CONFIGURE_IP_ARG + str(argin)
         self.logger.info(log_msg)
-        # TODO: how to access TANGO specific attributes (read-write)
-        device_data.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA)
-        device_data._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA
+        device.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA)
+        device._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA
         try:
             scan_configuration = json.loads(argin)
         except json.JSONDecodeError as jerror:
             log_message = const.ERR_INVALID_JSON + str(jerror)
             self.logger.error(log_message)
-            device_data._read_activity_message = log_message
+            device._read_activity_message = log_message
             tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
                                          const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
         tmc_configure = scan_configuration["tmc"]
-        device_data.scan_duration = int(tmc_configure["scanDuration"])
+        device.scan_duration = int(tmc_configure["scanDuration"])
         self._configure_dsh(scan_configuration)
         self._configure_csp(scan_configuration)
         self._configure_sdp(scan_configuration)
@@ -84,73 +79,65 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
         self.logger.info(message)
         return (ResultCode.STARTED, message)
 
-    @inject_with_id(2,'cmd_data')
-    def _configure_leaf_node(self, tango_client, cmd_name, cmd_data):
+    @inject_with_id(2, 'cmd_data')
+    def _configure_leaf_node(self, device_proxy, cmd_name, cmd_data):
+        device = self.target
         try:
-            tango_client.send_command(cmd_name, cmd_data)
-            log_msg = "%s configured succesfully." % tango_client.get_device_fqdn()
+            device_proxy.command_inout(cmd_name, cmd_data)
+            log_msg = "%s configured succesfully." % device_proxy.dev_name()
             self.logger.debug(log_msg)
-            device_data._read_activity_message = log_msg
         except DevFailed as df:
             log_message = df[0].desc
-            device_data._read_activity_message = log_message
-            log_msg = "Failed to configure %s. %s" % (tango_client.get_device_fqdn(), df)
+            device._read_activity_message = log_message
+            log_msg = "Failed to configure %s. %s" % (device_proxy.dev_name(), df)
             self.logger.error(log_msg)
             raise
 
     def _create_cmd_data(self, method_name, scan_config, *args):
+        device = self.target
         try:
             method = getattr(ElementDeviceData, method_name)
             cmd_data = method(scan_config, *args)
         except KeyError as kerr:
             log_message = kerr.args[0]
-            device_data._read_activity_message = log_message
+            device._read_activity_message = log_message
             self.logger.debug(log_message)
             raise
         return cmd_data
 
     def _configure_sdp(self, scan_configuration):
-        device_data = DeviceData.get_instance()
+        device = self.target
         cmd_data = self._create_cmd_data("build_up_sdp_cmd_data", scan_configuration)
-        # TODO : How to read device property device.SdpSubarrayLNFQDN
-        sdp_saln_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
-        self._configure_leaf_node(sdp_saln_client, "Configure", cmd_data)
+        self._configure_leaf_node(device._sdp_subarray_ln_proxy, "Configure", cmd_data)
 
     def _configure_csp(self, scan_configuration):
-        device_data = DeviceData.get_instance()
+        device = self.target
         attr_name_map = {
-            const.STR_DELAY_MODEL_SUB_POINT: device_data.csp_subarray_ln_fqdn + "/delayModel",
+            const.STR_DELAY_MODEL_SUB_POINT: device.CspSubarrayLNFQDN + "/delayModel",
         }
         cmd_data = self._create_cmd_data(
-            "build_up_csp_cmd_data", scan_configuration, attr_name_map, device_data._receive_addresses_map)
-        # TODO : How to read device property device.CspSubarrayLNFQDN
-        csp_saln_client = TangoClient(device_data.csp_subarray_ln_fqdn)
-        self._configure_leaf_node(csp_saln_client, "Configure", cmd_data)
+            "build_up_csp_cmd_data", scan_configuration, attr_name_map, device._receive_addresses_map)
+        self._configure_leaf_node(device._csp_subarray_ln_proxy, "Configure", cmd_data)
 
+    @inject_with_id(0, 'scan_configuration')
     def _configure_dsh(self, scan_configuration):
-        device_data = self.target
+        device = self.target
         config_keys = scan_configuration.keys()
         if not set(["sdp", "csp"]).issubset(config_keys) and "dish" in config_keys:
-            device_data.only_dishconfig_flag = True
+            device.only_dishconfig_flag = True
 
         cmd_data = self._create_cmd_data(
-            "build_up_dsh_cmd_data", scan_configuration, device_data.only_dishconfig_flag)
+            "build_up_dsh_cmd_data", scan_configuration, device.only_dishconfig_flag)
 
         try:
-            # TODO: Create Tango Group and add 2 dishes into the group for PoC purpose
-            dish_group_client = TangoGroupClient(const.GRP_DISH_LEAF_NODE)
-            dish_devices = ["ska_mid/tm_leaf_node/d0001", "ska_mid/tm_leaf_node/d0002"]
-            dish_group_client.add_device(dish_devices)
-            dish_group_client.send_command(const.CMD_CONFIGURE, cmd_data)
-
+            device._dish_leaf_node_group.command_inout(const.CMD_CONFIGURE, cmd_data)
             self.logger.info("Configure command is invoked on the Dish Leaf Nodes Group")
-            dish_group_client.send_command(const.CMD_TRACK, cmd_data)
+            device._dish_leaf_node_group.command_inout(const.CMD_TRACK, cmd_data)
             self.logger.info('TRACK command is invoked on the Dish Leaf Node Group')
         except DevFailed as df:
-            device_data._read_activity_message = df[0].desc
+            device._read_activity_message = df[0].desc
             self.logger.error(df)
             raise
-
 
 
 class ElementDeviceData:
@@ -193,7 +180,7 @@ class ElementDeviceData:
                 # Invoke ska_telmodel library function to create csp configure schema
                 if receive_addresses_map:
                     csp_config_schema = interface.make_csp_config(csp_interface_version, sdp_interface_version,
-                                        scan_type, csp_scan_config, receive_addresses_map)
+                                                                  scan_type, csp_scan_config, receive_addresses_map)
                     csp_config_schema = json.loads(csp_config_schema)
                 else:
                     raise KeyError("Receive addresses must be given. Aborting CSP configuration.")

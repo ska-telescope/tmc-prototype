@@ -10,24 +10,18 @@ if [ -d "$REPORTS_DIR" ]; then rm -rf $REPORTS_DIR; fi
 
 mkdir -p $REPORTS_DIR
 
-# for path in $(find ./*/test  -type d -name unit); do
-# 	export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
-# 	echo +++ Trying tests for $TMC_ELEMENT;
-# 	cd $TMC_ELEMENT;
-# 	tox -e py37
-# mv ${TMC_ELEMENT}_coverage ../$REPORTS_DIR;
-# cd ..
-# done
-
-# For testing purpose
-cd centralnode;
-tox -e py37
-mv centralnode_coverage ../$REPORTS_DIR;
+for path in $(find ./*/test  -type d -name unit); do
+	export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
+	echo +++ Trying tests for $TMC_ELEMENT;
+	cd $TMC_ELEMENT;
+	tox -e py37
+mv ${TMC_ELEMENT}_coverage ../$REPORTS_DIR;
 cd ..
+done
 
 # Combine coverage reports
 cd $REPORTS_DIR
-coverage combine centralnode_coverage cspmasterleafnode_coverage \
+coverage combine centralnode_coverage cspmasterleafnode_coverage dishmaster_coverage \
                   cspsubarrayleafnode_coverage dishleafnode_coverage \
                   sdpmasterleafnode_coverage sdpsubarrayleafnode_coverage \
                   subarraynode_coverage subarraynodelow_coverage centralnodelow_coverage \
@@ -35,6 +29,7 @@ coverage combine centralnode_coverage cspmasterleafnode_coverage \
 mv coverage.xml code-coverage.xml
 python3 -m pip install junitparser
 junitparser merge centralnode-unit-tests.xml \
+                  dishmaster-unit-tests.xml \
                   centralnodelow-unit-tests.xml \
                   cspmasterleafnode-unit-tests.xml \
                   cspsubarrayleafnode-unit-tests.xml \
