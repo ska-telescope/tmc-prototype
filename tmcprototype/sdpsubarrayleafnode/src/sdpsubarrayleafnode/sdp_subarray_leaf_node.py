@@ -24,12 +24,16 @@ from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
 from ska.base.commands import ResultCode, BaseCommand
 from .transaction_id import identify_with_id
-from . import const, release
+from . import const, release, on_command, off_command, abort_command, assign_resources_command, configure_command, end_command, endscan_command, obsreset_command, release_resources_command, restart_command, scan_command 
 from .exceptions import InvalidObsStateError
+from .device_data import DeviceData
+from tmc.common.tango_client import TangoClient
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
 
-__all__ = ["SdpSubarrayLeafNode", "main"]
-
+__all__ = ["SdpSubarrayLeafNode", "main", "assign_resources_command","const", "device_data"
+           "release", "release_resources_command", "on_command", "off_command", "configure_command",
+           "abort_command", "restart_command", "obsreset_command", "scan_command", "end_command",
+           "endscan_command"]
 
 # pylint: disable=unused-argument,unused-variable, implicit-str-concat
 class SdpSubarrayLeafNode(SKABaseDevice):
@@ -386,24 +390,25 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         device_data = DeviceData.get_instance()
 
         args = (device_data, self.state_model, self.logger)
-        self.assign_object = assign_resources_command.AssignResources(*args)
-        self.release_object = release_resources_command.ReleaseAllResources(*args)
-        self.configure_object = configure_command.Configure(*args)
-        self.scan_object = scan_command.Scan(*args)
-        self.endscan_object = endscan_command.EndScan(*args)
-        self.end_object = end_command.End(*args)
-        self.abort_object = abort_command.Abort(*args)
-        self.restart_object = restart_command.Restart(*args)
-        self.obsreset_object = obsreset_command.ObsReset(*args)
-        self.register_command_object("AssignResources", self.assign_object)
-        self.register_command_object("ReleaseAllResources", self.release_object)
-        self.register_command_object("Configure", self.configure_object)
-        self.register_command_object("Scan", self.scan_object)
-        self.register_command_object("EndScan", self.endscan_object)
-        self.register_command_object("End", self.end_object)
-        self.register_command_object("Abort", self.abort_object)
-        self.register_command_object("Restart", self.restart_object)
-        self.register_command_object("ObsReset", self.obsreset_object)
+        
+        # self.assign_object = assign_resources_command.AssignResources(*args)
+        # self.release_object = release_resources_command.ReleaseAllResources(*args)
+        # self.configure_object = configure_command.Configure(*args)
+        # self.scan_object = scan_command.Scan(*args)
+        # self.endscan_object = endscan_command.EndScan(*args)
+        # self.end_object = end_command.End(*args)
+        # self.abort_object = abort_command.Abort(*args)
+        # self.restart_object = restart_command.Restart(*args)
+        # self.obsreset_object = obsreset_command.ObsReset(*args)
+        # self.register_command_object("AssignResources", self.assign_object)
+        # self.register_command_object("ReleaseAllResources", self.release_object)
+        # self.register_command_object("Configure", self.configure_object)
+        # self.register_command_object("Scan", self.scan_object)
+        # self.register_command_object("EndScan", self.endscan_object)
+        # self.register_command_object("End", self.end_object)
+        # self.register_command_object("Abort", self.abort_object)
+        # self.register_command_object("Restart", self.restart_object)
+        # self.register_command_object("ObsReset", self.obsreset_object)
 
 
 # ----------
