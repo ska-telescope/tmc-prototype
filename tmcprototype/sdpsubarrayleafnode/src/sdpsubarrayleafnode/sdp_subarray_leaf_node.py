@@ -162,6 +162,125 @@ class SdpSubarrayLeafNode(SKABaseDevice):
          from SDP Subarray which depicts the active Processing Blocks in the SDP Subarray"""
         return self._active_processing_block
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.activeProcessingBlocks_read
+    
+    @command(
+    )
+    @DebugIt()
+    def Abort(self):
+        """
+        Invoke Abort on SdpSubarrayLeafNode.
+        """
+        handler = self.get_command_object("Abort")
+        handler()
+
+    def is_Abort_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state
+
+        :return: True if this command is allowed to be run in current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run in current device state
+
+        """
+        handler = self.get_command_object("Abort")
+        return handler.check_allowed()
+
+        
+    @command(
+        dtype_in=('str'),
+        doc_in="The input JSON string consists of information related to id, max_length, scan_types"
+                " and processing_blocks.",
+    )
+    @DebugIt()
+    def AssignResources(self, argin):
+        """
+        Assigns resources to given SDP subarray.
+        """
+        handler = self.get_command_object("AssignResources")
+        handler(argin)
+
+    def is_AssignResources_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state
+
+        :return: True if this command is allowed to be run in current device state
+
+        :rtype: boolean
+
+        """
+        handler = self.get_command_object("AssignResources")
+        return handler.check_allowed()
+
+    def is_Configure_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state
+
+        :return: True if this command is allowed to be run in current device state
+
+        :rtype: boolean
+
+        """
+        handler = self.get_command_object("Configure")
+        return handler.check_allowed()
+
+    @command(
+        dtype_in=('str'),
+        doc_in="The JSON input string consists of scan type.",
+    )
+    @DebugIt()
+    def Configure(self, argin):
+        """
+        Invokes Configure on SdpSubarrayLeafNode.
+        """
+        handler = self.get_command_object("Configure")
+        handler(argin)
+        
+        
+    def is_End_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state.
+
+        :return: True if this command is allowed to be run in current device state.
+
+        :rtype: boolean
+
+        """
+
+        handler = self.get_command_object("End")
+        return handler.check_allowed()
+
+    @command(
+    )
+    @DebugIt()
+    def End(self):
+        """ This command invokes End command on SDP subarray to end the current Scheduling block.
+        """
+        handler = self.get_command_object("End")
+        handler()
+    
+
+    def is_EndScan_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state.
+        :return: True if this command is allowed to be run in current device state.
+        :rtype: boolean
+        """
+
+        handler = self.get_command_object("EndScan")
+        return handler.check_allowed()
+
+    @command(
+    )
+    @DebugIt()
+    def EndScan(self):
+        """
+        Invokes EndScan on SdpSubarrayLeafNode.
+
+        """
+        handler = self.get_command_object("EndScan")
+        handler()
 
 
     def init_command_objects(self):

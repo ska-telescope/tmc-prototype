@@ -109,29 +109,3 @@ class Configure(BaseCommand):
             tango.Except.throw_exception(const.STR_CONFIG_EXEC, log_msg,
                                             "SdpSubarrayLeafNode.ConfigureCommand()",
                                             tango.ErrSeverity.ERR)
-
-
-def is_Configure_allowed(self):
-    """
-    Checks whether this command is allowed to be run in current device state
-
-    :return: True if this command is allowed to be run in current device state
-
-    :rtype: boolean
-
-    """
-    handler = self.get_command_object("Configure")
-    return handler.check_allowed()
-
-@command(
-    dtype_in=('str'),
-    doc_in="The JSON input string consists of scan type.",
-)
-@DebugIt()
-def Configure(self, argin):
-    """
-    Invokes Configure on SdpSubarrayLeafNode.
-    """
-    handler = self.get_command_object("Configure")
-    handler(argin)
-    

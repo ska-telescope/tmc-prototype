@@ -161,28 +161,3 @@ class AssignResources(BaseCommand):
             tango.Except.throw_exception(const.STR_ASSIGN_RES_EXEC, log_msg,
                                             "SdpSubarrayLeafNode.AssignResourcesCommand()",
                                             tango.ErrSeverity.ERR)
-
-@command(
-    dtype_in=('str'),
-    doc_in="The input JSON string consists of information related to id, max_length, scan_types"
-            " and processing_blocks.",
-)
-@DebugIt()
-def AssignResources(self, argin):
-    """
-    Assigns resources to given SDP subarray.
-    """
-    handler = self.get_command_object("AssignResources")
-    handler(argin)
-
-def is_AssignResources_allowed(self):
-    """
-    Checks whether this command is allowed to be run in current device state
-
-    :return: True if this command is allowed to be run in current device state
-
-    :rtype: boolean
-
-    """
-    handler = self.get_command_object("AssignResources")
-    return handler.check_allowed()
