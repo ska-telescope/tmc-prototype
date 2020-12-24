@@ -11,9 +11,6 @@ from tango import DevFailed
 from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
-from subarraynode.tango_group_client import TangoGroupClient
-from subarraynode.tango_client import TangoClient
-from subarraynode.DeviceData import DeviceData
 
 
 class OffCommand(SKASubarray.OffCommand):
@@ -32,22 +29,22 @@ class OffCommand(SKASubarray.OffCommand):
 
         :raises: DevFailed if the command execution is not successful
         """
-        device_data = DeviceData.get_instance()
-        device_data.is_restart_command = False
-        device_data.is_release_resources = False
-        device_data.is_abort_command = False
-        device_data.is_obsreset_command = False
+        device = self.target
+        device.is_restart_command = False
+        device.is_release_resources = False
+        device.is_abort_command = False
+        device.is_obsreset_command = False
         try:
-            device_data._csp_subarray_ln_proxy.Off()
-            device_data._sdp_subarray_ln_proxy.Off()
+            device._csp_subarray_ln_proxy.Off()
+            device._sdp_subarray_ln_proxy.Off()
             message = "Off command completed OK"
             self.logger.info(message)
 
             # TODO unsubscribe health obsState events from CSP and SDP
-            device_data._unsubscribe_csp_sdp_state_events(device_data._cspSdpLnHealthEventID)
-            device_data._unsubscribe_csp_sdp_state_events(device_data._cspSdpLnObsStateEventID)
-            device_data._cspSdpLnHealthEventID.clear()  # Clear eventID dictionary
-            device_data._cspSdpLnObsStateEventID.clear()
+            device._unsubscribe_csp_sdp_state_events(device._cspSdpLnHealthEventID)
+            device._unsubscribe_csp_sdp_state_events(device._cspSdpLnObsStateEventID)
+            device._cspSdpLnHealthEventID.clear()  # Clear eventID dictionary
+            device._cspSdpLnObsStateEventID.clear()
             return (ResultCode.OK, message)
 
         except DevFailed as dev_failed:
