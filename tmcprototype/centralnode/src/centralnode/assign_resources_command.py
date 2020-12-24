@@ -5,13 +5,13 @@ import ast
 import tango
 from tango import DevState, DevFailed
 
-from ska.base.commands import ResultCode, BaseCommand
+from ska.base.commands import BaseCommand
 from . import const, release
 from centralnode.check_receptor_reassignment import CheckReceptorReassignment
 from centralnode.input_validator import AssignResourceValidator
 from centralnode.tango_client import TangoClient
 from centralnode.device_data import DeviceData
-
+from centralnode.resource_manager import ResourceManager
 from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
 from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
 
@@ -135,7 +135,7 @@ class AssignResources(BaseCommand):
                 }
                 }
 
-        :rtype: (ResultCode, str)
+        :rtype: None
 
         :raises: DevFailed when the API fails to allocate resources.
 
@@ -182,13 +182,7 @@ class AssignResources(BaseCommand):
             resources_allocated = ast.literal_eval(resources_allocated_return[1][0])
             log_msg = "resources_assigned: " + str(resources_allocated)
             self.logger.debug(log_msg)
-            # Update self._subarray_allocation variable to update subarray allocation
-            # for the related dishes.
-            # Also append the allocated dish to out argument.
-            for dish in range(0, len(resources_allocated)):
-                dish_ID = "dish" + (resources_allocated[dish])
-                device_data._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
-                device_data.receptorIDList.append(resources_allocated[dish])
+            device_data.resource_manager_obj.update_resource_matrix(resources_allocated, subarrayID)
 
             # Allocation successful
             device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS

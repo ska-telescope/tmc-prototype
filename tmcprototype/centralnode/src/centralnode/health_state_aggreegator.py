@@ -2,6 +2,7 @@
 health_state_aggreegator class for CentralNode.
 """
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
+import tango
 from tango import DevFailed
 # Additional import
 from ska.base.control_model import HealthState

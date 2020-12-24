@@ -2,6 +2,7 @@
 ObsStateCheck class for CentralNode.
 """
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
+import tango
 from tango import DevFailed
 # Additional import
 from ska.base.control_model import ObsState
@@ -43,7 +44,7 @@ class ObsStateAggregator:
                 event_id = tango_client.subscribe_attribute(const.EVT_SUBSR_HEALTH_STATE,
                     self.obs_state_callback)
                 self.event_subscription_map[tango_client] = event_id
-        except tango.DevFailed as df:
+        except tango.DevFailed:
             self.logger.exception("Error in aggregation.")
 
     def stop_aggregation(self):
