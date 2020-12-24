@@ -90,23 +90,26 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             super().do()
             device = self.target
-            # Initialise device state
-            device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
 
             # Initialise attributes
-            device._receive_addresses = ""
+            #device._receive_addresses = ""
             device._sdp_subarray_health_state = HealthState.OK
-            device._read_activity_message = ""
-            device._active_processing_block = ""
+            #device._read_activity_message = ""
+            #device._active_processing_block = ""
             device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
             device._version_id = release.version
+
+            # Create DeviceData class instance
+            device_data = DeviceData.get_instance()
+            device_data._sdp_sa_fqdn = device.SdpSubarrayFQDN
+            device_data._read_activity_message = const.STR_SDPSALN_INIT_SUCCESS
+
             # Initialise Device status
             device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
             self.logger.info(const.STR_SDPSALN_INIT_SUCCESS)
-            device._read_activity_message = const.STR_SDPSALN_INIT_SUCCESS
 
             # Create Device proxy for Sdp Subarray using SdpSubarrayFQDN property
-            device._sdp_subarray_proxy = DeviceProxy(device.SdpSubarrayFQDN)
+            #device._sdp_subarray_proxy = DeviceProxy(device.SdpSubarrayFQDN)
             return (ResultCode.OK, const.STR_SDPSALN_INIT_SUCCESS)
 
     def init_command_objects(self):
@@ -115,16 +118,28 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         device.
         """
         super().init_command_objects()
-        args = (self, self.state_model, self.logger)
-        self.register_command_object("AssignResources", self.AssignResourcesCommand(*args))
-        self.register_command_object("ReleaseAllResources", self.ReleaseAllResourcesCommand(*args))
-        self.register_command_object("Configure", self.ConfigureCommand(*args))
-        self.register_command_object("Scan", self.ScanCommand(*args))
-        self.register_command_object("EndScan", self.EndScanCommand(*args))
-        self.register_command_object("End", self.EndCommand(*args))
-        self.register_command_object("Abort", self.AbortCommand(*args))
-        self.register_command_object("Restart", self.RestartCommand(*args))
-        self.register_command_object("ObsReset", self.ObsResetCommand(*args))
+        # Create DeviceData class instance
+        device_data = DeviceData.get_instance()
+
+        args = (device_data, self.state_model, self.logger)
+        self.assign_object = assign_resources_command.AssignResources(*args)
+        self.release_object = release_resources_command.ReleaseAllResources(*args)
+        self.configure_object = release_resources_command.Configure(*args)
+        self.scan_object = release_resources_command.Scan(*args)
+        self.endscan_object = release_resources_command.EndScan(*args)
+        self.end_object = release_resources_command.End(*args)
+        self.abort_object = release_resources_command.Abort(*args)
+        self.restart_object = release_resources_command.Restart(*args)
+        self.obsreset_object = release_resources_command.ObsReset(*args)
+        self.register_command_object("AssignResources", self.assign_object)
+        self.register_command_object("ReleaseAllResources", self.release_object)
+        self.register_command_object("Configure", self.configure_object)
+        self.register_command_object("Scan", self.scan_object)
+        self.register_command_object("EndScan", self.endscan_object)
+        self.register_command_object("End", self.end_object)
+        self.register_command_object("Abort", self.abort_object)
+        self.register_command_object("Restart", self.restart_object)
+        self.register_command_object("ObsReset", self.obsreset_object)
 
 
     def always_executed_hook(self):
