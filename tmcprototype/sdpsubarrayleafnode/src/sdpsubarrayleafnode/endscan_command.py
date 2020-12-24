@@ -101,24 +101,3 @@ class EndScan(BaseCommand):
             tango.Except.throw_exception(const.STR_ENDSCAN_EXEC, log_msg,
                                             "SdpSubarrayLeafNode.EndScanCommand()",
                                             tango.ErrSeverity.ERR)
-
-def is_EndScan_allowed(self):
-    """
-    Checks whether this command is allowed to be run in current device state.
-    :return: True if this command is allowed to be run in current device state.
-    :rtype: boolean
-    """
-
-    handler = self.get_command_object("EndScan")
-    return handler.check_allowed()
-
-@command(
-)
-@DebugIt()
-def EndScan(self):
-    """
-    Invokes EndScan on SdpSubarrayLeafNode.
-
-    """
-    handler = self.get_command_object("EndScan")
-    handler()

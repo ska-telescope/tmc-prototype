@@ -97,25 +97,3 @@ class End(BaseCommand):
             tango.Except.throw_exception(const.STR_END_EXEC, log_msg,
                                             "SdpSubarrayLeafNode.EndCommand()",
                                             tango.ErrSeverity.ERR)
-
-def is_End_allowed(self):
-    """
-    Checks whether this command is allowed to be run in current device state.
-
-    :return: True if this command is allowed to be run in current device state.
-
-    :rtype: boolean
-
-    """
-
-    handler = self.get_command_object("End")
-    return handler.check_allowed()
-
-@command(
-)
-@DebugIt()
-def End(self):
-    """ This command invokes End command on SDP subarray to end the current Scheduling block.
-    """
-    handler = self.get_command_object("End")
-    handler()
