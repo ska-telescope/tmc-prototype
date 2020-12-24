@@ -1,4 +1,3 @@
-# from .attribute_callbacks import CbfHealthStateAttributeUpdator
 class DeviceData:
     """
     This class represents the CSP master as functional device. It mainly comprise the data common
@@ -15,8 +14,7 @@ class DeviceData:
             DeviceData.__instance = self
         self.csp_master_ln_fqdn = ""
         self._read_activity_message= ""
-        from .attribute_callbacks import CbfHealthStateAttributeUpdator
-        self.cbf_health_updator = CbfHealthStateAttributeUpdator()
+        self.cbf_health_updator = None
 
     @staticmethod
     def get_instance():

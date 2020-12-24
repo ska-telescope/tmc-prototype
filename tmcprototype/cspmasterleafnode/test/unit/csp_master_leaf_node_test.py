@@ -24,19 +24,19 @@ from ska.base.control_model import LoggingLevel
 from ska.base.commands import ResultCode
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
 
-@pytest.fixture(scope="function")
-def mock_csp_master():
-    csp_master_fqdn = 'mid_csp/elt/master'
-    dut_properties = {'CspMasterFQDN': csp_master_fqdn}
-    event_subscription_map = {}
-    csp_master_proxy_mock = Mock()
-    csp_master_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args,
-               **kwargs: event_subscription_map.update({attr_name: callback}))
-    proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
-    with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        yield csp_master_proxy_mock, tango_context.device, csp_master_fqdn, event_subscription_map
+# @pytest.fixture(scope="function")
+# def mock_csp_master():
+#     csp_master_fqdn = 'mid_csp/elt/master'
+#     dut_properties = {'CspMasterFQDN': csp_master_fqdn}
+#     event_subscription_map = {}
+#     csp_master_proxy_mock = Mock()
+#     csp_master_proxy_mock.subscribe_event.side_effect = (
+#         lambda attr_name, event_type, callback, *args,
+#                **kwargs: event_subscription_map.update({attr_name: callback}))
+#     proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
+#     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
+#                            proxies_to_mock=proxies_to_mock) as tango_context:
+#         yield csp_master_proxy_mock, tango_context.device, csp_master_fqdn, event_subscription_map
 
 
 @pytest.fixture(scope="function")
@@ -52,13 +52,13 @@ def mock_csp_master_proxy():
             yield tango_context.device, tango_client_obj, dut_properties['CspMasterFQDN'], event_subscription_map
 
 
-@pytest.fixture(scope="function")
-def event_subscription(mock_csp_master):
-    event_subscription_map = {}
-    mock_csp_master[0].command_inout_asynch.side_effect = (
-        lambda command_name, arg, callback, *args,
-               **kwargs: event_subscription_map.update({command_name: callback}))
-    yield event_subscription_map
+# @pytest.fixture(scope="function")
+# def event_subscription(mock_csp_master):
+#     event_subscription_map = {}
+#     mock_csp_master[0].command_inout_asynch.side_effect = (
+#         lambda command_name, arg, callback, *args,
+#                **kwargs: event_subscription_map.update({command_name: callback}))
+#     yield event_subscription_map
 
 
 @pytest.fixture(scope="function")
@@ -180,13 +180,13 @@ def raise_devfailed_exception(*args):
 #TODO: FOR FUTURE USE
 @pytest.mark.xfail(reason="Off command is not generating event error in current implementation. "
                            "Will be updated later.")
-def test_off_should_command_with_callback_method_with_event_error(mock_csp_master ,event_subscription):
-    device_proxy=mock_csp_master[1]
+def test_off_should_command_with_callback_method_with_event_error(mock_csp_master_proxy ,event_subscription_mock):
+    device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
 
     device_proxy.On()
     device_proxy.Off()
     dummy_event = command_callback_with_event_error(const.CMD_OFF)
-    event_subscription[const.CMD_OFF](dummy_event)
+    event_subscription_mock[const.CMD_OFF](dummy_event)
 
     assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
 
@@ -210,42 +210,42 @@ def command_callback_with_command_exception():
     return Exception("Exception in Command Callback")
 
 
-# def test_activity_message_attribute_reports_correct_csp_cbf_health_state(mock_csp_master_proxy, health_state):
-#     device_proxy, tango_client_obj, csp_master_fqdn, event_subscription_map = mock_csp_master_proxy
-#     csp_cbf_health_state_attribute = 'cspCbfHealthState'
-#
-#     dummy_event = \
-#         create_dummy_event_for_health_state \
-#             (csp_master_fqdn, health_state, csp_cbf_health_state_attribute)
-#     event_subscription_map[csp_cbf_health_state_attribute](dummy_event)
-#
-#     assert device_data._read_activity_message == f"CSP CBF health is {health_state.name}."
-
-
-def test_activity_message_attribute_reports_correct_csp_pss_health_state(mock_csp_master, health_state):
-    csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-    csp_pss_health_state_attribute = 'cspPssHealthState'
-
+def test_activity_message_attribute_reports_correct_csp_cbf_health_state(mock_csp_master_proxy, health_state):
+    device_proxy, tango_client_obj, csp_master_fqdn, event_subscription_map = mock_csp_master_proxy
+    csp_cbf_health_state_attribute = 'cspCbfHealthState'
+    device_proxy.On()
     dummy_event = \
         create_dummy_event_for_health_state \
-            (csp_master_fqdn, health_state, csp_pss_health_state_attribute)
-    event_subscription_map[csp_pss_health_state_attribute](dummy_event)
+            (csp_master_fqdn, health_state, csp_cbf_health_state_attribute)
+    event_subscription_map[csp_cbf_health_state_attribute] = (dummy_event)
+    
+    assert device_data._read_activity_message == f"CSP CBF health is {health_state.name}."
 
-    assert device_data._read_activity_message == f"CSP PSS health is {health_state.name}."
 
-#
-# def test_activity_message_attribute_reports_correct_csp_pst_health_state(mock_csp_master, health_state):
-#     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
+# def test_activity_message_attribute_reports_correct_csp_pss_health_state(mock_csp_master_proxy, health_state):
+#     device_proxy, tango_client_obj, csp_master_fqdn, event_subscription_map = mock_csp_master_proxy
+#     csp_pss_health_state_attribute = 'cspPssHealthState'
+
+#     dummy_event = \
+#         create_dummy_event_for_health_state \
+#             (csp_master_fqdn, health_state, csp_pss_health_state_attribute)
+#     event_subscription_map[csp_pss_health_state_attribute] = (dummy_event)
+
+#     assert device_data._read_activity_message == f"CSP PSS health is {health_state.name}."
+
+
+# def test_activity_message_attribute_reports_correct_csp_pst_health_state(mock_csp_master_proxy, health_state):
+#     device_proxy, tango_client_obj, csp_master_fqdn, event_subscription_map = mock_csp_master_proxy
 #     csp_pst_health_state_attribute = 'cspPstHealthState'
-#
+
 #     dummy_event = \
 #         create_dummy_event_for_health_state \
 #             (csp_master_fqdn, health_state, csp_pst_health_state_attribute)
-#     event_subscription_map[csp_pst_health_state_attribute](dummy_event)
-#
-#     assert device_proxy.activityMessage == f"CSP PST health is {health_state.name}."
-#
-#
+#     event_subscription_map[csp_pst_health_state_attribute] = (dummy_event)
+
+#     assert device_data._read_activity_message == f"CSP PST health is {health_state.name}."
+
+
 # @pytest.mark.parametrize(
 #     "attribute_name,error_message",
 #     [
@@ -254,15 +254,15 @@ def test_activity_message_attribute_reports_correct_csp_pss_health_state(mock_cs
 #         ("cspPstHealthState", const.ERR_ON_SUBS_CSP_PST_HEALTH )
 #     ]
 # )
-# def test_activity_message_reports_correct_health_state_when_attribute_event_has_error(mock_csp_master, attribute_name, error_message):
-#     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
-#
+# def test_activity_message_reports_correct_health_state_when_attribute_event_has_error(mock_csp_master_proxy, attribute_name, error_message):
+#     device_proxy, tango_client_obj, csp_master_fqdn, event_subscription_map = mock_csp_master_proxy
+
 #     health_state_value = HealthState.UNKNOWN
 #     dummy_event = create_dummy_event_for_health_state_with_error(csp_master_fqdn, health_state_value,
 #                                                                  attribute_name)
-#     event_subscription_map[attribute_name](dummy_event)
-#
-#     assert device_proxy.activityMessage == error_message + str(
+#     event_subscription_map[attribute_name] = dummy_event
+
+#     assert device_data._read_activity_message == error_message + str(
 #         dummy_event.errors)
 
 
