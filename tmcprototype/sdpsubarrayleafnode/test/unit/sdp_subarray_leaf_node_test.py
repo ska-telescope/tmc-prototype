@@ -16,12 +16,12 @@ from tango.test_context import DeviceTestContext
 
 # Additional import
 from sdpsubarrayleafnode import SdpSubarrayLeafNode, const, release
+from sdpsubarrayleafnode.device_data import DeviceData
 from ska.base.control_model import ObsState, HealthState, AdminMode, TestMode, ControlMode, SimulationMode
 from ska.base.control_model import LoggingLevel
 from ska.base.commands import ResultCode
 #from tmc.common.tango_client import TangoClient
 from sdpsubarrayleafnode.tango_client import TangoClient
-from sdpsubarrayleafnode.device_data import DeviceData
 
 assign_input_file = 'command_AssignResources.json'
 path = join(dirname(__file__), 'data', assign_input_file)
@@ -57,19 +57,19 @@ with open(path, 'r') as f:
 #     yield event_subscription_map
 
 
-# @pytest.fixture(scope="function")
-# def mock_sdp_subarray():
-#     sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_01'
-#     dut_properties = {
-#         'SdpSubarrayFQDN': sdp_subarray1_fqdn
-#     }
-#     sdp_subarray1_proxy_mock = Mock()
-#     proxies_to_mock = {
-#         sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
-#     }
-#     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
-#                            proxies_to_mock=proxies_to_mock) as tango_context:
-#         yield tango_context.device, sdp_subarray1_proxy_mock
+@pytest.fixture(scope="function")
+def mock_sdp_subarray():
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_01'
+    dut_properties = {
+        'SdpSubarrayFQDN': sdp_subarray1_fqdn
+    }
+    sdp_subarray1_proxy_mock = Mock()
+    proxies_to_mock = {
+        sdp_subarray1_fqdn: sdp_subarray1_proxy_mock
+    }
+    with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        yield tango_context.device, sdp_subarray1_proxy_mock
 
 
 @pytest.fixture(scope="function")
@@ -80,7 +80,7 @@ def mock_sdp_subarray_proxy():
         lambda attr_name, event_type, callback, *args,
                **kwargs: event_subscription_map.update({attr_name: callback}))
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties) as tango_context:
-        with mock.patch.object(TangoClient, 'get_deviceproxy', return_value=Mock()) as mock_obj:
+        with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
             tango_client_obj = TangoClient(dut_properties['SdpSubarrayFQDN'])
             yield tango_context.device, tango_client_obj, dut_properties['SdpSubarrayFQDN'], event_subscription_map
 
@@ -108,6 +108,13 @@ def tango_context():
         yield tango_context
 
 
+def test_off_should_command_with_callback_method(mock_sdp_subarray_proxy,event_subscription_mock):
+    device_proxy, tango_client_obj,_ ,_= mock_sdp_subarray_proxy
+    device_proxy.On()
+    device_proxy.Off()
+    dummy_event = command_callback(const.CMD_OFF)
+    event_subscription_mock[const.CMD_OFF](dummy_event)
+
 def test_on(mock_sdp_subarray_proxy):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     assert device_proxy.On() == [[ResultCode.OK],
@@ -130,22 +137,29 @@ def test_on_should_command_with_callback_method(mock_sdp_subarray_proxy,event_su
     dummy_event = command_callback(const.CMD_ON)
     event_subscription_without_arg[const.CMD_ON](dummy_event)
     device_data = DeviceData.get_instance()
-    assert const.STR_COMMAND + const.CMD_ON in device_data._read_activity_message
-    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(const.CMD_ON,
-                                                                         any_method(with_name='on_cmd_ended_cb'))
+    assert const.STR_COMMAND + const.CMD_OFF in device_data._read_activity_message
+    # sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF,
+    #                                                                      any_method(with_name='off_cmd_ended_cb'))
+    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(const.CMD_OFF,
+                                                                         any_method(with_name='off_cmd_ended_cb'))
 
 
-# def test_off_should_command_with_callback_method(mock_sdp_subarray,event_subscription_without_arg):
+# def test_on_should_command_with_callback_method_with_event_error(mock_sdp_subarray,event_subscription_without_arg):
 #     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
 #     device_proxy.On()
-#     device_proxy.Off()
-#     dummy_event = command_callback(const.CMD_OFF)
-#     event_subscription_without_arg[const.CMD_OFF](dummy_event)
-#     assert const.STR_COMMAND + const.CMD_OFF in device_proxy.activityMessage
-#     sdp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_OFF,
-#                                                                          any_method(with_name='off_cmd_ended_cb'))
+#     dummy_event = command_callback_with_event_error(const.CMD_ON)
+#     event_subscription_without_arg[const.CMD_ON](dummy_event)
+#     assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
 
 
+def test_off_should_command_with_callback_method_with_event_error(mock_sdp_subarray_proxy,event_subscription_mock):
+    device_proxy, tango_client_obj = mock_sdp_subarray_proxy
+    device_proxy.On()
+    device_proxy.Off()
+    dummy_event = command_callback_with_event_error(const.CMD_OFF)
+    event_subscription_mock[const.CMD_OFF](dummy_event)
+    device_data = DeviceData.get_instance()
+    assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_data._read_activity_message
 # def test_on_should_command_with_callback_method_with_event_error(mock_sdp_subarray_proxy,event_subscription_mock):
 #     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]    
 #     device_proxy.On()
@@ -153,14 +167,6 @@ def test_on_should_command_with_callback_method(mock_sdp_subarray_proxy,event_su
 #     event_subscription_mock[const.CMD_ON](dummy_event)
 #     assert const.ERR_INVOKING_CMD + const.CMD_ON in device_data._read_activity_message
 
-
-# def test_off_should_command_with_callback_method_with_event_error(mock_sdp_subarray,event_subscription_without_arg):
-#     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-#     device_proxy.On()
-#     device_proxy.Off()
-#     dummy_event = command_callback_with_event_error(const.CMD_OFF)
-#     event_subscription_without_arg[const.CMD_OFF](dummy_event)
-#     assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
 
 
 # def test_on_command_should_raise_dev_failed(mock_sdp_subarray_proxy):
@@ -171,28 +177,29 @@ def test_on_should_command_with_callback_method(mock_sdp_subarray_proxy,event_su
 #     assert "This is error message for devfailed" in str(df.value)
 
 
-# def test_off_command_should_raise_dev_failed(mock_sdp_subarray):
-#     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-#     device_proxy.On()
-#     sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
-#     with pytest.raises(tango.DevFailed) as df:
-#         device_proxy.Off()
-#     assert "This is error message for devfailed" in str(df.value)
+def test_off_command_should_raise_dev_failed(mock_sdp_subarray_proxy):
+    device_proxy, tango_client_obj,_,_= mock_sdp_subarray_proxy
+    device_proxy.On()
+    # sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+    tango_client_obj.deviceproxy.command_inout_asynch.side_effect = raise_devfailed_exception
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.Off()
+    assert "This is error message for devfailed" in str(df.value)
 
 
-# @pytest.fixture(
-#     scope="function",
-#     params=[
-#         ("Scan", scan_input_str, const.CMD_SCAN, ObsState.READY,"scan_cmd_ended_cb", const.ERR_SCAN),
-#         ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.READY,"configure_cmd_ended_cb", const.ERR_CONFIGURE),
-#         ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.IDLE,"configure_cmd_ended_cb", const.ERR_CONFIGURE),
-#         ("AssignResources", assign_input_str, const.CMD_ASSIGN_RESOURCES, ObsState.EMPTY,"AssignResources_ended", const.ERR_ASSGN_RESOURCES),
-#         ("AssignResources", assign_input_str, const.CMD_ASSIGN_RESOURCES, ObsState.IDLE, "AssignResources_ended",const.ERR_ASSGN_RESOURCES),
-#     ])
+@pytest.fixture(
+    scope="function",
+    params=[
+        ("Scan", scan_input_str, const.CMD_SCAN, ObsState.READY,"scan_cmd_ended_cb", const.ERR_SCAN),
+        ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.READY,"configure_cmd_ended_cb", const.ERR_CONFIGURE),
+        ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.IDLE,"configure_cmd_ended_cb", const.ERR_CONFIGURE),
+        ("AssignResources", assign_input_str, const.CMD_ASSIGN_RESOURCES, ObsState.EMPTY,"AssignResources_ended", const.ERR_ASSGN_RESOURCES),
+        ("AssignResources", assign_input_str, const.CMD_ASSIGN_RESOURCES, ObsState.IDLE, "AssignResources_ended",const.ERR_ASSGN_RESOURCES),
+    ])
 
-# def command_with_arg(request):
-#     cmd_name, input_arg, requested_cmd, obs_state, callback_str, Error_msg = request.param
-#     return cmd_name, input_arg, requested_cmd, obs_state, callback_str, Error_msg
+def command_with_arg(request):
+    cmd_name, input_arg, requested_cmd, obs_state, callback_str, Error_msg = request.param
+    return cmd_name, input_arg, requested_cmd, obs_state, callback_str, Error_msg
 
 
 # def test_command_with_callback_method_with_arg(mock_sdp_subarray, event_subscription_with_arg, command_with_arg):
@@ -234,26 +241,26 @@ def test_on_should_command_with_callback_method(mock_sdp_subarray_proxy,event_su
 #     assert Error_msg in str(df.value)
 
 
-# @pytest.fixture(
-#     scope="function",
-#     params=[
-#         ("End", const.CMD_END, ObsState.READY,"end_cmd_ended_cb",const.ERR_END_INVOKING_CMD),
-#         ("ReleaseAllResources", const.CMD_RELEASE_RESOURCES, ObsState.IDLE,"releaseallresources_cmd_ended_cb", const.ERR_RELEASE_RESOURCES),
-#         ("EndScan", const.CMD_ENDSCAN, ObsState.SCANNING, "endscan_cmd_ended_cb", const.ERR_ENDSCAN_INVOKING_CMD),
-#         ("Abort", const.CMD_ABORT, ObsState.SCANNING, "abort_cmd_ended_cb", const.ERR_ABORT_INVOKING_CMD),
-#         ("Abort", const.CMD_ABORT, ObsState.CONFIGURING, "abort_cmd_ended_cb", const.ERR_ABORT_INVOKING_CMD),
-#         ("Abort", const.CMD_ABORT, ObsState.IDLE, "abort_cmd_ended_cb", const.ERR_ABORT_INVOKING_CMD),
-#         ("Abort", const.CMD_ABORT, ObsState.RESETTING, "abort_cmd_ended_cb", const.ERR_ABORT_INVOKING_CMD),
-#         ("Abort", const.CMD_ABORT, ObsState.READY, "abort_cmd_ended_cb", const.ERR_ABORT_INVOKING_CMD),
-#         ("Restart", const.CMD_RESTART, ObsState.ABORTED,"restart_cmd_ended_cb", const.ERR_RESTART_INVOKING_CMD), 
-#         ("Restart", const.CMD_RESTART, ObsState.FAULT,"restart_cmd_ended_cb", const.ERR_RESTART_INVOKING_CMD), 
-#         ("ObsReset", const.CMD_OBSRESET, ObsState.ABORTED, "obsreset_cmd_ended_cb", const.ERR_OBSRESET_INVOKING_CMD), 
-#         ("ObsReset", const.CMD_OBSRESET, ObsState.FAULT, "obsreset_cmd_ended_cb", const.ERR_OBSRESET_INVOKING_CMD),
-#     ])
+@pytest.fixture(
+    scope="function",
+    params=[
+        ("End", const.CMD_END, ObsState.READY,"end_cmd_ended_cb",const.ERR_END_INVOKING_CMD),
+        ("ReleaseAllResources", const.CMD_RELEASE_RESOURCES, ObsState.IDLE,"releaseallresources_cmd_ended_cb", const.ERR_RELEASE_RESOURCES),
+        ("EndScan", const.CMD_ENDSCAN, ObsState.SCANNING, "endscan_cmd_ended_cb", const.ERR_ENDSCAN_INVOKING_CMD),
+        ("Abort", const.CMD_ABORT, ObsState.SCANNING, "abort_cmd_ended_cb", const.ERR_ABORT_INVOKING_CMD),
+        ("Abort", const.CMD_ABORT, ObsState.CONFIGURING, "abort_cmd_ended_cb", const.ERR_ABORT_INVOKING_CMD),
+        ("Abort", const.CMD_ABORT, ObsState.IDLE, "abort_cmd_ended_cb", const.ERR_ABORT_INVOKING_CMD),
+        ("Abort", const.CMD_ABORT, ObsState.RESETTING, "abort_cmd_ended_cb", const.ERR_ABORT_INVOKING_CMD),
+        ("Abort", const.CMD_ABORT, ObsState.READY, "abort_cmd_ended_cb", const.ERR_ABORT_INVOKING_CMD),
+        ("Restart", const.CMD_RESTART, ObsState.ABORTED,"restart_cmd_ended_cb", const.ERR_RESTART_INVOKING_CMD), 
+        ("Restart", const.CMD_RESTART, ObsState.FAULT,"restart_cmd_ended_cb", const.ERR_RESTART_INVOKING_CMD), 
+        ("ObsReset", const.CMD_OBSRESET, ObsState.ABORTED, "obsreset_cmd_ended_cb", const.ERR_OBSRESET_INVOKING_CMD), 
+        ("ObsReset", const.CMD_OBSRESET, ObsState.FAULT, "obsreset_cmd_ended_cb", const.ERR_OBSRESET_INVOKING_CMD),
+    ])
 
-# def command_without_arg(request):
-#     cmd_name, requested_cmd, obs_state, callback_str, Error_msg = request.param
-#     return cmd_name, requested_cmd, obs_state, callback_str, Error_msg
+def command_without_arg(request):
+    cmd_name, requested_cmd, obs_state, callback_str, Error_msg = request.param
+    return cmd_name, requested_cmd, obs_state, callback_str, Error_msg
 
 # def test_command_with_callback_method_without_arg(mock_sdp_subarray, event_subscription_without_arg, command_without_arg):
 #     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
@@ -319,28 +326,28 @@ def raise_devfailed_exception(*args):
                                  " ", tango.ErrSeverity.ERR)
 
 
-# @pytest.fixture(
-#     scope="function",
-#     params=[
-#         ( "Abort", ObsState.RESOURCING),
-#         ( "Abort", ObsState.EMPTY),
-#         ( "Restart", ObsState.SCANNING),
-#         ( "Restart", ObsState.EMPTY),
-#         ( "Restart", ObsState.CONFIGURING),
-#         ( "Restart", ObsState.IDLE),
-#         ( "Restart", ObsState.READY),
-#         ( "Restart", ObsState.RESOURCING),
-#         ( "ObsReset", ObsState.SCANNING),
-#         ( "ObsReset", ObsState.EMPTY),
-#         ( "ObsReset", ObsState.CONFIGURING),
-#         ( "ObsReset", ObsState.IDLE),
-#         ( "ObsReset", ObsState.READY),
-#         ( "ObsReset", ObsState.RESOURCING),
-#     ])
+@pytest.fixture(
+    scope="function",
+    params=[
+        ( "Abort", ObsState.RESOURCING),
+        ( "Abort", ObsState.EMPTY),
+        ( "Restart", ObsState.SCANNING),
+        ( "Restart", ObsState.EMPTY),
+        ( "Restart", ObsState.CONFIGURING),
+        ( "Restart", ObsState.IDLE),
+        ( "Restart", ObsState.READY),
+        ( "Restart", ObsState.RESOURCING),
+        ( "ObsReset", ObsState.SCANNING),
+        ( "ObsReset", ObsState.EMPTY),
+        ( "ObsReset", ObsState.CONFIGURING),
+        ( "ObsReset", ObsState.IDLE),
+        ( "ObsReset", ObsState.READY),
+        ( "ObsReset", ObsState.RESOURCING),
+    ])
 
-# def command_should_not_allowed_in_obstate(request):
-#     cmd_name, obs_state = request.param
-#     return cmd_name, obs_state
+def command_should_not_allowed_in_obstate(request):
+    cmd_name, obs_state = request.param
+    return cmd_name, obs_state
 
 
 # def test_command_should_failed_when_device_is_not_in_required_obstate(mock_sdp_subarray, command_should_not_allowed_in_obstate):
@@ -352,18 +359,18 @@ def raise_devfailed_exception(*args):
 #     assert "Failed to invoke " + cmd_name in str(df.value)
 
 
-# @pytest.fixture(
-#     scope="function",
-#     params=[
-#         ("Scan", scan_input_str,  ObsState.IDLE),
-#         ("Configure", configure_str, ObsState.SCANNING),
-#         ("Configure", configure_str, ObsState.EMPTY),
-#         ("AssignResources", assign_input_str, ObsState.READY),
-#     ])
+@pytest.fixture(
+    scope="function",
+    params=[
+        ("Scan", scan_input_str,  ObsState.IDLE),
+        ("Configure", configure_str, ObsState.SCANNING),
+        ("Configure", configure_str, ObsState.EMPTY),
+        ("AssignResources", assign_input_str, ObsState.READY),
+    ])
 
-# def command_with_argin_should_not_allowed_in_obstate(request):
-#     cmd_name, input_str, obs_state = request.param
-#     return cmd_name, input_str, obs_state
+def command_with_argin_should_not_allowed_in_obstate(request):
+    cmd_name, input_str, obs_state = request.param
+    return cmd_name, input_str, obs_state
 
 
 # def test_command_with_argin_should_failed_when_device_is_not_in_required_obstate(mock_sdp_subarray, command_with_argin_should_not_allowed_in_obstate):
