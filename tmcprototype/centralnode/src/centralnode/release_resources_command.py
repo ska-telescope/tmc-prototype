@@ -8,8 +8,7 @@ import ast
 import tango
 from tango import DevState, DevFailed
 # Additional import
-from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode, BaseCommand
+from ska.base.commands import BaseCommand
 from . import const
 from centralnode.device_data import DeviceData
 from centralnode.tango_client import TangoClient
@@ -87,7 +86,7 @@ class ReleaseResources(BaseCommand):
                     "receptorIDList" : []
                 }
 
-         :rtype: (ResultCode, str)
+         :rtype: None
 
          :raises: ValueError if input argument json string contains invalid value
                 KeyError if input argument json string contains invalid key

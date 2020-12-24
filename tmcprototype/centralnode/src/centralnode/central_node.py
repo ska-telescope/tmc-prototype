@@ -12,24 +12,21 @@ Central Node is a coordinator of the complete M&C system. Central Node implement
 of state and mode attributes defined by the SKA Control Model.
 """
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
-# Standard Python imports
-import json
-import ast
 
 # Tango imports
 import tango
-from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
+from tango import DebugIt, AttrWriteType,  DevFailed
 from tango.server import run, attribute, command, device_property
 
 # Additional import
 from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode, BaseCommand
-from ska.base.control_model import HealthState, ObsState
+from ska.base.commands import ResultCode
+from ska.base.control_model import HealthState
 from . import const, release, assign_resources_command, release_resources_command, \
     tango_client, tango_server, stow_antennas_command, stand_by_telescope_command, start_up_telescope_command, \
         health_state_aggreegator, check_receptor_reassignment
 
-
+from centralnode.resource_manager import ResourceManager
 from centralnode.input_validator import AssignResourceValidator
 from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
 from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
@@ -37,10 +34,10 @@ from centralnode.device_data import DeviceData
 from centralnode.obs_state_check import ObsStateAggregator
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
-__all__ = ["CentralNode", "main", "assign_resources_command","check_receptor_reassignment", "const", "device_data"
-           "exceptions", "health_state_aggreegator", "input_validator", "release", "release_resources_command"
-           "stand_by_telescope_command", "start_up_telescope_command", "stow_antennas_command", "tango_client"
-           "tango_server", "ObsStateAggregator"]
+__all__ = ["CentralNode", "main", "assign_resources_command","check_receptor_reassignment", "const", "device_data",
+           "exceptions", "health_state_aggreegator", "input_validator", "release", "release_resources_command",
+           "stand_by_telescope_command", "start_up_telescope_command", "stow_antennas_command", "tango_client",
+           "tango_server", "ObsStateAggregator", "resource_manager"]
 
 
 class CentralNode(SKABaseDevice):
@@ -153,7 +150,9 @@ class CentralNode(SKABaseDevice):
                 device_data.sdp_master_ln_fqdn = device.SdpMasterLeafNodeFQDN
                 device_data.tm_mid_subarray = device.TMMidSubarrayNodes
                 device_data.dln_prefix = device.DishLeafNodePrefix
+                device_data.num_dishes = device.NumDishes
                 self.logger.debug(const.STR_INIT_SUCCESS)
+                device_data.resource_manager_obj = ResourceManager()
 
                 # Initialization of ObsState aggregator object
                 device_data.obs_state_aggregator = ObsStateAggregator(
@@ -175,17 +174,8 @@ class CentralNode(SKABaseDevice):
                 #     device._dish_leaf_node_devices.extend(device.dev_bdatum.value_string)
                 #     print device._dish_leaf_node_devices
 
+            device_data.resource_manager_obj.init_resource_matrix()
             # Creating proxies for lower level devices
-            for dish in range(1, (device.NumDishes + 1)):
-                # Update device._dish_leaf_node_devices variable
-                device_data._dish_leaf_node_devices.append(device_data.dln_prefix + "000" + str(dish))
-
-                # Initialize device._subarray_allocation variable (map of Dish Id and allocation status)
-                # to indicate availability of the dishes
-                dish_ID = "dish000" + str(dish)
-                device_data._subarray_allocation[dish_ID] = "NOT_ALLOCATED"
-
-
 
             # Create proxies of Dish Leaf Node devices - this is not required
             # for name in range(0, len(device_data._dish_leaf_node_devices)):

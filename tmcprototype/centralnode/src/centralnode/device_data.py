@@ -12,6 +12,7 @@ This module defines the DeviceData class, which represents of the functional Cen
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 from ska.base.control_model import HealthState
 from centralnode.health_state_aggreegator import HealthStateAggreegator
+# from centralnode.resource_manager import ResourceManager
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 class DeviceData:
@@ -47,7 +48,9 @@ class DeviceData:
         self.tm_mid_subarray = [] #"" # initialization is correct? it is array ('str',)
         self._read_activity_message = ""
         self.sln_prefix = ""
+        self.num_dishes = 0
         # self.health_aggreegator = HealthStateAggreegator()
+        self.resource_manager_obj = None
         self.obs_state_aggregator = None
 
     @staticmethod

@@ -3,8 +3,7 @@ CheckReceptorReassignment class for CentralNode.
 """
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 # Standard Python imports
-import json
-from tango import DevFailed
+# from tango import DevFailed
 # Additional import
 from . import const
 from centralnode.exceptions import ResourceReassignmentError

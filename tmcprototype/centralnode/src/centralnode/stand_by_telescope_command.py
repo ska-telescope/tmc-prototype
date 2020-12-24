@@ -2,6 +2,7 @@
 StandByTelescope class for CentralNode.
 """
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
+import tango
 from tango import DevState, DevFailed
 # Additional import
 from ska.base import SKABaseDevice

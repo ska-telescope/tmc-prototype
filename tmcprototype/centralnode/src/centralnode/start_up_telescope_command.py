@@ -2,6 +2,7 @@
 StartUpTelescope class for CentralNode.
 """
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
+import tango
 from tango import DevState, DevFailed
 # Additional import
 from ska.base import SKABaseDevice
@@ -133,7 +134,8 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
             log_msg = 'ON command invoked successfully on {}'.format(tango_client.get_device_fqdn)
             self.logger.debug(log_msg)
             device_data._read_activity_message = log_msg
-        except:
+
+        except DevFailed as dev_failed:
             log_msg = const.ERR_EXE_ON_CMD + str(dev_failed)
             self.logger.exception(dev_failed)
             device_data._read_activity_message = const.ERR_EXE_ON_CMD
