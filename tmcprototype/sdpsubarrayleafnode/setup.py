@@ -38,7 +38,7 @@ setup(name=name,
       long_description=long_description,
       url='https://www.skatelescope.org',
       platforms="Linux",
-      install_requires=['pytango==9.3.2', 'mock', 'katpoint', 'ska_logging==0.3.0', 'lmcbaseclasses==0.7.2'],
+      install_requires=['pytango==9.3.2', 'mock', 'katpoint', 'ska_logging==0.3.0', 'lmcbaseclasses==0.7.2', 'skatmccommon==0.1.0+e6c4b196'],
       setup_requires=[
           'pytest-runner',
           'sphinx',
