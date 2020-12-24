@@ -14,7 +14,8 @@ from os.path import dirname, join
 from tango.test_context import DeviceTestContext
 
 # Additional import
-from sdpsubarrayleafnode import SdpSubarrayLeafNode, const, release, DeviceData
+from sdpsubarrayleafnode import SdpSubarrayLeafNode, const, release
+from sdpsubarrayleafnode.device_data import DeviceData
 from ska.base.control_model import ObsState, HealthState, AdminMode, TestMode, ControlMode, SimulationMode
 from ska.base.control_model import LoggingLevel
 from tmc.common.tango_client import TangoClient
@@ -76,7 +77,7 @@ def mock_sdp_subarray_proxy():
         lambda attr_name, event_type, callback, *args,
                **kwargs: event_subscription_map.update({attr_name: callback}))
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties) as tango_context:
-        with mock.patch.object(TangoClient, 'get_deviceproxy', return_value=Mock()) as mock_obj:
+        with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
             tango_client_obj = TangoClient(dut_properties['SdpSubarrayFQDN'])
             yield tango_context.device, tango_client_obj, dut_properties['SdpSubarrayFQDN'], event_subscription_map
 
@@ -89,6 +90,13 @@ def event_subscription_mock(mock_sdp_subarray_proxy):
                **kwargs: event_subscription_map.update({command_name: callback}))
     yield event_subscription_map
 
+
+@pytest.fixture(scope="function")
+def tango_context():
+    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
+        yield tango_context
+
+        
 # def test_on_should_command_with_callback_method(mock_sdp_subarray,event_subscription_without_arg):
 #     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
 #     device_proxy.On()
@@ -100,7 +108,7 @@ def event_subscription_mock(mock_sdp_subarray_proxy):
 
 
 def test_off_should_command_with_callback_method(mock_sdp_subarray_proxy,event_subscription_mock):
-    device_proxy, tango_client_obj = mock_sdp_subarray_proxy
+    device_proxy, tango_client_obj,_ ,_= mock_sdp_subarray_proxy
     device_proxy.On()
     device_proxy.Off()
     dummy_event = command_callback(const.CMD_OFF)
@@ -111,7 +119,6 @@ def test_off_should_command_with_callback_method(mock_sdp_subarray_proxy,event_s
     #                                                                      any_method(with_name='off_cmd_ended_cb'))
     tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(const.CMD_OFF,
                                                                          any_method(with_name='off_cmd_ended_cb'))
-
 
 
 # def test_on_should_command_with_callback_method_with_event_error(mock_sdp_subarray,event_subscription_without_arg):
@@ -141,7 +148,7 @@ def test_off_should_command_with_callback_method_with_event_error(mock_sdp_subar
 
 
 def test_off_command_should_raise_dev_failed(mock_sdp_subarray_proxy):
-    device_proxy, tango_client_obj = mock_sdp_subarray_proxy
+    device_proxy, tango_client_obj,_,_= mock_sdp_subarray_proxy
     device_proxy.On()
     # sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
     tango_client_obj.deviceproxy.command_inout_asynch.side_effect = raise_devfailed_exception
@@ -359,74 +366,74 @@ def any_method(with_name=None):
     return AnyMethod()
 
 
-def test_status():
-    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        assert tango_context.device.Status() != const.STR_INIT_SUCCESS
+# def test_status():
+#     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
+#         assert tango_context.device.Status() != const.STR_INIT_SUCCESS
 
 
-def test_logging_level():
-    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        tango_context.device.loggingLevel = LoggingLevel.INFO
-        assert tango_context.device.loggingLevel == LoggingLevel.INFO
+# def test_logging_level():
+#     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
+#         tango_context.device.loggingLevel = LoggingLevel.INFO
+#         assert tango_context.device.loggingLevel == LoggingLevel.INFO
 
 
-def test_control_mode():
-    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        control_mode = ControlMode.REMOTE
-        tango_context.device.controlMode = control_mode
-        assert tango_context.device.controlMode == control_mode
+# def test_control_mode():
+#     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
+#         control_mode = ControlMode.REMOTE
+#         tango_context.device.controlMode = control_mode
+#         assert tango_context.device.controlMode == control_mode
 
 
-def test_test_mode():
-    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        test_mode = TestMode.NONE
-        tango_context.device.testMode = test_mode
-        assert tango_context.device.testMode == test_mode
+# def test_test_mode():
+#     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
+#         test_mode = TestMode.NONE
+#         tango_context.device.testMode = test_mode
+#         assert tango_context.device.testMode == test_mode
 
 
-def test_receive_addresses():
-    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        assert tango_context.device.receiveAddresses == ""
+# def test_receive_addresses():
+#     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
+#         assert tango_context.device.receiveAddresses == ""
 
 
-def test_activity_message():
-    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        assert tango_context.device.activityMessage == const.STR_SDPSALN_INIT_SUCCESS
+# def test_activity_message():
+#     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
+#         assert tango_context.device.activityMessage == const.STR_SDPSALN_INIT_SUCCESS
 
 
-def test_write_receive_addresses():
-    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        tango_context.device.receiveAddresses = "test"
-        assert tango_context.device.receiveAddresses == "test"
+# def test_write_receive_addresses():
+#     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
+#         tango_context.device.receiveAddresses = "test"
+#         assert tango_context.device.receiveAddresses == "test"
 
 
-def test_write_activity_message():
-    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        tango_context.device.activityMessage = "test"
-        assert tango_context.device.activityMessage == "test"
+# def test_write_activity_message():
+#     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
+#         tango_context.device.activityMessage = "test"
+#         assert tango_context.device.activityMessage == "test"
 
 
-def test_active_processing_blocks():
-    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        assert tango_context.device.activeProcessingBlocks == ""
+# def test_active_processing_blocks():
+#     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
+#         assert tango_context.device.activeProcessingBlocks == ""
 
 
-def test_logging_targets():
-    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        tango_context.device.loggingTargets = ['console::cout']
-        assert 'console::cout' in tango_context.device.loggingTargets
+# def test_logging_targets():
+#     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
+#         tango_context.device.loggingTargets = ['console::cout']
+#         assert 'console::cout' in tango_context.device.loggingTargets
 
 
-def test_version_id():
-    """Test for versionId"""
-    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        assert tango_context.device.versionId == release.version
+# def test_version_id():
+#     """Test for versionId"""
+#     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
+#         assert tango_context.device.versionId == release.version
 
 
-def test_build_state():
-    """Test for buildState"""
-    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        assert tango_context.device.buildState == ('{},{},{}'.format(release.name,release.version,release.description))
+# def test_build_state():
+#     """Test for buildState"""
+#     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
+#         assert tango_context.device.buildState == ('{},{},{}'.format(release.name,release.version,release.description))
 
 
 # def test_scan_device_not_ready():
