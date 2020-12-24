@@ -15,7 +15,9 @@ class DeviceData:
         self.csp_master_ln_fqdn = ""
         self._read_activity_message= ""
         self.cbf_health_updator = None
-
+        self.pss_health_updator = None
+        self.pst_health_updator = None
+        
     @staticmethod
     def get_instance():
         if DeviceData.__instance == None:

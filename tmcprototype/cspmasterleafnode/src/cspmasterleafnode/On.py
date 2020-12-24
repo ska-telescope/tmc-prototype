@@ -10,7 +10,7 @@ from ska.base.control_model import HealthState, SimulationMode, TestMode
 from . import const, release, tango_client, device_data
 from .tango_client import TangoClient
 from .device_data import DeviceData
-from .attribute_callbacks import CbfHealthStateAttributeUpdator
+from .attribute_callbacks import CbfHealthStateAttributeUpdator, PssHealthStateAttributeUpdator, PstHealthStateAttributeUpdator
 class OnCommand(SKABaseDevice.OnCommand):
     """
     A class for CspMasterLeafNode's On() command.
@@ -72,6 +72,10 @@ class OnCommand(SKABaseDevice.OnCommand):
             self.logger.debug(const.STR_ON_CMD_ISSUED)
             device_data.cbf_health_updator = CbfHealthStateAttributeUpdator()
             device_data.cbf_health_updator.start()
+            device_data.pss_health_updator = PssHealthStateAttributeUpdator()
+            device_data.pss_health_updator.start()
+            device_data.pst_health_updator = PstHealthStateAttributeUpdator()
+            device_data.pst_health_updator.start()
             return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
 
         except DevFailed as dev_failed:

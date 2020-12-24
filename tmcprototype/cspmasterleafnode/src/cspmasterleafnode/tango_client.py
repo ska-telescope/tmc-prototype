@@ -111,6 +111,7 @@ class TangoClient:
         Subscribes the attribute on Change event
         """
         try:
+            print("Inside++++++++++++++++++++Subscribe attribute")
             event_id = self.deviceproxy.subscribe_event(attr_name, EventType.CHANGE_EVENT, callback_method, stateless=True)
             return event_id
         except DevFailed as dev_failed:

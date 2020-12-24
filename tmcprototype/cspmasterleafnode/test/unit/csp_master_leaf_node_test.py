@@ -22,22 +22,8 @@ from cspmasterleafnode.device_data import DeviceData
 from ska.base.control_model import HealthState
 from ska.base.control_model import LoggingLevel
 from ska.base.commands import ResultCode
+
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
-
-# @pytest.fixture(scope="function")
-# def mock_csp_master():
-#     csp_master_fqdn = 'mid_csp/elt/master'
-#     dut_properties = {'CspMasterFQDN': csp_master_fqdn}
-#     event_subscription_map = {}
-#     csp_master_proxy_mock = Mock()
-#     csp_master_proxy_mock.subscribe_event.side_effect = (
-#         lambda attr_name, event_type, callback, *args,
-#                **kwargs: event_subscription_map.update({attr_name: callback}))
-#     proxies_to_mock = {csp_master_fqdn: csp_master_proxy_mock}
-#     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties,
-#                            proxies_to_mock=proxies_to_mock) as tango_context:
-#         yield csp_master_proxy_mock, tango_context.device, csp_master_fqdn, event_subscription_map
-
 
 @pytest.fixture(scope="function")
 def mock_csp_master_proxy():
@@ -51,14 +37,6 @@ def mock_csp_master_proxy():
             tango_client_obj = TangoClient(dut_properties['CspMasterFQDN'])
             yield tango_context.device, tango_client_obj, dut_properties['CspMasterFQDN'], event_subscription_map
 
-
-# @pytest.fixture(scope="function")
-# def event_subscription(mock_csp_master):
-#     event_subscription_map = {}
-#     mock_csp_master[0].command_inout_asynch.side_effect = (
-#         lambda command_name, arg, callback, *args,
-#                **kwargs: event_subscription_map.update({command_name: callback}))
-#     yield event_subscription_map
 
 
 @pytest.fixture(scope="function")
@@ -79,9 +57,6 @@ def tango_context():
     scope="function",
     params=[
         HealthState.OK,
-        HealthState.DEGRADED,
-        HealthState.FAILED,
-        HealthState.UNKNOWN
     ])
 def health_state(request):
     return request.param
@@ -212,38 +187,52 @@ def command_callback_with_command_exception():
 
 def test_activity_message_attribute_reports_correct_csp_cbf_health_state(mock_csp_master_proxy, health_state):
     device_proxy, tango_client_obj, csp_master_fqdn, event_subscription_map = mock_csp_master_proxy
-    csp_cbf_health_state_attribute = 'cspCbfHealthState'
-    device_proxy.On()
-    dummy_event = \
-        create_dummy_event_for_health_state \
-            (csp_master_fqdn, health_state, csp_cbf_health_state_attribute)
-    event_subscription_map[csp_cbf_health_state_attribute] = (dummy_event)
+    with mock.patch.object(TangoClient, 'get_deviceproxy', return_value=Mock()) as mock_obj:
+        with mock.patch.object(TangoClient, "subscribe_attribute", side_effect = dummy_subscriber):
+            tango_client_obj = TangoClient("mid_csp/elt/master")
+            device_proxy.On()
     
     assert device_data._read_activity_message == f"CSP CBF health is {health_state.name}."
 
-
-# def test_activity_message_attribute_reports_correct_csp_pss_health_state(mock_csp_master_proxy, health_state):
-#     device_proxy, tango_client_obj, csp_master_fqdn, event_subscription_map = mock_csp_master_proxy
-#     csp_pss_health_state_attribute = 'cspPssHealthState'
-
-#     dummy_event = \
-#         create_dummy_event_for_health_state \
-#             (csp_master_fqdn, health_state, csp_pss_health_state_attribute)
-#     event_subscription_map[csp_pss_health_state_attribute] = (dummy_event)
-
-#     assert device_data._read_activity_message == f"CSP PSS health is {health_state.name}."
+def dummy_subscriber(attribute, callback_method):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"mid_csp/elt/master/{attribute}"
+    fake_event.attr_value.value = HealthState.OK
+    callback_method(fake_event)
+    return 10
 
 
-# def test_activity_message_attribute_reports_correct_csp_pst_health_state(mock_csp_master_proxy, health_state):
-#     device_proxy, tango_client_obj, csp_master_fqdn, event_subscription_map = mock_csp_master_proxy
-#     csp_pst_health_state_attribute = 'cspPstHealthState'
+def test_activity_message_attribute_reports_correct_csp_pss_health_state(mock_csp_master_proxy, health_state):
+    device_proxy, tango_client_obj, csp_master_fqdn, event_subscription_map = mock_csp_master_proxy
+    # csp_pss_health_state_attribute = 'cspPssHealthState'
 
-#     dummy_event = \
-#         create_dummy_event_for_health_state \
-#             (csp_master_fqdn, health_state, csp_pst_health_state_attribute)
-#     event_subscription_map[csp_pst_health_state_attribute] = (dummy_event)
+    # dummy_event = \
+    #     create_dummy_event_for_health_state \
+    #         (csp_master_fqdn, health_state, csp_pss_health_state_attribute)
+    # event_subscription_map[csp_pss_health_state_attribute] = (dummy_event)
+    with mock.patch.object(TangoClient, 'get_deviceproxy', return_value=Mock()) as mock_obj:
+        with mock.patch.object(TangoClient, "subscribe_attribute", side_effect = dummy_subscriber):
+            tango_client_obj = TangoClient("mid_csp/elt/master")
+            device_proxy.On()
 
-#     assert device_data._read_activity_message == f"CSP PST health is {health_state.name}."
+    assert device_data._read_activity_message == f"CSP PSS health is {health_state.name}."
+
+
+def test_activity_message_attribute_reports_correct_csp_pst_health_state(mock_csp_master_proxy, health_state):
+    device_proxy, tango_client_obj, csp_master_fqdn, event_subscription_map = mock_csp_master_proxy
+    # csp_pst_health_state_attribute = 'cspPstHealthState'
+
+    # dummy_event = \
+    #     create_dummy_event_for_health_state \
+    #         (csp_master_fqdn, health_state, csp_pst_health_state_attribute)
+    # event_subscription_map[csp_pst_health_state_attribute] = (dummy_event)
+    with mock.patch.object(TangoClient, 'get_deviceproxy', return_value=Mock()) as mock_obj:
+        with mock.patch.object(TangoClient, "subscribe_attribute", side_effect = dummy_subscriber):
+            tango_client_obj = TangoClient("mid_csp/elt/master")
+            device_proxy.On()
+    
+    assert device_data._read_activity_message == f"CSP PST health is {health_state.name}."
 
 
 # @pytest.mark.parametrize(
