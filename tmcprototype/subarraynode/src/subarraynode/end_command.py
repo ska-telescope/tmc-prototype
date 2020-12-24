@@ -11,6 +11,9 @@ from tango import DevFailed
 from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+from subarraynode.tango_group_client import TangoGroupClient
+from subarraynode.tango_client import TangoClient
+from subarraynode.subarray_model import SubarrayModel
 
 
 class EndCommand(SKASubarray.EndCommand):
@@ -29,17 +32,23 @@ class EndCommand(SKASubarray.EndCommand):
 
         :raises: DevFailed if the command execution is not successful.
         """
-        device = self.target
-        device.is_end_command = False
-        device.is_release_resources = False
-        device.is_restart_command = False
-        device.is_abort_command = False
-        device.is_obsreset_command = False
+        self.logger.info(type(self.target))
+        self.device_data = self.target
+        self.device_data.is_end_command = False
+        self.device_data.is_release_resources = False
+        self.device_data.is_restart_command = False
+        self.device_data.is_abort_command = False
+        self.device_data.is_obsreset_command = False
+        dsh_leaf_node_client = TangoClient(device_data._dish_leaf_node_group)
         try:
             self.logger.info("End command invoked on SubarrayNode.")
-            device._sdp_subarray_ln_proxy.command_inout(const.CMD_END)
+            # device._sdp_subarray_ln_proxy.command_inout(const.CMD_END)
+            sdp_saln_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
+            sdp_saln_client.send_command(const.CMD_END)
             self.logger.info(const.STR_CMD_END_INV_SDP)
-            device._csp_subarray_ln_proxy.command_inout(const.CMD_GOTOIDLE)
+            # device._csp_subarray_ln_proxy.command_inout(const.CMD_GOTOIDLE)
+            csp_saln_client = TangoClient(device_data.csp_subarray_ln_fqdn)
+            csp_saln_client.send_command(const.CMD_GOTOIDLE)
             self.logger.info(const.STR_CMD_GOTOIDLE_INV_CSP)
             # TODO: Uncomment this after resolving issues
             self.stop_dish_tracking()
@@ -56,8 +65,9 @@ class EndCommand(SKASubarray.EndCommand):
                                          "SubarrayNode.EndCommand",
                                          tango.ErrSeverity.ERR)
 
-    def stop_dish_tracking(self):
+    def stop_dish_tracking(self, dsh_leaf_node_client):
         # TODO: Getting exception while running test cases using device mocking
-        device = self.target
-        device._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
+        self.device_data = self.target
+        # device._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
+        dsh_leaf_node_client.send_command(const.CMD_STOP_TRACK)
         self.logger.info(const.STR_CMD_STOP_TRACK_INV_DLN)

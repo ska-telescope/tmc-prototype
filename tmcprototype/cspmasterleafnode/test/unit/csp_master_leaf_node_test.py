@@ -18,6 +18,8 @@ from cspmasterleafnode import CspMasterLeafNode, const, release
 from ska.base.control_model import HealthState
 from ska.base.control_model import LoggingLevel
 from ska.base.commands import ResultCode
+
+
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
 
 @pytest.fixture(scope="function")
@@ -66,67 +68,67 @@ def test_on_should_command_csp_master_leaf_node_to_start(mock_csp_master):
     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
     assert device_proxy.On() == [[ResultCode.OK], ["ON command invoked successfully from CSP Master leaf node."]]
     csp_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ON, [],
-                                                                  any_method(with_name='on_cmd_ended_cb'))
+                                                           any_method(with_name='on_cmd_ended_cb'))
 
 
 def test_off_should_command_csp_master_leaf_node_to_stop(mock_csp_master):
-    device_proxy=mock_csp_master[1]
+    device_proxy = mock_csp_master[1]
 
     device_proxy.On()
     assert device_proxy.Off() == [[ResultCode.OK], ["OFF command invoked successfully from CSP Master leaf node."]]
 
 
 def test_standby_should_command_to_standby_with_callback_method(mock_csp_master, event_subscription):
-    device_proxy=mock_csp_master[1]
+    device_proxy = mock_csp_master[1]
 
     device_proxy.Standby([])
     dummy_event = command_callback(const.CMD_STANDBY)
     event_subscription[const.CMD_STANDBY](dummy_event)
-    
+
     assert const.STR_COMMAND + const.CMD_STANDBY in device_proxy.activityMessage
 
 
 def test_on_should_command_to_on_with_callback_method(mock_csp_master, event_subscription):
-    device_proxy=mock_csp_master[1]
+    device_proxy = mock_csp_master[1]
 
     device_proxy.On()
     dummy_event = command_callback(const.CMD_ON)
     event_subscription[const.CMD_ON](dummy_event)
-    
+
     assert const.STR_COMMAND + const.CMD_ON in device_proxy.activityMessage
 
 
 def test_off_should_command_to_off_with_callback_method(mock_csp_master):
-    device_proxy=mock_csp_master[1]
+    device_proxy = mock_csp_master[1]
 
     device_proxy.On()
     device_proxy.Off()
-    
-    #TODO: Off command is not generating event error in current implementation. Will be updated later.
+
+    # TODO: Off command is not generating event error in current implementation. Will be updated later.
     # dummy_event = command_callback(const.CMD_OFF)
     # event_subscription_map[const.CMD_OFF](dummy_event)
     # assert const.STR_COMMAND + const.CMD_OFF in tango_context.device.activityMessage
-    
+
     assert device_proxy.activityMessage in const.STR_OFF_CMD_ISSUED
 
 
 def test_standby_should_command_with_callback_method_with_event_error(mock_csp_master, event_subscription):
-    device_proxy=mock_csp_master[1]
+    device_proxy = mock_csp_master[1]
 
     device_proxy.Standby([])
     dummy_event = command_callback_with_event_error(const.CMD_STANDBY)
     event_subscription[const.CMD_STANDBY](dummy_event)
-    
+
     assert const.ERR_INVOKING_CMD + const.CMD_STANDBY in device_proxy.activityMessage
 
 
-def test_on_should_command_with_callback_method_with_event_error(mock_csp_master, event_subscription ):
-    device_proxy=mock_csp_master[1]
+def test_on_should_command_with_callback_method_with_event_error(mock_csp_master, event_subscription):
+    device_proxy = mock_csp_master[1]
 
     device_proxy.On()
     dummy_event = command_callback_with_event_error(const.CMD_ON)
     event_subscription[const.CMD_ON](dummy_event)
-    
+
     assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
 
 
@@ -152,17 +154,17 @@ def raise_devfailed_exception(*args):
                                  "", tango.ErrSeverity.ERR)
 
 
-#TODO: FOR FUTURE USE
+# TODO: FOR FUTURE USE
 @pytest.mark.xfail(reason="Off command is not generating event error in current implementation. "
                           "Will be updated later.")
-def test_off_should_command_with_callback_method_with_event_error(mock_csp_master ,event_subscription):
-    device_proxy=mock_csp_master[1]
+def test_off_should_command_with_callback_method_with_event_error(mock_csp_master, event_subscription):
+    device_proxy = mock_csp_master[1]
 
     device_proxy.On()
     device_proxy.Off()
     dummy_event = command_callback_with_event_error(const.CMD_OFF)
     event_subscription[const.CMD_OFF](dummy_event)
-    
+
     assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
 
 
@@ -226,17 +228,18 @@ def test_activity_message_attribute_reports_correct_csp_pst_health_state(mock_cs
     [
         ("cspCbfHealthState", const.ERR_ON_SUBS_CSP_CBF_HEALTH),
         ("cspPssHealthState", const.ERR_ON_SUBS_CSP_PSS_HEALTH),
-        ("cspPstHealthState", const.ERR_ON_SUBS_CSP_PST_HEALTH )
+        ("cspPstHealthState", const.ERR_ON_SUBS_CSP_PST_HEALTH)
     ]
 )
-def test_activity_message_reports_correct_health_state_when_attribute_event_has_error(mock_csp_master, attribute_name, error_message):
+def test_activity_message_reports_correct_health_state_when_attribute_event_has_error(mock_csp_master, attribute_name,
+                                                                                      error_message):
     csp_proxy_mock, device_proxy, csp_master_fqdn, event_subscription_map = mock_csp_master
 
     health_state_value = HealthState.UNKNOWN
     dummy_event = create_dummy_event_for_health_state_with_error(csp_master_fqdn, health_state_value,
                                                                  attribute_name)
     event_subscription_map[attribute_name](dummy_event)
-   
+
     assert device_proxy.activityMessage == error_message + str(
         dummy_event.errors)
 
@@ -293,7 +296,7 @@ def test_version_id(tango_context):
 
 def test_build_state(tango_context):
     """Test for buildState"""
-    assert tango_context.device.buildState == ('{},{},{}'.format(release.name,release.version,release.description))
+    assert tango_context.device.buildState == ('{},{},{}'.format(release.name, release.version, release.description))
 
 
 def any_method(with_name=None):

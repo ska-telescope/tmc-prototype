@@ -48,6 +48,7 @@ ERR_HEALTH_STATE_CB = "Error handling healthState callback for evt: %s"
 ERR_SUBARRAY_ID_DOES_NOT_EXIST = "The Subarray '99' does not exist."
 ERR_RECEPTOR_ID_DOES_NOT_EXIST = "The following Receptor id(s) do not exist:"
 ERR_RECEPTOR_ID_REALLOCATION = "The following Receptor id(s) are allocated to other subarrays: "
+ERR_DEVFAILED_MSG = "This is error message for devfailed"
 
 #strings
 #General strings
