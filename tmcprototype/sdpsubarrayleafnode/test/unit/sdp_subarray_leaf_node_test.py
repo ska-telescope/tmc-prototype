@@ -111,7 +111,7 @@ def tango_context():
 def test_on(mock_sdp_subarray_proxy):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     assert device_proxy.On() == [[ResultCode.OK],
-                                 ["On command completed OK"]]
+                                ["On command completed OK"]]
     #tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(const.CMD_ON, any_method(with_name='on_cmd_ended_cb'))
 
 
