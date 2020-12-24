@@ -14,7 +14,9 @@ from ska.base.commands import ResultCode, BaseCommand
 from . import const, device_data
 from .device_data import DeviceData
 from sdpsubarrayleafnode.device_data import DeviceData
-from tmc.common.tango_client import TangoClient
+#from tmc.common.tango_client import TangoClient
+from sdpsubarrayleafnode.tango_client import TangoClient
+
 
 class On(SKABaseDevice.OnCommand):
     """
@@ -42,7 +44,7 @@ class On(SKABaseDevice.OnCommand):
 
         :return: none
         """
-        device = self.target
+        device_data = self.target
         if event.err:
             log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
             device_data._read_activity_message = log
