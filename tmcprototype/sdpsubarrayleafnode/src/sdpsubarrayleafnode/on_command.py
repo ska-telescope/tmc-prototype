@@ -14,7 +14,9 @@ from ska.base.commands import ResultCode, BaseCommand
 from . import const, device_data
 from .device_data import DeviceData
 from sdpsubarrayleafnode.device_data import DeviceData
-from tmc.common.tango_client import TangoClient
+#from tmc.common.tango_client import TangoClient
+from sdpsubarrayleafnode.tango_client import TangoClient
+
 
 class On(SKABaseDevice.OnCommand):
     """

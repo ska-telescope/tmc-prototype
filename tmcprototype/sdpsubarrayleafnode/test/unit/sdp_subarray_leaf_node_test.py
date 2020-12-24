@@ -11,12 +11,17 @@ from mock import MagicMock
 from os.path import dirname, join
 
 # Tango imports
+import tango
 from tango.test_context import DeviceTestContext
 
 # Additional import
 from sdpsubarrayleafnode import SdpSubarrayLeafNode, const, release
 from ska.base.control_model import ObsState, HealthState, AdminMode, TestMode, ControlMode, SimulationMode
 from ska.base.control_model import LoggingLevel
+from ska.base.commands import ResultCode
+#from tmc.common.tango_client import TangoClient
+from sdpsubarrayleafnode.tango_client import TangoClient
+from sdpsubarrayleafnode.device_data import DeviceData
 
 assign_input_file = 'command_AssignResources.json'
 path = join(dirname(__file__), 'data', assign_input_file)
@@ -80,12 +85,20 @@ def mock_sdp_subarray_proxy():
             yield tango_context.device, tango_client_obj, dut_properties['SdpSubarrayFQDN'], event_subscription_map
 
 
+# @pytest.fixture(scope="function")
+# def event_subscription_mock(mock_sdp_subarray_proxy):
+#     event_subscription_map = {}
+#     mock_sdp_subarray_proxy[1].deviceproxy.command_inout_asynch.side_effect = (
+#         lambda command_name, callback, *args,
+#                **kwargs: event_subscription_map.update({command_name: callback}))
+#     yield event_subscription_map
+
 @pytest.fixture(scope="function")
-def event_subscription_mock(mock_sdp_subarray_proxy):
+def event_subscription_without_arg(mock_sdp_subarray_proxy):
     event_subscription_map = {}
     mock_sdp_subarray_proxy[1].deviceproxy.command_inout_asynch.side_effect = (
-        lambda command_name, arg, callback, *args,
-               **kwargs: event_subscription_map.update({command_name: callback}))
+        lambda command_name, callback, *args,
+                **kwargs: event_subscription_map.update({command_name: callback}))
     yield event_subscription_map
 
 
@@ -96,19 +109,26 @@ def tango_context():
 
 
 def test_on(mock_sdp_subarray_proxy):
-    device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
+    device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     assert device_proxy.On() == [[ResultCode.OK],
-                                 ["ON Command :->  invoked successfully."]]
-    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(const.CMD_ON,
-                                                           any_method(with_name='on_cmd_ended_cb'))
+                                 ["On command completed OK"]]
+    #tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(const.CMD_ON, any_method(with_name='on_cmd_ended_cb'))
 
 
 
-def test_on_should_command_with_callback_method(mock_sdp_subarray_proxy,event_subscription_mock):
+def test_off_should_command_sdp_subarray_to_stop(mock_sdp_subarray_proxy):
+    device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
+
+    device_proxy.On()
+    assert device_proxy.Off() == [[ResultCode.OK], ["Off command completed OK"]]
+
+
+
+def test_on_should_command_with_callback_method(mock_sdp_subarray_proxy,event_subscription_without_arg):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     device_proxy.On()
     dummy_event = command_callback(const.CMD_ON)
-    event_subscription_mock[const.CMD_ON](dummy_event)
+    event_subscription_without_arg[const.CMD_ON](dummy_event)
     device_data = DeviceData.get_instance()
     assert const.STR_COMMAND + const.CMD_ON in device_data._read_activity_message
     tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(const.CMD_ON,
@@ -126,12 +146,12 @@ def test_on_should_command_with_callback_method(mock_sdp_subarray_proxy,event_su
 #                                                                          any_method(with_name='off_cmd_ended_cb'))
 
 
-def test_on_should_command_with_callback_method_with_event_error(mock_sdp_subarray_proxy,event_subscription_mock):
-    device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]    
-    device_proxy.On()
-    dummy_event = command_callback_with_event_error(const.CMD_ON)
-    event_subscription_mock[const.CMD_ON](dummy_event)
-    assert const.ERR_INVOKING_CMD + const.CMD_ON in device_data._read_activity_message
+# def test_on_should_command_with_callback_method_with_event_error(mock_sdp_subarray_proxy,event_subscription_mock):
+#     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]    
+#     device_proxy.On()
+#     dummy_event = command_callback_with_event_error(const.CMD_ON)
+#     event_subscription_mock[const.CMD_ON](dummy_event)
+#     assert const.ERR_INVOKING_CMD + const.CMD_ON in device_data._read_activity_message
 
 
 # def test_off_should_command_with_callback_method_with_event_error(mock_sdp_subarray,event_subscription_without_arg):
@@ -143,9 +163,9 @@ def test_on_should_command_with_callback_method_with_event_error(mock_sdp_subarr
 #     assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
 
 
-# def test_on_command_should_raise_dev_failed(mock_sdp_subarray):
-#     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-#     sdp_subarray1_proxy_mock.command_inout_asynch.side_effect = raise_devfailed_exception
+# def test_on_command_should_raise_dev_failed(mock_sdp_subarray_proxy):
+#     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
+#     tango_client_obj.deviceproxy.command_inout_asynch.side_effect = raise_devfailed_exception
 #     with pytest.raises(tango.DevFailed) as df:
 #         device_proxy.On()
 #     assert "This is error message for devfailed" in str(df.value)

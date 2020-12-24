@@ -28,7 +28,9 @@ from . import const, release, on_command, off_command
 #abort_command, assign_resources_command, configure_command, end_command, endscan_command, obsreset_command, release_resources_command, restart_command, scan_command 
 from .exceptions import InvalidObsStateError
 from .device_data import DeviceData
-from tmc.common.tango_client import TangoClient
+#from tmc.common.tango_client import TangoClient
+from sdpsubarrayleafnode.tango_client import TangoClient
+
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
 
 __all__ = ["SdpSubarrayLeafNode", "main", "assign_resources_command","const", "device_data"
