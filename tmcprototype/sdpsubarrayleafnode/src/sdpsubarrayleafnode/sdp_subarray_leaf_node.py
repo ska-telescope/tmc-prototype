@@ -304,7 +304,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("ObsReset")
         return handler.check_allowed()
 
-
     def is_ReleaseAllResources_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state
