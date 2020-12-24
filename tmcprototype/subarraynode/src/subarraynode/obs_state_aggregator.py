@@ -208,7 +208,7 @@ class ObsStateAggregator:
 
     def subscribe_dish_pointing_state(self, dish_ln_client):
         self.dishPointingStateMap[dish_ln_client] = -1
-        dish_event_id = dish_ln_client.subscribe_attribute(const.EVT_DISH_POINTING_STATE,self.pointing_state_cb)
+        dish_event_id = dish_ln_client.subscribe_attribute(const.EVT_DISH_POINTING_STATE, self.pointing_state_cb)
         self.dish_grp_ln_pointing_state_event_id[dish_ln_client] = dish_event_id
         self._pointing_state_event_id.append(dish_event_id)
         log_msg = const.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(self.dish_grp_ln_pointing_state_event_id)
@@ -216,5 +216,5 @@ class ObsStateAggregator:
 
     def unsubscribe_dish_pointing_state(self, dish_ln_client):
         if self.dish_grp_ln_pointing_state_event_id[dish_ln_client]:
-            dish_ln_client.unsubscribe_event(self.dish_grp_ln_pointing_state_event_id[dish_ln_client])
+            dish_ln_client.unsubscribe_attr(self.dish_grp_ln_pointing_state_event_id[dish_ln_client])
 

@@ -111,5 +111,5 @@ class HealthStateAggregator:
 
     def unsubscribe_dish_health_state(self, dish_ln_client):
         if self.dish_grp_ln_health_event_id[dish_ln_client]:
-            dish_ln_client.unsubscribe_event(self.dish_grp_ln_health_event_id[dish_ln_client])
+            dish_ln_client.unsubscribe_attr(self.dish_grp_ln_health_event_id[dish_ln_client])
 
