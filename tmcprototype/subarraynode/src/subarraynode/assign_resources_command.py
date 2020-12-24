@@ -262,7 +262,7 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
                 #                                           device.health_state_cb,
                 #                                           stateless=True)
                 # device_data._dishLnVsHealthEventID[devProxy] = self._event_id
-                # device_data._health_event_id.append(self._event_id)
+                # device_data._health_event_id.append(self._event_id) //
                 # log_msg = const.STR_DISH_LN_VS_HEALTH_EVT_ID + str(device_data._dishLnVsHealthEventID)
                 # self.logger.debug(log_msg)
                 
@@ -270,7 +270,7 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
                 device_data.health_state_aggr.subscribe_dish_health_state(dish_ln_client)
 
                 # Subscribe Dish Pointing State
-                device_data.health_state_aggr.subscribe_dish_pointing_state(dish_ln_client)
+                device_data.obs_state_aggr.subscribe_dish_pointing_state(dish_ln_client)
 
                 # device_data.dishPointingStateMap[devProxy] = -1
                 # self._event_id = devProxy.subscribe_event(const.EVT_DISH_POINTING_STATE,
@@ -302,11 +302,13 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
                 if group_dishes.contains(device_data.dish_leaf_node_prefix + str_leafId):
                     device_data._dish_leaf_node_group.remove(device_data.dish_leaf_node_prefix + str_leafId)
                 # unsubscribe event
-                if device_data._dishLnVsHealthEventID[devProxy]:
-                    devProxy.unsubscribe_event(device_data._dishLnVsHealthEventID[devProxy])
+                device_data.health_state_aggr.unsubscribe_dish_health_state(dish_ln_client)
+                # if device_data._dishLnVsHealthEventID[devProxy]:
+                #     devProxy.unsubscribe_event(device_data._dishLnVsHealthEventID[devProxy])
 
-                if device_data._dishLnVsPointingStateEventID[devProxy]:
-                    devProxy.unsubscribe_event(device_data._dishLnVsPointingStateEventID[devProxy])
+                device_data.obs_state_aggr.unsubscribe_dish_pointing_state(dish_ln_client)
+                # if device_data._dishLnVsPointingStateEventID[devProxy]:
+                #     devProxy.unsubscribe_event(device_data._dishLnVsPointingStateEventID[devProxy])
 
             except (TypeError) as except_occurred:
                 allocation_failure.append(str_leafId)

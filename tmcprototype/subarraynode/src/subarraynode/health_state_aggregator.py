@@ -12,6 +12,8 @@ class HealthStateAggregator:
     def __init__(self):
         self.subarray_ln_health_state_map = {}
         self.csp_sdp_ln_health_event_id = {}
+        self.dish_grp_ln_health_event_id = {}
+        self._health_event_id = []
         self.this_server = TangoServerHelper.get_instance()
         # How to pass fqdn here? 
         self.csp_client = TangoClient("ska_mid/tm_leaf_node/csp_subarray01")
@@ -102,5 +104,12 @@ class HealthStateAggregator:
 
     def subscribe_dish_health_state(self, dish_ln_client):
         dish_event_id = dish_ln_client.subscribe_attribute(EVT_DISH_HEALTH_STATE, self.health_state_cb)
+        self.dish_grp_ln_health_event_id[dish_ln_client] = dish_event_id
+        self._health_event_id.append(dish_event_id)
+        log_msg = const.STR_DISH_LN_VS_HEALTH_EVT_ID + str(self.dish_grp_ln_health_event_id)
+        self.logger.debug(log_msg)
 
+    def unsubscribe_dish_health_state(self, dish_ln_client):
+        if self.dish_grp_ln_health_event_id[dish_ln_client]:
+            dish_ln_client.unsubscribe_event(self.dish_grp_ln_health_event_id[dish_ln_client])
 
