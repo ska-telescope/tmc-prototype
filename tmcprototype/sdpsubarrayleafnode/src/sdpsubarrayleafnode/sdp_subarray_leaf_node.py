@@ -163,6 +163,100 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         return self._active_processing_block
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.activeProcessingBlocks_read
 
+    @command(
+    )
+    @DebugIt()
+    def ObsReset(self):
+        """
+        Invoke ObsReset command on SdpSubarrayLeafNode.
+        """
+        handler = self.get_command_object("ObsReset")
+        handler()
+
+    def is_ObsReset_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state
+
+        :return: True if this command is allowed to be run in current device state
+
+        :rtype: boolean
+
+        """
+        handler = self.get_command_object("ObsReset")
+        return handler.check_allowed()
+
+
+    def is_ReleaseAllResources_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state
+
+        :return: True if this command is allowed to be run in current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run in current device state
+
+        """
+
+        handler = self.get_command_object("ReleaseAllResources")
+        return handler.check_allowed()
+
+    @command(
+    )
+    @DebugIt()
+    def ReleaseAllResources(self):
+        """
+        Invokes ReleaseAllResources command on SdpSubarrayLeafNode.
+        """
+        handler = self.get_command_object("ReleaseAllResources")
+        handler()
+
+    @command(
+    )
+    @DebugIt()
+    def Restart(self):
+        """
+        Invoke Restart command on SdpSubarrayLeafNode.
+        """
+        handler = self.get_command_object("Restart")
+        handler()
+
+    def is_Restart_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state
+
+        :return: True if this command is allowed to be run in current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run in current device state
+
+        """
+        handler = self.get_command_object("Restart")
+        return handler.check_allowed()
+
+    def is_Scan_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state.
+
+        :return: True if this command is allowed to be run in current device state.
+
+        :rtype: boolean
+
+        """
+        handler = self.get_command_object("Scan")
+        return handler.check_allowed()
+
+    @command(
+        dtype_in=('str'),
+        doc_in="The JSON input string consists of SB ID.",
+    )
+    @DebugIt()
+    def Scan(self, argin):
+        """Invoke Scan command to SDP subarray. """
+
+        handler = self.get_command_object("Scan")
+        handler(argin)
 
     def init_command_objects(self):
         """

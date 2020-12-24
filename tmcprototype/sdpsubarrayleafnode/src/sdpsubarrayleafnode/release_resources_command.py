@@ -104,28 +104,3 @@ class ReleaseAllResources(BaseCommand):
             tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, log_msg,
                                             "SdpSubarrayLeafNode.ReleaseAllResourcesCommand()",
                                             tango.ErrSeverity.ERR)
-
-def is_ReleaseAllResources_allowed(self):
-    """
-    Checks whether this command is allowed to be run in current device state
-
-    :return: True if this command is allowed to be run in current device state
-
-    :rtype: boolean
-
-    :raises: DevFailed if this command is not allowed to be run in current device state
-
-    """
-
-    handler = self.get_command_object("ReleaseAllResources")
-    return handler.check_allowed()
-
-@command(
-)
-@DebugIt()
-def ReleaseAllResources(self):
-    """
-    Invokes ReleaseAllResources command on SdpSubarrayLeafNode.
-    """
-    handler = self.get_command_object("ReleaseAllResources")
-    handler()

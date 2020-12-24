@@ -101,24 +101,3 @@ class ObsReset(BaseCommand):
                                             "SdpSubarrayLeafNode.ObsResetCommand()",
                                             tango.ErrSeverity.ERR)
 
-@command(
-)
-@DebugIt()
-def ObsReset(self):
-    """
-    Invoke ObsReset command on SdpSubarrayLeafNode.
-    """
-    handler = self.get_command_object("ObsReset")
-    handler()
-
-def is_ObsReset_allowed(self):
-    """
-    Checks whether this command is allowed to be run in current device state
-
-    :return: True if this command is allowed to be run in current device state
-
-    :rtype: boolean
-
-    """
-    handler = self.get_command_object("ObsReset")
-    return handler.check_allowed()

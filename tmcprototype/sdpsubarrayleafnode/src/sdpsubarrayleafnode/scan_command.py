@@ -106,26 +106,3 @@ class Scan(BaseCommand):
             tango.Except.throw_exception(const.STR_SCAN_EXEC, log_msg,
                                             "SdpSubarrayLeafNode.ScanCommand()",
                                             tango.ErrSeverity.ERR)
-
-def is_Scan_allowed(self):
-    """
-    Checks whether this command is allowed to be run in current device state.
-
-    :return: True if this command is allowed to be run in current device state.
-
-    :rtype: boolean
-
-    """
-    handler = self.get_command_object("Scan")
-    return handler.check_allowed()
-
-@command(
-    dtype_in=('str'),
-    doc_in="The JSON input string consists of SB ID.",
-)
-@DebugIt()
-def Scan(self, argin):
-    """Invoke Scan command to SDP subarray. """
-
-    handler = self.get_command_object("Scan")
-    handler(argin)

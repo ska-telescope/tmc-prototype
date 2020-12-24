@@ -99,27 +99,3 @@ class Restart(BaseCommand):
             tango.Except.throw_exception(const.STR_RESTART_EXEC, log_msg,
                                             "SdpSubarrayLeafNode.RestartCommand()",
                                             tango.ErrSeverity.ERR)
-
-@command(
-)
-@DebugIt()
-def Restart(self):
-    """
-    Invoke Restart command on SdpSubarrayLeafNode.
-    """
-    handler = self.get_command_object("Restart")
-    handler()
-
-def is_Restart_allowed(self):
-    """
-    Checks whether this command is allowed to be run in current device state
-
-    :return: True if this command is allowed to be run in current device state
-
-    :rtype: boolean
-
-    :raises: DevFailed if this command is not allowed to be run in current device state
-
-    """
-    handler = self.get_command_object("Restart")
-    return handler.check_allowed()
