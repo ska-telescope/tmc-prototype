@@ -26,6 +26,7 @@ class DeviceData():
         else:
             DeviceData.__instance = self
 
+        self.receptorIDList_str = []
 
     @staticmethod
     def get_instance():
