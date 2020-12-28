@@ -449,14 +449,14 @@ def test_off_command_should_change_subarray_device_state_to_off(mock_device_prox
     assert device_proxy.state() == DevState.OFF
     assert device_proxy.obsState == ObsState.EMPTY
 
-def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_resources(mock_lower_devices,mock_device_proxy):
-    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
+def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_resources(mock_device_proxy):
     device_proxy, tango_client_obj = mock_device_proxy
     device_proxy.On()
     assign_input_dict = json.loads(assign_input_str)
     assert device_proxy.AssignResources(assign_input_str) == [[ResultCode.STARTED], ["['0001']"]]
     str_json_arg = json.dumps(assign_input_dict.get("sdp"))
-    verify_called_correctly(sdp_subarray1_ln_proxy_mock,const.CMD_ASSIGN_RESOURCES,str_json_arg)
+
+    verify_called_correctly(tango_client_obj.deviceproxy,const.CMD_ASSIGN_RESOURCES,str_json_arg)
     arg_list = []
     json_argument = {}
     dish = {}
@@ -464,8 +464,9 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
     dish[const.STR_KEY_RECEPTOR_ID_LIST] = receptor_list
     json_argument[const.STR_KEY_DISH] = dish
     arg_list.append(json.dumps(json_argument))
-    verify_called_correctly(csp_subarray1_ln_proxy_mock,const.CMD_ASSIGN_RESOURCES,json.dumps(json_argument))
-    assert tango_context.device.obsState == ObsState.RESOURCING
+    print("JSON----------------" , json.dumps(json_argument))
+    verify_called_correctly(tango_client_obj.deviceproxy,const.CMD_ASSIGN_RESOURCES,json.dumps(json_argument))
+    assert device_proxy.obsState == ObsState.RESOURCING
 
 '''
 
@@ -730,7 +731,7 @@ def test_transaction_id_injected_in_assign_command(empty_subarray_context:Subarr
     c.tango_context.device.AssignResources(assign_input_str)
     verify_called_correctly(c.sdp_subarray1_ln.proxy_mock,const.CMD_ASSIGN_RESOURCES,mock_transaction_id)
     verify_called_correctly(c.csp_subarray1_ln.proxy_mock,const.CMD_ASSIGN_RESOURCES,mock_transaction_id)
-
+'''
 def assert_data_is_subsisted_by(data:Dict,sub:Dict):
     for key,val in sub.items():
         assert(key in data.keys())
@@ -742,7 +743,7 @@ def verify_called_correctly(agent:Mock,command,data):
     subsisted_data = json.loads(data)
     assert_data_is_subsisted_by(args,subsisted_data)
 
-
+'''
 def test_configure_command_obsstate_changes_from_configuring_to_ready(mock_lower_devices):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"

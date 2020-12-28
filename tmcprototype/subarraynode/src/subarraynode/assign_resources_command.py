@@ -97,7 +97,7 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
             resources = json.loads(argin)
             receptor_list = resources["dish"]["receptorIDList"]
             sdp_resources = resources.get("sdp")
-            device_data._sb_id = resources["sdp"]["id"] 
+            device_data._sb_id = resources["sdp"]["id"]
 
             for leafId in range(0, len(receptor_list)):
                 float(receptor_list[leafId])
@@ -237,6 +237,7 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
         allocation_success = []
         allocation_failure = []
         device_data = DeviceData.get_instance()
+        receptor_id_list = []
         # Add each dish into the tango group
 
         
@@ -281,9 +282,10 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
                 # device_data._pointing_state_event_id.append(self._event_id)
                 # log_msg = const.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(device_data._dishLnVsPointingStateEventID)
                 # self.logger.debug(log_msg)
-                self._receptor_id_list.append(int(str_leafId))
-                device_data._read_activity_message = const.STR_GRP_DEF + str(device_data._dish_leaf_node_group.get_group_device_list(True))
-                device_data._read_activity_message = const.STR_LN_PROXIES + str(device_data._dish_leaf_node_proxy)
+                receptor_id_list.append(int(str_leafId))
+                # device_data._read_activity_message = const.STR_GRP_DEF + str(device_data._dish_leaf_node_group.get_group_device_list(True))
+                # print("-------------------------" , str(device_data._dish_leaf_node_group.get_group_device_list(True)))
+                # device_data._read_activity_message = const.STR_LN_PROXIES + str(device_data._dish_leaf_node_proxy)
                 self.logger.debug(const.STR_SUBS_ATTRS_LN)
                 device_data._read_activity_message = const.STR_SUBS_ATTRS_LN
                 self.logger.info(const.STR_ASSIGN_RES_SUCCESS)
@@ -297,10 +299,11 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
                                                  tango.ErrSeverity.ERR
                                                 )
                 allocation_failure.append(str_leafId)
+                #TODO: Need to check the remove implementation
                 # Exception Logic to remove Id from subarray group
-                group_dishes = device_data._dish_leaf_node_group.get_group_device_list(True)
-                if group_dishes.contains(device_data.dish_leaf_node_prefix + str_leafId):
-                    device_data._dish_leaf_node_group.remove(device_data.dish_leaf_node_prefix + str_leafId)
+                # group_dishes = device_data._dish_leaf_node_group.get_group_device_list(True)
+                # if group_dishes.contains(device_data.dish_leaf_node_prefix + str_leafId):
+                #     device_data._dish_leaf_node_group.remove(device_data.dish_leaf_node_prefix + str_leafId)
                 # unsubscribe event
                 device_data.health_state_aggr.unsubscribe_dish_health_state(dish_ln_client)
                 # if device_data._dishLnVsHealthEventID[devProxy]:
