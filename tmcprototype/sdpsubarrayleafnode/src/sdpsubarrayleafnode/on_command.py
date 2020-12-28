@@ -68,9 +68,6 @@ class On(SKABaseDevice.OnCommand):
         """
         device_data = self.target
         try:
-            # device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ON, self.on_cmd_ended_cb)
-            # log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
-            # self.logger.debug(log_msg)
             sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
             sdp_sa_ln_client_obj.send_command_async(const.CMD_ON, self.on_cmd_ended_cb)
             log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS

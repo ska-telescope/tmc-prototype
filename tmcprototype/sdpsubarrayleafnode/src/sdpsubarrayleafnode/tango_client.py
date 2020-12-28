@@ -26,7 +26,6 @@ class TangoClient:
         self.device_fqdn = fqdn
         self.deviceproxy = None
         self.deviceproxy = self.get_deviceproxy()
-        print("_______________________________Inside Init method for TAngoClient_________________________")
         # retry = 0
         # while retry < 3:
         #     try:

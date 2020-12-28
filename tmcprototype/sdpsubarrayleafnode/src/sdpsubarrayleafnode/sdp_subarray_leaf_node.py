@@ -97,10 +97,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             device = self.target
 
             # Initialise attributes
-            #device._receive_addresses = ""
             device._sdp_subarray_health_state = HealthState.OK
-            #device._read_activity_message = ""
-            #device._active_processing_block = ""
             device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
             device._version_id = release.version
 
@@ -113,8 +110,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
             self.logger.info(const.STR_SDPSALN_INIT_SUCCESS)
 
-            # Create Device proxy for Sdp Subarray using SdpSubarrayFQDN property
-            #device._sdp_subarray_proxy = DeviceProxy(device.SdpSubarrayFQDN)
             return (ResultCode.OK, const.STR_SDPSALN_INIT_SUCCESS)
     
     # ---------------
@@ -389,11 +384,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         device.
         """
         super().init_command_objects()
-        # Create DeviceData class instance
-        # device_data = DeviceData.get_instance()
+        
+        # T0DO: For future use
 
         #args = (device_data, self.state_model, self.logger)
-
         # self.assign_object = assign_resources_command.AssignResources(*args)
         # self.release_object = release_resources_command.ReleaseAllResources(*args)
         # self.configure_object = configure_command.Configure(*args)
@@ -412,7 +406,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         # self.register_command_object("Abort", self.abort_object)
         # self.register_command_object("Restart", self.restart_object)
         # self.register_command_object("ObsReset", self.obsreset_object)
+
+        # Create DeviceData class instance
         device_data = DeviceData.get_instance()
+
         self.register_command_object("Off", off_command.Off(device_data, self.state_model, self.logger))
         self.register_command_object("On", on_command.On(device_data, self.state_model, self.logger))
 
