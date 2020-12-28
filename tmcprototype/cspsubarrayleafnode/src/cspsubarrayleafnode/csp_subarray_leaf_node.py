@@ -24,15 +24,14 @@ import json
 # Third Party imports
 # PyTango imports
 import tango
-from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
+from tango import DebugIt, AttrWriteType, DeviceProxy, DevFailed
 from tango.server import run, attribute, command, device_property
 import katpoint
 
 # Additional import
-from ska.base.commands import ResultCode, BaseCommand
+from ska.base.commands import ResultCode
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
-from .transaction_id import identify_with_id
 from . import const, release, assign_resources_command, release_all_resources_command, configure_command,\
     scan_command, end_scan_command, end_command, abort_command, restart_command, obsreset_command
 from .exceptions import InvalidObsStateError
