@@ -13,7 +13,9 @@ from ska.base.commands import ResultCode, BaseCommand
 from . import const, device_data
 from .device_data import DeviceData
 # from sdpsubarrayleafnode.device_data import DeviceData
-from tmc.common.tango_client import TangoClient
+#from tmc.common.tango_client import TangoClient
+from sdpsubarrayleafnode.tango_client import TangoClient
+
 
 class Off(SKABaseDevice.OffCommand):
     """
@@ -68,10 +70,15 @@ class Off(SKABaseDevice.OffCommand):
         try:
             sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
             sdp_sa_ln_client_obj.send_command_async(const.CMD_OFF, self.off_cmd_ended_cb)
+            # sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
+            # sdp_sa_ln_client_obj.send_command_async(const.CMD_OFF, self.off_cmd_ended_cb)
             # device._sdp_subarray_proxy.command_inout_asynch(const.CMD_OFF, self.off_cmd_ended_cb)
-            self.logger.debug(const.STR_OFF_CMD_SUCCESS)
-            device_data._read_activity_message = const.STR_OFF_CMD_SUCCESS
-            return (ResultCode.OK, const.STR_OFF_CMD_SUCCESS)
+            # self.logger.debug(const.STR_OFF_CMD_SUCCESS)
+            # device_data._read_activity_message = const.STR_OFF_CMD_SUCCESS
+            log_msg = const.CMD_OFF + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+            self.logger.debug(log_msg)
+
+            return (ResultCode.OK, log_msg)
 
         except DevFailed as dev_failed:
             log_msg = const.ERR_INVOKING_OFF_CMD + str(dev_failed)

@@ -392,7 +392,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         # Create DeviceData class instance
         # device_data = DeviceData.get_instance()
 
-        args = (device_data, self.state_model, self.logger)
+        #args = (device_data, self.state_model, self.logger)
 
         # self.assign_object = assign_resources_command.AssignResources(*args)
         # self.release_object = release_resources_command.ReleaseAllResources(*args)
