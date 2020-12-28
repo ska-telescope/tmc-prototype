@@ -1,4 +1,5 @@
 from . import const
+from .const import PointingState
 from ska.base.control_model import ObsState
 from subarraynode.tango_client import TangoClient
 from subarraynode.tango_server_helper import TangoServerHelper
@@ -19,12 +20,9 @@ class ObsStateAggregator:
         self.csp_sa_obs_state = None
         self.sdp_sa_obs_state = None
         self.device_data = DeviceData.get_instance()
-        # self.csp_client = TangoClient(self.device_data.csp_subarray_ln_fqdn)
-        # self.sdp_client = TangoClient(self.device_data.sdp_subarray_ln_fqdn)
-        # self.sdp_sa_client = TangoClient(self.device_data.sdp_sa_fqdn)
-        # self.csp_client = TangoClient("")
-        # self.sdp_client = TangoClient("")
-        # self.sdp_sa_client = TangoClient("")
+        self.csp_client = None
+        self.sdp_client = None
+        self.sdp_sa_client = None
         self.dishPointingStateMap = {}
         # self._pointing_state_event_id = []
         self.this_server = TangoServerHelper.get_instance()
@@ -108,17 +106,17 @@ class ObsStateAggregator:
                 pointing_state_count_ready = pointing_state_count_ready + 1
         if ((self.csp_sa_obs_state == ObsState.EMPTY) and (self.sdp_sa_obs_state ==\
                 ObsState.EMPTY)):
-            if self.is_release_resources:
+            if self.device_data.is_release_resources:
                 self.logger.info("Calling ReleaseAllResource command succeeded() method")
                 self.this_server.release_obj.succeeded()
-            elif self.is_restart_command:
+            elif self.device_data.is_restart_command:
                 self.logger.info("Calling Restart command succeeded() method")
                 self.this_server.restart_obj.succeeded()
                 # TODO: As a action for Restart command invoke ReleaseResources command on SubarrayNode
 
         elif ((self.csp_sa_obs_state == ObsState.ABORTED) and (self.sdp_sa_obs_state == ObsState.ABORTED)):
             if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
-                if self.is_abort_command:
+                if self.device_data.is_abort_command:
                     self.logger.info("Calling ABORT command succeeded() method")
                     self.this_server.abort_obj.succeeded()
         elif ((self.csp_sa_obs_state == ObsState.READY) and (self.sdp_sa_obs_state == ObsState.READY)):
@@ -127,8 +125,8 @@ class ObsStateAggregator:
             log_msg = "No of dished being checked =" + str(len(self.dishPointingStateMap.values()))
             self.logger.debug(log_msg)
             if pointing_state_count_track == len(self.dishPointingStateMap.values()):
-                if not self.is_abort_command:
-                    if self.is_scan_completed:
+                if not self.device_data.is_abort_command:
+                    if self.device_data.is_scan_completed:
                         self.logger.info("Calling EndScan command succeeded() method")
                         self.this_server.endscan_obj.succeeded()
                     else:
@@ -137,7 +135,7 @@ class ObsStateAggregator:
                         self.this_server.configure_obj.succeeded()
         elif ((self.csp_sa_obs_state == ObsState.IDLE) and (self.sdp_sa_obs_state ==\
                 ObsState.IDLE)):
-            if self.is_end_command:
+            if self.device_data.is_end_command:
                 if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
                     # End command success
                     self.logger.info("Calling End command succeeded() method")
@@ -145,7 +143,7 @@ class ObsStateAggregator:
                     #  TODO: Stop track command will be invoked once tango group command issue gets resolved.
                     # self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
                     self.this_server.end_obj.succeeded()
-            elif self.is_obsreset_command:
+            elif self.device_data.is_obsreset_command:
                 if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
                     self.logger.info("Calling ObsReset command succeeded() method")
                     self.this_server.obsreset_obj.succeeded()
