@@ -12,8 +12,9 @@ This module defines the Device Data class, which represents the functional Subar
 """
 import tango
 from . import const
-from subarraynode.health_state_aggregator import HealthStateAggregator
-from subarraynode.obs_state_aggregator import ObsStateAggregator
+# from subarraynode.health_state_aggregator import HealthStateAggregator
+# from subarraynode.obs_state_aggregator import ObsStateAggregator
+from .tango_group_client import TangoGroupClient
 
 class DeviceData:
     """
@@ -52,8 +53,10 @@ class DeviceData:
         self._sb_id = ""
         self._scan_type = ""
         self._dish_leaf_node_group = []
-        self._dish_leaf_node_group_client = TangoGroupClient(const.GRP_DISH_LEAF_NODE) 
+        self._dish_leaf_node_group_client = TangoGroupClient(const.GRP_DISH_LEAF_NODE)
+        from subarraynode.health_state_aggregator import HealthStateAggregator
         self.health_state_aggr = HealthStateAggregator()
+        from subarraynode.obs_state_aggregator import ObsStateAggregator
         self.obs_state_aggr = ObsStateAggregator()
         self.dish_leaf_node_prefix = 0
         self._dish_leaf_node_proxy = ""

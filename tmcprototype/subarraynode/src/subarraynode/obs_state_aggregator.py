@@ -2,7 +2,7 @@ from . import const
 from ska.base.control_model import ObsState
 from subarraynode.tango_client import TangoClient
 from subarraynode.tango_server_helper import TangoServerHelper
-from subarraynode.device_data import DeviceData
+from .device_data import DeviceData
 
 class ObsStateAggregator:
     """
@@ -12,18 +12,22 @@ class ObsStateAggregator:
         self.csp_sdp_ln_obs_state_event_id = {}
         self.csp_sa_obs_state = None
         self.sdp_sa_obs_state = None
+        self.device_data = DeviceData.get_instance()
         # self.csp_client = TangoClient(self.device_data.csp_subarray_ln_fqdn)
         # self.sdp_client = TangoClient(self.device_data.sdp_subarray_ln_fqdn)
         # self.sdp_sa_client = TangoClient(self.device_data.sdp_sa_fqdn)
-        self.csp_client = TangoClient("")
-        self.sdp_client = TangoClient("")
-        self.sdp_sa_client = TangoClient("")
+        # self.csp_client = TangoClient("")
+        # self.sdp_client = TangoClient("")
+        # self.sdp_sa_client = TangoClient("")
         self.dishPointingStateMap = {}
         # self._pointing_state_event_id = []
         self.this_server = TangoServerHelper.get_instance()
         self.device_data = DeviceData.get_instance()
     
     def subscribe(self):
+        self.csp_client = TangoClient(self.device_data.csp_subarray_ln_fqdn)
+        self.sdp_client = TangoClient(self.device_data.sdp_subarray_ln_fqdn)
+        self.sdp_sa_client = TangoClient(self.device_data.sdp_sa_fqdn)
         # Subscribe cspSubarrayObsState (forwarded attribute) of CspSubarray
         csp_event_id = self.csp_client.subscribe_attribute(const.EVT_CSPSA_OBS_STATE, self.observation_state_cb)
         self.csp_sdp_ln_obs_state_event_id[self.csp_client] = csp_event_id
@@ -34,11 +38,11 @@ class ObsStateAggregator:
         sdp_event_id = self.sdp_client.subscribe_attribute(const.EVT_SDPSA_OBS_STATE, self.observation_state_cb)
         self.csp_sdp_ln_obs_state_event_id[self.sdp_client] = sdp_event_id
         log_msg = const.STR_SDP_LN_VS_HEALTH_EVT_ID + str(self.csp_sdp_ln_obs_state_event_id)
-        self.logger.debug(log_msg) 
+        self.logger.debug(log_msg)
 
         # Subscribe ReceiveAddresses of SdpSubarray
         sdp_receive_addr_event_id = self.sdp_sa_client.subscribe_attribute("receiveAddresses", self.receive_addresses_cb)
-       
+
     def observation_state_cb(self, evt):
         """
         Retrieves the subscribed CSP_Subarray AND SDP_Subarray  obsState.
@@ -159,7 +163,7 @@ class ObsStateAggregator:
         else:
             log_msg = const.ERR_SUBSR_RECEIVE_ADDRESSES_SDP_SA + str(event)
             self.logger.debug(log_msg)
-            self._read_activity_message = log_msg   
+            self._read_activity_message = log_msg
 
 
     def pointing_state_cb(self, evt):

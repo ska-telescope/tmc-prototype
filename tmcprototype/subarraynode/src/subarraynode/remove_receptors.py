@@ -78,17 +78,17 @@ class RemoveReceptors:
                 device_data._read_activity_message = log_message
 
         def _unsubscribe_csp_sdp_state_events(self, proxy_event_id_map):
-        """
-        This function unsubscribes all events given by the event ids and their
-        corresponding DeviceProxy objects.
+            """
+            This function unsubscribes all events given by the event ids and their
+            corresponding DeviceProxy objects.
 
-        :param 
-            device_proxy: Device Proxy
-            proxy_event_id: <event_id>
+            :param
+                device_proxy: Device Proxy
+                proxy_event_id: <event_id>
 
-        :return: None
+            :return: None
 
-        """
+            """
         for device_proxy, event_id in proxy_event_id_map.items():
             try:
                 device_proxy.unsubscribe_event(event_id)
