@@ -10,7 +10,7 @@ from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState
 from . import const
 from centralnode.device_data import DeviceData
-# from centralnode.health_state_agreegator import HealthStateAggreegator
+from centralnode.health_state_aggreegator import HealthStateAggreegator
 from centralnode.tango_client import TangoClient
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
@@ -51,7 +51,8 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         """
         device_data = self.target
         self.logger.info(type(self.target))
-        # device_data.health_aggreegator.subscribe_event()
+        device_data.health_aggreegator = HealthStateAggreegator(self.logger)
+        device_data.health_aggreegator.subscribe_event()
         # device_data.health_aggreegator.csp_health_subscribe_event()
         # device_data.health_aggreegator.sdp_health_subscribe_event()
         # device_data.health_aggreegator.subarray_health_subscribe_event()

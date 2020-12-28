@@ -10,6 +10,7 @@ from ska.base.commands import ResultCode
 from . import const
 from centralnode.device_data import DeviceData
 from centralnode.tango_client import TangoClient
+from centralnode.health_state_aggreegator import HealthStateAggreegator
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 class StandByTelescope(SKABaseDevice.OffCommand):
@@ -49,7 +50,7 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         self.standby_csp(device_data)
         self.standby_sdp(device_data)
         self.standby_subarray(device_data)
-        # device_data.health_aggreegator.unsubscribe_event()
+        device_data.health_aggreegator.unsubscribe_event()
         log_msg = const.STR_STANDBY_CMD_ISSUED
         self.logger.info(log_msg)
         device_data._read_activity_message = log_msg

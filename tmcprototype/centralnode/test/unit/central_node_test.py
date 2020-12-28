@@ -15,6 +15,7 @@ import tango
 from tango import DevState
 from tango.test_context import DeviceTestContext
 from centralnode.tango_client import TangoClient
+from centralnode.device_data import DeviceData
 
 # Additional import
 from centralnode import CentralNode, const, release
@@ -52,22 +53,21 @@ with open(path, 'r') as f:
 @pytest.fixture(scope = 'function')
 def mock_subarraynode_device():
     subarray1_fqdn = 'ska_mid/tm_subarray_node/1'
-    initial_dut_properties = {
-        'TMMidSubarrayNodes': subarray1_fqdn
+    dut_properties = {
+        'TMMidSubarrayNodes': 'ska_mid/tm_subarray_node/1'
     }
 
     event_subscription_map = {}
     subarray1_device_proxy_mock = Mock()
-    subarray1_device_proxy_mock.subscribe_event.side_effect = (
+    Mock().subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args,
                **kwargs: event_subscription_map.update({attr_name: callback}))
 
-    proxies_to_mock = {
-        subarray1_fqdn: subarray1_device_proxy_mock
-    }
 
-    with fake_tango_system(CentralNode, initial_dut_properties, proxies_to_mock) as tango_context:
-        yield tango_context.device, subarray1_device_proxy_mock, subarray1_fqdn, event_subscription_map
+    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties) as tango_context:
+        with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
+            tango_client_obj = TangoClient(dut_properties['TMMidSubarrayNodes'])
+            yield tango_context.device, tango_client_obj, dut_properties['TMMidSubarrayNodes'], event_subscription_map
 
 
 # New fixture "mock_subarray" is created to mock 1 device.
@@ -90,6 +90,36 @@ def mock_subarraynode_device():
 #         with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
 #             tango_client_obj = TangoClient(dut_properties['SdpMasterLeafNodeFQDN'])
 #             yield tango_context.device, tango_client_obj
+
+
+# def test_csp_master_health_state_callback():
+#     with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
+#         with mock.patch.object(TangoClient, "subscribe_attribute", side_effect = dummy_subscriber):
+#             # updator = HealthStateAggreegator()
+            
+#             updator.subscribe_event()
+#     assert 0 
+
+@pytest.fixture(
+    scope="function",
+    params=[
+        # HealthState.DEGRADED
+        HealthState.UNKNOWN
+        # HealthState.FAILED
+    ])
+def health_state(request):
+    return request.param
+
+def dummy_subscriber(attribute, callback_method):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"ska_mid/tm_leaf_node/csp_master/{attribute}"
+    fake_event.attr_value.value =  HealthState.UNKNOWN 
+    print("Inside dummy subscriber ...........................")
+    print( fake_event.attr_value.value )
+
+    callback_method(fake_event)
+    return 10
 
 
 @pytest.fixture( scope="function",
@@ -132,6 +162,7 @@ def test_standby(mock_subarray):
     device_proxy, tango_client_obj = mock_subarray
     # device_proxy.StartUpTelescope()
     # assert device_proxy.state() == DevState.ON
+    device_proxy.StartUpTelescope()
     assert device_proxy.StandByTelescope() == [[ResultCode.OK], ["STANDBYTELESCOPE command invoked from Central node"]]
     assert device_proxy.state() == DevState.OFF
 
@@ -359,9 +390,6 @@ def test_stow_antennas_invalid_value():
         assert const.ERR_STOW_ARGIN in str(df.value)
 
 
-
-
-
 def test_release_resources(mock_subarray):
     device_proxy,tango_client_obj=mock_subarray
 
@@ -421,53 +449,68 @@ def test_command_without_arg_should_raise_devfailed_exception(mock_subarray, com
 #
 #
 # # Test cases for Telescope Health State
-# def test_telescope_health_state_matches_csp_master_leaf_node_health_state_after_start(
-#     central_node_test_info):
-#     initial_dut_properties = central_node_test_info['initial_dut_properties']
-#     proxies_to_mock = central_node_test_info['proxies_to_mock']
-#     csp_master_ln_fqdn = central_node_test_info['csp_master_ln_fqdn']
-#     event_subscription_map = central_node_test_info['event_subscription_map']
-#     csp_master_ln_health_state = central_node_test_info['csp_master_ln_health_state']
-#     csp_master_ln_health_attribute = central_node_test_info['csp_master_ln_health_attribute']
-#
-#     with fake_tango_system(CentralNode, initial_dut_properties, proxies_to_mock) as tango_context:
-#         dummy_event = create_dummy_event(csp_master_ln_fqdn, csp_master_ln_health_state)
-#         event_subscription_map[csp_master_ln_health_attribute](dummy_event)
-#         assert tango_context.device.telescopeHealthState == csp_master_ln_health_state
-#
-#
-# def test_telescope_health_state_is_ok_when_sdp_master_leaf_node_is_ok_after_start():
-#     sdp_master_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_master'
-#     csp_master_ln_fqdn = 'ska_mid/tm_leaf_node/csp_master'
-#
-#     sdp_master_ln_health_attribute = 'sdpHealthState'
-#     initial_dut_properties = {
-#         'CspMasterLeafNodeFQDN': csp_master_ln_fqdn,
-#         'SdpMasterLeafNodeFQDN': sdp_master_ln_fqdn
-#     }
-#
-#     event_subscription_map = {}
-#     sdp_master_ln_proxy_mock = Mock()
-#     sdp_master_ln_proxy_mock.subscribe_event.side_effect = (
-#         lambda attr_name, event_type, callback, *args,
-#                **kwargs: event_subscription_map.update({attr_name: callback}))
-#
-#     proxies_to_mock = {
-#         sdp_master_ln_fqdn: sdp_master_ln_proxy_mock
-#     }
-#
-#     with fake_tango_system(CentralNode, initial_dut_properties, proxies_to_mock) as tango_context:
-#         dummy_event = create_dummy_event(sdp_master_ln_fqdn, HealthState.OK)
-#         event_subscription_map[sdp_master_ln_health_attribute](dummy_event)
-#         assert tango_context.device.telescopeHealthState == HealthState.OK
-#
-#
-# def test_telescope_health_state_is_ok_when_subarray1_is_ok_after_start(mock_subarraynode_device):
-#     device_proxy , subarray1_device_proxy_mock, subarray1_fqdn, event_subscription_map = mock_subarraynode_device
-#     subarray1_health_attribute = 'healthState'
-#     dummy_event = create_dummy_event(subarray1_fqdn, HealthState.OK)
-#     event_subscription_map[subarray1_health_attribute](dummy_event)
-#     assert device_proxy.telescopeHealthState == HealthState.OK
+
+@pytest.fixture(scope="function")
+def mock_csp_master_proxy():
+    dut_properties = {'CspMasterFQDN': 'mid_csp/elt/master'}
+    event_subscription_map = {}
+    Mock().subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties) as tango_context:
+        with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
+            tango_client_obj = TangoClient(dut_properties['CspMasterFQDN'])
+            yield tango_context.device, tango_client_obj, dut_properties['CspMasterFQDN'], event_subscription_map
+
+
+def test_telescope_health_state_matches_csp_master_leaf_node_health_state_after_start(mock_csp_master_proxy, health_state):
+    device_proxy, tango_client_obj, csp_master_fqdn, event_subscription_map = mock_csp_master_proxy
+    device_data = DeviceData.get_instance()
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
+        with mock.patch.object(TangoClient, "subscribe_attribute", side_effect = dummy_subscriber):
+            # updator = HealthStateAggreegator()
+            tango_client_obj = TangoClient('ska_mid/tm_leaf_node/csp_master')
+            device_proxy.StartUpTelescope()    
+    assert device_data._telescope_health_state == health_state
+
+
+@pytest.fixture(scope="function")
+def mock_sdp_master_proxy():
+    dut_properties = {'SdpMasterFQDN': 'mid_sdp/elt/master'}
+    event_subscription_map = {}
+    Mock().subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties) as tango_context:
+        with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
+            tango_client_obj = TangoClient(dut_properties['SdpMasterFQDN'])
+            yield tango_context.device, tango_client_obj, dut_properties['SdpMasterFQDN'], event_subscription_map
+
+
+def test_telescope_health_state_is_ok_when_sdp_master_leaf_node_is_ok_after_start(mock_sdp_master_proxy, health_state):
+    device_proxy, tango_client_obj, csp_master_fqdn, event_subscription_map = mock_sdp_master_proxy
+    device_data = DeviceData.get_instance()
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
+        with mock.patch.object(TangoClient, "subscribe_attribute", side_effect = dummy_subscriber):
+            # updator = HealthStateAggreegator()
+            tango_client_obj = TangoClient('ska_mid/tm_leaf_node/sdp_master')
+            device_proxy.StartUpTelescope()
+    assert device_data._telescope_health_state == health_state
+
+
+# def test_telescope_health_state_is_ok_when_subarray1_is_ok_after_start(mock_subarraynode_device, health_state):
+#     device_proxy , tango_client_obj, subarray1_fqdn, event_subscription_map = mock_subarraynode_device
+#     device_data = DeviceData.get_instance()
+#     with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
+#         with mock.patch.object(TangoClient, "subscribe_attribute", side_effect = dummy_subscriber):
+#             # updator = HealthStateAggreegator()
+#             tango_client_obj = TangoClient('ska_mid/tm_subarray_node/1')
+#             device_proxy.StartUpTelescope()
+#     assert device_data._telescope_health_state == health_state
+    # subarray1_health_attribute = 'healthState'
+    # dummy_event = create_dummy_event(subarray1_fqdn, HealthState.OK)
+    # event_subscription_map[subarray1_health_attribute](dummy_event)
+    # assert device_proxy.telescopeHealthState == HealthState.OK
 #
 #
 # @pytest.mark.parametrize(
