@@ -11,8 +11,8 @@ from tango import DevState, DevFailed
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode, BaseCommand
 from . import const, device_data
-from .device_data import DeviceData
-# from sdpsubarrayleafnode.device_data import DeviceData
+#from .device_data import DeviceData
+from sdpsubarrayleafnode.device_data import DeviceData
 #from tmc.common.tango_client import TangoClient
 from sdpsubarrayleafnode.tango_client import TangoClient
 

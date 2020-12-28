@@ -39,7 +39,7 @@ with open(path, 'r') as f:
     configure_str=f.read()
 
 
-## ### This fixture is used in refactored On and Off command testcases (SP-1420)
+##### This fixture is used in refactored On and Off command testcases (SP-1420)
 @pytest.fixture(scope="function")
 def mock_sdp_subarray_proxy():
     dut_properties = {'SdpSubarrayFQDN': 'mid_sdp/elt/subarray_01'}
