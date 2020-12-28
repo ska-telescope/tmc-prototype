@@ -10,13 +10,13 @@ import tango
 from tango import DevFailed
 #from tango.server import run, command, device_property, attribute
 # Additional import
-# from ska.base import SKABaseDevice
-# from ska.base.commands import ResultCode, BaseCommand
+from ska.base import SKABaseDevice
+from ska.base.commands import ResultCode, BaseCommand
 from . import const, device_data
 #from .device_data import DeviceData
 from sdpsubarrayleafnode.device_data import DeviceData
-#from tmc.common.tango_client import TangoClient
-from sdpsubarrayleafnode.tango_client import TangoClient
+from tmc.common.tango_client import TangoClient
+#from sdpsubarrayleafnode.tango_client import TangoClient
 
 
 class On(SKABaseDevice.OnCommand):
@@ -70,7 +70,7 @@ class On(SKABaseDevice.OnCommand):
         device_data = self.target
         try:
             sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
-            sdp_sa_ln_client_obj.send_command_async(const.CMD_ON, self.on_cmd_ended_cb)
+            sdp_sa_ln_client_obj.send_command_async(const.CMD_ON, None, self.on_cmd_ended_cb)
             log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
             self.logger.debug(log_msg)
 

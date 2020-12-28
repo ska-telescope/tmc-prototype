@@ -20,8 +20,8 @@ from sdpsubarrayleafnode.device_data import DeviceData
 from ska.base.control_model import ObsState, HealthState, AdminMode, TestMode, ControlMode, SimulationMode
 from ska.base.control_model import LoggingLevel
 from ska.base.commands import ResultCode
-#from tmc.common.tango_client import TangoClient
-from sdpsubarrayleafnode.tango_client import TangoClient
+from tmc.common.tango_client import TangoClient
+#from sdpsubarrayleafnode.tango_client import TangoClient
 
 assign_input_file = 'command_AssignResources.json'
 path = join(dirname(__file__), 'data', assign_input_file)
@@ -48,7 +48,7 @@ def mock_sdp_subarray_proxy():
         lambda attr_name, event_type, callback, *args,
                **kwargs: event_subscription_map.update({attr_name: callback}))
     with fake_tango_system(SdpSubarrayLeafNode, initial_dut_properties=dut_properties) as tango_context:
-        with mock.patch.object(TangoClient, 'get_deviceproxy', return_value=Mock()) as mock_obj:
+        with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
             tango_client_obj = TangoClient(dut_properties['SdpSubarrayFQDN'])
             yield tango_context.device, tango_client_obj, dut_properties['SdpSubarrayFQDN'], event_subscription_map
 
@@ -58,7 +58,7 @@ def mock_sdp_subarray_proxy():
 def event_subscription_mock(mock_sdp_subarray_proxy):
     dut_properties = {'SdpSubarrayFQDN': 'mid_sdp/elt/subarray_01'}
     event_subscription_map = {}
-    with mock.patch.object(TangoClient, 'get_deviceproxy', return_value=Mock()) as mock_obj:
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
         tango_client_obj = TangoClient(dut_properties['SdpSubarrayFQDN'])
         tango_client_obj.deviceproxy.command_inout_asynch.side_effect = (
             lambda command_name, arg, callback, *args,
