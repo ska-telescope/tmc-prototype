@@ -390,7 +390,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         super().init_command_objects()
         # Create DeviceData class instance
-        device_data = DeviceData.get_instance()
+        # device_data = DeviceData.get_instance()
 
         args = (device_data, self.state_model, self.logger)
 
@@ -412,6 +412,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         # self.register_command_object("Abort", self.abort_object)
         # self.register_command_object("Restart", self.restart_object)
         # self.register_command_object("ObsReset", self.obsreset_object)
+        device_data = DeviceData.get_instance()
+        self.register_command_object("Off", off_command.Off(device_data, self.state_model, self.logger))
+        self.register_command_object("On", on_command.On(device_data, self.state_model, self.logger))
 
 
 # ----------
