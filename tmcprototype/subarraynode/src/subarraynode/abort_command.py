@@ -11,6 +11,9 @@ from tango import DevFailed
 from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+from subarraynode.tango_group_client import TangoGroupClient
+from subarraynode.tango_client import TangoClient
+from subarraynode.device_data import DeviceData
 
 
 class AbortCommand(SKASubarray.AbortCommand):
@@ -30,24 +33,23 @@ class AbortCommand(SKASubarray.AbortCommand):
         :raises: DevFailed if error occurs in invoking command on any of the devices like CSPSubarrayLeafNode,
                 SDPSubarrayLeafNode or DishLeafNode
         """
-        device = self.target
-        device.is_release_resources = False
-        device.is_restart_command = False
-        device.is_end_command = False
-        device.is_obsreset_command = False
+        device_data = DeviceData.get_instance()
+        device_data.is_release_resources = False
+        device_data.is_restart_command = False
+        device_data.is_end_command = False
+        device_data.is_obsreset_command = False
         try:
-            if device.scan_thread:
-                if device.scan_thread.is_alive():
-                    device.scan_thread.cancel()  # stop timer when EndScan command is called
-            device._sdp_subarray_ln_proxy.command_inout(const.CMD_ABORT)
-            self.logger.info(const.STR_CMD_ABORT_INV_SDP)
-            device._csp_subarray_ln_proxy.command_inout(const.CMD_ABORT)
-            self.logger.info(const.STR_CMD_ABORT_INV_CSP)
-            device._dish_leaf_node_group.command_inout(const.CMD_ABORT)
-            device._read_activity_message = const.STR_ABORT_SUCCESS
+            if device_data.scan_thread:
+                if device_data.scan_thread.is_alive():
+                    device_data.scan_thread.cancel()  # stop timer when EndScan command is called
+            self.abort_sdp(device_data)
+            self.abort_csp(device_data)
+            self.abort_dish_grp(device_data)
             self.logger.info(const.STR_ABORT_SUCCESS)
-            device.set_status(const.STR_ABORT_SUCCESS)
-            device.is_abort_command = True
+            device_data._read_activity_message = const.STR_ABORT_SUCCESS
+            
+            device_data.set_status(const.STR_ABORT_SUCCESS)
+            device_data.is_abort_command = True
             return (ResultCode.STARTED, const.STR_ABORT_SUCCESS)
 
         except DevFailed as dev_failed:
@@ -58,3 +60,25 @@ class AbortCommand(SKASubarray.AbortCommand):
                                          "SubarrayNode.AbortCommand",
                                          tango.ErrSeverity.ERR)
 
+    def abort_sdp(self, device_data):
+        """
+        set up sdp devices
+        """
+        #Invoke Abort command on SDP Subarray Leaf Node.
+        sdp_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
+        sdp_client.send_command(CMD_ABORT)
+        self.logger.info(const.STR_CMD_ABORT_INV_SDP)
+
+    def abort_csp(self, device_data):
+        """
+        set up csp devices
+        """
+         #Invoke Abort command on CSP Subarray Leaf Node.
+        csp_client = TangoClient(device_data.csp_subarray_ln_fqdn)
+        csp_client.send_command(CMD_ABORT)
+        self.logger.info(const.STR_CMD_ABORT_INV_CSP)
+
+    def abort_dish_grp(self, device_data):
+         # Create proxy for Dish Leaf Node Group 
+        dsh_ln_grp_client = TangoGroupClient(device_data._dish_leaf_node_group)
+        dsh_ln_grp_client.send_command(const.CMD_ABORT)
