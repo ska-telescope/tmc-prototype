@@ -9,6 +9,7 @@ from ska.base.commands import ResultCode, BaseCommand
 from ska.base.control_model import HealthState, SimulationMode, TestMode
 from . import const, release, tango_client, device_data
 from .tango_client import TangoClient
+from .attribute_callbacks import CbfHealthStateAttributeUpdator, PssHealthStateAttributeUpdator, PstHealthStateAttributeUpdator
 
 
 class OffCommand(SKABaseDevice.OffCommand):
@@ -72,7 +73,11 @@ class OffCommand(SKABaseDevice.OffCommand):
         csp_mln_client_obj = TangoClient(device_data.csp_master_ln_fqdn)
         csp_mln_client_obj.send_command_async(const.CMD_OFF, self.off_cmd_ended_cb)
         self.logger.debug(const.STR_ON_CMD_ISSUED)
-
+        device_data.cbf_health_updator = CbfHealthStateAttributeUpdator()
         device_data.cbf_health_updator.stop()
+        device_data.pss_health_updator = PssHealthStateAttributeUpdator()
+        device_data.pss_health_updator.stop()
+        device_data.pst_health_updator = PstHealthStateAttributeUpdator()
+        device_data.pst_health_updator.stop()
 
         return (ResultCode.OK, const.STR_OFF_CMD_ISSUED)

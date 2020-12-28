@@ -39,6 +39,7 @@ class CbfHealthStateAttributeUpdator:
     
     def stop(self):
         try:
+            self.csp_master = TangoClient(self.device_data.csp_master_ln_fqdn)
             self.csp_master.unsubscribe_attr(self.event_id)
         except tango.DevFailed as df:
             self.logger.exception("Exception in unsubscribing the attribute.")
@@ -55,26 +56,24 @@ class CbfHealthStateAttributeUpdator:
         """
         log_msg = 'CspCbfHealthState attribute change event is : ' + str(evt)
         self.logger.info(log_msg)
-        print("INSIDE ++++++++++++++++++++++++++++Callback.")
         if not evt.err:
             self._csp_cbf_health = evt.attr_value.value
             if self._csp_cbf_health == HealthState.OK:
                 self.logger.debug(const.STR_CSP_CBF_HEALTH_OK)
-                self.device_data._read_activity_message = const.STR_CSP_CBF_HEALTH_OK
+                self.device_data._csp_cbf_health_state_log = const.STR_CSP_CBF_HEALTH_OK
             elif self._csp_cbf_health == HealthState.DEGRADED:
                 self.logger.debug(const.STR_CSP_CBF_HEALTH_DEGRADED)
-                self.device_data._read_activity_message = const.STR_CSP_CBF_HEALTH_DEGRADED
+                self.device_data._csp_cbf_health_state_log = const.STR_CSP_CBF_HEALTH_DEGRADED
             elif self._csp_cbf_health == HealthState.FAILED:
                 self.logger.debug(const.STR_CSP_CBF_HEALTH_FAILED)
-                self.device_data._read_activity_message = const.STR_CSP_CBF_HEALTH_FAILED
+                self.device_data._csp_cbf_health_state_log = const.STR_CSP_CBF_HEALTH_FAILED
             else:
                 self.logger.debug(const.STR_CSP_CBF_HEALTH_UNKNOWN)
-                self.device_data._read_activity_message = const.STR_CSP_CBF_HEALTH_UNKNOWN
+                self.device_data._csp_cbf_health_state_log = const.STR_CSP_CBF_HEALTH_UNKNOWN
         else:
-            log_msg = const.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
-            self.logger.error(log_msg)
-            self.device_data._read_activity_message = log_msg
+            self.device_data._csp_cbf_health_state_log = const.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
             self.logger.error(const.ERR_ON_SUBS_CSP_CBF_HEALTH)
+           
 
 class PssHealthStateAttributeUpdator:
     """
@@ -104,6 +103,7 @@ class PssHealthStateAttributeUpdator:
     
     def stop(self):
         try:
+            self.csp_master = TangoClient(self.device_data.csp_master_ln_fqdn)
             self.csp_master.unsubscribe_attr(self.event_id)
         except tango.DevFailed as df:
             self.logger.exception("Exception in unsubscribing the attribute.")
@@ -123,20 +123,19 @@ class PssHealthStateAttributeUpdator:
             self._csp_pss_health = evt.attr_value.value
             if self._csp_pss_health == HealthState.OK:
                 self.logger.debug(const.STR_CSP_PSS_HEALTH_OK)
-                self.device_data._read_activity_message = const.STR_CSP_PSS_HEALTH_OK
+                self.device_data._csp_pss_health_state_log = const.STR_CSP_PSS_HEALTH_OK
             elif self._csp_pss_health == HealthState.DEGRADED:
                 self.logger.debug(const.STR_CSP_PSS_HEALTH_DEGRADED)
-                self.device_data._read_activity_message = const.STR_CSP_PSS_HEALTH_DEGRADED
+                self.device_data._csp_pss_health_state_log = const.STR_CSP_PSS_HEALTH_DEGRADED
             elif self._csp_pss_health == HealthState.FAILED:
                 self.logger.debug(const.STR_CSP_PSS_HEALTH_FAILED)
-                self.device_data._read_activity_message = const.STR_CSP_PSS_HEALTH_FAILED
+                self.device_data._csp_pss_health_state_log = const.STR_CSP_PSS_HEALTH_FAILED
             else:
                 self.logger.debug(const.STR_CSP_PSS_HEALTH_UNKNOWN)
-                self.device_data._read_activity_message = const.STR_CSP_PSS_HEALTH_UNKNOWN
+                self.device_data._csp_pss_health_state_log = const.STR_CSP_PSS_HEALTH_UNKNOWN
         else:
-            log_msg = const.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors)
-            self.logger.error(log_msg)
-            self.device_data._read_activity_message = log_msg
+            self.device_data._csp_pss_health_state_log = const.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors)
+            self.logger.error(const.ERR_ON_SUBS_CSP_PSS_HEALTH)
 
 class PstHealthStateAttributeUpdator:
     """
@@ -166,6 +165,7 @@ class PstHealthStateAttributeUpdator:
     
     def stop(self):
         try:
+            self.csp_master = TangoClient(self.device_data.csp_master_ln_fqdn)
             self.csp_master.unsubscribe_attr(self.event_id)
         except tango.DevFailed as df:
             self.logger.exception("Exception in unsubscribing the attribute.")
@@ -185,18 +185,17 @@ class PstHealthStateAttributeUpdator:
             self._csp_pst_health = evt.attr_value.value
             if self._csp_pst_health == HealthState.OK:
                 self.logger.debug(const.STR_CSP_PST_HEALTH_OK)
-                self.device_data._read_activity_message = const.STR_CSP_PST_HEALTH_OK
+                self.device_data._csp_pst_health_state_log = const.STR_CSP_PST_HEALTH_OK
             elif self._csp_pst_health == HealthState.DEGRADED:
                 self.logger.debug(const.STR_CSP_PST_HEALTH_DEGRADED)
-                self.device_data._read_activity_message = const.STR_CSP_PST_HEALTH_DEGRADED
+                self.device_data._csp_pst_health_state_log = const.STR_CSP_PST_HEALTH_DEGRADED
             elif self._csp_pst_health == HealthState.FAILED:
                 self.logger.debug(const.STR_CSP_PST_HEALTH_FAILED)
-                self.device_data._read_activity_message = const.STR_CSP_PST_HEALTH_FAILED
+                self.device_data._csp_pst_health_state_log = const.STR_CSP_PST_HEALTH_FAILED
             else:
                 self.logger.debug(const.STR_CSP_PST_HEALTH_UNKNOWN)
-                self.device_data._read_activity_message = const.STR_CSP_PST_HEALTH_UNKNOWN
+                self.device_data._csp_pst_health_state_log = const.STR_CSP_PST_HEALTH_UNKNOWN
         else:
-            log_msg = const.ERR_ON_SUBS_CSP_PST_HEALTH + str(evt.errors)
-            self.logger.error(log_msg)
-            self.device_data._read_activity_message = log_msg
+            self.device_data._csp_pst_health_state_log = const.ERR_ON_SUBS_CSP_PST_HEALTH + str(evt.errors)
+            self.logger.error(const.ERR_ON_SUBS_CSP_PST_HEALTH)
 

@@ -17,6 +17,9 @@ class DeviceData:
         self.cbf_health_updator = None
         self.pss_health_updator = None
         self.pst_health_updator = None
+        self._csp_cbf_health_state_log = ""
+        self._csp_pss_health_state_log = ""
+        self._csp_pst_health_state_log = ""
         
     @staticmethod
     def get_instance():
