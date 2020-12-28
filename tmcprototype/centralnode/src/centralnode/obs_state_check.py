@@ -87,8 +87,6 @@ class ObsStateAggregator:
                     for dish, subarray in self._subarray_allocation.items():
                         if subarray == subarray_id:
                             self._subarray_allocation[dish] = "NOT_ALLOCATED"
-                log_msg = "Subarray_allocation is: " + str(self._subarray_allocation)
-                self.logger.info(log_msg)
             else:
                 # TODO: For future reference
                 self._read_activity_message = const.ERR_SUBSR_SA_OBS_STATE + str(evt)
