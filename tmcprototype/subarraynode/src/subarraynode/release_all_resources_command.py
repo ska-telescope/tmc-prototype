@@ -14,6 +14,7 @@ from ska.base import SKASubarray
 from subarraynode.tango_group_client import TangoGroupClient
 from subarraynode.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
+from subarraynode.remove_receptors import RemoveReceptors
 
 
 class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
@@ -51,8 +52,8 @@ class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
                                          const.STR_RELEASE_ALL_RES_EXEC, tango.ErrSeverity.ERR)
 
         self.logger.info(const.STR_DISH_RELEASE)
-        self.remove_receptors_when_release_resources(device_data)
-        # device.remove_receptors_from_group()
+        self.remove_receptors_when_release_resources()
+        # self.remove_receptors_from_group()
         self.logger.info(const.STR_CSP_RELEASE)
         self.release_csp_resources(device_data)
         self.logger.info(const.STR_SDP_RELEASE)
@@ -106,7 +107,6 @@ class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
             self.logger.error(const.ERR_SDP_CMD)
             self.logger.debug(df)
 
-    def remove_receptors_when_release_resources(self, device_data):
+    def remove_receptors_when_release_resources(self):
         # Remove the group for receptors.
-        # subaraynode_obj = SubarrayNode()
-        # device_data.subaraynode_obj.remove_receptors_from_group()
+        RemoveReceptors.remove_receptors_from_group()

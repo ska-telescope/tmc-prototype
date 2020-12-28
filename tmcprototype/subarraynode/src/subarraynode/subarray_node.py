@@ -52,44 +52,44 @@ class SubarrayNode(SKASubarray):
                 _ = self.subarray_ln_health_state_map.pop(dev_name)
 
     # TODO for unsubscribing health and obsState events on CSP and SDP
-    def _unsubscribe_csp_sdp_state_events(self, proxy_event_id_map):
-        """
-        This function unsubscribes all events given by the event ids and their
-        corresponding DeviceProxy objects.
+    # def _unsubscribe_csp_sdp_state_events(self, proxy_event_id_map):
+    #     """
+    #     This function unsubscribes all events given by the event ids and their
+    #     corresponding DeviceProxy objects.
 
-        :param 
-            device_proxy: Device Proxy
-            proxy_event_id: <event_id>
+    #     :param 
+    #         device_proxy: Device Proxy
+    #         proxy_event_id: <event_id>
 
-        :return: None
+    #     :return: None
 
-        """
-        for device_proxy, event_id in proxy_event_id_map.items():
-            try:
-                device_proxy.unsubscribe_event(event_id)
-            except DevFailed as dev_failed:
-                log_message = "Failed to unsubscribe health state event {}.".format(dev_failed)
-                self.logger.error(log_message )
-                self.device_data._read_activity_message = log_message
+    #     """
+    #     for device_proxy, event_id in proxy_event_id_map.items():
+    #         try:
+    #             device_proxy.unsubscribe_event(event_id)
+    #         except DevFailed as dev_failed:
+    #             log_message = "Failed to unsubscribe health state event {}.".format(dev_failed)
+    #             self.logger.error(log_message )
+    #             self.device_data._read_activity_message = log_message
 
-    def _unsubscribe_resource_events(self, proxy_event_id_map):
-        """
-        This function unsubscribes all events given by the event ids and their
-        corresponding DeviceProxy objects.
+    # def _unsubscribe_resource_events(self, proxy_event_id_map):
+    #     """
+    #     This function unsubscribes all events given by the event ids and their
+    #     corresponding DeviceProxy objects.
 
-        :param proxy_event_id_map: dict
-            A mapping of '<DeviceProxy>': <event_id>.
+    #     :param proxy_event_id_map: dict
+    #         A mapping of '<DeviceProxy>': <event_id>.
 
-        :return: None
+    #     :return: None
 
-        """
-        for device_proxy, event_id in proxy_event_id_map.items():
-            try:
-                device_proxy.unsubscribe_event(event_id)
-            except DevFailed as dev_failed:
-                log_message = "Failed to unsubscribe event {}.".format(dev_failed)
-                self.logger.error(log_message )
-                self.device_data._read_activity_message = log_message
+    #     """
+    #     for device_proxy, event_id in proxy_event_id_map.items():
+    #         try:
+    #             device_proxy.unsubscribe_event(event_id)
+    #         except DevFailed as dev_failed:
+    #             log_message = "Failed to unsubscribe event {}.".format(dev_failed)
+    #             self.logger.error(log_message )
+    #             self.device_data._read_activity_message = log_message
 
     def __len__(self):
         """
@@ -104,44 +104,44 @@ class SubarrayNode(SKASubarray):
         return len(self._receptor_id_list)
 
     
-    def remove_receptors_from_group(self):
-        """
-        Deletes tango group of the resources allocated in the subarray.
+    # def remove_receptors_from_group(self): // make separate class and call remove all from TangoGroupClient
+    #     """
+    #     Deletes tango group of the resources allocated in the subarray.
 
-        Note: Currently there are only receptors allocated so the group contains only receptor ids.
+    #     Note: Currently there are only receptors allocated so the group contains only receptor ids.
 
-        :param argin:
-            DevVoid
-        :return:
-            DevVoid
-        """
-        if not self._dishLnVsHealthEventID or not self._dishLnVsPointingStateEventID:
-            return
-        try:
-            self._dish_leaf_node_group.remove_all()
-            log_message = const.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True))
-            self.logger.debug(log_message)
-            self.device_data._read_activity_message = log_message
-            self.logger.info(const.RECEPTORS_REMOVE_SUCCESS)
-        except DevFailed as dev_failed:
-            log_message = "Failed to remove receptors from the group. {}".format(dev_failed)
-            self.logger.error(log_message)
-            self.device_data._read_activity_message = log_message
-            return
+    #     :param argin:
+    #         DevVoid
+    #     :return:
+    #         DevVoid
+    #     """
+    #     if not self._dishLnVsHealthEventID or not self._dishLnVsPointingStateEventID:
+    #         return
+    #     try:
+    #         self._dish_leaf_node_group.remove_all()
+    #         log_message = const.STR_GRP_DEF + str(self._dish_leaf_node_group.get_device_list(True))
+    #         self.logger.debug(log_message)
+    #         self.device_data._read_activity_message = log_message
+    #         self.logger.info(const.RECEPTORS_REMOVE_SUCCESS)
+    #     except DevFailed as dev_failed:
+    #         log_message = "Failed to remove receptors from the group. {}".format(dev_failed)
+    #         self.logger.error(log_message)
+    #         self.device_data._read_activity_message = log_message
+    #         return
 
-        self._unsubscribe_resource_events(self._dishLnVsHealthEventID)
-        self._unsubscribe_resource_events(self._dishLnVsPointingStateEventID)
+    #     # self._unsubscribe_resource_events(self._dishLnVsHealthEventID)
+    #     # self._unsubscribe_resource_events(self._dishLnVsPointingStateEventID)
 
-        # clearing dictonaries and lists
-        self._dishLnVsHealthEventID.clear()  # Clear eventID dictionary
-        self._dishLnVsPointingStateEventID.clear()  # Clear eventID dictionary
-        self._health_event_id.clear()
-        self._remove_subarray_dish_lns_health_states()
-        self.dishPointingStateMap.clear()
-        self._pointing_state_event_id.clear()
-        self._dish_leaf_node_proxy.clear()
-        self._receptor_id_list.clear()
-        self.logger.info(const.STR_RECEPTORS_REMOVE_SUCCESS)
+    #     # clearing dictonaries and lists
+    #     self._dishLnVsHealthEventID.clear()  # Clear eventID dictionary
+    #     self._dishLnVsPointingStateEventID.clear()  # Clear eventID dictionary
+    #     self._health_event_id.clear()
+    #     self._remove_subarray_dish_lns_health_states()
+    #     self.dishPointingStateMap.clear()
+    #     self._pointing_state_event_id.clear()
+    #     # self._dish_leaf_node_proxy.clear()
+    #     self._receptor_id_list.clear()
+    #     self.logger.info(const.STR_RECEPTORS_REMOVE_SUCCESS)
 
     # PROTECTED REGION END #    //  SubarrayNode.class_variable
 

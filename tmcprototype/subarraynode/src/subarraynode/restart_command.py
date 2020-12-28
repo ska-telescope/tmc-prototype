@@ -14,7 +14,7 @@ from ska.base import SKASubarray
 from subarraynode.tango_group_client import TangoGroupClient
 from subarraynode.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
-# from subarraynode.subarray_node import SubarrayNode
+from subarraynode.remove_receptors import RemoveReceptors
 
 
 class RestartCommand(SKASubarray.RestartCommand):
@@ -89,7 +89,6 @@ class RestartCommand(SKASubarray.RestartCommand):
         dsh_ln_grp_client.send_command(const.CMD_RESTART)
         self.logger.info(const.STR_CMD_RESTART_INV_DISH_GROUP)
 
-    def remove_receptors_when_restart(self, device_data):
+    def remove_receptors_when_restart(self):
         # Remove the group for receptors.
-        # subaraynode_obj = SubarrayNode()
-        device_data.subaraynode_obj.remove_receptors_from_group()
+        RemoveReceptors.remove_receptors_from_group()
