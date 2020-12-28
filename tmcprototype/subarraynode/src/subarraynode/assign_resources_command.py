@@ -357,7 +357,7 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
             inject_id(self,json_argument)
 
             arg_list.append(json.dumps(json_argument))
-            csp_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
+            csp_client = TangoClient(device_data.csp_subarray_ln_fqdn)
             csp_client.send_command(const.CMD_ASSIGN_RESOURCES, json.dumps(json_argument))
             # device._csp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, json.dumps(json_argument))
             self.logger.info(const.STR_ASSIGN_RESOURCES_INV_CSP_SALN)
