@@ -138,10 +138,9 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
 
         try:
             # TODO: Create Tango Group and add 2 dishes into the group for PoC purpose
-            dish_group_client = TangoGroupClient(const.GRP_DISH_LEAF_NODE)
-            dish_devices = ["ska_mid/tm_leaf_node/d0001", "ska_mid/tm_leaf_node/d0002"]
-            dish_group_client.add_device(dish_devices)
-            dish_group_client.send_command(const.CMD_CONFIGURE, cmd_data)
+            # dish_devices = ["ska_mid/tm_leaf_node/d0001", "ska_mid/tm_leaf_node/d0002"]
+            device_data._dish_leaf_node_group_client.add_device(device_data._dish_leaf_node_group)
+            device_data._dish_leaf_node_group_client.send_command(const.CMD_CONFIGURE, cmd_data)
 
             self.logger.info("Configure command is invoked on the Dish Leaf Nodes Group")
             dish_group_client.send_command(const.CMD_TRACK, cmd_data)
