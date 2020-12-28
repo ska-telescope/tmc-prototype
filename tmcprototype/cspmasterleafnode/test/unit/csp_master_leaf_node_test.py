@@ -175,6 +175,8 @@ def command_callback_with_event_error(command_name):
 def command_callback_with_command_exception():
     return Exception("Exception in Command Callback")
 
+
+#TODO: Use parametrize approach for commented Healthstate callback parameters.
 @pytest.fixture(
     scope="function",
     params=[
@@ -197,7 +199,7 @@ def test_activity_message_attribute_reports_correct_csp_health_state_callbacks(m
     assert device_data._csp_pst_health_state_log == f"CSP PST health is {health_state.name}."
     assert device_data._csp_pss_health_state_log == f"CSP PSS health is {health_state.name}."
 
-
+#TODO: Use parametrize approach for Healthstate callbacks
 # @pytest.mark.parametrize(
 #     "attribute_name,error_message",
 #     [
