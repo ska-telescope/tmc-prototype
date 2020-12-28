@@ -9,7 +9,7 @@ from ska.base.commands import BaseCommand
 from . import const, release
 from centralnode.check_receptor_reassignment import CheckReceptorReassignment
 from centralnode.input_validator import AssignResourceValidator
-from centralnode.tango_client import TangoClient
+from tmc.common.tango_client import TangoClient
 from centralnode.device_data import DeviceData
 from centralnode.resource_manager import ResourceManager
 from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
@@ -145,8 +145,7 @@ class AssignResources(BaseCommand):
         device_data = self.target 
         device_data.receptorIDList = []
         argout = []
-        
-        
+    
         ## Validate the input JSON string.
         try:
             self.logger.info("Validating input string.")

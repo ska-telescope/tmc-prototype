@@ -9,7 +9,7 @@ from tango import DevState, DevFailed
 from ska.base.commands import ResultCode, BaseCommand
 from . import const
 from centralnode.device_data import DeviceData
-from centralnode.tango_client import TangoClient
+from tmc.common.tango_client import TangoClient
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 

@@ -7,8 +7,8 @@ from tango import DevFailed
 # Additional import
 from ska.base.control_model import ObsState
 from . import const
-from centralnode.tango_client import TangoClient
-from centralnode.tango_server import TangoServerHelper
+from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 import logging
 # PROTECTED REGION END #    //  CentralNode.additional_import
 

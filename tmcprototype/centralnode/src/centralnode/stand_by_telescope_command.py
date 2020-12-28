@@ -9,7 +9,7 @@ from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from . import const
 from centralnode.device_data import DeviceData
-from centralnode.tango_client import TangoClient
+from tmc.common.tango_client import TangoClient
 from centralnode.health_state_aggreegator import HealthStateAggreegator
 # PROTECTED REGION END #    //  CentralNode.additional_import
 

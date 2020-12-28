@@ -11,7 +11,7 @@ from ska.base.control_model import HealthState
 from . import const
 from centralnode.device_data import DeviceData
 from centralnode.health_state_aggreegator import HealthStateAggreegator
-from centralnode.tango_client import TangoClient
+from tmc.common.tango_client import TangoClient
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 class StartUpTelescope(SKABaseDevice.OnCommand):

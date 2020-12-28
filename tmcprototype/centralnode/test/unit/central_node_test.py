@@ -14,7 +14,7 @@ from os.path import dirname, join
 import tango
 from tango import DevState
 from tango.test_context import DeviceTestContext
-from centralnode.tango_client import TangoClient
+from tmc.common.tango_client import TangoClient
 from centralnode.device_data import DeviceData
 
 # Additional import
