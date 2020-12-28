@@ -246,7 +246,7 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
                 str_leafId = argin[leafId]
 
                 #TODO: Need to access dish_leaf_node_prefix from DeviceData
-                device_data._dish_leaf_node_group.add(device_data.dish_leaf_node_prefix + str_leafId)
+                device_data._dish_leaf_node_group.append(device_data.dish_leaf_node_prefix + str_leafId)
                 dish_ln_client = TangoClient(device_data.dish_leaf_node_prefix + str_leafId)
                 # device_data._dish_leaf_node_proxy.append(dish_ln_client)
                 # devProxy = device_data.get_deviceproxy(device_data.dish_leaf_node_prefix + str_leafId)

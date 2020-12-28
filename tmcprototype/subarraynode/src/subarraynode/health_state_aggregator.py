@@ -4,12 +4,18 @@ from subarraynode.tango_client import TangoClient
 from subarraynode.tango_group_client import TangoGroupClient
 from subarraynode.tango_server_helper import TangoServerHelper
 from .device_data import DeviceData
+import logging
 
 class HealthStateAggregator:
     """
     Health State Aggregator class
     """
-    def __init__(self):
+    def __init__(self, logger = None):
+        if logger == None:
+            self.logger = logging.getLogger(__name__)
+        else:
+            self.logger = logger
+
         self.subarray_ln_health_state_map = {}
         self.csp_sdp_ln_health_event_id = {}
         self._health_event_id = []
@@ -105,7 +111,7 @@ class HealthStateAggregator:
             tango_client.unsubscribe_attr(event_id)
 
     def subscribe_dish_health_state(self, dish_ln_client):
-        dish_event_id = dish_ln_client.subscribe_attribute(EVT_DISH_HEALTH_STATE, self.health_state_cb)
+        dish_event_id = dish_ln_client.subscribe_attribute(const.EVT_DISH_HEALTH_STATE, self.health_state_cb)
         self.device_data._dishLnVsHealthEventID[dish_ln_client] = dish_event_id
         # self._health_event_id.append(dish_event_id)
         log_msg = const.STR_DISH_LN_VS_HEALTH_EVT_ID + str(self.device_data._dishLnVsHealthEventID)

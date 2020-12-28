@@ -3,12 +3,18 @@ from ska.base.control_model import ObsState
 from subarraynode.tango_client import TangoClient
 from subarraynode.tango_server_helper import TangoServerHelper
 from .device_data import DeviceData
+import logging
+
 
 class ObsStateAggregator:
     """
     Observation State Aggregator class
     """
-    def __init__(self):
+    def __init__(self, logger = None):
+        if logger == None:
+            self.logger = logging.getLogger(__name__)
+        else:
+            self.logger = logger
         self.csp_sdp_ln_obs_state_event_id = {}
         self.csp_sa_obs_state = None
         self.sdp_sa_obs_state = None

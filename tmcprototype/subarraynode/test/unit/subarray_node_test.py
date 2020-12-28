@@ -448,12 +448,13 @@ def test_off_command_should_change_subarray_device_state_to_off(mock_device_prox
     assert device_proxy.Off() == [[ResultCode.OK], ['Off command completed OK']]
     assert device_proxy.state() == DevState.OFF
     assert device_proxy.obsState == ObsState.EMPTY
-'''
-def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_resources(mock_lower_devices):
+
+def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_resources(mock_lower_devices,mock_device_proxy):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
-    tango_context.device.On()
+    device_proxy, tango_client_obj = mock_device_proxy
+    device_proxy.On()
     assign_input_dict = json.loads(assign_input_str)
-    assert tango_context.device.AssignResources(assign_input_str) == [[ResultCode.STARTED], ["['0001']"]]
+    assert device_proxy.AssignResources(assign_input_str) == [[ResultCode.STARTED], ["['0001']"]]
     str_json_arg = json.dumps(assign_input_dict.get("sdp"))
     verify_called_correctly(sdp_subarray1_ln_proxy_mock,const.CMD_ASSIGN_RESOURCES,str_json_arg)
     arg_list = []
@@ -466,6 +467,7 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
     verify_called_correctly(csp_subarray1_ln_proxy_mock,const.CMD_ASSIGN_RESOURCES,json.dumps(json_argument))
     assert tango_context.device.obsState == ObsState.RESOURCING
 
+'''
 
 def test_assign_resource_is_completed_when_csp_and_sdp_is_idle(mock_lower_devices):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
