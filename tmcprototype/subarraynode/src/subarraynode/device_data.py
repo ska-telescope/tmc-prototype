@@ -59,6 +59,8 @@ class DeviceData:
         self._dish_leaf_node_proxy = ""
         self.csp_sa_obs_state = None
         self.sdp_sa_obs_state = None
+        self._dishLnVsHealthEventID = {}
+        self._dishLnVsPointingStateEventID = {}
         # TODO: For future use
         self.receptor_id_list = []
 

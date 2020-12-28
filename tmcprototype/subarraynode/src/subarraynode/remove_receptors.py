@@ -11,8 +11,6 @@ from subarraynode.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
 
 
-
-
 class RemoveReceptors:
     """
     Remove Receptors class
@@ -29,27 +27,28 @@ class RemoveReceptors:
         :return:
             DevVoid
         """
-        if not self._dishLnVsHealthEventID or not self._dishLnVsPointingStateEventID:
+        device_data = DeviceData.get_instance()
+        if not device_data._dishLnVsHealthEventID or not device_data._dishLnVsPointingStateEventID:
             return
         try:
             # self._dish_leaf_node_group.remove_all()
             device_data._dish_leaf_node_group.TangoGroupClient(remove_all_device)
             log_message = const.STR_GRP_DEF + str(device_data._dish_leaf_node_group.get_group_device_list(True))
             self.logger.debug(log_message)
-            self.device_data._read_activity_message = log_message
+            device_data._read_activity_message = log_message
             self.logger.info(const.RECEPTORS_REMOVE_SUCCESS)
         except DevFailed as dev_failed:
             log_message = "Failed to remove receptors from the group. {}".format(dev_failed)
             self.logger.error(log_message)
-            self.device_data._read_activity_message = log_message
+            device_data._read_activity_message = log_message
             return
 
         # self._unsubscribe_resource_events(self._dishLnVsHealthEventID)
         # self._unsubscribe_resource_events(self._dishLnVsPointingStateEventID)
 
         # clearing dictonaries and lists
-        self._dishLnVsHealthEventID.clear()  # Clear eventID dictionary
-        self._dishLnVsPointingStateEventID.clear()  # Clear eventID dictionary
+        device_data._dishLnVsHealthEventID.clear()  # Clear eventID dictionary
+        device_data._dishLnVsPointingStateEventID.clear()  # Clear eventID dictionary
         self._health_event_id.clear()
         self._remove_subarray_dish_lns_health_states()
         self.dishPointingStateMap.clear()
@@ -76,7 +75,7 @@ class RemoveReceptors:
             except DevFailed as dev_failed:
                 log_message = "Failed to unsubscribe event {}.".format(dev_failed)
                 self.logger.error(log_message )
-                self.device_data._read_activity_message = log_message
+                device_data._read_activity_message = log_message
 
         def _unsubscribe_csp_sdp_state_events(self, proxy_event_id_map):
         """
@@ -96,4 +95,4 @@ class RemoveReceptors:
             except DevFailed as dev_failed:
                 log_message = "Failed to unsubscribe health state event {}.".format(dev_failed)
                 self.logger.error(log_message )
-                self.device_data._read_activity_message = log_message
+                device_data._read_activity_message = log_message
