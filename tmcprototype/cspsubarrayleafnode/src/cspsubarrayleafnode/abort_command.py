@@ -8,7 +8,6 @@ from tango import DevState, DevFailed
 from ska.base.commands import BaseCommand
 from ska.base.control_model import ObsState
 from . import const
-from .transaction_id import identify_with_id
 
 class AbortCommand(BaseCommand):
     """

@@ -6,6 +6,7 @@ import pytz
 import numpy as np
 import katpoint
 from cspsubarrayleafnode.device_data import DeviceData
+from ska.base.control_model import ObsState
 import json
 
 class DelayModel:
