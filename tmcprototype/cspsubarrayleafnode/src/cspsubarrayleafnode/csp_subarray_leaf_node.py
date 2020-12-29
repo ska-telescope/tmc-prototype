@@ -21,7 +21,9 @@ import pytz
 import numpy as np
 import json
 
+
 # Third Party imports
+from tmc.common.tango_client import TangoClient
 # PyTango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, DevFailed
@@ -35,7 +37,8 @@ from ska.base.control_model import HealthState, ObsState
 from . import const, release, assign_resources_command, release_all_resources_command, configure_command,\
     scan_command, end_scan_command, end_command, abort_command, restart_command, obsreset_command
 from .exceptions import InvalidObsStateError
-from .device_data import DeviceData
+from cspsubarrayleafnode.device_data import DeviceData
+
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additional_import
 
 __all__ = ["CspSubarrayLeafNode", "main", "assign_resources_command", "release_all_resources_command",
@@ -303,7 +306,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device = self.target
             device_data = DeviceData.get_instance()
             device_data.csp_subarray_fqdn = device.CspSubarrayFQDN
-            
+
             try:
                 # create CspSubarray Proxy
                 device._csp_subarray_proxy = DeviceProxy(device.CspSubarrayFQDN)
@@ -519,15 +522,15 @@ class CspSubarrayLeafNode(SKABaseDevice):
     def AssignResources(self, argin):
         """ Invokes AssignResources command on CspSubarrayLeafNode. """
         handler = self.get_command_object("AssignResources")
-        try:
-            self.validate_obs_state()
+        # try:
+        #     self.validate_obs_state()
 
-        except InvalidObsStateError as error:
-            self.logger.exception(error)
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_EMPTY_OR_IDLE,
-                                         "CSP subarray leaf node raised exception",
-                                         "CSP.AddReceptors",
-                                         tango.ErrSeverity.ERR)
+        # except InvalidObsStateError as error:
+        #     self.logger.exception(error)
+        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_EMPTY_OR_IDLE,
+        #                                  "CSP subarray leaf node raised exception",
+        #                                  "CSP.AddReceptors",
+        #                                  tango.ErrSeverity.ERR)
         handler(argin)
 
     
@@ -556,7 +559,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
         handler()
 
     def validate_obs_state(self):
-        if self._csp_subarray_proxy.obsState in [ObsState.EMPTY, ObsState.IDLE]:
+        device_data = DeviceData.get_instance()
+        csp_sa_client = TangoClient(device_data.csp_subarray_fqdn)
+        print ("ObsState:", csp_sa_client.get_attribute("obsState"))
+        if csp_sa_client.get_attribute("obsState") in [ObsState.EMPTY, ObsState.IDLE]:
             self.logger.info("CSP Subarray is in required obsState, resources will be assigned")
         else:
             self.logger.error("CSP Subarray is not in EMPTY/IDLE obsState")

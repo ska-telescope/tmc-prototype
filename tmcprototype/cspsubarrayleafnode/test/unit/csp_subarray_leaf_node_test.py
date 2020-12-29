@@ -19,6 +19,7 @@ from cspsubarrayleafnode import CspSubarrayLeafNode, const, release
 from ska.base.control_model import HealthState, ObsState, LoggingLevel
 
 from tmc.common.tango_client import TangoClient
+from cspsubarrayleafnode.device_data import DeviceData
 
 
 assign_input_file = 'command_AssignResources.json'
@@ -93,7 +94,7 @@ def command_with_arg(request):
     cmd_name, input_arg, requested_cmd, obs_state, error_msg = request.param
     return cmd_name, input_arg, requested_cmd, obs_state, error_msg
 
-
+'''
 def test_command_cb_is_invoked_when_command_with_arg_is_called_async(mock_csp_subarray, event_subscription, command_with_arg):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     cmd_name, input_arg, requested_cmd, obs_state, _ = command_with_arg
@@ -259,35 +260,72 @@ def test_command_fails_when_device_in_invalid_obstate(mock_csp_subarray, command
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name)
     assert activity_msg in str(df.value)
+'''
+# Create DeviceData class instance
+device_data = DeviceData.get_instance()
+
+##### This fixture is used for SP-1420
+@pytest.fixture(scope="function")
+def mock_csp_subarray_proxy():
+    dut_properties = {'CspSubarrayFQDN': 'mid_csp/elt/subarray_01'}
+    event_subscription_map = {}
+    Mock().subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+    with fake_tango_system(CspSubarrayLeafNode, initial_dut_properties=dut_properties) as tango_context:
+        with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
+            tango_client_obj = TangoClient(dut_properties['CspSubarrayFQDN'])
+            yield tango_context.device, tango_client_obj, dut_properties['CspSubarrayFQDN'], event_subscription_map
 
 
-def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list(mock_csp_subarray):
+### This fixture is used for SP-1420
+@pytest.fixture(scope="function")
+def event_subscription_mock():
+    dut_properties = {'CspSubarrayFQDN': 'mid_csp/elt/subarray_01'}
+    event_subscription_map = {}
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
+        tango_client_obj = TangoClient(dut_properties['CspSubarrayFQDN'])
+        tango_client_obj.deviceproxy.command_inout_asynch.side_effect = (
+            lambda command_name, arg, callback, *args,
+                **kwargs: event_subscription_map.update({command_name: callback}))
+        yield event_subscription_map
+
+
+def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list(mock_csp_subarray_proxy):
     #arrange
-    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
-    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
+    device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
+    # tango_client_obj.set_attribute("obsState", ObsState.EMPTY)
     device_proxy.On()
     device_proxy.AssignResources(assign_input_str)
     json_argument = json.loads(assign_input_str)
     receptorIDList_str = json_argument[const.STR_DISH][const.STR_RECEPTORID_LIST]
     # convert receptorIDList from list of string to list of int
     receptorIDList = [int(receptor_id) for receptor_id in receptorIDList_str]
-    csp_subarray1_proxy_mock.command_inout_asynch.assert_called_with(const.CMD_ADD_RECEPTORS,
+    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(const.CMD_ADD_RECEPTORS,
                                                                      receptorIDList,
                                                                      any_method(with_name='add_receptors_ended'))
     assert_activity_message(device_proxy, const.STR_ADD_RECEPTORS_SUCCESS)
 
 
-def test_assign_command_with_callback_method_with_devfailed_error(mock_csp_subarray, event_subscription):
-    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
-    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
+def test_assign_command_with_callback_method_with_devfailed_error(mock_csp_subarray_proxy, event_subscription_mock):
+    device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
+    # csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
     device_proxy.On()
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.AssignResources(assign_input_str)
         dummy_event = command_callback_with_devfailed_exception()
-        event_subscription[const.CMD_ADD_RECEPTORS](dummy_event)
+        event_subscription_mock[const.CMD_ADD_RECEPTORS](dummy_event)
     assert const.ERR_CALLBACK_CMD_FAILED in str(df.value)
 
 
+def test_assign_resource_should_raise_exception_when_key_not_found(mock_csp_subarray_proxy):
+    device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
+    # csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.AssignResources(assign_invalid_key)
+    assert const.ERR_JSON_KEY_NOT_FOUND in str(df)
+
+'''
 def test_release_resource_should_command_csp_subarray_to_release_all_resources(mock_csp_subarray):
     device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
     csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
@@ -371,14 +409,7 @@ def test_start_scan_should_not_command_csp_subarray_to_start_scan_when_it_is_idl
         device_proxy.StartScan(scan_input_str)
     assert const.ERR_DEVICE_NOT_READY in str(df.value)
 
-
-def test_assign_resource_should_raise_exception_when_key_not_found(mock_csp_subarray):
-    device_proxy, csp_subarray1_proxy_mock = mock_csp_subarray
-    csp_subarray1_proxy_mock.obsState = ObsState.EMPTY
-    with pytest.raises(tango.DevFailed) as df:
-        device_proxy.AssignResources(assign_invalid_key)
-    assert const.ERR_JSON_KEY_NOT_FOUND in str(df)
-
+'''
 
 def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):
     fake_event = Mock()
