@@ -20,7 +20,6 @@ class DeviceData:
     across various functions of a central node.
     """
     __instance = None
-    
     def __init__(self):
         """Private constructor of the class"""
         if DeviceData.__instance != None:
@@ -35,7 +34,7 @@ class DeviceData:
         self._csp_master_leaf_health = HealthState.UNKNOWN
         self._telescope_health_state = HealthState.UNKNOWN
         self.receptorIDList = []
-        # self.subarray_health_state_map = {}
+        self.subarray_health_state_map = {}
         self._dish_leaf_node_devices = []
         self._leaf_device_proxy = []
         self.subarray_FQDN_dict = {}

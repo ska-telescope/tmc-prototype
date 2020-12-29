@@ -131,7 +131,6 @@ class HealthStateAggreegator:
         """
         device_data = DeviceData.get_instance()
         try:
-            print("-------------inside callback ------------------------")
             self._read_activity_message = "Within health callback"
             self.logger.info(self._read_activity_message)
             log_msg = 'Health state attribute change event is : ' + str(evt.attr_name)
@@ -142,7 +141,7 @@ class HealthStateAggreegator:
             self.logger.info(log_msg)
             if not evt.err:
                 health_state = evt.attr_value.value
-                log_msg = '///////.......Health state ....: ' + str(health_state)
+                log_msg = 'Health state is: ' + str(health_state)
                 self.logger.info(log_msg)
                 if const.PROP_DEF_VAL_TM_MID_SA1 in evt.attr_name:
                     device_data._subarray1_health_state = health_state
@@ -154,10 +153,10 @@ class HealthStateAggreegator:
                     device_data._subarray3_health_state = health_state
                     self.subarray_health_state_map[evt.attr_name] = health_state
                 elif self.csp_master_ln_fqdn in evt.attr_name:
-                    log_msg = '///////.......Health state msg in CSP Master....: ' + str(evt.attr_name)
+                    log_msg = 'Health state msg in CSP Master....: ' + str(evt.attr_name)
                     self.logger.info(log_msg)
                     device_data._csp_master_leaf_health = evt.attr_value.value
-                    log_msg = '///////.......CSP Master health is....: ' + str(device_data._csp_master_leaf_health)
+                    log_msg = 'CSP Master health is....: ' + str(device_data._csp_master_leaf_health)
                     self.logger.info(log_msg)
                 elif self.sdp_master_ln_fqdn in evt.attr_name:
                     device_data._sdp_master_leaf_health = health_state

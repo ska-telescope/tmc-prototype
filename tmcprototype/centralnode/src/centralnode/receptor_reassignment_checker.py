@@ -1,20 +1,14 @@
 """
-CheckReceptorReassignment class for CentralNode.
+ReceptorReassignmentChecker class for CentralNode.
 """
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
-# Standard Python imports
-# from tango import DevFailed
-# Additional import
-from . import const
 from centralnode.exceptions import ResourceReassignmentError
 from centralnode.device_data import DeviceData
-# from centralnode.tango_client import TangoClient
+from . import const
 import logging
+# PROTECTED REGION END #
 
-
-# PROTECTED REGION END #    //  CentralNode.additional_import
-
-class CheckReceptorReassignment:
+class ReceptorReassignmentChecker:
     """
     Checks if any of the receptors are already allocated to other subarray when AssignResources command is called.
 
@@ -22,13 +16,11 @@ class CheckReceptorReassignment:
 
     :return: None
 
-    :throws:
-        ResourceReassignmentError: Thrown when an already assigned resource is received
-        in Assignresources command.
+    :raises: ResourceReassignmentError: Thrown when an already assigned resource is received
+             in Assignresources command.
 
     """
-    #
-    def do(self,input_receptors_list):
+    def do(self, input_receptors_list):
         device_data = DeviceData.get_instance()
         self.logger = logging.getLogger(__name__)
         self.logger.info("Checking for duplicate allocation of dishes.")

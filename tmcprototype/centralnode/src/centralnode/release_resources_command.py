@@ -12,7 +12,7 @@ from ska.base.commands import BaseCommand
 from . import const
 from centralnode.device_data import DeviceData
 from tmc.common.tango_client import TangoClient
-from tmc.common.tango_server_helper import TangoServerHelper
+
 class ReleaseResources(BaseCommand):
     """
     A class for CentralNode's ReleaseResources() command.
@@ -93,15 +93,14 @@ class ReleaseResources(BaseCommand):
                 DevFailed if the command execution or command invocation on SubarrayNode is not successful
 
         """
-        device_data = self.target
-        self.logger.info(type(self.target))
+        device_data = DeviceData.get_instance()
+        self.logger.debug(type(self.target))
 
         try:
             release_success = False
             jsonArgument = json.loads(argin)
             subarrayID = jsonArgument['subarrayID']
             subarray_fqdn = device_data.subarray_FQDN_dict[subarrayID]
-            #subarray_client = TangoClient(subarray_fqdn)
             subarray_name = "SA" + str(subarrayID)
             if jsonArgument['releaseALL'] == True:
                 # Invoke "ReleaseAllResources" on SubarrayNode
@@ -109,7 +108,7 @@ class ReleaseResources(BaseCommand):
                 return_val = subarray_client.send_command_with_return(const.CMD_RELEASE_RESOURCES)
                 res_not_released = ast.literal_eval(return_val[1][0])
                 log_msg = const.STR_REL_RESOURCES
-                self.logger.info(log_msg)
+                self.logger.debug(log_msg)
                 device_data._read_activity_message = log_msg
                 if not res_not_released:
                     release_success = True
@@ -126,11 +125,11 @@ class ReleaseResources(BaseCommand):
                 else:
                     log_msg = const.STR_LIST_RES_NOT_REL + str(res_not_released)
                     device_data._read_activity_message = log_msg
-                    self.logger.info(log_msg)
+                    self.logger.debug(log_msg)
                     # release_success = False
             else:
                 device_data._read_activity_message = const.STR_FALSE_TAG
-                self.logger.info(const.STR_FALSE_TAG)
+                self.logger.debug(const.STR_FALSE_TAG)
 
         except ValueError as value_error:
             self.logger.error(const.ERR_INVALID_JSON)
@@ -157,5 +156,3 @@ class ReleaseResources(BaseCommand):
             tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, log_msg,
                                          "CentralNode.ReleaseResources",
                                          tango.ErrSeverity.ERR)
-
-
