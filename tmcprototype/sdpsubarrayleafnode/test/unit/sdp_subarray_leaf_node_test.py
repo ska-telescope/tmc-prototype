@@ -153,13 +153,48 @@ def command_with_arg(request):
 def test_command_with_callback_method_with_arg(mock_sdp_subarray_proxy, event_subscription_mock, command_with_arg):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     cmd_name, input_arg, requested_cmd, obs_state, _, _ = command_with_arg
-    
     # tango_client_obj.set_attribute("obsState", obs_state)
-
     device_proxy.command_inout(cmd_name, input_arg)
     dummy_event = command_callback(requested_cmd)
     event_subscription_mock[requested_cmd](dummy_event)
     assert const.STR_COMMAND + requested_cmd in device_proxy.activityMessage
+
+
+def test_command_with_callback_method_with_arg_with_event_error(mock_sdp_subarray_proxy, event_subscription_mock, command_with_arg):
+    device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
+    cmd_name, input_arg, requested_cmd, obs_state, _, _ = command_with_arg
+    # tango_client_obj.set_attribute("obsState", obs_state)
+    device_proxy.command_inout(cmd_name, input_arg)
+    dummy_event = command_callback(requested_cmd)
+    event_subscription_mock[requested_cmd](dummy_event)
+    assert const.STR_COMMAND + requested_cmd in device_proxy.activityMessage
+
+
+def test_command_for_allowed_Obstate_with_arg(mock_sdp_subarray_proxy, command_with_arg):
+    device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
+    cmd_name, input_arg, requested_cmd, obs_state, callback_str, _ = command_with_arg    
+    # tango_client_obj.set_attribute("obsState", obs_state)
+    device_proxy.command_inout(cmd_name, input_arg)
+    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(requested_cmd, input_arg,
+                                                                         any_method(with_name=callback_str))
+    assert_activity_message(device_proxy, const.STR_ASSIGN_RESOURCES_SUCCESS)
+
+
+def test_command_with_arg_should_raise_devfailed_exception(mock_sdp_subarray_proxy, event_subscription_mock, command_with_arg):
+    device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
+    cmd_name, input_arg, requested_cmd, obs_state, _,_ = command_with_arg
+    # tango_client_obj.set_attribute("obsState", obs_state)
+    # tango_client_obj.deviceproxy.command_inout_asynch.side_effect = raise_devfailed_exception
+    # with pytest.raises(tango.DevFailed) as df:
+    #     device_proxy.command_inout(cmd_name, input_arg)
+    # assert Error_msg in str(df.value)
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.AssignResources(input_arg)
+        dummy_event = command_callback_with_devfailed_exception()
+        event_subscription_mock[requested_cmd](dummy_event)
+    assert "This is error message for devfailed" in str(df.value)
+
+
 
 ###########################################################################################################
 
@@ -326,10 +361,9 @@ def command_callback_with_event_error(command_name):
 # def command_callback_with_command_exception():
 #     return Exception("Exception in Command callback")
 
-# # TODO: FOR FUTURE REFERENCE
-# def command_callback_with_devfailed_exception():
-#     tango.Except.throw_exception("SdpSubarrayLeafNode_Commandfailed in callback", "This is error message for devfailed",
-#                                  " ", tango.ErrSeverity.ERR)
+def command_callback_with_devfailed_exception():
+    tango.Except.throw_exception("SdpSubarrayLeafNode_Commandfailed in callback", "This is error message for devfailed",
+                                 " ", tango.ErrSeverity.ERR)
 
 def raise_devfailed_exception(*args):
     tango.Except.throw_exception("SdpSubarrayLeafNode_Commandfailed", "This is error message for devfailed",
@@ -392,8 +426,8 @@ def raise_devfailed_exception(*args):
 #     assert "Failed to invoke " + cmd_name in str(df.value)
 
 
-# def assert_activity_message(device_proxy, expected_message):
-#     assert device_proxy.activityMessage == expected_message  # reads tango attribute
+def assert_activity_message(device_proxy, expected_message):
+    assert device_proxy.activityMessage == expected_message  # reads tango attribute
 
 
 def any_method(with_name=None):
