@@ -50,7 +50,7 @@ class HealthStateAggreegator:
 
     def csp_health_subscribe_event(self):
         """
-        Method for event subscription on CspMasterLeafNode.
+        Method to subscribe to health state change event on CspMasterLeafNode.
 
         :raises: Devfailed exception if erroe occures while subscribing event.
         """
@@ -69,7 +69,7 @@ class HealthStateAggreegator:
 
     def sdp_health_subscribe_event(self):
         """
-        Method for event subscription on SdpMasterLeafNode.
+        Method to subscribe to health state change event on SdpMasterLeafNode.
 
         :raises: Devfailed exception if erroe occures while subscribing event.
         """
@@ -87,7 +87,7 @@ class HealthStateAggreegator:
 
     def subarray_health_subscribe_event(self):
         """
-        Method for event subscription on SubarrayNode.
+        Method to subscribe to health state change event on SubarrayNode.
 
         :raises: Devfailed exception if erroe occures while subscribing event.
         """
@@ -108,8 +108,7 @@ class HealthStateAggreegator:
 
     def unsubscribe_event(self):
         """
-        Method for event subscription. Calls separate subscribe event methods for CSP Master, SDP Master and
-        Subarray health state attribute subscription.
+        Method to unsubscribe to health state change event on CspMasterLeafNode, SdpMasterLeafNode and SubarrayNode
         """
         for tango_client in self.health_state_event_map:
             log_message = "Unsubscribing ObsState of: {}".format(tango_client.get_device_fqdn)
