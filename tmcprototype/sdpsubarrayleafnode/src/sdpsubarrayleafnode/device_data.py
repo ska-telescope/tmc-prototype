@@ -9,10 +9,6 @@
 """ Device Data
 This module defines the DeviceData class, which represents of the functional SDPSubarrayLeafNode device.
 """
-# PROTECTED REGION ID(SDPSubarrayLeafNode.additionnal_import) ENABLED START #
-from ska.base.control_model import HealthState
-#from centralnode.health_state_aggreegator import HealthStateAggreegator
-# PROTECTED REGION END #    //  SDPSubarrayLeafNode.additional_import
 
 class DeviceData:
     """
