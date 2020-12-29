@@ -3,20 +3,13 @@ On class for SDPSubarrayLeafNode.
 """
 # PROTECTED REGION ID(sdpsubarrayleafnode.additionnal_import) ENABLED START #
 # Standard Python imports
-# import json
-# import ast
 import tango
-#from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
 from tango import DevFailed
-#from tango.server import run, command, device_property, attribute
 # Additional import
 from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode, BaseCommand
-from . import const, device_data
-#from .device_data import DeviceData
-from sdpsubarrayleafnode.device_data import DeviceData
+from ska.base.commands import ResultCode
+from . import const
 from tmc.common.tango_client import TangoClient
-#from sdpsubarrayleafnode.tango_client import TangoClient
 
 
 class On(SKABaseDevice.OnCommand):

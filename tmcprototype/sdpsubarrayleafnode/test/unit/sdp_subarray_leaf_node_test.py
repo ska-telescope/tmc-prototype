@@ -15,7 +15,7 @@ import tango
 from tango.test_context import DeviceTestContext
 
 # Additional import
-from sdpsubarrayleafnode import SdpSubarrayLeafNode, const, release
+from sdpsubarrayleafnode import SdpSubarrayLeafNode, const, release, device_data
 from sdpsubarrayleafnode.device_data import DeviceData
 from ska.base.control_model import ObsState, HealthState, AdminMode, TestMode, ControlMode, SimulationMode
 from ska.base.control_model import LoggingLevel
@@ -38,6 +38,8 @@ path= join(dirname(__file__), 'data' , configure_input_file)
 with open(path, 'r') as f:
     configure_str=f.read()
 
+# Create DeviceData class instance
+device_data = DeviceData.get_instance()
 
 ##### This fixture is used in refactored On and Off command testcases (SP-1420)
 @pytest.fixture(scope="function")
@@ -55,7 +57,7 @@ def mock_sdp_subarray_proxy():
 
 ### This fixture is used in refactored On and Off command testcases (SP-1420)
 @pytest.fixture(scope="function")
-def event_subscription_mock(mock_sdp_subarray_proxy):
+def event_subscription_mock():
     dut_properties = {'SdpSubarrayFQDN': 'mid_sdp/elt/subarray_01'}
     event_subscription_map = {}
     with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
@@ -84,7 +86,6 @@ def test_on_should_command_with_callback_method(mock_sdp_subarray_proxy,event_su
     device_proxy.On()
     dummy_event = command_callback(const.CMD_ON)
     event_subscription_mock[const.CMD_ON](dummy_event)
-    device_data = DeviceData.get_instance()
     assert const.STR_COMMAND + const.CMD_ON in device_data._read_activity_message
 
 
@@ -102,7 +103,6 @@ def test_off_should_command_with_callback_method(mock_sdp_subarray_proxy,event_s
     device_proxy.Off()
     dummy_event = command_callback(const.CMD_OFF)
     event_subscription_mock[const.CMD_OFF](dummy_event)
-    device_data = DeviceData.get_instance()
     assert const.STR_COMMAND + const.CMD_OFF in device_data._read_activity_message
 
 
@@ -111,7 +111,6 @@ def test_on_should_command_with_callback_method_with_event_error(mock_sdp_subarr
     device_proxy.On()
     dummy_event = command_callback_with_event_error(const.CMD_ON)
     event_subscription_mock[const.CMD_ON](dummy_event)
-    device_data = DeviceData.get_instance()
     assert const.ERR_INVOKING_CMD + const.CMD_ON in device_data._read_activity_message
 
 
@@ -121,7 +120,6 @@ def test_off_should_command_with_callback_method_with_event_error(mock_sdp_subar
     device_proxy.Off()
     dummy_event = command_callback_with_event_error(const.CMD_OFF)
     event_subscription_mock[const.CMD_OFF](dummy_event)
-    device_data = DeviceData.get_instance()
     assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_data._read_activity_message
 
 
