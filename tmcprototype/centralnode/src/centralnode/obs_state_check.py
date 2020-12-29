@@ -3,12 +3,12 @@ ObsStateCheck class for CentralNode.
 """
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 import tango
-from tango import DevFailed
+# from tango import DevFailed
 # Additional import
 from ska.base.control_model import ObsState
 from . import const
 from tmc.common.tango_client import TangoClient
-from tmc.common.tango_server_helper import TangoServerHelper
+# from tmc.common.tango_server_helper import TangoServerHelper
 import logging
 # PROTECTED REGION END #    //  CentralNode.additional_import
 

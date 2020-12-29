@@ -10,7 +10,6 @@ from ska.base.commands import ResultCode
 from . import const
 from centralnode.device_data import DeviceData
 from tmc.common.tango_client import TangoClient
-from centralnode.health_state_aggreegator import HealthStateAggreegator
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 class StandByTelescope(SKABaseDevice.OffCommand):
@@ -45,7 +44,7 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         :rtype: (ResultCode, str)
         """
         self.logger.info(type(self.target))
-        device_data = self.target
+        device_data = DeviceData.get_instance()
         self.standby_dish(device_data)
         self.standby_csp(device_data)
         self.standby_sdp(device_data)
@@ -57,7 +56,6 @@ class StandByTelescope(SKABaseDevice.OffCommand):
 
         # stop obs state aggregation
         device_data.obs_state_aggregator.stop_aggregation()
-
         return (ResultCode.OK,const.STR_STANDBY_CMD_ISSUED)
 
     def standby_csp(self,device_data):

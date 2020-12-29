@@ -6,7 +6,7 @@ StowAntennas class for CentralNode.
 import tango
 from tango import DevState, DevFailed
 # Additional import
-from ska.base.commands import ResultCode, BaseCommand
+from ska.base.commands import BaseCommand
 from . import const
 from centralnode.device_data import DeviceData
 from tmc.common.tango_client import TangoClient
@@ -48,7 +48,7 @@ class StowAntennas(BaseCommand):
         :raises: DevFailed if error occurs while invoking command of DishLeafNode
                 ValueError if error occurs if input argument json string contains invalid value
         """
-        device_data = self.target
+        device_data = DeviceData.get_instance()
         self.logger.info(type(self.target))
         try:
             for leafId in range(0, len(argin)):

@@ -235,6 +235,7 @@ def test_telescope_health_state():
         assert tango_context.device.telescopeHealthState == HealthState.UNKNOWN
 
 def test_activity_message():
+    device_data = DeviceData.get_instance()
     with fake_tango_system(CentralNode) as tango_context:
         tango_context.device.activityMessage = ''
         assert tango_context.device.activityMessage == ''

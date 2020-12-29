@@ -23,21 +23,18 @@ from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState
 from . import const, release, assign_resources_command, release_resources_command, \
-    tango_client, tango_server, stow_antennas_command, stand_by_telescope_command, start_up_telescope_command, \
+      stow_antennas_command, stand_by_telescope_command, start_up_telescope_command, \
         health_state_aggreegator, check_receptor_reassignment
 
 from centralnode.resource_manager import ResourceManager
-from centralnode.input_validator import AssignResourceValidator
-from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
-from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
 from centralnode.device_data import DeviceData
 from centralnode.obs_state_check import ObsStateAggregator
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 __all__ = ["CentralNode", "main", "assign_resources_command","check_receptor_reassignment", "const", "device_data",
            "exceptions", "health_state_aggreegator", "input_validator", "release", "release_resources_command",
-           "stand_by_telescope_command", "start_up_telescope_command", "stow_antennas_command", "tango_client",
-           "tango_server", "ObsStateAggregator", "resource_manager"]
+           "stand_by_telescope_command", "start_up_telescope_command", "stow_antennas_command", "ObsStateAggregator",
+           "resource_manager"]
 
 
 class CentralNode(SKABaseDevice):
@@ -146,14 +143,15 @@ class CentralNode(SKABaseDevice):
                 device._build_state = '{},{},{}'.format(release.name,release.version,release.description)
                 device._version_id = release.version
                 device_data = DeviceData.get_instance()
+                device.device_data = device_data
                 device_data.csp_master_ln_fqdn = device.CspMasterLeafNodeFQDN
-                device_data.sdp_master_ln_fqdn = device.SdpMasterLeafNodeFQDN
-                device_data.tm_mid_subarray = device.TMMidSubarrayNodes
-                device_data.dln_prefix = device.DishLeafNodePrefix
-                device_data.num_dishes = device.NumDishes
-                device_data._telescope_health_state = device._telescope_health_state
+                device_data .sdp_master_ln_fqdn = device.SdpMasterLeafNodeFQDN
+                device_data .tm_mid_subarray = device.TMMidSubarrayNodes
+                device_data .dln_prefix = device.DishLeafNodePrefix
+                device_data .num_dishes = device.NumDishes
+                device_data ._telescope_health_state = device._telescope_health_state
                 self.logger.debug(const.STR_INIT_SUCCESS)
-                device_data.resource_manager_obj = ResourceManager()
+                device_data .resource_manager_obj = ResourceManager()
 
                 # Initialization of ObsState aggregator object
                 device_data.obs_state_aggregator = ObsStateAggregator(
@@ -167,69 +165,11 @@ class CentralNode(SKABaseDevice):
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand.do()",
                                              tango.ErrSeverity.ERR)
 
-                #  Get Dish Leaf Node devices List
-                # TODO: Getting DishLeafNode devices list from TANGO DB
-                # device.tango_db = PyTango.Database()
-                # try:
-                #     device.dev_dbdatum = device.tango_db.get_device_exported(const.GET_DEVICE_LIST_TANGO_DB)
-                #     device._dish_leaf_node_devices.extend(device.dev_bdatum.value_string)
-                #     print device._dish_leaf_node_devices
 
             device_data.resource_manager_obj.init_resource_matrix()
-            # Creating proxies for lower level devices
 
-            # Create proxies of Dish Leaf Node devices - this is not required
-            # for name in range(0, len(device_data._dish_leaf_node_devices)):
-            #     try:
-            #         device._leaf_device_proxy.append(DeviceProxy(device_data._dish_leaf_node_devices[name]))
-            #     except (DevFailed, KeyError) as except_occurred:
-            #         log_msg = const.ERR_IN_CREATE_PROXY + str(except_occurred)
-            #         self.logger.exception(except_occurred)
-            #         device._read_activity_message = const.ERR_IN_CREATE_PROXY
-            #         tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand",
-            #                                      tango.ErrSeverity.ERR)
-            #   # REMOVE below code when moved to other class
-            # Create device proxy for CSP Master Leaf Node
-            # try:
-            #     device._csp_master_leaf_proxy = DeviceProxy(device.CspMasterLeafNodeFQDN)
-            #     device._csp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_CSP_MASTER_HEALTH,
-            #                                                EventType.CHANGE_EVENT,
-            #                                                device.health_state_cb, stateless=True)
-            # except DevFailed as dev_failed:
-            #     log_msg = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH + str(dev_failed)
-            #     self.logger.exception(dev_failed)
-            #     device._read_activity_message = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH
-            #     tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand",
-            #                                  tango.ErrSeverity.ERR)
-            # # Create device proxy for SDP Master Leaf Node
-            # try:
-            #     device._sdp_master_leaf_proxy = DeviceProxy(device.SdpMasterLeafNodeFQDN)
-            #     device._sdp_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_SDP_MASTER_HEALTH,
-            #                                                EventType.CHANGE_EVENT,
-            #                                                device.health_state_cb, stateless=True)
-            # except DevFailed as dev_failed:
-            #     log_msg = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH + str(dev_failed)
-            #     self.logger.exception(dev_failed)
-            #     device._read_activity_message = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH
-            #     tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand",
-            #                                  tango.ErrSeverity.ERR)
-
-            # Create device proxy for Subarray Node
             for subarray in range(0, len(device.TMMidSubarrayNodes)):
                 try:
-                  
-                    # REMOVE below code when moved to other class
-                    # subarray_proxy = DeviceProxy(device.TMMidSubarrayNodes[subarray])
-                    # device.subarray_health_state_map[subarray_proxy] = -1
-                    # subarray_proxy.subscribe_event(const.EVT_SUBSR_HEALTH_STATE,
-                    #                               EventType.CHANGE_EVENT,
-                    #                               device.health_state_cb, stateless=True)
-
-                    # subarray_proxy.subscribe_event(const.EVT_SUBSR_OBS_STATE,
-                    #                                EventType.CHANGE_EVENT,
-                    #                                device.obs_state_cb, stateless=True)
-
-                    # populate subarrayID-subarray proxy map
                     tokens = device.TMMidSubarrayNodes[subarray].split('/')
                     subarrayID = int(tokens[2])
                     # the below line appends the FQDN of each subarray into the dict
@@ -263,37 +203,37 @@ class CentralNode(SKABaseDevice):
     def read_telescopeHealthState(self):
         # PROTECTED REGION ID(CentralNode.telescope_healthstate_read) ENABLED START #
         """ Internal construct of TANGO. Returns the Telescope health state."""
-        return self._telescope_health_state
+        return self.device_data._telescope_health_state
         # PROTECTED REGION END #    //  CentralNode.telescope_healthstate_read
 
     def read_subarray1HealthState(self):
         # PROTECTED REGION ID(CentralNode.subarray1_healthstate_read) ENABLED START #
         """ Internal construct of TANGO. Returns Subarray1 health state. """
-        return self._subarray1_health_state
+        return device.device_data._subarray1_health_state
         # PROTECTED REGION END #    //  CentralNode.subarray1_healthstate_read
 
     def read_subarray2HealthState(self):
         # PROTECTED REGION ID(CentralNode.subarray2_healthstate_read) ENABLED START #
         """ Internal construct of TANGO. Returns Subarray2 health state. """
-        return self._subarray2_health_state
+        return device.device_data._subarray2_health_state
         # PROTECTED REGION END #    //  CentralNode.subarray2_healthstate_read
 
     def read_subarray3HealthState(self):
         # PROTECTED REGION ID(CentralNode.subarray3HealthState_read) ENABLED START #
         """ Internal construct of TANGO. Returns Subarray3 health state. """
-        return self._subarray3_health_state
+        return device.device_data._subarray3_health_state
         # PROTECTED REGION END #    //  CentralNode.subarray3HealthState_read
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(CentralNode.activity_message_read) ENABLED START #
         """Internal construct of TANGO. Returns activity message. """
-        return self._read_activity_message
+        return self.device_data._read_activity_message
         # PROTECTED REGION END #    //  CentralNode.activity_message_read
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(CentralNode.activity_message_write) ENABLED START #
         """Internal construct of TANGO. Sets the activity message. """
-        self._read_activity_message = value
+        self.device_data._read_activity_message = value
         # PROTECTED REGION END #    //  CentralNode.activity_message_write
 
     # --------
@@ -454,7 +394,6 @@ class CentralNode(SKABaseDevice):
         Initialises the command handlers for commands supported by this device.
         """
         super().init_command_objects()
-
         device_data = DeviceData.get_instance()
         args = (device_data, self.state_model, self.logger)
         self.startup_object = start_up_telescope_command.StartUpTelescope(*args)

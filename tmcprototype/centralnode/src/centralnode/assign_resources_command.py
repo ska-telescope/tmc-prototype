@@ -6,12 +6,11 @@ import tango
 from tango import DevState, DevFailed
 
 from ska.base.commands import BaseCommand
-from . import const, release
+from . import const
 from centralnode.check_receptor_reassignment import CheckReceptorReassignment
 from centralnode.input_validator import AssignResourceValidator
 from tmc.common.tango_client import TangoClient
 from centralnode.device_data import DeviceData
-from centralnode.resource_manager import ResourceManager
 from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
 from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
 
@@ -142,10 +141,10 @@ class AssignResources(BaseCommand):
         Note: Enter input without spaces as:{"dish":{"receptorIDList_success":["0001","0002"]}}
 
         """
-        device_data = self.target 
+        device_data = DeviceData.get_instance()
         device_data.receptorIDList = []
         argout = []
-    
+
         ## Validate the input JSON string.
         try:
             self.logger.info("Validating input string.")
@@ -170,7 +169,7 @@ class AssignResources(BaseCommand):
             input_to_sa = json.dumps(input_json_subarray)
             subarray_client = TangoClient(subarrayFqdn)
          
-            resources_allocated_return = subarray_client.send_command_with_return(
+            resources_allocated_return = subarray_client.send_command(
                 const.CMD_ASSIGN_RESOURCES, input_to_sa)
 
             # Note: resources_allocated_return[1] contains the JSON string containing

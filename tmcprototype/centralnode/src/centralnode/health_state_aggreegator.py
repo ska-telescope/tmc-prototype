@@ -9,7 +9,7 @@ from tango import DevFailed
 from ska.base.control_model import HealthState
 from . import const
 from tmc.common.tango_client import TangoClient
-from centralnode.tango_server import TangoServerHelper
+from tmc.common.tango_server_helper import TangoServerHelper
 from centralnode.device_data import DeviceData
 # PROTECTED REGION END #    //  CentralNode.additional_import
 

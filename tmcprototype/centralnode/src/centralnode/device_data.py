@@ -11,8 +11,6 @@ This module defines the DeviceData class, which represents of the functional Cen
 """
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 from ska.base.control_model import HealthState
-# from centralnode.health_state_aggreegator import HealthStateAggreegator
-# from centralnode.resource_manager import ResourceManager
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 class DeviceData:
