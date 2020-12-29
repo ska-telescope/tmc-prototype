@@ -24,24 +24,18 @@ class HealthStateAggreegator:
         else:
             self.logger = logger
         self.device_data = DeviceData.get_instance()
-        self.subarray_ln_health_state_map = {}
-        self.csp_sdp_ln_health_event_id = {}
+        self.subarray_health_state_map = {}
+        # self.csp_sdp_ln_health_event_id = {}
         self.this_server = TangoServerHelper.get_instance()
         # How to pass fqdn here? 
         self.csp_master_ln_fqdn = "ska_mid/tm_leaf_node/csp_master"
         self.sdp_master_ln_fqdn = "ska_mid/tm_leaf_node/sdp_master"
-        self.subarray_ln_fqdn_list= ["ska_mid/tm_subarray_node/1","ska_mid/tm_subarray_node/2","ska_mid/tm_subarray_node/3"]
-        self.sdp_event_id = ""
-        self.csp_event_id = ""
-        self.subarray_event_id_list = []
-        self.subarray_health_state_map = {}
-        # self._csp_master_leaf_health = None
-        # self._sdp_master_leaf_health = None
-        # self._subarray1_health_state = None
-        # self._subarray2_health_state = None
-        # self._subarray3_health_state = None
-        # self._telescope_health_state = None
-        self.unsubscribe_flag = False
+        # self.subarray_ln_fqdn_list= ["ska_mid/tm_subarray_node/1","ska_mid/tm_subarray_node/2","ska_mid/tm_subarray_node/3"]
+        # self.sdp_event_id = ""
+        # self.csp_event_id = ""
+        # self.subarray_event_id_list = []
+        self.health_state_event_map = {}
+
 
 
     def subscribe_event(self):
@@ -49,43 +43,28 @@ class HealthStateAggreegator:
         Method for event subscription. Calls separate subscribe event methods for CSP Master, SDP Master and
         Subarray health state attribute subscription.
         """
-        self.unsubscribe_flag = False
         self.csp_health_subscribe_event()
         self.sdp_health_subscribe_event()
         self.subarray_health_subscribe_event() 
 
-    def unsubscribe_event(self):
-        """
-        Method for event subscription. Calls separate subscribe event methods for CSP Master, SDP Master and
-        Subarray health state attribute subscription.
-        """
-        self.unsubscribe_flag=True
-        self.csp_health_subscribe_event()
-        self.sdp_health_subscribe_event()
-        self.subarray_health_subscribe_event() 
 
-    
     def csp_health_subscribe_event(self):
         """
         Method for event subscription on CspMasterLeafNode.
 
         :raises: Devfailed exception if erroe occures while subscribing event.
         """
-        # self.logger.info(type(self.target))
-        # device_data = DeviceData.get_instance()
-        csp_mln_client = TangoClient(self.csp_master_ln_fqdn)
-        if not self.unsubscribe_flag:
-            try:
-                self.csp_event_id = csp_mln_client.subscribe_attribute(const.EVT_SUBSR_CSP_MASTER_HEALTH,
+        csp_mln_client = TangoClient(self.device_data.csp_master_ln_fqdn)
+        try:
+            self.csp_event_id = csp_mln_client.subscribe_attribute(const.EVT_SUBSR_CSP_MASTER_HEALTH,
                                                                         self.health_state_cb)
-            except DevFailed as dev_failed:
-                log_msg = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH + str(dev_failed)
-                self.logger.exception(dev_failed)
-                self._read_activity_message = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH
-                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.HealthStateSubscribeEvent",
-                                            tango.ErrSeverity.ERR)
-        else:
-            csp_mln_client.unsubscribe_attribute(self.csp_event_id)
+            self.health_state_event_map[csp_mln_client] = self.csp_event_id
+        except DevFailed as dev_failed:
+            log_msg = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH + str(dev_failed)
+            self.logger.exception(dev_failed)
+            self._read_activity_message = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH
+            tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.HealthStateSubscribeEvent",
+                                        tango.ErrSeverity.ERR)
 
 
     def sdp_health_subscribe_event(self):
@@ -94,19 +73,17 @@ class HealthStateAggreegator:
 
         :raises: Devfailed exception if erroe occures while subscribing event.
         """
-        sdp_mln_client = TangoClient(self.sdp_master_ln_fqdn)
-        if not self.unsubscribe_flag:
-            try:
-                self.sdp_event_id = sdp_mln_client.subscribe_attribute(const.EVT_SUBSR_SDP_MASTER_HEALTH,
+        sdp_mln_client = TangoClient(self.device_data.sdp_master_ln_fqdn)
+        try:
+            self.sdp_event_id = sdp_mln_client.subscribe_attribute(const.EVT_SUBSR_SDP_MASTER_HEALTH,
                                                                         self.health_state_cb)
-            except DevFailed as dev_failed:
-                log_msg = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH + str(dev_failed)
-                self.logger.exception(dev_failed)
-                self._read_activity_message = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH
-                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.HealthStateSubscribeEvent",
-                                            tango.ErrSeverity.ERR)
-        else:
-            sdp_mln_client.unsubscribe_attribute(self.sdp_event_id)
+            self.health_state_event_map[sdp_mln_client] = self.sdp_event_id
+        except DevFailed as dev_failed:
+            log_msg = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH + str(dev_failed)
+            self.logger.exception(dev_failed)
+            self._read_activity_message = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH
+            tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.HealthStateSubscribeEvent",
+                                        tango.ErrSeverity.ERR)
 
     def subarray_health_subscribe_event(self):
         """
@@ -114,24 +91,32 @@ class HealthStateAggreegator:
 
         :raises: Devfailed exception if erroe occures while subscribing event.
         """
-        for subarrayID in range(1, len(self.subarray_ln_fqdn_list) + 1):
-            subarray_client = TangoClient(subarrayID)
+        for subarray_fqdn in self.device_data.tm_mid_subarray:
+            subarray_client = TangoClient(subarray_fqdn)
             #updating the subarray_health_state_map with device name (as ska_mid/tm_subarray_node/1) and its value which is required in callback
-            sa_fqdn = self.subarray_ln_fqdn_list[subarrayID-1]
-            self.subarray_health_state_map[sa_fqdn] = -1
-            if not self.unsubscribe_flag:
-                try:
-                    event_id = subarray_client.subscribe_attribute(const.EVT_SUBSR_HEALTH_STATE,
+            self.subarray_health_state_map[subarray_fqdn] = -1
+            try:
+                event_id = subarray_client.subscribe_attribute(const.EVT_SUBSR_HEALTH_STATE,
                                             self.health_state_cb)
-                    self.subarray_event_id_list.append(event_id)
-                except DevFailed as dev_failed:
-                    log_msg = const.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
-                    self.logger.exception(dev_failed)
-                    self._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE
-                    tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.HealthStateSubscribeEvent",
-                                            tango.ErrSeverity.ERR)
-            else:
-                subarray_client.unsubscribe_attribute(self.subarray_event_id_list[subarrayID-1])
+                self.health_state_event_map[subarray_client] = event_id
+            except DevFailed as dev_failed:
+                log_msg = const.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
+                self.logger.exception(dev_failed)
+                self._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE
+                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.HealthStateSubscribeEvent",
+                                        tango.ErrSeverity.ERR)
+
+    def unsubscribe_event(self):
+        """
+        Method for event subscription. Calls separate subscribe event methods for CSP Master, SDP Master and
+        Subarray health state attribute subscription.
+        """
+        for tango_client in self.health_state_event_map:
+            log_message = "Unsubscribing ObsState of: {}".format(tango_client.get_device_fqdn)
+            self.logger.debug(log_message)
+            tango_client.unsubscribe_attribute(self.health_state_event_map[tango_client])
+        self.health_state_event_map.clear()
+
 
     def health_state_cb(self, evt):
         """

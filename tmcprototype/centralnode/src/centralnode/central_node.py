@@ -145,13 +145,13 @@ class CentralNode(SKABaseDevice):
                 device_data = DeviceData.get_instance()
                 device.device_data = device_data
                 device_data.csp_master_ln_fqdn = device.CspMasterLeafNodeFQDN
-                device_data .sdp_master_ln_fqdn = device.SdpMasterLeafNodeFQDN
-                device_data .tm_mid_subarray = device.TMMidSubarrayNodes
-                device_data .dln_prefix = device.DishLeafNodePrefix
-                device_data .num_dishes = device.NumDishes
-                device_data ._telescope_health_state = device._telescope_health_state
+                device_data.sdp_master_ln_fqdn = device.SdpMasterLeafNodeFQDN
+                device_data.tm_mid_subarray = device.TMMidSubarrayNodes
+                device_data.dln_prefix = device.DishLeafNodePrefix
+                device_data.num_dishes = device.NumDishes
+                device_data._telescope_health_state = device._telescope_health_state
                 self.logger.debug(const.STR_INIT_SUCCESS)
-                device_data .resource_manager_obj = ResourceManager()
+                device_data.resource_manager_obj = ResourceManager()
 
                 # Initialization of ObsState aggregator object
                 device_data.obs_state_aggregator = ObsStateAggregator(
@@ -172,7 +172,8 @@ class CentralNode(SKABaseDevice):
                 try:
                     tokens = device.TMMidSubarrayNodes[subarray].split('/')
                     subarrayID = int(tokens[2])
-                    # the below line appends the FQDN of each subarray into the dict
+                    # The below code appends the FQDN corresponding to each subarray Id into the dictionary.
+                    # This is required in AssignResource command where according to Subarray Id in input json, proxy has to be created.
                     device_data.subarray_FQDN_dict[subarrayID] = device.TMMidSubarrayNodes[subarray]
                 except DevFailed as dev_failed:
                     log_msg = const.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
