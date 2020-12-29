@@ -53,7 +53,7 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
 
         :raises: JSONDecodeError if input argument json string contains invalid value
         """
-        self.logger.info(type(self.target))
+        self.logger.debug(type(self.target))
         device_data = DeviceData.get_instance()
         device_data.is_scan_completed = False
         device_data.is_release_resources = False
@@ -65,8 +65,6 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
         log_msg = const.STR_CONFIGURE_IP_ARG + str(argin)
         self.logger.info(log_msg)
         # TODO: how to access TANGO specific attributes (read-write)
-        device_data.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA)
-        device_data._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA
         try:
             scan_configuration = json.loads(argin)
         except json.JSONDecodeError as jerror:
@@ -82,6 +80,8 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
         self._configure_sdp(scan_configuration)
         message = "Configure command invoked"
         self.logger.info(message)
+        device_data.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA)
+        device_data._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA
         return (ResultCode.STARTED, message)
 
     @inject_with_id(2,'cmd_data')
