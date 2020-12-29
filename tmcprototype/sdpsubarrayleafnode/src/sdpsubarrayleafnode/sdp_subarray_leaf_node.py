@@ -22,7 +22,7 @@ from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState
 from ska.base.commands import ResultCode
-from .transaction_id import identify_with_id
+#from .transaction_id import identify_with_id
 from . import const, release, on_command, off_command, assign_resources_command, release_resources_command, configure_command, abort_command, restart_command, obsreset_command, scan_command, end_command, endscan_command
 from .device_data import DeviceData
 
