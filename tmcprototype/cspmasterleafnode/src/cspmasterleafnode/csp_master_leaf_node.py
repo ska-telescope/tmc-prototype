@@ -88,6 +88,7 @@ class CspMasterLeafNode(SKABaseDevice):
             super().do()
             device = self.target
             device_data = DeviceData.get_instance()
+            device.device_data = device_data
             device._health_state = HealthState.OK  # Setting healthState to "OK"
             device._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
             device._test_mode = TestMode.NONE
@@ -121,13 +122,13 @@ class CspMasterLeafNode(SKABaseDevice):
     def read_activityMessage(self):
         # PROTECTED REGION ID(CspMasterLeafNode.activityMessage_read) ENABLED START #
         """ Internal construct of TANGO. Returns the activityMessage. """
-        return self._read_activity_message
+        return self.device_data._read_activity_message
         # PROTECTED REGION END #    //  CspMasterLeafNode.activityMessage_read
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(CspMasterLeafNode.activityMessage_write) ENABLED START #
         """Internal construct of TANGO. Sets the activityMessage. """
-        self._read_activity_message = value
+        self.device_data._read_activity_message = value
         # PROTECTED REGION END #    //  CspMasterLeafNode.activityMessage_write
 
 

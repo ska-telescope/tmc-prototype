@@ -75,7 +75,7 @@ def test_standby_should_command_to_standby_with_callback_method(mock_csp_master_
     dummy_event = command_callback(const.CMD_STANDBY)
     event_subscription_mock[const.CMD_STANDBY](dummy_event)
     device_data = DeviceData.get_instance()
-    assert const.STR_COMMAND + const.CMD_STANDBY in device_data._read_activity_message
+    assert const.STR_COMMAND + const.CMD_STANDBY in device_proxy.activityMessage
 
 
 def test_on_should_command_to_on_with_callback_method(mock_csp_master_proxy, event_subscription_mock):
@@ -85,7 +85,7 @@ def test_on_should_command_to_on_with_callback_method(mock_csp_master_proxy, eve
     dummy_event = command_callback(const.CMD_ON)
     event_subscription_mock[const.CMD_ON](dummy_event)
     device_data = DeviceData.get_instance()
-    assert const.STR_COMMAND + const.CMD_ON in device_data._read_activity_message
+    assert const.STR_COMMAND + const.CMD_ON in device_proxy.activityMessage
 
 @pytest.mark.xfail(reason="Off command is not generating event error in current implementation. "
                            "Will be updated later.")
@@ -100,7 +100,7 @@ def test_off_should_command_to_off_with_callback_method(mock_csp_master_proxy):
     # event_subscription_map[const.CMD_OFF](dummy_event)
     # assert const.STR_COMMAND + const.CMD_OFF in tango_context.device.activityMessage
     device_data = DeviceData.get_instance()
-    assert device_data._read_activity_message in const.STR_OFF_CMD_ISSUED
+    assert device_proxy.activityMessage in const.STR_OFF_CMD_ISSUED
 
 device_data = DeviceData.get_instance()
 def test_standby_should_command_with_callback_method_with_event_error(mock_csp_master_proxy, event_subscription_mock):
@@ -110,7 +110,7 @@ def test_standby_should_command_with_callback_method_with_event_error(mock_csp_m
     dummy_event = command_callback_with_event_error(const.CMD_STANDBY)
     event_subscription_mock[const.CMD_STANDBY](dummy_event)
 
-    assert const.ERR_INVOKING_CMD + const.CMD_STANDBY in device_data._read_activity_message
+    assert const.ERR_INVOKING_CMD + const.CMD_STANDBY in device_proxy.activityMessage
 
 
 def test_on_should_command_with_callback_method_with_event_error(mock_csp_master_proxy, event_subscription_mock):
@@ -119,7 +119,7 @@ def test_on_should_command_with_callback_method_with_event_error(mock_csp_master
     dummy_event = command_callback_with_event_error(const.CMD_ON)
     event_subscription_mock[const.CMD_ON](dummy_event)
 
-    assert const.ERR_INVOKING_CMD + const.CMD_ON in device_data._read_activity_message
+    assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
 
 
 def test_on_command_should_raise_dev_failed(mock_csp_master_proxy):
