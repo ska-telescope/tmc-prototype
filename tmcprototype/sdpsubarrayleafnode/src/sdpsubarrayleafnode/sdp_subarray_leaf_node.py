@@ -25,6 +25,7 @@ from ska.base.control_model import HealthState, ObsState
 from ska.base.commands import ResultCode, BaseCommand
 from .transaction_id import identify_with_id
 from . import const, release, on_command, off_command
+from sdpsubarrayleafnode import device_data
 from .exceptions import InvalidObsStateError
 from .device_data import DeviceData
 from tmc.common.tango_client import TangoClient
@@ -98,9 +99,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             device._sdp_subarray_health_state = HealthState.OK
             device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
             device._version_id = release.version
+            
 
             # Create DeviceData class instance
             device_data = DeviceData.get_instance()
+            device.device_data = device_data
             device_data._sdp_sa_fqdn = device.SdpSubarrayFQDN
             device_data._read_activity_message = const.STR_SDPSALN_INIT_SUCCESS
 
@@ -132,28 +135,28 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.receiveAddresses_read) ENABLED START #
         """ Internal construct of TANGO. Returns the Receive Addresses.
         receiveAddresses is a forwarded attribute from SDP Master which depicts State of the SDP."""
-        return self._receive_addresses
+        return self.device_data._receive_addresses
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.receiveAddresses_read
 
     def write_receiveAddresses(self, value):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.receiveAddresses_read) ENABLED START #
         """ Internal construct of TANGO. Sets the Receive Addresses.
         receiveAddresses is a forwarded attribute from SDP Master which depicts State of the SDP."""
-        self._receive_addresses = value
+        self.device_data._receive_addresses = value
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.receiveAddresses_read
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.activityMessage_read) ENABLED START #
         """ Internal construct of TANGO. Returns Activity Messages.
         activityMessage is a String providing information about the current activity in SDP Subarray Leaf Node"""
-        return self._read_activity_message
+        return self.device_data._read_activity_message
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.activityMessage_read
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.activityMessage_write) ENABLED START #
         """Internal construct of TANGO. Sets the Activity Message.
         activityMessage is a String providing information about the current activity in SDP Subarray Leaf Node."""
-        self._read_activity_message = value
+        self.device_data._read_activity_message = value
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.activityMessage_write
 
     def read_activeProcessingBlocks(self):

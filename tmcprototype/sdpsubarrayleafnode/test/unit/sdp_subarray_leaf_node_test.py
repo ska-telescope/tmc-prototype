@@ -21,7 +21,7 @@ from ska.base.control_model import ObsState, HealthState, AdminMode, TestMode, C
 from ska.base.control_model import LoggingLevel
 from ska.base.commands import ResultCode
 from tmc.common.tango_client import TangoClient
-#from sdpsubarrayleafnode.tango_client import TangoClient
+
 
 assign_input_file = 'command_AssignResources.json'
 path = join(dirname(__file__), 'data', assign_input_file)
@@ -78,7 +78,6 @@ def test_on(mock_sdp_subarray_proxy):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     assert device_proxy.On() == [[ResultCode.OK],
                                 ["OnCommand :->  invoked successfully."]]
-    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(const.CMD_ON, None, any_method(with_name='on_cmd_ended_cb'))
 
 
 def test_on_should_command_with_callback_method(mock_sdp_subarray_proxy,event_subscription_mock):
@@ -86,7 +85,7 @@ def test_on_should_command_with_callback_method(mock_sdp_subarray_proxy,event_su
     device_proxy.On()
     dummy_event = command_callback(const.CMD_ON)
     event_subscription_mock[const.CMD_ON](dummy_event)
-    assert const.STR_COMMAND + const.CMD_ON in device_data._read_activity_message
+    assert const.STR_COMMAND + const.CMD_ON in device_proxy.activityMessage
 
 
 def test_off_should_command_sdp_subarray_to_stop(mock_sdp_subarray_proxy):
@@ -94,7 +93,6 @@ def test_off_should_command_sdp_subarray_to_stop(mock_sdp_subarray_proxy):
 
     device_proxy.On()
     assert device_proxy.Off() == [[ResultCode.OK], ["OffCommand :->  invoked successfully."]]
-    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(const.CMD_OFF, None, any_method(with_name='off_cmd_ended_cb'))
 
 
 def test_off_should_command_with_callback_method(mock_sdp_subarray_proxy,event_subscription_mock):
@@ -103,7 +101,7 @@ def test_off_should_command_with_callback_method(mock_sdp_subarray_proxy,event_s
     device_proxy.Off()
     dummy_event = command_callback(const.CMD_OFF)
     event_subscription_mock[const.CMD_OFF](dummy_event)
-    assert const.STR_COMMAND + const.CMD_OFF in device_data._read_activity_message
+    assert const.STR_COMMAND + const.CMD_OFF in device_proxy.activityMessage
 
 
 def test_on_should_command_with_callback_method_with_event_error(mock_sdp_subarray_proxy,event_subscription_mock):
@@ -111,7 +109,7 @@ def test_on_should_command_with_callback_method_with_event_error(mock_sdp_subarr
     device_proxy.On()
     dummy_event = command_callback_with_event_error(const.CMD_ON)
     event_subscription_mock[const.CMD_ON](dummy_event)
-    assert const.ERR_INVOKING_CMD + const.CMD_ON in device_data._read_activity_message
+    assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
 
 
 def test_off_should_command_with_callback_method_with_event_error(mock_sdp_subarray_proxy,event_subscription_mock):
@@ -120,7 +118,7 @@ def test_off_should_command_with_callback_method_with_event_error(mock_sdp_subar
     device_proxy.Off()
     dummy_event = command_callback_with_event_error(const.CMD_OFF)
     event_subscription_mock[const.CMD_OFF](dummy_event)
-    assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_data._read_activity_message
+    assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
 
 
 def test_on_command_should_raise_dev_failed(mock_sdp_subarray_proxy):

@@ -14,13 +14,12 @@ from tmc.common.tango_client import TangoClient
 
 class Off(SKABaseDevice.OffCommand):
     """
-    A class for SDP master's Off() command.
+    A class for SDP Subarray's Off() command.
     """
 
     def off_cmd_ended_cb(self, event):
         """
-        Callback function immediately executed when the asynchronous invoked command returns.
-        Checks whether the off command has been successfully invoked on SDP Subarray.
+        Callback function executes when the command invoked asynchronously returns from the server.
 
         :param event: A CmdDoneEvent object.
         This class is used to pass data to the callback method in asynchronous callback model

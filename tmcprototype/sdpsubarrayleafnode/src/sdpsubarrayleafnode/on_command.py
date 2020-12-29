@@ -19,8 +19,7 @@ class On(SKABaseDevice.OnCommand):
 
     def on_cmd_ended_cb(self, event):
         """
-        Callback function immediately executed when the asynchronous invoked command returns.
-        Checks whether the On command has been successfully invoked on SDP Subarray.
+        Callback function executes when the command invoked asynchronously returns from the server.
 
         :param event: A CmdDoneEvent object. This class is used to pass data to the callback method in asynchronous
                         callback model for command execution.
