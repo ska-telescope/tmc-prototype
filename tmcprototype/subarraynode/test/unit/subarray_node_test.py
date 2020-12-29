@@ -265,7 +265,11 @@ def mock_lower_devices():
 
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        yield tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map
+        with mock.patch.object(TangoClient, 'get_deviceproxy', return_value=Mock()) as mock_obj:
+            tango_client_obj = TangoClient(dut_properties['CspSubarrayLNFQDN'])
+            # yield tango_context.device, tango_client_obj
+
+            yield tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map, tango_client_obj
 
 @pytest.fixture(scope="function")
 def mock_device_proxy():
@@ -469,9 +473,33 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
 
 
 
-def test_assign_resource_is_completed_when_csp_and_sdp_is_idle(mock_lower_devices,mock_device_proxy):
-    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
+def test_assign_resource_is_completed_when_csp_and_sdp_is_idle(mock_device_proxy, health_state):
+    # tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
     device_proxy, tango_client_obj = mock_device_proxy
+    csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
+    csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
+    sdp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/sdp_subarray01'
+    sdp_subarray1_fqdn = 'mid_sdp/elt/subarray_1'
+    dish_ln_prefix = 'ska_mid/tm_leaf_node/d'
+    #
+    # csp_subarray1_ln_proxy_mock = Mock()
+    # csp_subarray1_proxy_mock = Mock()
+    # sdp_subarray1_ln_proxy_mock = Mock()
+    # sdp_subarray1_proxy_mock = Mock()
+    # dish_ln_proxy_mock = Mock()
+
+
+    event_subscription_map = {}
+    # dish_pointing_state_map = {}
+
+    tango_client_obj.deviceproxy.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    tango_client_obj.deviceproxy.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
     sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
 
@@ -479,15 +507,58 @@ def test_assign_resource_is_completed_when_csp_and_sdp_is_idle(mock_lower_device
     device_proxy.AssignResources(assign_input_str)
         # Mock the behaviour of Csp and SDP subarray's ObsState
     attribute = 'ObsState'
-    dummy_event_csp = create_dummy_event_state(tango_client_obj.deviceproxy, csp_subarray1_ln_fqdn,
-                                                   attribute, ObsState.IDLE)
+    with mock.patch.object(TangoClient, "get_deviceproxy", return_value = Mock()):
+        with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber):
+            tango_client_obj = TangoClient('ska_mid/tm_leaf_node/csp_subarray01')
+    # with mock.patch.object(TangoClient, "get_deviceproxy", return_value=Mock()):
+    #     with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_sdp):
+    #         tango_client_obj = TangoClient('ska_mid/tm_leaf_node/csp_master')
+        # dummy_event_csp = create_dummy_event_state(tango_client_obj.deviceproxy, csp_subarray1_ln_fqdn,
+        #                                            attribute, ObsState.IDLE)
 
-    event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
+    # event_subscription_map[csp_subarray1_obsstate_attribute] = dummy_event_csp
 
-    dummy_event_sdp = create_dummy_event_state(tango_client_obj.deviceproxy, sdp_subarray1_ln_fqdn,
-                                               attribute, ObsState.IDLE)
-    event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
-    assert tango_context.device.obsState == ObsState.IDLE
+    # dummy_event_sdp = create_dummy_event_state(tango_client_obj.deviceproxy, sdp_subarray1_ln_fqdn,
+    #                                            attribute, ObsState.IDLE)
+    # event_subscription_map[sdp_subarray1_obsstate_attribute] = dummy_event_sdp
+    assert device_proxy.obsState == ObsState.IDLE
+
+@pytest.fixture(
+    scope="function",
+    params=[
+        ObsState.IDLE
+    ])
+def health_state(request):
+    return request.param
+
+def dummy_subscriber(attribute, callback_method):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"ska_mid/tm_leaf_node/csp_subarray01/{attribute}"
+    fake_event.attr_value.value =  ObsState.IDLE
+    print("Inside dummy subscriber :::::::::::::::::::::::::::::::::::::::::::::::::::")
+    print( fake_event.attr_value.value )
+    callback_method(fake_event)
+    return 10
+
+def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{device_fqdn}/{attribute}"
+    fake_event.attr_value.value = attr_value
+    fake_event.device = proxy_mock
+    return fake_event
+
+def dummy_subscriber_sdp(attribute, callback_method):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"ska_mid/tm_leaf_node/sdp_subarray01/{attribute}"
+    fake_event.attr_value.value =  ObsState.IDLE
+    print("Inside dummy subscriber ...........................")
+    print( fake_event.attr_value.value )
+
+    callback_method(fake_event)
+    return 10
 
 '''
 def test_assign_resource_should_raise_exception_when_called_when_device_state_off():
