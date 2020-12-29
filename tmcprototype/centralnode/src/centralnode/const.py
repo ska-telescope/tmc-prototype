@@ -44,6 +44,7 @@ ERR_STOW_ARGIN = "Invalid StowAntennas arguments \n"
 ERR_HEALTH_STATE_CB = "Error handling healthState callback for evt: %s"
 ERR_RECEPTOR_ID_REALLOCATION = "The following Receptor id(s) are allocated to other subarrays: "
 ERR_DEVFAILED_MSG = "This is error message for devfailed"
+ERR_SUBARRAY_ID_DOES_NOT_EXIST = "The Subarray '99' does not exist."
 
 #strings
 #General strings

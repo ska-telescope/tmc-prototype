@@ -35,12 +35,6 @@ class HealthStateAggreegator:
         self.csp_event_id = ""
         self.subarray_event_id_list = []
         self.subarray_health_state_map = {}
-        # self._csp_master_leaf_health = None
-        # self._sdp_master_leaf_health = None
-        # self._subarray1_health_state = None
-        # self._subarray2_health_state = None
-        # self._subarray3_health_state = None
-        # self._telescope_health_state = None
         self.unsubscribe_flag = False
 
 

@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of the CentralNode project
-#
-#
-#
 # Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 
@@ -12,42 +9,34 @@ Central Node is a coordinator of the complete M&C system. Central Node implement
 of state and mode attributes defined by the SKA Control Model.
 """
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
-
 # Tango imports
 import tango
 from tango import DebugIt, AttrWriteType,  DevFailed
 from tango.server import run, attribute, command, device_property
-
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState
-from . import const, release, assign_resources_command, release_resources_command, \
-      stow_antennas_command, stand_by_telescope_command, start_up_telescope_command, \
-        health_state_aggreegator, check_receptor_reassignment
-
+from . import const, release, receptor_reassignment_checker
+from centralnode.start_up_telescope_command import StartUpTelescope
+from centralnode.stand_by_telescope_command import StandByTelescope
+from centralnode.assign_resources_command import AssignResources
+from centralnode.release_resources_command import ReleaseResources
+from centralnode.stow_antennas_command import StowAntennas
 from centralnode.resource_manager import ResourceManager
 from centralnode.device_data import DeviceData
 from centralnode.obs_state_check import ObsStateAggregator
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
-__all__ = ["CentralNode", "main", "assign_resources_command","check_receptor_reassignment", "const", "device_data",
-           "exceptions", "health_state_aggreegator", "input_validator", "release", "release_resources_command",
-           "stand_by_telescope_command", "start_up_telescope_command", "stow_antennas_command", "obs_state_check",
-           "resource_manager"]
-
+__all__ = ["CentralNode", "main", "AssignResources", "DeviceData", "const",
+           "exceptions", "HealthStateAggreegator", "input_validator", "ObsStateAggregator", "release",
+           "ReceptorReassignmentChecker", "ReleaseResources", "ResourceManager"
+           "StandByTelescope", "StartUpTelescope", "StowAntennas"]
 
 class CentralNode(SKABaseDevice):
     """
     Central Node is a coordinator of the complete M&C system.
     """
-
-    # PROTECTED REGION ID(CentralNode.class_variable) ENABLED START #
-   
-    # obs_state_cb and health_state_cb moved into separate classes.
-
-    # PROTECTED REGION END #    //  CentralNode.class_variable
-
     # -----------------
     # Device Properties
     # -----------------
@@ -145,13 +134,13 @@ class CentralNode(SKABaseDevice):
                 device_data = DeviceData.get_instance()
                 device.device_data = device_data
                 device_data.csp_master_ln_fqdn = device.CspMasterLeafNodeFQDN
-                device_data .sdp_master_ln_fqdn = device.SdpMasterLeafNodeFQDN
-                device_data .tm_mid_subarray = device.TMMidSubarrayNodes
-                device_data .dln_prefix = device.DishLeafNodePrefix
-                device_data .num_dishes = device.NumDishes
-                device_data ._telescope_health_state = device._telescope_health_state
+                device_data.sdp_master_ln_fqdn = device.SdpMasterLeafNodeFQDN
+                device_data.tm_mid_subarray = device.TMMidSubarrayNodes
+                device_data.dln_prefix = device.DishLeafNodePrefix
+                device_data.num_dishes = device.NumDishes
+                device_data._telescope_health_state = device._telescope_health_state
                 self.logger.debug(const.STR_INIT_SUCCESS)
-                device_data .resource_manager_obj = ResourceManager()
+                device_data.resource_manager_obj = ResourceManager()
 
                 # Initialization of ObsState aggregator object
                 device_data.obs_state_aggregator = ObsStateAggregator(
@@ -184,7 +173,6 @@ class CentralNode(SKABaseDevice):
             device_data._read_activity_message = "Central Node initialised successfully."
             self.logger.info(device_data._read_activity_message)
             return (ResultCode.OK, device_data._read_activity_message)
-
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(CentralNode.always_executed_hook) ENABLED START #
@@ -395,11 +383,11 @@ class CentralNode(SKABaseDevice):
         """
         super().init_command_objects()
         args = (self.device_data, self.state_model, self.logger)
-        self.startup_object = start_up_telescope_command.StartUpTelescope(*args)
-        self.standby_object = stand_by_telescope_command.StandByTelescope(*args)
-        self.assign_object  = assign_resources_command.AssignResources(*args)
-        self.release_object = release_resources_command.ReleaseResources(*args)
-        self.stow_object = stow_antennas_command.StowAntennas(*args)
+        self.startup_object = StartUpTelescope(*args)
+        self.standby_object = StandByTelescope(*args)
+        self.assign_object  = AssignResources(*args)
+        self.release_object = ReleaseResources(*args)
+        self.stow_object = StowAntennas(*args)
         self.register_command_object("AssignResources", self.assign_object)
         self.register_command_object("StowAntennas", self.stow_object)
         self.register_command_object("StartUpTelescope", self.startup_object)

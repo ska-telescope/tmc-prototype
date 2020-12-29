@@ -7,7 +7,7 @@ from tango import DevState, DevFailed
 
 from ska.base.commands import BaseCommand
 from . import const
-from centralnode.check_receptor_reassignment import CheckReceptorReassignment
+from centralnode.receptor_reassignment_checker import ReceptorReassignmentChecker
 from centralnode.input_validator import AssignResourceValidator
 from tmc.common.tango_client import TangoClient
 from centralnode.device_data import DeviceData
@@ -157,10 +157,10 @@ class AssignResources(BaseCommand):
             subarrayFqdn = device_data.subarray_FQDN_dict[subarrayID]
             ## check for duplicate allocation
             self.logger.info("Checking for resource reallocation.")
-            check_res = CheckReceptorReassignment()
+            check_res = ReceptorReassignmentChecker()
             check_res.do(json_argument["dish"]["receptorIDList"])
 
-            ## Allocate resources to subarray
+            #Allocate resources to subarray
             # Remove Subarray Id key from input json argument and send the json with
             # receptor Id list and SDP block to TMC Subarray Node
             self.logger.info("Allocating resource to subarray %d", subarrayID)
@@ -184,7 +184,7 @@ class AssignResources(BaseCommand):
 
             # Allocation successful
             device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
-            self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
+            self.logger.debug(const.STR_ASSIGN_RESOURCES_SUCCESS)
 
             # Prepare output argument
             argout = {
