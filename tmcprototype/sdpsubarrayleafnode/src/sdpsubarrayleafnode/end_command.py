@@ -6,7 +6,7 @@ End class for SDPSubarrayLeafNode.
 import tango
 from tango import DevState, DevFailed
 # Additional import
-from ska.base.commands import ResultCode, BaseCommand
+from ska.base.commands import BaseCommand
 from ska.base.control_model import ObsState
 from . import const
 
