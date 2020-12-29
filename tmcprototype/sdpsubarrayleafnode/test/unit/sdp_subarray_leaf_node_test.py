@@ -138,6 +138,29 @@ def test_off_command_should_raise_dev_failed(mock_sdp_subarray_proxy):
     assert "This is error message for devfailed" in str(df.value)
 
 
+@pytest.fixture(
+    scope="function",
+    params=[
+        ("AssignResources", assign_input_str, const.CMD_ASSIGN_RESOURCES, ObsState.EMPTY,"AssignResources_ended", const.ERR_ASSGN_RESOURCES),
+        ("AssignResources", assign_input_str, const.CMD_ASSIGN_RESOURCES, ObsState.IDLE, "AssignResources_ended",const.ERR_ASSGN_RESOURCES),
+    ])
+
+def command_with_arg(request):
+    cmd_name, input_arg, requested_cmd, obs_state, callback_str, Error_msg = request.param
+    return cmd_name, input_arg, requested_cmd, obs_state, callback_str, Error_msg
+
+
+def test_command_with_callback_method_with_arg(mock_sdp_subarray_proxy, event_subscription_mock, command_with_arg):
+    device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
+    cmd_name, input_arg, requested_cmd, obs_state, _, _ = command_with_arg
+    
+    # tango_client_obj.set_attribute("obsState", obs_state)
+
+    device_proxy.command_inout(cmd_name, input_arg)
+    dummy_event = command_callback(requested_cmd)
+    event_subscription_mock[requested_cmd](dummy_event)
+    assert const.STR_COMMAND + requested_cmd in device_proxy.activityMessage
+
 ###########################################################################################################
 
 # @pytest.fixture(scope="function")
