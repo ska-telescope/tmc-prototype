@@ -15,24 +15,20 @@ It also acts as a SDP contact point for Subarray Node for observation execution.
 # PROTECTED REGION ID(sdpsubarrayleafnode.additionnal_import) ENABLED START #
 # Third party imports
 # PyTango imports
-import tango
-from tango import DeviceProxy, DebugIt, DevState, AttrWriteType, DevFailed
+from tango import DebugIt, AttrWriteType
 from tango.server import run, command, device_property, attribute
 
 # Additional imports
 from ska.base import SKABaseDevice
-from ska.base.control_model import HealthState, ObsState
-from ska.base.commands import ResultCode, BaseCommand
+from ska.base.control_model import HealthState
+from ska.base.commands import ResultCode
 from .transaction_id import identify_with_id
-from . import const, release, on_command, off_command
-from sdpsubarrayleafnode import device_data
-from .exceptions import InvalidObsStateError
+from . import const, release, on_command, off_command, assign_resources_command, release_resources_command, configure_command, abort_command, restart_command, obsreset_command, scan_command, end_command, endscan_command
 from .device_data import DeviceData
-from tmc.common.tango_client import TangoClient
 
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
 
-__all__ = ["SdpSubarrayLeafNode", "main", "assign_resources_command","const", "device_data"
+__all__ = ["SdpSubarrayLeafNode", "main", "assign_resources_command", "const", 
            "release", "release_resources_command", "on_command", "off_command", "configure_command",
            "abort_command", "restart_command", "obsreset_command", "scan_command", "end_command",
            "endscan_command"]
