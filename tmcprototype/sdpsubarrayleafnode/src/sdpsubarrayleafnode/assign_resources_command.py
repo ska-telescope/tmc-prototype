@@ -12,6 +12,7 @@ from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode, BaseCommand
 from . import const
 from sdpsubarrayleafnode.device_data import DeviceData
+from .transaction_id import identify_with_id
 from tmc.common.tango_client import TangoClient
 
 
