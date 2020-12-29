@@ -24,7 +24,7 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
     """
     A class for SubarrayNode's AssignResources() command.
     """
-    # @identify_with_id('assign','argin')
+    @identify_with_id('assign','argin')
     def do(self, argin):
         """
         Assigns resources to the subarray. It accepts receptor id list as well as SDP resources string
@@ -71,9 +71,6 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
                 DevFailed if the command execution is not successful
 
         """
-
-        # exception_count = 0
-        # exception_message = []
         device_data = DeviceData.get_instance()
         argout = []
         device_data.is_end_command = False
@@ -158,7 +155,6 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
                 self.logger.debug(log_msg)
 
                 csp_allocation_result.sort()
-                # assert csp_allocation_result == receptor_list
                 self.logger.info("Assign Resources on CSPSubarray successful")
             except DevFailed as df:
                 # The exception is already logged so not logged again.
