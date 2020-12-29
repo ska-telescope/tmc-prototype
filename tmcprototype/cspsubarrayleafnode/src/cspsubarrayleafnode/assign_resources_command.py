@@ -11,7 +11,6 @@ from tango import DevState, DevFailed
 from ska.base.commands import BaseCommand
 from . import const
 from .transaction_id import identify_with_id
-from cspsubarrayleafnode.device_data import DeviceData
 
 
 class AssignResourcesCommand(BaseCommand):
@@ -61,17 +60,17 @@ class AssignResourcesCommand(BaseCommand):
         in current device state
 
         """
-        device = self.target
+        device_data = self.target
         self.logger.info("Executing callback add_receptors_ended")
         try:
             if event.err:
-                device._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
+                device_data._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
                     event.errors)
                 log = const.ERR_INVOKING_CMD + event.cmd_name
                 self.logger.error(log)
             else:
                 log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-                device._read_activity_message = log
+                device_data._read_activity_message = log
                 self.logger.info(log)
 
         except tango.DevFailed as df:
@@ -113,8 +112,7 @@ class AssignResourcesCommand(BaseCommand):
                     KeyError if input argument json string contains invalid key
                     DevFailed if the command execution is not successful
         """
-        device = self.target
-        device_data = DeviceData.get_instance()
+        device_data = self.target
         receptorIDList = []
         try:
             # Parse receptorIDList from JSON string.
@@ -135,12 +133,12 @@ class AssignResourcesCommand(BaseCommand):
             #                                             self.add_receptors_ended)
 
             self.logger.info("After invoking AddReceptors on CSP subarray")
-            device._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
+            device_data._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
             self.logger.info(const.STR_ADD_RECEPTORS_SUCCESS)
 
         except ValueError as value_error:
             log_msg = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
-            device._read_activity_message = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
+            device_data._read_activity_message = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
             self.logger.exception(value_error)
             tango.Except.throw_exception(const.ERR_INVALID_JSON_ASSIGN_RES, log_msg,
                                             "CspSubarrayLeafNode.AssignResourcesCommand",
@@ -148,7 +146,7 @@ class AssignResourcesCommand(BaseCommand):
 
         except KeyError as key_error:
             log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            device._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            device_data._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             self.logger.exception(key_error)
             tango.Except.throw_exception(const.STR_ASSIGN_RES_EXEC, log_msg,
                                             "CspSubarrayLeafNode.AssignResourcesCommand",
@@ -156,7 +154,7 @@ class AssignResourcesCommand(BaseCommand):
 
         except DevFailed as dev_failed:
             log_msg = const.ERR_ASSGN_RESOURCES + str(dev_failed)
-            device._read_activity_message = log_msg
+            device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(const.STR_ASSIGN_RES_EXEC, log_msg,
                                             "CspSubarrayLeafNode.AssignResourcesCommand",

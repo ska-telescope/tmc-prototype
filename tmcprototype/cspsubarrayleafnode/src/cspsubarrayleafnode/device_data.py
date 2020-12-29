@@ -27,6 +27,7 @@ class DeviceData():
             DeviceData.__instance = self
 
         self.receptorIDList_str = []
+        self._read_activity_message = ""
 
     @staticmethod
     def get_instance():

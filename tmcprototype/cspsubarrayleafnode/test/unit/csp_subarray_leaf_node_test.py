@@ -475,7 +475,7 @@ def test_health_state():
 
 def test_read_activity_message():
     with fake_tango_system(CspSubarrayLeafNode) as tango_context:
-        assert tango_context.device.activityMessage == " "
+        assert tango_context.device.activityMessage == const.STR_CSPSALN_INIT_SUCCESS
 
 
 def test_write_activity_message():

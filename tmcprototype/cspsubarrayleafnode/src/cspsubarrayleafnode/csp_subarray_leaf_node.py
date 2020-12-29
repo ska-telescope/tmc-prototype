@@ -305,7 +305,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
             super().do()
             device = self.target
             device_data = DeviceData.get_instance()
+            device.device_data = device_data
             device_data.csp_subarray_fqdn = device.CspSubarrayFQDN
+
+            
 
             try:
                 # create CspSubarray Proxy
@@ -316,7 +319,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 return (ResultCode.FAILED, log_msg)
             device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
             device._version_id = release.version
-            device._read_activity_message = " "
             device._delay_model = " "
             device._versioninfo = " "
             device.receptorIDList_str = []
@@ -342,6 +344,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device.delay_model_calculator_thread.start()
             device.set_status(const.STR_CSPSALN_INIT_SUCCESS)
             device._csp_subarray_health_state = HealthState.OK
+            device_data._read_activity_message = const.STR_CSPSALN_INIT_SUCCESS
             self.logger.info(const.STR_CSPSALN_INIT_SUCCESS)
             return (ResultCode.OK, const.STR_CSPSALN_INIT_SUCCESS)
 
@@ -384,13 +387,13 @@ class CspSubarrayLeafNode(SKABaseDevice):
     def read_activityMessage(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.activityMessage_read) ENABLED START #
         '''Internal construct of TANGO. Returns activity message.'''
-        return self._read_activity_message
+        return self.device_data._read_activity_message
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.activityMessage_read
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(CspSubarrayLeafNode.activityMessage_write) ENABLED START #
         '''Internal construct of TANGO. Sets the activity message.'''
-        self._read_activity_message = value
+        self.device_data._read_activity_message = value
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.activityMessage_write
 
     # --------
@@ -566,7 +569,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             self.logger.info("CSP Subarray is in required obsState, resources will be assigned")
         else:
             self.logger.error("CSP Subarray is not in EMPTY/IDLE obsState")
-            self._read_activity_message = "Error in device obsState"
+            self.device_data._read_activity_message = "Error in device obsState"
             raise InvalidObsStateError("CSP Subarray is not in EMPTY/IDLE obsState")
 
     
@@ -648,8 +651,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
         device.
         """
         super().init_command_objects()
+        device_data = DeviceData.get_instance()
         args = (self, self.state_model, self.logger)
-        self.register_command_object("AssignResources", assign_resources_command.AssignResourcesCommand(*args))
+        assign_args = (device_data, self.state_model, self.logger)
+        self.register_command_object("AssignResources", assign_resources_command.AssignResourcesCommand(*assign_args))
         self.register_command_object("ReleaseAllResources", release_all_resources_command.ReleaseAllResourcesCommand(*args))
         self.register_command_object("Configure", configure_command.ConfigureCommand(*args))
         self.register_command_object("StartScan", scan_command.StartScanCommand(*args))
