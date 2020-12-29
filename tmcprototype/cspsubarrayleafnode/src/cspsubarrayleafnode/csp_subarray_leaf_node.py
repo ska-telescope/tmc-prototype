@@ -35,6 +35,7 @@ from ska.base.control_model import HealthState, ObsState
 from . import const, release, assign_resources_command, release_all_resources_command, configure_command,\
     scan_command, end_scan_command, end_command, abort_command, restart_command, obsreset_command
 from .exceptions import InvalidObsStateError
+from .device_data import DeviceData
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additional_import
 
 __all__ = ["CspSubarrayLeafNode", "main", "assign_resources_command", "release_all_resources_command",
@@ -300,6 +301,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             super().do()
             device = self.target
+            device_data = DeviceData.get_instance()
+            device_data.csp_subarray_fqdn = device.CspSubarrayFQDN
+            
             try:
                 # create CspSubarray Proxy
                 device._csp_subarray_proxy = DeviceProxy(device.CspSubarrayFQDN)

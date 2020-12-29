@@ -1,15 +1,17 @@
 import json
 
 # Third Party imports
+from tmc.common.tango_client import TangoClient
+
 # PyTango imports
 import tango
 from tango import DevState, DevFailed
 
 # Additional import
-# Additional import
 from ska.base.commands import BaseCommand
 from . import const
 from .transaction_id import identify_with_id
+from cspsubarrayleafnode.device_data import DeviceData
 
 
 class AssignResourcesCommand(BaseCommand):
@@ -112,21 +114,25 @@ class AssignResourcesCommand(BaseCommand):
                     DevFailed if the command execution is not successful
         """
         device = self.target
+        device_data = DeviceData.get_instance()
         receptorIDList = []
         try:
             # Parse receptorIDList from JSON string.
             json_argument = json.loads(argin)
-            device.receptorIDList_str = json_argument[const.STR_DISH][const.STR_RECEPTORID_LIST]
+            device_data.receptorIDList_str = json_argument[const.STR_DISH][const.STR_RECEPTORID_LIST]
             # convert receptorIDList from list of string to list of int
-            for receptor in device.receptorIDList_str:
+            for receptor in device_data.receptorIDList_str:
                 receptorIDList.append(int(receptor))
             self.logger.info("receptorIDList: %s", str(receptorIDList))
-            device.update_config_params()
+            # TODO: How to call this ?
+            # device.update_config_params()
             # Invoke AddReceptors command on CspSubarray
             self.logger.info("Invoking AddReceptors on CSP subarray")
+            csp_sub_client_obj = TangoClient(device_data.csp_subarray_fqdn)
+            csp_sub_client_obj.send_command_async(const.CMD_ADD_RECEPTORS, receptorIDList, self.add_receptors_ended)
 
-            device._csp_subarray_proxy.command_inout_asynch(const.CMD_ADD_RECEPTORS, receptorIDList,
-                                                        self.add_receptors_ended)
+            # device._csp_subarray_proxy.command_inout_asynch(const.CMD_ADD_RECEPTORS, receptorIDList,
+            #                                             self.add_receptors_ended)
 
             self.logger.info("After invoking AddReceptors on CSP subarray")
             device._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
