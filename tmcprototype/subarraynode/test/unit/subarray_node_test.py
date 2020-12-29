@@ -467,28 +467,29 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
     # verify_called_correctly(tango_client_obj.deviceproxy,const.CMD_ASSIGN_RESOURCES,json.dumps(json_argument))
     assert device_proxy.obsState == ObsState.RESOURCING
 
-'''
 
-def test_assign_resource_is_completed_when_csp_and_sdp_is_idle(mock_lower_devices):
+
+def test_assign_resource_is_completed_when_csp_and_sdp_is_idle(mock_lower_devices,mock_device_proxy):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
+    device_proxy, tango_client_obj = mock_device_proxy
     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
     sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
 
-    tango_context.device.On()
-    tango_context.device.AssignResources(assign_input_str)
+    device_proxy.On()
+    device_proxy.AssignResources(assign_input_str)
         # Mock the behaviour of Csp and SDP subarray's ObsState
     attribute = 'ObsState'
-    dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+    dummy_event_csp = create_dummy_event_state(tango_client_obj.deviceproxy, csp_subarray1_ln_fqdn,
                                                    attribute, ObsState.IDLE)
 
     event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
 
-    dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+    dummy_event_sdp = create_dummy_event_state(tango_client_obj.deviceproxy, sdp_subarray1_ln_fqdn,
                                                attribute, ObsState.IDLE)
     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
     assert tango_context.device.obsState == ObsState.IDLE
 
-
+'''
 def test_assign_resource_should_raise_exception_when_called_when_device_state_off():
     with fake_tango_system(SubarrayNode) as tango_context:
         with pytest.raises(tango.DevFailed) as df:
@@ -1933,7 +1934,7 @@ def create_dummy_event_healthstate_with_error(proxy_mock, device_fqdn, health_st
     fake_event.attr_value.value = health_state_value
     fake_event.device= proxy_mock
     return fake_event
-
+'''
 
 def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):
     fake_event = Mock()
@@ -1998,7 +1999,7 @@ def command_callback_with_devfailed_exception():
                                  "From function test devfailed", tango.ErrSeverity.ERR)
     return fake_event
 
-'''
+
 @contextlib.contextmanager
 def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={}, group_to_mock={},
                     device_proxy_import_path='tango.DeviceProxy',device_group_import_path='tango.Group'):
