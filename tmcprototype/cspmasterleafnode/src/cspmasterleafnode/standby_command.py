@@ -7,8 +7,8 @@ from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode, BaseCommand
 from ska.base.control_model import HealthState, SimulationMode, TestMode
-from . import const, release, tango_client, device_data
-from .tango_client import TangoClient
+from . import const, release, device_data
+from tmc.common.tango_client import TangoClient
 
 class StandbyCommand(BaseCommand):
     """
@@ -84,7 +84,7 @@ class StandbyCommand(BaseCommand):
 
         try:
             csp_mln_client_obj = TangoClient(device_data.csp_master_ln_fqdn)
-            csp_mln_client_obj.send_command_async(const.CMD_STANDBY, self.standby_cmd_ended_cb, argin)
+            csp_mln_client_obj.send_command_async(const.CMD_STANDBY, argin, self.standby_cmd_ended_cb)
             self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
 
         except DevFailed as dev_failed:

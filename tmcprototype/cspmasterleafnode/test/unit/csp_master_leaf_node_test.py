@@ -15,12 +15,13 @@ from tango.test_context import DeviceTestContext
 
 # Additional import
 from cspmasterleafnode import CspMasterLeafNode, const, release
-from cspmasterleafnode.tango_client import TangoClient
 from cspmasterleafnode.device_data import DeviceData
 
 from ska.base.control_model import HealthState
 from ska.base.control_model import LoggingLevel
 from ska.base.commands import ResultCode
+from tmc.common.tango_client import TangoClient
+
 
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
 
@@ -32,7 +33,7 @@ def mock_csp_master_proxy():
         lambda attr_name, event_type, callback, *args,
                **kwargs: event_subscription_map.update({attr_name: callback}))
     with fake_tango_system(CspMasterLeafNode, initial_dut_properties=dut_properties) as tango_context:
-        with mock.patch.object(TangoClient, 'get_deviceproxy', return_value=Mock()) as mock_obj:
+        with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
             tango_client_obj = TangoClient(dut_properties['CspMasterFQDN'])
             yield tango_context.device, tango_client_obj, dut_properties['CspMasterFQDN'], event_subscription_map
 
@@ -190,7 +191,7 @@ def health_state(request):
 
 def test_activity_message_attribute_reports_correct_csp_health_state_callbacks(mock_csp_master_proxy, health_state):
     device_proxy, tango_client_obj, csp_master_fqdn, event_subscription_map = mock_csp_master_proxy
-    with mock.patch.object(TangoClient, 'get_deviceproxy', return_value=Mock()) as mock_obj:
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
         with mock.patch.object(TangoClient, "subscribe_attribute", side_effect = dummy_subscriber):
             tango_client_obj = TangoClient("mid_csp/elt/master")
             device_proxy.On()
@@ -210,7 +211,7 @@ def test_activity_message_attribute_reports_correct_csp_health_state_callbacks(m
 # )
 def test_activity_message_reports_correct_health_state_when_attribute_event_has_error(mock_csp_master_proxy):
     device_proxy, tango_client_obj, csp_master_fqdn, event_subscription_map = mock_csp_master_proxy
-    with mock.patch.object(TangoClient, 'get_deviceproxy', return_value=Mock()) as mock_obj:
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
         with mock.patch.object(TangoClient, "subscribe_attribute", side_effect = dummy_subscriber_with_error):
             tango_client_obj = TangoClient("mid_csp/elt/master")
             device_proxy.On()
