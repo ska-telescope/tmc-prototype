@@ -3,16 +3,12 @@ Abort class for SDPSubarrayLeafNode.
 """
 # PROTECTED REGION ID(sdpsubarrayleafnode.additionnal_import) ENABLED START #
 # Standard Python imports
-import json
-import ast
 import tango
 from tango import DevState, DevFailed
 # Additional import
-from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode, BaseCommand
+from ska.base.commands import BaseCommand
+from ska.base.control_model import ObsState
 from . import const
-from sdpsubarrayleafnode.device_data import DeviceData
-from tmc.common.tango_client import TangoClient
 
 
 class Abort(BaseCommand):
