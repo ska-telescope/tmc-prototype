@@ -33,7 +33,7 @@ from centralnode.obs_state_check import ObsStateAggregator
 
 __all__ = ["CentralNode", "main", "assign_resources_command","check_receptor_reassignment", "const", "device_data",
            "exceptions", "health_state_aggreegator", "input_validator", "release", "release_resources_command",
-           "stand_by_telescope_command", "start_up_telescope_command", "stow_antennas_command", "ObsStateAggregator",
+           "stand_by_telescope_command", "start_up_telescope_command", "stow_antennas_command", "obs_state_check",
            "resource_manager"]
 
 
@@ -209,19 +209,19 @@ class CentralNode(SKABaseDevice):
     def read_subarray1HealthState(self):
         # PROTECTED REGION ID(CentralNode.subarray1_healthstate_read) ENABLED START #
         """ Internal construct of TANGO. Returns Subarray1 health state. """
-        return device.device_data._subarray1_health_state
+        return self.device_data._subarray1_health_state
         # PROTECTED REGION END #    //  CentralNode.subarray1_healthstate_read
 
     def read_subarray2HealthState(self):
         # PROTECTED REGION ID(CentralNode.subarray2_healthstate_read) ENABLED START #
         """ Internal construct of TANGO. Returns Subarray2 health state. """
-        return device.device_data._subarray2_health_state
+        return self.device_data._subarray2_health_state
         # PROTECTED REGION END #    //  CentralNode.subarray2_healthstate_read
 
     def read_subarray3HealthState(self):
         # PROTECTED REGION ID(CentralNode.subarray3HealthState_read) ENABLED START #
         """ Internal construct of TANGO. Returns Subarray3 health state. """
-        return device.device_data._subarray3_health_state
+        return self.device_data._subarray3_health_state
         # PROTECTED REGION END #    //  CentralNode.subarray3HealthState_read
 
     def read_activityMessage(self):
@@ -394,8 +394,7 @@ class CentralNode(SKABaseDevice):
         Initialises the command handlers for commands supported by this device.
         """
         super().init_command_objects()
-        device_data = DeviceData.get_instance()
-        args = (device_data, self.state_model, self.logger)
+        args = (self.device_data, self.state_model, self.logger)
         self.startup_object = start_up_telescope_command.StartUpTelescope(*args)
         self.standby_object = stand_by_telescope_command.StandByTelescope(*args)
         self.assign_object  = assign_resources_command.AssignResources(*args)

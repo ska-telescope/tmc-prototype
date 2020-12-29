@@ -53,7 +53,6 @@ class StowAntennas(BaseCommand):
         try:
             for leafId in range(0, len(argin)):
                 input_type_check = float(argin[leafId])
-
             log_msg = const.STR_STOW_CMD_ISSUED_CN
             self.logger.info(log_msg)
             device_data._read_activity_message = log_msg
