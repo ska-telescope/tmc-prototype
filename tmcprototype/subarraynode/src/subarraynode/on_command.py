@@ -15,6 +15,7 @@ from ska.base.control_model import HealthState
 from subarraynode.tango_group_client import TangoGroupClient
 from subarraynode.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
+from subarraynode.health_state_aggregator import HealthStateAggregator
 
 
 class OnCommand(SKASubarray.OnCommand):
@@ -39,7 +40,8 @@ class OnCommand(SKASubarray.OnCommand):
         device_data.is_release_resources = False
         device_data.is_abort_command = False
         device_data.is_obsreset_command = False
-        # device_data.health_state_aggr.subscribe()
+        device_data.health_state_aggr = HealthStateAggregator(self.logger)
+        device_data.health_state_aggr.subscribe()
         # device_data.obs_state_aggr.subscribe()
         self.set_csp_client(device_data)
         self.set_sdp_client(device_data)
