@@ -11,6 +11,7 @@ from ska.base.control_model import ObsState
 from . import const
 from .exceptions import InvalidObsStateError
 from .transaction_id import identify_with_id
+from tmc.common.tango_client import TangoClient
 
 
 class AssignResources(BaseCommand):
@@ -29,7 +30,7 @@ class AssignResources(BaseCommand):
         :raises: Exception if command execution throws any type of exception.
 
         """
-        device = self.target
+        #device_data = self.target
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
             tango.Except.throw_exception("AssignResources() is not allowed in current state",
                                     "Failed to invoke AssignResources command on SdpSubarrayLeafNode.",
@@ -49,10 +50,10 @@ class AssignResources(BaseCommand):
 
         :return: None
         """
-        device = self.target
+        device_data = self.target
         if event.err:
             log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-            device._read_activity_message = log
+            device_data._read_activity_message = log
             self.logger.error(log)
             tango.Except.throw_exception(
                 "SDP Subarray returned error while assigning resources",
@@ -62,19 +63,10 @@ class AssignResources(BaseCommand):
             )
         else:
             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            device._read_activity_message = log
+            device_data._read_activity_message = log
             self.logger.debug(log)
 
     
-    def validate_obs_state(self):
-        sdp_subarray_obs_state = self._sdp_subarray_proxy.obsState
-        if sdp_subarray_obs_state in [ObsState.EMPTY, ObsState.IDLE]:
-            self.logger.info("SDP subarray is in required obstate,Hence resources to SDP can be assign.")
-        else:
-            self.logger.error("Subarray is not in EMPTY obstate")
-            self._read_activity_message = "Error in device obstate."
-            raise InvalidObsStateError("SDP subarray is not in EMPTY obstate.")
-
     @identify_with_id('assign','argin')
     def do(self, argin):
         """
@@ -130,14 +122,16 @@ class AssignResources(BaseCommand):
                     DevFailed if the command execution is not successful.
         """
 
-        device = self.target
+        device_data = self.target
         try:
-            device.validate_obs_state()
+            #device.validate_obs_state()
             # Call SDP Subarray Command asynchronously
-            device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ASSIGN_RESOURCES, argin,
-                                                            self.AssignResources_ended)
+            sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
+            sdp_sa_ln_client_obj.send_command_async(const.CMD_ASSIGN_RESOURCES, argin, self.AssignResources_ended)
+            # device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ASSIGN_RESOURCES, argin,
+            #                                                 self.AssignResources_ended)
             # Update the status of command execution status in activity message
-            device._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
+            device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
 
         except InvalidObsStateError as error:
@@ -148,14 +142,14 @@ class AssignResources(BaseCommand):
         except ValueError as value_error:
             log_msg = const.ERR_INVALID_JSON + str(value_error)
             self.logger.exception(log_msg)
-            device._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
+            device_data._read_activity_message = const.ERR_INVALID_JSON + str(value_error)
             tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
                                             const.ERR_INVALID_JSON, tango.ErrSeverity.ERR)
 
         except DevFailed as dev_failed:
             log_msg = const.ERR_ASSGN_RESOURCES + str(dev_failed)
-            device._read_activity_message = log_msg
+            device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(const.STR_ASSIGN_RES_EXEC, log_msg,
-                                            "SdpSubarrayLeafNode.AssignResourcesCommand()",
+                                            "SdpSubarrayLeafNode.AssignResources()",
                                             tango.ErrSeverity.ERR)
