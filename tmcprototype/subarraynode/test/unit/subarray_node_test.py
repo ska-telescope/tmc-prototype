@@ -492,24 +492,31 @@ def test_assign_resource_is_completed_when_csp_and_sdp_is_idle(mock_device_proxy
     event_subscription_map = {}
     # dish_pointing_state_map = {}
 
-    tango_client_obj.deviceproxy.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
-            update({attr_name: callback}))
-
-    tango_client_obj.deviceproxy.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
-            update({attr_name: callback}))
+    # tango_client_obj.deviceproxy.subscribe_event.side_effect = (
+    #     lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+    #         update({attr_name: callback}))
+    #
+    # tango_client_obj.deviceproxy.subscribe_event.side_effect = (
+    #     lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+    #         update({attr_name: callback}))
 
     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
     sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
 
-    device_proxy.On()
-    device_proxy.AssignResources(assign_input_str)
+    # device_proxy.On()
+    # device_proxy.AssignResources(assign_input_str)
         # Mock the behaviour of Csp and SDP subarray's ObsState
     attribute = 'ObsState'
     with mock.patch.object(TangoClient, "get_deviceproxy", return_value = Mock()):
         with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber):
             tango_client_obj = TangoClient('ska_mid/tm_leaf_node/csp_subarray01')
+            device_proxy.On()
+            device_proxy.AssignResources(assign_input_str)
+    with mock.patch.object(TangoClient, "get_deviceproxy", return_value=Mock()):
+        with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_for_sdp):
+            tango_client_obj = TangoClient('ska_mid/tm_leaf_node/sdp_subarray01')
+            device_proxy.On()
+            device_proxy.AssignResources(assign_input_str)
     # with mock.patch.object(TangoClient, "get_deviceproxy", return_value=Mock()):
     #     with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_sdp):
     #         tango_client_obj = TangoClient('ska_mid/tm_leaf_node/csp_master')
@@ -537,6 +544,16 @@ def dummy_subscriber(attribute, callback_method):
     fake_event.attr_name = f"ska_mid/tm_leaf_node/csp_subarray01/{attribute}"
     fake_event.attr_value.value =  ObsState.IDLE
     print("Inside dummy subscriber :::::::::::::::::::::::::::::::::::::::::::::::::::")
+    print( fake_event.attr_value.value )
+    callback_method(fake_event)
+    return 10
+
+def dummy_subscriber_for_sdp(attribute, callback_method):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"ska_mid/tm_leaf_node/sdp_subarray01/{attribute}"
+    fake_event.attr_value.value =  ObsState.IDLE
+    print("Inside dummy subscriber for SDP:::::::::::::::::::::::::::::::::::::::::::::::::::")
     print( fake_event.attr_value.value )
     callback_method(fake_event)
     return 10

@@ -55,8 +55,7 @@ class DeviceData:
         self._dish_leaf_node_group = []
         self._dish_leaf_node_group_client = TangoGroupClient(const.GRP_DISH_LEAF_NODE)
         self.health_state_aggr = None
-        from subarraynode.obs_state_aggregator import ObsStateAggregator
-        self.obs_state_aggr = ObsStateAggregator()
+        self.obs_state_aggr = None
         self.dish_leaf_node_prefix = 0
         self._dish_leaf_node_proxy = ""
         self.csp_sa_obs_state = None
