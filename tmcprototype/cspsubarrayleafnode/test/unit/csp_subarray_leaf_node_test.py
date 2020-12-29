@@ -18,6 +18,9 @@ from tango.test_context import DeviceTestContext
 from cspsubarrayleafnode import CspSubarrayLeafNode, const, release
 from ska.base.control_model import HealthState, ObsState, LoggingLevel
 
+from tmc.common.tango_client import TangoClient
+
+
 assign_input_file = 'command_AssignResources.json'
 path = join(dirname(__file__), 'data', assign_input_file)
 with open(path, 'r') as f:
