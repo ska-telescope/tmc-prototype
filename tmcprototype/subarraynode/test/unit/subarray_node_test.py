@@ -460,19 +460,19 @@ def test_assign_resource_should_command_dish_csp_sdp_subarray1_to_assign_valid_r
     assert device_proxy.AssignResources(assign_input_str) == [[ResultCode.STARTED], ["['0001']"]]
     str_json_arg = json.dumps(assign_input_dict.get("sdp"))
     verify_called_correctly(tango_client_obj.deviceproxy,const.CMD_ASSIGN_RESOURCES,str_json_arg)
-    arg_list = []
-    json_argument = {}
-    dish = {}
-    receptor_list = assign_input_dict["dish"]["receptorIDList"]
-    dish[const.STR_KEY_RECEPTOR_ID_LIST] = receptor_list
-    json_argument[const.STR_KEY_DISH] = dish
-    arg_list.append(json.dumps(json_argument))
+    # arg_list = []
+    # json_argument = {}
+    # dish = {}
+    # receptor_list = assign_input_dict["dish"]["receptorIDList"]
+    # dish[const.STR_KEY_RECEPTOR_ID_LIST] = receptor_list
+    # json_argument[const.STR_KEY_DISH] = dish
+    # arg_list.append(json.dumps(json_argument))
     #TODO: Not able to mock the second device, enable one device at a time
     # verify_called_correctly(tango_client_obj.deviceproxy,const.CMD_ASSIGN_RESOURCES,json.dumps(json_argument))
     assert device_proxy.obsState == ObsState.RESOURCING
 
 
-
+'''
 def test_assign_resource_is_completed_when_csp_and_sdp_is_idle(mock_device_proxy, health_state):
     # tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
     device_proxy, tango_client_obj = mock_device_proxy
@@ -576,8 +576,8 @@ def dummy_subscriber_sdp(attribute, callback_method):
 
     callback_method(fake_event)
     return 10
-
 '''
+
 def test_assign_resource_should_raise_exception_when_called_when_device_state_off():
     with fake_tango_system(SubarrayNode) as tango_context:
         with pytest.raises(tango.DevFailed) as df:
@@ -587,44 +587,46 @@ def test_assign_resource_should_raise_exception_when_called_when_device_state_of
         assert "Error executing command AssignResourcesCommand" in str(df.value)
 
 
-def test_assign_resource_should_raise_exception_when_called_with_invalid_input(mock_lower_devices):
-    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock = mock_lower_devices[:3]
-    tango_context.device.On()
+def test_assign_resource_should_raise_exception_when_called_with_invalid_input(mock_device_proxy):
+    # tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock = mock_lower_devices[:3]
+    device_proxy, tango_client_obj = mock_device_proxy
+    device_proxy.On()
     with pytest.raises(tango.DevFailed) as df:
-        tango_context.device.AssignResources(assign_invalid_key)
-    assert tango_context.device.State() == DevState.ON
-    assert tango_context.device.obsState == ObsState.FAULT
+        device_proxy.AssignResources(assign_invalid_key)
+    assert device_proxy.State() == DevState.ON
+    assert device_proxy.obsState == ObsState.FAULT
     assert "Invalid JSON format" in str(df.value)
 
 
-def test_assign_resource_should_raise_exception_when_csp_subarray_ln_throws_devfailed_exception(mock_lower_devices):
+def test_assign_resource_should_raise_exception_when_csp_subarray_ln_throws_devfailed_exception(mock_device_proxy):
     # # Generate dummy devFailed exception raised by Csp Subarray Leaf Node
-    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
-    tango_context.device.On()
-    csp_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
+    # tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
+    device_proxy, tango_client_obj = mock_device_proxy
+    device_proxy.On()
+    tango_client_obj.deviceproxy.command_inout.side_effect = raise_devfailed_exception
 
     with pytest.raises(tango.DevFailed) as df:
-        tango_context.device.AssignResources(assign_input_str)
-    assert tango_context.device.State() == DevState.ON
-    assert tango_context.device.obsState == ObsState.FAULT
+        device_proxy.AssignResources(assign_input_str)
+    assert device_proxy.State() == DevState.ON
+    assert device_proxy.obsState == ObsState.FAULT
     assert "This is error message for devfailed" in str(df.value)
 
 
-def test_assign_resource_should_raise_exception_when_sdp_subarray_ln_throws_devfailed_exception(mock_lower_devices):
-    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
-    sdp_subarray1_proxy_mock.subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
-            update({attr_name: callback}))
-    tango_context.device.On()
-    sdp_subarray1_ln_proxy_mock.command_inout.side_effect = raise_devfailed_exception
+def test_assign_resource_should_raise_exception_when_sdp_subarray_ln_throws_devfailed_exception(mock_device_proxy):
+    # tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
+    device_proxy, tango_client_obj = mock_device_proxy
+
+    device_proxy.On()
+    tango_client_obj.deviceproxy.command_inout.side_effect = raise_devfailed_exception
 
     with pytest.raises(tango.DevFailed) as df:
-        tango_context.device.AssignResources(assign_input_str)
-    assert tango_context.device.State() == DevState.ON
-    assert tango_context.device.obsState == ObsState.FAULT
+        device_proxy.AssignResources(assign_input_str)
+    assert device_proxy.State() == DevState.ON
+    assert device_proxy.obsState == ObsState.FAULT
     assert "This is error message for devfailed" in str(df.value)
 
 
+'''
 def test_release_resource_command_subarray(mock_lower_devices):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
