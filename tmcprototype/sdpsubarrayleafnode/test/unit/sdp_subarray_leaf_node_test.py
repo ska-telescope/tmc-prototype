@@ -141,6 +141,8 @@ def test_off_command_should_raise_dev_failed(mock_sdp_subarray_proxy):
 @pytest.fixture(
     scope="function",
     params=[
+        ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.READY,"configure_cmd_ended_cb", const.ERR_CONFIGURE),
+        ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.IDLE,"configure_cmd_ended_cb", const.ERR_CONFIGURE),
         ("AssignResources", assign_input_str, const.CMD_ASSIGN_RESOURCES, ObsState.EMPTY,"AssignResources_ended", const.ERR_ASSGN_RESOURCES),
         ("AssignResources", assign_input_str, const.CMD_ASSIGN_RESOURCES, ObsState.IDLE, "AssignResources_ended",const.ERR_ASSGN_RESOURCES),
         ("Scan", scan_input_str, const.CMD_SCAN, ObsState.READY,"scan_cmd_ended_cb", const.ERR_SCAN),
@@ -199,6 +201,7 @@ def test_command_with_arg_should_raise_devfailed_exception(mock_sdp_subarray_pro
 @pytest.fixture(
     scope="function",
     params=[
+        ("EndScan", const.CMD_ENDSCAN, ObsState.SCANNING, "endscan_cmd_ended_cb", const.ERR_ENDSCAN_INVOKING_CMD),
         ("ReleaseAllResources", const.CMD_RELEASE_RESOURCES, ObsState.IDLE,"releaseallresources_cmd_ended_cb", const.ERR_RELEASE_RESOURCES)
     ])
 
@@ -239,6 +242,16 @@ def test_command_for_allowed_Obstate_without_arg(mock_sdp_subarray_proxy, comman
 #     tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(requested_cmd, 
 #                                                                          any_method(with_name=callback_str))
 
+####For EndScan command #######
+def test_command_for_allowed_Obstate_without_arg(mock_sdp_subarray_proxy, command_without_arg):
+    device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
+    cmd_name, requested_cmd, obs_state, callback_str, _ = command_without_arg    
+
+#     tango_client_obj.set_attribute("obsState", obs_state)
+
+    device_proxy.command_inout(cmd_name)
+    assert const.STR_ENDSCAN_SUCCESS in device_proxy.activityMessage
+
 def test_release_command_with_callback_method_with_devfailed_error(mock_sdp_subarray_proxy, event_subscription_mock):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     device_proxy.On()
@@ -247,7 +260,6 @@ def test_release_command_with_callback_method_with_devfailed_error(mock_sdp_suba
         dummy_event = command_callback_with_devfailed_exception()
         event_subscription_mock[const.CMD_RELEASE_RESOURCES](dummy_event)
     assert const.ERR_CMD_FAILED in str(df.value)
-
 
 
 def test_command_without_arg_should_raise_devfailed_exception(mock_sdp_subarray_proxy,event_subscription_mock, command_without_arg):
@@ -267,8 +279,8 @@ def test_command_without_arg_should_raise_devfailed_exception(mock_sdp_subarray_
     scope="function",
     params=[
         ("Scan", scan_input_str,  ObsState.IDLE),
-        # ("Configure", configure_str, ObsState.SCANNING),
-        # ("Configure", configure_str, ObsState.EMPTY),
+        ("Configure", configure_str, ObsState.SCANNING),
+        ("Configure", configure_str, ObsState.EMPTY),
         ("AssignResources", assign_input_str, ObsState.READY),
     ])
 
