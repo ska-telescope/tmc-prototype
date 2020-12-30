@@ -203,12 +203,12 @@ def test_command_with_arg_should_raise_devfailed_exception(mock_sdp_subarray_pro
     params=[
         ("ReleaseAllResources", const.CMD_RELEASE_RESOURCES, ObsState.IDLE,"releaseallresources_cmd_ended_cb", const.STR_REL_RESOURCES),
         ("End", const.CMD_END, ObsState.READY,"end_cmd_ended_cb",const.STR_END_SUCCESS)
-        ("EndScan", const.CMD_ENDSCAN, ObsState.SCANNING, "endscan_cmd_ended_cb", const.ERR_ENDSCAN_INVOKING_CMD),
-        ("Abort", const.CMD_ABORT, ObsState.SCANNING, "abort_cmd_ended_cb", const.ERR_ABORT_INVOKING_CMD),
-        ("Abort", const.CMD_ABORT, ObsState.CONFIGURING, "abort_cmd_ended_cb", const.ERR_ABORT_INVOKING_CMD),
-        ("Abort", const.CMD_ABORT, ObsState.IDLE, "abort_cmd_ended_cb", const.ERR_ABORT_INVOKING_CMD),
-        ("Abort", const.CMD_ABORT, ObsState.RESETTING, "abort_cmd_ended_cb", const.ERR_ABORT_INVOKING_CMD),
-        ("Abort", const.CMD_ABORT, ObsState.READY, "abort_cmd_ended_cb", const.ERR_ABORT_INVOKING_CMD),
+        ("EndScan", const.CMD_ENDSCAN, ObsState.SCANNING, "endscan_cmd_ended_cb", const.STR_ENDSCAN_SUCCESS),
+        ("Abort", const.CMD_ABORT, ObsState.SCANNING, "abort_cmd_ended_cb", const.STR_ABORT_SUCCESS),
+        ("Abort", const.CMD_ABORT, ObsState.CONFIGURING, "abort_cmd_ended_cb", const.STR_ABORT_SUCCESS),
+        ("Abort", const.CMD_ABORT, ObsState.IDLE, "abort_cmd_ended_cb", const.STR_ABORT_SUCCESS),
+        ("Abort", const.CMD_ABORT, ObsState.RESETTING, "abort_cmd_ended_cb", const.STR_ABORT_SUCCESS),
+        ("Abort", const.CMD_ABORT, ObsState.READY, "abort_cmd_ended_cb", const.STR_ABORT_SUCCESS),
     ])
 
 def command_without_arg(request):
@@ -286,19 +286,26 @@ def command_with_argin_should_not_allowed_in_obstate(request):
 #         device_proxy.command_inout(cmd_name, input_str)
 #     assert "Failed to invoke " + cmd_name in str(df.value)
 
-
+# TODO: Run the test case with latest tmc-common-package package
 # def test_scan_device_not_ready():
 #     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
 #         with pytest.raises(tango.DevFailed) as df:
 #             tango_context.device.Scan(scan_input_str)
 #         assert const.ERR_DEVICE_NOT_READY in str(df.value)
 
-
+# TODO: Run the test case with latest tmc-common-package package
 # def test_end_device_not_ready():
 #     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
 #         with pytest.raises(tango.DevFailed) as df:
 #             tango_context.device.End()
 #         assert const.ERR_DEVICE_NOT_READY in str(df.value)
+
+# TODO: Run the test case with latest tmc-common-package package
+# def test_endscan_invalid_state():
+#     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
+#         with pytest.raises(tango.DevFailed) as df:
+#             tango_context.device.EndScan()
+#         assert const.ERR_DEVICE_NOT_IN_SCAN in str(df.value)
 
 
 @pytest.fixture(
