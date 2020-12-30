@@ -7,8 +7,8 @@ import tango
 from tango import DevState, DevFailed
 # Additional import
 from ska.base.commands import BaseCommand
-from . import const
 from ska.base.control_model import ObsState
+from . import const
 from tmc.common.tango_client import TangoClient
 
 class ReleaseAllResources(BaseCommand):

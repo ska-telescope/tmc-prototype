@@ -199,12 +199,13 @@ def test_command_with_arg_should_raise_devfailed_exception(mock_sdp_subarray_pro
 @pytest.fixture(
     scope="function",
     params=[
-        ("ReleaseAllResources", const.CMD_RELEASE_RESOURCES, ObsState.IDLE,"releaseallresources_cmd_ended_cb", const.ERR_RELEASE_RESOURCES)
+        ("ReleaseAllResources", const.CMD_RELEASE_RESOURCES, ObsState.IDLE,"releaseallresources_cmd_ended_cb", const.STR_REL_RESOURCES),
+        ("End", const.CMD_END, ObsState.READY,"end_cmd_ended_cb",const.STR_END_SUCCESS)
     ])
 
 def command_without_arg(request):
-    cmd_name, requested_cmd, obs_state, callback_str, Error_msg = request.param
-    return cmd_name, requested_cmd, obs_state, callback_str, Error_msg
+    cmd_name, requested_cmd, obs_state, callback_str, cmd_success_msg = request.param
+    return cmd_name, requested_cmd, obs_state, callback_str, cmd_success_msg
 
 def test_command_with_callback_method_without_arg(mock_sdp_subarray_proxy, event_subscription_mock, command_without_arg):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
@@ -230,12 +231,12 @@ def test_command_with_callback_method_without_arg_with_event_error(mock_sdp_suba
 
 def test_command_for_allowed_Obstate_without_arg(mock_sdp_subarray_proxy, command_without_arg):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
-    cmd_name, requested_cmd, obs_state, callback_str, _ = command_without_arg    
+    cmd_name, requested_cmd, obs_state, callback_str, cmd_success_msg = command_without_arg    
 
 #     tango_client_obj.set_attribute("obsState", obs_state)
 
     device_proxy.command_inout(cmd_name)
-    assert const.STR_REL_RESOURCES in device_proxy.activityMessage
+    assert cmd_success_msg in device_proxy.activityMessage
 #     tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(requested_cmd, 
 #                                                                          any_method(with_name=callback_str))
 
@@ -252,7 +253,7 @@ def test_release_command_with_callback_method_with_devfailed_error(mock_sdp_suba
 
 def test_command_without_arg_should_raise_devfailed_exception(mock_sdp_subarray_proxy,event_subscription_mock, command_without_arg):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
-    cmd_name, requested_cmd, obs_state, _, Error_msg = command_without_arg
+    cmd_name, requested_cmd, obs_state, _, _ = command_without_arg
 
     # tango_client_obj.set_attribute("obsState", obs_state)
 
@@ -287,11 +288,19 @@ def command_with_argin_should_not_allowed_in_obstate(request):
 #         device_proxy.command_inout(cmd_name, input_str)
 #     assert "Failed to invoke " + cmd_name in str(df.value)
 
-def test_scan_device_not_ready():
-    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-        with pytest.raises(tango.DevFailed) as df:
-            tango_context.device.Scan(scan_input_str)
-        assert const.ERR_DEVICE_NOT_READY in str(df.value)
+
+# def test_scan_device_not_ready():
+#     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
+#         with pytest.raises(tango.DevFailed) as df:
+#             tango_context.device.Scan(scan_input_str)
+#         assert const.ERR_DEVICE_NOT_READY in str(df.value)
+
+
+# def test_end_device_not_ready():
+#     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
+#         with pytest.raises(tango.DevFailed) as df:
+#             tango_context.device.End()
+#         assert const.ERR_DEVICE_NOT_READY in str(df.value)
 
 ###########################################################################################################
 
@@ -585,12 +594,6 @@ def any_method(with_name=None):
 #     """Test for buildState"""
 #     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
 #         assert tango_context.device.buildState == ('{},{},{}'.format(release.name,release.version,release.description))
-
-# def test_end_device_not_ready():
-#     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-#         with pytest.raises(tango.DevFailed) as df:
-#             tango_context.device.End()
-#         assert const.ERR_DEVICE_NOT_READY in str(df.value)
 
 
 # def test_endscan_invalid_state():

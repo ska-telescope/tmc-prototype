@@ -402,17 +402,13 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         # T0DO: For future use
 
         # self.configure_object = configure_command.Configure(*args)
-        # self.scan_object = scan_command.Scan(*args)
         # self.endscan_object = endscan_command.EndScan(*args)
-        # self.end_object = end_command.End(*args)
         # self.abort_object = abort_command.Abort(*args)
         # self.restart_object = restart_command.Restart(*args)
         # self.obsreset_object = obsreset_command.ObsReset(*args)
         # 
         # self.register_command_object("Configure", self.configure_object)
-        # self.register_command_object("Scan", self.scan_object)
         # self.register_command_object("EndScan", self.endscan_object)
-        # self.register_command_object("End", self.end_object)
         # self.register_command_object("Abort", self.abort_object)
         # self.register_command_object("Restart", self.restart_object)
         # self.register_command_object("ObsReset", self.obsreset_object)
@@ -422,8 +418,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         args = (device_data, self.state_model, self.logger)
         self.assign_object = assign_resources_command.AssignResources(*args)
         self.release_object = release_resources_command.ReleaseAllResources(*args)
+        self.scan_object = scan_command.Scan(*args)
+        self.end_object = end_command.End(*args)
         self.register_command_object("AssignResources", self.assign_object)
         self.register_command_object("ReleaseAllResources", self.release_object)
+        self.register_command_object("Scan", self.scan_object)
+        self.register_command_object("End", self.end_object)
         self.register_command_object("Off", off_command.Off(device_data, self.state_model, self.logger))
         self.register_command_object("On", on_command.On(device_data, self.state_model, self.logger))
 
