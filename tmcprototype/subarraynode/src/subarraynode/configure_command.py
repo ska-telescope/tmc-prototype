@@ -131,7 +131,7 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
         self._configure_leaf_node(csp_saln_client, "Configure", cmd_data, device_data)
 
     def _configure_dsh(self, scan_configuration):
-        device_data = self.target
+        device_data = DeviceData.get_instance()
         config_keys = scan_configuration.keys()
         if not set(["sdp", "csp"]).issubset(config_keys) and "dish" in config_keys:
             device_data.only_dishconfig_flag = True
