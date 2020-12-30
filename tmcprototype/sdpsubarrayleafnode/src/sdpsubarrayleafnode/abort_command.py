@@ -95,7 +95,7 @@ class Abort(BaseCommand):
             #device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ABORT, self.abort_cmd_ended_cb)
             sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
             sdp_sa_ln_client_obj.send_command_async(const.CMD_ABORT, None, self.abort_cmd_ended_cb)
-            device._read_activity_message = const.STR_ABORT_SUCCESS
+            device_data._read_activity_message = const.STR_ABORT_SUCCESS
             self.logger.info(const.STR_ABORT_SUCCESS)
 
         except DevFailed as dev_failed:

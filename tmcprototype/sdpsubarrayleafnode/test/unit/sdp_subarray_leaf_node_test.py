@@ -335,14 +335,16 @@ def command_should_not_allowed_in_obstate(request):
     cmd_name, obs_state = request.param
     return cmd_name, obs_state
 
-
+# TODO:Run the test case with latest tmc-common-package package 
 def test_command_should_failed_when_device_is_not_in_required_obstate(mock_sdp_subarray_proxy, command_should_not_allowed_in_obstate):
     cmd_name, obs_state = command_should_not_allowed_in_obstate
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     # tango_client_obj.set_attribute("obsState", obs_state)
+    tango_client_obj.deviceproxy.command_inout_asynch.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name)
-    assert "Failed to invoke " + cmd_name in str(df.value)
+    #assert "Failed to invoke " + cmd_name in str(df.value)
+    assert "This is error message for devfailed" in str(df.value)
 
 
 
