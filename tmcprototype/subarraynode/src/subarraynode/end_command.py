@@ -45,7 +45,7 @@ class EndCommand(SKASubarray.EndCommand):
             self.logger.info("End command invoked on SubarrayNode.")
             self.end_sdp(device_data)
             self.end_csp(device_data)
-            self.stop_dish_tracking()
+            self.stop_dish_tracking(device_data)
             device_data._read_activity_message = const.STR_ENDSB_SUCCESS
             self.logger.info(const.STR_ENDSB_SUCCESS)
             device_data.set_status(const.STR_ENDSB_SUCCESS)

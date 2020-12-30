@@ -45,8 +45,8 @@ class EndScanCommand(SKASubarray.EndScanCommand):
             device_data.isScanRunning = False
             device_data.is_scan_completed = True
             
-            self.endscan_sdp()
-            self.endscan_csp()
+            self.endscan_sdp(device_data)
+            self.endscan_csp(device_data)
             device_data._scan_id = ""
             # TODO: For Future Use
             # if device._csp_sa_obs_state == ObsState.IDLE and device._sdp_sa_obs_state ==\
