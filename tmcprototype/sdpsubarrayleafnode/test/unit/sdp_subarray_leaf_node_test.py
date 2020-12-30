@@ -202,7 +202,7 @@ def test_command_with_arg_should_raise_devfailed_exception(mock_sdp_subarray_pro
     scope="function",
     params=[
         ("ReleaseAllResources", const.CMD_RELEASE_RESOURCES, ObsState.IDLE,"releaseallresources_cmd_ended_cb", const.STR_REL_RESOURCES),
-        ("End", const.CMD_END, ObsState.READY,"end_cmd_ended_cb",const.STR_END_SUCCESS)
+        ("End", const.CMD_END, ObsState.READY,"end_cmd_ended_cb",const.STR_END_SUCCESS),
         ("EndScan", const.CMD_ENDSCAN, ObsState.SCANNING, "endscan_cmd_ended_cb", const.STR_ENDSCAN_SUCCESS),
         ("Abort", const.CMD_ABORT, ObsState.SCANNING, "abort_cmd_ended_cb", const.STR_ABORT_SUCCESS),
         ("Abort", const.CMD_ABORT, ObsState.CONFIGURING, "abort_cmd_ended_cb", const.STR_ABORT_SUCCESS),

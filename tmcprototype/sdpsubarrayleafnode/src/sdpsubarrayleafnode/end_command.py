@@ -34,11 +34,11 @@ class End(BaseCommand):
                                             "sdpsubarrayleafnode.End()",
                                             tango.ErrSeverity.ERR)
 
-        sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
-        if sdp_sa_ln_client_obj.get_attribute("obsState") != ObsState.READY:
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, "Failed to invoke End command on SdpSubarrayLeafNode.",
-                                            "SdpSubarrayLeafNode.End()",
-                                            tango.ErrSeverity.ERR)
+        # sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
+        # if sdp_sa_ln_client_obj.get_attribute("obsState") != ObsState.READY:
+        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, "Failed to invoke End command on SdpSubarrayLeafNode.",
+        #                                     "SdpSubarrayLeafNode.End()",
+        #                                     tango.ErrSeverity.ERR)
         return True
 
     def end_cmd_ended_cb(self, event):

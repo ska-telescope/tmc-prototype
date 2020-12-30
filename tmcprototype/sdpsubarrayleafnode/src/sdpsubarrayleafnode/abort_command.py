@@ -41,12 +41,12 @@ class Abort(BaseCommand):
         #                                     "SdpSubarrayLeafNode.AbortCommand()",
         #                                     tango.ErrSeverity.ERR)
         
-        sdp_sa_ln_client = TangoClient(device_data._sdp_sa_fqdn)
-        if sdp_sa_ln_client.get_attribute("obsState") not in [ObsState.READY, ObsState.CONFIGURING,
-                                                        ObsState.SCANNING, ObsState.IDLE, ObsState.RESETTING]:
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_IDLE_CONFIG_SCAN_RESET, "Failed to invoke Abort command on SdpSubarrayLeafNode."
-                                            "SdpSubarrayLeafNode.Abort()",
-                                            tango.ErrSeverity.ERR)
+        # sdp_sa_ln_client = TangoClient(device_data._sdp_sa_fqdn)
+        # if sdp_sa_ln_client.get_attribute("obsState") not in [ObsState.READY, ObsState.CONFIGURING,
+        #                                                 ObsState.SCANNING, ObsState.IDLE, ObsState.RESETTING]:
+        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_IDLE_CONFIG_SCAN_RESET, "Failed to invoke Abort command on SdpSubarrayLeafNode."
+        #                                     "SdpSubarrayLeafNode.Abort()",
+        #                                     tango.ErrSeverity.ERR)
         return True
 
     def abort_cmd_ended_cb(self, event):

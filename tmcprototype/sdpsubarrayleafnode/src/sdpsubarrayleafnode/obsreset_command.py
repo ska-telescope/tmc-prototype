@@ -38,11 +38,11 @@ class ObsReset(BaseCommand):
         #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_ABORTED_FAULT, "Failed to invoke ObsReset command on SdpSubarrayLeafNode.",
         #                                     "SdpSubarrayLeafNode.ObsResetCommand()",
         #                                     tango.ErrSeverity.ERR)
-        sdp_sa_ln_client = TangoClient(device_data._sdp_sa_fqdn)
-        if sdp_sa_ln_client.get_attribute("obsState") not in [ObsState.ABORTED, ObsState.FAULT]:
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_ABORTED_FAULT, "Failed to invoke ObsReset command on SdpSubarrayLeafNode."
-                                            "SdpSubarrayLeafNode.ObsReset()",
-                                            tango.ErrSeverity.ERR)
+        # sdp_sa_ln_client = TangoClient(device_data._sdp_sa_fqdn)
+        # if sdp_sa_ln_client.get_attribute("obsState") not in [ObsState.ABORTED, ObsState.FAULT]:
+        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_ABORTED_FAULT, "Failed to invoke ObsReset command on SdpSubarrayLeafNode."
+        #                                     "SdpSubarrayLeafNode.ObsReset()",
+        #                                     tango.ErrSeverity.ERR)
         return True
 
     def obsreset_cmd_ended_cb(self, event):

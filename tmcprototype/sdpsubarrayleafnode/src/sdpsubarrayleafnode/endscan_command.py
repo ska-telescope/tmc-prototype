@@ -41,11 +41,11 @@ class EndScan(BaseCommand):
         #                                     "SdpSubarrayLeafNode.EndScanCommand()",
         #                                     tango.ErrSeverity.ERR)
 
-        sdp_sa_ln_client = TangoClient(device_data._sdp_sa_fqdn)
-        if sdp_sa_ln_client.get_attribute("obsState") != ObsState.SCANNING:
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_SCAN, "Failed to invoke EndScan command on SdpSubarrayLeafNode."
-                                            "SdpSubarrayLeafNode.EndScan()",
-                                            tango.ErrSeverity.ERR)
+        # sdp_sa_ln_client = TangoClient(device_data._sdp_sa_fqdn)
+        # if sdp_sa_ln_client.get_attribute("obsState") != ObsState.SCANNING:
+        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_SCAN, "Failed to invoke EndScan command on SdpSubarrayLeafNode."
+        #                                     "SdpSubarrayLeafNode.EndScan()",
+        #                                     tango.ErrSeverity.ERR)
         return True
 
     def endscan_cmd_ended_cb(self, event):
