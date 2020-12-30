@@ -88,7 +88,7 @@ class Scan(BaseCommand):
 
         :raises: DevFailed if the command execution is not successful.
         """
-        device = self.target
+        device_data = self.target
         try:
             log_msg = "Input JSON for SDP Subarray Leaf Node Scan command is: " + argin
             self.logger.debug(log_msg)

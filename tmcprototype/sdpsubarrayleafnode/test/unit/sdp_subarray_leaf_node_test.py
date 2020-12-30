@@ -209,6 +209,8 @@ def test_command_with_arg_should_raise_devfailed_exception(mock_sdp_subarray_pro
         ("Abort", const.CMD_ABORT, ObsState.IDLE, "abort_cmd_ended_cb", const.STR_ABORT_SUCCESS),
         ("Abort", const.CMD_ABORT, ObsState.RESETTING, "abort_cmd_ended_cb", const.STR_ABORT_SUCCESS),
         ("Abort", const.CMD_ABORT, ObsState.READY, "abort_cmd_ended_cb", const.STR_ABORT_SUCCESS),
+        ("Restart", const.CMD_RESTART, ObsState.ABORTED,"restart_cmd_ended_cb", const.STR_RESTART_SUCCESS), 
+        ("Restart", const.CMD_RESTART, ObsState.FAULT,"restart_cmd_ended_cb", const.STR_RESTART_SUCCESS), 
     ])
 
 def command_without_arg(request):
@@ -313,6 +315,12 @@ def command_with_argin_should_not_allowed_in_obstate(request):
     params=[
         ( "Abort", ObsState.RESOURCING),
         ( "Abort", ObsState.EMPTY),
+        ( "Restart", ObsState.SCANNING),
+        ( "Restart", ObsState.EMPTY),
+        ( "Restart", ObsState.CONFIGURING),
+        ( "Restart", ObsState.IDLE),
+        ( "Restart", ObsState.READY),
+        ( "Restart", ObsState.RESOURCING),
         ( "End", ObsState.SCANNING),
         ( "ReleaseAllResources", ObsState.SCANNING),
     ])
@@ -625,12 +633,6 @@ def any_method(with_name=None):
 #     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
 #         assert tango_context.device.buildState == ('{},{},{}'.format(release.name,release.version,release.description))
 
-
-# def test_endscan_invalid_state():
-#     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-#         with pytest.raises(tango.DevFailed) as df:
-#             tango_context.device.EndScan()
-#         assert const.ERR_DEVICE_NOT_IN_SCAN in str(df.value)
  
 @contextlib.contextmanager
 def fake_tango_system(device_under_test, initial_dut_properties={}, proxies_to_mock={},
