@@ -202,7 +202,12 @@ def test_command_with_arg_should_raise_devfailed_exception(mock_sdp_subarray_pro
     scope="function",
     params=[
         ("EndScan", const.CMD_ENDSCAN, ObsState.SCANNING, "endscan_cmd_ended_cb", const.ERR_ENDSCAN_INVOKING_CMD),
-        ("ReleaseAllResources", const.CMD_RELEASE_RESOURCES, ObsState.IDLE,"releaseallresources_cmd_ended_cb", const.ERR_RELEASE_RESOURCES)
+        ("ReleaseAllResources", const.CMD_RELEASE_RESOURCES, ObsState.IDLE,"releaseallresources_cmd_ended_cb", const.ERR_RELEASE_RESOURCES),
+        ("Abort", const.CMD_ABORT, ObsState.SCANNING, "abort_cmd_ended_cb", const.ERR_ABORT_INVOKING_CMD),
+        ("Abort", const.CMD_ABORT, ObsState.CONFIGURING, "abort_cmd_ended_cb", const.ERR_ABORT_INVOKING_CMD),
+        ("Abort", const.CMD_ABORT, ObsState.IDLE, "abort_cmd_ended_cb", const.ERR_ABORT_INVOKING_CMD),
+        ("Abort", const.CMD_ABORT, ObsState.RESETTING, "abort_cmd_ended_cb", const.ERR_ABORT_INVOKING_CMD),
+        ("Abort", const.CMD_ABORT, ObsState.READY, "abort_cmd_ended_cb", const.ERR_ABORT_INVOKING_CMD),
     ])
 
 def command_without_arg(request):
@@ -304,6 +309,29 @@ def test_scan_device_not_ready():
         with pytest.raises(tango.DevFailed) as df:
             tango_context.device.Scan(scan_input_str)
         assert const.ERR_DEVICE_NOT_READY in str(df.value)
+
+
+@pytest.fixture(
+    scope="function",
+    params=[
+        ( "Abort", ObsState.RESOURCING),
+        ( "Abort", ObsState.EMPTY),
+    ])
+
+def command_should_not_allowed_in_obstate(request):
+    cmd_name, obs_state = request.param
+    return cmd_name, obs_state
+
+
+def test_command_should_failed_when_device_is_not_in_required_obstate(mock_sdp_subarray_proxy, command_should_not_allowed_in_obstate):
+    cmd_name, obs_state = command_should_not_allowed_in_obstate
+    device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
+    # tango_client_obj.set_attribute("obsState", obs_state)
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.command_inout(cmd_name)
+    assert "Failed to invoke " + cmd_name in str(df.value)
+
+
 
 ###########################################################################################################
 
