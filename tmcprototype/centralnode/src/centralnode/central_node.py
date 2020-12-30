@@ -128,7 +128,6 @@ class CentralNode(SKABaseDevice):
                 self.logger.info("Device initialisating...")
                 # Initialise Attributes
                 device._health_state = HealthState.OK
-                device._telescope_health_state = HealthState.UNKNOWN
                 device._build_state = '{},{},{}'.format(release.name,release.version,release.description)
                 device._version_id = release.version
                 device_data = DeviceData.get_instance()
@@ -138,9 +137,8 @@ class CentralNode(SKABaseDevice):
                 device_data.tm_mid_subarray = device.TMMidSubarrayNodes
                 device_data.dln_prefix = device.DishLeafNodePrefix
                 device_data.num_dishes = device.NumDishes
-                device_data._telescope_health_state = device._telescope_health_state
                 self.logger.debug(const.STR_INIT_SUCCESS)
-                device_data.resource_manager_obj = ResourceManager()
+                device_data.resource_manager = ResourceManager.get_instance(self.logger)
 
                 # Initialization of ObsState aggregator object
                 device_data.obs_state_aggregator = ObsStateAggregator(
@@ -155,7 +153,7 @@ class CentralNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
 
-            device_data.resource_manager_obj.init_resource_matrix()
+            device_data.resource_manager.init_resource_matrix()
 
             for subarray in range(0, len(device.TMMidSubarrayNodes)):
                 try:

@@ -94,8 +94,7 @@ class ReleaseResources(BaseCommand):
 
         """
         device_data = DeviceData.get_instance()
-        self.logger.debug(type(self.target))
-
+        
         try:
             release_success = False
             jsonArgument = json.loads(argin)
@@ -112,9 +111,7 @@ class ReleaseResources(BaseCommand):
                 device_data._read_activity_message = log_msg
                 if not res_not_released:
                     release_success = True
-                    for Dish_ID, Dish_Status in device_data._subarray_allocation.items():
-                        if Dish_Status == subarray_name:
-                            device_data._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
+                    device_data.resource_manager.update_resource_deallocation(subarray_name)
                     argout = {
                         "ReleaseAll": release_success,
                         "receptorIDList": res_not_released

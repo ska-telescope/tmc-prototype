@@ -6,10 +6,10 @@ import tango
 from tango import DevState, DevFailed
 
 from ska.base.commands import BaseCommand
+from tmc.common.tango_client import TangoClient
 from . import const
 from centralnode.receptor_reassignment_checker import ReceptorReassignmentChecker
 from centralnode.input_validator import AssignResourceValidator
-from tmc.common.tango_client import TangoClient
 from centralnode.device_data import DeviceData
 from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
 from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
@@ -157,7 +157,7 @@ class AssignResources(BaseCommand):
             subarrayFqdn = device_data.subarray_FQDN_dict[subarrayID]
             ## check for duplicate allocation
             self.logger.info("Checking for resource reallocation.")
-            check_res = ReceptorReassignmentChecker()
+            check_res = ReceptorReassignmentChecker(self.logger)
             check_res.do(json_argument["dish"]["receptorIDList"])
 
             #Allocate resources to subarray
@@ -180,7 +180,7 @@ class AssignResources(BaseCommand):
             resources_allocated = ast.literal_eval(resources_allocated_return[1][0])
             log_msg = "resources_assigned: " + str(resources_allocated)
             self.logger.debug(log_msg)
-            device_data.resource_manager_obj.update_resource_matrix(resources_allocated, subarrayID)
+            device_data.resource_manager.update_resource_matrix(resources_allocated, subarrayID)
 
             # Allocation successful
             device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS

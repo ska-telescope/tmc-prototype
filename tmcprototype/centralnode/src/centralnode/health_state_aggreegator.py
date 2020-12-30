@@ -25,15 +25,11 @@ class HealthStateAggreegator:
             self.logger = logger
         self.device_data = DeviceData.get_instance()
         self.subarray_health_state_map = {}
-        # self.csp_sdp_ln_health_event_id = {}
         self.this_server = TangoServerHelper.get_instance()
-        # How to pass fqdn here? 
+        # FQDN are passed as string here. Once tangoserverhelper is updated in tmccommonpackage, then this will be updated.  
         self.csp_master_ln_fqdn = "ska_mid/tm_leaf_node/csp_master"
         self.sdp_master_ln_fqdn = "ska_mid/tm_leaf_node/sdp_master"
         # self.subarray_ln_fqdn_list= ["ska_mid/tm_subarray_node/1","ska_mid/tm_subarray_node/2","ska_mid/tm_subarray_node/3"]
-        # self.sdp_event_id = ""
-        # self.csp_event_id = ""
-        # self.subarray_event_id_list = []
         self.health_state_event_map = {}
 
 

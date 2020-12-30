@@ -2,10 +2,11 @@
 ReceptorReassignmentChecker class for CentralNode.
 """
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
+import logging
+from . import const
 from centralnode.exceptions import ResourceReassignmentError
 from centralnode.device_data import DeviceData
-from . import const
-import logging
+
 # PROTECTED REGION END #
 
 class ReceptorReassignmentChecker:
@@ -20,6 +21,12 @@ class ReceptorReassignmentChecker:
              in Assignresources command.
 
     """
+    def __init__(self, logger =None):
+        if logger == None:
+            self.logger = logging.getLogger(__name__)
+        else:
+            self.logger = logger
+
     def do(self, input_receptors_list):
         device_data = DeviceData.get_instance()
         self.logger = logging.getLogger(__name__)

@@ -47,7 +47,7 @@ class DeviceData:
         self.sln_prefix = ""
         self.num_dishes = 0
         self.health_aggreegator = None
-        self.resource_manager_obj = None
+        self.resource_manager = None
         self.obs_state_aggregator = None
 
     @staticmethod

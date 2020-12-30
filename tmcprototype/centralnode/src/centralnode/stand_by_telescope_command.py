@@ -38,6 +38,8 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         """
         Sets the CentralNode into OFF state. Invokes the respective command on lower level nodes adn devices.
 
+        :param: None
+
         :return: A tuple containing a return code and a string message indicating status.
         The message is for information purpose only.
 

@@ -4,9 +4,22 @@ ResourceManager class for CentralNode.
 from centralnode.device_data import DeviceData
 class ResourceManager:
     """
-    ResourceManager class for Resource management.
+    ResourceManager class for managing the resource allocation status per subarray in a matrix.
     """
-    def init_resource_matrix(self,):
+    __instance = None
+    def __init__(self, logger =None) :
+        """Private constructor of the class"""
+        if ResourceManager.__instance != None:
+            raise Exception("This is singletone class")
+        else:
+            ResourceManager.__instance = self
+        if logger == None:
+            self.logger = logging.getLogger(__name__)
+        else:
+            self.logger = logger
+
+    
+    def initialize_resource_matrix(self):
         """
         Initializes Resource Matrix which maintains resource allocation to a perticular subarray.
         :return: None
@@ -31,4 +44,15 @@ class ResourceManager:
         for dish in range(0, len(resources_allocated)):
             dish_ID = "dish" + (resources_allocated[dish])
             device_data._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
-            device_data.receptorIDList.append(resources_allocated[dish])
+            device_data.receptorIDList.append(resources_allocated[dish]) 
+    
+    def update_resource_deallocation(self, subarray_name):
+        for Dish_ID, Dish_Status in device_data._subarray_allocation.items():
+            if Dish_Status == subarray_name:
+                device_data._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
+    
+    @staticmethod
+    def get_instance():
+        if ResourceManager.__instance == None:
+            ResourceManager()
+        return ResourceManager.__instance
