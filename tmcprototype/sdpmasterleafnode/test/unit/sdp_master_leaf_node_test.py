@@ -35,6 +35,19 @@ def event_subscription(mock_sdp_master):
 
 
 @pytest.fixture(scope="function")
+def mock_sdp_master_proxy():
+    dut_properties = {'SdpMasterFQDN': 'mid_sdp/elt/master'}
+    event_subscription_map = {}
+    Mock().subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+    with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties) as tango_context:
+        with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
+            tango_client_obj = TangoClient(dut_properties['SdpMasterFQDN'])
+            yield tango_context.device, tango_client_obj, dut_properties[
+                'SdpMasterFQDN'], event_subscription_map
+
+@pytest.fixture(scope="function")
 def mock_sdp_master():
     sdp_master_fqdn = 'mid_sdp/elt/master'
     dut_properties = {'SdpMasterFQDN': sdp_master_fqdn}
@@ -43,7 +56,6 @@ def mock_sdp_master():
     with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
         yield tango_context.device, sdp_master_proxy_mock
-
 
 def raise_devfailed_exception(*args):
     # "This function is called to raise DevFailed exception without arguments."
@@ -63,8 +75,8 @@ def command_without_args(request):
     return cmd_name, requested_cmd, Err_msg
 
 
-def test_command_should_be_relayed_to_sdp_master(mock_sdp_master, command_without_args):
-    device_proxy, sdp_master_proxy_mock = mock_sdp_master
+def test_command_should_be_relayed_to_sdp_master(mock_sdp_master_proxy, command_without_args):
+    device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
     cmd_name, requested_cmd, _ = command_without_args
     device_proxy.command_inout(cmd_name)
     callback_name = f"{requested_cmd.lower()}_cmd_ended_cb"
