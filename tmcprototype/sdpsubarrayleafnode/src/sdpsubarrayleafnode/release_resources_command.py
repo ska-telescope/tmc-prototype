@@ -39,7 +39,7 @@ class ReleaseAllResources(BaseCommand):
         # if sdp_sa_ln_client_obj.get_attribute("obsState") != ObsState.IDLE:
         #     tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, "Failed to invoke ReleaseAllResources command on "
         #                                     "SdpSubarrayLeafNode.",
-        #                                     "SdpSubarrayLeafNode.ReleaseAllResourcesCommand()",
+        #                                     "SdpSubarrayLeafNode.ReleaseAllResources()",
         #                                     tango.ErrSeverity.ERR)
         return True
 

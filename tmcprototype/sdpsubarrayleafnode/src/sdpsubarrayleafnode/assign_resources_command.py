@@ -7,7 +7,6 @@ import tango
 from tango import DevState, DevFailed
 # Additional import
 from ska.base.commands import BaseCommand
-from ska.base.control_model import ObsState
 from . import const
 from .exceptions import InvalidObsStateError
 from .transaction_id import identify_with_id
