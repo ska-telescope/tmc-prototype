@@ -16,10 +16,13 @@ class PointingState(enum.IntEnum):
     """
     Pointing state of the dish.
     """
-    READY = 0
-    SLEW = 1
-    TRACK = 2
-    SCAN = 3
+
+    NONE = 0
+    READY = 1
+    SLEW = 2
+    TRACK = 3
+    SCAN = 4
+    UNKNOWN = 5
 
 
 class UnitConverter:
@@ -31,19 +34,15 @@ class UnitConverter:
         Converts a number in Deg:Min:Sec to radians.
 
         :param argin: list of numbers in degrees, minutes, seconds respectively in string.
-
-        Example: ['20', '30', '40']
-
+            Example: ['20', '30', '40']
         :return: A number in radians.
-
-        Example: 20.500193925472445 is the returned value for ['20', '30', '40'] input.
-
+            Example: 20.500193925472445 is the returned value for ['20', '30', '40'] input.
         """
         try:
             degrees = float(argin[0])
             minutes = float(argin[1])
             seconds = float(argin[2])
-            rad_value = ((math.pi / 180) * (degrees + (minutes / 60) + (seconds / 3600)))
+            rad_value = (math.pi / 180) * (degrees + (minutes / 60) + (seconds / 3600))
             return rad_value
         except IndexError as error:
             log_msg = "Error while converting Deg:Min:Sec to radians." + str(error)
@@ -52,19 +51,14 @@ class UnitConverter:
             log_msg = "Error while converting Deg:Min:Sec to radians." + str(error)
             self.logger.error(log_msg)
 
-
     def rad_to_dms(self, argin):
         """
         Converts a number in radians to Deg:Min:Sec.
 
         :param argin: A number in radians.
-
-        Example: 0.123472
-
+            Example: 0.123472
         :return: List of numbers in degrees, minutes, seconds respectively in string.
-
-        Example: [7.0, 4.0, 27.928156941480466] is returned value for input 0.123472.
-
+            Example: [7.0, 4.0, 27.928156941480466] is returned value for input 0.123472.
         """
         try:
             dms = []
@@ -84,16 +78,12 @@ class UnitConverter:
         Converts a number in dig:Min:sec to decimal degrees.
 
         :param argin: A number in Deg:Min:Sec.
-
-        Example: 18:31:48.0
-
+            Example: 18:31:48.0
         :return: A number in decimal Degrees.
-
-        Example : "18.529999999999998" is the returned value for 18:31:48.0 input.
-
+            Example : "18.529999999999998" is the returned value for 18:31:48.0 input.
         """
         try:
-            dd = re.split('[:]+', argin)
+            dd = re.split("[:]+", argin)
             deg_dec = abs(float(dd[0])) + ((float(dd[1])) / 60) + ((float(dd[2])) / 3600)
             if "-" in dd[0]:
                 return deg_dec * (-1)
@@ -108,12 +98,15 @@ class UnitConverter:
 
 
 class DishMode(enum.IntEnum):
-    OFF = 0
-    STARTUP = 1
-    SHUTDOWN = 2
-    STANDBY_LP = 3
-    STANDBY_FP = 4
-    STOW = 5
-    CONFIG = 6
-    OPERATE = 7
-    MAINTENANCE = 8
+    UNKNOWN = 0
+    OFF = 1
+    STARTUP = 2
+    SHUTDOWN = 3
+    STANDBY_LP = 4
+    STANDBY_FP = 5
+    STOW = 6
+    CONFIG = 7
+    OPERATE = 8
+    MAINTENANCE = 9
+    FORBIDDEN = 10
+    ERROR = 11

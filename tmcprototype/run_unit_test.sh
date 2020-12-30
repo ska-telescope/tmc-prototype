@@ -14,7 +14,7 @@ for path in $(find ./*/test  -type d -name unit); do
 done
 cd /report/unit_test
 #Combine the individual report in combine converage report in xml and html format.
-coverage combine dishleafnode_coverage cspmasterleafnode_coverage \
+coverage combine dishmaster_coverage dishleafnode_coverage cspmasterleafnode_coverage \
 	 cspsubarrayleafnode_coverage sdpmasterleafnode_coverage sdpsubarrayleafnode_coverage \
 	 subarraynode_coverage centralnode_coverage mccsmasterleafnode_coverage \
       mccssubarrayleafnode_coverage subarraynode_coverage subarraynodelow_coverage \
@@ -24,6 +24,7 @@ mv /report/unit_test/coverage.xml /report/code-coverage.xml
 #Combine the unit_test.xml reports
 python3 -m pip install junitparser
 junitparser merge /report/unit_test/dishleafnode-unit-tests.xml \
+                /report/unit_test/dishmaster-unit-tests.xml \
                 /report/unit_test/centralnode-unit-tests.xml \
                 /report/unit_test/cspmasterleafnode-unit-tests.xml \
                 /report/unit_test/cspsubarrayleafnode-unit-tests.xml \

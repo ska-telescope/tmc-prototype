@@ -1,0 +1,3 @@
+pytango>=9.3.2
+ska-logging>=0.3.0
+tango-simlib>=0.9.0
