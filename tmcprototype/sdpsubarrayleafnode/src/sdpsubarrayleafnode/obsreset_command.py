@@ -9,6 +9,7 @@ from tango import DevState, DevFailed
 from ska.base.commands import  BaseCommand
 from . import const
 from ska.base.control_model import ObsState
+from tmc.common.tango_client import TangoClient
 
 class ObsReset(BaseCommand):
     """
@@ -26,16 +27,21 @@ class ObsReset(BaseCommand):
         :raises: DevFailed if this command is not allowed to be run in current device state
 
         """
-        device = self.target
+        device_data = self.target
         if self.state_model.op_state in [DevState.UNKNOWN, DevState.DISABLE]:
             tango.Except.throw_exception("ObsResetCommand() is not allowed in current state",
                                             "Failed to invoke ObsReset command on SdpSubarrayLeafNode.",
                                             "sdpsubarrayleafnode.ObsResetCommand()",
                                             tango.ErrSeverity.ERR)
 
-        if device._sdp_subarray_proxy.obsState not in [ObsState.ABORTED, ObsState.FAULT]:
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_ABORTED_FAULT, "Failed to invoke ObsReset command on SdpSubarrayLeafNode.",
-                                            "SdpSubarrayLeafNode.ObsResetCommand()",
+        # if device._sdp_subarray_proxy.obsState not in [ObsState.ABORTED, ObsState.FAULT]:
+        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_ABORTED_FAULT, "Failed to invoke ObsReset command on SdpSubarrayLeafNode.",
+        #                                     "SdpSubarrayLeafNode.ObsResetCommand()",
+        #                                     tango.ErrSeverity.ERR)
+        sdp_sa_ln_client = TangoClient(device_data._sdp_sa_fqdn)
+        if sdp_sa_ln_client.get_attribute("obsState") not in [ObsState.ABORTED, ObsState.FAULT]:
+            tango.Except.throw_exception(const.ERR_DEVICE_NOT_ABORTED_FAULT, "Failed to invoke ObsReset command on SdpSubarrayLeafNode."
+                                            "SdpSubarrayLeafNode.ObsReset()",
                                             tango.ErrSeverity.ERR)
         return True
 
@@ -61,14 +67,14 @@ class ObsReset(BaseCommand):
 
         :return: none
         """
-        device = self.target
+        device_data = self.target
         if event.err:
             log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-            device._read_activity_message = log
+            device_data._read_activity_message = log
             self.logger.error(log)
         else:
             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            device._read_activity_message = log
+            device_data._read_activity_message = log
             self.logger.info(log)
 
     def do(self):
@@ -82,18 +88,20 @@ class ObsReset(BaseCommand):
         :raises: DevFailed if error occurs while invoking command on SDPSubarray.
 
         """
-        device = self.target
+        device_data = self.target
         try:
-            device._sdp_subarray_proxy.command_inout_asynch(const.CMD_OBSRESET,
-                                                            self.obsreset_cmd_ended_cb)
-            device._read_activity_message = const.STR_OBSRESET_SUCCESS
+            # device._sdp_subarray_proxy.command_inout_asynch(const.CMD_OBSRESET,
+            #                                                 self.obsreset_cmd_ended_cb)
+            sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
+            sdp_sa_ln_client_obj.send_command_async(const.CMD_OBSRESET, None, self.obsreset_cmd_ended_cb)
+            device_data._read_activity_message = const.STR_OBSRESET_SUCCESS
             self.logger.info(const.STR_OBSRESET_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = const.ERR_OBSRESET_INVOKING_CMD + str(dev_failed)
-            device._read_activity_message = log_msg
+            device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(const.STR_OBSRESET_EXEC, log_msg,
-                                            "SdpSubarrayLeafNode.ObsResetCommand()",
+                                            "SdpSubarrayLeafNode.ObsReset()",
                                             tango.ErrSeverity.ERR)
 

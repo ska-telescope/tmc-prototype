@@ -211,6 +211,8 @@ def test_command_with_arg_should_raise_devfailed_exception(mock_sdp_subarray_pro
         ("Abort", const.CMD_ABORT, ObsState.READY, "abort_cmd_ended_cb", const.STR_ABORT_SUCCESS),
         ("Restart", const.CMD_RESTART, ObsState.ABORTED,"restart_cmd_ended_cb", const.STR_RESTART_SUCCESS), 
         ("Restart", const.CMD_RESTART, ObsState.FAULT,"restart_cmd_ended_cb", const.STR_RESTART_SUCCESS), 
+        ("ObsReset", const.CMD_OBSRESET, ObsState.ABORTED, "obsreset_cmd_ended_cb", const.STR_OBSRESET_SUCCESS), 
+        ("ObsReset", const.CMD_OBSRESET, ObsState.FAULT, "obsreset_cmd_ended_cb", const.STR_OBSRESET_SUCCESS),
     ])
 
 def command_without_arg(request):
@@ -323,7 +325,13 @@ def command_with_argin_should_not_allowed_in_obstate(request):
         ( "Restart", ObsState.RESOURCING),
         ( "End", ObsState.SCANNING),
         ( "ReleaseAllResources", ObsState.SCANNING),
-    ])
+        ( "ObsReset", ObsState.SCANNING),
+        ( "ObsReset", ObsState.EMPTY),
+        ( "ObsReset", ObsState.CONFIGURING),
+        ( "ObsReset", ObsState.IDLE),
+        ( "ObsReset", ObsState.READY),
+        ( "ObsReset", ObsState.RESOURCING),
+])
 
 def command_should_not_allowed_in_obstate(request):
     cmd_name, obs_state = request.param
