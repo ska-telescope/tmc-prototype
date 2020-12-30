@@ -9,6 +9,7 @@ from tango import DevState, DevFailed
 from ska.base.commands import BaseCommand
 from ska.base.control_model import ObsState
 from . import const
+from tmc.common.tango_client import TangoClient
 
 
 class Abort(BaseCommand):
@@ -27,17 +28,24 @@ class Abort(BaseCommand):
         :raises: DevFailed if this command is not allowed to be run in current device state
 
         """
-        device = self.target
+        device_data = self.target
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
             tango.Except.throw_exception("Abort() is not allowed in current state",
                                             "Failed to invoke Abort command on SdpSubarrayLeafNode.",
                                             "sdpsubarrayleafnode.Abort()",
                                             tango.ErrSeverity.ERR)
 
-        if device._sdp_subarray_proxy.obsState not in [ObsState.READY, ObsState.CONFIGURING,
+        # if device._sdp_subarray_proxy.obsState not in [ObsState.READY, ObsState.CONFIGURING,
+        #                                                 ObsState.SCANNING, ObsState.IDLE, ObsState.RESETTING]:
+        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_IDLE_CONFIG_SCAN_RESET, "Failed to invoke Abort command on SdpSubarrayLeafNode." ,
+        #                                     "SdpSubarrayLeafNode.AbortCommand()",
+        #                                     tango.ErrSeverity.ERR)
+        
+        sdp_sa_ln_client = TangoClient(device_data._sdp_sa_fqdn)
+        if sdp_sa_ln_client.get_attribute("obsState") not in [ObsState.READY, ObsState.CONFIGURING,
                                                         ObsState.SCANNING, ObsState.IDLE, ObsState.RESETTING]:
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_IDLE_CONFIG_SCAN_RESET, "Failed to invoke Abort command on SdpSubarrayLeafNode." ,
-                                            "SdpSubarrayLeafNode.AbortCommand()",
+            tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_IDLE_CONFIG_SCAN_RESET, "Failed to invoke Abort command on SdpSubarrayLeafNode."
+                                            "SdpSubarrayLeafNode.Abort()",
                                             tango.ErrSeverity.ERR)
         return True
 
@@ -63,14 +71,14 @@ class Abort(BaseCommand):
 
         :return: none
         """
-        device = self.target
+        device_data = self.target
         if event.err:
             log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-            device._read_activity_message = log
+            device_data._read_activity_message = log
             self.logger.error(log)
         else:
             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            device._read_activity_message = log
+            device_data._read_activity_message = log
             self.logger.info(log)
 
     def do(self):
@@ -82,16 +90,18 @@ class Abort(BaseCommand):
         :raises: DevFailed if error occurs while invoking command on CSPSubarray.
 
         """
-        device = self.target
+        device_data = self.target
         try:
-            device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ABORT, self.abort_cmd_ended_cb)
+            #device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ABORT, self.abort_cmd_ended_cb)
+            sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
+            sdp_sa_ln_client_obj.send_command_async(const.CMD_ABORT, None, self.abort_cmd_ended_cb)
             device._read_activity_message = const.STR_ABORT_SUCCESS
             self.logger.info(const.STR_ABORT_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = const.ERR_ABORT_INVOKING_CMD + str(dev_failed)
-            device._read_activity_message = log_msg
+            device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(const.STR_ABORT_EXEC, log_msg,
-                                            "SdpSubarrayLeafNode.AbortCommand()",
+                                            "SdpSubarrayLeafNode.Abort()",
                                             tango.ErrSeverity.ERR)
