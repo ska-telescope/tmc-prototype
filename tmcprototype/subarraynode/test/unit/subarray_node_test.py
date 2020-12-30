@@ -880,6 +880,37 @@ def verify_called_correctly(agent:Mock,command,data):
     subsisted_data = json.loads(data)
     assert_data_is_subsisted_by(args,subsisted_data)
 
+def test_configure_command_subarray_with_invalid_configure_input(mock_lower_devices):
+    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
+    csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
+    sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
+    tango_context.device.On()
+    tango_context.device.AssignResources(assign_input_str)
+    attribute = 'ObsState'
+    dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
+                                               attribute, ObsState.IDLE)
+    event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
+
+    dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
+                                               attribute, ObsState.IDLE)
+    event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
+    with pytest.raises(tango.DevFailed) as df:
+        tango_context.device.Configure(invalid_conf_input)
+    assert tango_context.device.obsState == ObsState.FAULT
+
+
+def test_configure_command_subarray_with_invalid_configure_input(device_data, subarray_state_model, mock_device_proxy):
+    deviceproxy, tango_client_obj = mock_device_proxy
+    configure_cmd = ConfigureCommand(device_data, subarray_state_model)
+    attribute = "receiveAddresses"
+    with mock.patch.object(TangoClient, "get_deviceproxy", return_value=Mock()):
+        with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_receive_addresses):
+            tango_client_obj = TangoClient('ska_mid/tm_leaf_node/sdp_subarray01')
+    with pytest.raises(tango.DevFailed) as df:
+        configure_cmd.do(invalid_conf_input)
+    #TODO: Assert with devfailed activity message
+    # assert tango_context.device.obsState == ObsState.FAULT
+
 '''
 def test_configure_command_obsstate_changes_from_configuring_to_ready(mock_lower_devices):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
