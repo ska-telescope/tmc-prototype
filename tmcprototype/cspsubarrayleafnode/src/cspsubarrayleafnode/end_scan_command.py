@@ -2,6 +2,8 @@
 import tango
 from tango import DevState, DevFailed
 
+# Third Party imports
+from tmc.common.tango_client import TangoClient
 # Additional import
 from ska.base.commands import BaseCommand
 from ska.base.control_model import ObsState
@@ -32,10 +34,10 @@ class EndScanCommand(BaseCommand):
                                             "cspsubarrayleafnode.EndScan()",
                                             tango.ErrSeverity.ERR)
 
-        if device._csp_subarray_proxy.obsState != ObsState.SCANNING:
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_SCAN, "Failed to invoke EndScan command on cspsubarrayleafnode.",
-                                            "CspSubarrayLeafNode.EndScanCommand",
-                                            tango.ErrSeverity.ERR)
+        # if device._csp_subarray_proxy.obsState != ObsState.SCANNING:
+        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_SCAN, "Failed to invoke EndScan command on cspsubarrayleafnode.",
+        #                                     "CspSubarrayLeafNode.EndScanCommand",
+        #                                     tango.ErrSeverity.ERR)
 
         return True
 
@@ -60,16 +62,16 @@ class EndScanCommand(BaseCommand):
 
         :return: none
         """
-        device = self.target
+        device_data = self.target
         # Update logs and activity message attribute with received event
         if event.err:
             log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
             self.logger.error(log_msg)
-            device._read_activity_message = log_msg
+            device_data._read_activity_message = log_msg
         else:
             log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
             self.logger.info(log_msg)
-            device._read_activity_message = log_msg
+            device_data._read_activity_message = log_msg
 
     def do(self):
         """
@@ -83,15 +85,16 @@ class EndScanCommand(BaseCommand):
 
         :raises: DevFailed if the command execution is not successful
         """
-        device = self.target
+        device_data = self.target
         try:
-            device._csp_subarray_proxy.command_inout_asynch(const.CMD_ENDSCAN, self.endscan_cmd_ended_cb)
-            device._read_activity_message = const.STR_ENDSCAN_SUCCESS
+            csp_sub_client_obj = TangoClient(device_data.csp_subarray_fqdn)
+            csp_sub_client_obj.send_command_async(const.CMD_ENDSCAN, None, self.endscan_cmd_ended_cb)
+            device_data._read_activity_message = const.STR_ENDSCAN_SUCCESS
             self.logger.info(const.STR_ENDSCAN_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = const.ERR_ENDSCAN_INVOKING_CMD + str(dev_failed)
-            device._read_activity_message = log_msg
+            device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(const.STR_ENDSCAN_EXEC, log_msg,
                                             "CspSubarrayLeafNode.EndScanCommand",

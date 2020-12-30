@@ -28,6 +28,9 @@ class DeviceData():
 
         self.receptorIDList_str = []
         self._read_activity_message = ""
+        self.target = ""
+        self.fsp_ids_object = []
+
 
     @staticmethod
     def get_instance():

@@ -1,11 +1,13 @@
 # PyTango imports
 import tango
 from tango import DevState, DevFailed
-
+# Third Party imports
+from tmc.common.tango_client import TangoClient
 # Additional import
 from ska.base.commands import BaseCommand
 from ska.base.control_model import ObsState
 from . import const
+
 
 class ReleaseAllResourcesCommand(BaseCommand):
     """
@@ -23,7 +25,7 @@ class ReleaseAllResourcesCommand(BaseCommand):
         :raises: DevFailed if this command is not allowed to be run in current device state
 
         """
-        device = self.target
+        # device = self.target
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
             tango.Except.throw_exception("ReleaseAllResources() is not allowed in current state",
                                             "Failed to invoke ReleaseAllResources command on "
@@ -31,10 +33,10 @@ class ReleaseAllResourcesCommand(BaseCommand):
                                             "cspsubarrayleafnode.ReleaseAllResources()",
                                             tango.ErrSeverity.ERR)
 
-        if device._csp_subarray_proxy.obsState != ObsState.IDLE:
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_IDLE, "Failed to invoke ReleaseAllResourcesCommand command on cspsubarrayleafnode.",
-                                            "CspSubarrayLeafNode.ReleaseAllResourcesCommand",
-                                            tango.ErrSeverity.ERR)
+        # if device._csp_subarray_proxy.obsState != ObsState.IDLE:
+        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_IDLE, "Failed to invoke ReleaseAllResourcesCommand command on cspsubarrayleafnode.",
+        #                                     "CspSubarrayLeafNode.ReleaseAllResourcesCommand",
+        #                                     tango.ErrSeverity.ERR)
 
         return True
 
@@ -59,16 +61,16 @@ class ReleaseAllResourcesCommand(BaseCommand):
 
         :return: none
         """
-        device = self.target
+        device_data = self.target
         # Update logs and activity message attribute with received event
         if event.err:
             log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
             self.logger.error(log_msg)
-            device._read_activity_message = log_msg
+            device_data._read_activity_message = log_msg
         else:
             log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
             self.logger.info(log_msg)
-            device._read_activity_message = log_msg
+            device_data._read_activity_message = log_msg
 
     def do(self):
         """
@@ -80,19 +82,20 @@ class ReleaseAllResourcesCommand(BaseCommand):
         :raises: DevFailed if the command execution is not successful
 
         """
-        device = self.target
+        device_data = self.target
         try:
             # Invoke RemoveAllReceptors command on CspSubarray
-            device.receptorIDList = []
-            device.fsids_list = []
-            device._csp_subarray_proxy.command_inout_asynch(const.CMD_REMOVE_ALL_RECEPTORS,
-                                                            self.releaseallresources_cmd_ended_cb)
-            device._read_activity_message = const.STR_REMOVE_ALL_RECEPTORS_SUCCESS
+            device_data.receptorIDList = []
+            device_data.fsids_list = []
+            csp_sub_client_obj = TangoClient(device_data.csp_subarray_fqdn)
+            csp_sub_client_obj.send_command_async(const.CMD_REMOVE_ALL_RECEPTORS, None , self.releaseallresources_cmd_ended_cb)
+
+            device_data._read_activity_message = const.STR_REMOVE_ALL_RECEPTORS_SUCCESS
             self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = const.ERR_RELEASE_ALL_RESOURCES + str(dev_failed)
-            device._read_activity_message = log_msg
+            device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, log_msg,
                                             "CspSubarrayLeafNode.ReleaseAllResourcesCommand",

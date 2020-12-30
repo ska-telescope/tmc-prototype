@@ -11,6 +11,7 @@ from tango import DevState, DevFailed
 from ska.base.commands import BaseCommand
 from . import const
 from .transaction_id import identify_with_id
+from .delay_model import DelayManager
 
 
 class AssignResourcesCommand(BaseCommand):
@@ -123,14 +124,12 @@ class AssignResourcesCommand(BaseCommand):
                 receptorIDList.append(int(receptor))
             self.logger.info("receptorIDList: %s", str(receptorIDList))
             # TODO: How to call this ?
-            # device.update_config_params()
+            delay_manager_obj = DelayManager.get_instance()
+            delay_manager_obj.update_config_params()
             # Invoke AddReceptors command on CspSubarray
             self.logger.info("Invoking AddReceptors on CSP subarray")
             csp_sub_client_obj = TangoClient(device_data.csp_subarray_fqdn)
             csp_sub_client_obj.send_command_async(const.CMD_ADD_RECEPTORS, receptorIDList, self.add_receptors_ended)
-
-            # device._csp_subarray_proxy.command_inout_asynch(const.CMD_ADD_RECEPTORS, receptorIDList,
-            #                                             self.add_receptors_ended)
 
             self.logger.info("After invoking AddReceptors on CSP subarray")
             device_data._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS

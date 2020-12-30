@@ -652,9 +652,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
         """
         super().init_command_objects()
         device_data = DeviceData.get_instance()
-        args = (self, self.state_model, self.logger)
-        assign_args = (device_data, self.state_model, self.logger)
-        self.register_command_object("AssignResources", assign_resources_command.AssignResourcesCommand(*assign_args))
+        args = (device_data, self.state_model, self.logger)
+        self.register_command_object("AssignResources", assign_resources_command.AssignResourcesCommand(*args))
         self.register_command_object("ReleaseAllResources", release_all_resources_command.ReleaseAllResourcesCommand(*args))
         self.register_command_object("Configure", configure_command.ConfigureCommand(*args))
         self.register_command_object("StartScan", scan_command.StartScanCommand(*args))
