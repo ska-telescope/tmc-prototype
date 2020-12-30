@@ -143,6 +143,7 @@ def test_off_command_should_raise_dev_failed(mock_sdp_subarray_proxy):
     params=[
         ("AssignResources", assign_input_str, const.CMD_ASSIGN_RESOURCES, ObsState.EMPTY,"AssignResources_ended", const.ERR_ASSGN_RESOURCES),
         ("AssignResources", assign_input_str, const.CMD_ASSIGN_RESOURCES, ObsState.IDLE, "AssignResources_ended",const.ERR_ASSGN_RESOURCES),
+        ("Scan", scan_input_str, const.CMD_SCAN, ObsState.READY,"scan_cmd_ended_cb", const.ERR_SCAN),
     ])
 
 def command_with_arg(request):
@@ -262,10 +263,35 @@ def test_command_without_arg_should_raise_devfailed_exception(mock_sdp_subarray_
     assert "This is error message for devfailed" in str(df.value)
 
 
+@pytest.fixture(
+    scope="function",
+    params=[
+        ("Scan", scan_input_str,  ObsState.IDLE),
+        # ("Configure", configure_str, ObsState.SCANNING),
+        # ("Configure", configure_str, ObsState.EMPTY),
+        ("AssignResources", assign_input_str, ObsState.READY),
+    ])
 
+def command_with_argin_should_not_allowed_in_obstate(request):
+    cmd_name, input_str, obs_state = request.param
+    return cmd_name, input_str, obs_state
 
+# TODO: Run the test case with latest tmc-common-package package
+# def test_command_with_argin_should_failed_when_device_is_not_in_required_obstate(mock_sdp_subarray_proxy, command_with_argin_should_not_allowed_in_obstate):
+#     cmd_name, input_str, obs_state = command_with_argin_should_not_allowed_in_obstate
+#     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
 
+#     # tango_client_obj.set_attribute("obsState", obs_state)
+    
+#     with pytest.raises(tango.DevFailed) as df:
+#         device_proxy.command_inout(cmd_name, input_str)
+#     assert "Failed to invoke " + cmd_name in str(df.value)
 
+def test_scan_device_not_ready():
+    with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
+        with pytest.raises(tango.DevFailed) as df:
+            tango_context.device.Scan(scan_input_str)
+        assert const.ERR_DEVICE_NOT_READY in str(df.value)
 
 ###########################################################################################################
 
@@ -474,27 +500,7 @@ def raise_devfailed_exception(*args):
 #     assert "Failed to invoke " + cmd_name in str(df.value)
 
 
-# @pytest.fixture(
-#     scope="function",
-#     params=[
-#         ("Scan", scan_input_str,  ObsState.IDLE),
-#         ("Configure", configure_str, ObsState.SCANNING),
-#         ("Configure", configure_str, ObsState.EMPTY),
-#         ("AssignResources", assign_input_str, ObsState.READY),
-#     ])
 
-# def command_with_argin_should_not_allowed_in_obstate(request):
-#     cmd_name, input_str, obs_state = request.param
-#     return cmd_name, input_str, obs_state
-
-
-# def test_command_with_argin_should_failed_when_device_is_not_in_required_obstate(mock_sdp_subarray, command_with_argin_should_not_allowed_in_obstate):
-#     cmd_name, input_str, obs_state = command_with_argin_should_not_allowed_in_obstate
-#     device_proxy, sdp_subarray1_proxy_mock = mock_sdp_subarray
-#     sdp_subarray1_proxy_mock.obsState = obs_state
-#     with pytest.raises(tango.DevFailed) as df:
-#         device_proxy.command_inout(cmd_name, input_str)
-#     assert "Failed to invoke " + cmd_name in str(df.value)
 
 
 def assert_activity_message(device_proxy, expected_message):
@@ -579,13 +585,6 @@ def any_method(with_name=None):
 #     """Test for buildState"""
 #     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
 #         assert tango_context.device.buildState == ('{},{},{}'.format(release.name,release.version,release.description))
-
-
-# def test_scan_device_not_ready():
-#     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:
-#         with pytest.raises(tango.DevFailed) as df:
-#             tango_context.device.Scan(scan_input_str)
-#         assert const.ERR_DEVICE_NOT_READY in str(df.value)
 
 # def test_end_device_not_ready():
 #     with fake_tango_system(SdpSubarrayLeafNode) as tango_context:

@@ -9,6 +9,7 @@ from tango import DevState, DevFailed
 from ska.base.commands import BaseCommand
 from ska.base.control_model import ObsState
 from . import const
+from tmc.common.tango_client import TangoClient
 
 class Scan(BaseCommand):
     """
@@ -26,17 +27,18 @@ class Scan(BaseCommand):
         :raises: Exception if command execution throws any type of exception.
 
         """
-        device = self.target
+        device_data = self.target
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
             tango.Except.throw_exception("Scan() is not allowed in current state",
                                             "Failed to invoke Scan command on SdpSubarrayLeafNode.",
                                             "sdpsubarrayleafnode.Scan()",
                                             tango.ErrSeverity.ERR)
-
-        if device._sdp_subarray_proxy.obsState != ObsState.READY:
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, "Failed to invoke Scan command on SdpSubarrayLeafNode.",
-                                            "SdpSubarrayLeafNode.ScanCommand()",
-                                            tango.ErrSeverity.ERR)
+        
+        # sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
+        # if sdp_sa_ln_client_obj.get_attribute("obsState") != ObsState.READY:
+        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, "Failed to invoke Scan command on SdpSubarrayLeafNode.",
+        #                                     "SdpSubarrayLeafNode.Scan()",
+        #                                     tango.ErrSeverity.ERR)
         return True
 
     def scan_cmd_ended_cb(self, event):
@@ -61,14 +63,14 @@ class Scan(BaseCommand):
 
         :return: none
         """
-        device = self.target
+        device_data = self.target
         if event.err:
             log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-            device._read_activity_message = log
+            device_data._read_activity_message = log
             self.logger.error(log)
         else:
             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            device._read_activity_message = log
+            device_data._read_activity_message = log
             self.logger.info(log)
 
     def do(self, argin):
@@ -90,15 +92,17 @@ class Scan(BaseCommand):
         try:
             log_msg = "Input JSON for SDP Subarray Leaf Node Scan command is: " + argin
             self.logger.debug(log_msg)
-            device._sdp_subarray_proxy.command_inout_asynch(const.CMD_SCAN, argin,
-                                                            self.scan_cmd_ended_cb)
-            device._read_activity_message = const.STR_SCAN_SUCCESS
+            sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
+            sdp_sa_ln_client_obj.send_command_async(const.CMD_SCAN, argin, self.scan_cmd_ended_cb)
+            # device._sdp_subarray_proxy.command_inout_asynch(const.CMD_SCAN, argin,
+            #                                                 self.scan_cmd_ended_cb)
+            device_data._read_activity_message = const.STR_SCAN_SUCCESS
             self.logger.info(const.STR_SCAN_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = const.ERR_SCAN + str(dev_failed)
-            device._read_activity_message = log_msg
+            device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(const.STR_SCAN_EXEC, log_msg,
-                                            "SdpSubarrayLeafNode.ScanCommand()",
+                                            "SdpSubarrayLeafNode.Scan()",
                                             tango.ErrSeverity.ERR)
