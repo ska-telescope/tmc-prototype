@@ -537,12 +537,40 @@ def subarray_state_model():
 def device_data():
     yield DeviceData()
 
-def test_configure_command(device_data, subarray_state_model):
+def test_configure_command(device_data, subarray_state_model, mock_device_proxy):
+    # tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map, tango_client_obj = mock_lower_devices
+    deviceproxy, tango_client_obj = mock_device_proxy
     configure_cmd = ConfigureCommand(device_data, subarray_state_model)
+    attribute = "receiveAddresses"
+    # dummy_event = create_dummy_event_state(sdp_subarray1_fqdn, attribute,
+    #                                        receive_addresses_map)
+    with mock.patch.object(TangoClient, "get_deviceproxy", return_value=Mock()):
+        with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_receive_addresses):
+            tango_client_obj = TangoClient('ska_mid/tm_leaf_node/sdp_subarray01')
+    # event_subscription_map[attribute](dummy_event)
+    # dummy_event = create_dummy_event_state(csp_subarray1_fqdn, attribute,
+    #                                        receive_addresses_map)
+    # with mock.patch.object(TangoClient, "get_deviceproxy", return_value=Mock()):
+    #     with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber):
+    #         tango_client_obj = TangoClient('ska_mid/tm_leaf_node/csp_subarray01')
+    # event_subscription_map[attribute](dummy_event)
+    assert deviceproxy.Configure(configure_str) == [[ResultCode.STARTED], ['Configure command invoked']]
+    # verify_called_correctly(sdp_subarray1_ln_proxy_mock, const.CMD_CONFIGURE, sdp_conf_str)
+    # verify_called_correctly(csp_subarray1_ln_proxy_mock, const.CMD_CONFIGURE, csp_conf_str)
+    assert deviceproxy.obsState == ObsState.CONFIGURING
     # subarray_state_model._straight_to_state(IDLE)
 
     assert configure_cmd.do(configure_str) == (ResultCode.STARTED, "Configure command invoked")
 
+def dummy_subscriber_receive_addresses(attribute, callback_method):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"ska_mid/tm_leaf_node/sdp_subarray01/{attribute}"
+    fake_event.attr_value.value =  receive_addresses_map
+    print("Inside dummy subscriber for receive add:::::::::::::::::::::::::::::::::::::::::::::::::::")
+    print( fake_event.attr_value.value )
+    callback_method(fake_event)
+    return 10
 
 def create_dummy_event_state(device_fqdn, attribute, attr_value):
     print("inside create dummy::::::::::::::::::::::::::::::::::::::::")
@@ -579,7 +607,7 @@ def dummy_subscriber_for_sdp(attribute, callback_method):
     fake_event = Mock()
     fake_event.err = False
     fake_event.attr_name = f"ska_mid/tm_leaf_node/sdp_subarray01/{attribute}"
-    fake_event.attr_value.value =  ObsState.IDLE
+    fake_event.attr_value.value =  ObsState.CONFIGURING
     print("Inside dummy subscriber for SDP:::::::::::::::::::::::::::::::::::::::::::::::::::")
     print( fake_event.attr_value.value )
     callback_method(fake_event)
@@ -595,7 +623,7 @@ def dummy_subscriber_sdp(attribute, callback_method):
 
     callback_method(fake_event)
     return 10
-'''
+
 
 def test_assign_resource_should_raise_exception_when_called_when_device_state_off():
     with fake_tango_system(SubarrayNode) as tango_context:
@@ -645,7 +673,7 @@ def test_assign_resource_should_raise_exception_when_sdp_subarray_ln_throws_devf
     assert "This is error message for devfailed" in str(df.value)
 
 
-
+'''
 def test_release_resource_command_subarray(mock_lower_devices):
     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"

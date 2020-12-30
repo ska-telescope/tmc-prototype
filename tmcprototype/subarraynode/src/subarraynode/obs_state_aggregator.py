@@ -46,6 +46,7 @@ class ObsStateAggregator:
 
         # Subscribe ReceiveAddresses of SdpSubarray
         sdp_receive_addr_event_id = self.sdp_sa_client.subscribe_attribute("receiveAddresses", self.receive_addresses_cb)
+        # self._receive_addresses_map[self.sdp_sa_client] = sdp_receive_addr_event_id
 
     def observation_state_cb(self, evt):
         """
@@ -163,7 +164,7 @@ class ObsStateAggregator:
         """
         if not event.err:
             # self._receive_addresses_map = event.attr_value.value
-            self._receive_addresses_map = event.attr_value.value
+            self.device_data._receive_addresses_map = event.attr_value.value
         else:
             log_msg = const.ERR_SUBSR_RECEIVE_ADDRESSES_SDP_SA + str(event)
             self.logger.debug(log_msg)
