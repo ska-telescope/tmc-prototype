@@ -35,8 +35,8 @@ class ReleaseAllResources(BaseCommand):
                                             "SdpSubarrayLeafNode.ReleaseAllResources()",
                                             tango.ErrSeverity.ERR)
         
-        # sdp_sa_ln_client = TangoClient(device_data._sdp_sa_fqdn)
-        # if sdp_sa_ln_client.get_attribute("obsState") != ObsState.IDLE:
+        # sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
+        # if sdp_sa_ln_client_obj.get_attribute("obsState") != ObsState.IDLE:
         #     tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, "Failed to invoke ReleaseAllResources command on "
         #                                     "SdpSubarrayLeafNode.",
         #                                     "SdpSubarrayLeafNode.ReleaseAllResourcesCommand()",
@@ -89,7 +89,7 @@ class ReleaseAllResources(BaseCommand):
         device_data = self.target
         try:
             # Call SDP Subarray Command asynchronously
-            sdp_sa_ln_client = TangoClient(device_data._sdp_sa_fqdn)
+            sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
             sdp_sa_ln_client_obj.send_command_async(const.CMD_RELEASE_RESOURCES, None, self.releaseallresources_cmd_ended_cb)
             # device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RELEASE_RESOURCES,
             #                                                 self.releaseallresources_cmd_ended_cb)

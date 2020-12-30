@@ -161,6 +161,73 @@ def test_command_with_callback_method_with_arg(mock_sdp_subarray_proxy, event_su
     event_subscription_mock[requested_cmd](dummy_event)
     assert const.STR_COMMAND + requested_cmd in device_proxy.activityMessage
 
+@pytest.fixture(
+    scope="function",
+    params=[
+        ("ReleaseAllResources", const.CMD_RELEASE_RESOURCES, ObsState.IDLE,"releaseallresources_cmd_ended_cb", const.ERR_RELEASE_RESOURCES)
+    ])
+
+def command_without_arg(request):
+    cmd_name, requested_cmd, obs_state, callback_str, Error_msg = request.param
+    return cmd_name, requested_cmd, obs_state, callback_str, Error_msg
+
+def test_command_with_callback_method_without_arg(mock_sdp_subarray_proxy, event_subscription_mock, command_without_arg):
+    device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
+    cmd_name, requested_cmd, obs_state, _, _ = command_without_arg
+    
+    # tango_client_obj.set_attribute("obsState", obs_state)
+
+    device_proxy.command_inout(cmd_name)
+    dummy_event = command_callback(requested_cmd)
+    event_subscription_mock[requested_cmd](dummy_event)
+    assert const.STR_COMMAND + requested_cmd in device_proxy.activityMessage
+
+def test_command_with_callback_method_without_arg_with_event_error(mock_sdp_subarray_proxy,event_subscription_mock, command_without_arg):
+    device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
+    cmd_name, requested_cmd, obs_state, _, _ = command_without_arg
+    
+    # tango_client_obj.set_attribute("obsState", obs_state)
+
+    device_proxy.command_inout(cmd_name)
+    dummy_event = command_callback_with_event_error(requested_cmd)
+    event_subscription_mock[requested_cmd](dummy_event)
+    assert const.ERR_INVOKING_CMD + requested_cmd in device_proxy.activityMessage
+
+def test_command_for_allowed_Obstate_without_arg(mock_sdp_subarray_proxy, command_without_arg):
+    device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
+    cmd_name, requested_cmd, obs_state, callback_str, _ = command_without_arg    
+
+#     tango_client_obj.set_attribute("obsState", obs_state)
+
+    device_proxy.command_inout(cmd_name)
+    assert const.STR_REL_RESOURCES in device_proxy.activityMessage
+#     tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(requested_cmd, 
+#                                                                          any_method(with_name=callback_str))
+
+def test_release_command_with_callback_method_with_devfailed_error(mock_sdp_subarray_proxy, event_subscription_mock):
+    device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
+    device_proxy.On()
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.ReleaseAllResources()
+        dummy_event = command_callback_with_devfailed_exception()
+        event_subscription_mock[const.CMD_RELEASE_RESOURCES](dummy_event)
+    assert const.ERR_CMD_FAILED in str(df.value)
+
+
+
+def test_command_without_arg_should_raise_devfailed_exception(mock_sdp_subarray_proxy,event_subscription_mock, command_without_arg):
+    device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
+    cmd_name, requested_cmd, obs_state, _, Error_msg = command_without_arg
+
+    # tango_client_obj.set_attribute("obsState", obs_state)
+
+    # tango_client_obj.send_command_async.side_effect = raise_devfailed_exception
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.command_inout(cmd_name)
+        raise_devfailed_exception()
+    assert "This is error message for devfailed" in str(df.value)
+
+
 ###########################################################################################################
 
 # @pytest.fixture(scope="function")
@@ -326,10 +393,9 @@ def command_callback_with_event_error(command_name):
 # def command_callback_with_command_exception():
 #     return Exception("Exception in Command callback")
 
-# # TODO: FOR FUTURE REFERENCE
-# def command_callback_with_devfailed_exception():
-#     tango.Except.throw_exception("SdpSubarrayLeafNode_Commandfailed in callback", "This is error message for devfailed",
-#                                  " ", tango.ErrSeverity.ERR)
+def command_callback_with_devfailed_exception():
+    tango.Except.throw_exception("SdpSubarrayLeafNode_Commandfailed in callback", "This is error message for devfailed",
+                                 " ", tango.ErrSeverity.ERR)
 
 def raise_devfailed_exception(*args):
     tango.Except.throw_exception("SdpSubarrayLeafNode_Commandfailed", "This is error message for devfailed",
