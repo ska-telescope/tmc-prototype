@@ -141,16 +141,16 @@ def test_off_command_should_raise_dev_failed(mock_sdp_subarray_proxy):
 @pytest.fixture(
     scope="function",
     params=[
-        ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.READY,"configure_cmd_ended_cb", const.ERR_CONFIGURE),
-        ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.IDLE,"configure_cmd_ended_cb", const.ERR_CONFIGURE),
-        ("AssignResources", assign_input_str, const.CMD_ASSIGN_RESOURCES, ObsState.EMPTY,"AssignResources_ended", const.ERR_ASSGN_RESOURCES),
-        ("AssignResources", assign_input_str, const.CMD_ASSIGN_RESOURCES, ObsState.IDLE, "AssignResources_ended",const.ERR_ASSGN_RESOURCES),
-        ("Scan", scan_input_str, const.CMD_SCAN, ObsState.READY,"scan_cmd_ended_cb", const.ERR_SCAN),
+        ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.READY,"configure_cmd_ended_cb", const.STR_CONFIGURE_SUCCESS),
+        ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.IDLE,"configure_cmd_ended_cb", const.STR_CONFIGURE_SUCCESS),
+        ("AssignResources", assign_input_str, const.CMD_ASSIGN_RESOURCES, ObsState.EMPTY,"AssignResources_ended", const.STR_ASSIGN_RESOURCES_SUCCESS),
+        ("AssignResources", assign_input_str, const.CMD_ASSIGN_RESOURCES, ObsState.IDLE, "AssignResources_ended",const.STR_ASSIGN_RESOURCES_SUCCESS),
+        ("Scan", scan_input_str, const.CMD_SCAN, ObsState.READY,"scan_cmd_ended_cb", const.STR_SCAN_SUCCESS),
     ])
 
 def command_with_arg(request):
-    cmd_name, input_arg, requested_cmd, obs_state, callback_str, Error_msg = request.param
-    return cmd_name, input_arg, requested_cmd, obs_state, callback_str, Error_msg
+    cmd_name, input_arg, requested_cmd, obs_state, callback_str, cmd_success_msg = request.param
+    return cmd_name, input_arg, requested_cmd, obs_state, callback_str, cmd_success_msg
 
 
 def test_command_with_callback_method_with_arg(mock_sdp_subarray_proxy, event_subscription_mock, command_with_arg):
@@ -175,12 +175,10 @@ def test_command_with_callback_method_with_arg_with_event_error(mock_sdp_subarra
 
 def test_command_for_allowed_Obstate_with_arg(mock_sdp_subarray_proxy, command_with_arg):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
-    cmd_name, input_arg, requested_cmd, obs_state, callback_str, _ = command_with_arg    
+    cmd_name, input_arg, requested_cmd, obs_state, callback_str, cmd_success_msg = command_with_arg    
     # tango_client_obj.set_attribute("obsState", obs_state)
     device_proxy.command_inout(cmd_name, input_arg)
-    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(requested_cmd, input_arg,
-                                                                         any_method(with_name=callback_str))
-    assert_activity_message(device_proxy, const.STR_ASSIGN_RESOURCES_SUCCESS)
+    assert_activity_message(device_proxy, cmd_success_msg)
 
 
 def test_command_with_arg_should_raise_devfailed_exception(mock_sdp_subarray_proxy, event_subscription_mock, command_with_arg):
