@@ -144,9 +144,6 @@ def raise_devfailed_exception(*args):
                                  "", tango.ErrSeverity.ERR)
 
 
-#TODO: FOR FUTURE USE
-@pytest.mark.xfail(reason="Off command is not generating event error in current implementation. "
-                           "Will be updated later.")
 def test_off_should_command_with_callback_method_with_event_error(mock_csp_master_proxy ,event_subscription_mock):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
 

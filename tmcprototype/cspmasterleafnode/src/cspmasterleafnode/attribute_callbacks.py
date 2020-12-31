@@ -1,11 +1,7 @@
-# Additional import
 import tango
-from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
-from tango.server import run, command, device_property, attribute
-
 from ska.base.control_model import HealthState
 from tmc.common.tango_server_helper import TangoServerHelper
-from . import const, release, device_data
+from . import const
 from .device_data import DeviceData
 from tmc.common.tango_client import TangoClient
 import logging
@@ -33,13 +29,13 @@ class CbfHealthStateAttributeUpdator:
     def start(self):
         try:
             self.event_id = self.csp_master.subscribe_attribute("cspCbfHealthState", self.csp_cbf_health_state_cb)
-        except tango.DevFailed as df:
+        except tango.DevFailed:
             self.logger.exception("Exception in attribute subscription")
     
     def stop(self):
         try:
             self.csp_master.unsubscribe_attribute(self.event_id)
-        except tango.DevFailed as df:
+        except tango.DevFailed:
             self.logger.exception("Exception in unsubscribing the attribute.")
 
                 
@@ -95,13 +91,13 @@ class PssHealthStateAttributeUpdator:
     def start(self):
         try:
             self.event_id = self.csp_master.subscribe_attribute("cspPssHealthState", self.csp_pss_health_state_cb)
-        except tango.DevFailed as df:
+        except tango.DevFailed:
             self.logger.exception("Exception in attribute subscription")
     
     def stop(self):
         try:
             self.csp_master.unsubscribe_attribute(self.event_id)
-        except tango.DevFailed as df:
+        except tango.DevFailed:
             self.logger.exception("Exception in unsubscribing the attribute.")
 
     def csp_pss_health_state_cb(self, evt):
@@ -155,13 +151,13 @@ class PstHealthStateAttributeUpdator:
     def start(self):
         try:
             self.event_id = self.csp_master.subscribe_attribute("cspPstHealthState", self.csp_pst_health_state_cb)
-        except tango.DevFailed as df:
+        except tango.DevFailed:
             self.logger.exception("Exception in attribute subscription")
     
     def stop(self):
         try:
             self.csp_master.unsubscribe_attribute(self.event_id)
-        except tango.DevFailed as df:
+        except tango.DevFailed:
             self.logger.exception("Exception in unsubscribing the attribute.")
 
     def csp_pst_health_state_cb(self, evt):

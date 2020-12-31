@@ -15,15 +15,14 @@ CSP Master Leaf node monitors the CSP Master and issues control actions during a
 # Third party imports
 # PyTango imports
 import tango
-from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
+from tango import ApiUtil, DebugIt, AttrWriteType
 from tango.server import run, command, device_property, attribute
 
 # Additional import
 from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode, BaseCommand
+from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, SimulationMode, TestMode
-from . import const, release, on_command, off_command, standby_command, device_data
-from tmc.common.tango_client import TangoClient
+from . import const, release, on_command, off_command, standby_command
 from .device_data import DeviceData
 
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
@@ -162,11 +161,12 @@ class CspMasterLeafNode(SKABaseDevice):
         """
         Initialises the command handlers for commands supported by this device.
         """
-        super().init_command_objects()
         device_data = DeviceData.get_instance()
-        self.register_command_object("Off", off_command.OffCommand(device_data, self.state_model, self.logger))
+        super().init_command_objects()
+        self.register_command_object("Off", off_command.OffCommand(device_data, self.state_model,self.logger))
         self.register_command_object("On", on_command.OnCommand(device_data, self.state_model, self.logger))
-        self.register_command_object("Standby", standby_command.StandbyCommand(device_data, self.state_model, self.logger))
+        self.register_command_object("Standby", standby_command.StandbyCommand(device_data, self.state_model,
+                                                                               self.logger))
 
 
 # ----------

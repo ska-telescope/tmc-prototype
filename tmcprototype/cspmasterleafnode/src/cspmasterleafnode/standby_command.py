@@ -1,13 +1,7 @@
-# PyTango imports
 import tango
-from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
-from tango.server import run, command, device_property, attribute
-
-# Additional import
-from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode, BaseCommand
-from ska.base.control_model import HealthState, SimulationMode, TestMode
-from . import const, release, device_data
+from tango import DevState, DevFailed
+from ska.base.commands import BaseCommand
+from . import const
 from tmc.common.tango_client import TangoClient
 
 class StandbyCommand(BaseCommand):
