@@ -156,7 +156,7 @@ def command_with_arg(request):
 def test_command_with_callback_method_with_arg(mock_sdp_subarray_proxy, event_subscription_mock, command_with_arg):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     cmd_name, input_arg, requested_cmd, obs_state, _, _ = command_with_arg
-    # tango_client_obj.set_attribute("obsState", obs_state)
+    tango_client_obj.set_attribute("obsState", obs_state)
     device_proxy.command_inout(cmd_name, input_arg)
     dummy_event = command_callback(requested_cmd)
     event_subscription_mock[requested_cmd](dummy_event)
@@ -166,7 +166,7 @@ def test_command_with_callback_method_with_arg(mock_sdp_subarray_proxy, event_su
 def test_command_with_callback_method_with_arg_with_event_error(mock_sdp_subarray_proxy, event_subscription_mock, command_with_arg):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     cmd_name, input_arg, requested_cmd, obs_state, _, _ = command_with_arg
-    # tango_client_obj.set_attribute("obsState", obs_state)
+    tango_client_obj.set_attribute("obsState", obs_state)
     device_proxy.command_inout(cmd_name, input_arg)
     dummy_event = command_callback(requested_cmd)
     event_subscription_mock[requested_cmd](dummy_event)
@@ -176,7 +176,7 @@ def test_command_with_callback_method_with_arg_with_event_error(mock_sdp_subarra
 def test_command_for_allowed_Obstate_with_arg(mock_sdp_subarray_proxy, command_with_arg):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     cmd_name, input_arg, requested_cmd, obs_state, callback_str, cmd_success_msg = command_with_arg    
-    # tango_client_obj.set_attribute("obsState", obs_state)
+    tango_client_obj.set_attribute("obsState", obs_state)
     device_proxy.command_inout(cmd_name, input_arg)
     assert_activity_message(device_proxy, cmd_success_msg)
 
