@@ -36,11 +36,11 @@ class Configure(BaseCommand):
                                             "sdpsubarrayleafnode.Configure()",
                                         tango.ErrSeverity.ERR)
 
-        sdp_sa_ln_client = TangoClient(device_data._sdp_sa_fqdn)
-        if sdp_sa_ln_client.get_attribute("obsState") not in [ObsState.IDLE, ObsState.READY]:
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_IDLE, "Failed to invoke Configure command on SdpSubarrayLeafNode.",
-                                            "SdpSubarrayLeafNode.Configure()",
-                                        tango.ErrSeverity.ERR)
+        # sdp_sa_ln_client = TangoClient(device_data._sdp_sa_fqdn)
+        # if sdp_sa_ln_client.get_attribute("obsState") not in [ObsState.IDLE, ObsState.READY]:
+        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_IDLE, "Failed to invoke Configure command on SdpSubarrayLeafNode.",
+        #                                     "SdpSubarrayLeafNode.Configure()",
+        #                                 tango.ErrSeverity.ERR)
 
         # if device._sdp_subarray_proxy.obsState not in [ObsState.IDLE, ObsState.READY]:
         #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_IDLE, "Failed to invoke Configure command on SdpSubarrayLeafNode.",
