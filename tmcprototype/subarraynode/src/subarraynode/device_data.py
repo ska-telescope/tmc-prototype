@@ -63,7 +63,7 @@ class DeviceData:
         self._dishLnVsHealthEventID = {}
         self._dishLnVsPointingStateEventID = {}
         # TODO: For future use
-        # self.receptor_id_list = []
+        self._receptor_id_list = []
 
     @staticmethod
     def get_instance():

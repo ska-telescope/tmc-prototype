@@ -35,17 +35,27 @@ class TangoGroupClient:
 
         return self.tango_group
 
-    def add_device(self, devices_to_add):
+   def add_device(self, device_to_add):
+        """
+        Add device element in the Group.
+
+        :param:
+            device_to_add: string. Device FQDN to add in the group
+        
+        :return: None
+
+        :throws: DevFailed in case of error.
+        """
         try:
-            for device in devices_to_add:
-                self.tango_group.add(device)
+            log_msg = f"Adding in group: {device_to_add}."
+            self.logger.debug(log_msg)
+            self.tango_group.add(device_to_add)
         except DevFailed as dev_failed:
             self.logger.exception("Failed to add device")
             tango.Except.re_throw_exception(dev_failed,
                 "Failed to add device",
                 str(dev_failed),
-                "TangoGroupClient.add_device()",
-                tango.ErrSeverity.ERR)  
+                "TangoGroupClient.add_device()")  
 
     def remove_device(self, devices_to_remove):
         """

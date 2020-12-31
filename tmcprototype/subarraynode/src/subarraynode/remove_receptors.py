@@ -59,43 +59,51 @@ class RemoveReceptors:
         self.logger.info(const.STR_RECEPTORS_REMOVE_SUCCESS)
 
 
-    def _unsubscribe_resource_events(self, proxy_event_id_map):
-        """
-        This function unsubscribes all events given by the event ids and their
-        corresponding DeviceProxy objects.
 
-        :param proxy_event_id_map: dict
-            A mapping of '<DeviceProxy>': <event_id>.
+    # def _unsubscribe_resource_events(self, proxy_event_id_map):
+    #     """
+    #     This function unsubscribes all events given by the event ids and their
+    #     corresponding DeviceProxy objects.
 
-        :return: None
+    #     :param proxy_event_id_map: dict
+    #         A mapping of '<DeviceProxy>': <event_id>.
 
-        """
-        for device_proxy, event_id in proxy_event_id_map.items():
-            try:
-                device_proxy.unsubscribe_event(event_id)
-            except DevFailed as dev_failed:
-                log_message = "Failed to unsubscribe event {}.".format(dev_failed)
-                self.logger.error(log_message )
-                device_data = DeviceData()
-                device_data._read_activity_message = log_message
+    #     :return: None
 
-        def _unsubscribe_csp_sdp_state_events(self, proxy_event_id_map):
-            """
-            This function unsubscribes all events given by the event ids and their
-            corresponding DeviceProxy objects.
+    #     """
+    #     for device_proxy, event_id in proxy_event_id_map.items():
+    #         try:
+    #             device_proxy.unsubscribe_event(event_id)
+    #         except DevFailed as dev_failed:
+    #             log_message = "Failed to unsubscribe event {}.".format(dev_failed)
+    #             self.logger.error(log_message )
+    #             device_data = DeviceData()
+    #             device_data._read_activity_message = log_message
 
-            :param
-                device_proxy: Device Proxy
-                proxy_event_id: <event_id>
+    # def _unsubscribe_csp_sdp_state_events(self, proxy_event_id_map):
+    #     """
+    #     This function unsubscribes all events given by the event ids and their
+    #     corresponding DeviceProxy objects.
 
-            :return: None
+    #     :param
+    #         device_proxy: Device Proxy
+    #         proxy_event_id: <event_id>
 
-            """
-        for device_proxy, event_id in proxy_event_id_map.items():
-            try:
-                device_proxy.unsubscribe_event(event_id)
-            except DevFailed as dev_failed:
-                log_message = "Failed to unsubscribe health state event {}.".format(dev_failed)
-                self.logger.error(log_message )
-                device_data = DeviceData()
-                device_data._read_activity_message = log_message
+    #     :return: None
+
+    #     """
+    #     for device_proxy, event_id in proxy_event_id_map.items():
+    #         try:
+    #             device_proxy.unsubscribe_event(event_id)
+    #         except DevFailed as dev_failed:
+    #             log_message = "Failed to unsubscribe health state event {}.".format(dev_failed)
+    #             self.logger.error(log_message )
+    #             device_data = DeviceData()
+    #             device_data._read_activity_message = log_message
+    #             device_data._read_activity_message = log_message
+
+    def _remove_subarray_dish_lns_health_states(self):
+        subarray_ln_health_state_map_copy = self.subarray_ln_health_state_map.copy()
+        for dev_name in subarray_ln_health_state_map_copy:
+            if dev_name.startswith(const.PROP_DEF_VAL_LEAF_NODE_PREFIX):
+                _ = self.subarray_ln_health_state_map.pop(dev_name)

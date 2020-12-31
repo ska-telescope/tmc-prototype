@@ -45,11 +45,11 @@ class SubarrayNode(SKASubarray):
     """
     # PROTECTED REGION ID(SubarrayNode.class_variable) ENABLED START 
 
-    def _remove_subarray_dish_lns_health_states(self):
-        subarray_ln_health_state_map_copy = self.subarray_ln_health_state_map.copy()
-        for dev_name in subarray_ln_health_state_map_copy:
-            if dev_name.startswith(const.PROP_DEF_VAL_LEAF_NODE_PREFIX):
-                _ = self.subarray_ln_health_state_map.pop(dev_name)
+    # def _remove_subarray_dish_lns_health_states(self):
+    #     subarray_ln_health_state_map_copy = self.subarray_ln_health_state_map.copy()
+    #     for dev_name in subarray_ln_health_state_map_copy:
+    #         if dev_name.startswith(const.PROP_DEF_VAL_LEAF_NODE_PREFIX):
+    #             _ = self.subarray_ln_health_state_map.pop(dev_name)
 
     # TODO for unsubscribing health and obsState events on CSP and SDP
     # def _unsubscribe_csp_sdp_state_events(self, proxy_event_id_map):
@@ -101,7 +101,7 @@ class SubarrayNode(SKASubarray):
         :rtype: int
         """
 
-        return len(self._receptor_id_list)
+        return len(self.device_data._receptor_id_list)
 
     
     # def remove_receptors_from_group(self): // make separate class and call remove all from TangoGroupClient
@@ -271,7 +271,7 @@ class SubarrayNode(SKASubarray):
         Where 123 is a Scan ID from configuration json string.
         """
         # PROTECTED REGION ID(SubarrayNode.scanID_read) ENABLED START #
-        return self._scan_id
+        return self.device_data._scan_id
         # PROTECTED REGION END #    //  SubarrayNode.scanID_read
 
     def read_sbID(self):
@@ -301,7 +301,7 @@ class SubarrayNode(SKASubarray):
         """ Internal construct of TANGO. Returns the receptor IDs allocated to the Subarray.
          """
         # PROTECTED REGION ID(SubarrayNode.receptorIDList_read) ENABLED START #
-        return self._receptor_id_list
+        return self.device_data._receptor_id_list
         # PROTECTED REGION END #    //  SubarrayNode.receptorIDList_read
 
     # --------
