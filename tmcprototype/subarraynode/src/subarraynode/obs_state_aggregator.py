@@ -162,6 +162,7 @@ class ObsStateAggregator:
 
         :return: None
         """
+        print("Inside receive address::::::::::::::::::::::::::::::::::")
         if not event.err:
             # self._receive_addresses_map = event.attr_value.value
             self.device_data._receive_addresses_map = event.attr_value.value

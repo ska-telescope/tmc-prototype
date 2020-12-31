@@ -66,7 +66,7 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
         log_msg = const.STR_CONFIGURE_IP_ARG + str(argin)
         self.logger.info(log_msg)
         # TODO: how to access TANGO specific attributes (read-write)
-        tango_server_helper_obj = TangoServerHelper()
+        tango_server_helper_obj = TangoServerHelper.get_instance()
         try:
             scan_configuration = json.loads(argin)
         except json.JSONDecodeError as jerror:
@@ -193,6 +193,7 @@ class ElementDeviceData:
             scan_type = scan_config["sdp"]["scan_type"]
             if scan_type:
                 # Invoke ska_telmodel library function to create csp configure schema
+                print("Receive addr map:::::::::::::::::::::::::::::", receive_addresses_map)
                 if receive_addresses_map:
                     csp_config_schema = interface.make_csp_config(csp_interface_version, sdp_interface_version,
                                         scan_type, csp_scan_config, receive_addresses_map)
