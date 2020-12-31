@@ -9,7 +9,7 @@ from ska.base.commands import ResultCode, BaseCommand
 from . import const, release
 from tmc.common.tango_client import TangoClient
 from .device_data import DeviceData
-# PROTECTED REGION END #    //  SdpMasterLeafNode.additionnal_import
+# PROTECTED REGION END #    //  SdpMasterLeafNode.additional_import
 
 
 class OnCommand(SKABaseDevice.OnCommand):

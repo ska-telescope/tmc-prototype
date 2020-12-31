@@ -32,15 +32,16 @@ setup(
     package_dir={'': 'src'},
     include_package_data=True,
     test_suite="test",
-    entry_points={'console_scripts':['SdpMasterLeafNodeDS = sdpmasterleafnode.sdp_master_leaf_node:main']},
+    entry_points={'console_scripts': ['SdpMasterLeafNodeDS = sdpmasterleafnode.sdp_master_leaf_node:main']},
     author='Team NCRA',
     author_email='telmgt-internal@googlegroups.com',
     license='BSD-3-Clause',
     long_description=long_description,
     url='https://www.skatelescope.org',
     platforms="Linux",
-    install_requires=['pytango==9.3.2', 'mock', 'ska_logging==0.3.0', 'lmcbaseclasses==0.7.2','skatmccommon==0.1.1+4fba2733'],
-    #test_suite='test',
+    install_requires=['pytango==9.3.2', 'mock', 'ska_logging==0.3.0', 'lmcbaseclasses==0.7.2', 'skatmccommon'
+                                                                                               '==0.1.2+b01374cf'],
+    # test_suite='test',
     setup_requires=[
         # dependency for `python setup.py test`
         'pytest-runner',
@@ -55,6 +56,6 @@ setup(
         'pycodestyle',
     ],
     extras_require={
-        'dev':  ['prospector[with_pyroma]', 'yapf', 'isort']
+        'dev': ['prospector[with_pyroma]', 'yapf', 'isort']
     }
 )
