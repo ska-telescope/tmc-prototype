@@ -1,7 +1,9 @@
 """
 ResourceManager class for CentralNode.
 """
+import logging
 from centralnode.device_data import DeviceData
+
 class ResourceManager:
     """
     ResourceManager class for managing the resource allocation status per subarray in a matrix.
@@ -47,6 +49,7 @@ class ResourceManager:
             device_data.receptorIDList.append(resources_allocated[dish]) 
     
     def update_resource_deallocation(self, subarray_name):
+        device_data = DeviceData.get_instance()
         for Dish_ID, Dish_Status in device_data._subarray_allocation.items():
             if Dish_Status == subarray_name:
                 device_data._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"

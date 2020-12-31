@@ -138,7 +138,7 @@ class CentralNode(SKABaseDevice):
                 device_data.dln_prefix = device.DishLeafNodePrefix
                 device_data.num_dishes = device.NumDishes
                 self.logger.debug(const.STR_INIT_SUCCESS)
-                device_data.resource_manager = ResourceManager.get_instance(self.logger)
+                device_data.resource_manager = ResourceManager.get_instance()
 
                 # Initialization of ObsState aggregator object
                 device_data.obs_state_aggregator = ObsStateAggregator(
@@ -153,7 +153,7 @@ class CentralNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
 
-            device_data.resource_manager.init_resource_matrix()
+            device_data.resource_manager.initialize_resource_matrix()
 
             for subarray in range(0, len(device.TMMidSubarrayNodes)):
                 try:
