@@ -14,7 +14,7 @@ from ska.base import SKASubarray
 from subarraynode.tango_group_client import TangoGroupClient
 from subarraynode.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
-
+from .tango_server_helper import TangoServerHelper
 
 class EndCommand(SKASubarray.EndCommand):
     """
@@ -47,7 +47,8 @@ class EndCommand(SKASubarray.EndCommand):
             self.stop_dish_tracking(device_data)
             device_data._read_activity_message = const.STR_ENDSB_SUCCESS
             self.logger.info(const.STR_ENDSB_SUCCESS)
-            device_data.set_status(const.STR_ENDSB_SUCCESS)
+            tango_server_helper_obj = TangoServerHelper.get_instance()
+            tango_server_helper_obj.set_status(const.STR_ENDSB_SUCCESS)
             device_data.is_end_command = True
             return (ResultCode.OK, const.STR_ENDSB_SUCCESS)
         except DevFailed as dev_failed:
@@ -78,6 +79,6 @@ class EndCommand(SKASubarray.EndCommand):
 
     def stop_dish_tracking(self, device_data):
         # TODO: Getting exception while running test cases using device mocking
-        dsh_leaf_node_client = TangoGroupClient(device_data._dish_leaf_node_group)
-        dsh_leaf_node_client.send_command(const.CMD_STOP_TRACK)
+        # dsh_leaf_node_client = TangoGroupClient(device_data._dish_leaf_node_group)
+        device_data._dish_leaf_node_group_client.send_command(const.CMD_STOP_TRACK)
         self.logger.info(const.STR_CMD_STOP_TRACK_INV_DLN)

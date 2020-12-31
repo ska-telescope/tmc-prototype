@@ -53,6 +53,7 @@ class ObsResetCommand(SKASubarray.ObsResetCommand):
             
             device_data._read_activity_message = const.STR_OBSRESET_SUCCESS
             self.logger.info(const.STR_OBSRESET_SUCCESS)
+
             device_data.set_status(const.STR_OBSRESET_SUCCESS)
             device_data.is_obsreset_command = True
             return (ResultCode.STARTED, const.STR_OBSRESET_SUCCESS)
@@ -85,6 +86,6 @@ class ObsResetCommand(SKASubarray.ObsResetCommand):
 
     def obsreset_dsh_grp(self, device_data):
         # Invoke ObsReset command on group of Dishes.
-        dsh_leaf_node_client = TangoGroupClient(device_data._dish_leaf_node_group)
-        dsh_leaf_node_client.send_command(const.CMD_OBSRESET)
+        # dsh_leaf_node_client = TangoGroupClient(device_data._dish_leaf_node_group)
+        device_data._dish_leaf_node_group_client.send_command(const.CMD_OBSRESET)
         self.logger.info(const.STR_CMD_OBSRESET_INV_DISH_GROUP)

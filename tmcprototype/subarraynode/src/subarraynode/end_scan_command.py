@@ -14,6 +14,7 @@ from ska.base import SKASubarray
 from subarraynode.tango_group_client import TangoGroupClient
 from subarraynode.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
+from .tango_server_helper import TangoServerHelper
 
 
 class EndScanCommand(SKASubarray.EndScanCommand):
@@ -53,7 +54,8 @@ class EndScanCommand(SKASubarray.EndScanCommand):
             #         ObsState.IDLE:
             #     if len(device.dishPointingStateMap.values()) != 0:
             #         device.calculate_observation_state()
-            device_data.set_status(const.STR_SCAN_COMPLETE)
+            tango_server_helper_obj = TangoServerHelper.get_instance()
+            tango_server_helper_obj.set_status(const.STR_SCAN_COMPLETE)
             self.logger.info(const.STR_SCAN_COMPLETE)
             device_data._read_activity_message = const.STR_END_SCAN_SUCCESS
             return (ResultCode.OK, const.STR_END_SCAN_SUCCESS)
