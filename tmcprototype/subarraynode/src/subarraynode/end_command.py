@@ -32,9 +32,8 @@ class EndCommand(SKASubarray.EndCommand):
 
         :raises: DevFailed if the command execution is not successful.
         """
-        self.logger.info(type(self.target))
+        self.logger.debug(type(self.target))
         device_data = DeviceData.get_instance()
-        device_data = self.target
         device_data.is_end_command = False
         device_data.is_release_resources = False
         device_data.is_restart_command = False
@@ -82,5 +81,3 @@ class EndCommand(SKASubarray.EndCommand):
         dsh_leaf_node_client = TangoGroupClient(device_data._dish_leaf_node_group)
         dsh_leaf_node_client.send_command(const.CMD_STOP_TRACK)
         self.logger.info(const.STR_CMD_STOP_TRACK_INV_DLN)
-
-    

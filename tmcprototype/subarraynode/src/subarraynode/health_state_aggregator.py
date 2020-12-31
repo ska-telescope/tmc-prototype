@@ -36,7 +36,9 @@ class HealthStateAggregator:
         self.csp_sdp_ln_health_event_id[self.csp_client] = csp_event_id
         log_msg = const.STR_CSP_LN_VS_HEALTH_EVT_ID + str(self.csp_sdp_ln_health_event_id)
         self.logger.debug(log_msg)
-        self.this_server.set_status(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
+        # self.this_server.set_status(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
+        tango_server_helper_obj = TangoServerHelper()
+        tango_server_helper_obj.set_status(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
         self.logger.info(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
 
         self.subarray_ln_health_state_map[self.sdp_client.get_device_fqdn()] = (HealthState.UNKNOWN)
