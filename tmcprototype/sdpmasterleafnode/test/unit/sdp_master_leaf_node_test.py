@@ -17,6 +17,7 @@ from sdpmasterleafnode import SdpMasterLeafNode, const, release
 from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
 from ska.base.control_model import LoggingLevel
 from ska.base.commands import ResultCode
+from tmc.common.tango_client import TangoClient
 
 
 @pytest.fixture(scope="function")
