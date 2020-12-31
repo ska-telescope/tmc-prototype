@@ -14,6 +14,7 @@ from ska.base import SKASubarray
 from subarraynode.tango_group_client import TangoGroupClient
 from subarraynode.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
+from .tango_server_helper import TangoServerHelper
 
 
 class ObsResetCommand(SKASubarray.ObsResetCommand):
@@ -53,8 +54,8 @@ class ObsResetCommand(SKASubarray.ObsResetCommand):
             
             device_data._read_activity_message = const.STR_OBSRESET_SUCCESS
             self.logger.info(const.STR_OBSRESET_SUCCESS)
-
-            device_data.set_status(const.STR_OBSRESET_SUCCESS)
+            tango_server_helper_obj = TangoServerHelper.get_instance()
+            tango_server_helper_obj.set_status(const.STR_OBSRESET_SUCCESS)
             device_data.is_obsreset_command = True
             return (ResultCode.STARTED, const.STR_OBSRESET_SUCCESS)
 

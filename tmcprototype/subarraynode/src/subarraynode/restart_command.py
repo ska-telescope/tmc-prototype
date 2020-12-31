@@ -14,6 +14,7 @@ from ska.base import SKASubarray
 from subarraynode.tango_group_client import TangoGroupClient
 from subarraynode.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
+from .tango_server_helper import TangoServerHelper
 from subarraynode.remove_receptors import RemoveReceptors
 
 
@@ -53,7 +54,8 @@ class RestartCommand(SKASubarray.RestartCommand):
             # device.remove_receptors_from_group()
             device_data._read_activity_message = const.STR_RESTART_SUCCESS
             self.logger.info(const.STR_RESTART_SUCCESS)
-            device_data.set_status(const.STR_RESTART_SUCCESS)
+            tango_server_helper_obj = TangoServerHelper.get_instance()
+            tango_server_helper_obj.set_status(const.STR_RESTART_SUCCESS)
             device_data.is_restart_command = True
             return (ResultCode.STARTED, const.STR_RESTART_SUCCESS)
 
@@ -85,10 +87,11 @@ class RestartCommand(SKASubarray.RestartCommand):
 
     def restart_dsh_grp(self, device_data):
         # Create proxy for Dish Leaf Node Group 
-        dsh_ln_grp_client = TangoGroupClient(device_data._dish_leaf_node_group)
-        dsh_ln_grp_client.send_command(const.CMD_RESTART)
+        # dsh_ln_grp_client = TangoGroupClient(device_data._dish_leaf_node_group)
+        device_data._dish_leaf_node_group_client.send_command(const.CMD_RESTART)
         self.logger.info(const.STR_CMD_RESTART_INV_DISH_GROUP)
 
     def remove_receptors_when_restart(self):
         # Remove the group for receptors.
-        RemoveReceptors.remove_receptors_from_group()
+        remove_receptor_obj = RemoveReceptors()
+        remove_receptor_obj.remove_receptors_from_group()

@@ -17,7 +17,6 @@ from tango.server import run,attribute, command, device_property
 
 import logging
 
-LOGGER = logging.getLogger(__name__)
 
 class TangoGroupClient:
     """
@@ -27,7 +26,7 @@ class TangoGroupClient:
     def __init__(self, group_name):
         self.tango_group = group_name
         self.tango_group = self.get_tango_group(group_name)
-    
+        self.logger = logging.getLogger(__name__)
     def get_tango_group(self, group_name):
         """
         Create Tango Group Command

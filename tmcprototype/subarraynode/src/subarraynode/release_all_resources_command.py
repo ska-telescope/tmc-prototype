@@ -14,6 +14,7 @@ from ska.base import SKASubarray
 from subarraynode.tango_group_client import TangoGroupClient
 from subarraynode.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
+from .tango_server_helper import TangoServerHelper
 from subarraynode.remove_receptors import RemoveReceptors
 
 
@@ -58,12 +59,12 @@ class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
         self.release_csp_resources(device_data)
         self.logger.info(const.STR_SDP_RELEASE)
         self.release_sdp_resources(device_data)
-        device._scan_id = ""
+        device_data._scan_id = ""
         # For now cleared SB ID in ReleaseAllResources command. When the EndSB command is implemented,
         # It will be moved to that command.
-        device._sb_id = ""
-        device.is_release_resources = True
-        argout = device._dish_leaf_node_group.get_device_list(True)
+        device_data._sb_id = ""
+        device_data.is_release_resources = True
+        argout = device_data._dish_leaf_node_group_client.get_group_device_list(True)
         log_msg = "Release_all_resources:", argout
         self.logger.debug(log_msg)
         message = str(argout)
@@ -109,4 +110,5 @@ class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
 
     def remove_receptors_when_release_resources(self):
         # Remove the group for receptors.
-        RemoveReceptors.remove_receptors_from_group()
+        remove_receptors_obj =RemoveReceptors()
+        remove_receptors_obj.remove_receptors_from_group()
