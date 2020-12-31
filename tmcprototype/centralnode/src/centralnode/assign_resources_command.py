@@ -1,3 +1,6 @@
+"""
+AssignResources class for CentralNode.
+"""
 import json
 import ast
 
