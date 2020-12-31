@@ -24,7 +24,7 @@ class ObsResetCommand(BaseCommand):
         :raises: DevFailed if this command is not allowed to be run in current device state
 
         """
-        device = self.target
+        # device = self.target
         if self.state_model.op_state in [DevState.UNKNOWN, DevState.DISABLE]:
             log_msg= "ObsReset() is not allowed in " + str(self.state_model.op_state)
             tango.Except.throw_exception(log_msg ,

@@ -29,7 +29,7 @@ class AbortCommand(BaseCommand):
         :raises: DevFailed if this command is not allowed to be run in current device state
 
         """
-        device = self.target
+        # device = self.target
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
             tango.Except.throw_exception("Abort() is not allowed in current state",
                                             "Failed to invoke Abort command on CspSubarrayLeafNode.",

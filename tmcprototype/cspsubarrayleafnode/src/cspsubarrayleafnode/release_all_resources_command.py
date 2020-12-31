@@ -25,15 +25,15 @@ class ReleaseAllResourcesCommand(BaseCommand):
         :raises: DevFailed if this command is not allowed to be run in current device state
 
         """
-        # device = self.target
+        device_data = self.target
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
             tango.Except.throw_exception("ReleaseAllResources() is not allowed in current state",
                                             "Failed to invoke ReleaseAllResources command on "
                                             "cspsubarrayleafnode.",
                                             "cspsubarrayleafnode.ReleaseAllResources()",
                                             tango.ErrSeverity.ERR)
-
-        # if device._csp_subarray_proxy.obsState != ObsState.IDLE:
+        # csp_sa_client = TangoClient(device_data.csp_subarray_fqdn)
+        # if csp_sa_client.get_attribute("obsState") != ObsState.IDLE:
         #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_IDLE, "Failed to invoke ReleaseAllResourcesCommand command on cspsubarrayleafnode.",
         #                                     "CspSubarrayLeafNode.ReleaseAllResourcesCommand",
         #                                     tango.ErrSeverity.ERR)

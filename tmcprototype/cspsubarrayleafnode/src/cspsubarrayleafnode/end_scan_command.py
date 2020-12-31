@@ -27,7 +27,7 @@ class EndScanCommand(BaseCommand):
         in current device state
 
         """
-        device = self.target
+        # device = self.target
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
             tango.Except.throw_exception("EndScan() is not allowed in current state",
                                             "Failed to invoke EndScan command on cspsubarrayleafnode.",

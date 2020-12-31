@@ -34,14 +34,15 @@ class ConfigureCommand(BaseCommand):
             in current device state
 
         """
-        device = self.target
+        device_data = self.target
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
             tango.Except.throw_exception("Configure() is not allowed in current state",
                                             "Failed to invoke Configure command on cspsubarrayleafnode.",
                                             "cspsubarrayleafnode.Configure()",
                                             tango.ErrSeverity.ERR)
 
-        # if device._csp_subarray_proxy.obsState not in [ObsState.IDLE, ObsState.READY]:
+        # csp_sa_client = TangoClient(device_data.csp_subarray_fqdn)
+        # if csp_sa_client.get_attribute("obsState") not in [ObsState.IDLE, ObsState.READY]:
         #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_OR_IDLE, const.ERR_CONFIGURE_INVOKING_CMD,
         #                                     "CspSubarrayLeafNode.ConfigureCommand",
         #                                     tango.ErrSeverity.ERR)

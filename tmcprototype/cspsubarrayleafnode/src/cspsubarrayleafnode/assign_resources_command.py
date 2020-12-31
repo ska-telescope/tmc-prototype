@@ -11,6 +11,7 @@ from tango import DevState, DevFailed
 from ska.base.commands import BaseCommand
 from . import const
 from .transaction_id import identify_with_id
+from ska.base.control_model import ObsState
 from .delay_model import DelayManager
 
 

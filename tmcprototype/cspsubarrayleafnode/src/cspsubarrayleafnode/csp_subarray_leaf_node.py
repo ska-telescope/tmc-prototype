@@ -25,7 +25,6 @@ import json
 # Third Party imports
 from tmc.common.tango_client import TangoClient
 # PyTango imports
-import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, DevFailed
 from tango.server import run, attribute, command, device_property
 import katpoint
@@ -567,9 +566,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
         print ("ObsState:", csp_sa_client.get_attribute("obsState"))
         if csp_sa_client.get_attribute("obsState") in [ObsState.EMPTY, ObsState.IDLE]:
             self.logger.info("CSP Subarray is in required obsState, resources will be assigned")
+            #return True
         else:
             self.logger.error("CSP Subarray is not in EMPTY/IDLE obsState")
             self.device_data._read_activity_message = "Error in device obsState"
+            #return False
             raise InvalidObsStateError("CSP Subarray is not in EMPTY/IDLE obsState")
 
     
