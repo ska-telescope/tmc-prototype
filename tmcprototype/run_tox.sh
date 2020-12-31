@@ -19,8 +19,13 @@ mkdir -p $REPORTS_DIR
 # cd ..
 # done
 
-cd $sdpsubarrayleafnode;
+export TMC_ELEMENT=sdpsubarrayleafnode;
+echo +++ Trying tests for $TMC_ELEMENT;
+cd $TMC_ELEMENT;
 tox -e py37
+mv ${TMC_ELEMENT}_coverage ../$REPORTS_DIR;
+cd ..
+
 
 # Combine coverage reports
 cd $REPORTS_DIR
