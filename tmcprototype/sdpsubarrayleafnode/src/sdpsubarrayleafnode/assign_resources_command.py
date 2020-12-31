@@ -29,7 +29,6 @@ class AssignResources(BaseCommand):
         :raises: Exception if command execution throws any type of exception.
 
         """
-        device = self.target
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
             tango.Except.throw_exception("AssignResources() is not allowed in current state",
                                     "Failed to invoke AssignResources command on SdpSubarrayLeafNode.",
