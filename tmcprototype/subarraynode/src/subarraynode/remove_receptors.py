@@ -46,6 +46,8 @@ class RemoveReceptors:
 
         # self._unsubscribe_resource_events(self._dishLnVsHealthEventID)
         # self._unsubscribe_resource_events(self._dishLnVsPointingStateEventID)
+        device_data.health_state_aggr.unsubscribe_dish_health_state()
+        device_data.obs_state_aggr.unsubscribe_dish_pointing_state()
 
         # clearing dictonaries and lists
         device_data._dishLnVsHealthEventID.clear()  # Clear eventID dictionary
@@ -57,7 +59,6 @@ class RemoveReceptors:
         # self._dish_leaf_node_proxy.clear()
         # self._receptor_id_list.clear()
         self.logger.info(const.STR_RECEPTORS_REMOVE_SUCCESS)
-
 
 
     # def _unsubscribe_resource_events(self, proxy_event_id_map):

@@ -35,7 +35,7 @@ class TangoGroupClient:
 
         return self.tango_group
 
-   def add_device(self, device_to_add):
+    def add_device(self, device_to_add):
         """
         Add device element in the Group.
 

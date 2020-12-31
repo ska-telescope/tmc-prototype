@@ -47,7 +47,7 @@ class OffCommand(SKASubarray.OffCommand):
             self.logger.info(message)
 
             # TODO unsubscribe health obsState events from CSP and SDP
-            # device_data.health_state_aggr.unsubscribe()
+            device_data.health_state_aggr.unsubscribe()
             # device_data.obs_state_aggr.unsubscribe()
             # device_data._unsubscribe_csp_sdp_state_events(device_data._cspSdpLnHealthEventID)
             # device_data._unsubscribe_csp_sdp_state_events(device_data._cspSdpLnObsStateEventID)
