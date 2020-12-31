@@ -14,6 +14,7 @@ from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from subarraynode.tango_group_client import TangoGroupClient
+from subarraynode.tango_server_helper import TangoServerHelper
 from subarraynode.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
 from subarraynode.end_scan_command import EndScanCommand
@@ -46,33 +47,34 @@ class ScanCommand(SKASubarray.ScanCommand):
 
         :raises: DevFailed if the command execution is not successful
         """
-        device_data = DeviceData.get_instance()
-        device_data.is_scan_completed = False
-        device_data.is_release_resources = False
-        device_data.is_restart_command = False
-        device_data.is_abort_command = False
-        device_data.is_obsreset_command = False
+        self.device_data = DeviceData.get_instance()
+        self.device_data.is_scan_completed = False
+        self.device_data.is_release_resources = False
+        self.device_data.is_restart_command = False
+        self.device_data.is_abort_command = False
+        self.device_data.is_obsreset_command = False
+        self.device_data.tango_group_client_obj = TangoServerHelper.get_instance()
         try:
             log_msg = const.STR_SCAN_IP_ARG + str(argin)
             self.logger.info(log_msg)
-            device_data._read_activity_message = log_msg
-            device_data.isScanRunning = True
-            self.scan_sdp(device_data, argin)
-            self.scan_csp(device_data, argin)
-            device_data._read_activity_message = const.STR_CSP_SCAN_INIT
+            self.device_data._read_activity_message = log_msg
+            self.device_data.isScanRunning = True
+            self.scan_sdp(self.device_data, argin)
+            self.scan_csp(self.device_data, argin)
+            self.device_data._read_activity_message = const.STR_CSP_SCAN_INIT
             # TODO: Update observation state aggregation logic
             # if self._csp_sa_obs_state == ObsState.IDLE and self._sdp_sa_obs_state ==\
             #         ObsState.IDLE:
             #     if len(self.dishPointingStateMap.values()) != 0:
             #         self.calculate_observation_state()
-            device_data.set_status(const.STR_SA_SCANNING)
+            self.device_data.tango_group_client_obj.set_status(const.STR_SA_SCANNING)
             self.logger.info(const.STR_SA_SCANNING)
-            device_data._read_activity_message = const.STR_SCAN_SUCCESS
+            self.device_data._read_activity_message = const.STR_SCAN_SUCCESS
 
             # Once Scan Duration is complete call EndScan Command
             self.logger.info("Starting Scan Thread")
-            device_data.scan_thread = threading.Timer(self.device_data.scan_duration, self.call_end_scan_command)
-            device_data.scan_thread.start()
+            scan_thread = threading.Timer(self.device_data.scan_duration, self.call_end_scan_command)
+            scan_thread.start()
             self.logger.info("Scan thread started")
             return (ResultCode.STARTED, const.STR_SCAN_SUCCESS)
         except DevFailed as dev_failed:

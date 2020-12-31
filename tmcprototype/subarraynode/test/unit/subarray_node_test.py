@@ -21,9 +21,12 @@ from subarraynode import SubarrayNode, const, ElementDeviceData, release
 from subarraynode.const import PointingState
 from subarraynode.tango_client import TangoClient
 from subarraynode.configure_command import ConfigureCommand
+from subarraynode.scan_command import ScanCommand
+from subarraynode.device_data import DeviceData
 from ska.base.control_model import AdminMode, HealthState, ObsState, ObsMode, TestMode, SimulationMode, \
     LoggingLevel
 from ska.base.commands import ResultCode
+
 
 
 # Command wait timeout:
@@ -537,97 +540,6 @@ def subarray_state_model():
 def device_data():
     yield DeviceData()
 
-def test_configure_command(device_data, subarray_state_model, mock_device_proxy):
-    # tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map, tango_client_obj = mock_lower_devices
-    device_proxy, tango_client_obj = mock_device_proxy
-    configure_cmd = ConfigureCommand(device_data, subarray_state_model)
-    attribute = "receiveAddresses"
-    # dummy_event = create_dummy_event_state(sdp_subarray1_fqdn, attribute,
-    #                                        receive_addresses_map)
-    with mock.patch.object(TangoClient, "get_deviceproxy", return_value=Mock()):
-        with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_receive_addresses):
-            tango_client_obj = TangoClient('ska_mid/tm_leaf_node/sdp_subarray01')
-            device_proxy.On()
-
-    # event_subscription_map[attribute](dummy_event)
-    # dummy_event = create_dummy_event_state(csp_subarray1_fqdn, attribute,
-    #                                        receive_addresses_map)
-    # with mock.patch.object(TangoClient, "get_deviceproxy", return_value=Mock()):
-    #     with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber):
-    #         tango_client_obj = TangoClient('ska_mid/tm_leaf_node/csp_subarray01')
-    # event_subscription_map[attribute](dummy_event)
-    subarray_state_model._straight_to_state(DevState.ON, None, ObsState.IDLE)
-    # assert device_proxy.Configure(configure_str) == [[ResultCode.STARTED], ['Configure command invoked']]
-    # verify_called_correctly(sdp_subarray1_ln_proxy_mock, const.CMD_CONFIGURE, sdp_conf_str)
-    # verify_called_correctly(csp_subarray1_ln_proxy_mock, const.CMD_CONFIGURE, csp_conf_str)
-    # assert device_proxy.obsState == ObsState.CONFIGURING
-    # subarray_state_model._straight_to_state(IDLE)
-
-    assert configure_cmd.do(configure_str) == (ResultCode.STARTED, "Configure command invoked")
-    assert 0
-
-def dummy_subscriber_receive_addresses(attribute, callback_method):
-    fake_event = Mock()
-    fake_event.err = False
-    fake_event.attr_name = f"ska_mid/tm_leaf_node/sdp_subarray01/{attribute}"
-    fake_event.attr_value.value =  receive_addresses_map
-    print("Inside dummy subscriber for receive add:::::::::::::::::::::::::::::::::::::::::::::::::::")
-    print( fake_event.attr_value.value )
-    callback_method(fake_event)
-    return 10
-
-def create_dummy_event_state(device_fqdn, attribute, attr_value):
-    print("inside create dummy::::::::::::::::::::::::::::::::::::::::")
-    with mock.patch.object(TangoClient, "get_deviceproxy", return_value=Mock()):
-        # with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_sd):
-        tango_client_obj = TangoClient(device_fqdn)
-        tango_client_obj.subscribe_attribute(attribute, callback_method=Mock())
-    fake_event = Mock()
-    fake_event.err = False
-    fake_event.attr_name = f"{device_fqdn}/{attribute}"
-    fake_event.attr_value.value = attr_value
-    fake_event.device = tango_client_obj.deviceproxy
-    return fake_event
-
-@pytest.fixture(
-    scope="function",
-    params=[
-        ObsState.IDLE
-    ])
-def health_state(request):
-    return request.param
-
-def dummy_subscriber(attribute, callback_method):
-    fake_event = Mock()
-    fake_event.err = False
-    fake_event.attr_name = f"ska_mid/tm_leaf_node/csp_subarray01/{attribute}"
-    fake_event.attr_value.value =  ObsState.IDLE
-    print("Inside dummy subscriber :::::::::::::::::::::::::::::::::::::::::::::::::::")
-    print( fake_event.attr_value.value )
-    callback_method(fake_event)
-    return 10
-
-def dummy_subscriber_for_sdp(attribute, callback_method):
-    fake_event = Mock()
-    fake_event.err = False
-    fake_event.attr_name = f"ska_mid/tm_leaf_node/sdp_subarray01/{attribute}"
-    fake_event.attr_value.value =  ObsState.CONFIGURING
-    print("Inside dummy subscriber for SDP:::::::::::::::::::::::::::::::::::::::::::::::::::")
-    print( fake_event.attr_value.value )
-    callback_method(fake_event)
-    return 10
-
-def dummy_subscriber_sdp(attribute, callback_method):
-    fake_event = Mock()
-    fake_event.err = False
-    fake_event.attr_name = f"ska_mid/tm_leaf_node/sdp_subarray01/{attribute}"
-    fake_event.attr_value.value =  ObsState.IDLE
-    print("Inside dummy subscriber ...........................")
-    print( fake_event.attr_value.value )
-
-    callback_method(fake_event)
-    return 10
-
 
 def test_assign_resource_should_raise_exception_when_called_when_device_state_off():
     with fake_tango_system(SubarrayNode) as tango_context:
@@ -884,36 +796,51 @@ def verify_called_correctly(agent:Mock,command,data):
     subsisted_data = json.loads(data)
     assert_data_is_subsisted_by(args,subsisted_data)
 
-# def test_configure_command_subarray_with_invalid_configure_input(mock_lower_devices):
-#     tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
-#     csp_subarray1_obsstate_attribute = "cspSubarrayObsState"
-#     sdp_subarray1_obsstate_attribute = "sdpSubarrayObsState"
-#     tango_context.device.On()
-#     tango_context.device.AssignResources(assign_input_str)
-#     attribute = 'ObsState'
-#     dummy_event_csp = create_dummy_event_state(csp_subarray1_ln_proxy_mock, csp_subarray1_ln_fqdn,
-#                                                attribute, ObsState.IDLE)
-#     event_subscription_map[csp_subarray1_obsstate_attribute](dummy_event_csp)
-#
-#     dummy_event_sdp = create_dummy_event_state(sdp_subarray1_ln_proxy_mock, sdp_subarray1_ln_fqdn,
-#                                                attribute, ObsState.IDLE)
-#     event_subscription_map[sdp_subarray1_obsstate_attribute](dummy_event_sdp)
-#     with pytest.raises(tango.DevFailed) as df:
-#         tango_context.device.Configure(invalid_conf_input)
-#     assert tango_context.device.obsState == ObsState.FAULT
-#
 
-# def test_configure_command_subarray_with_invalid_configure_input(device_data, subarray_state_model, mock_device_proxy):
-#     deviceproxy, tango_client_obj = mock_device_proxy
-#     configure_cmd = ConfigureCommand(device_data, subarray_state_model)
-#     attribute = "receiveAddresses"
-#     with mock.patch.object(TangoClient, "get_deviceproxy", return_value=Mock()):
-#         with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_receive_addresses):
-#             tango_client_obj = TangoClient('ska_mid/tm_leaf_node/sdp_subarray01')
-#     with pytest.raises(tango.DevFailed) as df:
-#         configure_cmd.do(invalid_conf_input)
-#     #TODO: Assert with devfailed activity message
-#     # assert tango_context.device.obsState == ObsState.FAULT
+def test_configure_command(device_data, subarray_state_model, mock_device_proxy):
+    device_proxy, tango_client_obj = mock_device_proxy
+    configure_cmd = ConfigureCommand(device_data, subarray_state_model)
+    attribute = "receiveAddresses"
+    with mock.patch.object(TangoClient, "get_deviceproxy", return_value=Mock()):
+        with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_receive_addresses):
+            tango_client_obj = TangoClient('ska_mid/tm_leaf_node/sdp_subarray01')
+            device_proxy.On()
+    subarray_state_model._straight_to_state(DevState.ON, None, ObsState.IDLE)
+    assert configure_cmd.do(configure_str) == (ResultCode.STARTED, "Configure command invoked")
+
+
+def dummy_subscriber_receive_addresses(attribute, callback_method):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"ska_mid/tm_leaf_node/sdp_subarray01/{attribute}"
+    fake_event.attr_value.value =  receive_addresses_map
+    print("Inside dummy subscriber for receive add:::::::::::::::::::::::::::::::::::::::::::::::::::")
+    print( fake_event.attr_value.value )
+    callback_method(fake_event)
+    return 10
+
+
+def test_configure_command_subarray_with_invalid_configure_input(device_data, subarray_state_model, mock_device_proxy):
+    device_proxy, tango_client_obj = mock_device_proxy
+    configure_cmd = ConfigureCommand(device_data, subarray_state_model)
+    attribute = "receiveAddresses"
+    with mock.patch.object(TangoClient, "get_deviceproxy", return_value=Mock()):
+        with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_receive_addresses):
+            tango_client_obj = TangoClient('ska_mid/tm_leaf_node/sdp_subarray01')
+            device_proxy.On()
+    subarray_state_model._straight_to_state(DevState.ON, None, ObsState.IDLE)
+    with pytest.raises(tango.DevFailed) as df:
+        configure_cmd.do(invalid_conf_input)
+    device_data = DeviceData.get_instance()
+    assert device_data._read_activity_message in str(df.value)
+    # assert configure_cmd.do(configure_str) == (ResultCode.STARTED, "Configure command invoked")
+
+def test_scan_command(device_data, subarray_state_model, mock_device_proxy):
+    device_proxy, tango_client_obj = mock_device_proxy
+    scan_cmd = ScanCommand(device_data, subarray_state_model)
+    subarray_state_model._straight_to_state(DevState.ON, None, ObsState.IDLE)
+    assert scan_cmd.do(configure_str) == (ResultCode.STARTED, 'Scan command is executed successfully.')
+
 
 '''
 def test_configure_command_obsstate_changes_from_configuring_to_ready(mock_lower_devices):
