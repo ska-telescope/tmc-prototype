@@ -20,3 +20,4 @@ flake8
 tango-simlib==0.7.0
 lmcbaseclasses
 skatmccommon==0.1.2+b01374cf
+
