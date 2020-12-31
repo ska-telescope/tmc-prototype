@@ -62,6 +62,7 @@ class DeviceData:
         self.sdp_sa_obs_state = None
         self._dishLnVsHealthEventID = {}
         self._dishLnVsPointingStateEventID = {}
+        self.health_state = None
         # TODO: For future use
         self._receptor_id_list = []
 
