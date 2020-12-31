@@ -938,15 +938,12 @@ def test_releaseallresources_command(device_data, subarray_state_model, mock_dev
     assert release_resources_cmd.do() == (ResultCode.STARTED, 'True')
 
 
-# def test_releaseresources_raise_devfailed(device_data, subarray_state_model, mock_device_proxy):
-#     device_proxy, tango_client_obj = mock_device_proxy
-#     device_proxy.On()
-#     device_proxy.AssignResources(assign_input_str)
-#     tango_client_obj.deviceproxy.command_inout.side_effect = raise_devfailed_exception
-#     release_resources_cmd = ReleaseAllResourcesCommand(device_data, subarray_state_model)
-#     with pytest.raises(tango.DevFailed) as df:
-#         release_resources_cmd.do()
-#     assert "Error executing command ReleaseAllResourcesCommand" in str(df.value)
+def test_release_resource_should_raise_exception_when_called_before_assign_resource(device_data, subarray_state_model, mock_device_proxy):
+    device_proxy, tango_client_obj = mock_device_proxy
+    release_resources_cmd = ReleaseAllResourcesCommand(device_data, subarray_state_model)
+    with pytest.raises(tango.DevFailed) as df:
+        release_resources_cmd.do()
+    assert const.ERR_RELEASE_RES_CMD in str(df.value)
 
 '''
 def test_configure_command_obsstate_changes_from_configuring_to_ready(mock_lower_devices):
