@@ -47,10 +47,10 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         """
         self.logger.info(type(self.target))
         device_data = DeviceData.get_instance()
-        self.standby_dish(device_data)
-        self.standby_csp(device_data)
-        self.standby_sdp(device_data)
-        self.standby_subarray(device_data)
+        self.standby_dish(device_data._dish_leaf_node_devices)
+        self.standby_csp(device_data.csp_master_ln_fqdn)
+        self.standby_sdp(device_data.sdp_master_ln_fqdn)
+        self.standby_subarray(device_data.tm_mid_subarray)
         device_data.health_aggreegator.unsubscribe_event()
         log_msg = const.STR_STANDBY_CMD_ISSUED
         self.logger.info(log_msg)
@@ -60,19 +60,18 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         device_data.obs_state_aggregator.stop_aggregation()
         return (ResultCode.OK,const.STR_STANDBY_CMD_ISSUED)
 
-    def standby_csp(self,device_data):
+    def standby_csp(self, csp_fqdn):
         """
         Create TangoClient for CspMasterLeaf node and call
         standby method.
 
         :return: None
         """
-
-        csp_mln_client = TangoClient(device_data.csp_master_ln_fqdn)
+        csp_mln_client = TangoClient(csp_fqdn)
         self.standby_leaf_node(csp_mln_client, const.CMD_OFF)
         self.standby_leaf_node(csp_mln_client, const.CMD_STANDBY, [])
 
-    def standby_sdp(self,device_data):
+    def standby_sdp(self, sdp_fqdn):
         """
         Create TangoClient for SdpMasterLeaf node and call
         standby method.
@@ -80,12 +79,12 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         :return: None
         """
 
-        sdp_mln_client = TangoClient(device_data.sdp_master_ln_fqdn)
+        sdp_mln_client = TangoClient(sdp_fqdn)
         self.standby_leaf_node(sdp_mln_client, const.CMD_OFF)
         self.standby_leaf_node(sdp_mln_client, const.CMD_STANDBY)
 
 
-    def standby_dish(self,device_data):
+    def standby_dish(self, dish_fqdn):
         """
         Create TangoClient for DishLeaf node node and call
         standby method.
@@ -93,23 +92,24 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         :return: None
         """
 
-        for name in range(0, len(device_data._dish_leaf_node_devices)):
-            dish_ln_client = TangoClient(device_data._dish_leaf_node_devices[name])
+        for name in range(0, len(dish_fqdn)):
+            dish_ln_client = TangoClient(dish_fqdn[name])
             self.standby_leaf_node(dish_ln_client, const.CMD_SET_STANDBY_MODE)
 
-    def standby_subarray(self,device_data):
+    def standby_subarray(self, subarray_fqdn_list):
         """
         Create TangoClient for Subarray node and call
         standby method.
 
         :return: None
         """
-        for subarrayID in range(1, len(device_data.tm_mid_subarray) + 1):
+        for subarrayID in range(1, len(subarray_fqdn_list) + 1):
             subarray_client = TangoClient(subarrayID)
             self.standby_leaf_node(subarray_client, const.CMD_OFF)
             self.standby_leaf_node(subarray_client, const.CMD_STANDBY)
 
-    def standby_leaf_node(self,tango_client, cmd_name, param=None):
+
+    def standby_leaf_node(self, tango_client, cmd_name, param=None):
         """
         Invoke command on leaf nodes.
 
@@ -121,7 +121,7 @@ class StandByTelescope(SKABaseDevice.OffCommand):
 
         :raises: Devfailed exception if error occures while executing command on leaf nodes.
         """
-        device_data = self.target
+        device_data = DeviceData.get_instance()
         try:
             tango_client.send_command(cmd_name, param)
             log_msg = 'Command {} invoked successfully on {}'.format(cmd_name, tango_client.get_device_fqdn)

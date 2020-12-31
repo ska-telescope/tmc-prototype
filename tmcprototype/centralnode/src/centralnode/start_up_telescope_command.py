@@ -48,17 +48,17 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
 
         :rtype: (ResultCode, str)
         """
-        device_data = self.target
+        device_data = DeviceData.get_instance()
         self.logger.info(type(self.target))
         device_data.health_aggreegator = HealthStateAggreegator(self.logger)
         device_data.health_aggreegator.subscribe_event()
         device_data.health_aggreegator.csp_health_subscribe_event()
         device_data.health_aggreegator.sdp_health_subscribe_event()
         device_data.health_aggreegator.subarray_health_subscribe_event()
-        self.startup_sdp()
-        self.startup_dish()
-        self.startup_csp()
-        self.startup_subarray()
+        self.startup_sdp(device_data.sdp_master_ln_fqdn)
+        self.startup_dish(device_data._dish_leaf_node_devices)
+        self.startup_csp(device_data.csp_master_ln_fqdn)
+        self.startup_subarray(device_data.tm_mid_subarray)
         
         log_msg = const.STR_ON_CMD_ISSUED
         self.logger.info(log_msg)
@@ -72,49 +72,45 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         return (ResultCode.OK,const.STR_ON_CMD_ISSUED)
 
 
-    def startup_csp(self):
+    def startup_csp(self, csp_fqdn):
         """
         Create TangoClient for CspMasterLeaf node and call
         startup method.
 
         :return: None
         """
-        device_data = DeviceData.get_instance()
-        csp_mln_client = TangoClient(device_data.csp_master_ln_fqdn)
+        csp_mln_client = TangoClient(csp_fqdn)
         self.startup_leaf_node(csp_mln_client)
 
-    def startup_sdp(self):
+    def startup_sdp(self, sdp_fqdn):
         """
         Create TangoClient for SdpMasterLeaf node and call
         startup method.
 
         :return: None
         """
-        device_data = DeviceData.get_instance()
-        sdp_mln_client = TangoClient(device_data.sdp_master_ln_fqdn)
+        sdp_mln_client = TangoClient(sdp_fqdn)
         self.startup_leaf_node(sdp_mln_client)
 
-    def startup_dish(self):
+    def startup_dish(self, dish_fqdn):
         """
         Create TangoClient for DishLeaf node and call
         startup method.
 
         :return: None
         """
-        device_data = DeviceData.get_instance()
-        for name in range(0, len(device_data._dish_leaf_node_devices)):
-            dish_ln_client = TangoClient(device_data._dish_leaf_node_devices[name])
+        for name in range(0, len(dish_fqdn)):
+            dish_ln_client = TangoClient(dish_fqdn[name])
             self.startup_leaf_node(dish_ln_client)
 
-    def startup_subarray(self):
+    def startup_subarray(self, subarray_fqdn_list):
         """
         Create TangoClient for Subarray node and call
         startup method.
 
         :return: None
         """
-        device_data = DeviceData.get_instance()
-        for subarrayID in range(1, len(device_data.tm_mid_subarray) + 1):
+        for subarrayID in range(1, len(subarray_fqdn_list) + 1):
             subarray_client = TangoClient(subarrayID)
             self.startup_leaf_node(subarray_client)
 
