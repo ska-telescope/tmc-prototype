@@ -104,7 +104,7 @@ class ReleaseResources(BaseCommand):
             if jsonArgument['releaseALL'] == True:
                 # Invoke "ReleaseAllResources" on SubarrayNode
                 subarray_client = TangoClient(subarray_fqdn)
-                return_val = subarray_client.send_command_with_return(const.CMD_RELEASE_RESOURCES)
+                return_val = subarray_client.send_command(const.CMD_RELEASE_RESOURCES)
                 res_not_released = ast.literal_eval(return_val[1][0])
                 log_msg = const.STR_REL_RESOURCES
                 self.logger.debug(log_msg)

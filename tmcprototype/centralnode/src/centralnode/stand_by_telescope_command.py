@@ -127,7 +127,6 @@ class StandByTelescope(SKABaseDevice.OffCommand):
             log_msg = 'Command {} invoked successfully on {}'.format(cmd_name, tango_client.get_device_fqdn)
             self.logger.debug(log_msg)
             device_data._read_activity_message = log_msg
-
         except DevFailed as dev_failed:
             log_msg = const.ERR_EXE_STANDBY_CMD + str(dev_failed)
             self.logger.exception(dev_failed)
@@ -135,9 +134,5 @@ class StandByTelescope(SKABaseDevice.OffCommand):
             tango.Except.throw_exception(const.STR_STANDBY_EXEC, log_msg,
                                          "CentralNode.StandByTelescopeCommand",
                                          tango.ErrSeverity.ERR)
-
-
-
-
 
 

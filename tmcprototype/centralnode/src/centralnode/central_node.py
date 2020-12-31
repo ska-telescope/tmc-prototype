@@ -17,7 +17,7 @@ from tango.server import run, attribute, command, device_property
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState
-from . import const, release, receptor_reassignment_checker
+from . import const, release
 from centralnode.start_up_telescope_command import StartUpTelescope
 from centralnode.stand_by_telescope_command import StandByTelescope
 from centralnode.assign_resources_command import AssignResources
@@ -29,8 +29,7 @@ from centralnode.obs_state_check import ObsStateAggregator
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 __all__ = ["CentralNode", "main", "AssignResources", "DeviceData", "const",
-           "exceptions", "HealthStateAggreegator", "input_validator", "ObsStateAggregator", "release",
-           "ReceptorReassignmentChecker", "ReleaseResources", "ResourceManager"
+           "ObsStateAggregator", "release", "ReleaseResources",
            "StandByTelescope", "StartUpTelescope", "StowAntennas"]
 
 class CentralNode(SKABaseDevice):

@@ -8,6 +8,7 @@ from ska.base.control_model import ObsState
 from . import const
 from tmc.common.tango_client import TangoClient
 import logging
+from centralnode.device_data import DeviceData
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 # TODO: this class is created separate from CentralNode class. Data from DeviceData class is required here.
@@ -62,6 +63,7 @@ class ObsStateAggregator:
         :raises: KeyError in Subarray obsState callback
         """
         try:
+            device_data  = DeviceData.get_instance()
             log_msg = 'Observation state attribute change event is : ' + str(evt)
             self.logger.info(log_msg)
             if not evt.err:
@@ -87,4 +89,5 @@ class ObsStateAggregator:
         except KeyError as key_error:
             self._read_activity_message = const.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
             log_msg = const.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
+            self.logger.critical(log_msg)
             self.logger.critical(log_msg)

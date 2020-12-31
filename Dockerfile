@@ -16,7 +16,7 @@ RUN python3 -m pip install ska-telescope-model==0.1.4
 RUN python3 -m pip install install ska-log-transactions
 
 # install all local TMC packages
-RUN python3 -m pip install skatmccommon==0.1.1+4fba2733
+RUN python3 -m pip install skatmccommon==0.1.2+b01374cf
     /app/tmcprototype/centralnode \
     /app/tmcprototype/centralnodelow \
     /app/tmcprototype/cspmasterleafnode \
