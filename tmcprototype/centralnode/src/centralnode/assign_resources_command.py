@@ -157,8 +157,8 @@ class AssignResources(BaseCommand):
             subarrayFqdn = device_data.subarray_FQDN_dict[subarrayID]
             ## check for duplicate allocation
             self.logger.info("Checking for resource reallocation.")
-            check_res = ReceptorReassignmentChecker(self.logger)
-            check_res.do(json_argument["dish"]["receptorIDList"])
+            device_data.check_resources = ReceptorReassignmentChecker(self.logger)
+            device_data.check_resources.do(json_argument["dish"]["receptorIDList"])
 
             #Allocate resources to subarray
             # Remove Subarray Id key from input json argument and send the json with

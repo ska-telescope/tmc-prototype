@@ -38,7 +38,6 @@ class DeviceData:
         self._dish_leaf_node_devices = []
         self._leaf_device_proxy = []
         self.subarray_FQDN_dict = {}
-        self._subarray_allocation = {}
         self.sdp_master_ln_fqdn = ""
         self.csp_master_ln_fqdn = ""
         self.dln_prefix = ""
@@ -49,6 +48,7 @@ class DeviceData:
         self.health_aggreegator = None
         self.resource_manager = None
         self.obs_state_aggregator = None
+        self.check_resources = None
 
     @staticmethod
     def get_instance():

@@ -19,6 +19,7 @@ class ResourceManager:
             self.logger = logging.getLogger(__name__)
         else:
             self.logger = logger
+        self._subarray_allocation = {}
 
     
     def initialize_resource_matrix(self):
@@ -33,7 +34,7 @@ class ResourceManager:
             # Initialize device._subarray_allocation variable (map of Dish Id and allocation status)
             # to indicate availability of the dishes
             dish_ID = "dish000" + str(dish)
-            device_data._subarray_allocation[dish_ID] = "NOT_ALLOCATED"
+            self._subarray_allocation[dish_ID] = "NOT_ALLOCATED"
 
     def update_resource_matrix(self, resources_allocated, subarrayID):
         """
@@ -45,14 +46,16 @@ class ResourceManager:
         device_data = DeviceData.get_instance()
         for dish in range(0, len(resources_allocated)):
             dish_ID = "dish" + (resources_allocated[dish])
-            device_data._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
+            self._subarray_allocation[dish_ID] = "SA" + str(subarrayID)
             device_data.receptorIDList.append(resources_allocated[dish]) 
     
     def update_resource_deallocation(self, subarray_name):
-        device_data = DeviceData.get_instance()
-        for Dish_ID, Dish_Status in device_data._subarray_allocation.items():
+        for Dish_ID, Dish_Status in self._subarray_allocation.items():
             if Dish_Status == subarray_name:
-                device_data._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
+                self._subarray_allocation[Dish_ID] = "NOT_ALLOCATED"
+    
+    def is_already_assigned(self, dish_ID):
+        return self._subarray_allocation[dish_ID] != "NOT_ALLOCATED"
     
     @staticmethod
     def get_instance():

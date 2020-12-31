@@ -33,12 +33,11 @@ class ReceptorReassignmentChecker:
         self.logger.info("Checking for duplicate allocation of dishes.")
         duplicate_allocation_count = 0
         duplicate_allocation_dish_ids = []
-        self.logger.info(device_data._subarray_allocation)
-
+       
         for receptor in input_receptors_list:
             dish_ID = "dish" + receptor
             self.logger.info("Checking allocation status of dish %s.", dish_ID)
-            if device_data._subarray_allocation[dish_ID] != "NOT_ALLOCATED":
+            if (device_data.resource_manager.is_already_assigned(dish_ID)):
                 self.logger.info("Dish %s is already allocated.", dish_ID)
                 # duplicate_allocation_dish_ids.append(dish_ID)
                 duplicate_allocation_dish_ids.append(receptor)

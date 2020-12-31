@@ -76,9 +76,10 @@ class ObsStateAggregator:
                 subarray_id = "SA" + str(id)
                 self.logger.info(log_msg)
                 if obs_state == ObsState.EMPTY or obs_state == ObsState.RESTARTING:
-                    for dish, subarray in self._subarray_allocation.items():
-                        if subarray == subarray_id:
-                            self._subarray_allocation[dish] = "NOT_ALLOCATED"
+                    device_data.resource_manager.update_resource_deallocation(subarray_id)
+                    # for dish, subarray in self._subarray_allocation.items():
+                    #     if subarray == subarray_id:
+                    #         self._subarray_allocation[dish] = "NOT_ALLOCATED"
             else:
                 # TODO: For future reference
                 self._read_activity_message = const.ERR_SUBSR_SA_OBS_STATE + str(evt)
