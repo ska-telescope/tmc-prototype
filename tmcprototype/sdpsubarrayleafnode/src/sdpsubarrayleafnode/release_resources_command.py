@@ -7,7 +7,7 @@ import tango
 from tango import DevState, DevFailed
 # Additional import
 from ska.base.commands import BaseCommand
-from ska.base.control_model import ObsState
+# from ska.base.control_model import ObsState
 from tmc.common.tango_client import TangoClient
 from . import const
 
@@ -28,7 +28,6 @@ class ReleaseAllResources(BaseCommand):
         :raises: Exception if command execution throws any type of exception
 
         """
-        device_data = self.target
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
             tango.Except.throw_exception("ReleaseAllResources() is not allowed in current state",
                                             "Failed to invoke ReleaseAllResources command on "
@@ -36,6 +35,8 @@ class ReleaseAllResources(BaseCommand):
                                             "SdpSubarrayLeafNode.ReleaseAllResources()",
                                             tango.ErrSeverity.ERR)
         
+        # TODO: Mock obs_state issue to be resolved
+        # device_data = self.target
         # sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
         # if sdp_sa_ln_client_obj.get_attribute("obsState") != ObsState.IDLE:
         #     tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, "Failed to invoke ReleaseAllResources command on "
