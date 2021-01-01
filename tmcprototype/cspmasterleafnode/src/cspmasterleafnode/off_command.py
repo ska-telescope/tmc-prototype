@@ -1,9 +1,9 @@
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
-from tmc.common.tango_client import TangoClient
+# from tmc.common.tango_client import TangoClient
 from . import const
-from .attribute_callbacks import CbfHealthStateAttributeUpdator, PssHealthStateAttributeUpdator, \
-                                                                            PstHealthStateAttributeUpdator
+# from .attribute_callbacks import CbfHealthStateAttributeUpdator, PssHealthStateAttributeUpdator, \
+#                                                                             PstHealthStateAttributeUpdator
 
 class Off(SKABaseDevice.OffCommand):
     """
@@ -53,7 +53,7 @@ class Off(SKABaseDevice.OffCommand):
         :rtype: (ResultCode, str)
 
         """
-        device_data = self.target
+        # device_data = self.target
         # pass argin to csp master.
         # If the array length is 0, the command applies to the whole CSP Element.
         # If the array length is >, each array element specifies the FQDN of the CSP SubElement to switch OFF.
