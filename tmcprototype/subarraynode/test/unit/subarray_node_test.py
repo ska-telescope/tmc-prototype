@@ -684,56 +684,59 @@ class SubarrayProxyContext(ProxyContext):
 
 
 class SubarrayContext(NamedTuple):
-    sdp_subarray1: SubarrayProxyContext
-    csp_subarray1: SubarrayProxyContext
-    event_subscription_map: Any
-    tango_context: Any
-    sdp_subarray1_ln: SubarrayProxyContext
+    # sdp_subarray1: SubarrayProxyContext
+    # csp_subarray1: SubarrayProxyContext
+    # event_subscription_map: Any
+    # tango_context: Any
+    # sdp_subarray1_ln: SubarrayProxyContext
     csp_subarray1_ln: SubarrayProxyContext
-    dish_ln: DishProxyContext
+    # dish_ln: DishProxyContext
 
 
 @pytest.fixture()
-def empty_subarray_context(mock_lower_devices) -> SubarrayContext:
-    tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
-    sdp_obs_state_mapping = ("ObsState", "sdpSubarrayObsState")
+def empty_subarray_context(mock_device_proxy) -> SubarrayContext:
+    # tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
+    device_proxy, tango_client_obj = mock_device_proxy
+    csp_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/csp_subarray01'
+    event_subscription_map = {}
+    # sdp_obs_state_mapping = ("ObsState", "sdpSubarrayObsState")
     csp_obs_state_mapping = ("ObsState", "cspSubarrayObsState")
-    dish_pointing_state_mapping = ("PointingState", "dishPointingState")
-    csp_subarray1 = SubarrayProxyContext(
-        csp_subarray1_proxy_mock,
-        event_subscription_map,
-        csp_subarray1_fqdn,
-        csp_obs_state_mapping)
-    sdp_subarray1 = SubarrayProxyContext(
-        sdp_subarray1_proxy_mock,
-        event_subscription_map,
-        sdp_subarray1_fqdn,
-        sdp_obs_state_mapping)
+    # dish_pointing_state_mapping = ("PointingState", "dishPointingState")
+    # csp_subarray1 = SubarrayProxyContext(
+    #     csp_subarray1_proxy_mock,
+    #     event_subscription_map,
+    #     csp_subarray1_fqdn,
+    #     csp_obs_state_mapping)
+    # sdp_subarray1 = SubarrayProxyContext(
+    #     sdp_subarray1_proxy_mock,
+    #     event_subscription_map,
+    #     sdp_subarray1_fqdn,
+    #     sdp_obs_state_mapping)
     csp_subarray1_ln = SubarrayProxyContext(
-        csp_subarray1_ln_proxy_mock,
+        Mock(),
         event_subscription_map,
         csp_subarray1_ln_fqdn,
         csp_obs_state_mapping)
-    sdp_subarray1_ln = SubarrayProxyContext(
-        sdp_subarray1_ln_proxy_mock,
-        event_subscription_map,
-        sdp_subarray1_ln_fqdn,
-        sdp_obs_state_mapping)
-    dish_ln = DishProxyContext(
-        dish_ln_proxy_mock,
-        dish_pointing_state_map,
-        (dish_ln_prefix + "0001"),
-        '',
-        dish_pointing_state_mapping)
+    # sdp_subarray1_ln = SubarrayProxyContext(
+    #     sdp_subarray1_ln_proxy_mock,
+    #     event_subscription_map,
+    #     sdp_subarray1_ln_fqdn,
+    #     sdp_obs_state_mapping)
+    # dish_ln = DishProxyContext(
+    #     dish_ln_proxy_mock,
+    #     dish_pointing_state_map,
+    #     (dish_ln_prefix + "0001"),
+    #     '',
+    #     dish_pointing_state_mapping)
     context = SubarrayContext(
-        sdp_subarray1,
-        csp_subarray1,
-        event_subscription_map,
-        tango_context,
-        sdp_subarray1_ln,
-        csp_subarray1_ln,
-        dish_ln)
-    context.tango_context.device.On()
+        # sdp_subarray1,
+        # csp_subarray1,
+        # event_subscription_map,
+        # tango_context,
+        # sdp_subarray1_ln,
+        csp_subarray1_ln
+        # dish_ln)
+    context.device_proxy.device.On()
     return context
 
 
@@ -747,7 +750,7 @@ def idle_subarray_context(empty_subarray_context: SubarrayContext) -> SubarrayCo
     wait_for(c.tango_context, ObsState.IDLE)
     return c
 
-
+'''
 def assert_that_log_contains(name: str, caplog):
     patterns = [f'^Transaction.*(?<=Enter\[{name}\])', f'^Transaction.*(?<=Exit\[{name}\])']
     for pattern in patterns:
@@ -760,17 +763,40 @@ def assert_that_log_contains(name: str, caplog):
             raise AssertionError(f'pattern ({pattern}) not found in expected log messages')
 
 
-def test_log_transaction_with_assign(empty_subarray_context: SubarrayContext, caplog):
-    c = empty_subarray_context
-    c.tango_context.device.AssignResources(assign_input_str)
+# def test_log_transaction_with_assign(empty_subarray_context: SubarrayContext, caplog):
+#     c = empty_subarray_context
+#     c.tango_context.device.AssignResources(assign_input_str)
+#     assert_that_log_contains('assign', caplog)
+
+def test_log_transaction_with_assign(mock_device_proxy, caplog):
+    device_proxy, tango_client_obj = mock_device_proxy
+    device_proxy.On()
+    assign_input_dict = json.loads(assign_input_str)
+    device_proxy.AssignResources(assign_input_str)
     assert_that_log_contains('assign', caplog)
 
 
-def test_log_transaction_with_config(idle_subarray_context: SubarrayContext, caplog):
-    c = idle_subarray_context
-    c.sdp_subarray1.generate_event("receiveAddresses", receive_addresses_map)
-    c.tango_context.device.Configure(configure_str)
+# def test_log_transaction_with_config(idle_subarray_context: SubarrayContext, caplog):
+#     c = idle_subarray_context
+#     c.sdp_subarray1.generate_event("receiveAddresses", receive_addresses_map)
+#     c.tango_context.device.Configure(configure_str)
+#     assert_that_log_contains('configure', caplog)
+
+def test_log_transaction_with_config(mock_device_proxy, subarray_state_model, caplog):
+    device_proxy, tango_client_obj = mock_device_proxy
+    device_data = DeviceData.get_instance()
+    configure_cmd = ConfigureCommand(device_data, subarray_state_model)
+    attribute = "receiveAddresses"
+    with mock.patch.object(TangoClient, "get_deviceproxy", return_value=Mock()):
+        with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_receive_addresses):
+            tango_client_obj = TangoClient('ska_mid/tm_leaf_node/sdp_subarray01')
+            device_proxy.On()
+    subarray_state_model._straight_to_state(DevState.ON, None, ObsState.IDLE)
+    configure_cmd.do(configure_str)
+    # c.sdp_subarray1.generate_event("receiveAddresses", receive_addresses_map)
+    # c.tango_context.device.Configure(configure_str)
     assert_that_log_contains('configure', caplog)
+
 
 
 @pytest.fixture()
@@ -782,20 +808,40 @@ def mock_transaction_id():
         yield json.dumps({'transaction_id': dummy_id})
 
 
-def test_transaction_id_injected_in_config_command(idle_subarray_context: SubarrayContext, mock_transaction_id):
-    c = idle_subarray_context
-    c.sdp_subarray1.generate_event("receiveAddresses", receive_addresses_map)
-    c.tango_context.device.Configure(configure_str)
-    verify_called_correctly(c.sdp_subarray1_ln.proxy_mock, const.CMD_CONFIGURE, mock_transaction_id)
-    verify_called_correctly(c.csp_subarray1_ln.proxy_mock, const.CMD_CONFIGURE, mock_transaction_id)
+# def test_transaction_id_injected_in_config_command(mock_device_proxy, subarray_state_model, mock_transaction_id):
+#     device_proxy, tango_client_obj = mock_device_proxy
+#     device_data = DeviceData.get_instance()
+#     configure_cmd = ConfigureCommand(device_data, subarray_state_model)
+#     attribute = "receiveAddresses"
+#     with mock.patch.object(TangoClient, "get_deviceproxy", return_value=Mock()):
+#         with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_receive_addresses):
+#             tango_client_obj = TangoClient('ska_mid/tm_leaf_node/sdp_subarray01')
+#             # valid_scan_config = example_scan_configuration #json.loads(scan_config_str)
+#             # attr_name_map = csp_func_args
+#             # receive_addresses_map = sdp_func_receive_addresses
+#             # csp_cmd_data = ElementDeviceData.build_up_csp_cmd_data(valid_scan_config, attr_name_map, receive_addresses_map)
+    
+#             # device_proxy.Confiure()
+#             subarray_state_model._straight_to_state(DevState.ON, None, ObsState.IDLE)
+#             configure_cmd.do(configure_str)
+    
+#     # c = idle_subarray_context
+#     # c.sdp_subarray1.generate_event("receiveAddresses", receive_addresses_map)
+#     # c.tango_context.device.Configure(configure_str)
+#             verify_called_correctly(tango_client_obj.deviceproxy, const.CMD_CONFIGURE, mock_transaction_id)
+#     # verify_called_correctly(c.csp_subarray1_ln.proxy_mock, const.CMD_CONFIGURE, mock_transaction_id)
 
 
-def test_transaction_id_injected_in_assign_command(empty_subarray_context: SubarrayContext, mock_transaction_id):
-    c = empty_subarray_context
-    c.tango_context.device.AssignResources(assign_input_str)
-    verify_called_correctly(c.sdp_subarray1_ln.proxy_mock,const.CMD_ASSIGN_RESOURCES,mock_transaction_id)
-    verify_called_correctly(c.csp_subarray1_ln.proxy_mock,const.CMD_ASSIGN_RESOURCES,mock_transaction_id)
-'''
+def test_transaction_id_injected_in_assign_command(mock_device_proxy, mock_transaction_id):
+    device_proxy, tango_client_obj = mock_device_proxy
+    device_proxy.On()
+    assign_input_dict = json.loads(assign_input_str)
+    device_proxy.AssignResources(assign_input_str)
+    # c = empty_subarray_context
+    # c.tango_context.device.AssignResources(assign_input_str)
+    # verify_called_correctly(c.sdp_subarray1_ln.proxy_mock,const.CMD_ASSIGN_RESOURCES,mock_transaction_id)
+    verify_called_correctly(tango_client_obj.deviceproxy,const.CMD_ASSIGN_RESOURCES,mock_transaction_id)
+
 def assert_data_is_subsisted_by(data:Dict,sub:Dict):
     for key,val in sub.items():
         assert(key in data.keys())
