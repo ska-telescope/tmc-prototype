@@ -2,14 +2,15 @@
 Restart class for SDPSubarrayLeafNode.
 """
 # PROTECTED REGION ID(sdpsubarrayleafnode.additionnal_import) ENABLED START #
-# Standard Python imports
+# Tango imports
 import tango
 from tango import DevState, DevFailed
 # Additional import
 from ska.base.commands import BaseCommand
 from ska.base.control_model import ObsState
-from . import const
 from tmc.common.tango_client import TangoClient
+from . import const
+
 
 class Restart(BaseCommand):
     """
