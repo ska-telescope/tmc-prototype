@@ -1,11 +1,11 @@
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
-from . import const
 from tmc.common.tango_client import TangoClient
+from . import const
 from .attribute_callbacks import CbfHealthStateAttributeUpdator, PssHealthStateAttributeUpdator, \
                                                                             PstHealthStateAttributeUpdator
 
-class OffCommand(SKABaseDevice.OffCommand):
+class Off(SKABaseDevice.OffCommand):
     """
     A class for CspMasterLeafNode's Off() command.
     """
@@ -57,14 +57,16 @@ class OffCommand(SKABaseDevice.OffCommand):
         # pass argin to csp master.
         # If the array length is 0, the command applies to the whole CSP Element.
         # If the array length is >, each array element specifies the FQDN of the CSP SubElement to switch OFF.
-        csp_mln_client_obj = TangoClient(device_data.csp_master_ln_fqdn)
-        csp_mln_client_obj.send_command_async(const.CMD_OFF,[], self.off_cmd_ended_cb)
-        self.logger.debug(const.STR_ON_CMD_ISSUED)
-        device_data.cbf_health_updator = CbfHealthStateAttributeUpdator()
-        device_data.cbf_health_updator.stop()
-        device_data.pss_health_updator = PssHealthStateAttributeUpdator()
-        device_data.pss_health_updator.stop()
-        device_data.pst_health_updator = PstHealthStateAttributeUpdator()
-        device_data.pst_health_updator.stop()
+        #Off command is not generating event error in current implementation. "
+                        #    "Will be updated later.
+        # csp_mln_client_obj = TangoClient(device_data.csp_master_ln_fqdn)
+        # csp_mln_client_obj.send_command_async(const.CMD_OFF,[], self.off_cmd_ended_cb)
+        # self.logger.debug(const.STR_ON_CMD_ISSUED)
+        # device_data.cbf_health_updator = CbfHealthStateAttributeUpdator()
+        # device_data.cbf_health_updator.stop()
+        # device_data.pss_health_updator = PssHealthStateAttributeUpdator()
+        # device_data.pss_health_updator.stop()
+        # device_data.pst_health_updator = PstHealthStateAttributeUpdator()
+        # device_data.pst_health_updator.stop()
 
         return (ResultCode.OK, const.STR_OFF_CMD_ISSUED)

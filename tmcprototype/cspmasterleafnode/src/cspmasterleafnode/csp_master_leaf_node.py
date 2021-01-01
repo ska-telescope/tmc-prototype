@@ -163,9 +163,9 @@ class CspMasterLeafNode(SKABaseDevice):
         """
         device_data = DeviceData.get_instance()
         super().init_command_objects()
-        self.register_command_object("Off", off_command.OffCommand(device_data, self.state_model,self.logger))
-        self.register_command_object("On", on_command.OnCommand(device_data, self.state_model, self.logger))
-        self.register_command_object("Standby", standby_command.StandbyCommand(device_data, self.state_model,
+        self.register_command_object("Off", off_command.Off(device_data, self.state_model,self.logger))
+        self.register_command_object("On", on_command.On(device_data, self.state_model, self.logger))
+        self.register_command_object("Standby", standby_command.Standby(device_data, self.state_model,
                                                                                self.logger))
 
 
@@ -184,6 +184,7 @@ def main(args=None, **kwargs):
     :param kwargs: Arguments internal to TANGO
 
     :return: CspMasterLeafNode TANGO object.
+    
     """
     return run((CspMasterLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  CspMasterLeafNode.main

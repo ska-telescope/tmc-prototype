@@ -2,11 +2,11 @@ import tango
 from tango import DevFailed
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
-from . import const
 from tmc.common.tango_client import TangoClient
+from . import const
 from .attribute_callbacks import CbfHealthStateAttributeUpdator, PssHealthStateAttributeUpdator, \
                                                                     PstHealthStateAttributeUpdator
-class OnCommand(SKABaseDevice.OnCommand):
+class On(SKABaseDevice.OnCommand):
     """
     A class for CspMasterLeafNode's On() command.
     """

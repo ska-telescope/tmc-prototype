@@ -1,18 +1,14 @@
 import tango
 from ska.base.control_model import HealthState
 from tmc.common.tango_server_helper import TangoServerHelper
+from tmc.common.tango_client import TangoClient
 from . import const
 from .device_data import DeviceData
-from tmc.common.tango_client import TangoClient
-import logging
-LOGGER = logging.getLogger(__name__)
 
 class CbfHealthStateAttributeUpdator:
     """
-     **Attributes:**
-
-    - cspHealthState  - Forwarded attribute to provide CSP Master Health State
-    - activityMessage - Attribute to provide activity message
+    - CbfHealthStateAttribute  - Forwarded attribute to provide CSP Master Health State
+    - _csp_cbf_health_state_log - Variable to provide activity log
 
     """
     def __init__(self, logger =None):
@@ -71,10 +67,8 @@ class CbfHealthStateAttributeUpdator:
 
 class PssHealthStateAttributeUpdator:
     """
-     **Attributes:**
-
-    - cspHealthState  - Forwarded attribute to provide CSP Master Health State
-    - activityMessage - Attribute to provide activity message
+    - PssHealthStateAttribute  - Forwarded attribute to provide CSP Master Health State
+    - _csp_pss_health_state_log - Variable to provide activity log
 
     """
     def __init__(self, logger =None):
@@ -131,10 +125,8 @@ class PssHealthStateAttributeUpdator:
 
 class PstHealthStateAttributeUpdator:
     """
-     **Attributes:**
-
-    - cspHealthState  - Forwarded attribute to provide CSP Master Health State
-    - activityMessage - Attribute to provide activity message
+    - PstHealthStateAttribute  - Forwarded attribute to provide CSP Master Health State
+    - _csp_pst_health_state_log - Variable to provide activity log
 
     """
     def __init__(self, logger =None):
