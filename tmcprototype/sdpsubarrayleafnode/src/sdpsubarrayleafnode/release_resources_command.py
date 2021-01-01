@@ -91,8 +91,6 @@ class ReleaseAllResources(BaseCommand):
             # Call SDP Subarray Command asynchronously
             sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
             sdp_sa_ln_client_obj.send_command_async(const.CMD_RELEASE_RESOURCES, None, self.releaseallresources_cmd_ended_cb)
-            # device._sdp_subarray_proxy.command_inout_asynch(const.CMD_RELEASE_RESOURCES,
-            #                                                 self.releaseallresources_cmd_ended_cb)
             # Update the status of command execution status in activity message
             device_data._read_activity_message = const.STR_REL_RESOURCES
             self.logger.info(const.STR_REL_RESOURCES)
