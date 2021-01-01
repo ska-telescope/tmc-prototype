@@ -225,8 +225,8 @@ class SdpMasterLeafNode(SKABaseDevice):
         """
         super().init_command_objects()
         device_data = DeviceData.get_instance()
-        args = (self, self.state_model, self.logger)
-        self.register_command_object("On",on_command.OnCommand(device_data, self.state_model, self.logger))
+        args = (device_data, self.state_model, self.logger)
+        self.register_command_object("On",on_command.OnCommand(*args))
         self.register_command_object("Off",off_command.OffCommand(*args))
         self.register_command_object("Disable",disable_command.DisableCommand(*args))
         self.register_command_object("Standby",standby_command.StandbyCommand(*args))

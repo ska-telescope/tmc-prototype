@@ -70,7 +70,9 @@ class StandbyCommand(BaseCommand):
         """
         device =self.target
         try:
-            device._sdp_proxy.command_inout_asynch(const.CMD_STANDBY, self.standby_cmd_ended_cb)
+            sdp_mln_client_obj = TangoClient(device.sdp_master_ln_fqdn)
+            sdp_mln_client_obj.send_command_async(const.CMD_STANDBY, [], self.standby_cmd_ended_cb)
+            # device._sdp_proxy.command_inout_asynch(const.CMD_STANDBY, self.standby_cmd_ended_cb)
             log_msg = const.CMD_STANDBY + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
             self.logger.debug(log_msg)
 

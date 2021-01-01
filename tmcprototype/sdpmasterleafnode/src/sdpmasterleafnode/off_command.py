@@ -60,7 +60,9 @@ class OffCommand(SKABaseDevice.OffCommand):
         """
         device =self.target
         try:
-            device._sdp_proxy.command_inout_asynch(const.CMD_OFF, self.off_cmd_ended_cb)
+            sdp_mln_client_obj = TangoClient(device.sdp_master_ln_fqdn)
+            sdp_mln_client_obj.send_command_async(const.CMD_OFF, [], self.off_cmd_ended_cb)
+            # device._sdp_proxy.command_inout_asynch(const.CMD_OFF, self.off_cmd_ended_cb)
             self.logger.debug(const.STR_OFF_CMD_SUCCESS)
             device._read_activity_message = const.STR_OFF_CMD_SUCCESS
             return (ResultCode.OK, const.STR_OFF_CMD_SUCCESS)
