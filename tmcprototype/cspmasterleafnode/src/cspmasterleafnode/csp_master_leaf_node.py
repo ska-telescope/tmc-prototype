@@ -22,10 +22,20 @@ from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode, BaseCommand
 from ska.base.control_model import HealthState, SimulationMode, TestMode
+<<<<<<< HEAD
 from . import const, release
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
 
 __all__ = ["CspMasterLeafNode", "main"]
+=======
+from . import const, release, on_command, off_command, standby_command, device_data
+from tmc.common.tango_client import TangoClient
+from .device_data import DeviceData
+
+# PROTECTED REGION END #    //  CspMasterLeafNode imports
+
+__all__ = ["CspMasterLeafNode", "main", "on_command", "off_command", "standby_command"]
+>>>>>>> 748ab84671c814f65904ab7007f59d85f21588ca
 
 
 class CspMasterLeafNode(SKABaseDevice):
@@ -34,6 +44,7 @@ class CspMasterLeafNode(SKABaseDevice):
 
     - CspMasterFQDN   - Property to provide FQDN of CSP Master Device
 
+<<<<<<< HEAD
     **Attributes:**
 
     - cspHealthState  - Forwarded attribute to provide CSP Master Health State
@@ -134,6 +145,15 @@ class CspMasterLeafNode(SKABaseDevice):
             self._read_activity_message = log_msg
 
     # PROTECTED REGION END #    //  CspMasterLeafNode.class_variable
+=======
+    # **Attributes:**
+
+    # - cspHealthState  - Forwarded attribute to provide CSP Master Health State
+    # - activityMessage - Attribute to provide activity message
+
+    # """
+
+>>>>>>> 748ab84671c814f65904ab7007f59d85f21588ca
 
     # -----------------
     # Device Properties
@@ -177,11 +197,17 @@ class CspMasterLeafNode(SKABaseDevice):
             """
             super().do()
             device = self.target
+<<<<<<< HEAD
+=======
+            device_data = DeviceData.get_instance()
+            device.device_data = device_data
+>>>>>>> 748ab84671c814f65904ab7007f59d85f21588ca
             device._health_state = HealthState.OK  # Setting healthState to "OK"
             device._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
             device._test_mode = TestMode.NONE
             device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
             device._version_id = release.version
+<<<<<<< HEAD
             device._read_activity_message = const.STR_CSP_INIT_LEAF_NODE
             try:
                 device._read_activity_message = const.STR_CSPMASTER_FQDN + str(device.CspMasterFQDN)
@@ -212,6 +238,10 @@ class CspMasterLeafNode(SKABaseDevice):
                 device._read_activity_message = log_msg
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CspMasterLeafNode.InitCommand.do()",
                                              tango.ErrSeverity.ERR)
+=======
+            device_data._read_activity_message = const.STR_CSP_INIT_LEAF_NODE
+            device_data.csp_master_ln_fqdn = device.CspMasterFQDN
+>>>>>>> 748ab84671c814f65904ab7007f59d85f21588ca
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
@@ -238,13 +268,13 @@ class CspMasterLeafNode(SKABaseDevice):
     def read_activityMessage(self):
         # PROTECTED REGION ID(CspMasterLeafNode.activityMessage_read) ENABLED START #
         """ Internal construct of TANGO. Returns the activityMessage. """
-        return self._read_activity_message
+        return self.device_data._read_activity_message
         # PROTECTED REGION END #    //  CspMasterLeafNode.activityMessage_read
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(CspMasterLeafNode.activityMessage_write) ENABLED START #
         """Internal construct of TANGO. Sets the activityMessage. """
-        self._read_activity_message = value
+        self.device_data._read_activity_message = value
         # PROTECTED REGION END #    //  CspMasterLeafNode.activityMessage_write
 
     # --------
@@ -491,7 +521,14 @@ class CspMasterLeafNode(SKABaseDevice):
         Initialises the command handlers for commands supported by this device.
         """
         super().init_command_objects()
+<<<<<<< HEAD
         self.register_command_object("Standby", self.StandbyCommand(self, self.state_model, self.logger))
+=======
+        device_data = DeviceData.get_instance()
+        self.register_command_object("Off", off_command.OffCommand(device_data, self.state_model, self.logger))
+        self.register_command_object("On", on_command.OnCommand(device_data, self.state_model, self.logger))
+        self.register_command_object("Standby", standby_command.StandbyCommand(device_data, self.state_model, self.logger))
+>>>>>>> 748ab84671c814f65904ab7007f59d85f21588ca
 
 
 # ----------
