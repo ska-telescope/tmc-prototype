@@ -67,7 +67,7 @@ class TrackCommand(ResponseCommand):
             cmd_input = [argin]
             cmdData = tango.DeviceData()
             cmdData.insert(tango.DevVarStringArray, cmd_input)
-            device_data._dish_leaf_node_group_client.command_inout(const.CMD_TRACK, cmdData)
+            device_data._dish_leaf_node_group_client.send_command(const.CMD_TRACK, cmdData)
             device_data._scan_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
             self.logger.info(const.STR_TRACK_CMD_INVOKED_SA)
             return (ResultCode.OK, const.STR_TRACK_CMD_INVOKED_SA)

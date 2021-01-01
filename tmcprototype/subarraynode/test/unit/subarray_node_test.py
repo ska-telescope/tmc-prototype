@@ -28,6 +28,7 @@ from subarraynode.abort_command import AbortCommand
 from subarraynode.obsreset_command import ObsResetCommand
 from subarraynode.restart_command import RestartCommand
 from subarraynode.release_all_resources_command import ReleaseAllResourcesCommand
+from subarraynode.track_command import TrackCommand
 from subarraynode.device_data import DeviceData
 from ska.base.control_model import AdminMode, HealthState, ObsState, ObsMode, TestMode, SimulationMode, \
     LoggingLevel
@@ -942,6 +943,14 @@ def test_release_resource_should_raise_exception_when_called_before_assign_resou
     with pytest.raises(tango.DevFailed) as df:
         release_resources_cmd.do()
     assert const.ERR_RELEASE_RES_CMD in str(df.value)
+
+def test_track_command_subarray(mock_device_proxy):
+    device_proxy, tango_client_obj = mock_device_proxy
+    device_proxy.On()
+    device_proxy.AssignResources(assign_input_str)
+    track_input = "radec|2:31:50.91|89:15:51.4"
+    track_cmd = TrackCommand(device_data, subarray_state_model)
+    assert track_cmd.do(track_input) == (ResultCode.OK, const.STR_TRACK_CMD_INVOKED_SA)
 
 def create_dummy_event_healthstate_with_error(attribute, callback_method):
     fake_event = Mock()
