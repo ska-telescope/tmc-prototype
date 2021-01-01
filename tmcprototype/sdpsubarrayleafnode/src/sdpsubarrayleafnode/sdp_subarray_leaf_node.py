@@ -26,6 +26,7 @@ from ska.base.commands import ResultCode
 from . import const, release, on_command, off_command, assign_resources_command, release_resources_command, configure_command, abort_command, restart_command, obsreset_command, scan_command, end_command, endscan_command
 from .device_data import DeviceData
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 from .exceptions import InvalidObsStateError
 
 
@@ -93,6 +94,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             super().do()
             device = self.target
+
+            this_server = TangoServerHelper.get_instance()
+            this_server.device = device
 
             # Initialise attributes
             device._sdp_subarray_health_state = HealthState.OK
