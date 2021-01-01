@@ -15,12 +15,12 @@ import tango
 from tango.test_context import DeviceTestContext
 
 # Additional import
-from sdpsubarrayleafnode import SdpSubarrayLeafNode, const, release, device_data
-from sdpsubarrayleafnode.device_data import DeviceData
 from ska.base.control_model import ObsState, HealthState, AdminMode, TestMode, ControlMode, SimulationMode
 from ska.base.control_model import LoggingLevel
 from ska.base.commands import ResultCode
 from tmc.common.tango_client import TangoClient
+from sdpsubarrayleafnode import SdpSubarrayLeafNode, const, release, device_data
+from sdpsubarrayleafnode.device_data import DeviceData
 
 
 assign_input_file = 'command_AssignResources.json'

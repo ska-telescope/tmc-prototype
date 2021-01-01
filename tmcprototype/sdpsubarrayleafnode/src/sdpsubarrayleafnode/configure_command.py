@@ -2,15 +2,15 @@
 Configure class for SDPSubarrayLeafNode.
 """
 # PROTECTED REGION ID(SDPSubarrayLeafNode.additionnal_import) ENABLED START #
-# Standard Python imports
+# Tango imports
 import tango
 from tango import DevState, DevFailed
 # Additional import
 from ska.base.commands import BaseCommand
 from ska.base.control_model import ObsState
+from tmc.common.tango_client import TangoClient
 from . import const
 from .transaction_id import identify_with_id
-from tmc.common.tango_client import TangoClient
 
 
 class Configure(BaseCommand):

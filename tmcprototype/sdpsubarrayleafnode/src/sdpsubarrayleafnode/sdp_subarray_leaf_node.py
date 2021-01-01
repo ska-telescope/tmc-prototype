@@ -22,11 +22,10 @@ from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
 from ska.base.commands import ResultCode
-#from .transaction_id import identify_with_id
-from . import const, release, on_command, off_command, assign_resources_command, release_resources_command, configure_command, abort_command, restart_command, obsreset_command, scan_command, end_command, endscan_command
-from .device_data import DeviceData
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
+from . import const, release, on_command, off_command, assign_resources_command, release_resources_command, configure_command, abort_command, restart_command, obsreset_command, scan_command, end_command, endscan_command
+from .device_data import DeviceData
 from .exceptions import InvalidObsStateError
 
 
@@ -405,24 +404,15 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         # Create device_data class object
         device_data = DeviceData.get_instance()
         args = (device_data, self.state_model, self.logger)
-        self.assign_object = assign_resources_command.AssignResources(*args)
-        self.release_object = release_resources_command.ReleaseAllResources(*args)
-        self.scan_object = scan_command.Scan(*args)
-        self.end_object = end_command.End(*args)
-        self.restart_object = restart_command.Restart(*args)
-        self.configure_object = configure_command.Configure(*args)
-        self.endscan_object = endscan_command.EndScan(*args)
-        self.abort_object = abort_command.Abort(*args)
-        self.obsreset_object = obsreset_command.ObsReset(*args)
-        self.register_command_object("AssignResources", self.assign_object)
-        self.register_command_object("ReleaseAllResources", self.release_object)
-        self.register_command_object("Scan", self.scan_object)
-        self.register_command_object("End", self.end_object)
-        self.register_command_object("Restart", self.restart_object)
-        self.register_command_object("Configure", self.configure_object)
-        self.register_command_object("EndScan", self.endscan_object)
-        self.register_command_object("Abort", self.abort_object)
-        self.register_command_object("ObsReset", self.obsreset_object)
+        self.register_command_object("AssignResources", assign_resources_command.AssignResources(*args))
+        self.register_command_object("ReleaseAllResources", release_resources_command.ReleaseAllResources(*args))
+        self.register_command_object("Scan", scan_command.Scan(*args))
+        self.register_command_object("End", end_command.End(*args))
+        self.register_command_object("Restart", restart_command.Restart(*args))
+        self.register_command_object("Configure", configure_command.Configure(*args))
+        self.register_command_object("EndScan", endscan_command.EndScan(*args))
+        self.register_command_object("Abort", abort_command.Abort(*args))
+        self.register_command_object("ObsReset", obsreset_command.ObsReset(*args))
         self.register_command_object("Off", off_command.Off(device_data, self.state_model, self.logger))
         self.register_command_object("On", on_command.On(device_data, self.state_model, self.logger))
 
