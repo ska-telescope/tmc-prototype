@@ -54,9 +54,9 @@ class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
         remove_receptors = RemoveReceptors()
         remove_receptors.remove_receptors_from_group()
         self.logger.info(const.STR_CSP_RELEASE)
-        self.release_csp_resources(device_data)
+        self.release_csp_resources(device_data.csp_subarray_ln_fqdn)
         self.logger.info(const.STR_SDP_RELEASE)
-        self.release_sdp_resources(device_data)
+        self.release_sdp_resources(device_data.sdp_subarray_ln_fqdn)
         device_data._scan_id = ""
         # For now cleared SB ID in ReleaseAllResources command. When the EndSB command is implemented,
         # It will be moved to that command.
@@ -68,7 +68,7 @@ class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
         message = str(argout)
         return (ResultCode.STARTED, message)
 
-    def release_csp_resources(self, device_data):
+    def release_csp_resources(self, csp_subarray_ln_fqdn):
         """
             This function invokes releaseAllResources command on CSP Subarray via CSP Subarray Leaf
             Node.
@@ -80,14 +80,14 @@ class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
         """
         try:
             # device._csp_subarray_ln_proxy.command_inout(const.CMD_RELEASE_ALL_RESOURCES)
-            csp_client = TangoClient(device_data.csp_subarray_ln_fqdn)
+            csp_client = TangoClient(csp_subarray_ln_fqdn)
             csp_client.send_command(const.CMD_RELEASE_ALL_RESOURCES)
             self.logger.info(const.STR_RELEASE_ALL_RESOURCES_CSP_SALN)
         except DevFailed as df:
             self.logger.error(const.ERR_CSP_CMD)
             self.logger.debug(df)
 
-    def release_sdp_resources(self, device_data):
+    def release_sdp_resources(self, sdp_subarray_ln_fqdn):
         """
             This function invokes releaseAllResources command on SDP Subarray via SDP Subarray Leaf Node.
 
@@ -97,7 +97,7 @@ class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
 
         """
         try:
-            sdp_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
+            sdp_client = TangoClient(sdp_subarray_ln_fqdn)
             sdp_client.send_command(const.CMD_RELEASE_ALL_RESOURCES)
             self.logger.info(const.STR_RELEASE_ALL_RESOURCES_SDP_SALN)
 
