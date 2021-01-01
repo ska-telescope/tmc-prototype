@@ -124,7 +124,6 @@ class AssignResourcesCommand(BaseCommand):
             for receptor in device_data.receptorIDList_str:
                 receptorIDList.append(int(receptor))
             self.logger.info("receptorIDList: %s", str(receptorIDList))
-            # TODO: How to call this ?
             delay_manager_obj = DelayManager.get_instance()
             delay_manager_obj.update_config_params()
             # Invoke AddReceptors command on CspSubarray

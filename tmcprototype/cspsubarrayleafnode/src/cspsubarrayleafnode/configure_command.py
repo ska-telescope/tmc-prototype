@@ -116,7 +116,6 @@ class ConfigureCommand(BaseCommand):
             argin_json = json.loads(argin)
             # Used to extract FSP IDs
             device_data.fsp_ids_object = argin_json["fsp"]
-            # TODO: How to call this ?
             delay_manager_obj = DelayManager.get_instance()
             delay_manager_obj.update_config_params()
             # device.update_config_params()
