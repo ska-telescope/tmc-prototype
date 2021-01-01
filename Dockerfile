@@ -17,7 +17,7 @@ RUN python3 -m pip install install ska-log-transactions
 # install all local TMC packages
 RUN python3 -m pip install skatmccommon==0.1.2+b01374cf
 
-RUN python3 -m pip install
+RUN python3 -m pip install \
     /app/tmcprototype/centralnode \
     /app/tmcprototype/centralnodelow \
     /app/tmcprototype/cspmasterleafnode \
