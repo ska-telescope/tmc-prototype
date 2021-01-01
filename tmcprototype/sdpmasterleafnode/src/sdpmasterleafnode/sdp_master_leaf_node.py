@@ -17,19 +17,19 @@ execution. There is one to one mapping between SDP Subarray Leaf Node and SDP su
 # Third party imports
 # Tango imports
 import tango
-from tango import DeviceProxy, ApiUtil, DevState, AttrWriteType, DevFailed
-from tango.server import run,command, device_property, attribute
+from tango import ApiUtil, DebugIt, AttrWriteType
+from tango.server import run, command, device_property, attribute
 
 # Additional import
 from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode, BaseCommand
+from ska.base.commands import ResultCode
+from ska.base.control_model import HealthState, SimulationMode, TestMode
 from . import const, release, on_command, off_command, standby_command, disable_command
 from .device_data import DeviceData
-from tmc.common.tango_client import TangoClient
 
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additional_import
 
-__all__ = ["SdpMasterLeafNode", "main", "on_command","off_command", "standby_command", "disable_command"]
+__all__ = ["SdpMasterLeafNode", "main", "on_command", "off_command", "standby_command", "disable_command"]
 
 
 class SdpMasterLeafNode(SKABaseDevice):
@@ -49,7 +49,6 @@ class SdpMasterLeafNode(SKABaseDevice):
     # Attributes
     # ----------
 
-
     versionInfo = attribute(
         dtype='str',
         doc="Version information of TANGO device.",
@@ -68,6 +67,7 @@ class SdpMasterLeafNode(SKABaseDevice):
     )
 
     sdpHealthState = attribute(name="sdpHealthState", label="sdpHealthState", forwarded=True)
+
     # ---------------
     # General methods
     # ---------------
@@ -75,6 +75,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         """
         A class for the SDP master's init_device() method"
         """
+
         def do(self):
             """
             Initializes the attributes and properties of the SdpMasterLeafNode.
@@ -90,42 +91,24 @@ class SdpMasterLeafNode(SKABaseDevice):
 
             super().do()
             device = self.target
-            try:
-                device_data = DeviceData()
-                device._version_info = "1.0"
-                device._processing_block_list = "test"
-                device_data._read_activity_message = 'OK'
-                device.set_status(const.STR_INIT_SUCCESS)
-                device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
-                device._version_id = release.version
-                device_data.sdp_master_ln_fqdn = device.SdpMasterFQDN
-
-            except DevFailed as dev_failed:
-                self.logger.exception(dev_failed)
-                log_msg = const.ERR_INIT_PROP_ATTR + str(dev_failed)
-                tango.Except.re_throw_exception(dev_failed, const.ERR_INVOKING_CMD, log_msg,
-                                       "SdpMasterLeafNode.InitCommand()", const.ERR_INIT_PROP_ATTR)
-
-            try:
-                device._read_activity_message = const.STR_SDPMASTER_FQDN + device.SdpMasterFQDN
-                # Creating proxy to the SDPMaster
-                device._sdp_proxy = DeviceProxy(device.SdpMasterFQDN)
-
-            except DevFailed as dev_failed:
-                self.logger.exception(dev_failed)
-                log_msg = const.ERR_IN_CREATE_PROXY_SDP_MASTER + str(dev_failed)
-                tango.Except.re_throw_exception(dev_failed, const.ERR_INVOKING_CMD, log_msg,
-                                             "SdpMasterLeafNode.InitCommand()",
-                                             tango.ErrSeverity.ERR)
+            device_data = DeviceData.get_instance()
+            device.device_data = device_data
+            device._health_state = HealthState.OK  # Setting healthState to "OK"
+            device._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
+            device._test_mode = TestMode.NONE
+            device._version_info = "1.0"
+            device._processing_block_list = "test"
+            device_data._read_activity_message = 'OK'
+            device.set_status(const.STR_INIT_SUCCESS)
+            device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
+            device._version_id = release.version
+            device_data.sdp_master_ln_fqdn = device.SdpMasterFQDN
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
-            device._read_activity_message = const.STR_SETTING_CB_MODEL + str(
-                ApiUtil.instance().get_asynch_cb_sub_model())
-
-            device._read_activity_message = const.STR_INIT_SUCCESS
-            self.logger.info(device._read_activity_message)
+            log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
+            self.logger.debug(log_msg)
+            device_data._read_activity_message = const.STR_INIT_SUCCESS
+            self.logger.info(device_data._read_activity_message)
             return (ResultCode.OK, const.STR_INIT_SUCCESS)
-
-
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.always_executed_hook) ENABLED START #
@@ -149,27 +132,27 @@ class SdpMasterLeafNode(SKABaseDevice):
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.activityMessage_read) ENABLED START #
-        """ Internal construct of TANGO. String providing information about the current activity in SDPLeafNode."""
+        """ Internal construct of TANGO. String providing information about the current activity in
+        SDPLeafNode. """
         return self._read_activity_message
         # PROTECTED REGION END #    //  SdpMasterLeafNode.activityMessage_read
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(SdpMasterLeafNode.activityMessage_write) ENABLED START #
-        '''
+        """
         Internal construct of TANGO. Sets the activity message.
-        '''
+        """
         self._read_activity_message = value
         # PROTECTED REGION END #    //  SdpMasterLeafNode.activityMessage_write
 
     def read_ProcessingBlockList(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.ProcessingBlockList_read) ENABLED START #
-        '''
+        """
         Internal construct of TANGO.
         :return:
-        '''
+        """
         return self._processing_block_list
         # PROTECTED REGION END #    //  SdpMasterLeafNode.ProcessingBlockList_read
-
 
     # --------
     # Commands
@@ -191,6 +174,7 @@ class SdpMasterLeafNode(SKABaseDevice):
 
     @command(
     )
+    @DebugIt()
     def Disable(self):
         """
         Sets the OperatingState to Disable.
@@ -203,9 +187,9 @@ class SdpMasterLeafNode(SKABaseDevice):
         handler = self.get_command_object("Disable")
         handler()
 
-
     @command(
     )
+    @DebugIt()
     def Standby(self):
         """
         Invokes Standby command .
@@ -240,6 +224,7 @@ def main(args=None, **kwargs):
     # PROTECTED REGION ID(SdpMasterLeafNode.main) ENABLED START #
     return run((SdpMasterLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  SdpMasterLeafNode.main
+
 
 if __name__ == '__main__':
     main()
