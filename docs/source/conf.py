@@ -19,7 +19,7 @@ autodoc_mock_imports = ['PyTango', 'tango', 'tango.server', 'run', 'DeviceMeta',
                 'subarraynode', 'subarraynode.subarray_node', 'marshmallow', 'ska.cdm.messages', 'ska.cdm.schemas',
                 'ska.cdm.messages.central_node.assign_resources', 'AssignResourcesRequest', 'CODEC', 'ValidationError',
                 'ska_telmodel','subarraynodelow','subarraynodelow.subarray_node_low','centralnodelow',
-                'centralnodelow.central_node_low'
+                'centralnodelow.central_node_low','tmc'
                  ]
 
 import os

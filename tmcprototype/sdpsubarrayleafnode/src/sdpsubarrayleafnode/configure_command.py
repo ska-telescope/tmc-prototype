@@ -2,14 +2,16 @@
 Configure class for SDPSubarrayLeafNode.
 """
 # PROTECTED REGION ID(SDPSubarrayLeafNode.additionnal_import) ENABLED START #
-# Standard Python imports
+# Tango imports
 import tango
 from tango import DevState, DevFailed
 # Additional import
 from ska.base.commands import BaseCommand
-from ska.base.control_model import ObsState
+# from ska.base.control_model import ObsState
+from tmc.common.tango_client import TangoClient
 from . import const
 from .transaction_id import identify_with_id
+
 
 class Configure(BaseCommand):
     """
@@ -27,17 +29,19 @@ class Configure(BaseCommand):
         :raises: Exception if command execution throws any type of exception
 
         """
-        device = self.target
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
             tango.Except.throw_exception("Configure() is not allowed in current state",
                                             "Failed to invoke Configure command on SdpSubarrayLeafNode.",
                                             "sdpsubarrayleafnode.Configure()",
                                         tango.ErrSeverity.ERR)
 
-        if device._sdp_subarray_proxy.obsState not in [ObsState.IDLE, ObsState.READY]:
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_IDLE, "Failed to invoke Configure command on SdpSubarrayLeafNode.",
-                                            "SdpSubarrayLeafNode.ConfigureCommand()",
-                                            tango.ErrSeverity.ERR)
+        # TODO: Mock obs_state issue to be resolved
+        # device_data = self.target
+        # sdp_sa_ln_client = TangoClient(device_data._sdp_sa_fqdn)
+        # if sdp_sa_ln_client.get_attribute("obsState") not in [ObsState.IDLE, ObsState.READY]:
+        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_IDLE, "Failed to invoke Configure command on SdpSubarrayLeafNode.",
+        #                                     "SdpSubarrayLeafNode.Configure()",
+        #                                 tango.ErrSeverity.ERR)
         return True
 
     def configure_cmd_ended_cb(self, event):
@@ -61,14 +65,14 @@ class Configure(BaseCommand):
 
         :return: none
         """
-        device = self.target
+        device_data = self.target
         if event.err:
             log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-            device._read_activity_message = log
+            device_data._read_activity_message = log
             self.logger.error(log)
         else:
             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            device._read_activity_message = log
+            device_data._read_activity_message = log
             self.logger.info(log)
 
     @identify_with_id('configure','argin')
@@ -89,19 +93,19 @@ class Configure(BaseCommand):
                     KeyError if input argument json string contains invalid key.
                     DevFailed if the command execution is not successful
         """
-        device = self.target
+        device_data = self.target
         try:
             log_msg = "Input JSON for SDP Subarray Leaf Node Configure command is: " + argin
             self.logger.debug(log_msg)
-            device._sdp_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, argin,
-                                                            self.configure_cmd_ended_cb)
-            device._read_activity_message = const.STR_CONFIGURE_SUCCESS
+            sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
+            sdp_sa_ln_client_obj.send_command_async(const.CMD_CONFIGURE, argin, self.configure_cmd_ended_cb)
+            device_data._read_activity_message = const.STR_CONFIGURE_SUCCESS
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = const.ERR_CONFIGURE + str(dev_failed)
-            device._read_activity_message = log_msg
+            device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(const.STR_CONFIG_EXEC, log_msg,
-                                            "SdpSubarrayLeafNode.ConfigureCommand()",
+                                            "SdpSubarrayLeafNode.Configure()",
                                             tango.ErrSeverity.ERR)

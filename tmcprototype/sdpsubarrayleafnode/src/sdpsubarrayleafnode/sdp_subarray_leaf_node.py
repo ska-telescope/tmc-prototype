@@ -20,11 +20,14 @@ from tango.server import run, command, device_property, attribute
 
 # Additional imports
 from ska.base import SKABaseDevice
-from ska.base.control_model import HealthState
+from ska.base.control_model import HealthState, ObsState
 from ska.base.commands import ResultCode
-#from .transaction_id import identify_with_id
+from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 from . import const, release, on_command, off_command, assign_resources_command, release_resources_command, configure_command, abort_command, restart_command, obsreset_command, scan_command, end_command, endscan_command
 from .device_data import DeviceData
+from .exceptions import InvalidObsStateError
+
 
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
 
@@ -90,6 +93,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             super().do()
             device = self.target
+
+            this_server = TangoServerHelper.get_instance()
+            this_server.device = device
 
             # Initialise attributes
             device._sdp_subarray_health_state = HealthState.OK
@@ -159,7 +165,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.activeProcessingBlocks_read) ENABLED START #
         """Internal construct of TANGO. Returns Active Processing Blocks.activeProcessingBlocks is a forwarded attribute
          from SDP Subarray which depicts the active Processing Blocks in the SDP Subarray"""
-        return self._active_processing_block
+        return self.device_data._active_processing_block
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.activeProcessingBlocks_read
     
     @command(
@@ -375,6 +381,19 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Scan")
         handler(argin)
 
+    
+    def validate_obs_state(self):
+        device_data = self.target
+        device_data = DeviceData.get_instance()
+        sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
+        if sdp_sa_ln_client_obj.get_attribute("obsState") in [ObsState.EMPTY, ObsState.IDLE]:
+            self.logger.info("SDP subarray is in required obstate,Hence resources to SDP can be assign.")
+        else:
+            self.logger.error("Subarray is not in EMPTY obstate")
+            device_data._read_activity_message = "Error in device obstate."
+            raise InvalidObsStateError("SDP subarray is not in EMPTY obstate.")
+
+
     def init_command_objects(self):
         """
         Initialises the command handlers for commands supported by this
@@ -382,31 +401,18 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         super().init_command_objects()
         
-        # T0DO: For future use
-
-        #args = (device_data, self.state_model, self.logger)
-        # self.assign_object = assign_resources_command.AssignResources(*args)
-        # self.release_object = release_resources_command.ReleaseAllResources(*args)
-        # self.configure_object = configure_command.Configure(*args)
-        # self.scan_object = scan_command.Scan(*args)
-        # self.endscan_object = endscan_command.EndScan(*args)
-        # self.end_object = end_command.End(*args)
-        # self.abort_object = abort_command.Abort(*args)
-        # self.restart_object = restart_command.Restart(*args)
-        # self.obsreset_object = obsreset_command.ObsReset(*args)
-        # self.register_command_object("AssignResources", self.assign_object)
-        # self.register_command_object("ReleaseAllResources", self.release_object)
-        # self.register_command_object("Configure", self.configure_object)
-        # self.register_command_object("Scan", self.scan_object)
-        # self.register_command_object("EndScan", self.endscan_object)
-        # self.register_command_object("End", self.end_object)
-        # self.register_command_object("Abort", self.abort_object)
-        # self.register_command_object("Restart", self.restart_object)
-        # self.register_command_object("ObsReset", self.obsreset_object)
-
-        # Create DeviceData class instance
+        # Create device_data class object
         device_data = DeviceData.get_instance()
-
+        args = (device_data, self.state_model, self.logger)
+        self.register_command_object("AssignResources", assign_resources_command.AssignResources(*args))
+        self.register_command_object("ReleaseAllResources", release_resources_command.ReleaseAllResources(*args))
+        self.register_command_object("Scan", scan_command.Scan(*args))
+        self.register_command_object("End", end_command.End(*args))
+        self.register_command_object("Restart", restart_command.Restart(*args))
+        self.register_command_object("Configure", configure_command.Configure(*args))
+        self.register_command_object("EndScan", endscan_command.EndScan(*args))
+        self.register_command_object("Abort", abort_command.Abort(*args))
+        self.register_command_object("ObsReset", obsreset_command.ObsReset(*args))
         self.register_command_object("Off", off_command.Off(device_data, self.state_model, self.logger))
         self.register_command_object("On", on_command.On(device_data, self.state_model, self.logger))
 
