@@ -11,6 +11,9 @@ from tango import DevFailed
 from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+from subarraynode.tango_group_client import TangoGroupClient
+from subarraynode.tango_client import TangoClient
+from subarraynode.device_data import DeviceData
 
 
 class OffCommand(SKASubarray.OffCommand):
@@ -29,27 +32,32 @@ class OffCommand(SKASubarray.OffCommand):
 
         :raises: DevFailed if the command execution is not successful
         """
-        device = self.target
-        device.is_restart_command = False
-        device.is_release_resources = False
-        device.is_abort_command = False
-        device.is_obsreset_command = False
+        device_data = DeviceData.get_instance()
+        device_data.is_restart_command = False
+        device_data.is_release_resources = False
+        device_data.is_abort_command = False
+        device_data.is_obsreset_command = False
         try:
-            device._csp_subarray_ln_proxy.Off()
-            device._sdp_subarray_ln_proxy.Off()
+            csp_subarray_proxy = TangoClient(device_data.csp_subarray_ln_fqdn)
+            csp_subarray_proxy.send_command("Off")
+            sdp_subarray_proxy = TangoClient(device_data.sdp_subarray_ln_fqdn)
+            sdp_subarray_proxy.send_command("Off")
+            
             message = "Off command completed OK"
             self.logger.info(message)
 
             # TODO unsubscribe health obsState events from CSP and SDP
-            device._unsubscribe_csp_sdp_state_events(device._cspSdpLnHealthEventID)
-            device._unsubscribe_csp_sdp_state_events(device._cspSdpLnObsStateEventID)
-            device._cspSdpLnHealthEventID.clear()  # Clear eventID dictionary
-            device._cspSdpLnObsStateEventID.clear()
+            device_data.health_state_aggr.unsubscribe()
+            # device_data.obs_state_aggr.unsubscribe()
+            # device_data._unsubscribe_csp_sdp_state_events(device_data._cspSdpLnHealthEventID)
+            # device_data._unsubscribe_csp_sdp_state_events(device_data._cspSdpLnObsStateEventID)
+            # device_data.csp_sdp_ln_health_event_id.clear()  # Clear eventID dictionary
+            # device_data.csp_sdp_ln_obs_state_event_id.clear()
             return (ResultCode.OK, message)
 
         except DevFailed as dev_failed:
             log_msg = const.ERR_INVOKING_OFF_CMD + str(dev_failed)
             self.logger.error(log_msg)
-            self._read_activity_message = log_msg
+            device_data._read_activity_message = log_msg
             tango.Except.throw_exception(dev_failed[0].desc, "Failed to invoke Off command on SubarrayNode.",
                                          "SubarrayNode.Off()", tango.ErrSeverity.ERR)
