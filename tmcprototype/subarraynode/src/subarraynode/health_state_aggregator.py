@@ -20,30 +20,34 @@ class HealthStateAggregator:
         self._health_event_id = []
         self.this_server = TangoServerHelper.get_instance()
         self.device_data = DeviceData.get_instance()
+        self.csp_client = TangoClient(self.device_data.csp_subarray_ln_fqdn)
+        self.sdp_client = TangoClient(self.device_data.sdp_subarray_ln_fqdn)
+        self.subarray_ln_health_state_map[self.csp_client.get_device_fqdn()] = (HealthState.UNKNOWN)
+        self.subarray_ln_health_state_map[self.sdp_client.get_device_fqdn()] = (HealthState.UNKNOWN)
         # How to pass fqdn here?
         # self.csp_client = TangoClient("ska_mid/tm_leaf_node/csp_subarray01")
         # self.sdp_client = TangoClient("ska_mid/tm_leaf_node/sdp_subarray01")
 
     def subscribe(self):
         # TODO: dev_name() where to keep this API?
-        self.csp_client = TangoClient(self.device_data.csp_subarray_ln_fqdn)
-        self.sdp_client = TangoClient(self.device_data.sdp_subarray_ln_fqdn)
-        self.subarray_ln_health_state_map[self.csp_client.get_device_fqdn()] = (HealthState.UNKNOWN)
+        # self.csp_client = TangoClient(self.device_data.csp_subarray_ln_fqdn)
+        # self.sdp_client = TangoClient(self.device_data.sdp_subarray_ln_fqdn)
+        # self.subarray_ln_health_state_map[self.csp_client.get_device_fqdn()] = (HealthState.UNKNOWN)
         # Subscribe cspsubarrayHealthState (forwarded attribute) of CspSubarray
         csp_event_id = self.csp_client.subscribe_attribute(const.EVT_CSPSA_HEALTH, self.health_state_cb)
         self.csp_sdp_ln_health_event_id[self.csp_client] = csp_event_id
         log_msg = const.STR_CSP_LN_VS_HEALTH_EVT_ID + str(self.csp_sdp_ln_health_event_id)
         self.logger.debug(log_msg)
         tango_server_helper_obj = TangoServerHelper.get_instance()
-        tango_server_helper_obj.set_status(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
-        self.logger.info(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
-        self.subarray_ln_health_state_map[self.sdp_client.get_device_fqdn()] = (HealthState.UNKNOWN)
+        tango_server_helper_obj.set_status(const.STR_CSP_SA_LEAF_SUB_SUCCESS)
+        self.logger.info(const.STR_CSP_SA_LEAF_SUB_SUCCESS)
+        # self.subarray_ln_health_state_map[self.sdp_client.get_device_fqdn()] = (HealthState.UNKNOWN)
         # Subscribe sdpSubarrayHealthState (forwarded attribute) of SdpSubarray
         sdp_event_id = self.sdp_client.subscribe_attribute(const.EVT_SDPSA_HEALTH, self.health_state_cb)
         self.csp_sdp_ln_health_event_id[self.sdp_client] = sdp_event_id
         log_msg = const.STR_SDP_LN_VS_HEALTH_EVT_ID + str(self.csp_sdp_ln_health_event_id)
         self.logger.debug(log_msg)
-        self.this_server.set_status(const.STR_SDP_SA_LEAF_INIT_SUCCESS)
+        tango_server_helper_obj.set_status(const.STR_SDP_SA_LEAF_SUB_SUCCESS)
 
     def health_state_cb(self, event):
         """

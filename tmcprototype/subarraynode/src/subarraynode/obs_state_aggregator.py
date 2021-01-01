@@ -45,6 +45,7 @@ class ObsStateAggregator:
 
         # Subscribe ReceiveAddresses of SdpSubarray
         sdp_receive_addr_event_id = self.sdp_sa_client.subscribe_attribute("receiveAddresses", self.receive_addresses_cb)
+        self.csp_sdp_ln_obs_state_event_id[self.sdp_sa_client] = sdp_receive_addr_event_id
 
     def observation_state_cb(self, evt):
         """
