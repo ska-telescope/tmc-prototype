@@ -3,14 +3,12 @@ On class for CspSubarrayLeafNode.
 """
 # PROTECTED REGION ID(cspsubarrayleafnode.additionnal_import) ENABLED START #
 # Standard Python imports
-import tango
-from tango import DevFailed
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from . import const
-from tmc.common.tango_client import TangoClient
 from .delay_model import DelayManager
+from tmc.common.tango_server_helper import TangoServerHelper
 
 class On(SKABaseDevice.OnCommand):
     """
@@ -59,9 +57,11 @@ class On(SKABaseDevice.OnCommand):
         :rtype: (ResultCode, str)
 
         """
-        device_data = self.target    
+        # device_data = self.target    
         log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
         self.logger.debug(log_msg)
         delay_manager_obj = DelayManager.get_instance()
         delay_manager_obj.start()
+        this_server = TangoServerHelper.get_instance()
+        this_server.set_status("Testing On Command")
         return (ResultCode.OK, log_msg)

@@ -13,21 +13,14 @@ It also acts as a CSP contact point for Subarray Node for observation execution 
 
 # PROTECTED REGION ID(CspSubarrayLeafNode.additional_import) ENABLED START #
 # Standard python imports
-import datetime
-import importlib.resources
-import threading
-from datetime import datetime, timedelta
-import pytz
-import numpy as np
-import json
-
 
 # Third Party imports
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
+
 # PyTango imports
-from tango import DebugIt, AttrWriteType, DeviceProxy, DevFailed
+from tango import DebugIt, AttrWriteType
 from tango.server import run, attribute, command, device_property
-import katpoint
 
 # Additional import
 from ska.base.commands import ResultCode
@@ -100,6 +93,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
             """
             super().do()
             device = self.target
+
+            this_server = TangoServerHelper.get_instance()
+            this_server.device = device
+
             device_data = DeviceData.get_instance()
             device.device_data = device_data
             device_data.csp_subarray_fqdn = device.CspSubarrayFQDN
