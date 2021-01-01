@@ -4,6 +4,7 @@ from tmc.common.tango_server_helper import TangoServerHelper
 from tmc.common.tango_client import TangoClient
 from . import const
 from .device_data import DeviceData
+import logging
 
 class CbfHealthStateAttributeUpdator:
     """
