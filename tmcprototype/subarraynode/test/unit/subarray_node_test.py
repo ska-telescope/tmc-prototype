@@ -787,7 +787,7 @@ def test_log_transaction_with_config(mock_device_proxy, subarray_state_model, ca
     device_data = DeviceData.get_instance()
     configure_cmd = ConfigureCommand(device_data, subarray_state_model)
     attribute = "receiveAddresses"
-    with mock.patch.object(TangoClient, "get_deviceproxy", return_value=Mock()):
+    with mock.patch.object(TangoClient, "_get_deviceproxy", return_value=Mock()):
         with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_receive_addresses):
             tango_client_obj = TangoClient('ska_mid/tm_leaf_node/sdp_subarray01')
             device_proxy.On()
@@ -808,28 +808,28 @@ def mock_transaction_id():
         yield json.dumps({'transaction_id': dummy_id})
 
 
-# def test_transaction_id_injected_in_config_command(mock_device_proxy, subarray_state_model, mock_transaction_id):
-#     device_proxy, tango_client_obj = mock_device_proxy
-#     device_data = DeviceData.get_instance()
-#     configure_cmd = ConfigureCommand(device_data, subarray_state_model)
-#     attribute = "receiveAddresses"
-#     with mock.patch.object(TangoClient, "get_deviceproxy", return_value=Mock()):
-#         with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_receive_addresses):
-#             tango_client_obj = TangoClient('ska_mid/tm_leaf_node/sdp_subarray01')
-#             # valid_scan_config = example_scan_configuration #json.loads(scan_config_str)
-#             # attr_name_map = csp_func_args
-#             # receive_addresses_map = sdp_func_receive_addresses
-#             # csp_cmd_data = ElementDeviceData.build_up_csp_cmd_data(valid_scan_config, attr_name_map, receive_addresses_map)
+def test_transaction_id_injected_in_config_command(mock_device_proxy, subarray_state_model, mock_transaction_id):
+    device_proxy, tango_client_obj = mock_device_proxy
+    device_data = DeviceData.get_instance()
+    configure_cmd = ConfigureCommand(device_data, subarray_state_model)
+    attribute = "receiveAddresses"
+    with mock.patch.object(TangoClient, "_get_deviceproxy", return_value=Mock()):
+        with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_receive_addresses):
+            tango_client_obj = TangoClient('ska_mid/tm_leaf_node/sdp_subarray01')
+            # valid_scan_config = example_scan_configuration #json.loads(scan_config_str)
+            # attr_name_map = csp_func_args
+            # receive_addresses_map = sdp_func_receive_addresses
+            # csp_cmd_data = ElementDeviceData.build_up_csp_cmd_data(valid_scan_config, attr_name_map, receive_addresses_map)
+            device_proxy.On()
+            # device_proxy.Confiure()
+            subarray_state_model._straight_to_state(DevState.ON, None, ObsState.IDLE)
+            configure_cmd.do(configure_str)
     
-#             # device_proxy.Confiure()
-#             subarray_state_model._straight_to_state(DevState.ON, None, ObsState.IDLE)
-#             configure_cmd.do(configure_str)
-    
-#     # c = idle_subarray_context
-#     # c.sdp_subarray1.generate_event("receiveAddresses", receive_addresses_map)
-#     # c.tango_context.device.Configure(configure_str)
-#             verify_called_correctly(tango_client_obj.deviceproxy, const.CMD_CONFIGURE, mock_transaction_id)
-#     # verify_called_correctly(c.csp_subarray1_ln.proxy_mock, const.CMD_CONFIGURE, mock_transaction_id)
+    # c = idle_subarray_context
+    # c.sdp_subarray1.generate_event("receiveAddresses", receive_addresses_map)
+    # c.tango_context.device.Configure(configure_str)
+            verify_called_correctly(tango_client_obj.deviceproxy, const.CMD_CONFIGURE, mock_transaction_id)
+    # verify_called_correctly(c.csp_subarray1_ln.proxy_mock, const.CMD_CONFIGURE, mock_transaction_id)
 
 
 def test_transaction_id_injected_in_assign_command(mock_device_proxy, mock_transaction_id):
