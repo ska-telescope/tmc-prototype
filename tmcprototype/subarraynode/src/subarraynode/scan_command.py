@@ -56,7 +56,7 @@ class ScanCommand(SKASubarray.ScanCommand):
         device_data.tango_group_client_obj = TangoServerHelper.get_instance()
         try:
             log_msg = const.STR_SCAN_IP_ARG + str(argin)
-            self.logger.info(log_msg)
+            self.logger.debug(log_msg)
             device_data._read_activity_message = log_msg
             device_data.isScanRunning = True
             self.scan_sdp(device_data, argin)

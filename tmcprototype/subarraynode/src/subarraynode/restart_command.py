@@ -47,13 +47,11 @@ class RestartCommand(SKASubarray.RestartCommand):
             device_data._sb_id = ""
             device_data.scan_duration = 0
             device_data._scan_type = ''
-            self.restart_sdp(device_data)
-            self.restart_csp(device_data)
+            self.restart_leaf_nodes(device_data.csp_subarray_ln_fqdn, const.STR_CMD_RESTART_INV_CSP)
+            self.restart_leaf_nodes(device_data.sdp_subarray_ln_fqdn, const.STR_CMD_RESTART_INV_SDP)
             self.restart_dsh_grp(device_data)
             remove_receptors = RemoveReceptors()
             remove_receptors.remove_receptors_from_group()
-            # self.remove_receptors_when_restart()
-            # device.remove_receptors_from_group()
             device_data._read_activity_message = const.STR_RESTART_SUCCESS
             self.logger.info(const.STR_RESTART_SUCCESS)
             tango_server_helper_obj = TangoServerHelper.get_instance()
@@ -69,26 +67,17 @@ class RestartCommand(SKASubarray.RestartCommand):
                                          "SubarrayNode.RestartCommand",
                                          tango.ErrSeverity.ERR)
 
-    def restart_sdp(self, device_data):
+    def restart_leaf_nodes(self, leaf_node_fqdn, info_string):
         """
         set up sdp devices
         """
         #Invoke Restart command on SDP Subarray Leaf Node.
-        sdp_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
+        sdp_client = TangoClient(leaf_node_fqdn)
         sdp_client.send_command(const.CMD_RESTART)
-        self.logger.info(const.STR_CMD_RESTART_INV_SDP)
-
-    def restart_csp(self, device_data):
-        """
-        set up csp devices
-        """
-         #Invoke Restart command on CSP Subarray Leaf Node.
-        csp_client = TangoClient(device_data.csp_subarray_ln_fqdn)
-        csp_client.send_command(const.CMD_RESTART)
-        self.logger.info(const.STR_CMD_RESTART_INV_CSP)
+        self.logger.info(info_string)
 
     def restart_dsh_grp(self, device_data):
-        # Create proxy for Dish Leaf Node Group 
+        # Create proxy for Dish Leaf Node Group
         device_data._dish_leaf_node_group_client.send_command(const.CMD_RESTART)
         self.logger.info(const.STR_CMD_RESTART_INV_DISH_GROUP)
 

@@ -64,7 +64,7 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
         # TODO: How to use logger. Currenly logger is passed from do() method
         self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
         log_msg = const.STR_CONFIGURE_IP_ARG + str(argin)
-        self.logger.info(log_msg)
+        self.logger.debug(log_msg)
         # TODO: how to access TANGO specific attributes (read-write)
         tango_server_helper_obj = TangoServerHelper.get_instance()
         try:
