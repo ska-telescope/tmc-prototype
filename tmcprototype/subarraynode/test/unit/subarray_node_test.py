@@ -59,7 +59,7 @@ with open(path, 'r') as f:
 
 configure_invalid_input_file = 'invalid_input_Configure.json'
 path = join(dirname(__file__), 'data', configure_invalid_input_file)
-with open(path, 'r') as f: 
+with open(path, 'r') as f:
     invalid_conf_input = f.read()
 
 assign_invalid_key_file = 'invalid_key_AssignResources.json'
@@ -71,7 +71,7 @@ sdp_configure_input_file = 'command_sdp_Configure.json'
 path = join(dirname(__file__), 'data', sdp_configure_input_file)
 with open(path, 'r') as f:
     sdp_conf_str = f.read()
-from subarraynode.const import PointingState
+
 csp_configure_input_file = 'command_csp_Configure.json'
 path = join(dirname(__file__), 'data', csp_configure_input_file)
 with open(path, 'r') as f:
