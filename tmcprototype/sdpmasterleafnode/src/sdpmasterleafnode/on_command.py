@@ -38,16 +38,16 @@ class OnCommand(SKABaseDevice.OnCommand):
         :return: none
 
         """
-        device = self.target
+        device_data = DeviceData.get_instance()
         if event.err:
             log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
             self.logger.error(log_msg)
-            device._read_activity_message = log_msg
+            device_data._read_activity_message = log_msg
 
         else:
             log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
             self.logger.info(log_msg)
-            device._read_activity_message = log_msg
+            device_data._read_activity_message = log_msg
 
     def do(self):
         """ Informs the SDP that it can start executing Processing Blocks. Sets the OperatingState to ON.
@@ -60,9 +60,9 @@ class OnCommand(SKABaseDevice.OnCommand):
         :rtype: (ResultCode, str)
 
         """
-        device = self.target
+        device_data = DeviceData.get_instance()
         try:
-            sdp_mln_client_obj = TangoClient(device.sdp_master_ln_fqdn)
+            sdp_mln_client_obj = TangoClient(device_data.sdp_master_ln_fqdn)
             sdp_mln_client_obj.send_command_async(const.CMD_ON, [], self.on_cmd_ended_cb)
             # device._sdp_proxy.command_inout_asynch(const.CMD_ON, self.on_cmd_ended_cb)
             log_msg = const.STR_ON_CMD_SUCCESS

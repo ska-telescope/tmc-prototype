@@ -26,13 +26,13 @@ def tango_context():
         yield tango_context
 
 
-@pytest.fixture(scope="function")
-def event_subscription(mock_sdp_master):
-    event_subscription_map = {}
-    mock_sdp_master[1].deviceproxy.command_inout_asynch.side_effect = (
-        lambda command_name, arg, callback, *args,
-               **kwargs: event_subscription_map.update({command_name: callback}))
-    yield event_subscription_map
+# @pytest.fixture(scope="function")
+# def event_subscription(mock_sdp_master):
+#     event_subscription_map = {}
+#     mock_sdp_master[1].deviceproxy.command_inout_asynch.side_effect = (
+#         lambda command_name, arg, callback, *args,
+#                **kwargs: event_subscription_map.update({command_name: callback}))
+#     yield event_subscription_map
 
 # @pytest.fixture(scope="function")
 # def event_subscription_mock(mock_csp_master_proxy):
@@ -42,29 +42,40 @@ def event_subscription(mock_sdp_master):
 #                **kwargs: event_subscription_map.update({command_name: callback}))
 #     yield event_subscription_map
 
+@pytest.fixture(scope="function")
+def event_subscription_mock():
+    dut_properties = {'SdpMasterFQDN': 'mid_sdp/elt/master'}
+    event_subscription_map = {}
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
+        tango_client_obj = TangoClient(dut_properties['SdpMasterFQDN'])
+        tango_client_obj.deviceproxy.command_inout_asynch.side_effect = (
+            lambda command_name, arg, callback, *args,
+                **kwargs: event_subscription_map.update({command_name: callback}))
+        yield event_subscription_map
+
 
 @pytest.fixture(scope="function")
 def mock_sdp_master_proxy():
     dut_properties = {'SdpMasterFQDN': 'mid_sdp/elt/master'}
-    # event_subscription_map = {}
+    event_subscription_map = {}
     Mock().subscribe_event.side_effect = (
         lambda attr_name, event_type, callback, *args,
                **kwargs: event_subscription_map.update({attr_name: callback}))
     with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties) as tango_context:
         with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
             tango_client_obj = TangoClient(dut_properties['SdpMasterFQDN'])
-            yield tango_context.device, tango_client_obj
+            yield tango_context.device, tango_client_obj, dut_properties['SdpMasterFQDN'], event_subscription_map
 
 
-@pytest.fixture(scope="function")
-def mock_sdp_master():
-    sdp_master_fqdn = 'mid_sdp/elt/master'
-    dut_properties = {'SdpMasterFQDN': sdp_master_fqdn}
-    sdp_master_proxy_mock = Mock()
-    proxies_to_mock = {sdp_master_fqdn: sdp_master_proxy_mock}
-    with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        yield tango_context.device, sdp_master_proxy_mock
+# @pytest.fixture(scope="function")
+# def mock_sdp_master():
+#     sdp_master_fqdn = 'mid_sdp/elt/master'
+#     dut_properties = {'SdpMasterFQDN': sdp_master_fqdn}
+#     sdp_master_proxy_mock = Mock()
+#     proxies_to_mock = {sdp_master_fqdn: sdp_master_proxy_mock}
+#     with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
+#                            proxies_to_mock=proxies_to_mock) as tango_context:
+#         yield tango_context.device, sdp_master_proxy_mock
 
 
 def raise_devfailed_exception(*args):
@@ -84,52 +95,52 @@ def command_without_args(request):
     cmd_name, requested_cmd, Err_msg = request.param
     return cmd_name, requested_cmd, Err_msg
 
-
-def test_command_should_be_relayed_to_sdp_master(mock_sdp_master_proxy, command_without_args):
-    device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
-    cmd_name, requested_cmd, _ = command_without_args
-    device_proxy.command_inout(cmd_name)
-    callback_name = f"{requested_cmd.lower()}_cmd_ended_cb"
-    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(requested_cmd,
-                                                                  any_method(with_name=callback_name))
-
-
-def test_command_should_raise_exception(mock_sdp_master_proxy, command_without_args):
-    device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
-    cmd_name, _, error_msg = command_without_args
-    tango_client_obj.deviceproxy.command_inout_asynch.side_effect = raise_devfailed_exception
-    with pytest.raises(tango.DevFailed) as df:
-        device_proxy.command_inout(cmd_name)
-    assert error_msg in str(df)
-
-
-def test_on_should_command_sdp_master_leaf_node_to_start(mock_sdp_master_proxy):
-    device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
-    assert device_proxy.On() == [[ResultCode.OK],
-                                 ["ON command invoked successfully from SDP Master leaf node."]]
-
-def test_on_command_should_raise_dev_failed(mock_sdp_master_proxy):
-    device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
-    tango_client_obj.deviceproxy.command_inout_asynch.side_effect = raise_devfailed_exception
-    with pytest.raises(tango.DevFailed) as df:
-        device_proxy.On()
-    assert const.ERR_DEVFAILED_MSG in str(df)
-
-
-def test_on_should_command_with_callback_method(mock_sdp_master_proxy, event_subscription):
+#
+# def test_command_should_be_relayed_to_sdp_master(mock_sdp_master_proxy, command_without_args):
+#     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
+#     cmd_name, requested_cmd, _ = command_without_args
+#     device_proxy.command_inout(cmd_name)
+#     callback_name = f"{requested_cmd.lower()}_cmd_ended_cb"
+#     tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(requested_cmd,
+#                                                                   any_method(with_name=callback_name))
+#
+#
+# def test_command_should_raise_exception(mock_sdp_master_proxy, command_without_args):
+#     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
+#     cmd_name, _, error_msg = command_without_args
+#     tango_client_obj.deviceproxy.command_inout_asynch.side_effect = raise_devfailed_exception
+#     with pytest.raises(tango.DevFailed) as df:
+#         device_proxy.command_inout(cmd_name)
+#     assert error_msg in str(df)
+#
+#
+# def test_on_should_command_sdp_master_leaf_node_to_start(mock_sdp_master_proxy):
+#     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
+#     assert device_proxy.On() == [[ResultCode.OK],
+#                                  ["ON command invoked successfully from SDP Master leaf node."]]
+#
+# def test_on_command_should_raise_dev_failed(mock_sdp_master_proxy):
+#     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
+#     tango_client_obj.deviceproxy.command_inout_asynch.side_effect = raise_devfailed_exception
+#     with pytest.raises(tango.DevFailed) as df:
+#         device_proxy.On()
+#     assert const.ERR_DEVFAILED_MSG in str(df)
+#
+#
+def test_on_should_command_with_callback_method(mock_sdp_master_proxy, event_subscription_mock):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
     device_proxy.On()
     dummy_event = command_callback(const.CMD_ON)
-    event_subscription[const.CMD_ON](dummy_event)
+    event_subscription_mock[const.CMD_ON](dummy_event)
     assert const.STR_COMMAND + const.CMD_ON in device_proxy.activityMessage
 
 
-def test_on_should_command_with_callback_method_with_event_error(mock_sdp_master_proxy, event_subscription):
+def test_on_should_command_with_callback_method_with_event_error(mock_sdp_master_proxy, event_subscription_mock):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
     device_proxy.On()
 
     dummy_event = command_callback_with_event_error(const.CMD_ON)
-    event_subscription[const.CMD_ON](dummy_event)
+    event_subscription_mock[const.CMD_ON](dummy_event)
 
     assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
 
@@ -202,7 +213,7 @@ def test_on_should_command_with_callback_method_with_event_error(mock_sdp_master
 #     event_subscription[const.CMD_OFF](dummy_event)
 #
 #     assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
-
+#
 
 def command_callback(command_name):
     fake_event = MagicMock()
@@ -228,59 +239,59 @@ def test_activity_message(tango_context):
     assert tango_context.device.activityMessage == "text"
 
 
-def test_version_info(tango_context):
-    assert tango_context.device.versionInfo == '1.0'
-
-
-def test_processing_block_list(tango_context):
-    assert tango_context.device.ProcessingBlockList
-
-
-def test_status(tango_context):
-    assert tango_context.device.Status() != const.STR_INIT_SUCCESS
-
-
-def test_logging_level(tango_context):
-    tango_context.device.loggingLevel = LoggingLevel.INFO
-    assert tango_context.device.loggingLevel == LoggingLevel.INFO
-
-
-def test_logging_targets(tango_context):
-    tango_context.device.loggingTargets = ['console::cout']
-    assert 'console::cout' in tango_context.device.loggingTargets
-
-
-def test_test_mode(tango_context):
-    test_mode = TestMode.NONE
-    tango_context.device.testMode = test_mode
-    assert tango_context.device.testMode == test_mode
-
-
-def test_simulation_mode(tango_context):
-    tango_context.device.simulationMode = SimulationMode.FALSE
-    assert tango_context.device.simulationMode == SimulationMode.FALSE
-
-
-def test_control_mode(tango_context):
-    control_mode = ControlMode.REMOTE
-    tango_context.device.controlMode = control_mode
-    assert tango_context.device.controlMode == control_mode
-
-
-def test_health_state(tango_context):
-    assert tango_context.device.healthState == HealthState.OK
-
-
-def test_version_id(tango_context):
-    """Test for versionId"""
-    assert tango_context.device.versionId == release.version
-
-
-def test_build_state(tango_context):
-    """Test for buildState"""
-    assert tango_context.device.buildState == (
-        '{},{},{}'.format(release.name, release.version, release.description))
-
+# def test_version_info(tango_context):
+#     assert tango_context.device.versionInfo == '1.0'
+#
+#
+# def test_processing_block_list(tango_context):
+#     assert tango_context.device.ProcessingBlockList
+#
+#
+# def test_status(tango_context):
+#     assert tango_context.device.Status() != const.STR_INIT_SUCCESS
+#
+#
+# def test_logging_level(tango_context):
+#     tango_context.device.loggingLevel = LoggingLevel.INFO
+#     assert tango_context.device.loggingLevel == LoggingLevel.INFO
+#
+#
+# def test_logging_targets(tango_context):
+#     tango_context.device.loggingTargets = ['console::cout']
+#     assert 'console::cout' in tango_context.device.loggingTargets
+#
+#
+# def test_test_mode(tango_context):
+#     test_mode = TestMode.NONE
+#     tango_context.device.testMode = test_mode
+#     assert tango_context.device.testMode == test_mode
+#
+#
+# def test_simulation_mode(tango_context):
+#     tango_context.device.simulationMode = SimulationMode.FALSE
+#     assert tango_context.device.simulationMode == SimulationMode.FALSE
+#
+#
+# def test_control_mode(tango_context):
+#     control_mode = ControlMode.REMOTE
+#     tango_context.device.controlMode = control_mode
+#     assert tango_context.device.controlMode == control_mode
+#
+#
+# def test_health_state(tango_context):
+#     assert tango_context.device.healthState == HealthState.OK
+#
+#
+# def test_version_id(tango_context):
+#     """Test for versionId"""
+#     assert tango_context.device.versionId == release.version
+#
+#
+# def test_build_state(tango_context):
+#     """Test for buildState"""
+#     assert tango_context.device.buildState == (
+#         '{},{},{}'.format(release.name, release.version, release.description))
+#
 
 def any_method(with_name=None):
     class AnyMethod():

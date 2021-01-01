@@ -6,7 +6,9 @@ from tango.server import run,command, device_property, attribute
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode, BaseCommand
-from . import const, release
+from . import const
+from tmc.common.tango_client import TangoClient
+from sdpmasterleafnode import DeviceData
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additionnal_import
 
 class DisableCommand(BaseCommand):
@@ -53,16 +55,16 @@ class DisableCommand(BaseCommand):
         :return: none
 
         """
-        device = self.target
+        device_data = DeviceData.get_instance()
         if event.err:
             log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
             self.logger.error(log_msg)
-            device._read_activity_message = log_msg
+            device_data._read_activity_message = log_msg
 
         else:
             log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
             self.logger.info(log_msg)
-            device._read_activity_message = log_msg
+            device_data._read_activity_message = log_msg
 
     def do(self):
         """
@@ -73,13 +75,13 @@ class DisableCommand(BaseCommand):
         :return: None
 
         """
-        device = self.target
+        device_data = DeviceData.get_instance()
         try:
-            sdp_mln_client_obj = TangoClient(device.sdp_master_ln_fqdn)
+            sdp_mln_client_obj = TangoClient(device_data.sdp_master_ln_fqdn)
             sdp_mln_client_obj.send_command_async(const.CMD_Disable, [], self.disable_cmd_ended_cb)
             # device._sdp_proxy.command_inout_asynch(const.CMD_Disable, self.disable_cmd_ended_cb)
             self.logger.debug(const.STR_DISABLE_CMS_SUCCESS)
-            device._read_activity_message = const.STR_DISABLE_CMS_SUCCESS
+            device_data._read_activity_message = const.STR_DISABLE_CMS_SUCCESS
 
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)

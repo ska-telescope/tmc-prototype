@@ -134,7 +134,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         # PROTECTED REGION ID(SdpMasterLeafNode.activityMessage_read) ENABLED START #
         """ Internal construct of TANGO. String providing information about the current activity in
         SDPLeafNode. """
-        return self._read_activity_message
+        return self.device_data._read_activity_message
         # PROTECTED REGION END #    //  SdpMasterLeafNode.activityMessage_read
 
     def write_activityMessage(self, value):
@@ -142,7 +142,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         """
         Internal construct of TANGO. Sets the activity message.
         """
-        self._read_activity_message = value
+        self.device_data._read_activity_message = value
         # PROTECTED REGION END #    //  SdpMasterLeafNode.activityMessage_write
 
     def read_ProcessingBlockList(self):
