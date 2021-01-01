@@ -44,7 +44,7 @@ class AbortCommand(SKASubarray.AbortCommand):
                     device_data.scan_thread.cancel()  # stop timer when EndScan command is called
             self.abort_sdp(device_data)
             self.abort_csp(device_data)
-            self.abort_dish_grp(device_data)
+            self.abort_dish_group(device_data)
             self.logger.info(const.STR_ABORT_SUCCESS)
             device_data._read_activity_message = const.STR_ABORT_SUCCESS
             tango_server_helper_obj = TangoServerHelper.get_instance()
@@ -78,6 +78,6 @@ class AbortCommand(SKASubarray.AbortCommand):
         csp_client.send_command(const.CMD_ABORT)
         self.logger.info(const.STR_CMD_ABORT_INV_CSP)
 
-    def abort_dish_grp(self, device_data):
+    def abort_dish_group(self, device_data):
          # Create proxy for Dish Leaf Node Group
         device_data._dish_leaf_node_group_client.send_command(const.CMD_ABORT)

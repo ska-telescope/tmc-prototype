@@ -89,7 +89,6 @@ class RestartCommand(SKASubarray.RestartCommand):
 
     def restart_dsh_grp(self, device_data):
         # Create proxy for Dish Leaf Node Group 
-        # dsh_ln_grp_client = TangoGroupClient(device_data._dish_leaf_node_group)
         device_data._dish_leaf_node_group_client.send_command(const.CMD_RESTART)
         self.logger.info(const.STR_CMD_RESTART_INV_DISH_GROUP)
 
