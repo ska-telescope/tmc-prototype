@@ -275,7 +275,7 @@ class SubarrayNode(SKASubarray):
         This function unsubscribes all events given by the event ids and their
         corresponding DeviceProxy objects.
 
-        :param 
+        :param
             device_proxy: Device Proxy
             proxy_event_id: <event_id>
 
