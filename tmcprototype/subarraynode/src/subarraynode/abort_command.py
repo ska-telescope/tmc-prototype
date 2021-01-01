@@ -11,7 +11,6 @@ from tango import DevFailed
 from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
-from tmc.common.tango_group_client import TangoGroupClient
 from tmc.common.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
 from tmc.common.tango_server_helper import TangoServerHelper
@@ -80,6 +79,5 @@ class AbortCommand(SKASubarray.AbortCommand):
         self.logger.info(const.STR_CMD_ABORT_INV_CSP)
 
     def abort_dish_grp(self, device_data):
-         # Create proxy for Dish Leaf Node Group 
-        # dsh_ln_grp_client = TangoGroupClient(device_data._dish_leaf_node_group)
+         # Create proxy for Dish Leaf Node Group
         device_data._dish_leaf_node_group_client.send_command(const.CMD_ABORT)

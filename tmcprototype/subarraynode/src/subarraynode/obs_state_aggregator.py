@@ -24,7 +24,6 @@ class ObsStateAggregator:
         self.sdp_client = None
         self.sdp_sa_client = None
         self.dishPointingStateMap = {}
-        # self._pointing_state_event_id = []
         self.this_server = TangoServerHelper.get_instance()
         self.device_data = DeviceData.get_instance()
     
@@ -46,7 +45,6 @@ class ObsStateAggregator:
 
         # Subscribe ReceiveAddresses of SdpSubarray
         sdp_receive_addr_event_id = self.sdp_sa_client.subscribe_attribute("receiveAddresses", self.receive_addresses_cb)
-        # self._receive_addresses_map[self.sdp_sa_client] = sdp_receive_addr_event_id
 
     def observation_state_cb(self, evt):
         """
@@ -162,9 +160,7 @@ class ObsStateAggregator:
 
         :return: None
         """
-        print("Inside receive address::::::::::::::::::::::::::::::::::")
         if not event.err:
-            # self._receive_addresses_map = event.attr_value.value
             self.device_data._receive_addresses_map = event.attr_value.value
         else:
             log_msg = const.ERR_SUBSR_RECEIVE_ADDRESSES_SDP_SA + str(event)
@@ -221,13 +217,8 @@ class ObsStateAggregator:
         self.dishPointingStateMap[dish_ln_client] = -1
         dish_event_id = dish_ln_client.subscribe_attribute(const.EVT_DISH_POINTING_STATE, self.pointing_state_cb)
         self.device_data._dishLnVsPointingStateEventID[dish_ln_client] = dish_event_id
-        # self._pointing_state_event_id.append(dish_event_id)
         log_msg = const.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(self.device_data._dishLnVsPointingStateEventID)
         self.logger.debug(log_msg)
-
-    # def unsubscribe_dish_pointing_state(self, dish_ln_client):
-    #     if self.device_data._dishLnVsPointingStateEventID[dish_ln_client]:
-    #         dish_ln_client.unsubscribe_attr(self.device_data._dishLnVsPointingStateEventID[dish_ln_client])
 
     def unsubscribe_dish_pointing_state(self):
         for dish_ln_client in self.device_data._dishLnVsPointingStateEventID:

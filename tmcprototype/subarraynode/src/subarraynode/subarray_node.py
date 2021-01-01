@@ -20,9 +20,7 @@ from tango import AttrWriteType, DevFailed, DeviceProxy, Group
 from tango.server import run,attribute, command, device_property
 
 # Additional imports
-from . import const, release, assign_resources_command, release_all_resources_command, configure_command,\
-    scan_command, end_scan_command, end_command, on_command, off_command, track_command,\
-    abort_command, restart_command, obsreset_command
+from . import const, release,  track_command
 from .const import PointingState
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, ObsMode, ObsState
@@ -40,9 +38,7 @@ from subarraynode.abort_command import AbortCommand
 from subarraynode.restart_command import RestartCommand
 from subarraynode.obsreset_command import ObsResetCommand
 from subarraynode.track_command import TrackCommand
-from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
-from subarraynode.exceptions import InvalidObsStateError
 
 __all__ = ["SubarrayNode", "main", "AssignResourcesCommand", "ReleaseAllResourcesCommand",
            "ConfigureCommand", "ScanCommand", "EndScanCommand", "EndCommand", "OnCommand",
@@ -159,20 +155,8 @@ class SubarrayNode(SKASubarray):
 
             device.set_status(const.STR_SA_INIT)
             device._obs_mode = ObsMode.IDLE
-            device.isScanRunning = False
-            device.is_end_command = False
-            device._scan_id = ""
-            # device._sb_id = ""
             device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
             device._version_id = release.version
-            device._receptor_id_list = []
-            device.dishPointingStateMap = {}
-            device._dish_leaf_node_proxy = []
-            device._health_event_id = []
-            device._pointing_state_event_id = []
-            device._dishLnVsHealthEventID = {}
-            device._dishLnVsPointingStateEventID = {}
-            device.only_dishconfig_flag = False
             device.scan_thread = None
             # Step 1: Create object of configuration model
             device.device_data = DeviceData.get_instance()

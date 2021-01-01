@@ -11,7 +11,6 @@ from tango import DevFailed
 from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
-from tmc.common.tango_group_client import TangoGroupClient
 from tmc.common.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
 from subarraynode.remove_receptors import RemoveReceptors
@@ -54,8 +53,6 @@ class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
         self.logger.info(const.STR_DISH_RELEASE)
         remove_receptors = RemoveReceptors()
         remove_receptors.remove_receptors_from_group()
-        # self.remove_receptors_when_release_resources()
-        # self.remove_receptors_from_group()
         self.logger.info(const.STR_CSP_RELEASE)
         self.release_csp_resources(device_data)
         self.logger.info(const.STR_SDP_RELEASE)
@@ -100,7 +97,6 @@ class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
 
         """
         try:
-            # device._sdp_subarray_ln_proxy.command_inout(const.CMD_RELEASE_ALL_RESOURCES)
             sdp_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
             sdp_client.send_command(const.CMD_RELEASE_ALL_RESOURCES)
             self.logger.info(const.STR_RELEASE_ALL_RESOURCES_SDP_SALN)
@@ -108,7 +104,3 @@ class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
         except DevFailed as df:
             self.logger.error(const.ERR_SDP_CMD)
             self.logger.debug(df)
-
-    def remove_receptors_when_release_resources(self):
-        # Remove the group for receptors.
-        RemoveReceptors.remove_receptors_from_group()

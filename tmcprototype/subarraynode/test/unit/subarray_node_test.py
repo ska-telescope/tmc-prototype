@@ -14,7 +14,7 @@ import re
 
 # Tango imports
 import tango
-from tango import DevState, DeviceData, DevString, DevVarStringArray
+from tango import DevState, DeviceData
 from tango.test_context import DeviceTestContext
 # Additional import
 from subarraynode import SubarrayNode, const, ElementDeviceData, release
@@ -59,7 +59,7 @@ with open(path, 'r') as f:
 
 configure_invalid_input_file = 'invalid_input_Configure.json'
 path = join(dirname(__file__), 'data', configure_invalid_input_file)
-with open(path, 'r') as f:
+with open(path, 'r') as f: 
     invalid_conf_input = f.read()
 
 assign_invalid_key_file = 'invalid_key_AssignResources.json'
@@ -71,7 +71,7 @@ sdp_configure_input_file = 'command_sdp_Configure.json'
 path = join(dirname(__file__), 'data', sdp_configure_input_file)
 with open(path, 'r') as f:
     sdp_conf_str = f.read()
-
+from subarraynode.const import PointingState
 csp_configure_input_file = 'command_csp_Configure.json'
 path = join(dirname(__file__), 'data', csp_configure_input_file)
 with open(path, 'r') as f:
@@ -561,7 +561,6 @@ def test_assign_resource_should_raise_exception_when_called_when_device_state_of
 
 
 def test_assign_resource_should_raise_exception_when_called_with_invalid_input(mock_device_proxy):
-    # tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock = mock_lower_devices[:3]
     device_proxy, tango_client_obj = mock_device_proxy
     device_proxy.On()
     with pytest.raises(tango.DevFailed) as df:

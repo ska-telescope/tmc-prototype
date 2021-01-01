@@ -106,7 +106,5 @@ class ScanCommand(SKASubarray.ScanCommand):
         self.logger.info(const.STR_CSP_SCAN_INIT)
         device_data._read_activity_message = const.STR_CSP_SCAN_INIT
 
-    def call_end_scan_command(self):
-        device_data = self.target
-        end_scan_obj = EndScanCommand()
+    def call_end_scan_command(self, device_data):
         device_data.end_scan_obj.do()
