@@ -11,10 +11,10 @@ from tango import DevFailed
 from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
-from subarraynode.tango_group_client import TangoGroupClient
-from subarraynode.tango_client import TangoClient
+from tmc.common.tango_group_client import TangoGroupClient
+from tmc.common.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
-from .tango_server_helper import TangoServerHelper
+from tmc.common.tango_server_helper import TangoServerHelper
 
 
 class ObsResetCommand(SKASubarray.ObsResetCommand):

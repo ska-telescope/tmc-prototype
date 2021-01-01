@@ -13,9 +13,9 @@ from tango import DevFailed
 from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
-from subarraynode.tango_group_client import TangoGroupClient
-from subarraynode.tango_server_helper import TangoServerHelper
-from subarraynode.tango_client import TangoClient
+from tmc.common.tango_group_client import TangoGroupClient
+from tmc.common.tango_server_helper import TangoServerHelper
+from tmc.common.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
 from subarraynode.end_scan_command import EndScanCommand
 

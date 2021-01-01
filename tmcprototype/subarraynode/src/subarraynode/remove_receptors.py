@@ -6,8 +6,8 @@ from tango import DevFailed
 # Additional import
 from . import const
 
-from subarraynode.tango_group_client import TangoGroupClient
-from subarraynode.tango_client import TangoClient
+from tmc.common.tango_group_client import TangoGroupClient
+from tmc.common.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
 import logging
 

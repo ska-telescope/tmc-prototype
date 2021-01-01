@@ -14,7 +14,7 @@ import tango
 from . import const
 # from subarraynode.health_state_aggregator import HealthStateAggregator
 # from subarraynode.obs_state_aggregator import ObsStateAggregator
-from .tango_group_client import TangoGroupClient
+from tmc.common.tango_group_client import TangoGroupClient
 
 class DeviceData:
     """
@@ -52,7 +52,7 @@ class DeviceData:
         self._scan_id = ""
         self._sb_id = ""
         self._scan_type = ""
-        self._dish_leaf_node_group_client = TangoGroupClient(const.GRP_DISH_LEAF_NODE)
+        self._dish_leaf_node_group_client = TangoGroupClient(const.GRP_DISH_LEAF_NODE, None)
         self.health_state_aggr = None
         self.obs_state_aggr = None
         self.dish_leaf_node_prefix = 0

@@ -1,8 +1,8 @@
 from . import const
 from .const import PointingState
 from ska.base.control_model import ObsState
-from subarraynode.tango_client import TangoClient
-from subarraynode.tango_server_helper import TangoServerHelper
+from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 from .device_data import DeviceData
 import logging
 
@@ -231,5 +231,5 @@ class ObsStateAggregator:
 
     def unsubscribe_dish_pointing_state(self):
         for dish_ln_client in self.device_data._dishLnVsPointingStateEventID:
-            dish_ln_client.unsubscribe_attr(self.device_data._dishLnVsPointingStateEventID[dish_ln_client])
+            dish_ln_client.unsubscribe_attribute(self.device_data._dishLnVsPointingStateEventID[dish_ln_client])
 

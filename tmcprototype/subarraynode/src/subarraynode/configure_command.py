@@ -15,10 +15,10 @@ from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from ska_telmodel.csp import interface
 from .transaction_id import identify_with_id,inject_with_id
-from subarraynode.tango_group_client import TangoGroupClient
-from subarraynode.tango_client import TangoClient
+from tmc.common.tango_group_client import TangoGroupClient
+from tmc.common.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
-from .tango_server_helper import TangoServerHelper
+from tmc.common.tango_server_helper import TangoServerHelper
 
 csp_interface_version = 0
 sdp_interface_version = 0

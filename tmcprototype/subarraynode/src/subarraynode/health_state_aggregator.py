@@ -1,8 +1,8 @@
 from . import const
 from ska.base.control_model import HealthState
-from subarraynode.tango_client import TangoClient
-from subarraynode.tango_group_client import TangoGroupClient
-from subarraynode.tango_server_helper import TangoServerHelper
+from tmc.common.tango_client import TangoClient
+from tmc.common.tango_group_client import TangoGroupClient
+from tmc.common.tango_server_helper import TangoServerHelper
 from .device_data import DeviceData
 import logging
 
@@ -109,7 +109,7 @@ class HealthStateAggregator:
 
         """
         for tango_client, event_id in self.csp_sdp_ln_health_event_id.items():
-            tango_client.unsubscribe_attr(event_id)
+            tango_client.unsubscribe_attribute(event_id)
 
     def subscribe_dish_health_state(self, dish_ln_client):
         dish_event_id = dish_ln_client.subscribe_attribute(const.EVT_DISH_HEALTH_STATE, self.health_state_cb)
@@ -124,5 +124,5 @@ class HealthStateAggregator:
 
     def unsubscribe_dish_health_state(self):
         for dish_ln_client in self.device_data._dishLnVsHealthEventID:
-            dish_ln_client.unsubscribe_attr(self.device_data._dishLnVsHealthEventID[dish_ln_client])
+            dish_ln_client.unsubscribe_attribute(self.device_data._dishLnVsHealthEventID[dish_ln_client])
 

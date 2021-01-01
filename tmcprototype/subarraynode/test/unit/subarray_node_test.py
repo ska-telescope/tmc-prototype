@@ -19,7 +19,7 @@ from tango.test_context import DeviceTestContext
 # Additional import
 from subarraynode import SubarrayNode, const, ElementDeviceData, release
 from subarraynode.const import PointingState
-from subarraynode.tango_client import TangoClient
+from tmc.common.tango_client import TangoClient
 from subarraynode.configure_command import ConfigureCommand
 from subarraynode.scan_command import ScanCommand
 from subarraynode.end_scan_command import EndScanCommand
@@ -281,7 +281,7 @@ def mock_lower_devices():
 
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
                            proxies_to_mock=proxies_to_mock) as tango_context:
-        with mock.patch.object(TangoClient, 'get_deviceproxy', return_value=Mock()) as mock_obj:
+        with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
             tango_client_obj = TangoClient(dut_properties['CspSubarrayLNFQDN'])
             # yield tango_context.device, tango_client_obj
 
@@ -304,7 +304,7 @@ def mock_device_proxy():
     }
     
     with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties) as tango_context:
-        with mock.patch.object(TangoClient, 'get_deviceproxy', return_value=Mock()) as mock_obj:
+        with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
             tango_client_obj = TangoClient(dut_properties['CspSubarrayLNFQDN'])
             yield tango_context.device, tango_client_obj
 
@@ -813,7 +813,7 @@ def test_configure_command(device_data, subarray_state_model, mock_device_proxy)
     device_proxy, tango_client_obj = mock_device_proxy
     configure_cmd = ConfigureCommand(device_data, subarray_state_model)
     attribute = "receiveAddresses"
-    with mock.patch.object(TangoClient, "get_deviceproxy", return_value=Mock()):
+    with mock.patch.object(TangoClient, "_get_deviceproxy", return_value=Mock()):
         with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_receive_addresses):
             tango_client_obj = TangoClient('ska_mid/tm_leaf_node/sdp_subarray01')
             device_proxy.On()
@@ -836,7 +836,7 @@ def test_configure_command_subarray_with_invalid_configure_input(device_data, su
     device_proxy, tango_client_obj = mock_device_proxy
     configure_cmd = ConfigureCommand(device_data, subarray_state_model)
     attribute = "receiveAddresses"
-    with mock.patch.object(TangoClient, "get_deviceproxy", return_value=Mock()):
+    with mock.patch.object(TangoClient, "_get_deviceproxy", return_value=Mock()):
         with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_receive_addresses):
             tango_client_obj = TangoClient('ska_mid/tm_leaf_node/sdp_subarray01')
             device_proxy.On()
@@ -941,7 +941,7 @@ def test_releaseallresources_command(device_data, subarray_state_model, mock_dev
     device_proxy.On()
     device_proxy.AssignResources(assign_input_str)
     release_resources_cmd = ReleaseAllResourcesCommand(device_data, subarray_state_model)
-    assert release_resources_cmd.do() == (ResultCode.STARTED, 'True')
+    assert release_resources_cmd.do() == (ResultCode.STARTED, '[]')
 
 
 def test_release_resource_should_raise_exception_when_called_before_assign_resource(device_data, subarray_state_model, mock_device_proxy):
@@ -994,14 +994,14 @@ def csp_health_state(request):
 def test_subarray_health_state_when_csubarray1_ln_is_in_health_state_after_start(mock_device_proxy, csp_health_state):
     device_proxy, tango_client_obj = mock_device_proxy
     device_data = DeviceData.get_instance()
-    with mock.patch.object(TangoClient, 'get_deviceproxy', return_value=Mock()) as mock_obj:
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
         with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber):
             device_proxy.On()
     assert device_data.health_state == csp_health_state
 
 def test_subarray_health_state_is_ok_when_csp_and_sdp_subarray1_ln_is_ok_after_start(mock_device_proxy):
     device_proxy, tango_client_obj = mock_device_proxy
-    with mock.patch.object(TangoClient, 'get_deviceproxy', return_value=Mock()) as mock_obj:
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
         with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber):
             device_proxy.On()
 
@@ -1010,7 +1010,7 @@ def test_subarray_health_state_is_ok_when_csp_and_sdp_subarray1_ln_is_ok_after_s
 def test_subarray_health_state_with_error_event(mock_device_proxy):
     device_proxy, tango_client_obj = mock_device_proxy
     device_data = DeviceData.get_instance()
-    with mock.patch.object(TangoClient, 'get_deviceproxy', return_value=Mock()) as mock_obj:
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
         with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=create_dummy_event_healthstate_with_error):
             device_proxy.On()
     assert const.ERR_SUBSR_SA_HEALTH_STATE in device_proxy.activityMessage
