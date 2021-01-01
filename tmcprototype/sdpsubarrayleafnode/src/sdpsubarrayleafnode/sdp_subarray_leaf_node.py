@@ -383,7 +383,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         device_data = self.target
         device_data = DeviceData.get_instance()
         sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
-        #sdp_subarray_obs_state = self.sdp_sa_ln_client_obj.get_attribute("obsState")
         if sdp_sa_ln_client_obj.get_attribute("obsState") in [ObsState.EMPTY, ObsState.IDLE]:
             self.logger.info("SDP subarray is in required obstate,Hence resources to SDP can be assign.")
         else:

@@ -41,11 +41,6 @@ class Configure(BaseCommand):
         #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_IDLE, "Failed to invoke Configure command on SdpSubarrayLeafNode.",
         #                                     "SdpSubarrayLeafNode.Configure()",
         #                                 tango.ErrSeverity.ERR)
-
-        # if device._sdp_subarray_proxy.obsState not in [ObsState.IDLE, ObsState.READY]:
-        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_IDLE, "Failed to invoke Configure command on SdpSubarrayLeafNode.",
-        #                                     "SdpSubarrayLeafNode.ConfigureCommand()",
-        #                                     tango.ErrSeverity.ERR)
         return True
 
     def configure_cmd_ended_cb(self, event):
@@ -103,8 +98,6 @@ class Configure(BaseCommand):
             self.logger.debug(log_msg)
             sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
             sdp_sa_ln_client_obj.send_command_async(const.CMD_CONFIGURE, argin, self.configure_cmd_ended_cb)
-            # device._sdp_subarray_proxy.command_inout_asynch(const.CMD_CONFIGURE, argin,
-            #                                                 self.configure_cmd_ended_cb)
             device_data._read_activity_message = const.STR_CONFIGURE_SUCCESS
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
 

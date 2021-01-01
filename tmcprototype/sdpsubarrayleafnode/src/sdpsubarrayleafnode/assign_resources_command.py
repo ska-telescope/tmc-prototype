@@ -123,12 +123,11 @@ class AssignResources(BaseCommand):
 
         device_data = self.target
         try:
-            #device.validate_obs_state()
+            #TODO: When ObsState check related issue is resolved 
+            # device.validate_obs_state()
             # Call SDP Subarray Command asynchronously
             sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
             sdp_sa_ln_client_obj.send_command_async(const.CMD_ASSIGN_RESOURCES, argin, self.AssignResources_ended)
-            # device._sdp_subarray_proxy.command_inout_asynch(const.CMD_ASSIGN_RESOURCES, argin,
-            #                                                 self.AssignResources_ended)
             # Update the status of command execution status in activity message
             device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)

@@ -34,10 +34,6 @@ class ObsReset(BaseCommand):
                                             "sdpsubarrayleafnode.ObsResetCommand()",
                                             tango.ErrSeverity.ERR)
 
-        # if device._sdp_subarray_proxy.obsState not in [ObsState.ABORTED, ObsState.FAULT]:
-        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_ABORTED_FAULT, "Failed to invoke ObsReset command on SdpSubarrayLeafNode.",
-        #                                     "SdpSubarrayLeafNode.ObsResetCommand()",
-        #                                     tango.ErrSeverity.ERR)
         # sdp_sa_ln_client = TangoClient(device_data._sdp_sa_fqdn)
         # if sdp_sa_ln_client.get_attribute("obsState") not in [ObsState.ABORTED, ObsState.FAULT]:
         #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_ABORTED_FAULT, "Failed to invoke ObsReset command on SdpSubarrayLeafNode."
@@ -89,9 +85,7 @@ class ObsReset(BaseCommand):
 
         """
         device_data = self.target
-        try:
-            # device._sdp_subarray_proxy.command_inout_asynch(const.CMD_OBSRESET,
-            #                                                 self.obsreset_cmd_ended_cb)
+        try:    
             sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
             sdp_sa_ln_client_obj.send_command_async(const.CMD_OBSRESET, None, self.obsreset_cmd_ended_cb)
             device_data._read_activity_message = const.STR_OBSRESET_SUCCESS
