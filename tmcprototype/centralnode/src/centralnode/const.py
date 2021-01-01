@@ -11,9 +11,6 @@ STR_CMD_STANDBY_SDP_DEV = "STANDBY command invoked on SdpMasterleafNode device "
 STR_CMD_STANDBY_SA_DEV = "STANDBY command invoked on SubarrayNode device"
 CMD_ON = "On"
 CMD_OFF = "Off"
-STR_CMD_ON_CSP_DEV = "ON command invoked on CspMasterLeafNode device"
-STR_CMD_ON_SDP_DEV = "ON command invoked on SdpMasterLeafNode device"
-STR_CMD_ON_SA_DEV = "ON command invoked on SubarrayNode device"
 
 #Event messages
 EVT_UNKNOWN = "Event from the Unknown device!"
@@ -45,9 +42,9 @@ ERR_ASSGN_RESOURCES = "Error occurred while assigning resources to the Subarray 
 ERR_RELEASE_RESOURCES = "Error occurred while releasing resources from the Subarray \n"
 ERR_STOW_ARGIN = "Invalid StowAntennas arguments \n"
 ERR_HEALTH_STATE_CB = "Error handling healthState callback for evt: %s"
-ERR_SUBARRAY_ID_DOES_NOT_EXIST = "The Subarray '99' does not exist."
-ERR_RECEPTOR_ID_DOES_NOT_EXIST = "The following Receptor id(s) do not exist:"
 ERR_RECEPTOR_ID_REALLOCATION = "The following Receptor id(s) are allocated to other subarrays: "
+ERR_DEVFAILED_MSG = "This is error message for devfailed"
+ERR_SUBARRAY_ID_DOES_NOT_EXIST = "The Subarray '99' does not exist."
 
 #strings
 #General strings
