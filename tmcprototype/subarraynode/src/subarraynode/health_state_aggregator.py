@@ -1,7 +1,6 @@
 from . import const
 from ska.base.control_model import HealthState
 from tmc.common.tango_client import TangoClient
-from tmc.common.tango_group_client import TangoGroupClient
 from tmc.common.tango_server_helper import TangoServerHelper
 from .device_data import DeviceData
 import logging
@@ -25,7 +24,6 @@ class HealthStateAggregator:
         # self.csp_client = TangoClient("ska_mid/tm_leaf_node/csp_subarray01")
         # self.sdp_client = TangoClient("ska_mid/tm_leaf_node/sdp_subarray01")
 
-
     def subscribe(self):
         # TODO: dev_name() where to keep this API?
         self.csp_client = TangoClient(self.device_data.csp_subarray_ln_fqdn)
@@ -36,11 +34,9 @@ class HealthStateAggregator:
         self.csp_sdp_ln_health_event_id[self.csp_client] = csp_event_id
         log_msg = const.STR_CSP_LN_VS_HEALTH_EVT_ID + str(self.csp_sdp_ln_health_event_id)
         self.logger.debug(log_msg)
-        # self.this_server.set_status(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
         tango_server_helper_obj = TangoServerHelper.get_instance()
         tango_server_helper_obj.set_status(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
         self.logger.info(const.STR_CSP_SA_LEAF_INIT_SUCCESS)
-
         self.subarray_ln_health_state_map[self.sdp_client.get_device_fqdn()] = (HealthState.UNKNOWN)
         # Subscribe sdpSubarrayHealthState (forwarded attribute) of SdpSubarray
         sdp_event_id = self.sdp_client.subscribe_attribute(const.EVT_SDPSA_HEALTH, self.health_state_cb)
@@ -66,14 +62,11 @@ class HealthStateAggregator:
 
             log_message = self.generate_health_state_log_msg(
                 event_health_state, device_name, event)
-            # self._read_activity_message = log_message
             self.device_data._read_activity_message = log_message
             self.device_data.health_state = self.calculate_health_state(
                 self.subarray_ln_health_state_map.values())
-            # self.this_server._health_state = self.device_data.health_state
         else:
             log_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(device_name) + str(event)
-            # self._read_activity_message = log_message
             self.device_data._read_activity_message = log_message
 
     def generate_health_state_log_msg(self, health_state, device_name, event):
@@ -118,11 +111,13 @@ class HealthStateAggregator:
         log_msg = const.STR_DISH_LN_VS_HEALTH_EVT_ID + str(self.device_data._dishLnVsHealthEventID)
         self.logger.debug(log_msg)
 
-    # def unsubscribe_dish_health_state(self, dish_ln_client):
-    #     if self.device_data._dishLnVsHealthEventID[dish_ln_client]:
-    #         dish_ln_client.unsubscribe_attr(self.device_data._dishLnVsHealthEventID[dish_ln_client])
-
     def unsubscribe_dish_health_state(self):
         for dish_ln_client in self.device_data._dishLnVsHealthEventID:
             dish_ln_client.unsubscribe_attribute(self.device_data._dishLnVsHealthEventID[dish_ln_client])
+
+    def _remove_subarray_dish_lns_health_states(self):
+        subarray_ln_health_state_map_copy = self.subarray_ln_health_state_map.copy()
+        for dev_name in subarray_ln_health_state_map_copy:
+            if dev_name.startswith(const.PROP_DEF_VAL_LEAF_NODE_PREFIX):
+                _ = self.subarray_ln_health_state_map.pop(dev_name)
 

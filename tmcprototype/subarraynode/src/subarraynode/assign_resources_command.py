@@ -15,7 +15,6 @@ from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from .transaction_id import identify_with_id, inject_id,inject_with_id
-from tmc.common.tango_group_client import TangoGroupClient
 from tmc.common.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
 
@@ -240,10 +239,7 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
         for leafId in range(0, len(argin)):
             try:
                 str_leafId = argin[leafId]
-
-                #TODO: Need to access dish_leaf_node_prefix from DeviceData
                 device_data._dish_leaf_node_group_client.add_device(device_data.dish_leaf_node_prefix + str_leafId)
-                
                 # TangoClient is used for each dish leaf node for subscribing attribute instead of TangoGroupClient. 
                 dish_ln_client = TangoClient(device_data.dish_leaf_node_prefix + str_leafId)
                 
@@ -265,20 +261,7 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
 
                 # Subscribe Dish Pointing State
                 device_data.obs_state_aggr.subscribe_dish_pointing_state(dish_ln_client)
-
-                # device_data.dishPointingStateMap[devProxy] = -1
-                # self._event_id = devProxy.subscribe_event(const.EVT_DISH_POINTING_STATE,
-                #                                           tango.EventType.CHANGE_EVENT,
-                #                                           device_data.pointing_state_cb,
-                #                                           stateless=True)
-                # device_data._dishLnVsPointingStateEventID[devProxy] = self._event_id
-                # device_data._pointing_state_event_id.append(self._event_id)
-                # log_msg = const.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(device_data._dishLnVsPointingStateEventID)
-                # self.logger.debug(log_msg)
                 receptor_id_list.append(int(str_leafId)) # no need to have this variable here - Snehal
-                # device_data._read_activity_message = const.STR_GRP_DEF + str(device_data._dish_leaf_node_group.get_group_device_list(True))
-                # print("-------------------------" , str(device_data._dish_leaf_node_group.get_group_device_list(True)))
-                # device_data._read_activity_message = const.STR_LN_PROXIES + str(device_data._dish_leaf_node_proxy)
                 self.logger.debug(const.STR_SUBS_ATTRS_LN)
                 device_data._read_activity_message = const.STR_SUBS_ATTRS_LN
                 self.logger.info(const.STR_ASSIGN_RES_SUCCESS)
@@ -299,12 +282,8 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
                 #     device_data._dish_leaf_node_group.remove(device_data.dish_leaf_node_prefix + str_leafId)
                 # unsubscribe event
                 device_data.health_state_aggr.unsubscribe_dish_health_state(dish_ln_client)
-                # if device_data._dishLnVsHealthEventID[devProxy]:
-                #     devProxy.unsubscribe_event(device_data._dishLnVsHealthEventID[devProxy])
 
                 device_data.obs_state_aggr.unsubscribe_dish_pointing_state(dish_ln_client)
-                # if device_data._dishLnVsPointingStateEventID[devProxy]:
-                #     devProxy.unsubscribe_event(device_data._dishLnVsPointingStateEventID[devProxy])
 
             except (TypeError) as except_occurred:
                 allocation_failure.append(str_leafId)

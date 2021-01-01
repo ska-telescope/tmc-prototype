@@ -50,7 +50,9 @@ class RestartCommand(SKASubarray.RestartCommand):
             self.restart_sdp(device_data)
             self.restart_csp(device_data)
             self.restart_dsh_grp(device_data)
-            self.remove_receptors_when_restart()
+            remove_receptors = RemoveReceptors()
+            remove_receptors.remove_receptors_from_group()
+            # self.remove_receptors_when_restart()
             # device.remove_receptors_from_group()
             device_data._read_activity_message = const.STR_RESTART_SUCCESS
             self.logger.info(const.STR_RESTART_SUCCESS)
@@ -91,7 +93,7 @@ class RestartCommand(SKASubarray.RestartCommand):
         device_data._dish_leaf_node_group_client.send_command(const.CMD_RESTART)
         self.logger.info(const.STR_CMD_RESTART_INV_DISH_GROUP)
 
-    def remove_receptors_when_restart(self):
-        # Remove the group for receptors.
-        remove_receptor_obj = RemoveReceptors()
-        remove_receptor_obj.remove_receptors_from_group()
+    # def remove_receptors_when_restart(self):
+    #     # Remove the group for receptors.
+    #     remove_receptor_obj = RemoveReceptors()
+    #     remove_receptor_obj.remove_receptors_from_group()

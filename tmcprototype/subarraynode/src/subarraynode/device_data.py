@@ -32,6 +32,7 @@ class DeviceData:
             DeviceData.__instance = self
 
         self.is_scan_completed = False
+        self.is_end_command = False
         self.is_release_resources = False
         self.is_restart_command = False
         self.is_abort_command = False

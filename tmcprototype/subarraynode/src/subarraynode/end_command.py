@@ -79,6 +79,5 @@ class EndCommand(SKASubarray.EndCommand):
 
     def stop_dish_tracking(self, device_data):
         # TODO: Getting exception while running test cases using device mocking
-        # dsh_leaf_node_client = TangoGroupClient(device_data._dish_leaf_node_group)
         device_data._dish_leaf_node_group_client.send_command(const.CMD_STOP_TRACK)
         self.logger.info(const.STR_CMD_STOP_TRACK_INV_DLN)

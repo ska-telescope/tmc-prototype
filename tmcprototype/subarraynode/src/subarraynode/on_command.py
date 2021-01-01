@@ -11,10 +11,7 @@ from tango import DevFailed, EventType
 from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
-from ska.base.control_model import HealthState
-from tmc.common.tango_group_client import TangoGroupClient
 from tmc.common.tango_client import TangoClient
-from subarraynode.device_data import DeviceData
 from subarraynode.health_state_aggregator import HealthStateAggregator
 from .obs_state_aggregator import ObsStateAggregator
 
