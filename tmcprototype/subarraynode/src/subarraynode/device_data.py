@@ -11,8 +11,12 @@
 This module defines the Device Data class, which represents the functional Subarray device.
 """
 import tango
+from tango import DevFailed
+
+# Additional import
 from . import const
 from tmc.common.tango_group_client import TangoGroupClient
+import logging
 
 class DeviceData:
     """
@@ -23,7 +27,7 @@ class DeviceData:
     __instance = None
 
     def __init__(self):
-        """Private constructor of the class""" 
+        """Private constructor of the class"""
         if DeviceData.__instance != None:
             raise Exception("This is singletone class")
         else:
@@ -64,6 +68,46 @@ class DeviceData:
         # TODO: For future use
         self._receptor_id_list = []
         self.receive_addresses = None
+
+    def clean_up_dict(self,logger = None ):
+        """
+        Cleans dictionaries of the resources across the subarraynode.
+
+        Note: Currently there are only receptors allocated so the group contains only receptor ids.
+
+        :param argin:
+            DevVoid
+        :return:
+            DevVoid
+        """
+        if logger == None:
+            self.logger = logging.getLogger(__name__)
+        else:
+            self.logger = logger
+        if not self._dishLnVsHealthEventID or not self._dishLnVsPointingStateEventID:
+            return
+        try:
+            self._dish_leaf_node_group_client.remove_all_device()
+            log_message = const.STR_GRP_DEF
+            self.logger.debug(log_message)
+            self._read_activity_message = log_message
+            self.logger.info(const.RECEPTORS_REMOVE_SUCCESS)
+        except DevFailed as dev_failed:
+            log_message = "Failed to remove receptors from the group. {}".format(dev_failed)
+            self.logger.error(log_message)
+            self._read_activity_message = log_message
+            return
+
+        self.health_state_aggr.unsubscribe_dish_health_state()
+        self.obs_state_aggr.unsubscribe_dish_pointing_state()
+
+        # clearing dictonaries and lists
+        self._dishLnVsHealthEventID.clear()  # Clear eventID dictionary
+        self._dishLnVsPointingStateEventID.clear()  # Clear eventID dictionary
+        # self._health_event_id.clear()
+        self.health_state_aggr._remove_subarray_dish_lns_health_states()
+        self.logger.info(const.STR_RECEPTORS_REMOVE_SUCCESS)
+
 
     @staticmethod
     def get_instance():
