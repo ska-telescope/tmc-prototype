@@ -114,7 +114,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         with ThreadPoolExecutor(3) as executor:
             # 2.1 Create group of receptors
             self.logger.debug(const.STR_DISH_ALLOCATION)
-            dish_allocation_status = executor.submit(self.add_receptors_in_group, receptor_list)
+            dish_allocation_status = executor.submit(self.set_up_dish_data, receptor_list)
 
             # 2.2. Add resources in CSP subarray
             self.logger.debug(const.STR_CSP_ALLOCATION)
@@ -211,7 +211,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         message = str(argout)
         return (ResultCode.STARTED, message)
 
-    def add_receptors_in_group(self, argin):
+    def set_up_dish_data(self, argin):
         """
         Creates a tango group of the successfully allocated resources in the subarray.
         Device proxy for each of the resources is created. The healthState and pointintgState attributes
@@ -261,7 +261,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
                 self.logger.exception(dev_failed)
                 tango.Except.throw_exception(const.ERR_ADDING_LEAFNODE,
                                                  log_msg,
-                                                 "SubarrayNode.add_receptors_in_group",
+                                                 "SubarrayNode.set_up_dish_data",
                                                  tango.ErrSeverity.ERR
                                                 )
                 allocation_failure.append(str_leafId)
@@ -280,7 +280,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
                 log_msg = const.ERR_ADDING_LEAFNODE + str(except_occurred)
                 self.logger.exception(except_occurred)
                 tango.Except.throw_exception(const.ERR_ADDING_LEAFNODE, log_msg,
-                                             "SubarrayNode.add_receptors_in_group",
+                                             "SubarrayNode.set_up_dish_data",
                                              tango.ErrSeverity.ERR)
 
         log_msg = "List of Resources added to the Subarray::",allocation_success
