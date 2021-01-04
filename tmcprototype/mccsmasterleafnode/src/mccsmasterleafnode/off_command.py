@@ -2,19 +2,16 @@
 # Third party imports
 # Tango imports
 import tango
-from tango import DeviceProxy, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
-from tango.server import run, command, device_property, attribute
+from tango import DevFailed
 
 # Additional import
 from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode, BaseCommand
-from ska.base.control_model import HealthState, SimulationMode, TestMode
+from ska.base.commands import ResultCode 
 from tmc.common.tango_client import TangoClient
-from . import const, release
+from . import const
 # PROTECTED REGION END #    //  MccsMasterLeafNode imports
 
-
-class OffCommand(SKABaseDevice.OffCommand):
+class Off(SKABaseDevice.OffCommand):
     """
     A class for MccsMasterLeafNode's Off() command.
     """
@@ -39,20 +36,20 @@ class OffCommand(SKABaseDevice.OffCommand):
         :return: none
 
         """
-        device = self.target
+        device_data = self.target
         # Update logs and activity message attribute with received event
         if event.err:
             log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
             self.logger.error(log_msg)
-            device._read_activity_message = log_msg
+            device_data._read_activity_message = log_msg
         else:
             log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
             self.logger.info(log_msg)
-            device._read_activity_message = log_msg
+            device_data._read_activity_message = log_msg
 
     def do(self):
         """
-        Invokes Off command on the MCCS Element.
+        Invokes Off command on the MCCS Master.
 
         :param argin: None.
 
@@ -62,15 +59,22 @@ class OffCommand(SKABaseDevice.OffCommand):
         :rtype: (ResultCode, str)
 
         """
-        device = self.target
+        device_data = self.target
         # If the array length is 0, the command applies to the whole MCCS Element.
-        # If the array length is >, each array element _CMD_ISSUED
+        # If the array length is >, each array element specifies the FQDN of the MCCS SubElement to switch OFF.
+        try:
+            #device._mccs_master_proxy.command_inout_asynch(const.CMD_OFF, self.off_cmd_ended_cb)
+            mccs_mln_client_obj = TangoClient(device_data._mccs_master_ln_fqdn)
+            mccs_mln_client_obj.send_command_async(const.CMD_OFF, None, self.off_cmd_ended_cb)
+            self.logger.debug(const.STR_OFF_CMD_ISSUED)
+            device_data._read_activity_message = const.STR_OFF_CMD_ISSUED
             return (ResultCode.OK, const.STR_OFF_CMD_ISSUED)
 
         except DevFailed as dev_failed:
             log_msg = const.ERR_OFF_RESOURCES + str(dev_failed)
-            device._read_activity_message = log_msg
+            device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(const.STR_OFF_EXEC, log_msg,
                                             "MccsMasterLeafNode.Off",
                                             tango.ErrSeverity.ERR)
+
