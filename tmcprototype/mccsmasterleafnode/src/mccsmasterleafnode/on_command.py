@@ -2,15 +2,13 @@
 # Third party imports
 # Tango imports
 import tango
-from tango import DeviceProxy, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
-from tango.server import run, command, device_property, attribute
+from tango import DevFailed
 
 # Additional import
 from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode, BaseCommand
-from ska.base.control_model import HealthState, SimulationMode, TestMode
+from ska.base.commands import ResultCode 
 from tmc.common.tango_client import TangoClient
-from . import const, release
+from . import const
 # PROTECTED REGION END #    //  MccsMasterLeafNode imports
 
 
