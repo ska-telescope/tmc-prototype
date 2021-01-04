@@ -36,16 +36,16 @@ tmcprototype:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: tmcprototype
-    tag: 0.2.16
+    tag: 0.3.1-dirty
     pullPolicy: IfNotPresent
 
-resources:
-  limits:
-    cpu: 300m
-    memory: 500Mi
-  requests:
-    cpu: 100m
-    memory: 128Mi
+# resources:
+#   limits:
+#     cpu: 300m
+#     memory: 500Mi
+#   requests:
+#     cpu: 100m
+#     memory: 128Mi
 
 deviceServers:
   - name: dishmaster1
@@ -307,10 +307,10 @@ deviceServers:
       image: tmalarmhandler
       tag: latest
       pullPolicy: Always
-    resources:
-      limits:
-        cpu: 300m
-        memory: 500Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
+    # resources:
+    #   limits:
+    #     cpu: 300m
+    #     memory: 500Mi
+    #   requests:
+    #     cpu: 100m
+    #     memory: 128Mi

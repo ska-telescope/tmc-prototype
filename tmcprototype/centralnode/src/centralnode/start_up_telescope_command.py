@@ -110,8 +110,10 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
 
         :return: None
         """
-        for subarrayID in range(1, len(subarray_fqdn_list) + 1):
-            subarray_client = TangoClient(subarrayID)
+        print("**************************** SUBARRAY FQDN LIST: ", subarray_fqdn_list)
+        for subarray_fqdn in subarray_fqdn_list:
+            print("**************************** subarray_fqdn: ", subarray_fqdn)
+            subarray_client = TangoClient(subarray_fqdn)
             self.startup_leaf_node(subarray_client)
 
     def startup_leaf_node(self, tango_client):
