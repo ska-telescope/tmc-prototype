@@ -34,7 +34,7 @@ class ObsStateAggregator:
                 log_message = "Subscribing ObsState of: {}".format(subarray_fqdn)
                 self.logger.debug(log_message)
                 tango_client = TangoClient(subarray_fqdn)
-                event_id = tango_client.subscribe_attribute(const.EVT_SUBSR_HEALTH_STATE,
+                event_id = tango_client.subscribe_attribute(const.EVT_SUBSR_OBS_STATE,
                     self.obs_state_callback)
                 self.event_subscription_map[tango_client] = event_id
         except tango.DevFailed:
@@ -44,9 +44,11 @@ class ObsStateAggregator:
         """
         Method to stop ObsState aggregation
         """
+        print ("Event subscription map: ", self.event_subscription_map) 
         for tango_client in self.event_subscription_map:
             log_message = "Unsubscribing ObsState of: {}".format(tango_client.get_device_fqdn)
             self.logger.debug(log_message)
+            print ("Event Id:", self.event_subscription_map[tango_client])
             tango_client.unsubscribe_attribute(self.event_subscription_map[tango_client])
         self.event_subscription_map.clear()
 
