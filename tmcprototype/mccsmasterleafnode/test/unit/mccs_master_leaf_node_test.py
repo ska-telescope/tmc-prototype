@@ -163,14 +163,9 @@ def command_with_arg(request):
     cmd_name, requested_cmd, input_str, obs_state, error_msg=request.param
     return cmd_name, requested_cmd, input_str, obs_state, error_msg
 
-@pytest.mark.xfail(reason="This test case is not applicable for now as obsState is not getting checked")
 def test_command_raise_devfailed_exception(mock_mccs_master_proxy,command_with_arg):
-    mccs_master_proxy_mock, device_proxy, mccs_master_fqdn, event_subscription_map = mock_mccs_master_proxy
+    device_proxy, tango_client_obj, mccs_master_fqdn, event_subscription_map = mock_mccs_master_proxy
     cmd_name, requested_cmd, input_str, obs_state, error_msg = command_with_arg
-    global obs_state_global
-    device_proxy, tango_client_obj = mock_mccs_master_proxy[:2]
-    obs_state_global = ObsState.EMPTY
-    tango_client_obj.deviceproxy.read_attribute.side_effect = check_obs_state    
     tango_client_obj.deviceproxy.command_inout_asynch.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name, input_str)
