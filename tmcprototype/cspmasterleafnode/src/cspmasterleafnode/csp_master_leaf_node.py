@@ -22,12 +22,15 @@ from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, SimulationMode, TestMode
-from . import const, release, on_command, off_command, standby_command
+from . import const, release
+from .on_command import On
+from .off_command import Off
+from .standby_command import Standby
 from .device_data import DeviceData
 
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
 
-__all__ = ["CspMasterLeafNode", "main", "on_command", "off_command", "standby_command"]
+__all__ = ["CspMasterLeafNode", "main", "On", "Off", "Standby"]
 
 
 class CspMasterLeafNode(SKABaseDevice):
@@ -163,10 +166,10 @@ class CspMasterLeafNode(SKABaseDevice):
         """
         device_data = DeviceData.get_instance()
         super().init_command_objects()
-        self.register_command_object("Off", off_command.Off(device_data, self.state_model,self.logger))
-        self.register_command_object("On", on_command.On(device_data, self.state_model, self.logger))
-        self.register_command_object("Standby", standby_command.Standby(device_data, self.state_model,
-                                                                               self.logger))
+        args = (device_data, self.state_model,self.logger)
+        self.register_command_object("Off", Off(*args))
+        self.register_command_object("On", On(*args))
+        self.register_command_object("Standby", Standby(*args))
 
 
 # ----------
