@@ -25,8 +25,15 @@ from ska.base.commands import ResultCode
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
 from .assign_resources_command import AssignResourcesCommand
-from . import const, release, release_all_resources_command, configure_command,\
-    scan_command, end_scan_command, end_command, abort_command, restart_command, obsreset_command
+from .release_all_resources_command import ReleaseAllResourcesCommand
+from .configure_command import ConfigureCommand
+from .scan_command import StartScanCommand
+from .end_scan_command import EndScanCommand
+from .end_command import GoToIdleCommand
+from .abort_command import AbortCommand
+from .restart_command import RestartCommand
+from .obsreset_command import ObsResetCommand
+from . import const, release
 from .exceptions import InvalidObsStateError
 
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additional_import
@@ -411,14 +418,14 @@ class CspSubarrayLeafNode(SKABaseDevice):
         device_data = DeviceData.get_instance()
         args = (device_data, self.state_model, self.logger)
         self.register_command_object("AssignResources", AssignResourcesCommand(*args))
-        self.register_command_object("ReleaseAllResources", release_all_resources_command.ReleaseAllResourcesCommand(*args))
-        self.register_command_object("Configure", configure_command.ConfigureCommand(*args))
-        self.register_command_object("StartScan", scan_command.StartScanCommand(*args))
-        self.register_command_object("EndScan", end_scan_command.EndScanCommand(*args))
-        self.register_command_object("GoToIdle", end_command.GoToIdleCommand(*args))
-        self.register_command_object("Abort", abort_command.AbortCommand(*args))
-        self.register_command_object("Restart", restart_command.RestartCommand(*args))
-        self.register_command_object("ObsReset", obsreset_command.ObsResetCommand(*args))
+        self.register_command_object("ReleaseAllResources", ReleaseAllResourcesCommand(*args))
+        self.register_command_object("Configure", ConfigureCommand(*args))
+        self.register_command_object("StartScan", StartScanCommand(*args))
+        self.register_command_object("EndScan", EndScanCommand(*args))
+        self.register_command_object("GoToIdle", GoToIdleCommand(*args))
+        self.register_command_object("Abort", AbortCommand(*args))
+        self.register_command_object("Restart", RestartCommand(*args))
+        self.register_command_object("ObsReset", ObsResetCommand(*args))
 
 
 # ----------

@@ -5,7 +5,6 @@ from tango import DevState, DevFailed
 # Additional import
 from tmc.common.tango_client import TangoClient
 from ska.base.commands import BaseCommand
-from ska.base.control_model import ObsState
 import katpoint
 from .transaction_id import identify_with_id
 from . import const
@@ -29,7 +28,7 @@ class ConfigureCommand(BaseCommand):
             in current device state
 
         """
-        device_data = self.target
+        # device_data = self.target
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
             tango.Except.throw_exception("Configure() is not allowed in current state",
                                             "Failed to invoke Configure command on cspsubarrayleafnode.",

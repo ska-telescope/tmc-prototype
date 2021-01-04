@@ -3,8 +3,6 @@ Off class for CspSubarrayLeafNode.
 """
 # PROTECTED REGION ID(cspsubarrayleafnode.additionnal_import) ENABLED START #
 # Standard Python imports
-import tango
-from tango import DevFailed
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
@@ -59,7 +57,6 @@ class Off(SKABaseDevice.OffCommand):
         :rtype: (ResultCode, str)
 
         """
-        device_data = self.target    
         log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
         self.logger.debug(log_msg)
         delay_manager_obj = DelayManager.get_instance()

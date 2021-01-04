@@ -4,7 +4,6 @@ from tango import DevState, DevFailed
 # Additional import
 from tmc.common.tango_client import TangoClient
 from ska.base.commands import BaseCommand
-from ska.base.control_model import ObsState
 from . import const
 
 
@@ -24,7 +23,7 @@ class ReleaseAllResourcesCommand(BaseCommand):
         :raises: DevFailed if this command is not allowed to be run in current device state
 
         """
-        device_data = self.target
+        # device_data = self.target
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
             tango.Except.throw_exception("ReleaseAllResources() is not allowed in current state",
                                             "Failed to invoke ReleaseAllResources command on "
