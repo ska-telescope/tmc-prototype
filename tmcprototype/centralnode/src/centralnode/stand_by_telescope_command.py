@@ -108,7 +108,7 @@ class StandByTelescope(SKABaseDevice.OffCommand):
             print("**************************** subarray_fqdn: ", subarray_fqdn)
             subarray_client = TangoClient(subarray_fqdn)
             self.standby_leaf_node(subarray_client, const.CMD_OFF)
-            self.standby_leaf_node(subarray_client, const.CMD_STANDBY)
+            # self.standby_leaf_node(subarray_client, const.CMD_STANDBY)
 
 
     def standby_leaf_node(self, tango_client, cmd_name, param=None):
