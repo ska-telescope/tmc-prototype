@@ -1,5 +1,5 @@
 """
-TrackCommand class for SubarrayNode.
+Track Command class for SubarrayNode.
 """
 
 # Standard python imports
@@ -17,7 +17,7 @@ from ska.base.commands import ResultCode, ResponseCommand
 from .device_data import DeviceData
 
 
-class TrackCommand(ResponseCommand):
+class Track(ResponseCommand):
     """
     A class for SubarrayNode's Track command.
     """
@@ -33,9 +33,9 @@ class TrackCommand(ResponseCommand):
         :raises: DevFailed if this command is not allowed to be run in current device state
         """
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-            tango.Except.throw_exception("Command TrackCommand is not allowed in current state.",
-                                         "Failed to invoke TrackCommand command on DishLeafNode.",
-                                         "SubarrayNode.TrackComamnd()",
+            tango.Except.throw_exception("Command Track is not allowed in current state.",
+                                         "Failed to invoke Track command on DishLeafNode.",
+                                         "SubarrayNode.Track()",
                                          tango.ErrSeverity.ERR)
         return True
 
@@ -76,5 +76,5 @@ class TrackCommand(ResponseCommand):
             self.logger.exception(devfailed)
             tango.Except.throw_exception(const.STR_CMD_FAILED,
                                          log_msg,
-                                         "SubarrayNode.TrackCommand()",
+                                         "SubarrayNode.Track()",
                                          tango.ErrSeverity.ERR)

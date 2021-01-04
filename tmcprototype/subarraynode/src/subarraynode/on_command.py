@@ -1,5 +1,5 @@
 """
-OnCommand class for SubarrayNode
+On Command class for SubarrayNode
 """
 
 # Third party imports
@@ -16,7 +16,7 @@ from subarraynode.health_state_aggregator import HealthStateAggregator
 from .obs_state_aggregator import ObsStateAggregator
 
 
-class OnCommand(SKASubarray.OnCommand):
+class On(SKASubarray.OnCommand):
     """
     A class for the SubarrayNode's On() command.
     """
@@ -57,7 +57,7 @@ class OnCommand(SKASubarray.OnCommand):
         log_msg = const.STR_SA_PROXY_INIT  + str(device_data.csp_subarray_ln_fqdn)
         csp_subarray_ln_client = TangoClient(device_data.csp_subarray_ln_fqdn)
         self.logger.info(log_msg)
-        self.on_leaf_node(csp_subarray_ln_client)
+        self.turn_on_leaf_node(csp_subarray_ln_client)
 
     def set_sdp_client(self, device_data):
         """
@@ -67,9 +67,9 @@ class OnCommand(SKASubarray.OnCommand):
         log_msg = const.STR_SA_PROXY_INIT  + str(device_data.sdp_subarray_ln_fqdn)
         sdp_subarray_ln_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
         self.logger.info(log_msg)
-        self.on_leaf_node(sdp_subarray_ln_client)
+        self.turn_on_leaf_node(sdp_subarray_ln_client)
 
-    def on_leaf_node(self, tango_client):
+    def turn_on_leaf_node(self, tango_client):
         # Invoke ON command on lower level devices
         try:
             tango_client.send_command(const.CMD_ON)
@@ -78,5 +78,5 @@ class OnCommand(SKASubarray.OnCommand):
             self.logger.exception(log_msg)
             self._read_activity_message = log_msg
             tango.Except.throw_exception(dev_failed[0].desc, const.ERR_INVOKE_ON_CMD_ON_SA,
-                                         "SubarrayNode.OnCommand()", tango.ErrSeverity.ERR)
+                                         "SubarrayNode.On()", tango.ErrSeverity.ERR)
 

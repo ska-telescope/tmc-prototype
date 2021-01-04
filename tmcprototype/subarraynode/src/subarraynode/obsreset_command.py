@@ -1,5 +1,5 @@
 """
-ObsResetCommand for SubarrayNode.
+ObsReset Command for SubarrayNode.
 """
 
 # Third party imports
@@ -17,7 +17,7 @@ from subarraynode.device_data import DeviceData
 from tmc.common.tango_server_helper import TangoServerHelper
 
 
-class ObsResetCommand(SKASubarray.ObsResetCommand):
+class ObsReset(SKASubarray.ObsResetCommand):
     """
     A class for SubarrayNode's ObsReset() command.
     """
@@ -40,10 +40,6 @@ class ObsResetCommand(SKASubarray.ObsResetCommand):
         try:
             self.logger.info("ObsReset command invoked on SubarrayNode.")
             # As a part of ObsReset clear the attributes on SubarrayNode
-            device_data._scan_id = ""
-            device_data._sb_id = ""
-            device_data.scan_duration = 0
-            device_data._scan_type = ""
             self.obsreset_sdp(device_data)
             self.obsreset_csp(device_data)
             self.obsreset_dsh_grp(device_data)
@@ -60,7 +56,7 @@ class ObsResetCommand(SKASubarray.ObsResetCommand):
             self.logger.exception(log_msg)
             tango.Except.throw_exception(const.STR_OBSRESET_EXEC,
                                          log_msg,
-                                         "SKASubarray.ObsResetCommand",
+                                         "SKASubarray.ObsReset",
                                          tango.ErrSeverity.ERR)
 
     def obsreset_sdp(self, device_data):

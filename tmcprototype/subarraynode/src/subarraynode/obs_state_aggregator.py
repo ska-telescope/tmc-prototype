@@ -19,7 +19,7 @@ class ObsStateAggregator:
         self.csp_sdp_ln_obs_state_event_id = {}
         self.csp_sa_obs_state = None
         self.sdp_sa_obs_state = None
-        self.device_data = DeviceData.get_instance()
+        # self.device_data = DeviceData.get_instance()
         self.csp_client = None
         self.sdp_client = None
         self.sdp_sa_client = None
@@ -57,7 +57,7 @@ class ObsStateAggregator:
         """
         try:
             log_msg = 'Observation State Attribute change event is: ' + str(evt)
-            self.logger.info(log_msg)
+            self.logger.debug(log_msg)
             if not evt.err:
                 observetion_state = evt.attr_value.value
                 log_msg = 'Observation State Attribute value is: ' + str(observetion_state)

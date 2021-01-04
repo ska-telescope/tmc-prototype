@@ -1,5 +1,5 @@
 """
-ReleaseAllResourcesCommand for SubarrayNode
+ReleaseAllResources Command for SubarrayNode
 """
 
 # Third party imports
@@ -8,15 +8,15 @@ import tango
 from tango import DevFailed
 
 # Additional import
-from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+from . import const
 from tmc.common.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
 from subarraynode.remove_receptors import RemoveReceptors
 
 
-class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
+class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
     """
     A class for SKASubarray's ReleaseAllResources() command.
     """

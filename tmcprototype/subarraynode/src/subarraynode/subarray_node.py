@@ -26,23 +26,23 @@ from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, ObsMode, ObsState
 from ska.base import SKASubarray
 from subarraynode.device_data import DeviceData
-from subarraynode.on_command import OnCommand
-from subarraynode.off_command import OffCommand
-from subarraynode.assign_resources_command import AssignResourcesCommand
-from subarraynode.release_all_resources_command import ReleaseAllResourcesCommand
-from subarraynode.configure_command import ConfigureCommand
-from subarraynode.scan_command import ScanCommand
-from subarraynode.end_scan_command import EndScanCommand
-from subarraynode.end_command import EndCommand
-from subarraynode.abort_command import AbortCommand
-from subarraynode.restart_command import RestartCommand
-from subarraynode.obsreset_command import ObsResetCommand
-from subarraynode.track_command import TrackCommand
+from subarraynode.on_command import On
+from subarraynode.off_command import Off
+from subarraynode.assign_resources_command import AssignResources
+from subarraynode.release_all_resources_command import ReleaseAllResources
+from subarraynode.configure_command import Configure
+from subarraynode.scan_command import Scan
+from subarraynode.end_scan_command import EndScan
+from subarraynode.end_command import End
+from subarraynode.abort_command import Abort
+from subarraynode.restart_command import Restart
+from subarraynode.obsreset_command import ObsReset
+from subarraynode.track_command import Track
 from tmc.common.tango_server_helper import TangoServerHelper
 
-__all__ = ["SubarrayNode", "main", "AssignResourcesCommand", "ReleaseAllResourcesCommand",
-           "ConfigureCommand", "ScanCommand", "EndScanCommand", "EndCommand", "OnCommand",
-           "OffCommand", "TrackCommand", "AbortCommand", "RestartCommand", "ObsResetCommand",
+__all__ = ["SubarrayNode", "main", "AssignResources", "ReleaseAllResources",
+           "Configure", "Scan", "EndScan", "End", "On",
+           "Off", "Track", "Abort", "Restart", "ObsReset",
            "device_data", "tango_client", "tango_group_client", "tango_server_helper"]
 
 
@@ -253,21 +253,21 @@ class SubarrayNode(SKASubarray):
         super().init_command_objects()
         device_data = DeviceData.get_instance()
         args = (device_data, self.state_model, self.logger)
-        self.configure = ConfigureCommand(*args)
-        self.assign = AssignResourcesCommand(*args)
-        self.release = ReleaseAllResourcesCommand(*args)
-        self.scan = ScanCommand(*args)
-        self.endscan = EndScanCommand(*args)
-        self.end = EndCommand(*args)
-        self.restart = RestartCommand(*args)
-        self.abort = AbortCommand(*args)
+        self.configure = Configure(*args)
+        self.assign = AssignResources(*args)
+        self.release = ReleaseAllResources(*args)
+        self.scan = Scan(*args)
+        self.endscan = EndScan(*args)
+        self.end = End(*args)
+        self.restart = Restart(*args)
+        self.abort = Abort(*args)
         self.init = self.InitCommand(*args)
-        self.on = OnCommand(*args)
-        self.off = OffCommand(*args)
-        self.obsreset = ObsResetCommand(*args)
-        self.track = TrackCommand(*args)
+        self.on = On(*args)
+        self.off = Off(*args)
+        self.obsreset = ObsReset(*args)
+        self.track = Track(*args)
 
-        self.register_command_object("Track", track_command.TrackCommand(*args))
+        self.register_command_object("Track", track_command.Track(*args))
         # In order to pass self = subarray node as target device, the assign and release resource commands
         # are registered and inherited from SKASubarray
         self.register_command_object("AssignResources", self.assign)

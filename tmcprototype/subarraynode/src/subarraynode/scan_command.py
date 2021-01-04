@@ -1,5 +1,5 @@
 """
-ScanCommand class for SubarrayNode
+Scan Command class for SubarrayNode
 """
 # Standard python imports
 import threading
@@ -10,17 +10,17 @@ import tango
 from tango import DevFailed
 
 # Additional import
-from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+from . import const
 from tmc.common.tango_group_client import TangoGroupClient
 from tmc.common.tango_server_helper import TangoServerHelper
 from tmc.common.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
-from subarraynode.end_scan_command import EndScanCommand
+from subarraynode.end_scan_command import EndScan
 
 
-class ScanCommand(SKASubarray.ScanCommand):
+class Scan(SKASubarray.ScanCommand):
     """
     A class for SubarrayNode's Scan() command.
     """
@@ -82,7 +82,7 @@ class ScanCommand(SKASubarray.ScanCommand):
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(const.STR_SCAN_EXEC,
                                          log_msg,
-                                         "SubarrayNode.ScanCommand",
+                                         "SubarrayNode.Scan",
                                          tango.ErrSeverity.ERR)
 
     def scan_sdp(self, device_data, argin):

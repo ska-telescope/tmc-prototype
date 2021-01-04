@@ -1,5 +1,5 @@
 """
-AbortCommand for SubarrayNode.
+Abort Command for SubarrayNode.
 """
 
 # Third party imports
@@ -16,7 +16,7 @@ from subarraynode.device_data import DeviceData
 from tmc.common.tango_server_helper import TangoServerHelper
 
 
-class AbortCommand(SKASubarray.AbortCommand):
+class Abort(SKASubarray.AbortCommand):
     """
     A class for SubarrayNode's Abort() command.
     """
@@ -57,7 +57,7 @@ class AbortCommand(SKASubarray.AbortCommand):
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(const.ERR_ABORT_INVOKING_CMD,
                                          log_msg,
-                                         "SubarrayNode.AbortCommand",
+                                         "SubarrayNode.Abort",
                                          tango.ErrSeverity.ERR)
 
     def abort_sdp(self, device_data):

@@ -19,7 +19,7 @@ from tmc.common.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
 
 
-class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
+class AssignResources(SKASubarray.AssignResourcesCommand):
     """
     A class for SubarrayNode's AssignResources() command.
     """

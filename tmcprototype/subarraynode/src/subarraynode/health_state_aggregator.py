@@ -99,8 +99,7 @@ class HealthStateAggregator:
         This function unsubscribes all health state events given by the event ids and their
         corresponding DeviceProxy objects.
 
-        :param proxy_event_id_map: dict
-            A mapping of '<DeviceProxy>': <event_id>.
+        :param : None
 
         :return: None
 

@@ -1,5 +1,5 @@
 """
-EndScanCommand class for SubarrayNode.
+EndScan Command class for SubarrayNode.
 """
 
 # Third party imports
@@ -17,7 +17,7 @@ from subarraynode.device_data import DeviceData
 from tmc.common.tango_server_helper import TangoServerHelper
 
 
-class EndScanCommand(SKASubarray.EndScanCommand):
+class EndScan(SKASubarray.EndScanCommand):
     """
     A class for SubarrayNode's EndScan() command.
     """
@@ -65,7 +65,7 @@ class EndScanCommand(SKASubarray.EndScanCommand):
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(const.STR_END_SCAN_EXEC,
                                          log_msg,
-                                         "SubarrayNode.EndScanCommand",
+                                         "SubarrayNode.EndScan",
                                          tango.ErrSeverity.ERR)
 
     def endscan_sdp(self, device_data):

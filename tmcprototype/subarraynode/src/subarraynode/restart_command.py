@@ -1,5 +1,5 @@
 """
-RestartCommand for SubarrayNode.
+Restart Command for SubarrayNode.
 """
 
 # Third party imports
@@ -18,7 +18,7 @@ from tmc.common.tango_server_helper import TangoServerHelper
 from subarraynode.remove_receptors import RemoveReceptors
 
 
-class RestartCommand(SKASubarray.RestartCommand):
+class Restart(SKASubarray.RestartCommand):
     """
     A class for SubarrayNode's Restart() command.
     """
@@ -43,10 +43,6 @@ class RestartCommand(SKASubarray.RestartCommand):
         try:
             self.logger.info("Restart command invoked on SubarrayNode.")
             # As a part of Restart clear the attributes on SubarrayNode
-            device_data._scan_id = ""
-            device_data._sb_id = ""
-            device_data.scan_duration = 0
-            device_data._scan_type = ''
             self.restart_leaf_nodes(device_data.csp_subarray_ln_fqdn, const.STR_CMD_RESTART_INV_CSP)
             self.restart_leaf_nodes(device_data.sdp_subarray_ln_fqdn, const.STR_CMD_RESTART_INV_SDP)
             self.restart_dsh_grp(device_data)
@@ -64,7 +60,7 @@ class RestartCommand(SKASubarray.RestartCommand):
             self.logger.exception(log_msg)
             tango.Except.throw_exception(const.STR_RESTART_EXEC,
                                          log_msg,
-                                         "SubarrayNode.RestartCommand",
+                                         "SubarrayNode.Restart",
                                          tango.ErrSeverity.ERR)
 
     def restart_leaf_nodes(self, leaf_node_fqdn, info_string):

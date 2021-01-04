@@ -1,5 +1,5 @@
 """
-ConfigureCommand class for SubarrayNode.
+Configure Command class for SubarrayNode.
 """
 # Standard python imports
 import json
@@ -23,7 +23,7 @@ csp_interface_version = 0
 sdp_interface_version = 0
 
 
-class ConfigureCommand(SKASubarray.ConfigureCommand):
+class Configure(SKASubarray.ConfigureCommand):
     """
     A class for SubarrayNode's Configure() command.
     """
