@@ -101,7 +101,7 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         """
         for name in range(0, len(dish_fqdn)):
             dish_ln_client = TangoClient(dish_fqdn[name])
-            self.startup_leaf_node(dish_ln_client)
+            self.startup_dish_leaf_node(dish_ln_client)
 
     def startup_subarray(self, subarray_fqdn_list):
         """
@@ -130,6 +130,36 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         try:
             tango_client.send_command(const.CMD_ON)
             log_msg = 'ON command invoked successfully on {}'.format(tango_client.get_device_fqdn)
+            self.logger.debug(log_msg)
+            device_data._read_activity_message = log_msg
+
+        except DevFailed as dev_failed:
+            log_msg = const.ERR_EXE_ON_CMD + str(dev_failed)
+            self.logger.exception(dev_failed)
+            device_data._read_activity_message = const.ERR_EXE_ON_CMD
+            tango.Except.throw_exception(const.STR_ON_EXEC, log_msg,
+                                         "CentralNode.StartUpTelescopeCommand",
+                                         tango.ErrSeverity.ERR)
+
+    def startup_dish_leaf_node(self, tango_client):
+        """
+        Invoke On command on leaf nodes.
+
+        :param tango_client: Proxy of corresponding node.
+
+        :return: None
+
+        :raises: Devfailed exception if error occures while  executing On command on leaf node.
+        """
+        device_data = DeviceData.get_instance()
+        try:
+            tango_client.send_command(const.CMD_ON)
+            log_msg = 'ON command invoked successfully on {}'.format(tango_client.get_device_fqdn)
+            self.logger.debug(log_msg)
+            device_data._read_activity_message = log_msg
+
+            tango_client.send_command(const.CMD_SET_OPERATE_MODE)
+            log_msg = 'SetOperateMode command invoked successfully on {}'.format(tango_client.get_device_fqdn)
             self.logger.debug(log_msg)
             device_data._read_activity_message = log_msg
 
