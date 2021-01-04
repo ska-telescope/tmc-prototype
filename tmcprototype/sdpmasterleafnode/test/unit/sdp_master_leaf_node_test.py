@@ -78,13 +78,13 @@ def command_without_args(request):
     return cmd_name, requested_cmd, Err_msg
 
 
-# def test_command_should_be_relayed_to_sdp_master(mock_sdp_master_proxy, command_without_args):
-#     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
-#     cmd_name, requested_cmd, _ = command_without_args
-#     device_proxy.command_inout(cmd_name)
-#     callback_name = f"{requested_cmd.lower()}_cmd_ended_cb"
-#     tango_client_obj.deviceproxy.send_command_async.assert_called_with(requested_cmd, [],
-#                                                                 callback_name)
+def test_command_should_be_relayed_to_sdp_master(mock_sdp_master_proxy, command_without_args):
+    device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
+    cmd_name, requested_cmd, _ = command_without_args
+    device_proxy.command_inout(cmd_name)
+    callback_name = f"{requested_cmd.lower()}_cmd_ended_cb"
+    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(requested_cmd, [],
+                                                                         any_method(with_name=callback_name))
 
 
 def test_command_should_raise_exception(mock_sdp_master_proxy, command_without_args):

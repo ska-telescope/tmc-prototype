@@ -1,17 +1,14 @@
 # Tango imports
 import tango
-from tango import DeviceProxy, ApiUtil, DevState, AttrWriteType, DevFailed
-from tango.server import run,command, device_property, attribute
+from tango import DevState, DevFailed
 
 # Additional import
-from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode, BaseCommand
-from . import const, release
+from ska.base.commands import  BaseCommand
+from . import const
 from tmc.common.tango_client import TangoClient
-from .device_data import DeviceData
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additionnal_import
 
-class StandbyCommand(BaseCommand):
+class Standby(BaseCommand):
     """
     A class for SDP Master's Standby() command.
     """
@@ -92,23 +89,3 @@ class StandbyCommand(BaseCommand):
             tango.Except.re_throw_exception(dev_failed, const.ERR_INVOKING_CMD, log_msg,
                                             "SdpMasterLeafNode.StandbyCommand()",
                                             tango.ErrSeverity.ERR)
-
-    def check_allowed(self):
-        """
-        Check Whether this command is allowed to be run in current device
-        state.
-
-         :return: True if this command is allowed to be run in
-             current device state.
-         :rtype: boolean
-         :raises: DevFailed if this command is not allowed to be run
-             in current device state.
-
-        """
-
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
-            tango.Except.throw_exception("Standby() is not allowed in current state",
-                                         "Failed to invoke Standby command on SdpMasterLeafNode.",
-                                         "SdpMasterLeafNode.Standby() ",
-                                         tango.ErrSeverity.ERR)
-        return True

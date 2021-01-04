@@ -1,18 +1,16 @@
 # Tango imports
 import tango
-from tango import DeviceProxy, ApiUtil, DevState, AttrWriteType, DevFailed
-from tango.server import run,command, device_property, attribute
+from tango import  DevFailed
 
 # Additional import
 from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode, BaseCommand
-from . import const, release
+from ska.base.commands import ResultCode
+from . import const
 from tmc.common.tango_client import TangoClient
-from .device_data import DeviceData
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additional_import
 
 
-class OnCommand(SKABaseDevice.OnCommand):
+class On(SKABaseDevice.OnCommand):
     """
     A class for SDP master's On() command.
     """

@@ -24,12 +24,18 @@ from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, SimulationMode, TestMode
-from . import const, release, on_command, off_command, standby_command, disable_command
+from sdpmasterleafnode.on_command import On
+from sdpmasterleafnode.off_command import Off
+from sdpmasterleafnode.standby_command import Standby
+from sdpmasterleafnode.disable_command import Disable
+
+
+
 from .device_data import DeviceData
 
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additional_import
 
-__all__ = ["SdpMasterLeafNode", "main", "on_command", "off_command", "standby_command", "disable_command"]
+__all__ = ["SdpMasterLeafNode", "main", "On", "Off", "Standby", "Disable"]
 
 
 class SdpMasterLeafNode(SKABaseDevice):
@@ -210,10 +216,13 @@ class SdpMasterLeafNode(SKABaseDevice):
         super().init_command_objects()
         device_data = DeviceData.get_instance()
         args = (device_data, self.state_model, self.logger)
-        self.register_command_object("On",on_command.OnCommand(*args))
-        self.register_command_object("Off",off_command.OffCommand(*args))
-        self.register_command_object("Disable",disable_command.DisableCommand(*args))
-        self.register_command_object("Standby",standby_command.StandbyCommand(*args))
+        self.register_command_object("On", On(*args))
+        self.register_command_object("Off", Off(*args))
+        self.register_command_object("Disable", Disable(*args))
+        self.register_command_object("Standby", Standby(*args))
+
+
+
 
 # ----------
 # Run server

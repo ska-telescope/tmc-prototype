@@ -1,17 +1,14 @@
 # Tango imports
 import tango
-from tango import DeviceProxy, ApiUtil, DevState, AttrWriteType, DevFailed
-from tango.server import run,command, device_property, attribute
+from tango import DevState, DevFailed
 
 # Additional import
-from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode, BaseCommand
+from ska.base.commands import  BaseCommand
 from . import const
 from tmc.common.tango_client import TangoClient
-from sdpmasterleafnode import DeviceData
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additionnal_import
 
-class DisableCommand(BaseCommand):
+class Disable(BaseCommand):
     """
     A class for SDP master's Disable() command.
     """
@@ -79,7 +76,6 @@ class DisableCommand(BaseCommand):
         try:
             sdp_mln_client_obj = TangoClient(device_data.sdp_master_ln_fqdn)
             sdp_mln_client_obj.send_command_async(const.CMD_Disable, [], self.disable_cmd_ended_cb)
-            # device._sdp_proxy.command_inout_asynch(const.CMD_Disable, self.disable_cmd_ended_cb)
             self.logger.debug(const.STR_DISABLE_CMS_SUCCESS)
             device_data._read_activity_message = const.STR_DISABLE_CMS_SUCCESS
 
