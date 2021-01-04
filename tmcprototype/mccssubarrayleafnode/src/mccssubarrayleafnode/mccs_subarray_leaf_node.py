@@ -27,7 +27,6 @@ from tango.server import run, attribute, command, device_property
 from ska.base.commands import ResultCode, BaseCommand
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
-from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 from .device_data import DeviceData
 from . import const, release, configure_command, scan_command, end_scan_command, end_command
