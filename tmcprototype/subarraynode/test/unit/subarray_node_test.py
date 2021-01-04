@@ -210,7 +210,7 @@ class TestElementDeviceData:
 
     def test_build_up_dsh_cmd_data_with_valid_scan_configuration(self, example_scan_configuration):
         valid_scan_config = example_scan_configuration
-        dsh_cmd_data = ElementDeviceData.build_up_dsh_cmd_data(valid_scan_config, True)
+        dsh_cmd_data = ElementDeviceData.build_up_dsh_cmd_data(valid_scan_config)
         valid_scan_config.pop("sdp")
         valid_scan_config.pop("csp")
         valid_scan_config.pop("tmc")
@@ -222,7 +222,7 @@ class TestElementDeviceData:
     def test_build_up_dsh_cmd_data_with_invalid_scan_configuration(self, example_scan_configuration):
         invalid_scan_config = example_scan_configuration.pop("dish")
         with pytest.raises(KeyError) as exception:
-            ElementDeviceData.build_up_dsh_cmd_data(invalid_scan_config, False)
+            ElementDeviceData.build_up_dsh_cmd_data(invalid_scan_config)
         expected_msg = "Dish configuration must be given. Aborting Dish configuration."
         assert exception.value.args[0] == expected_msg
         

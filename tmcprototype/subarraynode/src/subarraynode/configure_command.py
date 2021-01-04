@@ -138,10 +138,10 @@ class Configure(SKASubarray.ConfigureCommand):
         device_data = DeviceData.get_instance()
         # config_keys = scan_configuration.keys()
         # if not set(["sdp", "csp"]).issubset(config_keys) and "dish" in config_keys:
-        # device_data.only_dishconfig_flag = True
+        #   device_data.only_dishconfig_flag = True
 
         cmd_data = self._create_cmd_data(
-            "build_up_dsh_cmd_data", scan_configuration, self.only_dishconfig_flag)
+            "build_up_dsh_cmd_data", scan_configuration)
 
         try:
             device_data._dish_leaf_node_group_client.send_command(const.CMD_CONFIGURE, cmd_data)
@@ -218,9 +218,9 @@ class ElementDeviceData:
         return json.dumps(csp_config_schema)
 
     @staticmethod
-    def build_up_dsh_cmd_data(scan_config, only_dishconfig_flag):
+    def build_up_dsh_cmd_data(scan_config):
         scan_config = scan_config.copy()
-        if set(["pointing", "dish"]).issubset(scan_config.keys()) or only_dishconfig_flag:
+        if set(["pointing", "dish"]).issubset(scan_config.keys()):
             scan_config.pop("sdp", None)
             scan_config.pop("csp", None)
             scan_config.pop("tmc", None)
