@@ -18,7 +18,6 @@ from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, SimulationMode, TestMode
-from tmc.common.tango_client import TangoClient
 from . import const, release, on_command, off_command, assign_resources_command, release_resources_command
 from .device_data import DeviceData
 
@@ -97,7 +96,8 @@ class MccsMasterLeafNode(SKABaseDevice):
                 log_msg = "MCCS Master name: " + str(device.MccsMasterFQDN)
                 self.logger.debug(log_msg)
                 #device_data._mccs_master_ln_fqdn = DeviceProxy(str(device.MccsMasterFQDN))
-                device_data._mccs_master_ln_fqdn = device.MccsMasterFQDN
+                device_data._mccs_master_ln_fqdn = str(device.MccsMasterFQDN)
+                print("************************ _mccs_master_ln_fqdn ***************************",device_data._mccs_master_ln_fqdn)
 
             except DevFailed as dev_failed:
                 log_msg = const.ERR_IN_CREATE_PROXY + str(device.MccsMasterFQDN)
@@ -111,7 +111,7 @@ class MccsMasterLeafNode(SKABaseDevice):
             log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
             self.logger.debug(log_msg)
             device_data._read_activity_message = const.STR_INIT_SUCCESS
-            self.logger.info(device._read_activity_message)
+            self.logger.info(device_data._read_activity_message)
             return (ResultCode.OK, device_data._read_activity_message)
 
     def always_executed_hook(self):
@@ -195,8 +195,12 @@ class MccsMasterLeafNode(SKABaseDevice):
         args = (device_data, self.state_model, self.logger)
         # self.register_command_object("AssignResources", self.AssignResourcesCommand(*args))
         # self.register_command_object("ReleaseResources", self.ReleaseResourcesCommand(*args))
-        self.register_command_object("AssignResources", assign_resources_command.AssignResources(*args))
-        self.register_command_object("ReleaseAllResources", release_resources_command.ReleaseAllResources(*args))
+        # self.register_command_object("AssignResources", assign_resources_command.AssignResources(*args))
+        # self.register_command_object("ReleaseAllResources", release_resources_command.ReleaseAllResources(*args))
+        self.register_command_object("On", on_command.On(device_data, self.state_model, self.logger))
+        self.register_command_object("Off", off_command.Off(device_data, self.state_model, self.logger))
+
+
 
 # ----------
 # Run server
