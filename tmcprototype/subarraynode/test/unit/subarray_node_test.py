@@ -572,7 +572,6 @@ def test_assign_resource_should_raise_exception_when_called_with_invalid_input(m
 
 def test_assign_resource_should_raise_exception_when_csp_subarray_ln_throws_devfailed_exception(mock_device_proxy):
     # # Generate dummy devFailed exception raised by Csp Subarray Leaf Node
-    # tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
     device_proxy, tango_client_obj = mock_device_proxy
     device_proxy.On()
     tango_client_obj.deviceproxy.command_inout.side_effect = raise_devfailed_exception
@@ -585,7 +584,6 @@ def test_assign_resource_should_raise_exception_when_csp_subarray_ln_throws_devf
 
 
 def test_assign_resource_should_raise_exception_when_sdp_subarray_ln_throws_devfailed_exception(mock_device_proxy):
-    # tango_context, csp_subarray1_ln_proxy_mock, csp_subarray1_proxy_mock, sdp_subarray1_ln_proxy_mock, sdp_subarray1_proxy_mock, dish_ln_proxy_mock, csp_subarray1_ln_fqdn, csp_subarray1_fqdn, sdp_subarray1_ln_fqdn, sdp_subarray1_fqdn, dish_ln_prefix, event_subscription_map, dish_pointing_state_map = mock_lower_devices
     device_proxy, tango_client_obj = mock_device_proxy
 
     device_proxy.On()

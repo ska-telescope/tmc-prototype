@@ -11,7 +11,6 @@ from tango import DevFailed
 from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
-from tmc.common.tango_group_client import TangoGroupClient
 from tmc.common.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
 from tmc.common.tango_server_helper import TangoServerHelper
@@ -39,7 +38,6 @@ class ObsReset(SKASubarray.ObsResetCommand):
         device_data.is_abort_command = False
         try:
             self.logger.info("ObsReset command invoked on SubarrayNode.")
-            # As a part of ObsReset clear the attributes on SubarrayNode
             self.obsreset_sdp(device_data)
             self.obsreset_csp(device_data)
             self.obsreset_dsh_grp(device_data)

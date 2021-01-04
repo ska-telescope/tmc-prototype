@@ -12,8 +12,6 @@ This module defines the Device Data class, which represents the functional Subar
 """
 import tango
 from . import const
-# from subarraynode.health_state_aggregator import HealthStateAggregator
-# from subarraynode.obs_state_aggregator import ObsStateAggregator
 from tmc.common.tango_group_client import TangoGroupClient
 
 class DeviceData:
@@ -39,7 +37,7 @@ class DeviceData:
         self.is_obsreset_command = False
         self.scan_duration = 0.0
         self.isScanRunning = False
-        self.only_dishconfig_flag = False
+        # self.only_dishconfig_flag = False
         self.scan_thread = None
         # TODO : Tango server class variables
         self._read_activity_message = ""

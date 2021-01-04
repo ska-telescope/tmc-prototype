@@ -6,8 +6,6 @@ from tango import DevFailed
 # Additional import
 from . import const
 
-from tmc.common.tango_group_client import TangoGroupClient
-from tmc.common.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
 import logging
 
@@ -50,9 +48,5 @@ class RemoveReceptors:
         device_data._dishLnVsPointingStateEventID.clear()  # Clear eventID dictionary
         # self._health_event_id.clear()
         device_data.health_state_aggr._remove_subarray_dish_lns_health_states()
-        # self.dishPointingStateMap.clear()
-        # self._pointing_state_event_id.clear()
-        # self._dish_leaf_node_proxy.clear()
-        # self._receptor_id_list.clear()
         self.logger.info(const.STR_RECEPTORS_REMOVE_SUCCESS)
 

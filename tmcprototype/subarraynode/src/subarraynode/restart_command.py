@@ -11,7 +11,6 @@ from tango import DevFailed
 from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
-from tmc.common.tango_group_client import TangoGroupClient
 from tmc.common.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
 from tmc.common.tango_server_helper import TangoServerHelper
@@ -42,7 +41,6 @@ class Restart(SKASubarray.RestartCommand):
         device_data.is_obsreset_command = False
         try:
             self.logger.info("Restart command invoked on SubarrayNode.")
-            # As a part of Restart clear the attributes on SubarrayNode
             self.restart_leaf_nodes(device_data.csp_subarray_ln_fqdn, const.STR_CMD_RESTART_INV_CSP)
             self.restart_leaf_nodes(device_data.sdp_subarray_ln_fqdn, const.STR_CMD_RESTART_INV_SDP)
             self.restart_dsh_grp(device_data)
@@ -76,8 +74,3 @@ class Restart(SKASubarray.RestartCommand):
         # Create proxy for Dish Leaf Node Group
         device_data._dish_leaf_node_group_client.send_command(const.CMD_RESTART)
         self.logger.info(const.STR_CMD_RESTART_INV_DISH_GROUP)
-
-    # def remove_receptors_when_restart(self):
-    #     # Remove the group for receptors.
-    #     remove_receptor_obj = RemoveReceptors()
-    #     remove_receptor_obj.remove_receptors_from_group()

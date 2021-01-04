@@ -79,7 +79,6 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
 
         """
         try:
-            # device._csp_subarray_ln_proxy.command_inout(const.CMD_RELEASE_ALL_RESOURCES)
             csp_client = TangoClient(csp_subarray_ln_fqdn)
             csp_client.send_command(const.CMD_RELEASE_ALL_RESOURCES)
             self.logger.info(const.STR_RELEASE_ALL_RESOURCES_CSP_SALN)

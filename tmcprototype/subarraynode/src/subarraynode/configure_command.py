@@ -55,6 +55,7 @@ class Configure(SKASubarray.ConfigureCommand):
         :raises: JSONDecodeError if input argument json string contains invalid value
         """
         self.logger.debug(type(self.target))
+        self.only_dishconfig_flag = False
         device_data = DeviceData.get_instance()
         device_data.is_scan_completed = False
         device_data.is_release_resources = False
@@ -78,8 +79,10 @@ class Configure(SKASubarray.ConfigureCommand):
         tmc_configure = scan_configuration["tmc"]
         scan_duration = int(tmc_configure["scanDuration"])
         self._configure_dsh(scan_configuration)
-        self._configure_csp(scan_configuration)
-        self._configure_sdp(scan_configuration)
+        self.check_only_dish_config(scan_configuration)
+        if self.only_dishconfig_flag:
+            self._configure_csp(scan_configuration)
+            self._configure_sdp(scan_configuration)
         message = "Configure command invoked"
         self.logger.info(message)
         tango_server_helper_obj.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA)
@@ -133,12 +136,12 @@ class Configure(SKASubarray.ConfigureCommand):
     @inject_with_id(0, 'scan_configuration')
     def _configure_dsh(self, scan_configuration):
         device_data = DeviceData.get_instance()
-        config_keys = scan_configuration.keys()
-        if not set(["sdp", "csp"]).issubset(config_keys) and "dish" in config_keys:
-            device_data.only_dishconfig_flag = True
+        # config_keys = scan_configuration.keys()
+        # if not set(["sdp", "csp"]).issubset(config_keys) and "dish" in config_keys:
+        # device_data.only_dishconfig_flag = True
 
         cmd_data = self._create_cmd_data(
-            "build_up_dsh_cmd_data", scan_configuration, device_data.only_dishconfig_flag)
+            "build_up_dsh_cmd_data", scan_configuration, self.only_dishconfig_flag)
 
         try:
             device_data._dish_leaf_node_group_client.send_command(const.CMD_CONFIGURE, cmd_data)
@@ -151,6 +154,10 @@ class Configure(SKASubarray.ConfigureCommand):
             self.logger.error(df)
             raise
 
+    def check_only_dish_config(self, scan_configuration):
+        config_keys = scan_configuration.keys()
+        if set(["sdp", "csp"]).issubset(config_keys) and "dish" in config_keys:
+            self.only_dishconfig_flag = True
 
 class ElementDeviceData:
     @staticmethod

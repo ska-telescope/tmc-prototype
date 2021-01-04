@@ -245,16 +245,6 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
                 
                 # Update the list allocation_success with the dishes allocated successfully to subarray
                 allocation_success.append(str_leafId)
-                # Subscribe Dish Health State
-                
-                # device_data._event_id = devProxy.subscribe_event(const.EVT_DISH_HEALTH_STATE,
-                #                                           tango.EventType.CHANGE_EVENT,
-                #                                           device.health_state_cb,
-                #                                           stateless=True)
-                # device_data._dishLnVsHealthEventID[devProxy] = self._event_id
-                # device_data._health_event_id.append(self._event_id) //
-                # log_msg = const.STR_DISH_LN_VS_HEALTH_EVT_ID + str(device_data._dishLnVsHealthEventID)
-                # self.logger.debug(log_msg)
                 
                 #TODo: To subscribe health state method in HealthState Aggregator Class
                 device_data.health_state_aggr.subscribe_dish_health_state(dish_ln_client)
@@ -331,7 +321,6 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
             arg_list.append(json.dumps(json_argument))
             csp_client = TangoClient(device_data.csp_subarray_ln_fqdn)
             csp_client.send_command(const.CMD_ASSIGN_RESOURCES, json.dumps(json_argument))
-            # device._csp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, json.dumps(json_argument))
             self.logger.info(const.STR_ASSIGN_RESOURCES_INV_CSP_SALN)
             argout = argin
         except DevFailed as df:
@@ -376,7 +365,6 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
             str_json_arg = json.dumps(argin)
             sdp_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
             sdp_client.send_command(const.CMD_ASSIGN_RESOURCES, str_json_arg)
-            # device._sdp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, str_json_arg)
             self.logger.info(const.STR_ASSIGN_RESOURCES_INV_SDP_SALN)
             argout = argin
         except DevFailed as df:
