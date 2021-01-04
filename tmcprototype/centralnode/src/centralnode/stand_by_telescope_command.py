@@ -95,6 +95,7 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         for name in range(0, len(dish_fqdn)):
             dish_ln_client = TangoClient(dish_fqdn[name])
             self.standby_leaf_node(dish_ln_client, const.CMD_SET_STANDBY_MODE)
+            self.standby_leaf_node(dish_ln_client, const.CMD_OFF)
 
     def standby_subarray(self, subarray_fqdn_list):
         """

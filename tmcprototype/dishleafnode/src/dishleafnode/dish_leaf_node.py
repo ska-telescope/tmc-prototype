@@ -481,8 +481,12 @@ class DishLeafNode(SKABaseDevice):
             :raises DevFailed: If error occurs while invoking SetStandbyLPMode command on DishMaster.
             """
             device = self.target
-            command_name = "SetStandbyLPMode"
+            command_name = "SetStandbyFPMode"
             try:
+                device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
+                self.logger.info("'%s' command executed successfully.", command_name)
+
+                command_name = "SetStandbyLPMode"
                 device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
                 self.logger.info("'%s' command executed successfully.", command_name)
             except DevFailed as dev_failed:
@@ -515,10 +519,15 @@ class DishLeafNode(SKABaseDevice):
             :raises DevFailed: If error occurs while invoking SetOperateMode command on DishMaster.
             """
             device = self.target
-            command_name = "SetOperateMode"
+            command_name = "SetStandbyFPMode"
             try:
                 device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
                 self.logger.info("'%s' command executed successfully.", command_name)
+                
+                command_name = "SetOperateMode"
+                device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
+                self.logger.info("'%s' command executed successfully.", command_name)
+
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_message = f"Exception occured while executing the '{command_name}' command."
