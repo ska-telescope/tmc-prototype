@@ -8,7 +8,6 @@
 # See LICENSE.txt for more info.
 
 # PROTECTED REGION ID(MccsMasterLeafNode.import) ENABLED START #
-# Third party imports
 # Tango imports
 import tango
 from tango import ApiUtil, DebugIt, AttrWriteType, DevFailed
@@ -95,10 +94,7 @@ class MccsMasterLeafNode(SKABaseDevice):
                 # Creating proxy to the CSPMaster
                 log_msg = "MCCS Master name: " + str(device.MccsMasterFQDN)
                 self.logger.debug(log_msg)
-                #device_data._mccs_master_ln_fqdn = DeviceProxy(str(device.MccsMasterFQDN))
                 device_data._mccs_master_ln_fqdn = str(device.MccsMasterFQDN)
-                print("************************ _mccs_master_ln_fqdn ***************************",device_data._mccs_master_ln_fqdn)
-
             except DevFailed as dev_failed:
                 log_msg = const.ERR_IN_CREATE_PROXY + str(device.MccsMasterFQDN)
                 self.logger.debug(log_msg)

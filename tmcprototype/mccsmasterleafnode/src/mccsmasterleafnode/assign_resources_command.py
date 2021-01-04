@@ -1,5 +1,4 @@
 # PROTECTED REGION ID(MccsMasterLeafNode.import) ENABLED START #
-# Third party imports
 # Tango imports
 import tango
 from tango import DevState, DevFailed
@@ -106,8 +105,6 @@ class AssignResources(BaseCommand):
             log_msg = "Input JSON for MCCS master leaf node AssignResources command is: " + argin
             self.logger.debug(log_msg)
             self.logger.info("Invoking Allocate on MCCS master")
-            # device._mccs_master_proxy.command_inout_asynch(const.CMD_ALLOCATE, argin,
-            #                                         self.allocate_ended)
             mccs_mln_client_obj = TangoClient(device_data._mccs_master_ln_fqdn)
             mccs_mln_client_obj.send_command_async(const.CMD_ALLOCATE, None, self.allocate_ended)
             self.logger.info("After invoking Allocate on MCCS master")

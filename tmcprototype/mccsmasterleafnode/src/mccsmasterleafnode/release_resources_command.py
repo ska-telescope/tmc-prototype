@@ -1,21 +1,4 @@
-# # PROTECTED REGION ID(MccsMasterLeafNode.import) ENABLED START #
-# # Third party imports
-# # Tango imports
-# import tango
-# from tango import DeviceProxy, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
-# from tango.server import run, command, device_property, attribute
-
-# # Additional import
-# from ska.base import SKABaseDevice
-# from ska.base.commands import BaseCommand
-# from ska.base.control_model import HealthState, SimulationMode, TestMode
-# from tmc.common.tango_client import TangoClient
-# from . import const, release
-# # PROTECTED REGION END #    //  MccsMasterLeafNode imports
-
-
 # PROTECTED REGION ID(MccsMasterLeafNode.import) ENABLED START #
-# Third party imports
 # Tango imports
 import tango
 from tango import DevState, DevFailed
@@ -107,8 +90,6 @@ class ReleaseResources(BaseCommand):
         self.logger.info("Invoking Release on MCCS master")
 
         try:
-            # device._mccs_master_proxy.command_inout_asynch(const.CMD_Release, argin,
-            #                                         self.releaseresources_cmd_ended_cb)
             mccs_mln_client_obj = TangoClient(device_data._mccs_master_ln_fqdn)
             mccs_mln_client_obj.send_command_async(const.CMD_Release, argin, self.releaseresources_cmd_ended_cb)
             device_data._read_activity_message = const.STR_REMOVE_ALL_RECEPTORS_SUCCESS
