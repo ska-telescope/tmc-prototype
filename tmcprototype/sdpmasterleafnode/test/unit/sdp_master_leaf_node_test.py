@@ -34,13 +34,6 @@ def tango_context():
 #                **kwargs: event_subscription_map.update({command_name: callback}))
 #     yield event_subscription_map
 
-# @pytest.fixture(scope="function")
-# def event_subscription_mock(mock_csp_master_proxy):
-#     event_subscription_map = {}
-#     mock_csp_master_proxy[1].deviceproxy.command_inout_asynch.side_effect = (
-#         lambda command_name, arg, callback, *args,
-#                **kwargs: event_subscription_map.update({command_name: callback}))
-#     yield event_subscription_map
 
 @pytest.fixture(scope="function")
 def event_subscription_mock():
@@ -65,17 +58,6 @@ def mock_sdp_master_proxy():
         with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
             tango_client_obj = TangoClient(dut_properties['SdpMasterFQDN'])
             yield tango_context.device, tango_client_obj, dut_properties['SdpMasterFQDN'], event_subscription_map
-
-
-@pytest.fixture(scope="function")
-def mock_sdp_master():
-    sdp_master_fqdn = 'mid_sdp/elt/master'
-    dut_properties = {'SdpMasterFQDN': sdp_master_fqdn}
-    sdp_master_proxy_mock = Mock()
-    proxies_to_mock = {sdp_master_fqdn: sdp_master_proxy_mock}
-    with fake_tango_system(SdpMasterLeafNode, initial_dut_properties=dut_properties,
-                           proxies_to_mock=proxies_to_mock) as tango_context:
-        yield tango_context.device, sdp_master_proxy_mock
 
 
 def raise_devfailed_exception(*args):

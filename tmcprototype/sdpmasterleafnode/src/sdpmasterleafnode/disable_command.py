@@ -55,7 +55,7 @@ class DisableCommand(BaseCommand):
         :return: none
 
         """
-        device_data = DeviceData.get_instance()
+        device_data = self.target
         if event.err:
             log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
             self.logger.error(log_msg)
@@ -75,7 +75,7 @@ class DisableCommand(BaseCommand):
         :return: None
 
         """
-        device_data = DeviceData.get_instance()
+        device_data = self.target
         try:
             sdp_mln_client_obj = TangoClient(device_data.sdp_master_ln_fqdn)
             sdp_mln_client_obj.send_command_async(const.CMD_Disable, [], self.disable_cmd_ended_cb)
