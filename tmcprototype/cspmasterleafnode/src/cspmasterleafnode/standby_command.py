@@ -1,16 +1,10 @@
-# PyTango imports
 import tango
-from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
-from tango.server import run, command, device_property, attribute
-
-# Additional import
-from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode, BaseCommand
-from ska.base.control_model import HealthState, SimulationMode, TestMode
-from . import const, release, device_data
+from tango import DevState, DevFailed
+from ska.base.commands import BaseCommand
 from tmc.common.tango_client import TangoClient
+from . import const
 
-class StandbyCommand(BaseCommand):
+class Standby(BaseCommand):
     """
     A class for CspMasterLeafNode's Standby() command.
     """
@@ -68,15 +62,10 @@ class StandbyCommand(BaseCommand):
     def do(self, argin):
         """
         It invokes the STANDBY command on CSP Master.
-
         :param argin: DevStringArray.
-
         If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1
         , each array element specifies the FQDN of the CSP SubElement to put in STANDBY mode.
-
-
         :return: None
-
         :raises: DevFailed on communication failure with CspMaster or CspMaster is in error state.
 
         """

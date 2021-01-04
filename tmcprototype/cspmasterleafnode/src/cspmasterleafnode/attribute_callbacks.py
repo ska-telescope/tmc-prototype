@@ -1,22 +1,15 @@
-# Additional import
 import tango
-from tango import DeviceProxy, EventType, ApiUtil, DebugIt, DevState, AttrWriteType, DevFailed
-from tango.server import run, command, device_property, attribute
-
 from ska.base.control_model import HealthState
 from tmc.common.tango_server_helper import TangoServerHelper
-from . import const, release, device_data
-from .device_data import DeviceData
 from tmc.common.tango_client import TangoClient
+from . import const
+from .device_data import DeviceData
 import logging
-LOGGER = logging.getLogger(__name__)
 
 class CbfHealthStateAttributeUpdator:
     """
-     **Attributes:**
-
-    - cspHealthState  - Forwarded attribute to provide CSP Master Health State
-    - activityMessage - Attribute to provide activity message
+    - CbfHealthStateAttribute  - Forwarded attribute to provide CSP Master Health State
+    - _csp_cbf_health_state_log - Variable to provide activity log
 
     """
     def __init__(self, logger =None):
@@ -33,13 +26,13 @@ class CbfHealthStateAttributeUpdator:
     def start(self):
         try:
             self.event_id = self.csp_master.subscribe_attribute("cspCbfHealthState", self.csp_cbf_health_state_cb)
-        except tango.DevFailed as df:
+        except tango.DevFailed:
             self.logger.exception("Exception in attribute subscription")
     
     def stop(self):
         try:
             self.csp_master.unsubscribe_attribute(self.event_id)
-        except tango.DevFailed as df:
+        except tango.DevFailed:
             self.logger.exception("Exception in unsubscribing the attribute.")
 
                 
@@ -75,10 +68,8 @@ class CbfHealthStateAttributeUpdator:
 
 class PssHealthStateAttributeUpdator:
     """
-     **Attributes:**
-
-    - cspHealthState  - Forwarded attribute to provide CSP Master Health State
-    - activityMessage - Attribute to provide activity message
+    - PssHealthStateAttribute  - Forwarded attribute to provide CSP Master Health State
+    - _csp_pss_health_state_log - Variable to provide activity log
 
     """
     def __init__(self, logger =None):
@@ -95,13 +86,13 @@ class PssHealthStateAttributeUpdator:
     def start(self):
         try:
             self.event_id = self.csp_master.subscribe_attribute("cspPssHealthState", self.csp_pss_health_state_cb)
-        except tango.DevFailed as df:
+        except tango.DevFailed:
             self.logger.exception("Exception in attribute subscription")
     
     def stop(self):
         try:
             self.csp_master.unsubscribe_attribute(self.event_id)
-        except tango.DevFailed as df:
+        except tango.DevFailed:
             self.logger.exception("Exception in unsubscribing the attribute.")
 
     def csp_pss_health_state_cb(self, evt):
@@ -135,10 +126,8 @@ class PssHealthStateAttributeUpdator:
 
 class PstHealthStateAttributeUpdator:
     """
-     **Attributes:**
-
-    - cspHealthState  - Forwarded attribute to provide CSP Master Health State
-    - activityMessage - Attribute to provide activity message
+    - PstHealthStateAttribute  - Forwarded attribute to provide CSP Master Health State
+    - _csp_pst_health_state_log - Variable to provide activity log
 
     """
     def __init__(self, logger =None):
@@ -155,13 +144,13 @@ class PstHealthStateAttributeUpdator:
     def start(self):
         try:
             self.event_id = self.csp_master.subscribe_attribute("cspPstHealthState", self.csp_pst_health_state_cb)
-        except tango.DevFailed as df:
+        except tango.DevFailed:
             self.logger.exception("Exception in attribute subscription")
     
     def stop(self):
         try:
             self.csp_master.unsubscribe_attribute(self.event_id)
-        except tango.DevFailed as df:
+        except tango.DevFailed:
             self.logger.exception("Exception in unsubscribing the attribute.")
 
     def csp_pst_health_state_cb(self, evt):
