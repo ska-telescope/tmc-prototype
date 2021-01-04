@@ -38,9 +38,9 @@ from .exceptions import InvalidObsStateError
 
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additional_import
 
-__all__ = ["CspSubarrayLeafNode", "main", "AssignResourcesCommand", "release_all_resources_command",
-           "configure_command", "scan_command", "end_scan_command", "end_command", "abort_command", 
-           "restart_command", "obsreset_command"]
+__all__ = ["CspSubarrayLeafNode", "main", "AssignResourcesCommand", "ReleaseAllResourcesCommand",
+           "ConfigureCommand", "StartScanCommand", "EndScanCommand", "GoToIdleCommand", "AbortCommand", 
+           "RestartCommand", "ObsResetCommand"]
 
 
 class CspSubarrayLeafNode(SKABaseDevice):
