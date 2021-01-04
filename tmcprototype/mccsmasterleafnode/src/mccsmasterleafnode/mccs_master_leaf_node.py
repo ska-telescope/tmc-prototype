@@ -192,11 +192,9 @@ class MccsMasterLeafNode(SKABaseDevice):
         # Create device_data class object
         device_data = DeviceData.get_instance()
 
-        args = (device_data, self.state_model, self.logger)
-        # self.register_command_object("AssignResources", self.AssignResourcesCommand(*args))
-        # self.register_command_object("ReleaseResources", self.ReleaseResourcesCommand(*args))
+        args = (device_data, self.state_model, self.logger)  
         self.register_command_object("AssignResources", assign_resources_command.AssignResources(*args))
-        #self.register_command_object("ReleaseAllResources", release_resources_command.ReleaseAllResources(*args))
+        self.register_command_object("ReleaseResources", release_resources_command.ReleaseResources(*args))
         self.register_command_object("On", on_command.On(device_data, self.state_model, self.logger))
         self.register_command_object("Off", off_command.Off(device_data, self.state_model, self.logger))
 

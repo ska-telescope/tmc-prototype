@@ -156,7 +156,8 @@ def test_off_should_command_with_callback_method_with_event_error(mock_mccs_mast
 @pytest.fixture(
     scope="function",
     params= [
-        ("AssignResources",const.CMD_ALLOCATE,assign_input_str,ObsState.EMPTY,const.ERR_DEVFAILED_MSG)
+        ("AssignResources",const.CMD_ALLOCATE,assign_input_str,ObsState.EMPTY,const.ERR_DEVFAILED_MSG),
+        ("ReleaseResources",const.CMD_Release,release_input_str,ObsState.IDLE,const.ERR_RELEASE_ALL_RESOURCES)
     ])
 def command_with_arg(request):
     cmd_name, requested_cmd, input_str, obs_state, error_msg=request.param
@@ -210,18 +211,18 @@ def check_obs_state(arg1):
     return obs_state_global
 
       
-# def test_release_resource_should_command_mccs_master_to_release_all_resources(mock_mccs_master_proxy):
-#     device_proxy, tango_client_obj, mccs_master_fqdn, event_subscription_map = mock_mccs_master_proxy
-#     global obs_state_global
-#     device_proxy, tango_client_obj = mock_mccs_master_proxy[:2]
-#     obs_state_global = ObsState.EMPTY
-#     tango_client_obj.deviceproxy.read_attribute.side_effect = check_obs_state
-#     device_proxy.On()
-#     device_proxy.AssignResources(assign_input_str)
-#     device_proxy.ReleaseResources(release_input_str)
-#     tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(const.CMD_Release, release_input_str,
-#                                                                         any_method(
-#                                                                             with_name='releaseresources_cmd_ended_cb'))
+def test_release_resource_should_command_mccs_master_to_release_all_resources(mock_mccs_master_proxy):
+    device_proxy, tango_client_obj, mccs_master_fqdn, event_subscription_map = mock_mccs_master_proxy
+    global obs_state_global
+    device_proxy, tango_client_obj = mock_mccs_master_proxy[:2]
+    obs_state_global = ObsState.EMPTY
+    tango_client_obj.deviceproxy.read_attribute.side_effect = check_obs_state
+    device_proxy.On()
+    device_proxy.AssignResources(assign_input_str)
+    device_proxy.ReleaseResources(release_input_str)
+    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(const.CMD_Release, release_input_str,
+                                                                        any_method(
+                                                                            with_name='releaseresources_cmd_ended_cb'))
 
 
 #######################################################################################################
