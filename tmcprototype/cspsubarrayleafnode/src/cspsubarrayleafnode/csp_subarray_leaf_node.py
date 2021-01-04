@@ -14,26 +14,24 @@ It also acts as a CSP contact point for Subarray Node for observation execution 
 # PROTECTED REGION ID(CspSubarrayLeafNode.additional_import) ENABLED START #
 # Standard python imports
 
-# Third Party imports
-from tmc.common.tango_client import TangoClient
-from tmc.common.tango_server_helper import TangoServerHelper
-
 # PyTango imports
 from tango import DebugIt, AttrWriteType
 from tango.server import run, attribute, command, device_property
-
 # Additional import
+from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
+from cspsubarrayleafnode.device_data import DeviceData
 from ska.base.commands import ResultCode
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
-from . import const, release, assign_resources_command, release_all_resources_command, configure_command,\
+from .assign_resources_command import AssignResourcesCommand
+from . import const, release, release_all_resources_command, configure_command,\
     scan_command, end_scan_command, end_command, abort_command, restart_command, obsreset_command
 from .exceptions import InvalidObsStateError
-from cspsubarrayleafnode.device_data import DeviceData
 
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additional_import
 
-__all__ = ["CspSubarrayLeafNode", "main", "assign_resources_command", "release_all_resources_command",
+__all__ = ["CspSubarrayLeafNode", "main", "AssignResourcesCommand", "release_all_resources_command",
            "configure_command", "scan_command", "end_scan_command", "end_command", "abort_command", 
            "restart_command", "obsreset_command"]
 
@@ -120,10 +118,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
     def delete_device(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.delete_device) ENABLED START #
         """ Internal construct of TANGO. """
-        # Stop thread to update delay model
-        self.logger.debug("Stopping delay model thread.")
-        # self._stop_delay_model_event.set()
-        # self.delay_model_calculator_thread.join()
         self.logger.debug("Exiting.")
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.delete_device
 
@@ -328,14 +322,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
     def validate_obs_state(self):
         device_data = DeviceData.get_instance()
         csp_sa_client = TangoClient(device_data.csp_subarray_fqdn)
-        print ("ObsState:", csp_sa_client.get_attribute("obsState"))
         if csp_sa_client.get_attribute("obsState") in [ObsState.EMPTY, ObsState.IDLE]:
             self.logger.info("CSP Subarray is in required obsState, resources will be assigned")
-            #return True
         else:
             self.logger.error("CSP Subarray is not in EMPTY/IDLE obsState")
             self.device_data._read_activity_message = "Error in device obsState"
-            #return False
             raise InvalidObsStateError("CSP Subarray is not in EMPTY/IDLE obsState")
 
     
@@ -419,7 +410,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         super().init_command_objects()
         device_data = DeviceData.get_instance()
         args = (device_data, self.state_model, self.logger)
-        self.register_command_object("AssignResources", assign_resources_command.AssignResourcesCommand(*args))
+        self.register_command_object("AssignResources", AssignResourcesCommand(*args))
         self.register_command_object("ReleaseAllResources", release_all_resources_command.ReleaseAllResourcesCommand(*args))
         self.register_command_object("Configure", configure_command.ConfigureCommand(*args))
         self.register_command_object("StartScan", scan_command.StartScanCommand(*args))

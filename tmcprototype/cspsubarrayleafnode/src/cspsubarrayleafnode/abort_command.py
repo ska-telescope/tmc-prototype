@@ -2,13 +2,8 @@
 # PyTango imports
 import tango
 from tango import DevState, DevFailed
-
-
-# Third Party imports
+# Additional import
 from tmc.common.tango_client import TangoClient
-
-# Additional import
-# Additional import
 from ska.base.commands import BaseCommand
 from ska.base.control_model import ObsState
 from . import const

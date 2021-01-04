@@ -63,5 +63,5 @@ class Off(SKABaseDevice.OffCommand):
         log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
         self.logger.debug(log_msg)
         delay_manager_obj = DelayManager.get_instance()
-        delay_manager_obj.start()
+        delay_manager_obj.stop()
         return (ResultCode.OK, log_msg)

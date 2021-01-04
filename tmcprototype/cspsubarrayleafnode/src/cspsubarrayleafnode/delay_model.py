@@ -9,8 +9,6 @@ import numpy as np
 import katpoint
 from cspsubarrayleafnode.device_data import DeviceData
 from ska.base.control_model import ObsState
-
-# Third Party imports
 from tmc.common.tango_client import TangoClient
 
 class DelayManager:
@@ -50,7 +48,7 @@ class DelayManager:
         # create lock
         self.delay_model_lock = threading.Lock()
         # create thread
-        # self.logger.debug("Starting thread to calculate delay model.")
+        self.logger.debug("Starting thread to calculate delay model.")
         self.delay_model_calculator_thread = threading.Thread(
             target=self.delay_model_handler,
             args=[self._DELAY_UPDATE_INTERVAL],

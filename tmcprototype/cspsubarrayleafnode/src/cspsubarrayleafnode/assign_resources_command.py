@@ -1,13 +1,9 @@
 import json
-
-# Third Party imports
-from tmc.common.tango_client import TangoClient
-
 # PyTango imports
 import tango
 from tango import DevState, DevFailed
-
 # Additional import
+from tmc.common.tango_client import TangoClient
 from ska.base.commands import BaseCommand
 from . import const
 from .transaction_id import identify_with_id
@@ -46,7 +42,7 @@ class AssignResourcesCommand(BaseCommand):
         Callback function immediately executed when the asynchronous invoked
         command returns.
 
-        :type: CmdDoneEvent object
+        :param: CmdDoneEvent object
             It has the following members:
                 - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
                 - cmd_name   : (str) The command name

@@ -63,5 +63,5 @@ class On(SKABaseDevice.OnCommand):
         delay_manager_obj = DelayManager.get_instance()
         delay_manager_obj.start()
         this_server = TangoServerHelper.get_instance()
-        this_server.set_status("Testing On Command")
+        this_server.set_status(log_msg)
         return (ResultCode.OK, log_msg)
