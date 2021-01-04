@@ -22,7 +22,6 @@ class ObsStateAggregator:
         # self.device_data = DeviceData.get_instance()
         self.csp_client = None
         self.sdp_client = None
-        self.sdp_sa_client = None
         self.dishPointingStateMap = {}
         self.this_server = TangoServerHelper.get_instance()
         self.device_data = DeviceData.get_instance()
@@ -30,7 +29,6 @@ class ObsStateAggregator:
     def subscribe(self):
         self.csp_client = TangoClient(self.device_data.csp_subarray_ln_fqdn)
         self.sdp_client = TangoClient(self.device_data.sdp_subarray_ln_fqdn)
-        self.sdp_sa_client = TangoClient(self.device_data.sdp_sa_fqdn)
         # Subscribe cspSubarrayObsState (forwarded attribute) of CspSubarray
         csp_event_id = self.csp_client.subscribe_attribute(const.EVT_CSPSA_OBS_STATE, self.observation_state_cb)
         self.csp_sdp_ln_obs_state_event_id[self.csp_client] = csp_event_id
@@ -43,10 +41,21 @@ class ObsStateAggregator:
         log_msg = const.STR_SDP_LN_VS_HEALTH_EVT_ID + str(self.csp_sdp_ln_obs_state_event_id)
         self.logger.debug(log_msg)
 
-        # Subscribe ReceiveAddresses of SdpSubarray
-        sdp_receive_addr_event_id = self.sdp_sa_client.subscribe_attribute("receiveAddresses", self.receive_addresses_cb)
-        self.csp_sdp_ln_obs_state_event_id[self.sdp_sa_client] = sdp_receive_addr_event_id
 
+    def unsubscribe(self):
+        """
+        This function unsubscribes all Observation state events given by the event ids and their
+        corresponding DeviceProxy objects.
+
+        :param : None
+
+        :return: None
+
+        """
+        for tango_client, event_id in self.csp_sdp_ln_obs_state_event_id.items():
+            tango_client.unsubscribe_attribute(event_id)
+
+    
     def observation_state_cb(self, evt):
         """
         Retrieves the subscribed CSP_Subarray AND SDP_Subarray  obsState.
@@ -152,21 +161,6 @@ class ObsStateAggregator:
                 # Assign Resource command success
                 self.logger.info("Calling AssignResource command succeeded() method")
                 self.this_server.assign_obj.succeeded()
-
-    def receive_addresses_cb(self, event):
-        """
-        Retrieves the receiveAddresses attribute of SDP Subarray.
-
-        :param event: A TANGO_CHANGE event on SDP Subarray receiveAddresses attribute.
-
-        :return: None
-        """
-        if not event.err:
-            self.device_data._receive_addresses_map = event.attr_value.value
-        else:
-            log_msg = const.ERR_SUBSR_RECEIVE_ADDRESSES_SDP_SA + str(event)
-            self.logger.debug(log_msg)
-            self._read_activity_message = log_msg
 
 
     def pointing_state_cb(self, evt):

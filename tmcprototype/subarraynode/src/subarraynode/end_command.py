@@ -12,8 +12,9 @@ from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from tmc.common.tango_client import TangoClient
-from subarraynode.device_data import DeviceData
 from tmc.common.tango_server_helper import TangoServerHelper
+from subarraynode.device_data import DeviceData
+from subarraynode.receive_addresses import ReceiveAddresses
 
 class End(SKASubarray.EndCommand):
     """
@@ -65,6 +66,7 @@ class End(SKASubarray.EndCommand):
         #To read device proxy from device.SdpSubarrayLNFQDN
         sdp_saln_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
         sdp_saln_client.send_command(const.CMD_END)
+        # device_data.receive_addresses.unsubscribe()
         self.logger.info(const.STR_CMD_END_INV_SDP)
 
     def end_csp(self, device_data):

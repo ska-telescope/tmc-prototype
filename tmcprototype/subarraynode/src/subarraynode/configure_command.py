@@ -16,8 +16,9 @@ from ska.base import SKASubarray
 from ska_telmodel.csp import interface
 from .transaction_id import identify_with_id,inject_with_id
 from tmc.common.tango_client import TangoClient
-from subarraynode.device_data import DeviceData
 from tmc.common.tango_server_helper import TangoServerHelper
+from subarraynode.device_data import DeviceData
+from subarraynode.receive_addresses import ReceiveAddresses
 
 csp_interface_version = 0
 sdp_interface_version = 0
@@ -57,6 +58,9 @@ class Configure(SKASubarray.ConfigureCommand):
         self.logger.debug(type(self.target))
         self.only_dishconfig_flag = False
         device_data = DeviceData.get_instance()
+        # # subscribe to receiveAddressesMap from SDP 
+        # device_data.receive_addresses = ReceiveAddresses(self.logger)
+        # device_data.receive_addresses.subscribe()
         device_data.is_scan_completed = False
         device_data.is_release_resources = False
         device_data.is_restart_command = False

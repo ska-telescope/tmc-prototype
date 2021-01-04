@@ -63,6 +63,7 @@ class DeviceData:
         self.health_state = None
         # TODO: For future use
         self._receptor_id_list = []
+        self.receive_addresses = None
 
     @staticmethod
     def get_instance():

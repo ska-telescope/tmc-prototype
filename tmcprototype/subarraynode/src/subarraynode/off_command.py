@@ -14,7 +14,6 @@ from ska.base import SKASubarray
 from tmc.common.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
 
-
 class Off(SKASubarray.OffCommand):
     """
     A class for the SubarrayNodes's Off() command.
@@ -47,6 +46,8 @@ class Off(SKASubarray.OffCommand):
 
             # TODO unsubscribe health obsState events from CSP and SDP
             device_data.health_state_aggr.unsubscribe()
+            device_data.obs_state_aggr.unsubscribe()
+            device_data.receive_addresses.unsubscribe()
             return (ResultCode.OK, message)
 
         except DevFailed as dev_failed:
