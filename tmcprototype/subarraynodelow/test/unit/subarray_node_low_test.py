@@ -562,6 +562,31 @@ def test_release_all_resources_should_release_resources_when_obstate_idle(mock_l
     assert release_resources_cmd.do() == (ResultCode.STARTED, 'RELEASEALLRESOURCES command invoked successfully.')
     # assert device_proxy.device.State() == DevState.ON
     # assert device_proxy.device.obsState == ObsState.EMPTY
+        tango_context.device.ReleaseAllResources()
+    assert tango_context.device.State() == DevState.ON
+    assert tango_context.device.obsState == ObsState.EMPTY
+    assert "Error executing command ReleaseAllResources" in str(df.value)
+
+
+# def test_release_all_resources_should_release_resources_when_obstate_idle(mock_lower_devices):
+#     tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
+#     mccs_subarray1_obsstate_attribute = "mccsSubarrayObsState"
+#     tango_context.device.On()
+#     tango_context.device.AssignResources(assign_input_str)
+
+#     attribute = 'ObsState'
+#     dummy_event = create_dummy_event_state(mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, attribute,
+#                                            ObsState.IDLE)
+#     event_subscription_map[mccs_subarray1_obsstate_attribute](dummy_event)
+#     wait_for(tango_context, ObsState.IDLE)
+#     assert tango_context.device.obsState == ObsState.IDLE
+#     assert tango_context.device.ReleaseAllResources() == [[ResultCode.STARTED], ["RELEASEALLRESOURCES command invoked successfully."]]
+#     dummy_event = create_dummy_event_state(mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, attribute,
+#                                            ObsState.EMPTY)
+#     event_subscription_map[mccs_subarray1_obsstate_attribute](dummy_event)
+#     wait_for(tango_context, ObsState.EMPTY)
+#     assert tango_context.device.State() == DevState.ON
+#     assert tango_context.device.obsState == ObsState.EMPTY
 
 
 def create_dummy_event_healthstate_with_proxy(proxy_mock, device_fqdn, health_state_value, attribute):
