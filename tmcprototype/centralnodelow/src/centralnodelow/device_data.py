@@ -28,13 +28,13 @@ class DeviceData:
             DeviceData.__instance = self
 
         self._subarray1_health_state = HealthState.UNKNOWN
-        self.mccs_master_fqdn = ""
         self._mccs_master_leaf_health = HealthState.UNKNOWN
         self._health_state = HealthState.UNKNOWN
         self._telescope_health_state = HealthState.UNKNOWN
         self.subarray_health_state_map = {}
         self.subarray_FQDN_dict = {}
         self.subarray_low = ""
+        self.mccs_master_fqdn = ""
         self._read_activity_message = ""
 
     @staticmethod

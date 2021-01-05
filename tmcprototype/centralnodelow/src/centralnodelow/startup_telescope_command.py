@@ -54,12 +54,12 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
 
         """
         device_data = self.target
+        self.startup_mccs(device_data.mccs_master_fqdn)
+        self.startup_subarray(device_data.subarray_low)
         log_msg = const.STR_ON_CMD_ISSUED
         self.logger.info(log_msg)
         device_data._read_activity_message = log_msg
-        self.startup_mccs(device_data.mccs_master_fqdn)
-        self.startup_subarray(device_data.subarray_low)
-
+        return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
 
     def startup_subarray(self, subarray_fqdn):
         for subarray_id in range(1, len(subarray_fqdn) + 1):

@@ -14,7 +14,6 @@ of state and mode attributes defined by the SKA Control Model.
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 # Standard Python imports
 import json
-
 # Tango imports
 import tango
 from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
@@ -26,10 +25,10 @@ from ska.base.commands import ResultCode, BaseCommand
 from ska.base.control_model import HealthState
 from . import const, release
 from .device_data import DeviceData
-from centralnodelow.start_up_telescope_command import StartUpTelescope
-from centralnodelow.stand_by_telescope_command import StandByTelescope
-from centralnodelow.assign_resources_command import AssignResources
-from centralnodelow.release_resources_command import ReleaseResources
+from centralnodelow.startup_telescope_command import StartUpTelescope
+# from centralnodelow.standby_telescope_command import StandByTelescope
+# from centralnodelow.assign_resources_command import AssignResources
+# from centralnodelow.release_resources_command import ReleaseResources
 
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
@@ -220,31 +219,32 @@ class CentralNode(SKABaseDevice):
                                              tango.ErrSeverity.ERR)
 
             # Create device proxy for MCCS Master Leaf Node
-            try:
-                device._mccs_master_leaf_proxy = DeviceProxy(device.MCCSMasterLeafNodeFQDN)
-                device._mccs_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_MCCS_MASTER_HEALTH,
-                                                           EventType.CHANGE_EVENT,
-                                                           device.health_state_cb, stateless=True)
-            except DevFailed as dev_failed:
-                log_msg = const.ERR_SUBSR_MCCS_MASTER_LEAF_HEALTH + str(dev_failed)
-                self.logger.exception(dev_failed)
-                device._read_activity_message = const.ERR_SUBSR_MCCS_MASTER_LEAF_HEALTH
-                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand",
-                                             tango.ErrSeverity.ERR)
+            # try:
+            #     device._mccs_master_leaf_proxy = DeviceProxy(device.MCCSMasterLeafNodeFQDN)
+            #     device._mccs_master_leaf_proxy.subscribe_event(const.EVT_SUBSR_MCCS_MASTER_HEALTH,
+            #                                                EventType.CHANGE_EVENT,
+            #                                                device.health_state_cb, stateless=True)
+            # except DevFailed as dev_failed:
+            #     log_msg = const.ERR_SUBSR_MCCS_MASTER_LEAF_HEALTH + str(dev_failed)
+            #     self.logger.exception(dev_failed)
+            #     device._read_activity_message = const.ERR_SUBSR_MCCS_MASTER_LEAF_HEALTH
+            #     tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand",
+            #                                  tango.ErrSeverity.ERR)
 
             # Create device proxy for Subarray Node
             for subarray in range(0, len(device.TMLowSubarrayNodes)):
                 try:
-                    subarray_proxy = DeviceProxy(device.TMLowSubarrayNodes[subarray])
-                    device.subarray_health_state_map[subarray_proxy] = -1
-                    subarray_proxy.subscribe_event(const.EVT_SUBSR_HEALTH_STATE,
-                                                  EventType.CHANGE_EVENT,
-                                                  device.health_state_cb, stateless=True)
+                    # subarray_proxy = DeviceProxy(device.TMLowSubarrayNodes[subarray])
+                    # device.subarray_health_state_map[subarray_proxy] = -1
+                    # subarray_proxy.subscribe_event(const.EVT_SUBSR_HEALTH_STATE,
+                    #                               EventType.CHANGE_EVENT,
+                    #                               device.health_state_cb, stateless=True)
 
                     # populate subarray_id-subarray proxy map
                     tokens = device.TMLowSubarrayNodes[subarray].split('/')
                     subarray_id = int(tokens[2])
-                    device.subarray_FQDN_dict[subarray_id] = subarray_proxy
+                    device_data.subarray_FQDN_dict[subarray_id] = device.TMLowSubarrayNodes[subarray]
+
                 except DevFailed as dev_failed:
                     log_msg = const.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
                     self.logger.exception(dev_failed)
@@ -274,25 +274,25 @@ class CentralNode(SKABaseDevice):
     def read_telescopeHealthState(self):
         # PROTECTED REGION ID(CentralNode.telescope_healthstate_read) ENABLED START #
         """ Internal construct of TANGO. Returns the Telescope health state."""
-        return self._telescope_health_state
+        return self.device_data._telescope_health_state
         # PROTECTED REGION END #    //  CentralNode.telescope_healthstate_read
 
     def read_subarray1HealthState(self):
         # PROTECTED REGION ID(CentralNode.subarray1_healthstate_read) ENABLED START #
         """ Internal construct of TANGO. Returns Subarray1 health state. """
-        return self._subarray1_health_state
+        return self.device_data._subarray1_health_state
         # PROTECTED REGION END #    //  CentralNode.subarray1_healthstate_read
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(CentralNode.activity_message_read) ENABLED START #
         """Internal construct of TANGO. Returns activity message. """
-        return self._read_activity_message
+        return self.device_data._read_activity_message
         # PROTECTED REGION END #    //  CentralNode.activity_message_read
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(CentralNode.activity_message_write) ENABLED START #
         """Internal construct of TANGO. Sets the activity message. """
-        self._read_activity_message = value
+        self.device_data._read_activity_message = value
         # PROTECTED REGION END #    //  CentralNode.activity_message_write
 
     # --------
@@ -750,9 +750,9 @@ class CentralNode(SKABaseDevice):
         super().init_command_objects()
         args = (self.device_data, self.state_model, self.logger)
         self.register_command_object("StartUpTelescope", StartUpTelescope(*args))
-        self.register_command_object("StandByTelescope", StandByTelescope(*args))
-        self.register_command_object("AssignResources", AssignResources(*args))
-        self.register_command_object("ReleaseResources", ReleaseResources(*args))
+        # self.register_command_object("StandByTelescope", StandByTelescope(*args))
+        # self.register_command_object("AssignResources", AssignResources(*args))
+        # self.register_command_object("ReleaseResources", ReleaseResources(*args))
 
         # self.register_command_object("Standby", Standby(*args))
 
