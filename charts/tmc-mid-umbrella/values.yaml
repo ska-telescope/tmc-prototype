@@ -10,7 +10,7 @@ global:
 
 # Set minikube=true when deploying on minikube
 webjive:
-  minikube: true
+  minikube: false
 
 etcd-operator:
   deployments:

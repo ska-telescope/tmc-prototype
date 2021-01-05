@@ -44,11 +44,9 @@ class ObsStateAggregator:
         """
         Method to stop ObsState aggregation
         """
-        print ("Event subscription map: ", self.event_subscription_map) 
         for tango_client in self.event_subscription_map:
             log_message = "Unsubscribing ObsState of: {}".format(tango_client.get_device_fqdn)
             self.logger.debug(log_message)
-            print ("Event Id:", self.event_subscription_map[tango_client])
             tango_client.unsubscribe_attribute(self.event_subscription_map[tango_client])
         self.event_subscription_map.clear()
 
