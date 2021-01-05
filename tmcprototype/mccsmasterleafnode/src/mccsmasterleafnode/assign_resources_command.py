@@ -91,10 +91,10 @@ class AssignResources(BaseCommand):
             "channels": [1,2,3,4,5,6,7,8],
             "station_beam_ids": [1]
         }
+        
+        Note: Enter the json string without spaces as an input.
 
         :return: None
-
-        Note: Enter the json string without spaces as an input.
 
         :raises: ValueError if input argument json string contains invalid value
                     KeyError if input argument json string contains invalid key
@@ -104,10 +104,8 @@ class AssignResources(BaseCommand):
         try:
             log_msg = "Input JSON for MCCS master leaf node AssignResources command is: " + argin
             self.logger.debug(log_msg)
-            self.logger.info("Invoking Allocate on MCCS master")
             mccs_mln_client_obj = TangoClient(device_data._mccs_master_ln_fqdn)
             mccs_mln_client_obj.send_command_async(const.CMD_ALLOCATE, None, self.allocate_ended)
-            self.logger.info("After invoking Allocate on MCCS master")
             device_data._read_activity_message = const.STR_ALLOCATE_SUCCESS
             self.logger.info(const.STR_ALLOCATE_SUCCESS)
 

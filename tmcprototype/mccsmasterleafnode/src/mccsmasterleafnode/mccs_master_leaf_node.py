@@ -17,13 +17,17 @@ from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, SimulationMode, TestMode
-from . import const, release, on_command, off_command, assign_resources_command, release_resources_command
-from .device_data import DeviceData
+from . import const, release
+from mccsmasterleafnode.assign_resources_command import AssignResources
+from mccsmasterleafnode.release_resources_command import ReleaseResources
+from mccsmasterleafnode.on_command import On
+from mccsmasterleafnode.off_command import Off
+from mccsmasterleafnode.device_data import DeviceData
 
 # PROTECTED REGION END #    //  MccsMasterLeafNode imports
 
-__all__ = ["MccsMasterLeafNode", "main", "assign_resources_command", "const", 
-           "release", "release_resources_command", "on_command", "off_command"]
+__all__ = ["MccsMasterLeafNode", "main", "AssignResources", "const", 
+           "release", "ReleaseResources", "On", "Off"]
 
 class MccsMasterLeafNode(SKABaseDevice):
     """
@@ -181,10 +185,10 @@ class MccsMasterLeafNode(SKABaseDevice):
         device_data = DeviceData.get_instance()
 
         args = (device_data, self.state_model, self.logger)  
-        self.register_command_object("AssignResources", assign_resources_command.AssignResources(*args))
-        self.register_command_object("ReleaseResources", release_resources_command.ReleaseResources(*args))
-        self.register_command_object("On", on_command.On(device_data, self.state_model, self.logger))
-        self.register_command_object("Off", off_command.Off(device_data, self.state_model, self.logger))
+        self.register_command_object("AssignResources", AssignResources(*args))
+        self.register_command_object("ReleaseResources", ReleaseResources(*args))
+        self.register_command_object("On", On(device_data, self.state_model, self.logger))
+        self.register_command_object("Off", Off(device_data, self.state_model, self.logger))
 
 
 
