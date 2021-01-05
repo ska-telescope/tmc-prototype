@@ -48,6 +48,7 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         self.logger.info(type(self.target))
         device_data = DeviceData.get_instance()
         self.standby_subarray(device_data.tm_low_subarray)
+        self.standby_mccs(device_data.mccs_master_ln_fqdn)
         device_data.health_aggregator.unsubscribe_event()
         log_msg = const.STR_STANDBY_CMD_ISSUED
         self.logger.info(log_msg)
