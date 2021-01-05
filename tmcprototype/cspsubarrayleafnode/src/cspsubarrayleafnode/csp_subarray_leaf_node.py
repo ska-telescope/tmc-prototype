@@ -15,7 +15,8 @@ It also acts as a CSP contact point for Subarray Node for observation execution 
 # Standard python imports
 
 # PyTango imports
-from tango import DebugIt, AttrWriteType
+import tango
+from tango import DebugIt, AttrWriteType, ApiUtil
 from tango.server import run, attribute, command, device_property
 # Additional import
 from tmc.common.tango_client import TangoClient
@@ -110,6 +111,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device._version_id = release.version
             device._delay_model = " "
             device._versioninfo = " "
+
+            ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
+            device._read_activity_message = const.STR_SETTING_CB_MODEL + str(
+                ApiUtil.instance().get_asynch_cb_sub_model())
 
             device.set_status(const.STR_CSPSALN_INIT_SUCCESS)
             device._csp_subarray_health_state = HealthState.OK

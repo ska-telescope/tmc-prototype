@@ -2,14 +2,14 @@
 Off class for SDPSubarrayLeafNode.
 """
 # PROTECTED REGION ID(sdpsubarrayleafnode.additionnal_import) ENABLED START #
-# Standard Python imports
+# Tango imports
 import tango
 from tango import DevFailed
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
-from . import const
 from tmc.common.tango_client import TangoClient
+from . import const
 
 
 class Off(SKABaseDevice.OffCommand):
