@@ -10,7 +10,7 @@
 # PROTECTED REGION ID(MccsMasterLeafNode.import) ENABLED START #
 # Tango imports
 import tango
-from tango import ApiUtil, DebugIt, AttrWriteType, DevFailed
+from tango import ApiUtil, DebugIt, AttrWriteType
 from tango.server import run, command, device_property, attribute
 
 # Additional import
