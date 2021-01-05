@@ -9,12 +9,12 @@ from enum import IntEnum, unique
 
 @unique
 class PointingState(IntEnum):
-    READY = 0
-    SLEW = 1
-    TRACK = 2
-    SCAN = 3
-    RESERVED = 4
-
+    NONE = 0
+    READY = 1
+    SLEW = 2
+    TRACK = 3
+    SCAN = 4
+    UNKNOWN = 5
 
 # Events
 EVT_DISH_HEALTH_STATE = "dishHealthState"

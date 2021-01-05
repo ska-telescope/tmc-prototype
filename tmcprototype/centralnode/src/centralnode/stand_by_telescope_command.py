@@ -95,6 +95,7 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         for name in range(0, len(dish_fqdn)):
             dish_ln_client = TangoClient(dish_fqdn[name])
             self.standby_leaf_node(dish_ln_client, const.CMD_SET_STANDBY_MODE)
+            self.standby_leaf_node(dish_ln_client, const.CMD_OFF)
 
     def standby_subarray(self, subarray_fqdn_list):
         """
@@ -103,10 +104,9 @@ class StandByTelescope(SKABaseDevice.OffCommand):
 
         :return: None
         """
-        for subarrayID in range(1, len(subarray_fqdn_list) + 1):
-            subarray_client = TangoClient(subarrayID)
+        for subarray_fqdn in subarray_fqdn_list:
+            subarray_client = TangoClient(subarray_fqdn)
             self.standby_leaf_node(subarray_client, const.CMD_OFF)
-            self.standby_leaf_node(subarray_client, const.CMD_STANDBY)
 
 
     def standby_leaf_node(self, tango_client, cmd_name, param=None):
