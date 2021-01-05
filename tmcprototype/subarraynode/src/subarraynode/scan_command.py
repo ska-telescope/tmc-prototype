@@ -73,7 +73,7 @@ class Scan(SKASubarray.ScanCommand):
             # scan_thread = threading.Timer(device_data.scan_duration, self.call_end_scan_command)
             # scan_thread.start()
             # self.logger.info("Scan thread started")
-            ScanThread()
+            ScanThreadExecutor().scan_thread(scan_duration)
             return (ResultCode.STARTED, const.STR_SCAN_SUCCESS)
         except DevFailed as dev_failed:
             log_msg = const.ERR_SCAN_CMD + str(dev_failed)
@@ -108,14 +108,17 @@ class Scan(SKASubarray.ScanCommand):
     #     device_data.end_scan_obj.do()
 
 
-class ScanThread():
+class ScanThreadExecutor():
     """
     A class to start the Scan threading.
     """
-    def scan_thread(self, device_data):
-        scan_thread = threading.Timer(device_data.scan_duration, self.call_end_scan_command)
-        scan_thread.start()
+    def scan_thread(self, scan_duration):
+        start_scan_thread = threading.Timer(scan_duration, self.call_end_scan_command())
+        start_scan_thread.start()
         self.logger.info("Scan thread started")
 
-    def call_end_scan_command(self, device_data):
-        device_data.end_scan_obj.do()
+    def call_end_scan_command(self, device):
+        handler = device.get_command_obj("EndScan")
+        (result_code, message) = handler()
+        return [[result_code], [message]]
+            # end_scan_obj.do()

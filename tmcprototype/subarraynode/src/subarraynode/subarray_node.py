@@ -63,7 +63,7 @@ class SubarrayNode(SKASubarray):
         :rtype: int
         """
 
-        return len(self.device_data._receptor_id_list)
+        return len(self.device_data.receptor_id_list)
 
 
     # PROTECTED REGION END #    //  SubarrayNode.class_variable

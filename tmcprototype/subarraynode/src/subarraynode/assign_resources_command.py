@@ -229,7 +229,6 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         allocation_success = []
         allocation_failure = []
         device_data = DeviceData.get_instance()
-        receptor_id_list = []
         # Add each dish into the tango group
 
         
@@ -248,7 +247,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
 
                 # Subscribe Dish Pointing State
                 device_data.obs_state_aggr.subscribe_dish_pointing_state(dish_ln_client)
-                receptor_id_list.append(int(str_leafId)) # no need to have this variable here - Snehal
+                device_data.receptor_id_list.append(int(str_leafId))
                 self.logger.debug(const.STR_SUBS_ATTRS_LN)
                 device_data._read_activity_message = const.STR_SUBS_ATTRS_LN
                 self.logger.info(const.STR_ASSIGN_RES_SUCCESS)
