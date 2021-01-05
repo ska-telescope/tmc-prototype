@@ -3,9 +3,9 @@ import tango
 from tango import DevState, DevFailed
 
 # Additional import
+from tmc.common.tango_client import TangoClient
 from ska.base.commands import  BaseCommand
 from . import const
-from tmc.common.tango_client import TangoClient
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additionnal_import
 
 class Disable(BaseCommand):
@@ -75,7 +75,7 @@ class Disable(BaseCommand):
         device_data = self.target
         try:
             sdp_mln_client_obj = TangoClient(device_data.sdp_master_ln_fqdn)
-            sdp_mln_client_obj.send_command_async(const.CMD_Disable, [], self.disable_cmd_ended_cb)
+            sdp_mln_client_obj.send_command_async(const.CMD_Disable, self.disable_cmd_ended_cb)
             self.logger.debug(const.STR_DISABLE_CMS_SUCCESS)
             device_data._read_activity_message = const.STR_DISABLE_CMS_SUCCESS
 

@@ -3,10 +3,10 @@ import tango
 from tango import DevFailed
 
 # Additional import
+from tmc.common.tango_client import TangoClient
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from . import const
-from tmc.common.tango_client import TangoClient
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additionnal_import
 
 class Off(SKABaseDevice.OffCommand):

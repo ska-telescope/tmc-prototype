@@ -1,4 +1,5 @@
 # Standard Python imports
+# Standard Python imports
 import contextlib
 import importlib
 import sys
@@ -83,7 +84,7 @@ def test_command_should_be_relayed_to_sdp_master(mock_sdp_master_proxy, command_
     cmd_name, requested_cmd, _ = command_without_args
     device_proxy.command_inout(cmd_name)
     callback_name = f"{requested_cmd.lower()}_cmd_ended_cb"
-    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(requested_cmd, [],
+    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(requested_cmd,
                                                                          any_method(with_name=callback_name))
 
 
@@ -203,59 +204,59 @@ def test_activity_message(tango_context):
     assert tango_context.device.activityMessage == "text"
 
 
-# def test_version_info(tango_context):
-#     assert tango_context.device.versionInfo == '1.0'
-#
-#
-# def test_processing_block_list(tango_context):
-#     assert tango_context.device.ProcessingBlockList
-#
-#
-# def test_status(tango_context):
-#     assert tango_context.device.Status() != const.STR_INIT_SUCCESS
-#
-#
-# def test_logging_level(tango_context):
-#     tango_context.device.loggingLevel = LoggingLevel.INFO
-#     assert tango_context.device.loggingLevel == LoggingLevel.INFO
-#
-#
-# def test_logging_targets(tango_context):
-#     tango_context.device.loggingTargets = ['console::cout']
-#     assert 'console::cout' in tango_context.device.loggingTargets
-#
-#
-# def test_test_mode(tango_context):
-#     test_mode = TestMode.NONE
-#     tango_context.device.testMode = test_mode
-#     assert tango_context.device.testMode == test_mode
-#
-#
-# def test_simulation_mode(tango_context):
-#     tango_context.device.simulationMode = SimulationMode.FALSE
-#     assert tango_context.device.simulationMode == SimulationMode.FALSE
-#
-#
-# def test_control_mode(tango_context):
-#     control_mode = ControlMode.REMOTE
-#     tango_context.device.controlMode = control_mode
-#     assert tango_context.device.controlMode == control_mode
-#
-#
-# def test_health_state(tango_context):
-#     assert tango_context.device.healthState == HealthState.OK
-#
-#
-# def test_version_id(tango_context):
-#     """Test for versionId"""
-#     assert tango_context.device.versionId == release.version
-#
-#
-# def test_build_state(tango_context):
-#     """Test for buildState"""
-#     assert tango_context.device.buildState == (
-#         '{},{},{}'.format(release.name, release.version, release.description))
-#
+def test_version_info(tango_context):
+    assert tango_context.device.versionInfo == '1.0'
+
+
+def test_processing_block_list(tango_context):
+    assert tango_context.device.ProcessingBlockList
+
+
+def test_status(tango_context):
+    assert tango_context.device.Status() != const.STR_INIT_SUCCESS
+
+
+def test_logging_level(tango_context):
+    tango_context.device.loggingLevel = LoggingLevel.INFO
+    assert tango_context.device.loggingLevel == LoggingLevel.INFO
+
+
+def test_logging_targets(tango_context):
+    tango_context.device.loggingTargets = ['console::cout']
+    assert 'console::cout' in tango_context.device.loggingTargets
+
+
+def test_test_mode(tango_context):
+    test_mode = TestMode.NONE
+    tango_context.device.testMode = test_mode
+    assert tango_context.device.testMode == test_mode
+
+
+def test_simulation_mode(tango_context):
+    tango_context.device.simulationMode = SimulationMode.FALSE
+    assert tango_context.device.simulationMode == SimulationMode.FALSE
+
+
+def test_control_mode(tango_context):
+    control_mode = ControlMode.REMOTE
+    tango_context.device.controlMode = control_mode
+    assert tango_context.device.controlMode == control_mode
+
+
+def test_health_state(tango_context):
+    assert tango_context.device.healthState == HealthState.OK
+
+
+def test_version_id(tango_context):
+    """Test for versionId"""
+    assert tango_context.device.versionId == release.version
+
+
+def test_build_state(tango_context):
+    """Test for buildState"""
+    assert tango_context.device.buildState == (
+        '{},{},{}'.format(release.name, release.version, release.description))
+
 
 def any_method(with_name=None):
     class AnyMethod():

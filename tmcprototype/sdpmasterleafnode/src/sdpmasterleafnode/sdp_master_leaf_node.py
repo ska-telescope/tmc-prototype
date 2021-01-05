@@ -20,7 +20,7 @@ import tango
 from tango import ApiUtil, DebugIt, AttrWriteType
 from tango.server import run, command, device_property, attribute
 
-# Additional import
+# PROTECTED REGION ID(SdpMasterLeafNode.additional_import) ENABLED START #
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, SimulationMode, TestMode
@@ -28,11 +28,7 @@ from sdpmasterleafnode.on_command import On
 from sdpmasterleafnode.off_command import Off
 from sdpmasterleafnode.standby_command import Standby
 from sdpmasterleafnode.disable_command import Disable
-
-
-
 from .device_data import DeviceData
-
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additional_import
 
 __all__ = ["SdpMasterLeafNode", "main", "On", "Off", "Standby", "Disable"]
@@ -102,7 +98,6 @@ class SdpMasterLeafNode(SKABaseDevice):
             device._health_state = HealthState.OK  # Setting healthState to "OK"
             device._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
             device._test_mode = TestMode.NONE
-            device._version_info = "1.0"
             device._processing_block_list = "test"
             device_data._read_activity_message = 'OK'
             device.set_status(const.STR_INIT_SUCCESS)

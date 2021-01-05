@@ -3,10 +3,10 @@ import tango
 from tango import  DevFailed
 
 # Additional import
+from tmc.common.tango_client import TangoClient
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from . import const
-from tmc.common.tango_client import TangoClient
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additional_import
 
 
@@ -61,7 +61,7 @@ class On(SKABaseDevice.OnCommand):
         device_data = self.target
         try:
             sdp_mln_client_obj = TangoClient(device_data.sdp_master_ln_fqdn)
-            sdp_mln_client_obj.send_command_async(const.CMD_ON, [], self.on_cmd_ended_cb)
+            sdp_mln_client_obj.send_command_async(const.CMD_ON, self.on_cmd_ended_cb)
             # device._sdp_proxy.command_inout_asynch(const.CMD_ON, self.on_cmd_ended_cb)
             log_msg = const.STR_ON_CMD_SUCCESS
             self.logger.debug(log_msg)
