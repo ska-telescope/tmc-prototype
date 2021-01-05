@@ -61,7 +61,7 @@ class On(SKABaseDevice.OnCommand):
         device_data = self.target
         try:
             sdp_mln_client_obj = TangoClient(device_data.sdp_master_ln_fqdn)
-            sdp_mln_client_obj.send_command_async(const.CMD_ON, [], self.on_cmd_ended_cb)
+            sdp_mln_client_obj.send_command_async(const.CMD_ON, None, self.on_cmd_ended_cb)
             log_msg = const.STR_ON_CMD_SUCCESS
             self.logger.debug(log_msg)
             return (ResultCode.OK, log_msg)
