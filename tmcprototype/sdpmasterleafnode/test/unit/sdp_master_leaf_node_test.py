@@ -84,7 +84,7 @@ def test_command_should_be_relayed_to_sdp_master(mock_sdp_master_proxy, command_
     cmd_name, requested_cmd, _ = command_without_args
     device_proxy.command_inout(cmd_name)
     callback_name = f"{requested_cmd.lower()}_cmd_ended_cb"
-    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(requested_cmd,
+    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(requested_cmd, [],
                                                                          any_method(with_name=callback_name))
 
 
@@ -204,10 +204,6 @@ def test_activity_message(tango_context):
     assert tango_context.device.activityMessage == "text"
 
 
-def test_version_info(tango_context):
-    assert tango_context.device.versionInfo == '1.0'
-
-
 def test_processing_block_list(tango_context):
     assert tango_context.device.ProcessingBlockList
 
@@ -242,20 +238,22 @@ def test_control_mode(tango_context):
     tango_context.device.controlMode = control_mode
     assert tango_context.device.controlMode == control_mode
 
-
+#
 def test_health_state(tango_context):
     assert tango_context.device.healthState == HealthState.OK
 
 
-def test_version_id(tango_context):
+def test_version_id():
     """Test for versionId"""
-    assert tango_context.device.versionId == release.version
+    with fake_tango_system(SdpMasterLeafNode) as tango_context:
+     assert tango_context.device.versionId == release.version
 
 
-def test_build_state(tango_context):
+def test_build_state():
     """Test for buildState"""
-    assert tango_context.device.buildState == (
-        '{},{},{}'.format(release.name, release.version, release.description))
+    with fake_tango_system(SdpMasterLeafNode) as tango_context:
+        assert tango_context.device.buildState == (
+            '{},{},{}'.format(release.name, release.version, release.description))
 
 
 def any_method(with_name=None):
