@@ -8,6 +8,7 @@ import json
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from . import const
+from subarraynodelow.device_data import DeviceData
 
 
 class AssignResources(SKASubarray.AssignResourcesCommand):
@@ -34,14 +35,14 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
 
         """
 
-        device = self.target
-        device.is_end_command = False
-        device.is_release_resources = False
+        device_data = DeviceData.get_instance
+        device_data.is_end_command = False
+        device_data.is_release_resources = False
         # TODO: For now storing resources as station ids
         input_str = json.loads(argin)
-        device._resource_list = input_str["station_ids"]
+        device_data.resource_list = input_str["station_ids"]
         log_msg = const.STR_ASSIGN_RES_EXEC + "STARTED"
         self.logger.debug(log_msg)
-        device._read_activity_message = log_msg
+        device_data.activity_message = log_msg
         
         return (ResultCode.STARTED, log_msg)

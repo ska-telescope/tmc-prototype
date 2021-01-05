@@ -41,6 +41,9 @@ class DeviceData:
         self._mccs_sa_obs_state = None
         self._health_event_id = {}
         self.mccs_subarray_fqdn = ""
+        self.activity_message = ""
+        self.resource_list = []
+        self.end_scan = None
 
     @staticmethod
     def get_instance():
