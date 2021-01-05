@@ -301,7 +301,7 @@ def test_assign_resource_should_raise_exception_when_called_when_device_state_of
             tango_context.device.AssignResources(assign_input_str)
         assert tango_context.device.State() == DevState.OFF
         assert tango_context.device.obsState == ObsState.EMPTY
-        assert "Error executing command AssignResourcesCommand" in str(df.value)
+        assert "Error executing command AssignResources" in str(df.value)
 
 
 def test_configure_command_obsstate_changes_from_configuring_to_ready(mock_lower_devices):
@@ -491,7 +491,7 @@ def test_release_resource_should_raise_exception_when_call_before_assign_resourc
         tango_context.device.ReleaseAllResources()
     assert tango_context.device.State() == DevState.ON
     assert tango_context.device.obsState == ObsState.EMPTY
-    assert "Error executing command ReleaseAllResourcesCommand" in str(df.value)
+    assert "Error executing command ReleaseAllResources" in str(df.value)
 
 
 def test_release_all_resources_should_release_resources_when_obstate_idle(mock_lower_devices):
