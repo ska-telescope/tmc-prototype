@@ -168,6 +168,12 @@ def test_startup(mock_subarray):
     assert device_proxy.StartUpTelescope() == [[ResultCode.OK],[const.STR_ON_CMD_ISSUED]]
     assert device_proxy.state() == DevState.ON
 
+def test_standby(mock_subarray):
+    device_proxy, tango_client_obj = mock_subarray
+    # device_proxy.StartUpTelescope()
+    # assert device_proxy.state() == DevState.ON
+    assert device_proxy.StandByTelescope() == [[ResultCode.OK],[const.STR_STANDBY_CMD_ISSUED]]
+    assert device_proxy.state() == DevState.OFF
 
 def test_command_should_raise_devfailed_exception(mock_subarray,command_with_devfailed_error):
     device_proxy, tango_client_obj = mock_subarray
@@ -177,53 +183,52 @@ def test_command_should_raise_devfailed_exception(mock_subarray,command_with_dev
         device_proxy.command_inout(cmd_name)
     assert device_proxy.state() == DevState.FAULT
 
+# Test cases for Attributes
+def test_telescope_health_state():
+    with fake_tango_system(CentralNode) as tango_context:
+        assert tango_context.device.telescopeHealthState == HealthState.OK
 
-# # Test cases for Attributes
-# def test_telescope_health_state():
-#     with fake_tango_system(CentralNode) as tango_context:
-#         assert tango_context.device.telescopeHealthState == HealthState.OK
-#
-#
-# def test_subarray1_health_state():
-#     with fake_tango_system(CentralNode) as tango_context:
-#         assert tango_context.device.subarray1HealthState == HealthState.OK
-#
-#
-# def test_activity_message():
-#     with fake_tango_system(CentralNode) as tango_context:
-#         tango_context.device.activityMessage = ''
-#         assert tango_context.device.activityMessage == ''
-#
-#
-# def test_logging_level():
-#     with fake_tango_system(CentralNode) as tango_context:
-#         tango_context.device.loggingLevel = LoggingLevel.INFO
-#         assert tango_context.device.loggingLevel == LoggingLevel.INFO
-#
-#
-# def test_logging_targets():
-#     with fake_tango_system(CentralNode) as tango_context:
-#         tango_context.device.loggingTargets = ['console::cout']
-#         assert 'console::cout' in tango_context.device.loggingTargets
-#
-#
-# def test_health_state():
-#     with fake_tango_system(CentralNode) as tango_context:
-#         assert tango_context.device.healthState == HealthState.OK
-#
-#
-# def test_version_id():
-#     """Test for versionId"""
-#     with fake_tango_system(CentralNode) as tango_context:
-#         assert tango_context.device.versionId == release.version
-#
-#
-# def test_build_state():
-#     """Test for buildState"""
-#     with fake_tango_system(CentralNode) as tango_context:
-#         assert tango_context.device.buildState == (
-#             '{},{},{}'.format(release.name, release.version, release.description))
-#
+
+def test_subarray1_health_state():
+    with fake_tango_system(CentralNode) as tango_context:
+        assert tango_context.device.subarray1HealthState == HealthState.OK
+
+
+def test_activity_message():
+    with fake_tango_system(CentralNode) as tango_context:
+        tango_context.device.activityMessage = ''
+        assert tango_context.device.activityMessage == ''
+
+
+def test_logging_level():
+    with fake_tango_system(CentralNode) as tango_context:
+        tango_context.device.loggingLevel = LoggingLevel.INFO
+        assert tango_context.device.loggingLevel == LoggingLevel.INFO
+
+
+def test_logging_targets():
+    with fake_tango_system(CentralNode) as tango_context:
+        tango_context.device.loggingTargets = ['console::cout']
+        assert 'console::cout' in tango_context.device.loggingTargets
+
+
+def test_health_state():
+    with fake_tango_system(CentralNode) as tango_context:
+        assert tango_context.device.healthState == HealthState.OK
+
+
+def test_version_id():
+    """Test for versionId"""
+    with fake_tango_system(CentralNode) as tango_context:
+        assert tango_context.device.versionId == release.version
+
+
+def test_build_state():
+    """Test for buildState"""
+    with fake_tango_system(CentralNode) as tango_context:
+        assert tango_context.device.buildState == (
+            '{},{},{}'.format(release.name, release.version, release.description))
+
 #
 # # Test cases for command
 # def test_assign_resources(mock_central_lower_devices):
@@ -314,15 +319,7 @@ def test_command_should_raise_devfailed_exception(mock_subarray,command_with_dev
 #     assert device_proxy.state() == DevState.FAULT
 
 
-# def test_standby(mock_central_lower_devices):
-#     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
-#     device_proxy.StartUpTelescope()
-#     assert device_proxy.state() == DevState.ON
-#     device_proxy.StandByTelescope()
-#
-#     mccs_master_ln_proxy_mock.command_inout.assert_called_with(const.CMD_OFF)
-#     subarray1_proxy_mock.command_inout.assert_called_with(const.CMD_OFF)
-#     assert device_proxy.state() == DevState.OFF
+
 
 
 # # Test cases for Telescope Health State

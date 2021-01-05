@@ -26,7 +26,7 @@ from ska.base.control_model import HealthState
 from . import const, release
 from .device_data import DeviceData
 from centralnodelow.startup_telescope_command import StartUpTelescope
-# from centralnodelow.standby_telescope_command import StandByTelescope
+from centralnodelow.standby_telescope_command import StandByTelescope
 # from centralnodelow.assign_resources_command import AssignResources
 # from centralnodelow.release_resources_command import ReleaseResources
 
@@ -750,7 +750,7 @@ class CentralNode(SKABaseDevice):
         super().init_command_objects()
         args = (self.device_data, self.state_model, self.logger)
         self.register_command_object("StartUpTelescope", StartUpTelescope(*args))
-        # self.register_command_object("StandByTelescope", StandByTelescope(*args))
+        self.register_command_object("StandByTelescope", StandByTelescope(*args))
         # self.register_command_object("AssignResources", AssignResources(*args))
         # self.register_command_object("ReleaseResources", ReleaseResources(*args))
 

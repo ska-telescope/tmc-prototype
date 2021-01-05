@@ -48,10 +48,6 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         The message is for information purpose only.
 
         :rtype: (ResultCode, str)
-
-        :raises: DevFailed if error occurs while invoking command on any of the devices like SubarrayNode or
-                MccsMasterLeafNode.
-
         """
         device_data = self.target
         self.startup_mccs(device_data.mccs_master_fqdn)
