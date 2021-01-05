@@ -523,7 +523,7 @@ class DishLeafNode(SKABaseDevice):
             try:
                 device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
                 self.logger.info("'%s' command executed successfully.", command_name)
-                
+                time.sleep(0.5)
                 command_name = "SetOperateMode"
                 device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
                 self.logger.info("'%s' command executed successfully.", command_name)
@@ -1276,14 +1276,14 @@ class DishLeafNode(SKABaseDevice):
 
         def do(self):
             """
-            Invokes SetStandbyFPMode command on the DishMaster.
+            Invokes StopCapture command on the DishMaster.
 
-            :raises DevFailed: If error occurs while invoking SetStandbyFPMode command on DishMaster.
+            :raises DevFailed: If error occurs while invoking StopCapture command on DishMaster.
             """
             device = self.target
             command_name = "ObsReset"
             try:
-                device._dish_proxy.command_inout_asynch("SetStandbyFPMode", device.cmd_ended_cb)
+                device._dish_proxy.command_inout_asynch("StopCapture", device.cmd_ended_cb)
                 self.logger.info("'%s' command executed successfully.", command_name)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
