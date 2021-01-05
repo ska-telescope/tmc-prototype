@@ -24,6 +24,7 @@ from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, SimulationMode, TestMode
+from . import const, release
 from sdpmasterleafnode.on_command import On
 from sdpmasterleafnode.off_command import Off
 from sdpmasterleafnode.standby_command import Standby

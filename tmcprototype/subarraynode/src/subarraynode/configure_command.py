@@ -14,11 +14,7 @@ from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from ska_telmodel.csp import interface
-<<<<<<< HEAD
 from .transaction_id import identify_with_id, inject_with_id
-=======
-from .transaction_id import identify_with_id,inject_with_id
->>>>>>> 748ab84671c814f65904ab7007f59d85f21588ca
 
 csp_interface_version = 0
 sdp_interface_version = 0
@@ -28,12 +24,8 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
     """
     A class for SubarrayNode's Configure() command.
     """
-<<<<<<< HEAD
 
     @identify_with_id('configure', 'argin')
-=======
-    @identify_with_id('configure','argin')
->>>>>>> 748ab84671c814f65904ab7007f59d85f21588ca
     def do(self, argin):
         """
         Configures the resources assigned to the Subarray.The configuration data for SDP, CSP and Dish is
@@ -87,11 +79,7 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
         self.logger.info(message)
         return (ResultCode.STARTED, message)
 
-<<<<<<< HEAD
     @inject_with_id(2, 'cmd_data')
-=======
-    @inject_with_id(2,'cmd_data')
->>>>>>> 748ab84671c814f65904ab7007f59d85f21588ca
     def _configure_leaf_node(self, device_proxy, cmd_name, cmd_data):
         device = self.target
         try:
@@ -131,11 +119,7 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
             "build_up_csp_cmd_data", scan_configuration, attr_name_map, device._receive_addresses_map)
         self._configure_leaf_node(device._csp_subarray_ln_proxy, "Configure", cmd_data)
 
-<<<<<<< HEAD
     @inject_with_id(0, 'scan_configuration')
-=======
-    @inject_with_id(0,'scan_configuration')
->>>>>>> 748ab84671c814f65904ab7007f59d85f21588ca
     def _configure_dsh(self, scan_configuration):
         device = self.target
         config_keys = scan_configuration.keys()
