@@ -28,6 +28,5 @@ def telescope_is_in_standby():
 
     return  [resource('ska_mid/tm_subarray_node/1').get("State"),
             resource('mid_csp/elt/subarray_01').get("State"),
-            resource('mid_csp_cbf/sub_elt/subarray_01').get("State"),
-            resource('mid_sdp/elt/subarray_1').get("State")] == \
-            ['OFF','OFF','OFF', 'OFF']
+            resource('mid_csp_cbf/sub_elt/subarray_01').get("State")]== \
+            ['OFF','OFF','OFF']
