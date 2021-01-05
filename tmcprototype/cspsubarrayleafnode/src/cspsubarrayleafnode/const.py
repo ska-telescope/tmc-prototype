@@ -83,6 +83,7 @@ STR_RELEASE_RES_CMD_CALLBACK = "CSP Subarray Leaf Node ReleaseAllResources Comma
 STR_GO_TO_IDLE_CMD_CALLBK = "CSP Subarray Leaf Node GoToIdle Command Callback"
 STR_ABORT_CMD_CALLBK = "CSP Subarray Leaf Node Abort Command Callback"
 STR_RESTART_CMD_CALLBK = "CSP Subarray Leaf Node Restart Command Callback"
+STR_SETTING_CB_MODEL = "Setting CallBack Model as :-> "
 
 
 STR_FALSE = "False"
