@@ -94,6 +94,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             this_server = TangoServerHelper.get_instance()
             this_server.device = device
             device_data = DeviceData.get_instance()
+            device.device_data = device_data
             device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
             device._version_id = release.version
             device._versioninfo = " "
