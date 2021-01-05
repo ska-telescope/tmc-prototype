@@ -1,7 +1,7 @@
 """
 StartUpTelescope class for CentralNode.
 """
-# PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
+# PROTECTED REGION ID(CentralNode.additional_import) ENABLED START #
 import tango
 from tango import DevState, DevFailed
 # Additional import
@@ -9,7 +9,7 @@ from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from . import const
 from centralnode.device_data import DeviceData
-from centralnode.health_state_aggreegator import HealthStateAggreegator
+from centralnode.health_state_aggregator import HealthStateAggregator
 from tmc.common.tango_client import TangoClient
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
@@ -50,15 +50,12 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         """
         device_data = DeviceData.get_instance()
         self.logger.info(type(self.target))
-        device_data.health_aggreegator = HealthStateAggreegator(self.logger)
-        device_data.health_aggreegator.subscribe_event()
-        device_data.health_aggreegator.csp_health_subscribe_event()
-        device_data.health_aggreegator.sdp_health_subscribe_event()
+        device_data.health_aggregator = HealthStateAggreegator(self.logger)
+        device_data.health_aggregator.subscribe_event()
+        device_data.health_aggregator.mccs_health_subscribe_event()
         device_data.health_aggreegator.subarray_health_subscribe_event()
-        self.startup_sdp(device_data.sdp_master_ln_fqdn)
-        self.startup_dish(device_data._dish_leaf_node_devices)
-        self.startup_csp(device_data.csp_master_ln_fqdn)
-        self.startup_subarray(device_data.tm_mid_subarray)
+        self.startup_sdp(device_data.mccs_master_ln_fqdn)
+        self.startup_subarray(device_data.tm_low_subarray)
         
         log_msg = const.STR_ON_CMD_ISSUED
         self.logger.info(log_msg)
@@ -72,36 +69,16 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         return (ResultCode.OK,const.STR_ON_CMD_ISSUED)
 
 
-    def startup_csp(self, csp_fqdn):
+    def startup_mccs(self, mccs_fqdn):
         """
-        Create TangoClient for CspMasterLeaf node and call
+        Create TangoClient for MccsMasterLeaf node and call
         startup method.
 
         :return: None
         """
-        csp_mln_client = TangoClient(csp_fqdn)
-        self.startup_leaf_node(csp_mln_client)
+        mccs_mln_client = TangoClient(mccs_fqdn)
+        self.startup_leaf_node(mccs_mln_client)
 
-    def startup_sdp(self, sdp_fqdn):
-        """
-        Create TangoClient for SdpMasterLeaf node and call
-        startup method.
-
-        :return: None
-        """
-        sdp_mln_client = TangoClient(sdp_fqdn)
-        self.startup_leaf_node(sdp_mln_client)
-
-    def startup_dish(self, dish_fqdn):
-        """
-        Create TangoClient for DishLeaf node and call
-        startup method.
-
-        :return: None
-        """
-        for name in range(0, len(dish_fqdn)):
-            dish_ln_client = TangoClient(dish_fqdn[name])
-            self.startup_leaf_node(dish_ln_client)
 
     def startup_subarray(self, subarray_fqdn_list):
         """
