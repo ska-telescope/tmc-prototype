@@ -186,12 +186,12 @@ def test_command_should_raise_devfailed_exception(mock_subarray,command_with_dev
 # Test cases for Attributes
 def test_telescope_health_state():
     with fake_tango_system(CentralNode) as tango_context:
-        assert tango_context.device.telescopeHealthState == HealthState.OK
+        assert tango_context.device.telescopeHealthState == HealthState.UNKNOWN
 
 
 def test_subarray1_health_state():
     with fake_tango_system(CentralNode) as tango_context:
-        assert tango_context.device.subarray1HealthState == HealthState.OK
+        assert tango_context.device.subarray1HealthState == HealthState.UNKNOWN
 
 
 def test_activity_message():
