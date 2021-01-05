@@ -9,9 +9,9 @@ import tango
 from tango import DevState, DevFailed
 
 # Additional import
-from ska.base.commands import ResultCode, BaseCommand
+from ska.base.commands import BaseCommand
 from tmc.common.tango_client import TangoClient
-from . import const, release
+from . import const
 # PROTECTED REGION END #    //  MccsSubarrayLeafNode.additional_import
 
 
@@ -95,51 +95,24 @@ class Configure(BaseCommand):
         """
         device_data = self.target
         try:
-            mccs_subarray_client_obj = TangoClient(device_data._mccs_subarray_fqdn)
+            mccs_subarray_client = TangoClient(device_data._mccs_subarray_fqdn)
             # TODO: Mock obs_state issue to be resolved
-            # assert (tango_client_object.get_attribute("obsState") in (ObsState.IDLE, ObsState.READY))
+            # assert (mccs_subarray_client.get_attribute("obsState") in (ObsState.IDLE, ObsState.READY))
             log_msg = "Input JSON for MCCS Subarray Leaf Node Configure command is: " + argin
             self.logger.debug(log_msg)
 
             argin_json = json.loads(argin)
             station_beam_pointings = argin_json["station_beam_pointings"][0]
-            azimuth_coord = station_beam_pointings["target"]["Az"]
-            elevation_coord = station_beam_pointings["target"]["El"]
-
-            # Append current timestamp into sky_coordinates set
-            time_t0 = datetime.today() + timedelta(seconds=0)
-            time_t0_utc = (time_t0.astimezone(pytz.UTC)).timestamp()
-            device_data._sky_coordinates.append(time_t0_utc)
-
-            # Append Azimuth and Azimuth_rate into sky_coordinates set
-            device_data._sky_coordinates.append(azimuth_coord)
-            device_data._sky_coordinates.append(0.0)
-
-            # Append Elevation and Elevation_rate into sky_coordinates set
-            device_data._sky_coordinates.append(elevation_coord)
-            device_data._sky_coordinates.append(0.0)
-
+            device_data._sky_coordinates = self.sky_coordinates(station_beam_pointings, device_data._sky_coordinates)
             # Add in sky_coordinates set in station_beam_pointings
             station_beam_pointings["sky_coordinates"] = device_data._sky_coordinates
 
             # Add station_ids in station_beam_pointings
-            for station in argin_json["stations"]:
-                log_msg = "Station is: " + str(station)
-                self.logger.info(log_msg)
-                device_data._station_ids.append(station["station_id"])
-            station_beam_pointings["station_id"] = device_data._station_ids
-            # Remove target block from station_beam_pointings
-            station_beam_pointings.pop("target", None)
-
-            # Update station_beam_pointings into output Configure JSON
-            argin_json["station_beam_pointings"][0] = station_beam_pointings
-            argin_json["station_beams"] = argin_json["station_beam_pointings"]
-            argin_json.pop("station_beam_pointings", None)
-
+            argin_json = self.station_ids(argin_json, device_data._station_ids, station_beam_pointings)
             input_mccs_subarray = json.dumps(argin_json)
             log_msg = "Output Configure JSON is: " + input_mccs_subarray
             self.logger.info(log_msg)
-            mccs_subarray_client_obj.send_command_async(const.CMD_CONFIGURE, input_mccs_subarray,
+            mccs_subarray_client.send_command_async(const.CMD_CONFIGURE, input_mccs_subarray,
                                                              self.configure_cmd_ended_cb)
             device_data._read_activity_message = const.STR_CONFIGURE_SUCCESS
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
@@ -147,7 +120,7 @@ class Configure(BaseCommand):
         # TODO: Mock obs_state issue to be resolved
         # except AssertionError:
         #     log_msg = (
-        #         f"Mccs Subarray is in ObsState {mccs_subarray_client_obj.deviceproxy.obsState.name}.""Unable to invoke Configure command")
+        #         f"Mccs Subarray is in ObsState {mccs_subarray_client.deviceproxy.obsState.name}.""Unable to invoke Configure command")
         #     device_data._read_activity_message = log_msg
         #     self.logger.exception(log_msg)
         #     tango.Except.throw_exception(const.STR_CONFIGURE_EXEC, log_msg,
@@ -177,3 +150,36 @@ class Configure(BaseCommand):
             tango.Except.throw_exception(const.ERR_CONFIGURE_INVOKING_CMD, log_msg,
                                          "MccsSubarrayLeafNode.Configure",
                                          tango.ErrSeverity.ERR)
+
+    def sky_coordinates(self, station_beam_pointings, sky_coordinates):
+        azimuth_coord = station_beam_pointings["target"]["Az"]
+        elevation_coord = station_beam_pointings["target"]["El"]
+
+        # Append current timestamp into sky_coordinates set
+        time_t0 = datetime.today() + timedelta(seconds=0)
+        time_t0_utc = (time_t0.astimezone(pytz.UTC)).timestamp()
+        sky_coordinates.append(time_t0_utc)
+
+        # Append Azimuth and Azimuth_rate into sky_coordinates set
+        sky_coordinates.append(azimuth_coord)
+        sky_coordinates.append(0.0)
+
+        # Append Elevation and Elevation_rate into sky_coordinates set
+        sky_coordinates.append(elevation_coord)
+        sky_coordinates.append(0.0)
+        return sky_coordinates
+
+    def station_ids(self, argin_json, station_ids, station_beam_pointings):
+        for station in argin_json["stations"]:
+            log_msg = "Station is: " + str(station)
+            self.logger.info(log_msg)
+            station_ids.append(station["station_id"])
+        station_beam_pointings["station_id"] = station_ids
+        # Remove target block from station_beam_pointings
+        station_beam_pointings.pop("target", None)
+
+        # Update station_beam_pointings into output Configure JSON
+        argin_json["station_beam_pointings"][0] = station_beam_pointings
+        argin_json["station_beams"] = argin_json["station_beam_pointings"]
+        argin_json.pop("station_beam_pointings", None)
+        return argin_json

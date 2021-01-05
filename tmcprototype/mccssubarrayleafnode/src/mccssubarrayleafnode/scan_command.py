@@ -6,9 +6,9 @@ import tango
 from tango import DevState, DevFailed
 
 # Additional import
-from ska.base.commands import ResultCode, BaseCommand
+from ska.base.commands import BaseCommand
 from tmc.common.tango_client import TangoClient
-from . import const, release
+from . import const
 # PROTECTED REGION END #    //  MccsSubarrayLeafNode.additional_import
 
 class Scan(BaseCommand):
@@ -90,10 +90,10 @@ class Scan(BaseCommand):
         """
         device_data = self.target
         try:
-            mccs_subarray_client_obj = TangoClient(device_data._mccs_subarray_fqdn)
+            mccs_subarray_client = TangoClient(device_data._mccs_subarray_fqdn)
             # TODO: Mock obs_state issue to be resolved
-            # assert tango_client_object.get_attribute("obsState") == ObsState.READY
-            mccs_subarray_client_obj.send_command_async(const.CMD_SCAN, argin, self.scan_cmd_ended_cb)
+            # assert mccs_subarray_client.get_attribute("obsState") == ObsState.READY
+            mccs_subarray_client.send_command_async(const.CMD_SCAN, argin, self.scan_cmd_ended_cb)
             device_data._read_activity_message = const.STR_SCAN_SUCCESS
             self.logger.info(const.STR_SCAN_SUCCESS)
 
