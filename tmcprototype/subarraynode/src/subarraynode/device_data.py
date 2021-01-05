@@ -10,7 +10,6 @@
 """ Device Data
 This module defines the Device Data class, which represents the functional Subarray device.
 """
-import tango
 from tango import DevFailed
 
 # Additional import

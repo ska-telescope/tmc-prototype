@@ -55,7 +55,7 @@ class HealthStateAggregator:
         """
         device_name = event.device.dev_name()
         log_msg= "Device name is : " + str(device_name)
-        # self.logger.debug(log_msg)
+        self.logger.debug(log_msg)
         if not event.err:
             event_health_state = event.attr_value.value
             self.subarray_ln_health_state_map[device_name] = event_health_state
