@@ -25,10 +25,10 @@ from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, SimulationMode, TestMode
 from . import const, release
-from sdpmasterleafnode.on_command import On
-from sdpmasterleafnode.off_command import Off
-from sdpmasterleafnode.standby_command import Standby
-from sdpmasterleafnode.disable_command import Disable
+from .on_command import On
+from .off_command import Off
+from .standby_command import Standby
+from .disable_command import Disable
 from .device_data import DeviceData
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additional_import
 
