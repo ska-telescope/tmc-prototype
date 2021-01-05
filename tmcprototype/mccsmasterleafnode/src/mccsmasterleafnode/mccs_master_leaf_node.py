@@ -89,20 +89,12 @@ class MccsMasterLeafNode(SKABaseDevice):
             device_data = DeviceData.get_instance()
             device.device_data = device_data
             device_data._read_activity_message = const.STR_MCCS_INIT_LEAF_NODE
-            try:
-                device_data._read_activity_message = const.STR_MCCSMASTER_FQDN + str(device.MccsMasterFQDN)
-                # Creating proxy to the CSPMaster
-                log_msg = "MCCS Master name: " + str(device.MccsMasterFQDN)
-                self.logger.debug(log_msg)
-                device_data._mccs_master_ln_fqdn = str(device.MccsMasterFQDN)
-            except DevFailed as dev_failed:
-                log_msg = const.ERR_IN_CREATE_PROXY + str(device.MccsMasterFQDN)
-                self.logger.debug(log_msg)
-                self.logger.exception(dev_failed)
-                device_data._read_activity_message = log_msg
-                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "MccsMasterLeafNode.InitCommand.do()",
-                                             tango.ErrSeverity.ERR)
-
+            device_data._read_activity_message = const.STR_MCCSMASTER_FQDN + str(device.MccsMasterFQDN)
+            # Creating proxy to the CSPMaster
+            log_msg = "MCCS Master name: " + str(device.MccsMasterFQDN)
+            self.logger.debug(log_msg)
+            device_data._mccs_master_ln_fqdn = str(device.MccsMasterFQDN)
+        
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
             self.logger.debug(log_msg)
