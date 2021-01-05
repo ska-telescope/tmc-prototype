@@ -44,6 +44,7 @@ class DeviceData:
         # self.only_dishconfig_flag = False
         self.scan_thread = None
         # TODO : Tango server class variables
+        self.this_device_server = None
         self._read_activity_message = ""
         self.sdp_subarray_ln_fqdn = ""
         self.csp_subarray_ln_fqdn = ""

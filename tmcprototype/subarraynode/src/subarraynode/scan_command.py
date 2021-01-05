@@ -51,7 +51,7 @@ class Scan(SKASubarray.ScanCommand):
         device_data.is_restart_command = False
         device_data.is_abort_command = False
         device_data.is_obsreset_command = False
-        device_data.tango_group_client_obj = TangoServerHelper.get_instance()
+        device_data.this_device_server = TangoServerHelper.get_instance()
         try:
             log_msg = const.STR_SCAN_IP_ARG + str(argin)
             self.logger.debug(log_msg)
@@ -64,16 +64,16 @@ class Scan(SKASubarray.ScanCommand):
             #         ObsState.IDLE:
             #     if len(self.dishPointingStateMap.values()) != 0:
             #         self.calculate_observation_state()
-            device_data.tango_group_client_obj.set_status(const.STR_SA_SCANNING)
+
+            # Set timer to invoke EndScan command after scan duration is complete.
+            self.logger.info("Setting scan timer")
+            scan_stopper = ScanStopper(self.end_scan_command, self.logger)
+            scan_stopper.start_scan_timer(device_data.scan_duration)
+
+            device_data.this_device_server.set_status(const.STR_SA_SCANNING)
             self.logger.info(const.STR_SA_SCANNING)
             device_data._read_activity_message = const.STR_SCAN_SUCCESS
 
-            # Once Scan Duration is complete call EndScan Command
-            self.logger.info("Starting Scan Thread")
-            # scan_thread = threading.Timer(device_data.scan_duration, self.call_end_scan_command)
-            # scan_thread.start()
-            # self.logger.info("Scan thread started")
-            ScanThreadExecutor().scan_thread(scan_duration)
             return (ResultCode.STARTED, const.STR_SCAN_SUCCESS)
         except DevFailed as dev_failed:
             log_msg = const.ERR_SCAN_CMD + str(dev_failed)
@@ -104,21 +104,28 @@ class Scan(SKASubarray.ScanCommand):
         self.logger.info(const.STR_CSP_SCAN_INIT)
         device_data._read_activity_message = const.STR_CSP_SCAN_INIT
 
-    # def call_end_scan_command(self, device_data):
-    #     device_data.end_scan_obj.do()
+    def set_end_scan_command_object(end_scan_command):
+        self.end_scan_command = end_scan_command
 
-
-class ScanThreadExecutor():
+class ScanStopper():
     """
-    A class to start the Scan threading.
+    Class to invoke EndScan command after scan duration is complete.
     """
-    def scan_thread(self, scan_duration):
-        start_scan_thread = threading.Timer(scan_duration, self.call_end_scan_command())
-        start_scan_thread.start()
-        self.logger.info("Scan thread started")
+    def __init(self, stop_scan_method, logger = None):
+        if logger == None:
+            self.logger = logging.getLogger(__name__)
+        else:
+            self.logger = logger
+        self.end_scan_command = stop_scan_method
 
-    def call_end_scan_command(self, device):
-        handler = device.get_command_obj("EndScan")
-        (result_code, message) = handler()
-        return [[result_code], [message]]
-            # end_scan_obj.do()
+    def start_scan_timer(scan_duration):
+        log_message = f"Scan duration: {}", scan_duration
+        self.logger.info(log_message)
+        scan_timer = threading.Timer(scan_duration, self.invoke_stop_scan_command,
+            self.end_scan_command())
+        scan_timer.start()
+
+    # TODO: method kept for reference. To be deleted after testing.
+    # def invoke_stop_scan_command(self, device):
+    #     (result_code, message) = self.end_scan_command()
+    #     return [[result_code], [message]]
