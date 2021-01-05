@@ -28,8 +28,6 @@ class DeviceData:
 
         self._read_activity_message = ""
         self._mccs_subarray_fqdn = ""
-        self._sky_coordinates = []
-        self._station_ids = []
 
     @staticmethod
     def get_instance():

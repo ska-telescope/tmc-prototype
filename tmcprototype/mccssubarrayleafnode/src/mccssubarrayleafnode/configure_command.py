@@ -95,6 +95,7 @@ class Configure(BaseCommand):
         """
         device_data = self.target
         try:
+            sky_coordinates = []
             mccs_subarray_client = TangoClient(device_data._mccs_subarray_fqdn)
             # TODO: Mock obs_state issue to be resolved
             # assert (mccs_subarray_client.get_attribute("obsState") in (ObsState.IDLE, ObsState.READY))
@@ -103,12 +104,12 @@ class Configure(BaseCommand):
 
             argin_json = json.loads(argin)
             station_beam_pointings = argin_json["station_beam_pointings"][0]
-            device_data._sky_coordinates = self.sky_coordinates(station_beam_pointings, device_data._sky_coordinates)
+            sky_coordinates = self.sky_coordinates(station_beam_pointings, sky_coordinates)
             # Add in sky_coordinates set in station_beam_pointings
-            station_beam_pointings["sky_coordinates"] = device_data._sky_coordinates
+            station_beam_pointings["sky_coordinates"] = sky_coordinates
 
             # Add station_ids in station_beam_pointings
-            argin_json = self.station_ids(argin_json, device_data._station_ids, station_beam_pointings)
+            argin_json = self.update_station_ids(argin_json, station_beam_pointings)
             input_mccs_subarray = json.dumps(argin_json)
             log_msg = "Output Configure JSON is: " + input_mccs_subarray
             self.logger.info(log_msg)
@@ -169,7 +170,8 @@ class Configure(BaseCommand):
         sky_coordinates.append(0.0)
         return sky_coordinates
 
-    def station_ids(self, argin_json, station_ids, station_beam_pointings):
+    def update_station_ids(self, argin_json, station_beam_pointings):
+        station_ids = []
         for station in argin_json["stations"]:
             log_msg = "Station is: " + str(station)
             self.logger.info(log_msg)

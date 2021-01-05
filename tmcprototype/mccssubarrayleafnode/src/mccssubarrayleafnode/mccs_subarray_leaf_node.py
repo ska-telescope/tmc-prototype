@@ -234,8 +234,8 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         device.
         """
         super().init_command_objects()
-        device_data = DeviceData.get_instance()
-        args = (device_data, self.state_model, self.logger)
+        # device_data = DeviceData.get_instance()
+        args = (self.device_data, self.state_model, self.logger)
         self.configure = Configure(*args)
         self.scan = Scan(*args)
         self.endscan = EndScan(*args)
