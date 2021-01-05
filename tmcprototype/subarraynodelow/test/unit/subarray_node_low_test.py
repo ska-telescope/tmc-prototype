@@ -562,10 +562,6 @@ def test_release_all_resources_should_release_resources_when_obstate_idle(mock_l
     assert release_resources_cmd.do() == (ResultCode.STARTED, 'RELEASEALLRESOURCES command invoked successfully.')
     # assert device_proxy.device.State() == DevState.ON
     # assert device_proxy.device.obsState == ObsState.EMPTY
-        tango_context.device.ReleaseAllResources()
-    assert tango_context.device.State() == DevState.ON
-    assert tango_context.device.obsState == ObsState.EMPTY
-    assert "Error executing command ReleaseAllResources" in str(df.value)
 
 
 # def test_release_all_resources_should_release_resources_when_obstate_idle(mock_lower_devices):
