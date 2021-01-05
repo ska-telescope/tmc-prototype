@@ -18,11 +18,11 @@ from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, SimulationMode, TestMode
 from . import const, release
-from mccsmasterleafnode.assign_resources_command import AssignResources
-from mccsmasterleafnode.release_resources_command import ReleaseResources
-from mccsmasterleafnode.on_command import On
-from mccsmasterleafnode.off_command import Off
-from mccsmasterleafnode.device_data import DeviceData
+from .assign_resources_command import AssignResources
+from .release_resources_command import ReleaseResources
+from .on_command import On
+from .off_command import Off
+from .device_data import DeviceData
 
 # PROTECTED REGION END #    //  MccsMasterLeafNode imports
 
