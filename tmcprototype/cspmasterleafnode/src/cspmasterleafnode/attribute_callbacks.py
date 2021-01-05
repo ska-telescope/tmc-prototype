@@ -1,10 +1,10 @@
+import logging
 import tango
 from ska.base.control_model import HealthState
 from tmc.common.tango_server_helper import TangoServerHelper
 from tmc.common.tango_client import TangoClient
 from . import const
 from .device_data import DeviceData
-import logging
 
 class CbfHealthStateAttributeUpdator:
     """
@@ -46,7 +46,7 @@ class CbfHealthStateAttributeUpdator:
 
         """
         log_msg = 'CspCbfHealthState attribute change event is : ' + str(evt)
-        self.logger.info(log_msg)
+        self.logger.debug(log_msg)
         if not evt.err:
             self._csp_cbf_health = evt.attr_value.value
             if self._csp_cbf_health == HealthState.OK:
@@ -105,7 +105,7 @@ class PssHealthStateAttributeUpdator:
 
         """
         log_msg = 'CspPssHealthState Attribute change event is : ' + str(evt)
-        self.logger.info(log_msg)
+        self.logger.debug(log_msg)
         if not evt.err:
             self._csp_pss_health = evt.attr_value.value
             if self._csp_pss_health == HealthState.OK:
@@ -163,7 +163,7 @@ class PstHealthStateAttributeUpdator:
 
         """
         log_msg = 'CspPstHealthState Attribute change event is : ' + str(evt)
-        self.logger.info(log_msg)
+        self.logger.debug(log_msg)
         if not evt.err:
             self._csp_pst_health = evt.attr_value.value
             if self._csp_pst_health == HealthState.OK:
