@@ -357,7 +357,6 @@ unit tests:
 
 test-mid:
   stage: test
-  when: manual
   tags:
     - k8srunner
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
@@ -390,7 +389,6 @@ test-mid:
 
 test-low:
   stage: test
-  when: manual
   tags:
     - k8srunner
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3

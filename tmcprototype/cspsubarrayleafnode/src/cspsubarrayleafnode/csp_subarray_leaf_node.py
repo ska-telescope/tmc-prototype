@@ -433,7 +433,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         self.register_command_object("Abort", AbortCommand(*args))
         self.register_command_object("Restart", RestartCommand(*args))
         self.register_command_object("ObsReset", ObsResetCommand(*args))
-         self.register_command_object("Off", Off(*args))
+        self.register_command_object("Off", Off(*args))
         self.register_command_object("On", On(*args))
 
 
