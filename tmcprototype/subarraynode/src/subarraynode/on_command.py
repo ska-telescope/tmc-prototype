@@ -5,7 +5,7 @@ On Command class for SubarrayNode
 # Third party imports
 # Tango imports
 import tango
-from tango import DevFailed, EventType
+from tango import DevFailed
 
 # Additional import
 from . import const

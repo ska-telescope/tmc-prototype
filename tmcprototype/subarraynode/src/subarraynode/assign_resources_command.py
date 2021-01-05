@@ -247,7 +247,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
 
                 # Subscribe Dish Pointing State
                 device_data.obs_state_aggr.subscribe_dish_pointing_state(dish_ln_client)
-                device_data.receptor_id_list.append(int(str_leafId))
+                device_data._receptor_id_list.append(int(str_leafId))
                 self.logger.debug(const.STR_SUBS_ATTRS_LN)
                 device_data._read_activity_message = const.STR_SUBS_ATTRS_LN
                 self.logger.info(const.STR_ASSIGN_RES_SUCCESS)

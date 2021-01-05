@@ -51,7 +51,7 @@ class Scan(SKASubarray.ScanCommand):
         device_data.is_restart_command = False
         device_data.is_abort_command = False
         device_data.is_obsreset_command = False
-        device_data.tango_group_client_obj = TangoServerHelper.get_instance()
+        device_data.tango_server_helper_obj = TangoServerHelper.get_instance()
         try:
             log_msg = const.STR_SCAN_IP_ARG + str(argin)
             self.logger.debug(log_msg)
@@ -64,7 +64,7 @@ class Scan(SKASubarray.ScanCommand):
             #         ObsState.IDLE:
             #     if len(self.dishPointingStateMap.values()) != 0:
             #         self.calculate_observation_state()
-            device_data.tango_group_client_obj.set_status(const.STR_SA_SCANNING)
+            device_data.tango_server_helper_obj.set_status(const.STR_SA_SCANNING)
             self.logger.info(const.STR_SA_SCANNING)
             device_data._read_activity_message = const.STR_SCAN_SUCCESS
 
@@ -73,7 +73,7 @@ class Scan(SKASubarray.ScanCommand):
             # scan_thread = threading.Timer(device_data.scan_duration, self.call_end_scan_command)
             # scan_thread.start()
             # self.logger.info("Scan thread started")
-            ScanThreadExecutor().scan_thread(scan_duration)
+            ScanThreadExecutor().scan_thread(device_data.scan_duration)
             return (ResultCode.STARTED, const.STR_SCAN_SUCCESS)
         except DevFailed as dev_failed:
             log_msg = const.ERR_SCAN_CMD + str(dev_failed)

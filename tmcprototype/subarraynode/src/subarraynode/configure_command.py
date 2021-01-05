@@ -78,8 +78,9 @@ class Configure(SKASubarray.ConfigureCommand):
             device_data._read_activity_message = log_message
             tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
                                          const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
-        tmc_configure = scan_configuration["tmc"]
-        scan_duration = int(tmc_configure["scanDuration"])
+        # TODO: For future Use
+        # tmc_configure = scan_configuration["tmc"]
+        # scan_duration = int(tmc_configure["scanDuration"])
         self._configure_dsh(scan_configuration)
         self.check_only_dish_config(scan_configuration)
         if self.only_dishconfig_flag:

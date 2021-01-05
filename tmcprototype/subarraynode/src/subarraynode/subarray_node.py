@@ -15,15 +15,13 @@ other TM Components (such as OET, Central Node) for a Subarray.
 # PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
 # Third party imports
 # Tango imports
-import tango
-from tango import AttrWriteType, DevFailed, DeviceProxy, Group
+from tango import AttrWriteType
 from tango.server import run,attribute, command, device_property
 
 # Additional imports
 from . import const, release,  track_command
-from .const import PointingState
 from ska.base.commands import ResultCode
-from ska.base.control_model import HealthState, ObsMode, ObsState
+from ska.base.control_model import ObsMode
 from ska.base import SKASubarray
 from subarraynode.device_data import DeviceData
 from subarraynode.on_command import On
@@ -42,8 +40,7 @@ from tmc.common.tango_server_helper import TangoServerHelper
 
 __all__ = ["SubarrayNode", "main", "AssignResources", "ReleaseAllResources",
            "Configure", "Scan", "EndScan", "End", "On",
-           "Off", "Track", "Abort", "Restart", "ObsReset",
-           "device_data", "tango_client", "tango_group_client", "tango_server_helper"]
+           "Off", "Track", "Abort", "Restart", "ObsReset"]
 
 
 class SubarrayNode(SKASubarray):
@@ -63,7 +60,7 @@ class SubarrayNode(SKASubarray):
         :rtype: int
         """
 
-        return len(self.device_data.receptor_id_list)
+        return len(self.device_data._receptor_id_list)
 
 
     # PROTECTED REGION END #    //  SubarrayNode.class_variable
