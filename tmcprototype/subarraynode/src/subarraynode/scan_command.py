@@ -23,6 +23,11 @@ class Scan(SKASubarray.ScanCommand):
     A class for SubarrayNode's Scan() command.
     """
 
+    def __init__(self, target, state_model, logger=None):
+        # super.__init__(self, target, state_model, logger)
+        super(Scan, self).__init__(target, state_model, logger)
+        self.end_scan_command = None
+
     def do(self, argin):
         """
         This command accepts id as input. And it Schedule scan on subarray
@@ -104,28 +109,22 @@ class Scan(SKASubarray.ScanCommand):
         self.logger.info(const.STR_CSP_SCAN_INIT)
         device_data._read_activity_message = const.STR_CSP_SCAN_INIT
 
-    def set_end_scan_command_object(end_scan_command):
+    def set_end_scan_command_object(self, end_scan_command):
         self.end_scan_command = end_scan_command
 
 class ScanStopper():
     """
     Class to invoke EndScan command after scan duration is complete.
     """
-    def __init(self, stop_scan_method, logger = None):
+    def __init__(self, stop_scan_method, logger = None):
         if logger == None:
             self.logger = logging.getLogger(__name__)
         else:
             self.logger = logger
         self.end_scan_command = stop_scan_method
 
-    def start_scan_timer(scan_duration):
-        log_message = f"Scan duration: {}", scan_duration
+    def start_scan_timer(self, scan_duration):
+        log_message = f"Scan duration: {scan_duration}"
         self.logger.info(log_message)
-        scan_timer = threading.Timer(scan_duration, self.invoke_stop_scan_command,
-            self.end_scan_command())
+        scan_timer = threading.Timer(scan_duration, self.end_scan_command)
         scan_timer.start()
-
-    # TODO: method kept for reference. To be deleted after testing.
-    # def invoke_stop_scan_command(self, device):
-    #     (result_code, message) = self.end_scan_command()
-    #     return [[result_code], [message]]
