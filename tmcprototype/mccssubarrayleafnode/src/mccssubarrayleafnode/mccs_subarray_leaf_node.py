@@ -29,11 +29,15 @@ from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState
 from tmc.common.tango_server_helper import TangoServerHelper
 from .device_data import DeviceData
-from . import const, release, configure_command, scan_command, end_scan_command, end_command
+from . import const, release
+from .configure_command import Configure
+from .scan_command import Scan
+from .end_command import End
+from .end_scan_command import EndScan
 # PROTECTED REGION END #    //  MccsSubarrayLeafNode.additional_import
 
-__all__ = ["MccsSubarrayLeafNode", "main", "configure_command", "scan_command",
-           "end_scan_command", "end_command"]
+__all__ = ["MccsSubarrayLeafNode", "main", "Configure", "Scan",
+           "EndScan", "End"]
 
 
 class MccsSubarrayLeafNode(SKABaseDevice):
@@ -87,13 +91,9 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             """
             super().do()
             device = self.target
-
             this_server = TangoServerHelper.get_instance()
             this_server.device = device
-
             device_data = DeviceData.get_instance()
-            device.device_data = device_data
-
             device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
             device._version_id = release.version
             device._versioninfo = " "
@@ -235,10 +235,17 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         super().init_command_objects()
         device_data = DeviceData.get_instance()
         args = (device_data, self.state_model, self.logger)
-        self.register_command_object("Configure", configure_command.Configure(*args))
-        self.register_command_object("Scan", scan_command.Scan(*args))
-        self.register_command_object("End", end_command.End(*args))
-        self.register_command_object("EndScan", end_scan_command.EndScan(*args))
+        self.configure = Configure(*args)
+        self.scan = Scan(*args)
+        self.endscan = EndScan(*args)
+        self.end = End(*args)
+
+        # In order to pass self = subarray node as target device, the assign and release resource commands
+        # are registered and inherited from SKASubarray
+        self.register_command_object("Configure", self.configure)
+        self.register_command_object("Scan", self.scan)
+        self.register_command_object("EndScan", self.endscan)
+        self.register_command_object("End", self.end)
 
 # ----------
 # Run server
