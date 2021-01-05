@@ -15,7 +15,6 @@ class PointingState(IntEnum):
     SCAN = 3
     RESERVED = 4
 
-
 # Events
 EVT_DISH_HEALTH_STATE = "dishHealthState"
 EVT_DISH_POINTING_STATE = "dishPointingState"

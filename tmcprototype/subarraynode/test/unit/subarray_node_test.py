@@ -29,6 +29,7 @@ from subarraynode.obsreset_command import ObsReset
 from subarraynode.restart_command import Restart
 from subarraynode.release_all_resources_command import ReleaseAllResources
 from subarraynode.track_command import Track
+from subarraynode.receive_addresses import ReceiveAddressesUpdater
 from subarraynode.device_data import DeviceData
 from ska.base.control_model import AdminMode, HealthState, ObsState, ObsMode, TestMode, SimulationMode, \
     LoggingLevel

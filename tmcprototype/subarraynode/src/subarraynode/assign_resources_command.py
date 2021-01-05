@@ -213,11 +213,8 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
 
     def set_up_dish_data(self, argin):
         """
-        Creates a tango group of the successfully allocated resources in the subarray.
-        Device proxy for each of the resources is created. The healthState and pointintgState attributes
-        from all the devices in the group are subscribed so that the changes in the respective device are
-        received at Subarray Node.
-
+        Adds the receptors in dish leaf node group. The healthState and pointintgState attributes of all
+        all the dishes are subscribed.
 
         Note: Currently there are only receptors allocated so the group contains only receptor ids.
 

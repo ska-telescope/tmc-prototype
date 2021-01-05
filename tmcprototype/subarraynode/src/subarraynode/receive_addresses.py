@@ -4,9 +4,9 @@ from .device_data import DeviceData
 import logging
 
 
-class ReceiveAddresses:
+class ReceiveAddressesUpdater:
     """
-    Observation State Aggregator class
+    Receive Addresses Updater class
     """
     def __init__(self, logger = None):
         if logger == None:
@@ -42,7 +42,7 @@ class ReceiveAddresses:
 
     def unsubscribe(self):
         """
-        This function unsubscribes to receive_addresses attribute changeevents given by the event ids and their
+        This function unsubscribes to receive_addresses attribute change events given by the event ids and their
         corresponding SDP leaf node DeviceProxy objects.
 
         :param : None

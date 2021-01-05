@@ -14,7 +14,7 @@ from ska.base import SKASubarray
 from tmc.common.tango_client import TangoClient
 from subarraynode.health_state_aggregator import HealthStateAggregator
 from subarraynode.obs_state_aggregator import ObsStateAggregator
-from subarraynode.receive_addresses import ReceiveAddresses
+from subarraynode.receive_addresses import ReceiveAddressesUpdater
 
 
 class On(SKASubarray.OnCommand):
@@ -44,7 +44,7 @@ class On(SKASubarray.OnCommand):
         device_data.health_state_aggr.subscribe()
         device_data.obs_state_aggr.subscribe()
         # subscribe to receiveAddressesMap from SDP 
-        device_data.receive_addresses = ReceiveAddresses(self.logger)
+        device_data.receive_addresses = ReceiveAddressesUpdater(self.logger)
         device_data.receive_addresses.subscribe()
         self.set_csp_client(device_data)
         self.set_sdp_client(device_data)

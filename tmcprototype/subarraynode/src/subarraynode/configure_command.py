@@ -18,8 +18,6 @@ from .transaction_id import identify_with_id,inject_with_id
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 from subarraynode.device_data import DeviceData
-from subarraynode.receive_addresses import ReceiveAddresses
-
 csp_interface_version = 0
 sdp_interface_version = 0
 

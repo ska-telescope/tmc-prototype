@@ -14,7 +14,6 @@ from ska.base import SKASubarray
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 from subarraynode.device_data import DeviceData
-from subarraynode.receive_addresses import ReceiveAddresses
 
 class End(SKASubarray.EndCommand):
     """

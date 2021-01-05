@@ -59,7 +59,6 @@ class Scan(SKASubarray.ScanCommand):
             device_data.isScanRunning = True
             self.scan_sdp(device_data, argin)
             self.scan_csp(device_data, argin)
-            device_data._read_activity_message = const.STR_CSP_SCAN_INIT
             # TODO: Update observation state aggregation logic
             # if self._csp_sa_obs_state == ObsState.IDLE and self._sdp_sa_obs_state ==\
             #         ObsState.IDLE:
@@ -71,9 +70,10 @@ class Scan(SKASubarray.ScanCommand):
 
             # Once Scan Duration is complete call EndScan Command
             self.logger.info("Starting Scan Thread")
-            scan_thread = threading.Timer(device_data.scan_duration, self.call_end_scan_command)
-            scan_thread.start()
-            self.logger.info("Scan thread started")
+            # scan_thread = threading.Timer(device_data.scan_duration, self.call_end_scan_command)
+            # scan_thread.start()
+            # self.logger.info("Scan thread started")
+            ScanThread()
             return (ResultCode.STARTED, const.STR_SCAN_SUCCESS)
         except DevFailed as dev_failed:
             log_msg = const.ERR_SCAN_CMD + str(dev_failed)
@@ -103,6 +103,19 @@ class Scan(SKASubarray.ScanCommand):
         csp_client.send_command(const.CMD_START_SCAN, csp_argin)
         self.logger.info(const.STR_CSP_SCAN_INIT)
         device_data._read_activity_message = const.STR_CSP_SCAN_INIT
+
+    # def call_end_scan_command(self, device_data):
+    #     device_data.end_scan_obj.do()
+
+
+class ScanThread():
+    """
+    A class to start the Scan threading.
+    """
+    def scan_thread(self, device_data):
+        scan_thread = threading.Timer(device_data.scan_duration, self.call_end_scan_command)
+        scan_thread.start()
+        self.logger.info("Scan thread started")
 
     def call_end_scan_command(self, device_data):
         device_data.end_scan_obj.do()
