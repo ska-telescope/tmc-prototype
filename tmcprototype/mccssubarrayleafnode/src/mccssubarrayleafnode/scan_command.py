@@ -89,11 +89,11 @@ class Scan(BaseCommand):
         :raises: DevFailed if the command execution is not successful
         """
         device_data = self.target
-        tango_client_object = TangoClient(device_data._mccs_subarray_fqdn)
         try:
+            mccs_subarray_client_obj = TangoClient(device_data._mccs_subarray_fqdn)
             # TODO: Mock obs_state issue to be resolved
             # assert tango_client_object.get_attribute("obsState") == ObsState.READY
-            tango_client_object.send_command_async(const.CMD_SCAN, argin, self.scan_cmd_ended_cb)
+            mccs_subarray_client_obj.send_command_async(const.CMD_SCAN, argin, self.scan_cmd_ended_cb)
             device_data._read_activity_message = const.STR_SCAN_SUCCESS
             self.logger.info(const.STR_SCAN_SUCCESS)
 
@@ -103,7 +103,7 @@ class Scan(BaseCommand):
         #     device_data._read_activity_message = log_msg
         #     self.logger.exception(log_msg)
         #     tango.Except.throw_exception(const.STR_SCAN_EXEC, log_msg,
-        #                                  "MccsSubarrayLeafNode.ScanCommand",
+        #                                  "MccsSubarrayLeafNode.Scan",
         #                                  tango.ErrSeverity.ERR)
 
         except DevFailed as dev_failed:
@@ -111,5 +111,5 @@ class Scan(BaseCommand):
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(const.STR_SCAN_EXEC, log_msg,
-                                         "MccsSubarrayLeafNode.ScanCommand",
+                                         "MccsSubarrayLeafNode.Scan",
                                          tango.ErrSeverity.ERR)

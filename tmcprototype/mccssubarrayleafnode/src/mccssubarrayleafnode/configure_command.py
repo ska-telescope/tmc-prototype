@@ -94,8 +94,8 @@ class Configure(BaseCommand):
                  KeyError if input argument json string contains invalid key
         """
         device_data = self.target
-        tango_client_object = TangoClient(device_data._mccs_subarray_fqdn)
         try:
+            mccs_subarray_client_obj = TangoClient(device_data._mccs_subarray_fqdn)
             # TODO: Mock obs_state issue to be resolved
             # assert (tango_client_object.get_attribute("obsState") in (ObsState.IDLE, ObsState.READY))
             log_msg = "Input JSON for MCCS Subarray Leaf Node Configure command is: " + argin
@@ -139,7 +139,7 @@ class Configure(BaseCommand):
             input_mccs_subarray = json.dumps(argin_json)
             log_msg = "Output Configure JSON is: " + input_mccs_subarray
             self.logger.info(log_msg)
-            tango_client_object.send_command_async(const.CMD_CONFIGURE, input_mccs_subarray,
+            mccs_subarray_client_obj.send_command_async(const.CMD_CONFIGURE, input_mccs_subarray,
                                                              self.configure_cmd_ended_cb)
             device_data._read_activity_message = const.STR_CONFIGURE_SUCCESS
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
@@ -147,7 +147,7 @@ class Configure(BaseCommand):
         # TODO: Mock obs_state issue to be resolved
         # except AssertionError:
         #     log_msg = (
-        #         f"Mccs Subarray is in ObsState {tango_client_object.deviceproxy.obsState.name}.""Unable to invoke Configure command")
+        #         f"Mccs Subarray is in ObsState {mccs_subarray_client_obj.deviceproxy.obsState.name}.""Unable to invoke Configure command")
         #     device_data._read_activity_message = log_msg
         #     self.logger.exception(log_msg)
         #     tango.Except.throw_exception(const.STR_CONFIGURE_EXEC, log_msg,
@@ -159,7 +159,7 @@ class Configure(BaseCommand):
             device_data._read_activity_message = log_msg
             self.logger.exception(value_error)
             tango.Except.throw_exception(const.ERR_CONFIGURE_INVOKING_CMD, log_msg,
-                                         "MccsSubarrayLeafNode.ConfigureCommand",
+                                         "MccsSubarrayLeafNode.Configure",
                                          tango.ErrSeverity.ERR)
 
         except KeyError as key_error:
@@ -167,7 +167,7 @@ class Configure(BaseCommand):
             device_data._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
             self.logger.exception(key_error)
             tango.Except.throw_exception(const.ERR_CONFIGURE_INVOKING_CMD, log_msg,
-                                         "MccsSubarrayLeafNode.ConfigureCommand",
+                                         "MccsSubarrayLeafNode.Configure",
                                          tango.ErrSeverity.ERR)
 
         except DevFailed as dev_failed:
@@ -175,5 +175,5 @@ class Configure(BaseCommand):
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(const.ERR_CONFIGURE_INVOKING_CMD, log_msg,
-                                         "MccsSubarrayLeafNode.ConfigureCommand",
+                                         "MccsSubarrayLeafNode.Configure",
                                          tango.ErrSeverity.ERR)

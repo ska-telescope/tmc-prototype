@@ -79,11 +79,11 @@ class EndScan(BaseCommand):
                  AssertionError if MccsSubarray is not in SCANNING obsState.
         """
         device_data = self.target
-        tango_client_object = TangoClient(device_data._mccs_subarray_fqdn)
         try:
+            mccs_subarray_client_obj = TangoClient(device_data._mccs_subarray_fqdn)
             # TODO: Mock obs_state issue to be resolved
             # assert tango_client_object.get_attribute("obsState") == ObsState.SCANNING
-            tango_client_object.send_command_async(const.CMD_ENDSCAN, None, self.endscan_cmd_ended_cb)
+            mccs_subarray_client_obj.send_command_async(const.CMD_ENDSCAN, None, self.endscan_cmd_ended_cb)
             device_data._read_activity_message = const.STR_ENDSCAN_SUCCESS
             self.logger.info(const.STR_ENDSCAN_SUCCESS)
 
@@ -92,7 +92,7 @@ class EndScan(BaseCommand):
         #     device_data._read_activity_message = const.ERR_DEVICE_NOT_SCANNING
         #     self.logger.error(const.ERR_DEVICE_NOT_SCANNING)
         #     tango.Except.throw_exception(const.STR_END_SCAN_EXEC, const.ERR_DEVICE_NOT_SCANNING,
-        #                                  "MCCSSubarrayLeafNode.EndScanCommand",
+        #                                  "MCCSSubarrayLeafNode.EndScan",
         #                                  tango.ErrSeverity.ERR)
 
         except DevFailed as dev_failed:
@@ -100,5 +100,5 @@ class EndScan(BaseCommand):
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(const.STR_END_SCAN_EXEC, log_msg,
-                                         "MccsSubarrayLeafNode.EndScanCommand",
+                                         "MccsSubarrayLeafNode.EndScan",
                                          tango.ErrSeverity.ERR)
