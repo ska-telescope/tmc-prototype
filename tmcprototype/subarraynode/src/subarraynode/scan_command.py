@@ -16,6 +16,7 @@ from . import const
 from tmc.common.tango_server_helper import TangoServerHelper
 from tmc.common.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
+import logging
 
 
 class Scan(SKASubarray.ScanCommand):
@@ -24,7 +25,6 @@ class Scan(SKASubarray.ScanCommand):
     """
 
     def __init__(self, target, state_model, logger=None):
-        # super.__init__(self, target, state_model, logger)
         super(Scan, self).__init__(target, state_model, logger)
         self.end_scan_command = None
 
