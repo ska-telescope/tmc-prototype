@@ -13,7 +13,7 @@ from ska.base import SKASubarray
 from . import const
 
 
-class OnCommand(SKASubarray.OnCommand):
+class On(SKASubarray.OnCommand):
     """
     A class for the SubarrayNodeLow's On() command.
     """

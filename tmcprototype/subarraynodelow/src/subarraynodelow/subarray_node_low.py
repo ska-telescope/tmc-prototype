@@ -22,11 +22,20 @@ from tango.server import run,attribute, device_property
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, ObsMode, ObsState
 from ska.base import SKASubarray
-from . import const, release, on_command, assign_resources_command, configure_command, scan_command, end_scan_command, end_command, release_all_resources_command, off_command
+from .device_data import DeviceData
+from . import const, release 
+from .on_command import On
+from .off_command import Off
+from .assign_resources_command import AssignResources
+from .configure_command import Configure
+from .scan_command import Scan
+from .end_command import End
+from .end_scan_command import EndScan
+from .release_all_resources_command import ReleaseAllResources
 
-__all__ = ["SubarrayNode", "main", "assign_resources_command", "release_all_resources_command",
-           "configure_command", "scan_command", "end_scan_command", "end_command", "on_command",
-           "off_command"]
+__all__ = ["SubarrayNode", "main", "AssignResources", "ReleaseAllResources",
+           "Configure", "Scan", "EndScan", "End", "On",
+           "Off"]
 
 
 class SubarrayHealthState:
@@ -66,14 +75,14 @@ class SubarrayNode(SKASubarray):
         """
         args = (self, self.state_model, self.logger)
         self.init_obj = self.InitCommand(*args)
-        self.on_obj = on_command.OnCommand(*args)
-        self.off_obj = off_command.OffCommand(*args)
-        self.end_obj = end_command.EndCommand(*args)
-        self.scan_obj = scan_command.ScanCommand(*args)
-        self.endscan_obj = end_scan_command.EndScanCommand(*args)
-        self.configure_obj = configure_command.ConfigureCommand(*args)
-        self.release_obj = release_all_resources_command.ReleaseAllResourcesCommand(*args)
-        self.assign_obj = assign_resources_command.AssignResourcesCommand(*args)
+        self.on_obj = On(*args)
+        self.off_obj = Off(*args)
+        self.end_obj = End(*args)
+        self.scan_obj = Scan(*args)
+        self.endscan_obj = EndScan(*args)
+        self.configure_obj = Configure(*args)
+        self.release_obj = ReleaseAllResources(*args)
+        self.assign_obj = AssignResources(*args)
 
     def health_state_cb(self, event):
         """
@@ -276,6 +285,7 @@ class SubarrayNode(SKASubarray):
             super().do()
             device = self.target
             device.set_status(const.STR_SA_INIT)
+            device_data = DeviceData.get_instance()
             device._obs_mode = ObsMode.IDLE
             device._scan_id = ""
             device._resource_list = []
@@ -293,6 +303,7 @@ class SubarrayNode(SKASubarray):
             device._mccs_subarray_proxy = None
             device._mccs_subarray_ln_proxy = device.get_deviceproxy(device.MccsSubarrayLNFQDN)
             device._mccs_subarray_proxy = device.get_deviceproxy(device.MccsSubarrayFQDN)
+            # device_data.mccs_subarray_fqdn = device.MccsSubarrayLNFQDN
             device.command_class_object()
 
             try:
@@ -372,16 +383,16 @@ class SubarrayNode(SKASubarray):
         device.
         """
         super().init_command_objects()
+        device_data = DeviceData.get_instance()
         args = (self, self.state_model, self.logger)
-        self.register_command_object("AssignResources", assign_resources_command.AssignResourcesCommand(*args))
-        self.register_command_object("ReleaseAllResources", release_all_resources_command.ReleaseAllResourcesCommand(*args))
-        self.register_command_object("On", on_command.OnCommand(*args))
-        self.register_command_object("Off", off_command.OffCommand(*args))
-        self.register_command_object("Configure", configure_command.ConfigureCommand(*args))
-        self.register_command_object("Scan", scan_command.ScanCommand(*args))
-        self.register_command_object("End", end_command.EndCommand(*args))
-        self.register_command_object("EndScan", end_scan_command.EndScanCommand(*args))
-        self.register_command_object("ReleaseAllResources", release_all_resources_command.ReleaseAllResourcesCommand(*args))
+        self.register_command_object("AssignResources", AssignResources(*args))
+        self.register_command_object("ReleaseAllResources", ReleaseAllResources(*args))
+        self.register_command_object("On", On(*args))
+        self.register_command_object("Off", Off(*args))
+        self.register_command_object("Configure", Configure(*args))
+        self.register_command_object("Scan", Scan(*args))
+        self.register_command_object("End", End(*args))
+        self.register_command_object("EndScan", EndScan(*args))
 
 
 # ----------

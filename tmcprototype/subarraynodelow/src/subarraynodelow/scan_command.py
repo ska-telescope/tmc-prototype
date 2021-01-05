@@ -16,7 +16,7 @@ from ska.base import SKASubarray
 from . import const
 
 
-class ScanCommand(SKASubarray.ScanCommand):
+class Scan(SKASubarray.ScanCommand):
     """
     A class for SubarrayNodeLow's Scan() command.
     """

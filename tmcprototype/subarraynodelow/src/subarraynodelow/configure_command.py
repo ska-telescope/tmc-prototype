@@ -16,7 +16,7 @@ from ska.base import SKASubarray
 from . import const
 
 
-class ConfigureCommand(SKASubarray.ConfigureCommand):
+class Configure(SKASubarray.ConfigureCommand):
     """
     A class for SubarrayNodeLow's Configure() command.
     """

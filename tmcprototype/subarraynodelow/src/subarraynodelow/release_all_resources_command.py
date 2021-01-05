@@ -7,7 +7,7 @@ from ska.base import SKASubarray
 from . import const
 
 
-class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
+class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
     """
     A class for SKASubarrayLow's ReleaseAllResources() command.
     """

@@ -10,7 +10,7 @@ from ska.base import SKASubarray
 from . import const
 
 
-class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
+class AssignResources(SKASubarray.AssignResourcesCommand):
     """
     A class for SubarrayNodelow's AssignResources() command.
     """

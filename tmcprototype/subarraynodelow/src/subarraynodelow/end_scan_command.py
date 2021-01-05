@@ -13,7 +13,7 @@ from ska.base import SKASubarray
 from . import const
 
 
-class EndScanCommand(SKASubarray.EndScanCommand):
+class EndScan(SKASubarray.EndScanCommand):
     """
     A class for SubarrayNodeLow's EndScan() command.
     """
