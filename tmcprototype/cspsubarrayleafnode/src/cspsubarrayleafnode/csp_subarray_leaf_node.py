@@ -34,6 +34,8 @@ from .end_command import GoToIdleCommand
 from .abort_command import AbortCommand
 from .restart_command import RestartCommand
 from .obsreset_command import ObsResetCommand
+from .on_command import On
+from .off_command import Off
 from . import const, release
 from .exceptions import InvalidObsStateError
 
@@ -41,7 +43,7 @@ from .exceptions import InvalidObsStateError
 
 __all__ = ["CspSubarrayLeafNode", "main", "AssignResourcesCommand", "ReleaseAllResourcesCommand",
            "ConfigureCommand", "StartScanCommand", "EndScanCommand", "GoToIdleCommand", "AbortCommand", 
-           "RestartCommand", "ObsResetCommand"]
+           "RestartCommand", "ObsResetCommand","On","Off"]
 
 
 class CspSubarrayLeafNode(SKABaseDevice):
@@ -431,6 +433,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
         self.register_command_object("Abort", AbortCommand(*args))
         self.register_command_object("Restart", RestartCommand(*args))
         self.register_command_object("ObsReset", ObsResetCommand(*args))
+         self.register_command_object("Off", Off(*args))
+        self.register_command_object("On", On(*args))
 
 
 # ----------
