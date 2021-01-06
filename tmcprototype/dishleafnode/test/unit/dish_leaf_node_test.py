@@ -39,9 +39,6 @@ with open(path, "r") as f:
     config_track_invalid_str = f.read()
 
 
-# Create DeviceData class instance
-device_data = DeviceData.get_instance()
-
 
 @pytest.fixture(scope="function")
 def mock_dish_master_proxy():
@@ -74,6 +71,8 @@ def event_subscription_mock():
     params=[
         ("SetStandbyFPMode", "SetStandbyFPMode"),
         ("SetStowMode", "SetStowMode"),
+        ("SetStandbyLPMode", "SetStandbyLPMode"),
+         ("SetOperateMode", "SetOperateMode")
     ],
 )
 def command_without_arg(request):
@@ -91,6 +90,36 @@ def test_command_cb_is_invoked_when_command_without_arg_is_called_async(mock_dis
                                                                             any_method(with_name="cmd_ended_cb"))
 
 
+@pytest.fixture(
+    scope="function",
+    params=[
+        "SetStowMode",
+        "SetStandbyLPMode",
+        "SetOperateMode",
+        "SetStandbyFPMode",
+    ],
+)
+def command_name(request):
+    cmd_name = request.param
+    return cmd_name
+
+
+def test_activity_message_attribute_value_contains_command_name(event_subscription_mock, mock_dish_master_proxy, command_name):
+    device_proxy, _, _, _ = mock_dish_master_proxy
+    device_proxy.command_inout(command_name)
+    dummy_event = command_callback(command_name)
+    event_subscription_mock[command_name](dummy_event)
+    assert f"Command :-> {command_name}" in device_proxy.activityMessage
+
+
+def test_activity_message_attribute_value_contains_command_name_with_event_error(
+    event_subscription, mock_dish_master, command_name
+):
+    device_proxy, _, _, _ = mock_dish_master_proxy
+    device_proxy.command_inout(command_name)
+    dummy_event = command_callback_with_event_error(command_name)
+    event_subscription[command_name](dummy_event)
+    assert f"Error in invoking command: {command_name}" in device_proxy.activityMessage
 
 
 
