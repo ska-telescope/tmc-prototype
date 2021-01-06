@@ -618,39 +618,39 @@ def test_activity_message_attribute_value_contains_command_name_with_event_error
 #         )
 
 
-# def command_callback(command_name):
-#     fake_event = MagicMock()
-#     fake_event.err = False
-#     fake_event.errors = "Event error"
-#     fake_event.cmd_name = f"{command_name}"
-#     return fake_event
+def command_callback(command_name):
+    fake_event = MagicMock()
+    fake_event.err = False
+    fake_event.errors = "Event error"
+    fake_event.cmd_name = f"{command_name}"
+    return fake_event
 
 
-# def command_callback_with_event_error(command_name):
-#     fake_event = MagicMock()
-#     fake_event.err = True
-#     fake_event.errors = "Event error"
-#     fake_event.cmd_name = f"{command_name}"
-#     return fake_event
+def command_callback_with_event_error(command_name):
+    fake_event = MagicMock()
+    fake_event.err = True
+    fake_event.errors = "Event error"
+    fake_event.cmd_name = f"{command_name}"
+    return fake_event
 
 
-# def command_callback_with_command_exception(command_name):
-#     return Exception("Exception in callback")
+def command_callback_with_command_exception(command_name):
+    return Exception("Exception in callback")
 
 
-# def assert_activity_message(device_proxy, expected_message):
-#     assert device_proxy.activityMessage == expected_message  # reads tango attribute
+def assert_activity_message(device_proxy, expected_message):
+    assert device_proxy.activityMessage == expected_message  # reads tango attribute
 
 
-# def any_method(with_name=None):
-#     class AnyMethod:
-#         def __eq__(self, other):
-#             if not isinstance(other, types.MethodType):
-#                 return False
+def any_method(with_name=None):
+    class AnyMethod:
+        def __eq__(self, other):
+            if not isinstance(other, types.MethodType):
+                return False
 
-#             return other.__func__.__name__ == with_name if with_name else True
+            return other.__func__.__name__ == with_name if with_name else True
 
-#     return AnyMethod()
+    return AnyMethod()
 
 
 @contextlib.contextmanager

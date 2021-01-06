@@ -19,11 +19,10 @@ mkdir -p $REPORTS_DIR
 # cd ..
 # done
 
-cd $dishleafnode;
 export TMC_ELEMENT=dishleafnode;
 echo +++ Trying tests for $TMC_ELEMENT;
 cd $TMC_ELEMENT;
-tox -e py37
+tox -e py37;
 mv ${TMC_ELEMENT}_coverage ../$REPORTS_DIR;
 cd ..
 
