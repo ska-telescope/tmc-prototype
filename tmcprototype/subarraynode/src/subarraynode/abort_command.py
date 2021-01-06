@@ -39,9 +39,8 @@ class Abort(SKASubarray.AbortCommand):
         device_data.is_end_command = False
         device_data.is_obsreset_command = False
         try:
-            # if device_data.scan_thread:
-            #     if device_data.scan_thread.is_alive():
-            #         device_data.scan_thread.cancel()  # stop timer when EndScan command is called
+            if device_data.scan_stopper.is_scan_running():
+                device_data.scan_stopper.stop_scan_timer()
             self.abort_sdp(device_data)
             self.abort_csp(device_data)
             self.abort_dishes(device_data)

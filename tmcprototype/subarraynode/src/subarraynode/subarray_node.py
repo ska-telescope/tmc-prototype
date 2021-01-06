@@ -266,7 +266,8 @@ class SubarrayNode(SKASubarray):
 
         # Note: Scan command invokes EndScan after completion. For that purpose, it require object
         # of EndScan command. This Logic may be revisited later.
-        self.scan.set_end_scan_command_object(self.endscan)
+        # self.scan.set_end_scan_command_object(self.endscan)
+        device_data.end_scan_command = self.endscan
 
         self.register_command_object("Track", track_command.Track(*args))
         # In order to pass self = subarray node as target device, the assign and release resource commands

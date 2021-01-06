@@ -17,7 +17,7 @@ from tango import DevFailed
 # Additional import
 from tmc.common.tango_group_client import TangoGroupClient
 from . import const
-from subarraynode.scan_command import ScanStopper
+from subarraynode.scan_stopper import ScanStopper
 
 
 class DeviceData:
@@ -43,8 +43,8 @@ class DeviceData:
         self.is_obsreset_command = False
         self.scan_duration = 0.0
         self.isScanRunning = False
-        # self.only_dishconfig_flag = False
         self.scan_stopper = ScanStopper()
+        self.end_scan_command = None
         # TODO : Tango server class variables
         self.this_device_server = None
         self._read_activity_message = ""

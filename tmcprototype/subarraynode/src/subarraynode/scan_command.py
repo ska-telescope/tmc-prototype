@@ -17,6 +17,7 @@ from tmc.common.tango_server_helper import TangoServerHelper
 from tmc.common.tango_client import TangoClient
 from . import const
 from subarraynode.device_data import DeviceData
+from subarraynode.scan_stopper import ScanStopper
 
 
 class Scan(SKASubarray.ScanCommand):
@@ -26,7 +27,7 @@ class Scan(SKASubarray.ScanCommand):
 
     def __init__(self, target, state_model, logger=None):
         super(Scan, self).__init__(target, state_model, logger)
-        self.end_scan_command = None
+        # self.end_scan_command = None
 
     def do(self, argin):
         """
@@ -72,8 +73,8 @@ class Scan(SKASubarray.ScanCommand):
 
             # Set timer to invoke EndScan command after scan duration is complete.
             self.logger.info("Setting scan timer")
-            device_data.scan_stopper = ScanStopper(self.logger)
-            device_data.scan_stopper.start_scan_timer(device_data.scan_duration, self.end_scan_command)
+            # device_data.scan_stopper = ScanStopper(self.logger)
+            device_data.scan_stopper.start_scan_timer(device_data.scan_duration, device_data.end_scan_command)
 
             device_data.this_device_server.set_status(const.STR_SA_SCANNING)
             self.logger.info(const.STR_SA_SCANNING)
@@ -109,29 +110,29 @@ class Scan(SKASubarray.ScanCommand):
         self.logger.info(const.STR_CSP_SCAN_INIT)
         device_data._read_activity_message = const.STR_CSP_SCAN_INIT
 
-    def set_end_scan_command_object(self, end_scan_command):
-        self.end_scan_command = end_scan_command
+    # def set_end_scan_command_object(self, end_scan_command):
+    #     self.end_scan_command = end_scan_command
 
-class ScanStopper():
-    """
-    Class to invoke EndScan command after scan duration is complete.
-    """
-    def __init__(self, logger = None):
-        if logger == None:
-            self.logger = logging.getLogger(__name__)
-        else:
-            self.logger = logger
-        # self.end_scan_command = stop_scan_method
-        self.scan_timer = None
-
-    def start_scan_timer(self, scan_duration, end_scan_command):
-        log_message = f"Scan duration: {scan_duration}"
-        self.logger.info(log_message)
-        self.scan_timer = threading.Timer(scan_duration, end_scan_command)
-        self.scan_timer.start()
-    
-    def stop_scan_timer():
-        self.scan_timer.cancel()
-
-    def is_scan_running():
-        return self.scan_timer.is_alive()
+# class ScanStopper():
+#     """
+#     Class to invoke EndScan command after scan duration is complete.
+#     """
+#     def __init__(self, logger = None):
+#         if logger == None:
+#             self.logger = logging.getLogger(__name__)
+#         else:
+#             self.logger = logger
+#         # self.end_scan_command = stop_scan_method
+#         self.scan_timer = None
+#
+#     def start_scan_timer(self, scan_duration, end_scan_command):
+#         log_message = f"Scan duration: {scan_duration}"
+#         self.logger.info(log_message)
+#         self.scan_timer = threading.Timer(scan_duration, end_scan_command)
+#         self.scan_timer.start()
+#
+#     def stop_scan_timer():
+#         self.scan_timer.cancel()
+#
+#     def is_scan_running():
+#         return self.scan_timer.is_alive()
