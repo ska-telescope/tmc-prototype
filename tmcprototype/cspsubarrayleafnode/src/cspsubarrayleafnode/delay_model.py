@@ -211,10 +211,9 @@ class DelayManager:
         print ("Inside delay model handler method")
         delay_update_interval = argin
         csp_sub_client_obj = TangoClient(self.device_data.csp_subarray_fqdn)
-        csp_subarray_obsstate = csp_sub_client_obj.get_attribute("obsState")
         while not self._stop_delay_model_event.isSet():
             csp_subarray_obsstate = csp_sub_client_obj.get_attribute("obsState")
-            if csp_sub_client_obj.deviceproxy.obsState in (ObsState.CONFIGURING.value, ObsState.READY.value, ObsState.SCANNING.value):
+            if csp_sub_client_obj.deviceproxy.obsState in (ObsState.CONFIGURING, ObsState.READY, ObsState.SCANNING):
                 self.delay_model_calculator()
                 # update the attribute
                 self.delay_model_lock.acquire()
