@@ -92,7 +92,7 @@ class DishLeafNode(SKABaseDevice):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.cmd_ended_cb = CommandCallBack(self, self.logger).cmd_ended_cb
+        # self.cmd_ended_cb = CommandCallBack(self, self.logger).cmd_ended_cb
 
     def init_command_objects(self):
         """

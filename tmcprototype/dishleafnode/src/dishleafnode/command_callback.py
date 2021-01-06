@@ -34,24 +34,9 @@ from .device_data import DeviceData
 class CommandCallBack:
     __instance = None
 
-    def __init__(self, logger = None):
-        """Private constructor of the class"""
-        if CommandCallBack.__instance is not None:
-            raise Exception("This is singletone class")
-        else:
-            CommandCallBack.__instance = self
-
-        if logger is None:
-            self.logger = logging.getLogger(__name__)
-        else:
-            self.logger = logger
-
-    
-    @staticmethod
-    def get_instance():
-        if CommandCallBack.__instance is None:
-            CommandCallBack()
-        return CommandCallBack.__instance
+    def __init__(self, device, log):
+        self.device = device
+        self.logger = log
 
 
     def cmd_ended_cb(self, event):
@@ -75,13 +60,12 @@ class CommandCallBack:
         """
 
         device_data = DeviceData.get_instance()
-        device.device_data = device_data
 
         if event.err:
             log_message = f"Error in invoking command: {event.cmd_name}\n{event.errors}"
             self.logger.error(log_message)
-            self.device_data._read_activity_message = log_message
+            device_data._read_activity_message = log_message
         else:
             log_message = f"Command :-> {event.cmd_name} invoked successfully."
             self.logger.info(log_message)
-            self.device_data._read_activity_message = log_message
+            device_data._read_activity_message = log_message

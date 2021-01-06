@@ -29,9 +29,10 @@ from ska.base.control_model import HealthState, SimulationMode
 from .utils import UnitConverter
 from . import release
 from .device_data import DeviceData
+from .command_callback import CommandCallBack
 
 
-class SetOperateModeCommand(BaseCommand):
+class SetOperateMode(BaseCommand):
     """
     A class for DishLeafNode's SetOperateMode() command.
     """
@@ -43,23 +44,25 @@ class SetOperateModeCommand(BaseCommand):
         :raises DevFailed: If error occurs while invoking SetOperateMode command on DishMaster.
         """
         device_data = self.target
-        command_name = "SetStandbyFPMode"
-        try:
-            attributes_to_subscribe_to = (
+
+        cmd_ended_cb = CommandCallBack(self, self.logger).cmd_ended_cb
+        attributes_to_subscribe_to = (
                 "dishMode",
                 "capturing",
                 "achievedPointing",
                 "desiredPointing",
             )
-
+        command_name = "SetStandbyFPMode"
+        try:
             self._subscribe_to_attribute_events(attributes_to_subscribe_to)
 
-            device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
+            dish_client = TangoClient(device_data._dish_master_fqdn)
+            dish_client.send_command_asynch(command_name, None, cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
             time.sleep(0.5)
             command_name = "SetOperateMode"
             #device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
-            dish_ln_client.send_command_asynch(command_name, None, command_callback_obj.cmd_ended_cb)
+            dish_client.send_command_asynch(command_name, None, cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
 
         except DevFailed as dev_failed:
@@ -104,9 +107,10 @@ class SetOperateModeCommand(BaseCommand):
 
         :param evt: A TANGO_CHANGE event on attribute.
         """
+        device_data = DeviceData.get_instance()
         if event_data.err:
             log_message = f"Event system DevError(s) occured!!! {str(event_data.errors)}"
-            self._read_activity_message = log_message
+            device_data._read_activity_message = log_message
             self.logger.error(log_message)
             return
 
@@ -118,5 +122,5 @@ class SetOperateModeCommand(BaseCommand):
         # converted to lowercase in subsequent callbacks.
         attr_name = fqdn_attr_name.split("/")[-1].split("#")[0]
         log_message = f"{attr_name} is {event_data.attr_value.value}."
-        self._read_activity_message = log_message
+        device_data._read_activity_message = log_message
         self.logger.debug(log_message)
