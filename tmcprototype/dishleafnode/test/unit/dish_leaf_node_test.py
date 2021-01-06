@@ -73,6 +73,7 @@ def event_subscription_mock():
     scope="function",
     params=[
         ("SetStandbyFPMode", "SetStandbyFPMode"),
+        ("SetStowMode", "SetStowMode"),
     ],
 )
 def command_without_arg(request):
