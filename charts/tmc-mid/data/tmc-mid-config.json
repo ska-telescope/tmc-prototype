@@ -882,8 +882,6 @@
         "AlarmHandler": {
           "ska_mid/tm_alarmhandler/tmalarmhandler": {
             "properties": {
-              "AlarmList": [
-              ],
               "SkaLevel": [
                 "1"
               ]

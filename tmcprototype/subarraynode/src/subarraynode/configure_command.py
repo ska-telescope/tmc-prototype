@@ -14,17 +14,18 @@ from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from ska_telmodel.csp import interface
-from .transaction_id import identify_with_id,inject_with_id
+from .transaction_id import identify_with_id, inject_with_id
 
 csp_interface_version = 0
 sdp_interface_version = 0
-            
+
 
 class ConfigureCommand(SKASubarray.ConfigureCommand):
     """
     A class for SubarrayNode's Configure() command.
     """
-    @identify_with_id('configure','argin')
+
+    @identify_with_id('configure', 'argin')
     def do(self, argin):
         """
         Configures the resources assigned to the Subarray.The configuration data for SDP, CSP and Dish is
@@ -78,7 +79,7 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
         self.logger.info(message)
         return (ResultCode.STARTED, message)
 
-    @inject_with_id(2,'cmd_data')
+    @inject_with_id(2, 'cmd_data')
     def _configure_leaf_node(self, device_proxy, cmd_name, cmd_data):
         device = self.target
         try:
@@ -118,7 +119,7 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
             "build_up_csp_cmd_data", scan_configuration, attr_name_map, device._receive_addresses_map)
         self._configure_leaf_node(device._csp_subarray_ln_proxy, "Configure", cmd_data)
 
-    @inject_with_id(0,'scan_configuration')
+    @inject_with_id(0, 'scan_configuration')
     def _configure_dsh(self, scan_configuration):
         device = self.target
         config_keys = scan_configuration.keys()
@@ -137,7 +138,6 @@ class ConfigureCommand(SKASubarray.ConfigureCommand):
             device._read_activity_message = df[0].desc
             self.logger.error(df)
             raise
-
 
 
 class ElementDeviceData:
@@ -180,7 +180,7 @@ class ElementDeviceData:
                 # Invoke ska_telmodel library function to create csp configure schema
                 if receive_addresses_map:
                     csp_config_schema = interface.make_csp_config(csp_interface_version, sdp_interface_version,
-                                        scan_type, csp_scan_config, receive_addresses_map)
+                                                                  scan_type, csp_scan_config, receive_addresses_map)
                     csp_config_schema = json.loads(csp_config_schema)
                 else:
                     raise KeyError("Receive addresses must be given. Aborting CSP configuration.")

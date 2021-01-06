@@ -15,9 +15,10 @@ execution. There is one to one mapping between SDP Subarray Leaf Node and SDP su
 """
 
 from . import release, const
+from .device_data import DeviceData
 from .sdp_master_leaf_node import SdpMasterLeafNode
 
-__all__ = ["const", "release", "SdpMasterLeafNode"]
+__all__ = ["const", "release", "SdpMasterLeafNode", "DeviceData"]
 
 __version__ = release.version
 __version_info__ = release.version_info

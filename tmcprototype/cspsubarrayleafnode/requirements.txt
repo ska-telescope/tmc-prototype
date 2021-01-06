@@ -4,6 +4,7 @@ jsonschema >= 3.2.0
 ska-logging==0.3.0
 lmcbaseclasses == 0.7.2
 ska-log-transactions == 0.1.0
+skatmccommon==0.1.2+b01374cf
 marshmallow
 cdm-shared-library
 ska-telescope-model
