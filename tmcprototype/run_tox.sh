@@ -19,15 +19,6 @@ mkdir -p $REPORTS_DIR
  cd ..
  done
 
-#for path in $(find ./*/test -type d -name unit); do
-#export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
-##export TMC_ELEMENT=subarraynode;
-#echo +++ Trying tests for $TMC_ELEMENT;
-#cd $TMC_ELEMENT;
-#tox -e py37
-#mv ${TMC_ELEMENT}_coverage ../$REPORTS_DIR;
-#cd ..
-
 # Combine coverage reports
 cd $REPORTS_DIR
 coverage combine centralnode_coverage cspmasterleafnode_coverage dishmaster_coverage \
