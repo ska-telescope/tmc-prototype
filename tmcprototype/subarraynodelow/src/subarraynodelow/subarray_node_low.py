@@ -387,19 +387,7 @@ class SubarrayNode(SKASubarray):
         super().init_command_objects()
  
         device_data = DeviceData.get_instance()
-<<<<<<< HEAD
-        args = (self, self.state_model, self.logger)
-        self.register_command_object("AssignResources", AssignResources(*args))
-        self.register_command_object("ReleaseAllResources", ReleaseAllResources(*args))
-        self.register_command_object("On", On(device_data, self.state_model, self.logger))
-        self.register_command_object("Off", Off(*args))
-        self.register_command_object("Configure", Configure(*args))
-        self.register_command_object("Scan", Scan(*args))
-        self.register_command_object("End", End(*args))
-        self.register_command_object("EndScan", EndScan(*args))
-=======
         args = (device_data, self.state_model, self.logger)
-
         self.init_obj = self.InitCommand(*args)
         self.on_obj = On(*args)
         self.off_obj = Off(*args)
@@ -421,7 +409,6 @@ class SubarrayNode(SKASubarray):
         self.register_command_object("Scan", self.scan_obj)
         self.register_command_object("End", self.end_obj)
         self.register_command_object("EndScan", self.endscan_obj)
->>>>>>> 2e0b16098258bdc9c5de39660faab1661a86d2e9
 
 
 # ----------
