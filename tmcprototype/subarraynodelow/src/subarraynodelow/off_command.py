@@ -10,7 +10,9 @@ from tango import DevFailed
 # Additional import
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+from tmc.common.tango_client import TangoClient
 from . import const
+from .device_data import DeviceData
 
 
 class Off(SKASubarray.OffCommand):
@@ -32,7 +34,8 @@ class Off(SKASubarray.OffCommand):
         device = self.target
         device.is_release_resources = False
         try:
-            device._mccs_subarray_ln_proxy.Off()
+            mccs_subarray_client = TangoClient(device.mccs_subarray_fqdn)
+            mccs_subarray_client.send_command(const.CMD_OFF, None)
             message = "Off command completed OK"
             self.logger.info(message)
             return (ResultCode.OK, message)

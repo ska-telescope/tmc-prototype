@@ -12,6 +12,7 @@ from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from tmc.common.tango_client import TangoClient
 from . import const
+from .device_data import DeviceData
 
 
 class On(SKASubarray.OnCommand):
@@ -31,11 +32,11 @@ class On(SKASubarray.OnCommand):
 
         :raises: DevFailed if the command execution is not successful
         """
-        device = self.target
-        device.is_release_resources = False
+        device_data = DeviceData.get_instance()
+        device_data.is_release_resources = False
         try:
-            print("mccs fqdn:::::::::::::",device.mccs_subarray_fqdn )
-            mccs_subarray_client_obj = TangoClient(device.mccs_subarray_fqdn)
+            print("mccs fqdn:::::::::::::",device_data.mccs_subarray_fqdn )
+            mccs_subarray_client_obj = TangoClient(device_data.mccs_subarray_fqdn)
             mccs_subarray_client_obj.send_command(const.CMD_ON, None)
             # device._mccs_subarray_ln_proxy.On()
             message = "On command completed OK"

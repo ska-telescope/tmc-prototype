@@ -106,21 +106,23 @@ def test_write_activity_message():
 
 
 # Test cases for Commands
-def test_on_command_should_change_subarray_device_state_to_on():
-    with fake_tango_system(SubarrayNode) as tango_context:
-        # result = tango_context.device.On()
-        assert tango_context.device.On() == [[ResultCode.OK], ["On command completed OK"]]
-        assert tango_context.device.state() == DevState.ON
-        assert tango_context.device.obsState == ObsState.EMPTY
+def test_on_command_should_change_subarray_device_state_to_on(mock_lower_devices):
+    device_proxy, tango_client_obj = mock_lower_devices
+    # with fake_tango_system(SubarrayNode) as tango_context:
+    #     # result = tango_context.device.On()
+    assert device_proxy.On() == [[ResultCode.OK], ["On command completed OK"]]
+    assert device_proxy.state() == DevState.ON
+    assert device_proxy.obsState == ObsState.EMPTY
 
 
 
-def test_off_command_should_change_subarray_device_state_to_off():
-    with fake_tango_system(SubarrayNode) as tango_context:
-        tango_context.device.On()
-        assert tango_context.device.Off() == [[ResultCode.OK], ["Off command completed OK"]]
-        assert tango_context.device.state() == DevState.OFF
-        assert tango_context.device.obsState == ObsState.EMPTY
+def test_off_command_should_change_subarray_device_state_to_off(mock_lower_devices):
+    device_proxy, tango_client_obj = mock_lower_devices
+    # with fake_tango_system(SubarrayNode) as tango_context:
+    device_proxy.On()
+    assert device_proxy.Off() == [[ResultCode.OK], ["Off command completed OK"]]
+    assert device_proxy.state() == DevState.OFF
+    assert device_proxy.obsState == ObsState.EMPTY
 
 def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready(mock_lower_devices):
     device_proxy, tango_client_obj = mock_lower_devices
@@ -210,10 +212,10 @@ def test_start_scan_should_raise_devfailed_exception(mock_lower_devices, subarra
 
 
 def test_off_should_raise_devfailed_exception(mock_lower_devices):
-    tango_context, mccs_subarray1_ln_proxy_mock = mock_lower_devices[:2]
-    mccs_subarray1_ln_proxy_mock.Off.side_effect = raise_devfailed_exception
+    device_proxy, tango_client_obj = mock_lower_devices
+    device_proxy.Off.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
-        tango_context.device.Off()
+        device_proxy.Off()
     assert "This is error message for devfailed" in str(df.value)
 
 
