@@ -388,7 +388,6 @@ class SubarrayNode(SKASubarray):
  
         device_data = DeviceData.get_instance()
         args = (device_data, self.state_model, self.logger)
-
         self.init_obj = self.InitCommand(*args)
         self.on_obj = On(*args)
         self.off_obj = Off(*args)
