@@ -505,10 +505,10 @@ def test_health_state():
 
 @pytest.fixture(scope="function",
     params=[
-        HealthState.DEGRADED,
         HealthState.OK,
-        HealthState.UNKNOWN,
-        HealthState.FAILED,
+        # HealthState.DEGRADED,
+        # HealthState.UNKNOWN,
+        # HealthState.FAILED,
     ])
 def health_state(request):
     health_state = request.param
@@ -516,47 +516,68 @@ def health_state(request):
 
 
 # Test case for HealthState callback
-def test_subarray_health_state_changes_as_per_mccs_subarray_ln_healthstate(mock_lower_devices, health_state):
-    mccs_subarray1_ln_health_attribute = 'mccsSubarrayHealthState'
-    tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
-    dummy_event = create_dummy_event_healthstate_with_proxy(
-        mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, health_state,
-        mccs_subarray1_ln_health_attribute)
-    event_subscription_map[mccs_subarray1_ln_health_attribute](dummy_event)
-    assert tango_context.device.healthState == health_state
+def test_subarray_health_state_changes_as_per_mccs_subarray_ln_healthstate(mock_lower_devices_proxy, health_state):
+    # mccs_subarray1_ln_health_attribute = 'mccsSubarrayHealthState'
+    device_proxy, tango_client = mock_lower_devices_proxy
+    device_data = DeviceData.get_instance()
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
+        with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber):
+            device_proxy.On()
+    assert device_data._subarray_health_state == health_state
 
+def dummy_subscriber(attribute, callback_method):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"ska_mid/tm_leaf_node/mccs_subarray01/{attribute}"
+    fake_event.attr_value.value =  HealthState.OK
+    print("Inside dummy subscriber ...........................")
+    print( fake_event.attr_value.value )
 
-def test_subarray_health_state_with_error_event(mock_lower_devices):
-    tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
-    mccs_subarray1_ln_health_attribute = 'mccsSubarrayHealthState'
-    health_state_value = HealthState.FAILED
-    dummy_event = create_dummy_event_healthstate_with_error(
-        mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, health_state_value,
-        mccs_subarray1_ln_health_attribute)
-    event_subscription_map[mccs_subarray1_ln_health_attribute](dummy_event)
+    callback_method(fake_event)
+    return 10
+
+def test_subarray_health_state_with_error_event(mock_lower_devices_proxy):
+    # tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
+    # mccs_subarray1_ln_health_attribute = 'mccsSubarrayHealthState'
+    # health_state_value = HealthState.FAILED
+    # dummy_event = create_dummy_event_healthstate_with_error(
+    #     mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, health_state_value,
+    #     mccs_subarray1_ln_health_attribute)
+    # event_subscription_map[mccs_subarray1_ln_health_attribute](dummy_event)
+    device_proxy, tango_client = mock_lower_devices_proxy
+    device_data = DeviceData.get_instance()
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
+        with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=create_dummy_event_healthstate_with_error):
+            device_proxy.On()
     assert const.ERR_SUBSR_SA_HEALTH_STATE in tango_context.device.activityMessage
 
 
 # Test case for event subscribtion
-def test_subarray_health_state_event_to_raise_devfailed_exception_for_mccs_subarray_ln():
-    mccs_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/mccs_subarray01'
-    mccs_subarray1_ln_health_attribute = 'mccsSubarrayHealthState'
-    initial_dut_properties = {
-        'MccsSubarrayLNFQDN': mccs_subarray1_ln_fqdn
-    }
-
-    mccs_subarray1_ln_proxy_mock = Mock()
-    mccs_subarray1_ln_proxy_mock.subscribe_event.side_effect = raise_devfailed_for_event_subscription
-
-    proxies_to_mock = {
-        mccs_subarray1_ln_fqdn: mccs_subarray1_ln_proxy_mock
-    }
-
-    with fake_tango_system(SubarrayNode, initial_dut_properties, proxies_to_mock) as tango_context:
-        health_state_value = HealthState.FAILED
-        dummy_event = create_dummy_event_healthstate_with_proxy(
-            mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, health_state_value,
-            mccs_subarray1_ln_health_attribute)
+def test_subarray_health_state_event_to_raise_devfailed_exception_for_mccs_subarray_ln(mock_lower_devices_proxy):
+    # mccs_subarray1_ln_fqdn = 'ska_mid/tm_leaf_node/mccs_subarray01'
+    # mccs_subarray1_ln_health_attribute = 'mccsSubarrayHealthState'
+    # initial_dut_properties = {
+    #     'MccsSubarrayLNFQDN': mccs_subarray1_ln_fqdn
+    # }
+    #
+    # mccs_subarray1_ln_proxy_mock = Mock()
+    # mccs_subarray1_ln_proxy_mock.subscribe_event.side_effect = raise_devfailed_for_event_subscription
+    #
+    # proxies_to_mock = {
+    #     mccs_subarray1_ln_fqdn: mccs_subarray1_ln_proxy_mock
+    # }
+    #
+    # with fake_tango_system(SubarrayNode, initial_dut_properties, proxies_to_mock) as tango_context:
+    #     health_state_value = HealthState.FAILED
+    #     dummy_event = create_dummy_event_healthstate_with_proxy(
+    #         mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, health_state_value,
+    #         mccs_subarray1_ln_health_attribute)
+    device_proxy, tango_client = mock_lower_devices_proxy
+    device_data = DeviceData.get_instance()
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
+        with mock.patch.object(TangoClient, "subscribe_attribute",
+                               side_effect=create_dummy_event_healthstate_with_proxy):
+            device_proxy.On()
         assert tango_context.device.State() == DevState.FAULT
 
 
@@ -635,20 +656,20 @@ def test_release_all_resources_should_release_resources_when_obstate_idle(mock_l
 #     assert tango_context.device.obsState == ObsState.EMPTY
 
 
-def create_dummy_event_healthstate_with_proxy(proxy_mock, device_fqdn, health_state_value, attribute):
+def create_dummy_event_healthstate_with_proxy(proxy_mock, attribute):
     fake_event = Mock()
     fake_event.err = False
-    fake_event.attr_name = f"{device_fqdn}/{attribute}"
-    fake_event.attr_value.value = health_state_value
+    fake_event.attr_name = f"ska_mid/tm_leaf_node/mccs_subarray01/{attribute}"
+    fake_event.attr_value.value = HealthState.OK
     fake_event.device= proxy_mock
     return fake_event
 
 
-def create_dummy_event_healthstate_with_error(proxy_mock, device_fqdn, health_state_value, attribute):
+def create_dummy_event_healthstate_with_error(proxy_mock, attribute):
     fake_event = Mock()
     fake_event.err = True
-    fake_event.attr_name = f"{device_fqdn}/{attribute}"
-    fake_event.attr_value.value = health_state_value
+    fake_event.attr_name = f"ska_mid/tm_leaf_node/mccs_subarray01/{attribute}"
+    fake_event.attr_value.value =  HealthState.OK
     fake_event.device= proxy_mock
     return fake_event
 

@@ -36,6 +36,8 @@ class Off(SKASubarray.OffCommand):
         try:
             mccs_subarray_ln_client = TangoClient(device.mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(const.CMD_OFF, None)
+            device.health_state_aggregator.unsubscribe()
+            device.obs_state_aggregator.unsubscribe()
             message = "Off command completed OK"
             self.logger.info(message)
             return (ResultCode.OK, message)

@@ -38,30 +38,30 @@ __all__ = ["SubarrayNode", "main", "AssignResources", "ReleaseAllResources",
            "Off"]
 
 
-class SubarrayHealthState:
+# class SubarrayHealthState:
 
-    @staticmethod
-    def generate_health_state_log_msg(health_state, device_name, event):
-        if isinstance(health_state, HealthState):
-            return (
-                const.STR_HEALTH_STATE + str(device_name) + const.STR_ARROW + str(health_state.name.upper()))
-        else:
-            return const.STR_HEALTH_STATE_UNKNOWN_VAL + str(event)
+    # @staticmethod
+    # def generate_health_state_log_msg(health_state, device_name, event):
+    #     if isinstance(health_state, HealthState):
+    #         return (
+    #             const.STR_HEALTH_STATE + str(device_name) + const.STR_ARROW + str(health_state.name.upper()))
+    #     else:
+    #         return const.STR_HEALTH_STATE_UNKNOWN_VAL + str(event)
 
-    @staticmethod
-    def calculate_health_state(health_states):
-        """
-        Calculates aggregated health state of SubarrayLow.
-        """
-        unique_states = set(health_states)
-        if unique_states == set([HealthState.OK]):
-            return HealthState.OK
-        elif HealthState.FAILED in unique_states:
-            return HealthState.FAILED
-        elif HealthState.DEGRADED in unique_states:
-            return HealthState.DEGRADED
-        else:
-            return HealthState.UNKNOWN
+    # @staticmethod
+    # def calculate_health_state(health_states):
+    #     """
+    #     Calculates aggregated health state of SubarrayLow.
+    #     """
+    #     unique_states = set(health_states)
+    #     if unique_states == set([HealthState.OK]):
+    #         return HealthState.OK
+    #     elif HealthState.FAILED in unique_states:
+    #         return HealthState.FAILED
+    #     elif HealthState.DEGRADED in unique_states:
+    #         return HealthState.DEGRADED
+    #     else:
+    #         return HealthState.UNKNOWN
 
 class SubarrayNode(SKASubarray):
     """
@@ -84,140 +84,140 @@ class SubarrayNode(SKASubarray):
     #     self.release_obj = ReleaseAllResources(*args)
     #     self.assign_obj = AssignResources(*args)
 
-    def health_state_cb(self, event):
-        """
-        Receives the subscribed health states, aggregates them
-        to calculate the overall subarray health state.
+    # def health_state_cb(self, event):
+    #     """
+    #     Receives the subscribed health states, aggregates them
+    #     to calculate the overall subarray health state.
+    #
+    #     :param evt: A event on MCCS Subarray healthState.
+    #
+    #     :type: Event object
+    #         It has the following members:
+    #
+    #             - date (event timestamp)
+    #
+    #             - reception_date (event reception timestamp)
+    #
+    #             - type (event type)
+    #
+    #             - dev_name (device name)
+    #
+    #             - name (attribute name)
+    #
+    #             - value (event value)
+    #
+    #     :return: None
+    #     """
+    #
+    #     device_name = event.device.dev_name()
+    #     if not event.err:
+    #         event_health_state = event.attr_value.value
+    #         self.subarray_ln_health_state_map[device_name] = event_health_state
+    #
+    #         log_message = SubarrayHealthState.generate_health_state_log_msg(
+    #             event_health_state, device_name, event)
+    #         self._read_activity_message = log_message
+    #         self._health_state = SubarrayHealthState.calculate_health_state(
+    #             self.subarray_ln_health_state_map.values())
+    #     else:
+    #         log_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(device_name) + str(event)
+    #         self._read_activity_message = log_message
 
-        :param evt: A event on MCCS Subarray healthState.
+    # def observation_state_cb(self, evt):
+    #     """
+    #     Receives the subscribed MCCS Subarray obsState.
+    #
+    #     :param evt: A event on MCCS Subarray ObsState.
+    #
+    #     :type: Event object
+    #         It has the following members:
+    #
+    #             - date (event timestamp)
+    #
+    #             - reception_date (event reception timestamp)
+    #
+    #             - type (event type)
+    #
+    #             - dev_name (device name)
+    #
+    #             - name (attribute name)
+    #
+    #             - value (event value)
+    #
+    #     :return: None
+    #
+    #     :raises: KeyError if error occurs while setting SubarrayNode's ObsState.
+    #     """
+    #     try:
+    #         if not evt.err:
+    #             self._observetion_state = evt.attr_value.value
+    #             if const.PROP_DEF_VAL_TMMCCS_MID_SALN in evt.attr_name:
+    #                 self._mccs_sa_obs_state = self._observetion_state
+    #                 self._read_activity_message = const.STR_MCCS_SUBARRAY_OBS_STATE + str(
+    #                     self._mccs_sa_obs_state)
+    #             else:
+    #                 self.logger.debug(const.EVT_UNKNOWN)
+    #                 self._read_activity_message = const.EVT_UNKNOWN
+    #             self.calculate_observation_state()
+    #
+    #         else:
+    #             log_msg = const.ERR_SUBSR_MCCSSA_OBS_STATE + str(evt)
+    #             self.logger.debug(log_msg)
+    #             self._read_activity_message = log_msg
+    #     except KeyError as key_error:
+    #         log_msg = const.ERR_MCCS_SUBARRAY_OBS_STATE + str(key_error)
+    #         self.logger.error(log_msg)
+    #         self._read_activity_message = const.ERR_MCCS_SUBARRAY_OBS_STATE + str(key_error)
 
-        :type: Event object
-            It has the following members:
-                    
-                - date (event timestamp)
-
-                - reception_date (event reception timestamp)
-
-                - type (event type)
-
-                - dev_name (device name)
-
-                - name (attribute name)
-
-                - value (event value)
-
-        :return: None
-        """
-
-        device_name = event.device.dev_name()
-        if not event.err:
-            event_health_state = event.attr_value.value
-            self.subarray_ln_health_state_map[device_name] = event_health_state
-
-            log_message = SubarrayHealthState.generate_health_state_log_msg(
-                event_health_state, device_name, event)
-            self._read_activity_message = log_message
-            self._health_state = SubarrayHealthState.calculate_health_state(
-                self.subarray_ln_health_state_map.values())
-        else:
-            log_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(device_name) + str(event)
-            self._read_activity_message = log_message
-
-    def observation_state_cb(self, evt):
-        """
-        Receives the subscribed MCCS Subarray obsState.
-
-        :param evt: A event on MCCS Subarray ObsState.
-
-        :type: Event object
-            It has the following members:
-                    
-                - date (event timestamp)
-
-                - reception_date (event reception timestamp)
-
-                - type (event type)
-
-                - dev_name (device name)
-
-                - name (attribute name)
-
-                - value (event value)
-
-        :return: None
-
-        :raises: KeyError if error occurs while setting SubarrayNode's ObsState.
-        """
-        try:
-            if not evt.err:
-                self._observetion_state = evt.attr_value.value
-                if const.PROP_DEF_VAL_TMMCCS_MID_SALN in evt.attr_name:
-                    self._mccs_sa_obs_state = self._observetion_state
-                    self._read_activity_message = const.STR_MCCS_SUBARRAY_OBS_STATE + str(
-                        self._mccs_sa_obs_state)
-                else:
-                    self.logger.debug(const.EVT_UNKNOWN)
-                    self._read_activity_message = const.EVT_UNKNOWN
-                self.calculate_observation_state()
-
-            else:
-                log_msg = const.ERR_SUBSR_MCCSSA_OBS_STATE + str(evt)
-                self.logger.debug(log_msg)
-                self._read_activity_message = log_msg
-        except KeyError as key_error:
-            log_msg = const.ERR_MCCS_SUBARRAY_OBS_STATE + str(key_error)
-            self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_MCCS_SUBARRAY_OBS_STATE + str(key_error)
-
-    def calculate_observation_state(self):
-        """
-        Calculates aggregated observation state of Subarray.
-        """
-        log_msg = "self._mccs_sa_obs_state is: " + str(self._mccs_sa_obs_state)
-        self.logger.info(log_msg)
-        if self._mccs_sa_obs_state == ObsState.EMPTY:
-            if self.is_release_resources:
-                self.logger.info("Calling ReleaseAllResource command succeeded() method")
-                self.release_obj.succeeded()
-
-        elif self._mccs_sa_obs_state == ObsState.READY:
-            if self.is_scan_completed:
-                self.logger.info("Calling EndScan command succeeded() method")
-                self.endscan_obj.succeeded()
-            else:
-                # Configure command success
-                self.logger.info("Calling Configure command succeeded() method")
-                self.configure_obj.succeeded()
-        elif self._mccs_sa_obs_state == ObsState.IDLE:
-            if self.is_end_command:
-                # End command success
-                self.logger.info("Calling End command succeeded() method")
-                self.end_obj.succeeded()
-            else:
-                # Assign Resource command success
-                self.logger.info("Calling AssignResource command succeeded() method")
-                self.assign_obj.succeeded()
+    # def calculate_observation_state(self):
+    #     """
+    #     Calculates aggregated observation state of Subarray.
+    #     """
+    #     log_msg = "self._mccs_sa_obs_state is: " + str(self._mccs_sa_obs_state)
+    #     self.logger.info(log_msg)
+    #     if self._mccs_sa_obs_state == ObsState.EMPTY:
+    #         if self.is_release_resources:
+    #             self.logger.info("Calling ReleaseAllResource command succeeded() method")
+    #             self.release_obj.succeeded()
+    #
+    #     elif self._mccs_sa_obs_state == ObsState.READY:
+    #         if self.is_scan_completed:
+    #             self.logger.info("Calling EndScan command succeeded() method")
+    #             self.endscan_obj.succeeded()
+    #         else:
+    #             # Configure command success
+    #             self.logger.info("Calling Configure command succeeded() method")
+    #             self.configure_obj.succeeded()
+    #     elif self._mccs_sa_obs_state == ObsState.IDLE:
+    #         if self.is_end_command:
+    #             # End command success
+    #             self.logger.info("Calling End command succeeded() method")
+    #             self.end_obj.succeeded()
+    #         else:
+    #             # Assign Resource command success
+    #             self.logger.info("Calling AssignResource command succeeded() method")
+    #             self.assign_obj.succeeded()
 
 
-    def get_deviceproxy(self, device_fqdn):
-        """
-        Returns device proxy for given FQDN.
-        """
-        retry = 0
-        device_proxy = None
-        while retry < 3:
-            try:
-                device_proxy = DeviceProxy(device_fqdn)
-                break
-            except DevFailed as df:
-                self.logger.exception(df)
-                if retry >= 2:
-                    tango.Except.re_throw_exception(df, "Retries exhausted while creating device proxy.",
-                                                    "Failed to create DeviceProxy of " + str(device_fqdn),
-                                                    "SubarrayNode.get_deviceproxy()", tango.ErrSeverity.ERR)
-                retry += 1
-                continue
-        return device_proxy
+    # def get_deviceproxy(self, device_fqdn):
+    #     """
+    #     Returns device proxy for given FQDN.
+    #     """
+    #     retry = 0
+    #     device_proxy = None
+    #     while retry < 3:
+    #         try:
+    #             device_proxy = DeviceProxy(device_fqdn)
+    #             break
+    #         except DevFailed as df:
+    #             self.logger.exception(df)
+    #             if retry >= 2:
+    #                 tango.Except.re_throw_exception(df, "Retries exhausted while creating device proxy.",
+    #                                                 "Failed to create DeviceProxy of " + str(device_fqdn),
+    #                                                 "SubarrayNode.get_deviceproxy()", tango.ErrSeverity.ERR)
+    #             retry += 1
+    #             continue
+    #     return device_proxy
 
     def __len__(self):
         """
@@ -301,35 +301,34 @@ class SubarrayNode(SKASubarray):
             device_data.mccs_subarray_ln_fqdn = device.MccsSubarrayLNFQDN
 
             # Create proxy for MCCS Subarray Leaf Node
-            device._mccs_subarray_ln_proxy = None
-            device._mccs_subarray_proxy = None
-            device._mccs_subarray_ln_proxy = device.get_deviceproxy(device.MccsSubarrayLNFQDN)
-            device._mccs_subarray_proxy = device.get_deviceproxy(device.MccsSubarrayFQDN)
+            # device._mccs_subarray_ln_proxy = None
+            # device._mccs_subarray_proxy = None
+            # device._mccs_subarray_ln_proxy = device.get_deviceproxy(device.MccsSubarrayLNFQDN)
+            # device._mccs_subarray_proxy = device.get_deviceproxy(device.MccsSubarrayFQDN)
             # device.command_class_object()
 
 
-            try:
-                device.subarray_ln_health_state_map[device._mccs_subarray_ln_proxy.dev_name()] = (
-                    HealthState.UNKNOWN)
-                # Subscribe mccssubarrayHealthState (forwarded attribute) of MccsSubarray
-                device._mccs_subarray_ln_proxy.subscribe_event(const.EVT_MCCSSA_HEALTH, EventType.CHANGE_EVENT,
-                                                              device.health_state_cb, stateless=True)
-
-                # Subscribe mccsSubarrayObsState (forwarded attribute) of MccsSubarray
-                device._mccs_subarray_ln_proxy.subscribe_event(const.EVT_MCCSSA_OBS_STATE, EventType.CHANGE_EVENT,
-                                                              device.observation_state_cb, stateless=True)
-                device.set_status(const.STR_SUB_ATTR_MCCS_SALN_SUCCESS)
-                self.logger.info(const.STR_SUB_ATTR_MCCS_SALN_SUCCESS)
-            except DevFailed as dev_failed:
-                log_msg = const.ERR_SUBS_MCCS_SA_LEAF_ATTR + str(dev_failed)
-                device._read_activity_message = log_msg
-                device.set_status(const.ERR_SUBS_MCCS_SA_LEAF_ATTR)
-                self.logger.exception(dev_failed)
-                tango.Except.throw_exception(const.ERR_SUBS_MCCS_SA_LEAF_ATTR,
-                                             log_msg,
-                                             "SubarrayNode.InitCommand",
-                                             tango.ErrSeverity.ERR)
-
+            # try:
+            #     device.subarray_ln_health_state_map[device._mccs_subarray_ln_proxy.dev_name()] = (
+            #         HealthState.UNKNOWN)
+            #     # Subscribe mccssubarrayHealthState (forwarded attribute) of MccsSubarray
+            #     device._mccs_subarray_ln_proxy.subscribe_event(const.EVT_MCCSSA_HEALTH, EventType.CHANGE_EVENT,
+            #                                                   device.health_state_cb, stateless=True)
+            #
+            #     # Subscribe mccsSubarrayObsState (forwarded attribute) of MccsSubarray
+            #     device._mccs_subarray_ln_proxy.subscribe_event(const.EVT_MCCSSA_OBS_STATE, EventType.CHANGE_EVENT,
+            #                                                   device.observation_state_cb, stateless=True)
+            #     device.set_status(const.STR_SUB_ATTR_MCCS_SALN_SUCCESS)
+            #     self.logger.info(const.STR_SUB_ATTR_MCCS_SALN_SUCCESS)
+            # except DevFailed as dev_failed:
+            #     log_msg = const.ERR_SUBS_MCCS_SA_LEAF_ATTR + str(dev_failed)
+            #     device._read_activity_message = log_msg
+            #     device.set_status(const.ERR_SUBS_MCCS_SA_LEAF_ATTR)
+            #     self.logger.exception(dev_failed)
+            #     tango.Except.throw_exception(const.ERR_SUBS_MCCS_SA_LEAF_ATTR,
+            #                                  log_msg,
+            #                                  "SubarrayNode.InitCommand",
+            #                                  tango.ErrSeverity.ERR)
 
 
             device._read_activity_message = const.STR_SA_INIT_SUCCESS
