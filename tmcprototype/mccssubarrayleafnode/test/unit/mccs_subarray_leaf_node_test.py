@@ -20,9 +20,7 @@ from tango.test_context import DeviceTestContext
 from mccssubarrayleafnode import MccsSubarrayLeafNode, const, release
 from ska.base.control_model import HealthState, ObsState, LoggingLevel
 from tmc.common.tango_client import TangoClient
-from mccssubarrayleafnode.device_data import DeviceData
 
-device_data = DeviceData.get_instance()
 @pytest.fixture(scope="function")
 def tango_context():
     with fake_tango_system(MccsSubarrayLeafNode) as tango_context:
@@ -93,7 +91,7 @@ def test_command_with_arg_in_allowed_obsstate_with_callback_method(mock_mccs_sub
     dummy_event = command_callback(requested_cmd)
     event_subscription[requested_cmd](dummy_event)
     assert const.STR_COMMAND + requested_cmd in device_proxy.activityMessage
-    
+
 
 def test_command_without_arg_in_allowed_obsstate_with_callback_method(mock_mccs_subarray_proxy, event_subscription,command_without_arg):
     device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy

@@ -234,14 +234,12 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         device.
         """
         super().init_command_objects()
-        # device_data = DeviceData.get_instance()
         args = (self.device_data, self.state_model, self.logger)
         self.configure = Configure(*args)
         self.scan = Scan(*args)
         self.endscan = EndScan(*args)
         self.end = End(*args)
 
-        # In order to pass self = subarray node as target device, the assign and release resource commands
         # are registered and inherited from SKASubarray
         self.register_command_object("Configure", self.configure)
         self.register_command_object("Scan", self.scan)

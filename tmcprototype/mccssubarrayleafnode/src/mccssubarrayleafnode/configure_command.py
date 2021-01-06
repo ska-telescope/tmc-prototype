@@ -95,26 +95,20 @@ class Configure(BaseCommand):
         """
         device_data = self.target
         try:
-            sky_coordinates = []
             mccs_subarray_client = TangoClient(device_data._mccs_subarray_fqdn)
             # TODO: Mock obs_state issue to be resolved
             # assert (mccs_subarray_client.get_attribute("obsState") in (ObsState.IDLE, ObsState.READY))
             log_msg = "Input JSON for MCCS Subarray Leaf Node Configure command is: " + argin
             self.logger.debug(log_msg)
 
-            argin_json = json.loads(argin)
-            station_beam_pointings = argin_json["station_beam_pointings"][0]
-            sky_coordinates = self.sky_coordinates(station_beam_pointings, sky_coordinates)
-            # Add in sky_coordinates set in station_beam_pointings
-            station_beam_pointings["sky_coordinates"] = sky_coordinates
+            argin = json.loads(argin)
+            station_beam_pointings = self.sky_coordinates(argin)
 
             # Add station_ids in station_beam_pointings
-            argin_json = self.update_station_ids(argin_json, station_beam_pointings)
-            input_mccs_subarray = json.dumps(argin_json)
-            log_msg = "Output Configure JSON is: " + input_mccs_subarray
-            self.logger.info(log_msg)
-            mccs_subarray_client.send_command_async(const.CMD_CONFIGURE, input_mccs_subarray,
-                                                             self.configure_cmd_ended_cb)
+            updated_argin = self.update_station_ids(argin, station_beam_pointings)
+
+            #Invoke Configure command on MCCSSubarray.
+            self.configure_mccs_subarray(updated_argin, mccs_subarray_client)
             device_data._read_activity_message = const.STR_CONFIGURE_SUCCESS
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
 
@@ -152,7 +146,9 @@ class Configure(BaseCommand):
                                          "MccsSubarrayLeafNode.Configure",
                                          tango.ErrSeverity.ERR)
 
-    def sky_coordinates(self, station_beam_pointings, sky_coordinates):
+    def sky_coordinates(self, argin):
+        station_beam_pointings = argin["station_beam_pointings"][0]
+        sky_coordinates = []
         azimuth_coord = station_beam_pointings["target"]["Az"]
         elevation_coord = station_beam_pointings["target"]["El"]
 
@@ -168,11 +164,14 @@ class Configure(BaseCommand):
         # Append Elevation and Elevation_rate into sky_coordinates set
         sky_coordinates.append(elevation_coord)
         sky_coordinates.append(0.0)
-        return sky_coordinates
 
-    def update_station_ids(self, argin_json, station_beam_pointings):
+        # Add in sky_coordinates set in station_beam_pointings
+        station_beam_pointings["sky_coordinates"] = sky_coordinates
+        return station_beam_pointings
+
+    def update_station_ids(self, argin, station_beam_pointings):
         station_ids = []
-        for station in argin_json["stations"]:
+        for station in argin["stations"]:
             log_msg = "Station is: " + str(station)
             self.logger.info(log_msg)
             station_ids.append(station["station_id"])
@@ -181,7 +180,14 @@ class Configure(BaseCommand):
         station_beam_pointings.pop("target", None)
 
         # Update station_beam_pointings into output Configure JSON
-        argin_json["station_beam_pointings"][0] = station_beam_pointings
-        argin_json["station_beams"] = argin_json["station_beam_pointings"]
-        argin_json.pop("station_beam_pointings", None)
-        return argin_json
+        argin["station_beam_pointings"][0] = station_beam_pointings
+        argin["station_beams"] = argin["station_beam_pointings"]
+        argin.pop("station_beam_pointings", None)
+        return argin
+
+    def configure_mccs_subarray(self, argin, mccs_subarray_client):
+        input_mccs_subarray = json.dumps(argin)
+        log_msg = "Output Configure JSON is: " + input_mccs_subarray
+        self.logger.info(log_msg)
+        mccs_subarray_client.send_command_async(const.CMD_CONFIGURE, input_mccs_subarray,
+                                                self.configure_cmd_ended_cb)
