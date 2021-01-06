@@ -43,7 +43,8 @@ class SetOperateMode(BaseCommand):
         :raises DevFailed: If error occurs while invoking SetOperateMode command on DishMaster.
         """
         device_data = self.target
-        cmd_ended_cb = CommandCallBack(self, self.logger).cmd_ended_cb
+        cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
+
 
         attributes_to_subscribe_to = (
                 "dishMode",
@@ -55,9 +56,9 @@ class SetOperateMode(BaseCommand):
         try:
             # Subscribe the DishMaster attributes
             self._subscribe_to_attribute_events(attributes_to_subscribe_to)
-            
+
             dish_client = TangoClient(device_data._dish_master_fqdn)
-            cmd_ended_cb = CommandCallBack(self, self.logger).cmd_ended_cb
+            cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
             dish_client.send_command_async(command_name, None, cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
             time.sleep(0.5)

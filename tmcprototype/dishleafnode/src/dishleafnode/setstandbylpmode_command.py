@@ -46,7 +46,7 @@ class SetStandbyLPMode(BaseCommand):
         command_name = "SetStandbyFPMode"
         try:
             dish_client = TangoClient(device_data._dish_master_fqdn)
-            cmd_ended_cb = CommandCallBack(self, self.logger).cmd_ended_cb
+            cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
             # Unsubscribe the DishMaster attributes
             self._unsubscribe_attribute_events() 
             
