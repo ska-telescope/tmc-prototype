@@ -45,6 +45,7 @@ class DeviceData:
         self.activity_message = ""
         self.resource_list = []
         self.end_scan = None
+        self.scan_thread = None
 
     @staticmethod
     def get_instance():

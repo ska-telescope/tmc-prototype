@@ -34,8 +34,8 @@ class Off(SKASubarray.OffCommand):
         device = self.target
         device.is_release_resources = False
         try:
-            mccs_subarray_client = TangoClient(device.mccs_subarray_ln_fqdn)
-            mccs_subarray_client.send_command(const.CMD_OFF, None)
+            mccs_subarray_ln_client = TangoClient(device.mccs_subarray_ln_fqdn)
+            mccs_subarray_ln_client.send_command(const.CMD_OFF, None)
             message = "Off command completed OK"
             self.logger.info(message)
             return (ResultCode.OK, message)
