@@ -68,21 +68,21 @@ class SubarrayNode(SKASubarray):
     Provides the monitoring and control interface required by users as well as
     other TM Components (such as OET, Central Node) for a Subarray.
     """
-    def command_class_object(self):
-        """
-        Sets up the command objects
-        :return: None
-        """
-        args = (self, self.state_model, self.logger)
-        self.init_obj = self.InitCommand(*args)
-        self.on_obj = On(*args)
-        self.off_obj = Off(*args)
-        self.end_obj = End(*args)
-        self.scan_obj = Scan(*args)
-        self.endscan_obj = EndScan(*args)
-        self.configure_obj = Configure(*args)
-        self.release_obj = ReleaseAllResources(*args)
-        self.assign_obj = AssignResources(*args)
+    # def command_class_object(self):
+    #     """
+    #     Sets up the command objects
+    #     :return: None
+    #     """
+    #     args = (self, self.state_model, self.logger)
+    #     self.init_obj = self.InitCommand(*args)
+    #     self.on_obj = On(*args)
+    #     self.off_obj = Off(*args)
+    #     self.end_obj = End(*args)
+    #     self.scan_obj = Scan(*args)
+    #     self.endscan_obj = EndScan(*args)
+    #     self.configure_obj = Configure(*args)
+    #     self.release_obj = ReleaseAllResources(*args)
+    #     self.assign_obj = AssignResources(*args)
 
     def health_state_cb(self, event):
         """
@@ -229,7 +229,7 @@ class SubarrayNode(SKASubarray):
         :rtype: int
         """
 
-        return len(self._resource_list)
+        return len(device_data.resource_list)
 
     # -----------------
     # Device Properties
@@ -306,6 +306,7 @@ class SubarrayNode(SKASubarray):
             device._mccs_subarray_ln_proxy = device.get_deviceproxy(device.MccsSubarrayLNFQDN)
             device._mccs_subarray_proxy = device.get_deviceproxy(device.MccsSubarrayFQDN)
             device.command_class_object()
+
 
             try:
                 device.subarray_ln_health_state_map[device._mccs_subarray_ln_proxy.dev_name()] = (
@@ -384,7 +385,9 @@ class SubarrayNode(SKASubarray):
         device.
         """
         super().init_command_objects()
+ 
         device_data = DeviceData.get_instance()
+<<<<<<< HEAD
         args = (self, self.state_model, self.logger)
         self.register_command_object("AssignResources", AssignResources(*args))
         self.register_command_object("ReleaseAllResources", ReleaseAllResources(*args))
@@ -394,6 +397,31 @@ class SubarrayNode(SKASubarray):
         self.register_command_object("Scan", Scan(*args))
         self.register_command_object("End", End(*args))
         self.register_command_object("EndScan", EndScan(*args))
+=======
+        args = (device_data, self.state_model, self.logger)
+
+        self.init_obj = self.InitCommand(*args)
+        self.on_obj = On(*args)
+        self.off_obj = Off(*args)
+        self.end_obj = End(*args)
+        self.scan_obj = Scan(*args)
+        self.endscan_obj = EndScan(*args)
+        self.configure_obj = Configure(*args)
+        self.release_obj = ReleaseAllResources(*args)
+        self.assign_obj = AssignResources(*args)
+        # The EndScan object is created in device data as it is utilized in Scan command to invoke EndScan. 
+        # This might be updated once Mid Subarray node implementation is confirmed.
+        device_data.end_scan = self.endscan_obj
+
+        self.register_command_object("AssignResources", self.assign_obj)
+        self.register_command_object("ReleaseAllResources", self.release_obj)
+        self.register_command_object("On", self.on_obj)
+        self.register_command_object("Off", self.off_obj)
+        self.register_command_object("Configure", self.configure_obj)
+        self.register_command_object("Scan", self.scan_obj)
+        self.register_command_object("End", self.end_obj)
+        self.register_command_object("EndScan", self.endscan_obj)
+>>>>>>> 2e0b16098258bdc9c5de39660faab1661a86d2e9
 
 
 # ----------

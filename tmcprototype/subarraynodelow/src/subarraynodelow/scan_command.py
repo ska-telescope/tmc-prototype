@@ -14,6 +14,8 @@ from tango import DevFailed
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from . import const
+from subarraynodelow.device_data import DeviceData
+from tmc.common.tango_client import TangoClient
 
 
 class Scan(SKASubarray.ScanCommand):
@@ -43,25 +45,27 @@ class Scan(SKASubarray.ScanCommand):
 
         :raises: DevFailed if the command execution is not successful
         """
-        device = self.target
-        device.is_scan_completed = False
-        device.is_release_resources = False
+        device_data = DeviceData.get_instance()
+        device_data.is_scan_completed = False
+        device_data.is_release_resources = False
         try:
             log_msg = const.STR_SCAN_IP_ARG + str(argin)
             self.logger.info(log_msg)
-            device._read_activity_message = log_msg
-            device.isScanRunning = True
+            device_data.activity_message = log_msg
+            device_data.isScanRunning = True
             # Invoke scan command on MCCS Subarray Leaf Node with input argument as scan id
-            device._mccs_subarray_ln_proxy.command_inout(const.CMD_SCAN, argin)
+            mccs_leaf_node_client = TangoClient(device_data.mccs_subarray1_ln_fqdn)
+            mccs_leaf_node_client.send_command(const.CMD_SCAN, argin)
+            # device._mccs_subarray_ln_proxy.command_inout(const.CMD_SCAN, argin)
             self.logger.info(const.STR_MCCS_SCAN_INIT)
-            device._read_activity_message = const.STR_MCCS_SCAN_INIT
-            device.set_status(const.STR_SA_SCANNING)
+            device_data.activity_message = const.STR_MCCS_SCAN_INIT
+            # device_data.set_status(const.STR_SA_SCANNING)
             self.logger.info(const.STR_SA_SCANNING)
-            device._read_activity_message = const.STR_SCAN_SUCCESS
+            device_data.activity_message = const.STR_SCAN_SUCCESS
             # Once Scan Duration is complete call EndScan Command
             self.logger.info("Starting Scan Thread")
-            device.scan_thread = threading.Timer(device.scan_duration, self.call_end_scan_command)
-            device.scan_thread.start()
+            device_data.scan_thread = threading.Timer(device_data.scan_duration, self.call_end_scan_command)
+            device_data.scan_thread.start()
             self.logger.info("Scan thread started")
             return (ResultCode.STARTED, const.STR_SCAN_SUCCESS)
         except DevFailed as dev_failed:
@@ -73,5 +77,5 @@ class Scan(SKASubarray.ScanCommand):
                                          tango.ErrSeverity.ERR)
 
     def call_end_scan_command(self):
-        device = self.target
-        device.endscan_obj.do()
+        device_data = DeviceData.get_instance()
+        device_data.end_scan.do()

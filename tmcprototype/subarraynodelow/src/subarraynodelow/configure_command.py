@@ -14,6 +14,8 @@ from tango import DevFailed
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from . import const
+from subarraynodelow.device_data import DeviceData
+from tmc.common.tango_client import TangoClient
 
 
 class Configure(SKASubarray.ConfigureCommand):
@@ -41,45 +43,47 @@ class Configure(SKASubarray.ConfigureCommand):
         :raises: JSONDecodeError if input argument json string contains invalid value
                  DevFailed if the command execution is not successful.
         """
-        device = self.target
-        device.is_scan_completed = False
-        device.is_release_resources = False
+        device_data = DeviceData.get_instance()
+        device_data.is_scan_completed = False
+        device_data.is_release_resources = False
         self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA_LOW)
         log_msg = const.STR_CONFIGURE_IP_ARG + str(argin)
         self.logger.info(log_msg)
-        device.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA_LOW)
-        device._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA_LOW
+        # device.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA_LOW)
+        device_data.activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA_LOW
         try:
             scan_configuration = json.loads(argin)
         except json.JSONDecodeError as jerror:
             log_message = const.ERR_INVALID_JSON + str(jerror)
             self.logger.error(log_message)
-            device._read_activity_message = log_message
+            device_data.activity_message = log_message
             tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
             const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
         tmc_configure = scan_configuration["tmc"]
-        device.scan_duration = int(tmc_configure["scanDuration"])
+        device_data.scan_duration = int(tmc_configure["scanDuration"])
         self._configure_mccs_subarray(scan_configuration)
         message = "Configure command invoked"
         self.logger.info(message)
         return (ResultCode.STARTED, message)
         
     def _configure_mccs_subarray(self, scan_configuration):
-        device = self.target
+        # device_data = self.target
         scan_configuration = scan_configuration["mccs"]
         if not scan_configuration:
             raise KeyError("MCCS configuration must be given. Aborting MCCS configuration.")
-        self._configure_leaf_node(device._mccs_subarray_ln_proxy, "Configure", json.dumps(scan_configuration))
+        self._configure_leaf_node("Configure", json.dumps(scan_configuration))
       
-    def _configure_leaf_node(self, device_proxy, cmd_name, cmd_data):
-        device = self.target
+    def _configure_leaf_node(self, cmd_name, cmd_data):
+        device_data = DeviceData.get_instance()
         try:
-            device_proxy.command_inout(cmd_name, cmd_data)
-            log_msg = "%s configured succesfully." % device_proxy.dev_name()
+            mccs_leaf_node_client = TangoClient(device_data.mccs_subarray_fqdn)
+            mccs_leaf_node_client.send_command(cmd_name, cmd_data)
+            # device_proxy.command_inout(cmd_name, cmd_data)
+            log_msg = "%s configured succesfully." % device_data.mccs_subarray_fqdn
             self.logger.debug(log_msg)
         except DevFailed as df:
             log_message = df[0].desc
-            device._read_activity_message = log_message
-            log_msg = "Failed to configure %s. %s" % (device_proxy.dev_name(), df)
+            device_data.activity_message = log_message
+            log_msg = "Failed to configure %s. %s" % (device_data.mccs_subarray_fqdn, df)
             self.logger.error(log_msg)
             raise
