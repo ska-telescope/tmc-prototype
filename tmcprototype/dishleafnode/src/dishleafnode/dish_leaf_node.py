@@ -36,9 +36,9 @@ from .endscan_command import EndScanCommand
 from .obsreset_command import ObsResetCommand
 from .restart_command import RestartCommand
 from .scan_command import ScanCommand
-from .setoperatemode_command import SetOperateModeCommand
+from .setoperatemode_command import SetOperateMode
 from .setstandbyfpmode_command import SetStandbyFPMode
-from .setstandbylpmode_command import SetStandbyLPModeCommand
+from .setstandbylpmode_command import SetStandbyLPMode
 from .setstowmode_command import SetStowModeCommand
 from .slew_command import SlewCommand
 from .startcapture_command import StartCaptureCommand
@@ -47,7 +47,7 @@ from .stoptrack_command import StopTrackCommand
 from .track_command import TrackCommand
 
 
-__all__ = ["DishLeafNode", "main", "SetOperateModeCommand"]
+__all__ = ["DishLeafNode", "main", "SetOperateMode", "SetStandbyLPMode"]
 
 
 # class CommandCallBack:
@@ -102,8 +102,8 @@ class DishLeafNode(SKABaseDevice):
         super().init_command_objects()
         args = (device_data, self.state_model, self.logger)
         self.register_command_object("SetStowMode", SetStowModeCommand(*args))
-        self.register_command_object("SetStandbyLPMode", SetStandbyLPModeCommand(*args))
-        self.register_command_object("SetOperateMode", SetOperateModeCommand(*args))
+        self.register_command_object("SetStandbyLPMode", SetStandbyLPMode(*args))
+        self.register_command_object("SetOperateMode", SetOperateMode(*args))
         self.register_command_object("Scan", ScanCommand(*args))
         self.register_command_object("EndScan", EndScanCommand(*args))
         self.register_command_object("Configure", ConfigureCommand(*args))

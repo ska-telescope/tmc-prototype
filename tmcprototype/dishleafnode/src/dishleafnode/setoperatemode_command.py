@@ -31,7 +31,6 @@ from . import release
 from .device_data import DeviceData
 from .command_callback import CommandCallBack
 
-
 class SetOperateMode(BaseCommand):
     """
     A class for DishLeafNode's SetOperateMode() command.
@@ -45,7 +44,6 @@ class SetOperateMode(BaseCommand):
         """
         device_data = self.target
 
-        cmd_ended_cb = CommandCallBack(self, self.logger).cmd_ended_cb
         attributes_to_subscribe_to = (
                 "dishMode",
                 "capturing",
@@ -54,9 +52,11 @@ class SetOperateMode(BaseCommand):
             )
         command_name = "SetStandbyFPMode"
         try:
+            dish_client = TangoClient(device_data._dish_master_fqdn)
+            cmd_ended_cb = CommandCallBack(self, self.logger).cmd_ended_cb
+            # Subscribe the DishMaster attributes
             self._subscribe_to_attribute_events(attributes_to_subscribe_to)
 
-            dish_client = TangoClient(device_data._dish_master_fqdn)
             dish_client.send_command_asynch(command_name, None, cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
             time.sleep(0.5)

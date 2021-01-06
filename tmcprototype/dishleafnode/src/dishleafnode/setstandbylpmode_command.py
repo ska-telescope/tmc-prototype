@@ -28,10 +28,10 @@ from tmc.common.tango_client import TangoClient
 from ska.base.control_model import HealthState, SimulationMode
 from .utils import UnitConverter
 from . import release
+from .device_data import DeviceData
+from .command_callback import CommandCallBack
 
-
-
-class SetStandbyLPModeCommand(BaseCommand):
+class SetStandbyLPMode(BaseCommand):
     """
     A class for DishLeafNode's SetStandbyLPMode() command.
     """
@@ -42,16 +42,21 @@ class SetStandbyLPModeCommand(BaseCommand):
 
         :raises DevFailed: If error occurs while invoking SetStandbyLPMode command on DishMaster.
         """
-        device = self.target
+        device_data = self.target
         command_name = "SetStandbyFPMode"
         try:
+            dish_client = TangoClient(device_data._dish_master_fqdn)
+            cmd_ended_cb = CommandCallBack(self, self.logger).cmd_ended_cb
+            # Unsubscribe the DishMaster attributes
             self._unsubscribe_attribute_events() 
-            # ----------------------------------------------------
-            device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
+            
+            dish_client.send_command_asynch(command_name, None, cmd_ended_cb)
+            # device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
 
             command_name = "SetStandbyLPMode"
-            device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
+            dish_client.send_command_asynch(command_name, None, cmd_ended_cb)
+            # device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
@@ -69,8 +74,8 @@ class SetStandbyLPModeCommand(BaseCommand):
         """
         Method to unsubscribe to health state change event on CspMasterLeafNode, SdpMasterLeafNode and SubarrayNode
         """
-        dish_client = TangoClient(device_data._dish_master_fqdn)
         device_data = DeviceData.get_instance()
+        dish_client = TangoClient(device_data._dish_master_fqdn)
 
         for attr_name in device_data.attr_event_map:
             log_message = "Unsubscribing attributes of: {}".format(dish_client.get_device_fqdn)
