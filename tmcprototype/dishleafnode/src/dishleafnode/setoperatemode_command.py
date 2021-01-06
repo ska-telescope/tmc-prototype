@@ -28,6 +28,7 @@ from tmc.common.tango_client import TangoClient
 from ska.base.control_model import HealthState, SimulationMode
 from .utils import UnitConverter
 from . import release
+from .device_data import DeviceData
 
 
 class SetOperateModeCommand(BaseCommand):
@@ -41,7 +42,7 @@ class SetOperateModeCommand(BaseCommand):
 
         :raises DevFailed: If error occurs while invoking SetOperateMode command on DishMaster.
         """
-        device = self.target
+        device_data = self.target
         command_name = "SetStandbyFPMode"
         try:
             attributes_to_subscribe_to = (
@@ -57,13 +58,14 @@ class SetOperateModeCommand(BaseCommand):
             self.logger.info("'%s' command executed successfully.", command_name)
             time.sleep(0.5)
             command_name = "SetOperateMode"
-            device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
+            #device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
+            dish_ln_client.send_command_asynch(command_name, None, command_callback_obj.cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
 
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
             log_message = f"Exception occured while executing the '{command_name}' command."
-            device._read_activity_message = log_message
+            device_data._read_activity_message = log_message
             tango.Except.re_throw_exception(
                 dev_failed,
                 f"Exception in '{command_name}' command.",

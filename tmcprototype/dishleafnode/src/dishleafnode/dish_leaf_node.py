@@ -47,41 +47,41 @@ from .stoptrack_command import StopTrackCommand
 from .track_command import TrackCommand
 
 
-__all__ = ["DishLeafNode", "main"]
+__all__ = ["DishLeafNode", "main", "SetOperateModeCommand"]
 
 
-class CommandCallBack:
-    def __init__(self, device, log):
-        self.device = device
-        self.logger = log
+# class CommandCallBack:
+#     def __init__(self, device, log):
+#         self.device = device
+#         self.logger = log
 
-    def cmd_ended_cb(self, event):
-        """
-        Callback function immediately executed when the asynchronous invoked
-        command returns. Checks whether the command has been successfully invoked on DishMaster.
+#     def cmd_ended_cb(self, event):
+#         """
+#         Callback function immediately executed when the asynchronous invoked
+#         command returns. Checks whether the command has been successfully invoked on DishMaster.
 
-        :param event: a CmdDoneEvent object. This object is used to pass data
-            to the callback method in asynchronous callback model for command
-            execution.
-        :type: CmdDoneEvent object
-            It has the following members:
-            - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
-            - cmd_name   : (str) The command name
-            - argout_raw : (DeviceData) The command argout
-            - argout     : The command argout
-            - err        : (bool) A boolean flag set to True if the command failed.
-                            False otherwise
-            - errors     : (sequence<DevError>) The error stack
-            - ext
-        """
-        if event.err:
-            log_message = f"Error in invoking command: {event.cmd_name}\n{event.errors}"
-            self.logger.error(log_message)
-            self.device._read_activity_message = log_message
-        else:
-            log_message = f"Command :-> {event.cmd_name} invoked successfully."
-            self.logger.info(log_message)
-            self.device._read_activity_message = log_message
+#         :param event: a CmdDoneEvent object. This object is used to pass data
+#             to the callback method in asynchronous callback model for command
+#             execution.
+#         :type: CmdDoneEvent object
+#             It has the following members:
+#             - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
+#             - cmd_name   : (str) The command name
+#             - argout_raw : (DeviceData) The command argout
+#             - argout     : The command argout
+#             - err        : (bool) A boolean flag set to True if the command failed.
+#                             False otherwise
+#             - errors     : (sequence<DevError>) The error stack
+#             - ext
+#         """
+#         if event.err:
+#             log_message = f"Error in invoking command: {event.cmd_name}\n{event.errors}"
+#             self.logger.error(log_message)
+#             self.device._read_activity_message = log_message
+#         else:
+#             log_message = f"Command :-> {event.cmd_name} invoked successfully."
+#             self.logger.info(log_message)
+#             self.device._read_activity_message = log_message
 
 
 # pylint: disable=unused-variable, logging-fstring-interpolation
