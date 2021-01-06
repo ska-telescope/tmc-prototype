@@ -14,7 +14,6 @@ from ska.base import SKASubarray
 from tmc.common.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
 from tmc.common.tango_server_helper import TangoServerHelper
-# from subarraynode.remove_receptors import RemoveReceptors
 
 
 class Restart(SKASubarray.RestartCommand):
@@ -44,8 +43,6 @@ class Restart(SKASubarray.RestartCommand):
             self.restart_leaf_nodes(device_data.csp_subarray_ln_fqdn, const.STR_CMD_RESTART_INV_CSP)
             self.restart_leaf_nodes(device_data.sdp_subarray_ln_fqdn, const.STR_CMD_RESTART_INV_SDP)
             self.restart_dsh_grp(device_data)
-            # remove_receptors = RemoveReceptors()
-            # remove_receptors.remove_receptors_from_group()
             device_data.clean_up_dict(self.logger)
             device_data._read_activity_message = const.STR_RESTART_SUCCESS
             self.logger.info(const.STR_RESTART_SUCCESS)

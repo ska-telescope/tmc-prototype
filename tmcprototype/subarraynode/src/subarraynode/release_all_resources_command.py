@@ -13,7 +13,6 @@ from ska.base import SKASubarray
 from . import const
 from tmc.common.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
-# from subarraynode.remove_receptors import RemoveReceptors
 
 
 class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
