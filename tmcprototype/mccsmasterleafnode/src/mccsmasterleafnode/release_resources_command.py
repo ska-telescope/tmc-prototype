@@ -90,8 +90,8 @@ class ReleaseResources(BaseCommand):
         self.logger.info("Invoking Release on MCCS master")
 
         try:
-            mccs_mln_client_obj = TangoClient(device_data._mccs_master_ln_fqdn)
-            mccs_mln_client_obj.send_command_async(const.CMD_Release, argin, self.releaseresources_cmd_ended_cb)
+            mccs_mln_client = TangoClient(device_data._mccs_master_ln_fqdn)
+            mccs_mln_client.send_command_async(const.CMD_Release, argin, self.releaseresources_cmd_ended_cb)
             device_data._read_activity_message = const.STR_REMOVE_ALL_RECEPTORS_SUCCESS
             self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 

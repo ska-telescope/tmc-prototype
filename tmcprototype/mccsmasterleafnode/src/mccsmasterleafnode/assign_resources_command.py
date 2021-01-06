@@ -104,8 +104,8 @@ class AssignResources(BaseCommand):
         try:
             log_msg = "Input JSON for MCCS master leaf node AssignResources command is: " + argin
             self.logger.debug(log_msg)
-            mccs_mln_client_obj = TangoClient(device_data._mccs_master_ln_fqdn)
-            mccs_mln_client_obj.send_command_async(const.CMD_ALLOCATE, None, self.allocate_ended)
+            mccs_mln_client = TangoClient(device_data._mccs_master_ln_fqdn)
+            mccs_mln_client.send_command_async(const.CMD_ALLOCATE, None, self.allocate_ended)
             device_data._read_activity_message = const.STR_ALLOCATE_SUCCESS
             self.logger.info(const.STR_ALLOCATE_SUCCESS)
 

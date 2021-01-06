@@ -64,8 +64,8 @@ class On(SKABaseDevice.OnCommand):
         # If the array length is 0, the command applies to the whole MCCS Element.
         # If the array length is > 1 each array element specifies the FQDN of the MCCS SubElement to switch ON.
         try:
-            mccs_mln_client_obj = TangoClient(device_data._mccs_master_ln_fqdn)
-            mccs_mln_client_obj.send_command_async(const.CMD_ON, None, self.on_cmd_ended_cb)
+            mccs_mln_client = TangoClient(device_data._mccs_master_ln_fqdn)
+            mccs_mln_client.send_command_async(const.CMD_ON, None, self.on_cmd_ended_cb)
             self.logger.debug(const.STR_ON_CMD_ISSUED)
             return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
 
