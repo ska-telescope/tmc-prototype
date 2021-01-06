@@ -101,14 +101,14 @@ class Configure(BaseCommand):
             log_msg = "Input JSON for MCCS Subarray Leaf Node Configure command is: " + argin
             self.logger.debug(log_msg)
 
-            argin = json.loads(argin)
-            station_beam_pointings = self.sky_coordinates(argin)
-
-            # Add station_ids in station_beam_pointings
-            updated_argin = self.update_station_ids(argin, station_beam_pointings)
+            configuration_string = json.loads(argin)
+            cmd_data = self.create_cmd_data(configuration_string)
 
             #Invoke Configure command on MCCSSubarray.
-            self.configure_mccs_subarray(updated_argin, mccs_subarray_client)
+            log_msg = "Output Configure JSON is: " + cmd_data
+            self.logger.info(log_msg)
+            mccs_subarray_client.send_command_async(const.CMD_CONFIGURE, cmd_data,
+                                                    self.configure_cmd_ended_cb)
             device_data._read_activity_message = const.STR_CONFIGURE_SUCCESS
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
 
@@ -146,8 +146,25 @@ class Configure(BaseCommand):
                                          "MccsSubarrayLeafNode.Configure",
                                          tango.ErrSeverity.ERR)
 
-    def sky_coordinates(self, argin):
-        station_beam_pointings = argin["station_beam_pointings"][0]
+    def create_cmd_data(self, configuration_string):
+        station_beam_pointings = configuration_string["station_beam_pointings"][0]
+        sky_coordinates = self.get_sky_coordinates(station_beam_pointings)
+
+        # Add in sky_coordinates set in station_beam_pointings
+        station_beam_pointings["sky_coordinates"] = sky_coordinates
+
+        station_ids = self.get_station_ids(configuration_string, station_beam_pointings)
+
+        station_beam_pointings["station_id"] = station_ids
+        # Remove target block from station_beam_pointings
+        station_beam_pointings.pop("target", None)
+
+        mccs_sa_configuration_string = self.update_configuration_json(station_beam_pointings, station_ids, configuration_string)
+        cmd_data = json.dumps(mccs_sa_configuration_string)
+        return cmd_data
+
+    def get_sky_coordinates(self, station_beam_pointings):
+
         sky_coordinates = []
         azimuth_coord = station_beam_pointings["target"]["Az"]
         elevation_coord = station_beam_pointings["target"]["El"]
@@ -165,29 +182,19 @@ class Configure(BaseCommand):
         sky_coordinates.append(elevation_coord)
         sky_coordinates.append(0.0)
 
-        # Add in sky_coordinates set in station_beam_pointings
-        station_beam_pointings["sky_coordinates"] = sky_coordinates
-        return station_beam_pointings
+        return sky_coordinates
 
-    def update_station_ids(self, argin, station_beam_pointings):
+    def get_station_ids(self, configuration_string, station_beam_pointings):
         station_ids = []
-        for station in argin["stations"]:
+        for station in configuration_string["stations"]:
             log_msg = "Station is: " + str(station)
             self.logger.info(log_msg)
             station_ids.append(station["station_id"])
-        station_beam_pointings["station_id"] = station_ids
-        # Remove target block from station_beam_pointings
-        station_beam_pointings.pop("target", None)
+        return station_ids
 
+    def update_configuration_json(self, station_beam_pointings, station_ids, configuration_string):
         # Update station_beam_pointings into output Configure JSON
-        argin["station_beam_pointings"][0] = station_beam_pointings
-        argin["station_beams"] = argin["station_beam_pointings"]
-        argin.pop("station_beam_pointings", None)
-        return argin
-
-    def configure_mccs_subarray(self, argin, mccs_subarray_client):
-        input_mccs_subarray = json.dumps(argin)
-        log_msg = "Output Configure JSON is: " + input_mccs_subarray
-        self.logger.info(log_msg)
-        mccs_subarray_client.send_command_async(const.CMD_CONFIGURE, input_mccs_subarray,
-                                                self.configure_cmd_ended_cb)
+        configuration_string["station_beam_pointings"][0] = station_beam_pointings
+        configuration_string["station_beams"] = configuration_string["station_beam_pointings"]
+        configuration_string.pop("station_beam_pointings", None)
+        return configuration_string
