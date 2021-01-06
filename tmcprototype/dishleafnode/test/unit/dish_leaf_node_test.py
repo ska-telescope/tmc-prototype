@@ -82,10 +82,10 @@ def command_without_arg(request):
 
 
 def test_command_cb_is_invoked_when_command_without_arg_is_called_async(mock_dish_master_proxy, command_without_arg):
-    tango_context, dish1_proxy_mock, _, _ = mock_dish_master_proxy
+    device_proxy, dish1_proxy_mock, _, _ = mock_dish_master_proxy
     cmd_name, requested_cmd = command_without_arg
 
-    tango_context.device.command_inout(cmd_name)
+    device_proxy.command_inout(cmd_name)
 
     dish1_proxy_mock.deviceproxy.command_inout_asynch.assert_called_with(requested_cmd, None, 
                                                                             any_method(with_name="cmd_ended_cb"))
