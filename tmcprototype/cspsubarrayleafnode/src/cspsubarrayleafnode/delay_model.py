@@ -48,7 +48,6 @@ class DelayManager:
         # create lock
         self.delay_model_lock = threading.Lock()
         # create thread
-        print ("Starting thread to calculate delay model.")
         self.logger.debug("Starting thread to calculate delay model.")
         self.delay_model_calculator_thread = threading.Thread(
             target=self.delay_model_handler,
@@ -116,7 +115,6 @@ class DelayManager:
 
         :return: Dictionary containing fifth order polynomial coefficients per antenna per fsp.
         """
-
         delay_corrections_h_array_t0 = []
         delay_corrections_h_array_t1 = []
         delay_corrections_h_array_t2 = []
@@ -139,9 +137,8 @@ class DelayManager:
 
         for timestamp_index in range(0, len(timestamp_array)):
             # Calculate geometric delay value.
-            delay = self.delay_correction_object._calculate_delays(self.target,
+            delay = self.delay_correction_object._calculate_delays(self.device_data.target,
                                                                     str(timestamp_array[timestamp_index]))
-
             # Horizontal and vertical delay corrections for each antenna
             for i in range(0, len(delay)):
                 if i % 2 == 0:
@@ -208,11 +205,9 @@ class DelayManager:
         :return: None.
 
         """
-        print ("Inside delay model handler method")
         delay_update_interval = argin
         csp_sub_client_obj = TangoClient(self.device_data.csp_subarray_fqdn)
         while not self._stop_delay_model_event.isSet():
-            csp_subarray_obsstate = csp_sub_client_obj.get_attribute("obsState")
             if csp_sub_client_obj.deviceproxy.obsState in (ObsState.CONFIGURING, ObsState.READY, ObsState.SCANNING):
                 self.delay_model_calculator()
                 # update the attribute
@@ -225,7 +220,7 @@ class DelayManager:
             else:
                 # TODO: This waiting on event is added temporarily to reduce high CPU usage.
                 self._stop_delay_model_event.wait(0.02)
-                self.device_data._delay_model = " test"
+                self.device_data._delay_model = " "
 
         self.logger.debug("Stop event received. Thread exit.")
 
@@ -233,7 +228,7 @@ class DelayManager:
         self.logger.info("Calculating delays.")
         time_t0 = datetime.today() + timedelta(seconds=self._delay_in_advance)
         time_t0_utc = (time_t0.astimezone(pytz.UTC)).timestamp()
-
+        self.logger.info("calling Calculate_geometric delays.")
         delay_corrections_h_array_dict = self.calculate_geometric_delays(time_t0)
         delay_model = []
         receptor_delay_model = []
