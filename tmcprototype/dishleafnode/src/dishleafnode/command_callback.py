@@ -32,10 +32,8 @@ from .device_data import DeviceData
 
 
 class CommandCallBack:
-    __instance = None
 
-    def __init__(self, device, log):
-        self.device = device
+    def __init__(self, log):
         self.logger = log
 
 
