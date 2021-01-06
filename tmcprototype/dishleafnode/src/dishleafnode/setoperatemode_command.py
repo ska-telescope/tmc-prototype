@@ -44,6 +44,15 @@ class SetOperateModeCommand(BaseCommand):
         device = self.target
         command_name = "SetStandbyFPMode"
         try:
+            attributes_to_subscribe_to = (
+                "dishMode",
+                "capturing",
+                "achievedPointing",
+                "desiredPointing",
+            )
+
+            self._subscribe_to_attribute_events(attributes_to_subscribe_to)
+
             device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
             time.sleep(0.5)
@@ -63,3 +72,49 @@ class SetOperateModeCommand(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
 
+    def _subscribe_to_attribute_events(self, attributes):
+        dish_client = TangoClient(device_data._dish_master_fqdn)
+        device_data = DeviceData.get_instance()
+
+        for attribute_name in attributes:
+            try:
+                device_data.attr_event_map[attribute_name] = dish_client.subscribe_attribute(
+                    attribute_name,
+                    self.attribute_event_handler)
+                    
+            except DevFailed as dev_failed:
+                self.logger.exception(dev_failed)
+                log_message = (
+                    f"Exception occurred while subscribing to Dish attribute: {attribute_name}"
+                )
+                device_data._read_activity_message = log_message
+                tango.Except.re_throw_exception(
+                    dev_failed,
+                    "Exception in Init command",
+                    log_message,
+                    "DishLeafNode.{}Command".format("Init"),
+                    tango.ErrSeverity.ERR,
+                )
+
+    def attribute_event_handler(self, event_data):
+        """
+        Retrieves the subscribed attribute of DishMaster.
+
+        :param evt: A TANGO_CHANGE event on attribute.
+        """
+        if event_data.err:
+            log_message = f"Event system DevError(s) occured!!! {str(event_data.errors)}"
+            self._read_activity_message = log_message
+            self.logger.error(log_message)
+            return
+
+        fqdn_attr_name = event_data.attr_name
+        # tango://monctl.devk4.camlab.kat.ac.za:4000/mid_dish_0000/elt/
+        # master/<attribute_name>#dbase=no
+        # We process the FQDN of the attribute to extract just the
+        # attribute name. Also handle the issue with the attribute name being
+        # converted to lowercase in subsequent callbacks.
+        attr_name = fqdn_attr_name.split("/")[-1].split("#")[0]
+        log_message = f"{attr_name} is {event_data.attr_value.value}."
+        self._read_activity_message = log_message
+        self.logger.debug(log_message)

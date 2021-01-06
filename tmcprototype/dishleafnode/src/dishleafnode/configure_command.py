@@ -125,3 +125,30 @@ class ConfigureCommand(BaseCommand):
         time_az_el = [now.timestamp(), device.az, device.el]
         device._dish_proxy.desiredPointing = time_az_el
 
+    def _get_targets(self, json_argument):
+        try:
+            ra_value = json_argument["pointing"]["target"]["RA"]
+            dec_value = json_argument["pointing"]["target"]["dec"]
+        except KeyError as key_error:
+            tango.Except.throw_exception(
+                str(key_error),
+                "JSON key not found.",
+                "_get_targets",
+                tango.ErrSeverity.ERR,
+            )
+
+        return (ra_value, dec_value)
+
+    def _load_config_string(self, argin):
+        try:
+            json_argument = json.loads(argin)
+        except json.JSONDecodeError as jsonerr:
+            tango.Except.throw_exception(
+                str(jsonerr),
+                "Invalid JSON format.",
+                "_load_config_string",
+                tango.ErrSeverity.ERR,
+            )
+
+        return json_argument
+

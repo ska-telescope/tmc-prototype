@@ -45,6 +45,8 @@ class SetStandbyLPModeCommand(BaseCommand):
         device = self.target
         command_name = "SetStandbyFPMode"
         try:
+            self._unsubscribe_attribute_events() 
+            # ----------------------------------------------------
             device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
 
@@ -63,4 +65,16 @@ class SetStandbyLPModeCommand(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
 
+    def _unsubscribe_attribute_events(self):
+        """
+        Method to unsubscribe to health state change event on CspMasterLeafNode, SdpMasterLeafNode and SubarrayNode
+        """
+        dish_client = TangoClient(device_data._dish_master_fqdn)
+        device_data = DeviceData.get_instance()
+
+        for attr_name in device_data.attr_event_map:
+            log_message = "Unsubscribing attributes of: {}".format(dish_client.get_device_fqdn)
+            self.logger.debug(log_message)
+            dish_client.unsubscribe_attribute(device_data.attr_event_map[attr_name])
+        device_data.attr_event_map.clear()
 

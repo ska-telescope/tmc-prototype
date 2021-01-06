@@ -27,6 +27,19 @@ class DeviceData:
 
         self._read_activity_message = ""
         self._dish_master_fqdn = ""
+        self.el = 30.0
+        self.az = 0.0
+        self.ele_max_lim = 90
+        self.ele_min_lim = 17.5
+        self.el_limit = False
+        self.radec_value = ""
+        self.dish_name = ""
+        self.dish_number = ""
+        self.observer_location_lat = ""
+        self.observer_location_long = ""
+        self.observer_altitude = 0
+        self.event_track_time = threading.Event()
+        self.attr_event_map = {}
 
     @staticmethod
     def get_instance():

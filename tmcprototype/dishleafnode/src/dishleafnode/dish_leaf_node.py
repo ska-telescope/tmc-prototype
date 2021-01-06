@@ -117,28 +117,28 @@ class DishLeafNode(SKABaseDevice):
         self.register_command_object("Restart", RestartCommand(*args))
         self.register_command_object("ObsReset", ObsResetCommand(*args))
 
-    def attribute_event_handler(self, event_data):
-        """
-        Retrieves the subscribed attribute of DishMaster.
+    # def attribute_event_handler(self, event_data):
+    #     """
+    #     Retrieves the subscribed attribute of DishMaster.
 
-        :param evt: A TANGO_CHANGE event on attribute.
-        """
-        if event_data.err:
-            log_message = f"Event system DevError(s) occured!!! {str(event_data.errors)}"
-            self._read_activity_message = log_message
-            self.logger.error(log_message)
-            return
+    #     :param evt: A TANGO_CHANGE event on attribute.
+    #     """
+    #     if event_data.err:
+    #         log_message = f"Event system DevError(s) occured!!! {str(event_data.errors)}"
+    #         self._read_activity_message = log_message
+    #         self.logger.error(log_message)
+    #         return
 
-        fqdn_attr_name = event_data.attr_name
-        # tango://monctl.devk4.camlab.kat.ac.za:4000/mid_dish_0000/elt/
-        # master/<attribute_name>#dbase=no
-        # We process the FQDN of the attribute to extract just the
-        # attribute name. Also handle the issue with the attribute name being
-        # converted to lowercase in subsequent callbacks.
-        attr_name = fqdn_attr_name.split("/")[-1].split("#")[0]
-        log_message = f"{attr_name} is {event_data.attr_value.value}."
-        self._read_activity_message = log_message
-        self.logger.debug(log_message)
+    #     fqdn_attr_name = event_data.attr_name
+    #     # tango://monctl.devk4.camlab.kat.ac.za:4000/mid_dish_0000/elt/
+    #     # master/<attribute_name>#dbase=no
+    #     # We process the FQDN of the attribute to extract just the
+    #     # attribute name. Also handle the issue with the attribute name being
+    #     # converted to lowercase in subsequent callbacks.
+    #     attr_name = fqdn_attr_name.split("/")[-1].split("#")[0]
+    #     log_message = f"{attr_name} is {event_data.attr_value.value}."
+    #     self._read_activity_message = log_message
+    #     self.logger.debug(log_message)
 
     def convert_radec_to_azel(self, target, timestamp):
         """Converts RaDec coordinate in to AzEl coordinate using KATPoint library.
@@ -152,11 +152,13 @@ class DishLeafNode(SKABaseDevice):
             Azimuth and elevation angle, in degrees
         :raises ValueError: If error occurs when creating katpoint Target or Timestamp.
         """
+        device_data = DeviceData.get_instance()
+
         dish_antenna = katpoint.Antenna(
-            name=self.dish_name,
-            latitude=self.observer_location_lat,
-            longitude=self.observer_location_long,
-            altitude=self.observer_altitude,
+            name=device_data.dish_name,
+            latitude=device_data.observer_location_lat,
+            longitude=device_data.observer_location_long,
+            altitude=device_data.observer_altitude,
         )
 
         dish_antenna_latitude = dish_antenna.ref_observer.lat
@@ -199,34 +201,36 @@ class DishLeafNode(SKABaseDevice):
             f"print track_thread thread name:{threading.currentThread().getName()}"
             f"{threading.get_ident()}"
         )
-        while self.event_track_time.is_set() is False:
+        device_data = DeviceData.get_instance()
+        while device_data.event_track_time.is_set() is False:
             now = datetime.datetime.utcnow()
             timestamp = str(now)
             # pylint: disable=unbalanced-tuple-unpacking
-            self.az, self.el = self.convert_radec_to_azel(self.radec_value, timestamp)
+            device_data.az, device_data.el = self.convert_radec_to_azel(device_data.radec_value, timestamp)
 
             if not self._is_elevation_within_mechanical_limits():
                 time.sleep(0.05)
                 continue
 
-            if self.az < 0:
-                self.az = 360 - abs(self.az)
+            if device_data.az < 0:
+                device_data.az = 360 - abs(device_data.az)
 
-            if self.event_track_time.is_set():
-                log_message = f"Break loop: {self.event_track_time.is_set()}"
+            if device_data.event_track_time.is_set():
+                log_message = f"Break loop: {device_data.event_track_time.is_set()}"
                 self.logger.debug(log_message)
                 break
 
             # TODO (kmadisa 11-12-2020) Add a pointing lead time to the current time (like we do on MeerKAT)
-            desired_pointing = [now.timestamp(), round(self.az, 12), round(self.el, 12)]
+            desired_pointing = [now.timestamp(), round(device_data.az, 12), round(device_data.el, 12)]
             self.logger.debug("desiredPointing coordinates: %s", desired_pointing)
             self._dish_proxy.desiredPointing = desired_pointing
 
             time.sleep(0.05)
 
     def _is_elevation_within_mechanical_limits(self):
-        if not (self.el_min_lim <= self.el <= self.el_max_lim):
-            self.el_limit = True
+        device_data = DeviceData.get_instance()
+        if not (device_data.ele_min_lim <= device_data.el <= device_data.ele_max_lim):
+            device_data.el_limit = True
             log_message = "Minimum/maximum elevation limit has been reached."
             self._read_activity_message = log_message
             self.logger.info(log_message)
@@ -235,14 +239,15 @@ class DishLeafNode(SKABaseDevice):
             self.logger.info(log_message)
             return False
 
-        self.el_limit = False
+        device_data.el_limit = False
         return True
 
     def set_dish_name_number(self):
+        device_data = DeviceData.get_instance()
         # Find out dish number from DishMasterFQDN property e.g. mid_d0001/elt/master
         dish_name_string = self.DishMasterFQDN.split("/")[0]
-        self.dish_name = dish_name_string.split("_")[1]
-        self.dish_number = self.dish_name[1:]
+        device_data.dish_name = dish_name_string.split("_")[1]
+        device_data.dish_number = device_data.dish_name[1:]
 
     def set_observer_lat_long_alt(self):
         # Load a set of antenna descriptions (latitude, longitude, altitude, enu coordinates)
@@ -260,8 +265,10 @@ class DishLeafNode(SKABaseDevice):
             raise verr
 
         antenna_exist = False
+
+        device_data = DeviceData.get_instance()
         for ant in antennas:
-            if ant.name == self.dish_number:
+            if ant.name == device_data.dish_number:
                 ref_ant_lat = ant.ref_observer.lat
                 ref_ant_long = ant.ref_observer.long
                 ref_ant_altitude = ant.ref_observer.elevation
@@ -270,7 +277,7 @@ class DishLeafNode(SKABaseDevice):
                 break
 
         if not antenna_exist:
-            raise Exception(f"Antenna '{self.dish_number}' not in the ska_antennas.txt file.")
+            raise Exception(f"Antenna '{device_data.dish_number}' not in the ska_antennas.txt file.")
 
         # Convert reference antenna lat and long into radian
         obj_unitconverter = UnitConverter()
@@ -295,36 +302,36 @@ class DishLeafNode(SKABaseDevice):
         dish_lat_dms = obj_unitconverter.rad_to_dms(dish_lat_long_alt_rad[0])
         dish_long_dms = obj_unitconverter.rad_to_dms(dish_lat_long_alt_rad[1])
 
-        self.observer_location_lat = f"{dish_lat_dms[0]}:{dish_lat_dms[1]}:{dish_lat_dms[2]}"
-        self.observer_location_long = f"{dish_long_dms[0]}:{dish_long_dms[1]}:{dish_long_dms[2]}"
-        self.observer_altitude = dish_ecef_coordinates[2]
+        device_data.observer_location_lat = f"{dish_lat_dms[0]}:{dish_lat_dms[1]}:{dish_lat_dms[2]}"
+        device_data.observer_location_long = f"{dish_long_dms[0]}:{dish_long_dms[1]}:{dish_long_dms[2]}"
+        device_data.observer_altitude = dish_ecef_coordinates[2]
 
-    def _get_targets(self, json_argument):
-        try:
-            ra_value = json_argument["pointing"]["target"]["RA"]
-            dec_value = json_argument["pointing"]["target"]["dec"]
-        except KeyError as key_error:
-            tango.Except.throw_exception(
-                str(key_error),
-                "JSON key not found.",
-                "_get_targets",
-                tango.ErrSeverity.ERR,
-            )
+    # def _get_targets(self, json_argument):
+    #     try:
+    #         ra_value = json_argument["pointing"]["target"]["RA"]
+    #         dec_value = json_argument["pointing"]["target"]["dec"]
+    #     except KeyError as key_error:
+    #         tango.Except.throw_exception(
+    #             str(key_error),
+    #             "JSON key not found.",
+    #             "_get_targets",
+    #             tango.ErrSeverity.ERR,
+    #         )
 
-        return (ra_value, dec_value)
+    #     return (ra_value, dec_value)
 
-    def _load_config_string(self, argin):
-        try:
-            json_argument = json.loads(argin)
-        except json.JSONDecodeError as jsonerr:
-            tango.Except.throw_exception(
-                str(jsonerr),
-                "Invalid JSON format.",
-                "_load_config_string",
-                tango.ErrSeverity.ERR,
-            )
+    # def _load_config_string(self, argin):
+    #     try:
+    #         json_argument = json.loads(argin)
+    #     except json.JSONDecodeError as jsonerr:
+    #         tango.Except.throw_exception(
+    #             str(jsonerr),
+    #             "Invalid JSON format.",
+    #             "_load_config_string",
+    #             tango.ErrSeverity.ERR,
+    #         )
 
-        return json_argument
+    #     return json_argument
 
     # -----------------
     # Device Properties
@@ -346,11 +353,11 @@ class DishLeafNode(SKABaseDevice):
 
     def read_activityMessage(self):
         """ Returns the activityMessage """
-        return self._read_activity_message
+        return self.device_data._read_activity_message
 
     def write_activityMessage(self, value):
         """ Internal construct of TANGO. Sets the activityMessage """
-        self._read_activity_message = value
+        self.device_data._read_activity_message = value
 
     dishHealthState = attribute(name="dishHealthState", label="dishHealthState", forwarded=True)
 
@@ -378,29 +385,28 @@ class DishLeafNode(SKABaseDevice):
 
             this_server = TangoServerHelper.get_instance()
             this_server.device = device
-            
-            self.logger.info("Initializing DishLeafNode...")
-            device.el = 30.0
-            device.az = 0.0
-            device.ele_max_lim = 90
-            device.ele_min_lim = 17.5
-            device.el_limit = False
-            device._build_state = f"{release.name},{release.version},{release.description}"
-            device._version_id = release.version
-            device.radec_value = ""
-            device.set_dish_name_number()
-            device.set_observer_lat_long_alt()
-            log_message = f"DishMasterFQDN :-> {device.DishMasterFQDN}"
-            self.logger.debug(log_message)
-            device._read_activity_message = log_message
-            device.event_track_time = threading.Event()
-            device._health_state = HealthState.OK
-            device._simulation_mode = SimulationMode.FALSE
 
+            self.logger.info("Initializing DishLeafNode...")
             # Create DeviceData class instance
             device_data = DeviceData.get_instance()
             device.device_data = device_data
             device_data._dish_master_fqdn = device.DishMasterFQDN
+            # device.el = 30.0
+            # device.az = 0.0
+            # device.ele_max_lim = 90
+            # device.ele_min_lim = 17.5
+            # device.el_limit = False
+            device._build_state = f"{release.name},{release.version},{release.description}"
+            device._version_id = release.version
+            # device.radec_value = ""
+            device.set_dish_name_number()
+            device.set_observer_lat_long_alt()
+            log_message = f"DishMasterFQDN :-> {device.DishMasterFQDN}"
+            self.logger.debug(log_message)
+            device_data._read_activity_message = log_message
+            # device.event_track_time = threading.Event()
+            device._health_state = HealthState.OK
+            device._simulation_mode = SimulationMode.FALSE
 
 
             # try:
@@ -417,14 +423,14 @@ class DishLeafNode(SKABaseDevice):
             #         tango.ErrSeverity.ERR,
             #     )
 
-            attributes_to_subscribe_to = (
-                "dishMode",
-                "capturing",
-                "achievedPointing",
-                "desiredPointing",
-            )
+            # attributes_to_subscribe_to = (
+            #     "dishMode",
+            #     "capturing",
+            #     "achievedPointing",
+            #     "desiredPointing",
+            # )
 
-            self._subscribe_to_attribute_events(attributes_to_subscribe_to)
+            # self._subscribe_to_attribute_events(attributes_to_subscribe_to)
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_message = (
@@ -438,30 +444,30 @@ class DishLeafNode(SKABaseDevice):
             self.logger.info(log_message)
             return (ResultCode.OK, device_data._read_activity_message)
 
-        def _subscribe_to_attribute_events(self, attributes):
-            device = self.target
-            for attribute_name in attributes:
-                try:
-                    device._dish_proxy.subscribe_event(
-                        attribute_name,
-                        EventType.CHANGE_EVENT,
-                        device.attribute_event_handler,
-                        stateless=True,
-                    )
-                except DevFailed as dev_failed:
-                    self.logger.exception(dev_failed)
-                    log_message = (
-                        f"Exception occurred while subscribing to Dish attribute: {attribute_name}"
-                    )
-                    device.set_status("Error occured in Dish Leaf Node initialization")
-                    device_data._read_activity_message = log_message
-                    tango.Except.re_throw_exception(
-                        dev_failed,
-                        "Exception in Init command",
-                        log_message,
-                        "DishLeafNode.{}Command".format("Init"),
-                        tango.ErrSeverity.ERR,
-                    )
+        # def _subscribe_to_attribute_events(self, attributes):
+        #     device = self.target
+        #     for attribute_name in attributes:
+        #         try:
+        #             device._dish_proxy.subscribe_event(
+        #                 attribute_name,
+        #                 EventType.CHANGE_EVENT,
+        #                 device.attribute_event_handler,
+        #                 stateless=True,
+        #             )
+        #         except DevFailed as dev_failed:
+        #             self.logger.exception(dev_failed)
+        #             log_message = (
+        #                 f"Exception occurred while subscribing to Dish attribute: {attribute_name}"
+        #             )
+        #             device.set_status("Error occured in Dish Leaf Node initialization")
+        #             device_data._read_activity_message = log_message
+        #             tango.Except.re_throw_exception(
+        #                 dev_failed,
+        #                 "Exception in Init command",
+        #                 log_message,
+        #                 "DishLeafNode.{}Command".format("Init"),
+        #                 tango.ErrSeverity.ERR,
+        #             )
 
     @command()
     def SetStowMode(self):
