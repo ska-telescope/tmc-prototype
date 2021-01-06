@@ -48,6 +48,7 @@ class DelayManager:
         # create lock
         self.delay_model_lock = threading.Lock()
         # create thread
+        print ("Starting thread to calculate delay model.")
         self.logger.debug("Starting thread to calculate delay model.")
         self.delay_model_calculator_thread = threading.Thread(
             target=self.delay_model_handler,
@@ -207,16 +208,17 @@ class DelayManager:
         :return: None.
 
         """
+        print ("Inside delay model handler method")
         delay_update_interval = argin
         csp_sub_client_obj = TangoClient(self.device_data.csp_subarray_fqdn)
+        csp_subarray_obsstate = csp_sub_client_obj.get_attribute("obsState")
         while not self._stop_delay_model_event.isSet():
-            
             csp_subarray_obsstate = csp_sub_client_obj.get_attribute("obsState")
-            if csp_subarray_obsstate in (ObsState.CONFIGURING, ObsState.READY, ObsState.SCANNING):
+            if csp_sub_client_obj.deviceproxy.obsState in (ObsState.CONFIGURING.value, ObsState.READY.value, ObsState.SCANNING.value):
                 self.delay_model_calculator()
                 # update the attribute
                 self.delay_model_lock.acquire()
-                self._delay_model = json.dumps(self.delay_model_json)
+                self.device_data._delay_model = json.dumps(self.delay_model_json)
                 self.delay_model_lock.release()
 
                 # wait for timer event
@@ -224,7 +226,7 @@ class DelayManager:
             else:
                 # TODO: This waiting on event is added temporarily to reduce high CPU usage.
                 self._stop_delay_model_event.wait(0.02)
-                self._delay_model = " "
+                self.device_data._delay_model = " test"
 
         self.logger.debug("Stop event received. Thread exit.")
 

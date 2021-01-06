@@ -108,10 +108,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device_data = DeviceData.get_instance()
             device.device_data = device_data
             device_data.csp_subarray_fqdn = device.CspSubarrayFQDN
-
+            device_data._delay_model = " "
+            
             device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
             device._version_id = release.version
-            device._delay_model = " "
             device._versioninfo = " "
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
@@ -141,13 +141,13 @@ class CspSubarrayLeafNode(SKABaseDevice):
     def read_delayModel(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.delayModel_read) ENABLED START #
         '''Internal construct of TANGO. Returns the delay model.'''
-        return self._delay_model
+        return self.device_data._delay_model
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.delayModel_read
 
     def write_delayModel(self, value):
         # PROTECTED REGION ID(CspSubarrayLeafNode.delayModel_write) ENABLED START #
         '''Internal construct of TANGO. Sets in to the delay model.'''
-        self._delay_model = value
+        self.device_data._delay_model = value
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.delayModel_write
 
     def read_versionInfo(self):

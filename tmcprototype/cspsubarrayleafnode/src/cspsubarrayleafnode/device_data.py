@@ -30,6 +30,7 @@ class DeviceData():
         self._read_activity_message = ""
         self.target = ""
         self.fsp_ids_object = []
+        self._delay_model = " "
 
 
     @staticmethod
