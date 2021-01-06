@@ -28,8 +28,8 @@ from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 from ska.base.control_model import HealthState, SimulationMode
 from .utils import UnitConverter
-from . import release
-from . import DeviceData
+from dishleafnode import release
+from .device_data import DeviceData
 from .abort_command import AbortCommand
 from .configure_command import ConfigureCommand
 from .endscan_command import EndScanCommand
@@ -37,7 +37,7 @@ from .obsreset_command import ObsResetCommand
 from .restart_command import RestartCommand
 from .scan_command import ScanCommand
 from .setoperatemode_command import SetOperateModeCommand
-from .setstandbyfpmode_command import SetStandbyFPModeCommand
+from .setstandbyfpmode_command import SetStandbyFPMode
 from .setstandbylpmode_command import SetStandbyLPModeCommand
 from .setstowmode_command import SetStowModeCommand
 from .slew_command import SlewCommand
@@ -109,7 +109,7 @@ class DishLeafNode(SKABaseDevice):
         self.register_command_object("Configure", ConfigureCommand(*args))
         self.register_command_object("StartCapture", StartCaptureCommand(*args))
         self.register_command_object("StopCapture", StopCaptureCommand(*args))
-        self.register_command_object("SetStandbyFPMode", SetStandbyFPModeCommand(*args))
+        self.register_command_object("SetStandbyFPMode", SetStandbyFPMode(*args))
         self.register_command_object("Slew", SlewCommand(*args))
         self.register_command_object("Track", TrackCommand(*args))
         self.register_command_object("StopTrack", StopTrackCommand(*args))
