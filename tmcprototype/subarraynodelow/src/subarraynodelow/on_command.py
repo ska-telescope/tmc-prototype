@@ -10,6 +10,7 @@ from tango import DevFailed
 # Additional import
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+from tmc.common.tango_client import TangoClient
 from . import const
 
 
@@ -33,7 +34,10 @@ class On(SKASubarray.OnCommand):
         device = self.target
         device.is_release_resources = False
         try:
-            device._mccs_subarray_ln_proxy.On()
+            print("mccs fqdn:::::::::::::",device.mccs_subarray_fqdn )
+            mccs_subarray_client_obj = TangoClient(device.mccs_subarray_fqdn)
+            mccs_subarray_client_obj.send_command(const.CMD_ON, None)
+            # device._mccs_subarray_ln_proxy.On()
             message = "On command completed OK"
             self.logger.info(message)
             return (ResultCode.OK, message)

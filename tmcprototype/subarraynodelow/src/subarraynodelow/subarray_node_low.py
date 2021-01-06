@@ -297,13 +297,14 @@ class SubarrayNode(SKASubarray):
             device._mccs_sa_obs_state = ObsState.EMPTY
             device.subarray_ln_health_state_map = {}
             device._subarray_health_state = HealthState.OK  #Aggregated Subarray Health State
-
+            device_data.mccs_subarray_fqdn = device.MccsSubarrayLNFQDN
+            print("mccs fqdn:::::::::::::::",device.get_status())
+            print("mccs real value::::::::::",device.MccsSubarrayLNFQDN)
             # Create proxy for MCCS Subarray Leaf Node
             device._mccs_subarray_ln_proxy = None
             device._mccs_subarray_proxy = None
             device._mccs_subarray_ln_proxy = device.get_deviceproxy(device.MccsSubarrayLNFQDN)
             device._mccs_subarray_proxy = device.get_deviceproxy(device.MccsSubarrayFQDN)
-            # device_data.mccs_subarray_fqdn = device.MccsSubarrayLNFQDN
             device.command_class_object()
 
             try:
@@ -387,7 +388,7 @@ class SubarrayNode(SKASubarray):
         args = (self, self.state_model, self.logger)
         self.register_command_object("AssignResources", AssignResources(*args))
         self.register_command_object("ReleaseAllResources", ReleaseAllResources(*args))
-        self.register_command_object("On", On(*args))
+        self.register_command_object("On", On(device_data, self.state_model, self.logger))
         self.register_command_object("Off", Off(*args))
         self.register_command_object("Configure", Configure(*args))
         self.register_command_object("Scan", Scan(*args))
