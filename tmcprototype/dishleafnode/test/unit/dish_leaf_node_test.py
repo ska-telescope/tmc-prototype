@@ -16,6 +16,8 @@ from dishleafnode import DishLeafNode, const, release
 from dishleafnode.utils import DishMode
 from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
 from ska.base.control_model import LoggingLevel
+from tmc.common.tango_client import TangoClient
+
 
 
 config_input_file = "command_Config.json"
@@ -37,7 +39,6 @@ invalid_key_config_track_file = "invalid_key_Configure_Track.json"
 path = join(dirname(__file__), "data", invalid_key_config_track_file)
 with open(path, "r") as f:
     config_track_invalid_str = f.read()
-
 
 
 @pytest.fixture(scope="function")
@@ -113,12 +114,12 @@ def test_activity_message_attribute_value_contains_command_name(event_subscripti
 
 
 def test_activity_message_attribute_value_contains_command_name_with_event_error(
-    event_subscription, mock_dish_master, command_name
+    event_subscription_mock, mock_dish_master_proxy, command_name
 ):
     device_proxy, _, _, _ = mock_dish_master_proxy
     device_proxy.command_inout(command_name)
     dummy_event = command_callback_with_event_error(command_name)
-    event_subscription[command_name](dummy_event)
+    event_subscription_mock[command_name](dummy_event)
     assert f"Error in invoking command: {command_name}" in device_proxy.activityMessage
 
 
@@ -333,21 +334,21 @@ def test_activity_message_attribute_value_contains_command_name_with_event_error
 #     assert "Event system DevError(s) occured!!!" in tango_context.device.activityMessage
 
 
-# def create_dummy_event_with_error(device_fqdn, attr_value, attribute):
-#     fake_event = Mock()
-#     fake_event.err = True
-#     fake_event.errors = "Event Error"
-#     fake_event.attr_name = f"{device_fqdn}/{attribute}"
-#     fake_event.attr_value.value = attr_value
-#     return fake_event
+def create_dummy_event_with_error(device_fqdn, attr_value, attribute):
+    fake_event = Mock()
+    fake_event.err = True
+    fake_event.errors = "Event Error"
+    fake_event.attr_name = f"{device_fqdn}/{attribute}"
+    fake_event.attr_value.value = attr_value
+    return fake_event
 
 
-# def create_dummy_event_for_dish_capturing(device_fqdn, dish_capturing_value, attribute):
-#     fake_event = Mock()
-#     fake_event.err = False
-#     fake_event.attr_name = f"{device_fqdn}/{attribute}"
-#     fake_event.attr_value.value = dish_capturing_value
-#     return fake_event
+def create_dummy_event_for_dish_capturing(device_fqdn, dish_capturing_value, attribute):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{device_fqdn}/{attribute}"
+    fake_event.attr_value.value = dish_capturing_value
+    return fake_event
 
 
 # @pytest.fixture(scope="function", params=["True", "False"])
