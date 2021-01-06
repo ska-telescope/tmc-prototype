@@ -108,7 +108,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device_data = DeviceData.get_instance()
             device.device_data = device_data
             device_data.csp_subarray_fqdn = device.CspSubarrayFQDN
-            device_data._delay_model = " "
             
             device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
             device._version_id = release.version
