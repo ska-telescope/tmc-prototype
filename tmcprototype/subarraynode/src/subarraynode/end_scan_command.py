@@ -12,9 +12,9 @@ from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from tmc.common.tango_client import TangoClient
-from subarraynode.device_data import DeviceData
 from tmc.common.tango_server_helper import TangoServerHelper
-
+from subarraynode.device_data import DeviceData
+from subarraynode.scan_command import ScanStopper
 
 class EndScan(SKASubarray.EndScanCommand):
     """
@@ -39,12 +39,11 @@ class EndScan(SKASubarray.EndScanCommand):
         device_data.is_abort_command = False
         device_data.is_obsreset_command = False
         try:
-            if device_data.scan_thread:
-                if device_data.scan_thread.is_alive():
-                    device_data.scan_thread.cancel()  # stop timer when EndScan command is called
+            if device_data.scan_stopper.is_scan_running():
+                device_data.scan_stopper.stop_scan_timer()
             device_data.isScanRunning = False
             device_data.is_scan_completed = True
-            
+
             self.endscan_sdp(device_data)
             self.endscan_csp(device_data)
             device_data._scan_id = ""

@@ -40,7 +40,7 @@ from tmc.common.tango_server_helper import TangoServerHelper
 
 __all__ = ["SubarrayNode", "main", "AssignResources", "ReleaseAllResources",
            "Configure", "Scan", "EndScan", "End", "On",
-           "Off", "Track", "Abort", "Restart", "ObsReset"]
+           "Off", "Track", "Abort", "Restart", "ObsReset", "ScanStopper"]
 
 
 class SubarrayNode(SKASubarray):
