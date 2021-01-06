@@ -25,10 +25,10 @@ from ska.base.commands import ResultCode, BaseCommand
 from ska.base.control_model import HealthState
 from . import const, release
 from .device_data import DeviceData
-from centralnodelow.startup_telescope_command import StartUpTelescope
-from centralnodelow.standby_telescope_command import StandByTelescope
-# from centralnodelow.assign_resources_command import AssignResources
-# from centralnodelow.release_resources_command import ReleaseResources
+from .startup_telescope_command import StartUpTelescope
+from .standby_telescope_command import StandByTelescope
+from .assign_resources_command import AssignResources
+from .release_resources_command import ReleaseResources
 
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
@@ -751,11 +751,8 @@ class CentralNode(SKABaseDevice):
         args = (self.device_data, self.state_model, self.logger)
         self.register_command_object("StartUpTelescope", StartUpTelescope(*args))
         self.register_command_object("StandByTelescope", StandByTelescope(*args))
-        # self.register_command_object("AssignResources", AssignResources(*args))
-        # self.register_command_object("ReleaseResources", ReleaseResources(*args))
-
-        # self.register_command_object("Standby", Standby(*args))
-
+        self.register_command_object("AssignResources", AssignResources(*args))
+        self.register_command_object("ReleaseResources", ReleaseResources(*args))
 
 
 # ----------
