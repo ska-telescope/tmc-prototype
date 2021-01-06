@@ -14,12 +14,12 @@ of state and mode attributes defined by the SKA Control Model.
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 # Tango imports
 import tango
-from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
+from tango import DebugIt, AttrWriteType, EventType, DevFailed
 from tango.server import run, attribute, command, device_property
 
 # Additional import
 from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode, BaseCommand
+from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState
 from . import const, release
 from .device_data import DeviceData
@@ -230,7 +230,8 @@ class CentralNode(SKABaseDevice):
             #                                  tango.ErrSeverity.ERR)
 
             # Create device proxy for Subarray Node
-            for subarray in range(0, len(device.TMLowSubarrayNodes)):
+
+            for subarray in range(0, len(device_data.subarray_low)):
                 try:
                     # subarray_proxy = DeviceProxy(device.TMLowSubarrayNodes[subarray])
                     # device.subarray_health_state_map[subarray_proxy] = -1
@@ -239,9 +240,9 @@ class CentralNode(SKABaseDevice):
                     #                               device.health_state_cb, stateless=True)
 
                     # populate subarray_id-subarray proxy map
-                    tokens = device.TMLowSubarrayNodes[subarray].split('/')
+                    tokens = device_data.subarray_low[subarray].split('/')
                     subarray_id = int(tokens[2])
-                    device_data.subarray_FQDN_dict[subarray_id] = device.TMLowSubarrayNodes[subarray]
+                    device_data.subarray_FQDN_dict[subarray_id] = device_data.subarray_low[subarray]
 
                 except DevFailed as dev_failed:
                     log_msg = const.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)

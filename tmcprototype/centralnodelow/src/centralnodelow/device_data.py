@@ -33,9 +33,12 @@ class DeviceData:
         self._telescope_health_state = HealthState.UNKNOWN
         self.subarray_health_state_map = {}
         self.subarray_FQDN_dict = {}
-        self.subarray_low = ""
+        self.subarray_low = []
         self.mccs_master_fqdn = ""
         self._read_activity_message = ""
+        self.health_aggreegator = None
+
+
 
     @staticmethod
     def get_instance():

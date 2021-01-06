@@ -11,6 +11,7 @@ from ska.base.commands import ResultCode
 # from ska.base.control_model import HealthState
 from . import const
 from .device_data import DeviceData
+from .health_state_aggreegator import HealthStateAggreegator
 from tmc.common.tango_client import TangoClient
 
 class StartUpTelescope(SKABaseDevice.OnCommand):
@@ -50,7 +51,8 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         :rtype: (ResultCode, str)
         """
         device_data = self.target
-        self.startup_mccs(device_data.mccs_master_fqdn)
+        device_data.health_aggreegator = HealthStateAggreegator(self.logger)
+        device_data.health_aggreegator.subscribe_event()
         self.startup_subarray(device_data.subarray_low)
         log_msg = const.STR_ON_CMD_ISSUED
         self.logger.info(log_msg)

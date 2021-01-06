@@ -29,6 +29,7 @@ from ska.base.control_model import HealthState
 from ska.base.control_model import LoggingLevel
 from tmc.common.tango_client import TangoClient
 from ska.base.commands import ResultCode
+from centralnodelow.device_data import DeviceData
 
 
 
@@ -286,13 +287,64 @@ def test_build_state():
 #         dummy_event = create_dummy_event(mccs_master_ln_fqdn, mccs_master_ln_health_state)
 #         event_subscription_map[mccs_master_ln_health_attribute](dummy_event)
 #         assert tango_context.device.telescopeHealthState == mccs_master_ln_health_state
-#
-# def test_telescope_health_state_is_ok_when_subarray_node_is_ok_after_start(mock_central_lower_devices):
-#     device_proxy, subarray1_proxy_mock, mccs_master_ln_proxy_mock, subarray1_fqdn, event_subscription_map = mock_central_lower_devices
+
+
+@pytest.fixture(scope = 'function')
+def mock_subarraynode_device():
+    subarray1_fqdn = 'ska_low/tm_subarray_node/1'
+    dut_properties = {
+        'TMLowSubarrayNodes':'ska_low/tm_subarray_node/1'
+    }
+
+    event_subscription_map = {}
+    subarray1_device_proxy_mock = Mock()
+    Mock().subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args,
+               **kwargs: event_subscription_map.update({attr_name: callback}))
+
+    with fake_tango_system(CentralNode, initial_dut_properties=dut_properties) as tango_context:
+        with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
+            tango_client_obj = TangoClient(dut_properties['TMLowSubarrayNodes'])
+            yield tango_context.device, tango_client_obj, dut_properties['TMLowSubarrayNodes'], event_subscription_map
+
+
+def test_telescope_health_state_is_ok_when_subarray_node_is_ok_after_start(mock_subarraynode_device, health_state):
+    device_proxy , tango_client_obj, subarray1_fqdn, event_subscription_map = mock_subarraynode_device
+    device_data = DeviceData.get_instance()
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
+        with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber):
+            tango_client_obj = TangoClient('ska_low/tm_subarray_node/1')
+            device_proxy.StartUpTelescope()
+    assert device_data._telescope_health_state == health_state
+
+# def test_telescope_health_state_is_ok_when_subarray_node_is_ok_after_start(mock_subarraynode_device):
+#     device_proxy , tango_client_obj, subarray1_fqdn, event_subscription_map = mock_subarraynode_device
 #     subarray1_health_attribute = 'healthState'
 #     dummy_event = create_dummy_event(subarray1_fqdn, HealthState.OK)
 #     event_subscription_map[subarray1_health_attribute](dummy_event)
-#     assert device_proxy.telescopeHealthState == HealthState.OK
+#     assert device_proxy.telescopeHealthState == HealthState.ok
+
+
+
+def dummy_subscriber(attribute, callback_method):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"ska_low/tm_subarray_node/1/{attribute}"
+    fake_event.attr_value.value =  HealthState.UNKNOWN
+    print("Inside dummy subscriber ...........................")
+    print( fake_event.attr_value.value )
+
+    callback_method(fake_event)
+    return 10
+
+@pytest.fixture(
+    scope="function",
+    params=[
+        HealthState.UNKNOWN
+    ])
+def health_state(request):
+    return request.param
+
 
 def create_dummy_event(device_fqdn, health_state):
     fake_event = Mock()
