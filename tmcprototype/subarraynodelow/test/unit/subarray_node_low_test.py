@@ -374,8 +374,8 @@ def test_assign_resource_should_raise_exception_when_called_when_device_state_of
 #     wait_for(tango_context, ObsState.READY)
 #     assert tango_context.device.obsState == ObsState.READY
 
-def test_configure_command(subarray_state_model, mock_lower_devices):
-    device_proxy, tango_client_obj = mock_lower_devices
+def test_configure_command(subarray_state_model, mock_lower_devices_proxy):
+    device_proxy, tango_client_obj = mock_lower_devices_proxy
     device_data = DeviceData.get_instance()
     configure_cmd = Configure(device_data, subarray_state_model)
     # with mock.patch.object(ReceiveAddresses, subscribe, side_effect = Mock()):
@@ -408,8 +408,8 @@ def test_configure_command(subarray_state_model, mock_lower_devices):
 #     assert const.ERR_INVALID_JSON in  str(df.value)
 
 
-def test_configure_command_subarray_with_invalid_configure_input(subarray_state_model, mock_lower_devices):
-    device_proxy, tango_client_obj = mock_lower_devices
+def test_configure_command_subarray_with_invalid_configure_input(subarray_state_model, mock_lower_devices_proxy):
+    device_proxy, tango_client_obj = mock_lower_devices_proxy
     device_data = DeviceData.get_instance()
     configure_cmd = Configure(device_data, subarray_state_model)
     subarray_state_model._straight_to_state(DevState.ON, None, ObsState.IDLE)
@@ -545,8 +545,8 @@ def test_subarray_health_state_event_to_raise_devfailed_exception_for_mccs_subar
         assert tango_context.device.State() == DevState.FAULT
 
 
-def test_assign_resources_should_assign_resources_when_device_state_on(mock_lower_devices):
-    device_proxy, tango_client_obj = mock_lower_devices
+def test_assign_resources_should_assign_resources_when_device_state_on(mock_lower_devices_proxy):
+    device_proxy, tango_client_obj = mock_lower_devices_proxy
     device_proxy.On()
     assert  device_proxy.AssignResources(assign_input_str) == [[ResultCode.STARTED], ["AssignResources command executionSTARTED"]]
     # attribute = 'ObsState'
@@ -556,26 +556,26 @@ def test_assign_resources_should_assign_resources_when_device_state_on(mock_lowe
     # wait_for(tango_context, ObsState.IDLE)
     assert device_proxy.obsState == ObsState.RESOURCING
 
+#NOte: for now there is no invokation of commandinout in relesase_all_resources
+# def test_release_resource_should_raise_exception_when_call_before_assign_resources(mock_lower_devices_proxy, subarray_state_model):
+#     device_proxy, tango_client_obj = mock_lower_devices_proxy
+#     device_proxy.On()
+#     # with pytest.raises(tango.DevFailed) as df:
+#     #     device_proxy.ReleaseAllResources()
+#     # # assert tango_context.device.State() == DevState.ON
+#     # # assert tango_context.device.obsState == ObsState.EMPTY
+#     # assert "Error executing command ReleaseAllResources" in str(df.value)
+#
+#     device_data = DeviceData.get_instance()
+#     tango_client_obj.deviceproxy.command_inout.side_effect = raise_devfailed_exception
+#     release_resources_cmd = ReleaseAllResources(device_data, subarray_state_model)
+#     with pytest.raises(tango.DevFailed) as df:
+#         release_resources_cmd.do()
+#     assert "Error executing command ReleaseAllResources" in str(df.value)
 
-def test_release_resource_should_raise_exception_when_call_before_assign_resources(mock_lower_devices_proxy, subarray_state_model):
+
+def test_release_all_resources_should_release_resources_when_obstate_idle(mock_lower_devices_proxy, subarray_state_model,):
     device_proxy, tango_client_obj = mock_lower_devices_proxy
-    device_proxy.On()
-    # with pytest.raises(tango.DevFailed) as df:
-    #     device_proxy.ReleaseAllResources()
-    # # assert tango_context.device.State() == DevState.ON
-    # # assert tango_context.device.obsState == ObsState.EMPTY
-    # assert "Error executing command ReleaseAllResources" in str(df.value)
-
-    # device_data = DeviceData.get_instance()
-    release_resources_cmd = ReleaseAllResources(device_data, subarray_state_model)
-    tango_client_obj.deviceproxy.command_inout.side_effect = raise_devfailed_exception
-    with pytest.raises(tango.DevFailed) as df:
-        release_resources_cmd.do()
-    assert "Error executing command ReleaseAllResources" in str(df.value)
-
-
-def test_release_all_resources_should_release_resources_when_obstate_idle(mock_lower_devices, subarray_state_model,):
-    device_proxy, tango_client_obj = mock_lower_devices
     # mccs_subarray1_obsstate_attribute = "mccsSubarrayObsState"
     device_proxy.On()
     device_proxy.AssignResources(assign_input_str)
