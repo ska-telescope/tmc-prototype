@@ -10,29 +10,19 @@
 """
 A Leaf control node for DishMaster.
 """
-import json
-import importlib.resources
-import math
-import datetime
-import time
-import threading
 
 import tango
-from tango import DeviceProxy, EventType, ApiUtil, DevState, AttrWriteType, DevFailed
-from tango.server import run, command, device_property, attribute
-import katpoint
+from tango import DevFailed
+from tango.server import command
 
-from ska.base.commands import ResultCode, BaseCommand
-from ska.base import SKABaseDevice
+from ska.base.commands import  BaseCommand
 from tmc.common.tango_client import TangoClient
-from ska.base.control_model import HealthState, SimulationMode
-from .utils import UnitConverter
 from . import release
+from .device_data import DeviceData
+from .command_callback import CommandCallBack
 
 
-
-
-class SetStandbyFPModeCommand(BaseCommand):
+class SetStandbyFPMode(BaseCommand):
     """
     A class for DishLeafNode's SetStandbyFPMode() command.
     """
@@ -43,20 +33,24 @@ class SetStandbyFPModeCommand(BaseCommand):
 
         :raises DevFailed: If error occurs while invoking SetStandbyFPMode command on DishMaster.
         """
-        device = self.target
+        device_data = self.target
+        cmd_ended_cb = CommandCallBack(self, self.logger).cmd_ended_cb
+
         command_name = "SetStandbyFPMode"
         try:
-            device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
+            dish_client = TangoClient(device_data._dish_master_fqdn)
+            dish_client.send_command_asynch(command_name, None, cmd_ended_cb)
+            #device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
             log_message = f"Exception occured while executing the '{command_name}' command."
-            device._read_activity_message = log_message
+            device_data._read_activity_message = log_message
             tango.Except.re_throw_exception(
                 dev_failed,
                 f"Exception in '{command_name}' command.",
                 log_message,
-                f"DishLeafNode.{command_name}Command",
+                "SetStandbyFPMode.do()",
                 tango.ErrSeverity.ERR,
             )
 
