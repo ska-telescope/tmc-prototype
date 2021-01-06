@@ -100,7 +100,10 @@ class DishLeafNode(SKABaseDevice):
         device.
         """
         super().init_command_objects()
+        device_data = DeviceData.get_instance()
+
         args = (device_data, self.state_model, self.logger)
+        
         self.register_command_object("SetStowMode", SetStowMode(*args))
         self.register_command_object("SetStandbyLPMode", SetStandbyLPMode(*args))
         self.register_command_object("SetOperateMode", SetOperateMode(*args))
