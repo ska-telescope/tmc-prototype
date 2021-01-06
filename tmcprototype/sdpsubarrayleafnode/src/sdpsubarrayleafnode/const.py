@@ -102,6 +102,7 @@ STR_OFF_CALLBK = "SdpSubarrayLeafNode Off Command Callback"
 STR_COMMAND = "Command :-> "
 STR_INVOKE_SUCCESS = " invoked successfully."
 STR_OFF_CMD_SUCCESS = "Off command executed successfully."
+STR_SETTING_CB_MODEL = "Setting CallBack Model as :-> "
 
 # #PROPERTIES DEFAULT VALUES
 PROP_DEF_VAL_TM_MID_SDP_SA = "mid_sdp/elt/subarray_1"

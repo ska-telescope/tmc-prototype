@@ -8,4 +8,13 @@ CSP Master Leaf Node
 
 .. automodule:: tmcprototype.cspmasterleafnode.src.cspmasterleafnode.csp_master_leaf_node
    :members:
+   :undoc-members: 
+.. automodule:: tmcprototype.cspmasterleafnode.src.cspmasterleafnode.off_command
+   :members:
+   :undoc-members:
+.. automodule:: tmcprototype.cspmasterleafnode.src.cspmasterleafnode.on_command
+   :members:
+   :undoc-members:
+.. automodule:: tmcprototype.cspmasterleafnode.src.cspmasterleafnode.standby_command
+   :members:
    :undoc-members:

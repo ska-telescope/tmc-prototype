@@ -9,3 +9,18 @@ SDP Master Leaf Node
 .. automodule:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.sdp_master_leaf_node
    :members:
    :undoc-members:
+.. automodule:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.disable_command
+   :members:
+   :undoc-members:
+.. automodule:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.off_command
+   :members:
+   :undoc-members:
+.. automodule:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.on_command
+   :members:
+   :undoc-members:
+.. automodule:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.on_command
+   :members:
+   :undoc-members:
+.. automodule:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.standby_command
+   :members:
+   :undoc-members:
