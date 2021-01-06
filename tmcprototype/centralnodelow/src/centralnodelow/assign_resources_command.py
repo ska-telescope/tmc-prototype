@@ -5,7 +5,6 @@
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 # Standard Python imports
 import json
-import ast
 import tango
 from tango import DevState, DevFailed
 # Additional import
@@ -66,14 +65,13 @@ class AssignResources(BaseCommand):
                 "station_beam_ids": [1]
             }
 
-        Note: From Jive, enter above input string without any space.
+        Note: Enter input without spaces as:{"subarray_id":1,"station_ids":[1,2],"channels":[1,2,3,4,5,6,7,8],"station_beam_ids":[1]}
 
         :return: None
 
         :raises: DevFailed if error occurs while invoking command on any of the devices like SubarrayNode, MCCSMasterLeafNode
-
-        Note: Enter input without spaces as:{"subarray_id":1,"station_ids":[1,2],"channels":[1,2,3,4,5,6,7,8],"station_beam_ids":[1]}
-
+                 KeyError if input argument json string contains invalid key
+                 ValueError if input argument json string contains invalid value
         """
         device_data = self.target
         try:

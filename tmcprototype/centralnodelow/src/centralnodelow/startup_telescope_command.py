@@ -3,14 +3,14 @@ StartUpTelescope class for CentralNodelow.
 """
 # Tango imports
 import tango
-from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
+from tango import DevState, DevFailed
 
 # Additional import
 from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode, BaseCommand
-from ska.base.control_model import HealthState
+from ska.base.commands import ResultCode
+# from ska.base.control_model import HealthState
 from . import const
-from centralnodelow.device_data import DeviceData
+from .device_data import DeviceData
 from tmc.common.tango_client import TangoClient
 
 class StartUpTelescope(SKABaseDevice.OnCommand):
@@ -58,12 +58,24 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
 
     def startup_subarray(self, subarray_fqdn):
+        """
+        Create TangoClient for Subarray node and call
+        startup method.
+
+        :return: None
+        """
         for subarray_id in range(1, len(subarray_fqdn) + 1):
             subarray_client = TangoClient(subarray_id)
             self.startup_leaf_node(subarray_client)
 
 
     def startup_mccs(self, mccs_fqdn):
+        """
+        Create TangoClient for MccsMasterLeafNode node and call
+        startup method.
+
+        :return: None
+        """
         mccs_proxy = TangoClient(mccs_fqdn)
         self.startup_leaf_node(mccs_proxy)
 

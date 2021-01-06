@@ -3,14 +3,14 @@ StandByTelescope class for CentralNodelow.
 """
 # Tango imports
 import tango
-from tango import DebugIt, AttrWriteType, DeviceProxy, EventType, DevState, DevFailed
+from tango import DevState, DevFailed
 
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode, BaseCommand
-from ska.base.control_model import HealthState
+# from ska.base.control_model import HealthState
 from . import const
-from centralnodelow.device_data import DeviceData
+from .device_data import DeviceData
 from tmc.common.tango_client import TangoClient
 
 
@@ -58,22 +58,31 @@ class StandByTelescope(SKABaseDevice.OffCommand):
 
 
     def standby_mccs(self, mccs_fqdn):
+        """
+        Create TangoClient for MccsMasterLeafNode node and call
+        standby method.
+
+        :return: None
+        """
         mccs_proxy = TangoClient(mccs_fqdn)
         self.standby_leaf_node(mccs_proxy)
 
     def standby_subarray(self, subarray_fqdn):
+        """
+        Create TangoClient for Subarray node and call
+        standby method.
+
+        :return: None
+        """
         for subarray_id in range(1, len(subarray_fqdn) + 1):
             subarray_client = TangoClient(subarray_id)
             self.standby_leaf_node(subarray_client)
 
     def standby_leaf_node(self, tango_client):
         """
-        Invoke command on leaf nodes.
+        Invoke command Off leaf nodes.
 
         :param tango_client: proxy of corresponding leaf node
-        :param cmd_name: command name
-        :param param: Empty list from cspsmn
-
         :return: None
 
         :raises: Devfailed exception if error occures while executing command on leaf nodes.
