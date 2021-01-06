@@ -35,8 +35,7 @@ class On(SKASubarray.OnCommand):
         device_data = DeviceData.get_instance()
         device_data.is_release_resources = False
         try:
-            print("mccs fqdn:::::::::::::",device_data.mccs_subarray_fqdn )
-            mccs_subarray_client_obj = TangoClient(device_data.mccs_subarray_fqdn)
+            mccs_subarray_client_obj = TangoClient(device_data.mccs_subarray_ln_fqdn)
             mccs_subarray_client_obj.send_command(const.CMD_ON, None)
             # device._mccs_subarray_ln_proxy.On()
             message = "On command completed OK"

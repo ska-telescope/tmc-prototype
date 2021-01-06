@@ -106,8 +106,8 @@ def test_write_activity_message():
 
 
 # Test cases for Commands
-def test_on_command_should_change_subarray_device_state_to_on(mock_lower_devices):
-    device_proxy, tango_client_obj = mock_lower_devices
+def test_on_command_should_change_subarray_device_state_to_on(mock_lower_devices_proxy):
+    device_proxy, tango_client_obj = mock_lower_devices_proxy
     # with fake_tango_system(SubarrayNode) as tango_context:
     #     # result = tango_context.device.On()
     assert device_proxy.On() == [[ResultCode.OK], ["On command completed OK"]]
@@ -116,16 +116,16 @@ def test_on_command_should_change_subarray_device_state_to_on(mock_lower_devices
 
 
 
-def test_off_command_should_change_subarray_device_state_to_off(mock_lower_devices):
-    device_proxy, tango_client_obj = mock_lower_devices
+def test_off_command_should_change_subarray_device_state_to_off(mock_lower_devices_proxy):
+    device_proxy, tango_client_obj = mock_lower_devices_proxy
     # with fake_tango_system(SubarrayNode) as tango_context:
     device_proxy.On()
     assert device_proxy.Off() == [[ResultCode.OK], ["Off command completed OK"]]
     assert device_proxy.state() == DevState.OFF
     assert device_proxy.obsState == ObsState.EMPTY
 
-def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready(mock_lower_devices):
-    device_proxy, tango_client_obj = mock_lower_devices
+def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready(mock_lower_devices_proxy):
+    device_proxy, tango_client_obj = mock_lower_devices_proxy
     device_data = DeviceData.get_instance()
     scan_cmd = Scan(device_data, subarray_state_model)
     assert scan_cmd.do(scan_input_str) == (ResultCode.STARTED, 'Scan command is executed successfully.')
@@ -166,8 +166,8 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready(mock_
     # assert tango_context.device.obsState == ObsState.SCANNING
 
 
-def test_start_scan_should_raise_devfailed_exception(mock_lower_devices, subarray_state_model):
-    device_proxy, tango_client_obj = mock_lower_devices
+def test_start_scan_should_raise_devfailed_exception(mock_lower_devices_proxy, subarray_state_model):
+    device_proxy, tango_client_obj = mock_lower_devices_proxy
     device_data = DeviceData.get_instance()
     tango_client_obj.deviceproxy.command_inout.side_effect = raise_devfailed_exception
     scan_cmd = Scan(device_data, subarray_state_model)
@@ -211,9 +211,9 @@ def test_start_scan_should_raise_devfailed_exception(mock_lower_devices, subarra
     # assert "Exception in Scan command:" in str(df.value)
 
 
-def test_off_should_raise_devfailed_exception(mock_lower_devices):
-    device_proxy, tango_client_obj = mock_lower_devices
-    device_proxy.Off.side_effect = raise_devfailed_exception
+def test_off_should_raise_devfailed_exception(mock_lower_devices_proxy):
+    device_proxy, tango_client_obj = mock_lower_devices_proxy
+    tango_client_obj.deviceproxy.command_inout.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.Off()
     assert "This is error message for devfailed" in str(df.value)
@@ -295,9 +295,41 @@ def test_end_should_raise_devfailed_exception_when_mccs_subarray_throws_devfaile
         tango_context.device.End()
     assert tango_context.device.obsState == ObsState.FAULT
 
-
 @pytest.fixture(scope="function")
 def mock_lower_devices():
+    mccs_subarray1_ln_fqdn = 'ska_low/tm_leaf_node/mccs_subarray01'
+    mccs_subarray1_fqdn = 'low-mccs/subarray/01'
+
+    dut_properties = {
+        'MccsSubarrayLNFQDN': mccs_subarray1_ln_fqdn,
+        'MccsSubarrayFQDN': mccs_subarray1_fqdn
+    }
+
+    mccs_subarray1_ln_proxy_mock = MagicMock()
+    mccs_subarray1_proxy_mock = MagicMock()
+
+    proxies_to_mock = {
+        mccs_subarray1_ln_fqdn: mccs_subarray1_ln_proxy_mock,
+        mccs_subarray1_fqdn: mccs_subarray1_proxy_mock
+    }
+
+    event_subscription_map = {}
+
+    mccs_subarray1_ln_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    mccs_subarray1_proxy_mock.subscribe_event.side_effect = (
+        lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.
+            update({attr_name: callback}))
+
+    with fake_tango_system(SubarrayNode, initial_dut_properties=dut_properties,
+                           proxies_to_mock=proxies_to_mock) as tango_context:
+        yield tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map
+
+
+@pytest.fixture(scope="function")
+def mock_lower_devices_proxy():
     mccs_subarray1_ln_fqdn = 'ska_low/tm_leaf_node/mccs_subarray01'
     mccs_subarray1_fqdn = 'low-mccs/subarray/01'
 
@@ -525,8 +557,8 @@ def test_assign_resources_should_assign_resources_when_device_state_on(mock_lowe
     assert device_proxy.obsState == ObsState.RESOURCING
 
 
-def test_release_resource_should_raise_exception_when_call_before_assign_resources(mock_lower_devices, subarray_state_model):
-    device_proxy, tango_client_obj = mock_lower_devices
+def test_release_resource_should_raise_exception_when_call_before_assign_resources(mock_lower_devices_proxy, subarray_state_model):
+    device_proxy, tango_client_obj = mock_lower_devices_proxy
     device_proxy.On()
     # with pytest.raises(tango.DevFailed) as df:
     #     device_proxy.ReleaseAllResources()
@@ -534,9 +566,9 @@ def test_release_resource_should_raise_exception_when_call_before_assign_resourc
     # # assert tango_context.device.obsState == ObsState.EMPTY
     # assert "Error executing command ReleaseAllResources" in str(df.value)
 
-    device_data = DeviceData.get_instance()
-    # tango_client_obj.deviceproxy.command_inout.side_effect = raise_devfailed_exception
+    # device_data = DeviceData.get_instance()
     release_resources_cmd = ReleaseAllResources(device_data, subarray_state_model)
+    tango_client_obj.deviceproxy.command_inout.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         release_resources_cmd.do()
     assert "Error executing command ReleaseAllResources" in str(df.value)

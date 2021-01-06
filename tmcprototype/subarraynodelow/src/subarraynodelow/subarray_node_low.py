@@ -297,9 +297,9 @@ class SubarrayNode(SKASubarray):
             device._mccs_sa_obs_state = ObsState.EMPTY
             device.subarray_ln_health_state_map = {}
             device._subarray_health_state = HealthState.OK  #Aggregated Subarray Health State
-            device_data.mccs_subarray_fqdn = device.MccsSubarrayLNFQDN
-            print("mccs fqdn:::::::::::::::",device.get_status())
-            print("mccs real value::::::::::",device.MccsSubarrayLNFQDN)
+            device_data.mccs_subarray_fqdn = device.MccsSubarrayFQDN
+            device_data.mccs_subarray_ln_fqdn = device.MccsSubarrayLNFQDN
+
             # Create proxy for MCCS Subarray Leaf Node
             device._mccs_subarray_ln_proxy = None
             device._mccs_subarray_proxy = None
