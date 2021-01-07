@@ -119,7 +119,7 @@ class ObsStateAggregator:
                 ObsState.EMPTY)):
             if self.device_data.is_release_resources:
                 self.logger.info("Calling ReleaseAllResource command succeeded() method")
-                self.this_server.release.succeeded()
+                device_data.release.succeeded()
             elif self.device_data.is_restart_command:
                 self.logger.info("Calling Restart command succeeded() method")
                 self.this_server.restart.succeeded()
@@ -162,7 +162,8 @@ class ObsStateAggregator:
             else:
                 # Assign Resource command success
                 self.logger.info("Calling AssignResource command succeeded() method")
-                self.this_server.assign.succeeded()
+                device_data.assign.succeeded()
+                self.logger.info("AssignResource command succeeded() method executed")
 
 
     def pointing_state_cb(self, evt):
