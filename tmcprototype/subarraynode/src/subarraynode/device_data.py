@@ -71,6 +71,8 @@ class DeviceData:
         # TODO: For future use
         self._receptor_id_list = []
         self.receive_addresses = None
+        self.assign = None
+        self.release = None
 
     def clean_up_dict(self,logger = None ):
         """
