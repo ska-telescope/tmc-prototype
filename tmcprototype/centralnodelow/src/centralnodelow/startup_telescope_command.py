@@ -52,21 +52,22 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         device_data = self.target
         device_data.health_aggreegator = HealthStateAggreegator(self.logger)
         device_data.health_aggreegator.subscribe_event()
+        self.startup_mccs(device_data.mccs_master_fqdn)
         self.startup_subarray(device_data.subarray_low)
         log_msg = const.STR_ON_CMD_ISSUED
         self.logger.info(log_msg)
         device_data._read_activity_message = log_msg
         return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
 
-    def startup_subarray(self, subarray_fqdn):
+    def startup_subarray(self, subarray_fqdn_list):
         """
         Create TangoClient for Subarray node and call
         startup method.
 
         :return: None
         """
-        for subarray_id in range(1, len(subarray_fqdn) + 1):
-            subarray_client = TangoClient(subarray_id)
+        for subarray_fqdn in subarray_fqdn_list:
+            subarray_client = TangoClient(subarray_fqdn)
             self.startup_leaf_node(subarray_client)
 
 

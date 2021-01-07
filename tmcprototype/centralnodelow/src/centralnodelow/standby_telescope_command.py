@@ -66,15 +66,15 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         mccs_proxy = TangoClient(mccs_fqdn)
         self.standby_leaf_node(mccs_proxy)
 
-    def standby_subarray(self, subarray_fqdn):
+    def standby_subarray(self, subarray_fqdn_list):
         """
         Create TangoClient for Subarray node and call
         standby method.
 
         :return: None
         """
-        for subarray_id in range(1, len(subarray_fqdn) + 1):
-            subarray_client = TangoClient(subarray_id)
+        for subarray_fqdn in subarray_fqdn_list:
+            subarray_client = TangoClient(subarray_fqdn)
             self.standby_leaf_node(subarray_client)
 
     def standby_leaf_node(self, tango_client):
