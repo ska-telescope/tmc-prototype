@@ -100,7 +100,7 @@ class HealthStateAggregator:
 
         """
         for tango_client, event_id in self.csp_sdp_ln_health_event_id.items():
-            log_msg = "Unsubscribe Health State event for " + tango_client
+            log_msg = "Unsubscribe Health State event for " + str(tango_client)
             self.logger.debug(log_msg)
             tango_client.unsubscribe_attribute(event_id)
 
