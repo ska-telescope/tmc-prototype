@@ -28,13 +28,8 @@ from ska.base.control_model import HealthState, SimulationMode
 from .utils import UnitConverter
 from . import release
 from .device_data import DeviceData
-<<<<<<< HEAD
-from .abort_command import AbortCommand
-from .configure_command import Configure
-=======
 from .abort_command import Abort
-from .configure_command import ConfigureCommand
->>>>>>> 50ec5f986b05d2b8a3bed78300fdfe881d47899d
+from .configure_command import Configure
 from .endscan_command import EndScan
 from .obsreset_command import ObsReset
 from .restart_command import Restart
@@ -50,12 +45,8 @@ from .stoptrack_command import StopTrackCommand
 from .track_command import TrackCommand
 
 
-<<<<<<< HEAD
-__all__ = ["DishLeafNode", "main", "release", "SetOperateMode", "SetStandbyLPMode", "SetStandbyFPMode", "SetStowMode", "Scan", "EndScan", "StartCapture", "StopCapture", "Configure"]
-=======
 __all__ = ["DishLeafNode", "main", "release", "SetOperateMode", "SetStandbyLPMode", "SetStandbyFPMode", "SetStowMode", "Scan", "EndScan", "StartCapture", "StopCapture"
-                "Abort", "Restart", "ObsReset", "Slew"]
->>>>>>> 50ec5f986b05d2b8a3bed78300fdfe881d47899d
+                "Abort", "Restart", "ObsReset", "Slew", "Configure"]
 
 
 # class CommandCallBack:
