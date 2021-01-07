@@ -10,10 +10,11 @@ from tango import DevFailed
 # Additional import
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+from tmc.common.tango_client import TangoClient
 from . import const
 
 
-class EndScanCommand(SKASubarray.EndScanCommand):
+class EndScan(SKASubarray.EndScanCommand):
     """
     A class for SubarrayNodeLow's EndScan() command.
     """
@@ -38,13 +39,14 @@ class EndScanCommand(SKASubarray.EndScanCommand):
                     device.scan_thread.cancel()  # stop timer when EndScan command is called
             device.isScanRunning = False
             device.is_scan_completed = True
-            device._mccs_subarray_ln_proxy.command_inout(const.CMD_END_SCAN)
+            mccs_subarray_ln_client = TangoClient(device.mccs_subarray_ln_fqdn)
+            mccs_subarray_ln_client.send_command(const.CMD_END_SCAN)
             self.logger.debug(const.STR_MCCS_END_SCAN_INIT)
-            device._read_activity_message = const.STR_MCCS_END_SCAN_INIT
+            device.activity_message = const.STR_MCCS_END_SCAN_INIT
             device._scan_id = ""
-            device.set_status(const.STR_SCAN_COMPLETE)
+            # device.set_status(const.STR_SCAN_COMPLETE)
             self.logger.info(const.STR_SCAN_COMPLETE)
-            device._read_activity_message = const.STR_END_SCAN_SUCCESS
+            device.activity_message = const.STR_END_SCAN_SUCCESS
             return (ResultCode.OK, const.STR_END_SCAN_SUCCESS)
 
         except DevFailed as dev_failed:

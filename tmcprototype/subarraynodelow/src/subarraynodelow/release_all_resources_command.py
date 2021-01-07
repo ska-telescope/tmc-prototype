@@ -5,9 +5,9 @@ ReleaseAllResourcesCommand for SubarrayNodeLow
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from . import const
+from subarraynodelow.device_data import DeviceData
 
-
-class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
+class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
     """
     A class for SKASubarrayLow's ReleaseAllResources() command.
     """
@@ -21,9 +21,9 @@ class ReleaseAllResourcesCommand(SKASubarray.ReleaseAllResourcesCommand):
         :rtype: (ResultCode, str)
 
         """
-        device = self.target
-        device.is_release_resources = True
+        device_data = DeviceData.get_instance()
+        device_data.is_release_resources = True
         # TODO: Clearing the assigned resources
-        device._resource_list = []
+        device_data.resource_list = []
         self.logger.debug(const.STR_RELEASE_SUCCESS)
         return (ResultCode.STARTED, const.STR_RELEASE_SUCCESS )

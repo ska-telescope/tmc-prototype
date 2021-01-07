@@ -10,10 +10,12 @@ from tango import DevFailed
 # Additional import
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+from tmc.common.tango_client import TangoClient
 from . import const
+from .device_data import DeviceData
 
 
-class OffCommand(SKASubarray.OffCommand):
+class Off(SKASubarray.OffCommand):
     """
     A class for the SubarrayNodes's Off() command.
     """
@@ -32,7 +34,10 @@ class OffCommand(SKASubarray.OffCommand):
         device = self.target
         device.is_release_resources = False
         try:
-            device._mccs_subarray_ln_proxy.Off()
+            mccs_subarray_ln_client = TangoClient(device.mccs_subarray_ln_fqdn)
+            mccs_subarray_ln_client.send_command(const.CMD_OFF, None)
+            device.health_state_aggregator.unsubscribe()
+            device.obs_state_aggregator.unsubscribe()
             message = "Off command completed OK"
             self.logger.info(message)
             return (ResultCode.OK, message)
