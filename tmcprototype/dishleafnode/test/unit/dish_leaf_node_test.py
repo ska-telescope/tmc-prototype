@@ -78,7 +78,8 @@ def event_subscription_mock():
         ("SetStandbyFPMode", "SetStandbyFPMode"),
         ("SetStowMode", "SetStowMode"),
         ("SetStandbyLPMode", "SetStandbyLPMode"),
-        ("SetOperateMode", "SetOperateMode")
+        ("SetOperateMode", "SetOperateMode"),
+        ("Abort", "TrackStop"),
     ],
 )
 def command_without_arg(request):
@@ -492,62 +493,62 @@ def create_dummy_event_for_dish_capturing(device_fqdn, dish_capturing_value, att
 #         assert const.ERR_INVALID_JSON in str(df.value)
 
 
-# def test_activity_message():
-#     with fake_tango_system(DishLeafNode) as tango_context:
-#         tango_context.device.activityMessage = const.STR_OK
-#         assert tango_context.device.activityMessage == const.STR_OK
+def test_activity_message():
+    with fake_tango_system(DishLeafNode) as tango_context:
+        tango_context.device.activityMessage = const.STR_OK
+        assert tango_context.device.activityMessage == const.STR_OK
 
 
-# def test_status():
-#     with fake_tango_system(DishLeafNode) as tango_context:
-#         assert tango_context.device.Status() != const.STR_DISH_INIT_SUCCESS
+def test_status():
+    with fake_tango_system(DishLeafNode) as tango_context:
+        assert tango_context.device.Status() != const.STR_DISH_INIT_SUCCESS
 
 
-# def test_logging_level():
-#     with fake_tango_system(DishLeafNode) as tango_context:
-#         tango_context.device.loggingLevel = LoggingLevel.INFO
-#         assert tango_context.device.loggingLevel == LoggingLevel.INFO
+def test_logging_level():
+    with fake_tango_system(DishLeafNode) as tango_context:
+        tango_context.device.loggingLevel = LoggingLevel.INFO
+        assert tango_context.device.loggingLevel == LoggingLevel.INFO
 
 
-# def test_logging_targets():
-#     with fake_tango_system(DishLeafNode) as tango_context:
-#         tango_context.device.loggingTargets = ["console::cout"]
-#         assert "console::cout" in tango_context.device.loggingTargets
+def test_logging_targets():
+    with fake_tango_system(DishLeafNode) as tango_context:
+        tango_context.device.loggingTargets = ["console::cout"]
+        assert "console::cout" in tango_context.device.loggingTargets
 
 
-# def test_test_mode():
-#     with fake_tango_system(DishLeafNode) as tango_context:
-#         test_mode = TestMode.NONE
-#         tango_context.device.testMode = test_mode
-#         assert tango_context.device.testMode == test_mode
+def test_test_mode():
+    with fake_tango_system(DishLeafNode) as tango_context:
+        test_mode = TestMode.NONE
+        tango_context.device.testMode = test_mode
+        assert tango_context.device.testMode == test_mode
 
 
-# def test_simulation_mode():
-#     with fake_tango_system(DishLeafNode) as tango_context:
-#         simulation_mode = SimulationMode.FALSE
-#         tango_context.device.simulationMode = simulation_mode
-#         assert tango_context.device.simulationMode == simulation_mode
+def test_simulation_mode():
+    with fake_tango_system(DishLeafNode) as tango_context:
+        simulation_mode = SimulationMode.FALSE
+        tango_context.device.simulationMode = simulation_mode
+        assert tango_context.device.simulationMode == simulation_mode
 
 
-# def test_control_mode():
-#     with fake_tango_system(DishLeafNode) as tango_context:
-#         control_mode = ControlMode.REMOTE
-#         tango_context.device.controlMode = control_mode
-#         assert tango_context.device.controlMode == control_mode
+def test_control_mode():
+    with fake_tango_system(DishLeafNode) as tango_context:
+        control_mode = ControlMode.REMOTE
+        tango_context.device.controlMode = control_mode
+        assert tango_context.device.controlMode == control_mode
 
 
-# def test_health_state():
-#     with fake_tango_system(DishLeafNode) as tango_context:
-#         assert tango_context.device.healthState == HealthState.OK
+def test_health_state():
+    with fake_tango_system(DishLeafNode) as tango_context:
+        assert tango_context.device.healthState == HealthState.OK
 
 
-# def raise_devfailed_exception(*args):
-#     tango.Except.throw_exception(
-#         "DishLeafNode_Commandfailed",
-#         "This is error message for devfailed",
-#         " ",
-#         tango.ErrSeverity.ERR,
-#     )
+def raise_devfailed_exception(*args):
+    tango.Except.throw_exception(
+        "DishLeafNode_Commandfailed",
+        "This is error message for devfailed",
+        " ",
+        tango.ErrSeverity.ERR,
+    )
 
 
 # @pytest.fixture(

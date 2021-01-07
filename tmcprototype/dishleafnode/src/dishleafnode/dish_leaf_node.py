@@ -30,7 +30,7 @@ from ska.base.control_model import HealthState, SimulationMode
 from .utils import UnitConverter
 from . import release
 from .device_data import DeviceData
-from .abort_command import AbortCommand
+from .abort_command import Abort
 from .configure_command import ConfigureCommand
 from .endscan_command import EndScan
 from .obsreset_command import ObsResetCommand
@@ -47,7 +47,8 @@ from .stoptrack_command import StopTrackCommand
 from .track_command import TrackCommand
 
 
-__all__ = ["DishLeafNode", "main", "release", "SetOperateMode", "SetStandbyLPMode", "SetStandbyFPMode", "SetStowMode", "Scan", "EndScan", "StartCapture", "StopCapture"]
+__all__ = ["DishLeafNode", "main", "release", "SetOperateMode", "SetStandbyLPMode", "SetStandbyFPMode", "SetStowMode", "Scan", "EndScan", "StartCapture", "StopCapture"
+                "Abort"]
 
 
 # class CommandCallBack:
@@ -116,7 +117,7 @@ class DishLeafNode(SKABaseDevice):
         # self.register_command_object("Slew", SlewCommand(*args))
         # self.register_command_object("Track", TrackCommand(*args))
         # self.register_command_object("StopTrack", StopTrackCommand(*args))
-        # self.register_command_object("Abort", AbortCommand(*args))
+        self.register_command_object("Abort", Abort(*args))
         # self.register_command_object("Restart", RestartCommand(*args))
         # self.register_command_object("ObsReset", ObsResetCommand(*args))
 
