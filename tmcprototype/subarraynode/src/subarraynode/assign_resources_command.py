@@ -15,9 +15,11 @@ from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from .transaction_id import identify_with_id, inject_id,inject_with_id
+from tmc.common.tango_client import TangoClient
+from subarraynode.device_data import DeviceData
 
 
-class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
+class AssignResources(SKASubarray.AssignResourcesCommand):
     """
     A class for SubarrayNode's AssignResources() command.
     """
@@ -68,16 +70,13 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
                 DevFailed if the command execution is not successful
 
         """
-
-        # exception_count = 0
-        # exception_message = []
-        device = self.target
+        device_data = DeviceData.get_instance()
         argout = []
-        device.is_end_command = False
-        device.is_release_resources = False
-        device.is_restart_command = False
-        device.is_abort_command = False
-        device.is_obsreset_command = False
+        device_data.is_end_command = False
+        device_data.is_release_resources = False
+        device_data.is_restart_command = False
+        device_data.is_abort_command = False
+        device_data.is_obsreset_command = False
         # Validate if Subarray is in IDLE obsState
         # TODO: Need to get idea if this is required?
         # try:
@@ -94,7 +93,7 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
             resources = json.loads(argin)
             receptor_list = resources["dish"]["receptorIDList"]
             sdp_resources = resources.get("sdp")
-            device._sb_id = resources["sdp"]["id"]
+            device_data._sb_id = resources["sdp"]["id"]
 
             for leafId in range(0, len(receptor_list)):
                 float(receptor_list[leafId])
@@ -102,20 +101,20 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
         except json.JSONDecodeError as json_error:
             self.logger.exception(const.ERR_INVALID_JSON)
             message = const.ERR_INVALID_JSON + str(json_error)
-            device._read_activity_message = message
+            device_data._read_activity_message = message
             tango.Except.throw_exception(const.STR_CMD_FAILED, message,
                                          const.STR_ASSIGN_RES_EXEC, tango.ErrSeverity.ERR)
         except ValueError as value_error:
             self.logger.exception(const.ERR_INVALID_DATATYPE)
             message = const.ERR_INVALID_DATATYPE + value_error
-            device._read_activity_message = message
+            device_data._read_activity_message = message
             tango.Except.throw_exception(const.STR_CMD_FAILED, message,
                                          const.STR_ASSIGN_RES_EXEC, tango.ErrSeverity.ERR)
 
         with ThreadPoolExecutor(3) as executor:
             # 2.1 Create group of receptors
             self.logger.debug(const.STR_DISH_ALLOCATION)
-            dish_allocation_status = executor.submit(self.add_receptors_in_group, receptor_list)
+            dish_allocation_status = executor.submit(self.set_up_dish_data, receptor_list)
 
             # 2.2. Add resources in CSP subarray
             self.logger.debug(const.STR_CSP_ALLOCATION)
@@ -155,7 +154,6 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
                 self.logger.debug(log_msg)
 
                 csp_allocation_result.sort()
-                # assert csp_allocation_result == receptor_list
                 self.logger.info("Assign Resources on CSPSubarray successful")
             except DevFailed as df:
                 # The exception is already logged so not logged again.
@@ -213,13 +211,10 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
         message = str(argout)
         return (ResultCode.STARTED, message)
 
-    def add_receptors_in_group(self, argin):
+    def set_up_dish_data(self, argin):
         """
-        Creates a tango group of the successfully allocated resources in the subarray.
-        Device proxy for each of the resources is created. The healthState and pointintgState attributes
-        from all the devices in the group are subscribed so that the changes in the respective device are
-        received at Subarray Node.
-
+        Adds the receptors in dish leaf node group. The healthState and pointintgState attributes of all
+        all the dishes are subscribed.
 
         Note: Currently there are only receptors allocated so the group contains only receptor ids.
 
@@ -233,43 +228,28 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
         """
         allocation_success = []
         allocation_failure = []
-        device = self.target
+        device_data = DeviceData.get_instance()
         # Add each dish into the tango group
 
+        
         for leafId in range(0, len(argin)):
             try:
                 str_leafId = argin[leafId]
-                device._dish_leaf_node_group.add(device.DishLeafNodePrefix + str_leafId)
-                devProxy = device.get_deviceproxy(device.DishLeafNodePrefix + str_leafId)
-                device._dish_leaf_node_proxy.append(devProxy)
+                device_data._dish_leaf_node_group_client.add_device(device_data.dish_leaf_node_prefix + str_leafId)
+                # TangoClient is used for each dish leaf node for subscribing attribute instead of TangoGroupClient. 
+                dish_ln_client = TangoClient(device_data.dish_leaf_node_prefix + str_leafId)
+                
                 # Update the list allocation_success with the dishes allocated successfully to subarray
                 allocation_success.append(str_leafId)
-                # Subscribe Dish Health State
-                self._event_id = devProxy.subscribe_event(const.EVT_DISH_HEALTH_STATE,
-                                                          tango.EventType.CHANGE_EVENT,
-                                                          device.health_state_cb,
-                                                          stateless=True)
-                device._dishLnVsHealthEventID[devProxy] = self._event_id
-                device._health_event_id.append(self._event_id)
-                log_msg = const.STR_DISH_LN_VS_HEALTH_EVT_ID + str(device._dishLnVsHealthEventID)
-                self.logger.debug(log_msg)
+                
+                #TODo: To subscribe health state method in HealthState Aggregator Class
+                device_data.health_state_aggr.subscribe_dish_health_state(dish_ln_client)
 
                 # Subscribe Dish Pointing State
-                device.dishPointingStateMap[devProxy] = -1
-                self._event_id = devProxy.subscribe_event(const.EVT_DISH_POINTING_STATE,
-                                                          tango.EventType.CHANGE_EVENT,
-                                                          device.pointing_state_cb,
-                                                          stateless=True)
-                device._dishLnVsPointingStateEventID[devProxy] = self._event_id
-                device._pointing_state_event_id.append(self._event_id)
-                log_msg = const.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(device._dishLnVsPointingStateEventID)
-                self.logger.debug(log_msg)
-                device._receptor_id_list.append(int(str_leafId))
-                device._read_activity_message = const.STR_GRP_DEF + str(
-                    device._dish_leaf_node_group.get_device_list(True))
-                device._read_activity_message = const.STR_LN_PROXIES + str(device._dish_leaf_node_proxy)
+                device_data.obs_state_aggr.subscribe_dish_pointing_state(dish_ln_client)
+                device_data._receptor_id_list.append(int(str_leafId))
                 self.logger.debug(const.STR_SUBS_ATTRS_LN)
-                device._read_activity_message = const.STR_SUBS_ATTRS_LN
+                device_data._read_activity_message = const.STR_SUBS_ATTRS_LN
                 self.logger.info(const.STR_ASSIGN_RES_SUCCESS)
             except DevFailed as dev_failed:
                 self.logger.exception("Receptor %s allocation failed.", str_leafId)
@@ -277,27 +257,26 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
                 self.logger.exception(dev_failed)
                 tango.Except.throw_exception(const.ERR_ADDING_LEAFNODE,
                                                  log_msg,
-                                                 "SubarrayNode.add_receptors_in_group",
+                                                 "SubarrayNode.set_up_dish_data",
                                                  tango.ErrSeverity.ERR
                                                 )
                 allocation_failure.append(str_leafId)
+                #TODO: Need to check the remove implementation
                 # Exception Logic to remove Id from subarray group
-                group_dishes = device._dish_leaf_node_group.get_device_list()
-                if group_dishes.contains(device.DishLeafNodePrefix + str_leafId):
-                    device._dish_leaf_node_group.remove(device.DishLeafNodePrefix + str_leafId)
+                # group_dishes = device_data._dish_leaf_node_group.get_group_device_list(True)
+                # if group_dishes.contains(device_data.dish_leaf_node_prefix + str_leafId):
+                #     device_data._dish_leaf_node_group.remove(device_data.dish_leaf_node_prefix + str_leafId)
                 # unsubscribe event
-                if device._dishLnVsHealthEventID[devProxy]:
-                    devProxy.unsubscribe_event(device._dishLnVsHealthEventID[devProxy])
+                device_data.health_state_aggr.unsubscribe_dish_health_state(dish_ln_client)
 
-                if device._dishLnVsPointingStateEventID[devProxy]:
-                    devProxy.unsubscribe_event(device._dishLnVsPointingStateEventID[devProxy])
+                device_data.obs_state_aggr.unsubscribe_dish_pointing_state(dish_ln_client)
 
             except (TypeError) as except_occurred:
                 allocation_failure.append(str_leafId)
                 log_msg = const.ERR_ADDING_LEAFNODE + str(except_occurred)
                 self.logger.exception(except_occurred)
                 tango.Except.throw_exception(const.ERR_ADDING_LEAFNODE, log_msg,
-                                             "SubarrayNode.add_receptors_in_group",
+                                             "SubarrayNode.set_up_dish_data",
                                              tango.ErrSeverity.ERR)
 
         log_msg = "List of Resources added to the Subarray::",allocation_success
@@ -323,7 +302,7 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
             the input argument in case of successful resource allocation, or returns exception
             object in case of failure.
         """
-        device = self.target
+        device_data = DeviceData.get_instance()
         arg_list = []
         json_argument = {}
         argout = []
@@ -336,7 +315,8 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
             inject_id(self,json_argument)
 
             arg_list.append(json.dumps(json_argument))
-            device._csp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, json.dumps(json_argument))
+            csp_client = TangoClient(device_data.csp_subarray_ln_fqdn)
+            csp_client.send_command(const.CMD_ASSIGN_RESOURCES, json.dumps(json_argument))
             self.logger.info(const.STR_ASSIGN_RESOURCES_INV_CSP_SALN)
             argout = argin
         except DevFailed as df:
@@ -375,22 +355,18 @@ class AssignResourcesCommand(SKASubarray.AssignResourcesCommand):
             function just loops back the input argument in case of success or returns exception
             object in case of failure.
         """
-        device = self.target
+        device_data = DeviceData.get_instance()
         argout = []
         try:
             str_json_arg = json.dumps(argin)
-            device._sdp_subarray_ln_proxy.command_inout(const.CMD_ASSIGN_RESOURCES, str_json_arg)
+            sdp_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
+            sdp_client.send_command(const.CMD_ASSIGN_RESOURCES, str_json_arg)
             self.logger.info(const.STR_ASSIGN_RESOURCES_INV_SDP_SALN)
             argout = argin
         except DevFailed as df:
             self.logger.exception("SDP Subarray failed to allocate resources.")
-            tango.Except.re_throw_exception(df,
-                "SDP Subarray failed to allocate resources.",
-                str(df),
-                "SubarrayNode.assign_sdp_resources",
-                tango.ErrSeverity.ERR
-            )
-
+            tango.Except.re_throw_exception(df, "SDP Subarray failed to allocate resources.", str(df),
+                                    "SubarrayNode.assign_sdp_resources",tango.ErrSeverity.ERR)
         # For this PI SDP Subarray Leaf Node does not return anything. So this function is
         # looping the processing block ids back.
         log_msg = "assign_sdp_resources::", argout
