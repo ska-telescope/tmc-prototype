@@ -12,7 +12,7 @@ class DeviceData:
             raise Exception("This is singletone class")
         else:
             DeviceData.__instance = self
-        self._mccs_master_ln_fqdn = ""
+        self._mccs_master_fqdn = ""
         self._read_activity_message= ""
         
         

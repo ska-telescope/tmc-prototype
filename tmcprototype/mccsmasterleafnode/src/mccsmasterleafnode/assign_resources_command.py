@@ -61,6 +61,7 @@ class AssignResources(BaseCommand):
         device_data = self.target
         self.logger.info("Executing callback allocate_ended")
         try:
+
             if event.err:
                 device_data._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
                     event.errors)
@@ -104,8 +105,8 @@ class AssignResources(BaseCommand):
         try:
             log_msg = "Input JSON for MCCS master leaf node AssignResources command is: " + argin
             self.logger.debug(log_msg)
-            mccs_mln_client = TangoClient(device_data._mccs_master_ln_fqdn)
-            mccs_mln_client.send_command_async(const.CMD_ALLOCATE, None, self.allocate_ended)
+            mccs_master_client = TangoClient(device_data._mccs_master_fqdn)
+            mccs_master_client.send_command_async(const.CMD_ALLOCATE, argin, self.allocate_ended)
             device_data._read_activity_message = const.STR_ALLOCATE_SUCCESS
             self.logger.info(const.STR_ALLOCATE_SUCCESS)
 
