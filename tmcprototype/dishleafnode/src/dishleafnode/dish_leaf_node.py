@@ -38,7 +38,7 @@ from .setoperatemode_command import SetOperateMode
 from .setstandbyfpmode_command import SetStandbyFPMode
 from .setstandbylpmode_command import SetStandbyLPMode
 from .setstowmode_command import SetStowMode
-from .slew_command import SlewCommand
+from .slew_command import Slew
 from .startcapture_command import StartCapture
 from .stopcapture_command import StopCapture
 from .stoptrack_command import StopTrackCommand
@@ -46,7 +46,7 @@ from .track_command import TrackCommand
 
 
 __all__ = ["DishLeafNode", "main", "release", "SetOperateMode", "SetStandbyLPMode", "SetStandbyFPMode", "SetStowMode", "Scan", "EndScan", "StartCapture", "StopCapture"
-                "Abort", "Restart", "ObsReset"]
+                "Abort", "Restart", "ObsReset", "Slew"]
 
 
 # class CommandCallBack:
@@ -112,7 +112,7 @@ class DishLeafNode(SKABaseDevice):
         self.register_command_object("StartCapture", StartCapture(*args))
         self.register_command_object("StopCapture", StopCapture(*args))
         self.register_command_object("SetStandbyFPMode", SetStandbyFPMode(*args))
-        # self.register_command_object("Slew", SlewCommand(*args))
+        self.register_command_object("Slew", Slew(*args))
         # self.register_command_object("Track", TrackCommand(*args))
         # self.register_command_object("StopTrack", StopTrackCommand(*args))
         self.register_command_object("Abort", Abort(*args))
