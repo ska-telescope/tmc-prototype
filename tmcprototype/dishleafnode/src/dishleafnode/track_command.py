@@ -30,7 +30,7 @@ from .utils import UnitConverter
 from . import release
 
 
-class TrackCommand(BaseCommand):
+class Track(BaseCommand):
     """
     A class for DishLeafNode's Track() command.
     """
@@ -63,25 +63,31 @@ class TrackCommand(BaseCommand):
             "dish":{"receiverBand":"1"}}
         :raises DevFailed: If error occurs while invoking Track command on DishMaster.
         """
-        device = self.target
-        device.el_limit = False
+        device_data = self.target
+        device_data.el_limit = False
         command_name = "Track"
 
         try:
-            json_argin = device._load_config_string(argin)
-            ra_value, dec_value = device._get_targets(json_argin)
+            json_argin = self._load_config_string(argin)
+            ra_value, dec_value = self._get_targets(json_argin)
             radec_value = f"radec,{ra_value},{dec_value}"
             self.logger.info(
                 "Track command ignores RA dec coordinates passed in: %s. "
                 "Uses coordinates from Configure command instead.",
                 radec_value,
             )
-            device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
+
+            dish_client = TangoClient(device_data._dish_master_fqdn)
+            cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
+            azel_converter = AzElConverter.get_instance()
+
+            dish_client.send_command_async(command_name, None, cmd_ended_cb)
+            # device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
             log_message = f"Exception occured while executing the '{command_name}' command."
-            device._read_activity_message = log_message
+            device_data._read_activity_message = log_message
             tango.Except.re_throw_exception(
                 dev_failed,
                 f"Exception in '{command_name}' command.",
@@ -90,9 +96,9 @@ class TrackCommand(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
 
-        device.event_track_time.clear()
-        device.tracking_thread = threading.Thread(None, device.track_thread, "DishLeafNode")
-        device.tracking_thread.start()
+        device_data.event_track_time.clear()
+        self.tracking_thread = threading.Thread(None, azel_converter.track_thread, "DishLeafNode")
+        self.tracking_thread.start()
 
     
     def _get_targets(self, json_argument):

@@ -186,7 +186,7 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle(mock_dis
 
     tango_client.deviceproxy.command_inout_asynch.assert_called_with(
         const.CMD_DISH_CONFIGURE, str(dish_str_ip), any_method(with_name="cmd_ended_cb")
-#     )
+    )
 
 
 # TODO: actual AZ and EL values need to be generated.
@@ -198,6 +198,44 @@ def test_configure_command_with_callback_method(mock_dish_master_proxy, event_su
     dummy_event = command_callback(const.CMD_DISH_CONFIGURE)
     event_subscription_mock[const.CMD_DISH_CONFIGURE](dummy_event)
     assert const.STR_COMMAND + const.CMD_DISH_CONFIGURE in device_proxy.activityMessage
+
+
+def test_track_should_raise_exception_when_called_with_invalid_arguments():
+    with fake_tango_system(DishLeafNode) as tango_context:
+        with pytest.raises(tango.DevFailed) as df:
+            tango_context.device.Track(track_invalid_arg)
+        assert const.ERR_JSON_KEY_NOT_FOUND in str(df.value)
+
+
+def test_track_should_raise_exception_when_called_with_invalid_json():
+    with fake_tango_system(DishLeafNode) as tango_context:
+        with pytest.raises(tango.DevFailed) as df:
+            tango_context.device.Track(config_track_invalid_str)
+        assert const.ERR_INVALID_JSON in str(df.value)
+
+
+@pytest.mark.xfail
+def test_track_should_command_dish_to_start_tracking(mock_dish_master_proxy):
+    device_proxy, device_proxy, _, _ = mock_dish_master_proxy
+    device_proxy.Track(config_input_str)
+    json_argument = config_input_str
+    ra_value = json_argument["pointing"]["target"]["RA"]
+    dec_value = json_argument["pointing"]["target"]["dec"]
+    radec_value = "radec" + "," + str(ra_value) + "," + str(dec_value)
+    tango_client.deviceproxy.command_inout_asynch.assert_called_with(
+        const.CMD_TRACK, "0", any_method(with_name="cmd_ended_cb")
+    )
+
+
+# TODO: actual AZ and EL values need to be generated.
+@pytest.mark.xfail
+def test_track_command_with_callback_method(mock_dish_master_proxy, event_subscription_mock):
+    device_proxy, device_proxy, _, _ = mock_dish_master_proxy
+    device_proxy.Track("0")
+    dummy_event = command_callback(const.CMD_TRACK)
+    event_subscription_mock[const.CMD_TRACK](dummy_event)
+    assert const.STR_COMMAND + const.CMD_TRACK in device_proxy.activityMessage
+
 
 
 @pytest.fixture(
@@ -289,17 +327,7 @@ def test_command_cb_is_invoked_when_command_with_arg_is_called_async(mock_dish_m
     assert dish1_proxy_mock.deviceproxy.command_inout_asynch.call_args[0][2] == any_method(with_name="cmd_ended_cb")
 
 
-@pytest.mark.xfail
-def test_track_should_command_dish_to_start_tracking(mock_dish_master):
-    tango_context, dish1_proxy_mock, _, _ = mock_dish_master
-    tango_context.device.Track(config_input_str)
-    json_argument = config_input_str
-    ra_value = json_argument["pointing"]["target"]["RA"]
-    dec_value = json_argument["pointing"]["target"]["dec"]
-    radec_value = "radec" + "," + str(ra_value) + "," + str(dec_value)
-    dish1_proxy_mock.command_inout_asynch.assert_called_with(
-        const.CMD_TRACK, "0", any_method(with_name="cmd_ended_cb")
-    )
+
 
 
 
@@ -386,14 +414,6 @@ def raise_devfailed_exception(*args):
     )
 
 
-# TODO: actual AZ and EL values need to be generated.
-@pytest.mark.xfail
-def test_track_command_with_callback_method(event_subscription, mock_dish_master):
-    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-    tango_context.device.Track("0")
-    dummy_event = command_callback(const.CMD_TRACK)
-    event_subscription[const.CMD_TRACK](dummy_event)
-    assert const.STR_COMMAND + const.CMD_TRACK in tango_context.device.activityMessage
 
 
 def test_version_id():
@@ -594,17 +614,6 @@ def fake_tango_system(
 #     )
 
 
-# @pytest.mark.xfail
-# def test_track_should_command_dish_to_start_tracking(mock_dish_master):
-#     tango_context, dish1_proxy_mock, _, _ = mock_dish_master
-#     tango_context.device.Track(config_input_str)
-#     json_argument = config_input_str
-#     ra_value = json_argument["pointing"]["target"]["RA"]
-#     dec_value = json_argument["pointing"]["target"]["dec"]
-#     radec_value = "radec" + "," + str(ra_value) + "," + str(dec_value)
-#     dish1_proxy_mock.command_inout_asynch.assert_called_with(
-#         const.CMD_TRACK, "0", any_method(with_name="cmd_ended_cb")
-#     )
 
 
 # def create_dummy_event_for_dishmode(device_fqdn, dish_mode_value, attribute):
@@ -713,18 +722,6 @@ def fake_tango_system(
 #     assert tango_context.device.activityMessage == f"{attribute} is {value}."
 
 
-# def test_track_should_raise_exception_when_called_with_invalid_arguments():
-#     with fake_tango_system(DishLeafNode) as tango_context:
-#         with pytest.raises(tango.DevFailed) as df:
-#             tango_context.device.Track(track_invalid_arg)
-#         assert const.ERR_JSON_KEY_NOT_FOUND in str(df.value)
-
-
-# def test_track_should_raise_exception_when_called_with_invalid_json():
-#     with fake_tango_system(DishLeafNode) as tango_context:
-#         with pytest.raises(tango.DevFailed) as df:
-#             tango_context.device.Track(config_track_invalid_str)
-#         assert const.ERR_INVALID_JSON in str(df.value)
 
 
 # def test_activity_message():
@@ -849,18 +846,6 @@ def fake_tango_system(
 #     event_subscription_with_arg[command_name](dummy_event)
 #     assert f"Error in invoking command: {command_name}" in tango_context.device.activityMessage
 
-
-
-
-
-# # TODO: actual AZ and EL values need to be generated.
-# @pytest.mark.xfail
-# def test_track_command_with_callback_method(event_subscription, mock_dish_master):
-#     tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
-#     tango_context.device.Track("0")
-#     dummy_event = command_callback(const.CMD_TRACK)
-#     event_subscription[const.CMD_TRACK](dummy_event)
-#     assert const.STR_COMMAND + const.CMD_TRACK in tango_context.device.activityMessage
 
 
 # # def test_version_id():
