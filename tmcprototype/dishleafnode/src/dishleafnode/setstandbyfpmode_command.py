@@ -13,12 +13,9 @@ A Leaf control node for DishMaster.
 
 import tango
 from tango import DevFailed
-from tango.server import command
 
 from ska.base.commands import  BaseCommand
 from tmc.common.tango_client import TangoClient
-from dishleafnode import release
-from .device_data import DeviceData
 from .command_callback import CommandCallBack
 
 

@@ -14,12 +14,9 @@ A Leaf control node for DishMaster.
 
 import tango
 from tango import DevFailed, DevState
-from tango.server import command
 
 from ska.base.commands import  BaseCommand
 from tmc.common.tango_client import TangoClient
-from dishleafnode import release
-from .device_data import DeviceData
 from .command_callback import CommandCallBack
 
 
@@ -53,7 +50,6 @@ class Scan(BaseCommand):
         cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
 
         try:
-            #device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
             dish_client = TangoClient(device_data._dish_master_fqdn)
             dish_client.send_command_async(command_name, argin, cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)

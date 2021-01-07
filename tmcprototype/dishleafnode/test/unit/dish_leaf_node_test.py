@@ -54,7 +54,6 @@ def mock_dish_master_proxy():
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties) as tango_context:
         with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
             tango_client_obj = TangoClient(dut_properties['DishMasterFQDN'])
-            print("***********************dish master proxy *********************",tango_client_obj)
             yield tango_context.device, tango_client_obj, dut_properties['DishMasterFQDN'], event_subscription_map
 
 
@@ -62,12 +61,10 @@ def mock_dish_master_proxy():
 def event_subscription_mock():
     dut_properties = {'DishMasterFQDN': 'mid_d0001/elt/master'}
     event_subscription_map = {}
-    print("***********************event_subscription_map is *********************",event_subscription_map)
     with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
         tango_client_obj = TangoClient(dut_properties['DishMasterFQDN'])
         tango_client_obj.deviceproxy.command_inout_asynch.side_effect = (
             lambda command_name, arg, callback, *args, **kwargs: event_subscription_map.update({command_name: callback}))
-        print("********************** event_subscription_map ****************", event_subscription_map)
         yield event_subscription_map
 
 
@@ -78,7 +75,9 @@ def event_subscription_mock():
         ("SetStandbyFPMode", "SetStandbyFPMode"),
         ("SetStowMode", "SetStowMode"),
         ("SetStandbyLPMode", "SetStandbyLPMode"),
-        ("SetOperateMode", "SetOperateMode")
+        ("SetOperateMode", "SetOperateMode"),
+        ("Abort", "TrackStop"),
+        ("Restart", "StopCapture"),
     ],
 )
 def command_without_arg(request):
@@ -170,35 +169,35 @@ def test_configure_should_raise_exception_when_called_with_invalid_arguments():
 
 
 # TODO: actual AZ and EL values need to be generated.
-# @pytest.mark.xfail
-# def test_configure_to_send_correct_configuration_data_when_dish_is_idle(mock_dish_master_proxy):
-#     device_proxy, tango_client , _, _ = mock_dish_master_proxy
-#     dish_config = config_input_str
-#     device_proxy.Configure(json.dumps(dish_config))
+@pytest.mark.xfail
+def test_configure_to_send_correct_configuration_data_when_dish_is_idle(mock_dish_master_proxy):
+    device_proxy, tango_client , _, _ = mock_dish_master_proxy
+    dish_config = config_input_str
+    device_proxy.Configure(json.dumps(dish_config))
 
-#     json_argument = dish_config
-#     receiver_band = int(json_argument["dish"]["receiverBand"])
+    json_argument = dish_config
+    receiver_band = int(json_argument["dish"]["receiverBand"])
 
-#     arg_list = {
-#         "pointing": {"AZ": 181.6281105048956, "EL": 27.336666294459825},
-#         "dish": {"receiverBand": receiver_band},
-#     }
-#     dish_str_ip = json.dumps(arg_list)
+    arg_list = {
+        "pointing": {"AZ": 181.6281105048956, "EL": 27.336666294459825},
+        "dish": {"receiverBand": receiver_band},
+    }
+    dish_str_ip = json.dumps(arg_list)
 
-#     tango_client.deviceproxy.command_inout_asynch.assert_called_with(
-#         const.CMD_DISH_CONFIGURE, str(dish_str_ip), any_method(with_name="cmd_ended_cb")
+    tango_client.deviceproxy.command_inout_asynch.assert_called_with(
+        const.CMD_DISH_CONFIGURE, str(dish_str_ip), any_method(with_name="cmd_ended_cb")
 #     )
 
 
 # TODO: actual AZ and EL values need to be generated.
-# @pytest.mark.xfail
-# def test_configure_command_with_callback_method(mock_dish_master_proxy, event_subscription_mock):
-#     device_proxy, _, _, _ = mock_dish_master_proxy
-#     dish_config = config_input_str
-#     device_proxy.Configure(json.dumps(dish_config))
-#     dummy_event = command_callback(const.CMD_DISH_CONFIGURE)
-#     event_subscription_mock[const.CMD_DISH_CONFIGURE](dummy_event)
-#     assert const.STR_COMMAND + const.CMD_DISH_CONFIGURE in device_proxy.activityMessage
+@pytest.mark.xfail
+def test_configure_command_with_callback_method(mock_dish_master_proxy, event_subscription_mock):
+    device_proxy, _, _, _ = mock_dish_master_proxy
+    dish_config = config_input_str
+    device_proxy.Configure(json.dumps(dish_config))
+    dummy_event = command_callback(const.CMD_DISH_CONFIGURE)
+    event_subscription_mock[const.CMD_DISH_CONFIGURE](dummy_event)
+    assert const.STR_COMMAND + const.CMD_DISH_CONFIGURE in device_proxy.activityMessage
 
 
 @pytest.fixture(
@@ -238,6 +237,233 @@ def dish_mode(request):
 #     )
 #     event_subscription_map[dish_master_dishmode_attribute](dummy_event)
 #     assert "Event system DevError(s) occured!!!" in device_proxy.activityMessage
+@pytest.fixture(
+    scope="function",
+    params=[("Slew", [10.0, 20.0])],
+)
+def command_name_with_args(request):
+    cmd_name, input_args = request.param
+    return cmd_name, input_args
+
+
+def test_msg_in_activity_message_attribute(mock_dish_master_proxy, event_subscription_mock, command_name_with_args):
+    device_proxy, _, _, _ = mock_dish_master_proxy
+    command_name, input_args = command_name_with_args
+    device_proxy.command_inout(command_name, input_args)
+    dummy_event = command_callback(command_name)
+    event_subscription_mock[command_name](dummy_event)
+    assert f"Command :-> {command_name}" in device_proxy.activityMessage
+
+
+def test_activity_message_attribute_when_command_callback_is_called_with_error_event(mock_dish_master_proxy, event_subscription_mock, command_name_with_args):
+    device_proxy, _, _, _ = mock_dish_master_proxy
+    command_name, input_args = command_name_with_args
+    device_proxy.command_inout(command_name, input_args)
+    dummy_event = command_callback_with_event_error(command_name)
+    event_subscription_mock[command_name](dummy_event)
+    assert f"Error in invoking command: {command_name}" in device_proxy.activityMessage
+
+
+@pytest.fixture(
+    scope="function",
+    params=[
+        ("Slew", [10.0, 20.0], "Slew"),
+    ],
+)
+def command_with_arg(request):
+    cmd_name, input_arg, requested_cmd = request.param
+    return cmd_name, input_arg, requested_cmd
+
+
+def test_command_cb_is_invoked_when_command_with_arg_is_called_async(mock_dish_master_proxy, command_with_arg):
+    device_proxy, dish1_proxy_mock, _, _ = mock_dish_master_proxy
+    cmd_name, input_arg, requested_cmd = command_with_arg
+
+    device_proxy.command_inout(cmd_name, input_arg)
+    # Comparing np.arrys behaves differently, so it is suggested to use the
+    # np.testing.assert_equal method.
+    # See https://stackoverflow.com/questions/27781394/mock-assert-called-once-with-a-numpy-array-as-argument
+    np.testing.assert_array_equal(
+        dish1_proxy_mock.deviceproxy.command_inout_asynch.call_args[0][1], np.array(input_arg)
+    )
+    assert dish1_proxy_mock.deviceproxy.command_inout_asynch.call_args[0][2] == any_method(with_name="cmd_ended_cb")
+
+
+@pytest.mark.xfail
+def test_track_should_command_dish_to_start_tracking(mock_dish_master):
+    tango_context, dish1_proxy_mock, _, _ = mock_dish_master
+    tango_context.device.Track(config_input_str)
+    json_argument = config_input_str
+    ra_value = json_argument["pointing"]["target"]["RA"]
+    dec_value = json_argument["pointing"]["target"]["dec"]
+    radec_value = "radec" + "," + str(ra_value) + "," + str(dec_value)
+    dish1_proxy_mock.command_inout_asynch.assert_called_with(
+        const.CMD_TRACK, "0", any_method(with_name="cmd_ended_cb")
+    )
+
+
+
+def create_dummy_event_for_dishmode(device_fqdn, dish_mode_value, attribute):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{device_fqdn}/{attribute}"
+    fake_event.attr_value.value = dish_mode_value
+    return fake_event
+
+
+def create_dummy_event_with_error(device_fqdn, attr_value, attribute):
+    fake_event = Mock()
+    fake_event.err = True
+    fake_event.errors = "Event Error"
+    fake_event.attr_name = f"{device_fqdn}/{attribute}"
+    fake_event.attr_value.value = attr_value
+    return fake_event
+
+
+def create_dummy_event_for_dish_capturing(device_fqdn, dish_capturing_value, attribute):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{device_fqdn}/{attribute}"
+    fake_event.attr_value.value = dish_capturing_value
+    return fake_event
+
+
+def test_activity_message():
+    with fake_tango_system(DishLeafNode) as tango_context:
+        tango_context.device.activityMessage = const.STR_OK
+        assert tango_context.device.activityMessage == const.STR_OK
+
+
+def test_status():
+    with fake_tango_system(DishLeafNode) as tango_context:
+        assert tango_context.device.Status() != const.STR_DISH_INIT_SUCCESS
+
+
+def test_logging_level():
+    with fake_tango_system(DishLeafNode) as tango_context:
+        tango_context.device.loggingLevel = LoggingLevel.INFO
+        assert tango_context.device.loggingLevel == LoggingLevel.INFO
+
+
+def test_logging_targets():
+    with fake_tango_system(DishLeafNode) as tango_context:
+        tango_context.device.loggingTargets = ["console::cout"]
+        assert "console::cout" in tango_context.device.loggingTargets
+
+
+def test_test_mode():
+    with fake_tango_system(DishLeafNode) as tango_context:
+        test_mode = TestMode.NONE
+        tango_context.device.testMode = test_mode
+        assert tango_context.device.testMode == test_mode
+
+
+def test_simulation_mode():
+    with fake_tango_system(DishLeafNode) as tango_context:
+        simulation_mode = SimulationMode.FALSE
+        tango_context.device.simulationMode = simulation_mode
+        assert tango_context.device.simulationMode == simulation_mode
+
+
+def test_control_mode():
+    with fake_tango_system(DishLeafNode) as tango_context:
+        control_mode = ControlMode.REMOTE
+        tango_context.device.controlMode = control_mode
+        assert tango_context.device.controlMode == control_mode
+
+
+def test_health_state():
+    with fake_tango_system(DishLeafNode) as tango_context:
+        assert tango_context.device.healthState == HealthState.OK
+
+
+def raise_devfailed_exception(*args):
+    tango.Except.throw_exception(
+        "DishLeafNode_Commandfailed",
+        "This is error message for devfailed",
+        " ",
+        tango.ErrSeverity.ERR,
+    )
+
+
+# TODO: actual AZ and EL values need to be generated.
+@pytest.mark.xfail
+def test_track_command_with_callback_method(event_subscription, mock_dish_master):
+    tango_context, dish1_proxy_mock, dish_master1_fqdn, event_subscription_map = mock_dish_master
+    tango_context.device.Track("0")
+    dummy_event = command_callback(const.CMD_TRACK)
+    event_subscription[const.CMD_TRACK](dummy_event)
+    assert const.STR_COMMAND + const.CMD_TRACK in tango_context.device.activityMessage
+
+
+def test_version_id():
+    """Test for versionId"""
+    with fake_tango_system(DishLeafNode) as tango_context:
+        assert tango_context.device.versionId == release.version
+
+
+def test_build_state():
+    """Test for buildState"""
+    with fake_tango_system(DishLeafNode) as tango_context:
+        assert tango_context.device.buildState == (
+            "{},{},{}".format(release.name, release.version, release.description)
+        )
+
+
+def command_callback(command_name):
+    fake_event = MagicMock()
+    fake_event.err = False
+    fake_event.errors = "Event error"
+    fake_event.cmd_name = f"{command_name}"
+    return fake_event
+
+
+def command_callback_with_event_error(command_name):
+    fake_event = MagicMock()
+    fake_event.err = True
+    fake_event.errors = "Event error"
+    fake_event.cmd_name = f"{command_name}"
+    return fake_event
+
+
+def command_callback_with_command_exception(command_name):
+    return Exception("Exception in callback")
+
+
+def assert_activity_message(device_proxy, expected_message):
+    assert device_proxy.activityMessage == expected_message  # reads tango attribute
+
+
+def any_method(with_name=None):
+    class AnyMethod:
+        def __eq__(self, other):
+            if not isinstance(other, types.MethodType):
+                return False
+
+            return other.__func__.__name__ == with_name if with_name else True
+
+    return AnyMethod()
+
+
+@contextlib.contextmanager
+def fake_tango_system(
+    device_under_test,
+    initial_dut_properties={},
+    proxies_to_mock={},
+    device_proxy_import_path="tango.DeviceProxy",
+):
+    with mock.patch(device_proxy_import_path) as patched_constructor:
+        patched_constructor.side_effect = lambda device_fqdn: proxies_to_mock.get(
+            device_fqdn, Mock()
+        )
+        patched_module = importlib.reload(sys.modules[device_under_test.__module__])
+
+    device_under_test = getattr(patched_module, device_under_test.__name__)
+
+    device_test_context = DeviceTestContext(device_under_test, properties=initial_dut_properties)
+    device_test_context.start()
+    yield device_test_context
+    device_test_context.stop()
 
 ############################################################################################################
 
@@ -368,9 +594,6 @@ def dish_mode(request):
 #     )
 
 
-
-
-
 # @pytest.mark.xfail
 # def test_track_should_command_dish_to_start_tracking(mock_dish_master):
 #     tango_context, dish1_proxy_mock, _, _ = mock_dish_master
@@ -384,30 +607,30 @@ def dish_mode(request):
 #     )
 
 
-def create_dummy_event_for_dishmode(device_fqdn, dish_mode_value, attribute):
-    fake_event = Mock()
-    fake_event.err = False
-    fake_event.attr_name = f"{device_fqdn}/{attribute}"
-    fake_event.attr_value.value = dish_mode_value
-    return fake_event
+# def create_dummy_event_for_dishmode(device_fqdn, dish_mode_value, attribute):
+#     fake_event = Mock()
+#     fake_event.err = False
+#     fake_event.attr_name = f"{device_fqdn}/{attribute}"
+#     fake_event.attr_value.value = dish_mode_value
+#     return fake_event
 
 
 
-def create_dummy_event_with_error(device_fqdn, attr_value, attribute):
-    fake_event = Mock()
-    fake_event.err = True
-    fake_event.errors = "Event Error"
-    fake_event.attr_name = f"{device_fqdn}/{attribute}"
-    fake_event.attr_value.value = attr_value
-    return fake_event
+# def create_dummy_event_with_error(device_fqdn, attr_value, attribute):
+#     fake_event = Mock()
+#     fake_event.err = True
+#     fake_event.errors = "Event Error"
+#     fake_event.attr_name = f"{device_fqdn}/{attribute}"
+#     fake_event.attr_value.value = attr_value
+#     return fake_event
 
 
-def create_dummy_event_for_dish_capturing(device_fqdn, dish_capturing_value, attribute):
-    fake_event = Mock()
-    fake_event.err = False
-    fake_event.attr_name = f"{device_fqdn}/{attribute}"
-    fake_event.attr_value.value = dish_capturing_value
-    return fake_event
+# def create_dummy_event_for_dish_capturing(device_fqdn, dish_capturing_value, attribute):
+#     fake_event = Mock()
+#     fake_event.err = False
+#     fake_event.attr_name = f"{device_fqdn}/{attribute}"
+#     fake_event.attr_value.value = dish_capturing_value
+#     return fake_event
 
 
 # @pytest.fixture(scope="function", params=["True", "False"])
@@ -489,8 +712,6 @@ def create_dummy_event_for_dish_capturing(device_fqdn, dish_capturing_value, att
 #     event_subscription_map[dish_master_pointing_attribute](dummy_event)
 #     assert tango_context.device.activityMessage == f"{attribute} is {value}."
 
-
-# 
 
 # def test_track_should_raise_exception_when_called_with_invalid_arguments():
 #     with fake_tango_system(DishLeafNode) as tango_context:
@@ -642,71 +863,71 @@ def create_dummy_event_for_dish_capturing(device_fqdn, dish_capturing_value, att
 #     assert const.STR_COMMAND + const.CMD_TRACK in tango_context.device.activityMessage
 
 
-# def test_version_id():
-#     """Test for versionId"""
-#     with fake_tango_system(DishLeafNode) as tango_context:
-#         assert tango_context.device.versionId == release.version
+# # def test_version_id():
+# #     """Test for versionId"""
+# #     with fake_tango_system(DishLeafNode) as tango_context:
+# #         assert tango_context.device.versionId == release.version
 
 
-# def test_build_state():
-#     """Test for buildState"""
-#     with fake_tango_system(DishLeafNode) as tango_context:
-#         assert tango_context.device.buildState == (
-#             "{},{},{}".format(release.name, release.version, release.description)
+# # def test_build_state():
+# #     """Test for buildState"""
+# #     with fake_tango_system(DishLeafNode) as tango_context:
+# #         assert tango_context.device.buildState == (
+# #             "{},{},{}".format(release.name, release.version, release.description)
+# #         )
+
+
+# def command_callback(command_name):
+#     fake_event = MagicMock()
+#     fake_event.err = False
+#     fake_event.errors = "Event error"
+#     fake_event.cmd_name = f"{command_name}"
+#     return fake_event
+
+
+# def command_callback_with_event_error(command_name):
+#     fake_event = MagicMock()
+#     fake_event.err = True
+#     fake_event.errors = "Event error"
+#     fake_event.cmd_name = f"{command_name}"
+#     return fake_event
+
+
+# def command_callback_with_command_exception(command_name):
+#     return Exception("Exception in callback")
+
+
+# def assert_activity_message(device_proxy, expected_message):
+#     assert device_proxy.activityMessage == expected_message  # reads tango attribute
+
+
+# def any_method(with_name=None):
+#     class AnyMethod:
+#         def __eq__(self, other):
+#             if not isinstance(other, types.MethodType):
+#                 return False
+
+#             return other.__func__.__name__ == with_name if with_name else True
+
+#     return AnyMethod()
+
+
+# @contextlib.contextmanager
+# def fake_tango_system(
+#     device_under_test,
+#     initial_dut_properties={},
+#     proxies_to_mock={},
+#     device_proxy_import_path="tango.DeviceProxy",
+# ):
+#     with mock.patch(device_proxy_import_path) as patched_constructor:
+#         patched_constructor.side_effect = lambda device_fqdn: proxies_to_mock.get(
+#             device_fqdn, Mock()
 #         )
+#         patched_module = importlib.reload(sys.modules[device_under_test.__module__])
 
+#     device_under_test = getattr(patched_module, device_under_test.__name__)
 
-def command_callback(command_name):
-    fake_event = MagicMock()
-    fake_event.err = False
-    fake_event.errors = "Event error"
-    fake_event.cmd_name = f"{command_name}"
-    return fake_event
-
-
-def command_callback_with_event_error(command_name):
-    fake_event = MagicMock()
-    fake_event.err = True
-    fake_event.errors = "Event error"
-    fake_event.cmd_name = f"{command_name}"
-    return fake_event
-
-
-def command_callback_with_command_exception(command_name):
-    return Exception("Exception in callback")
-
-
-def assert_activity_message(device_proxy, expected_message):
-    assert device_proxy.activityMessage == expected_message  # reads tango attribute
-
-
-def any_method(with_name=None):
-    class AnyMethod:
-        def __eq__(self, other):
-            if not isinstance(other, types.MethodType):
-                return False
-
-            return other.__func__.__name__ == with_name if with_name else True
-
-    return AnyMethod()
-
-
-@contextlib.contextmanager
-def fake_tango_system(
-    device_under_test,
-    initial_dut_properties={},
-    proxies_to_mock={},
-    device_proxy_import_path="tango.DeviceProxy",
-):
-    with mock.patch(device_proxy_import_path) as patched_constructor:
-        patched_constructor.side_effect = lambda device_fqdn: proxies_to_mock.get(
-            device_fqdn, Mock()
-        )
-        patched_module = importlib.reload(sys.modules[device_under_test.__module__])
-
-    device_under_test = getattr(patched_module, device_under_test.__name__)
-
-    device_test_context = DeviceTestContext(device_under_test, properties=initial_dut_properties)
-    device_test_context.start()
-    yield device_test_context
-    device_test_context.stop()
+#     device_test_context = DeviceTestContext(device_under_test, properties=initial_dut_properties)
+#     device_test_context.start()
+#     yield device_test_context
+#     device_test_context.stop()

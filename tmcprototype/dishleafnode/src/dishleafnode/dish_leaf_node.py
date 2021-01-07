@@ -10,7 +10,6 @@
 """
 A Leaf control node for DishMaster.
 """
-import json
 import importlib.resources
 import math
 import datetime
@@ -18,36 +17,45 @@ import time
 import threading
 
 import tango
-from tango import DeviceProxy, EventType, ApiUtil, DevState, AttrWriteType, DevFailed
+from tango import ApiUtil, AttrWriteType
 from tango.server import run, command, device_property, attribute
 import katpoint
 
-from ska.base.commands import ResultCode, BaseCommand
+from ska.base.commands import ResultCode
 from ska.base import SKABaseDevice
-from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 from ska.base.control_model import HealthState, SimulationMode
 from .utils import UnitConverter
 from . import release
 from .device_data import DeviceData
+<<<<<<< HEAD
 from .abort_command import AbortCommand
 from .configure_command import Configure
+=======
+from .abort_command import Abort
+from .configure_command import ConfigureCommand
+>>>>>>> 50ec5f986b05d2b8a3bed78300fdfe881d47899d
 from .endscan_command import EndScan
-from .obsreset_command import ObsResetCommand
-from .restart_command import RestartCommand
+from .obsreset_command import ObsReset
+from .restart_command import Restart
 from .scan_command import Scan
 from .setoperatemode_command import SetOperateMode
 from .setstandbyfpmode_command import SetStandbyFPMode
 from .setstandbylpmode_command import SetStandbyLPMode
 from .setstowmode_command import SetStowMode
-from .slew_command import SlewCommand
+from .slew_command import Slew
 from .startcapture_command import StartCapture
 from .stopcapture_command import StopCapture
 from .stoptrack_command import StopTrackCommand
 from .track_command import TrackCommand
 
 
+<<<<<<< HEAD
 __all__ = ["DishLeafNode", "main", "release", "SetOperateMode", "SetStandbyLPMode", "SetStandbyFPMode", "SetStowMode", "Scan", "EndScan", "StartCapture", "StopCapture", "Configure"]
+=======
+__all__ = ["DishLeafNode", "main", "release", "SetOperateMode", "SetStandbyLPMode", "SetStandbyFPMode", "SetStowMode", "Scan", "EndScan", "StartCapture", "StopCapture"
+                "Abort", "Restart", "ObsReset", "Slew"]
+>>>>>>> 50ec5f986b05d2b8a3bed78300fdfe881d47899d
 
 
 # class CommandCallBack:
@@ -113,12 +121,12 @@ class DishLeafNode(SKABaseDevice):
         self.register_command_object("StartCapture", StartCapture(*args))
         self.register_command_object("StopCapture", StopCapture(*args))
         self.register_command_object("SetStandbyFPMode", SetStandbyFPMode(*args))
-        # self.register_command_object("Slew", SlewCommand(*args))
+        self.register_command_object("Slew", Slew(*args))
         # self.register_command_object("Track", TrackCommand(*args))
         # self.register_command_object("StopTrack", StopTrackCommand(*args))
-        # self.register_command_object("Abort", AbortCommand(*args))
-        # self.register_command_object("Restart", RestartCommand(*args))
-        # self.register_command_object("ObsReset", ObsResetCommand(*args))
+        self.register_command_object("Abort", Abort(*args))
+        self.register_command_object("Restart", Restart(*args))
+        self.register_command_object("ObsReset", ObsReset(*args))
 
     # def attribute_event_handler(self, event_data):
     #     """
