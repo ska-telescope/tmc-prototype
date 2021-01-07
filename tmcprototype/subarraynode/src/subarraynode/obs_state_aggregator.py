@@ -53,7 +53,7 @@ class ObsStateAggregator:
 
         """
         for tango_client, event_id in self.csp_sdp_ln_obs_state_event_id.items():
-            log_msg = "Unsubscribe ObsState event for " + tango_client
+            log_msg = "Unsubscribe ObsState event for " + str(tango_client)
             self.logger.debug(log_msg)
             tango_client.unsubscribe_attribute(event_id)
 
