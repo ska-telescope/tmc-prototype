@@ -52,16 +52,17 @@ class SetOperateMode(BaseCommand):
                 "achievedPointing",
                 "desiredPointing",
             )
-        command_name = "SetStandbyFPMode"
+        # command_name = "SetStandbyFPMode"
         try:
             # Subscribe the DishMaster attributes
             self._subscribe_to_attribute_events(attributes_to_subscribe_to)
 
             dish_client = TangoClient(device_data._dish_master_fqdn)
             cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
-            dish_client.send_command_async(command_name, None, cmd_ended_cb)
-            self.logger.info("'%s' command executed successfully.", command_name)
-            time.sleep(0.5)
+            print("------------- cmd_ended_cb --------------------------", cmd_ended_cb)
+            # dish_client.send_command_async(command_name, None, cmd_ended_cb)
+            # self.logger.info("'%s' command executed successfully.", command_name)
+            # time.sleep(0.5)
             command_name = "SetOperateMode"
             #device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
             dish_client.send_command_async(command_name, None, cmd_ended_cb)

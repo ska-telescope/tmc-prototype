@@ -58,7 +58,7 @@ class CommandCallBack:
         """
 
         device_data = DeviceData.get_instance()
-
+        print("********************* IN CALLBACK **********************")
         if event.err:
             log_message = f"Error in invoking command: {event.cmd_name}\n{event.errors}"
             self.logger.error(log_message)
