@@ -12,19 +12,15 @@ It also acts as a MCCS contact point for Subarray Node for observation execution
 # See LICENSE.txt for more info.
 
 # PROTECTED REGION ID(MccSubarrayLeafNode.additional_import) ENABLED START #
-# Standard python imports
-import json
-from datetime import datetime, timedelta
-import pytz
 
 # Third party imports
 # Tango imports
 import tango
-from tango import DebugIt, AttrWriteType, DeviceProxy, DevState, DevFailed
+from tango import DebugIt, AttrWriteType
 from tango.server import run, attribute, command, device_property
 
 # Additional import
-from ska.base.commands import ResultCode, BaseCommand
+from ska.base.commands import ResultCode
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState
 from tmc.common.tango_server_helper import TangoServerHelper

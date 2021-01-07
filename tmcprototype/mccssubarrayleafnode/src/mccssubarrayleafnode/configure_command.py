@@ -153,13 +153,13 @@ class Configure(BaseCommand):
         # Add in sky_coordinates set in station_beam_pointings
         station_beam_pointings["sky_coordinates"] = sky_coordinates
 
-        station_ids = self.get_station_ids(configuration_string, station_beam_pointings)
+        station_ids = self.get_station_ids(configuration_string)
 
         station_beam_pointings["station_id"] = station_ids
         # Remove target block from station_beam_pointings
         station_beam_pointings.pop("target", None)
 
-        mccs_sa_configuration_string = self.update_configuration_json(station_beam_pointings, station_ids, configuration_string)
+        mccs_sa_configuration_string = self.update_configuration_json(station_beam_pointings, configuration_string)
         cmd_data = json.dumps(mccs_sa_configuration_string)
         return cmd_data
 
@@ -184,7 +184,7 @@ class Configure(BaseCommand):
 
         return sky_coordinates
 
-    def get_station_ids(self, configuration_string, station_beam_pointings):
+    def get_station_ids(self, configuration_string):
         station_ids = []
         for station in configuration_string["stations"]:
             log_msg = "Station is: " + str(station)
@@ -192,7 +192,7 @@ class Configure(BaseCommand):
             station_ids.append(station["station_id"])
         return station_ids
 
-    def update_configuration_json(self, station_beam_pointings, station_ids, configuration_string):
+    def update_configuration_json(self, station_beam_pointings, configuration_string):
         # Update station_beam_pointings into output Configure JSON
         configuration_string["station_beam_pointings"][0] = station_beam_pointings
         configuration_string["station_beams"] = configuration_string["station_beam_pointings"]
