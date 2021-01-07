@@ -33,15 +33,14 @@ class HealthStateAggregator:
         # Subscribe cspsubarrayHealthState (forwarded attribute) of CspSubarray
         csp_event_id = self.csp_client.subscribe_attribute(const.EVT_CSPSA_HEALTH, self.health_state_cb)
         self.csp_sdp_ln_health_event_id[self.csp_client] = csp_event_id
-        log_msg = const.STR_CSP_LN_VS_HEALTH_EVT_ID + str(self.csp_sdp_ln_health_event_id)
+        log_msg = const.STR_CSP_LN_HEALTH_EVT_ID + str(self.csp_sdp_ln_health_event_id)
         self.logger.debug(log_msg)
         tango_server_helper_obj = TangoServerHelper.get_instance()
         tango_server_helper_obj.set_status(const.STR_CSP_SA_LEAF_SUB_SUCCESS)
-        self.logger.info(const.STR_CSP_SA_LEAF_SUB_SUCCESS)
         # Subscribe sdpSubarrayHealthState (forwarded attribute) of SdpSubarray
         sdp_event_id = self.sdp_client.subscribe_attribute(const.EVT_SDPSA_HEALTH, self.health_state_cb)
         self.csp_sdp_ln_health_event_id[self.sdp_client] = sdp_event_id
-        log_msg = const.STR_SDP_LN_VS_HEALTH_EVT_ID + str(self.csp_sdp_ln_health_event_id)
+        log_msg = const.STR_SDP_LN_HEALTH_EVT_ID + str(self.csp_sdp_ln_health_event_id)
         self.logger.debug(log_msg)
         tango_server_helper_obj.set_status(const.STR_SDP_SA_LEAF_SUB_SUCCESS)
 
@@ -101,6 +100,8 @@ class HealthStateAggregator:
 
         """
         for tango_client, event_id in self.csp_sdp_ln_health_event_id.items():
+            log_msg = "Unsubscribe Health State event for " + tango_client
+            self.logger.debug(log_msg)
             tango_client.unsubscribe_attribute(event_id)
 
     def subscribe_dish_health_state(self, dish_ln_client):
