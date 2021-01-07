@@ -15,7 +15,7 @@ It also acts as a MCCS contact point for Subarray Node for observation execution
 
 # Third party imports
 # Tango imports
-import tango
+# import tango
 from tango import DebugIt, AttrWriteType
 from tango.server import run, attribute, command, device_property
 
