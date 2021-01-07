@@ -28,10 +28,12 @@ from tmc.common.tango_client import TangoClient
 from ska.base.control_model import HealthState, SimulationMode
 from .utils import UnitConverter
 from . import release
+from .device_data import DeviceData
+from .command_callback import CommandCallBack
+from .az_el_converter import AzElConverter
 
 
-
-class ConfigureCommand(BaseCommand):
+class Configure(BaseCommand):
     """
     A class for DishLeafNode's Configure() command.
     """
@@ -71,20 +73,20 @@ class ConfigureCommand(BaseCommand):
             if the json string contains invalid data.
         """
 
-        device = self.target
+        device_data = self.target
         command_name = "Configure"
 
         try:
-            json_argument = device._load_config_string(argin)
-            ra_value, dec_value = device._get_targets(json_argument)
-            device.radec_value = f"radec,{ra_value},{dec_value}"
+            json_argument = self._load_config_string(argin)
+            ra_value, dec_value = self._get_targets(json_argument)
+            device_data.radec_value = f"radec,{ra_value},{dec_value}"
             receiver_band = json_argument["dish"]["receiverBand"]
-            self._set_desired_pointing(device.radec_value)
+            self._set_desired_pointing(device_data.radec_value)
             self._configure_band(receiver_band)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
             log_message = f"Exception occured while executing the '{command_name}' command."
-            device._read_activity_message = log_message
+            device_data._read_activity_message = log_message
             tango.Except.re_throw_exception(
                 dev_failed,
                 f"Exception in '{command_name}' command.",
@@ -97,21 +99,26 @@ class ConfigureCommand(BaseCommand):
 
     def _configure_band(self, band):
         """"Send the ConfigureBand<band-number> command to Dish Master"""
-        device = self.target
+        # device_data = self.target
         command_name = f"ConfigureBand{band}"
 
         try:
-            device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
+            dish_client = TangoClient(device_data._dish_master_fqdn)
+            cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
+            dish_client.send_command_async(command_name, None, cmd_ended_cb)
+            # device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
         except DevFailed as dev_failed:
             raise dev_failed
 
     def _set_desired_pointing(self, radec):
-        device = self.target
+        # device_data = self.target
         now = datetime.datetime.utcnow()
         timestamp = str(now)
 
         try:
-            device.az, device.el = device.convert_radec_to_azel(radec, timestamp)
+            dish_client = TangoClient(device_data._dish_master_fqdn)
+            azel_converter = AzElConverter.get_instance()
+            device_data.az, device_data.el = azel_converter.convert_radec_to_azel(radec, timestamp)
         except ValueError as valuerr:
             tango.Except.throw_exception(
                 str(valuerr),
@@ -122,8 +129,8 @@ class ConfigureCommand(BaseCommand):
 
         # Set desiredPointing on Dish Master (it won't move until asked to
         # track or scan, but provide initial coordinates for interest)
-        time_az_el = [now.timestamp(), device.az, device.el]
-        device._dish_proxy.desiredPointing = time_az_el
+        time_az_el = [now.timestamp(), device_data.az, device_data.el]
+        dish_client.deviceproxy.desiredPointing = time_az_el
 
     def _get_targets(self, json_argument):
         try:
