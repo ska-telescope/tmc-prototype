@@ -117,17 +117,17 @@ class ObsStateAggregator:
                 ObsState.EMPTY)):
             if self.device_data.is_release_resources:
                 self.logger.info("Calling ReleaseAllResource command succeeded() method")
-                self.this_server.release_obj.succeeded()
+                self.this_server.release.succeeded()
             elif self.device_data.is_restart_command:
                 self.logger.info("Calling Restart command succeeded() method")
-                self.this_server.restart_obj.succeeded()
+                self.this_server.restart.succeeded()
                 # TODO: As a action for Restart command invoke ReleaseResources command on SubarrayNode
 
         elif ((self.csp_sa_obs_state == ObsState.ABORTED) and (self.sdp_sa_obs_state == ObsState.ABORTED)):
             if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
                 if self.device_data.is_abort_command:
                     self.logger.info("Calling ABORT command succeeded() method")
-                    self.this_server.abort_obj.succeeded()
+                    self.this_server.abort.succeeded()
         elif ((self.csp_sa_obs_state == ObsState.READY) and (self.sdp_sa_obs_state == ObsState.READY)):
             log_msg = "Pointing state in track counts = " + str(pointing_state_count_track)
             self.logger.debug(log_msg)
@@ -137,11 +137,11 @@ class ObsStateAggregator:
                 if not self.device_data.is_abort_command:
                     if self.device_data.is_scan_completed:
                         self.logger.info("Calling EndScan command succeeded() method")
-                        self.this_server.endscan_obj.succeeded()
+                        self.this_server.endscan.succeeded()
                     else:
                         # Configure command success
                         self.logger.info("Calling Configure command succeeded() method")
-                        self.this_server.configure_obj.succeeded()
+                        self.this_server.configure.succeeded()
         elif ((self.csp_sa_obs_state == ObsState.IDLE) and (self.sdp_sa_obs_state ==\
                 ObsState.IDLE)):
             if self.device_data.is_end_command:
@@ -151,16 +151,16 @@ class ObsStateAggregator:
                     # As a part of end command send Stop track command on dish leaf node
                     #  TODO: Stop track command will be invoked once tango group command issue gets resolved.
                     # self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
-                    self.this_server.end_obj.succeeded()
+                    self.this_server.end.succeeded()
             elif self.device_data.is_obsreset_command:
                 if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
                     self.logger.info("Calling ObsReset command succeeded() method")
-                    self.this_server.obsreset_obj.succeeded()
+                    self.this_server.obsreset.succeeded()
 
             else:
                 # Assign Resource command success
                 self.logger.info("Calling AssignResource command succeeded() method")
-                self.this_server.assign_obj.succeeded()
+                self.this_server.assign.succeeded()
 
 
     def pointing_state_cb(self, evt):
