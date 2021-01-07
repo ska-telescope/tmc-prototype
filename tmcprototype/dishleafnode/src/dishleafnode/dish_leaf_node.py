@@ -31,7 +31,7 @@ from .utils import UnitConverter
 from . import release
 from .device_data import DeviceData
 from .abort_command import AbortCommand
-from .configure_command import ConfigureCommand
+from .configure_command import Configure
 from .endscan_command import EndScan
 from .obsreset_command import ObsResetCommand
 from .restart_command import RestartCommand
@@ -47,7 +47,7 @@ from .stoptrack_command import StopTrackCommand
 from .track_command import TrackCommand
 
 
-__all__ = ["DishLeafNode", "main", "release", "SetOperateMode", "SetStandbyLPMode", "SetStandbyFPMode", "SetStowMode", "Scan", "EndScan", "StartCapture", "StopCapture"]
+__all__ = ["DishLeafNode", "main", "release", "SetOperateMode", "SetStandbyLPMode", "SetStandbyFPMode", "SetStowMode", "Scan", "EndScan", "StartCapture", "StopCapture", "Configure"]
 
 
 # class CommandCallBack:
@@ -109,7 +109,7 @@ class DishLeafNode(SKABaseDevice):
         self.register_command_object("SetOperateMode", SetOperateMode(*args))
         self.register_command_object("Scan", Scan(*args))
         self.register_command_object("EndScan", EndScan(*args))
-        # self.register_command_object("Configure", ConfigureCommand(*args))
+        self.register_command_object("Configure", Configure(*args))
         self.register_command_object("StartCapture", StartCapture(*args))
         self.register_command_object("StopCapture", StopCapture(*args))
         self.register_command_object("SetStandbyFPMode", SetStandbyFPMode(*args))

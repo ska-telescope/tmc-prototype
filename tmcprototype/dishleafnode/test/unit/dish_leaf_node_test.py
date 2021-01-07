@@ -153,7 +153,91 @@ def test_dish_master_command_is_called_with_the_no_inputs_when_leaf_node_command
     device_proxy.command_inout(cmd_name, input_arg)
 
 
+def test_configure_should_raise_exception_when_called_with_invalid_json():
+    with fake_tango_system(DishLeafNode) as tango_context:
+        with pytest.raises(tango.DevFailed) as df:
+            tango_context.device.Configure(config_track_invalid_str)
+        assert const.ERR_INVALID_JSON in str(df.value)
 
+
+def test_configure_should_raise_exception_when_called_with_invalid_arguments():
+    with fake_tango_system(DishLeafNode) as tango_context:
+        input_string = []
+        input_string.append(configure_invalid_arg)
+        with pytest.raises(tango.DevFailed) as df:
+            tango_context.device.Configure(input_string[0])
+        assert const.ERR_JSON_KEY_NOT_FOUND in str(df.value)
+
+
+# TODO: actual AZ and EL values need to be generated.
+# @pytest.mark.xfail
+# def test_configure_to_send_correct_configuration_data_when_dish_is_idle(mock_dish_master_proxy):
+#     device_proxy, tango_client , _, _ = mock_dish_master_proxy
+#     dish_config = config_input_str
+#     device_proxy.Configure(json.dumps(dish_config))
+
+#     json_argument = dish_config
+#     receiver_band = int(json_argument["dish"]["receiverBand"])
+
+#     arg_list = {
+#         "pointing": {"AZ": 181.6281105048956, "EL": 27.336666294459825},
+#         "dish": {"receiverBand": receiver_band},
+#     }
+#     dish_str_ip = json.dumps(arg_list)
+
+#     tango_client.deviceproxy.command_inout_asynch.assert_called_with(
+#         const.CMD_DISH_CONFIGURE, str(dish_str_ip), any_method(with_name="cmd_ended_cb")
+#     )
+
+
+# TODO: actual AZ and EL values need to be generated.
+# @pytest.mark.xfail
+# def test_configure_command_with_callback_method(mock_dish_master_proxy, event_subscription_mock):
+#     device_proxy, _, _, _ = mock_dish_master_proxy
+#     dish_config = config_input_str
+#     device_proxy.Configure(json.dumps(dish_config))
+#     dummy_event = command_callback(const.CMD_DISH_CONFIGURE)
+#     event_subscription_mock[const.CMD_DISH_CONFIGURE](dummy_event)
+#     assert const.STR_COMMAND + const.CMD_DISH_CONFIGURE in device_proxy.activityMessage
+
+
+@pytest.fixture(
+    scope="function",
+    params=[
+        DishMode.OFF,
+        DishMode.STARTUP,
+        DishMode.SHUTDOWN,
+        DishMode.STANDBY_LP,
+        DishMode.STANDBY_FP,
+        DishMode.STOW,
+        DishMode.CONFIG,
+        DishMode.OPERATE,
+        DishMode.MAINTENANCE,
+    ],
+)
+def dish_mode(request):
+    return request.param
+
+
+# def test_dish_leaf_node_activity_message_reports_correct_dish_master_dish_mode(
+#     mock_dish_master_proxy, dish_mode
+# ):
+#     attribute_name = "dishMode"
+#     device_proxy, _, dish_master1_fqdn, event_subscription_map = mock_dish_master_proxy
+#     dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode, attribute_name)
+#     event_subscription_map[attribute_name](dummy_event)
+#     assert device_proxy.activityMessage == f"dishMode is {dish_mode}."
+
+
+# def test_dish_leaf_node_dish_mode_with_error_event(mock_dish_master_proxy):
+#     dish_master_dishmode_attribute = "dishMode"
+#     device_proxy, _, dish_master1_fqdn, event_subscription_map = mock_dish_master_proxy
+#     dish_mode_value = 9
+#     dummy_event = create_dummy_event_with_error(
+#         dish_master1_fqdn, dish_mode_value, dish_master_dishmode_attribute
+#     )
+#     event_subscription_map[dish_master_dishmode_attribute](dummy_event)
+#     assert "Event system DevError(s) occured!!!" in device_proxy.activityMessage
 
 ############################################################################################################
 
@@ -284,25 +368,7 @@ def test_dish_master_command_is_called_with_the_no_inputs_when_leaf_node_command
 #     )
 
 
-# # TODO: actual AZ and EL values need to be generated.
-# @pytest.mark.xfail
-# def test_configure_to_send_correct_configuration_data_when_dish_is_idle(mock_dish_master):
-#     tango_context, dish1_proxy_mock, _, _ = mock_dish_master
-#     dish_config = config_input_str
-#     tango_context.device.Configure(json.dumps(dish_config))
 
-#     json_argument = dish_config
-#     receiver_band = int(json_argument["dish"]["receiverBand"])
-
-#     arg_list = {
-#         "pointing": {"AZ": 181.6281105048956, "EL": 27.336666294459825},
-#         "dish": {"receiverBand": receiver_band},
-#     }
-#     dish_str_ip = json.dumps(arg_list)
-
-#     dish1_proxy_mock.command_inout_asynch.assert_called_with(
-#         const.CMD_DISH_CONFIGURE, str(dish_str_ip), any_method(with_name="cmd_ended_cb")
-#     )
 
 
 # @pytest.mark.xfail
@@ -325,44 +391,6 @@ def create_dummy_event_for_dishmode(device_fqdn, dish_mode_value, attribute):
     fake_event.attr_value.value = dish_mode_value
     return fake_event
 
-
-# @pytest.fixture(
-#     scope="function",
-#     params=[
-#         DishMode.OFF,
-#         DishMode.STARTUP,
-#         DishMode.SHUTDOWN,
-#         DishMode.STANDBY_LP,
-#         DishMode.STANDBY_FP,
-#         DishMode.STOW,
-#         DishMode.CONFIG,
-#         DishMode.OPERATE,
-#         DishMode.MAINTENANCE,
-#     ],
-# )
-# def dish_mode(request):
-#     return request.param
-
-
-# def test_dish_leaf_node_activity_message_reports_correct_dish_master_dish_mode(
-#     mock_dish_master, dish_mode
-# ):
-#     attribute_name = "dishMode"
-#     tango_context, _, dish_master1_fqdn, event_subscription_map = mock_dish_master
-#     dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode, attribute_name)
-#     event_subscription_map[attribute_name](dummy_event)
-#     assert tango_context.device.activityMessage == f"dishMode is {dish_mode}."
-
-
-# def test_dish_leaf_node_dish_mode_with_error_event(mock_dish_master):
-#     dish_master_dishmode_attribute = "dishMode"
-#     tango_context, _, dish_master1_fqdn, event_subscription_map = mock_dish_master
-#     dish_mode_value = 9
-#     dummy_event = create_dummy_event_with_error(
-#         dish_master1_fqdn, dish_mode_value, dish_master_dishmode_attribute
-#     )
-#     event_subscription_map[dish_master_dishmode_attribute](dummy_event)
-#     assert "Event system DevError(s) occured!!!" in tango_context.device.activityMessage
 
 
 def create_dummy_event_with_error(device_fqdn, attr_value, attribute):
@@ -462,21 +490,7 @@ def create_dummy_event_for_dish_capturing(device_fqdn, dish_capturing_value, att
 #     assert tango_context.device.activityMessage == f"{attribute} is {value}."
 
 
-# def test_configure_should_raise_exception_when_called_with_invalid_json():
-#     with fake_tango_system(DishLeafNode) as tango_context:
-#         with pytest.raises(tango.DevFailed) as df:
-#             tango_context.device.Configure(config_track_invalid_str)
-#         assert const.ERR_INVALID_JSON in str(df.value)
-
-
-# def test_configure_should_raise_exception_when_called_with_invalid_arguments():
-#     with fake_tango_system(DishLeafNode) as tango_context:
-#         input_string = []
-#         input_string.append(configure_invalid_arg)
-#         with pytest.raises(tango.DevFailed) as df:
-#             tango_context.device.Configure(input_string[0])
-#         assert const.ERR_JSON_KEY_NOT_FOUND in str(df.value)
-
+# 
 
 # def test_track_should_raise_exception_when_called_with_invalid_arguments():
 #     with fake_tango_system(DishLeafNode) as tango_context:
@@ -615,15 +629,7 @@ def create_dummy_event_for_dish_capturing(device_fqdn, dish_capturing_value, att
 #     assert f"Error in invoking command: {command_name}" in tango_context.device.activityMessage
 
 
-# # TODO: actual AZ and EL values need to be generated.
-# @pytest.mark.xfail
-# def test_configure_command_with_callback_method(event_subscription, mock_dish_master):
-#     tango_context, _, _, _ = mock_dish_master
-#     dish_config = config_input_str
-#     tango_context.device.Configure(json.dumps(dish_config))
-#     dummy_event = command_callback(const.CMD_DISH_CONFIGURE)
-#     event_subscription[const.CMD_DISH_CONFIGURE](dummy_event)
-#     assert const.STR_COMMAND + const.CMD_DISH_CONFIGURE in tango_context.device.activityMessage
+
 
 
 # # TODO: actual AZ and EL values need to be generated.
