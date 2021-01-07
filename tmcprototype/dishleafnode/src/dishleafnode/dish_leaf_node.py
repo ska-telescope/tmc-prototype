@@ -28,7 +28,7 @@ from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 from ska.base.control_model import HealthState, SimulationMode
 from .utils import UnitConverter
-from dishleafnode import release
+from . import release
 from .device_data import DeviceData
 from .abort_command import AbortCommand
 from .configure_command import ConfigureCommand
@@ -47,7 +47,7 @@ from .stoptrack_command import StopTrackCommand
 from .track_command import TrackCommand
 
 
-__all__ = ["DishLeafNode", "main", "SetOperateMode", "SetStandbyLPMode", "SetStandbyFPMode", "SetStowMode"]
+__all__ = ["DishLeafNode", "main", "release", "SetOperateMode", "SetStandbyLPMode", "SetStandbyFPMode", "SetStowMode"]
 
 
 # class CommandCallBack:
@@ -90,8 +90,8 @@ class DishLeafNode(SKABaseDevice):
     A Leaf control node for DishMaster.
     """
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
         # self.cmd_ended_cb = CommandCallBack(self, self.logger).cmd_ended_cb
 
     def init_command_objects(self):

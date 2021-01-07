@@ -3,8 +3,11 @@ import importlib
 import types
 import sys
 import json
-from unittest import mock
-from unittest.mock import Mock, MagicMock
+# from unittest import mock
+# from unittest.mock import Mock, MagicMock
+import mock
+from mock import Mock
+from mock import MagicMock
 import numpy as np
 import tango
 import pytest
@@ -61,8 +64,8 @@ def event_subscription_mock():
     with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
         tango_client_obj = TangoClient(dut_properties['DishMasterFQDN'])
         tango_client_obj.deviceproxy.command_inout_asynch.side_effect = (
-            lambda command_name, arg, callback, *args,
-                **kwargs: event_subscription_map.update({command_name: callback}))
+            lambda command_name, arg, callback, *args, **kwargs: event_subscription_map.update({command_name: callback}))
+        print("********************** event_subscription_map ****************", event_subscription_map)
         yield event_subscription_map
 
 
@@ -94,10 +97,10 @@ def test_command_cb_is_invoked_when_command_without_arg_is_called_async(mock_dis
 @pytest.fixture(
     scope="function",
     params=[
-        # "SetStowMode",
-        # "SetStandbyLPMode",
+        "SetStowMode",
+        "SetStandbyLPMode",
         "SetOperateMode",
-        # "SetStandbyFPMode",
+        "SetStandbyFPMode",
     ],
 )
 def command_name(request):
@@ -105,22 +108,23 @@ def command_name(request):
     return cmd_name
 
 
-def test_activity_message_attribute_value_contains_command_name(event_subscription_mock, mock_dish_master_proxy, command_name):
+def test_activity_message_attribute_value_contains_command_name(mock_dish_master_proxy, event_subscription_mock, command_name):
     device_proxy, _, _, _ = mock_dish_master_proxy
+    print("***************** command_name *****************", command_name)
     device_proxy.command_inout(command_name)
     dummy_event = command_callback(command_name)
     event_subscription_mock[command_name](dummy_event)
     assert f"Command :-> {command_name}" in device_proxy.activityMessage
 
 
-# def test_activity_message_attribute_value_contains_command_name_with_event_error(
-#     event_subscription_mock, mock_dish_master_proxy, command_name
-# ):
-#     device_proxy, _, _, _ = mock_dish_master_proxy
-#     device_proxy.command_inout(command_name)
-#     dummy_event = command_callback_with_event_error(command_name)
-#     event_subscription_mock[command_name](dummy_event)
-#     assert f"Error in invoking command: {command_name}" in device_proxy.activityMessage
+def test_activity_message_attribute_value_contains_command_name_with_event_error(
+    mock_dish_master_proxy, event_subscription_mock, command_name
+):
+    device_proxy, _, _, _ = mock_dish_master_proxy
+    device_proxy.command_inout(command_name)
+    dummy_event = command_callback_with_event_error(command_name)
+    event_subscription_mock[command_name](dummy_event)
+    assert f"Error in invoking command: {command_name}" in device_proxy.activityMessage
 
 
 
