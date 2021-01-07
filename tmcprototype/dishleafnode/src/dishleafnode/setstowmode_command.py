@@ -13,12 +13,9 @@ A Leaf control node for DishMaster.
 
 import tango
 from tango import DevFailed
-from tango.server import command
 
 from ska.base.commands import  BaseCommand
 from tmc.common.tango_client import TangoClient
-from dishleafnode import release
-from .device_data import DeviceData
 from .command_callback import CommandCallBack
 
 
@@ -40,7 +37,6 @@ class SetStowMode(BaseCommand):
         try:
             dish_client = TangoClient(device_data._dish_master_fqdn)
             dish_client.send_command_async(command_name, None, cmd_ended_cb)
-            #device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
