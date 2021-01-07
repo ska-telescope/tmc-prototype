@@ -32,22 +32,22 @@ from . import release
 from .device_data import DeviceData
 from .abort_command import AbortCommand
 from .configure_command import ConfigureCommand
-from .endscan_command import EndScanCommand
+from .endscan_command import EndScan
 from .obsreset_command import ObsResetCommand
 from .restart_command import RestartCommand
-from .scan_command import ScanCommand
+from .scan_command import Scan
 from .setoperatemode_command import SetOperateMode
 from .setstandbyfpmode_command import SetStandbyFPMode
 from .setstandbylpmode_command import SetStandbyLPMode
 from .setstowmode_command import SetStowMode
 from .slew_command import SlewCommand
-from .startcapture_command import StartCaptureCommand
-from .stopcapture_command import StopCaptureCommand
+from .startcapture_command import StartCapture
+from .stopcapture_command import StopCapture
 from .stoptrack_command import StopTrackCommand
 from .track_command import TrackCommand
 
 
-__all__ = ["DishLeafNode", "main", "release", "SetOperateMode", "SetStandbyLPMode", "SetStandbyFPMode", "SetStowMode"]
+__all__ = ["DishLeafNode", "main", "release", "SetOperateMode", "SetStandbyLPMode", "SetStandbyFPMode", "SetStowMode", "Scan", "EndScan", "StartCapture", "StopCapture"]
 
 
 # class CommandCallBack:
@@ -103,22 +103,22 @@ class DishLeafNode(SKABaseDevice):
         device_data = DeviceData.get_instance()
 
         args = (device_data, self.state_model, self.logger)
-        
+
         self.register_command_object("SetStowMode", SetStowMode(*args))
         self.register_command_object("SetStandbyLPMode", SetStandbyLPMode(*args))
         self.register_command_object("SetOperateMode", SetOperateMode(*args))
-        self.register_command_object("Scan", ScanCommand(*args))
-        self.register_command_object("EndScan", EndScanCommand(*args))
-        self.register_command_object("Configure", ConfigureCommand(*args))
-        self.register_command_object("StartCapture", StartCaptureCommand(*args))
-        self.register_command_object("StopCapture", StopCaptureCommand(*args))
+        self.register_command_object("Scan", Scan(*args))
+        self.register_command_object("EndScan", EndScan(*args))
+        # self.register_command_object("Configure", ConfigureCommand(*args))
+        self.register_command_object("StartCapture", StartCapture(*args))
+        self.register_command_object("StopCapture", StopCapture(*args))
         self.register_command_object("SetStandbyFPMode", SetStandbyFPMode(*args))
-        self.register_command_object("Slew", SlewCommand(*args))
-        self.register_command_object("Track", TrackCommand(*args))
-        self.register_command_object("StopTrack", StopTrackCommand(*args))
-        self.register_command_object("Abort", AbortCommand(*args))
-        self.register_command_object("Restart", RestartCommand(*args))
-        self.register_command_object("ObsReset", ObsResetCommand(*args))
+        # self.register_command_object("Slew", SlewCommand(*args))
+        # self.register_command_object("Track", TrackCommand(*args))
+        # self.register_command_object("StopTrack", StopTrackCommand(*args))
+        # self.register_command_object("Abort", AbortCommand(*args))
+        # self.register_command_object("Restart", RestartCommand(*args))
+        # self.register_command_object("ObsReset", ObsResetCommand(*args))
 
     # def attribute_event_handler(self, event_data):
     #     """

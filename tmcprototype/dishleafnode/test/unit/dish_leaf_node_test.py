@@ -54,6 +54,7 @@ def mock_dish_master_proxy():
     with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties) as tango_context:
         with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
             tango_client_obj = TangoClient(dut_properties['DishMasterFQDN'])
+            print("***********************dish master proxy *********************",tango_client_obj)
             yield tango_context.device, tango_client_obj, dut_properties['DishMasterFQDN'], event_subscription_map
 
 
@@ -61,6 +62,7 @@ def mock_dish_master_proxy():
 def event_subscription_mock():
     dut_properties = {'DishMasterFQDN': 'mid_d0001/elt/master'}
     event_subscription_map = {}
+    print("***********************event_subscription_map is *********************",event_subscription_map)
     with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
         tango_client_obj = TangoClient(dut_properties['DishMasterFQDN'])
         tango_client_obj.deviceproxy.command_inout_asynch.side_effect = (
@@ -76,7 +78,7 @@ def event_subscription_mock():
         ("SetStandbyFPMode", "SetStandbyFPMode"),
         ("SetStowMode", "SetStowMode"),
         ("SetStandbyLPMode", "SetStandbyLPMode"),
-         ("SetOperateMode", "SetOperateMode")
+        ("SetOperateMode", "SetOperateMode")
     ],
 )
 def command_without_arg(request):
@@ -117,6 +119,7 @@ def test_activity_message_attribute_value_contains_command_name(mock_dish_master
     assert f"Command :-> {command_name}" in device_proxy.activityMessage
 
 
+
 def test_activity_message_attribute_value_contains_command_name_with_event_error(
     mock_dish_master_proxy, event_subscription_mock, command_name
 ):
@@ -125,6 +128,30 @@ def test_activity_message_attribute_value_contains_command_name_with_event_error
     dummy_event = command_callback_with_event_error(command_name)
     event_subscription_mock[command_name](dummy_event)
     assert f"Error in invoking command: {command_name}" in device_proxy.activityMessage
+    
+
+@pytest.fixture(
+    scope="function",
+    params=[
+        ("Scan", "0.0", "Scan"),
+        ("EndScan", "0.0", "StopCapture"),
+        ("StartCapture", "0.0", "StartCapture"),
+        ("StopCapture", "0.0", "StopCapture"),
+    ],
+)
+def dish_leaf_node_command_with_arg(request):
+    cmd_name, input_arg, requested_cmd = request.param
+    return cmd_name, input_arg, requested_cmd
+
+
+def test_dish_master_command_is_called_with_the_no_inputs_when_leaf_node_command_has_inputs(
+    mock_dish_master_proxy, dish_leaf_node_command_with_arg
+):
+    device_proxy, dish1_proxy_mock, _, _ = mock_dish_master_proxy
+    cmd_name, input_arg, requested_cmd = dish_leaf_node_command_with_arg
+
+    device_proxy.command_inout(cmd_name, input_arg)
+
 
 
 
@@ -291,12 +318,12 @@ def test_activity_message_attribute_value_contains_command_name_with_event_error
 #     )
 
 
-# def create_dummy_event_for_dishmode(device_fqdn, dish_mode_value, attribute):
-#     fake_event = Mock()
-#     fake_event.err = False
-#     fake_event.attr_name = f"{device_fqdn}/{attribute}"
-#     fake_event.attr_value.value = dish_mode_value
-#     return fake_event
+def create_dummy_event_for_dishmode(device_fqdn, dish_mode_value, attribute):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"{device_fqdn}/{attribute}"
+    fake_event.attr_value.value = dish_mode_value
+    return fake_event
 
 
 # @pytest.fixture(
