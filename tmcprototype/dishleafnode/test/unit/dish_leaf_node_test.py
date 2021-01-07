@@ -80,6 +80,7 @@ def event_subscription_mock():
         ("SetStandbyLPMode", "SetStandbyLPMode"),
         ("SetOperateMode", "SetOperateMode"),
         ("Abort", "TrackStop"),
+        ("Restart", "StopCapture"),
     ],
 )
 def command_without_arg(request):
