@@ -32,13 +32,13 @@ class ObsStateAggregator:
         # Subscribe cspSubarrayObsState (forwarded attribute) of CspSubarray
         csp_event_id = self.csp_client.subscribe_attribute(const.EVT_CSPSA_OBS_STATE, self.observation_state_cb)
         self.csp_sdp_ln_obs_state_event_id[self.csp_client] = csp_event_id
-        log_msg = const.STR_CSP_LN_VS_HEALTH_EVT_ID + str(self.csp_sdp_ln_obs_state_event_id)
+        log_msg = const.STR_CSP_LN_OBS_STATE_EVT_ID + str(self.csp_sdp_ln_obs_state_event_id)
         self.logger.debug(log_msg)
 
         # Subscribe sdpSubarrayObsState (forwarded attribute) of SdpSubarray
         sdp_event_id = self.sdp_client.subscribe_attribute(const.EVT_SDPSA_OBS_STATE, self.observation_state_cb)
         self.csp_sdp_ln_obs_state_event_id[self.sdp_client] = sdp_event_id
-        log_msg = const.STR_SDP_LN_VS_HEALTH_EVT_ID + str(self.csp_sdp_ln_obs_state_event_id)
+        log_msg = const.STR_SDP_LN_OBS_STATE_EVT_ID + str(self.csp_sdp_ln_obs_state_event_id)
         self.logger.debug(log_msg)
 
 
@@ -53,6 +53,8 @@ class ObsStateAggregator:
 
         """
         for tango_client, event_id in self.csp_sdp_ln_obs_state_event_id.items():
+            log_msg = "Unsubscribe ObsState event for " + tango_client
+            self.logger.debug(log_msg)
             tango_client.unsubscribe_attribute(event_id)
 
     
