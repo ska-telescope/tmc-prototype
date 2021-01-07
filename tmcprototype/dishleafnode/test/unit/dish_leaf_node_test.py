@@ -187,7 +187,7 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle(mock_dis
 
     tango_client.deviceproxy.command_inout_asynch.assert_called_with(
         const.CMD_DISH_CONFIGURE, str(dish_str_ip), any_method(with_name="cmd_ended_cb")
-#     )
+    )
 
 
 # TODO: actual AZ and EL values need to be generated.
