@@ -549,7 +549,7 @@ def test_subarray_health_state_with_error_event(mock_lower_devices_proxy):
     with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
         with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=create_dummy_event_healthstate_with_error):
             device_proxy.On()
-    assert const.ERR_SUBSR_SA_HEALTH_STATE in tango_context.device.activityMessage
+    assert const.ERR_SUBSR_SA_HEALTH_STATE in device_proxy.activityMessage
 
 
 # Test case for event subscribtion
@@ -573,12 +573,12 @@ def test_subarray_health_state_event_to_raise_devfailed_exception_for_mccs_subar
     #         mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, health_state_value,
     #         mccs_subarray1_ln_health_attribute)
     device_proxy, tango_client = mock_lower_devices_proxy
-    device_data = DeviceData.get_instance()
+    # device_data = DeviceData.get_instance()
     with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
         with mock.patch.object(TangoClient, "subscribe_attribute",
                                side_effect=create_dummy_event_healthstate_with_proxy):
             device_proxy.On()
-        assert tango_context.device.State() == DevState.FAULT
+        assert device_proxy.State() == DevState.FAULT
 
 
 def test_assign_resources_should_assign_resources_when_device_state_on(mock_lower_devices_proxy):
