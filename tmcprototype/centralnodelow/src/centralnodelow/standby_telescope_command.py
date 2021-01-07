@@ -4,7 +4,6 @@ StandByTelescope class for CentralNodelow.
 # Tango imports
 import tango
 from tango import DevState, DevFailed
-
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
@@ -12,7 +11,6 @@ from ska.base.commands import ResultCode
 from . import const
 from .device_data import DeviceData
 from tmc.common.tango_client import TangoClient
-
 
 class StandByTelescope(SKABaseDevice.OffCommand):
     """
@@ -51,7 +49,7 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         device_data = self.target
         self.standby_mccs(device_data.mccs_master_fqdn)
         self.standby_subarray(device_data.subarray_low)
-        #device_data.health_aggreegator.unsubscribe_event()
+        device_data.health_aggreegator.unsubscribe_event()
         log_msg = const.STR_STANDBY_CMD_ISSUED
         self.logger.info(log_msg)
         device_data._read_activity_message = log_msg

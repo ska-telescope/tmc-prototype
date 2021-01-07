@@ -4,8 +4,7 @@ StartUpTelescope class for CentralNodelow.
 # Tango imports
 import logging
 import tango
-from tango import DevState, DevFailed
-
+from tango import  DevFailed
 # Additional import
 from ska.base.control_model import HealthState
 from . import const
@@ -126,7 +125,7 @@ class HealthStateAggreegator:
                 if const.PROP_DEF_VAL_TM_LOW_SA1 in evt.attr_name:
                     device_data._subarray1_health_state = health_state
                     self.subarray_health_state_map[evt.device] = health_state
-                elif device_data.MCCSMasterLeafNodeFQDN in evt.attr_name:
+                elif self.mccs_master_ln_fqdn in evt.attr_name:
                     device_data._mccs_master_leaf_health = health_state
                 else:
                     self.logger.debug(const.EVT_UNKNOWN)
@@ -140,7 +139,7 @@ class HealthStateAggreegator:
 
                 # TODO: For Future use
                 for subsystem_health_field_name in ['mccs_master_leaf_health']:
-                    health_state = getattr(self, f"_{subsystem_health_field_name}")
+                    health_state = getattr(device_data, f"_{subsystem_health_field_name}")
                     counts[health_state] += 1
 
                 for subarray_health_state in self.subarray_health_state_map.values():

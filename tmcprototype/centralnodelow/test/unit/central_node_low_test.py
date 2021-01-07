@@ -215,6 +215,7 @@ def test_startup(mock_subarray):
 
 def test_standby(mock_subarray):
     device_proxy, tango_client_obj = mock_subarray
+    device_proxy.StartUpTelescope()
     assert device_proxy.StandByTelescope() == [[ResultCode.OK],[const.STR_STANDBY_CMD_ISSUED]]
     assert device_proxy.state() == DevState.OFF
 
@@ -316,14 +317,6 @@ def test_telescope_health_state_is_ok_when_subarray_node_is_ok_after_start(mock_
             tango_client_obj = TangoClient('ska_low/tm_subarray_node/1')
             device_proxy.StartUpTelescope()
     assert device_data._telescope_health_state == health_state
-
-# def test_telescope_health_state_is_ok_when_subarray_node_is_ok_after_start(mock_subarraynode_device):
-#     device_proxy , tango_client_obj, subarray1_fqdn, event_subscription_map = mock_subarraynode_device
-#     subarray1_health_attribute = 'healthState'
-#     dummy_event = create_dummy_event(subarray1_fqdn, HealthState.OK)
-#     event_subscription_map[subarray1_health_attribute](dummy_event)
-#     assert device_proxy.telescopeHealthState == HealthState.ok
-
 
 
 def dummy_subscriber(attribute, callback_method):

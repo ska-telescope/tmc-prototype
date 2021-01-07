@@ -5,6 +5,7 @@ ReleaseResources class for CentralNodeLow.
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 # Standard Python imports
 import json
+#Tango imports
 import tango
 from tango import DevState, DevFailed
 # Additional import

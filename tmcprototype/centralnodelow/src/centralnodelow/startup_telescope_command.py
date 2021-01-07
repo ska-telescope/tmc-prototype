@@ -4,7 +4,6 @@ StartUpTelescope class for CentralNodelow.
 # Tango imports
 import tango
 from tango import DevState, DevFailed
-
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
