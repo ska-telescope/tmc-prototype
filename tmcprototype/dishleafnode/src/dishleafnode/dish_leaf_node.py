@@ -17,7 +17,7 @@ import time
 import threading
 
 import tango
-from tango import ApiUtil, AttrWriteType
+from tango import ApiUtil, AttrWriteType, DeviceProxy
 from tango.server import run, command, device_property, attribute
 import katpoint
 
@@ -41,12 +41,12 @@ from .setstowmode_command import SetStowMode
 from .slew_command import Slew
 from .startcapture_command import StartCapture
 from .stopcapture_command import StopCapture
-from .stoptrack_command import StopTrackCommand
+from .stoptrack_command import StopTrack
 from .track_command import TrackCommand
 
 
 __all__ = ["DishLeafNode", "main", "release", "SetOperateMode", "SetStandbyLPMode", "SetStandbyFPMode", "SetStowMode", "Scan", "EndScan", "StartCapture", "StopCapture"
-                "Abort", "Restart", "ObsReset", "Slew"]
+                "Abort", "Restart", "ObsReset", "Slew", "StopTrack"]
 
 
 # class CommandCallBack:
@@ -114,7 +114,7 @@ class DishLeafNode(SKABaseDevice):
         self.register_command_object("SetStandbyFPMode", SetStandbyFPMode(*args))
         self.register_command_object("Slew", Slew(*args))
         # self.register_command_object("Track", TrackCommand(*args))
-        # self.register_command_object("StopTrack", StopTrackCommand(*args))
+        self.register_command_object("StopTrack", StopTrack(*args))
         self.register_command_object("Abort", Abort(*args))
         self.register_command_object("Restart", Restart(*args))
         self.register_command_object("ObsReset", ObsReset(*args))

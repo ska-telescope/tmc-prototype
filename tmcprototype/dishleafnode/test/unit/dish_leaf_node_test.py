@@ -76,6 +76,7 @@ def event_subscription_mock():
         ("SetStowMode", "SetStowMode"),
         ("SetStandbyLPMode", "SetStandbyLPMode"),
         ("SetOperateMode", "SetOperateMode"),
+        ("StopTrack", "TrackStop"),
         ("Abort", "TrackStop"),
         ("Restart", "StopCapture"),
     ],
