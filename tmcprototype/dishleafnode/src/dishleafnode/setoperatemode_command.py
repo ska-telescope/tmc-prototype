@@ -44,18 +44,11 @@ class SetOperateMode(BaseCommand):
                 "desiredPointing",
             )
         command_name = "SetOperateMode"
+        cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
         try:
             # Subscribe the DishMaster attributes
             self._subscribe_to_attribute_events(attributes_to_subscribe_to)
-
             dish_client = TangoClient(device_data._dish_master_fqdn)
-            print("*********************************** dish client proxy is *******************************", dish_client)
-            cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
-
-            # dish_client.send_command_async(command_name, None, cmd_ended_cb)
-            # self.logger.info("'%s' command executed successfully.", command_name)
-            # time.sleep(0.5)
-            #device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
             dish_client.send_command_async(command_name, None, cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
 
@@ -80,7 +73,6 @@ class SetOperateMode(BaseCommand):
                 device_data.attr_event_map[attribute_name] = dish_client.subscribe_attribute(
                     attribute_name,
                     self.attribute_event_handler)
-                    
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_message = (
@@ -94,7 +86,6 @@ class SetOperateMode(BaseCommand):
                     "DishLeafNode.{}Command".format("Init"),
                     tango.ErrSeverity.ERR,
                 )
-        print("*********************************** attribute map is *******************************", device_data.attr_event_map[attribute_name])
 
     def attribute_event_handler(self, event_data):
         """
@@ -118,4 +109,4 @@ class SetOperateMode(BaseCommand):
         attr_name = fqdn_attr_name.split("/")[-1].split("#")[0]
         log_message = f"{attr_name} is {event_data.attr_value.value}."
         device_data._read_activity_message = log_message
-        self.logger.debug(log_message)
+        self.logger.info(log_message)

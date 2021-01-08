@@ -20,6 +20,7 @@ from dishleafnode.utils import DishMode
 from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
 from ska.base.control_model import LoggingLevel
 from tmc.common.tango_client import TangoClient
+from dishleafnode.device_data import DeviceData
 
 
 
@@ -68,6 +69,18 @@ def event_subscription_mock():
         yield event_subscription_map
 
 
+@pytest.fixture(scope="function")
+def event_subscription_attr_mock():
+    dut_properties = {'DishMasterFQDN': 'mid_d0001/elt/master'}
+    event_subscription_map = {}
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
+        tango_client_obj = TangoClient(dut_properties['DishMasterFQDN'])
+        tango_client_obj.deviceproxy.subscribe_event.side_effect = (
+            lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
+        yield event_subscription_map
+
+
+device_data = DeviceData.get_instance()
 
 @pytest.fixture(
     scope="function",
@@ -257,25 +270,27 @@ def dish_mode(request):
     return request.param
 
 
-# def test_dish_leaf_node_activity_message_reports_correct_dish_master_dish_mode(
-#     mock_dish_master_proxy, dish_mode
-# ):
-#     attribute_name = "dishMode"
-#     device_proxy, _, dish_master1_fqdn, event_subscription_map = mock_dish_master_proxy
-#     dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode, attribute_name)
-#     event_subscription_map[attribute_name](dummy_event)
-#     assert device_proxy.activityMessage == f"dishMode is {dish_mode}."
+def test_dish_leaf_node_activity_message_reports_correct_dish_master_dish_mode(mock_dish_master_proxy, event_subscription_attr_mock, dish_mode):
+    device_proxy, tango_client_obj, dish_master1_fqdn, _ = mock_dish_master_proxy
+    attribute_name = "dishMode"
+    device_proxy.SetOperateMode()
+    dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode, attribute_name)
+    event_subscription_attr_mock[attribute_name](dummy_event)
+    assert device_proxy.activityMessage == f"dishMode is {dish_mode.value}."   
 
 
-# def test_dish_leaf_node_dish_mode_with_error_event(mock_dish_master_proxy):
-#     dish_master_dishmode_attribute = "dishMode"
-#     device_proxy, _, dish_master1_fqdn, event_subscription_map = mock_dish_master_proxy
-#     dish_mode_value = 9
-#     dummy_event = create_dummy_event_with_error(
-#         dish_master1_fqdn, dish_mode_value, dish_master_dishmode_attribute
-#     )
-#     event_subscription_map[dish_master_dishmode_attribute](dummy_event)
-#     assert "Event system DevError(s) occured!!!" in device_proxy.activityMessage
+def test_dish_leaf_node_dish_mode_with_error_event(mock_dish_master_proxy, event_subscription_attr_mock):
+    device_proxy, _, dish_master1_fqdn, _ = mock_dish_master_proxy
+    dish_master_dishmode_attribute = "dishMode"
+    dish_mode_value = 9
+    device_proxy.SetOperateMode()
+    dummy_event = create_dummy_event_with_error(
+        dish_master1_fqdn, dish_mode_value, dish_master_dishmode_attribute
+    )
+    event_subscription_attr_mock[dish_master_dishmode_attribute](dummy_event)
+    assert "Event system DevError(s) occured!!!" in device_proxy.activityMessage
+
+
 @pytest.fixture(
     scope="function",
     params=[("Slew", [10.0, 20.0])],
@@ -326,8 +341,6 @@ def test_command_cb_is_invoked_when_command_with_arg_is_called_async(mock_dish_m
         dish1_proxy_mock.deviceproxy.command_inout_asynch.call_args[0][1], np.array(input_arg)
     )
     assert dish1_proxy_mock.deviceproxy.command_inout_asynch.call_args[0][2] == any_method(with_name="cmd_ended_cb")
-
-
 
 
 
