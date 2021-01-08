@@ -11,13 +11,9 @@
 A Leaf control node for DishMaster.
 """
 import importlib.resources
-import math
-import datetime
-import time
-import threading
 
 import tango
-from tango import ApiUtil, AttrWriteType, DeviceProxy
+from tango import ApiUtil, AttrWriteType
 from tango.server import run, command, device_property, attribute
 import katpoint
 
@@ -45,7 +41,7 @@ from .stoptrack_command import StopTrack
 from .track_command import Track
 
 
-__all__ = ["DishLeafNode", "main", "release", "SetOperateMode", "SetStandbyLPMode", "SetStandbyFPMode", "SetStowMode", "Scan", "EndScan", "StartCapture", "StopCapture"
+__all__ = ["DishLeafNode", "main", "release", "SetOperateMode", "SetStandbyLPMode", "SetStandbyFPMode", "SetStowMode", "Scan", "EndScan", "StartCapture", "StopCapture",
                 "Abort", "Restart", "ObsReset", "Slew", "Configure", "Track", "StopTrack"]
 
 

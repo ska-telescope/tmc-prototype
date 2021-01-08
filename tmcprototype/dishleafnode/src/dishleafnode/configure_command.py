@@ -11,26 +11,16 @@
 A Leaf control node for DishMaster.
 """
 import json
-import importlib.resources
-import math
-import datetime
-import time
 import threading
 
 import tango
-from tango import DeviceProxy, EventType, ApiUtil, DevState, AttrWriteType, DevFailed
-from tango.server import run, command, device_property, attribute
-import katpoint
+from tango import DevState, DevFailed
 
-from ska.base.commands import ResultCode, BaseCommand
-from ska.base import SKABaseDevice
+from ska.base.commands import BaseCommand
 from tmc.common.tango_client import TangoClient
-from ska.base.control_model import HealthState, SimulationMode
-from .utils import UnitConverter
-from . import release
+from .az_el_converter import AzElConverter
 from .device_data import DeviceData
 from .command_callback import CommandCallBack
-from .az_el_converter import AzElConverter
 
 
 class Configure(BaseCommand):
