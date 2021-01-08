@@ -34,7 +34,7 @@ class DeviceData:
         self.subarray_health_state_map = {}
         self.subarray_FQDN_dict = {}
         self.subarray_low = []
-        self.mccs_master_fqdn = ""
+        self.mccs_master_ln_fqdn = ""
         self._read_activity_message = ""
         self.health_aggreegator = None
 

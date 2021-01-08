@@ -44,7 +44,7 @@ class HealthStateAggreegator:
 
         :raises: Devfailed exception if erroe occures while subscribing event.
         """
-        mccs_mln_client = TangoClient(self.device_data.mccs_master_fqdn)
+        mccs_mln_client = TangoClient(self.device_data.mccs_master_ln_fqdn)
         try:
             self.mccs_event_id = mccs_mln_client.subscribe_attribute(const.EVT_SUBSR_MCCS_MASTER_HEALTH,
                                                                    self.health_state_cb)

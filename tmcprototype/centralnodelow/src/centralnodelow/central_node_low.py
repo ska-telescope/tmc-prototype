@@ -107,14 +107,11 @@ class CentralNode(SKABaseDevice):
                 self.logger.info("Device initialisating...")
                 device_data = DeviceData.get_instance()
                 device.device_data = device_data
-                device._subarray1_health_state = HealthState.OK
-                device._mccs_master_leaf_health = HealthState.OK
                 # Initialise Attributes
                 device._health_state = HealthState.OK
-                device._telescope_health_state = HealthState.OK
                 device._build_state = '{},{},{}'.format(release.name,release.version,release.description)
                 device._version_id = release.version
-                device_data.mccs_master_fqdn = device.MCCSMasterLeafNodeFQDN
+                device_data.mccs_master_ln_fqdn = device.MCCSMasterLeafNodeFQDN
                 device_data.subarray_low = device.TMLowSubarrayNodes
                 self.logger.debug(const.STR_INIT_SUCCESS)
 
@@ -125,19 +122,11 @@ class CentralNode(SKABaseDevice):
                 tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand.do()",
                                              tango.ErrSeverity.ERR)
 
-            for subarray in range(0, len(device_data.subarray_low)):
-                try:
-                    # populate subarray_id-subarray proxy map
-                    tokens = device_data.subarray_low[subarray].split('/')
-                    subarray_id = int(tokens[2])
-                    device_data.subarray_FQDN_dict[subarray_id] = device_data.subarray_low[subarray]
-
-                except DevFailed as dev_failed:
-                    log_msg = const.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
-                    self.logger.exception(dev_failed)
-                    device._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE
-                    tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand",
-                                                 tango.ErrSeverity.ERR)
+            for subarray in range(0, len(device.TMLowSubarrayNodes)):
+                # populate subarray_id-subarray proxy map
+                tokens = device.TMLowSubarrayNodes[subarray].split('/')
+                subarray_id = int(tokens[2])
+                device_data.subarray_FQDN_dict[subarray_id] = device.TMLowSubarrayNodes[subarray]
 
             device._read_activity_message = "Central Node initialised successfully."
             self.logger.info(device._read_activity_message)
@@ -295,12 +284,15 @@ class CentralNode(SKABaseDevice):
         """
         super().init_command_objects()
         args = (self.device_data, self.state_model, self.logger)
-        self.register_command_object("StartUpTelescope", StartUpTelescope(*args))
-        self.register_command_object("StandByTelescope", StandByTelescope(*args))
-        self.register_command_object("AssignResources", AssignResources(*args))
-        self.register_command_object("ReleaseResources", ReleaseResources(*args))
+        self.assign_resources = AssignResources(*args)
+        self.release_resources = ReleaseResources(*args)
+        self.startup_telescope = StartUpTelescope(*args)
+        self.standby_telescope = StandByTelescope(*args)
 
-
+        self.register_command_object("StartUpTelescope", self.startup_telescope)
+        self.register_command_object("StandByTelescope", self.standby_telescope)
+        self.register_command_object("AssignResources", self.assign_resources)
+        self.register_command_object("ReleaseResources", self.release_resources)
 # ----------
 # Run server
 # ----------

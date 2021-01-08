@@ -11,6 +11,7 @@ from tango import DevState, DevFailed
 # Additional import
 from ska.base.commands import BaseCommand
 from . import const
+from .device_data import  DeviceData
 from tmc.common.tango_client import TangoClient
 
 class AssignResources(BaseCommand):
@@ -70,33 +71,14 @@ class AssignResources(BaseCommand):
 
         :return: None
 
-        :raises: DevFailed if error occurs while invoking command on any of the devices like SubarrayNode, MCCSMasterLeafNode
-                 KeyError if input argument json string contains invalid key
+        :raises: KeyError if input argument json string contains invalid key
                  ValueError if input argument json string contains invalid value
         """
         device_data = self.target
         try:
             json_argument = json.loads(argin)
-            # Create subarray proxy
-            subarray_id = int(json_argument['subarray_id'])
-            subarray_fqdn = device_data.subarray_FQDN_dict[subarray_id]
-
-            # Remove subarray_id key from input json argument and send the json to subarray node
-            input_json_subarray = json_argument.copy()
-            del input_json_subarray["subarray_id"]
-            input_to_sa = json.dumps(input_json_subarray)
-            # Allocate resources to subarray
-            self.logger.info("Allocating resource to subarray %d", subarray_id)
-            subarrayProxy = TangoClient(subarray_fqdn)
-            subarrayProxy.send_command(const.CMD_ASSIGN_RESOURCES, input_to_sa)
-
-            # Invoke command on MCCS Master leaf node
-            self.logger.info("Invoking AssignResources command on MCCS Master Leaf Node")
-            input_to_mccs = json.dumps(json_argument)
-            mccs_proxy = TangoClient(device_data.mccs_master_fqdn)
-            mccs_proxy.send_command(const.CMD_ASSIGN_RESOURCES, input_to_mccs)
-
-            # Allocation successful
+            self.assign_resources_subarray(json_argument, device_data)
+            self.assign_resources_mccs(json_argument, device_data)
             device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
 
@@ -116,6 +98,60 @@ class AssignResources(BaseCommand):
             tango.Except.throw_exception(const.STR_RESOURCE_ALLOCATION_FAILED, log_msg,
                                          "CentralNode.AssignResourcesCommand",
                                          tango.ErrSeverity.ERR)
+
+
+    def assign_resources_subarray(self, json_argument, device_data):
+        """
+        Delete subarray id from json argument and create proxy of subarray corresponding to subarray id
+        and call assign_resources_leaf_node method.
+
+        :param json_argument: The string in JSON format.
+                device_data : Object of class device_data
+
+        :return: None
+        """
+        subarray_id = int(json_argument['subarray_id'])
+        subarray_fqdn = device_data.subarray_FQDN_dict[subarray_id]
+        # Remove subarray_id key from input json argument and send the json to subarray node
+        input_json_subarray = json_argument.copy()
+        del input_json_subarray["subarray_id"]
+        input_to_sa = json.dumps(input_json_subarray)
+        # Allocate resources to subarray
+        self.logger.info("Allocating resource to subarray %d", subarray_id)
+        subarray_client = TangoClient(subarray_fqdn)
+        self.assign_resources_leaf_node(subarray_client, input_to_sa)
+
+
+    def assign_resources_mccs(self, json_argument, device_data):
+        """
+        Create proxy of mccs master leaf node and call method assign_resources_leaf_node.
+
+        :param json_argument: The string in JSON format.
+               device_data : Object of class device_data.
+
+        return: None
+        """
+        self.logger.info("Invoking AssignResources command on MCCS Master Leaf Node")
+        input_to_mccs = json.dumps(json_argument)
+        mccs_master_ln_client = TangoClient(device_data.mccs_master_ln_fqdn)
+        self.assign_resources_leaf_node(mccs_master_ln_client, input_to_mccs)
+
+    def assign_resources_leaf_node(self, tango_client, input_arg):
+        """
+        Invokes assign Resources command on leaf node with input argument.
+
+        :param tango_client: client of corresponding leaf node
+        :param input_arg: Json string input to invoke command.
+
+        :raises: DevFailed if error occurs while invoking command on any of the devices like SubarrayNode, MCCSMasterLeafNode
+        """
+        device_data = DeviceData.get_instance()
+        try:
+            tango_client.send_command(const.CMD_ASSIGN_RESOURCES, input_arg)
+            log_msg = 'Assign resurces command invoked successfully on {}'.format(tango_client.get_device_fqdn)
+            self.logger.debug(log_msg)
+            device_data._read_activity_message = log_msg
+
         except DevFailed as dev_failed:
             log_msg = const.ERR_ASSGN_RESOURCES + str(dev_failed)
             self.logger.exception(dev_failed)

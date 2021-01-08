@@ -47,7 +47,7 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         :rtype: (ResultCode, str)
         """
         device_data = self.target
-        self.standby_mccs(device_data.mccs_master_fqdn)
+        self.standby_mccs_mln(device_data.mccs_master_ln_fqdn)
         self.standby_subarray(device_data.subarray_low)
         device_data.health_aggreegator.unsubscribe_event()
         log_msg = const.STR_STANDBY_CMD_ISSUED
@@ -56,15 +56,15 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         return (ResultCode.OK, const.STR_STANDBY_CMD_ISSUED)
 
 
-    def standby_mccs(self, mccs_fqdn):
+    def standby_mccs_mln(self, mccs_master_fqdn):
         """
         Create TangoClient for MccsMasterLeafNode node and call
         standby method.
 
         :return: None
         """
-        mccs_proxy = TangoClient(mccs_fqdn)
-        self.standby_leaf_node(mccs_proxy)
+        mccs_mln_client = TangoClient(mccs_master_fqdn)
+        self.standby_leaf_node(mccs_mln_client)
 
     def standby_subarray(self, subarray_fqdn_list):
         """
