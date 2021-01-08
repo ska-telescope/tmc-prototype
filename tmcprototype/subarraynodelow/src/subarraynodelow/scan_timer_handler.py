@@ -15,7 +15,9 @@ class ScanTimerHandler():
         self.scan_timer.start()
 
     def stop_scan_timer(self):
-        self.scan_timer.cancel()
+        if self.scan_timer:
+            self.scan_timer.cancel()
 
     def is_scan_running(self):
-        return self.scan_timer.is_alive()
+        if self.scan_timer:
+            return self.scan_timer.is_alive()

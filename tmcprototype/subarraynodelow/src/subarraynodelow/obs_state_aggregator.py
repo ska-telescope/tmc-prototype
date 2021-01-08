@@ -78,7 +78,7 @@ class ObsStateAggregator:
                 else:
                     self.logger.info(const.EVT_UNKNOWN)
                     self._read_activity_message = const.EVT_UNKNOWN
-                self.device_data._mccs_sa_obs_state = self.calculate_observation_state()
+                self.calculate_observation_state()
 
             else:
                 log_msg = const.ERR_SUBSR_MCCSSA_OBS_STATE + str(evt)
