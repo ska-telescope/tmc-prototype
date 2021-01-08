@@ -98,22 +98,22 @@ class ObsStateAggregator:
         if self.device_data._mccs_sa_obs_state == ObsState.EMPTY:
             if self.device_data.is_release_resources:
                 self.logger.info("Calling ReleaseAllResource command succeeded() method")
-                self.this_server.device.release_obj.succeeded()
+                self.this_server.device.release.succeeded()
 
         elif self.device_data._mccs_sa_obs_state == ObsState.READY:
             if self.device_data.is_scan_completed:
                 self.logger.info("Calling EndScan command succeeded() method")
-                self.this_server.device.endscan_obj.succeeded()
+                self.this_server.device.endscan.succeeded()
             else:
                 # Configure command success
                 self.logger.info("Calling Configure command succeeded() method")
-                self.this_server.device.configure_obj.succeeded()
+                self.this_server.device.configure.succeeded()
         elif self.device_data._mccs_sa_obs_state == ObsState.IDLE:
             if self.device_data.is_end_command:
                 # End command success
                 self.logger.info("Calling End command succeeded() method")
-                self.this_server.device.end_obj.succeeded()
+                self.this_server.device.end.succeeded()
             else:
                 # Assign Resource command success
                 self.logger.info("Calling AssignResource command succeeded() method")
-                self.this_server.device.assign_obj.succeeded()
+                self.this_server.device.assign.succeeded()

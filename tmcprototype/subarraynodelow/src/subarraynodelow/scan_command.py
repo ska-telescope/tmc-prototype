@@ -14,7 +14,6 @@ from tango import DevFailed
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from tmc.common.tango_client import TangoClient
-from tmc.common.tango_server_helper import TangoServerHelper
 from . import const
 from subarraynodelow.device_data import DeviceData
 
@@ -47,7 +46,6 @@ class Scan(SKASubarray.ScanCommand):
         :raises: DevFailed if the command execution is not successful
         """
         device_data = DeviceData.get_instance()
-        self.this_server = TangoServerHelper.get_instance()
         device_data.is_scan_completed = False
         device_data.is_release_resources = False
         try:
@@ -66,8 +64,9 @@ class Scan(SKASubarray.ScanCommand):
             device_data.activity_message = const.STR_SCAN_SUCCESS
             # Once Scan Duration is complete call EndScan Command
             self.logger.info("Starting Scan Thread")
-            device_data.scan_thread = threading.Timer(device_data.scan_duration, self.call_end_scan_command)
-            device_data.scan_thread.start()
+            device_data.scan_timer_handler.start_scan_timer(device_data.scan_duration)
+            # device_data.scan_thread = threading.Timer()
+            # device_data.scan_thread.start()
             self.logger.info("Scan thread started")
             return (ResultCode.STARTED, const.STR_SCAN_SUCCESS)
         except DevFailed as dev_failed:
@@ -78,5 +77,5 @@ class Scan(SKASubarray.ScanCommand):
                                          "SubarrayNode.ScanCommand",
                                          tango.ErrSeverity.ERR)
 
-    def call_end_scan_command(self):
-        self.this_server.device.endscan_obj.do()
+    # def call_end_scan_command(self):
+    #     self.this_server.device.endscan.do()
