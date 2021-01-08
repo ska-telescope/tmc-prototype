@@ -11,7 +11,6 @@
 Configure class for DishLeafNode.
 """
 import json
-import threading
 
 import tango
 from tango import DevState, DevFailed
@@ -19,7 +18,6 @@ from tango import DevState, DevFailed
 from ska.base.commands import BaseCommand
 from tmc.common.tango_client import TangoClient
 from .az_el_converter import AzElConverter
-from .device_data import DeviceData
 from .command_callback import CommandCallBack
 
 

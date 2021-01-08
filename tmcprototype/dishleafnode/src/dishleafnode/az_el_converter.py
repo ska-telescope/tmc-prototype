@@ -9,14 +9,9 @@
 """ Az El Converter
 This module performs Ra-Dec to Az-El coordinates conversion.
 """
-import threading
-import datetime
 import katpoint
 import math
-import time
 from .utils import UnitConverter
-from tmc.common.tango_client import TangoClient
-from .device_data import DeviceData
 
 class AzElConverter:
     def __init__(self, log):
