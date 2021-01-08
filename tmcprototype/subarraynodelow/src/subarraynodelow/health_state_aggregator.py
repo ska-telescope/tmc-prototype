@@ -22,7 +22,6 @@ class HealthStateAggregator:
 
 
     def subscribe(self):
-        # TODO: dev_name() where to keep this API?
         # Subscribe cspsubarrayHealthState (forwarded attribute) of CspSubarray
         mccs_event_id = self.mccs_client.subscribe_attribute(const.EVT_MCCSSA_HEALTH, self.health_state_cb)
         self.mccs_ln_health_event_id[self.mccs_client] = mccs_event_id

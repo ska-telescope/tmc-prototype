@@ -11,8 +11,6 @@
 Provides the monitoring and control interface required by users as well as
 other TM Components (such as OET, Central Node) for a Subarray.
 """
-
-# Third party imports
 # Tango imports
 import tango
 from tango import AttrWriteType, DevFailed, DeviceProxy, EventType
@@ -23,6 +21,7 @@ from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, ObsMode, ObsState
 from ska.base import SKASubarray
 from .device_data import DeviceData
+from tmc.common.tango_server_helper import TangoServerHelper
 from . import const, release 
 from .on_command import On
 from .off_command import Off
@@ -43,19 +42,6 @@ class SubarrayNode(SKASubarray):
     Provides the monitoring and control interface required by users as well as
     other TM Components (such as OET, Central Node) for a Subarray.
     """
-
-    def __len__(self):
-        """
-        Returns the number of resources currently assigned. Note that
-        this also functions as a boolean method for whether there are
-        any assigned resources: ``if len()``.
-
-        :return: number of resources assigned
-        :rtype: int
-        """
-
-        return len(device_data.resource_list)
-
     # -----------------
     # Device Properties
     # -----------------
@@ -112,6 +98,10 @@ class SubarrayNode(SKASubarray):
             device.set_status(const.STR_SA_INIT)
             device_data = DeviceData.get_instance()
             device.device_data = device_data
+
+            this_server = TangoServerHelper.get_instance()
+            this_server.device = device
+
             device._obs_mode = ObsMode.IDLE
             device._scan_id = ""
             device._resource_list = []
@@ -172,14 +162,13 @@ class SubarrayNode(SKASubarray):
     # --------
     # Commands
     # --------
-
     def init_command_objects(self):
         """
         Initialises the command handlers for commands supported by this
         device.
         """
         super().init_command_objects()
- 
+
         device_data = DeviceData.get_instance()
         args = (device_data, self.state_model, self.logger)
         self.init_obj = self.InitCommand(*args)
@@ -191,10 +180,7 @@ class SubarrayNode(SKASubarray):
         self.configure_obj = Configure(*args)
         self.release_obj = ReleaseAllResources(*args)
         self.assign_obj = AssignResources(*args)
-        # The EndScan object is created in device data as it is utilized in Scan command to invoke EndScan. 
-        # This might be updated once Mid Subarray node implementation is confirmed.
-        device_data.end_scan = self.endscan_obj
-
+        
         self.register_command_object("AssignResources", self.assign_obj)
         self.register_command_object("ReleaseAllResources", self.release_obj)
         self.register_command_object("On", self.on_obj)

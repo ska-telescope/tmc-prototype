@@ -44,11 +44,21 @@ class DeviceData:
         self.mccs_subarray_ln_fqdn = ""
         self.activity_message = ""
         self.resource_list = []
-        self.end_scan = None
         self.scan_thread = None
-
     @staticmethod
     def get_instance():
         if DeviceData.__instance == None:
             DeviceData()
         return DeviceData.__instance
+
+    def __len__(self):
+        """
+        Returns the number of resources currently assigned. Note that
+        this also functions as a boolean method for whether there are
+        any assigned resources: ``if len()``.
+
+        :return: number of resources assigned
+        :rtype: int
+        """
+
+        return len(self.resource_list)

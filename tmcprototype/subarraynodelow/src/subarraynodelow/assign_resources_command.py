@@ -35,7 +35,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
 
         """
 
-        device_data = DeviceData.get_instance
+        device_data = DeviceData.get_instance()
         device_data.is_end_command = False
         device_data.is_release_resources = False
         # TODO: For now storing resources as station ids

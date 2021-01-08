@@ -5,7 +5,6 @@ from tmc.common.tango_server_helper import TangoServerHelper
 from .device_data import DeviceData
 import logging
 
-
 class ObsStateAggregator:
     """
     Observation State Aggregator class
@@ -17,18 +16,18 @@ class ObsStateAggregator:
         else:
             self.logger = logger
         self.mccs_obs_state_event_id = {}
-        self.mccs_client = None
         self.this_server = TangoServerHelper.get_instance()
         self.device_data = DeviceData.get_instance()
+        self.mccs_client = TangoClient(self.device_data.mccs_subarray_ln_fqdn)
+
 
     def subscribe(self):
-        self.mccs_client = TangoClient(self.device_data.mccs_subarray_ln_fqdn)
         # Subscribe mccsSubarrayObsState (forwarded attribute) of mccsSubarray
         mccs_event_id = self.mccs_client.subscribe_attribute(const.EVT_MCCSSA_OBS_STATE,
                                                            self.observation_state_cb)
         self.mccs_obs_state_event_id[self.mccs_client] = mccs_event_id
         log_msg = const.STR_SUB_ATTR_MCCS_SALN_OBSTATE_SUCCESS + str(self.mccs_obs_state_event_id)
-        self.logger.debug(log_msg)
+        self.logger.info(log_msg)
 
 
     def unsubscribe(self):
@@ -77,13 +76,13 @@ class ObsStateAggregator:
                     self._read_activity_message = const.STR_MCCS_SUBARRAY_OBS_STATE + str(
                         event_observetion_state)
                 else:
-                    self.logger.debug(const.EVT_UNKNOWN)
+                    self.logger.info(const.EVT_UNKNOWN)
                     self._read_activity_message = const.EVT_UNKNOWN
                 self.device_data._mccs_sa_obs_state = self.calculate_observation_state()
 
             else:
                 log_msg = const.ERR_SUBSR_MCCSSA_OBS_STATE + str(evt)
-                self.logger.debug(log_msg)
+                self.logger.info(log_msg)
                 self._read_activity_message = log_msg
         except KeyError as key_error:
             log_msg = const.ERR_MCCS_SUBARRAY_OBS_STATE + str(key_error)
@@ -97,25 +96,24 @@ class ObsStateAggregator:
         log_msg = "MCCS ObsState is: " + str(self.device_data._mccs_sa_obs_state)
         self.logger.info(log_msg)
         if self.device_data._mccs_sa_obs_state == ObsState.EMPTY:
-            if self.is_release_resources:
+            if self.device_data.is_release_resources:
                 self.logger.info("Calling ReleaseAllResource command succeeded() method")
-                self.release_obj.succeeded()
+                self.this_server.device.release_obj.succeeded()
 
         elif self.device_data._mccs_sa_obs_state == ObsState.READY:
-            if self.is_scan_completed:
+            if self.device_data.is_scan_completed:
                 self.logger.info("Calling EndScan command succeeded() method")
-                self.endscan_obj.succeeded()
+                self.this_server.device.endscan_obj.succeeded()
             else:
                 # Configure command success
                 self.logger.info("Calling Configure command succeeded() method")
-                self.configure_obj.succeeded()
+                self.this_server.device.configure_obj.succeeded()
         elif self.device_data._mccs_sa_obs_state == ObsState.IDLE:
-            if self.is_end_command:
+            if self.device_data.is_end_command:
                 # End command success
                 self.logger.info("Calling End command succeeded() method")
-                self.end_obj.succeeded()
+                self.this_server.device.end_obj.succeeded()
             else:
                 # Assign Resource command success
                 self.logger.info("Calling AssignResource command succeeded() method")
-                self.assign_obj.succeeded()
-
+                self.this_server.device.assign_obj.succeeded()

@@ -35,11 +35,11 @@ class On(SKASubarray.OnCommand):
         """
         device_data = DeviceData.get_instance()
         device_data.is_release_resources = False
-        device_data.health_state_aggregator = HealthStateAggregator(self.logger)
-        device_data.obs_state_aggregator = ObsStateAggregator(self.logger)
+        device_data.health_state_aggregator = HealthStateAggregator()
+        device_data.obs_state_aggregator = ObsStateAggregator()
         device_data.health_state_aggregator.subscribe()
         device_data.obs_state_aggregator.subscribe()
-
+      
         try:
             mccs_subarray_ln_client = TangoClient(device_data.mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(const.CMD_ON, None)
