@@ -80,6 +80,7 @@ class Configure(BaseCommand):
             json_argument = self._load_config_string(argin)
             ra_value, dec_value = self._get_targets(json_argument)
             device_data.radec_value = f"radec,{ra_value},{dec_value}"
+            print("************ device_data.radec_value ************", device_data.radec_value)
             receiver_band = json_argument["dish"]["receiverBand"]
             self._set_desired_pointing(device_data.radec_value)
             self._configure_band(receiver_band)
@@ -99,7 +100,7 @@ class Configure(BaseCommand):
 
     def _configure_band(self, band):
         """"Send the ConfigureBand<band-number> command to Dish Master"""
-        # device_data = self.target
+        device_data = self.target
         command_name = f"ConfigureBand{band}"
 
         try:
@@ -111,7 +112,7 @@ class Configure(BaseCommand):
             raise dev_failed
 
     def _set_desired_pointing(self, radec):
-        # device_data = self.target
+        device_data = self.target
         now = datetime.datetime.utcnow()
         timestamp = str(now)
 
