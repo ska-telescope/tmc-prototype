@@ -12,6 +12,11 @@ A Leaf control node for DishMaster.
 """
 import json
 import threading
+import datetime
+import katpoint
+import math
+import time
+from .utils import UnitConverter
 
 import tango
 from tango import DevState, DevFailed
@@ -20,6 +25,7 @@ from ska.base.commands import BaseCommand
 from tmc.common.tango_client import TangoClient
 from ska.base.control_model import HealthState, SimulationMode
 from .utils import UnitConverter
+from tmc.common.tango_client import TangoClient
 from . import release
 from .device_data import DeviceData
 from .command_callback import CommandCallBack
@@ -93,7 +99,7 @@ class Track(BaseCommand):
             )
 
         device_data.event_track_time.clear()
-        self.tracking_thread = threading.Thread(None, azel_converter.track_thread, "DishLeafNode")
+        self.tracking_thread = threading.Thread(None, self.track_thread, "DishLeafNode")
         self.tracking_thread.start()
 
     
@@ -124,4 +130,56 @@ class Track(BaseCommand):
 
         return json_argument
 
+
+    def track_thread(self):
+        """This thread writes coordinates to desiredPointing on DishMaster at the rate of 20 Hz."""
+        self.logger.info(
+            f"print track_thread thread name:{threading.currentThread().getName()}"
+            f"{threading.get_ident()}"
+        )
+        # device_data = DeviceData.get_instance()
+        device_data = self.target
+        dish_client = TangoClient(device_data._dish_master_fqdn)
+
+        while device_data.event_track_time.is_set() is False:
+            now = datetime.datetime.utcnow()
+            timestamp = str(now)
+            # pylint: disable=unbalanced-tuple-unpacking
+            device_data.az, device_data.el = self.convert_radec_to_azel(device_data.radec_value, timestamp)
+
+            if not self._is_elevation_within_mechanical_limits():
+                time.sleep(0.05)
+                continue
+
+            if device_data.az < 0:
+                device_data.az = 360 - abs(device_data.az)
+
+            if device_data.event_track_time.is_set():
+                log_message = f"Break loop: {device_data.event_track_time.is_set()}"
+                self.logger.debug(log_message)
+                break
+
+            # TODO (kmadisa 11-12-2020) Add a pointing lead time to the current time (like we do on MeerKAT)
+            desired_pointing = [now.timestamp(), round(device_data.az, 12), round(device_data.el, 12)]
+            self.logger.debug("desiredPointing coordinates: %s", desired_pointing)
+            # self._dish_proxy.desiredPointing = desired_pointing
+            dish_client.deviceproxy.desiredPointing = desired_pointing
+            time.sleep(0.05)
+
+    def _is_elevation_within_mechanical_limits(self):
+        # device_data = DeviceData.get_instance()
+        device_data = self.target
+
+        if not (device_data.ele_min_lim <= device_data.el <= device_data.ele_max_lim):
+            device_data.el_limit = True
+            log_message = "Minimum/maximum elevation limit has been reached."
+            device_data._read_activity_message = log_message
+            self.logger.info(log_message)
+            log_message = "Source is not visible currently."
+            device_data._read_activity_message = log_message
+            self.logger.info(log_message)
+            return False
+
+        device_data.el_limit = False
+        return True
 
