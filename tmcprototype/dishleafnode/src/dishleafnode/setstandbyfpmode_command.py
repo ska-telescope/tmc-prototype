@@ -28,6 +28,10 @@ class SetStandbyFPMode(BaseCommand):
         """
         Invokes SetStandbyFPMode command on DishMaster (Standby-Full power) mode.
 
+        :param argin: None
+
+        :return:None
+
         :raises DevFailed: If error occurs while invoking SetStandbyFPMode command on DishMaster.
         """
         device_data = self.target
@@ -38,7 +42,6 @@ class SetStandbyFPMode(BaseCommand):
         try:
             dish_client = TangoClient(device_data._dish_master_fqdn)
             dish_client.send_command_async(command_name, None, cmd_ended_cb)
-            #device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)

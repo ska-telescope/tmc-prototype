@@ -84,7 +84,6 @@ class Track(BaseCommand):
             azel_converter = AzElConverter(self.logger)
 
             dish_client.send_command_async(command_name, None, cmd_ended_cb)
-            # device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
@@ -137,7 +136,6 @@ class Track(BaseCommand):
             f"print track_thread thread name:{threading.currentThread().getName()}"
             f"{threading.get_ident()}"
         )
-        # device_data = DeviceData.get_instance()
         device_data = self.target
         dish_client = TangoClient(device_data._dish_master_fqdn)
 
@@ -163,12 +161,10 @@ class Track(BaseCommand):
             # TODO (kmadisa 11-12-2020) Add a pointing lead time to the current time (like we do on MeerKAT)
             desired_pointing = [now.timestamp(), round(device_data.az, 12), round(device_data.el, 12)]
             self.logger.debug("desiredPointing coordinates: %s", desired_pointing)
-            # self._dish_proxy.desiredPointing = desired_pointing
             dish_client.deviceproxy.desiredPointing = desired_pointing
             time.sleep(0.05)
 
     def _is_elevation_within_mechanical_limits(self):
-        # device_data = DeviceData.get_instance()
         device_data = self.target
 
         if not (device_data.ele_min_lim <= device_data.el <= device_data.ele_max_lim):

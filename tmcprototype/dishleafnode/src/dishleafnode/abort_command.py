@@ -40,6 +40,10 @@ class Abort(BaseCommand):
         """
         Invokes TrackStop command on the DishMaster.
 
+        :param argin: None
+
+        :return:None
+
         :raises DevFailed: If error occurs while invoking TrackStop command on DishMaster.
         """
         device_data = self.target

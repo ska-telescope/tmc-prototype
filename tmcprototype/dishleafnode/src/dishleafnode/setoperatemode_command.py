@@ -14,12 +14,10 @@ SetOperateMode class for DishLeafNode.
 
 import tango
 from tango import DevFailed
-
 from ska.base.commands import  BaseCommand
 from tmc.common.tango_client import TangoClient
 from .command_callback import CommandCallBack
 from .device_data import DeviceData
-
 
 
 class SetOperateMode(BaseCommand):
@@ -30,6 +28,10 @@ class SetOperateMode(BaseCommand):
     def do(self):
         """
         Invokes SetOperateMode command on DishMaster.
+
+        :param argin: None
+
+        :return:None
 
         :raises DevFailed: If error occurs while invoking SetOperateMode command on DishMaster.
         """

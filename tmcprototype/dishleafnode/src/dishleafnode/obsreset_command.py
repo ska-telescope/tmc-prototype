@@ -41,6 +41,10 @@ class ObsReset(BaseCommand):
         """
         Invokes StopCapture command on the DishMaster.
 
+        :param argin: None
+
+        :return:None
+
         :raises DevFailed: If error occurs while invoking StopCapture command on DishMaster.
         """
         device_data = self.target
