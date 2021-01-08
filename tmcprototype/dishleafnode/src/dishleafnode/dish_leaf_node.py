@@ -10,7 +10,6 @@
 """
 A Leaf control node for DishMaster.
 """
-import importlib.resources
 
 import tango
 from tango import ApiUtil, AttrWriteType
@@ -240,71 +239,6 @@ class DishLeafNode(SKABaseDevice):
     #     device_data.el_limit = False
     #     return True
 
-    def set_dish_name_number(self):
-        device_data = DeviceData.get_instance()
-        # Find out dish number from DishMasterFQDN property e.g. mid_d0001/elt/master
-        dish_name_string = self.DishMasterFQDN.split("/")[0]
-        device_data.dish_name = dish_name_string.split("_")[1]
-        device_data.dish_number = device_data.dish_name[1:]
-
-    def set_observer_lat_long_alt(self):
-        # Load a set of antenna descriptions (latitude, longitude, altitude, enu coordinates)
-        # from text file and construct Antenna objects from them. Currently the text file
-        # contains Meerkat Antenna parameters.
-        try:
-            with importlib.resources.open_text("dishleafnode", "ska_antennas.txt") as f:
-                descriptions = f.readlines()
-            antennas = [katpoint.Antenna(line) for line in descriptions]
-        except OSError as err:
-            self.logger.error(err)
-            raise err
-        except ValueError as verr:
-            self.logger.error(verr)
-            raise verr
-
-        antenna_exist = False
-
-        device_data = DeviceData.get_instance()
-        for ant in antennas:
-            if ant.name == device_data.dish_number:
-                ref_ant_lat = ant.ref_observer.lat
-                ref_ant_long = ant.ref_observer.long
-                ref_ant_altitude = ant.ref_observer.elevation
-                ant_delay_model = ant.delay_model.values()
-                antenna_exist = True
-                break
-
-        if not antenna_exist:
-            raise Exception(f"Antenna '{device_data.dish_number}' not in the ska_antennas.txt file.")
-
-        # Convert reference antenna lat and long into radian
-        obj_unitconverter = UnitConverter()
-        ref_ant_lat_rad = obj_unitconverter.dms_to_rad(str(ref_ant_lat).split(":"))
-        ref_ant_long_rad = obj_unitconverter.dms_to_rad(str(ref_ant_long).split(":"))
-
-        # Find latitude, longitude and altitude of Dish antenna
-        # Convert enu to ecef coordinates for dish
-        dish_ecef_coordinates = katpoint.enu_to_ecef(
-            ref_ant_lat_rad,
-            ref_ant_long_rad,
-            ref_ant_altitude,
-            ant_delay_model[0],
-            ant_delay_model[1],
-            ant_delay_model[2],
-        )
-        # Convert ecef to lla coordinates for dish (in radians)
-        dish_lat_long_alt_rad = katpoint.ecef_to_lla(
-            dish_ecef_coordinates[0], dish_ecef_coordinates[1], dish_ecef_coordinates[2]
-        )
-        # Convert lla coordinates from rad to dms
-        dish_lat_dms = obj_unitconverter.rad_to_dms(dish_lat_long_alt_rad[0])
-        dish_long_dms = obj_unitconverter.rad_to_dms(dish_lat_long_alt_rad[1])
-
-
-        device_data.observer_location["latitude"] = f"{dish_lat_dms[0]}:{dish_lat_dms[1]}:{dish_lat_dms[2]}"
-        device_data.observer_location["longitude"] = f"{dish_long_dms[0]}:{dish_long_dms[1]}:{dish_long_dms[2]}"
-        device_data.observer_location["altitude"] = dish_ecef_coordinates[2]
-
     # def _get_targets(self, json_argument):
     #     try:
     #         ra_value = json_argument["pointing"]["target"]["RA"]
@@ -398,8 +332,8 @@ class DishLeafNode(SKABaseDevice):
             device._build_state = f"{release.name},{release.version},{release.description}"
             device._version_id = release.version
             # device.radec_value = ""
-            device.set_dish_name_number()
-            device.set_observer_lat_long_alt()
+            device_data.set_dish_name_number()
+            device_data.set_observer_lat_long_alt(self.logger)
             log_message = f"DishMasterFQDN :-> {device.DishMasterFQDN}"
             self.logger.debug(log_message)
             device_data._read_activity_message = log_message
