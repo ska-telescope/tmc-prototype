@@ -9,7 +9,7 @@
 
 
 """
-A Leaf control node for DishMaster.
+SetStandbyLPMode class for DishLeafNode.
 """
 
 import tango

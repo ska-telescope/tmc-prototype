@@ -8,7 +8,7 @@
 # See LICENSE.txt for more info.
 
 """
-A Leaf control node for DishMaster.
+SetStowMode class for DishLeafNode.
 """
 
 import tango

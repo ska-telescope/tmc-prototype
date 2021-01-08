@@ -9,7 +9,7 @@
 
 
 """
-A Leaf control node for DishMaster.
+SetOperateMode class for DishLeafNode.
 """
 
 import tango

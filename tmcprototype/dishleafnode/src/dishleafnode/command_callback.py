@@ -8,7 +8,7 @@
 # See LICENSE.txt for more info.
 
 """
-A Leaf control node for DishMaster.
+CommandCallBack class for DishLeafNode.
 """
 from .device_data import DeviceData
 
