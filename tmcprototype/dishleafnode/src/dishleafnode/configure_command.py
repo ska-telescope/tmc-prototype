@@ -119,7 +119,6 @@ class Configure(BaseCommand):
         # Set desiredPointing on Dish Master (it won't move until asked to
         # track or scan, but provide initial coordinates for interest)
         time_az_el = [now.timestamp(), device_data.az, device_data.el]
-        # dish_client.deviceproxy.desiredPointing = time_az_el
         dish_client.set_attribute("desiredPointing", time_az_el)
         
     def _get_targets(self, json_argument):
