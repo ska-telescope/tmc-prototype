@@ -18,7 +18,6 @@ from .utils import UnitConverter
 from tmc.common.tango_client import TangoClient
 from .device_data import DeviceData
 
-
 class AzElConverter:
 
     __instance = None

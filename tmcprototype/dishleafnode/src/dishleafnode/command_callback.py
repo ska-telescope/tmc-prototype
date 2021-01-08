@@ -29,7 +29,6 @@ class CommandCallBack:
             execution.
         :type: CmdDoneEvent object
             It has the following members:
-            - device     : (DeviceProxy) The DeviceProxy object on which the call was executed.
             - cmd_name   : (str) The command name
             - argout_raw : (DeviceData) The command argout
             - argout     : The command argout
@@ -40,7 +39,6 @@ class CommandCallBack:
         """
 
         device_data = DeviceData.get_instance()
-        print("********************* IN CALLBACK **********************")
         if event.err:
             log_message = f"Error in invoking command: {event.cmd_name}\n{event.errors}"
             self.logger.error(log_message)
