@@ -72,7 +72,7 @@ class Configure(BaseCommand):
             device_data.radec_value = f"radec,{ra_value},{dec_value}"
             print("************ device_data.radec_value ************", device_data.radec_value)
             receiver_band = json_argument["dish"]["receiverBand"]
-            self._set_desired_pointing(device_data.radec_value)
+            self._set_dish_desired_pointing_attribute(device_data.radec_value)
             self._configure_band(receiver_band)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
@@ -101,20 +101,20 @@ class Configure(BaseCommand):
         except DevFailed as dev_failed:
             raise dev_failed
 
-    def _set_desired_pointing(self, radec):
+    def _set_dish_desired_pointing_attribute(self, radec):
         device_data = self.target
         now = datetime.datetime.utcnow()
         timestamp = str(now)
 
         try:
             dish_client = TangoClient(device_data._dish_master_fqdn)
-            azel_converter = AzElConverter.get_instance()
-            device_data.az, device_data.el = azel_converter.convert_radec_to_azel(radec, timestamp)
+            azel_converter = AzElConverter(self.logger)
+            device_data.az, device_data.el = azel_converter.convert_radec_to_azel(device_data.radec_value, timestamp, device_data.dish_name, device_data.observer_location["latitude"], device_data.observer_location["latitude"], device_data.observer_location["altitude"])
         except ValueError as valuerr:
             tango.Except.throw_exception(
                 str(valuerr),
                 f"Error converting radec '{radec}' to az and el coordinates, respectively.",
-                "_set_desired_pointing",
+                "_set_dish_desired_pointing_attribute",
                 tango.ErrSeverity.ERR,
             )
 

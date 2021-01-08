@@ -81,7 +81,7 @@ class Track(BaseCommand):
 
             dish_client = TangoClient(device_data._dish_master_fqdn)
             cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
-            azel_converter = AzElConverter.get_instance()
+            azel_converter = AzElConverter(self.logger)
 
             dish_client.send_command_async(command_name, None, cmd_ended_cb)
             # device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
@@ -145,7 +145,8 @@ class Track(BaseCommand):
             now = datetime.datetime.utcnow()
             timestamp = str(now)
             # pylint: disable=unbalanced-tuple-unpacking
-            device_data.az, device_data.el = self.convert_radec_to_azel(device_data.radec_value, timestamp)
+            azel_converter = AzElConverter(self.logger)
+            device_data.az, device_data.el = azel_converter.convert_radec_to_azel(device_data.radec_value, timestamp, device_data.dish_name, device_data.observer_location["latitude"], device_data.observer_location["latitude"], device_data.observer_location["altitude"])
 
             if not self._is_elevation_within_mechanical_limits():
                 time.sleep(0.05)

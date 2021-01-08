@@ -36,9 +36,10 @@ class DeviceData:
         self.radec_value = ""
         self.dish_name = ""
         self.dish_number = ""
-        self.observer_location_lat = ""
-        self.observer_location_long = ""
-        self.observer_altitude = 0
+        # self.observer_location_lat = ""
+        # self.observer_location_long = ""
+        # self.observer_altitude = 0
+        self.observer_location = {}
         self.event_track_time = threading.Event()
         self.attr_event_map = {}
 

@@ -300,9 +300,10 @@ class DishLeafNode(SKABaseDevice):
         dish_lat_dms = obj_unitconverter.rad_to_dms(dish_lat_long_alt_rad[0])
         dish_long_dms = obj_unitconverter.rad_to_dms(dish_lat_long_alt_rad[1])
 
-        device_data.observer_location_lat = f"{dish_lat_dms[0]}:{dish_lat_dms[1]}:{dish_lat_dms[2]}"
-        device_data.observer_location_long = f"{dish_long_dms[0]}:{dish_long_dms[1]}:{dish_long_dms[2]}"
-        device_data.observer_altitude = dish_ecef_coordinates[2]
+
+        device_data.observer_location["latitude"] = f"{dish_lat_dms[0]}:{dish_lat_dms[1]}:{dish_lat_dms[2]}"
+        device_data.observer_location["longitude"] = f"{dish_long_dms[0]}:{dish_long_dms[1]}:{dish_long_dms[2]}"
+        device_data.observer_location["altitude"] = dish_ecef_coordinates[2]
 
     # def _get_targets(self, json_argument):
     #     try:

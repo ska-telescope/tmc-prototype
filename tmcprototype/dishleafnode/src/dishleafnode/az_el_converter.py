@@ -19,23 +19,11 @@ from tmc.common.tango_client import TangoClient
 from .device_data import DeviceData
 
 class AzElConverter:
+    def __init__(self, log):
+        self.logger = log
 
-    __instance = None
-    
-    def __init__(self):
-        """Private constructor of the class"""
-        if AzElConverter.__instance != None:
-            raise Exception("This is singletone class")
-        else:
-            AzElConverter.__instance = self
 
-    @staticmethod
-    def get_instance():
-        if AzElConverter.__instance == None:
-            AzElConverter()
-        return AzElConverter.__instance
-
-    def convert_radec_to_azel(self, target, timestamp):
+    def convert_radec_to_azel(self, target, timestamp, dish_name, observer_location_lat, observer_location_long, observer_altitude):
         """Converts RaDec coordinate in to AzEl coordinate using KATPoint library.
 
         :param target: str
@@ -47,14 +35,13 @@ class AzElConverter:
             Azimuth and elevation angle, in degrees
         :raises ValueError: If error occurs when creating katpoint Target or Timestamp.
         """
-        device_data = DeviceData.get_instance()
-
+        # device_data = DeviceData.get_instance()
 
         dish_antenna = katpoint.Antenna(
-            name=device_data.dish_name,
-            latitude=device_data.observer_location_lat,
-            longitude=device_data.observer_location_long,
-            altitude=device_data.observer_altitude,
+            name=dish_name,
+            latitude=observer_location_lat,
+            longitude=observer_location_long,
+            altitude=observer_altitude,
         )
 
         dish_antenna_latitude = dish_antenna.ref_observer.lat
