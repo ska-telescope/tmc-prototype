@@ -77,8 +77,8 @@ class AssignResources(BaseCommand):
         device_data = self.target
         try:
             json_argument = json.loads(argin)
-            self.assign_resources_subarray(json_argument, device_data)
-            self.assign_resources_mccs(json_argument, device_data)
+            self.create_subarray_client(json_argument, device_data)
+            self.create_mccs_client(json_argument, device_data)
             device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
 
@@ -100,7 +100,7 @@ class AssignResources(BaseCommand):
                                          tango.ErrSeverity.ERR)
 
 
-    def assign_resources_subarray(self, json_argument, device_data):
+    def create_subarray_client(self, json_argument, device_data):
         """
         Delete subarray id from json argument and create proxy of subarray corresponding to subarray id
         and call assign_resources_leaf_node method.
@@ -119,10 +119,10 @@ class AssignResources(BaseCommand):
         # Allocate resources to subarray
         self.logger.info("Allocating resource to subarray %d", subarray_id)
         subarray_client = TangoClient(subarray_fqdn)
-        self.assign_resources_leaf_node(subarray_client, input_to_sa)
+        self.invoke_assign_resources(subarray_client, input_to_sa)
 
 
-    def assign_resources_mccs(self, json_argument, device_data):
+    def create_mccs_client(self, json_argument, device_data):
         """
         Create proxy of mccs master leaf node and call method assign_resources_leaf_node.
 
@@ -134,9 +134,9 @@ class AssignResources(BaseCommand):
         self.logger.info("Invoking AssignResources command on MCCS Master Leaf Node")
         input_to_mccs = json.dumps(json_argument)
         mccs_master_ln_client = TangoClient(device_data.mccs_master_ln_fqdn)
-        self.assign_resources_leaf_node(mccs_master_ln_client, input_to_mccs)
+        self.invoke_assign_resources(mccs_master_ln_client, input_to_mccs)
 
-    def assign_resources_leaf_node(self, tango_client, input_arg):
+    def invoke_assign_resources(self, tango_client, input_arg):
         """
         Invokes assign Resources command on leaf node with input argument.
 

@@ -52,14 +52,14 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         device_data = self.target
         device_data.health_aggreegator = HealthStateAggreegator(self.logger)
         device_data.health_aggreegator.subscribe_event()
-        self.startup_mccs_mln(device_data.mccs_master_ln_fqdn)
-        self.startup_subarray(device_data.subarray_low)
+        self.create_mccs_client(device_data.mccs_master_ln_fqdn)
+        self.create_subarray_client(device_data.subarray_low)
         log_msg = const.STR_ON_CMD_ISSUED
         self.logger.info(log_msg)
         device_data._read_activity_message = log_msg
         return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
 
-    def startup_subarray(self, subarray_fqdn_list):
+    def create_subarray_client(self, subarray_fqdn_list):
         """
         Create TangoClient for Subarray node and call
         startup method.
@@ -68,10 +68,10 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         """
         for subarray_fqdn in subarray_fqdn_list:
             subarray_client = TangoClient(subarray_fqdn)
-            self.startup_leaf_node(subarray_client)
+            self.invoke_startup(subarray_client)
 
 
-    def startup_mccs_mln(self, mccs_master_fqdn):
+    def create_mccs_client(self, mccs_master_fqdn):
         """
         Create TangoClient for MccsMasterLeafNode node and call
         startup method.
@@ -79,10 +79,10 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         :return: None
         """
         mccs_mln_client = TangoClient(mccs_master_fqdn)
-        self.startup_leaf_node(mccs_mln_client)
+        self.invoke_startup(mccs_mln_client)
 
 
-    def startup_leaf_node(self, tango_client):
+    def invoke_startup(self, tango_client):
         """
         Invoke On command on leaf nodes.
 

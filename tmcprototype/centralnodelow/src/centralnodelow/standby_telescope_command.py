@@ -47,8 +47,8 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         :rtype: (ResultCode, str)
         """
         device_data = self.target
-        self.standby_mccs_mln(device_data.mccs_master_ln_fqdn)
-        self.standby_subarray(device_data.subarray_low)
+        self.create_mccs_client(device_data.mccs_master_ln_fqdn)
+        self.create_subarray_client(device_data.subarray_low)
         device_data.health_aggreegator.unsubscribe_event()
         log_msg = const.STR_STANDBY_CMD_ISSUED
         self.logger.info(log_msg)
@@ -56,7 +56,7 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         return (ResultCode.OK, const.STR_STANDBY_CMD_ISSUED)
 
 
-    def standby_mccs_mln(self, mccs_master_fqdn):
+    def create_mccs_client(self, mccs_master_fqdn):
         """
         Create TangoClient for MccsMasterLeafNode node and call
         standby method.
@@ -64,9 +64,9 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         :return: None
         """
         mccs_mln_client = TangoClient(mccs_master_fqdn)
-        self.standby_leaf_node(mccs_mln_client)
+        self.invoke_stnadby(mccs_mln_client)
 
-    def standby_subarray(self, subarray_fqdn_list):
+    def create_subarray_client(self, subarray_fqdn_list):
         """
         Create TangoClient for Subarray node and call
         standby method.
@@ -75,9 +75,9 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         """
         for subarray_fqdn in subarray_fqdn_list:
             subarray_client = TangoClient(subarray_fqdn)
-            self.standby_leaf_node(subarray_client)
+            self.invoke_stnadby(subarray_client)
 
-    def standby_leaf_node(self, tango_client):
+    def invoke_stnadby(self, tango_client):
         """
         Invoke command Off leaf nodes.
 
