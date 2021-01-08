@@ -9,7 +9,7 @@
 
 
 """
-A Leaf control node for DishMaster.
+ObsReset class for DishLeafNode.
 """
 
 import tango

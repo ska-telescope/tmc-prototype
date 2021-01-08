@@ -9,7 +9,7 @@
 
 
 """
-A Leaf control node for DishMaster.
+StartCapture class for DishLeafNode.
 """
 
 import tango

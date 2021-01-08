@@ -9,11 +9,11 @@
 
 
 """
-A Leaf control node for DishMaster.
+SetOperateMode class for DishLeafNode.
 """
 
 import tango
-from tango import DevFailed, DevState
+from tango import DevFailed
 
 from ska.base.commands import  BaseCommand
 from tmc.common.tango_client import TangoClient
