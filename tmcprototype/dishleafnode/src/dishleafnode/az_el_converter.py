@@ -35,8 +35,6 @@ class AzElConverter:
             Azimuth and elevation angle, in degrees
         :raises ValueError: If error occurs when creating katpoint Target or Timestamp.
         """
-        # device_data = DeviceData.get_instance()
-
         dish_antenna = katpoint.Antenna(
             name=dish_name,
             latitude=observer_location_lat,
