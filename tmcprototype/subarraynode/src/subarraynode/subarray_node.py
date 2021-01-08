@@ -14,6 +14,7 @@ other TM Components (such as OET, Central Node) for a Subarray.
 
 # PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
 # Third party imports
+import copy
 # Tango imports
 from tango import AttrWriteType
 from tango.server import run,attribute, command, device_property
@@ -50,17 +51,17 @@ class SubarrayNode(SKASubarray):
     """
     # PROTECTED REGION ID(SubarrayNode.class_variable) ENABLED START
 
-    def __len__(self):
-        """
-        Returns the number of resources currently assigned. Note that
-        this also functions as a boolean method for whether there are
-        any assigned resources: ``if len()``.
+    # def __len__(self):
+    #     """
+    #     Returns the number of resources currently assigned. Note that
+    #     this also functions as a boolean method for whether there are
+    #     any assigned resources: ``if len()``.
 
-        :return: number of resources assigned
-        :rtype: int
-        """
+    #     :return: number of resources assigned
+    #     :rtype: int
+    #     """
 
-        return len(self.device_data._receptor_id_list)
+    #     return len(self.device_data._receptor_id_list)
 
 
     # PROTECTED REGION END #    //  SubarrayNode.class_variable
@@ -258,7 +259,7 @@ class SubarrayNode(SKASubarray):
         self.end = End(*args)
         self.restart = Restart(*args)
         self.abort = Abort(*args)
-        self.init = self.InitCommand(*args)
+        # self.init = self.InitCommand(*args)
         self.on = On(*args)
         self.off = Off(*args)
         self.obsreset = ObsReset(*args)
@@ -267,9 +268,9 @@ class SubarrayNode(SKASubarray):
         # Note: Scan command invokes EndScan after completion. For that purpose, it require object
         # of EndScan command. This Logic may be revisited later.
         # self.scan.set_end_scan_command_object(self.endscan)
-        device_data.end_scan_command = self.endscan
-        device_data.assign = self.assign
-        device_data.release = self.release
+        # device_data.end_scan_command = copy.copy(self.endscan)
+        # device_data.assign = self.assign
+        # device_data.release = copy.copy(self.release)
 
         self.register_command_object("Track", track_command.Track(*args))
         # In order to pass self = subarray node as target device, the assign and release resource commands

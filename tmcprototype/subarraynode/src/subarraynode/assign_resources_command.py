@@ -111,73 +111,79 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
             tango.Except.throw_exception(const.STR_CMD_FAILED, message,
                                          const.STR_ASSIGN_RES_EXEC, tango.ErrSeverity.ERR)
 
-        with ThreadPoolExecutor(3) as executor:
-            # 2.1 Create group of receptors
-            self.logger.debug(const.STR_DISH_ALLOCATION)
-            dish_allocation_status = executor.submit(self.set_up_dish_data, receptor_list)
+        
+        dish_allocation_result = self.set_up_dish_data(receptor_list)
+        self.assign_csp_resources(receptor_list)
+        self.assign_sdp_resources(sdp_resources)
+        # with ThreadPoolExecutor(3) as executor:
+        #     # 2.1 Create group of receptors
+        #     self.logger.debug(const.STR_DISH_ALLOCATION)
+        #     dish_allocation_status = executor.submit(self.set_up_dish_data, receptor_list)
 
-            # 2.2. Add resources in CSP subarray
-            self.logger.debug(const.STR_CSP_ALLOCATION)
-            csp_allocation_status = executor.submit(self.assign_csp_resources, receptor_list)
+        #     # 2.2. Add resources in CSP subarray
+        #     self.logger.debug(const.STR_CSP_ALLOCATION)
+        #     # csp_allocation_status = executor.submit(self.assign_csp_resources, receptor_list)
+        #     executor.submit(self.assign_csp_resources, receptor_list)
 
-            # 2.3. Add resources in SDP subarray
-            self.logger.debug(const.STR_SDP_ALLOCATION)
-            sdp_allocation_status = executor.submit(self.assign_sdp_resources, sdp_resources)
+        #     # 2.3. Add resources in SDP subarray
+        #     self.logger.debug(const.STR_SDP_ALLOCATION)
+        #     # sdp_allocation_status = executor.submit(self.assign_sdp_resources, sdp_resources)
+        #     executor.submit(self.assign_sdp_resources, sdp_resources)
 
-            # 2.4 wait for result
-            while (dish_allocation_status.done() is False or
-                   csp_allocation_status.done() is False or
-                   sdp_allocation_status.done() is False
-            ):
-                pass
+        #     # 2.4 wait for result
+        #     while (dish_allocation_status.done() is False #or
+        #         #    csp_allocation_status.done() is False or
+        #         #    sdp_allocation_status.done() is False
+        #     ):
+        #         pass
 
             # 2.5. check results
-            try:
-                dish_allocation_result = dish_allocation_status.result()
-                log_msg = const.STR_DISH_ALLOCATION_RESULT + str(dish_allocation_result)
-                self.logger.debug(log_msg)
-                dish_allocation_result.sort()
-                self.logger.debug("Dish group is created successfully")
-            except DevFailed as df:
-                self.logger.exception("Dish allocation failed.")
-                tango.Except.re_throw_exception(
-                    df,
-                    "Dish allocation failed.",
-                    "Failed to allocate receptors to Subarray.",
-                    "SubarrayNode.AssignResources",
-                    tango.ErrSeverity.ERR
-                )
+        try:
+            # dish_allocation_result = dish_allocation_status.result()
+            log_msg = const.STR_DISH_ALLOCATION_RESULT + str(dish_allocation_result)
+            self.logger.debug(log_msg)
+            dish_allocation_result.sort()
+            self.logger.debug("Dish group is created successfully")
+        except DevFailed as df:
+            self.logger.exception("Dish allocation failed.")
+            tango.Except.re_throw_exception(
+                df,
+                "Dish allocation failed.",
+                "Failed to allocate receptors to Subarray.",
+                "SubarrayNode.AssignResources",
+                tango.ErrSeverity.ERR
+            )
 
-            try:
-                csp_allocation_result = csp_allocation_status.result()
-                log_msg = const.STR_CSP_ALLOCATION_RESULT + str(csp_allocation_result)
-                self.logger.debug(log_msg)
+            # try:
+            #     csp_allocation_result = csp_allocation_status.result()
+            #     log_msg = const.STR_CSP_ALLOCATION_RESULT + str(csp_allocation_result)
+            #     self.logger.debug(log_msg)
 
-                csp_allocation_result.sort()
-                self.logger.info("Assign Resources on CSPSubarray successful")
-            except DevFailed as df:
-                # The exception is already logged so not logged again.
-                tango.Except.re_throw_exception(
-                    df,
-                    "CSP allocation failed.",
-                    "Failed to allocate CSP resources to Subarray.",
-                    "SubarrayNode.AssignResources",
-                    tango.ErrSeverity.ERR
-                )
+            #     csp_allocation_result.sort()
+            #     self.logger.info("Assign Resources on CSPSubarray successful")
+            # except DevFailed as df:
+            #     # The exception is already logged so not logged again.
+            #     tango.Except.re_throw_exception(
+            #         df,
+            #         "CSP allocation failed.",
+            #         "Failed to allocate CSP resources to Subarray.",
+            #         "SubarrayNode.AssignResources",
+            #         tango.ErrSeverity.ERR
+            #     )
 
-            try:
-                sdp_allocation_result = sdp_allocation_status.result()
-                log_msg = const.STR_SDP_ALLOCATION_RESULT + str(sdp_allocation_result)
-                self.logger.debug(log_msg)
-                self.logger.info("Assign Resources on SDPSubarray successful")
-            except DevFailed as df:
-                # The exception is already logged so not logged again.
-                tango.Except.re_throw_exception(df,
-                    "SDP allocation failed.",
-                    "Failed to allocate SDP resources to Subarray.",
-                    "SubarrayNode.AssignResources",
-                    tango.ErrSeverity.ERR
-                )
+            # try:
+            #     sdp_allocation_result = sdp_allocation_status.result()
+            #     log_msg = const.STR_SDP_ALLOCATION_RESULT + str(sdp_allocation_result)
+            #     self.logger.debug(log_msg)
+            #     self.logger.info("Assign Resources on SDPSubarray successful")
+            # except DevFailed as df:
+            #     # The exception is already logged so not logged again.
+            #     tango.Except.re_throw_exception(df,
+            #         "SDP allocation failed.",
+            #         "Failed to allocate SDP resources to Subarray.",
+            #         "SubarrayNode.AssignResources",
+            #         tango.ErrSeverity.ERR
+            #     )
 
             # TODO: For future use
             # sdp_allocation_result = sdp_allocation_status.result()
@@ -235,9 +241,10 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         for leafId in range(0, len(argin)):
             try:
                 str_leafId = argin[leafId]
-                device_data._dish_leaf_node_group_client.add_device(device_data.dish_leaf_node_prefix + str_leafId)
+                dish_FQDN = device_data.dish_leaf_node_prefix + str_leafId
+                device_data._dish_leaf_node_group_client.add_device(dish_FQDN)
                 # TangoClient is used for each dish leaf node for subscribing attribute instead of TangoGroupClient. 
-                dish_ln_client = TangoClient(device_data.dish_leaf_node_prefix + str_leafId)
+                dish_ln_client = TangoClient(dish_FQDN)
                 
                 # Update the list allocation_success with the dishes allocated successfully to subarray
                 allocation_success.append(str_leafId)
@@ -246,6 +253,11 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
                 device_data.health_state_aggr.subscribe_dish_health_state(dish_ln_client)
 
                 # Subscribe Dish Pointing State
+                log_msg = "Dish dev proxy : " + str(dish_ln_client._get_deviceproxy())
+                self.logger.info(log_msg)
+                log_msg = "Dish ln client proxy : " + str(dish_ln_client.deviceproxy)
+                self.logger.info(log_msg)
+                device_data.dishPointingStateMap[dish_ln_client._get_deviceproxy()] = -1
                 device_data.obs_state_aggr.subscribe_dish_pointing_state(dish_ln_client)
                 device_data._receptor_id_list.append(int(str_leafId))
                 self.logger.debug(const.STR_SUBS_ATTRS_LN)
@@ -269,6 +281,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
                 # unsubscribe event
                 device_data.health_state_aggr.unsubscribe_dish_health_state(dish_ln_client)
 
+
                 device_data.obs_state_aggr.unsubscribe_dish_pointing_state(dish_ln_client)
 
             except (TypeError) as except_occurred:
@@ -281,6 +294,8 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
 
         log_msg = "List of Resources added to the Subarray::",allocation_success
         self.logger.debug(log_msg)
+        log_msg= 'dishPointingStateMap in Assign resourcessssssssssssssssssssssss : ' + str(device_data.dishPointingStateMap)
+        self.logger.info(log_msg)
         return allocation_success
 
 
@@ -334,7 +349,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         # looping the receptor ids back.
         log_msg = "assign_csp_resources::", argout
         self.logger.debug(log_msg)
-        return argout
+        # return argout
 
     @inject_with_id(0,'argin')
     def assign_sdp_resources(self, argin):
@@ -371,4 +386,4 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         # looping the processing block ids back.
         log_msg = "assign_sdp_resources::", argout
         self.logger.debug(log_msg)
-        return argout
+        # return argout

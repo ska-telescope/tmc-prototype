@@ -44,7 +44,7 @@ class DeviceData:
         self.scan_duration = 0.0
         self.isScanRunning = False
         self.scan_stopper = ScanStopper()
-        self.end_scan_command = None
+        # self.end_scan_command = None
         # TODO : Tango server class variables
         self.this_device_server = None
         self._read_activity_message = ""
@@ -54,6 +54,7 @@ class DeviceData:
         self._receive_addresses_map = ""
         self.csp_sdp_ln_health_event_id = ""
         self.csp_sdp_ln_obs_state_event_id = ""
+        self.dishPointingStateMap = {}
         self.scan_configuration = ""
         self._scan_id = ""
         self._sb_id = ""
@@ -71,8 +72,7 @@ class DeviceData:
         # TODO: For future use
         self._receptor_id_list = []
         self.receive_addresses = None
-        self.assign = None
-        self.release = None
+
 
     def clean_up_dict(self,logger = None ):
         """
@@ -109,6 +109,8 @@ class DeviceData:
         # clearing dictonaries and lists
         self._dishLnVsHealthEventID.clear()  # Clear eventID dictionary
         self._dishLnVsPointingStateEventID.clear()  # Clear eventID dictionary
+        self._receptor_id_list.clear()
+        self.dishPointingStateMap.clear()
         # self._health_event_id.clear()
         self.health_state_aggr._remove_subarray_dish_lns_health_states()
         self.logger.info(const.STR_RECEPTORS_REMOVE_SUCCESS)
@@ -120,4 +122,15 @@ class DeviceData:
             DeviceData()
         return DeviceData.__instance
     
+    def __len__(self):
+        """
+        Returns the number of resources currently assigned. Note that
+        this also functions as a boolean method for whether there are
+        any assigned resources: ``if len()``.
+
+        :return: number of resources assigned
+        :rtype: int
+        """
+
+        return len(self._receptor_id_list)
 

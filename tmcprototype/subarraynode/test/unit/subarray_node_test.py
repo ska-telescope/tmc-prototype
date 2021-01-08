@@ -906,18 +906,20 @@ def test_scan_raise_devfailed(device_data, subarray_state_model, mock_device_pro
     assert "This is error message for devfailed" in str(df.value)
 
 
-def test_end_scan_command(device_data, subarray_state_model, mock_device_proxy):
+def test_end_scan_command(subarray_state_model, mock_device_proxy):
     _ , _ = mock_device_proxy
+    device_data = DeviceData.get_instance()
     end_scan_cmd = EndScan(device_data, subarray_state_model)
-    device_data.scan_stopper.start_scan_timer(10, end_scan_cmd)
+    device_data.scan_stopper.start_scan_timer(10)
     assert end_scan_cmd.do() == (ResultCode.OK, const.STR_END_SCAN_SUCCESS)
 
 
-def test_end_scan_raise_devfailed(device_data, subarray_state_model, mock_device_proxy):
+def test_end_scan_raise_devfailed(subarray_state_model, mock_device_proxy):
     device_proxy, tango_client_obj = mock_device_proxy
     tango_client_obj.deviceproxy.command_inout.side_effect = raise_devfailed_exception
+    device_data = DeviceData.get_instance()
     end_scan_cmd = EndScan(device_data, subarray_state_model)
-    device_data.scan_stopper.start_scan_timer(10, end_scan_cmd)
+    device_data.scan_stopper.start_scan_timer(10)
     with pytest.raises(tango.DevFailed) as df:
         end_scan_cmd.do()
     assert "This is error message for devfailed" in str(df.value)
@@ -941,7 +943,7 @@ def test_end_raise_devfailed(device_data, subarray_state_model, mock_device_prox
 def test_abort_command(device_data, subarray_state_model, mock_device_proxy):
     _ , _ = mock_device_proxy
     abort_cmd = Abort(device_data, subarray_state_model)
-    device_data.scan_stopper.start_scan_timer(10, abort_cmd)
+    device_data.scan_stopper.start_scan_timer(10)
     assert abort_cmd.do() == (ResultCode.STARTED, const.STR_ABORT_SUCCESS)
 
 
@@ -949,7 +951,7 @@ def test_abort_raise_devfailed(device_data, subarray_state_model, mock_device_pr
     device_proxy, tango_client_obj = mock_device_proxy
     tango_client_obj.deviceproxy.command_inout.side_effect = raise_devfailed_exception
     abort_cmd = Abort(device_data, subarray_state_model)
-    device_data.scan_stopper.start_scan_timer(10, abort_cmd)
+    device_data.scan_stopper.start_scan_timer(10)
     with pytest.raises(tango.DevFailed) as df:
         abort_cmd.do()
     assert "This is error message for devfailed" in str(df.value)

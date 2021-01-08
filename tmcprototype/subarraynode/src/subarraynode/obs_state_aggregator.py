@@ -1,6 +1,7 @@
 from . import const
 from .const import PointingState
 from ska.base.control_model import ObsState
+from ska.base.commands import ResultCode
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 from .device_data import DeviceData
@@ -22,9 +23,10 @@ class ObsStateAggregator:
         # self.device_data = DeviceData.get_instance()
         self.csp_client = None
         self.sdp_client = None
-        self.dishPointingStateMap = {}
+        # self.dishPointingStateMap = {}
         self.this_server = TangoServerHelper.get_instance()
         self.device_data = DeviceData.get_instance()
+        
     
     def subscribe(self):
         self.csp_client = TangoClient(self.device_data.csp_subarray_ln_fqdn)
@@ -99,16 +101,17 @@ class ObsStateAggregator:
         """
         Calculates aggregated observation state of Subarray.
         """
+        # device_data_local =  DeviceData.get_instance()
         pointing_state_count_track = 0
         pointing_state_count_slew = 0
         pointing_state_count_ready = 0
-        log_msg = "Dish PointingStateMap is :" + str(self.dishPointingStateMap)
+        log_msg = "Dish PointingStateMap is :" + str(self.device_data.dishPointingStateMap)
         self.logger.info(log_msg)
         log_msg = "self._csp_sa_obs_state is: " + str(self.csp_sa_obs_state)
         self.logger.info(log_msg)
         log_msg = "self._sdp_sa_obs_state is: " + str(self.sdp_sa_obs_state)
         self.logger.info(log_msg)
-        for value in list(self.dishPointingStateMap.values()):
+        for value in list(self.device_data.dishPointingStateMap.values()):
             if value == PointingState.TRACK:
                 pointing_state_count_track = pointing_state_count_track + 1
             elif value == PointingState.SLEW:
@@ -119,56 +122,57 @@ class ObsStateAggregator:
                 ObsState.EMPTY)):
             if self.device_data.is_release_resources:
                 self.logger.info("Calling ReleaseAllResource command succeeded() method")
-                device_data.release.succeeded()
+                self.this_server.device.release.succeeded()
             elif self.device_data.is_restart_command:
                 self.logger.info("Calling Restart command succeeded() method")
-                self.this_server.restart.succeeded()
+                self.this_server.device.restart.succeeded()
                 # TODO: As a action for Restart command invoke ReleaseResources command on SubarrayNode
 
         elif ((self.csp_sa_obs_state == ObsState.ABORTED) and (self.sdp_sa_obs_state == ObsState.ABORTED)):
-            if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
+            if pointing_state_count_ready == len(self.device_data.dishPointingStateMap.values()):
                 if self.device_data.is_abort_command:
                     self.logger.info("Calling ABORT command succeeded() method")
-                    self.this_server.abort.succeeded()
+                    self.this_server.device.abort.succeeded()
         elif ((self.csp_sa_obs_state == ObsState.READY) and (self.sdp_sa_obs_state == ObsState.READY)):
             log_msg = "Pointing state in track counts = " + str(pointing_state_count_track)
             self.logger.debug(log_msg)
-            log_msg = "No of dished being checked =" + str(len(self.dishPointingStateMap.values()))
+            log_msg = "No of dishes being checked =" + str(len(self.device_data.dishPointingStateMap.values()))
             self.logger.debug(log_msg)
-            if pointing_state_count_track == len(self.dishPointingStateMap.values()):
+            if pointing_state_count_track == len(self.device_data.dishPointingStateMap.values()):
                 if not self.device_data.is_abort_command:
                     if self.device_data.is_scan_completed:
                         self.logger.info("Calling EndScan command succeeded() method")
-                        self.this_server.endscan.succeeded()
+                        self.this_server.device.endscan.succeeded()
                     else:
                         # Configure command success
                         self.logger.info("Calling Configure command succeeded() method")
-                        self.this_server.configure.succeeded()
+                        self.this_server.device.configure.succeeded()
         elif ((self.csp_sa_obs_state == ObsState.IDLE) and (self.sdp_sa_obs_state ==\
                 ObsState.IDLE)):
             if self.device_data.is_end_command:
-                if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
+                if pointing_state_count_ready == len(self.device_data.dishPointingStateMap.values()):
                     # End command success
                     self.logger.info("Calling End command succeeded() method")
                     # As a part of end command send Stop track command on dish leaf node
                     #  TODO: Stop track command will be invoked once tango group command issue gets resolved.
                     # self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
-                    self.this_server.end.succeeded()
+                    self.this_server.device.end.succeeded()
             elif self.device_data.is_obsreset_command:
-                if pointing_state_count_ready == len(self.dishPointingStateMap.values()):
+                if pointing_state_count_ready == len(self.device_data.dishPointingStateMap.values()):
                     self.logger.info("Calling ObsReset command succeeded() method")
-                    self.this_server.obsreset.succeeded()
+                    self.this_server.device.obsreset.succeeded()
 
             else:
                 # Assign Resource command success
                 self.logger.info("Calling AssignResource command succeeded() method")
-                device_data.assign.succeeded()
+                self.this_server.device.assign.succeeded()
+                # self.device_data.assign.succeeded()
                 self.logger.info("AssignResource command succeeded() method executed")
 
 
     def pointing_state_cb(self, evt):
         """
-        Retrieves the subscribed DishMaster health state, aggregate them to evaluate
+        Retrieves the s_dish_pointing_stateubscribed DishMaster health state, aggregate them to evaluate
         health state of the Subarray.
 
         :param evt: A TANGO_CHANGE event on DishMaster healthState.
@@ -181,7 +185,9 @@ class ObsStateAggregator:
             self.logger.info(log_msg)
             if not evt.err:
                 self._dish_pointing_state = evt.attr_value.value
-                self.dishPointingStateMap[evt.device] = self._dish_pointing_state
+                log_msg= 'in Obs_state_cb dishPointingStateMap : ' + str(self.device_data.dishPointingStateMap)
+                self.logger.info(log_msg)
+                self.device_data.dishPointingStateMap[evt.device] = self._dish_pointing_state
                 if self._dish_pointing_state == PointingState.READY:
                     str_log = const.STR_POINTING_STATE + str(evt.device) + const.STR_READY
                     self.logger.debug(str_log)
@@ -212,7 +218,7 @@ class ObsStateAggregator:
             self._read_activity_message = const.ERR_SETPOINTING_CALLBK + str(key_err)
 
     def subscribe_dish_pointing_state(self, dish_ln_client):
-        self.dishPointingStateMap[dish_ln_client] = -1
+        # self.dishPointingStateMap[dish_ln_client] = -1
         dish_event_id = dish_ln_client.subscribe_attribute(const.EVT_DISH_POINTING_STATE, self.pointing_state_cb)
         self.device_data._dishLnVsPointingStateEventID[dish_ln_client] = dish_event_id
         log_msg = const.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(self.device_data._dishLnVsPointingStateEventID)

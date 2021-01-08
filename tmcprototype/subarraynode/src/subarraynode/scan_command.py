@@ -27,6 +27,7 @@ class Scan(SKASubarray.ScanCommand):
 
     def __init__(self, target, state_model, logger=None):
         super(Scan, self).__init__(target, state_model, logger)
+        # this_server = TangoServerHelper.get_instance()
         # self.end_scan_command = None
 
     def do(self, argin):
@@ -57,7 +58,7 @@ class Scan(SKASubarray.ScanCommand):
         device_data.is_restart_command = False
         device_data.is_abort_command = False
         device_data.is_obsreset_command = False
-        device_data.this_device_server = TangoServerHelper.get_instance()
+        this_device_server = TangoServerHelper.get_instance()
         try:
             log_msg = const.STR_SCAN_IP_ARG + str(argin)
             self.logger.debug(log_msg)
@@ -74,9 +75,9 @@ class Scan(SKASubarray.ScanCommand):
             # Set timer to invoke EndScan command after scan duration is complete.
             self.logger.info("Setting scan timer")
             # device_data.scan_stopper = ScanStopper(self.logger)
-            device_data.scan_stopper.start_scan_timer(device_data.scan_duration, device_data.end_scan_command)
+            device_data.scan_stopper.start_scan_timer(device_data.scan_duration)
 
-            device_data.this_device_server.set_status(const.STR_SA_SCANNING)
+            this_device_server.set_status(const.STR_SA_SCANNING)
             self.logger.info(const.STR_SA_SCANNING)
             device_data._read_activity_message = const.STR_SCAN_SUCCESS
 
