@@ -293,6 +293,7 @@ def test_end_scan_should_command_subarray_to_end_scan_when_it_is_scanning(mock_l
     device_data = DeviceData.get_instance()
     end_scan_cmd = EndScan(device_data, subarray_state_model)
     subarray_state_model._straight_to_state(DevState.ON, None, ObsState.SCANNING)
+    device_data.scan_timer_handler.start_scan_timer(10)
     assert end_scan_cmd.do() == (ResultCode.OK, "EndScan command is executed successfully.")
 
 
@@ -301,6 +302,7 @@ def test_end_scan_should_raise_devfailed_exception_when_mccs_subbarray_ln_throws
     device_data = DeviceData.get_instance()
     tango_client.deviceproxy.command_inout.side_effect = raise_devfailed_exception
     end_scan_cmd = EndScan(device_data, subarray_state_model)
+    device_data.scan_timer_handler.start_scan_timer(10)
     with pytest.raises(tango.DevFailed) as df:
         end_scan_cmd.do()
     # assert tango_context.device.obsState == ObsState.FAULT
