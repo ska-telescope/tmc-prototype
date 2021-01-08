@@ -8,3 +8,18 @@ Central Node
 .. automodule:: tmcprototype.centralnodelow.src.centralnodelow.central_node_low
    :members:
    :undoc-members:
+.. automodule:: tmcprototype.centralnodelow.src.centralnodelow.assign_resources_command
+   :members:
+   :undoc-members:
+.. automodule:: tmcprototype.centralnodelow.src.centralnodelow.health_state_aggreegator
+   :members:
+   :undoc-members:
+.. automodule:: tmcprototype.centralnodelow.src.centralnodelow.release_resources_command
+   :members:
+   :undoc-members:
+.. automodule:: tmcprototype.centralnodelow.src.centralnodelow.standby_telescope_command
+   :members:
+   :undoc-members:
+.. automodule:: tmcprototype.centralnodelow.src.centralnodelow.startup_telescope_command
+   :members:
+   :undoc-members:

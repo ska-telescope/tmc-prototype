@@ -126,8 +126,6 @@ def test_startup(mock_subarray):
 
 def test_standby(mock_subarray):
     device_proxy, tango_client_obj = mock_subarray
-    # device_proxy.StartUpTelescope()
-    # assert device_proxy.state() == DevState.ON
     device_proxy.StartUpTelescope()
     assert device_proxy.StandByTelescope() == [[ResultCode.OK], ["STANDBYTELESCOPE command invoked from Central node"]]
     assert device_proxy.state() == DevState.OFF
