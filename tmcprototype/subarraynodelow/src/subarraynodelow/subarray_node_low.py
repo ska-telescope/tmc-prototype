@@ -12,8 +12,7 @@ Provides the monitoring and control interface required by users as well as
 other TM Components (such as OET, Central Node) for a Subarray.
 """
 # Tango imports
-import tango
-from tango import AttrWriteType, DevFailed, DeviceProxy, EventType
+from tango import AttrWriteType
 from tango.server import run,attribute, device_property
 
 # Additional imports

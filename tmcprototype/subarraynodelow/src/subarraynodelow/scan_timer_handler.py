@@ -11,7 +11,6 @@ class ScanTimerHandler():
         self.this_server = TangoServerHelper.get_instance()
 
     def start_scan_timer(self, scan_duration):
-        log_message = f"Scan duration: {scan_duration}"
         self.scan_timer = threading.Timer(scan_duration, self.this_server.device.endscan)
         self.scan_timer.start()
 
