@@ -13,21 +13,13 @@ Track class for DishLeafNode.
 import json
 import threading
 import datetime
-import katpoint
-import math
 import time
-from .utils import UnitConverter
 
 import tango
 from tango import DevState, DevFailed
 
 from ska.base.commands import BaseCommand
 from tmc.common.tango_client import TangoClient
-from ska.base.control_model import HealthState, SimulationMode
-from .utils import UnitConverter
-from tmc.common.tango_client import TangoClient
-from . import release
-from .device_data import DeviceData
 from .command_callback import CommandCallBack
 from .az_el_converter import AzElConverter
 

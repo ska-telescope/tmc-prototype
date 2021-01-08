@@ -11,7 +11,6 @@
 Configure class for DishLeafNode.
 """
 import json
-import threading
 
 import tango
 from tango import DevState, DevFailed
@@ -19,7 +18,6 @@ from tango import DevState, DevFailed
 from ska.base.commands import BaseCommand
 from tmc.common.tango_client import TangoClient
 from .az_el_converter import AzElConverter
-from .device_data import DeviceData
 from .command_callback import CommandCallBack
 
 
@@ -70,7 +68,6 @@ class Configure(BaseCommand):
             json_argument = self._load_config_string(argin)
             ra_value, dec_value = self._get_targets(json_argument)
             device_data.radec_value = f"radec,{ra_value},{dec_value}"
-            print("************ device_data.radec_value ************", device_data.radec_value)
             receiver_band = json_argument["dish"]["receiverBand"]
             self._set_dish_desired_pointing_attribute(device_data.radec_value)
             self._configure_band(receiver_band)
@@ -97,7 +94,6 @@ class Configure(BaseCommand):
             dish_client = TangoClient(device_data._dish_master_fqdn)
             cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
             dish_client.send_command_async(command_name, None, cmd_ended_cb)
-            # device._dish_proxy.command_inout_asynch(command_name, device.cmd_ended_cb)
         except DevFailed as dev_failed:
             raise dev_failed
 
@@ -121,7 +117,6 @@ class Configure(BaseCommand):
         # Set desiredPointing on Dish Master (it won't move until asked to
         # track or scan, but provide initial coordinates for interest)
         time_az_el = [now.timestamp(), device_data.az, device_data.el]
-        # dish_client.deviceproxy.desiredPointing = time_az_el
         dish_client.set_attribute("desiredPointing", time_az_el)
         
     def _get_targets(self, json_argument):
