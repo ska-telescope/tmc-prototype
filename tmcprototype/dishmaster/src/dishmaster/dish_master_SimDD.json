@@ -35,6 +35,48 @@
             "period": 1000
           }
         }
+      },
+      {
+        "basicAttributeData": {
+          "name": "versionID",
+          "unit": "",
+          "label": "version ID",
+          "description": "Version Id of this device",
+          "data_type": "String",
+          "data_format": "Scalar",
+          "format": "",
+          "data_shape": {
+            "max_dim_x": 1,
+            "max_dim_y": 0
+          },
+          "attributeInterlocks": {
+            "writable": "READ"
+          },
+          "dataSimulationParameters": {
+            "quantity_simulation_type": "ConstantQuantity"
+          },
+          "attributeControlSystem": {
+            "display_level": "OPERATOR",
+            "period": 1000
+          }
+        }
+      }
+    ],
+    "commands": [
+      {
+        "basicCommandData": {
+          "name": "GetVersionInfo",
+          "input_parameters": {
+            "dtype_in": "Void",
+            "doc_in": "",
+            "dformat_in": "Scalar"
+          },
+          "output_parameters": {
+            "dtype_out": "String",
+            "doc_out": "Version strings",
+            "dformat_out": "Scalar"
+          }
+        }
       }
     ]
   }
