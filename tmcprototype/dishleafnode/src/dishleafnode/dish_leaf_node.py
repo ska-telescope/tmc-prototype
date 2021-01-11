@@ -14,13 +14,11 @@ A Leaf control node for DishMaster.
 import tango
 from tango import ApiUtil, AttrWriteType
 from tango.server import run, command, device_property, attribute
-import katpoint
 
 from ska.base.commands import ResultCode
 from ska.base import SKABaseDevice
 from tmc.common.tango_server_helper import TangoServerHelper
 from ska.base.control_model import HealthState, SimulationMode
-from .utils import UnitConverter
 from . import release
 from .device_data import DeviceData
 from .abort_command import Abort
