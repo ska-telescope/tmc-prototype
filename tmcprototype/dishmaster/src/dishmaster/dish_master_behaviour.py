@@ -8,7 +8,7 @@ import logging
 
 from collections import namedtuple
 
-from tango import Except, ErrSeverity
+from tango import DevState, Except, ErrSeverity
 
 from ska.logging import configure_logging
 
@@ -290,6 +290,9 @@ class OverrideDish(object):
             model.logger.info("Dish pointing state set to 'READY'.")
         else:
             self._throw_exception("SetOperateMode", _allowed_modes)
+
+        tango_dev.set_state(DevState.ON)
+        model.logger.info("Dish state set to 'ON'.")
         return [[self.OK], [f"Dish transitioned to '{operate} Mode"]]
 
     def action_setstandbyfpmode(
@@ -318,6 +321,9 @@ class OverrideDish(object):
             self._reset_pointing_state(model)
         else:
             self._throw_exception("SetStandbyFPMode", _allowed_modes)
+
+        tango_dev.set_state(DevState.STANDBY)
+        model.logger.info("Dish state set to 'STANDBY'.")
         return [[self.OK], [f"Dish transitioned to '{standby_fp}' mode"]]
 
     def action_setstandbylpmode(
@@ -356,6 +362,9 @@ class OverrideDish(object):
             self._reset_pointing_state(model)
         else:
             self._throw_exception("SetStandbyLPMode", _allowed_modes)
+
+        tango_dev.set_state(DevState.STANDBY)
+        model.logger.info("Dish state set to 'STANDBY'.")
         return [[self.OK], [f"Dish transitioned to '{standby_lp}' mode"]]
 
     def action_setstowmode(self, model, tango_dev=None, data_input=None):  # pylint: disable=W0613
