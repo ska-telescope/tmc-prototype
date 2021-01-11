@@ -44,8 +44,6 @@ class DeviceData:
         self.scan_duration = 0.0
         self.isScanRunning = False
         self.scan_timer_handler = ScanTimerHandler()
-        # TODO : Tango server class variables
-        self.this_device_server = None
         self._read_activity_message = ""
         self.sdp_subarray_ln_fqdn = ""
         self.csp_subarray_ln_fqdn = ""
@@ -121,6 +119,8 @@ class DeviceData:
             DeviceData()
         return DeviceData.__instance
     
+    
+    # This method is required to complete and AssignResources and ReleaseAllResources command.
     def __len__(self):
         """
         Returns the number of resources currently assigned. Note that

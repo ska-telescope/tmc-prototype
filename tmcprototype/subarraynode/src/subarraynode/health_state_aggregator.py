@@ -24,9 +24,6 @@ class HealthStateAggregator:
         self.sdp_client = TangoClient(self.device_data.sdp_subarray_ln_fqdn)
         self.subarray_ln_health_state_map[self.csp_client.get_device_fqdn()] = (HealthState.UNKNOWN)
         self.subarray_ln_health_state_map[self.sdp_client.get_device_fqdn()] = (HealthState.UNKNOWN)
-        # How to pass fqdn here?
-        # self.csp_client = TangoClient("ska_mid/tm_leaf_node/csp_subarray01")
-        # self.sdp_client = TangoClient("ska_mid/tm_leaf_node/sdp_subarray01")
 
     def subscribe(self):
         # TODO: dev_name() where to keep this API?
@@ -107,7 +104,7 @@ class HealthStateAggregator:
     def subscribe_dish_health_state(self, dish_ln_client):
         dish_event_id = dish_ln_client.subscribe_attribute(const.EVT_DISH_HEALTH_STATE, self.health_state_cb)
         self.device_data._dishLnVsHealthEventID[dish_ln_client] = dish_event_id
-        log_msg = const.STR_DISH_LN_VS_HEALTH_EVT_ID + str(self.device_data._dishLnVsHealthEventID)
+        log_msg = const.STR_DISH_LN_HEALTH_EVT_ID + str(self.device_data._dishLnVsHealthEventID)
         self.logger.debug(log_msg)
 
     def unsubscribe_dish_health_state(self):

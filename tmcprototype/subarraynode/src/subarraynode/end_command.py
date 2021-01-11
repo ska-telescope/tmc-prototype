@@ -65,6 +65,7 @@ class End(SKASubarray.EndCommand):
         #To read device proxy from device.SdpSubarrayLNFQDN
         sdp_saln_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
         sdp_saln_client.send_command(const.CMD_END)
+        #TODO: Unsubscribe ReceiveAddressesMap from SDP in End command instead of OFF command.
         # device_data.receive_addresses.unsubscribe()
         self.logger.info(const.STR_CMD_END_INV_SDP)
 

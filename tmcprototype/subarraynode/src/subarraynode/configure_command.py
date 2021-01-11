@@ -18,6 +18,7 @@ from .transaction_id import identify_with_id,inject_with_id
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 from subarraynode.device_data import DeviceData
+
 csp_interface_version = 0
 sdp_interface_version = 0
 
@@ -56,7 +57,7 @@ class Configure(SKASubarray.ConfigureCommand):
         self.logger.debug(type(self.target))
         self.only_dishconfig_flag = False
         device_data = DeviceData.get_instance()
-        # # subscribe to receiveAddressesMap from SDP 
+        #TODO: Subscribe to receiveAddressesMap from SDP in Configure command instead of On command.
         # device_data.receive_addresses = ReceiveAddresses(self.logger)
         # device_data.receive_addresses.subscribe()
         device_data.is_scan_completed = False
@@ -64,12 +65,10 @@ class Configure(SKASubarray.ConfigureCommand):
         device_data.is_restart_command = False
         device_data.is_abort_command = False
         device_data.is_obsreset_command = False
-        # TODO: How to use logger. Currenly logger is passed from do() method
         self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
         log_msg = const.STR_CONFIGURE_IP_ARG + str(argin)
         self.logger.debug(log_msg)
-        # TODO: how to access TANGO specific attributes (read-write)
-        tango_server_helper_obj = TangoServerHelper.get_instance()
+        tango_server_helper = TangoServerHelper.get_instance()
         try:
             scan_configuration = json.loads(argin)
         except json.JSONDecodeError as jerror:
@@ -88,7 +87,7 @@ class Configure(SKASubarray.ConfigureCommand):
             self._configure_sdp(scan_configuration)
         message = "Configure command invoked"
         self.logger.info(message)
-        tango_server_helper_obj.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA)
+        tango_server_helper.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA)
         device_data._read_activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA
         return (ResultCode.STARTED, message)
 
@@ -121,7 +120,6 @@ class Configure(SKASubarray.ConfigureCommand):
     def _configure_sdp(self, scan_configuration):
         device_data = DeviceData.get_instance()
         cmd_data = self._create_cmd_data("build_up_sdp_cmd_data", scan_configuration)
-        # TODO : How to read device property device.SdpSubarrayLNFQDN
         sdp_saln_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
         self._configure_leaf_node(sdp_saln_client, "Configure", cmd_data, device_data)
 
@@ -132,7 +130,6 @@ class Configure(SKASubarray.ConfigureCommand):
         }
         cmd_data = self._create_cmd_data(
             "build_up_csp_cmd_data", scan_configuration, attr_name_map, device_data._receive_addresses_map)
-        # TODO : How to read device property device.CspSubarrayLNFQDN
         csp_saln_client = TangoClient(device_data.csp_subarray_ln_fqdn)
         self._configure_leaf_node(csp_saln_client, "Configure", cmd_data, device_data)
 
@@ -142,13 +139,11 @@ class Configure(SKASubarray.ConfigureCommand):
         # config_keys = scan_configuration.keys()
         # if not set(["sdp", "csp"]).issubset(config_keys) and "dish" in config_keys:
         #   device_data.only_dishconfig_flag = True
-
         cmd_data = self._create_cmd_data(
             "build_up_dsh_cmd_data", scan_configuration)
 
         try:
             device_data._dish_leaf_node_group_client.send_command(const.CMD_CONFIGURE, cmd_data)
-
             self.logger.info("Configure command is invoked on the Dish Leaf Nodes Group")
             device_data._dish_leaf_node_group_client.send_command(const.CMD_TRACK, cmd_data)
             self.logger.info('TRACK command is invoked on the Dish Leaf Node Group')

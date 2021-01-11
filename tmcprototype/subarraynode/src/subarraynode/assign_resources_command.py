@@ -111,37 +111,26 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
                                          const.STR_ASSIGN_RES_EXEC, tango.ErrSeverity.ERR)
 
         
+        # 2. Invoke command on CSP and SDP. Call method to create DishGroup.
         dish_allocation_result = self.set_up_dish_data(receptor_list)
         self.assign_csp_resources(receptor_list)
         self.assign_sdp_resources(sdp_resources)
+       
+        log_msg = const.STR_DISH_ALLOCATION_RESULT + str(dish_allocation_result)
+        self.logger.debug(log_msg)
+        dish_allocation_result.sort()
+        self.logger.debug("Dish group is created successfully")
 
-            # 2.5. check results
-        try:
-            # dish_allocation_result = dish_allocation_status.result()
-            log_msg = const.STR_DISH_ALLOCATION_RESULT + str(dish_allocation_result)
-            self.logger.debug(log_msg)
-            dish_allocation_result.sort()
-            self.logger.debug("Dish group is created successfully")
-        except DevFailed as df:
-            self.logger.exception("Dish allocation failed.")
-            tango.Except.re_throw_exception(
-                df,
-                "Dish allocation failed.",
-                "Failed to allocate receptors to Subarray.",
-                "SubarrayNode.AssignResources",
-                tango.ErrSeverity.ERR
-            )
+        # TODO: For future use
+        # if(dish_allocation_result == receptor_list and
+        #     csp_allocation_result == receptor_list and
+        #     sdp_allocation_result == sdp_resources
+        #   ):
+        #     argout = dish_allocation_result
+        # else:
+        #     argout = []
 
-            # TODO: For future use
-            # if(dish_allocation_result == receptor_list and
-            #     csp_allocation_result == receptor_list and
-            #     sdp_allocation_result == sdp_resources
-            #   ):
-            #     # Currently sending dish allocation and SDP allocation results.
-            #     argout = dish_allocation_result
-            # else:
-            #     argout = []
-
+        # Currently sending dish allocation results as argout
         argout = dish_allocation_result
         log_msg = "assign_resource_argout", argout
         self.logger.debug(log_msg)
@@ -167,7 +156,6 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         allocation_failure = []
         device_data = DeviceData.get_instance()
         # Add each dish into the tango group
-
         
         for leafId in range(0, len(argin)):
             try:
@@ -228,7 +216,6 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         return allocation_success
 
 
-
     def assign_csp_resources(self, argin):
         """
         This function accepts the receptor IDs list as input and invokes the assign resources command on
@@ -278,7 +265,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         # looping the receptor ids back.
         log_msg = "assign_csp_resources::", argout
         self.logger.debug(log_msg)
-        # return argout
+        return argout
 
     @inject_with_id(0,'argin')
     def assign_sdp_resources(self, argin):
@@ -315,4 +302,4 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         # looping the processing block ids back.
         log_msg = "assign_sdp_resources::", argout
         self.logger.debug(log_msg)
-        # return argout
+        return argout

@@ -123,7 +123,6 @@ class ObsStateAggregator:
                 self.logger.info("Calling Restart command succeeded() method")
                 self.this_server.device.restart.succeeded()
                 # TODO: As a action for Restart command invoke ReleaseResources command on SubarrayNode
-
         elif ((self.csp_sa_obs_state == ObsState.ABORTED) and (self.sdp_sa_obs_state == ObsState.ABORTED)):
             if pointing_state_count_ready == len(self.device_data.dishPointingStateMap.values()):
                 if self.device_data.is_abort_command:
@@ -157,7 +156,6 @@ class ObsStateAggregator:
                 if pointing_state_count_ready == len(self.device_data.dishPointingStateMap.values()):
                     self.logger.info("Calling ObsReset command succeeded() method")
                     self.this_server.device.obsreset.succeeded()
-
             else:
                 # Assign Resource command success
                 self.logger.info("Calling AssignResource command succeeded() method")
