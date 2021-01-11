@@ -157,10 +157,10 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
             device_data._read_activity_message = log_msg
 
             tango_client.send_command(const.CMD_SET_STANDBYFP_MODE)
-            log_msg = 'SetStandByFPMode command invoked successfully on {}'.format(tango_client.get_device_fqdn)
+            log_msg = 'SetStandbyFPMode command invoked successfully on {}'.format(tango_client.get_device_fqdn)
             self.logger.debug(log_msg)
             device_data._read_activity_message = log_msg
-
+            time.sleep(0.5)
             tango_client.send_command(const.CMD_SET_OPERATE_MODE)
             log_msg = 'SetOperateMode command invoked successfully on {}'.format(tango_client.get_device_fqdn)
             self.logger.debug(log_msg)
