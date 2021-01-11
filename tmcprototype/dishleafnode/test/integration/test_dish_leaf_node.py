@@ -72,7 +72,7 @@ devices_info = [
                     "LoggingTargetsDefault": ["tango::logger"],
                     "LoggingLevelDefault": ["5"],
                     "polled_attr": [
-                        "activitymessage",Docker image released
+                        "activitymessage",
                         "1000",
                         "desiredPointing",
                         "1000",
