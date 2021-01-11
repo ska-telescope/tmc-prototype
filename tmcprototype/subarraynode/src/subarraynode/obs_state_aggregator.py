@@ -1,7 +1,6 @@
 from . import const
 from .const import PointingState
 from ska.base.control_model import ObsState
-from ska.base.commands import ResultCode
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 from .device_data import DeviceData
@@ -20,10 +19,8 @@ class ObsStateAggregator:
         self.csp_sdp_ln_obs_state_event_id = {}
         self.csp_sa_obs_state = None
         self.sdp_sa_obs_state = None
-        # self.device_data = DeviceData.get_instance()
         self.csp_client = None
         self.sdp_client = None
-        # self.dishPointingStateMap = {}
         self.this_server = TangoServerHelper.get_instance()
         self.device_data = DeviceData.get_instance()
         
@@ -101,7 +98,6 @@ class ObsStateAggregator:
         """
         Calculates aggregated observation state of Subarray.
         """
-        # device_data_local =  DeviceData.get_instance()
         pointing_state_count_track = 0
         pointing_state_count_slew = 0
         pointing_state_count_ready = 0
@@ -166,7 +162,6 @@ class ObsStateAggregator:
                 # Assign Resource command success
                 self.logger.info("Calling AssignResource command succeeded() method")
                 self.this_server.device.assign.succeeded()
-                # self.device_data.assign.succeeded()
                 self.logger.info("AssignResource command succeeded() method executed")
 
 
@@ -218,7 +213,6 @@ class ObsStateAggregator:
             self._read_activity_message = const.ERR_SETPOINTING_CALLBK + str(key_err)
 
     def subscribe_dish_pointing_state(self, dish_ln_client):
-        # self.dishPointingStateMap[dish_ln_client] = -1
         dish_event_id = dish_ln_client.subscribe_attribute(const.EVT_DISH_POINTING_STATE, self.pointing_state_cb)
         self.device_data._dishLnVsPointingStateEventID[dish_ln_client] = dish_event_id
         log_msg = const.STR_DISH_LN_VS_POINTING_STATE_EVT_ID + str(self.device_data._dishLnVsPointingStateEventID)

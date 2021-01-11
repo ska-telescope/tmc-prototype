@@ -18,9 +18,9 @@ from . import const
 from .subarray_node import SubarrayNode
 from .configure_command import ElementDeviceData
 from .device_data import DeviceData
-from .scan_command import Scan, ScanStopper
+from .scan_command import Scan
 
-__all__ = ["SubarrayNode", "ElementDeviceData", "const", "release", "DeviceData", "Scan", "ScanStopper"]
+__all__ = ["SubarrayNode", "ElementDeviceData", "const", "release", "DeviceData", "Scan"]
 
 __version__ = release.version
 __version_info__ = release.version_info

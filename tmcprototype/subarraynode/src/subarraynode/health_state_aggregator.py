@@ -107,7 +107,6 @@ class HealthStateAggregator:
     def subscribe_dish_health_state(self, dish_ln_client):
         dish_event_id = dish_ln_client.subscribe_attribute(const.EVT_DISH_HEALTH_STATE, self.health_state_cb)
         self.device_data._dishLnVsHealthEventID[dish_ln_client] = dish_event_id
-        # self._health_event_id.append(dish_event_id)
         log_msg = const.STR_DISH_LN_VS_HEALTH_EVT_ID + str(self.device_data._dishLnVsHealthEventID)
         self.logger.debug(log_msg)
 

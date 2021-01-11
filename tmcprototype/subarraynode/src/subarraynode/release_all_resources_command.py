@@ -50,8 +50,6 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
                                          const.STR_RELEASE_ALL_RES_EXEC, tango.ErrSeverity.ERR)
 
         self.logger.info(const.STR_DISH_RELEASE)
-        # remove_receptors = RemoveReceptors()
-        # remove_receptors.remove_receptors_from_group()
         device_data.clean_up_dict(self.logger)
         self.logger.info(const.STR_CSP_RELEASE)
         self.release_csp_resources(device_data.csp_subarray_ln_fqdn)

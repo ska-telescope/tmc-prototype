@@ -44,7 +44,6 @@ class DeviceData:
         self.scan_duration = 0.0
         self.isScanRunning = False
         self.scan_stopper = ScanStopper()
-        # self.end_scan_command = None
         # TODO : Tango server class variables
         self.this_device_server = None
         self._read_activity_message = ""

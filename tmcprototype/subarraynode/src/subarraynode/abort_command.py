@@ -13,7 +13,6 @@ from ska.base import SKASubarray
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 from subarraynode.device_data import DeviceData
-from subarraynode.scan_command import ScanStopper
 from . import const
 
 class Abort(SKASubarray.AbortCommand):

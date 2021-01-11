@@ -13,8 +13,6 @@ other TM Components (such as OET, Central Node) for a Subarray.
 """
 
 # PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
-# Third party imports
-import copy
 # Tango imports
 from tango import AttrWriteType
 from tango.server import run,attribute, command, device_property
@@ -41,7 +39,7 @@ from tmc.common.tango_server_helper import TangoServerHelper
 
 __all__ = ["SubarrayNode", "main", "AssignResources", "ReleaseAllResources",
            "Configure", "Scan", "EndScan", "End", "On",
-           "Off", "Track", "Abort", "Restart", "ObsReset", "ScanStopper"]
+           "Off", "Track", "Abort", "Restart", "ObsReset"]
 
 
 class SubarrayNode(SKASubarray):

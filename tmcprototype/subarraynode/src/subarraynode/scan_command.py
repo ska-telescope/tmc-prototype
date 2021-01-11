@@ -1,9 +1,6 @@
 """
 Scan Command class for SubarrayNode
 """
-# Standard python imports
-import threading
-import logging
 
 # Third party imports
 # Tango imports
@@ -17,18 +14,12 @@ from tmc.common.tango_server_helper import TangoServerHelper
 from tmc.common.tango_client import TangoClient
 from . import const
 from subarraynode.device_data import DeviceData
-from subarraynode.scan_stopper import ScanStopper
 
 
 class Scan(SKASubarray.ScanCommand):
     """
     A class for SubarrayNode's Scan() command.
     """
-
-    def __init__(self, target, state_model, logger=None):
-        super(Scan, self).__init__(target, state_model, logger)
-        # this_server = TangoServerHelper.get_instance()
-        # self.end_scan_command = None
 
     def do(self, argin):
         """
@@ -74,7 +65,6 @@ class Scan(SKASubarray.ScanCommand):
 
             # Set timer to invoke EndScan command after scan duration is complete.
             self.logger.info("Setting scan timer")
-            # device_data.scan_stopper = ScanStopper(self.logger)
             device_data.scan_stopper.start_scan_timer(device_data.scan_duration)
 
             this_device_server.set_status(const.STR_SA_SCANNING)
@@ -110,6 +100,3 @@ class Scan(SKASubarray.ScanCommand):
         csp_client.send_command(const.CMD_START_SCAN, csp_argin)
         self.logger.info(const.STR_CSP_SCAN_INIT)
         device_data._read_activity_message = const.STR_CSP_SCAN_INIT
-
-    # def set_end_scan_command_object(self, end_scan_command):
-    #     self.end_scan_command = end_scan_command
