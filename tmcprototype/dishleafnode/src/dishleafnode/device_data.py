@@ -82,7 +82,7 @@ class DeviceData:
                 break
 
         if not antenna_exist:
-            raise Exception(f"Antenna '{device_data.dish_number}' not in the ska_antennas.txt file.")
+            raise Exception(f"Antenna '{self.dish_number}' not in the ska_antennas.txt file.")
 
         # Convert reference antenna lat and long into radian
         obj_unitconverter = UnitConverter()
