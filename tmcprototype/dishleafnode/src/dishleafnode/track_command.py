@@ -73,7 +73,6 @@ class Track(BaseCommand):
 
             dish_client = TangoClient(device_data._dish_master_fqdn)
             cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
-            azel_converter = AzElConverter(self.logger)
 
             dish_client.send_command_async(command_name, None, cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
@@ -121,7 +120,7 @@ class Track(BaseCommand):
 
         return json_argument
 
-
+    # pylint: disable=logging-fstring-interpolation
     def track_thread(self):
         """This thread writes coordinates to desiredPointing on DishMaster at the rate of 20 Hz."""
         self.logger.info(
@@ -155,6 +154,8 @@ class Track(BaseCommand):
             self.logger.debug("desiredPointing coordinates: %s", desired_pointing)
             dish_client.deviceproxy.desiredPointing = desired_pointing
             time.sleep(0.05)
+
+    # pylint: enable=logging-fstring-interpolation, unbalanced-tuple-unpacking
 
     def _is_elevation_within_mechanical_limits(self):
         device_data = self.target
