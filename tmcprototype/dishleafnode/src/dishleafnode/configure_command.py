@@ -14,7 +14,7 @@ import json
 
 import tango
 from tango import DevState, DevFailed
-
+import datetime
 from ska.base.commands import BaseCommand
 from tmc.common.tango_client import TangoClient
 from .az_el_converter import AzElConverter
