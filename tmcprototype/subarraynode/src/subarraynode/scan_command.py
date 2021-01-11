@@ -65,8 +65,7 @@ class Scan(SKASubarray.ScanCommand):
 
             # Set timer to invoke EndScan command after scan duration is complete.
             self.logger.info("Setting scan timer")
-            device_data.scan_stopper.start_scan_timer(device_data.scan_duration)
-
+            device_data.scan_timer_handler.start_scan_timer(device_data.scan_duration)
             this_device_server.set_status(const.STR_SA_SCANNING)
             self.logger.info(const.STR_SA_SCANNING)
             device_data._read_activity_message = const.STR_SCAN_SUCCESS

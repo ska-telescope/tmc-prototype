@@ -38,8 +38,8 @@ class EndScan(SKASubarray.EndScanCommand):
         device_data.is_abort_command = False
         device_data.is_obsreset_command = False
         try:
-            if device_data.scan_stopper.is_scan_running():
-                device_data.scan_stopper.stop_scan_timer()
+            if device_data.scan_timer_handler.is_scan_running():
+                device_data.scan_timer_handler.stop_scan_timer()
             device_data.isScanRunning = False
             device_data.is_scan_completed = True
 
