@@ -23,4 +23,15 @@ Central Node
 .. automodule:: tmcprototype.centralnode.src.centralnode.stow_antennas_command
    :members:
    :undoc-members:
-
+.. automodule:: tmcprototype.centralnode.src.centralnode.health_state_aggregator
+   :members:
+   :undoc-members:
+.. automodule:: tmcprototype.centralnode.src.centralnode.receptor_reassignment_checker
+   :members:
+   :undoc-members:
+.. automodule:: tmcprototype.centralnode.src.centralnode.resource_manager
+   :members:
+   :undoc-members:
+.. automodule:: tmcprototype.centralnode.src.centralnode.obs_state_check
+   :members:
+   :undoc-members:

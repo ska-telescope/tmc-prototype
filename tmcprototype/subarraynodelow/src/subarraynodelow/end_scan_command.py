@@ -10,10 +10,11 @@ from tango import DevFailed
 # Additional import
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+from tmc.common.tango_client import TangoClient
 from . import const
 
 
-class EndScanCommand(SKASubarray.EndScanCommand):
+class EndScan(SKASubarray.EndScanCommand):
     """
     A class for SubarrayNodeLow's EndScan() command.
     """
@@ -30,21 +31,21 @@ class EndScanCommand(SKASubarray.EndScanCommand):
 
         :raises: DevFailed if the command execution is not successful.
         """
-        device = self.target
-        device.is_release_resources = False
+        device_data = self.target
+        device_data.is_release_resources = False
         try:
-            if device.scan_thread:
-                if device.scan_thread.is_alive():
-                    device.scan_thread.cancel()  # stop timer when EndScan command is called
-            device.isScanRunning = False
-            device.is_scan_completed = True
-            device._mccs_subarray_ln_proxy.command_inout(const.CMD_END_SCAN)
+            if device_data.scan_timer_handler.is_scan_running():
+                device_data.scan_timer_handler.stop_scan_timer() # stop timer when EndScan command is called
+            device_data.isScanRunning = False
+            device_data.is_scan_completed = True
+            mccs_subarray_ln_client = TangoClient(device_data.mccs_subarray_ln_fqdn)
+            mccs_subarray_ln_client.send_command(const.CMD_END_SCAN)
             self.logger.debug(const.STR_MCCS_END_SCAN_INIT)
-            device._read_activity_message = const.STR_MCCS_END_SCAN_INIT
-            device._scan_id = ""
-            device.set_status(const.STR_SCAN_COMPLETE)
+            device_data.activity_message = const.STR_MCCS_END_SCAN_INIT
+            device_data._scan_id = ""
+            # device.set_status(const.STR_SCAN_COMPLETE)
             self.logger.info(const.STR_SCAN_COMPLETE)
-            device._read_activity_message = const.STR_END_SCAN_SUCCESS
+            device_data.activity_message = const.STR_END_SCAN_SUCCESS
             return (ResultCode.OK, const.STR_END_SCAN_SUCCESS)
 
         except DevFailed as dev_failed:
