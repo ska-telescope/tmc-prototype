@@ -19,7 +19,8 @@ CMD_END = "End"
 
 
 # strings
-STR_SUB_ATTR_MCCS_SALN_SUCCESS = "Subscribed MCCS Subarray attributes successfully."
+STR_SUB_ATTR_MCCS_SALN_HEALTH_SUCCESS = "Subscribed MCCS Subarray Health State attributes successfully."
+STR_SUB_ATTR_MCCS_SALN_OBSTATE_SUCCESS = "Subscribed MCCS Subarray ObsState attributes successfully."
 STR_SA_INIT_SUCCESS = "Subarray node is initialized successfully."
 STR_SA_INIT = "Initializing SubarrayNode..."
 STR_CONFIGURE_IP_ARG = "Input Arguments for Configure command :-> "

@@ -10,10 +10,13 @@ from tango import DevFailed
 # Additional import
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+from tmc.common.tango_client import TangoClient
 from . import const
+from .device_data import DeviceData
+from .health_state_aggregator import HealthStateAggregator
+from .obs_state_aggregator import ObsStateAggregator
 
-
-class OnCommand(SKASubarray.OnCommand):
+class On(SKASubarray.OnCommand):
     """
     A class for the SubarrayNodeLow's On() command.
     """
@@ -30,10 +33,16 @@ class OnCommand(SKASubarray.OnCommand):
 
         :raises: DevFailed if the command execution is not successful
         """
-        device = self.target
-        device.is_release_resources = False
+        device_data = DeviceData.get_instance()
+        device_data.is_release_resources = False
+        device_data.health_state_aggregator = HealthStateAggregator()
+        device_data.obs_state_aggregator = ObsStateAggregator()
+        device_data.health_state_aggregator.subscribe()
+        device_data.obs_state_aggregator.subscribe()
+      
         try:
-            device._mccs_subarray_ln_proxy.On()
+            mccs_subarray_ln_client = TangoClient(device_data.mccs_subarray_ln_fqdn)
+            mccs_subarray_ln_client.send_command(const.CMD_ON, None)
             message = "On command completed OK"
             self.logger.info(message)
             return (ResultCode.OK, message)
