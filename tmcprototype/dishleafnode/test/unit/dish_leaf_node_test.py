@@ -105,7 +105,7 @@ def test_command_cb_is_invoked_when_command_without_arg_is_called_async(mock_dis
 
     device_proxy.command_inout(cmd_name)
 
-    dish1_proxy_mock.deviceproxy.command_inout_asynch.assert_called_with(requested_cmd, None, 
+    dish1_proxy_mock.deviceproxy.command_inout_asynch.assert_called_with(requested_cmd, 
                                                                             any_method(with_name="cmd_ended_cb"))
 
 
