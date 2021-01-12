@@ -62,7 +62,6 @@ class SetStandbyLPMode(BaseCommand):
         """
         device_data = DeviceData.get_instance()
         dish_client = device_data.attr_event_map["dish_client"]
-        #dish_client = TangoClient(device_data._dish_master_fqdn)
         device_data.attr_event_map.pop("dish_client")
         for attr_name in device_data.attr_event_map:
             log_message = "Unsubscribing attributes of: {}".format(dish_client.get_device_fqdn)
