@@ -48,8 +48,6 @@ class Abort(BaseCommand):
         :raises DevFailed: If error occurs while invoking TrackStop command on DishMaster.
         """
         device_data = self.target
-
-        self.logger.error("Target object attributes: %s", self.target)
         command_name = "Abort"
         device_data.event_track_time.set()
         cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
