@@ -61,6 +61,7 @@ class SetStandbyLPMode(BaseCommand):
         Method to unsubscribe to health state change event on CspMasterLeafNode, SdpMasterLeafNode and SubarrayNode
         """
         device_data = DeviceData.get_instance()
+        print("*******************************in set standbylp device_data.attr_event_map*********************", device_data.attr_event_map)
         dish_client = device_data.attr_event_map["dish_client"]
         device_data.attr_event_map.pop("dish_client")
         for attr_name in device_data.attr_event_map:
