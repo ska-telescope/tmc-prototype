@@ -13,9 +13,9 @@ SetStandbyLPMode class for DishLeafNode.
 """
 
 import tango
-from tango import DevFailed
+from tango import DevFailed, DeviceProxy
 
-from ska.base.commands import  BaseCommand
+from ska.base.commands import BaseCommand
 from tmc.common.tango_client import TangoClient
 from .command_callback import CommandCallBack
 from .device_data import DeviceData
@@ -38,11 +38,11 @@ class SetStandbyLPMode(BaseCommand):
         device_data = self.target
         command_name = "SetStandbyLPMode"
         try:
-            dish_client = TangoClient(device_data._dish_master_fqdn)
+            dish_client = DeviceProxy(device_data._dish_master_fqdn)
             cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
             # Unsubscribe the DishMaster attributes
-            self._unsubscribe_attribute_events() 
-            dish_client.send_command_async(command_name, None, cmd_ended_cb)
+            self._unsubscribe_attribute_events()
+            dish_client.command_inout_async(command_name, cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
@@ -61,11 +61,10 @@ class SetStandbyLPMode(BaseCommand):
         Method to unsubscribe to health state change event on CspMasterLeafNode, SdpMasterLeafNode and SubarrayNode
         """
         device_data = DeviceData.get_instance()
-        dish_client = TangoClient(device_data._dish_master_fqdn)
+        dish_client = DeviceProxy(device_data._dish_master_fqdn)
 
         for attr_name in device_data.attr_event_map:
             log_message = "Unsubscribing attributes of: {}".format(dish_client.get_device_fqdn)
             self.logger.debug(log_message)
-            dish_client.unsubscribe_attribute(device_data.attr_event_map[attr_name])
+            dish_client.unsubscribe_event(device_data.attr_event_map[attr_name])
         device_data.attr_event_map.clear()
-

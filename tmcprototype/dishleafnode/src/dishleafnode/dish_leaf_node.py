@@ -38,14 +38,33 @@ from .stoptrack_command import StopTrack
 from .track_command import Track
 
 
-__all__ = ["DishLeafNode", "main", "release", "SetOperateMode", "SetStandbyLPMode", "SetStandbyFPMode", "SetStowMode", "Scan", "EndScan", "StartCapture", "StopCapture",
-                "Abort", "Restart", "ObsReset", "Slew", "Configure", "Track", "StopTrack"]
+__all__ = [
+    "DishLeafNode",
+    "main",
+    "release",
+    "SetOperateMode",
+    "SetStandbyLPMode",
+    "SetStandbyFPMode",
+    "SetStowMode",
+    "Scan",
+    "EndScan",
+    "StartCapture",
+    "StopCapture",
+    "Abort",
+    "Restart",
+    "ObsReset",
+    "Slew",
+    "Configure",
+    "Track",
+    "StopTrack",
+]
 
 # pylint: disable=unused-variable, logging-fstring-interpolation
 class DishLeafNode(SKABaseDevice):
     """
     A Leaf control node for DishMaster.
     """
+
     def init_command_objects(self):
         """
         Initialises the command handlers for commands supported by this
@@ -158,7 +177,6 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("SetStowMode")
         handler()
 
-
     @command()
     def SetStandbyLPMode(self):
         """Invokes SetStandbyLPMode (i.e. Low Power State) command on DishMaster."""
@@ -189,7 +207,6 @@ class DishLeafNode(SKABaseDevice):
         """Invokes Scan command on DishMaster."""
         handler = self.get_command_object("Scan")
         handler(argin)
-
 
     def is_EndScan_allowed(self):
         """
@@ -229,7 +246,6 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("Configure")
         handler(argin)
 
-    
     def is_StartCapture_allowed(self):
         """
         Checks whether this command is allowed to be run in the current device state.
@@ -248,7 +264,6 @@ class DishLeafNode(SKABaseDevice):
         """Triggers the DishMaster to Start capture on the set configured band."""
         handler = self.get_command_object("StartCapture")
         handler(argin)
-
 
     def is_StopCapture_allowed(self):
         """
@@ -269,13 +284,11 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("StopCapture")
         handler(argin)
 
-
     @command()
     def SetStandbyFPMode(self):
         """Invokes SetStandbyFPMode command on DishMaster (Standby-Full power) mode."""
         handler = self.get_command_object("SetStandbyFPMode")
         handler()
-
 
     def is_Slew_allowed(self):
         """
@@ -298,7 +311,6 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("Slew")
         handler(argin)
 
-
     def is_Track_allowed(self):
         """
         Checks whether this command is allowed to be run in the current device state.
@@ -318,7 +330,6 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("Track")
         handler(argin)
 
-    
     def is_StopTrack_allowed(self):
         """
         Checks whether this command is allowed to be run in the current device state.
@@ -334,7 +345,6 @@ class DishLeafNode(SKABaseDevice):
         """Invokes StopTrack command on the DishMaster."""
         handler = self.get_command_object("StopTrack")
         handler()
-
 
     @command()
     def Abort(self):
@@ -352,7 +362,6 @@ class DishLeafNode(SKABaseDevice):
         handler = self.get_command_object("Abort")
         return handler.check_allowed()
 
-    
     @command()
     def Restart(self):
         """Invokes Restart command on the DishMaster."""
@@ -368,7 +377,6 @@ class DishLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("Restart")
         return handler.check_allowed()
-
 
     @command()
     def ObsReset(self):

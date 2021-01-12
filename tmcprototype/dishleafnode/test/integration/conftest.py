@@ -35,12 +35,31 @@ def tango_context(mocker, devices_info):  # pylint: disable=redefined-outer-name
     PORT = _get_open_port()
 
     _DeviceProxy = tango.DeviceProxy
-    mocker.patch(
-        "dishleafnode.dish_leaf_node.DeviceProxy",
-        wraps=lambda fqdn, *args, **kwargs: _DeviceProxy(
-            "tango://{0}:{1}/{2}#dbase=no".format(HOST, PORT, fqdn)
-        ),
-    )
+
+    command_modules = [
+        "abort_command",
+        "configure_command",
+        "endscan_command",
+        "restart_command",
+        "scan_command",
+        "setoperatemode_command",
+        "setstandbyfpmode_command",
+        "setstandbylpmode_command",
+        "setstowmode_command",
+        "slew_command",
+        "startcapture_command",
+        "stopcapture_command",
+        "stoptrack_command",
+        "track_command",
+    ]
+
+    for command_module in command_modules:
+        mocker.patch(
+            f"dishleafnode.{command_module}.DeviceProxy",
+            wraps=lambda fqdn, *args, **kwargs: _DeviceProxy(
+                f"tango://{HOST}:{PORT}/{fqdn}#dbase=no"
+            ),
+        )
 
     # In tango_simlib devices the Tango DB file is retrieved from the commandline arguments in
     # the function `get_database`.

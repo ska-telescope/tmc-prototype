@@ -13,9 +13,9 @@ Restart class for DishLeafNode.
 """
 
 import tango
-from tango import DevFailed, DevState
+from tango import DevFailed, DevState, DeviceProxy
 
-from ska.base.commands import  BaseCommand
+from ska.base.commands import BaseCommand
 from tmc.common.tango_client import TangoClient
 from .command_callback import CommandCallBack
 
@@ -50,8 +50,8 @@ class Restart(BaseCommand):
         command_name = "Restart"
         cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
         try:
-            dish_client = TangoClient(device_data._dish_master_fqdn)
-            dish_client.send_command_async("StopCapture", None, cmd_ended_cb)
+            dish_client = DeviceProxy(device_data._dish_master_fqdn)
+            dish_client.command_inout_async("StopCapture", cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
@@ -64,4 +64,3 @@ class Restart(BaseCommand):
                 "Restart.do()",
                 tango.ErrSeverity.ERR,
             )
-

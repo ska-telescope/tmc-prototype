@@ -12,9 +12,9 @@ SetStandbyFPMode class for DishLeafNode.
 """
 
 import tango
-from tango import DevFailed
+from tango import DevFailed, DeviceProxy
 
-from ska.base.commands import  BaseCommand
+from ska.base.commands import BaseCommand
 from tmc.common.tango_client import TangoClient
 from .command_callback import CommandCallBack
 
@@ -37,11 +37,10 @@ class SetStandbyFPMode(BaseCommand):
         device_data = self.target
         cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
 
-
         command_name = "SetStandbyFPMode"
         try:
-            dish_client = TangoClient(device_data._dish_master_fqdn)
-            dish_client.send_command_async(command_name, None, cmd_ended_cb)
+            dish_client = DeviceProxy(device_data._dish_master_fqdn)
+            dish_client.command_inout_async(command_name, cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
@@ -54,4 +53,3 @@ class SetStandbyFPMode(BaseCommand):
                 "SetStandbyFPMode.do()",
                 tango.ErrSeverity.ERR,
             )
-
