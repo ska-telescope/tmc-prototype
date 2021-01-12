@@ -4,6 +4,7 @@ StandByTelescope class for CentralNode.
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 import tango
 from tango import DevState, DevFailed
+import time
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
@@ -94,7 +95,9 @@ class StandByTelescope(SKABaseDevice.OffCommand):
 
         for name in range(0, len(dish_fqdn)):
             dish_ln_client = TangoClient(dish_fqdn[name])
-            self.standby_leaf_node(dish_ln_client, const.CMD_SET_STANDBY_MODE)
+            self.standby_leaf_node(dish_ln_client, const.CMD_SET_STANDBYFP_MODE)
+            time.sleep(0.5)
+            self.standby_leaf_node(dish_ln_client, const.CMD_SET_STANDBYLP_MODE)
             self.standby_leaf_node(dish_ln_client, const.CMD_OFF)
 
     def standby_subarray(self, subarray_fqdn_list):
