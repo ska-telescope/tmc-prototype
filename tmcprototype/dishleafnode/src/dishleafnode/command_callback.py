@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#-*- coding: utf-8 -*-
 #
 # This file is part of the DishLeafNode project
 #
@@ -14,8 +14,10 @@ from .device_data import DeviceData
 
 
 class CommandCallBack:
+
     def __init__(self, log):
         self.logger = log
+
 
     def cmd_ended_cb(self, event):
         """

@@ -2,14 +2,14 @@
 This file is part of the DishLeafNode project and defines variables used
 """
 
-# Events
+#Events
 EVT_DISH_MODE = "dishMode"
 EVT_DISH_POINTING_STATE = "pointingState"
 EVT_DISH_CAPTURING = "capturing"
 EVT_ACHVD_POINT = "achievedPointing"
 EVT_DESIRED_POINT = "desiredPointing"
 
-# In/out commands
+#In/out commands
 CMD_SET_STOW_MODE = "SetStowMode"
 CMD_SET_STANDBYLP_MODE = "SetStandbyLPMode"
 CMD_SET_OPERATE_MODE = "SetOperateMode"
@@ -17,7 +17,7 @@ CMD_SET_STANDBYFP_MODE = "SetStandbyFPMode"
 CMD_DISH_SCAN = "Scan"
 CMD_DISH_ENDSCAN = "EndScan"
 CMD_DISH_SLEW = "Slew"
-CMD_DISH_CONFIGURE = "Configure"
+CMD_DISH_CONFIGURE = 'Configure'
 CMD_STOP_CAPTURE = "StopCapture"
 CMD_START_CAPTURE = "StartCapture"
 CMD_TRACK = "Track"
@@ -26,7 +26,7 @@ CMD_ABORT = "Abort"
 CMD_RESTART = "Restart"
 CMD_OBSRESET = "ObsReset"
 
-# string constants
+#string constants
 STR_DISH_STANDBYLP_MODE = "Dish is in STANDBY-LP mode."
 STR_DISH_STANDBYFP_MODE = "Dish is in STANDBY-FP mode."
 STR_DISH_MAINT_MODE = "Dish is in MAINTENANCE mode."
@@ -60,7 +60,7 @@ STR_FALSE = "False"
 STR_OK = "OK"
 
 
-# error messages
+#error messages
 ERR_DISH_MODE_CB = "Error in DishModeCallback "
 ERR_ON_SUBS_DISH_MODE_ATTR = "Error in subscribing DishMode attribute "
 
@@ -166,7 +166,7 @@ STR_SET_STOW_MODE_CMD_CALLBK = "DishLeafNode SetStowMode Command Callback"
 STR_SET_SETSTANDBYLP_CMD_CALLBK = "DishLeafNode SetStandByLPMode Command Callback"
 STR_SET_SETOPERATE_CMD_CALLBK = "DishLeafNode SetOperateMode Command Callback"
 STR_SCAN_CMD_CALLBK = "DishLeafNode Scan Command Callback"
-# STR_ENDSCAN_CMD_CALLBK = "DishLeafNode EndScan Command Callback"
+#STR_ENDSCAN_CMD_CALLBK = "DishLeafNode EndScan Command Callback"
 STR_CONFIGURE_CMD_CALLBK = "DishLeafNode Configure Command Callback"
 STR_STARTCAPTURE_CMD_CALLBK = "DishLeafNode StartCapture Command Callback"
 STR_SET_SETSTANDBYFP_CMD_CALLBK = "DishLeafNode SetStandByFPMode Command Callback"

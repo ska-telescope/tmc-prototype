@@ -13,7 +13,7 @@ Configure class for DishLeafNode.
 import json
 
 import tango
-from tango import DevState, DevFailed, DeviceProxy
+from tango import DevState, DevFailed
 import datetime
 from ska.base.commands import BaseCommand
 from tmc.common.tango_client import TangoClient
@@ -91,9 +91,9 @@ class Configure(BaseCommand):
         command_name = f"ConfigureBand{band}"
 
         try:
-            dish_client = DeviceProxy(device_data._dish_master_fqdn)
+            dish_client = TangoClient(device_data._dish_master_fqdn)
             cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
-            dish_client.command_inout_async(command_name, cmd_ended_cb)
+            dish_client.send_command_async(command_name, None, cmd_ended_cb)
         except DevFailed as dev_failed:
             raise dev_failed
 
@@ -103,17 +103,10 @@ class Configure(BaseCommand):
         timestamp = str(now)
 
         try:
-            dish_client = DeviceProxy(device_data._dish_master_fqdn)
+            dish_client = TangoClient(device_data._dish_master_fqdn)
             azel_converter = AzElConverter(self.logger)
             # pylint: disable=unbalanced-tuple-unpacking
-            device_data.az, device_data.el = azel_converter.convert_radec_to_azel(
-                device_data.radec_value,
-                timestamp,
-                device_data.dish_name,
-                device_data.observer_location["latitude"],
-                device_data.observer_location["latitude"],
-                device_data.observer_location["altitude"],
-            )
+            device_data.az, device_data.el = azel_converter.convert_radec_to_azel(device_data.radec_value, timestamp, device_data.dish_name, device_data.observer_location["latitude"], device_data.observer_location["latitude"], device_data.observer_location["altitude"])
         except ValueError as valuerr:
             tango.Except.throw_exception(
                 str(valuerr),
@@ -125,9 +118,9 @@ class Configure(BaseCommand):
         # Set desiredPointing on Dish Master (it won't move until asked to
         # track or scan, but provide initial coordinates for interest)
         time_az_el = [now.timestamp(), device_data.az, device_data.el]
-        dish_client.desiredPointing = time_az_el
-
+        dish_client.set_attribute("desiredPointing", time_az_el)
     # pylint: enable= unbalanced-tuple-unpacking
+
 
     def _get_targets(self, json_argument):
         try:
@@ -155,3 +148,4 @@ class Configure(BaseCommand):
             )
 
         return json_argument
+

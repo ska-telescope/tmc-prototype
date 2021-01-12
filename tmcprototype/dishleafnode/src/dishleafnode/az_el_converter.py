@@ -13,20 +13,12 @@ import katpoint
 import math
 from .utils import UnitConverter
 
-
 class AzElConverter:
     def __init__(self, log):
         self.logger = log
 
-    def convert_radec_to_azel(
-        self,
-        target,
-        timestamp,
-        dish_name,
-        observer_location_lat,
-        observer_location_long,
-        observer_altitude,
-    ):
+
+    def convert_radec_to_azel(self, target, timestamp, dish_name, observer_location_lat, observer_location_long, observer_altitude):
         """Converts RaDec coordinate in to AzEl coordinate using KATPoint library.
 
         :param target: str
