@@ -36,7 +36,7 @@ def tango_context(mocker, devices_info):  # pylint: disable=redefined-outer-name
 
     _DeviceProxy = tango.DeviceProxy
     mocker.patch(
-        "dishleafnode.dish_leaf_node.DeviceProxy",
+        "dishleafnode.abort_command.TangoClient.DeviceProxy",
         wraps=lambda fqdn, *args, **kwargs: _DeviceProxy(
             "tango://{0}:{1}/{2}#dbase=no".format(HOST, PORT, fqdn)
         ),
