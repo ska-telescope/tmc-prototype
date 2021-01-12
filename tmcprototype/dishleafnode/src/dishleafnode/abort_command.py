@@ -53,7 +53,8 @@ class Abort(BaseCommand):
 
         try:
             dish_client = TangoClient(device_data._dish_master_fqdn)
-            dish_client.send_command_async("TrackStop", cmd_ended_cb)
+            dish_client.deviceproxy.command_inout_asynch("TrackStop", cmd_ended_cb)
+            # dish_client.send_command_async("TrackStop", cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)

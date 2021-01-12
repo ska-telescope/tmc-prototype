@@ -41,8 +41,9 @@ class SetStandbyLPMode(BaseCommand):
             dish_client = TangoClient(device_data._dish_master_fqdn)
             cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
             # Unsubscribe the DishMaster attributes
-            self._unsubscribe_attribute_events() 
-            dish_client.send_command_async(command_name, cmd_ended_cb)
+            self._unsubscribe_attribute_events()
+            dish_client.deviceproxy.command_inout_asynch(command_name, cmd_ended_cb)
+            # dish_client.send_command_async(command_name, cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
