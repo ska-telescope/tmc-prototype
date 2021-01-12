@@ -49,7 +49,7 @@ class StopCapture(BaseCommand):
         cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
 
         try:
-            dish_client = DeviceProxy(device_data.DishMasterFQDN)
+            dish_client = DeviceProxy(device_data._dish_master_fqdn)
             dish_client.command_inout_async(command_name, argin, cmd_ended_cb)
             self.logger.info("'%s' command executed succesfully.", command_name)
         except DevFailed as dev_failed:

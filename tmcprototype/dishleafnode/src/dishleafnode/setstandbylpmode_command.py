@@ -38,7 +38,7 @@ class SetStandbyLPMode(BaseCommand):
         device_data = self.target
         command_name = "SetStandbyLPMode"
         try:
-            dish_client = DeviceProxy(device_data.DishMasterFQDN)
+            dish_client = DeviceProxy(device_data._dish_master_fqdn)
             cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
             # Unsubscribe the DishMaster attributes
             self._unsubscribe_attribute_events()
@@ -61,7 +61,7 @@ class SetStandbyLPMode(BaseCommand):
         Method to unsubscribe to health state change event on CspMasterLeafNode, SdpMasterLeafNode and SubarrayNode
         """
         device_data = DeviceData.get_instance()
-        dish_client = DeviceProxy(device_data.DishMasterFQDN)
+        dish_client = DeviceProxy(device_data._dish_master_fqdn)
 
         for attr_name in device_data.attr_event_map:
             log_message = "Unsubscribing attributes of: {}".format(dish_client.get_device_fqdn)

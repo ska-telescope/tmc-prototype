@@ -49,7 +49,7 @@ class SetOperateMode(BaseCommand):
         try:
             # Subscribe the DishMaster attributes
             self._subscribe_to_attribute_events(attributes_to_subscribe_to)
-            dish_client = DeviceProxy(device_data.DishMasterFQDN)
+            dish_client = DeviceProxy(device_data._dish_master_fqdn)
             dish_client.command_inout_async(command_name, cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
 
@@ -67,7 +67,7 @@ class SetOperateMode(BaseCommand):
 
     def _subscribe_to_attribute_events(self, attributes):
         device_data = DeviceData.get_instance()
-        dish_client = DeviceProxy(device_data.DishMasterFQDN)
+        dish_client = DeviceProxy(device_data._dish_master_fqdn)
 
         for attribute_name in attributes:
             try:
