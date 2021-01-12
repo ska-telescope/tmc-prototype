@@ -93,7 +93,7 @@ class Configure(BaseCommand):
         try:
             dish_client = TangoClient(device_data._dish_master_fqdn)
             cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
-            dish_client.send_command_async(command_name, None, cmd_ended_cb)
+            dish_client.send_command_async(command_name, cmd_ended_cb)
         except DevFailed as dev_failed:
             raise dev_failed
 
