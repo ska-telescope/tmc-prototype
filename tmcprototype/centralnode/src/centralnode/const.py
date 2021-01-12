@@ -1,6 +1,7 @@
 # In/Out command constants
 CMD_SET_STOW_MODE = "SetStowMode"
-CMD_SET_STANDBY_MODE = "SetStandbyFPMode"
+CMD_SET_STANDBYLP_MODE = "SetStandbyLPMode"
+CMD_SET_STANDBYFP_MODE = "SetStandbyFPMode"
 CMD_SET_OPERATE_MODE = "SetOperateMode"
 CMD_ASSIGN_RESOURCES = "AssignResources"
 CMD_RELEASE_RESOURCES = "ReleaseAllResources"
