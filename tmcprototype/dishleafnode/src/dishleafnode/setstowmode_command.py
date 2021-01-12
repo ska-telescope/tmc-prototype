@@ -38,7 +38,7 @@ class SetStowMode(BaseCommand):
 
         command_name = "SetStowMode"
         try:
-            dish_client = DeviceProxy(device_data._dish_master_fqdn)
+            dish_client = DeviceProxy(device_data.DishMasterFQDN)
             dish_client.command_inout_async(command_name, cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
         except DevFailed as dev_failed:

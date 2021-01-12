@@ -91,7 +91,7 @@ class Configure(BaseCommand):
         command_name = f"ConfigureBand{band}"
 
         try:
-            dish_client = DeviceProxy(device_data._dish_master_fqdn)
+            dish_client = DeviceProxy(device_data.DishMasterFQDN)
             cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
             dish_client.command_inout_async(command_name, cmd_ended_cb)
         except DevFailed as dev_failed:
@@ -103,7 +103,7 @@ class Configure(BaseCommand):
         timestamp = str(now)
 
         try:
-            dish_client = DeviceProxy(device_data._dish_master_fqdn)
+            dish_client = DeviceProxy(device_data.DishMasterFQDN)
             azel_converter = AzElConverter(self.logger)
             # pylint: disable=unbalanced-tuple-unpacking
             device_data.az, device_data.el = azel_converter.convert_radec_to_azel(

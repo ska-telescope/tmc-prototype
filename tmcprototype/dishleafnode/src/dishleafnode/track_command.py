@@ -71,7 +71,7 @@ class Track(BaseCommand):
                 radec_value,
             )
 
-            dish_client = DeviceProxy(device_data._dish_master_fqdn)
+            dish_client = DeviceProxy(device_data.DishMasterFQDN)
             cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
 
             dish_client.command_inout_async(command_name, cmd_ended_cb)
@@ -127,7 +127,7 @@ class Track(BaseCommand):
             f"{threading.get_ident()}"
         )
         device_data = self.target
-        dish_client = DeviceProxy(device_data._dish_master_fqdn)
+        dish_client = DeviceProxy(device_data.DishMasterFQDN)
 
         while device_data.event_track_time.is_set() is False:
             now = datetime.datetime.utcnow()

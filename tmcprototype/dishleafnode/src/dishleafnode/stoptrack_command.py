@@ -54,7 +54,7 @@ class StopTrack(BaseCommand):
         try:
             # Note: The DishMaster implements the 'TrackStop' command. This is in accordance to the
             # SKA-TEL-SKO-0000150-04-SKA1-Mid TM to Dish ICD.
-            dish_client = DeviceProxy(device_data._dish_master_fqdn)
+            dish_client = DeviceProxy(device_data.DishMasterFQDN)
             dish_client.command_inout_async("TrackStop", cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
         except DevFailed as dev_failed:
