@@ -130,8 +130,8 @@ def event_subscription_mock():
         ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.READY, const.ERR_DEVFAILED_MSG),
         ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.IDLE, const.ERR_DEVFAILED_MSG),
         ("StartScan", scan_input_str, const.CMD_STARTSCAN, ObsState.READY, const.ERR_STARTSCAN_RESOURCES),
-        ("AssignResources", assign_input_str, const.CMD_ADD_RECEPTORS, ObsState.IDLE, const.ERR_DEVFAILED_MSG),
-        ("AssignResources", assign_input_str, const.CMD_ADD_RECEPTORS, ObsState.EMPTY, const.ERR_DEVFAILED_MSG),
+        ("AssignResources", assign_input_str, const.CMD_ASSIGN_RESOURCES, ObsState.IDLE, const.ERR_DEVFAILED_MSG),
+        ("AssignResources", assign_input_str, const.CMD_ASSIGN_RESOURCES, ObsState.EMPTY, const.ERR_DEVFAILED_MSG),
     ])
 def command_with_arg(request):
     cmd_name, input_arg, requested_cmd, obs_state, error_msg = request.param
@@ -321,10 +321,10 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
     receptorIDList_str = json_argument[const.STR_DISH][const.STR_RECEPTORID_LIST]
     # convert receptorIDList from list of string to list of int
     receptorIDList = [int(receptor_id) for receptor_id in receptorIDList_str]
-    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(const.CMD_ADD_RECEPTORS,
+    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(const.CMD_ASSIGN_RESOURCES,
                                                                      receptorIDList,
-                                                                     any_method(with_name='add_receptors_ended'))
-    assert_activity_message(device_proxy, const.STR_ADD_RECEPTORS_SUCCESS)
+                                                                     any_method(with_name='assign_resources_ended_cb'))
+    assert_activity_message(device_proxy, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
 
 
@@ -337,7 +337,7 @@ def test_assign_command_with_callback_method_with_devfailed_error(mock_csp_subar
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.AssignResources(assign_input_str)
         dummy_event = command_callback_with_devfailed_exception()
-        event_subscription_mock[const.CMD_ADD_RECEPTORS](dummy_event)
+        event_subscription_mock[const.CMD_ASSIGN_RESOURCES](dummy_event)
     assert const.ERR_CALLBACK_CMD_FAILED in str(df.value)
 
 def test_assign_resource_should_raise_exception_when_key_not_found(mock_csp_subarray_proxy):
