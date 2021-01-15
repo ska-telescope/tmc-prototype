@@ -126,8 +126,7 @@ class ConfigureCommand(BaseCommand):
             log_msg = "Input JSON for CSP Subarray Leaf Node Configure command is: " + argin
             self.logger.debug(log_msg)
             csp_sub_client_obj = TangoClient(device_data.csp_subarray_fqdn)
-            print("csl configurations is::::::::::::", csp_configuration)
-            csp_sub_client_obj.send_command_async(const.CMD_CONFIGURE, json.dumps(csp_configuration), 
+            csp_sub_client_obj.send_command_async(const.CMD_CONFIGURE, json.dumps(csp_configuration),
                                                         self.configure_cmd_ended_cb)
             device_data._read_activity_message = const.STR_CONFIGURE_SUCCESS
             self.logger.info(const.STR_CONFIGURE_SUCCESS)

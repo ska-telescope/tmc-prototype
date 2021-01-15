@@ -178,8 +178,6 @@ class TestElementDeviceData:
         with open(path, 'r') as f:
             expected_json = f.read()
         assert isinstance(csp_cmd_data, str)
-        print("Expected:::::::::::::::::::::::::::::::", expected_json)
-        print("csp_cmd_data:::::::::::::::::::::::::::", csp_cmd_data)
         assert expected_json == csp_cmd_data
 
     def test_build_up_csp_cmd_data_with_empty_receive_addresses(self, example_scan_configuration, csp_func_args):

@@ -148,7 +148,6 @@ def test_command_cb_is_invoked_when_command_with_arg_is_called_async(mock_csp_su
     dummy_event = command_callback(requested_cmd)
     event_subscription_mock[requested_cmd](dummy_event)
     assert const.STR_COMMAND + requested_cmd in device_proxy.activityMessage
-    assert 0
 
 
 @pytest.fixture(
