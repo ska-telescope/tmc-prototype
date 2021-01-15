@@ -23,7 +23,6 @@ class ReleaseAllResourcesCommand(BaseCommand):
         :raises: DevFailed if this command is not allowed to be run in current device state
 
         """
-        # device_data = self.target
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
             tango.Except.throw_exception("ReleaseAllResources() is not allowed in current state",
                                             "Failed to invoke ReleaseAllResources command on "
@@ -72,7 +71,7 @@ class ReleaseAllResourcesCommand(BaseCommand):
 
     def do(self):
         """
-        It invokes RemoveAllReceptors command on CspSubarray and releases all the resources assigned to
+        It invokes ReleaseAllResources command on CspSubarray and releases all the resources assigned to
         CspSubarray.
 
         :return: None
@@ -82,14 +81,14 @@ class ReleaseAllResourcesCommand(BaseCommand):
         """
         device_data = self.target
         try:
-            # Invoke RemoveAllReceptors command on CspSubarray
+            # Invoke ReleaseAllResources command on CspSubarray
             device_data.receptorIDList = []
             device_data.fsids_list = []
             csp_sub_client_obj = TangoClient(device_data.csp_subarray_fqdn)
-            csp_sub_client_obj.send_command_async(const.CMD_REMOVE_ALL_RECEPTORS, None , self.releaseallresources_cmd_ended_cb)
+            csp_sub_client_obj.send_command_async(const.CMD_RELEASE_ALL_RESOURCES, None , self.releaseallresources_cmd_ended_cb)
 
-            device_data._read_activity_message = const.STR_REMOVE_ALL_RECEPTORS_SUCCESS
-            self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
+            device_data._read_activity_message = const.STR_RELEASE_ALL_RESOURCES_SUCCESS
+            self.logger.info(const.STR_RELEASE_ALL_RESOURCES_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = const.ERR_RELEASE_ALL_RESOURCES + str(dev_failed)
