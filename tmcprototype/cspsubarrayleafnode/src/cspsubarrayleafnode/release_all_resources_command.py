@@ -29,6 +29,7 @@ class ReleaseAllResourcesCommand(BaseCommand):
                                             "cspsubarrayleafnode.",
                                             "cspsubarrayleafnode.ReleaseAllResources()",
                                             tango.ErrSeverity.ERR)
+        #TODO: When ObsState check related issue is resolved
         # csp_sa_client = TangoClient(device_data.csp_subarray_fqdn)
         # if csp_sa_client.get_attribute("obsState") != ObsState.IDLE:
         #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_IDLE, "Failed to invoke ReleaseAllResourcesCommand command on cspsubarrayleafnode.",
