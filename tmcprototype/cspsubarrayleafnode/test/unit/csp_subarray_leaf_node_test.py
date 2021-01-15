@@ -53,18 +53,6 @@ with open(path, 'r') as f:
     assign_invalid_key = f.read()
 
 
-# @pytest.fixture(scope="function")
-# def event_subscription(mock_csp_subarray):
-#     event_subscription_map = {}
-#     mock_csp_subarray[1].command_inout_asynch.side_effect = (
-#         lambda command_name, argument, callback, *args,
-#                **kwargs: event_subscription_map.update({command_name: callback}))
-#     yield event_subscription_map
-
-
-
-
-
 @pytest.fixture(scope="function")
 def mock_csp_subarray():
     csp_subarray1_fqdn = 'mid_csp/elt/subarray_01'
@@ -105,11 +93,6 @@ def event_subscription_mock_without_arg():
                 **kwargs: event_subscription_map.update({command_name: callback}))
         yield event_subscription_map
 
-    # event_subscription_map = {}
-    # mock_csp_subarray[1].command_inout_asynch.side_effect = (
-    #     lambda command_name, callback, *args,
-    #            **kwargs: event_subscription_map.update({command_name: callback}))
-    # yield event_subscription_map
 
 ### This fixture is used for SP-1420
 @pytest.fixture(scope="function")
@@ -193,7 +176,7 @@ def test_command_cb_is_invoked_when_command_with_event_error_is_called_async(moc
     event_subscription_mock[requested_cmd](dummy_event)
     assert const.ERR_INVOKING_CMD + requested_cmd in device_proxy.activityMessage
 
-
+#TODO:ObsState mocking to be implemented
 # def test_command_cb_is_invoked_when_command_with_event_error_without_arg_is_called_async(mock_csp_subarray_proxy, event_subscription_mock_without_arg, command_without_arg):
 #     device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
 #     cmd_name, obs_state, _ = command_without_arg
@@ -296,6 +279,7 @@ def command_with_incorrect_obsstate(request):
     cmd_name, obs_state, activity_msg = request.param
     return cmd_name, obs_state, activity_msg
 
+#TODO:ObsState mocking to be implemented
 '''
 def test_command_fails_when_device_in_invalid_obstate(mock_csp_subarray_proxy, command_with_incorrect_obsstate):
     device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
@@ -325,7 +309,6 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
                                                                      receptorIDList,
                                                                      any_method(with_name='assign_resources_ended_cb'))
     assert_activity_message(device_proxy, const.STR_ASSIGN_RESOURCES_SUCCESS)
-
 
 
 def test_assign_command_with_callback_method_with_devfailed_error(mock_csp_subarray_proxy, event_subscription_mock):
