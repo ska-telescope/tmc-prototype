@@ -2,7 +2,7 @@
 const file for CspSubarrayLeafNode
 """
 # In/Out command constants
-CMD_ADD_RECEPTORS = "AddReceptors"
+CMD_ASSIGN_RESOURCES = "AssignResources"
 CMD_REMOVE_ALL_RECEPTORS = "RemoveAllReceptors"
 CMD_ENDSCAN = "EndScan"
 CMD_CONFIGURE = "Configure"
@@ -62,7 +62,7 @@ ERR_DEVICE_NOT_IDLE = "CSP Subarray is not in IDLE obsState."
 STR_RECEPTORID_LIST = "receptorIDList"
 STR_DISH = "dish"
 STR_ERR_MSG = "Error message is: "
-STR_ADD_RECEPTORS_SUCCESS = "Resources are assigned successfully on CSP Subarray."
+STR_ASSIGN_RESOURCES_SUCCESS = "Resources are assigned successfully on CSP Subarray."
 STR_REMOVE_ALL_RECEPTORS_SUCCESS = "All resources assigned to CSP Subarray are removed successfully."
 STR_CONFIGURE_SUCCESS = "Configure command invoked successfully on CSP Subarray from " \
                             "CSP Subarray Leaf Node."
