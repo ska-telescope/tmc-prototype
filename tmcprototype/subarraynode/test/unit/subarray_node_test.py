@@ -244,10 +244,77 @@ def mock_device_proxy():
             yield tango_context.device, tango_client_obj
 
 
+def test_health_state():
+    """Test for healthState"""
+    with fake_tango_system(SubarrayNode) as tango_context:
+        assert tango_context.device.healthState == HealthState.OK
+
+def test_activation_time():
+    """Test for activationTime"""
+    with fake_tango_system(SubarrayNode) as tango_context:
+        assert tango_context.device.activationTime == 0.0
+
+
+def test_version_id():
+    """Test for versionId"""
+    with fake_tango_system(SubarrayNode) as tango_context:
+        assert tango_context.device.versionId == release.version
+
+
+def test_build_state():
+    """Test for buildState"""
+    with fake_tango_system(SubarrayNode) as tango_context:
+        assert tango_context.device.buildState == ('{},{},{}'.format(release.name,release.version,release.description))
+
+
+def test_configuration_delay_expected():
+    """Test for configurationDelayExpected"""
+    with fake_tango_system(SubarrayNode) as tango_context:
+        assert tango_context.device.configurationDelayExpected == 0
+
+
+def test_configuration_progress():
+    """Test for configurationProgress"""
+    with fake_tango_system(SubarrayNode) as tango_context:
+        assert tango_context.device.configurationProgress == 0
+
+
+def test_scan_id():
+    """Test for scanID"""
+    with fake_tango_system(SubarrayNode) as tango_context:
+        assert tango_context.device.scanID == ""
+
+
+def test_sb_id():
+    """Test for sbID"""
+    with fake_tango_system(SubarrayNode) as tango_context:
+        assert tango_context.device.sbID == ""
+
+
 def test_read_activity_message():
     """Test for activityMessage"""
     with fake_tango_system(SubarrayNode) as tango_context:
         assert tango_context.device.activityMessage == const.STR_SA_INIT_SUCCESS
+
+
+def test_write_activity_message():
+    """Test for activityMessage"""
+    with fake_tango_system(SubarrayNode) as tango_context:
+        tango_context.device.activityMessage = 'test'
+        assert tango_context.device.activityMessage == 'test'
+
+
+def test_configured_capabilities():
+    """Test for configuredCapabilities"""
+    with fake_tango_system(SubarrayNode) as tango_context:
+        assert tango_context.device.configuredCapabilities is None
+
+
+def test_receptor_id_list():
+    """Test for receptorIDList"""
+    with fake_tango_system(SubarrayNode) as tango_context:
+        assert tango_context.device.receptorIDList is None
+
 
 
 # Test cases for Commands
