@@ -128,10 +128,10 @@ def event_subscription_mock():
     scope="function",
     params=[
         ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.READY, const.ERR_DEVFAILED_MSG),
-        ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.IDLE, const.ERR_DEVFAILED_MSG),
-        ("StartScan", scan_input_str, const.CMD_STARTSCAN, ObsState.READY, const.ERR_STARTSCAN_RESOURCES),
-        ("AssignResources", assign_input_str, const.CMD_ADD_RECEPTORS, ObsState.IDLE, const.ERR_DEVFAILED_MSG),
-        ("AssignResources", assign_input_str, const.CMD_ADD_RECEPTORS, ObsState.EMPTY, const.ERR_DEVFAILED_MSG),
+        # ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.IDLE, const.ERR_DEVFAILED_MSG),
+        # ("StartScan", scan_input_str, const.CMD_STARTSCAN, ObsState.READY, const.ERR_STARTSCAN_RESOURCES),
+        # ("AssignResources", assign_input_str, const.CMD_ADD_RECEPTORS, ObsState.IDLE, const.ERR_DEVFAILED_MSG),
+        # ("AssignResources", assign_input_str, const.CMD_ADD_RECEPTORS, ObsState.EMPTY, const.ERR_DEVFAILED_MSG),
     ])
 def command_with_arg(request):
     cmd_name, input_arg, requested_cmd, obs_state, error_msg = request.param
@@ -148,6 +148,7 @@ def test_command_cb_is_invoked_when_command_with_arg_is_called_async(mock_csp_su
     dummy_event = command_callback(requested_cmd)
     event_subscription_mock[requested_cmd](dummy_event)
     assert const.STR_COMMAND + requested_cmd in device_proxy.activityMessage
+    assert 0
 
 
 @pytest.fixture(
