@@ -73,11 +73,6 @@ path = join(dirname(__file__), 'data', csp_configure_input_file)
 with open(path, 'r') as f:
     csp_conf_str = f.read()
 
-scan_config_file = 'example_scan_config.json'
-path = join(dirname(__file__), 'data', scan_config_file)
-with open(path, 'r') as f:
-    scan_config_str = f.read()
-
 invalid_scan_config_file = 'example_invalid_scan_config.json'
 path = join(dirname(__file__), 'data', invalid_scan_config_file)
 with open(path, 'r') as f:
@@ -110,12 +105,6 @@ def wait_for(tango_context, obs_state_to_change, timeout=10):
 
 
 @pytest.fixture(scope="function")
-def example_scan_configuration():
-    scan_config = json.loads(scan_config_str)
-    return scan_config
-
-
-@pytest.fixture(scope="function")
 def example_invalid_scan_configuration():
     scan_config = json.loads(invalid_scan_config_str)
     return scan_config
@@ -136,8 +125,8 @@ def sdp_func_receive_addresses():
 
 
 class TestElementDeviceData:
-    def test_build_up_sdp_cmd_data_with_valid_scan_configuration(self, example_scan_configuration):
-        valid_scan_config = example_scan_configuration
+    def test_build_up_sdp_cmd_data_with_valid_scan_configuration(self):
+        valid_scan_config = json.loads(configure_str)
         sdp_cmd_data = ElementDeviceData.build_up_sdp_cmd_data(valid_scan_config)
 
         expected_string_dict = {
@@ -154,16 +143,16 @@ class TestElementDeviceData:
         expected_msg = "SDP Subarray scan_type is empty. Command data not built up"
         assert exception.value.args[0] == expected_msg
 
-    def test_build_up_sdp_cmd_data_with_invalid_scan_configuration(self, example_scan_configuration):
-        invalid_scan_config = example_scan_configuration.pop("sdp")
+    def test_build_up_sdp_cmd_data_with_invalid_scan_configuration(self):
+        invalid_scan_config = json.loads(configure_str).pop("sdp")
         with pytest.raises(KeyError) as exception:
             ElementDeviceData.build_up_sdp_cmd_data(invalid_scan_config)
         expected_msg = "SDP configuration must be given. Aborting SDP configuration."
         assert exception.value.args[0] == expected_msg
 
-    def test_build_up_csp_cmd_data_with_valid_scan_configuration(self, example_scan_configuration, csp_func_args,
+    def test_build_up_csp_cmd_data_with_valid_scan_configuration(self, csp_func_args,
                                                                  sdp_func_receive_addresses):
-        valid_scan_config = example_scan_configuration
+        valid_scan_config = json.loads(configure_str)
         attr_name_map = csp_func_args
         receive_addresses_map = sdp_func_receive_addresses
         csp_cmd_data = ElementDeviceData.build_up_csp_cmd_data(valid_scan_config, attr_name_map, receive_addresses_map)
@@ -174,8 +163,8 @@ class TestElementDeviceData:
         assert isinstance(csp_cmd_data, str)
         assert expected_json == csp_cmd_data
 
-    def test_build_up_csp_cmd_data_with_empty_receive_addresses(self, example_scan_configuration, csp_func_args):
-        valid_scan_config = example_scan_configuration
+    def test_build_up_csp_cmd_data_with_empty_receive_addresses(self, csp_func_args):
+        valid_scan_config = json.loads(configure_str)
         attr_name_map = csp_func_args
         receive_addresses_map = ''
         with pytest.raises(KeyError) as exception:
@@ -193,9 +182,9 @@ class TestElementDeviceData:
         expected_msg = "CSP configuration must be given. Aborting CSP configuration."
         assert exception.value.args[0] == expected_msg
 
-    def test_build_up_csp_cmd_data_with_invalid_scan_configuration(self, example_scan_configuration, csp_func_args,
+    def test_build_up_csp_cmd_data_with_invalid_scan_configuration(self, csp_func_args,
                                                                    sdp_func_receive_addresses):
-        invalid_scan_config = example_scan_configuration.pop("csp")
+        invalid_scan_config = json.loads(configure_str).pop("csp")
         attr_name_map = csp_func_args
         receive_addresses_map = sdp_func_receive_addresses
         with pytest.raises(KeyError) as exception:
@@ -203,8 +192,8 @@ class TestElementDeviceData:
         expected_msg = "CSP configuration must be given. Aborting CSP configuration."
         assert exception.value.args[0] == expected_msg
 
-    def test_build_up_dsh_cmd_data_with_valid_scan_configuration(self, example_scan_configuration):
-        valid_scan_config = example_scan_configuration
+    def test_build_up_dsh_cmd_data_with_valid_scan_configuration(self):
+        valid_scan_config = json.loads(configure_str)
         dsh_cmd_data = ElementDeviceData.build_up_dsh_cmd_data(valid_scan_config)
         valid_scan_config.pop("sdp")
         valid_scan_config.pop("csp")
@@ -214,8 +203,8 @@ class TestElementDeviceData:
         assert isinstance(dsh_cmd_data, tango.DeviceData)
         assert expected_string_dict == dsh_cmd_data.extract()
 
-    def test_build_up_dsh_cmd_data_with_invalid_scan_configuration(self, example_scan_configuration):
-        invalid_scan_config = example_scan_configuration.pop("dish")
+    def test_build_up_dsh_cmd_data_with_invalid_scan_configuration(self):
+        invalid_scan_config = json.loads(configure_str).pop("dish")
         with pytest.raises(KeyError) as exception:
             ElementDeviceData.build_up_dsh_cmd_data(invalid_scan_config)
         expected_msg = "Dish configuration must be given. Aborting Dish configuration."
