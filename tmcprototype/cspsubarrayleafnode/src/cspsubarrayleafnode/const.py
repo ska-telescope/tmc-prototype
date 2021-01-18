@@ -2,8 +2,8 @@
 const file for CspSubarrayLeafNode
 """
 # In/Out command constants
-CMD_ASSIGN_RESOURCES = "AddReceptors"
-CMD_RELEASE_ALL_RESOURCES = "RemoveReceptors"
+CMD_ADD_RECEPTORS = "AddReceptors"
+CMD_REMOVE_ALL_RECEPTORS = "RemoveReceptors"
 CMD_ENDSCAN = "EndScan"
 CMD_CONFIGURE = "Configure"
 CMD_STARTSCAN = "Scan"
