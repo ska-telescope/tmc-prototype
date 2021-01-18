@@ -127,6 +127,7 @@ class Configure(SKASubarray.ConfigureCommand):
         cmd_data = self._create_cmd_data("build_up_sdp_cmd_data", scan_configuration)
         sdp_saln_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
         self._configure_leaf_node(sdp_saln_client, "Configure", cmd_data, device_data)
+        print(":::::::::::::::::::::::::::cmd_data on sdp:::::::::::::::::::::::",cmd_data)
 
     def _configure_csp(self, scan_configuration):
         device_data = DeviceData.get_instance()
@@ -137,6 +138,8 @@ class Configure(SKASubarray.ConfigureCommand):
             "build_up_csp_cmd_data", scan_configuration, attr_name_map, device_data._receive_addresses_map)
         csp_saln_client = TangoClient(device_data.csp_subarray_ln_fqdn)
         self._configure_leaf_node(csp_saln_client, "Configure", cmd_data, device_data)
+        print(":::::::::::::::::::::::::::cmd_data on csp:::::::::::::::::::::::",cmd_data)
+
 
     @inject_with_id(0, 'scan_configuration')
     def _configure_dsh(self, scan_configuration):
@@ -152,6 +155,7 @@ class Configure(SKASubarray.ConfigureCommand):
             self.logger.info("Configure command is invoked on the Dish Leaf Nodes Group")
             device_data._dish_leaf_node_group_client.send_command(const.CMD_TRACK, cmd_data)
             self.logger.info('TRACK command is invoked on the Dish Leaf Node Group')
+            print(":::::::::::::::::::::::::::cmd_data on dish:::::::::::::::::::::::",cmd_data)
         except DevFailed as df:
             device_data._read_activity_message = df[0].desc
             self.logger.error(df)
@@ -211,8 +215,10 @@ class ElementDeviceData:
 
             if csp_config_schema:
                 for key, attribute_name in attr_name_map.items():
-                    csp_config_schema[key] = attribute_name
+                    csp_config_schema['cbf'][key] = attribute_name
                 csp_config_schema["pointing"] = scan_config["pointing"]
+                print(":::::::::::::::::::::::::::csp_config_schema:::::::::::::::::::::::",csp_config_schema)
+
             else:
                 raise KeyError("CSP configuration schema must be given. Aborting CSP configuration.")
 
