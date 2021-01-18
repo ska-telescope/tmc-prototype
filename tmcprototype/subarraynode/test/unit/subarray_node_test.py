@@ -73,11 +73,6 @@ path = join(dirname(__file__), 'data', csp_configure_input_file)
 with open(path, 'r') as f:
     csp_conf_str = f.read()
 
-scan_config_file = 'example_scan_config.json'
-path = join(dirname(__file__), 'data', scan_config_file)
-with open(path, 'r') as f:
-    scan_config_str = f.read()
-
 invalid_scan_config_file = 'example_invalid_scan_config.json'
 path = join(dirname(__file__), 'data', invalid_scan_config_file)
 with open(path, 'r') as f:
