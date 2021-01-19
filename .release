@@ -12,12 +12,7 @@ copyright=""""""
 
 release=0.3.4
 tag=0.3.4
-tag_description=New DishMaster interface
-release_notes=This release Contains:
-    <br/>
-        <ul>
-            <li>Resolved the first StartUpTelescope failure issue.</li><li>Refactored TMC Prototype for code modularity as part of feature SP-1420.</li>
-        </ul>
-    <br/>
+tag_description=Refactored TMC Prototype for code modularity
+release_notes=This release Contains:<br/><ul><li>Resolved the first StartUpTelescope failure issue.</li><li>Refactored TMC Prototype for code modularity as part of feature SP-1420.</li></ul><br/>
 gitlab_username=apurvapatkar
 private_token=BRuUgR3cjqE16ngDpGb6
