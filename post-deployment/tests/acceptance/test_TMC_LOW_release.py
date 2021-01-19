@@ -45,19 +45,21 @@ def test_release_resources():
         fixture['state'] = 'Subarray CONFIGURING'
         tmc.configure_sub()
         fixture['state'] = 'Subarray Configured for SCAN'
-        tmc.scan_sub() 
         resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('READY')
         LOGGER.info('Starting a scan of 4 seconds')
         fixture['state'] = 'Subarray SCANNING'
-        LOGGER.info('Scan complete')
-        fixture['state'] = 'Subarray Configured for SCAN'
-        # tmc.endscan_sub()
-        # tmc.end_sub()
+        tmc.scan_sub() 
+        LOGGER.info('Scan completed')
+        fixture['state'] = 'Scan completed'
+        tmc.end_sub()
+        fixture['state'] = 'End Completed'
+        LOGGER.info('End Command Invoked')        
         # @log_it('TMC_int_release_resources',devices_to_log)
         @sync_release_resources(100)
         def release_resources():
+            CentralNodeLow = DeviceProxy('ska_low/tm_central/central_node')
+            CentralNodeLow.ReleaseResources('{"subarray_id":1,"release_all":true}')
             SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
-            SubarrayNodeLow.ReleaseResources()
         release_resources()
         LOGGER.info('Release Resources complete')
         fixture['state'] = 'Subarray Configured for RELEASE RESOURCES'
@@ -77,6 +79,18 @@ def test_release_resources():
             LOGGER.info('Tearing down in , state = {}'.format(fixture['state']))
             tmc.end()
             tmc.release_resources()
+            tmc.set_to_standby()
+        elif fixture['state'] == 'Scan completed':
+            LOGGER.info('Tearing down in , state = {}'.format(fixture['state']))
+            tmc.end()
+            tmc.release_resources()
+            tmc.set_to_standby()
+        elif fixture['state'] == 'End Completed':
+            LOGGER.info('Tearing down in , state = {}'.format(fixture['state']))
+            tmc.release_resources()
+            tmc.set_to_standby()
+        elif fixture['state'] == 'Release Resources Completed':
+            LOGGER.info('Tearing down in , state = {}'.format(fixture['state']))
             tmc.set_to_standby()
         elif fixture['state'] == 'Subarray SCANNING':
             raise Exception('unable to teardown subarray from being in SCANNING')
