@@ -24,7 +24,7 @@ LOGGER = logging.getLogger(__name__)
 
 @pytest.mark.low
 # @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
-def test_scan():
+def test_endscan():
     
     try:
         # given an interface to TMC to interact with a subarray node and a central node
@@ -50,13 +50,16 @@ def test_scan():
         LOGGER.info('Starting a scan of 4 seconds')
         fixture['state'] = 'Subarray SCANNING'
         # @log_it('TMC_int_scan',devices_to_log)
-        @sync_endscan(200)
-        def scan():
+        tmc.scan_sub() 
+        LOGGER.info('Scan completed')
+        fixture['state'] = 'Scan completed'        
+        @sync_scan(2000)
+        def endscan():
             SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
-            SubarrayNodeLow.Scan('{"id":1}')
-        scan()
-        LOGGER.info('Scan complete')
-        fixture['state'] = 'Subarray Configured for SCAN'
+            SubarrayNodeLow.EndScan()
+        endscan()
+        LOGGER.info('EndScan complete')
+        fixture['state'] = 'Subarray EndScan invoked'
         #tear down
         LOGGER.info('TMC-Scan tests complete: tearing down...')
         tmc.end()
@@ -75,6 +78,10 @@ def test_scan():
             tmc.release_resources()
             tmc.set_to_standby()
         elif fixture['state'] == 'Subarray Configured for SCAN':
+            tmc.end()
+            tmc.release_resources()
+            tmc.set_to_standby()
+        elif fixture['state'] == 'Scan completed':
             tmc.end()
             tmc.release_resources()
             tmc.set_to_standby()
