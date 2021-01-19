@@ -12,12 +12,7 @@ copyright=""""""
 
 release=0.3.5
 tag=0.3.5
-tag_description=New DishMaster interface
-release_notes=This release Contains:
-    <br/>
-        <ul>
-            <li>SP-1393: Update TMC.Mid devices to support CSP JSON updates as per ADR-18.</li>
-        </ul>
-    <br/>
+tag_description= Support CSP JSON updates as per ADR-18
+release_notes=This release Contains:<br/><ul><li>SP-1393: Update TMC.Mid devices to support CSP JSON updates as per ADR-18.</li></ul><br/>
 gitlab_username=DigvijayMali92
 private_token=BRuUgR3cjqE16ngDpGb6
