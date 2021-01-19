@@ -23,13 +23,13 @@ class ReleaseAllResourcesCommand(BaseCommand):
         :raises: DevFailed if this command is not allowed to be run in current device state
 
         """
-        # device_data = self.target
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
             tango.Except.throw_exception("ReleaseAllResources() is not allowed in current state",
                                             "Failed to invoke ReleaseAllResources command on "
                                             "cspsubarrayleafnode.",
                                             "cspsubarrayleafnode.ReleaseAllResources()",
                                             tango.ErrSeverity.ERR)
+        #TODO: When ObsState check related issue is resolved
         # csp_sa_client = TangoClient(device_data.csp_subarray_fqdn)
         # if csp_sa_client.get_attribute("obsState") != ObsState.IDLE:
         #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_IDLE, "Failed to invoke ReleaseAllResourcesCommand command on cspsubarrayleafnode.",
@@ -87,7 +87,9 @@ class ReleaseAllResourcesCommand(BaseCommand):
             device_data.fsids_list = []
             csp_sub_client_obj = TangoClient(device_data.csp_subarray_fqdn)
             csp_sub_client_obj.send_command_async(const.CMD_REMOVE_ALL_RECEPTORS, None , self.releaseallresources_cmd_ended_cb)
-
+            # TODO: Waiting for CSPSubarray's changes
+            # csp_sub_client_obj.send_command_async(const.CMD_RELEASE_ALL_RESOURCES, None , self.releaseallresources_cmd_ended_cb)
+            # device_data._read_activity_message = const.STR_RELEASE_ALL_RESOURCES_SUCCESS
             device_data._read_activity_message = const.STR_REMOVE_ALL_RECEPTORS_SUCCESS
             self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 

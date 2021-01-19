@@ -23,7 +23,7 @@ dependencies:
   version: 0.1.1
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: mid-csp
-  version: 0.1.0
+  version: 0.1.1
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: sdp
   version: 0.3.1

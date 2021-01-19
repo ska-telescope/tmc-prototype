@@ -1,5 +1,5 @@
 """
-CSP Subarray Leaf node is monitors the CSP Subarray and issues control actions during an observation.
+CSP Subarray Leaf node monitors the CSP Subarray and issues control actions during an observation.
 It also acts as a CSP contact point for Subarray Node for observation execution for TMC.
 """
 # -*- coding: utf-8 -*-
