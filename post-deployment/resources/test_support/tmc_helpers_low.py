@@ -1,4 +1,4 @@
-from resources.test_support.sync_decorators_low import sync_start_up_telescope,sync_assign_resources,sync_configure,sync_end,sync_release_resources,sync_set_to_standby,time_it
+from resources.test_support.sync_decorators_low import sync_start_up_telescope,sync_assign_resources,sync_configure,sync_scan,sync_end,sync_release_resources,sync_set_to_standby,time_it
 from resources.test_support.logging_decorators import log_it
 from tango import DeviceProxy   
 from resources.test_support.helpers_low import waiter,watch,resource
@@ -38,7 +38,7 @@ def end():
     SubarrayNodeLow.End()
     LOGGER.info('Invoked End on Subarray')
 
-@sync_release_resources
+@sync_release_resources(100)
 def release_resources():
     resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('IDLE')
     CentralNodeLow = DeviceProxy('ska_low/tm_central/central_node')
@@ -69,4 +69,16 @@ def configure_sub():
     LOGGER.info("Subarray obsState is: " + str(SubarrayNodeLow.obsState))
     LOGGER.info('Invoked Configure on Subarray')
 
+@sync_scan(200)
+def scan_sub():
+    SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
+    SubarrayNodeLow.Scan('{"id":1}')
+    LOGGER.info('Scan complete')
+    LOGGER.info('Invoked Scan on Subarray')
 
+@sync_end
+def end_sub():
+    SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
+    SubarrayNodeLow.End()
+    LOGGER.info('End complete')
+    LOGGER.info('Invoked End on Subarray')
