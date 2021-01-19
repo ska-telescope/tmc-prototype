@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""tmcprototype"""
-version="0.3.3"
+version="0.3.4"
 version_info=version.split(".")
 description="""TMC Prototype"""
 author="Team NCRA"
@@ -10,14 +10,14 @@ license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
 
-release=0.3.3
-tag=0.3.3
+release=0.3.4
+tag=0.3.4
 tag_description=New DishMaster interface
 release_notes=This release Contains:
     <br/>
         <ul>
-            <li>A DishMaster simulator implementing the latest interface and behaviour as the DSH LMC software that is running on the SKA dish prototype in the Karoo, South Africa.</li>
+            <li>Resolved the first StartUpTelescope failure issue.</li><li>Refactored TMC Prototype for code modularity as part of feature SP-1420.</li>
         </ul>
     <br/>
-gitlab_username=kmadisa
-private_token=JHyyBJXXeGvU4qCQykUz
+gitlab_username=apurvapatkar
+private_token=BRuUgR3cjqE16ngDpGb6
