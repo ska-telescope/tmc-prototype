@@ -25,6 +25,9 @@ def check_going_out_of_configure():
     ##Can only return to ON/IDLE if in READY
     resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('READY')
 
+def check_whether_in_scanning():
+    ##Can only return to ON/IDLE if in READY
+    resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('SCANNING')
 
 def check_going_into_empty():
     ##Can only release resources if subarray is in ON/IDLE
@@ -95,6 +98,13 @@ class WaitScanning():
         logging.info("state transitioned to SCANNING, waiting for it to return to READY")
         self.the_watch.wait_until_value_changed_to('READY',timeout)
     
+class WaitInBetweenScanning():
+    def __init__(self):
+        self.the_watch = watch(resource('ska_low/tm_subarray_node/1')).for_a_change_on('obsState')
+
+    def wait(self,timeout):
+        logging.info("scan command dispatched, checking that the state transitioned to SCANNING")
+        self.the_watch.wait_until_value_changed_to('SCANNING',timeout)
 
 def sync_assign_resources(timeout=60):
 # defined as a decorator
@@ -284,6 +294,20 @@ def sync_scan(timeout=200):
         return wrapper
     return decorator
 
+def sync_end_scan(timeout=200):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            check_going_out_of_configure()
+            # the_waiter = waiter()
+            # the_waiter.set_wait_for_going_into_scanning()
+            w = WaitInBetweenScanning()
+            result = func(*args, **kwargs)
+            w.wait(timeout)
+            check_whether_in_scanning()
+            return result
+        return wrapper
+    return decorator
 
 # defined as a context manager
 @contextmanager
