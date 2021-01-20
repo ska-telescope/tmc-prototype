@@ -1,4 +1,6 @@
 {
-  "subarray_id": 1,
-  "release_all": true
+  "mccs": {
+    "subarray_id": 1,
+    "release_all": true
+  }
 }
