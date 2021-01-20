@@ -51,13 +51,9 @@ class ReleaseResources(BaseCommand):
                 Boolean(True or False). Mandatory. True when all the resources to be released from Subarray.
 
             Example:
-                {
-                    "subarray_id": 1,
-                    "release_all": true,
-                }
-
+                {"mccs":{"subarray_id":1,"release_all":true}}
             Note: From Jive, enter input as:
-                {"subarray_id":1,"release_all":true} without any space.
+                {"mccs":{"subarray_id":1,"release_all":true}} without any space.
 
         :raises: ValueError if input argument json string contains invalid value
                  KeyError if input argument json string contains invalid key
@@ -67,9 +63,9 @@ class ReleaseResources(BaseCommand):
         device_data = self.target
         try:
             jsonArgument = json.loads(argin)
-            subarray_id = jsonArgument['subarray_id']
+            subarray_id = jsonArgument['mccs']['subarray_id']
             subarray_fqdn = device_data.subarray_FQDN_dict[subarray_id]
-            if jsonArgument['release_all'] == True:
+            if jsonArgument['mccs']['release_all'] == True:
                 # Invoke ReleaseAllResources on SubarrayNode
                 subarray_client = TangoClient(subarray_fqdn)
                 subarray_client.send_command(const.CMD_RELEASE_RESOURCES)
