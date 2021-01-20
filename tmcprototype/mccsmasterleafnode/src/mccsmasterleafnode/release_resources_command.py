@@ -74,8 +74,10 @@ class ReleaseResources(BaseCommand):
 
         Example: 
             {
+            "mccs": {
                 "subarray_id": 1,
-                "release_all": true,
+                "release_all": true
+               }
             }
 
         :return: None.
