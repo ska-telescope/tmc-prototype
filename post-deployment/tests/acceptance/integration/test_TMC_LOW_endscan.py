@@ -21,14 +21,12 @@ devices_to_log = [
 LOGGER = logging.getLogger(__name__)
 
 @pytest.mark.low
-# @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_endscan():
     
     try:
         # given an interface to TMC to interact with a subarray node and a central node
         fixture = {}
         fixture['state'] = 'Unknown'
-
         # given a started up telescope
         assert(telescope_is_in_standby())
         LOGGER.info('Starting up the Telescope')
@@ -43,20 +41,19 @@ def test_endscan():
         fixture['state'] = 'Subarray CONFIGURING'
         tmc.configure_sub()
         fixture['state'] = 'Subarray Configured for SCAN'
-        #When I run a scan of 4 seconds based on previos configuration
+        #When scan is run for provided duration based on previous configuuration
         resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('READY')
-        LOGGER.info('Starting a scan of 4 seconds')
+        LOGGER.info('Executing scan for provided duration')
         fixture['state'] = 'Subarray SCANNING'
-        # @log_it('TMC_int_scan',devices_to_log)
-        tmc.scan_for_endscan_sub()
         def endscan():
             SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
+            SubarrayNodeLow.Scan('{"id":1}')
             SubarrayNodeLow.EndScan()
         endscan()
         LOGGER.info('EndScan complete')
         fixture['state'] = 'Subarray EndScan invoked'
         #tear down
-        LOGGER.info('TMC-Scan tests complete: tearing down...')
+        LOGGER.info('TMC-EndScan tests complete: tearing down...')
         tmc.end()
         resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('IDLE')
         LOGGER.info('Invoked End on Subarray')
