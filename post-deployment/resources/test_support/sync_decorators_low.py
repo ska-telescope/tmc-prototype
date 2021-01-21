@@ -218,8 +218,6 @@ def sync_telescope_starting_up(timeout=50):
 # defined as a context manager
 
 def sync_release_resources(func):
-# defined as a decorator
-    # def decorator_sync_release_resources(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         check_going_into_empty()
@@ -229,7 +227,6 @@ def sync_release_resources(func):
         the_waiter.wait(timeout=100)
         return result
     return wrapper
-    # return decorator_sync_release_resources
 
 
 # defined as a context manager

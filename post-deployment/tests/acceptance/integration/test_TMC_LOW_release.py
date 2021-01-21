@@ -39,21 +39,6 @@ def test_release_resources():
         LOGGER.info('Composing the Subarray')
         tmc.compose_sub()
         fixture['state'] = 'Subarray Assigned'
-        #and a subarray configured to perform a scan as per 'TMC_integration/configure1.json'
-        # LOGGER.info('Configuring the Subarray')
-        # fixture['state'] = 'Subarray CONFIGURING'
-        # tmc.configure_sub()
-        # fixture['state'] = 'Subarray Configured for SCAN'
-        # resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('READY')
-        # LOGGER.info('Starting a scan of 4 seconds')
-        # fixture['state'] = 'Subarray SCANNING'
-        # tmc.scan_sub() 
-        # LOGGER.info('Scan completed')
-        # fixture['state'] = 'Scan completed'
-        # tmc.end_sub()
-        # fixture['state'] = 'End Completed'
-        # LOGGER.info('End Command Invoked')        
-        # @log_it('TMC_int_release_resources',devices_to_log)
         @sync_release_resources
         def release_resources():
             CentralNodeLow = DeviceProxy('ska_low/tm_central/central_node')
@@ -74,20 +59,6 @@ def test_release_resources():
         elif fixture['state'] == 'Subarray Assigned':
             tmc.release_resources()
             tmc.set_to_standby()
-        # elif fixture['state'] == 'Subarray Configured for SCAN':
-        #     LOGGER.info('Tearing down in , state = {}'.format(fixture['state']))
-        #     tmc.end()
-        #     tmc.release_resources()
-        #     tmc.set_to_standby()
-        # elif fixture['state'] == 'Scan completed':
-        #     LOGGER.info('Tearing down in , state = {}'.format(fixture['state']))
-        #     tmc.end()
-        #     tmc.release_resources()
-        #     tmc.set_to_standby()
-        # elif fixture['state'] == 'End Completed':
-        #     LOGGER.info('Tearing down in , state = {}'.format(fixture['state']))
-        #     tmc.release_resources()
-        #     tmc.set_to_standby()
         elif fixture['state'] == 'Release Resources Completed':
             LOGGER.info('Tearing down in , state = {}'.format(fixture['state']))
             tmc.set_to_standby()
