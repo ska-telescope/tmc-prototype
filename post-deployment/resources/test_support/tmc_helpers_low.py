@@ -75,5 +75,4 @@ def configure_sub():
 def scan_sub():
     SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
     SubarrayNodeLow.Scan('{"id":1}')
-    LOGGER.info('Scan complete')
-    LOGGER.info('Invoked Scan on Subarray')
+    LOGGER.info('Scan Started')
