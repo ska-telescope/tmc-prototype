@@ -40,7 +40,7 @@ def end():
     SubarrayNodeLow.End()
     LOGGER.info('Invoked End on Subarray')
 
-@sync_release_resources(100)
+@sync_release_resources
 def release_resources():
     resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('IDLE')
     CentralNodeLow = DeviceProxy('ska_low/tm_central/central_node')

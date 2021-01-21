@@ -54,7 +54,7 @@ def test_release_resources():
         fixture['state'] = 'End Completed'
         LOGGER.info('End Command Invoked')        
         # @log_it('TMC_int_release_resources',devices_to_log)
-        @sync_release_resources(100)
+        @sync_release_resources
         def release_resources():
             CentralNodeLow = DeviceProxy('ska_low/tm_central/central_node')
             CentralNodeLow.ReleaseResources('{"subarray_id":1,"release_all":true}')
