@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""tmcprototype"""
-version="0.3.5"
+version="0.3.6"
 version_info=version.split(".")
 description="""TMC Prototype"""
 author="Team NCRA"
@@ -10,9 +10,9 @@ license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
 
-release=0.3.5
-tag=0.3.5
-tag_description= Support CSP JSON updates as per ADR-18
-release_notes=This release Contains:<br/><ul><li>SP-1393: Update TMC.Mid devices to support CSP JSON updates as per ADR-18.</li></ul><br/>
-gitlab_username=DigvijayMali92
-private_token=BRuUgR3cjqE16ngDpGb6
+release=0.3.6
+tag=0.3.6
+tag_description= Updated DishMaster attribute name versionId
+release_notes=This release Contains:<br/><ul><li>SP-1123: Updated DishMaster attribute name to versionId instead of versionID.</li></ul><br/>
+gitlab_username=kmadisa
+private_token=9z8kSfR9yh_2QKRygEwv
