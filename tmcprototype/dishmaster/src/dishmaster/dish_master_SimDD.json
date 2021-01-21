@@ -38,7 +38,7 @@
       },
       {
         "basicAttributeData": {
-          "name": "versionID",
+          "name": "versionId",
           "unit": "",
           "label": "version ID",
           "description": "Version Id of this device",
