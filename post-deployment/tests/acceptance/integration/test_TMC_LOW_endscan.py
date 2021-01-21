@@ -43,7 +43,7 @@ def test_endscan():
         fixture['state'] = 'Subarray Configured for SCAN'
         #When scan is run for provided duration based on previous configuuration
         resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('READY')
-        LOGGER.info('Executing scan for provided duration')
+        LOGGER.info('Invoked Scan on Subarray')
         fixture['state'] = 'Subarray SCANNING'
         def endscan():
             SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
