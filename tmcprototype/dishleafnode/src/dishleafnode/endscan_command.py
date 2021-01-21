@@ -50,7 +50,7 @@ class EndScan(BaseCommand):
 
         try:
             dish_client = TangoClient(device_data._dish_master_fqdn)
-            dish_client.send_command_async("StopCapture", argin, cmd_ended_cb)
+            dish_client.send_command_async("StopCapture", callback_method=cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)

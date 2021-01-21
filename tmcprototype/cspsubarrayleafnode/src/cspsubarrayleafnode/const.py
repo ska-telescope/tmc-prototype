@@ -2,6 +2,9 @@
 const file for CspSubarrayLeafNode
 """
 # In/Out command constants
+#TODO:Waiting for CSPSubarray's changes
+# CMD_ASSIGN_RESOURCES = "AssignResources"
+# CMD_RELEASE_ALL_RESOURCES = "ReleaseAllResources"
 CMD_ADD_RECEPTORS = "AddReceptors"
 CMD_REMOVE_ALL_RECEPTORS = "RemoveAllReceptors"
 CMD_ENDSCAN = "EndScan"
@@ -63,6 +66,9 @@ STR_RECEPTORID_LIST = "receptorIDList"
 STR_DISH = "dish"
 STR_ERR_MSG = "Error message is: "
 STR_ADD_RECEPTORS_SUCCESS = "Resources are assigned successfully on CSP Subarray."
+#TODO: Waiting for CSPSubarray's changes
+# STR_ASSIGN_RESOURCES_SUCCESS = "Resources are assigned successfully on CSP Subarray."
+# STR_RELEASE_ALL_RESOURCES_SUCCESS = "All resources assigned to CSP Subarray are removed successfully."
 STR_REMOVE_ALL_RECEPTORS_SUCCESS = "All resources assigned to CSP Subarray are removed successfully."
 STR_CONFIGURE_SUCCESS = "Configure command invoked successfully on CSP Subarray from " \
                             "CSP Subarray Leaf Node."

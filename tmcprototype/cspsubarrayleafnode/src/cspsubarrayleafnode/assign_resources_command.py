@@ -58,7 +58,7 @@ class AssignResourcesCommand(BaseCommand):
 
         """
         device_data = self.target
-        self.logger.info("Executing callback add_receptors_ended")
+        self.logger.info("Executing callback assign_resources_ended_cb")
         try:
             if event.err:
                 device_data._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
@@ -125,9 +125,12 @@ class AssignResourcesCommand(BaseCommand):
             self.logger.info("Invoking AddReceptors on CSP subarray")
             csp_sub_client_obj = TangoClient(device_data.csp_subarray_fqdn)
             csp_sub_client_obj.send_command_async(const.CMD_ADD_RECEPTORS, receptorIDList, self.add_receptors_ended)
-
+            #TODO: Waiting for CSPSubarray's changes
+            # csp_sub_client_obj.send_command_async(const.CMD_ASSIGN_RESOURCES, receptorIDList, self.assign_resources_ended)
             self.logger.info("After invoking AddReceptors on CSP subarray")
             device_data._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
+            # TODO: Waiting for CSPSubarray's changes
+            # device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
             self.logger.info(const.STR_ADD_RECEPTORS_SUCCESS)
 
         except ValueError as value_error:

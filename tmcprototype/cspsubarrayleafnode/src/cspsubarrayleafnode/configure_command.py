@@ -83,15 +83,11 @@ class ConfigureCommand(BaseCommand):
         :param argin:DevString. The string in JSON format. The JSON contains following values:
 
         Example:
-        {"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","fsp":[{"fspID":1,"functionMode":
-        "CORR", "frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":
-        [[0,2],[744,0]], "fspChannelOffset":0,"outputLinkMap":[[0,0],[200,1]],"outputHost":[[0,
-        "192.168.1.1"]],"outputPort": [[0,9000,1]]},{"fspID":2,"functionMode":"CORR","frequencySliceID":2,
-        "integrationTime":1400,"corrBandwidth":0, "channelAveragingMap":[[0,2],[744,0]],
-            "fspChannelOffset":744,"outputLinkMap":[[0,4],[200,5]],"outputHost": [[0,"192.168.1.1"]],
-            "outputPort":[[0,9744,1]]}],"delayModelSubscriptionPoint":
-        "ska_mid/tm_leaf_node/csp_subarray01/delayModel","pointing":{"target":{"system":"ICRS",
-        "name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}}}
+        {"interface":"https://schema.skatelescope.org/ska-csp-configure/1.0","subarray":{"subarrayName":"science period 23"},"common":{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","subarrayID":"1"},
+        "cbf":{"fsp":[{"fspID":1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],"ChannelOffset":0,"outputLinkMap":[[0,0],[200,1]],"outputHost"
+        :[[0,"192.168.1.1"]],"outputPort":[[0,9000,1]]},{"fspID":2,"functionMode":"CORR","frequencySliceID":2,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],"fspChannelOffset":744,
+        "outputLinkMap":[[0,4],[200,5]],"outputHost":[[0,"192.168.1.1"]],"outputPort":[[0,9744,1]]}],"vlbi":{},"delayModelSubscriptionPoint":"ska_mid/tm_leaf_node/csp_subarray01/delayModel"},"pss":{},"pst":{},
+        "pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}}}
 
         Note: Enter the json string without spaces as a input.
 
@@ -109,10 +105,9 @@ class ConfigureCommand(BaseCommand):
         try:
             argin_json = json.loads(argin)
             # Used to extract FSP IDs
-            device_data.fsp_ids_object = argin_json["fsp"]
+            device_data.fsp_ids_object = argin_json["cbf"]["fsp"]
             delay_manager_obj = DelayManager.get_instance()
             delay_manager_obj.update_config_params()
-            # device.update_config_params()
             pointing_params = argin_json["pointing"]
             target_Ra = pointing_params["target"]["RA"]
             target_Dec = pointing_params["target"]["dec"]
@@ -126,7 +121,7 @@ class ConfigureCommand(BaseCommand):
             log_msg = "Input JSON for CSP Subarray Leaf Node Configure command is: " + argin
             self.logger.debug(log_msg)
             csp_sub_client_obj = TangoClient(device_data.csp_subarray_fqdn)
-            csp_sub_client_obj.send_command_async(const.CMD_CONFIGURE, json.dumps(csp_configuration), 
+            csp_sub_client_obj.send_command_async(const.CMD_CONFIGURE, json.dumps(csp_configuration),
                                                         self.configure_cmd_ended_cb)
             device_data._read_activity_message = const.STR_CONFIGURE_SUCCESS
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
