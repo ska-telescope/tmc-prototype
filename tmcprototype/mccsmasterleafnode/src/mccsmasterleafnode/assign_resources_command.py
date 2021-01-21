@@ -86,14 +86,13 @@ class AssignResources(BaseCommand):
         :param argin:StringType. The string in JSON format.
             
         Example:
-            {
-                "mccs": {
+                {
                     "subarray_id": 1,
                     "station_ids":[1,2],
                     "channels": [[[0,8,1,1],[8,8,2,1],[24,16,2,1]],
                     "station_beam_ids": [1]
                 }
-            }
+        
         
         Note: Enter the json string without spaces as an input.
 

@@ -1,32 +1,30 @@
 {
-  "mccs": {
-    "array_id": 1,
-    "station_ids": [
+  "array_id": 1,
+  "station_ids": [
+    1,
+    2
+  ],
+  "channels": [
+    [
+      0,
+      8,
       1,
-      2
+      1
     ],
-    "channels": [
-      [
-        0,
-        8,
-        1,
-        1
-      ],
-      [
-        8,
-        8,
-        2,
-        1
-      ],
-      [
-        24,
-        16,
-        2,
-        1
-      ]
+    [
+      8,
+      8,
+      2,
+      1
     ],
-    "station_beam_ids": [
+    [
+      24,
+      16,
+      2,
       1
     ]
-  }
+  ],
+  "station_beam_ids": [
+    1
+  ]
 }
