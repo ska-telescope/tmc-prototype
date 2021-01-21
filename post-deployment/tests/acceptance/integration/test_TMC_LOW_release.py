@@ -5,8 +5,7 @@ import os
 import logging
 from resources.test_support.helpers_low import waiter,watch,resource
 from resources.test_support.controls_low import telescope_is_in_standby
-from resources.test_support.sync_decorators_low import sync_start_up_telescope,sync_assign_resources,sync_configure,sync_end,sync_release_resources,\
-    sync_set_to_standby,time_it,sync_scan
+from resources.test_support.sync_decorators_low import sync_release_resources
 from resources.test_support.logging_decorators import log_it
 import resources.test_support.tmc_helpers_low as tmc
 

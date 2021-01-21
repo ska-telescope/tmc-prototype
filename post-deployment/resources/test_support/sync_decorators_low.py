@@ -218,10 +218,10 @@ def sync_telescope_starting_up(timeout=50):
 # defined as a context manager
 
 def sync_release_resources(timeout=100):
+# defined as a decorator
     def decorator_sync_release_resources(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            print("In sync_release_resources")
             check_going_into_empty()
             the_waiter = waiter()
             the_waiter.set_wait_for_tearing_down_subarray()
