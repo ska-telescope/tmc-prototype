@@ -51,7 +51,7 @@ class SetOperateMode(BaseCommand):
             # Subscribe the DishMaster attributes
             self._subscribe_to_attribute_events(attributes_to_subscribe_to)
             dish_client = TangoClient(device_data._dish_master_fqdn)
-            dish_client.send_command_async(command_name, None, cmd_ended_cb)
+            dish_client.send_command_async(command_name, callback_method=cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
 
         except DevFailed as dev_failed:
