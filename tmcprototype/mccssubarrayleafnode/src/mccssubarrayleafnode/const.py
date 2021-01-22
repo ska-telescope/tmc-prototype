@@ -6,6 +6,7 @@ CMD_CONFIGURE = "Configure"
 CMD_END = "End"
 CMD_SCAN = "Scan"
 CMD_ENDSCAN = "EndScan"
+CMD_OBSRESET= "ObsReset"
 
 #Event messages
 
@@ -41,6 +42,7 @@ STR_SCAN_EXEC = "Scan command execution"
 STR_ENDSCAN_SUCCESS = "EndScan command is executed successfully."
 STR_END_SCAN_EXEC = "EndScan command execution"
 STR_SETTING_CB_MODEL = "Setting CallBack Model as :-> "
-
+STR_OBSRESET_SUCCESS = "ObsReset command is invoked successfully on MCCS Subarray."
+ERR_OBSRESET_INVOKING_CMD = "Error while invoking ObsReset command on MCCS Subarray."
 #INTEGERS
 INT_SKA_LEVEL = 3
