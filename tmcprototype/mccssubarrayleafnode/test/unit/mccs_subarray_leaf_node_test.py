@@ -77,8 +77,8 @@ def command_with_arg(request):
     params=[
         ("End", const.CMD_END, ObsState.READY, const.ERR_END_INVOKING_CMD),
         ("EndScan", const.CMD_ENDSCAN, ObsState.SCANNING, const.ERR_ENDSCAN_COMMAND),
-        ("ObsReset", const.CMD_OBSRESET, ObsState.ABORTED, const.ERR_DEVFAILED_MSG),
-        ("ObsReset", const.CMD_OBSRESET, ObsState.FAULT, const.ERR_DEVFAILED_MSG)
+        ("ObsReset", const.CMD_OBSRESET, ObsState.ABORTED, const.ERR_OBSRESET_INVOKING_CMD),
+        ("ObsReset", const.CMD_OBSRESET, ObsState.FAULT, const.ERR_OBSRESET_INVOKING_CMD)
     ])
 def command_without_arg(request):
     cmd_name, requested_cmd, obs_state, error_msg = request.param
