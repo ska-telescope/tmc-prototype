@@ -76,7 +76,7 @@ def command_with_arg(request):
     scope="function",
     params=[
         ("End", const.CMD_END, ObsState.READY, const.ERR_END_INVOKING_CMD),
-        ("EndScan", const.CMD_ENDSCAN, ObsState.SCANNING, const.ERR_ENDSCAN_COMMAND)
+        ("EndScan", const.CMD_ENDSCAN, ObsState.SCANNING, const.ERR_ENDSCAN_COMMAND),
         ("Abort", const.CMD_ABORT, ObsState.IDLE, const.ERR_ABORT_COMMAND),
         ("Abort", const.CMD_ABORT, ObsState.RESETTING, const.ERR_ABORT_COMMAND),
         ("Abort", const.CMD_ABORT, ObsState.READY, const.ERR_ABORT_COMMAND),

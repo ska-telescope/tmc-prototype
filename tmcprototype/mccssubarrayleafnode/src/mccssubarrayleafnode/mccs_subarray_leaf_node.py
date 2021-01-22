@@ -225,7 +225,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("End")
         handler()
 
-def is_Abort_allowed(self):
+    def is_Abort_allowed(self):
         """
         Checks whether the command is allowed to be run in the current state
 
