@@ -6,7 +6,7 @@ from tmc.common.tango_client import TangoClient
 from ska.base.commands import BaseCommand
 from . import const
 
-class ObsResetCommand(BaseCommand):
+class ObsReset(BaseCommand):
     """
     A class for MccsSubarrayLeafNode's ObsReset() command.
     """
