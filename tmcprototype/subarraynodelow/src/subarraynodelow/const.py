@@ -16,6 +16,7 @@ CMD_OFF = "Off"
 CMD_ASSIGN_RESOURCES = "AssignResources"
 CMD_RELEASE_ALL_RESOURCES = "ReleaseAllResources"
 CMD_END = "End"
+CMD_ABORT = "Abort"
 
 
 # strings
@@ -36,6 +37,8 @@ STR_SCAN_COMPLETE = "Scan is completed"
 SCAN_NOT_EXECUTED = "Scan can not be executed as Subarray.obsState is not READY."
 RESOURCE_ALREADY_RELEASED = "Resources are already released from Subarray"
 STR_MCCS_END_SCAN_INIT = "MCCS EndScan is initiated."
+STR_CMD_ABORT_INV_MCCS = "Abort command invoked successfully on MCCS."
+STR_ABORT_SUCCESS = "Abort command invoked successfully."
 STR_FALSE = "False"
 STR_TRACK_EXEC = "Track command execution"
 STR_CMD_FAILED = "SubarrayNodeLow_Commandfailed"
@@ -74,6 +77,7 @@ ERR_END_SCAN_CMD_ON_MCCS="Error invoking EndScan command on MccsSubarrayLeafNode
 ERR_DEVICE_NOT_READY = "Subarray Node low is not in Ready observation state."
 ERR_MCCS_CMD = "Failed to send command to MCCS Subarray Leaf Node."
 ERR_SUBSR_SA_HEALTH_STATE = "Error in subscribing Subarray healthState \n"
+ERR_ABORT_INVOKING_CMD = "Error in invoking Abort command."
 
 
 # JSON keys
