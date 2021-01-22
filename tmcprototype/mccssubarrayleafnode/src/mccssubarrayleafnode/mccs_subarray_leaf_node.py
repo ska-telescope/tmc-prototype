@@ -30,10 +30,11 @@ from .configure_command import Configure
 from .scan_command import Scan
 from .end_command import End
 from .end_scan_command import EndScan
+from obsreset_command import ObsReset
 # PROTECTED REGION END #    //  MccsSubarrayLeafNode.additional_import
 
 __all__ = ["MccsSubarrayLeafNode", "main", "Configure", "Scan",
-           "EndScan", "End"]
+           "EndScan", "End", "ObsReset"]
 
 
 class MccsSubarrayLeafNode(SKABaseDevice):
@@ -235,12 +236,14 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         self.scan = Scan(*args)
         self.endscan = EndScan(*args)
         self.end = End(*args)
+        self.obsreset = ObsReset(*args)
 
         # are registered and inherited from SKASubarray
         self.register_command_object("Configure", self.configure)
         self.register_command_object("Scan", self.scan)
         self.register_command_object("EndScan", self.endscan)
         self.register_command_object("End", self.end)
+        self.register_command_object("ObsReset", self.obsreset)
 
 # ----------
 # Run server
