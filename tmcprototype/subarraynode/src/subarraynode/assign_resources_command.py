@@ -236,18 +236,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
             object in case of failure.
         """
         device_data = DeviceData.get_instance()
-        # arg_list = []
-        # json_argument = {}
-        # argout = []
-        # dish = {}
         try:
-            # dish[const.STR_KEY_RECEPTOR_ID_LIST] = argin
-            # json_argument[const.STR_KEY_DISH] = dish
-
-            # #inject transaction id for logging purpose
-            # inject_id(self,json_argument)
-
-            # arg_list.append(json.dumps(json_argument))
             json_argument = argin
             csp_client = TangoClient(device_data.csp_subarray_ln_fqdn)
             csp_client.send_command(const.CMD_ASSIGN_RESOURCES, json.dumps(json_argument))
