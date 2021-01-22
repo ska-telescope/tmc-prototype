@@ -149,7 +149,7 @@ class Configure(BaseCommand):
                                          tango.ErrSeverity.ERR)
 
     def create_cmd_data(self, configuration_string):
-        station_beam_pointings = configuration_string["mccs"]["subarray_beams"][0]
+        station_beam_pointings = configuration_string["subarray_beams"][0]
         sky_coordinates = self.get_sky_coordinates(station_beam_pointings)
 
         # Add in sky_coordinates set in station_beam_pointings
@@ -188,7 +188,7 @@ class Configure(BaseCommand):
 
     def get_station_ids(self, configuration_string):
         station_ids = []
-        for station in configuration_string["mccs"]["stations"]:
+        for station in configuration_string["stations"]:
             log_msg = "Station is: " + str(station)
             self.logger.info(log_msg)
             station_ids.append(station["station_id"])
@@ -196,8 +196,6 @@ class Configure(BaseCommand):
 
     def update_configuration_json(self, station_beam_pointings, configuration_string):
         # Update station_beam_pointings into output Configure JSON
-        configuration_string["mccs"]["subarray_beams"][0] = station_beam_pointings
-        # configuration_string["mccs"]["station_beams"] = configuration_string["mccs"]["subarray_beams"]
-        configuration_string["mccs"].pop("station_beams", None)
-        print("configure string is ::::::::::::::::::::::", configuration_string)
+        configuration_string["subarray_beams"][0] = station_beam_pointings
+        configuration_string.pop("station_beams", None)
         return configuration_string

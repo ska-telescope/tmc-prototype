@@ -112,7 +112,7 @@ def test_configure_with_correct_configuration_data_when_mccs_subarray_is_idle(mo
     sky_coordinates = []
     station_ids = []
     argin_json = json.loads(configure_str)
-    station_beam_pointings = argin_json["mccs"]["subarray_beams"][0]
+    station_beam_pointings = argin_json["subarray_beams"][0]
     azimuth_coord = station_beam_pointings["target"]["Az"]
     elevation_coord = station_beam_pointings["target"]["El"]
 
@@ -132,18 +132,18 @@ def test_configure_with_correct_configuration_data_when_mccs_subarray_is_idle(mo
     # Add in sky_coordinates set in station_beam_pointings
     station_beam_pointings["sky_coordinates"] = sky_coordinates
     # Add station_id in station_beam_pointings
-    for station in argin_json["mccs"]["stations"]:
+    for station in argin_json["stations"]:
         station_ids.append(station["station_id"])
     station_beam_pointings["station_id"] = station_ids
 
     # Remove target block from station_beam_pointings
     station_beam_pointings.pop("target", None)
 
-    argin_json["mccs"]["subarray_beams"][0] = station_beam_pointings
-    argin_json["mccs"]["station_beams"] = argin_json["mccs"]["subarray_beams"]
-    argin_json["mccs"].pop("subarray_beams", None)
-    mccs_subarray_client.deviceproxy.command_inout_asynch.assert_any_call(const.CMD_CONFIGURE,
-                                json.dumps(argin_json), 'configure_cmd_ended_cb')
+    argin_json["subarray_beams"][0] = station_beam_pointings
+    argin_json["station_beams"] = argin_json["subarray_beams"]
+    argin_json.pop("subarray_beams", None)
+    mccs_subarray_client.deviceproxy.command_inout_asynch.assert_called_with(const.CMD_CONFIGURE,
+                                json.dumps(argin_json), any_method(with_name='configure_cmd_ended_cb'))
 
 
 def test_command_with_callback_method_with_event_error(mock_mccs_subarray_proxy ,event_subscription, command_without_arg):

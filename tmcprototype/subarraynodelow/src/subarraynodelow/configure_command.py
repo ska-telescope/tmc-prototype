@@ -67,7 +67,6 @@ class Configure(SKASubarray.ConfigureCommand):
         return (ResultCode.STARTED, message)
         
     def _configure_mccs_subarray(self, scan_configuration):
-        # device_data = self.target
         scan_configuration = scan_configuration["mccs"]
         if not scan_configuration:
             raise KeyError("MCCS configuration must be given. Aborting MCCS configuration.")

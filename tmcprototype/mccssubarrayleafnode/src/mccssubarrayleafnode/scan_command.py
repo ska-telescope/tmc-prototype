@@ -78,7 +78,7 @@ class Scan(BaseCommand):
         :param argin: JSON string consists of scan id (int).
 
         Example:
-        {"id":1}
+        {"id":1, "scan_time":0.0}
 
         Note: Enter the json string without spaces as a input.
 
