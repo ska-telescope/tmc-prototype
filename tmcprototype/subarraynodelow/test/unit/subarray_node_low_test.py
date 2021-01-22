@@ -171,6 +171,22 @@ def test_end_should_raise_devfailed_exception_when_mccs_subarray_throws_devfaile
     # assert tango_context.device.obsState == ObsState.FAULT
     assert "This is error message for devfailed" in str(df.value)
 
+def test_abort_command(device_data, subarray_state_model, mock_lower_devices_proxy):
+    _ , _ = mock_lower_devices_proxy
+    abort_cmd = Abort(device_data, subarray_state_model)
+    device_data.scan_timer_handler.start_scan_timer(10)
+    assert abort_cmd.do() == (ResultCode.STARTED, const.STR_ABORT_SUCCESS)
+
+
+def test_abort_raise_devfailed(device_data, subarray_state_model, mock_lower_devices_proxy):
+    device_proxy, tango_client_obj = mock_lower_devices_proxy
+    tango_client_obj.deviceproxy.command_inout.side_effect = raise_devfailed_exception
+    abort_cmd = Abort(device_data, subarray_state_model)
+    device_data.scan_timer_handler.start_scan_timer(10)
+    with pytest.raises(tango.DevFailed) as df:
+        abort_cmd.do()
+    assert "This is error message for devfailed" in str(df.value)
+
 @pytest.fixture(scope="function")
 def mock_lower_devices():
     mccs_subarray1_ln_fqdn = 'ska_low/tm_leaf_node/mccs_subarray01'
