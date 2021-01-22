@@ -1,4 +1,5 @@
-from resources.test_support.sync_decorators_low import sync_start_up_telescope,sync_assign_resources,sync_configure,sync_end,sync_release_resources,sync_set_to_standby,time_it
+from resources.test_support.sync_decorators_low import sync_start_up_telescope, sync_assign_resources,\
+    sync_configure, sync_end, sync_abort, sync_release_resources, sync_set_to_standby, time_it
 from resources.test_support.logging_decorators import log_it
 from tango import DeviceProxy   
 from resources.test_support.helpers_low import waiter,watch,resource
@@ -69,4 +70,11 @@ def configure_sub():
     LOGGER.info("Subarray obsState is: " + str(SubarrayNodeLow.obsState))
     LOGGER.info('Invoked Configure on Subarray')
 
-
+@sync_abort
+def abort():
+    resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('ON')
+    resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('IDLE')
+    SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
+    SubarrayNodeLow.Abort()
+    LOGGER.info("Subarray obsState is: " + str(SubarrayNodeLow.obsState))
+    LOGGER.info('Invoked Abort on Subarray')
