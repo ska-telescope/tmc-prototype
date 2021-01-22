@@ -163,9 +163,9 @@ def test_command_cb_is_invoked_when_releaseresources_is_called_async(mock_csp_su
     device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
     #csp_subarray1_proxy_mock.obsState = ObsState.IDLE
     device_proxy.ReleaseAllResources()
-    dummy_event = command_callback(const.CMD_REMOVE_ALL_RECEPTORS)
-    event_subscription_mock[const.CMD_REMOVE_ALL_RECEPTORS](dummy_event)
-    assert const.STR_COMMAND + const.CMD_REMOVE_ALL_RECEPTORS in device_proxy.activityMessage
+    dummy_event = command_callback(const.CMD_RELEASE_ALL_RESOURCES)
+    event_subscription_mock[const.CMD_RELEASE_ALL_RESOURCES](dummy_event)
+    assert const.STR_COMMAND + const.CMD_RELEASE_ALL_RESOURCES in device_proxy.activityMessage
 
 
 def test_command_cb_is_invoked_when_command_with_event_error_is_called_async(mock_csp_subarray_proxy, event_subscription_mock, command_with_arg):
@@ -193,9 +193,9 @@ def test_command_cb_is_invoked_releaseresources_when_command_with_event_error_as
     device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
     # csp_subarray1_proxy_mock.obsState = ObsState.IDLE
     device_proxy.ReleaseAllResources()
-    dummy_event = command_callback_with_event_error(const.CMD_REMOVE_ALL_RECEPTORS)
-    event_subscription_mock[const.CMD_REMOVE_ALL_RECEPTORS](dummy_event)
-    assert const.ERR_INVOKING_CMD + const.CMD_REMOVE_ALL_RECEPTORS in device_proxy.activityMessage
+    dummy_event = command_callback_with_event_error(const.CMD_RELEASE_ALL_RESOURCES)
+    event_subscription_mock[const.CMD_RELEASE_ALL_RESOURCES](dummy_event)
+    assert const.ERR_INVOKING_CMD + const.CMD_RELEASE_ALL_RESOURCES in device_proxy.activityMessage
 
 @pytest.mark.xfail(reason="This test case is not applicable for now as obsState is not getting checked")
 def test_command_with_arg_devfailed(mock_csp_subarray_proxy, event_subscription_mock, command_with_arg):
@@ -313,9 +313,9 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
     receptorIDList_str = json_argument[const.STR_DISH][const.STR_RECEPTORID_LIST]
     # convert receptorIDList from list of string to list of int
     receptorIDList = [int(receptor_id) for receptor_id in receptorIDList_str]
-    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(const.CMD_ADD_RECEPTORS,
+    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(const.CMD_ASSIGN_RESOURCES,
                                                                      receptorIDList,
-                                                                     any_method(with_name='add_receptors_ended'))
+                                                                     any_method(with_name='assign_resources_ended'))
     assert_activity_message(device_proxy, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
 

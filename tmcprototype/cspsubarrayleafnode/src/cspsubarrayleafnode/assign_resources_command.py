@@ -128,10 +128,10 @@ class AssignResourcesCommand(BaseCommand):
             #TODO: Waiting for CSPSubarray's changes
             csp_sub_client_obj.send_command_async(const.CMD_ASSIGN_RESOURCES, receptorIDList, self.assign_resources_ended)
             self.logger.info("After invoking AddReceptors on CSP subarray")
-            device_data._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
+            device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
             # TODO: Waiting for CSPSubarray's changes
             # device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
-            self.logger.info(const.STR_ADD_RECEPTORS_SUCCESS)
+            self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
 
         except ValueError as value_error:
             log_msg = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)

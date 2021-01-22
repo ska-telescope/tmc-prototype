@@ -90,8 +90,8 @@ class ReleaseAllResourcesCommand(BaseCommand):
             # TODO: Waiting for CSPSubarray's changes
             csp_sub_client_obj.send_command_async(const.CMD_RELEASE_ALL_RESOURCES, None , self.releaseallresources_cmd_ended_cb)
             # device_data._read_activity_message = const.STR_RELEASE_ALL_RESOURCES_SUCCESS
-            device_data._read_activity_message = const.STR_REMOVE_ALL_RECEPTORS_SUCCESS
-            self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
+            device_data._read_activity_message = const.STR_RELEASE_ALL_RESOURCES_SUCCESS
+            self.logger.info(const.STR_RELEASE_ALL_RESOURCES_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = const.ERR_RELEASE_ALL_RESOURCES + str(dev_failed)
