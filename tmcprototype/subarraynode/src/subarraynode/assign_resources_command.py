@@ -113,7 +113,9 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         
         # 2. Invoke command on CSP and SDP. Call method to create DishGroup.
         dish_allocation_result = self.set_up_dish_data(receptor_list)
-        self.assign_csp_resources(receptor_list)
+        input_csp_assign = resource.copy()
+        del input_csp_assign["sdp"]
+        self.assign_csp_resources(input_csp_assign)
         self.assign_sdp_resources(sdp_resources)
        
         log_msg = const.STR_DISH_ALLOCATION_RESULT + str(dish_allocation_result)
@@ -234,18 +236,19 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
             object in case of failure.
         """
         device_data = DeviceData.get_instance()
-        arg_list = []
-        json_argument = {}
-        argout = []
-        dish = {}
+        # arg_list = []
+        # json_argument = {}
+        # argout = []
+        # dish = {}
         try:
-            dish[const.STR_KEY_RECEPTOR_ID_LIST] = argin
-            json_argument[const.STR_KEY_DISH] = dish
+            # dish[const.STR_KEY_RECEPTOR_ID_LIST] = argin
+            # json_argument[const.STR_KEY_DISH] = dish
 
-            #inject transaction id for logging purpose
-            inject_id(self,json_argument)
+            # #inject transaction id for logging purpose
+            # inject_id(self,json_argument)
 
-            arg_list.append(json.dumps(json_argument))
+            # arg_list.append(json.dumps(json_argument))
+            json_argument = argin
             csp_client = TangoClient(device_data.csp_subarray_ln_fqdn)
             csp_client.send_command(const.CMD_ASSIGN_RESOURCES, json.dumps(json_argument))
             self.logger.info(const.STR_ASSIGN_RESOURCES_INV_CSP_SALN)
