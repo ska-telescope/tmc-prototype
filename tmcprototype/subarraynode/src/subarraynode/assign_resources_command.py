@@ -113,7 +113,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         
         # 2. Invoke command on CSP and SDP. Call method to create DishGroup.
         dish_allocation_result = self.set_up_dish_data(receptor_list)
-        input_csp_assign = resource.copy()
+        input_csp_assign = resources.copy()
         del input_csp_assign["sdp"]
         self.assign_csp_resources(input_csp_assign)
         self.assign_sdp_resources(sdp_resources)
