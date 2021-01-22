@@ -72,8 +72,10 @@ class AssignResources(BaseCommand):
         device_data = self.target
         try:
             json_argument = json.loads(argin)
-            self.create_subarray_client(json_argument, device_data.subarray_FQDN_dict)
-            self.create_mccs_client(json_argument, device_data.mccs_master_ln_fqdn)
+            cmd_data = self._create_cmd_data(json_argument)
+            self.create_subarray_client(cmd_data, device_data.subarray_FQDN_dict)
+            input_mccs_assign = json.dumps(json_argument["mccs"])
+            self.create_mccs_client(input_mccs_assign, device_data.mccs_master_ln_fqdn)
             device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
 
@@ -94,30 +96,37 @@ class AssignResources(BaseCommand):
                                          "CentralNode.AssignResourcesCommand",
                                          tango.ErrSeverity.ERR)
 
-
-    def create_subarray_client(self, json_argument, subarray_FQDN_dict):
+    def _create_cmd_data(self, json_argument):
         """
-        Delete subarray id from json argument and create proxy of subarray corresponding to subarray id
-        and call assign_resources_leaf_node method.
+                Delete subarray id from json argument and create proxy of subarray corresponding to subarray id
+                and call assign_resources_leaf_node method.
 
-        :param json_argument: The string in JSON format.
-                device_data : Object of class device_data
+                :param json_argument: The string in JSON format.
+                        device_data : Object of class device_data
 
-        :return: None
-        """
+                :return: None
+                """
         subarray_id = int(json_argument['mccs']['subarray_id'])
-        subarray_fqdn = subarray_FQDN_dict[subarray_id]
         # Remove subarray_id key from input json argument and send the json to subarray node
         input_json_subarray = json_argument['mccs']
         del input_json_subarray["subarray_id"]
         input_to_sa = json.dumps(input_json_subarray)
+        return (input_to_sa, subarray_id)
+
+    def create_subarray_client(self, cmd_data, subarray_FQDN_dict):
+        """
+
+        :return: None
+        """
         # Allocate resources to subarray
+        input_to_sa, subarray_id = cmd_data
         self.logger.info("Allocating resource to subarray %d", subarray_id)
+        subarray_fqdn = subarray_FQDN_dict[subarray_id]
         subarray_client = TangoClient(subarray_fqdn)
         self.invoke_assign_resources(subarray_client, input_to_sa)
 
 
-    def create_mccs_client(self, json_argument, mccs_master_ln_fqdn):
+    def create_mccs_client(self, input_to_mccs, mccs_master_ln_fqdn):
         """
         Create proxy of mccs master leaf node and call method assign_resources_leaf_node.
 
@@ -127,7 +136,6 @@ class AssignResources(BaseCommand):
         return: None
         """
         self.logger.info("Invoking AssignResources command on MCCS Master Leaf Node")
-        input_to_mccs = json.dumps(json_argument)
         mccs_master_ln_client = TangoClient(mccs_master_ln_fqdn)
         self.invoke_assign_resources(mccs_master_ln_client, input_to_mccs)
 

@@ -67,12 +67,13 @@ class ReleaseResources(BaseCommand):
             subarray_fqdn = device_data.subarray_FQDN_dict[subarray_id]
             if jsonArgument['mccs']['release_all'] == True:
                 # Invoke ReleaseAllResources on SubarrayNode
+                input_mccs_release = json.dumps(jsonArgument["mccs"])
                 subarray_client = TangoClient(subarray_fqdn)
                 subarray_client.send_command(const.CMD_RELEASE_RESOURCES)
                 # Invoke ReleaseAllResources on MCCS Master Leaf Node
                 # Send same input argument to MCCS Master for ReleaseResource Command
                 mccs_mln_client = TangoClient(device_data.mccs_master_ln_fqdn)
-                mccs_mln_client.send_command(const.CMD_RELEASE_MCCS_RESOURCES, argin)
+                mccs_mln_client.send_command(const.CMD_RELEASE_MCCS_RESOURCES, input_mccs_release)
                 log_msg = const.STR_REL_RESOURCES
                 self.logger.info(log_msg)
                 device_data._read_activity_message = log_msg

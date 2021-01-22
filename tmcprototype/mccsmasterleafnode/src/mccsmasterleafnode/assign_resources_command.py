@@ -111,21 +111,6 @@ class AssignResources(BaseCommand):
             device_data._read_activity_message = const.STR_ALLOCATE_SUCCESS
             self.logger.info(const.STR_ALLOCATE_SUCCESS)
 
-        except ValueError as value_error:
-            log_msg = const.ERR_INVALID_JSON_ASSIGN_RES_MCCS + str(value_error)
-            device_data._read_activity_message = const.ERR_INVALID_JSON_ASSIGN_RES_MCCS + str(value_error)
-            self.logger.exception(value_error)
-            tango.Except.re_throw_exception(value_error, const.STR_ASSIGN_RES_EXEC, log_msg,
-                                            "MccsMasterLeafNode.AssignResources",
-                                            tango.ErrSeverity.ERR)
-
-        except KeyError as key_error:
-            log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            device_data._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            self.logger.exception(key_error)
-            tango.Except.re_throw_exception(key_error,const.STR_ASSIGN_RES_EXEC, log_msg,
-                                            "MccsMasterLeafNode.AssignResources",
-                                            tango.ErrSeverity.ERR)
         except DevFailed as dev_failed:
             log_msg = const.ERR_ASSGN_RESOURCE_MCCS + str(dev_failed)
             device_data._read_activity_message = log_msg
