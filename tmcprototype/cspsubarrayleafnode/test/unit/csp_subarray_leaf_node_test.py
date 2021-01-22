@@ -11,19 +11,13 @@ from mock import Mock
 from mock import MagicMock
 from os.path import dirname, join
 
-import logging
-
 # Tango imports
 from tango.test_context import DeviceTestContext
 
 # Additional import
 from cspsubarrayleafnode import CspSubarrayLeafNode, const, release
 from ska.base.control_model import HealthState, ObsState, LoggingLevel
-
 from tmc.common.tango_client import TangoClient
-from cspsubarrayleafnode.device_data import DeviceData
-from cspsubarrayleafnode.assign_resources_command import AssignResourcesCommand
-from ska.base import SKASubarrayStateModel
 
 obs_state_global = ObsState.IDLE
 
@@ -309,15 +303,10 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
     tango_client_obj.deviceproxy.read_attribute.side_effect = check_obs_state
     device_proxy.On()
     device_proxy.AssignResources(assign_input_str)
-    json_argument = json.loads(assign_input_str)
-    receptorIDList_str = json_argument[const.STR_DISH][const.STR_RECEPTORID_LIST]
-    # convert receptorIDList from list of string to list of int
-    receptorIDList = [int(receptor_id) for receptor_id in receptorIDList_str]
     tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(const.CMD_ASSIGN_RESOURCES,
-                                                                     receptorIDList,
+                                                                     assign_input_str,
                                                                      any_method(with_name='assign_resources_ended'))
     assert_activity_message(device_proxy, const.STR_ASSIGN_RESOURCES_SUCCESS)
-
 
 
 ### TODO: This testcase needs tobe updated when CSP supports command name changes
@@ -335,14 +324,6 @@ def test_assign_command_with_callback_method_with_devfailed_error(mock_csp_subar
         event_subscription_mock[const.CMD_ASSIGN_RESOURCES](dummy_event)
     assert const.ERR_CALLBACK_CMD_FAILED in str(df.value)
 
-def test_assign_resource_should_raise_exception_when_key_not_found(mock_csp_subarray_proxy):
-    global obs_state_global
-    device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
-    obs_state_global = ObsState.EMPTY
-    tango_client_obj.deviceproxy.read_attribute.side_effect = check_obs_state
-    with pytest.raises(tango.DevFailed) as df:
-        device_proxy.AssignResources(assign_invalid_key)
-    assert const.ERR_JSON_KEY_NOT_FOUND in str(df)
 
 def check_obs_state(arg1):
     return obs_state_global
