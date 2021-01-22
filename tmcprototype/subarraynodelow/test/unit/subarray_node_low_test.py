@@ -27,6 +27,8 @@ from subarraynodelow.configure_command import Configure
 from subarraynodelow.scan_command import Scan
 from subarraynodelow.end_scan_command import EndScan
 from subarraynodelow.end_command import End
+from subarraynodelow.abort_command import Abort
+
 
 
 assign_input_file = 'command_AssignResources.json'
