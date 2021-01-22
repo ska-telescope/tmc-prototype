@@ -3,10 +3,10 @@ const file for CspSubarrayLeafNode
 """
 # In/Out command constants
 #TODO:Waiting for CSPSubarray's changes
-# CMD_ASSIGN_RESOURCES = "AssignResources"
-# CMD_RELEASE_ALL_RESOURCES = "ReleaseAllResources"
-CMD_ADD_RECEPTORS = "AddReceptors"
-CMD_REMOVE_ALL_RECEPTORS = "RemoveAllReceptors"
+CMD_ASSIGN_RESOURCES = "AssignResources"
+CMD_RELEASE_ALL_RESOURCES = "ReleaseAllResources"
+# CMD_ADD_RECEPTORS = "AddReceptors"
+# CMD_REMOVE_ALL_RECEPTORS = "RemoveAllReceptors"
 CMD_ENDSCAN = "EndScan"
 CMD_CONFIGURE = "Configure"
 CMD_STARTSCAN = "Scan"

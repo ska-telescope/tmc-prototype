@@ -36,7 +36,7 @@ class AssignResourcesCommand(BaseCommand):
 
         return True
 
-    def add_receptors_ended(self, event):
+    def assign_resources_ended(self, event):
         """
         Callback function immediately executed when the asynchronous invoked
         command returns.
@@ -124,9 +124,9 @@ class AssignResourcesCommand(BaseCommand):
             # Invoke AddReceptors command on CspSubarray
             self.logger.info("Invoking AddReceptors on CSP subarray")
             csp_sub_client_obj = TangoClient(device_data.csp_subarray_fqdn)
-            csp_sub_client_obj.send_command_async(const.CMD_ADD_RECEPTORS, receptorIDList, self.add_receptors_ended)
+            # csp_sub_client_obj.send_command_async(const.CMD_ADD_RECEPTORS, receptorIDList, self.add_receptors_ended)
             #TODO: Waiting for CSPSubarray's changes
-            # csp_sub_client_obj.send_command_async(const.CMD_ASSIGN_RESOURCES, receptorIDList, self.assign_resources_ended)
+            csp_sub_client_obj.send_command_async(const.CMD_ASSIGN_RESOURCES, receptorIDList, self.assign_resources_ended)
             self.logger.info("After invoking AddReceptors on CSP subarray")
             device_data._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
             # TODO: Waiting for CSPSubarray's changes
