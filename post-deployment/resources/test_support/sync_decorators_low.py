@@ -25,7 +25,6 @@ def check_going_out_of_configure():
     ##Can only return to ON/IDLE if in READY
     resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('READY')
 
-
 def check_going_into_empty():
     ##Can only release resources if subarray is in ON/IDLE
     resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('ON')
@@ -94,7 +93,7 @@ class WaitScanning():
         self.the_watch.wait_until_value_changed_to('SCANNING',timeout)
         logging.info("state transitioned to SCANNING, waiting for it to return to READY")
         self.the_watch.wait_until_value_changed_to('READY',timeout)
-    
+
 
 def sync_assign_resources(timeout=60):
 # defined as a decorator
@@ -280,7 +279,6 @@ def sync_scan(timeout=200):
             return result
         return wrapper
     return decorator
-
 
 # defined as a context manager
 @contextmanager
