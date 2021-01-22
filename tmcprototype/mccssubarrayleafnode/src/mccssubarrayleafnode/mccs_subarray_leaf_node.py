@@ -30,10 +30,11 @@ from .configure_command import Configure
 from .scan_command import Scan
 from .end_command import End
 from .end_scan_command import EndScan
+from .abort_command import Abort
 # PROTECTED REGION END #    //  MccsSubarrayLeafNode.additional_import
 
 __all__ = ["MccsSubarrayLeafNode", "main", "Configure", "Scan",
-           "EndScan", "End"]
+           "EndScan", "End", "Abort"]
 
 
 class MccsSubarrayLeafNode(SKABaseDevice):
@@ -224,6 +225,30 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("End")
         handler()
 
+def is_Abort_allowed(self):
+        """
+        Checks whether the command is allowed to be run in the current state
+
+        :return: True if this command is allowed to be run in
+        current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+
+        """
+        handler = self.get_command_object("Abort")
+        return handler.check_allowed()
+
+    @command(
+    )
+    @DebugIt()
+    def Abort(self):
+        """ Invokes Abort command on MccsSubarrayLeafNode. """
+        handler = self.get_command_object("Abort")
+        handler()
+
     def init_command_objects(self):
         """
         Initialises the command handlers for commands supported by this
@@ -235,12 +260,14 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         self.scan = Scan(*args)
         self.endscan = EndScan(*args)
         self.end = End(*args)
+        self.abort = Abort(*args)
 
         # are registered and inherited from SKASubarray
         self.register_command_object("Configure", self.configure)
         self.register_command_object("Scan", self.scan)
         self.register_command_object("EndScan", self.endscan)
         self.register_command_object("End", self.end)
+        self.register_command_object("Abort", self.abort)
 
 # ----------
 # Run server

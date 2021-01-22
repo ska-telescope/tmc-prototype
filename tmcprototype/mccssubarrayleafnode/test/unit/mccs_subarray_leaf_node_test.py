@@ -77,6 +77,11 @@ def command_with_arg(request):
     params=[
         ("End", const.CMD_END, ObsState.READY, const.ERR_END_INVOKING_CMD),
         ("EndScan", const.CMD_ENDSCAN, ObsState.SCANNING, const.ERR_ENDSCAN_COMMAND)
+        ("Abort", const.CMD_ABORT, ObsState.IDLE, const.ERR_ABORT_COMMAND),
+        ("Abort", const.CMD_ABORT, ObsState.RESETTING, const.ERR_ABORT_COMMAND),
+        ("Abort", const.CMD_ABORT, ObsState.READY, const.ERR_ABORT_COMMAND),
+        ("Abort", const.CMD_ABORT, ObsState.CONFIGURING, const.ERR_ABORT_COMMAND),
+        ("Abort", const.CMD_ABORT, ObsState.SCANNING, const.ERR_ABORT_COMMAND)   
     ])
 def command_without_arg(request):
     cmd_name, requested_cmd, obs_state, error_msg = request.param
@@ -213,7 +218,13 @@ def test_command_without_arg_to_raise_devfailed_exception(mock_mccs_subarray_pro
     scope="function",
     params=[
         ("End", ObsState.READY, const.CMD_END, 'end_cmd_ended_cb'),
-        ("Endscan", ObsState.SCANNING, const.CMD_ENDSCAN, 'endscan_cmd_ended_cb')
+        ("Endscan", ObsState.SCANNING, const.CMD_ENDSCAN, 'endscan_cmd_ended_cb'),
+        ("Abort", ObsState.IDLE, const.CMD_ABORT, 'abort_cmd_ended_cb'),
+        ("Abort", ObsState.RESETTING, const.CMD_ABORT, 'abort_cmd_ended_cb'),
+        ("Abort", ObsState.READY, const.CMD_ABORT, 'abort_cmd_ended_cb'),
+        ("Abort", ObsState.CONFIGURING, const.CMD_ABORT, 'abort_cmd_ended_cb'),
+        ("Abort", ObsState.SCANNING, const.CMD_ABORT, 'abort_cmd_ended_cb')
+        
     ])
 def command_with_correct_obsstate(request):
     cmd_name, obs_state , requested_cmd, cmd_callbk = request.param
