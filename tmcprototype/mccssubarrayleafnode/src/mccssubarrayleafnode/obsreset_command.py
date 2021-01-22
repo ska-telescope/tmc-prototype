@@ -6,6 +6,7 @@ from tmc.common.tango_client import TangoClient
 from ska.base.commands import BaseCommand
 from . import const
 
+
 class ObsReset(BaseCommand):
     """
     A class for MccsSubarrayLeafNode's ObsReset() command.
@@ -26,7 +27,7 @@ class ObsReset(BaseCommand):
             log_msg= "ObsReset() is not allowed in " + str(self.state_model.op_state)
             tango.Except.throw_exception(log_msg ,
                                             "Failed to invoke ObsReset command on MccsSubarrayLeafNode.",
-                                            "Mccssubarrayleafnode.ObsReset()",
+                                            "mccssubarrayleafnode.ObsReset()",
                                             tango.ErrSeverity.ERR)
         return True
 

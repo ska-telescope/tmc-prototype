@@ -319,7 +319,7 @@ def command_callback_with_command_exception():
 
 def raise_devfailed_exception(*args):
     # "This function is called to raise DevFailed exception."
-    tango.Except.throw_exception("CspSubarrayLeafNode_CommandFailed", const.ERR_DEVFAILED_MSG,
+    tango.Except.throw_exception("MccsSubarrayLeafNode_CommandFailed", const.ERR_DEVFAILED_MSG,
                                  " ", tango.ErrSeverity.ERR)
                                  
 
