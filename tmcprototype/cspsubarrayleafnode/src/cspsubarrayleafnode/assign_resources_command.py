@@ -79,7 +79,7 @@ class AssignResourcesCommand(BaseCommand):
     @identify_with_id('assign','argin') 
     def do(self, argin):
         """
-        It accepts dish in JSON string format and invokes AssignResources command on CspSubarray
+        It accepts receptor ids in JSON string format and invokes AssignResources command on CspSubarray
         with dish as an input argument.
 
         :param argin:DevString. The string in JSON format. The JSON contains following values:
