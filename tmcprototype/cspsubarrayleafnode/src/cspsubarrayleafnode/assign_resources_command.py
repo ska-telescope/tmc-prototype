@@ -82,6 +82,7 @@ class AssignResourcesCommand(BaseCommand):
         with dish as an input argument.
 
         :param argin:DevString. The string in JSON format. The JSON contains following values:
+            subarrayID: integer
 
             dish:
                 Mandatory JSON object consisting of
@@ -92,6 +93,7 @@ class AssignResourcesCommand(BaseCommand):
                     with preceding zeroes upto 3 digits. E.g. 0001, 0002.
         Example:
         {
+            "subarrayID":1,
             "dish": {
             "receptorIDList": [
                 "0001",
