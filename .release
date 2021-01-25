@@ -12,7 +12,7 @@ copyright=""""""
 
 release=0.3.7
 tag=0.3.7
-tag_description= Updated DishMaster attribute name versionId
-release_notes=This release Contains:<br/><ul><li>SP-1123: Update AssignResources command on tmc-mid devices to support SP-1393.</li></ul><br/>
-gitlab_username=kmadisa
-private_token=9z8kSfR9yh_2QKRygEwv
+tag_description= Update AssignResources command to support SP-1393
+release_notes=This release Contains:<br/><ul><li>SP-1123: Updated AssignResources command on tmc-mid devices to support SP-1393.</li></ul><br/>
+gitlab_username=DigvijayMali92
+private_token=sCzXs9ZEsztzgo4CEWzv
