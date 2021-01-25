@@ -11,7 +11,7 @@ from ska.base import SKASubarray
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 from . import const
-from .device_data import DeviceData
+# from .device_data import DeviceData
 
 
 class Abort(SKASubarray.AbortCommand):
@@ -31,7 +31,7 @@ class Abort(SKASubarray.AbortCommand):
         :raises: DevFailed if error occurs in invoking command on MCCS Subarrayleaf node.
 
         """
-        device_data = DeviceData.get_instance()
+        device_data = self.target
         device_data.is_release_resources = False
         device_data.is_end_command = False
         try:
