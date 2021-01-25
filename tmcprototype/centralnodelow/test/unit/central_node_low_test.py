@@ -105,7 +105,8 @@ def command_with_devfailed_error(request):
 def test_assign_resources(mock_subarraynode_proxy):
     device_proxy, tango_client_obj = mock_subarraynode_proxy[:2]
     device_proxy.AssignResources(assign_input_str)
-    tango_client_obj.deviceproxy.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, assign_input_str)
+    assert const.STR_ASSIGN_RESOURCES_SUCCESS in device_proxy.activityMessage
+    # tango_client_obj.deviceproxy.command_inout.assert_called_with(const.CMD_ASSIGN_RESOURCES, assign_input_str_to_subarray)
 
 
 def test_assign_resources_should_raise_devfailed_exception_when_subarray_node_throws_devfailed_exception(
@@ -120,7 +121,10 @@ def test_assign_resources_should_raise_devfailed_exception_when_subarray_node_th
 def test_release_resources(mock_subarraynode_proxy):
     device_proxy, tango_client_obj = mock_subarraynode_proxy[:2]
     device_proxy.ReleaseResources(release_input_str)
-    tango_client_obj.deviceproxy.command_inout.assert_called_with(const.CMD_RELEASE_MCCS_RESOURCES, release_input_str)
+    input_release = json.loads(release_input_str)
+    input_release = json.dumps(input_release["mccs"])
+    tango_client_obj.deviceproxy.command_inout.assert_called_with(const.CMD_RELEASE_MCCS_RESOURCES, input_release)
+
 
 def test_release_resources_should_raise_devfailed_exception_when_subarray_node_throws_devfailed_exception(
         mock_subarraynode_proxy):

@@ -29,7 +29,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
 
         Example:
 
-        {"station_ids": [1, 2], "channels": [1, 2, 3, 4, 5, 6, 7, 8], "station_beam_ids": [1]}
+        {"station_ids":[1,2],"channels":[[0,8,1,1],[8,8,2,1],[24,16,2,1]],"station_beam_ids":[1]}
 
         :return: A tuple containing ResultCode and string.
 
