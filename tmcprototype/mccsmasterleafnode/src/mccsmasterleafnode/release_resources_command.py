@@ -73,10 +73,11 @@ class ReleaseResources(BaseCommand):
         :param argin:StringType. The string in JSON format.
 
         Example: 
-            {
+             {
                 "subarray_id": 1,
-                "release_all": true,
-            }
+                "release_all": true
+               }
+
 
         :return: None.
 

@@ -1,24 +1,19 @@
-# PROTECTED REGION ID(MccSubarrayLeafNode.additional_import) ENABLED START #
-# Standard python imports
-
 # Third party imports
 import tango
 from tango import DevState, DevFailed
-
 # Additional import
 from ska.base.commands import BaseCommand
 from tmc.common.tango_client import TangoClient
 from . import const
-# PROTECTED REGION END #    //  MccsSubarrayLeafNode.additional_import
 
-class Scan(BaseCommand):
+class Abort(BaseCommand):
     """
-    A class for MccsSubarrayLeafNode's Scan() command.
-     """
+    A class for MccsSubarrayLeafNode's Abort() command.
+    """
 
     def check_allowed(self):
         """
-        Checks whether the command is allowed to be run in the current state
+        Checks whether the command is allowed to be executed in the current state
 
         :return: True if this command is allowed to be run in
             current device state
@@ -29,15 +24,23 @@ class Scan(BaseCommand):
             in current device state
 
         """
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-            tango.Except.throw_exception("Scan() is not allowed in current state",
-                                         "Failed to invoke Scan command on mccssubarrayleafnode.",
-                                         "mccssubarrayleafnode.Scan()",
+        if self.state_model.op_state in [
+            DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE,
+        ]:
+            tango.Except.throw_exception("Abort() is not allowed in current state",
+                                         "Failed to invoke Abort command on MccsSubarrayLeafNode.",
+                                         "Mccssubarrayleafnode.Abort()",
                                          tango.ErrSeverity.ERR)
-
+        # TODO : ObsState is not getting checked. Can be uncommented once issue get resolved.
+        # mccs_subarray_client = TangoClient(device_data._mccs_subarray_fqdn)
+        # if mccs_subarray_client.get_attribute("obsState") not in [ObsState.IDLE, ObsState.READY,
+        #                                     ObsState.CONFIGURING, ObsState.SCANNING, ObsState.RESETTING]:
+        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_VALID_OBSTATE, const.ERR_ABORT_COMMAND,
+        #                                     "Mccssubarrayleafnode.Abort()",
+        #                                     tango.ErrSeverity.ERR)
         return True
 
-    def scan_cmd_ended_cb(self, event):
+    def abort_cmd_ended_cb(self, event):
         """
         Callback function immediately executed when the asynchronous invoked
         command returns.
@@ -58,7 +61,6 @@ class Scan(BaseCommand):
 
         :return: none
         """
-
         device_data = self.target
         # Update logs and activity message attribute with received event
         if event.err:
@@ -70,18 +72,12 @@ class Scan(BaseCommand):
             self.logger.info(log_msg)
             device_data._read_activity_message = log_msg
 
-    def do(self, argin):
+    def do(self):
         """
-        This command invokes Scan command on MccsSubarray. It is allowed only when MccsSubarray is in
-        ObsState READY.
+        This command invokes Abort command on MCCS Subarray.
 
-        :param argin: JSON string consists of scan id (int) and scan_time.
-
-        Example:
-        {"id":1, "scan_time":0.0}
-
-        Note: Enter the json string without spaces as a input.
-
+        :param argin: None
+        
         :return: None
 
         :rtype: Void
@@ -93,23 +89,14 @@ class Scan(BaseCommand):
             mccs_subarray_client = TangoClient(device_data._mccs_subarray_fqdn)
             # TODO: Mock obs_state issue to be resolved
             # assert mccs_subarray_client.get_attribute("obsState") == ObsState.READY
-            mccs_subarray_client.send_command_async(const.CMD_SCAN, argin, self.scan_cmd_ended_cb)
-            device_data._read_activity_message = const.STR_SCAN_SUCCESS
-            self.logger.info(const.STR_SCAN_SUCCESS)
-
-        # TODO: Mock obs_state issue to be resolved
-        # except AssertionError as assertion_error:
-        #     log_msg = const.ERR_DEVICE_NOT_READY + str(assertion_error)
-        #     device_data._read_activity_message = log_msg
-        #     self.logger.exception(log_msg)
-        #     tango.Except.throw_exception(const.STR_SCAN_EXEC, log_msg,
-        #                                  "MccsSubarrayLeafNode.Scan",
-        #                                  tango.ErrSeverity.ERR)
+            mccs_subarray_client.send_command_async(const.CMD_ABORT, None, self.abort_cmd_ended_cb)
+            device_data._read_activity_message = const.STR_ABORT_SUCCESS
+            self.logger.info(const.STR_ABORT_SUCCESS)
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_SCAN_RESOURCES + str(dev_failed)
+            log_msg = const.ERR_ABORT_COMMAND + str(dev_failed)
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
-            tango.Except.throw_exception(const.STR_SCAN_EXEC, log_msg,
-                                         "MccsSubarrayLeafNode.Scan",
+            tango.Except.throw_exception(const.ERR_ABORT_COMMAND, log_msg,
+                                         "MccsSubarrayLeafNode.Abort",
                                          tango.ErrSeverity.ERR)
