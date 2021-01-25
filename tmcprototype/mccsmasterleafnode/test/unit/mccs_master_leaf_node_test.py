@@ -29,11 +29,6 @@ path = join(dirname(__file__), 'data', assign_input_file)
 with open(path, 'r') as f:
     assign_input_str = f.read()
 
-assign_invalid_key_file = 'invalid_key_AssignResources.json'
-path = join(dirname(__file__), 'data', assign_invalid_key_file)
-with open(path, 'r') as f:
-    assign_invalid_key = f.read()
-
 release_input_file = 'command_ReleaseResources.json'
 path = join(dirname(__file__), 'data', release_input_file)
 with open(path, 'r') as f:
