@@ -12,7 +12,7 @@ from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from tmc.common.tango_client import TangoClient
-from subarraynode.device_data import DeviceData
+from subarraynodelow.device_data import DeviceData
 from tmc.common.tango_server_helper import TangoServerHelper
 
 
@@ -33,12 +33,14 @@ class ObsReset(SKASubarray.ObsResetCommand):
 
         :raises: DevFailed if error occurs while invoking command on MccsSubarrayLeafNode.
         """
-
+        device = self.target
         device_data = DeviceData.get_instance()
         device_data.is_abort_command = False
         try:
             self.logger.info("ObsReset command invoked on SubarrayNodeLow.")
-            self.obsreset_mccs_subarray_leaf_node()
+            #self.obsreset_mccs_subarray_leaf_node()
+            mccs_subarray_ln_client = TangoClient(device.mccs_subarray_ln_fqdn)
+            mccs_subarray_ln_client.send_command(const.CMD_OBSRESET)
             device_data._read_activity_message = const.STR_OBSRESET_SUCCESS
             self.logger.info(const.STR_OBSRESET_SUCCESS)
 
@@ -55,12 +57,12 @@ class ObsReset(SKASubarray.ObsResetCommand):
                                          "SKASubarrayLow.ObsReset",
                                          tango.ErrSeverity.ERR)
 
-    def obsreset_mccs_subarray_leaf_node(self):
-        """
-        set up MccsSubarray devices
-        """
-        #Invoke ObsReset command on Mccs Subarray Leaf Node.
-        device = self.target
-        mccs_subarray_ln_client = TangoClient(device.mccs_subarray_ln_fqdn)
-        mccs_subarray_ln_client.send_command(const.CMD_OBSRESET)
-        self.logger.info(const.STR_CMD_OBSRESET_INV_MCCSSLN)
+    # def obsreset_mccs_subarray_leaf_node(self):
+    #     """
+    #     set up MccsSubarray devices
+    #     """
+    #     #Invoke ObsReset command on Mccs Subarray Leaf Node.
+    #     device = self.target
+    #     mccs_subarray_ln_client = TangoClient(device.mccs_subarray_ln_fqdn)
+    #     mccs_subarray_ln_client.send_command(const.CMD_OBSRESET)
+    #     self.logger.info(const.STR_CMD_OBSRESET_INV_MCCSSLN)
