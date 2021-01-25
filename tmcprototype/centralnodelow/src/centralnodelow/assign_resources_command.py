@@ -72,8 +72,7 @@ class AssignResources(BaseCommand):
         device_data = self.target
         try:
             json_argument = json.loads(argin)
-
-            subarray_cmd_data = self._create_cmd_data(json_argument)
+            subarray_cmd_data = self._create_subarray_cmd_data(json_argument)
             subarray_client = self.create_subarray_client(subarray_cmd_data, device_data.subarray_FQDN_dict)
             self.invoke_assign_resources(subarray_client, subarray_cmd_data)
 
