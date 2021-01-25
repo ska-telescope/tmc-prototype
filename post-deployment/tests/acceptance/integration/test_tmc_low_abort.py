@@ -1,8 +1,8 @@
-from tango import DeviceProxy   
-from datetime import date,datetime
 import pytest
 import os
 import logging
+from tango import DeviceProxy   
+from datetime import date, datetime
 from resources.test_support.helpers_low import waiter, watch, resource
 from resources.test_support.controls_low import telescope_is_in_standby
 from resources.test_support.sync_decorators_low import sync_abort
@@ -61,8 +61,7 @@ def test_abort():
         abort()
         LOGGER.info('Abort is complete on Subarray')
         fixture['state'] = 'Subarray Aborted'
-        tmc.set_to_standby()
-        LOGGER.info('Invoked StandBy on Subarray')
+        
         # tear down
         #TODO: Waiting for obsreset tobe implemented.
         tmc.obsreset()
@@ -74,6 +73,10 @@ def test_abort():
         LOGGER.info('Invoked StandBy on Subarray')
         # tear down
         LOGGER.info('TMC-ObsReset tests complete: tearing down...')
+
+        tmc.set_to_standby()
+        LOGGER.info('Invoked StandBy on Subarray')
+        
 
 
     except:

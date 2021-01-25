@@ -77,7 +77,7 @@ ERR_END_SCAN_CMD_ON_MCCS="Error invoking EndScan command on MccsSubarrayLeafNode
 ERR_DEVICE_NOT_READY = "Subarray Node low is not in Ready observation state."
 ERR_MCCS_CMD = "Failed to send command to MCCS Subarray Leaf Node."
 ERR_SUBSR_SA_HEALTH_STATE = "Error in subscribing Subarray healthState \n"
-ERR_ABORT_INVOKING_CMD = "Error in invoking Abort command on Subarray Node low."
+ERR_ABORT_INVOKING_CMD = "Error while invoking Abort command."
 
 
 # JSON keys

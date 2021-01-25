@@ -20,8 +20,8 @@ class Abort(SKASubarray.AbortCommand):
     """
     def do(self):
         """
-        This command on Subarray Node invokes Abort command on MCCS Subarray Leaf Node and abort current
-        functionality.
+        This command on Subarray Node Low invokes Abort command on MCCS Subarray Leaf Node and aborts ongoing
+        activity.
 
         :return: A tuple containing a return code and a string
             message indicating status. The message is for
@@ -55,13 +55,15 @@ class Abort(SKASubarray.AbortCommand):
 
     def abort_mccs(self, mccs_sa_ln_fqdn):
         """
-        Create client of mccs subarray leaf node and invoke abort command on clinet.
+        Create client of MCCS subarray leaf node and invoke abort command on client.
+
+        :param argin: MCCS SubarrayLeafNode FQDN
+
+        :return: None
         """
         mccs_client = TangoClient(mccs_sa_ln_fqdn)
         mccs_client.send_command(const.CMD_ABORT)
         self.logger.info(const.STR_CMD_ABORT_INV_MCCS)
-
-
 
 
 
