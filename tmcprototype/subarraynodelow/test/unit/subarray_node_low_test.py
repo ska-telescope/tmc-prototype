@@ -27,6 +27,7 @@ from subarraynodelow.configure_command import Configure
 from subarraynodelow.scan_command import Scan
 from subarraynodelow.end_scan_command import EndScan
 from subarraynodelow.end_command import End
+from subarraynodelow.device_data import DeviceData
 
 
 assign_input_file = 'command_AssignResources.json'
@@ -65,7 +66,7 @@ with open(path, 'r') as f:
     invalid_key_scan=f.read()
 
 
-device_data = DeviceData.get_instance() is missing.
+device_data = DeviceData.get_instance()
 
 @pytest.fixture
 def subarray_state_model():
