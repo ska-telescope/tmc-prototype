@@ -75,10 +75,10 @@ class Scan(BaseCommand):
         This command invokes Scan command on MccsSubarray. It is allowed only when MccsSubarray is in
         ObsState READY.
 
-        :param argin: JSON string consists of scan id (int).
+        :param argin: JSON string consists of scan id (int) and scan_time.
 
         Example:
-        {"id":1}
+        {"id":1, "scan_time":0.0}
 
         Note: Enter the json string without spaces as a input.
 

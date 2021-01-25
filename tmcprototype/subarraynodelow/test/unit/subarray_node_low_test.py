@@ -54,6 +54,19 @@ path= join(dirname(__file__), 'data', scan_input_file)
 with open(path, 'r') as f:
     scan_input_str=f.read()
 
+scan_invalid_input_file='invalid_input_Scan.json'
+path= join(dirname(__file__), 'data' , scan_invalid_input_file)
+with open(path, 'r') as f:
+    invalid_scan_input=f.read()
+
+scan_invalid_key_file='invalid_key_Scan.json'
+path= join(dirname(__file__), 'data' , scan_invalid_key_file)
+with open(path, 'r') as f:
+    invalid_key_scan=f.read()
+
+
+device_data = DeviceData.get_instance() is missing.
+
 @pytest.fixture
 def subarray_state_model():
     """
@@ -130,6 +143,22 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready(mock_
     device_data = DeviceData.get_instance()
     scan_cmd = Scan(device_data, subarray_state_model)
     assert scan_cmd.do(scan_input_str) == (ResultCode.STARTED, 'Scan command is executed successfully.')
+
+
+def test_invalid_json_scan_should_command_subarray_to_raise_invalid_json_error(mock_lower_devices_proxy):
+    device_proxy, tango_client = mock_lower_devices_proxy
+    scan_cmd = Scan(device_data, subarray_state_model)
+    with pytest.raises(tango.DevFailed) as df:
+        scan_cmd.do(invalid_scan_input)
+    assert const.ERR_INVALID_JSON in str(df.value)
+
+
+def test_invalid_key_scan_should_command_subarray_to_raise_key_error(mock_lower_devices_proxy):
+    device_proxy, tango_client = mock_lower_devices_proxy
+    scan_cmd = Scan(device_data, subarray_state_model)
+    with pytest.raises(tango.DevFailed) as df:
+        scan_cmd.do(invalid_key_scan)
+    assert const.ERR_JSON_KEY_NOT_FOUND in str(df.value)
 
 
 def test_start_scan_should_raise_devfailed_exception(mock_lower_devices_proxy, subarray_state_model):
@@ -229,52 +258,12 @@ def test_assign_resource_should_raise_exception_when_called_when_device_state_of
         assert "Error executing command AssignResources" in str(df.value)
 
 
-# def test_configure_command_obsstate_changes_from_configuring_to_ready(mock_lower_devices):
-#     tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
-#     mccs_subarray1_obsstate_attribute = "mccsSubarrayObsState"
-#     tango_context.device.On()
-#     tango_context.device.AssignResources(assign_input_str)
-   
-#     attribute = 'ObsState'
-#     dummy_event = create_dummy_event_state(mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, attribute, ObsState.IDLE)
-#     event_subscription_map[mccs_subarray1_obsstate_attribute](dummy_event)
-#     wait_for(tango_context, ObsState.IDLE)
-#     assert tango_context.device.obsState == ObsState.IDLE
-
-#     assert tango_context.device.Configure(configure_str) == [[ResultCode.STARTED], ['Configure command invoked']]
-#     mccs_subarray1_ln_proxy_mock.command_inout.assert_called_with(const.CMD_CONFIGURE, configure_mccs_str)
-#     assert tango_context.device.obsState == ObsState.CONFIGURING
-#     attribute = 'ObsState'
-#     dummy_event = create_dummy_event_state(mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn, attribute, ObsState.READY)
-#     event_subscription_map[mccs_subarray1_obsstate_attribute](dummy_event)
-#     wait_for(tango_context, ObsState.READY)
-#     assert tango_context.device.obsState == ObsState.READY
-
 def test_configure_command(subarray_state_model, mock_lower_devices_proxy):
     device_proxy, tango_client = mock_lower_devices_proxy
     device_data = DeviceData.get_instance()
     configure_cmd = Configure(device_data, subarray_state_model)
     subarray_state_model._straight_to_state(DevState.ON, None, ObsState.IDLE)
     assert configure_cmd.do(configure_str) == (ResultCode.STARTED, "Configure command invoked")
-
-
-
-# def test_configure_command_subarray_with_invalid_configure_input(mock_lower_devices, subarray_state_model):
-#     tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map = mock_lower_devices
-#     mccs_subarray1_obsstate_attribute = "mccsSubarrayObsState"
-#     tango_context.device.On()
-#     tango_context.device.AssignResources(assign_input_str)
-#     attribute = 'ObsState'
-
-#     dummy_event_mccs = create_dummy_event_state(mccs_subarray1_ln_proxy_mock, mccs_subarray1_ln_fqdn,
-#                                                attribute, ObsState.IDLE)
-#     event_subscription_map[mccs_subarray1_obsstate_attribute](dummy_event_mccs)
-#     wait_for(tango_context, ObsState.IDLE)
-#     assert tango_context.device.obsState == ObsState.IDLE 
-#     with pytest.raises(tango.DevFailed) as df:
-#         tango_context.device.Configure(invalid_conf_input)
-#     assert tango_context.device.obsState == ObsState.FAULT
-#     assert const.ERR_INVALID_JSON in  str(df.value)
 
 
 def test_configure_command_subarray_with_invalid_configure_input(subarray_state_model, mock_lower_devices_proxy):
@@ -285,7 +274,6 @@ def test_configure_command_subarray_with_invalid_configure_input(subarray_state_
     with pytest.raises(tango.DevFailed) as df:
         configure_cmd.do(invalid_conf_input)
     assert const.ERR_INVALID_JSON in str(df.value)
-    # assert configure_cmd.do(configure_str) == (ResultCode.STARTED, "Configure command invoked")
 
 
 def test_end_scan_should_command_subarray_to_end_scan_when_it_is_scanning(mock_lower_devices_proxy, subarray_state_model):
@@ -305,7 +293,6 @@ def test_end_scan_should_raise_devfailed_exception_when_mccs_subbarray_ln_throws
     device_data.scan_timer_handler.start_scan_timer(10)
     with pytest.raises(tango.DevFailed) as df:
         end_scan_cmd.do()
-    # assert tango_context.device.obsState == ObsState.FAULT
     assert "This is error message for devfailed" in str(df.value)
 
 
