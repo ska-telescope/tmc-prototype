@@ -27,6 +27,7 @@ from subarraynodelow.configure_command import Configure
 from subarraynodelow.scan_command import Scan
 from subarraynodelow.end_scan_command import EndScan
 from subarraynodelow.end_command import End
+from subarraynodelow.obsreset_command import ObsReset
 
 
 assign_input_file = 'command_AssignResources.json'
@@ -307,6 +308,11 @@ def test_end_scan_should_raise_devfailed_exception_when_mccs_subbarray_ln_throws
         end_scan_cmd.do()
     # assert tango_context.device.obsState == ObsState.FAULT
     assert "This is error message for devfailed" in str(df.value)
+
+
+def test_obsreset_command(device_data, subarray_state_model):
+    obsreset_cmd = ObsReset(device_data, subarray_state_model)
+    assert obsreset_cmd.do() == (ResultCode.STARTED, const.STR_OBSRESET_SUCCESS)
 
 
 # Test case for health state

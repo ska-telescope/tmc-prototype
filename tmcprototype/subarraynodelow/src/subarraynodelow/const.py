@@ -16,7 +16,7 @@ CMD_OFF = "Off"
 CMD_ASSIGN_RESOURCES = "AssignResources"
 CMD_RELEASE_ALL_RESOURCES = "ReleaseAllResources"
 CMD_END = "End"
-
+CMD_OBSRESET = "ObsReset"
 
 # strings
 STR_SUB_ATTR_MCCS_SALN_HEALTH_SUCCESS = "Subscribed MCCS Subarray Health State attributes successfully."
@@ -58,7 +58,10 @@ STR_HEALTH_STATE_UNKNOWN_VAL = "Subarray healthState event returned unknown valu
 STR_MCCS_SUBARRAY_OBS_STATE = "MCCS Subarray obsState is:"
 STR_SCAN_IP_ARG = "Scan inputs Arguments :-> "
 STR_SA_SCANNING = "Subarray is scanning at the desired pointing coordinates."
-
+STR_OBSRESET_SUCCESS = "Command ObsReset is invoked on MccsSubarrayLeafNode."
+ERR_OBSRESET_INVOKING_CMD = "Error while invoking ObsReset command on Subarray Node Low."
+STR_OBSRESET_EXEC = "ObsReset command execution."
+STR_CMD_OBSRESET_INV_MCCSSLN = "Command ObsReset is invoked on MccsSubarrayLeafNode."
 
 
 # Error messages
