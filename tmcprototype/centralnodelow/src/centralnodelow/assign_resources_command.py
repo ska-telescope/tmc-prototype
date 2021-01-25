@@ -11,7 +11,6 @@ from tango import DevState, DevFailed
 # Additional import
 from ska.base.commands import BaseCommand
 from . import const
-from .device_data import  DeviceData
 from tmc.common.tango_client import TangoClient
 
 class AssignResources(BaseCommand):
