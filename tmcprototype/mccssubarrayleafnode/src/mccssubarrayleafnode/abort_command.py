@@ -32,6 +32,13 @@ class Abort(BaseCommand):
                                          "Failed to invoke Abort command on MccsSubarrayLeafNode.",
                                          "Mccssubarrayleafnode.Abort()",
                                          tango.ErrSeverity.ERR)
+
+        # mccs_subarray_client = TangoClient(device_data._mccs_subarray_fqdn)
+        # if mccs_subarray_client.get_attribute("obsState") not in [ObsState.IDLE, ObsState.READY,
+        #                                     ObsState.CONFIGURING, ObsState.SCANNING, ObsState.RESETTING]:
+        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_VALID_OBSTATE, const.ERR_ABORT_COMMAND,
+        #                                     "Mccssubarrayleafnode.Abort()",
+        #                                     tango.ErrSeverity.ERR)
         return True
 
     def abort_cmd_ended_cb(self, event):

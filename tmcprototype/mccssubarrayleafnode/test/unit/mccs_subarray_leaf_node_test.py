@@ -285,6 +285,13 @@ def test_end_scan_should_not_command_mccs_subarray_to_end_scan_when_it_is_idle(m
         device_proxy.EndScan()
     assert const.ERR_DEVICE_NOT_SCANNING in str(df)
 
+@pytest.mark.xfail(reason="This test case is not applicable for now as obsState is not getting checked")
+def test_abort_should_not_command_mccs_subarray_when_it_is_aborted(mock_mccs_subarray_proxy):
+    device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
+    mccs_subarray_client.deviceproxy.obsState = ObsState.ABORTED
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.Abort()
+    assert const.ERR_ABORT_COMMAND in str(df)
 
 def any_method(with_name=None):
     class AnyMethod():

@@ -18,6 +18,7 @@ ERR_CONFIGURE_INVOKING_CMD = "Error while invoking Configure command on MCCS Sub
 ERR_DEVFAILED_MSG = "This is error message for devfailed"
 ERR_CALLBACK_CMD_FAILED = "MccsSubarrayLeafNode_Commandfailed in callback"
 ERR_INVALID_JSON_CONFIG = "Invalid JSON format while invoking Configure command on MccsSubarray."
+ERR_DEVICE_NOT_IN_VALID_OBSTATE = "MCCS subarray is not in valid ObsState."
 
 ERR_END_INVOKING_CMD = "Error while invoking End command on MCCS Subarray."
 ERR_DEVICE_NOT_READY = "MCCS subarray is not in READY obsState."
