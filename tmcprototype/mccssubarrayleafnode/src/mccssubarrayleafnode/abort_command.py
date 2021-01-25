@@ -13,7 +13,7 @@ class Abort(BaseCommand):
 
     def check_allowed(self):
         """
-        Checks whether the command is allowed to be run in the current state
+        Checks whether the command is allowed to be executed in the current state
 
         :return: True if this command is allowed to be run in
             current device state
@@ -75,6 +75,9 @@ class Abort(BaseCommand):
     def do(self):
         """
         This command invokes Abort command on MCCS Subarray.
+
+        :param argin: None
+        
         :return: None
 
         :rtype: Void
