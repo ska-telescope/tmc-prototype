@@ -1,7 +1,6 @@
 # Third party imports
 import tango
 from tango import DevState, DevFailed
-
 # Additional import
 from ska.base.commands import BaseCommand
 from tmc.common.tango_client import TangoClient
@@ -32,7 +31,7 @@ class Abort(BaseCommand):
                                          "Failed to invoke Abort command on MccsSubarrayLeafNode.",
                                          "Mccssubarrayleafnode.Abort()",
                                          tango.ErrSeverity.ERR)
-
+        # TODO : ObsState is not getting checked. Can be uncommented once issue get resolved.
         # mccs_subarray_client = TangoClient(device_data._mccs_subarray_fqdn)
         # if mccs_subarray_client.get_attribute("obsState") not in [ObsState.IDLE, ObsState.READY,
         #                                     ObsState.CONFIGURING, ObsState.SCANNING, ObsState.RESETTING]:
