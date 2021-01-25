@@ -37,7 +37,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
 
         Example:
 
-        {"dish":{"receptorIDList":["0002","0001"]},"sdp":{"id":
+        {"subarraID":1,"dish":{"receptorIDList":["0002","0001"]},"sdp":{"id":
         "sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":[{"id":"science_A",
         "coordinate_system":"ICRS","ra":"02:42:40.771","dec":"-00:00:47.84","channels":
         [{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,
