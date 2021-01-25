@@ -79,8 +79,8 @@ class AssignResourcesCommand(BaseCommand):
     @identify_with_id('assign','argin') 
     def do(self, argin):
         """
-        It accepts receptor id list in JSON string format and invokes AddReceptors command on CspSubarray
-        with receptorIDList (list of integers) as an input argument.
+        It accepts dish in JSON string format and invokes AssignResources command on CspSubarray
+        with dish as an input argument.
 
         :param argin:DevString. The string in JSON format. The JSON contains following values:
 

@@ -237,9 +237,8 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         """
         device_data = DeviceData.get_instance()
         try:
-            json_argument = argin
             csp_client = TangoClient(device_data.csp_subarray_ln_fqdn)
-            csp_client.send_command(const.CMD_ASSIGN_RESOURCES, json.dumps(json_argument))
+            csp_client.send_command(const.CMD_ASSIGN_RESOURCES, json.dumps(argin))
             self.logger.info(const.STR_ASSIGN_RESOURCES_INV_CSP_SALN)
             argout = argin
         except DevFailed as df:

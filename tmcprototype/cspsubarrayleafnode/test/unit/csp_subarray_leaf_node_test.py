@@ -100,9 +100,6 @@ def event_subscription_mock():
                 **kwargs: event_subscription_map.update({command_name: callback}))
         yield event_subscription_map
 
-### TODO: This fixture needs tobe updated when CSP supports command name changes
-### AddReceptor to AssignResources, RemoveReceptor to ReleaseResources 
-##  update const.CMD_ADD_RECEPTORS to const.CMD_ASSIGN_RESOURCES
 @pytest.fixture(
     scope="function",
     params=[
@@ -249,10 +246,6 @@ def test_command_correct_obsstate(mock_csp_subarray_proxy, command_with_correct_
     tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with (cmd_name, None, any_method(with_name=cmd_callback))
     assert_activity_message(device_proxy, activity_msg)
 
-
-### TODO: This fixture needs tobe updated when CSP supports command name changes
-### AddReceptor to AssignResources, RemoveReceptor to ReleaseResources 
-##  update RemoveAllReceptors to ReleaseAllResources
 @pytest.fixture(
     scope="function",
     params=[
@@ -290,11 +283,6 @@ def test_command_fails_when_device_in_invalid_obstate(mock_csp_subarray_proxy, c
     assert activity_msg in str(df.value)
 
 '''
-
-### TODO: This testcase needs tobe updated when CSP supports command name changes
-### AddReceptor to AssignResources, RemoveReceptor to ReleaseResources 
-##  update const.CMD_ADD_RECEPTORS to const.CMD_ASSIGN_RESOURCES
-
 def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list(mock_csp_subarray_proxy):
     # arrange
     global obs_state_global
@@ -308,10 +296,6 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
                                                                      any_method(with_name='assign_resources_ended'))
     assert_activity_message(device_proxy, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
-
-### TODO: This testcase needs tobe updated when CSP supports command name changes
-### AddReceptor to AssignResources, RemoveReceptor to ReleaseResources 
-##  update const.CMD_ADD_RECEPTORS to const.CMD_ASSIGN_RESOURCES
 def test_assign_command_with_callback_method_with_devfailed_error(mock_csp_subarray_proxy, event_subscription_mock):
     global obs_state_global
     device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
@@ -328,11 +312,6 @@ def test_assign_command_with_callback_method_with_devfailed_error(mock_csp_subar
 def check_obs_state(arg1):
     return obs_state_global
 
-
-
-### TODO: This testcase needs tobe updated when CSP supports command name changes
-### AddReceptor to AssignResources, RemoveReceptor to ReleaseResources 
-##  update const.CMD_REMOVE_ALL_RECEPTORS to const.CMD_RELEASE_ALL_RESOURCES, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS to const.STR_RELEASE_ALL_RESOURCES_SUCCESS
 def test_release_resource_should_command_csp_subarray_to_release_all_resources(mock_csp_subarray_proxy):
     global obs_state_global
     device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
