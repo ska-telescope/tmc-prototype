@@ -168,7 +168,6 @@ class AssignResources(BaseCommand):
             # receptor Id list and SDP block to TMC Subarray Node
             self.logger.info("Allocating resource to subarray %d", subarrayID)
             input_json_subarray = json_argument.copy()
-            del input_json_subarray["subarrayID"]
             input_to_sa = json.dumps(input_json_subarray)
             subarray_client = TangoClient(subarrayFqdn)
          

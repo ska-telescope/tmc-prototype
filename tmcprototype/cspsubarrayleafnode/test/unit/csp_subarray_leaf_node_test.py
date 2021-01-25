@@ -11,19 +11,13 @@ from mock import Mock
 from mock import MagicMock
 from os.path import dirname, join
 
-import logging
-
 # Tango imports
 from tango.test_context import DeviceTestContext
 
 # Additional import
 from cspsubarrayleafnode import CspSubarrayLeafNode, const, release
 from ska.base.control_model import HealthState, ObsState, LoggingLevel
-
 from tmc.common.tango_client import TangoClient
-from cspsubarrayleafnode.device_data import DeviceData
-from cspsubarrayleafnode.assign_resources_command import AssignResourcesCommand
-from ska.base import SKASubarrayStateModel
 
 obs_state_global = ObsState.IDLE
 
@@ -106,17 +100,14 @@ def event_subscription_mock():
                 **kwargs: event_subscription_map.update({command_name: callback}))
         yield event_subscription_map
 
-### TODO: This fixture needs tobe updated when CSP supports command name changes
-### AddReceptor to AssignResources, RemoveReceptor to ReleaseResources 
-##  update const.CMD_ADD_RECEPTORS to const.CMD_ASSIGN_RESOURCES
 @pytest.fixture(
     scope="function",
     params=[
         ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.READY, const.ERR_DEVFAILED_MSG),
         ("Configure", configure_str, const.CMD_CONFIGURE, ObsState.IDLE, const.ERR_DEVFAILED_MSG),
         ("StartScan", scan_input_str, const.CMD_STARTSCAN, ObsState.READY, const.ERR_STARTSCAN_RESOURCES),
-        ("AssignResources", assign_input_str, const.CMD_ADD_RECEPTORS, ObsState.IDLE, const.ERR_DEVFAILED_MSG),
-        ("AssignResources", assign_input_str, const.CMD_ADD_RECEPTORS, ObsState.EMPTY, const.ERR_DEVFAILED_MSG),
+        ("AssignResources", assign_input_str, const.CMD_ASSIGN_RESOURCES, ObsState.IDLE, const.ERR_DEVFAILED_MSG),
+        ("AssignResources", assign_input_str, const.CMD_ASSIGN_RESOURCES, ObsState.EMPTY, const.ERR_DEVFAILED_MSG),
     ])
 def command_with_arg(request):
     cmd_name, input_arg, requested_cmd, obs_state, error_msg = request.param
@@ -163,9 +154,9 @@ def test_command_cb_is_invoked_when_releaseresources_is_called_async(mock_csp_su
     device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
     #csp_subarray1_proxy_mock.obsState = ObsState.IDLE
     device_proxy.ReleaseAllResources()
-    dummy_event = command_callback(const.CMD_REMOVE_ALL_RECEPTORS)
-    event_subscription_mock[const.CMD_REMOVE_ALL_RECEPTORS](dummy_event)
-    assert const.STR_COMMAND + const.CMD_REMOVE_ALL_RECEPTORS in device_proxy.activityMessage
+    dummy_event = command_callback(const.CMD_RELEASE_ALL_RESOURCES)
+    event_subscription_mock[const.CMD_RELEASE_ALL_RESOURCES](dummy_event)
+    assert const.STR_COMMAND + const.CMD_RELEASE_ALL_RESOURCES in device_proxy.activityMessage
 
 
 def test_command_cb_is_invoked_when_command_with_event_error_is_called_async(mock_csp_subarray_proxy, event_subscription_mock, command_with_arg):
@@ -193,9 +184,9 @@ def test_command_cb_is_invoked_releaseresources_when_command_with_event_error_as
     device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
     # csp_subarray1_proxy_mock.obsState = ObsState.IDLE
     device_proxy.ReleaseAllResources()
-    dummy_event = command_callback_with_event_error(const.CMD_REMOVE_ALL_RECEPTORS)
-    event_subscription_mock[const.CMD_REMOVE_ALL_RECEPTORS](dummy_event)
-    assert const.ERR_INVOKING_CMD + const.CMD_REMOVE_ALL_RECEPTORS in device_proxy.activityMessage
+    dummy_event = command_callback_with_event_error(const.CMD_RELEASE_ALL_RESOURCES)
+    event_subscription_mock[const.CMD_RELEASE_ALL_RESOURCES](dummy_event)
+    assert const.ERR_INVOKING_CMD + const.CMD_RELEASE_ALL_RESOURCES in device_proxy.activityMessage
 
 @pytest.mark.xfail(reason="This test case is not applicable for now as obsState is not getting checked")
 def test_command_with_arg_devfailed(mock_csp_subarray_proxy, event_subscription_mock, command_with_arg):
@@ -255,10 +246,6 @@ def test_command_correct_obsstate(mock_csp_subarray_proxy, command_with_correct_
     tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with (cmd_name, None, any_method(with_name=cmd_callback))
     assert_activity_message(device_proxy, activity_msg)
 
-
-### TODO: This fixture needs tobe updated when CSP supports command name changes
-### AddReceptor to AssignResources, RemoveReceptor to ReleaseResources 
-##  update RemoveAllReceptors to ReleaseAllResources
 @pytest.fixture(
     scope="function",
     params=[
@@ -296,11 +283,6 @@ def test_command_fails_when_device_in_invalid_obstate(mock_csp_subarray_proxy, c
     assert activity_msg in str(df.value)
 
 '''
-
-### TODO: This testcase needs tobe updated when CSP supports command name changes
-### AddReceptor to AssignResources, RemoveReceptor to ReleaseResources 
-##  update const.CMD_ADD_RECEPTORS to const.CMD_ASSIGN_RESOURCES
-
 def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list(mock_csp_subarray_proxy):
     # arrange
     global obs_state_global
@@ -309,20 +291,11 @@ def test_assign_resources_should_send_csp_subarray_with_correct_receptor_id_list
     tango_client_obj.deviceproxy.read_attribute.side_effect = check_obs_state
     device_proxy.On()
     device_proxy.AssignResources(assign_input_str)
-    json_argument = json.loads(assign_input_str)
-    receptorIDList_str = json_argument[const.STR_DISH][const.STR_RECEPTORID_LIST]
-    # convert receptorIDList from list of string to list of int
-    receptorIDList = [int(receptor_id) for receptor_id in receptorIDList_str]
-    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(const.CMD_ADD_RECEPTORS,
-                                                                     receptorIDList,
-                                                                     any_method(with_name='add_receptors_ended'))
-    assert_activity_message(device_proxy, const.STR_ADD_RECEPTORS_SUCCESS)
+    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(const.CMD_ASSIGN_RESOURCES,
+                                                                     assign_input_str,
+                                                                     any_method(with_name='assign_resources_ended'))
+    assert_activity_message(device_proxy, const.STR_ASSIGN_RESOURCES_SUCCESS)
 
-
-
-### TODO: This testcase needs tobe updated when CSP supports command name changes
-### AddReceptor to AssignResources, RemoveReceptor to ReleaseResources 
-##  update const.CMD_ADD_RECEPTORS to const.CMD_ASSIGN_RESOURCES
 def test_assign_command_with_callback_method_with_devfailed_error(mock_csp_subarray_proxy, event_subscription_mock):
     global obs_state_global
     device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
@@ -332,26 +305,13 @@ def test_assign_command_with_callback_method_with_devfailed_error(mock_csp_subar
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.AssignResources(assign_input_str)
         dummy_event = command_callback_with_devfailed_exception()
-        event_subscription_mock[const.CMD_ADD_RECEPTORS](dummy_event)
+        event_subscription_mock[const.CMD_ASSIGN_RESOURCES](dummy_event)
     assert const.ERR_CALLBACK_CMD_FAILED in str(df.value)
 
-def test_assign_resource_should_raise_exception_when_key_not_found(mock_csp_subarray_proxy):
-    global obs_state_global
-    device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
-    obs_state_global = ObsState.EMPTY
-    tango_client_obj.deviceproxy.read_attribute.side_effect = check_obs_state
-    with pytest.raises(tango.DevFailed) as df:
-        device_proxy.AssignResources(assign_invalid_key)
-    assert const.ERR_JSON_KEY_NOT_FOUND in str(df)
 
 def check_obs_state(arg1):
     return obs_state_global
 
-
-
-### TODO: This testcase needs tobe updated when CSP supports command name changes
-### AddReceptor to AssignResources, RemoveReceptor to ReleaseResources 
-##  update const.CMD_REMOVE_ALL_RECEPTORS to const.CMD_RELEASE_ALL_RESOURCES, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS to const.STR_RELEASE_ALL_RESOURCES_SUCCESS
 def test_release_resource_should_command_csp_subarray_to_release_all_resources(mock_csp_subarray_proxy):
     global obs_state_global
     device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
@@ -362,9 +322,9 @@ def test_release_resource_should_command_csp_subarray_to_release_all_resources(m
     obs_state_global = ObsState.IDLE
     tango_client_obj.deviceproxy.read_attribute.side_effect = check_obs_state
     device_proxy.ReleaseAllResources()
-    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(const.CMD_REMOVE_ALL_RECEPTORS, None, 
+    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(const.CMD_RELEASE_ALL_RESOURCES, None, 
                                                             any_method(with_name = 'releaseallresources_cmd_ended_cb'))
-    assert_activity_message(device_proxy, const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
+    assert_activity_message(device_proxy, const.STR_RELEASE_ALL_RESOURCES_SUCCESS)
 
 
 @pytest.fixture(
