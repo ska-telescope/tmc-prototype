@@ -11,8 +11,6 @@ from ska.base import SKASubarray
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 from . import const
-# from .device_data import DeviceData
-
 
 class Abort(SKASubarray.AbortCommand):
     """
