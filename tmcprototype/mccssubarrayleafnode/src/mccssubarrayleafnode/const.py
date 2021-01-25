@@ -6,6 +6,7 @@ CMD_CONFIGURE = "Configure"
 CMD_END = "End"
 CMD_SCAN = "Scan"
 CMD_ENDSCAN = "EndScan"
+CMD_ABORT = "Abort"
 CMD_OBSRESET= "ObsReset"
 
 #Event messages
@@ -18,13 +19,17 @@ ERR_CONFIGURE_INVOKING_CMD = "Error while invoking Configure command on MCCS Sub
 ERR_DEVFAILED_MSG = "This is error message for devfailed"
 ERR_CALLBACK_CMD_FAILED = "MccsSubarrayLeafNode_Commandfailed in callback"
 ERR_INVALID_JSON_CONFIG = "Invalid JSON format while invoking Configure command on MccsSubarray."
+ERR_DEVICE_NOT_IN_VALID_OBSTATE = "MCCS subarray is not in valid ObsState."
 
 ERR_END_INVOKING_CMD = "Error while invoking End command on MCCS Subarray."
 ERR_DEVICE_NOT_READY = "MCCS subarray is not in READY obsState."
 ERR_SCAN_RESOURCES = "Error while invoking Scan command on MCCS Subarray."
 ERR_DEVICE_NOT_SCANNING = "MCCS subarray is not in SCANNING obsState."
 ERR_ENDSCAN_COMMAND = "Error while invoking EndScan command on MCCS Subarray."
+ERR_ABORT_COMMAND = "Error while invoking Abort command on MCCS Subarray."
+STR_END_EXEC = "End command execution"
 ERR_OBSRESET_INVOKING_CMD = "Error while invoking ObsReset command on MCCS Subarray."
+
 
 #strings
 #General strings
@@ -41,6 +46,8 @@ STR_SCAN_SUCCESS = "Scan command is executed successfully."
 STR_SCAN_EXEC = "Scan command execution"
 STR_ENDSCAN_SUCCESS = "EndScan command is executed successfully."
 STR_END_SCAN_EXEC = "EndScan command execution"
+STR_ABORT_SUCCESS = "Abort command is executed successfully."
+
 STR_SETTING_CB_MODEL = "Setting CallBack Model as :-> "
 STR_OBSRESET_SUCCESS = "ObsReset command is invoked successfully on MCCS Subarray."
 STR_END_EXEC = "End command execution"
