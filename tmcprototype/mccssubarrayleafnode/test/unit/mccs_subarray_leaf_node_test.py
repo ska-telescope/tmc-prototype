@@ -77,6 +77,11 @@ def command_with_arg(request):
     params=[
         ("End", const.CMD_END, ObsState.READY, const.ERR_END_INVOKING_CMD),
         ("EndScan", const.CMD_ENDSCAN, ObsState.SCANNING, const.ERR_ENDSCAN_COMMAND),
+        ("Abort", const.CMD_ABORT, ObsState.IDLE, const.ERR_ABORT_COMMAND),
+        ("Abort", const.CMD_ABORT, ObsState.RESETTING, const.ERR_ABORT_COMMAND),
+        ("Abort", const.CMD_ABORT, ObsState.READY, const.ERR_ABORT_COMMAND),
+        ("Abort", const.CMD_ABORT, ObsState.CONFIGURING, const.ERR_ABORT_COMMAND),
+        ("Abort", const.CMD_ABORT, ObsState.SCANNING, const.ERR_ABORT_COMMAND),   
         ("ObsReset", const.CMD_OBSRESET, ObsState.ABORTED, const.ERR_OBSRESET_INVOKING_CMD),
         ("ObsReset", const.CMD_OBSRESET, ObsState.FAULT, const.ERR_OBSRESET_INVOKING_CMD)
     ])
@@ -216,12 +221,13 @@ def test_command_without_arg_to_raise_devfailed_exception(mock_mccs_subarray_pro
     params=[
         ("End", ObsState.READY, const.CMD_END, 'end_cmd_ended_cb'),
         ("Endscan", ObsState.SCANNING, const.CMD_ENDSCAN, 'endscan_cmd_ended_cb'),
-        ("ObsReset", ObsState.SCANNING, const.CMD_OBSRESET, 'obsreset_cmd_ended_cb'),
-        ("ObsReset", ObsState.EMPTY, const.CMD_OBSRESET, 'obsreset_cmd_ended_cb'),
-        ("ObsReset", ObsState.CONFIGURING, const.CMD_OBSRESET, 'obsreset_cmd_ended_cb'),
-        ("ObsReset", ObsState.IDLE, const.CMD_OBSRESET, 'obsreset_cmd_ended_cb'),
-        ("ObsReset", ObsState.READY, const.CMD_OBSRESET, 'obsreset_cmd_ended_cb'),
-        ("ObsReset", ObsState.RESOURCING, const.CMD_OBSRESET, 'obsreset_cmd_ended_cb')
+        ("Abort", ObsState.IDLE, const.CMD_ABORT, 'abort_cmd_ended_cb'),
+        ("Abort", ObsState.RESETTING, const.CMD_ABORT, 'abort_cmd_ended_cb'),
+        ("Abort", ObsState.READY, const.CMD_ABORT, 'abort_cmd_ended_cb'),
+        ("Abort", ObsState.CONFIGURING, const.CMD_ABORT, 'abort_cmd_ended_cb'),
+        ("Abort", ObsState.SCANNING, const.CMD_ABORT, 'abort_cmd_ended_cb'),
+        ("ObsReset", ObsState.ABORTED, const.CMD_OBSRESET, 'obsreset_cmd_ended_cb'),
+        ("ObsReset", ObsState.FAULT, const.CMD_OBSRESET, 'obsreset_cmd_ended_cb')
     ])
 def command_with_correct_obsstate(request):
     cmd_name, obs_state , requested_cmd, cmd_callbk = request.param
@@ -282,6 +288,13 @@ def test_end_scan_should_not_command_mccs_subarray_to_end_scan_when_it_is_idle(m
         device_proxy.EndScan()
     assert const.ERR_DEVICE_NOT_SCANNING in str(df)
 
+@pytest.mark.xfail(reason="This test case is not applicable for now as obsState is not getting checked")
+def test_abort_should_not_command_mccs_subarray_when_it_is_aborted(mock_mccs_subarray_proxy):
+    device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
+    mccs_subarray_client.deviceproxy.obsState = ObsState.ABORTED
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.Abort()
+    assert const.ERR_ABORT_COMMAND in str(df)
 
 def any_method(with_name=None):
     class AnyMethod():
