@@ -72,10 +72,15 @@ class AssignResources(BaseCommand):
         device_data = self.target
         try:
             json_argument = json.loads(argin)
-            cmd_data = self._create_cmd_data(json_argument)
-            self.create_subarray_client(cmd_data, device_data.subarray_FQDN_dict)
+
+            subarray_cmd_data = self._create_cmd_data(json_argument)
+            subarray_client = self.create_subarray_client(subarray_cmd_data, device_data.subarray_FQDN_dict)
+            self.invoke_assign_resources(subarray_client, subarray_cmd_data)
+
             input_mccs_assign = json.dumps(json_argument["mccs"])
-            self.create_mccs_client(input_mccs_assign, device_data.mccs_master_ln_fqdn)
+            mccs_master_ln_client = self.create_mccs_client(device_data.mccs_master_ln_fqdn)
+            self.invoke_assign_resources(mccs_master_ln_client, input_mccs_assign)
+
             device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
 
@@ -96,7 +101,7 @@ class AssignResources(BaseCommand):
                                          "CentralNode.AssignResourcesCommand",
                                          tango.ErrSeverity.ERR)
 
-    def _create_cmd_data(self, json_argument):
+    def _create_subarray_cmd_data(self, json_argument):
         """
                 Delete subarray id from json argument and create proxy of subarray corresponding to subarray id
                 and call assign_resources_leaf_node method.
@@ -123,10 +128,9 @@ class AssignResources(BaseCommand):
         self.logger.info("Allocating resource to subarray %d", subarray_id)
         subarray_fqdn = subarray_FQDN_dict[subarray_id]
         subarray_client = TangoClient(subarray_fqdn)
-        self.invoke_assign_resources(subarray_client, input_to_sa)
+        return subarray_client
 
-
-    def create_mccs_client(self, input_to_mccs, mccs_master_ln_fqdn):
+    def create_mccs_client(self, mccs_master_ln_fqdn):
         """
         Create proxy of mccs master leaf node and call method assign_resources_leaf_node.
 
@@ -137,7 +141,7 @@ class AssignResources(BaseCommand):
         """
         self.logger.info("Invoking AssignResources command on MCCS Master Leaf Node")
         mccs_master_ln_client = TangoClient(mccs_master_ln_fqdn)
-        self.invoke_assign_resources(mccs_master_ln_client, input_to_mccs)
+        return mccs_master_ln_client
 
     def invoke_assign_resources(self, tango_client, input_arg):
         """
