@@ -35,6 +35,12 @@ def check_going_into_standby():
     print ("In check_going_into_standby")
     resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('ON')
 
+def check_going_into_abort():
+    resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('ON')
+    print("In check_going_into_aborted")
+    resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('ABORTED')
+
+
 # pre waitings
 
 class WaitConfigure():

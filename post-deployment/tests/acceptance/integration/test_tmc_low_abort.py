@@ -49,13 +49,12 @@ def test_abort():
         LOGGER.info('Scanning the subarray')
         fixture['state'] = 'Subarray SCANNING'
         tmc.scan_sub()
-        resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('SCANNING')
         LOGGER.info('Aborting the subarray')
         fixture['state'] = 'Subarray ABORTING'
         @sync_abort()
         def abort():
             resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('ON')
-            resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('IDLE')
+            resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('SCANNING')
             SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
             SubarrayNodeLow.Abort()
             LOGGER.info('Invoked Abort on Subarray')

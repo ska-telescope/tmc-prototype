@@ -1,5 +1,5 @@
 from resources.test_support.sync_decorators_low import sync_start_up_telescope, sync_assign_resources,\
-    sync_configure, sync_end, sync_abort, sync_release_resources, sync_set_to_standby, time_it
+    sync_configure, sync_end, sync_abort, sync_release_resources, sync_set_to_standby, sync_scan, time_it
 
 from resources.test_support.logging_decorators import log_it
 from tango import DeviceProxy   

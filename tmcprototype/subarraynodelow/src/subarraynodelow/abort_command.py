@@ -10,8 +10,9 @@ from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
-from .device_data import DeviceData
 from . import const
+from .device_data import DeviceData
+
 
 class Abort(SKASubarray.AbortCommand):
     """
@@ -52,12 +53,12 @@ class Abort(SKASubarray.AbortCommand):
                                          "SubarrayNode.Abort",
                                          tango.ErrSeverity.ERR)
 
-    def abort_mccs(self, mccsln_fqdn):
+    def abort_mccs(self, mccs_sa_ln_fqdn):
         """
         Create client of mccs subarray leaf node and invoke abort command on clinet.
         """
-        sdp_client = TangoClient(mccsln_fqdn)
-        sdp_client.send_command(const.CMD_ABORT)
+        mccs_client = TangoClient(mccs_sa_ln_fqdn)
+        mccs_client.send_command(const.CMD_ABORT)
         self.logger.info(const.STR_CMD_ABORT_INV_MCCS)
 
 
