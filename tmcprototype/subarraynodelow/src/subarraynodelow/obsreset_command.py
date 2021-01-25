@@ -38,7 +38,6 @@ class ObsReset(SKASubarray.ObsResetCommand):
         device_data.is_abort_command = False
         try:
             self.logger.info("ObsReset command invoked on SubarrayNodeLow.")
-            #self.obsreset_mccs_subarray_leaf_node()
             mccs_subarray_ln_client = TangoClient(device.mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(const.CMD_OBSRESET)
             device_data._read_activity_message = const.STR_OBSRESET_SUCCESS
@@ -56,13 +55,3 @@ class ObsReset(SKASubarray.ObsResetCommand):
                                          log_msg,
                                          "SKASubarrayLow.ObsReset",
                                          tango.ErrSeverity.ERR)
-
-    # def obsreset_mccs_subarray_leaf_node(self):
-    #     """
-    #     set up MccsSubarray devices
-    #     """
-    #     #Invoke ObsReset command on Mccs Subarray Leaf Node.
-    #     device = self.target
-    #     mccs_subarray_ln_client = TangoClient(device.mccs_subarray_ln_fqdn)
-    #     mccs_subarray_ln_client.send_command(const.CMD_OBSRESET)
-    #     self.logger.info(const.STR_CMD_OBSRESET_INV_MCCSSLN)
