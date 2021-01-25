@@ -13,7 +13,7 @@ from tango import DevFailed
 from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
-from .transaction_id import identify_with_id, inject_id,inject_with_id
+from .transaction_id import identify_with_id, inject_with_id
 from tmc.common.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
 
@@ -37,7 +37,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
 
         Example:
 
-        {"dish":{"receptorIDList":["0002","0001"]},"sdp":{"id":
+        {"subarraID":1,"dish":{"receptorIDList":["0002","0001"]},"sdp":{"id":
         "sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":[{"id":"science_A",
         "coordinate_system":"ICRS","ra":"02:42:40.771","dec":"-00:00:47.84","channels":
         [{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,
@@ -113,7 +113,9 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         
         # 2. Invoke command on CSP and SDP. Call method to create DishGroup.
         dish_allocation_result = self.set_up_dish_data(receptor_list)
-        self.assign_csp_resources(receptor_list)
+        input_csp_assign = resources.copy()
+        del input_csp_assign["sdp"]
+        self.assign_csp_resources(input_csp_assign)
         self.assign_sdp_resources(sdp_resources)
        
         log_msg = const.STR_DISH_ALLOCATION_RESULT + str(dish_allocation_result)
@@ -234,20 +236,9 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
             object in case of failure.
         """
         device_data = DeviceData.get_instance()
-        arg_list = []
-        json_argument = {}
-        argout = []
-        dish = {}
         try:
-            dish[const.STR_KEY_RECEPTOR_ID_LIST] = argin
-            json_argument[const.STR_KEY_DISH] = dish
-
-            #inject transaction id for logging purpose
-            inject_id(self,json_argument)
-
-            arg_list.append(json.dumps(json_argument))
             csp_client = TangoClient(device_data.csp_subarray_ln_fqdn)
-            csp_client.send_command(const.CMD_ASSIGN_RESOURCES, json.dumps(json_argument))
+            csp_client.send_command(const.CMD_ASSIGN_RESOURCES, json.dumps(argin))
             self.logger.info(const.STR_ASSIGN_RESOURCES_INV_CSP_SALN)
             argout = argin
         except DevFailed as df:

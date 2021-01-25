@@ -1,4 +1,3 @@
-import json
 # PyTango imports
 import tango
 from tango import DevState, DevFailed
@@ -36,7 +35,7 @@ class AssignResourcesCommand(BaseCommand):
 
         return True
 
-    def add_receptors_ended(self, event):
+    def assign_resources_ended(self, event):
         """
         Callback function immediately executed when the asynchronous invoked
         command returns.
@@ -79,10 +78,11 @@ class AssignResourcesCommand(BaseCommand):
     @identify_with_id('assign','argin') 
     def do(self, argin):
         """
-        It accepts receptor id list in JSON string format and invokes AddReceptors command on CspSubarray
-        with receptorIDList (list of integers) as an input argument.
+        It accepts subarrayID and receptor ids in JSON string format and invokes AssignResources command on CspSubarray
+        with dish as an input argument.
 
         :param argin:DevString. The string in JSON format. The JSON contains following values:
+            subarrayID: integer
 
             dish:
                 Mandatory JSON object consisting of
@@ -93,6 +93,7 @@ class AssignResourcesCommand(BaseCommand):
                     with preceding zeroes upto 3 digits. E.g. 0001, 0002.
         Example:
         {
+            "subarrayID":1,
             "dish": {
             "receptorIDList": [
                 "0001",
@@ -110,44 +111,16 @@ class AssignResourcesCommand(BaseCommand):
                     DevFailed if the command execution is not successful
         """
         device_data = self.target
-        receptorIDList = []
         try:
-            # Parse receptorIDList from JSON string.
-            json_argument = json.loads(argin)
-            device_data.receptorIDList_str = json_argument[const.STR_DISH][const.STR_RECEPTORID_LIST]
-            # convert receptorIDList from list of string to list of int
-            for receptor in device_data.receptorIDList_str:
-                receptorIDList.append(int(receptor))
-            self.logger.info("receptorIDList: %s", str(receptorIDList))
             delay_manager_obj = DelayManager.get_instance()
             delay_manager_obj.update_config_params()
-            # Invoke AddReceptors command on CspSubarray
-            self.logger.info("Invoking AddReceptors on CSP subarray")
+            # Invoke AssignResources command on CspSubarray
+            self.logger.info("Invoking AssignResources on CSP subarray")
             csp_sub_client_obj = TangoClient(device_data.csp_subarray_fqdn)
-            csp_sub_client_obj.send_command_async(const.CMD_ADD_RECEPTORS, receptorIDList, self.add_receptors_ended)
-            #TODO: Waiting for CSPSubarray's changes
-            # csp_sub_client_obj.send_command_async(const.CMD_ASSIGN_RESOURCES, receptorIDList, self.assign_resources_ended)
-            self.logger.info("After invoking AddReceptors on CSP subarray")
-            device_data._read_activity_message = const.STR_ADD_RECEPTORS_SUCCESS
-            # TODO: Waiting for CSPSubarray's changes
-            # device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
-            self.logger.info(const.STR_ADD_RECEPTORS_SUCCESS)
-
-        except ValueError as value_error:
-            log_msg = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
-            device_data._read_activity_message = const.ERR_INVALID_JSON_ASSIGN_RES + str(value_error)
-            self.logger.exception(value_error)
-            tango.Except.throw_exception(const.ERR_INVALID_JSON_ASSIGN_RES, log_msg,
-                                            "CspSubarrayLeafNode.AssignResourcesCommand",
-                                            tango.ErrSeverity.ERR)
-
-        except KeyError as key_error:
-            log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            device_data._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            self.logger.exception(key_error)
-            tango.Except.throw_exception(const.STR_ASSIGN_RES_EXEC, log_msg,
-                                            "CspSubarrayLeafNode.AssignResourcesCommand",
-                                            tango.ErrSeverity.ERR)
+            csp_sub_client_obj.send_command_async(const.CMD_ASSIGN_RESOURCES, argin, self.assign_resources_ended)
+            self.logger.info("After invoking AssignResources on CSP subarray")
+            device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
+            self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = const.ERR_ASSGN_RESOURCES + str(dev_failed)
