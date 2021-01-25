@@ -197,5 +197,6 @@ class Configure(BaseCommand):
     def update_configuration_json(self, station_beam_pointings, configuration_string):
         # Update station_beam_pointings into output Configure JSON
         configuration_string["subarray_beams"][0] = station_beam_pointings
-        configuration_string.pop("station_beams", None)
+        configuration_string["station_beams"] = configuration_string["subarray_beams"]
+        configuration_string.pop("subarray_beams", None)
         return configuration_string
