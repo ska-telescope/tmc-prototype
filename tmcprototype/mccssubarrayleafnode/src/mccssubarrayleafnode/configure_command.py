@@ -80,7 +80,9 @@ class Configure(BaseCommand):
         :param argin:DevString. The string in JSON format. The JSON contains following values:
 
         Example:
-        {"stations":[{"station_id":1},{"station_id":2}],"station_beam_pointings":[{"station_beam_id":1,"target":{"system":"HORIZON","name":"DriftScan","Az":180.0,"El":45.0},"update_rate":0.0,"channels":[1,2,3,4,5,6,7,8]}]}
+        {"mccs":{"stations":[{"station_id":1},{"station_id":2}],"subarray_beams":[{"subarray_id":1,"subarray_beam_id":1,
+        "target":{"system":"HORIZON","name":"DriftScan","Az":180.0,"El":45.0},"update_rate":0.0,"channels":[[0,8,1,1],
+        [8,8,2,1],[24,16,2,1]]}]}}
 
         Note: Enter the json string without spaces as a input.
 
@@ -147,7 +149,7 @@ class Configure(BaseCommand):
                                          tango.ErrSeverity.ERR)
 
     def create_cmd_data(self, configuration_string):
-        station_beam_pointings = configuration_string["station_beam_pointings"][0]
+        station_beam_pointings = configuration_string["subarray_beams"][0]
         sky_coordinates = self.get_sky_coordinates(station_beam_pointings)
 
         # Add in sky_coordinates set in station_beam_pointings
@@ -194,7 +196,7 @@ class Configure(BaseCommand):
 
     def update_configuration_json(self, station_beam_pointings, configuration_string):
         # Update station_beam_pointings into output Configure JSON
-        configuration_string["station_beam_pointings"][0] = station_beam_pointings
-        configuration_string["station_beams"] = configuration_string["station_beam_pointings"]
-        configuration_string.pop("station_beam_pointings", None)
+        configuration_string["subarray_beams"][0] = station_beam_pointings
+        configuration_string["station_beams"] = configuration_string["subarray_beams"]
+        configuration_string.pop("subarray_beams", None)
         return configuration_string
