@@ -13,7 +13,7 @@ from tango import DevFailed
 from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
-from .transaction_id import identify_with_id, inject_id,inject_with_id
+from .transaction_id import identify_with_id, inject_with_id
 from tmc.common.tango_client import TangoClient
 from subarraynode.device_data import DeviceData
 
