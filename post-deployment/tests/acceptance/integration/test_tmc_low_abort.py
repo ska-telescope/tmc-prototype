@@ -21,9 +21,9 @@ devices_to_log = [
 
 LOGGER = logging.getLogger(__name__)
 
-@pytest.mark.low
-# @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
-@pytest.mark.xfail(reason="Run the test case once mccs image is available")
+# @pytest.mark.low
+@pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
+# @pytest.mark.xfail(reason="Run the test case once mccs image is available")
 def test_abort():
     try:
         # given an interface to TMC to interact with a subarray node and a central node
