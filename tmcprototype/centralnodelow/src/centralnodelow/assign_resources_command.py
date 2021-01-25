@@ -72,12 +72,16 @@ class AssignResources(BaseCommand):
         device_data = self.target
         try:
             json_argument = json.loads(argin)
+            subarray_id = int(json_argument['mccs']['subarray_id'])
             subarray_cmd_data = self._create_subarray_cmd_data(json_argument)
-            subarray_client = self.create_subarray_client(subarray_cmd_data, device_data.subarray_FQDN_dict)
+            log_msg = f"Assigning resources to subarray :-> {subarray_id}"
+            self.logger.info(log_msg)
+            subarray_client = self.create_client(subarray_cmd_data, 
+                device_data.subarray_FQDN_dict[subarray_id])
             self.invoke_assign_resources(subarray_client, subarray_cmd_data)
 
             input_mccs_assign = json.dumps(json_argument["mccs"])
-            mccs_master_ln_client = self.create_mccs_client(device_data.mccs_master_ln_fqdn)
+            mccs_master_ln_client = self.create_client(device_data.mccs_master_ln_fqdn)
             self.invoke_assign_resources(mccs_master_ln_client, input_mccs_assign)
 
             device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
@@ -114,33 +118,43 @@ class AssignResources(BaseCommand):
         # Remove subarray_id key from input json argument and send the json to subarray node
         input_json_subarray = json_argument['mccs']
         del input_json_subarray["subarray_id"]
-        input_to_sa = json.dumps(input_json_subarray)
-        return (input_to_sa, subarray_id)
+        input_to_subarray = json.dumps(input_json_subarray)
+        return input_to_subarray
 
-    def create_subarray_client(self, cmd_data, subarray_FQDN_dict):
+    # def create_subarray_client(self, cmd_data, subarray_FQDN_dict):
+    #     """
+
+    #     :return: None
+    #     """
+    #     # Allocate resources to subarray
+    #     input_to_sa, subarray_id = cmd_data
+    #     self.logger.info("Allocating resource to subarray %d", subarray_id)
+    #     subarray_fqdn = subarray_FQDN_dict[subarray_id]
+    #     subarray_client = TangoClient(subarray_fqdn)
+    #     return subarray_client
+
+    def create_client(self, fqdn):
         """
+        Creates TangoClient for given FQDN
 
-        :return: None
+        :param fqdn: String. FQDN of the Tango device for which client object is to be created.
+
+        return: TangoClient object
         """
-        # Allocate resources to subarray
-        input_to_sa, subarray_id = cmd_data
-        self.logger.info("Allocating resource to subarray %d", subarray_id)
-        subarray_fqdn = subarray_FQDN_dict[subarray_id]
-        subarray_client = TangoClient(subarray_fqdn)
-        return subarray_client
+        return TangoClient(fqdn)
 
-    def create_mccs_client(self, mccs_master_ln_fqdn):
-        """
-        Create proxy of mccs master leaf node and call method assign_resources_leaf_node.
+    # def create_mccs_client(self, mccs_master_ln_fqdn):
+    #     """
+    #     Create proxy of mccs master leaf node and call method assign_resources_leaf_node.
 
-        :param json_argument: The string in JSON format.
-               device_data : Object of class device_data.
+    #     :param json_argument: The string in JSON format.
+    #            device_data : Object of class device_data.
 
-        return: None
-        """
-        self.logger.info("Invoking AssignResources command on MCCS Master Leaf Node")
-        mccs_master_ln_client = TangoClient(mccs_master_ln_fqdn)
-        return mccs_master_ln_client
+    #     return: None
+    #     """
+    #     self.logger.info("Invoking AssignResources command on MCCS Master Leaf Node")
+    #     mccs_master_ln_client = TangoClient(mccs_master_ln_fqdn)
+    #     return mccs_master_ln_client
 
     def invoke_assign_resources(self, tango_client, input_arg):
         """
@@ -151,7 +165,8 @@ class AssignResources(BaseCommand):
 
         :raises: DevFailed if error occurs while invoking command on any of the devices like SubarrayNode, MCCSMasterLeafNode
         """
-        device_data = DeviceData.get_instance()
+        # device_data = DeviceData.get_instance()
+        device_data = self.target
         try:
             tango_client.send_command(const.CMD_ASSIGN_RESOURCES, input_arg)
             log_msg = 'Assign resurces command invoked successfully on {}'.format(tango_client.get_device_fqdn)
