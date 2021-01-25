@@ -31,11 +31,11 @@ from .scan_command import Scan
 from .end_command import End
 from .end_scan_command import EndScan
 from .abort_command import Abort
-# PROTECTED REGION END #    //  MccsSubarrayLeafNode.additional_import
+from .obsreset_command import ObsReset
 
 __all__ = ["MccsSubarrayLeafNode", "main", "Configure", "Scan",
-           "EndScan", "End", "Abort"]
-
+           "EndScan", "End", "Abort", "ObsReset"]
+# PROTECTED REGION END #    //  MccsSubarrayLeafNode.additional_import
 
 class MccsSubarrayLeafNode(SKABaseDevice):
     """
@@ -248,6 +248,30 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         """ Invokes Abort command on MccsSubarrayLeafNode. """
         handler = self.get_command_object("Abort")
         handler()
+    
+    def is_ObsReset_allowed(self):
+        """
+        Checks whether the command is allowed to be run in the current state
+
+        :return: True if this command is allowed to be run in
+        current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run
+        in current device state
+
+        """
+        handler = self.get_command_object("ObsReset")
+        return handler.check_allowed()
+
+    @command(
+    )
+    @DebugIt()
+    def ObsReset(self):
+        """ Invokes ObsReset command on MccsSubarrayLeafNode. """
+        handler = self.get_command_object("ObsReset")
+        handler()
 
     def init_command_objects(self):
         """
@@ -261,6 +285,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         self.endscan = EndScan(*args)
         self.end = End(*args)
         self.abort = Abort(*args)
+        self.obsreset = ObsReset(*args)
 
         # are registered and inherited from SKASubarray
         self.register_command_object("Configure", self.configure)
@@ -268,6 +293,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         self.register_command_object("EndScan", self.endscan)
         self.register_command_object("End", self.end)
         self.register_command_object("Abort", self.abort)
+        self.register_command_object("ObsReset", self.obsreset)
 
 # ----------
 # Run server
