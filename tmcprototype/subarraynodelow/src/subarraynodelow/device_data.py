@@ -33,6 +33,7 @@ class DeviceData:
         self.is_release_resources = False
         self.is_scan_completed = False
         self.isScanRunning = False
+        self.is_abort_command = False
         self._scan_id = ""
         self.scan_duration = None
         self.health_state_aggregator = None
