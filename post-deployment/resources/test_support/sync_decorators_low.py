@@ -25,7 +25,6 @@ def check_going_out_of_configure():
     ##Can only return to ON/IDLE if in READY
     resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('READY')
 
-
 def check_going_into_empty():
     ##Can only release resources if subarray is in ON/IDLE
     resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('ON')
@@ -94,7 +93,7 @@ class WaitScanning():
         self.the_watch.wait_until_value_changed_to('SCANNING',timeout)
         logging.info("state transitioned to SCANNING, waiting for it to return to READY")
         self.the_watch.wait_until_value_changed_to('READY',timeout)
-    
+
 
 def sync_assign_resources(timeout=60):
 # defined as a decorator
@@ -216,17 +215,18 @@ def sync_telescope_starting_up(timeout=50):
 
 
 # defined as a context manager
+
 def sync_release_resources(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        print("In sync_release_resources")
         check_going_into_empty()
         the_waiter = waiter()
         the_waiter.set_wait_for_tearing_down_subarray()
         result = func(*args, **kwargs)
-        the_waiter.wait(150)
+        the_waiter.wait(timeout=100)
         return result
     return wrapper
+
 
 # defined as a context manager
 @contextmanager
@@ -279,7 +279,6 @@ def sync_scan(timeout=200):
             return result
         return wrapper
     return decorator
-
 
 # defined as a context manager
 @contextmanager
