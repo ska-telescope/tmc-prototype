@@ -27,8 +27,8 @@ from subarraynodelow.configure_command import Configure
 from subarraynodelow.scan_command import Scan
 from subarraynodelow.end_scan_command import EndScan
 from subarraynodelow.end_command import End
+from subarraynodelow.abort_command import Abort
 from subarraynodelow.device_data import DeviceData
-
 
 assign_input_file = 'command_AssignResources.json'
 path = join(dirname(__file__), 'data', assign_input_file)
@@ -64,9 +64,6 @@ scan_invalid_key_file='invalid_key_Scan.json'
 path= join(dirname(__file__), 'data' , scan_invalid_key_file)
 with open(path, 'r') as f:
     invalid_key_scan=f.read()
-
-
-device_data = DeviceData.get_instance()
 
 @pytest.fixture
 def subarray_state_model():
@@ -199,6 +196,22 @@ def test_end_should_raise_devfailed_exception_when_mccs_subarray_throws_devfaile
     with pytest.raises(tango.DevFailed) as df:
         end_cmd.do()
     # assert tango_context.device.obsState == ObsState.FAULT
+    assert "This is error message for devfailed" in str(df.value)
+
+def test_abort_command(device_data, subarray_state_model, mock_lower_devices_proxy):
+    _ , _ = mock_lower_devices_proxy
+    device_data.scan_timer_handler.start_scan_timer(10)
+    abort_cmd = Abort(device_data, subarray_state_model)
+    assert abort_cmd.do() == (ResultCode.STARTED, const.STR_ABORT_SUCCESS)
+
+
+def test_abort_raise_devfailed(device_data, subarray_state_model, mock_lower_devices_proxy):
+    device_proxy, tango_client_obj = mock_lower_devices_proxy
+    tango_client_obj.deviceproxy.command_inout.side_effect = raise_devfailed_exception
+    device_data.scan_timer_handler.start_scan_timer(10)
+    abort_cmd = Abort(device_data, subarray_state_model)
+    with pytest.raises(tango.DevFailed) as df:
+        abort_cmd.do()
     assert "This is error message for devfailed" in str(df.value)
 
 @pytest.fixture(scope="function")

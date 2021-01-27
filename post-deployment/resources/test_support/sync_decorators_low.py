@@ -35,6 +35,12 @@ def check_going_into_standby():
     print ("In check_going_into_standby")
     resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('ON')
 
+def check_going_into_abort():
+    resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('ON')
+    print("In check_going_into_aborted")
+    resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('ABORTED')
+
+
 # pre waitings
 
 class WaitConfigure():
@@ -311,4 +317,16 @@ def sync_oet_scanning():
     the_waiter.wait()
 
 
-
+def sync_abort(timeout=200):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            check_going_into_abort()
+            w = WaitAbort()
+            ################
+            result = func(*args, **kwargs)
+            ################
+            w.wait(timeout)
+            return result
+        return wrapper
+    return decorator
