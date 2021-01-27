@@ -78,13 +78,13 @@ def scan_sub():
     SubarrayNodeLow.Scan('{"id":1}')
     LOGGER.info('Scan Started')
 
-@sync_abort()
+@sync_abort
 def abort_sub():
     SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
     SubarrayNodeLow.Abort()
     LOGGER.info('Abort command invoked on SubarrayNodeLow.')
 
-@sync_obsreset()
+@sync_obsreset
 def ObsReset_sub():
     SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
     SubarrayNodeLow.ObsReset()
