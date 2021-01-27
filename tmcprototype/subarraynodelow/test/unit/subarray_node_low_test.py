@@ -310,7 +310,7 @@ def test_end_scan_should_raise_devfailed_exception_when_mccs_subbarray_ln_throws
     assert "This is error message for devfailed" in str(df.value)
 
 
-def test_obsreset_command_when_subarray_is_in_obsstate_abort(mock_lower_devices_proxy, subarray_state_model):
+def test_obsreset_command(mock_lower_devices_proxy, subarray_state_model):
     device_data = DeviceData.get_instance()
     obsreset_cmd = ObsReset(device_data, subarray_state_model)
     assert obsreset_cmd.do() == (ResultCode.STARTED, const.STR_OBSRESET_SUCCESS)

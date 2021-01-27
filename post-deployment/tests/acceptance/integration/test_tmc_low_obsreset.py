@@ -40,6 +40,16 @@ def test_obsreset():
         tmc.compose_sub()
         fixture['state'] = 'Subarray Assigned'
         #need to add abort invocation here
+        LOGGER.info('Configuring the Subarray')
+        fixture['state'] = 'Subarray CONFIGURING'
+        tmc.configure_sub()
+        fixture['state'] = 'Subarray Configured for SCAN'
+        # When scan is run for provided duration based on previous configuuration
+        resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('READY')
+        LOGGER.info('Invoking Scan on Subarray')
+        SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
+        SubarrayNodeLow.Scan('{"id":1}')
+        fixture['state'] = 'Subarray SCANNING'
         LOGGER.info('Invoking abort command')
         tmc.abort_sub()
         fixture['state'] = 'Obstate aborted'
@@ -65,9 +75,16 @@ def test_obsreset():
         elif fixture['state'] == 'Subarray Assigned':
             tmc.release_resources()
             tmc.set_to_standby()
+        elif fixture['state'] == 'Subarray Configured for SCAN':
+            tmc.end()
+            tmc.release_resources()
+            tmc.set_to_standby()
+        elif fixture['state'] == 'Subarray SCANNING':
+            raise Exception('unable to teardown subarray from being in SCANNING')
+        elif fixture['state'] == 'Subarray CONFIGURING':
+            raise Exception('unable to teardown subarray from being in CONFIGURING')
         elif fixture['state'] == 'Obstate aborted':
             tmc.ObsReset_sub()
             tmc.release_resources()
             tmc.set_to_standby()
-
         pytest.fail("unable to complete test without exceptions")

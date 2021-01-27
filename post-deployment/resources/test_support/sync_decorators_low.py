@@ -28,15 +28,15 @@ def check_going_out_of_configure():
 def check_going_into_empty():
     ##Can only release resources if subarray is in ON/IDLE
     resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('ON')
-    print ("In check_going_into_empty")
+    logging.info ("In check_going_into_empty")
     resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('IDLE')
 
 def check_going_into_standby():
-    print ("In check_going_into_standby")
+    logging.info ("In check_going_into_standby")
     resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('ON')
 
 def check_going_out_of_abort():
-    print ("In check_going_out_of_abort")
+    logging.info ("In check_going_out_of_abort")
     resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('ABORTED')
 
 # pre waitings
@@ -171,7 +171,7 @@ def sync_oet_configuration():
 
 
 def handle_timeout(arg1,agr2):
-    print("operation timeout")
+    logging.info("operation timeout")
     raise Exception("operation timeout")
 
 def time_it(timeout):
