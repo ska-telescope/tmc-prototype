@@ -31,9 +31,9 @@ class Configure(SKASubarray.ConfigureCommand):
 
         JSON string example is:
 
-         {"mccs":{"stations":[{"station_id":1,},{"station_id":2,}],"station_beam_pointings":
-         [{"station_beam_id":1,"target":{"system":"HORIZON","name":"DriftScan","Az":180.0,"El":45.0},
-         "update_rate":0.0,"channels":[1,2,3,4,5,6,7,8]}]},"tmc":{"scanDuration":10.0}}
+         {"mccs":{"stations":[{"station_id":1},{"station_id":2}],"subarray_beams":[{"subarray_id":1,
+         "subarray_beam_id":1,"target":{"system":"HORIZON","name":"DriftScan","Az":180.0,"El":45.0},
+         "update_rate":0.0,"channels":[[0,8,1,1],[8,8,2,1],[24,16,2,1]]}]},"tmc":{"scanDuration":10.0}}
 
         :return: A tuple containing a return code and a string message indicating status.
          The message is for information purpose only.
@@ -43,7 +43,7 @@ class Configure(SKASubarray.ConfigureCommand):
         :raises: JSONDecodeError if input argument json string contains invalid value
                  DevFailed if the command execution is not successful.
         """
-        device_data = DeviceData.get_instance()
+        device_data = self.target
         device_data.is_scan_completed = False
         device_data.is_release_resources = False
         self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA_LOW)
@@ -67,7 +67,6 @@ class Configure(SKASubarray.ConfigureCommand):
         return (ResultCode.STARTED, message)
         
     def _configure_mccs_subarray(self, scan_configuration):
-        # device_data = self.target
         scan_configuration = scan_configuration["mccs"]
         if not scan_configuration:
             raise KeyError("MCCS configuration must be given. Aborting MCCS configuration.")

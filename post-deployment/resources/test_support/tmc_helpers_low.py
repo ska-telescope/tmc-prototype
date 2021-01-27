@@ -72,6 +72,15 @@ def configure_sub():
     LOGGER.info("Subarray obsState is: " + str(SubarrayNodeLow.obsState))
     LOGGER.info('Invoked Configure on Subarray')
 
+@sync_abort
+def abort():
+    resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('ON')
+    resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('IDLE')
+    SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
+    SubarrayNodeLow.Abort()
+    LOGGER.info("Subarray obsState is: " + str(SubarrayNodeLow.obsState))
+    LOGGER.info('Invoked Abort on Subarray')
+
 @sync_scan(200)
 def scan_sub():
     SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')

@@ -176,7 +176,8 @@ def handle_timeout(arg1,agr2):
 
 def time_it(timeout):
     def decorator(func):
-        @functools.wraps(func)
+        @functools.wraps(func)CONFLICT (content): Merge conflict in tmcprototype/subarraynodelow/test/unit/subarray_node_low_test.py
+
         def wrapper(*args, **kwargs):
             signal.signal(signal.SIGALRM, handle_timeout)
             signal.alarm(timeout)  # wait for timeout seconds and timeout if still stick

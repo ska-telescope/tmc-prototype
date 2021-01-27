@@ -30,10 +30,12 @@ from .scan_command import Scan
 from .end_command import End
 from .end_scan_command import EndScan
 from .release_all_resources_command import ReleaseAllResources
+from .abort_command import Abort
 from .obsreset_command import ObsReset
 
 __all__ = ["SubarrayNode", "main", "AssignResources", "ReleaseAllResources",
-           "Configure", "Scan", "EndScan", "End", "On", "ObsReset", "Off"]
+           "Configure", "Scan", "EndScan", "End", "On", "ObsReset", "Abort", "Off"]
+
 
 
 class SubarrayNode(SKASubarray):
@@ -178,7 +180,11 @@ class SubarrayNode(SKASubarray):
         self.configure = Configure(*args)
         self.release = ReleaseAllResources(*args)
         self.assign = AssignResources(*args)
+<<<<<<< HEAD
         self.obsreset = ObsReset(*args)
+=======
+        self.abort = Abort(*args)
+>>>>>>> master
         
         self.register_command_object("AssignResources", self.assign)
         self.register_command_object("ReleaseAllResources", self.release)
@@ -188,7 +194,11 @@ class SubarrayNode(SKASubarray):
         self.register_command_object("Scan", self.scan)
         self.register_command_object("End", self.end)
         self.register_command_object("EndScan", self.endscan)
+<<<<<<< HEAD
         self.register_command_object("ObsReset", self.endscan)
+=======
+        self.register_command_object("Abort", self.abort)
+>>>>>>> master
 
 # ----------
 # Run server
