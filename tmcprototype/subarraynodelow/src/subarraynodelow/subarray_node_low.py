@@ -180,11 +180,8 @@ class SubarrayNode(SKASubarray):
         self.configure = Configure(*args)
         self.release = ReleaseAllResources(*args)
         self.assign = AssignResources(*args)
-<<<<<<< HEAD
         self.obsreset = ObsReset(*args)
-=======
         self.abort = Abort(*args)
->>>>>>> master
         
         self.register_command_object("AssignResources", self.assign)
         self.register_command_object("ReleaseAllResources", self.release)
@@ -194,11 +191,8 @@ class SubarrayNode(SKASubarray):
         self.register_command_object("Scan", self.scan)
         self.register_command_object("End", self.end)
         self.register_command_object("EndScan", self.endscan)
-<<<<<<< HEAD
         self.register_command_object("ObsReset", self.endscan)
-=======
         self.register_command_object("Abort", self.abort)
->>>>>>> master
 
 # ----------
 # Run server
