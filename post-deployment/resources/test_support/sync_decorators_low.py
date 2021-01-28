@@ -28,18 +28,16 @@ def check_going_out_of_configure():
 def check_going_into_empty():
     ##Can only release resources if subarray is in ON/IDLE
     resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('ON')
-    print ("In check_going_into_empty")
+    logging.info ("In check_going_into_empty")
     resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('IDLE')
 
 def check_going_into_standby():
-    print ("In check_going_into_standby")
+    logging.info ("In check_going_into_standby")
     resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('ON')
 
-def check_going_into_abort():
-    resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('ON')
-    print("In check_going_into_aborted")
-    resource('ska_low/tm_subarray_node/1').assert_attribute('obsState').equals('ABORTED')
-
+def check_going_out_of_abort():
+    logging.info ("In check_going_out_of_abort")
+    resource('ska_low/tm_subarray_node/1').assert_attribute('State').equals('ABORTED')
 
 # pre waitings
 
@@ -173,7 +171,7 @@ def sync_oet_configuration():
 
 
 def handle_timeout(arg1,agr2):
-    print("operation timeout")
+    logging.info("operation timeout")
     raise Exception("operation timeout")
 
 def time_it(timeout):
@@ -316,17 +314,26 @@ def sync_oet_scanning():
     yield
     the_waiter.wait()
 
+def sync_obsreset(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        check_going_out_of_abort()
+        w  = WaitObsReset()
+        ################
+        result = func(*args, **kwargs)
+        ################
+        w.wait()
+        return result
+    return wrapper
 
-def sync_abort(timeout=200):
-    def decorator(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            check_going_into_abort()
-            w = WaitAbort()
-            ################
-            result = func(*args, **kwargs)
-            ################
-            w.wait(timeout)
-            return result
-        return wrapper
-    return decorator
+def sync_abort(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        check_going_into_empty()
+        w  = WaitAbort()
+        ################
+        result = func(*args, **kwargs)
+        ################
+        w.wait()
+        return result
+    return wrapper

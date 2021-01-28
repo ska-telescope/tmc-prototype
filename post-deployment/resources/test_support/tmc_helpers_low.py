@@ -1,6 +1,6 @@
 from resources.test_support.sync_decorators_low import sync_start_up_telescope, sync_assign_resources,\
-    sync_configure, sync_end, sync_abort, sync_release_resources, sync_set_to_standby, sync_scan, time_it
-
+                    sync_scan, sync_configure, sync_end, sync_release_resources, sync_abort, \
+                    sync_obsreset,sync_set_to_standby, time_it
 from resources.test_support.logging_decorators import log_it
 from tango import DeviceProxy   
 from resources.test_support.helpers_low import waiter,watch,resource
@@ -86,3 +86,15 @@ def scan_sub():
     SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
     SubarrayNodeLow.Scan('{"id":1}')
     LOGGER.info('Scan Started')
+
+@sync_abort
+def abort_sub():
+    SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
+    SubarrayNodeLow.Abort()
+    LOGGER.info('Abort command invoked on SubarrayNodeLow.')
+
+@sync_obsreset
+def ObsReset_sub():
+    SubarrayNodeLow = DeviceProxy('ska_low/tm_subarray_node/1')
+    SubarrayNodeLow.ObsReset()
+    LOGGER.info('ObsReset command invoked on SubarrayNodeLow.')
