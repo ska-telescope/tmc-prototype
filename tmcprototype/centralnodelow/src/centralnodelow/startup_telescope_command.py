@@ -3,7 +3,7 @@ StartUpTelescope class for CentralNodelow.
 """
 # Tango imports
 import tango
-from tango import DevState, DevFailed
+from tango import DevState, DevFailed, DeviceProxy, EventType
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
@@ -17,6 +17,20 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
     """
     A class for Low CentralNode's StartupCommand() command.
     """
+
+    def command_result_cb(self, event):
+        """
+        Attribute callback for commandResult.
+        """
+        device_data = DeviceData.get_instance()
+        log_msg = 'MccsController.commandResult change event is : ' + str(event)
+        self.logger.debug(log_msg)
+        if not event.err:
+            device_data.cmd_res_evt_val = event.attr_value.value
+            log_msg="commandResult attrobute value is :" + str(self.cmd_res_val)
+            self.logger.info(log_msg)
+        else:
+            self.loger.error("Error on subscribing commandResult attribute")
 
     def check_allowed(self):
 
@@ -57,6 +71,15 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         log_msg = const.STR_ON_CMD_ISSUED
         self.logger.info(log_msg)
         device_data._read_activity_message = log_msg
+
+        mccs_controller_client = TangoClient(device_data.mcce_controller_fqdn)
+        mccs_controller_proxy = mccs_controller_client.deviceproxy
+        device_data.cmd_res_evt_id = mccs_controller_proxy.subscribe_event("commandResult",
+                            EventType.CHANGE_EVENT, self.command_result_cb, stateless=True)
+
+        while str(self.cmd_res_evt_val) is not "0":
+            pass
+
         return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
 
     def create_subarray_client(self, subarray_fqdn_list):
