@@ -69,10 +69,6 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         self.create_mccs_client(device_data.mccs_master_ln_fqdn)
         self.create_subarray_client(device_data.subarray_low)
 
-        mccs_mln_client = TangoClient("low-mccs/control/control")
-        self.mccs_event_id = mccs_mln_client.subscribe_attribute("commandResult", None)
-        print(":::::::::::::::::::::::::::::::self.mccs_event_id:::::::::::::::::::::::::", self.mccs_event_id)
-        
         log_msg = const.STR_ON_CMD_ISSUED
         self.logger.info(log_msg)
         device_data._read_activity_message = log_msg
@@ -107,8 +103,6 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         :return: None
         """
         mccs_mln_client = TangoClient(mccs_master_fqdn)
-        # self.mccs_event_id = mccs_mln_client.subscribe_attribute("commandResult", None)
-        # print(":::::::::::::::::::::::::::::::self.mccs_event_id:::::::::::::::::::::::::", self.mccs_event_id)
         self.invoke_startup(mccs_mln_client)
 
 
