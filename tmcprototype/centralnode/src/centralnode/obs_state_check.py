@@ -20,7 +20,7 @@ class ObsStateAggregator:
     """
 
     def __init__(self, subarray_fqdn_list, logger=None):
-        if logger == None:
+        if logger is None:
             self.logger = logging.getLogger(__name__)
         else:
             self.logger = logger
@@ -89,9 +89,6 @@ class ObsStateAggregator:
                     device_data.resource_manager.update_resource_deallocation(
                         subarray_id
                     )
-                    # for dish, subarray in self._subarray_allocation.items():
-                    #     if subarray == subarray_id:
-                    #         self._subarray_allocation[dish] = "NOT_ALLOCATED"
             else:
                 # TODO: For future reference
                 self._read_activity_message = const.ERR_SUBSR_SA_OBS_STATE + str(evt)

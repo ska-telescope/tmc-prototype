@@ -29,7 +29,7 @@ class ReleaseResources(BaseCommand):
         :rtype: boolean
 
         :raises: DevFailed if this command is not allowed to be run in current device state
-
+        
         """
 
         if self.state_model.op_state in [

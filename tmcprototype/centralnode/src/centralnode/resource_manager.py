@@ -18,7 +18,7 @@ class ResourceManager:
             raise Exception("This is singletone class")
         else:
             ResourceManager.__instance = self
-        if logger == None:
+        if logger is None:
             self.logger = logging.getLogger(__name__)
         else:
             self.logger = logger
@@ -63,6 +63,6 @@ class ResourceManager:
 
     @staticmethod
     def get_instance():
-        if ResourceManager.__instance == None:
+        if ResourceManager.__instance is None:
             ResourceManager()
         return ResourceManager.__instance

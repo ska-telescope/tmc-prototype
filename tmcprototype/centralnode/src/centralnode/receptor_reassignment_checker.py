@@ -24,7 +24,7 @@ class ReceptorReassignmentChecker:
     """
 
     def __init__(self, logger=None):
-        if logger == None:
+        if logger is None:
             self.logger = logging.getLogger(__name__)
         else:
             self.logger = logger
@@ -41,7 +41,6 @@ class ReceptorReassignmentChecker:
             self.logger.info("Checking allocation status of dish %s.", dish_ID)
             if device_data.resource_manager.is_already_assigned(dish_ID):
                 self.logger.info("Dish %s is already allocated.", dish_ID)
-                # duplicate_allocation_dish_ids.append(dish_ID)
                 duplicate_allocation_dish_ids.append(receptor)
                 duplicate_allocation_count = duplicate_allocation_count + 1
         self.logger.info(

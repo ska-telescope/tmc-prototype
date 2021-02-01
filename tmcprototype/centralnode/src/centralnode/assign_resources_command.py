@@ -53,7 +53,7 @@ class AssignResources(BaseCommand):
         """
         Assigns resources to given subarray. It accepts the subarray id, receptor id list and SDP block in JSON
         string format. Upon successful execution, the 'receptorIDList' attribute of the given subarray is populated
-        with the given receptors.Also checking for duplicate allocation of resources is done. If already allocated
+        with the given receptors. Also checking for duplicate allocation of resources is done. If already allocated
         it will throw error message regarding the prior existence of resource.
 
         :param argin: The string in JSON format. The JSON contains following values:
@@ -264,5 +264,5 @@ class AssignResources(BaseCommand):
         message = json.dumps(argout)
         self.logger.info(message)
         return message
-
+        
         # PROTECTED REGION END #    //  CentralNode.AssignResources

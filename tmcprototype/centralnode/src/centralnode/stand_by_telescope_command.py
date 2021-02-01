@@ -89,7 +89,6 @@ class StandByTelescope(SKABaseDevice.OffCommand):
 
         :return: None
         """
-
         sdp_mln_client = TangoClient(sdp_fqdn)
         self.standby_leaf_node(sdp_mln_client, const.CMD_OFF)
         self.standby_leaf_node(sdp_mln_client, const.CMD_STANDBY)
@@ -101,7 +100,6 @@ class StandByTelescope(SKABaseDevice.OffCommand):
 
         :return: None
         """
-
         for name in range(0, len(dish_fqdn)):
             dish_ln_client = TangoClient(dish_fqdn[name])
             self.standby_leaf_node(dish_ln_client, const.CMD_SET_STANDBYFP_MODE)
