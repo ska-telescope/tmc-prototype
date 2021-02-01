@@ -10,6 +10,7 @@ from . import const
 from .delay_model import DelayManager
 from tmc.common.tango_server_helper import TangoServerHelper
 
+
 class On(SKABaseDevice.OnCommand):
     """
     A class for CSP Subarray's On() command.
@@ -37,7 +38,9 @@ class On(SKABaseDevice.OnCommand):
         """
         device_data = self.target
         if event.err:
-            log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log = (
+                const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            )
             device_data._read_activity_message = log
             self.logger.error(log)
         else:
@@ -57,7 +60,7 @@ class On(SKABaseDevice.OnCommand):
         :rtype: (ResultCode, str)
 
         """
-        # device_data = self.target    
+        # device_data = self.target
         log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
         self.logger.debug(log_msg)
         delay_manager_obj = DelayManager.get_instance()

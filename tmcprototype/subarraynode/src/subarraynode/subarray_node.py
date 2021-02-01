@@ -15,10 +15,10 @@ other TM Components (such as OET, Central Node) for a Subarray.
 # PROTECTED REGION ID(SubarrayNode.additionnal_import) ENABLED START #
 # Tango imports
 from tango import AttrWriteType
-from tango.server import run,attribute, command, device_property
+from tango.server import run, attribute, command, device_property
 
 # Additional imports
-from . import const, release,  track_command
+from . import const, release, track_command
 from ska.base.commands import ResultCode
 from ska.base.control_model import ObsMode
 from ska.base import SKASubarray
@@ -37,9 +37,22 @@ from subarraynode.obsreset_command import ObsReset
 from subarraynode.track_command import Track
 from tmc.common.tango_server_helper import TangoServerHelper
 
-__all__ = ["SubarrayNode", "main", "AssignResources", "ReleaseAllResources",
-           "Configure", "Scan", "EndScan", "End", "On",
-           "Off", "Track", "Abort", "Restart", "ObsReset"]
+__all__ = [
+    "SubarrayNode",
+    "main",
+    "AssignResources",
+    "ReleaseAllResources",
+    "Configure",
+    "Scan",
+    "EndScan",
+    "End",
+    "On",
+    "Off",
+    "Track",
+    "Abort",
+    "Restart",
+    "ObsReset",
+]
 
 
 class SubarrayNode(SKASubarray):
@@ -47,6 +60,7 @@ class SubarrayNode(SKASubarray):
     Provides the monitoring and control interface required by users as well as
     other TM Components (such as OET, Central Node) for a Subarray.
     """
+
     # PROTECTED REGION ID(SubarrayNode.class_variable) ENABLED START
 
     # PROTECTED REGION END #    //  SubarrayNode.class_variable
@@ -56,26 +70,28 @@ class SubarrayNode(SKASubarray):
     # -----------------
 
     DishLeafNodePrefix = device_property(
-        dtype='str', doc="Device name prefix for the Dish Leaf Node",
+        dtype="str",
+        doc="Device name prefix for the Dish Leaf Node",
     )
 
     CspSubarrayLNFQDN = device_property(
-
-        dtype='str', doc="This property contains the FQDN of the CSP Subarray Leaf Node associated with the "
-            "Subarray Node.",
+        dtype="str",
+        doc="This property contains the FQDN of the CSP Subarray Leaf Node associated with the "
+        "Subarray Node.",
     )
 
     SdpSubarrayLNFQDN = device_property(
-        dtype='str', doc="This property contains the FQDN of the SDP Subarray Leaf Node associated with the "
-            "Subarray Node.",
+        dtype="str",
+        doc="This property contains the FQDN of the SDP Subarray Leaf Node associated with the "
+        "Subarray Node.",
     )
 
     CspSubarrayFQDN = device_property(
-        dtype='str',
+        dtype="str",
     )
 
     SdpSubarrayFQDN = device_property(
-        dtype='str',
+        dtype="str",
     )
 
     # ----------
@@ -83,23 +99,23 @@ class SubarrayNode(SKASubarray):
     # ----------
 
     scanID = attribute(
-        dtype='str',
+        dtype="str",
         doc="ID of ongoing SCAN",
     )
 
     sbID = attribute(
-        dtype='str',
+        dtype="str",
         doc="ID of ongoing Scheduling Block",
     )
 
     activityMessage = attribute(
-        dtype='str',
+        dtype="str",
         access=AttrWriteType.READ_WRITE,
         doc="Activity Message",
     )
 
     receptorIDList = attribute(
-        dtype=('uint16',),
+        dtype=("uint16",),
         max_dim_x=100,
         doc="ID List of the Receptors assigned in the Subarray",
     )
@@ -112,6 +128,7 @@ class SubarrayNode(SKASubarray):
         """
         A class for the TMC SubarrayNode's init_device() method.
         """
+
         def do(self):
             """
             Initializes the attributes and properties of the Subarray Node.
@@ -131,7 +148,9 @@ class SubarrayNode(SKASubarray):
 
             device.set_status(const.STR_SA_INIT)
             device._obs_mode = ObsMode.IDLE
-            device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
+            device._build_state = "{},{},{}".format(
+                release.name, release.version, release.description
+            )
             device._version_id = release.version
             device.scan_thread = None
             # Step 1: Create object of configuration model
@@ -159,7 +178,7 @@ class SubarrayNode(SKASubarray):
     # ------------------
 
     def read_scanID(self):
-        """ Internal construct of TANGO. Returns the Scan ID.
+        """Internal construct of TANGO. Returns the Scan ID.
 
         EXAMPLE: 123
         Where 123 is a Scan ID from configuration json string.
@@ -175,7 +194,7 @@ class SubarrayNode(SKASubarray):
         # PROTECTED REGION END #    //  SubarrayNode.sbID_read
 
     def read_activityMessage(self):
-        """ Internal construct of TANGO. Returns activityMessage.
+        """Internal construct of TANGO. Returns activityMessage.
         Example: "Subarray node is initialized successfully"
         //result occured after initialization of device.
         """
@@ -190,8 +209,7 @@ class SubarrayNode(SKASubarray):
         # PROTECTED REGION END #    //  SubarrayNode.activityMessage_write
 
     def read_receptorIDList(self):
-        """ Internal construct of TANGO. Returns the receptor IDs allocated to the Subarray.
-         """
+        """Internal construct of TANGO. Returns the receptor IDs allocated to the Subarray."""
         # PROTECTED REGION ID(SubarrayNode.receptorIDList_read) ENABLED START #
         return self.device_data._receptor_id_list
         # PROTECTED REGION END #    //  SubarrayNode.receptorIDList_read
@@ -215,7 +233,7 @@ class SubarrayNode(SKASubarray):
         return handler.check_allowed()
 
     @command(
-        dtype_in='str',
+        dtype_in="str",
         doc_in="Initial Pointing parameters of Dish - Right Ascension and Declination coordinates.",
         dtype_out="DevVarLongStringArray",
         doc_out="[ResultCode, information-only string]",
@@ -265,9 +283,11 @@ class SubarrayNode(SKASubarray):
         self.register_command_object("ObsReset", self.obsreset)
         self.register_command_object("Track", self.track)
 
+
 # ----------
 # Run server
 # ----------
+
 
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(SubarrayNode.main) ENABLED START #
@@ -280,5 +300,6 @@ def main(args=None, **kwargs):
     return run((SubarrayNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  SubarrayNode.main
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

@@ -17,6 +17,7 @@ class DeviceData:
     as functional device. It mainly comprise the data common
     across various functions of a MCCSSubarrayLeafNode
     """
+
     __instance = None
 
     def __init__(self):
@@ -34,4 +35,3 @@ class DeviceData:
         if DeviceData.__instance == None:
             DeviceData()
         return DeviceData.__instance
-

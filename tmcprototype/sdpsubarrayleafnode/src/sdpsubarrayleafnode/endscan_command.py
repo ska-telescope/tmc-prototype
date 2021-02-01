@@ -5,8 +5,10 @@ EndScan class for SDPSubarrayLeafNode.
 # Tango imports
 import tango
 from tango import DevState, DevFailed
+
 # Additional import
 from ska.base.commands import BaseCommand
+
 # from ska.base.control_model import ObsState
 from tmc.common.tango_client import TangoClient
 from . import const
@@ -29,14 +31,20 @@ class EndScan(BaseCommand):
         :raises: Exception if command execution throws any type of exception.
 
         """
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-            tango.Except.throw_exception("EndScan() is not allowed in current state",
-                                            "Failed to invoke EndScan command on SdpSubarrayLeafNode.",
-                                            "sdpsubarrayleafnode.EndScan()",
-                                            tango.ErrSeverity.ERR)
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
+            tango.Except.throw_exception(
+                "EndScan() is not allowed in current state",
+                "Failed to invoke EndScan command on SdpSubarrayLeafNode.",
+                "sdpsubarrayleafnode.EndScan()",
+                tango.ErrSeverity.ERR,
+            )
 
-        # TODO: Mock obs_state issue to be resolved     
-        # device_data = self.target   
+        # TODO: Mock obs_state issue to be resolved
+        # device_data = self.target
         # sdp_sa_ln_client = TangoClient(device_data._sdp_sa_fqdn)
         # if sdp_sa_ln_client.get_attribute("obsState") != ObsState.SCANNING:
         #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_SCAN, "Failed to invoke EndScan command on SdpSubarrayLeafNode."
@@ -68,7 +76,9 @@ class EndScan(BaseCommand):
         """
         device_data = self.target
         if event.err:
-            log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log = (
+                const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            )
             device_data._read_activity_message = log
             self.logger.error(log)
         else:
@@ -90,7 +100,9 @@ class EndScan(BaseCommand):
         device_data = self.target
         try:
             sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
-            sdp_sa_ln_client_obj.send_command_async(const.CMD_ENDSCAN, None, self.endscan_cmd_ended_cb)
+            sdp_sa_ln_client_obj.send_command_async(
+                const.CMD_ENDSCAN, None, self.endscan_cmd_ended_cb
+            )
             device_data._read_activity_message = const.STR_ENDSCAN_SUCCESS
             self.logger.info(const.STR_ENDSCAN_SUCCESS)
 
@@ -98,6 +110,9 @@ class EndScan(BaseCommand):
             log_msg = const.ERR_ENDSCAN_INVOKING_CMD + str(dev_failed)
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
-            tango.Except.throw_exception(const.STR_ENDSCAN_EXEC, log_msg,
-                                            "SdpSubarrayLeafNode.EndScan()",
-                                            tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_ENDSCAN_EXEC,
+                log_msg,
+                "SdpSubarrayLeafNode.EndScan()",
+                tango.ErrSeverity.ERR,
+            )

@@ -5,7 +5,7 @@ EVT_CBF_HEALTH = "cspCbfHealthState"
 EVT_PSS_HEALTH = "cspPssHealthState"
 EVT_PST_HEALTH = "cspPstHealthState"
 
-#In/out commands
+# In/out commands
 CMD_ON = "On"
 CMD_OFF = "Off"
 CMD_STANDBY = "Standby"
@@ -25,7 +25,9 @@ STR_CSP_PST_HEALTH_DEGRADED = "CSP PST health is DEGRADED."
 STR_CSP_PST_HEALTH_FAILED = "CSP PST health is FAILED."
 STR_CSP_PST_HEALTH_UNKNOWN = "CSP PST health is UNKNOWN."
 STR_ON_CMD_ISSUED = "ON command invoked successfully from CSP Master leaf node."
-STR_STANDBY_CMD_ISSUED = "StandByTelescope command invoked successfully from CSP Master leaf node."
+STR_STANDBY_CMD_ISSUED = (
+    "StandByTelescope command invoked successfully from CSP Master leaf node."
+)
 STR_OFF_CMD_ISSUED = "OFF command invoked successfully from CSP Master leaf node."
 STR_COMMAND = "Command :-> "
 STR_INVOKE_SUCCESS = "Command invoked successfully."
@@ -43,7 +45,9 @@ ERR_IN_CREATE_PROXY = "Error in creating proxy of the device "
 ERR_ON_SUBS_CSP_CBF_HEALTH = "Error in subscribing CspCbfHealth attribute "
 ERR_ON_SUBS_CSP_PSS_HEALTH = "Error in subscribing CspPssHealth attribute "
 ERR_ON_SUBS_CSP_PST_HEALTH = "Error in subscribing CspPstHealth attribute "
-ERR_SUBS_CSP_MASTER_LEAF_ATTR = "Exception occurred while subscribing to Csp Master attribute"
+ERR_SUBS_CSP_MASTER_LEAF_ATTR = (
+    "Exception occurred while subscribing to Csp Master attribute"
+)
 ERR_CSP_MASTER_LEAF_INIT = "Error occured in Csp Master Leaf Node initialization "
 ERR_INVOKING_CMD = "Error in invoking command: "
 ERR_EXE_ON_CMD = "Error in executing On command"

@@ -15,6 +15,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
     """
     A class for SubarrayNodelow's AssignResources() command.
     """
+
     def do(self, argin):
         """
         Assigns the resources to the subarray. It accepts station ids, channels, station beam ids
@@ -44,5 +45,5 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         log_msg = const.STR_ASSIGN_RES_EXEC + "STARTED"
         self.logger.debug(log_msg)
         device_data.activity_message = log_msg
-        
+
         return (ResultCode.STARTED, log_msg)

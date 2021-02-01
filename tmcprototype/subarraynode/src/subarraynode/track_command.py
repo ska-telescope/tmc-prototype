@@ -32,15 +32,21 @@ class Track(ResponseCommand):
 
         :raises: DevFailed if this command is not allowed to be run in current device state
         """
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-            tango.Except.throw_exception("Command Track is not allowed in current state.",
-                                         "Failed to invoke Track command on DishLeafNode.",
-                                         "SubarrayNode.Track()",
-                                         tango.ErrSeverity.ERR)
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
+            tango.Except.throw_exception(
+                "Command Track is not allowed in current state.",
+                "Failed to invoke Track command on DishLeafNode.",
+                "SubarrayNode.Track()",
+                tango.ErrSeverity.ERR,
+            )
         return True
 
     def do(self, argin):
-        """ Invokes Track command on the Dishes assigned to the Subarray.
+        """Invokes Track command on the Dishes assigned to the Subarray.
 
         :param argin: DevString
 
@@ -67,14 +73,20 @@ class Track(ResponseCommand):
             cmd_input = [argin]
             cmdData = tango.DeviceData()
             cmdData.insert(tango.DevVarStringArray, cmd_input)
-            device_data._dish_leaf_node_group_client.send_command(const.CMD_TRACK, cmdData)
-            device_data._scan_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
+            device_data._dish_leaf_node_group_client.send_command(
+                const.CMD_TRACK, cmdData
+            )
+            device_data._scan_id = "".join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(4)
+            )
             self.logger.info(const.STR_TRACK_CMD_INVOKED_SA)
             return (ResultCode.OK, const.STR_TRACK_CMD_INVOKED_SA)
         except tango.DevFailed as devfailed:
             log_msg = const.ERR_TRACK_CMD + str(devfailed)
             self.logger.exception(devfailed)
-            tango.Except.throw_exception(const.STR_CMD_FAILED,
-                                         log_msg,
-                                         "SubarrayNode.Track()",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_CMD_FAILED,
+                log_msg,
+                "SubarrayNode.Track()",
+                tango.ErrSeverity.ERR,
+            )

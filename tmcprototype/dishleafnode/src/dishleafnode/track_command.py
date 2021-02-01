@@ -36,7 +36,11 @@ class Track(BaseCommand):
         :return: True if this command is allowed to be run in current device state.
         :rtype: boolean
         """
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
             return False
 
         return True
@@ -78,7 +82,9 @@ class Track(BaseCommand):
             self.logger.info("'%s' command executed successfully.", command_name)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
-            log_message = f"Exception occured while executing the '{command_name}' command."
+            log_message = (
+                f"Exception occured while executing the '{command_name}' command."
+            )
             device_data._read_activity_message = log_message
             tango.Except.re_throw_exception(
                 dev_failed,
@@ -92,7 +98,6 @@ class Track(BaseCommand):
         self.tracking_thread = threading.Thread(None, self.track_thread, "DishLeafNode")
         self.tracking_thread.start()
 
-    
     def _get_targets(self, json_argument):
         try:
             ra_value = json_argument["pointing"]["target"]["RA"]
@@ -135,7 +140,14 @@ class Track(BaseCommand):
             timestamp = str(now)
             # pylint: disable=unbalanced-tuple-unpacking
             azel_converter = AzElConverter(self.logger)
-            device_data.az, device_data.el = azel_converter.convert_radec_to_azel(device_data.radec_value, timestamp, device_data.dish_name, device_data.observer_location["latitude"], device_data.observer_location["latitude"], device_data.observer_location["altitude"])
+            device_data.az, device_data.el = azel_converter.convert_radec_to_azel(
+                device_data.radec_value,
+                timestamp,
+                device_data.dish_name,
+                device_data.observer_location["latitude"],
+                device_data.observer_location["latitude"],
+                device_data.observer_location["altitude"],
+            )
 
             if not self._is_elevation_within_mechanical_limits():
                 time.sleep(0.05)
@@ -150,7 +162,11 @@ class Track(BaseCommand):
                 break
 
             # TODO (kmadisa 11-12-2020) Add a pointing lead time to the current time (like we do on MeerKAT)
-            desired_pointing = [now.timestamp(), round(device_data.az, 12), round(device_data.el, 12)]
+            desired_pointing = [
+                now.timestamp(),
+                round(device_data.az, 12),
+                round(device_data.el, 12),
+            ]
             self.logger.debug("desiredPointing coordinates: %s", desired_pointing)
             dish_client.deviceproxy.desiredPointing = desired_pointing
             time.sleep(0.05)
@@ -172,4 +188,3 @@ class Track(BaseCommand):
 
         device_data.el_limit = False
         return True
-

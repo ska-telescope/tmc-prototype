@@ -43,7 +43,7 @@ class On(SKASubarray.OnCommand):
         device_data.obs_state_aggr = ObsStateAggregator(self.logger)
         device_data.health_state_aggr.subscribe()
         device_data.obs_state_aggr.subscribe()
-        # subscribe to receiveAddressesMap from SDP 
+        # subscribe to receiveAddressesMap from SDP
         device_data.receive_addresses = ReceiveAddressesUpdater(self.logger)
         device_data.receive_addresses.subscribe()
         self.set_csp_client(device_data)
@@ -58,7 +58,7 @@ class On(SKASubarray.OnCommand):
         set up csp devices
         """
         # Create proxy for CSP Subarray Leaf Node
-        log_msg = const.STR_SA_PROXY_INIT  + str(device_data.csp_subarray_ln_fqdn)
+        log_msg = const.STR_SA_PROXY_INIT + str(device_data.csp_subarray_ln_fqdn)
         csp_subarray_ln_client = TangoClient(device_data.csp_subarray_ln_fqdn)
         self.logger.info(log_msg)
         self.turn_on_leaf_node(csp_subarray_ln_client)
@@ -68,7 +68,7 @@ class On(SKASubarray.OnCommand):
         set up sdp devices
         """
         # Create proxy for SDP Subarray Leaf Node
-        log_msg = const.STR_SA_PROXY_INIT  + str(device_data.sdp_subarray_ln_fqdn)
+        log_msg = const.STR_SA_PROXY_INIT + str(device_data.sdp_subarray_ln_fqdn)
         sdp_subarray_ln_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
         self.logger.info(log_msg)
         self.turn_on_leaf_node(sdp_subarray_ln_client)
@@ -81,6 +81,9 @@ class On(SKASubarray.OnCommand):
             log_msg = const.ERR_INVOKING_ON_CMD + str(dev_failed)
             self.logger.exception(log_msg)
             self._read_activity_message = log_msg
-            tango.Except.throw_exception(dev_failed[0].desc, const.ERR_INVOKE_ON_CMD_ON_SA,
-                                         "SubarrayNode.On()", tango.ErrSeverity.ERR)
-
+            tango.Except.throw_exception(
+                dev_failed[0].desc,
+                const.ERR_INVOKE_ON_CMD_ON_SA,
+                "SubarrayNode.On()",
+                tango.ErrSeverity.ERR,
+            )

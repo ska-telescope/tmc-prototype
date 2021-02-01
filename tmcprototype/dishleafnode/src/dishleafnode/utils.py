@@ -84,16 +84,22 @@ class UnitConverter:
         """
         try:
             dd = re.split("[:]+", argin)
-            deg_dec = abs(float(dd[0])) + ((float(dd[1])) / 60) + ((float(dd[2])) / 3600)
+            deg_dec = (
+                abs(float(dd[0])) + ((float(dd[1])) / 60) + ((float(dd[2])) / 3600)
+            )
             if "-" in dd[0]:
                 return deg_dec * (-1)
             else:
                 return deg_dec
         except IndexError as error:
-            log_msg = "Error while converting Deg:Min:Sec to decimal degrees." + str(error)
+            log_msg = "Error while converting Deg:Min:Sec to decimal degrees." + str(
+                error
+            )
             self.logger.error(log_msg)
         except SyntaxError as error:
-            log_msg = "Error while converting Deg:Min:Sec to decimal degrees." + str(error)
+            log_msg = "Error while converting Deg:Min:Sec to decimal degrees." + str(
+                error
+            )
             self.logger.error(log_msg)
 
 

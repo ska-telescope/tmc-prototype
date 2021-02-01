@@ -13,12 +13,20 @@ import katpoint
 import math
 from .utils import UnitConverter
 
+
 class AzElConverter:
     def __init__(self, log):
         self.logger = log
 
-
-    def convert_radec_to_azel(self, target, timestamp, dish_name, observer_location_lat, observer_location_long, observer_altitude):
+    def convert_radec_to_azel(
+        self,
+        target,
+        timestamp,
+        dish_name,
+        observer_location_lat,
+        observer_location_long,
+        observer_altitude,
+    ):
         """Converts RaDec coordinate in to AzEl coordinate using KATPoint library.
 
         :param target: str
@@ -63,10 +71,14 @@ class AzElConverter:
         latitude_radian = katpoint.deg2rad(latitude_degree_decimal)
 
         # Calculate enu coordinates
-        enu_array = katpoint.hadec_to_enu(hour_angle, target_apparnt_radec[1], latitude_radian)
+        enu_array = katpoint.hadec_to_enu(
+            hour_angle, target_apparnt_radec[1], latitude_radian
+        )
 
         # Calculate Az El coordinates
-        az_el_coordinates = list(katpoint.enu_to_azel(enu_array[0], enu_array[1], enu_array[2]))
+        az_el_coordinates = list(
+            katpoint.enu_to_azel(enu_array[0], enu_array[1], enu_array[2])
+        )
         az_el_coordinates[0] = katpoint.rad2deg(az_el_coordinates[0])
         az_el_coordinates[1] = katpoint.rad2deg(az_el_coordinates[1])
         return az_el_coordinates

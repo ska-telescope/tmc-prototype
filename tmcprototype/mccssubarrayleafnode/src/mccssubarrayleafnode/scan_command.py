@@ -9,12 +9,14 @@ from tango import DevState, DevFailed
 from ska.base.commands import BaseCommand
 from tmc.common.tango_client import TangoClient
 from . import const
+
 # PROTECTED REGION END #    //  MccsSubarrayLeafNode.additional_import
+
 
 class Scan(BaseCommand):
     """
     A class for MccsSubarrayLeafNode's Scan() command.
-     """
+    """
 
     def check_allowed(self):
         """
@@ -29,11 +31,17 @@ class Scan(BaseCommand):
             in current device state
 
         """
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-            tango.Except.throw_exception("Scan() is not allowed in current state",
-                                         "Failed to invoke Scan command on mccssubarrayleafnode.",
-                                         "mccssubarrayleafnode.Scan()",
-                                         tango.ErrSeverity.ERR)
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
+            tango.Except.throw_exception(
+                "Scan() is not allowed in current state",
+                "Failed to invoke Scan command on mccssubarrayleafnode.",
+                "mccssubarrayleafnode.Scan()",
+                tango.ErrSeverity.ERR,
+            )
 
         return True
 
@@ -62,7 +70,9 @@ class Scan(BaseCommand):
         device_data = self.target
         # Update logs and activity message attribute with received event
         if event.err:
-            log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log_msg = (
+                const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            )
             self.logger.error(log_msg)
             device_data._read_activity_message = log_msg
         else:
@@ -93,7 +103,9 @@ class Scan(BaseCommand):
             mccs_subarray_client = TangoClient(device_data._mccs_subarray_fqdn)
             # TODO: Mock obs_state issue to be resolved
             # assert mccs_subarray_client.get_attribute("obsState") == ObsState.READY
-            mccs_subarray_client.send_command_async(const.CMD_SCAN, argin, self.scan_cmd_ended_cb)
+            mccs_subarray_client.send_command_async(
+                const.CMD_SCAN, argin, self.scan_cmd_ended_cb
+            )
             device_data._read_activity_message = const.STR_SCAN_SUCCESS
             self.logger.info(const.STR_SCAN_SUCCESS)
 
@@ -110,6 +122,9 @@ class Scan(BaseCommand):
             log_msg = const.ERR_SCAN_RESOURCES + str(dev_failed)
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
-            tango.Except.throw_exception(const.STR_SCAN_EXEC, log_msg,
-                                         "MccsSubarrayLeafNode.Scan",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_SCAN_EXEC,
+                log_msg,
+                "MccsSubarrayLeafNode.Scan",
+                tango.ErrSeverity.ERR,
+            )

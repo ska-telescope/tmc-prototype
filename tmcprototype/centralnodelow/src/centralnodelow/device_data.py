@@ -11,7 +11,9 @@ This module defines the DeviceData class, which represents of the functional Cen
 """
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 from ska.base.control_model import HealthState
+
 # PROTECTED REGION END #    //  CentralNode.additional_import
+
 
 class DeviceData:
     """
@@ -19,7 +21,9 @@ class DeviceData:
     as functional device. It mainly comprise the data common
     across various functions of a central node.
     """
+
     __instance = None
+
     def __init__(self):
         """Private constructor of the class"""
         if DeviceData.__instance != None:
@@ -38,19 +42,8 @@ class DeviceData:
         self._read_activity_message = ""
         self.health_aggreegator = None
 
-
-
     @staticmethod
     def get_instance():
         if DeviceData.__instance == None:
             DeviceData()
         return DeviceData.__instance
-
-
-
-
-
-
-
-
-

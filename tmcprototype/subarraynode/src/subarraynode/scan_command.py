@@ -74,10 +74,9 @@ class Scan(SKASubarray.ScanCommand):
         except DevFailed as dev_failed:
             log_msg = const.ERR_SCAN_CMD + str(dev_failed)
             self.logger.exception(dev_failed)
-            tango.Except.throw_exception(const.STR_SCAN_EXEC,
-                                         log_msg,
-                                         "SubarrayNode.Scan",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_SCAN_EXEC, log_msg, "SubarrayNode.Scan", tango.ErrSeverity.ERR
+            )
 
     def scan_sdp(self, device_data, argin):
         """

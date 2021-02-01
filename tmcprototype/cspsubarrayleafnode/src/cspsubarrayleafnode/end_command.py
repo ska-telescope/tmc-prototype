@@ -1,10 +1,12 @@
 # PyTango imports
 import tango
 from tango import DevState, DevFailed
+
 # Additional import
 from tmc.common.tango_client import TangoClient
 from ska.base.commands import BaseCommand
 from . import const
+
 
 class GoToIdleCommand(BaseCommand):
     """
@@ -25,11 +27,17 @@ class GoToIdleCommand(BaseCommand):
 
         """
         # device = self.target
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-            tango.Except.throw_exception("GoToIdle() is not allowed in current state",
-                                            "Failed to invoke GoToIdle command on cspsubarrayleafnode.",
-                                            "cspsubarrayleafnode.GoToIdle()",
-                                            tango.ErrSeverity.ERR)
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
+            tango.Except.throw_exception(
+                "GoToIdle() is not allowed in current state",
+                "Failed to invoke GoToIdle command on cspsubarrayleafnode.",
+                "cspsubarrayleafnode.GoToIdle()",
+                tango.ErrSeverity.ERR,
+            )
 
         # if device._csp_subarray_proxy.obsState != ObsState.READY:
         #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, "Failed to invoke GoToIdle command on cspsubarrayleafnode.",
@@ -61,7 +69,9 @@ class GoToIdleCommand(BaseCommand):
         device_data = self.target
         # Update logs and activity message attribute with received event
         if event.err:
-            log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log_msg = (
+                const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            )
             self.logger.error(log_msg)
             device_data._read_activity_message = log_msg
         else:
@@ -80,7 +90,9 @@ class GoToIdleCommand(BaseCommand):
         device_data = self.target
         try:
             csp_sub_client_obj = TangoClient(device_data.csp_subarray_fqdn)
-            csp_sub_client_obj.send_command_async(const.CMD_GOTOIDLE, None, self.gotoidle_cmd_ended_cb)
+            csp_sub_client_obj.send_command_async(
+                const.CMD_GOTOIDLE, None, self.gotoidle_cmd_ended_cb
+            )
             device_data._read_activity_message = const.STR_GOTOIDLE_SUCCESS
             self.logger.info(const.STR_GOTOIDLE_SUCCESS)
 
@@ -88,6 +100,9 @@ class GoToIdleCommand(BaseCommand):
             log_msg = const.ERR_GOTOIDLE_INVOKING_CMD + str(dev_failed)
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
-            tango.Except.throw_exception(const.ERR_GOTOIDLE_INVOKING_CMD, log_msg,
-                                            "CspSubarrayLeafNode.GoToIdleCommand",
-                                            tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.ERR_GOTOIDLE_INVOKING_CMD,
+                log_msg,
+                "CspSubarrayLeafNode.GoToIdleCommand",
+                tango.ErrSeverity.ERR,
+            )

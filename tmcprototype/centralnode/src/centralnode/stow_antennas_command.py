@@ -5,11 +5,13 @@ StowAntennas class for CentralNode.
 # Standard Python imports
 import tango
 from tango import DevState, DevFailed
+
 # Additional import
 from ska.base.commands import BaseCommand
 from . import const
 from centralnode.device_data import DeviceData
 from tmc.common.tango_client import TangoClient
+
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
 
@@ -30,11 +32,17 @@ class StowAntennas(BaseCommand):
         :raises: DevFailed if this command is not allowed to be run in current device state
 
         """
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-            tango.Except.throw_exception("Command StowAntennas is not allowed in current state.",
-                                         "Failed to invoke StowAntennas command on CentralNode.",
-                                         "CentralNode.StowAntennas()",
-                                         tango.ErrSeverity.ERR)
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
+            tango.Except.throw_exception(
+                "Command StowAntennas is not allowed in current state.",
+                "Failed to invoke StowAntennas command on CentralNode.",
+                "CentralNode.StowAntennas()",
+                tango.ErrSeverity.ERR,
+            )
         return True
 
     def do(self, argin):
@@ -66,24 +74,31 @@ class StowAntennas(BaseCommand):
                     log_msg = const.ERR_EXE_STOW_CMD + str(dev_failed)
                     self.logger.exception(dev_failed)
                     device_data._read_activity_message = const.ERR_EXE_STOW_CMD
-                    tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
-                                                 "CentralNode.StowAntennasCommand",
-                                                 tango.ErrSeverity.ERR)
+                    tango.Except.throw_exception(
+                        const.STR_CMD_FAILED,
+                        log_msg,
+                        "CentralNode.StowAntennasCommand",
+                        tango.ErrSeverity.ERR,
+                    )
 
         except ValueError as value_error:
             log_msg = const.ERR_STOW_ARGIN + str(value_error)
             self.logger.exception(value_error)
             device_data._read_activity_message = const.ERR_STOW_ARGIN
-            tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
-                                         "CentralNode.StowAntennasCommand",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_CMD_FAILED,
+                log_msg,
+                "CentralNode.StowAntennasCommand",
+                tango.ErrSeverity.ERR,
+            )
 
         except DevFailed as dev_failed:
             log_msg = const.ERR_EXE_STOW_CMD + str(dev_failed)
             self.logger.exception(dev_failed)
             device_data._read_activity_message = const.ERR_EXE_STOW_CMD
-            tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
-                                         "CentralNode.StowAntennasCommand",
-                                         tango.ErrSeverity.ERR)
-
-
+            tango.Except.throw_exception(
+                const.STR_CMD_FAILED,
+                log_msg,
+                "CentralNode.StowAntennasCommand",
+                tango.ErrSeverity.ERR,
+            )

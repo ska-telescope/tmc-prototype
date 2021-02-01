@@ -2,10 +2,12 @@ from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from . import const
 
+
 class Off(SKABaseDevice.OffCommand):
     """
     A class for CspMasterLeafNode's Off() command.
     """
+
     def do(self):
         """
         Invokes Off command on the CSP Element.

@@ -7,6 +7,7 @@ from tango import DevState, DevFailed
 from ska.base.commands import BaseCommand
 from tmc.common.tango_client import TangoClient
 from . import const
+
 # PROTECTED REGION END #    //  MccsMasterLeafNode imports
 
 
@@ -27,12 +28,17 @@ class AssignResources(BaseCommand):
             in current device state
 
         """
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-            tango.Except.throw_exception("AssignResources() is not allowed in current state",
-                                            "Failed to invoke AssignResources command on "
-                                            "mccsmasterleafnode.",
-                                            "mccsmasterleafnode.AssignResources()",
-                                            tango.ErrSeverity.ERR)
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
+            tango.Except.throw_exception(
+                "AssignResources() is not allowed in current state",
+                "Failed to invoke AssignResources command on " "mccsmasterleafnode.",
+                "mccsmasterleafnode.AssignResources()",
+                tango.ErrSeverity.ERR,
+            )
         return True
 
     def allocate_ended(self, event):
@@ -63,8 +69,12 @@ class AssignResources(BaseCommand):
         try:
 
             if event.err:
-                device_data._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
-                    event.errors)
+                device_data._read_activity_message = (
+                    const.ERR_INVOKING_CMD
+                    + str(event.cmd_name)
+                    + "\n"
+                    + str(event.errors)
+                )
                 log = const.ERR_INVOKING_CMD + event.cmd_name
                 self.logger.error(log)
             else:
@@ -74,9 +84,13 @@ class AssignResources(BaseCommand):
 
         except tango.DevFailed as df:
             self.logger.exception(df)
-            tango.Except.re_throw_exception(df, "MCCS master gave an error response",
-                                            "MCCS master threw error in Allocate MCCS LMC_CommandFailed",
-                                            "Allocate", tango.ErrSeverity.ERR)
+            tango.Except.re_throw_exception(
+                df,
+                "MCCS master gave an error response",
+                "MCCS master threw error in Allocate MCCS LMC_CommandFailed",
+                "Allocate",
+                tango.ErrSeverity.ERR,
+            )
 
     def do(self, argin):
         """
@@ -84,7 +98,7 @@ class AssignResources(BaseCommand):
         with JSON string as an input argument.
 
         :param argin:StringType. The string in JSON format.
-            
+
         Example:
                 {
                     "subarray_id": 1,
@@ -92,8 +106,8 @@ class AssignResources(BaseCommand):
                     "channels": [[[0,8,1,1],[8,8,2,1],[24,16,2,1]],
                     "station_beam_ids": [1]
                 }
-        
-        
+
+
         Note: Enter the json string without spaces as an input.
 
         :return: None
@@ -104,10 +118,15 @@ class AssignResources(BaseCommand):
         """
         device_data = self.target
         try:
-            log_msg = "Input JSON for MCCS master leaf node AssignResources command is: " + argin
+            log_msg = (
+                "Input JSON for MCCS master leaf node AssignResources command is: "
+                + argin
+            )
             self.logger.debug(log_msg)
             mccs_master_client = TangoClient(device_data._mccs_master_fqdn)
-            mccs_master_client.send_command_async(const.CMD_ALLOCATE, argin, self.allocate_ended)
+            mccs_master_client.send_command_async(
+                const.CMD_ALLOCATE, argin, self.allocate_ended
+            )
             device_data._read_activity_message = const.STR_ALLOCATE_SUCCESS
             self.logger.info(const.STR_ALLOCATE_SUCCESS)
 
@@ -115,6 +134,10 @@ class AssignResources(BaseCommand):
             log_msg = const.ERR_ASSGN_RESOURCE_MCCS + str(dev_failed)
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
-            tango.Except.re_throw_exception(dev_failed, const.STR_ASSIGN_RES_EXEC, log_msg,
-                                            "MccsMasterLeafNode.AssignResources",
-                                            tango.ErrSeverity.ERR)
+            tango.Except.re_throw_exception(
+                dev_failed,
+                const.STR_ASSIGN_RES_EXEC,
+                log_msg,
+                "MccsMasterLeafNode.AssignResources",
+                tango.ErrSeverity.ERR,
+            )

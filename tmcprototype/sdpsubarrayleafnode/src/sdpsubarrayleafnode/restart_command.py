@@ -5,8 +5,10 @@ Restart class for SDPSubarrayLeafNode.
 # Tango imports
 import tango
 from tango import DevState, DevFailed
+
 # Additional import
 from ska.base.commands import BaseCommand
+
 # from ska.base.control_model import ObsState
 from tmc.common.tango_client import TangoClient
 from . import const
@@ -28,11 +30,13 @@ class Restart(BaseCommand):
         :raises: DevFailed if this command is not allowed to be run in current device state
 
         """
-        if self.state_model.op_state in [DevState.UNKNOWN, DevState.DISABLE ]:
-            tango.Except.throw_exception("Restart() is not allowed in current state",
-                                            "Failed to invoke Restart command on SdpSubarrayLeafNode.",
-                                            "sdpsubarrayleafnode.Restart()",
-                                            tango.ErrSeverity.ERR)
+        if self.state_model.op_state in [DevState.UNKNOWN, DevState.DISABLE]:
+            tango.Except.throw_exception(
+                "Restart() is not allowed in current state",
+                "Failed to invoke Restart command on SdpSubarrayLeafNode.",
+                "sdpsubarrayleafnode.Restart()",
+                tango.ErrSeverity.ERR,
+            )
 
         # TODO: Mock obs_state issue to be resolved
         # device_data = self.target
@@ -67,7 +71,9 @@ class Restart(BaseCommand):
         """
         device_data = self.target
         if event.err:
-            log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log = (
+                const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            )
             device_data._read_activity_message = log
             self.logger.error(log)
         else:
@@ -87,7 +93,9 @@ class Restart(BaseCommand):
         device_data = self.target
         try:
             sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
-            sdp_sa_ln_client_obj.send_command_async(const.CMD_RESTART, None, self.restart_cmd_ended_cb)
+            sdp_sa_ln_client_obj.send_command_async(
+                const.CMD_RESTART, None, self.restart_cmd_ended_cb
+            )
             device_data._read_activity_message = const.STR_RESTART_SUCCESS
             self.logger.info(const.STR_RESTART_SUCCESS)
 
@@ -95,6 +103,9 @@ class Restart(BaseCommand):
             log_msg = const.ERR_RESTART_INVOKING_CMD + str(dev_failed)
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
-            tango.Except.throw_exception(const.STR_RESTART_EXEC, log_msg,
-                                            "SdpSubarrayLeafNode.RestartCommand()",
-                                            tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_RESTART_EXEC,
+                log_msg,
+                "SdpSubarrayLeafNode.RestartCommand()",
+                tango.ErrSeverity.ERR,
+            )

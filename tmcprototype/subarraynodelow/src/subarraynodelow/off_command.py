@@ -18,6 +18,7 @@ class Off(SKASubarray.OffCommand):
     """
     A class for the SubarrayNodes's Off() command.
     """
+
     def do(self):
         """
         This command invokes Off Command on MCCSSubarray through mccs subarray leaf node. This comamnd
@@ -45,5 +46,9 @@ class Off(SKASubarray.OffCommand):
             log_msg = const.ERR_INVOKING_OFF_CMD + str(dev_failed)
             self.logger.error(log_msg)
             self._read_activity_message = log_msg
-            tango.Except.throw_exception(dev_failed[0].desc, "Failed to invoke Off command on SubarrayNode.",
-                                         "SubarrayNode.Off()", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                dev_failed[0].desc,
+                "Failed to invoke Off command on SubarrayNode.",
+                "SubarrayNode.Off()",
+                tango.ErrSeverity.ERR,
+            )

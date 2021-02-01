@@ -7,10 +7,12 @@ from ska.base import SKASubarray
 from . import const
 from subarraynodelow.device_data import DeviceData
 
+
 class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
     """
     A class for SKASubarrayLow's ReleaseAllResources() command.
     """
+
     def do(self):
         """
         It invokes ReleaseAllResources command on Subarraylow.
@@ -26,4 +28,4 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
         # TODO: Clearing the assigned resources
         device_data.resource_list = []
         self.logger.debug(const.STR_RELEASE_SUCCESS)
-        return (ResultCode.STARTED, const.STR_RELEASE_SUCCESS )
+        return (ResultCode.STARTED, const.STR_RELEASE_SUCCESS)

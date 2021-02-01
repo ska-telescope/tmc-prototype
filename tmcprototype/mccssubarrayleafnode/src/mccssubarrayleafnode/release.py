@@ -12,10 +12,11 @@
 name = """mccssubarrayleafnode"""
 version = "0.2.16"
 version_info = version.split(".")
-description = """MCCS Subarray Leaf Node monitors and controls the MCCS Subarray device."""
+description = (
+    """MCCS Subarray Leaf Node monitors and controls the MCCS Subarray device."""
+)
 author = "Team NCRA"
 author_email = "telmgt-internal@googlegroups.com"
 license = """BSD-3-Clause"""
 url = """https://www.skatelescope.org"""
 copyright = """"""
-

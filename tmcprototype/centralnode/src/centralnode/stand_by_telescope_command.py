@@ -5,18 +5,22 @@ StandByTelescope class for CentralNode.
 import tango
 from tango import DevState, DevFailed
 import time
+
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from . import const
 from centralnode.device_data import DeviceData
 from tmc.common.tango_client import TangoClient
+
 # PROTECTED REGION END #    //  CentralNode.additional_import
+
 
 class StandByTelescope(SKABaseDevice.OffCommand):
     """
     A class for CentralNode's StandByTelescope() command.
     """
+
     def check_allowed(self):
 
         """
@@ -28,11 +32,17 @@ class StandByTelescope(SKABaseDevice.OffCommand):
 
         :raises: DevFailed if this command is not allowed to be run in current device state
         """
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-            tango.Except.throw_exception("Command StandByTelescope is not allowed in current state.",
-                                         "Failed to invoke StandByTelescope command on CentralNode.",
-                                         "CentralNode.StandByTelescope()",
-                                         tango.ErrSeverity.ERR)
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
+            tango.Except.throw_exception(
+                "Command StandByTelescope is not allowed in current state.",
+                "Failed to invoke StandByTelescope command on CentralNode.",
+                "CentralNode.StandByTelescope()",
+                tango.ErrSeverity.ERR,
+            )
         return True
 
     def do(self):
@@ -59,7 +69,7 @@ class StandByTelescope(SKABaseDevice.OffCommand):
 
         # stop obs state aggregation
         device_data.obs_state_aggregator.stop_aggregation()
-        return (ResultCode.OK,const.STR_STANDBY_CMD_ISSUED)
+        return (ResultCode.OK, const.STR_STANDBY_CMD_ISSUED)
 
     def standby_csp(self, csp_fqdn):
         """
@@ -83,7 +93,6 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         sdp_mln_client = TangoClient(sdp_fqdn)
         self.standby_leaf_node(sdp_mln_client, const.CMD_OFF)
         self.standby_leaf_node(sdp_mln_client, const.CMD_STANDBY)
-
 
     def standby_dish(self, dish_fqdn):
         """
@@ -111,7 +120,6 @@ class StandByTelescope(SKABaseDevice.OffCommand):
             subarray_client = TangoClient(subarray_fqdn)
             self.standby_leaf_node(subarray_client, const.CMD_OFF)
 
-
     def standby_leaf_node(self, tango_client, cmd_name, param=None):
         """
         Invoke command on leaf nodes.
@@ -127,15 +135,18 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         device_data = DeviceData.get_instance()
         try:
             tango_client.send_command(cmd_name, param)
-            log_msg = 'Command {} invoked successfully on {}'.format(cmd_name, tango_client.get_device_fqdn)
+            log_msg = "Command {} invoked successfully on {}".format(
+                cmd_name, tango_client.get_device_fqdn
+            )
             self.logger.debug(log_msg)
             device_data._read_activity_message = log_msg
         except DevFailed as dev_failed:
             log_msg = const.ERR_EXE_STANDBY_CMD + str(dev_failed)
             self.logger.exception(dev_failed)
             device_data._read_activity_message = const.ERR_EXE_STANDBY_CMD
-            tango.Except.throw_exception(const.STR_STANDBY_EXEC, log_msg,
-                                         "CentralNode.StandByTelescopeCommand",
-                                         tango.ErrSeverity.ERR)
-
-
+            tango.Except.throw_exception(
+                const.STR_STANDBY_EXEC,
+                log_msg,
+                "CentralNode.StandByTelescopeCommand",
+                tango.ErrSeverity.ERR,
+            )

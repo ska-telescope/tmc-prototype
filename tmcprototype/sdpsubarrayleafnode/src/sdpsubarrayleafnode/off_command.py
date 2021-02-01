@@ -5,6 +5,7 @@ Off class for SDPSubarrayLeafNode.
 # Tango imports
 import tango
 from tango import DevFailed
+
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
@@ -40,7 +41,9 @@ class Off(SKABaseDevice.OffCommand):
         """
         device_data = self.target
         if event.err:
-            log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log = (
+                const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            )
             device_data._read_activity_message = log
             self.logger.error(log)
         else:
@@ -63,7 +66,9 @@ class Off(SKABaseDevice.OffCommand):
         device_data = self.target
         try:
             sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
-            sdp_sa_ln_client_obj.send_command_async(const.CMD_OFF, None, self.off_cmd_ended_cb)
+            sdp_sa_ln_client_obj.send_command_async(
+                const.CMD_OFF, None, self.off_cmd_ended_cb
+            )
             log_msg = const.CMD_OFF + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
             self.logger.debug(log_msg)
 
@@ -73,7 +78,9 @@ class Off(SKABaseDevice.OffCommand):
             log_msg = const.ERR_INVOKING_OFF_CMD + str(dev_failed)
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
-            tango.Except.throw_exception(const.STR_OFF_EXEC, log_msg,
-                                            "SdpSubarrayLeafNode.Off()",
-                                            tango.ErrSeverity.ERR)
-
+            tango.Except.throw_exception(
+                const.STR_OFF_EXEC,
+                log_msg,
+                "SdpSubarrayLeafNode.Off()",
+                tango.ErrSeverity.ERR,
+            )

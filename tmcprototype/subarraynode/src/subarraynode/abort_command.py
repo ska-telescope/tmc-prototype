@@ -15,10 +15,12 @@ from tmc.common.tango_server_helper import TangoServerHelper
 from subarraynode.device_data import DeviceData
 from . import const
 
+
 class Abort(SKASubarray.AbortCommand):
     """
     A class for SubarrayNode's Abort() command.
     """
+
     def do(self):
         """
         This command on Subarray Node invokes Abort command on CSP Subarray Leaf Node and SDP
@@ -53,29 +55,31 @@ class Abort(SKASubarray.AbortCommand):
         except DevFailed as dev_failed:
             log_msg = const.ERR_ABORT_INVOKING_CMD + str(dev_failed)
             self.logger.exception(dev_failed)
-            tango.Except.throw_exception(const.ERR_ABORT_INVOKING_CMD,
-                                         log_msg,
-                                         "SubarrayNode.Abort",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.ERR_ABORT_INVOKING_CMD,
+                log_msg,
+                "SubarrayNode.Abort",
+                tango.ErrSeverity.ERR,
+            )
 
     def abort_sdp(self, device_data):
         """
-        set up sdp devices
+        Abort command on SDP Subarray Leaf Node
         """
-        #Invoke Abort command on SDP Subarray Leaf Node.
         sdp_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
         sdp_client.send_command(const.CMD_ABORT)
         self.logger.info(const.STR_CMD_ABORT_INV_SDP)
 
     def abort_csp(self, device_data):
         """
-        set up csp devices
+        Abort command on CSP Subarray Leaf Node
         """
-         #Invoke Abort command on CSP Subarray Leaf Node.
         csp_client = TangoClient(device_data.csp_subarray_ln_fqdn)
         csp_client.send_command(const.CMD_ABORT)
         self.logger.info(const.STR_CMD_ABORT_INV_CSP)
 
     def abort_dishes(self, device_data):
-         # Create proxy for Dish Leaf Node Group
+        """
+        Abort command on Dish Leaf Node Group
+        """
         device_data._dish_leaf_node_group_client.send_command(const.CMD_ABORT)

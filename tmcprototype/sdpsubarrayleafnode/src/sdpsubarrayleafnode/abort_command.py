@@ -5,8 +5,10 @@ Abort class for SDPSubarrayLeafNode.
 # Tango imports
 import tango
 from tango import DevState, DevFailed
+
 # Additional import
 from ska.base.commands import BaseCommand
+
 # from ska.base.control_model import ObsState
 from tmc.common.tango_client import TangoClient
 from . import const
@@ -28,12 +30,18 @@ class Abort(BaseCommand):
         :raises: DevFailed if this command is not allowed to be run in current device state
 
         """
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-            tango.Except.throw_exception("Abort() is not allowed in current state",
-                                            "Failed to invoke Abort command on SdpSubarrayLeafNode.",
-                                            "sdpsubarrayleafnode.Abort()",
-                                            tango.ErrSeverity.ERR)
-        
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
+            tango.Except.throw_exception(
+                "Abort() is not allowed in current state",
+                "Failed to invoke Abort command on SdpSubarrayLeafNode.",
+                "sdpsubarrayleafnode.Abort()",
+                tango.ErrSeverity.ERR,
+            )
+
         # TODO: Mock obs_state issue to be resolved
         # device_data = self.target
         # sdp_sa_ln_client = TangoClient(device_data._sdp_sa_fqdn)
@@ -68,7 +76,9 @@ class Abort(BaseCommand):
         """
         device_data = self.target
         if event.err:
-            log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log = (
+                const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            )
             device_data._read_activity_message = log
             self.logger.error(log)
         else:
@@ -88,7 +98,9 @@ class Abort(BaseCommand):
         device_data = self.target
         try:
             sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
-            sdp_sa_ln_client_obj.send_command_async(const.CMD_ABORT, None, self.abort_cmd_ended_cb)
+            sdp_sa_ln_client_obj.send_command_async(
+                const.CMD_ABORT, None, self.abort_cmd_ended_cb
+            )
             device_data._read_activity_message = const.STR_ABORT_SUCCESS
             self.logger.info(const.STR_ABORT_SUCCESS)
 
@@ -96,6 +108,9 @@ class Abort(BaseCommand):
             log_msg = const.ERR_ABORT_INVOKING_CMD + str(dev_failed)
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
-            tango.Except.throw_exception(const.STR_ABORT_EXEC, log_msg,
-                                            "SdpSubarrayLeafNode.Abort()",
-                                            tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_ABORT_EXEC,
+                log_msg,
+                "SdpSubarrayLeafNode.Abort()",
+                tango.ErrSeverity.ERR,
+            )

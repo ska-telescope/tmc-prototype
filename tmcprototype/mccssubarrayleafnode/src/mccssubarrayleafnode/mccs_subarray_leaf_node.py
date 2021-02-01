@@ -32,20 +32,30 @@ from .end_scan_command import EndScan
 from .abort_command import Abort
 from .obsreset_command import ObsReset
 
-__all__ = ["MccsSubarrayLeafNode", "main", "Configure", "Scan",
-           "EndScan", "End", "Abort", "ObsReset"]
+__all__ = [
+    "MccsSubarrayLeafNode",
+    "main",
+    "Configure",
+    "Scan",
+    "EndScan",
+    "End",
+    "Abort",
+    "ObsReset",
+]
 # PROTECTED REGION END #    //  MccsSubarrayLeafNode.additional_import
+
 
 class MccsSubarrayLeafNode(SKABaseDevice):
     """
     MCCS Subarray Leaf node monitors the MCCS Subarray and issues control actions during an observation.
     """
+
     # -----------------
     # Device Properties
     # -----------------
 
     MccsSubarrayFQDN = device_property(
-        dtype='str', default_value="low-mccs/subarray/01"
+        dtype="str", default_value="low-mccs/subarray/01"
     )
 
     # ----------
@@ -53,16 +63,15 @@ class MccsSubarrayLeafNode(SKABaseDevice):
     # ----------
 
     activityMessage = attribute(
-        dtype='str',
+        dtype="str",
         access=AttrWriteType.READ_WRITE,
     )
 
-
-    mccsSubarrayHealthState = attribute(name="mccsSubarrayHealthState", label="mccsSubarrayHealthState",
-        forwarded=True
+    mccsSubarrayHealthState = attribute(
+        name="mccsSubarrayHealthState", label="mccsSubarrayHealthState", forwarded=True
     )
-    mccsSubarrayObsState = attribute(name="mccsSubarrayObsState", label="mccsSubarrayObsState",
-        forwarded=True
+    mccsSubarrayObsState = attribute(
+        name="mccsSubarrayObsState", label="mccsSubarrayObsState", forwarded=True
     )
     # ---------------
     # General methods
@@ -91,7 +100,9 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             this_server.device = device
             device_data = DeviceData.get_instance()
             device.device_data = device_data
-            device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
+            device._build_state = "{},{},{}".format(
+                release.name, release.version, release.description
+            )
             device._version_id = release.version
             device._versioninfo = " "
             device_data._mccs_subarray_fqdn = device.MccsSubarrayFQDN
@@ -144,18 +155,14 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Configure")
         return handler.check_allowed()
 
-    @command(
-        dtype_in=('str')
-    )
+    @command(dtype_in=("str"))
     @DebugIt()
     def Configure(self, argin):
         """ Invokes Configure command on MccsSubarrayLeafNode """
         handler = self.get_command_object("Configure")
         handler(argin)
 
-    @command(
-        dtype_in=('str')
-    )
+    @command(dtype_in=("str"))
     @DebugIt()
     def Scan(self, argin):
         """ Invokes Scan command on mccssubarrayleafnode"""
@@ -216,8 +223,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("End")
         return handler.check_allowed()
 
-    @command(
-    )
+    @command()
     @DebugIt()
     def End(self):
         """ Invokes End command on MccsSubarrayLeafNode. """
@@ -240,14 +246,13 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Abort")
         return handler.check_allowed()
 
-    @command(
-    )
+    @command()
     @DebugIt()
     def Abort(self):
         """ Invokes Abort command on MccsSubarrayLeafNode. """
         handler = self.get_command_object("Abort")
         handler()
-    
+
     def is_ObsReset_allowed(self):
         """
         Checks whether the command is allowed to be run in the current state
@@ -264,8 +269,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("ObsReset")
         return handler.check_allowed()
 
-    @command(
-    )
+    @command()
     @DebugIt()
     def ObsReset(self):
         """ Invokes ObsReset command on MccsSubarrayLeafNode. """
@@ -294,14 +298,17 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         self.register_command_object("Abort", self.abort)
         self.register_command_object("ObsReset", self.obsreset)
 
+
 # ----------
 # Run server
 # ----------
+
 
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(MccsSubarrayLeafNode.main) ENABLED START #
     return run((MccsSubarrayLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  MccsSubarrayLeafNode.main
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

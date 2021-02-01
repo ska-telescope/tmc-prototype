@@ -30,6 +30,7 @@ from .off_command import Off
 from .standby_command import Standby
 from .disable_command import Disable
 from .device_data import DeviceData
+
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additional_import
 
 __all__ = ["SdpMasterLeafNode", "main", "On", "Off", "Standby", "Disable"]
@@ -40,36 +41,36 @@ class SdpMasterLeafNode(SKABaseDevice):
     The primary responsibility of the SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
     actions during an observation.
     """
+
     # -----------------
     # Device Properties
     # -----------------
 
-    SdpMasterFQDN = device_property(
-        dtype='str'
-    )
+    SdpMasterFQDN = device_property(dtype="str")
 
     # ----------
     # Attributes
     # ----------
 
     versionInfo = attribute(
-        dtype='str',
+        dtype="str",
         doc="Version information of TANGO device.",
     )
 
     activityMessage = attribute(
-
-        dtype='str',
+        dtype="str",
         access=AttrWriteType.READ_WRITE,
         doc="String providing information about the current activity in SDPLeafNode.",
     )
 
     ProcessingBlockList = attribute(
-        dtype='str',
+        dtype="str",
         doc="List of Processing Block devices.",
     )
 
-    sdpHealthState = attribute(name="sdpHealthState", label="sdpHealthState", forwarded=True)
+    sdpHealthState = attribute(
+        name="sdpHealthState", label="sdpHealthState", forwarded=True
+    )
 
     # ---------------
     # General methods
@@ -97,16 +98,22 @@ class SdpMasterLeafNode(SKABaseDevice):
             device_data = DeviceData.get_instance()
             device.device_data = device_data
             device._health_state = HealthState.OK  # Setting healthState to "OK"
-            device._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
+            device._simulation_mode = (
+                SimulationMode.FALSE
+            )  # Enabling the simulation mode
             device._test_mode = TestMode.NONE
             device._processing_block_list = "test"
-            device_data._read_activity_message = 'OK'
+            device_data._read_activity_message = "OK"
             device.set_status(const.STR_INIT_SUCCESS)
-            device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
+            device._build_state = "{},{},{}".format(
+                release.name, release.version, release.description
+            )
             device._version_id = release.version
             device_data.sdp_master_ln_fqdn = device.SdpMasterFQDN
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
-            log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
+            log_msg = const.STR_SETTING_CB_MODEL + str(
+                ApiUtil.instance().get_asynch_cb_sub_model()
+            )
             self.logger.debug(log_msg)
             device_data._read_activity_message = const.STR_INIT_SUCCESS
             self.logger.info(device_data._read_activity_message)
@@ -134,8 +141,8 @@ class SdpMasterLeafNode(SKABaseDevice):
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.activityMessage_read) ENABLED START #
-        """ Internal construct of TANGO. String providing information about the current activity in
-        SDPLeafNode. """
+        """Internal construct of TANGO. String providing information about the current activity in
+        SDPLeafNode."""
         return self.device_data._read_activity_message
         # PROTECTED REGION END #    //  SdpMasterLeafNode.activityMessage_read
 
@@ -174,8 +181,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         handler = self.get_command_object("Disable")
         return handler.check_allowed()
 
-    @command(
-    )
+    @command()
     @DebugIt()
     def Disable(self):
         """
@@ -189,8 +195,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         handler = self.get_command_object("Disable")
         handler()
 
-    @command(
-    )
+    @command()
     @DebugIt()
     def Standby(self):
         """
@@ -218,8 +223,6 @@ class SdpMasterLeafNode(SKABaseDevice):
         self.register_command_object("Standby", Standby(*args))
 
 
-
-
 # ----------
 # Run server
 # ----------
@@ -231,5 +234,5 @@ def main(args=None, **kwargs):
     # PROTECTED REGION END #    //  SdpMasterLeafNode.main
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

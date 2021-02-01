@@ -5,6 +5,7 @@ On class for SDPSubarrayLeafNode.
 # Tango imports
 import tango
 from tango import DevFailed
+
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
@@ -41,7 +42,9 @@ class On(SKABaseDevice.OnCommand):
         device_data = self.target
         sdp_sa_ln_server = TangoServerHelper.get_instance()
         if event.err:
-            log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log = (
+                const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            )
             device_data._read_activity_message = log
             sdp_sa_ln_server.set_status(log)
             self.logger.error(log)
@@ -67,7 +70,9 @@ class On(SKABaseDevice.OnCommand):
         try:
             sdp_sa_ln_server = TangoServerHelper.get_instance()
             sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
-            sdp_sa_ln_client_obj.send_command_async(const.CMD_ON, None, self.on_cmd_ended_cb)
+            sdp_sa_ln_client_obj.send_command_async(
+                const.CMD_ON, None, self.on_cmd_ended_cb
+            )
             log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
             sdp_sa_ln_server.set_status(log_msg)
             self.logger.debug(log_msg)
@@ -79,6 +84,9 @@ class On(SKABaseDevice.OnCommand):
             device_data._read_activity_message = log_msg
             sdp_sa_ln_server.set_status(log_msg)
             self.logger.exception(dev_failed)
-            tango.Except.throw_exception(const.STR_ON_EXEC, log_msg,
-                                            "SdpSubarrayLeafNode.On()",
-                                            tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_ON_EXEC,
+                log_msg,
+                "SdpSubarrayLeafNode.On()",
+                tango.ErrSeverity.ERR,
+            )

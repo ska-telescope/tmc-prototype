@@ -73,7 +73,9 @@ class Configure(BaseCommand):
             self._configure_band(receiver_band)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
-            log_message = f"Exception occured while executing the '{command_name}' command."
+            log_message = (
+                f"Exception occured while executing the '{command_name}' command."
+            )
             device_data._read_activity_message = log_message
             tango.Except.re_throw_exception(
                 dev_failed,
@@ -106,7 +108,14 @@ class Configure(BaseCommand):
             dish_client = TangoClient(device_data._dish_master_fqdn)
             azel_converter = AzElConverter(self.logger)
             # pylint: disable=unbalanced-tuple-unpacking
-            device_data.az, device_data.el = azel_converter.convert_radec_to_azel(device_data.radec_value, timestamp, device_data.dish_name, device_data.observer_location["latitude"], device_data.observer_location["latitude"], device_data.observer_location["altitude"])
+            device_data.az, device_data.el = azel_converter.convert_radec_to_azel(
+                device_data.radec_value,
+                timestamp,
+                device_data.dish_name,
+                device_data.observer_location["latitude"],
+                device_data.observer_location["latitude"],
+                device_data.observer_location["altitude"],
+            )
         except ValueError as valuerr:
             tango.Except.throw_exception(
                 str(valuerr),
@@ -119,8 +128,8 @@ class Configure(BaseCommand):
         # track or scan, but provide initial coordinates for interest)
         time_az_el = [now.timestamp(), device_data.az, device_data.el]
         dish_client.set_attribute("desiredPointing", time_az_el)
-    # pylint: enable= unbalanced-tuple-unpacking
 
+    # pylint: enable= unbalanced-tuple-unpacking
 
     def _get_targets(self, json_argument):
         try:
@@ -148,4 +157,3 @@ class Configure(BaseCommand):
             )
 
         return json_argument
-

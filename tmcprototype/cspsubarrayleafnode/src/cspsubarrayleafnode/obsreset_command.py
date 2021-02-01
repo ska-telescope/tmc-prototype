@@ -1,15 +1,18 @@
 # PyTango imports
 import tango
 from tango import DevState, DevFailed
+
 # Additional import
 from tmc.common.tango_client import TangoClient
 from ska.base.commands import BaseCommand
 from . import const
 
+
 class ObsResetCommand(BaseCommand):
     """
     A class for CSPSubarrayLeafNode's ObsReset() command.
     """
+
     def check_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state
@@ -23,11 +26,13 @@ class ObsResetCommand(BaseCommand):
         """
         # device = self.target
         if self.state_model.op_state in [DevState.UNKNOWN, DevState.DISABLE]:
-            log_msg= "ObsReset() is not allowed in " + str(self.state_model.op_state)
-            tango.Except.throw_exception(log_msg ,
-                                            "Failed to invoke ObsReset command on CspSubarrayLeafNode.",
-                                            "cspsubarrayleafnode.ObsReset()",
-                                            tango.ErrSeverity.ERR)
+            log_msg = "ObsReset() is not allowed in " + str(self.state_model.op_state)
+            tango.Except.throw_exception(
+                log_msg,
+                "Failed to invoke ObsReset command on CspSubarrayLeafNode.",
+                "cspsubarrayleafnode.ObsReset()",
+                tango.ErrSeverity.ERR,
+            )
 
         # if device._csp_subarray_proxy.obsState not in [ObsState.ABORTED, ObsState.FAULT]:
         #     tango.Except.throw_exception(const.ERR_UNABLE_OBSRESET_CMD, const.ERR_OBSRESET_INVOKING_CMD,
@@ -39,7 +44,7 @@ class ObsResetCommand(BaseCommand):
     def obsreset_cmd_ended_cb(self, event):
         """
         Callback function immediately executed when the asynchronous invoked
-        command returns. 
+        command returns.
 
         :param event: a CmdDoneEvent object. This class is used to pass data
             to the callback method in asynchronous callback model for command
@@ -60,7 +65,9 @@ class ObsResetCommand(BaseCommand):
         device_data = self.target
         # Update logs and activity message attribute with received event
         if event.err:
-            log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log_msg = (
+                const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            )
             self.logger.error(log_msg)
             device_data._read_activity_message = log_msg
         else:
@@ -81,7 +88,9 @@ class ObsResetCommand(BaseCommand):
         device_data = self.target
         try:
             csp_sub_client_obj = TangoClient(device_data.csp_subarray_fqdn)
-            csp_sub_client_obj.send_command_async(const.CMD_OBSRESET, None, self.obsreset_cmd_ended_cb)
+            csp_sub_client_obj.send_command_async(
+                const.CMD_OBSRESET, None, self.obsreset_cmd_ended_cb
+            )
             device_data._read_activity_message = const.STR_OBSRESET_SUCCESS
             self.logger.info(const.STR_OBSRESET_SUCCESS)
 
@@ -89,6 +98,9 @@ class ObsResetCommand(BaseCommand):
             log_msg = const.ERR_OBSRESET_INVOKING_CMD + str(dev_failed)
             device_data._read_activity_message = log_msg
             self.logger.exception(log_msg)
-            tango.Except.throw_exception(const.ERR_OBSRESET_INVOKING_CMD, log_msg,
-                                            "CspSubarrayLeafNode.ObsResetCommand",
-                                            tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.ERR_OBSRESET_INVOKING_CMD,
+                log_msg,
+                "CspSubarrayLeafNode.ObsResetCommand",
+                tango.ErrSeverity.ERR,
+            )

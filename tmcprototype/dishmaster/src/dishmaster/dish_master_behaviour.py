@@ -64,7 +64,8 @@ class OverrideDish(object):
             set_enum(ds_indexer_position, "B{}".format(band_number), model.time_func())
             set_enum(configured_band, "B{}".format(band_number), model.time_func())
             model.logger.info(
-                "Done configuring DISH to operate in frequency band" " {}.".format(band_number)
+                "Done configuring DISH to operate in frequency band"
+                " {}.".format(band_number)
             )
             model.logger.info("DISH reverting back to '{}' mode.".format(dish_mode))
             set_enum(dish_mode_quantity, dish_mode, model.time_func())
@@ -182,7 +183,9 @@ class OverrideDish(object):
             ErrSeverity.WARN,
         )
 
-    def action_lowpower(self, model, tango_dev=None, data_input=None):  # pylint: disable=W0613
+    def action_lowpower(
+        self, model, tango_dev=None, data_input=None
+    ):  # pylint: disable=W0613
         """This command triggers the Dish to transition to the LOW power
         state. All subsystems go into a low power state to power only the
         essential equipment. Specifically the Helium compressor will be set
@@ -241,11 +244,15 @@ class OverrideDish(object):
 
         if dish_mode in _allowed_modes:
             elev = self.MIN_DESIRED_ELEV
-            desiredPointing = [0.0] * len(model.sim_quantities["desiredPointing"].last_val)
+            desiredPointing = [0.0] * len(
+                model.sim_quantities["desiredPointing"].last_val
+            )
             desiredPointing[self.TS_IDX] = model.time_func()
             desiredPointing[self.AZIM_IDX] = self.MAINT_AZIM
             desiredPointing[self.ELEV_IDX] = elev
-            model.sim_quantities["desiredPointing"].set_val(desiredPointing, model.time_func())
+            model.sim_quantities["desiredPointing"].set_val(
+                desiredPointing, model.time_func()
+            )
             set_enum(dish_mode_quantity, maintenance, model.time_func())
             model.logger.info("Dish transitioned to the '%s' mode.", maintenance)
             self._reset_pointing_state(model)
@@ -317,7 +324,9 @@ class OverrideDish(object):
 
         if dish_mode in _allowed_modes:
             set_enum(dish_mode_quantity, standby_fp, model.time_func())
-            model.logger.info("Dish transitioned to the '%s' Dish Element Mode.", standby_fp)
+            model.logger.info(
+                "Dish transitioned to the '%s' Dish Element Mode.", standby_fp
+            )
             self._reset_pointing_state(model)
         else:
             self._throw_exception("SetStandbyFPMode", _allowed_modes)
@@ -358,7 +367,9 @@ class OverrideDish(object):
 
         if dish_mode in _allowed_modes:
             set_enum(dish_mode_quantity, standby_lp, model.time_func())
-            model.logger.info("Dish transitioned to the '%s' Dish Element Mode.", standby_lp)
+            model.logger.info(
+                "Dish transitioned to the '%s' Dish Element Mode.", standby_lp
+            )
             self._reset_pointing_state(model)
         else:
             self._throw_exception("SetStandbyLPMode", _allowed_modes)
@@ -367,7 +378,9 @@ class OverrideDish(object):
         model.logger.info("Dish state set to 'STANDBY'.")
         return [[self.OK], [f"Dish transitioned to '{standby_lp}' mode"]]
 
-    def action_setstowmode(self, model, tango_dev=None, data_input=None):  # pylint: disable=W0613
+    def action_setstowmode(
+        self, model, tango_dev=None, data_input=None
+    ):  # pylint: disable=W0613
         """This command triggers the Dish to transition to the STOW Dish
         Element Mode, and returns to the caller. To point the dish in a
         direction that minimises the wind loads on the structure, for survival
@@ -398,12 +411,18 @@ class OverrideDish(object):
 
         if dish_mode in _allowed_modes:
             elev = self.MAX_DESIRED_ELEV
-            current_azim = model.sim_quantities["achievedPointing"].last_val[self.AZIM_IDX]
-            desiredPointing = [0.0] * len(model.sim_quantities["desiredPointing"].last_val)
+            current_azim = model.sim_quantities["achievedPointing"].last_val[
+                self.AZIM_IDX
+            ]
+            desiredPointing = [0.0] * len(
+                model.sim_quantities["desiredPointing"].last_val
+            )
             desiredPointing[self.TS_IDX] = model.time_func()
             desiredPointing[self.AZIM_IDX] = current_azim
             desiredPointing[self.ELEV_IDX] = elev
-            model.sim_quantities["desiredPointing"].set_val(desiredPointing, model.time_func())
+            model.sim_quantities["desiredPointing"].set_val(
+                desiredPointing, model.time_func()
+            )
             set_enum(dish_mode_quantity, stow, model.time_func())
             model.logger.info("Dish transitioned to the '%s' Dish Element Mode.", stow)
             self._reset_pointing_state(model)
@@ -411,7 +430,9 @@ class OverrideDish(object):
             self._throw_exception("SetStowMode", _allowed_modes)
         return [[self.OK], [f"Dish transitioned to '{stow}' mode."]]
 
-    def action_startcapture(self, model, tango_dev=None, data_input=None):  # pylint: disable=W0613
+    def action_startcapture(
+        self, model, tango_dev=None, data_input=None
+    ):  # pylint: disable=W0613
         """Triggers the dish to start capturing the data on the configured band.
 
         :param model: tango_simlib.model.Model
@@ -440,7 +461,9 @@ class OverrideDish(object):
 
         model.logger.info("'StartCapture' command executed successfully.")
 
-    def action_stopcapture(self, model, tango_dev=None, data_input=None):  # pylint: disable=W0613
+    def action_stopcapture(
+        self, model, tango_dev=None, data_input=None
+    ):  # pylint: disable=W0613
         """Triggers the dish to stop capturing the data on the configured band.
 
         :param model: tango_simlib.model.Model
@@ -467,7 +490,9 @@ class OverrideDish(object):
         else:
             model.logger.warning("pointingState is already '{}'.".format(action))
 
-    def action_track(self, model, tango_dev=None, data_input=None):  # pylint: disable=W0613
+    def action_track(
+        self, model, tango_dev=None, data_input=None
+    ):  # pylint: disable=W0613
         """The Dish is tracking the commanded pointing positions within the
         specified TRACK pointing accuracy.
 
@@ -478,7 +503,9 @@ class OverrideDish(object):
         self._change_pointing_state(model, "TRACK", ("OPERATE",))
         model.logger.info("'Track' command executed successfully.")
 
-    def action_trackstop(self, model, tango_dev=None, data_input=None):  # pylint: disable=W0613
+    def action_trackstop(
+        self, model, tango_dev=None, data_input=None
+    ):  # pylint: disable=W0613
         """The Dish will stop tracking but will not apply brakes.
         Stops movement, but doesn't clear tables/queues.
 
@@ -501,7 +528,9 @@ class OverrideDish(object):
         program_track_quantity = model.sim_quantities["programTrackTable"]
         track_table_size = len(program_track_quantity.last_val)
         default_values = [0.0] * track_table_size
-        model.sim_quantities["programTrackTable"].set_val(default_values, model.time_func())
+        model.sim_quantities["programTrackTable"].set_val(
+            default_values, model.time_func()
+        )
         model.logger.info("'ResetTrackTable' command executed successfully.")
 
     def action_resettracktablebuffer(
@@ -515,7 +544,9 @@ class OverrideDish(object):
         self.desired_pointings = []
         model.logger.info("'ResetTrackTableBuffer' command executed successfully.")
 
-    def action_slew(self, model, tango_dev=None, data_input=None):  # pylint: disable=W0613
+    def action_slew(
+        self, model, tango_dev=None, data_input=None
+    ):  # pylint: disable=W0613
         """The Dish moves to the commanded pointing angle at the maximum
         speed, as defined by the specified slew rate.
 
@@ -529,7 +560,9 @@ class OverrideDish(object):
         self._change_pointing_state(model, "SLEW", ("OPERATE",))
         model.logger.info("'Slew' command executed successfully.")
 
-    def action_scan(self, model, tango_dev=None, data_input=None):  # pylint: disable=W0613
+    def action_scan(
+        self, model, tango_dev=None, data_input=None
+    ):  # pylint: disable=W0613
         """The Dish is tracking the commanded pointing positions within the
         specified SCAN pointing accuracy.
 
@@ -550,7 +583,9 @@ class OverrideDish(object):
             else:
                 break  # all other samples are in the future
         if best_pointing is not None:
-            return AzEl(azim=best_pointing[self.AZIM_IDX], elev=best_pointing[self.ELEV_IDX])
+            return AzEl(
+                azim=best_pointing[self.AZIM_IDX], elev=best_pointing[self.ELEV_IDX]
+            )
         else:
             # no useful samples, so use last requested position
             return self.requested_position
@@ -608,7 +643,10 @@ class OverrideDish(object):
         )
 
     def ensure_within_mechanical_limits(self, next_pos):
-        if next_pos.azim > self.MAX_DESIRED_AZIM or next_pos.azim < self.MIN_DESIRED_AZIM:
+        if (
+            next_pos.azim > self.MAX_DESIRED_AZIM
+            or next_pos.azim < self.MIN_DESIRED_AZIM
+        ):
             Except.throw_exception(
                 "Skipping dish movement.",
                 "Desired azimuth angle '%s' is out of pointing limits %s."
@@ -616,7 +654,10 @@ class OverrideDish(object):
                 "ensure_within_mechanical_limits()",
                 ErrSeverity.WARN,
             )
-        elif next_pos.elev > self.MAX_DESIRED_ELEV or next_pos.elev < self.MIN_DESIRED_ELEV:
+        elif (
+            next_pos.elev > self.MAX_DESIRED_ELEV
+            or next_pos.elev < self.MIN_DESIRED_ELEV
+        ):
             Except.throw_exception(
                 "Skipping dish movement.",
                 "Desired elevation angle '%s' is out of pointing limits %s."
@@ -646,8 +687,12 @@ class OverrideDish(object):
             - 1 entry of desiredPointing if it is the latest
             - All the entries of programTrackTable if it is the latest (7 in testing)
         """
-        programTrackTable_last_update = model.sim_quantities["programTrackTable"].last_update_time
-        desiredPointing_last_update = model.sim_quantities["desiredPointing"].last_update_time
+        programTrackTable_last_update = model.sim_quantities[
+            "programTrackTable"
+        ].last_update_time
+        desiredPointing_last_update = model.sim_quantities[
+            "desiredPointing"
+        ].last_update_time
 
         if programTrackTable_last_update > desiredPointing_last_update:
             if programTrackTable_last_update > self.last_coordinate_update_timestamp:
@@ -669,7 +714,9 @@ class OverrideDish(object):
         unverified_pointings = self.get_new_unverified_pointings(model)
         now_millisec = model.time_func() * 1000.0
         return [
-            pointing for pointing in unverified_pointings if pointing[self.TS_IDX] >= now_millisec
+            pointing
+            for pointing in unverified_pointings
+            if pointing[self.TS_IDX] >= now_millisec
         ]
 
     def update_desired_pointing_history(self, model):

@@ -5,9 +5,10 @@ from tango import DevFailed
 
 # Additional import
 from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode 
+from ska.base.commands import ResultCode
 from tmc.common.tango_client import TangoClient
 from . import const
+
 # PROTECTED REGION END #    //  MccsMasterLeafNode imports
 
 
@@ -39,7 +40,9 @@ class On(SKABaseDevice.OnCommand):
         device_data = self.target
         # Update logs and activity message attribute with received event
         if event.err:
-            log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log_msg = (
+                const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            )
             self.logger.error(log_msg)
             device_data._read_activity_message = log_msg
         else:
@@ -65,7 +68,9 @@ class On(SKABaseDevice.OnCommand):
         # If the array length is > 1 each array element specifies the FQDN of the MCCS SubElement to switch ON.
         try:
             mccs_master_client = TangoClient(device_data._mccs_master_fqdn)
-            mccs_master_client.send_command_async(const.CMD_ON, None, self.on_cmd_ended_cb)
+            mccs_master_client.send_command_async(
+                const.CMD_ON, None, self.on_cmd_ended_cb
+            )
             self.logger.debug(const.STR_ON_CMD_ISSUED)
             return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
 
@@ -73,7 +78,9 @@ class On(SKABaseDevice.OnCommand):
             log_msg = const.ERR_ON_RESOURCES + str(dev_failed)
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
-            tango.Except.throw_exception(const.STR_ON_EXEC, log_msg,
-                                            "MccsMasterLeafNode.On",
-                                            tango.ErrSeverity.ERR)
-
+            tango.Except.throw_exception(
+                const.STR_ON_EXEC,
+                log_msg,
+                "MccsMasterLeafNode.On",
+                tango.ErrSeverity.ERR,
+            )

@@ -19,6 +19,7 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
     """
     A class for SKASubarray's ReleaseAllResources() command.
     """
+
     def do(self):
         """
         It checks whether all resources are already released. If yes then it throws error while
@@ -41,13 +42,19 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
         device_data.is_abort_command = False
         device_data.is_obsreset_command = False
         try:
-            assert device_data._dishLnVsHealthEventID != {}, const.RESOURCE_ALREADY_RELEASED
+            assert (
+                device_data._dishLnVsHealthEventID != {}
+            ), const.RESOURCE_ALREADY_RELEASED
         except AssertionError as assert_err:
             log_message = const.ERR_RELEASE_RES_CMD + str(assert_err)
             self.logger.error(log_message)
             device_data._read_activity_message = log_message
-            tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
-                                         const.STR_RELEASE_ALL_RES_EXEC, tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_CMD_FAILED,
+                log_message,
+                const.STR_RELEASE_ALL_RES_EXEC,
+                tango.ErrSeverity.ERR,
+            )
 
         self.logger.info(const.STR_DISH_RELEASE)
         device_data.clean_up_dict(self.logger)
@@ -68,12 +75,12 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
 
     def release_csp_resources(self, csp_subarray_ln_fqdn):
         """
-            This function invokes releaseAllResources command on CSP Subarray via CSP Subarray Leaf
-            Node.
+        This function invokes releaseAllResources command on CSP Subarray via CSP Subarray Leaf
+        Node.
 
-            :param argin: DevVoid
+        :param argin: DevVoid
 
-            :return: DevVoid
+        :return: DevVoid
 
         """
         try:
@@ -86,11 +93,11 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
 
     def release_sdp_resources(self, sdp_subarray_ln_fqdn):
         """
-            This function invokes releaseAllResources command on SDP Subarray via SDP Subarray Leaf Node.
+        This function invokes releaseAllResources command on SDP Subarray via SDP Subarray Leaf Node.
 
-            :param argin: DevVoid
+        :param argin: DevVoid
 
-            :return: DevVoid
+        :return: DevVoid
 
         """
         try:

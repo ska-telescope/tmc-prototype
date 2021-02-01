@@ -15,7 +15,7 @@ StopCapture class for DishLeafNode.
 import tango
 from tango import DevFailed, DevState
 
-from ska.base.commands import  BaseCommand
+from ska.base.commands import BaseCommand
 from tmc.common.tango_client import TangoClient
 from .command_callback import CommandCallBack
 
@@ -32,7 +32,11 @@ class StopCapture(BaseCommand):
         :return: True if this command is allowed to be run in current device state.
         :rtype: boolean
         """
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
             return False
 
         return True
@@ -54,7 +58,9 @@ class StopCapture(BaseCommand):
             self.logger.info("'%s' command executed succesfully.", command_name)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
-            log_message = f"Exception occured while executing the '{command_name}' command."
+            log_message = (
+                f"Exception occured while executing the '{command_name}' command."
+            )
             device_data._read_activity_message = log_message
             tango.Except.re_throw_exception(
                 dev_failed,
@@ -63,4 +69,3 @@ class StopCapture(BaseCommand):
                 f"DishLeafNode.{command_name}Command",
                 tango.ErrSeverity.ERR,
             )
-

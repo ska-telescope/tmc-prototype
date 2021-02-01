@@ -2,10 +2,12 @@
 # PyTango imports
 import tango
 from tango import DevState, DevFailed
+
 # Additional import
 from tmc.common.tango_client import TangoClient
 from ska.base.commands import BaseCommand
 from . import const
+
 
 class AbortCommand(BaseCommand):
     """
@@ -24,11 +26,17 @@ class AbortCommand(BaseCommand):
 
         """
         # device = self.target
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-            tango.Except.throw_exception("Abort() is not allowed in current state",
-                                            "Failed to invoke Abort command on CspSubarrayLeafNode.",
-                                            "cspsubarrayleafnode.Abort()",
-                                            tango.ErrSeverity.ERR)
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
+            tango.Except.throw_exception(
+                "Abort() is not allowed in current state",
+                "Failed to invoke Abort command on CspSubarrayLeafNode.",
+                "cspsubarrayleafnode.Abort()",
+                tango.ErrSeverity.ERR,
+            )
 
         # if device._csp_subarray_proxy.obsState not in [ObsState.READY, ObsState.CONFIGURING, ObsState.SCANNING,
         #                                                 ObsState.IDLE, ObsState.RESETTING]:
@@ -62,7 +70,9 @@ class AbortCommand(BaseCommand):
         device_data = self.target
         # Update logs and activity message attribute with received event
         if event.err:
-            log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log_msg = (
+                const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            )
             self.logger.error(log_msg)
             device_data._read_activity_message = log_msg
         else:
@@ -82,7 +92,9 @@ class AbortCommand(BaseCommand):
         device_data = self.target
         try:
             csp_sub_client_obj = TangoClient(device_data.csp_subarray_fqdn)
-            csp_sub_client_obj.send_command_async(const.CMD_ABORT, None, self.abort_cmd_ended_cb)
+            csp_sub_client_obj.send_command_async(
+                const.CMD_ABORT, None, self.abort_cmd_ended_cb
+            )
             device_data._read_activity_message = const.STR_ABORT_SUCCESS
             self.logger.info(const.STR_ABORT_SUCCESS)
 
@@ -90,6 +102,9 @@ class AbortCommand(BaseCommand):
             log_msg = const.ERR_ABORT_INVOKING_CMD + str(dev_failed)
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
-            tango.Except.throw_exception(const.STR_ABORT_EXEC, log_msg,
-                                            "CspSubarrayLeafNode.AbortCommand",
-                                            tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_ABORT_EXEC,
+                log_msg,
+                "CspSubarrayLeafNode.AbortCommand",
+                tango.ErrSeverity.ERR,
+            )

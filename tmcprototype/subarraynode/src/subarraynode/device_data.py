@@ -56,7 +56,9 @@ class DeviceData:
         self._scan_id = ""
         self._sb_id = ""
         self._scan_type = ""
-        self._dish_leaf_node_group_client = TangoGroupClient(const.GRP_DISH_LEAF_NODE, None)
+        self._dish_leaf_node_group_client = TangoGroupClient(
+            const.GRP_DISH_LEAF_NODE, None
+        )
         self.health_state_aggr = None
         self.obs_state_aggr = None
         self.dish_leaf_node_prefix = 0
@@ -70,8 +72,7 @@ class DeviceData:
         self._receptor_id_list = []
         self.receive_addresses = None
 
-
-    def clean_up_dict(self,logger = None ):
+    def clean_up_dict(self, logger=None):
         """
         Cleans dictionaries of the resources across the subarraynode.
 
@@ -95,7 +96,9 @@ class DeviceData:
             self._read_activity_message = log_message
             self.logger.info(const.RECEPTORS_REMOVE_SUCCESS)
         except DevFailed as dev_failed:
-            log_message = "Failed to remove receptors from the group. {}".format(dev_failed)
+            log_message = "Failed to remove receptors from the group. {}".format(
+                dev_failed
+            )
             self.logger.error(log_message)
             self._read_activity_message = log_message
             return
@@ -112,14 +115,12 @@ class DeviceData:
         self.health_state_aggr._remove_subarray_dish_lns_health_states()
         self.logger.info(const.STR_RECEPTORS_REMOVE_SUCCESS)
 
-
     @staticmethod
     def get_instance():
         if DeviceData.__instance == None:
             DeviceData()
         return DeviceData.__instance
-    
-    
+
     # This method is required to complete and AssignResources and ReleaseAllResources command.
     def __len__(self):
         """
@@ -132,4 +133,3 @@ class DeviceData:
         """
 
         return len(self._receptor_id_list)
-

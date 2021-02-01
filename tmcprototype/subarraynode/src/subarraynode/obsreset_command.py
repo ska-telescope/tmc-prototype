@@ -52,16 +52,18 @@ class ObsReset(SKASubarray.ObsResetCommand):
         except DevFailed as dev_failed:
             log_msg = const.ERR_OBSRESET_INVOKING_CMD + str(dev_failed)
             self.logger.exception(log_msg)
-            tango.Except.throw_exception(const.STR_OBSRESET_EXEC,
-                                         log_msg,
-                                         "SKASubarray.ObsReset",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_OBSRESET_EXEC,
+                log_msg,
+                "SKASubarray.ObsReset",
+                tango.ErrSeverity.ERR,
+            )
 
     def obsreset_sdp(self, device_data):
         """
         set up sdp devices
         """
-        #Invoke ObsReset command on SDP Subarray Leaf Node.
+        # Invoke ObsReset command on SDP Subarray Leaf Node.
         sdp_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
         sdp_client.send_command(const.CMD_OBSRESET)
         self.logger.info(const.STR_CMD_OBSRESET_INV_SDP)
@@ -70,7 +72,7 @@ class ObsReset(SKASubarray.ObsResetCommand):
         """
         set up csp devices
         """
-        #Invoke ObsReset command on CSP Subarray Leaf Node.
+        # Invoke ObsReset command on CSP Subarray Leaf Node.
         csp_client = TangoClient(device_data.csp_subarray_ln_fqdn)
         csp_client.send_command(const.CMD_OBSRESET)
         self.logger.info(const.STR_CMD_OBSRESET_INV_CSP)

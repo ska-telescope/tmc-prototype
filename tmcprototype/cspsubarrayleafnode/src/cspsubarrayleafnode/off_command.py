@@ -9,6 +9,7 @@ from ska.base.commands import ResultCode
 from . import const
 from .delay_model import DelayManager
 
+
 class Off(SKABaseDevice.OffCommand):
     """
     A class for CSP Subarray's Off() command.
@@ -37,7 +38,9 @@ class Off(SKABaseDevice.OffCommand):
         """
         device_data = self.target
         if event.err:
-            log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log = (
+                const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            )
             device_data._read_activity_message = log
             self.logger.error(log)
         else:

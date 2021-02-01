@@ -1,7 +1,10 @@
 import pkg_resources
 import logging
 
-from tango_simlib.tango_sim_generator import configure_device_model, get_tango_device_server
+from tango_simlib.tango_sim_generator import (
+    configure_device_model,
+    get_tango_device_server,
+)
 from ska.logging import configure_logging
 
 
@@ -14,8 +17,12 @@ def get_tango_server_class(device_name):
         The Tango device class for dishmaster
     """
     data_descr_files = []
-    data_descr_files.append(pkg_resources.resource_filename("dishmaster", "dish_master.fgo"))
-    data_descr_files.append(pkg_resources.resource_filename("dishmaster", "dish_master_SimDD.json"))
+    data_descr_files.append(
+        pkg_resources.resource_filename("dishmaster", "dish_master.fgo")
+    )
+    data_descr_files.append(
+        pkg_resources.resource_filename("dishmaster", "dish_master_SimDD.json")
+    )
 
     # add a filter with this device's name
     device_name_tag = f"tango-device:{device_name}"

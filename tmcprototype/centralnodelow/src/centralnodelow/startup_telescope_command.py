@@ -4,14 +4,17 @@ StartUpTelescope class for CentralNodelow.
 # Tango imports
 import tango
 from tango import DevState, DevFailed
+
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
+
 # from ska.base.control_model import HealthState
 from . import const
 from .device_data import DeviceData
 from .health_state_aggreegator import HealthStateAggreegator
 from tmc.common.tango_client import TangoClient
+
 
 class StartUpTelescope(SKABaseDevice.OnCommand):
     """
@@ -30,11 +33,17 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         :raises: DevFailed if this command is not allowed to be run in current device state
 
         """
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-            tango.Except.throw_exception("Command StartUpTelescope is not allowed in current state.",
-                                         "Failed to invoke StartUpTelescope command on CentralNodeLow.",
-                                         "CentralNodeLow.StartUpTelescope()",
-                                         tango.ErrSeverity.ERR)
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
+            tango.Except.throw_exception(
+                "Command StartUpTelescope is not allowed in current state.",
+                "Failed to invoke StartUpTelescope command on CentralNodeLow.",
+                "CentralNodeLow.StartUpTelescope()",
+                tango.ErrSeverity.ERR,
+            )
         return True
 
     def do(self):
@@ -70,7 +79,6 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
             subarray_client = TangoClient(subarray_fqdn)
             self.invoke_startup(subarray_client)
 
-
     def create_mccs_client(self, mccs_master_fqdn):
         """
         Create TangoClient for MccsMasterLeafNode node and call
@@ -80,7 +88,6 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         """
         mccs_mln_client = TangoClient(mccs_master_fqdn)
         self.invoke_startup(mccs_mln_client)
-
 
     def invoke_startup(self, tango_client):
         """
@@ -95,7 +102,9 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         device_data = DeviceData.get_instance()
         try:
             tango_client.send_command(const.CMD_ON)
-            log_msg = 'ON command invoked successfully on {}'.format(tango_client.get_device_fqdn)
+            log_msg = "ON command invoked successfully on {}".format(
+                tango_client.get_device_fqdn
+            )
             self.logger.debug(log_msg)
             device_data._read_activity_message = log_msg
 
@@ -103,7 +112,11 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
             log_msg = const.ERR_EXE_ON_CMD + str(dev_failed)
             self.logger.exception(dev_failed)
             device_data._read_activity_message = const.ERR_EXE_ON_CMD
-            tango.Except.re_throw_exception(dev_failed, const.STR_ON_EXEC, log_msg,
-                                            "CentralNodeLow.StartUpTelescopeCommand",
-                                            tango.ErrSeverity.ERR)
+            tango.Except.re_throw_exception(
+                dev_failed,
+                const.STR_ON_EXEC,
+                log_msg,
+                "CentralNodeLow.StartUpTelescopeCommand",
+                tango.ErrSeverity.ERR,
+            )
         return (ResultCode.OK, device_data._read_activity_message)

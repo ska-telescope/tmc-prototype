@@ -26,7 +26,7 @@ class Configure(SKASubarray.ConfigureCommand):
     def do(self, argin):
         """
         Configures the resources assigned to the Mccs Subarray.
-    
+
         :param argin: DevString.
 
         JSON string example is:
@@ -57,21 +57,27 @@ class Configure(SKASubarray.ConfigureCommand):
             log_message = const.ERR_INVALID_JSON + str(jerror)
             self.logger.error(log_message)
             device_data.activity_message = log_message
-            tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
-            const.STR_CONFIGURE_EXEC, tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_CMD_FAILED,
+                log_message,
+                const.STR_CONFIGURE_EXEC,
+                tango.ErrSeverity.ERR,
+            )
         tmc_configure = scan_configuration["tmc"]
         device_data.scan_duration = int(tmc_configure["scanDuration"])
         self._configure_mccs_subarray(scan_configuration)
         message = "Configure command invoked"
         self.logger.info(message)
         return (ResultCode.STARTED, message)
-        
+
     def _configure_mccs_subarray(self, scan_configuration):
         scan_configuration = scan_configuration["mccs"]
         if not scan_configuration:
-            raise KeyError("MCCS configuration must be given. Aborting MCCS configuration.")
+            raise KeyError(
+                "MCCS configuration must be given. Aborting MCCS configuration."
+            )
         self._configure_leaf_node("Configure", json.dumps(scan_configuration))
-      
+
     def _configure_leaf_node(self, cmd_name, cmd_data):
         device_data = DeviceData.get_instance()
         try:
@@ -83,6 +89,9 @@ class Configure(SKASubarray.ConfigureCommand):
         except DevFailed as df:
             log_message = df[0].desc
             device_data.activity_message = log_message
-            log_msg = "Failed to configure %s. %s" % (device_data.mccs_subarray_ln_fqdn, df)
+            log_msg = "Failed to configure %s. %s" % (
+                device_data.mccs_subarray_ln_fqdn,
+                df,
+            )
             self.logger.error(log_msg)
             raise

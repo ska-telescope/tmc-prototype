@@ -5,6 +5,7 @@ from tmc.common.tango_server_helper import TangoServerHelper
 from .device_data import DeviceData
 import logging
 
+
 class ObsStateAggregator:
     """
     Observation State Aggregator class
@@ -20,15 +21,16 @@ class ObsStateAggregator:
         self.device_data = DeviceData.get_instance()
         self.mccs_client = TangoClient(self.device_data.mccs_subarray_ln_fqdn)
 
-
     def subscribe(self):
         # Subscribe mccsSubarrayObsState (forwarded attribute) of mccsSubarray
-        mccs_event_id = self.mccs_client.subscribe_attribute(const.EVT_MCCSSA_OBS_STATE,
-                                                           self.observation_state_cb)
+        mccs_event_id = self.mccs_client.subscribe_attribute(
+            const.EVT_MCCSSA_OBS_STATE, self.observation_state_cb
+        )
         self.mccs_obs_state_event_id[self.mccs_client] = mccs_event_id
-        log_msg = const.STR_SUB_ATTR_MCCS_SALN_OBSTATE_SUCCESS + str(self.mccs_obs_state_event_id)
+        log_msg = const.STR_SUB_ATTR_MCCS_SALN_OBSTATE_SUCCESS + str(
+            self.mccs_obs_state_event_id
+        )
         self.logger.info(log_msg)
-
 
     def unsubscribe(self):
         """
@@ -73,8 +75,9 @@ class ObsStateAggregator:
                 event_observetion_state = evt.attr_value.value
                 if const.PROP_DEF_VAL_TMMCCS_MID_SALN in evt.attr_name:
                     self.device_data._mccs_sa_obs_state = event_observetion_state
-                    self._read_activity_message = const.STR_MCCS_SUBARRAY_OBS_STATE + str(
-                        event_observetion_state)
+                    self._read_activity_message = (
+                        const.STR_MCCS_SUBARRAY_OBS_STATE + str(event_observetion_state)
+                    )
                 else:
                     self.logger.info(const.EVT_UNKNOWN)
                     self._read_activity_message = const.EVT_UNKNOWN
@@ -87,7 +90,9 @@ class ObsStateAggregator:
         except KeyError as key_error:
             log_msg = const.ERR_MCCS_SUBARRAY_OBS_STATE + str(key_error)
             self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_MCCS_SUBARRAY_OBS_STATE + str(key_error)
+            self._read_activity_message = const.ERR_MCCS_SUBARRAY_OBS_STATE + str(
+                key_error
+            )
 
     def calculate_observation_state(self):
         """
@@ -97,7 +102,9 @@ class ObsStateAggregator:
         self.logger.info(log_msg)
         if self.device_data._mccs_sa_obs_state == ObsState.EMPTY:
             if self.device_data.is_release_resources:
-                self.logger.info("Calling ReleaseAllResource command succeeded() method")
+                self.logger.info(
+                    "Calling ReleaseAllResource command succeeded() method"
+                )
                 self.this_server.device.release.succeeded()
 
         elif self.device_data._mccs_sa_obs_state == ObsState.READY:

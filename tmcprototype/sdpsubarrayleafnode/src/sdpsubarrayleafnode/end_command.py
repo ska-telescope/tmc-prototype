@@ -5,11 +5,14 @@ End class for SDPSubarrayLeafNode.
 # Tango imports
 import tango
 from tango import DevState, DevFailed
+
 # Additional import
 from ska.base.commands import BaseCommand
+
 # from ska.base.control_model import ObsState
 from tmc.common.tango_client import TangoClient
 from . import const
+
 
 class End(BaseCommand):
     """
@@ -27,11 +30,17 @@ class End(BaseCommand):
         :raises: Exception if command execution throws any type of exception.
 
         """
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-            tango.Except.throw_exception("End() is not allowed in current state",
-                                            "Failed to invoke End command on SdpSubarrayLeafNode.",
-                                            "sdpsubarrayleafnode.End()",
-                                            tango.ErrSeverity.ERR)
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
+            tango.Except.throw_exception(
+                "End() is not allowed in current state",
+                "Failed to invoke End command on SdpSubarrayLeafNode.",
+                "sdpsubarrayleafnode.End()",
+                tango.ErrSeverity.ERR,
+            )
 
         # TODO: Mock obs_state issue to be resolved
         # device_data = self.target
@@ -66,7 +75,9 @@ class End(BaseCommand):
         """
         device_data = self.target
         if event.err:
-            log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log = (
+                const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            )
             device_data._read_activity_message = log
             self.logger.error(log)
         else:
@@ -85,7 +96,9 @@ class End(BaseCommand):
         device_data = self.target
         try:
             sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
-            sdp_sa_ln_client_obj.send_command_async(const.CMD_END, None, self.end_cmd_ended_cb)
+            sdp_sa_ln_client_obj.send_command_async(
+                const.CMD_END, None, self.end_cmd_ended_cb
+            )
             device_data._read_activity_message = const.STR_END_SUCCESS
             self.logger.info(const.STR_END_SUCCESS)
 
@@ -93,6 +106,9 @@ class End(BaseCommand):
             log_msg = const.ERR_END_INVOKING_CMD + str(dev_failed)
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
-            tango.Except.throw_exception(const.STR_END_EXEC, log_msg,
-                                            "SdpSubarrayLeafNode.EndCommand()",
-                                            tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_END_EXEC,
+                log_msg,
+                "SdpSubarrayLeafNode.EndCommand()",
+                tango.ErrSeverity.ERR,
+            )
