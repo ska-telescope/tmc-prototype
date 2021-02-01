@@ -57,7 +57,7 @@ class EndScan(SKASubarray.EndScanCommand):
             return (ResultCode.OK, const.STR_END_SCAN_SUCCESS)
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_END_SCAN_CMD_ON_GROUP + str(dev_failed)
+            log_msg = f"{const.ERR_END_SCAN_CMD_ON_GROUP}{dev_failed}"
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_END_SCAN_EXEC,

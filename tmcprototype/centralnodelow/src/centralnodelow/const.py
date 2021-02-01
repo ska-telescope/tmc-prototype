@@ -12,12 +12,8 @@ EVT_SUBSR_MCCS_MASTER_HEALTH = "mccsHealthState"
 
 # Error messages
 ERR_SUBSR_SA_HEALTH_STATE = "Error in subscribing Subarray healthState \n"
-ERR_SUBSR_MCCS_MASTER_LEAF_HEALTH = (
-    "Error in subscribing MCCS Master Leaf Node healthState \n"
-)
-ERR_INIT_PROP_ATTR_CN = (
-    "Error on initialising properties and attributes " "on Central Node device."
-)
+ERR_SUBSR_MCCS_MASTER_LEAF_HEALTH = "Error in subscribing MCCS Master Leaf Node healthState \n"
+ERR_INIT_PROP_ATTR_CN = "Error on initialising properties and attributes on Central Node device."
 ERR_IN_CREATE_PROXY = "Error in creating proxy of the LeafNode device: "
 ERR_EXE_OFF_CMD = "Error in executing OFF Telescope command "
 ERR_EXE_ON_CMD = "Error in executing STARTUP(ON) Telescope command "

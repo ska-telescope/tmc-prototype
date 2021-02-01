@@ -69,7 +69,7 @@ class Track(ResponseCommand):
         device_data.is_abort_command = False
         device_data.is_obsreset_command = False
         try:
-            device_data._read_activity_message = const.STR_TRACK_IP_ARG + argin
+            device_data._read_activity_message = f"{const.STR_TRACK_IP_ARG}{argin}"
             cmd_input = [argin]
             cmdData = tango.DeviceData()
             cmdData.insert(tango.DevVarStringArray, cmd_input)
@@ -82,7 +82,7 @@ class Track(ResponseCommand):
             self.logger.info(const.STR_TRACK_CMD_INVOKED_SA)
             return (ResultCode.OK, const.STR_TRACK_CMD_INVOKED_SA)
         except tango.DevFailed as devfailed:
-            log_msg = const.ERR_TRACK_CMD + str(devfailed)
+            log_msg = f"{const.ERR_TRACK_CMD}{devfailed}"
             self.logger.exception(devfailed)
             tango.Except.throw_exception(
                 const.STR_CMD_FAILED,

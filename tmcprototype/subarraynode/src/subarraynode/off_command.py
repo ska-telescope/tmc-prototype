@@ -53,7 +53,7 @@ class Off(SKASubarray.OffCommand):
             return (ResultCode.OK, message)
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_INVOKING_OFF_CMD + str(dev_failed)
+            log_msg = f"{const.ERR_INVOKING_OFF_CMD}{dev_failed}"
             self.logger.error(log_msg)
             device_data._read_activity_message = log_msg
             tango.Except.throw_exception(

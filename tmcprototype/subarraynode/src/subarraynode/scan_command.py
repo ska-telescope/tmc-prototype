@@ -51,7 +51,7 @@ class Scan(SKASubarray.ScanCommand):
         device_data.is_obsreset_command = False
         this_device_server = TangoServerHelper.get_instance()
         try:
-            log_msg = const.STR_SCAN_IP_ARG + str(argin)
+            log_msg = f"{const.STR_SCAN_IP_ARG}{argin}"
             self.logger.debug(log_msg)
             device_data._read_activity_message = log_msg
             device_data.isScanRunning = True
@@ -72,7 +72,7 @@ class Scan(SKASubarray.ScanCommand):
 
             return (ResultCode.STARTED, const.STR_SCAN_SUCCESS)
         except DevFailed as dev_failed:
-            log_msg = const.ERR_SCAN_CMD + str(dev_failed)
+            log_msg = f"{const.ERR_SCAN_CMD}{dev_failed}"
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_SCAN_EXEC, log_msg, "SubarrayNode.Scan", tango.ErrSeverity.ERR

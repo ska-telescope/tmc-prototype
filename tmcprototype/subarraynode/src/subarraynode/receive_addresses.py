@@ -39,7 +39,7 @@ class ReceiveAddressesUpdater:
         if not event.err:
             self.device_data._receive_addresses_map = event.attr_value.value
         else:
-            log_msg = const.ERR_SUBSR_RECEIVE_ADDRESSES_SDP_SA + str(event)
+            log_msg = f"{const.ERR_SUBSR_RECEIVE_ADDRESSES_SDP_SA}{event}"
             self.logger.debug(log_msg)
             self._read_activity_message = log_msg
 

@@ -24,18 +24,10 @@ EVT_SUBSR_SDP_MASTER_HEALTH = "sdpHealthState"
 ERR_AGGR_OBS_STATE = "Error in Subarray obsState callback \n"
 ERR_SUBSR_SA_HEALTH_STATE = "Error in subscribing Subarray healthState \n"
 ERR_SUBSR_SA_OBS_STATE = "Error in subscribing Subarray obsState \n"
-ERR_SUBSR_CSP_MASTER_LEAF_HEALTH = (
-    "Error in subscribing CSP Master Leaf Node healthState \n"
-)
-ERR_SUBSR_SDP_MASTER_LEAF_HEALTH = (
-    "Error in subscribing SDP Master Leaf Node healthState \n"
-)
-ERR_INIT_PROP_ATTR_CN = (
-    "Error on initialising properties and attributes " "on Central Node device."
-)
-ERR_IN_READ_DISH_LN_DEVS = (
-    "Error in reading exported Dish Leaf Node device names " "from database \n"
-)
+ERR_SUBSR_CSP_MASTER_LEAF_HEALTH = "Error in subscribing CSP Master Leaf Node healthState \n"
+ERR_SUBSR_SDP_MASTER_LEAF_HEALTH = "Error in subscribing SDP Master Leaf Node healthState \n"
+ERR_INIT_PROP_ATTR_CN = "Error on initialising properties and attributes on Central Node device."
+ERR_IN_READ_DISH_LN_DEVS = "Error in reading exported Dish Leaf Node device names from database \n"
 ERR_IN_CREATE_PROXY = "Error in creating proxy of the LeafNode device: "
 ERR_EXE_STOW_CMD = "Error in executing STOW command "
 ERR_EXE_STANDBY_CMD = "Error in executing STANDBY Telescope command "
@@ -49,9 +41,7 @@ ERR_ASSGN_RESOURCES = "Error occurred while assigning resources to the Subarray 
 ERR_RELEASE_RESOURCES = "Error occurred while releasing resources from the Subarray \n"
 ERR_STOW_ARGIN = "Invalid StowAntennas arguments \n"
 ERR_HEALTH_STATE_CB = "Error handling healthState callback for evt: %s"
-ERR_RECEPTOR_ID_REALLOCATION = (
-    "The following Receptor id(s) are allocated to other subarrays: "
-)
+ERR_RECEPTOR_ID_REALLOCATION = "The following Receptor id(s) are allocated to other subarrays: "
 ERR_DEVFAILED_MSG = "This is error message for devfailed"
 ERR_SUBARRAY_ID_DOES_NOT_EXIST = "The Subarray '99' does not exist."
 
@@ -64,9 +54,7 @@ STR_FAILED = " :-> FAILED"
 STR_UNKNOWN = " :-> UNKNOWN"
 STR_HEALTH_STATE_UNKNOWN_VAL = "Subarray healthState event returned unknown value \n"
 STR_ERR_MSG = "Error message is: "
-STR_STOW_CMD_ISSUED_CN = (
-    "STOW command invoked from Central node on the requested dishes"
-)
+STR_STOW_CMD_ISSUED_CN = "STOW command invoked from Central node on the requested dishes"
 STR_STANDBY_CMD_ISSUED = "STANDBYTELESCOPE command invoked from Central node"
 STR_ON_CMD_ISSUED = "STARTUPTELESCOPE (ON) command invoked from Central node"
 STR_INIT_SUCCESS = "CentralNode is initialized successfully."

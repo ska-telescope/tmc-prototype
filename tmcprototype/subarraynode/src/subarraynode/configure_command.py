@@ -71,13 +71,13 @@ class Configure(SKASubarray.ConfigureCommand):
         device_data.is_abort_command = False
         device_data.is_obsreset_command = False
         self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
-        log_msg = const.STR_CONFIGURE_IP_ARG + str(argin)
+        log_msg = f"{const.STR_CONFIGURE_IP_ARG}{argin}"
         self.logger.debug(log_msg)
         tango_server_helper = TangoServerHelper.get_instance()
         try:
             scan_configuration = json.loads(argin)
         except json.JSONDecodeError as jerror:
-            log_message = const.ERR_INVALID_JSON + str(jerror)
+            log_message = f"{const.ERR_INVALID_JSON}{jerror}"
             self.logger.error(log_message)
             device_data._read_activity_message = log_message
             tango.Except.throw_exception(
@@ -134,10 +134,6 @@ class Configure(SKASubarray.ConfigureCommand):
         cmd_data = self._create_cmd_data("build_up_sdp_cmd_data", scan_configuration)
         sdp_saln_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
         self._configure_leaf_node(sdp_saln_client, "Configure", cmd_data, device_data)
-        print(
-            ":::::::::::::::::::::::::::cmd_data on sdp:::::::::::::::::::::::",
-            cmd_data,
-        )
 
     def _configure_csp(self, scan_configuration):
         device_data = DeviceData.get_instance()
@@ -153,11 +149,7 @@ class Configure(SKASubarray.ConfigureCommand):
         )
         csp_saln_client = TangoClient(device_data.csp_subarray_ln_fqdn)
         self._configure_leaf_node(csp_saln_client, "Configure", cmd_data, device_data)
-        print(
-            ":::::::::::::::::::::::::::cmd_data on csp:::::::::::::::::::::::",
-            cmd_data,
-        )
-
+       
     @inject_with_id(0, "scan_configuration")
     def _configure_dsh(self, scan_configuration):
         device_data = DeviceData.get_instance()
@@ -177,10 +169,7 @@ class Configure(SKASubarray.ConfigureCommand):
                 const.CMD_TRACK, cmd_data
             )
             self.logger.info("TRACK command is invoked on the Dish Leaf Node Group")
-            print(
-                ":::::::::::::::::::::::::::cmd_data on dish:::::::::::::::::::::::",
-                cmd_data,
-            )
+            
         except DevFailed as df:
             device_data._read_activity_message = df[0].desc
             self.logger.error(df)
@@ -254,10 +243,6 @@ class ElementDeviceData:
                 for key, attribute_name in attr_name_map.items():
                     csp_config_schema["cbf"][key] = attribute_name
                 csp_config_schema["pointing"] = scan_config["pointing"]
-                print(
-                    ":::::::::::::::::::::::::::csp_config_schema:::::::::::::::::::::::",
-                    csp_config_schema,
-                )
 
             else:
                 raise KeyError(

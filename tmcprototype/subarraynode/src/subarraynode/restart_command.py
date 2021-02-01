@@ -56,7 +56,7 @@ class Restart(SKASubarray.RestartCommand):
             return (ResultCode.STARTED, const.STR_RESTART_SUCCESS)
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_RESTART_INVOKING_CMD + str(dev_failed)
+            log_msg = f"{const.ERR_RESTART_INVOKING_CMD}{dev_failed}"
             self.logger.exception(log_msg)
             tango.Except.throw_exception(
                 const.STR_RESTART_EXEC,

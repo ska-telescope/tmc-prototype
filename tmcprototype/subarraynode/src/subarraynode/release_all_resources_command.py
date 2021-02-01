@@ -46,7 +46,7 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
                 device_data._dishLnVsHealthEventID != {}
             ), const.RESOURCE_ALREADY_RELEASED
         except AssertionError as assert_err:
-            log_message = const.ERR_RELEASE_RES_CMD + str(assert_err)
+            log_message = f"{const.ERR_RELEASE_RES_CMD}{assert_err}"
             self.logger.error(log_message)
             device_data._read_activity_message = log_message
             tango.Except.throw_exception(

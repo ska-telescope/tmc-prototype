@@ -111,7 +111,6 @@ class DeviceData:
         self._dishLnVsPointingStateEventID.clear()  # Clear eventID dictionary
         self._receptor_id_list.clear()
         self.dishPointingStateMap.clear()
-        # self._health_event_id.clear()
         self.health_state_aggr._remove_subarray_dish_lns_health_states()
         self.logger.info(const.STR_RECEPTORS_REMOVE_SUCCESS)
 

@@ -59,12 +59,8 @@ STR_CMD_ABORT_INV_SDP = "Command Abort is invoked on SDP Subarray Leaf Node."
 STR_CMD_ABORT_INV_CSP = "Command Abort is invoked on CSP Subarray Leaf Node."
 STR_ASSIGN_RESOURCES_INV_CSP_SALN = "Assign Resources is invoked on CSPSubarrayLeafNode"
 STR_ASSIGN_RESOURCES_INV_SDP_SALN = "Assign Resources is invoked on SDPSubarrayLeafNode"
-STR_RELEASE_ALL_RESOURCES_CSP_SALN = (
-    "ReleaseAllResources command is invoked on CSPSubarrayLeafNode"
-)
-STR_RELEASE_ALL_RESOURCES_SDP_SALN = (
-    "ReleaseAllResources command is invoked on SDPSubarrayLeafNode"
-)
+STR_RELEASE_ALL_RESOURCES_CSP_SALN = "ReleaseAllResources command is invoked on CSPSubarrayLeafNode"
+STR_RELEASE_ALL_RESOURCES_SDP_SALN = "ReleaseAllResources command is invoked on SDPSubarrayLeafNode"
 STR_SCAN_IP_ARG = "Scan inputs Arguments :-> "
 STR_GRP_DEF_SCAN_FN = "Group Definitions in scan function :-> "
 STR_SA_SCANNING = "Subarray is scanning at the desired pointing coordinates."
@@ -98,9 +94,7 @@ STR_READY = " :-> READY"
 STR_SLEW = " :-> SLEW"
 STR_TRACK = " :-> TRACK"
 STR_SCAN = " :-> SCAN"
-STR_POINTING_STATE_UNKNOWN_VAL = (
-    "Subarray pointingState event returned unknown value  \n"
-)
+STR_POINTING_STATE_UNKNOWN_VAL = "Subarray pointingState event returned unknown value  \n"
 STR_ARROW = " :-> "
 STR_SA_INIT = "Initializing SubarrayNode..."
 STR_SA_INIT_SUCCESS = "Subarray node is initialized successfully."
@@ -173,9 +167,7 @@ ERR_SUBSR_DSH_POINTING_STATE = "Error in subscribing Dish pointingState \n"
 ERR_CONFIGURE_CMD = "Exception in Configure command: \n "
 ERR_ADDING_LEAFNODE = "Exception occurred while adding LeafNodes "
 ERR_END_SCAN_CMD_ON_GROUP = "Error invoking EndScan command on DishLeafNode group"
-ERR_RELEASE_RES_CMD_GROUP = (
-    "Error invoking AssignResources command on DishLeafNode group"
-)
+ERR_RELEASE_RES_CMD_GROUP = "Error invoking AssignResources command on DishLeafNode group"
 ERR_SETHEALTH_CALLBK = "KeyError occurred in setHealth callback of SubarrayNode "
 ERR_SETPOINTING_CALLBK = "KeyError occurred in setPointing callback of SubarrayNode "
 ERR_CONFIGURE_CMD_GROUP = "Error invoking Configure command on DishLeafNode group "
@@ -191,16 +183,10 @@ ERR_CREATE_PROXY = "Failed to create proxy on SubarrayNode."
 ERR_INVOKE_ON_CMD_ON_SA = "Failed to invoke On command on SubarrayNode."
 ERR_ON_SUBS_CSP_SA_HEALTH = "Error in subscribing cspsubarrayHealthState attribute."
 ERR_CSP_SA_HEALTH_CB = "Error in cspsubarrayHealthCallback."
-ERR_SUBS_CSP_SA_LEAF_ATTR = (
-    "Exception occurred while subscribing to Csp Subarray attribute"
-)
+ERR_SUBS_CSP_SA_LEAF_ATTR = "Exception occurred while subscribing to Csp Subarray attribute"
 ERR_CSP_SA_LEAF_INIT = "Error occured in Csp Subarray Leaf Node initialization "
-ERR_CSPSDP_SUBARRAY_HEALTHSTATE = (
-    "Key Error occurred while setting CSP/SDP Subarray healthState"
-)
-ERR_SUBSR_CSPSDPSA_HEALTH_STATE = (
-    "Error in subscribing CSP/SDP Subarray healthState on respective " "LeafNodes. \n"
-)
+ERR_CSPSDP_SUBARRAY_HEALTHSTATE = "Key Error occurred while setting CSP/SDP Subarray healthState"
+ERR_SUBSR_CSPSDPSA_HEALTH_STATE = "Error in subscribing CSP/SDP Subarray healthState on respective LeafNodes. \n"
 ERR_DEVICE_NOT_READY = "Subarray Node is not in Ready observation state."
 ERR_ENDSB_INVOKING_CMD = "Error while invoking EndSB command on Subarray Node."
 ERR_INVOKING_ON_CMD = "Error while invoking ON command on Subarray Node."
@@ -208,20 +194,12 @@ ERR_INVOKING_OFF_CMD = "Error while invoking OFF command on Subarray Node."
 ERR_RESTART_INVOKING_CMD = "Error while invoking Restart command on Subarray Node."
 ERR_OBSRESET_INVOKING_CMD = "Error while invoking ObsReset command on Subarray Node."
 ERR_ABORT_INVOKING_CMD = "Error while invoking ABORT command on Subarray Node."
-ERR_CSPSDP_SUBARRAY_OBS_STATE = (
-    "Key Error occurred while setting CSP/SDP Subarray obsState"
-)
-ERR_SUBSR_CSPSDPSA_OBS_STATE = (
-    "Error in subscribing CSP/SDP Subarray obsState on respective " "LeafNodes. \n"
-)
+ERR_CSPSDP_SUBARRAY_OBS_STATE = "Key Error occurred while setting CSP/SDP Subarray obsState"
+ERR_SUBSR_CSPSDPSA_OBS_STATE = "Error in subscribing CSP/SDP Subarray obsState on respective LeafNodes. \n"
 ERR_SUBSR_CSPSDPSA_DEVICE_STATE = "Error in subscribing CSP/SDP Subarray Device state"
-ERR_SUBS_SDP_SA_LEAF_ATTR = (
-    "Exception occurred while subscribing to SDP Subarray attribute"
-)
+ERR_SUBS_SDP_SA_LEAF_ATTR = "Exception occurred while subscribing to SDP Subarray attribute"
 ERR_SDP_SA_LEAF_INIT = "Error occured in SDP Subarray Leaf Node initialization "
-ERR_SUBSR_RECEIVE_ADDRESSES_SDP_SA = (
-    "Error in subscribing receive addresses of SDP Subarray"
-)
+ERR_SUBSR_RECEIVE_ADDRESSES_SDP_SA = "Error in subscribing receive addresses of SDP Subarray"
 ERR_SA_INIT = "Subarray node initialization failed."
 ERR_CSP_PROXY_CREATE = "CSP Proxy creaton failed on Subarray Node"
 ERR_SDP_PROXY_CREATE = "SDP Proxy creaton failed on Subarray Node"

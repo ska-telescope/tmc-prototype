@@ -78,7 +78,7 @@ class On(SKASubarray.OnCommand):
         try:
             tango_client.send_command(const.CMD_ON)
         except DevFailed as dev_failed:
-            log_msg = const.ERR_INVOKING_ON_CMD + str(dev_failed)
+            log_msg = f"{const.ERR_INVOKING_ON_CMD}{dev_failed}"
             self.logger.exception(log_msg)
             self._read_activity_message = log_msg
             tango.Except.throw_exception(

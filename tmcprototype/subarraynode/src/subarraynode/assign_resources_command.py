@@ -100,7 +100,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
             # validation of SDP and CSP resources yet to be implemented as of now reources are not present.
         except json.JSONDecodeError as json_error:
             self.logger.exception(const.ERR_INVALID_JSON)
-            message = const.ERR_INVALID_JSON + str(json_error)
+            message = f"{const.ERR_INVALID_JSON}{json_error}"
             device_data._read_activity_message = message
             tango.Except.throw_exception(
                 const.STR_CMD_FAILED,
@@ -110,7 +110,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
             )
         except ValueError as value_error:
             self.logger.exception(const.ERR_INVALID_DATATYPE)
-            message = const.ERR_INVALID_DATATYPE + value_error
+            message = f"{const.ERR_INVALID_DATATYPE}{value_error}"
             device_data._read_activity_message = message
             tango.Except.throw_exception(
                 const.STR_CMD_FAILED,
@@ -126,7 +126,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         self.assign_csp_resources(input_csp_assign)
         self.assign_sdp_resources(sdp_resources)
 
-        log_msg = const.STR_DISH_ALLOCATION_RESULT + str(dish_allocation_result)
+        log_msg = f"{const.STR_DISH_ALLOCATION_RESULT}{dish_allocation_result}"
         self.logger.debug(log_msg)
         dish_allocation_result.sort()
         self.logger.debug("Dish group is created successfully")
@@ -170,7 +170,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         for leafId in range(0, len(argin)):
             try:
                 str_leafId = argin[leafId]
-                dish_FQDN = device_data.dish_leaf_node_prefix + str_leafId
+                dish_FQDN = f"{device_data.dish_leaf_node_prefix}{str_leafId}" 
                 device_data._dish_leaf_node_group_client.add_device(dish_FQDN)
                 # TangoClient is used for each dish leaf node for subscribing attribute instead of TangoGroupClient.
                 dish_ln_client = TangoClient(dish_FQDN)
@@ -184,9 +184,9 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
                 )
 
                 # Subscribe Dish Pointing State
-                log_msg = "Dish dev proxy : " + str(dish_ln_client._get_deviceproxy())
+                log_msg = f"Dish dev proxy : {dish_ln_client._get_deviceproxy()}"
                 self.logger.info(log_msg)
-                log_msg = "Dish ln client proxy : " + str(dish_ln_client.deviceproxy)
+                log_msg = f"Dish ln client proxy : {dish_ln_client.deviceproxy}"
                 self.logger.info(log_msg)
                 device_data.dishPointingStateMap[dish_ln_client._get_deviceproxy()] = -1
                 device_data.obs_state_aggr.subscribe_dish_pointing_state(dish_ln_client)
@@ -196,7 +196,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
                 self.logger.info(const.STR_ASSIGN_RES_SUCCESS)
             except DevFailed as dev_failed:
                 self.logger.exception("Receptor %s allocation failed.", str_leafId)
-                log_msg = const.ERR_ADDING_LEAFNODE + str(dev_failed)
+                log_msg = f"{const.ERR_ADDING_LEAFNODE}{dev_failed}"
                 self.logger.exception(dev_failed)
                 tango.Except.throw_exception(
                     const.ERR_ADDING_LEAFNODE,
