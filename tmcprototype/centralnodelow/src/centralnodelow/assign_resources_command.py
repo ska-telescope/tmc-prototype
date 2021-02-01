@@ -76,14 +76,17 @@ class AssignResources(BaseCommand):
             log_msg = f"Assigning resources to subarray :-> {subarray_id}"
             self.logger.info(log_msg)
             subarray_client = self.create_client(device_data.subarray_FQDN_dict[subarray_id])
-            self.invoke_assign_resources(subarray_client, subarray_cmd_data)
-
             input_mccs_assign = json.dumps(json_argument["mccs"])
             mccs_master_ln_client = self.create_client(device_data.mccs_master_ln_fqdn)
-            self.invoke_assign_resources(mccs_master_ln_client, input_mccs_assign)
+            
+            if device_data.cmd_res_evt_val == 0:
+                self.invoke_assign_resources(subarray_client, subarray_cmd_data)
+                self.invoke_assign_resources(mccs_master_ln_client, input_mccs_assign)
 
-            device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
-            self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
+                device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
+                self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
+            else:
+                print("StartupTelescope command is not completed yet..")
 
         except KeyError as key_error:
             self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)

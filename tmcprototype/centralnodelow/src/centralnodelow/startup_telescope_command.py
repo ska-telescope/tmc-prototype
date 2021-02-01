@@ -24,13 +24,13 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         """
         device_data = DeviceData.get_instance()
         log_msg = 'MccsController.commandResult change event is : ' + str(event)
+        device_data.cmd_res_evt_val = event.attr_value.value
         self.logger.debug(log_msg)
-        if not event.err:
-            device_data.cmd_res_evt_val = event.attr_value.value
-            log_msg="commandResult attrobute value is :" + str(self.cmd_res_val)
-            self.logger.info(log_msg)
-        else:
-            self.loger.error("Error on subscribing commandResult attribute")
+        # if not event.err:
+        #     log_msg="commandResult attribute value is :" + str(device_data.cmd_res_evt_val)
+        #     self.logger.info(log_msg)
+        # else:
+        #     self.loger.error("Error on subscribing commandResult attribute")
 
     def check_allowed(self):
 
@@ -64,24 +64,24 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         :rtype: (ResultCode, str)
         """
         device_data = self.target
-        device_data.health_aggreegator = HealthStateAggreegator(self.logger)
-        device_data.health_aggreegator.subscribe_event()
-        self.create_mccs_client(device_data.mccs_master_ln_fqdn)
-        self.create_subarray_client(device_data.subarray_low)
 
-        log_msg = const.STR_ON_CMD_ISSUED
-        self.logger.info(log_msg)
-        device_data._read_activity_message = log_msg
-
-        mccs_controller_client = TangoClient(device_data.mcce_controller_fqdn)
-        mccs_controller_proxy = mccs_controller_client.deviceproxy
+        mccs_controller_proxy = DeviceProxy("low-mccs/control/control")
         device_data.cmd_res_evt_id = mccs_controller_proxy.subscribe_event("commandResult",
                             EventType.CHANGE_EVENT, self.command_result_cb, stateless=True)
 
-        while str(self.cmd_res_evt_val) is not "0":
-            pass
+        device_data.health_aggreegator = HealthStateAggreegator(self.logger)
+        device_data.health_aggreegator.subscribe_event()
 
-        return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
+        if device_data.cmd_res_evt_val == None or device_data.cmd_res_evt_val == 0:
+            self.create_mccs_client(device_data.mccs_master_ln_fqdn)
+            self.create_subarray_client(device_data.subarray_low)
+
+            log_msg = const.STR_ON_CMD_ISSUED
+            self.logger.info(log_msg)
+            device_data._read_activity_message = log_msg
+            return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
+        else:
+            print("StandbyTelescope command is not completed yet..")
 
     def create_subarray_client(self, subarray_fqdn_list):
         """
