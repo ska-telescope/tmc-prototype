@@ -7,9 +7,6 @@ from tmc.common.tango_client import TangoClient
 from ska.base.commands import BaseCommand
 from . import const
 
-# PROTECTED REGION END #    //  SdpMasterLeafNode.additionnal_import
-
-
 class Disable(BaseCommand):
     """
     A class for SDP master's Disable() command.
@@ -63,7 +60,6 @@ class Disable(BaseCommand):
             )
             self.logger.error(log_msg)
             device_data._read_activity_message = log_msg
-
         else:
             log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
             self.logger.info(log_msg)

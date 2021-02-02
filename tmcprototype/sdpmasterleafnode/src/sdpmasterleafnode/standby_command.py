@@ -7,9 +7,6 @@ from tmc.common.tango_client import TangoClient
 from ska.base.commands import BaseCommand
 from . import const
 
-# PROTECTED REGION END #    //  SdpMasterLeafNode.additionnal_import
-
-
 class Standby(BaseCommand):
     """
     A class for SDP Master's Standby() command.
@@ -85,8 +82,8 @@ class Standby(BaseCommand):
         try:
             sdp_mln_client_obj = TangoClient(device_data.sdp_master_ln_fqdn)
             sdp_mln_client_obj.send_command_async(
-                const.CMD_STANDBY, None, self.standby_cmd_ended_cb
-            )
+                const.CMD_STANDBY, callback_method=self.standby_cmd_ended_cb
+                )
             log_msg = const.CMD_STANDBY + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
             self.logger.debug(log_msg)
 

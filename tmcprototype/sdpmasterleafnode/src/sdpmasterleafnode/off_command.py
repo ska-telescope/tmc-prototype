@@ -8,9 +8,6 @@ from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from . import const
 
-# PROTECTED REGION END #    //  SdpMasterLeafNode.additionnal_import
-
-
 class Off(SKABaseDevice.OffCommand):
     """
     A class for SDP master's Off() command.
