@@ -3,7 +3,7 @@ StartUpTelescope class for CentralNodelow.
 """
 # Tango imports
 import tango
-from tango import DevState, DevFailed, DeviceProxy, EventType
+from tango import DevState, DevFailed
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
@@ -64,23 +64,21 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         :rtype: (ResultCode, str)
         """
         device_data = self.target
-
-        mccs_controller_obj = TangoClient("low-mccs/control/control")
-        device_data.cmd_res_evt_id = mccs_controller_obj.subscribe_attribute("commandResult", self.command_result_cb)
-
+        # Subscribe to commandResult attribute of MccsController
+        mccs_controller_obj = TangoClient(device_data.mccs_controller_fqdn)
+        device_data.cmd_res_evt_id = mccs_controller_obj.subscribe_attribute("commandResult",
+                                                                             self.command_result_cb)
         device_data.health_aggreegator = HealthStateAggreegator(self.logger)
         device_data.health_aggreegator.subscribe_event()
-
         if device_data.cmd_res_evt_val == None or device_data.cmd_res_evt_val == 0:
             self.create_mccs_client(device_data.mccs_master_ln_fqdn)
             self.create_subarray_client(device_data.subarray_low)
-
             log_msg = const.STR_ON_CMD_ISSUED
             self.logger.info(log_msg)
             device_data._read_activity_message = log_msg
             return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
         else:
-            print("StandbyTelescope command is not completed yet..")
+            print("StandByTelescope command is not completed yet..")
 
     def create_subarray_client(self, subarray_fqdn_list):
         """

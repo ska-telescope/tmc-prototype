@@ -86,7 +86,7 @@ class AssignResources(BaseCommand):
                 device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
                 self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
             else:
-                print("StartupTelescope command is not completed yet..")
+                print("StartUpTelescope command is not completed yet..")
 
         except KeyError as key_error:
             self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)

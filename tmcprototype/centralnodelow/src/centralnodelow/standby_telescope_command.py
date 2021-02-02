@@ -3,7 +3,7 @@ StandByTelescope class for CentralNodelow.
 """
 # Tango imports
 import tango
-from tango import DevState, DevFailed, DeviceProxy
+from tango import DevState, DevFailed
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
@@ -53,8 +53,8 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         log_msg = const.STR_STANDBY_CMD_ISSUED
         self.logger.info(log_msg)
         device_data._read_activity_message = log_msg
-        
-        mccs_controller_obj = TangoClient("low-mccs/control/control")
+        # Unsubscribe commandResult attribute of MccsController
+        mccs_controller_obj = TangoClient(device_data.mccs_controller_fqdn)
         mccs_controller_obj.unsubscribe_attribute(device_data.cmd_res_evt_id)
 
         return (ResultCode.OK, const.STR_STANDBY_CMD_ISSUED)
