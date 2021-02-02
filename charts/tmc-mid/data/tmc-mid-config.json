@@ -917,6 +917,9 @@
               }
             },
             "properties": {
+              "ReceptorNumber": [
+                "0001"
+              ],
               "SkaLevel": [
                 "1"
               ],
@@ -977,6 +980,9 @@
               }
             },
             "properties": {
+              "ReceptorNumber": [
+                "0002"
+              ],
               "SkaLevel": [
                 "1"
               ],
@@ -1037,6 +1043,9 @@
               }
             },
             "properties": {
+              "ReceptorNumber": [
+                "0003"
+              ],
               "SkaLevel": [
                 "1"
               ],
@@ -1097,6 +1106,9 @@
               }
             },
             "properties": {
+              "ReceptorNumber": [
+                "0004"
+              ],
               "SkaLevel": [
                 "1"
               ],
