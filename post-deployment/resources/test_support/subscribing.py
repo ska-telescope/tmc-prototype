@@ -34,6 +34,9 @@ class PointingState(enum.IntEnum):
     SLEW = 1
     TRACK = 2
     SCAN = 3
+    NONE = 4
+    UNKNOWN = 5
+
 
 def get_attr_value_as_str(attr: DeviceAttribute) -> str:
     if attr.name == 'obsState' :
