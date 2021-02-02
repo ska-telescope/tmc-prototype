@@ -27,7 +27,7 @@ class DeviceData:
 
     def __init__(self):
         """Private constructor of the class"""
-        if DeviceData.__instance != None:
+        if DeviceData.__instance is not None:
             raise Exception("This is singletone class")
         else:
             DeviceData.__instance = self
@@ -55,7 +55,7 @@ class DeviceData:
 
     @staticmethod
     def get_instance():
-        if DeviceData.__instance == None:
+        if DeviceData.__instance is None:
             DeviceData()
         return DeviceData.__instance
 

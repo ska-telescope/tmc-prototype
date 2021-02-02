@@ -27,15 +27,12 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
 
             station_beam_ids: list of integers
 
-
         Example:
 
         {"station_ids":[1,2],"channels":[[0,8,1,1],[8,8,2,1],[24,16,2,1]],"station_beam_ids":[1]}
 
         :return: A tuple containing ResultCode and string.
-
         """
-
         device_data = DeviceData.get_instance()
         device_data.is_end_command = False
         device_data.is_release_resources = False

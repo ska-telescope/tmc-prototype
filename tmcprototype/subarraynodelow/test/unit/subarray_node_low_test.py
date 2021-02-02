@@ -126,8 +126,6 @@ def test_write_activity_message():
 # Test cases for Commands
 def test_on_command_should_change_subarray_device_state_to_on(mock_lower_devices_proxy):
     device_proxy, tango_client = mock_lower_devices_proxy
-    # with fake_tango_system(SubarrayNode) as tango_context:
-    #     # result = tango_context.device.On()
     assert device_proxy.On() == [[ResultCode.OK], ["On command completed OK"]]
     assert device_proxy.state() == DevState.ON
     assert device_proxy.obsState == ObsState.EMPTY
@@ -137,7 +135,6 @@ def test_off_command_should_change_subarray_device_state_to_off(
     mock_lower_devices_proxy,
 ):
     device_proxy, tango_client = mock_lower_devices_proxy
-    # with fake_tango_system(SubarrayNode) as tango_context:
     device_proxy.On()
     assert device_proxy.Off() == [[ResultCode.OK], ["Off command completed OK"]]
     assert device_proxy.state() == DevState.OFF
@@ -200,7 +197,6 @@ def test_end_should_command_subarray_to_end_when_it_is_ready(
     mock_lower_devices_proxy, subarray_state_model
 ):
     device_proxy, tango_client = mock_lower_devices_proxy
-    # mccs_subarray1_obsstate_attribute = "mccsSubarrayObsState"
     device_proxy.On()
     device_data = DeviceData.get_instance()
     end_cmd = End(device_data, subarray_state_model)
@@ -215,13 +211,11 @@ def test_end_should_raise_devfailed_exception_when_mccs_subarray_throws_devfaile
     mock_lower_devices_proxy, subarray_state_model
 ):
     device_proxy, tango_client = mock_lower_devices_proxy
-    # mccs_subarray1_obsstate_attribute = "mccsSubarrayObsState"
     device_data = DeviceData.get_instance()
     tango_client.deviceproxy.command_inout.side_effect = raise_devfailed_exception
     end_cmd = End(device_data, subarray_state_model)
     with pytest.raises(tango.DevFailed) as df:
         end_cmd.do()
-    # assert tango_context.device.obsState == ObsState.FAULT
     assert "This is error message for devfailed" in str(df.value)
 
 
@@ -400,7 +394,6 @@ def health_state(request):
 def test_subarray_health_state_changes_as_per_mccs_subarray_ln_healthstate(
     mock_lower_devices_proxy, health_state
 ):
-    # mccs_subarray1_ln_health_attribute = 'mccsSubarrayHealthState'
     device_proxy, tango_client = mock_lower_devices_proxy
     device_data = DeviceData.get_instance()
     with mock.patch.object(

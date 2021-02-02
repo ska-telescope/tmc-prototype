@@ -10,9 +10,8 @@ class ObsStateAggregator:
     """
     Observation State Aggregator class
     """
-
     def __init__(self, logger=None):
-        if logger == None:
+        if logger is None:
             self.logger = logging.getLogger(__name__)
         else:
             self.logger = logger
@@ -40,7 +39,6 @@ class ObsStateAggregator:
         :param : None
 
         :return: None
-
         """
         for tango_client, event_id in self.mccs_obs_state_event_id.items():
             tango_client.unsubscribe_attribute(event_id)
@@ -100,14 +98,14 @@ class ObsStateAggregator:
         """
         log_msg = "MCCS ObsState is: " + str(self.device_data._mccs_sa_obs_state)
         self.logger.info(log_msg)
-        if self.device_data._mccs_sa_obs_state == ObsState.EMPTY:
+        if self.device_data._mccs_sa_obs_state is ObsState.EMPTY:
             if self.device_data.is_release_resources:
                 self.logger.info(
                     "Calling ReleaseAllResource command succeeded() method"
                 )
                 self.this_server.device.release.succeeded()
 
-        elif self.device_data._mccs_sa_obs_state == ObsState.READY:
+        elif self.device_data._mccs_sa_obs_state is ObsState.READY:
             if self.device_data.is_scan_completed:
                 self.logger.info("Calling EndScan command succeeded() method")
                 self.this_server.device.endscan.succeeded()
@@ -115,7 +113,7 @@ class ObsStateAggregator:
                 # Configure command success
                 self.logger.info("Calling Configure command succeeded() method")
                 self.this_server.device.configure.succeeded()
-        elif self.device_data._mccs_sa_obs_state == ObsState.IDLE:
+        elif self.device_data._mccs_sa_obs_state is ObsState.IDLE:
             if self.device_data.is_end_command:
                 # End command success
                 self.logger.info("Calling End command succeeded() method")

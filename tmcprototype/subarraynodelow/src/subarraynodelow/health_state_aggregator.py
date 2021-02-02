@@ -60,7 +60,6 @@ class HealthStateAggregator:
 
         :return: None
         """
-
         device_name = event.device.dev_name()
         if not event.err:
             event_health_state = event.attr_value.value
@@ -112,7 +111,6 @@ class HealthStateAggregator:
         :param : None
 
         :return: None
-
         """
         for tango_client, event_id in self.mccs_ln_health_event_id.items():
             tango_client.unsubscribe_attribute(event_id)

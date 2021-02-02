@@ -21,7 +21,6 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
         Example: RELEASEALLRESOURCES command invoked successfully as string on successful release all resources.
 
         :rtype: (ResultCode, str)
-
         """
         device_data = DeviceData.get_instance()
         device_data.is_release_resources = True
