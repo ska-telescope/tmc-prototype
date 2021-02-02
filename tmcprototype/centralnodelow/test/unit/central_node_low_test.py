@@ -149,9 +149,38 @@ def test_command_invalid_json_value(mock_subarraynode_proxy,command_raise_error)
     assert error_msg in str(df.value)
 
 
+def dummy_subscriber_cmd_res(attribute, callback_method):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"low-mccs/control/control/{attribute}"
+    fake_event.attr_value.value = 0
+    print( fake_event.attr_value.value )
+
+    callback_method(fake_event)
+    return 10
+
+@pytest.fixture(
+    scope="function",
+    params=[
+        0
+    ])
+def command_result_cmd_res(request):
+    return request.param
+
+def create_dummy_event_cmd_result(attribute, command_result):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"low-mccs/control/control/{attribute}"
+    fake_event.attr_value.value = command_result
+    return fake_event
+
+
 def test_startup(mock_subarraynode_proxy):
     device_proxy, tango_client_obj = mock_subarraynode_proxy[:2]
-    assert device_proxy.StartUpTelescope() == [[ResultCode.OK],[const.STR_ON_CMD_ISSUED]]
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
+        with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_cmd_res):
+            tango_client_obj = TangoClient('low-mccs/control/control')
+            assert device_proxy.StartUpTelescope() == [[ResultCode.OK],[const.STR_ON_CMD_ISSUED]]
     assert device_proxy.state() == DevState.ON
 
 def test_standby(mock_subarraynode_proxy):
