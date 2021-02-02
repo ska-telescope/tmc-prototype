@@ -48,28 +48,13 @@ class CbfHealthStateAttributeUpdator:
         :return: None
 
         """
-        log_msg = "CspCbfHealthState attribute change event is : " + str(evt)
+        log_msg = f"CspCbfHealthState attribute change event is :{evt} "
         self.logger.debug(log_msg)
         if not evt.err:
             self._csp_cbf_health = evt.attr_value.value
-            if self._csp_cbf_health == HealthState.OK:
-                self.logger.debug(const.STR_CSP_CBF_HEALTH_OK)
-                self.device_data._csp_cbf_health_state_log = const.STR_CSP_CBF_HEALTH_OK
-            elif self._csp_cbf_health == HealthState.DEGRADED:
-                self.logger.debug(const.STR_CSP_CBF_HEALTH_DEGRADED)
-                self.device_data._csp_cbf_health_state_log = (
-                    const.STR_CSP_CBF_HEALTH_DEGRADED
-                )
-            elif self._csp_cbf_health == HealthState.FAILED:
-                self.logger.debug(const.STR_CSP_CBF_HEALTH_FAILED)
-                self.device_data._csp_cbf_health_state_log = (
-                    const.STR_CSP_CBF_HEALTH_FAILED
-                )
-            else:
-                self.logger.debug(const.STR_CSP_CBF_HEALTH_UNKNOWN)
-                self.device_data._csp_cbf_health_state_log = (
-                    const.STR_CSP_CBF_HEALTH_UNKNOWN
-                )
+            log_message = f"CSP CBF health is {HealthState(self._csp_cbf_health).name}"
+            self.logger.debug(log_message)
+            self.device_data._csp_cbf_health_state_log = log_message
         else:
             self.device_data._csp_cbf_health_state_log = (
                 const.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
@@ -118,28 +103,19 @@ class PssHealthStateAttributeUpdator:
         :return: None
 
         """
-        log_msg = "CspPssHealthState Attribute change event is : " + str(evt)
+        log_msg = f"CspPssHealthState Attribute change event is : {evt}"
         self.logger.debug(log_msg)
         if not evt.err:
             self._csp_pss_health = evt.attr_value.value
-            if self._csp_pss_health == HealthState.OK:
-                self.logger.debug(const.STR_CSP_PSS_HEALTH_OK)
-                self.device_data._csp_pss_health_state_log = const.STR_CSP_PSS_HEALTH_OK
-            elif self._csp_pss_health == HealthState.DEGRADED:
-                self.logger.debug(const.STR_CSP_PSS_HEALTH_DEGRADED)
-                self.device_data._csp_pss_health_state_log = (
-                    const.STR_CSP_PSS_HEALTH_DEGRADED
-                )
-            elif self._csp_pss_health == HealthState.FAILED:
-                self.logger.debug(const.STR_CSP_PSS_HEALTH_FAILED)
-                self.device_data._csp_pss_health_state_log = (
-                    const.STR_CSP_PSS_HEALTH_FAILED
-                )
+            if self._csp_pss_health in (HealthState.OK, HealthState.DEGRADED, HealthState.FAILED):
+                log_message = f"CSP PSS health is {HealthState(self._csp_pss_health).name}."
+                self.logger.debug(log_message)
+                self.device_data._csp_pss_health_state_log = log_message
             else:
-                self.logger.debug(const.STR_CSP_PSS_HEALTH_UNKNOWN)
-                self.device_data._csp_pss_health_state_log = (
-                    const.STR_CSP_PSS_HEALTH_UNKNOWN
-                )
+                log_message = "CSP PSS health is UNKNOWN."
+                self.logger.debug(log_message)
+                self.device_data._csp_pss_health_state_log = log_message
+
         else:
             self.device_data._csp_pss_health_state_log = (
                 const.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors)
@@ -192,24 +168,15 @@ class PstHealthStateAttributeUpdator:
         self.logger.debug(log_msg)
         if not evt.err:
             self._csp_pst_health = evt.attr_value.value
-            if self._csp_pst_health == HealthState.OK:
-                self.logger.debug(const.STR_CSP_PST_HEALTH_OK)
-                self.device_data._csp_pst_health_state_log = const.STR_CSP_PST_HEALTH_OK
-            elif self._csp_pst_health == HealthState.DEGRADED:
-                self.logger.debug(const.STR_CSP_PST_HEALTH_DEGRADED)
-                self.device_data._csp_pst_health_state_log = (
-                    const.STR_CSP_PST_HEALTH_DEGRADED
-                )
-            elif self._csp_pst_health == HealthState.FAILED:
-                self.logger.debug(const.STR_CSP_PST_HEALTH_FAILED)
-                self.device_data._csp_pst_health_state_log = (
-                    const.STR_CSP_PST_HEALTH_FAILED
-                )
+            if self._csp_pst_health in (HealthState.OK, HealthState.DEGRADED, HealthState.FAILED):
+                log_message = f"CSP PST health is {HealthState(self._csp_pst_health).name}."
+                self.logger.debug(log_message)
+                self.device_data._csp_pst_health_state_log = log_message
             else:
-                self.logger.debug(const.STR_CSP_PST_HEALTH_UNKNOWN)
-                self.device_data._csp_pst_health_state_log = (
-                    const.STR_CSP_PST_HEALTH_UNKNOWN
-                )
+                log_message = "CSP PST health is UNKNOWN."
+                self.logger.debug(log_message)
+                self.device_data._csp_pst_health_state_log = log_message
+
         else:
             self.device_data._csp_pst_health_state_log = (
                 const.ERR_ON_SUBS_CSP_PST_HEALTH + str(evt.errors)

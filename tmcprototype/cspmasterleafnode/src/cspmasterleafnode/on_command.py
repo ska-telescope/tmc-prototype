@@ -37,7 +37,6 @@ class On(SKABaseDevice.OnCommand):
 
         """
         device_data = self.target
-        # Update logs and activity message attribute with received event
         if event.err:
             log_msg = (
                 const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
@@ -65,10 +64,6 @@ class On(SKABaseDevice.OnCommand):
         """
         device_data = self.target
         try:
-            # Pass argin to csp master .
-            # If the array length is 0, the command applies to the whole CSP Element.
-            # If the array length is > 1 each array element specifies
-            # the FQDN of the CSP SubElement to switch ON.
             csp_mln_client_obj = TangoClient(device_data.csp_master_ln_fqdn)
             csp_mln_client_obj.send_command_async(
                 const.CMD_ON, [], self.on_cmd_ended_cb

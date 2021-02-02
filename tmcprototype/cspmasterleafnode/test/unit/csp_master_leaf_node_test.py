@@ -90,7 +90,6 @@ def test_standby_should_command_to_standby_with_callback_method(
     device_proxy.Standby([])
     dummy_event = command_callback(const.CMD_STANDBY)
     event_subscription_mock[const.CMD_STANDBY](dummy_event)
-    device_data = DeviceData.get_instance()
     assert const.STR_COMMAND + const.CMD_STANDBY in device_proxy.activityMessage
 
 
@@ -102,7 +101,6 @@ def test_on_should_command_to_on_with_callback_method(
     device_proxy.On()
     dummy_event = command_callback(const.CMD_ON)
     event_subscription_mock[const.CMD_ON](dummy_event)
-    device_data = DeviceData.get_instance()
     assert const.STR_COMMAND + const.CMD_ON in device_proxy.activityMessage
 
 
@@ -111,12 +109,7 @@ def test_off_should_command_to_off(mock_csp_master_proxy):
 
     device_proxy.On()
     device_proxy.Off()
-
-    device_data = DeviceData.get_instance()
     assert device_proxy.activityMessage in const.STR_OFF_CMD_ISSUED
-
-
-device_data = DeviceData.get_instance()
 
 
 def test_standby_should_command_with_callback_method_with_event_error(
@@ -219,10 +212,10 @@ def test_activity_message_attribute_reports_correct_csp_health_state_callbacks(
         ):
             tango_client_obj = TangoClient("mid_csp/elt/master")
             device_proxy.On()
-
+    device_data = DeviceData.get_instance()
     assert (
         device_data._csp_cbf_health_state_log
-        == f"CSP CBF health is {health_state.name}."
+        == f"CSP CBF health is {health_state.name}"
     )
     assert (
         device_data._csp_pst_health_state_log
@@ -260,6 +253,7 @@ def test_activity_message_reports_correct_health_state_when_attribute_event_has_
         ):
             tango_client_obj = TangoClient("mid_csp/elt/master")
             device_proxy.On()
+    device_data = DeviceData.get_instance()
     assert const.ERR_ON_SUBS_CSP_CBF_HEALTH in device_data._csp_cbf_health_state_log
     assert const.ERR_ON_SUBS_CSP_PSS_HEALTH in device_data._csp_pss_health_state_log
     assert const.ERR_ON_SUBS_CSP_PST_HEALTH in device_data._csp_pst_health_state_log

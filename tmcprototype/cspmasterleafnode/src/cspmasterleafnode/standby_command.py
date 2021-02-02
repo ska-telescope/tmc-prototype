@@ -52,7 +52,6 @@ class Standby(BaseCommand):
 
         """
         device = self.target
-        # Update logs and activity message attribute with received event
         if event.err:
             log_msg = (
                 const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
@@ -79,7 +78,7 @@ class Standby(BaseCommand):
         try:
             csp_mln_client_obj = TangoClient(device_data.csp_master_ln_fqdn)
             csp_mln_client_obj.send_command_async(
-                const.CMD_STANDBY, argin, self.standby_cmd_ended_cb
+                const.CMD_STANDBY, command_data=argin, callback_method=self.standby_cmd_ended_cb
             )
             self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
 
