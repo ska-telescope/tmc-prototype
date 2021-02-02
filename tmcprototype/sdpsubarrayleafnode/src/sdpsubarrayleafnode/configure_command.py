@@ -9,7 +9,6 @@ from tango import DevState, DevFailed
 # Additional import
 from ska.base.commands import BaseCommand
 
-# from ska.base.control_model import ObsState
 from tmc.common.tango_client import TangoClient
 from . import const
 from .transaction_id import identify_with_id
@@ -44,12 +43,6 @@ class Configure(BaseCommand):
             )
 
         # TODO: Mock obs_state issue to be resolved
-        # device_data = self.target
-        # sdp_sa_ln_client = TangoClient(device_data._sdp_sa_fqdn)
-        # if sdp_sa_ln_client.get_attribute("obsState") not in [ObsState.IDLE, ObsState.READY]:
-        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_IDLE, "Failed to invoke Configure command on SdpSubarrayLeafNode.",
-        #                                     "SdpSubarrayLeafNode.Configure()",
-        #                                 tango.ErrSeverity.ERR)
         return True
 
     def configure_cmd_ended_cb(self, event):
@@ -111,8 +104,8 @@ class Configure(BaseCommand):
             self.logger.debug(log_msg)
             sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
             sdp_sa_ln_client_obj.send_command_async(
-                const.CMD_CONFIGURE, argin, self.configure_cmd_ended_cb
-            )
+                const.CMD_CONFIGURE, command_data=argin, callback_method=self.configure_cmd_ended_cb
+                )
             device_data._read_activity_message = const.STR_CONFIGURE_SUCCESS
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
 

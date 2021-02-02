@@ -1,7 +1,6 @@
 """
 Abort class for SDPSubarrayLeafNode.
 """
-# PROTECTED REGION ID(sdpsubarrayleafnode.additionnal_import) ENABLED START #
 # Tango imports
 import tango
 from tango import DevState, DevFailed
@@ -9,7 +8,6 @@ from tango import DevState, DevFailed
 # Additional import
 from ska.base.commands import BaseCommand
 
-# from ska.base.control_model import ObsState
 from tmc.common.tango_client import TangoClient
 from . import const
 
@@ -43,13 +41,6 @@ class Abort(BaseCommand):
             )
 
         # TODO: Mock obs_state issue to be resolved
-        # device_data = self.target
-        # sdp_sa_ln_client = TangoClient(device_data._sdp_sa_fqdn)
-        # if sdp_sa_ln_client.get_attribute("obsState") not in [ObsState.READY, ObsState.CONFIGURING,
-        #                                                 ObsState.SCANNING, ObsState.IDLE, ObsState.RESETTING]:
-        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_IDLE_CONFIG_SCAN_RESET, "Failed to invoke Abort command on SdpSubarrayLeafNode."
-        #                                     "SdpSubarrayLeafNode.Abort()",
-        #                                     tango.ErrSeverity.ERR)
         return True
 
     def abort_cmd_ended_cb(self, event):
@@ -99,8 +90,8 @@ class Abort(BaseCommand):
         try:
             sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
             sdp_sa_ln_client_obj.send_command_async(
-                const.CMD_ABORT, None, self.abort_cmd_ended_cb
-            )
+                const.CMD_ABORT, callback_method=self.abort_cmd_ended_cb
+                )
             device_data._read_activity_message = const.STR_ABORT_SUCCESS
             self.logger.info(const.STR_ABORT_SUCCESS)
 

@@ -94,8 +94,8 @@ class Restart(BaseCommand):
         try:
             sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
             sdp_sa_ln_client_obj.send_command_async(
-                const.CMD_RESTART, None, self.restart_cmd_ended_cb
-            )
+               const.CMD_RESTART, callback_method=self.restart_cmd_ended_cb
+               )
             device_data._read_activity_message = const.STR_RESTART_SUCCESS
             self.logger.info(const.STR_RESTART_SUCCESS)
 

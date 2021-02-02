@@ -193,7 +193,7 @@ def test_off_command_should_raise_dev_failed(mock_sdp_subarray_proxy):
             assign_input_str,
             const.CMD_ASSIGN_RESOURCES,
             ObsState.EMPTY,
-            "AssignResources_ended",
+            "assign_resources_ended",
             const.STR_ASSIGN_RESOURCES_SUCCESS,
         ),
         (
@@ -201,7 +201,7 @@ def test_off_command_should_raise_dev_failed(mock_sdp_subarray_proxy):
             assign_input_str,
             const.CMD_ASSIGN_RESOURCES,
             ObsState.IDLE,
-            "AssignResources_ended",
+            "assign_resources_ended",
             const.STR_ASSIGN_RESOURCES_SUCCESS,
         ),
         (
@@ -231,7 +231,7 @@ def test_command_with_callback_method_with_arg(
 ):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     cmd_name, input_arg, requested_cmd, obs_state, _, _ = command_with_arg
-    # tango_client_obj.set_attribute("obsState", obs_state)
+    # tango_client_obj.set_attribute("obsState", obs_sta
     device_proxy.command_inout(cmd_name, input_arg)
     dummy_event = command_callback(requested_cmd)
     event_subscription_mock[requested_cmd](dummy_event)
@@ -243,7 +243,6 @@ def test_command_with_callback_method_with_arg_with_event_error(
 ):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     cmd_name, input_arg, requested_cmd, obs_state, _, _ = command_with_arg
-    # tango_client_obj.set_attribute("obsState", obs_state)
     device_proxy.command_inout(cmd_name, input_arg)
     dummy_event = command_callback(requested_cmd)
     event_subscription_mock[requested_cmd](dummy_event)
@@ -255,12 +254,10 @@ def test_command_for_allowed_Obstate_with_arg(
 ):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     cmd_name, input_arg, requested_cmd, obs_state, callback_str, _ = command_with_arg
-    # tango_client_obj.set_attribute("obsState", obs_state)
     device_proxy.command_inout(cmd_name, input_arg)
     tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(
         requested_cmd, input_arg, any_method(with_name=callback_str)
     )
-
 
 # TODO: When ObsState check related issue is resolved
 # def test_command_with_arg_should_raise_devfailed_exception(mock_sdp_subarray_proxy, event_subscription_mock, command_with_arg):
@@ -372,7 +369,6 @@ def test_command_with_callback_method_without_arg(
 ):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     cmd_name, requested_cmd, obs_state, callback_str, _ = command_without_arg
-    # tango_client_obj.set_attribute("obsState", obs_state)
     device_proxy.command_inout(cmd_name)
     dummy_event = command_callback(requested_cmd)
     event_subscription_mock[requested_cmd](dummy_event)
@@ -384,7 +380,6 @@ def test_command_with_callback_method_without_arg_with_event_error(
 ):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     cmd_name, requested_cmd, obs_state, callback_str, _ = command_without_arg
-    # tango_client_obj.set_attribute("obsState", obs_state)
     device_proxy.command_inout(cmd_name)
     dummy_event = command_callback_with_event_error(requested_cmd)
     event_subscription_mock[requested_cmd](dummy_event)
@@ -396,7 +391,6 @@ def test_command_for_allowed_Obstate_without_arg(
 ):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     cmd_name, requested_cmd, obs_state, callback_str, _ = command_without_arg
-    # tango_client_obj.set_attribute("obsState", obs_state)
     device_proxy.command_inout(cmd_name)
     tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(
         requested_cmd, None, any_method(with_name=callback_str)
@@ -408,7 +402,6 @@ def test_command_without_arg_should_raise_devfailed_exception(
 ):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     cmd_name, requested_cmd, obs_state, _, _ = command_without_arg
-    # tango_client_obj.set_attribute("obsState", obs_state)
     tango_client_obj.deviceproxy.command_inout_asynch_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name)

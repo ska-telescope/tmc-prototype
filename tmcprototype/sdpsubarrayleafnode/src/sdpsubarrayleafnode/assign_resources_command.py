@@ -1,7 +1,6 @@
 """
 AssignResouces class for SDPSubarrayLeafNode.
 """
-# PROTECTED REGION ID(SDPSubarrayLeafNode.additionnal_import) ENABLED START #
 # Tango imports
 import tango
 from tango import DevState, DevFailed
@@ -44,7 +43,7 @@ class AssignResources(BaseCommand):
 
         return True
 
-    def AssignResources_ended(self, event):
+    def assign_resources_ended(self, event):
         """
         This is the callback method of AssignResources command of the SDP Subarray.
         It checks whether the AssignResources command on SDP subarray is successful.
@@ -135,8 +134,8 @@ class AssignResources(BaseCommand):
             # Call SDP Subarray Command asynchronously
             sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
             sdp_sa_ln_client_obj.send_command_async(
-                const.CMD_ASSIGN_RESOURCES, argin, self.AssignResources_ended
-            )
+                const.CMD_ASSIGN_RESOURCES, command_data=argin, callback_method=self.assign_resources_ended
+                )
             # Update the status of command execution status in activity message
             device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)

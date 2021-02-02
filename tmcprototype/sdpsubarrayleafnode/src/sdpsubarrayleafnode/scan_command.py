@@ -43,12 +43,6 @@ class Scan(BaseCommand):
             )
 
         # TODO: Mock obs_state issue to be resolved
-        # device_data = self.target
-        # sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
-        # if sdp_sa_ln_client_obj.get_attribute("obsState") != ObsState.READY:
-        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, "Failed to invoke Scan command on SdpSubarrayLeafNode.",
-        #                                     "SdpSubarrayLeafNode.Scan()",
-        #                                     tango.ErrSeverity.ERR)
         return True
 
     def scan_cmd_ended_cb(self, event):
@@ -106,8 +100,8 @@ class Scan(BaseCommand):
             self.logger.debug(log_msg)
             sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
             sdp_sa_ln_client_obj.send_command_async(
-                const.CMD_SCAN, argin, self.scan_cmd_ended_cb
-            )
+                const.CMD_SCAN, command_data=argin, callback_method=self.scan_cmd_ended_cb
+                )
             device_data._read_activity_message = const.STR_SCAN_SUCCESS
             self.logger.info(const.STR_SCAN_SUCCESS)
 
