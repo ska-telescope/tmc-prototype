@@ -1735,7 +1735,7 @@
             "time": 1602497000.703595,
             "unit": "",
             "value": 4,
-            "writable": "READ_WRITE"
+            "writable": "READ"
         },
         "dishState": {
             "alarms": {
