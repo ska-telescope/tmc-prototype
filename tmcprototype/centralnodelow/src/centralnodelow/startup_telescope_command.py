@@ -65,9 +65,8 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         """
         device_data = self.target
 
-        mccs_controller_proxy = DeviceProxy("low-mccs/control/control")
-        device_data.cmd_res_evt_id = mccs_controller_proxy.subscribe_event("commandResult",
-                            EventType.CHANGE_EVENT, self.command_result_cb, stateless=True)
+        mccs_controller_obj = TangoClient("low-mccs/control/control")
+        device_data.cmd_res_evt_id = mccs_controller_obj.subscribe_attribute("commandResult", self.command_result_cb)
 
         device_data.health_aggreegator = HealthStateAggreegator(self.logger)
         device_data.health_aggreegator.subscribe_event()

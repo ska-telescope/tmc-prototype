@@ -54,8 +54,8 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         self.logger.info(log_msg)
         device_data._read_activity_message = log_msg
         
-        mccs_controller_proxy = DeviceProxy("low-mccs/control/control")
-        mccs_controller_proxy.unsubscribe_attribute(device_data.cmd_res_evt_id)
+        mccs_controller_obj = TangoClient("low-mccs/control/control")
+        mccs_controller_obj.unsubscribe_attribute(device_data.cmd_res_evt_id)
 
         return (ResultCode.OK, const.STR_STANDBY_CMD_ISSUED)
 
