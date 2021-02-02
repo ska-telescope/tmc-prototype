@@ -1688,7 +1688,6 @@
             "dim_y": 0,
             "display_unit": "No display unit",
             "enum_labels": [
-                "UNKNOWN",
                 "OFF",
                 "STARTUP",
                 "SHUTDOWN",
@@ -1697,9 +1696,7 @@
                 "STOW",
                 "CONFIG",
                 "OPERATE",
-                "MAINTENANCE",
-                "FORBIDDEN",
-                "ERROR"
+                "MAINTENANCE"
             ],
             "events": {
                 "arch_event": {
