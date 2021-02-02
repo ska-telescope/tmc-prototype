@@ -12479,8 +12479,8 @@
             "in_type": "DevVoid",
             "in_type_desc": "Uninitialised",
             "name": "SetMaintenanceMode",
-            "out_type": "DevVarLongStringArray",
-            "out_type_desc": "== Long field ==\n[0]: ack code (0=OK, 1=QUEUED, 2=FAILED)\n\n== String field ==\n[0]: Informative message or error/fault description"
+            "out_type": "DevVoid",
+            "out_type_desc": "Uninitialised"
         },
         "SetOperateMode": {
             "cmd_name": "SetOperateMode",
@@ -12490,8 +12490,8 @@
             "in_type": "DevVoid",
             "in_type_desc": "Uninitialised",
             "name": "SetOperateMode",
-            "out_type": "DevVarLongStringArray",
-            "out_type_desc": "0]: ack code (0=OK, 1=QUEUED, 2=FAILED)\n\n== String field ==\n[0]: Informative message or error/fault description"
+            "out_type": "DevVoid",
+            "out_type_desc": "Uninitialised"
         },
         "SetRxMaintenanceMode": {
             "cmd_name": "SetRxMaintenanceMode",
@@ -12721,7 +12721,7 @@
             "in_type": "DevVoid",
             "in_type_desc": "Uninitialised",
             "name": "SetStandbyFPMode",
-            "out_type": "DevVarLongStringArray",
+            "out_type": "DevVoid",
             "out_type_desc": "Uninitialised"
         },
         "SetStandbyFPModeOnBandError": {
@@ -12743,7 +12743,7 @@
             "in_type": "DevVoid",
             "in_type_desc": "Uninitialised",
             "name": "SetStandbyLPMode",
-            "out_type": "DevVarLongStringArray",
+            "out_type": "DevVoid",
             "out_type_desc": "Uninitialised"
         },
         "SetStowMode": {
@@ -12754,8 +12754,8 @@
             "in_type": "DevVoid",
             "in_type_desc": "Uninitialised",
             "name": "SetStowMode",
-            "out_type": "DevVarLongStringArray",
-            "out_type_desc": "== Long field ==\n[0]: ack code (0=OK, 1=QUEUED, 2=FAILED)\n\n== String field ==\n[0]: Informative message or error/fault description"
+            "out_type": "DevVoid",
+            "out_type_desc": "Uninitialised"
         },
         "SetTMProxyAddress": {
             "cmd_name": "SetTMProxyAddress",

@@ -237,7 +237,8 @@ class OverrideDish(object):
         dish_mode = get_enum_str(dish_mode_quantity)
 
         if dish_mode == maintenance:
-            return [[self.OK], [f"DISH is already in '{maintenance}' mode"]]
+            self.logger.info("Dish is already in '%s' mode", maintenance)
+            return
 
         if dish_mode in _allowed_modes:
             elev = self.MIN_DESIRED_ELEV
@@ -251,7 +252,6 @@ class OverrideDish(object):
             self._reset_pointing_state(model)
         else:
             self._throw_exception("SetMaintenanceMode", _allowed_modes)
-        return [[self.OK], [f"Dish transitioned to '{maintenance}' Mode"]]
 
     def action_setoperatemode(
         self, model, tango_dev=None, data_input=None
@@ -271,7 +271,8 @@ class OverrideDish(object):
         dish_mode = get_enum_str(dish_mode_quantity)
 
         if dish_mode == operate:
-            return [[self.OK], [f"DISH is already in '{operate}' mode"]]
+            self.logger.info("Dish is already in '%s' mode", operate)
+            return
 
         if dish_mode in _allowed_modes:
             configuredBand = model.sim_quantities["configuredBand"]
@@ -293,7 +294,6 @@ class OverrideDish(object):
 
         tango_dev.set_state(DevState.ON)
         model.logger.info("Dish state set to 'ON'.")
-        return [[self.OK], [f"Dish transitioned to '{operate} Mode"]]
 
     def action_setstandbyfpmode(
         self, model, tango_dev=None, data_input=None
@@ -313,7 +313,8 @@ class OverrideDish(object):
         dish_mode = get_enum_str(dish_mode_quantity)
 
         if dish_mode == standby_fp:
-            return [[self.OK], [f"DISH is already in '{standby_fp}' mode"]]
+            self.logger.info("Dish is already in '%s' mode", standby_fp)
+            return
 
         if dish_mode in _allowed_modes:
             set_enum(dish_mode_quantity, standby_fp, model.time_func())
@@ -324,7 +325,6 @@ class OverrideDish(object):
 
         tango_dev.set_state(DevState.STANDBY)
         model.logger.info("Dish state set to 'STANDBY'.")
-        return [[self.OK], [f"Dish transitioned to '{standby_fp}' mode"]]
 
     def action_setstandbylpmode(
         self, model, tango_dev=None, data_input=None
@@ -354,7 +354,8 @@ class OverrideDish(object):
         dish_mode = get_enum_str(dish_mode_quantity)
 
         if dish_mode == standby_lp:
-            return [[self.OK], [f"DISH is already in '{standby_lp}' mode"]]
+            self.logger.info("Dish is already in '%s' mode", standby_lp)
+            return
 
         if dish_mode in _allowed_modes:
             set_enum(dish_mode_quantity, standby_lp, model.time_func())
@@ -365,7 +366,6 @@ class OverrideDish(object):
 
         tango_dev.set_state(DevState.STANDBY)
         model.logger.info("Dish state set to 'STANDBY'.")
-        return [[self.OK], [f"Dish transitioned to '{standby_lp}' mode"]]
 
     def action_setstowmode(self, model, tango_dev=None, data_input=None):  # pylint: disable=W0613
         """This command triggers the Dish to transition to the STOW Dish
@@ -394,7 +394,8 @@ class OverrideDish(object):
         dish_mode = get_enum_str(dish_mode_quantity)
 
         if dish_mode == stow:
-            return [[self.OK], [f"DISH is already in '{stow}' mode"]]
+            self.logger.info("Dish is already in '%s' mode", stow)
+            return
 
         if dish_mode in _allowed_modes:
             elev = self.MAX_DESIRED_ELEV
@@ -409,7 +410,6 @@ class OverrideDish(object):
             self._reset_pointing_state(model)
         else:
             self._throw_exception("SetStowMode", _allowed_modes)
-        return [[self.OK], [f"Dish transitioned to '{stow}' mode."]]
 
     def action_startcapture(self, model, tango_dev=None, data_input=None):  # pylint: disable=W0613
         """Triggers the dish to start capturing the data on the configured band.
