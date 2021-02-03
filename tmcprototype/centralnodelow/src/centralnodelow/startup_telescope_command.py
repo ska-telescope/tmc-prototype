@@ -72,7 +72,7 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         device_data.health_aggreegator.subscribe_event()
         try:
             # Check if Mccs Off command is completed
-            assert device_data.cmd_res_evt_val == None or device_data.cmd_res_evt_val == 0
+            assert device_data.cmd_res_evt_val == None or device_data.cmd_res_evt_val == 0, const.ERR_STANDBY_CMD_UNCOMPLETE
             self.create_mccs_client(device_data.mccs_master_ln_fqdn)
             self.create_subarray_client(device_data.subarray_low)
             log_msg = const.STR_ON_CMD_ISSUED
