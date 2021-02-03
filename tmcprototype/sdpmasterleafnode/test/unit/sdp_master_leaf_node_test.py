@@ -31,16 +31,6 @@ def tango_context():
     with fake_tango_system(SdpMasterLeafNode) as tango_context:
         yield tango_context
 
-
-# @pytest.fixture(scope="function")
-# def event_subscription(mock_sdp_master):
-#     event_subscription_map = {}
-#     mock_sdp_master[1].deviceproxy.command_inout_asynch.side_effect = (
-#         lambda command_name, arg, callback, *args,
-#                **kwargs: event_subscription_map.update({command_name: callback}))
-#     yield event_subscription_map
-
-
 @pytest.fixture(scope="function")
 def event_subscription_mock():
     dut_properties = {"SdpMasterFQDN": "mid_sdp/elt/master"}

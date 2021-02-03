@@ -532,7 +532,7 @@ def raise_devfailed_exception(*args):
 
 
 def assert_activity_message(device_proxy, expected_message):
-    assert device_proxy.activityMessage == expected_message  # reads tango attribute
+    assert device_proxy.activityMessage == expected_message  
 
 
 def any_method(with_name=None):
