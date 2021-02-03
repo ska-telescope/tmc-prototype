@@ -17,11 +17,11 @@ class PointingState(enum.IntEnum):
     Pointing state of the dish.
     """
 
-    READY = 0
-    SLEW = 1
-    TRACK = 2
-    SCAN = 3
-    NONE = 4
+    NONE = 0
+    READY = 1
+    SLEW = 2
+    TRACK = 3
+    SCAN = 4
     UNKNOWN = 5
 
 
@@ -98,12 +98,15 @@ class UnitConverter:
 
 
 class DishMode(enum.IntEnum):
-    OFF = 0
-    STARTUP = 1
-    SHUTDOWN = 2
-    STANDBY_LP = 3
-    STANDBY_FP = 4
-    STOW = 5
-    CONFIG = 6
-    OPERATE = 7
-    MAINTENANCE = 8
+    UNKNOWN = 0
+    OFF = 1
+    STARTUP = 2
+    SHUTDOWN = 3
+    STANDBY_LP = 4
+    STANDBY_FP = 5
+    STOW = 6
+    CONFIG = 7
+    OPERATE = 8
+    MAINTENANCE = 9
+    FORBIDDEN = 10
+    ERROR = 11

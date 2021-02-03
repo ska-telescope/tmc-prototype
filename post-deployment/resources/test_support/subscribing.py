@@ -30,11 +30,11 @@ class PointingState(enum.IntEnum):
     """
     Pointing state of the dish
     """
-    READY = 0
-    SLEW = 1
-    TRACK = 2
-    SCAN = 3
-    NONE = 4
+    NONE = 0
+    READY = 1
+    SLEW = 2
+    TRACK = 3
+    SCAN = 4
     UNKNOWN = 5
 
 

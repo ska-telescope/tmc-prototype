@@ -1509,6 +1509,7 @@
                 "B4",
                 "B5a",
                 "B5b",
+                "B5c",
                 "NONE",
                 "ERROR",
                 "UNDEFINED"
@@ -1688,6 +1689,7 @@
             "dim_y": 0,
             "display_unit": "No display unit",
             "enum_labels": [
+                "UNKNOWN"
                 "OFF",
                 "STARTUP",
                 "SHUTDOWN",
@@ -1696,7 +1698,9 @@
                 "STOW",
                 "CONFIG",
                 "OPERATE",
-                "MAINTENANCE"
+                "MAINTENANCE",
+                "FORBIDDEN",
+                "ERROR"
             ],
             "events": {
                 "arch_event": {
@@ -1728,10 +1732,10 @@
             "polling": 1000,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "3",
+            "string": "4",
             "time": 1602497000.703595,
             "unit": "",
-            "value": 3,
+            "value": 4,
             "writable": "READ"
         },
         "dishState": {
@@ -4025,11 +4029,11 @@
             "dim_y": 0,
             "display_unit": "No display unit",
             "enum_labels": [
+                "NONE",
                 "READY",
                 "SLEW",
                 "TRACK",
                 "SCAN",
-                "NONE",
                 "UNKNOWN"
             ],
             "events": {
@@ -4062,10 +4066,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "4",
+            "string": "0",
             "time": 1602497005.66357,
             "unit": "",
-            "value": 4,
+            "value": 0,
             "writable": "READ"
         },
         "polyTrack": {
@@ -11496,6 +11500,17 @@
             "in_type": "DevVoid",
             "in_type_desc": "Uninitialised",
             "name": "ConfigureBand5b",
+            "out_type": "DevVoid",
+            "out_type_desc": "Uninitialised"
+        },
+        "ConfigureBand5c": {
+            "cmd_name": "ConfigureBand5c",
+            "cmd_tag": 0,
+            "device": "mid_dsh_0000/elt/master",
+            "disp_level": "OPERATOR",
+            "in_type": "DevVoid",
+            "in_type_desc": "Uninitialised",
+            "name": "ConfigureBand5c",
             "out_type": "DevVoid",
             "out_type_desc": "Uninitialised"
         },
