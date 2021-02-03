@@ -136,62 +136,39 @@ class CentralNode(SKABaseDevice):
             super().do()
 
             device = self.target
-            try:
-                self.logger.info("Device initialisating...")
-                # Initialise Attributes
-                device._health_state = HealthState.OK
-                device._build_state = "{},{},{}".format(
-                    release.name, release.version, release.description
-                )
-                device._version_id = release.version
-                device_data = DeviceData.get_instance()
-                device.device_data = device_data
-                device_data.csp_master_ln_fqdn = device.CspMasterLeafNodeFQDN
-                device_data.sdp_master_ln_fqdn = device.SdpMasterLeafNodeFQDN
-                device_data.tm_mid_subarray = device.TMMidSubarrayNodes
-                device_data.dln_prefix = device.DishLeafNodePrefix
-                device_data.num_dishes = device.NumDishes
-                self.logger.debug(const.STR_INIT_SUCCESS)
-                device_data.resource_manager = ResourceManager.get_instance()
+            self.logger.info("Device initialisating...")
+            # Initialise Attributes
+            device._health_state = HealthState.OK
+            device._build_state = "{},{},{}".format(
+                release.name, release.version, release.description
+            )
+            device._version_id = release.version
+            device_data = DeviceData.get_instance()
+            device.device_data = device_data
+            device_data.csp_master_ln_fqdn = device.CspMasterLeafNodeFQDN
+            device_data.sdp_master_ln_fqdn = device.SdpMasterLeafNodeFQDN
+            device_data.tm_mid_subarray = device.TMMidSubarrayNodes
+            device_data.dln_prefix = device.DishLeafNodePrefix
+            device_data.num_dishes = device.NumDishes
+            self.logger.debug(const.STR_INIT_SUCCESS)
+            device_data.resource_manager = ResourceManager.get_instance()
 
-                # Initialization of ObsState aggregator object
-                device_data.obs_state_aggregator = ObsStateAggregator(
-                    device_data.tm_mid_subarray, self.logger
-                )
-
-            except DevFailed as dev_failed:
-                log_msg = const.ERR_INIT_PROP_ATTR_CN + str(dev_failed)
-                self.logger.exception(dev_failed)
-                device._read_activity_message = const.ERR_INIT_PROP_ATTR_CN
-                tango.Except.throw_exception(
-                    const.STR_CMD_FAILED,
-                    log_msg,
-                    "CentralNode.InitCommand.do()",
-                    tango.ErrSeverity.ERR,
-                )
+            # Initialization of ObsState aggregator object
+            device_data.obs_state_aggregator = ObsStateAggregator(
+                device_data.tm_mid_subarray, self.logger
+            )
 
             device_data.resource_manager.initialize_resource_matrix()
 
             for subarray in range(0, len(device.TMMidSubarrayNodes)):
-                try:
-                    tokens = device.TMMidSubarrayNodes[subarray].split("/")
-                    subarrayID = int(tokens[2])
-                    # The below code appends the FQDN corresponding to each subarray Id into the dictionary.
-                    # This is required in AssignResource command where according to Subarray Id in input json, proxy has to be created.
-                    device_data.subarray_FQDN_dict[
-                        subarrayID
-                    ] = device.TMMidSubarrayNodes[subarray]
-                except DevFailed as dev_failed:
-                    log_msg = const.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
-                    self.logger.exception(dev_failed)
-                    device._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE
-                    tango.Except.throw_exception(
-                        const.STR_CMD_FAILED,
-                        log_msg,
-                        "CentralNode.InitCommand",
-                        tango.ErrSeverity.ERR,
-                    )
-
+                tokens = device.TMMidSubarrayNodes[subarray].split("/")
+                subarrayID = int(tokens[2])
+                # The below code appends the FQDN corresponding to each subarray Id into the dictionary.
+                # This is required in AssignResource command where according to Subarray Id in input json, proxy has to be created.
+                device_data.subarray_FQDN_dict[
+                    subarrayID
+                ] = device.TMMidSubarrayNodes[subarray]
+                
             device_data._read_activity_message = (
                 "Central Node initialised successfully."
             )

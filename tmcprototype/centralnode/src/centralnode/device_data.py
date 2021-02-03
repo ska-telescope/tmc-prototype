@@ -45,9 +45,7 @@ class DeviceData:
         self.sdp_master_ln_fqdn = ""
         self.csp_master_ln_fqdn = ""
         self.dln_prefix = ""
-        self.tm_mid_subarray = (
-            []
-        )  # "" # initialization is correct? it is array ('str',)
+        self.tm_mid_subarray = []
         self._read_activity_message = ""
         self.sln_prefix = ""
         self.num_dishes = 0

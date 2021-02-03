@@ -5,14 +5,17 @@ ReleaseResources class for CentralNode.
 # Standard Python imports
 import json
 import ast
+
 import tango
 from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
+
+from tmc.common.tango_client import TangoClient
+
 from . import const
 from centralnode.device_data import DeviceData
-from tmc.common.tango_client import TangoClient
 
 
 class ReleaseResources(BaseCommand):

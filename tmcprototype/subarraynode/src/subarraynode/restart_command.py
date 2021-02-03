@@ -47,7 +47,7 @@ class Restart(SKASubarray.RestartCommand):
                 device_data.sdp_subarray_ln_fqdn, const.STR_CMD_RESTART_INV_SDP
             )
             self.restart_dsh_grp(device_data)
-            device_data.clean_up_dict(self.logger)
+            device_data.clean_up(self.logger)
             device_data._read_activity_message = const.STR_RESTART_SUCCESS
             self.logger.info(const.STR_RESTART_SUCCESS)
             tango_server_helper_obj = TangoServerHelper.get_instance()

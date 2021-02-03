@@ -72,16 +72,20 @@ class DeviceData:
         self._receptor_id_list = []
         self.receive_addresses = None
 
-    def clean_up_dict(self, logger=None):
+    def clean_up(self, logger=None):
         """
+        Removes group of dishes from tango group client.
+
+        Unsubscribes events for dish health state and dish pointing state.
+
         Cleans dictionaries of the resources across the subarraynode.
 
         Note: Currently there are only receptors allocated so the group contains only receptor ids.
 
         :param argin:
-            DevVoid
+            None
         :return:
-            DevVoid
+            None
         """
         if logger == None:
             self.logger = logging.getLogger(__name__)

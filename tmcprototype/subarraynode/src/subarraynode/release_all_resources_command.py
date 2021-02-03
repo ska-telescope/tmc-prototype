@@ -57,7 +57,7 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
             )
 
         self.logger.info(const.STR_DISH_RELEASE)
-        device_data.clean_up_dict(self.logger)
+        device_data.clean_up(self.logger)
         self.logger.info(const.STR_CSP_RELEASE)
         self.release_csp_resources(device_data.csp_subarray_ln_fqdn)
         self.logger.info(const.STR_SDP_RELEASE)

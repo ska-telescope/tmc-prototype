@@ -3,14 +3,17 @@ health_state_aggregator class for CentralNode.
 """
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 import logging
+
 import tango
 from tango import DevFailed
 
 # Additional import
 from ska.base.control_model import HealthState
-from . import const
+
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
+
+from . import const
 from centralnode.device_data import DeviceData
 
 # PROTECTED REGION END #    //  CentralNode.additional_import
@@ -130,142 +133,87 @@ class HealthStateAggregator:
             )
         self.health_state_event_map.clear()
 
-    def health_state_cb(self, evt):
+    def health_state_cb(self, event):
         """
         Retrieves the subscribed Subarray health state, aggregates them to calculate the
         telescope health state.
 
-        :param evt: A TANGO_CHANGE event on Subarray healthState.
+        :param event: A TANGO_CHANGE event on Subarray healthState.
 
         :return: None
-
-        :raises: KeyError if error occurs while setting Subarray healthState
         """
         device_data = DeviceData.get_instance()
-        try:
-            self._read_activity_message = "Within health callback"
-            self.logger.info(self._read_activity_message)
-            log_msg = "Health state attribute change event is : " + str(evt.attr_name)
+        self._read_activity_message = "Within health callback"
+        self.logger.info(self._read_activity_message)
+        log_msg = 'Health state attribute change event is : ' + str(event.attr_name)
+        self.logger.info(log_msg)
+        log_msg = 'Health state attribute change event is .....................: ' + str(event.attr_value.value)
+        self.logger.info(log_msg)
 
-            self.logger.info(log_msg)
-            log_msg = (
-                "Health state attribute change event is .....................: "
-                + str(evt.attr_value.value)
-            )
-
-            self.logger.info(log_msg)
-            if not evt.err:
-                health_state = evt.attr_value.value
-                log_msg = "Health state is: " + str(health_state)
-                self.logger.info(log_msg)
-                if const.PROP_DEF_VAL_TM_MID_SA1 in evt.attr_name:
-                    device_data._subarray1_health_state = health_state
-                    self.subarray_health_state_map[evt.attr_name] = health_state
-                elif const.PROP_DEF_VAL_TM_MID_SA2 in evt.attr_name:
-                    device_data._subarray2_health_state = health_state
-                    self.subarray_health_state_map[evt.attr_name] = health_state
-                elif const.PROP_DEF_VAL_TM_MID_SA3 in evt.attr_name:
-                    device_data._subarray3_health_state = health_state
-                    self.subarray_health_state_map[evt.attr_name] = health_state
-                elif self.csp_master_ln_fqdn in evt.attr_name:
-                    log_msg = "Health state msg in CSP Master....: " + str(
-                        evt.attr_name
-                    )
-                    self.logger.info(log_msg)
-                    device_data._csp_master_leaf_health = evt.attr_value.value
-                    log_msg = "CSP Master health is....: " + str(
-                        device_data._csp_master_leaf_health
-                    )
-                    self.logger.info(log_msg)
-                elif self.sdp_master_ln_fqdn in evt.attr_name:
-                    device_data._sdp_master_leaf_health = health_state
-                else:
-                    self.logger.debug(const.EVT_UNKNOWN)
-                    # TODO: For future reference
-                    # self._read_activity_message = const.EVT_UNKNOWN
-
-                counts = {
-                    HealthState.OK: 0,
-                    HealthState.DEGRADED: 0,
-                    HealthState.FAILED: 0,
-                    HealthState.UNKNOWN: 0,
-                }
-
-                for subsystem_health_field_name in [
-                    "csp_master_leaf_health",
-                    "sdp_master_leaf_health",
-                ]:
-                    log_msg = "inside first for loop...: " + str(
-                        subsystem_health_field_name
-                    )
-                    self.logger.info(log_msg)
-
-                    health_state = getattr(
-                        device_data, f"_{subsystem_health_field_name}"
-                    )
-                    counts[health_state] += 1
-                    log_msg = "Conunt is .......: " + str(counts[health_state])
-                    self.logger.info(log_msg)
-
-                for subarray_health_state in list(
-                    self.subarray_health_state_map.values()
-                ):
-                    counts[subarray_health_state] += 1
-
-                # Calculating health_state for SubarrayNode, CspMasterLeafNode, SdpMasterLeafNode
-                if (
-                    counts[HealthState.OK]
-                    == len(list(self.subarray_health_state_map.values())) + 2
-                ):
-                    device_data._telescope_health_state = HealthState.OK
-                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_OK
-                    self.logger.info(str_log)
-                    log_msg = const.STR_HEALTH_STATE + str(evt.device) + const.STR_OK
-                    self._read_activity_message = log_msg
-                    self.logger.info(log_msg)
-                elif counts[HealthState.FAILED] != 0:
-                    device_data._telescope_health_state = HealthState.FAILED
-                    str_log = (
-                        const.STR_HEALTH_STATE + str(evt.device) + const.STR_FAILED
-                    )
-                    self.logger.info(str_log)
-                    log_msg = (
-                        const.STR_HEALTH_STATE + str(evt.device) + const.STR_FAILED
-                    )
-                    self._read_activity_message = log_msg
-                    self.logger.info(log_msg)
-                elif counts[HealthState.DEGRADED] != 0:
-                    device_data._telescope_health_state = HealthState.DEGRADED
-                    str_log = (
-                        const.STR_HEALTH_STATE + str(evt.device) + const.STR_DEGRADED
-                    )
-                    self.logger.info(str_log)
-                    log_msg = (
-                        const.STR_HEALTH_STATE + str(evt.device) + const.STR_DEGRADED
-                    )
-                    self._read_activity_message = log_msg
-                    self.logger.info(log_msg)
-                else:
-                    device_data._telescope_health_state = HealthState.UNKNOWN
-                    str_log = (
-                        const.STR_HEALTH_STATE + str(evt.device) + const.STR_UNKNOWN
-                    )
-                    self.logger.info(str_log)
-                    log_msg = (
-                        const.STR_HEALTH_STATE + str(evt.device) + const.STR_UNKNOWN
-                    )
-                    self._read_activity_message = log_msg
-                    self.logger.info(log_msg)
+        def _update_health_state(self, fqdn_device_health_state_map: dict):
+            health_state = event.attr_value.value
+            attr_name = event.attr_name
+            self.logger.info(f"Health state is: {health_state}")
+            for fqdn, dd_health_state in fqdn_device_health_state_map.items():
+                if fqdn in attr_name:
+                    setattr(device_data, dd_health_state, health_state)
+                    if "subarray" in fqdn:
+                        self.subarray_health_state_map[attr_name] = health_state
+                    elif "csp" in fqdn:
+                        self.logger.info(f"Health state msg in CSP Master....: {attr_name}")
+                        self.logger.info(f"CSP Master health is....: {health_state}")
+                    break
             else:
-                # TODO: For future reference
-                self._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(evt)
-                log_msg = self._read_activity_message
-                self.logger.info(log_msg)
-                self.logger.critical(const.ERR_SUBSR_SA_HEALTH_STATE)
-        except KeyError as key_error:
+                self.logger.debug(const.event_UNKNOWN)
+                # TODO: update read_activity message for unknown events
+
+        def _generate_health_state_log_msg(self, health_state):
+            health_state_string_map = {
+                HealthState.OK: const.STR_OK,
+                HealthState.DEGRADED: const.STR_DEGRADED,
+                HealthState.FAILED: const.STR_FAILED,
+                HealthState.UNKNOWN: const.STR_UNKNOWN
+            }
+            log_msg = (const.STR_HEALTH_STATE + str(event.device) +
+                        health_state_string_map[health_state])
+            self.logger.info(log_msg)
+            self._read_activity_message = log_msg
+
+        def _calculate_health_state(health_states):
+            unique_states = set(health_states)
+            if unique_states == set([HealthState.OK]):
+                device_data._telescope_health_state = HealthState.OK
+                _generate_health_state_log_msg(self, HealthState.OK)
+            elif HealthState.FAILED in unique_states:
+                device_data._telescope_health_state = HealthState.FAILED
+                _generate_health_state_log_msg(self, HealthState.FAILED)
+            elif HealthState.DEGRADED in unique_states:
+                device_data._telescope_health_state = HealthState.DEGRADED
+                _generate_health_state_log_msg(self, HealthState.DEGRADED)
+            else:
+                device_data._telescope_health_state = HealthState.UNKNOWN
+                _generate_health_state_log_msg(self, HealthState.UNKNOWN)
+            
+        if not event.err:
+            fqdn_device_health_state_map = {
+                const.PROP_DEF_VAL_TM_MID_SA1: "_subarray1_health_state",
+                const.PROP_DEF_VAL_TM_MID_SA2: "._subarray2_health_state",
+                const.PROP_DEF_VAL_TM_MID_SA3: "_subarray3_health_state",
+                self.csp_master_ln_fqdn: "_csp_master_leaf_health",
+                self.sdp_master_ln_fqdn: "_sdp_master_leaf_health"
+            }
+            _update_health_state(self, fqdn_device_health_state_map)
+
+            health_states = [
+                device_data._csp_master_leaf_health,
+                device_data._sdp_master_leaf_health
+            ]
+            health_states = health_states + list(self.subarray_health_state_map.values())
+            _calculate_health_state(health_states)
+
+        else:
             # TODO: For future reference
-            self._read_activity_message = const.ERR_SUBARRAY_HEALTHSTATE + str(
-                key_error
-            )
-            log_msg = const.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
-            self.logger.critical(log_msg)
+            self._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(event)
+            log_msg = self._read_activity_message
+            self.logger.info(log_msg)
+            self.logger.critical(const.ERR_SUBSR_SA_HEALTH_STATE)
