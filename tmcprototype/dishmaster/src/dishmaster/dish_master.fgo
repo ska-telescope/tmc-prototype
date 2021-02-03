@@ -1689,7 +1689,7 @@
             "dim_y": 0,
             "display_unit": "No display unit",
             "enum_labels": [
-                "UNKNOWN"
+                "UNKNOWN",
                 "OFF",
                 "STARTUP",
                 "SHUTDOWN",
