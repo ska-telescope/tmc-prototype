@@ -66,10 +66,10 @@ class Configure(SKASubarray.ConfigureCommand):
         # device_data.receive_addresses = ReceiveAddresses(self.logger)
         # device_data.receive_addresses.subscribe()
         device_data.is_scan_completed = False
-        device_data.is_release_resources = False
-        device_data.is_restart_command = False
-        device_data.is_abort_command = False
-        device_data.is_obsreset_command = False
+        device_data.is_release_resources_command_executed = False
+        device_data.is_restart_command_executed = False
+        device_data.is_abort_command_executed = False
+        device_data.is_obsreset_command_executed = False
         self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA)
         log_msg = f"{const.STR_CONFIGURE_IP_ARG}{argin}"
         self.logger.debug(log_msg)

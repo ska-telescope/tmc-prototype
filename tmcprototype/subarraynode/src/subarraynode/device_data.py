@@ -36,13 +36,13 @@ class DeviceData:
             DeviceData.__instance = self
 
         self.is_scan_completed = False
-        self.is_end_command = False
-        self.is_release_resources = False
-        self.is_restart_command = False
-        self.is_abort_command = False
-        self.is_obsreset_command = False
+        self.is_end_command_executed = False
+        self.is_release_resources_command_executed = False
+        self.is_restart_command_executed = False
+        self.is_abort_command_executed = False
+        self.is_obsreset_command_executed = False
         self.scan_duration = 0.0
-        self.isScanRunning = False
+        self.is_scan_running = False
         self.scan_timer_handler = ScanTimerHandler()
         self._read_activity_message = ""
         self.sdp_subarray_ln_fqdn = ""
@@ -51,7 +51,7 @@ class DeviceData:
         self._receive_addresses_map = ""
         self.csp_sdp_ln_health_event_id = ""
         self.csp_sdp_ln_obs_state_event_id = ""
-        self.dishPointingStateMap = {}
+        self.dish_pointing_state_map = {}
         self.scan_configuration = ""
         self._scan_id = ""
         self._sb_id = ""
@@ -65,8 +65,8 @@ class DeviceData:
         self._dish_leaf_node_proxy = ""
         self.csp_sa_obs_state = None
         self.sdp_sa_obs_state = None
-        self._dishLnVsHealthEventID = {}
-        self._dishLnVsPointingStateEventID = {}
+        self.dish_ln_health_even_id = {}
+        self.dish_ln_pointing_state_event_id = {}
         self.health_state = None
         # TODO: For future use
         self._receptor_id_list = []
@@ -87,7 +87,7 @@ class DeviceData:
             self.logger = logging.getLogger(__name__)
         else:
             self.logger = logger
-        if not self._dishLnVsHealthEventID or not self._dishLnVsPointingStateEventID:
+        if not self.dish_ln_health_even_id or not self.dish_ln_pointing_state_event_id:
             return
         try:
             self._dish_leaf_node_group_client.remove_all_device()
@@ -107,10 +107,10 @@ class DeviceData:
         self.obs_state_aggr.unsubscribe_dish_pointing_state()
 
         # clearing dictonaries and lists
-        self._dishLnVsHealthEventID.clear()  # Clear eventID dictionary
-        self._dishLnVsPointingStateEventID.clear()  # Clear eventID dictionary
+        self.dish_ln_health_even_id.clear()  # Clear eventID dictionary
+        self.dish_ln_pointing_state_event_id.clear()  # Clear eventID dictionary
         self._receptor_id_list.clear()
-        self.dishPointingStateMap.clear()
+        self.dish_pointing_state_map.clear()
         self.health_state_aggr._remove_subarray_dish_lns_health_states()
         self.logger.info(const.STR_RECEPTORS_REMOVE_SUCCESS)
 

@@ -117,15 +117,15 @@ class HealthStateAggregator:
         dish_event_id = dish_ln_client.subscribe_attribute(
             const.EVT_DISH_HEALTH_STATE, self.health_state_cb
         )
-        self.device_data._dishLnVsHealthEventID[dish_ln_client] = dish_event_id
-        log_msg = f"{const.STR_DISH_LN_HEALTH_EVT_ID}{self.device_data._dishLnVsHealthEventID}"
+        self.device_data.dish_ln_health_even_id[dish_ln_client] = dish_event_id
+        log_msg = f"{const.STR_DISH_LN_HEALTH_EVT_ID}{self.device_data.dish_ln_health_even_id}"
         self.logger.debug(log_msg)
 
     def unsubscribe_dish_health_state(self):
-        for dish_ln_client in self.device_data._dishLnVsHealthEventID:
+        for dish_ln_client in self.device_data.dish_ln_health_even_id:
             try:
                 dish_ln_client.unsubscribe_attribute(
-                    self.device_data._dishLnVsHealthEventID[dish_ln_client]
+                    self.device_data.dish_ln_health_even_id[dish_ln_client]
                 )
             except KeyError as error:
                 log_msg = f"{const.ERR_UNSUBSR_ATTRIBUTE}{error}"

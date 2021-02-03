@@ -64,10 +64,10 @@ class Track(ResponseCommand):
         device_data = DeviceData.get_instance()
         log_msg = "Track:", argin
         self.logger.debug(log_msg)
-        device_data.is_restart_command = False
-        device_data.is_release_resources = False
-        device_data.is_abort_command = False
-        device_data.is_obsreset_command = False
+        device_data.is_restart_command_executed = False
+        device_data.is_release_resources_command_executed = False
+        device_data.is_abort_command_executed = False
+        device_data.is_obsreset_command_executed = False
         try:
             device_data._read_activity_message = f"{const.STR_TRACK_IP_ARG}{argin}"
             cmd_input = [argin]

@@ -45,22 +45,22 @@ class Scan(SKASubarray.ScanCommand):
         """
         device_data = DeviceData.get_instance()
         device_data.is_scan_completed = False
-        device_data.is_release_resources = False
-        device_data.is_restart_command = False
-        device_data.is_abort_command = False
-        device_data.is_obsreset_command = False
+        device_data.is_release_resources_command_executed = False
+        device_data.is_restart_command_executed = False
+        device_data.is_abort_command_executed = False
+        device_data.is_obsreset_command_executed = False
         this_device_server = TangoServerHelper.get_instance()
         try:
             log_msg = f"{const.STR_SCAN_IP_ARG}{argin}"
             self.logger.debug(log_msg)
             device_data._read_activity_message = log_msg
-            device_data.isScanRunning = True
+            device_data.is_scan_running = True
             self.scan_sdp(device_data, argin)
             self.scan_csp(device_data, argin)
             # TODO: Update observation state aggregation logic
             # if self._csp_sa_obs_state == ObsState.IDLE and self._sdp_sa_obs_state ==\
             #         ObsState.IDLE:
-            #     if len(self.dishPointingStateMap.values()) != 0:
+            #     if len(self.dish_pointing_state_map.values()) != 0:
             #         self.calculate_observation_state()
 
             # Set timer to invoke EndScan command after scan duration is complete.

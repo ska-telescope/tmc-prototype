@@ -35,9 +35,9 @@ class Restart(SKASubarray.RestartCommand):
                 DishLeafNode.
         """
         device_data = DeviceData.get_instance()
-        device_data.is_release_resources = False
-        device_data.is_abort_command = False
-        device_data.is_obsreset_command = False
+        device_data.is_release_resources_command_executed = False
+        device_data.is_abort_command_executed = False
+        device_data.is_obsreset_command_executed = False
         try:
             self.logger.info("Restart command invoked on SubarrayNode.")
             self.restart_leaf_nodes(
@@ -52,7 +52,7 @@ class Restart(SKASubarray.RestartCommand):
             self.logger.info(const.STR_RESTART_SUCCESS)
             tango_server_helper_obj = TangoServerHelper.get_instance()
             tango_server_helper_obj.set_status(const.STR_RESTART_SUCCESS)
-            device_data.is_restart_command = True
+            device_data.is_restart_command_executed = True
             return (ResultCode.STARTED, const.STR_RESTART_SUCCESS)
 
         except DevFailed as dev_failed:

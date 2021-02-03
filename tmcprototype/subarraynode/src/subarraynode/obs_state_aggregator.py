@@ -110,13 +110,13 @@ class ObsStateAggregator:
         pointing_state_count_track = 0
         pointing_state_count_slew = 0
         pointing_state_count_ready = 0
-        log_msg = f"Dish PointingStateMap is :{self.device_data.dishPointingStateMap}"
+        log_msg = f"Dish PointingStateMap is :{self.device_data.dish_pointing_state_map}"
         self.logger.info(log_msg)
         log_msg = f"self._csp_sa_obs_state is:{self.csp_sa_obs_state}"
         self.logger.info(log_msg)
         log_msg = f"self._sdp_sa_obs_state is:{self.sdp_sa_obs_state}"
         self.logger.info(log_msg)
-        for value in list(self.device_data.dishPointingStateMap.values()):
+        for value in list(self.device_data.dish_pointing_state_map.values()):
             if value == PointingState.TRACK:
                 pointing_state_count_track = pointing_state_count_track + 1
             elif value == PointingState.SLEW:
@@ -126,12 +126,12 @@ class ObsStateAggregator:
         if (self.csp_sa_obs_state == ObsState.EMPTY) and (
             self.sdp_sa_obs_state == ObsState.EMPTY
         ):
-            if self.device_data.is_release_resources:
+            if self.device_data.is_release_resources_command_executed:
                 self.logger.info(
                     "Calling ReleaseAllResource command succeeded() method"
                 )
                 self.this_server.device.release.succeeded()
-            elif self.device_data.is_restart_command:
+            elif self.device_data.is_restart_command_executed:
                 self.logger.info("Calling Restart command succeeded() method")
                 self.this_server.device.restart.succeeded()
                 # TODO: As a action for Restart command invoke ReleaseResources command on SubarrayNode
@@ -139,9 +139,9 @@ class ObsStateAggregator:
             self.sdp_sa_obs_state == ObsState.ABORTED
         ):
             if pointing_state_count_ready == len(
-                self.device_data.dishPointingStateMap.values()
+                self.device_data.dish_pointing_state_map.values()
             ):
-                if self.device_data.is_abort_command:
+                if self.device_data.is_abort_command_executed:
                     self.logger.info("Calling ABORT command succeeded() method")
                     self.this_server.device.abort.succeeded()
         elif (self.csp_sa_obs_state == ObsState.READY) and (
@@ -149,12 +149,12 @@ class ObsStateAggregator:
         ):
             log_msg = f"Pointing state in track counts = {pointing_state_count_track}"
             self.logger.debug(log_msg)
-            log_msg = f"No of dishes being checked = {len(self.device_data.dishPointingStateMap.values())}" 
+            log_msg = f"No of dishes being checked = {len(self.device_data.dish_pointing_state_map.values())}" 
             self.logger.debug(log_msg)
             if pointing_state_count_track == len(
-                self.device_data.dishPointingStateMap.values()
+                self.device_data.dish_pointing_state_map.values()
             ):
-                if not self.device_data.is_abort_command:
+                if not self.device_data.is_abort_command_executed:
                     if self.device_data.is_scan_completed:
                         self.logger.info("Calling EndScan command succeeded() method")
                         self.this_server.device.endscan.succeeded()
@@ -165,9 +165,9 @@ class ObsStateAggregator:
         elif (self.csp_sa_obs_state == ObsState.IDLE) and (
             self.sdp_sa_obs_state == ObsState.IDLE
         ):
-            if self.device_data.is_end_command:
+            if self.device_data.is_end_command_executed:
                 if pointing_state_count_ready == len(
-                    self.device_data.dishPointingStateMap.values()
+                    self.device_data.dish_pointing_state_map.values()
                 ):
                     # End command success
                     self.logger.info("Calling End command succeeded() method")
@@ -175,9 +175,9 @@ class ObsStateAggregator:
                     #  TODO: Stop track command will be invoked once tango group command issue gets resolved.
                     # self._dish_leaf_node_group.command_inout(const.CMD_STOP_TRACK)
                     self.this_server.device.end.succeeded()
-            elif self.device_data.is_obsreset_command:
+            elif self.device_data.is_obsreset_command_executed:
                 if pointing_state_count_ready == len(
-                    self.device_data.dishPointingStateMap.values()
+                    self.device_data.dish_pointing_state_map.values()
                 ):
                     self.logger.info("Calling ObsReset command succeeded() method")
                     self.this_server.device.obsreset.succeeded()
@@ -202,9 +202,9 @@ class ObsStateAggregator:
             self.logger.info(log_msg)
             if not evt.err:
                 self._dish_pointing_state = evt.attr_value.value
-                log_msg = f"in Obs_state_cb dishPointingStateMap : {self.device_data.dishPointingStateMap}" 
+                log_msg = f"in Obs_state_cb dish_pointing_state_map : {self.device_data.dish_pointing_state_map}" 
                 self.logger.info(log_msg)
-                self.device_data.dishPointingStateMap[
+                self.device_data.dish_pointing_state_map[
                     evt.device
                 ] = self._dish_pointing_state
                 if self._dish_pointing_state == PointingState.READY:
@@ -240,15 +240,15 @@ class ObsStateAggregator:
         dish_event_id = dish_ln_client.subscribe_attribute(
             const.EVT_DISH_POINTING_STATE, self.pointing_state_cb
         )
-        self.device_data._dishLnVsPointingStateEventID[dish_ln_client] = dish_event_id
-        log_msg = f"{const.STR_DISH_LN_VS_POINTING_STATE_EVT_ID}{self.device_data._dishLnVsPointingStateEventID}"
+        self.device_data.dish_ln_pointing_state_event_id[dish_ln_client] = dish_event_id
+        log_msg = f"{const.STR_DISH_LN_VS_POINTING_STATE_EVT_ID}{self.device_data.dish_ln_pointing_state_event_id}"
         self.logger.debug(log_msg)
 
     def unsubscribe_dish_pointing_state(self):
-        for dish_ln_client in self.device_data._dishLnVsPointingStateEventID:
+        for dish_ln_client in self.device_data.dish_ln_pointing_state_event_id:
             try:
                 dish_ln_client.unsubscribe_attribute(
-                self.device_data._dishLnVsPointingStateEventID[dish_ln_client]
+                self.device_data.dish_ln_pointing_state_event_id[dish_ln_client]
                 )
             except KeyError as key_err:
                 log_msg = f"{const.ERR_UNSUBSR_ATTRIBUTE}{key_err}"

@@ -35,7 +35,7 @@ class ObsReset(SKASubarray.ObsResetCommand):
                 DishLeafNode.
         """
         device_data = DeviceData.get_instance()
-        device_data.is_abort_command = False
+        device_data.is_abort_command_executed = False
         try:
             self.logger.info("ObsReset command invoked on SubarrayNode.")
             self.obsreset_sdp(device_data)
@@ -46,7 +46,7 @@ class ObsReset(SKASubarray.ObsResetCommand):
             self.logger.info(const.STR_OBSRESET_SUCCESS)
             tango_server_helper_obj = TangoServerHelper.get_instance()
             tango_server_helper_obj.set_status(const.STR_OBSRESET_SUCCESS)
-            device_data.is_obsreset_command = True
+            device_data.is_obsreset_command_executed = True
             return (ResultCode.STARTED, const.STR_OBSRESET_SUCCESS)
 
         except DevFailed as dev_failed:

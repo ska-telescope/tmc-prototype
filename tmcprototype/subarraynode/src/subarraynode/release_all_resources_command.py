@@ -37,13 +37,13 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
         :raises: DevFailed if the command execution is not successful
         """
         device_data = DeviceData.get_instance()
-        device_data.is_release_resources = False
-        device_data.is_restart_command = False
-        device_data.is_abort_command = False
-        device_data.is_obsreset_command = False
+        device_data.is_release_resources_command_executed = False
+        device_data.is_restart_command_executed = False
+        device_data.is_abort_command_executed = False
+        device_data.is_obsreset_command_executed = False
         try:
             assert (
-                device_data._dishLnVsHealthEventID != {}
+                device_data.dish_ln_health_even_id != {}
             ), const.RESOURCE_ALREADY_RELEASED
         except AssertionError as assert_err:
             log_message = f"{const.ERR_RELEASE_RES_CMD}{assert_err}"
@@ -66,7 +66,7 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
         # For now cleared SB ID in ReleaseAllResources command. When the EndSB command is implemented,
         # It will be moved to that command.
         device_data._sb_id = ""
-        device_data.is_release_resources = True
+        device_data.is_release_resources_command_executed = True
         argout = device_data._dish_leaf_node_group_client.get_group_device_list(True)
         log_msg = "Release_all_resources:", argout
         self.logger.debug(log_msg)

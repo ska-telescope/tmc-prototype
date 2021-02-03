@@ -33,10 +33,10 @@ class Off(SKASubarray.OffCommand):
         :raises: DevFailed if the command execution is not successful
         """
         device_data = DeviceData.get_instance()
-        device_data.is_restart_command = False
-        device_data.is_release_resources = False
-        device_data.is_abort_command = False
-        device_data.is_obsreset_command = False
+        device_data.is_restart_command_executed = False
+        device_data.is_release_resources_command_executed = False
+        device_data.is_abort_command_executed = False
+        device_data.is_obsreset_command_executed = False
         try:
             csp_subarray_proxy = TangoClient(device_data.csp_subarray_ln_fqdn)
             csp_subarray_proxy.send_command("Off")

@@ -72,11 +72,11 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         """
         device_data = DeviceData.get_instance()
         argout = []
-        device_data.is_end_command = False
-        device_data.is_release_resources = False
-        device_data.is_restart_command = False
-        device_data.is_abort_command = False
-        device_data.is_obsreset_command = False
+        device_data.is_end_command_executed = False
+        device_data.is_release_resources_command_executed = False
+        device_data.is_restart_command_executed = False
+        device_data.is_abort_command_executed = False
+        device_data.is_obsreset_command_executed = False
         # Validate if Subarray is in IDLE obsState
         # TODO: Need to get idea if this is required?
         # try:
@@ -188,7 +188,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
                 self.logger.info(log_msg)
                 log_msg = f"Dish ln client proxy : {dish_ln_client.deviceproxy}"
                 self.logger.info(log_msg)
-                device_data.dishPointingStateMap[dish_ln_client._get_deviceproxy()] = -1
+                device_data.dish_pointing_state_map[dish_ln_client._get_deviceproxy()] = -1
                 device_data.obs_state_aggr.subscribe_dish_pointing_state(dish_ln_client)
                 device_data._receptor_id_list.append(int(str_leafId))
                 self.logger.debug(const.STR_SUBS_ATTRS_LN)

@@ -35,11 +35,11 @@ class End(SKASubarray.EndCommand):
         """
         self.logger.debug(type(self.target))
         device_data = DeviceData.get_instance()
-        device_data.is_end_command = False
-        device_data.is_release_resources = False
-        device_data.is_restart_command = False
-        device_data.is_abort_command = False
-        device_data.is_obsreset_command = False
+        device_data.is_end_command_executed = False
+        device_data.is_release_resources_command_executed = False
+        device_data.is_restart_command_executed = False
+        device_data.is_abort_command_executed = False
+        device_data.is_obsreset_command_executed = False
 
         try:
             self.logger.info("End command invoked on SubarrayNode.")
@@ -50,7 +50,7 @@ class End(SKASubarray.EndCommand):
             self.logger.info(const.STR_ENDSB_SUCCESS)
             tango_server_helper_obj = TangoServerHelper.get_instance()
             tango_server_helper_obj.set_status(const.STR_ENDSB_SUCCESS)
-            device_data.is_end_command = True
+            device_data.is_end_command_executed = True
             return (ResultCode.OK, const.STR_ENDSB_SUCCESS)
         except DevFailed as dev_failed:
             log_msg = const.ERR_ENDSB_INVOKING_CMD + str(dev_failed)

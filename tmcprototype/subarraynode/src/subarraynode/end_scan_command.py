@@ -35,14 +35,14 @@ class EndScan(SKASubarray.EndScanCommand):
         :raises: DevFailed if the command execution is not successful.
         """
         device_data = DeviceData.get_instance()
-        device_data.is_release_resources = False
-        device_data.is_restart_command = False
-        device_data.is_abort_command = False
-        device_data.is_obsreset_command = False
+        device_data.is_release_resources_command_executed = False
+        device_data.is_restart_command_executed = False
+        device_data.is_abort_command_executed = False
+        device_data.is_obsreset_command_executed = False
         try:
             if device_data.scan_timer_handler.is_scan_running():
                 device_data.scan_timer_handler.stop_scan_timer()
-            device_data.isScanRunning = False
+            device_data.is_scan_running = False
             device_data.is_scan_completed = True
 
             self.endscan_sdp(device_data)
