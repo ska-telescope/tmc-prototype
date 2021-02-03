@@ -10,8 +10,7 @@ of state and mode attributes defined by the SKA Control Model.
 """
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 # Tango imports
-import tango
-from tango import DebugIt, AttrWriteType, DevFailed
+from tango import DebugIt, AttrWriteType
 from tango.server import run, attribute, command, device_property
 
 # Additional import
