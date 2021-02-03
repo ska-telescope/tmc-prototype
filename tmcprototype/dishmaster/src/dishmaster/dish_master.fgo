@@ -1728,10 +1728,10 @@
             "polling": 1000,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "4",
+            "string": "3",
             "time": 1602497000.703595,
             "unit": "",
-            "value": 4,
+            "value": 3,
             "writable": "READ"
         },
         "dishState": {
@@ -4062,10 +4062,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "0",
+            "string": "4",
             "time": 1602497005.66357,
             "unit": "",
-            "value": 0,
+            "value": 4,
             "writable": "READ"
         },
         "polyTrack": {
