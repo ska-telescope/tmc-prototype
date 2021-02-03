@@ -27,6 +27,7 @@ ERR_RELEASE_RESOURCES = "Error occurred while releasing resources from the Subar
 ERR_HEALTH_STATE_CB = "Error handling healthState callback for evt: %s"
 ERR_STANDBY_CMD_UNCOMPLETE = "StandByTelescope command is not completed yet"
 ERR_STARTUP_CMD_UNCOMPLETE = "StartUpTelescope command is not completed yet"
+ERR_SUB_CMD_RES_ATTR = "Error on subscribing commandResult attribute"
 
 #General strings
 STR_HEALTH_STATE = "healthState of "

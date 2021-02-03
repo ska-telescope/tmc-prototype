@@ -24,13 +24,13 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         """
         device_data = DeviceData.get_instance()
         log_msg = 'MccsController.commandResult change event is : ' + str(event)
-        device_data.cmd_res_evt_val = event.attr_value.value
         self.logger.debug(log_msg)
-        # if not event.err:
-        #     log_msg="commandResult attribute value is :" + str(device_data.cmd_res_evt_val)
-        #     self.logger.info(log_msg)
-        # else:
-        #     self.loger.error("Error on subscribing commandResult attribute")
+        try:
+            device_data.cmd_res_evt_val = event.attr_value.value
+            log_msg="commandResult attribute value is :" + str(device_data.cmd_res_evt_val)
+            self.logger.info(log_msg)
+        except Exception:
+            self.loger.exception(const.ERR_SUB_CMD_RES_ATTR)
 
     def check_allowed(self):
 
