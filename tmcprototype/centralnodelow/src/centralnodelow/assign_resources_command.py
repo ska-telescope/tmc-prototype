@@ -70,23 +70,22 @@ class AssignResources(BaseCommand):
         """
         device_data = self.target
         try:
+            assert device_data.cmd_res_evt_val == 0
             json_argument = json.loads(argin)
             subarray_id = int(json_argument['mccs']['subarray_id'])
             subarray_cmd_data = self._create_subarray_cmd_data(json_argument)
             log_msg = f"Assigning resources to subarray :-> {subarray_id}"
             self.logger.info(log_msg)
             subarray_client = self.create_client(device_data.subarray_FQDN_dict[subarray_id])
+            self.invoke_assign_resources(subarray_client, subarray_cmd_data)
+
             input_mccs_assign = json.dumps(json_argument["mccs"])
             mccs_master_ln_client = self.create_client(device_data.mccs_master_ln_fqdn)
-            
-            if device_data.cmd_res_evt_val == 0:
-                self.invoke_assign_resources(subarray_client, subarray_cmd_data)
-                self.invoke_assign_resources(mccs_master_ln_client, input_mccs_assign)
+            self.invoke_assign_resources(mccs_master_ln_client, input_mccs_assign)
 
-                device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
-                self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
-            else:
-                print("StartUpTelescope command is not completed yet..")
+            device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
+            self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
+
 
         except KeyError as key_error:
             self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
@@ -102,6 +101,15 @@ class AssignResources(BaseCommand):
             log_msg = const.STR_ASSIGN_RES_EXEC + str(val_error)
             self.logger.exception(val_error)
             tango.Except.throw_exception(const.STR_RESOURCE_ALLOCATION_FAILED, log_msg,
+                                         "CentralNode.AssignResourcesCommand",
+                                         tango.ErrSeverity.ERR)
+        except AssertionError:
+            log_msg = "Exception in AssignResources command: " + const.ERR_STARTUP_CMD_UNCOMPLETE
+            self.logger.exception(log_msg)
+            log_msg = const.STR_ASSIGN_RES_EXEC + const.ERR_STARTUP_CMD_UNCOMPLETE
+            self.logger.exception(log_msg)
+            device_data._read_activity_message = log_msg
+            tango.Except.throw_exception(const.ERR_STARTUP_CMD_UNCOMPLETE, log_msg,
                                          "CentralNode.AssignResourcesCommand",
                                          tango.ErrSeverity.ERR)
 

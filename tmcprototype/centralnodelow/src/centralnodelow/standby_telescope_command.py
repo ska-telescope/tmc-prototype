@@ -47,17 +47,27 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         :rtype: (ResultCode, str)
         """
         device_data = self.target
-        self.create_mccs_client(device_data.mccs_master_ln_fqdn)
-        self.create_subarray_client(device_data.subarray_low)
-        device_data.health_aggreegator.unsubscribe_event()
-        log_msg = const.STR_STANDBY_CMD_ISSUED
-        self.logger.info(log_msg)
-        device_data._read_activity_message = log_msg
-        # Unsubscribe commandResult attribute of MccsController
-        mccs_controller_obj = TangoClient(device_data.mccs_controller_fqdn)
-        mccs_controller_obj.unsubscribe_attribute(device_data.cmd_res_evt_id)
+        try:
+            assert device_data.cmd_res_evt_val == 0
+            self.create_mccs_client(device_data.mccs_master_ln_fqdn)
+            self.create_subarray_client(device_data.subarray_low)
+            device_data.health_aggreegator.unsubscribe_event()
+            log_msg = const.STR_STANDBY_CMD_ISSUED
+            self.logger.info(log_msg)
+            device_data._read_activity_message = log_msg
+            # Unsubscribe commandResult attribute of MccsController
+            mccs_controller_obj = TangoClient(device_data.mccs_controller_fqdn)
+            mccs_controller_obj.unsubscribe_attribute(device_data.cmd_res_evt_id)
 
-        return (ResultCode.OK, const.STR_STANDBY_CMD_ISSUED)
+            return (ResultCode.OK, const.STR_STANDBY_CMD_ISSUED)
+
+        except AssertionError:
+            log_msg = const.ERR_STARTUP_CMD_UNCOMPLETE
+            self.logger.exception(log_msg)
+            device_data._read_activity_message = const.ERR_STARTUP_CMD_UNCOMPLETE
+            tango.Except.throw_exception(const.STR_STANDBY_EXEC, log_msg,
+                                         "CentralNode.StandByTelescopeCommand",
+                                         tango.ErrSeverity.ERR)
 
 
     def create_mccs_client(self, mccs_master_fqdn):

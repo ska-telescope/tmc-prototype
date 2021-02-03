@@ -80,7 +80,6 @@ class CentralNode(SKABaseDevice):
         doc="Activity Message",
     )
 
-    #commandResult = attribute(name="commandResult", label="commandResult", forwarded=True)
 
     # ---------------
     # General methods

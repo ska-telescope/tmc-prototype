@@ -142,6 +142,9 @@ def test_release_resources_should_raise_devfailed_exception_when_subarray_node_t
 
 def test_command_invalid_key(mock_subarraynode_proxy, command_raise_error):
     device_proxy, tango_client_obj = mock_subarraynode_proxy[:2]
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
+        with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_cmd_res):
+            device_proxy.StartUpTelescope()
     cmd_name,error_msg,input_str= command_raise_error
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name,input_str)
@@ -149,6 +152,9 @@ def test_command_invalid_key(mock_subarraynode_proxy, command_raise_error):
 
 def test_command_invalid_json_value(mock_subarraynode_proxy,command_raise_error):
     device_proxy, tango_client_obj = mock_subarraynode_proxy[:2]
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
+        with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_cmd_res):
+            device_proxy.StartUpTelescope()
     cmd_name,error_msg= command_raise_error[:2]
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name, assign_release_invalid_str)
@@ -164,22 +170,6 @@ def dummy_subscriber_cmd_res(attribute, callback_method):
 
     callback_method(fake_event)
     return 10
-
-@pytest.fixture(
-    scope="function",
-    params=[
-        0
-    ])
-def command_result_cmd_res(request):
-    return request.param
-
-def create_dummy_event_cmd_result(attribute, command_result):
-    fake_event = Mock()
-    fake_event.err = False
-    fake_event.attr_name = f"low-mccs/control/control/{attribute}"
-    fake_event.attr_value.value = command_result
-    return fake_event
-
 
 def test_startup(mock_subarraynode_proxy):
     device_proxy, tango_client_obj = mock_subarraynode_proxy[:2]
