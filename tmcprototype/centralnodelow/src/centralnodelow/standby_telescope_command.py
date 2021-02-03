@@ -48,6 +48,7 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         """
         device_data = self.target
         try:
+            # Check if Mccs On command is completed
             assert device_data.cmd_res_evt_val == 0
             self.create_mccs_client(device_data.mccs_master_ln_fqdn)
             self.create_subarray_client(device_data.subarray_low)

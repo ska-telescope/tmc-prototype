@@ -70,6 +70,7 @@ class AssignResources(BaseCommand):
         """
         device_data = self.target
         try:
+            # Check if Mccs On command is completed
             assert device_data.cmd_res_evt_val == 0
             json_argument = json.loads(argin)
             subarray_id = int(json_argument['mccs']['subarray_id'])
