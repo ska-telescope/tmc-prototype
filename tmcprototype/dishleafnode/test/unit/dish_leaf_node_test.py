@@ -4,8 +4,8 @@ import types
 import sys
 import json
 
-# from unittest import mock
-# from unittest.mock import Mock, MagicMock
+from unittest import mock
+from unittest.mock import Mock, MagicMock
 import mock
 from mock import Mock
 from mock import MagicMock
