@@ -337,9 +337,9 @@ def test_health_state():
 
 @pytest.fixture(scope="function",
     params=[
-        HealthState.OK,
+        # HealthState.OK,
         # HealthState.DEGRADED,
-        # HealthState.UNKNOWN,
+        HealthState.UNKNOWN,
         # HealthState.FAILED,
     ])
 def health_state(request):
