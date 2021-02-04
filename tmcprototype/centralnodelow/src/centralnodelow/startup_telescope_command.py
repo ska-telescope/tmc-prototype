@@ -29,8 +29,9 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
             device_data.cmd_res_evt_val = event.attr_value.value
             log_msg="commandResult attribute value is :" + str(device_data.cmd_res_evt_val)
             self.logger.info(log_msg)
-        except Exception:
-            self.loger.exception(const.ERR_SUB_CMD_RES_ATTR)
+        except Exception as exp:
+            self.logger.exception(const.ERR_SUB_CMD_RES_ATTR)
+            self.logger.exception(exp)
 
     def check_allowed(self):
 
@@ -69,9 +70,6 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         )
         # Subscribe to commandResult attribute of MccsController
         self._subscribe_cmd_res_attribute_events(attributes_to_subscribe_to)
-        # mccs_controller_obj = TangoClient(device_data.mccs_controller_fqdn)
-        # device_data.cmd_res_evt_id = mccs_controller_obj.subscribe_attribute("commandResult",
-        #                                                                      self.command_result_cb)
         device_data.health_aggreegator = HealthStateAggreegator(self.logger)
         device_data.health_aggreegator.subscribe_event()
         try:
