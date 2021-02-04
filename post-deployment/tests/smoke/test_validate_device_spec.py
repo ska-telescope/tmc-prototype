@@ -14,7 +14,7 @@ SPEC_URLS = {
 }
 
 
-@pytest.mark.skamid
+@pytest.mark.mid
 def test_dishmaster_conforms_to_tango_wide():
     """Check that dishmaster conforms to tango developers guide"""
     result = validate_device_from_url(
@@ -22,7 +22,7 @@ def test_dishmaster_conforms_to_tango_wide():
     )
     assert not result
 
-@pytest.mark.skamid
+@pytest.mark.mid
 def test_dishmaster_conforms_to_dishmaster_spec():
     """Check that dishmaster device conforms to dishmaster specification"""
     result = validate_device_from_url(
