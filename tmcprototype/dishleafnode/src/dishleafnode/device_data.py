@@ -9,6 +9,7 @@
 """ Device Data
 This module defines the DeviceData class, which represents of the functional DishLeafNode device.
 """
+import json
 import threading
 import importlib.resources
 from .utils import UnitConverter
@@ -118,3 +119,24 @@ class DeviceData:
             "longitude"
         ] = f"{dish_long_dms[0]}:{dish_long_dms[1]}:{dish_long_dms[2]}"
         self.observer_location["altitude"] = dish_ecef_coordinates[2]
+
+    def _get_targets(self, json_argument):
+        try:
+            ra_value = json_argument["pointing"]["target"]["RA"]
+            dec_value = json_argument["pointing"]["target"]["dec"]
+        except KeyError as key_error:
+            raise Exception(
+                f"JSON key not found.'{key_error}'in device_data._get_targets."
+            )
+            
+        return (ra_value, dec_value)
+
+    def _load_config_string(self, argin):
+        try:
+            json_argument = json.loads(argin)
+        except json.JSONDecodeError as jsonerr:
+            raise Exception(
+                f"Invalid JSON format.'{jsonerr}'in device_data._load_config_string."
+            )
+            
+        return json_argument

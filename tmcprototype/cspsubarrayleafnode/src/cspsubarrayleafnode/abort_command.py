@@ -38,6 +38,7 @@ class AbortCommand(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
 
+        # TODO: Need to get ObsState issue resolved.
         # if device._csp_subarray_proxy.obsState not in [ObsState.READY, ObsState.CONFIGURING, ObsState.SCANNING,
         #                                                 ObsState.IDLE, ObsState.RESETTING]:
         #     tango.Except.throw_exception(const.ERR_UNABLE_ABORT_CMD, const.ERR_ABORT_INVOKING_CMD,

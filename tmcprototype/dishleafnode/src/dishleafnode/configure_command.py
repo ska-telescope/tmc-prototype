@@ -10,8 +10,6 @@
 """
 Configure class for DishLeafNode.
 """
-import json
-
 import tango
 from tango import DevState, DevFailed
 import datetime
@@ -65,8 +63,8 @@ class Configure(BaseCommand):
         command_name = "Configure"
 
         try:
-            json_argument = self._load_config_string(argin)
-            ra_value, dec_value = self._get_targets(json_argument)
+            json_argument = device_data._load_config_string(argin)
+            ra_value, dec_value = device_data._get_targets(json_argument)
             device_data.radec_value = f"radec,{ra_value},{dec_value}"
             receiver_band = json_argument["dish"]["receiverBand"]
             self._set_dish_desired_pointing_attribute(device_data.radec_value)
@@ -130,30 +128,3 @@ class Configure(BaseCommand):
         dish_client.set_attribute("desiredPointing", time_az_el)
 
     # pylint: enable= unbalanced-tuple-unpacking
-
-    def _get_targets(self, json_argument):
-        try:
-            ra_value = json_argument["pointing"]["target"]["RA"]
-            dec_value = json_argument["pointing"]["target"]["dec"]
-        except KeyError as key_error:
-            tango.Except.throw_exception(
-                str(key_error),
-                "JSON key not found.",
-                "_get_targets",
-                tango.ErrSeverity.ERR,
-            )
-
-        return (ra_value, dec_value)
-
-    def _load_config_string(self, argin):
-        try:
-            json_argument = json.loads(argin)
-        except json.JSONDecodeError as jsonerr:
-            tango.Except.throw_exception(
-                str(jsonerr),
-                "Invalid JSON format.",
-                "_load_config_string",
-                tango.ErrSeverity.ERR,
-            )
-
-        return json_argument
