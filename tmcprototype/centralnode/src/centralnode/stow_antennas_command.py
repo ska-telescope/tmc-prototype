@@ -73,7 +73,7 @@ class StowAntennas(BaseCommand):
                     device_proxy.send_command(const.CMD_SET_STOW_MODE)
 
                 except DevFailed as dev_failed:
-                    log_msg = const.ERR_EXE_STOW_CMD + str(dev_failed)
+                    log_msg = f"{const.ERR_EXE_STOW_CMD}{dev_failed}"
                     self.logger.exception(dev_failed)
                     device_data._read_activity_message = const.ERR_EXE_STOW_CMD
                     tango.Except.throw_exception(
@@ -84,7 +84,7 @@ class StowAntennas(BaseCommand):
                     )
 
         except ValueError as value_error:
-            log_msg = const.ERR_STOW_ARGIN + str(value_error)
+            log_msg = f"{const.ERR_STOW_ARGIN}{value_error}"
             self.logger.exception(value_error)
             device_data._read_activity_message = const.ERR_STOW_ARGIN
             tango.Except.throw_exception(
@@ -95,7 +95,7 @@ class StowAntennas(BaseCommand):
             )
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_EXE_STOW_CMD + str(dev_failed)
+            log_msg = f"{const.ERR_EXE_STOW_CMD}{dev_failed}"
             self.logger.exception(dev_failed)
             device_data._read_activity_message = const.ERR_EXE_STOW_CMD
             tango.Except.throw_exception(

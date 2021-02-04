@@ -19,7 +19,6 @@ from centralnode.health_state_aggregator import HealthStateAggregator
 
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
-
 class StartUpTelescope(SKABaseDevice.OnCommand):
     """
     A class for CentralNode's StartupCommand() command.
@@ -143,7 +142,7 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
             device_data._read_activity_message = log_msg
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_EXE_ON_CMD + str(dev_failed)
+            log_msg = f"{const.ERR_EXE_ON_CMD}{dev_failed}"
             self.logger.exception(dev_failed)
             device_data._read_activity_message = const.ERR_EXE_ON_CMD
             tango.Except.throw_exception(
@@ -187,7 +186,7 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
             device_data._read_activity_message = log_msg
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_EXE_ON_CMD + str(dev_failed)
+            log_msg = f"{const.ERR_EXE_ON_CMD}{dev_failed}"
             self.logger.exception(dev_failed)
             device_data._read_activity_message = const.ERR_EXE_ON_CMD
             tango.Except.throw_exception(

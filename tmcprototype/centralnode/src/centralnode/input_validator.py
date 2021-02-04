@@ -142,9 +142,7 @@ class AssignResourceValidator:
             assign_request["dish"]["receptorIDList"]
         )
         if non_existing_receptors:
-            exception_message = "The following Receptor id(s) do not exist: " + str(
-                non_existing_receptors
-            )
+            exception_message = f"The following Receptor id(s) do not exist:{non_existing_receptors}"
             raise ResourceNotPresentError(exception_message)
         self.logger.debug("receptor_id_list validation successful.")
 

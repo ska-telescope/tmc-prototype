@@ -191,12 +191,10 @@ class AssignResources(BaseCommand):
             # Note: resources_allocated_return[1] contains the JSON string containing
             # allocated resources.
             # resources_allocated = resources_allocated_return[1]
-            log_msg = "Return value from subarray node: " + str(
-                resources_allocated_return
-            )
+            log_msg = f"Return value from subarray node:{resources_allocated_return}" 
             self.logger.info(log_msg)
             resources_allocated = ast.literal_eval(resources_allocated_return[1][0])
-            log_msg = "resources_assigned: " + str(resources_allocated)
+            log_msg = f"resources_assigned:{resources_allocated}"
             self.logger.debug(log_msg)
             device_data.resource_manager.update_resource_matrix(
                 resources_allocated, subarrayID
@@ -215,10 +213,8 @@ class AssignResources(BaseCommand):
             SubarrayNotPresentError,
         ) as error:
             self.logger.exception("Exception in AssignResource(): %s", str(error))
-            device_data._read_activity_message = (
-                "Exception in validating input: " + str(error)
-            )
-            log_msg = const.STR_ASSIGN_RES_EXEC + str(error)
+            device_data._read_activity_message = f"Exception in validating input:{error}"
+            log_msg = f"{const.STR_ASSIGN_RES_EXEC}{error}"
             self.logger.exception(error)
             tango.Except.throw_exception(
                 const.STR_RESOURCE_ALLOCATION_FAILED,
@@ -232,10 +228,8 @@ class AssignResources(BaseCommand):
                 "List of the dishes that are already allocated: %s",
                 str(resource_error.resources_reallocation),
             )
-            device_data._read_activity_message = const.STR_DISH_DUPLICATE + str(
-                resource_error.resources_reallocation
-            )
-            log_msg = const.STR_DISH_DUPLICATE + str(resource_error)
+            device_data._read_activity_message = f"{const.STR_DISH_DUPLICATE}{resource_error.resources_reallocation}"
+            log_msg = f"{const.STR_DISH_DUPLICATE}{resource_error}"
             self.logger.exception(resource_error)
             tango.Except.throw_exception(
                 const.STR_RESOURCE_ALLOCATION_FAILED,
@@ -245,8 +239,8 @@ class AssignResources(BaseCommand):
             )
         except ValueError as ve:
             self.logger.exception("Exception in AssignResources command: %s", str(ve))
-            device_data._read_activity_message = "Invalid value in input: " + str(ve)
-            log_msg = const.STR_ASSIGN_RES_EXEC + str(ve)
+            device_data._read_activity_message = f"Invalid value in input:{ve}" 
+            log_msg = f"{const.STR_ASSIGN_RES_EXEC}{ve}"    
             self.logger.exception(ve)
             tango.Except.throw_exception(
                 const.STR_RESOURCE_ALLOCATION_FAILED,
@@ -255,7 +249,7 @@ class AssignResources(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
         except DevFailed as dev_failed:
-            log_msg = const.ERR_ASSGN_RESOURCES + str(dev_failed)
+            log_msg = f"{const.ERR_ASSGN_RESOURCES}{dev_failed}"
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_CMD_FAILED,

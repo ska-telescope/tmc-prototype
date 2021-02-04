@@ -60,7 +60,7 @@ class HealthStateAggregator:
             )
             self.health_state_event_map[csp_mln_client] = self.csp_event_id
         except DevFailed as dev_failed:
-            log_msg = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH + str(dev_failed)
+            log_msg = f"{const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH}{dev_failed}"
             self.logger.exception(dev_failed)
             self._read_activity_message = const.ERR_SUBSR_CSP_MASTER_LEAF_HEALTH
             tango.Except.throw_exception(
@@ -83,7 +83,7 @@ class HealthStateAggregator:
             )
             self.health_state_event_map[sdp_mln_client] = self.sdp_event_id
         except DevFailed as dev_failed:
-            log_msg = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH + str(dev_failed)
+            log_msg = f"{const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH}{dev_failed}"
             self.logger.exception(dev_failed)
             self._read_activity_message = const.ERR_SUBSR_SDP_MASTER_LEAF_HEALTH
             tango.Except.throw_exception(
@@ -109,7 +109,7 @@ class HealthStateAggregator:
                 )
                 self.health_state_event_map[subarray_client] = event_id
             except DevFailed as dev_failed:
-                log_msg = const.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
+                log_msg = f"{const.ERR_SUBSR_SA_HEALTH_STATE}{dev_failed}"
                 self.logger.exception(dev_failed)
                 self._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE
                 tango.Except.throw_exception(
@@ -145,9 +145,9 @@ class HealthStateAggregator:
         device_data = DeviceData.get_instance()
         self._read_activity_message = "Within health callback"
         self.logger.info(self._read_activity_message)
-        log_msg = 'Health state attribute change event is : ' + str(event.attr_name)
+        log_msg = f'Health state attribute change event is : {event.attr_name}'
         self.logger.info(log_msg)
-        log_msg = 'Health state attribute change event is .....................: ' + str(event.attr_value.value)
+        log_msg = f'Health state attribute change event is .....................: {event.attr_value.value}'
         self.logger.info(log_msg)
 
         def _update_health_state(self, fqdn_device_health_state_map: dict):
@@ -174,8 +174,7 @@ class HealthStateAggregator:
                 HealthState.FAILED: const.STR_FAILED,
                 HealthState.UNKNOWN: const.STR_UNKNOWN
             }
-            log_msg = (const.STR_HEALTH_STATE + str(event.device) +
-                        health_state_string_map[health_state])
+            log_msg = f"{const.STR_HEALTH_STATE}{event.device}{health_state_string_map[health_state]}"                       
             self.logger.info(log_msg)
             self._read_activity_message = log_msg
 
@@ -213,7 +212,7 @@ class HealthStateAggregator:
 
         else:
             # TODO: For future reference
-            self._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(event)
+            self._read_activity_message = f"{const.ERR_SUBSR_SA_HEALTH_STATE}{event}"
             log_msg = self._read_activity_message
             self.logger.info(log_msg)
             self.logger.critical(const.ERR_SUBSR_SA_HEALTH_STATE)

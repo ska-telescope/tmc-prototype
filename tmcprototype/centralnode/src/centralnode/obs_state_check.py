@@ -75,7 +75,7 @@ class ObsStateAggregator:
         """
         try:
             device_data = DeviceData.get_instance()
-            log_msg = "Observation state attribute change event is : " + str(evt)
+            log_msg = f"Observation state attribute change event is : {evt}"
             self.logger.info(log_msg)
             if not evt.err:
                 obs_state = evt.attr_value.value
@@ -86,7 +86,7 @@ class ObsStateAggregator:
                     if subarray_device_list[index].isdigit():
                         id = subarray_device_list[index]
 
-                subarray_id = "SA" + str(id)
+                subarray_id = f"SA{id}"
                 self.logger.info(log_msg)
                 if obs_state == ObsState.EMPTY or obs_state == ObsState.RESTARTING:
                     device_data.resource_manager.update_resource_deallocation(
@@ -94,12 +94,10 @@ class ObsStateAggregator:
                     )
             else:
                 # TODO: For future reference
-                self._read_activity_message = const.ERR_SUBSR_SA_OBS_STATE + str(evt)
+                self._read_activity_message = f"{const.ERR_SUBSR_SA_OBS_STATE}{evt}"
                 self.logger.critical(const.ERR_SUBSR_SA_OBS_STATE)
         except KeyError as key_error:
-            self._read_activity_message = const.ERR_SUBARRAY_HEALTHSTATE + str(
-                key_error
-            )
-            log_msg = const.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
+            self._read_activity_message = f"{const.ERR_SUBARRAY_HEALTHSTATE}{key_error}"
+            log_msg = const.ERR_SUBARRAY_HEALTHSTATE + f": {key_error}"
             self.logger.critical(log_msg)
             self.logger.critical(log_msg)
