@@ -64,10 +64,14 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         :rtype: (ResultCode, str)
         """
         device_data = self.target
+        attributes_to_subscribe_to = (
+            "commandResult",
+        )
         # Subscribe to commandResult attribute of MccsController
-        mccs_controller_obj = TangoClient(device_data.mccs_controller_fqdn)
-        device_data.cmd_res_evt_id = mccs_controller_obj.subscribe_attribute("commandResult",
-                                                                             self.command_result_cb)
+        self._subscribe_cmd_res_attribute_events(attributes_to_subscribe_to)
+        # mccs_controller_obj = TangoClient(device_data.mccs_controller_fqdn)
+        # device_data.cmd_res_evt_id = mccs_controller_obj.subscribe_attribute("commandResult",
+        #                                                                      self.command_result_cb)
         device_data.health_aggreegator = HealthStateAggreegator(self.logger)
         device_data.health_aggreegator.subscribe_event()
         try:
@@ -136,3 +140,28 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
                                             "CentralNodeLow.StartUpTelescopeCommand",
                                             tango.ErrSeverity.ERR)
         return (ResultCode.OK, device_data._read_activity_message)
+
+    def _subscribe_cmd_res_attribute_events(self, attributes):
+        """Method to subscribe the commandResult attributes"""
+        device_data = DeviceData.get_instance()
+        mccs_controller_client = TangoClient(device_data.mccs_controller_fqdn)
+        device_data.attr_event_map["mccs_controller_client"] = mccs_controller_client
+
+        for attribute_name in attributes:
+            try:
+                device_data.attr_event_map[attribute_name] = mccs_controller_client.subscribe_attribute(
+                    attribute_name,
+                    self.command_result_cb)
+            except DevFailed as dev_failed:
+                self.logger.exception(dev_failed)
+                log_message = (
+                    f"Exception occurred while subscribing to mccs attribute: {attribute_name}"
+                )
+                device_data._read_activity_message = log_message
+                tango.Except.re_throw_exception(
+                    dev_failed,
+                    "Exception in StartupTelescope command",
+                    log_message,
+                    "CentralNode.{}Command".format("StartUpTelescope"),
+                    tango.ErrSeverity.ERR,
+                )

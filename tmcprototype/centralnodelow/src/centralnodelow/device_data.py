@@ -40,6 +40,7 @@ class DeviceData:
         self.health_aggreegator = None
         self.cmd_res_evt_id = None
         self.cmd_res_evt_val = ""
+        self.attr_event_map = {}
 
 
     @staticmethod
