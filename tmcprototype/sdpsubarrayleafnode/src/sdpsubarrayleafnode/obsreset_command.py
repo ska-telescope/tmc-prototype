@@ -32,7 +32,7 @@ class ObsReset(BaseCommand):
         """
         if self.state_model.op_state in [DevState.UNKNOWN, DevState.DISABLE]:
             tango.Except.throw_exception(
-                "ObsResetCommand() is not allowed in current state",
+                f"ObsResetCommand() is not allowed in current state {self.state_model.op_state}",
                 "Failed to invoke ObsReset command on SdpSubarrayLeafNode.",
                 "sdpsubarrayleafnode.ObsResetCommand()",
                 tango.ErrSeverity.ERR,

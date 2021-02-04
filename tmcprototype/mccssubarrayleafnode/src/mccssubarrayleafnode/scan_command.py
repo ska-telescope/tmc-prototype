@@ -37,7 +37,7 @@ class Scan(BaseCommand):
             DevState.DISABLE,
         ]:
             tango.Except.throw_exception(
-                "Scan() is not allowed in current state",
+                f"Scan() is not allowed in current state {self.state_model.op_state}",
                 "Failed to invoke Scan command on mccssubarrayleafnode.",
                 "mccssubarrayleafnode.Scan()",
                 tango.ErrSeverity.ERR,

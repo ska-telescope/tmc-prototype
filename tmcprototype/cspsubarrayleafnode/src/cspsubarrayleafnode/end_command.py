@@ -33,7 +33,7 @@ class GoToIdleCommand(BaseCommand):
             DevState.DISABLE,
         ]:
             tango.Except.throw_exception(
-                "GoToIdle() is not allowed in current state",
+                f"GoToIdle() is not allowed in current state {self.state_model.op_state}",
                 "Failed to invoke GoToIdle command on cspsubarrayleafnode.",
                 "cspsubarrayleafnode.GoToIdle()",
                 tango.ErrSeverity.ERR,

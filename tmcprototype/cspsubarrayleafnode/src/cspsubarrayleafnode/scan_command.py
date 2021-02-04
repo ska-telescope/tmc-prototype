@@ -33,7 +33,7 @@ class StartScanCommand(BaseCommand):
             DevState.DISABLE,
         ]:
             tango.Except.throw_exception(
-                "StartScan() is not allowed in current state",
+                f"StartScan() is not allowed in current state {self.state_model.op_state}",
                 "Failed to invoke StartScan command on cspsubarrayleafnode.",
                 "cspsubarrayleafnode.StartScan()",
                 tango.ErrSeverity.ERR,

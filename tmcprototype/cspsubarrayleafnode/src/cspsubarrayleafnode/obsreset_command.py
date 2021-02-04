@@ -26,7 +26,7 @@ class ObsResetCommand(BaseCommand):
         """
         # device = self.target
         if self.state_model.op_state in [DevState.UNKNOWN, DevState.DISABLE]:
-            log_msg = "ObsReset() is not allowed in " + str(self.state_model.op_state)
+            log_msg = f"ObsReset() is not allowed in {self.state_model.op_state}"
             tango.Except.throw_exception(
                 log_msg,
                 "Failed to invoke ObsReset command on CspSubarrayLeafNode.",

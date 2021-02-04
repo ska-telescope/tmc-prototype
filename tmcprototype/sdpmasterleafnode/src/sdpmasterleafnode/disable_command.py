@@ -25,7 +25,7 @@ class Disable(BaseCommand):
         """
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.ON]:
             tango.Except.throw_exception(
-                "Disable() is not allowed in current state",
+                f"Disable() is not allowed in current state {self.state_model.op_state}",
                 "Failed to invoke Disable command on SdpMasterLeafNode.",
                 "SdpMasterLeafNode.Disable() ",
                 tango.ErrSeverity.ERR,

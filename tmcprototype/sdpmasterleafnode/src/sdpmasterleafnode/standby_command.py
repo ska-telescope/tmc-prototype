@@ -27,7 +27,7 @@ class Standby(BaseCommand):
 
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
             tango.Except.throw_exception(
-                "Standby() is not allowed in current state",
+                f"Standby() is not allowed in current state {self.state_model.op_state}",
                 "Failed to invoke Standby command on SdpMasterLeafNode.",
                 "SdpMasterLeafNode.Standby() ",
                 tango.ErrSeverity.ERR,
