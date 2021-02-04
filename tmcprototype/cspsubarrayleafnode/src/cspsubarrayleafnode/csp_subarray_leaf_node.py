@@ -346,7 +346,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
     def validate_obs_state(self):
         device_data = DeviceData.get_instance()
         csp_sa_client = TangoClient(device_data.csp_subarray_fqdn)
-        if csp_sa_client.get_attribute("obsState") in [ObsState.EMPTY, ObsState.IDLE]:
+        if csp_sa_client.deviceproxy.obsState in [ObsState.EMPTY, ObsState.IDLE]:
             self.logger.info(
                 "CSP Subarray is in required obsState, resources will be assigned"
             )

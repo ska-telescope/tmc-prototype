@@ -409,7 +409,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         device_data = self.target
         device_data = DeviceData.get_instance()
         sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
-        if sdp_sa_ln_client_obj.get_attribute("obsState") in [
+        if sdp_sa_ln_client_obj.deviceproxy.obsState in [
             ObsState.EMPTY,
             ObsState.IDLE,
         ]:

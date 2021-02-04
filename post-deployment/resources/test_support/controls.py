@@ -30,10 +30,6 @@ from resources.test_support.mappings import device_to_subarrays
 LOGGER = logging.getLogger(__name__)
 
 
-def take_subarray(id):
-    return pilot(id)
-
-
 def telescope_is_in_standby():
     LOGGER.info(
         'resource("ska_mid/tm_subarray_node/1").get("State")'
