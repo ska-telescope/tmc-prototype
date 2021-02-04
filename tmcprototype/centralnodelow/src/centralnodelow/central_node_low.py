@@ -124,7 +124,7 @@ class CentralNode(SKABaseDevice):
                 self.logger.debug(const.STR_INIT_SUCCESS)
 
             except DevFailed as dev_failed:
-                log_msg = const.ERR_INIT_PROP_ATTR_CN + str(dev_failed)
+                log_msg = f"{const.ERR_INIT_PROP_ATTR_CN}{dev_failed}"
                 self.logger.exception(dev_failed)
                 device._read_activity_message = const.ERR_INIT_PROP_ATTR_CN
                 tango.Except.throw_exception(

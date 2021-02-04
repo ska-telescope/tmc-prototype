@@ -110,11 +110,7 @@ class AssignResourceValidator:
             assign_request = CODEC.loads(AssignResourcesRequest, input_string)
         except (ValidationError, JSONDecodeError) as json_error:
             self.logger.exception("Exception: %s", str(json_error))
-            exception_message = (
-                "Malformed input string. Please check the JSON format."
-                + "Full exception info: "
-                + str(json_error)
-            )
+            exception_message = f"Malformed input string. Please check the JSON format. Full exception info:{son_error}"
             raise InvalidJSONError(exception_message)
 
         ## Validate subarray ID
@@ -122,11 +118,7 @@ class AssignResourceValidator:
         # JSON string.
         assign_request = json.loads(input_string)
         if not self._subarray_exists(assign_request["subarrayID"]):
-            exception_message = (
-                "The Subarray '"
-                + str(assign_request["subarrayID"])
-                + "' does not exist."
-            )
+            exception_message = f"The Subarray {assign_request["subarrayID"]} does not exist."
             raise SubarrayNotPresentError(exception_message)
         self.logger.debug("SubarrayID validation successful.")
 

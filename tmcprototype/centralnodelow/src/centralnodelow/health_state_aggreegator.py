@@ -54,7 +54,7 @@ class HealthStateAggreegator:
             self.health_state_event_map[mccs_mln_client] = self.mccs_event_id
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_SUBSR_MCCS_MASTER_LEAF_HEALTH + str(dev_failed)
+            log_msg = f"{const.ERR_SUBSR_MCCS_MASTER_LEAF_HEALTH}{dev_failed}"
             self.logger.exception(dev_failed)
             self.device_data._read_activity_message = (
                 const.ERR_SUBSR_MCCS_MASTER_LEAF_HEALTH
@@ -83,7 +83,7 @@ class HealthStateAggreegator:
                 self.health_state_event_map[subarray_client] = event_id
 
             except DevFailed as dev_failed:
-                log_msg = const.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
+                log_msg = f"{const.ERR_SUBSR_SA_HEALTH_STATE}{dev_failed}"
                 self.logger.exception(dev_failed)
                 self.device_data._read_activity_message = (
                     const.ERR_SUBSR_SA_HEALTH_STATE
@@ -137,7 +137,7 @@ class HealthStateAggreegator:
         """
         device_data = DeviceData.get_instance()
         try:
-            log_msg = "Health state attribute change event is : " + str(evt)
+            log_msg = f"Health state attribute change event is : {evt}"
             self.logger.info(log_msg)
             if not evt.err:
                 health_state = evt.attr_value.value
@@ -172,46 +172,28 @@ class HealthStateAggreegator:
                     == len(self.subarray_health_state_map.values()) + 1
                 ):
                     device_data._telescope_health_state = HealthState.OK
-                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_OK
+                    str_log = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_OK}"
                     self.logger.info(str_log)
-                    device_data._read_activity_message = (
-                        const.STR_HEALTH_STATE + str(evt.device) + const.STR_OK
-                    )
+                    device_data._read_activity_message = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_OK}"
                 elif counts[HealthState.FAILED] != 0:
                     device_data._telescope_health_state = HealthState.FAILED
-                    str_log = (
-                        const.STR_HEALTH_STATE + str(evt.device) + const.STR_FAILED
-                    )
+                    str_log = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_FAILED}"
                     self.logger.info(str_log)
-                    device_data._read_activity_message = (
-                        const.STR_HEALTH_STATE + str(evt.device) + const.STR_FAILED
-                    )
+                    device_data._read_activity_message = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_FAILED}"
                 elif counts[HealthState.DEGRADED] != 0:
                     device_data._telescope_health_state = HealthState.DEGRADED
-                    str_log = (
-                        const.STR_HEALTH_STATE + str(evt.device) + const.STR_DEGRADED
-                    )
+                    str_log = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_DEGRADED}"
                     self.logger.info(str_log)
-                    device_data._read_activity_message = (
-                        const.STR_HEALTH_STATE + str(evt.device) + const.STR_DEGRADED
-                    )
+                    device_data._read_activity_message = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_DEGRADED}"
                 else:
                     device_data._telescope_health_state = HealthState.UNKNOWN
-                    str_log = (
-                        const.STR_HEALTH_STATE + str(evt.device) + const.STR_UNKNOWN
-                    )
+                    str_log = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_UNKNOWN}"
                     self.logger.info(str_log)
-                    device_data._read_activity_message = (
-                        const.STR_HEALTH_STATE + str(evt.device) + const.STR_UNKNOWN
-                    )
+                    device_data._read_activity_message = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_UNKNOWN}"
             else:
-                device_data._read_activity_message = (
-                    const.ERR_SUBSR_SA_HEALTH_STATE + str(evt)
-                )
+                device_data._read_activity_message = f"{const.ERR_SUBSR_SA_HEALTH_STATE}{evt}"
                 self.logger.critical(const.ERR_SUBSR_SA_HEALTH_STATE)
         except KeyError as key_error:
-            device_data._read_activity_message = const.ERR_SUBARRAY_HEALTHSTATE + str(
-                key_error
-            )
-            log_msg = const.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
+            device_data._read_activity_message = f"{const.ERR_SUBARRAY_HEALTHSTATE}{key_error}"
+            log_msg = f"{const.ERR_SUBARRAY_HEALTHSTATE} : {key_error}"
             self.logger.error(log_msg)

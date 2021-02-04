@@ -97,10 +97,8 @@ class AssignResources(BaseCommand):
 
         except KeyError as key_error:
             self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
-            device_data._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(
-                key_error
-            )
-            log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            device_data._read_activity_message = f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}"
+            log_msg = f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}"
             self.logger.exception(key_error)
             tango.Except.throw_exception(
                 const.STR_RESOURCE_ALLOCATION_FAILED,
@@ -112,10 +110,8 @@ class AssignResources(BaseCommand):
             self.logger.exception(
                 "Exception in AssignResources command: %s", str(val_error)
             )
-            device_data._read_activity_message = "Invalid value in input: " + str(
-                val_error
-            )
-            log_msg = const.STR_ASSIGN_RES_EXEC + str(val_error)
+            device_data._read_activity_message = f"Invalid value in input: {val_error}"  
+            log_msg = f"{const.STR_ASSIGN_RES_EXEC}{val_error}"
             self.logger.exception(val_error)
             tango.Except.throw_exception(
                 const.STR_RESOURCE_ALLOCATION_FAILED,
@@ -170,7 +166,7 @@ class AssignResources(BaseCommand):
             device_data._read_activity_message = log_msg
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_ASSGN_RESOURCES + str(dev_failed)
+            log_msg = f"{const.ERR_ASSGN_RESOURCES}{dev_failed}"
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_CMD_FAILED,
