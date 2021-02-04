@@ -32,7 +32,7 @@ class Abort(BaseCommand):
             DevState.DISABLE,
         ]:
             tango.Except.throw_exception(
-                "Abort() is not allowed in current state",
+                f"Abort() is not allowed in current state {self.state_model.op_state}",
                 "Failed to invoke Abort command on MccsSubarrayLeafNode.",
                 "Mccssubarrayleafnode.Abort()",
                 tango.ErrSeverity.ERR,

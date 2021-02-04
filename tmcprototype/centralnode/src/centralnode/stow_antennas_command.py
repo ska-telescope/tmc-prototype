@@ -40,7 +40,7 @@ class StowAntennas(BaseCommand):
             DevState.DISABLE,
         ]:
             tango.Except.throw_exception(
-                "Command StowAntennas is not allowed in current state.",
+                f"Command StowAntennas is not allowed in current state {self.state_model.op_state}.",
                 "Failed to invoke StowAntennas command on CentralNode.",
                 "CentralNode.StowAntennas()",
                 tango.ErrSeverity.ERR,

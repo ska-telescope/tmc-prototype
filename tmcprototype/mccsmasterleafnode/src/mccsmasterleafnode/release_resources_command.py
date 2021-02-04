@@ -34,7 +34,7 @@ class ReleaseResources(BaseCommand):
             DevState.DISABLE,
         ]:
             tango.Except.throw_exception(
-                "ReleaseResources() is not allowed in current state",
+                f"ReleaseResources() is not allowed in current state {self.state_model.op_state}",
                 "Failed to invoke ReleaseResources command on " "mccsmasterleafnode.",
                 "mccsmasterleafnode.ReleaseResources()",
                 tango.ErrSeverity.ERR,

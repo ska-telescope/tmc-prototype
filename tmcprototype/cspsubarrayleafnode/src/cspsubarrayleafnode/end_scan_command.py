@@ -33,7 +33,7 @@ class EndScanCommand(BaseCommand):
             DevState.DISABLE,
         ]:
             tango.Except.throw_exception(
-                "EndScan() is not allowed in current state",
+                f"EndScan() is not allowed in current state {self.state_model.op_state}",
                 "Failed to invoke EndScan command on cspsubarrayleafnode.",
                 "cspsubarrayleafnode.EndScan()",
                 tango.ErrSeverity.ERR,

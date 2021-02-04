@@ -36,7 +36,7 @@ class ReleaseAllResources(BaseCommand):
             DevState.DISABLE,
         ]:
             tango.Except.throw_exception(
-                "ReleaseAllResources() is not allowed in current state",
+                f"ReleaseAllResources() is not allowed in current state {self.state_model.op_state}",
                 "Failed to invoke ReleaseAllResources command on "
                 "SdpSubarrayLeafNode.",
                 "SdpSubarrayLeafNode.ReleaseAllResources()",

@@ -36,7 +36,7 @@ class Configure(BaseCommand):
             DevState.DISABLE,
         ]:
             tango.Except.throw_exception(
-                "Configure() is not allowed in current state",
+                f"Configure() is not allowed in current state {self.state_model.op_state}",
                 "Failed to invoke Configure command on SdpSubarrayLeafNode.",
                 "sdpsubarrayleafnode.Configure()",
                 tango.ErrSeverity.ERR,

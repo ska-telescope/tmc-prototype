@@ -35,7 +35,7 @@ class End(BaseCommand):
             DevState.DISABLE,
         ]:
             tango.Except.throw_exception(
-                "End() is not allowed in current state",
+                f"End() is not allowed in current state {self.state_model.op_state}",
                 "Failed to invoke End command on SdpSubarrayLeafNode.",
                 "sdpsubarrayleafnode.End()",
                 tango.ErrSeverity.ERR,

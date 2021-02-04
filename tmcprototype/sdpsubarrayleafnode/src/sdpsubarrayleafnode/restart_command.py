@@ -32,7 +32,7 @@ class Restart(BaseCommand):
         """
         if self.state_model.op_state in [DevState.UNKNOWN, DevState.DISABLE]:
             tango.Except.throw_exception(
-                "Restart() is not allowed in current state",
+                f"Restart() is not allowed in current state {self.state_model.op_state}",
                 "Failed to invoke Restart command on SdpSubarrayLeafNode.",
                 "sdpsubarrayleafnode.Restart()",
                 tango.ErrSeverity.ERR,

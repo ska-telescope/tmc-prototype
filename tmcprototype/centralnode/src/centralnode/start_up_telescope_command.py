@@ -41,7 +41,7 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
             DevState.DISABLE,
         ]:
             tango.Except.throw_exception(
-                "Command StartUpTelescope is not allowed in current state.",
+                f"Command StartUpTelescope is not allowed in current state {self.state_model.op_state}.",
                 "Failed to invoke StartUpTelescope command on CentralNode.",
                 "CentralNode.StartUpTelescope()",
                 tango.ErrSeverity.ERR,

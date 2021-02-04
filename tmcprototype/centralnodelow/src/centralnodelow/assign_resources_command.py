@@ -39,7 +39,7 @@ class AssignResources(BaseCommand):
             DevState.DISABLE,
         ]:
             tango.Except.throw_exception(
-                "Command AssignResources is not allowed in current state.",
+                f"Command AssignResources is not allowed in current state {self.state_model.op_state}.",
                 "Failed to invoke AssignResources command on CentralNode.",
                 "CentralNode.AssignResources()",
                 tango.ErrSeverity.ERR,
