@@ -11,6 +11,7 @@ from ska.base.commands import ResultCode
 from . import const
 from .device_data import DeviceData
 from tmc.common.tango_client import TangoClient
+from .cmd_res_subscriber_unsubscriber import CmdResSubscriberUnsubscriber
 
 class StandByTelescope(SKABaseDevice.OffCommand):
     """
@@ -57,7 +58,8 @@ class StandByTelescope(SKABaseDevice.OffCommand):
             self.logger.info(log_msg)
             device_data._read_activity_message = log_msg
             # Unsubscribe commandResult attribute of MccsController
-            self._unsubscribe_cmd_res_attribute_events()
+            cmd_res_subscriber_unsubscriber_obj = CmdResSubscriberUnsubscriber()
+            cmd_res_subscriber_unsubscriber_obj._unsubscribe_cmd_res_attribute_events()
 
             return (ResultCode.OK, const.STR_STANDBY_CMD_ISSUED)
 
@@ -116,17 +118,3 @@ class StandByTelescope(SKABaseDevice.OffCommand):
                                          "CentralNode.StandByTelescopeCommand",
                                          tango.ErrSeverity.ERR)
         return (ResultCode.OK, device_data._read_activity_message)
-
-
-    def _unsubscribe_cmd_res_attribute_events(self):
-        """
-        Method to unsubscribe to commandResult attribute event on MccsController
-        """
-        device_data = DeviceData.get_instance()
-        mccs_controller_client = device_data.attr_event_map["mccs_controller_client"]
-        device_data.attr_event_map.pop("mccs_controller_client")
-        for attr_name in device_data.attr_event_map:
-            log_message = "Unsubscribing attributes of: {}".format(mccs_controller_client.get_device_fqdn)
-            self.logger.debug(log_message)
-            mccs_controller_client.unsubscribe_attribute(device_data.attr_event_map[attr_name])
-        device_data.attr_event_map.clear()

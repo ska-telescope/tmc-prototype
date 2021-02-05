@@ -12,26 +12,12 @@ from . import const
 from .device_data import DeviceData
 from .health_state_aggreegator import HealthStateAggreegator
 from tmc.common.tango_client import TangoClient
+from .cmd_res_subscriber_unsubscriber import CmdResSubscriberUnsubscriber
 
 class StartUpTelescope(SKABaseDevice.OnCommand):
     """
     A class for Low CentralNode's StartupCommand() command.
     """
-
-    def command_result_cb(self, event):
-        """
-        Attribute callback for commandResult.
-        """
-        device_data = DeviceData.get_instance()
-        log_msg = 'MccsController.commandResult change event is : ' + str(event)
-        self.logger.debug(log_msg)
-        try:
-            device_data.cmd_res_evt_val = event.attr_value.value
-            log_msg="commandResult attribute value is :" + str(device_data.cmd_res_evt_val)
-            self.logger.info(log_msg)
-        except Exception as exp:
-            self.logger.exception(const.ERR_SUB_CMD_RES_ATTR)
-            self.logger.exception(exp)
 
     def check_allowed(self):
 
@@ -69,7 +55,9 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
             "commandResult",
         )
         # Subscribe to commandResult attribute of MccsController
-        self._subscribe_cmd_res_attribute_events(attributes_to_subscribe_to)
+        cmd_res_subscriber_unsubscriber_obj = CmdResSubscriberUnsubscriber()
+        cmd_res_subscriber_unsubscriber_obj._subscribe_cmd_res_attribute_events(
+            attributes_to_subscribe_to)
         device_data.health_aggreegator = HealthStateAggreegator(self.logger)
         device_data.health_aggreegator.subscribe_event()
         try:
@@ -138,28 +126,3 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
                                             "CentralNodeLow.StartUpTelescopeCommand",
                                             tango.ErrSeverity.ERR)
         return (ResultCode.OK, device_data._read_activity_message)
-
-    def _subscribe_cmd_res_attribute_events(self, attributes):
-        """Method to subscribe the commandResult attributes"""
-        device_data = DeviceData.get_instance()
-        mccs_controller_client = TangoClient(device_data.mccs_controller_fqdn)
-        device_data.attr_event_map["mccs_controller_client"] = mccs_controller_client
-
-        for attribute_name in attributes:
-            try:
-                device_data.attr_event_map[attribute_name] = mccs_controller_client.subscribe_attribute(
-                    attribute_name,
-                    self.command_result_cb)
-            except DevFailed as dev_failed:
-                self.logger.exception(dev_failed)
-                log_message = (
-                    f"Exception occurred while subscribing to mccs attribute: {attribute_name}"
-                )
-                device_data._read_activity_message = log_message
-                tango.Except.re_throw_exception(
-                    dev_failed,
-                    "Exception in StartupTelescope command",
-                    log_message,
-                    "CentralNode.{}Command".format("StartUpTelescope"),
-                    tango.ErrSeverity.ERR,
-                )
