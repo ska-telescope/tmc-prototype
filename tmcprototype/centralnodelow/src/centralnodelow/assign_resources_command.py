@@ -80,6 +80,8 @@ class AssignResources(BaseCommand):
         """
         device_data = self.target
         try:
+            # Check if Mccs On command is completed
+            assert device_data.cmd_res_evt_val == 0
             json_argument = json.loads(argin)
             subarray_id = int(json_argument["mccs"]["subarray_id"])
             subarray_cmd_data = self._create_subarray_cmd_data(json_argument)
@@ -96,6 +98,7 @@ class AssignResources(BaseCommand):
 
             device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
+
 
         except KeyError as key_error:
             self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
@@ -115,12 +118,18 @@ class AssignResources(BaseCommand):
             device_data._read_activity_message = f"Invalid value in input: {val_error}"  
             log_msg = f"{const.STR_ASSIGN_RES_EXEC}{val_error}"
             self.logger.exception(val_error)
-            tango.Except.throw_exception(
-                const.STR_RESOURCE_ALLOCATION_FAILED,
-                log_msg,
-                "CentralNode.AssignResourcesCommand",
-                tango.ErrSeverity.ERR,
-            )
+            tango.Except.throw_exception(const.STR_RESOURCE_ALLOCATION_FAILED, log_msg,
+                                         "CentralNode.AssignResourcesCommand",
+                                         tango.ErrSeverity.ERR)
+        except AssertionError:
+            log_msg = "Exception in AssignResources command: " + const.ERR_STARTUP_CMD_UNCOMPLETE
+            self.logger.exception(log_msg)
+            log_msg = const.STR_ASSIGN_RES_EXEC + const.ERR_STARTUP_CMD_UNCOMPLETE
+            self.logger.exception(log_msg)
+            device_data._read_activity_message = log_msg
+            tango.Except.throw_exception(const.ERR_STARTUP_CMD_UNCOMPLETE, log_msg,
+                                         "CentralNode.AssignResourcesCommand",
+                                         tango.ErrSeverity.ERR)
 
     def _create_subarray_cmd_data(self, json_argument):
         """

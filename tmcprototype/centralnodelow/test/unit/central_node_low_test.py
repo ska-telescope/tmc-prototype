@@ -106,6 +106,9 @@ def command_with_devfailed_error(request):
 
 def test_assign_resources(mock_subarraynode_proxy):
     device_proxy, tango_client_obj = mock_subarraynode_proxy[:2]
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()):
+        with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_cmd_res):
+            device_proxy.StartUpTelescope()
     device_proxy.AssignResources(assign_input_str)
     assert const.STR_ASSIGN_RESOURCES_SUCCESS in device_proxy.activityMessage
 
@@ -114,6 +117,9 @@ def test_assign_resources_should_raise_devfailed_exception_when_subarray_node_th
     mock_subarraynode_proxy,
 ):
     device_proxy, tango_client_obj = mock_subarraynode_proxy[:2]
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()):
+        with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_cmd_res):
+            device_proxy.StartUpTelescope()
     tango_client_obj.deviceproxy.command_inout.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.AssignResources(assign_input_str)
@@ -144,7 +150,11 @@ def test_release_resources_should_raise_devfailed_exception_when_subarray_node_t
 
 def test_command_invalid_key(mock_subarraynode_proxy, command_raise_error):
     device_proxy, tango_client_obj = mock_subarraynode_proxy[:2]
-    cmd_name, error_msg, input_str = command_raise_error
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()):
+        with mock.patch.object(TangoClient, "subscribe_attribute",
+                               side_effect=dummy_subscriber_cmd_res):
+            device_proxy.StartUpTelescope()
+    cmd_name,error_msg,input_str= command_raise_error
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name, input_str)
     assert const.ERR_JSON_KEY_NOT_FOUND in str(df.value)
@@ -152,34 +162,99 @@ def test_command_invalid_key(mock_subarraynode_proxy, command_raise_error):
 
 def test_command_invalid_json_value(mock_subarraynode_proxy, command_raise_error):
     device_proxy, tango_client_obj = mock_subarraynode_proxy[:2]
-    cmd_name, error_msg = command_raise_error[:2]
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()):
+        with mock.patch.object(TangoClient, "subscribe_attribute",
+                               side_effect=dummy_subscriber_cmd_res):
+            device_proxy.StartUpTelescope()
+    cmd_name,error_msg= command_raise_error[:2]
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name, assign_release_invalid_str)
     assert error_msg in str(df.value)
 
 
+def dummy_subscriber_cmd_res(attribute, callback_method):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"low-mccs/control/control/{attribute}"
+    fake_event.attr_value.value = 0
+    print( fake_event.attr_value.value )
+
+    callback_method(fake_event)
+    return 10
+
 def test_startup(mock_subarraynode_proxy):
     device_proxy, tango_client_obj = mock_subarraynode_proxy[:2]
-    assert device_proxy.StartUpTelescope() == [
-        [ResultCode.OK],
-        [const.STR_ON_CMD_ISSUED],
-    ]
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()):
+        with mock.patch.object(TangoClient, "subscribe_attribute",
+                               side_effect=dummy_subscriber_cmd_res):
+            assert device_proxy.StartUpTelescope() == [[ResultCode.OK],[const.STR_ON_CMD_ISSUED]]
     assert device_proxy.state() == DevState.ON
+
+
+def dummy_subscriber_cmd_res_incorrect_value(attribute, callback_method):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"low-mccs/control/control/{attribute}"
+    fake_event.attr_value.value = 1
+    print( fake_event.attr_value.value )
+
+    callback_method(fake_event)
+    return 10
+
+
+def test_startup_command_should_raise_assertion_error(mock_subarraynode_proxy):
+    device_proxy, tango_client_obj = mock_subarraynode_proxy[:2]
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()):
+        with mock.patch.object(TangoClient, "subscribe_attribute",
+                               side_effect=dummy_subscriber_cmd_res_incorrect_value):
+            with pytest.raises(tango.DevFailed) as df:
+                device_proxy.StartUpTelescope()
+            assert const.ERR_STANDBY_CMD_UNCOMPLETE in str(df.value)
+
+
+def dummy_subscriber_cmd_res_none_value(attribute, callback_method):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"low-mccs/control/control/{attribute}"
+    fake_event.attr_value.value = None
+    print( fake_event.attr_value.value )
+
+    callback_method(fake_event)
+    return 10
+
+def test_assign_command_should_raise_assertion_error(mock_subarraynode_proxy):
+    device_proxy, tango_client_obj = mock_subarraynode_proxy[:2]
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()):
+        with mock.patch.object(TangoClient, "subscribe_attribute",
+                               side_effect=dummy_subscriber_cmd_res_none_value):
+            with pytest.raises(tango.DevFailed) as df:
+                device_proxy.StartUpTelescope()
+                device_proxy.AssignResources(assign_input_str)
+            assert const.ERR_STARTUP_CMD_UNCOMPLETE in str(df.value)
 
 
 def test_standby(mock_subarraynode_proxy):
     device_proxy, tango_client_obj = mock_subarraynode_proxy[:2]
-    device_proxy.StartUpTelescope()
-    assert device_proxy.StandByTelescope() == [
-        [ResultCode.OK],
-        [const.STR_STANDBY_CMD_ISSUED],
-    ]
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()):
+        with mock.patch.object(TangoClient, "subscribe_attribute",
+                               side_effect=dummy_subscriber_cmd_res):
+            device_proxy.StartUpTelescope()
+    assert device_proxy.StandByTelescope() == [[ResultCode.OK],[const.STR_STANDBY_CMD_ISSUED]]
     assert device_proxy.state() == DevState.OFF
 
 
-def test_command_should_raise_devfailed_exception(
-    mock_subarraynode_proxy, command_with_devfailed_error
-):
+def test_standby_command_should_raise_assertion_error(mock_subarraynode_proxy):
+    device_proxy, tango_client_obj = mock_subarraynode_proxy[:2]
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()):
+        with mock.patch.object(TangoClient, "subscribe_attribute",
+                               side_effect=dummy_subscriber_cmd_res_none_value):
+            with pytest.raises(tango.DevFailed) as df:
+                device_proxy.StartUpTelescope()
+                device_proxy.StandByTelescope()
+            assert const.ERR_STARTUP_CMD_UNCOMPLETE in str(df.value)
+
+
+def test_command_should_raise_devfailed_exception(mock_subarraynode_proxy,command_with_devfailed_error):
     device_proxy, tango_client_obj = mock_subarraynode_proxy[:2]
     cmd_name = command_with_devfailed_error
     tango_client_obj.deviceproxy.command_inout.side_effect = raise_devfailed_exception
@@ -246,6 +321,7 @@ def test_telescope_health_state_is_ok_when_subarray_node_is_ok_after_start(
         event_subscription_map,
     ) = mock_subarraynode_proxy
     device_data = DeviceData.get_instance()
+<<<<<<< HEAD
     with mock.patch.object(
         TangoClient, "_get_deviceproxy", return_value=Mock()
     ) as mock_obj:
@@ -254,6 +330,15 @@ def test_telescope_health_state_is_ok_when_subarray_node_is_ok_after_start(
         ):
             tango_client_obj = TangoClient("ska_low/tm_subarray_node/1")
             device_proxy.StartUpTelescope()
+=======
+    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
+        with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber):
+            with mock.patch.object(TangoClient, '_get_deviceproxy',
+                                   return_value=Mock()) as mock_obj:
+                with mock.patch.object(TangoClient, "subscribe_attribute",
+                                       side_effect=dummy_subscriber_cmd_res):
+                    device_proxy.StartUpTelescope()
+>>>>>>> master
     assert device_data._telescope_health_state == health_state
 
 

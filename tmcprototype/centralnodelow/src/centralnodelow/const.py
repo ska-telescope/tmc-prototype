@@ -24,6 +24,9 @@ ERR_SUBARRAY_HEALTHSTATE = "Key Error occurred while setting Subarray healthStat
 ERR_ASSGN_RESOURCES = "Error occurred while assigning resources to the Subarray \n"
 ERR_RELEASE_RESOURCES = "Error occurred while releasing resources from the Subarray \n"
 ERR_HEALTH_STATE_CB = "Error handling healthState callback for evt: %s"
+ERR_STANDBY_CMD_UNCOMPLETE = "StandByTelescope command is not completed yet"
+ERR_STARTUP_CMD_UNCOMPLETE = "StartUpTelescope command is not completed yet"
+ERR_SUB_CMD_RES_ATTR = "Error on subscribing commandResult attribute"
 
 # General strings
 STR_HEALTH_STATE = "healthState of "

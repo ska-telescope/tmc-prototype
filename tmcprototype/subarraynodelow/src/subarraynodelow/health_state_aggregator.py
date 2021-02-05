@@ -23,6 +23,7 @@ class HealthStateAggregator:
         else:
             self.logger = logger
 
+        self.subarray_ln_health_state_map = {}
         self.mccs_ln_health_event_id = {}
         self.this_server = TangoServerHelper.get_instance()
         self.device_data = DeviceData.get_instance()
@@ -69,15 +70,14 @@ class HealthStateAggregator:
         device_name = event.device.dev_name()
         if not event.err:
             event_health_state = event.attr_value.value
-            self.mccs_ln_health_event_id[device_name] = event_health_state
+            self.subarray_ln_health_state_map[device_name] = event_health_state
 
             log_message = self.generate_health_state_log_msg(
                 event_health_state, device_name, event
             )
             self.device_data.activity_message = log_message
             self.device_data._subarray_health_state = self.calculate_health_state(
-                self.mccs_ln_health_event_id.values()
-            )
+                self.subarray_ln_health_state_map.values())
         else:
             log_message = (
                 const.ERR_SUBSR_SA_HEALTH_STATE + str(device_name) + str(event)

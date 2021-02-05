@@ -86,6 +86,7 @@ class CentralNode(SKABaseDevice):
         doc="Activity Message",
     )
 
+
     # ---------------
     # General methods
     # ---------------
@@ -121,6 +122,7 @@ class CentralNode(SKABaseDevice):
                 )
                 device._version_id = release.version
                 device_data.mccs_master_ln_fqdn = device.MCCSMasterLeafNodeFQDN
+                device_data.mccs_controller_fqdn = "low-mccs/control/control"
                 device_data.subarray_low = device.TMLowSubarrayNodes
                 self.logger.debug(const.STR_INIT_SUCCESS)
 
