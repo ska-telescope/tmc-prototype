@@ -40,7 +40,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         # TODO: For now storing resources as station ids
         input_str = json.loads(argin)
         device_data.resource_list = input_str["station_ids"]
-        log_msg = const.STR_ASSIGN_RES_EXEC + "STARTED"
+        log_msg = f"{const.STR_ASSIGN_RES_EXEC} STARTED"
         self.logger.debug(log_msg)
         device_data.activity_message = log_msg
 

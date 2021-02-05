@@ -49,7 +49,7 @@ class ObsReset(SKASubarray.ObsResetCommand):
             return (ResultCode.STARTED, const.STR_OBSRESET_SUCCESS)
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_OBSRESET_INVOKING_CMD + str(dev_failed)
+            log_msg = f"{const.ERR_OBSRESET_INVOKING_CMD}{dev_failed}"
             self.logger.exception(log_msg)
             tango.Except.throw_exception(
                 const.STR_OBSRESET_EXEC,

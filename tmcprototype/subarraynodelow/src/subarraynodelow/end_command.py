@@ -49,7 +49,7 @@ class End(SKASubarray.EndCommand):
             return (ResultCode.OK, const.STR_END_SUCCESS)
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_END_INVOKING_CMD + str(dev_failed)
+            log_msg = f"{const.ERR_END_INVOKING_CMD}{dev_failed}"
             self.logger.exception(log_msg)
             # device.set_status(const.ERR_END_INVOKING_CMD)
             tango.Except.throw_exception(

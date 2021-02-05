@@ -31,9 +31,7 @@ class ObsStateAggregator:
             const.EVT_MCCSSA_OBS_STATE, self.observation_state_cb
         )
         self.mccs_obs_state_event_id[self.mccs_client] = mccs_event_id
-        log_msg = const.STR_SUB_ATTR_MCCS_SALN_OBSTATE_SUCCESS + str(
-            self.mccs_obs_state_event_id
-        )
+        log_msg = f"{const.STR_SUB_ATTR_MCCS_SALN_OBSTATE_SUCCESS}{self.mccs_obs_state_event_id}"
         self.logger.info(log_msg)
 
     def unsubscribe(self):
@@ -78,30 +76,26 @@ class ObsStateAggregator:
                 event_observetion_state = evt.attr_value.value
                 if const.PROP_DEF_VAL_TMMCCS_MID_SALN in evt.attr_name:
                     self.device_data._mccs_sa_obs_state = event_observetion_state
-                    self._read_activity_message = (
-                        const.STR_MCCS_SUBARRAY_OBS_STATE + str(event_observetion_state)
-                    )
+                    self._read_activity_message = f"{const.STR_MCCS_SUBARRAY_OBS_STATE}{event_observetion_state}"
                 else:
                     self.logger.info(const.EVT_UNKNOWN)
                     self._read_activity_message = const.EVT_UNKNOWN
                 self.calculate_observation_state()
 
             else:
-                log_msg = const.ERR_SUBSR_MCCSSA_OBS_STATE + str(evt)
+                log_msg = f"{const.ERR_SUBSR_MCCSSA_OBS_STATE}{evt}"
                 self.logger.info(log_msg)
                 self._read_activity_message = log_msg
         except KeyError as key_error:
-            log_msg = const.ERR_MCCS_SUBARRAY_OBS_STATE + str(key_error)
+            log_msg = f"{const.ERR_MCCS_SUBARRAY_OBS_STATE}{key_error}"
             self.logger.error(log_msg)
-            self._read_activity_message = const.ERR_MCCS_SUBARRAY_OBS_STATE + str(
-                key_error
-            )
+            self._read_activity_message = f"{const.ERR_MCCS_SUBARRAY_OBS_STATE}{key_error}"
 
     def calculate_observation_state(self):
         """
         Calculates aggregated observation state of Subarray.
         """
-        log_msg = "MCCS ObsState is: " + str(self.device_data._mccs_sa_obs_state)
+        log_msg = f"MCCS ObsState is: {self.device_data._mccs_sa_obs_state}"
         self.logger.info(log_msg)
         if self.device_data._mccs_sa_obs_state is ObsState.EMPTY:
             if self.device_data.is_release_resources:

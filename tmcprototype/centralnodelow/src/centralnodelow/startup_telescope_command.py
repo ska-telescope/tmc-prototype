@@ -130,18 +130,7 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
             log_msg = f"{const.ERR_EXE_ON_CMD}{dev_failed}"
             self.logger.exception(dev_failed)
             device_data._read_activity_message = const.ERR_EXE_ON_CMD
-<<<<<<< HEAD
-            tango.Except.re_throw_exception(
-                dev_failed,
-                const.STR_ON_EXEC,
-                log_msg,
-                "CentralNodeLow.StartUpTelescopeCommand",
-                tango.ErrSeverity.ERR,
-            )
-        return (ResultCode.OK, device_data._read_activity_message)
-=======
             tango.Except.re_throw_exception(dev_failed, const.STR_ON_EXEC, log_msg,
                                             "CentralNodeLow.StartUpTelescopeCommand",
                                             tango.ErrSeverity.ERR)
         return (ResultCode.OK, device_data._read_activity_message)
->>>>>>> master

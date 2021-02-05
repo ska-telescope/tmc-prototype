@@ -35,9 +35,7 @@ class HealthStateAggregator:
             const.EVT_MCCSSA_HEALTH, self.health_state_cb
         )
         self.mccs_ln_health_event_id[self.mccs_client] = mccs_event_id
-        log_msg = const.STR_SUB_ATTR_MCCS_SALN_HEALTH_SUCCESS + str(
-            self.mccs_ln_health_event_id
-        )
+        log_msg = f"{const.STR_SUB_ATTR_MCCS_SALN_HEALTH_SUCCESS}{self.mccs_ln_health_event_id}"
         self.logger.debug(log_msg)
         # tango_server_helper_obj = TangoServerHelper.get_instance()
         # tango_server_helper_obj.set_status(const.STR_SUB_ATTR_MCCS_SALN_HEALTH_SUCCESS)
@@ -79,21 +77,14 @@ class HealthStateAggregator:
             self.device_data._subarray_health_state = self.calculate_health_state(
                 self.subarray_ln_health_state_map.values())
         else:
-            log_message = (
-                const.ERR_SUBSR_SA_HEALTH_STATE + str(device_name) + str(event)
-            )
+            log_message = f"{const.ERR_SUBSR_SA_HEALTH_STATE}{device_name}{event}"
             self.device_data.activity_message = log_message
 
     def generate_health_state_log_msg(self, health_state, device_name, event):
         if isinstance(health_state, HealthState):
-            return (
-                const.STR_HEALTH_STATE
-                + str(device_name)
-                + const.STR_ARROW
-                + str(health_state.name.upper())
-            )
+            return f"{const.STR_HEALTH_STATE}{device_name}{const.STR_ARROW}{health_state.name.upper()}"
         else:
-            return const.STR_HEALTH_STATE_UNKNOWN_VAL + str(event)
+            return f"{const.STR_HEALTH_STATE_UNKNOWN_VAL}{event}"
 
     def calculate_health_state(self, health_states):
         """

@@ -49,7 +49,7 @@ class Scan(SKASubarray.ScanCommand):
         try:
             input_scan = json.loads(argin)
             mccs_input_scan = input_scan["mccs"]
-            log_msg = const.STR_SCAN_IP_ARG + str(argin)
+            log_msg = f"{const.STR_SCAN_IP_ARG}{argin}"
             self.logger.info(log_msg)
             device_data.activity_message = log_msg
             device_data.isScanRunning = True
@@ -69,7 +69,7 @@ class Scan(SKASubarray.ScanCommand):
             return (ResultCode.STARTED, const.STR_SCAN_SUCCESS)
 
         except json.JSONDecodeError as json_error:
-            log_message = const.ERR_INVALID_JSON + str(json_error)
+            log_message = f"{const.ERR_INVALID_JSON}{json_error}"
             self.logger.error(log_message)
             device_data.activity_message = log_message
             tango.Except.throw_exception(
@@ -84,7 +84,7 @@ class Scan(SKASubarray.ScanCommand):
             device_data._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(
                 key_error
             )
-            log_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            log_message = f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}"
             self.logger.exception(key_error)
             tango.Except.throw_exception(
                 const.STR_CMD_FAILED,
@@ -94,7 +94,7 @@ class Scan(SKASubarray.ScanCommand):
             )
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_SCAN_CMD + str(dev_failed)
+            log_msg = f"{const.ERR_SCAN_CMD}{dev_failed}"
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_SCAN_EXEC,
