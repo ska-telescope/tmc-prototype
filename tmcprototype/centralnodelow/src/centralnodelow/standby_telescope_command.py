@@ -11,6 +11,7 @@ from ska.base.commands import ResultCode
 from . import const
 from .device_data import DeviceData
 from tmc.common.tango_client import TangoClient
+from .command_result_fetcher import CommandResultFetcher
 
 class StandByTelescope(SKABaseDevice.OffCommand):
     """
@@ -47,13 +48,28 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         :rtype: (ResultCode, str)
         """
         device_data = self.target
-        self.create_mccs_client(device_data.mccs_master_ln_fqdn)
-        self.create_subarray_client(device_data.subarray_low)
-        device_data.health_aggreegator.unsubscribe_event()
-        log_msg = const.STR_STANDBY_CMD_ISSUED
-        self.logger.info(log_msg)
-        device_data._read_activity_message = log_msg
-        return (ResultCode.OK, const.STR_STANDBY_CMD_ISSUED)
+        try:
+            # Check if Mccs On command is completed
+            assert device_data.cmd_res_evt_val == 0
+            self.create_mccs_client(device_data.mccs_master_ln_fqdn)
+            self.create_subarray_client(device_data.subarray_low)
+            device_data.health_aggreegator.unsubscribe_event()
+            log_msg = const.STR_STANDBY_CMD_ISSUED
+            self.logger.info(log_msg)
+            device_data._read_activity_message = log_msg
+            # Unsubscribe commandResult attribute of MccsController
+            cmd_res_subscriber_unsubscriber_obj = CommandResultFetcher()
+            cmd_res_subscriber_unsubscriber_obj._unsubscribe_cmd_res_attribute_events()
+
+            return (ResultCode.OK, const.STR_STANDBY_CMD_ISSUED)
+
+        except AssertionError:
+            log_msg = const.ERR_STARTUP_CMD_UNCOMPLETE
+            self.logger.exception(log_msg)
+            device_data._read_activity_message = const.ERR_STARTUP_CMD_UNCOMPLETE
+            tango.Except.throw_exception(const.STR_STANDBY_EXEC, log_msg,
+                                         "CentralNode.StandByTelescopeCommand",
+                                         tango.ErrSeverity.ERR)
 
 
     def create_mccs_client(self, mccs_master_fqdn):

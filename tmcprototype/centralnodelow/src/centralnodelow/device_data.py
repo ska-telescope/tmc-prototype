@@ -35,9 +35,12 @@ class DeviceData:
         self.subarray_FQDN_dict = {}
         self.subarray_low = []
         self.mccs_master_ln_fqdn = ""
+        self.mccs_controller_fqdn = ""
         self._read_activity_message = ""
         self.health_aggreegator = None
-
+        self.cmd_res_evt_id = None
+        self.cmd_res_evt_val = ""
+        self.attr_event_map = {}
 
 
     @staticmethod

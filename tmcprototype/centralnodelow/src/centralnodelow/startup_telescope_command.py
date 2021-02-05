@@ -12,6 +12,7 @@ from . import const
 from .device_data import DeviceData
 from .health_state_aggreegator import HealthStateAggreegator
 from tmc.common.tango_client import TangoClient
+from .command_result_fetcher import CommandResultFetcher
 
 class StartUpTelescope(SKABaseDevice.OnCommand):
     """
@@ -50,14 +51,32 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         :rtype: (ResultCode, str)
         """
         device_data = self.target
+        attributes_to_subscribe_to = (
+            "commandResult",
+        )
+        # Subscribe to commandResult attribute of MccsController
+        cmd_res_subscriber_unsubscriber_obj = CommandResultFetcher()
+        cmd_res_subscriber_unsubscriber_obj._subscribe_cmd_res_attribute_events(
+            attributes_to_subscribe_to)
         device_data.health_aggreegator = HealthStateAggreegator(self.logger)
         device_data.health_aggreegator.subscribe_event()
-        self.create_mccs_client(device_data.mccs_master_ln_fqdn)
-        self.create_subarray_client(device_data.subarray_low)
-        log_msg = const.STR_ON_CMD_ISSUED
-        self.logger.info(log_msg)
-        device_data._read_activity_message = log_msg
-        return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
+        try:
+            # Check if Mccs Off command is completed
+            assert device_data.cmd_res_evt_val == None or device_data.cmd_res_evt_val == 0, const.ERR_STANDBY_CMD_UNCOMPLETE
+            self.create_mccs_client(device_data.mccs_master_ln_fqdn)
+            self.create_subarray_client(device_data.subarray_low)
+            log_msg = const.STR_ON_CMD_ISSUED
+            self.logger.info(log_msg)
+            device_data._read_activity_message = log_msg
+            return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
+        except AssertionError as assertion_err:
+            log_msg = const.ERR_STANDBY_CMD_UNCOMPLETE
+            self.logger.exception(log_msg)
+            device_data._read_activity_message = const.ERR_STANDBY_CMD_UNCOMPLETE
+            tango.Except.re_throw_exception(assertion_err, const.ERR_STANDBY_CMD_UNCOMPLETE,
+                                            log_msg, "CentralNodeLow.StartUpTelescopeCommand",
+                                            tango.ErrSeverity.ERR)
+
 
     def create_subarray_client(self, subarray_fqdn_list):
         """
