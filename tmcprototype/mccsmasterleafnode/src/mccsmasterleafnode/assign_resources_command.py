@@ -71,12 +71,7 @@ class AssignResources(BaseCommand):
         try:
 
             if event.err:
-                device_data._read_activity_message = (
-                    const.ERR_INVOKING_CMD
-                    + str(event.cmd_name)
-                    + "\n"
-                    + str(event.errors)
-                )
+                device_data._read_activity_message = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
                 log = const.ERR_INVOKING_CMD + event.cmd_name
                 self.logger.error(log)
             else:
@@ -133,7 +128,7 @@ class AssignResources(BaseCommand):
             self.logger.info(const.STR_ALLOCATE_SUCCESS)
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_ASSGN_RESOURCE_MCCS + str(dev_failed)
+            log_msg = f"{const.ERR_ASSGN_RESOURCE_MCCS}{dev_failed}"
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
             tango.Except.re_throw_exception(
