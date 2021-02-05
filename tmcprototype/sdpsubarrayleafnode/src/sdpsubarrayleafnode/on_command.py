@@ -44,9 +44,7 @@ class On(SKABaseDevice.OnCommand):
         device_data = self.target
         sdp_sa_ln_server = TangoServerHelper.get_instance()
         if event.err:
-            log = (
-                const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-            )
+            log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             device_data._read_activity_message = log
             sdp_sa_ln_server.set_status(log)
             self.logger.error(log)
@@ -82,7 +80,7 @@ class On(SKABaseDevice.OnCommand):
             return (ResultCode.OK, log_msg)
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_INVOKING_ON_CMD + str(dev_failed)
+            log_msg = f"{const.ERR_INVOKING_ON_CMD} {dev_failed}"
             device_data._read_activity_message = log_msg
             sdp_sa_ln_server.set_status(log_msg)
             self.logger.exception(dev_failed)

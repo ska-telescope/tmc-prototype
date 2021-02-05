@@ -69,9 +69,7 @@ class Configure(BaseCommand):
         """
         device_data = self.target
         if event.err:
-            log = (
-                const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-            )
+            log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             device_data._read_activity_message = log
             self.logger.error(log)
         else:
@@ -111,7 +109,7 @@ class Configure(BaseCommand):
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_CONFIGURE + str(dev_failed)
+            log_msg = f"{const.ERR_CONFIGURE}{dev_failed}"
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(

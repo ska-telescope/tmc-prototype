@@ -141,9 +141,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             device_data._read_activity_message = const.STR_SDPSALN_INIT_SUCCESS
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
-            device._read_activity_message = const.STR_SETTING_CB_MODEL + str(
-                ApiUtil.instance().get_asynch_cb_sub_model()
-            )
+            device._read_activity_message = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
 
             # Initialise Device status
             device.set_status(const.STR_SDPSALN_INIT_SUCCESS)

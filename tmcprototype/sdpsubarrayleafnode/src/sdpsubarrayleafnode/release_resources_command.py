@@ -76,7 +76,7 @@ class ReleaseAllResources(BaseCommand):
         """
         device_data = self.target
         if event.err:
-            log = const.ERR_INVOKING_CMD + str(event.cmd_name) + str(event.errors)
+            log = f"{const.ERR_INVOKING_CMD}{event.cmd_name} {event.errors}"
             device_data._read_activity_message = log
             self.logger.error(log)
         else:
@@ -107,7 +107,7 @@ class ReleaseAllResources(BaseCommand):
             self.logger.info(const.STR_REL_RESOURCES)
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_RELEASE_RESOURCES + str(dev_failed)
+            log_msg = f"{const.ERR_RELEASE_RESOURCES}{dev_failed}"
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(

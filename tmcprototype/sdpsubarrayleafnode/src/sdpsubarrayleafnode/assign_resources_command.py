@@ -58,9 +58,7 @@ class AssignResources(BaseCommand):
         """
         device_data = self.target
         if event.err:
-            log = (
-                const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-            )
+            log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             device_data._read_activity_message = log
             self.logger.error(log)
             tango.Except.throw_exception(
@@ -152,11 +150,9 @@ class AssignResources(BaseCommand):
             )
 
         except ValueError as value_error:
-            log_msg = const.ERR_INVALID_JSON + str(value_error)
+            log_msg = f"{const.ERR_INVALID_JSON}{value_error}"
             self.logger.exception(log_msg)
-            device_data._read_activity_message = const.ERR_INVALID_JSON + str(
-                value_error
-            )
+            device_data._read_activity_message = f"{const.ERR_INVALID_JSON}{value_error}"
             tango.Except.throw_exception(
                 const.STR_CMD_FAILED,
                 log_msg,
@@ -165,7 +161,7 @@ class AssignResources(BaseCommand):
             )
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_ASSGN_RESOURCES + str(dev_failed)
+            log_msg = f"{const.ERR_ASSGN_RESOURCES}{dev_failed}"
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
