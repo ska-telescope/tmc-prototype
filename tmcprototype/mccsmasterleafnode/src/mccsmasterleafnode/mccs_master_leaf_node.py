@@ -116,7 +116,7 @@ class MccsMasterLeafNode(SKABaseDevice):
             device_data._mccs_master_fqdn = str(device.MccsMasterFQDN)
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
-            log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}
+            log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
             device_data._read_activity_message = const.STR_INIT_SUCCESS
             self.logger.info(device_data._read_activity_message)
