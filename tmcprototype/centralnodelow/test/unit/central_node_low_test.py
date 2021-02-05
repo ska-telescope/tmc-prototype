@@ -321,16 +321,6 @@ def test_telescope_health_state_is_ok_when_subarray_node_is_ok_after_start(
         event_subscription_map,
     ) = mock_subarraynode_proxy
     device_data = DeviceData.get_instance()
-<<<<<<< HEAD
-    with mock.patch.object(
-        TangoClient, "_get_deviceproxy", return_value=Mock()
-    ) as mock_obj:
-        with mock.patch.object(
-            TangoClient, "subscribe_attribute", side_effect=dummy_subscriber
-        ):
-            tango_client_obj = TangoClient("ska_low/tm_subarray_node/1")
-            device_proxy.StartUpTelescope()
-=======
     with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
         with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber):
             with mock.patch.object(TangoClient, '_get_deviceproxy',
@@ -338,7 +328,6 @@ def test_telescope_health_state_is_ok_when_subarray_node_is_ok_after_start(
                 with mock.patch.object(TangoClient, "subscribe_attribute",
                                        side_effect=dummy_subscriber_cmd_res):
                     device_proxy.StartUpTelescope()
->>>>>>> master
     assert device_data._telescope_health_state == health_state
 
 
