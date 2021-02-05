@@ -11,7 +11,7 @@ from ska.base.commands import ResultCode
 from . import const
 from .device_data import DeviceData
 from tmc.common.tango_client import TangoClient
-from .cmd_res_subscriber_unsubscriber import CmdResSubscriberUnsubscriber
+from .command_result_fetcher import CommandResultFetcher
 
 class StandByTelescope(SKABaseDevice.OffCommand):
     """
@@ -58,7 +58,7 @@ class StandByTelescope(SKABaseDevice.OffCommand):
             self.logger.info(log_msg)
             device_data._read_activity_message = log_msg
             # Unsubscribe commandResult attribute of MccsController
-            cmd_res_subscriber_unsubscriber_obj = CmdResSubscriberUnsubscriber()
+            cmd_res_subscriber_unsubscriber_obj = CommandResultFetcher()
             cmd_res_subscriber_unsubscriber_obj._unsubscribe_cmd_res_attribute_events()
 
             return (ResultCode.OK, const.STR_STANDBY_CMD_ISSUED)

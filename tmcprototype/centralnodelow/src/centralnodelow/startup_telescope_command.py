@@ -12,7 +12,7 @@ from . import const
 from .device_data import DeviceData
 from .health_state_aggreegator import HealthStateAggreegator
 from tmc.common.tango_client import TangoClient
-from .cmd_res_subscriber_unsubscriber import CmdResSubscriberUnsubscriber
+from .command_result_fetcher import CommandResultFetcher
 
 class StartUpTelescope(SKABaseDevice.OnCommand):
     """
@@ -55,7 +55,7 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
             "commandResult",
         )
         # Subscribe to commandResult attribute of MccsController
-        cmd_res_subscriber_unsubscriber_obj = CmdResSubscriberUnsubscriber()
+        cmd_res_subscriber_unsubscriber_obj = CommandResultFetcher()
         cmd_res_subscriber_unsubscriber_obj._subscribe_cmd_res_attribute_events(
             attributes_to_subscribe_to)
         device_data.health_aggreegator = HealthStateAggreegator(self.logger)

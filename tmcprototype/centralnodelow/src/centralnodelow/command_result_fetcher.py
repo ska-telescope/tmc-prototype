@@ -11,7 +11,7 @@ from .device_data import DeviceData
 from tmc.common.tango_client import TangoClient
 
 
-class CmdResSubscriberUnsubscriber:
+class CommandResultFetcher:
     """A class for commandResult attribute subscription and unsubscription methods"""
     def __init__(self, logger=None):
         if logger == None:
@@ -31,7 +31,6 @@ class CmdResSubscriberUnsubscriber:
         except Exception as exp:
             self.logger.exception(const.ERR_SUB_CMD_RES_ATTR)
             self.logger.exception(exp)
-
 
     def _subscribe_cmd_res_attribute_events(self, attributes):
         """Method to subscribe the commandResult attributes"""
