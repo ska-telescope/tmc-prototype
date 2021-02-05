@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""tmcprototype"""
-version="0.3.7"
+version="0.3.8"
 version_info=version.split(".")
 description="""TMC Prototype"""
 author="Team NCRA"
@@ -10,9 +10,9 @@ license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
 
-release=0.3.7
-tag=0.3.7
-tag_description= Update AssignResources command to support SP-1393
-release_notes=This release Contains:<br/><ul><li>SP-1123: Updated AssignResources command on tmc-mid devices to support SP-1393.</li></ul><br/>
-gitlab_username=DigvijayMali92
-private_token=bxxjs_mEhPh2r_57nynh
+release=0.3.8
+tag=0.3.8
+tag_description= Update tmc-low devices to support SP-1461
+release_notes=This release contains:<br/><ul><li>Updated AssignResources, ReleaseResources, Configure and Scan commands on tmc-low devices to support SP-1461.</li></ul><li>Implemented Abort and ObsReset functionality on tmc-low devices to support SP-1461.</li></ul><br/>
+gitlab_username=JayantKumbhar
+private_token=VKrB7zCeWE-L7362H_FG
