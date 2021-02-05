@@ -9,10 +9,10 @@ from tango import DevState, DevFailed
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 
-# from ska.base.control_model import HealthState
+from tmc.common.tango_client import TangoClient
+
 from . import const
 from .device_data import DeviceData
-from tmc.common.tango_client import TangoClient
 
 
 class StandByTelescope(SKABaseDevice.OffCommand):

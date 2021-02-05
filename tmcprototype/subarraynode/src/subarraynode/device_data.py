@@ -10,12 +10,15 @@
 """ Device Data
 This module defines the Device Data class, which represents the functional Subarray device.
 """
+# Standard Python imports
 import logging
 
+# Tango imports
 from tango import DevFailed
 
 # Additional import
 from tmc.common.tango_group_client import TangoGroupClient
+
 from . import const
 from subarraynode.scan_timer_handler import ScanTimerHandler
 

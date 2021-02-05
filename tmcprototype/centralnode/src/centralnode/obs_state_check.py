@@ -2,8 +2,10 @@
 ObsStateCheck class for CentralNode.
 """
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
+# Standard Python imports
 import logging
 
+#Tango imports
 import tango
 
 # Additional import

@@ -2,8 +2,10 @@
 StartUpTelescope class for CentralNode.
 """
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
+# Standard Python imports
 import time
 
+#Tango imports
 import tango
 from tango import DevState, DevFailed
 

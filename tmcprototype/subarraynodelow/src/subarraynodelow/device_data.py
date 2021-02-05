@@ -11,6 +11,7 @@ This module defines the DeviceData class, which represents of the functional TMC
 """
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 from ska.base.control_model import HealthState
+
 from subarraynodelow.scan_timer_handler import ScanTimerHandler
 
 # PROTECTED REGION END #    //  CentralNode.additional_import

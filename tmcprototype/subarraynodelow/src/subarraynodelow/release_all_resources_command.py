@@ -4,6 +4,7 @@ ReleaseAllResourcesCommand for SubarrayNodeLow
 # Additional import
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+
 from . import const
 from subarraynodelow.device_data import DeviceData
 

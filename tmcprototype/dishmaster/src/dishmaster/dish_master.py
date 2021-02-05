@@ -1,6 +1,11 @@
 #!/usr/bin/env python
+# Standard python import
 import sys
+
+# Tango import
 from tango.server import run
+
+# Additional import
 from dishmaster.utils import get_tango_server_class
 
 

@@ -2,7 +2,9 @@
 ReceptorReassignmentChecker class for CentralNode.
 """
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
+# Standard Python imports
 import logging
+
 from . import const
 from centralnode.exceptions import ResourceReassignmentError
 from centralnode.device_data import DeviceData

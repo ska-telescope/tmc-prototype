@@ -8,10 +8,12 @@ import tango
 from tango import DevFailed
 
 # Additional import
-from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+
 from tmc.common.tango_client import TangoClient
+
+from . import const
 from subarraynode.device_data import DeviceData
 
 

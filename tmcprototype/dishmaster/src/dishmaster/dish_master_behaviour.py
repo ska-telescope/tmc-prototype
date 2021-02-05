@@ -2,14 +2,17 @@
 """
 override class with command handlers for dsh-lmc.
 """
+# Standard python imports
 import time
 import enum
 import logging
 
 from collections import namedtuple
 
+# Tango import
 from tango import DevState, Except, ErrSeverity
 
+# Additional import
 from ska.logging import configure_logging
 
 configure_logging()

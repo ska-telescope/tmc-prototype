@@ -1,3 +1,4 @@
+# Standard Python imports
 import datetime
 import importlib.resources
 import threading
@@ -7,9 +8,13 @@ import logging
 import pytz
 import numpy as np
 import katpoint
-from cspsubarrayleafnode.device_data import DeviceData
+
+# Additional import
 from ska.base.control_model import ObsState
+
 from tmc.common.tango_client import TangoClient
+
+from cspsubarrayleafnode.device_data import DeviceData
 
 
 class DelayManager:

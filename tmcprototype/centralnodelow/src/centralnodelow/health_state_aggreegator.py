@@ -1,18 +1,21 @@
 """
 StartUpTelescope class for CentralNodelow.
 """
-# Tango imports
+# Standard Python imports
 import logging
+
+# Tango imports
 import tango
 from tango import DevFailed
 
 # Additional import
 from ska.base.control_model import HealthState
-from . import const
-from .device_data import DeviceData
+
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
+from . import const
+from .device_data import DeviceData
 
 class HealthStateAggreegator:
     """

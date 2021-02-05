@@ -7,7 +7,9 @@ from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
+
 from tmc.common.tango_client import TangoClient
+
 from . import const
 from .exceptions import InvalidObsStateError
 from .transaction_id import identify_with_id

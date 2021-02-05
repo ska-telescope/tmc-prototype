@@ -12,8 +12,9 @@ import tango
 from tango import DevState
 
 # Additional import
-from . import const
 from ska.base.commands import ResultCode, ResponseCommand
+
+from . import const
 from .device_data import DeviceData
 
 

@@ -1,7 +1,12 @@
+# Standard python import
 import logging
+
+# Additional import
 from ska.base.control_model import ObsState
+
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
+
 from . import const
 from .const import PointingState
 from .device_data import DeviceData

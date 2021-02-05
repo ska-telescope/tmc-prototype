@@ -9,8 +9,8 @@ from tango import DevState, DevFailed
 # Additional import
 from ska.base.commands import BaseCommand
 
-# from ska.base.control_model import ObsState
 from tmc.common.tango_client import TangoClient
+
 from . import const
 
 

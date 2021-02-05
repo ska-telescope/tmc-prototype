@@ -5,8 +5,10 @@ import tango
 from tango import DevState, DevFailed
 
 # Additional import
-from tmc.common.tango_client import TangoClient
 from ska.base.commands import BaseCommand
+
+from tmc.common.tango_client import TangoClient
+
 import katpoint
 from .transaction_id import identify_with_id
 from . import const

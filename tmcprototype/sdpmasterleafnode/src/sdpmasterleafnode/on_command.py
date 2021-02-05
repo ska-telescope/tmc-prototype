@@ -3,9 +3,11 @@ import tango
 from tango import DevFailed
 
 # Additional import
-from tmc.common.tango_client import TangoClient
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
+
+from tmc.common.tango_client import TangoClient
+
 from . import const
 
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additional_import

@@ -12,12 +12,14 @@ import json
 from json import JSONDecodeError
 import logging
 
+from marshmallow import ValidationError
+
 # SKA specific imports
-from centralnode.exceptions import ResourceNotPresentError
-from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
 from ska.cdm.schemas import CODEC
 from ska.cdm.messages.central_node.assign_resources import AssignResourcesRequest
-from marshmallow import ValidationError
+
+from centralnode.exceptions import ResourceNotPresentError
+from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
 
 module_logger = logging.getLogger(__name__)
 
@@ -110,7 +112,9 @@ class AssignResourceValidator:
             assign_request = CODEC.loads(AssignResourcesRequest, input_string)
         except (ValidationError, JSONDecodeError) as json_error:
             self.logger.exception("Exception: %s", str(json_error))
-            exception_message = f"Malformed input string. Please check the JSON format. Full exception info:{son_error}"
+            exception_message = "Malformed input string. Please check the JSON format." + \
+                "Full exception info: " + \
+                str(json_error)
             raise InvalidJSONError(exception_message)
 
         ## Validate subarray ID
@@ -118,7 +122,7 @@ class AssignResourceValidator:
         # JSON string.
         assign_request = json.loads(input_string)
         if not self._subarray_exists(assign_request["subarrayID"]):
-            exception_message = f"The Subarray {assign_request["subarrayID"]} does not exist."
+            exception_message = "The Subarray '" + str(assign_request["subarrayID"]) + "' does not exist."
             raise SubarrayNotPresentError(exception_message)
         self.logger.debug("SubarrayID validation successful.")
 
@@ -134,7 +138,7 @@ class AssignResourceValidator:
             assign_request["dish"]["receptorIDList"]
         )
         if non_existing_receptors:
-            exception_message = f"The following Receptor id(s) do not exist:{non_existing_receptors}"
+            exception_message = "The following Receptor id(s) do not exist: " + str(non_existing_receptors)            
             raise ResourceNotPresentError(exception_message)
         self.logger.debug("receptor_id_list validation successful.")
 

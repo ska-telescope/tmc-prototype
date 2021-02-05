@@ -1,7 +1,11 @@
-from . import const
-from tmc.common.tango_client import TangoClient
-from .device_data import DeviceData
+# Standard Python imports
 import logging
+
+# Additional imports
+from tmc.common.tango_client import TangoClient
+
+from . import const
+from .device_data import DeviceData
 
 
 class ReceiveAddressesUpdater:

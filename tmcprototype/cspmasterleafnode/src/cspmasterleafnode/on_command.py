@@ -1,7 +1,11 @@
+# Tango import
 import tango
 from tango import DevFailed
-from ska.base import SKABaseDevice
+
+# Additional import
+ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
+
 from tmc.common.tango_client import TangoClient
 from . import const
 from .attribute_callbacks import (

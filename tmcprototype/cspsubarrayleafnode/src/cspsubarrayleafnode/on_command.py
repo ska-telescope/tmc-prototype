@@ -6,9 +6,11 @@ On class for CspSubarrayLeafNode.
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
+
+from tmc.common.tango_server_helper import TangoServerHelper
+
 from . import const
 from .delay_model import DelayManager
-from tmc.common.tango_server_helper import TangoServerHelper
 
 
 class On(SKABaseDevice.OnCommand):

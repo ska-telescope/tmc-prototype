@@ -12,8 +12,7 @@ CSP Master Leaf node monitors the CSP Master and issues control actions during a
 # See LICENSE.txt for more info.
 
 # PROTECTED REGION ID(CspMasterLeafNode.import) ENABLED START #
-# Third party imports
-# PyTango imports
+# Tango imports
 import tango
 from tango import ApiUtil, DebugIt, AttrWriteType
 from tango.server import run, command, device_property, attribute
@@ -22,6 +21,7 @@ from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, SimulationMode, TestMode
+
 from . import const, release
 from .on_command import On
 from .off_command import Off

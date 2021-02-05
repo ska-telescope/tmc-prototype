@@ -10,13 +10,15 @@ import tango
 from tango import DevFailed
 
 # Additional import
-from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 from ska_telmodel.csp import interface
-from .transaction_id import identify_with_id, inject_with_id
+
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
+
+from .transaction_id import identify_with_id, inject_with_id
+from . import const
 from subarraynode.device_data import DeviceData
 
 csp_interface_version = 0

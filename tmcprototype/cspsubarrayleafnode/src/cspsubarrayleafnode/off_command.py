@@ -6,6 +6,7 @@ Off class for CspSubarrayLeafNode.
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
+
 from . import const
 from .delay_model import DelayManager
 

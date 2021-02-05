@@ -11,12 +11,15 @@
 """
 EndScan class for DishLeafNode.
 """
-
+# Tango imports
 import tango
 from tango import DevFailed, DevState
 
+# Additional import
 from ska.base.commands import BaseCommand
+
 from tmc.common.tango_client import TangoClient
+
 from .command_callback import CommandCallBack
 
 

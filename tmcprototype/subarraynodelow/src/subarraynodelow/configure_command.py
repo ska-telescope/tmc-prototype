@@ -13,9 +13,11 @@ from tango import DevFailed
 # Additional import
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+
+from tmc.common.tango_client import TangoClient
+
 from . import const
 from subarraynodelow.device_data import DeviceData
-from tmc.common.tango_client import TangoClient
 
 
 class Configure(SKASubarray.ConfigureCommand):

@@ -21,6 +21,7 @@ from tango.server import run, attribute, command, device_property
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState
+
 from . import const, release
 from .device_data import DeviceData
 from .startup_telescope_command import StartUpTelescope

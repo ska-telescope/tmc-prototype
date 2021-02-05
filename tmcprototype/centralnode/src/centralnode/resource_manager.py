@@ -1,7 +1,9 @@
 """
 ResourceManager class for CentralNode.
 """
+# Standard Python imports
 import logging
+
 from centralnode.device_data import DeviceData
 
 
