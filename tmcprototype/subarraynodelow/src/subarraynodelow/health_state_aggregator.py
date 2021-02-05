@@ -20,7 +20,6 @@ class HealthStateAggregator:
         self.this_server = TangoServerHelper.get_instance()
         self.device_data = DeviceData.get_instance()
         self.mccs_client = TangoClient(self.device_data.mccs_subarray_ln_fqdn)
-        self.subarray_ln_health_state_map[self.mccs_client.get_device_fqdn()] = (HealthState.UNKNOWN)
 
 
     def subscribe(self):
