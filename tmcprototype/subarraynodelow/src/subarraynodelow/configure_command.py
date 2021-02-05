@@ -49,14 +49,14 @@ class Configure(SKASubarray.ConfigureCommand):
         device_data.is_scan_completed = False
         device_data.is_release_resources = False
         self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA_LOW)
-        log_msg = const.STR_CONFIGURE_IP_ARG + str(argin)
+        log_msg = f"{const.STR_CONFIGURE_IP_ARG}{argin}"
         self.logger.info(log_msg)
         # device.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA_LOW)
         device_data.activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA_LOW
         try:
             scan_configuration = json.loads(argin)
         except json.JSONDecodeError as jerror:
-            log_message = const.ERR_INVALID_JSON + str(jerror)
+            log_message = f"{const.ERR_INVALID_JSON}{jerror}"
             self.logger.error(log_message)
             device_data.activity_message = log_message
             tango.Except.throw_exception(
