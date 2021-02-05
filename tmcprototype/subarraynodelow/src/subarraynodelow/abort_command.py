@@ -48,7 +48,7 @@ class Abort(SKASubarray.AbortCommand):
                 return (ResultCode.STARTED, const.STR_ABORT_SUCCESS)
 
         except DevFailed as dev_failed:
-            log_msg = f"{const.ERR_ABORT_INVOKING_CMD}{dev_failed)}"
+            log_msg = f"{const.ERR_ABORT_INVOKING_CMD}{dev_failed}"
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.ERR_ABORT_INVOKING_CMD,

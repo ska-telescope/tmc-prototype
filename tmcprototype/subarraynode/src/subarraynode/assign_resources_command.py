@@ -229,7 +229,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
 
             except (TypeError) as except_occurred:
                 allocation_failure.append(str_leafId)
-                log_msg = const.ERR_ADDING_LEAFNODE + str(except_occurred)
+                log_msg = f"{const.ERR_ADDING_LEAFNODE}{except_occurred}"
                 self.logger.exception(except_occurred)
                 tango.Except.throw_exception(
                     const.ERR_ADDING_LEAFNODE,

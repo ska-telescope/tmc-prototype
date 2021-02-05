@@ -60,7 +60,7 @@ class On(SKASubarray.OnCommand):
         set up csp devices
         """
         # Create proxy for CSP Subarray Leaf Node
-        log_msg = const.STR_SA_PROXY_INIT + str(device_data.csp_subarray_ln_fqdn)
+        log_msg = f"{const.STR_SA_PROXY_INIT}{device_data.csp_subarray_ln_fqdn}"
         csp_subarray_ln_client = TangoClient(device_data.csp_subarray_ln_fqdn)
         self.logger.info(log_msg)
         self.turn_on_leaf_node(csp_subarray_ln_client)
@@ -70,7 +70,7 @@ class On(SKASubarray.OnCommand):
         set up sdp devices
         """
         # Create proxy for SDP Subarray Leaf Node
-        log_msg = const.STR_SA_PROXY_INIT + str(device_data.sdp_subarray_ln_fqdn)
+        log_msg = f"{const.STR_SA_PROXY_INIT}{device_data.sdp_subarray_ln_fqdn}"
         sdp_subarray_ln_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
         self.logger.info(log_msg)
         self.turn_on_leaf_node(sdp_subarray_ln_client)
