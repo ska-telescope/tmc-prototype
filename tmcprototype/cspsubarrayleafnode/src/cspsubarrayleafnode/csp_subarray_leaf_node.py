@@ -134,9 +134,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device._versioninfo = " "
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
-            device._read_activity_message = const.STR_SETTING_CB_MODEL + str(
-                ApiUtil.instance().get_asynch_cb_sub_model()
-            )
+            device._read_activity_message = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
 
             device.set_status(const.STR_CSPSALN_INIT_SUCCESS)
             device._csp_subarray_health_state = HealthState.OK

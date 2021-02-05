@@ -63,9 +63,7 @@ class CbfHealthStateAttributeUpdator:
             self.logger.debug(log_message)
             self.device_data._csp_cbf_health_state_log = log_message
         else:
-            self.device_data._csp_cbf_health_state_log = (
-                const.ERR_ON_SUBS_CSP_CBF_HEALTH + str(evt.errors)
-            )
+            self.device_data._csp_cbf_health_state_log = f"{const.ERR_ON_SUBS_CSP_CBF_HEALTH}{evt.errors}"
             self.logger.error(const.ERR_ON_SUBS_CSP_CBF_HEALTH)
 
 
@@ -124,9 +122,7 @@ class PssHealthStateAttributeUpdator:
                 self.device_data._csp_pss_health_state_log = log_message
 
         else:
-            self.device_data._csp_pss_health_state_log = (
-                const.ERR_ON_SUBS_CSP_PSS_HEALTH + str(evt.errors)
-            )
+            self.device_data._csp_pss_health_state_log = f"{const.ERR_ON_SUBS_CSP_PSS_HEALTH}{evt.errors}"
             self.logger.error(const.ERR_ON_SUBS_CSP_PSS_HEALTH)
 
 
@@ -171,7 +167,7 @@ class PstHealthStateAttributeUpdator:
         :return: None
 
         """
-        log_msg = "CspPstHealthState Attribute change event is : " + str(evt)
+        log_msg = f"CspPstHealthState Attribute change event is : {evt}"
         self.logger.debug(log_msg)
         if not evt.err:
             self._csp_pst_health = evt.attr_value.value
@@ -185,7 +181,5 @@ class PstHealthStateAttributeUpdator:
                 self.device_data._csp_pst_health_state_log = log_message
 
         else:
-            self.device_data._csp_pst_health_state_log = (
-                const.ERR_ON_SUBS_CSP_PST_HEALTH + str(evt.errors)
-            )
+            self.device_data._csp_pst_health_state_log = f"{const.ERR_ON_SUBS_CSP_PST_HEALTH}{evt.errors}"
             self.logger.error(const.ERR_ON_SUBS_CSP_PST_HEALTH)

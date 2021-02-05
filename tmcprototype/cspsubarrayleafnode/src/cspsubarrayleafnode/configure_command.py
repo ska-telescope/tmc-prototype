@@ -77,13 +77,11 @@ class ConfigureCommand(BaseCommand):
         device_data = self.target
         # Update logs and activity message attribute with received event
         if event.err:
-            log_msg = (
-                const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-            )
+            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
             device_data._read_activity_message = log_msg
         else:
-            log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+            log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
             device_data._read_activity_message = log_msg
 
@@ -127,7 +125,7 @@ class ConfigureCommand(BaseCommand):
 
             # Create target object
             device_data.target = katpoint.Target(
-                "radec , " + str(target_Ra) + ", " + str(target_Dec)
+                f"radec , {target_Ra} , {target_Dec}"
             )
             csp_configuration = argin_json.copy()
             # Keep configuration specific to CSP and delete pointing configuration
@@ -147,7 +145,7 @@ class ConfigureCommand(BaseCommand):
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
 
         except ValueError as value_error:
-            log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
+            log_msg = f"{const.ERR_INVALID_JSON_CONFIG}{value_error}"
             device_data._read_activity_message = log_msg
             self.logger.exception(value_error)
             tango.Except.throw_exception(
@@ -158,7 +156,7 @@ class ConfigureCommand(BaseCommand):
             )
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_CONFIGURE_INVOKING_CMD + str(dev_failed)
+            log_msg = f"{const.ERR_CONFIGURE_INVOKING_CMD}{dev_failed}"
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(

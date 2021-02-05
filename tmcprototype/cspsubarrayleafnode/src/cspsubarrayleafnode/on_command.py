@@ -40,9 +40,7 @@ class On(SKABaseDevice.OnCommand):
         """
         device_data = self.target
         if event.err:
-            log = (
-                const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-            )
+            log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             device_data._read_activity_message = log
             self.logger.error(log)
         else:
