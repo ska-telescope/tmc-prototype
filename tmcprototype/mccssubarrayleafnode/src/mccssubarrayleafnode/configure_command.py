@@ -72,13 +72,11 @@ class Configure(BaseCommand):
         device_data = self.target
         # Update logs and activity message attribute with received event
         if event.err:
-            log_msg = (
-                const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
-            )
+            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
             device_data._read_activity_message = log_msg
         else:
-            log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+            log_msg = f"{const.STR_COMMAND} {event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
             device_data._read_activity_message = log_msg
 
@@ -138,7 +136,7 @@ class Configure(BaseCommand):
         #                                  tango.ErrSeverity.ERR)
 
         except ValueError as value_error:
-            log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
+            log_msg = f"{const.ERR_INVALID_JSON_CONFIG}{value_error}"
             device_data._read_activity_message = log_msg
             self.logger.exception(value_error)
             tango.Except.throw_exception(
@@ -149,10 +147,8 @@ class Configure(BaseCommand):
             )
 
         except KeyError as key_error:
-            log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            device_data._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(
-                key_error
-            )
+            log_msg = f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}"
+            device_data._read_activity_message = f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}"
             self.logger.exception(key_error)
             tango.Except.throw_exception(
                 const.ERR_CONFIGURE_INVOKING_CMD,
@@ -162,7 +158,7 @@ class Configure(BaseCommand):
             )
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_CONFIGURE_INVOKING_CMD + str(dev_failed)
+            log_msg = f"{const.ERR_CONFIGURE_INVOKING_CMD}{dev_failed}"
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
@@ -215,7 +211,7 @@ class Configure(BaseCommand):
     def get_station_ids(self, configuration_string):
         station_ids = []
         for station in configuration_string["stations"]:
-            log_msg = "Station is: " + str(station)
+            log_msg = f"Station is: {station}" 
             self.logger.info(log_msg)
             station_ids.append(station["station_id"])
         return station_ids
