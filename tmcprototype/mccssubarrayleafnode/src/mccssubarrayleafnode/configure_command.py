@@ -76,7 +76,7 @@ class Configure(BaseCommand):
             self.logger.error(log_msg)
             device_data._read_activity_message = log_msg
         else:
-            log_msg = f"{const.STR_COMMAND} {event.cmd_name}{const.STR_INVOKE_SUCCESS}"
+            log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
             device_data._read_activity_message = log_msg
 
