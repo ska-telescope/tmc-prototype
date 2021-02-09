@@ -35,7 +35,7 @@ tmcprototype:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: tmcprototype
-    tag: 0.2.16
+    tag: 0.3.8
     pullPolicy: IfNotPresent
 
 resources:
