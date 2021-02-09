@@ -20,8 +20,8 @@ dependencies:
   version: 1.0.11
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: tmc-low
-  version: 0.1.7
-  repository: file://../tmc-low
+  version: 0.1.6
+  repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: ska-low-mccs
   version: 0.3.0
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
