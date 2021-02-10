@@ -12,7 +12,7 @@ copyright=""""""
 
 release=0.3.9
 tag=0.3.9
-tag_description= Update tmc-low devices to support SP-1461
-release_notes=This release contains:<br/><ul><li>Updated AssignResources, ReleaseResources, Configure and Scan commands on tmc-low devices to support SP-1461.</li></ul><li>Implemented Abort and ObsReset functionality on tmc-low devices to support SP-1461.</li></ul><br/>
-gitlab_username=JayantKumbhar
-private_token=VKrB7zCeWE-L7362H_FG
+tag_description= Update TMC devices to resolve SP-1420 review comments received from KAROO team
+release_notes=This release contains:<br/><ul><li>Resolved SP-1420 review comments received from KAROO team.</li></ul><br/>
+gitlab_username=apurvapatkar
+private_token=Fv_XjxT3LV9jRyqM3XwG
