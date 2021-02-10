@@ -87,9 +87,6 @@ class SdpMasterLeafNode(SKABaseDevice):
             The message is for information purpose only.
 
             :rtype: (ReturnCode, str)
-
-            :raises:
-
             """
 
             super().do()
