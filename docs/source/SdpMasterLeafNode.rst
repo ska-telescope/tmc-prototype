@@ -5,22 +5,18 @@
 
 SDP Master Leaf Node
 ================================================
-
-.. automodule:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.sdp_master_leaf_node
-   :members:
-   :undoc-members:
-.. automodule:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.disable_command
-   :members:
-   :undoc-members:
-.. automodule:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.off_command
-   :members:
-   :undoc-members:
-.. automodule:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.on_command
-   :members:
-   :undoc-members:
-.. automodule:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.on_command
-   :members:
-   :undoc-members:
-.. automodule:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.standby_command
-   :members:
-   :undoc-members:
+.. autoclass:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.sdp_master_leaf_node.SdpMasterLeafNode
+    :members: read_versionInfo, read_activityMessage, write_activityMessage, read_ProcessingBlockList, is_Disable_allowed, init_command_objects
+    :undoc-members:
+.. autoclass:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.off_command.Off
+    :members: do, off_cmd_ended_cb, check_allowed
+    :undoc-members:
+.. autoclass:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.disable_command.Disable
+    :members: do, disable_cmd_ended_cb, check_allowed
+    :undoc-members:
+.. autoclass:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.on_command.On
+    :members: do, on_cmd_ended_cb, check_allowed
+    :undoc-members:
+.. autoclass:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.standby_command.Standby
+    :members: do, standby_cmd_ended_cb, check_allowed
+    :undoc-members: 
