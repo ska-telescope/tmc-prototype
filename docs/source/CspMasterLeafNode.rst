@@ -10,11 +10,11 @@ CSP Master Leaf Node
     :members: read_activityMessage, write_activityMessage, is_Standby_allowed, init_command_objects
     :undoc-members:
 .. autoclass:: tmcprototype.cspmasterleafnode.src.cspmasterleafnode.off_command.Off
-   :members: do
-   :undoc-members:
+    :members: do
+    :undoc-members:
 .. autoclass:: tmcprototype.cspmasterleafnode.src.cspmasterleafnode.on_command.On
-   :members: do, on_cmd_ended_cb
-   :undoc-members:
+    :members: do, on_cmd_ended_cb
+    :undoc-members:
 .. autoclass:: tmcprototype.cspmasterleafnode.src.cspmasterleafnode.standby_command.Standby
-   :members: do, standby_cmd_ended_cb, check_allowed
-   :undoc-members:
+    :members: do, standby_cmd_ended_cb, check_allowed
+    :undoc-members:
