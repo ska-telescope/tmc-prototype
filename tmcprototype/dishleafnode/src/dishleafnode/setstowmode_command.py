@@ -10,12 +10,15 @@
 """
 SetStowMode class for DishLeafNode.
 """
-
+# Tango import
 import tango
 from tango import DevFailed
 
-from ska.base.commands import  BaseCommand
+# Additional import
+from ska.base.commands import BaseCommand
+
 from tmc.common.tango_client import TangoClient
+
 from .command_callback import CommandCallBack
 
 
@@ -43,7 +46,9 @@ class SetStowMode(BaseCommand):
             self.logger.info("'%s' command executed successfully.", command_name)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
-            log_message = f"Exception occured while executing the '{command_name}' command."
+            log_message = (
+                f"Exception occured while executing the '{command_name}' command."
+            )
             device_data._read_activity_message = log_message
             tango.Except.re_throw_exception(
                 dev_failed,
@@ -52,4 +57,3 @@ class SetStowMode(BaseCommand):
                 "SetStowMode.do()",
                 tango.ErrSeverity.ERR,
             )
-

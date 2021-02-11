@@ -8,16 +8,20 @@ import tango
 from tango import DevFailed
 
 # Additional import
-from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+
 from tmc.common.tango_client import TangoClient
+
+from . import const
 from subarraynode.device_data import DeviceData
+
 
 class Off(SKASubarray.OffCommand):
     """
     A class for the SubarrayNodes's Off() command.
     """
+
     def do(self):
         """
         This command invokes Off Command on CSPSubarray and SDPSubarray through respective leaf nodes. This comamnd
@@ -31,16 +35,16 @@ class Off(SKASubarray.OffCommand):
         :raises: DevFailed if the command execution is not successful
         """
         device_data = DeviceData.get_instance()
-        device_data.is_restart_command = False
-        device_data.is_release_resources = False
-        device_data.is_abort_command = False
-        device_data.is_obsreset_command = False
+        device_data.is_restart_command_executed = False
+        device_data.is_release_resources_command_executed = False
+        device_data.is_abort_command_executed = False
+        device_data.is_obsreset_command_executed = False
         try:
             csp_subarray_proxy = TangoClient(device_data.csp_subarray_ln_fqdn)
             csp_subarray_proxy.send_command("Off")
             sdp_subarray_proxy = TangoClient(device_data.sdp_subarray_ln_fqdn)
             sdp_subarray_proxy.send_command("Off")
-            
+
             message = "Off command completed OK"
             self.logger.info(message)
 
@@ -51,8 +55,12 @@ class Off(SKASubarray.OffCommand):
             return (ResultCode.OK, message)
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_INVOKING_OFF_CMD + str(dev_failed)
+            log_msg = f"{const.ERR_INVOKING_OFF_CMD}{dev_failed}"
             self.logger.error(log_msg)
             device_data._read_activity_message = log_msg
-            tango.Except.throw_exception(dev_failed[0].desc, "Failed to invoke Off command on SubarrayNode.",
-                                         "SubarrayNode.Off()", tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                dev_failed[0].desc,
+                "Failed to invoke Off command on SubarrayNode.",
+                "SubarrayNode.Off()",
+                tango.ErrSeverity.ERR,
+            )

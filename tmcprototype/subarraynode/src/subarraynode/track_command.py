@@ -12,8 +12,9 @@ import tango
 from tango import DevState
 
 # Additional import
-from . import const
 from ska.base.commands import ResultCode, ResponseCommand
+
+from . import const
 from .device_data import DeviceData
 
 
@@ -32,15 +33,21 @@ class Track(ResponseCommand):
 
         :raises: DevFailed if this command is not allowed to be run in current device state
         """
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-            tango.Except.throw_exception("Command Track is not allowed in current state.",
-                                         "Failed to invoke Track command on DishLeafNode.",
-                                         "SubarrayNode.Track()",
-                                         tango.ErrSeverity.ERR)
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
+            tango.Except.throw_exception(
+                "Command Track is not allowed in current state.",
+                "Failed to invoke Track command on DishLeafNode.",
+                "SubarrayNode.Track()",
+                tango.ErrSeverity.ERR,
+            )
         return True
 
     def do(self, argin):
-        """ Invokes Track command on the Dishes assigned to the Subarray.
+        """Invokes Track command on the Dishes assigned to the Subarray.
 
         :param argin: DevString
 
@@ -58,23 +65,29 @@ class Track(ResponseCommand):
         device_data = DeviceData.get_instance()
         log_msg = "Track:", argin
         self.logger.debug(log_msg)
-        device_data.is_restart_command = False
-        device_data.is_release_resources = False
-        device_data.is_abort_command = False
-        device_data.is_obsreset_command = False
+        device_data.is_restart_command_executed = False
+        device_data.is_release_resources_command_executed = False
+        device_data.is_abort_command_executed = False
+        device_data.is_obsreset_command_executed = False
         try:
-            device_data._read_activity_message = const.STR_TRACK_IP_ARG + argin
+            device_data._read_activity_message = f"{const.STR_TRACK_IP_ARG}{argin}"
             cmd_input = [argin]
             cmdData = tango.DeviceData()
             cmdData.insert(tango.DevVarStringArray, cmd_input)
-            device_data._dish_leaf_node_group_client.send_command(const.CMD_TRACK, cmdData)
-            device_data._scan_id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
+            device_data._dish_leaf_node_group_client.send_command(
+                const.CMD_TRACK, cmdData
+            )
+            device_data._scan_id = "".join(
+                random.choice(string.ascii_uppercase + string.digits) for _ in range(4)
+            )
             self.logger.info(const.STR_TRACK_CMD_INVOKED_SA)
             return (ResultCode.OK, const.STR_TRACK_CMD_INVOKED_SA)
         except tango.DevFailed as devfailed:
-            log_msg = const.ERR_TRACK_CMD + str(devfailed)
+            log_msg = f"{const.ERR_TRACK_CMD}{devfailed}"
             self.logger.exception(devfailed)
-            tango.Except.throw_exception(const.STR_CMD_FAILED,
-                                         log_msg,
-                                         "SubarrayNode.Track()",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_CMD_FAILED,
+                log_msg,
+                "SubarrayNode.Track()",
+                tango.ErrSeverity.ERR,
+            )

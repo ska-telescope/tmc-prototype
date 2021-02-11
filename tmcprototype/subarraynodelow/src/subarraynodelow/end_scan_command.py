@@ -10,7 +10,9 @@ from tango import DevFailed
 # Additional import
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+
 from tmc.common.tango_client import TangoClient
+
 from . import const
 
 
@@ -18,6 +20,7 @@ class EndScan(SKASubarray.EndScanCommand):
     """
     A class for SubarrayNodeLow's EndScan() command.
     """
+
     def do(self):
         """
         Ends the scan. It is invoked on subarrayLow after completion of the scan duration. It can
@@ -35,7 +38,7 @@ class EndScan(SKASubarray.EndScanCommand):
         device_data.is_release_resources = False
         try:
             if device_data.scan_timer_handler.is_scan_running():
-                device_data.scan_timer_handler.stop_scan_timer() # stop timer when EndScan command is called
+                device_data.scan_timer_handler.stop_scan_timer()  # stop timer when EndScan command is called
             device_data.isScanRunning = False
             device_data.is_scan_completed = True
             mccs_subarray_ln_client = TangoClient(device_data.mccs_subarray_ln_fqdn)
@@ -49,9 +52,11 @@ class EndScan(SKASubarray.EndScanCommand):
             return (ResultCode.OK, const.STR_END_SCAN_SUCCESS)
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_END_SCAN_CMD_ON_MCCS + str(dev_failed)
+            log_msg = f"{const.ERR_END_SCAN_CMD_ON_MCCS}{dev_failed}"
             self.logger.exception(dev_failed)
-            tango.Except.throw_exception(const.STR_END_SCAN_EXEC,
-                                         log_msg,
-                                         "SubarrayNode.EndScanCommand",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_END_SCAN_EXEC,
+                log_msg,
+                "SubarrayNode.EndScanCommand",
+                tango.ErrSeverity.ERR,
+            )

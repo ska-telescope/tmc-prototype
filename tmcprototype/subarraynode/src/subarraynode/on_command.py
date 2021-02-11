@@ -8,10 +8,12 @@ import tango
 from tango import DevFailed
 
 # Additional import
-from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+
 from tmc.common.tango_client import TangoClient
+
+from . import const
 from subarraynode.health_state_aggregator import HealthStateAggregator
 from subarraynode.obs_state_aggregator import ObsStateAggregator
 from subarraynode.receive_addresses import ReceiveAddressesUpdater
@@ -35,15 +37,15 @@ class On(SKASubarray.OnCommand):
         :raises: DevFailed if the command execution is not successful
         """
         device_data = self.target
-        device_data.is_restart_command = False
-        device_data.is_release_resources = False
-        device_data.is_abort_command = False
-        device_data.is_obsreset_command = False
+        device_data.is_restart_command_executed = False
+        device_data.is_release_resources_command_executed = False
+        device_data.is_abort_command_executed = False
+        device_data.is_obsreset_command_executed = False
         device_data.health_state_aggr = HealthStateAggregator(self.logger)
         device_data.obs_state_aggr = ObsStateAggregator(self.logger)
         device_data.health_state_aggr.subscribe()
         device_data.obs_state_aggr.subscribe()
-        # subscribe to receiveAddressesMap from SDP 
+        # subscribe to receiveAddressesMap from SDP
         device_data.receive_addresses = ReceiveAddressesUpdater(self.logger)
         device_data.receive_addresses.subscribe()
         self.set_csp_client(device_data)
@@ -58,7 +60,7 @@ class On(SKASubarray.OnCommand):
         set up csp devices
         """
         # Create proxy for CSP Subarray Leaf Node
-        log_msg = const.STR_SA_PROXY_INIT  + str(device_data.csp_subarray_ln_fqdn)
+        log_msg = f"{const.STR_SA_PROXY_INIT}{device_data.csp_subarray_ln_fqdn}"
         csp_subarray_ln_client = TangoClient(device_data.csp_subarray_ln_fqdn)
         self.logger.info(log_msg)
         self.turn_on_leaf_node(csp_subarray_ln_client)
@@ -68,7 +70,7 @@ class On(SKASubarray.OnCommand):
         set up sdp devices
         """
         # Create proxy for SDP Subarray Leaf Node
-        log_msg = const.STR_SA_PROXY_INIT  + str(device_data.sdp_subarray_ln_fqdn)
+        log_msg = f"{const.STR_SA_PROXY_INIT}{device_data.sdp_subarray_ln_fqdn}"
         sdp_subarray_ln_client = TangoClient(device_data.sdp_subarray_ln_fqdn)
         self.logger.info(log_msg)
         self.turn_on_leaf_node(sdp_subarray_ln_client)
@@ -78,9 +80,12 @@ class On(SKASubarray.OnCommand):
         try:
             tango_client.send_command(const.CMD_ON)
         except DevFailed as dev_failed:
-            log_msg = const.ERR_INVOKING_ON_CMD + str(dev_failed)
+            log_msg = f"{const.ERR_INVOKING_ON_CMD}{dev_failed}"
             self.logger.exception(log_msg)
             self._read_activity_message = log_msg
-            tango.Except.throw_exception(dev_failed[0].desc, const.ERR_INVOKE_ON_CMD_ON_SA,
-                                         "SubarrayNode.On()", tango.ErrSeverity.ERR)
-
+            tango.Except.throw_exception(
+                dev_failed[0].desc,
+                const.ERR_INVOKE_ON_CMD_ON_SA,
+                "SubarrayNode.On()",
+                tango.ErrSeverity.ERR,
+            )

@@ -8,12 +8,14 @@ import tango
 from tango import DevFailed
 
 # Additional import
-from . import const
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+
 from tmc.common.tango_client import TangoClient
-from subarraynode.device_data import DeviceData
 from tmc.common.tango_server_helper import TangoServerHelper
+
+from . import const
+from subarraynode.device_data import DeviceData
 
 
 class Restart(SKASubarray.RestartCommand):
@@ -35,35 +37,41 @@ class Restart(SKASubarray.RestartCommand):
                 DishLeafNode.
         """
         device_data = DeviceData.get_instance()
-        device_data.is_release_resources = False
-        device_data.is_abort_command = False
-        device_data.is_obsreset_command = False
+        device_data.is_release_resources_command_executed = False
+        device_data.is_abort_command_executed = False
+        device_data.is_obsreset_command_executed = False
         try:
             self.logger.info("Restart command invoked on SubarrayNode.")
-            self.restart_leaf_nodes(device_data.csp_subarray_ln_fqdn, const.STR_CMD_RESTART_INV_CSP)
-            self.restart_leaf_nodes(device_data.sdp_subarray_ln_fqdn, const.STR_CMD_RESTART_INV_SDP)
+            self.restart_leaf_nodes(
+                device_data.csp_subarray_ln_fqdn, const.STR_CMD_RESTART_INV_CSP
+            )
+            self.restart_leaf_nodes(
+                device_data.sdp_subarray_ln_fqdn, const.STR_CMD_RESTART_INV_SDP
+            )
             self.restart_dsh_grp(device_data)
-            device_data.clean_up_dict(self.logger)
+            device_data.clean_up(self.logger)
             device_data._read_activity_message = const.STR_RESTART_SUCCESS
             self.logger.info(const.STR_RESTART_SUCCESS)
             tango_server_helper_obj = TangoServerHelper.get_instance()
             tango_server_helper_obj.set_status(const.STR_RESTART_SUCCESS)
-            device_data.is_restart_command = True
+            device_data.is_restart_command_executed = True
             return (ResultCode.STARTED, const.STR_RESTART_SUCCESS)
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_RESTART_INVOKING_CMD + str(dev_failed)
+            log_msg = f"{const.ERR_RESTART_INVOKING_CMD}{dev_failed}"
             self.logger.exception(log_msg)
-            tango.Except.throw_exception(const.STR_RESTART_EXEC,
-                                         log_msg,
-                                         "SubarrayNode.Restart",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_RESTART_EXEC,
+                log_msg,
+                "SubarrayNode.Restart",
+                tango.ErrSeverity.ERR,
+            )
 
     def restart_leaf_nodes(self, leaf_node_fqdn, info_string):
         """
         set up sdp devices
         """
-        #Invoke Restart command on SDP Subarray Leaf Node.
+        # Invoke Restart command on SDP Subarray Leaf Node.
         sdp_client = TangoClient(leaf_node_fqdn)
         sdp_client.send_command(const.CMD_RESTART)
         self.logger.info(info_string)

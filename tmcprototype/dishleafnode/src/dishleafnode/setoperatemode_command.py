@@ -11,11 +11,15 @@
 """
 SetOperateMode class for DishLeafNode.
 """
-
+# Tango import
 import tango
 from tango import DevFailed
-from ska.base.commands import  BaseCommand
+
+# Additional import
+from ska.base.commands import BaseCommand
+
 from tmc.common.tango_client import TangoClient
+
 from .command_callback import CommandCallBack
 from .device_data import DeviceData
 
@@ -38,13 +42,12 @@ class SetOperateMode(BaseCommand):
         device_data = self.target
         cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
 
-
         attributes_to_subscribe_to = (
-                "dishMode",
-                "capturing",
-                "achievedPointing",
-                "desiredPointing",
-            )
+            "dishMode",
+            "capturing",
+            "achievedPointing",
+            "desiredPointing",
+        )
         command_name = "SetOperateMode"
         cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
         try:
@@ -56,7 +59,9 @@ class SetOperateMode(BaseCommand):
 
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
-            log_message = f"Exception occured while executing the '{command_name}' command."
+            log_message = (
+                f"Exception occured while executing the '{command_name}' command."
+            )
             device_data._read_activity_message = log_message
             tango.Except.re_throw_exception(
                 dev_failed,
@@ -69,19 +74,19 @@ class SetOperateMode(BaseCommand):
     def _subscribe_to_attribute_events(self, attributes):
         device_data = DeviceData.get_instance()
         dish_client = TangoClient(device_data._dish_master_fqdn)
-        
+
         device_data.attr_event_map["dish_client"] = dish_client
 
         for attribute_name in attributes:
             try:
-                device_data.attr_event_map[attribute_name] = dish_client.subscribe_attribute(
-                    attribute_name,
-                    self.attribute_event_handler)
+                device_data.attr_event_map[
+                    attribute_name
+                ] = dish_client.subscribe_attribute(
+                    attribute_name, self.attribute_event_handler
+                )
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
-                log_message = (
-                    f"Exception occurred while subscribing to Dish attribute: {attribute_name}"
-                )
+                log_message = f"Exception occurred while subscribing to Dish attribute: {attribute_name}"
                 device_data._read_activity_message = log_message
                 tango.Except.re_throw_exception(
                     dev_failed,
@@ -99,7 +104,9 @@ class SetOperateMode(BaseCommand):
         """
         device_data = DeviceData.get_instance()
         if event_data.err:
-            log_message = f"Event system DevError(s) occured!!! {str(event_data.errors)}"
+            log_message = (
+                f"Event system DevError(s) occured!!! {str(event_data.errors)}"
+            )
             device_data._read_activity_message = log_message
             self.logger.error(log_message)
             return

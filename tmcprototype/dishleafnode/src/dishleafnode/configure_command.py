@@ -10,13 +10,18 @@
 """
 Configure class for DishLeafNode.
 """
-import json
+# Standard Python imports
+import datetime
 
+# Tango imports
 import tango
 from tango import DevState, DevFailed
-import datetime
+
+# Additional import
 from ska.base.commands import BaseCommand
+
 from tmc.common.tango_client import TangoClient
+
 from .az_el_converter import AzElConverter
 from .command_callback import CommandCallBack
 
@@ -65,15 +70,17 @@ class Configure(BaseCommand):
         command_name = "Configure"
 
         try:
-            json_argument = self._load_config_string(argin)
-            ra_value, dec_value = self._get_targets(json_argument)
+            json_argument = device_data._load_config_string(argin)
+            ra_value, dec_value = device_data._get_targets(json_argument)
             device_data.radec_value = f"radec,{ra_value},{dec_value}"
             receiver_band = json_argument["dish"]["receiverBand"]
             self._set_dish_desired_pointing_attribute(device_data.radec_value)
             self._configure_band(receiver_band)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
-            log_message = f"Exception occured while executing the '{command_name}' command."
+            log_message = (
+                f"Exception occured while executing the '{command_name}' command."
+            )
             device_data._read_activity_message = log_message
             tango.Except.re_throw_exception(
                 dev_failed,
@@ -106,7 +113,14 @@ class Configure(BaseCommand):
             dish_client = TangoClient(device_data._dish_master_fqdn)
             azel_converter = AzElConverter(self.logger)
             # pylint: disable=unbalanced-tuple-unpacking
-            device_data.az, device_data.el = azel_converter.convert_radec_to_azel(device_data.radec_value, timestamp, device_data.dish_name, device_data.observer_location["latitude"], device_data.observer_location["latitude"], device_data.observer_location["altitude"])
+            device_data.az, device_data.el = azel_converter.convert_radec_to_azel(
+                device_data.radec_value,
+                timestamp,
+                device_data.dish_name,
+                device_data.observer_location["latitude"],
+                device_data.observer_location["latitude"],
+                device_data.observer_location["altitude"],
+            )
         except ValueError as valuerr:
             tango.Except.throw_exception(
                 str(valuerr),
@@ -119,33 +133,5 @@ class Configure(BaseCommand):
         # track or scan, but provide initial coordinates for interest)
         time_az_el = [now.timestamp(), device_data.az, device_data.el]
         dish_client.set_attribute("desiredPointing", time_az_el)
+
     # pylint: enable= unbalanced-tuple-unpacking
-
-
-    def _get_targets(self, json_argument):
-        try:
-            ra_value = json_argument["pointing"]["target"]["RA"]
-            dec_value = json_argument["pointing"]["target"]["dec"]
-        except KeyError as key_error:
-            tango.Except.throw_exception(
-                str(key_error),
-                "JSON key not found.",
-                "_get_targets",
-                tango.ErrSeverity.ERR,
-            )
-
-        return (ra_value, dec_value)
-
-    def _load_config_string(self, argin):
-        try:
-            json_argument = json.loads(argin)
-        except json.JSONDecodeError as jsonerr:
-            tango.Except.throw_exception(
-                str(jsonerr),
-                "Invalid JSON format.",
-                "_load_config_string",
-                tango.ErrSeverity.ERR,
-            )
-
-        return json_argument
-

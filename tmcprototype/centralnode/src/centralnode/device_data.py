@@ -11,7 +11,9 @@ This module defines the DeviceData class, which represents of the functional Cen
 """
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 from ska.base.control_model import HealthState
+
 # PROTECTED REGION END #    //  CentralNode.additional_import
+
 
 class DeviceData:
     """
@@ -19,11 +21,13 @@ class DeviceData:
     as functional device. It mainly comprise the data common
     across various functions of a central node.
     """
+
     __instance = None
+
     def __init__(self):
         """Private constructor of the class"""
-        if DeviceData.__instance != None:
-            raise Exception("This is singletone class")
+        if DeviceData.__instance is not None:
+            raise Exception("This is singleton class")
         else:
             DeviceData.__instance = self
 
@@ -41,7 +45,7 @@ class DeviceData:
         self.sdp_master_ln_fqdn = ""
         self.csp_master_ln_fqdn = ""
         self.dln_prefix = ""
-        self.tm_mid_subarray = [] #"" # initialization is correct? it is array ('str',)
+        self.tm_mid_subarray = []
         self._read_activity_message = ""
         self.sln_prefix = ""
         self.num_dishes = 0
@@ -52,15 +56,6 @@ class DeviceData:
 
     @staticmethod
     def get_instance():
-        if DeviceData.__instance == None:
+        if DeviceData.__instance is None:
             DeviceData()
         return DeviceData.__instance
-
-
-
-
-
-
-
-
-

@@ -1,4 +1,3 @@
-
 """
 This file is part of the SubarrayNode project and defines variables used
 """
@@ -21,8 +20,12 @@ CMD_ABORT = "Abort"
 
 
 # strings
-STR_SUB_ATTR_MCCS_SALN_HEALTH_SUCCESS = "Subscribed MCCS Subarray Health State attributes successfully."
-STR_SUB_ATTR_MCCS_SALN_OBSTATE_SUCCESS = "Subscribed MCCS Subarray ObsState attributes successfully."
+STR_SUB_ATTR_MCCS_SALN_HEALTH_SUCCESS = (
+    "Subscribed MCCS Subarray Health State attributes successfully."
+)
+STR_SUB_ATTR_MCCS_SALN_OBSTATE_SUCCESS = (
+    "Subscribed MCCS Subarray ObsState attributes successfully."
+)
 STR_SA_INIT_SUCCESS = "Subarray node is initialized successfully."
 STR_SA_INIT = "Initializing SubarrayNode..."
 STR_CONFIGURE_IP_ARG = "Input Arguments for Configure command :-> "
@@ -63,7 +66,9 @@ STR_MCCS_SUBARRAY_OBS_STATE = "MCCS Subarray obsState is:"
 STR_SCAN_IP_ARG = "Scan inputs Arguments :-> "
 STR_SA_SCANNING = "Subarray is scanning at the desired pointing coordinates."
 STR_OBSRESET_SUCCESS = "ObsReset command is invoked on MccsSubarrayLeafNode."
-ERR_OBSRESET_INVOKING_CMD = "Error while invoking ObsReset command on Subarray Node Low."
+ERR_OBSRESET_INVOKING_CMD = (
+    "Error while invoking ObsReset command on Subarray Node Low."
+)
 STR_OBSRESET_EXEC = "ObsReset command execution."
 STR_CMD_OBSRESET_INV_MCCSSLN = "Command ObsReset is invoked on MccsSubarrayLeafNode."
 
@@ -72,13 +77,17 @@ STR_CMD_OBSRESET_INV_MCCSSLN = "Command ObsReset is invoked on MccsSubarrayLeafN
 ERR_INVALID_JSON = "Invalid JSON format"
 ERR_JSON_KEY_NOT_FOUND = "JSON key not found"
 ERR_SCAN_CMD = "Exception in Scan command: "
-ERR_SUBS_MCCS_SA_LEAF_ATTR = "Exception occurred while subscribing to MCCS Subarray attribute"
-ERR_SUBSR_MCCSSA_OBS_STATE = "Error in subscribing MCCS Subarray obsState on MCCSSALN LeafNodes."
+ERR_SUBS_MCCS_SA_LEAF_ATTR = (
+    "Exception occurred while subscribing to MCCS Subarray attribute"
+)
+ERR_SUBSR_MCCSSA_OBS_STATE = (
+    "Error in subscribing MCCS Subarray obsState on MCCSSALN LeafNodes."
+)
 ERR_MCCS_SUBARRAY_OBS_STATE = "Key Error occurred while setting MCCS Subarray obsState"
 ERR_INVOKING_ON_CMD = "Error while invoking ON command on Subarray Node."
 ERR_INVOKING_OFF_CMD = "Error while invoking OFF command on Subarray Node."
 ERR_END_INVOKING_CMD = "Error while invoking End command on Subarray Node low."
-ERR_END_SCAN_CMD_ON_MCCS="Error invoking EndScan command on MccsSubarrayLeafNode"
+ERR_END_SCAN_CMD_ON_MCCS = "Error invoking EndScan command on MccsSubarrayLeafNode"
 ERR_DEVICE_NOT_READY = "Subarray Node low is not in Ready observation state."
 ERR_MCCS_CMD = "Failed to send command to MCCS Subarray Leaf Node."
 ERR_SUBSR_SA_HEALTH_STATE = "Error in subscribing Subarray healthState \n"

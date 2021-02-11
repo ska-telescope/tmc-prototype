@@ -7,15 +7,14 @@ class DeviceData:
     __instance = None
 
     def __init__(self):
-        """Private constructor of the class""" 
+        """Private constructor of the class"""
         if DeviceData.__instance != None:
             raise Exception("This is singletone class")
         else:
             DeviceData.__instance = self
         self._mccs_master_fqdn = ""
-        self._read_activity_message= ""
-        
-        
+        self._read_activity_message = ""
+
     @staticmethod
     def get_instance():
         if DeviceData.__instance == None:

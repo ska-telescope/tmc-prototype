@@ -12,8 +12,7 @@ CSP Master Leaf node monitors the CSP Master and issues control actions during a
 # See LICENSE.txt for more info.
 
 # PROTECTED REGION ID(CspMasterLeafNode.import) ENABLED START #
-# Third party imports
-# PyTango imports
+# Tango imports
 import tango
 from tango import ApiUtil, DebugIt, AttrWriteType
 from tango.server import run, command, device_property, attribute
@@ -22,6 +21,7 @@ from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, SimulationMode, TestMode
+
 from . import const, release
 from .on_command import On
 from .off_command import Off
@@ -44,27 +44,26 @@ class CspMasterLeafNode(SKABaseDevice):
     # - cspHealthState  - Forwarded attribute to provide CSP Master Health State
     # - activityMessage - Attribute to provide activity message
 
-    # """
-
+    #"""
 
     # -----------------
     # Device Properties
     # -----------------
-    CspMasterFQDN = device_property(
-        dtype='str'
-    )
+    CspMasterFQDN = device_property(dtype="str")
 
     # ----------
     # Attributes
     # ----------
 
     activityMessage = attribute(
-        dtype='str',
+        dtype="str",
         access=AttrWriteType.READ_WRITE,
         doc="Activity Message",
     )
 
-    cspHealthState = attribute(name="cspHealthState", label="cspHealthState", forwarded=True)
+    cspHealthState = attribute(
+        name="cspHealthState", label="cspHealthState", forwarded=True
+    )
 
     # ---------------
     # General methods
@@ -92,15 +91,19 @@ class CspMasterLeafNode(SKABaseDevice):
             device_data = DeviceData.get_instance()
             device.device_data = device_data
             device._health_state = HealthState.OK  # Setting healthState to "OK"
-            device._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
+            device._simulation_mode = (
+                SimulationMode.FALSE
+            )  # Enabling the simulation mode
             device._test_mode = TestMode.NONE
-            device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
+            device._build_state = "{},{},{}".format(
+                release.name, release.version, release.description
+            )
             device._version_id = release.version
             device_data._read_activity_message = const.STR_CSP_INIT_LEAF_NODE
             device_data.csp_master_ln_fqdn = device.CspMasterFQDN
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
-            log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
+            log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
 
             device_data._read_activity_message = const.STR_INIT_SUCCESS
@@ -133,7 +136,6 @@ class CspMasterLeafNode(SKABaseDevice):
         self.device_data._read_activity_message = value
         # PROTECTED REGION END #    //  CspMasterLeafNode.activityMessage_write
 
-
     def is_Standby_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state
@@ -149,10 +151,10 @@ class CspMasterLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in=('str',),
+        dtype_in=("str",),
         doc_in="If the array length is 0, the command applies to the whole\nCSP Element.\nIf the array "
-               "length is > 1, each array element specifies the FQDN of the\nCSP SubElement to put in "
-               "STANDBY mode.",
+        "length is > 1, each array element specifies the FQDN of the\nCSP SubElement to put in "
+        "STANDBY mode.",
     )
     @DebugIt()
     def Standby(self, argin):
@@ -166,7 +168,7 @@ class CspMasterLeafNode(SKABaseDevice):
         """
         device_data = DeviceData.get_instance()
         super().init_command_objects()
-        args = (device_data, self.state_model,self.logger)
+        args = (device_data, self.state_model, self.logger)
         self.register_command_object("Off", Off(*args))
         self.register_command_object("On", On(*args))
         self.register_command_object("Standby", Standby(*args))
@@ -187,11 +189,11 @@ def main(args=None, **kwargs):
     :param kwargs: Arguments internal to TANGO
 
     :return: CspMasterLeafNode TANGO object.
-    
+
     """
     return run((CspMasterLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  CspMasterLeafNode.main
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

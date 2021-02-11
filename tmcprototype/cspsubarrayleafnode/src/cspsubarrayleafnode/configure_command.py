@@ -1,14 +1,19 @@
 import json
+
 # PyTango imports
 import tango
 from tango import DevState, DevFailed
+
 # Additional import
-from tmc.common.tango_client import TangoClient
 from ska.base.commands import BaseCommand
+
+from tmc.common.tango_client import TangoClient
+
 import katpoint
 from .transaction_id import identify_with_id
 from . import const
 from .delay_model import DelayManager
+
 
 class ConfigureCommand(BaseCommand):
     """
@@ -29,11 +34,17 @@ class ConfigureCommand(BaseCommand):
 
         """
         # device_data = self.target
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-            tango.Except.throw_exception("Configure() is not allowed in current state",
-                                            "Failed to invoke Configure command on cspsubarrayleafnode.",
-                                            "cspsubarrayleafnode.Configure()",
-                                            tango.ErrSeverity.ERR)
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
+            tango.Except.throw_exception(
+                f"Configure() is not allowed in current state {self.state_model.op_state}",
+                "Failed to invoke Configure command on cspsubarrayleafnode.",
+                "cspsubarrayleafnode.Configure()",
+                tango.ErrSeverity.ERR,
+            )
 
         # csp_sa_client = TangoClient(device_data.csp_subarray_fqdn)
         # if csp_sa_client.get_attribute("obsState") not in [ObsState.IDLE, ObsState.READY]:
@@ -66,15 +77,15 @@ class ConfigureCommand(BaseCommand):
         device_data = self.target
         # Update logs and activity message attribute with received event
         if event.err:
-            log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
             device_data._read_activity_message = log_msg
         else:
-            log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+            log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
             device_data._read_activity_message = log_msg
 
-    @identify_with_id('configure','argin')
+    @identify_with_id("configure", "argin")
     def do(self, argin):
         """
         This command configures a scan. It accepts configuration information in JSON string format and
@@ -113,31 +124,44 @@ class ConfigureCommand(BaseCommand):
             target_Dec = pointing_params["target"]["dec"]
 
             # Create target object
-            device_data.target = katpoint.Target('radec , ' + str(target_Ra) + ", " + str(target_Dec))
+            device_data.target = katpoint.Target(
+                f"radec , {target_Ra} , {target_Dec}"
+            )
             csp_configuration = argin_json.copy()
             # Keep configuration specific to CSP and delete pointing configuration
             if "pointing" in csp_configuration:
                 del csp_configuration["pointing"]
-            log_msg = "Input JSON for CSP Subarray Leaf Node Configure command is: " + argin
+            log_msg = (
+                "Input JSON for CSP Subarray Leaf Node Configure command is: " + argin
+            )
             self.logger.debug(log_msg)
             csp_sub_client_obj = TangoClient(device_data.csp_subarray_fqdn)
-            csp_sub_client_obj.send_command_async(const.CMD_CONFIGURE, json.dumps(csp_configuration),
-                                                        self.configure_cmd_ended_cb)
+            csp_sub_client_obj.send_command_async(
+                const.CMD_CONFIGURE,
+                json.dumps(csp_configuration),
+                self.configure_cmd_ended_cb,
+            )
             device_data._read_activity_message = const.STR_CONFIGURE_SUCCESS
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
 
         except ValueError as value_error:
-            log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
+            log_msg = f"{const.ERR_INVALID_JSON_CONFIG}{value_error}"
             device_data._read_activity_message = log_msg
             self.logger.exception(value_error)
-            tango.Except.throw_exception(const.ERR_CONFIGURE_INVOKING_CMD, log_msg,
-                                            "CspSubarrayLeafNode.ConfigureCommand",
-                                            tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.ERR_CONFIGURE_INVOKING_CMD,
+                log_msg,
+                "CspSubarrayLeafNode.ConfigureCommand",
+                tango.ErrSeverity.ERR,
+            )
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_CONFIGURE_INVOKING_CMD + str(dev_failed)
+            log_msg = f"{const.ERR_CONFIGURE_INVOKING_CMD}{dev_failed}"
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
-            tango.Except.throw_exception(const.ERR_CONFIGURE_INVOKING_CMD, log_msg,
-                                            "CspSubarrayLeafNode.ConfigureCommand",
-                                            tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.ERR_CONFIGURE_INVOKING_CMD,
+                log_msg,
+                "CspSubarrayLeafNode.ConfigureCommand",
+                tango.ErrSeverity.ERR,
+            )

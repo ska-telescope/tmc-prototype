@@ -14,10 +14,10 @@ CMD_OBSRESET = "ObsReset"
 CMD_ON = "On"
 CMD_OFF = "Off"
 
-#Event messages
+# Event messages
 EVT_SUBSR_SA_RECEPTOR_ID_LIST = "receptorIDList"
 
-#Error messages
+# Error messages
 ERR_IN_CREATE_PROXY = "Error in creating proxy of the Leaf Node device: "
 ERR_INVALID_JSON = "Invalid JSON format while invoking command on CSP Subarray."
 ERR_JSON_KEY_NOT_FOUND = "JSON key not found."
@@ -27,18 +27,28 @@ ERR_EXCEPT_CMD_CB = "Exception in CommandCallback: \n"
 ERR_EXCEPT_CONFIGURE_CMD_CB = "Exception in Configure CommandCallback: \n"
 ERR_EXCEPT_STARTSCAN_CMD_CB = "Exception in StartScan CommandCallback: \n"
 ERR_EXCEPT_ENDSCAN_CMD_CB = "Exception in EndScan CommandCallback: \n"
-ERR_EXCEPT_RELEASE_ALL_RESOURCES_CMD_CB = "Exception in ReleaseAllResources CommandCallback: \n"
+ERR_EXCEPT_RELEASE_ALL_RESOURCES_CMD_CB = (
+    "Exception in ReleaseAllResources CommandCallback: \n"
+)
 ERR_EXCEPT_GO_TO_IDLE_CMD_CB = "Exception in GoToIdle CommandCallback: \n"
 ERR_EXCEPT_ABORT_CMD_CB = "Exception in Abort CommandCallback: \n"
 ERR_EXCEPT_RESTART_CMD_CB = "Exception in Restart CommandCallback: \n"
-ERR_INIT_PROP_ATTR_CSPSALN = "Error on initialising properties and attributes " \
-                              "on CSP Subarray Leaf Node device."
+ERR_INIT_PROP_ATTR_CSPSALN = (
+    "Error on initialising properties and attributes "
+    "on CSP Subarray Leaf Node device."
+)
 ERR_MSG = "Error message is: "
-ERR_RELEASE_ALL_RESOURCES = "Error while invoking ReleaseAllResources command on CSP Subarray."
+ERR_RELEASE_ALL_RESOURCES = (
+    "Error while invoking ReleaseAllResources command on CSP Subarray."
+)
 ERR_CONFIGURE_INVOKING_CMD = "Error while invoking Configure command on CSP Subarray."
 ERR_ENDSCAN_INVOKING_CMD = "Error while invoking EndScan command on CSP Subarray."
-ERR_INVALID_JSON_CONFIG = "Invalid JSON format while invoking Configure command on CSP Subarray."
-ERR_INVALID_JSON_ASSIGN_RES = "Invalid JSON format while invoking AddReceptors command on CSP Subarray."
+ERR_INVALID_JSON_CONFIG = (
+    "Invalid JSON format while invoking Configure command on CSP Subarray."
+)
+ERR_INVALID_JSON_ASSIGN_RES = (
+    "Invalid JSON format while invoking AddReceptors command on CSP Subarray."
+)
 ERR_STARTSCAN_RESOURCES = "Error while invoking StartScan command on CSP Subarray."
 ERR_DEVICE_NOT_READY = "CSP subarray is not in READY obsState."
 ERR_DEVICE_NOT_READY_OR_IDLE = "CSP subarray is not in READY or IDLE obsState."
@@ -57,16 +67,22 @@ ERR_UNABLE_ABORT_CMD = "Unable to invoke Abort command"
 ERR_UNABLE_OBSRESET_CMD = "Unable to invoke ObsReset command"
 ERR_RAISED_EXCEPTION = "CSP subarray leaf node raised exception"
 ERR_DEVICE_NOT_IDLE = "CSP Subarray is not in IDLE obsState."
-#strings
-#General strings
+# strings
+# General strings
 STR_RECEPTORID_LIST = "receptorIDList"
 STR_DISH = "dish"
 STR_ERR_MSG = "Error message is: "
 STR_ASSIGN_RESOURCES_SUCCESS = "Resources are assigned successfully on CSP Subarray."
-STR_RELEASE_ALL_RESOURCES_SUCCESS = "All the resources are removed from CSP Subarray successfully."
-STR_CONFIGURE_SUCCESS = "Configure command invoked successfully on CSP Subarray from " \
-                            "CSP Subarray Leaf Node."
-STR_ENDSCAN_SUCCESS = "EndScan command invoked successfully on CspSubarray from CSP Subarray Leaf Node."
+STR_RELEASE_ALL_RESOURCES_SUCCESS = (
+    "All the resources are removed from CSP Subarray successfully."
+)
+STR_CONFIGURE_SUCCESS = (
+    "Configure command invoked successfully on CSP Subarray from "
+    "CSP Subarray Leaf Node."
+)
+STR_ENDSCAN_SUCCESS = (
+    "EndScan command invoked successfully on CspSubarray from CSP Subarray Leaf Node."
+)
 STR_CSPSALN_INIT_SUCCESS = "CSP Subarray Leaf Node initialized successfully."
 STR_CMD_FAILED = "CSP Subarray Leaf Node_CommandFailed"
 STR_ASSIGN_RES_EXEC = "AssignResources command execution"
@@ -79,7 +95,9 @@ STR_CMD_CALLBK = "CSP Subarray Leaf Node Command Callback"
 STR_CONFIGURE_CMD_CALLBK = "CSP Subarray Leaf Node Configure Command Callback"
 STR_STARTSCAN_CMD_CALLBK = "CSP Subarray Leaf Node StartScan Command Callback"
 STR_ENDSCAN_CMD_CALLBK = "CSP Subarray Leaf Node EndScan Command Callback"
-STR_RELEASE_RES_CMD_CALLBACK = "CSP Subarray Leaf Node ReleaseAllResources Command Callback"
+STR_RELEASE_RES_CMD_CALLBACK = (
+    "CSP Subarray Leaf Node ReleaseAllResources Command Callback"
+)
 STR_GO_TO_IDLE_CMD_CALLBK = "CSP Subarray Leaf Node GoToIdle Command Callback"
 STR_ABORT_CMD_CALLBK = "CSP Subarray Leaf Node Abort Command Callback"
 STR_RESTART_CMD_CALLBK = "CSP Subarray Leaf Node Restart Command Callback"
@@ -101,5 +119,5 @@ STR_OBS_STATE = "CSP Subarray Leaf Node obsState is: "
 STR_ON_CMD_ISSUED = "ON command invoked successfully from CSP Subarray Leaf Node."
 STR_OFF_CMD_ISSUED = "OFF command invoked successfully from CSP Subarray Leaf Node."
 
-#INTEGERS
+# INTEGERS
 INT_SKA_LEVEL = 3

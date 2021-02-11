@@ -23,8 +23,10 @@ from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
 from ska.base.commands import ResultCode
+
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
+
 from . import const, release
 from .assign_resources_command import AssignResources
 from .release_resources_command import ReleaseAllResources
@@ -43,50 +45,66 @@ from .exceptions import InvalidObsStateError
 
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
 
-__all__ = ["SdpSubarrayLeafNode", "main", "AssignResources", "const", 
-           "release", "ReleaseAllResources", "On", "Off", "Configure",
-           "Abort", "Restart", "ObsReset", "Scan", "End",
-           "EndScan"]
+__all__ = [
+    "SdpSubarrayLeafNode",
+    "main",
+    "AssignResources",
+    "const",
+    "release",
+    "ReleaseAllResources",
+    "On",
+    "Off",
+    "Configure",
+    "Abort",
+    "Restart",
+    "ObsReset",
+    "Scan",
+    "End",
+    "EndScan",
+]
 
 # pylint: disable=unused-argument,unused-variable, implicit-str-concat
 class SdpSubarrayLeafNode(SKABaseDevice):
     """
     SDP Subarray Leaf node is to monitor the SDP Subarray and issue control actions during an observation.
     """
+
     # -----------------
     # Device Properties
     # -----------------
     SdpSubarrayFQDN = device_property(
-        dtype='str', doc='FQDN of the SDP Subarray Tango Device Server.'
+        dtype="str", doc="FQDN of the SDP Subarray Tango Device Server."
     )
 
     # ----------
     # Attributes
     # ----------
     receiveAddresses = attribute(
-        dtype='str',
+        dtype="str",
         access=AttrWriteType.READ_WRITE,
-        doc='This attribute is used for testing purposes. In the unit test cases, '
-            'it is used to provide FQDN of receiveAddresses attribute from SDP.',
+        doc="This attribute is used for testing purposes. In the unit test cases, "
+        "it is used to provide FQDN of receiveAddresses attribute from SDP.",
     )
 
     activityMessage = attribute(
-        dtype='str',
+        dtype="str",
         access=AttrWriteType.READ_WRITE,
-        doc='String providing information about the current activity in SDP Subarray Leaf Node',
+        doc="String providing information about the current activity in SDP Subarray Leaf Node",
     )
 
     activeProcessingBlocks = attribute(
-        dtype='str',
-        doc='This is a attribute from SDP Subarray which depicts the active Processing Blocks in '
-            'the SDP Subarray.',
+        dtype="str",
+        doc="This is a attribute from SDP Subarray which depicts the active Processing Blocks in "
+        "the SDP Subarray.",
     )
 
-    sdpSubarrayHealthState = attribute(name="sdpSubarrayHealthState", label="sdpSubarrayHealthState",
-                                       forwarded=True)
+    sdpSubarrayHealthState = attribute(
+        name="sdpSubarrayHealthState", label="sdpSubarrayHealthState", forwarded=True
+    )
 
-    sdpSubarrayObsState = attribute(name="sdpSubarrayObsState", label="sdpSubarrayObsState", forwarded=True)
-
+    sdpSubarrayObsState = attribute(
+        name="sdpSubarrayObsState", label="sdpSubarrayObsState", forwarded=True
+    )
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
@@ -111,9 +129,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             # Initialise attributes
             device._sdp_subarray_health_state = HealthState.OK
-            device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
+            device._build_state = "{},{},{}".format(
+                release.name, release.version, release.description
+            )
             device._version_id = release.version
-            
 
             # Create DeviceData class instance
             device_data = DeviceData.get_instance()
@@ -122,15 +141,14 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             device_data._read_activity_message = const.STR_SDPSALN_INIT_SUCCESS
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
-            device._read_activity_message = const.STR_SETTING_CB_MODEL + str(
-                ApiUtil.instance().get_asynch_cb_sub_model())
+            device._read_activity_message = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
 
             # Initialise Device status
             device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
             self.logger.info(const.STR_SDPSALN_INIT_SUCCESS)
 
             return (ResultCode.OK, const.STR_SDPSALN_INIT_SUCCESS)
-    
+
     # ---------------
     # General methods
     # ---------------
@@ -151,21 +169,21 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     def read_receiveAddresses(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.receiveAddresses_read) ENABLED START #
-        """ Internal construct of TANGO. Returns the Receive Addresses.
+        """Internal construct of TANGO. Returns the Receive Addresses.
         receiveAddresses is a forwarded attribute from SDP Master which depicts State of the SDP."""
         return self.device_data._receive_addresses
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.receiveAddresses_read
 
     def write_receiveAddresses(self, value):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.receiveAddresses_read) ENABLED START #
-        """ Internal construct of TANGO. Sets the Receive Addresses.
+        """Internal construct of TANGO. Sets the Receive Addresses.
         receiveAddresses is a forwarded attribute from SDP Master which depicts State of the SDP."""
         self.device_data._receive_addresses = value
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.receiveAddresses_read
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.activityMessage_read) ENABLED START #
-        """ Internal construct of TANGO. Returns Activity Messages.
+        """Internal construct of TANGO. Returns Activity Messages.
         activityMessage is a String providing information about the current activity in SDP Subarray Leaf Node"""
         return self.device_data._read_activity_message
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.activityMessage_read
@@ -180,12 +198,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     def read_activeProcessingBlocks(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.activeProcessingBlocks_read) ENABLED START #
         """Internal construct of TANGO. Returns Active Processing Blocks.activeProcessingBlocks is a forwarded attribute
-         from SDP Subarray which depicts the active Processing Blocks in the SDP Subarray"""
+        from SDP Subarray which depicts the active Processing Blocks in the SDP Subarray"""
         return self.device_data._active_processing_block
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.activeProcessingBlocks_read
-    
-    @command(
-    )
+
+    @command()
     @DebugIt()
     def Abort(self):
         """
@@ -208,11 +225,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Abort")
         return handler.check_allowed()
 
-        
     @command(
-        dtype_in=('str'),
+        dtype_in=("str"),
         doc_in="The input JSON string consists of information related to id, max_length, scan_types"
-                " and processing_blocks.",
+        " and processing_blocks.",
     )
     @DebugIt()
     def AssignResources(self, argin):
@@ -247,7 +263,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in=('str'),
+        dtype_in=("str"),
         doc_in="The JSON input string consists of scan type.",
     )
     @DebugIt()
@@ -257,8 +273,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("Configure")
         handler(argin)
-        
-        
+
     def is_End_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state.
@@ -272,15 +287,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("End")
         return handler.check_allowed()
 
-    @command(
-    )
+    @command()
     @DebugIt()
     def End(self):
-        """ This command invokes End command on SDP subarray to end the current Scheduling block.
-        """
+        """This command invokes End command on SDP subarray to end the current Scheduling block."""
         handler = self.get_command_object("End")
         handler()
-    
 
     def is_EndScan_allowed(self):
         """
@@ -292,8 +304,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("EndScan")
         return handler.check_allowed()
 
-    @command(
-    )
+    @command()
     @DebugIt()
     def EndScan(self):
         """
@@ -303,8 +314,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("EndScan")
         handler()
 
-    @command(
-    )
+    @command()
     @DebugIt()
     def ObsReset(self):
         """
@@ -340,8 +350,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("ReleaseAllResources")
         return handler.check_allowed()
 
-    @command(
-    )
+    @command()
     @DebugIt()
     def ReleaseAllResources(self):
         """
@@ -350,8 +359,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("ReleaseAllResources")
         handler()
 
-    @command(
-    )
+    @command()
     @DebugIt()
     def Restart(self):
         """
@@ -387,7 +395,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in=('str'),
+        dtype_in=("str"),
         doc_in="The JSON input string consists of SB ID.",
     )
     @DebugIt()
@@ -397,18 +405,21 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Scan")
         handler(argin)
 
-    
     def validate_obs_state(self):
         device_data = self.target
         device_data = DeviceData.get_instance()
         sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
-        if sdp_sa_ln_client_obj.get_attribute("obsState") in [ObsState.EMPTY, ObsState.IDLE]:
-            self.logger.info("SDP subarray is in required obstate,Hence resources to SDP can be assign.")
+        if sdp_sa_ln_client_obj.deviceproxy.obsState in [
+            ObsState.EMPTY,
+            ObsState.IDLE,
+        ]:
+            self.logger.info(
+                "SDP subarray is in required obstate,Hence resources to SDP can be assign."
+            )
         else:
             self.logger.error("Subarray is not in EMPTY obstate")
             device_data._read_activity_message = "Error in device obstate."
             raise InvalidObsStateError("SDP subarray is not in EMPTY obstate.")
-
 
     def init_command_objects(self):
         """
@@ -416,7 +427,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         device.
         """
         super().init_command_objects()
-        
+
         # Create device_data class object
         device_data = DeviceData.get_instance()
         args = (device_data, self.state_model, self.logger)
@@ -437,6 +448,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 # Run server
 # ----------
 
+
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(SdpSubarrayLeafNode.main) ENABLED START #
     """
@@ -453,5 +465,5 @@ def main(args=None, **kwargs):
     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.main
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
