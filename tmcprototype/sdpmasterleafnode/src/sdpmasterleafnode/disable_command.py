@@ -10,7 +10,9 @@ from . import const
 
 class Disable(BaseCommand):
     """
-    A class for SDP master's Disable() command.
+    A class for SDP master's Disable() command. Disable command is inherited from BaseCommand.
+
+    Sets the OperatingState to Disable.
     """
 
     def check_allowed(self):
@@ -65,7 +67,7 @@ class Disable(BaseCommand):
 
     def do(self):
         """
-        Sets the OperatingState to Disable.
+        Method to invoke Disable command on sdp.
 
         :param argin: None.
 

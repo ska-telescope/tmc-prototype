@@ -6,17 +6,17 @@
 SDP Master Leaf Node
 ================================================
 .. autoclass:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.sdp_master_leaf_node.SdpMasterLeafNode
-    :members: read_versionInfo, read_activityMessage, write_activityMessage, read_ProcessingBlockList, is_Disable_allowed, init_command_objects
-    :undoc-members:
+    :members: None
+    :undoc-members: Disable
 .. autoclass:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.off_command.Off
-    :members: do, off_cmd_ended_cb, check_allowed
+    :members: do
     :undoc-members:
 .. autoclass:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.disable_command.Disable
-    :members: do, disable_cmd_ended_cb, check_allowed
+    :members: do
     :undoc-members:
 .. autoclass:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.on_command.On
-    :members: do, on_cmd_ended_cb, check_allowed
+    :members: do
     :undoc-members:
 .. autoclass:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.standby_command.Standby
-    :members: do, standby_cmd_ended_cb, check_allowed
-    :undoc-members: 
+    :members: do
+    :undoc-members:

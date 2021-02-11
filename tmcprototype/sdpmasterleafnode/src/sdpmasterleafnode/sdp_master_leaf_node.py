@@ -39,15 +39,26 @@ class SdpMasterLeafNode(SKABaseDevice):
     """
     The primary responsibility of the SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
     actions during an observation.
+
+    **Device Properties**
+
+    - SdpMasterFQDN: Property to provide FQDN of SDP Master Device
+
+    **Device Attributes**
+
+    - versionInfo: Provides Version information of TANGO device.
+
+    - activityMessage: String providing information about the current activity in SDPLeafNode.
+
+    - ProcessingBlockList: List of Processing Block devices
+
+    - sdpHealthState: Forwarded attribute to provide SDP Master Health State
+
     """
-    # -----------------
-    # Device Properties
-    # -----------------
 
     SdpMasterFQDN = device_property(
         dtype='str'
     )
-
     # ----------
     # Attributes
     # ----------
@@ -191,7 +202,7 @@ class SdpMasterLeafNode(SKABaseDevice):
     @DebugIt()
     def Standby(self):
         """
-        Invokes Standby command .
+        Invokes Standby command.
 
         :param argin: None
 

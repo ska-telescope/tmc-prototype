@@ -12,7 +12,10 @@ from . import const
 
 class On(SKABaseDevice.OnCommand):
     """
-    A class for SDP master's On() command.
+    A class for SDP master's On() command. On command is inherited from SKABaseDevice.
+
+    Informs the SDP that it can start executing Processing Blocks. Sets the OperatingState to ON.
+
     """
 
     def on_cmd_ended_cb(self, event):
@@ -48,7 +51,8 @@ class On(SKABaseDevice.OnCommand):
             device_data._read_activity_message = log_msg
 
     def do(self):
-        """ Informs the SDP that it can start executing Processing Blocks. Sets the OperatingState to ON.
+        """
+        Method to invoke On command on sdp.
 
         :param argin: None.
 
