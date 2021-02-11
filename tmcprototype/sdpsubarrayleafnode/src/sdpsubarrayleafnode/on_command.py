@@ -16,6 +16,8 @@ from . import const
 class On(SKABaseDevice.OnCommand):
     """
     A class for SDP Subarray's On() command.
+
+    Invokes On command on the SDP Subarray.
     """
 
     def on_cmd_ended_cb(self, event):
@@ -53,7 +55,7 @@ class On(SKABaseDevice.OnCommand):
 
     def do(self):
         """
-        Invokes On command on the SDP Subarray.
+        Method to invoke On command on SDP Subarray.
 
         :param argin: None.
 
@@ -61,6 +63,8 @@ class On(SKABaseDevice.OnCommand):
         The message is for information purpose only.
 
         :rtype: (ResultCode, str)
+
+        :raises: DevFailed if error occurs while invoking command on SDPSubarray.
 
         """
         device_data = self.target

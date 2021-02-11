@@ -15,6 +15,8 @@ from . import const
 class Scan(BaseCommand):
     """
     A class for SdpSubarrayLeafNode's Scan() command.
+
+    Invoke Scan command to SDP subarray.
     """
 
     def check_allowed(self):
@@ -77,7 +79,7 @@ class Scan(BaseCommand):
 
     def do(self, argin):
         """
-        Invoke Scan command to SDP subarray.
+        Method to invoke Scan command on SDP Subarray.
 
         :param argin: The string in JSON format. The JSON contains following values:
 

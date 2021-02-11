@@ -52,6 +52,25 @@ __all__ = ["SdpSubarrayLeafNode", "main", "AssignResources", "const",
 class SdpSubarrayLeafNode(SKABaseDevice):
     """
     SDP Subarray Leaf node is to monitor the SDP Subarray and issue control actions during an observation.
+
+    **Device Properties**
+
+    :SdpSubarrayFQDN: FQDN of the SDP Subarray Tango Device Server.
+
+    **Device Attributes**
+
+    :receiveAddresses: This attribute is used for testing purposes. In the unit test cases
+                       it is used to provide FQDN of receiveAddresses attribute from SDP.
+
+    :activityMessage: String providing information about the current activity in SDPLeafNode.
+
+    :activeProcessingBlocks: This is a attribute from SDP Subarray which depicts the active Processing
+                             Blocks in the SDP Subarray.
+
+    :sdpSubarrayHealthState: Attribute to provide SDP Subarray Health State.
+
+    :sdpSubarrayObsState: Attribute to show ObsState of Tango Device.
+
     """
     # -----------------
     # Device Properties

@@ -16,11 +16,19 @@ from .transaction_id import identify_with_id
 class AssignResources(BaseCommand):
     """
     A class for SdpSubarayLeafNode's AssignResources() command.
+
+    Assigns resources to given SDP subarray.
+    This command is provided as a noop placeholder from SDP subarray.
+    Eventually this will likely take a JSON string specifying the resource request.
     """
 
     def check_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state.
+
+        Assigns resources to given SDP subarray.
+        This command is provided as a noop placeholder from SDP subarray.
+        Eventually this will likely take a JSON string specifying the resource request.
 
         :return: True if this command is allowed to be run in current device state.
 
@@ -68,9 +76,7 @@ class AssignResources(BaseCommand):
     @identify_with_id('assign','argin')
     def do(self, argin):
         """
-        Assigns resources to given SDP subarray.
-        This command is provided as a noop placeholder from SDP subarray.
-        Eventually this will likely take a JSON string specifying the resource request.
+        Method to invoke AssignResources command on SDP SUbarray.
 
         :param argin: The string in JSON format. The JSON contains following values:
 
@@ -117,7 +123,8 @@ class AssignResources(BaseCommand):
         :return: None
 
         :raises: ValueError if input argument json string contains invalid value.
-                    DevFailed if the command execution is not successful.
+
+                 DevFailed if the command execution is not successful.
         """
 
         device_data = self.target

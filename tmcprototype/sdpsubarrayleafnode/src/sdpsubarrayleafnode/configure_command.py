@@ -16,6 +16,10 @@ from .transaction_id import identify_with_id
 class Configure(BaseCommand):
     """
     A class for SdpSubarrayLeafNode's Configure() command.
+
+    Configures the SDP Subarray device by providing the SDP PB
+    configuration needed to execute the receive workflow
+
     """
 
     def check_allowed(self):
@@ -78,8 +82,7 @@ class Configure(BaseCommand):
     @identify_with_id('configure','argin')
     def do(self, argin):
         """
-        Configures the SDP Subarray device by providing the SDP PB
-        configuration needed to execute the receive workflow
+        Method to invoke Configure command on SDP Subarray.
 
         :param argin: The string in JSON format. The JSON contains following values:
 
@@ -90,8 +93,10 @@ class Configure(BaseCommand):
         :return: None
 
         :raises: ValueError if input argument json string contains invalid value.
-                    KeyError if input argument json string contains invalid key.
-                    DevFailed if the command execution is not successful
+
+                 KeyError if input argument json string contains invalid key.
+
+                 DevFailed if the command execution is not successful
         """
         device_data = self.target
         try:

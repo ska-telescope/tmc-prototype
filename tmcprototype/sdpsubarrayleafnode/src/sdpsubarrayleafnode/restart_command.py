@@ -15,6 +15,9 @@ from . import const
 class Restart(BaseCommand):
     """
     A class for sdpSubarrayLeafNode's Restart() command.
+
+    Command to restart the SDP subarray and bring it to its ON state.
+
     """
 
     def check_allowed(self):
@@ -77,7 +80,7 @@ class Restart(BaseCommand):
 
     def do(self):
         """
-        Command to restart the SDP subarray and bring it to its ON state.
+        Method to invoke Restart command on SDP Subarray.
 
         :return: None
 

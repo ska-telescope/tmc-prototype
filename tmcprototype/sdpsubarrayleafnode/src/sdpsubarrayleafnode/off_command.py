@@ -15,6 +15,8 @@ from . import const
 class Off(SKABaseDevice.OffCommand):
     """
     A class for SDP Subarray's Off() command.
+
+    Invokes Off command on the SDP Subarray.
     """
 
     def off_cmd_ended_cb(self, event):
@@ -50,7 +52,7 @@ class Off(SKABaseDevice.OffCommand):
 
     def do(self):
         """
-        Invokes Off command on the SDP Subarray.
+        Method to invoke Off command on SDP Subarray.
 
         :param argin: None.
 
@@ -58,6 +60,8 @@ class Off(SKABaseDevice.OffCommand):
         The message is for information purpose only.
 
         :rtype: (ResultCode, str)
+
+        :raises: DevFailed if error occurs while invoking command on SDPSubarray.
 
         """
         device_data = self.target
