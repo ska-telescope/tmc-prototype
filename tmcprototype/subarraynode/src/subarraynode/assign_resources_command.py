@@ -214,7 +214,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
                 if group_dishes.contains(
                     device_data.dish_leaf_node_prefix + str_leafId
                 ):
-                    device_data._dish_leaf_node_group_client.remove(
+                    device_data._dish_leaf_node_group_client.remove_device(
                         device_data.dish_leaf_node_prefix + str_leafId
                     )
 
