@@ -42,17 +42,17 @@ class SdpMasterLeafNode(SKABaseDevice):
 
     **Device Properties**
 
-    - SdpMasterFQDN: Property to provide FQDN of SDP Master Device
+    :SdpMasterFQDN: Property to provide FQDN of SDP Master Device
 
     **Device Attributes**
 
-    - versionInfo: Provides Version information of TANGO device.
+    :versionInfo: Provides Version information of TANGO device.
 
-    - activityMessage: String providing information about the current activity in SDPLeafNode.
+    :activityMessage: String providing information about the current activity in SDPLeafNode.
 
-    - ProcessingBlockList: List of Processing Block devices
+    :ProcessingBlockList: List of Processing Block devices
 
-    - sdpHealthState: Forwarded attribute to provide SDP Master Health State
+    :sdpHealthState: Forwarded attribute to provide SDP Master Health State
 
     """
 
@@ -187,7 +187,7 @@ class SdpMasterLeafNode(SKABaseDevice):
     @DebugIt()
     def Disable(self):
         """
-        Sets the OperatingState to Disable.
+        Sets the opState to Disable.
 
         :param argin: None
 

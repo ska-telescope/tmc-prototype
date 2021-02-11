@@ -13,7 +13,7 @@ class Off(SKABaseDevice.OffCommand):
     """
     A class for SDP master's Off() command. Off command is inherited from SKABaseDevice.
 
-    It Sets the OperatingState to Off.
+    It Sets the opState  to Off.
 
     """
 

@@ -12,7 +12,7 @@ class Disable(BaseCommand):
     """
     A class for SDP master's Disable() command. Disable command is inherited from BaseCommand.
 
-    Sets the OperatingState to Disable.
+    Sets the opState to Disable.
     """
 
     def check_allowed(self):
