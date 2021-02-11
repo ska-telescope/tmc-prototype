@@ -8,7 +8,11 @@ from . import const
 
 class EndScanCommand(BaseCommand):
     """
-    A class for CspSubarrayLeafNode's EndScan() command.
+    A class for CspSubarrayLeafNode's EndScan() command. EndScan command is inherited from BaseCommand.
+
+    It invokes EndScan command on CspSubarray. This command is allowed when CspSubarray is in
+    obsState SCANNING.
+
     """
 
     def check_allowed(self):
@@ -72,9 +76,6 @@ class EndScanCommand(BaseCommand):
 
     def do(self):
         """
-        It invokes EndScan command on CspSubarray. This command is allowed when CspSubarray is in
-        obsState SCANNING
-
         :return: A tuple containing a return code and a string message indicating status.
                 The message is for information purpose only.
 

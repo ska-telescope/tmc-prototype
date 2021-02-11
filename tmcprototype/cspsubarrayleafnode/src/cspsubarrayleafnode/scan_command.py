@@ -8,7 +8,11 @@ from . import const
 
 class StartScanCommand(BaseCommand):
     """
-    A class for CspSubarrayLeafNode's StartScan() command.
+    A class for CspSubarrayLeafNode's StartScan() command. StartScan command is inherited from BaseCommand.
+
+    This command invokes Scan command on CspSubarray. It is allowed only when CspSubarray is in
+    ObsState READY.
+
     """
 
     def check_allowed(self):
@@ -73,9 +77,6 @@ class StartScanCommand(BaseCommand):
 
     def do(self, argin):
         """
-        This command invokes Scan command on CspSubarray. It is allowed only when CspSubarray is in
-        ObsState READY.
-
         :param argin: JSON string consists of scan id (int).
 
         Example:

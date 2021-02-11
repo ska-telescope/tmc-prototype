@@ -12,6 +12,10 @@ from .delay_model import DelayManager
 class AssignResourcesCommand(BaseCommand):
     """
     A class for CspSubarrayLeafNode's AssignResources() command.
+
+    It accepts subarrayID and receptor ids in JSON string format and invokes AssignResources command on CspSubarray
+    with dish as an input argument.
+
     """
 
     def check_allowed(self):
@@ -78,9 +82,6 @@ class AssignResourcesCommand(BaseCommand):
     @identify_with_id('assign','argin') 
     def do(self, argin):
         """
-        It accepts subarrayID and receptor ids in JSON string format and invokes AssignResources command on CspSubarray
-        with dish as an input argument.
-
         :param argin:DevString. The string in JSON format. The JSON contains following values:
             subarrayID: integer
 

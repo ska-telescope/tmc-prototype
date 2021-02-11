@@ -12,6 +12,8 @@ from .delay_model import DelayManager
 class Off(SKABaseDevice.OffCommand):
     """
     A class for CSP Subarray's Off() command.
+
+    Invokes Off command on the CSP Subarray.
     """
 
     def off_cmd_ended_cb(self, event):
@@ -47,8 +49,6 @@ class Off(SKABaseDevice.OffCommand):
 
     def do(self):
         """
-        Invokes Off command on the CSP Subarray.
-
         :param argin: None.
 
         :return: A tuple containing a return code and a string message indicating status.

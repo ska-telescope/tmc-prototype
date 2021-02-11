@@ -8,7 +8,10 @@ from . import const
 
 class RestartCommand(BaseCommand):
     """
-    A class for CSPSubarrayLeafNode's Restart() command.
+    A class for CSPSubarrayLeafNode's Restart() command. Restart command is inherited from BaseCommand.
+
+    This command invokes Restart command on CSPSubarray.
+
     """
 
     def check_allowed(self):
@@ -71,8 +74,6 @@ class RestartCommand(BaseCommand):
 
     def do(self):
         """
-        This command invokes Restart command on CSPSubarray.
-
         :return: None
 
         :raises: DevFailed if error occurs while invoking the command on CSpSubarray.

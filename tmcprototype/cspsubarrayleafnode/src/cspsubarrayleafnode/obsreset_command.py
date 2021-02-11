@@ -8,7 +8,10 @@ from . import const
 
 class ObsResetCommand(BaseCommand):
     """
-    A class for CSPSubarrayLeafNode's ObsReset() command.
+    A class for CSPSubarrayLeafNode's ObsReset() command. ObsReset command is inherited from BaseCommand.
+
+    Command to reset the CSP subarray and bring it to its RESETTING state.
+
     """
     def check_allowed(self):
         """
@@ -70,8 +73,6 @@ class ObsResetCommand(BaseCommand):
 
     def do(self):
         """
-        Command to reset the CSP subarray and bring it to its RESETTING state.
-
         :param argin: None
 
         :return: None

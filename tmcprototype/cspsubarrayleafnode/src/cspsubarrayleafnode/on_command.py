@@ -13,6 +13,8 @@ from tmc.common.tango_server_helper import TangoServerHelper
 class On(SKABaseDevice.OnCommand):
     """
     A class for CSP Subarray's On() command.
+
+    Invokes On command on the CSP Subarray.
     """
 
     def on_cmd_ended_cb(self, event):
@@ -47,8 +49,6 @@ class On(SKABaseDevice.OnCommand):
 
     def do(self):
         """
-        Invokes On command on the CSP Subarray.
-
         :param argin: None.
 
         :return: A tuple containing a return code and a string message indicating status.

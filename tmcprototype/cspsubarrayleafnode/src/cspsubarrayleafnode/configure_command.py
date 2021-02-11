@@ -12,7 +12,11 @@ from .delay_model import DelayManager
 
 class ConfigureCommand(BaseCommand):
     """
-    A class for CspSubarrayLeafNode's Configure() command.
+    A class for CspSubarrayLeafNode's Configure() command. Configure command is inherited from BaseCommand.
+
+    This command configures a scan. It accepts configuration information in JSON string format and
+    invokes Configure command on CspSubarray.
+
     """
 
     def check_allowed(self):
@@ -77,9 +81,6 @@ class ConfigureCommand(BaseCommand):
     @identify_with_id('configure','argin')
     def do(self, argin):
         """
-        This command configures a scan. It accepts configuration information in JSON string format and
-        invokes Configure command on CspSubarray.
-
         :param argin:DevString. The string in JSON format. The JSON contains following values:
 
         Example:

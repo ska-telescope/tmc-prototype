@@ -10,6 +10,9 @@ from . import const
 class AbortCommand(BaseCommand):
     """
     A class for CSPSubarrayLeafNode's Abort() command.
+
+    Command to abort the current operation being done on the CSP subarray.
+
     """
 
     def check_allowed(self):
@@ -23,7 +26,6 @@ class AbortCommand(BaseCommand):
         :raises: DevFailed if this command is not allowed to be run in current device state
 
         """
-        # device = self.target
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
             tango.Except.throw_exception("Abort() is not allowed in current state",
                                             "Failed to invoke Abort command on CspSubarrayLeafNode.",

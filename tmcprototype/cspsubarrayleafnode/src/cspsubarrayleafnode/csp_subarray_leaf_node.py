@@ -49,6 +49,23 @@ __all__ = ["CspSubarrayLeafNode", "main", "AssignResourcesCommand", "ReleaseAllR
 class CspSubarrayLeafNode(SKABaseDevice):
     """
     CSP Subarray Leaf node monitors the CSP Subarray and issues control actions during an observation.
+
+    **Device Properties**
+
+    :CspSubarrayFQDN: Property to provide FQDN of CSP Master Device
+
+    **Attributes**
+
+    :cspsubarrayHealthState: Forwarded attribute to provide CSP Subarray Health State
+
+    :cspSubarrayObsState: Forwarded attribute to provide CSP Subarray Observation State
+
+    :activityMessage: Attribute to provide activity message
+
+    :delayModel: Attribute to provide the delay model.
+
+    :versionInfo: Provides Version information of TANGO device.
+
     """
     # -----------------
     # Device Properties

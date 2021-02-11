@@ -9,7 +9,11 @@ from . import const
 
 class ReleaseAllResourcesCommand(BaseCommand):
     """
-    A class for CspSubarrayLeafNode's ReleaseAllResources() command.
+    A class for CspSubarrayLeafNode's ReleaseAllResources() command. ReleaseAllResources command is inherited from BaseCommand.
+
+    It invokes RemoveAllReceptors command on CspSubarray and releases all the resources assigned to
+    CspSubarray.
+
     """
 
     def check_allowed(self):
@@ -72,9 +76,6 @@ class ReleaseAllResourcesCommand(BaseCommand):
 
     def do(self):
         """
-        It invokes RemoveAllReceptors command on CspSubarray and releases all the resources assigned to
-        CspSubarray.
-
         :return: None
 
         :raises: DevFailed if the command execution is not successful
