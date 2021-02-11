@@ -7,14 +7,14 @@ CSP Master Leaf Node
 ===================================================
 
 .. autoclass:: tmcprototype.cspmasterleafnode.src.cspmasterleafnode.csp_master_leaf_node.CspMasterLeafNode
-    :members: read_activityMessage, write_activityMessage, is_Standby_allowed, init_command_objects
+    :members: None
     :undoc-members:
 .. autoclass:: tmcprototype.cspmasterleafnode.src.cspmasterleafnode.off_command.Off
     :members: do
     :undoc-members:
 .. autoclass:: tmcprototype.cspmasterleafnode.src.cspmasterleafnode.on_command.On
-    :members: do, on_cmd_ended_cb
+    :members: do
     :undoc-members:
 .. autoclass:: tmcprototype.cspmasterleafnode.src.cspmasterleafnode.standby_command.Standby
-    :members: do, standby_cmd_ended_cb, check_allowed
+    :members: do
     :undoc-members:
