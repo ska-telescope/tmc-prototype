@@ -100,7 +100,8 @@ class ConfigureCommand(BaseCommand):
         :rtype: (ReturnCode, str)
 
         :raises: DevFailed if the command execution is not successful
-                    ValueError if input argument json string contains invalid value
+
+                 ValueError if input argument json string contains invalid value
         """
         device_data = self.target
         target_Ra = ""

@@ -35,7 +35,8 @@ __all__ = ["CentralNode", "main", "AssignResources", "DeviceData", "const",
 class CentralNode(SKABaseDevice):
     """
     Central Node is a coordinator of the complete M&C system.
-    **Device Prortis**
+
+    **Device Properties**
 
     :CentralAlarmHandler: Device name of CentralAlarmHandler
 

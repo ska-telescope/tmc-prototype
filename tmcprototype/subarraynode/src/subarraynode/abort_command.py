@@ -25,7 +25,7 @@ class Abort(SKASubarray.AbortCommand):
     """
     def do(self):
         """
-        Method to invoke Abort command on Subarray.
+        Method to invoke Abort command.
 
         :return: A tuple containing a return code and a string
             message indicating status. The message is for

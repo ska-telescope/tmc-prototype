@@ -28,7 +28,7 @@ class On(SKASubarray.OnCommand):
 
     def do(self):
         """
-        Method to invoke On command on Subarray.
+        Method to invoke On command.
 
         :return: A tuple containing a return code and a string message indicating status. The message is for
                 information purpose only.

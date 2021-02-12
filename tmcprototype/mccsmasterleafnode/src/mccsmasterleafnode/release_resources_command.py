@@ -12,7 +12,11 @@ from . import const
 class ReleaseResources(BaseCommand):
     """
     A class for MccsMasterLeafNode's ReleaseResources() command.
+
+    It invokes ReleaseResources command on MccsMaster and releases all the resources assigned to
+    MccsMaster.
     """
+
 
     def check_allowed(self):
         """
@@ -67,10 +71,10 @@ class ReleaseResources(BaseCommand):
 
     def do(self, argin):
         """
-        It invokes ReleaseResources command on MccsMaster and releases all the resources assigned to
-        MccsMaster.
+        Method to invoke ReleaseResources command on Subarray.
 
-        :param argin:StringType. The string in JSON format.
+        :param argin:
+                     StringType. The string in JSON format.
 
         Example: 
              {
@@ -78,11 +82,11 @@ class ReleaseResources(BaseCommand):
                 "release_all": true
                }
 
-
         :return: None.
 
         :raises: DevFailed if the command execution is not successful
 
+                 ValueError if invalid json string.
 
         """
         device_data = self.target

@@ -51,7 +51,7 @@ class Off(SKABaseDevice.OffCommand):
 
     def do(self):
         """
-        Invokes Off command on the MCCS Master.
+        Method to invoke Off command on the MCCS.
 
         :param argin: None.
 

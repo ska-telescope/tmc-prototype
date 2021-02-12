@@ -26,7 +26,7 @@ class EndScan(SKASubarray.EndScanCommand):
     """
     def do(self):
         """
-        Method to invoke Endscan command on Subarray.
+        Method to invoke Endscan command.
 
         :return: A tuple containing a return code and a string message indicating status.
         The message is for information purpose only.

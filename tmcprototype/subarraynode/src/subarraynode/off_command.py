@@ -24,7 +24,7 @@ class Off(SKASubarray.OffCommand):
     """
     def do(self):
         """
-        Method to invoke Off command on Subarray.
+        Method to invoke Off command.
 
         :return: A tuple containing a return code and a string message indicating status.
                  The message is for information purpose only.

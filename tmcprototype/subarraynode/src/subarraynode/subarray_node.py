@@ -67,7 +67,7 @@ class SubarrayNode(SKASubarray):
 
     :sbID: ID of ongoing Scheduling Block
 
-    :activityMessage: String providing information about the current activity in SDPLeafNode.
+    :activityMessage: String providing information about the current activity in SubarrayNode.
 
     :receptorIDList: ID List of the Receptors assigned in the Subarray.
 

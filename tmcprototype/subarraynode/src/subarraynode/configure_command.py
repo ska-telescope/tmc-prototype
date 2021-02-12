@@ -35,7 +35,7 @@ class Configure(SKASubarray.ConfigureCommand):
     @identify_with_id('configure', 'argin')
     def do(self, argin):
         """
-        Method to invoke Configure command on Subarray.
+        Method to invoke Configure command.
 
         :param argin: DevString.
 

@@ -44,7 +44,7 @@ class Track(ResponseCommand):
 
     def do(self, argin):
         """
-        Method to invoke Track command on Subarray.
+        Method to invoke Track command.
 
         :param argin: DevString
 

@@ -6,7 +6,7 @@
 MCCS Master Leaf Node
 ************
 .. autoclass:: tmcprototype.mccsmasterleafnode.src.mccsmasterleafnode.mccs_master_leaf_node.MccsMasterLeafNode
-   :members:None
+   :members: None
    :undoc-members:
 .. autoclass:: tmcprototype.mccsmasterleafnode.src.mccsmasterleafnode.assign_resources_command.AssignResources
    :members: do

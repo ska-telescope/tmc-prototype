@@ -52,7 +52,7 @@ class On(SKABaseDevice.OnCommand):
 
     def do(self):
         """
-        Invokes On command on the MCCS Element.
+        Method to invoke On command on the MCCS.
 
         :param argin: None
 

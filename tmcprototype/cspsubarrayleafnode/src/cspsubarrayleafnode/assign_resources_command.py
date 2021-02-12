@@ -94,24 +94,27 @@ class AssignResourcesCommand(BaseCommand):
                     DevVarString
                     The individual string should contain dish numbers in string format
                     with preceding zeroes upto 3 digits. E.g. 0001, 0002.
-        Example:
-        {
-            "subarrayID":1,
-            "dish": {
-            "receptorIDList": [
-                "0001",
-                "0002"
-            ]
-            }
-        }
+
+        :Example: {
+                    "subarrayID":1,
+                    "dish": {
+                    "receptorIDList": [
+                        "0001",
+                        "0002"
+                    ]
+                    }
+              }
+
 
         Note: Enter the json string without spaces as an input.
 
         :return: None
 
         :raises: ValueError if input argument json string contains invalid value
-                    KeyError if input argument json string contains invalid key
-                    DevFailed if the command execution is not successful
+
+                KeyError if input argument json string contains invalid key
+
+                DevFailed if the command execution is not successful
         """
         device_data = self.target
         try:

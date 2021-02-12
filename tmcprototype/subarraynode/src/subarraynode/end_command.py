@@ -25,7 +25,7 @@ class End(SKASubarray.EndCommand):
     """
     def do(self):
         """
-        Method to invoke End command on Subarray.
+        Method to invoke End command.
 
         :return: A tuple containing a return code and a string message indicating status.
         The message is for information purpose only.

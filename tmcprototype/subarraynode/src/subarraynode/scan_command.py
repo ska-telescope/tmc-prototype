@@ -29,13 +29,11 @@ class Scan(SKASubarray.ScanCommand):
 
     def do(self, argin):
         """
-        Method to invoke Scan command on Subarray.
+        Method to invoke Scan command.
 
         :param argin: DevString. JSON string containing id.
 
-        JSON string example as follows:
-
-        {"id": 1}
+        :Example:   {"id": 1}
 
         Note: Above JSON string can be used as an input argument while invoking this command from JIVE.
 

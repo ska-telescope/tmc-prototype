@@ -60,7 +60,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     :cspSubarrayObsState: Forwarded attribute to provide CSP Subarray Observation State
 
-    :activityMessage: Attribute to provide activity message
+    :activityMessage: String providing information about the current activity in CspSubarrayLeaf Node.
 
     :delayModel: Attribute to provide the delay model.
 

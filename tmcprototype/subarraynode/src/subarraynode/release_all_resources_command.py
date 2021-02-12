@@ -29,7 +29,7 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
     """
     def do(self):
         """
-        Method to invoke ReleaseAllResources command on Subarray.
+        Method to invoke ReleaseAllResources command.
 
         :return: A tuple containing a return code and "[]" as a string on successful release all resources.
         Example: "[]" as string on successful release all resources.

@@ -13,6 +13,9 @@ from . import const
 class AssignResources(BaseCommand):
     """
     A class for MccsMasterLeafNode's AssignResources() command.
+
+     It accepts stationiDList list, channels and stationBeamiDList in JSON string format and invokes allocate command on MccsMaster
+     with JSON string as an input argument.
     """
 
     def check_allowed(self):
@@ -80,10 +83,10 @@ class AssignResources(BaseCommand):
 
     def do(self, argin):
         """
-        It accepts stationiDList list, channels and stationBeamiDList in JSON string format and invokes allocate command on MccsMaster
-        with JSON string as an input argument.
+        Method to invoke AssignResources command on Subarray.
 
-        :param argin:StringType. The string in JSON format.
+        :param argin:
+                     StringType. The string in JSON format.
             
         Example:
                 {
