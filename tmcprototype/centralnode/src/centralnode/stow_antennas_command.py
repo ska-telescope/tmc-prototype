@@ -16,6 +16,9 @@ from tmc.common.tango_client import TangoClient
 class StowAntennas(BaseCommand):
     """
     A class for CentralNode's StowAntennas() command.
+
+    Invokes the command SetStowMode on the specified receptors.
+
     """
 
     def check_allowed(self):
@@ -39,14 +42,15 @@ class StowAntennas(BaseCommand):
 
     def do(self, argin):
         """
-        Invokes the command SetStowMode on the specified receptors.
+        Method to invoke StowAntennas command.
 
         :param argin: List of Receptors to be stowed.
 
         :return: None
 
         :raises: DevFailed if error occurs while invoking command of DishLeafNode
-                ValueError if error occurs if input argument json string contains invalid value
+
+                 ValueError if error occurs if input argument json string contains invalid value
         """
         device_data = DeviceData.get_instance()
         self.logger.info(type(self.target))

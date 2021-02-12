@@ -17,6 +17,11 @@ from tmc.common.tango_client import TangoClient
 class StartUpTelescope(SKABaseDevice.OnCommand):
     """
     A class for CentralNode's StartupCommand() command.
+
+    Setting the startup state to TRUE enables the telescope to accept subarray commands as per the subarray
+    model. Set the CentralNode into ON state. Invokes 'On' command on DishLeaf node, SDPMasterLeaf node, CSPMasterLeaf node
+    and Subarray Node.
+
     """
 
     def check_allowed(self):
@@ -39,13 +44,12 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
 
     def do(self):
         """
-        Setting the startup state to TRUE enables the telescope to accept subarray commands as per the subarray
-        model. Set the CentralNode into ON state.
+        Method to invoke On command on Lower level devices.
 
         :param argin: None.
 
         :return: A tuple containing a return code and a string message indicating status.
-        The message is for information purpose only.
+                 The message is for information purpose only.
 
         :rtype: (ResultCode, str)
         """

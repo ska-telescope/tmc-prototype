@@ -35,6 +35,34 @@ __all__ = ["CentralNode", "main", "AssignResources", "DeviceData", "const",
 class CentralNode(SKABaseDevice):
     """
     Central Node is a coordinator of the complete M&C system.
+    **Device Prortis**
+
+    :CentralAlarmHandler: Device name of CentralAlarmHandler
+
+    :TMAlarmHandler: Device name of TMAlarmHandler
+
+    :TMMidSubarrayNodes: List of TM Mid Subarray Node devices
+
+    :NumDishes: Number of Dishes
+
+    :DishLeafNodePrefix: Device name prefix for Dish Leaf Node
+
+    :CspMasterLeafNodeFQDN: FQDN of CSP Master Leaf Node.
+
+    :SdpMasterLeafNodeFQDN: FQDN of SDP Master Leaf Node.
+
+    **Device Attributes**
+
+    :telescopeHealthState: Health state of Telescope
+
+    :subarray1HealthState: Health state of Subarray1
+
+    :subarray2HealthState:  Health state of Subarray2
+
+    :subarray3HealthState:  Health state of Subarray3
+
+    :activityMessage: String providing information about the current activity in Central Node.
+
     """
     # -----------------
     # Device Properties

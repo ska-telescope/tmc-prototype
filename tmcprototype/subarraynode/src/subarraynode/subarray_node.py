@@ -50,10 +50,10 @@ class SubarrayNode(SKASubarray):
     **Device Properties**
 
     :SdpSubarrayLNFQDN: This property contains the FQDN of the SDP Subarray Leaf Node associated with the
-    Subarray Node.
+                        Subarray Node.
 
     :CspSubarrayLNFQDN: This property contains the FQDN of the CSP Subarray Leaf Node associated with the
-    Subarray Node.
+                        Subarray Node.
 
     :DishLeafNodePrefix: Device name prefix for the Dish Leaf Node.
 

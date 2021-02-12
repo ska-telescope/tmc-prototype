@@ -67,7 +67,8 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         :rtype: (ResultCode, str)
 
         :raises: ValueError if input argument json string contains invalid value
-                DevFailed if the command execution is not successful
+
+                 DevFailed if the command execution is not successful
 
         """
         device_data = DeviceData.get_instance()

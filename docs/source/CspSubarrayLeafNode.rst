@@ -9,36 +9,36 @@ CSP Subarray Leaf Node
 .. autoclass:: tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.csp_subarray_leaf_node.CspSubarrayLeafNode
     :members: None
     :undoc-members:
-.. autoclass:: tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.csp_subarray_leaf_node.on_command.On
+.. autoclass:: tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.on_command.On
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.csp_subarray_leaf_node.off_command.Off
+.. autoclass:: tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.off_command.Off
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.csp_subarray_leaf_node.assign_resources_command.AssignResourcesCommand
+.. autoclass:: tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.assign_resources_command.AssignResourcesCommand
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.csp_subarray_leaf_node.release_all_resources_command.ReleaseAllResourcesCommand
+.. autoclass:: tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.release_all_resources_command.ReleaseAllResourcesCommand
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.csp_subarray_leaf_node.configure_command.ConfigureCommand
+.. autoclass:: tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.configure_command.ConfigureCommand
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.csp_subarray_leaf_node.scan_command.StartScanCommand
+.. autoclass:: tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.scan_command.StartScanCommand
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.csp_subarray_leaf_node.end_scan_command.EndScanCommand
+.. autoclass:: tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.end_scan_command.EndScanCommand
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.csp_subarray_leaf_node.end_command.GoToIdleCommand
+.. autoclass:: tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.end_command.GoToIdleCommand
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.csp_subarray_leaf_node.abort_command.AbortCommand
+.. autoclass:: tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.abort_command.AbortCommand
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.csp_subarray_leaf_node.restart_command.RestartCommand
+.. autoclass:: tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.restart_command.RestartCommand
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.csp_subarray_leaf_node.obsreset_command.ObsResetCommand
+.. autoclass:: tmcprototype.cspsubarrayleafnode.src.cspsubarrayleafnode.obsreset_command.ObsResetCommand
     :members: do
     :undoc-members:

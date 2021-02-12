@@ -16,6 +16,9 @@ from tmc.common.tango_client import TangoClient
 class StandByTelescope(SKABaseDevice.OffCommand):
     """
     A class for CentralNode's StandByTelescope() command.
+
+    Sets the CentralNode into OFF state. Invokes the respective command on lower level nodes.
+    Invokes command on DishLeaf node, SDPMasterLeaf node, CSPMasterLeaf node and Subarray Node.
     """
     def check_allowed(self):
 
@@ -37,14 +40,15 @@ class StandByTelescope(SKABaseDevice.OffCommand):
 
     def do(self):
         """
-        Sets the CentralNode into OFF state. Invokes the respective command on lower level nodes adn devices.
+        Method to invoke Off command on Lower level devices.
 
         :param: None
 
         :return: A tuple containing a return code and a string message indicating status.
-        The message is for information purpose only.
+                 The message is for information
 
         :rtype: (ResultCode, str)
+
         """
         self.logger.info(type(self.target))
         device_data = DeviceData.get_instance()
@@ -123,6 +127,7 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         :return: None
 
         :raises: Devfailed exception if error occures while executing command on leaf nodes.
+
         """
         device_data = DeviceData.get_instance()
         try:
