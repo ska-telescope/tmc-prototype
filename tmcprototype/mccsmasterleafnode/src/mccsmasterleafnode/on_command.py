@@ -13,7 +13,10 @@ from . import const
 
 class On(SKABaseDevice.OnCommand):
     """
-    A class for MccsMasterLeafNode's On() command.
+    A class for MccsMasterLeafNode's On() command. On command is inherited from SKABaseDevice.
+
+    It Sets the OpState to On.
+
     """
 
     def on_cmd_ended_cb(self, event):

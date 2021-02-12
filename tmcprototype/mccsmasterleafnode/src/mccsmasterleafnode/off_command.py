@@ -12,7 +12,10 @@ from . import const
 
 class Off(SKABaseDevice.OffCommand):
     """
-    A class for MccsMasterLeafNode's Off() command.
+    A class for MccsMasterLeafNode's Off() command. Off command is inherited from SKABaseDevice.
+
+    It Sets the OpState to Off.
+
     """
 
     def off_cmd_ended_cb(self, event):
