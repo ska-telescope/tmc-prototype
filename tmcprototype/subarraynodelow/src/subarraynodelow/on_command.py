@@ -19,12 +19,15 @@ from .obs_state_aggregator import ObsStateAggregator
 class On(SKASubarray.OnCommand):
     """
     A class for the SubarrayNodeLow's On() command.
+
+    This command invokes On Command on MCCSSubarray through MCCS Subarray Leaf node. This comamnd
+    changes Subarray device state from OFF to ON.
+
     """
 
     def do(self):
         """
-        This command invokes On Command on MCCSSubarray through MCCS Subarray Leaf node. This comamnd
-        changes Subarray device state from OFF to ON.
+        Method to invoke On command.
 
         :return: A tuple containing a return code and a string message indicating status. The message is for
                 information purpose only.

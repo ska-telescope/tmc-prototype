@@ -21,12 +21,15 @@ from tmc.common.tango_client import TangoClient
 class Configure(SKASubarray.ConfigureCommand):
     """
     A class for SubarrayNodeLow's Configure() command.
+
+    Configures the resources assigned to the Mccs Subarray.
+
     """
 
     def do(self, argin):
         """
-        Configures the resources assigned to the Mccs Subarray.
-    
+        Method to invoke Configure command.
+
         :param argin: DevString.
 
         JSON string example is:

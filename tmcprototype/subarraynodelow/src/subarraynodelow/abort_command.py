@@ -15,11 +15,14 @@ from . import const
 class Abort(SKASubarray.AbortCommand):
     """
     A class for SubarrayNode's Abort() command.
+
+    This command on Subarray Node Low invokes Abort command on MCCS Subarray Leaf Node and aborts ongoing
+    activity.
+
     """
     def do(self):
         """
-        This command on Subarray Node Low invokes Abort command on MCCS Subarray Leaf Node and aborts ongoing
-        activity.
+        Method to invoke Abort command.
 
         :return: A tuple containing a return code and a string
             message indicating status. The message is for

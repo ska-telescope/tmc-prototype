@@ -17,12 +17,15 @@ from . import const
 class EndScan(SKASubarray.EndScanCommand):
     """
     A class for SubarrayNodeLow's EndScan() command.
+
+    Ends the scan. It is invoked on subarrayLow after completion of the scan duration. It can
+    also be invoked by an external client while a scan is in progress, Which stops the scan
+    immediately irrespective of the provided scan duration.
+
     """
     def do(self):
         """
-        Ends the scan. It is invoked on subarrayLow after completion of the scan duration. It can
-        also be invoked by an external client while a scan is in progress, Which stops the scan
-        immediately irrespective of the provided scan duration.
+        Method to invoke EndScan command.
 
         :return: A tuple containing a return code and a string message indicating status.
         The message is for information purpose only.

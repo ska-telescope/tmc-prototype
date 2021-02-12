@@ -14,10 +14,12 @@ from subarraynodelow.device_data import DeviceData
 class AssignResources(SKASubarray.AssignResourcesCommand):
     """
     A class for SubarrayNodelow's AssignResources() command.
+
+    Assigns the resources to the subarray. It accepts station ids, channels, station beam ids
     """
     def do(self, argin):
         """
-        Assigns the resources to the subarray. It accepts station ids, channels, station beam ids
+        Method to invoke AssignResources command.
 
         :param argin: DevString in JSON form containing following fields:
             station_ids: list of integers

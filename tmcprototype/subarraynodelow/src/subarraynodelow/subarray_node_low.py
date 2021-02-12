@@ -42,6 +42,20 @@ class SubarrayNode(SKASubarray):
     """
     Provides the monitoring and control interface required by users as well as
     other TM Components (such as OET, Central Node) for a Subarray.
+
+    **Device Properties**
+
+    :MccsSubarrayLNFQDN: This property contains the FQDN of the MCCS Subarray Leaf Node associated with the
+                         Subarray Node.
+
+    :MccsSubarrayFQDN: This property contains the FQDN of the MCCS Subarray associated with the
+                       Subarray Node.
+
+    **Device Attributes**
+
+    :scanID: ID of ongoing SCAN
+
+    :activityMessage: String providing information about the current activity in SubarrayNode.
     """
     # -----------------
     # Device Properties

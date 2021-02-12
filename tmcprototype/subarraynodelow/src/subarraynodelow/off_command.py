@@ -17,11 +17,14 @@ from . import const
 class Off(SKASubarray.OffCommand):
     """
     A class for the SubarrayNodes's Off() command.
+
+    This command invokes Off Command on MCCSSubarray through mccs subarray leaf node. This comamnd
+    changes Subaray device state from ON to OFF.
+
     """
     def do(self):
         """
-        This command invokes Off Command on MCCSSubarray through mccs subarray leaf node. This comamnd
-        changes Subaray device state from ON to OFF.
+        Method to invoke Off command.
 
         :return: A tuple containing a return code and a string message indicating status.
         The message is for information purpose only.

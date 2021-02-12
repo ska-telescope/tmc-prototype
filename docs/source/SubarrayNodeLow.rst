@@ -3,33 +3,39 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Subarray Node
+Subarray Node Low
 ======================================
 
-.. automodule:: tmcprototype.subarraynodelow.src.subarraynodelow.subarray_node_low
-   :members:
-   :undoc-members:
-.. automodule:: tmcprototype.subarraynodelow.src.subarraynodelow.assign_resources_command
-  :members:
-  :undoc-members:
-.. automodule:: tmcprototype.subarraynodelow.src.subarraynodelow.configure_command
-  :members:
-  :undoc-members:
-.. automodule:: tmcprototype.subarraynodelow.src.subarraynodelow.end_command
-  :members:
-  :undoc-members:
-.. automodule:: tmcprototype.subarraynodelow.src.subarraynodelow.end_scan_command
-  :members:
-  :undoc-members:
-.. automodule:: tmcprototype.subarraynodelow.src.subarraynodelow.off_command
-  :members:
-  :undoc-members:
-.. automodule:: tmcprototype.subarraynodelow.src.subarraynodelow.on_command
-  :members:
-  :undoc-members:
-.. automodule:: tmcprototype.subarraynodelow.src.subarraynodelow.release_all_resources_command
-  :members:
-  :undoc-members:
-.. automodule:: tmcprototype.subarraynodelow.src.subarraynodelow.scan_command
-  :members:
-  :undoc-members:
+.. autoclass:: tmcprototype.subarraynodelow.src.subarraynodelow.subarray_node_low.SubarrayNode
+    :members: None
+    :undoc-members:
+.. autoclass:: tmcprototype.subarraynodelow.src.subarraynodelow.on_command.On
+    :members: do
+    :undoc-members:
+.. autoclass:: tmcprototype.subarraynodelow.src.subarraynodelow.off_command.Off
+    :members: do
+    :undoc-members:
+.. autoclass:: tmcprototype.subarraynodelow.src.subarraynodelow.assign_resources_command.AssignResources
+    :members: do
+    :undoc-members:
+.. autoclass:: tmcprototype.subarraynodelow.src.subarraynodelow.release_all_resources_command.ReleaseAllResources
+    :members: do
+    :undoc-members:
+.. autoclass:: tmcprototype.subarraynodelow.src.subarraynodelow.configure_command.Configure
+    :members: do
+    :undoc-members:
+.. autoclass:: tmcprototype.subarraynodelow.src.subarraynodelow.scan_command.Scan
+    :members: do
+    :undoc-members:
+.. autoclass:: tmcprototype.subarraynodelow.src.subarraynodelow.end_scan_command.EndScan
+    :members: do
+    :undoc-members:
+.. autoclass:: tmcprototype.subarraynodelow.src.subarraynodelow.end_command.End
+    :members: do
+    :undoc-members:
+.. autoclass:: tmcprototype.subarraynodelow.src.subarraynodelow.abort_command.Abort
+    :members: do
+    :undoc-members:
+.. autoclass:: tmcprototype.subarraynodelow.src.subarraynodelow.obsreset_command.ObsReset
+    :members: do
+    :undoc-members:

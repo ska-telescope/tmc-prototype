@@ -17,14 +17,17 @@ from . import const
 class Scan(SKASubarray.ScanCommand):
     """
     A class for SubarrayNodeLow's Scan() command.
+
+    This command accepts id as input. And it Schedule scan on subarray
+    from where scan command is invoked on MCCS subarray Leaf Node for the
+    provided interval of time. It checks whether the scan is already in progress. If yes it
+    throws error showing duplication of command.
+
     """
 
     def do(self, argin):
         """
-        This command accepts id as input. And it Schedule scan on subarray
-        from where scan command is invoked on MCCS subarray Leaf Node for the
-        provided interval of time. It checks whether the scan is already in progress. If yes it
-        throws error showing duplication of command.
+        Method to invoke Scan command.
 
         :param argin: DevString. JSON string containing id.
 

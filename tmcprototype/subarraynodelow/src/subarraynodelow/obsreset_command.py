@@ -18,11 +18,14 @@ from . import const
 class ObsReset(SKASubarray.ObsResetCommand):
     """
     A class for Low SubarrayNode's ObsReset() command.
+
+    This command invokes ObsReset command on MccsSubarrayLeafNode.
+
     """
 
     def do(self):
         """
-        This command invokes ObsReset command on MccsSubarrayLeafNode.
+        Method to invoke ObsReset command.
 
         :return: A tuple containing a return code and a string
             message indicating status. The message is for

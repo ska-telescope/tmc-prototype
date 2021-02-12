@@ -17,10 +17,13 @@ from . import const
 class End(SKASubarray.EndCommand):
     """
     A class for SubarrayNodeLow's End() command.
+
+    This command on Subarray Node Low invokes End command on MCCS Subarray Leaf Node.
+
     """
     def do(self):
         """
-        This command on Subarray Node Low invokes End command on MCCS Subarray Leaf Node.
+        Method to invoke End command.
 
         :return: A tuple containing a return code and a string message indicating status.
         The message is for information purpose only.
