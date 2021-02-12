@@ -1,5 +1,4 @@
 # PROTECTED REGION ID(MccsMasterLeafNode.import) ENABLED START #
-import time
 # Tango imports
 import tango
 from tango import DevFailed
@@ -72,7 +71,6 @@ class On(SKABaseDevice.OnCommand):
             mccs_master_client.send_command_async(
                 const.CMD_ON, None, self.on_cmd_ended_cb
             )
-            time.sleep(2)
             self.logger.debug(const.STR_ON_CMD_ISSUED)
             return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
 
