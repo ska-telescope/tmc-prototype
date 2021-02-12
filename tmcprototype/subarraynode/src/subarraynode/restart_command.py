@@ -19,12 +19,13 @@ from tmc.common.tango_server_helper import TangoServerHelper
 class Restart(SKASubarray.RestartCommand):
     """
     A class for SubarrayNode's Restart() command.
+
+    This command invokes Restart command on CSPSubarrayLeafNode, SDpSubarrayLeafNode and DishLeafNode.
+
     """
 
     def do(self):
         """
-        This command invokes Restart command on CSPSubarrayLeafNode, SDpSubarrayLeafNode and DishLeafNode.
-
         :return: A tuple containing a return code and a string
             message indicating status. The message is for
             information purpose only.

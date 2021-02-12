@@ -18,16 +18,17 @@ from subarraynode.device_data import DeviceData
 class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
     """
     A class for SKASubarray's ReleaseAllResources() command.
+
+    It checks whether all resources are already released. If yes then it throws error while
+    executing command. If not it Releases all the resources from the subarray i.e. Releases
+    resources from TMC Subarray Node, CSP Subarray and SDP Subarray. If the command
+    execution fails, array of receptors(device names) which are failed to be released from the
+    subarray, is returned to Central Node. Upon successful execution, all the resources of a given
+    subarray get released and empty array is returned. Selective release is not yet supported.
+
     """
     def do(self):
         """
-        It checks whether all resources are already released. If yes then it throws error while
-        executing command. If not it Releases all the resources from the subarray i.e. Releases
-        resources from TMC Subarray Node, CSP Subarray and SDP Subarray. If the command
-        execution fails, array of receptors(device names) which are failed to be released from the
-        subarray, is returned to Central Node. Upon successful execution, all the resources of a given
-        subarray get released and empty array is returned. Selective release is not yet supported.
-
         :return: A tuple containing a return code and "[]" as a string on successful release all resources.
         Example: "[]" as string on successful release all resources.
 

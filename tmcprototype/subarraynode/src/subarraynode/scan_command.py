@@ -19,15 +19,16 @@ from subarraynode.device_data import DeviceData
 class Scan(SKASubarray.ScanCommand):
     """
     A class for SubarrayNode's Scan() command.
+
+    This command accepts id as input. And it Schedule scan on subarray
+    from where scan command is invoked on respective CSP and SDP subarray node for the
+    provided interval of time. It checks whether the scan is already in progress. If yes it
+    throws error showing duplication of command.
+
     """
 
     def do(self, argin):
         """
-        This command accepts id as input. And it Schedule scan on subarray
-        from where scan command is invoked on respective CSP and SDP subarray node for the
-        provided interval of time. It checks whether the scan is already in progress. If yes it
-        throws error showing duplication of command.
-
         :param argin: DevString. JSON string containing id.
 
         JSON string example as follows:

@@ -17,12 +17,13 @@ from subarraynode.device_data import DeviceData
 class Off(SKASubarray.OffCommand):
     """
     A class for the SubarrayNodes's Off() command.
+
+    This command invokes Off Command on CSPSubarray and SDPSubarray through respective leaf nodes. This comamnd
+    changes Subaray device state from ON to OFF.
+
     """
     def do(self):
         """
-        This command invokes Off Command on CSPSubarray and SDPSubarray through respective leaf nodes. This comamnd
-        changes Subaray device state from ON to OFF.
-
         :return: A tuple containing a return code and a string message indicating status.
         The message is for information purpose only.
 

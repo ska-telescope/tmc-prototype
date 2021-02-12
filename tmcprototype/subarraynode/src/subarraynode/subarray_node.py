@@ -46,6 +46,31 @@ class SubarrayNode(SKASubarray):
     """
     Provides the monitoring and control interface required by users as well as
     other TM Components (such as OET, Central Node) for a Subarray.
+
+    **Device Properties**
+
+    :SdpSubarrayLNFQDN: This property contains the FQDN of the SDP Subarray Leaf Node associated with the
+    Subarray Node.
+
+    :CspSubarrayLNFQDN: This property contains the FQDN of the CSP Subarray Leaf Node associated with the
+    Subarray Node.
+
+    :DishLeafNodePrefix: Device name prefix for the Dish Leaf Node.
+
+    :CspSubarrayFQDN: FQDN of the CSP Subarray Tango Device Server.
+
+    :SdpSubarrayFQDN: FQDN of the CSP Subarray Tango Device Server.
+
+    **Device Attributes**
+
+    :scanID: ID of ongoing SCAN
+
+    :sbID: ID of ongoing Scheduling Block
+
+    :activityMessage: String providing information about the current activity in SDPLeafNode.
+
+    :receptorIDList: ID List of the Receptors assigned in the Subarray.
+
     """
     # PROTECTED REGION ID(SubarrayNode.class_variable) ENABLED START
 

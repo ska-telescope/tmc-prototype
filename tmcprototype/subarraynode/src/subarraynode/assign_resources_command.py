@@ -21,18 +21,19 @@ from subarraynode.device_data import DeviceData
 class AssignResources(SKASubarray.AssignResourcesCommand):
     """
     A class for SubarrayNode's AssignResources() command.
+
+    Assigns resources to the subarray. It accepts receptor id list as well as SDP resources string
+    as a DevString. Upon successful execution, the 'receptorIDList' attribute of the
+    subarray is updated with the list of receptors and SDP resources string is pass to SDPSubarrayLeafNode,
+    and returns list of assigned resources as well as passed SDP string as a DevString.
+
+    Note: Resource allocation for CSP and SDP resources is also implemented but
+    currently CSP accepts only receptorIDList and SDP accepts resources allocated to it.
+
     """
     @identify_with_id('assign','argin')
     def do(self, argin):
         """
-        Assigns resources to the subarray. It accepts receptor id list as well as SDP resources string
-        as a DevString. Upon successful execution, the 'receptorIDList' attribute of the
-        subarray is updated with the list of receptors and SDP resources string is pass to SDPSubarrayLeafNode,
-        and returns list of assigned resources as well as passed SDP string as a DevString.
-
-        Note: Resource allocation for CSP and SDP resources is also implemented but
-        currently CSP accepts only receptorIDList and SDP accepts resources allocated to it.
-
         :param argin: DevString.
 
         Example:

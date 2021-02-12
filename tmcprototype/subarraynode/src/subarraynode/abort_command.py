@@ -18,12 +18,13 @@ from . import const
 class Abort(SKASubarray.AbortCommand):
     """
     A class for SubarrayNode's Abort() command.
+
+    This command on Subarray Node invokes Abort command on CSP Subarray Leaf Node and SDP
+    Subarray Leaf Node, and stops tracking of all the assigned dishes.
+
     """
     def do(self):
         """
-        This command on Subarray Node invokes Abort command on CSP Subarray Leaf Node and SDP
-        Subarray Leaf Node, and stops tracking of all the assigned dishes.
-
         :return: A tuple containing a return code and a string
             message indicating status. The message is for
             information purpose only.

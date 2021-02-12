@@ -20,6 +20,9 @@ from .device_data import DeviceData
 class Track(ResponseCommand):
     """
     A class for SubarrayNode's Track command.
+
+    Invokes Track command on the Dishes assigned to the Subarray.
+
     """
 
     def check_allowed(self):
@@ -40,8 +43,7 @@ class Track(ResponseCommand):
         return True
 
     def do(self, argin):
-        """ Invokes Track command on the Dishes assigned to the Subarray.
-
+        """
         :param argin: DevString
 
         Example:

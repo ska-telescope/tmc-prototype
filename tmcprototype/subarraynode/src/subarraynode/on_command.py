@@ -20,13 +20,14 @@ from subarraynode.receive_addresses import ReceiveAddressesUpdater
 class On(SKASubarray.OnCommand):
     """
     A class for the SubarrayNode's On() command.
+
+    This command invokes On Command on CSPSubarray and SDPSubarray through respective leaf nodes. This comamnd
+    changes Subaray device state from OFF to ON.
+
     """
 
     def do(self):
         """
-        This command invokes On Command on CSPSubarray and SDPSubarray through respective leaf nodes. This comamnd
-        changes Subaray device state from OFF to ON.
-
         :return: A tuple containing a return code and a string message indicating status. The message is for
                 information purpose only.
 

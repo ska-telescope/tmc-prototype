@@ -26,15 +26,15 @@ sdp_interface_version = 0
 class Configure(SKASubarray.ConfigureCommand):
     """
     A class for SubarrayNode's Configure() command.
+
+    Configures the resources assigned to the Subarray.The configuration data for SDP, CSP and Dish is
+    extracted out of the input configuration string and relayed to the respective underlying devices (SDP
+    Subarray Leaf Node, CSP Subarray Leaf Node and Dish Leaf Node).
     """
 
     @identify_with_id('configure', 'argin')
     def do(self, argin):
         """
-        Configures the resources assigned to the Subarray.The configuration data for SDP, CSP and Dish is
-        extracted out of the input configuration string and relayed to the respective underlying devices (SDP
-        Subarray Leaf Node, CSP Subarray Leaf Node and Dish Leaf Node).
-
         :param argin: DevString.
 
         JSON string that includes pointing parameters of Dish - Azimuth and Elevation Angle, CSP
