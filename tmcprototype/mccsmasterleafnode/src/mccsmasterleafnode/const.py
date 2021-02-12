@@ -1,7 +1,7 @@
 # In/Out command constants
 CMD_ALLOCATE = "Allocate"
 CMD_Release = "Release"
-CMD_ON = "On"
+CMD_ON = "Startup"
 CMD_OFF = "Off"
 # Error messages
 ERR_IN_CREATE_PROXY = "Error in creating proxy of the device "
