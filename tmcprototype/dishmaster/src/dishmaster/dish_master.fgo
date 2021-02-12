@@ -50,10 +50,10 @@
             "polling": 3000,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "ON",
+            "string": "STANDBY",
             "time": 1602497011.473705,
             "unit": "",
-            "value": 0,
+            "value": 7,
             "writable": "READ"
         },
         "Status": {
@@ -106,10 +106,10 @@
             "polling": 3000,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "Device mid_dsh_0000/elt/master is running",
+            "string": "Device mid_dsh_0000/elt/master in standby",
             "time": 1602497011.473706,
             "unit": "",
-            "value": "Device mid_dsh_0000/elt/master is running",
+            "value": "Device mid_dsh_0000/elt/master is standby",
             "writable": "READ"
         },
         "achievedPointing": {
