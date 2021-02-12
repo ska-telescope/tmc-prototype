@@ -76,6 +76,8 @@ class ReleaseAllResourcesCommand(BaseCommand):
 
     def do(self):
         """
+        Method to invoke ReleaseAllResources command on CSP Subarray.
+
         :return: None
 
         :raises: DevFailed if the command execution is not successful

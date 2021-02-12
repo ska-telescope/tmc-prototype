@@ -29,12 +29,15 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
     """
     def do(self):
         """
+        Method to invoke ReleaseAllResources command on Subarray.
+
         :return: A tuple containing a return code and "[]" as a string on successful release all resources.
         Example: "[]" as string on successful release all resources.
 
         :rtype: (ResultCode, str)
 
         :raises: DevFailed if the command execution is not successful
+
         """
         device_data = DeviceData.get_instance()
         device_data.is_release_resources = False
@@ -69,12 +72,12 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
 
     def release_csp_resources(self, csp_subarray_ln_fqdn):
         """
-            This function invokes releaseAllResources command on CSP Subarray via CSP Subarray Leaf
-            Node.
+        This function invokes releaseAllResources command on CSP Subarray via CSP Subarray Leaf
+        Node.
 
-            :param argin: DevVoid
+        :param argin: DevVoid
 
-            :return: DevVoid
+        :return: DevVoid
 
         """
         try:
@@ -87,11 +90,11 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
 
     def release_sdp_resources(self, sdp_subarray_ln_fqdn):
         """
-            This function invokes releaseAllResources command on SDP Subarray via SDP Subarray Leaf Node.
+        This function invokes releaseAllResources command on SDP Subarray via SDP Subarray Leaf Node.
 
-            :param argin: DevVoid
+        :param argin: DevVoid
 
-            :return: DevVoid
+        :return: DevVoid
 
         """
         try:

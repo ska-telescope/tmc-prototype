@@ -77,6 +77,8 @@ class StartScanCommand(BaseCommand):
 
     def do(self, argin):
         """
+        Method to invoke StartScan command on CSP Subarray.
+
         :param argin: JSON string consists of scan id (int).
 
         Example:

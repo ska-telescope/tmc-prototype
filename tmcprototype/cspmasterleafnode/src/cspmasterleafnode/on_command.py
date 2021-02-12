@@ -46,7 +46,7 @@ class On(SKABaseDevice.OnCommand):
 
     def do(self):
         """
-        Invokes On command on the CSP Element.
+        Method to invoke On command on CSP Element.
 
         :param argin: None
 

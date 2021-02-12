@@ -73,6 +73,8 @@ class ObsResetCommand(BaseCommand):
 
     def do(self):
         """
+        Method to invoke ObsReset command on CSP Subarray.
+
         :param argin: None
 
         :return: None

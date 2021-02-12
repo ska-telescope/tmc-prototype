@@ -44,6 +44,8 @@ class Track(ResponseCommand):
 
     def do(self, argin):
         """
+        Method to invoke Track command on Subarray.
+
         :param argin: DevString
 
         Example:
@@ -52,7 +54,7 @@ class Track(ResponseCommand):
         in Hr:Min:Sec, and third value is Dec in Deg:Min:Sec.
 
         :return: A tuple containing a return code and a string message indicating status.
-        The message is for information purpose only.
+                 The message is for information purpose only.
 
         :rtype: (ResultCode, str)
 

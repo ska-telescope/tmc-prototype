@@ -24,12 +24,15 @@ class Off(SKASubarray.OffCommand):
     """
     def do(self):
         """
+        Method to invoke Off command on Subarray.
+
         :return: A tuple containing a return code and a string message indicating status.
-        The message is for information purpose only.
+                 The message is for information purpose only.
 
         :rtype: (ResultCode, str)
 
         :raises: DevFailed if the command execution is not successful
+
         """
         device_data = DeviceData.get_instance()
         device_data.is_restart_command = False

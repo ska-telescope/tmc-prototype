@@ -49,6 +49,8 @@ class On(SKABaseDevice.OnCommand):
 
     def do(self):
         """
+        Method to invoke On command on CSP Subarray.
+
         :param argin: None.
 
         :return: A tuple containing a return code and a string message indicating status.

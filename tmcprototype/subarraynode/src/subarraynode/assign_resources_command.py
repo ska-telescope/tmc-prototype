@@ -34,6 +34,8 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
     @identify_with_id('assign','argin')
     def do(self, argin):
         """
+        Method to invoke AssignResources command on Subarray.
+
         :param argin: DevString.
 
         Example:

@@ -74,6 +74,8 @@ class RestartCommand(BaseCommand):
 
     def do(self):
         """
+        Method to invoke Restart command on CSP Subarray.
+
         :return: None
 
         :raises: DevFailed if error occurs while invoking the command on CSpSubarray.

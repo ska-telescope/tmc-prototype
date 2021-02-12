@@ -63,7 +63,7 @@ class Standby(BaseCommand):
 
     def do(self, argin):
         """
-        It invokes the STANDBY command on CSP Master.
+        Method to invoke Standby command on CSP Element.
 
         :param argin: DevStringArray.
         If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1

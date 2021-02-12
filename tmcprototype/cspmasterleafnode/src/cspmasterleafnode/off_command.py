@@ -10,7 +10,7 @@ class Off(SKABaseDevice.OffCommand):
     """
     def do(self):
         """
-        Invokes Off command on the CSP Element.
+        Method to invoke Off command on CSP Element.
 
         :param argin: None.
 

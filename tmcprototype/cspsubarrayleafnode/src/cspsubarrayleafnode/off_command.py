@@ -49,6 +49,8 @@ class Off(SKABaseDevice.OffCommand):
 
     def do(self):
         """
+        Method to invoke Off command on CSP Subarray.
+
         :param argin: None.
 
         :return: A tuple containing a return code and a string message indicating status.

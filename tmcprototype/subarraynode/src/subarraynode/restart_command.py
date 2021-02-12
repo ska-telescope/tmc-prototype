@@ -26,9 +26,11 @@ class Restart(SKASubarray.RestartCommand):
 
     def do(self):
         """
+        Method to invoke Restart command on Subarray.
+
         :return: A tuple containing a return code and a string
-            message indicating status. The message is for
-            information purpose only.
+                 message indicating status. The message is for
+                 information purpose only.
 
         :rtype: (ResultCode, str)
 

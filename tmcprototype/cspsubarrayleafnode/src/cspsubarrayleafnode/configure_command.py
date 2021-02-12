@@ -81,6 +81,8 @@ class ConfigureCommand(BaseCommand):
     @identify_with_id('configure','argin')
     def do(self, argin):
         """
+        Method to invoke Configure command on CSP Subarray.
+
         :param argin:DevString. The string in JSON format. The JSON contains following values:
 
         Example:

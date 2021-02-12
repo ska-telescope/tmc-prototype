@@ -73,6 +73,8 @@ class GoToIdleCommand(BaseCommand):
 
     def do(self):
         """
+        Method to invoke GoToIdle command on CSP Subarray.
+
         :return: None
 
         :raises: DevFailed if the command execution is not successful

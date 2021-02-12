@@ -35,6 +35,8 @@ class Configure(SKASubarray.ConfigureCommand):
     @identify_with_id('configure', 'argin')
     def do(self, argin):
         """
+        Method to invoke Configure command on Subarray.
+
         :param argin: DevString.
 
         JSON string that includes pointing parameters of Dish - Azimuth and Elevation Angle, CSP
@@ -53,7 +55,7 @@ class Configure(SKASubarray.ConfigureCommand):
         Note: While invoking this command from JIVE, provide above JSON string without any space.
 
         :return: A tuple containing a return code and a string message indicating status.
-         The message is for information purpose only.
+                 The message is for information purpose only.
 
         :rtype: (ReturnCode, str)
 

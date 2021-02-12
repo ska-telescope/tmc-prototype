@@ -28,12 +28,15 @@ class On(SKASubarray.OnCommand):
 
     def do(self):
         """
+        Method to invoke On command on Subarray.
+
         :return: A tuple containing a return code and a string message indicating status. The message is for
                 information purpose only.
 
         :rtype: (ResultCode, str)
 
         :raises: DevFailed if the command execution is not successful
+
         """
         device_data = self.target
         device_data.is_restart_command = False

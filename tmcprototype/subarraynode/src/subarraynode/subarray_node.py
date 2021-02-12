@@ -142,7 +142,7 @@ class SubarrayNode(SKASubarray):
             Initializes the attributes and properties of the Subarray Node.
 
             :return: A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
+                     The message is for information purpose only.
 
             :rtype: (ReturnCode, str)
 
