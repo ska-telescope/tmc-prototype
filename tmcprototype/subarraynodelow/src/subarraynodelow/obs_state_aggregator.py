@@ -97,14 +97,14 @@ class ObsStateAggregator:
         """
         log_msg = f"MCCS ObsState is: {self.device_data._mccs_sa_obs_state}"
         self.logger.info(log_msg)
-        if self.device_data._mccs_sa_obs_state is ObsState.EMPTY:
+        if self.device_data._mccs_sa_obs_state is 0:
             if self.device_data.is_release_resources:
                 self.logger.info(
                     "Calling ReleaseAllResource command succeeded() method"
                 )
                 self.this_server.device.release.succeeded()
 
-        elif self.device_data._mccs_sa_obs_state is ObsState.READY:
+        elif self.device_data._mccs_sa_obs_state is 4:
             if self.device_data.is_scan_completed:
                 self.logger.info("Calling EndScan command succeeded() method")
                 self.this_server.device.endscan.succeeded()
@@ -112,7 +112,7 @@ class ObsStateAggregator:
                 # Configure command success
                 self.logger.info("Calling Configure command succeeded() method")
                 self.this_server.device.configure.succeeded()
-        elif self.device_data._mccs_sa_obs_state is ObsState.IDLE:
+        elif self.device_data._mccs_sa_obs_state is 2:
             if self.device_data.is_end_command:
                 # End command success
                 self.logger.info("Calling End command succeeded() method")
