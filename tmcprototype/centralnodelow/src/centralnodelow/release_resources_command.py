@@ -56,7 +56,9 @@ class ReleaseResources(BaseCommand):
                 {"mccs":{"subarray_id":1,"release_all":true}} without any space.
 
         :raises: ValueError if input argument json string contains invalid value
+
                  KeyError if input argument json string contains invalid key
+
                  DevFailed if the command execution or command invocation on SubarrayNode is not successful
 
         """

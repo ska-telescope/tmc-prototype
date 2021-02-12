@@ -16,6 +16,9 @@ from tmc.common.tango_client import TangoClient
 class AssignResources(BaseCommand):
     """
     A class for CentralNode's AssignResources() command.
+
+    Assigns resources to given subarray. It accepts the subarray id, station ids, station beam id and channels
+    in JSON string format.
     """
 
     def check_allowed(self):
@@ -40,8 +43,7 @@ class AssignResources(BaseCommand):
 
     def do(self, argin):
         """
-        Assigns resources to given subarray. It accepts the subarray id, station ids, station beam id and channels
-        in JSON string format.
+        Method to invoke AssignResources command on Subarray.
 
         :param argin: The string in JSON format. The JSON contains following values:
 
@@ -66,6 +68,7 @@ class AssignResources(BaseCommand):
         :return: None
 
         :raises: KeyError if input argument json string contains invalid key
+
                  ValueError if input argument json string contains invalid value
         """
         device_data = self.target

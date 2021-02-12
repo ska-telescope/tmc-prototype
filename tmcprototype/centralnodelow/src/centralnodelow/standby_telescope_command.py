@@ -16,6 +16,9 @@ from .command_result_fetcher import CommandResultFetcher
 class StandByTelescope(SKABaseDevice.OffCommand):
     """
     A class for Low CentralNode's StandByTelescope() command.
+
+    Sets the CentralNodeLow into OFF state. Invokes the respective command on lower level nodes and devices.
+
     """
 
     def check_allowed(self):
@@ -38,7 +41,7 @@ class StandByTelescope(SKABaseDevice.OffCommand):
 
     def do(self):
         """
-        Sets the CentralNodeLow into OFF state. Invokes the respective command on lower level nodes and devices.
+        Method to invoke StartBy command.
 
         param argin: None.
 
@@ -46,6 +49,9 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         The message is for information purpose only.
 
         :rtype: (ResultCode, str)
+
+        :raises: AssertionError if command is not completed.
+
         """
         device_data = self.target
         try:
