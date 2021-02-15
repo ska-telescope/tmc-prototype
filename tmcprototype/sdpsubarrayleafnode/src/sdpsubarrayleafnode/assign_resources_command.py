@@ -80,7 +80,7 @@ class AssignResources(BaseCommand):
 
         :param argin: The string in JSON format. The JSON contains following values:
 
-        SBI ID and maximum length of the SBI:
+            SBI ID and maximum length of the SBI:
             Mandatory JSON object consisting of
 
             SBI ID :

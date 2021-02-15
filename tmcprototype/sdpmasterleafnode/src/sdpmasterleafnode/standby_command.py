@@ -75,7 +75,8 @@ class Standby(BaseCommand):
 
         :param argin: None.
 
-        :return: None
+        return:
+            None
         """
         device_data = self.target
         try:

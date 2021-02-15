@@ -71,7 +71,8 @@ class Disable(BaseCommand):
 
         :param argin: None.
 
-        :return: None
+        return:
+            None
 
         """
         device_data = self.target

@@ -40,19 +40,24 @@ class SdpMasterLeafNode(SKABaseDevice):
     The primary responsibility of the SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
     actions during an observation.
 
-    **Device Properties**
+    :Device Properties:
 
-    :SdpMasterFQDN: Property to provide FQDN of SDP Master Device
+        SdpMasterFQDN:
+            Property to provide FQDN of SDP Master Device
 
-    **Device Attributes**
+    :Device Attributes:
 
-    :versionInfo: Provides Version information of TANGO device.
+        versionInfo:
+            Provides Version information of TANGO device.
 
-    :activityMessage: String providing information about the current activity in SDPLeafNode.
+        activityMessage:
+            String providing information about the current activity in SDPLeafNode.
 
-    :ProcessingBlockList: List of Processing Block devices
+        ProcessingBlockList:
+            List of Processing Block devices
 
-    :sdpHealthState: Forwarded attribute to provide SDP Master Health State
+        sdpHealthState:
+            Forwarded attribute to provide SDP Master Health State
 
     """
 
@@ -94,10 +99,12 @@ class SdpMasterLeafNode(SKABaseDevice):
             """
             Initializes the attributes and properties of the SdpMasterLeafNode.
 
-            :return: A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
+            return:
+                A tuple containing a return code and a string message indicating status.
+                The message is for information purpose only.
 
-            :rtype: (ReturnCode, str)
+            rtype:
+                (ReturnCode, str)
             """
 
             super().do()
@@ -172,11 +179,14 @@ class SdpMasterLeafNode(SKABaseDevice):
         """
         Checks Whether this command is allowed to be run in current device state.
 
-        :return: True if this command is allowed to be run in current device state.
+        return:
+            True if this command is allowed to be run in current device state.
 
-        :rtype: boolean
+        rtype:
+            boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state.
+        raises: DevF
+            ailed if this command is not allowed to be run in current device state.
 
         """
         handler = self.get_command_object("Disable")
