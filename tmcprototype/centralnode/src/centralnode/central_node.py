@@ -47,6 +47,24 @@ class CentralNode(SKABaseDevice):
         TMMidSubarrayNodes:
             List of TM Mid Subarray Node devices.
 
+    :Device Attributes:
+
+        telescopeHealthState:
+            Health state of Telescope
+
+        subarray1HealthState:
+            Health state of Subarray1
+
+        subarray2HealthState:
+            Health state of Subarray2
+
+        subarray3HealthState:
+            Health state of Subarray3
+
+        activityMessage:
+            String providing information about the current activity in Central Node.
+
+
 
     """
     # -----------------

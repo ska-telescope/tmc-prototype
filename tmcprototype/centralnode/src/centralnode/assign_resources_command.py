@@ -142,9 +142,11 @@ class AssignResources(BaseCommand):
 
         Note: Enter input without spaces as:{"dish":{"receptorIDList_success":["0001","0002"]}}
 
-        rtype: None
+        rtype:
+            None
 
-        raises: DevFailed when the API fails to allocate resources.
+        raises:
+            DevFailed when the API fails to allocate resources.
 
         """
         device_data = DeviceData.get_instance()
