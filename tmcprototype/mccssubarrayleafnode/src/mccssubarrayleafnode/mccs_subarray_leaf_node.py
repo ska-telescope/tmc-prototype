@@ -39,6 +39,19 @@ __all__ = ["MccsSubarrayLeafNode", "main", "Configure", "Scan",
 class MccsSubarrayLeafNode(SKABaseDevice):
     """
     MCCS Subarray Leaf node monitors the MCCS Subarray and issues control actions during an observation.
+
+    **Device Properties**
+
+    :MccsSubarrayFQDN: FQDN of MCCS Subarray.
+
+    **Device Attributes**
+
+    :mccsSubarrayHealthState: Forwarded attribute to provide MCCS Subarray Health State.
+
+    :mccsSubarrayObsState: Attribute to provide MCCS Subarray Observation State.
+
+    :activityMessage: String providing information about the current activity in MCCS Subarray Leaf Node.
+
     """
     # -----------------
     # Device Properties

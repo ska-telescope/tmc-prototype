@@ -30,9 +30,9 @@ class SetStowMode(BaseCommand):
 
         :param argin: None
 
-        :return:None
+        :return: None
 
-        :raises DevFailed: If error occurs while invoking SetStowMode command on DishMaster.
+        :raises: DevFailed If error occurs while invoking SetStowMode command on DishMaster.
         """
         device_data = self.target
         cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb

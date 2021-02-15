@@ -54,6 +54,3 @@ Dish Leaf Node
 .. autoclass:: tmcprototype.dishleafnode.src.dishleafnode.obsreset_command.ObsReset
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.dishleafnode.src.dishleafnode.az_el_converter.AzElConverter
-    :members: do
-    :undoc-members:

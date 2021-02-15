@@ -15,6 +15,9 @@ from . import const
 class End(BaseCommand):
     """
     A class for MccsSubarrayLeafNode's End() command.
+
+    This command invokes End command on MCCS Subarray in order to end current scheduling block.
+
     """
 
     def check_allowed(self):
@@ -73,13 +76,13 @@ class End(BaseCommand):
 
     def do(self):
         """
-        This command invokes End command on MCCS Subarray in order to end current scheduling block.
+        Method to invoke end command on MCCS Subarray.
 
         :return: None
 
         :rtype: Void
 
-        :raises: DevFailed if the command execution is not successful
+        :raises: DevFailed if the command execution is not successful.
         """
         device_data = self.target
         try:

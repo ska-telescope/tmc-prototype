@@ -51,7 +51,7 @@ class Configure(BaseCommand):
 
     def do(self, argin):
         """
-
+        Method to invoke Configure command on dish.
 
         :param argin:
             A String in a JSON format that includes pointing parameters of Dish- Azimuth and
@@ -60,8 +60,10 @@ class Configure(BaseCommand):
                 Example:
                 {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},
                 "dish":{"receiverBand":"1"}}
-        :raises DevFailed: If error occurs while invoking ConfigureBand<> command on DishMaster or
+
+        :raises: DevFailed If error occurs while invoking ConfigureBand<> command on DishMaster or
             if the json string contains invalid data.
+
         """
 
         device_data = self.target
