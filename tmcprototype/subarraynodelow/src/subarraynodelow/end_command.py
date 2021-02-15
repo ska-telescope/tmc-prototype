@@ -25,12 +25,15 @@ class End(SKASubarray.EndCommand):
         """
         Method to invoke End command.
 
-        :return: A tuple containing a return code and a string message indicating status.
-        The message is for information purpose only.
+        return:
+            A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
 
-        :rtype: (ResultCode, str)
+        rtype:
+            (ResultCode, str)
 
-        :raises: DevFailed if the command execution is not successful.
+        raises:
+            DevFailed if the command execution is not successful.
         """
         device = self.target
         device.is_end_command = False
