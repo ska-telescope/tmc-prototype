@@ -35,16 +35,16 @@ tmcprototype:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: tmcprototype
-    tag: 0.3.8
+    tag: 9.9.9-dirty
     pullPolicy: IfNotPresent
 
-resources:
-  limits:
-    cpu: 300m
-    memory: 500Mi
-  requests:
-    cpu: 100m
-    memory: 128Mi
+# resources:
+#   limits:
+#     cpu: 300m
+#     memory: 500Mi
+#   requests:
+#     cpu: 100m
+#     memory: 128Mi
 
 deviceServers:
 - name: subarraynode1

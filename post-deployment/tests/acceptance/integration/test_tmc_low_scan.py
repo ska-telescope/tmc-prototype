@@ -30,7 +30,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 @pytest.mark.low
-# @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
+@pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_scan():
 
     try:
