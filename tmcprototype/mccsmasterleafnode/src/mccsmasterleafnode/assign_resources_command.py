@@ -85,7 +85,7 @@ class AssignResources(BaseCommand):
         """
         Method to invoke AssignResources command on Subarray.
 
-        :=param argin:
+        :param argin:
                      StringType. The string in JSON format.
             
         Example:
