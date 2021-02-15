@@ -28,14 +28,17 @@ class Restart(SKASubarray.RestartCommand):
         """
         Method to invoke Restart command.
 
-        :return: A tuple containing a return code and a string
-                 message indicating status. The message is for
-                 information purpose only.
+        return:
+            A tuple containing a return code and a string
+            message indicating status. The message is for
+            information purpose only.
 
-        :rtype: (ResultCode, str)
+        rtype:
+            (ResultCode, str)
 
-        :raises: DevFailed if error occurs while invoking command on CSPSubarrayLeafNode, SDpSubarrayLeafNode or
-                DishLeafNode.
+        raises:
+            DevFailed if error occurs while invoking command on CSPSubarrayLeafNode, SDpSubarrayLeafNode or
+            DishLeafNode.
         """
         device_data = DeviceData.get_instance()
         device_data.is_release_resources = False

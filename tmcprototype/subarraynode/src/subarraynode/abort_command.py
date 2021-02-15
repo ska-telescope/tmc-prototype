@@ -27,13 +27,17 @@ class Abort(SKASubarray.AbortCommand):
         """
         Method to invoke Abort command.
 
-        :return: A tuple containing a return code and a string
+        return:
+            A tuple containing a return code and a string
             message indicating status. The message is for
             information purpose only.
-        :rtype: (ResultCode, str)
 
-        :raises: DevFailed if error occurs in invoking command on any of the devices like CSPSubarrayLeafNode,
-                SDPSubarrayLeafNode or DishLeafNode
+        rtype:
+            (ResultCode, str)
+
+        raises:
+            DevFailed if error occurs in invoking command on any of the devices like CSPSubarrayLeafNode,
+            SDPSubarrayLeafNode or DishLeafNode
         """
         device_data = DeviceData.get_instance()
         device_data.is_release_resources = False

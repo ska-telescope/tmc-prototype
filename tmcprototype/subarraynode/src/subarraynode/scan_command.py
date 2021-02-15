@@ -37,12 +37,15 @@ class Scan(SKASubarray.ScanCommand):
 
         Note: Above JSON string can be used as an input argument while invoking this command from JIVE.
 
-        :return: A tuple containing a return code and a string message indicating status.
-                 The message is for information purpose only.
+        return:
+            A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
 
-        :rtype: (ReturnCode, str)
+        rtype:
+            (ReturnCode, str)
 
-        :raises: DevFailed if the command execution is not successful
+        raises:
+            DevFailed if the command execution is not successful
         """
         device_data = DeviceData.get_instance()
         device_data.is_scan_completed = False

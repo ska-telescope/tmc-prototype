@@ -54,12 +54,15 @@ class Configure(SKASubarray.ConfigureCommand):
 
         Note: While invoking this command from JIVE, provide above JSON string without any space.
 
-        :return: A tuple containing a return code and a string message indicating status.
-                 The message is for information purpose only.
+        return:
+            A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
 
-        :rtype: (ReturnCode, str)
+        rtype:
+            (ReturnCode, str)
 
-        :raises: JSONDecodeError if input argument json string contains invalid value
+        raises:
+            JSONDecodeError if input argument json string contains invalid value
         """
         self.logger.debug(type(self.target))
         self.only_dishconfig_flag = False
@@ -198,7 +201,8 @@ class ElementDeviceData:
         [400, '192.168.0.4']], 'outputMac': [[0, '06-00-00-00-00-01']], 'outputPort': [[0, 9000, 1],
         [400, 9000, 1]]}]}
 
-        :return: csp confiuration schema
+        return:
+            csp confiuration schema
         '''
         scan_config = scan_config.copy()
         csp_scan_config = scan_config.get("csp", {})

@@ -28,12 +28,15 @@ class EndScan(SKASubarray.EndScanCommand):
         """
         Method to invoke Endscan command.
 
-        :return: A tuple containing a return code and a string message indicating status.
-        The message is for information purpose only.
+        return:
+            A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
 
-        :rtype: (ReturnCode, str)
+        rtype:
+            (ReturnCode, str)
 
-        :raises: DevFailed if the command execution is not successful.
+        raises:
+            DevFailed if the command execution is not successful.
         """
         device_data = DeviceData.get_instance()
         device_data.is_release_resources = False
