@@ -39,7 +39,7 @@ class ObsReset(BaseCommand):
 
     def do(self):
         """
-        Invokes StopCapture command on the DishMaster.
+        Invokes ObsReset command on the DishMaster.
 
         :param argin: None
 

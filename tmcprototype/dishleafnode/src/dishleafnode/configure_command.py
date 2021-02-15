@@ -24,6 +24,12 @@ from .command_callback import CommandCallBack
 class Configure(BaseCommand):
     """
     A class for DishLeafNode's Configure() command.
+
+    Configures the Dish by setting pointing coordinates for a given scan.
+    This function accepts the input json and calculate pointing parameters of Dish- Azimuth
+    and Elevation Angle. Calculated parameters are again converted to json and fed to the
+    dish master.
+
     """
 
     def check_allowed(self):
@@ -45,10 +51,7 @@ class Configure(BaseCommand):
 
     def do(self, argin):
         """
-        Configures the Dish by setting pointing coordinates for a given scan.
-        This function accepts the input json and calculate pointing parameters of Dish- Azimuth
-        and Elevation Angle. Calculated parameters are again converted to json and fed to the
-        dish master.
+
 
         :param argin:
             A String in a JSON format that includes pointing parameters of Dish- Azimuth and

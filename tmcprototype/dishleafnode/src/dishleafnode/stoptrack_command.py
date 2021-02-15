@@ -38,7 +38,7 @@ class StopTrack(BaseCommand):
 
     def do(self):
         """
-        Invokes TrackStop command on the DishMaster.
+        Invokes StopTrack command on the DishMaster.
 
         :param argin: None
 

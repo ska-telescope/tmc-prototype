@@ -45,6 +45,19 @@ __all__ = ["DishLeafNode", "main", "release", "SetOperateMode", "SetStandbyLPMod
 class DishLeafNode(SKABaseDevice):
     """
     A Leaf control node for DishMaster.
+
+    **Device Properties**
+
+    :DishMasterFQDN: FQDN of Dish Master Device
+
+    **Attributes**
+
+    :activityMessage: String providing information about the current activity in DishLeaf Node.
+
+    :dishHealthState: Forwarded attribute to provide Dishleafnode Health State
+
+    :dishPointingState: Forwarded attribute to provide Dishleafnode Pointing State
+
     """
     def init_command_objects(self):
         """

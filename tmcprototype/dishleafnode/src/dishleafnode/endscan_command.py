@@ -39,7 +39,7 @@ class EndScan(BaseCommand):
 
     def do(self, argin):
         """
-        Invokes StopCapture command on DishMaster.
+        Invokes Endscan command on DishMaster.
 
         :param argin: timestamp
         :raises DevFailed: If error occurs while invoking StopCapture command on DishMaster.

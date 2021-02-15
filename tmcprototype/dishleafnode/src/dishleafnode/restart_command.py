@@ -39,7 +39,8 @@ class Restart(BaseCommand):
 
     def do(self):
         """
-        Invokes StopCapture command on the DishMaster.
+        Invokes Restart command on the DishMaster.
+
         :param argin: None
 
         :return:None

@@ -27,6 +27,7 @@ class SetStowMode(BaseCommand):
     def do(self):
         """
         Invokes SetStowMode command on DishMaster.
+
         :param argin: None
 
         :return:None

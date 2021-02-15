@@ -29,6 +29,7 @@ class SetStandbyLPMode(BaseCommand):
     def do(self):
         """
         Invokes SetStandbyLPMode (i.e. Low Power State) command on DishMaster.
+
         :param argin: None
 
         :return:None

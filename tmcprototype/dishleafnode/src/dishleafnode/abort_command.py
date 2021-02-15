@@ -38,7 +38,7 @@ class Abort(BaseCommand):
 
     def do(self):
         """
-        Invokes TrackStop command on the DishMaster.
+        Invokes Abort command on the DishMaster.
 
         :param argin: None
 
