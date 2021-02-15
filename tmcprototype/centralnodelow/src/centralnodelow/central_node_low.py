@@ -38,23 +38,30 @@ class CentralNode(SKABaseDevice):
     """
     Central Node is a coordinator of the complete M&C system.
 
-    **Device Properties**
+    :Device Properties:
 
-    :CentralAlarmHandler: Device name of CentralAlarmHandler
+        CentralAlarmHandler:
+            Device name of CentralAlarmHandler
 
-    :TMAlarmHandler: Device name of TMAlarmHandler
+        TMAlarmHandler:
+            Device name of TMAlarmHandler
 
-    :TMLowSubarrayNodes: List of TM Low Subarray Node devices
+        TMLowSubarrayNodes:
+            List of TM Low Subarray Node devices
 
-    :MCCSMasterLeafNodeFQDN: FQDN of Mccs Master Leaf Node.
+        MCCSMasterLeafNodeFQDN:
+            FQDN of Mccs Master Leaf Node.
 
-    **Device Attributes**
+    :Device Attributes:
 
-    :telescopeHealthState: Health state of Telescope
+        telescopeHealthState:
+            Health state of Telescope
 
-    :subarray1HealthState: Health state of Subarray1
+        subarray1HealthState:
+            Health state of Subarray1
 
-    :activityMessage: String providing information about the current activity in Central Node.
+        activityMessage:
+            String providing information about the current activity in Central Node.
 
     """
     # -----------------

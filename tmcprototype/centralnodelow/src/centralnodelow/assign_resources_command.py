@@ -65,11 +65,14 @@ class AssignResources(BaseCommand):
 
         Note: Enter input without spaces as:{"subarray_id":1,"station_ids":[1,2],"channels":[1,2,3,4,5,6,7,8],"station_beam_ids":[1]}
 
-        :return: None
+        return:
+            None
 
-        :raises: KeyError if input argument json string contains invalid key
+        raises:
+            KeyError if input argument json string contains invalid key
 
-                 ValueError if input argument json string contains invalid value
+            ValueError if input argument json string contains invalid value
+
         """
         device_data = self.target
         try:

@@ -55,11 +55,12 @@ class ReleaseResources(BaseCommand):
             Note: From Jive, enter input as:
                 {"mccs":{"subarray_id":1,"release_all":true}} without any space.
 
-        :raises: ValueError if input argument json string contains invalid value
+        raises:
+            ValueError if input argument json string contains invalid value
 
-                 KeyError if input argument json string contains invalid key
+            KeyError if input argument json string contains invalid key
 
-                 DevFailed if the command execution or command invocation on SubarrayNode is not successful
+            DevFailed if the command execution or command invocation on SubarrayNode is not successful
 
         """
         device_data = self.target

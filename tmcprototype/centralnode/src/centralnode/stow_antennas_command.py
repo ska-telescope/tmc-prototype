@@ -54,7 +54,7 @@ class StowAntennas(BaseCommand):
             DevFailed if error occurs while invoking command of DishLeafNode
 
             ValueError if error occurs if input argument json string contains invalid value
-            
+
         """
         device_data = DeviceData.get_instance()
         self.logger.info(type(self.target))
