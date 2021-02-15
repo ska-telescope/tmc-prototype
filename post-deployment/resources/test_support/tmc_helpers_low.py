@@ -117,7 +117,8 @@ def abort():
 @sync_scan(200)
 def scan_sub():
     SubarrayNodeLow = DeviceProxy("ska_low/tm_subarray_node/1")
-    SubarrayNodeLow.Scan('{"id":1}')
+    SubarrayNodeLow.Scan('{"mccs":{"id":1,"scan_time":0.0}}
+')
     LOGGER.info("Scan Started")
 
 

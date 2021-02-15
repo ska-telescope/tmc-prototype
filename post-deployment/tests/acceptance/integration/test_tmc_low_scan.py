@@ -62,7 +62,7 @@ def test_scan():
         @sync_scan(200)
         def scan():
             SubarrayNodeLow = DeviceProxy("ska_low/tm_subarray_node/1")
-            SubarrayNodeLow.Scan('{"id":1}')
+            SubarrayNodeLow.Scan('{"mccs":{"id":1,"scan_time":0.0}}')
 
         scan()
         LOGGER.info("Scan complete")
