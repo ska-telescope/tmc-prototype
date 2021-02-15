@@ -82,11 +82,13 @@ class ReleaseResources(BaseCommand):
                 "release_all": true
                }
 
-        :return: None.
+        return:
+            None.
 
-        :raises: DevFailed if the command execution is not successful
+        raises:
+            DevFailed if the command execution is not successful
 
-                 ValueError if invalid json string.
+            ValueError if invalid json string.
 
         """
         device_data = self.target

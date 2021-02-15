@@ -85,7 +85,7 @@ class AssignResources(BaseCommand):
         """
         Method to invoke AssignResources command on Subarray.
 
-        :param argin:
+        :=param argin:
                      StringType. The string in JSON format.
             
         Example:
@@ -99,11 +99,15 @@ class AssignResources(BaseCommand):
         
         Note: Enter the json string without spaces as an input.
 
-        :return: None
+        return:
+            None
 
-        :raises: ValueError if input argument json string contains invalid value
-                    KeyError if input argument json string contains invalid key
-                    DevFailed if the command execution is not successful
+        raises:
+            ValueError if input argument json string contains invalid value
+
+            KeyError if input argument json string contains invalid key
+
+            DevFailed if the command execution is not successful
         """
         device_data = self.target
         try:

@@ -54,12 +54,15 @@ class On(SKABaseDevice.OnCommand):
         """
         Method to invoke On command on the MCCS.
 
-        :param argin: None
+        param argin:
+            None
 
-        :return: A tuple containing a return code and a string message indicating status.
+        return:
+            A tuple containing a return code and a string message indicating status.
             The message is for information purpose only.
 
-        :rtype: (ResultCode, str)
+        rtype:
+            (ResultCode, str)
 
         """
         device_data = self.target

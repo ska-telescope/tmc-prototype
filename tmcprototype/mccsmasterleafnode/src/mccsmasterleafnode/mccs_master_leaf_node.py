@@ -31,15 +31,18 @@ __all__ = ["MccsMasterLeafNode", "main", "AssignResources", "const",
 
 class MccsMasterLeafNode(SKABaseDevice):
     """
-    **Device Properties:**
+    :Device Properties:
 
-    :MccsMasterFQDN: Property to provide FQDN of MCCS Master Device
+        MccsMasterFQDN:
+            Property to provide FQDN of MCCS Master Device
 
-    **Attributes:**
+    :Attributes:
 
-    :mccsHealthState: Forwarded attribute to provide MCCS Master Health State
+        mccsHealthState:
+            Forwarded attribute to provide MCCS Master Health State
 
-    :activityMessage: String providing information about the current activity in MccsMasterLeafNode.
+        activityMessage:
+            String providing information about the current activity in MccsMasterLeafNode.
 
     """
 
