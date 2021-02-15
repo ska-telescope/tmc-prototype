@@ -29,12 +29,15 @@ class On(SKASubarray.OnCommand):
         """
         Method to invoke On command.
 
-        :return: A tuple containing a return code and a string message indicating status. The message is for
+        return:
+            A tuple containing a return code and a string message indicating status. The message is for
                 information purpose only.
 
-        :rtype: (ResultCode, str)
+        rtype:
+            (ResultCode, str)
 
-        :raises: DevFailed if the command execution is not successful
+        raises:
+            DevFailed if the command execution is not successful
         """
         device_data = DeviceData.get_instance()
         device_data.is_release_resources = False

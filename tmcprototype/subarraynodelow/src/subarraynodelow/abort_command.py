@@ -24,12 +24,16 @@ class Abort(SKASubarray.AbortCommand):
         """
         Method to invoke Abort command.
 
-        :return: A tuple containing a return code and a string
+        return:
+            A tuple containing a return code and a string
             message indicating status. The message is for
             information purpose only.
-        :rtype: (ResultCode, str)
 
-        :raises: DevFailed if error occurs in invoking command on MCCS Subarrayleaf node.
+        rtype:
+            (ResultCode, str)
+
+        raises:
+            DevFailed if error occurs in invoking command on MCCS Subarrayleaf node.
 
         """
         device_data = self.target
@@ -60,7 +64,8 @@ class Abort(SKASubarray.AbortCommand):
 
         :param argin: MCCS SubarrayLeafNode FQDN
 
-        :return: None
+        return:
+            None
         """
         mccs_client = TangoClient(mccs_sa_ln_fqdn)
         mccs_client.send_command(const.CMD_ABORT)
