@@ -38,13 +38,13 @@ class CentralNode(SKABaseDevice):
 
     **Device Properties**
 
-    :CentralAlarmHandler: Device name of CentralAlarmHandler
+        :CentralAlarmHandler: Device name of CentralAlarmHandler
 
-    :TMAlarmHandler: Device name of TMAlarmHandler
+        :TMAlarmHandler: Device name of TMAlarmHandler
 
-    :TMMidSubarrayNodes: List of TM Mid Subarray Node devices
+        :TMMidSubarrayNodes: List of TM Mid Subarray Node devices
 
-    :NumDishes: Number of Dishes
+        :NumDishes: Number of Dishes
 
     :DishLeafNodePrefix: Device name prefix for Dish Leaf Node
 
