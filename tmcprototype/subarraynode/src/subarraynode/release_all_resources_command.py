@@ -31,12 +31,15 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
         """
         Method to invoke ReleaseAllResources command.
 
-        :return: A tuple containing a return code and "[]" as a string on successful release all resources.
+        return:
+            A tuple containing a return code and "[]" as a string on successful release all resources.
         Example: "[]" as string on successful release all resources.
 
-        :rtype: (ResultCode, str)
+        rtype:
+            (ResultCode, str)
 
-        :raises: DevFailed if the command execution is not successful
+        raises:
+            DevFailed if the command execution is not successful
 
         """
         device_data = DeviceData.get_instance()
@@ -77,7 +80,8 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
 
         :param argin: DevVoid
 
-        :return: DevVoid
+        return:
+            DevVoid
 
         """
         try:
@@ -94,7 +98,8 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
 
         :param argin: DevVoid
 
-        :return: DevVoid
+        return:
+            DevVoid
 
         """
         try:

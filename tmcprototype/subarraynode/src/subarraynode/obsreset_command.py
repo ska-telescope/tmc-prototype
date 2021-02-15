@@ -28,14 +28,17 @@ class ObsReset(SKASubarray.ObsResetCommand):
         """
         Method to invoke ObsReset command.
 
-        :return: A tuple containing a return code and a string
-                 message indicating status. The message is for
-                 information purpose only.
+        return:
+            A tuple containing a return code and a string
+            message indicating status. The message is for
+            information purpose only.
 
-        :rtype: (ResultCode, str)
+        rtype:
+            (ResultCode, str)
 
-        :raises: DevFailed if error occurs while invoking command on CspSubarrayLeafNode, SdpSubarrayLeafNode or
-                 DishLeafNode.
+        raises:
+            DevFailed if error occurs while invoking command on CspSubarrayLeafNode, SdpSubarrayLeafNode or
+            DishLeafNode.
         """
         device_data = DeviceData.get_instance()
         device_data.is_abort_command = False

@@ -61,16 +61,19 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         ["calibration"]}]}]}}
 
 
-        :return: A tuple containing a return code and string of Resources added to the Subarray.
+        return:
+            A tuple containing a return code and string of Resources added to the Subarray.
             Example of string of Resources :
                 ["0001","0002"]
             as argout if allocation successful.
 
-        :rtype: (ResultCode, str)
+        rtype:
+            (ResultCode, str)
 
-        :raises: ValueError if input argument json string contains invalid value
+        raises:
+            ValueError if input argument json string contains invalid value
 
-                 DevFailed if the command execution is not successful
+            DevFailed if the command execution is not successful
 
         """
         device_data = DeviceData.get_instance()
@@ -154,7 +157,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
             DevVarStringArray. List of receptor IDs to be allocated to subarray.
             Example: ['0001', '0002']
 
-        :return:
+        return:
             DevVarStringArray. List of Resources added to the Subarray.
             Example: ['0001', '0002']
         """
@@ -233,7 +236,8 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
 
             Example: ['0001', '0002']
 
-        :return: List of strings.
+        return:
+            List of strings.
             Returns the list of CSP resources successfully assigned to the Subarray. Currently, the
             CSPSubarrayLeafNode.AssignResources function returns void. The function only loops back
             the input argument in case of successful resource allocation, or returns exception
@@ -272,7 +276,8 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
             Contains the list of strings that has the resources ids. Currently
             processing block ids are passed to this function.
 
-        :return: List of strings.
+        return:
+            List of strings.
 
             Example: ['PB1', 'PB2']
 
