@@ -46,6 +46,8 @@ class Scan(SKASubarray.ScanCommand):
         device_data = self.target
         device_data.is_scan_completed = False
         device_data.is_release_resources = False
+        device_data.is_abort_command_executed = False
+        device_data.is_obsreset_command_executed = False
         try:
             input_scan = json.loads(argin)
             mccs_input_scan = input_scan["mccs"]

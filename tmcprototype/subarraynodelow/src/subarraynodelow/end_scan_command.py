@@ -36,6 +36,8 @@ class EndScan(SKASubarray.EndScanCommand):
         """
         device_data = self.target
         device_data.is_release_resources = False
+        device_data.is_abort_command_executed = False
+        device_data.is_obsreset_command_executed = False
         try:
             if device_data.scan_timer_handler.is_scan_running():
                 device_data.scan_timer_handler.stop_scan_timer()  # stop timer when EndScan command is called

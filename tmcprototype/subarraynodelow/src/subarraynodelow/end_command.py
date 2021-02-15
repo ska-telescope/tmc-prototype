@@ -35,6 +35,8 @@ class End(SKASubarray.EndCommand):
         device = self.target
         device.is_end_command = False
         device.is_release_resources = False
+        device.is_abort_command_executed = False
+        device.is_obsreset_command_executed = False
 
         try:
             self.logger.info(const.STR_END_CMD_INVOKED_SA_LOW)
