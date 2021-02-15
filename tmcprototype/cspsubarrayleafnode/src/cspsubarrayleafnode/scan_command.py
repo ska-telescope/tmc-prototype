@@ -88,12 +88,16 @@ class StartScanCommand(BaseCommand):
 
         Note: Enter the json string without spaces as a input.
 
-        :return: A tuple containing a return code and a string message indicating status.
+        return:
+            A tuple containing a return code and a string message indicating status.
             The message is for information purpose only.
 
-        :rtype: (ReturnCode, str)
+        rtype:
+            (ReturnCode, str)
 
-        :raises: DevFailed if the command execution is not successful
+        raises:
+            DevFailed if the command execution is not successful
+
         """
         device_data = self.target
         try:

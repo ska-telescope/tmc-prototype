@@ -56,7 +56,9 @@ class Track(BaseCommand):
             {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},
             "dish":{"receiverBand":"1"}}
 
-        :raises: DevFailed If error occurs while invoking Track command on DishMaster.
+        raises:
+            DevFailed If error occurs while invoking Track command on DishMaster.
+
         """
         device_data = self.target
         device_data.el_limit = False

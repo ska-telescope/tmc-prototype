@@ -41,9 +41,12 @@ class StopCapture(BaseCommand):
         """
         Invokes StopCapture command on DishMaster on the set configured band.
 
-        :param argin: timestamp
+        param argin:
+            timestamp
 
-        :raises: DevFailed If error occurs while invoking StopCapture command on DishMaster.
+        raises:
+            DevFailed If error occurs while invoking StopCapture command on DishMaster.
+
         """
         device_data = self.target
         command_name = "StopCapture"

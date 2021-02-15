@@ -72,9 +72,11 @@ class Standby(BaseCommand):
         If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1
         , each array element specifies the FQDN of the CSP SubElement to put in STANDBY mode.
 
-        :return: None
+        return:
+            None
 
-        :raises: DevFailed on communication failure with CspMaster or CspMaster is in error state.
+        raises:
+            DevFailed on communication failure with CspMaster or CspMaster is in error state.
 
         """
         device_data = self.target

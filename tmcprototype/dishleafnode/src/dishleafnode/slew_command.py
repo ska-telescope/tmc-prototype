@@ -48,7 +48,9 @@ class Slew(BaseCommand):
             [0] = Azimuth, in degrees
             [1] = Elevation, in degrees
 
-        :raises: DevFailed If error occurs while invoking Slew command on DishMaster.
+        raises:
+            DevFailed If error occurs while invoking Slew command on DishMaster.
+
         """
         device_data = self.target
         command_name = "Slew"

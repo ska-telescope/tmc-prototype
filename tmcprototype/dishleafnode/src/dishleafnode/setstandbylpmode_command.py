@@ -33,11 +33,15 @@ class SetStandbyLPMode(BaseCommand):
         """
         Method to invoke SetStandbyLPMode command on DishMaster.
 
-        :param argin: None
+        param argin:
+            None
 
-        :return:None
+        return:
+            None
 
-        :raises: DevFailed If error occurs while invoking SetStandbyLPMode command on DishMaster.
+        raises:
+            DevFailed If error occurs while invoking SetStandbyLPMode command on DishMaster.
+
         """
         device_data = self.target
         command_name = "SetStandbyLPMode"

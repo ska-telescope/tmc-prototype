@@ -78,9 +78,12 @@ class RestartCommand(BaseCommand):
         """
         Method to invoke Restart command on CSP Subarray.
 
-        :return: None
+        return:
+            None
 
-        :raises: DevFailed if error occurs while invoking the command on CSpSubarray.
+        raises:
+            DevFailed if error occurs while invoking the command on CSpSubarray.
+
         """
         device_data = self.target
         try:

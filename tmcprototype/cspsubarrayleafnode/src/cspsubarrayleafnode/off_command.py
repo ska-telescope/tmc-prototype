@@ -52,7 +52,7 @@ class Off(SKABaseDevice.OffCommand):
         Method to invoke Off command on CSP Subarray.
 
         param argin:
-        None
+            None
 
         return:
             A tuple containing a return code and a string message indicating status.
