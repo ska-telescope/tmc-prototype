@@ -34,7 +34,7 @@ def start_up():
     CentralNodeLow.StartUpTelescope()
 
 
-@sync_assign_resources(300)
+@sync_assign_resources(150)
 def compose_sub():
     resource("ska_low/tm_subarray_node/1").assert_attribute("State").equals("ON")
     resource("ska_low/tm_subarray_node/1").assert_attribute("obsState").equals("EMPTY")
@@ -102,16 +102,6 @@ def configure_sub():
     SubarrayNodeLow.Configure(config)
     LOGGER.info("Subarray obsState is: " + str(SubarrayNodeLow.obsState))
     LOGGER.info("Invoked Configure on Subarray")
-
-
-@sync_abort
-def abort():
-    resource("ska_low/tm_subarray_node/1").assert_attribute("State").equals("ON")
-    resource("ska_low/tm_subarray_node/1").assert_attribute("obsState").equals("IDLE")
-    SubarrayNodeLow = DeviceProxy("ska_low/tm_subarray_node/1")
-    SubarrayNodeLow.Abort()
-    LOGGER.info("Subarray obsState is: " + str(SubarrayNodeLow.obsState))
-    LOGGER.info("Invoked Abort on Subarray")
 
 
 @sync_scan(200)

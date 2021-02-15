@@ -54,7 +54,7 @@ def test_abort():
         LOGGER.info("Aborting the subarray")
         fixture["state"] = "Subarray ABORTING"
 
-        @sync_abort()
+        @sync_abort
         def abort():
             resource("ska_low/tm_subarray_node/1").assert_attribute("State").equals(
                 "ON"
