@@ -54,7 +54,7 @@ class AssignResources(BaseCommand):
 
             event: response from SDP Subarray for the invoked assign resource command.
 
-        :return: None
+        return: None
         """
         device_data = self.target
         if event.err:
@@ -120,11 +120,13 @@ class AssignResources(BaseCommand):
 
         Note: Enter input without spaces
 
-        :return: None
+        return:
+            None
 
-        :raises: ValueError if input argument json string contains invalid value.
+        raises:
+            ValueError if input argument json string contains invalid value.
 
-                 DevFailed if the command execution is not successful.
+            DevFailed if the command execution is not successful.
         """
 
         device_data = self.target

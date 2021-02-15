@@ -82,9 +82,11 @@ class Restart(BaseCommand):
         """
         Method to invoke Restart command on SDP Subarray.
 
-        :return: None
+        return:
+            None
 
-        :raises: DevFailed if error occurs while invoking command on SDPSubarray.
+        raises:
+            DevFailed if error occurs while invoking command on SDPSubarray.
 
         """
         device_data = self.target

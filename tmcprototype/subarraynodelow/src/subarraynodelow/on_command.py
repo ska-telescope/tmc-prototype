@@ -31,7 +31,7 @@ class On(SKASubarray.OnCommand):
 
         return:
             A tuple containing a return code and a string message indicating status. The message is for
-                information purpose only.
+            information purpose only.
 
         rtype:
             (ResultCode, str)
