@@ -81,11 +81,14 @@ class Abort(BaseCommand):
 
         :param argin: None
         
-        :return: None
+        return:
+            None
 
-        :rtype: Void
+        rtype:
+            Void
 
-        :raises: DevFailed if the command execution is not successful
+        raises:
+            DevFailed if the command execution is not successful
 
         """
         device_data = self.target

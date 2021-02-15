@@ -71,9 +71,11 @@ class ObsReset(BaseCommand):
 
         :param argin: None
 
-        :return: None
+        return:
+            None
 
-        :raises: DevFailed if error occurs while invoking the command on MccsSubarray.
+        raises:
+            DevFailed if error occurs while invoking the command on MccsSubarray.
         """
         device_data = self.target
         try:

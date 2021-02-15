@@ -78,11 +78,14 @@ class End(BaseCommand):
         """
         Method to invoke end command on MCCS Subarray.
 
-        :return: None
+        return:
+            None
 
-        :rtype: Void
+        rtype:
+            Void
 
-        :raises: DevFailed if the command execution is not successful.
+        raises:
+            DevFailed if the command execution is not successful.
         """
         device_data = self.target
         try:

@@ -90,16 +90,19 @@ class Configure(BaseCommand):
 
         Note: Enter the json string without spaces as a input.
 
-        :return: A tuple containing a return code and a string message indicating status.
-         The message is for information purpose only.
+        return:
+            A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
 
-        :rtype: (ReturnCode, str)
+        rtype:
+            (ReturnCode, str)
 
-        :raises: DevFailed if the command execution is not successful
+        raises:
+            DevFailed if the command execution is not successful
 
-                 ValueError if input argument json string contains invalid value
+            ValueError if input argument json string contains invalid value
 
-                 KeyError if input argument json string contains invalid key
+            KeyError if input argument json string contains invalid key
         """
         device_data = self.target
         try:
