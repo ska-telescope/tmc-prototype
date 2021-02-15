@@ -18,14 +18,16 @@ class RestartCommand(BaseCommand):
         """
         Checks whether this command is allowed to be run in current device state
 
-        :return: True if this command is allowed to be run in current device state
+        return:
+            True if this command is allowed to be run in current device state
 
-        :rtype: boolean
+        rtype:
+            boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state
+        raises:
+            DevFailed if this command is not allowed to be run in current device state
 
         """
-        # device = self.target
         if self.state_model.op_state in [DevState.UNKNOWN, DevState.DISABLE]:
             tango.Except.throw_exception("Restart() is not allowed in current state",
                                             "Failed to invoke Restart command on CspSubarrayLeafNode.",

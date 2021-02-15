@@ -38,15 +38,18 @@ class CspMasterLeafNode(SKABaseDevice):
     The primary responsibility of the SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
     actions during an observation.
 
-    **Device Properties**
+    :Device Properties:
 
-    :CspMasterFQDN: Property to provide FQDN of CSP Master Device
+        CspMasterFQDN:
+            Property to provide FQDN of CSP Master Device
 
-    **Attributes**
+    :Attributes:
 
-    :cspHealthState: Forwarded attribute to provide CSP Master Health State
+        cspHealthState:
+            Forwarded attribute to provide CSP Master Health State
 
-    :activityMessage: Attribute to provide activity message
+        activityMessage:
+            Attribute to provide activity message
 
     """
 

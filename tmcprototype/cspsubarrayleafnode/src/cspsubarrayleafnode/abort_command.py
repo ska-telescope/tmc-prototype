@@ -76,9 +76,11 @@ class AbortCommand(BaseCommand):
         """
         This command invokes Abort command on CSP Subarray.
 
-        :return: None
+        return:
+            None
 
-        :raises: DevFailed if error occurs while invoking command on CSPSubarray.
+        raises:
+            DevFailed if error occurs while invoking command on CSPSubarray.
 
         """
         device_data = self.target

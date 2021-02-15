@@ -75,9 +75,12 @@ class GoToIdleCommand(BaseCommand):
         """
         Method to invoke GoToIdle command on CSP Subarray.
 
-        :return: None
+        return:
+            None
 
-        :raises: DevFailed if the command execution is not successful
+        raises:
+            DevFailed if the command execution is not successful
+
         """
         device_data = self.target
         try:

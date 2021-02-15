@@ -75,11 +75,15 @@ class ObsResetCommand(BaseCommand):
         """
         Method to invoke ObsReset command on CSP Subarray.
 
-        :param argin: None
+        param argin:
+            None
 
-        :return: None
+        return:
+            None
 
-        :raises: DevFailed if error occurs while invoking the command on CSpSubarray.
+        raises:
+            DevFailed if error occurs while invoking the command on CSpSubarray.
+
         """
         device_data = self.target
         try:

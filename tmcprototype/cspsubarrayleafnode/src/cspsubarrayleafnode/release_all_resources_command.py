@@ -20,11 +20,14 @@ class ReleaseAllResourcesCommand(BaseCommand):
         """
         Checks whether the command is allowed to be run in the current state
 
-        :return: True if this command is allowed to be run in current device state
+        return:
+            True if this command is allowed to be run in current device state
 
-        :rtype: boolean
+        rtype:
+            boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state
+        raises:
+            DevFailed if this command is not allowed to be run in current device state
 
         """
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:

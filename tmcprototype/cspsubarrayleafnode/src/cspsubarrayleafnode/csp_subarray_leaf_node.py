@@ -50,21 +50,27 @@ class CspSubarrayLeafNode(SKABaseDevice):
     """
     CSP Subarray Leaf node monitors the CSP Subarray and issues control actions during an observation.
 
-    **Device Properties**
+    :Device Properties:
 
-    :CspSubarrayFQDN: Property to provide FQDN of CSP Master Device
+        CspSubarrayFQDN:
+            Property to provide FQDN of CSP Master Device
 
-    **Attributes**
+    :Device Attributes:
 
-    :cspsubarrayHealthState: Forwarded attribute to provide CSP Subarray Health State
+        cspsubarrayHealthState:
+            Forwarded attribute to provide CSP Subarray Health State
 
-    :cspSubarrayObsState: Forwarded attribute to provide CSP Subarray Observation State
+        cspSubarrayObsState:
+            Forwarded attribute to provide CSP Subarray Observation State
 
-    :activityMessage: String providing information about the current activity in CspSubarrayLeaf Node.
+        activityMessage:
+            String providing information about the current activity in CspSubarrayLeaf Node.
 
-    :delayModel: Attribute to provide the delay model.
+        delayModel:
+            Attribute to provide the delay model.
 
-    :versionInfo: Provides Version information of TANGO device.
+        versionInfo:
+            Provides Version information of TANGO device.
 
     """
     # -----------------
