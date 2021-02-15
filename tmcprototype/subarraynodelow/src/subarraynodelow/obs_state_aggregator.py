@@ -117,7 +117,16 @@ class ObsStateAggregator:
                 # End command success
                 self.logger.info("Calling End command succeeded() method")
                 self.this_server.device.end.succeeded()
+            elif self.device_data.is_obsreset_command_executed:
+                # ObsReset command success
+                self.logger.info("Calling ObsReset command succeeded() method")
+                self.this_server.device.obsreset.succeeded()
             else:
                 # Assign Resource command success
                 self.logger.info("Calling AssignResource command succeeded() method")
                 self.this_server.device.assign.succeeded()
+        elif self.device_data._mccs_sa_obs_state is 7:
+            if self.device_data.is_abort_command_executed:
+                # Abort command success
+                self.logger.info("Calling Abort command succeeded() method")
+                self.this_server.device.abort.succeeded()
