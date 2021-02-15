@@ -44,13 +44,17 @@ class StowAntennas(BaseCommand):
         """
         Method to invoke StowAntennas command.
 
-        :param argin: List of Receptors to be stowed.
+        param argin:
+            List of Receptors to be stowed.
 
-        :return: None
+        return:
+            None
 
-        :raises: DevFailed if error occurs while invoking command of DishLeafNode
+        raises:
+            DevFailed if error occurs while invoking command of DishLeafNode
 
-                 ValueError if error occurs if input argument json string contains invalid value
+            ValueError if error occurs if input argument json string contains invalid value
+            
         """
         device_data = DeviceData.get_instance()
         self.logger.info(type(self.target))

@@ -42,12 +42,15 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         """
         Method to invoke Off command on Lower level devices.
 
-        :param: None
+        param:
+            None
 
-        :return: A tuple containing a return code and a string message indicating status.
-                 The message is for information
+        return:
+            A tuple containing a return code and a string message indicating status.
+            The message is for information
 
-        :rtype: (ResultCode, str)
+        rtype:
+            (ResultCode, str)
 
         """
         self.logger.info(type(self.target))
