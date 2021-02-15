@@ -66,7 +66,8 @@ def release_resources():
     release_resources_file = (
         "resources/test_data/TMC_integration/mccs_release_resources.json"
     )
-    CentralNodeLow.ReleaseResources(release_resources_file)
+    config = load_config_from_file(release_resources_file)
+    CentralNodeLow.ReleaseResources(config)
     SubarrayNodeLow = DeviceProxy("ska_low/tm_subarray_node/1")
     LOGGER.info(
         "After Invoking Release Resource on Subarray, SubarrayNodeLow State and ObsState:"

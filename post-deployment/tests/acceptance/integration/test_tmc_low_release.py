@@ -42,7 +42,7 @@ def test_release_resources():
         @sync_release_resources
         def release_resources():
             CentralNodeLow = DeviceProxy("ska_low/tm_central/central_node")
-            CentralNodeLow.ReleaseResources('{"subarray_id":1,"release_all":true}')
+            CentralNodeLow.ReleaseResources('{"mccs":{"subarray_id":1,"release_all":true}}')
             SubarrayNodeLow = DeviceProxy("ska_low/tm_subarray_node/1")
 
         release_resources()
