@@ -120,8 +120,9 @@ class AssignResources(BaseCommand):
 
         Note: From Jive, enter above input string without any space.
 
-        :return: A tuple containing a return code and a string in JSON format on successful assignment
-         of given resources. The JSON string contains following values:
+        return:
+            A tuple containing a return code and a string in JSON format on successful assignment
+            of given resources. The JSON string contains following values:
 
             dish:
                 Mandatory JSON object consisting of
@@ -139,11 +140,11 @@ class AssignResources(BaseCommand):
                 }
                 }
 
-         Note: Enter input without spaces as:{"dish":{"receptorIDList_success":["0001","0002"]}}
+        Note: Enter input without spaces as:{"dish":{"receptorIDList_success":["0001","0002"]}}
 
-        :rtype: None
+        rtype: None
 
-        :raises: DevFailed when the API fails to allocate resources.
+        raises: DevFailed when the API fails to allocate resources.
 
         """
         device_data = DeviceData.get_instance()

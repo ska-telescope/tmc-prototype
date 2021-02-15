@@ -36,7 +36,7 @@ class CentralNode(SKABaseDevice):
     """
     Central Node is a coordinator of the complete M&C system.
 
-    :Device Properties: Properties of central node:
+    :Device Properties:
 
         CentralAlarmHandler:
             Device name of CentralAlarmHandler
@@ -47,7 +47,7 @@ class CentralNode(SKABaseDevice):
         TMMidSubarrayNodes:
             List of TM Mid Subarray Node devices.
 
-            
+
     """
     # -----------------
     # Device Properties
