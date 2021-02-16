@@ -55,7 +55,7 @@ class Abort(BaseCommand):
             None
 
         raises:
-            DevFailed If error occurs while invoking TrackStop command on DishMaster.
+            DevFailed If error occurs while invoking Abort command on DishMaster.
 
         """
         device_data = self.target

@@ -16,8 +16,7 @@ class AssignResourcesCommand(BaseCommand):
     """
     A class for CspSubarrayLeafNode's AssignResources() command.
 
-    It accepts subarrayID and receptor ids in JSON string format and invokes AssignResources command on CspSubarray
-    with dish as an input argument.
+    It accepts subarrayID and receptor ids in JSON string format and invokes AssignResources command on CspSubarray.
 
     """
 
@@ -30,7 +29,7 @@ class AssignResourcesCommand(BaseCommand):
         :rtype: boolean
 
         :raises: DevFailed if this command is not allowed to be run
-            in current device state
+                 in current device state
 
         """
         if self.state_model.op_state in [

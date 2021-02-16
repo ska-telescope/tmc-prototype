@@ -89,11 +89,7 @@ class EndScanCommand(BaseCommand):
         Method to invoke Endscan command on CSP Subarray.
 
         return:
-            A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
-
-        rtype:
-            (ReturnCode, str)
+            None
 
         raises:
             DevFailed if the command execution is not successful

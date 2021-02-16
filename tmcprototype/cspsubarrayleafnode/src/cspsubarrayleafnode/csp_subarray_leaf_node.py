@@ -68,7 +68,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
     :Device Properties:
 
         CspSubarrayFQDN:
-            Property to provide FQDN of CSP Master Device
+            Property to provide FQDN of CSP Subarray Device
 
     :Device Attributes:
 

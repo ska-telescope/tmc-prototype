@@ -106,11 +106,7 @@ class ConfigureCommand(BaseCommand):
         Note: Enter the json string without spaces as a input.
 
         return:
-            A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
-
-        rtype:
-            (ReturnCode, str)
+            None
 
         raises:
             DevFailed if the command execution is not successful
