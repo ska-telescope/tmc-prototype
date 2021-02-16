@@ -50,7 +50,8 @@ def test_abort():
         )
         LOGGER.info("Scanning the subarray")
         fixture["state"] = "Subarray SCANNING"
-        tmc.scan_sub()
+        SubarrayNodeLow = DeviceProxy("ska_low/tm_subarray_node/1")
+        SubarrayNodeLow.Scan('{"mccs":{"id":1,"scan_time":0.0}}')
         LOGGER.info("Aborting the subarray")
         fixture["state"] = "Subarray ABORTING"
 
