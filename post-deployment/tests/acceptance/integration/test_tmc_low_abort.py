@@ -52,7 +52,7 @@ def test_abort():
         @sync_abort
         def abort():
             SubarrayNodeLow = DeviceProxy("ska_low/tm_subarray_node/1")
-            SubarrayNodeLow.Scan('{"mccs":{"id":1,"scan_time":0.0}}')
+            tmc.scan_for_scanning()
             SubarrayNodeLow.Abort()
             LOGGER.info("Invoked Abort on Subarray")
 
@@ -62,7 +62,7 @@ def test_abort():
 
         # tear down
         # TODO: Waiting for obsreset to be implemented.
-        tmc.ObsReset_sub()
+        tmc.obsreset_sub()
         LOGGER.info("Obsreset is complete on Subarray")
         fixture["state"] = "Subarray IDLE"
         tmc.release_resources()

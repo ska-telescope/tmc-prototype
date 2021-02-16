@@ -5,6 +5,7 @@ import os
 import logging
 from resources.test_support.helpers_low import waiter, watch, resource
 from resources.test_support.controls_low import telescope_is_in_standby
+from resources.test_support.persistance_helping import load_config_from_file
 from resources.test_support.sync_decorators_low import sync_release_resources
 from resources.test_support.logging_decorators import log_it
 import resources.test_support.tmc_helpers_low as tmc
@@ -42,8 +43,11 @@ def test_release_resources():
         @sync_release_resources
         def release_resources():
             CentralNodeLow = DeviceProxy("ska_low/tm_central/central_node")
-            CentralNodeLow.ReleaseResources('{"mccs":{"subarray_id":1,"release_all":true}}')
-            SubarrayNodeLow = DeviceProxy("ska_low/tm_subarray_node/1")
+            release_resources_file = (
+                "resources/test_data/TMC_integration/mccs_release_resources.json"
+            )
+            release_resource_str = load_config_from_file(release_resources_file)
+            CentralNodeLow.ReleaseResources(release_resource_str)
 
         release_resources()
         LOGGER.info("Release Resources complete")

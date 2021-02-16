@@ -3,6 +3,7 @@ from datetime import date, datetime
 import pytest
 import os
 import logging
+from resources.test_support.persistance_helping import load_config_from_file
 from resources.test_support.helpers_low import waiter, watch, resource
 from resources.test_support.controls_low import telescope_is_in_standby
 from resources.test_support.sync_decorators_low import (
@@ -62,7 +63,9 @@ def test_scan():
         @sync_scan(200)
         def scan():
             SubarrayNodeLow = DeviceProxy("ska_low/tm_subarray_node/1")
-            SubarrayNodeLow.Scan('{"mccs":{"id":1,"scan_time":0.0}}')
+            scan_command_file = ("resources/test_data/TMC_integration/mccs_scan.json")
+            scan_str = load_config_from_file(scan_command_file)
+            SubarrayNodeLow.Scan(scan_str)
 
         scan()
         LOGGER.info("Scan complete")

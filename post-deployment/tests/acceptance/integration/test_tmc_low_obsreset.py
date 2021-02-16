@@ -50,8 +50,7 @@ def test_obsreset():
             "READY"
         )
         LOGGER.info("Invoking Scan on Subarray")
-        SubarrayNodeLow = DeviceProxy("ska_low/tm_subarray_node/1")
-        SubarrayNodeLow.Scan('{"mccs":{"id":1,"scan_time":0.0}}')
+        tmc.scan_for_scanning()
         fixture["state"] = "Subarray SCANNING"
         LOGGER.info("Invoking abort command")
         tmc.abort_sub()
@@ -90,7 +89,7 @@ def test_obsreset():
         elif fixture["state"] == "Subarray CONFIGURING":
             raise Exception("unable to teardown subarray from being in CONFIGURING")
         elif fixture["state"] == "Obstate aborted":
-            tmc.ObsReset_sub()
+            tmc.obsreset_sub()
             tmc.release_resources()
             tmc.set_to_standby()
         pytest.fail("unable to complete test without exceptions")
