@@ -2,8 +2,6 @@
 import logging
 
 # Additional import
-from ska.base.control_model import ObsState
-
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -73,8 +71,6 @@ class ObsStateAggregator:
 
         :raises: KeyError if error occurs while setting SubarrayNode's ObsState.
         """
-        log_msg = "Event from mccs: " + str(evt)
-        self.logger.info(log_msg)
         try:
             if not evt.err:
                 event_observetion_state = evt.attr_value.value
