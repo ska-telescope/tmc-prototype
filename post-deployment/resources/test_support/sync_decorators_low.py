@@ -73,7 +73,7 @@ class WaitAbort:
             "obsState"
         )
 
-    def wait(self, timeout):
+    def wait(self):
         logging.info(
             "Abort command dispatched, checking that the state transitioned to ABORTING"
         )
