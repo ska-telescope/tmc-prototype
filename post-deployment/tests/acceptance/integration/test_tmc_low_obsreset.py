@@ -51,7 +51,7 @@ def test_obsreset():
         )
         LOGGER.info("Invoking Scan on Subarray")
         SubarrayNodeLow = DeviceProxy("ska_low/tm_subarray_node/1")
-        SubarrayNodeLow.Scan('{"id":1}')
+        SubarrayNodeLow.Scan('{"mccs":{"id":1,"scan_time":0.0}}')
         fixture["state"] = "Subarray SCANNING"
         LOGGER.info("Invoking abort command")
         tmc.abort_sub()
