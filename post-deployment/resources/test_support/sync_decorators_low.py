@@ -106,7 +106,7 @@ class WaitObsReset:
             "obsState"
         )
 
-    def wait(self, timeout):
+    def wait(self):
         logging.info(
             "ObsReset command dispatched, checking that the state transitioned to RESETTING"
         )
