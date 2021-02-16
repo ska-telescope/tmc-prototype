@@ -43,7 +43,7 @@ class CspMasterLeafNode(SKABaseDevice):
         CspMasterFQDN:
             Property to provide FQDN of CSP Master Device
 
-    :Attributes:
+    :Device Attributes:
 
         cspHealthState:
             Forwarded attribute to provide CSP Master Health State

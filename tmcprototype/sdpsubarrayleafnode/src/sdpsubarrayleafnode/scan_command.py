@@ -88,9 +88,11 @@ class Scan(BaseCommand):
 
         Note: Enter input as without spaces:{“id”:1}
 
-        :return: None
+        return:
+            None
 
-        :raises: DevFailed if the command execution is not successful.
+        raises:
+            DevFailed if the command execution is not successful.
         """
         device_data = self.target
         try:

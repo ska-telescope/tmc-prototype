@@ -40,17 +40,21 @@ class MccsSubarrayLeafNode(SKABaseDevice):
     """
     MCCS Subarray Leaf node monitors the MCCS Subarray and issues control actions during an observation.
 
-    **Device Properties**
+    :Device Properties:
 
-    :MccsSubarrayFQDN: FQDN of MCCS Subarray.
+        MccsSubarrayFQDN:
+            FQDN of MCCS Subarray.
 
-    **Device Attributes**
+    :Device Attributes:
 
-    :mccsSubarrayHealthState: Forwarded attribute to provide MCCS Subarray Health State.
+        mccsSubarrayHealthState:
+            Forwarded attribute to provide MCCS Subarray Health State.
 
-    :mccsSubarrayObsState: Attribute to provide MCCS Subarray Observation State.
+        mccsSubarrayObsState:
+            Attribute to provide MCCS Subarray Observation State.
 
-    :activityMessage: String providing information about the current activity in MCCS Subarray Leaf Node.
+        activityMessage:
+            String providing information about the current activity in MCCS Subarray Leaf Node.
 
     """
     # -----------------
@@ -90,12 +94,15 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             """
             Initializes the attributes and properties of the MccsSubarrayLeafNode.
 
-            :return: A tuple containing a return code and a string message indicating status. The message is
-            for information purpose only.
+            return:
+                A tuple containing a return code and a string message indicating status. The message is
+                for information purpose only.
 
-            :rtype: (ReturnCode, str)
+            rtype:
+                (ReturnCode, str)
 
-            :raises: DevFailed if error occurs in creating proxy for MCCSSubarray.
+            raises:
+                DevFailed if error occurs in creating proxy for MCCSSubarray.
 
             """
             super().do()
@@ -145,13 +152,16 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         """
         Checks whether the command is allowed to be run in the current state
 
-        :return: True if this command is allowed to be run in
-        current device state
+        return:
+            True if this command is allowed to be run in
+            current device state
 
-        :rtype: boolean
+        rtype:
+            boolean
 
-        :raises: DevFailed if this command is not allowed to be run
-        in current device state
+        raises:
+            DevFailed if this command is not allowed to be run
+            in current device state
 
         """
         handler = self.get_command_object("Configure")
@@ -179,13 +189,16 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         """
         Checks whether the command is allowed to be run in the current state
 
-        :return: True if this command is allowed to be run in
-        current device state
+        return:
+            True if this command is allowed to be run in
+            current device state
 
-        :rtype: boolean
+        rtype:
+            boolean
 
-        :raises: DevFailed if this command is not allowed to be run
-        in current device state
+        raises:
+            DevFailed if this command is not allowed to be run
+            in current device state
 
         """
         handler = self.get_command_object("Scan")
@@ -201,13 +214,16 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         """
         Checks whether the command is allowed to be run in the current state.
 
-        :return: True if this command is allowed to be run in
-        current device state
+        return:
+            True if this command is allowed to be run in
+            current device state
 
-        :rtype: boolean
+        rtype:
+            boolean
 
-        :raises: DevFailed if this command is not allowed to be run
-        in current device state
+        raises:
+            DevFailed if this command is not allowed to be run
+            in current device state
 
         """
         handler = self.get_command_object("EndScan")
@@ -217,13 +233,16 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         """
         Checks whether the command is allowed to be run in the current state
 
-        :return: True if this command is allowed to be run in
-        current device state
+        return:
+            True if this command is allowed to be run in
+            current device state
 
-        :rtype: boolean
+        rtype:
+            boolean
 
-        :raises: DevFailed if this command is not allowed to be run
-        in current device state
+        raises:
+            DevFailed if this command is not allowed to be run
+            in current device state
 
         """
         handler = self.get_command_object("End")
@@ -241,13 +260,16 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         """
         Checks whether the command is allowed to be run in the current state
 
-        :return: True if this command is allowed to be run in
-        current device state
+        return:
+            True if this command is allowed to be run in
+            current device state
 
-        :rtype: boolean
+        rtype:
+            boolean
 
-        :raises: DevFailed if this command is not allowed to be run
-        in current device state
+        raises:
+            DevFailed if this command is not allowed to be run
+            in current device state
 
         """
         handler = self.get_command_object("Abort")
@@ -265,13 +287,16 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         """
         Checks whether the command is allowed to be run in the current state
 
-        :return: True if this command is allowed to be run in
-        current device state
+        return:
+            True if this command is allowed to be run in
+            current device state
 
-        :rtype: boolean
+        rtype:
+            boolean
 
-        :raises: DevFailed if this command is not allowed to be run
-        in current device state
+        raises:
+            DevFailed if this command is not allowed to be run
+            in current device state
 
         """
         handler = self.get_command_object("ObsReset")

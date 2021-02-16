@@ -90,13 +90,15 @@ class Configure(BaseCommand):
 
         { "scan_type": "science_A" }
 
-        :return: None
+        return:
+            None
 
-        :raises: ValueError if input argument json string contains invalid value.
+        raises:
+            ValueError if input argument json string contains invalid value.
 
-                 KeyError if input argument json string contains invalid key.
+            KeyError if input argument json string contains invalid key.
 
-                 DevFailed if the command execution is not successful
+            DevFailed if the command execution is not successful
         """
         device_data = self.target
         try:

@@ -36,7 +36,7 @@ class MccsMasterLeafNode(SKABaseDevice):
         MccsMasterFQDN:
             Property to provide FQDN of MCCS Master Device
 
-    :Attributes:
+    :Device Attributes:
 
         mccsHealthState:
             Forwarded attribute to provide MCCS Master Health State

@@ -86,9 +86,11 @@ class ReleaseAllResources(BaseCommand):
 
         :param argin: None.
 
-        :return: None
+        return:
+            None
 
-        :raises: DevFailed if the command execution is not successful.
+        raises:
+            DevFailed if the command execution is not successful.
         """
         device_data = self.target
         try:

@@ -78,9 +78,10 @@ class EndScan(BaseCommand):
         """
         Method to invoke EndScan command on MCCS Subarray.
 
-        :raises: DevFailed if the command execution is not successful.
+        raises:
+            DevFailed if the command execution is not successful.
 
-                 AssertionError if MccsSubarray is not in SCANNING obsState.
+            AssertionError if MccsSubarray is not in SCANNING obsState.
 
         """
         device_data = self.target

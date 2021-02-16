@@ -84,11 +84,14 @@ class Scan(BaseCommand):
 
         Note: Enter the json string without spaces as a input.
 
-        :return: None
+        return:
+            None
 
-        :rtype: Void
+        rtype:
+            Void
 
-        :raises: DevFailed if the command execution is not successful
+        raises:
+            DevFailed if the command execution is not successful
         """
         device_data = self.target
         try:

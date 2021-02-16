@@ -81,9 +81,11 @@ class End(BaseCommand):
         """
         Method to invoke End command on SDP Subarray.
 
-        :return: None
+        return:
+            None
 
-        :raises: DevFailed if the command execution is not successful.
+        raises:
+            DevFailed if the command execution is not successful.
         """
         device_data = self.target
         try:
