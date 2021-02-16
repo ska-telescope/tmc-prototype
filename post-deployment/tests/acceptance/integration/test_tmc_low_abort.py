@@ -69,12 +69,7 @@ def test_abort():
         LOGGER.info("Invoked ReleaseResources on Subarray")
         tmc.set_to_standby()
         LOGGER.info("Invoked StandBy on Subarray")
-        # tear down
-        LOGGER.info("TMC-ObsReset tests complete: tearing down...")
-
-        tmc.set_to_standby()
-        LOGGER.info("Invoked StandBy on Subarray")
-
+       
     except:
         LOGGER.info("Tearing down failed test, state = {}".format(fixture["state"]))
         if fixture["state"] == "Telescope On":
