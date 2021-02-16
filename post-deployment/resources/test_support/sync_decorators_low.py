@@ -389,7 +389,7 @@ def sync_obsreset(func):
 def sync_abort(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        check_going_into_empty()
+        # check_going_into_empty()
         w = WaitAbort()
         ################
         result = func(*args, **kwargs)
