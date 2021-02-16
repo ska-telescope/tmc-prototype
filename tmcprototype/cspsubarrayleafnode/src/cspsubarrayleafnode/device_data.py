@@ -12,13 +12,14 @@ CspSubarrayLeafNode device.
 """
 
 
-class DeviceData():
+class DeviceData:
     """
     This class represents the CspSubarrayLeafNode as functional device.
     It mainly comprise the data common across various functions/modules of cspsubarrayleafnode.
     """
+
     __instance = None
-    
+
     def __init__(self):
         """Private constructor of the class"""
         if DeviceData.__instance is not None:
@@ -31,7 +32,6 @@ class DeviceData():
         self.target = None
         self.fsp_ids_object = []
         self._delay_model = " "
-
 
     @staticmethod
     def get_instance():

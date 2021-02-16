@@ -1,6 +1,7 @@
 """
 AssignResources class for CentralNode.
 """
+# Standard Python imports
 import json
 import ast
 
@@ -9,13 +10,16 @@ import tango
 from tango import DevState, DevFailed
 
 from ska.base.commands import BaseCommand
+
 from tmc.common.tango_client import TangoClient
+
 from . import const
 from centralnode.receptor_reassignment_checker import ReceptorReassignmentChecker
 from centralnode.input_validator import AssignResourceValidator
 from centralnode.device_data import DeviceData
 from centralnode.exceptions import ResourceReassignmentError, ResourceNotPresentError
 from centralnode.exceptions import SubarrayNotPresentError, InvalidJSONError
+
 
 class AssignResources(BaseCommand):
     """
@@ -40,11 +44,17 @@ class AssignResources(BaseCommand):
 
         """
 
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-            tango.Except.throw_exception("Command AssignResources is not allowed in current state.",
-                                         "Failed to invoke AssignResources command on CentralNode.",
-                                         "CentralNode.AssignResources()",
-                                         tango.ErrSeverity.ERR)
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
+            tango.Except.throw_exception(
+                f"Command AssignResources is not allowed in current state {self.state_model.op_state}.",
+                "Failed to invoke AssignResources command on CentralNode.",
+                "CentralNode.AssignResources()",
+                tango.ErrSeverity.ERR,
+            )
         return True
 
     def do(self, argin):
@@ -156,85 +166,105 @@ class AssignResources(BaseCommand):
         ## Validate the input JSON string.
         try:
             self.logger.info("Validating input string.")
-            input_validator = AssignResourceValidator(device_data.tm_mid_subarray, device_data._dish_leaf_node_devices,
-                                                      device_data.dln_prefix, self.logger)
+            input_validator = AssignResourceValidator(
+                device_data.tm_mid_subarray,
+                device_data._dish_leaf_node_devices,
+                device_data.dln_prefix,
+                self.logger,
+            )
             json_argument = input_validator.loads(argin)
 
             # Create subarray proxy
-            subarrayID = int(json_argument['subarrayID'])
+            subarrayID = int(json_argument["subarrayID"])
             subarrayFqdn = device_data.subarray_FQDN_dict[subarrayID]
             ## check for duplicate allocation
             self.logger.info("Checking for resource reallocation.")
             device_data.check_resources = ReceptorReassignmentChecker(self.logger)
             device_data.check_resources.do(json_argument["dish"]["receptorIDList"])
 
-            #Allocate resources to subarray
+            # Allocate resources to subarray
             # Remove Subarray Id key from input json argument and send the json with
             # receptor Id list and SDP block to TMC Subarray Node
             self.logger.info("Allocating resource to subarray %d", subarrayID)
             input_json_subarray = json_argument.copy()
             input_to_sa = json.dumps(input_json_subarray)
             subarray_client = TangoClient(subarrayFqdn)
-         
+
             resources_allocated_return = subarray_client.send_command(
-                const.CMD_ASSIGN_RESOURCES, input_to_sa)
+                const.CMD_ASSIGN_RESOURCES, input_to_sa
+            )
 
             # Note: resources_allocated_return[1] contains the JSON string containing
             # allocated resources.
             # resources_allocated = resources_allocated_return[1]
-            log_msg = "Return value from subarray node: " + str(resources_allocated_return)
+            log_msg = f"Return value from subarray node:{resources_allocated_return}" 
             self.logger.info(log_msg)
             resources_allocated = ast.literal_eval(resources_allocated_return[1][0])
-            log_msg = "resources_assigned: " + str(resources_allocated)
+            log_msg = f"resources_assigned:{resources_allocated}"
             self.logger.debug(log_msg)
-            device_data.resource_manager.update_resource_matrix(resources_allocated, subarrayID)
+            device_data.resource_manager.update_resource_matrix(
+                resources_allocated, subarrayID
+            )
 
             # Allocation successful
             device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
             self.logger.debug(const.STR_ASSIGN_RESOURCES_SUCCESS)
 
             # Prepare output argument
-            argout = {
-                "dish": {
-                    "receptorIDList_success": device_data.receptorIDList
-                }
-            }
+            argout = {"dish": {"receptorIDList_success": device_data.receptorIDList}}
             self.logger.debug(argout)
-        except (InvalidJSONError, ResourceNotPresentError, SubarrayNotPresentError) as error:
+        except (
+            InvalidJSONError,
+            ResourceNotPresentError,
+            SubarrayNotPresentError,
+        ) as error:
             self.logger.exception("Exception in AssignResource(): %s", str(error))
-            device_data._read_activity_message = "Exception in validating input: " + str(error)
-            log_msg = const.STR_ASSIGN_RES_EXEC + str(error)
+            device_data._read_activity_message = f"Exception in validating input:{error}"
+            log_msg = f"{const.STR_ASSIGN_RES_EXEC}{error}"
             self.logger.exception(error)
-            tango.Except.throw_exception(const.STR_RESOURCE_ALLOCATION_FAILED, log_msg,
-                                         "CentralNode.AssignResourcesCommand",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_RESOURCE_ALLOCATION_FAILED,
+                log_msg,
+                "CentralNode.AssignResourcesCommand",
+                tango.ErrSeverity.ERR,
+            )
 
         except ResourceReassignmentError as resource_error:
-            self.logger.exception("List of the dishes that are already allocated: %s", \
-                                  str(resource_error.resources_reallocation))
-            device_data._read_activity_message = const.STR_DISH_DUPLICATE + str(resource_error.resources_reallocation)
-            log_msg = const.STR_DISH_DUPLICATE + str(resource_error)
+            self.logger.exception(
+                "List of the dishes that are already allocated: %s",
+                str(resource_error.resources_reallocation),
+            )
+            device_data._read_activity_message = f"{const.STR_DISH_DUPLICATE}{resource_error.resources_reallocation}"
+            log_msg = f"{const.STR_DISH_DUPLICATE}{resource_error}"
             self.logger.exception(resource_error)
-            tango.Except.throw_exception(const.STR_RESOURCE_ALLOCATION_FAILED, log_msg,
-                                         "CentralNode.AssignResourcesCommand",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_RESOURCE_ALLOCATION_FAILED,
+                log_msg,
+                "CentralNode.AssignResourcesCommand",
+                tango.ErrSeverity.ERR,
+            )
         except ValueError as ve:
             self.logger.exception("Exception in AssignResources command: %s", str(ve))
-            device_data._read_activity_message = "Invalid value in input: " + str(ve)
-            log_msg = const.STR_ASSIGN_RES_EXEC + str(ve)
+            device_data._read_activity_message = f"Invalid value in input:{ve}" 
+            log_msg = f"{const.STR_ASSIGN_RES_EXEC}{ve}"    
             self.logger.exception(ve)
-            tango.Except.throw_exception(const.STR_RESOURCE_ALLOCATION_FAILED, log_msg,
-                                         "CentralNode.AssignResourcesCommand",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_RESOURCE_ALLOCATION_FAILED,
+                log_msg,
+                "CentralNode.AssignResourcesCommand",
+                tango.ErrSeverity.ERR,
+            )
         except DevFailed as dev_failed:
-            log_msg = const.ERR_ASSGN_RESOURCES + str(dev_failed)
+            log_msg = f"{const.ERR_ASSGN_RESOURCES}{dev_failed}"
             self.logger.exception(dev_failed)
-            tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg,
-                                         "CentralNode.AssignResourcesCommand",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_CMD_FAILED,
+                log_msg,
+                "CentralNode.AssignResourcesCommand",
+                tango.ErrSeverity.ERR,
+            )
         message = json.dumps(argout)
         self.logger.info(message)
         return message
-
+        
         # PROTECTED REGION END #    //  CentralNode.AssignResources
-

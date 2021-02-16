@@ -17,6 +17,7 @@ from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, SimulationMode, TestMode
+
 from . import const, release
 from .assign_resources_command import AssignResources
 from .release_resources_command import ReleaseResources
@@ -26,8 +27,17 @@ from .device_data import DeviceData
 
 # PROTECTED REGION END #    //  MccsMasterLeafNode imports
 
-__all__ = ["MccsMasterLeafNode", "main", "AssignResources", "const", 
-           "release", "ReleaseResources", "On", "Off"]
+__all__ = [
+    "MccsMasterLeafNode",
+    "main",
+    "AssignResources",
+    "const",
+    "release",
+    "ReleaseResources",
+    "On",
+    "Off",
+]
+
 
 class MccsMasterLeafNode(SKABaseDevice):
     """
@@ -51,19 +61,21 @@ class MccsMasterLeafNode(SKABaseDevice):
     # -----------------
 
     MccsMasterFQDN = device_property(
-        dtype='str', default_value="low-mccs/control/control"
+        dtype="str", default_value="low-mccs/control/control"
     )
     # ----------
     # Attributes
     # ----------
 
     activityMessage = attribute(
-        dtype='str',
+        dtype="str",
         access=AttrWriteType.READ_WRITE,
         doc="Activity Message",
     )
 
-    mccsHealthState = attribute(name="mccsHealthState", label="mccsHealthState", forwarded=True)
+    mccsHealthState = attribute(
+        name="mccsHealthState", label="mccsHealthState", forwarded=True
+    )
     # ---------------
     # General methods
     # ---------------
@@ -88,23 +100,27 @@ class MccsMasterLeafNode(SKABaseDevice):
             super().do()
             device = self.target
             device._health_state = HealthState.OK  # Setting healthState to "OK"
-            device._simulation_mode = SimulationMode.FALSE  # Enabling the simulation mode
+            device._simulation_mode = (
+                SimulationMode.FALSE
+            )  # Enabling the simulation mode
             device._test_mode = TestMode.NONE
-            device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
+            device._build_state = "{},{},{}".format(
+                release.name, release.version, release.description
+            )
             device._version_id = release.version
 
             # Create DeviceData class instance
             device_data = DeviceData.get_instance()
             device.device_data = device_data
             device_data._read_activity_message = const.STR_MCCS_INIT_LEAF_NODE
-            device_data._read_activity_message = const.STR_MCCSMASTER_FQDN + str(device.MccsMasterFQDN)
+            device_data._read_activity_message = f"{const.STR_MCCSMASTER_FQDN}{device.MccsMasterFQDN}"
             # Creating proxy to the CSPMaster
-            log_msg = "MCCS Master name: " + str(device.MccsMasterFQDN)
+            log_msg = f"MCCS Master name: {device.MccsMasterFQDN}"
             self.logger.debug(log_msg)
             device_data._mccs_master_fqdn = str(device.MccsMasterFQDN)
-        
+
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
-            log_msg = const.STR_SETTING_CB_MODEL + str(ApiUtil.instance().get_asynch_cb_sub_model())
+            log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
             device_data._read_activity_message = const.STR_INIT_SUCCESS
             self.logger.info(device_data._read_activity_message)
@@ -134,16 +150,14 @@ class MccsMasterLeafNode(SKABaseDevice):
         self.device_data._read_activity_message = value
         # PROTECTED REGION END #    //  MccsMasterLeafNode.activityMessage_write
 
-                                                 
     @command(
-        dtype_in='str',
+        dtype_in="str",
     )
     @DebugIt()
     def AssignResources(self, argin):
         """ Invokes AssignResources command on Mcccs Master"""
         handler = self.get_command_object("AssignResources")
         handler(argin)
-    
 
     def is_AssignResources_allowed(self):
         """
@@ -157,7 +171,7 @@ class MccsMasterLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in='str',
+        dtype_in="str",
     )
     @DebugIt()
     def ReleaseResources(self, argin):
@@ -177,7 +191,6 @@ class MccsMasterLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("ReleaseResources")
         return handler.check_allowed()
-    
 
     def init_command_objects(self):
         """
@@ -188,12 +201,15 @@ class MccsMasterLeafNode(SKABaseDevice):
         # Create device_data class object
         device_data = DeviceData.get_instance()
 
-        args = (device_data, self.state_model, self.logger)  
+        args = (device_data, self.state_model, self.logger)
         self.register_command_object("AssignResources", AssignResources(*args))
         self.register_command_object("ReleaseResources", ReleaseResources(*args))
-        self.register_command_object("On", On(device_data, self.state_model, self.logger))
-        self.register_command_object("Off", Off(device_data, self.state_model, self.logger))
-
+        self.register_command_object(
+            "On", On(device_data, self.state_model, self.logger)
+        )
+        self.register_command_object(
+            "Off", Off(device_data, self.state_model, self.logger)
+        )
 
 
 # ----------
@@ -215,5 +231,6 @@ def main(args=None, **kwargs):
     return run((MccsMasterLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  MccsMasterLeafNode.main
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

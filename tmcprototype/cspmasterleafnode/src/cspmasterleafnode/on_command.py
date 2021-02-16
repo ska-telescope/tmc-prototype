@@ -1,11 +1,20 @@
+# Tango import
 import tango
 from tango import DevFailed
+
+# Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
+
 from tmc.common.tango_client import TangoClient
 from . import const
-from .attribute_callbacks import CbfHealthStateAttributeUpdator, PssHealthStateAttributeUpdator, \
-                                                                    PstHealthStateAttributeUpdator
+from .attribute_callbacks import (
+    CbfHealthStateAttributeUpdator,
+    PssHealthStateAttributeUpdator,
+    PstHealthStateAttributeUpdator,
+)
+
+
 class On(SKABaseDevice.OnCommand):
     """
     A class for CspMasterLeafNode's On() command. On command is inherited from SKABaseDevice.
@@ -34,13 +43,12 @@ class On(SKABaseDevice.OnCommand):
 
         """
         device_data = self.target
-        # Update logs and activity message attribute with received event
         if event.err:
-            log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
             device_data._read_activity_message = log_msg
         else:
-            log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+            log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
             device_data._read_activity_message = log_msg
 
@@ -64,12 +72,10 @@ class On(SKABaseDevice.OnCommand):
         """
         device_data = self.target
         try:
-            # Pass argin to csp master .
-            # If the array length is 0, the command applies to the whole CSP Element.
-            # If the array length is > 1 each array element specifies
-            # the FQDN of the CSP SubElement to switch ON.
             csp_mln_client_obj = TangoClient(device_data.csp_master_ln_fqdn)
-            csp_mln_client_obj.send_command_async(const.CMD_ON, [], self.on_cmd_ended_cb)
+            csp_mln_client_obj.send_command_async(
+                const.CMD_ON, [], self.on_cmd_ended_cb
+            )
             self.logger.debug(const.STR_ON_CMD_ISSUED)
             device_data.cbf_health_updator = CbfHealthStateAttributeUpdator()
             device_data.cbf_health_updator.start()
@@ -80,9 +86,13 @@ class On(SKABaseDevice.OnCommand):
             return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_EXE_ON_CMD + str(dev_failed)
+            log_msg = f"{const.ERR_EXE_ON_CMD}{dev_failed}"
             self.logger.exception(dev_failed)
             device_data._read_activity_message = const.ERR_EXE_ON_CMD
-            tango.Except.re_throw_exception(dev_failed, const.STR_ON_EXEC, log_msg,
-                                            "CspMasterLeafNode.OnCommand",
-                                            tango.ErrSeverity.ERR)
+            tango.Except.re_throw_exception(
+                dev_failed,
+                const.STR_ON_EXEC,
+                log_msg,
+                "CspMasterLeafNode.OnCommand",
+                tango.ErrSeverity.ERR,
+            )

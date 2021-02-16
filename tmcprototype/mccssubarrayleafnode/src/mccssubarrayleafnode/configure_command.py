@@ -10,10 +10,12 @@ from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
-from tmc.common.tango_client import TangoClient
-from . import const
-# PROTECTED REGION END #    //  MccsSubarrayLeafNode.additional_import
 
+from tmc.common.tango_client import TangoClient
+
+from . import const
+
+# PROTECTED REGION END #    //  MccsSubarrayLeafNode.additional_import
 
 
 class Configure(BaseCommand):
@@ -38,11 +40,17 @@ class Configure(BaseCommand):
             in current device state
 
         """
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-            tango.Except.throw_exception("Configure() is not allowed in current state",
-                                         "Failed to invoke Configure command on mccssubarrayleafnode.",
-                                         "mccssubarrayleafnode.Configure()",
-                                         tango.ErrSeverity.ERR)
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
+            tango.Except.throw_exception(
+                f"Configure() is not allowed in current state {self.state_model.op_state}",
+                "Failed to invoke Configure command on mccssubarrayleafnode.",
+                "mccssubarrayleafnode.Configure()",
+                tango.ErrSeverity.ERR,
+            )
         return True
 
     def configure_cmd_ended_cb(self, event):
@@ -68,11 +76,11 @@ class Configure(BaseCommand):
         device_data = self.target
         # Update logs and activity message attribute with received event
         if event.err:
-            log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
             device_data._read_activity_message = log_msg
         else:
-            log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+            log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
             device_data._read_activity_message = log_msg
 
@@ -109,17 +117,20 @@ class Configure(BaseCommand):
             mccs_subarray_client = TangoClient(device_data._mccs_subarray_fqdn)
             # TODO: Mock obs_state issue to be resolved
             # assert (mccs_subarray_client.get_attribute("obsState") in (ObsState.IDLE, ObsState.READY))
-            log_msg = "Input JSON for MCCS Subarray Leaf Node Configure command is: " + argin
+            log_msg = (
+                "Input JSON for MCCS Subarray Leaf Node Configure command is: " + argin
+            )
             self.logger.debug(log_msg)
 
             configuration_string = json.loads(argin)
             cmd_data = self.create_cmd_data(configuration_string)
 
-            #Invoke Configure command on MCCSSubarray.
+            # Invoke Configure command on MCCSSubarray.
             log_msg = "Output Configure JSON is: " + cmd_data
             self.logger.info(log_msg)
-            mccs_subarray_client.send_command_async(const.CMD_CONFIGURE, cmd_data,
-                                                    self.configure_cmd_ended_cb)
+            mccs_subarray_client.send_command_async(
+                const.CMD_CONFIGURE, cmd_data, self.configure_cmd_ended_cb
+            )
             device_data._read_activity_message = const.STR_CONFIGURE_SUCCESS
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
 
@@ -134,28 +145,37 @@ class Configure(BaseCommand):
         #                                  tango.ErrSeverity.ERR)
 
         except ValueError as value_error:
-            log_msg = const.ERR_INVALID_JSON_CONFIG + str(value_error)
+            log_msg = f"{const.ERR_INVALID_JSON_CONFIG}{value_error}"
             device_data._read_activity_message = log_msg
             self.logger.exception(value_error)
-            tango.Except.throw_exception(const.ERR_CONFIGURE_INVOKING_CMD, log_msg,
-                                         "MccsSubarrayLeafNode.Configure",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.ERR_CONFIGURE_INVOKING_CMD,
+                log_msg,
+                "MccsSubarrayLeafNode.Configure",
+                tango.ErrSeverity.ERR,
+            )
 
         except KeyError as key_error:
-            log_msg = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
-            device_data._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(key_error)
+            log_msg = f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}"
+            device_data._read_activity_message = f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}"
             self.logger.exception(key_error)
-            tango.Except.throw_exception(const.ERR_CONFIGURE_INVOKING_CMD, log_msg,
-                                         "MccsSubarrayLeafNode.Configure",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.ERR_CONFIGURE_INVOKING_CMD,
+                log_msg,
+                "MccsSubarrayLeafNode.Configure",
+                tango.ErrSeverity.ERR,
+            )
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_CONFIGURE_INVOKING_CMD + str(dev_failed)
+            log_msg = f"{const.ERR_CONFIGURE_INVOKING_CMD}{dev_failed}"
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
-            tango.Except.throw_exception(const.ERR_CONFIGURE_INVOKING_CMD, log_msg,
-                                         "MccsSubarrayLeafNode.Configure",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.ERR_CONFIGURE_INVOKING_CMD,
+                log_msg,
+                "MccsSubarrayLeafNode.Configure",
+                tango.ErrSeverity.ERR,
+            )
 
     def create_cmd_data(self, configuration_string):
         station_beam_pointings = configuration_string["subarray_beams"][0]
@@ -170,7 +190,9 @@ class Configure(BaseCommand):
         # Remove target block from station_beam_pointings
         station_beam_pointings.pop("target", None)
 
-        mccs_sa_configuration_string = self.update_configuration_json(station_beam_pointings, configuration_string)
+        mccs_sa_configuration_string = self.update_configuration_json(
+            station_beam_pointings, configuration_string
+        )
         cmd_data = json.dumps(mccs_sa_configuration_string)
         return cmd_data
 
@@ -198,7 +220,7 @@ class Configure(BaseCommand):
     def get_station_ids(self, configuration_string):
         station_ids = []
         for station in configuration_string["stations"]:
-            log_msg = "Station is: " + str(station)
+            log_msg = f"Station is: {station}" 
             self.logger.info(log_msg)
             station_ids.append(station["station_id"])
         return station_ids

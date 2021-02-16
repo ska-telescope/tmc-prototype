@@ -10,7 +10,6 @@
 """
 Track class for DishLeafNode.
 """
-import json
 import threading
 import datetime
 import time
@@ -36,7 +35,11 @@ class Track(BaseCommand):
         :return: True if this command is allowed to be run in current device state.
         :rtype: boolean
         """
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
             return False
 
         return True
@@ -65,8 +68,8 @@ class Track(BaseCommand):
         command_name = "Track"
 
         try:
-            json_argin = self._load_config_string(argin)
-            ra_value, dec_value = self._get_targets(json_argin)
+            json_argin = device_data._load_config_string(argin)
+            ra_value, dec_value = device_data._get_targets(json_argin)
             radec_value = f"radec,{ra_value},{dec_value}"
             self.logger.info(
                 "Track command ignores RA dec coordinates passed in: %s. "
@@ -81,7 +84,9 @@ class Track(BaseCommand):
             self.logger.info("'%s' command executed successfully.", command_name)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
-            log_message = f"Exception occured while executing the '{command_name}' command."
+            log_message = (
+                f"Exception occured while executing the '{command_name}' command."
+            )
             device_data._read_activity_message = log_message
             tango.Except.re_throw_exception(
                 dev_failed,
@@ -94,34 +99,6 @@ class Track(BaseCommand):
         device_data.event_track_time.clear()
         self.tracking_thread = threading.Thread(None, self.track_thread, "DishLeafNode")
         self.tracking_thread.start()
-
-    
-    def _get_targets(self, json_argument):
-        try:
-            ra_value = json_argument["pointing"]["target"]["RA"]
-            dec_value = json_argument["pointing"]["target"]["dec"]
-        except KeyError as key_error:
-            tango.Except.throw_exception(
-                str(key_error),
-                "JSON key not found.",
-                "_get_targets",
-                tango.ErrSeverity.ERR,
-            )
-
-        return (ra_value, dec_value)
-
-    def _load_config_string(self, argin):
-        try:
-            json_argument = json.loads(argin)
-        except json.JSONDecodeError as jsonerr:
-            tango.Except.throw_exception(
-                str(jsonerr),
-                "Invalid JSON format.",
-                "_load_config_string",
-                tango.ErrSeverity.ERR,
-            )
-
-        return json_argument
 
     # pylint: disable=logging-fstring-interpolation
     def track_thread(self):
@@ -138,7 +115,14 @@ class Track(BaseCommand):
             timestamp = str(now)
             # pylint: disable=unbalanced-tuple-unpacking
             azel_converter = AzElConverter(self.logger)
-            device_data.az, device_data.el = azel_converter.convert_radec_to_azel(device_data.radec_value, timestamp, device_data.dish_name, device_data.observer_location["latitude"], device_data.observer_location["latitude"], device_data.observer_location["altitude"])
+            device_data.az, device_data.el = azel_converter.convert_radec_to_azel(
+                device_data.radec_value,
+                timestamp,
+                device_data.dish_name,
+                device_data.observer_location["latitude"],
+                device_data.observer_location["latitude"],
+                device_data.observer_location["altitude"],
+            )
 
             if not self._is_elevation_within_mechanical_limits():
                 time.sleep(0.05)
@@ -153,7 +137,11 @@ class Track(BaseCommand):
                 break
 
             # TODO (kmadisa 11-12-2020) Add a pointing lead time to the current time (like we do on MeerKAT)
-            desired_pointing = [now.timestamp(), round(device_data.az, 12), round(device_data.el, 12)]
+            desired_pointing = [
+                now.timestamp(),
+                round(device_data.az, 12),
+                round(device_data.el, 12),
+            ]
             self.logger.debug("desiredPointing coordinates: %s", desired_pointing)
             dish_client.deviceproxy.desiredPointing = desired_pointing
             time.sleep(0.05)
@@ -175,4 +163,3 @@ class Track(BaseCommand):
 
         device_data.el_limit = False
         return True
-

@@ -103,7 +103,9 @@ class TestMpiDshModel(unittest.TestCase):
         ]
 
         dish_override.last_coordinate_update_timestamp = now - 10
-        device_model.sim_quantities["desiredPointing"].set_val(desired_pointing_coordinates, now)
+        device_model.sim_quantities["desiredPointing"].set_val(
+            desired_pointing_coordinates, now
+        )
         device_model.sim_quantities["programTrackTable"].set_val(
             program_track_table_coordinates, now - 1.0
         )

@@ -10,8 +10,10 @@ from tango import DevFailed
 # Additional import
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
-from . import const
+
 from tmc.common.tango_client import TangoClient
+
+from . import const
 from subarraynode.device_data import DeviceData
 
 
@@ -27,6 +29,7 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
     subarray get released and empty array is returned. Selective release is not yet supported.
 
     """
+
     def do(self):
         """
         Method to invoke ReleaseAllResources command.
@@ -43,21 +46,27 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
 
         """
         device_data = DeviceData.get_instance()
-        device_data.is_release_resources = False
-        device_data.is_restart_command = False
-        device_data.is_abort_command = False
-        device_data.is_obsreset_command = False
+        device_data.is_release_resources_command_executed = False
+        device_data.is_restart_command_executed = False
+        device_data.is_abort_command_executed = False
+        device_data.is_obsreset_command_executed = False
         try:
-            assert device_data._dishLnVsHealthEventID != {}, const.RESOURCE_ALREADY_RELEASED
+            assert (
+                device_data.dish_ln_health_even_id != {}
+            ), const.RESOURCE_ALREADY_RELEASED
         except AssertionError as assert_err:
-            log_message = const.ERR_RELEASE_RES_CMD + str(assert_err)
+            log_message = f"{const.ERR_RELEASE_RES_CMD}{assert_err}"
             self.logger.error(log_message)
             device_data._read_activity_message = log_message
-            tango.Except.throw_exception(const.STR_CMD_FAILED, log_message,
-                                         const.STR_RELEASE_ALL_RES_EXEC, tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_CMD_FAILED,
+                log_message,
+                const.STR_RELEASE_ALL_RES_EXEC,
+                tango.ErrSeverity.ERR,
+            )
 
         self.logger.info(const.STR_DISH_RELEASE)
-        device_data.clean_up_dict(self.logger)
+        device_data.clean_up(self.logger)
         self.logger.info(const.STR_CSP_RELEASE)
         self.release_csp_resources(device_data.csp_subarray_ln_fqdn)
         self.logger.info(const.STR_SDP_RELEASE)
@@ -66,7 +75,7 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
         # For now cleared SB ID in ReleaseAllResources command. When the EndSB command is implemented,
         # It will be moved to that command.
         device_data._sb_id = ""
-        device_data.is_release_resources = True
+        device_data.is_release_resources_command_executed = True
         argout = device_data._dish_leaf_node_group_client.get_group_device_list(True)
         log_msg = "Release_all_resources:", argout
         self.logger.debug(log_msg)
@@ -98,8 +107,12 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
 
         :param argin: DevVoid
 
+<<<<<<< HEAD
         return:
             DevVoid
+=======
+        :return: DevVoid
+>>>>>>> master
 
         """
         try:

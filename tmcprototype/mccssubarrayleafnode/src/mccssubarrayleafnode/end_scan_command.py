@@ -7,8 +7,11 @@ from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
+
 from tmc.common.tango_client import TangoClient
+
 from . import const
+
 # PROTECTED REGION END #    //  MccsSubarrayLeafNode.additional_import
 
 
@@ -34,11 +37,17 @@ class EndScan(BaseCommand):
             in current device state
 
         """
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-            tango.Except.throw_exception("EndScan() is not allowed in current state",
-                                         "Failed to invoke EndScan command on mccssubarrayleafnode.",
-                                         "mccssubarrayleafnode.EndScan()",
-                                         tango.ErrSeverity.ERR)
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
+            tango.Except.throw_exception(
+                f"EndScan() is not allowed in current state {self.state_model.op_state}",
+                "Failed to invoke EndScan command on mccssubarrayleafnode.",
+                "mccssubarrayleafnode.EndScan()",
+                tango.ErrSeverity.ERR,
+            )
 
         return True
 
@@ -66,11 +75,11 @@ class EndScan(BaseCommand):
         device_data = self.target
         # Update logs and activity message attribute with received event
         if event.err:
-            log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
             device_data._read_activity_message = log_msg
         else:
-            log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+            log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
             device_data._read_activity_message = log_msg
 
@@ -89,7 +98,9 @@ class EndScan(BaseCommand):
             mccs_subarray_client = TangoClient(device_data._mccs_subarray_fqdn)
             # TODO: Mock obs_state issue to be resolved
             # assert mccs_subarray_client.get_attribute("obsState") == ObsState.SCANNING
-            mccs_subarray_client.send_command_async(const.CMD_ENDSCAN, None, self.endscan_cmd_ended_cb)
+            mccs_subarray_client.send_command_async(
+                const.CMD_ENDSCAN, None, self.endscan_cmd_ended_cb
+            )
             device_data._read_activity_message = const.STR_ENDSCAN_SUCCESS
             self.logger.info(const.STR_ENDSCAN_SUCCESS)
 
@@ -102,9 +113,12 @@ class EndScan(BaseCommand):
         #                                  tango.ErrSeverity.ERR)
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_ENDSCAN_COMMAND + str(dev_failed)
+            log_msg = f"{const.ERR_ENDSCAN_COMMAND}{dev_failed}"
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
-            tango.Except.throw_exception(const.STR_END_SCAN_EXEC, log_msg,
-                                         "MccsSubarrayLeafNode.EndScan",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_END_SCAN_EXEC,
+                log_msg,
+                "MccsSubarrayLeafNode.EndScan",
+                tango.ErrSeverity.ERR,
+            )

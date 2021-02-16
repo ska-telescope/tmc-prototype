@@ -45,8 +45,13 @@ setup(
     long_description=long_description,
     url="https://www.skatelescope.org",
     platforms="All Platforms",
-    install_requires=["pytango>=9.3.2", "mock", "ska_logging>=0.3.0", "tango-simlib>=0.9.0"],
-    #test_suite='test',
+    install_requires=[
+        "pytango>=9.3.2",
+        "mock",
+        "ska_logging>=0.3.0",
+        "tango-simlib>=0.9.0",
+    ],
+    # test_suite='test',
     setup_requires=[
         # dependency for `python setup.py test`
         "pytest-runner",

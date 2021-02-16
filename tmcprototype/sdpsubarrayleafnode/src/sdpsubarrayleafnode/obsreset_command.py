@@ -5,11 +5,14 @@ ObsReset class for SDPSubarrayLeafNode.
 # Tango imports
 import tango
 from tango import DevState, DevFailed
+
 # Additional import
-from ska.base.commands import  BaseCommand
-# from ska.base.control_model import ObsState
+from ska.base.commands import BaseCommand
+
 from tmc.common.tango_client import TangoClient
+
 from . import const
+
 
 class ObsReset(BaseCommand):
     """
@@ -30,10 +33,12 @@ class ObsReset(BaseCommand):
 
         """
         if self.state_model.op_state in [DevState.UNKNOWN, DevState.DISABLE]:
-            tango.Except.throw_exception("ObsResetCommand() is not allowed in current state",
-                                            "Failed to invoke ObsReset command on SdpSubarrayLeafNode.",
-                                            "sdpsubarrayleafnode.ObsResetCommand()",
-                                            tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                f"ObsResetCommand() is not allowed in current state {self.state_model.op_state}",
+                "Failed to invoke ObsReset command on SdpSubarrayLeafNode.",
+                "sdpsubarrayleafnode.ObsResetCommand()",
+                tango.ErrSeverity.ERR,
+            )
 
         # TODO: Mock obs_state issue to be resolved
         # device_data = self.target
@@ -68,7 +73,7 @@ class ObsReset(BaseCommand):
         """
         device_data = self.target
         if event.err:
-            log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             device_data._read_activity_message = log
             self.logger.error(log)
         else:
@@ -81,7 +86,7 @@ class ObsReset(BaseCommand):
         Method to invoke ObsReset command on SDP Subarray.
 
         :param argin: None
-        
+
         return:
             None
 
@@ -90,17 +95,21 @@ class ObsReset(BaseCommand):
 
         """
         device_data = self.target
-        try:    
+        try:
             sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
-            sdp_sa_ln_client_obj.send_command_async(const.CMD_OBSRESET, None, self.obsreset_cmd_ended_cb)
+            sdp_sa_ln_client_obj.send_command_async(
+                const.CMD_OBSRESET, None, self.obsreset_cmd_ended_cb
+            )
             device_data._read_activity_message = const.STR_OBSRESET_SUCCESS
             self.logger.info(const.STR_OBSRESET_SUCCESS)
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_OBSRESET_INVOKING_CMD + str(dev_failed)
+            log_msg = f"{const.ERR_OBSRESET_INVOKING_CMD}{dev_failed}"
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
-            tango.Except.throw_exception(const.STR_OBSRESET_EXEC, log_msg,
-                                            "SdpSubarrayLeafNode.ObsReset()",
-                                            tango.ErrSeverity.ERR)
-
+            tango.Except.throw_exception(
+                const.STR_OBSRESET_EXEC,
+                log_msg,
+                "SdpSubarrayLeafNode.ObsReset()",
+                tango.ErrSeverity.ERR,
+            )

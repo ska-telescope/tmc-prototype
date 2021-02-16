@@ -10,7 +10,9 @@ from tango import DevFailed
 # Additional import
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+
 from tmc.common.tango_client import TangoClient
+
 from . import const
 
 
@@ -21,6 +23,7 @@ class End(SKASubarray.EndCommand):
     This command on Subarray Node Low invokes End command on MCCS Subarray Leaf Node.
 
     """
+
     def do(self):
         """
         Method to invoke End command.
@@ -52,10 +55,12 @@ class End(SKASubarray.EndCommand):
             return (ResultCode.OK, const.STR_END_SUCCESS)
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_END_INVOKING_CMD + str(dev_failed)
+            log_msg = f"{const.ERR_END_INVOKING_CMD}{dev_failed}"
             self.logger.exception(log_msg)
             # device.set_status(const.ERR_END_INVOKING_CMD)
-            tango.Except.throw_exception(const.STR_END_EXEC,
-                                         log_msg,
-                                         "SubarrayNode.EndCommand",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_END_EXEC,
+                log_msg,
+                "SubarrayNode.EndCommand",
+                tango.ErrSeverity.ERR,
+            )

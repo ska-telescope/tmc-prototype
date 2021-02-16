@@ -1,6 +1,8 @@
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
+
 from . import const
+
 
 class Off(SKABaseDevice.OffCommand):
     """
@@ -8,6 +10,7 @@ class Off(SKABaseDevice.OffCommand):
 
     It Sets the OpState to Off.
     """
+
     def do(self):
         """
         Method to invoke Off command on CSP Element.
@@ -24,9 +27,6 @@ class Off(SKABaseDevice.OffCommand):
 
         """
         device_data = self.target
-        # pass argin to csp master.
-        # If the array length is 0, the command applies to the whole CSP Element.
-        # If the array length is >, each array element specifies the FQDN of the CSP SubElement to switch OFF.
         self.logger.debug(const.STR_OFF_CMD_ISSUED)
         device_data._read_activity_message = const.STR_OFF_CMD_ISSUED
         device_data.cbf_health_updator.stop()

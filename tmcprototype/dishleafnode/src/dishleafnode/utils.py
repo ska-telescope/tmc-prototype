@@ -45,10 +45,10 @@ class UnitConverter:
             rad_value = (math.pi / 180) * (degrees + (minutes / 60) + (seconds / 3600))
             return rad_value
         except IndexError as error:
-            log_msg = "Error while converting Deg:Min:Sec to radians." + str(error)
+            log_msg = f"Error while converting Deg:Min:Sec to radians.{error}"
             self.logger.error(log_msg)
         except SyntaxError as error:
-            log_msg = "Error while converting Deg:Min:Sec to radians." + str(error)
+            log_msg = f"Error while converting Deg:Min:Sec to radians.{error}"
             self.logger.error(log_msg)
 
     def rad_to_dms(self, argin):
@@ -70,7 +70,7 @@ class UnitConverter:
             dms.append(seconds)
             return dms
         except SyntaxError as error:
-            log_msg = "Error while converting radians to dig:min:sec." + str(error)
+            log_msg = f"Error while converting radians to dig:min:sec.{error}"
             self.logger.error(log_msg)
 
     def dms_to_dd(self, argin):
@@ -84,16 +84,18 @@ class UnitConverter:
         """
         try:
             dd = re.split("[:]+", argin)
-            deg_dec = abs(float(dd[0])) + ((float(dd[1])) / 60) + ((float(dd[2])) / 3600)
+            deg_dec = (
+                abs(float(dd[0])) + ((float(dd[1])) / 60) + ((float(dd[2])) / 3600)
+            )
             if "-" in dd[0]:
                 return deg_dec * (-1)
             else:
                 return deg_dec
         except IndexError as error:
-            log_msg = "Error while converting Deg:Min:Sec to decimal degrees." + str(error)
+            log_msg = f"Error while converting Deg:Min:Sec to decimal degrees.{error}"
             self.logger.error(log_msg)
         except SyntaxError as error:
-            log_msg = "Error while converting Deg:Min:Sec to decimal degrees." + str(error)
+            log_msg = f"Error while converting Deg:Min:Sec to decimal degrees.{error}"
             self.logger.error(log_msg)
 
 

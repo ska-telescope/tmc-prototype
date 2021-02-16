@@ -10,14 +10,16 @@
 This module defines the DeviceData class, which represents of the functional SDPSubarrayLeafNode device.
 """
 
+
 class DeviceData:
     """
     This class represents the SDPSubarrayLeafNode
     as functional device. It mainly comprise the data common
     across various functions of a SDPSubarrayLeafNode
     """
+
     __instance = None
-    
+
     def __init__(self):
         """Private constructor of the class"""
         if DeviceData.__instance != None:
@@ -29,11 +31,9 @@ class DeviceData:
         self._read_activity_message = ""
         self._active_processing_block = ""
         self._sdp_sa_fqdn = ""
-    
 
     @staticmethod
     def get_instance():
         if DeviceData.__instance == None:
             DeviceData()
         return DeviceData.__instance
-        

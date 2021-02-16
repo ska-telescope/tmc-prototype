@@ -1,9 +1,12 @@
 # PyTango imports
 import tango
 from tango import DevState, DevFailed
+
 # Additional import
-from tmc.common.tango_client import TangoClient
 from ska.base.commands import BaseCommand
+
+from tmc.common.tango_client import TangoClient
+
 from . import const
 from .transaction_id import identify_with_id
 from .delay_model import DelayManager
@@ -30,12 +33,17 @@ class AssignResourcesCommand(BaseCommand):
             in current device state
 
         """
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-            tango.Except.throw_exception("AssignResources() is not allowed in current state",
-                                            "Failed to invoke AssignResources command on "
-                                            "cspsubarrayleafnode.",
-                                            "cspsubarrayleafnode.AssignResources()",
-                                            tango.ErrSeverity.ERR)
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
+            tango.Except.throw_exception(
+                f"AssignResources() is not allowed in current state {self.state_model.op_state}",
+                "Failed to invoke AssignResources command on " "cspsubarrayleafnode.",
+                "cspsubarrayleafnode.AssignResources()",
+                tango.ErrSeverity.ERR,
+            )
 
         return True
 
@@ -64,8 +72,7 @@ class AssignResourcesCommand(BaseCommand):
         self.logger.info("Executing callback assign_resources_ended_cb")
         try:
             if event.err:
-                device_data._read_activity_message = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(
-                    event.errors)
+                device_data._read_activity_message = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
                 log = const.ERR_INVOKING_CMD + event.cmd_name
                 self.logger.error(log)
             else:
@@ -75,11 +82,15 @@ class AssignResourcesCommand(BaseCommand):
 
         except tango.DevFailed as df:
             self.logger.exception(df)
-            tango.Except.re_throw_exception(df, "CSP subarray gave an error response",
-                                            "CSP subarray threw error in AddReceptors CSP LMC_CommandFailed",
-                                            "AddReceptors", tango.ErrSeverity.ERR)
+            tango.Except.re_throw_exception(
+                df,
+                "CSP subarray gave an error response",
+                "CSP subarray threw error in AddReceptors CSP LMC_CommandFailed",
+                "AddReceptors",
+                tango.ErrSeverity.ERR,
+            )
 
-    @identify_with_id('assign','argin') 
+    @identify_with_id("assign", "argin")
     def do(self, argin):
         """
         Method to invoke AssignResources command on CSP Subarray.
@@ -126,15 +137,20 @@ class AssignResourcesCommand(BaseCommand):
             # Invoke AssignResources command on CspSubarray
             self.logger.info("Invoking AssignResources on CSP subarray")
             csp_sub_client_obj = TangoClient(device_data.csp_subarray_fqdn)
-            csp_sub_client_obj.send_command_async(const.CMD_ASSIGN_RESOURCES, argin, self.assign_resources_ended)
+            csp_sub_client_obj.send_command_async(
+                const.CMD_ASSIGN_RESOURCES, argin, self.assign_resources_ended
+            )
             self.logger.info("After invoking AssignResources on CSP subarray")
             device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_ASSGN_RESOURCES + str(dev_failed)
+            log_msg = f"{const.ERR_ASSGN_RESOURCES}{dev_failed}"
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
-            tango.Except.throw_exception(const.STR_ASSIGN_RES_EXEC, log_msg,
-                                            "CspSubarrayLeafNode.AssignResourcesCommand",
-                                            tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_ASSIGN_RES_EXEC,
+                log_msg,
+                "CspSubarrayLeafNode.AssignResourcesCommand",
+                tango.ErrSeverity.ERR,
+            )

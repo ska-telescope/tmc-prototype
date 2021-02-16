@@ -1,22 +1,28 @@
 """
 StartUpTelescope class for CentralNodelow.
 """
-# Tango imports
+# Standard Python imports
 import logging
+
+# Tango imports
 import tango
-from tango import  DevFailed
+from tango import DevFailed
+
 # Additional import
 from ska.base.control_model import HealthState
-from . import const
-from .device_data import DeviceData
+
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
+
+from . import const
+from .device_data import DeviceData
 
 class HealthStateAggreegator:
     """
     Aggrergator class for health state event supscription and health state
     callback.
     """
+
     def __init__(self, logger=None):
         if logger == None:
             self.logger = logging.getLogger(__name__)
@@ -36,8 +42,7 @@ class HealthStateAggreegator:
         """
         self.mccs_health_subscribe_event()
         self.subarray_health_subscribe_event()
-        
-        
+
     def mccs_health_subscribe_event(self):
         """
         Method to subscribe to health state change event on MccsMasterLeafNode.
@@ -46,16 +51,23 @@ class HealthStateAggreegator:
         """
         mccs_mln_client = TangoClient(self.device_data.mccs_master_ln_fqdn)
         try:
-            self.mccs_event_id = mccs_mln_client.subscribe_attribute(const.EVT_SUBSR_MCCS_MASTER_HEALTH,
-                                                                   self.health_state_cb)
+            self.mccs_event_id = mccs_mln_client.subscribe_attribute(
+                const.EVT_SUBSR_MCCS_MASTER_HEALTH, self.health_state_cb
+            )
             self.health_state_event_map[mccs_mln_client] = self.mccs_event_id
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_SUBSR_MCCS_MASTER_LEAF_HEALTH + str(dev_failed)
+            log_msg = f"{const.ERR_SUBSR_MCCS_MASTER_LEAF_HEALTH}{dev_failed}"
             self.logger.exception(dev_failed)
-            self.device_data._read_activity_message = const.ERR_SUBSR_MCCS_MASTER_LEAF_HEALTH
-            tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.HealthStateSubscribeEvent",
-                                         tango.ErrSeverity.ERR)
+            self.device_data._read_activity_message = (
+                const.ERR_SUBSR_MCCS_MASTER_LEAF_HEALTH
+            )
+            tango.Except.throw_exception(
+                const.STR_CMD_FAILED,
+                log_msg,
+                "CentralNode.HealthStateSubscribeEvent",
+                tango.ErrSeverity.ERR,
+            )
 
     def subarray_health_subscribe_event(self):
         """
@@ -68,27 +80,37 @@ class HealthStateAggreegator:
             # updating the subarray_health_state_map with device name (as ska_mid/tm_subarray_node/1) and its value which is required in callback
             self.subarray_health_state_map[subarray_fqdn] = -1
             try:
-                event_id = subarray_client.subscribe_attribute(const.EVT_SUBSR_HEALTH_STATE,
-                                                               self.health_state_cb)
+                event_id = subarray_client.subscribe_attribute(
+                    const.EVT_SUBSR_HEALTH_STATE, self.health_state_cb
+                )
                 self.health_state_event_map[subarray_client] = event_id
 
             except DevFailed as dev_failed:
-                log_msg = const.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
+                log_msg = f"{const.ERR_SUBSR_SA_HEALTH_STATE}{dev_failed}"
                 self.logger.exception(dev_failed)
-                self.device_data._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE
-                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.HealthStateSubscribeEvent",
-                                             tango.ErrSeverity.ERR)
+                self.device_data._read_activity_message = (
+                    const.ERR_SUBSR_SA_HEALTH_STATE
+                )
+                tango.Except.throw_exception(
+                    const.STR_CMD_FAILED,
+                    log_msg,
+                    "CentralNode.HealthStateSubscribeEvent",
+                    tango.ErrSeverity.ERR,
+                )
 
     def unsubscribe_event(self):
         """
         Method to unsubscribe to health state change event on MccsMasterLeafNode and SubarrayNode
         """
         for tango_client in self.health_state_event_map:
-            log_message = "Unsubscribing ObsState of: {}".format(tango_client.get_device_fqdn)
+            log_message = "Unsubscribing ObsState of: {}".format(
+                tango_client.get_device_fqdn
+            )
             self.logger.debug(log_message)
-            tango_client.unsubscribe_attribute(self.health_state_event_map[tango_client])
+            tango_client.unsubscribe_attribute(
+                self.health_state_event_map[tango_client]
+            )
         self.health_state_event_map.clear()
-
 
     def health_state_cb(self, evt):
         """
@@ -118,7 +140,7 @@ class HealthStateAggreegator:
         """
         device_data = DeviceData.get_instance()
         try:
-            log_msg = 'Health state attribute change event is : ' + str(evt)
+            log_msg = f"Health state attribute change event is : {evt}"
             self.logger.info(log_msg)
             if not evt.err:
                 health_state = evt.attr_value.value
@@ -134,49 +156,47 @@ class HealthStateAggreegator:
                     HealthState.OK: 0,
                     HealthState.DEGRADED: 0,
                     HealthState.FAILED: 0,
-                    HealthState.UNKNOWN: 0
+                    HealthState.UNKNOWN: 0,
                 }
 
                 # TODO: For Future use
-                for subsystem_health_field_name in ['mccs_master_leaf_health']:
-                    health_state = getattr(device_data, f"_{subsystem_health_field_name}")
+                for subsystem_health_field_name in ["mccs_master_leaf_health"]:
+                    health_state = getattr(
+                        device_data, f"_{subsystem_health_field_name}"
+                    )
                     counts[health_state] += 1
 
                 for subarray_health_state in self.subarray_health_state_map.values():
                     counts[subarray_health_state] += 1
 
                 # Calculating health_state for SubarrayNode, MCCSMasterLeafNode
-                if counts[HealthState.OK] == len(self.subarray_health_state_map.values()) + 1:
+                if (
+                    counts[HealthState.OK]
+                    == len(self.subarray_health_state_map.values()) + 1
+                ):
                     device_data._telescope_health_state = HealthState.OK
-                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_OK
+                    str_log = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_OK}"
                     self.logger.info(str_log)
-                    device_data._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
-                                                                               ) + const.STR_OK
+                    device_data._read_activity_message = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_OK}"
                 elif counts[HealthState.FAILED] != 0:
                     device_data._telescope_health_state = HealthState.FAILED
-                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_FAILED
+                    str_log = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_FAILED}"
                     self.logger.info(str_log)
-                    device_data._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
-                                                                               ) + const.STR_FAILED
+                    device_data._read_activity_message = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_FAILED}"
                 elif counts[HealthState.DEGRADED] != 0:
                     device_data._telescope_health_state = HealthState.DEGRADED
-                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_DEGRADED
+                    str_log = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_DEGRADED}"
                     self.logger.info(str_log)
-                    device_data._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
-                                                                               ) + const.STR_DEGRADED
+                    device_data._read_activity_message = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_DEGRADED}"
                 else:
                     device_data._telescope_health_state = HealthState.UNKNOWN
-                    str_log = const.STR_HEALTH_STATE + str(evt.device) + const.STR_UNKNOWN
+                    str_log = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_UNKNOWN}"
                     self.logger.info(str_log)
-                    device_data._read_activity_message = const.STR_HEALTH_STATE + str(evt.device
-                                                                               ) + const.STR_UNKNOWN
+                    device_data._read_activity_message = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_UNKNOWN}"
             else:
-                device_data._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(evt)
+                device_data._read_activity_message = f"{const.ERR_SUBSR_SA_HEALTH_STATE}{evt}"
                 self.logger.critical(const.ERR_SUBSR_SA_HEALTH_STATE)
         except KeyError as key_error:
-            device_data._read_activity_message = const.ERR_SUBARRAY_HEALTHSTATE + str(key_error)
-            log_msg = const.ERR_SUBARRAY_HEALTHSTATE + ": " + str(key_error)
+            device_data._read_activity_message = f"{const.ERR_SUBARRAY_HEALTHSTATE}{key_error}"
+            log_msg = f"{const.ERR_SUBARRAY_HEALTHSTATE} : {key_error}"
             self.logger.error(log_msg)
-
-
-

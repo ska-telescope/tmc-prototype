@@ -5,9 +5,13 @@ from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
+
 from tmc.common.tango_client import TangoClient
+
 from . import const
+
 # PROTECTED REGION END #    //  MccsMasterLeafNode imports
+
 
 class ReleaseResources(BaseCommand):
     """
@@ -30,12 +34,17 @@ class ReleaseResources(BaseCommand):
                 DevFailed if this command is not allowed to be run in current device state
 
         """
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-            tango.Except.throw_exception("ReleaseResources() is not allowed in current state",
-                                            "Failed to invoke ReleaseResources command on "
-                                            "mccsmasterleafnode.",
-                                            "mccsmasterleafnode.ReleaseResources()",
-                                            tango.ErrSeverity.ERR)
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
+            tango.Except.throw_exception(
+                f"ReleaseResources() is not allowed in current state {self.state_model.op_state}",
+                "Failed to invoke ReleaseResources command on " "mccsmasterleafnode.",
+                "mccsmasterleafnode.ReleaseResources()",
+                tango.ErrSeverity.ERR,
+            )
         return True
 
     def releaseresources_cmd_ended_cb(self, event):
@@ -61,11 +70,11 @@ class ReleaseResources(BaseCommand):
         device_data = self.target
         # Update logs and activity message attribute with received event
         if event.err:
-            log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
             device_data._read_activity_message = log_msg
         else:
-            log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+            log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
             device_data._read_activity_message = log_msg
 
@@ -76,7 +85,7 @@ class ReleaseResources(BaseCommand):
         :param argin:
                      StringType. The string in JSON format.
 
-        Example: 
+        Example:
              {
                 "subarray_id": 1,
                 "release_all": true
@@ -98,22 +107,32 @@ class ReleaseResources(BaseCommand):
 
         try:
             mccs_master_client = TangoClient(device_data._mccs_master_fqdn)
-            mccs_master_client.send_command_async(const.CMD_Release, argin, self.releaseresources_cmd_ended_cb)
+            mccs_master_client.send_command_async(
+                const.CMD_Release, argin, self.releaseresources_cmd_ended_cb
+            )
             device_data._read_activity_message = const.STR_REMOVE_ALL_RECEPTORS_SUCCESS
             self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
         except ValueError as value_error:
-            log_msg = const.ERR_INVALID_JSON_RELEASE_RES_MCCS + str(value_error)
-            device_data._read_activity_message = const.ERR_INVALID_JSON_RELEASE_RES_MCCS + str(value_error)
+            log_msg = f"{const.ERR_INVALID_JSON_RELEASE_RES_MCCS}{value_error}"
+            device_data._read_activity_message = f"{const.ERR_INVALID_JSON_RELEASE_RES_MCCS}{value_error}"
             self.logger.exception(value_error)
-            tango.Except.re_throw_exception(value_error, const.STR_RELEASE_RES_EXEC, log_msg,
-                                            "MccsMasterLeafNode.ReleaseResources",
-                                            tango.ErrSeverity.ERR)
-        
+            tango.Except.re_throw_exception(
+                value_error,
+                const.STR_RELEASE_RES_EXEC,
+                log_msg,
+                "MccsMasterLeafNode.ReleaseResources",
+                tango.ErrSeverity.ERR,
+            )
+
         except DevFailed as dev_failed:
-            log_msg = const.ERR_RELEASE_ALL_RESOURCES + str(dev_failed)
+            log_msg = f"{const.ERR_RELEASE_ALL_RESOURCES} {dev_failed}"
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
-            tango.Except.re_throw_exception(dev_failed, const.STR_RELEASE_RES_EXEC, log_msg,
-                                            "MccsMasterLeafNode.ReleaseAllResources",
-                                            tango.ErrSeverity.ERR)
+            tango.Except.re_throw_exception(
+                dev_failed,
+                const.STR_RELEASE_RES_EXEC,
+                log_msg,
+                "MccsMasterLeafNode.ReleaseAllResources",
+                tango.ErrSeverity.ERR,
+            )

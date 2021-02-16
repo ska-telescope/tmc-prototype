@@ -3,10 +3,11 @@ import tango
 from tango import DevState, DevFailed
 
 # Additional import
+from ska.base.commands import BaseCommand
+
 from tmc.common.tango_client import TangoClient
-from ska.base.commands import  BaseCommand
+
 from . import const
-# PROTECTED REGION END #    //  SdpMasterLeafNode.additionnal_import
 
 class Standby(BaseCommand):
     """
@@ -31,10 +32,12 @@ class Standby(BaseCommand):
         """
 
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
-            tango.Except.throw_exception("Standby() is not allowed in current state",
-                                         "Failed to invoke Standby command on SdpMasterLeafNode.",
-                                         "SdpMasterLeafNode.Standby() ",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                f"Standby() is not allowed in current state {self.state_model.op_state}",
+                "Failed to invoke Standby command on SdpMasterLeafNode.",
+                "SdpMasterLeafNode.Standby() ",
+                tango.ErrSeverity.ERR,
+            )
         return True
 
     def standby_cmd_ended_cb(self, event):
@@ -60,12 +63,12 @@ class Standby(BaseCommand):
         """
         device_data = self.target
         if event.err:
-            log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
             device_data._read_activity_message = log_msg
 
         else:
-            log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+            log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
             device_data._read_activity_message = log_msg
 
@@ -81,13 +84,19 @@ class Standby(BaseCommand):
         device_data = self.target
         try:
             sdp_mln_client_obj = TangoClient(device_data.sdp_master_ln_fqdn)
-            sdp_mln_client_obj.send_command_async(const.CMD_STANDBY, None, self.standby_cmd_ended_cb)
+            sdp_mln_client_obj.send_command_async(
+                const.CMD_STANDBY, callback_method=self.standby_cmd_ended_cb
+                )
             log_msg = const.CMD_STANDBY + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
             self.logger.debug(log_msg)
 
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
-            log_msg = const.ERR_STANDBY_CMD_FAIL + str(dev_failed)
-            tango.Except.re_throw_exception(dev_failed, const.ERR_INVOKING_CMD, log_msg,
-                                            "SdpMasterLeafNode.StandbyCommand()",
-                                            tango.ErrSeverity.ERR)
+            log_msg = f"{const.ERR_STANDBY_CMD_FAIL}{dev_failed}"
+            tango.Except.re_throw_exception(
+                dev_failed,
+                const.ERR_INVOKING_CMD,
+                log_msg,
+                "SdpMasterLeafNode.StandbyCommand()",
+                tango.ErrSeverity.ERR,
+            )

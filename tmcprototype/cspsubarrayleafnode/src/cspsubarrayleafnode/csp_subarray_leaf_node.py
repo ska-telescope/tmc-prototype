@@ -18,13 +18,16 @@ It also acts as a CSP contact point for Subarray Node for observation execution 
 import tango
 from tango import DebugIt, AttrWriteType, ApiUtil
 from tango.server import run, attribute, command, device_property
+
 # Additional import
-from tmc.common.tango_client import TangoClient
-from tmc.common.tango_server_helper import TangoServerHelper
-from cspsubarrayleafnode.device_data import DeviceData
 from ska.base.commands import ResultCode
 from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, ObsState
+
+from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
+
+from cspsubarrayleafnode.device_data import DeviceData
 from .assign_resources_command import AssignResourcesCommand
 from .release_all_resources_command import ReleaseAllResourcesCommand
 from .configure_command import ConfigureCommand
@@ -41,9 +44,21 @@ from .exceptions import InvalidObsStateError
 
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additional_import
 
-__all__ = ["CspSubarrayLeafNode", "main", "AssignResourcesCommand", "ReleaseAllResourcesCommand",
-           "ConfigureCommand", "StartScanCommand", "EndScanCommand", "GoToIdleCommand", "AbortCommand", 
-           "RestartCommand", "ObsResetCommand","On","Off"]
+__all__ = [
+    "CspSubarrayLeafNode",
+    "main",
+    "AssignResourcesCommand",
+    "ReleaseAllResourcesCommand",
+    "ConfigureCommand",
+    "StartScanCommand",
+    "EndScanCommand",
+    "GoToIdleCommand",
+    "AbortCommand",
+    "RestartCommand",
+    "ObsResetCommand",
+    "On",
+    "Off",
+]
 
 
 class CspSubarrayLeafNode(SKABaseDevice):
@@ -73,35 +88,38 @@ class CspSubarrayLeafNode(SKABaseDevice):
             Provides Version information of TANGO device.
 
     """
+
     # -----------------
     # Device Properties
     # -----------------
     CspSubarrayFQDN = device_property(
-        dtype='str',
+        dtype="str",
     )
 
     # ----------
     # Attributes
     # ----------
     delayModel = attribute(
-        dtype='str',
+        dtype="str",
         access=AttrWriteType.READ_WRITE,
     )
 
     versionInfo = attribute(
-        dtype='str',
+        dtype="str",
     )
 
     activityMessage = attribute(
-        dtype='str',
+        dtype="str",
         access=AttrWriteType.READ_WRITE,
     )
 
-    cspsubarrayHealthState = attribute(name="cspsubarrayHealthState", label="cspsubarrayHealthState",
-                                       forwarded=True
-                                       )
+    cspsubarrayHealthState = attribute(
+        name="cspsubarrayHealthState", label="cspsubarrayHealthState", forwarded=True
+    )
 
-    cspSubarrayObsState = attribute(name="cspSubarrayObsState", label="cspSubarrayObsState", forwarded=True)
+    cspSubarrayObsState = attribute(
+        name="cspSubarrayObsState", label="cspSubarrayObsState", forwarded=True
+    )
 
     # ---------------
     # General methods
@@ -131,14 +149,15 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device_data = DeviceData.get_instance()
             device.device_data = device_data
             device_data.csp_subarray_fqdn = device.CspSubarrayFQDN
-            
-            device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
+
+            device._build_state = "{},{},{}".format(
+                release.name, release.version, release.description
+            )
             device._version_id = release.version
             device._versioninfo = " "
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
-            device._read_activity_message = const.STR_SETTING_CB_MODEL + str(
-                ApiUtil.instance().get_asynch_cb_sub_model())
+            device._read_activity_message = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
 
             device.set_status(const.STR_CSPSALN_INIT_SUCCESS)
             device._csp_subarray_health_state = HealthState.OK
@@ -162,38 +181,38 @@ class CspSubarrayLeafNode(SKABaseDevice):
     # ------------------
     def read_delayModel(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.delayModel_read) ENABLED START #
-        '''Internal construct of TANGO. Returns the delay model.'''
+        """Internal construct of TANGO. Returns the delay model."""
         return self.device_data._delay_model
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.delayModel_read
 
     def write_delayModel(self, value):
         # PROTECTED REGION ID(CspSubarrayLeafNode.delayModel_write) ENABLED START #
-        '''Internal construct of TANGO. Sets in to the delay model.'''
+        """Internal construct of TANGO. Sets in to the delay model."""
         self.device_data._delay_model = value
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.delayModel_write
 
     def read_versionInfo(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.versionInfo_read) ENABLED START #
-        '''Internal construct of TANGO. Returns the version information.'''
+        """Internal construct of TANGO. Returns the version information."""
         return self._versioninfo
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.versionInfo_read
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.activityMessage_read) ENABLED START #
-        '''Internal construct of TANGO. Returns activity message.'''
+        """Internal construct of TANGO. Returns activity message."""
         return self.device_data._read_activity_message
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.activityMessage_read
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(CspSubarrayLeafNode.activityMessage_write) ENABLED START #
-        '''Internal construct of TANGO. Sets the activity message.'''
+        """Internal construct of TANGO. Sets the activity message."""
         self.device_data._read_activity_message = value
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.activityMessage_write
 
     # --------
     # Commands
     # --------
-    
+
     def is_Configure_allowed(self):
         """
         Checks whether the command is allowed to be run in the current state
@@ -211,9 +230,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in=('str'),
+        dtype_in=("str"),
         doc_in="The string in JSON format, contains CSP configuration id, frequencyBand, fsp,"
-               " delayModelSubscriptionPoint and pointing information.",
+        " delayModelSubscriptionPoint and pointing information.",
     )
     @DebugIt()
     def Configure(self, argin):
@@ -221,9 +240,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Configure")
         handler(argin)
 
-    
     @command(
-        dtype_in=('str',),
+        dtype_in=("str",),
         doc_in="The string in JSON format, consists of scan id.",
     )
     @DebugIt()
@@ -248,7 +266,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("StartScan")
         return handler.check_allowed()
 
-    
     def is_EndScan_allowed(self):
         """
         Checks whether the command is allowed to be run in the current state
@@ -263,15 +280,13 @@ class CspSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("EndScan")
         return handler.check_allowed()
 
-    @command(
-    )
+    @command()
     @DebugIt()
     def EndScan(self):
         """ Invokes EndScan command on CspSubarrayLeafNode"""
         handler = self.get_command_object("EndScan")
         handler()
 
-    
     def is_ReleaseAllResources_allowed(self):
         """
         Checks whether the command is allowed to be run in the current state
@@ -288,15 +303,13 @@ class CspSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("ReleaseAllResources")
         return handler.check_allowed()
 
-    @command(
-    )
+    @command()
     @DebugIt()
     def ReleaseAllResources(self):
         """ Invokes ReleaseAllResources command on CspSubarrayLeafNode"""
         handler = self.get_command_object("ReleaseAllResources")
         handler()
 
-    
     def is_AssignResources_allowed(self):
         """
         Checks whether the command is allowed to be run in the current state
@@ -312,7 +325,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in=('str'),
+        dtype_in=("str"),
         doc_in="The input string in JSON format consists of receptorIDList.",
     )
     @DebugIt()
@@ -330,7 +343,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
         #                                  tango.ErrSeverity.ERR)
         handler(argin)
 
-    
     def is_GoToIdle_allowed(self):
         """
         Checks whether the command is allowed to be run in the current state
@@ -347,8 +359,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("GoToIdle")
         return handler.check_allowed()
 
-    @command(
-    )
+    @command()
     @DebugIt()
     def GoToIdle(self):
         """ Invokes GoToIdle command on CspSubarrayLeafNode. """
@@ -358,16 +369,16 @@ class CspSubarrayLeafNode(SKABaseDevice):
     def validate_obs_state(self):
         device_data = DeviceData.get_instance()
         csp_sa_client = TangoClient(device_data.csp_subarray_fqdn)
-        if csp_sa_client.get_attribute("obsState") in [ObsState.EMPTY, ObsState.IDLE]:
-            self.logger.info("CSP Subarray is in required obsState, resources will be assigned")
+        if csp_sa_client.deviceproxy.obsState in [ObsState.EMPTY, ObsState.IDLE]:
+            self.logger.info(
+                "CSP Subarray is in required obsState, resources will be assigned"
+            )
         else:
             self.logger.error("CSP Subarray is not in EMPTY/IDLE obsState")
             self.device_data._read_activity_message = "Error in device obsState"
             raise InvalidObsStateError("CSP Subarray is not in EMPTY/IDLE obsState")
 
-    
-    @command(
-    )
+    @command()
     @DebugIt()
     def Abort(self):
         """ Invokes Abort command on CspSubarrayLeafNode"""
@@ -389,9 +400,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Abort")
         return handler.check_allowed()
 
-    
-    @command(
-    )
+    @command()
     @DebugIt()
     def Restart(self):
         """ Invokes Restart command on cspsubarrayleafnode"""
@@ -413,9 +422,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Restart")
         return handler.check_allowed()
 
-        
-    @command(
-    )
+    @command()
     @DebugIt()
     def ObsReset(self):
         """ Invokes ObsReset command on cspsubarrayleafnode"""
@@ -437,7 +444,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("ObsReset")
         return handler.check_allowed()
 
-
     def init_command_objects(self):
         """
         Initialises the command handlers for commands supported by this
@@ -447,7 +453,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
         device_data = DeviceData.get_instance()
         args = (device_data, self.state_model, self.logger)
         self.register_command_object("AssignResources", AssignResourcesCommand(*args))
-        self.register_command_object("ReleaseAllResources", ReleaseAllResourcesCommand(*args))
+        self.register_command_object(
+            "ReleaseAllResources", ReleaseAllResourcesCommand(*args)
+        )
         self.register_command_object("Configure", ConfigureCommand(*args))
         self.register_command_object("StartScan", StartScanCommand(*args))
         self.register_command_object("EndScan", EndScanCommand(*args))
@@ -479,5 +487,5 @@ def main(args=None, **kwargs):
     # PROTECTED REGION END #    //  CspSubarrayLeafNode.main
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -10,9 +10,9 @@ of state and mode attributes defined by the SKA Control Model.
 """
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 # Tango imports
-import tango
-from tango import DebugIt, AttrWriteType,  DevFailed
+from tango import DebugIt, AttrWriteType
 from tango.server import run, attribute, command, device_property
+
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
@@ -26,11 +26,23 @@ from centralnode.stow_antennas_command import StowAntennas
 from centralnode.resource_manager import ResourceManager
 from centralnode.device_data import DeviceData
 from centralnode.obs_state_check import ObsStateAggregator
+
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
-__all__ = ["CentralNode", "main", "AssignResources", "DeviceData", "const",
-           "ObsStateAggregator", "release", "ReleaseResources",
-           "StandByTelescope", "StartUpTelescope", "StowAntennas"]
+__all__ = [
+    "CentralNode",
+    "main",
+    "AssignResources",
+    "DeviceData",
+    "const",
+    "ObsStateAggregator",
+    "release",
+    "ReleaseResources",
+    "StandByTelescope",
+    "StartUpTelescope",
+    "StowAntennas",
+]
+
 
 class CentralNode(SKABaseDevice):
     """
@@ -67,40 +79,39 @@ class CentralNode(SKABaseDevice):
 
 
     """
+
     # -----------------
     # Device Properties
     # -----------------
     CentralAlarmHandler = device_property(
-        dtype='str',
+        dtype="str",
         doc="Device name of CentralAlarmHandler ",
     )
 
     TMAlarmHandler = device_property(
-        dtype='str',
+        dtype="str",
         doc="Device name of TMAlarmHandler ",
     )
 
     TMMidSubarrayNodes = device_property(
-        dtype=('str',), doc="List of TM Mid Subarray Node devices",
-        default_value=tuple()
+        dtype=("str",),
+        doc="List of TM Mid Subarray Node devices",
+        default_value=tuple(),
     )
 
     NumDishes = device_property(
-        dtype='uint', default_value=1,
+        dtype="uint",
+        default_value=1,
         doc="Number of Dishes",
     )
 
     DishLeafNodePrefix = device_property(
-        dtype='str', default_value='', doc="Device name prefix for Dish Leaf Node"
+        dtype="str", default_value="", doc="Device name prefix for Dish Leaf Node"
     )
 
-    CspMasterLeafNodeFQDN = device_property(
-        dtype='str'
-    )
+    CspMasterLeafNodeFQDN = device_property(dtype="str")
 
-    SdpMasterLeafNodeFQDN = device_property(
-        dtype='str'
-    )
+    SdpMasterLeafNodeFQDN = device_property(dtype="str")
 
     # ----------
     # Attributes
@@ -125,7 +136,7 @@ class CentralNode(SKABaseDevice):
     )
 
     activityMessage = attribute(
-        dtype='str',
+        dtype="str",
         access=AttrWriteType.READ_WRITE,
         doc="Activity Message",
     )
@@ -137,6 +148,7 @@ class CentralNode(SKABaseDevice):
         """
         A class for the TMC CentralNode's init_device() method.
         """
+
         def do(self):
             """
             Initializes the attributes and properties of the Central Node.
@@ -154,52 +166,42 @@ class CentralNode(SKABaseDevice):
             super().do()
 
             device = self.target
-            try:
-                self.logger.info("Device initialisating...")
-                # Initialise Attributes
-                device._health_state = HealthState.OK
-                device._build_state = '{},{},{}'.format(release.name,release.version,release.description)
-                device._version_id = release.version
-                device_data = DeviceData.get_instance()
-                device.device_data = device_data
-                device_data.csp_master_ln_fqdn = device.CspMasterLeafNodeFQDN
-                device_data.sdp_master_ln_fqdn = device.SdpMasterLeafNodeFQDN
-                device_data.tm_mid_subarray = device.TMMidSubarrayNodes
-                device_data.dln_prefix = device.DishLeafNodePrefix
-                device_data.num_dishes = device.NumDishes
-                self.logger.debug(const.STR_INIT_SUCCESS)
-                device_data.resource_manager = ResourceManager.get_instance()
+            self.logger.info("Device initialisating...")
+            # Initialise Attributes
+            device._health_state = HealthState.OK
+            device._build_state = "{},{},{}".format(
+                release.name, release.version, release.description
+            )
+            device._version_id = release.version
+            device_data = DeviceData.get_instance()
+            device.device_data = device_data
+            device_data.csp_master_ln_fqdn = device.CspMasterLeafNodeFQDN
+            device_data.sdp_master_ln_fqdn = device.SdpMasterLeafNodeFQDN
+            device_data.tm_mid_subarray = device.TMMidSubarrayNodes
+            device_data.dln_prefix = device.DishLeafNodePrefix
+            device_data.num_dishes = device.NumDishes
+            self.logger.debug(const.STR_INIT_SUCCESS)
+            device_data.resource_manager = ResourceManager.get_instance()
 
-                # Initialization of ObsState aggregator object
-                device_data.obs_state_aggregator = ObsStateAggregator(
-                    device_data.tm_mid_subarray,
-                    self.logger)
-
-            except DevFailed as dev_failed:
-                log_msg = const.ERR_INIT_PROP_ATTR_CN + str(dev_failed)
-                self.logger.exception(dev_failed)
-                device._read_activity_message = const.ERR_INIT_PROP_ATTR_CN
-                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand.do()",
-                                             tango.ErrSeverity.ERR)
-
+            # Initialization of ObsState aggregator object
+            device_data.obs_state_aggregator = ObsStateAggregator(
+                device_data.tm_mid_subarray, self.logger
+            )
 
             device_data.resource_manager.initialize_resource_matrix()
 
             for subarray in range(0, len(device.TMMidSubarrayNodes)):
-                try:
-                    tokens = device.TMMidSubarrayNodes[subarray].split('/')
-                    subarrayID = int(tokens[2])
-                    # The below code appends the FQDN corresponding to each subarray Id into the dictionary.
-                    # This is required in AssignResource command where according to Subarray Id in input json, proxy has to be created.
-                    device_data.subarray_FQDN_dict[subarrayID] = device.TMMidSubarrayNodes[subarray]
-                except DevFailed as dev_failed:
-                    log_msg = const.ERR_SUBSR_SA_HEALTH_STATE + str(dev_failed)
-                    self.logger.exception(dev_failed)
-                    device._read_activity_message = const.ERR_SUBSR_SA_HEALTH_STATE
-                    tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand",
-                                                 tango.ErrSeverity.ERR)
-
-            device_data._read_activity_message = "Central Node initialised successfully."
+                tokens = device.TMMidSubarrayNodes[subarray].split("/")
+                subarrayID = int(tokens[2])
+                # The below code appends the FQDN corresponding to each subarray Id into the dictionary.
+                # This is required in AssignResource command where according to Subarray Id in input json, proxy has to be created.
+                device_data.subarray_FQDN_dict[
+                    subarrayID
+                ] = device.TMMidSubarrayNodes[subarray]
+                
+            device_data._read_activity_message = (
+                "Central Node initialised successfully."
+            )
             self.logger.info(device_data._read_activity_message)
             return (ResultCode.OK, device_data._read_activity_message)
 
@@ -258,7 +260,7 @@ class CentralNode(SKABaseDevice):
     # --------
 
     # pylint: disable=unused-variable
-   
+
     # pylint: enable=unused-variable
 
     def is_StowAntennas_allowed(self):
@@ -276,7 +278,7 @@ class CentralNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in=('str',),
+        dtype_in=("str",),
         doc_in="List of Receptors to be stowed",
     )
     def StowAntennas(self, argin):
@@ -314,7 +316,6 @@ class CentralNode(SKABaseDevice):
         (result_code, message) = handler()
         return [[result_code], [message]]
 
-
     def is_StartUpTelescope_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state.
@@ -346,24 +347,24 @@ class CentralNode(SKABaseDevice):
     def is_AssignResources_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state.
-    
+
         :return: True if this command is allowed to be run in current device state
-    
+
         :rtype: boolean
-    
+
         :raises: DevFailed if this command is not allowed to be run in current device state
-    
+
         """
         handler = self.get_command_object("AssignResources")
         return handler.check_allowed()
-    
+
     @command(
-        dtype_in='str',
+        dtype_in="str",
         doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
-               "DevShort\ndish: JSON object consisting\n- receptorIDList: DevVarStringArray. "
-               "The individual string should contain dish numbers in string format with "
-               "preceding zeroes upto 3 digits. E.g. 0001, 0002",
-        dtype_out='str',
+        "DevShort\ndish: JSON object consisting\n- receptorIDList: DevVarStringArray. "
+        "The individual string should contain dish numbers in string format with "
+        "preceding zeroes upto 3 digits. E.g. 0001, 0002",
+        dtype_out="str",
         doc_out="information-only string",
     )
     @DebugIt()
@@ -378,21 +379,21 @@ class CentralNode(SKABaseDevice):
     def is_ReleaseResources_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state.
-    
+
         :return: True if this command is allowed to be run in current device state.
-    
+
         :rtype: boolean
-    
+
         :raises: DevFailed if this command is not allowed to be run in current device state
-    
+
         """
         handler = self.get_command_object("ReleaseResources")
         return handler.check_allowed()
-    
+
     @command(
         dtype_in="str",
         doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
-               "releaseALL boolean as true and receptorIDList.",
+        "releaseALL boolean as true and receptorIDList.",
         dtype_out="str",
         doc_out="information-only string",
     )
@@ -402,7 +403,7 @@ class CentralNode(SKABaseDevice):
         Release all the resources assigned to the given Subarray.
         """
         handler = self.get_command_object("ReleaseResources")
-    
+
         message = handler(argin)
         return message
 
@@ -414,7 +415,7 @@ class CentralNode(SKABaseDevice):
         args = (self.device_data, self.state_model, self.logger)
         self.startup_object = StartUpTelescope(*args)
         self.standby_object = StandByTelescope(*args)
-        self.assign_object  = AssignResources(*args)
+        self.assign_object = AssignResources(*args)
         self.release_object = ReleaseResources(*args)
         self.stow_object = StowAntennas(*args)
         self.register_command_object("AssignResources", self.assign_object)
@@ -423,9 +424,11 @@ class CentralNode(SKABaseDevice):
         self.register_command_object("StandByTelescope", self.standby_object)
         self.register_command_object("ReleaseResources", self.release_object)
 
+
 # ----------
 # Run server
 # ----------
+
 
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(CentralNode.main) ENABLED START #
@@ -441,5 +444,5 @@ def main(args=None, **kwargs):
     # PROTECTED REGION END #    //  CentralNode.main
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
