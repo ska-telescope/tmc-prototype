@@ -44,7 +44,7 @@ def check_going_into_standby():
 
 def check_going_out_of_abort():
     logging.info("In check_going_out_of_abort")
-    resource("ska_low/tm_subarray_node/1").assert_attribute("State").equals("ABORTED")
+    resource("ska_low/tm_subarray_node/1").assert_attribute("obsState").equals("ABORTED")
 
 
 # pre waitings
