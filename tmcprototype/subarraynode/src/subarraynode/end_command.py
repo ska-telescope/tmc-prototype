@@ -19,7 +19,7 @@ class End(SKASubarray.EndCommand):
     """
     A class for SubarrayNode's End() command.
 
-    This command on Subarray Node invokes EndSB command on CSP Subarray Leaf Node and SDP
+    This command on Subarray Node invokes End command on CSP Subarray Leaf Node and SDP
     Subarray Leaf Node, and stops tracking of all the assigned dishes.
 
     """

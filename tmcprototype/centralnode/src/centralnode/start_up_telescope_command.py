@@ -18,9 +18,8 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
     """
     A class for CentralNode's StartupCommand() command.
 
-    Setting the startup state to TRUE enables the telescope to accept subarray commands as per the subarray
-    model. Set the CentralNode into ON state. Invokes 'On' command on DishLeaf node, SDPMasterLeaf node, CSPMasterLeaf node
-    and Subarray Node.
+    StartUpTelescope command on Central node enables the telescope to perform further operations
+    and observations. It Invokes On command on lower level devices.
 
     """
 

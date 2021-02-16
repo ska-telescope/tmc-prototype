@@ -16,6 +16,10 @@ from tmc.common.tango_client import TangoClient
 class ReleaseResources(BaseCommand):
     """
     A class for CentralNodeLow's ReleaseResources() command.
+
+    Release all the resources assigned to the given Subarray. It accepts the subarray id, release_all flag in JSON string format. When the release_all flag is True, ReleaseAllResources command
+    is invoked on the respective SubarrayNode.
+
     """
 
     def check_allowed(self):
@@ -39,8 +43,7 @@ class ReleaseResources(BaseCommand):
 
     def do(self, argin):
         """
-        Release all the resources assigned to the given Subarray. It accepts the subarray id, release_all flag in JSON string format. When the release_all flag is True, ReleaseAllResources command
-        is invoked on the respective SubarrayNode.
+        Method to invoke ReleaseResouces command on Subarray Node.
 
         :param argin: The string in JSON format. The JSON contains following values:
 

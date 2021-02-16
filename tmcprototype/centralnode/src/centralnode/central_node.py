@@ -53,13 +53,13 @@ class CentralNode(SKABaseDevice):
             Health state of Telescope
 
         subarray1HealthState:
-            Health state of Subarray1
+            Health state of SubarrayNode1
 
         subarray2HealthState:
-            Health state of Subarray2
+            Health state of SubarrayNode2
 
         subarray3HealthState:
-            Health state of Subarray3
+            Health state of SubarrayNode3
 
         activityMessage:
             String providing information about the current activity in Central Node.

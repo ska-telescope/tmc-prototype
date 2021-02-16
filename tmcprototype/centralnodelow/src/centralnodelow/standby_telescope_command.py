@@ -41,7 +41,7 @@ class StandByTelescope(SKABaseDevice.OffCommand):
 
     def do(self):
         """
-        Method to invoke StartBy command.
+        Method to invoke StandBy command.
 
         param argin: None.
 
@@ -53,7 +53,7 @@ class StandByTelescope(SKABaseDevice.OffCommand):
             (ResultCode, str)
 
         raises:
-            AssertionError if command is not completed.
+            AssertionError if previous StandBy is not completed.
 
         """
         device_data = self.target

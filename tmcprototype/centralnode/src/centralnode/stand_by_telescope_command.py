@@ -17,8 +17,8 @@ class StandByTelescope(SKABaseDevice.OffCommand):
     """
     A class for CentralNode's StandByTelescope() command.
 
-    Sets the CentralNode into OFF state. Invokes the respective command on lower level nodes.
-    Invokes command on DishLeaf node, SDPMasterLeaf node, CSPMasterLeaf node and Subarray Node.
+    Sets the CentralNode into OFF state.Invokes command on DishLeaf node, SDPMasterLeaf node,
+    CSPMasterLeaf node and Subarray Node.
     """
     def check_allowed(self):
 
@@ -47,7 +47,6 @@ class StandByTelescope(SKABaseDevice.OffCommand):
 
         return:
             A tuple containing a return code and a string message indicating status.
-            The message is for information
 
         rtype:
             (ResultCode, str)

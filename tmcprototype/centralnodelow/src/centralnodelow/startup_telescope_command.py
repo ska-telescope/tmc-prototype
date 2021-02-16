@@ -18,8 +18,9 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
     """
     A class for Low CentralNode's StartupCommand() command.
 
-    Setting the startup state to TRUE enables the telescope to accept subarray commands as per the subarray
-    model. Set the CentralNode into ON state.
+    StartUpTelescope command on Central node enables the telescope to perform further operations
+    and observations. It Invokes On command on lower level devices.
+
     """
 
     def check_allowed(self):
@@ -43,7 +44,7 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
 
     def do(self):
         """
-        Method to invoke StartUp command.
+        Method to invoke ON command On lower level devices.
 
         param argin:
             None.
