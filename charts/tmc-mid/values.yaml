@@ -39,6 +39,20 @@ tmcprototype:
     tag: 0.3.9
     pullPolicy: IfNotPresent
 
+centralnodemid:
+  image:
+    registry: nexus.engageska-portugal.pt/ska-telescope
+    image: ska-tmc-centralnode-mid
+    tag: 0.1.0
+    pullPolicy: IfNotPresent
+
+subarraynodemid:
+  image:
+    registry: nexus.engageska-portugal.pt/ska-telescope
+    image: ska-tmc-subarraynode-mid
+    tag: 0.1.0
+    pullPolicy: IfNotPresent
+
 resources:
   limits:
     cpu: 300m
