@@ -61,8 +61,8 @@ def test_abort():
         fixture["state"] = "Subarray Aborted"
 
         # tear down
-        # TODO: Waiting for obsreset tobe implemented.
-        tmc.obsreset()
+        # TODO: Waiting for obsreset to be implemented.
+        tmc.ObsReset_sub()
         LOGGER.info("Obsreset is complete on Subarray")
         fixture["state"] = "Subarray IDLE"
         tmc.release_resources()
