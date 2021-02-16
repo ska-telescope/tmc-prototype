@@ -99,7 +99,7 @@ class ReleaseResources(BaseCommand):
                     "receptorIDList" : []
                 }
 
-        rtype:
+        return:
             None
 
         raises:

@@ -152,7 +152,7 @@ class AssignResources(BaseCommand):
 
         Note: Enter input without spaces as:{"dish":{"receptorIDList_success":["0001","0002"]}}
 
-        rtype:
+        return:
             None
 
         raises:

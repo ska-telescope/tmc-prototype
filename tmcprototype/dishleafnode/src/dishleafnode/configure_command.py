@@ -66,6 +66,9 @@ class Configure(BaseCommand):
                 {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},
                 "dish":{"receiverBand":"1"}}
 
+        return:
+            None
+
         raises:
             DevFailed If error occurs while invoking ConfigureBand<> command on DishMaster or
             if the json string contains invalid data.

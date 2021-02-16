@@ -51,6 +51,9 @@ class Scan(BaseCommand):
         param argin:
             timestamp
 
+        return:
+            None
+
         raises:
             DevFailed If error occurs while invoking Scan command on DishMaster.
 

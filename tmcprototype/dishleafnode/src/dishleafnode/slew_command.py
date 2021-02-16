@@ -53,6 +53,9 @@ class Slew(BaseCommand):
             [0] = Azimuth, in degrees
             [1] = Elevation, in degrees
 
+        return:
+            None
+
         raises:
             DevFailed If error occurs while invoking Slew command on DishMaster.
 

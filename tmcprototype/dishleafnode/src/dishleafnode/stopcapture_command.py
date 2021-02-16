@@ -48,6 +48,9 @@ class StopCapture(BaseCommand):
         param argin:
             timestamp
 
+        return:
+            None
+
         raises:
             DevFailed If error occurs while invoking StopCapture command on DishMaster.
 

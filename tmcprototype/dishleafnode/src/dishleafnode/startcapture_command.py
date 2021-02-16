@@ -48,6 +48,9 @@ class StartCapture(BaseCommand):
         param argin:
             timestamp
 
+        return:
+            None
+
         raises:
             DevFailed If error occurs while invoking StartCapture command on DishMaster.
 

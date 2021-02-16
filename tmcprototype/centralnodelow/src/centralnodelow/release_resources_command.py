@@ -44,6 +44,7 @@ class ReleaseResources(BaseCommand):
             DevState.DISABLE,
         ]:
             tango.Except.throw_exception(
+
                 f"Command ReleaseResources is not allowed in current state {self.state_model.op_state}.",
                 "Failed to invoke ReleaseResources command on CentralNode.",
                 "CentralNode.ReleaseResources()",
@@ -67,6 +68,8 @@ class ReleaseResources(BaseCommand):
                 {"mccs":{"subarray_id":1,"release_all":true}}
             Note: From Jive, enter input as:
                 {"mccs":{"subarray_id":1,"release_all":true}} without any space.
+        return:
+            None
 
         raises:
             ValueError if input argument json string contains invalid value

@@ -97,9 +97,6 @@ class Scan(BaseCommand):
         return:
             None
 
-        rtype:
-            Void
-
         raises:
             DevFailed if the command execution is not successful
         """
