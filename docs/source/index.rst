@@ -10,9 +10,7 @@ Welcome to TMC Prototype's documentation!
    :maxdepth: 1
    :caption: Contents:
 
-   Central Node<CentralNode>
    Central Node Low<CentralNodeLow>
-   Subarray Node<SubarrayNode>
    Subarray Node Low<SubarrayNodeLow>
    Dish Leaf Node<DishLeafNode>
    Dish Master<DishMaster>

@@ -21,15 +21,14 @@ done
 
 # Combine coverage reports
 cd $REPORTS_DIR
-coverage combine centralnode_coverage cspmasterleafnode_coverage dishmaster_coverage \
+coverage combine cspmasterleafnode_coverage dishmaster_coverage \
                   cspsubarrayleafnode_coverage dishleafnode_coverage \
                   sdpmasterleafnode_coverage sdpsubarrayleafnode_coverage \
-                  subarraynode_coverage subarraynodelow_coverage centralnodelow_coverage \
+                  subarraynodelow_coverage centralnodelow_coverage \
                   mccsmasterleafnode_coverage mccssubarrayleafnode_coverage && coverage xml
 mv coverage.xml code-coverage.xml
 python3 -m pip install junitparser
-junitparser merge centralnode-unit-tests.xml \
-                  dishmaster-unit-tests.xml \
+junitparser merge dishmaster-unit-tests.xml \
                   centralnodelow-unit-tests.xml \
                   cspmasterleafnode-unit-tests.xml \
                   cspsubarrayleafnode-unit-tests.xml \
@@ -38,6 +37,5 @@ junitparser merge centralnode-unit-tests.xml \
                   sdpsubarrayleafnode-unit-tests.xml \
                   mccsmasterleafnode-unit-tests.xml \
                   mccssubarrayleafnode-unit-tests.xml \
-                  subarraynode-unit-tests.xml \
                   subarraynodelow-unit-tests.xml \
                   unit-tests.xml
