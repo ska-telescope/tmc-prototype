@@ -22,10 +22,10 @@ class Scan(SKASubarray.ScanCommand):
     """
     A class for SubarrayNode's Scan() command.
 
-    This command accepts id as input. And it Schedule scan on subarray
-    from where scan command is invoked on respective CSP and SDP subarray node for the
-    provided interval of time. It checks whether the scan is already in progress. If yes it
-    throws error showing duplication of command.
+    The command accepts Scan id as an input and executes a scan on the subarray.
+    Scan command is invoked on respective CSP and SDP subarray node for the provided
+    interval of time. It checks whether the scan is already in progress.
+    If yes it throws error showing duplication of command.
 
     """
 

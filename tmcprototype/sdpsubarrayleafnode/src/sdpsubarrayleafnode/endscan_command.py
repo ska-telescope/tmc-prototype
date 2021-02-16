@@ -18,8 +18,8 @@ class EndScan(BaseCommand):
     """
     A class for SdpSubarrayLeafNode's EndScan() command.
 
-    It invokes EndScan command on SdpSubarray.
-    This command is allowed when SdpSubarray is in SCANNING state.
+    It invokes EndScan command on Sdp Subarray.
+    This command is allowed when Sdp Subarray is in SCANNING state.
     """
 
     def check_allowed(self):

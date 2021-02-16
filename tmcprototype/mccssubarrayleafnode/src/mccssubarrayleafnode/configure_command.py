@@ -23,7 +23,7 @@ class Configure(BaseCommand):
     A class for MccsSubarrayLeafNode's Configure() command.
 
     This command configures a scan. It accepts configuration information in JSON string format and
-    invokes Configure command on MccsSubarray.
+    invokes Configure command on Mccs Subarray.
 
     """
 

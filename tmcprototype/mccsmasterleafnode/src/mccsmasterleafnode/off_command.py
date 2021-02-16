@@ -18,7 +18,7 @@ class Off(SKABaseDevice.OffCommand):
     """
     A class for MccsMasterLeafNode's Off() command. Off command is inherited from SKABaseDevice.
 
-    It Sets the OpState to Off.
+    It Sets the State to Off.
 
     """
 

@@ -18,7 +18,7 @@ class On(SKABaseDevice.OnCommand):
     """
     A class for MccsMasterLeafNode's On() command. On command is inherited from SKABaseDevice.
 
-    It Sets the OpState to On.
+    It Sets the State to On.
 
     """
 

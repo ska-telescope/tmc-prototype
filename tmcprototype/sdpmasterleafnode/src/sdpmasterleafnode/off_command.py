@@ -14,7 +14,7 @@ class Off(SKABaseDevice.OffCommand):
     """
     A class for SDP master's Off() command. Off command is inherited from SKABaseDevice.
 
-    It Sets the opState  to Off.
+    It Sets the State  to Off.
 
     """
 
@@ -52,7 +52,7 @@ class Off(SKABaseDevice.OffCommand):
 
     def do(self):
         """
-        Method to invoke Off command on Sdp.
+        Method to invoke Off command on Sdp Master.
 
         :param argin: None.
 

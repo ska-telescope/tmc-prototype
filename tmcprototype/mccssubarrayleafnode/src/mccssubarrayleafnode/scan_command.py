@@ -19,7 +19,7 @@ class Scan(BaseCommand):
     """
     A class for MccsSubarrayLeafNode's Scan() command.
 
-    This command invokes Scan command on MccsSubarray. It is allowed only when MccsSubarray is in
+    This command invokes Scan command on Mccs Subarray. It is allowed only when MccsSubarray is in
     ObsState READY.
     """
 

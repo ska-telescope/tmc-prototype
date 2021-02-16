@@ -83,7 +83,7 @@ class End(BaseCommand):
 
     def do(self):
         """
-        Method to invoke end command on MCCS Subarray.
+        Method to invoke End command on MCCS Subarray.
 
         return:
             None

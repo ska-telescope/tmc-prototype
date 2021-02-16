@@ -8,7 +8,7 @@ class Off(SKABaseDevice.OffCommand):
     """
     A class for CspMasterLeafNode's Off() command. Off command is inherited from SKABaseDevice.
 
-    It Sets the OpState to Off.
+    It Sets the State to Off.
     """
 
     def do(self):
