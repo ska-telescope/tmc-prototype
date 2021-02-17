@@ -21,29 +21,33 @@ from subarraynode.device_data import DeviceData
 class Scan(SKASubarray.ScanCommand):
     """
     A class for SubarrayNode's Scan() command.
+
+    The command accepts Scan id as an input and executes a scan on the subarray.
+    Scan command is invoked on respective CSP and SDP subarray node for the provided
+    interval of time. It checks whether the scan is already in progress.
+    If yes it throws error showing duplication of command.
+
     """
 
     def do(self, argin):
         """
-        This command accepts id as input. And it Schedule scan on subarray
-        from where scan command is invoked on respective CSP and SDP subarray node for the
-        provided interval of time. It checks whether the scan is already in progress. If yes it
-        throws error showing duplication of command.
+        Method to invoke Scan command.
 
         :param argin: DevString. JSON string containing id.
 
-        JSON string example as follows:
-
-        {"id": 1}
+        :Example:   {"id": 1}
 
         Note: Above JSON string can be used as an input argument while invoking this command from JIVE.
 
-        :return: A tuple containing a return code and a string message indicating status.
-        The message is for information purpose only.
+        return:
+            A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
 
-        :rtype: (ReturnCode, str)
+        rtype:
+            (ReturnCode, str)
 
-        :raises: DevFailed if the command execution is not successful
+        raises:
+            DevFailed if the command execution is not successful
         """
         device_data = DeviceData.get_instance()
         device_data.is_scan_completed = False

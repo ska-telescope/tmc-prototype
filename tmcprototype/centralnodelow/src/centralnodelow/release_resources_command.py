@@ -20,6 +20,10 @@ from . import const
 class ReleaseResources(BaseCommand):
     """
     A class for CentralNodeLow's ReleaseResources() command.
+
+    Release all the resources assigned to the given Subarray. It accepts the subarray id, release_all flag in JSON string format. When the release_all flag is True, ReleaseAllResources command
+    is invoked on the respective SubarrayNode.
+
     """
 
     def check_allowed(self):
@@ -40,6 +44,7 @@ class ReleaseResources(BaseCommand):
             DevState.DISABLE,
         ]:
             tango.Except.throw_exception(
+
                 f"Command ReleaseResources is not allowed in current state {self.state_model.op_state}.",
                 "Failed to invoke ReleaseResources command on CentralNode.",
                 "CentralNode.ReleaseResources()",
@@ -49,8 +54,7 @@ class ReleaseResources(BaseCommand):
 
     def do(self, argin):
         """
-        Release all the resources assigned to the given Subarray. It accepts the subarray id, release_all flag in JSON string format. When the release_all flag is True, ReleaseAllResources command
-        is invoked on the respective SubarrayNode.
+        Method to invoke ReleaseResources command on Subarray Node.
 
         :param argin: The string in JSON format. The JSON contains following values:
 
@@ -64,10 +68,15 @@ class ReleaseResources(BaseCommand):
                 {"mccs":{"subarray_id":1,"release_all":true}}
             Note: From Jive, enter input as:
                 {"mccs":{"subarray_id":1,"release_all":true}} without any space.
+        return:
+            None
 
-        :raises: ValueError if input argument json string contains invalid value
-                 KeyError if input argument json string contains invalid key
-                 DevFailed if the command execution or command invocation on SubarrayNode is not successful
+        raises:
+            ValueError if input argument json string contains invalid value
+
+            KeyError if input argument json string contains invalid key
+
+            DevFailed if the command execution or command invocation on SubarrayNode is not successful
 
         """
         device_data = self.target

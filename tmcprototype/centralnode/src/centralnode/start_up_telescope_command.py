@@ -24,6 +24,10 @@ from centralnode.health_state_aggregator import HealthStateAggregator
 class StartUpTelescope(SKABaseDevice.OnCommand):
     """
     A class for CentralNode's StartupCommand() command.
+
+    StartUpTelescope command on Central node enables the telescope to perform further operations
+    and observations. It Invokes On command on lower level devices.
+
     """
 
     def check_allowed(self):
@@ -52,15 +56,18 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
 
     def do(self):
         """
-        Setting the startup state to TRUE enables the telescope to accept subarray commands as per the subarray
-        model. Set the CentralNode into ON state.
+        Method to invoke On command on Lower level devices.
 
-        :param argin: None.
+        param argin:
+            None.
 
-        :return: A tuple containing a return code and a string message indicating status.
-        The message is for information purpose only.
+        return:
+            A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
 
-        :rtype: (ResultCode, str)
+        rtype:
+            (ResultCode, str)
+
         """
         device_data = DeviceData.get_instance()
         self.logger.info(type(self.target))

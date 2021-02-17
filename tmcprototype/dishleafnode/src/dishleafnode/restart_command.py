@@ -26,6 +26,8 @@ from .command_callback import CommandCallBack
 class Restart(BaseCommand):
     """
     A class for DishLeafNode's Restart command.
+
+    Invokes Restart command on the DishMaster.
     """
 
     def check_allowed(self):
@@ -33,6 +35,7 @@ class Restart(BaseCommand):
         Checks whether this command is allowed to be run in current device state
 
         :return: True if this command is allowed to be run in current device state
+
         :rtype: boolean
         """
         if self.state_model.op_state in [
@@ -46,12 +49,17 @@ class Restart(BaseCommand):
 
     def do(self):
         """
-        Invokes StopCapture command on the DishMaster.
-        :param argin: None
+        Method to invoke Restart command on the DishMaster.
 
-        :return:None
+        param argin:
+            None
 
-        :raises DevFailed: If error occurs while invoking StopCapture command on DishMaster.
+        return:
+            None
+
+        raises:
+            DevFailed If error occurs while invoking StopCapture command on DishMaster.
+
         """
         device_data = self.target
         command_name = "Restart"

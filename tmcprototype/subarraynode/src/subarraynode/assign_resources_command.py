@@ -23,18 +23,21 @@ from subarraynode.device_data import DeviceData
 class AssignResources(SKASubarray.AssignResourcesCommand):
     """
     A class for SubarrayNode's AssignResources() command.
+
+    Assigns resources to the subarray. It accepts receptor id list as well as SDP resources string
+    as a DevString. Upon successful execution, the 'receptorIDList' attribute of the
+    subarray is updated with the list of receptors and SDP resources string is pass to SDPSubarrayLeafNode,
+    and returns list of assigned resources as well as passed SDP string as a DevString.
+
+    Note: Resource allocation for CSP and SDP resources is also implemented but
+    currently CSP accepts only receptorIDList and SDP accepts resources allocated to it.
+
     """
 
     @identify_with_id("assign", "argin")
     def do(self, argin):
         """
-        Assigns resources to the subarray. It accepts receptor id list as well as SDP resources string
-        as a DevString. Upon successful execution, the 'receptorIDList' attribute of the
-        subarray is updated with the list of receptors and SDP resources string is pass to SDPSubarrayLeafNode,
-        and returns list of assigned resources as well as passed SDP string as a DevString.
-
-        Note: Resource allocation for CSP and SDP resources is also implemented but
-        currently CSP accepts only receptorIDList and SDP accepts resources allocated to it.
+        Method to invoke AssignResources command.
 
         :param argin: DevString.
 
@@ -61,15 +64,19 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         ["calibration"]}]}]}}
 
 
-        :return: A tuple containing a return code and string of Resources added to the Subarray.
+        return:
+            A tuple containing a return code and string of Resources added to the Subarray.
             Example of string of Resources :
                 ["0001","0002"]
             as argout if allocation successful.
 
-        :rtype: (ResultCode, str)
+        rtype:
+            (ResultCode, str)
 
-        :raises: ValueError if input argument json string contains invalid value
-                DevFailed if the command execution is not successful
+        raises:
+            ValueError if input argument json string contains invalid value
+
+            DevFailed if the command execution is not successful
 
         """
         device_data = DeviceData.get_instance()
@@ -160,7 +167,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
             DevVarStringArray. List of receptor IDs to be allocated to subarray.
             Example: ['0001', '0002']
 
-        :return:
+        return:
             DevVarStringArray. List of Resources added to the Subarray.
             Example: ['0001', '0002']
         """
@@ -253,7 +260,8 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
 
             Example: ['0001', '0002']
 
-        :return: List of strings.
+        return:
+            List of strings.
             Returns the list of CSP resources successfully assigned to the Subarray. Currently, the
             CSPSubarrayLeafNode.AssignResources function returns void. The function only loops back
             the input argument in case of successful resource allocation, or returns exception
@@ -293,7 +301,8 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
             Contains the list of strings that has the resources ids. Currently
             processing block ids are passed to this function.
 
-        :return: List of strings.
+        return:
+            List of strings.
 
             Example: ['PB1', 'PB2']
 

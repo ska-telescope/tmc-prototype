@@ -21,6 +21,9 @@ from .device_data import DeviceData
 class Track(ResponseCommand):
     """
     A class for SubarrayNode's Track command.
+
+    Invokes Track command on the Dishes assigned to the Subarray.
+
     """
 
     def check_allowed(self):
@@ -47,7 +50,9 @@ class Track(ResponseCommand):
         return True
 
     def do(self, argin):
-        """Invokes Track command on the Dishes assigned to the Subarray.
+        """
+        Method to invoke Track command.
+
 
         :param argin: DevString
 
@@ -56,10 +61,12 @@ class Track(ResponseCommand):
         Argin to be provided is the Ra and Dec values where first value is tag that is radec, second value is Ra
         in Hr:Min:Sec, and third value is Dec in Deg:Min:Sec.
 
-        :return: A tuple containing a return code and a string message indicating status.
-        The message is for information purpose only.
+        return:
+            A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
 
-        :rtype: (ResultCode, str)
+        rtype:
+            (ResultCode, str)
 
         """
         device_data = DeviceData.get_instance()

@@ -17,7 +17,11 @@ from .delay_model import DelayManager
 
 class ConfigureCommand(BaseCommand):
     """
-    A class for CspSubarrayLeafNode's Configure() command.
+    A class for CspSubarrayLeafNode's Configure() command. Configure command is inherited from BaseCommand.
+
+    This command configures a scan. It accepts configuration information in JSON string format and
+    invokes Configure command on CSP Subarray.
+
     """
 
     def check_allowed(self):
@@ -88,8 +92,7 @@ class ConfigureCommand(BaseCommand):
     @identify_with_id("configure", "argin")
     def do(self, argin):
         """
-        This command configures a scan. It accepts configuration information in JSON string format and
-        invokes Configure command on CspSubarray.
+        Method to invoke Configure command on CSP Subarray.
 
         :param argin:DevString. The string in JSON format. The JSON contains following values:
 
@@ -102,13 +105,13 @@ class ConfigureCommand(BaseCommand):
 
         Note: Enter the json string without spaces as a input.
 
-        :return: A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
+        return:
+            None
 
-        :rtype: (ReturnCode, str)
+        raises:
+            DevFailed if the command execution is not successful
 
-        :raises: DevFailed if the command execution is not successful
-                    ValueError if input argument json string contains invalid value
+            ValueError if input argument json string contains invalid value
         """
         device_data = self.target
         target_Ra = ""

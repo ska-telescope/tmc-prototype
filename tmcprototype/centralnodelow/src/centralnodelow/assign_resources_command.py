@@ -20,6 +20,9 @@ from . import const
 class AssignResources(BaseCommand):
     """
     A class for CentralNode's AssignResources() command.
+
+    Assigns resources to given subarray. It accepts the subarray id, station ids, station beam id and channels
+    in JSON string format.
     """
 
     def check_allowed(self):
@@ -50,8 +53,7 @@ class AssignResources(BaseCommand):
 
     def do(self, argin):
         """
-        Assigns resources to given subarray. It accepts the subarray id, station ids, station beam id and channels
-        in JSON string format.
+        Method to invoke AssignResources command on Subarray.
 
         :param argin: The string in JSON format. The JSON contains following values:
 
@@ -73,10 +75,16 @@ class AssignResources(BaseCommand):
 
         Note: Enter input without spaces as:{"subarray_id":1,"station_ids":[1,2],"channels":[1,2,3,4,5,6,7,8],"station_beam_ids":[1]}
 
-        :return: None
+        return:
+            None
 
-        :raises: KeyError if input argument json string contains invalid key
-                 ValueError if input argument json string contains invalid value
+        raises:
+            KeyError if input argument json string contains invalid key
+
+            ValueError if input argument json string contains invalid value
+
+            AssertionError if  Mccs On command is not completed.
+
         """
         device_data = self.target
         try:

@@ -5,21 +5,19 @@
 
 Central Node
 ************
-.. automodule:: tmcprototype.centralnodelow.src.centralnodelow.central_node_low
-   :members:
-   :undoc-members:
-.. automodule:: tmcprototype.centralnodelow.src.centralnodelow.assign_resources_command
-   :members:
-   :undoc-members:
-.. automodule:: tmcprototype.centralnodelow.src.centralnodelow.health_state_aggreegator
-   :members:
-   :undoc-members:
-.. automodule:: tmcprototype.centralnodelow.src.centralnodelow.release_resources_command
-   :members:
-   :undoc-members:
-.. automodule:: tmcprototype.centralnodelow.src.centralnodelow.standby_telescope_command
-   :members:
-   :undoc-members:
-.. automodule:: tmcprototype.centralnodelow.src.centralnodelow.startup_telescope_command
-   :members:
-   :undoc-members:
+
+.. autoclass::  tmcprototype.centralnodelow.src.centralnodelow.central_node_low.CentralNode
+    :members: do
+    :undoc-members:
+.. autoclass::  tmcprototype.centralnodelow.src.centralnodelow.assign_resources_command.AssignResources
+    :members: do
+    :undoc-members:
+.. autoclass::  tmcprototype.centralnodelow.src.centralnodelow.release_resources_command.ReleaseResources
+    :members: do
+    :undoc-members:
+.. autoclass::  tmcprototype.centralnodelow.src.centralnodelow.standby_telescope_command.StandByTelescope
+    :members: do
+    :undoc-members:
+.. autoclass::  tmcprototype.centralnodelow.src.centralnodelow.startup_telescope_command.StartUpTelescope
+    :members: do
+    :undoc-members:

@@ -23,11 +23,14 @@ from subarraynodelow.device_data import DeviceData
 class Configure(SKASubarray.ConfigureCommand):
     """
     A class for SubarrayNodeLow's Configure() command.
+
+    Configures the resources assigned to the Mccs Subarray Leaf Node.
+
     """
 
     def do(self, argin):
         """
-        Configures the resources assigned to the Mccs Subarray.
+        Method to invoke Configure command.
 
         :param argin: DevString.
 
@@ -37,13 +40,16 @@ class Configure(SKASubarray.ConfigureCommand):
          "subarray_beam_id":1,"target":{"system":"HORIZON","name":"DriftScan","Az":180.0,"El":45.0},
          "update_rate":0.0,"channels":[[0,8,1,1],[8,8,2,1],[24,16,2,1]]}]},"tmc":{"scanDuration":10.0}}
 
-        :return: A tuple containing a return code and a string message indicating status.
-         The message is for information purpose only.
+        return:
+            A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
 
-        :rtype: (ReturnCode, str)
+        rtype:
+            (ReturnCode, str)
 
-        :raises: JSONDecodeError if input argument json string contains invalid value
-                 DevFailed if the command execution is not successful.
+        raises:
+            JSONDecodeError if input argument json string contains invalid value
+            DevFailed if the command execution is not successful.
         """
         device_data = self.target
         device_data.is_scan_completed = False

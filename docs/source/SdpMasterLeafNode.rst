@@ -5,22 +5,18 @@
 
 SDP Master Leaf Node
 ================================================
-
-.. automodule:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.sdp_master_leaf_node
-   :members:
-   :undoc-members:
-.. automodule:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.disable_command
-   :members:
-   :undoc-members:
-.. automodule:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.off_command
-   :members:
-   :undoc-members:
-.. automodule:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.on_command
-   :members:
-   :undoc-members:
-.. automodule:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.on_command
-   :members:
-   :undoc-members:
-.. automodule:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.standby_command
-   :members:
-   :undoc-members:
+.. autoclass:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.sdp_master_leaf_node.SdpMasterLeafNode
+    :members: None
+    :undoc-members: Disable
+.. autoclass:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.off_command.Off
+    :members: do
+    :undoc-members:
+.. autoclass:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.disable_command.Disable
+    :members: do
+    :undoc-members:
+.. autoclass:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.on_command.On
+    :members: do
+    :undoc-members:
+.. autoclass:: tmcprototype.sdpmasterleafnode.src.sdpmasterleafnode.standby_command.Standby
+    :members: do
+    :undoc-members:

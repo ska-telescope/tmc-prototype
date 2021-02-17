@@ -14,6 +14,9 @@ from . import const
 class AbortCommand(BaseCommand):
     """
     A class for CSPSubarrayLeafNode's Abort() command.
+
+    Command to abort the current operation being done on the CSP Subarray.
+
     """
 
     def check_allowed(self):
@@ -85,9 +88,11 @@ class AbortCommand(BaseCommand):
         """
         This command invokes Abort command on CSP Subarray.
 
-        :return: None
+        return:
+            None
 
-        :raises: DevFailed if error occurs while invoking command on CSPSubarray.
+        raises:
+            DevFailed if error occurs while invoking command on CSP Subarray.
 
         """
         device_data = self.target

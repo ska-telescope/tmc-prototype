@@ -35,17 +35,23 @@ __all__ = ["CspMasterLeafNode", "main", "On", "Off", "Standby"]
 
 class CspMasterLeafNode(SKABaseDevice):
     """
-    **Properties:**
+    The primary responsibility of the CSP Master Leaf node is to monitor the CSP Master and issue control
+    actions during an observation.
 
-    - CspMasterFQDN   - Property to provide FQDN of CSP Master Device
+    :Device Properties:
 
-    # **Attributes:**
+        CspMasterFQDN:
+            Property to provide FQDN of CSP Master Device
 
-    # - cspHealthState  - Forwarded attribute to provide CSP Master Health State
-    # - activityMessage - Attribute to provide activity message
+    :Device Attributes:
 
-    #"""
+        cspHealthState:
+            Forwarded attribute to provide CSP Master Health State
 
+        activityMessage:
+            Attribute to provide activity message
+
+    """
     # -----------------
     # Device Properties
     # -----------------

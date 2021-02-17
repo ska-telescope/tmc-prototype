@@ -16,6 +16,9 @@ from . import const
 class AssignResources(BaseCommand):
     """
     A class for MccsMasterLeafNode's AssignResources() command.
+
+     It accepts stationiDList list, channels and stationBeamiDList in JSON string format and invokes allocate command on MccsMaster
+     with JSON string as an input argument.
     """
 
     def check_allowed(self):
@@ -91,10 +94,10 @@ class AssignResources(BaseCommand):
 
     def do(self, argin):
         """
-        It accepts stationiDList list, channels and stationBeamiDList in JSON string format and invokes allocate command on MccsMaster
-        with JSON string as an input argument.
+        Method to invoke AssignResources command on MCCS Master.
 
-        :param argin:StringType. The string in JSON format.
+        :param argin:
+                     StringType. The string in JSON format.
 
         Example:
                 {
@@ -107,11 +110,15 @@ class AssignResources(BaseCommand):
 
         Note: Enter the json string without spaces as an input.
 
-        :return: None
+        return:
+            None
 
-        :raises: ValueError if input argument json string contains invalid value
-                    KeyError if input argument json string contains invalid key
-                    DevFailed if the command execution is not successful
+        raises:
+            ValueError if input argument json string contains invalid value
+
+            KeyError if input argument json string contains invalid key
+
+            DevFailed if the command execution is not successful
         """
         device_data = self.target
         try:

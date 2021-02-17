@@ -28,14 +28,16 @@ sdp_interface_version = 0
 class Configure(SKASubarray.ConfigureCommand):
     """
     A class for SubarrayNode's Configure() command.
+
+    Configures the resources assigned to the Subarray.The configuration data for SDP, CSP and Dish is
+    extracted out of the input configuration string and relayed to the respective underlying devices (SDP
+    Subarray Leaf Node, CSP Subarray Leaf Node and Dish Leaf Node).
     """
 
     @identify_with_id("configure", "argin")
     def do(self, argin):
         """
-        Configures the resources assigned to the Subarray.The configuration data for SDP, CSP and Dish is
-        extracted out of the input configuration string and relayed to the respective underlying devices (SDP
-        Subarray Leaf Node, CSP Subarray Leaf Node and Dish Leaf Node).
+        Method to invoke Configure command.
 
         :param argin: DevString.
 
@@ -54,12 +56,15 @@ class Configure(SKASubarray.ConfigureCommand):
 
         Note: While invoking this command from JIVE, provide above JSON string without any space.
 
-        :return: A tuple containing a return code and a string message indicating status.
-         The message is for information purpose only.
+        return:
+            A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
 
-        :rtype: (ReturnCode, str)
+        rtype:
+            (ReturnCode, str)
 
-        :raises: JSONDecodeError if input argument json string contains invalid value
+        raises:
+            JSONDecodeError if input argument json string contains invalid value
         """
         self.logger.debug(type(self.target))
         self.only_dishconfig_flag = False
@@ -217,7 +222,9 @@ class ElementDeviceData:
         [400, '192.168.0.4']], 'outputMac': [[0, '06-00-00-00-00-01']], 'outputPort': [[0, 9000, 1],
         [400, 9000, 1]]}]}
 
-        :return: csp confiuration schema
+        return:
+            csp confiuration schema
+
         """
         scan_config = scan_config.copy()
         csp_scan_config = scan_config.get("csp", {})

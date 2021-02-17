@@ -27,16 +27,24 @@ from .device_data import DeviceData
 class SetStandbyLPMode(BaseCommand):
     """
     A class for DishLeafNode's SetStandbyLPMode() command.
+
+    Invokes SetStandbyLPMode (i.e. Low Power State) command on DishMaster.
+
     """
 
     def do(self):
         """
-        Invokes SetStandbyLPMode (i.e. Low Power State) command on DishMaster.
-        :param argin: None
+        Method to invoke SetStandbyLPMode command on DishMaster.
 
-        :return:None
+        param argin:
+            None
 
-        :raises DevFailed: If error occurs while invoking SetStandbyLPMode command on DishMaster.
+        return:
+            None
+
+        raises:
+            DevFailed If error occurs while invoking SetStandbyLPMode command on DishMaster.
+
         """
         device_data = self.target
         command_name = "SetStandbyLPMode"

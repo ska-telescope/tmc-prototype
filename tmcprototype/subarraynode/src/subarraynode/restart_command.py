@@ -21,20 +21,26 @@ from subarraynode.device_data import DeviceData
 class Restart(SKASubarray.RestartCommand):
     """
     A class for SubarrayNode's Restart() command.
+
+    This command invokes Restart command on CSPSubarrayLeafNode, SDpSubarrayLeafNode and DishLeafNode.
+
     """
 
     def do(self):
         """
-        This command invokes Restart command on CSPSubarrayLeafNode, SDpSubarrayLeafNode and DishLeafNode.
+        Method to invoke Restart command.
 
-        :return: A tuple containing a return code and a string
+        return:
+            A tuple containing a return code and a string
             message indicating status. The message is for
             information purpose only.
 
-        :rtype: (ResultCode, str)
+        rtype:
+            (ResultCode, str)
 
-        :raises: DevFailed if error occurs while invoking command on CSPSubarrayLeafNode, SDpSubarrayLeafNode or
-                DishLeafNode.
+        raises:
+            DevFailed if error occurs while invoking command on CSPSubarrayLeafNode, SDpSubarrayLeafNode or
+            DishLeafNode.
         """
         device_data = DeviceData.get_instance()
         device_data.is_release_resources_command_executed = False

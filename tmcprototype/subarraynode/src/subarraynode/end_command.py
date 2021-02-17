@@ -21,19 +21,25 @@ from subarraynode.device_data import DeviceData
 class End(SKASubarray.EndCommand):
     """
     A class for SubarrayNode's End() command.
+
+    This command on Subarray Node invokes End command on CSP Subarray Leaf Node and SDP
+    Subarray Leaf Node, and stops tracking of all the assigned dishes.
+
     """
 
     def do(self):
         """
-        This command on Subarray Node invokes EndSB command on CSP Subarray Leaf Node and SDP
-        Subarray Leaf Node, and stops tracking of all the assigned dishes.
+        Method to invoke End command.
 
-        :return: A tuple containing a return code and a string message indicating status.
-        The message is for information purpose only.
+        return:
+            A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
 
-        :rtype: (ResultCode, str)
+        rtype:
+            (ResultCode, str)
 
-        :raises: DevFailed if the command execution is not successful.
+        raises:
+            DevFailed if the command execution is not successful.
         """
         self.logger.debug(type(self.target))
         device_data = DeviceData.get_instance()

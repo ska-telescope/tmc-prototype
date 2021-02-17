@@ -21,20 +21,26 @@ from subarraynode.device_data import DeviceData
 class EndScan(SKASubarray.EndScanCommand):
     """
     A class for SubarrayNode's EndScan() command.
+
+    Ends the scan. It is invoked on subarray after completion of the scan duration. It can
+    also be invoked by an external client while a scan is in progress, Which stops the scan
+    immediately irrespective of the provided scan duration.
+
     """
 
     def do(self):
         """
-        Ends the scan. It is invoked on subarray after completion of the scan duration. It can
-        also be invoked by an external client while a scan is in progress, Which stops the scan
-        immediately irrespective of the provided scan duration.
+        Method to invoke Endscan command.
 
-        :return: A tuple containing a return code and a string message indicating status.
-        The message is for information purpose only.
+        return:
+            A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
 
-        :rtype: (ReturnCode, str)
+        rtype:
+            (ReturnCode, str)
 
-        :raises: DevFailed if the command execution is not successful.
+        raises:
+            DevFailed if the command execution is not successful.
         """
         device_data = DeviceData.get_instance()
         device_data.is_release_resources_command_executed = False

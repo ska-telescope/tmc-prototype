@@ -21,6 +21,10 @@ from . import const
 class Configure(BaseCommand):
     """
     A class for MccsSubarrayLeafNode's Configure() command.
+
+    This command configures a scan. It accepts configuration information in JSON string format and
+    invokes Configure command on MCCS Subarray.
+
     """
 
     def check_allowed(self):
@@ -82,10 +86,10 @@ class Configure(BaseCommand):
 
     def do(self, argin):
         """
-        This command configures a scan. It accepts configuration information in JSON string format and
-        invokes Configure command on MccsSubarray.
+        Method to invoke Configure command on MCCS Subarray.
 
-        :param argin:DevString. The string in JSON format. The JSON contains following values:
+        :param argin: DevString.
+                      The string in JSON format. The JSON contains following values:
 
         Example:
         {"mccs":{"stations":[{"station_id":1},{"station_id":2}],"subarray_beams":[{"subarray_id":1,"subarray_beam_id":1,
@@ -94,14 +98,15 @@ class Configure(BaseCommand):
 
         Note: Enter the json string without spaces as a input.
 
-        :return: A tuple containing a return code and a string message indicating status.
-         The message is for information purpose only.
+        return:
+            None
 
-        :rtype: (ReturnCode, str)
+        raises:
+            DevFailed if the command execution is not successful
 
-        :raises: DevFailed if the command execution is not successful
-                 ValueError if input argument json string contains invalid value
-                 KeyError if input argument json string contains invalid key
+            ValueError if input argument json string contains invalid value
+
+            KeyError if input argument json string contains invalid key
         """
         device_data = self.target
         try:

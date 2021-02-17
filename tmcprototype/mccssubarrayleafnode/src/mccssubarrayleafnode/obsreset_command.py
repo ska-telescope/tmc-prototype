@@ -13,6 +13,9 @@ from . import const
 class ObsReset(BaseCommand):
     """
     A class for MccsSubarrayLeafNode's ObsReset() command.
+
+    Command to reset the MCCS subarray and bring it to its RESETTING state.
+
     """
 
     def check_allowed(self):
@@ -70,13 +73,15 @@ class ObsReset(BaseCommand):
 
     def do(self):
         """
-        Command to reset the MCCS subarray and bring it to its RESETTING state.
+        Method to invoke ObsReset command on MCCS Subarray.
 
         :param argin: None
 
-        :return: None
+        return:
+            None
 
-        :raises: DevFailed if error occurs while invoking the command on MccsSubarray.
+        raises:
+            DevFailed if error occurs while invoking the command on MccsSubarray.
         """
         device_data = self.target
         try:

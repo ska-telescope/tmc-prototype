@@ -6,19 +6,24 @@ from . import const
 
 class Off(SKABaseDevice.OffCommand):
     """
-    A class for CspMasterLeafNode's Off() command.
+    A class for CspMasterLeafNode's Off() command. Off command is inherited from SKABaseDevice.
+
+    It Sets the State to Off.
     """
 
     def do(self):
         """
-        Invokes Off command on the CSP Element.
+        Method to invoke Off command on CSP Element.
 
-        :param argin: None.
+        param argin:
+            None.
 
-        :return: A tuple containing a return code and a string message indicating status.
+        return:
+            A tuple containing a return code and a string message indicating status.
             The message is for information purpose only.
 
-        :rtype: (ResultCode, str)
+        rtype:
+            (ResultCode, str)
 
         """
         device_data = self.target

@@ -21,20 +21,26 @@ from subarraynode.device_data import DeviceData
 class ObsReset(SKASubarray.ObsResetCommand):
     """
     A class for SubarrayNode's ObsReset() command.
+
+    This command invokes ObsReset command on CspSubarrayLeafNode, SdpSubarrayLeafNode and DishLeafNode.
+
     """
 
     def do(self):
         """
-        This command invokes ObsReset command on CspSubarrayLeafNode, SdpSubarrayLeafNode and DishLeafNode.
+        Method to invoke ObsReset command.
 
-        :return: A tuple containing a return code and a string
+        return:
+            A tuple containing a return code and a string
             message indicating status. The message is for
             information purpose only.
 
-        :rtype: (ResultCode, str)
+        rtype:
+            (ResultCode, str)
 
-        :raises: DevFailed if error occurs while invoking command on CspSubarrayLeafNode, SdpSubarrayLeafNode or
-                DishLeafNode.
+        raises:
+            DevFailed if error occurs while invoking command on CspSubarrayLeafNode, SdpSubarrayLeafNode or
+            DishLeafNode.
         """
         device_data = DeviceData.get_instance()
         device_data.is_abort_command_executed = False

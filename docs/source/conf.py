@@ -13,41 +13,18 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 
-autodoc_mock_imports = [
-    "PyTango",
-    "tango",
-    "tango.server",
-    "run",
-    "DeviceMeta",
-    "command",
-    "future",
-    "future.utils",
-    "ska",
-    "ska.base",
-    "ska.base.SKABaseDevice",
-    "ska.base.SKAMaster",
-    "ska.base.SKASubarray",
-    "katpoint",
-    "numpy",
-    "centralnode",
-    "centralnode.central_node",
-    "subarraynode",
-    "subarraynode.subarray_node",
-    "marshmallow",
-    "ska.cdm.messages",
-    "ska.cdm.schemas",
-    "ska.cdm.messages.central_node.assign_resources",
-    "AssignResourcesRequest",
-    "CODEC",
-    "ValidationError",
-    "ska_telmodel",
-    "subarraynodelow",
-    "subarraynodelow.subarray_node_low",
-    "centralnodelow",
-    "centralnodelow.central_node_low",
-    "tmc",
-    "cspsubarrayleafnode",
-]
+autodoc_mock_imports = ['PyTango', 'tango', 'tango.server', 'run', 'DeviceMeta', 'command',
+                 'future', 'future.utils', 'ska', 'ska.base', 'ska.base.SKABaseDevice', 'ska.base.SKAMaster',
+                'ska.base.SKASubarray', 'katpoint', 'numpy', 'centralnode', 'centralnode.central_node',
+                'subarraynode', 'subarraynode.subarray_node', 'marshmallow', 'ska.cdm.messages', 'ska.cdm.schemas',
+                'ska.cdm.messages.central_node.assign_resources', 'AssignResourcesRequest', 'CODEC', 'ValidationError',
+                'ska_telmodel','subarraynodelow','subarraynodelow.subarray_node_low','centralnodelow',
+                'centralnodelow.central_node_low','tmc','cspsubarrayleafnode', 'cspsubarrayleafnode.csp_subarray_leaf_node',
+                        'importlib.resources', 'mccsmasterleafnode', 'mccsmasterleafnode.mccs_master_leaf_node',
+                        'mccssubarrayleafnode', 'mccssubarrayleafnode.mccs_subarray_leaf_node', 'dishmaster',
+                        'tango_simlib', 'dishleafnode', 'dishleafnode.dish_leaf_node'
+                 ]
+
 
 import os
 import sys

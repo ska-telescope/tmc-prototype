@@ -12,16 +12,22 @@ from subarraynodelow.device_data import DeviceData
 class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
     """
     A class for SKASubarrayLow's ReleaseAllResources() command.
+
+    It invokes ReleaseAllResources command on Subarray Node Low.
+
     """
 
     def do(self):
         """
-        It invokes ReleaseAllResources command on Subarraylow.
+        Method to invoke ReleaseAllResources command.
 
-        :return: A tuple containing a return code and RELEASEALLRESOURCES command invoked successfully as a string on successful release all resources.
+        return:
+            A tuple containing a return code and RELEASEALLRESOURCES command invoked successfully as a string on successful release all resources.
         Example: RELEASEALLRESOURCES command invoked successfully as string on successful release all resources.
 
-        :rtype: (ResultCode, str)
+        rtype:
+            (ResultCode, str)
+
         """
         device_data = DeviceData.get_instance()
         device_data.is_release_resources = True
