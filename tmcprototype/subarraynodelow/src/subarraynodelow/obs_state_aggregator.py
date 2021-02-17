@@ -76,7 +76,7 @@ class ObsStateAggregator:
             if not evt.err:
                 event_observetion_state = evt.attr_value.value
                 if const.PROP_DEF_VAL_TMMCCS_MID_SALN in evt.attr_name:
-                    self._mccs_sa_obs_state = event_observetion_state
+                    self._mccs_sa_obs_state = ObsState(event_observetion_state)
                     self._read_activity_message = f"{const.STR_MCCS_SUBARRAY_OBS_STATE}{event_observetion_state}"
                 else:
                     self.logger.info(const.EVT_UNKNOWN)
