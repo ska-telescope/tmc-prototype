@@ -17,7 +17,7 @@ class On(SKABaseDevice.OnCommand):
     """
     A class for SDP master's On() command. On command is inherited from SKABaseDevice.
 
-    Informs the SDP that it can start executing Processing Blocks. Sets the State  to ON.
+    Informs the SDP that it can start executing Processing Blocks. Sets the State to ON.
 
     """
 

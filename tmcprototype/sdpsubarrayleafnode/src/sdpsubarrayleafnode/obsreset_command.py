@@ -18,7 +18,7 @@ class ObsReset(BaseCommand):
     """
     A class for SdpSubarrayLeafNode's ObsResetCommand() command.
 
-    Command to reset the SDP subarray and bring it to its RESETTING state.
+    Command to reset the SDP Subarray and bring it to its RESETTING state.
     """
 
     def check_allowed(self):
@@ -91,7 +91,7 @@ class ObsReset(BaseCommand):
             None
 
         raises:
-            DevFailed if error occurs while invoking command on SDPSubarray.
+            DevFailed if error occurs while invoking command on SDP Subarray.
 
         """
         device_data = self.target

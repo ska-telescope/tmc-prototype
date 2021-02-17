@@ -18,7 +18,7 @@ class End(BaseCommand):
     """
     A class for SdpSubarrayLeafNode's End command.
 
-    This command invokes End command on SDP subarray to end the current Scheduling block.
+    This command invokes End command on SDP Subarray to end the current Scheduling block.
 
     """
 

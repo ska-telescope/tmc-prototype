@@ -19,8 +19,8 @@ class AssignResources(BaseCommand):
     """
     A class for SdpSubarayLeafNode's AssignResources() command.
 
-    Assigns resources to given SDP subarray.
-    This command is provided as a noop placeholder from SDP subarray.
+    Assigns resources to given SDP Subarray.
+    This command is provided as a noop placeholder from SDP Subarray.
     Eventually this will likely take a JSON string specifying the resource request.
     """
 
@@ -83,7 +83,7 @@ class AssignResources(BaseCommand):
     @identify_with_id("assign", "argin")
     def do(self, argin):
         """
-        Method to invoke AssignResources command on SDP SUbarray.
+        Method to invoke AssignResources command on SDP Subarray.
 
         :param argin: The string in JSON format. The JSON contains following values:
 

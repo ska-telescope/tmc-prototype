@@ -17,7 +17,7 @@ class On(SKABaseDevice.OnCommand):
     """
     A class for CSP Subarray's On() command.
 
-    Invokes On command on the Csp Subarray.
+    Invokes On command on the CSP Subarray.
     """
 
     def on_cmd_ended_cb(self, event):
@@ -65,7 +65,6 @@ class On(SKABaseDevice.OnCommand):
             (ResultCode, str)
 
         """
-        # device_data = self.target
         log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
         self.logger.debug(log_msg)
         delay_manager_obj = DelayManager.get_instance()

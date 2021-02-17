@@ -15,7 +15,7 @@ class AbortCommand(BaseCommand):
     """
     A class for CSPSubarrayLeafNode's Abort() command.
 
-    Command to abort the current operation being done on the CSP subarray.
+    Command to abort the current operation being done on the CSP Subarray.
 
     """
 
@@ -92,7 +92,7 @@ class AbortCommand(BaseCommand):
             None
 
         raises:
-            DevFailed if error occurs while invoking command on CSPSubarray.
+            DevFailed if error occurs while invoking command on CSP Subarray.
 
         """
         device_data = self.target

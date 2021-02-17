@@ -89,7 +89,7 @@ class ObsResetCommand(BaseCommand):
             None
 
         raises:
-            DevFailed if error occurs while invoking the command on CSpSubarray.
+            DevFailed if error occurs while invoking the command on CSP Subarray.
 
         """
         device_data = self.target

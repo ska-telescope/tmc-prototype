@@ -18,7 +18,7 @@ class Restart(BaseCommand):
     """
     A class for sdpSubarrayLeafNode's Restart() command.
 
-    Command to restart the SDP subarray and bring it to its ON state.
+    Command to restart the SDP Subarray and bring it to its ON state.
 
     """
 

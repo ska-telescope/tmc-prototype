@@ -32,7 +32,6 @@ class EndScanCommand(BaseCommand):
         in current device state
 
         """
-        # device = self.target
         if self.state_model.op_state in [
             DevState.FAULT,
             DevState.UNKNOWN,

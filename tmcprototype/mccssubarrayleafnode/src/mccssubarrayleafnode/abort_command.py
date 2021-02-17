@@ -14,7 +14,7 @@ class Abort(BaseCommand):
     """
     A class for MccsSubarrayLeafNode's Abort() command.
 
-    Command to abort the current operation being done on the MCCS subarray.
+    Command to abort the current operation being done on the MCCS Subarray.
 
     """
 

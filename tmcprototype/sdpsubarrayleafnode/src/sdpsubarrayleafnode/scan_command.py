@@ -18,7 +18,7 @@ class Scan(BaseCommand):
     """
     A class for SdpSubarrayLeafNode's Scan() command.
 
-    Invoke Scan command to SDP subarray.
+    Invoke Scan command to SDP Subarray.
     """
 
     def check_allowed(self):
