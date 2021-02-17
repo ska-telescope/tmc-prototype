@@ -2,6 +2,7 @@
 import logging
 
 # Additional import
+from ska.base.control_model import ObsState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -98,14 +99,14 @@ class ObsStateAggregator:
         log_msg = f"MCCS ObsState is: {self._mccs_sa_obs_state}"
         self.logger.info(log_msg)
         # Check mccs subarray obsState if it is EMPTY
-        if self._mccs_sa_obs_state is 0:
+        if self._mccs_sa_obs_state is ObsState.EMPTY:
             if self.device_data.is_release_resources:
                 self.logger.info(
                     "Calling ReleaseAllResource command succeeded() method"
                 )
                 self.this_server.device.release.succeeded()
         # Check mccs subarray obsState if it is READY
-        elif self._mccs_sa_obs_state is 4:
+        elif self._mccs_sa_obs_state is ObsState.READY:
             if self.device_data.is_scan_completed:
                 self.logger.info("Calling EndScan command succeeded() method")
                 self.this_server.device.endscan.succeeded()
@@ -114,7 +115,7 @@ class ObsStateAggregator:
                 self.logger.info("Calling Configure command succeeded() method")
                 self.this_server.device.configure.succeeded()
         # Check mccs subarray obsState if it is IDLE
-        elif self._mccs_sa_obs_state is 2:
+        elif self._mccs_sa_obs_state is ObsState.IDLE:
             if self.device_data.is_end_command:
                 # End command success
                 self.logger.info("Calling End command succeeded() method")
@@ -128,7 +129,7 @@ class ObsStateAggregator:
                 self.logger.info("Calling AssignResource command succeeded() method")
                 self.this_server.device.assign.succeeded()
         # Check mccs subarray obsState if it is ABORTED
-        elif self._mccs_sa_obs_state is 7:
+        elif self._mccs_sa_obs_state is ObsState.ABORTED:
             if self.device_data.is_abort_command_executed:
                 # Abort command success
                 self.logger.info("Calling Abort command succeeded() method")
