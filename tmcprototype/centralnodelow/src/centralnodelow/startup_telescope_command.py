@@ -20,7 +20,7 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
     """
     A class for Low CentralNode's StartupCommand() command.
 
-    StartUpTelescope command on Central node enables the telescope to perform further operations
+    StartUpTelescope command on Central Node Low enables the telescope to perform further operations
     and observations. It Invokes On command on lower level devices.
 
     """
@@ -65,7 +65,7 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
             (ResultCode, str)
 
         raises:
-            AssertionError if command is not completed.
+            AssertionError if f Mccs Off command is not completed.
 
         """
         device_data = self.target

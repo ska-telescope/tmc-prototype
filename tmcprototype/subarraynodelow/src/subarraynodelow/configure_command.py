@@ -24,7 +24,7 @@ class Configure(SKASubarray.ConfigureCommand):
     """
     A class for SubarrayNodeLow's Configure() command.
 
-    Configures the resources assigned to the Mccs Subarray.
+    Configures the resources assigned to the Mccs Subarray Leaf Node.
 
     """
 

@@ -35,7 +35,7 @@ __all__ = ["CspMasterLeafNode", "main", "On", "Off", "Standby"]
 
 class CspMasterLeafNode(SKABaseDevice):
     """
-    The primary responsibility of the CSP Subarray Leaf node is to monitor the CSP Subarray and issue control
+    The primary responsibility of the CSP Master Leaf node is to monitor the CSP Master and issue control
     actions during an observation.
 
     :Device Properties:

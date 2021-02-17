@@ -18,7 +18,7 @@ class ReleaseAllResources(BaseCommand):
     """
     A class for SdpSubarayLeafNode's ReleaseAllResources() command.
 
-    Releases all the resources of given SDPSubarrayLeafNode.
+    Releases all the resources of given SDP Subarray Leaf Node.
     It accepts the subarray id, releaseALL flag and receptorIDList in JSON string format.
     """
 

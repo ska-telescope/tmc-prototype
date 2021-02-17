@@ -17,7 +17,7 @@ class On(SKABaseDevice.OnCommand):
     """
     A class for CSP Subarray's On() command.
 
-    Invokes On command on the CSP Subarray.
+    Invokes On command on the Csp Subarray.
     """
 
     def on_cmd_ended_cb(self, event):

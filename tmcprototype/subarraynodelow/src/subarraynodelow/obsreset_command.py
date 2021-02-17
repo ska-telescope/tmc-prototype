@@ -21,7 +21,7 @@ class ObsReset(SKASubarray.ObsResetCommand):
     """
     A class for Low SubarrayNode's ObsReset() command.
 
-    This command invokes ObsReset command on MccsSubarrayLeafNode.
+    This command invokes ObsReset command on Mccs Subarray Leaf Node.
 
     """
 

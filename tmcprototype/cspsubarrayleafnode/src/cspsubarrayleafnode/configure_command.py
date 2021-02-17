@@ -20,7 +20,7 @@ class ConfigureCommand(BaseCommand):
     A class for CspSubarrayLeafNode's Configure() command. Configure command is inherited from BaseCommand.
 
     This command configures a scan. It accepts configuration information in JSON string format and
-    invokes Configure command on CspSubarray.
+    invokes Configure command on CSP Subarray.
 
     """
 

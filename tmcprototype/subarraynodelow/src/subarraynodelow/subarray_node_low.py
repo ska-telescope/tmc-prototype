@@ -89,10 +89,6 @@ class SubarrayNode(SKASubarray):
         "Subarray Node.",
     )
 
-    MccsSubarrayFQDN = device_property(
-        dtype="str",
-    )
-
     # ----------
     # Attributes
     # ----------

@@ -14,8 +14,8 @@ class ReleaseAllResourcesCommand(BaseCommand):
     """
     A class for CspSubarrayLeafNode's ReleaseAllResources() command. ReleaseAllResources command is inherited from BaseCommand.
 
-    It invokes ReleaseAllResources command on CspSubarray and releases all the resources assigned to
-    CspSubarray.
+    It invokes ReleaseAllResources command on Csp Subarray and releases all the resources assigned to
+    CSP Subarray.
 
     """
 

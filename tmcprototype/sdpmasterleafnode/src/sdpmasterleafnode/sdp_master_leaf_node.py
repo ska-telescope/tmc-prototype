@@ -53,7 +53,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             Provides Version information of TANGO device.
 
         activityMessage:
-            String providing information about the current activity in SDPLeafNode.
+            String providing information about the current activity in SDP Master Leaf Node.
 
         ProcessingBlockList:
             List of Processing Block devices

@@ -46,7 +46,7 @@ class Abort(BaseCommand):
 
     def do(self):
         """
-        Invokes Abort command on the DishMaster.
+        Invokes TrackStop command on the DishMaster.
 
         param argin:
             None
@@ -55,7 +55,7 @@ class Abort(BaseCommand):
             None
 
         raises:
-            DevFailed If error occurs while invoking Abort command on DishMaster.
+            DevFailed If error occurs while invoking TrackStop command on DishMaster.
 
         """
         device_data = self.target

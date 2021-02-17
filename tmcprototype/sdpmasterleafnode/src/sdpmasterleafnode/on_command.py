@@ -55,7 +55,7 @@ class On(SKABaseDevice.OnCommand):
 
     def do(self):
         """
-        Method to invoke On command on Sdp Master.
+        Method to invoke On command on SDP Master.
 
         :param argin: None.
 

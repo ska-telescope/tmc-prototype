@@ -23,7 +23,7 @@ class On(SKASubarray.OnCommand):
     """
     A class for the SubarrayNodeLow's On() command.
 
-    This command invokes On Command on MCCSSubarray through MCCS Subarray Leaf node. This comamnd
+    This command invokes On Command on MCCS Subarray through MCCS Subarray Leaf node. This comamnd
     changes Subarray device state from OFF to ON.
 
     """

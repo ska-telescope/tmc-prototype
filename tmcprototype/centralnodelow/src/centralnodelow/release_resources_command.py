@@ -54,7 +54,7 @@ class ReleaseResources(BaseCommand):
 
     def do(self, argin):
         """
-        Method to invoke ReleaseResouces command on Subarray Node.
+        Method to invoke ReleaseResources command on Subarray Node.
 
         :param argin: The string in JSON format. The JSON contains following values:
 

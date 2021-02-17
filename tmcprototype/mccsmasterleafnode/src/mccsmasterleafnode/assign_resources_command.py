@@ -94,7 +94,7 @@ class AssignResources(BaseCommand):
 
     def do(self, argin):
         """
-        Method to invoke AssignResources command on Subarray.
+        Method to invoke AssignResources command on MCCS Master.
 
         :param argin:
                      StringType. The string in JSON format.

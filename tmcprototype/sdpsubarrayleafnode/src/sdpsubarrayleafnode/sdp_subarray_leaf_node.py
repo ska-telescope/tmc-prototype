@@ -80,7 +80,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             it is used to provide FQDN of receiveAddresses attribute from SDP.
 
         activityMessage:
-            String providing information about the current activity in SDPLeafNode.
+            String providing information about the current activity in SDP Subarray Leaf Node.
 
         activeProcessingBlocks:
             This is a attribute from SDP Subarray which depicts the active Processing

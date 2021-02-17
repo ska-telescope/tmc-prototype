@@ -14,7 +14,7 @@ class StartScanCommand(BaseCommand):
     """
     A class for CspSubarrayLeafNode's StartScan() command. StartScan command is inherited from BaseCommand.
 
-    This command invokes Scan command on CspSubarray. It is allowed only when CspSubarray is in
+    This command invokes Scan command on Csp Subarray. It is allowed only when CSP Subarray is in
     ObsState READY.
 
     """

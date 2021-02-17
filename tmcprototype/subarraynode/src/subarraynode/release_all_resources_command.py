@@ -90,7 +90,7 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
         :param argin: DevVoid
 
         return:
-            DevVoid
+            None
 
         """
         try:
@@ -107,12 +107,8 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
 
         :param argin: DevVoid
 
-<<<<<<< HEAD
         return:
             DevVoid
-=======
-        :return: DevVoid
->>>>>>> master
 
         """
         try:

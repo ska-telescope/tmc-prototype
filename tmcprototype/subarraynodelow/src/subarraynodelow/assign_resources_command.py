@@ -16,7 +16,9 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
     """
     A class for SubarrayNodelow's AssignResources() command.
 
-    Assigns the resources to the subarray. It accepts station ids, channels, station beam ids
+    Assigns the resources to the subarray. It accepts station ids, channels, station beam ids and channels
+    in JSON string format.
+
     """
 
     def do(self, argin):

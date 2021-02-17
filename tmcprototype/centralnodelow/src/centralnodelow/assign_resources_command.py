@@ -83,6 +83,8 @@ class AssignResources(BaseCommand):
 
             ValueError if input argument json string contains invalid value
 
+            AssertionError if  Mccs On command is not completed.
+
         """
         device_data = self.target
         try:

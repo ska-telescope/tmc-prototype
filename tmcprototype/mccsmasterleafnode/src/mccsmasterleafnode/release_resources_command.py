@@ -80,7 +80,7 @@ class ReleaseResources(BaseCommand):
 
     def do(self, argin):
         """
-        Method to invoke ReleaseResources command on Mccs Subarray.
+        Method to invoke ReleaseResources command on Mccs Master.
 
         :param argin:
                      StringType. The string in JSON format.

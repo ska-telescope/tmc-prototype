@@ -69,7 +69,7 @@ class Disable(BaseCommand):
 
     def do(self):
         """
-        Method to invoke Disable command on Sdp Master.
+        Method to invoke Disable command on SDP Master.
 
         :param argin: None.
 

@@ -20,7 +20,7 @@ class Off(SKASubarray.OffCommand):
     """
     A class for the SubarrayNodes's Off() command.
 
-    This command invokes Off Command on MCCSSubarray through mccs subarray leaf node. This comamnd
+    This command invokes Off Command on MCCS Subarray through Mccs Subarray leaf node. This comamnd
     changes Subaray device state from ON to OFF.
 
     """

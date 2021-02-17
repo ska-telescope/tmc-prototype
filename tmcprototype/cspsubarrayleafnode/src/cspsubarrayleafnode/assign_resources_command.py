@@ -16,7 +16,7 @@ class AssignResourcesCommand(BaseCommand):
     """
     A class for CspSubarrayLeafNode's AssignResources() command.
 
-    It accepts subarrayID and receptor ids in JSON string format and invokes AssignResources command on CspSubarray.
+    It accepts subarrayID and receptor ids in JSON string format and invokes AssignResources command on CSP Subarray.
 
     """
 

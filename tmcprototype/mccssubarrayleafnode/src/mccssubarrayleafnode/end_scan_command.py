@@ -19,7 +19,7 @@ class EndScan(BaseCommand):
     """
     A class for MccsSubarrayLeafNode's EndScan() command.
 
-    This command invokes EndScan command on Mccs Subarray. It is allowed only when MccsSubarray is in
+    This command invokes EndScan command on MCCS Subarray. It is allowed only when MccsSubarray is in
     ObsState SCANNING.
 
     """

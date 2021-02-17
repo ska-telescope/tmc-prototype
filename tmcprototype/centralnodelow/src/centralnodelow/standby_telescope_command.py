@@ -61,7 +61,7 @@ class StandByTelescope(SKABaseDevice.OffCommand):
             (ResultCode, str)
 
         raises:
-            AssertionError if previous StandBy is not completed.
+            AssertionError if Mccs On command is not completed.
 
         """
         device_data = self.target

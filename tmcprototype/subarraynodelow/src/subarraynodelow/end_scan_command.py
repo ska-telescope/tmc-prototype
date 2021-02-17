@@ -20,7 +20,7 @@ class EndScan(SKASubarray.EndScanCommand):
     """
     A class for SubarrayNodeLow's EndScan() command.
 
-    Ends the scan. It is invoked on subarrayLow after completion of the scan duration. It can
+    Ends the scan. It is invoked on Subarray Node Low after completion of the scan duration. It can
     also be invoked by an external client while a scan is in progress, Which stops the scan
     immediately irrespective of the provided scan duration.
 

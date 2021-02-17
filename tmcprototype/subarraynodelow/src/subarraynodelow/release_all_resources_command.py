@@ -13,7 +13,7 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
     """
     A class for SKASubarrayLow's ReleaseAllResources() command.
 
-    It invokes ReleaseAllResources command on Subarraylow.
+    It invokes ReleaseAllResources command on Subarray Node Low.
 
     """
 

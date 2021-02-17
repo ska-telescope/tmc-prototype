@@ -14,7 +14,7 @@ class EndScanCommand(BaseCommand):
     """
     A class for CspSubarrayLeafNode's EndScan() command. EndScan command is inherited from BaseCommand.
 
-    It invokes EndScan command on CspSubarray. This command is allowed when CspSubarray is in
+    It invokes EndScan command on CSP Subarray. This command is allowed when CSP Subarray is in
     obsState SCANNING.
 
     """

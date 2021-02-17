@@ -52,7 +52,7 @@ class Off(SKABaseDevice.OffCommand):
 
     def do(self):
         """
-        Method to invoke Off command on Sdp Master.
+        Method to invoke Off command on SDP Master.
 
         :param argin: None.
 

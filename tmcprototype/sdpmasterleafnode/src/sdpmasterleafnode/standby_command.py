@@ -74,7 +74,7 @@ class Standby(BaseCommand):
 
     def do(self):
         """
-        Method to invoke Standby command on Sdp Master.
+        Method to invoke Standby command on SDP Master.
 
         :param argin: None.
 

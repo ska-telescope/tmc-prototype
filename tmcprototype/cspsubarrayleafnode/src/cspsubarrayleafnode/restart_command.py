@@ -14,7 +14,7 @@ class RestartCommand(BaseCommand):
     """
     A class for CSPSubarrayLeafNode's Restart() command. Restart command is inherited from BaseCommand.
 
-    This command invokes Restart command on CSPSubarray.
+    This command invokes Restart command on CSP Subarray.
 
     """
 
