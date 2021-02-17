@@ -76,7 +76,8 @@ class ObsStateAggregator:
             if not evt.err:
                 event_observetion_state = evt.attr_value.value
                 if const.PROP_DEF_VAL_TMMCCS_MID_SALN in evt.attr_name:
-                    self._mccs_sa_obs_state = ObsState(event_observetion_state)
+                    mccs_obsState = ObsState(event_observetion_state)
+                    self._mccs_sa_obs_state = str(mccs_obsState.name)
                     self._read_activity_message = f"{const.STR_MCCS_SUBARRAY_OBS_STATE}{event_observetion_state}"
                 else:
                     self.logger.info(const.EVT_UNKNOWN)
@@ -98,15 +99,16 @@ class ObsStateAggregator:
         """
         log_msg = f"MCCS ObsState is: {self._mccs_sa_obs_state}"
         self.logger.info(log_msg)
+        
         # Check mccs subarray obsState if it is EMPTY
-        if self._mccs_sa_obs_state == ObsState.EMPTY:
+        if self._mccs_sa_obs_state is "EMPTY":
             if self.device_data.is_release_resources:
                 self.logger.info(
                     "Calling ReleaseAllResource command succeeded() method"
                 )
                 self.this_server.device.release.succeeded()
         # Check mccs subarray obsState if it is READY
-        elif self._mccs_sa_obs_state == ObsState.READY:
+        elif self._mccs_sa_obs_state is "READY":
             if self.device_data.is_scan_completed:
                 self.logger.info("Calling EndScan command succeeded() method")
                 self.this_server.device.endscan.succeeded()
@@ -115,7 +117,7 @@ class ObsStateAggregator:
                 self.logger.info("Calling Configure command succeeded() method")
                 self.this_server.device.configure.succeeded()
         # Check mccs subarray obsState if it is IDLE
-        elif self._mccs_sa_obs_state == ObsState.IDLE:
+        elif self._mccs_sa_obs_state is "IDLE":
             if self.device_data.is_end_command:
                 # End command success
                 self.logger.info("Calling End command succeeded() method")
@@ -129,10 +131,8 @@ class ObsStateAggregator:
                 self.logger.info("Calling AssignResource command succeeded() method")
                 self.this_server.device.assign.succeeded()
         # Check mccs subarray obsState if it is ABORTED
-        elif self._mccs_sa_obs_state == ObsState.ABORTED:
+        elif self._mccs_sa_obs_state is "ABORTED":
             if self.device_data.is_abort_command_executed:
                 # Abort command success
                 self.logger.info("Calling Abort command succeeded() method")
                 self.this_server.device.abort.succeeded()
-        else:
-            self.this_server.device.assign.failed()
