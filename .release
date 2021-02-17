@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""tmcprototype"""
-version="0.3.10"
+version="0.3.11"
 version_info=version.split(".")
 description="""TMC Prototype"""
 author="Team NCRA"
@@ -10,9 +10,9 @@ license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
 
-release=0.3.10
-tag=0.3.10
-tag_description= Update TMC devices to resolve SP-1420 review comments received from KAROO team
-release_notes=This release contains:<br/><ul><li>Resolved SP-1420 review comments received from KAROO team.</li></ul><br/>
+release=0.3.11
+tag=0.3.11
+tag_description= Update TMC for SPO-990 
+release_notes=This release contains:<br/><ul><li>Update TMC for SPO-990</li></ul><br/>
 gitlab_username=apurvapatkar
 private_token=Fv_XjxT3LV9jRyqM3XwG
