@@ -243,7 +243,7 @@ class OverrideDish(object):
         dish_mode = get_enum_str(dish_mode_quantity)
 
         if dish_mode == maintenance:
-            self.logger.info("Dish is already in '%s' mode", maintenance)
+            model.logger.info("Dish is already in '%s' mode", maintenance)
             return
 
         if dish_mode in _allowed_modes:
@@ -281,7 +281,7 @@ class OverrideDish(object):
         dish_mode = get_enum_str(dish_mode_quantity)
 
         if dish_mode == operate:
-            self.logger.info("Dish is already in '%s' mode", operate)
+            model.logger.info("Dish is already in '%s' mode", operate)
             return
 
         if dish_mode in _allowed_modes:
@@ -323,7 +323,7 @@ class OverrideDish(object):
         dish_mode = get_enum_str(dish_mode_quantity)
 
         if dish_mode == standby_fp:
-            self.logger.info("Dish is already in '%s' mode", standby_fp)
+            model.logger.info("Dish is already in '%s' mode", standby_fp)
             return
 
         if dish_mode in _allowed_modes:
@@ -366,7 +366,7 @@ class OverrideDish(object):
         dish_mode = get_enum_str(dish_mode_quantity)
 
         if dish_mode == standby_lp:
-            self.logger.info("Dish is already in '%s' mode", standby_lp)
+            model.logger.info("Dish is already in '%s' mode", standby_lp)
             return
 
         if dish_mode in _allowed_modes:
@@ -410,7 +410,7 @@ class OverrideDish(object):
         dish_mode = get_enum_str(dish_mode_quantity)
 
         if dish_mode == stow:
-            self.logger.info("Dish is already in '%s' mode", stow)
+            model.logger.info("Dish is already in '%s' mode", stow)
             return
 
         if dish_mode in _allowed_modes:
