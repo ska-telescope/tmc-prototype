@@ -135,7 +135,7 @@ class TestDishLeafNode:
         self.wait_until_dish_attribute_equals(DishMode.OPERATE, "dishMode", dish_proxy)
 
     def test_SetStandByLPMode(self, dish_master_dp):
-        assert dish_master_dp.dishMode.name == "STANDBY-LP"
+        assert dish_master_dp.dishMode.name == "STANDBY_LP"
 
     def test_SetOperateMode(self, dish_leaf_node_dp, dish_master_dp):
         dish_leaf_node_dp.SetStandbyFPMode()
