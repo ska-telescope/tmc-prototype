@@ -66,12 +66,12 @@ class WaitConfigure:
         self.w.wait_until_value_changed_to("READY", timeout=200)
 
 
-# TODO : Abort, Restart and Obsreset implementation is updated for Low devices. Therefore need to keep it for further use.
 class WaitAbort:
     def __init__(self):
         self.the_watch = watch(resource("ska_low/tm_subarray_node/1")).for_a_change_on(
             "obsState"
         )
+        self.w1 = watch(resource("low-mccs/subarray/01")).for_a_change_on("obsState")
 
     def wait(self):
         logging.info(
@@ -81,6 +81,7 @@ class WaitAbort:
             "state transitioned to ABORTING, waiting for it to return to ABORTED"
         )
         self.the_watch.wait_until_value_changed_to("ABORTED", timeout=200)
+        self.w1.wait_until_value_changed_to("ABORTED", timeout=200)
 
 
 class WaitRestart:
@@ -389,7 +390,6 @@ def sync_obsreset(func):
 def sync_abort(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        # check_going_into_empty()
         w = WaitAbort()
         ################
         result = func(*args, **kwargs)

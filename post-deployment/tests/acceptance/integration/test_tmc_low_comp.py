@@ -34,7 +34,6 @@ LOGGER = logging.getLogger(__name__)
 
 
 @pytest.mark.low
-# @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_assign_resources():
 
     try:
@@ -59,9 +58,9 @@ def test_assign_resources():
             assign_resources_file = (
                 "resources/test_data/TMC_integration/mccs_assign_resources.json"
             )
-            config = load_config_from_file(assign_resources_file)
+            assign_resources_str = load_config_from_file(assign_resources_file)
             CentralNode = DeviceProxy("ska_low/tm_central/central_node")
-            CentralNode.AssignResources(config)
+            CentralNode.AssignResources(assign_resources_str)
             LOGGER.info("Invoked AssignResources on CentralNode")
 
         compose_sub()

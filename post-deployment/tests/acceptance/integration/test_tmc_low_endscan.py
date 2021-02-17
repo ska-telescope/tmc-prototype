@@ -20,7 +20,6 @@ LOGGER = logging.getLogger(__name__)
 
 
 @pytest.mark.low
-# @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_endscan():
 
     try:
@@ -50,7 +49,7 @@ def test_endscan():
 
         def endscan():
             SubarrayNodeLow = DeviceProxy("ska_low/tm_subarray_node/1")
-            SubarrayNodeLow.Scan('{"mccs":{"id":1,"scan_time":0.0}}')
+            tmc.scan_for_scanning()
             SubarrayNodeLow.EndScan()
 
         endscan()

@@ -20,8 +20,6 @@ devices_to_log = ["ska_low/tm_subarray_node/1", "low-mccs/subarray/01"]
 LOGGER = logging.getLogger(__name__)
 
 @pytest.mark.low
-# @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
-# @pytest.mark.xfail(reason="Run the test case once mccs image is available")
 def test_abort():
     try:
         # given an interface to TMC to interact with a subarray node and a central node
@@ -52,7 +50,7 @@ def test_abort():
         @sync_abort
         def abort():
             SubarrayNodeLow = DeviceProxy("ska_low/tm_subarray_node/1")
-            SubarrayNodeLow.Scan('{"mccs":{"id":1,"scan_time":0.0}}')
+            tmc.scan_for_scanning()
             SubarrayNodeLow.Abort()
             LOGGER.info("Invoked Abort on Subarray")
 
@@ -62,7 +60,7 @@ def test_abort():
 
         # tear down
         # TODO: Waiting for obsreset to be implemented.
-        tmc.ObsReset_sub()
+        tmc.obsreset_sub()
         LOGGER.info("Obsreset is complete on Subarray")
         fixture["state"] = "Subarray IDLE"
         tmc.release_resources()

@@ -66,8 +66,8 @@ def release_resources():
     release_resources_file = (
         "resources/test_data/TMC_integration/mccs_release_resources.json"
     )
-    config = load_config_from_file(release_resources_file)
-    CentralNodeLow.ReleaseResources(config)
+    release_resource_str = load_config_from_file(release_resources_file)
+    CentralNodeLow.ReleaseResources(release_resource_str)
     SubarrayNodeLow = DeviceProxy("ska_low/tm_subarray_node/1")
     LOGGER.info(
         "After Invoking Release Resource on Subarray, SubarrayNodeLow State and ObsState:"
@@ -107,9 +107,17 @@ def configure_sub():
 @sync_scan(200)
 def scan_sub():
     SubarrayNodeLow = DeviceProxy("ska_low/tm_subarray_node/1")
-    SubarrayNodeLow.Scan('{"mccs":{"id":1,"scan_time":0.0}}')
+    scan_command_file = ("resources/test_data/TMC_integration/mccs_scan.json")
+    scan_str = load_config_from_file(scan_command_file)
+    SubarrayNodeLow.Scan(scan_str)
     LOGGER.info("Scan Started")
 
+def scan_for_scanning():
+    SubarrayNodeLow = DeviceProxy("ska_low/tm_subarray_node/1")
+    scan_command_file = ("resources/test_data/TMC_integration/mccs_scan.json")
+    scan_str = load_config_from_file(scan_command_file)
+    SubarrayNodeLow.Scan(scan_str)
+    LOGGER.info("Scan Started")
 
 @sync_abort
 def abort_sub():
@@ -119,7 +127,7 @@ def abort_sub():
 
 
 @sync_obsreset
-def ObsReset_sub():
+def obsreset_sub():
     SubarrayNodeLow = DeviceProxy("ska_low/tm_subarray_node/1")
     SubarrayNodeLow.ObsReset()
     LOGGER.info("ObsReset command invoked on SubarrayNodeLow.")

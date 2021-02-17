@@ -2,8 +2,6 @@
 import logging
 
 # Additional import
-from ska.base.control_model import ObsState
-
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -20,6 +18,8 @@ class ObsStateAggregator:
             self.logger = logging.getLogger(__name__)
         else:
             self.logger = logger
+
+        self._mccs_sa_obs_state = None
         self.mccs_obs_state_event_id = {}
         self.this_server = TangoServerHelper.get_instance()
         self.device_data = DeviceData.get_instance()
@@ -75,7 +75,7 @@ class ObsStateAggregator:
             if not evt.err:
                 event_observetion_state = evt.attr_value.value
                 if const.PROP_DEF_VAL_TMMCCS_MID_SALN in evt.attr_name:
-                    self.device_data._mccs_sa_obs_state = event_observetion_state
+                    self._mccs_sa_obs_state = event_observetion_state
                     self._read_activity_message = f"{const.STR_MCCS_SUBARRAY_OBS_STATE}{event_observetion_state}"
                 else:
                     self.logger.info(const.EVT_UNKNOWN)
@@ -95,16 +95,17 @@ class ObsStateAggregator:
         """
         Calculates aggregated observation state of Subarray.
         """
-        log_msg = f"MCCS ObsState is: {self.device_data._mccs_sa_obs_state}"
+        log_msg = f"MCCS ObsState is: {self._mccs_sa_obs_state}"
         self.logger.info(log_msg)
-        if self.device_data._mccs_sa_obs_state is 0:
+        # Check mccs subarray obsState if it is EMPTY
+        if self._mccs_sa_obs_state is 0:
             if self.device_data.is_release_resources:
                 self.logger.info(
                     "Calling ReleaseAllResource command succeeded() method"
                 )
                 self.this_server.device.release.succeeded()
-
-        elif self.device_data._mccs_sa_obs_state is 4:
+        # Check mccs subarray obsState if it is READY
+        elif self._mccs_sa_obs_state is 4:
             if self.device_data.is_scan_completed:
                 self.logger.info("Calling EndScan command succeeded() method")
                 self.this_server.device.endscan.succeeded()
@@ -112,7 +113,8 @@ class ObsStateAggregator:
                 # Configure command success
                 self.logger.info("Calling Configure command succeeded() method")
                 self.this_server.device.configure.succeeded()
-        elif self.device_data._mccs_sa_obs_state is 2:
+        # Check mccs subarray obsState if it is IDLE
+        elif self._mccs_sa_obs_state is 2:
             if self.device_data.is_end_command:
                 # End command success
                 self.logger.info("Calling End command succeeded() method")
@@ -125,7 +127,8 @@ class ObsStateAggregator:
                 # Assign Resource command success
                 self.logger.info("Calling AssignResource command succeeded() method")
                 self.this_server.device.assign.succeeded()
-        elif self.device_data._mccs_sa_obs_state is 7:
+        # Check mccs subarray obsState if it is ABORTED
+        elif self._mccs_sa_obs_state is 7:
             if self.device_data.is_abort_command_executed:
                 # Abort command success
                 self.logger.info("Calling Abort command succeeded() method")
