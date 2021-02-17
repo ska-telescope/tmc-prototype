@@ -11,7 +11,9 @@ from . import const
 
 class Disable(BaseCommand):
     """
-    A class for SDP master's Disable() command.
+    A class for SDP master's Disable() command. Disable command is inherited from BaseCommand.
+
+    Sets the State to Disable.
     """
 
     def check_allowed(self):
@@ -67,11 +69,12 @@ class Disable(BaseCommand):
 
     def do(self):
         """
-        Sets the OperatingState to Disable.
+        Method to invoke Disable command on SDP Master.
 
         :param argin: None.
 
-        :return: None
+        return:
+            None
 
         """
         device_data = self.target

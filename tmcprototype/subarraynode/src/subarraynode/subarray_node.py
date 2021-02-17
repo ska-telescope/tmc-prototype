@@ -61,6 +61,40 @@ class SubarrayNode(SKASubarray):
     """
     Provides the monitoring and control interface required by users as well as
     other TM Components (such as OET, Central Node) for a Subarray.
+
+    :Device Properties:
+
+        SdpSubarrayLNFQDN:
+            This property contains the FQDN of the SDP Subarray Leaf Node associated with the
+            Subarray Node.
+
+        CspSubarrayLNFQDN:
+            This property contains the FQDN of the CSP Subarray Leaf Node associated with the
+            Subarray Node.
+
+        DishLeafNodePrefix:
+            Device name prefix for the Dish Leaf Node.
+
+        CspSubarrayFQDN:
+            FQDN of the CSP Subarray Tango Device Server.
+
+        SdpSubarrayFQDN:
+            FQDN of the CSP Subarray Tango Device Server.
+
+    :Device Attributes:
+
+        scanID:
+            ID of ongoing SCAN
+
+        sbID:
+            ID of ongoing Scheduling Block
+
+        activityMessage:
+            String providing information about the current activity in SubarrayNode.
+
+        receptorIDList:
+            ID List of the Receptors assigned in the Subarray.
+
     """
 
     # PROTECTED REGION ID(SubarrayNode.class_variable) ENABLED START
@@ -135,12 +169,15 @@ class SubarrayNode(SKASubarray):
             """
             Initializes the attributes and properties of the Subarray Node.
 
-            :return: A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
+            return:
+                A tuple containing a return code and a string message indicating status.
+                The message is for information purpose only.
 
-            :rtype: (ReturnCode, str)
+            rtype:
+                (ReturnCode, str)
 
-            :raises: DevFailed if the error while subscribing the tango attribute
+            raises:
+                DevFailed if the error while subscribing the tango attribute
             """
             super().do()
             device = self.target
@@ -224,11 +261,14 @@ class SubarrayNode(SKASubarray):
         """
         Checks whether this command is allowed to be run in current device state
 
-        :return: True if this command is allowed to be run in current device state
+        return:
+            True if this command is allowed to be run in current device state
 
-        :rtype: boolean
+        rtype:
+            boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state
+        raises:
+            DevFailed if this command is not allowed to be run in current device state
 
         """
         handler = self.get_command_object("Track")

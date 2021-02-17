@@ -12,7 +12,10 @@ from . import const
 
 class Off(SKABaseDevice.OffCommand):
     """
-    A class for SDP master's Off() command.
+    A class for SDP master's Off() command. Off command is inherited from SKABaseDevice.
+
+    It Sets the State  to Off.
+
     """
 
     def off_cmd_ended_cb(self, event):
@@ -49,14 +52,16 @@ class Off(SKABaseDevice.OffCommand):
 
     def do(self):
         """
-        Sets the OperatingState to Off.
+        Method to invoke Off command on SDP Master.
 
         :param argin: None.
 
-        :return: A tuple containing a return code and a string message indicating status.
-        The message is for information purpose only.
+        return:
+            A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
 
-        :rtype: (ResultCode, str)
+        rtype:
+            (ResultCode, str)
 
         """
         device_data = self.target

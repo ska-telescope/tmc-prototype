@@ -16,6 +16,8 @@ from . import const
 class Abort(BaseCommand):
     """
     A class for sdpSubarrayLeafNode's Abort() command.
+
+    Command to abort the current operation being done on the SDP Subarray.
     """
 
     def check_allowed(self):
@@ -78,11 +80,13 @@ class Abort(BaseCommand):
 
     def do(self):
         """
-        Command to abort the current operation being done on the SDP subarray.
+        Method to invoke Abort command on SDP Subarray.
 
-        :return: None
+        return:
+            None
 
-        :raises: DevFailed if error occurs while invoking command on CSPSubarray.
+        raises:
+            DevFailed if error occurs while invoking command on SDP Subarray.
 
         """
         device_data = self.target

@@ -12,18 +12,23 @@ from . import const
 
 class Standby(BaseCommand):
     """
-    A class for CspMasterLeafNode's Standby() command.
+    A class for CspMasterLeafNode's Standby() command. Standby command is inherited from BaseCommand.
+
+    It Sets the OpState to Standby.
     """
 
     def check_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state.
 
-        :return: True if this command is allowed to be run in current device state.
+        return:
+            True if this command is allowed to be run in current device state.
 
-        :rtype: boolean
+        rtype:
+            boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state.
+        raises:
+            DevFailed if this command is not allowed to be run in current device state.
 
         """
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
@@ -68,12 +73,17 @@ class Standby(BaseCommand):
 
     def do(self, argin):
         """
-        It invokes the STANDBY command on CSP Master.
+        Method to invoke Standby command on CSP Element.
+
         :param argin: DevStringArray.
         If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1
         , each array element specifies the FQDN of the CSP SubElement to put in STANDBY mode.
-        :return: None
-        :raises: DevFailed on communication failure with CspMaster or CspMaster is in error state.
+
+        return:
+            None
+
+        raises:
+            DevFailed on communication failure with CspMaster or CspMaster is in error state.
 
         """
         device_data = self.target

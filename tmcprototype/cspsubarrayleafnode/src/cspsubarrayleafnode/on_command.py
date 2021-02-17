@@ -16,6 +16,8 @@ from .delay_model import DelayManager
 class On(SKABaseDevice.OnCommand):
     """
     A class for CSP Subarray's On() command.
+
+    Invokes On command on the CSP Subarray.
     """
 
     def on_cmd_ended_cb(self, event):
@@ -50,17 +52,19 @@ class On(SKABaseDevice.OnCommand):
 
     def do(self):
         """
-        Invokes On command on the CSP Subarray.
+        Method to invoke On command on CSP Subarray.
 
-        :param argin: None.
+        param argin:
+            None
 
-        :return: A tuple containing a return code and a string message indicating status.
-        The message is for information purpose only.
+        return:
+            A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
 
-        :rtype: (ResultCode, str)
+        rtype:
+            (ResultCode, str)
 
         """
-        # device_data = self.target
         log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
         self.logger.debug(log_msg)
         delay_manager_obj = DelayManager.get_instance()

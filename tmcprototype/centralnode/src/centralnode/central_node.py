@@ -47,6 +47,37 @@ __all__ = [
 class CentralNode(SKABaseDevice):
     """
     Central Node is a coordinator of the complete M&C system.
+
+    :Device Properties:
+
+        CentralAlarmHandler:
+            Device name of CentralAlarmHandler
+
+        TMAlarmHandler:
+            Device name of TMAlarmHandler
+
+        TMMidSubarrayNodes:
+            List of TM Mid Subarray Node devices.
+
+    :Device Attributes:
+
+        telescopeHealthState:
+            Health state of Telescope
+
+        subarray1HealthState:
+            Health state of SubarrayNode1
+
+        subarray2HealthState:
+            Health state of SubarrayNode2
+
+        subarray3HealthState:
+            Health state of SubarrayNode3
+
+        activityMessage:
+            String providing information about the current activity in Central Node.
+
+
+
     """
 
     # -----------------

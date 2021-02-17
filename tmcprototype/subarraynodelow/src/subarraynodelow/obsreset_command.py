@@ -20,19 +20,25 @@ from . import const
 class ObsReset(SKASubarray.ObsResetCommand):
     """
     A class for Low SubarrayNode's ObsReset() command.
+
+    This command invokes ObsReset command on Mccs Subarray Leaf Node.
+
     """
 
     def do(self):
         """
-        This command invokes ObsReset command on MccsSubarrayLeafNode.
+        Method to invoke ObsReset command.
 
-        :return: A tuple containing a return code and a string
+        return:
+            A tuple containing a return code and a string
             message indicating status. The message is for
             information purpose only.
 
-        :rtype: (ResultCode, str)
+        rtype:
+            (ResultCode, str)
 
-        :raises: DevFailed if error occurs while invoking command on MccsSubarrayLeafNode.
+        raises:
+            DevFailed if error occurs while invoking command on MccsSubarrayLeafNode.
         """
         device_data = self.target
         device_data.is_abort_command = False

@@ -21,20 +21,27 @@ from . import const
 class Abort(SKASubarray.AbortCommand):
     """
     A class for SubarrayNode's Abort() command.
+
+    This command on Subarray Node invokes Abort command on CSP Subarray Leaf Node and SDP
+    Subarray Leaf Node, and stops tracking of all the assigned dishes.
+
     """
 
     def do(self):
         """
-        This command on Subarray Node invokes Abort command on CSP Subarray Leaf Node and SDP
-        Subarray Leaf Node, and stops tracking of all the assigned dishes.
+        Method to invoke Abort command.
 
-        :return: A tuple containing a return code and a string
+        return:
+            A tuple containing a return code and a string
             message indicating status. The message is for
             information purpose only.
-        :rtype: (ResultCode, str)
 
-        :raises: DevFailed if error occurs in invoking command on any of the devices like CSPSubarrayLeafNode,
-                SDPSubarrayLeafNode or DishLeafNode
+        rtype:
+            (ResultCode, str)
+
+        raises:
+            DevFailed if error occurs in invoking command on any of the devices like CSPSubarrayLeafNode,
+            SDPSubarrayLeafNode or DishLeafNode
         """
         device_data = DeviceData.get_instance()
         device_data.is_release_resources_command_executed = False

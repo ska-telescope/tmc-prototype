@@ -17,6 +17,9 @@ from . import const
 class ReleaseAllResources(BaseCommand):
     """
     A class for SdpSubarayLeafNode's ReleaseAllResources() command.
+
+    Releases all the resources of given SDP Subarray Leaf Node.
+    It accepts the subarray id, releaseALL flag and receptorIDList in JSON string format.
     """
 
     def check_allowed(self):
@@ -86,14 +89,15 @@ class ReleaseAllResources(BaseCommand):
 
     def do(self):
         """
-        Releases all the resources of given SDPSubarrayLeafNode. It accepts the subarray id,
-        releaseALL flag and receptorIDList in JSON string format.
+        Method to invoke ReleaseResources command on SDP Subarray.
 
         :param argin: None.
 
-        :return: None
+        return:
+            None
 
-        :raises: DevFailed if the command execution is not successful.
+        raises:
+            DevFailed if the command execution is not successful.
         """
         device_data = self.target
         try:

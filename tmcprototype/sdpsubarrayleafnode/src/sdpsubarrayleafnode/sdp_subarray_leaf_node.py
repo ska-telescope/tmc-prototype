@@ -67,6 +67,31 @@ __all__ = [
 class SdpSubarrayLeafNode(SKABaseDevice):
     """
     SDP Subarray Leaf node is to monitor the SDP Subarray and issue control actions during an observation.
+
+    :Device Properties:
+
+        SdpSubarrayFQDN:
+            FQDN of the SDP Subarray Tango Device Server.
+
+    :Device Attributes:
+
+        receiveAddresses:
+            This attribute is used for testing purposes. In the unit test cases
+            it is used to provide FQDN of receiveAddresses attribute from SDP.
+
+        activityMessage:
+            String providing information about the current activity in SDP Subarray Leaf Node.
+
+        activeProcessingBlocks:
+            This is a attribute from SDP Subarray which depicts the active Processing
+            Blocks in the SDP Subarray.
+
+        sdpSubarrayHealthState:
+            Attribute to provide SDP Subarray Health State.
+
+        sdpSubarrayObsState:
+            Attribute to show ObsState of Tango Device.
+
     """
 
     # -----------------
@@ -115,10 +140,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             Initializes the attributes and properties of the SdpSubarrayLeafNode.
 
-            :return: A tuple containing a return code and a string message indicating status.
-                     The message is for information purpose only.
+            return:
+                A tuple containing a return code and a string message indicating status.
+                The message is for information purpose only.
 
-            :rtype: (ResultCode, str)
+            rtype:
+                (ResultCode, str)
 
             """
             super().do()
@@ -215,11 +242,14 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         Checks whether this command is allowed to be run in current device state
 
-        :return: True if this command is allowed to be run in current device state
+        return:
+            True if this command is allowed to be run in current device state
 
-        :rtype: boolean
+        rtype:
+            boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state
+        raises:
+            DevFailed if this command is not allowed to be run in current device state
 
         """
         handler = self.get_command_object("Abort")
@@ -242,9 +272,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         Checks whether this command is allowed to be run in current device state
 
-        :return: True if this command is allowed to be run in current device state
+        return:
+        True if this command is allowed to be run in current device state
 
-        :rtype: boolean
+        rtype:
+            boolean
 
         """
         handler = self.get_command_object("AssignResources")
@@ -254,9 +286,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         Checks whether this command is allowed to be run in current device state
 
-        :return: True if this command is allowed to be run in current device state
+        return:
+            True if this command is allowed to be run in current device state
 
-        :rtype: boolean
+        rtype:
+            boolean
 
         """
         handler = self.get_command_object("Configure")
@@ -278,9 +312,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         Checks whether this command is allowed to be run in current device state.
 
-        :return: True if this command is allowed to be run in current device state.
+        return:
+            True if this command is allowed to be run in current device state.
 
-        :rtype: boolean
+        rtype:
+            boolean
 
         """
 
@@ -297,8 +333,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     def is_EndScan_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state.
-        :return: True if this command is allowed to be run in current device state.
-        :rtype: boolean
+        return:
+            True if this command is allowed to be run in current device state.
+
+        rtype:
+            boolean
         """
 
         handler = self.get_command_object("EndScan")
@@ -327,9 +366,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         Checks whether this command is allowed to be run in current device state
 
-        :return: True if this command is allowed to be run in current device state
+        return:
+            True if this command is allowed to be run in current device state
 
-        :rtype: boolean
+        rtype:
+            boolean
 
         """
         handler = self.get_command_object("ObsReset")
@@ -339,11 +380,14 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         Checks whether this command is allowed to be run in current device state
 
-        :return: True if this command is allowed to be run in current device state
+        return:
+            True if this command is allowed to be run in current device state
 
-        :rtype: boolean
+        rtype:
+            boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state
+        raises:
+            DevFailed if this command is not allowed to be run in current device state
 
         """
 
@@ -372,11 +416,14 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         Checks whether this command is allowed to be run in current device state
 
-        :return: True if this command is allowed to be run in current device state
+        return:
+            True if this command is allowed to be run in current device state
 
-        :rtype: boolean
+        rtype:
+            boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state
+        raises:
+            DevFailed if this command is not allowed to be run in current device state
 
         """
         handler = self.get_command_object("Restart")
@@ -386,9 +433,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         Checks whether this command is allowed to be run in current device state.
 
-        :return: True if this command is allowed to be run in current device state.
+        return:
+            True if this command is allowed to be run in current device state.
 
-        :rtype: boolean
+        rtype:
+            boolean
 
         """
         handler = self.get_command_object("Scan")

@@ -21,6 +21,14 @@ from centralnode.device_data import DeviceData
 class ReleaseResources(BaseCommand):
     """
     A class for CentralNode's ReleaseResources() command.
+
+    Release all the resources assigned to the given Subarray. It accepts the subarray id, releaseALL flag and
+    receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
+    is invoked on the respective SubarrayNode. In this case, the receptorIDList tag is empty as all
+    the resources of the Subarray are to be released.
+    When releaseALL is False, ReleaseResources will be invoked on the SubarrayNode and the resources provided
+    in receptorIDList tag, are to be released from the Subarray. The selective release of the resources when
+    releaseALL Flag is False is not yet supported.
     """
 
     def check_allowed(self):
@@ -50,13 +58,7 @@ class ReleaseResources(BaseCommand):
 
     def do(self, argin):
         """
-        Release all the resources assigned to the given Subarray. It accepts the subarray id, releaseALL flag and
-        receptorIDList in JSON string format. When the releaseALL flag is True, ReleaseAllResources command
-        is invoked on the respective SubarrayNode. In this case, the receptorIDList tag is empty as all
-        the resources of the Subarray are to be released.
-        When releaseALL is False, ReleaseResources will be invoked on the SubarrayNode and the resources provided
-        in receptorIDList tag, are to be released from the Subarray. The selective release of the resources when
-        releaseALL Flag is False is not yet supported.
+        Method to invoke ReleaseResources command on Subarray.
 
         :param argin: The string in JSON format. The JSON contains following values:
 
@@ -76,11 +78,11 @@ class ReleaseResources(BaseCommand):
                     "receptorIDList": []
                 }
 
-            Note: From Jive, enter input as:
-                {"subarrayID":1,"releaseALL":true,"receptorIDList":[]} without any space.
+        Note: From Jive, enter input as: {"subarrayID":1,"releaseALL":true,"receptorIDList":[]} without any space.
 
-        :return: A tuple containing a return code and a string in josn format on successful release
-         of all the resources. The JSON string contains following values:
+        return:
+            A tuple containing a return code and a string in josn format on successful release
+            of all the resources. The JSON string contains following values:
 
             releaseALL:
                 Boolean(True or False). If True, all the resources are successfully released from the
@@ -97,11 +99,15 @@ class ReleaseResources(BaseCommand):
                     "receptorIDList" : []
                 }
 
-         :rtype: None
+        return:
+            None
 
-         :raises: ValueError if input argument json string contains invalid value
-                KeyError if input argument json string contains invalid key
-                DevFailed if the command execution or command invocation on SubarrayNode is not successful
+        raises:
+            ValueError if input argument json string contains invalid value
+
+            KeyError if input argument json string contains invalid key
+
+            DevFailed if the command execution or command invocation on SubarrayNode is not successful
 
         """
         device_data = DeviceData.get_instance()

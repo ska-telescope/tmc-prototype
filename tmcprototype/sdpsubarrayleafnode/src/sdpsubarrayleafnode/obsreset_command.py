@@ -17,6 +17,8 @@ from . import const
 class ObsReset(BaseCommand):
     """
     A class for SdpSubarrayLeafNode's ObsResetCommand() command.
+
+    Command to reset the SDP Subarray and bring it to its RESETTING state.
     """
 
     def check_allowed(self):
@@ -81,13 +83,15 @@ class ObsReset(BaseCommand):
 
     def do(self):
         """
-        Command to reset the SDP subarray and bring it to its RESETTING state.
+        Method to invoke ObsReset command on SDP Subarray.
 
         :param argin: None
 
-        :return: None
+        return:
+            None
 
-        :raises: DevFailed if error occurs while invoking command on SDPSubarray.
+        raises:
+            DevFailed if error occurs while invoking command on SDP Subarray.
 
         """
         device_data = self.target

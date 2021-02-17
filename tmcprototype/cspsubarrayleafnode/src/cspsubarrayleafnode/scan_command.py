@@ -12,7 +12,11 @@ from . import const
 
 class StartScanCommand(BaseCommand):
     """
-    A class for CspSubarrayLeafNode's StartScan() command.
+    A class for CspSubarrayLeafNode's StartScan() command. StartScan command is inherited from BaseCommand.
+
+    This command invokes Scan command on CSP Subarray. It is allowed only when CSP Subarray is in
+    ObsState READY.
+
     """
 
     def check_allowed(self):
@@ -83,8 +87,7 @@ class StartScanCommand(BaseCommand):
 
     def do(self, argin):
         """
-        This command invokes Scan command on CspSubarray. It is allowed only when CspSubarray is in
-        ObsState READY.
+        Method to invoke StartScan command on CSP Subarray.
 
         :param argin: JSON string consists of scan id (int).
 
@@ -93,12 +96,12 @@ class StartScanCommand(BaseCommand):
 
         Note: Enter the json string without spaces as a input.
 
-        :return: A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
+        return:
+            None
 
-        :rtype: (ReturnCode, str)
+        raises:
+            DevFailed if the command execution is not successful
 
-        :raises: DevFailed if the command execution is not successful
         """
         device_data = self.target
         try:

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+                    # -*- coding: utf-8 -*-
 #
 # This file is part of the DishLeafNode project
 #
@@ -45,11 +45,15 @@ class StopTrack(BaseCommand):
         """
         Invokes TrackStop command on the DishMaster.
 
-        :param argin: None
+        param argin:
+            None
 
-        :return:None
+        return:
+            None
 
-        :raises DevFailed: If error occurs while invoking TrackStop command on DishMaster.
+        raises:
+            DevFailed If error occurs while invoking TrackStop command on DishMaster.
+
         """
         device_data = self.target
         command_name = "StopTrack"

@@ -15,6 +15,9 @@ from .delay_model import DelayManager
 class AssignResourcesCommand(BaseCommand):
     """
     A class for CspSubarrayLeafNode's AssignResources() command.
+
+    It accepts subarrayID and receptor ids in JSON string format and invokes AssignResources command on CSP Subarray.
+
     """
 
     def check_allowed(self):
@@ -26,7 +29,7 @@ class AssignResourcesCommand(BaseCommand):
         :rtype: boolean
 
         :raises: DevFailed if this command is not allowed to be run
-            in current device state
+                 in current device state
 
         """
         if self.state_model.op_state in [
@@ -89,8 +92,7 @@ class AssignResourcesCommand(BaseCommand):
     @identify_with_id("assign", "argin")
     def do(self, argin):
         """
-        It accepts subarrayID and receptor ids in JSON string format and invokes AssignResources command on CspSubarray
-        with dish as an input argument.
+        Method to invoke AssignResources command on CSP Subarray.
 
         :param argin:DevString. The string in JSON format. The JSON contains following values:
             subarrayID: integer
@@ -102,24 +104,30 @@ class AssignResourcesCommand(BaseCommand):
                     DevVarString
                     The individual string should contain dish numbers in string format
                     with preceding zeroes upto 3 digits. E.g. 0001, 0002.
+
         Example:
-        {
-            "subarrayID":1,
-            "dish": {
-            "receptorIDList": [
-                "0001",
-                "0002"
-            ]
+            {
+                    "subarrayID":1,
+                    "dish": {
+                    "receptorIDList": [
+                        "0001",
+                        "0002"
+                    ]
+                    }
             }
-        }
+
 
         Note: Enter the json string without spaces as an input.
 
-        :return: None
+        return:
+            None
 
-        :raises: ValueError if input argument json string contains invalid value
-                    KeyError if input argument json string contains invalid key
-                    DevFailed if the command execution is not successful
+        raises:
+            ValueError if input argument json string contains invalid value
+
+            KeyError if input argument json string contains invalid key
+
+            DevFailed if the command execution is not successful
         """
         device_data = self.target
         try:

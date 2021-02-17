@@ -12,21 +12,26 @@ from . import const
 
 class RestartCommand(BaseCommand):
     """
-    A class for CSPSubarrayLeafNode's Restart() command.
+    A class for CSPSubarrayLeafNode's Restart() command. Restart command is inherited from BaseCommand.
+
+    This command invokes Restart command on CSP Subarray.
+
     """
 
     def check_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state
 
-        :return: True if this command is allowed to be run in current device state
+        return:
+            True if this command is allowed to be run in current device state
 
-        :rtype: boolean
+        rtype:
+            boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state
+        raises:
+            DevFailed if this command is not allowed to be run in current device state
 
         """
-        # device = self.target
         if self.state_model.op_state in [DevState.UNKNOWN, DevState.DISABLE]:
             tango.Except.throw_exception(
                 f"Restart() is not allowed in current state {self.state_model.op_state}",
@@ -76,11 +81,14 @@ class RestartCommand(BaseCommand):
 
     def do(self):
         """
-        This command invokes Restart command on CSPSubarray.
+        Method to invoke Restart command on CSP Subarray.
 
-        :return: None
+        return:
+            None
 
-        :raises: DevFailed if error occurs while invoking the command on CSpSubarray.
+        raises:
+            DevFailed if error occurs while invoking the command on CSP Subarray.
+
         """
         device_data = self.target
         try:

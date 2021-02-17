@@ -18,6 +18,9 @@ from .command_result_fetcher import CommandResultFetcher
 class StandByTelescope(SKABaseDevice.OffCommand):
     """
     A class for Low CentralNode's StandByTelescope() command.
+
+    Sets the CentralNodeLow into OFF state. Invokes the respective command on lower level nodes and devices.
+
     """
 
     def check_allowed(self):
@@ -46,14 +49,20 @@ class StandByTelescope(SKABaseDevice.OffCommand):
 
     def do(self):
         """
-        Sets the CentralNodeLow into OFF state. Invokes the respective command on lower level nodes and devices.
+        Method to invoke StandBy command.
 
         param argin: None.
 
-        :return: A tuple containing a return code and a string message indicating status.
-        The message is for information purpose only.
+        return:
+            A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
 
-        :rtype: (ResultCode, str)
+        rtype:
+            (ResultCode, str)
+
+        raises:
+            AssertionError if Mccs On command is not completed.
+
         """
         device_data = self.target
         try:
