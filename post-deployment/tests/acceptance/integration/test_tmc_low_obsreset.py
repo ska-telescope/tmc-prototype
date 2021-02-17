@@ -21,10 +21,6 @@ LOGGER = logging.getLogger(__name__)
 
 
 @pytest.mark.low
-# @pytest.mark.skipif(
-#     DISABLE_TESTS_UNDER_DEVELOPMENT,
-#     reason="Abort test case need to implement first to make this run, hence disabaled",
-# )
 def test_obsreset():
     try:
         # given an interface to TMC to interact with a subarray node and a central node
