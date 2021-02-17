@@ -30,11 +30,13 @@ class PointingState(enum.IntEnum):
     """
     Pointing state of the dish
     """
+    NONE = 0
+    READY = 1
+    SLEW = 2
+    TRACK = 3
+    SCAN = 4
+    UNKNOWN = 5
 
-    READY = 0
-    SLEW = 1
-    TRACK = 2
-    SCAN = 3
 
 
 def get_attr_value_as_str(attr: DeviceAttribute) -> str:

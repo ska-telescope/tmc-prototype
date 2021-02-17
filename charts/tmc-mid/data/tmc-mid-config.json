@@ -917,6 +917,9 @@
               }
             },
             "properties": {
+              "ReceptorNumber": [
+                "0001"
+              ],
               "SkaLevel": [
                 "1"
               ],
@@ -945,6 +948,8 @@
                 "healthState",
                 "1000",
                 "pointingState",
+                "1000",
+                "state",
                 "1000"
               ]
             }
@@ -977,6 +982,9 @@
               }
             },
             "properties": {
+              "ReceptorNumber": [
+                "0002"
+              ],
               "SkaLevel": [
                 "1"
               ],
@@ -1005,6 +1013,8 @@
                 "healthState",
                 "1000",
                 "pointingState",
+                "1000",
+                "state",
                 "1000"
               ]
             }
@@ -1037,6 +1047,9 @@
               }
             },
             "properties": {
+              "ReceptorNumber": [
+                "0003"
+              ],
               "SkaLevel": [
                 "1"
               ],
@@ -1065,6 +1078,8 @@
                 "healthState",
                 "1000",
                 "pointingState",
+                "1000",
+                "state",
                 "1000"
               ]
             }
@@ -1097,6 +1112,9 @@
               }
             },
             "properties": {
+              "ReceptorNumber": [
+                "0004"
+              ],
               "SkaLevel": [
                 "1"
               ],
@@ -1125,6 +1143,8 @@
                 "healthState",
                 "1000",
                 "pointingState",
+                "1000",
+                "state",
                 "1000"
               ]
             }
