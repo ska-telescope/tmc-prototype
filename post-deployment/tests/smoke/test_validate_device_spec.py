@@ -23,6 +23,7 @@ def test_dishmaster_conforms_to_tango_wide():
     assert not result
 
 @pytest.mark.mid
+@pytest.mark.xfail
 def test_dishmaster_conforms_to_dishmaster_spec():
     """Check that dishmaster device conforms to dishmaster specification"""
     result = validate_device_from_url(
