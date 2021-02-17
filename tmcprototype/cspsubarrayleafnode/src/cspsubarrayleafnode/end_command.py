@@ -12,7 +12,9 @@ from . import const
 
 class GoToIdleCommand(BaseCommand):
     """
-    A class for CspSubarrayLeafNode's GoToIdle() command.
+    A class for CspSubarrayLeafNode's GoToIdle() command. GoToIdle command is inherited from BaseCommand.
+
+    This command invokes GoToIdle command on CSP Subarray in order to end current scheduling block.
     """
 
     def check_allowed(self):
@@ -81,11 +83,14 @@ class GoToIdleCommand(BaseCommand):
 
     def do(self):
         """
-        This command invokes GoToIdle command on CSP Subarray in order to end current scheduling block.
+        Method to invoke GoToIdle command on CSP Subarray.
 
-        :return: None
+        return:
+            None
 
-        :raises: DevFailed if the command execution is not successful
+        raises:
+            DevFailed if the command execution is not successful
+
         """
         device_data = self.target
         try:

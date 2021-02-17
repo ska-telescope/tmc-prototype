@@ -17,6 +17,9 @@ from . import const
 class EndScan(BaseCommand):
     """
     A class for SdpSubarrayLeafNode's EndScan() command.
+
+    It invokes EndScan command on Sdp Subarray.
+    This command is allowed when Sdp Subarray is in SCANNING state.
     """
 
     def check_allowed(self):
@@ -86,14 +89,15 @@ class EndScan(BaseCommand):
 
     def do(self):
         """
-        It invokes EndScan command on SdpSubarray.
-        This command is allowed when SdpSubarray is in SCANNING state.
+        Method to invoke EndScan command on SDP Subarray.
 
         :param argin: None
 
-        :return: None
+        return:
+            None
 
-        :raises: DevFailed if the command execution is not successful.
+        raises:
+            DevFailed if the command execution is not successful.
         """
         device_data = self.target
         try:

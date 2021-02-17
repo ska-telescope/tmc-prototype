@@ -19,19 +19,25 @@ from . import const
 class Off(SKASubarray.OffCommand):
     """
     A class for the SubarrayNodes's Off() command.
+
+    This command invokes Off Command on MCCS Subarray through Mccs Subarray leaf node. This comamnd
+    changes Subaray device state from ON to OFF.
+
     """
 
     def do(self):
         """
-        This command invokes Off Command on MCCSSubarray through mccs subarray leaf node. This comamnd
-        changes Subaray device state from ON to OFF.
+        Method to invoke Off command.
 
-        :return: A tuple containing a return code and a string message indicating status.
-        The message is for information purpose only.
+        return:
+            A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
 
-        :rtype: (ResultCode, str)
+        rtype:
+            (ResultCode, str)
 
-        :raises: DevFailed if the command execution is not successful
+        raises:
+            DevFailed if the command execution is not successful
         """
         device = self.target
         device.is_release_resources = False

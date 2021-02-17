@@ -16,7 +16,10 @@ from . import const
 
 class End(BaseCommand):
     """
-    A class for SdpSubarrayLeafNode's End() command.
+    A class for SdpSubarrayLeafNode's End command.
+
+    This command invokes End command on SDP Subarray to end the current Scheduling block.
+
     """
 
     def check_allowed(self):
@@ -85,11 +88,13 @@ class End(BaseCommand):
 
     def do(self):
         """
-        This command invokes End command on SDP subarray to end the current Scheduling block.
+        Method to invoke End command on SDP Subarray.
 
-        :return: None
+        return:
+            None
 
-        :raises: DevFailed if the command execution is not successful.
+        raises:
+            DevFailed if the command execution is not successful.
         """
         device_data = self.target
         try:

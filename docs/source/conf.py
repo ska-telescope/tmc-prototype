@@ -43,6 +43,16 @@ autodoc_mock_imports = [
     "centralnodelow.central_node_low",
     "tmc",
     "cspsubarrayleafnode",
+    "cspsubarrayleafnode.csp_subarray_leaf_node",
+    "importlib.resources", 
+    "mccsmasterleafnode", 
+    "mccsmasterleafnode.mccs_master_leaf_node",
+    "mccssubarrayleafnode", 
+    "mccssubarrayleafnode.mccs_subarray_leaf_node", 
+    "dishmaster", 
+    "tango_simlib", 
+    "dishleafnode", 
+    "dishleafnode.dish_leaf_node"
 ]
 
 import os

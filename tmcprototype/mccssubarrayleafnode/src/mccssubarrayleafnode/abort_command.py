@@ -13,6 +13,9 @@ from . import const
 class Abort(BaseCommand):
     """
     A class for MccsSubarrayLeafNode's Abort() command.
+
+    Command to abort the current operation being done on the MCCS Subarray.
+
     """
 
     def check_allowed(self):
@@ -82,15 +85,16 @@ class Abort(BaseCommand):
 
     def do(self):
         """
-        This command invokes Abort command on MCCS Subarray.
+         Method to invoke Abort command on MCCS Subarray.
 
         :param argin: None
 
-        :return: None
+        return:
+            None
 
-        :rtype: Void
+        raises:
+            DevFailed if the command execution is not successful
 
-        :raises: DevFailed if the command execution is not successful
         """
         device_data = self.target
         try:

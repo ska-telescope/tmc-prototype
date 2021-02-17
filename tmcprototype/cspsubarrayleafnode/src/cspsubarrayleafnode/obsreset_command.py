@@ -12,7 +12,10 @@ from . import const
 
 class ObsResetCommand(BaseCommand):
     """
-    A class for CSPSubarrayLeafNode's ObsReset() command.
+    A class for CSPSubarrayLeafNode's ObsReset() command. ObsReset command is inherited from BaseCommand.
+
+    Command to reset the Csp Subarray and bring it to its RESETTING state.
+
     """
 
     def check_allowed(self):
@@ -77,13 +80,17 @@ class ObsResetCommand(BaseCommand):
 
     def do(self):
         """
-        Command to reset the CSP subarray and bring it to its RESETTING state.
+        Method to invoke ObsReset command on CSP Subarray.
 
-        :param argin: None
+        param argin:
+            None
 
-        :return: None
+        return:
+            None
 
-        :raises: DevFailed if error occurs while invoking the command on CSpSubarray.
+        raises:
+            DevFailed if error occurs while invoking the command on CSP Subarray.
+
         """
         device_data = self.target
         try:

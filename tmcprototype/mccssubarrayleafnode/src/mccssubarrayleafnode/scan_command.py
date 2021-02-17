@@ -18,6 +18,9 @@ from . import const
 class Scan(BaseCommand):
     """
     A class for MccsSubarrayLeafNode's Scan() command.
+
+    This command invokes Scan command on Mccs Subarray. It is allowed only when MccsSubarray is in
+    ObsState READY.
     """
 
     def check_allowed(self):
@@ -82,8 +85,7 @@ class Scan(BaseCommand):
 
     def do(self, argin):
         """
-        This command invokes Scan command on MccsSubarray. It is allowed only when MccsSubarray is in
-        ObsState READY.
+        Method to invoke Scan command on MCCS Subarray.
 
         :param argin: JSON string consists of scan id (int) and scan_time.
 
@@ -92,11 +94,11 @@ class Scan(BaseCommand):
 
         Note: Enter the json string without spaces as a input.
 
-        :return: None
+        return:
+            None
 
-        :rtype: Void
-
-        :raises: DevFailed if the command execution is not successful
+        raises:
+            DevFailed if the command execution is not successful
         """
         device_data = self.target
         try:

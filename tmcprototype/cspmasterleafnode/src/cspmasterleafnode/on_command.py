@@ -17,7 +17,9 @@ from .attribute_callbacks import (
 
 class On(SKABaseDevice.OnCommand):
     """
-    A class for CspMasterLeafNode's On() command.
+    A class for CspMasterLeafNode's On() command. On command is inherited from SKABaseDevice.
+
+    It Sets the State to On.
     """
 
     def on_cmd_ended_cb(self, event):
@@ -52,16 +54,20 @@ class On(SKABaseDevice.OnCommand):
 
     def do(self):
         """
-        Invokes On command on the CSP Element.
+        Method to invoke On command on CSP Element.
 
-        :param argin: None
+        param argin:
+            None
 
-        :return: A tuple containing a return code and a string message indicating status.
+        return:
+            A tuple containing a return code and a string message indicating status.
             The message is for information purpose only.
 
-        :rtype: (ResultCode, str)
+        rtype:
+            (ResultCode, str)
 
-        :raises: DevFailed on communication failure with CspMaster or CspMaster is in error state.
+        raises:
+            DevFailed on communication failure with CspMaster or CspMaster is in error state.
 
         """
         device_data = self.target

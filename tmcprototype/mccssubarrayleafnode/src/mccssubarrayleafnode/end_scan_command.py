@@ -18,6 +18,10 @@ from . import const
 class EndScan(BaseCommand):
     """
     A class for MccsSubarrayLeafNode's EndScan() command.
+
+    This command invokes EndScan command on MCCS Subarray. It is allowed only when MccsSubarray is in
+    ObsState SCANNING.
+
     """
 
     def check_allowed(self):
@@ -81,11 +85,13 @@ class EndScan(BaseCommand):
 
     def do(self):
         """
-        This command invokes EndScan command on MccsSubarray. It is allowed only when MccsSubarray is in
-        ObsState SCANNING.
+        Method to invoke EndScan command on MCCS Subarray.
 
-        :raises: DevFailed if the command execution is not successful.
-                 AssertionError if MccsSubarray is not in SCANNING obsState.
+        raises:
+            DevFailed if the command execution is not successful.
+
+            AssertionError if MccsSubarray is not in SCANNING obsState.
+
         """
         device_data = self.target
         try:

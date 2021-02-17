@@ -53,6 +53,24 @@ class SubarrayNode(SKASubarray):
     """
     Provides the monitoring and control interface required by users as well as
     other TM Components (such as OET, Central Node) for a Subarray.
+
+    :Device Properties:
+
+        MccsSubarrayLNFQDN:
+            This property contains the FQDN of the MCCS Subarray Leaf Node associated with the
+            Subarray Node.
+
+        MccsSubarrayFQDN:
+            This property contains the FQDN of the MCCS Subarray associated with the
+            Subarray Node.
+
+    :Device Attributes:
+
+        scanID:
+            ID of ongoing SCAN
+
+        activityMessage:
+            String providing information about the current activity in SubarrayNode.
     """
 
     # -----------------
@@ -69,10 +87,6 @@ class SubarrayNode(SKASubarray):
         dtype="str",
         doc="This property contains the FQDN of the MCCS Subarray associated with the "
         "Subarray Node.",
-    )
-
-    MccsSubarrayFQDN = device_property(
-        dtype="str",
     )
 
     # ----------
@@ -101,12 +115,15 @@ class SubarrayNode(SKASubarray):
             """
             Initializes the attributes and properties of the Subarray Node.
 
-            :return: A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
+            return:
+                A tuple containing a return code and a string message indicating status.
+                The message is for information purpose only.
 
-            :rtype: (ReturnCode, str)
+            rtype:
+                (ReturnCode, str)
 
-            :raises: DevFailed if the error while subscribing the tango attribute
+            raises:
+                DevFailed if the error while subscribing the tango attribute
             """
             super().do()
             device = self.target

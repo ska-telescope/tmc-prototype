@@ -11,7 +11,11 @@ from . import const
 
 class Standby(BaseCommand):
     """
-    A class for SDP Master's Standby() command.
+    A class for SDP Master's Standby() command. Standby command is inherited from BaseCommand.
+
+    Informs the SDP to stop any executing Processing. To get into the STANDBY state all running
+    PBs will be aborted. In normal operation we expect diable should be triggered without first going
+    into STANDBY.
     """
 
     def check_allowed(self):
@@ -69,14 +73,13 @@ class Standby(BaseCommand):
             device_data._read_activity_message = log_msg
 
     def do(self):
-        """Informs the SDP to stop any executing Processing. To get into the STANDBY state all running
-        PBs will be aborted. In normal operation we expect diable should be triggered without first going
-        into STANDBY.
+        """
+        Method to invoke Standby command on SDP Master.
 
         :param argin: None.
 
-        :return: None
-
+        return:
+            None
         """
         device_data = self.target
         try:

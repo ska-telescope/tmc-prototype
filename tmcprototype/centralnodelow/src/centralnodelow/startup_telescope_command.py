@@ -19,6 +19,10 @@ from .command_result_fetcher import CommandResultFetcher
 class StartUpTelescope(SKABaseDevice.OnCommand):
     """
     A class for Low CentralNode's StartupCommand() command.
+
+    StartUpTelescope command on Central Node Low enables the telescope to perform further operations
+    and observations. It Invokes On command on lower level devices.
+
     """
 
     def check_allowed(self):
@@ -48,15 +52,21 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
 
     def do(self):
         """
-        Setting the startup state to TRUE enables the telescope to accept subarray commands as per the subarray
-        model. Set the CentralNode into ON state.
+        Method to invoke ON command On lower level devices.
 
-        :param argin: None.
+        param argin:
+            None.
 
-        :return: A tuple containing a return code and a string message indicating status.
-        The message is for information purpose only.
+        return:
+            A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
 
-        :rtype: (ResultCode, str)
+        rtype:
+            (ResultCode, str)
+
+        raises:
+            AssertionError if f Mccs Off command is not completed.
+
         """
         device_data = self.target
         attributes_to_subscribe_to = (

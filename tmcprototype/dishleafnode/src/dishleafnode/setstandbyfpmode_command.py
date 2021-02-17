@@ -25,17 +25,24 @@ from .command_callback import CommandCallBack
 class SetStandbyFPMode(BaseCommand):
     """
     A class for DishLeafNode's SetStandbyFPMode() command.
+
+    Invokes SetStandbyFPMode command on DishMaster (Standby-Full power) mode.
+
     """
 
     def do(self):
         """
-        Invokes SetStandbyFPMode command on DishMaster (Standby-Full power) mode.
+        Method to Invoke SetStandbyFPMode  on DishMaster.
 
-        :param argin: None
+        param argin:
+            None
 
-        :return:None
+        return:
+            None
 
-        :raises DevFailed: If error occurs while invoking SetStandbyFPMode command on DishMaster.
+        raises:
+            DevFailed If error occurs while invoking SetStandbyFPMode command on DishMaster.
+
         """
         device_data = self.target
         cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb

@@ -12,7 +12,11 @@ from . import const
 
 class ReleaseAllResourcesCommand(BaseCommand):
     """
-    A class for CspSubarrayLeafNode's ReleaseAllResources() command.
+    A class for CspSubarrayLeafNode's ReleaseAllResources() command. ReleaseAllResources command is inherited from BaseCommand.
+
+    It invokes ReleaseAllResources command on Csp Subarray and releases all the resources assigned to
+    CSP Subarray.
+
     """
 
     def check_allowed(self):
@@ -83,12 +87,13 @@ class ReleaseAllResourcesCommand(BaseCommand):
 
     def do(self):
         """
-        It invokes RemoveAllReceptors command on CspSubarray and releases all the resources assigned to
-        CspSubarray.
+        Method to invoke ReleaseAllResources command on CSP Subarray.
 
-        :return: None
+        return:
+            None
 
-        :raises: DevFailed if the command execution is not successful
+        raises:
+            DevFailed if the command execution is not successful
 
         """
         device_data = self.target

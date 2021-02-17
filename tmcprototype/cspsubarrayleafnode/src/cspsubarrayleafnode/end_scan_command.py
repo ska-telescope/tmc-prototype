@@ -12,7 +12,11 @@ from . import const
 
 class EndScanCommand(BaseCommand):
     """
-    A class for CspSubarrayLeafNode's EndScan() command.
+    A class for CspSubarrayLeafNode's EndScan() command. EndScan command is inherited from BaseCommand.
+
+    It invokes EndScan command on CSP Subarray. This command is allowed when CSP Subarray is in
+    obsState SCANNING.
+
     """
 
     def check_allowed(self):
@@ -28,7 +32,6 @@ class EndScanCommand(BaseCommand):
         in current device state
 
         """
-        # device = self.target
         if self.state_model.op_state in [
             DevState.FAULT,
             DevState.UNKNOWN,
@@ -82,15 +85,14 @@ class EndScanCommand(BaseCommand):
 
     def do(self):
         """
-        It invokes EndScan command on CspSubarray. This command is allowed when CspSubarray is in
-        obsState SCANNING
+        Method to invoke Endscan command on CSP Subarray.
 
-        :return: A tuple containing a return code and a string message indicating status.
-                The message is for information purpose only.
+        return:
+            None
 
-        :rtype: (ReturnCode, str)
+        raises:
+            DevFailed if the command execution is not successful
 
-        :raises: DevFailed if the command execution is not successful
         """
         device_data = self.target
         try:
