@@ -948,6 +948,8 @@
                 "healthState",
                 "1000",
                 "pointingState",
+                "1000",
+                "state",
                 "1000"
               ]
             }
@@ -1011,6 +1013,8 @@
                 "healthState",
                 "1000",
                 "pointingState",
+                "1000",
+                "state",
                 "1000"
               ]
             }
@@ -1074,6 +1078,8 @@
                 "healthState",
                 "1000",
                 "pointingState",
+                "1000",
+                "state",
                 "1000"
               ]
             }
@@ -1137,6 +1143,8 @@
                 "healthState",
                 "1000",
                 "pointingState",
+                "1000",
+                "state",
                 "1000"
               ]
             }
