@@ -1,18 +1,24 @@
 # Tango imports
 import tango
-from tango import  DevFailed
+from tango import DevFailed
 
 # Additional import
-from tmc.common.tango_client import TangoClient
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
+
+from tmc.common.tango_client import TangoClient
+
 from . import const
+
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additional_import
 
 
 class On(SKABaseDevice.OnCommand):
     """
-    A class for SDP master's On() command.
+    A class for SDP master's On() command. On command is inherited from SKABaseDevice.
+
+    Informs the SDP that it can start executing Processing Blocks. Sets the State to ON.
+
     """
 
     def on_cmd_ended_cb(self, event):
@@ -38,38 +44,46 @@ class On(SKABaseDevice.OnCommand):
         """
         device_data = self.target
         if event.err:
-            log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
             device_data._read_activity_message = log_msg
 
         else:
-            log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+            log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
             device_data._read_activity_message = log_msg
 
     def do(self):
-        """ Informs the SDP that it can start executing Processing Blocks. Sets the OperatingState to ON.
+        """
+        Method to invoke On command on SDP Master.
 
         :param argin: None.
 
-        :return: A tuple containing a return code and a string message indicating status.
-        The message is for information purpose only.
+        return:
+            A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
 
-        :rtype: (ResultCode, str)
+        rtype:
+            (ResultCode, str)
 
         """
         device_data = self.target
         try:
             sdp_mln_client_obj = TangoClient(device_data.sdp_master_ln_fqdn)
-            sdp_mln_client_obj.send_command_async(const.CMD_ON, None, self.on_cmd_ended_cb)
+            sdp_mln_client_obj.send_command_async(
+                const.CMD_ON, None, self.on_cmd_ended_cb
+            )
             log_msg = const.STR_ON_CMD_SUCCESS
             self.logger.debug(log_msg)
             return (ResultCode.OK, log_msg)
 
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
-            log_msg = const.ERR_ON_CMD_FAIL + str(dev_failed)
-            tango.Except.re_throw_exception(dev_failed, const.ERR_INVOKING_CMD, log_msg,
-                                            "SdpMasterLeafNode.OnCommand()",
-                                            tango.ErrSeverity.ERR)
-
+            log_msg = f"{const.ERR_ON_CMD_FAIL}{dev_failed}"
+            tango.Except.re_throw_exception(
+                dev_failed,
+                const.ERR_INVOKING_CMD,
+                log_msg,
+                "SdpMasterLeafNode.OnCommand()",
+                tango.ErrSeverity.ERR,
+            )

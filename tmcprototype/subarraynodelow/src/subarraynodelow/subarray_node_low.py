@@ -13,7 +13,7 @@ other TM Components (such as OET, Central Node) for a Subarray.
 """
 # Tango imports
 from tango import AttrWriteType
-from tango.server import run,attribute, device_property
+from tango.server import run, attribute, device_property
 
 # Additional imports
 from ska.base.commands import ResultCode
@@ -21,7 +21,7 @@ from ska.base.control_model import HealthState, ObsMode, ObsState
 from ska.base import SKASubarray
 from .device_data import DeviceData
 from tmc.common.tango_server_helper import TangoServerHelper
-from . import const, release 
+from . import const, release
 from .on_command import On
 from .off_command import Off
 from .assign_resources_command import AssignResources
@@ -33,45 +33,72 @@ from .release_all_resources_command import ReleaseAllResources
 from .abort_command import Abort
 from .obsreset_command import ObsReset
 
-__all__ = ["SubarrayNode", "main", "AssignResources", "ReleaseAllResources",
-           "Configure", "Scan", "EndScan", "End", "On", "ObsReset", "Abort", "Off"]
-
+__all__ = [
+    "SubarrayNode",
+    "main",
+    "AssignResources",
+    "ReleaseAllResources",
+    "Configure",
+    "Scan",
+    "EndScan",
+    "End",
+    "On",
+    "ObsReset",
+    "Abort",
+    "Off",
+]
 
 
 class SubarrayNode(SKASubarray):
     """
     Provides the monitoring and control interface required by users as well as
     other TM Components (such as OET, Central Node) for a Subarray.
+
+    :Device Properties:
+
+        MccsSubarrayLNFQDN:
+            This property contains the FQDN of the MCCS Subarray Leaf Node associated with the
+            Subarray Node.
+
+        MccsSubarrayFQDN:
+            This property contains the FQDN of the MCCS Subarray associated with the
+            Subarray Node.
+
+    :Device Attributes:
+
+        scanID:
+            ID of ongoing SCAN
+
+        activityMessage:
+            String providing information about the current activity in SubarrayNode.
     """
+
     # -----------------
     # Device Properties
     # -----------------
 
     MccsSubarrayLNFQDN = device_property(
-        dtype='str', doc="This property contains the FQDN of the MCCS Subarray Leaf Node associated with the "
-                         "Subarray Node."
+        dtype="str",
+        doc="This property contains the FQDN of the MCCS Subarray Leaf Node associated with the "
+        "Subarray Node.",
     )
 
     MccsSubarrayFQDN = device_property(
-        dtype='str', doc="This property contains the FQDN of the MCCS Subarray associated with the "
-                         "Subarray Node."
+        dtype="str",
+        doc="This property contains the FQDN of the MCCS Subarray associated with the "
+        "Subarray Node.",
     )
-
-    MccsSubarrayFQDN = device_property(
-        dtype='str',
-    )
-
 
     # ----------
     # Attributes
     # ----------
 
     scanID = attribute(
-        dtype='str',
+        dtype="str",
     )
 
     activityMessage = attribute(
-        dtype='str',
+        dtype="str",
         access=AttrWriteType.READ_WRITE,
     )
 
@@ -83,16 +110,20 @@ class SubarrayNode(SKASubarray):
         """
         A class for the TMC SubarrayNode's init_device() method.
         """
+
         def do(self):
             """
             Initializes the attributes and properties of the Subarray Node.
 
-            :return: A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
+            return:
+                A tuple containing a return code and a string message indicating status.
+                The message is for information purpose only.
 
-            :rtype: (ReturnCode, str)
+            rtype:
+                (ReturnCode, str)
 
-            :raises: DevFailed if the error while subscribing the tango attribute
+            raises:
+                DevFailed if the error while subscribing the tango attribute
             """
             super().do()
             device = self.target
@@ -108,12 +139,16 @@ class SubarrayNode(SKASubarray):
             device._resource_list = []
             device.is_end_command = False
             device.is_release_resources = False
-            device._build_state = '{},{},{}'.format(release.name, release.version, release.description)
+            device._build_state = "{},{},{}".format(
+                release.name, release.version, release.description
+            )
             device._version_id = release.version
             device._health_event_id = []
             device._mccs_sa_obs_state = ObsState.EMPTY
             device.subarray_ln_health_state_map = {}
-            device._subarray_health_state = HealthState.OK  #Aggregated Subarray Health State
+            device._subarray_health_state = (
+                HealthState.OK
+            )  # Aggregated Subarray Health State
             device_data.mccs_subarray_fqdn = device.MccsSubarrayFQDN
             device_data.mccs_subarray_ln_fqdn = device.MccsSubarrayLNFQDN
 
@@ -136,7 +171,7 @@ class SubarrayNode(SKASubarray):
     # ------------------
 
     def read_scanID(self):
-        """ Internal construct of TANGO. Returns the Scan ID.
+        """Internal construct of TANGO. Returns the Scan ID.
 
         EXAMPLE: 123
         Where 123 is a Scan ID from configuration json string.
@@ -146,7 +181,7 @@ class SubarrayNode(SKASubarray):
         # PROTECTED REGION END #    //  SubarrayNode.scanID_read
 
     def read_activityMessage(self):
-        """ Internal construct of TANGO. Returns activityMessage.
+        """Internal construct of TANGO. Returns activityMessage.
         Example: "Subarray node is initialized successfully"
         //result occured after initialization of device.
         """
@@ -182,7 +217,7 @@ class SubarrayNode(SKASubarray):
         self.assign = AssignResources(*args)
         self.obsreset = ObsReset(*args)
         self.abort = Abort(*args)
-        
+
         self.register_command_object("AssignResources", self.assign)
         self.register_command_object("ReleaseAllResources", self.release)
         self.register_command_object("On", self.on)
@@ -194,9 +229,11 @@ class SubarrayNode(SKASubarray):
         self.register_command_object("ObsReset", self.endscan)
         self.register_command_object("Abort", self.abort)
 
+
 # ----------
 # Run server
 # ----------
+
 
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(SubarrayNode.main) ENABLED START #
@@ -209,5 +246,6 @@ def main(args=None, **kwargs):
     return run((SubarrayNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  SubarrayNode.main
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

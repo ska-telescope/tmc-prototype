@@ -1,15 +1,22 @@
-from . import const
+# Standard Python imports
+import logging
+
+# Additional import
 from ska.base.control_model import HealthState
+
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
+
 from .device_data import DeviceData
-import logging
+from . import const
+
 
 class HealthStateAggregator:
     """
     Health State Aggregator class
     """
-    def __init__(self, logger = None):
+
+    def __init__(self, logger=None):
         if logger == None:
             self.logger = logging.getLogger(__name__)
         else:
@@ -22,22 +29,30 @@ class HealthStateAggregator:
         self.device_data = DeviceData.get_instance()
         self.csp_client = TangoClient(self.device_data.csp_subarray_ln_fqdn)
         self.sdp_client = TangoClient(self.device_data.sdp_subarray_ln_fqdn)
-        self.subarray_ln_health_state_map[self.csp_client.get_device_fqdn()] = (HealthState.UNKNOWN)
-        self.subarray_ln_health_state_map[self.sdp_client.get_device_fqdn()] = (HealthState.UNKNOWN)
+        self.subarray_ln_health_state_map[
+            self.csp_client.get_device_fqdn()
+        ] = HealthState.UNKNOWN
+        self.subarray_ln_health_state_map[
+            self.sdp_client.get_device_fqdn()
+        ] = HealthState.UNKNOWN
 
     def subscribe(self):
         # TODO: dev_name() where to keep this API?
         # Subscribe cspsubarrayHealthState (forwarded attribute) of CspSubarray
-        csp_event_id = self.csp_client.subscribe_attribute(const.EVT_CSPSA_HEALTH, self.health_state_cb)
+        csp_event_id = self.csp_client.subscribe_attribute(
+            const.EVT_CSPSA_HEALTH, self.health_state_cb
+        )
         self.csp_sdp_ln_health_event_id[self.csp_client] = csp_event_id
-        log_msg = const.STR_CSP_LN_HEALTH_EVT_ID + str(self.csp_sdp_ln_health_event_id)
+        log_msg = f"{const.STR_CSP_LN_HEALTH_EVT_ID}{self.csp_sdp_ln_health_event_id}"
         self.logger.debug(log_msg)
         tango_server_helper_obj = TangoServerHelper.get_instance()
         tango_server_helper_obj.set_status(const.STR_CSP_SA_LEAF_SUB_SUCCESS)
         # Subscribe sdpSubarrayHealthState (forwarded attribute) of SdpSubarray
-        sdp_event_id = self.sdp_client.subscribe_attribute(const.EVT_SDPSA_HEALTH, self.health_state_cb)
+        sdp_event_id = self.sdp_client.subscribe_attribute(
+            const.EVT_SDPSA_HEALTH, self.health_state_cb
+        )
         self.csp_sdp_ln_health_event_id[self.sdp_client] = sdp_event_id
-        log_msg = const.STR_SDP_LN_HEALTH_EVT_ID + str(self.csp_sdp_ln_health_event_id)
+        log_msg = f"{const.STR_SDP_LN_HEALTH_EVT_ID}{self.csp_sdp_ln_health_event_id}"
         self.logger.debug(log_msg)
         tango_server_helper_obj.set_status(const.STR_SDP_SA_LEAF_SUB_SUCCESS)
 
@@ -50,27 +65,23 @@ class HealthStateAggregator:
         :return: None
         """
         device_name = event.device.dev_name()
-        log_msg= "Device name is : " + str(device_name)
+        log_msg = f"Device name is : {device_name}"
         self.logger.debug(log_msg)
         if not event.err:
             event_health_state = event.attr_value.value
             self.subarray_ln_health_state_map[device_name] = event_health_state
-
-            log_message = self.generate_health_state_log_msg(
-                event_health_state, device_name, event)
+            if isinstance(event_health_state, HealthState):
+                log_message = f"{const.STR_HEALTH_STATE}{device_name} \
+                {const.STR_ARROW}{event_health_state.name.upper()}"
+            else:
+                log_message = f"{const.STR_HEALTH_STATE_UNKNOWN_VAL}{event}"
             self.device_data._read_activity_message = log_message
             self.device_data.health_state = self.calculate_health_state(
-                self.subarray_ln_health_state_map.values())
+                self.subarray_ln_health_state_map.values()
+            )
         else:
-            log_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(device_name) + str(event)
+            log_message = f"{const.ERR_SUBSR_SA_HEALTH_STATE}{device_name}{event}"
             self.device_data._read_activity_message = log_message
-
-    def generate_health_state_log_msg(self, health_state, device_name, event):
-        if isinstance(health_state, HealthState):
-            return (
-                const.STR_HEALTH_STATE + str(device_name) + const.STR_ARROW + str(health_state.name.upper()))
-        else:
-            return const.STR_HEALTH_STATE_UNKNOWN_VAL + str(event)
 
     def calculate_health_state(self, health_states):
         """
@@ -97,23 +108,37 @@ class HealthStateAggregator:
 
         """
         for tango_client, event_id in self.csp_sdp_ln_health_event_id.items():
-            log_msg = "Unsubscribe Health State event for " + str(tango_client)
+            log_msg = f"Unsubscribe Health State event for {tango_client}"
             self.logger.debug(log_msg)
-            tango_client.unsubscribe_attribute(event_id)
+            try:
+                tango_client.unsubscribe_attribute(event_id)
+            except KeyError as error:
+                log_msg = f"{const.ERR_UNSUBSR_ATTRIBUTE}{error}"
+                self.logger.exception(log_msg)
+                self._read_activity_message = log_msg
+                 
 
     def subscribe_dish_health_state(self, dish_ln_client):
-        dish_event_id = dish_ln_client.subscribe_attribute(const.EVT_DISH_HEALTH_STATE, self.health_state_cb)
-        self.device_data._dishLnVsHealthEventID[dish_ln_client] = dish_event_id
-        log_msg = const.STR_DISH_LN_HEALTH_EVT_ID + str(self.device_data._dishLnVsHealthEventID)
+        dish_event_id = dish_ln_client.subscribe_attribute(
+            const.EVT_DISH_HEALTH_STATE, self.health_state_cb
+        )
+        self.device_data.dish_ln_health_even_id[dish_ln_client] = dish_event_id
+        log_msg = f"{const.STR_DISH_LN_HEALTH_EVT_ID}{self.device_data.dish_ln_health_even_id}"
         self.logger.debug(log_msg)
 
     def unsubscribe_dish_health_state(self):
-        for dish_ln_client in self.device_data._dishLnVsHealthEventID:
-            dish_ln_client.unsubscribe_attribute(self.device_data._dishLnVsHealthEventID[dish_ln_client])
+        for dish_ln_client in self.device_data.dish_ln_health_even_id:
+            try:
+                dish_ln_client.unsubscribe_attribute(
+                    self.device_data.dish_ln_health_even_id[dish_ln_client]
+                )
+            except KeyError as error:
+                log_msg = f"{const.ERR_UNSUBSR_ATTRIBUTE}{error}"
+                self.logger.exception(log_msg)
+                self._read_activity_message = log_msg
 
     def _remove_subarray_dish_lns_health_states(self):
         subarray_ln_health_state_map_copy = self.subarray_ln_health_state_map.copy()
         for dev_name in subarray_ln_health_state_map_copy:
             if dev_name.startswith(const.PROP_DEF_VAL_LEAF_NODE_PREFIX):
                 _ = self.subarray_ln_health_state_map.pop(dev_name)
-

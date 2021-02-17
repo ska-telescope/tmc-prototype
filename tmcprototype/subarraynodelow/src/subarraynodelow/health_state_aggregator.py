@@ -1,31 +1,41 @@
-from . import const
+# Standard Python imports
+import logging
+
+# Additional import
 from ska.base.control_model import HealthState
+
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
+
 from .device_data import DeviceData
-import logging
+from . import const
+
+
 
 class HealthStateAggregator:
     """
     Health State Aggregator class
     """
-    def __init__(self, logger = None):
+
+    def __init__(self, logger=None):
         if logger == None:
             self.logger = logging.getLogger(__name__)
         else:
             self.logger = logger
 
+        self.subarray_ln_health_state_map = {}
         self.mccs_ln_health_event_id = {}
         self.this_server = TangoServerHelper.get_instance()
         self.device_data = DeviceData.get_instance()
         self.mccs_client = TangoClient(self.device_data.mccs_subarray_ln_fqdn)
 
-
     def subscribe(self):
         # Subscribe cspsubarrayHealthState (forwarded attribute) of CspSubarray
-        mccs_event_id = self.mccs_client.subscribe_attribute(const.EVT_MCCSSA_HEALTH, self.health_state_cb)
+        mccs_event_id = self.mccs_client.subscribe_attribute(
+            const.EVT_MCCSSA_HEALTH, self.health_state_cb
+        )
         self.mccs_ln_health_event_id[self.mccs_client] = mccs_event_id
-        log_msg = const.STR_SUB_ATTR_MCCS_SALN_HEALTH_SUCCESS + str(self.mccs_ln_health_event_id)
+        log_msg = f"{const.STR_SUB_ATTR_MCCS_SALN_HEALTH_SUCCESS}{self.mccs_ln_health_event_id}"
         self.logger.debug(log_msg)
         # tango_server_helper_obj = TangoServerHelper.get_instance()
         # tango_server_helper_obj.set_status(const.STR_SUB_ATTR_MCCS_SALN_HEALTH_SUCCESS)
@@ -55,27 +65,26 @@ class HealthStateAggregator:
 
         :return: None
         """
-
         device_name = event.device.dev_name()
         if not event.err:
             event_health_state = event.attr_value.value
-            self.mccs_ln_health_event_id[device_name] = event_health_state
+            self.subarray_ln_health_state_map[device_name] = event_health_state
 
             log_message = self.generate_health_state_log_msg(
-                event_health_state, device_name, event)
+                event_health_state, device_name, event
+            )
             self.device_data.activity_message = log_message
-            self.device_data._subarray_health_state = self.calculate_health_state(self.mccs_ln_health_event_id.values())
+            self.device_data._subarray_health_state = self.calculate_health_state(
+                self.subarray_ln_health_state_map.values())
         else:
-            log_message = const.ERR_SUBSR_SA_HEALTH_STATE + str(device_name) + str(event)
+            log_message = f"{const.ERR_SUBSR_SA_HEALTH_STATE}{device_name}{event}"
             self.device_data.activity_message = log_message
-
 
     def generate_health_state_log_msg(self, health_state, device_name, event):
         if isinstance(health_state, HealthState):
-            return (
-                const.STR_HEALTH_STATE + str(device_name) + const.STR_ARROW + str(health_state.name.upper()))
+            return f"{const.STR_HEALTH_STATE}{device_name}{const.STR_ARROW}{health_state.name.upper()}"
         else:
-            return const.STR_HEALTH_STATE_UNKNOWN_VAL + str(event)
+            return f"{const.STR_HEALTH_STATE_UNKNOWN_VAL}{event}"
 
     def calculate_health_state(self, health_states):
         """
@@ -99,8 +108,6 @@ class HealthStateAggregator:
         :param : None
 
         :return: None
-
         """
         for tango_client, event_id in self.mccs_ln_health_event_id.items():
             tango_client.unsubscribe_attribute(event_id)
-

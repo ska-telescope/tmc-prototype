@@ -1,8 +1,8 @@
-
-#Imports
+# Imports
 import sys, getopt
 import json
 from tango import DeviceProxy, DevFailed
+
 
 def cm_configure_attributes():
     configure_success_count = 0
@@ -10,7 +10,7 @@ def cm_configure_attributes():
     already_configured_count = 0
     total_attrib_count = 0
 
-    with open(attr_list_file, 'r') as attrib_list_file:
+    with open(attr_list_file, "r") as attrib_list_file:
         attribute_list = json.load(attrib_list_file)
         for attribute in attribute_list:
             total_attrib_count += 1
@@ -20,7 +20,9 @@ def cm_configure_attributes():
                 conf_manager_proxy.write_attribute("SetAttributeName", attribute)
 
                 # SetArchiver
-                conf_manager_proxy.write_attribute("SetArchiver", evt_subscriber_device_fqdn)
+                conf_manager_proxy.write_attribute(
+                    "SetArchiver", evt_subscriber_device_fqdn
+                )
 
                 # SetStrategy
                 conf_manager_proxy.write_attribute("SetStrategy", "ALWAYS")
@@ -31,7 +33,10 @@ def cm_configure_attributes():
                 # SetEventPeriod
                 conf_manager_proxy.write_attribute("SetPeriodEvent", 3000)
             except Exception as except_occured:
-                print("Exception while setting configuration manager arrtibutes: ", except_occured)
+                print(
+                    "Exception while setting configuration manager arrtibutes: ",
+                    except_occured,
+                )
                 configure_fail_count += 1
                 continue
 
@@ -48,13 +53,20 @@ def cm_configure_attributes():
 
             configure_success_count += 1
 
-    return configure_success_count, configure_fail_count, already_configured_count, total_attrib_count
+    return (
+        configure_success_count,
+        configure_fail_count,
+        already_configured_count,
+        total_attrib_count,
+    )
+
 
 def start_archiving(str_attribute):
     try:
         conf_manager_proxy.command_inout("AttributeStart", str_attribute)
     except Exception as except_occured:
         print("start_archiving except_occured: ", except_occured)
+
 
 # Main entrypoint of the script.
 conf_manager_device_fqdn = ""
@@ -66,7 +78,9 @@ try:
     opts, args = getopt.getopt(sys.argv[1:], "c:e:a:", ["cm=", "es=", "attrfile="])
 except getopt.GetoptError:
     print("Please provide proper arguments.")
-    print("Usage: $python configure_hdbpp.py --cm=<FQDN> --es=<FQDN> --attrfile=<filepath> OR")
+    print(
+        "Usage: $python configure_hdbpp.py --cm=<FQDN> --es=<FQDN> --attrfile=<filepath> OR"
+    )
     print("       $python configure_hdbpp.py -cm <FQDN> -e <FQDN> -a <filepath>")
     print("       cm: FQDN of HDB++ Configuration Manager")
     print("       es: FQDN of HDB++ Event subscriber")
@@ -78,7 +92,7 @@ for opt, arg in opts:
         conf_manager_device_fqdn = arg
     elif opt in ("-e", "--es"):
         evt_subscriber_device_fqdn = arg
-    elif  opt in ("-a", "--attrfile"):
+    elif opt in ("-a", "--attrfile"):
         attr_list_file = arg
 
 try:
@@ -87,9 +101,21 @@ try:
     evt_subscriber_proxy = DeviceProxy(evt_subscriber_device_fqdn)
 
     # configure attribute
-    configure_success_count, configure_fail_count, already_configured_count, total_attrib_count = cm_configure_attributes()
-    print("Configured successfully: ", configure_success_count, "Failed: ", configure_fail_count,
-          "Already configured: ", already_configured_count, "Total attributes: ", total_attrib_count
-          )
+    (
+        configure_success_count,
+        configure_fail_count,
+        already_configured_count,
+        total_attrib_count,
+    ) = cm_configure_attributes()
+    print(
+        "Configured successfully: ",
+        configure_success_count,
+        "Failed: ",
+        configure_fail_count,
+        "Already configured: ",
+        already_configured_count,
+        "Total attributes: ",
+        total_attrib_count,
+    )
 except Exception as exception:
     print("Exception: ", exception)

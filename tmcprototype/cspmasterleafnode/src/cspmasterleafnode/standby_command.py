@@ -1,30 +1,43 @@
+# Tango import
 import tango
 from tango import DevState, DevFailed
+
+# Additional import
 from ska.base.commands import BaseCommand
+
 from tmc.common.tango_client import TangoClient
+
 from . import const
+
 
 class Standby(BaseCommand):
     """
-    A class for CspMasterLeafNode's Standby() command.
+    A class for CspMasterLeafNode's Standby() command. Standby command is inherited from BaseCommand.
+
+    It Sets the OpState to Standby.
     """
 
     def check_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state.
 
-        :return: True if this command is allowed to be run in current device state.
+        return:
+            True if this command is allowed to be run in current device state.
 
-        :rtype: boolean
+        rtype:
+            boolean
 
-        :raises: DevFailed if this command is not allowed to be run in current device state.
+        raises:
+            DevFailed if this command is not allowed to be run in current device state.
 
         """
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
-            tango.Except.throw_exception("Command Standby is not allowed in current state.",
-                                            "Failed to invoke Standby command on CspMasterLeafNode.",
-                                            "CspMasterLeafNode.Standby()",
-                                            tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                f"Command Standby is not allowed in current state {self.state_model.op_state}.",
+                "Failed to invoke Standby command on CspMasterLeafNode.",
+                "CspMasterLeafNode.Standby()",
+                tango.ErrSeverity.ERR,
+            )
 
         return True
 
@@ -49,37 +62,47 @@ class Standby(BaseCommand):
 
         """
         device = self.target
-        # Update logs and activity message attribute with received event
         if event.err:
-            log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
             device._read_activity_message = log_msg
         else:
-            log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+            log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
             device._read_activity_message = log_msg
 
     def do(self, argin):
         """
-        It invokes the STANDBY command on CSP Master.
+        Method to invoke Standby command on CSP Element.
+
         :param argin: DevStringArray.
         If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1
         , each array element specifies the FQDN of the CSP SubElement to put in STANDBY mode.
-        :return: None
-        :raises: DevFailed on communication failure with CspMaster or CspMaster is in error state.
+
+        return:
+            None
+
+        raises:
+            DevFailed on communication failure with CspMaster or CspMaster is in error state.
 
         """
         device_data = self.target
 
         try:
             csp_mln_client_obj = TangoClient(device_data.csp_master_ln_fqdn)
-            csp_mln_client_obj.send_command_async(const.CMD_STANDBY, argin, self.standby_cmd_ended_cb)
+            csp_mln_client_obj.send_command_async(
+                const.CMD_STANDBY, command_data=argin, callback_method=self.standby_cmd_ended_cb
+            )
             self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_EXE_STANDBY_CMD + str(dev_failed)
+            log_msg = f"{const.ERR_EXE_STANDBY_CMD}{dev_failed}"
             self.logger.exception(dev_failed)
             device_data._read_activity_message = const.ERR_EXE_STANDBY_CMD
-            tango.Except.re_throw_exception(dev_failed, const.STR_STANDBY_EXEC, log_msg,
-                                            "CspMasterLeafNode.StandbyCommand",
-                                            tango.ErrSeverity.ERR)
+            tango.Except.re_throw_exception(
+                dev_failed,
+                const.STR_STANDBY_EXEC,
+                log_msg,
+                "CspMasterLeafNode.StandbyCommand",
+                tango.ErrSeverity.ERR,
+            )

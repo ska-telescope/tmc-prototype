@@ -5,6 +5,24 @@
 
 MCCS Subarray Leaf Node
 ************
-.. automodule:: tmcprototype.mccssubarrayleafnode.src.mccssubarrayleafnode.mccs_subarray_leaf_node
-   :members:
+.. autoclass:: tmcprototype.mccssubarrayleafnode.src.mccssubarrayleafnode.mccs_subarray_leaf_node.MccsSubarrayLeafNode
+   :members: do
+   :undoc-members:
+.. autoclass:: tmcprototype.mccssubarrayleafnode.src.mccssubarrayleafnode.abort_command.Abort
+   :members: do
+   :undoc-members:
+.. autoclass:: tmcprototype.mccssubarrayleafnode.src.mccssubarrayleafnode.configure_command.Configure
+   :members: do
+   :undoc-members:
+.. autoclass:: tmcprototype.mccssubarrayleafnode.src.mccssubarrayleafnode.end_command.End
+   :members: do
+   :undoc-members:
+.. autoclass:: tmcprototype.mccssubarrayleafnode.src.mccssubarrayleafnode.end_scan_command.EndScan
+   :members: do
+   :undoc-members:
+.. autoclass:: tmcprototype.mccssubarrayleafnode.src.mccssubarrayleafnode.obsreset_command.ObsReset
+   :members: do
+   :undoc-members:
+.. autoclass:: tmcprototype.mccssubarrayleafnode.src.mccssubarrayleafnode.scan_command.Scan
+   :members: do
    :undoc-members:

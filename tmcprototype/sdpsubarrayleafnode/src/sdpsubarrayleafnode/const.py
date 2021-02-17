@@ -12,8 +12,10 @@ CMD_ON = "On"
 CMD_OFF = "Off"
 
 # #Error messages
-ERR_INIT_PROP_ATTR_CN = "Error on initialising properties and attributes " \
-                         "on Sdp Subarray Leaf Node Node device."
+ERR_INIT_PROP_ATTR_CN = (
+    "Error on initialising properties and attributes "
+    "on Sdp Subarray Leaf Node Node device."
+)
 ERR_INVALID_JSON = "Invalid JSON format"
 ERR_JSON_KEY_NOT_FOUND = "JSON key not found "
 ERR_ENDSCAN_INVOKING_CMD = "Error while invoking EndScan command on SDP Subarray."
@@ -27,11 +29,17 @@ ERR_CONFIGURE = "Error while invoking Configure command on SDP Subarray."
 ERR_SCAN = "Error while invoking Scan command on SDP Subarray."
 ERR_INVOKING_ON_CMD = "Error while invoking ON command on SDP Subarray."
 ERR_INVOKING_OFF_CMD = "Error while invoking OFF command on SDP Subarray."
-ERR_INVALID_JSON_CONFIG = "Invalid JSON format while invoking Configure command on SDP Subarray."
-ERR_INVALID_JSON_SCAN = "Invalid JSON format while invoking Scan command on SDP Subarray."
+ERR_INVALID_JSON_CONFIG = (
+    "Invalid JSON format while invoking Configure command on SDP Subarray."
+)
+ERR_INVALID_JSON_SCAN = (
+    "Invalid JSON format while invoking Scan command on SDP Subarray."
+)
 ERR_DEVICE_NOT_IN_SCAN = "SdpSubarray is not in SCANNING state."
 ERR_EXCEPT_CMD_CB = "Exception in CommandCallback: \n"
-ERR_EXCEPT_RELEASE_ALL_RESOURCES_CMD_CB = "Exception in ReleaseAllResources CommandCallback: \n"
+ERR_EXCEPT_RELEASE_ALL_RESOURCES_CMD_CB = (
+    "Exception in ReleaseAllResources CommandCallback: \n"
+)
 ERR_EXCEPT_CONFIGURE_CMD_CB = "Exception in Configure CommandCallback: \n"
 ERR_EXCEPT_SCAN_CMD_CB = "Exception in Scan CommandCallback: \n"
 ERR_EXCEPT_END_SCAN_CMD_CB = "Exception in EndScan CommandCallback: \n"
@@ -43,7 +51,9 @@ ERR_EXCEPT_OFF_CMD_CB = "Exception in Off CommandCallback: \n"
 ERR_DEVICE_NOT_READY = "SdpSubarray is not in ready state."
 ERR_DEVICE_NOT_EMPTY_OR_IDLE = "SdpSubarray is not in EMPTY/IDLE state."
 ERR_DEVICE_NOT_READY_IDLE = "SdpSubarray is not in ready or idle state."
-ERR_DEVICE_NOT_READY_IDLE_CONFIG_SCAN_RESET = "SdpSubarray is not in configuring, scanning, resetting, ready or idle state."
+ERR_DEVICE_NOT_READY_IDLE_CONFIG_SCAN_RESET = (
+    "SdpSubarray is not in configuring, scanning, resetting, ready or idle state."
+)
 ERR_DEVICE_NOT_ABORTED_FAULT = "SdpSubarray is not in aborted or fault state."
 ERR_INVOKING_CMD = "Error in invoking command: "
 ERR_IN_CREATE_PROXY_SDPSA = "Error in creating proxy of the SDP Subarray device."
@@ -57,7 +67,9 @@ STR_OK = " :-> OK"
 STR_DEGRADED = " :-> DEGRADED"
 STR_FAILED = " :-> FAILED"
 STR_UNKNOWN = " :-> UNKNOWN"
-STR_HEALTH_STATE_UNKNOWN_VAL = "SDP Subarray leaf healthState event returned unknown value \n"
+STR_HEALTH_STATE_UNKNOWN_VAL = (
+    "SDP Subarray leaf healthState event returned unknown value \n"
+)
 STR_ERR_MSG = "Error message is: "
 STR_INIT_SUCCESS = "SDP Subarray Leaf Node is initialized successfully."
 STR_FALSE = "False"
@@ -106,4 +118,3 @@ STR_SETTING_CB_MODEL = "Setting CallBack Model as :-> "
 
 # #PROPERTIES DEFAULT VALUES
 PROP_DEF_VAL_TM_MID_SDP_SA = "mid_sdp/elt/subarray_1"
-

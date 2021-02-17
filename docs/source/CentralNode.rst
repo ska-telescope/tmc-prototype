@@ -5,33 +5,22 @@
 
 Central Node
 ************
-.. automodule:: tmcprototype.centralnode.src.centralnode.central_node
-   :members:
-   :undoc-members:
-.. automodule:: tmcprototype.centralnode.src.centralnode.assign_resources_command
-   :members:
-   :undoc-members:
-.. automodule:: tmcprototype.centralnode.src.centralnode.release_resources_command
-   :members:
-   :undoc-members:
-.. automodule:: tmcprototype.centralnode.src.centralnode.standby_telescope_command
-   :members:
-   :undoc-members:
-.. automodule:: tmcprototype.centralnode.src.centralnode.startup_telescope_command
-   :members:
-   :undoc-members:
-.. automodule:: tmcprototype.centralnode.src.centralnode.stow_antennas_command
-   :members:
-   :undoc-members:
-.. automodule:: tmcprototype.centralnode.src.centralnode.health_state_aggregator
-   :members:
-   :undoc-members:
-.. automodule:: tmcprototype.centralnode.src.centralnode.receptor_reassignment_checker
-   :members:
-   :undoc-members:
-.. automodule:: tmcprototype.centralnode.src.centralnode.resource_manager
-   :members:
-   :undoc-members:
-.. automodule:: tmcprototype.centralnode.src.centralnode.obs_state_check
-   :members:
-   :undoc-members:
+
+.. autoclass::  tmcprototype.centralnode.src.centralnode.central_node.CentralNode
+    :members: None
+    :undoc-members:
+.. autoclass::  tmcprototype.centralnode.src.centralnode.assign_resources_command.AssignResources
+    :members: do
+    :undoc-members:
+.. autoclass::  tmcprototype.centralnode.src.centralnode.release_resources_command.ReleaseResources
+    :members: do
+    :undoc-members:
+.. autoclass::  tmcprototype.centralnode.src.centralnode.stand_by_telescope_command.StandByTelescope
+    :members: do
+    :undoc-members:
+.. autoclass::  tmcprototype.centralnode.src.centralnode.start_up_telescope_command.StartUpTelescope
+    :members: do
+    :undoc-members:
+.. autoclass::  tmcprototype.centralnode.src.centralnode.stow_antennas_command.StowAntennas
+    :members: do
+    :undoc-members:

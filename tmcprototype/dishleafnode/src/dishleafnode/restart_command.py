@@ -11,18 +11,23 @@
 """
 Restart class for DishLeafNode.
 """
-
+# Tango import
 import tango
 from tango import DevFailed, DevState
 
-from ska.base.commands import  BaseCommand
+# Additional import
+from ska.base.commands import BaseCommand
+
 from tmc.common.tango_client import TangoClient
+
 from .command_callback import CommandCallBack
 
 
 class Restart(BaseCommand):
     """
     A class for DishLeafNode's Restart command.
+
+    Invokes Restart command on the DishMaster.
     """
 
     def check_allowed(self):
@@ -30,21 +35,31 @@ class Restart(BaseCommand):
         Checks whether this command is allowed to be run in current device state
 
         :return: True if this command is allowed to be run in current device state
+
         :rtype: boolean
         """
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
             return False
 
         return True
 
     def do(self):
         """
-        Invokes StopCapture command on the DishMaster.
-        :param argin: None
+        Method to invoke Restart command on the DishMaster.
 
-        :return:None
+        param argin:
+            None
 
-        :raises DevFailed: If error occurs while invoking StopCapture command on DishMaster.
+        return:
+            None
+
+        raises:
+            DevFailed If error occurs while invoking StopCapture command on DishMaster.
+
         """
         device_data = self.target
         command_name = "Restart"
@@ -55,7 +70,9 @@ class Restart(BaseCommand):
             self.logger.info("'%s' command executed successfully.", command_name)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
-            log_message = f"Exception occured while executing the '{command_name}' command."
+            log_message = (
+                f"Exception occured while executing the '{command_name}' command."
+            )
             device_data._read_activity_message = log_message
             tango.Except.re_throw_exception(
                 dev_failed,
@@ -64,4 +81,3 @@ class Restart(BaseCommand):
                 "Restart.do()",
                 tango.ErrSeverity.ERR,
             )
-

@@ -10,7 +10,7 @@
 """Release information for Python Package"""
 
 name = """sdpmasterleafnode"""
-version = "0.2.16"
+version = "0.3.8"
 version_info = version.split(".")
 description = """ The primary responsibility of the SDP Subarray 
                   Leaf node is to monitor the SDP Subarray 
@@ -20,5 +20,3 @@ author_email = "telmgt-internal@googlegroups.com"
 license = """BSD-3-Clause"""
 url = """https://www.skatelescope.org"""
 copyright = """"""
-
-

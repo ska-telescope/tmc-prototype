@@ -3,14 +3,17 @@ import tango
 from tango import DevState, DevFailed
 
 # Additional import
+from ska.base.commands import BaseCommand
+
 from tmc.common.tango_client import TangoClient
-from ska.base.commands import  BaseCommand
+
 from . import const
-# PROTECTED REGION END #    //  SdpMasterLeafNode.additionnal_import
 
 class Disable(BaseCommand):
     """
-    A class for SDP master's Disable() command.
+    A class for SDP master's Disable() command. Disable command is inherited from BaseCommand.
+
+    Sets the State to Disable.
     """
 
     def check_allowed(self):
@@ -25,10 +28,12 @@ class Disable(BaseCommand):
              in current device state.
         """
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.ON]:
-            tango.Except.throw_exception("Disable() is not allowed in current state",
-                                         "Failed to invoke Disable command on SdpMasterLeafNode.",
-                                         "SdpMasterLeafNode.Disable() ",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                f"Disable() is not allowed in current state {self.state_model.op_state}",
+                "Failed to invoke Disable command on SdpMasterLeafNode.",
+                "SdpMasterLeafNode.Disable() ",
+                tango.ErrSeverity.ERR,
+            )
         return True
 
     def disable_cmd_ended_cb(self, event):
@@ -54,34 +59,40 @@ class Disable(BaseCommand):
         """
         device_data = self.target
         if event.err:
-            log_msg = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
             device_data._read_activity_message = log_msg
-
         else:
-            log_msg = const.STR_COMMAND + str(event.cmd_name) + const.STR_INVOKE_SUCCESS
+            log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
             device_data._read_activity_message = log_msg
 
     def do(self):
         """
-        Sets the OperatingState to Disable.
+        Method to invoke Disable command on SDP Master.
 
         :param argin: None.
 
-        :return: None
+        return:
+            None
 
         """
         device_data = self.target
         try:
             sdp_mln_client_obj = TangoClient(device_data.sdp_master_ln_fqdn)
-            sdp_mln_client_obj.send_command_async(const.CMD_Disable, None, self.disable_cmd_ended_cb)
+            sdp_mln_client_obj.send_command_async(
+                const.CMD_Disable, None, self.disable_cmd_ended_cb
+            )
             self.logger.debug(const.STR_DISABLE_CMS_SUCCESS)
             device_data._read_activity_message = const.STR_DISABLE_CMS_SUCCESS
 
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
-            log_msg = const.ERR_DISABLE_CMD_FAIL + str(dev_failed)
-            tango.Except.re_throw_exception(dev_failed, const.ERR_INVOKING_CMD, log_msg,
-                                            "SdpMasterLeafNode.DisableCommand()",
-                                            tango.ErrSeverity.ERR)
+            log_msg = f"{const.ERR_DISABLE_CMD_FAIL}{dev_failed}"
+            tango.Except.re_throw_exception(
+                dev_failed,
+                const.ERR_INVOKING_CMD,
+                log_msg,
+                "SdpMasterLeafNode.DisableCommand()",
+                tango.ErrSeverity.ERR,
+            )

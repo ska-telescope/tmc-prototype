@@ -49,9 +49,12 @@ def tango_context(mocker, devices_info):  # pylint: disable=redefined-outer-name
     # We need to know what the temporary DB filename is before we can mock out the `get_database`
     # function. The DB file is created on init and we need to patch it before the __enter__,
     # thus we manually call the __enter__ and __exit__ of MultiDeviceTestContext.
-    context = MultiDeviceTestContext(devices_info, host=HOST, port=PORT, process=True, daemon=False)
+    context = MultiDeviceTestContext(
+        devices_info, host=HOST, port=PORT, process=True, daemon=False
+    )
     with mock.patch(
-        "tango_simlib.utilities.helper_module.get_database", return_value=tango.Database(context.db)
+        "tango_simlib.utilities.helper_module.get_database",
+        return_value=tango.Database(context.db),
     ):
         context.__enter__()
         yield context

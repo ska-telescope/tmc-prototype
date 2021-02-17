@@ -21,6 +21,7 @@ from tango.server import run, attribute, command, device_property
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState
+
 from . import const, release
 from .device_data import DeviceData
 from .startup_telescope_command import StartUpTelescope
@@ -30,35 +31,66 @@ from .release_resources_command import ReleaseResources
 
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
-__all__ = ["CentralNode", "main", "AssignResources", "ReleaseResources", "StandByTelescope",
-           "StartUpTelescope"]
+__all__ = [
+    "CentralNode",
+    "main",
+    "AssignResources",
+    "ReleaseResources",
+    "StandByTelescope",
+    "StartUpTelescope",
+]
 
 
 class CentralNode(SKABaseDevice):
     """
     Central Node is a coordinator of the complete M&C system.
+
+    :Device Properties:
+
+        CentralAlarmHandler:
+            Device name of CentralAlarmHandler
+
+        TMAlarmHandler:
+            Device name of TMAlarmHandler
+
+        TMLowSubarrayNodes:
+            List of TM Low Subarray Node devices
+
+        MCCSMasterLeafNodeFQDN:
+            FQDN of Mccs Master Leaf Node.
+
+    :Device Attributes:
+
+        telescopeHealthState:
+            Health state of Telescope
+
+        subarray1HealthState:
+            Health state of SubarrayNode1
+
+        activityMessage:
+            String providing information about the current activity in Central Node.
+
     """
+
     # -----------------
     # Device Properties
     # -----------------
     CentralAlarmHandler = device_property(
-        dtype='str',
+        dtype="str",
         doc="Device name of CentralAlarmHandler ",
     )
 
     TMAlarmHandler = device_property(
-        dtype='str',
+        dtype="str",
         doc="Device name of TMAlarmHandler ",
     )
 
     TMLowSubarrayNodes = device_property(
-        dtype=('str',), 
+        dtype=("str",),
         doc="List of TM Low Subarray Node devices",
     )
 
-    MCCSMasterLeafNodeFQDN = device_property(
-        dtype='str'
-    )
+    MCCSMasterLeafNodeFQDN = device_property(dtype="str")
 
     # ----------
     # Attributes
@@ -75,10 +107,11 @@ class CentralNode(SKABaseDevice):
     )
 
     activityMessage = attribute(
-        dtype='str',
+        dtype="str",
         access=AttrWriteType.READ_WRITE,
         doc="Activity Message",
     )
+
 
     # ---------------
     # General methods
@@ -87,6 +120,7 @@ class CentralNode(SKABaseDevice):
         """
         A class for the TMC CentralNode's init_device() method.
         """
+
         def do(self):
             """
             Initializes the attributes and properties of the Central Node Low.
@@ -109,29 +143,37 @@ class CentralNode(SKABaseDevice):
                 device.device_data = device_data
                 # Initialise Attributes
                 device._health_state = HealthState.OK
-                device._build_state = '{},{},{}'.format(release.name,release.version,release.description)
+                device._build_state = "{},{},{}".format(
+                    release.name, release.version, release.description
+                )
                 device._version_id = release.version
                 device_data.mccs_master_ln_fqdn = device.MCCSMasterLeafNodeFQDN
+                device_data.mccs_controller_fqdn = "low-mccs/control/control"
                 device_data.subarray_low = device.TMLowSubarrayNodes
                 self.logger.debug(const.STR_INIT_SUCCESS)
 
             except DevFailed as dev_failed:
-                log_msg = const.ERR_INIT_PROP_ATTR_CN + str(dev_failed)
+                log_msg = f"{const.ERR_INIT_PROP_ATTR_CN}{dev_failed}"
                 self.logger.exception(dev_failed)
                 device._read_activity_message = const.ERR_INIT_PROP_ATTR_CN
-                tango.Except.throw_exception(const.STR_CMD_FAILED, log_msg, "CentralNode.InitCommand.do()",
-                                             tango.ErrSeverity.ERR)
+                tango.Except.throw_exception(
+                    const.STR_CMD_FAILED,
+                    log_msg,
+                    "CentralNode.InitCommand.do()",
+                    tango.ErrSeverity.ERR,
+                )
 
             for subarray in range(0, len(device.TMLowSubarrayNodes)):
                 # populate subarray_id-subarray proxy map
-                tokens = device.TMLowSubarrayNodes[subarray].split('/')
+                tokens = device.TMLowSubarrayNodes[subarray].split("/")
                 subarray_id = int(tokens[2])
-                device_data.subarray_FQDN_dict[subarray_id] = device.TMLowSubarrayNodes[subarray]
+                device_data.subarray_FQDN_dict[subarray_id] = device.TMLowSubarrayNodes[
+                    subarray
+                ]
 
             device._read_activity_message = "Central Node initialised successfully."
             self.logger.info(device._read_activity_message)
             return (ResultCode.OK, device._read_activity_message)
-
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(CentralNode.always_executed_hook) ENABLED START #
@@ -181,7 +223,7 @@ class CentralNode(SKABaseDevice):
         :return: True if this command is allowed to be run in current device state.
 
         :rtype: boolean
-        
+
         """
         handler = self.get_command_object("StandByTelescope")
         return handler.check_allowed()
@@ -198,7 +240,6 @@ class CentralNode(SKABaseDevice):
         handler = self.get_command_object("StandByTelescope")
         (result_code, message) = handler()
         return [[result_code], [message]]
-
 
     def is_StartUpTelescope_allowed(self):
         """
@@ -219,7 +260,7 @@ class CentralNode(SKABaseDevice):
     @DebugIt()
     def StartUpTelescope(self):
         """
-        This command invokes On() command on SubarrayNode, MCCSMasterLeafNode 
+        This command invokes On() command on SubarrayNode, MCCSMasterLeafNode
         and sets the Central Node into ON state.
         """
         handler = self.get_command_object("StartUpTelescope")
@@ -239,7 +280,7 @@ class CentralNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in='str',
+        dtype_in="str",
         doc_in="It accepts the subarray id, station ids, station beam id and channels in JSON string format",
     )
     @DebugIt()
@@ -263,11 +304,11 @@ class CentralNode(SKABaseDevice):
         """
         handler = self.get_command_object("ReleaseResources")
         return handler.check_allowed()
-    
+
     @command(
         dtype_in="str",
         doc_in="The string in JSON format. The JSON contains following values:\nsubarray_id: "
-               "and release_all boolean as true.",
+        "and release_all boolean as true.",
     )
     @DebugIt()
     def ReleaseResources(self, argin):
@@ -293,9 +334,12 @@ class CentralNode(SKABaseDevice):
         self.register_command_object("StandByTelescope", self.standby_telescope)
         self.register_command_object("AssignResources", self.assign_resources)
         self.register_command_object("ReleaseResources", self.release_resources)
+
+
 # ----------
 # Run server
 # ----------
+
 
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(CentralNode.main) ENABLED START #
@@ -311,5 +355,5 @@ def main(args=None, **kwargs):
     # PROTECTED REGION END #    //  CentralNode.main
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

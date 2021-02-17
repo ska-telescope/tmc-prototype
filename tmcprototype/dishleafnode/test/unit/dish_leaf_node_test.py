@@ -3,8 +3,9 @@ import importlib
 import types
 import sys
 import json
-# from unittest import mock
-# from unittest.mock import Mock, MagicMock
+
+from unittest import mock
+from unittest.mock import Mock, MagicMock
 import mock
 from mock import Mock
 from mock import MagicMock
@@ -17,11 +18,16 @@ from os.path import dirname, join
 
 from dishleafnode import DishLeafNode, const, release
 from dishleafnode.utils import DishMode
-from ska.base.control_model import HealthState, AdminMode, TestMode, SimulationMode, ControlMode
+from ska.base.control_model import (
+    HealthState,
+    AdminMode,
+    TestMode,
+    SimulationMode,
+    ControlMode,
+)
 from ska.base.control_model import LoggingLevel
 from tmc.common.tango_client import TangoClient
 from dishleafnode.device_data import DeviceData
-
 
 
 config_input_file = "command_Config.json"
@@ -47,40 +53,53 @@ with open(path, "r") as f:
 
 @pytest.fixture(scope="function")
 def mock_dish_master_proxy():
-    dut_properties = {'DishMasterFQDN': 'mid_d0001/elt/master'}
+    dut_properties = {"DishMasterFQDN": "mid_d0001/elt/master"}
     event_subscription_map = {}
-    Mock().subscribe_event.side_effect = (
-        lambda attr_name, event_type, callback, *args,
-               **kwargs: event_subscription_map.update({attr_name: callback}))
-    with fake_tango_system(DishLeafNode, initial_dut_properties=dut_properties) as tango_context:
-        with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
-            tango_client_obj = TangoClient(dut_properties['DishMasterFQDN'])
-            yield tango_context.device, tango_client_obj, dut_properties['DishMasterFQDN'], event_subscription_map
+    Mock().subscribe_event.side_effect = lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update(
+        {attr_name: callback}
+    )
+    with fake_tango_system(
+        DishLeafNode, initial_dut_properties=dut_properties
+    ) as tango_context:
+        with mock.patch.object(
+            TangoClient, "_get_deviceproxy", return_value=Mock()
+        ) as mock_obj:
+            tango_client_obj = TangoClient(dut_properties["DishMasterFQDN"])
+            yield tango_context.device, tango_client_obj, dut_properties[
+                "DishMasterFQDN"
+            ], event_subscription_map
 
 
 @pytest.fixture(scope="function")
 def event_subscription_mock():
-    dut_properties = {'DishMasterFQDN': 'mid_d0001/elt/master'}
+    dut_properties = {"DishMasterFQDN": "mid_d0001/elt/master"}
     event_subscription_map = {}
-    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
-        tango_client_obj = TangoClient(dut_properties['DishMasterFQDN'])
-        tango_client_obj.deviceproxy.command_inout_asynch.side_effect = (
-            lambda command_name, arg, callback, *args, **kwargs: event_subscription_map.update({command_name: callback}))
+    with mock.patch.object(
+        TangoClient, "_get_deviceproxy", return_value=Mock()
+    ) as mock_obj:
+        tango_client_obj = TangoClient(dut_properties["DishMasterFQDN"])
+        tango_client_obj.deviceproxy.command_inout_asynch.side_effect = lambda command_name, arg, callback, *args, **kwargs: event_subscription_map.update(
+            {command_name: callback}
+        )
         yield event_subscription_map
 
 
 @pytest.fixture(scope="function")
 def event_subscription_attr_mock():
-    dut_properties = {'DishMasterFQDN': 'mid_d0001/elt/master'}
+    dut_properties = {"DishMasterFQDN": "mid_d0001/elt/master"}
     event_subscription_map = {}
-    with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
-        tango_client_obj = TangoClient(dut_properties['DishMasterFQDN'])
-        tango_client_obj.deviceproxy.subscribe_event.side_effect = (
-            lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update({attr_name: callback}))
+    with mock.patch.object(
+        TangoClient, "_get_deviceproxy", return_value=Mock()
+    ) as mock_obj:
+        tango_client_obj = TangoClient(dut_properties["DishMasterFQDN"])
+        tango_client_obj.deviceproxy.subscribe_event.side_effect = lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update(
+            {attr_name: callback}
+        )
         yield event_subscription_map
 
 
 device_data = DeviceData.get_instance()
+
 
 @pytest.fixture(
     scope="function",
@@ -98,42 +117,44 @@ def command_without_arg(request):
     return cmd_name, requested_cmd
 
 
-def test_command_cb_is_invoked_when_command_without_arg_is_called_async(mock_dish_master_proxy, command_without_arg):
+def test_command_cb_is_invoked_when_command_without_arg_is_called_async(
+    mock_dish_master_proxy, command_without_arg
+):
     device_proxy, dish1_proxy_mock, _, _ = mock_dish_master_proxy
     cmd_name, requested_cmd = command_without_arg
 
     device_proxy.command_inout(cmd_name)
 
-    dish1_proxy_mock.deviceproxy.command_inout_asynch.assert_called_with(requested_cmd, None, 
-                                                                            any_method(with_name="cmd_ended_cb"))
+    dish1_proxy_mock.deviceproxy.command_inout_asynch.assert_called_with(
+        requested_cmd, None, any_method(with_name="cmd_ended_cb")
+    )
 
 
 def test_command_cb_is_invoked_when_standbylp_is_called_async(mock_dish_master_proxy):
     device_proxy, dish1_proxy_mock, _, _ = mock_dish_master_proxy
-    
+
     cmd_name = "SetOperateMode"
     device_proxy.command_inout(cmd_name)
     cmd_name = "SetStandbyLPMode"
     device_proxy.command_inout(cmd_name)
 
-    dish1_proxy_mock.deviceproxy.command_inout_asynch.assert_called_with(cmd_name, None, 
-                                                                             any_method(with_name="cmd_ended_cb"))
+    dish1_proxy_mock.deviceproxy.command_inout_asynch.assert_called_with(
+        cmd_name, None, any_method(with_name="cmd_ended_cb")
+    )
 
 
 @pytest.fixture(
     scope="function",
-    params=[
-        "SetStowMode",
-        "SetOperateMode",
-        "SetStandbyFPMode"
-    ],
+    params=["SetStowMode", "SetOperateMode", "SetStandbyFPMode"],
 )
 def command_name(request):
     cmd_name = request.param
     return cmd_name
 
 
-def test_activity_message_attribute_value_contains_command_name(mock_dish_master_proxy, event_subscription_mock, command_name):
+def test_activity_message_attribute_value_contains_command_name(
+    mock_dish_master_proxy, event_subscription_mock, command_name
+):
     device_proxy, _, _, _ = mock_dish_master_proxy
     device_proxy.command_inout(command_name)
     dummy_event = command_callback(command_name)
@@ -142,15 +163,18 @@ def test_activity_message_attribute_value_contains_command_name(mock_dish_master
 
 
 def test_activity_message_attribute_value_contains_command_name_with_event_error(
-    mock_dish_master_proxy, event_subscription_mock, command_name):
+    mock_dish_master_proxy, event_subscription_mock, command_name
+):
     device_proxy, _, _, _ = mock_dish_master_proxy
     device_proxy.command_inout(command_name)
     dummy_event = command_callback_with_event_error(command_name)
     event_subscription_mock[command_name](dummy_event)
     assert f"Error in invoking command: {command_name}" in device_proxy.activityMessage
-    
 
-def test_activity_message_attribute_value_contains_setstandbylpmode_command_name(mock_dish_master_proxy, event_subscription_mock):
+
+def test_activity_message_attribute_value_contains_setstandbylpmode_command_name(
+    mock_dish_master_proxy, event_subscription_mock
+):
     device_proxy, _, _, _ = mock_dish_master_proxy
     cmd_name = "SetOperateMode"
     device_proxy.command_inout(cmd_name)
@@ -162,7 +186,8 @@ def test_activity_message_attribute_value_contains_setstandbylpmode_command_name
 
 
 def test_activity_message_attribute_value_contains_setstandbylpmode_command_name_with_event_error(
-    mock_dish_master_proxy, event_subscription_mock):
+    mock_dish_master_proxy, event_subscription_mock
+):
     device_proxy, _, _, _ = mock_dish_master_proxy
     cmd_name = "SetOperateMode"
     device_proxy.command_inout(cmd_name)
@@ -214,8 +239,10 @@ def test_configure_should_raise_exception_when_called_with_invalid_arguments():
 
 # TODO: actual AZ and EL values need to be generated.
 @pytest.mark.xfail
-def test_configure_to_send_correct_configuration_data_when_dish_is_idle(mock_dish_master_proxy):
-    device_proxy, tango_client , _, _ = mock_dish_master_proxy
+def test_configure_to_send_correct_configuration_data_when_dish_is_idle(
+    mock_dish_master_proxy,
+):
+    device_proxy, tango_client, _, _ = mock_dish_master_proxy
     dish_config = config_input_str
     device_proxy.Configure(json.dumps(dish_config))
 
@@ -235,7 +262,9 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle(mock_dis
 
 # TODO: actual AZ and EL values need to be generated.
 @pytest.mark.xfail
-def test_configure_command_with_callback_method(mock_dish_master_proxy, event_subscription_mock):
+def test_configure_command_with_callback_method(
+    mock_dish_master_proxy, event_subscription_mock
+):
     device_proxy, _, _, _ = mock_dish_master_proxy
     dish_config = config_input_str
     device_proxy.Configure(json.dumps(dish_config))
@@ -273,13 +302,14 @@ def test_track_should_command_dish_to_start_tracking(mock_dish_master_proxy):
 
 # TODO: actual AZ and EL values need to be generated.
 @pytest.mark.xfail
-def test_track_command_with_callback_method(mock_dish_master_proxy, event_subscription_mock):
+def test_track_command_with_callback_method(
+    mock_dish_master_proxy, event_subscription_mock
+):
     device_proxy, device_proxy, _, _ = mock_dish_master_proxy
     device_proxy.Track("0")
     dummy_event = command_callback(const.CMD_TRACK)
     event_subscription_mock[const.CMD_TRACK](dummy_event)
     assert const.STR_COMMAND + const.CMD_TRACK in device_proxy.activityMessage
-
 
 
 @pytest.fixture(
@@ -300,16 +330,22 @@ def dish_mode(request):
     return request.param
 
 
-def test_dish_leaf_node_activity_message_reports_correct_dish_master_dish_mode(mock_dish_master_proxy, event_subscription_attr_mock, dish_mode):
+def test_dish_leaf_node_activity_message_reports_correct_dish_master_dish_mode(
+    mock_dish_master_proxy, event_subscription_attr_mock, dish_mode
+):
     device_proxy, tango_client_obj, dish_master1_fqdn, _ = mock_dish_master_proxy
     attribute_name = "dishMode"
     device_proxy.SetOperateMode()
-    dummy_event = create_dummy_event_for_dishmode(dish_master1_fqdn, dish_mode, attribute_name)
+    dummy_event = create_dummy_event_for_dishmode(
+        dish_master1_fqdn, dish_mode, attribute_name
+    )
     event_subscription_attr_mock[attribute_name](dummy_event)
-    assert device_proxy.activityMessage == f"dishMode is {dish_mode.value}."   
+    assert device_proxy.activityMessage == f"dishMode is {dish_mode.value}."
 
 
-def test_dish_leaf_node_dish_mode_with_error_event(mock_dish_master_proxy, event_subscription_attr_mock):
+def test_dish_leaf_node_dish_mode_with_error_event(
+    mock_dish_master_proxy, event_subscription_attr_mock
+):
     device_proxy, _, dish_master1_fqdn, _ = mock_dish_master_proxy
     dish_master_dishmode_attribute = "dishMode"
     dish_mode_value = 9
@@ -330,7 +366,9 @@ def command_name_with_args(request):
     return cmd_name, input_args
 
 
-def test_msg_in_activity_message_attribute(mock_dish_master_proxy, event_subscription_mock, command_name_with_args):
+def test_msg_in_activity_message_attribute(
+    mock_dish_master_proxy, event_subscription_mock, command_name_with_args
+):
     device_proxy, _, _, _ = mock_dish_master_proxy
     command_name, input_args = command_name_with_args
     device_proxy.command_inout(command_name, input_args)
@@ -339,7 +377,9 @@ def test_msg_in_activity_message_attribute(mock_dish_master_proxy, event_subscri
     assert f"Command :-> {command_name}" in device_proxy.activityMessage
 
 
-def test_activity_message_attribute_when_command_callback_is_called_with_error_event(mock_dish_master_proxy, event_subscription_mock, command_name_with_args):
+def test_activity_message_attribute_when_command_callback_is_called_with_error_event(
+    mock_dish_master_proxy, event_subscription_mock, command_name_with_args
+):
     device_proxy, _, _, _ = mock_dish_master_proxy
     command_name, input_args = command_name_with_args
     device_proxy.command_inout(command_name, input_args)
@@ -359,7 +399,9 @@ def command_with_arg(request):
     return cmd_name, input_arg, requested_cmd
 
 
-def test_command_cb_is_invoked_when_command_with_arg_is_called_async(mock_dish_master_proxy, command_with_arg):
+def test_command_cb_is_invoked_when_command_with_arg_is_called_async(
+    mock_dish_master_proxy, command_with_arg
+):
     device_proxy, dish1_proxy_mock, _, _ = mock_dish_master_proxy
     cmd_name, input_arg, requested_cmd = command_with_arg
 
@@ -368,11 +410,12 @@ def test_command_cb_is_invoked_when_command_with_arg_is_called_async(mock_dish_m
     # np.testing.assert_equal method.
     # See https://stackoverflow.com/questions/27781394/mock-assert-called-once-with-a-numpy-array-as-argument
     np.testing.assert_array_equal(
-        dish1_proxy_mock.deviceproxy.command_inout_asynch.call_args[0][1], np.array(input_arg)
+        dish1_proxy_mock.deviceproxy.command_inout_asynch.call_args[0][1],
+        np.array(input_arg),
     )
-    assert dish1_proxy_mock.deviceproxy.command_inout_asynch.call_args[0][2] == any_method(with_name="cmd_ended_cb")
-
-
+    assert dish1_proxy_mock.deviceproxy.command_inout_asynch.call_args[0][
+        2
+    ] == any_method(with_name="cmd_ended_cb")
 
 
 def create_dummy_event_for_dishmode(device_fqdn, dish_mode_value, attribute):
@@ -458,8 +501,6 @@ def raise_devfailed_exception(*args):
     )
 
 
-
-
 def test_version_id():
     """Test for versionId"""
     with fake_tango_system(DishLeafNode) as tango_context:
@@ -524,7 +565,9 @@ def fake_tango_system(
 
     device_under_test = getattr(patched_module, device_under_test.__name__)
 
-    device_test_context = DeviceTestContext(device_under_test, properties=initial_dut_properties)
+    device_test_context = DeviceTestContext(
+        device_under_test, properties=initial_dut_properties
+    )
     device_test_context.start()
     yield device_test_context
     device_test_context.stop()

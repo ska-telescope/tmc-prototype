@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+                    # -*- coding: utf-8 -*-
 #
 # This file is part of the DishLeafNode project
 #
@@ -15,9 +15,10 @@ StopTrack class for DishLeafNode.
 import tango
 from tango import DevFailed, DevState
 
-from ska.base.commands import  BaseCommand
+from ska.base.commands import BaseCommand
 from tmc.common.tango_client import TangoClient
 from .command_callback import CommandCallBack
+
 
 class StopTrack(BaseCommand):
     """
@@ -31,7 +32,11 @@ class StopTrack(BaseCommand):
         :return: True if this command is allowed to be run in current device state.
         :rtype: boolean
         """
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
             return False
 
         return True
@@ -40,11 +45,15 @@ class StopTrack(BaseCommand):
         """
         Invokes TrackStop command on the DishMaster.
 
-        :param argin: None
+        param argin:
+            None
 
-        :return:None
+        return:
+            None
 
-        :raises DevFailed: If error occurs while invoking TrackStop command on DishMaster.
+        raises:
+            DevFailed If error occurs while invoking TrackStop command on DishMaster.
+
         """
         device_data = self.target
         command_name = "StopTrack"
@@ -58,7 +67,9 @@ class StopTrack(BaseCommand):
             self.logger.info("'%s' command executed successfully.", command_name)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
-            log_message = f"Exception occured while executing the '{command_name}' command."
+            log_message = (
+                f"Exception occured while executing the '{command_name}' command."
+            )
             device_data._read_activity_message = log_message
             tango.Except.re_throw_exception(
                 dev_failed,
@@ -67,4 +78,3 @@ class StopTrack(BaseCommand):
                 f"DishLeafNode.{command_name}Command",
                 tango.ErrSeverity.ERR,
             )
-

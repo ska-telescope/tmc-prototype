@@ -8,25 +8,36 @@ from tango import DevFailed
 # Additional import
 from ska.base.commands import ResultCode
 from ska.base import SKASubarray
+
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
+
 from . import const
+
 
 class Abort(SKASubarray.AbortCommand):
     """
     A class for SubarrayNode's Abort() command.
+
+    This command on Subarray Node Low invokes Abort command on MCCS Subarray Leaf Node and aborts ongoing
+    activity.
+
     """
+
     def do(self):
         """
-        This command on Subarray Node Low invokes Abort command on MCCS Subarray Leaf Node and aborts ongoing
-        activity.
+        Method to invoke Abort command.
 
-        :return: A tuple containing a return code and a string
+        return:
+            A tuple containing a return code and a string
             message indicating status. The message is for
             information purpose only.
-        :rtype: (ResultCode, str)
 
-        :raises: DevFailed if error occurs in invoking command on MCCS Subarrayleaf node.
+        rtype:
+            (ResultCode, str)
+
+        raises:
+            DevFailed if error occurs in invoking command on MCCS Subarrayleaf node.
 
         """
         device_data = self.target
@@ -44,12 +55,14 @@ class Abort(SKASubarray.AbortCommand):
                 return (ResultCode.STARTED, const.STR_ABORT_SUCCESS)
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_ABORT_INVOKING_CMD + str(dev_failed)
+            log_msg = f"{const.ERR_ABORT_INVOKING_CMD}{dev_failed}"
             self.logger.exception(dev_failed)
-            tango.Except.throw_exception(const.ERR_ABORT_INVOKING_CMD,
-                                         log_msg,
-                                         "SubarrayNode.Abort",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.ERR_ABORT_INVOKING_CMD,
+                log_msg,
+                "SubarrayNode.Abort",
+                tango.ErrSeverity.ERR,
+            )
 
     def abort_mccs(self, mccs_sa_ln_fqdn):
         """
@@ -57,13 +70,9 @@ class Abort(SKASubarray.AbortCommand):
 
         :param argin: MCCS SubarrayLeafNode FQDN
 
-        :return: None
+        return:
+            None
         """
         mccs_client = TangoClient(mccs_sa_ln_fqdn)
         mccs_client.send_command(const.CMD_ABORT)
         self.logger.info(const.STR_CMD_ABORT_INV_MCCS)
-
-
-
-
-

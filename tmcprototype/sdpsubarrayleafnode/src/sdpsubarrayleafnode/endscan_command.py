@@ -5,16 +5,21 @@ EndScan class for SDPSubarrayLeafNode.
 # Tango imports
 import tango
 from tango import DevState, DevFailed
+
 # Additional import
 from ska.base.commands import BaseCommand
-# from ska.base.control_model import ObsState
+
 from tmc.common.tango_client import TangoClient
+
 from . import const
 
 
 class EndScan(BaseCommand):
     """
     A class for SdpSubarrayLeafNode's EndScan() command.
+
+    It invokes EndScan command on Sdp Subarray.
+    This command is allowed when Sdp Subarray is in SCANNING state.
     """
 
     def check_allowed(self):
@@ -29,14 +34,20 @@ class EndScan(BaseCommand):
         :raises: Exception if command execution throws any type of exception.
 
         """
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-            tango.Except.throw_exception("EndScan() is not allowed in current state",
-                                            "Failed to invoke EndScan command on SdpSubarrayLeafNode.",
-                                            "sdpsubarrayleafnode.EndScan()",
-                                            tango.ErrSeverity.ERR)
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
+            tango.Except.throw_exception(
+                f"EndScan() is not allowed in current state{self.state_model.op_state}",
+                "Failed to invoke EndScan command on SdpSubarrayLeafNode.",
+                "sdpsubarrayleafnode.EndScan()",
+                tango.ErrSeverity.ERR,
+            )
 
-        # TODO: Mock obs_state issue to be resolved     
-        # device_data = self.target   
+        # TODO: Mock obs_state issue to be resolved
+        # device_data = self.target
         # sdp_sa_ln_client = TangoClient(device_data._sdp_sa_fqdn)
         # if sdp_sa_ln_client.get_attribute("obsState") != ObsState.SCANNING:
         #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_SCAN, "Failed to invoke EndScan command on SdpSubarrayLeafNode."
@@ -68,7 +79,7 @@ class EndScan(BaseCommand):
         """
         device_data = self.target
         if event.err:
-            log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             device_data._read_activity_message = log
             self.logger.error(log)
         else:
@@ -78,26 +89,32 @@ class EndScan(BaseCommand):
 
     def do(self):
         """
-        It invokes EndScan command on SdpSubarray.
-        This command is allowed when SdpSubarray is in SCANNING state.
+        Method to invoke EndScan command on SDP Subarray.
 
         :param argin: None
 
-        :return: None
+        return:
+            None
 
-        :raises: DevFailed if the command execution is not successful.
+        raises:
+            DevFailed if the command execution is not successful.
         """
         device_data = self.target
         try:
             sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
-            sdp_sa_ln_client_obj.send_command_async(const.CMD_ENDSCAN, None, self.endscan_cmd_ended_cb)
+            sdp_sa_ln_client_obj.send_command_async(
+                const.CMD_ENDSCAN, None, self.endscan_cmd_ended_cb
+            )
             device_data._read_activity_message = const.STR_ENDSCAN_SUCCESS
             self.logger.info(const.STR_ENDSCAN_SUCCESS)
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_ENDSCAN_INVOKING_CMD + str(dev_failed)
+            log_msg = f"{const.ERR_ENDSCAN_INVOKING_CMD}{dev_failed}"
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
-            tango.Except.throw_exception(const.STR_ENDSCAN_EXEC, log_msg,
-                                            "SdpSubarrayLeafNode.EndScan()",
-                                            tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_ENDSCAN_EXEC,
+                log_msg,
+                "SdpSubarrayLeafNode.EndScan()",
+                tango.ErrSeverity.ERR,
+            )

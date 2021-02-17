@@ -20,7 +20,14 @@ from .configure_command import ElementDeviceData
 from .device_data import DeviceData
 from .scan_command import Scan
 
-__all__ = ["SubarrayNode", "ElementDeviceData", "const", "release", "DeviceData", "Scan"]
+__all__ = [
+    "SubarrayNode",
+    "ElementDeviceData",
+    "const",
+    "release",
+    "DeviceData",
+    "Scan",
+]
 
 __version__ = release.version
 __version_info__ = release.version_info

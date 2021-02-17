@@ -11,12 +11,15 @@
 """
 ObsReset class for DishLeafNode.
 """
-
+# Tango imports
 import tango
 from tango import DevFailed, DevState
 
-from ska.base.commands import  BaseCommand
+# Additional import
+from ska.base.commands import BaseCommand
+
 from tmc.common.tango_client import TangoClient
+
 from .command_callback import CommandCallBack
 
 
@@ -39,13 +42,17 @@ class ObsReset(BaseCommand):
 
     def do(self):
         """
-        Invokes StopCapture command on the DishMaster.
+        Invokes ObsReset command on the DishMaster.
 
-        :param argin: None
+        param argin:
+            None
 
-        :return:None
+        return:
+            None
 
-        :raises DevFailed: If error occurs while invoking StopCapture command on DishMaster.
+        raises:
+            DevFailed If error occurs while invoking StopCapture command on DishMaster.
+
         """
         device_data = self.target
         command_name = "ObsReset"
@@ -56,7 +63,9 @@ class ObsReset(BaseCommand):
             self.logger.info("'%s' command executed successfully.", command_name)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
-            log_message = f"Exception occured while executing the '{command_name}' command."
+            log_message = (
+                f"Exception occured while executing the '{command_name}' command."
+            )
             device_data._read_activity_message = log_message
             tango.Except.re_throw_exception(
                 dev_failed,

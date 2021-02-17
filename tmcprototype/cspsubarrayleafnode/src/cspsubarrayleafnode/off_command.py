@@ -6,12 +6,16 @@ Off class for CspSubarrayLeafNode.
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
+
 from . import const
 from .delay_model import DelayManager
+
 
 class Off(SKABaseDevice.OffCommand):
     """
     A class for CSP Subarray's Off() command.
+
+    Invokes Off command on the CSP Subarray.
     """
 
     def off_cmd_ended_cb(self, event):
@@ -37,7 +41,7 @@ class Off(SKABaseDevice.OffCommand):
         """
         device_data = self.target
         if event.err:
-            log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             device_data._read_activity_message = log
             self.logger.error(log)
         else:
@@ -47,14 +51,17 @@ class Off(SKABaseDevice.OffCommand):
 
     def do(self):
         """
-        Invokes Off command on the CSP Subarray.
+        Method to invoke Off command on CSP Subarray.
 
-        :param argin: None.
+        param argin:
+            None
 
-        :return: A tuple containing a return code and a string message indicating status.
-        The message is for information purpose only.
+        return:
+            A tuple containing a return code and a string message indicating status.
+            The message is for information purpose only.
 
-        :rtype: (ResultCode, str)
+        rtype:
+            (ResultCode, str)
 
         """
         log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS

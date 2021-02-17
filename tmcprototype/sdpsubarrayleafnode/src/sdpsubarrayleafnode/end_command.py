@@ -5,15 +5,21 @@ End class for SDPSubarrayLeafNode.
 # Tango imports
 import tango
 from tango import DevState, DevFailed
+
 # Additional import
 from ska.base.commands import BaseCommand
-# from ska.base.control_model import ObsState
+
 from tmc.common.tango_client import TangoClient
+
 from . import const
+
 
 class End(BaseCommand):
     """
-    A class for SdpSubarrayLeafNode's End() command.
+    A class for SdpSubarrayLeafNode's End command.
+
+    This command invokes End command on SDP Subarray to end the current Scheduling block.
+
     """
 
     def check_allowed(self):
@@ -27,11 +33,17 @@ class End(BaseCommand):
         :raises: Exception if command execution throws any type of exception.
 
         """
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.DISABLE]:
-            tango.Except.throw_exception("End() is not allowed in current state",
-                                            "Failed to invoke End command on SdpSubarrayLeafNode.",
-                                            "sdpsubarrayleafnode.End()",
-                                            tango.ErrSeverity.ERR)
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
+            tango.Except.throw_exception(
+                f"End() is not allowed in current state {self.state_model.op_state}",
+                "Failed to invoke End command on SdpSubarrayLeafNode.",
+                "sdpsubarrayleafnode.End()",
+                tango.ErrSeverity.ERR,
+            )
 
         # TODO: Mock obs_state issue to be resolved
         # device_data = self.target
@@ -66,7 +78,7 @@ class End(BaseCommand):
         """
         device_data = self.target
         if event.err:
-            log = const.ERR_INVOKING_CMD + str(event.cmd_name) + "\n" + str(event.errors)
+            log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             device_data._read_activity_message = log
             self.logger.error(log)
         else:
@@ -76,23 +88,30 @@ class End(BaseCommand):
 
     def do(self):
         """
-        This command invokes End command on SDP subarray to end the current Scheduling block.
+        Method to invoke End command on SDP Subarray.
 
-        :return: None
+        return:
+            None
 
-        :raises: DevFailed if the command execution is not successful.
+        raises:
+            DevFailed if the command execution is not successful.
         """
         device_data = self.target
         try:
             sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
-            sdp_sa_ln_client_obj.send_command_async(const.CMD_END, None, self.end_cmd_ended_cb)
+            sdp_sa_ln_client_obj.send_command_async(
+                const.CMD_END, None, self.end_cmd_ended_cb
+            )
             device_data._read_activity_message = const.STR_END_SUCCESS
             self.logger.info(const.STR_END_SUCCESS)
 
         except DevFailed as dev_failed:
-            log_msg = const.ERR_END_INVOKING_CMD + str(dev_failed)
+            log_msg = f"{const.ERR_END_INVOKING_CMD}{dev_failed}"
             device_data._read_activity_message = log_msg
             self.logger.exception(dev_failed)
-            tango.Except.throw_exception(const.STR_END_EXEC, log_msg,
-                                            "SdpSubarrayLeafNode.EndCommand()",
-                                            tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_END_EXEC,
+                log_msg,
+                "SdpSubarrayLeafNode.EndCommand()",
+                tango.ErrSeverity.ERR,
+            )
