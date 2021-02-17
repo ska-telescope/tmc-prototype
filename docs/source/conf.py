@@ -32,7 +32,6 @@ autodoc_mock_imports = [
     "marshmallow",
     "ska.cdm.messages",
     "ska.cdm.schemas",
-    "ska.cdm.messages.central_node.assign_resources",
     "AssignResourcesRequest",
     "CODEC",
     "ValidationError",
