@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""tmcprototype"""
-version="0.5.0"
+version="0.5.1"
 version_info=version.split(".")
 description="""TMC Prototype"""
 author="Team NCRA"
@@ -10,9 +10,9 @@ license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
 
-release=0.5.0
-tag=0.5.0
-tag_description=Updated TMC mid helm chart that utilises new CentralNode and SubarrayNode docker image
-release_notes=This release contains:<br/><ul><li>Updated TMC mid helm chart that utilises new CentralNode and SubarrayNode docker image</li></ul><br/>
-gitlab_username=kmadisa
-private_token=MvMGxfndSVktgaw13jep
+release=0.5.1
+tag=0.5.1
+tag_description=Updated TMC devices to achieve objectives SPO-990 and SPO-921
+release_notes=This release contains:<br/><ul><li>Updated TMC mid helm chart that utilises new CentralNode and SubarrayNode docker image</li><li>Updated and verified the TMC-MCCS interface as per feature SP-1461</li></ul><br/>
+gitlab_username=apurvapatkar
+private_token=WxDBEBzAwNwrPxZnxQ3Q
