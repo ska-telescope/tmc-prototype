@@ -91,6 +91,7 @@ class AssignResources(BaseCommand):
             # Check if Mccs On command is completed
             assert device_data.cmd_res_evt_val == 0
             json_argument = json.loads(argin)
+            json_argument_mccs = json.loads(argin)
             subarray_id = int(json_argument["mccs"]["subarray_id"])
             subarray_cmd_data = self._create_subarray_cmd_data(json_argument)
             log_msg = f"Assigning resources to subarray :-> {subarray_id}"
@@ -100,7 +101,7 @@ class AssignResources(BaseCommand):
             )
             self.invoke_assign_resources(subarray_client, subarray_cmd_data)
 
-            input_mccs_assign = json.dumps(json_argument["mccs"])
+            input_mccs_assign = json.dumps(json_argument_mccs["mccs"])
             mccs_master_ln_client = self.create_client(device_data.mccs_master_ln_fqdn)
             self.invoke_assign_resources(mccs_master_ln_client, input_mccs_assign)
 

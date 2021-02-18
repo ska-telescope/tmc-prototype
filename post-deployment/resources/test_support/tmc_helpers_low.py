@@ -34,7 +34,7 @@ def start_up():
     CentralNodeLow.StartUpTelescope()
 
 
-@sync_assign_resources(300)
+@sync_assign_resources(150)
 def compose_sub():
     resource("ska_low/tm_subarray_node/1").assert_attribute("State").equals("ON")
     resource("ska_low/tm_subarray_node/1").assert_attribute("obsState").equals("EMPTY")
@@ -63,7 +63,11 @@ def end():
 def release_resources():
     resource("ska_low/tm_subarray_node/1").assert_attribute("obsState").equals("IDLE")
     CentralNodeLow = DeviceProxy("ska_low/tm_central/central_node")
-    CentralNodeLow.ReleaseResources('{"subarray_id":1,"release_all":true}')
+    release_resources_file = (
+        "resources/test_data/TMC_integration/mccs_release_resources.json"
+    )
+    release_resource_str = load_config_from_file(release_resources_file)
+    CentralNodeLow.ReleaseResources(release_resource_str)
     SubarrayNodeLow = DeviceProxy("ska_low/tm_subarray_node/1")
     LOGGER.info(
         "After Invoking Release Resource on Subarray, SubarrayNodeLow State and ObsState:"
@@ -100,22 +104,20 @@ def configure_sub():
     LOGGER.info("Invoked Configure on Subarray")
 
 
-@sync_abort
-def abort():
-    resource("ska_low/tm_subarray_node/1").assert_attribute("State").equals("ON")
-    resource("ska_low/tm_subarray_node/1").assert_attribute("obsState").equals("IDLE")
-    SubarrayNodeLow = DeviceProxy("ska_low/tm_subarray_node/1")
-    SubarrayNodeLow.Abort()
-    LOGGER.info("Subarray obsState is: " + str(SubarrayNodeLow.obsState))
-    LOGGER.info("Invoked Abort on Subarray")
-
-
 @sync_scan(200)
 def scan_sub():
     SubarrayNodeLow = DeviceProxy("ska_low/tm_subarray_node/1")
-    SubarrayNodeLow.Scan('{"id":1}')
+    scan_command_file = ("resources/test_data/TMC_integration/mccs_scan.json")
+    scan_str = load_config_from_file(scan_command_file)
+    SubarrayNodeLow.Scan(scan_str)
     LOGGER.info("Scan Started")
 
+def scan_for_scanning():
+    SubarrayNodeLow = DeviceProxy("ska_low/tm_subarray_node/1")
+    scan_command_file = ("resources/test_data/TMC_integration/mccs_scan.json")
+    scan_str = load_config_from_file(scan_command_file)
+    SubarrayNodeLow.Scan(scan_str)
+    LOGGER.info("Scan Started")
 
 @sync_abort
 def abort_sub():
@@ -125,7 +127,7 @@ def abort_sub():
 
 
 @sync_obsreset
-def ObsReset_sub():
+def obsreset_sub():
     SubarrayNodeLow = DeviceProxy("ska_low/tm_subarray_node/1")
     SubarrayNodeLow.ObsReset()
     LOGGER.info("ObsReset command invoked on SubarrayNodeLow.")

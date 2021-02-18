@@ -226,7 +226,7 @@ class SubarrayNode(SKASubarray):
         self.register_command_object("Scan", self.scan)
         self.register_command_object("End", self.end)
         self.register_command_object("EndScan", self.endscan)
-        self.register_command_object("ObsReset", self.endscan)
+        self.register_command_object("ObsReset", self.obsreset)
         self.register_command_object("Abort", self.abort)
 
 

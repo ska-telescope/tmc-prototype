@@ -19,9 +19,7 @@ devices_to_log = ["ska_low/tm_subarray_node/1", "low-mccs/subarray/01"]
 
 LOGGER = logging.getLogger(__name__)
 
-# @pytest.mark.low
-@pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
-# @pytest.mark.xfail(reason="Run the test case once mccs image is available")
+@pytest.mark.low
 def test_abort():
     try:
         # given an interface to TMC to interact with a subarray node and a central node
@@ -48,21 +46,11 @@ def test_abort():
         resource("ska_low/tm_subarray_node/1").assert_attribute("obsState").equals(
             "READY"
         )
-        LOGGER.info("Scanning the subarray")
-        fixture["state"] = "Subarray SCANNING"
-        tmc.scan_sub()
-        LOGGER.info("Aborting the subarray")
-        fixture["state"] = "Subarray ABORTING"
-
-        @sync_abort()
+        
+        @sync_abort
         def abort():
-            resource("ska_low/tm_subarray_node/1").assert_attribute("State").equals(
-                "ON"
-            )
-            resource("ska_low/tm_subarray_node/1").assert_attribute("obsState").equals(
-                "SCANNING"
-            )
             SubarrayNodeLow = DeviceProxy("ska_low/tm_subarray_node/1")
+            tmc.scan_for_scanning()
             SubarrayNodeLow.Abort()
             LOGGER.info("Invoked Abort on Subarray")
 
@@ -71,20 +59,15 @@ def test_abort():
         fixture["state"] = "Subarray Aborted"
 
         # tear down
-        # TODO: Waiting for obsreset tobe implemented.
-        tmc.obsreset()
+        # TODO: Waiting for obsreset to be implemented.
+        tmc.obsreset_sub()
         LOGGER.info("Obsreset is complete on Subarray")
         fixture["state"] = "Subarray IDLE"
         tmc.release_resources()
         LOGGER.info("Invoked ReleaseResources on Subarray")
         tmc.set_to_standby()
         LOGGER.info("Invoked StandBy on Subarray")
-        # tear down
-        LOGGER.info("TMC-ObsReset tests complete: tearing down...")
-
-        tmc.set_to_standby()
-        LOGGER.info("Invoked StandBy on Subarray")
-
+       
     except:
         LOGGER.info("Tearing down failed test, state = {}".format(fixture["state"]))
         if fixture["state"] == "Telescope On":

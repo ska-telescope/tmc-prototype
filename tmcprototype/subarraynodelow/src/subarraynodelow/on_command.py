@@ -44,6 +44,8 @@ class On(SKASubarray.OnCommand):
         """
         device_data = DeviceData.get_instance()
         device_data.is_release_resources = False
+        device_data.is_abort_command_executed = False
+        device_data.is_obsreset_command_executed = False
         device_data.health_state_aggregator = HealthStateAggregator()
         device_data.obs_state_aggregator = ObsStateAggregator()
         device_data.health_state_aggregator.subscribe()
