@@ -49,7 +49,7 @@ def test_endscan():
 
         def endscan():
             SubarrayNodeLow = DeviceProxy("ska_low/tm_subarray_node/1")
-            SubarrayNodeLow.Scan('{"id":1}')
+            tmc.scan_for_scanning()
             SubarrayNodeLow.EndScan()
 
         endscan()

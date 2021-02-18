@@ -41,7 +41,7 @@ class ObsReset(SKASubarray.ObsResetCommand):
             DevFailed if error occurs while invoking command on MccsSubarrayLeafNode.
         """
         device_data = self.target
-        device_data.is_abort_command = False
+        device_data.is_abort_command_executed = False
         try:
             self.logger.info("ObsReset command invoked on SubarrayNodeLow.")
             mccs_subarray_ln_client = TangoClient(device_data.mccs_subarray_ln_fqdn)
@@ -51,7 +51,7 @@ class ObsReset(SKASubarray.ObsResetCommand):
 
             tango_server_helper_obj = TangoServerHelper.get_instance()
             tango_server_helper_obj.set_status(const.STR_OBSRESET_SUCCESS)
-            device_data.is_obsreset_command = True
+            device_data.is_obsreset_command_executed = True
             return (ResultCode.STARTED, const.STR_OBSRESET_SUCCESS)
 
         except DevFailed as dev_failed:
