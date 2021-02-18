@@ -29,7 +29,7 @@ dependencies:
   version: 0.3.6
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: tmc-mid
-  version: 0.2.5
+  version: 0.2.6
   repository: file://../tmc-mid
 - name: webjive
   version: 1.0.11

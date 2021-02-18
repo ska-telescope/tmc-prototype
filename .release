@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""tmcprototype"""
-version="0.4.1"
+version="0.5.0"
 version_info=version.split(".")
 description="""TMC Prototype"""
 author="Team NCRA"
@@ -10,9 +10,9 @@ license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
 
-release=0.4.1
-tag=0.4.1
-tag_description=Update the dish master simulator interface
-release_notes=This release contains:<br/><ul><li>This updates the interface of the DishMaster simulator to match with the DishMaster specification document.</li></ul><br/>
+release=0.5.0
+tag=0.5.0
+tag_description=Updated TMC mid helm chart that utilises new CentralNode and SubarrayNode docker image
+release_notes=This release contains:<br/><ul><li>Updated TMC mid helm chart that utilises new CentralNode and SubarrayNode docker image</li></ul><br/>
 gitlab_username=kmadisa
 private_token=MvMGxfndSVktgaw13jep
