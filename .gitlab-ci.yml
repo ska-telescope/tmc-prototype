@@ -30,32 +30,6 @@ stages:
   - pages
   - release
 
-build CentralNode wheel for publication: # Executed on a tag
-  stage: build
-  tags:
-    - docker-executor
-  script:
-    - cd ./tmcprototype/centralnode
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
-  only:
-    - tags
-  artifacts:
-    paths:
-      - ./tmcprototype/centralnode/dist/
-
-build CentralNode wheel for development: # Executed on a commit
-  stage: build
-  tags:
-    - docker-executor
-  script:
-    - cd ./tmcprototype/centralnode
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
-  except:
-    - tags
-  artifacts:
-    paths:
-      - ./tmcprototype/centralnode/dist/
-
 build CentralNodeLow wheel for publication: # Executed on a tag
   stage: build
   tags:
@@ -81,32 +55,6 @@ build CentralNodeLow wheel for development: # Executed on a commit
   artifacts:
     paths:
       - ./tmcprototype/centralnodelow/dist/
-
-build SubarrayNode wheel for publication: # Executed on a tag
-  stage: build
-  tags:
-    - docker-executor
-  script:
-    - cd ./tmcprototype/subarraynode
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
-  only:
-    - tags
-  artifacts:
-    paths:
-      - ./tmcprototype/subarraynode/dist/
-
-build SubarrayNode wheel for development: # Executed on a commit
-  stage: build
-  tags:
-    - docker-executor
-  script:
-    - cd ./tmcprototype/subarraynode
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
-  except:
-    - tags
-  artifacts:
-    paths:
-      - ./tmcprototype/subarraynode/dist/
 
 build SubarrayNodeLow wheel for publication: # Executed on a tag
   stage: build
@@ -437,9 +385,7 @@ publish to nexus:
     TWINE_PASSWORD: $TWINE_PASSWORD
   script:
     - python3 -m pip install twine
-    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/centralnode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/centralnodelow/dist/*
-    - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/subarraynode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/subarraynodelow/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/dishleafnode/dist/*
     - twine upload --repository-url $PYPI_REPOSITORY_URL ./tmcprototype/cspmasterleafnode/dist/*
@@ -473,8 +419,6 @@ pages:
     - mv public/reports/mccsmasterleafnode_htmlcov/* public
     - mv public/reports/sdpmasterleafnode_htmlcov/* public
     - mv public/reports/dishleafnode_htmlcov/* public
-    - mv public/reports/subarraynode_htmlcov/* public
-    - mv public/reports/centralnode_htmlcov/* public
     - mv public/reports/subarraynodelow_htmlcov/* public
     - mv public/reports/centralnodelow_htmlcov/* public
     - make build

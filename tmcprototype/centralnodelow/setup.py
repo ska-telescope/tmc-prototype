@@ -27,7 +27,7 @@ exec(open(release_filename).read())
 setup(
     name=name,
     version=version,
-    description="Central Node is a coordinator of the complete M&C system for SKA Low.",
+    description="Central Node low is a coordinator of the complete M&C system for SKA Low.",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     include_package_data=True,

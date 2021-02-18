@@ -50,6 +50,7 @@ setup(
         "ska_logging==0.3.0",
         "lmcbaseclasses==0.7.2",
         "skatmccommon==0.1.2+b01374cf",
+        "ska-log-transactions == 0.1.0"
     ],
     # test_suite='test',
     setup_requires=[

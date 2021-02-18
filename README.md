@@ -23,8 +23,9 @@
 
 This is the repository for the TMC evolutionary prototype. The prototype aims to realize Telescope Monitoring and Control functionality, and utilizes the platform, tools and technology specified for the SKA construction.
 
-The prototype utilizes the base classes created in-line with the SKA Control System Guidelines and Tango coding standards. Developed in **Python 3.7** (PyTango 9.3.2), it is a single repository consisting twelve packages - CentralNode, CentralNodeLow, SubarrayNode, SubarrayNodeLow, DishLeafNode, CspMasterLeafNode, CspSubarrayLeafNode, SdpMasterLeafNode, SdpSubarrayLeafNode, MccsMasterLeafNode, MccsSubarrayLeafNode and DishMaster.
-
+The prototype utilizes the base classes created in-line with the SKA Control System Guidelines and Tango coding standards. Developed in **Python 3.7** (PyTango 9.3.2), it is a single repository consisting ten packages - CentralNodeLow, SubarrayNodeLow, DishLeafNode, CspMasterLeafNode, CspSubarrayLeafNode, SdpMasterLeafNode, SdpSubarrayLeafNode, MccsMasterLeafNode, MccsSubarrayLeafNode and DishMaster.
+CentralNode device is implementated in a separate gitlab repository which is available at https://gitlab.com/ska-telescope/ska-tmc-centralnode-mid .
+SubarrayNode device is implemented in a separate gitlab repository which is available at https://gitlab.com/ska-telescope/ska-tmc-subarraynode-mid .
 TMC prototype addresses the  following architectural aspects and functionality:
 
 ## 1.1 Architecture
