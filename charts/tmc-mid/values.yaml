@@ -36,7 +36,21 @@ tmcprototype:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: tmcprototype
-    tag: 0.3.9
+    tag: 0.5.0
+    pullPolicy: IfNotPresent
+
+centralnodemid:
+  image:
+    registry: nexus.engageska-portugal.pt/ska-telescope
+    image: ska-tmc-centralnode-mid
+    tag: 0.1.1
+    pullPolicy: IfNotPresent
+
+subarraynodemid:
+  image:
+    registry: nexus.engageska-portugal.pt/ska-telescope
+    image: ska-tmc-subarraynode-mid
+    tag: 0.1.2
     pullPolicy: IfNotPresent
 
 resources:
@@ -249,10 +263,10 @@ deviceServers:
       - device: ska_mid/tm_leaf_node/csp_subarray01
       - device: ska_mid/tm_leaf_node/sdp_subarray01
     image:
-      registry: "{{.Values.tmcprototype.image.registry}}"
-      image: "{{.Values.tmcprototype.image.image}}"
-      tag: "{{.Values.tmcprototype.image.tag}}"
-      pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
+      registry: "{{.Values.subarraynodemid.image.registry}}"
+      image: "{{.Values.subarraynodemid.image.image}}"
+      tag: "{{.Values.subarraynodemid.image.tag}}"
+      pullPolicy: "{{.Values.subarraynodemid.image.pullPolicy}}"
   - name: subarraynode2
     function: observation-execution
     domain: subarray
@@ -262,10 +276,10 @@ deviceServers:
       - device: ska_mid/tm_leaf_node/csp_subarray02
       - device: ska_mid/tm_leaf_node/sdp_subarray02
     image:
-      registry: "{{.Values.tmcprototype.image.registry}}"
-      image: "{{.Values.tmcprototype.image.image}}"
-      tag: "{{.Values.tmcprototype.image.tag}}"
-      pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
+      registry: "{{.Values.subarraynodemid.image.registry}}"
+      image: "{{.Values.subarraynodemid.image.image}}"
+      tag: "{{.Values.subarraynodemid.image.tag}}"
+      pullPolicy: "{{.Values.subarraynodemid.image.pullPolicy}}"
   - name: subarraynode3
     function: observation-execution
     domain: subarray
@@ -275,10 +289,10 @@ deviceServers:
       - device: ska_mid/tm_leaf_node/csp_subarray03
       - device: ska_mid/tm_leaf_node/sdp_subarray03
     image:
-      registry: "{{.Values.tmcprototype.image.registry}}"
-      image: "{{.Values.tmcprototype.image.image}}"
-      tag: "{{.Values.tmcprototype.image.tag}}"
-      pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
+      registry: "{{.Values.subarraynodemid.image.registry}}"
+      image: "{{.Values.subarraynodemid.image.image}}"
+      tag: "{{.Values.subarraynodemid.image.tag}}"
+      pullPolicy: "{{.Values.subarraynodemid.image.pullPolicy}}"
   - name: centralnode
     function: telescope-monitoring
     domain: general-monitoring
@@ -291,10 +305,10 @@ deviceServers:
       - device: ska_mid/tm_subarray_node/2
       - device: ska_mid/tm_subarray_node/3
     image:
-      registry: "{{.Values.tmcprototype.image.registry}}"
-      image: "{{.Values.tmcprototype.image.image}}"
-      tag: "{{.Values.tmcprototype.image.tag}}"
-      pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
+      registry: "{{.Values.centralnodemid.image.registry}}"
+      image: "{{.Values.centralnodemid.image.image}}"
+      tag: "{{.Values.centralnodemid.image.tag}}"
+      pullPolicy: "{{.Values.centralnodemid.image.pullPolicy}}"
   - name: tm-alarmhandler
     function: alarm-management
     domain: general-monitoring
