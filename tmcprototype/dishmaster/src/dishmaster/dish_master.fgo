@@ -50,10 +50,10 @@
             "polling": 3000,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "ON",
+            "string": "STANDBY",
             "time": 1602497011.473705,
             "unit": "",
-            "value": 0,
+            "value": 7,
             "writable": "READ"
         },
         "Status": {
@@ -106,10 +106,10 @@
             "polling": 3000,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "Device mid_dsh_0000/elt/master is running",
+            "string": "Device mid_dsh_0000/elt/master in standby",
             "time": 1602497011.473706,
             "unit": "",
-            "value": "Device mid_dsh_0000/elt/master is running",
+            "value": "Device mid_dsh_0000/elt/master is standby",
             "writable": "READ"
         },
         "achievedPointing": {
@@ -1693,8 +1693,8 @@
                 "OFF",
                 "STARTUP",
                 "SHUTDOWN",
-                "STANDBY-LP",
-                "STANDBY-FP",
+                "STANDBY_LP",
+                "STANDBY_FP",
                 "STOW",
                 "CONFIG",
                 "OPERATE",
@@ -1736,7 +1736,7 @@
             "time": 1602497000.703595,
             "unit": "",
             "value": 4,
-            "writable": "READ_WRITE"
+            "writable": "READ"
         },
         "dishState": {
             "alarms": {
@@ -2003,8 +2003,8 @@
                 "OFF",
                 "UNKNOWN",
                 "STARTUP",
-                "STANDBY-LP",
-                "STANDBY-FP",
+                "STANDBY_LP",
+                "STANDBY_FP",
                 "MAINTENANCE",
                 "STOW",
                 "ESTOP",
@@ -2181,7 +2181,7 @@
             "data_format": "SPECTRUM",
             "data_type": "DevString",
             "database": "10.96.64.100:10000",
-            "description": " DS set STANDBY-FP mode task progress status ",
+            "description": " DS set STANDBY_FP mode task progress status ",
             "device": "mid_dsh_0000/elt/master",
             "dim_x": 2,
             "dim_y": 0,
@@ -2240,7 +2240,7 @@
             "data_format": "SPECTRUM",
             "data_type": "DevString",
             "database": "10.96.64.100:10000",
-            "description": " DS set STANDBY-LP mode task progress status ",
+            "description": " DS set STANDBY_LP mode task progress status ",
             "device": "mid_dsh_0000/elt/master",
             "dim_x": 2,
             "dim_y": 0,
@@ -6694,8 +6694,8 @@
                 "UNKNOWN",
                 "OFF",
                 "STARTUP",
-                "STANDBY-LP",
-                "STANDBY-FP",
+                "STANDBY_LP",
+                "STANDBY_FP",
                 "DATA-CAPTURE",
                 "CONFIGURE",
                 "MAINTENANCE"
@@ -7759,7 +7759,7 @@
             "data_format": "SCALAR",
             "data_type": "DevEnum",
             "database": "10.96.64.100:10000",
-            "description": " Set dish STANDBY-FP mode task progress status ",
+            "description": " Set dish STANDBY_FP mode task progress status ",
             "device": "mid_dsh_0000/elt/master",
             "dim_x": 1,
             "dim_y": 0,
@@ -7943,7 +7943,7 @@
             "data_format": "SPECTRUM",
             "data_type": "DevString",
             "database": "10.96.64.100:10000",
-            "description": " Set dish STANDBY-LP mode task progress status ",
+            "description": " Set dish STANDBY_LP mode task progress status ",
             "device": "mid_dsh_0000/elt/master",
             "dim_x": 2,
             "dim_y": 0,
@@ -8002,7 +8002,7 @@
             "data_format": "SCALAR",
             "data_type": "DevEnum",
             "database": "10.96.64.100:10000",
-            "description": " Set dish STANDBY-LP mode task progress status ",
+            "description": " Set dish STANDBY_LP mode task progress status ",
             "device": "mid_dsh_0000/elt/master",
             "dim_x": 1,
             "dim_y": 0,
@@ -8850,7 +8850,7 @@
             "dim_y": 0,
             "display_unit": "No display unit",
             "enum_labels": [
-                "STANDBY-LP",
+                "STANDBY_LP",
                 "OPERATE"
             ],
             "events": {
@@ -9140,7 +9140,7 @@
             "enum_labels": [
                 "OFF",
                 "STARTUP",
-                "STANDBY-LP",
+                "STANDBY_LP",
                 "OPERATE",
                 "MAINTENANCE",
                 "ERROR",
@@ -9749,7 +9749,7 @@
             "enum_labels": [
                 "OFF",
                 "STARTUP",
-                "STANDBY-LP",
+                "STANDBY_LP",
                 "OPERATE",
                 "MAINTENANCE",
                 "ERROR"
@@ -10051,7 +10051,7 @@
             "data_format": "SPECTRUM",
             "data_type": "DevString",
             "database": "10.96.64.100:10000",
-            "description": " SPF set feed STANDBY-LP mode ",
+            "description": " SPF set feed STANDBY_LP mode ",
             "device": "mid_dsh_0000/elt/master",
             "dim_x": 3,
             "dim_y": 0,
@@ -12479,8 +12479,8 @@
             "in_type": "DevVoid",
             "in_type_desc": "Uninitialised",
             "name": "SetMaintenanceMode",
-            "out_type": "DevVarLongStringArray",
-            "out_type_desc": "== Long field ==\n[0]: ack code (0=OK, 1=QUEUED, 2=FAILED)\n\n== String field ==\n[0]: Informative message or error/fault description"
+            "out_type": "DevVoid",
+            "out_type_desc": "Uninitialised"
         },
         "SetOperateMode": {
             "cmd_name": "SetOperateMode",
@@ -12490,8 +12490,8 @@
             "in_type": "DevVoid",
             "in_type_desc": "Uninitialised",
             "name": "SetOperateMode",
-            "out_type": "DevVarLongStringArray",
-            "out_type_desc": "0]: ack code (0=OK, 1=QUEUED, 2=FAILED)\n\n== String field ==\n[0]: Informative message or error/fault description"
+            "out_type": "DevVoid",
+            "out_type_desc": "Uninitialised"
         },
         "SetRxMaintenanceMode": {
             "cmd_name": "SetRxMaintenanceMode",
@@ -12587,7 +12587,7 @@
             "device": "mid_dsh_0000/elt/master",
             "disp_level": "OPERATOR",
             "in_type": "DevVarShortArray",
-            "in_type_desc": "[0]: bandId [1-5]\n[1]: mode\n\nAllowed modes are:\n\n0= STANDBY-LP\n1= OPERATE\n2= MAINTENANCE",
+            "in_type_desc": "[0]: bandId [1-5]\n[1]: mode\n\nAllowed modes are:\n\n0= STANDBY_LP\n1= OPERATE\n2= MAINTENANCE",
             "name": "SetSPFFeedMode",
             "out_type": "DevVarLongStringArray",
             "out_type_desc": "Uninitialised"
@@ -12721,7 +12721,7 @@
             "in_type": "DevVoid",
             "in_type_desc": "Uninitialised",
             "name": "SetStandbyFPMode",
-            "out_type": "DevVarLongStringArray",
+            "out_type": "DevVoid",
             "out_type_desc": "Uninitialised"
         },
         "SetStandbyFPModeOnBandError": {
@@ -12743,7 +12743,7 @@
             "in_type": "DevVoid",
             "in_type_desc": "Uninitialised",
             "name": "SetStandbyLPMode",
-            "out_type": "DevVarLongStringArray",
+            "out_type": "DevVoid",
             "out_type_desc": "Uninitialised"
         },
         "SetStowMode": {
@@ -12754,8 +12754,8 @@
             "in_type": "DevVoid",
             "in_type_desc": "Uninitialised",
             "name": "SetStowMode",
-            "out_type": "DevVarLongStringArray",
-            "out_type_desc": "== Long field ==\n[0]: ack code (0=OK, 1=QUEUED, 2=FAILED)\n\n== String field ==\n[0]: Informative message or error/fault description"
+            "out_type": "DevVoid",
+            "out_type_desc": "Uninitialised"
         },
         "SetTMProxyAddress": {
             "cmd_name": "SetTMProxyAddress",

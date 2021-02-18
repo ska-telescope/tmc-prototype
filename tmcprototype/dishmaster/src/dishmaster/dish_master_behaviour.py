@@ -51,7 +51,7 @@ class OverrideDish(object):
     last_coordinate_update_timestamp = 0.0
 
     def _configureband(self, model, band_number):
-        _allowed_modes = ("STANDBY-FP", "OPERATE", "STOW")
+        _allowed_modes = ("STANDBY_FP", "OPERATE", "STOW")
         ds_indexer_position = model.sim_quantities["dsIndexerPosition"]
         configured_band = model.sim_quantities["configuredBand"]
         dish_mode_quantity = model.sim_quantities["dishMode"]
@@ -86,11 +86,11 @@ class OverrideDish(object):
         """This command triggers the Dish to transition to the CONFIGURE Dish Element
         Mode, and returns to the caller. To configure the Dish to operate in frequency
         band 1. On completion of the band configuration, Dish will automatically
-        revert to the previous Dish mode (OPERATE or STANDBY-FP).
+        revert to the previous Dish mode (OPERATE or STANDBY_FP).
 
         :param model: tango_simlib.model.Model
         :param data_input: None
-        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY-FP, OPERATE, STOW).
+        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY_FP, OPERATE, STOW).
         """
         self._configureband(model, "1")
 
@@ -100,11 +100,11 @@ class OverrideDish(object):
         """This command triggers the Dish to transition to the CONFIGURE Dish Element
         Mode, and returns to the caller. To configure the Dish to operate in frequency
         band 2. On completion of the band configuration, Dish will automatically
-        revert to the previous Dish mode (OPERATE or STANDBY-FP).
+        revert to the previous Dish mode (OPERATE or STANDBY_FP).
 
         :param model: tango_simlib.model.Model
         :param data_input: None
-        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY-FP, OPERATE, STOW).
+        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY_FP, OPERATE, STOW).
         """
         self._configureband(model, "2")
 
@@ -114,11 +114,11 @@ class OverrideDish(object):
         """This command triggers the Dish to transition to the CONFIGURE Dish Element
         Mode, and returns to the caller. To configure the Dish to operate in frequency
         band 3. On completion of the band configuration, Dish will automatically
-        revert to the previous Dish mode (OPERATE or STANDBY-FP).
+        revert to the previous Dish mode (OPERATE or STANDBY_FP).
 
         :param model: tango_simlib.model.Model
         :param data_input: None
-        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY-FP, OPERATE, STOW).
+        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY_FP, OPERATE, STOW).
         """
         self._configureband(model, "3")
 
@@ -128,11 +128,11 @@ class OverrideDish(object):
         """This command triggers the Dish to transition to the CONFIGURE Dish Element
         Mode, and returns to the caller. To configure the Dish to operate in frequency
         band 4. On completion of the band configuration, Dish will automatically
-        revert to the previous Dish mode (OPERATE or STANDBY-FP).
+        revert to the previous Dish mode (OPERATE or STANDBY_FP).
 
         :param model: tango_simlib.model.Model
         :param data_input: None
-        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY-FP, OPERATE, STOW).
+        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY_FP, OPERATE, STOW).
         """
         self._configureband(model, "4")
 
@@ -142,11 +142,11 @@ class OverrideDish(object):
         """This command triggers the Dish to transition to the CONFIGURE Dish Element
         Mode, and returns to the caller. To configure the Dish to operate in frequency
         band 5a. On completion of the band configuration, Dish will automatically
-        revert to the previous Dish mode (OPERATE or STANDBY-FP).
+        revert to the previous Dish mode (OPERATE or STANDBY_FP).
 
         :param model: tango_simlib.model.Model
         :param data_input: None
-        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY-FP, OPERATE, STOW).
+        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY_FP, OPERATE, STOW).
         """
         self._configureband(model, "5a")
 
@@ -156,11 +156,11 @@ class OverrideDish(object):
         """This command triggers the Dish to transition to the CONFIGURE Dish Element
         Mode, and returns to the caller. To configure the Dish to operate in frequency
         band 5b. On completion of the band configuration, Dish will automatically
-        revert to the previous Dish mode (OPERATE or STANDBY-FP).
+        revert to the previous Dish mode (OPERATE or STANDBY_FP).
 
         :param model: tango_simlib.model.Model
         :param data_input: None
-        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY-FP, OPERATE, STOW).
+        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY_FP, OPERATE, STOW).
         """
         self._configureband(model, "5b")
 
@@ -170,11 +170,11 @@ class OverrideDish(object):
         """This command triggers the Dish to transition to the CONFIGURE Dish Element
         Mode, and returns to the caller. To configure the Dish to operate in frequency
         band 5c. On completion of the band configuration, Dish will automatically
-        revert to the previous Dish mode (OPERATE or STANDBY-FP).
+        revert to the previous Dish mode (OPERATE or STANDBY_FP).
 
         :param model: tango_simlib.model.Model
         :param data_input: None
-        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY-FP, OPERATE, STOW).
+        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY_FP, OPERATE, STOW).
         """
         self._configureband(model, "5c")
 
@@ -235,15 +235,16 @@ class OverrideDish(object):
 
         :param model: tango_simlib.model.Model
         :param data_input: None
-        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY-LP, STANDBY-FP).
+        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY_LP, STANDBY_FP).
         """
         maintenance = "MAINTENANCE"
-        _allowed_modes = ("STANDBY-LP", "STANDBY-FP")
+        _allowed_modes = ("STANDBY_LP", "STANDBY_FP")
         dish_mode_quantity = model.sim_quantities["dishMode"]
         dish_mode = get_enum_str(dish_mode_quantity)
 
         if dish_mode == maintenance:
-            return [[self.OK], [f"DISH is already in '{maintenance}' mode"]]
+            model.logger.info("Dish is already in '%s' mode", maintenance)
+            return
 
         if dish_mode in _allowed_modes:
             elev = self.MIN_DESIRED_ELEV
@@ -261,7 +262,6 @@ class OverrideDish(object):
             self._reset_pointing_state(model)
         else:
             self._throw_exception("SetMaintenanceMode", _allowed_modes)
-        return [[self.OK], [f"Dish transitioned to '{maintenance}' Mode"]]
 
     def action_setoperatemode(
         self, model, tango_dev=None, data_input=None
@@ -273,15 +273,16 @@ class OverrideDish(object):
 
         :param model: tango_simlib.model.Model
         :param data_input: None
-        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY-FP).
+        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY_FP).
         """
         operate = "OPERATE"
-        _allowed_modes = ("STANDBY-FP",)
+        _allowed_modes = ("STANDBY_FP",)
         dish_mode_quantity = model.sim_quantities["dishMode"]
         dish_mode = get_enum_str(dish_mode_quantity)
 
         if dish_mode == operate:
-            return [[self.OK], [f"DISH is already in '{operate}' mode"]]
+            model.logger.info("Dish is already in '%s' mode", operate)
+            return
 
         if dish_mode in _allowed_modes:
             configuredBand = model.sim_quantities["configuredBand"]
@@ -303,27 +304,27 @@ class OverrideDish(object):
 
         tango_dev.set_state(DevState.ON)
         model.logger.info("Dish state set to 'ON'.")
-        return [[self.OK], [f"Dish transitioned to '{operate} Mode"]]
 
     def action_setstandbyfpmode(
         self, model, tango_dev=None, data_input=None
     ):  # pylint: disable=W0613
-        """This command triggers the Dish to transition to the STANDBY-FP Dish
+        """This command triggers the Dish to transition to the STANDBY_FP Dish
         Element Mode, and returns to the caller. To prepare all subsystems
         for active observation, once a command is received by TM to go to the
         FULL_POWER mode.
 
         :param model: tango_simlib.model.Model
         :param data_input: None
-        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY-LP, STOW, OPERATE, MAINTENANCE).
+        :raises DevFailed: dishMode is not in any of the allowed modes (STANDBY_LP, STOW, OPERATE, MAINTENANCE).
         """
-        standby_fp = "STANDBY-FP"
-        _allowed_modes = ("STANDBY-LP", "STOW", "OPERATE", "MAINTENANCE")
+        standby_fp = "STANDBY_FP"
+        _allowed_modes = ("STANDBY_LP", "STOW", "OPERATE", "MAINTENANCE")
         dish_mode_quantity = model.sim_quantities["dishMode"]
         dish_mode = get_enum_str(dish_mode_quantity)
 
         if dish_mode == standby_fp:
-            return [[self.OK], [f"DISH is already in '{standby_fp}' mode"]]
+            model.logger.info("Dish is already in '%s' mode", standby_fp)
+            return
 
         if dish_mode in _allowed_modes:
             set_enum(dish_mode_quantity, standby_fp, model.time_func())
@@ -336,12 +337,11 @@ class OverrideDish(object):
 
         tango_dev.set_state(DevState.STANDBY)
         model.logger.info("Dish state set to 'STANDBY'.")
-        return [[self.OK], [f"Dish transitioned to '{standby_fp}' mode"]]
 
     def action_setstandbylpmode(
         self, model, tango_dev=None, data_input=None
     ):  # pylint: disable=W0613
-        """This command triggers the Dish to transition to the STANDBY-LP Dish Element
+        """This command triggers the Dish to transition to the STANDBY_LP Dish Element
         Mode, and returns to the caller. Standby_LP is the default mode when the Dish
         is configured for low power consumption, and is the mode wherein Dish ends after
         a start up procedure.
@@ -349,14 +349,14 @@ class OverrideDish(object):
         :param model: tango_simlib.model.Model
         :param data_input: None
         :raises DevFailed: dishMode is not in any of the allowed modes
-            (OFF, STARTUP, SHUTDOWN, STANDBY-FP, MAINTENANCE, STOW, CONFIG, OPERATE).
+            (OFF, STARTUP, SHUTDOWN, STANDBY_FP, MAINTENANCE, STOW, CONFIG, OPERATE).
         """
-        standby_lp = "STANDBY-LP"
+        standby_lp = "STANDBY_LP"
         _allowed_modes = (
             "OFF",
             "STARTUP",
             "SHUTDOWN",
-            "STANDBY-FP",
+            "STANDBY_FP",
             "MAINTENANCE",
             "STOW",
             "CONFIG",
@@ -366,7 +366,8 @@ class OverrideDish(object):
         dish_mode = get_enum_str(dish_mode_quantity)
 
         if dish_mode == standby_lp:
-            return [[self.OK], [f"DISH is already in '{standby_lp}' mode"]]
+            model.logger.info("Dish is already in '%s' mode", standby_lp)
+            return
 
         if dish_mode in _allowed_modes:
             set_enum(dish_mode_quantity, standby_lp, model.time_func())
@@ -379,7 +380,6 @@ class OverrideDish(object):
 
         tango_dev.set_state(DevState.STANDBY)
         model.logger.info("Dish state set to 'STANDBY'.")
-        return [[self.OK], [f"Dish transitioned to '{standby_lp}' mode"]]
 
     def action_setstowmode(
         self, model, tango_dev=None, data_input=None
@@ -393,15 +393,15 @@ class OverrideDish(object):
         :param model: tango_simlib.model.Model
         :param data_input: None
         :raises DevFailed: dishMode is not in any of the allowed modes
-            (OFF, STARTUP, SHUTDOWN, STANDBY-LP, STANDBY-FP, MAINTENANCE, CONFIG, OPERATE).
+            (OFF, STARTUP, SHUTDOWN, STANDBY_LP, STANDBY_FP, MAINTENANCE, CONFIG, OPERATE).
         """
         stow = "STOW"
         _allowed_modes = (
             "OFF",
             "STARTUP",
             "SHUTDOWN",
-            "STANDBY-LP",
-            "STANDBY-FP",
+            "STANDBY_LP",
+            "STANDBY_FP",
             "MAINTENANCE",
             "CONFIG",
             "OPERATE",
@@ -410,7 +410,8 @@ class OverrideDish(object):
         dish_mode = get_enum_str(dish_mode_quantity)
 
         if dish_mode == stow:
-            return [[self.OK], [f"DISH is already in '{stow}' mode"]]
+            model.logger.info("Dish is already in '%s' mode", stow)
+            return
 
         if dish_mode in _allowed_modes:
             elev = self.MAX_DESIRED_ELEV
@@ -431,7 +432,6 @@ class OverrideDish(object):
             self._reset_pointing_state(model)
         else:
             self._throw_exception("SetStowMode", _allowed_modes)
-        return [[self.OK], [f"Dish transitioned to '{stow}' mode."]]
 
     def action_startcapture(
         self, model, tango_dev=None, data_input=None
