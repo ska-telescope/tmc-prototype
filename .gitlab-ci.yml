@@ -292,6 +292,15 @@ build DishMaster wheel for development: # Executed on a commit
     paths:
       - ./tmcprototype/dishmaster/dist/
 
+build tmc-prototype:
+  stage: build
+  tags:
+    - docker-executor
+  script:
+    - make build
+  except:
+    - tags
+
 unit tests:
   image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
   stage: unit-test
@@ -437,9 +446,9 @@ release tmc:
   script:
     - make release-tmc-prototype USERNAME=$GITLAB_USER_NAME EMAILID=$GITLAB_USER_EMAIL # Publish tag on the gitlab and tagged image on Nexus
   when: manual
-  only:
-    refs:
-      - master
+  # only:
+  #   refs:
+  #     - master
 
 
 # Standardised included jobs
