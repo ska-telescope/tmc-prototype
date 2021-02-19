@@ -26,9 +26,9 @@ stages:
   - unit-test
   - test
   - linting
+  - release
   - publish
   - pages
-  - release
 
 build CentralNodeLow wheel for publication: # Executed on a tag
   stage: build
@@ -445,10 +445,6 @@ release tmc:
   script:
     - make release-tmc-prototype USERNAME=$GITLAB_USER_NAME EMAILID=$GITLAB_USER_EMAIL # Publish tag on the gitlab and tagged image on Nexus
   when: manual
-  # only:
-  #   refs:
-  #     - master
-
 
 # Standardised included jobs
 variables:
