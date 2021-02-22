@@ -301,23 +301,6 @@ build DishMaster wheel for development: # Executed on a commit
 #     - make build
 
 
-build-image:
-  stage: build
-  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
-  dependencies:
-    - test
-  tags:
-    - k8srunner
-  script:
-    - export IMG="$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
-    - docker build --pull --tag "$IMG" .
-    - echo -n "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
-    - docker push "$IMG"
-  artifacts:
-    paths:
-      - current_tag.txt
-
-
 unit tests:
   image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
   stage: unit-test
@@ -328,6 +311,22 @@ unit tests:
   artifacts:
     paths:
       - ./build
+
+build-image:
+  stage: build
+  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
+  dependencies:
+    - unit tests
+  tags:
+    - k8srunner
+  script:
+    - export IMG="$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+    - docker build --pull --tag "$IMG" .
+    - echo -n "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+    - docker push "$IMG"
+  artifacts:
+    paths:
+      - current_tag.txt
 
 
 test-mid:
