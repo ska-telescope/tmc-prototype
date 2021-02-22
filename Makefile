@@ -49,12 +49,28 @@ DOCKER_VOLUMES ?= /var/run/docker.sock:/var/run/docker.sock
 # registry credentials - user/pass/registry - set these in PrivateRules.mak
 DOCKER_REGISTRY_USER_LOGIN ?=  ## registry credentials - user - set in PrivateRules.mak
 CI_REGISTRY_PASS_LOGIN ?=  ## registry credentials - pass - set in PrivateRules.mak
-CI_REGISTRY ?= gitlab.com/ska-telescope/tmc-prototype
+#CI_REGISTRY ?= gitlab.com/ska-telescope/tmc-prototype
+CI_REGISTRY ?= gitlab.com/ska-telescope/$(PROJECT)
 
 CI_PROJECT_DIR ?= .
 
 KUBE_CONFIG_BASE64 ?=  ## base64 encoded kubectl credentials for KUBECONFIG
 KUBECONFIG ?= /etc/deploy/config ## KUBECONFIG location
+
+
+ifneq ($(CI_JOB_ID),)
+CI_PROJECT_IMAGE := 
+VALUES_FILE = values-gitlab-ci.yaml
+CUSTOM_VALUES = --set tmcprototype.tmcmid.image.registry=$(CI_REGISTRY)/ska-telescope \
+	--set tmcprototype.tmcmid.image.tag=$(CI_COMMIT_SHORT_SHA)
+else
+endif
+
+ifneq ($(VALUES_FILE),)
+CUSTOM_VALUES := --values $(VALUES_FILE) $(CUSTOM_VALUES)
+else
+endif
+
 
 XAUTHORITYx ?= ${XAUTHORITY}
 THIS_HOST := $(shell ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n1)
