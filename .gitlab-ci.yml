@@ -311,6 +311,7 @@ unit tests:
   artifacts:
     paths:
       - ./build
+  when: manual
 
 build-image:
   stage: build
