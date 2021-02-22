@@ -58,6 +58,8 @@ KUBE_CONFIG_BASE64 ?=  ## base64 encoded kubectl credentials for KUBECONFIG
 KUBECONFIG ?= /etc/deploy/config ## KUBECONFIG location
 
 VALUES_FILE ?= values-gitlab-ci.yaml
+CUSTOM_VALUES = 
+
 ifneq ($(CI_JOB_ID),)
 CI_PROJECT_IMAGE := 
 VALUES_FILE = values-gitlab-ci.yaml
