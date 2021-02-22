@@ -292,13 +292,31 @@ build DishMaster wheel for development: # Executed on a commit
     paths:
       - ./tmcprototype/dishmaster/dist/
 
-build tmc-prototype:
-  image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
+# build tmc-prototype:
+#   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
+#   stage: build
+#   tags:
+#     - docker-executor
+#   script:
+#     - make build
+
+
+build-image:
   stage: build
+  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
+  dependencies:
+    - test
   tags:
-    - docker-executor
+    - k8srunner
   script:
-    - make build
+    - export IMG="$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+    - docker build --pull --tag "$IMG" .
+    - echo -n "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+    - docker push "$IMG"
+  artifacts:
+    paths:
+      - current_tag.txt
+
 
 unit tests:
   image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
@@ -311,8 +329,11 @@ unit tests:
     paths:
       - ./build
 
+
 test-mid:
   stage: test
+  dependencies:
+    - build-image 
   tags:
     - k8srunner
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
