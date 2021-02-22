@@ -315,8 +315,8 @@ unit tests:
 build-image:
   stage: build
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
-  dependencies:
-    - unit tests
+  # dependencies:
+  #   - unit tests
   tags:
     - k8srunner
   script:
