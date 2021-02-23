@@ -1,19 +1,20 @@
-# static overrides for (minikube) development
+# static overrides for gitlab ci job
 global:
-  minikube: true
+  minikube: false
+
+tango-base:
+  itango:
+    enabled: false
+
+tmcprototype:
+  cli:
+    enabled: false
 
 webjive:
-  enabled: true
+  minikube: false
 
 webjive-dashboard:
-    enabled: true
+  enabled: false
 
 webjive-auth:
-    enabled: true
-
-# Run from local image only, requires either a pulled or local image
-# always run "latest" by default in dev environmen
-tmcprototype:
-    image:
-      pullPolicy: Never
-      tag: latest
+  enabled: false
