@@ -340,7 +340,6 @@ test-mid:
   before_script:
     - kubectl get namespace
   script:
-    - export KUBE_NAMESPACE="ci-$CI_COMMIT_SHORT_SHA"
     - kubectl version
     - make clean
     - make install-chart MINIKUBE=false

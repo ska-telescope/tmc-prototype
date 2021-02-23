@@ -4,7 +4,7 @@ MARK ?= all
 IMAGE_TO_TEST ?= $(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/$(PROJECT):latest## docker image that will be run for testing purpose
 TANGO_DATABASE_DS ?= tango-host-databaseds-from-makefile-$(RELEASE_NAME) ## Stable name for the Tango DB
 TANGO_HOST ?= $(TANGO_DATABASE_DS):10000## TANGO_HOST is an input!
-
+PROJECT = tmcprototype
 
 CHARTS ?= tmc-mid tmc-low tmc-mid-umbrella tmc-low-umbrella ## list of charts to be published on gitlab -- umbrella charts for testing purpose
 
@@ -12,6 +12,8 @@ CI_PROJECT_PATH_SLUG ?= tmcprototype
 CI_ENVIRONMENT_SLUG ?= tmcprototype	
 
 .DEFAULT_GOAL := help
+
+CI_REGISTRY ?= gitlab.com/ska-telescope/$(PROJECT)
 
 k8s: ## Which kubernetes are we connected to
 	@echo "Kubernetes cluster-info:"
@@ -91,7 +93,8 @@ install-chart: dep-up namespace namespace_sdp ## install the helm chart with nam
 	--set global.tango_host=$(TANGO_HOST) \
 	--set tangoDatabaseDS=$(TANGO_DATABASE_DS) \
 	--set sdp.helmdeploy.namespace=$(SDP_KUBE_NAMESPACE) \
-	--values values.yaml \$(CUSTOM_VALUES) \
+	--set tmcprototype.image.registry=$(CI_REGISTRY)/ska-telescope \
+	--set tmcprototype.image.tag=$(CI_COMMIT_SHORT_SHA) \
 	 $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE); \
 	 rm generated_values.yaml; \
 	 rm values.yaml
@@ -105,7 +108,8 @@ template-chart: clean dep-up## install the helm chart with name RELEASE_NAME and
 	--set global.tango_host=$(TANGO_HOST) \
 	--set tangoDatabaseDS=$(TANGO_DATABASE_DS) \
 	--set sdp.helmdeploy.namespace=$(SDP_KUBE_NAMESPACE) \
-	--values values.yaml \$(CUSTOM_VALUES) \
+	--set tmcprototype.image.registry=$(CI_REGISTRY)/ska-telescope \
+	--set tmcprototype.image.tag=$(CI_COMMIT_SHORT_SHA) \
 	--debug \
 	 $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE); \
 	 rm generated_values.yaml; \
