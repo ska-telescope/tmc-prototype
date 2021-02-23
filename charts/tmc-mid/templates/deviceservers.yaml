@@ -2,11 +2,11 @@
 
 {{ template "tango-util.configuration.tpl" . }}
 
-{{ range $deviceserver := .Values.deviceServers }}
+{{ range $key, $deviceserver := .Values.deviceServers }}
 
 {{ range $instance := $deviceserver.instances }}
 
-{{ $context := dict "deviceserver" $deviceserver "image" $deviceserver.image "local" $localchart "instance" $instance  }}
+{{ $context := dict "deviceserver" $deviceserver "image" $localchart.Values.image "local" $localchart "instance" $instance  }}
 
 {{ template "tango-util.deviceserver.tpl" $context }}
 
