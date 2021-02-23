@@ -93,11 +93,15 @@ install-chart: dep-up namespace namespace_sdp ## install the helm chart with nam
 	--set global.tango_host=$(TANGO_HOST) \
 	--set tangoDatabaseDS=$(TANGO_DATABASE_DS) \
 	--set sdp.helmdeploy.namespace=$(SDP_KUBE_NAMESPACE) \
-	--set tmc-mid.tmcprototype.image.registry=$(CI_REGISTRY)/ska-telescope \
-	echo "tmc-mid.tmcprototype.image.registry=$(CI_REGISTRY)/ska-telescope"; \
-	--set tmc-mid.tmcprototype.image.tag=$(CI_COMMIT_SHORT_SHA) \
-	echo "tmc-mid.tmcprototype.image.tag=$(CI_COMMIT_SHORT_SHA)"; \
+	--set tmcprototype.image.registry=$(CI_REGISTRY)/ska-telescope \
+	--set tmcprototype.image.tag=$(CI_COMMIT_SHORT_SHA) \
+	--set global.image.registry=$(CI_REGISTRY)/ska-telescope \
+	--set global.image.tag=$(CI_COMMIT_SHORT_SHA) \
 	 $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE); \
+	 echo tmcprototype.image.registry; \
+	 echo tmcprototype.image.tag; \
+	 echo global.image.registry; \
+	 echo global.image.tag; \
 	 rm generated_values.yaml; \
 	 rm values.yaml
 
