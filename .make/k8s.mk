@@ -98,10 +98,10 @@ install-chart: dep-up namespace namespace_sdp ## install the helm chart with nam
 	--set global.image.registry=$(CI_REGISTRY)/ska-telescope \
 	--set global.image.tag=$(CI_COMMIT_SHORT_SHA) \
 	 $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE); \
-	 echo tmcprototype.image.registry; \
-	 echo tmcprototype.image.tag; \
-	 echo global.image.registry; \
-	 echo global.image.tag; \
+	 echo $(tmcprototype.image.registry); \
+	 echo $(tmcprototype.image.tag); \
+	 echo $(global.image.registry); \
+	 echo $(global.image.tag); \
 	 rm generated_values.yaml; \
 	 rm values.yaml
 
