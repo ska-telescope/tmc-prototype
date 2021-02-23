@@ -30,267 +30,267 @@ stages:
   - publish
   - pages
 
-build CentralNodeLow wheel for publication: # Executed on a tag
-  stage: build
-  tags:
-    - docker-executor
-  script:
-    - cd ./tmcprototype/centralnodelow
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
-  only:
-    - tags
-  artifacts:
-    paths:
-      - ./tmcprototype/centralnodelow/dist/
+# build CentralNodeLow wheel for publication: # Executed on a tag
+#   stage: build
+#   tags:
+#     - docker-executor
+#   script:
+#     - cd ./tmcprototype/centralnodelow
+#     - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+#   only:
+#     - tags
+#   artifacts:
+#     paths:
+#       - ./tmcprototype/centralnodelow/dist/
 
-build CentralNodeLow wheel for development: # Executed on a commit
-  stage: build
-  tags:
-    - docker-executor
-  script:
-    - cd ./tmcprototype/centralnodelow
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
-  except:
-    - tags
-  artifacts:
-    paths:
-      - ./tmcprototype/centralnodelow/dist/
+# build CentralNodeLow wheel for development: # Executed on a commit
+#   stage: build
+#   tags:
+#     - docker-executor
+#   script:
+#     - cd ./tmcprototype/centralnodelow
+#     - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+#   except:
+#     - tags
+#   artifacts:
+#     paths:
+#       - ./tmcprototype/centralnodelow/dist/
 
-build SubarrayNodeLow wheel for publication: # Executed on a tag
-  stage: build
-  tags:
-    - docker-executor
-  script:
-    - cd ./tmcprototype/subarraynodelow
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
-  only:
-    - tags
-  artifacts:
-    paths:
-      - ./tmcprototype/subarraynodelow/dist/
+# build SubarrayNodeLow wheel for publication: # Executed on a tag
+#   stage: build
+#   tags:
+#     - docker-executor
+#   script:
+#     - cd ./tmcprototype/subarraynodelow
+#     - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+#   only:
+#     - tags
+#   artifacts:
+#     paths:
+#       - ./tmcprototype/subarraynodelow/dist/
 
-build SubarrayNodeLow wheel for development: # Executed on a commit
-  stage: build
-  tags:
-    - docker-executor
-  script:
-    - cd ./tmcprototype/subarraynodelow
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
-  except:
-    - tags
-  artifacts:
-    paths:
-      - ./tmcprototype/subarraynodelow/dist/
+# build SubarrayNodeLow wheel for development: # Executed on a commit
+#   stage: build
+#   tags:
+#     - docker-executor
+#   script:
+#     - cd ./tmcprototype/subarraynodelow
+#     - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+#   except:
+#     - tags
+#   artifacts:
+#     paths:
+#       - ./tmcprototype/subarraynodelow/dist/
 
-build DishLeafNode wheel for publication: # Executed on a tag
-  stage: build
-  tags:
-    - docker-executor
-  script:
-    - cd ./tmcprototype/dishleafnode
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
-  only:
-    - tags
-  artifacts:
-    paths:
-      - ./tmcprototype/dishleafnode/dist/
+# build DishLeafNode wheel for publication: # Executed on a tag
+#   stage: build
+#   tags:
+#     - docker-executor
+#   script:
+#     - cd ./tmcprototype/dishleafnode
+#     - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+#   only:
+#     - tags
+#   artifacts:
+#     paths:
+#       - ./tmcprototype/dishleafnode/dist/
 
-build DishLeafNode wheel for development: # Executed on a commit
-  stage: build
-  tags:
-    - docker-executor
-  script:
-    - cd ./tmcprototype/dishleafnode
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
-  except:
-    - tags
-  artifacts:
-    paths:
-      - ./tmcprototype/dishleafnode/dist/
+# build DishLeafNode wheel for development: # Executed on a commit
+#   stage: build
+#   tags:
+#     - docker-executor
+#   script:
+#     - cd ./tmcprototype/dishleafnode
+#     - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+#   except:
+#     - tags
+#   artifacts:
+#     paths:
+#       - ./tmcprototype/dishleafnode/dist/
 
-build CspMasterLeafNode wheel for publication: # Executed on a tag
-  stage: build
-  tags:
-    - docker-executor
-  script:
-    - cd ./tmcprototype/cspmasterleafnode
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
-  only:
-    - tags
-  artifacts:
-    paths:
-      - ./tmcprototype/cspmasterleafnode/dist/
+# build CspMasterLeafNode wheel for publication: # Executed on a tag
+#   stage: build
+#   tags:
+#     - docker-executor
+#   script:
+#     - cd ./tmcprototype/cspmasterleafnode
+#     - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+#   only:
+#     - tags
+#   artifacts:
+#     paths:
+#       - ./tmcprototype/cspmasterleafnode/dist/
 
-build CspMasterLeafNode wheel for development: # Executed on a commit
-  stage: build
-  tags:
-    - docker-executor
-  script:
-    - cd ./tmcprototype/cspmasterleafnode
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
-  except:
-    - tags
-  artifacts:
-    paths:
-      - ./tmcprototype/cspmasterleafnode/dist/
+# build CspMasterLeafNode wheel for development: # Executed on a commit
+#   stage: build
+#   tags:
+#     - docker-executor
+#   script:
+#     - cd ./tmcprototype/cspmasterleafnode
+#     - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+#   except:
+#     - tags
+#   artifacts:
+#     paths:
+#       - ./tmcprototype/cspmasterleafnode/dist/
 
-build CspSubarrayLeafNode wheel for publication: # Executed on a tag
-  stage: build
-  tags:
-    - docker-executor
-  script:
-    - cd ./tmcprototype/cspsubarrayleafnode
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
-  only:
-    - tags
-  artifacts:
-    paths:
-      - ./tmcprototype/cspsubarrayleafnode/dist/
-
-
-build SdpMasterLeafNode wheel for publication: # Executed on a tag
-  stage: build
-  tags:
-    - docker-executor
-  script:
-    - cd ./tmcprototype/sdpmasterleafnode
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
-  only:
-    - tags
-  artifacts:
-    paths:
-      - ./tmcprototype/sdpmasterleafnode/dist/
+# build CspSubarrayLeafNode wheel for publication: # Executed on a tag
+#   stage: build
+#   tags:
+#     - docker-executor
+#   script:
+#     - cd ./tmcprototype/cspsubarrayleafnode
+#     - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+#   only:
+#     - tags
+#   artifacts:
+#     paths:
+#       - ./tmcprototype/cspsubarrayleafnode/dist/
 
 
-build SdpMasterLeafNode wheel for development: # Executed on a commit
-  stage: build
-  tags:
-    - docker-executor
-  script:
-    - cd ./tmcprototype/sdpmasterleafnode
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
-  except:
-    - tags
-  artifacts:
-    paths:
-      - ./tmcprototype/sdpmasterleafnode/dist/
+# build SdpMasterLeafNode wheel for publication: # Executed on a tag
+#   stage: build
+#   tags:
+#     - docker-executor
+#   script:
+#     - cd ./tmcprototype/sdpmasterleafnode
+#     - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+#   only:
+#     - tags
+#   artifacts:
+#     paths:
+#       - ./tmcprototype/sdpmasterleafnode/dist/
 
-build CspSubarrayLeafNode wheel for development: # Executed on a commit
-  stage: build
-  tags:
-    - docker-executor
-  script:
-    - cd ./tmcprototype/cspsubarrayleafnode
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
-  except:
-    - tags
-  artifacts:
-    paths:
-      - ./tmcprototype/cspsubarrayleafnode/dist/
 
-build SdpSubarrayLeafNode wheel for publication: # Executed on a tag
-  stage: build
-  tags:
-    - docker-executor
-  script:
-    - cd ./tmcprototype/sdpsubarrayleafnode
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
-  only:
-    - tags
-  artifacts:
-    paths:
-      - ./tmcprototype/sdpsubarrayleafnode/dist/
+# build SdpMasterLeafNode wheel for development: # Executed on a commit
+#   stage: build
+#   tags:
+#     - docker-executor
+#   script:
+#     - cd ./tmcprototype/sdpmasterleafnode
+#     - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+#   except:
+#     - tags
+#   artifacts:
+#     paths:
+#       - ./tmcprototype/sdpmasterleafnode/dist/
 
-build SdpSubarrayLeafNode wheel for development: # Executed on a commit
-  stage: build
-  tags:
-    - docker-executor
-  script:
-    - cd ./tmcprototype/sdpsubarrayleafnode
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
-  except:
-    - tags
-  artifacts:
-    paths:
-      - ./tmcprototype/sdpsubarrayleafnode/dist/
+# build CspSubarrayLeafNode wheel for development: # Executed on a commit
+#   stage: build
+#   tags:
+#     - docker-executor
+#   script:
+#     - cd ./tmcprototype/cspsubarrayleafnode
+#     - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+#   except:
+#     - tags
+#   artifacts:
+#     paths:
+#       - ./tmcprototype/cspsubarrayleafnode/dist/
 
-build MccsMasterLeafNode wheel for publication: # Executed on a tag
-  stage: build
-  tags:
-    - docker-executor
-  script:
-    - cd ./tmcprototype/mccsmasterleafnode
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
-  only:
-    - tags
-  artifacts:
-    paths:
-      - ./tmcprototype/mccsmasterleafnode/dist/
+# build SdpSubarrayLeafNode wheel for publication: # Executed on a tag
+#   stage: build
+#   tags:
+#     - docker-executor
+#   script:
+#     - cd ./tmcprototype/sdpsubarrayleafnode
+#     - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+#   only:
+#     - tags
+#   artifacts:
+#     paths:
+#       - ./tmcprototype/sdpsubarrayleafnode/dist/
 
-build MccsMasterLeafNode wheel for development: # Executed on a commit
-  stage: build
-  tags:
-    - docker-executor
-  script:
-    - cd ./tmcprototype/mccsmasterleafnode
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
-  except:
-    - tags
-  artifacts:
-    paths:
-      - ./tmcprototype/mccsmasterleafnode/dist/
+# build SdpSubarrayLeafNode wheel for development: # Executed on a commit
+#   stage: build
+#   tags:
+#     - docker-executor
+#   script:
+#     - cd ./tmcprototype/sdpsubarrayleafnode
+#     - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+#   except:
+#     - tags
+#   artifacts:
+#     paths:
+#       - ./tmcprototype/sdpsubarrayleafnode/dist/
 
-build MccsSubarrayLeafNode wheel for publication: # Executed on a tag
-  stage: build
-  tags:
-    - docker-executor
-  script:
-    - cd ./tmcprototype/mccssubarrayleafnode
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
-  only:
-    - tags
-  artifacts:
-    paths:
-      - ./tmcprototype/mccssubarrayleafnode/dist/
+# build MccsMasterLeafNode wheel for publication: # Executed on a tag
+#   stage: build
+#   tags:
+#     - docker-executor
+#   script:
+#     - cd ./tmcprototype/mccsmasterleafnode
+#     - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+#   only:
+#     - tags
+#   artifacts:
+#     paths:
+#       - ./tmcprototype/mccsmasterleafnode/dist/
 
-build MccsSubarrayLeafNode wheel for development: # Executed on a commit
-  stage: build
-  tags:
-    - docker-executor
-  script:
-    - cd ./tmcprototype/mccssubarrayleafnode
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
-  except:
-    - tags
-  artifacts:
-    paths:
-      - ./tmcprototype/mccssubarrayleafnode/dist/
+# build MccsMasterLeafNode wheel for development: # Executed on a commit
+#   stage: build
+#   tags:
+#     - docker-executor
+#   script:
+#     - cd ./tmcprototype/mccsmasterleafnode
+#     - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+#   except:
+#     - tags
+#   artifacts:
+#     paths:
+#       - ./tmcprototype/mccsmasterleafnode/dist/
 
-build DishMaster wheel for publication: # Executed on a tag
-  stage: build
-  tags:
-    - docker-executor
-  script:
-    - cd ./tmcprototype/dishmaster
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
-  only:
-    - tags
-  artifacts:
-    paths:
-      - ./tmcprototype/dishmaster/dist/
+# build MccsSubarrayLeafNode wheel for publication: # Executed on a tag
+#   stage: build
+#   tags:
+#     - docker-executor
+#   script:
+#     - cd ./tmcprototype/mccssubarrayleafnode
+#     - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+#   only:
+#     - tags
+#   artifacts:
+#     paths:
+#       - ./tmcprototype/mccssubarrayleafnode/dist/
 
-build DishMaster wheel for development: # Executed on a commit
-  stage: build
-  tags:
-    - docker-executor
-  script:
-    - cd ./tmcprototype/dishmaster
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
-  except:
-    - tags
-  artifacts:
-    paths:
-      - ./tmcprototype/dishmaster/dist/
+# build MccsSubarrayLeafNode wheel for development: # Executed on a commit
+#   stage: build
+#   tags:
+#     - docker-executor
+#   script:
+#     - cd ./tmcprototype/mccssubarrayleafnode
+#     - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+#   except:
+#     - tags
+#   artifacts:
+#     paths:
+#       - ./tmcprototype/mccssubarrayleafnode/dist/
+
+# build DishMaster wheel for publication: # Executed on a tag
+#   stage: build
+#   tags:
+#     - docker-executor
+#   script:
+#     - cd ./tmcprototype/dishmaster
+#     - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+#   only:
+#     - tags
+#   artifacts:
+#     paths:
+#       - ./tmcprototype/dishmaster/dist/
+
+# build DishMaster wheel for development: # Executed on a commit
+#   stage: build
+#   tags:
+#     - docker-executor
+#   script:
+#     - cd ./tmcprototype/dishmaster
+#     - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+#   except:
+#     - tags
+#   artifacts:
+#     paths:
+#       - ./tmcprototype/dishmaster/dist/
 
 # build tmc-prototype:
 #   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
