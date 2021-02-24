@@ -68,10 +68,10 @@ CUSTOM_VALUES = --set global.image.registry=$(CI_REGISTRY)/ska-telescope \
 # else
 # endif
 
-ifneq ($(VALUES_FILE),)
+#ifneq ($(VALUES_FILE),)
 CUSTOM_VALUES := --values $(VALUES_FILE) $(CUSTOM_VALUES)
-else
-endif
+# else
+# endif
 
 
 XAUTHORITYx ?= ${XAUTHORITY}
