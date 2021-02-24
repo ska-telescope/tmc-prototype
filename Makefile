@@ -57,19 +57,19 @@ CI_PROJECT_DIR ?= .
 KUBE_CONFIG_BASE64 ?=  ## base64 encoded kubectl credentials for KUBECONFIG
 KUBECONFIG ?= /etc/deploy/config ## KUBECONFIG location
 
-VALUES_FILE ?= charts/tmc-mid/values.yaml
+#VALUES_FILE ?= charts/tmc-mid/values.yaml
 # CUSTOM_VALUES = 
 
 # ifneq ($(CI_JOB_ID),)
 #CI_PROJECT_IMAGE := 
 #VALUES_FILE = /chart/tmcmid/vales.yaml
-CUSTOM_VALUES = --set global.image.registry=$(CI_REGISTRY)/ska-telescope \
-	--set global.image.tag=$(CI_COMMIT_SHORT_SHA)
+# CUSTOM_VALUES = --set global.image.registry=$(CI_REGISTRY)/ska-telescope \
+# 	--set global.image.tag=$(CI_COMMIT_SHORT_SHA)
 # else
 # endif
 
 #ifneq ($(VALUES_FILE),)
-CUSTOM_VALUES := --values $(VALUES_FILE) $(CUSTOM_VALUES)
+# CUSTOM_VALUES := --values $(VALUES_FILE) $(CUSTOM_VALUES)
 # else
 # endif
 
