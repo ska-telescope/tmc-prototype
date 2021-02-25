@@ -75,10 +75,10 @@ deviceServers:
     depends_on:
       - device: sys/database/2
     image:
-      registry: "{{.Values.tmcprototype.image.registry}}"
-      image: "{{.Values.tmcprototype.image.image}}"
-      tag: "{{.Values.tmcprototype.image.tag}}"
-      pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
+      registry: "{{.Values.global.image.registry}}"
+      image: "{{.Values.global.image.image}}"
+      tag: "{{.Values.global.image.tag}}"
+      pullPolicy: "{{.Values.global.image.pullPolicy}}"
   - name: dishmaster2
     function: receptor-simulation
     domain: sensing

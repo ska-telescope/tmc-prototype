@@ -6,7 +6,7 @@
 
 {{ range $instance := $deviceserver.instances }}
 
-{{ $context := dict "deviceserver" $deviceserver "image" $deviceserver.image "local" $localchart "instance" $instance  }}
+{{ $context := dict "deviceserver" $deviceserver "image" $localchart.Values.global.image "local" $localchart "instance" $instance  }}
 
 {{ template "tango-util.deviceserver.tpl" $context }}
 
