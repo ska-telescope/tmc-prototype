@@ -91,9 +91,9 @@ install-chart: dep-up namespace namespace_sdp ## install the helm chart with nam
 	--set global.tango_host=$(TANGO_HOST) \
 	--set tangoDatabaseDS=$(TANGO_DATABASE_DS) \
 	--set sdp.helmdeploy.namespace=$(SDP_KUBE_NAMESPACE) \
-	--set global.image.registry=registry.gitlab.com/ska-telescope \
-	--set global.image.image=tmc-prototype \
-	--set global.image.tag=$(CI_COMMIT_SHORT_SHA) \
+	--set global.image1.registry=registry.gitlab.com/ska-telescope \
+	--set global.image1.image=tmc-prototype \
+	--set global.image1.tag=097f7f36 \
 	 $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE); \
 	 rm generated_values.yaml; \
 	 rm values.yaml
@@ -107,9 +107,9 @@ template-chart: clean dep-up## install the helm chart with name RELEASE_NAME and
 	--set global.tango_host=$(TANGO_HOST) \
 	--set tangoDatabaseDS=$(TANGO_DATABASE_DS) \
 	--set sdp.helmdeploy.namespace=$(SDP_KUBE_NAMESPACE) \
-	--set global.image.registry=registry.gitlab.com/ska-telescope \
-	--set global.image.image=tmc-prototype \
-	--set global.image.tag=$(CI_COMMIT_SHORT_SHA) \
+	--set global.image1.registry=registry.gitlab.com/ska-telescope \
+	--set global.image1.image=tmc-prototype \
+	--set global.image1.tag=097f7f36 \
 	--debug \
 	 $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE); \
 	 rm generated_values.yaml; \
