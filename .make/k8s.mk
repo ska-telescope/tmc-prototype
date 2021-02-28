@@ -93,7 +93,7 @@ install-chart: dep-up namespace namespace_sdp ## install the helm chart with nam
 	--set sdp.helmdeploy.namespace=$(SDP_KUBE_NAMESPACE) \
 	--set global.image1.registry=registry.gitlab.com/ska-telescope \
 	--set global.image1.image=tmc-prototype \
-	--set global.image1.tag=097f7f36 \
+	--set global.image1.tag=$(CI_COMMIT_SHORT_SHA) \
 	 $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE); \
 	 rm generated_values.yaml; \
 	 rm values.yaml
@@ -109,7 +109,7 @@ template-chart: clean dep-up## install the helm chart with name RELEASE_NAME and
 	--set sdp.helmdeploy.namespace=$(SDP_KUBE_NAMESPACE) \
 	--set global.image1.registry=registry.gitlab.com/ska-telescope \
 	--set global.image1.image=tmc-prototype \
-	--set global.image1.tag=097f7f36 \
+	--set global.image1.tag=$(CI_COMMIT_SHORT_SHA) \
 	--debug \
 	 $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE); \
 	 rm generated_values.yaml; \
