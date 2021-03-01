@@ -1,18 +1,18 @@
 """Release information for Python Package"""
 
 name="""tmcprototype"""
-version="0.5.1"
+version="0.5.2"
 version_info=version.split(".")
 description="""TMC Prototype"""
-author="Team NCRA"
-author_email="telmgt-internal@googlegroups.com"
+author="Team Karoo"
+author_email="cam+karoo@ska.ac.za"
 license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
 
-release=0.5.1
-tag=0.5.1
-tag_description=Updated TMC devices to achieve objectives SPO-990 and SPO-921
-release_notes=This release contains:<br/><ul><li>Updated TMC mid helm chart that utilises new CentralNode and SubarrayNode docker image</li><li>Updated and verified the TMC-MCCS interface as per feature SP-1461</li></ul><br/>
-gitlab_username=apurvapatkar
-private_token=WxDBEBzAwNwrPxZnxQ3Q
+release=0.5.2
+tag=0.5.2
+tag_description=Upgrade to tango-simlib version >= 0.9.1
+release_notes=This release contains:<br/><ul><li>Updated dependecy for dishmaster (tango-simlib >= 0.9.1)</li></ul><br/>
+gitlab_username=kmadisa
+private_token=dS1igMEXLshYTDpJGPa4

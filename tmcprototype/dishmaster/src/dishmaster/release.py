@@ -10,11 +10,11 @@
 """Release information for Python Package"""
 
 name = """dishmaster"""
-version = ""
+version = "0.3.8"
 version_info = version.split(".")
 description = """SKA Dish Master TANGO device server"""
-author = "apurva.ska"
-author_email = "apurva.ska at gmail.com"
+author = "Team Karoo"
+author_email = "cam+karoo@ska.ac.za"
 license = """BSD-3-Clause"""
-url = """www.tango-controls.org"""
+url = """https://www.skatelescope.org"""
 copyright = """"""
