@@ -9,5 +9,5 @@ flake8_formatter_junit_xml
 flake8-rst-docstrings
 docstr-coverage
 darglint
-tango-simlib==0.9.0
-git+https://gitlab.com/ska-telescope/tmc-prototype.git@SAR-158/Update-dish-master-simulator-interface#egg=dishmaster&subdirectory=tmcprototype/dishmaster
+tango-simlib
+dishmaster==0.0.0+4502e122
