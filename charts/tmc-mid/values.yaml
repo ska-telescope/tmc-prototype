@@ -316,6 +316,7 @@ deviceServers:
     instances: ["01"]
     depends_on:
       - device: sys/database/2
+      - device: ska_mid/tm_leaf_node/csp_subarray01
     image:
       registry: nexus.engageska-portugal.pt/tango-example
       image: tmalarmhandler
