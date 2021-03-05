@@ -61,7 +61,6 @@ CUSTOM_VALUES =
 
 ifneq ($(CI_JOB_ID),)
 CI_PROJECT_IMAGE := 
-VALUES_FILE = charts/tmc-mid/values.yaml
 CUSTOM_VALUES = --set global.image1.registry=registry.gitlab.com/ska-telescope \
 	--set global.image1.image=tmc-prototype \
 	--set global.image1.tag=$(CI_COMMIT_SHORT_SHA)
