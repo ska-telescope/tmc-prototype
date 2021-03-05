@@ -19,7 +19,7 @@ global:
   image1:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: tmcprototype
-    tag: 9.1.1
+    tag: 0.5.1
     pullPolicy: IfNotPresent
 
 dsconfig:
