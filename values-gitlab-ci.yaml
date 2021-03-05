@@ -1,0 +1,20 @@
+# # static overrides for gitlab ci job
+# global:
+#   minikube: false
+
+# tango-base:
+#   itango:
+#     enabled: false
+
+# tmcprototype:
+#   cli:
+#     enabled: false
+
+# webjive:
+#   minikube: false
+
+# webjive-dashboard:
+#   enabled: false
+
+# webjive-auth:
+#   enabled: false
