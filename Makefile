@@ -61,9 +61,9 @@ CUSTOM_VALUES =
 
 ifneq ($(CI_JOB_ID),)
 CI_PROJECT_IMAGE := 
-CUSTOM_VALUES = --set global.image1.registry=registry.gitlab.com/ska-telescope \
-	--set global.image1.image=tmc-prototype \
-	--set global.image1.tag=$(CI_COMMIT_SHORT_SHA)
+CUSTOM_VALUES = --set global.tmcprototype.registry=registry.gitlab.com/ska-telescope \
+	--set global.tmcprototype.image=tmc-prototype \
+	--set global.tmcprototype.tag=$(CI_COMMIT_SHORT_SHA)
 else
 endif
 
