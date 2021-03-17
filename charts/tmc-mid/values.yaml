@@ -16,6 +16,11 @@ annotations:
 global:
   minikube: true
   tango_host: databaseds-tango-base-test:10000
+  tmcprototype:
+    registry: nexus.engageska-portugal.pt/ska-telescope
+    image: tmcprototype
+    tag: 0.5.2
+    pullPolicy: IfNotPresent
 
 dsconfig:
   configuration_file: data/tmc-mid-config.json
@@ -70,10 +75,10 @@ deviceServers:
     depends_on:
       - device: sys/database/2
     image:
-      registry: "{{.Values.tmcprototype.image.registry}}"
-      image: "{{.Values.tmcprototype.image.image}}"
-      tag: "{{.Values.tmcprototype.image.tag}}"
-      pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
+      registry: "{{.Values.global.tmcprototype.registry}}"
+      image: "{{.Values.global.tmcprototype.image}}"
+      tag: "{{.Values.global.tmcprototype.tag}}"
+      pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
   - name: dishmaster2
     function: receptor-simulation
     domain: sensing
@@ -82,10 +87,10 @@ deviceServers:
     depends_on:
       - device: sys/database/2
     image:
-      registry: "{{.Values.tmcprototype.image.registry}}"
-      image: "{{.Values.tmcprototype.image.image}}"
-      tag: "{{.Values.tmcprototype.image.tag}}"
-      pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
+      registry: "{{.Values.global.tmcprototype.registry}}"
+      image: "{{.Values.global.tmcprototype.image}}"
+      tag: "{{.Values.global.tmcprototype.tag}}"
+      pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
   - name: dishmaster3
     function: receptor-simulation
     domain: sensing
@@ -94,10 +99,10 @@ deviceServers:
     depends_on:
       - device: sys/database/2
     image:
-      registry: "{{.Values.tmcprototype.image.registry}}"
-      image: "{{.Values.tmcprototype.image.image}}"
-      tag: "{{.Values.tmcprototype.image.tag}}"
-      pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
+      registry: "{{.Values.global.tmcprototype.registry}}"
+      image: "{{.Values.global.tmcprototype.image}}"
+      tag: "{{.Values.global.tmcprototype.tag}}"
+      pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
   - name: dishmaster4
     function: receptor-simulation
     domain: sensing
@@ -106,10 +111,10 @@ deviceServers:
     depends_on:
       - device: sys/database/2
     image:
-      registry: "{{.Values.tmcprototype.image.registry}}"
-      image: "{{.Values.tmcprototype.image.image}}"
-      tag: "{{.Values.tmcprototype.image.tag}}"
-      pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
+      registry: "{{.Values.global.tmcprototype.registry}}"
+      image: "{{.Values.global.tmcprototype.image}}"
+      tag: "{{.Values.global.tmcprototype.tag}}"
+      pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
   - name: dishleafnode1
     function: dish-monitoring
     domain: general-monitoring
@@ -118,10 +123,10 @@ deviceServers:
     depends_on:
       - device: mid_d0001/elt/master
     image:
-      registry: "{{.Values.tmcprototype.image.registry}}"
-      image: "{{.Values.tmcprototype.image.image}}"
-      tag: "{{.Values.tmcprototype.image.tag}}"
-      pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
+      registry: "{{.Values.global.tmcprototype.registry}}"
+      image: "{{.Values.global.tmcprototype.image}}"
+      tag: "{{.Values.global.tmcprototype.tag}}"
+      pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
   - name: dishleafnode2
     function: dish-monitoring
     domain: general-monitoring
@@ -130,10 +135,10 @@ deviceServers:
     depends_on:
       - device: mid_d0002/elt/master
     image:
-      registry: "{{.Values.tmcprototype.image.registry}}"
-      image: "{{.Values.tmcprototype.image.image}}"
-      tag: "{{.Values.tmcprototype.image.tag}}"
-      pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
+      registry: "{{.Values.global.tmcprototype.registry}}"
+      image: "{{.Values.global.tmcprototype.image}}"
+      tag: "{{.Values.global.tmcprototype.tag}}"
+      pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
   - name: dishleafnode3
     function: dish-monitoring
     domain: general-monitoring
@@ -142,10 +147,10 @@ deviceServers:
     depends_on:
       - device: mid_d0003/elt/master
     image:
-      registry: "{{.Values.tmcprototype.image.registry}}"
-      image: "{{.Values.tmcprototype.image.image}}"
-      tag: "{{.Values.tmcprototype.image.tag}}"
-      pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
+      registry: "{{.Values.global.tmcprototype.registry}}"
+      image: "{{.Values.global.tmcprototype.image}}"
+      tag: "{{.Values.global.tmcprototype.tag}}"
+      pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
   - name: dishleafnode4
     function: dish-monitoring
     domain: general-monitoring
@@ -154,10 +159,10 @@ deviceServers:
     depends_on:
       - device: mid_d0004/elt/master
     image:
-      registry: "{{.Values.tmcprototype.image.registry}}"
-      image: "{{.Values.tmcprototype.image.image}}"
-      tag: "{{.Values.tmcprototype.image.tag}}"
-      pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
+      registry: "{{.Values.global.tmcprototype.registry}}"
+      image: "{{.Values.global.tmcprototype.image}}"
+      tag: "{{.Values.global.tmcprototype.tag}}"
+      pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
   - name: cspsubarrayleafnode1
     function: observation-execution
     domain: subarray
@@ -166,10 +171,10 @@ deviceServers:
     depends_on:
       - device: mid_csp/elt/subarray_01
     image:
-      registry: "{{.Values.tmcprototype.image.registry}}"
-      image: "{{.Values.tmcprototype.image.image}}"
-      tag: "{{.Values.tmcprototype.image.tag}}"
-      pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
+      registry: "{{.Values.global.tmcprototype.registry}}"
+      image: "{{.Values.global.tmcprototype.image}}"
+      tag: "{{.Values.global.tmcprototype.tag}}"
+      pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
   - name: cspsubarrayleafnode2
     function: observation-execution
     domain: subarray
@@ -178,10 +183,10 @@ deviceServers:
     depends_on:
       - device: mid_csp/elt/subarray_02
     image:
-      registry: "{{.Values.tmcprototype.image.registry}}"
-      image: "{{.Values.tmcprototype.image.image}}"
-      tag: "{{.Values.tmcprototype.image.tag}}"
-      pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
+      registry: "{{.Values.global.tmcprototype.registry}}"
+      image: "{{.Values.global.tmcprototype.image}}"
+      tag: "{{.Values.global.tmcprototype.tag}}"
+      pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
   - name: cspsubarrayleafnode3
     function: observation-execution
     domain: subarray
@@ -190,10 +195,10 @@ deviceServers:
     depends_on:
       - device: mid_csp/elt/subarray_03
     image:
-      registry: "{{.Values.tmcprototype.image.registry}}"
-      image: "{{.Values.tmcprototype.image.image}}"
-      tag: "{{.Values.tmcprototype.image.tag}}"
-      pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
+      registry: "{{.Values.global.tmcprototype.registry}}"
+      image: "{{.Values.global.tmcprototype.image}}"
+      tag: "{{.Values.global.tmcprototype.tag}}"
+      pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
   - name: cspmasterleafnode
     function: csp-monitoring
     domain: general-monitoring
@@ -202,10 +207,10 @@ deviceServers:
     depends_on:
       - device: mid_csp/elt/master
     image:
-      registry: "{{.Values.tmcprototype.image.registry}}"
-      image: "{{.Values.tmcprototype.image.image}}"
-      tag: "{{.Values.tmcprototype.image.tag}}"
-      pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
+      registry: "{{.Values.global.tmcprototype.registry}}"
+      image: "{{.Values.global.tmcprototype.image}}"
+      tag: "{{.Values.global.tmcprototype.tag}}"
+      pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
   - name: sdpsubarrayleafnode1
     function: observation-execution
     domain: subarray
@@ -214,10 +219,10 @@ deviceServers:
     depends_on:
       - device: mid_sdp/elt/subarray_1
     image:
-      registry: "{{.Values.tmcprototype.image.registry}}"
-      image: "{{.Values.tmcprototype.image.image}}"
-      tag: "{{.Values.tmcprototype.image.tag}}"
-      pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
+      registry: "{{.Values.global.tmcprototype.registry}}"
+      image: "{{.Values.global.tmcprototype.image}}"
+      tag: "{{.Values.global.tmcprototype.tag}}"
+      pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
   - name: sdpsubarrayleafnode2
     function: observation-execution
     domain: subarray
@@ -226,10 +231,10 @@ deviceServers:
     depends_on:
       - device: mid_sdp/elt/subarray_2
     image:
-      registry: "{{.Values.tmcprototype.image.registry}}"
-      image: "{{.Values.tmcprototype.image.image}}"
-      tag: "{{.Values.tmcprototype.image.tag}}"
-      pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
+      registry: "{{.Values.global.tmcprototype.registry}}"
+      image: "{{.Values.global.tmcprototype.image}}"
+      tag: "{{.Values.global.tmcprototype.tag}}"
+      pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
   - name: sdpsubarrayleafnode3
     function: observation-execution
     domain: subarray
@@ -238,10 +243,10 @@ deviceServers:
     depends_on:
       - device: mid_sdp/elt/subarray_3
     image:
-      registry: "{{.Values.tmcprototype.image.registry}}"
-      image: "{{.Values.tmcprototype.image.image}}"
-      tag: "{{.Values.tmcprototype.image.tag}}"
-      pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
+      registry: "{{.Values.global.tmcprototype.registry}}"
+      image: "{{.Values.global.tmcprototype.image}}"
+      tag: "{{.Values.global.tmcprototype.tag}}"
+      pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
   - name: sdpmasterleafnode
     function: observation-execution
     domain: subarray
@@ -250,10 +255,10 @@ deviceServers:
     depends_on:
       - device: mid_sdp/elt/master
     image:
-      registry: "{{.Values.tmcprototype.image.registry}}"
-      image: "{{.Values.tmcprototype.image.image}}"
-      tag: "{{.Values.tmcprototype.image.tag}}"
-      pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
+      registry: "{{.Values.global.tmcprototype.registry}}"
+      image: "{{.Values.global.tmcprototype.image}}"
+      tag: "{{.Values.global.tmcprototype.tag}}"
+      pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
   - name: subarraynode1
     function: observation-execution
     domain: subarray

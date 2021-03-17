@@ -26,9 +26,9 @@ stages:
   - unit-test
   - test
   - linting
+  - release
   - publish
   - pages
-  - release
 
 build CentralNodeLow wheel for publication: # Executed on a tag
   stage: build
@@ -303,8 +303,25 @@ unit tests:
     paths:
       - ./build
 
+build-image:
+  stage: build
+  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
+  tags:
+    - k8srunner
+  script:
+    - export IMG="$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+    - docker build --pull --tag "$IMG" .
+    - echo -n "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+    - docker push "$IMG"
+  artifacts:
+    paths:
+      - current_tag.txt
+
+
 test-mid:
   stage: test
+  dependencies:
+    - build-image 
   tags:
     - k8srunner
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
@@ -334,9 +351,13 @@ test-mid:
       - build
     reports:
       junit: build/report.xml
+    when: always
+
 
 test-low:
   stage: test
+  dependencies:
+    - build-image 
   tags:
     - k8srunner
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
@@ -437,10 +458,6 @@ release tmc:
   script:
     - make release-tmc-prototype USERNAME=$GITLAB_USER_NAME EMAILID=$GITLAB_USER_EMAIL # Publish tag on the gitlab and tagged image on Nexus
   when: manual
-  only:
-    refs:
-      - master
-
 
 # Standardised included jobs
 variables:
