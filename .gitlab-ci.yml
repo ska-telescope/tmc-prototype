@@ -292,15 +292,6 @@ build DishMaster wheel for development: # Executed on a commit
     paths:
       - ./tmcprototype/dishmaster/dist/
 
-# build tmc-prototype:
-#   image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
-#   stage: build
-#   tags:
-#     - docker-executor
-#   script:
-#     - make build
-
-
 unit tests:
   image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
   stage: unit-test
