@@ -58,6 +58,13 @@ subarraynodemid:
     tag: 0.1.2
     pullPolicy: IfNotPresent
 
+alarmhandler:
+  image:
+    registry: nexus.engageska-portugal.pt/tango-example
+    image: tmalarmhandler
+    tag: latest
+    pullPolicy: Always
+
 resources:
   limits:
     cpu: 300m
@@ -322,10 +329,10 @@ deviceServers:
     depends_on:
       - device: sys/database/2
     image:
-      registry: nexus.engageska-portugal.pt/tango-example
-      image: tmalarmhandler
-      tag: latest
-      pullPolicy: Always
+      registry: "{{.Values.alarmhandler.image.registry}}"
+      image: "{{.Values.alarmhandler.image.image}}"
+      tag: "{{.Values.alarmhandler.image.tag}}"
+      pullPolicy: "{{.Values.alarmhandler.image.pullPolicy}}"
     resources:
       limits:
         cpu: 300m
