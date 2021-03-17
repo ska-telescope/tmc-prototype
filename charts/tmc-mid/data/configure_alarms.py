@@ -4,7 +4,7 @@ import json
 
 # Update file path to devices.json in order to test locally
 # To test on docker environment use path : /app/tmcprototoype/devices.json
-with open("/app/tmcprototype/tmalarmhandler/alarms.json", "r") as file:
+with open("/data/alarms.json", "r") as file:
     jsonAlarmsString = file.read().replace("\n", "")
 
 # Creating DeviceProxy for Alarm Handler device
@@ -14,6 +14,7 @@ alarmHandler_proxy = DeviceProxy("ska_mid/tm_alarmhandler/tmalarmhandler")
 # Loading alarms.json file and creating an object
 try:
     json_alarms = json.loads(jsonAlarmsString)
+    print("json_alarms: ", str(json_alarms))
 except Exception as e:
     print("Exception in JSON parsing:", e.__str__())
 

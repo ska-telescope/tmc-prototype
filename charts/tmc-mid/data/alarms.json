@@ -1,0 +1,8 @@
+[
+  {
+    "alarm": "alertCspState",
+    "input_string": "tag=alertCspState;formula=(ska_mid/tm_leaf_node/csp_subarray01/State == OFF);on_delay=0;off_delay=0;priority=fault;silent_time=2;group=gr_all;message=Csp Subarray cannot be in Off state;on_command=ska_mid/tm_leaf_node/csp_subarray01/AssignResourcesCommand;enabled=1"
+  }
+]
+
+
