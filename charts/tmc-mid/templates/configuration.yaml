@@ -61,7 +61,7 @@ spec:
           - sh
         args:
           - -c
-          - "/venv/bin/python data/configure-alarm.py"
+          - "/venv/bin/python data/configure_alarms.py"
         env:
         - name: TANGO_HOST
           value: {{ $tango_host }}
