@@ -15,6 +15,11 @@ annotations:
 global:
   minikube: true
   tango_host: databaseds-tango-base-test:10000
+  tmcprototype:
+    registry: nexus.engageska-portugal.pt/ska-telescope
+    image: tmcprototype
+    tag: 0.5.2
+    pullPolicy: IfNotPresent
 
 dsconfig:
   configuration_file: data/tmc-low-config.json
@@ -35,7 +40,7 @@ tmcprototype:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: tmcprototype
-    tag: 0.5.1
+    tag: 0.5.2
     pullPolicy: IfNotPresent
 
 resources:
@@ -55,10 +60,10 @@ deviceServers:
   depends_on:
     - device: ska_low/tm_leaf_node/mccs_subarray01
   image:
-    registry: "{{.Values.tmcprototype.image.registry}}"
-    image: "{{.Values.tmcprototype.image.image}}"
-    tag: "{{.Values.tmcprototype.image.tag}}"
-    pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
+    registry: "{{.Values.global.tmcprototype.registry}}"
+    image: "{{.Values.global.tmcprototype.image}}"
+    tag: "{{.Values.global.tmcprototype.tag}}"
+    pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
 - name: centralnode
   function: telescope-monitoring
   domain: general-monitoring
@@ -68,10 +73,10 @@ deviceServers:
     - device: ska_low/tm_subarray_node/1
     - device: ska_low/tm_leaf_node/mccs_master
   image:
-    registry: "{{.Values.tmcprototype.image.registry}}"
-    image: "{{.Values.tmcprototype.image.image}}"
-    tag: "{{.Values.tmcprototype.image.tag}}"
-    pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
+    registry: "{{.Values.global.tmcprototype.registry}}"
+    image: "{{.Values.global.tmcprototype.image}}"
+    tag: "{{.Values.global.tmcprototype.tag}}"
+    pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
 - name: mccssmasterleafnode
   function: observation-execution
   domain: general-monitoring
@@ -80,10 +85,10 @@ deviceServers:
   depends_on:
     - device: low-mccs/control/control
   image:
-    registry: "{{.Values.tmcprototype.image.registry}}"
-    image: "{{.Values.tmcprototype.image.image}}"
-    tag: "{{.Values.tmcprototype.image.tag}}"
-    pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
+    registry: "{{.Values.global.tmcprototype.registry}}"
+    image: "{{.Values.global.tmcprototype.image}}"
+    tag: "{{.Values.global.tmcprototype.tag}}"
+    pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
 - name: mccssubarrayleafnode1
   function: observation-execution
   domain: subarray
@@ -92,8 +97,8 @@ deviceServers:
   depends_on:
     - device: low-mccs/subarray/01
   image:
-    registry: "{{.Values.tmcprototype.image.registry}}"
-    image: "{{.Values.tmcprototype.image.image}}"
-    tag: "{{.Values.tmcprototype.image.tag}}"
-    pullPolicy: "{{.Values.tmcprototype.image.pullPolicy}}"
+    registry: "{{.Values.global.tmcprototype.registry}}"
+    image: "{{.Values.global.tmcprototype.image}}"
+    tag: "{{.Values.global.tmcprototype.tag}}"
+    pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
 
