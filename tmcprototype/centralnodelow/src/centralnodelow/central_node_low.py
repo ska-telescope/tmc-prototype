@@ -12,6 +12,7 @@ of state and mode attributes defined by the SKA Control Model.
 """
 
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
+import threading
 # Tango imports
 import tango
 from tango import DebugIt, AttrWriteType, DevFailed
@@ -21,7 +22,7 @@ from tango.server import run, attribute, command, device_property
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState
-
+from tmc.common.tango_server_helper import TangoServerHelper
 from . import const, release
 from .device_data import DeviceData
 from .startup_telescope_command import StartUpTelescope
@@ -141,15 +142,23 @@ class CentralNode(SKABaseDevice):
                 self.logger.info("Device initialisating...")
                 device_data = DeviceData.get_instance()
                 device.device_data = device_data
+                # Get Instance of TangoServerHelper class
+                self.this_server = TangoServerHelper.get_instance()
+                self.this_server.device = device
+                device.attr_map = {}
                 # Initialise Attributes
+                device.attr_map["telescopeHealthState"]=HealthState.UNKNOWN
+                device.attr_map["subarray1HealthState"]=HealthState.UNKNOWN
+                device.attr_map["activityMessage"]=""
+
                 device._health_state = HealthState.OK
                 device._build_state = "{},{},{}".format(
                     release.name, release.version, release.description
                 )
                 device._version_id = release.version
-                device_data.mccs_master_ln_fqdn = device.MCCSMasterLeafNodeFQDN
+                device.mccs_master_ln_fqdn = self.this_server.read_property("MCCSMasterLeafNodeFQDN")
                 device_data.mccs_controller_fqdn = "low-mccs/control/control"
-                device_data.subarray_low = device.TMLowSubarrayNodes
+                device.subarray_low = self.this_server.read_property("TMLowSubarrayNodes")
                 self.logger.debug(const.STR_INIT_SUCCESS)
 
             except DevFailed as dev_failed:
@@ -171,9 +180,9 @@ class CentralNode(SKABaseDevice):
                     subarray
                 ]
 
-            device._read_activity_message = "Central Node initialised successfully."
-            self.logger.info(device._read_activity_message)
-            return (ResultCode.OK, device._read_activity_message)
+            self.this_server.write_attr("activityMessage", "Central Node initialised successfully.")
+            self.logger.info(device.attr_map["activityMessage"])
+            return (ResultCode.OK, device.attr_map["activityMessage"])
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(CentralNode.always_executed_hook) ENABLED START #
@@ -192,26 +201,32 @@ class CentralNode(SKABaseDevice):
     def read_telescopeHealthState(self):
         # PROTECTED REGION ID(CentralNode.telescope_healthstate_read) ENABLED START #
         """ Internal construct of TANGO. Returns the Telescope health state."""
-        return self.device_data._telescope_health_state
+        return self.attr_map["telescopeHealthState"]
         # PROTECTED REGION END #    //  CentralNode.telescope_healthstate_read
 
     def read_subarray1HealthState(self):
         # PROTECTED REGION ID(CentralNode.subarray1_healthstate_read) ENABLED START #
         """ Internal construct of TANGO. Returns Subarray1 health state. """
-        return self.device_data._subarray1_health_state
+        return self.attr_map["subarray1HealthState"]
         # PROTECTED REGION END #    //  CentralNode.subarray1_healthstate_read
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(CentralNode.activity_message_read) ENABLED START #
         """Internal construct of TANGO. Returns activity message. """
-        return self.device_data._read_activity_message
+        return self.attr_map["activityMessage"]
         # PROTECTED REGION END #    //  CentralNode.activity_message_read
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(CentralNode.activity_message_write) ENABLED START #
         """Internal construct of TANGO. Sets the activity message. """
-        self.device_data._read_activity_message = value
+        self.update_attr_map("activityMessage", value)
         # PROTECTED REGION END #    //  CentralNode.activity_message_write
+
+    def update_attr_map(self, attr, val):
+        lock = threading.Lock()
+        lock.acquire()
+        self.attr_map[attr] = val
+        lock.release()
 
     # --------
     # Commands

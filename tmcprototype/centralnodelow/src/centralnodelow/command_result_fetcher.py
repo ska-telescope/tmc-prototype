@@ -9,6 +9,7 @@ from tango import DevFailed
 from . import const
 from .device_data import DeviceData
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 
 
 class CommandResultFetcher:
@@ -16,6 +17,8 @@ class CommandResultFetcher:
     def __init__(self, logger=None):
         if logger == None:
             self.logger = logging.getLogger(__name__)
+
+        self.this_server = TangoServerHelper.get_instance()
 
     def command_result_cb(self, event):
         """
@@ -48,7 +51,7 @@ class CommandResultFetcher:
                 log_message = (
                     f"Exception occurred while subscribing to mccs attribute: {attribute_name}"
                 )
-                device_data._read_activity_message = log_message
+                self.this_server.write_attr("activityMessage", log_message)
                 tango.Except.re_throw_exception(
                     dev_failed,
                     "Exception in StartupTelescope command",

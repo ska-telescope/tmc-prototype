@@ -10,6 +10,7 @@ from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
 from .device_data import DeviceData
@@ -79,18 +80,19 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         device_data.health_aggreegator = HealthStateAggreegator(self.logger)
         device_data.health_aggreegator.subscribe_event()
         try:
+            self.this_server = TangoServerHelper.get_instance()
             # Check if Mccs Off command is completed
             assert device_data.cmd_res_evt_val == None or device_data.cmd_res_evt_val == 0, const.ERR_STANDBY_CMD_UNCOMPLETE
-            self.create_mccs_client(device_data.mccs_master_ln_fqdn)
-            self.create_subarray_client(device_data.subarray_low)
+            self.create_mccs_client(self.this_server.read_property("MCCSMasterLeafNodeFQDN"))
+            self.create_subarray_client(self.this_server.read_property("TMLowSubarrayNodes"))
             log_msg = const.STR_ON_CMD_ISSUED
             self.logger.info(log_msg)
-            device_data._read_activity_message = log_msg
+            self.this_server.write_attr("activityMessage", log_msg)
             return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
         except AssertionError as assertion_err:
             log_msg = const.ERR_STANDBY_CMD_UNCOMPLETE
             self.logger.exception(log_msg)
-            device_data._read_activity_message = const.ERR_STANDBY_CMD_UNCOMPLETE
+            self.this_server.write_attr("activityMessage", const.ERR_STANDBY_CMD_UNCOMPLETE)
             tango.Except.re_throw_exception(assertion_err, const.ERR_STANDBY_CMD_UNCOMPLETE,
                                             log_msg, "CentralNodeLow.StartUpTelescopeCommand",
                                             tango.ErrSeverity.ERR)
@@ -134,13 +136,13 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
                 tango_client.get_device_fqdn
             )
             self.logger.debug(log_msg)
-            device_data._read_activity_message = log_msg
+            self.this_server.write_attr("activityMessage", log_msg)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_EXE_ON_CMD}{dev_failed}"
             self.logger.exception(dev_failed)
-            device_data._read_activity_message = const.ERR_EXE_ON_CMD
+            self.this_server.write_attr("activityMessage", const.ERR_EXE_ON_CMD)
             tango.Except.re_throw_exception(dev_failed, const.STR_ON_EXEC, log_msg,
                                             "CentralNodeLow.StartUpTelescopeCommand",
                                             tango.ErrSeverity.ERR)
-        return (ResultCode.OK, device_data._read_activity_message)
+        return (ResultCode.OK, const.ERR_EXE_ON_CMD)
