@@ -44,14 +44,14 @@ class Abort(SKASubarray.AbortCommand):
         device_data.is_release_resources = False
         device_data.is_end_command = False
         device_data.is_obsreset_command_executed = False
+        this_server = TangoServerHelper.get_instance()
         try:
             if device_data.scan_timer_handler.is_scan_running():
                 device_data.scan_timer_handler.stop_scan_timer()
                 self.abort_mccs(device_data.mccs_subarray_ln_fqdn)
                 self.logger.info(const.STR_ABORT_SUCCESS)
-                device_data._read_activity_message = const.STR_ABORT_SUCCESS
-                tango_server_helper = TangoServerHelper.get_instance()
-                tango_server_helper.set_status(const.STR_ABORT_SUCCESS)
+                this_server.write_attr("activityMessage", const.STR_ABORT_SUCCESS)
+                this_server.set_status(const.STR_ABORT_SUCCESS)
                 device_data.is_abort_command_executed = True
                 return (ResultCode.STARTED, const.STR_ABORT_SUCCESS)
 

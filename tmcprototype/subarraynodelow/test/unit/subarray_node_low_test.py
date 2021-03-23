@@ -31,6 +31,7 @@ from subarraynodelow.obsreset_command import ObsReset
 
 from subarraynodelow.abort_command import Abort
 from subarraynodelow.device_data import DeviceData
+from tmc.common.tango_server_helper import TangoServerHelper
 
 assign_input_file = "command_AssignResources.json"
 path = join(dirname(__file__), "data", assign_input_file)
@@ -103,6 +104,33 @@ def wait_for(tango_context, obs_state_to_change, timeout=10):
         timer_thread.cancel()
         return True
 
+@pytest.fixture(scope="function")
+def mock_tsh():
+    mccs_subarray1_ln_fqdn = "ska_low/tm_leaf_node/mccs_subarray01"
+    tango_server_obj = TangoServerHelper.get_instance()
+    tango_server_obj.read_property = Mock(return_value = mccs_subarray1_ln_fqdn)
+    yield tango_server_obj
+
+
+@pytest.fixture(scope="function")
+def mock_lower_devices_proxy():
+    mccs_subarray1_ln_fqdn = "ska_low/tm_leaf_node/mccs_subarray01"
+    mccs_subarray1_fqdn = "low-mccs/subarray/01"
+
+    dut_properties = {
+        "MccsSubarrayLNFQDN": mccs_subarray1_ln_fqdn,
+        "MccsSubarrayFQDN": mccs_subarray1_fqdn,
+    }
+
+    with fake_tango_system(
+        SubarrayNode, initial_dut_properties=dut_properties
+    ) as tango_context:
+        with mock.patch.object(
+            TangoClient, "_get_deviceproxy", return_value=Mock()
+        ) as mock_obj:
+            tango_client = TangoClient(dut_properties["MccsSubarrayLNFQDN"])
+            
+            yield tango_context.device, tango_client
 
 def test_scan_id():
     """Test for scanID"""
@@ -273,27 +301,6 @@ def mock_lower_devices():
     ) as tango_context:
         yield tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map
 
-
-@pytest.fixture(scope="function")
-def mock_lower_devices_proxy():
-    mccs_subarray1_ln_fqdn = "ska_low/tm_leaf_node/mccs_subarray01"
-    mccs_subarray1_fqdn = "low-mccs/subarray/01"
-
-    dut_properties = {
-        "MccsSubarrayLNFQDN": mccs_subarray1_ln_fqdn,
-        "MccsSubarrayFQDN": mccs_subarray1_fqdn,
-    }
-
-    with fake_tango_system(
-        SubarrayNode, initial_dut_properties=dut_properties
-    ) as tango_context:
-        with mock.patch.object(
-            TangoClient, "_get_deviceproxy", return_value=Mock()
-        ) as mock_obj:
-            tango_client = TangoClient(dut_properties["MccsSubarrayLNFQDN"])
-            yield tango_context.device, tango_client
-
-
 def test_assign_resource_should_raise_exception_when_called_when_device_state_off():
     with fake_tango_system(SubarrayNode) as tango_context:
         with pytest.raises(tango.DevFailed) as df:
@@ -303,9 +310,10 @@ def test_assign_resource_should_raise_exception_when_called_when_device_state_of
         assert "Error executing command AssignResources" in str(df.value)
 
 
-def test_configure_command(subarray_state_model, mock_lower_devices_proxy):
+def test_configure_command(subarray_state_model, mock_lower_devices_proxy, mock_tsh):
     device_proxy, tango_client = mock_lower_devices_proxy
     device_data = DeviceData.get_instance()
+    tango_server_obj = mock_tsh
     configure_cmd = Configure(device_data, subarray_state_model)
     subarray_state_model._straight_to_state(DevState.ON, None, ObsState.IDLE)
     assert configure_cmd.do(configure_str) == (

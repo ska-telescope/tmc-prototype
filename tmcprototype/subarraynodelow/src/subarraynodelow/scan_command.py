@@ -13,6 +13,7 @@ from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
 
@@ -54,6 +55,7 @@ class Scan(SKASubarray.ScanCommand):
         device_data.is_release_resources = False
         device_data.is_abort_command_executed = False
         device_data.is_obsreset_command_executed = False
+        this_server = TangoServerHelper.get_instance()
         try:
             input_scan = json.loads(argin)
             mccs_input_scan = input_scan["mccs"]
@@ -89,9 +91,7 @@ class Scan(SKASubarray.ScanCommand):
 
         except KeyError as key_error:
             self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
-            device_data._read_activity_message = const.ERR_JSON_KEY_NOT_FOUND + str(
-                key_error
-            )
+            this_server.write_attr("activityMessage", const.ERR_JSON_KEY_NOT_FOUND + str(key_error))
             log_message = f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}"
             self.logger.exception(key_error)
             tango.Except.throw_exception(

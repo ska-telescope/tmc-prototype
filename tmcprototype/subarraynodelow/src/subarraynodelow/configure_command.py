@@ -15,6 +15,7 @@ from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
 from subarraynodelow.device_data import DeviceData
@@ -91,16 +92,18 @@ class Configure(SKASubarray.ConfigureCommand):
     def _configure_leaf_node(self, cmd_name, cmd_data):
         device_data = DeviceData.get_instance()
         try:
-            mccs_subarray_ln_client = TangoClient(device_data.mccs_subarray_ln_fqdn)
+            this_server = TangoServerHelper.get_instance()
+            mccs_subarray_ln_fqdn = this_server.read_property("MccsSubarrayLNFQDN")
+            mccs_subarray_ln_client = TangoClient(mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(cmd_name, cmd_data)
             # device_proxy.command_inout(cmd_name, cmd_data)
-            log_msg = "%s configured succesfully." % device_data.mccs_subarray_ln_fqdn
+            log_msg = "%s configured succesfully." % mccs_subarray_ln_fqdn
             self.logger.debug(log_msg)
         except DevFailed as df:
             log_message = df[0].desc
             device_data.activity_message = log_message
             log_msg = "Failed to configure %s. %s" % (
-                device_data.mccs_subarray_ln_fqdn,
+                mccs_subarray_ln_fqdn,
                 df,
             )
             self.logger.error(log_msg)

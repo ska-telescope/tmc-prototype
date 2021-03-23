@@ -16,6 +16,7 @@ from tango import AttrWriteType
 from tango.server import run, attribute, device_property
 
 # Additional imports
+import threading
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, ObsMode, ObsState
 from ska.base import SKASubarray
@@ -132,10 +133,10 @@ class SubarrayNode(SKASubarray):
             device.device_data = device_data
 
             this_server = TangoServerHelper.get_instance()
-            this_server.device = device
-
+            this_server.set_tango_class(device)
+            device.attr_map = {}
+            device.attr_map["scanID"] = ""
             device._obs_mode = ObsMode.IDLE
-            device._scan_id = ""
             device._resource_list = []
             device.is_end_command = False
             device.is_release_resources = False
@@ -149,12 +150,13 @@ class SubarrayNode(SKASubarray):
             device._subarray_health_state = (
                 HealthState.OK
             )  # Aggregated Subarray Health State
-            device_data.mccs_subarray_fqdn = device.MccsSubarrayFQDN
-            device_data.mccs_subarray_ln_fqdn = device.MccsSubarrayLNFQDN
 
-            device_data.activity_message = const.STR_SA_INIT_SUCCESS
-            self.logger.info(device_data.activity_message)
-            return (ResultCode.OK, device_data.activity_message)
+            # device_data.mccs_subarray_fqdn = device.MccsSubarrayFQDN
+            # device_data.mccs_subarray_ln_fqdn = device.MccsSubarrayLNFQDN
+
+            this_server.write_attr("activityMessage", const.STR_SA_INIT_SUCCESS)
+            self.logger.info(const.STR_SA_INIT_SUCCESS)
+            return (ResultCode.OK, const.STR_SA_INIT_SUCCESS)
 
     def always_executed_hook(self):
         """ Internal construct of TANGO. """
@@ -177,7 +179,7 @@ class SubarrayNode(SKASubarray):
         Where 123 is a Scan ID from configuration json string.
         """
         # PROTECTED REGION ID(SubarrayNode.scanID_read) ENABLED START #
-        return self._scan_id
+        return self.attr_map["scanID"]
         # PROTECTED REGION END #    //  SubarrayNode.scanID_read
 
     def read_activityMessage(self):
@@ -186,14 +188,20 @@ class SubarrayNode(SKASubarray):
         //result occured after initialization of device.
         """
         # PROTECTED REGION ID(SubarrayNode.activityMessage_read) ENABLED START #
-        return self.device_data.activity_message
+        return self.attr_map["activityMessage"]
         # PROTECTED REGION END #    //  SubarrayNode.activityMessage_read
 
     def write_activityMessage(self, value):
         """ Internal construct of TANGO. Sets the activityMessage. """
         # PROTECTED REGION ID(SubarrayNode.activityMessage_write) ENABLED START #
-        self.device_data.activity_message = value
+        self.update_attr_map("activityMessage", value)
         # PROTECTED REGION END #    //  SubarrayNode.activityMessage_write
+
+    def update_attr_map(self, attr, val):
+        lock = threading.Lock()
+        lock.acquire()
+        self.attr_map[attr] = val
+        lock.release()
 
     # --------
     # Commands
