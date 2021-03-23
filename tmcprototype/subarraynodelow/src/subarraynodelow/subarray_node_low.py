@@ -150,10 +150,6 @@ class SubarrayNode(SKASubarray):
             device._subarray_health_state = (
                 HealthState.OK
             )  # Aggregated Subarray Health State
-
-            # device_data.mccs_subarray_fqdn = device.MccsSubarrayFQDN
-            # device_data.mccs_subarray_ln_fqdn = device.MccsSubarrayLNFQDN
-
             this_server.write_attr("activityMessage", const.STR_SA_INIT_SUCCESS)
             self.logger.info(const.STR_SA_INIT_SUCCESS)
             return (ResultCode.OK, const.STR_SA_INIT_SUCCESS)

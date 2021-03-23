@@ -45,7 +45,8 @@ class ObsReset(SKASubarray.ObsResetCommand):
         this_server = TangoServerHelper.get_instance()
         try:
             self.logger.info("ObsReset command invoked on SubarrayNodeLow.")
-            mccs_subarray_ln_client = TangoClient(device_data.mccs_subarray_ln_fqdn)
+            mccs_subarray_ln_fqdn = this_server.read_property("MccsSubarrayLNFQDN")
+            mccs_subarray_ln_client = TangoClient(mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(const.CMD_OBSRESET)
             this_server.write_attr("activityMessage", const.STR_OBSRESET_SUCCESS)
             self.logger.info(const.STR_OBSRESET_SUCCESS)

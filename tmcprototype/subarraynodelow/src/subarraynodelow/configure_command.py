@@ -60,14 +60,14 @@ class Configure(SKASubarray.ConfigureCommand):
         self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA_LOW)
         log_msg = f"{const.STR_CONFIGURE_IP_ARG}{argin}"
         self.logger.info(log_msg)
-        # device.set_status(const.STR_CONFIGURE_CMD_INVOKED_SA_LOW)
-        device_data.activity_message = const.STR_CONFIGURE_CMD_INVOKED_SA_LOW
+        self.this_server = TangoServerHelper.get_instance()
+        self.this_server.write_attr("activityMessage", const.STR_CONFIGURE_CMD_INVOKED_SA_LOW)    
         try:
             scan_configuration = json.loads(argin)
         except json.JSONDecodeError as jerror:
             log_message = f"{const.ERR_INVALID_JSON}{jerror}"
             self.logger.error(log_message)
-            device_data.activity_message = log_message
+            self.this_server.write_attr("activityMessage", log_message)    
             tango.Except.throw_exception(
                 const.STR_CMD_FAILED,
                 log_message,
@@ -90,10 +90,8 @@ class Configure(SKASubarray.ConfigureCommand):
         self._configure_leaf_node("Configure", json.dumps(scan_configuration))
 
     def _configure_leaf_node(self, cmd_name, cmd_data):
-        device_data = DeviceData.get_instance()
         try:
-            this_server = TangoServerHelper.get_instance()
-            mccs_subarray_ln_fqdn = this_server.read_property("MccsSubarrayLNFQDN")
+            mccs_subarray_ln_fqdn = self.this_server.read_property("MccsSubarrayLNFQDN")
             mccs_subarray_ln_client = TangoClient(mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(cmd_name, cmd_data)
             # device_proxy.command_inout(cmd_name, cmd_data)
@@ -101,7 +99,7 @@ class Configure(SKASubarray.ConfigureCommand):
             self.logger.debug(log_msg)
         except DevFailed as df:
             log_message = df[0].desc
-            device_data.activity_message = log_message
+            self.this_server.write_attr("activityMessage", log_message)
             log_msg = "Failed to configure %s. %s" % (
                 mccs_subarray_ln_fqdn,
                 df,

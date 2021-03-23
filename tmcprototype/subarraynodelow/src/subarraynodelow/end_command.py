@@ -12,6 +12,7 @@ from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
 
@@ -43,23 +44,21 @@ class End(SKASubarray.EndCommand):
         device.is_release_resources = False
         device.is_abort_command_executed = False
         device.is_obsreset_command_executed = False
-
+        this_server = TangoServerHelper.get_instance()
         try:
             self.logger.info(const.STR_END_CMD_INVOKED_SA_LOW)
-            mccs_subarray_ln_client = TangoClient(device.mccs_subarray_ln_fqdn)
+            mccs_subarray_ln_fqdn = this_server.read_property("MccsSubarrayLNFQDN")
+            mccs_subarray_ln_client = TangoClient(mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(const.CMD_END)
-            # device._mccs_subarray_ln_proxy.command_inout(const.CMD_END)
             self.logger.info(const.STR_CMD_END_INV_MCCS)
-            device.activity_message = const.STR_END_SUCCESS
+            this_server.write_attr("activityMessage", const.STR_END_SUCCESS)
             self.logger.info(const.STR_END_SUCCESS)
-            # device.set_status(const.STR_END_SUCCESS)
             device.is_end_command = True
             return (ResultCode.OK, const.STR_END_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_END_INVOKING_CMD}{dev_failed}"
             self.logger.exception(log_msg)
-            # device.set_status(const.ERR_END_INVOKING_CMD)
             tango.Except.throw_exception(
                 const.STR_END_EXEC,
                 log_msg,

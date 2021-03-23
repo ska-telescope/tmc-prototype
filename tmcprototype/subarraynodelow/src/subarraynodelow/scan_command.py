@@ -61,17 +61,18 @@ class Scan(SKASubarray.ScanCommand):
             mccs_input_scan = input_scan["mccs"]
             log_msg = f"{const.STR_SCAN_IP_ARG}{argin}"
             self.logger.info(log_msg)
-            device_data.activity_message = log_msg
+            this_server.write_attr("activityMessage", log_msg)
             device_data.isScanRunning = True
             # Invoke scan command on MCCS Subarray Leaf Node with input argument as scan id
-            mccs_subarray_ln_client = TangoClient(device_data.mccs_subarray_ln_fqdn)
+            mccs_subarray_ln_fqdn = this_server.read_property("MccsSubarrayLNFQDN")
+            mccs_subarray_ln_client = TangoClient(mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(
                 const.CMD_SCAN, json.dumps(mccs_input_scan)
             )
             self.logger.info(const.STR_MCCS_SCAN_INIT)
-            device_data.activity_message = const.STR_MCCS_SCAN_INIT
+            this_server.write_attr("activityMessage", const.STR_MCCS_SCAN_INIT)
             self.logger.info(const.STR_SA_SCANNING)
-            device_data.activity_message = const.STR_SCAN_SUCCESS
+            this_server.write_attr("activityMessage", const.STR_SCAN_SUCCESS)
             # Once Scan Duration is complete call EndScan Command
             self.logger.info("Starting Scan Thread")
             device_data.scan_timer_handler.start_scan_timer(device_data.scan_duration)
@@ -81,7 +82,7 @@ class Scan(SKASubarray.ScanCommand):
         except json.JSONDecodeError as json_error:
             log_message = f"{const.ERR_INVALID_JSON}{json_error}"
             self.logger.error(log_message)
-            device_data.activity_message = log_message
+            this_server.write_attr("activityMessage", log_message)
             tango.Except.throw_exception(
                 const.STR_CMD_FAILED,
                 log_message,

@@ -27,7 +27,8 @@ class HealthStateAggregator:
         self.mccs_ln_health_event_id = {}
         self.this_server = TangoServerHelper.get_instance()
         self.device_data = DeviceData.get_instance()
-        self.mccs_client = TangoClient(self.device_data.mccs_subarray_ln_fqdn)
+        mccs_subarray_ln_fqdn = self.this_server.read_property("MccsSubarrayLNFQDN")
+        self.mccs_client = TangoClient(mccs_subarray_ln_fqdn)
 
     def subscribe(self):
         # Subscribe cspsubarrayHealthState (forwarded attribute) of CspSubarray
@@ -37,8 +38,6 @@ class HealthStateAggregator:
         self.mccs_ln_health_event_id[self.mccs_client] = mccs_event_id
         log_msg = f"{const.STR_SUB_ATTR_MCCS_SALN_HEALTH_SUCCESS}{self.mccs_ln_health_event_id}"
         self.logger.debug(log_msg)
-        # tango_server_helper_obj = TangoServerHelper.get_instance()
-        # tango_server_helper_obj.set_status(const.STR_SUB_ATTR_MCCS_SALN_HEALTH_SUCCESS)
         self.logger.info(const.STR_SUB_ATTR_MCCS_SALN_HEALTH_SUCCESS)
 
     def health_state_cb(self, event):
@@ -73,12 +72,12 @@ class HealthStateAggregator:
             log_message = self.generate_health_state_log_msg(
                 event_health_state, device_name, event
             )
-            self.device_data.activity_message = log_message
+            self.this_server.write_attr("activityMessage", log_message)
             self.device_data._subarray_health_state = self.calculate_health_state(
                 self.subarray_ln_health_state_map.values())
         else:
             log_message = f"{const.ERR_SUBSR_SA_HEALTH_STATE}{device_name}{event}"
-            self.device_data.activity_message = log_message
+            self.this_server.write_attr("activityMessage", log_message)
 
     def generate_health_state_log_msg(self, health_state, device_name, event):
         if isinstance(health_state, HealthState):

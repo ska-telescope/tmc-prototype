@@ -12,6 +12,7 @@ from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
 from .device_data import DeviceData
@@ -46,13 +47,14 @@ class On(SKASubarray.OnCommand):
         device_data.is_release_resources = False
         device_data.is_abort_command_executed = False
         device_data.is_obsreset_command_executed = False
-        device_data.health_state_aggregator = HealthStateAggregator()
         device_data.obs_state_aggregator = ObsStateAggregator()
-        device_data.health_state_aggregator.subscribe()
+        device_data.health_state_aggregator = HealthStateAggregator()
         device_data.obs_state_aggregator.subscribe()
-
+        device_data.health_state_aggregator.subscribe()
+        this_server = TangoServerHelper.get_instance()
         try:
-            mccs_subarray_ln_client = TangoClient(device_data.mccs_subarray_ln_fqdn)
+            mccs_subarray_ln_fqdn = this_server.read_property("MccsSubarrayLNFQDN")
+            mccs_subarray_ln_client = TangoClient(mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(const.CMD_ON, None)
             message = "On command completed OK"
             self.logger.info(message)
@@ -60,7 +62,7 @@ class On(SKASubarray.OnCommand):
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_INVOKING_ON_CMD}{dev_failed}"
             self.logger.error(log_msg)
-            self._read_activity_message = log_msg
+            this_server.write_attr("activityMessage", log_msg)
             tango.Except.throw_exception(
                 dev_failed[0].desc,
                 "Failed to invoke On command on SubarrayNode.",
