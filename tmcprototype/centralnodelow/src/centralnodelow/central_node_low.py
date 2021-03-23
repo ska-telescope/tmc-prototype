@@ -144,7 +144,7 @@ class CentralNode(SKABaseDevice):
                 device.device_data = device_data
                 # Get Instance of TangoServerHelper class
                 self.this_server = TangoServerHelper.get_instance()
-                self.this_server.device = device
+                self.this_server._device = device
                 device.attr_map = {}
                 # Initialise Attributes
                 device.attr_map["telescopeHealthState"]=HealthState.UNKNOWN
@@ -156,9 +156,7 @@ class CentralNode(SKABaseDevice):
                     release.name, release.version, release.description
                 )
                 device._version_id = release.version
-                device.mccs_master_ln_fqdn = self.this_server.read_property("MCCSMasterLeafNodeFQDN")
                 device_data.mccs_controller_fqdn = "low-mccs/control/control"
-                device.subarray_low = self.this_server.read_property("TMLowSubarrayNodes")
                 self.logger.debug(const.STR_INIT_SUCCESS)
 
             except DevFailed as dev_failed:
