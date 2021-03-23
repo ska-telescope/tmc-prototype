@@ -20,3 +20,8 @@ except Exception as e:
 
 for alarm in json_alarms:
     alarmHandler_proxy.command_inout("Load", alarm["input_string"])
+
+print("CREATING CentralNode deviceproxy")
+cn_proxy = DeviceProxy("ska_mid/tm_central/central_node")
+attr_config = cn_proxy.get_attribute_config("telescopeHealthState")
+print("attr_config ----------------", str(attr_config))

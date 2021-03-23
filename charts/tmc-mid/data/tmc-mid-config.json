@@ -27,7 +27,15 @@
                 "abs_change": [
                   "-1",
                   "1"
-                ]
+                ],
+                "max_value": [
+                  3],
+                "min_value": [
+                  3],
+                "max_alarm": [
+                  3],
+                "min_alarm": [
+                  3]
               }
             },
             "properties": {
