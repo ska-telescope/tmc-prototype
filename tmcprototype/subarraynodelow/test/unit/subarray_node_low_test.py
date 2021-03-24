@@ -106,10 +106,11 @@ def wait_for(tango_context, obs_state_to_change, timeout=10):
 
 @pytest.fixture(scope="function")
 def mock_tsh():
-    mccs_subarray1_ln_fqdn = "ska_low/tm_leaf_node/mccs_subarray01"
-    tango_server_obj = TangoServerHelper.get_instance()
-    tango_server_obj.read_property = Mock(return_value = mccs_subarray1_ln_fqdn)
-    yield tango_server_obj
+    with mock.patch.object(
+            TangoServerHelper, "read_property", return_value=Mock()
+        ) as mock_obj:
+        tango_server_obj = TangoServerHelper.get_instance()
+        yield tango_server_obj
 
 
 @pytest.fixture(scope="function")
