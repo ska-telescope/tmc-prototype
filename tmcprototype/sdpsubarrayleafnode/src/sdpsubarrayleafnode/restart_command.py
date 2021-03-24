@@ -10,6 +10,7 @@ from tango import DevState, DevFailed
 from ska.base.commands import BaseCommand
 
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
 
@@ -75,11 +76,13 @@ class Restart(BaseCommand):
         device_data = self.target
         if event.err:
             log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
-            device_data._read_activity_message = log
+            #device_data._read_activity_message = log
+            self.this_server.write_attr("activityMessage", log)
             self.logger.error(log)
         else:
             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            device_data._read_activity_message = log
+            #device_data._read_activity_message = log
+            self.this_server.write_attr("activityMessage", log)
             self.logger.info(log)
 
     def do(self):
@@ -94,17 +97,20 @@ class Restart(BaseCommand):
 
         """
         device_data = self.target
+        self.this_server = TangoServerHelper.get_instance()
         try:
             sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
             sdp_sa_ln_client_obj.send_command_async(
                const.CMD_RESTART, callback_method=self.restart_cmd_ended_cb
                )
-            device_data._read_activity_message = const.STR_RESTART_SUCCESS
+            #device_data._read_activity_message = const.STR_RESTART_SUCCESS
+            self.this_server.write_attr("activityMessage", const.STR_RESTART_SUCCESS)
             self.logger.info(const.STR_RESTART_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_RESTART_INVOKING_CMD}{dev_failed}"
-            device_data._read_activity_message = log_msg
+            #device_data._read_activity_message = log_msg
+            self.this_server.write_attr("activityMessage", log_msg)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_RESTART_EXEC,
