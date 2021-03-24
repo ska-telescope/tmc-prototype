@@ -1,7 +1,9 @@
+from ska.base.control_model import HealthState
+
 class DeviceData:
     """
-    This class represents the CSP master as functional device. It mainly comprise the data common
-    across various functions of a CSP master.
+    This class represents the SDP master as functional device. It mainly comprise the data common
+    across various functions of a SDP master.
     """
 
     __instance = None
@@ -12,6 +14,7 @@ class DeviceData:
             raise Exception("This is singletone class")
         else:
             DeviceData.__instance = self
+        self._health_state = HealthState.UNKNOWN
 
     @staticmethod
     def get_instance():

@@ -6,6 +6,7 @@ from tango import DevState, DevFailed
 from ska.base.commands import BaseCommand
 
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
 
@@ -81,9 +82,13 @@ class Standby(BaseCommand):
         return:
             None
         """
-        device_data = self.target
+        this_server = TangoServerHelper.get_instance()
         try:
-            sdp_mln_client_obj = TangoClient(device_data.sdp_master_ln_fqdn)
+            # sdp_mln_client_obj = TangoClient(device_data.sdp_master_ln_fqdn)
+            sdp_master_ln_fqdn = ""
+            property_val = this_server.read_property("SdpMasterFQDN")
+            sdp_master_ln_fqdn = sdp_master_ln_fqdn.join(property_val)
+            sdp_mln_client_obj = TangoClient(sdp_master_ln_fqdn)
             sdp_mln_client_obj.send_command_async(
                 const.CMD_STANDBY, callback_method=self.standby_cmd_ended_cb
                 )

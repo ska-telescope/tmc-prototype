@@ -126,7 +126,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             # Initialising Attributes 
             device.attr_map["sdpHealthState"]=HealthState.UNKNOWN
             device.attr_map["versionInfo"]=""
-            device.attr_map["activityMessage"]="OK"
+            device.attr_map["activityMessage"]=""
             device.attr_map["ProcessingBlockList"]= "test"
 
 
@@ -193,7 +193,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         Internal construct of TANGO.
         :return:
         """
-        return attr_map["ProcessingBlockList"]
+        return self.attr_map["ProcessingBlockList"]
         # PROTECTED REGION END #    //  SdpMasterLeafNode.ProcessingBlockList_read
 
     def update_attr_map(self, attr, val):
