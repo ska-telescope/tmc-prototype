@@ -28,7 +28,7 @@ class DeviceData:
             DeviceData.__instance = self
 
         #self._read_activity_message = ""
-        self._mccs_subarray_fqdn = ""
+        #self._mccs_subarray_fqdn = ""
 
     @staticmethod
     def get_instance():

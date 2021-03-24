@@ -108,7 +108,10 @@ class Scan(BaseCommand):
         device_data = self.target
         this_server = TangoServerHelper.get_instance()
         try:
-            mccs_subarray_client = TangoClient(device_data._mccs_subarray_fqdn)
+            mccs_subarray_fqdn = ""
+            property_value = this_server.read_property("MccsSubarrayFQDN")
+            mccs_subarray_fqdn = mccs_subarray_fqdn.join(property_value)
+            mccs_subarray_client = TangoClient(mccs_subarray_fqdn)
             # TODO: Mock obs_state issue to be resolved
             # assert mccs_subarray_client.get_attribute("obsState") == ObsState.READY
             mccs_subarray_client.send_command_async(

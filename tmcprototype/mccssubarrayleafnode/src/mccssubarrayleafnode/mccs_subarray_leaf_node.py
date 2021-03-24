@@ -130,7 +130,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             )
             device._version_id = release.version
             device._versioninfo = " "
-            device_data._mccs_subarray_fqdn = device.MccsSubarrayFQDN
+            #device_data._mccs_subarray_fqdn = device.MccsSubarrayFQDN
             device.set_status(const.STR_MCCSSALN_INIT_SUCCESS)
             device._mccs_subarray_health_state = HealthState.OK
             self.logger.info(const.STR_MCCSSALN_INIT_SUCCESS)
