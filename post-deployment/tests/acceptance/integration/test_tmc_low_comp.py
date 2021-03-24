@@ -34,7 +34,6 @@ LOGGER = logging.getLogger(__name__)
 
 
 @pytest.mark.low
-@pytest.mark.low_select
 def test_assign_resources():
 
     try:

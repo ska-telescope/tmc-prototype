@@ -30,7 +30,6 @@ class HealthStateAggregator:
         mccs_subarray_ln_fqdn = ""
         property_val = self.this_server.read_property("MccsSubarrayLNFQDN")
         mccs_subarray_ln_fqdn = mccs_subarray_ln_fqdn.join(property_val)
-        log_msg = "FQDN of MccsSubarrayLNFQDN: " + str(mccs_subarray_ln_fqdn)
         self.mccs_client = TangoClient(mccs_subarray_ln_fqdn)
 
     def subscribe(self):

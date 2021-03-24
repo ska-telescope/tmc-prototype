@@ -51,7 +51,6 @@ LOGGER = logging.getLogger(__name__)
 
 
 @pytest.mark.mid
-@pytest.mark.select
 # @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_assign_resources():
 

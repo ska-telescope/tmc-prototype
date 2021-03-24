@@ -18,7 +18,6 @@ from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
-from subarraynodelow.device_data import DeviceData
 
 
 class Configure(SKASubarray.ConfigureCommand):
