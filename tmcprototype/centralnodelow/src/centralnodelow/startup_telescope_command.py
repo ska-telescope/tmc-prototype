@@ -85,8 +85,8 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
             assert device_data.cmd_res_evt_val == None or device_data.cmd_res_evt_val == 0, const.ERR_STANDBY_CMD_UNCOMPLETE
 
             self.mccs_master_ln_fqdn = ""
-            input = self.this_server.read_property("MCCSMasterLeafNodeFQDN")
-            self.mccs_master_ln_fqdn = self.mccs_master_ln_fqdn.join(input)
+            property_value = self.this_server.read_property("MCCSMasterLeafNodeFQDN")
+            self.mccs_master_ln_fqdn = self.mccs_master_ln_fqdn.join(property_value)
 
             self.create_mccs_client(self.mccs_master_ln_fqdn)
             subarray_low = self.this_server.read_property("TMLowSubarrayNodes")

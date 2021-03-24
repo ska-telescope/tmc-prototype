@@ -72,8 +72,8 @@ class StandByTelescope(SKABaseDevice.OffCommand):
             assert device_data.cmd_res_evt_val == 0
 
             self.mccs_master_ln_fqdn = ""
-            input = self.this_server.read_property("MCCSMasterLeafNodeFQDN")
-            self.mccs_master_ln_fqdn = self.mccs_master_ln_fqdn.join(input)
+            property_value = self.this_server.read_property("MCCSMasterLeafNodeFQDN")
+            self.mccs_master_ln_fqdn = self.mccs_master_ln_fqdn.join(property_value)
 
             self.create_mccs_client(self.mccs_master_ln_fqdn)
             subarray_low = self.this_server.read_property("TMLowSubarrayNodes")

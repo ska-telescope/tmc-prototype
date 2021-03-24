@@ -95,8 +95,8 @@ class ReleaseResources(BaseCommand):
                 # Send same input argument to MCCS Master for ReleaseResource Command
 
                 self.mccs_master_ln_fqdn = ""
-                input = self.this_server.read_property("MCCSMasterLeafNodeFQDN")
-                self.mccs_master_ln_fqdn = self.mccs_master_ln_fqdn.join(input)
+                property_value = self.this_server.read_property("MCCSMasterLeafNodeFQDN")
+                self.mccs_master_ln_fqdn = self.mccs_master_ln_fqdn.join(property_value)
 
                 mccs_mln_client = TangoClient(self.mccs_master_ln_fqdn)
                 mccs_mln_client.send_command(
