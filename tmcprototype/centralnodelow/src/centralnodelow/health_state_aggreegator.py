@@ -31,7 +31,8 @@ class HealthStateAggreegator:
         self.device_data = DeviceData.get_instance()
         self.subarray_health_state_map = {}
         self.this_server = TangoServerHelper.get_instance()
-        self.mccs_master_ln_fqdn = self.this_server.read_property("MCCSMasterLeafNodeFQDN")
+        self.mccs_master_ln_fqdn = "ska_low/tm_leaf_node/mccs_master"
+        # self.mccs_master_ln_fqdn = self.this_server.read_property("MCCSMasterLeafNodeFQDN")
         self.health_state_event_map = {}
 
     def subscribe_event(self):
