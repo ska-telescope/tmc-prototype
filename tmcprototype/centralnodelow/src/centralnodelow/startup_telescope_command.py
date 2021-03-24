@@ -13,7 +13,6 @@ from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
-from .device_data import DeviceData
 from .health_state_aggreegator import HealthStateAggreegator
 from .command_result_fetcher import CommandResultFetcher
 

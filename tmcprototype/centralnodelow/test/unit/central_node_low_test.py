@@ -29,7 +29,6 @@ from ska.base.control_model import HealthState
 from ska.base.control_model import LoggingLevel
 from tmc.common.tango_client import TangoClient
 from ska.base.commands import ResultCode
-from centralnodelow.device_data import DeviceData
 from tmc.common.tango_server_helper import TangoServerHelper
 
 
@@ -71,6 +70,7 @@ def mock_tango_server_helper():
     tango_server_obj.read_property = Mock(return_value = subarray1_fqdn)
     yield tango_server_obj
 
+tango_server_helper_instance = TangoServerHelper.get_instance()
 
 @pytest.fixture(scope="function")
 def mock_subarraynode_proxy():
@@ -339,7 +339,6 @@ def test_telescope_health_state_is_ok_when_subarray_node_is_ok_after_start(
         subarray1_fqdn,
         event_subscription_map,
     ) = mock_subarraynode_proxy
-    device_data = DeviceData.get_instance()
     with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()) as mock_obj:
         with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber):
             with mock.patch.object(TangoClient, '_get_deviceproxy',
@@ -348,7 +347,8 @@ def test_telescope_health_state_is_ok_when_subarray_node_is_ok_after_start(
                                        side_effect=dummy_subscriber_cmd_res):
                     tango_server_obj = mock_tango_server_helper
                     device_proxy.StartUpTelescope()
-    assert device_data._telescope_health_state == health_state
+    telescope_health_state = tango_server_helper_instance.read_attr("telescopeHealthState")
+    assert telescope_health_state == health_state
 
 
 def dummy_subscriber(attribute, callback_method):

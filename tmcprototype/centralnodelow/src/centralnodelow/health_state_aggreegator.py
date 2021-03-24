@@ -185,14 +185,12 @@ class HealthStateAggreegator:
                                                 f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_FAILED}")
                 elif counts[HealthState.DEGRADED] != 0:
                     self.this_server.write_attr("telescopeHealthState", HealthState.DEGRADED)
-                    device_data._telescope_health_state = HealthState.DEGRADED
                     str_log = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_DEGRADED}"
                     self.logger.info(str_log)
                     self.this_server.write_attr("activityMessage",
                                                 f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_DEGRADED}")
                 else:
                     self.this_server.write_attr("telescopeHealthState", HealthState.UNKNOWN)
-                    device_data._telescope_health_state = HealthState.UNKNOWN
                     str_log = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_UNKNOWN}"
                     self.logger.info(str_log)
                     self.this_server.write_attr("activityMessage",

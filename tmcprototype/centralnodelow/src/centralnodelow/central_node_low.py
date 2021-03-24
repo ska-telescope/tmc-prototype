@@ -162,7 +162,7 @@ class CentralNode(SKABaseDevice):
             except DevFailed as dev_failed:
                 log_msg = f"{const.ERR_INIT_PROP_ATTR_CN}{dev_failed}"
                 self.logger.exception(dev_failed)
-                device._read_activity_message = const.ERR_INIT_PROP_ATTR_CN
+                this_server.write_attr("activityMessage", const.ERR_INIT_PROP_ATTR_CN)
                 tango.Except.throw_exception(
                     const.STR_CMD_FAILED,
                     log_msg,
