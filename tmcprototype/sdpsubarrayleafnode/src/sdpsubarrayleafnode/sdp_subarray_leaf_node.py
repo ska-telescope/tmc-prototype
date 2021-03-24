@@ -150,9 +150,14 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             super().do()
             device = self.target
-
-            this_server = TangoServerHelper.get_instance()
-            this_server.device = device
+            self.this_server = TangoServerHelper.get_instance()
+            self.this_server.device = device
+            device.attr_map = {}
+            device.attr_map["receiveAddresses"] = ""
+            device.attr_map["activeProcessingBlocks"] = ""
+            device.attr_map["activityMessage"] = ""
+            device.attr_map["sdpSubarrayHealthState"] = ""
+            device.attr_map["sdpSubarrayObsState"] = ""
 
             # Initialise attributes
             device._sdp_subarray_health_state = HealthState.OK
@@ -165,10 +170,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             device_data = DeviceData.get_instance()
             device.device_data = device_data
             device_data._sdp_sa_fqdn = device.SdpSubarrayFQDN
-            device_data._read_activity_message = const.STR_SDPSALN_INIT_SUCCESS
+            self.this_server.write_attr("activityMessage", const.STR_SDPSALN_INIT_SUCCESS)
+            # device_data._read_activity_message = const.STR_SDPSALN_INIT_SUCCESS
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
-            device._read_activity_message = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
+            self.this_server.write_attr("activityMessage",
+                             f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}")
 
             # Initialise Device status
             device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
