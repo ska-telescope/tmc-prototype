@@ -14,6 +14,8 @@ It also acts as a CSP contact point for Subarray Node for observation execution 
 # PROTECTED REGION ID(CspSubarrayLeafNode.additional_import) ENABLED START #
 # Standard python imports
 
+import threading
+
 # PyTango imports
 import tango
 from tango import DebugIt, AttrWriteType, ApiUtil
@@ -144,11 +146,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device = self.target
 
             this_server = TangoServerHelper.get_instance()
-            this_server.device = device
-
-            device_data = DeviceData.get_instance()
-            device.device_data = device_data
-            device_data.csp_subarray_fqdn = device.CspSubarrayFQDN
+            this_server.set_tango_class(device)
+            device.attr_map = {}
+            device.attr_map["cspsubarrayHealthState"] = HealthState.OK
+            device.attr_map["delayModel"] = " "
+            device.attr_map["activityMessage"] = ""
 
             device._build_state = "{},{},{}".format(
                 release.name, release.version, release.description
@@ -157,11 +159,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device._versioninfo = " "
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
-            device._read_activity_message = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
-
-            device.set_status(const.STR_CSPSALN_INIT_SUCCESS)
-            device._csp_subarray_health_state = HealthState.OK
-            device_data._read_activity_message = const.STR_CSPSALN_INIT_SUCCESS
+            this_server.write_attr("activityMessage", f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}")
+            this_server.set_status(const.STR_CSPSALN_INIT_SUCCESS)
+            this_server.write_attr("activityMessage", const.STR_CSPSALN_INIT_SUCCESS)
             self.logger.info(const.STR_CSPSALN_INIT_SUCCESS)
             return (ResultCode.OK, const.STR_CSPSALN_INIT_SUCCESS)
 
@@ -182,13 +182,13 @@ class CspSubarrayLeafNode(SKABaseDevice):
     def read_delayModel(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.delayModel_read) ENABLED START #
         """Internal construct of TANGO. Returns the delay model."""
-        return self.device_data._delay_model
+        return self.attr_map["delayModel"]
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.delayModel_read
 
     def write_delayModel(self, value):
         # PROTECTED REGION ID(CspSubarrayLeafNode.delayModel_write) ENABLED START #
         """Internal construct of TANGO. Sets in to the delay model."""
-        self.device_data._delay_model = value
+        self.update_attr_map("delayModel", value)
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.delayModel_write
 
     def read_versionInfo(self):
@@ -200,14 +200,24 @@ class CspSubarrayLeafNode(SKABaseDevice):
     def read_activityMessage(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.activityMessage_read) ENABLED START #
         """Internal construct of TANGO. Returns activity message."""
-        return self.device_data._read_activity_message
+        return self.attr_map["activityMessage"]
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.activityMessage_read
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(CspSubarrayLeafNode.activityMessage_write) ENABLED START #
         """Internal construct of TANGO. Sets the activity message."""
-        self.device_data._read_activity_message = value
+        self.update_attr_map("activityMessage", value)
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.activityMessage_write
+
+    def update_attr_map(self, attr, val):
+        """
+        This method updates attribute value in attribute map. Once a thread has acquired a lock,
+        subsequent attempts to acquire it are blocked, until it is released.
+        """
+        lock = threading.Lock()
+        lock.acquire()
+        self.attr_map[attr] = val
+        lock.release()
 
     # --------
     # Commands
@@ -368,7 +378,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     def validate_obs_state(self):
         device_data = DeviceData.get_instance()
-        csp_sa_client = TangoClient(device_data.csp_subarray_fqdn)
+        this_server = TangoServerHelper.get_instance()
+        csp_subarray_fqdn = ""
+        property_val = this_server.read_property("CspSubarrayFQDN")
+        csp_subarray_fqdn = csp_subarray_fqdn.join(property_val)
+        csp_sub_client_obj = TangoClient(csp_subarray_fqdn)
         if csp_sa_client.deviceproxy.obsState in [ObsState.EMPTY, ObsState.IDLE]:
             self.logger.info(
                 "CSP Subarray is in required obsState, resources will be assigned"
