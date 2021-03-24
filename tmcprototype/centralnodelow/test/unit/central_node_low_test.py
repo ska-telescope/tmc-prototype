@@ -117,8 +117,8 @@ def test_assign_resources(mock_subarraynode_proxy, mock_tsh):
     device_proxy, tango_client_obj = mock_subarraynode_proxy[:2]
     with mock.patch.object(TangoClient, '_get_deviceproxy', return_value=Mock()):
         with mock.patch.object(TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_cmd_res):
-            device_proxy.StartUpTelescope()
             tango_server_obj = mock_tsh
+            device_proxy.StartUpTelescope()
     device_proxy.AssignResources(assign_input_str)
     assert const.STR_ASSIGN_RESOURCES_SUCCESS in device_proxy.activityMessage
 
