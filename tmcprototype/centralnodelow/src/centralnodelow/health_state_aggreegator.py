@@ -31,7 +31,10 @@ class HealthStateAggreegator:
         self.device_data = DeviceData.get_instance()
         self.subarray_health_state_map = {}
         self.this_server = TangoServerHelper.get_instance()
-        self.mccs_master_ln_fqdn = self.this_server.read_property("MCCSMasterLeafNodeFQDN")
+        #self.mccs_master_ln_fqdn = self.this_server.read_property("MCCSMasterLeafNodeFQDN")[0]
+        self.mccs_master_ln_fqdn = ""
+        input = self.this_server.read_property("MCCSMasterLeafNodeFQDN")
+        self.mccs_master_ln_fqdn = self.mccs_master_ln_fqdn.join(input)
         self.health_state_event_map = {}
 
     def subscribe_event(self):
@@ -48,7 +51,7 @@ class HealthStateAggreegator:
 
         :raises: Devfailed exception if erroe occures while subscribing event.
         """
-        mccs_mln_client = TangoClient(self.this_server.read_property("MCCSMasterLeafNodeFQDN"))
+        mccs_mln_client = TangoClient(self.mccs_master_ln_fqdn)
         try:
             self.mccs_event_id = mccs_mln_client.subscribe_attribute(
                 const.EVT_SUBSR_MCCS_MASTER_HEALTH, self.health_state_cb
@@ -142,7 +145,7 @@ class HealthStateAggreegator:
                 if const.PROP_DEF_VAL_TM_LOW_SA1 in evt.attr_name:
                     self.this_server.write_attr("subarray1HealthState", health_state)
                     self.subarray_health_state_map[evt.device] = health_state
-                elif self.this_server.read_property("MCCSMasterLeafNodeFQDN") in evt.attr_name:
+                elif self.mccs_master_ln_fqdn in evt.attr_name:
                     device_data._mccs_master_leaf_health = health_state
                 else:
                     self.logger.debug(const.EVT_UNKNOWN)

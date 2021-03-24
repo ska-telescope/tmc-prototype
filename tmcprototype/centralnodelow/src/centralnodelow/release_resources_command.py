@@ -93,7 +93,12 @@ class ReleaseResources(BaseCommand):
                 subarray_client.send_command(const.CMD_RELEASE_RESOURCES)
                 # Invoke ReleaseAllResources on MCCS Master Leaf Node
                 # Send same input argument to MCCS Master for ReleaseResource Command
-                mccs_mln_client = TangoClient(self.this_server.read_property("MCCSMasterLeafNodeFQDN"))
+
+                self.mccs_master_ln_fqdn = ""
+                input = self.this_server.read_property("MCCSMasterLeafNodeFQDN")
+                self.mccs_master_ln_fqdn = self.mccs_master_ln_fqdn.join(input)
+
+                mccs_mln_client = TangoClient(self.mccs_master_ln_fqdn)
                 mccs_mln_client.send_command(
                     const.CMD_RELEASE_MCCS_RESOURCES, input_mccs_release
                 )

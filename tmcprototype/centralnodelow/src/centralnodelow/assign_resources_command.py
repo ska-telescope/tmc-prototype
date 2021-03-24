@@ -104,7 +104,12 @@ class AssignResources(BaseCommand):
             self.invoke_assign_resources(subarray_client, subarray_cmd_data)
 
             input_mccs_assign = json.dumps(json_argument_mccs["mccs"])
-            mccs_master_ln_client = self.create_client(self.this_server.read_property("MCCSMasterLeafNodeFQDN"))
+
+            self.mccs_master_ln_fqdn = ""
+            input = self.this_server.read_property("MCCSMasterLeafNodeFQDN")
+            self.mccs_master_ln_fqdn = self.mccs_master_ln_fqdn.join(input)
+
+            mccs_master_ln_client = self.create_client(self.mccs_master_ln_fqdn)
             self.invoke_assign_resources(mccs_master_ln_client, input_mccs_assign)
 
             self.this_server.write_attr("activityMessage", const.STR_ASSIGN_RESOURCES_SUCCESS)
