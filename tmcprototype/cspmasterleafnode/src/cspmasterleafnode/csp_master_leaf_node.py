@@ -22,6 +22,8 @@ from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, SimulationMode, TestMode
 
+from tmc.common.tango_server_helper import TangoServerHelper
+
 from . import const, release
 from .on_command import On
 from .off_command import Off
@@ -94,27 +96,26 @@ class CspMasterLeafNode(SKABaseDevice):
             """
             super().do()
             device = self.target
-            device_data = DeviceData.get_instance()
-            device.device_data = device_data
-            device._health_state = HealthState.OK  # Setting healthState to "OK"
-            device._simulation_mode = (
-                SimulationMode.FALSE
-            )  # Enabling the simulation mode
-            device._test_mode = TestMode.NONE
-            device._build_state = "{},{},{}".format(
-                release.name, release.version, release.description
-            )
-            device._version_id = release.version
-            device_data._read_activity_message = const.STR_CSP_INIT_LEAF_NODE
-            device_data.csp_master_ln_fqdn = device.CspMasterFQDN
+            device.attr_map = {}
+
+            this_device = TangoServerHelper.get_instance()
+            this_device.set_tango_class(device)
+
+            this_device.write_attr("healthState", HealthState.OK)
+            this_device.write_attr("simulationMode", HealthState.OK)
+            this_device.write_attr("testMode", HealthState.OK)
+            this_device.write_attr("buildState", "{},{},{}".format(
+                release.name, release.version, release.description)
+            this_device.write_attr("versionId", release.version)
+            this_device.write_attr("activityMessage", const.STR_CSP_INIT_LEAF_NODE)
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
 
-            device_data._read_activity_message = const.STR_INIT_SUCCESS
-            self.logger.info(device_data._read_activity_message)
-            return (ResultCode.OK, device_data._read_activity_message)
+            this_device.write_attr("activityMessage", const.STR_INIT_SUCCESS)
+            self.logger.info(const.STR_INIT_SUCCESS)
+            return (ResultCode.OK, const.STR_INIT_SUCCESS)
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(CspMasterLeafNode.always_executed_hook) ENABLED START #
@@ -133,13 +134,13 @@ class CspMasterLeafNode(SKABaseDevice):
     def read_activityMessage(self):
         # PROTECTED REGION ID(CspMasterLeafNode.activityMessage_read) ENABLED START #
         """ Internal construct of TANGO. Returns the activityMessage. """
-        return self.device_data._read_activity_message
+        return self.attr_map["activityMessage"]
         # PROTECTED REGION END #    //  CspMasterLeafNode.activityMessage_read
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(CspMasterLeafNode.activityMessage_write) ENABLED START #
         """Internal construct of TANGO. Sets the activityMessage. """
-        self.device_data._read_activity_message = value
+        self.attr_map["activityMessage"] = value
         # PROTECTED REGION END #    //  CspMasterLeafNode.activityMessage_write
 
     def is_Standby_allowed(self):
