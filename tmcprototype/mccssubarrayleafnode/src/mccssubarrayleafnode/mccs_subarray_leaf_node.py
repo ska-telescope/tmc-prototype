@@ -14,6 +14,7 @@ It also acts as a MCCS contact point for Subarray Node for observation execution
 # PROTECTED REGION ID(MccSubarrayLeafNode.additional_import) ENABLED START #
 
 # Third party imports
+import threading
 # Tango imports
 from tango import DebugIt, AttrWriteType
 from tango.server import run, attribute, command, device_property
@@ -119,7 +120,9 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             super().do()
             device = self.target
             this_server = TangoServerHelper.get_instance()
-            this_server.device = device
+            #this_server.device = device
+            this_server.set_tango_class(device)
+            device.attr_map = {}
             device_data = DeviceData.get_instance()
             device.device_data = device_data
             device._build_state = "{},{},{}".format(
@@ -149,13 +152,19 @@ class MccsSubarrayLeafNode(SKABaseDevice):
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(MccsSubarrayLeafNode.activityMessage_read) ENABLED START #
-        return self.device_data._read_activity_message
+        return self.attr_map["activityMessage"]
         # PROTECTED REGION END #    //  MccsSubarrayLeafNode.activityMessage_read
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(MccsSubarrayLeafNode.activityMessage_write) ENABLED START #
-        self.device_data._read_activity_message = value
+        self.update_attr_map("activityMessage", value)
         # PROTECTED REGION END #    //  MccsSubarrayLeafNode.activityMessage_write
+
+    def update_attr_map(self, attr, val):
+        lock = threading.Lock()
+        lock.acquire()
+        self.attr_map[attr] = val
+        lock.release()
 
     # --------
     # Commands

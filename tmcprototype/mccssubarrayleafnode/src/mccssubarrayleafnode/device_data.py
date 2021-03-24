@@ -27,7 +27,7 @@ class DeviceData:
         else:
             DeviceData.__instance = self
 
-        self._read_activity_message = ""
+        #self._read_activity_message = ""
         self._mccs_subarray_fqdn = ""
 
     @staticmethod

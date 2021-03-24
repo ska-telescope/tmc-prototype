@@ -12,6 +12,8 @@ from tango import DevState, DevFailed
 from ska.base.commands import BaseCommand
 
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
+
 
 from . import const
 
@@ -74,15 +76,18 @@ class Configure(BaseCommand):
         :return: none
         """
         device_data = self.target
+        this_server = TangoServerHelper.get_instance()
         # Update logs and activity message attribute with received event
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
-            device_data._read_activity_message = log_msg
+            this_server.write_attr("activityMessage", log_msg)
+            #device_data._read_activity_message = log_msg
         else:
             log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
-            device_data._read_activity_message = log_msg
+            this_server.write_attr("activityMessage", log_msg)
+            #device_data._read_activity_message = log_msg
 
     def do(self, argin):
         """
@@ -109,6 +114,7 @@ class Configure(BaseCommand):
             KeyError if input argument json string contains invalid key
         """
         device_data = self.target
+        this_server = TangoServerHelper.get_instance()
         try:
             mccs_subarray_client = TangoClient(device_data._mccs_subarray_fqdn)
             # TODO: Mock obs_state issue to be resolved
@@ -127,7 +133,9 @@ class Configure(BaseCommand):
             mccs_subarray_client.send_command_async(
                 const.CMD_CONFIGURE, cmd_data, self.configure_cmd_ended_cb
             )
-            device_data._read_activity_message = const.STR_CONFIGURE_SUCCESS
+            #device_data._read_activity_message = const.STR_CONFIGURE_SUCCESS
+            this_server.write_attr("activityMessage", const.STR_CONFIGURE_SUCCESS)
+
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
 
         # TODO: Mock obs_state issue to be resolved
@@ -142,7 +150,8 @@ class Configure(BaseCommand):
 
         except ValueError as value_error:
             log_msg = f"{const.ERR_INVALID_JSON_CONFIG}{value_error}"
-            device_data._read_activity_message = log_msg
+            #device_data._read_activity_message = log_msg
+            this_server.write_attr("activityMessage", log_msg)
             self.logger.exception(value_error)
             tango.Except.throw_exception(
                 const.ERR_CONFIGURE_INVOKING_CMD,
@@ -153,7 +162,8 @@ class Configure(BaseCommand):
 
         except KeyError as key_error:
             log_msg = f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}"
-            device_data._read_activity_message = f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}"
+            #device_data._read_activity_message = f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}"
+            this_server.write_attr("activityMessage", f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}")
             self.logger.exception(key_error)
             tango.Except.throw_exception(
                 const.ERR_CONFIGURE_INVOKING_CMD,
@@ -164,7 +174,8 @@ class Configure(BaseCommand):
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_CONFIGURE_INVOKING_CMD}{dev_failed}"
-            device_data._read_activity_message = log_msg
+            #device_data._read_activity_message = log_msg
+            this_server.write_attr("activityMessage", log_msg)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.ERR_CONFIGURE_INVOKING_CMD,
