@@ -27,10 +27,10 @@ class DeviceData:
         else:
             DeviceData.__instance = self
 
-        self._receive_addresses = ""
-        self._read_activity_message = ""
-        self._active_processing_block = ""
-        self._sdp_sa_fqdn = ""
+        # self._receive_addresses = ""
+        # self._read_activity_message = ""
+        # self._active_processing_block = ""
+        # self._sdp_sa_fqdn = ""
 
     @staticmethod
     def get_instance():

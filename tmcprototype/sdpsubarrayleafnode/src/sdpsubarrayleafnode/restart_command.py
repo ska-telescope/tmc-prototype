@@ -99,7 +99,10 @@ class Restart(BaseCommand):
         device_data = self.target
         self.this_server = TangoServerHelper.get_instance()
         try:
-            sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
+            _sdp_sa_fqdn = ""
+            input = self.this_server.read_property("SdpSubarrayFQDN")
+            _sdp_sa_fqdn = _sdp_sa_fqdn.join(input)
+            sdp_sa_ln_client_obj = TangoClient(_sdp_sa_fqdn)
             sdp_sa_ln_client_obj.send_command_async(
                const.CMD_RESTART, callback_method=self.restart_cmd_ended_cb
                )

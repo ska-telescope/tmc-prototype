@@ -146,7 +146,10 @@ class AssignResources(BaseCommand):
             # TODO: When ObsState check related issue is resolved
             # device.validate_obs_state()
             # Call SDP Subarray Command asynchronously
-            sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
+            _sdp_sa_fqdn = ""
+            input = self.this_server.read_property("SdpSubarrayFQDN")
+            _sdp_sa_fqdn = _sdp_sa_fqdn.join(input)
+            sdp_sa_ln_client_obj = TangoClient(_sdp_sa_fqdn)
             sdp_sa_ln_client_obj.send_command_async(
                 const.CMD_ASSIGN_RESOURCES, command_data=argin, callback_method=self.assign_resources_ended
                 )

@@ -104,7 +104,10 @@ class Scan(BaseCommand):
         try:
             log_msg = "Input JSON for SDP Subarray Leaf Node Scan command is: " + argin
             self.logger.debug(log_msg)
-            sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
+            _sdp_sa_fqdn = ""
+            input = self.this_server.read_property("SdpSubarrayFQDN")
+            _sdp_sa_fqdn = _sdp_sa_fqdn.join(input)
+            sdp_sa_ln_client_obj = TangoClient(_sdp_sa_fqdn)
             sdp_sa_ln_client_obj.send_command_async(
                 const.CMD_SCAN, command_data=argin, callback_method=self.scan_cmd_ended_cb
                 )
