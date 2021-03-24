@@ -8,6 +8,7 @@
 # See LICENSE.txt for more info.
 
 # PROTECTED REGION ID(MccsMasterLeafNode.import) ENABLED START #
+import threading
 # Tango imports
 import tango
 from tango import ApiUtil, DebugIt, AttrWriteType
@@ -17,7 +18,7 @@ from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, SimulationMode, TestMode
-
+from tmc.common.tango_server_helper import TangoServerHelper
 from . import const, release
 from .assign_resources_command import AssignResources
 from .release_resources_command import ReleaseResources
@@ -109,22 +110,28 @@ class MccsMasterLeafNode(SKABaseDevice):
             )
             device._version_id = release.version
 
+            self.this_server = TangoServerHelper.get_instance()
+            self.this_server.device = device
+            device.attr_map = {}
+            # Initialise Attributes
+            device.attr_map["activityMessage"] = ""
+
             # Create DeviceData class instance
             device_data = DeviceData.get_instance()
             device.device_data = device_data
-            device_data._read_activity_message = const.STR_MCCS_INIT_LEAF_NODE
-            device_data._read_activity_message = f"{const.STR_MCCSMASTER_FQDN}{device.MccsMasterFQDN}"
+            self.this_server.write_attr("activityMessage", const.STR_MCCS_INIT_LEAF_NODE)
+            self.this_server.write_attr("activityMessage",
+                                        f"{const.STR_MCCSMASTER_FQDN}{device.MccsMasterFQDN}")
             # Creating proxy to the CSPMaster
             log_msg = f"MCCS Master name: {device.MccsMasterFQDN}"
             self.logger.debug(log_msg)
-            device_data._mccs_master_fqdn = str(device.MccsMasterFQDN)
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
-            device_data._read_activity_message = const.STR_INIT_SUCCESS
-            self.logger.info(device_data._read_activity_message)
-            return (ResultCode.OK, device_data._read_activity_message)
+            self.this_server.write_attr("activityMessage", const.STR_INIT_SUCCESS)
+            self.logger.info(self.this_server.read_attr("activityMessage"))
+            return (ResultCode.OK, self.this_server.read_attr("activityMessage"))
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(MccsMasterLeafNode.always_executed_hook) ENABLED START #
@@ -142,13 +149,23 @@ class MccsMasterLeafNode(SKABaseDevice):
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(MccsMasterLeafNode.activityMessage_read) ENABLED START #
-        return self.device_data._read_activity_message
+        return self.attr_map["activityMessage"]
         # PROTECTED REGION END #    //  MccsMasterLeafNode.activityMessage_read
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(MccsMasterLeafNode.activityMessage_write) ENABLED START #
-        self.device_data._read_activity_message = value
+        self.update_attr_map("activityMessage", value)
         # PROTECTED REGION END #    //  MccsMasterLeafNode.activityMessage_write
+
+    def update_attr_map(self, attr, val):
+        """
+        This method updates attribute value in attribute map. Once a thread has acquired a lock,
+        subsequent attempts to acquire it are blocked, until it is released.
+        """
+        lock = threading.Lock()
+        lock.acquire()
+        self.attr_map[attr] = val
+        lock.release()
 
     @command(
         dtype_in="str",
