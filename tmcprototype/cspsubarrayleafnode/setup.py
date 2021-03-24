@@ -49,7 +49,7 @@ setup(
         "katpoint",
         "ska_logging==0.3.0",
         "lmcbaseclasses==0.7.2",
-        "skatmccommon==0.1.4+52ac2972",
+        "skatmccommon==0.1.5+124cd964",
         "ska-log-transactions == 0.1.0"
     ],
     # test_suite='test',

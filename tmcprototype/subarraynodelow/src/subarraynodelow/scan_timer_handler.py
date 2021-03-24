@@ -16,7 +16,7 @@ class ScanTimerHandler:
 
     def start_scan_timer(self, scan_duration):
         self.scan_timer = threading.Timer(
-            scan_duration, self.this_server._device.endscan
+            scan_duration, self.this_server.device.endscan
         )
         self.scan_timer.start()
 
