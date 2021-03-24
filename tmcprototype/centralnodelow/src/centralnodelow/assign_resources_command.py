@@ -13,6 +13,7 @@ from tango import DevState, DevFailed
 from ska.base.commands import BaseCommand
 
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
 
@@ -88,6 +89,7 @@ class AssignResources(BaseCommand):
         """
         device_data = self.target
         try:
+            self.this_server = TangoServerHelper.get_instance()
             # Check if Mccs On command is completed
             assert device_data.cmd_res_evt_val == 0
             json_argument = json.loads(argin)
@@ -102,16 +104,21 @@ class AssignResources(BaseCommand):
             self.invoke_assign_resources(subarray_client, subarray_cmd_data)
 
             input_mccs_assign = json.dumps(json_argument_mccs["mccs"])
-            mccs_master_ln_client = self.create_client(device_data.mccs_master_ln_fqdn)
+
+            self.mccs_master_ln_fqdn = ""
+            property_value = self.this_server.read_property("MCCSMasterLeafNodeFQDN")
+            self.mccs_master_ln_fqdn = self.mccs_master_ln_fqdn.join(property_value)
+
+            mccs_master_ln_client = self.create_client(self.mccs_master_ln_fqdn)
             self.invoke_assign_resources(mccs_master_ln_client, input_mccs_assign)
 
-            device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
+            self.this_server.write_attr("activityMessage", const.STR_ASSIGN_RESOURCES_SUCCESS)
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
 
 
         except KeyError as key_error:
             self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
-            device_data._read_activity_message = f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}"
+            self.this_server.write_attr("activityMessage", f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}")
             log_msg = f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}"
             self.logger.exception(key_error)
             tango.Except.throw_exception(
@@ -124,7 +131,7 @@ class AssignResources(BaseCommand):
             self.logger.exception(
                 "Exception in AssignResources command: %s", str(val_error)
             )
-            device_data._read_activity_message = f"Invalid value in input: {val_error}"  
+            self.this_server.write_attr("activityMessage", f"Invalid value in input: {val_error}")
             log_msg = f"{const.STR_ASSIGN_RES_EXEC}{val_error}"
             self.logger.exception(val_error)
             tango.Except.throw_exception(const.STR_RESOURCE_ALLOCATION_FAILED, log_msg,
@@ -135,7 +142,7 @@ class AssignResources(BaseCommand):
             self.logger.exception(log_msg)
             log_msg = const.STR_ASSIGN_RES_EXEC + const.ERR_STARTUP_CMD_UNCOMPLETE
             self.logger.exception(log_msg)
-            device_data._read_activity_message = log_msg
+            self.this_server.write_attr("activityMessage", log_msg)
             tango.Except.throw_exception(const.ERR_STARTUP_CMD_UNCOMPLETE, log_msg,
                                          "CentralNode.AssignResourcesCommand",
                                          tango.ErrSeverity.ERR)
@@ -175,15 +182,13 @@ class AssignResources(BaseCommand):
 
         :raises: DevFailed if error occurs while invoking command on any of the devices like SubarrayNode, MCCSMasterLeafNode
         """
-        # device_data = DeviceData.get_instance()
-        device_data = self.target
         try:
             tango_client.send_command(const.CMD_ASSIGN_RESOURCES, input_arg)
             log_msg = "Assign resurces command invoked successfully on {}".format(
                 tango_client.get_device_fqdn
             )
             self.logger.debug(log_msg)
-            device_data._read_activity_message = log_msg
+            self.this_server.write_attr("activityMessage", log_msg)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_ASSGN_RESOURCES}{dev_failed}"
