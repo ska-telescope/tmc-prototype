@@ -135,7 +135,6 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
 
         :raises: Devfailed exception if error occures while  executing On command on leaf node.
         """
-        device_data = DeviceData.get_instance()
         try:
             tango_client.send_command(const.CMD_ON)
             log_msg = "ON command invoked successfully on {}".format(

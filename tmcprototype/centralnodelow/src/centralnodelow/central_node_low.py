@@ -143,8 +143,8 @@ class CentralNode(SKABaseDevice):
                 device_data = DeviceData.get_instance()
                 device.device_data = device_data
                 # Get Instance of TangoServerHelper class
-                self.this_server = TangoServerHelper.get_instance()
-                self.this_server.device = device
+                this_server = TangoServerHelper.get_instance()
+                this_server.device = device
                 device.attr_map = {}
                 # Initialise Attributes
                 device.attr_map["telescopeHealthState"]=HealthState.UNKNOWN
@@ -178,7 +178,7 @@ class CentralNode(SKABaseDevice):
                     subarray
                 ]
 
-            self.this_server.write_attr("activityMessage", const.STR_CN_INIT_SUCCESS)
+            this_server.write_attr("activityMessage", const.STR_CN_INIT_SUCCESS)
             self.logger.info(device.attr_map["activityMessage"])
             return (ResultCode.OK, device.attr_map["activityMessage"])
 

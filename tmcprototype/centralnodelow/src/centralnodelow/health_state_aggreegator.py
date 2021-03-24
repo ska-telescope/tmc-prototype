@@ -175,24 +175,28 @@ class HealthStateAggreegator:
                     self.this_server.write_attr("telescopeHealthState", HealthState.OK)
                     str_log = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_OK}"
                     self.logger.info(str_log)
-                    self.this_server.write_attr("activityMessage", f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_OK}")
+                    self.this_server.write_attr("activityMessage",
+                                                f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_OK}")
                 elif counts[HealthState.FAILED] != 0:
                     self.this_server.write_attr("telescopeHealthState", HealthState.FAILED)
                     str_log = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_FAILED}"
                     self.logger.info(str_log)
-                    self.this_server.write_attr("activityMessage", f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_FAILED}")
+                    self.this_server.write_attr("activityMessage",
+                                                f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_FAILED}")
                 elif counts[HealthState.DEGRADED] != 0:
                     self.this_server.write_attr("telescopeHealthState", HealthState.DEGRADED)
                     device_data._telescope_health_state = HealthState.DEGRADED
                     str_log = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_DEGRADED}"
                     self.logger.info(str_log)
-                    self.this_server.write_attr("activityMessage", f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_DEGRADED}")
+                    self.this_server.write_attr("activityMessage",
+                                                f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_DEGRADED}")
                 else:
                     self.this_server.write_attr("telescopeHealthState", HealthState.UNKNOWN)
                     device_data._telescope_health_state = HealthState.UNKNOWN
                     str_log = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_UNKNOWN}"
                     self.logger.info(str_log)
-                    self.this_server.write_attr("activityMessage", f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_UNKNOWN}")
+                    self.this_server.write_attr("activityMessage",
+                                                f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_UNKNOWN}")
             else:
                 self.this_server.write_attr("activityMessage", f"{const.ERR_SUBSR_SA_HEALTH_STATE}{evt}")
                 self.logger.critical(const.ERR_SUBSR_SA_HEALTH_STATE)

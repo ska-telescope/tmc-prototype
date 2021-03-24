@@ -182,8 +182,6 @@ class AssignResources(BaseCommand):
 
         :raises: DevFailed if error occurs while invoking command on any of the devices like SubarrayNode, MCCSMasterLeafNode
         """
-        # device_data = DeviceData.get_instance()
-        device_data = self.target
         try:
             tango_client.send_command(const.CMD_ASSIGN_RESOURCES, input_arg)
             log_msg = "Assign resurces command invoked successfully on {}".format(

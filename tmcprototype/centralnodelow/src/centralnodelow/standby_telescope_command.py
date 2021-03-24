@@ -126,8 +126,6 @@ class StandByTelescope(SKABaseDevice.OffCommand):
 
         :raises: Devfailed exception if error occures while executing command on leaf nodes.
         """
-
-        device_data = DeviceData.get_instance()
         try:
             tango_client.send_command(const.CMD_OFF)
             log_msg = "Command {} invoked successfully on {}".format(
