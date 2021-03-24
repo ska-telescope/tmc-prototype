@@ -29,7 +29,7 @@ class HealthStateAggregator:
         self.device_data = DeviceData.get_instance()
         mccs_subarray_ln_fqdn = self.this_server.read_property("MccsSubarrayLNFQDN")
         log_msg = "FQDN: " + str(mccs_subarray_ln_fqdn)
-        self.mccs_client = TangoClient(mccs_subarray_ln_fqdn)
+        self.mccs_client = TangoClient(str(mccs_subarray_ln_fqdn))
 
     def subscribe(self):
         # Subscribe cspsubarrayHealthState (forwarded attribute) of CspSubarray
