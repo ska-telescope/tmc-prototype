@@ -12,8 +12,6 @@ class DeviceData:
             raise Exception("This is singletone class")
         else:
             DeviceData.__instance = self
-        self.sdp_master_ln_fqdn = ""
-        self._read_activity_message = ""
 
     @staticmethod
     def get_instance():

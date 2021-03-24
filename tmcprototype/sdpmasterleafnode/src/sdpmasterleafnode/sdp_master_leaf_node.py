@@ -15,6 +15,7 @@ execution. There is one to one mapping between SDP Subarray Leaf Node and SDP su
 
 # PROTECTED REGION ID(SdpMasterLeafNode.additional_import) ENABLED START #
 # Third party imports
+import threading
 # Tango imports
 import tango
 from tango import ApiUtil, DebugIt, AttrWriteType
@@ -24,7 +25,7 @@ from tango.server import run, command, device_property, attribute
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, SimulationMode, TestMode
-
+from tmc.common.tango_server_helper import TangoServerHelper
 from . import const, release
 from .on_command import On
 from .off_command import Off
@@ -117,25 +118,39 @@ class SdpMasterLeafNode(SKABaseDevice):
             device = self.target
             device_data = DeviceData.get_instance()
             device.device_data = device_data
+            # Creating Instance of TangoServerHelper class
+            self.this_server = TangoServerHelper.get_instance()
+            self.this_server.device = device
+
+            device.attr_map = {}
+            # Initialising Attributes 
+            device.attr_map["sdpHealthState"]=HealthState.UNKNOWN
+            device.attr_map["versionInfo"]=""
+            device.attr_map["activityMessage"]="OK"
+            device.attr_map["ProcessingBlockList"]= "test"
+
+
             device._health_state = HealthState.OK  # Setting healthState to "OK"
             device._simulation_mode = (
                 SimulationMode.FALSE
             )  # Enabling the simulation mode
             device._test_mode = TestMode.NONE
-            device._processing_block_list = "test"
-            device_data._read_activity_message = "OK"
+            # device._processing_block_list = "test"
+            # device_data._read_activity_message = "OK"
             device.set_status(const.STR_INIT_SUCCESS)
             device._build_state = "{},{},{}".format(
                 release.name, release.version, release.description
             )
             device._version_id = release.version
-            device_data.sdp_master_ln_fqdn = device.SdpMasterFQDN
+            # device_data.sdp_master_ln_fqdn = device.SdpMasterFQDN
+            device.sdp_master_ln_fqdn = self.this_server.read_property("SdpMasterFQDN")
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
-            device_data._read_activity_message = const.STR_INIT_SUCCESS
-            self.logger.info(device_data._read_activity_message)
-            return (ResultCode.OK, const.STR_INIT_SUCCESS)
+
+            self.this_server.write_attr("activityMessage", const.STR_INIT_SUCCESS)
+            self.logger.info(device.attr_map["activityMessage"])
+            return (ResultCode.OK, device.attr_map["activityMessage"])
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.always_executed_hook) ENABLED START #
@@ -154,14 +169,14 @@ class SdpMasterLeafNode(SKABaseDevice):
     def read_versionInfo(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.versionInfo_read) ENABLED START #
         """ Internal construct of TANGO. Version information of TANGO device."""
-        return self._version_info
+        return self.attr_map["versionInfo"]
         # PROTECTED REGION END #    //  SdpMasterLeafNode.versionInfo_read
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.activityMessage_read) ENABLED START #
         """Internal construct of TANGO. String providing information about the current activity in
         SDPLeafNode."""
-        return self.device_data._read_activity_message
+        return self.attr_map["activityMessage"]
         # PROTECTED REGION END #    //  SdpMasterLeafNode.activityMessage_read
 
     def write_activityMessage(self, value):
@@ -169,7 +184,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         """
         Internal construct of TANGO. Sets the activity message.
         """
-        self.device_data._read_activity_message = value
+        self.update_attr_map("activityMessage", value)
         # PROTECTED REGION END #    //  SdpMasterLeafNode.activityMessage_write
 
     def read_ProcessingBlockList(self):
@@ -178,8 +193,18 @@ class SdpMasterLeafNode(SKABaseDevice):
         Internal construct of TANGO.
         :return:
         """
-        return self._processing_block_list
+        return attr_map["ProcessingBlockList"]
         # PROTECTED REGION END #    //  SdpMasterLeafNode.ProcessingBlockList_read
+
+    def update_attr_map(self, attr, val):
+        """
+        This method updates attribute value in attribute map. Once a thread has acquired a lock,
+        subsequent attempts to acquire it are blocked, until it is released.
+        """
+        lock = threading.Lock()
+        lock.acquire()
+        self.attr_map[attr] = val
+        lock.release()
 
     # --------
     # Commands
