@@ -178,7 +178,7 @@ class CentralNode(SKABaseDevice):
                     subarray
                 ]
 
-            self.this_server.write_attr("activityMessage", "Central Node initialised successfully.")
+            self.this_server.write_attr("activityMessage", const.STR_CN_INIT_SUCCESS)
             self.logger.info(device.attr_map["activityMessage"])
             return (ResultCode.OK, device.attr_map["activityMessage"])
 
@@ -221,6 +221,10 @@ class CentralNode(SKABaseDevice):
         # PROTECTED REGION END #    //  CentralNode.activity_message_write
 
     def update_attr_map(self, attr, val):
+        """
+        This method updates attribute value in attribute map. Once a thread has acquired a lock,
+        subsequent attempts to acquire it are blocked, until it is released.
+        """
         lock = threading.Lock()
         lock.acquire()
         self.attr_map[attr] = val

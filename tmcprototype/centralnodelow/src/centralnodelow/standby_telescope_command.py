@@ -70,8 +70,10 @@ class StandByTelescope(SKABaseDevice.OffCommand):
             self.this_server = TangoServerHelper.get_instance()
             # Check if Mccs On command is completed
             assert device_data.cmd_res_evt_val == 0
-            self.create_mccs_client(self.this_server.read_property("MCCSMasterLeafNodeFQDN"))
-            self.create_subarray_client(self.this_server.read_property("TMLowSubarrayNodes"))
+            mccs_master_ln_fqdn = self.this_server.read_property("MCCSMasterLeafNodeFQDN")
+            self.create_mccs_client(mccs_master_ln_fqdn)
+            subarray_low = self.this_server.read_property("TMLowSubarrayNodes")
+            self.create_subarray_client(subarray_low)
             device_data.health_aggreegator.unsubscribe_event()
             log_msg = const.STR_STANDBY_CMD_ISSUED
             self.logger.info(log_msg)
