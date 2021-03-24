@@ -7,6 +7,8 @@ from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
+
 from . import const
 from .attribute_callbacks import (
     CbfHealthStateAttributeUpdator,
@@ -43,14 +45,15 @@ class On(SKABaseDevice.OnCommand):
 
         """
         device_data = self.target
+        this_device = TangoServerHelper.get_instance()
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
-            device_data._read_activity_message = log_msg
+            this_device.write_attr("activityMessage", log_msg)
         else:
             log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
-            device_data._read_activity_message = log_msg
+            this_device.write_attr("activityMessage", log_msg)
 
     def do(self):
         """
@@ -88,7 +91,7 @@ class On(SKABaseDevice.OnCommand):
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_EXE_ON_CMD}{dev_failed}"
             self.logger.exception(dev_failed)
-            device_data._read_activity_message = const.ERR_EXE_ON_CMD
+            this_device.write_attr("activityMessage", const.ERR_EXE_ON_CMD)
             tango.Except.re_throw_exception(
                 dev_failed,
                 const.STR_ON_EXEC,

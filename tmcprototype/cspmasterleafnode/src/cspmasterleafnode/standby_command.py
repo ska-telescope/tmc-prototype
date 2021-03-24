@@ -6,6 +6,7 @@ from tango import DevState, DevFailed
 from ska.base.commands import BaseCommand
 
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
 
@@ -62,14 +63,15 @@ class Standby(BaseCommand):
 
         """
         device = self.target
+        this_device = TangoServerHelper.get_instance()
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
-            device._read_activity_message = log_msg
+            this_device.write_attr("activityMessage", log_msg)
         else:
             log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
-            device._read_activity_message = log_msg
+            this_device.write_attr("activityMessage", log_msg)
 
     def do(self, argin):
         """
@@ -87,6 +89,7 @@ class Standby(BaseCommand):
 
         """
         device_data = self.target
+        this_device = TangoServerHelper.get_instance()
 
         try:
             csp_mln_client_obj = TangoClient(device_data.csp_master_ln_fqdn)
@@ -98,7 +101,7 @@ class Standby(BaseCommand):
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_EXE_STANDBY_CMD}{dev_failed}"
             self.logger.exception(dev_failed)
-            device_data._read_activity_message = const.ERR_EXE_STANDBY_CMD
+            this_device.write_attr("activityMessage", const.ERR_EXE_STANDBY_CMD)
             tango.Except.re_throw_exception(
                 dev_failed,
                 const.STR_STANDBY_EXEC,
