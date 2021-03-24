@@ -48,7 +48,9 @@ class Abort(SKASubarray.AbortCommand):
         try:
             if device_data.scan_timer_handler.is_scan_running():
                 device_data.scan_timer_handler.stop_scan_timer()
-                mccs_subarray_ln_fqdn = this_server.read_property("MccsSubarrayLNFQDN")
+                mccs_subarray_ln_fqdn = ""
+                property_val = this_server.read_property("MccsSubarrayLNFQDN")
+                mccs_subarray_ln_fqdn = mccs_subarray_ln_fqdn.join(property_val)
                 self.abort_mccs(mccs_subarray_ln_fqdn)
                 self.logger.info(const.STR_ABORT_SUCCESS)
                 this_server.write_attr("activityMessage", const.STR_ABORT_SUCCESS)

@@ -91,7 +91,9 @@ class Configure(SKASubarray.ConfigureCommand):
 
     def _configure_leaf_node(self, cmd_name, cmd_data):
         try:
-            mccs_subarray_ln_fqdn = self.this_server.read_property("MccsSubarrayLNFQDN")
+            mccs_subarray_ln_fqdn = ""
+            property_val = this_server.read_property("MccsSubarrayLNFQDN")
+            mccs_subarray_ln_fqdn = mccs_subarray_ln_fqdn.join(property_val)
             mccs_subarray_ln_client = TangoClient(mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(cmd_name, cmd_data)
             # device_proxy.command_inout(cmd_name, cmd_data)

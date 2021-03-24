@@ -64,7 +64,9 @@ class Scan(SKASubarray.ScanCommand):
             this_server.write_attr("activityMessage", log_msg)
             device_data.isScanRunning = True
             # Invoke scan command on MCCS Subarray Leaf Node with input argument as scan id
-            mccs_subarray_ln_fqdn = this_server.read_property("MccsSubarrayLNFQDN")
+            mccs_subarray_ln_fqdn = ""
+            property_val = this_server.read_property("MccsSubarrayLNFQDN")
+            mccs_subarray_ln_fqdn = mccs_subarray_ln_fqdn.join(property_val)
             mccs_subarray_ln_client = TangoClient(mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(
                 const.CMD_SCAN, json.dumps(mccs_input_scan)

@@ -53,7 +53,9 @@ class On(SKASubarray.OnCommand):
         device_data.health_state_aggregator.subscribe()
         this_server = TangoServerHelper.get_instance()
         try:
-            mccs_subarray_ln_fqdn = this_server.read_property("MccsSubarrayLNFQDN")
+            mccs_subarray_ln_fqdn = ""
+            property_val = this_server.read_property("MccsSubarrayLNFQDN")
+            mccs_subarray_ln_fqdn = mccs_subarray_ln_fqdn.join(property_val)
             mccs_subarray_ln_client = TangoClient(mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(const.CMD_ON, None)
             message = "On command completed OK"

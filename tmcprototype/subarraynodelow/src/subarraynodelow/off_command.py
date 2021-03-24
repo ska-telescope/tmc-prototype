@@ -46,7 +46,9 @@ class Off(SKASubarray.OffCommand):
         device.is_obsreset_command_executed = False
         this_server = TangoServerHelper.get_instance()
         try:
-            mccs_subarray_ln_fqdn = this_server.read_property("MccsSubarrayLNFQDN")
+            mccs_subarray_ln_fqdn = ""
+            property_val = this_server.read_property("MccsSubarrayLNFQDN")
+            mccs_subarray_ln_fqdn = mccs_subarray_ln_fqdn.join(property_val)
             mccs_subarray_ln_client = TangoClient(mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(const.CMD_OFF, None)
             device.health_state_aggregator.unsubscribe()

@@ -47,7 +47,9 @@ class End(SKASubarray.EndCommand):
         this_server = TangoServerHelper.get_instance()
         try:
             self.logger.info(const.STR_END_CMD_INVOKED_SA_LOW)
-            mccs_subarray_ln_fqdn = this_server.read_property("MccsSubarrayLNFQDN")
+            mccs_subarray_ln_fqdn = ""
+            property_val = this_server.read_property("MccsSubarrayLNFQDN")
+            mccs_subarray_ln_fqdn = mccs_subarray_ln_fqdn.join(property_val)
             mccs_subarray_ln_client = TangoClient(mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(const.CMD_END)
             self.logger.info(const.STR_CMD_END_INV_MCCS)

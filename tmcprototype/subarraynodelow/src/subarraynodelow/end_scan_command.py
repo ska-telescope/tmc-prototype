@@ -51,7 +51,9 @@ class EndScan(SKASubarray.EndScanCommand):
                 device_data.scan_timer_handler.stop_scan_timer()  # stop timer when EndScan command is called
             device_data.isScanRunning = False
             device_data.is_scan_completed = True
-            mccs_subarray_ln_fqdn = this_server.read_property("MccsSubarrayLNFQDN")
+            mccs_subarray_ln_fqdn = ""
+            property_val = this_server.read_property("MccsSubarrayLNFQDN")
+            mccs_subarray_ln_fqdn = mccs_subarray_ln_fqdn.join(property_val)
             mccs_subarray_ln_client = TangoClient(mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(const.CMD_END_SCAN)
             self.logger.debug(const.STR_MCCS_END_SCAN_INIT)
