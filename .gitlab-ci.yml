@@ -333,7 +333,7 @@ test-mid:
     - make install-chart MINIKUBE=false
     - make wait
     - make smoketest
-    - make test MARK=select && [ -f "build/report.xml" ]
+    - make test MARK=mid && [ -f "build/report.xml" ]
   after_script:
     - make uninstall-chart
     - make clean
@@ -366,7 +366,7 @@ test-low:
     - make install-chart MINIKUBE=false HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
     - make wait
     - make smoketest
-    - make test MARK=low_select && [ -f "build/report.xml" ]
+    - make test MARK=low && [ -f "build/report.xml" ]
   after_script:
     - make uninstall-chart HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
     - make clean
