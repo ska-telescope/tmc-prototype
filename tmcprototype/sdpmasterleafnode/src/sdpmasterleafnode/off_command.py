@@ -40,16 +40,15 @@ class Off(SKABaseDevice.OffCommand):
         :return: none
 
         """
-        device_data = self.target
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
-            device_data._read_activity_message = log_msg
+            self.this_server.write_attr("activityMessage", log_msg)
 
         else:
             log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
-            device_data._read_activity_message = log_msg
+            self.this_server.write_attr("activityMessage", log_msg)
 
     def do(self):
         """
@@ -65,18 +64,18 @@ class Off(SKABaseDevice.OffCommand):
             (ResultCode, str)
 
         """
-        this_server = TangoServerHelper.get_instance()
+        self.this_server = TangoServerHelper.get_instance()
         try:
             # sdp_mln_client_obj = TangoClient(device_data.sdp_master_ln_fqdn)
             sdp_master_ln_fqdn = ""
-            property_val = this_server.read_property("SdpMasterFQDN")
+            property_val = self.this_server.read_property("SdpMasterFQDN")
             sdp_master_ln_fqdn = sdp_master_ln_fqdn.join(property_val)
             sdp_mln_client_obj = TangoClient(sdp_master_ln_fqdn)
             sdp_mln_client_obj.send_command_async(
                 const.CMD_OFF, None, self.off_cmd_ended_cb
             )
             self.logger.debug(const.STR_OFF_CMD_SUCCESS)
-            this_server.write_attr("activityMessage", const.STR_OFF_CMD_SUCCESS)
+            self.this_server.write_attr("activityMessage", const.STR_OFF_CMD_SUCCESS)
             return (ResultCode.OK, const.STR_OFF_CMD_SUCCESS)
 
         except DevFailed as dev_failed:
