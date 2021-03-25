@@ -111,11 +111,10 @@ class MccsMasterLeafNode(SKABaseDevice):
             device._version_id = release.version
 
             self.this_server = TangoServerHelper.get_instance()
-            self.this_server.device = device
+            self.this_server.set_tango_class(device)
             device.attr_map = {}
             # Initialise Attributes
             device.attr_map["activityMessage"] = ""
-
             # Create DeviceData class instance
             device_data = DeviceData.get_instance()
             device.device_data = device_data
