@@ -10,6 +10,7 @@ from ska.base import SKASubarray
 
 from . import const
 from subarraynodelow.device_data import DeviceData
+from tmc.common.tango_server_helper import TangoServerHelper
 
 
 class AssignResources(SKASubarray.AssignResourcesCommand):
@@ -40,6 +41,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
             A tuple containing ResultCode and string.
         """
         device_data = DeviceData.get_instance()
+        this_server = TangoServerHelper.get_instance()
         device_data.is_end_command = False
         device_data.is_release_resources = False
         device_data.is_abort_command_executed = False
@@ -49,6 +51,6 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         device_data.resource_list = input_str["station_ids"]
         log_msg = f"{const.STR_ASSIGN_RES_EXEC}STARTED"
         self.logger.debug(log_msg)
-        device_data.activity_message = log_msg
+        this_server.write_attr("activityMessage", log_msg)
 
         return (ResultCode.STARTED, log_msg)
