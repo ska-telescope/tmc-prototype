@@ -54,7 +54,7 @@ class AbortCommand(BaseCommand):
 
     def abort_cmd_ended_cb(self, event):
         """
-        Callback function immediately executed when the asynchronous invoked
+        Callback function immediately  executed when the asynchronous invoked
         command returns.
 
         :param event: a CmdDoneEvent object. This class is used to pass data
