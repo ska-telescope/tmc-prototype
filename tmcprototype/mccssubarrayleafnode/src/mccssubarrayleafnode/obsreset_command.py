@@ -61,7 +61,6 @@ class ObsReset(BaseCommand):
 
         :return: none
         """
-        device_data = self.target
         this_server = TangoServerHelper.get_instance()
         # Update logs and activity message attribute with received event
         if event.err:
@@ -87,7 +86,6 @@ class ObsReset(BaseCommand):
         raises:
             DevFailed if error occurs while invoking the command on MccsSubarray.
         """
-        device_data = self.target
         this_server = TangoServerHelper.get_instance()
         try:
             mccs_subarray_fqdn = ""
@@ -97,13 +95,11 @@ class ObsReset(BaseCommand):
             mccs_subarray_client.send_command_async(
                 const.CMD_OBSRESET, None, self.obsreset_cmd_ended_cb
             )
-            #device_data._read_activity_message = const.STR_OBSRESET_SUCCESS
             this_server.write_attr("activityMessage", const.STR_OBSRESET_SUCCESS)
             self.logger.info(const.STR_OBSRESET_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_OBSRESET_INVOKING_CMD}{dev_failed}"
-            #device_data._read_activity_message = log_msg
             this_server.write_attr("activityMessage", log_msg)
             self.logger.exception(log_msg)
             tango.Except.throw_exception(
