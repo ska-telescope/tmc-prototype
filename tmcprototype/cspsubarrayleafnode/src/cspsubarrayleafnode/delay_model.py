@@ -40,6 +40,8 @@ class DelayManager:
         # _delay_in_advance variable (in seconds) is added to current timestamp and is used to calculate advance
         # delay coefficients.
         self._delay_in_advance = 60
+        self.this_server = TangoServerHelper.get_instance()
+        
 
     @staticmethod
     def get_instance():
@@ -224,9 +226,8 @@ class DelayManager:
 
         """
         delay_update_interval = argin
-        this_server = TangoServerHelper.get_instance()
         csp_subarray_fqdn = ""
-        property_val = this_server.read_property("CspSubarrayFQDN")
+        property_val = self.this_server.read_property("CspSubarrayFQDN")
         csp_subarray_fqdn = csp_subarray_fqdn.join(property_val)
         csp_sub_client_obj = TangoClient(csp_subarray_fqdn)
         while not self._stop_delay_model_event.isSet():
@@ -238,7 +239,7 @@ class DelayManager:
                 self.delay_model_calculator()
                 # update the attribute
                 self.delay_model_lock.acquire()
-                this_server.write_attr("delayModel", json.dumps(self.delay_model_json))
+                self.this_server.write_attr("delayModel", json.dumps(self.delay_model_json))
                 self.delay_model_lock.release()
 
                 # wait for timer event
@@ -246,7 +247,7 @@ class DelayManager:
             else:
                 # TODO: This waiting on event is added temporarily to reduce high CPU usage.
                 self._stop_delay_model_event.wait(0.02)
-                this_server.write_attr("delayModel", " ")
+                self.this_server.write_attr("delayModel", " ")
 
         self.logger.debug("Stop event received. Thread exit.")
 
