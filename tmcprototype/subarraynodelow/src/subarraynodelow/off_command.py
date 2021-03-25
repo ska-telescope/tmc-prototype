@@ -12,6 +12,7 @@ from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
 
@@ -43,8 +44,12 @@ class Off(SKASubarray.OffCommand):
         device.is_release_resources = False
         device.is_abort_command_executed = False
         device.is_obsreset_command_executed = False
+        this_server = TangoServerHelper.get_instance()
         try:
-            mccs_subarray_ln_client = TangoClient(device.mccs_subarray_ln_fqdn)
+            mccs_subarray_ln_fqdn = ""
+            property_val = this_server.read_property("MccsSubarrayLNFQDN")
+            mccs_subarray_ln_fqdn = mccs_subarray_ln_fqdn.join(property_val)
+            mccs_subarray_ln_client = TangoClient(mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(const.CMD_OFF, None)
             device.health_state_aggregator.unsubscribe()
             device.obs_state_aggregator.unsubscribe()
@@ -55,7 +60,7 @@ class Off(SKASubarray.OffCommand):
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_INVOKING_OFF_CMD}{dev_failed}"
             self.logger.error(log_msg)
-            self._read_activity_message = log_msg
+            this_server.write_attr("activityMessage", log_msg)
             tango.Except.throw_exception(
                 dev_failed[0].desc,
                 "Failed to invoke Off command on SubarrayNode.",
