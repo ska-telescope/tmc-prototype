@@ -74,10 +74,10 @@ class Scan(SKASubarray.ScanCommand):
             self.logger.info(const.STR_MCCS_SCAN_INIT)
             this_server.write_attr("activityMessage", const.STR_MCCS_SCAN_INIT)
             self.logger.info(const.STR_SA_SCANNING)
-            this_server.write_attr("activityMessage", const.STR_SCAN_SUCCESS)
             # Once Scan Duration is complete call EndScan Command
             self.logger.info("Starting Scan Thread")
             device_data.scan_timer_handler.start_scan_timer(device_data.scan_duration)
+            this_server.write_attr("activityMessage", const.STR_SCAN_SUCCESS)
             self.logger.info("Scan thread started")
             return (ResultCode.STARTED, const.STR_SCAN_SUCCESS)
 
