@@ -9,6 +9,7 @@ from ska.base.commands import ResultCode
 
 from . import const
 from .delay_model import DelayManager
+from tmc.common.tango_server_helper import TangoServerHelper
 
 
 class Off(SKABaseDevice.OffCommand):
@@ -39,14 +40,14 @@ class Off(SKABaseDevice.OffCommand):
 
         :return: none
         """
-        device_data = self.target
+        this_server = TangoServerHelper.get_instance()
         if event.err:
             log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
-            device_data._read_activity_message = log
+            this_server.write_attr("activityMessage", log_msg)
             self.logger.error(log)
         else:
             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            device_data._read_activity_message = log
+            this_server.write_attr("activityMessage", log_msg)
             self.logger.info(log)
 
     def do(self):
@@ -64,8 +65,20 @@ class Off(SKABaseDevice.OffCommand):
             (ResultCode, str)
 
         """
-        log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
-        self.logger.debug(log_msg)
-        delay_manager_obj = DelayManager.get_instance()
-        delay_manager_obj.stop()
-        return (ResultCode.OK, log_msg)
+        this_server = TangoServerHelper.get_instance()
+        try:
+            log_msg = const.CMD_OFF + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+            self.logger.debug(log_msg)
+            delay_manager_obj = DelayManager.get_instance()
+            delay_manager_obj.stop()
+            return (ResultCode.OK, log_msg)
+        except DevFailed as dev_failed:
+            log_msg = f"{const.ERR_OFF_INVOKING_CMD}{dev_failed}"
+            this_server.write_attr("activityMessage", log_msg)
+            self.logger.exception(log_msg)
+            tango.Except.throw_exception(
+                const.ERR_OFF_INVOKING_CMD,
+                log_msg,
+                "CspSubarrayLeafNode.OffCommand",
+                tango.ErrSeverity.ERR,
+            )
