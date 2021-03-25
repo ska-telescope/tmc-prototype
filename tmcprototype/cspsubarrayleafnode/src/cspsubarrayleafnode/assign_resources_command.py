@@ -6,6 +6,7 @@ from tango import DevState, DevFailed
 from ska.base.commands import BaseCommand
 
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
 from .transaction_id import identify_with_id
@@ -67,16 +68,16 @@ class AssignResourcesCommand(BaseCommand):
         in current device state
 
         """
-        device_data = self.target
         self.logger.info("Executing callback assign_resources_ended_cb")
+        this_server = TangoServerHelper.get_instance()
         try:
             if event.err:
-                device_data._read_activity_message = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+                this_server.write_attr("activityMessage", f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}")
                 log = const.ERR_INVOKING_CMD + event.cmd_name
                 self.logger.error(log)
             else:
                 log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-                device_data._read_activity_message = log
+                this_server.write_attr("activityMessage", log)
                 self.logger.info(log)
 
         except tango.DevFailed as df:
@@ -129,23 +130,26 @@ class AssignResourcesCommand(BaseCommand):
 
             DevFailed if the command execution is not successful
         """
-        device_data = self.target
         try:
             delay_manager_obj = DelayManager.get_instance()
             delay_manager_obj.update_config_params()
             # Invoke AssignResources command on CspSubarray
             self.logger.info("Invoking AssignResources on CSP subarray")
-            csp_sub_client_obj = TangoClient(device_data.csp_subarray_fqdn)
+            this_server = TangoServerHelper.get_instance()
+            csp_subarray_fqdn = ""
+            property_val = this_server.read_property("CspSubarrayFQDN")
+            csp_subarray_fqdn = csp_subarray_fqdn.join(property_val)
+            csp_sub_client_obj = TangoClient(csp_subarray_fqdn)
             csp_sub_client_obj.send_command_async(
                 const.CMD_ASSIGN_RESOURCES, argin, self.assign_resources_ended
             )
             self.logger.info("After invoking AssignResources on CSP subarray")
-            device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
+            this_server.write_attr("activityMessage", const.STR_ASSIGN_RESOURCES_SUCCESS)
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_ASSGN_RESOURCES}{dev_failed}"
-            device_data._read_activity_message = log_msg
+            this_server.write_attr("activityMessage", log_msg)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_ASSIGN_RES_EXEC,
