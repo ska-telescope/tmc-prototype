@@ -44,7 +44,6 @@ class On(SKABaseDevice.OnCommand):
         :return: none
 
         """
-        device_data = self.target
         this_device = TangoServerHelper.get_instance()
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
@@ -74,12 +73,14 @@ class On(SKABaseDevice.OnCommand):
 
         """
         device_data = self.target
+        this_device = TangoServerHelper.get_instance()
         try:
             csp_mln_client_obj = TangoClient(device_data.csp_master_ln_fqdn)
             csp_mln_client_obj.send_command_async(
                 const.CMD_ON, [], self.on_cmd_ended_cb
             )
             self.logger.debug(const.STR_ON_CMD_ISSUED)
+            this_device.write_attr("activityMessage", const.STR_ON_CMD_ISSUED)
             device_data.cbf_health_updator = CbfHealthStateAttributeUpdator()
             device_data.cbf_health_updator.start()
             device_data.pss_health_updator = PssHealthStateAttributeUpdator()

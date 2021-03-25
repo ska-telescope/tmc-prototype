@@ -102,8 +102,8 @@ class CspMasterLeafNode(SKABaseDevice):
             this_device.set_tango_class(device)
 
             this_device.write_attr("healthState", HealthState.OK)
-            this_device.write_attr("simulationMode", HealthState.OK)
-            this_device.write_attr("testMode", HealthState.OK)
+            this_device.write_attr("simulationMode", SimulationMode.FALSE)
+            this_device.write_attr("testMode", TestMode.NONE)
             this_device.write_attr("buildState", "{},{},{}".format(
                 release.name, release.version, release.description))
             this_device.write_attr("versionId", release.version)

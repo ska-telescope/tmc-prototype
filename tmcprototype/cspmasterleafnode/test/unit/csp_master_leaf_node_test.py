@@ -69,7 +69,6 @@ def mock_tango_server_helper():
 
 def test_on(mock_csp_master_proxy, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
-    tango_server_obj = mock_tango_server_helper
     assert device_proxy.On() == [
         [ResultCode.OK],
         ["ON command invoked successfully from CSP Master leaf node."],
@@ -81,7 +80,6 @@ def test_on(mock_csp_master_proxy, mock_tango_server_helper):
 
 def test_off_should_command_csp_master_leaf_node_to_stop(mock_csp_master_proxy, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
-    tango_server_obj = mock_tango_server_helper
 
     device_proxy.On()
     assert device_proxy.Off() == [
@@ -160,9 +158,8 @@ def test_on_command_should_raise_dev_failed(mock_csp_master_proxy, mock_tango_se
     assert const.ERR_DEVFAILED_MSG in str(df.value)
 
 
-def test_standby_command_should_raise_dev_failed(mock_csp_master_proxy, mock_tango_server_helper):
+def test_standby_command_should_raise_dev_failed(mock_csp_master_proxy):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
-    tango_server_obj = mock_tango_server_helper
     tango_client_obj.deviceproxy.command_inout_asynch.side_effect = (
         raise_devfailed_exception
     )
@@ -220,7 +217,6 @@ def test_activity_message_attribute_reports_correct_csp_health_state_callbacks(
         csp_master_fqdn,
         event_subscription_map,
     ) = mock_csp_master_proxy
-    tango_server_obj = mock_tango_server_helper
     with mock.patch.object(
         TangoClient, "_get_deviceproxy", return_value=Mock()
     ) as mock_obj:
@@ -262,7 +258,6 @@ def test_activity_message_reports_correct_health_state_when_attribute_event_has_
         csp_master_fqdn,
         event_subscription_map,
     ) = mock_csp_master_proxy
-    tango_server_obj = mock_tango_server_helper
     with mock.patch.object(
         TangoClient, "_get_deviceproxy", return_value=Mock()
     ) as mock_obj:

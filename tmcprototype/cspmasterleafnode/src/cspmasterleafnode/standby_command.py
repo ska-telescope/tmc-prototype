@@ -97,6 +97,7 @@ class Standby(BaseCommand):
                 const.CMD_STANDBY, command_data=argin, callback_method=self.standby_cmd_ended_cb
             )
             self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
+            this_device.write_attr("activityMessage", const.STR_STANDBY_CMD_ISSUED)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_EXE_STANDBY_CMD}{dev_failed}"
