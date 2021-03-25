@@ -69,7 +69,6 @@ class AssignResources(BaseCommand):
         in current device state
 
         """
-        device_data = self.target
         self.logger.info("Executing callback allocate_ended")
         try:
 
@@ -121,7 +120,6 @@ class AssignResources(BaseCommand):
 
             DevFailed if the command execution is not successful
         """
-        device_data = self.target
         try:
             self.this_server = TangoServerHelper.get_instance()
             log_msg = (

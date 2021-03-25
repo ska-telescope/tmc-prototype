@@ -43,7 +43,6 @@ class Off(SKABaseDevice.OffCommand):
         :return: none
 
         """
-        device_data = self.target
         # Update logs and activity message attribute with received event
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
@@ -69,7 +68,6 @@ class Off(SKABaseDevice.OffCommand):
             (ResultCode, str)
 
         """
-        device_data = self.target
         # If the array length is 0, the command applies to the whole MCCS Element.
         # If the array length is >, each array element specifies the FQDN of the MCCS SubElement to switch OFF.
         try:

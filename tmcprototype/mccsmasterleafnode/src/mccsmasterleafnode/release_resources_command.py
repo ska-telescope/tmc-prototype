@@ -68,7 +68,6 @@ class ReleaseResources(BaseCommand):
         :return: none
 
         """
-        device_data = self.target
         # Update logs and activity message attribute with received event
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
@@ -101,7 +100,6 @@ class ReleaseResources(BaseCommand):
             ValueError if invalid json string.
 
         """
-        device_data = self.target
         log_msg = "Input JSON for MCCS master leaf node Release command is: " + argin
         self.logger.debug(log_msg)
         self.logger.info("Invoking Release on MCCS master")
