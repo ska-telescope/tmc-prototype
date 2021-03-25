@@ -80,11 +80,9 @@ class Abort(BaseCommand):
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
             this_server.write_attr("activityMessage", log_msg)
-            #device_data._read_activity_message = log_msg
         else:
             log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
-            #device_data._read_activity_message = log_msg
             this_server.write_attr("activityMessage", log_msg)
 
     def do(self):
@@ -112,13 +110,11 @@ class Abort(BaseCommand):
             mccs_subarray_client.send_command_async(
                 const.CMD_ABORT, None, self.abort_cmd_ended_cb
             )
-            #device_data._read_activity_message = const.STR_ABORT_SUCCESS
             this_server.write_attr("activityMessage", const.STR_ABORT_SUCCESS)
             self.logger.info(const.STR_ABORT_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_ABORT_COMMAND}{dev_failed}"
-            #device_data._read_activity_message = log_msg
             this_server.write_attr("activityMessage", log_msg)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(

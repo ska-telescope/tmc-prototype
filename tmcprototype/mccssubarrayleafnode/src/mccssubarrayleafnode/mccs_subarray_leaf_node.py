@@ -161,6 +161,11 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         # PROTECTED REGION END #    //  MccsSubarrayLeafNode.activityMessage_write
 
     def update_attr_map(self, attr, val):
+        """
+        This method updates attribute value in attribute map. Once a thread has acquired a lock,
+        subsequent attempts to acquire it are blocked, until it is released.
+        """
+
         lock = threading.Lock()
         lock.acquire()
         self.attr_map[attr] = val
