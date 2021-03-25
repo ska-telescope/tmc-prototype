@@ -1,4 +1,4 @@
-from ska.base.control_model import HealthState
+# from ska.base.control_model import HealthState
 
 class DeviceData:
     """
@@ -14,7 +14,7 @@ class DeviceData:
             raise Exception("This is singletone class")
         else:
             DeviceData.__instance = self
-        self._health_state = HealthState.UNKNOWN
+        # self._health_state = HealthState.UNKNOWN
 
     @staticmethod
     def get_instance():

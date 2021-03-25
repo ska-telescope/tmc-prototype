@@ -124,7 +124,7 @@ class SdpMasterLeafNode(SKABaseDevice):
 
             device.attr_map = {}
             # Initialising Attributes 
-            device.attr_map["sdpHealthState"]=HealthState.UNKNOWN
+            # device.attr_map["sdpHealthState"]=HealthState.UNKNOWN
             device.attr_map["versionInfo"]=""
             device.attr_map["activityMessage"]=""
             device.attr_map["ProcessingBlockList"]= "test"
