@@ -28,10 +28,8 @@ class DeviceData:
             DeviceData.__instance = self
 
         self.receptorIDList_str = []
-        self._read_activity_message = ""
         self.target = None
         self.fsp_ids_object = []
-        self._delay_model = " "
 
     @staticmethod
     def get_instance():
