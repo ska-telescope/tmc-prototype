@@ -148,7 +148,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
             this_server = TangoServerHelper.get_instance()
             this_server.set_tango_class(device)
             device.attr_map = {}
-            device.attr_map["cspsubarrayHealthState"] = HealthState.OK
             device.attr_map["delayModel"] = " "
             device.attr_map["activityMessage"] = ""
 
