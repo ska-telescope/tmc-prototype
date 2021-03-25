@@ -120,7 +120,6 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             super().do()
             device = self.target
             this_server = TangoServerHelper.get_instance()
-            #this_server.device = device
             this_server.set_tango_class(device)
             device.attr_map = {}
             device_data = DeviceData.get_instance()
@@ -130,7 +129,6 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             )
             device._version_id = release.version
             device._versioninfo = " "
-            #device_data._mccs_subarray_fqdn = device.MccsSubarrayFQDN
             device.set_status(const.STR_MCCSSALN_INIT_SUCCESS)
             device._mccs_subarray_health_state = HealthState.OK
             self.logger.info(const.STR_MCCSSALN_INIT_SUCCESS)

@@ -57,7 +57,7 @@ def event_subscription():
 
 
 @pytest.fixture(scope="function")
-def mock_tsh():
+def mock_tango_server_helper():
     mccs_subarray1_fqdn = "low-mccs/subarray/01"
     tango_server_obj = TangoServerHelper.get_instance()
     tango_server_obj.read_property = Mock(return_value = mccs_subarray1_fqdn)
@@ -133,10 +133,10 @@ def command_without_arg(request):
 
 
 def test_command_with_arg_in_allowed_obsstate_with_callback_method(
-    mock_mccs_subarray_proxy, event_subscription, command_with_arg, mock_tsh
+    mock_mccs_subarray_proxy, event_subscription, command_with_arg, mock_tango_server_helper
 ):
     device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
-    tango_server_obj = mock_tsh
+    tango_server_obj = mock_tango_server_helper
     cmd_name, cmd_arg, requested_cmd, obs_state, _ = command_with_arg
     mccs_subarray_client.deviceproxy.obsState = obs_state
     device_proxy.command_inout(cmd_name, cmd_arg)
@@ -146,10 +146,10 @@ def test_command_with_arg_in_allowed_obsstate_with_callback_method(
 
 
 def test_command_without_arg_in_allowed_obsstate_with_callback_method(
-    mock_mccs_subarray_proxy, event_subscription, command_without_arg, mock_tsh
+    mock_mccs_subarray_proxy, event_subscription, command_without_arg, mock_tango_server_helper
 ):
     device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
-    tango_server_obj = mock_tsh
+    tango_server_obj = mock_tango_server_helper
     cmd_name, requested_cmd, obs_state, _ = command_without_arg
     mccs_subarray_client.deviceproxy.obsState = obs_state
     device_proxy.command_inout(cmd_name)
@@ -207,10 +207,10 @@ def test_configure_with_correct_configuration_data_when_mccs_subarray_is_idle(
 
 
 def test_command_with_callback_method_with_event_error(
-    mock_mccs_subarray_proxy, event_subscription, command_without_arg, mock_tsh
+    mock_mccs_subarray_proxy, event_subscription, command_without_arg, mock_tango_server_helper
 ):
     device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
-    tango_server_obj = mock_tsh
+    tango_server_obj = mock_tango_server_helper
     cmd_name, requested_cmd, obs_state, _ = command_without_arg
     mccs_subarray_client.deviceproxy.obsState = obs_state
     device_proxy.command_inout(cmd_name)
@@ -220,10 +220,10 @@ def test_command_with_callback_method_with_event_error(
 
 
 def test_command_with_callback_method_with_event_error_with_arg(
-    mock_mccs_subarray_proxy, event_subscription, command_with_arg, mock_tsh
+    mock_mccs_subarray_proxy, event_subscription, command_with_arg, mock_tango_server_helper
 ):
     device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
-    tango_server_obj = mock_tsh
+    tango_server_obj = mock_tango_server_helper
     cmd_name, cmd_arg, requested_cmd, obs_state, _ = command_with_arg
     mccs_subarray_client.deviceproxy.obsState = obs_state
     device_proxy.command_inout(cmd_name, cmd_arg)
@@ -233,10 +233,10 @@ def test_command_with_callback_method_with_event_error_with_arg(
 
 
 def test_command_with_arg_to_raise_devfailed_exception(
-    mock_mccs_subarray_proxy, command_with_arg, mock_tsh
+    mock_mccs_subarray_proxy, command_with_arg, mock_tango_server_helper
 ):
     device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
-    tango_server_obj = mock_tsh
+    tango_server_obj = mock_tango_server_helper
     cmd_name, cmd_arg, _, obs_state, error_msg = command_with_arg
     mccs_subarray_client.deviceproxy.obsState = obs_state
     mccs_subarray_client.deviceproxy.command_inout_asynch.side_effect = (
@@ -348,10 +348,10 @@ def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):
 
 
 def test_scan_should_command_mccs_subarray_to_start_its_scan_when_it_is_ready(
-    mock_mccs_subarray_proxy,mock_tsh
+    mock_mccs_subarray_proxy,mock_tango_server_helper
 ):
     device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
-    tango_server_obj = mock_tsh
+    tango_server_obj = mock_tango_server_helper
     mccs_subarray_client.deviceproxy.obsState = ObsState.READY
     device_proxy.Scan(scan_input_str)
     mccs_subarray_client.deviceproxy.command_inout_asynch.assert_called_with(
