@@ -65,7 +65,7 @@ def tango_context():
 def mock_tango_server_helper():
     csp_master_fqdn = "mid_csp/elt/master"
     tango_server_obj = TangoServerHelper.get_instance()
-    tango_server_obj.read_property = Mock(return_value = mccs_subarray1_ln_fqdn)
+    tango_server_obj.read_property = Mock(return_value = csp_master_fqdn)
     yield tango_server_obj
 
 def test_on(mock_csp_master_proxy, mock_tango_server_helper):
