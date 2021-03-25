@@ -9,6 +9,7 @@ from tango import DevState, DevFailed
 from ska.base.commands import BaseCommand
 
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
 from .exceptions import InvalidObsStateError
@@ -65,9 +66,10 @@ class AssignResources(BaseCommand):
         return: None
         """
         device_data = self.target
+
         if event.err:
             log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
-            device_data._read_activity_message = log
+            self.this_server.write_attr("activityMessage", log)
             self.logger.error(log)
             tango.Except.throw_exception(
                 "SDP Subarray returned error while assigning resources",
@@ -77,7 +79,7 @@ class AssignResources(BaseCommand):
             )
         else:
             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            device_data._read_activity_message = log
+            self.this_server.write_attr("activityMessage", log)
             self.logger.debug(log)
 
     @identify_with_id("assign", "argin")
@@ -137,16 +139,20 @@ class AssignResources(BaseCommand):
         """
 
         device_data = self.target
+        self.this_server = TangoServerHelper.get_instance()
         try:
             # TODO: When ObsState check related issue is resolved
             # device.validate_obs_state()
             # Call SDP Subarray Command asynchronously
-            sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
+            _sdp_sa_fqdn = ""
+            input = self.this_server.read_property("SdpSubarrayFQDN")
+            _sdp_sa_fqdn = _sdp_sa_fqdn.join(input)
+            sdp_sa_ln_client_obj = TangoClient(_sdp_sa_fqdn)
             sdp_sa_ln_client_obj.send_command_async(
                 const.CMD_ASSIGN_RESOURCES, command_data=argin, callback_method=self.assign_resources_ended
                 )
             # Update the status of command execution status in activity message
-            device_data._read_activity_message = const.STR_ASSIGN_RESOURCES_SUCCESS
+            self.this_server.write_attr("activityMessage", const.STR_ASSIGN_RESOURCES_SUCCESS)
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
 
         except InvalidObsStateError as error:
@@ -161,7 +167,7 @@ class AssignResources(BaseCommand):
         except ValueError as value_error:
             log_msg = f"{const.ERR_INVALID_JSON}{value_error}"
             self.logger.exception(log_msg)
-            device_data._read_activity_message = f"{const.ERR_INVALID_JSON}{value_error}"
+            self.this_server.write_attr("activityMessage", f"{const.ERR_INVALID_JSON}{value_error}")
             tango.Except.throw_exception(
                 const.STR_CMD_FAILED,
                 log_msg,
@@ -171,7 +177,7 @@ class AssignResources(BaseCommand):
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_ASSGN_RESOURCES}{dev_failed}"
-            device_data._read_activity_message = log_msg
+            self.this_server.write_attr("activityMessage", log_msg)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_ASSIGN_RES_EXEC,
