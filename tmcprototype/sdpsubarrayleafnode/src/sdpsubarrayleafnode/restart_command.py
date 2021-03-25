@@ -73,7 +73,6 @@ class Restart(BaseCommand):
 
         :return: none
         """
-        device_data = self.target
         if event.err:
             log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.this_server.write_attr("activityMessage", log)
@@ -94,7 +93,6 @@ class Restart(BaseCommand):
             DevFailed if error occurs while invoking command on SDPSubarray.
 
         """
-        device_data = self.target
         self.this_server = TangoServerHelper.get_instance()
         try:
             _sdp_sa_fqdn = ""

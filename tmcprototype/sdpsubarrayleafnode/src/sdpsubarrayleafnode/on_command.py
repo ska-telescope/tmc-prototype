@@ -43,7 +43,6 @@ class On(SKABaseDevice.OnCommand):
 
         :return: none
         """
-        device_data = self.target
         sdp_sa_ln_server = TangoServerHelper.get_instance()
         if event.err:
             log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
@@ -73,7 +72,6 @@ class On(SKABaseDevice.OnCommand):
             DevFailed if error occurs while invoking command on SDPSubarray.
 
         """
-        device_data = self.target
         self.this_server = TangoServerHelper.get_instance()
         try:
             _sdp_sa_fqdn = ""
@@ -92,7 +90,7 @@ class On(SKABaseDevice.OnCommand):
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_INVOKING_ON_CMD} {dev_failed}"
             self.this_server.write_attr("activityMessage", log_msg)
-            sdp_sa_ln_server.set_status(log_msg)
+            self.this_server.set_status(log_msg)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_ON_EXEC,

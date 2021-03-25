@@ -65,8 +65,6 @@ class AssignResources(BaseCommand):
 
         return: None
         """
-        device_data = self.target
-
         if event.err:
             log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.this_server.write_attr("activityMessage", log)
@@ -137,8 +135,6 @@ class AssignResources(BaseCommand):
 
             DevFailed if the command execution is not successful.
         """
-
-        device_data = self.target
         self.this_server = TangoServerHelper.get_instance()
         try:
             # TODO: When ObsState check related issue is resolved

@@ -72,7 +72,6 @@ class Configure(BaseCommand):
 
         :return: none
         """
-        device_data = self.target
         if event.err:
             log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.this_server.write_attr("activityMessage", log)
@@ -103,7 +102,6 @@ class Configure(BaseCommand):
 
             DevFailed if the command execution is not successful
         """
-        device_data = self.target
         self.this_server = TangoServerHelper.get_instance()
         try:
             log_msg = (
