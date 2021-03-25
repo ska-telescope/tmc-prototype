@@ -40,16 +40,12 @@ class DeviceData:
         self.isScanRunning = False
         self.is_abort_command_executed = False
         self.is_obsreset_command_executed = False
-        self._scan_id = ""
         self.scan_duration = None
         self.health_state_aggregator = None
         self.obs_state_aggregator = None
         self._subarray_health_state = HealthState.UNKNOWN
         self.subarray_health_state_map = {}
         self._health_event_id = {}
-        self.mccs_subarray_fqdn = ""
-        self.mccs_subarray_ln_fqdn = ""
-        self.activity_message = ""
         self.resource_list = []
         self.scan_thread = None
         self.scan_timer_handler = ScanTimerHandler()
