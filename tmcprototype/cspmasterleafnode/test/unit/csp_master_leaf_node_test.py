@@ -20,6 +20,7 @@ from ska.base.commands import ResultCode
 from cspmasterleafnode import CspMasterLeafNode, const, release
 from cspmasterleafnode.device_data import DeviceData
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server import TangoServerHelper
 
 
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
@@ -60,9 +61,16 @@ def tango_context():
     with fake_tango_system(CspMasterLeafNode) as tango_context:
         yield tango_context
 
+@pytest.fixture(scope="function")
+def mock_tango_server_helper():
+    csp_master_fqdn = "mid_csp/elt/master"
+    tango_server_obj = TangoServerHelper.get_instance()
+    tango_server_obj.read_property = Mock(return_value = mccs_subarray1_ln_fqdn)
+    yield tango_server_obj
 
-def test_on(mock_csp_master_proxy):
+def test_on(mock_csp_master_proxy, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
+    tango_server_obj = mock_tango_server_helper
     assert device_proxy.On() == [
         [ResultCode.OK],
         ["ON command invoked successfully from CSP Master leaf node."],
@@ -72,8 +80,9 @@ def test_on(mock_csp_master_proxy):
     )
 
 
-def test_off_should_command_csp_master_leaf_node_to_stop(mock_csp_master_proxy):
+def test_off_should_command_csp_master_leaf_node_to_stop(mock_csp_master_proxy, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
+    tango_server_obj = mock_tango_server_helper
 
     device_proxy.On()
     assert device_proxy.Off() == [
@@ -83,9 +92,10 @@ def test_off_should_command_csp_master_leaf_node_to_stop(mock_csp_master_proxy):
 
 
 def test_standby_should_command_to_standby_with_callback_method(
-    mock_csp_master_proxy, event_subscription_mock
+    mock_csp_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
+    tango_server_obj = mock_tango_server_helper
 
     device_proxy.Standby([])
     dummy_event = command_callback(const.CMD_STANDBY)
@@ -94,9 +104,10 @@ def test_standby_should_command_to_standby_with_callback_method(
 
 
 def test_on_should_command_to_on_with_callback_method(
-    mock_csp_master_proxy, event_subscription_mock
+    mock_csp_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
+    tango_server_obj = mock_tango_server_helper
 
     device_proxy.On()
     dummy_event = command_callback(const.CMD_ON)
@@ -104,8 +115,9 @@ def test_on_should_command_to_on_with_callback_method(
     assert const.STR_COMMAND + const.CMD_ON in device_proxy.activityMessage
 
 
-def test_off_should_command_to_off(mock_csp_master_proxy):
+def test_off_should_command_to_off(mock_csp_master_proxy, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
+    tango_server_obj = mock_tango_server_helper
 
     device_proxy.On()
     device_proxy.Off()
@@ -113,9 +125,10 @@ def test_off_should_command_to_off(mock_csp_master_proxy):
 
 
 def test_standby_should_command_with_callback_method_with_event_error(
-    mock_csp_master_proxy, event_subscription_mock
+    mock_csp_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
+    tango_server_obj = mock_tango_server_helper
 
     device_proxy.Standby([])
     dummy_event = command_callback_with_event_error(const.CMD_STANDBY)
@@ -125,9 +138,10 @@ def test_standby_should_command_with_callback_method_with_event_error(
 
 
 def test_on_should_command_with_callback_method_with_event_error(
-    mock_csp_master_proxy, event_subscription_mock
+    mock_csp_master_proxy, event_subscription_mock, tango_server_obj = mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
+    tango_server_obj = mock_tango_server_helper
     device_proxy.On()
     dummy_event = command_callback_with_event_error(const.CMD_ON)
     event_subscription_mock[const.CMD_ON](dummy_event)
@@ -135,8 +149,10 @@ def test_on_should_command_with_callback_method_with_event_error(
     assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
 
 
-def test_on_command_should_raise_dev_failed(mock_csp_master_proxy):
+def test_on_command_should_raise_dev_failed(mock_csp_master_proxy, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
+    tango_server_obj = mock_tango_server_helper
+
     tango_client_obj.deviceproxy.command_inout_asynch.side_effect = (
         raise_devfailed_exception
     )
@@ -145,8 +161,9 @@ def test_on_command_should_raise_dev_failed(mock_csp_master_proxy):
     assert const.ERR_DEVFAILED_MSG in str(df.value)
 
 
-def test_standby_command_should_raise_dev_failed(mock_csp_master_proxy):
+def test_standby_command_should_raise_dev_failed(mock_csp_master_proxy, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
+    tango_server_obj = mock_tango_server_helper
     tango_client_obj.deviceproxy.command_inout_asynch.side_effect = (
         raise_devfailed_exception
     )
@@ -196,7 +213,7 @@ def health_state(request):
 
 
 def test_activity_message_attribute_reports_correct_csp_health_state_callbacks(
-    mock_csp_master_proxy, health_state
+    mock_csp_master_proxy, health_state, mock_tango_server_helper
 ):
     (
         device_proxy,
@@ -204,6 +221,7 @@ def test_activity_message_attribute_reports_correct_csp_health_state_callbacks(
         csp_master_fqdn,
         event_subscription_map,
     ) = mock_csp_master_proxy
+    tango_server_obj = mock_tango_server_helper
     with mock.patch.object(
         TangoClient, "_get_deviceproxy", return_value=Mock()
     ) as mock_obj:
@@ -237,7 +255,7 @@ def test_activity_message_attribute_reports_correct_csp_health_state_callbacks(
 #     ]
 # )
 def test_activity_message_reports_correct_health_state_when_attribute_event_has_error(
-    mock_csp_master_proxy,
+    mock_csp_master_proxy, mock_tango_server_helper
 ):
     (
         device_proxy,
@@ -245,6 +263,7 @@ def test_activity_message_reports_correct_health_state_when_attribute_event_has_
         csp_master_fqdn,
         event_subscription_map,
     ) = mock_csp_master_proxy
+    tango_server_obj = mock_tango_server_helper
     with mock.patch.object(
         TangoClient, "_get_deviceproxy", return_value=Mock()
     ) as mock_obj:
@@ -278,18 +297,23 @@ def dummy_subscriber_with_error(attribute, callback_method):
     return 10
 
 
-def test_read_activity_message(tango_context):
-    tango_context.device.activityMessage = "test"
-    assert tango_context.device.activityMessage == "test"
+def test_read_activity_message(tango_context, mock_tango_server_helper):
+    # tango_context.device.activityMessage = "test"
+    tango_server_obj = mock_tango_server_helper
+    tango_server_obj.write_attr("activityMessage", test)
+    assert tango_server_obj.read_attr("activityMessage") == "test"
+    # assert tango_context.device.activityMessage == "test"
 
 
-def test_write_activity_message(tango_context):
-    tango_context.device.activityMessage = "test"
-    assert tango_context.device.activityMessage == "test"
+# def test_write_activity_message(tango_context):
+#     tango_context.device.activityMessage = "test"
+#     assert tango_context.device.activityMessage == "test"
 
 
-def test_status(tango_context):
-    assert const.STR_DEV_ALARM in tango_context.device.Status()
+def test_status(tango_context, mock_tango_server_helper):
+    tango_server_obj = mock_tango_server_helper
+    assert const.STR_DEV_ALARM in tango_server_obj.get_status()
+    # assert const.STR_DEV_ALARM in tango_context.device.Status()
 
 
 def test_logging_level(tango_context):
@@ -302,13 +326,17 @@ def test_logging_targets(tango_context):
     assert "console::cout" in tango_context.device.loggingTargets
 
 
-def test_health_state(tango_context):
-    assert tango_context.device.healthState == HealthState.OK
+def test_health_state(tango_context, mock_tango_server_helper):
+    tango_server_obj = mock_tango_server_helper
+    assert tango_server_obj.read_attr("healthState") == HealthState.OK
+    # assert tango_context.device.healthState == HealthState.OK
 
 
-def test_version_id(tango_context):
+def test_version_id(tango_context, mock_tango_server_helper):
     """Test for versionId"""
-    assert tango_context.device.versionId == release.version
+    tango_server_obj = mock_tango_server_helper
+    assert tango_server_obj.read_attr("versionId") == release.version
+    # assert tango_context.device.versionId == release.version
 
 
 def test_build_state(tango_context):
