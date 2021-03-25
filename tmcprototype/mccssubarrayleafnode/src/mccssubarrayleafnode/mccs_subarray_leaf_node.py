@@ -122,6 +122,8 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             this_server = TangoServerHelper.get_instance()
             this_server.set_tango_class(device)
             device.attr_map = {}
+            # Initialise Attributes
+            device.attr_map["activityMessage"] = ""
             device_data = DeviceData.get_instance()
             device.device_data = device_data
             device._build_state = "{},{},{}".format(
@@ -132,6 +134,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             device.set_status(const.STR_MCCSSALN_INIT_SUCCESS)
             device._mccs_subarray_health_state = HealthState.OK
             self.logger.info(const.STR_MCCSSALN_INIT_SUCCESS)
+            print("MccsSubarrayLeafNode is initialized successfully.")
             return (ResultCode.OK, const.STR_MCCSSALN_INIT_SUCCESS)
 
     def always_executed_hook(self):
