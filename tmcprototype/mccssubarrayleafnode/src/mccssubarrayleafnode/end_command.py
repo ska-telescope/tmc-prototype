@@ -71,7 +71,7 @@ class End(BaseCommand):
 
         :return: none
         """
-]        this_server = TangoServerHelper.get_instance()
+        this_server = TangoServerHelper.get_instance()
         # Update logs and activity message attribute with received event
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"

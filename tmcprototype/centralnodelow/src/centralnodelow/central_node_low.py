@@ -144,7 +144,7 @@ class CentralNode(SKABaseDevice):
                 device.device_data = device_data
                 # Get Instance of TangoServerHelper class
                 this_server = TangoServerHelper.get_instance()
-                this_server.device = device
+                this_server.set_tango_class(device)
                 device.attr_map = {}
                 # Initialise Attributes
                 device.attr_map["telescopeHealthState"]=HealthState.UNKNOWN

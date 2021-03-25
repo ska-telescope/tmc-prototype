@@ -8,6 +8,7 @@ from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
 
@@ -42,16 +43,15 @@ class Off(SKABaseDevice.OffCommand):
         :return: none
 
         """
-        device_data = self.target
         # Update logs and activity message attribute with received event
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
-            device_data._read_activity_message = log_msg
+            self.this_server.write_attr("activityMessage", log_msg)
         else:
             log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
-            device_data._read_activity_message = log_msg
+            self.this_server.write_attr("activityMessage", log_msg)
 
     def do(self):
         """
@@ -68,21 +68,25 @@ class Off(SKABaseDevice.OffCommand):
             (ResultCode, str)
 
         """
-        device_data = self.target
         # If the array length is 0, the command applies to the whole MCCS Element.
         # If the array length is >, each array element specifies the FQDN of the MCCS SubElement to switch OFF.
         try:
-            mccs_master_client = TangoClient(device_data._mccs_master_fqdn)
+            self.this_server = TangoServerHelper.get_instance()
+
+            mccs_master_fqdn = ""
+            property_value = self.this_server.read_property("MccsMasterFQDN")
+            mccs_master_fqdn = mccs_master_fqdn.join(property_value)
+            mccs_master_client = TangoClient(mccs_master_fqdn)
             mccs_master_client.send_command_async(
                 const.CMD_OFF, None, self.off_cmd_ended_cb
             )
             self.logger.debug(const.STR_OFF_CMD_ISSUED)
-            device_data._read_activity_message = const.STR_OFF_CMD_ISSUED
+            self.this_server.write_attr("activityMessage", const.STR_OFF_CMD_ISSUED)
             return (ResultCode.OK, const.STR_OFF_CMD_ISSUED)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_OFF_RESOURCES}{dev_failed}"
-            device_data._read_activity_message = log_msg
+            self.this_server.write_attr("activityMessage", log_msg)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_OFF_EXEC,
