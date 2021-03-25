@@ -15,6 +15,7 @@ import threading
 import importlib.resources
 from .utils import UnitConverter
 import katpoint
+from tmc.common.tango_server_helper import TangoServerHelper
 
 
 class DeviceData:
@@ -32,6 +33,8 @@ class DeviceData:
             raise Exception("This is singletone class")
         else:
             DeviceData.__instance = self
+
+        self.this_server = TangoServerHelper.get_instance()
 
         self.el = 30.0
         self.az = 0.0
@@ -53,7 +56,11 @@ class DeviceData:
 
     def set_dish_name_number(self):
         # Find out dish number from DishMasterFQDN property e.g. mid_d0001/elt/master
-        dish_name_string = self._dish_master_fqdn.split("/")[0]
+        # self.dish_master_fqdn = ""
+        # property_value = self.this_server.read_property("DishMasterFQDN")
+        # self.dish_master_fqdn = self.dish_master_fqdn.join(property_value)
+        # dish_name_string = self.dish_master_fqdn.split("/")[0]
+        dish_name_string="mid_d0001"
         self.dish_name = dish_name_string.split("_")[1]
         self.dish_number = self.dish_name[1:]
 

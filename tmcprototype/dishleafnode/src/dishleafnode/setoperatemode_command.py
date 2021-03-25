@@ -84,6 +84,9 @@ class SetOperateMode(BaseCommand):
 
     def _subscribe_to_attribute_events(self, attributes):
         device_data = DeviceData.get_instance()
+        self.dish_master_fqdn = ""
+        property_value = self.this_server.read_property("DishMasterFQDN")
+        self.dish_master_fqdn = self.dish_master_fqdn.join(property_value)
         dish_client = TangoClient(self.dish_master_fqdn)
 
         device_data.attr_event_map["dish_client"] = dish_client
