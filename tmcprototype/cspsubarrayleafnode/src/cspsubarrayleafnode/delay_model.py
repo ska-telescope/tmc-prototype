@@ -247,8 +247,9 @@ class DelayManager:
             else:
                 # TODO: This waiting on event is added temporarily to reduce high CPU usage.
                 self._stop_delay_model_event.wait(0.02)
-                self.this_server.write_attr("delayModel", " ")
-
+                # self.this_server.write_attr("delayModel", " ")
+        
+        self.this_server.write_attr("delayModel", " ")
         self.logger.debug("Stop event received. Thread exit.")
 
     def delay_model_calculator(self):
