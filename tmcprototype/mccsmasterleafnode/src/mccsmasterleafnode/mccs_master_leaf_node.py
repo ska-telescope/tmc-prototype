@@ -130,8 +130,9 @@ class MccsMasterLeafNode(SKABaseDevice):
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
             self.this_server.write_attr("activityMessage", const.STR_INIT_SUCCESS)
-            self.logger.info(self.this_server.read_attr("activityMessage"))
-            return (ResultCode.OK, self.this_server.read_attr("activityMessage"))
+            return_message = self.this_server.read_attr("activityMessage")
+            self.logger.info(return_message)
+            return (ResultCode.OK, return_message)
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(MccsMasterLeafNode.always_executed_hook) ENABLED START #
