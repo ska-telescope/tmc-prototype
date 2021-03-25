@@ -105,7 +105,7 @@ class CspMasterLeafNode(SKABaseDevice):
             this_device.write_attr("simulationMode", HealthState.OK)
             this_device.write_attr("testMode", HealthState.OK)
             this_device.write_attr("buildState", "{},{},{}".format(
-                release.name, release.version, release.description)
+                release.name, release.version, release.description))
             this_device.write_attr("versionId", release.version)
             this_device.write_attr("activityMessage", const.STR_CSP_INIT_LEAF_NODE)
 
