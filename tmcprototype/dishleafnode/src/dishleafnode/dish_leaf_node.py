@@ -10,6 +10,7 @@
 """
 A Leaf control node for DishMaster.
 """
+import threading
 # Tango imports
 import tango
 from tango import ApiUtil, AttrWriteType
@@ -131,11 +132,21 @@ class DishLeafNode(SKABaseDevice):
 
     def read_activityMessage(self):
         """ Returns the activityMessage """
-        return self.device_data._read_activity_message
+        return self.attr_map["activityMessage"]
 
     def write_activityMessage(self, value):
         """ Internal construct of TANGO. Sets the activityMessage """
-        self.device_data._read_activity_message = value
+        self.update_attr_map("activityMessage", value)
+
+    def update_attr_map(self, attr, val):
+        """
+        This method updates attribute value in attribute map. Once a thread has acquired a lock,
+        subsequent attempts to acquire it are blocked, until it is released.
+        """
+        lock = threading.Lock()
+        lock.acquire()
+        self.attr_map[attr] = val
+        lock.release()
 
     dishHealthState = attribute(
         name="dishHealthState", label="dishHealthState", forwarded=True
@@ -162,15 +173,16 @@ class DishLeafNode(SKABaseDevice):
 
             super().do()
             device = self.target
-
-            this_server = TangoServerHelper.get_instance()
-            this_server.device = device
-
             self.logger.info("Initializing DishLeafNode...")
             # Create DeviceData class instance
             device_data = DeviceData.get_instance()
             device.device_data = device_data
-            device_data._dish_master_fqdn = device.DishMasterFQDN
+            # Get Instance of TangoServerHelper class
+            this_server = TangoServerHelper.get_instance()
+            this_server.device = device
+            device.attr_map = {}
+            # Initialise Attributes
+            device.attr_map["activityMessage"] = ""
             device._build_state = (
                 f"{release.name},{release.version},{release.description}"
             )
@@ -179,19 +191,19 @@ class DishLeafNode(SKABaseDevice):
             device_data.set_observer_lat_long_alt(self.logger)
             log_message = f"DishMasterFQDN :-> {device.DishMasterFQDN}"
             self.logger.debug(log_message)
-            device_data._read_activity_message = log_message
+            this_server.write_attr("activityMessage", log_message)
             device._health_state = HealthState.OK
             device._simulation_mode = SimulationMode.FALSE
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_message = f"Setting CallBack Model as :-> {ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_message)
-            device_data._read_activity_message = log_message
+            this_server.write_attr("activityMessage", log_message)
             log_message = "Dish Leaf Node initialized successfully."
             device.set_status(log_message)
-            device_data._read_activity_message = log_message
+            this_server.write_attr("activityMessage", log_message)
             self.logger.info(log_message)
-            return (ResultCode.OK, device_data._read_activity_message)
+            return (ResultCode.OK, device.attr_map["activityMessage"])
 
     @command()
     def SetStowMode(self):

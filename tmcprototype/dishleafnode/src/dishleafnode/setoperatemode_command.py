@@ -19,7 +19,7 @@ from tango import DevFailed
 from ska.base.commands import BaseCommand
 
 from tmc.common.tango_client import TangoClient
-
+from tmc.common.tango_server_helper import TangoServerHelper
 from .command_callback import CommandCallBack
 from .device_data import DeviceData
 
@@ -57,9 +57,14 @@ class SetOperateMode(BaseCommand):
         command_name = "SetOperateMode"
         cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
         try:
+            self.this_server = TangoServerHelper.get_instance()
             # Subscribe the DishMaster attributes
             self._subscribe_to_attribute_events(attributes_to_subscribe_to)
-            dish_client = TangoClient(device_data._dish_master_fqdn)
+
+            self.dish_master_fqdn = ""
+            property_value = self.this_server.read_property("DishMasterFQDN")
+            self.dish_master_fqdn = self.dish_master_fqdn.join(property_value)
+            dish_client = TangoClient(self.dish_master_fqdn)
             dish_client.send_command_async(command_name, callback_method=cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
 
@@ -68,7 +73,7 @@ class SetOperateMode(BaseCommand):
             log_message = (
                 f"Exception occured while executing the '{command_name}' command."
             )
-            device_data._read_activity_message = log_message
+            self.this_server.write_attr("activityMessage", log_message)
             tango.Except.re_throw_exception(
                 dev_failed,
                 f"Exception in '{command_name}' command.",
@@ -79,7 +84,7 @@ class SetOperateMode(BaseCommand):
 
     def _subscribe_to_attribute_events(self, attributes):
         device_data = DeviceData.get_instance()
-        dish_client = TangoClient(device_data._dish_master_fqdn)
+        dish_client = TangoClient(self.dish_master_fqdn)
 
         device_data.attr_event_map["dish_client"] = dish_client
 
@@ -93,7 +98,7 @@ class SetOperateMode(BaseCommand):
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_message = f"Exception occurred while subscribing to Dish attribute: {attribute_name}"
-                device_data._read_activity_message = log_message
+                self.this_server.write_attr("activityMessage", log_message)
                 tango.Except.re_throw_exception(
                     dev_failed,
                     "Exception in Init command",
@@ -113,7 +118,7 @@ class SetOperateMode(BaseCommand):
             log_message = (
                 f"Event system DevError(s) occured!!! {str(event_data.errors)}"
             )
-            device_data._read_activity_message = log_message
+            self.this_server.write_attr("activityMessage", log_message)
             self.logger.error(log_message)
             return
 
@@ -125,5 +130,5 @@ class SetOperateMode(BaseCommand):
         # converted to lowercase in subsequent callbacks.
         attr_name = fqdn_attr_name.split("/")[-1].split("#")[0]
         log_message = f"{attr_name} is {event_data.attr_value.value}."
-        device_data._read_activity_message = log_message
+        self.this_server.write_attr("activityMessage", log_message)
         self.logger.info(log_message)

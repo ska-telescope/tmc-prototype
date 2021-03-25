@@ -17,6 +17,7 @@ from tango import DevFailed, DevState
 
 from ska.base.commands import BaseCommand
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 from .command_callback import CommandCallBack
 
 
@@ -64,7 +65,11 @@ class Slew(BaseCommand):
         command_name = "Slew"
         cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
         try:
-            dish_client = TangoClient(device_data._dish_master_fqdn)
+            this_server = TangoServerHelper.get_instance()
+            self.dish_master_fqdn = ""
+            property_value = this_server.read_property("DishMasterFQDN")
+            self.dish_master_fqdn = self.dish_master_fqdn.join(property_value)
+            dish_client = TangoClient(self.dish_master_fqdn)
             dish_client.send_command_async(
                 command_name, command_data=argin, callback_method=cmd_ended_cb
             )
@@ -74,7 +79,7 @@ class Slew(BaseCommand):
             log_message = (
                 f"Exception occured while executing the '{command_name}' command."
             )
-            device_data._read_activity_message = log_message
+            this_server.write_attr("activityMessage", log_message)
             tango.Except.re_throw_exception(
                 dev_failed,
                 f"Exception in '{command_name}' command.",

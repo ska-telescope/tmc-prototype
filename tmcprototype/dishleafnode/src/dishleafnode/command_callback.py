@@ -10,7 +10,7 @@
 """
 CommandCallBack class for DishLeafNode.
 """
-from .device_data import DeviceData
+from tmc.common.tango_server_helper import TangoServerHelper
 
 
 class CommandCallBack:
@@ -35,13 +35,12 @@ class CommandCallBack:
             - errors     : (sequence<DevError>) The error stack
             - ext
         """
-
-        device_data = DeviceData.get_instance()
+        this_server = TangoServerHelper.get_instance()
         if event.err:
             log_message = f"Error in invoking command: {event.cmd_name}\n{event.errors}"
             self.logger.error(log_message)
-            device_data._read_activity_message = log_message
+            this_server.write_attr("activityMessage", log_message)
         else:
             log_message = f"Command :-> {event.cmd_name} invoked successfully."
             self.logger.info(log_message)
-            device_data._read_activity_message = log_message
+            this_server.write_attr("activityMessage", log_message)

@@ -33,8 +33,6 @@ class DeviceData:
         else:
             DeviceData.__instance = self
 
-        self._read_activity_message = ""
-        self._dish_master_fqdn = ""
         self.el = 30.0
         self.az = 0.0
         self.ele_max_lim = 90
