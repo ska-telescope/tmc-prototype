@@ -20,7 +20,7 @@ from ska.base.commands import ResultCode
 from cspmasterleafnode import CspMasterLeafNode, const, release
 from cspmasterleafnode.device_data import DeviceData
 from tmc.common.tango_client import TangoClient
-from tmc.common.tango_server import TangoServerHelper
+from tmc.common.tango_server_helper import TangoServerHelper
 
 
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
