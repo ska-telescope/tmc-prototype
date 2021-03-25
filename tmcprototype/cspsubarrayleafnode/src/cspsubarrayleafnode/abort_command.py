@@ -74,7 +74,6 @@ class AbortCommand(BaseCommand):
 
         :return: none
         """
-        device_data = self.target
         # Update logs and activity message attribute with received event
         this_server = TangoServerHelper.get_instance()
         if event.err:
@@ -97,7 +96,6 @@ class AbortCommand(BaseCommand):
             DevFailed if error occurs while invoking command on CSP Subarray.
 
         """
-        device_data = self.target
         try:
             this_server = TangoServerHelper.get_instance()
             csp_subarray_fqdn = ""

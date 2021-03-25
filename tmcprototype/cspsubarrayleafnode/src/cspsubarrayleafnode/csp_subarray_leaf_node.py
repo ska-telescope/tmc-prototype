@@ -24,7 +24,7 @@ from tango.server import run, attribute, command, device_property
 # Additional import
 from ska.base.commands import ResultCode
 from ska.base import SKABaseDevice
-from ska.base.control_model import HealthState, ObsState
+from ska.base.control_model import ObsState
 
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
@@ -376,19 +376,18 @@ class CspSubarrayLeafNode(SKABaseDevice):
         handler()
 
     def validate_obs_state(self):
-        device_data = DeviceData.get_instance()
         this_server = TangoServerHelper.get_instance()
         csp_subarray_fqdn = ""
         property_val = this_server.read_property("CspSubarrayFQDN")
         csp_subarray_fqdn = csp_subarray_fqdn.join(property_val)
         csp_sub_client_obj = TangoClient(csp_subarray_fqdn)
-        if csp_sa_client.deviceproxy.obsState in [ObsState.EMPTY, ObsState.IDLE]:
+        if csp_sub_client_obj.deviceproxy.obsState in [ObsState.EMPTY, ObsState.IDLE]:
             self.logger.info(
                 "CSP Subarray is in required obsState, resources will be assigned"
             )
         else:
             self.logger.error("CSP Subarray is not in EMPTY/IDLE obsState")
-            self.device_data._read_activity_message = "Error in device obsState"
+            this_server.write_attr("activityMessage", "Error in device obsState")
             raise InvalidObsStateError("CSP Subarray is not in EMPTY/IDLE obsState")
 
     @command()

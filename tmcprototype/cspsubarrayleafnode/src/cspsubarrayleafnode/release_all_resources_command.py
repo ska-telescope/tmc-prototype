@@ -73,7 +73,6 @@ class ReleaseAllResourcesCommand(BaseCommand):
 
         :return: none
         """
-        device_data = self.target
         this_server = TangoServerHelper.get_instance()
         # Update logs and activity message attribute with received event
         if event.err:
@@ -119,7 +118,6 @@ class ReleaseAllResourcesCommand(BaseCommand):
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_RELEASE_ALL_RESOURCES}{dev_failed}"
             this_server.write_attr("activityMessage", log_msg)
-            const.STR_RELEASE_ALL_RESOURCES_SUCCESS
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_RELEASE_RES_EXEC,

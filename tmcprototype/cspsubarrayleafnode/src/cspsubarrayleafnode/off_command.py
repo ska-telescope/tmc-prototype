@@ -3,6 +3,10 @@ Off class for CspSubarrayLeafNode.
 """
 # PROTECTED REGION ID(cspsubarrayleafnode.additionnal_import) ENABLED START #
 # Standard Python imports
+# PyTango imports
+import tango
+from tango import DevFailed
+
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode

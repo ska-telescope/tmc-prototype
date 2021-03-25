@@ -3,6 +3,10 @@ On class for CspSubarrayLeafNode.
 """
 # PROTECTED REGION ID(cspsubarrayleafnode.additionnal_import) ENABLED START #
 # Standard Python imports
+# PyTango imports
+import tango
+from tango import DevFailed
+
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
@@ -43,11 +47,11 @@ class On(SKABaseDevice.OnCommand):
         this_server = TangoServerHelper.get_instance()
         if event.err:
             log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
-            this_server.write_attr("activityMessage", log_msg)
+            this_server.write_attr("activityMessage", log)
             self.logger.error(log)
         else:
             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            this_server.write_attr("activityMessage", log_msg)
+            this_server.write_attr("activityMessage", log)
             self.logger.info(log)
 
     def do(self):
