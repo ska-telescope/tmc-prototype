@@ -24,7 +24,10 @@ class ObsStateAggregator:
         self.mccs_obs_state_event_id = {}
         self.this_server = TangoServerHelper.get_instance()
         self.device_data = DeviceData.get_instance()
-        self.mccs_client = TangoClient(self.device_data.mccs_subarray_ln_fqdn)
+        mccs_subarray_ln_fqdn = ""
+        property_val = self.this_server.read_property("MccsSubarrayLNFQDN")
+        mccs_subarray_ln_fqdn = mccs_subarray_ln_fqdn.join(property_val)
+        self.mccs_client = TangoClient(mccs_subarray_ln_fqdn)
 
     def subscribe(self):
         # Subscribe mccsSubarrayObsState (forwarded attribute) of mccsSubarray
@@ -78,20 +81,20 @@ class ObsStateAggregator:
                 if const.PROP_DEF_VAL_TMMCCS_MID_SALN in evt.attr_name:
                     # Typacasted the event values to obsState ENUM labels.
                     self._mccs_sa_obs_state = ObsState(event_observation_state)
-                    self._read_activity_message = f"{const.STR_MCCS_SUBARRAY_OBS_STATE}{event_observation_state}"
+                    self.this_server.write_attr("activityMessage", f"{const.STR_MCCS_SUBARRAY_OBS_STATE}{event_observation_state}")
                 else:
                     self.logger.info(const.EVT_UNKNOWN)
-                    self._read_activity_message = const.EVT_UNKNOWN
+                    self.this_server.write_attr("activityMessage", const.EVT_UNKNOWN)
                 self.calculate_observation_state()
 
             else:
                 log_msg = f"{const.ERR_SUBSR_MCCSSA_OBS_STATE}{evt}"
                 self.logger.info(log_msg)
-                self._read_activity_message = log_msg
+                self.this_server.write_attr("activityMessage", log_msg)
         except KeyError as key_error:
             log_msg = f"{const.ERR_MCCS_SUBARRAY_OBS_STATE}{key_error}"
             self.logger.error(log_msg)
-            self._read_activity_message = f"{const.ERR_MCCS_SUBARRAY_OBS_STATE}{key_error}"
+            self.this_server.write_attr("activityMessage", f"{const.ERR_MCCS_SUBARRAY_OBS_STATE}{key_error}")
 
     def calculate_observation_state(self):
         """
