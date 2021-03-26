@@ -132,7 +132,6 @@ def test_command_cb_is_invoked_when_command_without_arg_is_called_async(
     device_proxy, dish1_proxy_mock, _, _ = mock_dish_master_proxy
     cmd_name, requested_cmd = command_without_arg
 
-    tango_server_obj = mock_tango_server_helper
     device_proxy.command_inout(cmd_name)
 
     dish1_proxy_mock.deviceproxy.command_inout_asynch.assert_called_with(
@@ -143,7 +142,6 @@ def test_command_cb_is_invoked_when_command_without_arg_is_called_async(
 def test_command_cb_is_invoked_when_standbylp_is_called_async(mock_dish_master_proxy, mock_tango_server_helper):
     device_proxy, dish1_proxy_mock, _, _ = mock_dish_master_proxy
 
-    tango_server_obj = mock_tango_server_helper
     cmd_name = "SetOperateMode"
     device_proxy.command_inout(cmd_name)
     cmd_name = "SetStandbyLPMode"
@@ -167,7 +165,6 @@ def test_activity_message_attribute_value_contains_command_name(
     mock_dish_master_proxy, event_subscription_mock, command_name, mock_tango_server_helper
 ):
     device_proxy, _, _, _ = mock_dish_master_proxy
-    tango_server_obj = mock_tango_server_helper
     device_proxy.command_inout(command_name)
     dummy_event = command_callback(command_name)
     event_subscription_mock[command_name](dummy_event)
@@ -178,7 +175,6 @@ def test_activity_message_attribute_value_contains_command_name_with_event_error
     mock_dish_master_proxy, event_subscription_mock, command_name, mock_tango_server_helper
 ):
     device_proxy, _, _, _ = mock_dish_master_proxy
-    tango_server_obj = mock_tango_server_helper
     device_proxy.command_inout(command_name)
     dummy_event = command_callback_with_event_error(command_name)
     event_subscription_mock[command_name](dummy_event)
@@ -189,7 +185,6 @@ def test_activity_message_attribute_value_contains_setstandbylpmode_command_name
     mock_dish_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, _, _, _ = mock_dish_master_proxy
-    tango_server_obj = mock_tango_server_helper
     cmd_name = "SetOperateMode"
     device_proxy.command_inout(cmd_name)
     cmd_name = "SetStandbyLPMode"
@@ -203,7 +198,6 @@ def test_activity_message_attribute_value_contains_setstandbylpmode_command_name
     mock_dish_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, _, _, _ = mock_dish_master_proxy
-    tango_server_obj = mock_tango_server_helper
     cmd_name = "SetOperateMode"
     device_proxy.command_inout(cmd_name)
     cmd_name = "SetStandbyLPMode"
@@ -232,14 +226,12 @@ def test_dish_master_command_is_called_with_the_no_inputs_when_leaf_node_command
 ):
     device_proxy, dish1_proxy_mock, _, _ = mock_dish_master_proxy
     cmd_name, input_arg, requested_cmd = dish_leaf_node_command_with_arg
-    tango_server_obj = mock_tango_server_helper
     device_proxy.command_inout(cmd_name, input_arg)
 
 
 def test_configure_should_raise_exception_when_called_with_invalid_json(mock_tango_server_helper):
     with fake_tango_system(DishLeafNode) as tango_context:
         with pytest.raises(tango.DevFailed) as df:
-            tango_server_obj = mock_tango_server_helper
             tango_context.device.Configure(config_track_invalid_str)
         assert const.ERR_INVALID_JSON in str(df.value)
 
@@ -249,7 +241,6 @@ def test_configure_should_raise_exception_when_called_with_invalid_arguments(moc
         input_string = []
         input_string.append(configure_invalid_arg)
         with pytest.raises(tango.DevFailed) as df:
-            tango_server_obj = mock_tango_server_helper
             tango_context.device.Configure(input_string[0])
         assert const.ERR_JSON_KEY_NOT_FOUND in str(df.value)
 
@@ -293,7 +284,6 @@ def test_configure_command_with_callback_method(
 def test_track_should_raise_exception_when_called_with_invalid_arguments(mock_tango_server_helper):
     with fake_tango_system(DishLeafNode) as tango_context:
         with pytest.raises(tango.DevFailed) as df:
-            tango_server_obj = mock_tango_server_helper
             tango_context.device.Track(track_invalid_arg)
         assert const.ERR_JSON_KEY_NOT_FOUND in str(df.value)
 
@@ -301,7 +291,6 @@ def test_track_should_raise_exception_when_called_with_invalid_arguments(mock_ta
 def test_track_should_raise_exception_when_called_with_invalid_json(mock_tango_server_helper):
     with fake_tango_system(DishLeafNode) as tango_context:
         with pytest.raises(tango.DevFailed) as df:
-            tango_server_obj = mock_tango_server_helper
             tango_context.device.Track(config_track_invalid_str)
         assert const.ERR_INVALID_JSON in str(df.value)
 
@@ -354,7 +343,6 @@ def test_dish_leaf_node_activity_message_reports_correct_dish_master_dish_mode(
 ):
     device_proxy, tango_client_obj, dish_master1_fqdn, _ = mock_dish_master_proxy
     attribute_name = "dishMode"
-    tango_server_obj = mock_tango_server_helper
     device_proxy.SetOperateMode()
     dummy_event = create_dummy_event_for_dishmode(
         dish_master1_fqdn, dish_mode, attribute_name
@@ -369,7 +357,6 @@ def test_dish_leaf_node_dish_mode_with_error_event(
     device_proxy, _, dish_master1_fqdn, _ = mock_dish_master_proxy
     dish_master_dishmode_attribute = "dishMode"
     dish_mode_value = 9
-    tango_server_obj = mock_tango_server_helper
     device_proxy.SetOperateMode()
     dummy_event = create_dummy_event_with_error(
         dish_master1_fqdn, dish_mode_value, dish_master_dishmode_attribute
@@ -392,7 +379,6 @@ def test_msg_in_activity_message_attribute(
 ):
     device_proxy, _, _, _ = mock_dish_master_proxy
     command_name, input_args = command_name_with_args
-    tango_server_obj = mock_tango_server_helper
     device_proxy.command_inout(command_name, input_args)
     dummy_event = command_callback(command_name)
     event_subscription_mock[command_name](dummy_event)
@@ -404,7 +390,6 @@ def test_activity_message_attribute_when_command_callback_is_called_with_error_e
 ):
     device_proxy, _, _, _ = mock_dish_master_proxy
     command_name, input_args = command_name_with_args
-    tango_server_obj = mock_tango_server_helper
     device_proxy.command_inout(command_name, input_args)
     dummy_event = command_callback_with_event_error(command_name)
     event_subscription_mock[command_name](dummy_event)
@@ -427,8 +412,6 @@ def test_command_cb_is_invoked_when_command_with_arg_is_called_async(
 ):
     device_proxy, dish1_proxy_mock, _, _ = mock_dish_master_proxy
     cmd_name, input_arg, requested_cmd = command_with_arg
-
-    tango_server_obj = mock_tango_server_helper
     device_proxy.command_inout(cmd_name, input_arg)
     # Comparing np.arrys behaves differently, so it is suggested to use the
     # np.testing.assert_equal method.
