@@ -311,19 +311,6 @@ def test_health_state(tango_context, mock_tango_server_helper):
     assert tango_context.device.healthState == HealthState.OK
 
 
-def test_version_id(tango_context, mock_tango_server_helper):
-    """Test for versionId"""
-    """Test for versionId"""
-    assert tango_context.device.versionId == release.version
-
-
-def test_build_state(tango_context, mock_tango_server_helper):
-    """Test for buildState"""
-    assert tango_context.device.buildState == (
-        "{},{},{}".format(release.name, release.version, release.description)
-    )
-
-
 def any_method(with_name=None):
     class AnyMethod:
         def __eq__(self, other):
