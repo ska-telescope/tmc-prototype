@@ -124,7 +124,6 @@ class SdpMasterLeafNode(SKABaseDevice):
 
             device.attr_map = {}
             # Initialising Attributes 
-            # device.attr_map["sdpHealthState"]=HealthState.UNKNOWN
             device.attr_map["versionInfo"]=""
             device.attr_map["activityMessage"]=""
             device.attr_map["ProcessingBlockList"]= "test"
@@ -135,15 +134,11 @@ class SdpMasterLeafNode(SKABaseDevice):
                 SimulationMode.FALSE
             )  # Enabling the simulation mode
             device._test_mode = TestMode.NONE
-            # device._processing_block_list = "test"
-            # device_data._read_activity_message = "OK"
             device.set_status(const.STR_INIT_SUCCESS)
             device._build_state = "{},{},{}".format(
                 release.name, release.version, release.description
             )
             device._version_id = release.version
-            # device_data.sdp_master_ln_fqdn = device.SdpMasterFQDN
-            # device.sdp_master_ln_fqdn = self.this_server.read_property("SdpMasterFQDN")
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
