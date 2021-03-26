@@ -60,6 +60,7 @@ class DeviceData:
         # property_value = self.this_server.read_property("DishMasterFQDN")
         # self.dish_master_fqdn = self.dish_master_fqdn.join(property_value)
         # dish_name_string = self.dish_master_fqdn.split("/")[0]
+        # TODO: This is temporary fix. Will be fixed in this MR only.
         dish_name_string="mid_d0001"
         self.dish_name = dish_name_string.split("_")[1]
         self.dish_number = self.dish_name[1:]
