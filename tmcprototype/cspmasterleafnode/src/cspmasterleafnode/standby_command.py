@@ -62,7 +62,6 @@ class Standby(BaseCommand):
         :return: none
 
         """
-        device = self.target
         this_device = TangoServerHelper.get_instance()
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
@@ -88,7 +87,6 @@ class Standby(BaseCommand):
             DevFailed on communication failure with CspMaster or CspMaster is in error state.
 
         """
-        device_data = self.target
         this_device = TangoServerHelper.get_instance()
 
         try:
