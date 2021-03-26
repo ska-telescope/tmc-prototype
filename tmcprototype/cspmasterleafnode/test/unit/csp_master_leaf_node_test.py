@@ -92,8 +92,6 @@ def test_standby_should_command_to_standby_with_callback_method(
     mock_csp_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
-    tango_server_obj = mock_tango_server_helper
-
     device_proxy.Standby([])
     dummy_event = command_callback(const.CMD_STANDBY)
     event_subscription_mock[const.CMD_STANDBY](dummy_event)
@@ -104,8 +102,6 @@ def test_on_should_command_to_on_with_callback_method(
     mock_csp_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
-    tango_server_obj = mock_tango_server_helper
-
     device_proxy.On()
     dummy_event = command_callback(const.CMD_ON)
     event_subscription_mock[const.CMD_ON](dummy_event)
@@ -114,8 +110,6 @@ def test_on_should_command_to_on_with_callback_method(
 
 def test_off_should_command_to_off(mock_csp_master_proxy, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
-    tango_server_obj = mock_tango_server_helper
-
     device_proxy.On()
     device_proxy.Off()
     assert const.STR_OFF_CMD_ISSUED in device_proxy.activityMessage
@@ -125,8 +119,6 @@ def test_standby_should_command_with_callback_method_with_event_error(
     mock_csp_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
-    tango_server_obj = mock_tango_server_helper
-
     device_proxy.Standby([])
     dummy_event = command_callback_with_event_error(const.CMD_STANDBY)
     event_subscription_mock[const.CMD_STANDBY](dummy_event)
@@ -137,7 +129,6 @@ def test_on_should_command_with_callback_method_with_event_error(
     mock_csp_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
-    tango_server_obj = mock_tango_server_helper
     device_proxy.On()
     dummy_event = command_callback_with_event_error(const.CMD_ON)
     event_subscription_mock[const.CMD_ON](dummy_event)
@@ -147,8 +138,7 @@ def test_on_should_command_with_callback_method_with_event_error(
 
 def test_on_command_should_raise_dev_failed(mock_csp_master_proxy, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
-    tango_server_obj = mock_tango_server_helper
-
+    
     tango_client_obj.deviceproxy.command_inout_asynch.side_effect = (
         raise_devfailed_exception
     )
@@ -157,7 +147,7 @@ def test_on_command_should_raise_dev_failed(mock_csp_master_proxy, mock_tango_se
     assert const.ERR_DEVFAILED_MSG in str(df.value)
 
 
-def test_standby_command_should_raise_dev_failed(mock_csp_master_proxy):
+def test_standby_command_should_raise_dev_failed(mock_csp_master_proxy, mock_tango_server_helper ):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
     tango_client_obj.deviceproxy.command_inout_asynch.side_effect = (
         raise_devfailed_exception
