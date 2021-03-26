@@ -149,8 +149,8 @@ class SdpMasterLeafNode(SKABaseDevice):
             self.logger.debug(log_msg)
 
             self.this_server.write_attr("activityMessage", const.STR_INIT_SUCCESS)
-            self.logger.info(device.attr_map["activityMessage"])
-            return (ResultCode.OK, device.attr_map["activityMessage"])
+            self.logger.info(const.STR_INIT_SUCCESS)
+            return (ResultCode.OK, const.STR_INIT_SUCCESS)
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.always_executed_hook) ENABLED START #

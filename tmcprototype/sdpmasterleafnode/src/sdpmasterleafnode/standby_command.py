@@ -62,15 +62,16 @@ class Standby(BaseCommand):
         :return: none
 
         """
+        this_server = TangoServerHelper.get_instance()
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
-            self.this_server.write_attr("activityMessage", log_msg)
+            this_server.write_attr("activityMessage", log_msg)
 
         else:
             log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
-            self.this_server.write_attr("activityMessage", log_msg)
+            this_server.write_attr("activityMessage", log_msg)
 
     def do(self):
         """
@@ -81,11 +82,11 @@ class Standby(BaseCommand):
         return:
             None
         """
-        self.this_server = TangoServerHelper.get_instance()
+        this_server = TangoServerHelper.get_instance()
         try:
             # sdp_mln_client_obj = TangoClient(device_data.sdp_master_ln_fqdn)
             sdp_master_ln_fqdn = ""
-            property_val = self.this_server.read_property("SdpMasterFQDN")
+            property_val = this_server.read_property("SdpMasterFQDN")
             sdp_master_ln_fqdn = sdp_master_ln_fqdn.join(property_val)
             sdp_mln_client_obj = TangoClient(sdp_master_ln_fqdn)
             sdp_mln_client_obj.send_command_async(

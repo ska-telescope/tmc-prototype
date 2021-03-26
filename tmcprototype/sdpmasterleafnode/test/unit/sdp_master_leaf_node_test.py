@@ -95,7 +95,6 @@ def test_command_should_be_relayed_to_sdp_master(
     mock_sdp_master_proxy, command_without_args, mock_tango_server_helper 
 ):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
-    tango_server_obj = mock_tango_server_helper
     cmd_name, requested_cmd, _ = command_without_args
     device_proxy.command_inout(cmd_name)
     callback_name = f"{requested_cmd.lower()}_cmd_ended_cb"
@@ -107,18 +106,16 @@ def test_command_should_be_relayed_to_sdp_master(
 def test_command_should_raise_exception(mock_sdp_master_proxy, command_without_args, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
     cmd_name, _, error_msg = command_without_args
-    tango_client_obj.deviceproxy.command_inout_asynch.side_effect =(
+    tango_client_obj.deviceproxy.command_inout_asynch.side_effect = (
         raise_devfailed_exception
     )
     with pytest.raises(tango.DevFailed) as df:
-        tango_server_obj = mock_tango_server_helper
         device_proxy.command_inout(cmd_name)
     assert error_msg in str(df)
 
 
 def test_on_should_command_sdp_master_leaf_node_to_start(mock_sdp_master_proxy, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
-    tango_server_obj = mock_tango_server_helper
     assert device_proxy.On() == [
         [ResultCode.OK],
         ["ON command invoked successfully from SDP Master leaf node."],
@@ -131,7 +128,6 @@ def test_on_command_should_raise_dev_failed(mock_sdp_master_proxy, mock_tango_se
         raise_devfailed_exception
     )
     with pytest.raises(tango.DevFailed) as df:
-        tango_server_obj = mock_tango_server_helper
         device_proxy.On()
     assert const.ERR_DEVFAILED_MSG in str(df)
 
@@ -140,7 +136,6 @@ def test_on_should_command_with_callback_method(
     mock_sdp_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
-    tango_server_obj = mock_tango_server_helper
     device_proxy.On()
     dummy_event = command_callback(const.CMD_ON)
     event_subscription_mock[const.CMD_ON](dummy_event)
@@ -151,7 +146,6 @@ def test_on_should_command_with_callback_method_with_event_error(
     mock_sdp_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
-    tango_server_obj = mock_tango_server_helper
     device_proxy.On()
     dummy_event = command_callback_with_event_error(const.CMD_ON)
     event_subscription_mock[const.CMD_ON](dummy_event)
@@ -162,7 +156,6 @@ def test_off_should_command_with_callback_method_with_event_error(
     mock_sdp_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
-    tango_server_obj = mock_tango_server_helper
     device_proxy.Off()
     dummy_event = command_callback_with_event_error(const.CMD_OFF)
     event_subscription_mock[const.CMD_OFF](dummy_event)
@@ -171,7 +164,6 @@ def test_off_should_command_with_callback_method_with_event_error(
 
 def test_off_should_command_sdp_master_leaf_node_to_stop(mock_sdp_master_proxy, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
-    tango_server_obj = mock_tango_server_helper
     assert device_proxy.Off() == [
         [ResultCode.OK],
         ["OFF command invoked successfully from SDP Master leaf node."],
@@ -185,7 +177,6 @@ def test_off_command_should_raise_dev_failed(mock_sdp_master_proxy, mock_tango_s
         raise_devfailed_exception
     )
     with pytest.raises(tango.DevFailed) as df:
-        tango_server_obj = mock_tango_server_helper
         device_proxy.Off()
     assert const.ERR_DEVFAILED_MSG in str(df)
 
@@ -194,7 +185,6 @@ def test_off_should_command_with_callback_method(
     mock_sdp_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
-    tango_server_obj = mock_tango_server_helper
     device_proxy.Off()
     dummy_event = command_callback(const.CMD_OFF)
     event_subscription_mock[const.CMD_OFF](dummy_event)
@@ -205,7 +195,6 @@ def test_disable_should_command_sdp_master_leaf_node_to_disable_devfailed(
     mock_sdp_master_proxy, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
-    tango_server_obj = mock_tango_server_helper
     device_proxy.On()
     device_proxy.DevState = DevState.FAULT
     with pytest.raises(tango.DevFailed) as df:
@@ -217,7 +206,6 @@ def test_command_should_command_with_callback_method(
     mock_sdp_master_proxy, event_subscription_mock, command_without_args, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
-    tango_server_obj = mock_tango_server_helper
     cmd_name, requested_cmd, _ = command_without_args
     device_proxy.command_inout(cmd_name)
     dummy_event = command_callback(requested_cmd)
@@ -230,7 +218,6 @@ def test_command_with_callback_method_with_event_error(
 ):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
     cmd_name, requested_cmd, _ = command_without_args
-    tango_server_obj = mock_tango_server_helper
     device_proxy.command_inout(cmd_name)
     dummy_event = command_callback_with_event_error(requested_cmd)
     event_subscription_mock[requested_cmd](dummy_event)
