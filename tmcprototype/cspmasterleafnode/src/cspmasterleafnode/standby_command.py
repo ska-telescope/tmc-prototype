@@ -92,7 +92,7 @@ class Standby(BaseCommand):
         this_device = TangoServerHelper.get_instance()
 
         try:
-            csp_mln_client_obj = TangoClient(device_data.csp_master_ln_fqdn)
+            csp_mln_client_obj = TangoClient(self.this_server.read_property("CspMasterFQDN")[0])
             csp_mln_client_obj.send_command_async(
                 const.CMD_STANDBY, command_data=argin, callback_method=self.standby_cmd_ended_cb
             )

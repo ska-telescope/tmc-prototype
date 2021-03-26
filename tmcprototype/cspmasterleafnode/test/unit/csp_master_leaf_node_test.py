@@ -97,7 +97,7 @@ def test_standby_should_command_to_standby_with_callback_method(
     device_proxy.Standby([])
     dummy_event = command_callback(const.CMD_STANDBY)
     event_subscription_mock[const.CMD_STANDBY](dummy_event)
-    assert const.STR_COMMAND + const.CMD_STANDBY in tango_server_obj.read_attr("activityMessage")
+    assert const.STR_COMMAND + const.CMD_STANDBY in device_proxy.activityMessage
 
 
 def test_on_should_command_to_on_with_callback_method(
@@ -109,7 +109,7 @@ def test_on_should_command_to_on_with_callback_method(
     device_proxy.On()
     dummy_event = command_callback(const.CMD_ON)
     event_subscription_mock[const.CMD_ON](dummy_event)
-    assert const.STR_COMMAND + const.CMD_ON in tango_server_obj.read_attr("activityMessage")
+    assert const.STR_COMMAND + const.CMD_ON in device_proxy.activityMessage
 
 
 def test_off_should_command_to_off(mock_csp_master_proxy, mock_tango_server_helper):
@@ -118,7 +118,7 @@ def test_off_should_command_to_off(mock_csp_master_proxy, mock_tango_server_help
 
     device_proxy.On()
     device_proxy.Off()
-    assert const.STR_OFF_CMD_ISSUED in tango_server_obj.read_attr("activityMessage")
+    assert const.STR_OFF_CMD_ISSUED in device_proxy.activityMessage
 
 
 def test_standby_should_command_with_callback_method_with_event_error(
@@ -130,8 +130,7 @@ def test_standby_should_command_with_callback_method_with_event_error(
     device_proxy.Standby([])
     dummy_event = command_callback_with_event_error(const.CMD_STANDBY)
     event_subscription_mock[const.CMD_STANDBY](dummy_event)
-
-    assert const.ERR_INVOKING_CMD + const.CMD_STANDBY in tango_server_obj.read_attr("activityMessage")
+    assert const.ERR_INVOKING_CMD + const.CMD_STANDBY in device_proxy.activityMessage
 
 
 def test_on_should_command_with_callback_method_with_event_error(
@@ -143,7 +142,7 @@ def test_on_should_command_with_callback_method_with_event_error(
     dummy_event = command_callback_with_event_error(const.CMD_ON)
     event_subscription_mock[const.CMD_ON](dummy_event)
 
-    assert const.ERR_INVOKING_CMD + const.CMD_ON in tango_server_obj.read_attr("activityMessage")
+    assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
 
 
 def test_on_command_should_raise_dev_failed(mock_csp_master_proxy, mock_tango_server_helper):
@@ -292,9 +291,9 @@ def dummy_subscriber_with_error(attribute, callback_method):
 
 
 def test_read_activity_message(tango_context, mock_tango_server_helper):
-    tango_server_obj = mock_tango_server_helper
-    tango_server_obj.write_attr("activityMessage", "test")
-    assert tango_server_obj.read_attr("activityMessage") == "test"
+    tango_context.device.activityMessage = "test"
+    assert tango_context.device.activityMessage == "test"
+
 
 def test_status(tango_context, mock_tango_server_helper):
     tango_server_obj = mock_tango_server_helper
