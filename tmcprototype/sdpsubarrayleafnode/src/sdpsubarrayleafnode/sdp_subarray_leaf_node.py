@@ -44,7 +44,6 @@ from .device_data import DeviceData
 from .exceptions import InvalidObsStateError
 
 
-
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
 
 __all__ = [
@@ -152,14 +151,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             super().do()
             device = self.target
-            self.this_server = TangoServerHelper.get_instance()
-            self.this_server.set_tango_class(device)
+            this_server = TangoServerHelper.get_instance()
+            this_server.set_tango_class(device)
             device.attr_map = {}
             device.attr_map["receiveAddresses"] = ""
             device.attr_map["activeProcessingBlocks"] = ""
             device.attr_map["activityMessage"] = ""
-            device.attr_map["sdpSubarrayHealthState"] = ""
-            device.attr_map["sdpSubarrayObsState"] = ""
             
             # Initialise attributes
             device._sdp_subarray_health_state = HealthState.OK
@@ -175,12 +172,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
-            self.this_server.write_attr("activityMessage", const.STR_SDPSALN_INIT_SUCCESS)
+            this_server.write_attr("activityMessage", const.STR_SDPSALN_INIT_SUCCESS)
             # Initialise Device status
             device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
             self.logger.info(const.STR_SDPSALN_INIT_SUCCESS)
-
-            return (ResultCode.OK, self.this_server.read_attr("activityMessage"))
+            return (ResultCode.OK, const.STR_SDPSALN_INIT_SUCCESS)
 
     # ---------------
     # General methods
@@ -220,13 +216,14 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         activityMessage is a String providing information about the current activity in SDP Subarray Leaf Node"""
         return self.attr_map['activityMessage']
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.activityMessage_read
-
-   
+ 
     def write_activityMessage(self, value):
          # PROTECTED REGION ID(SdpSubarrayLeafNode.activityMessage_write) ENABLED START #
-        """Internal construct of TANGO. Sets the activity message. """
+        """Internal construct of TANGO. Sets the activity message.
+        activityMessage is a String providing information about the current activity in SDP Subarray Leaf Node """
         self.update_attr_map("activityMessage", value)
         # PROTECTED REGION END # // SdpSubarrayLeafNode.activityMessage_write
+
     def update_attr_map(self, attr, val):
         lock = threading.Lock()
         lock.acquire()
@@ -330,7 +327,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             boolean
 
         """
-
         handler = self.get_command_object("End")
         return handler.check_allowed()
 
@@ -350,7 +346,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         rtype:
             boolean
         """
-
         handler = self.get_command_object("EndScan")
         return handler.check_allowed()
 
@@ -401,7 +396,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             DevFailed if this command is not allowed to be run in current device state
 
         """
-
         handler = self.get_command_object("ReleaseAllResources")
         return handler.check_allowed()
 
@@ -468,10 +462,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     def validate_obs_state(self):
         device_data = self.target
         device_data = DeviceData.get_instance()
-        _sdp_sa_fqdn = ""
-        input = self.this_server.read_property("SdpSubarrayFQDN")
-        _sdp_sa_fqdn = _sdp_sa_fqdn.join(input)
-        sdp_sa_ln_client_obj = TangoClient(_sdp_sa_fqdn)
+        this_server = TangoServerHelper.get_instance()
+        sdp_sa_ln_client_obj=TangoClient(this_server.read_property("SdpSubarrayFQDN")[0])
         if sdp_sa_ln_client_obj.deviceproxy.obsState in [
             ObsState.EMPTY,
             ObsState.IDLE,
@@ -482,7 +474,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         else:
             self.logger.error("Subarray is not in EMPTY obstate")
             log_msg = "Error in device obstate."
-            self.this_server.write_attr("activityMessage", log_msg)
+            this_server.write_attr("activityMessage", log_msg)
             raise InvalidObsStateError("SDP subarray is not in EMPTY obstate.")
 
     def init_command_objects(self):

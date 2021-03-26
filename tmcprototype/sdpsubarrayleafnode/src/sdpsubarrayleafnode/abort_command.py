@@ -69,13 +69,14 @@ class Abort(BaseCommand):
 
         :return: none
         """
+        this_server = TangoServerHelper.get_instance()
         if event.err:
             log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
-            self.this_server.write_attr("activityMessage", log)
+            this_server.write_attr("activityMessage", log)
             self.logger.error(log)
         else:
             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            self.this_server.write_attr("activityMessage", log)
+            this_server.write_attr("activityMessage", log)
             self.logger.info(log)
 
     def do(self):
@@ -89,21 +90,18 @@ class Abort(BaseCommand):
             DevFailed if error occurs while invoking command on SDP Subarray.
 
         """
-        self.this_server = TangoServerHelper.get_instance()
+        this_server = TangoServerHelper.get_instance()
         try:
-            _sdp_sa_fqdn = ""
-            input = self.this_server.read_property("SdpSubarrayFQDN")
-            _sdp_sa_fqdn = _sdp_sa_fqdn.join(input)
-            sdp_sa_ln_client_obj = TangoClient(_sdp_sa_fqdn)
+            sdp_sa_ln_client_obj=TangoClient(this_server.read_property("SdpSubarrayFQDN")[0])
             sdp_sa_ln_client_obj.send_command_async(
                 const.CMD_ABORT, callback_method=self.abort_cmd_ended_cb
                 )
-            self.this_server.write_attr("activityMessage", const.STR_ABORT_SUCCESS)
+            this_server.write_attr("activityMessage", const.STR_ABORT_SUCCESS)
             self.logger.info(const.STR_ABORT_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_ABORT_INVOKING_CMD}{dev_failed}"
-            self.this_server.write_attr("activityMessage", log_msg)
+            this_server.write_attr("activityMessage", log_msg)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_ABORT_EXEC,

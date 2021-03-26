@@ -43,15 +43,16 @@ class On(SKABaseDevice.OnCommand):
 
         :return: none
         """
+        this_server = TangoServerHelper.get_instance()
         sdp_sa_ln_server = TangoServerHelper.get_instance()
         if event.err:
             log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
-            self.this_server.write_attr("activityMessage", log)
+            this_server.write_attr("activityMessage", log)
             sdp_sa_ln_server.set_status(log)
             self.logger.error(log)
         else:
             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            self.this_server.write_attr("activityMessage", log)
+            this_server.write_attr("activityMessage", log)
             sdp_sa_ln_server.set_status(log)
             self.logger.info(log)
 
@@ -72,25 +73,22 @@ class On(SKABaseDevice.OnCommand):
             DevFailed if error occurs while invoking command on SDPSubarray.
 
         """
-        self.this_server = TangoServerHelper.get_instance()
+        this_server = TangoServerHelper.get_instance()
         try:
-            _sdp_sa_fqdn = ""
-            input = self.this_server.read_property("SdpSubarrayFQDN")
-            _sdp_sa_fqdn = _sdp_sa_fqdn.join(input)
-            sdp_sa_ln_client_obj = TangoClient(_sdp_sa_fqdn)
+            sdp_sa_ln_client_obj=TangoClient(this_server.read_property("SdpSubarrayFQDN")[0])
             sdp_sa_ln_client_obj.send_command_async(
                 const.CMD_ON, None, self.on_cmd_ended_cb
             )
             log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
-            self.this_server.set_status(log_msg)
+            this_server.set_status(log_msg)
             self.logger.debug(log_msg)
 
             return (ResultCode.OK, log_msg)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_INVOKING_ON_CMD} {dev_failed}"
-            self.this_server.write_attr("activityMessage", log_msg)
-            self.this_server.set_status(log_msg)
+            this_server.write_attr("activityMessage", log_msg)
+            this_server.set_status(log_msg)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_ON_EXEC,
