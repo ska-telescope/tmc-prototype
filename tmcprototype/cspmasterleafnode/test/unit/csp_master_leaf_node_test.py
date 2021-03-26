@@ -60,12 +60,14 @@ def tango_context():
     with fake_tango_system(CspMasterLeafNode) as tango_context:
         yield tango_context
 
+
 @pytest.fixture(scope="function")
 def mock_tango_server_helper():
     csp_master_fqdn = "mid_csp/elt/master"
     tango_server_obj = TangoServerHelper.get_instance()
-    tango_server_obj.read_property = Mock(return_value = csp_master_fqdn)
+    tango_server_obj.read_property = Mock(return_value=csp_master_fqdn)
     yield tango_server_obj
+
 
 def test_on(mock_csp_master_proxy, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
@@ -78,7 +80,9 @@ def test_on(mock_csp_master_proxy, mock_tango_server_helper):
     )
 
 
-def test_off_should_command_csp_master_leaf_node_to_stop(mock_csp_master_proxy, mock_tango_server_helper):
+def test_off_should_command_csp_master_leaf_node_to_stop(
+    mock_csp_master_proxy, mock_tango_server_helper
+):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
 
     device_proxy.On()
@@ -136,9 +140,11 @@ def test_on_should_command_with_callback_method_with_event_error(
     assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
 
 
-def test_on_command_should_raise_dev_failed(mock_csp_master_proxy, mock_tango_server_helper):
+def test_on_command_should_raise_dev_failed(
+    mock_csp_master_proxy, mock_tango_server_helper
+):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
-    
+
     tango_client_obj.deviceproxy.command_inout_asynch.side_effect = (
         raise_devfailed_exception
     )
@@ -147,7 +153,9 @@ def test_on_command_should_raise_dev_failed(mock_csp_master_proxy, mock_tango_se
     assert const.ERR_DEVFAILED_MSG in str(df.value)
 
 
-def test_standby_command_should_raise_dev_failed(mock_csp_master_proxy, mock_tango_server_helper ):
+def test_standby_command_should_raise_dev_failed(
+    mock_csp_master_proxy, mock_tango_server_helper
+):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
     tango_client_obj.deviceproxy.command_inout_asynch.side_effect = (
         raise_devfailed_exception
@@ -286,8 +294,7 @@ def test_read_activity_message(tango_context, mock_tango_server_helper):
 
 
 def test_status(tango_context, mock_tango_server_helper):
-    tango_server_obj = mock_tango_server_helper
-    assert const.STR_DEV_OFF in tango_server_obj.get_status()
+    assert const.STR_DEV_ALARM in tango_context.device.Status()
 
 
 def test_logging_level(tango_context):
@@ -301,21 +308,20 @@ def test_logging_targets(tango_context):
 
 
 def test_health_state(tango_context, mock_tango_server_helper):
-    tango_server_obj = mock_tango_server_helper
-    assert tango_server_obj.read_attr("healthState") == HealthState.OK
+    assert tango_context.device.healthState == HealthState.OK
 
 
 def test_version_id(tango_context, mock_tango_server_helper):
     """Test for versionId"""
-    tango_server_obj = mock_tango_server_helper
-    assert tango_server_obj.read_attr("versionId") == release.version
+    """Test for versionId"""
+    assert tango_context.device.versionId == release.version
 
 
 def test_build_state(tango_context, mock_tango_server_helper):
     """Test for buildState"""
-    tango_server_obj = mock_tango_server_helper
-    assert tango_server_obj.read_attr("buildState") == (
-        "{},{},{}".format(release.name, release.version, release.description))
+    assert tango_context.device.buildState == (
+        "{},{},{}".format(release.name, release.version, release.description)
+    )
 
 
 def any_method(with_name=None):
