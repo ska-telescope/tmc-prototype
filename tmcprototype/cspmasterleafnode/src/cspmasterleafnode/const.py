@@ -39,6 +39,7 @@ STR_CMD_FAILED = "CspMasterLeafNode_Commandfailed"
 STR_ON_EXEC = "On command execution"
 STR_OFF_EXEC = "Off command execution"
 STR_STANDBY_EXEC = "Standby command execution"
+STR_DEV_OFF = "The device is in OFF state."
 
 # Error messages
 ERR_IN_CREATE_PROXY = "Error in creating proxy of the device "

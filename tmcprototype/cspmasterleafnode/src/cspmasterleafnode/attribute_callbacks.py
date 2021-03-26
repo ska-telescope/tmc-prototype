@@ -16,6 +16,7 @@ from .device_data import DeviceData
 
 class CbfHealthStateAttributeUpdator:
     """
+    This class handles subscription of healthState attribute of CBF master device
     - CbfHealthStateAttribute  - Forwarded attribute to provide CSP Master Health State
     - _csp_cbf_health_state_log - Variable to provide activity log
 
@@ -30,7 +31,7 @@ class CbfHealthStateAttributeUpdator:
         self.device_data = DeviceData.get_instance()
         self.this_server = TangoServerHelper.get_instance()
         self.event_id = None
-        self.csp_master = TangoClient(self.device_data.csp_master_ln_fqdn)
+        self.csp_master = TangoClient(self.this_server.read_property("CspMasterFQDN")[0])
 
     def start(self):
         try:
@@ -69,6 +70,7 @@ class CbfHealthStateAttributeUpdator:
 
 class PssHealthStateAttributeUpdator:
     """
+    This class handles subscription of healthState attribute of PSS master device
     - PssHealthStateAttribute  - Forwarded attribute to provide CSP Master Health State
     - _csp_pss_health_state_log - Variable to provide activity log
 
@@ -83,7 +85,7 @@ class PssHealthStateAttributeUpdator:
         self.device_data = DeviceData.get_instance()
         self.this_server = TangoServerHelper.get_instance()
         self.event_id = None
-        self.csp_master = TangoClient(self.device_data.csp_master_ln_fqdn)
+        self.csp_master = TangoClient(self.this_server.read_property("CspMasterFQDN")[0])
 
     def start(self):
         try:
@@ -128,6 +130,7 @@ class PssHealthStateAttributeUpdator:
 
 class PstHealthStateAttributeUpdator:
     """
+    This class handles subscription of healthState attribute of PST master device
     - PstHealthStateAttribute  - Forwarded attribute to provide CSP Master Health State
     - _csp_pst_health_state_log - Variable to provide activity log
 
@@ -142,7 +145,7 @@ class PstHealthStateAttributeUpdator:
         self.device_data = DeviceData.get_instance()
         self.this_server = TangoServerHelper.get_instance()
         self.event_id = None
-        self.csp_master = TangoClient(self.device_data.csp_master_ln_fqdn)
+        self.csp_master = TangoClient(self.this_server.read_property("CspMasterFQDN")[0])
 
     def start(self):
         try:
