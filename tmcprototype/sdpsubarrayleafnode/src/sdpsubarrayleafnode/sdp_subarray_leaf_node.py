@@ -218,17 +218,21 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.activityMessage_read
  
     def write_activityMessage(self, value):
-         # PROTECTED REGION ID(SdpSubarrayLeafNode.activityMessage_write) ENABLED START #
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.activityMessage_write) ENABLED START #
         """Internal construct of TANGO. Sets the activity message.
         activityMessage is a String providing information about the current activity in SDP Subarray Leaf Node """
         self.update_attr_map("activityMessage", value)
         # PROTECTED REGION END # // SdpSubarrayLeafNode.activityMessage_write
 
     def update_attr_map(self, attr, val):
+        # PROTECTED REGION ID(SdpSubarrayLeafNode.update_attr_map) ENABLED START #
+        """This method updates attribute value in attribute map. Once a thread has acquired a lock,
+        subsequent attempts to acquire it are blocked, until it is released."""
         lock = threading.Lock()
         lock.acquire()
         self.attr_map[attr] = val
         lock.release()
+        # PROTECTED REGION END # // SdpSubarrayLeafNode.update_attr_map
 
     def read_activeProcessingBlocks(self):
         # PROTECTED REGION ID(SdpSubarrayLeafNode.activeProcessingBlocks_read) ENABLED START #
