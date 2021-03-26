@@ -1,5 +1,3 @@
-# from ska.base.control_model import HealthState
-
 class DeviceData:
     """
     This class represents the SDP master as functional device. It mainly comprise the data common
@@ -10,14 +8,13 @@ class DeviceData:
 
     def __init__(self):
         """Private constructor of the class"""
-        if DeviceData.__instance != None:
+        if DeviceData.__instance is not None:
             raise Exception("This is singletone class")
         else:
             DeviceData.__instance = self
-        # self._health_state = HealthState.UNKNOWN
 
     @staticmethod
     def get_instance():
-        if DeviceData.__instance == None:
+        if DeviceData.__instance is None:
             DeviceData()
         return DeviceData.__instance
