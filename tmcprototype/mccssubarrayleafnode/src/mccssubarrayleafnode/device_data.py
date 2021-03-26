@@ -27,9 +27,6 @@ class DeviceData:
         else:
             DeviceData.__instance = self
 
-        self._read_activity_message = ""
-        self._mccs_subarray_fqdn = ""
-
     @staticmethod
     def get_instance():
         if DeviceData.__instance == None:

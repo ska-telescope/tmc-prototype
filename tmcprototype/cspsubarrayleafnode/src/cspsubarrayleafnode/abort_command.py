@@ -7,6 +7,7 @@ from tango import DevState, DevFailed
 from ska.base.commands import BaseCommand
 
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
 
@@ -73,16 +74,16 @@ class AbortCommand(BaseCommand):
 
         :return: none
         """
-        device_data = self.target
         # Update logs and activity message attribute with received event
+        this_server = TangoServerHelper.get_instance()
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
-            device_data._read_activity_message = log_msg
+            this_server.write_attr("activityMessage", log_msg)
         else:
             log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
-            device_data._read_activity_message = log_msg
+            this_server.write_attr("activityMessage", log_msg)
 
     def do(self):
         """
@@ -95,18 +96,21 @@ class AbortCommand(BaseCommand):
             DevFailed if error occurs while invoking command on CSP Subarray.
 
         """
-        device_data = self.target
         try:
-            csp_sub_client_obj = TangoClient(device_data.csp_subarray_fqdn)
+            this_server = TangoServerHelper.get_instance()
+            csp_subarray_fqdn = ""
+            property_val = this_server.read_property("CspSubarrayFQDN")
+            csp_subarray_fqdn = csp_subarray_fqdn.join(property_val)
+            csp_sub_client_obj = TangoClient(csp_subarray_fqdn)
             csp_sub_client_obj.send_command_async(
                 const.CMD_ABORT, None, self.abort_cmd_ended_cb
             )
-            device_data._read_activity_message = const.STR_ABORT_SUCCESS
+            this_server.write_attr("activityMessage", const.STR_ABORT_SUCCESS)
             self.logger.info(const.STR_ABORT_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_ABORT_INVOKING_CMD}{dev_failed}"
-            device_data._read_activity_message = log_msg
+            this_server.write_attr("activityMessage", log_msg)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_ABORT_EXEC,

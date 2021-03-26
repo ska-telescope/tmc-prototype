@@ -19,6 +19,7 @@ from mccsmasterleafnode import MccsMasterLeafNode, const, release
 from ska.base.control_model import HealthState, ObsState
 from ska.base.commands import ResultCode
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 from mccsmasterleafnode import MccsMasterLeafNode, const, release, device_data
 from mccsmasterleafnode.device_data import DeviceData
 
@@ -37,6 +38,13 @@ with open(path, "r") as f:
 
 # Create DeviceData class instance
 device_data = DeviceData.get_instance()
+
+@pytest.fixture(scope="function")
+def mock_tango_server_helper():
+    mccs_master_fqdn = "low-mccs/control/control"
+    tango_server_obj = TangoServerHelper.get_instance()
+    tango_server_obj.read_property = Mock(return_value = mccs_master_fqdn)
+    yield tango_server_obj
 
 
 @pytest.fixture(scope="function")
@@ -82,13 +90,15 @@ def raise_devfailed_exception(*args):
     )
 
 
-def test_on_should_command_mccs_master_leaf_node_to_start(mock_mccs_master_proxy):
+def test_on_should_command_mccs_master_leaf_node_to_start(mock_mccs_master_proxy,
+                                                          mock_tango_server_helper):
     (
         device_proxy,
         tango_client_obj,
         mccs_master_fqdn,
         event_subscription_map,
     ) = mock_mccs_master_proxy
+    tango_server_obj = mock_tango_server_helper
     assert device_proxy.On() == [
         [ResultCode.OK],
         ["ON command invoked successfully from MCCS Master leaf node."],
@@ -99,9 +109,10 @@ def test_on_should_command_mccs_master_leaf_node_to_start(mock_mccs_master_proxy
 
 
 def test_on_should_command_to_on_with_callback_method(
-    mock_mccs_master_proxy, event_subscription_mock
+    mock_mccs_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_mccs_master_proxy[:2]
+    tango_server_obj = mock_tango_server_helper
     device_proxy.On()
     dummy_event = command_callback(const.CMD_ON)
     event_subscription_mock[const.CMD_ON](dummy_event)
@@ -109,16 +120,17 @@ def test_on_should_command_to_on_with_callback_method(
 
 
 def test_on_should_command_with_callback_method_with_event_error(
-    mock_mccs_master_proxy, event_subscription_mock
+    mock_mccs_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_mccs_master_proxy[:2]
+    tango_server_obj = mock_tango_server_helper
     device_proxy.On()
     dummy_event = command_callback_with_event_error(const.CMD_ON)
     event_subscription_mock[const.CMD_ON](dummy_event)
     assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
 
 
-def test_on_should_raise_devfailed_exception(mock_mccs_master_proxy):
+def test_on_should_raise_devfailed_exception(mock_mccs_master_proxy, mock_tango_server_helper):
     (
         device_proxy,
         tango_client_obj,
@@ -129,12 +141,14 @@ def test_on_should_raise_devfailed_exception(mock_mccs_master_proxy):
         raise_devfailed_exception
     )
     with pytest.raises(tango.DevFailed) as df:
+        tango_server_obj = mock_tango_server_helper
         device_proxy.On()
     assert const.ERR_DEVFAILED_MSG in str(df.value)
 
 
-def test_off_should_command_mccs_master_leaf_node_to_stop(mock_mccs_master_proxy):
+def test_off_should_command_mccs_master_leaf_node_to_stop(mock_mccs_master_proxy, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_mccs_master_proxy[:2]
+    tango_server_obj = mock_tango_server_helper
     device_proxy.On()
     assert device_proxy.Off() == [
         [ResultCode.OK],
@@ -146,9 +160,10 @@ def test_off_should_command_mccs_master_leaf_node_to_stop(mock_mccs_master_proxy
 
 
 def test_off_should_command_to_off_with_callback_method(
-    mock_mccs_master_proxy, event_subscription_mock
+    mock_mccs_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_mccs_master_proxy[:2]
+    tango_server_obj = mock_tango_server_helper
     device_proxy.On()
     device_proxy.Off()
     dummy_event = command_callback(const.CMD_OFF)
@@ -157,9 +172,10 @@ def test_off_should_command_to_off_with_callback_method(
 
 
 def test_off_should_command_with_callback_method_with_event_error(
-    mock_mccs_master_proxy, event_subscription_mock
+    mock_mccs_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_mccs_master_proxy[:2]
+    tango_server_obj = mock_tango_server_helper
     device_proxy.On()
     device_proxy.Off()
     dummy_event = command_callback_with_event_error(const.CMD_OFF)
@@ -167,13 +183,14 @@ def test_off_should_command_with_callback_method_with_event_error(
     assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
 
 
-def test_off_should_raise_devfailed_exception(mock_mccs_master_proxy):
+def test_off_should_raise_devfailed_exception(mock_mccs_master_proxy, mock_tango_server_helper):
     (
         device_proxy,
         tango_client_obj,
         mccs_master_fqdn,
         event_subscription_map,
     ) = mock_mccs_master_proxy
+    tango_server_obj = mock_tango_server_helper
     device_proxy.On()
     tango_client_obj.deviceproxy.command_inout_asynch.side_effect = (
         raise_devfailed_exception
@@ -207,7 +224,8 @@ def command_with_arg(request):
     return cmd_name, requested_cmd, input_str, obs_state, error_msg
 
 
-def test_command_raise_devfailed_exception(mock_mccs_master_proxy, command_with_arg):
+def test_command_raise_devfailed_exception(mock_mccs_master_proxy, command_with_arg,
+                                           mock_tango_server_helper):
     (
         device_proxy,
         tango_client_obj,
@@ -219,12 +237,13 @@ def test_command_raise_devfailed_exception(mock_mccs_master_proxy, command_with_
         raise_devfailed_exception
     )
     with pytest.raises(tango.DevFailed) as df:
+        tango_server_obj = mock_tango_server_helper
         device_proxy.command_inout(cmd_name, input_str)
     assert error_msg in str(df.value)
 
 
 def test_command_invoke_with_command_callback_method(
-    mock_mccs_master_proxy, event_subscription_mock, command_with_arg
+    mock_mccs_master_proxy, event_subscription_mock, command_with_arg, mock_tango_server_helper
 ):
     (
         device_proxy,
@@ -233,6 +252,7 @@ def test_command_invoke_with_command_callback_method(
         event_subscription_map,
     ) = mock_mccs_master_proxy
     cmd_name, requested_cmd, input_str, obs_state, error_msg = command_with_arg
+    tango_server_obj = mock_tango_server_helper
     device_proxy.command_inout(cmd_name, input_str)
     dummy_event = command_callback(requested_cmd)
     event_subscription_mock[requested_cmd](dummy_event)
@@ -240,7 +260,7 @@ def test_command_invoke_with_command_callback_method(
 
 
 def test_command_with_command_callback_event_error(
-    mock_mccs_master_proxy, event_subscription_mock, command_with_arg
+    mock_mccs_master_proxy, event_subscription_mock, command_with_arg, mock_tango_server_helper
 ):
     (
         device_proxy,
@@ -249,6 +269,7 @@ def test_command_with_command_callback_event_error(
         event_subscription_map,
     ) = mock_mccs_master_proxy
     cmd_name, requested_cmd, input_str, obs_state, error_msg = command_with_arg
+    tango_server_obj = mock_tango_server_helper
     device_proxy.command_inout(cmd_name, input_str)
     dummy_event = command_callback_with_event_error(requested_cmd)
     event_subscription_mock[requested_cmd](dummy_event)
@@ -256,7 +277,7 @@ def test_command_with_command_callback_event_error(
 
 
 def test_assign_command_with_callback_method_with_devfailed_error(
-    mock_mccs_master_proxy, event_subscription_mock
+    mock_mccs_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     (
         device_proxy,
@@ -267,6 +288,7 @@ def test_assign_command_with_callback_method_with_devfailed_error(
     device_proxy, tango_client_obj = mock_mccs_master_proxy[:2]
     device_proxy.On()
     with pytest.raises(tango.DevFailed) as df:
+        tango_server_obj = mock_tango_server_helper
         device_proxy.AssignResources(assign_input_str)
         dummy_event = command_callback_with_devfailed_exception()
         event_subscription_mock[const.CMD_ADD_RECEPTORS](dummy_event)
@@ -274,7 +296,7 @@ def test_assign_command_with_callback_method_with_devfailed_error(
 
 
 def test_release_resource_should_command_mccs_master_to_release_all_resources(
-    mock_mccs_master_proxy,
+    mock_mccs_master_proxy, mock_tango_server_helper
 ):
     (
         device_proxy,
@@ -283,6 +305,7 @@ def test_release_resource_should_command_mccs_master_to_release_all_resources(
         event_subscription_map,
     ) = mock_mccs_master_proxy
     device_proxy, tango_client_obj = mock_mccs_master_proxy[:2]
+    tango_server_obj = mock_tango_server_helper
     device_proxy.On()
     device_proxy.AssignResources(assign_input_str)
     device_proxy.ReleaseResources(release_input_str)
