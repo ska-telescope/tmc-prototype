@@ -7,7 +7,7 @@ from tango import DevState, DevFailed
 from ska.base.commands import BaseCommand
 
 from tmc.common.tango_client import TangoClient
-
+from tmc.common.tango_server_helper import TangoServerHelper
 from . import const
 
 # PROTECTED REGION END #    //  MccsMasterLeafNode imports
@@ -69,17 +69,17 @@ class AssignResources(BaseCommand):
         in current device state
 
         """
-        device_data = self.target
         self.logger.info("Executing callback allocate_ended")
         try:
 
             if event.err:
-                device_data._read_activity_message = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+                self.this_server.write_attr("activityMessage",
+                                    f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}")
                 log = const.ERR_INVOKING_CMD + event.cmd_name
                 self.logger.error(log)
             else:
                 log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-                device_data._read_activity_message = log
+                self.this_server.write_attr("activityMessage", log)
                 self.logger.info(log)
 
         except tango.DevFailed as df:
@@ -120,23 +120,27 @@ class AssignResources(BaseCommand):
 
             DevFailed if the command execution is not successful
         """
-        device_data = self.target
         try:
+            self.this_server = TangoServerHelper.get_instance()
             log_msg = (
                 "Input JSON for MCCS master leaf node AssignResources command is: "
                 + argin
             )
             self.logger.debug(log_msg)
-            mccs_master_client = TangoClient(device_data._mccs_master_fqdn)
+
+            mccs_master_fqdn = ""
+            property_value = self.this_server.read_property("MccsMasterFQDN")
+            mccs_master_fqdn = mccs_master_fqdn.join(property_value)
+            mccs_master_client = TangoClient(mccs_master_fqdn)
             mccs_master_client.send_command_async(
                 const.CMD_ALLOCATE, argin, self.allocate_ended
             )
-            device_data._read_activity_message = const.STR_ALLOCATE_SUCCESS
+            self.this_server.write_attr("activityMessage", const.STR_ALLOCATE_SUCCESS)
             self.logger.info(const.STR_ALLOCATE_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_ASSGN_RESOURCE_MCCS}{dev_failed}"
-            device_data._read_activity_message = log_msg
+            self.this_server.write_attr("activityMessage", log_msg)
             self.logger.exception(dev_failed)
             tango.Except.re_throw_exception(
                 dev_failed,

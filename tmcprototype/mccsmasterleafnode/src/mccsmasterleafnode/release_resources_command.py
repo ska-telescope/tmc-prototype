@@ -7,6 +7,7 @@ from tango import DevState, DevFailed
 from ska.base.commands import BaseCommand
 
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
 
@@ -67,16 +68,15 @@ class ReleaseResources(BaseCommand):
         :return: none
 
         """
-        device_data = self.target
         # Update logs and activity message attribute with received event
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
-            device_data._read_activity_message = log_msg
+            self.this_server.write_attr("activityMessage", log_msg)
         else:
             log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
-            device_data._read_activity_message = log_msg
+            self.this_server.write_attr("activityMessage", log_msg)
 
     def do(self, argin):
         """
@@ -100,22 +100,26 @@ class ReleaseResources(BaseCommand):
             ValueError if invalid json string.
 
         """
-        device_data = self.target
         log_msg = "Input JSON for MCCS master leaf node Release command is: " + argin
         self.logger.debug(log_msg)
         self.logger.info("Invoking Release on MCCS master")
 
         try:
-            mccs_master_client = TangoClient(device_data._mccs_master_fqdn)
+            self.this_server = TangoServerHelper.get_instance()
+            mccs_master_fqdn = ""
+            property_value = self.this_server.read_property("MccsMasterFQDN")
+            mccs_master_fqdn = mccs_master_fqdn.join(property_value)
+            mccs_master_client = TangoClient(mccs_master_fqdn)
             mccs_master_client.send_command_async(
                 const.CMD_Release, argin, self.releaseresources_cmd_ended_cb
             )
-            device_data._read_activity_message = const.STR_REMOVE_ALL_RECEPTORS_SUCCESS
+            self.this_server.write_attr("activityMessage", const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
             self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
         except ValueError as value_error:
             log_msg = f"{const.ERR_INVALID_JSON_RELEASE_RES_MCCS}{value_error}"
-            device_data._read_activity_message = f"{const.ERR_INVALID_JSON_RELEASE_RES_MCCS}{value_error}"
+            self.this_server.write_attr("activityMessage",
+                                        f"{const.ERR_INVALID_JSON_RELEASE_RES_MCCS}{value_error}")
             self.logger.exception(value_error)
             tango.Except.re_throw_exception(
                 value_error,
@@ -127,7 +131,7 @@ class ReleaseResources(BaseCommand):
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_RELEASE_ALL_RESOURCES} {dev_failed}"
-            device_data._read_activity_message = log_msg
+            self.this_server.write_attr("activityMessage", log_msg)
             self.logger.exception(dev_failed)
             tango.Except.re_throw_exception(
                 dev_failed,

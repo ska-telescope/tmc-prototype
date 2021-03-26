@@ -3,6 +3,10 @@ On class for CspSubarrayLeafNode.
 """
 # PROTECTED REGION ID(cspsubarrayleafnode.additionnal_import) ENABLED START #
 # Standard Python imports
+# PyTango imports
+import tango
+from tango import DevFailed
+
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
@@ -40,14 +44,14 @@ class On(SKABaseDevice.OnCommand):
 
         :return: none
         """
-        device_data = self.target
+        this_server = TangoServerHelper.get_instance()
         if event.err:
             log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
-            device_data._read_activity_message = log
+            this_server.write_attr("activityMessage", log)
             self.logger.error(log)
         else:
             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            device_data._read_activity_message = log
+            this_server.write_attr("activityMessage", log)
             self.logger.info(log)
 
     def do(self):
@@ -65,10 +69,22 @@ class On(SKABaseDevice.OnCommand):
             (ResultCode, str)
 
         """
-        log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
-        self.logger.debug(log_msg)
-        delay_manager_obj = DelayManager.get_instance()
-        delay_manager_obj.start()
         this_server = TangoServerHelper.get_instance()
-        this_server.set_status(log_msg)
-        return (ResultCode.OK, log_msg)
+        try:
+            log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+            self.logger.debug(log_msg)
+            delay_manager_obj = DelayManager.get_instance()
+            delay_manager_obj.start()
+            this_server.set_status(log_msg)
+            return (ResultCode.OK, log_msg)
+        except DevFailed as dev_failed:
+            log_msg = f"{const.ERR_ON_INVOKING_CMD}{dev_failed}"
+            this_server.write_attr("activityMessage", log_msg)
+            self.logger.exception(log_msg)
+            tango.Except.throw_exception(
+                const.ERR_ON_INVOKING_CMD,
+                log_msg,
+                "CspSubarrayLeafNode.OnCommand",
+                tango.ErrSeverity.ERR,
+            )
+
