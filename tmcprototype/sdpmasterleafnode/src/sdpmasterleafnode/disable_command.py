@@ -82,7 +82,7 @@ class Disable(BaseCommand):
         try:
             # sdp_mln_client_obj = TangoClient(device_data.sdp_master_ln_fqdn)
             sdp_master_ln_fqdn = ""
-            property_val = this_server.read_property("SdpMasterFQDN")
+            property_val = this_server.read_property("SdpMasterFQDN")[0]
             sdp_master_ln_fqdn = sdp_master_ln_fqdn.join(property_val)
             sdp_mln_client_obj = TangoClient(sdp_master_ln_fqdn)
             sdp_mln_client_obj.send_command_async(
