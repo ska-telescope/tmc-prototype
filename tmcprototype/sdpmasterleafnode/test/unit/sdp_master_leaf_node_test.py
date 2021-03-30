@@ -24,7 +24,14 @@ from ska.base.control_model import (
 from ska.base.control_model import LoggingLevel
 from ska.base.commands import ResultCode
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 
+@pytest.fixture(scope="function")
+def mock_tango_server_helper():
+    sdp_master_ln_fqdn = "mid_sdp/elt/master"
+    tango_server_obj = TangoServerHelper.get_instance()
+    tango_server_obj.read_property = Mock(return_value = sdp_master_ln_fqdn)
+    yield tango_server_obj
 
 @pytest.fixture(scope="function")
 def tango_context():
@@ -85,7 +92,7 @@ def command_without_args(request):
 
 
 def test_command_should_be_relayed_to_sdp_master(
-    mock_sdp_master_proxy, command_without_args
+    mock_sdp_master_proxy, command_without_args, mock_tango_server_helper 
 ):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
     cmd_name, requested_cmd, _ = command_without_args
@@ -96,7 +103,7 @@ def test_command_should_be_relayed_to_sdp_master(
     )
 
 
-def test_command_should_raise_exception(mock_sdp_master_proxy, command_without_args):
+def test_command_should_raise_exception(mock_sdp_master_proxy, command_without_args, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
     cmd_name, _, error_msg = command_without_args
     tango_client_obj.deviceproxy.command_inout_asynch.side_effect = (
@@ -107,7 +114,7 @@ def test_command_should_raise_exception(mock_sdp_master_proxy, command_without_a
     assert error_msg in str(df)
 
 
-def test_on_should_command_sdp_master_leaf_node_to_start(mock_sdp_master_proxy):
+def test_on_should_command_sdp_master_leaf_node_to_start(mock_sdp_master_proxy, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
     assert device_proxy.On() == [
         [ResultCode.OK],
@@ -115,7 +122,7 @@ def test_on_should_command_sdp_master_leaf_node_to_start(mock_sdp_master_proxy):
     ]
 
 
-def test_on_command_should_raise_dev_failed(mock_sdp_master_proxy):
+def test_on_command_should_raise_dev_failed(mock_sdp_master_proxy, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
     tango_client_obj.deviceproxy.command_inout_asynch.side_effect = (
         raise_devfailed_exception
@@ -126,7 +133,7 @@ def test_on_command_should_raise_dev_failed(mock_sdp_master_proxy):
 
 
 def test_on_should_command_with_callback_method(
-    mock_sdp_master_proxy, event_subscription_mock
+    mock_sdp_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
     device_proxy.On()
@@ -136,7 +143,7 @@ def test_on_should_command_with_callback_method(
 
 
 def test_on_should_command_with_callback_method_with_event_error(
-    mock_sdp_master_proxy, event_subscription_mock
+    mock_sdp_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
     device_proxy.On()
@@ -146,7 +153,7 @@ def test_on_should_command_with_callback_method_with_event_error(
 
 
 def test_off_should_command_with_callback_method_with_event_error(
-    mock_sdp_master_proxy, event_subscription_mock
+    mock_sdp_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
     device_proxy.Off()
@@ -155,7 +162,7 @@ def test_off_should_command_with_callback_method_with_event_error(
     assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
 
 
-def test_off_should_command_sdp_master_leaf_node_to_stop(mock_sdp_master_proxy):
+def test_off_should_command_sdp_master_leaf_node_to_stop(mock_sdp_master_proxy, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
     assert device_proxy.Off() == [
         [ResultCode.OK],
@@ -164,7 +171,7 @@ def test_off_should_command_sdp_master_leaf_node_to_stop(mock_sdp_master_proxy):
     assert const.STR_OFF_CMD_SUCCESS in device_proxy.activityMessage
 
 
-def test_off_command_should_raise_dev_failed(mock_sdp_master_proxy):
+def test_off_command_should_raise_dev_failed(mock_sdp_master_proxy, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
     tango_client_obj.deviceproxy.command_inout_asynch.side_effect = (
         raise_devfailed_exception
@@ -175,7 +182,7 @@ def test_off_command_should_raise_dev_failed(mock_sdp_master_proxy):
 
 
 def test_off_should_command_with_callback_method(
-    mock_sdp_master_proxy, event_subscription_mock
+    mock_sdp_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
     device_proxy.Off()
@@ -185,7 +192,7 @@ def test_off_should_command_with_callback_method(
 
 
 def test_disable_should_command_sdp_master_leaf_node_to_disable_devfailed(
-    mock_sdp_master_proxy,
+    mock_sdp_master_proxy, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
     device_proxy.On()
@@ -196,7 +203,7 @@ def test_disable_should_command_sdp_master_leaf_node_to_disable_devfailed(
 
 
 def test_command_should_command_with_callback_method(
-    mock_sdp_master_proxy, event_subscription_mock, command_without_args
+    mock_sdp_master_proxy, event_subscription_mock, command_without_args, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
     cmd_name, requested_cmd, _ = command_without_args
@@ -207,7 +214,7 @@ def test_command_should_command_with_callback_method(
 
 
 def test_command_with_callback_method_with_event_error(
-    mock_sdp_master_proxy, event_subscription_mock, command_without_args
+    mock_sdp_master_proxy, event_subscription_mock, command_without_args, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
     cmd_name, requested_cmd, _ = command_without_args
