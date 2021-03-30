@@ -79,9 +79,9 @@ class Configure(BaseCommand):
         command_name = "Configure"
 
         try:
-            self.this_server = TangoServerHelper.get_instance()
+            this_server = TangoServerHelper.get_instance()
             self.dish_master_fqdn = ""
-            property_value = self.this_server.read_property("DishMasterFQDN")
+            property_value = this_server.read_property("DishMasterFQDN")
             self.dish_master_fqdn = self.dish_master_fqdn.join(property_value)
             json_argument = device_data._load_config_string(argin)
             ra_value, dec_value = device_data._get_targets(json_argument)
@@ -94,7 +94,7 @@ class Configure(BaseCommand):
             log_message = (
                 f"Exception occured while executing the '{command_name}' command."
             )
-            self.this_server.write_attr("activityMessage", log_message)
+            this_server.write_attr("activityMessage", log_message)
             tango.Except.re_throw_exception(
                 dev_failed,
                 f"Exception in '{command_name}' command.",
@@ -107,7 +107,6 @@ class Configure(BaseCommand):
 
     def _configure_band(self, band):
         """"Send the ConfigureBand<band-number> command to Dish Master"""
-        device_data = self.target
         command_name = f"ConfigureBand{band}"
 
         try:

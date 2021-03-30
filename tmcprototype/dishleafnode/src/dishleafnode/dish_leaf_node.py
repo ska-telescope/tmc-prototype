@@ -187,7 +187,7 @@ class DishLeafNode(SKABaseDevice):
                 f"{release.name},{release.version},{release.description}"
             )
             device._version_id = release.version
-            device_data.set_dish_name_number()
+            device_data.set_dish_name_number(device.DishMasterFQDN)
             device_data.set_observer_lat_long_alt(self.logger)
             log_message = f"DishMasterFQDN :-> {device.DishMasterFQDN}"
             self.logger.debug(log_message)

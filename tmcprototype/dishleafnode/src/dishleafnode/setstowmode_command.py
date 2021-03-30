@@ -41,7 +41,6 @@ class SetStowMode(BaseCommand):
             DevFailed If error occurs while invoking SetStowMode command on DishMaster.
 
         """
-        device_data = self.target
         cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
 
         command_name = "SetStowMode"

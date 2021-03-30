@@ -61,7 +61,6 @@ class Slew(BaseCommand):
             DevFailed If error occurs while invoking Slew command on DishMaster.
 
         """
-        device_data = self.target
         command_name = "Slew"
         cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
         try:

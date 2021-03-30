@@ -46,7 +46,6 @@ class SetStandbyLPMode(BaseCommand):
             DevFailed If error occurs while invoking SetStandbyLPMode command on DishMaster.
 
         """
-        device_data = self.target
         command_name = "SetStandbyLPMode"
         try:
             this_server = TangoServerHelper.get_instance()

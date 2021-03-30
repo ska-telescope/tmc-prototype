@@ -45,7 +45,6 @@ class SetOperateMode(BaseCommand):
             DevFailed If error occurs while invoking SetOperateMode command on DishMaster.
 
         """
-        device_data = self.target
         cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
 
         attributes_to_subscribe_to = (
@@ -116,7 +115,6 @@ class SetOperateMode(BaseCommand):
 
         :param evt: A TANGO_CHANGE event on attribute.
         """
-        device_data = DeviceData.get_instance()
         if event_data.err:
             log_message = (
                 f"Event system DevError(s) occured!!! {str(event_data.errors)}"

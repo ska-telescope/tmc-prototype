@@ -54,7 +54,6 @@ class ObsReset(BaseCommand):
             DevFailed If error occurs while invoking StopCapture command on DishMaster.
 
         """
-        device_data = self.target
         command_name = "ObsReset"
         cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
         try:

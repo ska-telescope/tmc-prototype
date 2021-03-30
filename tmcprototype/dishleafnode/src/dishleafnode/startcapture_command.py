@@ -56,7 +56,6 @@ class StartCapture(BaseCommand):
             DevFailed If error occurs while invoking StartCapture command on DishMaster.
 
         """
-        device_data = self.target
         command_name = "StartCapture"
         cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
 
