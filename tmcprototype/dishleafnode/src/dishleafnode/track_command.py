@@ -19,6 +19,7 @@ from tango import DevState, DevFailed
 
 from ska.base.commands import BaseCommand
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 from .command_callback import CommandCallBack
 from .az_el_converter import AzElConverter
 
@@ -71,6 +72,10 @@ class Track(BaseCommand):
         command_name = "Track"
 
         try:
+            self.this_server = TangoServerHelper.get_instance()
+            self.dish_master_fqdn = ""
+            property_value = self.this_server.read_property("DishMasterFQDN")
+            self.dish_master_fqdn = self.dish_master_fqdn.join(property_value)
             json_argin = device_data._load_config_string(argin)
             ra_value, dec_value = device_data._get_targets(json_argin)
             radec_value = f"radec,{ra_value},{dec_value}"
@@ -80,7 +85,7 @@ class Track(BaseCommand):
                 radec_value,
             )
 
-            dish_client = TangoClient(device_data._dish_master_fqdn)
+            dish_client = TangoClient(self.dish_master_fqdn)
             cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
 
             dish_client.send_command_async(command_name, callback_method=cmd_ended_cb)
@@ -90,7 +95,7 @@ class Track(BaseCommand):
             log_message = (
                 f"Exception occured while executing the '{command_name}' command."
             )
-            device_data._read_activity_message = log_message
+            self.this_server.write_attr("activityMessage", log_message)
             tango.Except.re_throw_exception(
                 dev_failed,
                 f"Exception in '{command_name}' command.",
@@ -111,7 +116,7 @@ class Track(BaseCommand):
             f"{threading.get_ident()}"
         )
         device_data = self.target
-        dish_client = TangoClient(device_data._dish_master_fqdn)
+        dish_client = TangoClient(self.dish_master_fqdn)
 
         while device_data.event_track_time.is_set() is False:
             now = datetime.datetime.utcnow()
@@ -157,10 +162,10 @@ class Track(BaseCommand):
         if not (device_data.ele_min_lim <= device_data.el <= device_data.ele_max_lim):
             device_data.el_limit = True
             log_message = "Minimum/maximum elevation limit has been reached."
-            device_data._read_activity_message = log_message
+            self.this_server.write_attr("activityMessage", log_message)
             self.logger.info(log_message)
             log_message = "Source is not visible currently."
-            device_data._read_activity_message = log_message
+            self.this_server.write_attr("activityMessage", log_message)
             self.logger.info(log_message)
             return False
 

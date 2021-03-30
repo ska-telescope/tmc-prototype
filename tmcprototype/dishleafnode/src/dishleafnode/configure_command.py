@@ -21,7 +21,7 @@ from tango import DevState, DevFailed
 from ska.base.commands import BaseCommand
 
 from tmc.common.tango_client import TangoClient
-
+from tmc.common.tango_server_helper import TangoServerHelper
 from .az_el_converter import AzElConverter
 from .command_callback import CommandCallBack
 
@@ -79,6 +79,10 @@ class Configure(BaseCommand):
         command_name = "Configure"
 
         try:
+            this_server = TangoServerHelper.get_instance()
+            self.dish_master_fqdn = ""
+            property_value = this_server.read_property("DishMasterFQDN")
+            self.dish_master_fqdn = self.dish_master_fqdn.join(property_value)
             json_argument = device_data._load_config_string(argin)
             ra_value, dec_value = device_data._get_targets(json_argument)
             device_data.radec_value = f"radec,{ra_value},{dec_value}"
@@ -90,7 +94,7 @@ class Configure(BaseCommand):
             log_message = (
                 f"Exception occured while executing the '{command_name}' command."
             )
-            device_data._read_activity_message = log_message
+            this_server.write_attr("activityMessage", log_message)
             tango.Except.re_throw_exception(
                 dev_failed,
                 f"Exception in '{command_name}' command.",
@@ -103,11 +107,10 @@ class Configure(BaseCommand):
 
     def _configure_band(self, band):
         """"Send the ConfigureBand<band-number> command to Dish Master"""
-        device_data = self.target
         command_name = f"ConfigureBand{band}"
 
         try:
-            dish_client = TangoClient(device_data._dish_master_fqdn)
+            dish_client = TangoClient(self.dish_master_fqdn)
             cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
             dish_client.send_command_async(command_name, callback_method=cmd_ended_cb)
         except DevFailed as dev_failed:
@@ -119,7 +122,7 @@ class Configure(BaseCommand):
         timestamp = str(now)
 
         try:
-            dish_client = TangoClient(device_data._dish_master_fqdn)
+            dish_client = TangoClient(self.dish_master_fqdn)
             azel_converter = AzElConverter(self.logger)
             # pylint: disable=unbalanced-tuple-unpacking
             device_data.az, device_data.el = azel_converter.convert_radec_to_azel(

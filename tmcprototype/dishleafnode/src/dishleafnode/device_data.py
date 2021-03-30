@@ -15,6 +15,7 @@ import threading
 import importlib.resources
 from .utils import UnitConverter
 import katpoint
+from tmc.common.tango_server_helper import TangoServerHelper
 
 
 class DeviceData:
@@ -33,8 +34,8 @@ class DeviceData:
         else:
             DeviceData.__instance = self
 
-        self._read_activity_message = ""
-        self._dish_master_fqdn = ""
+        self.this_server = TangoServerHelper.get_instance()
+
         self.el = 30.0
         self.az = 0.0
         self.ele_max_lim = 90
@@ -53,9 +54,9 @@ class DeviceData:
             DeviceData()
         return DeviceData.__instance
 
-    def set_dish_name_number(self):
+    def set_dish_name_number(self, dish_master_fqdn):
         # Find out dish number from DishMasterFQDN property e.g. mid_d0001/elt/master
-        dish_name_string = self._dish_master_fqdn.split("/")[0]
+        dish_name_string=dish_master_fqdn.split("/")[0]
         self.dish_name = dish_name_string.split("_")[1]
         self.dish_number = self.dish_name[1:]
 
