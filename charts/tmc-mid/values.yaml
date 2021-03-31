@@ -19,7 +19,7 @@ global:
   tmcprototype:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: tmcprototype
-    tag: 0.5.2
+    tag: 0.5.3
     pullPolicy: IfNotPresent
 
 dsconfig:
@@ -41,21 +41,21 @@ tmcprototype:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: tmcprototype
-    tag: 0.5.2
+    tag: 0.5.3
     pullPolicy: IfNotPresent
 
 centralnodemid:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc-centralnode-mid
-    tag: 0.1.1
+    tag: 0.1.2
     pullPolicy: IfNotPresent
 
 subarraynodemid:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc-subarraynode-mid
-    tag: 0.1.2
+    tag: 0.1.3
     pullPolicy: IfNotPresent
 
 resources:
