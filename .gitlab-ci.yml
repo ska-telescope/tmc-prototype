@@ -320,8 +320,8 @@ build-image:
 
 test-mid:
   stage: test
-  dependencies:
-    - build-image 
+  # dependencies:
+  #   - build-image 
   tags:
     - k8srunner
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
@@ -333,7 +333,7 @@ test-mid:
     - make install-chart MINIKUBE=false
     - make wait
     - make smoketest
-    - make test MARK=mid && [ -f "build/report.xml" ]
+    - make test MARK=mid_select && [ -f "build/report.xml" ]
   after_script:
     - make uninstall-chart
     - make clean
