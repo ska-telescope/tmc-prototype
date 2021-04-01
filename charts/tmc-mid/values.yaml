@@ -48,15 +48,15 @@ centralnodemid:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc-centralnode-mid
-    tag: 0.1.1
-    pullPolicy: IfNotPresent
+    tag: 0.1.3
+    pullPolicy: Always
 
 subarraynodemid:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc-subarraynode-mid
-    tag: 0.1.2
-    pullPolicy: IfNotPresent
+    tag: 0.1.4
+    pullPolicy: Always
 
 resources:
   limits:
