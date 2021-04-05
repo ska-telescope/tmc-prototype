@@ -48,11 +48,11 @@ class On(SKABaseDevice.OnCommand):
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
-            this_device.write_attr("activityMessage", log_msg)
+            # this_device.write_attr("activityMessage", log_msg)
         else:
             log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
-            this_device.write_attr("activityMessage", log_msg)
+            # this_device.write_attr("activityMessage", log_msg)
 
     def do(self):
         """
@@ -80,7 +80,7 @@ class On(SKABaseDevice.OnCommand):
                 const.CMD_ON, [], self.on_cmd_ended_cb
             )
             self.logger.debug(const.STR_ON_CMD_ISSUED)
-            this_device.write_attr("activityMessage", const.STR_ON_CMD_ISSUED)
+            # this_device.write_attr("activityMessage", const.STR_ON_CMD_ISSUED)
             device_data.cbf_health_updator = CbfHealthStateAttributeUpdator()
             device_data.cbf_health_updator.start()
             device_data.pss_health_updator = PssHealthStateAttributeUpdator()

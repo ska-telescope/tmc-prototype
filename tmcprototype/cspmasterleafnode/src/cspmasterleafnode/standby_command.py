@@ -66,11 +66,11 @@ class Standby(BaseCommand):
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
-            this_device.write_attr("activityMessage", log_msg)
+            # this_device.write_attr("activityMessage", log_msg)
         else:
             log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
-            this_device.write_attr("activityMessage", log_msg)
+            # this_device.write_attr("activityMessage", log_msg)
 
     def do(self, argin):
         """
@@ -95,12 +95,12 @@ class Standby(BaseCommand):
                 const.CMD_STANDBY, command_data=argin, callback_method=self.standby_cmd_ended_cb
             )
             self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
-            this_device.write_attr("activityMessage", const.STR_STANDBY_CMD_ISSUED)
+            # this_device.write_attr("activityMessage", const.STR_STANDBY_CMD_ISSUED)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_EXE_STANDBY_CMD}{dev_failed}"
             self.logger.exception(dev_failed)
-            this_device.write_attr("activityMessage", const.ERR_EXE_STANDBY_CMD)
+            # this_device.write_attr("activityMessage", const.ERR_EXE_STANDBY_CMD)
             tango.Except.re_throw_exception(
                 dev_failed,
                 const.STR_STANDBY_EXEC,

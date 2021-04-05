@@ -47,12 +47,12 @@ class On(SKABaseDevice.OnCommand):
         sdp_sa_ln_server = TangoServerHelper.get_instance()
         if event.err:
             log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
-            this_server.write_attr("activityMessage", log)
+            # this_server.write_attr("activityMessage", log)
             sdp_sa_ln_server.set_status(log)
             self.logger.error(log)
         else:
             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            this_server.write_attr("activityMessage", log)
+            # this_server.write_attr("activityMessage", log)
             sdp_sa_ln_server.set_status(log)
             self.logger.info(log)
 

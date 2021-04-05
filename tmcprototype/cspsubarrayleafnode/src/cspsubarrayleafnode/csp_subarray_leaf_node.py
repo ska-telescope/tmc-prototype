@@ -158,9 +158,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device._versioninfo = " "
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
-            this_server.write_attr("activityMessage", f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}")
+            # this_server.write_attr("activityMessage", f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}")
             this_server.set_status(const.STR_CSPSALN_INIT_SUCCESS)
-            this_server.write_attr("activityMessage", const.STR_CSPSALN_INIT_SUCCESS)
+            # this_server.write_attr("activityMessage", const.STR_CSPSALN_INIT_SUCCESS)
             self.logger.info(const.STR_CSPSALN_INIT_SUCCESS)
             return (ResultCode.OK, const.STR_CSPSALN_INIT_SUCCESS)
 

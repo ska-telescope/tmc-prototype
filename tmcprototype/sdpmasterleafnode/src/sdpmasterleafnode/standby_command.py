@@ -66,12 +66,12 @@ class Standby(BaseCommand):
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
-            this_server.write_attr("activityMessage", log_msg)
+            # this_server.write_attr("activityMessage", log_msg)
 
         else:
             log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
-            this_server.write_attr("activityMessage", log_msg)
+            # this_server.write_attr("activityMessage", log_msg)
 
     def do(self):
         """
