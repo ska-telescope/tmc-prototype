@@ -48,23 +48,23 @@ centralnodemid:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc-centralnode-mid
-    tag: 0.1.1
-    pullPolicy: IfNotPresent
+    tag: 9.9.9
+    pullPolicy: Always
 
 subarraynodemid:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc-subarraynode-mid
-    tag: 0.1.2
-    pullPolicy: IfNotPresent
+    tag: 9.9.9
+    pullPolicy: Always
 
-resources:
-  limits:
-    cpu: 300m
-    memory: 500Mi
-  requests:
-    cpu: 100m
-    memory: 128Mi
+# resources:
+#   limits:
+#     cpu: 300m
+#     memory: 500Mi
+#   requests:
+#     cpu: 100m
+#     memory: 128Mi
 
 deviceServers:
   - name: dishmaster1
@@ -326,10 +326,10 @@ deviceServers:
       image: tmalarmhandler
       tag: latest
       pullPolicy: Always
-    resources:
-      limits:
-        cpu: 300m
-        memory: 500Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
+    # resources:
+    #   limits:
+    #     cpu: 300m
+    #     memory: 500Mi
+    #   requests:
+    #     cpu: 100m
+    #     memory: 128Mi
