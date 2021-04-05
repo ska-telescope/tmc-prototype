@@ -191,17 +191,17 @@ class DishLeafNode(SKABaseDevice):
             device_data.set_observer_lat_long_alt(self.logger)
             log_message = f"DishMasterFQDN :-> {device.DishMasterFQDN}"
             self.logger.debug(log_message)
-            this_server.write_attr("activityMessage", log_message)
+            # this_server.write_attr("activityMessage", log_message)
             device._health_state = HealthState.OK
             device._simulation_mode = SimulationMode.FALSE
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_message = f"Setting CallBack Model as :-> {ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_message)
-            this_server.write_attr("activityMessage", log_message)
+            # this_server.write_attr("activityMessage", log_message)
             log_message = "Dish Leaf Node initialized successfully."
             device.set_status(log_message)
-            this_server.write_attr("activityMessage", log_message)
+            # this_server.write_attr("activityMessage", log_message)
             self.logger.info(log_message)
             return (ResultCode.OK, device.attr_map["activityMessage"])
 

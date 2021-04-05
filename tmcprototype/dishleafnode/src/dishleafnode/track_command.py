@@ -95,7 +95,7 @@ class Track(BaseCommand):
             log_message = (
                 f"Exception occured while executing the '{command_name}' command."
             )
-            self.this_server.write_attr("activityMessage", log_message)
+            # self.this_server.write_attr("activityMessage", log_message)
             tango.Except.re_throw_exception(
                 dev_failed,
                 f"Exception in '{command_name}' command.",
@@ -162,10 +162,10 @@ class Track(BaseCommand):
         if not (device_data.ele_min_lim <= device_data.el <= device_data.ele_max_lim):
             device_data.el_limit = True
             log_message = "Minimum/maximum elevation limit has been reached."
-            self.this_server.write_attr("activityMessage", log_message)
+            # self.this_server.write_attr("activityMessage", log_message)
             self.logger.info(log_message)
             log_message = "Source is not visible currently."
-            self.this_server.write_attr("activityMessage", log_message)
+            # self.this_server.write_attr("activityMessage", log_message)
             self.logger.info(log_message)
             return False
 
