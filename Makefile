@@ -59,7 +59,6 @@ KUBECONFIG ?= /etc/deploy/config ## KUBECONFIG location
 VALUES_FILE ?= charts/tmc-mid/values.yaml
 CUSTOM_VALUES = 
 
-
 ifneq ($(CI_JOB_ID),)
 CI_PROJECT_IMAGE := 
 CUSTOM_VALUES = --set global.tmcprototype.registry=registry.gitlab.com/ska-telescope \

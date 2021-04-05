@@ -88,6 +88,7 @@ class SetStandbyLPMode(BaseCommand):
                 dish_client.unsubscribe_attribute(device_data.attr_event_map[attr_name])
             device_data.attr_event_map.clear()
         except Exception as e:
-            self.logger.exception("Exception in DishLeafNode: " + str(e))
+            log_message = "Exception occured while unsubscribing attribute events command. {}".format(e)
+            self.logger.exception(log_message)
             
 
