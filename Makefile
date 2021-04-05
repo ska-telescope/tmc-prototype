@@ -59,18 +59,19 @@ KUBECONFIG ?= /etc/deploy/config ## KUBECONFIG location
 VALUES_FILE ?= charts/tmc-mid/values.yaml
 CUSTOM_VALUES = 
 
-# ifneq ($(CI_JOB_ID),)
-# CI_PROJECT_IMAGE := 
-# CUSTOM_VALUES = --set global.tmcprototype.registry=registry.gitlab.com/ska-telescope \
-# 	--set global.tmcprototype.image=tmc-prototype \
-# 	--set global.tmcprototype.tag=$(CI_COMMIT_SHORT_SHA)
-# else
-# endif
 
-# ifneq ($(VALUES_FILE),)
-# CUSTOM_VALUES := --values $(VALUES_FILE) $(CUSTOM_VALUES)
-# else
-# endif
+ifneq ($(CI_JOB_ID),)
+CI_PROJECT_IMAGE := 
+CUSTOM_VALUES = --set global.tmcprototype.registry=registry.gitlab.com/ska-telescope \
+	--set global.tmcprototype.image=tmc-prototype \
+	--set global.tmcprototype.tag=$(CI_COMMIT_SHORT_SHA)
+else
+endif
+
+ifneq ($(VALUES_FILE),)
+CUSTOM_VALUES := --values $(VALUES_FILE) $(CUSTOM_VALUES)
+else
+endif
 
 XAUTHORITYx ?= ${XAUTHORITY}
 THIS_HOST := $(shell ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n1)

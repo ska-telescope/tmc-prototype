@@ -320,8 +320,8 @@ build-image:
 
 test-mid:
   stage: test
-  # dependencies:
-  #   - build-image 
+  dependencies:
+    - build-image 
   tags:
     - k8srunner
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
