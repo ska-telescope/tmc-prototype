@@ -172,7 +172,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
-            # this_server.write_attr("activityMessage", const.STR_SDPSALN_INIT_SUCCESS)
+            this_server.write_attr("activityMessage", const.STR_SDPSALN_INIT_SUCCESS, False)
             # Initialise Device status
             device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
             self.logger.info(const.STR_SDPSALN_INIT_SUCCESS)
@@ -478,7 +478,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         else:
             self.logger.error("Subarray is not in EMPTY obstate")
             log_msg = "Error in device obstate."
-            this_server.write_attr("activityMessage", log_msg)
+            this_server.write_attr("activityMessage", log_msg, False)
             raise InvalidObsStateError("SDP subarray is not in EMPTY obstate.")
 
     def init_command_objects(self):

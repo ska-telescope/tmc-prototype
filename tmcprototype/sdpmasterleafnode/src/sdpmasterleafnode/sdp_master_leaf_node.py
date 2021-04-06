@@ -143,7 +143,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
 
-            # self.this_server.write_attr("activityMessage", const.STR_INIT_SUCCESS)
+            self.this_server.write_attr("activityMessage", const.STR_INIT_SUCCESS, False)
             self.logger.info(const.STR_INIT_SUCCESS)
             return (ResultCode.OK, const.STR_INIT_SUCCESS)
 

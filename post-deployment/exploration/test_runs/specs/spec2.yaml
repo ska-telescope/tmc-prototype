@@ -1,5 +1,5 @@
 group: 
-  runs: 1
+  runs: 10
   path: "tests/acceptance/integration/"
   modules:
     - path: "test_tmc_obsreset.py"

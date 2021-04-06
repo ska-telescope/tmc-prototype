@@ -30,7 +30,7 @@ class Off(SKABaseDevice.OffCommand):
         device_data = self.target
         self.logger.debug(const.STR_OFF_CMD_ISSUED)
         this_device = TangoServerHelper.get_instance()
-        # this_device.write_attr("activityMessage", const.STR_OFF_CMD_ISSUED)
+        this_device.write_attr("activityMessage", const.STR_OFF_CMD_ISSUED, False)
         device_data.cbf_health_updator.stop()
         device_data.pss_health_updator.stop()
         device_data.pst_health_updator.stop()

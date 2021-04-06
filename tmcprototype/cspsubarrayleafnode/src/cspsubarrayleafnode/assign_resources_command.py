@@ -72,12 +72,12 @@ class AssignResourcesCommand(BaseCommand):
         this_server = TangoServerHelper.get_instance()
         try:
             if event.err:
-                this_server.write_attr("activityMessage", f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}")
+                this_server.write_attr("activityMessage", f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}", False)
                 log = const.ERR_INVOKING_CMD + event.cmd_name
                 self.logger.error(log)
             else:
                 log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-                this_server.write_attr("activityMessage", log)
+                this_server.write_attr("activityMessage", log, False)
                 self.logger.info(log)
 
         except tango.DevFailed as df:
@@ -144,12 +144,12 @@ class AssignResourcesCommand(BaseCommand):
                 const.CMD_ASSIGN_RESOURCES, argin, self.assign_resources_ended
             )
             self.logger.info("After invoking AssignResources on CSP subarray")
-            this_server.write_attr("activityMessage", const.STR_ASSIGN_RESOURCES_SUCCESS)
+            this_server.write_attr("activityMessage", const.STR_ASSIGN_RESOURCES_SUCCESS, False)
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_ASSGN_RESOURCES}{dev_failed}"
-            this_server.write_attr("activityMessage", log_msg)
+            this_server.write_attr("activityMessage", log_msg, False)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_ASSIGN_RES_EXEC,

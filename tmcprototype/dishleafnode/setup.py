@@ -47,7 +47,7 @@ setup(
         "katpoint",
         "ska_logging>=0.3.0",
         "lmcbaseclasses>=0.7.2",
-        "skatmccommon==0.1.5+124cd964",
+        "skatmccommon==0.1.6+3aaa7bbe",
     ],
     # test_suite='test',
     setup_requires=[
