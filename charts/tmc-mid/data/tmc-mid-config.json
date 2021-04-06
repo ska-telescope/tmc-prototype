@@ -877,7 +877,7 @@
         }
       }
     },
-    "alarmhandler-srv": {
+    "alarm-handler-srv": {
       "01": {
         "AlarmHandler": {
           "ska_mid/tm_alarmhandler/tmalarmhandler": {
