@@ -60,13 +60,13 @@ class Configure(SKASubarray.ConfigureCommand):
         log_msg = f"{const.STR_CONFIGURE_IP_ARG}{argin}"
         self.logger.info(log_msg)
         self.this_server = TangoServerHelper.get_instance()
-        self.this_server.write_attr("activityMessage", const.STR_CONFIGURE_CMD_INVOKED_SA_LOW)    
+        self.this_server.write_attr("activityMessage", const.STR_CONFIGURE_CMD_INVOKED_SA_LOW, False)    
         try:
             scan_configuration = json.loads(argin)
         except json.JSONDecodeError as jerror:
             log_message = f"{const.ERR_INVALID_JSON}{jerror}"
             self.logger.error(log_message)
-            self.this_server.write_attr("activityMessage", log_message)    
+            self.this_server.write_attr("activityMessage", log_message, False)    
             tango.Except.throw_exception(
                 const.STR_CMD_FAILED,
                 log_message,
@@ -100,7 +100,7 @@ class Configure(SKASubarray.ConfigureCommand):
             self.logger.debug(log_msg)
         except DevFailed as df:
             log_message = df[0].desc
-            self.this_server.write_attr("activityMessage", log_message)
+            self.this_server.write_attr("activityMessage", log_message, False)
             log_msg = "Failed to configure %s. %s" % (
                 mccs_subarray_ln_fqdn,
                 df,

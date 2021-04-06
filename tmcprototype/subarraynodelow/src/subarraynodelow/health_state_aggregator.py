@@ -74,12 +74,12 @@ class HealthStateAggregator:
             log_message = self.generate_health_state_log_msg(
                 event_health_state, device_name, event
             )
-            self.this_server.write_attr("activityMessage", log_message)
+            self.this_server.write_attr("activityMessage", log_message, False)
             self.device_data._subarray_health_state = self.calculate_health_state(
                 self.subarray_ln_health_state_map.values())
         else:
             log_message = f"{const.ERR_SUBSR_SA_HEALTH_STATE}{device_name}{event}"
-            self.this_server.write_attr("activityMessage", log_message)
+            self.this_server.write_attr("activityMessage", log_message, False)
 
     def generate_health_state_log_msg(self, health_state, device_name, event):
         if isinstance(health_state, HealthState):

@@ -51,6 +51,6 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         device_data.resource_list = input_str["station_ids"]
         log_msg = f"{const.STR_ASSIGN_RES_EXEC}STARTED"
         self.logger.debug(log_msg)
-        this_server.write_attr("activityMessage", log_msg)
+        this_server.write_attr("activityMessage", log_msg, False)
 
         return (ResultCode.STARTED, log_msg)
