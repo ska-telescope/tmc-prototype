@@ -57,10 +57,10 @@ class EndScan(SKASubarray.EndScanCommand):
             mccs_subarray_ln_client = TangoClient(mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(const.CMD_END_SCAN)
             self.logger.debug(const.STR_MCCS_END_SCAN_INIT)
-            this_server.write_attr("activityMessage", const.STR_MCCS_END_SCAN_INIT)
+            this_server.write_attr("activityMessage", const.STR_MCCS_END_SCAN_INIT, False)
             this_server.write_attr("scanID", "")
             self.logger.info(const.STR_SCAN_COMPLETE)
-            this_server.write_attr("activityMessage", const.STR_END_SCAN_SUCCESS)
+            this_server.write_attr("activityMessage", const.STR_END_SCAN_SUCCESS, False)
             return (ResultCode.OK, const.STR_END_SCAN_SUCCESS)
 
         except DevFailed as dev_failed:

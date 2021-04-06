@@ -118,9 +118,9 @@ class MccsMasterLeafNode(SKABaseDevice):
             # Create DeviceData class instance
             device_data = DeviceData.get_instance()
             device.device_data = device_data
-            self.this_server.write_attr("activityMessage", const.STR_MCCS_INIT_LEAF_NODE)
+            self.this_server.write_attr("activityMessage", const.STR_MCCS_INIT_LEAF_NODE, False)
             self.this_server.write_attr("activityMessage",
-                                        f"{const.STR_MCCSMASTER_FQDN}{device.MccsMasterFQDN}")
+                                        f"{const.STR_MCCSMASTER_FQDN}{device.MccsMasterFQDN}", False)
             # Creating proxy to the CSPMaster
             log_msg = f"MCCS Master name: {device.MccsMasterFQDN}"
             self.logger.debug(log_msg)
@@ -128,7 +128,7 @@ class MccsMasterLeafNode(SKABaseDevice):
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
-            self.this_server.write_attr("activityMessage", const.STR_INIT_SUCCESS)
+            self.this_server.write_attr("activityMessage", const.STR_INIT_SUCCESS, False)
             self.logger.info(const.STR_INIT_SUCCESS)
             return (ResultCode.OK, const.STR_INIT_SUCCESS)
 

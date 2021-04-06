@@ -60,11 +60,12 @@ class On(SKASubarray.OnCommand):
             mccs_subarray_ln_client.send_command(const.CMD_ON, None)
             message = "On command completed OK"
             self.logger.info(message)
+            this_server.write_attr("activityMessage", message, False)
             return (ResultCode.OK, message)
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_INVOKING_ON_CMD}{dev_failed}"
             self.logger.error(log_msg)
-            this_server.write_attr("activityMessage", log_msg)
+            this_server.write_attr("activityMessage", log_msg, False)
             tango.Except.throw_exception(
                 dev_failed[0].desc,
                 "Failed to invoke On command on SubarrayNode.",

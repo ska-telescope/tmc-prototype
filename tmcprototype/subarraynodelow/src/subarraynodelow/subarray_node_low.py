@@ -150,7 +150,7 @@ class SubarrayNode(SKASubarray):
             device._subarray_health_state = (
                 HealthState.OK
             )  # Aggregated Subarray Health State
-            this_server.write_attr("activityMessage", const.STR_SA_INIT_SUCCESS)
+            this_server.write_attr("activityMessage", const.STR_SA_INIT_SUCCESS, False)
             self.logger.info(const.STR_SA_INIT_SUCCESS)
             return (ResultCode.OK, const.STR_SA_INIT_SUCCESS)
 

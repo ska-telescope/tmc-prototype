@@ -50,7 +50,7 @@ class ObsReset(SKASubarray.ObsResetCommand):
             mccs_subarray_ln_fqdn = mccs_subarray_ln_fqdn.join(property_val)
             mccs_subarray_ln_client = TangoClient(mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(const.CMD_OBSRESET)
-            this_server.write_attr("activityMessage", const.STR_OBSRESET_SUCCESS)
+            this_server.write_attr("activityMessage", const.STR_OBSRESET_SUCCESS, False)
             self.logger.info(const.STR_OBSRESET_SUCCESS)
             this_server.set_status(const.STR_OBSRESET_SUCCESS)
             device_data.is_obsreset_command_executed = True

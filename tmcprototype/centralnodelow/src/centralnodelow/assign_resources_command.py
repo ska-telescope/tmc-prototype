@@ -112,13 +112,13 @@ class AssignResources(BaseCommand):
             mccs_master_ln_client = self.create_client(self.mccs_master_ln_fqdn)
             self.invoke_assign_resources(mccs_master_ln_client, input_mccs_assign)
 
-            self.this_server.write_attr("activityMessage", const.STR_ASSIGN_RESOURCES_SUCCESS)
+            self.this_server.write_attr("activityMessage", const.STR_ASSIGN_RESOURCES_SUCCESS, False)
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
 
 
         except KeyError as key_error:
             self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
-            self.this_server.write_attr("activityMessage", f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}")
+            self.this_server.write_attr("activityMessage", f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}", False)
             log_msg = f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}"
             self.logger.exception(key_error)
             tango.Except.throw_exception(
@@ -131,7 +131,7 @@ class AssignResources(BaseCommand):
             self.logger.exception(
                 "Exception in AssignResources command: %s", str(val_error)
             )
-            self.this_server.write_attr("activityMessage", f"Invalid value in input: {val_error}")
+            self.this_server.write_attr("activityMessage", f"Invalid value in input: {val_error}", False)
             log_msg = f"{const.STR_ASSIGN_RES_EXEC}{val_error}"
             self.logger.exception(val_error)
             tango.Except.throw_exception(const.STR_RESOURCE_ALLOCATION_FAILED, log_msg,
@@ -142,7 +142,7 @@ class AssignResources(BaseCommand):
             self.logger.exception(log_msg)
             log_msg = const.STR_ASSIGN_RES_EXEC + const.ERR_STARTUP_CMD_UNCOMPLETE
             self.logger.exception(log_msg)
-            self.this_server.write_attr("activityMessage", log_msg)
+            self.this_server.write_attr("activityMessage", log_msg, False)
             tango.Except.throw_exception(const.ERR_STARTUP_CMD_UNCOMPLETE, log_msg,
                                          "CentralNode.AssignResourcesCommand",
                                          tango.ErrSeverity.ERR)
@@ -188,7 +188,7 @@ class AssignResources(BaseCommand):
                 tango_client.get_device_fqdn
             )
             self.logger.debug(log_msg)
-            self.this_server.write_attr("activityMessage", log_msg)
+            self.this_server.write_attr("activityMessage", log_msg, False)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_ASSGN_RESOURCES}{dev_failed}"
