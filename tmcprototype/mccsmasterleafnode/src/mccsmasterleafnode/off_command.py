@@ -47,11 +47,11 @@ class Off(SKABaseDevice.OffCommand):
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
-            self.this_server.write_attr("activityMessage", log_msg)
+            self.this_server.write_attr("activityMessage", log_msg, False)
         else:
             log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
-            self.this_server.write_attr("activityMessage", log_msg)
+            self.this_server.write_attr("activityMessage", log_msg, False)
 
     def do(self):
         """
@@ -81,12 +81,12 @@ class Off(SKABaseDevice.OffCommand):
                 const.CMD_OFF, None, self.off_cmd_ended_cb
             )
             self.logger.debug(const.STR_OFF_CMD_ISSUED)
-            self.this_server.write_attr("activityMessage", const.STR_OFF_CMD_ISSUED)
+            self.this_server.write_attr("activityMessage", const.STR_OFF_CMD_ISSUED, False)
             return (ResultCode.OK, const.STR_OFF_CMD_ISSUED)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_OFF_RESOURCES}{dev_failed}"
-            self.this_server.write_attr("activityMessage", log_msg)
+            self.this_server.write_attr("activityMessage", log_msg, False)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_OFF_EXEC,

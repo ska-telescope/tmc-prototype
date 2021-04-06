@@ -74,12 +74,12 @@ class AssignResources(BaseCommand):
 
             if event.err:
                 self.this_server.write_attr("activityMessage",
-                                    f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}")
+                                    f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}", False)
                 log = const.ERR_INVOKING_CMD + event.cmd_name
                 self.logger.error(log)
             else:
                 log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-                self.this_server.write_attr("activityMessage", log)
+                self.this_server.write_attr("activityMessage", log, False)
                 self.logger.info(log)
 
         except tango.DevFailed as df:
@@ -135,12 +135,12 @@ class AssignResources(BaseCommand):
             mccs_master_client.send_command_async(
                 const.CMD_ALLOCATE, argin, self.allocate_ended
             )
-            self.this_server.write_attr("activityMessage", const.STR_ALLOCATE_SUCCESS)
+            self.this_server.write_attr("activityMessage", const.STR_ALLOCATE_SUCCESS, False)
             self.logger.info(const.STR_ALLOCATE_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_ASSGN_RESOURCE_MCCS}{dev_failed}"
-            self.this_server.write_attr("activityMessage", log_msg)
+            self.this_server.write_attr("activityMessage", log_msg, False)
             self.logger.exception(dev_failed)
             tango.Except.re_throw_exception(
                 dev_failed,

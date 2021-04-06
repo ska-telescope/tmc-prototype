@@ -80,7 +80,7 @@ class StandByTelescope(SKABaseDevice.OffCommand):
             device_data.health_aggreegator.unsubscribe_event()
             log_msg = const.STR_STANDBY_CMD_ISSUED
             self.logger.info(log_msg)
-            self.this_server.write_attr("activityMessage", log_msg)
+            self.this_server.write_attr("activityMessage", log_msg, False)
             # Unsubscribe commandResult attribute of MccsController
             cmd_res_subscriber_unsubscriber_obj = CommandResultFetcher()
             cmd_res_subscriber_unsubscriber_obj._unsubscribe_cmd_res_attribute_events()
@@ -90,7 +90,7 @@ class StandByTelescope(SKABaseDevice.OffCommand):
         except AssertionError:
             log_msg = const.ERR_STARTUP_CMD_UNCOMPLETE
             self.logger.exception(log_msg)
-            self.this_server.write_attr("activityMessage", const.ERR_STARTUP_CMD_UNCOMPLETE)
+            self.this_server.write_attr("activityMessage", const.ERR_STARTUP_CMD_UNCOMPLETE, False)
             tango.Except.throw_exception(const.STR_STANDBY_EXEC, log_msg,
                                          "CentralNode.StandByTelescopeCommand",
                                          tango.ErrSeverity.ERR)
@@ -131,12 +131,12 @@ class StandByTelescope(SKABaseDevice.OffCommand):
                 const.CMD_OFF, tango_client.get_device_fqdn
             )
             self.logger.debug(log_msg)
-            self.this_server.write_attr("activityMessage", log_msg)
+            self.this_server.write_attr("activityMessage", log_msg, False)
 
         except DevFailed as dev_failed:
             log_msg = const.ERR_EXE_OFF_CMD + str(dev_failed)
             self.logger.exception(dev_failed)
-            self.this_server.write_attr("activityMessage", const.ERR_EXE_OFF_CMD)
+            self.this_server.write_attr("activityMessage", const.ERR_EXE_OFF_CMD, False)
             tango.Except.throw_exception(
                 const.STR_STANDBY_EXEC,
                 log_msg,
