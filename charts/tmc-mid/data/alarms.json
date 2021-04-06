@@ -1,0 +1,10 @@
+[
+  {
+    "alarm": "alertCspState", 
+    "input_string": "tag=alertCspState;formula=(ska_mid/tm_leaf_node/csp_subarray01/State == ON);on_delay=0;off_delay=0;priority=fault;shlvd_time=2;group=gr_all;message=Csp Subarray cannot be in Off state;on_command=ska_mid/tm_leaf_node/csp_subarray01/Off;enabled=1"
+  },  
+  {
+    "alarm": "alertCnHealthState",
+    "input_string": "tag=alertCnHealthState;formula=(ska_mid/tm_central/central_node/telescopeHealthState == 3);on_delay=0;off_delay=0;priority=fault;shlvd_time=2;group=gr_all;message=Central Node is in telescopeHealthState UNKNOWN;enabled=1"
+  }
+]
