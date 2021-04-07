@@ -60,7 +60,6 @@ class On(SKASubarray.OnCommand):
             mccs_subarray_ln_client.send_command(const.CMD_ON, None)
             message = "On command completed OK"
             self.logger.info(message)
-            this_server.write_attr("activityMessage", message, False)
             return (ResultCode.OK, message)
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_INVOKING_ON_CMD}{dev_failed}"
