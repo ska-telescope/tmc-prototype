@@ -101,12 +101,21 @@ class AssignResources(BaseCommand):
 
         Example:
                 {
-                    "subarray_id": 1,
-                    "station_ids":[1,2],
-                    "channels": [[[0,8,1,1],[8,8,2,1],[24,16,2,1]],
-                    "station_beam_ids": [1]
+                  "interface": "https://schema.skatelescope.org/ska-low-mccs-assignresources/1.0",
+                  "subarray_id": 1,
+                  "subarray_beam_ids": [
+                    1
+                  ],
+                  "station_ids": [
+                    [
+                      1,
+                      2
+                    ]
+                  ],
+                  "channel_blocks": [
+                    3
+                  ]
                 }
-
 
         Note: Enter the json string without spaces as an input.
 
