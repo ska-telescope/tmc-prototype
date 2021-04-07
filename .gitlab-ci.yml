@@ -292,36 +292,36 @@ build DishMaster wheel for development: # Executed on a commit
     paths:
       - ./tmcprototype/dishmaster/dist/
 
-# unit tests:
-#   image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
-#   stage: unit-test
-#   tags:
-#     - docker-executor
-#   script:
-#     - make unit-test
-#   artifacts:
-#     paths:
-#       - ./build
+unit tests:
+  image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
+  stage: unit-test
+  tags:
+    - docker-executor
+  script:
+    - make unit-test
+  artifacts:
+    paths:
+      - ./build
 
-# build-image:
-#   stage: build
-#   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
-#   tags:
-#     - k8srunner
-#   script:
-#     - export IMG="$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
-#     - docker build --pull --tag "$IMG" .
-#     - echo -n "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
-#     - docker push "$IMG"
-#   artifacts:
-#     paths:
-#       - current_tag.txt
+build-image:
+  stage: build
+  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
+  tags:
+    - k8srunner
+  script:
+    - export IMG="$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+    - docker build --pull --tag "$IMG" .
+    - echo -n "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+    - docker push "$IMG"
+  artifacts:
+    paths:
+      - current_tag.txt
 
 
 test-mid:
   stage: test
-  # dependencies:
-  #   - build-image 
+  dependencies:
+    - build-image 
   tags:
     - k8srunner
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
@@ -356,8 +356,8 @@ test-mid:
 
 test-low:
   stage: test
-  # dependencies:
-  #   - build-image 
+  dependencies:
+    - build-image 
   tags:
     - k8srunner
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
