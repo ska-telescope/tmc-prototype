@@ -72,7 +72,7 @@ class AssignResources(BaseCommand):
                 logical ID of beam
 
         Example:
-            {"mccs":{"subarray_id":1,"station_ids":[1,2],"channels":[[0,8,1,1],[8,8,2,1],[24,16,2,1]],"station_beam_ids":[1]}}
+            {"interface":"https://schema.skatelescope.org/ska-low-tmc-assignresources/1.0","subarray_id":1,"mccs":{"subarray_beam_ids":[1],"station_ids":[[1,2]],"channel_blocks":[3]},"sdp":{}}
 
         Note: Enter input without spaces as:{"subarray_id":1,"station_ids":[1,2],"channels":[1,2,3,4,5,6,7,8],"station_beam_ids":[1]}
 
@@ -93,8 +93,7 @@ class AssignResources(BaseCommand):
             # Check if Mccs On command is completed
             assert device_data.cmd_res_evt_val == 0
             json_argument = json.loads(argin)
-            json_argument_mccs = json.loads(argin)
-            subarray_id = int(json_argument["mccs"]["subarray_id"])
+            subarray_id = int(json_argument["subarray_id"])
             subarray_cmd_data = self._create_subarray_cmd_data(json_argument)
             log_msg = f"Assigning resources to subarray :-> {subarray_id}"
             self.logger.info(log_msg)
@@ -103,8 +102,8 @@ class AssignResources(BaseCommand):
             )
             self.invoke_assign_resources(subarray_client, subarray_cmd_data)
 
-            input_mccs_assign = json.dumps(json_argument_mccs["mccs"])
-
+            json_argument_mccs = json.loads(argin)
+            input_mccs_assign = self._create_mccs_cmd_data(json_argument_mccs)
             self.mccs_master_ln_fqdn = ""
             property_value = self.this_server.read_property("MCCSMasterLeafNodeFQDN")
             self.mccs_master_ln_fqdn = self.mccs_master_ln_fqdn.join(property_value)
@@ -147,20 +146,34 @@ class AssignResources(BaseCommand):
                                          "CentralNode.AssignResourcesCommand",
                                          tango.ErrSeverity.ERR)
 
+    def _create_mccs_cmd_data(self, json_argument):
+        """
+        Delete sdp key value pair and mccs key from json argument to pass json key to mccs master leaf node.
+
+        :param json_argument: The string in JSON format.
+
+        :return: The string in JSON format.
+        """
+        mccs_value = json_argument["mccs"]
+        del json_argument["sdp"]
+        del json_argument["mccs"]
+        json_argument.update(mccs_value)
+        input_to_mccs= json.dumps(json_argument)
+        return input_to_mccs
+
     def _create_subarray_cmd_data(self, json_argument):
         """
-        Delete subarray id from json argument and create proxy of subarray corresponding to subarray id
+        Delete subarray id, sdp from json argument and create proxy of subarray corresponding to subarray id
         and call assign_resources_leaf_node method.
 
         :param json_argument: The string in JSON format.
-                device_data : Object of class device_data
 
         :return: None
         """
         # Remove subarray_id key from input json argument and send the json to subarray node
-        input_json_subarray = json_argument["mccs"]
-        del input_json_subarray["subarray_id"]
-        input_to_subarray = json.dumps(input_json_subarray)
+        del json_argument["subarray_id"]
+        del json_argument["sdp"]
+        input_to_subarray = json.dumps(json_argument)
         return input_to_subarray
 
     def create_client(self, fqdn):
