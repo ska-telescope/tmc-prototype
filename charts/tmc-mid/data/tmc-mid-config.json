@@ -28,6 +28,12 @@
                   "-1",
                   "1"
                 ]
+              },
+              "healthAggregationStatus": {
+                "abs_change": [
+                  "-1",
+                  "1"
+                ]
               }
             },
             "properties": {
@@ -41,7 +47,7 @@
                 "ska_mid/tm_leaf_node/d"
               ],
               "TMMidSubarrayNodes": [
-                "ska_mid/tm_subarray_node/1",
+                "ska_mid/tm_subarray_node/15",
                 "ska_mid/tm_subarray_node/2",
                 "ska_mid/tm_subarray_node/3"
               ],
@@ -67,6 +73,8 @@
                 "activitymessage",
                 "1000",
                 "telescopehealthstate",
+                "1000",
+                "healthAggregationStatus",
                 "1000"
               ]
             }
