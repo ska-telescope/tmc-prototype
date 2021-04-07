@@ -184,7 +184,7 @@ class WaitScanning:
         self.w2.wait_until_value_changed_to("READY", timeout)
 
 
-def sync_assign_resources(nr_of_receptors=4, timeout=60):
+def sync_assign_resources(nr_of_receptors=4, timeout=200):
     # defined as a decorator
     def decorator_sync_assign_resources(func):
         @functools.wraps(func)
