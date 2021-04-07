@@ -20,11 +20,10 @@ from tango.server import run, command, device_property, attribute
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
-from ska.base.control_model import HealthState, SimulationMode, TestMode
 
 from tmc.common.tango_server_helper import TangoServerHelper
 
-from . import const, release
+from . import const
 from .on_command import On
 from .off_command import Off
 from .standby_command import Standby
