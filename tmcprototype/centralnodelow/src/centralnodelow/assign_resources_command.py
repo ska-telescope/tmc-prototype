@@ -58,18 +58,25 @@ class AssignResources(BaseCommand):
 
         :param argin: The string in JSON format. The JSON contains following values:
 
+           interface:
+                DevString. Mandatory.
+                Schema to allocate assign resources.
+
            subarray_id:
                 DevShort. Mandatory.
                 Sub-Array to allocate resources to
-           station_ids:
-                DevArray. Mandatory
-                list of stations contributing beams to the data set
-           channels:
-                DevArray. Mandatory
-                list of frequency channels used
-           station_beam_ids:
-                DevArray. Mandatory
-                logical ID of beam
+
+           mccs:
+                subarray_beam_ids:
+                    DevArray. Mandatory
+                    logical ID of beam
+                station_ids:
+                    DevArray. Mandatory
+                    list of stations contributing beams to the data set
+                channel_blocks:
+                    DevArray. Mandatory
+                    list of channels used
+
 
         Example:
             {"interface":"https://schema.skatelescope.org/ska-low-tmc-assignresources/1.0","subarray_id":1,"mccs":{"subarray_beam_ids":[1],"station_ids":[[1,2]],"channel_blocks":[3]},"sdp":{}}
