@@ -22,7 +22,7 @@ class AssignResources(BaseCommand):
     """
     A class for CentralNode's AssignResources() command.
 
-    Assigns resources to given subarray. It accepts the subarray id, station ids, station beam id and channels
+    Assigns resources to given subarray. It accepts the subarray id, mccs string which contains subarray_beam_ids, station id and channels blocks
     in JSON string format.
     """
 
@@ -81,7 +81,7 @@ class AssignResources(BaseCommand):
         Example:
             {"interface":"https://schema.skatelescope.org/ska-low-tmc-assignresources/1.0","subarray_id":1,"mccs":{"subarray_beam_ids":[1],"station_ids":[[1,2]],"channel_blocks":[3]},"sdp":{}}
 
-        Note: Enter input without spaces as:{"subarray_id":1,"station_ids":[1,2],"channels":[1,2,3,4,5,6,7,8],"station_beam_ids":[1]}
+        Note: Enter input without spaces as: {"interface":"https://schema.skatelescope.org/ska-low-tmc-assignresources/1.0","subarray_id":1,"mccs":{"subarray_beam_ids":[1],"station_ids":[[1,2]],"channel_blocks":[3]},"sdp":{}}
 
         return:
             None
@@ -155,7 +155,7 @@ class AssignResources(BaseCommand):
 
     def _create_mccs_cmd_data(self, json_argument):
         """
-        Delete sdp key value pair and mccs key from json argument to pass json key to mccs master leaf node.
+        Remove 'sdp' and 'mccs' key from input JSON argument and forward the updated JSON to mccs master leaf node.
 
         :param json_argument: The string in JSON format.
 
@@ -170,12 +170,11 @@ class AssignResources(BaseCommand):
 
     def _create_subarray_cmd_data(self, json_argument):
         """
-        Delete subarray id, sdp from json argument and create proxy of subarray corresponding to subarray id
-        and call assign_resources_leaf_node method.
+        Remove 'subarray id', 'sdp' from json argument and forward the updated JSON to Subarray node.
 
         :param json_argument: The string in JSON format.
 
-        :return: None
+        :return: The string in JSON format.
         """
         # Remove subarray_id key from input json argument and send the json to subarray node
         del json_argument["subarray_id"]
