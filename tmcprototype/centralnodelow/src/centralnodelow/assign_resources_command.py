@@ -60,7 +60,7 @@ class AssignResources(BaseCommand):
 
            interface:
                 DevString. Mandatory.
-                Schema to allocate assign resources.
+                Version of schema to allocate assign resources.
 
            subarray_id:
                 DevShort. Mandatory.
@@ -109,14 +109,14 @@ class AssignResources(BaseCommand):
             )
             self.invoke_assign_resources(subarray_client, subarray_cmd_data)
 
-            json_argument_mccs = json.loads(argin)
-            input_mccs_assign = self._create_mccs_cmd_data(json_argument_mccs)
+            mccs_string = json.loads(argin)
+            input_mccs_master = self._create_mccs_cmd_data(mccs_string)
             self.mccs_master_ln_fqdn = ""
             property_value = self.this_server.read_property("MCCSMasterLeafNodeFQDN")
             self.mccs_master_ln_fqdn = self.mccs_master_ln_fqdn.join(property_value)
 
             mccs_master_ln_client = self.create_client(self.mccs_master_ln_fqdn)
-            self.invoke_assign_resources(mccs_master_ln_client, input_mccs_assign)
+            self.invoke_assign_resources(mccs_master_ln_client, input_mccs_master)
 
             self.this_server.write_attr("activityMessage", const.STR_ASSIGN_RESOURCES_SUCCESS, False)
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
