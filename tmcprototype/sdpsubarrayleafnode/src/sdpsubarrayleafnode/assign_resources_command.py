@@ -68,7 +68,7 @@ class AssignResources(BaseCommand):
         this_server = TangoServerHelper.get_instance()
         if event.err:
             log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
-            this_server.write_attr("activityMessage", log)
+            this_server.write_attr("activityMessage", log, False)
             self.logger.error(log)
             tango.Except.throw_exception(
                 "SDP Subarray returned error while assigning resources",
@@ -78,7 +78,7 @@ class AssignResources(BaseCommand):
             )
         else:
             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            this_server.write_attr("activityMessage", log)
+            this_server.write_attr("activityMessage", log, False)
             self.logger.debug(log)
 
     @identify_with_id("assign", "argin")
@@ -146,7 +146,7 @@ class AssignResources(BaseCommand):
                 const.CMD_ASSIGN_RESOURCES, command_data=argin, callback_method=self.assign_resources_ended
                 )
             # Update the status of command execution status in activity message
-            this_server.write_attr("activityMessage", const.STR_ASSIGN_RESOURCES_SUCCESS)
+            this_server.write_attr("activityMessage", const.STR_ASSIGN_RESOURCES_SUCCESS, False)
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
 
         except InvalidObsStateError as error:
@@ -161,7 +161,7 @@ class AssignResources(BaseCommand):
         except ValueError as value_error:
             log_msg = f"{const.ERR_INVALID_JSON}{value_error}"
             self.logger.exception(log_msg)
-            this_server.write_attr("activityMessage", f"{const.ERR_INVALID_JSON}{value_error}")
+            this_server.write_attr("activityMessage", f"{const.ERR_INVALID_JSON}{value_error}", False)
             tango.Except.throw_exception(
                 const.STR_CMD_FAILED,
                 log_msg,

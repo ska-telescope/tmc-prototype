@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""tmcprototype"""
-version="0.5.3"
+version="0.5.4"
 version_info=version.split(".")
 description="""TMC Prototype"""
 author="Team NCRA"
@@ -10,9 +10,9 @@ license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
 
-release=0.5.3
-tag=0.5.3
-tag_description=Update tmc devices to use ska-tmc-common package with version 0.1.5
-release_notes=This release contains:<br/><ul><li>Updated tmc devices to use ska-tmc-common package with version 0.1.5</li></ul><br/>
-gitlab_username=JayantKumbhar
-private_token=dnz2nQPwrzS9EPC7vbcN
+release=0.5.4
+tag=0.5.4
+tag_description=Utilisation of ska-tmc-common version 0.1.6
+release_notes=This release contains:<br/><ul><li>Updated tmc devices to use ska-tmc-common package with version 0.1.6</li></ul><br/>
+gitlab_username=kalyanithigale
+private_token=L25KZP--AZs1gUyrDipG

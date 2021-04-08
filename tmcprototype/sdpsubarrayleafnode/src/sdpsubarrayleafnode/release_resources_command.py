@@ -81,11 +81,11 @@ class ReleaseAllResources(BaseCommand):
         this_server = TangoServerHelper.get_instance()
         if event.err:
             log = f"{const.ERR_INVOKING_CMD}{event.cmd_name} {event.errors}"
-            this_server.write_attr("activityMessage", log)
+            this_server.write_attr("activityMessage", log, False)
             self.logger.error(log)
         else:
             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            this_server.write_attr("activityMessage", log)
+            this_server.write_attr("activityMessage", log, False)
             self.logger.info(log)
 
     def do(self):
@@ -108,12 +108,12 @@ class ReleaseAllResources(BaseCommand):
                 const.CMD_RELEASE_RESOURCES, None, self.releaseallresources_cmd_ended_cb
             )
             # Update the status of command execution status in activity message
-            this_server.write_attr("activityMessage", const.STR_REL_RESOURCES)
+            this_server.write_attr("activityMessage", const.STR_REL_RESOURCES, False)
             self.logger.info(const.STR_REL_RESOURCES)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_RELEASE_RESOURCES}{dev_failed}"
-            this_server.write_attr("activityMessage", log_msg)
+            this_server.write_attr("activityMessage", log_msg, False)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_RELEASE_RES_EXEC,

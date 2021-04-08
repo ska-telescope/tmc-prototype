@@ -80,11 +80,11 @@ class Configure(BaseCommand):
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
-            this_server.write_attr("activityMessage", log_msg)
+            this_server.write_attr("activityMessage", log_msg, False)
         else:
             log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
-            this_server.write_attr("activityMessage", log_msg)
+            this_server.write_attr("activityMessage", log_msg, False)
 
     def do(self, argin):
         """
@@ -132,7 +132,7 @@ class Configure(BaseCommand):
             mccs_subarray_client.send_command_async(
                 const.CMD_CONFIGURE, cmd_data, self.configure_cmd_ended_cb
             )
-            this_server.write_attr("activityMessage", const.STR_CONFIGURE_SUCCESS)
+            this_server.write_attr("activityMessage", const.STR_CONFIGURE_SUCCESS, False)
 
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
 
@@ -148,7 +148,7 @@ class Configure(BaseCommand):
 
         except ValueError as value_error:
             log_msg = f"{const.ERR_INVALID_JSON_CONFIG}{value_error}"
-            this_server.write_attr("activityMessage", log_msg)
+            this_server.write_attr("activityMessage", log_msg, False)
             self.logger.exception(value_error)
             tango.Except.throw_exception(
                 const.ERR_CONFIGURE_INVOKING_CMD,
@@ -159,7 +159,7 @@ class Configure(BaseCommand):
 
         except KeyError as key_error:
             log_msg = f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}"
-            this_server.write_attr("activityMessage", log_msg)
+            this_server.write_attr("activityMessage", log_msg, False)
             self.logger.exception(key_error)
             tango.Except.throw_exception(
                 const.ERR_CONFIGURE_INVOKING_CMD,
@@ -170,7 +170,7 @@ class Configure(BaseCommand):
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_CONFIGURE_INVOKING_CMD}{dev_failed}"
-            this_server.write_attr("activityMessage", log_msg)
+            this_server.write_attr("activityMessage", log_msg, False)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.ERR_CONFIGURE_INVOKING_CMD,

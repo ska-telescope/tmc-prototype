@@ -78,11 +78,11 @@ class EndScan(BaseCommand):
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
-            this_server.write_attr("activityMessage", log_msg)
+            this_server.write_attr("activityMessage", log_msg, False)
         else:
             log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
-            this_server.write_attr("activityMessage", log_msg)
+            this_server.write_attr("activityMessage", log_msg, False)
 
     def do(self):
         """
@@ -105,7 +105,7 @@ class EndScan(BaseCommand):
             mccs_subarray_client.send_command_async(
                 const.CMD_ENDSCAN, None, self.endscan_cmd_ended_cb
             )
-            this_server.write_attr("activityMessage", const.STR_ENDSCAN_SUCCESS)
+            this_server.write_attr("activityMessage", const.STR_ENDSCAN_SUCCESS, False)
             self.logger.info(const.STR_ENDSCAN_SUCCESS)
 
         # TODO: Mock obs_state issue to be resolved
@@ -118,7 +118,7 @@ class EndScan(BaseCommand):
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_ENDSCAN_COMMAND}{dev_failed}"
-            this_server.write_attr("activityMessage", log_msg)
+            this_server.write_attr("activityMessage", log_msg, False)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_END_SCAN_EXEC,

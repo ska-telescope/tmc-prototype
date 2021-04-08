@@ -62,11 +62,11 @@ class Disable(BaseCommand):
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
-            this_server.write_attr("activityMessage", log_msg)
+            this_server.write_attr("activityMessage", log_msg, False)
         else:
             log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
-            this_server.write_attr("activityMessage", log_msg)
+            this_server.write_attr("activityMessage", log_msg, False)
 
     def do(self):
         """
@@ -88,7 +88,7 @@ class Disable(BaseCommand):
                 const.CMD_Disable, None, self.disable_cmd_ended_cb
             )
             self.logger.debug(const.STR_DISABLE_CMS_SUCCESS)
-            this_server.write_attr("activityMessage", const.STR_DISABLE_CMS_SUCCESS)
+            this_server.write_attr("activityMessage", const.STR_DISABLE_CMS_SUCCESS, False)
 
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)

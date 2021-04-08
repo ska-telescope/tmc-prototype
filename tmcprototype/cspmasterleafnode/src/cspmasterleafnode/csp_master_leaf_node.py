@@ -20,11 +20,10 @@ from tango.server import run, command, device_property, attribute
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
-from ska.base.control_model import HealthState, SimulationMode, TestMode
 
 from tmc.common.tango_server_helper import TangoServerHelper
 
-from . import const, release
+from . import const
 from .on_command import On
 from .off_command import Off
 from .standby_command import Standby
@@ -100,20 +99,13 @@ class CspMasterLeafNode(SKABaseDevice):
 
             this_device = TangoServerHelper.get_instance()
             this_device.set_tango_class(device)
-
-            this_device.write_attr("healthState", HealthState.OK)
-            this_device.write_attr("simulationMode", SimulationMode.FALSE)
-            this_device.write_attr("testMode", TestMode.NONE)
-            this_device.write_attr("buildState", "{},{},{}".format(
-                release.name, release.version, release.description))
-            this_device.write_attr("versionId", release.version)
-            this_device.write_attr("activityMessage", const.STR_CSP_INIT_LEAF_NODE)
+            this_device.write_attr("activityMessage", const.STR_CSP_INIT_LEAF_NODE, False)
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
 
-            this_device.write_attr("activityMessage", const.STR_INIT_SUCCESS)
+            this_device.write_attr("activityMessage", const.STR_INIT_SUCCESS, False)
             self.logger.info(const.STR_INIT_SUCCESS)
             return (ResultCode.OK, const.STR_INIT_SUCCESS)
 

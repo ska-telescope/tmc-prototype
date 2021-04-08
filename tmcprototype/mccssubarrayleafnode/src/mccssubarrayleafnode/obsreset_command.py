@@ -67,12 +67,12 @@ class ObsReset(BaseCommand):
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
             #device_data._read_activity_message = log_msg
-            this_server.write_attr("activityMessage", log_msg)
+            this_server.write_attr("activityMessage", log_msg, False)
         else:
             log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
             #device_data._read_activity_message = log_msg
-            this_server.write_attr("activityMessage", log_msg)
+            this_server.write_attr("activityMessage", log_msg, False)
 
     def do(self):
         """
@@ -95,12 +95,12 @@ class ObsReset(BaseCommand):
             mccs_subarray_client.send_command_async(
                 const.CMD_OBSRESET, None, self.obsreset_cmd_ended_cb
             )
-            this_server.write_attr("activityMessage", const.STR_OBSRESET_SUCCESS)
+            this_server.write_attr("activityMessage", const.STR_OBSRESET_SUCCESS, False)
             self.logger.info(const.STR_OBSRESET_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_OBSRESET_INVOKING_CMD}{dev_failed}"
-            this_server.write_attr("activityMessage", log_msg)
+            this_server.write_attr("activityMessage", log_msg, False)
             self.logger.exception(log_msg)
             tango.Except.throw_exception(
                 const.ERR_OBSRESET_INVOKING_CMD,

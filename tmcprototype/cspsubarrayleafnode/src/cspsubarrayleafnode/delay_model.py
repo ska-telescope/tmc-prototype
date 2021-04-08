@@ -239,7 +239,7 @@ class DelayManager:
                 self.delay_model_calculator()
                 # update the attribute
                 self.delay_model_lock.acquire()
-                self.this_server.write_attr("delayModel", json.dumps(self.delay_model_json))
+                self.this_server.write_attr("delayModel", json.dumps(self.delay_model_json), False)
                 self.delay_model_lock.release()
 
                 # wait for timer event
@@ -247,7 +247,7 @@ class DelayManager:
             else:
                 # TODO: This waiting on event is added temporarily to reduce high CPU usage.
                 self._stop_delay_model_event.wait(0.02)
-                self.this_server.attr_map["delayModel"] = " "
+                self.this_server.write_attr("delayModel", " ", False)
         
         self.logger.debug("Stop event received. Thread exit.")
 

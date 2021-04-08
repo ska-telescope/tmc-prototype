@@ -72,7 +72,7 @@ class SetOperateMode(BaseCommand):
             log_message = (
                 f"Exception occured while executing the '{command_name}' command."
             )
-            self.this_server.write_attr("activityMessage", log_message)
+            self.this_server.write_attr("activityMessage", log_message, False)
             tango.Except.re_throw_exception(
                 dev_failed,
                 f"Exception in '{command_name}' command.",
@@ -100,7 +100,7 @@ class SetOperateMode(BaseCommand):
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_message = f"Exception occurred while subscribing to Dish attribute: {attribute_name}"
-                self.this_server.write_attr("activityMessage", log_message)
+                self.this_server.write_attr("activityMessage", log_message, False)
                 tango.Except.re_throw_exception(
                     dev_failed,
                     "Exception in Init command",
@@ -119,7 +119,7 @@ class SetOperateMode(BaseCommand):
             log_message = (
                 f"Event system DevError(s) occured!!! {str(event_data.errors)}"
             )
-            self.this_server.write_attr("activityMessage", log_message)
+            self.this_server.write_attr("activityMessage", log_message, False)
             self.logger.error(log_message)
             return
 
@@ -131,5 +131,5 @@ class SetOperateMode(BaseCommand):
         # converted to lowercase in subsequent callbacks.
         attr_name = fqdn_attr_name.split("/")[-1].split("#")[0]
         log_message = f"{attr_name} is {event_data.attr_value.value}."
-        self.this_server.write_attr("activityMessage", log_message)
+        self.this_server.write_attr("activityMessage", log_message, False)
         self.logger.info(log_message)

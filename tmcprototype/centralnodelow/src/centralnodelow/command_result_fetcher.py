@@ -51,7 +51,7 @@ class CommandResultFetcher:
                 log_message = (
                     f"Exception occurred while subscribing to mccs attribute: {attribute_name}"
                 )
-                self.this_server.write_attr("activityMessage", log_message)
+                self.this_server.write_attr("activityMessage", log_message, False)
                 tango.Except.re_throw_exception(
                     dev_failed,
                     "Exception in StartupTelescope command",

@@ -39,8 +39,8 @@ class CommandCallBack:
         if event.err:
             log_message = f"Error in invoking command: {event.cmd_name}\n{event.errors}"
             self.logger.error(log_message)
-            this_server.write_attr("activityMessage", log_message)
+            this_server.write_attr("activityMessage", log_message, False)
         else:
             log_message = f"Command :-> {event.cmd_name} invoked successfully."
             self.logger.info(log_message)
-            this_server.write_attr("activityMessage", log_message)
+            this_server.write_attr("activityMessage", log_message, False)
