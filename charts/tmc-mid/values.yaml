@@ -78,7 +78,7 @@ deviceServers:
     file: "data/cspsubarrayleafnode.yaml"
   cspmasterleafnode:
     instances: ["01"]
-    file: "data/cspmasterleafnode"
+    file: "data/cspmasterleafnode.yaml"
   sdpsubarrayleafnode:
     instances: ["01", "02", "03"]
     file: "data/sdpsubarrayleafnode.yaml"
@@ -86,7 +86,7 @@ deviceServers:
     instances: ["01"]
     file: "data/sdpmasterleafnode.yaml"
   subarraynode:
-    instances: ["01", "02", "03"]
+    instances: ["sa1", "sa2", "sa3", "sa4"]
     file: "data/subarraynode.yaml"
   centralnode:
     instances: ["01"]
