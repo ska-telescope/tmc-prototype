@@ -1,0 +1,26 @@
+name: "tm-alarmhandler-{{.Release.Name}}"
+function: alarm-management
+domain: general-monitoring
+instances: ["01"]
+entrypoints:
+  - name: "alarmhandler-srv.AlarmHandler"
+server:
+  name: "alarmhandler-srv"
+  instances:
+    - name: "01"
+      classes:
+        - name: "AlarmHandler"
+          devices:
+            - name: "ska_mid/tm_alarmhandler/tmalarmhandler"
+              properties:
+                - name: "SkaLevel"
+                  values:
+                    - "-1"
+
+depends_on:
+  - device: sys/database/2
+image:
+  registry: nexus.engageska-portugal.pt/tango-example
+  image: tmalarmhandler
+  tag: latest
+  pullPolicy: Always
