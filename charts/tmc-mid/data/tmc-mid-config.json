@@ -29,7 +29,7 @@
                   "1"
                 ]
               },
-              "healthAggregationStatus": {
+              "healthState": {
                 "abs_change": [
                   "-1",
                   "1"
@@ -74,7 +74,7 @@
                 "1000",
                 "telescopehealthstate",
                 "1000",
-                "healthAggregationStatus",
+                "healthState",
                 "1000"
               ]
             }

@@ -1,6 +1,6 @@
 [  
   {
     "alarm": "healthaggregationfailure",
-    "input_string": "tag=healthaggregationfailure;formula=(ska_mid/tm_central/central_node/healthAggregationStatus==-1);on_delay=0;off_delay=0;priority=fault;shlvd_time=2;group=gr_all;message=Central Node health aggregation not working;enabled=1"
+    "input_string": "tag=healthaggregationfailure;formula=(ska_mid/tm_central/central_node/healthState == 3);on_delay=0;off_delay=0;priority=fault;shlvd_time=2;group=gr_all;message=Central Node health aggregation not working;enabled=1"
   }
 ]
