@@ -131,7 +131,6 @@ class AssignResources(BaseCommand):
         """
 
         try:
-            print("********argin***********",argin)
             self.this_server = TangoServerHelper.get_instance()
             log_msg = (
                 "Input JSON for MCCS master leaf node AssignResources command is: "
