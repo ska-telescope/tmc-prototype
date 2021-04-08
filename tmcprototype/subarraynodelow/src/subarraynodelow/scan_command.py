@@ -61,7 +61,7 @@ class Scan(SKASubarray.ScanCommand):
             mccs_input_scan = input_scan["mccs"]
             log_msg = f"{const.STR_SCAN_IP_ARG}{argin}"
             self.logger.info(log_msg)
-            this_server.write_attr("activityMessage", log_msg)
+            this_server.write_attr("activityMessage", log_msg, False)
             device_data.isScanRunning = True
             # Invoke scan command on MCCS Subarray Leaf Node with input argument as scan id
             mccs_subarray_ln_fqdn = ""
@@ -72,19 +72,19 @@ class Scan(SKASubarray.ScanCommand):
                 const.CMD_SCAN, json.dumps(mccs_input_scan)
             )
             self.logger.info(const.STR_MCCS_SCAN_INIT)
-            this_server.write_attr("activityMessage", const.STR_MCCS_SCAN_INIT)
+            this_server.write_attr("activityMessage", const.STR_MCCS_SCAN_INIT, False)
             self.logger.info(const.STR_SA_SCANNING)
             # Once Scan Duration is complete call EndScan Command
             self.logger.info("Starting Scan Thread")
             device_data.scan_timer_handler.start_scan_timer(device_data.scan_duration)
-            this_server.write_attr("activityMessage", const.STR_SCAN_SUCCESS)
+            this_server.write_attr("activityMessage", const.STR_SCAN_SUCCESS, False)
             self.logger.info("Scan thread started")
             return (ResultCode.STARTED, const.STR_SCAN_SUCCESS)
 
         except json.JSONDecodeError as json_error:
             log_message = f"{const.ERR_INVALID_JSON}{json_error}"
             self.logger.error(log_message)
-            this_server.write_attr("activityMessage", log_message)
+            this_server.write_attr("activityMessage", log_message, False)
             tango.Except.throw_exception(
                 const.STR_CMD_FAILED,
                 log_message,
@@ -94,7 +94,7 @@ class Scan(SKASubarray.ScanCommand):
 
         except KeyError as key_error:
             self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
-            this_server.write_attr("activityMessage", const.ERR_JSON_KEY_NOT_FOUND + str(key_error))
+            this_server.write_attr("activityMessage", (const.ERR_JSON_KEY_NOT_FOUND + str(key_error)), False)
             log_message = f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}"
             self.logger.exception(key_error)
             tango.Except.throw_exception(

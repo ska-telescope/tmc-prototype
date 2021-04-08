@@ -53,7 +53,7 @@ class End(SKASubarray.EndCommand):
             mccs_subarray_ln_client = TangoClient(mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(const.CMD_END)
             self.logger.info(const.STR_CMD_END_INV_MCCS)
-            this_server.write_attr("activityMessage", const.STR_END_SUCCESS)
+            this_server.write_attr("activityMessage", const.STR_END_SUCCESS, False)
             self.logger.info(const.STR_END_SUCCESS)
             device.is_end_command = True
             return (ResultCode.OK, const.STR_END_SUCCESS)

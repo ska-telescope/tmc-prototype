@@ -94,6 +94,7 @@ def test_configure_scan():
         # tear down
         LOGGER.info("TMC-configure tests complete: tearing down...")
         tmc.end_sb()
+        fixture["state"] = "Subarray is in IDLE after EndCommand"
         LOGGER.info("Invoked EndSB on Subarray")
         DishMaster1 = DeviceProxy("mid_d0001/elt/master")
         DishMaster2 = DeviceProxy("mid_d0002/elt/master")
@@ -106,6 +107,7 @@ def test_configure_scan():
 
         tmc.release_resources()
         LOGGER.info("Invoked ReleaseResources on Subarray")
+        fixture["state"] = "Released Resources"
 
         tmc.set_to_standby()
         LOGGER.info("Invoked StandBy on Subarray")
@@ -122,8 +124,13 @@ def test_configure_scan():
             tmc.end_sb()
             tmc.release_resources()
             tmc.set_to_standby()
-        elif fixture["state"] == "Subarray SCANNING":
-            raise Exception("unable to teardown subarray from being in SCANNING")
+        elif fixture["state"] == "Subarray is in IDLE after EndCommand":
+            LOGGER.info("Tearing down in , state = {}".format(fixture["state"]))
+            tmc.release_resources()
+            tmc.set_to_standby()
+        elif fixture["state"] == "Released Resources":
+            LOGGER.info("Tearing down in , state = {}".format(fixture["state"]))
+            tmc.set_to_standby()
         elif fixture["state"] == "Subarray CONFIGURING":
             raise Exception("unable to teardown subarray from being in CONFIGURING")
         pytest.fail("unable to complete test without exceptions")

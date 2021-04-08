@@ -8,4 +8,4 @@ marshmallow
 cdm-shared-library
 ska-telescope-model
 fire
-skatmccommon==0.1.5+124cd964
+skatmccommon==0.1.6+3aaa7bbe

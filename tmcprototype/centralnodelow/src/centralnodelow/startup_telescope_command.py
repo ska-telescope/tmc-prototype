@@ -92,12 +92,12 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
             self.create_subarray_client(subarray_low)
             log_msg = const.STR_ON_CMD_ISSUED
             self.logger.info(log_msg)
-            self.this_server.write_attr("activityMessage", log_msg)
+            self.this_server.write_attr("activityMessage", log_msg, False)
             return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
         except AssertionError as assertion_err:
             log_msg = const.ERR_STANDBY_CMD_UNCOMPLETE
             self.logger.exception(log_msg)
-            self.this_server.write_attr("activityMessage", const.ERR_STANDBY_CMD_UNCOMPLETE)
+            self.this_server.write_attr("activityMessage", const.ERR_STANDBY_CMD_UNCOMPLETE, False)
             tango.Except.re_throw_exception(assertion_err, const.ERR_STANDBY_CMD_UNCOMPLETE,
                                             log_msg, "CentralNodeLow.StartUpTelescopeCommand",
                                             tango.ErrSeverity.ERR)
@@ -140,12 +140,12 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
                 tango_client.get_device_fqdn
             )
             self.logger.debug(log_msg)
-            self.this_server.write_attr("activityMessage", log_msg)
+            self.this_server.write_attr("activityMessage", log_msg, False)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_EXE_ON_CMD}{dev_failed}"
             self.logger.exception(dev_failed)
-            self.this_server.write_attr("activityMessage", const.ERR_EXE_ON_CMD)
+            self.this_server.write_attr("activityMessage", const.ERR_EXE_ON_CMD, False)
             tango.Except.re_throw_exception(dev_failed, const.STR_ON_EXEC, log_msg,
                                             "CentralNodeLow.StartUpTelescopeCommand",
                                             tango.ErrSeverity.ERR)

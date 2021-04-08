@@ -72,11 +72,11 @@ class ReleaseResources(BaseCommand):
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
-            self.this_server.write_attr("activityMessage", log_msg)
+            self.this_server.write_attr("activityMessage", log_msg, False)
         else:
             log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
-            self.this_server.write_attr("activityMessage", log_msg)
+            self.this_server.write_attr("activityMessage", log_msg, False)
 
     def do(self, argin):
         """
@@ -113,13 +113,13 @@ class ReleaseResources(BaseCommand):
             mccs_master_client.send_command_async(
                 const.CMD_Release, argin, self.releaseresources_cmd_ended_cb
             )
-            self.this_server.write_attr("activityMessage", const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
+            self.this_server.write_attr("activityMessage", const.STR_REMOVE_ALL_RECEPTORS_SUCCESS, False)
             self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
         except ValueError as value_error:
             log_msg = f"{const.ERR_INVALID_JSON_RELEASE_RES_MCCS}{value_error}"
             self.this_server.write_attr("activityMessage",
-                                        f"{const.ERR_INVALID_JSON_RELEASE_RES_MCCS}{value_error}")
+                                        f"{const.ERR_INVALID_JSON_RELEASE_RES_MCCS}{value_error}", False)
             self.logger.exception(value_error)
             tango.Except.re_throw_exception(
                 value_error,
@@ -131,7 +131,7 @@ class ReleaseResources(BaseCommand):
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_RELEASE_ALL_RESOURCES} {dev_failed}"
-            self.this_server.write_attr("activityMessage", log_msg)
+            self.this_server.write_attr("activityMessage", log_msg, False)
             self.logger.exception(dev_failed)
             tango.Except.re_throw_exception(
                 dev_failed,

@@ -447,6 +447,11 @@ class waiter:
                 "obsState", changed_to="IDLE"
             )
         )
+        self.waits.append(
+            watch(resource("mid_sdp/elt/subarray_1")).to_become(
+                "obsState", changed_to="IDLE"
+            )
+        )
         # self.waits.append(watch(resource('mid_sdp/elt/subarray_1')).to_become("obsState",changed_to='IDLE'))
         self.waits.append(
             watch(resource("ska_mid/tm_subarray_node/1")).to_become(

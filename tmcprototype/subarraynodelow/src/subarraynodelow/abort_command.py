@@ -53,7 +53,7 @@ class Abort(SKASubarray.AbortCommand):
                 mccs_subarray_ln_fqdn = mccs_subarray_ln_fqdn.join(property_val)
                 self.abort_mccs(mccs_subarray_ln_fqdn)
                 self.logger.info(const.STR_ABORT_SUCCESS)
-                this_server.write_attr("activityMessage", const.STR_ABORT_SUCCESS)
+                this_server.write_attr("activityMessage", const.STR_ABORT_SUCCESS, False)
                 this_server.set_status(const.STR_ABORT_SUCCESS)
                 device_data.is_abort_command_executed = True
                 return (ResultCode.STARTED, const.STR_ABORT_SUCCESS)

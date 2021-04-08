@@ -47,11 +47,11 @@ class On(SKABaseDevice.OnCommand):
         this_server = TangoServerHelper.get_instance()
         if event.err:
             log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
-            this_server.write_attr("activityMessage", log)
+            this_server.write_attr("activityMessage", log, False)
             self.logger.error(log)
         else:
             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            this_server.write_attr("activityMessage", log)
+            this_server.write_attr("activityMessage", log, False)
             self.logger.info(log)
 
     def do(self):
@@ -79,7 +79,7 @@ class On(SKABaseDevice.OnCommand):
             return (ResultCode.OK, log_msg)
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_ON_INVOKING_CMD}{dev_failed}"
-            this_server.write_attr("activityMessage", log_msg)
+            this_server.write_attr("activityMessage", log_msg, False)
             self.logger.exception(log_msg)
             tango.Except.throw_exception(
                 const.ERR_ON_INVOKING_CMD,

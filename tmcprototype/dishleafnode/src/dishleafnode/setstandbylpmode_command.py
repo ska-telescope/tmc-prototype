@@ -54,16 +54,16 @@ class SetStandbyLPMode(BaseCommand):
             self.dish_master_fqdn = self.dish_master_fqdn.join(property_value)
             dish_client = TangoClient(self.dish_master_fqdn)
             cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
+            dish_client.send_command_async(command_name, callback_method=cmd_ended_cb)
             # Unsubscribe the DishMaster attributes
             self._unsubscribe_attribute_events()
-            dish_client.send_command_async(command_name, callback_method=cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
             log_message = (
                 f"Exception occured while executing the '{command_name}' command."
             )
-            this_server.write_attr("activityMessage", log_message)
+            this_server.write_attr("activityMessage", log_message, False)
             tango.Except.re_throw_exception(
                 dev_failed,
                 f"Exception in '{command_name}' command.",
@@ -76,13 +76,19 @@ class SetStandbyLPMode(BaseCommand):
         """
         Method to unsubscribe to health state change event on CspMasterLeafNode, SdpMasterLeafNode and SubarrayNode
         """
-        device_data = DeviceData.get_instance()
-        dish_client = device_data.attr_event_map["dish_client"]
-        device_data.attr_event_map.pop("dish_client")
-        for attr_name in device_data.attr_event_map:
-            log_message = "Unsubscribing attributes of: {}".format(
-                dish_client.get_device_fqdn
-            )
-            self.logger.debug(log_message)
-            dish_client.unsubscribe_attribute(device_data.attr_event_map[attr_name])
-        device_data.attr_event_map.clear()
+        try:
+            device_data = DeviceData.get_instance()
+            dish_client = device_data.attr_event_map["dish_client"]
+            device_data.attr_event_map.pop("dish_client")
+            for attr_name in device_data.attr_event_map:
+                log_message = "Unsubscribing attributes of: {}".format(
+                    dish_client.get_device_fqdn
+                )
+                self.logger.debug(log_message)
+                dish_client.unsubscribe_attribute(device_data.attr_event_map[attr_name])
+            device_data.attr_event_map.clear()
+        except Exception as e:
+            log_message = "Exception occured while unsubscribing attribute events command. {}".format(e)
+            self.logger.exception(log_message)
+            
+

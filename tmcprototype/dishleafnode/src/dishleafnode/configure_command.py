@@ -94,7 +94,7 @@ class Configure(BaseCommand):
             log_message = (
                 f"Exception occured while executing the '{command_name}' command."
             )
-            this_server.write_attr("activityMessage", log_message)
+            this_server.write_attr("activityMessage", log_message, False)
             tango.Except.re_throw_exception(
                 dev_failed,
                 f"Exception in '{command_name}' command.",
