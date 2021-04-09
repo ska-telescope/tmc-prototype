@@ -20,7 +20,7 @@ global:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: tmcprototype
     tag: 0.5.4
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
 
 dsconfig:
   configuration_file: data/tmc-mid-config.json
@@ -41,30 +41,30 @@ tmcprototype:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: tmcprototype
-    tag: end-scan-dirty
-    pullPolicy: Always
+    tag: 0.5.4
+    pullPolicy: IfNotPresent
 
 centralnodemid:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc-centralnode-mid
     tag: 0.1.4
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
 
 subarraynodemid:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc-subarraynode-mid
-    tag: end-scan-testing
-    pullPolicy: Always
+    tag: 0.1.6
+    pullPolicy: IfNotPresent
 
-# resources:
-#   limits:
-#     cpu: 300m
-#     memory: 500Mi
-#   requests:
-#     cpu: 100m
-#     memory: 128Mi
+ resources:
+   limits:
+     cpu: 300m
+     memory: 500Mi
+   requests:
+     cpu: 100m
+     memory: 128Mi
 
 deviceServers:
   - name: dishmaster1
@@ -326,10 +326,10 @@ deviceServers:
       image: tmalarmhandler
       tag: latest
       pullPolicy: Always
-    # resources:
-    #   limits:
-    #     cpu: 300m
-    #     memory: 500Mi
-    #   requests:
-    #     cpu: 100m
-    #     memory: 128Mi
+     resources:
+       limits:
+         cpu: 300m
+         memory: 500Mi
+       requests:
+         cpu: 100m
+         memory: 128Mi
