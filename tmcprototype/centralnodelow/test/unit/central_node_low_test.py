@@ -140,10 +140,10 @@ def test_assign_resources_should_raise_devfailed_exception_when_subarray_node_th
 
 def test_release_resources(mock_subarraynode_proxy, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_subarraynode_proxy[:2]
-    tango_server_obj = mock_tango_server_helper
+    _ = mock_tango_server_helper
     device_proxy.ReleaseResources(release_input_str)
     input_release = json.loads(release_input_str)
-    input_release = json.dumps(input_release["mccs"])
+    input_release = json.dumps(input_release)
     tango_client_obj.deviceproxy.command_inout.assert_called_with(
         const.CMD_RELEASE_MCCS_RESOURCES, input_release
     )

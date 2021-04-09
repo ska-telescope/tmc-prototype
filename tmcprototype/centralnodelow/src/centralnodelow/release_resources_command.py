@@ -66,9 +66,11 @@ class ReleaseResources(BaseCommand):
                 Boolean(True or False). Mandatory. True when all the resources to be released from Subarray.
 
             Example:
-                {"mccs":{"subarray_id":1,"release_all":true}}
+                {"interface":"https://schema.skatelescope.org/ska-low-tmc-releaseresources/1.0","subarray_id":1,
+                "release_all":true}
             Note: From Jive, enter input as:
-                {"mccs":{"subarray_id":1,"release_all":true}} without any space.
+                {"interface":"https://schema.skatelescope.org/ska-low-tmc-releaseresources/1.0","subarray_id":1,
+                "release_all":true} without any space.
         return:
             None
 
@@ -84,11 +86,11 @@ class ReleaseResources(BaseCommand):
         try:
             this_server = TangoServerHelper.get_instance()
             jsonArgument = json.loads(argin)
-            subarray_id = jsonArgument["mccs"]["subarray_id"]
+            subarray_id = jsonArgument["subarray_id"]
             subarray_fqdn = device_data.subarray_FQDN_dict[subarray_id]
-            if jsonArgument["mccs"]["release_all"] == True:
+            if jsonArgument["release_all"] == True:
                 # Invoke ReleaseAllResources on SubarrayNode
-                input_mccs_release = json.dumps(jsonArgument["mccs"])
+                input_mccs_release = json.dumps(jsonArgument)
                 subarray_client = TangoClient(subarray_fqdn)
                 subarray_client.send_command(const.CMD_RELEASE_RESOURCES)
                 # Invoke ReleaseAllResources on MCCS Master Leaf Node
