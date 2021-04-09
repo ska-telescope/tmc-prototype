@@ -37,7 +37,9 @@ class Scan(SKASubarray.ScanCommand):
 
         JSON string example as follows:
 
-        {"mccs":{"id":1,"scan_time":0.0}}
+        # {"mccs":{"id":1,"scan_time":0.0}}
+        {"interface":"https://schema.skatelescope.org/ska-low-tmc-scan/1.0","scan_id":1}
+
         Note: Above JSON string can be used as an input argument while invoking this command from JIVE.
 
         return:
