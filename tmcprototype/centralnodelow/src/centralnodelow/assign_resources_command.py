@@ -147,6 +147,10 @@ class AssignResources(BaseCommand):
                                          "CentralNode.AssignResourcesCommand",
                                          tango.ErrSeverity.ERR)
 
+        message = const.STR_RETURN_MSG_ASSIGN_RESOURCES_SUCCESS
+        self.logger.info(message)
+        return message
+
     def _create_subarray_cmd_data(self, json_argument):
         """
         Delete subarray id from json argument and create proxy of subarray corresponding to subarray id
