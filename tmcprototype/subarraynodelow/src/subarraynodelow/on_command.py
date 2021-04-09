@@ -18,6 +18,7 @@ from . import const
 from .device_data import DeviceData
 from .health_state_aggregator import HealthStateAggregator
 from .obs_state_aggregator import ObsStateAggregator
+from .assigned_resources_maintainer import AssignedResourcesMaintainer
 
 
 class On(SKASubarray.OnCommand):
@@ -49,8 +50,10 @@ class On(SKASubarray.OnCommand):
         device_data.is_obsreset_command_executed = False
         device_data.obs_state_aggregator = ObsStateAggregator()
         device_data.health_state_aggregator = HealthStateAggregator()
+        device_data.assigned_resources_maintainer = AssignedResourcesMaintainer()
         device_data.obs_state_aggregator.subscribe()
         device_data.health_state_aggregator.subscribe()
+        device_data.assigned_resources_maintainer.subscribe()
         this_server = TangoServerHelper.get_instance()
         try:
             mccs_subarray_ln_fqdn = ""

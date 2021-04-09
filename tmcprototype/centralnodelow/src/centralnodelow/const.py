@@ -54,6 +54,8 @@ STR_CMD_OFF_SA_LOW_DEV = "OFF command invoked on SubarrayNode device"
 STR_CMD_ON_MCCS_DEV = "ON command invoked on MccsMasterLeafNode device"
 STR_CMD_ON_SA_LOW_DEV = "ON command invoked on SubarrayNode device"
 STR_CN_INIT_SUCCESS="Central Node initialised successfully."
+STR_RETURN_MSG_ASSIGN_RESOURCES_SUCCESS = "AssignResources Command invoked successfully on CentralNodeLow."
+STR_RETURN_MSG_RELEASE_RESOURCES_SUCCESS = "ReleaseResources Command invoked successfully on CentralNodeLow."
 
 # PROPERTIES DEFAULT VALUES
 PROP_DEF_VAL_TM_LOW_SA1 = "ska_low/tm_subarray_node/1"
