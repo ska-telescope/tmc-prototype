@@ -1,0 +1,219 @@
+{
+  "id": "60533347388bc0001909c11d",
+  "name": "ALARM Dashboard",
+  "version": "1.0.6",
+  "user": "user1",
+  "insertTime": "2021-03-18T11:02:31.213Z",
+  "updateTime": "2021-03-18T11:36:57.139Z",
+  "group": null,
+  "groupWriteAccess": false,
+  "lastUpdatedBy": "user1",
+  "widget": [
+    {
+      "id": "1",
+      "x": 1,
+      "y": 2,
+      "canvas": "0",
+      "width": 29,
+      "height": 3,
+      "type": "COMMAND_WRITER",
+      "inputs": {
+        "command": {
+          "device": "ska_mid/tm_alarmhandler/tmalarmhandler",
+          "command": "Load",
+          "acceptedType": "DevString"
+        },
+        "showDevice": true,
+        "showCommand": true,
+        "requireConfirmation": true,
+        "displayOutput": true,
+        "cooldown": 0,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 0
+    },
+    {
+      "id": "2",
+      "x": 30,
+      "y": 2,
+      "canvas": "0",
+      "width": 28,
+      "height": 3,
+      "type": "COMMAND_WRITER",
+      "inputs": {
+        "command": {
+          "device": "ska_mid/tm_alarmhandler/tmalarmhandler",
+          "command": "Enable",
+          "acceptedType": "DevString"
+        },
+        "showDevice": true,
+        "showCommand": true,
+        "requireConfirmation": true,
+        "displayOutput": true,
+        "cooldown": 0,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 1
+    },
+    {
+      "id": "3",
+      "x": 30,
+      "y": 6,
+      "canvas": "0",
+      "width": 29,
+      "height": 3,
+      "type": "COMMAND_WRITER",
+      "inputs": {
+        "command": {
+          "device": "ska_mid/tm_alarmhandler/tmalarmhandler",
+          "command": "Disable",
+          "acceptedType": "DevString"
+        },
+        "showDevice": true,
+        "showCommand": true,
+        "requireConfirmation": true,
+        "displayOutput": true,
+        "cooldown": 0,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 2
+    },
+    {
+      "id": "4",
+      "x": 1,
+      "y": 10,
+      "canvas": "0",
+      "width": 29,
+      "height": 2,
+      "type": "ATTRIBUTE_DISPLAY",
+      "inputs": {
+        "attribute": {
+          "device": "ska_mid/tm_alarmhandler/tmalarmhandler",
+          "attribute": "alertcspstate",
+          "label": "alertcspstate"
+        },
+        "precision": 2,
+        "showDevice": true,
+        "showAttribute": "Label",
+        "scientificNotation": false,
+        "showEnumLabels": true,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 3
+    },
+    {
+      "id": "5",
+      "x": 2,
+      "y": 16,
+      "canvas": "0",
+      "width": 29,
+      "height": 2,
+      "type": "ATTRIBUTE_DISPLAY",
+      "inputs": {
+        "attribute": {
+          "device": "ska_mid/tm_leaf_node/csp_subarray01",
+          "attribute": "state",
+          "label": "State"
+        },
+        "precision": 2,
+        "showDevice": true,
+        "showAttribute": "Label",
+        "scientificNotation": false,
+        "showEnumLabels": false,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 4
+    },
+    {
+      "id": "6",
+      "x": 2,
+      "y": 19,
+      "canvas": "0",
+      "width": 10,
+      "height": 2,
+      "type": "COMMAND_EXECUTOR",
+      "inputs": {
+        "command": {
+          "device": "ska_mid/tm_leaf_node/csp_subarray01",
+          "command": "On",
+          "acceptedType": "DevVoid"
+        },
+        "title": "",
+        "requireConfirmation": true,
+        "displayOutput": true,
+        "cooldown": 0,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 5
+    },
+    {
+      "id": "7",
+      "x": 14,
+      "y": 19,
+      "canvas": "0",
+      "width": 10,
+      "height": 2,
+      "type": "COMMAND_EXECUTOR",
+      "inputs": {
+        "command": {
+          "device": "ska_mid/tm_leaf_node/csp_subarray01",
+          "command": "Off",
+          "acceptedType": "DevVoid"
+        },
+        "title": "",
+        "requireConfirmation": true,
+        "displayOutput": true,
+        "cooldown": 0,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 6
+    },
+    {
+      "id": "8",
+      "x": 1,
+      "y": 6,
+      "canvas": "0",
+      "width": 29,
+      "height": 3,
+      "type": "COMMAND_WRITER",
+      "inputs": {
+        "command": {
+          "device": "ska_mid/tm_alarmhandler/tmalarmhandler",
+          "command": "Remove",
+          "acceptedType": "DevString"
+        },
+        "showDevice": true,
+        "showCommand": true,
+        "requireConfirmation": true,
+        "displayOutput": true,
+        "cooldown": 0,
+        "textColor": "#000000",
+        "backgroundColor": "#ffffff",
+        "size": 1,
+        "font": "Helvetica"
+      },
+      "order": 7
+    }
+  ]
+}

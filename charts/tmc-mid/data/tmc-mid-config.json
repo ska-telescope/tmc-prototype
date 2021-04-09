@@ -28,6 +28,12 @@
                   "-1",
                   "1"
                 ]
+              },
+              "healthState": {
+                "abs_change": [
+                  "-1",
+                  "1"
+                ]
               }
             },
             "properties": {
@@ -41,7 +47,7 @@
                 "ska_mid/tm_leaf_node/d"
               ],
               "TMMidSubarrayNodes": [
-                "ska_mid/tm_subarray_node/1",
+                "ska_mid/tm_subarray_node/15",
                 "ska_mid/tm_subarray_node/2",
                 "ska_mid/tm_subarray_node/3"
               ],
@@ -65,6 +71,8 @@
                 "subarray3healthstate",
                 "1000",
                 "telescopehealthstate",
+                "1000",
+                "healthState",
                 "1000"
               ]
             }
@@ -857,7 +865,7 @@
         }
       }
     },
-    "alarmhandler-srv": {
+    "alarm-handler-srv": {
       "01": {
         "AlarmHandler": {
           "ska_mid/tm_alarmhandler/tmalarmhandler": {
