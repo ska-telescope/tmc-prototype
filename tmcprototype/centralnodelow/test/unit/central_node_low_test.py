@@ -142,10 +142,8 @@ def test_release_resources(mock_subarraynode_proxy, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_subarraynode_proxy[:2]
     _ = mock_tango_server_helper
     device_proxy.ReleaseResources(release_input_str)
-    input_release = json.loads(release_input_str)
-    input_release = json.dumps(input_release)
     tango_client_obj.deviceproxy.command_inout.assert_called_with(
-        const.CMD_RELEASE_MCCS_RESOURCES, input_release
+        const.CMD_RELEASE_MCCS_RESOURCES, release_input_str
     )
 
 
