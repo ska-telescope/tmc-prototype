@@ -196,8 +196,8 @@ class Configure(BaseCommand):
     def get_sky_coordinates(self, station_beam_pointings):
 
         sky_coordinates = []
-        azimuth_coord = station_beam_pointings["target"]["Az"]
-        elevation_coord = station_beam_pointings["target"]["El"]
+        azimuth_coord = station_beam_pointings["target"]["az"]
+        elevation_coord = station_beam_pointings["target"]["el"]
 
         # Append current timestamp into sky_coordinates set
         time_t0 = datetime.today() + timedelta(seconds=0)
