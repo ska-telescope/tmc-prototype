@@ -63,7 +63,7 @@ class AssignedResourcesMaintainer:
         :return: None
         """
         device_name = event.device.dev_name()
-        log_msg = "Event on assigned_resources attribute is: " + event
+        log_msg = "Event on assigned_resources attribute is: " + str(event)
         self.logger.debug(log_msg)
         if not event.err:
             event_assigned_resources = event.attr_value.value

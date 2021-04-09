@@ -28,7 +28,7 @@ STR_SUB_ATTR_MCCS_SALN_OBSTATE_SUCCESS = (
     "Subscribed MCCS Subarray ObsState attributes successfully."
 )
 STR_SUB_ATTR_MCCS_SALN_ASSIGNED_RESOURCES_SUCCESS = (
-    ""
+    "Subscribed MCCS Subarray assigned_resources attribute successfully"
 )
 STR_SA_INIT_SUCCESS = "Subarray node is initialized successfully."
 STR_SA_INIT = "Initializing SubarrayNode..."
