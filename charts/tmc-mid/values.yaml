@@ -19,7 +19,7 @@ global:
   tmcprototype:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: tmcprototype
-    tag: end-scan-dirty
+    tag: 0.5.4
     pullPolicy: Always
 
 dsconfig:
