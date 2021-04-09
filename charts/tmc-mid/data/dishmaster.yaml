@@ -53,22 +53,22 @@ server:
                   properties:
                     - name: "abs_change"
                       values:
-                        - "-0.001"
                         - "0.001"
+                        - "-0.001"
                     - name: "rel_change"
                       values:
-                        - "-1"
                         - "1"
+                        - "-1"
                 - attribute: "desiredPointing"
                   properties:
                     - name: "abs_change"
                       values:
-                        - "-0.001"
                         - "0.001"
+                        - "-0.001"
                     - name: "rel_change"
                       values:
-                        - "-1"
                         - "1"
+                        - "-1"
     - name: "02"
       classes:
         - name: "DishMaster"
@@ -115,22 +115,22 @@ server:
                   properties:
                     - name: "abs_change"
                       values:
-                        - "-0.001"
                         - "0.001"
+                        - "-0.001"
                     - name: "rel_change"
                       values:
-                        - "-1"
                         - "1"
+                        - "-1"
                 - attribute: "desiredPointing"
                   properties:
                     - name: "abs_change"
                       values:
-                        - "-0.001"
                         - "0.001"
+                        - "-0.001"
                     - name: "rel_change"
                       values:
-                        - "-1"
                         - "1"
+                        - "-1"
     - name: "03"
       classes:
         - name: "DishMaster"
@@ -177,22 +177,22 @@ server:
                   properties:
                     - name: "abs_change"
                       values:
-                        - "-0.001"
                         - "0.001"
+                        - "-0.001"
                     - name: "rel_change"
                       values:
-                        - "-1"
                         - "1"
+                        - "-1"
                 - attribute: "desiredPointing"
                   properties:
                     - name: "abs_change"
                       values:
-                        - "-0.001"
                         - "0.001"
+                        - "-0.001"
                     - name: "rel_change"
                       values:
-                        - "-1"
                         - "1"
+                        - "-1"
     - name: "04"
       classes:
         - name: "DishMaster"
@@ -239,22 +239,22 @@ server:
                   properties:
                     - name: "abs_change"
                       values:
-                        - "-0.001"
                         - "0.001"
+                        - "-0.001"
                     - name: "rel_change"
                       values:
-                        - "-1"
                         - "1"
+                        - "-1"
                 - attribute: "desiredPointing"
                   properties:
                     - name: "abs_change"
                       values:
-                        - "-0.001"
                         - "0.001"
+                        - "-0.001"
                     - name: "rel_change"
                       values:
-                        - "-1"
                         - "1"
+                        - "-1"
 depends_on:
   - device: sys/database/2
 image:
