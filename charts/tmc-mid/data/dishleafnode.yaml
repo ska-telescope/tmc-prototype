@@ -35,12 +35,12 @@ server:
               attribute_properties:
                 - attribute: "dishHealthState"
                   properties:
-                    - name: "__root_attr"
+                    - name: "__root_att"
                       values:
                         - "mid_d0001/elt/master/healthState"
                 - attribute: "dishPointingState"
                   properties:
-                    - name: "__root_attr"
+                    - name: "__root_att"
                       values:
                         - "mid_d0001/elt/master/pointingState"
                 - attribute: "healthState"
@@ -77,12 +77,12 @@ server:
               attribute_properties:
                 - attribute: "dishHealthState"
                   properties:
-                    - name: "__root_attr"
+                    - name: "__root_att"
                       values:
                         - "mid_d0002/elt/master/healthState"
                 - attribute: "dishPointingState"
                   properties:
-                    - name: "__root_attr"
+                    - name: "__root_att"
                       values:
                         - "mid_d0002/elt/master/pointingState"
                 - attribute: "healthState"
@@ -119,12 +119,12 @@ server:
               attribute_properties:
                 - attribute: "dishHealthState"
                   properties:
-                    - name: "__root_attr"
+                    - name: "__root_att"
                       values:
                         - "mid_d0003/elt/master/healthState"
                 - attribute: "dishPointingState"
                   properties:
-                    - name: "__root_attr"
+                    - name: "__root_att"
                       values:
                         - "mid_d0003/elt/master/pointingState"
                 - attribute: "healthState"
@@ -161,12 +161,12 @@ server:
               attribute_properties:
                 - attribute: "dishHealthState"
                   properties:
-                    - name: "__root_attr"
+                    - name: "__root_att"
                       values:
                         - "mid_d0004/elt/master/healthState"
                 - attribute: "dishPointingState"
                   properties:
-                    - name: "__root_attr"
+                    - name: "__root_att"
                       values:
                         - "mid_d0004/elt/master/pointingState"
                 - attribute: "healthState"

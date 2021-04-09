@@ -29,7 +29,7 @@ server:
               attribute_properties:
                 - attribute: "cspHealthState"
                   properties:
-                    - name: "__root_attr"
+                    - name: "__root_att"
                       values:
                         - "mid_csp/elt/master/healthState"
                 - attribute: "healthState"

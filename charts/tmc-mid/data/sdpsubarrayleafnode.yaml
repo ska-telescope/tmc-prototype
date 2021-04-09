@@ -34,12 +34,12 @@ server:
               attribute_properties:
                 - attribute: "sdpSubarrayHealthState"
                   properties:
-                    - name: "__root_attr"
+                    - name: "__root_att"
                       values:
                         - "mid_sdp/elt/subarray_1/healthState"
                 - attribute: "sdpSubarrayObsState"
                   properties:
-                    - name: "__root_attr"
+                    - name: "__root_att"
                       values:
                         - "mid_sdp/elt/subarray_1/obsState"
                 - attribute: "healthState"
@@ -75,12 +75,12 @@ server:
               attribute_properties:
                 - attribute: "sdpSubarrayHealthState"
                   properties:
-                    - name: "__root_attr"
+                    - name: "__root_att"
                       values:
                         - "mid_sdp/elt/subarray_2/healthState"
                 - attribute: "sdpSubarrayObsState"
                   properties:
-                    - name: "__root_attr"
+                    - name: "__root_att"
                       values:
                         - "mid_sdp/elt/subarray_2/obsState"
                 - attribute: "healthState"
@@ -116,12 +116,12 @@ server:
               attribute_properties:
                 - attribute: "sdpSubarrayHealthState"
                   properties:
-                    - name: "__root_attr"
+                    - name: "__root_att"
                       values:
                         - "mid_sdp/elt/subarray_3/healthState"
                 - attribute: "sdpSubarrayObsState"
                   properties:
-                    - name: "__root_attr"
+                    - name: "__root_att"
                       values:
                         - "mid_sdp/elt/subarray_3/obsState"
                 - attribute: "healthState"
