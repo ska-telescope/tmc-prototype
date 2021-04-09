@@ -144,6 +144,6 @@ class ReleaseResources(BaseCommand):
                 "CentralNode.ReleaseResourcesCommand",
                 tango.ErrSeverity.ERR,
             )
-        message = const.STR_RETURN_MSG_ASSIGN_RESOURCES_SUCCESS
+        message = const.STR_RETURN_MSG_RELEASE_RESOURCES_SUCCESS
         self.logger.info(message)
         return message
