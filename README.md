@@ -129,6 +129,9 @@ Alarm handler is an optional feature and can be installed if desired. Refer to
 [this](https://docs.google.com/document/d/1uGnVrBGs6TvnORsM2m4hbORcAzn_KK2kAO8Roaocxjo/edit?usp=sharing)
 document for installation guide.
 
+A k8s job does the alarm configuration when TMC chart is deployed. This is currently done for 
+tmc mid chart only.
+
 # 4 Testing
 
 ## 4.1 Unit Testing
