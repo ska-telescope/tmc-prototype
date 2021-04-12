@@ -30,7 +30,6 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
 
         """
         device_data = DeviceData.get_instance()
-        device_data.assigned_resources_maintainer.unsubscribe()
         device_data.is_release_resources = True
         device_data.is_abort_command_executed = False
         device_data.is_obsreset_command_executed = False
