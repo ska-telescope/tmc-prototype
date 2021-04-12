@@ -61,7 +61,7 @@ class Configure(SKASubarray.ConfigureCommand):
         self.this_server = TangoServerHelper.get_instance()
         self.this_server.write_attr("activityMessage", const.STR_CONFIGURE_CMD_INVOKED_SA_LOW, False)    
         try:
-            mccs_string = json.loads(argin)
+            scan_configuration = json.loads(argin)
         except json.JSONDecodeError as jerror:
             log_message = f"{const.ERR_INVALID_JSON}{jerror}"
             self.logger.error(log_message)
@@ -72,21 +72,24 @@ class Configure(SKASubarray.ConfigureCommand):
                 const.STR_CONFIGURE_EXEC,
                 tango.ErrSeverity.ERR,
             )
-        self._create_mccs_cmd_data(mccs_string)
+        tmc_configure = scan_configuration["tmc"]
+        device_data.scan_duration = int(tmc_configure["scan_duration"])
+        self._create_mccs_cmd_data(scan_configuration)
         message = "Configure command invoked"
         self.logger.info(message)
         return (ResultCode.STARTED, message)
 
     def _create_mccs_cmd_data(self, json_argument):
         mccs_value = json_argument["mccs"]
+        json_argument["interface"] = "https://schema.skatelescope.org/ska-low-mccs-configure/1.0"
         del json_argument["sdp"]
         del json_argument["tmc"]
         del json_argument["mccs"]
         json_argument.update(mccs_value)
         input_to_mccs= json.dumps(json_argument)
-        self.invoke_configure_cmd("Configure", input_to_mccs)
+        self._configure_mccs_subarray("Configure", input_to_mccs)
 
-    def invoke_configure_cmd(self, cmd_name, cmd_data):
+    def _configure_mccs_subarray(self, cmd_name, cmd_data):
         try:
             mccs_subarray_ln_fqdn = ""
             property_val = self.this_server.read_property("MccsSubarrayLNFQDN")
