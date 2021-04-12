@@ -57,7 +57,7 @@ spec:
       - name: configure-alarm
         image: "{{ $itango.image.registry }}/{{ $itango.image.image }}:{{ $itango.image.tag }}"
         imagePullPolicy: {{ $itango.image.pullPolicy }}
-        command:    
+        command:
           - sh
         args:
           - -c
