@@ -55,7 +55,7 @@ subarraynodemid:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc-subarraynode-mid
-    tag: 0.1.5
+    tag: 0.1.6
     pullPolicy: IfNotPresent
 
 resources:
@@ -326,10 +326,10 @@ deviceServers:
       image: tmalarmhandler
       tag: latest
       pullPolicy: Always
-    resources:
-      limits:
-        cpu: 300m
-        memory: 500Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
+      resources:
+        limits:
+          cpu: 300m
+          memory: 500Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
