@@ -162,6 +162,7 @@ class AssignResources(BaseCommand):
         :return: The string in JSON format.
         """
         mccs_value = json_argument["mccs"]
+        json_argument["interface"] = "https://schema.skatelescope.org/ska-low-mccs-assignresources/1.0"
         del json_argument["sdp"]
         del json_argument["mccs"]
         json_argument.update(mccs_value)
