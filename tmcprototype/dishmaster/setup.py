@@ -56,7 +56,7 @@ setup(
         # dependency for `python setup.py test`
         "pytest-runner",
         # dependencies for `python setup.py build_sphinx`
-        "sphinx==3.5.4",
+        "sphinx",
         "recommonmark",
     ],
     tests_require=[
