@@ -11,6 +11,7 @@ from ska.base import SKASubarray
 from . import const
 from subarraynodelow.device_data import DeviceData
 from tmc.common.tango_server_helper import TangoServerHelper
+from .assigned_resources_maintainer import AssignedResourcesMaintainer
 
 
 class AssignResources(SKASubarray.AssignResourcesCommand):
@@ -44,6 +45,8 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
             A tuple containing ResultCode and string.
         """
         device_data = DeviceData.get_instance()
+        device_data.assigned_resources_maintainer = AssignedResourcesMaintainer()
+        device_data.assigned_resources_maintainer.subscribe()
         this_server = TangoServerHelper.get_instance()
         device_data.is_end_command = False
         device_data.is_release_resources = False
