@@ -38,8 +38,7 @@ class Scan(SKASubarray.ScanCommand):
         JSON string example as follows:
 
         # {"mccs":{"id":1,"scan_time":0.0}}
-        {"interface":"https://schema.skatelescope.org/ska-low-tmc-scan/1.0","scan_id":1}
-
+        {"interface":"https://schema.skatelescope.org/ska-low-tmc-scan/1.0","scan_id":1}       
         Note: Above JSON string can be used as an input argument while invoking this command from JIVE.
 
         return:
@@ -60,18 +59,19 @@ class Scan(SKASubarray.ScanCommand):
         this_server = TangoServerHelper.get_instance()
         try:
             input_scan = json.loads(argin)
-            mccs_input_scan = input_scan["mccs"]
+            print("ARGIN INPUT SCAN-----" ,input_scan )
+            # mccs_input_scan = input_scan["mccs"]
             log_msg = f"{const.STR_SCAN_IP_ARG}{argin}"
             self.logger.info(log_msg)
             this_server.write_attr("activityMessage", log_msg, False)
             device_data.isScanRunning = True
             # Invoke scan command on MCCS Subarray Leaf Node with input argument as scan id
             mccs_subarray_ln_fqdn = ""
-            property_val = this_server.read_property("MccsSubarrayLNFQDN")
+            property_val = this_server.read_property("MccsSubarrayLNFQDN")[0]
             mccs_subarray_ln_fqdn = mccs_subarray_ln_fqdn.join(property_val)
             mccs_subarray_ln_client = TangoClient(mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(
-                const.CMD_SCAN, json.dumps(mccs_input_scan)
+                const.CMD_SCAN, json.dumps(input_scan)
             )
             self.logger.info(const.STR_MCCS_SCAN_INIT)
             this_server.write_attr("activityMessage", const.STR_MCCS_SCAN_INIT, False)
