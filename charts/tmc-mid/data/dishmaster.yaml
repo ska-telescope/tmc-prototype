@@ -2,8 +2,7 @@ name: "dishmaster-{{.Release.Name}}"
 function: receptor-simulation
 domain: sensing
 instances: ["01", "02", "03", "04"]
-entrypoints:
-  - name: "DishMasterDS.DishMaster"
+command: "/usr/local/bin/DishMasterDS "
 server:
   name: "DishMasterDS"
   instances:
