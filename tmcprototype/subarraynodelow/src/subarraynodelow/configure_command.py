@@ -36,9 +36,8 @@ class Configure(SKASubarray.ConfigureCommand):
 
         JSON string example is:
 
-         {"mccs":{"stations":[{"station_id":1},{"station_id":2}],"subarray_beams":[{"subarray_id":1,
-         "subarray_beam_id":1,"target":{"system":"HORIZON","name":"DriftScan","Az":180.0,"El":45.0},
-         "update_rate":0.0,"channels":[[0,8,1,1],[8,8,2,1],[24,16,2,1]]}]},"tmc":{"scanDuration":10.0}}
+         {"interface":"https://schema.skatelescope.org/ska-low-tmc-configure/1.0","mccs":{"stations":[{"station_id":1},{"station_id":2}],"subarray_beams":[{"subarray_beam_id":1,"station_ids":[1,2],"update_rate":0.0,"channels":[[0,8,1,1],[8,8,2,1],[24,16,2,1]],"antenna_weights":[1.0,1.0,1.0],"phase_centre":[0.0,0.0],"target":{"system":"HORIZON","name":"DriftScan","az":180.0,"el":45.0}}]},"sdp":{},"tmc":{"scan_duration":10.0}}
+
 
         return:
             A tuple containing a return code and a string message indicating status.
@@ -74,28 +73,29 @@ class Configure(SKASubarray.ConfigureCommand):
                 tango.ErrSeverity.ERR,
             )
         tmc_configure = scan_configuration["tmc"]
-        device_data.scan_duration = int(tmc_configure["scanDuration"])
-        self._configure_mccs_subarray(scan_configuration)
+        device_data.scan_duration = int(tmc_configure["scan_duration"])
+        self._create_mccs_cmd_data(scan_configuration)
         message = "Configure command invoked"
         self.logger.info(message)
         return (ResultCode.STARTED, message)
 
-    def _configure_mccs_subarray(self, scan_configuration):
-        scan_configuration = scan_configuration["mccs"]
-        if not scan_configuration:
-            raise KeyError(
-                "MCCS configuration must be given. Aborting MCCS configuration."
-            )
-        self._configure_leaf_node("Configure", json.dumps(scan_configuration))
+    def _create_mccs_cmd_data(self, json_argument):
+        mccs_value = json_argument["mccs"]
+        json_argument["interface"] = "https://schema.skatelescope.org/ska-low-mccs-configure/1.0"
+        del json_argument["sdp"]
+        del json_argument["tmc"]
+        del json_argument["mccs"]
+        json_argument.update(mccs_value)
+        input_to_mccs= json.dumps(json_argument)
+        self._configure_mccs_subarray("Configure", input_to_mccs)
 
-    def _configure_leaf_node(self, cmd_name, cmd_data):
+    def _configure_mccs_subarray(self, cmd_name, cmd_data):
         try:
             mccs_subarray_ln_fqdn = ""
             property_val = self.this_server.read_property("MccsSubarrayLNFQDN")
             mccs_subarray_ln_fqdn = mccs_subarray_ln_fqdn.join(property_val)
             mccs_subarray_ln_client = TangoClient(mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(cmd_name, cmd_data)
-            # device_proxy.command_inout(cmd_name, cmd_data)
             log_msg = "%s configured succesfully." % mccs_subarray_ln_fqdn
             self.logger.debug(log_msg)
         except DevFailed as df:
@@ -106,4 +106,3 @@ class Configure(SKASubarray.ConfigureCommand):
                 df,
             )
             self.logger.error(log_msg)
-            raise
