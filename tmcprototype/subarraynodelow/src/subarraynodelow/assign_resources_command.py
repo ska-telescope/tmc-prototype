@@ -27,15 +27,18 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         Method to invoke AssignResources command.
 
         :param argin: DevString in JSON form containing following fields:
-            station_ids: list of integers
+            interface: Schema to allocate assign resources.
 
-            channels: list of integers
+            mccs:
+                subarray_beam_ids: list of integers
 
-            station_beam_ids: list of integers
+                station_ids: list of integers
+
+                channel_blocks: list of integers
 
         Example:
 
-        {"station_ids":[1,2],"channels":[[0,8,1,1],[8,8,2,1],[24,16,2,1]],"station_beam_ids":[1]}
+        {"interface":"https://schema.skatelescope.org/ska-low-tmc-assignedresources/1.0","mccs":{"subarray_beam_ids":[1],"station_ids":[[1,2]],"channel_blocks":[3]}}
 
         return:
             A tuple containing ResultCode and string.
@@ -48,7 +51,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         device_data.is_obsreset_command_executed = False
         # TODO: For now storing resources as station ids
         input_str = json.loads(argin)
-        device_data.resource_list = input_str["station_ids"]
+        device_data.resource_list = input_str["mccs"]["station_ids"]
         log_msg = f"{const.STR_ASSIGN_RES_EXEC}STARTED"
         self.logger.debug(log_msg)
         this_server.write_attr("activityMessage", log_msg, False)
