@@ -57,7 +57,8 @@ class Off(SKASubarray.OffCommand):
             message = "Off command completed OK"
             self.logger.info(message)
             this_server.write_attr("activityMessage", message, False)
-            device.assigned_resources_maintainer = AssignedResourcesMaintainer()
+            if device.assigned_resources_maintainer == None:
+                device.assigned_resources_maintainer = AssignedResourcesMaintainer()
             device.assigned_resources_maintainer.unsubscribe()
             return (ResultCode.OK, message)
 
