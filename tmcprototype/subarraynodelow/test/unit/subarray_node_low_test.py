@@ -63,12 +63,6 @@ path = join(dirname(__file__), "data", scan_invalid_input_file)
 with open(path, "r") as f:
     invalid_scan_input = f.read()
 
-scan_invalid_key_file = "invalid_key_Scan.json"
-path = join(dirname(__file__), "data", scan_invalid_key_file)
-with open(path, "r") as f:
-    invalid_key_scan = f.read()
-
-
 @pytest.fixture
 def subarray_state_model():
     """
@@ -221,24 +215,13 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready(
 
 
 def test_invalid_json_scan_should_command_subarray_to_raise_invalid_json_error(
-    mock_lower_devices_proxy,
+    mock_lower_devices_proxy
 ):
     device_proxy, tango_client = mock_lower_devices_proxy
     scan_cmd = Scan(device_data, subarray_state_model)
     with pytest.raises(tango.DevFailed) as df:
         scan_cmd.do(invalid_scan_input)
     assert const.ERR_INVALID_JSON in str(df.value)
-
-
-def test_invalid_key_scan_should_command_subarray_to_raise_key_error(
-    mock_lower_devices_proxy,
-):
-    device_proxy, tango_client = mock_lower_devices_proxy
-    scan_cmd = Scan(device_data, subarray_state_model)
-    with pytest.raises(tango.DevFailed) as df:
-        scan_cmd.do(invalid_key_scan)
-    assert const.ERR_JSON_KEY_NOT_FOUND in str(df.value)
-
 
 def test_start_scan_should_raise_devfailed_exception(
     mock_lower_devices_proxy, subarray_state_model, mock_tango_server_helper
