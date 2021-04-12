@@ -82,8 +82,9 @@ class AssignedResourcesMaintainer:
          SubarrayNode.assigned_resources attribute.
         """
         json_argument = json.loads(mccs_assigned_resources)
-        interface_value = json_argument.pop("interface")
-        assigned_resources_dict = {"interface": interface_value, "mccs": json_argument}
+        del json_argument["interface"]
+        assigned_resources_dict = {"interface": "https://schema.skatelescope.org/ska-low-tmc-assignedresources/1.0",
+                                   "mccs": json_argument}
         assigned_resources_attr_value = json.dumps(assigned_resources_dict)
         self.this_server.write_attr("assigned_resources", assigned_resources_attr_value, False)
         log_msg = "assigned_resources attribute value is: " + str(assigned_resources_attr_value)
