@@ -9,6 +9,7 @@ from mock import Mock, MagicMock
 from os.path import dirname, join
 import threading
 import logging
+import json
 
 # Tango imports
 import tango
@@ -455,6 +456,65 @@ def test_subarray_health_state_with_error_event(mock_lower_devices_proxy, mock_t
     assert const.ERR_SUBSR_SA_HEALTH_STATE in device_proxy.activityMessage
 
 
+# Test case for assigned_resources_cb callback
+def test_subarray_assigned_resources_attr_changes_as_per_mccs_subarray_ln_assigned_resources_attr(
+    mock_lower_devices_proxy, mock_tango_server_helper
+):
+    device_proxy, tango_client = mock_lower_devices_proxy
+    tango_server_obj = mock_tango_server_helper
+    device_data = DeviceData.get_instance()
+    with mock.patch.object(
+        TangoClient, "_get_deviceproxy", return_value=Mock()
+    ) as mock_obj:
+        with mock.patch.object(
+            TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_mccs
+        ):
+            device_proxy.On()
+            device_proxy.AssignResources(assign_input_str)
+    test1 = {
+    "interface": "https://schema.skatelescope.org/ska-low-mccs-assignedresources/1.0",
+    "subarray_beam_ids": [1],
+    "station_ids": [[1,2]],
+    "channel_blocks": [3]
+    }
+    result = json.dumps(test1)
+    assert device_data.assigned_resources_maintainer == result
+
+
+def dummy_subscriber_mccs(attribute, callback_method):
+    fake_event = Mock()
+    fake_event.err = False
+    fake_event.attr_name = f"ska_mid/tm_leaf_node/mccs_subarray01/{attribute}"
+    test1 = {
+    "interface": "https://schema.skatelescope.org/ska-low-mccs-assignedresources/1.0",
+    "subarray_beam_ids": [1],
+    "station_ids": [[1,2]],
+    "channel_blocks": [3]
+    }
+    result = json.dumps(test1)
+    fake_event.attr_value.value = result
+    print(fake_event.attr_value.value)
+    callback_method(fake_event)
+    return 10
+
+
+def test_subarray_assigned_resources_attr_callback_with_error_event(mock_lower_devices_proxy, mock_tango_server_helper):
+    device_proxy, tango_client = mock_lower_devices_proxy
+    tango_server_obj = mock_tango_server_helper
+    device_data = DeviceData.get_instance()
+    with mock.patch.object(
+        TangoClient, "_get_deviceproxy", return_value=Mock()
+    ) as mock_obj:
+        with mock.patch.object(
+            TangoClient,
+            "subscribe_attribute",
+            side_effect=create_dummy_event_assign_resource_attr_with_error,
+        ):
+            device_proxy.On()
+            device_proxy.AssignResources(assign_input_str)
+    assert const.ERR_SUBSR_MCCSSA_ASSIGNED_RES_ATTR in device_proxy.activityMessage
+
+
 def test_assign_resources_should_assign_resources_when_device_state_on(
     mock_lower_devices_proxy, mock_tango_server_helper
 ):
@@ -502,6 +562,13 @@ def create_dummy_event_healthstate_with_error(attribute, callback_method):
     callback_method(fake_event)
     return 10
 
+def create_dummy_event_assign_resource_attr_with_error(attribute, callback_method):
+    fake_event = Mock()
+    fake_event.err = True
+    fake_event.attr_name = f"ska_mid/tm_leaf_node/mccs_subarray01/{attribute}"
+    fake_event.attr_value.value = HealthState.OK
+    callback_method(fake_event)
+    return 10
 
 def any_method(with_name=None):
     class AnyMethod:

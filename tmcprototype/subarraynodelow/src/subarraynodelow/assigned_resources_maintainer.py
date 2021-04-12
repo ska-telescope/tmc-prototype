@@ -48,7 +48,7 @@ class AssignedResourcesMaintainer:
         :type: Event object
             It has the following members:
 
-                - date (event timestamp)
+                - date (event timestamp) 
 
                 - reception_date (event reception timestamp)
 
@@ -63,10 +63,11 @@ class AssignedResourcesMaintainer:
         :return: None
         """
         device_name = event.device.dev_name()
-        log_msg = "Event on assigned_resources attribute is: " + str(event)
-        self.logger.debug(log_msg)
+        # log_msg = "Event on assigned_resources attribute is: " + str(event)
+        # self.logger.debug(log_msg)
         if not event.err:
             event_assigned_resources = event.attr_value.value
+            self.device_data.assigned_resources_maintainer = event_assigned_resources
             self.update_assigned_resources_attribute(event_assigned_resources)
             self.logger.info("assigned_resources attribute subscribed successfully.")
             log_msg = "MccsSubarray.assigned_resources attribute value is: " + str(event_assigned_resources)
