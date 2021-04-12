@@ -153,6 +153,10 @@ class AssignResources(BaseCommand):
                                          "CentralNode.AssignResourcesCommand",
                                          tango.ErrSeverity.ERR)
 
+        message = const.STR_RETURN_MSG_ASSIGN_RESOURCES_SUCCESS
+        self.logger.info(message)
+        return message
+
     def _create_mccs_cmd_data(self, json_argument):
         """
         Remove 'sdp' and 'mccs' key from input JSON argument and forward the updated JSON to mccs master leaf node.

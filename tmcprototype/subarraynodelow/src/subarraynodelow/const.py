@@ -4,6 +4,7 @@ This file is part of the SubarrayNode project and defines variables used
 # Events
 EVT_MCCSSA_OBS_STATE = "mccsSubarrayObsState"
 EVT_MCCSSA_HEALTH = "mccsSubarrayHealthState"
+EVT_MCCSSA_ASSIGNED_RESOURCES = "mccs_assigned_resources"
 EVT_UNKNOWN = "Event from the Unknown device!"
 
 # Commands
@@ -25,6 +26,9 @@ STR_SUB_ATTR_MCCS_SALN_HEALTH_SUCCESS = (
 )
 STR_SUB_ATTR_MCCS_SALN_OBSTATE_SUCCESS = (
     "Subscribed MCCS Subarray ObsState attributes successfully."
+)
+STR_SUB_ATTR_MCCS_SALN_ASSIGNED_RESOURCES_SUCCESS = (
+    "Subscribed MCCS Subarray assigned_resources attribute successfully"
 )
 STR_SA_INIT_SUCCESS = "Subarray node is initialized successfully."
 STR_SA_INIT = "Initializing SubarrayNode..."
@@ -91,6 +95,7 @@ ERR_END_SCAN_CMD_ON_MCCS = "Error invoking EndScan command on MccsSubarrayLeafNo
 ERR_DEVICE_NOT_READY = "Subarray Node low is not in Ready observation state."
 ERR_MCCS_CMD = "Failed to send command to MCCS Subarray Leaf Node."
 ERR_SUBSR_SA_HEALTH_STATE = "Error in subscribing Subarray healthState \n"
+ERR_SUBSR_MCCSSA_ASSIGNED_RES_ATTR = "Error in subscribing assigned_resources attribute "
 ERR_ABORT_INVOKING_CMD = "Error while invoking Abort command."
 
 

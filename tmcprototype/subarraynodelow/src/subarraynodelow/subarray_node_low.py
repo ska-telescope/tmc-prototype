@@ -103,6 +103,10 @@ class SubarrayNode(SKASubarray):
         access=AttrWriteType.READ_WRITE,
     )
 
+    assigned_resources = attribute(
+        dtype="str",
+        access=AttrWriteType.READ_WRITE,
+    )
     # ---------------
     # General methods
     # ---------------
@@ -136,6 +140,7 @@ class SubarrayNode(SKASubarray):
             this_server.set_tango_class(device)
             device.attr_map = {}
             device.attr_map["scanID"] = ""
+            device.attr_map["assigned_resources"] = ""
             device._obs_mode = ObsMode.IDLE
             device._resource_list = []
             device.is_end_command = False
@@ -192,6 +197,18 @@ class SubarrayNode(SKASubarray):
         # PROTECTED REGION ID(SubarrayNode.activityMessage_write) ENABLED START #
         self.update_attr_map("activityMessage", value)
         # PROTECTED REGION END #    //  SubarrayNode.activityMessage_write
+
+    def read_assigned_resources(self):
+        """Internal construct of TANGO. Returns assigned_resources."""
+        # PROTECTED REGION ID(SubarrayNode.assigned_resources_read) ENABLED START #
+        return self.attr_map["assigned_resources"]
+        # PROTECTED REGION END #    //  SubarrayNode.assigned_resources_read
+
+    def write_assigned_resources(self, value):
+        """ Internal construct of TANGO. Sets the assigned_resources. """
+        # PROTECTED REGION ID(SubarrayNode.assigned_resources_write) ENABLED START #
+        self.update_attr_map("assigned_resources", value)
+        # PROTECTED REGION END #    //  SubarrayNode.assigned_resources_write
 
     def update_attr_map(self, attr, val):
         """
