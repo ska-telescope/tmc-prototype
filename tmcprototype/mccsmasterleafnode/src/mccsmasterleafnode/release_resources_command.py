@@ -86,10 +86,11 @@ class ReleaseResources(BaseCommand):
                      StringType. The string in JSON format.
 
         Example:
-             {
-                "subarray_id": 1,
-                "release_all": true
-               }
+            {
+                "interface":"https://schema.skatelescope.org/ska-low-tmc-releaseresources/1.0",
+                "subarray_id":1,
+                "release_all":true
+            }
 
         return:
             None.
