@@ -221,7 +221,7 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready(
 
 
 def test_invalid_json_scan_should_command_subarray_to_raise_invalid_json_error(
-    mock_lower_devices_proxy,
+    mock_lower_devices_proxy
 ):
     device_proxy, tango_client = mock_lower_devices_proxy
     scan_cmd = Scan(device_data, subarray_state_model)
@@ -231,11 +231,12 @@ def test_invalid_json_scan_should_command_subarray_to_raise_invalid_json_error(
 
 
 def test_invalid_key_scan_should_command_subarray_to_raise_key_error(
-    mock_lower_devices_proxy,
+    mock_lower_devices_proxy, mock_tango_server_helper
 ):
     device_proxy, tango_client = mock_lower_devices_proxy
     scan_cmd = Scan(device_data, subarray_state_model)
     with pytest.raises(tango.DevFailed) as df:
+        tango_server_obj = mock_tango_server_helper
         scan_cmd.do(invalid_key_scan)
     assert const.ERR_JSON_KEY_NOT_FOUND in str(df.value)
 
