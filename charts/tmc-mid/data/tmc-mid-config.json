@@ -1039,7 +1039,7 @@
               "LoggingLevelDefault": [
                 "5"
               ],
-              "update_period": [
+              "min_update_period": [
                 "0.2"
               ],
               "polled_attr": [

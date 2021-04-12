@@ -15,7 +15,7 @@ server:
               properties:
                 - name: "SkaLevel"
                   values:
-                    - "-1"
+                    - "1"
 
 depends_on:
   - device: sys/database/2

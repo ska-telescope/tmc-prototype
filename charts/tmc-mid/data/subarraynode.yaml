@@ -1,7 +1,7 @@
 name: "dishleafnode-{{.Release.Name}}"
 function: dish-monitoring
 domain: general-monitoring
-instances: ["sa1", "sa2", "sa3", "sa4"]
+instances: ["sa1", "sa2", "sa3"]
 entrypoints:
   - name: "SubarrayNodeDS.SubarrayNode"
 server:
@@ -180,82 +180,6 @@ server:
                 - name: "SdpSubarrayFQDN"
                   values:
                     - "mid_sdp/elt/subarray_3"
-                - name: "SkaLevel"
-                  values:
-                    - "2"
-                - name: "LoggingTargetsDefault"
-                  values:
-                    - "tango::logger"
-                - name: "LoggingLevelDefault"
-                  values:
-                    - "5"
-                - name: "polled_attr"
-                  values:
-                    - "adminmode"
-                    - "1000"
-                    - "healthstate"
-                    - "1000"
-                    - "obsmode"
-                    - "1000"
-                    - "receptoridlist"
-                    - "1000"
-              attribute_properties:
-                - attribute: "adminMode"
-                  properties:
-                    - name: "abs_change"
-                      values:
-                        - "-1"
-                        - "1"
-                - attribute: "healthState"
-                  properties:
-                    - name: "abs_change"
-                      values:
-                        - "-1"
-                        - "1"
-                - attribute: "obsMode"
-                  properties:
-                    - name: "abs_change"
-                      values:
-                        - "-1"
-                        - "1"
-                - attribute: "obsState"
-                  properties:
-                    - name: "abs_change"
-                      values:
-                        - "-1"
-                        - "1"
-                - attribute: "receptorIDList"
-                  properties:
-                    - name: "abs_change"
-                      values:
-                        - "-1"
-                        - "1"
-                - attribute: "simulationMode"
-                  properties:
-                    - name: "__value"
-                      values:
-                        - "false"
-    - name: "sa4"
-      classes:
-        - name: "SubarrayNode"
-          devices:
-            - name: "ska_mid/tm_subarray_node/4"
-              properties:
-                - name: "CspSubarrayLNFQDN"
-                  values:
-                    - "ska_mid/tm_leaf_node/csp_subarray04"
-                - name: "DishLeafNodePrefix"
-                  values:
-                    - "ska_mid/tm_leaf_node/d"
-                - name: "SdpSubarrayLNFQDN"
-                  values:
-                    - "ska_mid/tm_leaf_node/sdp_subarray04"
-                - name: "CspSubarrayFQDN"
-                  values:
-                    - "mid_csp/elt/subarray_04"
-                - name: "SdpSubarrayFQDN"
-                  values:
-                    - "mid_sdp/elt/subarray_4"
                 - name: "SkaLevel"
                   values:
                     - "2"

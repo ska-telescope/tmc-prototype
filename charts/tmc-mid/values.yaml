@@ -86,7 +86,7 @@ deviceServers:
     instances: ["01"]
     file: "data/sdpmasterleafnode.yaml"
   subarraynode:
-    instances: ["sa1", "sa2", "sa3", "sa4"]
+    instances: ["sa1", "sa2", "sa3"]
     file: "data/subarraynode.yaml"
   centralnode:
     instances: ["01"]
