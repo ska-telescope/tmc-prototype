@@ -478,7 +478,7 @@ def test_subarray_assigned_resources_attr_changes_as_per_mccs_subarray_ln_assign
     "channel_blocks": [3]
     }
     result = json.dumps(test1)
-    assert device_data.assigned_resources_maintainer == result
+    assert device_data.assignd_resources_by_mccs == result
 
 
 def dummy_subscriber_mccs(attribute, callback_method):

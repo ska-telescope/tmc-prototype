@@ -61,14 +61,14 @@ class AssignedResourcesMaintainer:
         :return: None
         """
         device_name = event.device.dev_name()
-        log_msg = "Event on assigned_resources attribute is: " + str(event)
+        log_msg = "Event on assigned_resources attribute is: {}".format(str(event))
         self.logger.debug(log_msg)
         if not event.err:
-            assigned_resources = event.attr_value.value
-            self.device_data.assigned_resources_maintainer = assigned_resources
-            self.update_assigned_resources_attribute(assigned_resources)
-            self.logger.info("assigned_resources attribute subscribed successfully.")
-            log_msg = "MccsSubarray.assigned_resources attribute value is: " + str(assigned_resources)
+            self.device_data.assignd_resources_by_mccs = event.attr_value.value
+            self.update_assigned_resources_attribute(self.device_data.assignd_resources_by_mccs)
+            self.logger.info(const.STR_SUB_ATTR_MCCS_SALN_ASSIGNED_RESOURCES_SUCCESS)
+            log_msg = "MccsSubarray.assigned_resources attribute value is: {}".format(
+                      str(self.device_data.assignd_resources_by_mccs))
             self.logger.info(log_msg)
         else:
             log_message = f"{const.ERR_SUBSR_MCCSSA_ASSIGNED_RES_ATTR}{device_name}{event}"
@@ -81,11 +81,9 @@ class AssignedResourcesMaintainer:
         """
         json_argument = json.loads(mccs_assigned_resources)
         del json_argument["interface"]
-        assigned_resources_dict = {"interface": "https://schema.skatelescope.org/ska-low-tmc-assignedresources/1.0",
-                                   "mccs": json_argument}
-        assigned_resources_attr_value = json.dumps(assigned_resources_dict)
-        self.this_server.write_attr("assigned_resources", assigned_resources_attr_value)
-        log_msg = "assigned_resources attribute value is: " + str(assigned_resources_attr_value)
+        json_argument["interface"] = "https://schema.skatelescope.org/ska-low-tmc-assignedresources/1.0"
+        self.this_server.write_attr("assigned_resources", json.dumps(json_argument))
+        log_msg = "assigned_resources attribute value is: {}".format(str(json.dumps(json_argument)))
         self.logger.info(log_msg)
 
     def unsubscribe(self):

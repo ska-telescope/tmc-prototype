@@ -108,6 +108,8 @@
                       "obsmode",
                       "1000",
                       "obsstate",
+                      "1000",
+                      "assigned_resources",
                       "1000"
                   ]
               }
