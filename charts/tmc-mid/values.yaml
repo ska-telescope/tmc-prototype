@@ -55,7 +55,7 @@ subarraynodemid:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc-subarraynode-mid
-    tag: 0.1.5
+    tag: 0.1.6
     pullPolicy: IfNotPresent
 
 alarmhandler:

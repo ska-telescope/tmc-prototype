@@ -24,8 +24,8 @@
 This is the repository for the TMC evolutionary prototype. The prototype aims to realize Telescope Monitoring and Control functionality, and utilizes the platform, tools and technology specified for the SKA construction.
 
 The prototype utilizes the base classes created in-line with the SKA Control System Guidelines and Tango coding standards. Developed in **Python 3.7** (PyTango 9.3.2), it is a single repository consisting ten packages - CentralNodeLow, SubarrayNodeLow, DishLeafNode, CspMasterLeafNode, CspSubarrayLeafNode, SdpMasterLeafNode, SdpSubarrayLeafNode, MccsMasterLeafNode, MccsSubarrayLeafNode and DishMaster.
-CentralNode device is implementated in a separate gitlab repository which is available at https://gitlab.com/ska-telescope/ska-tmc-centralnode-mid .
-SubarrayNode device is implemented in a separate gitlab repository which is available at https://gitlab.com/ska-telescope/ska-tmc-subarraynode-mid .
+CentralNode device is implementated in a separate gitlab repository which is available at <https://gitlab.com/ska-telescope/ska-tmc-centralnode-mid> .
+SubarrayNode device is implemented in a separate gitlab repository which is available at <https://gitlab.com/ska-telescope/ska-tmc-subarraynode-mid> .
 TMC prototype addresses the  following architectural aspects and functionality:
 
 ## 1.1 Architecture
@@ -129,7 +129,7 @@ Alarm handler is an optional feature and can be installed if desired. Refer to
 [this](https://docs.google.com/document/d/1uGnVrBGs6TvnORsM2m4hbORcAzn_KK2kAO8Roaocxjo/edit?usp=sharing)
 document for installation guide.
 
-A k8s job does the alarm configuration when TMC chart is deployed. This is currently done for 
+A k8s job does the alarm configuration when TMC chart is deployed. This is currently done for  
 tmc mid chart only.
 
 # 4 Testing
