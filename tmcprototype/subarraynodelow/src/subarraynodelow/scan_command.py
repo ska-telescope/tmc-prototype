@@ -114,6 +114,9 @@ class Scan(SKASubarray.ScanCommand):
             )
 
     def update_mccs_json(self, input_argin):
+        """
+        This Scan command input string is updated to send to MCCS SubarrayLeafNode.
+        """
         input_scan = json.loads(input_argin)
         input_scan["interface"] = "https://schema.skatelescope.org/ska-low-mccs-scan/1.0"
         start_time = {"start_time":0.0}
