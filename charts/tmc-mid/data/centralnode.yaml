@@ -3,7 +3,7 @@ function: telescope-monitoring
 domain: general-monitoring
 instances: ["01"]
 entrypoints:
-  - name: "CentralNodeDS.CentralNode"
+  - name: "tmc.centralnode.central_node.CentralNode"
 server:
   name: "CentralNodeDS"
   instances:
@@ -81,7 +81,8 @@ depends_on:
   - device: ska_mid/tm_subarray_node/2
   - device: ska_mid/tm_subarray_node/3
 image:
-  registry: "{{.Values.global.tmcprototype.registry}}"
-  image: "{{.Values.global.tmcprototype.image}}"
-  tag: "{{.Values.global.tmcprototype.tag}}"
-  pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
+  registry: "{{.Values.centralnodemid.image.registry}}"
+  image: "{{.Values.centralnodemid.image.image}}"
+  tag: "{{.Values.centralnodemid.image.tag}}"
+  pullPolicy: "{{.Values.centralnodemid.image.pullPolicy}}"
+

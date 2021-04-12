@@ -3,7 +3,7 @@ function: observation-execution
 domain: subarray
 instances: ["01", "02", "03"]
 entrypoints:
-  - name: "CspSubarrayLeafNodeDS.CspSubarrayLeafNode"
+  - name: "cspsubarrayleafnode.CspSubarrayLeafNode"
 server:
   name: "CspSubarrayLeafNodeDS"
   instances:

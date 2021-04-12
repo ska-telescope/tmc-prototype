@@ -16,15 +16,15 @@ dependencies:
 - name: tango-base
   version: 0.2.13
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
-- name: webjive
-  version: 1.0.11
-  repository: https://nexus.engageska-portugal.pt/repository/helm-chart
-- name: tmc-low
-  version: 0.1.9
-  repository: file://../tmc-low
-- name: ska-low-mccs
-  version: 0.6.0
-  repository: https://nexus.engageska-portugal.pt/repository/helm-chart
+# - name: webjive
+#   version: 1.0.11
+#   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
+# - name: tmc-low
+#   version: 0.1.9
+#   repository: file://../tmc-low
+# - name: ska-low-mccs
+#   version: 0.6.0
+#   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: tango-util
   version: 0.2.9
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart

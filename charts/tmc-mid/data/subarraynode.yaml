@@ -3,7 +3,7 @@ function: dish-monitoring
 domain: general-monitoring
 instances: ["sa1", "sa2", "sa3"]
 entrypoints:
-  - name: "SubarrayNodeDS.SubarrayNode"
+  - name: "tmc.subarraynode.subarray_node.SubarrayNode"
 server:
   name: "SubarrayNodeDS"
   instances:
@@ -244,7 +244,8 @@ depends_on:
   - device: ska_mid/tm_leaf_node/csp_subarray03
   - device: ska_mid/tm_leaf_node/sdp_subarray03
 image:
-  registry: "{{.Values.global.tmcprototype.registry}}"
-  image: "{{.Values.global.tmcprototype.image}}"
-  tag: "{{.Values.global.tmcprototype.tag}}"
-  pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
+  registry: "{{.Values.subarraynodemid.image.registry}}"
+  image: "{{.Values.subarraynodemid.image.image}}"
+  tag: "{{.Values.subarraynodemid.image.tag}}"
+  pullPolicy: "{{.Values.subarraynodemid.image.pullPolicy}}"
+

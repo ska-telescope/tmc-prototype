@@ -4,6 +4,7 @@ domain: general-monitoring
 instances: ["01"]
 entrypoints:
   - name: "alarmhandler-srv.AlarmHandler"
+    path: "./app/alarmhandler-srv"
 server:
   name: "alarmhandler-srv"
   instances:

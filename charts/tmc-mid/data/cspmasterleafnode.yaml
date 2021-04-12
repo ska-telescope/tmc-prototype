@@ -3,7 +3,7 @@ function: csp-monitoring
 domain: general-monitoring
 instances: ["01"]
 entrypoints:
-  - name: "CspMasterLeafNodeDS.CspMasterLeafNode"
+  - name: "cspmasterleafnode.CspMasterLeafNode"
 server:
   name: "CspMasterLeafNodeDS"
   instances:

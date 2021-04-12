@@ -3,7 +3,7 @@ function: observation-execution
 domain: subarray
 instances: ["01"]
 entrypoints:
-  - name: "SdpMasterLeafNodeDS.SdpMasterLeafNode"
+  - name: "sdpmasterleafnode.SdpMasterLeafNode"
 server:
   name: "SdpMasterLeafNodeDS"
   instances:
