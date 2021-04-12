@@ -2,9 +2,7 @@ name: "tm-alarmhandler-{{.Release.Name}}"
 function: alarm-management
 domain: general-monitoring
 instances: ["01"]
-entrypoints:
-  - name: "alarmhandler-srv.AlarmHandler"
-    path: "./app/alarmhandler-srv"
+command: "./app/alarmhandler-srv"
 server:
   name: "alarmhandler-srv"
   instances:
