@@ -57,7 +57,7 @@ class Scan(SKASubarray.ScanCommand):
         device_data.is_obsreset_command_executed = False
         this_server = TangoServerHelper.get_instance()
         try:
-            input_to_mccs = self.update_json(argin)
+            input_to_mccs = self.update_mccs_json(argin)
             log_msg = f"{const.STR_SCAN_IP_ARG}{argin}"
             self.logger.info(log_msg)
             this_server.write_attr("activityMessage", log_msg, False)
@@ -113,9 +113,9 @@ class Scan(SKASubarray.ScanCommand):
                 tango.ErrSeverity.ERR,
             )
 
-    def update_json(self, argin):
-        input_scan = json.loads(argin)
-        input_scan = {"interface":"https://schema.skatelescope.org/ska-low-mccs-scan/1.0","scan_id":1} 
+    def update_mccs_json(self, input_argin):
+        input_scan = json.loads(input_argin)
+        input_scan["interface"] = "https://schema.skatelescope.org/ska-low-mccs-scan/1.0"
         start_time = {"start_time":0.0}
         input_scan.update(start_time)
         return input_scan
