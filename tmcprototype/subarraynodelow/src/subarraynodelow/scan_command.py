@@ -37,7 +37,7 @@ class Scan(SKASubarray.ScanCommand):
 
         JSON string example as follows:
 
-        {"mccs":{"id":1,"scan_time":0.0}}
+        {"interface":"https://schema.skatelescope.org/ska-low-tmc-scan/1.0","scan_id":1}       
         Note: Above JSON string can be used as an input argument while invoking this command from JIVE.
 
         return:
@@ -57,19 +57,18 @@ class Scan(SKASubarray.ScanCommand):
         device_data.is_obsreset_command_executed = False
         this_server = TangoServerHelper.get_instance()
         try:
-            input_scan = json.loads(argin)
-            mccs_input_scan = input_scan["mccs"]
+            input_to_mccs = self.update_mccs_json(argin)
             log_msg = f"{const.STR_SCAN_IP_ARG}{argin}"
             self.logger.info(log_msg)
             this_server.write_attr("activityMessage", log_msg, False)
             device_data.isScanRunning = True
             # Invoke scan command on MCCS Subarray Leaf Node with input argument as scan id
             mccs_subarray_ln_fqdn = ""
-            property_val = this_server.read_property("MccsSubarrayLNFQDN")
+            property_val = this_server.read_property("MccsSubarrayLNFQDN")[0]
             mccs_subarray_ln_fqdn = mccs_subarray_ln_fqdn.join(property_val)
             mccs_subarray_ln_client = TangoClient(mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(
-                const.CMD_SCAN, json.dumps(mccs_input_scan)
+                const.CMD_SCAN, json.dumps(input_to_mccs)
             )
             self.logger.info(const.STR_MCCS_SCAN_INIT)
             this_server.write_attr("activityMessage", const.STR_MCCS_SCAN_INIT, False)
@@ -113,3 +112,10 @@ class Scan(SKASubarray.ScanCommand):
                 "SubarrayNode.ScanCommand",
                 tango.ErrSeverity.ERR,
             )
+
+    def update_mccs_json(self, input_argin):
+        input_scan = json.loads(input_argin)
+        input_scan["interface"] = "https://schema.skatelescope.org/ska-low-mccs-scan/1.0"
+        start_time = {"start_time":0.0}
+        input_scan.update(start_time)
+        return input_scan
