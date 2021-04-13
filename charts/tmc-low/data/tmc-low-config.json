@@ -108,7 +108,8 @@
                       "obsmode",
                       "1000",
                       "obsstate",
-                      "1000"
+                      "1000",
+                      "assigned_resources"
                   ]
               }
           }
@@ -172,6 +173,11 @@
               "MccsSubarrayObsState": {
                 "__root_att": [
                   "low-mccs/subarray/01/obsState"
+                ]
+              },
+              "assigned_resources": {
+                "__root_att": [
+                  "low-mccs/subarray/01/assigned_resources"
                 ]
               },
               "healthState": {

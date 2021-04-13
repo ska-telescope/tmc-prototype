@@ -66,9 +66,11 @@ class ReleaseResources(BaseCommand):
                 Boolean(True or False). Mandatory. True when all the resources to be released from Subarray.
 
             Example:
-                {"mccs":{"subarray_id":1,"release_all":true}}
+                {"interface":"https://schema.skatelescope.org/ska-low-tmc-releaseresources/1.0","subarray_id":1,
+                "release_all":true}
             Note: From Jive, enter input as:
-                {"mccs":{"subarray_id":1,"release_all":true}} without any space.
+                {"interface":"https://schema.skatelescope.org/ska-low-tmc-releaseresources/1.0","subarray_id":1,
+                "release_all":true} without any space.
         return:
             None
 
@@ -84,23 +86,23 @@ class ReleaseResources(BaseCommand):
         try:
             this_server = TangoServerHelper.get_instance()
             jsonArgument = json.loads(argin)
-            subarray_id = jsonArgument["mccs"]["subarray_id"]
+            input_mccs_release = json.loads(argin)
+            subarray_id = jsonArgument["subarray_id"]
             subarray_fqdn = device_data.subarray_FQDN_dict[subarray_id]
-            if jsonArgument["mccs"]["release_all"] == True:
+            if jsonArgument["release_all"] == True:
                 # Invoke ReleaseAllResources on SubarrayNode
-                input_mccs_release = json.dumps(jsonArgument["mccs"])
                 subarray_client = TangoClient(subarray_fqdn)
                 subarray_client.send_command(const.CMD_RELEASE_RESOURCES)
                 # Invoke ReleaseAllResources on MCCS Master Leaf Node
-                # Send same input argument to MCCS Master for ReleaseResource Command
-
+                # Send updated input string with inteface key to MCCS Master for ReleaseResource Command
+                input_mccs_release["interface"] = "https://schema.skatelescope.org/ska-low-mccs-releaseresources/1.0"
                 self.mccs_master_ln_fqdn = ""
                 property_value = this_server.read_property("MCCSMasterLeafNodeFQDN")
                 self.mccs_master_ln_fqdn = self.mccs_master_ln_fqdn.join(property_value)
 
                 mccs_mln_client = TangoClient(self.mccs_master_ln_fqdn)
                 mccs_mln_client.send_command(
-                    const.CMD_RELEASE_MCCS_RESOURCES, input_mccs_release
+                    const.CMD_RELEASE_MCCS_RESOURCES, json.dumps(input_mccs_release)
                 )
                 log_msg = const.STR_REL_RESOURCES
                 self.logger.info(log_msg)
@@ -144,3 +146,6 @@ class ReleaseResources(BaseCommand):
                 "CentralNode.ReleaseResourcesCommand",
                 tango.ErrSeverity.ERR,
             )
+        message = const.STR_RETURN_MSG_RELEASE_RESOURCES_SUCCESS
+        self.logger.info(message)
+        return message

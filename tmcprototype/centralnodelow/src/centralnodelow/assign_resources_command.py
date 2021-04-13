@@ -22,7 +22,7 @@ class AssignResources(BaseCommand):
     """
     A class for CentralNode's AssignResources() command.
 
-    Assigns resources to given subarray. It accepts the subarray id, station ids, station beam id and channels
+    Assigns resources to given subarray. It accepts the subarray id, mccs string which contains subarray_beam_ids, station id and channels blocks
     in JSON string format.
     """
 
@@ -58,23 +58,30 @@ class AssignResources(BaseCommand):
 
         :param argin: The string in JSON format. The JSON contains following values:
 
+           interface:
+                DevString. Mandatory.
+                Version of schema to allocate assign resources.
+
            subarray_id:
                 DevShort. Mandatory.
                 Sub-Array to allocate resources to
-           station_ids:
-                DevArray. Mandatory
-                list of stations contributing beams to the data set
-           channels:
-                DevArray. Mandatory
-                list of frequency channels used
-           station_beam_ids:
-                DevArray. Mandatory
-                logical ID of beam
+
+           mccs:
+                subarray_beam_ids:
+                    DevArray. Mandatory
+                    logical ID of beam
+                station_ids:
+                    DevArray. Mandatory
+                    list of stations contributing beams to the data set
+                channel_blocks:
+                    DevArray. Mandatory
+                    list of channels used
+
 
         Example:
-            {"mccs":{"subarray_id":1,"station_ids":[1,2],"channels":[[0,8,1,1],[8,8,2,1],[24,16,2,1]],"station_beam_ids":[1]}}
+            {"interface":"https://schema.skatelescope.org/ska-low-tmc-assignresources/1.0","subarray_id":1,"mccs":{"subarray_beam_ids":[1],"station_ids":[[1,2]],"channel_blocks":[3]},"sdp":{}}
 
-        Note: Enter input without spaces as:{"subarray_id":1,"station_ids":[1,2],"channels":[1,2,3,4,5,6,7,8],"station_beam_ids":[1]}
+        Note: Enter input without spaces as: {"interface":"https://schema.skatelescope.org/ska-low-tmc-assignresources/1.0","subarray_id":1,"mccs":{"subarray_beam_ids":[1],"station_ids":[[1,2]],"channel_blocks":[3]},"sdp":{}}
 
         return:
             None
@@ -93,8 +100,7 @@ class AssignResources(BaseCommand):
             # Check if Mccs On command is completed
             assert device_data.cmd_res_evt_val == 0
             json_argument = json.loads(argin)
-            json_argument_mccs = json.loads(argin)
-            subarray_id = int(json_argument["mccs"]["subarray_id"])
+            subarray_id = int(json_argument["subarray_id"])
             subarray_cmd_data = self._create_subarray_cmd_data(json_argument)
             log_msg = f"Assigning resources to subarray :-> {subarray_id}"
             self.logger.info(log_msg)
@@ -103,14 +109,14 @@ class AssignResources(BaseCommand):
             )
             self.invoke_assign_resources(subarray_client, subarray_cmd_data)
 
-            input_mccs_assign = json.dumps(json_argument_mccs["mccs"])
-
+            mccs_string = json.loads(argin)
+            input_mccs_master = self._create_mccs_cmd_data(mccs_string)
             self.mccs_master_ln_fqdn = ""
             property_value = self.this_server.read_property("MCCSMasterLeafNodeFQDN")
             self.mccs_master_ln_fqdn = self.mccs_master_ln_fqdn.join(property_value)
 
             mccs_master_ln_client = self.create_client(self.mccs_master_ln_fqdn)
-            self.invoke_assign_resources(mccs_master_ln_client, input_mccs_assign)
+            self.invoke_assign_resources(mccs_master_ln_client, input_mccs_master)
 
             self.this_server.write_attr("activityMessage", const.STR_ASSIGN_RESOURCES_SUCCESS, False)
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
@@ -147,20 +153,38 @@ class AssignResources(BaseCommand):
                                          "CentralNode.AssignResourcesCommand",
                                          tango.ErrSeverity.ERR)
 
-    def _create_subarray_cmd_data(self, json_argument):
+        message = const.STR_RETURN_MSG_ASSIGN_RESOURCES_SUCCESS
+        self.logger.info(message)
+        return message
+
+    def _create_mccs_cmd_data(self, json_argument):
         """
-        Delete subarray id from json argument and create proxy of subarray corresponding to subarray id
-        and call assign_resources_leaf_node method.
+        Remove 'sdp' and 'mccs' key from input JSON argument and forward the updated JSON to mccs master leaf node.
 
         :param json_argument: The string in JSON format.
-                device_data : Object of class device_data
 
-        :return: None
+        :return: The string in JSON format.
+        """
+        mccs_value = json_argument["mccs"]
+        json_argument["interface"] = "https://schema.skatelescope.org/ska-low-mccs-assignresources/1.0"
+        del json_argument["sdp"]
+        del json_argument["mccs"]
+        json_argument.update(mccs_value)
+        input_to_mccs= json.dumps(json_argument)
+        return input_to_mccs
+
+    def _create_subarray_cmd_data(self, json_argument):
+        """
+        Remove 'subarray id', 'sdp' from json argument and forward the updated JSON to Subarray node.
+
+        :param json_argument: The string in JSON format.
+
+        :return: The string in JSON format.
         """
         # Remove subarray_id key from input json argument and send the json to subarray node
-        input_json_subarray = json_argument["mccs"]
-        del input_json_subarray["subarray_id"]
-        input_to_subarray = json.dumps(input_json_subarray)
+        del json_argument["subarray_id"]
+        del json_argument["sdp"]
+        input_to_subarray = json.dumps(json_argument)
         return input_to_subarray
 
     def create_client(self, fqdn):

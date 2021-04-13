@@ -94,9 +94,7 @@ class Configure(BaseCommand):
                       The string in JSON format. The JSON contains following values:
 
         Example:
-        {"mccs":{"stations":[{"station_id":1},{"station_id":2}],"subarray_beams":[{"subarray_id":1,"subarray_beam_id":1,
-        "target":{"system":"HORIZON","name":"DriftScan","Az":180.0,"El":45.0},"update_rate":0.0,"channels":[[0,8,1,1],
-        [8,8,2,1],[24,16,2,1]]}]}}
+        {'interface':'https://schema.skatelescope.org/ska-low-tmc-configure/1.0','stations':[{'station_id':1},{'station_id':2}],'subarray_beams':[{'subarray_beam_id':1,'station_ids':[1,2],'update_rate':0.0,'channels':[[0,8,1,1],[8,8,2,1],[24,16,2,1]],'antenna_weights':[1.0,1.0,1.0],'phase_centre':[0.0,0.0],'target':{'system':'HORIZON','name':'DriftScan','az':180.0,'el':45.0}}]}
 
         Note: Enter the json string without spaces as a input.
 
@@ -186,9 +184,6 @@ class Configure(BaseCommand):
         # Add in sky_coordinates set in station_beam_pointings
         station_beam_pointings["sky_coordinates"] = sky_coordinates
 
-        station_ids = self.get_station_ids(configuration_string)
-
-        station_beam_pointings["station_id"] = station_ids
         # Remove target block from station_beam_pointings
         station_beam_pointings.pop("target", None)
 
@@ -201,8 +196,8 @@ class Configure(BaseCommand):
     def get_sky_coordinates(self, station_beam_pointings):
 
         sky_coordinates = []
-        azimuth_coord = station_beam_pointings["target"]["Az"]
-        elevation_coord = station_beam_pointings["target"]["El"]
+        azimuth_coord = station_beam_pointings["target"]["az"]
+        elevation_coord = station_beam_pointings["target"]["el"]
 
         # Append current timestamp into sky_coordinates set
         time_t0 = datetime.today() + timedelta(seconds=0)
@@ -218,14 +213,6 @@ class Configure(BaseCommand):
         sky_coordinates.append(0.0)
 
         return sky_coordinates
-
-    def get_station_ids(self, configuration_string):
-        station_ids = []
-        for station in configuration_string["stations"]:
-            log_msg = f"Station is: {station}" 
-            self.logger.info(log_msg)
-            station_ids.append(station["station_id"])
-        return station_ids
 
     def update_configuration_json(self, station_beam_pointings, configuration_string):
         # Update station_beam_pointings into output Configure JSON
