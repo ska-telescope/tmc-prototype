@@ -4,7 +4,6 @@
 {{ $tango_host := tpl (coalesce .Values.global.tango_host .Values.tango_host $default_tango_host | toString) . }}
 {{ $dsconfig := coalesce .Values.global.dsconfig .Values.dsconfig}}
 {{ $itango := coalesce .Values.global.itango .Values.itango}}
-# {{ $tangodb := coalesce .Values.global.tangodb .Values.tangodb}}
 {{ $alarmhandler := coalesce .Values.global.alarmhandler .Values.alarmhandler}}
 
 ---
