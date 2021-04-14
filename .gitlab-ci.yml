@@ -23,6 +23,7 @@ before_script:
 
 stages:
   - build
+  - unit-test
   - test
   - linting
   - release
@@ -297,7 +298,7 @@ unit tests:
   tags:
     - docker-executor
   script:
-    - make unit-test
+    - ls -l
   artifacts:
     paths:
       - ./build
