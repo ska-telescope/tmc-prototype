@@ -1,0 +1,95 @@
+GCCMAJOR := $(shell ${CXX} -dumpversion | cut -d"." -f1)
+GCCMINOR := $(shell ${CXX} -dumpversion | cut -d"." -f2)
+MACHINE  := $(shell ${CXX} -dumpmachine)
+RELEASE_STRING := $(shell git describe --dirty 2>/dev/null)
+
+TANGO_DIR := /usr/local
+OMNIORB_DIR := /usr/local/omniorb-4.2.3
+ZMQ_DIR := /usr/local/zeromq-4.0.8
+RUNTIME_DIR := /runtime
+
+TANGO_INC := ${TANGO_DIR}/include/tango
+LOG4TANGO_INC := ${TANGO_DIR}/include
+OMNIORB_INC := ${OMNIORB_DIR}/include
+ZMQ_INC := ${ZMQ_DIR}/include
+RUNTIME_INC := ${RUNTIME_DIR}/include
+
+TANGO_LIB = ${TANGO_DIR}/lib
+OMNIORB_LIB = ${OMNIORB_DIR}/lib
+ZMQ_LIB = ${ZMQ_DIR}/lib
+RUNTIME_LIB = ${RUNTIME_DIR}/lib
+
+ifeq ($(SDKTARGETSYSROOT),)
+	ifeq ($(GCCMAJOR),4)
+		ifeq ($(shell test $(GCCMINOR) -lt 4; echo $$?),0)
+			CXXFLAGS += -std=gnu++98
+		else
+			CXXFLAGS += -std=c++0x
+		endif
+	else
+		CXXFLAGS += -std=c++11
+	endif
+	INC_DIR = -I${TANGO_INC} -I${LOG4TANGO_INC} -I${OMNIORB_INC} -I${ZMQ_INC} -I${RUNTIME_INC}
+	LIB_DIR = -L${TANGO_LIB} -L${OMNIORB_LIB} -L${ZMQ_LIB} -L${RUNTIME_LIB} -L/usr/local/lib
+else
+	CXXFLAGS += -std=gnu++11
+	INC_DIR = -I${SDKTARGETSYSROOT}/usr/include/tango
+endif
+
+#-----------------------------------------
+#	 Default make entry
+#-----------------------------------------
+default: release
+release debug: bin/$(NAME_SRV)
+
+#-----------------------------------------
+#	Set CXXFLAGS and LDFLAGS
+#-----------------------------------------
+
+CXXFLAGS += -D__linux__ -D__OSVERSION__=2 -Wall -pedantic \
+	-Wno-non-virtual-dtor -Wno-long-long -DOMNI_UNLOADABLE_STUBS \
+	$(INC_DIR) -Isrc -D'RELEASE_STRING="$(RELEASE_STRING)"'
+
+ifeq ($(GCCMAJOR),4)
+    CXXFLAGS += -Wextra
+endif
+ifeq ($(GCCMAJOR),5)
+    CXXFLAGS += -Wextra
+endif
+LDFLAGS += $(LIB_DIR) -ltango -lomniORB4 -lomniDynamic4 \
+	-lCOS4 -lomnithread -lzmq
+
+#-----------------------------------------
+#	Set dependencies
+#-----------------------------------------
+SRC_FILES += $(wildcard src/*.cpp)
+OBJ_FILES += $(addprefix obj/,$(notdir $(SRC_FILES:.cpp=.o)))
+
+obj/%.o: $(SRC_FILES:%.cpp)
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+.nse_depinfo: $(SRC_FILES)
+	@$(CXX) $(CXXFLAGS) -M -MM $^ | sed 's/\(.*\)\.o/obj\/\1.o/g' > $@
+-include .nse_depinfo
+
+#-----------------------------------------
+#	 Main make entries
+#-----------------------------------------
+bin/$(NAME_SRV): bin obj $(OBJ_FILES)
+	$(CXX) $(CXXFLAGS) $(OBJ_FILES) -o bin/$(NAME_SRV) $(LDFLAGS)
+
+clean:
+	@rm -fr obj/ bin/ core* .nse_depinfo src/*~
+
+bin obj:
+	@ test -d $@ || mkdir $@
+
+#-----------------------------------------
+#	 Target specific options
+#-----------------------------------------
+release: CXXFLAGS += -O2 -DNDEBUG
+release: LDFLAGS += -s
+debug: CXXFLAGS += -ggdb3
+
+.PHONY: clean
+

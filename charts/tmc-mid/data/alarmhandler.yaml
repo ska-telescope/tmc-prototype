@@ -2,9 +2,9 @@ name: "tm-alarmhandler-{{.Release.Name}}"
 function: alarm-management
 domain: general-monitoring
 instances: ["01"]
-command: "./app/alarmhandler-srv"
+command: "./alarm-handler/bin/alarm-handler-srv"
 server:
-  name: "alarmhandler-srv"
+  name: "alarm-handler-srv"
   instances:
     - name: "01"
       classes:
@@ -19,7 +19,7 @@ server:
 depends_on:
   - device: sys/database/2
 image:
-  registry: nexus.engageska-portugal.pt/tango-example
-  image: tmalarmhandler
-  tag: latest
-  pullPolicy: Always
+  registry: "{{.Values.alarmhandler.image.registry}}"
+  image: "{{.Values.alarmhandler.image.image}}"
+  tag: "{{.Values.alarmhandler.image.tag}}"
+  pullPolicy: "{{.Values.alarmhandler.image.pullPolicy}}"
