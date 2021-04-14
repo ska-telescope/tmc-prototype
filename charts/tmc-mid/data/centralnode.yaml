@@ -49,6 +49,8 @@ server:
                     - "1000"
                     - "telescopehealthstate"
                     - "1000"
+                    - "healthstate"
+                    - "1000"
               attribute_properties:
                 - attribute: "subarray1HealthState"
                   properties:
@@ -69,6 +71,12 @@ server:
                         - "-1"
                         - "1"
                 - attribute: "telescopeHealthState"
+                  properties:
+                    - name: "abs_change"
+                      values:
+                        - "-1"
+                        - "1"
+                - attribute: "healthState"
                   properties:
                     - name: "abs_change"
                       values:
