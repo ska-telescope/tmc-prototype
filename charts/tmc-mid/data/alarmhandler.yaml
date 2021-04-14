@@ -19,7 +19,7 @@ server:
 depends_on:
   - device: sys/database/2
 image:
-  registry: nexus.engageska-portugal.pt/tango-example
-  image: tmalarmhandler
-  tag: 0.1.5
-  pullPolicy: Always
+  registry: "{{.Values.alarmhandler.image.registry}}"
+  image: "{{.Values.alarmhandler.image.image}}"
+  tag: "{{.Values.alarmhandler.image.tag}}"
+  pullPolicy: "{{.Values.alarmhandler.image.pullPolicy}}"

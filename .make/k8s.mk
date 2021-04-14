@@ -86,6 +86,8 @@ install-chart: dep-up namespace namespace_sdp ## install the helm chart with nam
 	@sed -e 's/CI_PROJECT_PATH_SLUG/$(CI_PROJECT_PATH_SLUG)/' $(UMBRELLA_CHART_PATH)values.yaml > generated_values.yaml; \
 	sed -e 's/CI_ENVIRONMENT_SLUG/$(CI_ENVIRONMENT_SLUG)/' generated_values.yaml > values.yaml; \
 	helm install $(HELM_RELEASE) \
+	-- debug \
+	-- wait --timeout 30m \
 	--set minikube=$(MINIKUBE) \
 	--set global.minikube=$(MINIKUBE) \
 	--set global.tango_host=$(TANGO_HOST) \

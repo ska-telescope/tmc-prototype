@@ -23,7 +23,7 @@ before_script:
 
 stages:
   - build
-  - unit-test
+  # - unit-test
   - test
   - linting
   - release
