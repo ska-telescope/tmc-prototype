@@ -1,0 +1,54 @@
+name: "cspmasterleafnode-{{.Release.Name}}"
+function: csp-monitoring
+domain: general-monitoring
+instances: ["01"]
+entrypoints:
+  - name: "cspmasterleafnode.CspMasterLeafNode"
+server:
+  name: "CspMasterLeafNodeDS"
+  instances:
+    - name: "01"
+      classes:
+        - name: "CspMasterLeafNode"
+          devices:
+            - name: "ska_mid/tm_leaf_node/csp_master"
+              properties:
+                - name: "CspMasterFQDN"
+                  values:
+                    - "mid_csp/elt/master"
+                - name: "LoggingTargetsDefault"
+                  values:
+                    - "tango::logger"
+                - name: "LoggingLevelDefault"
+                  values:
+                    - "5"
+                - name: "polled_attr"
+                  values:
+                    - "healthstate"
+                    - "1000"
+              attribute_properties:
+                - attribute: "cspHealthState"
+                  properties:
+                    - name: "__root_att"
+                      values:
+                        - "mid_csp/elt/master/healthState"
+                - attribute: "healthState"
+                  properties:
+                    - name: "abs_change"
+                      values:
+                        - "-1"
+                        - "1"
+depends_on:
+  - device: mid_csp/elt/master
+image:
+  registry: "{{.Values.global.tmcprototype.registry}}"
+  image: "{{.Values.global.tmcprototype.image}}"
+  tag: "{{.Values.global.tmcprototype.tag}}"
+  pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
+resources:
+      limits:
+        cpu: 300m
+        memory: 500Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi

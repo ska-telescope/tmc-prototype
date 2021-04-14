@@ -43,6 +43,8 @@ class DeviceData:
         self.scan_duration = None
         self.health_state_aggregator = None
         self.obs_state_aggregator = None
+        self.assigned_resources_maintainer = None
+        self.assignd_resources_by_mccs = ""
         self._subarray_health_state = HealthState.UNKNOWN
         self.subarray_health_state_map = {}
         self._health_event_id = {}

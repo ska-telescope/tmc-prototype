@@ -1,0 +1,88 @@
+name: "centralnode-{{.Release.Name}}"
+function: telescope-monitoring
+domain: general-monitoring
+instances: ["01"]
+entrypoints:
+  - name: "tmc.centralnode.central_node.CentralNode"
+server:
+  name: "CentralNodeDS"
+  instances:
+    - name: "01"
+      classes:
+        - name: "CentralNode"
+          devices:
+            - name: "ska_mid/tm_central/central_node"
+              properties:
+                - name: "CspMasterLeafNodeFQDN"
+                  values:
+                    - "ska_mid/tm_leaf_node/csp_master"
+                - name: "SdpMasterLeafNodeFQDN"
+                  values:
+                    - "ska_mid/tm_leaf_node/sdp_master"
+                - name: "DishLeafNodePrefix"
+                  values:
+                    - "ska_mid/tm_leaf_node/d"
+                - name: "TMMidSubarrayNodes"
+                  values:
+                    - "ska_mid/tm_subarray_node/1"
+                    - "ska_mid/tm_subarray_node/2"
+                    - "ska_mid/tm_subarray_node/3"
+                - name: "NumDishes"
+                  values:
+                    - "4"
+                - name: "SkaLevel"
+                  values:
+                    - "1"
+                - name: "LoggingTargetsDefault"
+                  values:
+                    - "tango::logger"
+                - name: "LoggingLevelDefault"
+                  values:
+                    - "5"
+                - name: "polled_attr"
+                  values:
+                    - "subarray1healthstate"
+                    - "1000"
+                    - "subarray2healthstate"
+                    - "1000"
+                    - "subarray3healthstate"
+                    - "1000"
+                    - "telescopehealthstate"
+                    - "1000"
+              attribute_properties:
+                - attribute: "subarray1HealthState"
+                  properties:
+                    - name: "abs_change"
+                      values:
+                        - "-1"
+                        - "1"
+                - attribute: "subarray2HealthState"
+                  properties:
+                    - name: "abs_change"
+                      values:
+                        - "-1"
+                        - "1"
+                - attribute: "subarray3HealthState"
+                  properties:
+                    - name: "abs_change"
+                      values:
+                        - "-1"
+                        - "1"
+                - attribute: "telescopeHealthState"
+                  properties:
+                    - name: "abs_change"
+                      values:
+                        - "-1"
+                        - "1"
+depends_on:
+  - device: ska_mid/tm_leaf_node/csp_master
+  - device: ska_mid/tm_leaf_node/sdp_master
+  - device: ska_mid/tm_subarray_node/1
+  - device: ska_mid/tm_subarray_node/2
+  - device: ska_mid/tm_subarray_node/3
+image:
+  registry: "{{.Values.centralnodemid.image.registry}}"
+  image: "{{.Values.centralnodemid.image.image}}"
+  tag: "{{.Values.centralnodemid.image.tag}}"
+  pullPolicy: "{{.Values.centralnodemid.image.pullPolicy}}"
+

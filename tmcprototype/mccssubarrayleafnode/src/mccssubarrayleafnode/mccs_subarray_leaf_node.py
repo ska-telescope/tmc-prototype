@@ -92,6 +92,9 @@ class MccsSubarrayLeafNode(SKABaseDevice):
     mccsSubarrayObsState = attribute(
         name="mccsSubarrayObsState", label="mccsSubarrayObsState", forwarded=True
     )
+    mccs_assigned_resources = attribute(
+        name="mccs_assigned_resources", label="mccs_assigned_resources", forwarded=True
+    )
     # ---------------
     # General methods
     # ---------------

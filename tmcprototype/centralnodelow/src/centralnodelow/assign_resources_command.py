@@ -153,6 +153,10 @@ class AssignResources(BaseCommand):
                                          "CentralNode.AssignResourcesCommand",
                                          tango.ErrSeverity.ERR)
 
+        message = const.STR_RETURN_MSG_ASSIGN_RESOURCES_SUCCESS
+        self.logger.info(message)
+        return message
+
     def _create_mccs_cmd_data(self, json_argument):
         """
         Remove 'sdp' and 'mccs' key from input JSON argument and forward the updated JSON to mccs master leaf node.
@@ -162,6 +166,7 @@ class AssignResources(BaseCommand):
         :return: The string in JSON format.
         """
         mccs_value = json_argument["mccs"]
+        json_argument["interface"] = "https://schema.skatelescope.org/ska-low-mccs-assignresources/1.0"
         del json_argument["sdp"]
         del json_argument["mccs"]
         json_argument.update(mccs_value)
