@@ -6,15 +6,15 @@
 CSP Master Leaf Node
 ===================================================
 
-.. autoclass:: tmcprototype.cspmasterleafnode.src.cspmasterleafnode.csp_master_leaf_node.CspMasterLeafNode
+.. autoclass:: ska-tmc.cspmasterleafnode.src.cspmasterleafnode.csp_master_leaf_node.CspMasterLeafNode
     :members: None
     :undoc-members:
-.. autoclass:: tmcprototype.cspmasterleafnode.src.cspmasterleafnode.off_command.Off
+.. autoclass:: ska-tmc.cspmasterleafnode.src.cspmasterleafnode.off_command.Off
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.cspmasterleafnode.src.cspmasterleafnode.on_command.On
+.. autoclass:: ska-tmc.cspmasterleafnode.src.cspmasterleafnode.on_command.On
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.cspmasterleafnode.src.cspmasterleafnode.standby_command.Standby
+.. autoclass:: ska-tmc.cspmasterleafnode.src.cspmasterleafnode.standby_command.Standby
     :members: do
     :undoc-members:

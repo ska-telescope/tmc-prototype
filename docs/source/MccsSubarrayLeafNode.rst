@@ -5,24 +5,24 @@
 
 MCCS Subarray Leaf Node
 ************
-.. autoclass:: tmcprototype.mccssubarrayleafnode.src.mccssubarrayleafnode.mccs_subarray_leaf_node.MccsSubarrayLeafNode
+.. autoclass:: ska-tmc.mccssubarrayleafnode.src.mccssubarrayleafnode.mccs_subarray_leaf_node.MccsSubarrayLeafNode
    :members: do
    :undoc-members:
-.. autoclass:: tmcprototype.mccssubarrayleafnode.src.mccssubarrayleafnode.abort_command.Abort
+.. autoclass:: ska-tmc.mccssubarrayleafnode.src.mccssubarrayleafnode.abort_command.Abort
    :members: do
    :undoc-members:
-.. autoclass:: tmcprototype.mccssubarrayleafnode.src.mccssubarrayleafnode.configure_command.Configure
+.. autoclass:: ska-tmc.mccssubarrayleafnode.src.mccssubarrayleafnode.configure_command.Configure
    :members: do
    :undoc-members:
-.. autoclass:: tmcprototype.mccssubarrayleafnode.src.mccssubarrayleafnode.end_command.End
+.. autoclass:: ska-tmc.mccssubarrayleafnode.src.mccssubarrayleafnode.end_command.End
    :members: do
    :undoc-members:
-.. autoclass:: tmcprototype.mccssubarrayleafnode.src.mccssubarrayleafnode.end_scan_command.EndScan
+.. autoclass:: ska-tmc.mccssubarrayleafnode.src.mccssubarrayleafnode.end_scan_command.EndScan
    :members: do
    :undoc-members:
-.. autoclass:: tmcprototype.mccssubarrayleafnode.src.mccssubarrayleafnode.obsreset_command.ObsReset
+.. autoclass:: ska-tmc.mccssubarrayleafnode.src.mccssubarrayleafnode.obsreset_command.ObsReset
    :members: do
    :undoc-members:
-.. autoclass:: tmcprototype.mccssubarrayleafnode.src.mccssubarrayleafnode.scan_command.Scan
+.. autoclass:: ska-tmc.mccssubarrayleafnode.src.mccssubarrayleafnode.scan_command.Scan
    :members: do
    :undoc-members:

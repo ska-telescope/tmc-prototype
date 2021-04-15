@@ -6,39 +6,39 @@
 SDP Subarray Leaf Node
 ========================================================
 
-.. autoclass:: tmcprototype.sdpsubarrayleafnode.src.sdpsubarrayleafnode.sdp_subarray_leaf_node.SdpSubarrayLeafNode
+.. autoclass:: ska-tmc.sdpsubarrayleafnode.src.sdpsubarrayleafnode.sdp_subarray_leaf_node.SdpSubarrayLeafNode
     :members: None
     :undoc-members:
-.. autoclass:: tmcprototype.sdpsubarrayleafnode.src.sdpsubarrayleafnode.abort_command.Abort
+.. autoclass:: ska-tmc.sdpsubarrayleafnode.src.sdpsubarrayleafnode.abort_command.Abort
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.sdpsubarrayleafnode.src.sdpsubarrayleafnode.assign_resources_command.AssignResources
+.. autoclass:: ska-tmc.sdpsubarrayleafnode.src.sdpsubarrayleafnode.assign_resources_command.AssignResources
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.sdpsubarrayleafnode.src.sdpsubarrayleafnode.configure_command.Configure
+.. autoclass:: ska-tmc.sdpsubarrayleafnode.src.sdpsubarrayleafnode.configure_command.Configure
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.sdpsubarrayleafnode.src.sdpsubarrayleafnode.end_command.End
+.. autoclass:: ska-tmc.sdpsubarrayleafnode.src.sdpsubarrayleafnode.end_command.End
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.sdpsubarrayleafnode.src.sdpsubarrayleafnode.endscan_command.EndScan
+.. autoclass:: ska-tmc.sdpsubarrayleafnode.src.sdpsubarrayleafnode.endscan_command.EndScan
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.sdpsubarrayleafnode.src.sdpsubarrayleafnode.obsreset_command.ObsReset
+.. autoclass:: ska-tmc.sdpsubarrayleafnode.src.sdpsubarrayleafnode.obsreset_command.ObsReset
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.sdpsubarrayleafnode.src.sdpsubarrayleafnode.off_command.Off
+.. autoclass:: ska-tmc.sdpsubarrayleafnode.src.sdpsubarrayleafnode.off_command.Off
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.sdpsubarrayleafnode.src.sdpsubarrayleafnode.on_command.On
+.. autoclass:: ska-tmc.sdpsubarrayleafnode.src.sdpsubarrayleafnode.on_command.On
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.sdpsubarrayleafnode.src.sdpsubarrayleafnode.release_resources_command.ReleaseAllResources
+.. autoclass:: ska-tmc.sdpsubarrayleafnode.src.sdpsubarrayleafnode.release_resources_command.ReleaseAllResources
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.sdpsubarrayleafnode.src.sdpsubarrayleafnode.restart_command.Restart
+.. autoclass:: ska-tmc.sdpsubarrayleafnode.src.sdpsubarrayleafnode.restart_command.Restart
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.sdpsubarrayleafnode.src.sdpsubarrayleafnode.scan_command.Scan
+.. autoclass:: ska-tmc.sdpsubarrayleafnode.src.sdpsubarrayleafnode.scan_command.Scan
     :members: do
     :undoc-members:

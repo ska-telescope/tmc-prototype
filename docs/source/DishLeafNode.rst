@@ -6,51 +6,51 @@
 Dish Leaf Node
 ======================================
 
-.. autoclass:: tmcprototype.dishleafnode.src.dishleafnode.dish_leaf_node.DishLeafNode
+.. autoclass:: ska-tmc.dishleafnode.src.dishleafnode.dish_leaf_node.DishLeafNode
     :members: None
     :undoc-members:
-.. autoclass:: tmcprototype.dishleafnode.src.dishleafnode.setoperatemode_command.SetOperateMode
+.. autoclass:: ska-tmc.dishleafnode.src.dishleafnode.setoperatemode_command.SetOperateMode
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.dishleafnode.src.dishleafnode.setstandbyfpmode_command.SetStandbyFPMode
+.. autoclass:: ska-tmc.dishleafnode.src.dishleafnode.setstandbyfpmode_command.SetStandbyFPMode
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.dishleafnode.src.dishleafnode.setstandbylpmode_command.SetStandbyLPMode
+.. autoclass:: ska-tmc.dishleafnode.src.dishleafnode.setstandbylpmode_command.SetStandbyLPMode
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.dishleafnode.src.dishleafnode.setstowmode_command.SetStowMode
+.. autoclass:: ska-tmc.dishleafnode.src.dishleafnode.setstowmode_command.SetStowMode
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.dishleafnode.src.dishleafnode.configure_command.Configure
+.. autoclass:: ska-tmc.dishleafnode.src.dishleafnode.configure_command.Configure
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.dishleafnode.src.dishleafnode.scan_command.Scan
+.. autoclass:: ska-tmc.dishleafnode.src.dishleafnode.scan_command.Scan
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.dishleafnode.src.dishleafnode.endscan_command.EndScan
+.. autoclass:: ska-tmc.dishleafnode.src.dishleafnode.endscan_command.EndScan
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.dishleafnode.src.dishleafnode.slew_command.Slew
+.. autoclass:: ska-tmc.dishleafnode.src.dishleafnode.slew_command.Slew
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.dishleafnode.src.dishleafnode.startcapture_command.StartCapture
+.. autoclass:: ska-tmc.dishleafnode.src.dishleafnode.startcapture_command.StartCapture
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.dishleafnode.src.dishleafnode.stopcapture_command.StopCapture
+.. autoclass:: ska-tmc.dishleafnode.src.dishleafnode.stopcapture_command.StopCapture
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.dishleafnode.src.dishleafnode.stoptrack_command.StopTrack
+.. autoclass:: ska-tmc.dishleafnode.src.dishleafnode.stoptrack_command.StopTrack
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.dishleafnode.src.dishleafnode.track_command.Track
+.. autoclass:: ska-tmc.dishleafnode.src.dishleafnode.track_command.Track
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.dishleafnode.src.dishleafnode.abort_command.Abort
+.. autoclass:: ska-tmc.dishleafnode.src.dishleafnode.abort_command.Abort
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.dishleafnode.src.dishleafnode.restart_command.Restart
+.. autoclass:: ska-tmc.dishleafnode.src.dishleafnode.restart_command.Restart
     :members: do
     :undoc-members:
-.. autoclass:: tmcprototype.dishleafnode.src.dishleafnode.obsreset_command.ObsReset
+.. autoclass:: ska-tmc.dishleafnode.src.dishleafnode.obsreset_command.ObsReset
     :members: do
     :undoc-members:
