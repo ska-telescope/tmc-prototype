@@ -1,9 +1,9 @@
 """Release information for Python Package"""
 
-name="""tmcprototype"""
+name="""ska-tmc"""
 version="0.5.4"
 version_info=version.split(".")
-description="""TMC Prototype"""
+description="""ska-TMC"""
 author="Team NCRA"
 author_email="telmgt-internal@googlegroups.com"
 license="""BSD-3-Clause"""
