@@ -18,16 +18,16 @@ RUN python3 -m pip install ska-log-transactions
 RUN python3 -m pip install skatmccommon==0.1.6+3aaa7bbe
 # install all local TMC packages
 RUN python3 -m pip install \
-    /app/tmcprototype/centralnodelow \
-    /app/tmcprototype/cspmasterleafnode \
-    /app/tmcprototype/cspsubarrayleafnode \
-    /app/tmcprototype/dishleafnode \
-    /app/tmcprototype/dishmaster \
-    /app/tmcprototype/sdpmasterleafnode \
-    /app/tmcprototype/sdpsubarrayleafnode \
-    /app/tmcprototype/mccsmasterleafnode \
-    /app/tmcprototype/mccssubarrayleafnode \
-    /app/tmcprototype/subarraynodelow 
+    /app/ska-tmc/centralnodelow \
+    /app/ska-tmc/cspmasterleafnode \
+    /app/ska-tmc/cspsubarrayleafnode \
+    /app/ska-tmc/dishleafnode \
+    /app/ska-tmc/dishmaster \
+    /app/ska-tmc/sdpmasterleafnode \
+    /app/ska-tmc/sdpsubarrayleafnode \
+    /app/ska-tmc/mccsmasterleafnode \
+    /app/ska-tmc/mccssubarrayleafnode \
+    /app/ska-tmc/subarraynodelow 
 
 USER tango
 
