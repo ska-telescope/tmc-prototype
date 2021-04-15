@@ -1,4 +1,4 @@
-[![Documentation Status](https://readthedocs.org/projects/tmc-prototype/badge/?version=master)](https://developer.skatelescope.org/projects/tmc-prototype/en/master/?badge=master)
+[![Documentation Status](https://readthedocs.org/projects/ska-tmc/badge/?version=master)](https://developer.skatelescope.org/projects/ska-tmc/en/master/?badge=master)
 
 # TABLE OF CONTENTS
 
@@ -6,10 +6,10 @@
   * 1.1 - Architecture
   * 1.2 - Functionality
 * 2   - Prerequisites
-* 3   - Installing, configuring and running the prototype (non-containerised environment)
+* 3   - Installing, configuring and running the ska-tmc (non-containerised environment)
   * 3.1 - Install SKA Base classes
   * 3.2 - Install Elettra Alarm Handler
-  * 3.3 - Running tmc-prototype
+  * 3.3 - Running ska-tmc
   * 3.4 - Configuration of TANGO devices
   * 3.5 - Running the GUI
 * 4   - Testing
@@ -21,12 +21,12 @@
 
 # 1 Introduction
 
-This is the repository for the TMC evolutionary prototype. The prototype aims to realize Telescope Monitoring and Control functionality, and utilizes the platform, tools and technology specified for the SKA construction.
+This is the repository for the TMC evolutionary prototype. The ska-tmc aims to realize Telescope Monitoring and Control functionality, and utilizes the platform, tools and technology specified for the SKA construction.
 
-The prototype utilizes the base classes created in-line with the SKA Control System Guidelines and Tango coding standards. Developed in **Python 3.7** (PyTango 9.3.2), it is a single repository consisting ten packages - CentralNodeLow, SubarrayNodeLow, DishLeafNode, CspMasterLeafNode, CspSubarrayLeafNode, SdpMasterLeafNode, SdpSubarrayLeafNode, MccsMasterLeafNode, MccsSubarrayLeafNode and DishMaster.
-CentralNode device is implementated in a separate gitlab repository which is available at https://gitlab.com/ska-telescope/ska-tmc-centralnode-mid .
-SubarrayNode device is implemented in a separate gitlab repository which is available at https://gitlab.com/ska-telescope/ska-tmc-subarraynode-mid .
-TMC prototype addresses the  following architectural aspects and functionality:
+The ska-tmc utilizes the base classes created in-line with the SKA Control System Guidelines and Tango coding standards. Developed in **Python 3.7** (PyTango 9.3.2), it is a single repository consisting ten packages - CentralNodeLow, SubarrayNodeLow, DishLeafNode, CspMasterLeafNode, CspSubarrayLeafNode, SdpMasterLeafNode, SdpSubarrayLeafNode, MccsMasterLeafNode, MccsSubarrayLeafNode and DishMaster.
+CentralNode device is implementated in a separate gitlab repository which is available at <https://gitlab.com/ska-telescope/ska-tmc-centralnode-mid> .
+SubarrayNode device is implemented in a separate gitlab repository which is available at <https://gitlab.com/ska-telescope/ska-tmc-subarraynode-mid> .
+SKA-TMC addresses the  following architectural aspects and functionality:
 
 ## 1.1 Architecture
 
@@ -113,14 +113,14 @@ TMC prototype addresses the  following architectural aspects and functionality:
 * [pytest-json-report](https://pypi.org/project/pytest-json-report/)
 * [pycodestyle](https://pypi.org/project/pycodestyle/)
 * [pylint](https://pypi.org/project/pylint/)
-* [Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/) (for running the prototype in a containerised environment)
+* [Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/) (for running the ska-tmc in a containerised environment)
 * [Kubernetes (K8s)/Minikube](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/)
 
-# 3 Installing, configuring and running the prototype
+# 3 Installing, configuring and running the ska-tmc
 
 ## 3.1 Install SKA Base classes
 
-Since the TMC prototype is developed using LMC Base classes, we need to install them prior to running tmc-prototype.
+Since the SKA-TMC is developed using LMC Base classes, we need to install them prior to running ska-tmc.
 Follow the steps specified at [this link](https://gitlab.com/ska-telescope/lmc-base-classes#installation-steps) to install LMC Base classes.
 
 ## 3.2 Install Elettra Alarm Handler
@@ -128,6 +128,9 @@ Follow the steps specified at [this link](https://gitlab.com/ska-telescope/lmc-b
 Alarm handler is an optional feature and can be installed if desired. Refer to
 [this](https://docs.google.com/document/d/1uGnVrBGs6TvnORsM2m4hbORcAzn_KK2kAO8Roaocxjo/edit?usp=sharing)
 document for installation guide.
+
+A k8s job does the alarm configuration when TMC chart is deployed. This is currently done for  
+tmc mid chart only.
 
 # 4 Testing
 
@@ -151,7 +154,7 @@ The command to run the unit tests is: `make test` \
 
 ## 4.3 Manual Testing
 
-The TMC prototype can be deployed in the development environment. The TMC needs to be deployed in kubernetes environment. The deployment however, must be made without the SKA Logger and Archiver components as these two consume a lot of resources leading the system to hanged state after few minutes. Webjive component from the MVP is used to invoke commands and monitor the attributes.
+The SKA-TMC can be deployed in the development environment. The TMC needs to be deployed in kubernetes environment. The deployment however, must be made without the SKA Logger and Archiver components as these two consume a lot of resources leading the system to hanged state after few minutes. Webjive component from the MVP is used to invoke commands and monitor the attributes.
 
 ### 4.3.1 System Requirements
 
@@ -184,7 +187,7 @@ The command `make clean` performs cleanup like deleting the kubernetes namespace
 
 # 5 Linting
 
-[Pylint](http://pylint.pycqa.org/en/stable/), code analysis tool used for the linting in the TMC prototype.
+[Pylint](http://pylint.pycqa.org/en/stable/), code analysis tool used for the linting in the SKA-TMC.
  Configuration for linting is provided in *.pylintrc* file. For the code analysis of entire TMC, a command in the
  makefile is implemented.
 
@@ -195,9 +198,9 @@ After completion of linting job, *linting.xml* file is generated, which is used 
 
 # 6 Documentation
 
-* [ReadTheDocs](https://tmc-prototype.readthedocs.io/en/master/)
+* [ReadTheDocs](https://ska-tmc.readthedocs.io/en/master/)
 * [ADR-8: Subarray observation control state machine](https://confluence.skatelescope.org/x/bIdIBg)
-* [TMC Prototype Learnings](https://docs.google.com/document/d/1DMhb_6NM0oaZMhSwEE79_B-MwycwzuH-RJsuOd5Zjlw/edit?usp=sharing)
+* [SKA-TMC Learnings](https://docs.google.com/document/d/1DMhb_6NM0oaZMhSwEE79_B-MwycwzuH-RJsuOd5Zjlw/edit?usp=sharing)
 * [TMC Stage I Prototype Demo](https://replay.skatelescope.org/replay/showRecordingExternal.html?key=3Na630an0coGgdK)
 * [System Demo #3.2 (Recording)](https://www.dropbox.com/sh/ecqqky7ze5oaehm/AACBPF95iub58Y_OIIT-V4XZa?dl=0)
 * [System Demo #3.2 (PPT)](https://drive.google.com/file/d/1pv8B3HDvNlUR3fd69_urpALWF7wwmlKG/view?usp=sharing)

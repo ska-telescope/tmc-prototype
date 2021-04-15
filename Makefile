@@ -1,5 +1,5 @@
 #
-# Project makefile for a tmc-prototype project. You should normally only need to modify
+# Project makefile for a ska-tmc project. You should normally only need to modify
 # DOCKER_REGISTRY_USER and PROJECT below.
 #
 
@@ -8,10 +8,10 @@
 # the Docker tag for this project. The definition below inherits the standard
 # value for DOCKER_REGISTRY_HOST (=rnexus.engageska-portugal.pt) and overwrites
 # DOCKER_REGISTRY_USER and PROJECT to give a final Docker tag of
-# nexus.engageska-portugal.pt/tmc-prototype/tmcprototype
+# nexus.engageska-portugal.pt/ska-tmc/ska-tmc
 #
 DOCKER_REGISTRY_USER:=ska-telescope
-PROJECT = tmcprototype
+PROJECT = ska-tmc
 
 # KUBE_NAMESPACE defines the Kubernetes Namespace that will be deployed to
 # using Helm.  If this does not already exist it will be created
@@ -49,7 +49,7 @@ DOCKER_VOLUMES ?= /var/run/docker.sock:/var/run/docker.sock
 # registry credentials - user/pass/registry - set these in PrivateRules.mak
 DOCKER_REGISTRY_USER_LOGIN ?=  ## registry credentials - user - set in PrivateRules.mak
 CI_REGISTRY_PASS_LOGIN ?=  ## registry credentials - pass - set in PrivateRules.mak
-CI_REGISTRY ?= gitlab.com/ska-telescope/tmc-prototype
+CI_REGISTRY ?= gitlab.com/ska-telescope/ska-tmc
 
 CI_PROJECT_DIR ?= .
 
@@ -61,9 +61,9 @@ CUSTOM_VALUES =
 
 ifneq ($(CI_JOB_ID),)
 CI_PROJECT_IMAGE := 
-CUSTOM_VALUES = --set global.tmcprototype.registry=registry.gitlab.com/ska-telescope \
-	--set global.tmcprototype.image=tmc-prototype \
-	--set global.tmcprototype.tag=$(CI_COMMIT_SHORT_SHA)
+CUSTOM_VALUES = --set global.ska-tmc.registry=registry.gitlab.com/ska-telescope \
+	--set global.ska-tmc.image=ska-tmc \
+	--set global.ska-tmc.tag=$(CI_COMMIT_SHORT_SHA)
 else
 endif
 
