@@ -22,7 +22,7 @@ TracerMessage = namedtuple("TracerMessage", ["time", "message"])
 SubscriptionId: Tuple[DeviceProxy, int] = namedtuple("SubscriptionId", ["device", "id"])
 
 CHANGE_EVENT = EventType.CHANGE_EVENT
-sys.path.append("/home/tango/tmcprototype/post-deployment/")
+sys.path.append("/home/tango/ska-tmc/post-deployment/")
 
 
 ## helpers for reading an event
