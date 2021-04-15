@@ -1,6 +1,6 @@
 apiVersion: v2
 name: tmc-mid
-description: A subchart for TMC-Mid prototype deployment.
+description: A subchart for SKA-TMC-Mid  deployment.
 type: application
 version: 0.2.10
 appVersion: 1.16.0

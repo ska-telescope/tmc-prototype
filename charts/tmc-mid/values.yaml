@@ -8,7 +8,7 @@ telescope: SKA-mid
 subsystem: tmc-mid
 
 labels:
-  app: tmc-prototype
+  app: ska-tmc
 annotations:
   app.gitlab.com/app: CI_PROJECT_PATH_SLUG
   app.gitlab.com/env: CI_ENVIRONMENT_SLUG
@@ -16,9 +16,9 @@ annotations:
 global:
   minikube: true
   tango_host: databaseds-tango-base-test:10000
-  tmcprototype:
+  ska-tmc:
     registry: nexus.engageska-portugal.pt/ska-telescope
-    image: tmcprototype
+    image: ska-tmc
     tag: 0.5.4
     pullPolicy: IfNotPresent
 
@@ -37,10 +37,10 @@ itango:
     tag: 9.3.1
     pullPolicy: IfNotPresent
 
-tmcprototype:
+ska-tmc:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
-    image: tmcprototype
+    image: ska-tmc
     tag: 0.5.4
     pullPolicy: IfNotPresent
 

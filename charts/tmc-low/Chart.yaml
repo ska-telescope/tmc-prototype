@@ -1,6 +1,6 @@
 apiVersion: v2
 name: tmc-low
-description: A subchart for TMC-Low prototype deployment.
+description: A subchart for SKA-TMC-Low  deployment.
 type: application
 version: 0.1.9
 appVersion: 1.16.0
