@@ -39,7 +39,7 @@ DOCKER_BUILD_CONTEXT=.
 DOCKER_FILE_PATH=Dockerfile
 
 .PHONY: pre-build docker-build post-build build release patch-release minor-release major-release tag check-status check-release showver \
-	push pre-push do-push post-push push-versioned-image create-tag create-publish-tag release-tmc-prototype push-tag config-git \
+	push pre-push do-push post-push push-versioned-image create-tag create-publish-tag release-ska-tmc push-tag config-git \
 	release-tmc delete-tmc-release delete-tag release-tmc-if-no-error
 
 build: pre-build docker-build post-build  ## build the application image
@@ -135,7 +135,7 @@ config-git:
 	git config --global user.email $(EMAILID)
 	git config --global user.name $(USERNAME)
 
-release-tmc-prototype: config-git docker-build push-versioned-image create-publish-tag release-tmc-if-no-error
+release-ska-tmc: config-git docker-build push-versioned-image create-publish-tag release-tmc-if-no-error
 
 release-tmc: .release
 	@. $(RELEASE_SUPPORT) ; releaseTMC
