@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# This file is part of the TMC Prototype project
+# This file is part of the SKA-TMC project
 #
 #
 #

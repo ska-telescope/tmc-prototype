@@ -3,7 +3,7 @@
 name="""ska-tmc"""
 version="0.5.4"
 version_info=version.split(".")
-description="""ska-TMC"""
+description="""SKA-TMC"""
 author="Team NCRA"
 author_email="telmgt-internal@googlegroups.com"
 license="""BSD-3-Clause"""
