@@ -1,4 +1,4 @@
-namespace: tmcprototype
+namespace: ska-tmc
 accountName: testing-pod
 system: verification-system
 telescope: SKA-mid

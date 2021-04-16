@@ -7,7 +7,7 @@
 
 """Release information for Python Package"""
 
-name = """tmcprototype"""
+name = """ska-tmc"""
 version = "0.1.0"
 version_info = version.split(".")
 description = (
