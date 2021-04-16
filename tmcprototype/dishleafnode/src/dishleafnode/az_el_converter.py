@@ -39,47 +39,15 @@ class AzElConverter:
             Azimuth and elevation angle, in degrees
         :raises ValueError: If error occurs when creating katpoint Target or Timestamp.
         """
+        
         dish_antenna = katpoint.Antenna(
             name=dish_name,
             latitude=observer_location_lat,
             longitude=observer_location_long,
             altitude=observer_altitude,
-        )
-
-        dish_antenna_latitude = dish_antenna.ref_observer.lat
-        try:
-            desired_target = katpoint.Target(str(target))
-            timestamp = katpoint.Timestamp(timestamp=timestamp)
-            target_apparnt_radec = katpoint.Target.apparent_radec(
-                desired_target, timestamp=timestamp, antenna=dish_antenna
-            )
-        except ValueError as value_err:
-            self.logger.error(
-                "Error creating instances of katpoint Target/Timestamp from target: '%s' and timestamp: '%s'.",
-                target,
-                timestamp,
-            )
-            raise value_err
-
-        sidereal_time = dish_antenna.local_sidereal_time(timestamp=timestamp)
-        sidereal_time_radian = katpoint.deg2rad(math.degrees(sidereal_time))
-
-        # converting ra to ha
-        hour_angle = sidereal_time_radian - target_apparnt_radec[0]
-
-        # Geodetic latitude of the observer
-        latitude_degree_decimal = UnitConverter().dms_to_dd(str(dish_antenna_latitude))
-        latitude_radian = katpoint.deg2rad(latitude_degree_decimal)
-
-        # Calculate enu coordinates
-        enu_array = katpoint.hadec_to_enu(
-            hour_angle, target_apparnt_radec[1], latitude_radian
-        )
-
-        # Calculate Az El coordinates
-        az_el_coordinates = list(
-            katpoint.enu_to_azel(enu_array[0], enu_array[1], enu_array[2])
-        )
-        az_el_coordinates[0] = katpoint.rad2deg(az_el_coordinates[0])
-        az_el_coordinates[1] = katpoint.rad2deg(az_el_coordinates[1])
+        )  
+        # obtain az el co-ordinates for dish
+        azel = target.azel(timestamp, dish_antenna)
+        # list of az el co-ordinates 
+        az_el_coordinates = [azel.az.deg, azel.alt.deg]
         return az_el_coordinates
