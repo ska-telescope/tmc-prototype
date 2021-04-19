@@ -60,10 +60,10 @@ deviceServers:
   depends_on:
     - device: ska_low/tm_leaf_node/mccs_subarray01
   image:
-    registry: "{{.Values.global.ska-tmc.registry}}"
-    image: "{{.Values.global.ska-tmc.image}}"
-    tag: "{{.Values.global.ska-tmc.tag}}"
-    pullPolicy: "{{.Values.global.ska-tmc.pullPolicy}}"
+    registry: "{{.Values.global.skatmc.registry}}"
+    image: "{{.Values.global.skatmc.image}}"
+    tag: "{{.Values.global.skatmc.tag}}"
+    pullPolicy: "{{.Values.global.skatmc.pullPolicy}}"
 - name: centralnode
   function: telescope-monitoring
   domain: general-monitoring
@@ -73,10 +73,10 @@ deviceServers:
     - device: ska_low/tm_subarray_node/1
     - device: ska_low/tm_leaf_node/mccs_master
   image:
-    registry: "{{.Values.global.ska-tmc.registry}}"
-    image: "{{.Values.global.ska-tmc.image}}"
-    tag: "{{.Values.global.ska-tmc.tag}}"
-    pullPolicy: "{{.Values.global.ska-tmc.pullPolicy}}"
+    registry: "{{.Values.global.skatmc.registry}}"
+    image: "{{.Values.global.skatmc.image}}"
+    tag: "{{.Values.global.skatmc.tag}}"
+    pullPolicy: "{{.Values.global.skatmc.pullPolicy}}"
 - name: mccssmasterleafnode
   function: observation-execution
   domain: general-monitoring
@@ -85,10 +85,10 @@ deviceServers:
   depends_on:
     - device: low-mccs/control/control
   image:
-    registry: "{{.Values.global.ska-tmc.registry}}"
-    image: "{{.Values.global.ska-tmc.image}}"
-    tag: "{{.Values.global.ska-tmc.tag}}"
-    pullPolicy: "{{.Values.global.ska-tmc.pullPolicy}}"
+    registry: "{{.Values.global.skatmc.registry}}"
+    image: "{{.Values.global.skatmc.image}}"
+    tag: "{{.Values.global.skatmc.tag}}"
+    pullPolicy: "{{.Values.global.skatmc.pullPolicy}}"
 - name: mccssubarrayleafnode1
   function: observation-execution
   domain: subarray
@@ -97,8 +97,8 @@ deviceServers:
   depends_on:
     - device: low-mccs/subarray/01
   image:
-    registry: "{{.Values.global.ska-tmc.registry}}"
-    image: "{{.Values.global.ska-tmc.image}}"
-    tag: "{{.Values.global.ska-tmc.tag}}"
-    pullPolicy: "{{.Values.global.ska-tmc.pullPolicy}}"
+    registry: "{{.Values.global.skatmc.registry}}"
+    image: "{{.Values.global.skatmc.image}}"
+    tag: "{{.Values.global.skatmc.tag}}"
+    pullPolicy: "{{.Values.global.skatmc.pullPolicy}}"
 
