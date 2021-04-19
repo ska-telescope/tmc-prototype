@@ -6,7 +6,8 @@ lmcbaseclasses >= 0.7.2
 marshmallow
 cdm-shared-library
 ska-telescope-model
-katpoint
+astropy >= 4.1
+katpoint == 1.0a1
 datetime
 fire
 skatmccommon==0.1.6+3aaa7bbe
