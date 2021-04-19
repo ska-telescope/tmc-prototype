@@ -62,8 +62,10 @@ CUSTOM_VALUES =
 ifneq ($(CI_JOB_ID),)
 CI_PROJECT_IMAGE := 
 CUSTOM_VALUES = --set global.skatmc.registry=registry.gitlab.com/ska-telescope \
+CUSTOM_VALUES = --set global.skatmc.registry=registry.gitlab.com/ska-telescope \
 	--set global.skatmc.image=ska-tmc \
 	--set global.skatmc.tag=$(CI_COMMIT_SHORT_SHA)
+
 else
 endif
 
