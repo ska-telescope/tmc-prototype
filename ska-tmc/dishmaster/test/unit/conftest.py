@@ -11,11 +11,10 @@ from tango import Database
 from tango.test_context import DeviceTestContext
 
 from tango_simlib.utilities import helper_module
-# from dishmaster.utils import get_tango_server_class
+from dishmaster.utils import get_tango_server_class
 
 
 @pytest.fixture(scope="class")
-@pytest.mark.xfail
 def tango_context(request):
     """Creates and returns a TANGO DeviceTestContext object.
 
@@ -36,7 +35,6 @@ def tango_context(request):
 
 
 @pytest.fixture(scope="class")
-@pytest.mark.xfail
 def initialize_device(tango_context):
     """Re-initializes the device.
 
