@@ -137,7 +137,7 @@ function gitPush() {
   git_username=$(awk -F= '/^gitlab_username=/{print $2}' .release)
   private_token=$(awk -F= '/^private_token=/{print $2}' .release)
   echo $tag
-  $(git push https://"$git_username":"$private_token"@gitlab.com/ska-telescope/tmc-prototype.git "$tag")
+  $(git push https://"$git_username":"$private_token"@gitlab.com/ska-telescope/ska-tmc.git "$tag")
   result=$(echo $?)
   if [ $result -ne 0 ];
   then
@@ -150,7 +150,7 @@ function getReleaseDescription(){
 	awk -F= '/^release_notes=/{print $2}' .release
 }
 
-# Create GitLab release for tmc-prototype with version given in .release file
+# Create GitLab release for ska-tmc with version given in .release file
 function releaseTMC() {
   name=$(getRelease)
   tag_name=$(getRelease)
@@ -164,7 +164,7 @@ function releaseTMC() {
   echo $result
 }
 
-# Delete released tmc-prototype with version given in .release file
+# Delete released ska-tmc with version given in .release file
 function deleteTMCRelease() {
   tag_name=$(getRelease)
   private_token=$(awk -F= '/^private_token=/{print $2}' .release)
@@ -177,7 +177,7 @@ function deleteTag() {
   tag=$(awk -F= '/^tag=/{print $2}' .release)
   git_username=$(awk -F= '/^gitlab_username=/{print $2}' .release)
   private_token=$(awk -F= '/^private_token=/{print $2}' .release)
-  git push --delete https://"$git_username":"$private_token"@gitlab.com/ska-telescope/tmc-prototype.git "$tag"
+  git push --delete https://"$git_username":"$private_token"@gitlab.com/ska-telescope/ska-tmc.git "$tag"
 }
 
 # Create GitLab release tmc with version given in .release file.
@@ -192,7 +192,7 @@ function releaseTMCIfNoError() {
   then
     echo "THIS RELEASE IS ALREADY EXISTS. NEW RELEASE WITH SAME VERSION IS NOT POSSIBLE."
   else
-    echo "RELEASING TMC-PROTOTYPE..."
+    echo "RELEASING SKA-TMC..."
     releaseTMC
     checkReleaseExists=$(curl --header "PRIVATE-TOKEN: "$private_token "https://gitlab.com/api/v4/projects/""$CI_PROJECT_ID""/releases/""$tag_name" | \
     python3 -c "import sys, json; print(json.load(sys.stdin)['tag_name'])")

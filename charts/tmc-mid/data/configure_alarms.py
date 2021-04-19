@@ -11,7 +11,7 @@ print("Attribute telescopehealthstate ----------------: ", str(data))
 print("Attribute telescopehealthstate quality ----------: ", str(data.quality))
 
 # Update file path to devices.json in order to test locally
-# To test on docker environment use path : /app/tmcprototoype/devices.json
+# To test on docker environment use path : /app/ska-tmc/devices.json
 with open("data/alarms.json", "r") as file:
     jsonAlarmsString = file.read().replace("\n", "")
 
