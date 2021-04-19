@@ -160,7 +160,7 @@ depends_on:
   - device: mid_csp/elt/subarray_02
   - device: mid_csp/elt/subarray_03
 image:
-  registry: "{{.Values.global.ska-tmc.registry}}"
-  image: "{{.Values.global.ska-tmc.image}}"
-  tag: "{{.Values.global.ska-tmc.tag}}"
-  pullPolicy: "{{.Values.global.ska-tmc.pullPolicy}}"
+  registry: "{{.Values.global.skatmc.registry}}"
+  image: "{{.Values.global.skatmc.image}}"
+  tag: "{{.Values.global.skatmc.tag}}"
+  pullPolicy: "{{.Values.global.skatmc.pullPolicy}}"
