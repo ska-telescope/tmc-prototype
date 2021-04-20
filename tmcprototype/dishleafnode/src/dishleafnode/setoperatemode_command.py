@@ -131,5 +131,5 @@ class SetOperateMode(BaseCommand):
         # converted to lowercase in subsequent callbacks.
         attr_name = fqdn_attr_name.split("/")[-1].split("#")[0]
         log_message = f"{attr_name} is {event_data.attr_value.value}."
-        # self.this_server.write_attr("activityMessage", log_message, False)
+        self.this_server.write_attr("activityMessage", log_message, False)
         self.logger.info(log_message)

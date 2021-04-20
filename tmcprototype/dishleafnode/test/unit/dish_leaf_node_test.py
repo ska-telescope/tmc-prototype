@@ -338,17 +338,17 @@ def dish_mode(request):
     return request.param
 
 
-# def test_dish_leaf_node_activity_message_reports_correct_dish_master_dish_mode(
-#     mock_dish_master_proxy, event_subscription_attr_mock, dish_mode, mock_tango_server_helper
-# ):
-#     device_proxy, tango_client_obj, dish_master1_fqdn, _ = mock_dish_master_proxy
-#     attribute_name = "dishMode"
-#     device_proxy.SetOperateMode()
-#     dummy_event = create_dummy_event_for_dishmode(
-#         dish_master1_fqdn, dish_mode, attribute_name
-#     )
-#     event_subscription_attr_mock[attribute_name](dummy_event)
-#     assert device_proxy.activityMessage == f"dishMode is {dish_mode.value}."
+def test_dish_leaf_node_activity_message_reports_correct_dish_master_dish_mode(
+    mock_dish_master_proxy, event_subscription_attr_mock, dish_mode, mock_tango_server_helper
+):
+    device_proxy, tango_client_obj, dish_master1_fqdn, _ = mock_dish_master_proxy
+    attribute_name = "dishMode"
+    device_proxy.SetOperateMode()
+    dummy_event = create_dummy_event_for_dishmode(
+        dish_master1_fqdn, dish_mode, attribute_name
+    )
+    event_subscription_attr_mock[attribute_name](dummy_event)
+    assert device_proxy.activityMessage == f"dishMode is {dish_mode.value}."
 
 
 def test_dish_leaf_node_dish_mode_with_error_event(
