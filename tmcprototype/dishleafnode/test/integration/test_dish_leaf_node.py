@@ -195,6 +195,7 @@ class TestDishLeafNode:
 
     def test_SetStowMode(self, dish_leaf_node_dp, dish_master_dp):
         dish_leaf_node_dp.SetStowMode()
+        time.sleep(0.2)
         assert dish_master_dp.dishmode.name == "STOW"
 
     def test_Slew(self, dish_leaf_node_dp, dish_master_dp):
@@ -208,6 +209,7 @@ class TestDishLeafNode:
         dish_leaf_node_dp.Track(input_string)
         assert dish_master_dp.pointingState == PointingState.TRACK
         dish_leaf_node_dp.StopTrack()
+        time.sleep(0.2)
         assert dish_master_dp.pointingState == PointingState.READY
 
     def test_Restart(self, dish_leaf_node_dp, dish_master_dp):
