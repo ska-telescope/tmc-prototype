@@ -130,7 +130,7 @@ class Configure(BaseCommand):
                 timestamp,
                 device_data.dish_name,
                 device_data.observer_location["latitude"],
-                device_data.observer_location["latitude"],
+                device_data.observer_location["longitude"],
                 device_data.observer_location["altitude"],
             )
         except ValueError as valuerr:

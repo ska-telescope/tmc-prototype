@@ -61,13 +61,17 @@ class UnitConverter:
             Example: [7.0, 4.0, 27.928156941480466] is returned value for input 0.123472.
         """
         try:
+            sign = 1
+            if argin < 0:
+                sign = -1
             dms = []
-            frac_min, degrees = math.modf(argin * (180 / math.pi))
+            frac_min, degrees = math.modf(abs(argin) * (180 / math.pi))
             frac_sec, minutes = math.modf(frac_min * 60)
             seconds = frac_sec * 60
-            dms.append(degrees)
-            dms.append(minutes)
+            dms.append(int(degrees * sign))
+            dms.append(int(minutes))
             dms.append(seconds)
+            print("dms -------------", dms)
             return dms
         except SyntaxError as error:
             log_msg = f"Error while converting radians to dig:min:sec.{error}"

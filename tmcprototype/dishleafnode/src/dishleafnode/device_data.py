@@ -143,7 +143,7 @@ class DeviceData:
         self.observer_location[
             "longitude"
         ] = f"{dish_long_dms[0]}:{dish_long_dms[1]}:{dish_long_dms[2]}"
-        self.observer_location["altitude"] = dish_ecef_coordinates[2]
+        self.observer_location["altitude"] = dish_lat_long_alt_rad[2]
 
         print("self.observer_location -------", self.observer_location)
 
