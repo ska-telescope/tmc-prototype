@@ -16,26 +16,10 @@ other TM Components (such as OET, Central Node) for a SKA Low Subarray.
 from . import release
 from . import const
 from .subarray_node_low import SubarrayNode
-from .device_data import DeviceData
 
 # from .configure_command import ElementDeviceData
 
-__all__ = [
-    "SubarrayNode", 
-    "const", 
-    "release",
-    "exceptions", 
-    "DeviceData",
-    "AssignResources",
-    "ReleaseAllResources",
-    "Configure",
-    "Scan",
-    "EndScan",
-    "End",
-    "On",
-    "ObsReset",
-    "Abort",
-    "Off"]
+__all__ = ["SubarrayNode", "const", "release"]
 
 __version__ = release.version
 __version_info__ = release.version_info
