@@ -39,38 +39,11 @@ class AzElConverter:
             Azimuth and elevation angle, in degrees
         :raises ValueError: If error occurs when creating katpoint Target or Timestamp.
         """
-        print("dish_name -----------", dish_name, type(dish_name))
-        print("observer_location_lat -----------", observer_location_lat, type(observer_location_lat))
-        print("observer_location_long ----------", observer_location_long, type(observer_location_long))
-        print("observer_altitude ----------", observer_altitude, type(observer_altitude))
-        print("timestamp ----------", timestamp)
-
         dish_antenna = katpoint.Antenna(f'{dish_name}, {observer_location_lat}, {observer_location_long}, {observer_altitude}')
-        
-        
-        
-        # test 1
-        # descriptions = '''
-        # 0001, -30:42:39.8, 21:26:38.0, 1086, 13.5, 0 0 0 0 0 0,0, 0
-        # '''.strip().split('\n')
-        # antennas = [katpoint.Antenna(line) for line in descriptions]
-        # dish_antenna = antennas[0]
-
-        # test 2
-        # dish_antenna = katpoint.Antenna('0001, -30:42:39.8, 21:26:38.0, 1086, 13.5, 0 0 0 0 0 0,0, 0')
-        # print("dish_antenna -----------", dish_antenna)
-        # timestamp1 = '2021-04-20 11:47:59.787580'
-        # print("timestamp1 ---------", timestamp1)
-
-        text_input_array = target_input.split(",")
-        print("text_input_array -------------", text_input_array)
-        
+        text_input_array = target_input.split(",")        
         ra = text_input_array[1]
-        print("ra -------------", ra)
         dec = text_input_array[2]
-        print("dec ------------", dec)
         target = katpoint.Target.from_radec(ra, dec)
-
 
         # obtain az el co-ordinates for dish
         azel = target.azel(timestamp, dish_antenna)
