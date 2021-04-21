@@ -2,13 +2,13 @@
 from tango import DeviceProxy
 import json
 
-print("CREATING CentralNode deviceproxy")
-cn_proxy = DeviceProxy("ska_mid/tm_central/central_node")
-attr_config = cn_proxy.get_attribute_config("telescopeHealthState")
-print("attr_config ----------------", str(attr_config))
-data = cn_proxy.read_attribute("telescopeHealthState")
-print("Attribute telescopehealthstate ----------------: ", str(data))
-print("Attribute telescopehealthstate quality ----------: ", str(data.quality))
+# print("CREATING CentralNode deviceproxy")
+# cn_proxy = DeviceProxy("ska_mid/tm_central/central_node")
+# attr_config = cn_proxy.get_attribute_config("telescopeHealthState")
+# print("attr_config ----------------", str(attr_config))
+# data = cn_proxy.read_attribute("telescopeHealthState")
+# print("Attribute telescopehealthstate ----------------: ", str(data))
+# print("Attribute telescopehealthstate quality ----------: ", str(data.quality))
 
 # Update file path to devices.json in order to test locally
 # To test on docker environment use path : /app/ska-tmc/devices.json
