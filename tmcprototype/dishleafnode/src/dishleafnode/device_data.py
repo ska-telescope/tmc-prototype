@@ -47,6 +47,7 @@ class DeviceData:
         self.observer_location = {}
         self.event_track_time = threading.Event()
         self.attr_event_map = {}
+        self.observer = None
 
     @staticmethod
     def get_instance():
@@ -167,3 +168,46 @@ class DeviceData:
             )
             
         return json_argument
+
+    def create_antenna_obj():
+        try:
+            with importlib.resources.open_text("dishleafnode", "ska_antennas.txt") as f:
+                descriptions = f.readlines()
+            antennas = [katpoint.Antenna(line) for line in descriptions]
+        except OSError as err:
+            logger.exception(err)
+            raise err
+        except ValueError as verr:
+            logger.exception(verr)
+            raise verr
+
+        antenna_exist = False
+
+        for ant in antennas:
+            if ant.name == self.dish_number:
+                # ref_ant_lat = ant.ref_observer.lat
+                # ref_ant_long = ant.ref_observer.long
+                # ref_ant_altitude = ant.ref_observer.elevation
+                # ant_delay_model = ant.delay_model.values()
+                print("ant is ----------------", ant)
+                self.observer = ant
+
+
+    def point(target, timestamp):
+        # write your code
+        print("hello")
+        text_input_array = target_input.split(",")
+        print("text_input_array -------------", text_input_array)
+        
+        ra = text_input_array[1]
+        print("ra -------------", ra)
+        dec = text_input_array[2]
+        print("dec ------------", dec)
+        target = katpoint.Target.from_radec(ra, dec)
+
+
+        # obtain az el co-ordinates for dish
+        azel = target.azel(timestamp, dish_antenna)
+        # list of az el co-ordinates 
+        az_el_coordinates = [azel.az.deg, azel.alt.deg]
+        return az_el_coordinates
