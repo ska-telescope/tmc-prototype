@@ -19,8 +19,8 @@ global:
   skatmc:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc
-    tag: 8.8.8-dirty
-    pullPolicy: IfNotPresent
+    tag: 9.9.9-dirty
+    pullPolicy: Always
 
 dsconfig:
   configuration_file: data/tmc-mid-config.json
@@ -63,7 +63,7 @@ alarmhandler:
     registry: nexus.engageska-portugal.pt/tango-example
     image: tmalarmhandler
     tag: 0.1.5
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
 
 resources:
   limits:

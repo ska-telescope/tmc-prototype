@@ -18,8 +18,8 @@ global:
   skatmc:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc
-    tag: 8.8.8-dirty
-    pullPolicy: IfNotPresent
+    tag: 9.9.9-dirty
+    pullPolicy: Always
 
 dsconfig:
   configuration_file: data/tmc-low-config.json
@@ -40,7 +40,7 @@ skatmc:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc
-    tag: 8.8.8-dirty
+    tag: 9.9.9-dirty
     pullPolicy: IfNotPresent
 
 resources:
@@ -55,7 +55,7 @@ deviceServers:
 - name: subarraynode1
   function: observation-execution
   domain: subarray
-  command: "/usr/local/bin/SubarrayNodeLowDS"
+  command: "/usr/local/bin/SubarrayNodeLowDS "
   instances: ["sa1"]
   depends_on:
     - device: ska_low/tm_leaf_node/mccs_subarray01
