@@ -60,7 +60,7 @@ Added
 Fixed
 -----
 
-* `Issue #26: AssignResources command is disabled in SubArray <https://github.com/ska-telescope/tmc-prototype/issues/26>`_
-* `Issue #12: make up fails <https://github.com/ska-telescope/tmc-prototype/issues/12>`_
-* `Issue #11: missing katpoint dependency <https://github.com/ska-telescope/tmc-prototype/issues/11>`_
-* `Issue #10: ska-registry.av.it.pt <https://github.com/ska-telescope/tmc-prototype/issues/10>`_
+* `Issue #26: AssignResources command is disabled in SubArray <https://github.com/ska-telescope/ska-tmc/issues/26>`_
+* `Issue #12: make up fails <https://github.com/ska-telescope/ska-tmc/issues/12>`_
+* `Issue #11: missing katpoint dependency <https://github.com/ska-telescope/ska-tmc/issues/11>`_
+* `Issue #10: ska-registry.av.it.pt <https://github.com/ska-telescope/ska-tmc/issues/10>`_

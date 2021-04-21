@@ -12,13 +12,13 @@ To ensure the test scripts are executing via the front door they have to be invo
 Note that during interactive development the dev-testing helm application consists of the following parts:
 
 1. A kubernetes testing pod (`dev-testing`) based on a predefined testing image used for both ci testing and interactive developement testing
-2. A host path storage that mounts on your host system at the location of where the makefile invoked the pod (i.e. the tmcprototype root). 
+2. A host path storage that mounts on your host system at the location of where the makefile invoked the pod (i.e. the ska-tmc root). 
 3. A side car container (disabled by default) that runs a web server on the testing pod, allowing you to activate a test from a REST command
 4. A log consumer pod (`log-consumer`) that aggregates logs from tango devices
 4. Kubernetes role bindings giving the pod neccesarry permissions to perform kubernetes operations on the namespace
 
 
-The host path storage is basically a means of working inside the testing pods (e.g. actively developing tests and running) whilst still being able to save your code to the tmcprototype repository and commit to the repo.
+The host path storage is basically a means of working inside the testing pods (e.g. actively developing tests and running) whilst still being able to save your code to the ska-tmc repository and commit to the repo.
 
 ## Getting Started
 
@@ -29,7 +29,7 @@ The host path storage is basically a means of working inside the testing pods (e
 In the git repository, cloned on your kubernetes enabled machine, navigate to the root directory:
 
 ```bash
-cd ~/tmcprototype/
+cd ~/ska-tmc/
 ```
 
 To deploy the acceptance tester in interactive mode run:
@@ -38,7 +38,7 @@ To deploy the acceptance tester in interactive mode run:
 make set_up_dev_testing
 ```
 
-The system will install a helm chart `dev-testing` on the `KUBE_NAMESPACE` namespace using the exact same image used for ci testing (thus ensuring your interactive tests will also work on ci pipeline) The testing-pod )`dev-testing-0` will mount to the `tmcprototype` repository at `/app/tmcprototype/`. 
+The system will install a helm chart `dev-testing` on the `KUBE_NAMESPACE` namespace using the exact same image used for ci testing (thus ensuring your interactive tests will also work on ci pipeline) The testing-pod )`dev-testing-0` will mount to the `ska-tmc` repository at `/app/ska-tmc/`. 
 
 The testing pod also has an ssh server running that you can access by updating you ssh config file as follows:
 
@@ -53,7 +53,7 @@ The password for entering the pod is `vscodessh`. There is also an option to loa
 
 To use the ssh server for developing requires that you have Vscode with `remote extension` installed. This is a plugin that spawns a vscode server process on the pod and allows you to have a debug and terminal service attaced to the pod using the IDE. As this can be resource  intensive, ensure that your network are not limited in bandwith.
 
-The testing environment becomes pre loaded with extensions for testing in vscode. However it is  best to set up your root space as `tmcprototype/post-deployment` to make sure the extension loads the test modules correctly
+The testing environment becomes pre loaded with extensions for testing in vscode. However it is  best to set up your root space as `ska-tmc/post-deployment` to make sure the extension loads the test modules correctly
 
 
 ### Running tests automatically

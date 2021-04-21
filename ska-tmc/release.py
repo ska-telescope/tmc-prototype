@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 #
-# This file is part of the TMC Prototype project
+# This file is part of the SKA-TMC project
 #
 #
 #
 
 """Release information for Python Package"""
 
-name = """tmcprototype"""
+name = """ska-tmc"""
 version = "0.1.0"
 version_info = version.split(".")
 description = (
