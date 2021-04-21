@@ -79,28 +79,10 @@ class DeviceData:
         antenna_exist = False
 
         for ant in antennas:
-            if ant.name == self.dish_number:
-                # ref_ant_lat = ant.ref_observer.lat
-                # ref_ant_long = ant.ref_observer.long
-                # ref_ant_altitude = ant.ref_observer.elevation
-                # ant_delay_model = ant.delay_model.values()
-                print("ant is ----------------", ant)
-                
+            if ant.name == self.dish_number:                
                 ref_ant_lat, ref_ant_long, ref_ant_altitude = ant.ref_position_wgs84
-
-                # ref_ant_lat = ant.ref_location.lat
-                # ref_ant_long = ant.ref_location.long
-                # ref_ant_altitude = ant.ref_location.elevation
                 ant_delay_model = ant.delay_model.values()
-
-                print("ref_ant_lat ---------", ref_ant_lat)
-                print("ref_ant_long ---------", ref_ant_long)
-                print("ref_ant_altitude ---------", ref_ant_altitude)
-
                 obj_unitconverter = UnitConverter()
-                print("LAT DMS -----------", obj_unitconverter.rad_to_dms(ref_ant_lat))
-                print("LONG DMS -----------", obj_unitconverter.rad_to_dms(ref_ant_long))
-
                 antenna_exist = True
                 break
 
@@ -108,11 +90,6 @@ class DeviceData:
             raise Exception(
                 f"Antenna '{self.dish_number}' not in the ska_antennas.txt file."
             )
-
-        # Convert reference antenna lat and long into radian
-        obj_unitconverter = UnitConverter()
-        # ref_ant_lat_rad = obj_unitconverter.dms_to_rad(str(ref_ant_lat).split(":"))
-        # ref_ant_long_rad = obj_unitconverter.dms_to_rad(str(ref_ant_long).split(":"))
 
         # Find latitude, longitude and altitude of Dish antenna
         # Convert enu to ecef coordinates for dish
@@ -124,15 +101,11 @@ class DeviceData:
             ant_delay_model[1],
             ant_delay_model[2],
         )
-
-        print("dish_ecef_coordinates ---------", dish_ecef_coordinates)
-
         
         # Convert ecef to lla coordinates for dish (in radians)
         dish_lat_long_alt_rad = katpoint.ecef_to_lla(
             dish_ecef_coordinates[0], dish_ecef_coordinates[1], dish_ecef_coordinates[2]
         )
-        print("dish_lat_long_alt_rad ---------", dish_lat_long_alt_rad)
 
         # Convert lla coordinates from rad to dms
         dish_lat_dms = obj_unitconverter.rad_to_dms(dish_lat_long_alt_rad[0])
@@ -145,8 +118,6 @@ class DeviceData:
             "longitude"
         ] = f"{dish_long_dms[0]}:{dish_long_dms[1]}:{dish_long_dms[2]}"
         self.observer_location["altitude"] = dish_lat_long_alt_rad[2]
-
-        print("self.observer_location -------", self.observer_location)
 
     def _get_targets(self, json_argument):
         try:

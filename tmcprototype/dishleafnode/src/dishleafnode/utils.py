@@ -71,7 +71,6 @@ class UnitConverter:
             dms.append(int(degrees * sign))
             dms.append(int(minutes))
             dms.append(seconds)
-            print("dms -------------", dms)
             return dms
         except SyntaxError as error:
             log_msg = f"Error while converting radians to dig:min:sec.{error}"
