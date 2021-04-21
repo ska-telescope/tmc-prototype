@@ -47,8 +47,7 @@ spec:
             - sh
           args:
             - -c
-            - "retry --max=20 -- tango_admin --ping-device ska_mid/tm_alarmhandler/tmalarmhandler && \
-            retry --max=20 -- tango_admin --ping-device ska_mid/tm_central/central_node"
+            - "retry --max=30 -- tango_admin --ping-device ska_mid/tm_alarmhandler/tmalarmhandler"
           env:
           - name: TANGO_HOST
             value: {{ $tango_host }}
