@@ -96,10 +96,9 @@ class DeviceData:
 
         antenna_exist = False
 
-        self.observer = katpoint.Antenna('0004, -30:42:39.8, 21:26:38.0, 1086, 13.5, -123.624 -252.946 8.513 0 0 0,0,0')
-        # for ant in antennas:
-        #     if ant.name == self.dish_number:
-        #         self.observer = ant
+        for ant in antennas:
+            if ant.name == self.dish_number:
+                self.observer = ant
 
 
     def point(self,target_input, timestamp):
