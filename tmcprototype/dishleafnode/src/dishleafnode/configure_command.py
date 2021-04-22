@@ -22,7 +22,6 @@ from ska.base.commands import BaseCommand
 
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
-from .az_el_converter import AzElConverter
 from .command_callback import CommandCallBack
 
 
@@ -123,16 +122,8 @@ class Configure(BaseCommand):
 
         try:
             dish_client = TangoClient(self.dish_master_fqdn)
-            azel_converter = AzElConverter(self.logger)
-            # pylint: disable=unbalanced-tuple-unpacking
-            device_data.az, device_data.el = azel_converter.convert_radec_to_azel(
-                device_data.radec_value,
-                timestamp,
-                device_data.dish_name,
-                device_data.observer_location["latitude"],
-                device_data.observer_location["longitude"],
-                device_data.observer_location["altitude"],
-            )
+            device_data.az, device_data.el = device_data.point(device_data.radec_value,timestamp)
+
         except ValueError as valuerr:
             tango.Except.throw_exception(
                 str(valuerr),

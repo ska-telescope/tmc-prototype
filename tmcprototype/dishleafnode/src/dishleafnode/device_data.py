@@ -61,64 +61,6 @@ class DeviceData:
         self.dish_name = dish_name_string.split("_")[1]
         self.dish_number = self.dish_name[1:]
 
-    def set_observer_lat_long_alt(self, logger):
-        # Load a set of antenna descriptions (latitude, longitude, altitude, enu coordinates)
-        # from text file and construct Antenna objects from them. Currently the text file
-        # contains Meerkat Antenna parameters.
-        try:
-            with importlib.resources.open_text("dishleafnode", "ska_antennas.txt") as f:
-                descriptions = f.readlines()
-            antennas = [katpoint.Antenna(line) for line in descriptions]
-        except OSError as err:
-            logger.exception(err)
-            raise err
-        except ValueError as verr:
-            logger.exception(verr)
-            raise verr
-
-        antenna_exist = False
-
-        for ant in antennas:
-            if ant.name == self.dish_number:                
-                ref_ant_lat, ref_ant_long, ref_ant_altitude = ant.ref_position_wgs84
-                ant_delay_model = ant.delay_model.values()
-                obj_unitconverter = UnitConverter()
-                antenna_exist = True
-                break
-
-        if not antenna_exist:
-            raise Exception(
-                f"Antenna '{self.dish_number}' not in the ska_antennas.txt file."
-            )
-
-        # Find latitude, longitude and altitude of Dish antenna
-        # Convert enu to ecef coordinates for dish
-        dish_ecef_coordinates = katpoint.enu_to_ecef(
-            ref_ant_lat,
-            ref_ant_long,
-            ref_ant_altitude,
-            ant_delay_model[0],
-            ant_delay_model[1],
-            ant_delay_model[2],
-        )
-        
-        # Convert ecef to lla coordinates for dish (in radians)
-        dish_lat_long_alt_rad = katpoint.ecef_to_lla(
-            dish_ecef_coordinates[0], dish_ecef_coordinates[1], dish_ecef_coordinates[2]
-        )
-
-        # Convert lla coordinates from rad to dms
-        dish_lat_dms = obj_unitconverter.rad_to_dms(dish_lat_long_alt_rad[0])
-        dish_long_dms = obj_unitconverter.rad_to_dms(dish_lat_long_alt_rad[1])
-
-        self.observer_location[
-            "latitude"
-        ] = f"{dish_lat_dms[0]}:{dish_lat_dms[1]}:{dish_lat_dms[2]}"
-        self.observer_location[
-            "longitude"
-        ] = f"{dish_long_dms[0]}:{dish_long_dms[1]}:{dish_long_dms[2]}"
-        self.observer_location["altitude"] = dish_lat_long_alt_rad[2]
-
     def _get_targets(self, json_argument):
         try:
             ra_value = json_argument["pointing"]["target"]["RA"]
@@ -140,7 +82,7 @@ class DeviceData:
             
         return json_argument
 
-    def create_antenna_obj():
+    def create_antenna_obj(self):
         try:
             with importlib.resources.open_text("dishleafnode", "ska_antennas.txt") as f:
                 descriptions = f.readlines()
@@ -154,31 +96,22 @@ class DeviceData:
 
         antenna_exist = False
 
-        for ant in antennas:
-            if ant.name == self.dish_number:
-                # ref_ant_lat = ant.ref_observer.lat
-                # ref_ant_long = ant.ref_observer.long
-                # ref_ant_altitude = ant.ref_observer.elevation
-                # ant_delay_model = ant.delay_model.values()
-                print("ant is ----------------", ant)
-                self.observer = ant
+        self.observer = katpoint.Antenna('0004, -30:42:39.8, 21:26:38.0, 1086, 13.5, -123.624 -252.946 8.513 0 0 0,0,0')
+        # for ant in antennas:
+        #     if ant.name == self.dish_number:
+        #         self.observer = ant
 
 
-    def point(target, timestamp):
+    def point(self,target_input, timestamp):
         # write your code
-        print("hello")
-        text_input_array = target_input.split(",")
-        print("text_input_array -------------", text_input_array)
-        
+        text_input_array = target_input.split(",")        
         ra = text_input_array[1]
-        print("ra -------------", ra)
         dec = text_input_array[2]
-        print("dec ------------", dec)
         target = katpoint.Target.from_radec(ra, dec)
 
-
         # obtain az el co-ordinates for dish
-        azel = target.azel(timestamp, dish_antenna)
+        azel = target.azel(timestamp, self.observer)
         # list of az el co-ordinates 
         az_el_coordinates = [azel.az.deg, azel.alt.deg]
         return az_el_coordinates
+        
