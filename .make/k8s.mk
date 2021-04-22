@@ -8,8 +8,8 @@ TANGO_HOST ?= $(TANGO_DATABASE_DS):10000## TANGO_HOST is an input!
 
 CHARTS ?= tmc-mid tmc-low tmc-mid-umbrella tmc-low-umbrella ## list of charts to be published on gitlab -- umbrella charts for testing purpose
 
-CI_PROJECT_PATH_SLUG ?= tmcprototype
-CI_ENVIRONMENT_SLUG ?= tmcprototype	
+CI_PROJECT_PATH_SLUG ?= ska-tmc
+CI_ENVIRONMENT_SLUG ?= ska-tmc
 
 .DEFAULT_GOAL := help
 
@@ -113,13 +113,13 @@ template-chart: clean dep-up## install the helm chart with name RELEASE_NAME and
 
 # This job is used to delete a deployment of tmc-mid charts
 # Currently umbreall chart for tmc-mid path is given
-uninstall-chart: ## uninstall the tmc-mid helm chart on the namespace tmcprototype
+uninstall-chart: ## uninstall the tmc-mid helm chart on the namespace ska-tmc
 	helm template  $(HELM_RELEASE) $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE)  | kubectl delete -f - ; \
 	helm uninstall  $(HELM_RELEASE) --namespace $(KUBE_NAMESPACE) 
 
-reinstall-chart: uninstall-chart install-chart ## reinstall the tmc-mid helm chart on the namespace tmcprototype
+reinstall-chart: uninstall-chart install-chart ## reinstall the tmc-mid helm chart on the namespace ska-tmc
 
-upgrade-chart: ## upgrade the tmc-mid helm chart on the namespace tmcprototype
+upgrade-chart: ## upgrade the tmc-mid helm chart on the namespace ska-tmc
 	helm upgrade --set minikube=$(MINIKUBE) $(HELM_RELEASE) $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE) 
 
 wait:## wait for pods to be ready
@@ -127,7 +127,7 @@ wait:## wait for pods to be ready
 	@date
 	@kubectl -n $(KUBE_NAMESPACE) get pods
 	@jobs=$$(kubectl get job --output=jsonpath={.items..metadata.name} -n $(KUBE_NAMESPACE)); kubectl wait job --for=condition=complete --timeout=240s $$jobs -n $(KUBE_NAMESPACE)
-	@kubectl -n $(KUBE_NAMESPACE) wait --for=condition=ready -l app=tmc-prototype --timeout=240s pods
+	@kubectl -n $(KUBE_NAMESPACE) wait --for=condition=ready -l app=ska-tmc --timeout=240s pods
 	@kubectl get pods -n $(KUBE_NAMESPACE)
 	@date
 
@@ -304,12 +304,12 @@ load_dashboards: # @param: name of the dashborad
 
 # How to test unit-test cases
 unit-test:
-	cd tmcprototype; \
+	cd ska-tmc; \
 	chmod 755 run_tox.sh; \
 	./run_tox.sh;
 # How to run lint job
 lint:
-	cd tmcprototype; \
+	cd ska-tmc; \
 	chmod 755 run_lint.sh; \
 	./run_lint.sh;
 

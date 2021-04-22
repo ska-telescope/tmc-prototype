@@ -18,7 +18,7 @@ test: install
 	(python3 resources/log_consumer/log_consumer.py log &); \
 	mkdir -p build && \
 	find . -name "*.pyc" -type f -delete && \
-	PYTHONPATH=/app:/app/tmcprototype:/app/tmcprototype/post-deployment pytest $(if $(findstring all,$(MARK)),, -m $(MARK)) --disable-pytest-warnings | tee pytest.stdout; \
+	PYTHONPATH=/app:/app/ska-tmc:/app/ska-tmc/post-deployment pytest $(if $(findstring all,$(MARK)),, -m $(MARK)) --disable-pytest-warnings | tee pytest.stdout; \
 	status=$$?; \
 	(tango_admin --delete-server log_consumer/log &) && \
 	$(foreach artfct,$(TEST_ARTIFACTS),mv -f $(artfct) build/;) \
@@ -33,7 +33,7 @@ test_multiple_runs: install
 	(python3 resources/log_consumer/log_consumer.py log &); \
 	mkdir -p build && \
 	find . -name "*.pyc" -type f -delete && \
-	PYTHONPATH=/app:/app/tmcprototype:/app/tmcprototype/post-deployment python3 exploration/test_runs/run_it.py \
+	PYTHONPATH=/app:/app/ska-tmc:/app/ska-tmc/post-deployment python3 exploration/test_runs/run_it.py \
 		-f exploration/test_runs/specs/$(TEST_RUN_SPEC) | tee pytest.stdout; \
 	status=$$?; \
 	(tango_admin --delete-server log_consumer/log &) && \
@@ -61,7 +61,7 @@ set_auto_complete:
 export_extensions:
 	cd ~ && \
 	tar -cvzf vscode-server.tar .vscode-server && \
-	mv vscode-server.tar ~/tmcprototype/vscode-server.tar
+	mv vscode-server.tar ~/ska-tmc/vscode-server.tar
 
 get_mem_usage:
 	@raw=$$(cat /sys/fs/cgroup/memory/memory.usage_in_bytes) && \

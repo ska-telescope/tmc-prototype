@@ -29,7 +29,7 @@ k8s_test = tar -c post-deployment/ | \
 		--image-pull-policy=IfNotPresent \
 		--image=$(IMAGE_TO_TEST) \
 		--serviceaccount=$(TESTING_ACCOUNT) -- \
-		/bin/bash -c "mkdir tmc-prototype && tar xv --directory tmc-prototype --strip-components 1 --warning=all && cd tmc-prototype && \
+		/bin/bash -c "mkdir skatmc && tar xv --directory skatmc --strip-components 1 --warning=all && cd skatmc && \
 		make KUBE_NAMESPACE=$(KUBE_NAMESPACE) HELM_RELEASE=$(HELM_RELEASE) TANGO_HOST=$(TANGO_HOST) MARK=$(MARK) TEST_RUN_SPEC=$(TEST_RUN_SPEC) $1 && \
 		tar -czvf /tmp/build.tgz build && \
 		echo '~~~~BOUNDARY~~~~' && \
@@ -141,7 +141,7 @@ check_oet_packages:
 	echo "Warning: observation-execution-tool package for MVP is not the same as used for testing!"; \
 	fi
 
-##the following section is for developers requiring the testing pod to be instantiated with a volume mappig to tmcprototype
+##the following section is for developers requiring the testing pod to be instantiated with a volume mappig to ska-tmc
 -include .make/dev-testing.mk
 
 timestamp=$(shell date -u +"%s")

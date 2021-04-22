@@ -1,18 +1,18 @@
 """Release information for Python Package"""
 
-name="""tmcprototype"""
-version="0.5.4"
+name="""ska-tmc"""
+version="0.6.0"
 version_info=version.split(".")
-description="""TMC Prototype"""
+description="""SKA-TMC"""
 author="Team NCRA"
 author_email="telmgt-internal@googlegroups.com"
 license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
 
-release=0.5.4
-tag=0.5.4
-tag_description=Utilisation of ska-tmc-common version 0.1.6
-release_notes=This release contains:<br/><ul><li>Updated tmc devices to use ska-tmc-common package with version 0.1.6</li></ul><br/>
+release=0.6.0
+tag=0.6.0
+tag_description=Rename tmc-prototype to ska-tmc supporting ADR-25
+release_notes=This release contains:<br/><ul><li>Docker image name changed from tmc-prototype to ska-tmc.</li></ul><br/>
 gitlab_username=kalyanithigale
 private_token=L25KZP--AZs1gUyrDipG

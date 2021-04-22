@@ -1,5 +1,6 @@
 """Contain the tests for the DishMaster Simulator."""
 from tango import DevState
+import pytest
 
 
 class TestDishMaster(object):

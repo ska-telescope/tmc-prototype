@@ -7,7 +7,7 @@ telescope: SKA-low
 subsystem: tmc-low
 
 labels:
-  app: tmc-prototype
+  app: ska-tmc
 annotations:
   app.gitlab.com/app: CI_PROJECT_PATH_SLUG
   app.gitlab.com/env: CI_ENVIRONMENT_SLUG
@@ -15,10 +15,10 @@ annotations:
 global:
   minikube: true
   tango_host: databaseds-tango-base-test:10000
-  tmcprototype:
+  skatmc:
     registry: nexus.engageska-portugal.pt/ska-telescope
-    image: tmcprototype
-    tag: 0.5.4
+    image: ska-tmc
+    tag: 0.6.0
     pullPolicy: IfNotPresent
 
 dsconfig:
@@ -36,11 +36,11 @@ itango:
     tag: 9.3.1
     pullPolicy: IfNotPresent
 
-tmcprototype:
+skatmc:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
-    image: tmcprototype
-    tag: 0.5.4
+    image: ska-tmc
+    tag: 9.9.9-dirty
     pullPolicy: IfNotPresent
 
 resources:
@@ -55,15 +55,15 @@ deviceServers:
 - name: subarraynode1
   function: observation-execution
   domain: subarray
-  command: "/usr/local/bin/SubarrayNodeLowDS"
+  command: "/usr/local/bin/SubarrayNodeLowDS "
   instances: ["sa1"]
   depends_on:
     - device: ska_low/tm_leaf_node/mccs_subarray01
   image:
-    registry: "{{.Values.global.tmcprototype.registry}}"
-    image: "{{.Values.global.tmcprototype.image}}"
-    tag: "{{.Values.global.tmcprototype.tag}}"
-    pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
+    registry: "{{.Values.global.skatmc.registry}}"
+    image: "{{.Values.global.skatmc.image}}"
+    tag: "{{.Values.global.skatmc.tag}}"
+    pullPolicy: "{{.Values.global.skatmc.pullPolicy}}"
 - name: centralnode
   function: telescope-monitoring
   domain: general-monitoring
@@ -73,10 +73,10 @@ deviceServers:
     - device: ska_low/tm_subarray_node/1
     - device: ska_low/tm_leaf_node/mccs_master
   image:
-    registry: "{{.Values.global.tmcprototype.registry}}"
-    image: "{{.Values.global.tmcprototype.image}}"
-    tag: "{{.Values.global.tmcprototype.tag}}"
-    pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
+    registry: "{{.Values.global.skatmc.registry}}"
+    image: "{{.Values.global.skatmc.image}}"
+    tag: "{{.Values.global.skatmc.tag}}"
+    pullPolicy: "{{.Values.global.skatmc.pullPolicy}}"
 - name: mccssmasterleafnode
   function: observation-execution
   domain: general-monitoring
@@ -85,10 +85,10 @@ deviceServers:
   depends_on:
     - device: low-mccs/control/control
   image:
-    registry: "{{.Values.global.tmcprototype.registry}}"
-    image: "{{.Values.global.tmcprototype.image}}"
-    tag: "{{.Values.global.tmcprototype.tag}}"
-    pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
+    registry: "{{.Values.global.skatmc.registry}}"
+    image: "{{.Values.global.skatmc.image}}"
+    tag: "{{.Values.global.skatmc.tag}}"
+    pullPolicy: "{{.Values.global.skatmc.pullPolicy}}"
 - name: mccssubarrayleafnode1
   function: observation-execution
   domain: subarray
@@ -97,8 +97,8 @@ deviceServers:
   depends_on:
     - device: low-mccs/subarray/01
   image:
-    registry: "{{.Values.global.tmcprototype.registry}}"
-    image: "{{.Values.global.tmcprototype.image}}"
-    tag: "{{.Values.global.tmcprototype.tag}}"
-    pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
+    registry: "{{.Values.global.skatmc.registry}}"
+    image: "{{.Values.global.skatmc.image}}"
+    tag: "{{.Values.global.skatmc.tag}}"
+    pullPolicy: "{{.Values.global.skatmc.pullPolicy}}"
 

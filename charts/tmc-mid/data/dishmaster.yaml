@@ -257,7 +257,7 @@ server:
 depends_on:
   - device: sys/database/2
 image:
-  registry: "{{.Values.global.tmcprototype.registry}}"
-  image: "{{.Values.global.tmcprototype.image}}"
-  tag: "{{.Values.global.tmcprototype.tag}}"
-  pullPolicy: "{{.Values.global.tmcprototype.pullPolicy}}"
+  registry: "{{.Values.global.skatmc.registry}}"
+  image: "{{.Values.global.skatmc.image}}"
+  tag: "{{.Values.global.skatmc.tag}}"
+  pullPolicy: "{{.Values.global.skatmc.pullPolicy}}"

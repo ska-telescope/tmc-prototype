@@ -5,26 +5,26 @@ echo
 
 echo "MODULE ANALYSIS"
 echo "---------------"
-pylint --rcfile=.pylintrc tmcprototype/dishmaster/src/dishmaster
-pylint --rcfile=.pylintrc tmcprototype/cspsubarrayleafnode/src/cspsubarrayleafnode
-pylint --rcfile=.pylintrc tmcprototype/dishleafnode/src/dishleafnode
-pylint --rcfile=.pylintrc tmcprototype/cspmasterleafnode/src/cspmasterleafnode
-pylint --rcfile=.pylintrc tmcprototype/sdpsubarrayleafnode/src/sdpsubarrayleafnode
-pylint --rcfile=.pylintrc tmcprototype/sdpmasterleafnode/src/sdpmasterleafnode
-pylint --rcfile=.pylintrc tmcprototype/mccssubarrayleafnode/src/mccssubarrayleafnode
-pylint --rcfile=.pylintrc tmcprototype/mccsmasterleafnode/src/mccsmasterleafnode
-pylint --rcfile=.pylintrc tmcprototype/subarraynodelow/src/subarraynodelow
-pylint --rcfile=.pylintrc tmcprototype/centralnodelow/src/centralnodelow
+pylint --rcfile=.pylintrc ska-tmc/dishmaster/src/dishmaster
+pylint --rcfile=.pylintrc ska-tmc/cspsubarrayleafnode/src/cspsubarrayleafnode
+pylint --rcfile=.pylintrc ska-tmc/dishleafnode/src/dishleafnode
+pylint --rcfile=.pylintrc ska-tmc/cspmasterleafnode/src/cspmasterleafnode
+pylint --rcfile=.pylintrc ska-tmc/sdpsubarrayleafnode/src/sdpsubarrayleafnode
+pylint --rcfile=.pylintrc ska-tmc/sdpmasterleafnode/src/sdpmasterleafnode
+pylint --rcfile=.pylintrc ska-tmc/mccssubarrayleafnode/src/mccssubarrayleafnode
+pylint --rcfile=.pylintrc ska-tmc/mccsmasterleafnode/src/mccsmasterleafnode
+pylint --rcfile=.pylintrc ska-tmc/subarraynodelow/src/subarraynodelow
+pylint --rcfile=.pylintrc ska-tmc/centralnodelow/src/centralnodelow
 
 echo "TESTS ANALYSIS"
 echo "--------------"
-pylint --rcfile=.pylintrc tmcprototype/dishmaster/test
-pylint --rcfile=.pylintrc tmcprototype/cspsubarrayleafnode/test
-pylint --rcfile=.pylintrc tmcprototype/dishleafnode/test
-pylint --rcfile=.pylintrc tmcprototype/cspmasterleafnode/test
-pylint --rcfile=.pylintrc tmcprototype/sdpsubarrayleafnode/test
-pylint --rcfile=.pylintrc tmcprototype/sdpmasterleafnode/test
-pylint --rcfile=.pylintrc tmcprototype/mccssubarrayleafnode/test
-pylint --rcfile=.pylintrc tmcprototype/mccsmasterleafnode/test
-pylint --rcfile=.pylintrc tmcprototype/subarraynodelow/test
-pylint --rcfile=.pylintrc tmcprototype/centralnodelow/test
+pylint --rcfile=.pylintrc ska-tmc/dishmaster/test
+pylint --rcfile=.pylintrc ska-tmc/cspsubarrayleafnode/test
+pylint --rcfile=.pylintrc ska-tmc/dishleafnode/test
+pylint --rcfile=.pylintrc ska-tmc/cspmasterleafnode/test
+pylint --rcfile=.pylintrc ska-tmc/sdpsubarrayleafnode/test
+pylint --rcfile=.pylintrc ska-tmc/sdpmasterleafnode/test
+pylint --rcfile=.pylintrc ska-tmc/mccssubarrayleafnode/test
+pylint --rcfile=.pylintrc ska-tmc/mccsmasterleafnode/test
+pylint --rcfile=.pylintrc ska-tmc/subarraynodelow/test
+pylint --rcfile=.pylintrc ska-tmc/centralnodelow/test
