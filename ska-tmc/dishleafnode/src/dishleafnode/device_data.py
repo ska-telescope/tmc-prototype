@@ -101,12 +101,12 @@ class DeviceData:
                 self.observer = ant
 
 
-    def point(self,target_input, timestamp):
+    def point(self,ra_value, dec_value, timestamp):
         # write your code
-        text_input_array = target_input.split(",")        
-        ra = text_input_array[1]
-        dec = text_input_array[2]
-        target = katpoint.Target.from_radec(ra, dec)
+        # text_input_array = target_input.split(",")        
+        # ra = text_input_array[1]
+        # dec = text_input_array[2]
+        target = katpoint.Target.from_radec(ra_value, dec_value)
 
         # obtain az el co-ordinates for dish
         azel = target.azel(timestamp, self.observer)

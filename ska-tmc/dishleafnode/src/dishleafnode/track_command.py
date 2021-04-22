@@ -73,11 +73,13 @@ class Track(BaseCommand):
         try:
             self.this_server = TangoServerHelper.get_instance()
             self.dish_master_fqdn = ""
+            self.ra_value = ""
+            self.dec_value= ""
             property_value = self.this_server.read_property("DishMasterFQDN")
             self.dish_master_fqdn = self.dish_master_fqdn.join(property_value)
             json_argin = device_data._load_config_string(argin)
-            ra_value, dec_value = device_data._get_targets(json_argin)
-            radec_value = f"radec,{ra_value},{dec_value}"
+            self.ra_value, self.dec_value = device_data._get_targets(json_argin)
+            radec_value = f"{self.ra_value},{self.dec_value}"
             self.logger.info(
                 "Track command ignores RA dec coordinates passed in: %s. "
                 "Uses coordinates from Configure command instead.",
@@ -121,7 +123,8 @@ class Track(BaseCommand):
             now = datetime.datetime.utcnow()
             timestamp = str(now)
             # pylint: disable=unbalanced-tuple-unpacking
-            device_data.az, device_data.el = device_data.point(device_data.radec_value,timestamp)
+            # device_data.az, device_data.el = device_data.point(device_data.radec_value,timestamp)
+            device_data.az, device_data.el = device_data.point(self.ra_value,self.dec_value,timestamp)
 
             if not self._is_elevation_within_mechanical_limits():
                 time.sleep(0.05)

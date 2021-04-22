@@ -84,9 +84,10 @@ class Configure(BaseCommand):
             self.dish_master_fqdn = self.dish_master_fqdn.join(property_value)
             json_argument = device_data._load_config_string(argin)
             ra_value, dec_value = device_data._get_targets(json_argument)
-            device_data.radec_value = f"radec,{ra_value},{dec_value}"
+            # device_data.radec_value = f"radec,{ra_value},{dec_value}"
             receiver_band = json_argument["dish"]["receiverBand"]
-            self._set_dish_desired_pointing_attribute(device_data.radec_value)
+            # self._set_dish_desired_pointing_attribute(device_data.radec_value)
+            self._set_dish_desired_pointing_attribute(ra_value, dec_value)
             self._configure_band(receiver_band)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
@@ -115,14 +116,15 @@ class Configure(BaseCommand):
         except DevFailed as dev_failed:
             raise dev_failed
 
-    def _set_dish_desired_pointing_attribute(self, radec):
+    def _set_dish_desired_pointing_attribute(self, ra_value, dec_value):
         device_data = self.target
         now = datetime.datetime.utcnow()
         timestamp = str(now)
 
         try:
             dish_client = TangoClient(self.dish_master_fqdn)
-            device_data.az, device_data.el = device_data.point(device_data.radec_value,timestamp)
+            # device_data.az, device_data.el = device_data.point(device_data.radec_value,timestamp)
+            device_data.az, device_data.el = device_data.point(ra_value, dec_value,timestamp)
 
         except ValueError as valuerr:
             tango.Except.throw_exception(
