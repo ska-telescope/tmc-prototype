@@ -75,16 +75,10 @@ class On(SKABaseDevice.OnCommand):
         """
         this_server = TangoServerHelper.get_instance()
         try:
-            log_msg = "Inside On Command DO() method"
-            self.logger.debug(log_msg)
             sdp_sa_ln_client_obj=TangoClient(this_server.read_property("SdpSubarrayFQDN")[0])
-            log_msg = "After read property in DO method"
-            self.logger.debug(log_msg)
             sdp_sa_ln_client_obj.send_command_async(
                 const.CMD_ON, None, self.on_cmd_ended_cb
             )
-            log_msg = "After invoking the command"
-            self.logger.debug(log_msg)
             log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
             this_server.set_status(log_msg)
             self.logger.debug(log_msg)
