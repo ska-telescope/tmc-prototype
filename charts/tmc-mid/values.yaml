@@ -19,7 +19,7 @@ global:
   skatmc:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc
-    tag: 0.6.1-katpoint
+    tag: 0.6.1-katpoint-dirty
     pullPolicy: Always
 
 dsconfig:
