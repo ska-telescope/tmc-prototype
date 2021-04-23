@@ -57,13 +57,13 @@ class SetOperateMode(BaseCommand):
         cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
         try:
             self.this_server = TangoServerHelper.get_instance()
-            # Subscribe the DishMaster attributes
-            self._subscribe_to_attribute_events(attributes_to_subscribe_to)
 
             self.dish_master_fqdn = ""
             property_value = self.this_server.read_property("DishMasterFQDN")
             self.dish_master_fqdn = self.dish_master_fqdn.join(property_value)
             dish_client = TangoClient(self.dish_master_fqdn)
+            # Subscribe the DishMaster attributes
+            self._subscribe_to_attribute_events(attributes_to_subscribe_to, dish_client)
             dish_client.send_command_async(command_name, callback_method=cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
 
@@ -81,15 +81,9 @@ class SetOperateMode(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
 
-    def _subscribe_to_attribute_events(self, attributes):
+    def _subscribe_to_attribute_events(self, attributes, dish_client):
         device_data = DeviceData.get_instance()
-        self.dish_master_fqdn = ""
-        property_value = self.this_server.read_property("DishMasterFQDN")
-        self.dish_master_fqdn = self.dish_master_fqdn.join(property_value)
-        dish_client = TangoClient(self.dish_master_fqdn)
-
         device_data.attr_event_map["dish_client"] = dish_client
-
         for attribute_name in attributes:
             try:
                 device_data.attr_event_map[
