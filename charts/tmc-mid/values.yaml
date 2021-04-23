@@ -37,13 +37,6 @@ itango:
     tag: 9.3.1
     pullPolicy: IfNotPresent
 
-skatmc:
-  image:
-    registry: nexus.engageska-portugal.pt/ska-telescope
-    image: ska-tmc
-    tag: 0.6.1
-    pullPolicy: IfNotPresent
-
 centralnodemid:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
