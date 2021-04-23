@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc"""
-version="0.6.0"
+version="0.6.1"
 version_info=version.split(".")
 description="""SKA-TMC"""
 author="Team NCRA"
@@ -10,9 +10,9 @@ license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
 
-release=0.6.0
-tag=0.6.0
-tag_description=Rename tmc-prototype to ska-tmc supporting ADR-25
-release_notes=This release contains:<br/><ul><li>Docker image name changed from tmc-prototype to ska-tmc.</li></ul><br/>
-gitlab_username=kalyanithigale
-private_token=L25KZP--AZs1gUyrDipG
+release=0.6.1
+tag=0.6.1
+tag_description=Enhanced TMC version to resolve SKB-46 and SKB-54. 
+release_notes=This release contains:<br/><ul><li>New docker images for CentralNodeMid and SubarrayNodeMid which implements resolution for SKB-46, SKB-54</li></ul><br/>
+gitlab_username=mesnehal
+private_token=RsZhvFYJrFytKTuMyZ2r
