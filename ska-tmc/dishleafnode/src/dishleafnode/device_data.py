@@ -13,7 +13,6 @@ This module defines the DeviceData class, which represents of the functional Dis
 import json
 import threading
 import importlib.resources
-from .utils import UnitConverter
 import katpoint
 from tmc.common.tango_server_helper import TangoServerHelper
 
