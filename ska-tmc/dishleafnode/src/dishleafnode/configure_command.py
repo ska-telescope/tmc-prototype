@@ -11,7 +11,6 @@
 Configure class for DishLeafNode.
 """
 # Standard Python imports
-import datetime
 
 # Tango imports
 import tango
@@ -19,7 +18,6 @@ from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
-
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 from .command_callback import CommandCallBack
@@ -83,7 +81,6 @@ class Configure(BaseCommand):
             property_value = this_server.read_property("DishMasterFQDN")
             self.dish_master_fqdn = self.dish_master_fqdn.join(property_value)
             json_argument = device_data._load_config_string(argin)
-            ra_value, dec_value = device_data._get_targets(json_argument)
             receiver_band = json_argument["dish"]["receiverBand"]
             self._configure_band(receiver_band)
         except DevFailed as dev_failed:

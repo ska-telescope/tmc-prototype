@@ -87,13 +87,13 @@ class DeviceData:
                 descriptions = f.readlines()
             antennas = [katpoint.Antenna(line) for line in descriptions]
         except OSError as err:
-            logger.exception(err)
-            raise err
+            raise Exception(
+                f"OSError.'{err}'in device_data.create_antenna_obj."
+            )
         except ValueError as verr:
-            logger.exception(verr)
-            raise verr
-
-        antenna_exist = False
+            raise Exception(
+                f"ValueError.'{verr}'in device_data.create_antenna_obj."
+            )
 
         for ant in antennas:
             if ant.name == self.dish_number:
