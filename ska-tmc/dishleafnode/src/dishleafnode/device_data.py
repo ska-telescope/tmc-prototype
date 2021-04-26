@@ -44,7 +44,6 @@ class DeviceData:
         self.radec_value = ""
         self.dish_name = ""
         self.dish_number = ""
-        self.observer_location = {}
         self.event_track_time = threading.Event()
         self.attr_event_map = {}
         self.observer = None
@@ -100,14 +99,9 @@ class DeviceData:
             if ant.name == self.dish_number:
                 self.observer = ant
 
-
     def point(self,ra_value, dec_value, timestamp):
-        # write your code
-        # text_input_array = target_input.split(",")        
-        # ra = text_input_array[1]
-        # dec = text_input_array[2]
+        # Create KATPoint Target object
         target = katpoint.Target.from_radec(ra_value, dec_value)
-
         # obtain az el co-ordinates for dish
         azel = target.azel(timestamp, self.observer)
         # list of az el co-ordinates 
