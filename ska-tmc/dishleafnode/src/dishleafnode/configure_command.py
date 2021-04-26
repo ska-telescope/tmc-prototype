@@ -96,7 +96,10 @@ class Configure(BaseCommand):
                 f"DishLeafNode.{command_name}Command",
                 tango.ErrSeverity.ERR,
             )
-
+        except KeyError as key_error:
+            raise Exception(
+                f"JSON key not found.'{key_error}'in Configure.do()."
+            )
         self.logger.info("'%s' command executed successfully.", command_name)
 
     def _configure_band(self, band):
