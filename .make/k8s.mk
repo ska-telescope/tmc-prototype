@@ -8,6 +8,10 @@ TANGO_HOST ?= $(TANGO_DATABASE_DS):10000## TANGO_HOST is an input!
 
 CHARTS ?= tmc-mid tmc-low tmc-mid-umbrella tmc-low-umbrella ## list of charts to be published on gitlab -- umbrella charts for testing purpose
 
+CUSTOM_SUBARRAY_COUNT ?= 1
+CUSTOM_DISHES_LIST ?= {01}
+CHART_DEBUG ?= # --debug
+
 CI_PROJECT_PATH_SLUG ?= ska-tmc
 CI_ENVIRONMENT_SLUG ?= ska-tmc
 
@@ -81,7 +85,7 @@ dep-up: ## update dependencies for every charts in the env var CHARTS
 
 # This job is used to create a deployment of tmc-mid charts
 # Currently umbrealla chart for tmc-mid path is given
-install-chart: dep-up namespace namespace_sdp ## install the helm chart with name HELM_RELEASE and path UMBRELLA_CHART_PATH on the namespace KUBE_NAMESPACE 
+install-chart: dep-up namespace namespace_sdp ## install the helm chart with name HELM_RELEASE and path UMBRELLA_CHART_PATH on the namespace KUBE_NAMESPACE
 	# Understand this better
 	@sed -e 's/CI_PROJECT_PATH_SLUG/$(CI_PROJECT_PATH_SLUG)/' $(UMBRELLA_CHART_PATH)values.yaml > generated_values.yaml; \
 	sed -e 's/CI_ENVIRONMENT_SLUG/$(CI_ENVIRONMENT_SLUG)/' generated_values.yaml > values.yaml; \
@@ -95,6 +99,31 @@ install-chart: dep-up namespace namespace_sdp ## install the helm chart with nam
 	 $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE); \
 	 rm generated_values.yaml; \
 	 rm values.yaml
+
+# A Custom deployment
+# Default settings:
+#   CUSTOM_DISHES_LIST ?= {01}
+#   CUSTOM_SUBARRAY_COUNT ?= 1
+# install-custom-chart:
+# 	@echo global.dishes=$(CUSTOM_DISHES_LIST)
+install-custom-chart: dep-up namespace namespace_sdp ## Specify the number of subarrays and dishes as paramaters. E.g NUM_SUBARRAYS=3 DISHES={1,2,7} make install-custom-chart
+	@sed -e 's/CI_PROJECT_PATH_SLUG/$(CI_PROJECT_PATH_SLUG)/' $(UMBRELLA_CHART_PATH)values.yaml > generated_values.yaml; \
+	sed -e 's/CI_ENVIRONMENT_SLUG/$(CI_ENVIRONMENT_SLUG)/' generated_values.yaml > values.yaml; \
+	helm install $(HELM_RELEASE) \
+	--set minikube=$(MINIKUBE) \
+	--set "global.dishes=$(CUSTOM_DISHES_LIST)" \
+	--set global.subarray_count=$(CUSTOM_SUBARRAY_COUNT) \
+	--set global.minikube=$(MINIKUBE) \
+	--set global.tango_host=$(TANGO_HOST) \
+	--set tangoDatabaseDS=$(TANGO_DATABASE_DS) \
+	--set sdp.helmdeploy.namespace=$(SDP_KUBE_NAMESPACE) \
+	--values values.yaml $(CUSTOM_VALUES) \
+	 $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE) $(CHART_DEBUG); \
+	 rm generated_values.yaml; \
+	 rm values.yaml
+
+
+
 
 template-chart: clean dep-up## install the helm chart with name RELEASE_NAME and path UMBRELLA_CHART_PATH on the namespace KUBE_NAMESPACE
 	@sed -e 's/CI_PROJECT_PATH_SLUG/$(CI_PROJECT_PATH_SLUG)/' $(UMBRELLA_CHART_PATH)values.yaml > generated_values.yaml; \
@@ -115,7 +144,7 @@ template-chart: clean dep-up## install the helm chart with name RELEASE_NAME and
 # Currently umbreall chart for tmc-mid path is given
 uninstall-chart: ## uninstall the tmc-mid helm chart on the namespace ska-tmc
 	helm template  $(HELM_RELEASE) $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE)  | kubectl delete -f - ; \
-	helm uninstall  $(HELM_RELEASE) --namespace $(KUBE_NAMESPACE) 
+	helm uninstall  $(HELM_RELEASE) --namespace $(KUBE_NAMESPACE)
 
 reinstall-chart: uninstall-chart install-chart ## reinstall the tmc-mid helm chart on the namespace ska-tmc
 
@@ -136,12 +165,12 @@ show: ## show the helm chart
 	@helm template $(HELM_RELEASE) charts/$(HELM_CHART)/ \
 		--namespace $(KUBE_NAMESPACE) \
 		--set xauthority="$(XAUTHORITYx)" \
-		--set display="$(DISPLAY)" 
+		--set display="$(DISPLAY)"
 
 # Linting chart tmc-mid
 chart_lint: ## lint check the helm chart
 	@helm lint $(UMBRELLA_CHART_PATH) \
-		--namespace $(KUBE_NAMESPACE) 
+		--namespace $(KUBE_NAMESPACE)
 
 describe: ## describe Pods executed from Helm chart
 	@for i in `kubectl -n $(KUBE_NAMESPACE) get pods -l release=$(HELM_RELEASE) -o=name`; \
@@ -267,7 +296,7 @@ rk8s_test:  ## run k8s_test on K8s using gitlab-runner
 	test-chart || true
 
 
-helm_tests:  ## run Helm chart tests 
+helm_tests:  ## run Helm chart tests
 	helm test $(HELM_RELEASE) --cleanup
 
 help:  ## show this help.
@@ -275,7 +304,7 @@ help:  ## show this help.
 	@grep -hE '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 	@echo ""; echo "make vars (+defaults):"
 	@grep -hE '^[0-9a-zA-Z_-]+ \?=.*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = " \?\= "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' | sed -e 's/\#\#/  \#/'
-	
+
 traefik: ## install the helm chart for traefik (in the kube-system namespace). @param: EXTERNAL_IP (i.e. private ip of the master node).
 	@TMP=`mktemp -d`; \
 	$(helm_add_stable_repo) && \
