@@ -24,12 +24,12 @@ server:
                     - "ska_mid/tm_leaf_node/d"
                 - name: "TMMidSubarrayNodes"
                   values:
-                    - "ska_mid/tm_subarray_node/1"
-                    - "ska_mid/tm_subarray_node/2"
-                    - "ska_mid/tm_subarray_node/3"
+                    {{- range  ( regexSplit " " ((.Values.global.subarray_count | int) | seq ) -1 )  }}
+                    - "ska_mid/tm_subarray_node/{{ . }}"
+                    {{- end }}
                 - name: "NumDishes"
                   values:
-                    - "4"
+                    - "{{ coalesce (len .Values.global.dishes) .instances }}"
                 - name: "SkaLevel"
                   values:
                     - "1"
@@ -85,9 +85,9 @@ server:
 depends_on:
   - device: ska_mid/tm_leaf_node/csp_master
   - device: ska_mid/tm_leaf_node/sdp_master
-  - device: ska_mid/tm_subarray_node/1
-  - device: ska_mid/tm_subarray_node/2
-  - device: ska_mid/tm_subarray_node/3
+  {{- range  ( regexSplit " " ((.Values.global.subarray_count | int) | seq ) -1 )  }}
+  - device: ska_mid/tm_subarray_node/{{ . }}
+  {{- end }}
 image:
   registry: "{{.Values.centralnodemid.image.registry}}"
   image: "{{.Values.centralnodemid.image.image}}"

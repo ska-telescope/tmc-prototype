@@ -7,15 +7,16 @@ entrypoints:
 server:
   name: "CspSubarrayLeafNodeDS"
   instances:
-    - name: "01"
+  {{- range  .Values.coalesced_subarray_devices }}
+    - name: "{{ . }}"
       classes:
         - name: "CspSubarrayLeafNode"
           devices:
-            - name: "ska_mid/tm_leaf_node/csp_subarray01"
+            - name: "ska_mid/tm_leaf_node/csp_subarray{{ . }}"
               properties:
                 - name: "CspSubarrayFQDN"
                   values:
-                    - "mid_csp/elt/subarray_01"
+                    - "mid_csp/elt/subarray_{{ . }}"
                 - name: "SkaLevel"
                   values:
                     - "3"
@@ -38,12 +39,12 @@ server:
                   properties:
                     - name: "__root_att"
                       values:
-                        - "mid_csp/elt/subarray_01/healthState"
+                        - "mid_csp/elt/subarray_{{ . }}/healthState"
                 - attribute: "cspSubarrayObsState"
                   properties:
                     - name: "__root_att"
                       values:
-                        - "mid_csp/elt/subarray_01/obsState"
+                        - "mid_csp/elt/subarray_{{ . }}/obsState"
                 - attribute: "healthState"
                   properties:
                     - name: "abs_change"
@@ -56,109 +57,11 @@ server:
                       values:
                         - "-1"
                         - "1"
-    - name: "02"
-      classes:
-        - name: "CspSubarrayLeafNode"
-          devices:
-            - name: "ska_mid/tm_leaf_node/csp_subarray02"
-              properties:
-                - name: "CspSubarrayFQDN"
-                  values:
-                    - "mid_csp/elt/subarray_02"
-                - name: "SkaLevel"
-                  values:
-                    - "3"
-                - name: "LoggingTargetsDefault"
-                  values:
-                    - "tango::logger"
-                - name: "LoggingLevelDefault"
-                  values:
-                    - "5"
-                - name: "polled_attr"
-                  values:
-                    - "adminmode"
-                    - "1000"
-                    - "healthstate"
-                    - "1000"
-                    - "delayModel"
-                    - "1000"
-              attribute_properties:
-                - attribute: "cspsubarrayHealthState"
-                  properties:
-                    - name: "__root_att"
-                      values:
-                        - "mid_csp/elt/subarray_02/healthState"
-                - attribute: "cspSubarrayObsState"
-                  properties:
-                    - name: "__root_att"
-                      values:
-                        - "mid_csp/elt/subarray_02/obsState"
-                - attribute: "healthState"
-                  properties:
-                    - name: "abs_change"
-                      values:
-                        - "-1"
-                        - "1"
-                - attribute: "adminMode"
-                  properties:
-                    - name: "abs_change"
-                      values:
-                        - "-1"
-                        - "1"
-    - name: "03"
-      classes:
-        - name: "CspSubarrayLeafNode"
-          devices:
-            - name: "ska_mid/tm_leaf_node/csp_subarray03"
-              properties:
-                - name: "CspSubarrayFQDN"
-                  values:
-                    - "mid_csp/elt/subarray_03"
-                - name: "SkaLevel"
-                  values:
-                    - "3"
-                - name: "LoggingTargetsDefault"
-                  values:
-                    - "tango::logger"
-                - name: "LoggingLevelDefault"
-                  values:
-                    - "5"
-                - name: "polled_attr"
-                  values:
-                    - "adminmode"
-                    - "1000"
-                    - "healthstate"
-                    - "1000"
-                    - "delayModel"
-                    - "1000"
-              attribute_properties:
-                - attribute: "cspsubarrayHealthState"
-                  properties:
-                    - name: "__root_att"
-                      values:
-                        - "mid_csp/elt/subarray_03/healthState"
-                - attribute: "cspSubarrayObsState"
-                  properties:
-                    - name: "__root_att"
-                      values:
-                        - "mid_csp/elt/subarray_03/obsState"
-                - attribute: "healthState"
-                  properties:
-                    - name: "abs_change"
-                      values:
-                        - "-1"
-                        - "1"
-                - attribute: "adminMode"
-                  properties:
-                    - name: "abs_change"
-                      values:
-                        - "-1"
-                        - "1"
-
+  {{- end }}
 depends_on:
-  - device: mid_csp/elt/subarray_01
-  - device: mid_csp/elt/subarray_02
-  - device: mid_csp/elt/subarray_03
+{{- range  .Values.coalesced_subarray_devices }}
+  - device: mid_csp/elt/subarray_{{ . }}
+{{- end }}
 image:
   registry: "{{.Values.global.skatmc.registry}}"
   image: "{{.Values.global.skatmc.image}}"
