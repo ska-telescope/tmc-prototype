@@ -87,7 +87,7 @@ class Configure(BaseCommand):
             # device_data.radec_value = f"radec,{ra_value},{dec_value}"
             receiver_band = json_argument["dish"]["receiverBand"]
             # self._set_dish_desired_pointing_attribute(device_data.radec_value)
-            self._set_dish_desired_pointing_attribute(ra_value, dec_value)
+            # self._set_dish_desired_pointing_attribute(ra_value, dec_value)
             self._configure_band(receiver_band)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
