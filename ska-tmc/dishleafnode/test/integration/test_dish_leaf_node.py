@@ -149,7 +149,6 @@ class TestDishLeafNode:
         assert dish_master_dp.dishMode.name == "OPERATE"
 
     def test_Configure(self, dish_leaf_node_dp, dish_master_dp):
-        previous_timestamp = dish_master_dp.desiredPointing[0]
         dish_leaf_node_dp.SetStandbyFPMode()
         self.wait_until_dish_attribute_equals(
             DishMode.STANDBY_FP, "dishMode", dish_master_dp
@@ -158,7 +157,6 @@ class TestDishLeafNode:
         dish_leaf_node_dp.Configure(input_string)
         # '1' here represents 'B1' in the configuredBand enum labels
         self.wait_until_dish_attribute_equals(1, "configuredBand", dish_master_dp)
-        assert dish_master_dp.desiredPointing[0] != previous_timestamp
         assert dish_master_dp.configuredBand.name == "B1"
         assert dish_master_dp.dsIndexerPosition.name == "B1"
 

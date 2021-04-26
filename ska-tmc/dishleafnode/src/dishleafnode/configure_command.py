@@ -11,7 +11,6 @@
 Configure class for DishLeafNode.
 """
 # Standard Python imports
-import datetime
 
 # Tango imports
 import tango
@@ -19,7 +18,6 @@ from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
-
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 from .command_callback import CommandCallBack
@@ -83,11 +81,7 @@ class Configure(BaseCommand):
             property_value = this_server.read_property("DishMasterFQDN")
             self.dish_master_fqdn = self.dish_master_fqdn.join(property_value)
             json_argument = device_data._load_config_string(argin)
-            ra_value, dec_value = device_data._get_targets(json_argument)
-            # device_data.radec_value = f"radec,{ra_value},{dec_value}"
             receiver_band = json_argument["dish"]["receiverBand"]
-            # self._set_dish_desired_pointing_attribute(device_data.radec_value)
-            self._set_dish_desired_pointing_attribute(ra_value, dec_value)
             self._configure_band(receiver_band)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
@@ -115,28 +109,5 @@ class Configure(BaseCommand):
             dish_client.send_command_async(command_name, callback_method=cmd_ended_cb)
         except DevFailed as dev_failed:
             raise dev_failed
-
-    def _set_dish_desired_pointing_attribute(self, ra_value, dec_value):
-        device_data = self.target
-        now = datetime.datetime.utcnow()
-        timestamp = str(now)
-
-        try:
-            dish_client = TangoClient(self.dish_master_fqdn)
-            # device_data.az, device_data.el = device_data.point(device_data.radec_value,timestamp)
-            device_data.az, device_data.el = device_data.point(ra_value, dec_value,timestamp)
-
-        except ValueError as valuerr:
-            tango.Except.throw_exception(
-                str(valuerr),
-                f"Error converting radec '{radec}' to az and el coordinates, respectively.",
-                "_set_dish_desired_pointing_attribute",
-                tango.ErrSeverity.ERR,
-            )
-
-        # Set desiredPointing on Dish Master (it won't move until asked to
-        # track or scan, but provide initial coordinates for interest)
-        time_az_el = [now.timestamp(), device_data.az, device_data.el]
-        dish_client.set_attribute("desiredPointing", time_az_el)
 
     # pylint: enable= unbalanced-tuple-unpacking
