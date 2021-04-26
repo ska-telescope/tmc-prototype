@@ -29,6 +29,7 @@ class UnitConverter:
     def __init__(self, logger=module_logger):
         self.logger = logger
 
+    # TODO: FOR FUTURE USE
     def dms_to_rad(self, argin):
         """
         Converts a number in Deg:Min:Sec to radians.
@@ -51,6 +52,7 @@ class UnitConverter:
             log_msg = f"Error while converting Deg:Min:Sec to radians.{error}"
             self.logger.error(log_msg)
 
+    # TODO: FOR FUTURE USE
     def rad_to_dms(self, argin):
         """
         Converts a number in radians to Deg:Min:Sec.
@@ -79,6 +81,7 @@ class UnitConverter:
             log_msg = f"Error while converting radians to dig:min:sec.{error}"
             self.logger.error(log_msg)
 
+    # TODO: FOR FUTURE USE
     def dms_to_dd(self, argin):
         """
         Converts a number in dig:Min:sec to decimal degrees.
