@@ -35,7 +35,7 @@ def start_up():
     CentralNode.StartUpTelescope()
 
 
-@sync_assign_resources(2, 1000)
+@sync_assign_resources(2, 300)
 def compose_sub():
     resource("ska_mid/tm_subarray_node/1").assert_attribute("State").equals("ON")
     resource("ska_mid/tm_subarray_node/1").assert_attribute("obsState").equals("EMPTY")
