@@ -37,7 +37,7 @@ SKA-TMC addresses the  following architectural aspects and functionality:
 * [x] Interface between the TMC and CSP (CSP Master and Csp Subarray devices)
 * [x] Interface between the TMC and SDP (SDP Master and SDP Subarray devices)
 * [x] Interface between the TMC and MCCS (MCCS Master and MCCS Subarray devices)
-* [x] Integration of KATPoint library for pointing and delay calculation for TMC-Mid
+* [x] Integration of KATPoint library (1.0a1) for pointing and delay calculation for TMC-Mid
 * [x] Use of Elettra AlarmHandler as the alarm handling solution
 * [x] Use of SKA Logger as the logging solution
 * [x] Use of HDB++ Archiver as the archiving solution
