@@ -7,15 +7,16 @@ entrypoints:
 server:
   name: "DishLeafNodeDS"
   instances:
-    - name: "01"
+  {{- range  .Values.coalesced_dishes }}
+    - name: "{{ . }}"
       classes:
         - name: "DishLeafNode"
           devices:
-            - name: "ska_mid/tm_leaf_node/d0001"
+            - name: "ska_mid/tm_leaf_node/d{{ printf "%04s" . }}"
               properties:
                 - name: "DishMasterFQDN"
                   values:
-                    - "mid_d0001/elt/master"
+                    - "mid_d{{ printf "%04s" . }}/elt/master"
                 - name: "SkaLevel"
                   values:
                     - "3"
@@ -37,150 +38,24 @@ server:
                   properties:
                     - name: "__root_att"
                       values:
-                        - "mid_d0001/elt/master/healthState"
+                        - "mid_d{{ printf "%04s" . }}/elt/master/healthState"
                 - attribute: "dishPointingState"
                   properties:
                     - name: "__root_att"
                       values:
-                        - "mid_d0001/elt/master/pointingState"
+                        - "mid_d{{ printf "%04s" . }}/elt/master/pointingState"
                 - attribute: "healthState"
                   properties:
                     - name: "abs_change"
                       values:
                         - "-1"
                         - "1"
-    - name: "02"
-      classes:
-        - name: "DishLeafNode"
-          devices:
-            - name: "ska_mid/tm_leaf_node/d0002"
-              properties:
-                - name: "DishMasterFQDN"
-                  values:
-                    - "mid_d0002/elt/master"
-                - name: "SkaLevel"
-                  values:
-                    - "3"
-                - name: "TrackDuration"
-                  values:
-                    - "1"
-                - name: "LoggingTargetsDefault"
-                  values:
-                    - "tango::logger"
-                - name: "LoggingLevelDefault"
-                  values:
-                    - "5"
-                - name: "polled_attr"
-                  values:
-                    - "healthstate"
-                    - "1000"
-              attribute_properties:
-                - attribute: "dishHealthState"
-                  properties:
-                    - name: "__root_att"
-                      values:
-                        - "mid_d0002/elt/master/healthState"
-                - attribute: "dishPointingState"
-                  properties:
-                    - name: "__root_att"
-                      values:
-                        - "mid_d0002/elt/master/pointingState"
-                - attribute: "healthState"
-                  properties:
-                    - name: "abs_change"
-                      values:
-                        - "-1"
-                        - "1"
-    - name: "03"
-      classes:
-        - name: "DishLeafNode"
-          devices:
-            - name: "ska_mid/tm_leaf_node/d0003"
-              properties:
-                - name: "DishMasterFQDN"
-                  values:
-                    - "mid_d0003/elt/master"
-                - name: "SkaLevel"
-                  values:
-                    - "3"
-                - name: "TrackDuration"
-                  values:
-                    - "1"
-                - name: "LoggingTargetsDefault"
-                  values:
-                    - "tango::logger"
-                - name: "LoggingLevelDefault"
-                  values:
-                    - "5"
-                - name: "polled_attr"
-                  values:
-                    - "healthstate"
-                    - "1000"
-              attribute_properties:
-                - attribute: "dishHealthState"
-                  properties:
-                    - name: "__root_att"
-                      values:
-                        - "mid_d0003/elt/master/healthState"
-                - attribute: "dishPointingState"
-                  properties:
-                    - name: "__root_att"
-                      values:
-                        - "mid_d0003/elt/master/pointingState"
-                - attribute: "healthState"
-                  properties:
-                    - name: "abs_change"
-                      values:
-                        - "-1"
-                        - "1"
-    - name: "04"
-      classes:
-        - name: "DishLeafNode"
-          devices:
-            - name: "ska_mid/tm_leaf_node/d0004"
-              properties:
-                - name: "DishMasterFQDN"
-                  values:
-                    - "mid_d0004/elt/master"
-                - name: "SkaLevel"
-                  values:
-                    - "3"
-                - name: "TrackDuration"
-                  values:
-                    - "1"
-                - name: "LoggingTargetsDefault"
-                  values:
-                    - "tango::logger"
-                - name: "LoggingLevelDefault"
-                  values:
-                    - "5"
-                - name: "polled_attr"
-                  values:
-                    - "healthstate"
-                    - "1000"
-              attribute_properties:
-                - attribute: "dishHealthState"
-                  properties:
-                    - name: "__root_att"
-                      values:
-                        - "mid_d0004/elt/master/healthState"
-                - attribute: "dishPointingState"
-                  properties:
-                    - name: "__root_att"
-                      values:
-                        - "mid_d0004/elt/master/pointingState"
-                - attribute: "healthState"
-                  properties:
-                    - name: "abs_change"
-                      values:
-                        - "-1"
-                        - "1"
+    {{- end }}
 
 depends_on:
-  - device: mid_d0001/elt/master
-  - device: mid_d0002/elt/master
-  - device: mid_d0003/elt/master
-  - device: mid_d0004/elt/master
+{{- range  .Values.coalesced_dishes }}
+  - device: mid_d{{ printf "%04s" . }}/elt/master
+{{- end }}
 image:
   registry: "{{.Values.global.skatmc.registry}}"
   image: "{{.Values.global.skatmc.image}}"
