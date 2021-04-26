@@ -123,7 +123,7 @@ class Track(BaseCommand):
             now = datetime.datetime.utcnow()
             timestamp = str(now)
             # pylint: disable=unbalanced-tuple-unpacking
-            device_data.az, device_data.el = device_data.point(self.ra_value,self.dec_value,timestamp)
+            device_data.az, device_data.el = device_data.point(self.ra_value, self.dec_value, timestamp)
 
             if not self._is_elevation_within_mechanical_limits():
                 time.sleep(0.05)
