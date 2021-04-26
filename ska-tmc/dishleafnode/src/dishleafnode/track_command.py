@@ -21,6 +21,7 @@ from ska.base.commands import BaseCommand
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 from .command_callback import CommandCallBack
+from .az_el_converter import AzElConverter
 
 
 class Track(BaseCommand):
@@ -118,15 +119,19 @@ class Track(BaseCommand):
         )
         device_data = self.target
         dish_client = TangoClient(self.dish_master_fqdn)
+        azel_converter = AzElConverter(self.logger)
 
         while device_data.event_track_time.is_set() is False:
             now = datetime.datetime.utcnow()
             timestamp = str(now)
             # pylint: disable=unbalanced-tuple-unpacking
-            device_data.az, device_data.el = device_data.point(
+            
+            # device_data.az, device_data.el = device_data.point(
+            #     self.ra_value, self.dec_value, timestamp
+            # )
+            device_data.az, device_data.el = azel_converter.point(
                 self.ra_value, self.dec_value, timestamp
             )
-
             if not self._is_elevation_within_mechanical_limits():
                 time.sleep(0.05)
                 continue
