@@ -50,9 +50,7 @@ setup(
         "lmcbaseclasses>=0.7.2",
         "skatmccommon==0.1.6+3aaa7bbe",
     ],
-    dependency_links=[
-        'https://nexus.engageska-portugal.pt/repository/pypi/simple/'
-    ],
+    dependency_links=["https://nexus.engageska-portugal.pt/repository/pypi/simple/"],
     # test_suite='test',
     setup_requires=[
         # dependency for `python setup.py test`

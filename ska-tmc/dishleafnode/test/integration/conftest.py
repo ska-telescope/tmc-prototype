@@ -45,7 +45,7 @@ def tango_context(mocker, devices_info):  # pylint: disable=redefined-outer-name
     _Database = tango.Database
     mocker.patch(
         "tmc.common.tango_server_helper.Database",
-        wraps=lambda *args, **kwargs: _Database(context.db)
+        wraps=lambda *args, **kwargs: _Database(context.db),
     )
 
     # In tango_simlib devices the Tango DB file is retrieved from the commandline arguments in

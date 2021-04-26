@@ -61,8 +61,8 @@ class UnitConverter:
             Example: [7.0, 4.0, 27.928156941480466] is returned value for input 0.123472.
         """
         try:
-            # Sign variable represents the sign of the number (in radians) received in input. 
-            # Sign should not be used in the radian to dms conversion. It should just be appended 
+            # Sign variable represents the sign of the number (in radians) received in input.
+            # Sign should not be used in the radian to dms conversion. It should just be appended
             # to the resulting dms value as it is.
             sign = 1
             if argin < 0:
