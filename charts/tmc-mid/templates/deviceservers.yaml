@@ -4,8 +4,36 @@
 
 {{- if hasKey $deviceserver "file"}}
 
-{{- $filedeviceserver := $.Files.Get $deviceserver.file | fromYaml }}
-{{- $_ := set $filedeviceserver "instances" (coalesce $localchart.Values.global.instances $deviceserver.instances $filedeviceserver.instances) }}
+{{- $filedeviceserver := tpl ($.Files.Get $deviceserver.file) $ | fromYaml }}
+
+
+# Determine which dish instances to use
+{{- $_ := set  $localchart.Values "coalesced_dishes" (coalesce $localchart.Values.global.dishes $deviceserver.instances $filedeviceserver.instances)  }}
+
+# Determine which subarray instances to use
+## Unpack the subarray_count int into a list 1 to N (inclusive)
+{{- $unpacked_subarray_devices:=  ( regexSplit " " ((  $localchart.Values.global.subarray_count | int) | seq ) -1 ) }}
+## Prepend a zero to every subarray number by making use of a dictionary if N < 10
+{{ $prepended_subarray_devices := list  }}
+{{- range $unpacked_subarray_devices }}
+    {{ $prepended_subarray_devices = append $prepended_subarray_devices ( printf "%02s" . ) }}
+{{- end }}
+## Determine which instances to use
+{{- $_ := set  $localchart.Values "coalesced_subarray_devices" (coalesce $prepended_subarray_devices  $deviceserver.instances $filedeviceserver.instances)  }}
+
+# Set the default instances
+{{- $_ := set $filedeviceserver "instances" (coalesce $deviceserver.instances $filedeviceserver.instances) }}
+
+# If it's a dish device, update the instances
+{{- if has $key $localchart.Values.global.dish_devices  }}
+{{- $_ := set $filedeviceserver "instances" $localchart.Values.coalesced_dishes  }}
+{{- end }}
+
+# If it's a subarray device, update the instances
+{{- if has $key $localchart.Values.global.subarray_devices }}
+{{- $_ := set $filedeviceserver "instances" $localchart.Values.coalesced_subarray_devices }}
+{{- end }}
+
 {{- $context := dict "name" $key "deviceserver" $filedeviceserver "image" $deviceserver.image "local" $localchart }}
 {{ template "tango-util.multidevice-config.tpl" $context }}
 {{ template "tango-util.multidevice-sacc-role.tpl" $context }}
@@ -14,7 +42,7 @@
 
 {{- else }}
 
-{{- $_ := set $deviceserver "instances" (coalesce $localchart.Values.global.instances $deviceserver.instances) }}
+{{- $_ := set $deviceserver "instances" $deviceserver.instances }}
 {{- $context := dict "name" $key "deviceserver" $deviceserver "image" $deviceserver.image "local" $localchart }}
 {{ template "tango-util.multidevice-config.tpl" $context }}
 {{ template "tango-util.multidevice-sacc-role.tpl" $context }}

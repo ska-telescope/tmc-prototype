@@ -22,6 +22,24 @@ global:
     tag: 0.6.1
     pullPolicy: IfNotPresent
 
+  ##  Order of instances resolution ##
+  # .Values.global.dishes & .Values.global.subarray_count
+  # .Values.deviceServers.<device>.instances
+  # File, data/<device>.yaml, instances
+
+  # List the dishes, if set, then this list will be applied to instances of:
+  # deviceServers.dishmaster, deviceServers.dishleafnode
+  dish_devices: ["dishmaster", "dishleafnode"]
+  dishes: ["01", "02", "03", "04"]
+
+  # subarray_count, this will be expanded (1 to N inclusive) and applied to instances of:
+  # deviceServers.cspsubarrayleafnode, deviceServers.sdpsubarrayleafnode, deviceServers.subarraynode
+  subarray_devices:
+    - "cspsubarrayleafnode"
+    - "sdpsubarrayleafnode"
+    - "subarraynode"
+  subarray_count: 3
+
 dsconfig:
   configuration_file: data/tmc-mid-config.json
   image:
@@ -86,7 +104,7 @@ deviceServers:
     instances: ["01"]
     file: "data/sdpmasterleafnode.yaml"
   subarraynode:
-    instances: ["sa1", "sa2", "sa3"]
+    instances: ["01", "02", "03"]
     file: "data/subarraynode.yaml"
   centralnode:
     instances: ["01"]

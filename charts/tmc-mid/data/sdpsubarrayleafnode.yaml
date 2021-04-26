@@ -7,15 +7,16 @@ entrypoints:
 server:
   name: "SdpSubarrayLeafNodeDS"
   instances:
-    - name: "01"
+  {{- range  .Values.coalesced_subarray_devices }}
+    - name: "{{ . }}"
       classes:
         - name: "SdpSubarrayLeafNode"
           devices:
-            - name: "ska_mid/tm_leaf_node/sdp_subarray01"
+            - name: "ska_mid/tm_leaf_node/sdp_subarray{{ . }}"
               properties:
                 - name: "SdpSubarrayFQDN"
                   values:
-                    - "mid_sdp/elt/subarray_1"
+                    - "mid_sdp/elt/subarray_{{ (split "0" .)._1}}"
                 - name: "SkaLevel"
                   values:
                     - "3"
@@ -36,105 +37,23 @@ server:
                   properties:
                     - name: "__root_att"
                       values:
-                        - "mid_sdp/elt/subarray_1/healthState"
+                        - "mid_sdp/elt/subarray_{{ (split "0" .)._1}}/healthState"
                 - attribute: "sdpSubarrayObsState"
                   properties:
                     - name: "__root_att"
                       values:
-                        - "mid_sdp/elt/subarray_1/obsState"
+                        - "mid_sdp/elt/subarray_{{ (split "0" .)._1}}/obsState"
                 - attribute: "healthState"
                   properties:
                     - name: "abs_change"
                       values:
                         - "-1"
                         - "1"
-    - name: "02"
-      classes:
-        - name: "SdpSubarrayLeafNode"
-          devices:
-            - name: "ska_mid/tm_leaf_node/sdp_subarray02"
-              properties:
-                - name: "SdpSubarrayFQDN"
-                  values:
-                    - "mid_sdp/elt/subarray_2"
-                - name: "SkaLevel"
-                  values:
-                    - "3"
-                - name: "LoggingTargetsDefault"
-                  values:
-                    - "tango::logger"
-                - name: "LoggingLevelDefault"
-                  values:
-                    - "5"
-                - name: "polled_attr"
-                  values:
-                    - "healthstate"
-                    - "1000"
-                    - "receiveAddresses"
-                    - "1000"
-              attribute_properties:
-                - attribute: "sdpSubarrayHealthState"
-                  properties:
-                    - name: "__root_att"
-                      values:
-                        - "mid_sdp/elt/subarray_2/healthState"
-                - attribute: "sdpSubarrayObsState"
-                  properties:
-                    - name: "__root_att"
-                      values:
-                        - "mid_sdp/elt/subarray_2/obsState"
-                - attribute: "healthState"
-                  properties:
-                    - name: "abs_change"
-                      values:
-                        - "-1"
-                        - "1"
-    - name: "03"
-      classes:
-        - name: "SdpSubarrayLeafNode"
-          devices:
-            - name: "ska_mid/tm_leaf_node/sdp_subarray03"
-              properties:
-                - name: "SdpSubarrayFQDN"
-                  values:
-                    - "mid_sdp/elt/subarray_3"
-                - name: "SkaLevel"
-                  values:
-                    - "3"
-                - name: "LoggingTargetsDefault"
-                  values:
-                    - "tango::logger"
-                - name: "LoggingLevelDefault"
-                  values:
-                    - "5"
-                - name: "polled_attr"
-                  values:
-                    - "healthstate"
-                    - "1000"
-                    - "receiveAddresses"
-                    - "1000"
-              attribute_properties:
-                - attribute: "sdpSubarrayHealthState"
-                  properties:
-                    - name: "__root_att"
-                      values:
-                        - "mid_sdp/elt/subarray_3/healthState"
-                - attribute: "sdpSubarrayObsState"
-                  properties:
-                    - name: "__root_att"
-                      values:
-                        - "mid_sdp/elt/subarray_3/obsState"
-                - attribute: "healthState"
-                  properties:
-                    - name: "abs_change"
-                      values:
-                        - "-1"
-                        - "1"
-
+  {{- end }}
 depends_on:
-  - device: mid_sdp/elt/subarray_1
-  - device: mid_sdp/elt/subarray_2
-  - device: mid_sdp/elt/subarray_3
+{{- range  .Values.coalesced_subarray_devices }}
+  - device: mid_sdp/elt/subarray_{{ (split "0" .)._1}}
+{{- end }}
 image:
   registry: "{{.Values.global.skatmc.registry}}"
   image: "{{.Values.global.skatmc.image}}"

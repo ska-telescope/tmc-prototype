@@ -1,33 +1,34 @@
-name: "dishleafnode-{{.Release.Name}}"
+name: "subarraynode-{{.Release.Name}}"
 function: dish-monitoring
 domain: general-monitoring
-instances: ["sa1", "sa2", "sa3"]
+instances: ["01", "02", "03"]
 entrypoints:
   - name: "tmc.subarraynode.subarray_node.SubarrayNode"
 server:
   name: "SubarrayNodeDS"
   instances:
-    - name: "sa1"
+  {{- range  .Values.coalesced_subarray_devices }}
+    - name: "{{ . }}"
       classes:
         - name: "SubarrayNode"
           devices:
-            - name: "ska_mid/tm_subarray_node/1"
+            - name: "ska_mid/tm_subarray_node/{{ (split "0" .)._1}}"
               properties:
                 - name: "CspSubarrayLNFQDN"
                   values:
-                    - "ska_mid/tm_leaf_node/csp_subarray01"
+                    - "ska_mid/tm_leaf_node/csp_subarray{{ . }}"
                 - name: "DishLeafNodePrefix"
                   values:
                     - "ska_mid/tm_leaf_node/d"
                 - name: "SdpSubarrayLNFQDN"
                   values:
-                    - "ska_mid/tm_leaf_node/sdp_subarray01"
+                    - "ska_mid/tm_leaf_node/sdp_subarray{{ . }}"
                 - name: "CspSubarrayFQDN"
                   values:
-                    - "mid_csp/elt/subarray_01"
+                    - "mid_csp/elt/subarray_{{ . }}"
                 - name: "SdpSubarrayFQDN"
                   values:
-                    - "mid_sdp/elt/subarray_1"
+                    - "mid_sdp/elt/subarray_{{ (split "0" .)._1}}"
                 - name: "SkaLevel"
                   values:
                     - "2"
@@ -83,169 +84,14 @@ server:
                     - name: "__value"
                       values:
                         - "false"
-    - name: "sa2"
-      classes:
-        - name: "SubarrayNode"
-          devices:
-            - name: "ska_mid/tm_subarray_node/2"
-              properties:
-                - name: "CspSubarrayLNFQDN"
-                  values:
-                    - "ska_mid/tm_leaf_node/csp_subarray02"
-                - name: "DishLeafNodePrefix"
-                  values:
-                    - "ska_mid/tm_leaf_node/d"
-                - name: "SdpSubarrayLNFQDN"
-                  values:
-                    - "ska_mid/tm_leaf_node/sdp_subarray02"
-                - name: "CspSubarrayFQDN"
-                  values:
-                    - "mid_csp/elt/subarray_02"
-                - name: "SdpSubarrayFQDN"
-                  values:
-                    - "mid_sdp/elt/subarray_2"
-                - name: "SkaLevel"
-                  values:
-                    - "2"
-                - name: "LoggingTargetsDefault"
-                  values:
-                    - "tango::logger"
-                - name: "LoggingLevelDefault"
-                  values:
-                    - "5"
-                - name: "polled_attr"
-                  values:
-                    - "adminmode"
-                    - "1000"
-                    - "healthstate"
-                    - "1000"
-                    - "obsmode"
-                    - "1000"
-                    - "receptoridlist"
-                    - "1000"
-              attribute_properties:
-                - attribute: "adminMode"
-                  properties:
-                    - name: "abs_change"
-                      values:
-                        - "-1"
-                        - "1"
-                - attribute: "healthState"
-                  properties:
-                    - name: "abs_change"
-                      values:
-                        - "-1"
-                        - "1"
-                - attribute: "obsMode"
-                  properties:
-                    - name: "abs_change"
-                      values:
-                        - "-1"
-                        - "1"
-                - attribute: "obsState"
-                  properties:
-                    - name: "abs_change"
-                      values:
-                        - "-1"
-                        - "1"
-                - attribute: "receptorIDList"
-                  properties:
-                    - name: "abs_change"
-                      values:
-                        - "-1"
-                        - "1"
-                - attribute: "simulationMode"
-                  properties:
-                    - name: "__value"
-                      values:
-                        - "false"
-    - name: "sa3"
-      classes:
-        - name: "SubarrayNode"
-          devices:
-            - name: "ska_mid/tm_subarray_node/3"
-              properties:
-                - name: "CspSubarrayLNFQDN"
-                  values:
-                    - "ska_mid/tm_leaf_node/csp_subarray03"
-                - name: "DishLeafNodePrefix"
-                  values:
-                    - "ska_mid/tm_leaf_node/d"
-                - name: "SdpSubarrayLNFQDN"
-                  values:
-                    - "ska_mid/tm_leaf_node/sdp_subarray03"
-                - name: "CspSubarrayFQDN"
-                  values:
-                    - "mid_csp/elt/subarray_03"
-                - name: "SdpSubarrayFQDN"
-                  values:
-                    - "mid_sdp/elt/subarray_3"
-                - name: "SkaLevel"
-                  values:
-                    - "2"
-                - name: "LoggingTargetsDefault"
-                  values:
-                    - "tango::logger"
-                - name: "LoggingLevelDefault"
-                  values:
-                    - "5"
-                - name: "polled_attr"
-                  values:
-                    - "adminmode"
-                    - "1000"
-                    - "healthstate"
-                    - "1000"
-                    - "obsmode"
-                    - "1000"
-                    - "receptoridlist"
-                    - "1000"
-              attribute_properties:
-                - attribute: "adminMode"
-                  properties:
-                    - name: "abs_change"
-                      values:
-                        - "-1"
-                        - "1"
-                - attribute: "healthState"
-                  properties:
-                    - name: "abs_change"
-                      values:
-                        - "-1"
-                        - "1"
-                - attribute: "obsMode"
-                  properties:
-                    - name: "abs_change"
-                      values:
-                        - "-1"
-                        - "1"
-                - attribute: "obsState"
-                  properties:
-                    - name: "abs_change"
-                      values:
-                        - "-1"
-                        - "1"
-                - attribute: "receptorIDList"
-                  properties:
-                    - name: "abs_change"
-                      values:
-                        - "-1"
-                        - "1"
-                - attribute: "simulationMode"
-                  properties:
-                    - name: "__value"
-                      values:
-                        - "false"
-
+  {{- end}}
 depends_on:
-  - device: ska_mid/tm_leaf_node/csp_subarray01
-  - device: ska_mid/tm_leaf_node/sdp_subarray01
-  - device: ska_mid/tm_leaf_node/csp_subarray02
-  - device: ska_mid/tm_leaf_node/sdp_subarray02
-  - device: ska_mid/tm_leaf_node/csp_subarray03
-  - device: ska_mid/tm_leaf_node/sdp_subarray03
+{{- range  .Values.coalesced_subarray_devices }}
+  - device: ska_mid/tm_leaf_node/csp_subarray{{ . }}
+  - device: ska_mid/tm_leaf_node/sdp_subarray{{ . }}
+{{- end }}
 image:
   registry: "{{.Values.subarraynodemid.image.registry}}"
   image: "{{.Values.subarraynodemid.image.image}}"
   tag: "{{.Values.subarraynodemid.image.tag}}"
   pullPolicy: "{{.Values.subarraynodemid.image.pullPolicy}}"
-
