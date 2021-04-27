@@ -11,6 +11,7 @@
 A Leaf control node for DishMaster.
 """
 import threading
+
 # Tango imports
 import tango
 from tango import ApiUtil, AttrWriteType
@@ -40,6 +41,7 @@ from .startcapture_command import StartCapture
 from .stopcapture_command import StopCapture
 from .stoptrack_command import StopTrack
 from .track_command import Track
+from .az_el_converter import AzElConverter
 
 
 __all__ = [
@@ -188,7 +190,8 @@ class DishLeafNode(SKABaseDevice):
             )
             device._version_id = release.version
             device_data.set_dish_name_number(device.DishMasterFQDN)
-            device_data.set_observer_lat_long_alt(self.logger)
+            azel_converter = AzElConverter(self.logger)
+            azel_converter.create_antenna_obj()
             log_message = f"DishMasterFQDN :-> {device.DishMasterFQDN}"
             self.logger.debug(log_message)
             this_server.write_attr("activityMessage", log_message, False)

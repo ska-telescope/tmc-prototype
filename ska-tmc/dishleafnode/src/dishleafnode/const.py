@@ -26,7 +26,7 @@ CMD_ABORT = "Abort"
 CMD_RESTART = "Restart"
 CMD_OBSRESET = "ObsReset"
 
-#string constants
+# string constants
 STR_DISH_STANDBYLP_MODE = "Dish is in STANDBY_LP mode."
 STR_DISH_STANDBYFP_MODE = "Dish is in STANDBY_FP mode."
 STR_DISH_MAINT_MODE = "Dish is in MAINTENANCE mode."

@@ -29,6 +29,7 @@ class UnitConverter:
     def __init__(self, logger=module_logger):
         self.logger = logger
 
+    # TODO: FOR FUTURE USE
     def dms_to_rad(self, argin):
         """
         Converts a number in Deg:Min:Sec to radians.
@@ -51,6 +52,7 @@ class UnitConverter:
             log_msg = f"Error while converting Deg:Min:Sec to radians.{error}"
             self.logger.error(log_msg)
 
+    # TODO: FOR FUTURE USE
     def rad_to_dms(self, argin):
         """
         Converts a number in radians to Deg:Min:Sec.
@@ -61,18 +63,25 @@ class UnitConverter:
             Example: [7.0, 4.0, 27.928156941480466] is returned value for input 0.123472.
         """
         try:
+            # Sign variable represents the sign of the number (in radians) received in input.
+            # Sign should not be used in the radian to dms conversion. It should just be appended
+            # to the resulting dms value as it is.
+            sign = 1
+            if argin < 0:
+                sign = -1
             dms = []
-            frac_min, degrees = math.modf(argin * (180 / math.pi))
+            frac_min, degrees = math.modf(abs(argin) * (180 / math.pi))
             frac_sec, minutes = math.modf(frac_min * 60)
             seconds = frac_sec * 60
-            dms.append(degrees)
-            dms.append(minutes)
+            dms.append(int(degrees * sign))
+            dms.append(int(minutes))
             dms.append(seconds)
             return dms
         except SyntaxError as error:
             log_msg = f"Error while converting radians to dig:min:sec.{error}"
             self.logger.error(log_msg)
 
+    # TODO: FOR FUTURE USE
     def dms_to_dd(self, argin):
         """
         Converts a number in dig:Min:sec to decimal degrees.
