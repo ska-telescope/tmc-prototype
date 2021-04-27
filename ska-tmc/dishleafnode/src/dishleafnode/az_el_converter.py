@@ -1,4 +1,5 @@
 import katpoint
+import importlib.resources
 from .device_data import DeviceData
 
 class AzElConverter:
