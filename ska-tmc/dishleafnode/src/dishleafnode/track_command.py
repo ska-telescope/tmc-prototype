@@ -80,7 +80,7 @@ class Track(BaseCommand):
             self.dish_master_fqdn = self.dish_master_fqdn.join(property_value)
             json_argin = device_data._load_config_string(argin)
             self.ra_value, self.dec_value = device_data._get_targets(json_argin)
-            radec_value = f"{self.ra_value},{self.dec_value}"
+            radec_value = f"{self.ra_value}, {self.dec_value}"
             self.logger.info(
                 "Track command ignores RA dec coordinates passed in: %s. "
                 "Uses coordinates from Configure command instead.",
@@ -126,9 +126,6 @@ class Track(BaseCommand):
             timestamp = str(now)
             # pylint: disable=unbalanced-tuple-unpacking
             
-            # device_data.az, device_data.el = device_data.point(
-            #     self.ra_value, self.dec_value, timestamp
-            # )
             device_data.az, device_data.el = azel_converter.point(
                 self.ra_value, self.dec_value, timestamp
             )

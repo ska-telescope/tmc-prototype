@@ -191,7 +191,6 @@ class DishLeafNode(SKABaseDevice):
             device._version_id = release.version
             device_data.set_dish_name_number(device.DishMasterFQDN)
             azel_converter = AzElConverter(self.logger)
-            # device_data.create_antenna_obj()
             azel_converter.create_antenna_obj()
             log_message = f"DishMasterFQDN :-> {device.DishMasterFQDN}"
             self.logger.debug(log_message)
