@@ -5,6 +5,7 @@ from .device_data import DeviceData
 class AzElConverter:
     def __init__(self, log):
         self.logger = log
+        self.logger.info("In AzElConverter init: '%s' ", str(self.logger))
 
     def create_antenna_obj(self):
         """ This method identifies the KATPoint.Antenna object to be used from the Dish Number. """
@@ -38,4 +39,9 @@ class AzElConverter:
         azel = target.azel(timestamp, device_data.observer)
         # list of az el co-ordinates
         az_el_coordinates = [azel.az.deg, azel.alt.deg]
+        self.logger.info("device_data.observer: '%s' ", str(device_data.observer))
+        self.logger.info("ra_value: '%s'", str(ra_value))
+        self.logger.info("dec_value: '%s'", str(dec_value))
+        self.logger.info("timestamp: '%s' ", str(timestamp))
+        self.logger.info("az_el_coordinates: '%s' ", str(az_el_coordinates))
         return az_el_coordinates
