@@ -27,13 +27,15 @@ class AzElConverter:
         for ant in antennas:
             if ant.name == device_data.dish_number:
                 device_data.observer = ant
+        self.logger.info("ant: '%s'", str(ant))
 
     def point(self, ra_value, dec_value, timestamp):
         """This method converts Target RaDec coordinates to the AzEl coordinates. It is called
         continuosly from Track command (in a thread) at interval of 50ms till the StopTrack command is invoked.
         """
+        self.logger.info("In point function: '%s'", str(ra_value))
         device_data = DeviceData.get_instance()
-        self.logger.info("device_data_new 5: '%s'", str(device_data_new))
+        self.logger.info("device_data 5: '%s'", str(device_data))
         self.logger.info("katpoint.Target 6: '%s'", str(katpoint.Target))
         # Create KATPoint Target object
         target = katpoint.Target.from_radec(ra_value, dec_value)

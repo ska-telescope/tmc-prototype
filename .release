@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc"""
-version="0.6.2-katpoint"
+version="0.6.2-katpoint1.0a1"
 version_info=version.split(".")
 description="""SKA-TMC"""
 author="Team NCRA"
@@ -10,8 +10,8 @@ license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
 
-release=0.6.2-katpoint
-tag=0.6.2-katpoint
+release=0.6.2-katpoint1.0a1
+tag=0.6.2-katpoint1.0a1
 tag_description=Utilise KATpoint 1.0a1 in DishLeafNode for pointing calculations.
 release_notes=This release contains:<br/><ul><li>Utilise KATpoint 1.0a1 in DishLeafNode for pointing calculations.</li></ul><br/>
 gitlab_username=apurvapatkar
