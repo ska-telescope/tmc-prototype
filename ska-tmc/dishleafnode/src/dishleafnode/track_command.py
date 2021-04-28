@@ -133,24 +133,25 @@ class Track(BaseCommand):
             timestamp = str(now)
             # pylint: disable=unbalanced-tuple-unpacking
             self.logger.info("In while loop timestamp 4: '%s'", str(timestamp))
-            # device_data.az, device_data.el = azel_converter.point(self.ra_value, self.dec_value, timestamp)
+            device_data.az, device_data.el = azel_converter.point(self.ra_value, self.dec_value, timestamp)
             
-            device_data_new = DeviceData.get_instance()
-            self.logger.info("device_data_new 5: '%s'", str(device_data_new))
-            # Create KATPoint Target object
-            target = katpoint.Target.from_radec(self.ra_value, self.dec_value)
-            self.logger.info("target 6: '%s'", str(target))
-            # obtain az el co-ordinates for dish
-            azel = target.azel(timestamp, device_data_new.observer)
-            self.logger.info("azel 7: '%s'", str(azel))
-            # list of az el co-ordinates
-            az_el_coordinates = [azel.az.deg, azel.alt.deg]
-            self.logger.info("device_data.observer: '%s' ", str(device_data_new.observer))
-            self.logger.info("ra_value: '%s'", str(self.ra_value))
-            self.logger.info("dec_value: '%s'", str(self.dec_value))
-            self.logger.info("timestamp: '%s' ", str(timestamp))
-            self.logger.info("az_el_coordinates: '%s' ", str(az_el_coordinates))
-            device_data.az, device_data.el = az_el_coordinates
+            # device_data_new = DeviceData.get_instance()
+            # self.logger.info("device_data_new 5: '%s'", str(device_data_new))
+            # self.logger.info("katpoint.Target 6: '%s'", str(katpoint.Target))
+            # # Create KATPoint Target object
+            # target = katpoint.Target.from_radec(self.ra_value, self.dec_value)
+            # self.logger.info("target 7: '%s'", str(target))
+            # # obtain az el co-ordinates for dish
+            # azel = target.azel(timestamp, device_data_new.observer)
+            # self.logger.info("azel 8: '%s'", str(azel))
+            # # list of az el co-ordinates
+            # az_el_coordinates = [azel.az.deg, azel.alt.deg]
+            # self.logger.info("device_data.observer: '%s' ", str(device_data_new.observer))
+            # self.logger.info("ra_value: '%s'", str(self.ra_value))
+            # self.logger.info("dec_value: '%s'", str(self.dec_value))
+            # self.logger.info("timestamp: '%s' ", str(timestamp))
+            # self.logger.info("az_el_coordinates: '%s' ", str(az_el_coordinates))
+            # device_data.az, device_data.el = az_el_coordinates
             
             if not self._is_elevation_within_mechanical_limits():
                 time.sleep(0.05)

@@ -33,10 +33,14 @@ class AzElConverter:
         continuosly from Track command (in a thread) at interval of 50ms till the StopTrack command is invoked.
         """
         device_data = DeviceData.get_instance()
+        self.logger.info("device_data_new 5: '%s'", str(device_data_new))
+        self.logger.info("katpoint.Target 6: '%s'", str(katpoint.Target))
         # Create KATPoint Target object
         target = katpoint.Target.from_radec(ra_value, dec_value)
+        self.logger.info("target 7: '%s'", str(target))
         # obtain az el co-ordinates for dish
         azel = target.azel(timestamp, device_data.observer)
+        self.logger.info("azel 8: '%s'", str(azel))
         # list of az el co-ordinates
         az_el_coordinates = [azel.az.deg, azel.alt.deg]
         self.logger.info("device_data.observer: '%s' ", str(device_data.observer))
