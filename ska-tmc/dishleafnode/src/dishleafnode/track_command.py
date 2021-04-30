@@ -84,6 +84,11 @@ class Track(BaseCommand):
             self.dish_master_fqdn = self.dish_master_fqdn.join(property_value)
             json_argin = device_data._load_config_string(argin)
             self.ra_value, self.dec_value = device_data._get_targets(json_argin)
+
+            device_data.event_track_time.clear()
+            self.tracking_thread = threading.Thread(None, self.track_thread, "DishLeafNode")
+            self.tracking_thread.start()
+            
             radec_value = f"{self.ra_value}, {self.dec_value}"
             self.logger.info(
                 "Track command ignores RA dec coordinates passed in: %s. "
@@ -110,10 +115,6 @@ class Track(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
 
-        device_data.event_track_time.clear()
-        self.tracking_thread = threading.Thread(None, self.track_thread, "DishLeafNode")
-        self.tracking_thread.start()
-
     # pylint: disable=logging-fstring-interpolation
     def track_thread(self):
         """This thread writes coordinates to desiredPointing on DishMaster at the rate of 20 Hz."""
@@ -136,6 +137,7 @@ class Track(BaseCommand):
             device_data.az, device_data.el = azel_converter.point(self.ra_value, self.dec_value, timestamp)
             self.logger.info("device_data.az 5: '%s'", str(device_data.az))
             self.logger.info("device_data.el 6: '%s'", str(device_data.el))
+
             # device_data_new = DeviceData.get_instance()
             # self.logger.info("device_data_new 5: '%s'", str(device_data_new))
             # self.logger.info("katpoint.Target 6: '%s'", str(katpoint.Target))

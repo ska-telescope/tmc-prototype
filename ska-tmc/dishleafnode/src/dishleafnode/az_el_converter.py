@@ -33,6 +33,7 @@ class AzElConverter:
         """This method converts Target RaDec coordinates to the AzEl coordinates. It is called
         continuosly from Track command (in a thread) at interval of 50ms till the StopTrack command is invoked.
         """
+        timestamp_new='2021-04-29 05:36:50.031567'
         self.logger.info("In point function: '%s'", str(ra_value))
         device_data = DeviceData.get_instance()
         self.logger.info("device_data 5: '%s'", str(device_data))
