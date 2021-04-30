@@ -4,6 +4,7 @@ from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
+from ska.base.control_model import ObsState
 
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
@@ -45,12 +46,15 @@ class StartScanCommand(BaseCommand):
                 "cspsubarrayleafnode.StartScan()",
                 tango.ErrSeverity.ERR,
             )
-        # csp_sa_client = TangoClient(device_data.csp_subarray_fqdn)
-        # if csp_sa_client.get_attribute("obsState") != ObsState.READY:
-        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, const.STR_OBS_STATE,
-        #                                     "CspSubarrayLeafNode.StartScanCommand",
-        #                                     tango.ErrSeverity.ERR)
-
+        this_server = TangoServerHelper.get_instance()
+        csp_subarray_fqdn = this_server.read_property("CspSubarrayFQDN")[0]
+        csp_sa_client = TangoClient(csp_subarray_fqdn)
+        self.logger.info(":::::::::::::::::::::::::::::::::csp_sa_client.get_attribute(obsState).value is::::::::::::::::::::::" + str(csp_sa_client.get_attribute("obsState").value))
+        if csp_sa_client.get_attribute("obsState").value != ObsState.READY:
+            self.logger.info(":::::::::::::::::::::::::::Inside check_allowed condition:::::::::::::::::::::::::::::::::")
+            tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, const.STR_OBS_STATE,
+                                            "CspSubarrayLeafNode.StartScanCommand",
+                                            tango.ErrSeverity.ERR)
         return True
 
     def startscan_cmd_ended_cb(self, event):

@@ -341,15 +341,15 @@ class CspSubarrayLeafNode(SKABaseDevice):
     def AssignResources(self, argin):
         """ Invokes AssignResources command on CspSubarrayLeafNode. """
         handler = self.get_command_object("AssignResources")
-        # try:
-        #     self.validate_obs_state()
+        try:
+            self.validate_obs_state()
 
-        # except InvalidObsStateError as error:
-        #     self.logger.exception(error)
-        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_EMPTY_OR_IDLE,
-        #                                  "CSP subarray leaf node raised exception",
-        #                                  "CSP.AddReceptors",
-        #                                  tango.ErrSeverity.ERR)
+        except InvalidObsStateError as error:
+            self.logger.exception(error)
+            tango.Except.throw_exception(const.ERR_DEVICE_NOT_EMPTY_OR_IDLE,
+                                         "CSP subarray leaf node raised exception",
+                                         "CSP.AddReceptors",
+                                         tango.ErrSeverity.ERR)
         handler(argin)
 
     def is_GoToIdle_allowed(self):
@@ -378,10 +378,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
     def validate_obs_state(self):
         this_server = TangoServerHelper.get_instance()
         csp_subarray_fqdn = ""
-        property_val = this_server.read_property("CspSubarrayFQDN")
-        csp_subarray_fqdn = csp_subarray_fqdn.join(property_val)
+        property_val = this_server.read_property("CspSubarrayFQDN")[0]
+        #csp_subarray_fqdn = csp_subarray_fqdn.join(property_val)
         csp_sub_client_obj = TangoClient(csp_subarray_fqdn)
-        if csp_sub_client_obj.deviceproxy.obsState in [ObsState.EMPTY, ObsState.IDLE]:
+        if csp_sub_client_obj.get_attribute("obsState").value in [ObsState.EMPTY, ObsState.IDLE]:
             self.logger.info(
                 "CSP Subarray is in required obsState, resources will be assigned"
             )
