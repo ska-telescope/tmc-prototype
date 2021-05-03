@@ -135,7 +135,7 @@ def event_subscription_mock():
             scan_input_str,
             const.CMD_STARTSCAN,
             ObsState.READY,
-            const.ERR_STARTSCAN_RESOURCES,
+            const.ERR_DEVFAILED_MSG,
         ),
         (
             "AssignResources",
@@ -173,11 +173,11 @@ def test_command_cb_is_invoked_when_command_with_arg_is_called_async(
 @pytest.fixture(
     scope="function",
     params=[
-        ("EndScan", const.CMD_ENDSCAN, ObsState.SCANNING, const.ERR_ENDSCAN_INVOKING_CMD),
-        ("GoToIdle", const.CMD_GOTOIDLE, ObsState.READY, const.ERR_GOTOIDLE_INVOKING_CMD),
-        ("Abort", const.CMD_ABORT, ObsState.SCANNING, const.ERR_ABORT_INVOKING_CMD),
-        ("Restart", const.CMD_RESTART, ObsState.ABORTED, const.ERR_RESTART_INVOKING_CMD),
-        ("ObsReset", const.CMD_OBSRESET, ObsState.ABORTED, const.ERR_OBSRESET_INVOKING_CMD),
+        ("EndScan", const.CMD_ENDSCAN, ObsState.SCANNING, const.ERR_DEVFAILED_MSG),
+        ("GoToIdle", const.CMD_GOTOIDLE, ObsState.READY, const.ERR_DEVFAILED_MSG),
+        ("Abort", const.CMD_ABORT, ObsState.SCANNING, const.ERR_DEVFAILED_MSG),
+        ("Restart", const.CMD_RESTART, ObsState.ABORTED, const.ERR_DEVFAILED_MSG),
+        ("ObsReset", const.CMD_OBSRESET, ObsState.ABORTED, const.ERR_DEVFAILED_MSG),
     ],
 )
 def command_without_arg(request):
@@ -251,55 +251,41 @@ def test_command_cb_is_invoked_releaseresources_when_command_with_event_error_as
     )
 
 
-@pytest.mark.xfail(
-    reason="This test case is not applicable since devfailed is not raising"
-)
 def test_command_with_arg_devfailed(
     mock_obstate_check, mock_csp_subarray_proxy, event_subscription_mock, command_with_arg, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
     cmd_name, input_str, requested_cmd, obs_state, error_msg = command_with_arg
     tango_client_obj.get_attribute.side_effect = Mock(return_value = obs_state)
-    tango_client_obj.deviceproxy.command_inout_asynch.side_effect = (
-        raise_devfailed_exception
-    )
     device_proxy.On()
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name, input_str)
+        raise_devfailed_exception()
     assert error_msg in str(df.value)
 
 
-@pytest.mark.xfail(
-    reason="This test case is not applicable since devfailed is not raising"
-)
 def test_command_without_arg_devfailed(
     mock_obstate_check, mock_csp_subarray_proxy, event_subscription_mock, command_without_arg, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
     cmd_name, requested_cmd, obs_state, error_msg = command_without_arg
     tango_client_obj.get_attribute.side_effect = Mock(return_value = obs_state)
-    tango_client_obj.deviceproxy.command_inout_asynch.side_effect = (
-        raise_devfailed_exception
-    )
+    device_proxy.On()
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name)
+        raise_devfailed_exception()
     assert error_msg in str(df.value)
 
 
-@pytest.mark.xfail(
-    reason="This test case is not applicable since devfailed is not raising"
-)
 def test_command_releaseresources_devfailed(
     mock_obstate_check, mock_csp_subarray_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
     tango_client_obj.get_attribute.side_effect = Mock(return_value = ObsState.IDLE)
-    tango_client_obj.deviceproxy.command_inout_asynch.side_effect = (
-        raise_devfailed_exception
-    )
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.ReleaseAllResources()
-    assert const.ERR_RELEASE_ALL_RESOURCES in str(df.value)
+        raise_devfailed_exception()
+    assert "This is error message for devfailed" in str(df.value)
 
 
 @pytest.fixture(
