@@ -128,19 +128,19 @@ class DelayManager:
 
         :return: Dictionary containing fifth order polynomial coefficients per antenna per fsp.
         """
-        delay_corrections_h_array_t0 = []
-        delay_corrections_h_array_t1 = []
-        delay_corrections_h_array_t2 = []
-        delay_corrections_h_array_t3 = []
-        delay_corrections_h_array_t4 = []
-        delay_corrections_h_array_t5 = []
-        delay_corrections_h_array_dict = {}
-        delay_corrections_v_array_t0 = []
-        delay_corrections_v_array_t1 = []
-        delay_corrections_v_array_t2 = []
-        delay_corrections_v_array_t3 = []
-        delay_corrections_v_array_t4 = []
-        delay_corrections_v_array_t5 = []
+        # delay_corrections_h_array_t0 = []
+        # delay_corrections_h_array_t1 = []
+        # delay_corrections_h_array_t2 = []
+        # delay_corrections_h_array_t3 = []
+        # delay_corrections_h_array_t4 = []
+        # delay_corrections_h_array_t5 = []
+        # delay_corrections_h_array_dict = {}
+        # delay_corrections_v_array_t0 = []
+        # delay_corrections_v_array_t1 = []
+        # delay_corrections_v_array_t2 = []
+        # delay_corrections_v_array_t3 = []
+        # delay_corrections_v_array_t4 = []
+        # delay_corrections_v_array_t5 = []
 
         # Delays are calculated for the timestamps between "t0 - 25" to "t0 + 25" at an interval of 10
         # seconds.
@@ -159,51 +159,66 @@ class DelayManager:
                 self.device_data.target, str(timestamp_array[timestamp_index])
             )
             # Horizontal and vertical delay corrections for each antenna
-            for i in range(0, len(delay)):
-                if i % 2 == 0:
-                    if timestamp_index == 0:
-                        delay_corrections_h_array_t0.append(delay[i])
-                    elif timestamp_index == 1:
-                        delay_corrections_h_array_t1.append(delay[i])
-                    elif timestamp_index == 2:
-                        delay_corrections_h_array_t2.append(delay[i])
-                    elif timestamp_index == 3:
-                        delay_corrections_h_array_t3.append(delay[i])
-                    elif timestamp_index == 4:
-                        delay_corrections_h_array_t4.append(delay[i])
-                    elif timestamp_index == 5:
-                        delay_corrections_h_array_t5.append(delay[i])
-                else:
-                    if timestamp_index == 0:
-                        delay_corrections_v_array_t0.append(delay[i])
-                    elif timestamp_index == 1:
-                        delay_corrections_v_array_t1.append(delay[i])
-                    elif timestamp_index == 2:
-                        delay_corrections_v_array_t2.append(delay[i])
-                    elif timestamp_index == 3:
-                        delay_corrections_v_array_t3.append(delay[i])
-                    elif timestamp_index == 4:
-                        delay_corrections_v_array_t4.append(delay[i])
-                    elif timestamp_index == 5:
-                        delay_corrections_v_array_t5.append(delay[i])
+            print("Delay value :::::::::::::::::::::::::::::::::::",delay)
+        #     for i in range(0, len(delay)):
+        #         if i % 2 == 0:
+        #             if timestamp_index == 0:
+        #                 delay_corrections_h_array_t0.append(delay[i])
+        #             elif timestamp_index == 1:
+        #                 delay_corrections_h_array_t1.append(delay[i])
+        #             elif timestamp_index == 2:
+        #                 delay_corrections_h_array_t2.append(delay[i])
+        #             elif timestamp_index == 3:
+        #                 delay_corrections_h_array_t3.append(delay[i])
+        #             elif timestamp_index == 4:
+        #                 delay_corrections_h_array_t4.append(delay[i])
+        #             elif timestamp_index == 5:
+        #                 delay_corrections_h_array_t5.append(delay[i])
+        #         else:
+        #             if timestamp_index == 0:
+        #                 delay_corrections_v_array_t0.append(delay[i])
+        #             elif timestamp_index == 1:
+        #                 delay_corrections_v_array_t1.append(delay[i])
+        #             elif timestamp_index == 2:
+        #                 delay_corrections_v_array_t2.append(delay[i])
+        #             elif timestamp_index == 3:
+        #                 delay_corrections_v_array_t3.append(delay[i])
+        #             elif timestamp_index == 4:
+        #                 delay_corrections_v_array_t4.append(delay[i])
+        #             elif timestamp_index == 5:
+        #                 delay_corrections_v_array_t5.append(delay[i])
 
         # Convert delays in seconds to 5th order polynomial coefficients
         # x is always [-25, -15, -5, 5, 15, 25] as the delays are calculated for the timestamps between
         # "t0 - 25" to "t0 + 25" at an interval of 10 seconds.
-        x = np.array([-25, -15, -5, 5, 15, 25])
-        for i in range(0, len(self.antenna_names)):
-            antenna_delay_list = []
-            antenna_delay_list.append(delay_corrections_h_array_t0[i])
-            antenna_delay_list.append(delay_corrections_h_array_t1[i])
-            antenna_delay_list.append(delay_corrections_h_array_t2[i])
-            antenna_delay_list.append(delay_corrections_h_array_t3[i])
-            antenna_delay_list.append(delay_corrections_h_array_t4[i])
-            antenna_delay_list.append(delay_corrections_h_array_t5[i])
+            x = np.array([-25, -15, -5, 5, 15, 25])
+            print("delay_corrections_h_array_t0::::::::::::::::::::::::::::::",delay_corrections_h_array_t0)
+        # for i in range(0, len(self.antenna_names)):
+        #     antenna_delay_list = []
+        #     antenna_delay_list.append(delay_corrections_h_array_t0[i])
+        #     antenna_delay_list.append(delay_corrections_h_array_t1[i])
+        #     antenna_delay_list.append(delay_corrections_h_array_t2[i])
+        #     antenna_delay_list.append(delay_corrections_h_array_t3[i])
+        #     antenna_delay_list.append(delay_corrections_h_array_t4[i])
+        #     antenna_delay_list.append(delay_corrections_h_array_t5[i])
 
             # Array including delay values per antenna for the timestamps between "t0 - 25" to "t0 + 25"
             # at an interval of 10 seconds.
-            y = np.array(antenna_delay_list)
+            antenna_delay_list = []
+            for j in range(len(delay[0])):
+                for i in range(len(delay)):
+                    if i % 2 == 0:
+                        print("values of delays timestamp:::::::::::::::",delay[i][j])
+                        antenna_delay_list.append(delay[i][j])
 
+            single_value = antenna_delay_list
+            sencond_value = delay[1][0]
+            print("single value is --------------: ", single_value)
+            print("sencond_value value is --------------: ", sencond_value)
+            print("delays are --------------: ", str(delay))
+            print("Shape of delays is -----------------: ", delay.shape)
+            y = np.array(antenna_delay_list)
+            print("antenna_delay_list::::::::::::::::::::::::::::::",antenna_delay_list)
             # Fit polynomial to the values over 50-second range
             polynomial = np.polynomial.Polynomial.fit(x, y, 5)
             polynomial_coefficients = polynomial.convert().coef
