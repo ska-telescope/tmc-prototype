@@ -47,13 +47,13 @@ webjive:
     hostname: k8s.stfc.skao.int
   tangogql:
     replicas: 3
-    # resources:
-    #   requests:
-    #     cpu: 600m     # 600m = 0.6 CPU
-    #     memory: 512Mi # 512Mi = 0.5 GB mem
-    #   limits:
-    #     cpu: 1000m     # 1000m = 1 CPU
-    #     memory: 1024Mi # 1024Mi = 1 GB mem
+    resources:
+      requests:
+        cpu: 600m     # 600m = 0.6 CPU
+        memory: 512Mi # 512Mi = 0.5 GB mem
+      limits:
+        cpu: 1000m     # 1000m = 1 CPU
+        memory: 1024Mi # 1024Mi = 1 GB mem
 
 mid-cbf:
   enabled: true
@@ -74,38 +74,3 @@ sdp:
 ## tm
 tmc-mid:
   enabled: true
-
-# global:
-#   minikube: true
-#   tango_host: databaseds-tango-base-test:10000
-#   sub-system:
-#     tango-base:
-#       enabled: false
-
-# # Set minikube=true when deploying on minikube
-# webjive:
-#   minikube: true
-
-# etcd-operator:
-#   deployments:
-#     backupOperator: false
-#     restoreOperator: false
-
-# # Need to identify the dependencies from lower level devices which are common and referred in TMC as well.
-# # The same dependencies should be only referred in one chart at a time. 
-# # This is handled by making the enable : true/false the dependency.
-
-# mid-csp:
-#   enabled: true
-      
-# mid-cbf:
-#   enabled: true
-
-# sdp:
-#   tango-base:
-#     enabled: false
-#   lmc:
-#     enabled: true
-
-
-
