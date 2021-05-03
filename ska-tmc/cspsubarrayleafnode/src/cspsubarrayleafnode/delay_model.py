@@ -134,7 +134,7 @@ class DelayManager:
         # delay_corrections_h_array_t3 = []
         # delay_corrections_h_array_t4 = []
         # delay_corrections_h_array_t5 = []
-        # delay_corrections_h_array_dict = {}
+        delay_corrections_h_array_dict = {}
         # delay_corrections_v_array_t0 = []
         # delay_corrections_v_array_t1 = []
         # delay_corrections_v_array_t2 = []
@@ -153,13 +153,16 @@ class DelayManager:
             (time_t0 + timedelta(seconds=25)),
         ]
 
-        for timestamp_index in range(0, len(timestamp_array)):
-            # Calculate geometric delay value.
-            delay = self.delay_correction_object.delays(
-                self.device_data.target, str(timestamp_array[timestamp_index])
-            )
-            # Horizontal and vertical delay corrections for each antenna
-            print("Delay value :::::::::::::::::::::::::::::::::::",delay)
+        # Calculate geometric delay values.
+        delays = self.delay_correction_object.delays(self.device_data.target, timestamp_array)
+
+        # for timestamp_index in range(0, len(timestamp_array)):
+        #     # Calculate geometric delay value.
+        #     # delay = self.delay_correction_object.delays(
+        #     #     self.device_data.target, str(timestamp_array[timestamp_index])
+        #     # )
+        #     # Horizontal and vertical delay corrections for each antenna
+        #     print("Delay value :::::::::::::::::::::::::::::::::::",delay)
         #     for i in range(0, len(delay)):
         #         if i % 2 == 0:
         #             if timestamp_index == 0:
@@ -192,6 +195,7 @@ class DelayManager:
         # x is always [-25, -15, -5, 5, 15, 25] as the delays are calculated for the timestamps between
         # "t0 - 25" to "t0 + 25" at an interval of 10 seconds.
         x = np.array([-25, -15, -5, 5, 15, 25])
+        
         # for i in range(0, len(self.antenna_names)):
         #     antenna_delay_list = []
         #     antenna_delay_list.append(delay_corrections_h_array_t0[i])
@@ -201,17 +205,16 @@ class DelayManager:
         #     antenna_delay_list.append(delay_corrections_h_array_t4[i])
         #     antenna_delay_list.append(delay_corrections_h_array_t5[i])
 
+        for antenna in range(0, len(self.antenna_names)):
             # Array including delay values per antenna for the timestamps between "t0 - 25" to "t0 + 25"
             # at an interval of 10 seconds.
-        for i in range(0, len(self.antenna_names)):
-            if i % 2 == 0:    
-                y = np.array(delay[i])
-                # Fit polynomial to the values over 50-second range
-                polynomial = np.polynomial.Polynomial.fit(x, y, 5)
-                polynomial_coefficients = polynomial.convert().coef
-                delay_corrections_h_array_dict[
-                    self.antenna_names[i]
-                ] = polynomial_coefficients
+            y = np.array(delays[antenna * 2])
+            # Fit polynomial to the values over 50-second range
+            polynomial = np.polynomial.Polynomial.fit(x, y, 5)
+            polynomial_coefficients = polynomial.convert().coef
+            delay_corrections_h_array_dict[
+            self.antenna_names[antenna]
+            ] = polynomial_coefficients
         return delay_corrections_h_array_dict
 
     def delay_model_handler(self, argin):
