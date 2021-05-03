@@ -192,7 +192,6 @@ class DelayManager:
         # x is always [-25, -15, -5, 5, 15, 25] as the delays are calculated for the timestamps between
         # "t0 - 25" to "t0 + 25" at an interval of 10 seconds.
             x = np.array([-25, -15, -5, 5, 15, 25])
-            print("delay_corrections_h_array_t0::::::::::::::::::::::::::::::",delay_corrections_h_array_t0)
         # for i in range(0, len(self.antenna_names)):
         #     antenna_delay_list = []
         #     antenna_delay_list.append(delay_corrections_h_array_t0[i])
@@ -204,27 +203,15 @@ class DelayManager:
 
             # Array including delay values per antenna for the timestamps between "t0 - 25" to "t0 + 25"
             # at an interval of 10 seconds.
-            antenna_delay_list = []
-            for j in range(len(delay[0])):
-                for i in range(len(delay)):
-                    if i % 2 == 0:
-                        print("values of delays timestamp:::::::::::::::",delay[i][j])
-                        antenna_delay_list.append(delay[i][j])
-
-            single_value = antenna_delay_list
-            sencond_value = delay[1][0]
-            print("single value is --------------: ", single_value)
-            print("sencond_value value is --------------: ", sencond_value)
-            print("delays are --------------: ", str(delay))
-            print("Shape of delays is -----------------: ", delay.shape)
-            y = np.array(antenna_delay_list)
-            print("antenna_delay_list::::::::::::::::::::::::::::::",antenna_delay_list)
-            # Fit polynomial to the values over 50-second range
-            polynomial = np.polynomial.Polynomial.fit(x, y, 5)
-            polynomial_coefficients = polynomial.convert().coef
-            delay_corrections_h_array_dict[
-                self.antenna_names[i]
-            ] = polynomial_coefficients
+        for i in range(0, len(self.antenna_names)):
+            if i % 2 == 0:    
+                y = np.array(delay[i])
+                # Fit polynomial to the values over 50-second range
+                polynomial = np.polynomial.Polynomial.fit(x, y, 5)
+                polynomial_coefficients = polynomial.convert().coef
+                delay_corrections_h_array_dict[
+                    self.antenna_names[i]
+                ] = polynomial_coefficients
         return delay_corrections_h_array_dict
 
     def delay_model_handler(self, argin):
