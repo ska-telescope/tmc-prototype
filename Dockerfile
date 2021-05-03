@@ -6,17 +6,12 @@ RUN ipython profile create
 
 #install lmc-base-classes
 USER root
-RUN python3 -m pip install ska-logging==0.3.0
-RUN python3 -m pip install lmcbaseclasses==0.7.2
-# install cdm-shared-library
-RUN python3 -m pip install cdm-shared-library==2.0.0
-#install ska-telescope-model
-RUN python3 -m pip install ska-telescope-model==0.3.0
-# install transaction id
-RUN python3 -m pip install ska-log-transactions
-# install ska tmc common package
-RUN python3 -m pip install skatmccommon==0.1.6+3aaa7bbe
-# install all local TMC packages
+RUN python3 -m pip install ska-logging==0.3.0 \
+                           lmcbaseclasses==0.7.2 \
+                           cdm-shared-library==2.0.0 \
+                           ska-telescope-model==0.3.0 \
+                           ska-log-transactions \
+                           skatmccommon==0.1.6+3aaa7bbe
 RUN python3 -m pip install \
     /app/ska-tmc/centralnodelow \
     /app/ska-tmc/cspmasterleafnode \
