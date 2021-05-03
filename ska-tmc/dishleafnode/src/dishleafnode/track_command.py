@@ -23,10 +23,6 @@ from tmc.common.tango_server_helper import TangoServerHelper
 from .command_callback import CommandCallBack
 from .az_el_converter import AzElConverter
 
-import katpoint
-import importlib.resources
-from .device_data import DeviceData
-
 
 class Track(BaseCommand):
     """

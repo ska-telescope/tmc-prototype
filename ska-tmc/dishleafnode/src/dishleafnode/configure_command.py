@@ -10,8 +10,6 @@
 """
 Configure class for DishLeafNode.
 """
-# Standard Python imports
-import datetime
 # Tango imports
 import tango
 from tango import DevState, DevFailed
@@ -21,7 +19,6 @@ from ska.base.commands import BaseCommand
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 from .command_callback import CommandCallBack
-from .az_el_converter import AzElConverter
 
 class Configure(BaseCommand):
     """
