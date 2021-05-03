@@ -189,12 +189,12 @@ def test_command_cb_is_invoked_when_command_without_arg_is_called_async(
     mock_obstate_check, mock_csp_subarray_proxy, event_subscription_mock, command_without_arg, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
-    cmd_name, _, obs_state, _ = command_without_arg
+    cmd_name, requested_cmd, obs_state, _ = command_without_arg
     tango_client_obj.get_attribute.side_effect = Mock(return_value = obs_state)
     device_proxy.command_inout(cmd_name)
     dummy_event = command_callback(cmd_name)
-    event_subscription_mock[cmd_name](dummy_event)
-    assert const.STR_COMMAND + cmd_name in device_proxy.activityMessage
+    event_subscription_mock[requested_cmd](dummy_event)
+    assert const.STR_COMMAND + requested_cmd in device_proxy.activityMessage
 
 
 def test_command_cb_is_invoked_when_releaseresources_is_called_async(
