@@ -82,7 +82,6 @@ class Configure(BaseCommand):
             json_argument = device_data._load_config_string(argin)
             receiver_band = json_argument["dish"]["receiverBand"]
             self._configure_band(receiver_band)
-        
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
             log_message = (

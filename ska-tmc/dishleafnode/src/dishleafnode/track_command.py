@@ -80,11 +80,10 @@ class Track(BaseCommand):
             self.dish_master_fqdn = self.dish_master_fqdn.join(property_value)
             json_argin = device_data._load_config_string(argin)
             self.ra_value, self.dec_value = device_data._get_targets(json_argin)
-
             device_data.event_track_time.clear()
+            # Start pointing calculations in a Track Thread
             self.tracking_thread = threading.Thread(None, self.track_thread, "DishLeafNode")
             self.tracking_thread.start()
-            
             radec_value = f"{self.ra_value}, {self.dec_value}"
             self.logger.info(
                 "Track command ignores RA dec coordinates passed in: %s. "

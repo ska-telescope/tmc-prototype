@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc"""
-version="0.6.2
+version="0.6.2"
 version_info=version.split(".")
 description="""SKA-TMC"""
 author="Team NCRA"
