@@ -171,7 +171,7 @@ class Track(BaseCommand):
 
             # TODO (kmadisa 11-12-2020) Add a pointing lead time to the current time (like we do on MeerKAT)
             desired_pointing = [
-                now.timestamp(),
+                (time.time() * 1000) + 50,
                 round(device_data.az, 12),
                 round(device_data.el, 12),
             ]
