@@ -23,11 +23,6 @@ from tmc.common.tango_server_helper import TangoServerHelper
 from .command_callback import CommandCallBack
 from .az_el_converter import AzElConverter
 
-import katpoint
-import importlib.resources
-from .device_data import DeviceData
-
-
 class Track(BaseCommand):
     """
     A class for DishLeafNode's Track() command.
@@ -97,11 +92,6 @@ class Track(BaseCommand):
                 radec_value,
             )
 
-            # dish_client = TangoClient(self.dish_master_fqdn)
-            # cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
-
-            # dish_client.send_command_async(command_name, callback_method=cmd_ended_cb)
-            # self.logger.info("'%s' command executed successfully.", command_name)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
             log_message = (
@@ -125,37 +115,13 @@ class Track(BaseCommand):
         )
         device_data = self.target
         dish_client = TangoClient(self.dish_master_fqdn)
-        self.logger.info("In track thread 1: '%s'", str(self.dish_master_fqdn))
         azel_converter = AzElConverter(self.logger)
 
-        self.logger.info("device_data.event_track_time.is_set() 2: '%s'", str(device_data.event_track_time.is_set()))
-        self.logger.info("azel_converter 3: '%s'", str(azel_converter))
         while device_data.event_track_time.is_set() is False:
             now = datetime.datetime.utcnow()
             timestamp = str(now)
             # pylint: disable=unbalanced-tuple-unpacking
-            self.logger.info("In while loop timestamp 4: '%s'", str(timestamp))
             device_data.az, device_data.el = azel_converter.point(self.ra_value, self.dec_value, timestamp)
-            self.logger.info("device_data.az 5: '%s'", str(device_data.az))
-            self.logger.info("device_data.el 6: '%s'", str(device_data.el))
-
-            # device_data_new = DeviceData.get_instance()
-            # self.logger.info("device_data_new 5: '%s'", str(device_data_new))
-            # self.logger.info("katpoint.Target 6: '%s'", str(katpoint.Target))
-            # # Create KATPoint Target object
-            # target = katpoint.Target.from_radec(self.ra_value, self.dec_value)
-            # self.logger.info("target 7: '%s'", str(target))
-            # # obtain az el co-ordinates for dish
-            # azel = target.azel(timestamp, device_data_new.observer)
-            # self.logger.info("azel 8: '%s'", str(azel))
-            # # list of az el co-ordinates
-            # az_el_coordinates = [azel.az.deg, azel.alt.deg]
-            # self.logger.info("device_data.observer: '%s' ", str(device_data_new.observer))
-            # self.logger.info("ra_value: '%s'", str(self.ra_value))
-            # self.logger.info("dec_value: '%s'", str(self.dec_value))
-            # self.logger.info("timestamp: '%s' ", str(timestamp))
-            # self.logger.info("az_el_coordinates: '%s' ", str(az_el_coordinates))
-            # device_data.az, device_data.el = az_el_coordinates
             
             if not self._is_elevation_within_mechanical_limits():
                 time.sleep(0.05)
