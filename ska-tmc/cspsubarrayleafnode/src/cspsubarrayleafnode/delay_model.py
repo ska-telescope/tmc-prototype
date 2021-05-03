@@ -191,7 +191,7 @@ class DelayManager:
         # Convert delays in seconds to 5th order polynomial coefficients
         # x is always [-25, -15, -5, 5, 15, 25] as the delays are calculated for the timestamps between
         # "t0 - 25" to "t0 + 25" at an interval of 10 seconds.
-            x = np.array([-25, -15, -5, 5, 15, 25])
+        x = np.array([-25, -15, -5, 5, 15, 25])
         # for i in range(0, len(self.antenna_names)):
         #     antenna_delay_list = []
         #     antenna_delay_list.append(delay_corrections_h_array_t0[i])
