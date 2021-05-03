@@ -4,6 +4,7 @@ from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
+from ska.base.control_model import ObsState
 
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
@@ -39,11 +40,14 @@ class ObsResetCommand(BaseCommand):
                 "cspsubarrayleafnode.ObsReset()",
                 tango.ErrSeverity.ERR,
             )
-
-        # if device._csp_subarray_proxy.obsState not in [ObsState.ABORTED, ObsState.FAULT]:
-        #     tango.Except.throw_exception(const.ERR_UNABLE_OBSRESET_CMD, const.ERR_OBSRESET_INVOKING_CMD,
-        #                                     "CspSubarrayLeafNode.ObsResetCommand",
-        #                                     tango.ErrSeverity.ERR)
+   
+        this_server = TangoServerHelper.get_instance()
+        csp_subarray_fqdn = this_server.read_property("CspSubarrayFQDN")[0]
+        csp_sa_client = TangoClient(csp_subarray_fqdn)
+        if csp_sa_client.get_attribute("obsState").value not in [ObsState.ABORTED, ObsState.FAULT]:
+            tango.Except.throw_exception(const.ERR_UNABLE_OBSRESET_CMD, const.ERR_OBSRESET_INVOKING_CMD,
+                                    "CspSubarrayLeafNode.ObsResetCommand",
+                                    tango.ErrSeverity.ERR)
 
         return True
 

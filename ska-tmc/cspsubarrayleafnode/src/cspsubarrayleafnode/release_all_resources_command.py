@@ -4,6 +4,7 @@ from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
+from ska.base.control_model import ObsState
 
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
@@ -43,12 +44,14 @@ class ReleaseAllResourcesCommand(BaseCommand):
                 "cspsubarrayleafnode.ReleaseAllResources()",
                 tango.ErrSeverity.ERR,
             )
-        # TODO: When ObsState check related issue is resolved
-        # csp_sa_client = TangoClient(device_data.csp_subarray_fqdn)
-        # if csp_sa_client.get_attribute("obsState") != ObsState.IDLE:
-        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_IDLE, "Failed to invoke ReleaseAllResourcesCommand command on cspsubarrayleafnode.",
-        #                                     "CspSubarrayLeafNode.ReleaseAllResourcesCommand",
-        #                                     tango.ErrSeverity.ERR)
+        
+        this_server = TangoServerHelper.get_instance()
+        csp_subarray_fqdn = this_server.read_property("CspSubarrayFQDN")[0]
+        csp_sa_client = TangoClient(csp_subarray_fqdn)
+        if csp_sa_client.get_attribute("obsState").value != ObsState.IDLE:
+            tango.Except.throw_exception(const.ERR_DEVICE_NOT_IDLE, "Failed to invoke ReleaseAllResourcesCommand command on cspsubarrayleafnode.",
+                                            "CspSubarrayLeafNode.ReleaseAllResourcesCommand",
+                                            tango.ErrSeverity.ERR)
 
         return True
 
