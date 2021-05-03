@@ -74,12 +74,13 @@ class Track(BaseCommand):
         device_data = self.target
         device_data.el_limit = False
         command_name = "Track"
+        self.dish_master_fqdn = ""
+        self.ra_value = ""
+        self.dec_value = ""
+        self.track_on_dish = False
 
         try:
             self.this_server = TangoServerHelper.get_instance()
-            self.dish_master_fqdn = ""
-            self.ra_value = ""
-            self.dec_value = ""
             property_value = self.this_server.read_property("DishMasterFQDN")
             self.dish_master_fqdn = self.dish_master_fqdn.join(property_value)
             json_argin = device_data._load_config_string(argin)
@@ -96,11 +97,11 @@ class Track(BaseCommand):
                 radec_value,
             )
 
-            dish_client = TangoClient(self.dish_master_fqdn)
-            cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
+            # dish_client = TangoClient(self.dish_master_fqdn)
+            # cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
 
-            dish_client.send_command_async(command_name, callback_method=cmd_ended_cb)
-            self.logger.info("'%s' command executed successfully.", command_name)
+            # dish_client.send_command_async(command_name, callback_method=cmd_ended_cb)
+            # self.logger.info("'%s' command executed successfully.", command_name)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
             log_message = (
@@ -176,6 +177,14 @@ class Track(BaseCommand):
             ]
             self.logger.debug("desiredPointing coordinates: %s", desired_pointing)
             dish_client.deviceproxy.desiredPointing = desired_pointing
+            if (self.track_on_dish == False):
+                command_name = "Track"
+                dish_client = TangoClient(self.dish_master_fqdn)
+                cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
+                dish_client.send_command_async(command_name, callback_method=cmd_ended_cb)
+                self.logger.info("'%s' command executed successfully.", command_name)
+                self.track_on_dish = True
+
             time.sleep(0.05)
 
     # pylint: enable=logging-fstring-interpolation, unbalanced-tuple-unpacking
