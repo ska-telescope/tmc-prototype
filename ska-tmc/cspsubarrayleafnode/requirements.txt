@@ -8,6 +8,6 @@ skatmccommon==0.1.6+3aaa7bbe
 marshmallow
 cdm-shared-library
 ska-telescope-model
-katpoint
+katpoint==1.0a1
 pytz
 fire

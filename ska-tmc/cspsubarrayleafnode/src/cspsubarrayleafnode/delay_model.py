@@ -155,7 +155,7 @@ class DelayManager:
 
         for timestamp_index in range(0, len(timestamp_array)):
             # Calculate geometric delay value.
-            delay = self.delay_correction_object._calculate_delays(
+            delay = self.delay_correction_object.delays(
                 self.device_data.target, str(timestamp_array[timestamp_index])
             )
             # Horizontal and vertical delay corrections for each antenna
