@@ -40,7 +40,7 @@ tango-base:
 
 webjive:
   enabled: true
-  minikube: true
+  minikube: false
   ingress:
     enabled: true
     nginx: true

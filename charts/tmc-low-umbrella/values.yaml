@@ -10,7 +10,7 @@ global:
       enabled: false
     webjive:
       enabled: true
-  minikube: true
+  minikube: false
   tango_host: databaseds-tango-base-test:10000
   dsconfig:
     timeout: 300s
@@ -49,7 +49,7 @@ ska-low-mccs:
     enabled: false
 
 webjive:
-  minikube: true
+  minikube: false
   ingress:
     enabled: true
     nginx: true
