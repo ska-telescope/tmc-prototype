@@ -100,22 +100,6 @@ def mock_csp_subarray_proxy(mock_tango_client):
 
 ### This fixture is used for SP-1420
 @pytest.fixture(scope="function")
-def event_subscription_mock_without_arg():
-
-    dut_properties = {"CspSubarrayFQDN": "mid_csp/elt/subarray_01"}
-    event_subscription_map = {}
-    with mock.patch.object(
-        TangoClient, "_get_deviceproxy", return_value=Mock()
-    ) as mock_obj:
-        tango_client_obj = TangoClient(dut_properties["CspSubarrayFQDN"])
-        tango_client_obj.deviceproxy.command_inout_asynch.side_effect = lambda command_name, callback, *args, **kwargs: event_subscription_map.update(
-            {command_name: callback}
-        )
-        yield event_subscription_map
-
-
-### This fixture is used for SP-1420
-@pytest.fixture(scope="function")
 def event_subscription_mock():
     dut_properties = {"CspSubarrayFQDN": "mid_csp/elt/subarray_01"}
     event_subscription_map = {}
@@ -174,9 +158,6 @@ def command_with_arg(request):
     return cmd_name, input_arg, requested_cmd, obs_state, error_msg
 
 
-# @pytest.mark.xfail(
-#     reason="This test case is not applicable for now as obsState is not getting checked"
-# )
 def test_command_cb_is_invoked_when_command_with_arg_is_called_async(
     mock_obstate_check, mock_csp_subarray_proxy, event_subscription_mock, command_with_arg, mock_tango_server_helper
 ):
@@ -192,25 +173,24 @@ def test_command_cb_is_invoked_when_command_with_arg_is_called_async(
 @pytest.fixture(
     scope="function",
     params=[
-        ("EndScan", ObsState.SCANNING, const.ERR_ENDSCAN_INVOKING_CMD),
-        ("GoToIdle", ObsState.READY, const.ERR_GOTOIDLE_INVOKING_CMD),
-        ("Abort", ObsState.SCANNING, const.ERR_ABORT_INVOKING_CMD),
-        ("Restart", ObsState.ABORTED, const.ERR_RESTART_INVOKING_CMD),
-        ("ObsReset", ObsState.ABORTED, const.ERR_OBSRESET_INVOKING_CMD),
+        ("EndScan", const.CMD_ENDSCAN, ObsState.SCANNING, const.ERR_ENDSCAN_INVOKING_CMD),
+        ("GoToIdle", const.CMD_GOTOIDLE, ObsState.READY, const.ERR_GOTOIDLE_INVOKING_CMD),
+        ("Abort", const.CMD_ABORT, ObsState.SCANNING, const.ERR_ABORT_INVOKING_CMD),
+        ("Restart", const.CMD_RESTART, ObsState.ABORTED, const.ERR_RESTART_INVOKING_CMD),
+        ("ObsReset", const.CMD_OBSRESET, ObsState.ABORTED, const.ERR_OBSRESET_INVOKING_CMD),
     ],
 )
 def command_without_arg(request):
-    cmd_name, obs_state, error_msg = request.param
-    return cmd_name, obs_state, error_msg
+    cmd_name, requested_cmd, obs_state, error_msg = request.param
+    return cmd_name, requested_cmd, obs_state, error_msg
 
 
 def test_command_cb_is_invoked_when_command_without_arg_is_called_async(
     mock_obstate_check, mock_csp_subarray_proxy, event_subscription_mock, command_without_arg, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
-    cmd_name, obs_state, _ = command_without_arg
+    cmd_name, _, obs_state, _ = command_without_arg
     tango_client_obj.get_attribute.side_effect = Mock(return_value = obs_state)
-    # csp_subarray1_proxy_mock.obsState = obs_state
     device_proxy.command_inout(cmd_name)
     dummy_event = command_callback(cmd_name)
     event_subscription_mock[cmd_name](dummy_event)
@@ -244,17 +224,17 @@ def test_command_cb_is_invoked_when_command_with_event_error_is_called_async(
     assert const.ERR_INVOKING_CMD + requested_cmd in device_proxy.activityMessage
 
 
-# def test_command_cb_is_invoked_when_command_with_event_error_without_arg_is_called_async(
-#     mock_obstate_check, mock_csp_subarray_proxy, event_subscription_mock_without_arg, command_without_arg, mock_tango_server_helper
-# ):
-#     device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
-#     cmd_name, obs_state, _ = command_without_arg
-#     tango_client_obj.get_attribute.side_effect = Mock(return_value = obs_state)
-#     device_proxy.On()
-#     device_proxy.command_inout(cmd_name)
-#     dummy_event = command_callback_with_event_error(cmd_name)
-#     event_subscription_mock_without_arg[cmd_name](dummy_event)
-#     assert const.ERR_INVOKING_CMD + cmd_name in device_proxy.activityMessage
+def test_command_cb_is_invoked_when_command_with_event_error_without_arg_is_called_async(
+    mock_obstate_check, mock_csp_subarray_proxy, event_subscription_mock, command_without_arg, mock_tango_server_helper
+):
+    device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
+    cmd_name, requested_cmd, obs_state, _ = command_without_arg
+    tango_client_obj.get_attribute.side_effect = Mock(return_value = obs_state)
+    device_proxy.On()
+    device_proxy.command_inout(cmd_name)
+    dummy_event = command_callback_with_event_error(requested_cmd)
+    event_subscription_mock[requested_cmd](dummy_event)
+    assert const.ERR_INVOKING_CMD + cmd_name in device_proxy.activityMessage
 
 
 def test_command_cb_is_invoked_releaseresources_when_command_with_event_error_async(
@@ -279,7 +259,6 @@ def test_command_with_arg_devfailed(
 ):
     device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
     cmd_name, input_str, requested_cmd, obs_state, error_msg = command_with_arg
-    # csp_subarray1_proxy_mock.obsState = obs_state
     tango_client_obj.get_attribute.side_effect = Mock(return_value = obs_state)
     tango_client_obj.deviceproxy.command_inout_asynch.side_effect = (
         raise_devfailed_exception
@@ -297,7 +276,7 @@ def test_command_without_arg_devfailed(
     mock_obstate_check, mock_csp_subarray_proxy, event_subscription_mock, command_without_arg, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
-    cmd_name, obs_state, error_msg = command_without_arg
+    cmd_name, requested_cmd, obs_state, error_msg = command_without_arg
     tango_client_obj.get_attribute.side_effect = Mock(return_value = obs_state)
     tango_client_obj.deviceproxy.command_inout_asynch.side_effect = (
         raise_devfailed_exception
@@ -493,9 +472,6 @@ def command_with_argin_should_not_allowed_in_obstate(request):
     return cmd_name, input_str, obs_state, error_message
 
 
-# @pytest.mark.xfail(
-#     reason="This test case is not applicable for now as obsState is not getting checked"
-# )
 def test_command_with_argin_should_failed_when_device_is_not_in_required_obstate(
     mock_obstate_check, mock_csp_subarray_proxy, command_with_argin_should_not_allowed_in_obstate, mock_tango_server_helper
 ):
@@ -555,9 +531,6 @@ def test_configure_should_raise_exception_when_called_invalid_json(
     assert const.ERR_INVALID_JSON_CONFIG in str(df.value)
 
 
-# @pytest.mark.xfail(
-#     reason="This test case is not applicable for now as obsState is not getting checked"
-# )
 def test_configure_should_raise_assertion_exception_when_called_invalid_obsstate(
     mock_obstate_check, mock_csp_subarray_proxy, mock_tango_server_helper
 ):
@@ -580,9 +553,6 @@ def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_rea
     )
 
 
-# @pytest.mark.xfail(
-#     reason="This test case is not applicable for now as obsState is not getting checked"
-# )
 def test_start_scan_should_not_command_csp_subarray_to_start_scan_when_it_is_idle(
     mock_obstate_check, mock_csp_subarray_proxy, mock_tango_server_helper
 ):

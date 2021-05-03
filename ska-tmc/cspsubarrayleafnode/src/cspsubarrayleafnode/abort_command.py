@@ -48,10 +48,8 @@ class AbortCommand(BaseCommand):
         this_server = TangoServerHelper.get_instance()
         csp_subarray_fqdn = this_server.read_property("CspSubarrayFQDN")[0]
         csp_sa_client = TangoClient(csp_subarray_fqdn)
-        self.logger.info(":::::::::::::::::::::::::::::::::csp_sa_client.get_attribute(obsState).value is::::::::::::::::::::::" + str(csp_sa_client.get_attribute("obsState").value))
         if csp_sa_client.get_attribute("obsState").value not in [ObsState.READY, ObsState.CONFIGURING, ObsState.SCANNING,
                                                         ObsState.IDLE, ObsState.RESETTING]:
-            self.logger.info(":::::::::::::::::::::::::::Inside check_allowed condition:::::::::::::::::::::::::::::::::")
             tango.Except.throw_exception(const.ERR_UNABLE_ABORT_CMD, const.ERR_ABORT_INVOKING_CMD,
                                         "CspSubarrayLeafNode.AbortCommand",
                                         tango.ErrSeverity.ERR)

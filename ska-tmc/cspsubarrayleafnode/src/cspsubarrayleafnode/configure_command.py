@@ -54,10 +54,7 @@ class ConfigureCommand(BaseCommand):
         this_server = TangoServerHelper.get_instance()
         csp_subarray_fqdn = this_server.read_property("CspSubarrayFQDN")[0]
         csp_sa_client = TangoClient(csp_subarray_fqdn)
-        self.logger.info(":::::::::::::::::::::::::::::::::csp_sa_client.get_attribute(obsState).value is::::::::::::::::::::::" + str(csp_sa_client.get_attribute("obsState").value))
-        #if csp_sa_client.deviceproxy.read_attribute("obsState").value not in [ObsState.IDLE, ObsState.READY]:
         if csp_sa_client.get_attribute("obsState").value not in [ObsState.IDLE, ObsState.READY]:
-            self.logger.info(":::::::::::::::::::::::::::Inside check_allowed condition:::::::::::::::::::::::::::::::::")
             tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_OR_IDLE, const.ERR_CONFIGURE_INVOKING_CMD,
                                             "CspSubarrayLeafNode.ConfigureCommand",
                                             tango.ErrSeverity.ERR)

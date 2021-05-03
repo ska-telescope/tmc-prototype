@@ -48,9 +48,7 @@ class ReleaseAllResourcesCommand(BaseCommand):
         this_server = TangoServerHelper.get_instance()
         csp_subarray_fqdn = this_server.read_property("CspSubarrayFQDN")[0]
         csp_sa_client = TangoClient(csp_subarray_fqdn)
-        self.logger.info(":::::::::::::::::::::::::::::::::csp_sa_client.get_attribute(obsState).value is::::::::::::::::::::::" + str(csp_sa_client.get_attribute("obsState").value))
         if csp_sa_client.get_attribute("obsState").value != ObsState.IDLE:
-            self.logger.info(":::::::::::::::::::::::::::Inside check_allowed condition:::::::::::::::::::::::::::::::::")
             tango.Except.throw_exception(const.ERR_DEVICE_NOT_IDLE, "Failed to invoke ReleaseAllResourcesCommand command on cspsubarrayleafnode.",
                                             "CspSubarrayLeafNode.ReleaseAllResourcesCommand",
                                             tango.ErrSeverity.ERR)

@@ -49,9 +49,7 @@ class EndScanCommand(BaseCommand):
         this_server = TangoServerHelper.get_instance()
         csp_subarray_fqdn = this_server.read_property("CspSubarrayFQDN")[0]
         csp_sa_client = TangoClient(csp_subarray_fqdn)
-        self.logger.info(":::::::::::::::::::::::::::::::::csp_sa_client.get_attribute(obsState).value is::::::::::::::::::::::" + str(csp_sa_client.get_attribute("obsState").value))
         if csp_sa_client.get_attribute("obsState").value != ObsState.SCANNING:
-            self.logger.info(":::::::::::::::::::::::::::Inside check_allowed condition:::::::::::::::::::::::::::::::::")
             tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_SCAN, "Failed to invoke EndScan command on cspsubarrayleafnode.",
                                         "CspSubarrayLeafNode.EndScanCommand",
                                         tango.ErrSeverity.ERR)
