@@ -13,27 +13,29 @@ maintainers:
   - name: Kalyani Thigale
     email: kalyanit.ska@gmail.com
 dependencies:
-- name: etcd-operator
-  version: 0.11.0
-  repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: tango-base
-  version: 0.2.13
+  version: 0.2.20
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: mid-cbf
   version: 0.1.1
+  condition: mid-cbf.enabled
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: mid-csp
-  version: 0.1.2
+  version: 0.1.5
+  condition: mid-csp.enabled
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: sdp
-  version: 0.3.6
+  version: 0.4.0
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
+  condition: sdp.enabled
 - name: tmc-mid
   version: 0.3.2
   repository: file://../tmc-mid
+  condition: tmc-mid.enabled
 - name: webjive
-  version: 1.0.16
+  version: 1.0.18
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
+  condition: webjive.enabled
 - name: tango-util
-  version: 0.2.9
+  version: 0.2.13
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart

@@ -22,7 +22,6 @@ from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 from .command_callback import CommandCallBack
 
-
 class Configure(BaseCommand):
     """
     A class for DishLeafNode's Configure() command.

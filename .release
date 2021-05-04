@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc"""
-version="0.6.3"
+version="0.6.4"
 version_info=version.split(".")
 description="""SKA-TMC"""
 author="Team NCRA"
@@ -10,9 +10,9 @@ license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
 
-release=0.6.3
-tag=0.6.3
-tag_description=Explore and implement obsState attribute mocking for CSPSubarrayLeafNode
-release_notes=This release contains:<br/><ul><li>Explore and implement obsState attribute mocking for CSPSubarrayLeafNode</li></ul><br/>
-gitlab_username=shraddhabajare
-private_token=9yzM1vb4R7j5xmdcNPy8
+release=0.6.4
+tag=0.6.4
+tag_description=Fixed issues related to the pointing calculations in DishLeafNode.
+release_notes=This release contains:<br/><ul><li>Update TMC to utilise KATPoint version 1.0a1</li><li>Fix issue related to the updates in AchievedPointing attribute of DishMaster</li><li>Fix issues related to the pointing calculations in DishLeafNode.</li></ul><br/>
+gitlab_username=apurvapatkar
+private_token=hXtfrhEmn2zZLpjFSGqG
