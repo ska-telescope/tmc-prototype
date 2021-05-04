@@ -92,24 +92,27 @@ class DelayManager:
         ) as f:
             descriptions = f.readlines()
         antennas = [katpoint.Antenna(line) for line in descriptions]
+        self.logger.info("antennas: '%s'", antennas)
         # Create a dictionary including antenna objects
         antennas_dict = {ant.name: ant for ant in antennas}
+        self.logger.info("antennas_dict: '%s'", antennas_dict)
         antenna_keys_list = antennas_dict.keys()
         for receptor in self.device_data.receptorIDList_str:
             if receptor in antenna_keys_list:
                 assigned_receptors.append(antennas_dict[receptor])
                 # Create a dictionary including antennas (objects) assigned to the Subarray
                 assigned_receptors_dict[receptor] = antennas_dict[receptor]
-
         # Antenna having key 'ref_ant' from antennas_dict, is referred as a reference antenna.
         ref_ant = antennas_dict["ref_ant"]
-
+        self.logger.info("ref_ant: '%s'", ref_ant)
+        self.logger.info("assigned_receptors: '%s'", assigned_receptors)
         # Create DelayCorrection Object
         self.delay_correction_object = katpoint.DelayCorrection(
             assigned_receptors, ref_ant
         )
+        self.logger.info("self.delay_correction_object: '%s'", self.delay_correction_object)
         self.antenna_names = list(self.delay_correction_object.ant_models.keys())
-
+        self.logger.info("self.antenna_names: '%s'", self.antenna_names)
         # list of frequency slice ids
         for fsp_entry in self.device_data.fsp_ids_object:
             self.fsids_list.append(fsp_entry["fspID"])
@@ -144,6 +147,7 @@ class DelayManager:
 
         # Delays are calculated for the timestamps between "t0 - 25" to "t0 + 25" at an interval of 10
         # seconds.
+        self.logger.info("time_t0: '%s'", time_t0)
         timestamp_array = [
             time_t0 - timedelta(seconds=25),
             (time_t0 - timedelta(seconds=15)),
@@ -152,9 +156,11 @@ class DelayManager:
             (time_t0 + timedelta(seconds=15)),
             (time_t0 + timedelta(seconds=25)),
         ]
-
+        self.logger.info("timestamp_array: '%s'", timestamp_array)
+        self.logger.info("self.device_data.target: '%s'", self.device_data.target)
         # Calculate geometric delay values.
         delays = self.delay_correction_object.delays(self.device_data.target, timestamp_array)
+        self.logger.info("delays: '%s'", delays)
 
         # for timestamp_index in range(0, len(timestamp_array)):
         #     # Calculate geometric delay value.
@@ -215,6 +221,7 @@ class DelayManager:
             delay_corrections_h_array_dict[
             self.antenna_names[antenna]
             ] = polynomial_coefficients
+            self.logger.info("delay_corrections_h_array_dict: '%s'", delay_corrections_h_array_dict)
         return delay_corrections_h_array_dict
 
     def delay_model_handler(self, argin):
@@ -262,9 +269,12 @@ class DelayManager:
         time_t0_utc = (time_t0.astimezone(pytz.UTC)).timestamp()
         self.logger.info("calling Calculate_geometric delays.")
         delay_corrections_h_array_dict = self.calculate_geometric_delays(time_t0)
+        self.logger.info("calling Calculate_geometric delays.")
         delay_model = []
         receptor_delay_model = []
         delay_model_per_epoch = {}
+        self.logger.info("self.device_data.receptorIDList_str: '%s'", self.device_data.receptorIDList_str)
+        self.logger.info("self.fsids_list: '%s'", self.fsids_list)
         for receptor in self.device_data.receptorIDList_str:
             receptor_delay_object = {}
             receptor_delay_object["receptor"] = receptor
@@ -274,17 +284,26 @@ class DelayManager:
                 fsid_delay_object["fsid"] = fsid
                 delay_coeff_array = []
                 receptor_delay_coeffs = delay_corrections_h_array_dict[receptor]
+                self.logger.info("receptor_delay_coeffs: '%s'", receptor_delay_coeffs)
                 for i in range(0, len(receptor_delay_coeffs)):
                     delay_coeff_array.append(receptor_delay_coeffs[i])
+                self.logger.info("delay_coeff_array: '%s'", delay_coeff_array)
                 fsid_delay_object["delayCoeff"] = delay_coeff_array
+                self.logger.info("fsid_delay_object: '%s'", fsid_delay_object)
                 receptor_specific_delay_details.append(fsid_delay_object)
+            self.logger.info("receptor_specific_delay_details: '%s'", receptor_specific_delay_details)
             receptor_delay_object[
                 "receptorDelayDetails"
             ] = receptor_specific_delay_details
+            self.logger.info("receptor_delay_object: '%s'", receptor_delay_object)
             receptor_delay_model.append(receptor_delay_object)
+        
         delay_model_per_epoch["epoch"] = str(time_t0_utc)
+        self.logger.info("receptor_delay_model: '%s'", receptor_delay_model)
         delay_model_per_epoch["delayDetails"] = receptor_delay_model
         delay_model.append(delay_model_per_epoch)
+        self.logger.info("delay_model: '%s'", delay_model)
         self.delay_model_json["delayModel"] = delay_model
         log_msg = f"delay_model_json: {self.delay_model_json}"
         self.logger.debug(log_msg)
+        self.logger.info("self.delay_model_json: '%s'", self.delay_model_json)
