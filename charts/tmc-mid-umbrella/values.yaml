@@ -44,7 +44,6 @@ webjive:
   ingress:
     enabled: true
     nginx: true
-    hostname: k8s.stfc.skao.int
   tangogql:
     replicas: 3
     resources:

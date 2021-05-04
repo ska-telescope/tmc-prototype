@@ -40,7 +40,6 @@ tango-base:
     enabled: true
   ingress:
     enabled: true
-    hostname: k8s.stfc.skao.int
   tangodb:
     use_pv: false
 
