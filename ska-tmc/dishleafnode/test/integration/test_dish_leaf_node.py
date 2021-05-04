@@ -204,6 +204,8 @@ class TestDishLeafNode:
         self._set_dish_to_operate_mode(dish_leaf_node_dp, dish_master_dp)
         input_string = '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiverBand":"1"}}'
         dish_leaf_node_dp.Track(input_string)
+        # Wait for Dish to change pointingState to Track
+        time.sleep(10)
         assert dish_master_dp.pointingState == PointingState.TRACK
         dish_leaf_node_dp.StopTrack()
         assert dish_master_dp.pointingState == PointingState.READY
