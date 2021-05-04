@@ -130,7 +130,10 @@ class AssignResourcesCommand(BaseCommand):
 
             DevFailed if the command execution is not successful
         """
+        device_data = self.target
         try:
+            json_argument = json.loads(argin)
+            device_data.receptorIDList_str = json_argument[const.STR_DISH][const.STR_RECEPTORID_LIST]
             delay_manager_obj = DelayManager.get_instance()
             delay_manager_obj.update_config_params()
             # Invoke AssignResources command on CspSubarray
