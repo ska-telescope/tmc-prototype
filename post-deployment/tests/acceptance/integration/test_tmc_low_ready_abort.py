@@ -20,7 +20,7 @@ devices_to_log = ["ska_low/tm_subarray_node/1", "low-mccs/subarray/01"]
 LOGGER = logging.getLogger(__name__)
 
 @pytest.mark.low
-def test_idle_abort():
+def test_ready_abort():
     try:
         # given an interface to TMC to interact with a subarray node and a central node
         fixture = {}
@@ -43,11 +43,10 @@ def test_idle_abort():
         fixture["state"] = "Subarray CONFIGURING"
         tmc.configure_sub()
         fixture["state"] = "Subarray Configured for SCAN"
-        # When I run a scan of 4 seconds based on previos configuration
         resource("ska_low/tm_subarray_node/1").assert_attribute("obsState").equals(
             "READY"
         )
-        
+
         LOGGER.info("Invoking abort command")
         tmc.abort_sub()
         fixture["state"] = "Obstate aborted"
@@ -74,6 +73,8 @@ def test_idle_abort():
             raise Exception("unable to teardown subarray from being in Aborted")
         elif fixture["state"] == "Subarray Resetting":
             raise Exception("unable to teardown subarray from being in Restarting")
+        elif fixture["state"] == "Subarray CONFIGURING":
+            raise Exception("unable to teardown subarray from being in CONFIGURING")
         elif fixture["state"] == "Subarray IDLE":
             tmc.release_resources()
             tmc.set_to_standby()
