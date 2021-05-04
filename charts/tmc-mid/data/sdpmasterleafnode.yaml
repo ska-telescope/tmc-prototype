@@ -38,9 +38,6 @@ server:
                       values:
                         - "-1"
                         - "1"
-
-depends_on:
-  - device: mid_sdp/elt/master
 image:
   registry: "{{.Values.global.skatmc.registry}}"
   image: "{{.Values.global.skatmc.image}}"
