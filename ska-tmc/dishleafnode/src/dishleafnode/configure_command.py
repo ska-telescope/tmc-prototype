@@ -10,6 +10,8 @@
 """
 Configure class for DishLeafNode.
 """
+# Standard Python imports
+
 # Tango imports
 import tango
 from tango import DevState, DevFailed
@@ -80,15 +82,6 @@ class Configure(BaseCommand):
             json_argument = device_data._load_config_string(argin)
             receiver_band = json_argument["dish"]["receiverBand"]
             self._configure_band(receiver_band)
-
-            # ra_value, dec_value = device_data._get_targets(json_argument)
-            # now = datetime.datetime.utcnow()
-            # timestamp = str(now)
-            # # pylint: disable=unbalanced-tuple-unpacking
-            # self.logger.info("In while loop timestamp 4: '%s'", str(timestamp))
-            # azel_converter = AzElConverter(self.logger)
-            # azel_converter.point(ra_value, dec_value, timestamp)
-        
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
             log_message = (

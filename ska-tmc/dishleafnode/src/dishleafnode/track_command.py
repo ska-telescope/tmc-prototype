@@ -23,7 +23,6 @@ from tmc.common.tango_server_helper import TangoServerHelper
 from .command_callback import CommandCallBack
 from .az_el_converter import AzElConverter
 
-
 class Track(BaseCommand):
     """
     A class for DishLeafNode's Track() command.
@@ -70,21 +69,21 @@ class Track(BaseCommand):
         device_data = self.target
         device_data.el_limit = False
         command_name = "Track"
+        self.dish_master_fqdn = ""
+        self.ra_value = ""
+        self.dec_value = ""
+        self.track_on_dish = False
 
         try:
             self.this_server = TangoServerHelper.get_instance()
-            self.dish_master_fqdn = ""
-            self.ra_value = ""
-            self.dec_value = ""
             property_value = self.this_server.read_property("DishMasterFQDN")
             self.dish_master_fqdn = self.dish_master_fqdn.join(property_value)
             json_argin = device_data._load_config_string(argin)
             self.ra_value, self.dec_value = device_data._get_targets(json_argin)
-
             device_data.event_track_time.clear()
+            # Start pointing calculations in a Track Thread
             self.tracking_thread = threading.Thread(None, self.track_thread, "DishLeafNode")
             self.tracking_thread.start()
-            
             radec_value = f"{self.ra_value}, {self.dec_value}"
             self.logger.info(
                 "Track command ignores RA dec coordinates passed in: %s. "
@@ -92,11 +91,6 @@ class Track(BaseCommand):
                 radec_value,
             )
 
-            dish_client = TangoClient(self.dish_master_fqdn)
-            cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
-
-            dish_client.send_command_async(command_name, callback_method=cmd_ended_cb)
-            self.logger.info("'%s' command executed successfully.", command_name)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
             log_message = (
@@ -120,37 +114,13 @@ class Track(BaseCommand):
         )
         device_data = self.target
         dish_client = TangoClient(self.dish_master_fqdn)
-        self.logger.info("In track thread 1: '%s'", str(self.dish_master_fqdn))
         azel_converter = AzElConverter(self.logger)
 
-        self.logger.info("device_data.event_track_time.is_set() 2: '%s'", str(device_data.event_track_time.is_set()))
-        self.logger.info("azel_converter 3: '%s'", str(azel_converter))
         while device_data.event_track_time.is_set() is False:
             now = datetime.datetime.utcnow()
             timestamp = str(now)
             # pylint: disable=unbalanced-tuple-unpacking
-            self.logger.info("In while loop timestamp 4: '%s'", str(timestamp))
             device_data.az, device_data.el = azel_converter.point(self.ra_value, self.dec_value, timestamp)
-            self.logger.info("device_data.az 5: '%s'", str(device_data.az))
-            self.logger.info("device_data.el 6: '%s'", str(device_data.el))
-
-            # device_data_new = DeviceData.get_instance()
-            # self.logger.info("device_data_new 5: '%s'", str(device_data_new))
-            # self.logger.info("katpoint.Target 6: '%s'", str(katpoint.Target))
-            # # Create KATPoint Target object
-            # target = katpoint.Target.from_radec(self.ra_value, self.dec_value)
-            # self.logger.info("target 7: '%s'", str(target))
-            # # obtain az el co-ordinates for dish
-            # azel = target.azel(timestamp, device_data_new.observer)
-            # self.logger.info("azel 8: '%s'", str(azel))
-            # # list of az el co-ordinates
-            # az_el_coordinates = [azel.az.deg, azel.alt.deg]
-            # self.logger.info("device_data.observer: '%s' ", str(device_data_new.observer))
-            # self.logger.info("ra_value: '%s'", str(self.ra_value))
-            # self.logger.info("dec_value: '%s'", str(self.dec_value))
-            # self.logger.info("timestamp: '%s' ", str(timestamp))
-            # self.logger.info("az_el_coordinates: '%s' ", str(az_el_coordinates))
-            # device_data.az, device_data.el = az_el_coordinates
             
             if not self._is_elevation_within_mechanical_limits():
                 time.sleep(0.05)
@@ -166,12 +136,20 @@ class Track(BaseCommand):
 
             # TODO (kmadisa 11-12-2020) Add a pointing lead time to the current time (like we do on MeerKAT)
             desired_pointing = [
-                now.timestamp(),
+                (time.time() * 1000) + 50,
                 round(device_data.az, 12),
                 round(device_data.el, 12),
             ]
             self.logger.debug("desiredPointing coordinates: %s", desired_pointing)
             dish_client.deviceproxy.desiredPointing = desired_pointing
+            if (self.track_on_dish == False):
+                command_name = "Track"
+                dish_client = TangoClient(self.dish_master_fqdn)
+                cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
+                dish_client.send_command_async(command_name, callback_method=cmd_ended_cb)
+                self.logger.info("'%s' command executed successfully.", command_name)
+                self.track_on_dish = True
+
             time.sleep(0.05)
 
     # pylint: enable=logging-fstring-interpolation, unbalanced-tuple-unpacking
