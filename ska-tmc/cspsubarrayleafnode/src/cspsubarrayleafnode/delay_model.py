@@ -242,12 +242,16 @@ class DelayManager:
         property_val = self.this_server.read_property("CspSubarrayFQDN")
         csp_subarray_fqdn = csp_subarray_fqdn.join(property_val)
         csp_sub_client_obj = TangoClient(csp_subarray_fqdn)
+        self.this_server.write_attr("delayModel", None, False)
+        # If download_IERS flag is true that means the IERS_A file need to be downloaded from the internet.
+        download_IERS = True
         while not self._stop_delay_model_event.isSet():
             if csp_sub_client_obj.deviceproxy.obsState in (
                 ObsState.CONFIGURING,
                 ObsState.READY,
                 ObsState.SCANNING,
             ):
+                self.logger.info("In delay_model_handler IF")
                 self.delay_model_calculator()
                 # update the attribute
                 self.delay_model_lock.acquire()
@@ -258,10 +262,45 @@ class DelayManager:
                 self._stop_delay_model_event.wait(delay_update_interval)
             else:
                 # TODO: This waiting on event is added temporarily to reduce high CPU usage.
+                self.this_server.write_attr("delayModel", None, False)
+                self.logger.info("In delay_model_handler ELSE")
+                if download_IERS == True:
+                    # The IERS_A file is requierd to be donloaded once per deployment 
+                    # so download_IERS_file method will be executed only once per deployment.
+                    self.logger.info("In download_IERS IF")
+                    self.download_IERS_file()
+                    download_IERS = False
                 self._stop_delay_model_event.wait(0.02)
-                self.this_server.write_attr("delayModel", " ", False)
+                # self.this_server.write_attr("delayModel", " ", False)
+                
         
         self.logger.debug("Stop event received. Thread exit.")
+    
+    def download_IERS_file(self):
+        self.logger.info("In download_IERS_file method")
+        # Create an example radec target
+        ra = '21:08:47.92'
+        dec = '-88:57:22.9'
+        target = katpoint.Target.from_radec(ra, dec)
+        descriptions = '''
+        ref_ant, -30:42:39.8, 21:26:38.0, 1086, 13.5, 0 0 0 0 0 0,0, 0
+        ref_ant, -30:42:39.8, 21:26:38.0, 1086, 13.5, 0 0 0 0 0 0,0, 0
+        '''.strip().split('\n')
+        antennas = [katpoint.Antenna(line) for line in descriptions]
+        ref_ant = antennas[0]
+        print("ref_ant is ------------------: ", str(ref_ant))
+        ants = antennas[1:]
+        print("ants are -----------------: ", str(ants))
+        print("Length of ants is -----------------: ", len(ants))
+        delay_correction = katpoint.DelayCorrection(ants, ref_ant)
+        self.logger.info("delay_correction is: '%s'", delay_correction)
+        # Get delays towards target for example timestamp
+        exa_time_t0 = '2021-05-04 12:54:09.686556'
+        self.logger.info("exa_time_t0: '%s'", exa_time_t0)
+        time_t0_obj = datetime.strptime(exa_time_t0, '%Y-%m-%d %H:%M:%S.%f')
+        self.logger.info("time_t0_obj: '%s'", time_t0_obj)
+        delays = delay_correction.delays(target, time_t0_obj)
+        self.logger.info("delays are: '%s'", delays)
 
     def delay_model_calculator(self):
         self.logger.info("Calculating delays.")
