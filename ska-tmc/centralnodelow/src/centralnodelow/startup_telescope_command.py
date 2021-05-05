@@ -76,8 +76,8 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         cmd_res_subscriber_unsubscriber_obj = CommandResultFetcher()
         cmd_res_subscriber_unsubscriber_obj._subscribe_cmd_res_attribute_events(
             attributes_to_subscribe_to)
-        device_data.health_aggreegator = HealthStateAggreegator(self.logger)
-        device_data.health_aggreegator.subscribe_event()
+        # device_data.health_aggreegator = HealthStateAggreegator(self.logger)
+        # device_data.health_aggreegator.subscribe_event()
         try:
             self.this_server = TangoServerHelper.get_instance()
             # Check if Mccs Off command is completed
