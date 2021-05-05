@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc"""
-version="0.6.4"
+version="10.10.10"
 version_info=version.split(".")
 description="""SKA-TMC"""
 author="Team NCRA"
@@ -10,8 +10,8 @@ license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
 
-release=0.6.4
-tag=0.6.4
+release=10.10.10
+tag=10.10.10
 tag_description=Fixed issues related to the pointing calculations in DishLeafNode.
 release_notes=This release contains:<br/><ul><li>Update TMC to utilise KATPoint version 1.0a1</li><li>Fix issue related to the updates in AchievedPointing attribute of DishMaster</li><li>Fix issues related to the pointing calculations in DishLeafNode.</li></ul><br/>
 gitlab_username=apurvapatkar
