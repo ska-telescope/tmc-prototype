@@ -29,6 +29,8 @@ class CommandResultFetcher:
         self.logger.debug(log_msg)
         try:
             device_data.cmd_res_evt_val = event.attr_value.value
+            event_attr_all = event.attr_value
+            print("all event val is::::::::::::::::::::::::::::::::", event_attr_all)
             log_msg="commandResult attribute value is ::::::::::::" + str(device_data.cmd_res_evt_val)
             self.logger.info(log_msg)
         except Exception as exp:
