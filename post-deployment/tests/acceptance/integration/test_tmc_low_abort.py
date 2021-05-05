@@ -34,7 +34,6 @@ def required_obstate(request):
     return obs_state
 
 @pytest.mark.low
-@pytest.mark.abort
 def test_abort(required_obstate):
     try:
         obs_state_val = required_obstate
@@ -158,6 +157,8 @@ def test_abort(required_obstate):
         elif fixture["state"] == "Subarray Assigned":
             tmc.release_resources()
             tmc.set_to_standby()
+        elif fixture["state"] == "Subarray CONFIGURING":
+            raise Exception("unable to teardown subarray from being in Restarting")
         elif fixture["state"] == "Subarray ABORTING":
             raise Exception("unable to teardown subarray from being in ABORTING")
         elif fixture["state"] == "Subarray Aborted":
