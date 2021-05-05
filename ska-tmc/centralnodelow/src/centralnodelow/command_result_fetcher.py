@@ -25,11 +25,11 @@ class CommandResultFetcher:
         Attribute callback for commandResult.
         """
         device_data = DeviceData.get_instance()
-        log_msg = 'MccsController.commandResult change event is : ' + str(event)
+        log_msg = 'MccsController.commandResult change event is :::::::::::::::::: ' + str(event)
         self.logger.debug(log_msg)
         try:
             device_data.cmd_res_evt_val = event.attr_value.value
-            log_msg="commandResult attribute value is :" + str(device_data.cmd_res_evt_val)
+            log_msg="commandResult attribute value is ::::::::::::" + str(device_data.cmd_res_evt_val)
             self.logger.info(log_msg)
         except Exception as exp:
             self.logger.exception(const.ERR_SUB_CMD_RES_ATTR)
@@ -46,6 +46,7 @@ class CommandResultFetcher:
                 device_data.attr_event_map[attribute_name] = mccs_controller_client.subscribe_attribute(
                     attribute_name,
                     self.command_result_cb)
+                print("attribute return is:::::::::::::::::::::::::::::::::::", device_data.attr_event_map)
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_message = (
