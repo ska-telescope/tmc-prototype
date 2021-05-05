@@ -284,15 +284,11 @@ class DelayManager:
         target = katpoint.Target.from_radec(ra, dec)
         descriptions = '''
         ref_ant, -30:42:39.8, 21:26:38.0, 1086, 13.5, 0 0 0 0 0 0,0, 0
-        ref_ant, -30:42:39.8, 21:26:38.0, 1086, 13.5, 0 0 0 0 0 0,0, 0
         '''.strip().split('\n')
         antennas = [katpoint.Antenna(line) for line in descriptions]
         ref_ant = antennas[0]
         print("ref_ant is ------------------: ", str(ref_ant))
-        ants = antennas[1:]
-        print("ants are -----------------: ", str(ants))
-        print("Length of ants is -----------------: ", len(ants))
-        delay_correction = katpoint.DelayCorrection(ants, ref_ant)
+        delay_correction = katpoint.DelayCorrection(ref_ant, ref_ant)
         self.logger.info("delay_correction is: '%s'", delay_correction)
         # Get delays towards target for example timestamp
         exa_time_t0 = '2021-05-04 12:54:09.686556'

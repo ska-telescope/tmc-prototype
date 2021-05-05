@@ -39,3 +39,16 @@ class AzElConverter:
         # list of az el co-ordinates
         az_el_coordinates = [azel.az.deg, azel.alt.deg]
         return az_el_coordinates
+
+    def download_IERS_file(self):
+        self.logger.info("In download_IERS_file method")
+        # Create an example radec target
+        ra = '21:08:47.92'
+        dec = '-88:57:22.9'
+        target = katpoint.Target.from_radec(ra, dec)
+        ant = katpoint.Antenna('0001, -30:42:39.8d, 21:26:38d, 1086, 13.5, 1.1205 -171.762 8.4705, , 0.0')
+        self.logger.info("ant is: '%s'", ant)
+        timestamp = '2021-04-29 05:36:50.031567'
+        self.logger.info("timestamp is: '%s'", timestamp)
+        azel = target.azel(timestamp, ant)
+        self.logger.info("azel is: '%s'", azel)

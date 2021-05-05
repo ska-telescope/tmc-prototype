@@ -197,11 +197,15 @@ class DishLeafNode(SKABaseDevice):
             this_server.write_attr("activityMessage", log_message, False)
             device._health_state = HealthState.OK
             device._simulation_mode = SimulationMode.FALSE
-
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_message = f"Setting CallBack Model as :-> {ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_message)
             this_server.write_attr("activityMessage", log_message, False)
+            
+            # Download IERS file from internet
+            self.download_iers_thread = threading.Thread(None, azel_converter.download_IERS_file, "DishLeafNode")
+            self.download_iers_thread.start()
+
             log_message = "Dish Leaf Node initialized successfully."
             device.set_status(log_message)
             this_server.write_attr("activityMessage", log_message, False)
