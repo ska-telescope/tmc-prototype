@@ -18,7 +18,7 @@ global:
   skatmc:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc
-    tag: 10.10.10
+    tag: 10.10.10-dirty
     pullPolicy: Always
 
 dsconfig:
@@ -34,13 +34,6 @@ itango:
     registry: nexus.engageska-portugal.pt/ska-docker
     image: tango-itango
     tag: 9.3.1
-    pullPolicy: IfNotPresent
-
-skatmc:
-  image:
-    registry: nexus.engageska-portugal.pt/ska-telescope
-    image: ska-tmc
-    tag: 10.10.10
     pullPolicy: IfNotPresent
 
 resources:
