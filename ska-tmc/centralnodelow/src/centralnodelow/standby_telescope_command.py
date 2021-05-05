@@ -77,7 +77,7 @@ class StandByTelescope(SKABaseDevice.OffCommand):
             self.create_mccs_client(self.mccs_master_ln_fqdn)
             subarray_low = self.this_server.read_property("TMLowSubarrayNodes")
             self.create_subarray_client(subarray_low)
-            # device_data.health_aggreegator.unsubscribe_event()
+            device_data.health_aggreegator.unsubscribe_event()
             log_msg = const.STR_STANDBY_CMD_ISSUED
             self.logger.info(log_msg)
             self.this_server.write_attr("activityMessage", log_msg, False)
