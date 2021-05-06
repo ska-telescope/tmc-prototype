@@ -13,6 +13,7 @@ Track class for DishLeafNode.
 import threading
 import datetime
 import time
+from datetime import timezone
 
 import tango
 from tango import DevState, DevFailed
@@ -119,6 +120,8 @@ class Track(BaseCommand):
         while device_data.event_track_time.is_set() is False:
             now = datetime.datetime.utcnow()
             timestamp = str(now)
+            utc_time = now.replace(tzinfo=timezone.utc)
+            utc_timestamp = utc_time.timestamp()
             # pylint: disable=unbalanced-tuple-unpacking
             device_data.az, device_data.el = azel_converter.point(self.ra_value, self.dec_value, timestamp)
             
@@ -134,9 +137,15 @@ class Track(BaseCommand):
                 self.logger.debug(log_message)
                 break
 
+            self.logger.info("now '%s'", now)
+            self.logger.info("utc_timestamp '%s'", utc_timestamp)
+            self.logger.info("time.time() '%s'", time.time())
+
             # TODO (kmadisa 11-12-2020) Add a pointing lead time to the current time (like we do on MeerKAT)
+            # utc_timestamp is the time used for AzEl calculation. For the timestamp to be a future timestamp 
+            # on DishMaster, 100 ms are added to it. 
             desired_pointing = [
-                (time.time() * 1000) + 50,
+                (utc_timestamp * 1000) + 100,
                 round(device_data.az, 12),
                 round(device_data.el, 12),
             ]
