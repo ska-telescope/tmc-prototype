@@ -83,6 +83,7 @@ class DelayManager:
         """
         assigned_receptors_dict = {}
         assigned_receptors = []
+        self.fsids_list = []
 
         self.logger.info("Updating config parameters.")
 
