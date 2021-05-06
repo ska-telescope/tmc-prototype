@@ -36,6 +36,13 @@ itango:
     tag: 9.3.1
     pullPolicy: IfNotPresent
 
+skatmc:
+  image:
+    registry: nexus.engageska-portugal.pt/ska-telescope
+    image: ska-tmc
+    tag: 10.10.10-dirty
+    pullPolicy: Always
+
 resources:
   limits:
     cpu: 300m
@@ -45,7 +52,7 @@ resources:
     memory: 128Mi
 
 deviceServers:
-- name: subarraynode1
+- name:   subarraynode1
   function: observation-execution
   domain: subarray
   command: "/usr/local/bin/SubarrayNodeLowDS "
