@@ -82,9 +82,11 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         try:
             self.this_server = TangoServerHelper.get_instance()
             # Check if Mccs Off command is completed
-            device_data.cmd_res_evt_val = json.loads(device_data.cmd_res_evt_val)
-            if "Standby" in device_data.cmd_res_evt_val["message_uid"]:
-                assert (device_data.cmd_res_evt_val["result_code"] == 0), const.ERR_STANDBY_CMD_UNCOMPLETE
+            print("type od cmdres::::::::::::::::::::::::::", type(device_data.cmd_res_evt_val))
+            cmd_res = json.loads(device_data.cmd_res_evt_val)
+            if "Off" in cmd_res["status"] or cmd_res["status"] == "":
+                print("inside startup:::::::::::::::::::::::::::::::::::::::")
+                assert cmd_res["result_code"] == 0 or cmd_res["result_code"] == 4, const.ERR_STANDBY_CMD_UNCOMPLETE
 
             self.mccs_master_ln_fqdn = ""
             property_value = self.this_server.read_property("MCCSMasterLeafNodeFQDN")

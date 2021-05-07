@@ -98,7 +98,9 @@ class AssignResources(BaseCommand):
         try:
             self.this_server = TangoServerHelper.get_instance()
             # Check if Mccs On command is completed
-            assert device_data.cmd_res_evt_val == 0
+            # assert device_data.cmd_res_evt_val == 0
+            cmd_res = json.loads(device_data.cmd_res_evt_val)
+            assert cmd_res["result_code"] == 0, "Startup command completed OK"
             json_argument = json.loads(argin)
             subarray_id = int(json_argument["subarray_id"])
             subarray_cmd_data = self._create_subarray_cmd_data(json_argument)
