@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc"""
-version="0.6.3-delay-dirty"
+version="0.6.5"
 version_info=version.split(".")
 description="""SKA-TMC"""
 author="Team NCRA"
@@ -10,9 +10,9 @@ license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
 
-release=0.6.3-delay-dirty
-tag=0.6.3-delay-dirty
-tag_description=Fixed issues related to the pointing calculations in DishLeafNode.
-release_notes=This release contains:<br/><ul><li>Update TMC to utilise KATPoint version 1.0a1</li><li>Fix issue related to the updates in AchievedPointing attribute of DishMaster</li><li>Fix issues related to the pointing calculations in DishLeafNode.</li></ul><br/>
+release=0.6.5
+tag=0.6.5
+tag_description=Updated Delay calculations on CspSubarryLeafNode to utilise KATPoint version 1.0a1.
+release_notes=This release contains:<br/><ul><li>Update Delay calculations on CspSubarryLeafNode to utilise KATPoint version 1.0a1</li><li>Update desiredPointing attribute with the timestamp used for AzEl calculation</li></ul><br/>
 gitlab_username=apurvapatkar
-private_token=hXtfrhEmn2zZLpjFSGqG
+private_token=RxFJy34EvjkxVv7bWSdY
