@@ -1,7 +1,9 @@
 """
 StandByTelescope class for CentralNodelow.
 """
+# Standard Python imports
 import json
+
 # Tango imports
 import tango
 from tango import DevState, DevFailed
@@ -70,6 +72,8 @@ class StandByTelescope(SKABaseDevice.OffCommand):
             self.this_server = TangoServerHelper.get_instance()
             # Check if Mccs On command is completed
             cmd_res = json.loads(device_data.cmd_res_evt_val)
+            log_msg = "commandresult attribute value in StandByTelescope command", cmd_res
+            self.logger.debug(log_msg)
             assert cmd_res["result_code"] == 0, "Startup command completed OK"
             self.mccs_master_ln_fqdn = ""
             property_value = self.this_server.read_property("MCCSMasterLeafNodeFQDN")
@@ -89,9 +93,9 @@ class StandByTelescope(SKABaseDevice.OffCommand):
             return (ResultCode.OK, const.STR_STANDBY_CMD_ISSUED)
 
         except AssertionError:
-            log_msg = const.ERR_STARTUP_CMD_UNCOMPLETE
+            log_msg = const.ERR_STARTUP_CMD_INCOMPLETE
             self.logger.exception(log_msg)
-            self.this_server.write_attr("activityMessage", const.ERR_STARTUP_CMD_UNCOMPLETE, False)
+            self.this_server.write_attr("activityMessage", const.ERR_STARTUP_CMD_INCOMPLETE, False)
             tango.Except.throw_exception(const.STR_STANDBY_EXEC, log_msg,
                                          "CentralNode.StandByTelescopeCommand",
                                          tango.ErrSeverity.ERR)
