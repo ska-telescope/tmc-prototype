@@ -1,6 +1,7 @@
 """
 StartUpTelescope class for CentralNodelow.
 """
+import json
 # Tango imports
 import tango
 from tango import DevState, DevFailed
@@ -81,7 +82,9 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         try:
             self.this_server = TangoServerHelper.get_instance()
             # Check if Mccs Off command is completed
-            assert device_data.cmd_res_evt_val["result_code"] == None or device_data.cmd_res_evt_val["result_code"] == 0, const.ERR_STANDBY_CMD_UNCOMPLETE
+            device_data.cmd_res_evt_val = json.loads(device_data.cmd_res_evt_val)
+            if "Standby" in device_data.cmd_res_evt_val["message_uid"]:
+                assert (device_data.cmd_res_evt_val["result_code"] == 0), const.ERR_STANDBY_CMD_UNCOMPLETE
 
             self.mccs_master_ln_fqdn = ""
             property_value = self.this_server.read_property("MCCSMasterLeafNodeFQDN")
