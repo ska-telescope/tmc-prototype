@@ -175,7 +175,7 @@ class DelayManager:
         csp_subarray_fqdn = csp_subarray_fqdn.join(property_val)
         csp_sub_client_obj = TangoClient(csp_subarray_fqdn)
         self.this_server.write_attr("delayModel", None, False)
-        # If download_IERS flag is true that means the IERS_A file need to be downloaded from the internet.
+        # Download IERS_A file from internet if download_IERS flag is True.
         download_IERS = True
         while not self._stop_delay_model_event.isSet():
             if csp_sub_client_obj.deviceproxy.obsState in (
@@ -195,38 +195,32 @@ class DelayManager:
                 # TODO: This waiting on event is added temporarily to reduce high CPU usage.
                 self.this_server.write_attr("delayModel", None, False)
                 if download_IERS == True:
-                    # The IERS_A file is requierd to be donloaded once per deployment 
-                    # so download_IERS_file method will be executed only once per deployment.
+                    # The IERS_A file needs to be downloaded each time when the MVP is deployed. 
                     self.download_IERS_file()
                     download_IERS = False
                 self._stop_delay_model_event.wait(0.02)
         self.logger.debug("Stop event received. Thread exit.")
     
     def download_IERS_file(self):
+        """ This method performs one delay calculation with dummy values to download the IERS file in advanced 
+        to the delay calcualtions on CspSubarrayLeafNode."""
         # Create an example radec target
         ra = '21:08:47.92'
         dec = '-88:57:22.9'
         target = katpoint.Target.from_radec(ra, dec)
-        self.logger.info("target is: '%s'", target)
         descriptions = '''
         ref_ant, -30:42:39.8, 21:26:38.0, 1086, 13.5, 0 0 0 0 0 0,0, 0
         ref_ant, -30:42:39.8, 21:26:38.0, 1086, 13.5, 0 0 0 0 0 0,0, 0
         '''.strip().split('\n')
         antennas = [katpoint.Antenna(line) for line in descriptions]
         ref_ant = antennas[0]
-        # ref_ant = katpoint.Antenna('ref_ant, -30:42:39.8, 21:26:38.0, 1086, 13.5, 0 0 0 0 0 0,0, 0')
-        self.logger.info("ref_ant is: '%s'", ref_ant)
         ants = antennas[1:]
-        self.logger.info("ants is: '%s'", ants)
         delay_correction = katpoint.DelayCorrection(ants, ref_ant)
-        self.logger.info("delay_correction is: '%s'", delay_correction)
         # Get delays towards target for example timestamp
         exa_time_t0 = '2021-05-04 12:54:09.686556'
-        self.logger.info("exa_time_t0: '%s'", exa_time_t0)
         time_t0_obj = datetime.strptime(exa_time_t0, '%Y-%m-%d %H:%M:%S.%f')
-        self.logger.info("time_t0_obj: '%s'", time_t0_obj)
         delays = delay_correction.delays(target, time_t0_obj)
-        self.logger.info("delays are: '%s'", delays)
+        self.logger.debug("delays are: '%s'", delays)
 
     def delay_model_calculator(self):
         self.logger.info("Calculating delays.")
@@ -237,8 +231,6 @@ class DelayManager:
         delay_model = []
         receptor_delay_model = []
         delay_model_per_epoch = {}
-        self.logger.info("self.device_data.receptorIDList_str: '%s'", self.device_data.receptorIDList_str)
-        self.logger.info("self.fsids_list: '%s'", self.fsids_list)
         for receptor in self.device_data.receptorIDList_str:
             receptor_delay_object = {}
             receptor_delay_object["receptor"] = receptor
@@ -248,26 +240,18 @@ class DelayManager:
                 fsid_delay_object["fsid"] = fsid
                 delay_coeff_array = []
                 receptor_delay_coeffs = delay_corrections_h_array_dict[receptor]
-                self.logger.info("receptor_delay_coeffs: '%s'", receptor_delay_coeffs)
                 for i in range(0, len(receptor_delay_coeffs)):
                     delay_coeff_array.append(receptor_delay_coeffs[i])
-                self.logger.info("delay_coeff_array: '%s'", delay_coeff_array)
                 fsid_delay_object["delayCoeff"] = delay_coeff_array
-                self.logger.info("fsid_delay_object: '%s'", fsid_delay_object)
                 receptor_specific_delay_details.append(fsid_delay_object)
-            self.logger.info("receptor_specific_delay_details: '%s'", receptor_specific_delay_details)
             receptor_delay_object[
                 "receptorDelayDetails"
             ] = receptor_specific_delay_details
-            self.logger.info("receptor_delay_object: '%s'", receptor_delay_object)
             receptor_delay_model.append(receptor_delay_object)
         
         delay_model_per_epoch["epoch"] = str(time_t0_utc)
-        self.logger.info("receptor_delay_model: '%s'", receptor_delay_model)
         delay_model_per_epoch["delayDetails"] = receptor_delay_model
         delay_model.append(delay_model_per_epoch)
-        self.logger.info("delay_model: '%s'", delay_model)
         self.delay_model_json["delayModel"] = delay_model
         log_msg = f"delay_model_json: {self.delay_model_json}"
         self.logger.debug(log_msg)
-        self.logger.info("self.delay_model_json: '%s'", self.delay_model_json)

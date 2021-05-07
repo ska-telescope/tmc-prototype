@@ -137,10 +137,6 @@ class Track(BaseCommand):
                 self.logger.debug(log_message)
                 break
 
-            self.logger.info("now '%s'", now)
-            self.logger.info("utc_timestamp '%s'", utc_timestamp)
-            self.logger.info("time.time() '%s'", time.time())
-
             # TODO (kmadisa 11-12-2020) Add a pointing lead time to the current time (like we do on MeerKAT)
             # utc_timestamp is the time used for AzEl calculation. For the timestamp to be a future timestamp 
             # on DishMaster, 100 ms are added to it. 

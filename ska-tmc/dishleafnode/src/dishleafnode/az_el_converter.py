@@ -41,6 +41,8 @@ class AzElConverter:
         return az_el_coordinates
 
     def download_IERS_file(self):
+        """ This method performs one pointing calculation with dummy values to download the IERS file in advanced 
+        to the potinting calcualtions on DishLeafNode."""
         # Create an example radec target
         ra = '21:08:47.92'
         dec = '-88:57:22.9'
