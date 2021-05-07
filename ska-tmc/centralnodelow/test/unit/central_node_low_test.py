@@ -247,7 +247,7 @@ def test_startup_command_should_raise_assertion_error(mock_subarraynode_proxy, m
             with pytest.raises(tango.DevFailed) as df:
                 tango_server_obj = mock_tango_server_helper
                 device_proxy.StartUpTelescope()
-            assert const.ERR_STANDBY_CMD_UNCOMPLETE in str(df.value)
+            assert const.ERR_STANDBY_CMD_INCOMPLETE in str(df.value)
 
 
 def test_assign_command_should_raise_assertion_error(mock_subarraynode_proxy, mock_tango_server_helper):
@@ -259,7 +259,7 @@ def test_assign_command_should_raise_assertion_error(mock_subarraynode_proxy, mo
                 tango_server_obj = mock_tango_server_helper
                 device_proxy.StartUpTelescope()
                 device_proxy.AssignResources(assign_input_str)
-            assert const.ERR_STARTUP_CMD_UNCOMPLETE in str(df.value)
+            assert const.ERR_STARTUP_CMD_INCOMPLETE in str(df.value)
 
 
 def test_standby(mock_subarraynode_proxy, mock_tango_server_helper):
@@ -285,7 +285,7 @@ def test_standby_command_should_raise_assertion_error(mock_subarraynode_proxy, m
                 tango_server_obj = mock_tango_server_helper
                 device_proxy.StartUpTelescope()
                 device_proxy.StandByTelescope()
-            assert const.ERR_STARTUP_CMD_UNCOMPLETE in str(df.value)
+            assert const.ERR_STARTUP_CMD_INCOMPLETE in str(df.value)
 
 
 def test_command_should_raise_devfailed_exception(mock_subarraynode_proxy,command_with_devfailed_error):

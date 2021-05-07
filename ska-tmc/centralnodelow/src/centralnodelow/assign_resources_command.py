@@ -98,8 +98,9 @@ class AssignResources(BaseCommand):
         try:
             self.this_server = TangoServerHelper.get_instance()
             # Check if Mccs On command is completed
-            # assert device_data.cmd_res_evt_val == 0
             cmd_res = json.loads(device_data.cmd_res_evt_val)
+            log_msg = "commandresult attribute value in StandByTelescope command", cmd_res
+            self.logger.debug(log_msg)
             assert cmd_res["result_code"] == 0, "Startup command completed OK"
             json_argument = json.loads(argin)
             subarray_id = int(json_argument["subarray_id"])
@@ -146,12 +147,12 @@ class AssignResources(BaseCommand):
                                          "CentralNode.AssignResourcesCommand",
                                          tango.ErrSeverity.ERR)
         except AssertionError:
-            log_msg = "Exception in AssignResources command: " + const.ERR_STARTUP_CMD_UNCOMPLETE
+            log_msg = "Exception in AssignResources command: " + const.ERR_STARTUP_CMD_INCOMPLETE
             self.logger.exception(log_msg)
-            log_msg = const.STR_ASSIGN_RES_EXEC + const.ERR_STARTUP_CMD_UNCOMPLETE
+            log_msg = const.STR_ASSIGN_RES_EXEC + const.ERR_STARTUP_CMD_INCOMPLETE
             self.logger.exception(log_msg)
             self.this_server.write_attr("activityMessage", log_msg, False)
-            tango.Except.throw_exception(const.ERR_STARTUP_CMD_UNCOMPLETE, log_msg,
+            tango.Except.throw_exception(const.ERR_STARTUP_CMD_INCOMPLETE, log_msg,
                                          "CentralNode.AssignResourcesCommand",
                                          tango.ErrSeverity.ERR)
 
