@@ -120,6 +120,7 @@ class ConfigureCommand(BaseCommand):
         target_Ra = ""
         target_Dec = ""
         this_server = TangoServerHelper.get_instance()
+        device_data.fsp_ids_object = []
         try:
             argin_json = json.loads(argin)
             # Used to extract FSP IDs
