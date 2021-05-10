@@ -4,7 +4,7 @@
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 # Standard Python imports
 import json
-
+import time
 # Tango imports
 import tango
 from tango import DevState, DevFailed
@@ -101,6 +101,13 @@ class AssignResources(BaseCommand):
             cmd_res = json.loads(device_data.cmd_res_evt_val)
             log_msg = "commandresult attribute value in StandByTelescope command", cmd_res
             self.logger.debug(log_msg)
+
+            if cmd_res["result_code"] != 0:
+                retry = 0
+                while retry < 3:
+                    time.sleep(0.1)
+                    retry += 1
+
             assert cmd_res["result_code"] == 0, "Startup command completed OK"
             json_argument = json.loads(argin)
             subarray_id = int(json_argument["subarray_id"])

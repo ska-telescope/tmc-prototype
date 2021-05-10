@@ -3,7 +3,7 @@ StandByTelescope class for CentralNodelow.
 """
 # Standard Python imports
 import json
-
+import time
 # Tango imports
 import tango
 from tango import DevState, DevFailed
@@ -74,6 +74,13 @@ class StandByTelescope(SKABaseDevice.OffCommand):
             cmd_res = json.loads(device_data.cmd_res_evt_val)
             log_msg = "commandresult attribute value in StandByTelescope command", cmd_res
             self.logger.debug(log_msg)
+
+            if cmd_res["result_code"] != 0:
+                retry = 0
+                while retry < 3:
+                    time.sleep(0.1)
+                    retry += 1
+
             assert cmd_res["result_code"] == 0, "Startup command completed OK"
             self.mccs_master_ln_fqdn = ""
             property_value = self.this_server.read_property("MCCSMasterLeafNodeFQDN")

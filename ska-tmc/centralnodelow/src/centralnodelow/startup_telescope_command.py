@@ -3,6 +3,7 @@ StartUpTelescope class for CentralNodelow.
 """
 # Standard Python imports
 import json
+import time
 
 # Tango imports
 import tango
@@ -86,6 +87,11 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
             # Check if Mccs Off command is completed
             cmd_res = json.loads(device_data.cmd_res_evt_val)
             if "Off" in cmd_res["status"] or cmd_res["status"] == "":
+                if cmd_res["result_code"] != 0 or cmd_res["result_code"] != 4:
+                    retry = 0
+                    while retry < 3:
+                        time.sleep(0.1)
+                        retry += 1
                 assert cmd_res["result_code"] == 0 or cmd_res["result_code"] == 4, const.ERR_STANDBY_CMD_INCOMPLETE
 
             self.mccs_master_ln_fqdn = ""
