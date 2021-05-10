@@ -1,5 +1,5 @@
-FROM nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:9.3.3.1 AS buildenv
-FROM nexus.engageska-portugal.pt/ska-docker/ska-python-runtime:9.3.3.1 AS runtime
+FROM nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:9.3.2 AS buildenv
+FROM nexus.engageska-portugal.pt/ska-docker/ska-python-runtime:9.3.2 AS runtime
 
 # create ipython profile to so that itango doesn't fail if ipython hasn't run yet
 RUN ipython profile create
@@ -8,9 +8,9 @@ RUN ipython profile create
 USER root
 
 RUN python3 -m pip install ska-logging==0.3.0 \
-                           lmcbaseclasses==0.8.1 \
-                           cdm-shared-library==5.0.1 \
-                           ska-telescope-model==1.1.0 \
+                           lmcbaseclasses==0.7.2 \
+                           cdm-shared-library==2.0.0 \
+                           ska-telescope-model==0.3.0 \
                            ska-log-transactions \
                            skatmccommon==0.1.6+3aaa7bbe
 # install all local TMC packages
