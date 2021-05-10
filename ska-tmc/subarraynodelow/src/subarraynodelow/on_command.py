@@ -16,8 +16,6 @@ from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
 from .device_data import DeviceData
-from .health_state_aggregator import HealthStateAggregator
-from .obs_state_aggregator import ObsStateAggregator
 
 
 class On(SKASubarray.OnCommand):
