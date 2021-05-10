@@ -85,6 +85,8 @@ server:
                       values:
                         - "false"
   {{- end}}
+depends_on:
+  - device: sys/database/2
 image:
   registry: "{{.Values.subarraynodemid.image.registry}}"
   image: "{{.Values.subarraynodemid.image.image}}"

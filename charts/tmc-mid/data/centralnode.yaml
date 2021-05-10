@@ -82,6 +82,8 @@ server:
                       values:
                         - "-1"
                         - "1"
+depends_on:
+  - device: sys/database/2
 image:
   registry: "{{.Values.centralnodemid.image.registry}}"
   image: "{{.Values.centralnodemid.image.image}}"

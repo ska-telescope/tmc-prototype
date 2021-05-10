@@ -51,7 +51,8 @@ server:
                         - "-1"
                         - "1"
     {{- end }}
-
+depends_on:
+  - device: sys/database/2
 image:
   registry: "{{.Values.global.skatmc.registry}}"
   image: "{{.Values.global.skatmc.image}}"
