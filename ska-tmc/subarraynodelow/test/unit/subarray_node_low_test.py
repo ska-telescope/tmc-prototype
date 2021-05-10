@@ -461,22 +461,6 @@ def test_subarray_health_state_with_error_event(error_in_health_state, mock_lowe
     assert device not in health_state_aggr.subarray_ln_health_state_map.keys()
 
 
-# def test_subarray_health_state_with_error_event(mock_lower_devices_proxy, mock_tango_server_helper):
-#     device_proxy, tango_client = mock_lower_devices_proxy
-#     tango_server_obj = mock_tango_server_helper
-#     device_data = DeviceData.get_instance()
-#     with mock.patch.object(
-#         TangoClient, "_get_deviceproxy", return_value=Mock()
-#     ) as mock_obj:
-#         with mock.patch.object(
-#             TangoClient,
-#             "subscribe_attribute",
-#             side_effect=create_dummy_event_healthstate_with_error,
-#         ):
-#             device_proxy.On()
-#     assert const.ERR_SUBSR_SA_HEALTH_STATE in device_proxy.activityMessage
-
-
 # Test case for assigned_resources_cb callback
 def test_subarray_assigned_resources_attr_changes_as_per_mccs_subarray_ln_assigned_resources_attr(
     mock_lower_devices_proxy, mock_tango_server_helper
