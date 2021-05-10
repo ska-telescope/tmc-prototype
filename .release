@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc"""
-version="10.10.10"
+version="0.6.5"
 version_info=version.split(".")
 description="""SKA-TMC"""
 author="Team NCRA"
@@ -11,9 +11,9 @@ url="""https://www.skatelescope.org"""
 copyright=""""""
 
 
-release=10.10.10
-tag=10.10.10
-tag_description=Utilise KATpoint 1.0a1 in DishLeafNode for pointing calculations.
-release_notes=This release contains:<br/><ul><li>Utilise KATpoint 1.0a1 in DishLeafNode for pointing calculations.</li></ul><br/>
+release=0.6.5
+tag=0.6.5
+tag_description=Updated Delay calculations on CspSubarryLeafNode to utilise KATPoint version 1.0a1.
+release_notes=This release contains:<br/><ul><li>Update Delay calculations on CspSubarryLeafNode to utilise KATPoint version 1.0a1</li><li>Update desiredPointing attribute with the timestamp used for AzEl calculation</li></ul><br/>
 gitlab_username=apurvapatkar
-private_token=hXtfrhEmn2zZLpjFSGqG
+private_token=RxFJy34EvjkxVv7bWSdY
