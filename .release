@@ -10,7 +10,6 @@ license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
 
-
 release=0.6.5
 tag=0.6.5
 tag_description=Updated Delay calculations on CspSubarryLeafNode to utilise KATPoint version 1.0a1.
