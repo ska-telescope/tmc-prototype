@@ -83,6 +83,7 @@ class DelayManager:
         """
         assigned_receptors_dict = {}
         assigned_receptors = []
+        self.fsids_list = []
 
         self.logger.info("Updating config parameters.")
 
@@ -100,16 +101,13 @@ class DelayManager:
                 assigned_receptors.append(antennas_dict[receptor])
                 # Create a dictionary including antennas (objects) assigned to the Subarray
                 assigned_receptors_dict[receptor] = antennas_dict[receptor]
-
         # Antenna having key 'ref_ant' from antennas_dict, is referred as a reference antenna.
         ref_ant = antennas_dict["ref_ant"]
-
         # Create DelayCorrection Object
         self.delay_correction_object = katpoint.DelayCorrection(
             assigned_receptors, ref_ant
         )
         self.antenna_names = list(self.delay_correction_object.ant_models.keys())
-
         # list of frequency slice ids
         for fsp_entry in self.device_data.fsp_ids_object:
             self.fsids_list.append(fsp_entry["fspID"])
@@ -128,20 +126,7 @@ class DelayManager:
 
         :return: Dictionary containing fifth order polynomial coefficients per antenna per fsp.
         """
-        delay_corrections_h_array_t0 = []
-        delay_corrections_h_array_t1 = []
-        delay_corrections_h_array_t2 = []
-        delay_corrections_h_array_t3 = []
-        delay_corrections_h_array_t4 = []
-        delay_corrections_h_array_t5 = []
         delay_corrections_h_array_dict = {}
-        delay_corrections_v_array_t0 = []
-        delay_corrections_v_array_t1 = []
-        delay_corrections_v_array_t2 = []
-        delay_corrections_v_array_t3 = []
-        delay_corrections_v_array_t4 = []
-        delay_corrections_v_array_t5 = []
-
         # Delays are calculated for the timestamps between "t0 - 25" to "t0 + 25" at an interval of 10
         # seconds.
         timestamp_array = [
@@ -152,63 +137,22 @@ class DelayManager:
             (time_t0 + timedelta(seconds=15)),
             (time_t0 + timedelta(seconds=25)),
         ]
-
-        for timestamp_index in range(0, len(timestamp_array)):
-            # Calculate geometric delay value.
-            delay = self.delay_correction_object._calculate_delays(
-                self.device_data.target, str(timestamp_array[timestamp_index])
-            )
-            # Horizontal and vertical delay corrections for each antenna
-            for i in range(0, len(delay)):
-                if i % 2 == 0:
-                    if timestamp_index == 0:
-                        delay_corrections_h_array_t0.append(delay[i])
-                    elif timestamp_index == 1:
-                        delay_corrections_h_array_t1.append(delay[i])
-                    elif timestamp_index == 2:
-                        delay_corrections_h_array_t2.append(delay[i])
-                    elif timestamp_index == 3:
-                        delay_corrections_h_array_t3.append(delay[i])
-                    elif timestamp_index == 4:
-                        delay_corrections_h_array_t4.append(delay[i])
-                    elif timestamp_index == 5:
-                        delay_corrections_h_array_t5.append(delay[i])
-                else:
-                    if timestamp_index == 0:
-                        delay_corrections_v_array_t0.append(delay[i])
-                    elif timestamp_index == 1:
-                        delay_corrections_v_array_t1.append(delay[i])
-                    elif timestamp_index == 2:
-                        delay_corrections_v_array_t2.append(delay[i])
-                    elif timestamp_index == 3:
-                        delay_corrections_v_array_t3.append(delay[i])
-                    elif timestamp_index == 4:
-                        delay_corrections_v_array_t4.append(delay[i])
-                    elif timestamp_index == 5:
-                        delay_corrections_v_array_t5.append(delay[i])
-
+        # Calculate geometric delay values.
+        delays = self.delay_correction_object.delays(self.device_data.target, timestamp_array)
         # Convert delays in seconds to 5th order polynomial coefficients
         # x is always [-25, -15, -5, 5, 15, 25] as the delays are calculated for the timestamps between
         # "t0 - 25" to "t0 + 25" at an interval of 10 seconds.
         x = np.array([-25, -15, -5, 5, 15, 25])
-        for i in range(0, len(self.antenna_names)):
-            antenna_delay_list = []
-            antenna_delay_list.append(delay_corrections_h_array_t0[i])
-            antenna_delay_list.append(delay_corrections_h_array_t1[i])
-            antenna_delay_list.append(delay_corrections_h_array_t2[i])
-            antenna_delay_list.append(delay_corrections_h_array_t3[i])
-            antenna_delay_list.append(delay_corrections_h_array_t4[i])
-            antenna_delay_list.append(delay_corrections_h_array_t5[i])
 
+        for antenna in range(0, len(self.antenna_names)):
             # Array including delay values per antenna for the timestamps between "t0 - 25" to "t0 + 25"
             # at an interval of 10 seconds.
-            y = np.array(antenna_delay_list)
-
+            y = np.array(delays[antenna * 2])
             # Fit polynomial to the values over 50-second range
             polynomial = np.polynomial.Polynomial.fit(x, y, 5)
             polynomial_coefficients = polynomial.convert().coef
             delay_corrections_h_array_dict[
-                self.antenna_names[i]
+            self.antenna_names[antenna]
             ] = polynomial_coefficients
         return delay_corrections_h_array_dict
 
@@ -230,6 +174,9 @@ class DelayManager:
         property_val = self.this_server.read_property("CspSubarrayFQDN")
         csp_subarray_fqdn = csp_subarray_fqdn.join(property_val)
         csp_sub_client_obj = TangoClient(csp_subarray_fqdn)
+        self.this_server.write_attr("delayModel", None, False)
+        # Download IERS_A file from internet if download_IERS flag is True.
+        download_IERS = True
         while not self._stop_delay_model_event.isSet():
             if csp_sub_client_obj.deviceproxy.obsState in (
                 ObsState.CONFIGURING,
@@ -246,10 +193,34 @@ class DelayManager:
                 self._stop_delay_model_event.wait(delay_update_interval)
             else:
                 # TODO: This waiting on event is added temporarily to reduce high CPU usage.
+                self.this_server.write_attr("delayModel", None, False)
+                if download_IERS == True:
+                    # The IERS_A file needs to be downloaded each time when the MVP is deployed. 
+                    self.download_IERS_file()
+                    download_IERS = False
                 self._stop_delay_model_event.wait(0.02)
-                self.this_server.write_attr("delayModel", " ", False)
-        
         self.logger.debug("Stop event received. Thread exit.")
+    
+    def download_IERS_file(self):
+        """ This method performs one delay calculation with dummy values to download the IERS file in advanced 
+        to the delay calcualtions on CspSubarrayLeafNode."""
+        # Create an example radec target
+        ra = '21:08:47.92'
+        dec = '-88:57:22.9'
+        target = katpoint.Target.from_radec(ra, dec)
+        descriptions = '''
+        ref_ant, -30:42:39.8, 21:26:38.0, 1086, 13.5, 0 0 0 0 0 0,0, 0
+        ref_ant, -30:42:39.8, 21:26:38.0, 1086, 13.5, 0 0 0 0 0 0,0, 0
+        '''.strip().split('\n')
+        antennas = [katpoint.Antenna(line) for line in descriptions]
+        ref_ant = antennas[0]
+        ants = antennas[1:]
+        delay_correction = katpoint.DelayCorrection(ants, ref_ant)
+        # Get delays towards target for example timestamp
+        exa_time_t0 = '2021-05-04 12:54:09.686556'
+        time_t0_obj = datetime.strptime(exa_time_t0, '%Y-%m-%d %H:%M:%S.%f')
+        delays = delay_correction.delays(target, time_t0_obj)
+        self.logger.debug("delays are: '%s'", delays)
 
     def delay_model_calculator(self):
         self.logger.info("Calculating delays.")
@@ -277,6 +248,7 @@ class DelayManager:
                 "receptorDelayDetails"
             ] = receptor_specific_delay_details
             receptor_delay_model.append(receptor_delay_object)
+        
         delay_model_per_epoch["epoch"] = str(time_t0_utc)
         delay_model_per_epoch["delayDetails"] = receptor_delay_model
         delay_model.append(delay_model_per_epoch)

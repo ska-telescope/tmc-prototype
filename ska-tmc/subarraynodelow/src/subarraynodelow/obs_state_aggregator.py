@@ -24,12 +24,12 @@ class ObsStateAggregator:
         self.mccs_obs_state_event_id = {}
         self.this_server = TangoServerHelper.get_instance()
         self.device_data = DeviceData.get_instance()
+        
+    def subscribe(self):
         mccs_subarray_ln_fqdn = ""
         property_val = self.this_server.read_property("MccsSubarrayLNFQDN")
         mccs_subarray_ln_fqdn = mccs_subarray_ln_fqdn.join(property_val)
         self.mccs_client = TangoClient(mccs_subarray_ln_fqdn)
-
-    def subscribe(self):
         # Subscribe mccsSubarrayObsState (forwarded attribute) of mccsSubarray
         mccs_event_id = self.mccs_client.subscribe_attribute(
             const.EVT_MCCSSA_OBS_STATE, self.observation_state_cb
