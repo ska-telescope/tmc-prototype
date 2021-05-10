@@ -69,11 +69,6 @@ CUSTOM_VALUES = --set global.skatmc.registry=registry.gitlab.com/ska-telescope \
 else
 endif
 
-# ifneq ($(VALUES_FILE),)
-# CUSTOM_VALUES := --values $(VALUES_FILE) $(CUSTOM_VALUES)
-# else
-# endif
-
 XAUTHORITYx ?= ${XAUTHORITY}
 THIS_HOST := $(shell ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n1)
 DISPLAY := $(THIS_HOST):0
