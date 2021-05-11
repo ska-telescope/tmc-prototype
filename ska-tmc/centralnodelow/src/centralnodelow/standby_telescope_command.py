@@ -78,10 +78,10 @@ class StandByTelescope(SKABaseDevice.OffCommand):
             if cmd_res["result_code"] != 0:
                 retry = 0
                 while retry < 3:
-                    time.sleep(0.1)
                     if cmd_res["result_code"] == 0:
                         break
                     retry += 1
+                    time.sleep(0.1)
 
             assert cmd_res["result_code"] == 0, "Startup command completed OK"
             self.mccs_master_ln_fqdn = ""
