@@ -22,6 +22,8 @@ from ska.base.control_model import HealthState, ObsMode, ObsState
 from ska.base import SKASubarray
 from .device_data import DeviceData
 from tmc.common.tango_server_helper import TangoServerHelper
+from subarraynodelow.health_state_aggregator import HealthStateAggregator
+from subarraynodelow.obs_state_aggregator import ObsStateAggregator
 from . import const, release
 from .on_command import On
 from .off_command import Off
@@ -141,6 +143,7 @@ class SubarrayNode(SKASubarray):
             device.attr_map = {}
             device.attr_map["scanID"] = ""
             device.attr_map["assigned_resources"] = ""
+            device.attr_map["activityMessage"] = ""
             device._obs_mode = ObsMode.IDLE
             device._resource_list = []
             device.is_end_command = False
@@ -155,6 +158,11 @@ class SubarrayNode(SKASubarray):
             device._subarray_health_state = (
                 HealthState.OK
             )  # Aggregated Subarray Health State
+            device.device_data.obs_state_aggr = ObsStateAggregator(self.logger)
+            device.device_data.obs_state_aggr.subscribe()
+            # subscribe to HealthState
+            device.device_data.health_state_aggr = HealthStateAggregator(self.logger)
+            device.device_data.health_state_aggr.subscribe()
             this_server.write_attr("activityMessage", const.STR_SA_INIT_SUCCESS, False)
             self.logger.info(const.STR_SA_INIT_SUCCESS)
             return (ResultCode.OK, const.STR_SA_INIT_SUCCESS)
