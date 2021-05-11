@@ -91,6 +91,8 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
                     retry = 0
                     while retry < 3:
                         time.sleep(0.1)
+                        if cmd_res["result_code"] == 0 or cmd_res["result_code"] == 4:
+                            break
                         retry += 1
                 assert cmd_res["result_code"] == 0 or cmd_res["result_code"] == 4, const.ERR_STANDBY_CMD_INCOMPLETE
 
