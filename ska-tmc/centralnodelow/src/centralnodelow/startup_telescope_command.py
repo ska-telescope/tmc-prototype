@@ -1,6 +1,10 @@
 """
 StartUpTelescope class for CentralNodelow.
 """
+# Standard Python imports
+import json
+import time
+
 # Tango imports
 import tango
 from tango import DevState, DevFailed
@@ -81,7 +85,17 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         try:
             self.this_server = TangoServerHelper.get_instance()
             # Check if Mccs Off command is completed
-            assert device_data.cmd_res_evt_val == None or device_data.cmd_res_evt_val == 0, const.ERR_STANDBY_CMD_UNCOMPLETE
+            cmd_res = json.loads(device_data.cmd_res_evt_val)
+            if "Off" in cmd_res["status"] or cmd_res["status"] == "":
+                if cmd_res["result_code"] != 0 or cmd_res["result_code"] != 4:
+                    retry = 0
+                    while retry < 3:
+                        if cmd_res["result_code"] == 0 or cmd_res["result_code"] == 4:
+                            break
+                        retry += 1
+                        time.sleep(0.1)
+                        
+                assert cmd_res["result_code"] == 0 or cmd_res["result_code"] == 4, const.ERR_STANDBY_CMD_INCOMPLETE
 
             self.mccs_master_ln_fqdn = ""
             property_value = self.this_server.read_property("MCCSMasterLeafNodeFQDN")
@@ -95,10 +109,10 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
             self.this_server.write_attr("activityMessage", log_msg, False)
             return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
         except AssertionError as assertion_err:
-            log_msg = const.ERR_STANDBY_CMD_UNCOMPLETE
+            log_msg = const.ERR_STANDBY_CMD_INCOMPLETE
             self.logger.exception(log_msg)
-            self.this_server.write_attr("activityMessage", const.ERR_STANDBY_CMD_UNCOMPLETE, False)
-            tango.Except.re_throw_exception(assertion_err, const.ERR_STANDBY_CMD_UNCOMPLETE,
+            self.this_server.write_attr("activityMessage", const.ERR_STANDBY_CMD_INCOMPLETE, False)
+            tango.Except.re_throw_exception(assertion_err, const.ERR_STANDBY_CMD_INCOMPLETE,
                                             log_msg, "CentralNodeLow.StartUpTelescopeCommand",
                                             tango.ErrSeverity.ERR)
 
