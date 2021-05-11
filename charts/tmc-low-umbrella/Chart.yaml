@@ -24,7 +24,7 @@ dependencies:
   repository: file://../tmc-low
 - name: ska-low-mccs
   version: 0.7.0
-   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
+  repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: tango-util
   version: 0.2.13
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
