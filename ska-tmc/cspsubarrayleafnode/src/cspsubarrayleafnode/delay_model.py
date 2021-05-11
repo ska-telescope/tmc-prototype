@@ -194,10 +194,10 @@ class DelayManager:
             else:
                 # TODO: This waiting on event is added temporarily to reduce high CPU usage.
                 self.this_server.write_attr("delayModel", None, False)
-                # if download_IERS == True:
-                #     # The IERS_A file needs to be downloaded each time when the MVP is deployed. 
-                #     self.download_IERS_file()
-                #     download_IERS = False
+                if download_IERS == True:
+                    # The IERS_A file needs to be downloaded each time when the MVP is deployed. 
+                    self.download_IERS_file()
+                    download_IERS = False
                 self._stop_delay_model_event.wait(0.02)
         self.logger.debug("Stop event received. Thread exit.")
     
