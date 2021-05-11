@@ -199,7 +199,7 @@ class DelayManager:
     
     def download_IERS_file(self):
         """ This method performs one delay calculation with dummy values to download the IERS file in advanced 
-        to the delay calcualtions on CspSubarrayLeafNode."""
+        to the delay calcualtions at the initialization of the device ."""
         # Create an example radec target
         ra = '21:08:47.92'
         dec = '-88:57:22.9'
