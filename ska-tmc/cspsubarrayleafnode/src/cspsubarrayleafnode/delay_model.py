@@ -57,7 +57,7 @@ class DelayManager:
         # create lock
         self.delay_model_lock = threading.Lock()
         # create thread
-        self.logger.debug("Starting thread to calculate delay model.")
+        self.logger.info("Starting thread to calculate delay model.")
         self.delay_model_calculator_thread = threading.Thread(
             target=self.delay_model_handler,
             args=[self._DELAY_UPDATE_INTERVAL],
@@ -67,9 +67,10 @@ class DelayManager:
 
     def stop(self):
         # Stop thread to update delay model
-        self.logger.debug("Stopping delay model thread.")
+        self.logger.info("Stopping delay model thread.")
         self._stop_delay_model_event.set()
         self.delay_model_calculator_thread.join()
+        self.logger.info("Delay model thread stopped.")
 
     def update_config_params(self):
         """
@@ -111,6 +112,7 @@ class DelayManager:
         # list of frequency slice ids
         for fsp_entry in self.device_data.fsp_ids_object:
             self.fsids_list.append(fsp_entry["fspID"])
+        self.logger.info("Completed updating config parameters.")
 
     def calculate_geometric_delays(self, time_t0):
         """
@@ -175,8 +177,6 @@ class DelayManager:
         csp_subarray_fqdn = csp_subarray_fqdn.join(property_val)
         csp_sub_client_obj = TangoClient(csp_subarray_fqdn)
         self.this_server.write_attr("delayModel", None, False)
-        # Download IERS_A file from internet if download_IERS flag is True.
-        download_IERS = True
         while not self._stop_delay_model_event.isSet():
             if csp_sub_client_obj.deviceproxy.obsState in (
                 ObsState.CONFIGURING,
@@ -194,12 +194,8 @@ class DelayManager:
             else:
                 # TODO: This waiting on event is added temporarily to reduce high CPU usage.
                 self.this_server.write_attr("delayModel", None, False)
-                if download_IERS == True:
-                    # The IERS_A file needs to be downloaded each time when the MVP is deployed. 
-                    self.download_IERS_file()
-                    download_IERS = False
                 self._stop_delay_model_event.wait(0.02)
-        self.logger.debug("Stop event received. Thread exit.")
+        self.logger.info("Stop event received. Thread exit.")
     
     def download_IERS_file(self):
         """ This method performs one delay calculation with dummy values to download the IERS file in advanced 
@@ -220,7 +216,7 @@ class DelayManager:
         exa_time_t0 = '2021-05-04 12:54:09.686556'
         time_t0_obj = datetime.strptime(exa_time_t0, '%Y-%m-%d %H:%M:%S.%f')
         delays = delay_correction.delays(target, time_t0_obj)
-        self.logger.debug("delays are: '%s'", delays)
+        self.logger.info("delays are: '%s'", delays)
 
     def delay_model_calculator(self):
         self.logger.info("Calculating delays.")
@@ -254,4 +250,4 @@ class DelayManager:
         delay_model.append(delay_model_per_epoch)
         self.delay_model_json["delayModel"] = delay_model
         log_msg = f"delay_model_json: {self.delay_model_json}"
-        self.logger.debug(log_msg)
+        self.logger.info(log_msg)

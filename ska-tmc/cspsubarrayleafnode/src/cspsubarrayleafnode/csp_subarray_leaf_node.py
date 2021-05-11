@@ -43,6 +43,7 @@ from .on_command import On
 from .off_command import Off
 from . import const, release
 from .exceptions import InvalidObsStateError
+from .delay_model import DelayManager
 
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additional_import
 
@@ -156,7 +157,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
             )
             device._version_id = release.version
             device._versioninfo = " "
-
+            # The IERS_A file needs to be downloaded each time when the MVP is deployed.
+            delay_manager_obj = DelayManager.get_instance() 
+            delay_manager_obj.download_IERS_file()
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             this_server.write_attr("activityMessage", f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}", False)
             this_server.set_status(const.STR_CSPSALN_INIT_SUCCESS)
