@@ -211,7 +211,11 @@ class DelayManager:
         antennas = [katpoint.Antenna(line) for line in descriptions]
         ref_ant = antennas[0]
         ants = antennas[1:]
-        delay_correction = katpoint.DelayCorrection(ants, ref_ant)
+        try:
+            delay_correction = katpoint.DelayCorrection(ants, ref_ant)
+        except Exception as delay_execption:
+            log_msg = f"Exception in DelayCorrection Katpoint API {delay_execption}"
+            self.logger.exception(delay_execption)
         # Get delays towards target for example timestamp
         exa_time_t0 = '2021-05-04 12:54:09.686556'
         time_t0_obj = datetime.strptime(exa_time_t0, '%Y-%m-%d %H:%M:%S.%f')
