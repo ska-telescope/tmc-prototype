@@ -157,9 +157,7 @@ def command_with_arg(request):
     cmd_name, input_arg, requested_cmd, obs_state, error_msg = request.param
     return cmd_name, input_arg, requested_cmd, obs_state, error_msg
 
-@pytest.mark.xfail(
-    reason="This test case is failing as IERS download moved to init of csp subarray."
-)
+
 def test_command_cb_is_invoked_when_command_with_arg_is_called_async(
     mock_obstate_check, mock_csp_subarray_proxy, event_subscription_mock, command_with_arg, mock_tango_server_helper
 ):
