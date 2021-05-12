@@ -167,7 +167,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
                 download_iers_thread.start()
             except Exception as delay_execption:
                 log_msg = f"Exception in DelayCorrection Katpoint API {delay_execption}"
-                self.logger.exception(delay_execption)
+                self.logger.exception(log_msg)
                 tango.Except.throw_exception(
                     const.STR_CMD_FAILED,
                     log_msg,
