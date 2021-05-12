@@ -89,6 +89,7 @@ def test_assign_resources():
         # tear down
         LOGGER.info("Tests complete: tearing down...")
         tmc.release_resources()
+        fixture["state"] = "Complete"
         tmc.set_to_standby()
 
     except:
@@ -98,4 +99,6 @@ def test_assign_resources():
         elif fixture["state"] == "Subarray Assigned":
             tmc.release_resources()
             tmc.set_to_standby()
+        else:
+            LOGGER.info("Tearing down completed...")
         raise
