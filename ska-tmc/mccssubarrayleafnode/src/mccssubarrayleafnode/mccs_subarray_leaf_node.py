@@ -32,6 +32,7 @@ from .scan_command import Scan
 from .end_command import End
 from .end_scan_command import EndScan
 from .abort_command import Abort
+from .restart_command import Restart
 from .obsreset_command import ObsReset
 
 __all__ = [
@@ -43,6 +44,7 @@ __all__ = [
     "End",
     "Abort",
     "ObsReset",
+    "Restart",
 ]
 # PROTECTED REGION END #    //  MccsSubarrayLeafNode.additional_import
 
@@ -307,6 +309,32 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Abort")
         handler()
 
+    def is_Restart_allowed(self):
+        """
+        Checks whether the command is allowed to be run in the current state
+
+        return:
+            True if this command is allowed to be run in
+            current device state
+
+        rtype:
+            boolean
+
+        raises:
+            DevFailed if this command is not allowed to be run
+            in current device state
+
+        """
+        handler = self.get_command_object("Restart")
+        return handler.check_allowed()
+
+    @command()
+    @DebugIt()
+    def Restart(self):
+        """ Invokes Restart command on MccsSubarrayLeafNode. """
+        handler = self.get_command_object("Restart")
+        handler()
+
     def is_ObsReset_allowed(self):
         """
         Checks whether the command is allowed to be run in the current state
@@ -346,6 +374,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         self.end = End(*args)
         self.abort = Abort(*args)
         self.obsreset = ObsReset(*args)
+        self.restart = Restart(*args)
 
         # are registered and inherited from SKASubarray
         self.register_command_object("Configure", self.configure)
@@ -354,7 +383,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         self.register_command_object("End", self.end)
         self.register_command_object("Abort", self.abort)
         self.register_command_object("ObsReset", self.obsreset)
-
+        self.register_command_object("Restart", self.restart)
 
 # ----------
 # Run server

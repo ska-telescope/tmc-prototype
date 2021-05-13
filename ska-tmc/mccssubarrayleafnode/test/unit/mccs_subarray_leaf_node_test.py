@@ -125,6 +125,8 @@ def command_with_arg(request):
             ObsState.FAULT,
             const.ERR_OBSRESET_INVOKING_CMD,
         ),
+        ("Restart", const.CMD_RESTART, ObsState.ABORTED, const.ERR_RESTART_COMMAND),
+        ("Restart", const.CMD_RESTART, ObsState.FAULT, const.ERR_RESTART_COMMAND),
     ],
 )
 def command_without_arg(request):
@@ -299,6 +301,8 @@ def test_command_without_arg_to_raise_devfailed_exception(
         ("Abort", ObsState.SCANNING, const.CMD_ABORT, "abort_cmd_ended_cb"),
         ("ObsReset", ObsState.ABORTED, const.CMD_OBSRESET, "obsreset_cmd_ended_cb"),
         ("ObsReset", ObsState.FAULT, const.CMD_OBSRESET, "obsreset_cmd_ended_cb"),
+        ("Restart",  ObsState.ABORTED, const.CMD_RESTART, "restart_cmd_ended_cb"),
+        ("Restart",  ObsState.FAULT, const.CMD_RESTART, "restart_cmd_ended_cb"),
     ],
 )
 def command_with_correct_obsstate(request):
@@ -389,6 +393,16 @@ def test_abort_should_not_command_mccs_subarray_when_it_is_aborted(
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.Abort()
     assert const.ERR_ABORT_COMMAND in str(df)
+
+
+def test_restart_should_not_command_mccs_subarray_when_it_is_not_in_aborted(
+    mock_mccs_subarray_proxy,
+):
+    device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
+    mccs_subarray_client.deviceproxy.obsState = ObsState.ABORTED
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.Restart()
+    assert const.ERR_RESTART_COMMAND in str(df)
 
 
 def any_method(with_name=None):
