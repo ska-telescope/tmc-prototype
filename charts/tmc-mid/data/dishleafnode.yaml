@@ -52,7 +52,9 @@ server:
                         - "1"
     {{- end }}
 depends_on:
-  - device: sys/database/2
+{{- range  .Values.coalesced_dishes }}
+  - device: mid_d{{ printf "%04s" . }}/elt/master
+{{- end }}
 image:
   registry: "{{.Values.global.skatmc.registry}}"
   image: "{{.Values.global.skatmc.image}}"

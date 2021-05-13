@@ -59,7 +59,9 @@ server:
                         - "1"
   {{- end }}
 depends_on:
-  - device: sys/database/2
+{{- range  .Values.coalesced_subarray_devices }}
+  - device: mid_csp/elt/subarray_{{ . }}
+{{- end }}
 image:
   registry: "{{.Values.global.skatmc.registry}}"
   image: "{{.Values.global.skatmc.image}}"
