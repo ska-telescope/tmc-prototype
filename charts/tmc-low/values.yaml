@@ -40,7 +40,7 @@ skatmc:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc
-    tag: 9.9.9-dirty
+    tag: 0.6.0
     pullPolicy: IfNotPresent
 
 resources:
