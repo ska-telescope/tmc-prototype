@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc"""
-version="0.6.5"
+version="8.7.6"
 version_info=version.split(".")
 description="""SKA-TMC"""
 author="Team NCRA"
@@ -10,8 +10,8 @@ license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
 
-release=0.6.5
-tag=0.6.5
+release=8.7.6
+tag=8.7.6
 tag_description=Updated Delay calculations on CspSubarryLeafNode to utilise KATPoint version 1.0a1.
 release_notes=This release contains:<br/><ul><li>Update Delay calculations on CspSubarryLeafNode to utilise KATPoint version 1.0a1</li><li>Update desiredPointing attribute with the timestamp used for AzEl calculation</li></ul><br/>
 gitlab_username=apurvapatkar
