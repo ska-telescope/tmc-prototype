@@ -43,6 +43,7 @@ from .on_command import On
 from .off_command import Off
 from . import const, release
 from .exceptions import InvalidObsStateError
+from .delay_model import DelayManager
 
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additional_import
 
@@ -157,10 +158,33 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device._version_id = release.version
             device._versioninfo = " "
 
+            # The IERS_A file needs to be downloaded each time when the MVP is deployed.
+            delay_manager_obj = DelayManager.get_instance()
+            try:
+                download_iers_thread = threading.Thread(
+                    None, delay_manager_obj.download_IERS_file, "CspSubarrayLeafNode"
+                )
+                download_iers_thread.start()
+            except Exception as delay_execption:
+                log_msg = f"Exception in DelayCorrection Katpoint API {delay_execption}"
+                self.logger.exception(log_msg)
+                tango.Except.throw_exception(
+                    const.STR_CMD_FAILED,
+                    log_msg,
+                    "CspSubarrayLeafNode.InitCommand.do()",
+                    tango.ErrSeverity.ERR,
+                )
+
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
-            this_server.write_attr("activityMessage", f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}", False)
+            this_server.write_attr(
+                "activityMessage",
+                f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}",
+                False,
+            )
             this_server.set_status(const.STR_CSPSALN_INIT_SUCCESS)
-            this_server.write_attr("activityMessage", const.STR_CSPSALN_INIT_SUCCESS, False)
+            this_server.write_attr(
+                "activityMessage", const.STR_CSPSALN_INIT_SUCCESS, False
+            )
             self.logger.info(const.STR_CSPSALN_INIT_SUCCESS)
             return (ResultCode.OK, const.STR_CSPSALN_INIT_SUCCESS)
 
@@ -346,10 +370,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
         except InvalidObsStateError as error:
             self.logger.exception(error)
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_EMPTY_OR_IDLE,
-                                         "CSP subarray leaf node raised exception",
-                                         "CSP.AddReceptors",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.ERR_DEVICE_NOT_EMPTY_OR_IDLE,
+                "CSP subarray leaf node raised exception",
+                "CSP.AddReceptors",
+                tango.ErrSeverity.ERR,
+            )
         handler(argin)
 
     def is_GoToIdle_allowed(self):
@@ -379,7 +405,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
         this_server = TangoServerHelper.get_instance()
         csp_subarray_fqdn = this_server.read_property("CspSubarrayFQDN")[0]
         csp_sa_client = TangoClient(csp_subarray_fqdn)
-        if csp_sa_client.get_attribute("obsState").value in [ObsState.EMPTY, ObsState.IDLE]:
+        if csp_sa_client.get_attribute("obsState").value in [
+            ObsState.EMPTY,
+            ObsState.IDLE,
+        ]:
             self.logger.info(
                 "CSP Subarray is in required obsState, resources will be assigned"
             )

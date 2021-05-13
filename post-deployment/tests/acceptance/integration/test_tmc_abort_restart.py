@@ -111,6 +111,7 @@ def test_abort_restart():
 
         tmc.set_to_standby()
         LOGGER.info("Invoked StandBy on Subarray")
+        fixture["state"] = "Subarray off"
 
         # tear down
         LOGGER.info("TMC-Abort-Restart tests complete: tearing down...")
@@ -131,6 +132,6 @@ def test_abort_restart():
         elif fixture["state"] == "Subarray Restarting":
             # restart_subarray(1)
             raise Exception("unable to teardown subarray from being in Restarting")
-        elif fixture["state"] == "Subarray empty":
-            tmc.set_to_standby()
+        elif fixture["state"] == "Subarray off":
+            LOGGER.info("Subarray has completed StandBy execution")
         pytest.fail("unable to complete test without exceptions")
