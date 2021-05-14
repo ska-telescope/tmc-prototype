@@ -98,7 +98,7 @@ class WaitRestart:
         logging.info(
             "state transitioned to RESTARTING, waiting for it to return to EMPTY"
         )
-        self.the_watch.wait_until_value_changed_to("EMPTY", timeout=200)
+        self.the_watch.wait_until_value_changed_to("IDLE", timeout=200)
 
 
 class WaitObsReset:
@@ -371,6 +371,24 @@ def sync_oet_scanning():
     the_waiter.set_wait_for_going_into_scanning()
     yield
     the_waiter.wait()
+
+
+def sync_restart(timeout=200):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            # check_going_into_restart()
+            check_going_out_of_abort()
+            w = WaitRestart()
+            ################
+            result = func(*args, **kwargs)
+            ################
+            w.wait(timeout)
+            return result
+
+        return wrapper
+
+    return decorator
 
 
 def sync_obsreset(func):
