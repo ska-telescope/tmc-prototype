@@ -49,7 +49,7 @@ __all__ = [
     "On",
     "ObsReset",
     "Abort",
-    "Restart"
+    "Restart",
     "Off",
 ]
 

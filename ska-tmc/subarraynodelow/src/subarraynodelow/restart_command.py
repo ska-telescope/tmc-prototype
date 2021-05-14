@@ -13,7 +13,7 @@ from ska.base import SKASubarray
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
-from . import const, release
+from . import const
 from .device_data import DeviceData
 
 
@@ -52,7 +52,6 @@ class Restart(SKASubarray.RestartCommand):
                 this_server.read_property("MccsSubarrayLNFQDN")[0],
                 const.STR_CMD_RESTART_INV_CSP,
             )
-            device_data.clean_up(self.logger)
             device_data._read_activity_message = const.STR_RESTART_SUCCESS
             self.logger.info(const.STR_RESTART_SUCCESS)
             tango_server_helper_obj = TangoServerHelper.get_instance()
