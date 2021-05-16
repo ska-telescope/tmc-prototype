@@ -18,8 +18,8 @@ global:
   skatmc:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc
-    tag: 0.6.0
-    pullPolicy: IfNotPresent
+    tag: 8.7.6-dirty
+    pullPolicy: Always
 
 dsconfig:
   configuration_file: data/tmc-low-config.json
@@ -40,8 +40,8 @@ skatmc:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc
-    tag: 0.6.0
-    pullPolicy: IfNotPresent
+    tag: 8.7.6-dirty
+    pullPolicy: Always
 
 resources:
   limits:
