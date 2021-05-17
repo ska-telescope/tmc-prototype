@@ -71,6 +71,13 @@ def mock_mccs_subarray_proxy():
             tango_client_object = TangoClient("low-mccs/subarray/01")
             yield tango_context.device, tango_client_object
 
+@pytest.fixture(scope="function")
+def mock_mccs_controller_proxy():
+    with fake_tango_system(MccsSubarrayLeafNode) as tango_context:
+        with mock.patch.object(TangoClient, "_get_deviceproxy", return_value=Mock()):
+            tango_client_object = TangoClient("low-mccs/control/control")
+            yield tango_context.device, tango_client_object
+
 
 @pytest.fixture(
     scope="function",
@@ -396,14 +403,26 @@ def test_abort_should_not_command_mccs_subarray_when_it_is_aborted(
 
 
 def test_restart_should_not_command_mccs_subarray_when_it_is_not_in_aborted(
-    mock_mccs_subarray_proxy,
+    mock_mccs_controller_proxy,
 ):
-    device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
-    mccs_subarray_client.deviceproxy.obsState = ObsState.ABORTED
+    device_proxy, mccs_subarray_client = mock_mccs_controller_proxy
+    mccs_subarray_client.deviceproxy.obsState = ObsState.READY
+    mccs_subarray_client.deviceproxy.command_inout_asynch.side_effect = raise_devfailed_exception
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.Restart()
     assert const.ERR_RESTART_COMMAND in str(df)
 
+def test_restart_should_command_mccs_controller_when_it_is_in_aborted(
+    mock_mccs_controller_proxy,
+):
+    device_proxy, mccs_subarray_client = mock_mccs_controller_proxy
+    inp_arg = {"subarrayID": 1}
+    input_mccs = json.dumps(inp_arg)
+    mccs_subarray_client.deviceproxy.obsState = ObsState.ABORTED
+    device_proxy.Restart()
+    mccs_subarray_client.deviceproxy.command_inout_asynch.assert_called_with(
+        const.CMD_RESTART, input_mccs, any_method(with_name="restart_cmd_ended_cb")
+    )
 
 def any_method(with_name=None):
     class AnyMethod:

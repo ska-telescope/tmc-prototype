@@ -1,4 +1,5 @@
-    # Third party imports
+import json
+# Third party imports
 import tango
 from tango import DevState, DevFailed
 
@@ -103,12 +104,15 @@ class Restart(BaseCommand):
         """
         this_server = TangoServerHelper.get_instance()
         try:
-            mccs_subarray_fqdn = ""
-            property_value = this_server.read_property("MccsSubarrayFQDN")
-            mccs_subarray_fqdn = mccs_subarray_fqdn.join(property_value)
-            mccs_subarray_client = TangoClient(mccs_subarray_fqdn)
-            mccs_subarray_client.send_command_async(
-                const.CMD_RESTART, None, self.restart_cmd_ended_cb
+            mccs_controller_fqdn = "low-mccs/control/control"
+            input_to_mccs_controller = {"subarrayID":1}
+            argin = json.dumps(input_to_mccs_controller)
+            # mccs_subarray_fqdn = ""
+            # property_value = this_server.read_property("MccsSubarrayFQDN")
+            # mccs_subarray_fqdn = mccs_subarray_fqdn.join(property_value)
+            mccs_controller_client = TangoClient(mccs_controller_fqdn)
+            mccs_controller_client.send_command_async(
+                const.CMD_RESTART, argin, self.restart_cmd_ended_cb
             )
             this_server.write_attr("activityMessage", const.STR_RESTART_SUCCESS, False)
             self.logger.info(const.STR_RESTART_SUCCESS)
