@@ -402,7 +402,7 @@ def test_abort_should_not_command_mccs_subarray_when_it_is_aborted(
     assert const.ERR_ABORT_COMMAND in str(df)
 
 
-def test_restart_should_not_command_mccs_subarray_when_it_is_not_in_aborted(
+def test_restart_command_when_mccs_subarray_is_not_in_aborted(
     mock_mccs_controller_proxy,
 ):
     device_proxy, mccs_subarray_client = mock_mccs_controller_proxy
@@ -412,11 +412,11 @@ def test_restart_should_not_command_mccs_subarray_when_it_is_not_in_aborted(
         device_proxy.Restart()
     assert const.ERR_RESTART_COMMAND in str(df)
 
-def test_restart_should_command_mccs_controller_when_it_is_in_aborted(
+def test_restart_when_mccs_subarray_is_in_aborted(
     mock_mccs_controller_proxy,
 ):
     device_proxy, mccs_subarray_client = mock_mccs_controller_proxy
-    inp_arg = {"subarrayID": 1}
+    inp_arg = {"subarray_id": 1}
     input_mccs = json.dumps(inp_arg)
     mccs_subarray_client.deviceproxy.obsState = ObsState.ABORTED
     device_proxy.Restart()

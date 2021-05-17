@@ -5,7 +5,6 @@ from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
-# from ska.base.control_model import ObsState
 
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
@@ -17,7 +16,7 @@ class Restart(BaseCommand):
     """
     A class for MccsSubarrayLeafNode's Restart() command.
 
-    Restart command is inherited from BaseCommand. This command invokes Restart command on MCCS Subarray
+    Restart command is inherited from BaseCommand. This command Invokes Restart command on MCCS Controller.
     """
 
     def check_allowed(self):
@@ -91,7 +90,7 @@ class Restart(BaseCommand):
 
     def do(self):
         """
-         Method to invoke Restart command on MCCS Subarray.
+         Method to invoke Restart command on MCCS Controller.
 
         :param argin: None
 
@@ -104,12 +103,11 @@ class Restart(BaseCommand):
         """
         this_server = TangoServerHelper.get_instance()
         try:
+            # On mccs side this implementation is not finalize yet modifications are expected.
+            # Hence hardcoded controller FQDN and input arguement (subarray ID).
             mccs_controller_fqdn = "low-mccs/control/control"
-            input_to_mccs_controller = {"subarrayID":1}
+            input_to_mccs_controller = {"subarray_id":1}
             argin = json.dumps(input_to_mccs_controller)
-            # mccs_subarray_fqdn = ""
-            # property_value = this_server.read_property("MccsSubarrayFQDN")
-            # mccs_subarray_fqdn = mccs_subarray_fqdn.join(property_value)
             mccs_controller_client = TangoClient(mccs_controller_fqdn)
             mccs_controller_client.send_command_async(
                 const.CMD_RESTART, argin, self.restart_cmd_ended_cb
