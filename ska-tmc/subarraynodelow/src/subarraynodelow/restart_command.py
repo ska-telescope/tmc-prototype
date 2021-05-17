@@ -50,7 +50,7 @@ class Restart(SKASubarray.RestartCommand):
             self.logger.info("Restart command invoked on SubarrayNodeLow")
             self.restart_leaf_nodes(
                 this_server.read_property("MccsSubarrayLNFQDN")[0],
-                const.STR_CMD_RESTART_INV_CSP,
+                const.STR_CMD_RESTART_INV_MCCS,
             )
             device_data._read_activity_message = const.STR_RESTART_SUCCESS
             self.logger.info(const.STR_RESTART_SUCCESS)
