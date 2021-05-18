@@ -21,6 +21,7 @@ from ska.base.commands import BaseCommand
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 from .command_callback import CommandCallBack
+from .utils import PointingState
 
 
 class Abort(BaseCommand):
@@ -68,7 +69,9 @@ class Abort(BaseCommand):
             property_value = this_server.read_property("DishMasterFQDN")
             self.dish_master_fqdn = self.dish_master_fqdn.join(property_value)
             dish_client = TangoClient(self.dish_master_fqdn)
-            dish_client.send_command_async("TrackStop", callback_method=cmd_ended_cb)
+            dish_pointing_state = dish_client.get_attribute("pointingState")
+            if (dish_pointing_state.value is not PointingState.READY):
+                dish_client.send_command_async("TrackStop", callback_method=cmd_ended_cb)
             self.logger.info("'%s' command executed successfully.", command_name)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
