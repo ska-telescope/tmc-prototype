@@ -19,8 +19,8 @@ global:
   skatmc:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc
-    tag: 0.6.5
-    pullPolicy: IfNotPresent
+    tag: 0.9.9-dirty
+    pullPolicy: Always
 
   ##  Order of instances resolution ##
   # .Values.global.dishes & .Values.global.subarray_count
@@ -59,15 +59,15 @@ centralnodemid:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc-centralnode-mid
-    tag: 0.1.5
-    pullPolicy: IfNotPresent
+    tag: 0.9.9
+    pullPolicy: Always
 
 subarraynodemid:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc-subarraynode-mid
-    tag: 0.1.8
-    pullPolicy: IfNotPresent
+    tag: 0.9.9
+    pullPolicy: Always
 
 alarmhandler:
   image:
@@ -76,13 +76,13 @@ alarmhandler:
     tag: 0.1.5
     pullPolicy: IfNotPresent
 
-resources:
-  limits:
-    cpu: 300m
-    memory: 500Mi
-  requests:
-    cpu: 100m
-    memory: 128Mi
+# resources:
+#   limits:
+#     cpu: 300m
+#     memory: 500Mi
+#   requests:
+#     cpu: 100m
+#     memory: 128Mi
 
 deviceServers:
   dishmaster:

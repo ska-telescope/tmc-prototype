@@ -90,9 +90,9 @@ class SdpMasterLeafNode(SKABaseDevice):
         doc="List of Processing Block devices.",
     )
 
-    sdpHealthState = attribute(
-        name="sdpHealthState", label="sdpHealthState", forwarded=True
-    )
+    # sdpHealthState = attribute(
+    #     name="sdpHealthState", label="sdpHealthState", forwarded=True
+    # )
 
     # ---------------
     # General methods

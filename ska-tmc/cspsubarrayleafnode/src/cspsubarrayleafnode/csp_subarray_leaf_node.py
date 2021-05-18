@@ -116,13 +116,13 @@ class CspSubarrayLeafNode(SKABaseDevice):
         access=AttrWriteType.READ_WRITE,
     )
 
-    cspsubarrayHealthState = attribute(
-        name="cspsubarrayHealthState", label="cspsubarrayHealthState", forwarded=True
-    )
+    # cspsubarrayHealthState = attribute(
+    #     name="cspsubarrayHealthState", label="cspsubarrayHealthState", forwarded=True
+    # )
 
-    cspSubarrayObsState = attribute(
-        name="cspSubarrayObsState", label="cspSubarrayObsState", forwarded=True
-    )
+    # cspSubarrayObsState = attribute(
+    #     name="cspSubarrayObsState", label="cspSubarrayObsState", forwarded=True
+    # )
 
     # ---------------
     # General methods
