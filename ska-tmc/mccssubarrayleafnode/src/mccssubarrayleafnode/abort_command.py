@@ -4,6 +4,7 @@ from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
+from ska.base.control_model import ObsState
 
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
@@ -44,6 +45,14 @@ class Abort(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
         # TODO : ObsState is not getting checked. Can be uncommented once issue get resolved.
+        this_server = TangoServerHelper.get_instance()
+        mccs_subarray_fqdn = this_server.read_property("MccsSubarrayFQDN")[0]
+        mccs_sa_client = TangoClient(mccs_subarray_fqdn)
+        if mccs_sa_client.get_attribute("obsState").value not in [ObsState.READY, ObsState.CONFIGURING, ObsState.SCANNING,
+                                                        ObsState.IDLE, ObsState.RESETTING]:
+            tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_VALID_OBSTATE, const.ERR_ABORT_COMMAND,
+                                            "MccsSubarrayLeafNode.Abort()",
+                                            tango.ErrSeverity.ERR)
         # mccs_subarray_client = TangoClient(device_data._mccs_subarray_fqdn)
         # if mccs_subarray_client.get_attribute("obsState") not in [ObsState.IDLE, ObsState.READY,
         #                                     ObsState.CONFIGURING, ObsState.SCANNING, ObsState.RESETTING]:
@@ -100,7 +109,7 @@ class Abort(BaseCommand):
         this_server = TangoServerHelper.get_instance()
         try:
             mccs_subarray_fqdn = ""
-            property_value = this_server.read_property("MccsSubarrayFQDN")
+            property_value = this_server.read_property("MccsSubarrayFQDN")[0]
             mccs_subarray_fqdn = mccs_subarray_fqdn.join(property_value)
             mccs_subarray_client = TangoClient(mccs_subarray_fqdn)
             # TODO: Mock obs_state issue to be resolved

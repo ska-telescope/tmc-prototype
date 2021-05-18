@@ -7,6 +7,7 @@ from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
+from ska.base.control_model import ObsState
 
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
@@ -48,6 +49,14 @@ class Scan(BaseCommand):
                 "mccssubarrayleafnode.Scan()",
                 tango.ErrSeverity.ERR,
             )
+        this_server = TangoServerHelper.get_instance()
+        mccs_subarray_fqdn = this_server.read_property("MccsSubarrayFQDN")[0]
+        mccs_sa_client = TangoClient(mccs_subarray_fqdn)
+        if mccs_sa_client.get_attribute("obsState").value not in [ObsState.IDLE, ObsState.READY]:
+            tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_OR_IDLE, const.ERR_SCAN_RESOURCES,
+                                            "MccsSubarrayLeafNode.Scan()",
+                                            tango.ErrSeverity.ERR)
+
 
         return True
 

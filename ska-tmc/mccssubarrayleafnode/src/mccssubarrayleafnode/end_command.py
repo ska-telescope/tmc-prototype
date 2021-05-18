@@ -7,6 +7,7 @@ from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
+from ska.base.control_model import ObsState
 
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
@@ -48,6 +49,13 @@ class End(BaseCommand):
                 "Mccssubarrayleafnode.End()",
                 tango.ErrSeverity.ERR,
             )
+        this_server = TangoServerHelper.get_instance()
+        mccs_subarray_fqdn = this_server.read_property("MccsSubarrayFQDN")[0]
+        mccs_sa_client = TangoClient(mccs_subarray_fqdn)
+        if mccs_sa_client.get_attribute("obsState").value not in [ObsState.READY]:
+            tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, const.ERR_END_INVOKING_CMD,
+                                            "MccsSubarrayLeafNode.End()",
+                                            tango.ErrSeverity.ERR)
         return True
 
     def end_cmd_ended_cb(self, event):
@@ -122,6 +130,6 @@ class End(BaseCommand):
             tango.Except.throw_exception(
                 const.ERR_END_INVOKING_CMD,
                 log_msg,
-                "MccsSubarrayLeafNode.EndC",
+                "MccsSubarrayLeafNode.End()",
                 tango.ErrSeverity.ERR,
             )
