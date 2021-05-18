@@ -11,6 +11,7 @@ from ska.base.control_model import ObsState
 
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
+from mccssubarrayleafnode.device_data import DeviceData
 
 from . import const
 
@@ -49,13 +50,6 @@ class End(BaseCommand):
                 "Mccssubarrayleafnode.End()",
                 tango.ErrSeverity.ERR,
             )
-        this_server = TangoServerHelper.get_instance()
-        mccs_subarray_fqdn = this_server.read_property("MccsSubarrayFQDN")[0]
-        mccs_sa_client = TangoClient(mccs_subarray_fqdn)
-        if mccs_sa_client.get_attribute("obsState").value not in [ObsState.READY]:
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, const.ERR_END_INVOKING_CMD,
-                                            "MccsSubarrayLeafNode.End()",
-                                            tango.ErrSeverity.ERR)
         return True
 
     def end_cmd_ended_cb(self, event):
@@ -101,27 +95,26 @@ class End(BaseCommand):
             DevFailed if the command execution is not successful.
         """
         this_server = TangoServerHelper.get_instance()
+        device_data = DeviceData.get_instance()
         try:
             mccs_subarray_fqdn = ""
-            property_value = this_server.read_property("MccsSubarrayFQDN")
+            property_value = this_server.read_property("MccsSubarrayFQDN")[0]
             mccs_subarray_fqdn = mccs_subarray_fqdn.join(property_value)
             mccs_subarray_client = TangoClient(mccs_subarray_fqdn)
-            # TODO: Mock obs_state issue to be resolved
-            # assert mccs_subarray_client.get_attribute("obsState") == ObsState.READY
+            assert mccs_subarray_client.get_attribute("obsState") == ObsState.READY
             mccs_subarray_client.send_command_async(
                 const.CMD_END, None, self.end_cmd_ended_cb
             )
             this_server.write_attr("activityMessage", const.STR_END_SUCCESS, False)
             self.logger.info(const.STR_END_SUCCESS)
 
-        # TODO: Mock obs_state issue to be resolved
-        # except AssertionError:
-        #     log_msg = const.STR_OBS_STATE
-        #     device_data._read_activity_message = const.ERR_DEVICE_NOT_READY
-        #     self.logger.error(log_msg)
-        #     tango.Except.throw_exception(const.STR_END_EXEC, const.ERR_DEVICE_NOT_READY,
-        #                                  "MCCSSubarrayLeafNode.End",
-        #                                  tango.ErrSeverity.ERR)
+        except AssertionError:
+            log_msg = const.STR_OBS_STATE
+            device_data._read_activity_message = const.ERR_DEVICE_NOT_READY
+            self.logger.error(log_msg)
+            tango.Except.throw_exception(const.STR_END_EXEC, const.ERR_DEVICE_NOT_READY,
+                                         "MCCSSubarrayLeafNode.End",
+                                         tango.ErrSeverity.ERR)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_END_INVOKING_CMD}{dev_failed}"

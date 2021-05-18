@@ -11,6 +11,7 @@ from ska.base.control_model import ObsState
 
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
+from mccssubarrayleafnode.device_data import DeviceData
 
 from . import const
 
@@ -50,14 +51,6 @@ class EndScan(BaseCommand):
                 "mccssubarrayleafnode.EndScan()",
                 tango.ErrSeverity.ERR,
             )
-        this_server = TangoServerHelper.get_instance()
-        mccs_subarray_fqdn = this_server.read_property("MccsSubarrayFQDN")[0]
-        mccs_sa_client = TangoClient(mccs_subarray_fqdn)
-        if mccs_sa_client.get_attribute("obsState").value not in [ObsState.SCANNING]:
-            self.logger.info(":::::::::::::::::::::::::::::::::mccs_sa_client.get_attribute(obsState).value is::::::::::::::::::::::" + str(mccs_sa_client.get_attribute("obsState").value))
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_SCANNING, const.ERR_ENDSCAN_COMMAND,
-                                            "MccsSubarrayLeafNode.EndScanCommand",
-                                            tango.ErrSeverity.ERR)
         return True
 
     def endscan_cmd_ended_cb(self, event):
@@ -103,26 +96,25 @@ class EndScan(BaseCommand):
 
         """
         this_server = TangoServerHelper.get_instance()
+        device_data = DeviceData.get_instance()
         try:
             mccs_subarray_fqdn = ""
-            property_value = this_server.read_property("MccsSubarrayFQDN")
+            property_value = this_server.read_property("MccsSubarrayFQDN")[0]
             mccs_subarray_fqdn = mccs_subarray_fqdn.join(property_value)
             mccs_subarray_client = TangoClient(mccs_subarray_fqdn)
-            # TODO: Mock obs_state issue to be resolved
-            # assert mccs_subarray_client.get_attribute("obsState") == ObsState.SCANNING
+            assert mccs_subarray_client.get_attribute("obsState") == ObsState.SCANNING
             mccs_subarray_client.send_command_async(
                 const.CMD_ENDSCAN, None, self.endscan_cmd_ended_cb
             )
             this_server.write_attr("activityMessage", const.STR_ENDSCAN_SUCCESS, False)
             self.logger.info(const.STR_ENDSCAN_SUCCESS)
 
-        # TODO: Mock obs_state issue to be resolved
-        # except AssertionError:
-        #     device_data._read_activity_message = const.ERR_DEVICE_NOT_SCANNING
-        #     self.logger.error(const.ERR_DEVICE_NOT_SCANNING)
-        #     tango.Except.throw_exception(const.STR_END_SCAN_EXEC, const.ERR_DEVICE_NOT_SCANNING,
-        #                                  "MCCSSubarrayLeafNode.EndScan",
-        #                                  tango.ErrSeverity.ERR)
+        except AssertionError:
+            device_data._read_activity_message = const.ERR_DEVICE_NOT_SCANNING
+            self.logger.error(const.ERR_DEVICE_NOT_SCANNING)
+            tango.Except.throw_exception(const.STR_END_SCAN_EXEC, const.ERR_DEVICE_NOT_SCANNING,
+                                         "MCCSSubarrayLeafNode.EndScan",
+                                         tango.ErrSeverity.ERR)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_ENDSCAN_COMMAND}{dev_failed}"

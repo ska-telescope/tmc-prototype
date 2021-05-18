@@ -44,7 +44,6 @@ class Abort(BaseCommand):
                 "Mccssubarrayleafnode.Abort()",
                 tango.ErrSeverity.ERR,
             )
-        # TODO : ObsState is not getting checked. Can be uncommented once issue get resolved.
         this_server = TangoServerHelper.get_instance()
         mccs_subarray_fqdn = this_server.read_property("MccsSubarrayFQDN")[0]
         mccs_sa_client = TangoClient(mccs_subarray_fqdn)
@@ -53,12 +52,6 @@ class Abort(BaseCommand):
             tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_VALID_OBSTATE, const.ERR_ABORT_COMMAND,
                                             "MccsSubarrayLeafNode.Abort()",
                                             tango.ErrSeverity.ERR)
-        # mccs_subarray_client = TangoClient(device_data._mccs_subarray_fqdn)
-        # if mccs_subarray_client.get_attribute("obsState") not in [ObsState.IDLE, ObsState.READY,
-        #                                     ObsState.CONFIGURING, ObsState.SCANNING, ObsState.RESETTING]:
-        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_VALID_OBSTATE, const.ERR_ABORT_COMMAND,
-        #                                     "Mccssubarrayleafnode.Abort()",
-        #                                     tango.ErrSeverity.ERR)
         return True
 
     def abort_cmd_ended_cb(self, event):
@@ -112,8 +105,6 @@ class Abort(BaseCommand):
             property_value = this_server.read_property("MccsSubarrayFQDN")[0]
             mccs_subarray_fqdn = mccs_subarray_fqdn.join(property_value)
             mccs_subarray_client = TangoClient(mccs_subarray_fqdn)
-            # TODO: Mock obs_state issue to be resolved
-            # assert mccs_subarray_client.get_attribute("obsState") == ObsState.READY
             mccs_subarray_client.send_command_async(
                 const.CMD_ABORT, None, self.abort_cmd_ended_cb
             )

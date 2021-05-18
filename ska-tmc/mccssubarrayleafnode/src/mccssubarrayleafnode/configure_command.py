@@ -14,6 +14,7 @@ from ska.base.control_model import ObsState
 
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
+from mccssubarrayleafnode.device_data import DeviceData
 
 
 from . import const
@@ -54,16 +55,6 @@ class Configure(BaseCommand):
                 "mccssubarrayleafnode.Configure()",
                 tango.ErrSeverity.ERR,
             )
-        this_server = TangoServerHelper.get_instance()
-        mccs_subarray_fqdn = this_server.read_property("MccsSubarrayFQDN")[0]
-        mccs_sa_client = TangoClient(mccs_subarray_fqdn)
-        self.logger.info(":::::::::::::::::::::::::::::::::mccs_sa_client.get_attribute(obsState).value is::::::::::::::::::::::" + str(mccs_sa_client.get_attribute("obsState").value))
-        if mccs_sa_client.get_attribute("obsState").value not in [ObsState.IDLE, ObsState.READY]:
-            self.logger.info(":::::::::::::::::::::::::::Inside check_allowed condition:::::::::::::::::::::::::::::::::")
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_OR_IDLE, const.ERR_CONFIGURE_INVOKING_CMD,
-                                            "MccsSubarrayLeafNode.Configure()",
-                                            tango.ErrSeverity.ERR)
-
         return True
 
     def configure_cmd_ended_cb(self, event):
@@ -120,13 +111,13 @@ class Configure(BaseCommand):
             KeyError if input argument json string contains invalid key
         """
         this_server = TangoServerHelper.get_instance()
+        device_data = DeviceData.get_instance()
         try:
             mccs_subarray_fqdn = ""
             property_value = this_server.read_property("MccsSubarrayFQDN")
             mccs_subarray_fqdn = mccs_subarray_fqdn.join(property_value)
             mccs_subarray_client = TangoClient(mccs_subarray_fqdn)
-            # TODO: Mock obs_state issue to be resolved
-            # assert (mccs_subarray_client.get_attribute("obsState") in (ObsState.IDLE, ObsState.READY))
+            assert (mccs_subarray_client.get_attribute("obsState") in (ObsState.IDLE, ObsState.READY))
             log_msg = (
                 "Input JSON for MCCS Subarray Leaf Node Configure command is: " + argin
             )
@@ -145,15 +136,15 @@ class Configure(BaseCommand):
 
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
 
-        # TODO: Mock obs_state issue to be resolved
-        # except AssertionError:
-        #     log_msg = (
-        #         f"Mccs Subarray is in ObsState {mccs_subarray_client.deviceproxy.obsState.name}.""Unable to invoke Configure command")
-        #     device_data._read_activity_message = log_msg
-        #     self.logger.exception(log_msg)
-        #     tango.Except.throw_exception(const.STR_CONFIGURE_EXEC, log_msg,
-        #                                  "MccsSubarrayLeafNode.ConfigureCommand",
-        #                                  tango.ErrSeverity.ERR)
+        except AssertionError:
+            obsState_val = mccs_subarray_client.get_attribute("obsState")
+            log_msg = (
+                f"Mccs Subarray is in ObsState {obsState_val}.""Unable to invoke Configure command")
+            device_data._read_activity_message = log_msg
+            self.logger.exception(log_msg)
+            tango.Except.throw_exception(const.STR_CONFIGURE_EXEC, log_msg,
+                                         "MccsSubarrayLeafNode.ConfigureCommand",
+                                         tango.ErrSeverity.ERR)
 
         except ValueError as value_error:
             log_msg = f"{const.ERR_INVALID_JSON_CONFIG}{value_error}"
