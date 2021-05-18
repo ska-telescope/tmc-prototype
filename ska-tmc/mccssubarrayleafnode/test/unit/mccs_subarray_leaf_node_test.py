@@ -157,7 +157,7 @@ def command_without_arg(request):
 
 
 def test_command_with_arg_in_allowed_obsstate_with_callback_method(
-    mock_mccs_subarray_proxy, event_subscription, command_with_arg, mock_tango_server_helper, mock_obstate_check
+    mock_obstate_check, mock_mccs_subarray_proxy, event_subscription, command_with_arg, mock_tango_server_helper
 ):
     device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
     cmd_name, cmd_arg, requested_cmd, obs_state, _ = command_with_arg
@@ -170,7 +170,7 @@ def test_command_with_arg_in_allowed_obsstate_with_callback_method(
 
 
 def test_command_without_arg_in_allowed_obsstate_with_callback_method(
-    mock_mccs_subarray_proxy, event_subscription, command_without_arg, mock_tango_server_helper, mock_obstate_check
+    mock_obstate_check, mock_mccs_subarray_proxy, event_subscription, command_without_arg, mock_tango_server_helper
 ):
     device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
     cmd_name, requested_cmd, obs_state, _ = command_without_arg
