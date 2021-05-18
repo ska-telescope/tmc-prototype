@@ -373,6 +373,24 @@ def sync_oet_scanning():
     the_waiter.wait()
 
 
+def sync_restart(timeout=200):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            # check_going_into_restart()
+            check_going_out_of_abort()
+            w = WaitRestart()
+            ################
+            result = func(*args, **kwargs)
+            ################
+            w.wait(timeout)
+            return result
+
+        return wrapper
+
+    return decorator
+
+
 def sync_obsreset(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):

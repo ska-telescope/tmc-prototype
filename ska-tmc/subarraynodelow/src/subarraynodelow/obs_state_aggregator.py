@@ -108,6 +108,9 @@ class ObsStateAggregator:
                     "Calling ReleaseAllResource command succeeded() method"
                 )
                 self.this_server.device.release.succeeded()
+            elif self.device_data.is_restart_command_executed:
+                self.logger.info("Calling Restart command succeeded() method")
+                self.this_server.device.restart.succeeded()
         elif self._mccs_sa_obs_state == ObsState.READY:
             if self.device_data.is_scan_completed:
                 self.logger.info("Calling EndScan command succeeded() method")
