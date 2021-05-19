@@ -15,6 +15,7 @@ from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
+from .device_data import DeviceData
 
 
 class ObsReset(SKASubarray.ObsResetCommand):
@@ -40,7 +41,7 @@ class ObsReset(SKASubarray.ObsResetCommand):
         raises:
             DevFailed if error occurs while invoking command on MccsSubarrayLeafNode.
         """
-        device_data = self.target
+        device_data = DeviceData.get_instance()
         device_data.is_abort_command_executed = False
         this_server = TangoServerHelper.get_instance()
         try:

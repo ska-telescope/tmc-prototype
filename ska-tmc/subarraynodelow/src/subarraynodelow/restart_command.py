@@ -47,15 +47,11 @@ class Restart(SKASubarray.RestartCommand):
         device_data.is_obsreset_command_executed = False
         try:
             this_server = TangoServerHelper.get_instance()
+            property_val = this_server.read_property("MccsSubarrayLNFQDN")[0]
             self.logger.info("Restart command invoked on SubarrayNodeLow")
-            self.restart_leaf_nodes(
-                this_server.read_property("MccsSubarrayLNFQDN")[0],
-                const.STR_CMD_RESTART_INV_MCCS,
-            )
+            self.restart_leaf_nodes(property_val, const.STR_CMD_RESTART_INV_MCCS)
             device_data._read_activity_message = const.STR_RESTART_SUCCESS
-            self.logger.info(const.STR_RESTART_SUCCESS)
-            tango_server_helper_obj = TangoServerHelper.get_instance()
-            tango_server_helper_obj.set_status(const.STR_RESTART_SUCCESS)
+            this_server.set_status(const.STR_RESTART_SUCCESS)
             device_data.is_restart_command_executed = True
             return (ResultCode.STARTED, const.STR_RESTART_SUCCESS)
 
@@ -74,7 +70,9 @@ class Restart(SKASubarray.RestartCommand):
         set up mccs devices
         """
         # Invoke Restart command on MCCS Subarray Leaf Node.
-        sdp_client = TangoClient(leaf_node_fqdn)
-        sdp_client.send_command(const.CMD_RESTART)
+        mccs_subarray_client = TangoClient(leaf_node_fqdn)
+        mccs_subarray_client.send_command(const.CMD_RESTART)
         self.logger.info(info_string)
+        self.logger.info(const.STR_RESTART_SUCCESS)
+
 

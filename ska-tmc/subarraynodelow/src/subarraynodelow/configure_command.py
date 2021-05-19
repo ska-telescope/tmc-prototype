@@ -18,6 +18,7 @@ from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
+from .device_data import DeviceData
 
 
 class Configure(SKASubarray.ConfigureCommand):
@@ -50,11 +51,12 @@ class Configure(SKASubarray.ConfigureCommand):
             JSONDecodeError if input argument json string contains invalid value
             DevFailed if the command execution is not successful.
         """
-        device_data = self.target
+        device_data = DeviceData.get_instance()
         device_data.is_scan_completed = False
         device_data.is_release_resources = False
         device_data.is_abort_command_executed = False
         device_data.is_obsreset_command_executed = False
+        device_data.is_restart_command_executed = False
         self.logger.info(const.STR_CONFIGURE_CMD_INVOKED_SA_LOW)
         log_msg = f"{const.STR_CONFIGURE_IP_ARG}{argin}"
         self.logger.info(log_msg)

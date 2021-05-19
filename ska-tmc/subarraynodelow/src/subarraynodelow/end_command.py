@@ -15,6 +15,7 @@ from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
+from .device_data import DeviceData
 
 
 class End(SKASubarray.EndCommand):
@@ -39,12 +40,13 @@ class End(SKASubarray.EndCommand):
         raises:
             DevFailed if the command execution is not successful.
         """
-        device = self.target
-        device.is_end_command = False
-        device.is_release_resources = False
-        device.is_abort_command_executed = False
-        device.is_obsreset_command_executed = False
+        device_data = DeviceData.get_instance()
         this_server = TangoServerHelper.get_instance()
+        device_data.is_end_command = False
+        device_data.is_release_resources = False
+        device_data.is_abort_command_executed = False
+        device_data.is_obsreset_command_executed = False
+        device_data.is_restart_command_executed = False
         try:
             self.logger.info(const.STR_END_CMD_INVOKED_SA_LOW)
             mccs_subarray_ln_fqdn = ""
@@ -55,7 +57,7 @@ class End(SKASubarray.EndCommand):
             self.logger.info(const.STR_CMD_END_INV_MCCS)
             this_server.write_attr("activityMessage", const.STR_END_SUCCESS, False)
             self.logger.info(const.STR_END_SUCCESS)
-            device.is_end_command = True
+            device_data.is_end_command = True
             return (ResultCode.OK, const.STR_END_SUCCESS)
 
         except DevFailed as dev_failed:

@@ -33,6 +33,7 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
         device_data.is_release_resources = True
         device_data.is_abort_command_executed = False
         device_data.is_obsreset_command_executed = False
+        device_data.is_restart_command_executed = False
         # TODO: Clearing the assigned resources
         device_data.resource_list = []
         self.logger.debug(const.STR_RELEASE_SUCCESS)

@@ -50,6 +50,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         device_data.is_release_resources = False
         device_data.is_abort_command_executed = False
         device_data.is_obsreset_command_executed = False
+        device_data.is_restart_command_executed = False
         # TODO: For now storing resources as station ids
         input_str = json.loads(argin)
         device_data.resource_list = input_str["mccs"]["station_ids"]
