@@ -114,7 +114,7 @@ class Configure(BaseCommand):
         device_data = DeviceData.get_instance()
         try:
             mccs_subarray_fqdn = ""
-            property_value = this_server.read_property("MccsSubarrayFQDN")
+            property_value = this_server.read_property("MccsSubarrayFQDN")[0]
             mccs_subarray_fqdn = mccs_subarray_fqdn.join(property_value)
             mccs_subarray_client = TangoClient(mccs_subarray_fqdn)
             assert (mccs_subarray_client.get_attribute("obsState").value in (ObsState.IDLE, ObsState.READY))

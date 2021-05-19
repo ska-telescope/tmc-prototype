@@ -19,16 +19,6 @@ class ObsReset(BaseCommand):
     Command to reset the MCCS subarray and bring it to its RESETTING state.
 
     """
-    def __init__(self, logger=None):
-        if logger == None:
-            self.logger = logging.getLogger(__name__)
-        else:
-            self.logger = logger
-
-        self.this_server = TangoServerHelper.get_instance()
-        self.mccs_sa_fqdn = self.this_server.read_property("MccsSubarrayLNFQDN")[0]
-        self.mccs_sa_client = TangoClient(self.mccs_sa_fqdn)
-
 
     def check_allowed(self):
         """
@@ -49,9 +39,9 @@ class ObsReset(BaseCommand):
                 "mccssubarrayleafnode.ObsReset()",
                 tango.ErrSeverity.ERR,
             )
-        # this_server = TangoServerHelper.get_instance()
-        # mccs_subarray_fqdn = this_server.read_property("MccsSubarrayFQDN")[0]
-        # mccs_sa_client = TangoClient(mccs_subarray_fqdn)
+        self.this_server = TangoServerHelper.get_instance()
+        self.mccs_sa_fqdn = self.this_server.read_property("MccsSubarrayFQDN")[0]
+        self.mccs_sa_client = TangoClient(self.mccs_sa_fqdn)
         if self.mccs_sa_client.get_attribute("obsState").value not in [ObsState.ABORTED, ObsState.FAULT]:
             tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_VALID_OBSTATE, const.ERR_OBSRESET_INVOKING_CMD,
                                             "MccsSubarrayLeafNode.ObsResetCommand",
@@ -80,7 +70,6 @@ class ObsReset(BaseCommand):
 
         :return: none
         """
-        # this_server = TangoServerHelper.get_instance()
         # Update logs and activity message attribute with received event
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
@@ -103,10 +92,8 @@ class ObsReset(BaseCommand):
         raises:
             DevFailed if error occurs while invoking the command on MccsSubarray.
         """
-        # self.this_server = TangoServerHelper.get_instance()
         try:
             mccs_subarray_fqdn = ""
-            # property_value = this_server.read_property("MccsSubarrayFQDN")
             mccs_subarray_fqdn = mccs_subarray_fqdn.join(self.mccs_sa_fqdn)
             mccs_subarray_client = TangoClient(mccs_subarray_fqdn)
             mccs_subarray_client.send_command_async(
