@@ -30,7 +30,7 @@ def test_restart():
 
         # given a started up telescope
         assert telescope_is_in_standby()
-        LOGGER.info("Staring up the Telescope")
+        LOGGER.info("Starting up the Telescope")
         tmc.start_up()
         fixture["state"] = "Telescope On"
 
