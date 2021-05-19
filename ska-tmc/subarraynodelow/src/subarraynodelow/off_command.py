@@ -16,7 +16,6 @@ from tmc.common.tango_server_helper import TangoServerHelper
 from .assigned_resources_maintainer import AssignedResourcesMaintainer
 
 from . import const
-from .device_data import DeviceData
 
 
 class Off(SKASubarray.OffCommand):

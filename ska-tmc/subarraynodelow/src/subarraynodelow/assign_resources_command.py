@@ -9,7 +9,6 @@ from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 
 from . import const
-from subarraynodelow.device_data import DeviceData
 from tmc.common.tango_server_helper import TangoServerHelper
 from .assigned_resources_maintainer import AssignedResourcesMaintainer
 
