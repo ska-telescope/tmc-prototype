@@ -8,6 +8,7 @@ CMD_SCAN = "Scan"
 CMD_ENDSCAN = "EndScan"
 CMD_ABORT = "Abort"
 CMD_OBSRESET = "ObsReset"
+CMD_RESTART = "Restart"
 
 # Event messages
 
@@ -29,6 +30,7 @@ ERR_SCAN_RESOURCES = "Error while invoking Scan command on MCCS Subarray."
 ERR_DEVICE_NOT_SCANNING = "MCCS subarray is not in SCANNING obsState."
 ERR_ENDSCAN_COMMAND = "Error while invoking EndScan command on MCCS Subarray."
 ERR_ABORT_COMMAND = "Error while invoking Abort command on MCCS Subarray."
+ERR_RESTART_COMMAND = "Error while invoking Restart command on MCCS Subarray."
 STR_END_EXEC = "End command execution"
 ERR_OBSRESET_INVOKING_CMD = "Error while invoking ObsReset command on MCCS Subarray."
 
@@ -51,6 +53,7 @@ STR_SCAN_EXEC = "Scan command execution"
 STR_ENDSCAN_SUCCESS = "EndScan command is executed successfully."
 STR_END_SCAN_EXEC = "EndScan command execution"
 STR_ABORT_SUCCESS = "Abort command is executed successfully."
+STR_RESTART_SUCCESS = "Restart command is executed successfully."
 
 STR_SETTING_CB_MODEL = "Setting CallBack Model as :-> "
 STR_OBSRESET_SUCCESS = "ObsReset command is invoked successfully on MCCS Subarray."
