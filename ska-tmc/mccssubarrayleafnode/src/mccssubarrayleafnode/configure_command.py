@@ -117,7 +117,7 @@ class Configure(BaseCommand):
             property_value = this_server.read_property("MccsSubarrayFQDN")
             mccs_subarray_fqdn = mccs_subarray_fqdn.join(property_value)
             mccs_subarray_client = TangoClient(mccs_subarray_fqdn)
-            assert (mccs_subarray_client.get_attribute("obsState") in (ObsState.IDLE, ObsState.READY))
+            assert (mccs_subarray_client.get_attribute("obsState").value in (ObsState.IDLE, ObsState.READY))
             log_msg = (
                 "Input JSON for MCCS Subarray Leaf Node Configure command is: " + argin
             )
@@ -137,7 +137,7 @@ class Configure(BaseCommand):
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
 
         except AssertionError:
-            obsState_val = mccs_subarray_client.get_attribute("obsState")
+            obsState_val = mccs_subarray_client.get_attribute("obsState").value
             log_msg = (
                 f"Mccs Subarray is in ObsState {obsState_val}.""Unable to invoke Configure command")
             device_data._read_activity_message = log_msg

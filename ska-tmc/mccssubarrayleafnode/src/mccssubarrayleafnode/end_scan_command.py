@@ -102,7 +102,7 @@ class EndScan(BaseCommand):
             property_value = this_server.read_property("MccsSubarrayFQDN")[0]
             mccs_subarray_fqdn = mccs_subarray_fqdn.join(property_value)
             mccs_subarray_client = TangoClient(mccs_subarray_fqdn)
-            assert mccs_subarray_client.get_attribute("obsState") == ObsState.SCANNING
+            assert mccs_subarray_client.get_attribute("obsState").value == ObsState.SCANNING
             mccs_subarray_client.send_command_async(
                 const.CMD_ENDSCAN, None, self.endscan_cmd_ended_cb
             )
