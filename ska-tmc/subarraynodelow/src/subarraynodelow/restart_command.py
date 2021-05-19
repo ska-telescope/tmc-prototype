@@ -41,7 +41,7 @@ class Restart(SKASubarray.RestartCommand):
         raises:
             DevFailed if error occurs while invoking command on MCCS Subarray Leaf Node.
         """
-        device_data = DeviceData.get_instance()
+        device_data = self.target
         device_data.is_release_resources_command_executed = False
         device_data.is_abort_command_executed = False
         device_data.is_obsreset_command_executed = False

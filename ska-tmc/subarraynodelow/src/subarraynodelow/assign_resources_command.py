@@ -44,7 +44,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         return:
             A tuple containing ResultCode and string.
         """
-        device_data = DeviceData.get_instance()
+        device_data = self.target
         this_server = TangoServerHelper.get_instance()
         device_data.is_end_command = False
         device_data.is_release_resources = False

@@ -42,7 +42,7 @@ class EndScan(SKASubarray.EndScanCommand):
         raises:
             DevFailed if the command execution is not successful.
         """
-        device_data = DeviceData.get_instance()
+        device_data = self.target
         device_data.is_release_resources = False
         device_data.is_abort_command_executed = False
         device_data.is_obsreset_command_executed = False

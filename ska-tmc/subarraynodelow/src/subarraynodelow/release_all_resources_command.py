@@ -29,7 +29,7 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
             (ResultCode, str)
 
         """
-        device_data = DeviceData.get_instance()
+        device_data = self.target
         device_data.is_release_resources = True
         device_data.is_abort_command_executed = False
         device_data.is_obsreset_command_executed = False
