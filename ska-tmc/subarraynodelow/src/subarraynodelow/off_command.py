@@ -41,11 +41,12 @@ class Off(SKASubarray.OffCommand):
         raises:
             DevFailed if the command execution is not successful
         """
-        device = self.target
-        device.is_release_resources = False
-        device.is_abort_command_executed = False
-        device.is_obsreset_command_executed = False
+        device_data = self.target
         this_server = TangoServerHelper.get_instance()
+        device_data.is_release_resources = False
+        device_data.is_abort_command_executed = False
+        device_data.is_obsreset_command_executed = False
+        device_data.is_restart_command_executed = False
         try:
             mccs_subarray_ln_fqdn = ""
             property_val = this_server.read_property("MccsSubarrayLNFQDN")
@@ -55,9 +56,9 @@ class Off(SKASubarray.OffCommand):
             message = "Off command completed OK"
             self.logger.info(message)
             this_server.write_attr("activityMessage", message, False)
-            if device.assigned_resources_maintainer == None:
-                device.assigned_resources_maintainer = AssignedResourcesMaintainer()
-            device.assigned_resources_maintainer.unsubscribe()
+            if device_data.assigned_resources_maintainer == None:
+                device_data.assigned_resources_maintainer = AssignedResourcesMaintainer()
+            device_data.assigned_resources_maintainer.unsubscribe()
             return (ResultCode.OK, message)
 
         except DevFailed as dev_failed:

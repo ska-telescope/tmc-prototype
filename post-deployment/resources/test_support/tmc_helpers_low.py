@@ -7,6 +7,7 @@ from resources.test_support.sync_decorators_low import (
     sync_release_resources,
     sync_abort,
     sync_obsreset,
+    sync_restart,
     sync_set_to_standby,
     time_it,
 )
@@ -131,3 +132,14 @@ def obsreset_sub():
     SubarrayNodeLow = DeviceProxy("ska_low/tm_subarray_node/1")
     SubarrayNodeLow.ObsReset()
     LOGGER.info("ObsReset command invoked on SubarrayNodeLow.")
+
+
+@sync_restart
+def restart():
+    resource("ska_low/tm_subarray_node/1").assert_attribute("obsState").equals(
+        "ABORTED"
+    )
+    SubarrayNode = DeviceProxy("ska_low/tm_subarray_node/1")
+    SubarrayNode.Restart()
+    LOGGER.info("Subarray obsState is: " + str(SubarrayNode.obsState))
+    LOGGER.info("Invoked restart on Subarray")

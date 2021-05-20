@@ -6,7 +6,6 @@ from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 
 from . import const
-from subarraynodelow.device_data import DeviceData
 
 
 class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
@@ -29,10 +28,11 @@ class ReleaseAllResources(SKASubarray.ReleaseAllResourcesCommand):
             (ResultCode, str)
 
         """
-        device_data = DeviceData.get_instance()
+        device_data = self.target
         device_data.is_release_resources = True
         device_data.is_abort_command_executed = False
         device_data.is_obsreset_command_executed = False
+        device_data.is_restart_command_executed = False
         # TODO: Clearing the assigned resources
         device_data.resource_list = []
         self.logger.debug(const.STR_RELEASE_SUCCESS)
