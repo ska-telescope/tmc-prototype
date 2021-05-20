@@ -176,9 +176,9 @@
                   "low-mccs/subarray/01/obsState"
                 ]
               },
-              "assigned_resources": {
+              "mccs_assigned_resources": {
                 "__root_att": [
-                  "low-mccs/subarray/01/assigned_resources"
+                  "low-mccs/control/control/assignedResources"
                 ]
               },
               "healthState": {
