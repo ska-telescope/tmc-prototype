@@ -15,7 +15,6 @@ from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
-from .device_data import DeviceData
 
 
 class On(SKASubarray.OnCommand):
@@ -41,10 +40,11 @@ class On(SKASubarray.OnCommand):
         raises:
             DevFailed if the command execution is not successful
         """
-        device_data = DeviceData.get_instance()
+        device_data = self.target
         device_data.is_release_resources = False
         device_data.is_abort_command_executed = False
         device_data.is_obsreset_command_executed = False
+        device_data.is_restart_command_executed = False
         this_server = TangoServerHelper.get_instance()
         try:
             mccs_subarray_ln_fqdn = ""

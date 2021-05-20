@@ -29,8 +29,8 @@ from subarraynodelow.scan_command import Scan
 from subarraynodelow.end_scan_command import EndScan
 from subarraynodelow.end_command import End
 from subarraynodelow.obsreset_command import ObsReset
-
 from subarraynodelow.abort_command import Abort
+from subarraynodelow.restart_command import Restart
 from subarraynodelow.device_data import DeviceData
 from tmc.common.tango_server_helper import TangoServerHelper
 from subarraynodelow.health_state_aggregator import HealthStateAggregator
@@ -297,6 +297,20 @@ def test_abort_raise_devfailed(
     abort_cmd = Abort(device_data, subarray_state_model)
     with pytest.raises(tango.DevFailed) as df:
         abort_cmd.do()
+    assert "This is error message for devfailed" in str(df.value)
+
+
+def test_restart_command(device_data, subarray_state_model, mock_lower_devices_proxy):
+    restart_cmd = Restart(device_data, subarray_state_model)
+    assert restart_cmd.do() == (ResultCode.STARTED, const.STR_RESTART_SUCCESS)
+
+
+def test_restart_raise_devfailed(device_data, subarray_state_model, mock_lower_devices_proxy):
+    device_proxy, tango_client_obj = mock_lower_devices_proxy
+    tango_client_obj.deviceproxy.command_inout.side_effect = raise_devfailed_exception
+    restart_cmd = Restart(device_data, subarray_state_model)
+    with pytest.raises(tango.DevFailed) as df:
+        restart_cmd.do()
     assert "This is error message for devfailed" in str(df.value)
 
 
