@@ -49,7 +49,7 @@ class ObsReset(BaseCommand):
         # device_data = self.target
         # sdp_sa_ln_client = TangoClient(device_data._sdp_sa_fqdn)
 
-        if sdp_sa_client.get_attribute("obsState") not in [ObsState.ABORTED, ObsState.FAULT]:
+        if sdp_sa_client.get_attribute("obsState").value not in [ObsState.ABORTED, ObsState.FAULT]:
             tango.Except.throw_exception(const.ERR_DEVICE_NOT_ABORTED_FAULT, const.ERR_OBSRESET_INVOKING_CMD,
                                             "SdpSubarrayLeafNode.ObsReset()",
                                             tango.ErrSeverity.ERR)
