@@ -51,7 +51,7 @@ class ReleaseAllResources(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
 
-        if sdp_sa_client.get_attribute("obsState") != ObsState.IDLE:
+        if sdp_sa_client.get_attribute("obsState").value != ObsState.IDLE:
             tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, const.ERR_RELEASE_RESOURCES,
                                             "SdpSubarrayLeafNode.ReleaseAllResources()",
                                             tango.ErrSeverity.ERR)

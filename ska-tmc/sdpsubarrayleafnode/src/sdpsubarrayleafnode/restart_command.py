@@ -46,7 +46,7 @@ class Restart(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
 
-        if sdp_sa_client.get_attribute("obsState") not in [ObsState.ABORTED, ObsState.FAULT]:
+        if sdp_sa_client.get_attribute("obsState").value not in [ObsState.ABORTED, ObsState.FAULT]:
             tango.Except.throw_exception(const.ERR_DEVICE_NOT_ABORTED_FAULT, const.ERR_RESTART_INVOKING_CMD,
                                         "SdpSubarrayLeafNode.Restart()",
                                         tango.ErrSeverity.ERR)
