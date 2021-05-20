@@ -8,7 +8,7 @@ from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
-
+from ska.base.control_model import ObsState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -33,6 +33,10 @@ class ObsReset(BaseCommand):
         :raises: DevFailed if this command is not allowed to be run in current device state
 
         """
+        this_server = TangoServerHelper.get_instance()
+        sdp_subarray_fqdn = this_server.read_property("SdpSubarrayFQDN")[0]
+        sdp_sa_client = TangoClient(sdp_subarray_fqdn)
+
         if self.state_model.op_state in [DevState.UNKNOWN, DevState.DISABLE]:
             tango.Except.throw_exception(
                 f"ObsResetCommand() is not allowed in current state {self.state_model.op_state}",
@@ -44,10 +48,11 @@ class ObsReset(BaseCommand):
         # TODO: Mock obs_state issue to be resolved
         # device_data = self.target
         # sdp_sa_ln_client = TangoClient(device_data._sdp_sa_fqdn)
-        # if sdp_sa_ln_client.get_attribute("obsState") not in [ObsState.ABORTED, ObsState.FAULT]:
-        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_ABORTED_FAULT, "Failed to invoke ObsReset command on SdpSubarrayLeafNode."
-        #                                     "SdpSubarrayLeafNode.ObsReset()",
-        #                                     tango.ErrSeverity.ERR)
+
+        if sdp_sa_client.get_attribute("obsState") not in [ObsState.ABORTED, ObsState.FAULT]:
+            tango.Except.throw_exception(const.ERR_DEVICE_NOT_ABORTED_FAULT, const.ERR_OBSRESET_INVOKING_CMD,
+                                            "SdpSubarrayLeafNode.ObsReset()",
+                                            tango.ErrSeverity.ERR)
         return True
 
     def obsreset_cmd_ended_cb(self, event):

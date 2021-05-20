@@ -8,10 +8,9 @@ from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
-
+from ska.base.control_model import ObsState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
-
 from . import const
 from .transaction_id import identify_with_id
 
@@ -36,6 +35,10 @@ class Configure(BaseCommand):
         :raises: Exception if command execution throws any type of exception
 
         """
+        this_server = TangoServerHelper.get_instance()
+        sdp_subarray_fqdn = this_server.read_property("SdpSubarrayFQDN")[0]
+        sdp_sa_client = TangoClient(sdp_subarray_fqdn)
+
         if self.state_model.op_state in [
             DevState.FAULT,
             DevState.UNKNOWN,
@@ -48,7 +51,10 @@ class Configure(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
 
-        # TODO: Mock obs_state issue to be resolved
+        if sdp_sa_client.get_attribute("obsState").value not in [ObsState.IDLE, ObsState.READY]:
+            tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_OR_IDLE, const.ERR_CONFIGURE,
+                                         "SdpSubarrayLeafNode.ConfigureCommand",
+                                         tango.ErrSeverity.ERR)
         return True
 
     def configure_cmd_ended_cb(self, event):

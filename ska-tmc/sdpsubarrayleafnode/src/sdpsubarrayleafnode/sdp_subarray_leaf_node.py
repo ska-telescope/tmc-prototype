@@ -464,11 +464,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler(argin)
 
     def validate_obs_state(self):
-        device_data = self.target
-        device_data = DeviceData.get_instance()
         this_server = TangoServerHelper.get_instance()
-        sdp_sa_ln_client_obj=TangoClient(this_server.read_property("SdpSubarrayFQDN")[0])
-        if sdp_sa_ln_client_obj.deviceproxy.obsState in [
+        sdp_subarray_fqdn = this_server.read_property("SdpSubarrayFQDN")[0]
+        sdp_sa_client = TangoClient(sdp_subarray_fqdn)
+        if sdp_sa_client.deviceproxy.obsState in [
             ObsState.EMPTY,
             ObsState.IDLE,
         ]:

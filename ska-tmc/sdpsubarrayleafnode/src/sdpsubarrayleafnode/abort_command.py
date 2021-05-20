@@ -7,9 +7,8 @@ from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
-
+from ska.base.control_model import ObsState
 from tmc.common.tango_client import TangoClient
-
 from . import const
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -32,6 +31,10 @@ class Abort(BaseCommand):
         :raises: DevFailed if this command is not allowed to be run in current device state
 
         """
+        this_server = TangoServerHelper.get_instance()
+        sdp_subarray_fqdn = this_server.read_property("SdpSubarrayFQDN")[0]
+        sdp_sa_client = TangoClient(sdp_subarray_fqdn)
+
         if self.state_model.op_state in [
             DevState.FAULT,
             DevState.UNKNOWN,
@@ -44,7 +47,13 @@ class Abort(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
 
-        # TODO: Mock obs_state issue to be resolved
+        if sdp_sa_client.get_attribute("obsState").value not in [ObsState.READY, ObsState.CONFIGURING,
+                                                                 ObsState.SCANNING,
+                                                                 ObsState.IDLE, ObsState.RESETTING]:
+            tango.Except.throw_exception(const.ERR_ABORT_INVOKING_CMD, const.ERR_ABORT_INVOKING_CMD,
+                                         "SdpSubarrayLeafNode.AbortCommand",
+                                         tango.ErrSeverity.ERR)
+
         return True
 
     def abort_cmd_ended_cb(self, event):
