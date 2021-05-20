@@ -7,7 +7,7 @@ from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
-
+from ska.base.control_model import ObsState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -40,6 +40,10 @@ class AssignResources(BaseCommand):
         :raises: Exception if command execution throws any type of exception.
 
         """
+        this_server = TangoServerHelper.get_instance()
+        sdp_subarray_fqdn = this_server.read_property("SdpSubarrayFQDN")[0]
+        sdp_sa_client = TangoClient(sdp_subarray_fqdn)
+
         if self.state_model.op_state in [
             DevState.FAULT,
             DevState.UNKNOWN,
@@ -52,6 +56,10 @@ class AssignResources(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
 
+        if sdp_sa_client.get_attribute("obsState") not in [ObsState.EMPTY, ObsState.IDLE]:
+            tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_EMPTY_IDLE, const.ERR_ASSGN_RESOURCES,
+                                        "SdpSubarrayLeafNode.AssignResources()",
+                                        tango.ErrSeverity.ERR)
         return True
 
     def assign_resources_ended(self, event):

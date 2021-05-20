@@ -36,6 +36,7 @@ ERR_INVALID_JSON_SCAN = (
     "Invalid JSON format while invoking Scan command on SDP Subarray."
 )
 ERR_DEVICE_NOT_IN_SCAN = "SdpSubarray is not in SCANNING state."
+ERR_DEVICE_NOT_IN_EMPTY_IDLE = "SdpSubarray is not in EMPTY/IDLE state."
 ERR_EXCEPT_CMD_CB = "Exception in CommandCallback: \n"
 ERR_EXCEPT_RELEASE_ALL_RESOURCES_CMD_CB = (
     "Exception in ReleaseAllResources CommandCallback: \n"
