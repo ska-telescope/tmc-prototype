@@ -3,7 +3,6 @@
 override class with command handlers for dsh-lmc.
 """
 # Standard python imports
-import time
 import enum
 import logging
 
