@@ -40,10 +40,6 @@ class AssignResources(BaseCommand):
         :raises: Exception if command execution throws any type of exception.
 
         """
-        this_server = TangoServerHelper.get_instance()
-        sdp_subarray_fqdn = this_server.read_property("SdpSubarrayFQDN")[0]
-        sdp_sa_client = TangoClient(sdp_subarray_fqdn)
-
         if self.state_model.op_state in [
             DevState.FAULT,
             DevState.UNKNOWN,
@@ -56,10 +52,6 @@ class AssignResources(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
 
-        if sdp_sa_client.get_attribute("obsState") not in [ObsState.EMPTY, ObsState.IDLE]:
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_EMPTY_IDLE, const.ERR_ASSGN_RESOURCES,
-                                        "SdpSubarrayLeafNode.AssignResources()",
-                                        tango.ErrSeverity.ERR)
         return True
 
     def assign_resources_ended(self, event):
@@ -146,8 +138,6 @@ class AssignResources(BaseCommand):
         """
         this_server = TangoServerHelper.get_instance()
         try:
-            # TODO: When ObsState check related issue is resolved
-            # device.validate_obs_state()
             # Call SDP Subarray Command asynchronously
             sdp_sa_ln_client_obj=TangoClient(this_server.read_property("SdpSubarrayFQDN")[0])
             sdp_sa_ln_client_obj.send_command_async(
@@ -156,15 +146,6 @@ class AssignResources(BaseCommand):
             # Update the status of command execution status in activity message
             this_server.write_attr("activityMessage", const.STR_ASSIGN_RESOURCES_SUCCESS, False)
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
-
-        except InvalidObsStateError as error:
-            self.logger.exception(error)
-            tango.Except.throw_exception(
-                const.ERR_DEVICE_NOT_EMPTY_OR_IDLE,
-                "Failed to invoke AssignResources command on ",
-                "SDP.AssignResources",
-                tango.ErrSeverity.ERR,
-            )
 
         except ValueError as value_error:
             log_msg = f"{const.ERR_INVALID_JSON}{value_error}"

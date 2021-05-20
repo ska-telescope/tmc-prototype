@@ -277,7 +277,15 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         Assigns resources to given SDP subarray.
         """
+
         handler = self.get_command_object("AssignResources")
+        try:
+            self.validate_obs_state()
+        except InvalidObsStateError as error:
+            self.logger.exception(error)
+            tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_EMPTY_IDLE, const.ERR_ASSGN_RESOURCES,
+                                        "SdpSubarrayLeafNode.AssignResources()",
+                                        tango.ErrSeverity.ERR)
         handler(argin)
 
     def is_AssignResources_allowed(self):
@@ -467,10 +475,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         this_server = TangoServerHelper.get_instance()
         sdp_subarray_fqdn = this_server.read_property("SdpSubarrayFQDN")[0]
         sdp_sa_client = TangoClient(sdp_subarray_fqdn)
-        if sdp_sa_client.deviceproxy.obsState in [
-            ObsState.EMPTY,
-            ObsState.IDLE,
-        ]:
+        if sdp_sa_client.get_attribute("obsState").value in [ObsState.EMPTY, ObsState.IDLE]:
             self.logger.info(
                 "SDP subarray is in required obstate,Hence resources to SDP can be assign."
             )
