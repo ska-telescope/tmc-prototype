@@ -68,7 +68,7 @@ class OverrideDish(object):
             set_enum(ds_indexer_position, "B{}".format(band_number), model.time_func())
             set_enum(configured_band, "B{}".format(band_number), model.time_func())
             model.logger.info(
-                "Done configuring DISH to operate in frequency band" " {}.".format(band_number)
+                "Done configuring DISH to operate in frequency band {}.".format(band_number)
             )
             model.logger.info("DISH reverting back to '{}' mode.".format(dish_mode))
             set_enum(dish_mode_quantity, dish_mode, model.time_func())
