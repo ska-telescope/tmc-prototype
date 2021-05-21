@@ -31,9 +31,9 @@ class Abort(BaseCommand):
         :raises: DevFailed if this command is not allowed to be run in current device state
 
         """
-        this_server = TangoServerHelper.get_instance()
-        sdp_subarray_fqdn = this_server.read_property("SdpSubarrayFQDN")[0]
-        sdp_sa_client = TangoClient(sdp_subarray_fqdn)
+        self.this_server = TangoServerHelper.get_instance()
+        sdp_subarray_fqdn = self.this_server.read_property("SdpSubarrayFQDN")[0]
+        self.sdp_sa_ln_client_obj = TangoClient(sdp_subarray_fqdn)
 
         if self.state_model.op_state in [
             DevState.FAULT,
@@ -47,7 +47,7 @@ class Abort(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
 
-        if sdp_sa_client.get_attribute("obsState").value not in [ObsState.READY, ObsState.CONFIGURING,
+        if self.sdp_sa_ln_client_obj.get_attribute("obsState").value not in [ObsState.READY, ObsState.CONFIGURING,
                                                                  ObsState.SCANNING,
                                                                  ObsState.IDLE, ObsState.RESETTING]:
             tango.Except.throw_exception(const.ERR_ABORT_INVOKING_CMD, const.ERR_ABORT_INVOKING_CMD,
@@ -78,14 +78,13 @@ class Abort(BaseCommand):
 
         :return: none
         """
-        this_server = TangoServerHelper.get_instance()
         if event.err:
             log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
-            this_server.write_attr("activityMessage", log, False)
+            self.this_server.write_attr("activityMessage", log, False)
             self.logger.error(log)
         else:
             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            this_server.write_attr("activityMessage", log, False)
+            self.this_server.write_attr("activityMessage", log, False)
             self.logger.info(log)
 
     def do(self):
@@ -99,18 +98,16 @@ class Abort(BaseCommand):
             DevFailed if error occurs while invoking command on SDP Subarray.
 
         """
-        this_server = TangoServerHelper.get_instance()
         try:
-            sdp_sa_ln_client_obj=TangoClient(this_server.read_property("SdpSubarrayFQDN")[0])
-            sdp_sa_ln_client_obj.send_command_async(
+            self.sdp_sa_ln_client_obj.send_command_async(
                 const.CMD_ABORT, callback_method=self.abort_cmd_ended_cb
                 )
-            this_server.write_attr("activityMessage", const.STR_ABORT_SUCCESS, False)
+            self.this_server.write_attr("activityMessage", const.STR_ABORT_SUCCESS, False)
             self.logger.info(const.STR_ABORT_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_ABORT_INVOKING_CMD}{dev_failed}"
-            this_server.write_attr("activityMessage", log_msg, False)
+            self.this_server.write_attr("activityMessage", log_msg, False)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_ABORT_EXEC,

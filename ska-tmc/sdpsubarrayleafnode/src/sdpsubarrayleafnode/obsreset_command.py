@@ -33,9 +33,9 @@ class ObsReset(BaseCommand):
         :raises: DevFailed if this command is not allowed to be run in current device state
 
         """
-        this_server = TangoServerHelper.get_instance()
-        sdp_subarray_fqdn = this_server.read_property("SdpSubarrayFQDN")[0]
-        sdp_sa_client = TangoClient(sdp_subarray_fqdn)
+        self.this_server = TangoServerHelper.get_instance()
+        sdp_subarray_fqdn = self.this_server.read_property("SdpSubarrayFQDN")[0]
+        self.sdp_sa_ln_client_obj = TangoClient(sdp_subarray_fqdn)
 
         if self.state_model.op_state in [DevState.UNKNOWN, DevState.DISABLE]:
             tango.Except.throw_exception(
@@ -49,7 +49,7 @@ class ObsReset(BaseCommand):
         # device_data = self.target
         # sdp_sa_ln_client = TangoClient(device_data._sdp_sa_fqdn)
 
-        if sdp_sa_client.get_attribute("obsState").value not in [ObsState.ABORTED, ObsState.FAULT]:
+        if self.sdp_sa_ln_client_obj.get_attribute("obsState").value not in [ObsState.ABORTED, ObsState.FAULT]:
             tango.Except.throw_exception(const.ERR_DEVICE_NOT_ABORTED_FAULT, const.ERR_OBSRESET_INVOKING_CMD,
                                             "SdpSubarrayLeafNode.ObsReset()",
                                             tango.ErrSeverity.ERR)
@@ -77,14 +77,13 @@ class ObsReset(BaseCommand):
 
         :return: none
         """
-        this_server = TangoServerHelper.get_instance()
         if event.err:
             log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
-            this_server.write_attr("activityMessage", log, False)
+            self.this_server.write_attr("activityMessage", log, False)
             self.logger.error(log)
         else:
             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            this_server.write_attr("activityMessage", log, False)
+            self.this_server.write_attr("activityMessage", log, False)
             self.logger.info(log)
 
     def do(self):
@@ -100,18 +99,16 @@ class ObsReset(BaseCommand):
             DevFailed if error occurs while invoking command on SDP Subarray.
 
         """
-        this_server = TangoServerHelper.get_instance()
         try:
-            sdp_sa_ln_client_obj=TangoClient(this_server.read_property("SdpSubarrayFQDN")[0])
-            sdp_sa_ln_client_obj.send_command_async(
+            self.sdp_sa_ln_client_obj.send_command_async(
                 const.CMD_OBSRESET, None, self.obsreset_cmd_ended_cb
             )
-            this_server.write_attr("activityMessage", const.STR_OBSRESET_SUCCESS, False)
+            self.this_server.write_attr("activityMessage", const.STR_OBSRESET_SUCCESS, False)
             self.logger.info(const.STR_OBSRESET_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_OBSRESET_INVOKING_CMD}{dev_failed}"
-            this_server.write_attr("activityMessage", log_msg, False)
+            self.this_server.write_attr("activityMessage", log_msg, False)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_OBSRESET_EXEC,

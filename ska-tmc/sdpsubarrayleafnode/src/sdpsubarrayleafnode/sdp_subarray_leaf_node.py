@@ -151,8 +151,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             super().do()
             device = self.target
-            this_server = TangoServerHelper.get_instance()
-            this_server.set_tango_class(device)
+            self.this_server = TangoServerHelper.get_instance()
+            self.this_server.set_tango_class(device)
             device.attr_map = {}
             device.attr_map["receiveAddresses"] = ""
             device.attr_map["activeProcessingBlocks"] = ""
@@ -172,7 +172,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
-            this_server.write_attr("activityMessage", const.STR_SDPSALN_INIT_SUCCESS, False)
+            self.this_server.write_attr("activityMessage", const.STR_SDPSALN_INIT_SUCCESS, False)
             # Initialise Device status
             device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
             self.logger.info(const.STR_SDPSALN_INIT_SUCCESS)
@@ -472,8 +472,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler(argin)
 
     def validate_obs_state(self):
-        this_server = TangoServerHelper.get_instance()
-        sdp_subarray_fqdn = this_server.read_property("SdpSubarrayFQDN")[0]
+        self.this_server = TangoServerHelper.get_instance()
+        sdp_subarray_fqdn = self.this_server.read_property("SdpSubarrayFQDN")[0]
         sdp_sa_client = TangoClient(sdp_subarray_fqdn)
         if sdp_sa_client.get_attribute("obsState").value in [ObsState.EMPTY, ObsState.IDLE]:
             self.logger.info(
@@ -482,7 +482,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         else:
             self.logger.error("Subarray is not in EMPTY obstate")
             log_msg = "Error in device obstate."
-            this_server.write_attr("activityMessage", log_msg, False)
+            self.this_server.write_attr("activityMessage", log_msg, False)
             raise InvalidObsStateError("SDP subarray is not in EMPTY obstate.")
 
     def init_command_objects(self):

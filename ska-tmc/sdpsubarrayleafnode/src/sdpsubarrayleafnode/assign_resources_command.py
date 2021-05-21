@@ -136,8 +136,8 @@ class AssignResources(BaseCommand):
 
             DevFailed if the command execution is not successful.
         """
-        this_server = TangoServerHelper.get_instance()
         try:
+            this_server = TangoServerHelper.get_instance()
             # Call SDP Subarray Command asynchronously
             sdp_sa_ln_client_obj=TangoClient(this_server.read_property("SdpSubarrayFQDN")[0])
             sdp_sa_ln_client_obj.send_command_async(

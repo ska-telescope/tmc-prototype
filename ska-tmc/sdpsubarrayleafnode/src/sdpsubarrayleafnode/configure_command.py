@@ -35,9 +35,9 @@ class Configure(BaseCommand):
         :raises: Exception if command execution throws any type of exception
 
         """
-        this_server = TangoServerHelper.get_instance()
-        sdp_subarray_fqdn = this_server.read_property("SdpSubarrayFQDN")[0]
-        sdp_sa_client = TangoClient(sdp_subarray_fqdn)
+        self.this_server = TangoServerHelper.get_instance()
+        sdp_subarray_fqdn = self.this_server.read_property("SdpSubarrayFQDN")[0]
+        sdp_sa_ln_client_obj = TangoClient(sdp_subarray_fqdn)
 
         if self.state_model.op_state in [
             DevState.FAULT,
@@ -51,7 +51,7 @@ class Configure(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
 
-        if sdp_sa_client.get_attribute("obsState").value not in [ObsState.IDLE, ObsState.READY]:
+        if sdp_sa_ln_client_obj.get_attribute("obsState").value not in [ObsState.IDLE, ObsState.READY]:
             tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_OR_IDLE, const.ERR_CONFIGURE,
                                          "SdpSubarrayLeafNode.ConfigureCommand",
                                          tango.ErrSeverity.ERR)
@@ -78,14 +78,13 @@ class Configure(BaseCommand):
 
         :return: none
         """
-        this_server = TangoServerHelper.get_instance()
         if event.err:
             log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
-            this_server.write_attr("activityMessage", log, False)
+            self.this_server.write_attr("activityMessage", log, False)
             self.logger.error(log)
         else:
             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            this_server.write_attr("activityMessage", log, False)
+            self.this_server.write_attr("activityMessage", log, False)
             self.logger.info(log)
 
     @identify_with_id("configure", "argin")
