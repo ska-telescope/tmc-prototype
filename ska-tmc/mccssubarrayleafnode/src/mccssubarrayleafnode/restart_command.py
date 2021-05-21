@@ -51,14 +51,6 @@ class Restart(BaseCommand):
             tango.Except.throw_exception(const.ERR_INVOKING_CMD, const.ERR_RESTART_COMMAND,
                                             "MccsSubarrayLeafNode.RestartCommand",
                                             tango.ErrSeverity.ERR)
-        # TODO : ObsState is not getting checked. Can be uncommented once issue get resolved.
-        # this_server = TangoServerHelper.get_instance()
-        # mccs_subarray_fqdn = this_server.read_property("MccsSubarrayFQDN")[0]
-        # mccs_sa_client = TangoClient(mccs_subarray_fqdn)
-        # if mccs_sa_client.get_attribute("obsState").value not in [ObsState.FAULT, ObsState.ABORTED]:
-        #     tango.Except.throw_exception(const.ERR_INVOKING_CMD, const.ERR_RESTART_COMMAND,
-        #                                     "MccsSubarrayLeafNode.RestartCommand",
-        #                                     tango.ErrSeverity.ERR)
         
         return True
 
@@ -84,7 +76,6 @@ class Restart(BaseCommand):
 
         :return: none
         """
-        # this_server = TangoServerHelper.get_instance()
         # Update logs and activity message attribute with received event
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
@@ -108,7 +99,6 @@ class Restart(BaseCommand):
             DevFailed if the command execution is not successful
 
         """
-        # this_server = TangoServerHelper.get_instance()
         try:
             # On mccs side this implementation is not finalize yet modifications are expected.
             # Hence hardcoded controller FQDN and input arguement (subarray ID).

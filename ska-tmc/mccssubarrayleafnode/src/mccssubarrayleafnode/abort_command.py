@@ -46,8 +46,8 @@ class Abort(BaseCommand):
             )
         self.this_server = TangoServerHelper.get_instance()
         self.mccs_sa_fqdn = self.this_server.read_property("MccsSubarrayFQDN")[0]
-        mccs_sa_client = TangoClient(self.mccs_sa_fqdn)
-        if mccs_sa_client.get_attribute("obsState").value not in [ObsState.READY, ObsState.CONFIGURING, ObsState.SCANNING,
+        self.mccs_sa_client = TangoClient(self.mccs_sa_fqdn)
+        if self.mccs_sa_client.get_attribute("obsState").value not in [ObsState.READY, ObsState.CONFIGURING, ObsState.SCANNING,
                                                         ObsState.IDLE, ObsState.RESETTING]:
             tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_VALID_OBSTATE, const.ERR_ABORT_COMMAND,
                                             "MccsSubarrayLeafNode.Abort()",
@@ -99,10 +99,7 @@ class Abort(BaseCommand):
 
         """
         try:
-            mccs_subarray_fqdn = ""
-            mccs_subarray_fqdn = mccs_subarray_fqdn.join(self.mccs_sa_fqdn)
-            mccs_subarray_client = TangoClient(mccs_subarray_fqdn)
-            mccs_subarray_client.send_command_async(
+            self.mccs_sa_client.send_command_async(
                 const.CMD_ABORT, None, self.abort_cmd_ended_cb
             )
             self.this_server.write_attr("activityMessage", const.STR_ABORT_SUCCESS, False)

@@ -93,10 +93,7 @@ class ObsReset(BaseCommand):
             DevFailed if error occurs while invoking the command on MccsSubarray.
         """
         try:
-            mccs_subarray_fqdn = ""
-            mccs_subarray_fqdn = mccs_subarray_fqdn.join(self.mccs_sa_fqdn)
-            mccs_subarray_client = TangoClient(mccs_subarray_fqdn)
-            mccs_subarray_client.send_command_async(
+            self.mccs_sa_client.send_command_async(
                 const.CMD_OBSRESET, None, self.obsreset_cmd_ended_cb
             )
             self.this_server.write_attr("activityMessage", const.STR_OBSRESET_SUCCESS, False)
