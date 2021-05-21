@@ -151,8 +151,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             super().do()
             device = self.target
-            this_server = TangoServerHelper.get_instance()
-            this_server.set_tango_class(device)
+            self.this_server = TangoServerHelper.get_instance()
+            self.this_server.set_tango_class(device)
             device.attr_map = {}
             device.attr_map["receiveAddresses"] = ""
             device.attr_map["activeProcessingBlocks"] = ""
@@ -172,7 +172,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
-            this_server.write_attr("activityMessage", const.STR_SDPSALN_INIT_SUCCESS, False)
+            self.this_server.write_attr("activityMessage", const.STR_SDPSALN_INIT_SUCCESS, False)
             # Initialise Device status
             device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
             self.logger.info(const.STR_SDPSALN_INIT_SUCCESS)
@@ -277,7 +277,15 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         Assigns resources to given SDP subarray.
         """
+
         handler = self.get_command_object("AssignResources")
+        try:
+            self.validate_obs_state()
+        except InvalidObsStateError as error:
+            self.logger.exception(error)
+            tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_EMPTY_IDLE, const.ERR_ASSGN_RESOURCES,
+                                        "SdpSubarrayLeafNode.AssignResources()",
+                                        tango.ErrSeverity.ERR)
         handler(argin)
 
     def is_AssignResources_allowed(self):
@@ -464,21 +472,17 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler(argin)
 
     def validate_obs_state(self):
-        device_data = self.target
-        device_data = DeviceData.get_instance()
-        this_server = TangoServerHelper.get_instance()
-        sdp_sa_ln_client_obj=TangoClient(this_server.read_property("SdpSubarrayFQDN")[0])
-        if sdp_sa_ln_client_obj.deviceproxy.obsState in [
-            ObsState.EMPTY,
-            ObsState.IDLE,
-        ]:
+        self.this_server = TangoServerHelper.get_instance()
+        sdp_subarray_fqdn = self.this_server.read_property("SdpSubarrayFQDN")[0]
+        sdp_sa_client = TangoClient(sdp_subarray_fqdn)
+        if sdp_sa_client.get_attribute("obsState").value in [ObsState.EMPTY, ObsState.IDLE]:
             self.logger.info(
                 "SDP subarray is in required obstate,Hence resources to SDP can be assign."
             )
         else:
             self.logger.error("Subarray is not in EMPTY obstate")
             log_msg = "Error in device obstate."
-            this_server.write_attr("activityMessage", log_msg, False)
+            self.this_server.write_attr("activityMessage", log_msg, False)
             raise InvalidObsStateError("SDP subarray is not in EMPTY obstate.")
 
     def init_command_objects(self):
