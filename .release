@@ -14,5 +14,5 @@ release=0.6.7
 tag=0.6.7
 tag_description=Solved polling thread sync errors.
 release_notes=This release contains:<br/><ul><li>Solved polling thread sync errors</li><li>Disabled polling for non-key attributes.</li></ul><br/>
-gitlab_username=p.dube
-private_token=xjvtXhbHz7J6edtscKqD
+gitlab_username=kmadisa
+private_token=X4FBs-HMTzHzncunTACF
