@@ -86,10 +86,7 @@ server:
                         - "false"
   {{- end}}
 depends_on:
-{{- range  .Values.coalesced_subarray_devices }}
-  - device: ska_mid/tm_leaf_node/csp_subarray{{ . }}
-  - device: ska_mid/tm_leaf_node/sdp_subarray{{ . }}
-{{- end }}
+  - device: sys/database/2
 image:
   registry: "{{.Values.subarraynodemid.image.registry}}"
   image: "{{.Values.subarraynodemid.image.image}}"

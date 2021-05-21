@@ -45,10 +45,3 @@ image:
   image: "{{.Values.global.skatmc.image}}"
   tag: "{{.Values.global.skatmc.tag}}"
   pullPolicy: "{{.Values.global.skatmc.pullPolicy}}"
-resources:
-      limits:
-        cpu: 300m
-        memory: 500Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi

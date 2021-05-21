@@ -44,6 +44,7 @@ class Abort(SKASubarray.AbortCommand):
         device_data.is_release_resources = False
         device_data.is_end_command = False
         device_data.is_obsreset_command_executed = False
+        device_data.is_restart_command_executed = False
         this_server = TangoServerHelper.get_instance()
         try:
             if device_data.scan_timer_handler.is_scan_running():

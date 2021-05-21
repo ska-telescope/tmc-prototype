@@ -40,6 +40,7 @@ class DeviceData:
         self.isScanRunning = False
         self.is_abort_command_executed = False
         self.is_obsreset_command_executed = False
+        self.is_restart_command_executed = False
         self.scan_duration = None
         self.health_state_aggregator = None
         self.obs_state_aggregator = None
