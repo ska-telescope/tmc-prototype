@@ -1,18 +1,18 @@
 """Release information for Python Package"""
 
 name="""ska-tmc"""
-version="0.6.7"
+version="0.6.8"
 version_info=version.split(".")
 description="""SKA-TMC"""
-author="Team Karoo"
-author_email="cam+karoo@ska.ac.za"
+author="Team NCRA"
+author_email="telmgt-internal@googlegroups.com"
 license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
 
-release=0.6.7
-tag=0.6.7
-tag_description=Solved polling thread sync errors.
-release_notes=This release contains:<br/><ul><li>Solved polling thread sync errors</li><li>Disabled polling for non-key attributes.</li></ul><br/>
-gitlab_username=kmadisa
-private_token=X4FBs-HMTzHzncunTACF
+release=0.6.8
+tag=0.6.8
+tag_description=Updated DishLeafNode to implement fix for SKB-64.
+release_notes=This release contains:<br/><ul><li>Update DishLeafNode to implement fix for SKB-64</li></ul><br/>
+gitlab_username=apurvapatkar
+private_token=sGdaPN4s87-e3EpiYjUh
