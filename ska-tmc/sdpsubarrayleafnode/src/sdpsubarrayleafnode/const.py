@@ -36,6 +36,7 @@ ERR_INVALID_JSON_SCAN = (
     "Invalid JSON format while invoking Scan command on SDP Subarray."
 )
 ERR_DEVICE_NOT_IN_SCAN = "SdpSubarray is not in SCANNING state."
+ERR_DEVICE_NOT_IN_EMPTY_IDLE = "SdpSubarray is not in EMPTY/IDLE state."
 ERR_EXCEPT_CMD_CB = "Exception in CommandCallback: \n"
 ERR_EXCEPT_RELEASE_ALL_RESOURCES_CMD_CB = (
     "Exception in ReleaseAllResources CommandCallback: \n"
@@ -55,6 +56,7 @@ ERR_DEVICE_NOT_READY_IDLE_CONFIG_SCAN_RESET = (
     "SdpSubarray is not in configuring, scanning, resetting, ready or idle state."
 )
 ERR_DEVICE_NOT_ABORTED_FAULT = "SdpSubarray is not in aborted or fault state."
+ERR_DEVICE_NOT_READY_OR_IDLE = "SDP subarray is not in READY or IDLE obsState."
 ERR_INVOKING_CMD = "Error in invoking command: "
 ERR_IN_CREATE_PROXY_SDPSA = "Error in creating proxy of the SDP Subarray device."
 ERR_CMD_FAILED = "SdpSubarrayLeafNode_Commandfailed in callback"
