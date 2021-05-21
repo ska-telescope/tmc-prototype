@@ -3,7 +3,6 @@
 override class with command handlers for dsh-lmc.
 """
 # Standard python imports
-import time
 import enum
 import logging
 
@@ -61,14 +60,14 @@ class OverrideDish(object):
             model.logger.info(
                 "Configuring DISH to operate in frequency band {}.".format(band_number)
             )
-            # Sleep for some time to allow the dishMode to remain in 'CONFIG' to simulate
-            # the real DSH LMC.
-            time.sleep(2)
+
+            # TODO (p.dube 19-05-2021) Implement sleep in a background thread to allow the
+            # dishMode to remain in 'CONFIG' to simulate the real DSH LMC.
+
             set_enum(ds_indexer_position, "B{}".format(band_number), model.time_func())
             set_enum(configured_band, "B{}".format(band_number), model.time_func())
             model.logger.info(
-                "Done configuring DISH to operate in frequency band"
-                " {}.".format(band_number)
+                "Done configuring DISH to operate in frequency band {}.".format(band_number)
             )
             model.logger.info("DISH reverting back to '{}' mode.".format(dish_mode))
             set_enum(dish_mode_quantity, dish_mode, model.time_func())

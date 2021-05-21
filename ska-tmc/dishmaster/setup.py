@@ -49,7 +49,7 @@ setup(
         "pytango>=9.3.2",
         "mock",
         "ska_logging>=0.3.0",
-        "tango-simlib>=0.9.1",
+        "tango-simlib>=0.9.2",
     ],
     # test_suite='test',
     setup_requires=[

@@ -10,7 +10,7 @@
 """Release information for Python Package"""
 
 name = """cspmasterleafnode"""
-version = "0.5.3"
+version = "0.6.7"
 version_info = version.split(".")
 description = """CspMasterLeafNode - Leaf Node to monitor and control CSP Master."""
 author = "Team NCRA"
