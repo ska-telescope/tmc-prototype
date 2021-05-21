@@ -8,10 +8,9 @@ from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
-
+from ska.base.control_model import ObsState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
-
 from . import const
 from .transaction_id import identify_with_id
 
@@ -36,6 +35,10 @@ class Configure(BaseCommand):
         :raises: Exception if command execution throws any type of exception
 
         """
+        self.this_server = TangoServerHelper.get_instance()
+        sdp_subarray_fqdn = self.this_server.read_property("SdpSubarrayFQDN")[0]
+        self.sdp_sa_ln_client_obj = TangoClient(sdp_subarray_fqdn)
+
         if self.state_model.op_state in [
             DevState.FAULT,
             DevState.UNKNOWN,
@@ -48,7 +51,10 @@ class Configure(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
 
-        # TODO: Mock obs_state issue to be resolved
+        if self.sdp_sa_ln_client_obj.get_attribute("obsState").value not in [ObsState.IDLE, ObsState.READY]:
+            tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_OR_IDLE, const.ERR_CONFIGURE,
+                                         "SdpSubarrayLeafNode.ConfigureCommand",
+                                         tango.ErrSeverity.ERR)
         return True
 
     def configure_cmd_ended_cb(self, event):
@@ -72,14 +78,13 @@ class Configure(BaseCommand):
 
         :return: none
         """
-        this_server = TangoServerHelper.get_instance()
         if event.err:
             log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
-            this_server.write_attr("activityMessage", log, False)
+            self.this_server.write_attr("activityMessage", log, False)
             self.logger.error(log)
         else:
             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            this_server.write_attr("activityMessage", log, False)
+            self.this_server.write_attr("activityMessage", log, False)
             self.logger.info(log)
 
     @identify_with_id("configure", "argin")
@@ -103,22 +108,20 @@ class Configure(BaseCommand):
 
             DevFailed if the command execution is not successful
         """
-        this_server = TangoServerHelper.get_instance()
         try:
             log_msg = (
                 "Input JSON for SDP Subarray Leaf Node Configure command is: " + argin
             )
             self.logger.debug(log_msg)
-            sdp_sa_ln_client_obj=TangoClient(this_server.read_property("SdpSubarrayFQDN")[0])
-            sdp_sa_ln_client_obj.send_command_async(
+            self.sdp_sa_ln_client_obj.send_command_async(
                 const.CMD_CONFIGURE, command_data=argin, callback_method=self.configure_cmd_ended_cb
                 )
-            this_server.write_attr("activityMessage", const.STR_CONFIGURE_SUCCESS, False)
+            self.this_server.write_attr("activityMessage", const.STR_CONFIGURE_SUCCESS, False)
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_CONFIGURE}{dev_failed}"
-            this_server.write_attr("activityMessage", log_msg, False)
+            self.this_server.write_attr("activityMessage", log_msg, False)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_CONFIG_EXEC,

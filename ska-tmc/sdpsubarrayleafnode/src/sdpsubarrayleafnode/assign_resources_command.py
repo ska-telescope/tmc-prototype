@@ -7,12 +7,10 @@ from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
-
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
-from .exceptions import InvalidObsStateError
 from .transaction_id import identify_with_id
 
 
@@ -40,6 +38,7 @@ class AssignResources(BaseCommand):
         :raises: Exception if command execution throws any type of exception.
 
         """
+        self.this_server = TangoServerHelper.get_instance()
         if self.state_model.op_state in [
             DevState.FAULT,
             DevState.UNKNOWN,
@@ -65,10 +64,9 @@ class AssignResources(BaseCommand):
 
         return: None
         """
-        this_server = TangoServerHelper.get_instance()
         if event.err:
             log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
-            this_server.write_attr("activityMessage", log, False)
+            self.this_server.write_attr("activityMessage", log, False)
             self.logger.error(log)
             tango.Except.throw_exception(
                 "SDP Subarray returned error while assigning resources",
@@ -78,7 +76,7 @@ class AssignResources(BaseCommand):
             )
         else:
             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            this_server.write_attr("activityMessage", log, False)
+            self.this_server.write_attr("activityMessage", log, False)
             self.logger.debug(log)
 
     @identify_with_id("assign", "argin")
@@ -136,32 +134,20 @@ class AssignResources(BaseCommand):
 
             DevFailed if the command execution is not successful.
         """
-        this_server = TangoServerHelper.get_instance()
         try:
-            # TODO: When ObsState check related issue is resolved
-            # device.validate_obs_state()
             # Call SDP Subarray Command asynchronously
-            sdp_sa_ln_client_obj=TangoClient(this_server.read_property("SdpSubarrayFQDN")[0])
+            sdp_sa_ln_client_obj=TangoClient(self.this_server.read_property("SdpSubarrayFQDN")[0])
             sdp_sa_ln_client_obj.send_command_async(
                 const.CMD_ASSIGN_RESOURCES, command_data=argin, callback_method=self.assign_resources_ended
                 )
             # Update the status of command execution status in activity message
-            this_server.write_attr("activityMessage", const.STR_ASSIGN_RESOURCES_SUCCESS, False)
+            self.this_server.write_attr("activityMessage", const.STR_ASSIGN_RESOURCES_SUCCESS, False)
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
-
-        except InvalidObsStateError as error:
-            self.logger.exception(error)
-            tango.Except.throw_exception(
-                const.ERR_DEVICE_NOT_EMPTY_OR_IDLE,
-                "Failed to invoke AssignResources command on ",
-                "SDP.AssignResources",
-                tango.ErrSeverity.ERR,
-            )
 
         except ValueError as value_error:
             log_msg = f"{const.ERR_INVALID_JSON}{value_error}"
             self.logger.exception(log_msg)
-            this_server.write_attr("activityMessage", f"{const.ERR_INVALID_JSON}{value_error}", False)
+            self.this_server.write_attr("activityMessage", f"{const.ERR_INVALID_JSON}{value_error}", False)
             tango.Except.throw_exception(
                 const.STR_CMD_FAILED,
                 log_msg,
@@ -171,7 +157,7 @@ class AssignResources(BaseCommand):
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_ASSGN_RESOURCES}{dev_failed}"
-            this_server.write_attr("activityMessage", log_msg)
+            self.this_server.write_attr("activityMessage", log_msg)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_ASSIGN_RES_EXEC,
