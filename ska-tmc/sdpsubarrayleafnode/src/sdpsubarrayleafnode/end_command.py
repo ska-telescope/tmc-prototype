@@ -8,10 +8,9 @@ from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
-
+from ska.base.control_model import ObsState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
-
 from . import const
 
 
@@ -34,6 +33,10 @@ class End(BaseCommand):
         :raises: Exception if command execution throws any type of exception.
 
         """
+        self.this_server = TangoServerHelper.get_instance()
+        sdp_subarray_fqdn = self.this_server.read_property("SdpSubarrayFQDN")[0]
+        self.sdp_sa_ln_client_obj = TangoClient(sdp_subarray_fqdn)
+
         if self.state_model.op_state in [
             DevState.FAULT,
             DevState.UNKNOWN,
@@ -46,13 +49,11 @@ class End(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
 
-        # TODO: Mock obs_state issue to be resolved
-        # device_data = self.target
-        # sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
-        # if sdp_sa_ln_client_obj.get_attribute("obsState") != ObsState.READY:
-        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, "Failed to invoke End command on SdpSubarrayLeafNode.",
-        #                                     "SdpSubarrayLeafNode.End()",
-        #                                     tango.ErrSeverity.ERR)
+        if self.sdp_sa_ln_client_obj.get_attribute("obsState").value != ObsState.READY:
+            tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY,
+                                         "Failed to invoke End command on sdpsubarrayleafnode.",
+                                         "SdpSubarrayLeafNode.End",
+                                         tango.ErrSeverity.ERR)
         return True
 
     def end_cmd_ended_cb(self, event):
@@ -77,14 +78,13 @@ class End(BaseCommand):
 
         :return: none
         """
-        this_server = TangoServerHelper.get_instance()
         if event.err:
             log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
-            this_server.write_attr("activityMessage", log, False)
+            self.this_server.write_attr("activityMessage", log, False)
             self.logger.error(log)
         else:
             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            this_server.write_attr("activityMessage", log, False)
+            self.this_server.write_attr("activityMessage", log, False)
             self.logger.info(log)
 
     def do(self):
@@ -97,18 +97,16 @@ class End(BaseCommand):
         raises:
             DevFailed if the command execution is not successful.
         """
-        this_server = TangoServerHelper.get_instance()
         try:
-            sdp_sa_ln_client_obj=TangoClient(this_server.read_property("SdpSubarrayFQDN")[0])
-            sdp_sa_ln_client_obj.send_command_async(
+            self.sdp_sa_ln_client_obj.send_command_async(
                 const.CMD_END, None, self.end_cmd_ended_cb
             )
-            this_server.write_attr("activityMessage", const.STR_END_SUCCESS, False)
+            self.this_server.write_attr("activityMessage", const.STR_END_SUCCESS, False)
             self.logger.info(const.STR_END_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_END_INVOKING_CMD}{dev_failed}"
-            this_server.write_attr("activityMessage", log_msg, False)
+            self.this_server.write_attr("activityMessage", log_msg, False)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_END_EXEC,
