@@ -10,7 +10,6 @@ from ska.base import SKASubarray
 
 from . import const
 from tmc.common.tango_server_helper import TangoServerHelper
-from .assigned_resources_maintainer import AssignedResourcesMaintainer
 
 
 class AssignResources(SKASubarray.AssignResourcesCommand):

@@ -13,7 +13,6 @@ from ska.base import SKASubarray
 
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
-from .assigned_resources_maintainer import AssignedResourcesMaintainer
 
 from . import const
 
