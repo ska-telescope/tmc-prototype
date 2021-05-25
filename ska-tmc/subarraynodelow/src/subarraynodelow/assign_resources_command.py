@@ -56,7 +56,5 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
         log_msg = f"{const.STR_ASSIGN_RES_EXEC}STARTED"
         self.logger.debug(log_msg)
         this_server.write_attr("activityMessage", log_msg, False)
-        device_data.assigned_resources_maintainer = AssignedResourcesMaintainer()
-        device_data.assigned_resources_maintainer.subscribe()
 
         return (ResultCode.STARTED, log_msg)
