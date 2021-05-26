@@ -34,21 +34,20 @@ watch:
 	watch kubectl get all,pv,pvc,ingress -n $(KUBE_NAMESPACE)
 
 namespace: ## create the kubernetes namespace
-	# @kubectl describe namespace $(KUBE_NAMESPACE) > /dev/null 2>&1 ; \
-	# K_DESC=$$? ; \
-	# if [ $$K_DESC -eq 0 ] ; \
-	# then kubectl describe namespace $(KUBE_NAMESPACE); \
-	# else kubectl create namespace $(KUBE_NAMESPACE); \
-	# fi
-	kubectl create namespace $(KUBE_NAMESPACE);
+	@kubectl describe namespace $(KUBE_NAMESPACE) > /dev/null 2>&1 ; \
+		K_DESC=$$? ; \
+		if [ $$K_DESC -eq 0 ] ; \
+		then kubectl describe namespace $(KUBE_NAMESPACE); \
+		else kubectl create namespace $(KUBE_NAMESPACE); \
+		fi
 
 namespace_sdp: ## create the kubernetes namespace for SDP dynamic deployments
 	@kubectl describe namespace $(SDP_KUBE_NAMESPACE) > /dev/null 2>&1 ; \
- 	K_DESC=$$? ; \
-	if [ $$K_DESC -eq 0 ] ; \
-	then kubectl describe namespace $(SDP_KUBE_NAMESPACE) ; \
-	else kubectl create namespace $(SDP_KUBE_NAMESPACE); \
-	fi
+		K_DESC=$$? ; \
+		if [ $$K_DESC -eq 0 ] ; \
+		then kubectl describe namespace $(SDP_KUBE_NAMESPACE) ; \
+		else kubectl create namespace $(SDP_KUBE_NAMESPACE); \
+		fi
 
 delete_namespace: ## delete the kubernetes namespace
 	@if [ "default" == "$(KUBE_NAMESPACE)" ] || [ "kube-system" == "$(KUBE_NAMESPACE)" ]; then \
