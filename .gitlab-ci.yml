@@ -344,7 +344,7 @@ test-mid:
    environment:
      name: test
      kubernetes:
-       namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA
+       namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-mid
    artifacts:
      name: "$CI_PROJECT_NAME-$CI_JOB_ID"
      paths:
