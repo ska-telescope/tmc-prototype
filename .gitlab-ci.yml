@@ -303,6 +303,7 @@ unit tests:
     paths:
       - ./build
 
+
 build-image:
   stage: build
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
