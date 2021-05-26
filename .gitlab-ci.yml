@@ -380,14 +380,14 @@ test-low:
   environment:
     name: test
     kubernetes:
-    namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-low
+      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-low
   artifacts:
     name: "$CI_PROJECT_NAME-$CI_JOB_ID"
     paths:
       - build
     reports:
       junit: build/report.xml
-    when: always
+
 
 linting:
   stage: linting
