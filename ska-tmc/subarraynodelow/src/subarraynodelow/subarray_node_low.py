@@ -24,6 +24,7 @@ from .device_data import DeviceData
 from tmc.common.tango_server_helper import TangoServerHelper
 from subarraynodelow.health_state_aggregator import HealthStateAggregator
 from subarraynodelow.obs_state_aggregator import ObsStateAggregator
+from .assigned_resources_maintainer import AssignedResourcesMaintainer
 from . import const, release
 from .on_command import On
 from .off_command import Off
@@ -165,6 +166,8 @@ class SubarrayNode(SKASubarray):
             # subscribe to HealthState
             device.device_data.health_state_aggr = HealthStateAggregator(self.logger)
             device.device_data.health_state_aggr.subscribe()
+            device_data.assigned_resources_maintainer = AssignedResourcesMaintainer()
+            device_data.assigned_resources_maintainer.subscribe()
             this_server.write_attr("activityMessage", const.STR_SA_INIT_SUCCESS, False)
             self.logger.info(const.STR_SA_INIT_SUCCESS)
             return (ResultCode.OK, const.STR_SA_INIT_SUCCESS)

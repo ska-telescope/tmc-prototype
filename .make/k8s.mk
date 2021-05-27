@@ -43,11 +43,11 @@ namespace: ## create the kubernetes namespace
 
 namespace_sdp: ## create the kubernetes namespace for SDP dynamic deployments
 	@kubectl describe namespace $(SDP_KUBE_NAMESPACE) > /dev/null 2>&1 ; \
- 	K_DESC=$$? ; \
-	if [ $$K_DESC -eq 0 ] ; \
-	then kubectl describe namespace $(SDP_KUBE_NAMESPACE) ; \
-	else kubectl create namespace $(SDP_KUBE_NAMESPACE); \
-	fi
+		K_DESC=$$? ; \
+		if [ $$K_DESC -eq 0 ] ; \
+		then kubectl describe namespace $(SDP_KUBE_NAMESPACE) ; \
+		else kubectl create namespace $(SDP_KUBE_NAMESPACE); \
+		fi
 
 delete_namespace: ## delete the kubernetes namespace
 	@if [ "default" == "$(KUBE_NAMESPACE)" ] || [ "kube-system" == "$(KUBE_NAMESPACE)" ]; then \
@@ -155,8 +155,8 @@ wait:## wait for pods to be ready
 	@echo "Waiting for pods to be ready"
 	@date
 	@kubectl -n $(KUBE_NAMESPACE) get pods
-	@jobs=$$(kubectl get job --output=jsonpath={.items..metadata.name} -n $(KUBE_NAMESPACE)); kubectl wait job --for=condition=complete --timeout=240s $$jobs -n $(KUBE_NAMESPACE)
-	@kubectl -n $(KUBE_NAMESPACE) wait --for=condition=ready -l app=ska-tmc --timeout=240s pods
+	@jobs=$$(kubectl get job --output=jsonpath={.items..metadata.name} -n $(KUBE_NAMESPACE)); kubectl wait job --for=condition=complete --timeout=360s $$jobs -n $(KUBE_NAMESPACE)
+	@kubectl -n $(KUBE_NAMESPACE) wait --for=condition=ready -l app=ska-tmc --timeout=360s pods
 	@kubectl get pods -n $(KUBE_NAMESPACE)
 	@date
 
