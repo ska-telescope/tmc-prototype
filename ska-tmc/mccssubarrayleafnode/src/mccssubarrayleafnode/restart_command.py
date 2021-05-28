@@ -5,6 +5,7 @@ from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
+from ska.base.control_model import ObsState
 
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
@@ -43,15 +44,13 @@ class Restart(BaseCommand):
                 "Mccssubarrayleafnode.Restart()",
                 tango.ErrSeverity.ERR,
             )
-        
-        # TODO : ObsState is not getting checked. Can be uncommented once issue get resolved.
-        # this_server = TangoServerHelper.get_instance()
-        # mccs_subarray_fqdn = this_server.read_property("MccsSubarrayFQDN")[0]
-        # mccs_sa_client = TangoClient(mccs_subarray_fqdn)
-        # if mccs_sa_client.get_attribute("obsState").value not in [ObsState.FAULT, ObsState.ABORTED]:
-        #     tango.Except.throw_exception(const.ERR_INVOKING_CMD, const.ERR_RESTART_COMMAND,
-        #                                     "MccsSubarrayLeafNode.RestartCommand",
-        #                                     tango.ErrSeverity.ERR)
+        self.this_server = TangoServerHelper.get_instance()
+        self.mccs_sa_fqdn = self.this_server.read_property("MccsSubarrayFQDN")[0]
+        self.mccs_sa_client = TangoClient(self.mccs_sa_fqdn)
+        if self.mccs_sa_client.get_attribute("obsState").value not in [ObsState.ABORTED, ObsState.FAULT]:
+            tango.Except.throw_exception(const.ERR_INVOKING_CMD, const.ERR_RESTART_COMMAND,
+                                            "MccsSubarrayLeafNode.RestartCommand",
+                                            tango.ErrSeverity.ERR)
         
         return True
 
@@ -77,16 +76,15 @@ class Restart(BaseCommand):
 
         :return: none
         """
-        this_server = TangoServerHelper.get_instance()
         # Update logs and activity message attribute with received event
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
-            this_server.write_attr("activityMessage", log_msg, False)
+            self.this_server.write_attr("activityMessage", log_msg, False)
         else:
             log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
-            this_server.write_attr("activityMessage", log_msg, False)
+            self.this_server.write_attr("activityMessage", log_msg, False)
 
     def do(self):
         """
@@ -101,7 +99,6 @@ class Restart(BaseCommand):
             DevFailed if the command execution is not successful
 
         """
-        this_server = TangoServerHelper.get_instance()
         try:
             # On mccs side this implementation is not finalize yet modifications are expected.
             # Hence hardcoded controller FQDN and input arguement (subarray ID).
@@ -112,12 +109,12 @@ class Restart(BaseCommand):
             mccs_controller_client.send_command_async(
                 const.CMD_RESTART, argin, self.restart_cmd_ended_cb
             )
-            this_server.write_attr("activityMessage", const.STR_RESTART_SUCCESS, False)
+            self.this_server.write_attr("activityMessage", const.STR_RESTART_SUCCESS, False)
             self.logger.info(const.STR_RESTART_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_RESTART_COMMAND}{dev_failed}"
-            this_server.write_attr("activityMessage", log_msg, False)
+            self.this_server.write_attr("activityMessage", log_msg, False)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.ERR_RESTART_COMMAND,
