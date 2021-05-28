@@ -13,7 +13,6 @@ from ska.base import SKASubarray
 
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
-from .assigned_resources_maintainer import AssignedResourcesMaintainer
 
 from . import const
 
@@ -56,9 +55,6 @@ class Off(SKASubarray.OffCommand):
             message = "Off command completed OK"
             self.logger.info(message)
             this_server.write_attr("activityMessage", message, False)
-            if device_data.assigned_resources_maintainer == None:
-                device_data.assigned_resources_maintainer = AssignedResourcesMaintainer()
-            device_data.assigned_resources_maintainer.unsubscribe()
             return (ResultCode.OK, message)
 
         except DevFailed as dev_failed:

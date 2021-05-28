@@ -33,9 +33,10 @@ class AssignedResourcesMaintainer:
         )
         self.mccs_ln_asigned_res_event_id[self.mccs_client] = mccs_event_id
         log_msg = f"{const.STR_SUB_ATTR_MCCS_SALN_ASSIGNED_RESOURCES_SUCCESS}" \
-                  f"{self.mccs_ln_asigned_res_event_id}"
-        self.logger.debug(log_msg)
+                f"{self.mccs_ln_asigned_res_event_id}"
+        self.logger.info(log_msg)
         self.logger.info(const.STR_SUB_ATTR_MCCS_SALN_ASSIGNED_RESOURCES_SUCCESS)
+        
 
     def assigned_resources_cb(self, event):
         """
@@ -62,29 +63,35 @@ class AssignedResourcesMaintainer:
         """
         device_name = event.device.dev_name()
         log_msg = "Event on assigned_resources attribute is: {}".format(str(event))
-        self.logger.debug(log_msg)
+        self.logger.info(log_msg)
         if not event.err:
             self.device_data.assignd_resources_by_mccs = event.attr_value.value
+            log_msg = "Event on assigned_resources attribute is: {}".format(str(event))
+            self.logger.info(log_msg)
             self.update_assigned_resources_attribute(self.device_data.assignd_resources_by_mccs)
             self.logger.info(const.STR_SUB_ATTR_MCCS_SALN_ASSIGNED_RESOURCES_SUCCESS)
             log_msg = "MccsSubarray.assigned_resources attribute value is: {}".format(
-                      str(self.device_data.assignd_resources_by_mccs))
+                    str(self.device_data.assignd_resources_by_mccs))
             self.logger.info(log_msg)
         else:
             log_message = f"{const.ERR_SUBSR_MCCSSA_ASSIGNED_RES_ATTR}{device_name}{event}"
             self.logger.info(log_message)
             self.this_server.write_attr("activityMessage", log_message, False)
+        
 
     def update_assigned_resources_attribute(self, mccs_assigned_resources):
         """
         This method updates the SubarrayNode.assigned_resources attribute.
         """
-        json_argument = json.loads(mccs_assigned_resources)
-        del json_argument["interface"]
-        json_argument["interface"] = "https://schema.skatelescope.org/ska-low-tmc-assignedresources/1.0"
-        self.this_server.write_attr("assigned_resources", json.dumps(json_argument))
-        log_msg = "assigned_resources attribute value is: {}".format(str(json.dumps(json_argument)))
-        self.logger.info(log_msg)
+        if mccs_assigned_resources:
+            input_json_arg = json.loads(mccs_assigned_resources)
+            del input_json_arg["interface"]
+            json_argument={}
+            json_argument["interface"] = "https://schema.skatelescope.org/ska-low-tmc-assignedresources/1.0"
+            json_argument["mccs"]=input_json_arg
+            self.this_server.write_attr("assigned_resources", json.dumps(json_argument))
+            log_msg = "assigned_resources attribute value is: {}".format(str(json.dumps(json_argument)))
+            self.logger.info(log_msg)
 
     def unsubscribe(self):
         """

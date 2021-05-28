@@ -8,7 +8,7 @@ from tmc.common.tango_server_helper import TangoServerHelper
 
 from .device_data import DeviceData
 from . import const
-
+from time import sleep
 
 class ObsStateAggregator:
     """
@@ -133,7 +133,15 @@ class ObsStateAggregator:
                 self.logger.info("Calling AssignResource command succeeded() method")
                 self.this_server.device.assign.succeeded()
         elif self._mccs_sa_obs_state == ObsState.ABORTED:
-            if self.device_data.is_abort_command_executed:
-                # Abort command success
-                self.logger.info("Calling Abort command succeeded() method")
-                self.this_server.device.abort.succeeded()
+            try:
+                retry_count = 0
+                while retry_count < 3:
+                    if self.device_data.is_abort_command_executed:
+                        # Abort command success
+                        self.logger.info("Calling Abort command succeeded() method")
+                        self.this_server.device.abort.succeeded()
+                        break
+                    sleep(0.1)
+                    retry_count+=1
+            except Exception as e:
+                self.logger(str(e))

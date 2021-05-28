@@ -83,7 +83,8 @@ class Configure(SKASubarray.ConfigureCommand):
     def _create_mccs_cmd_data(self, json_argument):
         mccs_value = json_argument["mccs"]
         json_argument["interface"] = "https://schema.skatelescope.org/ska-low-mccs-configure/1.0"
-        del json_argument["sdp"]
+        if 'sdp' in json_argument:
+            del json_argument["sdp"]
         del json_argument["tmc"]
         del json_argument["mccs"]
         json_argument.update(mccs_value)
