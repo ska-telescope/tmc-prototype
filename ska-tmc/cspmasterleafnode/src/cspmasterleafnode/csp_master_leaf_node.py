@@ -68,9 +68,6 @@ class CspMasterLeafNode(SKABaseDevice):
         doc="Activity Message",
     )
 
-    cspHealthState = attribute(
-        name="cspHealthState", label="cspHealthState", forwarded=True
-    )
 
     # ---------------
     # General methods

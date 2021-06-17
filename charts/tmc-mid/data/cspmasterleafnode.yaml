@@ -39,7 +39,7 @@ server:
                         - "-1"
                         - "1"
 depends_on:
-  - device: mid_csp/elt/master
+  - device: sys/database/2
 image:
   registry: "{{.Values.global.skatmc.registry}}"
   image: "{{.Values.global.skatmc.image}}"

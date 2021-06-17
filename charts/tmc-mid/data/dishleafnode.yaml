@@ -51,7 +51,6 @@ server:
                         - "-1"
                         - "1"
     {{- end }}
-
 depends_on:
 {{- range  .Values.coalesced_dishes }}
   - device: mid_d{{ printf "%04s" . }}/elt/master

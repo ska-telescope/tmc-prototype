@@ -124,13 +124,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         "the SDP Subarray.",
     )
 
-    sdpSubarrayHealthState = attribute(
-        name="sdpSubarrayHealthState", label="sdpSubarrayHealthState", forwarded=True
-    )
-
-    sdpSubarrayObsState = attribute(
-        name="sdpSubarrayObsState", label="sdpSubarrayObsState", forwarded=True
-    )
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
