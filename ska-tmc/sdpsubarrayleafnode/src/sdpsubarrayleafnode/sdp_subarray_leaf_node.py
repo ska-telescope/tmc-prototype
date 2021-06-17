@@ -87,11 +87,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             This is a attribute from SDP Subarray which depicts the active Processing
             Blocks in the SDP Subarray.
 
-        sdpSubarrayHealthState:
-            Attribute to provide SDP Subarray Health State.
-
-        sdpSubarrayObsState:
-            Attribute to show ObsState of Tango Device.
 
     """
 

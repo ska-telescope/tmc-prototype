@@ -59,9 +59,6 @@ class SdpMasterLeafNode(SKABaseDevice):
         ProcessingBlockList:
             List of Processing Block devices
 
-        sdpHealthState:
-            Forwarded attribute to provide SDP Master Health State
-
     """
 
     # -----------------
