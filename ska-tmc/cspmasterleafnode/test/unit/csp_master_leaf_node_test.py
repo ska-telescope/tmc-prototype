@@ -294,7 +294,7 @@ def test_read_activity_message(tango_context, mock_tango_server_helper):
 
 
 def test_status(tango_context, mock_tango_server_helper):
-    assert const.STR_DEV_ALARM in tango_context.device.Status()
+    assert const.STR_DEV_OFF in tango_context.device.Status()
 
 
 def test_logging_level(tango_context):
