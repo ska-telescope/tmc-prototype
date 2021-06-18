@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from tango import DeviceProxy
+from tango import DeviceProxy, DevFailed
 import json
 
 # print("CREATING CentralNode deviceproxy")
@@ -27,4 +27,7 @@ except Exception as e:
     print("Exception in JSON parsing:", e.__str__())
 
 for alarm in json_alarms:
-    alarmHandler_proxy.command_inout("Load", alarm["input_string"])
+    try:
+        alarmHandler_proxy.command_inout("Load", alarm["input_string"])
+    except DevFailed:
+        pass
