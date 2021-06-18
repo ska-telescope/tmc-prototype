@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc"""
-version="0.7.0"
+version="0.7.1-testing"
 version_info=version.split(".")
 description="""SKA-TMC"""
 author="Team NCRA"
@@ -10,8 +10,8 @@ license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
 
-release=0.7.0
-tag=0.7.0
+release=0.7.1-testing
+tag=0.7.1-testing
 tag_description=Updated SubarraryNode-low to fix issues for abort command during testing.
 release_notes=This release contains:<br/><ul><li>Updated SubarraryNode-low to fix issues for abort command during testing</li></ul><br/>
 gitlab_username=kalyanithigale
