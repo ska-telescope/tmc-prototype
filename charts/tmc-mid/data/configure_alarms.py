@@ -29,5 +29,6 @@ except Exception as e:
 for alarm in json_alarms:
     try:
         alarmHandler_proxy.command_inout("Load", alarm["input_string"])
-    except DevFailed:
+    except DevFailed as dev_failed:
+        print("Exception in Loding the Alarm: ", str(dev_failed))
         pass
