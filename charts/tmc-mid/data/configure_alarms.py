@@ -31,4 +31,3 @@ for alarm in json_alarms:
         alarmHandler_proxy.command_inout("Load", alarm["input_string"])
     except DevFailed as dev_failed:
         print("Exception in Loding the Alarm: ", str(dev_failed))
-        pass
