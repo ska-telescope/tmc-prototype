@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc"""
-version="0.7.0"
+version="0.7.1"
 version_info=version.split(".")
 description="""SKA-TMC"""
 author="Team NCRA"
@@ -10,9 +10,9 @@ license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
 
-release=0.7.0
-tag=0.7.0
-tag_description=Updated SubarraryNode-low to fix issues for abort command during testing.
-release_notes=This release contains:<br/><ul><li>Updated SubarraryNode-low to fix issues for abort command during testing</li></ul><br/>
-gitlab_username=kalyanithigale
-private_token=P-J4UzDhpinwoPpkrnkz
+release=0.7.1
+tag=0.7.1
+tag_description=Fixed the bug SKB-73.
+release_notes=This release contains:<br/><ul><li>Fix the bug SKB-73</li></ul><br/>
+gitlab_username=apurvapatkar
+private_token=FH2Y7heSU6oTCcRxPCrn
