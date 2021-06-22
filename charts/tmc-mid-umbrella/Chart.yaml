@@ -29,7 +29,7 @@ dependencies:
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
   condition: sdp.enabled
 - name: tmc-mid
-  version: 0.3.7
+  version: 0.9.0-testing
   repository: file://../tmc-mid
   condition: tmc-mid.enabled
 - name: webjive
