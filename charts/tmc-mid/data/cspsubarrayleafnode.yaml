@@ -35,16 +35,6 @@ server:
                     - "delayModel"
                     - "1000"
               attribute_properties:
-                - attribute: "cspsubarrayHealthState"
-                  properties:
-                    - name: "__root_att"
-                      values:
-                        - "mid_csp/elt/subarray_{{ . }}/healthState"
-                - attribute: "cspSubarrayObsState"
-                  properties:
-                    - name: "__root_att"
-                      values:
-                        - "mid_csp/elt/subarray_{{ . }}/obsState"
                 - attribute: "healthState"
                   properties:
                     - name: "abs_change"

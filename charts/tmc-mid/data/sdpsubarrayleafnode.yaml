@@ -33,16 +33,6 @@ server:
                     - "receiveAddresses"
                     - "1000"
               attribute_properties:
-                - attribute: "sdpSubarrayHealthState"
-                  properties:
-                    - name: "__root_att"
-                      values:
-                        - "mid_sdp/elt/subarray_{{ (split "0" .)._1}}/healthState"
-                - attribute: "sdpSubarrayObsState"
-                  properties:
-                    - name: "__root_att"
-                      values:
-                        - "mid_sdp/elt/subarray_{{ (split "0" .)._1}}/obsState"
                 - attribute: "healthState"
                   properties:
                     - name: "abs_change"

@@ -29,9 +29,6 @@ server:
                 - name: "SdpSubarrayFQDN"
                   values:
                     - "mid_sdp/elt/subarray_{{ (split "0" .)._1}}"
-                - name: "DishMasterFQDN"
-                  values:
-                    - "mid_d{{ printf "%04s" . }}/elt/master"
                 - name: "SkaLevel"
                   values:
                     - "2"

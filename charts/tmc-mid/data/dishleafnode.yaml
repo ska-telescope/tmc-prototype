@@ -34,16 +34,6 @@ server:
                     - "healthstate"
                     - "1000"
               attribute_properties:
-                - attribute: "dishHealthState"
-                  properties:
-                    - name: "__root_att"
-                      values:
-                        - "mid_d{{ printf "%04s" . }}/elt/master/healthState"
-                - attribute: "dishPointingState"
-                  properties:
-                    - name: "__root_att"
-                      values:
-                        - "mid_d{{ printf "%04s" . }}/elt/master/pointingState"
                 - attribute: "healthState"
                   properties:
                     - name: "abs_change"
