@@ -22,6 +22,7 @@ global:
     tag: 0.7.1-testing-dirty
     pullPolicy: Always
 
+
   ##  Order of instances resolution ##
   # .Values.global.dishes & .Values.global.subarray_count
   # .Values.deviceServers.<device>.instances
