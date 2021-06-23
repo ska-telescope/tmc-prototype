@@ -10,7 +10,7 @@ from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
 
-class Standby(BaseCommand):
+class TelescopeStandby(BaseCommand):
     """
     A class for SDP Master's Standby() command. Standby command is inherited from BaseCommand.
 
@@ -36,12 +36,12 @@ class Standby(BaseCommand):
             tango.Except.throw_exception(
                 f"Standby() is not allowed in current state {self.state_model.op_state}",
                 "Failed to invoke Standby command on SdpMasterLeafNode.",
-                "SdpMasterLeafNode.Standby() ",
+                "SdpMasterLeafNode.TelescopeStandby() ",
                 tango.ErrSeverity.ERR,
             )
         return True
 
-    def standby_cmd_ended_cb(self, event):
+    def telescope_standby_cmd_ended_cb(self, event):
 
         """
         Callback function immediately executed when the asynchronous invoked
@@ -75,7 +75,7 @@ class Standby(BaseCommand):
 
     def do(self):
         """
-        Method to invoke Standby command on SDP Master.
+        Method to invoke TelescopeStandby command on SDP Master.
 
         :param argin: None.
 
@@ -89,18 +89,18 @@ class Standby(BaseCommand):
             sdp_master_ln_fqdn = sdp_master_ln_fqdn.join(property_val)
             sdp_mln_client_obj = TangoClient(sdp_master_ln_fqdn)
             sdp_mln_client_obj.send_command_async(
-                const.CMD_STANDBY, callback_method=self.standby_cmd_ended_cb
+                const.CMD_TELESCOPE_STANDBY, callback_method=self.telescope_standby_cmd_ended_cb
                 )
-            log_msg = const.CMD_STANDBY + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+            log_msg = const.CMD_TELESCOPE_STANDBY + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
             self.logger.debug(log_msg)
 
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
-            log_msg = f"{const.ERR_STANDBY_CMD_FAIL}{dev_failed}"
+            log_msg = f"{const.ERR_TELESCOPE_STANDBY_CMD_FAIL}{dev_failed}"
             tango.Except.re_throw_exception(
                 dev_failed,
                 const.ERR_INVOKING_CMD,
                 log_msg,
-                "SdpMasterLeafNode.StandbyCommand()",
+                "SdpMasterLeafNode.TelescopeStandby()",
                 tango.ErrSeverity.ERR,
             )

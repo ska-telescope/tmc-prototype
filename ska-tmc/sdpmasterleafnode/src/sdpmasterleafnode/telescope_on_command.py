@@ -4,7 +4,7 @@ from tango import DevFailed
 
 # Additional import
 from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode
+from ska.base.commands import BaseCommand
 
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
@@ -14,19 +14,19 @@ from . import const
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additional_import
 
 
-class On(SKABaseDevice.OnCommand):
+class TelescopeOn(BaseCommand):
     """
-    A class for SDP master's On() command. On command is inherited from SKABaseDevice.
+    A class for SDP master's TelescopeOn() command. TelescopeOn command is inherited from BaseCommand.
 
     Informs the SDP that it can start executing Processing Blocks. Sets the State to ON.
 
     """
 
-    def on_cmd_ended_cb(self, event):
+    def telescope_on_cmd_ended_cb(self, event):
 
         """
         Callback function immediately executed when the asynchronous invoked
-        command returns. Checks whether the On command has been successfully invoked on SDP Master.
+        command returns. Checks whether the TelescopeOn command has been successfully invoked on SDP Master.
 
         :param event: a CmdDoneEvent object. This class is used to pass data
             to the callback method in asynchronous callback model for command
@@ -56,7 +56,7 @@ class On(SKABaseDevice.OnCommand):
 
     def do(self):
         """
-        Method to invoke On command on SDP Master.
+        Method to invoke TelescopeOn command on SDP Master.
 
         :param argin: None.
 
@@ -76,19 +76,18 @@ class On(SKABaseDevice.OnCommand):
             sdp_mln_client_obj = TangoClient(sdp_master_ln_fqdn)
             
             sdp_mln_client_obj.send_command_async(
-                const.CMD_ON, None, self.on_cmd_ended_cb
+                const.CMD_TELSCOPE_ON, None, self.telescope_on_cmd_ended_cb
             )
-            log_msg = const.STR_ON_CMD_SUCCESS
+            log_msg = const.STR_TELESCOPE_ON_CMD_SUCCESS
             self.logger.debug(log_msg)
-            return (ResultCode.OK, log_msg)
 
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
-            log_msg = f"{const.ERR_ON_CMD_FAIL}{dev_failed}"
+            log_msg = f"{const.ERR_TELESCOPE_ON_CMD_FAIL}{dev_failed}"
             tango.Except.re_throw_exception(
                 dev_failed,
                 const.ERR_INVOKING_CMD,
                 log_msg,
-                "SdpMasterLeafNode.OnCommand()",
+                "SdpMasterLeafNode.TelescopeOn()",
                 tango.ErrSeverity.ERR,
             )
