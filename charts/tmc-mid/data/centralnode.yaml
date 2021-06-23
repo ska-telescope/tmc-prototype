@@ -16,9 +16,15 @@ server:
                 - name: "CspMasterLeafNodeFQDN"
                   values:
                     - "ska_mid/tm_leaf_node/csp_master"
+                - name: "CspMasterFQDN"
+                  values:
+                    - "mid_csp/elt/master"
                 - name: "SdpMasterLeafNodeFQDN"
                   values:
                     - "ska_mid/tm_leaf_node/sdp_master"
+                - name: "SdpMasterFQDN"
+                  values:
+                    - "mid_sdp/elt/master"
                 - name: "DishLeafNodePrefix"
                   values:
                     - "ska_mid/tm_leaf_node/d"

@@ -75,12 +75,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     :Device Attributes:
 
-        cspsubarrayHealthState:
-            Forwarded attribute to provide CSP Subarray Health State
-
-        cspSubarrayObsState:
-            Forwarded attribute to provide CSP Subarray Observation State
-
         activityMessage:
             String providing information about the current activity in CspSubarrayLeaf Node.
 
@@ -116,13 +110,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
         access=AttrWriteType.READ_WRITE,
     )
 
-    cspsubarrayHealthState = attribute(
-        name="cspsubarrayHealthState", label="cspsubarrayHealthState", forwarded=True
-    )
-
-    cspSubarrayObsState = attribute(
-        name="cspSubarrayObsState", label="cspSubarrayObsState", forwarded=True
-    )
 
     # ---------------
     # General methods

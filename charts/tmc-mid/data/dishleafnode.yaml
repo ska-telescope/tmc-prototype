@@ -34,16 +34,6 @@ server:
                     - "healthstate"
                     - "1000"
               attribute_properties:
-                - attribute: "dishHealthState"
-                  properties:
-                    - name: "__root_att"
-                      values:
-                        - "mid_d{{ printf "%04s" . }}/elt/master/healthState"
-                - attribute: "dishPointingState"
-                  properties:
-                    - name: "__root_att"
-                      values:
-                        - "mid_d{{ printf "%04s" . }}/elt/master/pointingState"
                 - attribute: "healthState"
                   properties:
                     - name: "abs_change"
@@ -51,11 +41,8 @@ server:
                         - "-1"
                         - "1"
     {{- end }}
-
 depends_on:
-{{- range  .Values.coalesced_dishes }}
-  - device: mid_d{{ printf "%04s" . }}/elt/master
-{{- end }}
+  - device: sys/database/2
 image:
   registry: "{{.Values.global.skatmc.registry}}"
   image: "{{.Values.global.skatmc.image}}"
