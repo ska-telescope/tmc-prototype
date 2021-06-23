@@ -19,8 +19,8 @@ global:
   skatmc:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc
-    tag: 0.7.1-testing-dirty
-    pullPolicy: Always
+    tag: 0.7.2
+    pullPolicy: IfNotPresent
 
 
   ##  Order of instances resolution ##
@@ -61,14 +61,14 @@ centralnodemid:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc-centralnode-mid
     tag: 0.1.6
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
 
 subarraynodemid:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc-subarraynode-mid
     tag: 0.2.0
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
 
 alarmhandler:
   image:
