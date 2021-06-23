@@ -46,9 +46,6 @@ class CspMasterLeafNode(SKABaseDevice):
 
     :Device Attributes:
 
-        cspHealthState:
-            Forwarded attribute to provide CSP Master Health State
-
         activityMessage:
             Attribute to provide activity message
 
@@ -68,9 +65,6 @@ class CspMasterLeafNode(SKABaseDevice):
         doc="Activity Message",
     )
 
-    cspHealthState = attribute(
-        name="cspHealthState", label="cspHealthState", forwarded=True
-    )
 
     # ---------------
     # General methods

@@ -80,11 +80,6 @@ class DishLeafNode(SKABaseDevice):
         activityMessage:
             String providing information about the current activity in DishLeaf Node.
 
-        dishHealthState:
-            Forwarded attribute to provide Dish Master Health State
-
-        dishPointingState:
-            Forwarded attribute to provide Dish Master Pointing State
 
     """
 
@@ -150,13 +145,6 @@ class DishLeafNode(SKABaseDevice):
         self.attr_map[attr] = val
         lock.release()
 
-    dishHealthState = attribute(
-        name="dishHealthState", label="dishHealthState", forwarded=True
-    )
-
-    dishPointingState = attribute(
-        name="dishPointingState", label="dishPointingState", forwarded=True
-    )
 
     class InitCommand(SKABaseDevice.InitCommand):
         """

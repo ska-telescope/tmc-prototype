@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc"""
-version="0.7.1"
+version="0.7.2"
 version_info=version.split(".")
 description="""SKA-TMC"""
 author="Team NCRA"
@@ -10,9 +10,10 @@ license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
 
-release=0.7.1
-tag=0.7.1
-tag_description=Fixed the bug SKB-73.
-release_notes=This release contains:<br/><ul><li>Fix the bug SKB-73</li></ul><br/>
-gitlab_username=apurvapatkar
-private_token=FH2Y7heSU6oTCcRxPCrn
+release=0.7.2
+tag=0.7.2
+tag_description=Remove forwarded attributes from ska-tmc leaf nodes as a part of resolution of SKB-10.
+release_notes=This release contains:<br/><ul><li>Removed pod dependencies of tmc leaf nodes on lower level devices.</li><li>Removed forwarded attributes from ska-tmc leaf nodes.</li></ul><br/>
+gitlab_username=JayantKumbhar
+private_token=qbx9w8iZw5st2dxAZ2MF
+

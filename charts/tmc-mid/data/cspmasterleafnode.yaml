@@ -27,11 +27,6 @@ server:
                     - "healthstate"
                     - "1000"
               attribute_properties:
-                - attribute: "cspHealthState"
-                  properties:
-                    - name: "__root_att"
-                      values:
-                        - "mid_csp/elt/master/healthState"
                 - attribute: "healthState"
                   properties:
                     - name: "abs_change"
@@ -39,7 +34,7 @@ server:
                         - "-1"
                         - "1"
 depends_on:
-  - device: mid_csp/elt/master
+  - device: sys/database/2
 image:
   registry: "{{.Values.global.skatmc.registry}}"
   image: "{{.Values.global.skatmc.image}}"
