@@ -460,10 +460,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "5",
+            "string": "1",
             "time": 1602497001.703918,
             "unit": "",
-            "value": 5,
+            "value": 1,
             "writable": "READ"
         },
         "b1PointingModelParams": {
@@ -589,10 +589,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "5",
+            "string": "1",
             "time": 1602497001.703937,
             "unit": "",
-            "value": 5,
+            "value": 1,
             "writable": "READ"
         },
         "b2PointingModelParams": {
@@ -718,10 +718,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "5",
+            "string": "1",
             "time": 1602497001.703955,
             "unit": "",
-            "value": 5,
+            "value": 1,
             "writable": "READ"
         },
         "b3PointingModelParams": {
@@ -847,10 +847,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "5",
+            "string": "1",
             "time": 1602497001.703979,
             "unit": "",
-            "value": 5,
+            "value": 1,
             "writable": "READ"
         },
         "b4PointingModelParams": {
@@ -976,10 +976,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "5",
+            "string": "1",
             "time": 1602497001.703999,
             "unit": "",
-            "value": 5,
+            "value": 1,
             "writable": "READ"
         },
         "b5aPointingModelParams": {
@@ -1105,10 +1105,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "5",
+            "string": "1",
             "time": 1602497001.704017,
             "unit": "",
-            "value": 5,
+            "value": 1,
             "writable": "READ"
         },
         "b5bPointingModelParams": {
@@ -1234,10 +1234,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "5",
+            "string": "1",
             "time": 1602497001.704036,
             "unit": "",
-            "value": 5,
+            "value": 1,
             "writable": "READ"
         },
         "centralLoggerEnabled": {
@@ -1974,10 +1974,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "1",
+            "string": "2",
             "time": 1602497005.494655,
             "unit": "",
-            "value": 1,
+            "value": 2,
             "writable": "READ_WRITE"
         },
         "dsOperatingMode": {
@@ -2511,10 +2511,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "3",
+            "string": "2",
             "time": 1602496996.471885,
             "unit": "",
-            "value": 3,
+            "value": 2,
             "writable": "READ"
         },
         "elementType": {
@@ -2572,10 +2572,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "3",
+            "string": "2",
             "time": 1602496997.84752,
             "unit": "",
-            "value": 3,
+            "value": 2,
             "writable": "READ"
         },
         "enableBandErrorEventHandler": {
@@ -3080,10 +3080,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "2",
+            "string": "1",
             "time": 1602496998.415548,
             "unit": "",
-            "value": 2,
+            "value": 1,
             "writable": "READ"
         },
         "healthState": {
@@ -3141,10 +3141,10 @@
             "polling": 1000,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "2",
+            "string": "1",
             "time": 1602497000.703696,
             "unit": "",
-            "value": 2,
+            "value": 1,
             "writable": "READ_WRITE"
         },
         "lmcStaticPointCorrEnabled": {
@@ -3937,10 +3937,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "2",
+            "string": "1",
             "time": 1602497000.703673,
             "unit": "",
-            "value": 2,
+            "value": 1,
             "writable": "READ"
         },
         "pointingModelParams": {
@@ -4194,10 +4194,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "4",
+            "string": "3",
             "time": 1602497000.703649,
             "unit": "",
-            "value": 4,
+            "value": 3,
             "writable": "READ"
         },
         "programTrackTable": {
@@ -4809,10 +4809,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "7",
+            "string": "0",
             "time": 1602496999.471756,
             "unit": "",
-            "value": 7,
+            "value": 0,
             "writable": "READ_WRITE"
         },
         "rxB1CapabilityState": {
@@ -5791,10 +5791,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "4",
+            "string": "2",
             "time": 1602497008.880411,
             "unit": "",
-            "value": 4,
+            "value": 2,
             "writable": "READ_WRITE"
         },
         "rxB5aDefaultSamplingClockFrequency": {
@@ -6245,10 +6245,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "True",
+            "string": "False",
             "time": 1602497011.342343,
             "unit": "",
-            "value": 1,
+            "value": 0,
             "writable": "READ"
         },
         "rxConfigureBandProgress": {
@@ -6369,10 +6369,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "5",
+            "string": "0",
             "time": 1602497011.255648,
             "unit": "",
-            "value": 5,
+            "value": 0,
             "writable": "READ_WRITE"
         },
         "rxEngineeringModeEnabled": {
@@ -6730,10 +6730,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "5",
+            "string": "3",
             "time": 1602497008.314933,
             "unit": "",
-            "value": 5,
+            "value": 3,
             "writable": "READ_WRITE"
         },
         "rxPeriodicNoiseDiodePars": {
@@ -6963,10 +6963,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "2",
+            "string": "1",
             "time": 1602497008.396947,
             "unit": "",
-            "value": 2,
+            "value": 1,
             "writable": "READ_WRITE"
         },
         "rxPseudoRandomNoiseDiodePars": {
@@ -7369,10 +7369,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "0",
+            "string": "1",
             "time": 1602497002.848172,
             "unit": "",
-            "value": 0,
+            "value": 1,
             "writable": "READ"
         },
         "seRunStatus": {
@@ -7555,10 +7555,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "0",
+            "string": "2",
             "time": 1602497002.472255,
             "unit": "",
-            "value": 0,
+            "value": 2,
             "writable": "READ_WRITE"
         },
         "setOperateModeProgress": {
@@ -7680,10 +7680,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "0",
+            "string": "2",
             "time": 1602497002.472296,
             "unit": "",
-            "value": 0,
+            "value": 2,
             "writable": "READ_WRITE"
         },
         "setStandbyFPModeProgress": {
@@ -7805,10 +7805,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "0",
+            "string": "2",
             "time": 1602497002.472214,
             "unit": "",
-            "value": 0,
+            "value": 2,
             "writable": "READ_WRITE"
         },
         "setStandbyFPOnBandErrorProgress": {
@@ -8048,10 +8048,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "0",
+            "string": "2",
             "time": 1602497002.472173,
             "unit": "",
-            "value": 0,
+            "value": 2,
             "writable": "READ_WRITE"
         },
         "setStowModeProgress": {
@@ -8173,10 +8173,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "0",
+            "string": "2",
             "time": 1602497002.472131,
             "unit": "",
-            "value": 0,
+            "value": 2,
             "writable": "READ_WRITE"
         },
         "shutdownOnPowerCutProgress": {
@@ -8577,10 +8577,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "K",
-            "string": "4 K",
+            "string": "0",
             "time": 1602497013.256264,
             "unit": "K",
-            "value": 4,
+            "value": 0,
             "writable": "READ_WRITE"
         },
         "spfB2CapTime2OpFull": {
@@ -8694,10 +8694,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "3",
+            "string": "1",
             "time": 1602497012.095205,
             "unit": "",
-            "value": 3,
+            "value": 1,
             "writable": "READ"
         },
         "spfB2DefaultCalSourceTempSetPoint": {
@@ -8883,10 +8883,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "1",
+            "string": "0",
             "time": 1602497013.668362,
             "unit": "",
-            "value": 1,
+            "value": 0,
             "writable": "READ_WRITE"
         },
         "spfB2ExpectedOnline": {
@@ -9177,10 +9177,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "3",
+            "string": "2",
             "time": 1602497012.27007,
             "unit": "",
-            "value": 3,
+            "value": 2,
             "writable": "READ"
         },
         "spfB2Rfe1TempCtrlState": {
@@ -9365,10 +9365,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "5",
+            "string": "0",
             "time": 1602497007.926522,
             "unit": "",
-            "value": 5,
+            "value": 0,
             "writable": "READ_WRITE"
         },
         "spfCtrlExpectedOnline": {
@@ -9721,10 +9721,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "3",
+            "string": "2",
             "time": 1602497012.354608,
             "unit": "",
-            "value": 3,
+            "value": 2,
             "writable": "READ"
         },
         "spfOperatingMode": {
@@ -9784,10 +9784,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "3",
+            "string": "2",
             "time": 1602497011.82581,
             "unit": "",
-            "value": 3,
+            "value": 2,
             "writable": "READ"
         },
         "spfPowerState": {
@@ -9844,10 +9844,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "2",
+            "string": "1",
             "time": 1602497011.914927,
             "unit": "",
-            "value": 2,
+            "value": 1,
             "writable": "READ"
         },
         "spfSerialNumbers": {
@@ -10737,10 +10737,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "True",
+            "string": "False",
             "time": 1602497006.674946,
             "unit": "",
-            "value": 1,
+            "value": 0,
             "writable": "READ"
         },
         "testMode": {
