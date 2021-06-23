@@ -41,7 +41,7 @@ class TelescopeStandby(BaseCommand):
             )
         return True
 
-    def telescope_standby_cmd_ended_cb(self, event):
+    def telescopestandby_cmd_ended_cb(self, event):
 
         """
         Callback function immediately executed when the asynchronous invoked
@@ -89,7 +89,7 @@ class TelescopeStandby(BaseCommand):
             sdp_master_ln_fqdn = sdp_master_ln_fqdn.join(property_val)
             sdp_mln_client_obj = TangoClient(sdp_master_ln_fqdn)
             sdp_mln_client_obj.send_command_async(
-                const.CMD_TELESCOPE_STANDBY, callback_method=self.telescope_standby_cmd_ended_cb
+                const.CMD_TELESCOPE_STANDBY, callback_method=self.telescopestandby_cmd_ended_cb
                 )
             log_msg = const.CMD_TELESCOPE_STANDBY + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
             self.logger.debug(log_msg)

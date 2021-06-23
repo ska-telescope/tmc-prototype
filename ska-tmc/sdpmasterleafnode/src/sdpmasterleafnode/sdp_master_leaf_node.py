@@ -59,9 +59,6 @@ class SdpMasterLeafNode(SKABaseDevice):
         ProcessingBlockList:
             List of Processing Block devices
 
-        sdpHealthState:
-            Forwarded attribute to provide SDP Master Health State
-
     """
 
     # -----------------
@@ -90,9 +87,6 @@ class SdpMasterLeafNode(SKABaseDevice):
         doc="List of Processing Block devices.",
     )
 
-    sdpHealthState = attribute(
-        name="sdpHealthState", label="sdpHealthState", forwarded=True
-    )
 
     # ---------------
     # General methods
@@ -338,7 +332,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         super().init_command_objects()
         device_data = DeviceData.get_instance()
         args = (device_data, self.state_model, self.logger)
-        self.register_command_object("TelscopeOn", TelescopeOn(*args))
+        self.register_command_object("TelescopeOn", TelescopeOn(*args))
         self.register_command_object("TelescopeOff", TelescopeOff(*args))
         self.register_command_object("Disable", Disable(*args))
         self.register_command_object("TelescopeStandby", TelescopeStandby(*args))

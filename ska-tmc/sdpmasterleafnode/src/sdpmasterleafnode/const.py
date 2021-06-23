@@ -2,7 +2,7 @@
 #
 # Events
 # In/out commands
-CMD_TELSCOPE_ON = "TelescopeOn"
+CMD_TELESCOPE_ON = "TelescopeOn"
 CMD_TELESCOPE_OFF = "TelescopeOff"
 CMD_TELESCOPE_STANDBY = "TelescopeStandby"
 CMD_Disable = "Disable"
