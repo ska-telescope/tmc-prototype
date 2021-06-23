@@ -69,34 +69,12 @@ def mock_tango_server_helper():
     yield tango_server_obj
 
 
-# def test_on(mock_csp_master_proxy, mock_tango_server_helper):
-#     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
-#     assert device_proxy.On() == [
-#         [ResultCode.OK],
-#         ["ON command invoked successfully from CSP Master leaf node."],
-#     ]
-#     tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(
-#         const.CMD_ON, [], any_method(with_name="on_cmd_ended_cb")
-#     )
-
 def test_on(mock_csp_master_proxy, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
     device_proxy.TelescopeOn() 
     tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(
         const.CMD_TELESCOPE_ON, [], any_method(with_name="telescope_on_cmd_ended_cb")
     )
-
-
-# def test_off_should_command_csp_master_leaf_node_to_stop(
-#     mock_csp_master_proxy, mock_tango_server_helper
-# ):
-#     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
-
-#     device_proxy.TelescopeOn()
-    # assert device_proxy.TelescopeOff() == [
-    #     [ResultCode.OK],
-    #     ["OFF command invoked successfully from CSP Master leaf node."],
-    # ]
 
 
 def test_telescope_standby_should_command_to_standby_with_callback_method(
