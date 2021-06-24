@@ -27,15 +27,15 @@ from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, SimulationMode, TestMode
 from tmc.common.tango_server_helper import TangoServerHelper
 from . import const, release
-from .on_command import On
-from .off_command import Off
-from .standby_command import Standby
+from .telescope_on_command import TelescopeOn
+from .telescope_off_command import TelescopeOff
+from .telescope_standby_command import TelescopeStandby
 from .disable_command import Disable
 from .device_data import DeviceData
 
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additional_import
 
-__all__ = ["SdpMasterLeafNode", "main", "On", "Off", "Standby", "Disable"]
+__all__ = ["SdpMasterLeafNode", "main", "TelescopeOn", "TelescopeOff", "TelescopeStandby", "Disable"]
 
 
 class SdpMasterLeafNode(SKABaseDevice):
@@ -230,18 +230,98 @@ class SdpMasterLeafNode(SKABaseDevice):
         handler = self.get_command_object("Disable")
         handler()
 
+    def is_telescope_on_allowed(self):
+        """
+        Checks Whether this command is allowed to be run in current device state.
+
+        return:
+            True if this command is allowed to be run in current device state.
+
+        rtype:
+            boolean
+
+        raises: DevF
+            ailed if this command is not allowed to be run in current device state.
+
+        """
+        handler = self.get_command_object("TelescopeOn")
+        return handler.check_allowed()
+
     @command()
     @DebugIt()
-    def Standby(self):
+    def TelescopeOn(self):
         """
-        Invokes Standby command.
+        Sets the opState to ON.
 
         :param argin: None
 
         :return: None
 
         """
-        handler = self.get_command_object("Standby")
+        handler = self.get_command_object("TelescopeOn")
+        handler()
+
+    def is_telescope_off_allowed(self):
+        """
+        Checks Whether this command is allowed to be run in current device state.
+
+        return:
+            True if this command is allowed to be run in current device state.
+
+        rtype:
+            boolean
+
+        raises: DevF
+            ailed if this command is not allowed to be run in current device state.
+
+        """
+        handler = self.get_command_object("TelescopeOff")
+        return handler.check_allowed()
+
+    @command()
+    @DebugIt()
+    def TelescopeOff(self):
+        """
+        Sets the opState to Off.
+
+        :param argin: None
+
+        :return: None
+
+        """
+        handler = self.get_command_object("TelescopeOff")
+        handler()
+
+    
+    def is_telescope_standby_allowed(self):
+        """
+        Checks Whether this command is allowed to be run in current device state.
+
+        return:
+            True if this command is allowed to be run in current device state.
+
+        rtype:
+            boolean
+
+        raises: DevF
+            ailed if this command is not allowed to be run in current device state.
+
+        """
+        handler = self.get_command_object("TelescopeStandby")
+        return handler.check_allowed()
+
+    @command()
+    @DebugIt()
+    def TelescopeStandby(self):
+        """
+        Invokes TelescopeStandby command.
+
+        :param argin: None
+
+        :return: None
+
+        """
+        handler = self.get_command_object("TelescopeStandby")
         handler()
 
     def init_command_objects(self):
@@ -252,10 +332,10 @@ class SdpMasterLeafNode(SKABaseDevice):
         super().init_command_objects()
         device_data = DeviceData.get_instance()
         args = (device_data, self.state_model, self.logger)
-        self.register_command_object("On", On(*args))
-        self.register_command_object("Off", Off(*args))
+        self.register_command_object("TelescopeOn", TelescopeOn(*args))
+        self.register_command_object("TelescopeOff", TelescopeOff(*args))
         self.register_command_object("Disable", Disable(*args))
-        self.register_command_object("Standby", Standby(*args))
+        self.register_command_object("TelescopeStandby", TelescopeStandby(*args))
 
 
 # ----------

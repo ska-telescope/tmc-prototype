@@ -4,26 +4,26 @@ from tango import DevFailed
 
 # Additional import
 from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode
+from ska.base.commands import BaseCommand
 
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
 
-class Off(SKABaseDevice.OffCommand):
+class TelescopeOff(BaseCommand):
     """
-    A class for SDP master's Off() command. Off command is inherited from SKABaseDevice.
+    A class for SDP master's TelescopeOff() command. TelescopeOff command is inherited from BaseCommand.
 
     It Sets the State  to Off.
 
     """
 
-    def off_cmd_ended_cb(self, event):
+    def telescopeoff_cmd_ended_cb(self, event):
 
         """
         Callback function immediately executed when the asynchronous invoked
-        command returns. Checks whether the OFF command has been successfully invoked on SDP Master.
+        command returns. Checks whether the TelescopeOff command has been successfully invoked on SDP Master.
 
         :param event: a CmdDoneEvent object. This class is used to pass data
             to the callback method in asynchronous callback model for command
@@ -53,7 +53,7 @@ class Off(SKABaseDevice.OffCommand):
 
     def do(self):
         """
-        Method to invoke Off command on SDP Master.
+        Method to invoke TelescopeOff command on SDP Master.
 
         :param argin: None.
 
@@ -72,19 +72,18 @@ class Off(SKABaseDevice.OffCommand):
             sdp_master_ln_fqdn = sdp_master_ln_fqdn.join(property_val)
             sdp_mln_client_obj = TangoClient(sdp_master_ln_fqdn)
             sdp_mln_client_obj.send_command_async(
-                const.CMD_OFF, None, self.off_cmd_ended_cb
+                const.CMD_TELESCOPE_OFF, None, self.telescopeoff_cmd_ended_cb
             )
-            self.logger.debug(const.STR_OFF_CMD_SUCCESS)
-            this_server.write_attr("activityMessage", const.STR_OFF_CMD_SUCCESS, False)
-            return (ResultCode.OK, const.STR_OFF_CMD_SUCCESS)
+            self.logger.debug(const.STR_TELESCOPE_OFF_CMD_SUCCESS)
+            this_server.write_attr("activityMessage", const.STR_TELESCOPE_OFF_CMD_SUCCESS, False)
 
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
-            log_msg = f"{const.ERR_OFF_CMD_FAIL}{dev_failed}"
+            log_msg = f"{const.ERR_TELESCOPE_OFF_CMD_FAIL}{dev_failed}"
             tango.Except.re_throw_exception(
                 dev_failed,
                 const.ERR_INVOKING_CMD,
                 log_msg,
-                "SdpMasterLeafNode.OffCommand()",
+                "SdpMasterLeafNode.TelescopeOffCommand()",
                 tango.ErrSeverity.ERR,
             )

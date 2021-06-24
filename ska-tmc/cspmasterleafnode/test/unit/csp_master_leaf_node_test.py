@@ -71,73 +71,58 @@ def mock_tango_server_helper():
 
 def test_on(mock_csp_master_proxy, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
-    assert device_proxy.On() == [
-        [ResultCode.OK],
-        ["ON command invoked successfully from CSP Master leaf node."],
-    ]
+    device_proxy.TelescopeOn() 
     tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(
-        const.CMD_ON, [], any_method(with_name="on_cmd_ended_cb")
+        const.CMD_TELESCOPE_ON, [], any_method(with_name="telescope_on_cmd_ended_cb")
     )
 
 
-def test_off_should_command_csp_master_leaf_node_to_stop(
-    mock_csp_master_proxy, mock_tango_server_helper
-):
-    device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
-
-    device_proxy.On()
-    assert device_proxy.Off() == [
-        [ResultCode.OK],
-        ["OFF command invoked successfully from CSP Master leaf node."],
-    ]
-
-
-def test_standby_should_command_to_standby_with_callback_method(
+def test_telescope_standby_should_command_to_standby_with_callback_method(
     mock_csp_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
-    device_proxy.Standby([])
-    dummy_event = command_callback(const.CMD_STANDBY)
-    event_subscription_mock[const.CMD_STANDBY](dummy_event)
-    assert const.STR_COMMAND + const.CMD_STANDBY in device_proxy.activityMessage
+    device_proxy.TelescopeStandby([])
+    dummy_event = command_callback(const.CMD_TELESCOPE_STANDBY)
+    event_subscription_mock[const.CMD_TELESCOPE_STANDBY](dummy_event)
+    assert const.STR_COMMAND + const.CMD_TELESCOPE_STANDBY in device_proxy.activityMessage
 
 
-def test_on_should_command_to_on_with_callback_method(
+def test_telescope_on_should_command_to_on_with_callback_method(
     mock_csp_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
-    device_proxy.On()
-    dummy_event = command_callback(const.CMD_ON)
-    event_subscription_mock[const.CMD_ON](dummy_event)
-    assert const.STR_COMMAND + const.CMD_ON in device_proxy.activityMessage
+    device_proxy.TelescopeOn()
+    dummy_event = command_callback(const.CMD_TELESCOPE_ON)
+    event_subscription_mock[const.CMD_TELESCOPE_ON](dummy_event)
+    assert const.STR_COMMAND + const.CMD_TELESCOPE_ON in device_proxy.activityMessage
 
 
-def test_off_should_command_to_off(mock_csp_master_proxy, mock_tango_server_helper):
+def test_telescope_off_should_command_to_off(mock_csp_master_proxy, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
-    device_proxy.On()
-    device_proxy.Off()
-    assert const.STR_OFF_CMD_ISSUED in device_proxy.activityMessage
+    device_proxy.TelescopeOn()
+    device_proxy.TelescopeOff()
+    assert const.STR_TELESCOPE_OFF_CMD_ISSUED in device_proxy.activityMessage
 
 
-def test_standby_should_command_with_callback_method_with_event_error(
+def test_telescope_standby_should_command_with_callback_method_with_event_error(
     mock_csp_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
-    device_proxy.Standby([])
-    dummy_event = command_callback_with_event_error(const.CMD_STANDBY)
-    event_subscription_mock[const.CMD_STANDBY](dummy_event)
-    assert const.ERR_INVOKING_CMD + const.CMD_STANDBY in device_proxy.activityMessage
+    device_proxy.TelescopeStandby([])
+    dummy_event = command_callback_with_event_error(const.CMD_TELESCOPE_STANDBY)
+    event_subscription_mock[const.CMD_TELESCOPE_STANDBY](dummy_event)
+    assert const.ERR_INVOKING_CMD + const.CMD_TELESCOPE_STANDBY in device_proxy.activityMessage
 
 
 def test_on_should_command_with_callback_method_with_event_error(
     mock_csp_master_proxy, event_subscription_mock, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
-    device_proxy.On()
-    dummy_event = command_callback_with_event_error(const.CMD_ON)
-    event_subscription_mock[const.CMD_ON](dummy_event)
+    device_proxy.TelescopeOn()
+    dummy_event = command_callback_with_event_error(const.CMD_TELESCOPE_ON)
+    event_subscription_mock[const.CMD_TELESCOPE_ON](dummy_event)
 
-    assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
+    assert const.ERR_INVOKING_CMD + const.CMD_TELESCOPE_ON in device_proxy.activityMessage
 
 
 def test_on_command_should_raise_dev_failed(
@@ -149,11 +134,11 @@ def test_on_command_should_raise_dev_failed(
         raise_devfailed_exception
     )
     with pytest.raises(tango.DevFailed) as df:
-        device_proxy.On()
+        device_proxy.TelescopeOn()
     assert const.ERR_DEVFAILED_MSG in str(df.value)
 
 
-def test_standby_command_should_raise_dev_failed(
+def test_telescope_standby_command_should_raise_dev_failed(
     mock_csp_master_proxy, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
@@ -161,7 +146,7 @@ def test_standby_command_should_raise_dev_failed(
         raise_devfailed_exception
     )
     with pytest.raises(tango.DevFailed) as df:
-        device_proxy.standby([])
+        device_proxy.TelescopeStandby([])
     assert const.ERR_DEVFAILED_MSG in str(df.value)
 
 
@@ -221,7 +206,7 @@ def test_activity_message_attribute_reports_correct_csp_health_state_callbacks(
             TangoClient, "subscribe_attribute", side_effect=dummy_subscriber
         ):
             tango_client_obj = TangoClient("mid_csp/elt/master")
-            device_proxy.On()
+            device_proxy.TelescopeOn()
     device_data = DeviceData.get_instance()
     assert (
         device_data._csp_cbf_health_state_log
@@ -262,7 +247,7 @@ def test_activity_message_reports_correct_health_state_when_attribute_event_has_
             TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_with_error
         ):
             tango_client_obj = TangoClient("mid_csp/elt/master")
-            device_proxy.On()
+            device_proxy.TelescopeOn()
     device_data = DeviceData.get_instance()
     assert const.ERR_ON_SUBS_CSP_CBF_HEALTH in device_data._csp_cbf_health_state_log
     assert const.ERR_ON_SUBS_CSP_PSS_HEALTH in device_data._csp_pss_health_state_log

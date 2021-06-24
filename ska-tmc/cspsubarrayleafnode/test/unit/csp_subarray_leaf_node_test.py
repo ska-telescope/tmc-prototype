@@ -217,7 +217,7 @@ def test_command_cb_is_invoked_when_command_with_event_error_is_called_async(
     device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
     cmd_name, input_str, requested_cmd, obs_state, _ = command_with_arg
     tango_client_obj.get_attribute.side_effect = Mock(return_value = obs_state)
-    device_proxy.On()
+    device_proxy.TelescopeOn()
     device_proxy.command_inout(cmd_name, input_str)
     dummy_event = command_callback_with_event_error(requested_cmd)
     event_subscription_mock[requested_cmd](dummy_event)
