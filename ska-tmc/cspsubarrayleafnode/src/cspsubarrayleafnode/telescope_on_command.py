@@ -8,7 +8,8 @@ import tango
 from tango import DevFailed
 
 # Additional import
-from ska.base import SKABaseDevice
+# from ska.base import SKABaseDevice
+from ska.base.commands import BaseCommand
 from ska.base.commands import ResultCode
 
 from tmc.common.tango_server_helper import TangoServerHelper
@@ -17,14 +18,14 @@ from . import const
 from .delay_model import DelayManager
 
 
-class On(SKABaseDevice.OnCommand):
+class TelescopeOn(BaseCommand):
     """
-    A class for CSP Subarray's On() command.
+    A class for CSP Subarray's TelescopeOn() command.
 
-    Invokes On command on the CSP Subarray.
+    Invokes TelescopeOn command on the CSP Subarray.
     """
 
-    def on_cmd_ended_cb(self, event):
+    def telescope_on_cmd_ended_cb(self, event):
         """
         Callback function executes when the command invoked asynchronously returns from the server.
 
@@ -56,7 +57,7 @@ class On(SKABaseDevice.OnCommand):
 
     def do(self):
         """
-        Method to invoke On command on CSP Subarray.
+        Method to invoke TelescopeOn command on CSP Subarray.
 
         param argin:
             None
@@ -71,20 +72,20 @@ class On(SKABaseDevice.OnCommand):
         """
         this_server = TangoServerHelper.get_instance()
         try:
-            log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+            log_msg = const.CMD_TELESCOPE_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
             self.logger.debug(log_msg)
             delay_manager_obj = DelayManager.get_instance()
             delay_manager_obj.start()
             this_server.set_status(log_msg)
             return (ResultCode.OK, log_msg)
         except DevFailed as dev_failed:
-            log_msg = f"{const.ERR_ON_INVOKING_CMD}{dev_failed}"
+            log_msg = f"{const.ERR_TELESCOPE_ON_INVOKING_CMD}{dev_failed}"
             this_server.write_attr("activityMessage", log_msg, False)
             self.logger.exception(log_msg)
             tango.Except.throw_exception(
-                const.ERR_ON_INVOKING_CMD,
+                const.ERR_TELESCOPE_ON_INVOKING_CMD,
                 log_msg,
-                "CspSubarrayLeafNode.OnCommand",
+                "CspSubarrayLeafNode.TelescopeOnCommand",
                 tango.ErrSeverity.ERR,
             )
 

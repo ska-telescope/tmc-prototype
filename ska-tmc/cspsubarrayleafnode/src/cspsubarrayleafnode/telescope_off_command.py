@@ -16,14 +16,14 @@ from .delay_model import DelayManager
 from tmc.common.tango_server_helper import TangoServerHelper
 
 
-class Off(SKABaseDevice.OffCommand):
+class TelescopeOff(BaseCommand):
     """
-    A class for CSP Subarray's Off() command.
+    A class for CSP Subarray's TelescopeOff() command.
 
-    Invokes Off command on the CSP Subarray.
+    Invokes TelescopeOff command on the CSP Subarray.
     """
 
-    def off_cmd_ended_cb(self, event):
+    def telescope_off_cmd_ended_cb(self, event):
         """
         Callback function executes when the command invoked asynchronously returns from the server.
 
@@ -56,7 +56,7 @@ class Off(SKABaseDevice.OffCommand):
 
     def do(self):
         """
-        Method to invoke Off command on CSP Subarray.
+        Method to invoke TelescopeOff command on CSP Subarray.
 
         param argin:
             None
@@ -71,18 +71,18 @@ class Off(SKABaseDevice.OffCommand):
         """
         this_server = TangoServerHelper.get_instance()
         try:
-            log_msg = const.CMD_OFF + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+            log_msg = const.CMD_TELESCOPE_OFF + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
             self.logger.debug(log_msg)
             delay_manager_obj = DelayManager.get_instance()
             delay_manager_obj.stop()
             return (ResultCode.OK, log_msg)
         except DevFailed as dev_failed:
-            log_msg = f"{const.ERR_OFF_INVOKING_CMD}{dev_failed}"
+            log_msg = f"{const.ERR_TELESCOPE_OFF_INVOKING_CMD}{dev_failed}"
             this_server.write_attr("activityMessage", log_msg, False)
             self.logger.exception(log_msg)
             tango.Except.throw_exception(
-                const.ERR_OFF_INVOKING_CMD,
+                const.ERR_TELESCOPE_OFF_INVOKING_CMD,
                 log_msg,
-                "CspSubarrayLeafNode.OffCommand",
+                "CspSubarrayLeafNode.TelescopeOffCommand",
                 tango.ErrSeverity.ERR,
             )
