@@ -8,8 +8,8 @@ CMD_END = "End"
 CMD_ABORT = "Abort"
 CMD_RESTART = "Restart"
 CMD_OBSRESET = "ObsReset"
-CMD_ON = "On"
-CMD_OFF = "Off"
+CMD_TELESCOPE_ON = "TelescopeOn"
+CMD_TELESCOPE_OFF = "TelescopeOff"
 
 # #Error messages
 ERR_INIT_PROP_ATTR_CN = (
@@ -27,8 +27,8 @@ ERR_ASSGN_RESOURCES = "Error occurred while assigning resources to the SDP Subar
 ERR_RELEASE_RESOURCES = "Error occurred while releasing resources from the Subarray \n"
 ERR_CONFIGURE = "Error while invoking Configure command on SDP Subarray."
 ERR_SCAN = "Error while invoking Scan command on SDP Subarray."
-ERR_INVOKING_ON_CMD = "Error while invoking ON command on SDP Subarray."
-ERR_INVOKING_OFF_CMD = "Error while invoking OFF command on SDP Subarray."
+ERR_INVOKING_TELESCOPE_ON_CMD = "Error while invoking TELESCOPEON command on SDP Subarray."
+ERR_INVOKING_TELESCOPE_OFF_CMD = "Error while invoking TELESCOPEOFF command on SDP Subarray."
 ERR_INVALID_JSON_CONFIG = (
     "Invalid JSON format while invoking Configure command on SDP Subarray."
 )
@@ -92,8 +92,8 @@ STR_END_EXEC = "End command execution"
 STR_ABORT_EXEC = "Abort command execution"
 STR_RESTART_EXEC = "Restart command execution"
 STR_OBSRESET_EXEC = "ObsReset command execution"
-STR_ON_EXEC = "On command execution"
-STR_OFF_EXEC = "Off command execution"
+STR_TELESCOPE_ON_EXEC = "TelescopeOn command execution"
+STR_TELESCOPE_OFF_EXEC = "TelescopeOff command execution"
 STR_ABORT_SUCCESS = "Abort invoked successfully on SdpSubarray."
 STR_RESTART_SUCCESS = "Restart invoked successfully on SdpSubarray."
 STR_OBSRESET_SUCCESS = "ObsReset invoked successfully on SdpSubarray."

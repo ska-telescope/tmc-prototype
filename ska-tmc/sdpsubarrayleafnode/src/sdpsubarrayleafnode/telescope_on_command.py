@@ -1,5 +1,5 @@
 """
-Off class for SDPSubarrayLeafNode.
+TelescopeOn class for SDPSubarrayLeafNode.
 """
 # PROTECTED REGION ID(sdpsubarrayleafnode.additionnal_import) ENABLED START #
 # Tango imports
@@ -8,7 +8,7 @@ from tango import DevFailed
 
 # Additional import
 from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode
+from ska.base.commands import BaseCommand
 
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
@@ -16,20 +16,19 @@ from tmc.common.tango_server_helper import TangoServerHelper
 from . import const
 
 
-class Off(SKABaseDevice.OffCommand):
+class TelescopeOn(BaseCommand):
     """
-    A class for SDP Subarray's Off() command.
+    A class for SDP Subarray's TelescopeOn() command.
 
-    Invokes Off command on the SDP Subarray.
+    Invokes TelescopeOn command on the SDP Subarray.
     """
 
-    def off_cmd_ended_cb(self, event):
+    def telescopeon_cmd_ended_cb(self, event):
         """
         Callback function executes when the command invoked asynchronously returns from the server.
 
-        :param event: A CmdDoneEvent object.
-        This class is used to pass data to the callback method in asynchronous callback model
-        for command execution.
+        :param event: A CmdDoneEvent object. This class is used to pass data to the callback method in asynchronous
+                        callback model for command execution.
 
         :type: CmdDoneEvent object
 
@@ -45,28 +44,26 @@ class Off(SKABaseDevice.OffCommand):
         :return: none
         """
         this_server = TangoServerHelper.get_instance()
+        sdp_sa_ln_server = TangoServerHelper.get_instance()
         if event.err:
             log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             this_server.write_attr("activityMessage", log, False)
+            sdp_sa_ln_server.set_status(log)
             self.logger.error(log)
         else:
             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
             this_server.write_attr("activityMessage", log, False)
+            sdp_sa_ln_server.set_status(log)
             self.logger.info(log)
 
     def do(self):
         """
-        Method to invoke Off command on SDP Subarray.
+        Method to invoke TelescopeOn command on SDP Subarray.
 
         :param argin: None.
 
-        return:
-            A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
-
-        rtype:
-            (ResultCode, str)
-
+        return: None
+        
         raises:
             DevFailed if error occurs while invoking command on SDPSubarray.
 
@@ -75,20 +72,21 @@ class Off(SKABaseDevice.OffCommand):
         try:
             sdp_sa_ln_client_obj=TangoClient(this_server.read_property("SdpSubarrayFQDN")[0])
             sdp_sa_ln_client_obj.send_command_async(
-                const.CMD_OFF, None, self.off_cmd_ended_cb
+                const.CMD_TELESCOPE_ON, None, self.telescopeon_cmd_ended_cb
             )
-            log_msg = const.CMD_OFF + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+            log_msg = const.CMD_TELESCOPE_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+            this_server.set_status(log_msg)
             self.logger.debug(log_msg)
 
-            return (ResultCode.OK, log_msg)
 
         except DevFailed as dev_failed:
-            log_msg = f"{const.ERR_INVOKING_OFF_CMD}{dev_failed}"
+            log_msg = f"{const.ERR_INVOKING_TELESCOPE_ON_CMD} {dev_failed}"
             this_server.write_attr("activityMessage", log_msg, False)
+            this_server.set_status(log_msg)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
-                const.STR_OFF_EXEC,
+                const.STR_TELESCOPE_ON_EXEC,
                 log_msg,
-                "SdpSubarrayLeafNode.Off()",
+                "SdpSubarrayLeafNode.TelescopeOn()",
                 tango.ErrSeverity.ERR,
             )
