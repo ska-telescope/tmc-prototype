@@ -502,7 +502,8 @@ class OverrideDish(object):
         :param data_input: None
         :raises DevFailed: dishMode is not in any of the allowed modes (OPERATE).
         """
-        self._change_pointing_state(model, "TRACK", ("OPERATE",))
+        # pointing state is changed to TRACK when dish is in the requested position
+        self._change_pointing_state(model, "SLEW", ("OPERATE",))
         model.logger.info("'Track' command executed successfully.")
 
     def action_trackstop(
@@ -607,6 +608,9 @@ class OverrideDish(object):
     def update_movement_attributes(self, model, sim_time):
         self.set_lock_attribute(model, self.is_on_target())
         self.set_achieved_pointing_attribute(model, sim_time, self.actual_position)
+        # change pointing state to TRACK when the dish arrives at the desired position
+        if self.is_on_target():
+            self._change_pointing_state(model, "TRACK", ("OPERATE",))
 
     @staticmethod
     def set_lock_attribute(model, target_reached):
