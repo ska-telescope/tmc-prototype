@@ -8,7 +8,6 @@ import tango
 from tango import DevFailed
 
 # Additional import
-# from ska.base import SKABaseDevice
 from ska.base.commands import BaseCommand
 from ska.base.commands import ResultCode
 
