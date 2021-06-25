@@ -53,7 +53,7 @@ class TelescopeOff(BaseCommand):
 
     def do(self):
         """
-        Method to invoke TelescopeOff command on SDP Master.
+        Method to invoke Off command on SDP Master.
 
         :param argin: None.
 
@@ -72,14 +72,14 @@ class TelescopeOff(BaseCommand):
             sdp_master_ln_fqdn = sdp_master_ln_fqdn.join(property_val)
             sdp_mln_client_obj = TangoClient(sdp_master_ln_fqdn)
             sdp_mln_client_obj.send_command_async(
-                const.CMD_TELESCOPE_OFF, None, self.telescopeoff_cmd_ended_cb
+                const.CMD_OFF, None, self.telescopeoff_cmd_ended_cb
             )
-            self.logger.debug(const.STR_TELESCOPE_OFF_CMD_SUCCESS)
-            this_server.write_attr("activityMessage", const.STR_TELESCOPE_OFF_CMD_SUCCESS, False)
+            self.logger.debug(const.STR_OFF_CMD_SUCCESS)
+            this_server.write_attr("activityMessage", const.STR_OFF_CMD_SUCCESS, False)
 
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
-            log_msg = f"{const.ERR_TELESCOPE_OFF_CMD_FAIL}{dev_failed}"
+            log_msg = f"{const.ERR_OFF_CMD_FAIL}{dev_failed}"
             tango.Except.re_throw_exception(
                 dev_failed,
                 const.ERR_INVOKING_CMD,

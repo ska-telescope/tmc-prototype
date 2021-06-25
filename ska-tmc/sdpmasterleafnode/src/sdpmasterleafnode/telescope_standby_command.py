@@ -75,7 +75,7 @@ class TelescopeStandby(BaseCommand):
 
     def do(self):
         """
-        Method to invoke TelescopeStandby command on SDP Master.
+        Method to invoke Standby command on SDP Master.
 
         :param argin: None.
 
@@ -89,14 +89,14 @@ class TelescopeStandby(BaseCommand):
             sdp_master_ln_fqdn = sdp_master_ln_fqdn.join(property_val)
             sdp_mln_client_obj = TangoClient(sdp_master_ln_fqdn)
             sdp_mln_client_obj.send_command_async(
-                const.CMD_TELESCOPE_STANDBY, callback_method=self.telescopestandby_cmd_ended_cb
+                const.CMD_STANDBY, callback_method=self.telescopestandby_cmd_ended_cb
                 )
-            log_msg = const.CMD_TELESCOPE_STANDBY + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+            log_msg = const.CMD_STANDBY + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
             self.logger.debug(log_msg)
 
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
-            log_msg = f"{const.ERR_TELESCOPE_STANDBY_CMD_FAIL}{dev_failed}"
+            log_msg = f"{const.ERR_STANDBY_CMD_FAIL}{dev_failed}"
             tango.Except.re_throw_exception(
                 dev_failed,
                 const.ERR_INVOKING_CMD,
