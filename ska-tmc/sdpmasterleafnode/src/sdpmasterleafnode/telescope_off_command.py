@@ -1,6 +1,6 @@
 # Tango imports
 import tango
-from tango import DevFailed
+from tango import DevFailed, DevState
 
 # Additional import
 from ska.base import SKABaseDevice
@@ -13,12 +13,35 @@ from . import const
 
 class TelescopeOff(BaseCommand):
     """
-    A class for SDP master's TelescopeOff() command. TelescopeOff command is inherited from BaseCommand.
+    A class for TelescopeOff() command of SDP Master Leaf Node. TelescopeOff command is inherited from BaseCommand.
 
     It Sets the State  to Off.
 
     """
 
+    def check_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state.
+
+        return:
+            True if this command is allowed to be run in current device state.
+
+        rtype:
+            boolean
+
+        raises:
+            DevFailed if this command is not allowed to be run in current device state.
+
+        """
+        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
+            tango.Except.throw_exception(
+                f"Command TelescopeOff is not allowed in current state {self.state_model.op_state}.",
+                "Failed to invoke Standby command on CspMasterLeafNode.",
+                "CspMasterLeafNode.TelescopeOff()",
+                tango.ErrSeverity.ERR,
+            )
+
+        return True
     def telescopeoff_cmd_ended_cb(self, event):
 
         """

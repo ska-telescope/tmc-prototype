@@ -1,6 +1,7 @@
 # Tango imports
 import tango
-from tango import DevFailed
+from tango import DevFailed, DevState
+
 
 # Additional import
 from ska.base import SKABaseDevice
@@ -16,17 +17,37 @@ from . import const
 
 class TelescopeOn(BaseCommand):
     """
-    A class for SDP master's TelescopeOn() command. TelescopeOn command is inherited from BaseCommand.
+    A class for TelescopeOn() command of SDP Master Leaf Node. TelescopeOn command is inherited from BaseCommand.
 
     Informs the SDP that it can start executing Processing Blocks. Sets the State to ON.
 
     """
+    def check_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state
+
+        :return: True if this command is allowed to be run in current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run in current device state
+
+        """
+        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
+            tango.Except.throw_exception(
+                f"Command TelescopeOn is not allowed in current state {self.state_model.op_state}.",
+                "Failed to invoke On command on CspMasterLeafNode.",
+                "CspMasterLeafNode.TelescopeOn()",
+                tango.ErrSeverity.ERR,
+            )
+
+        return True
 
     def telescopeon_cmd_ended_cb(self, event):
 
         """
         Callback function immediately executed when the asynchronous invoked
-        command returns. Checks whether the TelescopeOn command has been successfully invoked on SDP Master.
+        command returns. Checks whether the On command has been successfully invoked on SDP Master.
 
         :param event: a CmdDoneEvent object. This class is used to pass data
             to the callback method in asynchronous callback model for command
