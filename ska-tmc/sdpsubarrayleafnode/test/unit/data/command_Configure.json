@@ -1,3 +1,4 @@
 {
+  "interface": "https://schema.skao.int/ska-sdp-configure/2.0",
   "scan_type": "science_A"
 }

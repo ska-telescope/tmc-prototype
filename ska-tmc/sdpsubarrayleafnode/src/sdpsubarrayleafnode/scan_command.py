@@ -92,9 +92,12 @@ class Scan(BaseCommand):
         :param argin: The string in JSON format. The JSON contains following values:
 
         Example:
-        {“id”:1}
+        {
+             "interface": "https://schema.skao.int/ska-sdp-scan/1.0",
+             "scan_id": 1
+        }
 
-        Note: Enter input as without spaces:{“id”:1}
+        Note: Enter input as without spaces
 
         return:
             None
