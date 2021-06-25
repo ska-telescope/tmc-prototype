@@ -6,7 +6,6 @@ Tests for the SKA Dish simulator.
 
 import pkg_resources
 import time
-import unittest2 as unittest
 import pytest
 
 from tango_simlib import tango_sim_generator
