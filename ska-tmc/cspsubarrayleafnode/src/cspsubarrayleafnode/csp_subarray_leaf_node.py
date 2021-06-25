@@ -240,6 +240,22 @@ class CspSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("TelescopeOn")
         handler()
 
+    def is_TelescopeOn_allowed(self):
+        """
+        Checks whether the command is allowed to be run in the current state
+
+        :return: True if this command is allowed to be run in
+                 current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run
+                 in current device state
+        """
+        handler = self.get_command_object("TelescopeOff")
+        return handler.check_allowed()
+
+
     @command()
     @DebugIt()
     def TelescopeOff(self):

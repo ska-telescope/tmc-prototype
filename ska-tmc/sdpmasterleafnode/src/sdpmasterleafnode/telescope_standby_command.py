@@ -18,30 +18,7 @@ class TelescopeStandby(BaseCommand):
     PBs will be aborted. In normal operation we expect diable should be triggered without first going
     into STANDBY.
     """
-    def check_allowed(self):
-        """
-        Checks whether this command is allowed to be run in current device state.
-
-        return:
-            True if this command is allowed to be run in current device state.
-
-        rtype:
-            boolean
-
-        raises:
-            DevFailed if this command is not allowed to be run in current device state.
-
-        """
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
-            tango.Except.throw_exception(
-                f"Command TelescopeStandby is not allowed in current state {self.state_model.op_state}.",
-                "Failed to invoke Standby command on CspMasterLeafNode.",
-                "CspMasterLeafNode.TelescopeStandby()",
-                tango.ErrSeverity.ERR,
-            )
-
-        return True
-
+    
     def check_allowed(self):
         """
         Check Whether this command is allowed to be run in current device
@@ -49,7 +26,9 @@ class TelescopeStandby(BaseCommand):
 
          :return: True if this command is allowed to be run in
              current device state.
+
          :rtype: boolean
+
          :raises: DevFailed if this command is not allowed to be run
              in current device state.
 
@@ -57,7 +36,7 @@ class TelescopeStandby(BaseCommand):
 
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
             tango.Except.throw_exception(
-                f"Standby() is not allowed in current state {self.state_model.op_state}",
+                f"TelescopeStandby() is not allowed in current state {self.state_model.op_state}",
                 "Failed to invoke Standby command on SdpMasterLeafNode.",
                 "SdpMasterLeafNode.TelescopeStandby() ",
                 tango.ErrSeverity.ERR,

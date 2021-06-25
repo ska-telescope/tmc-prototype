@@ -36,12 +36,13 @@ class TelescopeOff(BaseCommand):
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
             tango.Except.throw_exception(
                 f"Command TelescopeOff is not allowed in current state {self.state_model.op_state}.",
-                "Failed to invoke Standby command on CspMasterLeafNode.",
-                "CspMasterLeafNode.TelescopeOff()",
+                "Failed to invoke Off command on SdpMasterLeafNode.",
+                "SdpMasterLeafNode.TelescopeOff()",
                 tango.ErrSeverity.ERR,
             )
 
         return True
+
     def telescopeoff_cmd_ended_cb(self, event):
 
         """
@@ -81,11 +82,7 @@ class TelescopeOff(BaseCommand):
         :param argin: None.
 
         return:
-            A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
-
-        rtype:
-            (ResultCode, str)
+            None
 
         """
         this_server = TangoServerHelper.get_instance()

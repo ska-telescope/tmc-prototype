@@ -37,7 +37,7 @@ class TelescopeOn(BaseCommand):
             tango.Except.throw_exception(
                 f"Command TelescopeOn is not allowed in current state {self.state_model.op_state}.",
                 "Failed to invoke On command on CspMasterLeafNode.",
-                "CspMasterLeafNode.TelescopeOn()",
+                "SdpMasterLeafNode.TelescopeOn()",
                 tango.ErrSeverity.ERR,
             )
 
@@ -82,11 +82,7 @@ class TelescopeOn(BaseCommand):
         :param argin: None.
 
         return:
-            A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
-
-        rtype:
-            (ResultCode, str)
+            None
 
         """
         this_server = TangoServerHelper.get_instance()

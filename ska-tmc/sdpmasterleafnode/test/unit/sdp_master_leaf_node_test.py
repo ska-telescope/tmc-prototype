@@ -81,7 +81,7 @@ def raise_devfailed_exception(*args):
 @pytest.fixture(
     scope="function",
     params=[
-        ("TelescopeOn", const.CMD_TELESCOPE_ON, const.ERR_DEVFAILED_MSG),
+        ("TelescopeOn", const.CMD_ON, const.ERR_DEVFAILED_MSG),
         ("TelescopeStandby", const.CMD_STANDBY, const.ERR_DEVFAILED_MSG),
         ("Disable", const.CMD_Disable, const.ERR_DEVFAILED_MSG),
     ],
@@ -97,7 +97,7 @@ def test_command_should_be_relayed_to_sdp_master(
     device_proxy, tango_client_obj = mock_sdp_master_proxy[:2]
     cmd_name, requested_cmd, _ = command_without_args
     device_proxy.command_inout(cmd_name)
-    callback_name = f"{requested_cmd.lower()}_cmd_ended_cb"
+    callback_name = f"{cmd_name.lower()}_cmd_ended_cb"
     tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(
         requested_cmd, None, any_method(with_name=callback_name)
     )
