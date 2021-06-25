@@ -4,7 +4,7 @@ TelescopeOff class for SDPSubarrayLeafNode.
 # PROTECTED REGION ID(sdpsubarrayleafnode.additionnal_import) ENABLED START #
 # Tango imports
 import tango
-from tango import DevFailed
+from tango import DevFailed, DevState
 
 # Additional import
 from ska.base import SKABaseDevice
@@ -22,6 +22,27 @@ class TelescopeOff(BaseCommand):
 
     Invokes Off command on the SDP Subarray.
     """
+
+    def check_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state
+
+        :return: True if this command is allowed to be run in current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run in current device state
+
+        """
+        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
+            tango.Except.throw_exception(
+                f"Command TelescopeOff is not allowed in current state {self.state_model.op_state}.",
+                "Failed to invoke Off command on SdpSubarrayLeafNode.",
+                "SdpSubarrayLeafNode.TelescopeOff()",
+                tango.ErrSeverity.ERR,
+            )
+
+        return True
 
     def telescopeoff_cmd_ended_cb(self, event):
         """
@@ -56,7 +77,7 @@ class TelescopeOff(BaseCommand):
 
     def do(self):
         """
-        Method to invoke TelescopeOff command on SDP Subarray.
+        Method to invoke Off command on SDP Subarray.
 
         :param argin: None.
 
@@ -70,18 +91,18 @@ class TelescopeOff(BaseCommand):
         try:
             sdp_sa_ln_client_obj=TangoClient(this_server.read_property("SdpSubarrayFQDN")[0])
             sdp_sa_ln_client_obj.send_command_async(
-                const.CMD_TELESCOPE_OFF, None, self.telescopeoff_cmd_ended_cb
+                const.CMD_OFF, None, self.telescopeoff_cmd_ended_cb
             )
-            log_msg = const.CMD_TELESCOPE_OFF + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+            log_msg = const.CMD_OFF + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
             self.logger.debug(log_msg)
 
 
         except DevFailed as dev_failed:
-            log_msg = f"{const.ERR_INVOKING_TELESCOPE_OFF_CMD}{dev_failed}"
+            log_msg = f"{const.ERR_INVOKING_OFF_CMD}{dev_failed}"
             this_server.write_attr("activityMessage", log_msg, False)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
-                const.STR_TELESCOPE_OFF_EXEC,
+                const.STR_OFF_EXEC,
                 log_msg,
                 "SdpSubarrayLeafNode.TelescopeOff()",
                 tango.ErrSeverity.ERR,

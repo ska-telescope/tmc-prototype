@@ -303,8 +303,8 @@ class SdpMasterLeafNode(SKABaseDevice):
         rtype:
             boolean
 
-        raises: DevF
-            ailed if this command is not allowed to be run in current device state.
+        raises: 
+            DevFailed if this command is not allowed to be run in current device state.
 
         """
         handler = self.get_command_object("TelescopeStandby")

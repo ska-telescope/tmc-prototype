@@ -115,7 +115,7 @@ def test_on(mock_sdp_subarray_proxy, mock_tsh):
     tango_server_obj = mock_tsh
     device_proxy.TelescopeOn() 
     tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(
-        const.CMD_TELESCOPE_ON, None, any_method(with_name="telescopeon_cmd_ended_cb")
+        const.CMD_ON, None, any_method(with_name="telescopeon_cmd_ended_cb")
     )
 
 
@@ -124,9 +124,9 @@ def test_on_should_command_with_callback_method(
 ):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     device_proxy.TelescopeOn()
-    dummy_event = command_callback(const.CMD_TELESCOPE_ON)
-    event_subscription_mock[const.CMD_TELESCOPE_ON](dummy_event)
-    assert const.STR_COMMAND + const.CMD_TELESCOPE_ON in device_proxy.activityMessage
+    dummy_event = command_callback(const.CMD_ON)
+    event_subscription_mock[const.CMD_ON](dummy_event)
+    assert const.STR_COMMAND + const.CMD_ON in device_proxy.activityMessage
 
 
 def test_off_should_command_sdp_subarray_to_stop(mock_sdp_subarray_proxy, mock_tsh):
@@ -134,7 +134,7 @@ def test_off_should_command_sdp_subarray_to_stop(mock_sdp_subarray_proxy, mock_t
     device_proxy.TelescopeOn()
     device_proxy.TelescopeOff()
     tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(
-        const.CMD_TELESCOPE_OFF, None, any_method(with_name="telescopeoff_cmd_ended_cb")
+        const.CMD_OFF, None, any_method(with_name="telescopeoff_cmd_ended_cb")
     )
 
 
@@ -144,9 +144,9 @@ def test_off_should_command_with_callback_method(
     device_proxy, tango_client_obj, _, _ = mock_sdp_subarray_proxy
     device_proxy.TelescopeOn()
     device_proxy.TelescopeOff()
-    dummy_event = command_callback(const.CMD_TELESCOPE_OFF)
-    event_subscription_mock[const.CMD_TELESCOPE_OFF](dummy_event)
-    assert const.STR_COMMAND + const.CMD_TELESCOPE_OFF in device_proxy.activityMessage
+    dummy_event = command_callback(const.CMD_OFF)
+    event_subscription_mock[const.CMD_OFF](dummy_event)
+    assert const.STR_COMMAND + const.CMD_OFF in device_proxy.activityMessage
 
 
 def test_on_should_command_with_callback_method_with_event_error(
@@ -154,9 +154,9 @@ def test_on_should_command_with_callback_method_with_event_error(
 ):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     device_proxy.TelescopeOn()
-    dummy_event = command_callback_with_event_error(const.CMD_TELESCOPE_ON)
-    event_subscription_mock[const.CMD_TELESCOPE_ON](dummy_event)
-    assert const.ERR_INVOKING_CMD + const.CMD_TELESCOPE_ON in device_proxy.activityMessage
+    dummy_event = command_callback_with_event_error(const.CMD_ON)
+    event_subscription_mock[const.CMD_ON](dummy_event)
+    assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
 
 
 def test_off_should_command_with_callback_method_with_event_error(
@@ -165,9 +165,9 @@ def test_off_should_command_with_callback_method_with_event_error(
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     device_proxy.TelescopeOn()
     device_proxy.TelescopeOff()
-    dummy_event = command_callback_with_event_error(const.CMD_TELESCOPE_OFF)
-    event_subscription_mock[const.CMD_TELESCOPE_OFF](dummy_event)
-    assert const.ERR_INVOKING_CMD + const.CMD_TELESCOPE_OFF in device_proxy.activityMessage
+    dummy_event = command_callback_with_event_error(const.CMD_OFF)
+    event_subscription_mock[const.CMD_OFF](dummy_event)
+    assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
 
 
 def test_on_command_should_raise_dev_failed(mock_sdp_subarray_proxy, mock_tsh):
