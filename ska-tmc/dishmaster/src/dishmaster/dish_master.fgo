@@ -1476,10 +1476,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "0",
+            "string": "2",
             "time": 1602497002.472336,
             "unit": "",
-            "value": 0,
+            "value": 2,
             "writable": "READ_WRITE"
         },
         "configuredBand": {
@@ -8759,10 +8759,10 @@
             "polling": 0,
             "quality": "ATTR_VALID",
             "standard_unit": "K",
-            "string": "4 K",
+            "string": "0",
             "time": 1602497013.336459,
             "unit": "K",
-            "value": 4,
+            "value": 0,
             "writable": "READ_WRITE"
         },
         "spfB2DefaultRfe1TempSetPoint": {
