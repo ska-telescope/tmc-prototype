@@ -621,7 +621,7 @@ class OverrideDish(object):
         pointing_state = get_enum_str(model.sim_quantities["pointingState"])
         target_lock = model.sim_quantities["targetLock"].last_val
         # update the pointing state to TRACK when the dish arrives on target
-        if target_lock == True and pointing_state == "SLEW":
+        if target_lock and pointing_state == "SLEW":
             self._change_pointing_state(model, "TRACK", ("OPERATE",))
 
     def set_achieved_pointing_attribute(self, model, sim_time, position):
