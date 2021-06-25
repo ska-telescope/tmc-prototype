@@ -129,24 +129,24 @@ class CspMasterLeafNode(SKABaseDevice):
         self.attr_map["activityMessage"] = value
         # PROTECTED REGION END #    //  CspMasterLeafNode.activityMessage_write
 
-    # def is_TelescopeOn_allowed(self):
-    #     """
-    #     Checks whether this command is allowed to be run in current device state
+    def is_TelescopeOn_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state
 
-    #     :return: True if this command is allowed to be run in current device state
+        :return: True if this command is allowed to be run in current device state
 
-    #     :rtype: boolean
+        :rtype: boolean
 
-    #     :raises: DevFailed if this command is not allowed to be run in current device state
+        :raises: DevFailed if this command is not allowed to be run in current device state
 
-    #     """
-    #     handler = self.get_command_object("TelescopeOn")
-    #     return handler.check_allowed()
+        """
+        handler = self.get_command_object("TelescopeOn")
+        return handler.check_allowed()
 
     @command()
     @DebugIt()
     def TelescopeOn(self):
-        """ Sets TelescopeOn Mode on the CSP Element. """
+        """ Sets On Mode on the CSP Element. """
         handler = self.get_command_object("TelescopeOn")
         handler()
 

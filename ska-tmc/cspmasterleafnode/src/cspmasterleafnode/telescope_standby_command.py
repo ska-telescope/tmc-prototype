@@ -35,7 +35,7 @@ class TelescopeStandby(BaseCommand):
         if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
             tango.Except.throw_exception(
                 f"Command TelescopeStandby is not allowed in current state {self.state_model.op_state}.",
-                "Failed to invoke TelescopeStandby command on CspMasterLeafNode.",
+                "Failed to invoke Standby command on CspMasterLeafNode.",
                 "CspMasterLeafNode.TelescopeStandby()",
                 tango.ErrSeverity.ERR,
             )
@@ -74,7 +74,7 @@ class TelescopeStandby(BaseCommand):
 
     def do(self, argin):
         """
-        Method to invoke Telescope Standby command on CSP Element.
+        Method to invoke Standby command on CSP Element.
 
         :param argin: DevStringArray.
         If the array length is 0, the command applies to the whole CSP Element. If the array length is > 1
@@ -92,18 +92,18 @@ class TelescopeStandby(BaseCommand):
         try:
             csp_mln_client_obj = TangoClient(this_device.read_property("CspMasterFQDN")[0])
             csp_mln_client_obj.send_command_async(
-                const.CMD_TELESCOPE_STANDBY, command_data=argin, callback_method=self.telescope_standby_cmd_ended_cb
+                const.CMD_STANDBY, command_data=argin, callback_method=self.telescope_standby_cmd_ended_cb
             )
-            self.logger.debug(const.STR_TELESCOPE_STANDBY_CMD_ISSUED)
-            this_device.write_attr("activityMessage", const.STR_TELESCOPE_STANDBY_CMD_ISSUED, False)
+            self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
+            this_device.write_attr("activityMessage", const.STR_STANDBY_CMD_ISSUED, False)
 
         except DevFailed as dev_failed:
-            log_msg = f"{const.ERR_EXE_TELESCOPE_STANDBY_CMD}{dev_failed}"
+            log_msg = f"{const.ERR_EXE_STANDBY_CMD}{dev_failed}"
             self.logger.exception(dev_failed)
-            this_device.write_attr("activityMessage", const.ERR_EXE_TELESCOPE_STANDBY_CMD, False)
+            this_device.write_attr("activityMessage", const.ERR_EXE_STANDBY_CMD, False)
             tango.Except.re_throw_exception(
                 dev_failed,
-                const.STR_TELESCOPE_STANDBY_EXEC,
+                const.STR_STANDBY_EXEC,
                 log_msg,
                 "CspMasterLeafNode.TelescopeStandbyCommand",
                 tango.ErrSeverity.ERR,

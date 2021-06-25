@@ -1,9 +1,8 @@
 # Tango import
 import tango
-from tango import DevFailed
+from tango import DevFailed, DevState
 
 # Additional import
-# from ska.base import SKABaseDevice
 from ska.base.commands import BaseCommand
 from ska.base.commands import ResultCode
 
@@ -24,6 +23,27 @@ class TelescopeOn(BaseCommand):
 
     It Sets the State to On.
     """
+
+    def check_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state
+
+        :return: True if this command is allowed to be run in current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run in current device state
+
+        """
+        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
+            tango.Except.throw_exception(
+                f"Command TelescopeOn is not allowed in current state {self.state_model.op_state}.",
+                "Failed to invoke On command on CspMasterLeafNode.",
+                "CspMasterLeafNode.TelescopeOn()",
+                tango.ErrSeverity.ERR,
+            )
+
+        return True
 
     def telescope_on_cmd_ended_cb(self, event):
         """
@@ -57,17 +77,10 @@ class TelescopeOn(BaseCommand):
 
     def do(self):
         """
-        Method to invoke Telescope On command on CSP Element.
+        Method to invoke On command on CSP Element.
 
         param argin:
             None
-
-        return:
-            A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
-
-        rtype:
-            (ResultCode, str)
 
         raises:
             DevFailed on communication failure with CspMaster or CspMaster is in error state.
@@ -78,26 +91,25 @@ class TelescopeOn(BaseCommand):
         try:
             csp_mln_client_obj = TangoClient(this_device.read_property("CspMasterFQDN")[0])
             csp_mln_client_obj.send_command_async(
-                const.CMD_TELESCOPE_ON, [], self.telescope_on_cmd_ended_cb
+                const.CMD_ON, [], self.telescope_on_cmd_ended_cb
             )
-            self.logger.debug(const.STR_TELESCOPE_ON_CMD_ISSUED)
-            this_device.write_attr("activityMessage", const.STR_TELESCOPE_ON_CMD_ISSUED, False)
+            self.logger.debug(const.STR_ON_CMD_ISSUED)
+            this_device.write_attr("activityMessage", const.STR_ON_CMD_ISSUED, False)
             device_data.cbf_health_updator = CbfHealthStateAttributeUpdator()
             device_data.cbf_health_updator.start()
             device_data.pss_health_updator = PssHealthStateAttributeUpdator()
             device_data.pss_health_updator.start()
             device_data.pst_health_updator = PstHealthStateAttributeUpdator()
             device_data.pst_health_updator.start()
-            return (ResultCode.OK, const.STR_TELESCOPE_ON_CMD_ISSUED)
 
         except DevFailed as dev_failed:
-            log_msg = f"{const.ERR_EXE_TELESCOPE_ON_CMD}{dev_failed}"
+            log_msg = f"{const.ERR_EXE_ON_CMD}{dev_failed}"
             self.logger.exception(dev_failed)
-            this_device.write_attr("activityMessage", const.ERR_EXE_TELESCOPE_ON_CMD, False)
+            this_device.write_attr("activityMessage", const.ERR_EXE_ON_CMD, False)
             tango.Except.re_throw_exception(
                 dev_failed,
-                const.STR_TELESCOPE_ON_EXEC,
+                const.STR_ON_EXEC,
                 log_msg,
-                "CspMasterLeafNode.OnCommand",
+                "CspMasterLeafNode.TelescopeOnCommand",
                 tango.ErrSeverity.ERR,
             )
