@@ -71,7 +71,7 @@ ERR_RAISED_EXCEPTION = "CSP subarray leaf node raised exception"
 ERR_DEVICE_NOT_IDLE = "CSP Subarray is not in IDLE obsState."
 # strings
 # General strings
-STR_RECEPTORID_LIST = "receptorIDList"
+STR_RECEPTOR_IDS = "receptor_ids"
 STR_DISH = "dish"
 STR_ERR_MSG = "Error message is: "
 STR_ASSIGN_RESOURCES_SUCCESS = "Resources are assigned successfully on CSP Subarray."

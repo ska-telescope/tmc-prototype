@@ -11,10 +11,8 @@ import katpoint
 
 # Additional import
 from ska.base.control_model import ObsState
-
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
-
 from cspsubarrayleafnode.device_data import DeviceData
 
 
@@ -97,7 +95,7 @@ class DelayManager:
         # Create a dictionary including antenna objects
         antennas_dict = {ant.name: ant for ant in antennas}
         antenna_keys_list = antennas_dict.keys()
-        for receptor in self.device_data.receptorIDList_str:
+        for receptor in self.device_data.receptor_ids_str:
             if receptor in antenna_keys_list:
                 assigned_receptors.append(antennas_dict[receptor])
                 # Create a dictionary including antennas (objects) assigned to the Subarray
@@ -111,7 +109,7 @@ class DelayManager:
         self.antenna_names = list(self.delay_correction_object.ant_models.keys())
         # list of frequency slice ids
         for fsp_entry in self.device_data.fsp_ids_object:
-            self.fsids_list.append(fsp_entry["fspID"])
+            self.fsids_list.append(fsp_entry["fsp_id"])
         self.logger.info("Completed updating config parameters.")
 
     def calculate_geometric_delays(self, time_t0):
@@ -231,7 +229,7 @@ class DelayManager:
         delay_model = []
         receptor_delay_model = []
         delay_model_per_epoch = {}
-        for receptor in self.device_data.receptorIDList_str:
+        for receptor in self.device_data.receptor_ids_str:
             receptor_delay_object = {}
             receptor_delay_object["receptor"] = receptor
             receptor_specific_delay_details = []
@@ -242,15 +240,15 @@ class DelayManager:
                 receptor_delay_coeffs = delay_corrections_h_array_dict[receptor]
                 for i in range(0, len(receptor_delay_coeffs)):
                     delay_coeff_array.append(receptor_delay_coeffs[i])
-                fsid_delay_object["delayCoeff"] = delay_coeff_array
+                fsid_delay_object["delay_coeff"] = delay_coeff_array
                 receptor_specific_delay_details.append(fsid_delay_object)
             receptor_delay_object[
-                "receptorDelayDetails"
+                "receptor_delay_details"
             ] = receptor_specific_delay_details
             receptor_delay_model.append(receptor_delay_object)
         
         delay_model_per_epoch["epoch"] = str(time_t0_utc)
-        delay_model_per_epoch["delayDetails"] = receptor_delay_model
+        delay_model_per_epoch["delay_details"] = receptor_delay_model
         delay_model.append(delay_model_per_epoch)
         self.delay_model_json["delayModel"] = delay_model
         log_msg = f"delay_model_json: {self.delay_model_json}"

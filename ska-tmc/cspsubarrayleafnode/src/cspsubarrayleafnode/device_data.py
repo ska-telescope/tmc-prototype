@@ -27,7 +27,7 @@ class DeviceData:
         else:
             DeviceData.__instance = self
 
-        self.receptorIDList_str = []
+        self.receptor_ids_str = []
         self.target = None
         self.fsp_ids_object = []
 
