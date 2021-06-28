@@ -36,8 +36,7 @@ class Configure(SKASubarray.ConfigureCommand):
 
         JSON string example is:
 
-         {"interface":"https://schema.skatelescope.org/ska-low-tmc-configure/1.0","mccs":{"stations":[{"station_id":1},{"station_id":2}],"subarray_beams":[{"subarray_beam_id":1,"station_ids":[1,2],"update_rate":0.0,"channels":[[0,8,1,1],[8,8,2,1],[24,16,2,1]],"antenna_weights":[1.0,1.0,1.0],"phase_centre":[0.0,0.0],"target":{"system":"HORIZON","name":"DriftScan","az":180.0,"el":45.0}}]},"sdp":{},"tmc":{"scan_duration":10.0}}
-
+        {"interface":"https://schema.skao.int/ska-low-tmc-configure/2.0","transaction_id":"txn-....-00001","mccs":{"stations":[{"station_id":1},{"station_id":2}],"subarray_beams":[{"subarray_beam_id":1,"station_ids":[1,2],"update_rate":0.0,"channels":[[0,8,1,1],[8,8,2,1],[24,16,2,1]],"antenna_weights":[1.0,1.0,1.0],"phase_centre":[0.0,0.0],"target":{"system":"HORIZON","name":"DriftScan","az":180.0,"el":45.0}}]},"sdp":{},"tmc":{"scan_duration":10.0}}
 
         return:
             A tuple containing a return code and a string message indicating status.
@@ -82,7 +81,8 @@ class Configure(SKASubarray.ConfigureCommand):
 
     def _create_mccs_cmd_data(self, json_argument):
         mccs_value = json_argument["mccs"]
-        json_argument["interface"] = "https://schema.skatelescope.org/ska-low-mccs-configure/1.0"
+        # json_argument["interface"] = "https://schema.skatelescope.org/ska-low-mccs-configure/1.0"
+        json_argument["interface"] = "https://schema.skao.int/ska-low-mccs-configure/2.0"
         if 'sdp' in json_argument:
             del json_argument["sdp"]
         del json_argument["tmc"]

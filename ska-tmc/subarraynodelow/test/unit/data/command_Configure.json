@@ -1,5 +1,6 @@
 {
-  "interface": "https://schema.skatelescope.org/ska-low-tmc-configure/1.0",
+  "interface": "https://schema.skao.int/ska-low-tmc-configure/2.0",
+  "transaction_id": "txn-....-00001",
   "mccs": {
     "stations": [
       {
@@ -48,7 +49,7 @@
         ],
         "target": {
           "system": "HORIZON",
-          "name": "DriftScan",
+             "name": "DriftScan",
           "az": 180.0,
           "el": 45.0
         }
@@ -56,9 +57,9 @@
     ]
   },
   "sdp": {
-
+     
   },
   "tmc": {
-    "scan_duration": 10.0
+    "scan_duration": 10.0 
   }
 }
