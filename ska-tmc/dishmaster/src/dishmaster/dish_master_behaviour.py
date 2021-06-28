@@ -596,7 +596,8 @@ class OverrideDish(object):
     @staticmethod
     def is_movement_allowed(model):
         pointing_state = get_enum_str(model.sim_quantities["pointingState"])
-        return pointing_state in ["SLEW", "TRACK", "SCAN"]
+        dish_mode = get_enum_str(model.sim_quantities["dishMode"])
+        return pointing_state in ["SLEW", "TRACK", "SCAN"] or dish_mode == "STOW"
 
     def is_on_target(self):
         actual = self.actual_position
