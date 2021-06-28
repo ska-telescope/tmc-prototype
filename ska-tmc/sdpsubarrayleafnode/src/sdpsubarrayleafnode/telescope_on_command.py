@@ -7,7 +7,6 @@ import tango
 from tango import DevFailed, DevState
 
 # Additional import
-from ska.base import SKABaseDevice
 from ska.base.commands import BaseCommand
 
 from tmc.common.tango_client import TangoClient
