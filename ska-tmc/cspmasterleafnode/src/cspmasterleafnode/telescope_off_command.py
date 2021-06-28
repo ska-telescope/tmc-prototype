@@ -1,6 +1,6 @@
 # Tango import
 import tango
-from tango import DevFailed, DevState
+from tango import DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
