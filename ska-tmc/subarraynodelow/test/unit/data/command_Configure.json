@@ -49,7 +49,7 @@
         ],
         "target": {
           "system": "HORIZON",
-             "name": "DriftScan",
+          "name": "DriftScan",
           "az": 180.0,
           "el": 45.0
         }
@@ -60,6 +60,6 @@
      
   },
   "tmc": {
-    "scan_duration": 10.0 
+    "scan_duration": 10.0
   }
 }
