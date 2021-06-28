@@ -59,7 +59,7 @@ class DeviceData:
 
     def _get_targets(self, json_argument):
         try:
-            ra_value = json_argument["pointing"]["target"]["RA"]
+            ra_value = json_argument["pointing"]["target"]["ra"]
             dec_value = json_argument["pointing"]["target"]["dec"]
         except KeyError as key_error:
             raise Exception(
