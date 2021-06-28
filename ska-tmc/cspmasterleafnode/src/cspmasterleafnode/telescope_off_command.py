@@ -3,7 +3,6 @@ import tango
 from tango import DevFailed, DevState
 
 # Additional import
-from ska.base.commands import ResultCode
 from ska.base.commands import BaseCommand
 from tmc.common.tango_server_helper import TangoServerHelper
 from tmc.common.tango_client import TangoClient

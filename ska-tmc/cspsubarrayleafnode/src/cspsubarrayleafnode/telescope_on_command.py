@@ -9,8 +9,6 @@ from tango import DevFailed, DevState
 
 # Additional import
 from ska.base.commands import BaseCommand
-from ska.base.commands import ResultCode
-
 from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const

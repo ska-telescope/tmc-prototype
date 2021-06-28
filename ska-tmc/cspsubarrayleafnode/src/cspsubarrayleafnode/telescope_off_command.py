@@ -9,12 +9,9 @@ from tango import DevFailed, DevState
 
 # Additional import
 from ska.base.commands import BaseCommand
-from ska.base.commands import ResultCode
-
 from . import const
 from .delay_model import DelayManager
 from tmc.common.tango_server_helper import TangoServerHelper
-
 
 class TelescopeOff(BaseCommand):
     """
