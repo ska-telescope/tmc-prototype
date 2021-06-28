@@ -96,8 +96,7 @@ class Configure(BaseCommand):
                       The string in JSON format. The JSON contains following values:
 
         Example:
-        {'interface':'https://schema.skatelescope.org/ska-low-tmc-configure/1.0','stations':[{'station_id':1},{'station_id':2}],'subarray_beams':[{'subarray_beam_id':1,'station_ids':[1,2],'update_rate':0.0,'channels':[[0,8,1,1],[8,8,2,1],[24,16,2,1]],'antenna_weights':[1.0,1.0,1.0],'phase_centre':[0.0,0.0],'target':{'system':'HORIZON','name':'DriftScan','az':180.0,'el':45.0}}]}
-
+        {"interface":"https://schema.skao.int/ska-low-mccs-configure/2.0","stations":[{"station_id":1},{"station_id":2}],"subarray_beams":[{"subarray_beam_id":1,"station_ids":[1,2],"update_rate":0.0,"channels":[[0,8,1,1],[8,8,2,1],[24,16,2,1]],"sky_coordinates":[0.0,180.0,0.0,45.0,0.0],"antenna_weights":[1.0,1.0,1.0],"phase_centre":[0.0,0.0],"target":{"reference_frame":"HORIZON","target_name":"DriftScan","az":180.0,"el":45.0}}]}
         Note: Enter the json string without spaces as a input.
 
         return:
