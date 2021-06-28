@@ -11,6 +11,7 @@ CMD_TELESCOPE_OFF = "TelescopeOff"
 CMD_TELESCOPE_STANDBY = "TelescopeStandby"
 CMD_ON = "On"
 CMD_STANDBY ="Standby"
+CMD_OFF = "Off"
 
 # String constants
 STR_INIT_SUCCESS = "CSP Master Leaf Node is initialized successfully."
