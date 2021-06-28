@@ -251,7 +251,7 @@ class SdpMasterLeafNode(SKABaseDevice):
     @DebugIt()
     def TelescopeOn(self):
         """
-        Sets the opState to ON.
+        Invokes On command on SDP Master.
 
         :param argin: None
 
@@ -282,7 +282,7 @@ class SdpMasterLeafNode(SKABaseDevice):
     @DebugIt()
     def TelescopeOff(self):
         """
-        Sets the opState to Off.
+        Invokes Off command on SDP Master.
 
         :param argin: None
 
