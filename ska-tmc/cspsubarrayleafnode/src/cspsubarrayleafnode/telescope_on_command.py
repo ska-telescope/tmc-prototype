@@ -19,7 +19,8 @@ class TelescopeOn(BaseCommand):
     """
     A class for CSP Subarray's TelescopeOn() command.
 
-    Invokes On command on the CSP Subarray.
+    Invokes method to start Delay Calculation.
+
     """
     def check_allowed(self):
         """
@@ -74,7 +75,7 @@ class TelescopeOn(BaseCommand):
 
     def do(self):
         """
-        Method to invoke On command on CSP Subarray.
+        Method to start Delay calculation.
 
         param argin:
             None

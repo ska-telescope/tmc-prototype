@@ -17,7 +17,7 @@ class TelescopeOff(BaseCommand):
     """
     A class for CSP Subarray's TelescopeOff() command.
 
-    Invokes Off command on the CSP Subarray.
+    Invokes method to stop Delay Calculation.
     """
 
     def check_allowed(self):
@@ -74,7 +74,7 @@ class TelescopeOff(BaseCommand):
 
     def do(self):
         """
-        Method to invoke Off command on CSP Subarray.
+        Method to stop Delay Calculation.
 
         param argin:
             None
