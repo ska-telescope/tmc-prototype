@@ -120,6 +120,7 @@ class Scan(SKASubarray.ScanCommand):
         """
         input_scan = json.loads(input_argin)
         input_scan["interface"] = "https://schema.skao.int/ska-low-mccs-scan/2.0"
+        del input_scan["transaction_id"]
         start_time = {"start_time":0.0}
         input_scan.update(start_time)
         return input_scan
