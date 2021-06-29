@@ -39,8 +39,8 @@ from .end_command import GoToIdleCommand
 from .abort_command import AbortCommand
 from .restart_command import RestartCommand
 from .obsreset_command import ObsResetCommand
-from .on_command import On
-from .off_command import Off
+from .telescope_on_command import TelescopeOn
+from .telescope_off_command import TelescopeOff
 from . import const, release
 from .exceptions import InvalidObsStateError
 from .delay_model import DelayManager
@@ -59,8 +59,8 @@ __all__ = [
     "AbortCommand",
     "RestartCommand",
     "ObsResetCommand",
-    "On",
-    "Off",
+    "TelescopeOn",
+    "TelescopeOff",
 ]
 
 
@@ -232,6 +232,52 @@ class CspSubarrayLeafNode(SKABaseDevice):
     # --------
     # Commands
     # --------
+
+    @command()
+    @DebugIt()
+    def TelescopeOn(self):
+        """ Invokes TelescopeOn command on cspsubarrayleafnode"""
+        handler = self.get_command_object("TelescopeOn")
+        handler()
+
+    def is_TelescopeOn_allowed(self):
+        """
+        Checks whether the command is allowed to be run in the current state
+
+        :return: True if this command is allowed to be run in
+                 current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run
+                 in current device state
+        """
+        handler = self.get_command_object("TelescopeOff")
+        return handler.check_allowed()
+
+
+    @command()
+    @DebugIt()
+    def TelescopeOff(self):
+        """ Invokes TelescopeOff command on cspsubarrayleafnode"""
+        handler = self.get_command_object("TelescopeOff")
+        handler()
+
+    def is_TelescopeOff_allowed(self):
+        """
+        Checks whether the command is allowed to be run in the current state
+
+        :return: True if this command is allowed to be run in
+                 current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run
+                 in current device state
+        """
+        handler = self.get_command_object("TelescopeOff")
+        return handler.check_allowed()
+
 
     def is_Configure_allowed(self):
         """
@@ -489,8 +535,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
         self.register_command_object("Abort", AbortCommand(*args))
         self.register_command_object("Restart", RestartCommand(*args))
         self.register_command_object("ObsReset", ObsResetCommand(*args))
-        self.register_command_object("Off", Off(*args))
-        self.register_command_object("On", On(*args))
+        self.register_command_object("TelescopeOff", TelescopeOff(*args))
+        self.register_command_object("TelescopeOn", TelescopeOn(*args))
 
 
 # ----------
