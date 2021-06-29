@@ -113,17 +113,17 @@ def tango_context():
 def test_on(mock_sdp_subarray_proxy, mock_tsh):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     tango_server_obj = mock_tsh
-    assert device_proxy.On() == [
-        [ResultCode.OK],
-        ["OnCommand :->  invoked successfully."],
-    ]
+    device_proxy.TelescopeOn() 
+    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(
+        const.CMD_ON, None, any_method(with_name="telescopeon_cmd_ended_cb")
+    )
 
 
 def test_on_should_command_with_callback_method(
     mock_sdp_subarray_proxy, event_subscription_mock, mock_tsh
 ):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
-    device_proxy.On()
+    device_proxy.TelescopeOn()
     dummy_event = command_callback(const.CMD_ON)
     event_subscription_mock[const.CMD_ON](dummy_event)
     assert const.STR_COMMAND + const.CMD_ON in device_proxy.activityMessage
@@ -131,19 +131,19 @@ def test_on_should_command_with_callback_method(
 
 def test_off_should_command_sdp_subarray_to_stop(mock_sdp_subarray_proxy, mock_tsh):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
-    device_proxy.On()
-    assert device_proxy.Off() == [
-        [ResultCode.OK],
-        ["OffCommand :->  invoked successfully."],
-    ]
+    device_proxy.TelescopeOn()
+    device_proxy.TelescopeOff()
+    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(
+        const.CMD_OFF, None, any_method(with_name="telescopeoff_cmd_ended_cb")
+    )
 
 
 def test_off_should_command_with_callback_method(
     mock_sdp_subarray_proxy, event_subscription_mock, mock_tsh
 ):
     device_proxy, tango_client_obj, _, _ = mock_sdp_subarray_proxy
-    device_proxy.On()
-    device_proxy.Off()
+    device_proxy.TelescopeOn()
+    device_proxy.TelescopeOff()
     dummy_event = command_callback(const.CMD_OFF)
     event_subscription_mock[const.CMD_OFF](dummy_event)
     assert const.STR_COMMAND + const.CMD_OFF in device_proxy.activityMessage
@@ -153,7 +153,7 @@ def test_on_should_command_with_callback_method_with_event_error(
     mock_sdp_subarray_proxy, event_subscription_mock, mock_tsh
 ):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
-    device_proxy.On()
+    device_proxy.TelescopeOn()
     dummy_event = command_callback_with_event_error(const.CMD_ON)
     event_subscription_mock[const.CMD_ON](dummy_event)
     assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
@@ -163,8 +163,8 @@ def test_off_should_command_with_callback_method_with_event_error(
     mock_sdp_subarray_proxy, event_subscription_mock, mock_tsh
 ):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
-    device_proxy.On()
-    device_proxy.Off()
+    device_proxy.TelescopeOn()
+    device_proxy.TelescopeOff()
     dummy_event = command_callback_with_event_error(const.CMD_OFF)
     event_subscription_mock[const.CMD_OFF](dummy_event)
     assert const.ERR_INVOKING_CMD + const.CMD_OFF in device_proxy.activityMessage
@@ -176,18 +176,18 @@ def test_on_command_should_raise_dev_failed(mock_sdp_subarray_proxy, mock_tsh):
         raise_devfailed_exception
     )
     with pytest.raises(tango.DevFailed) as df:
-        device_proxy.On()
+        device_proxy.TelescopeOn()
     assert "This is error message for devfailed" in str(df.value)
 
 
 def test_off_command_should_raise_dev_failed(mock_sdp_subarray_proxy, mock_tsh):
     device_proxy, tango_client_obj, _, _ = mock_sdp_subarray_proxy
-    device_proxy.On()
+    device_proxy.TelescopeOn()
     tango_client_obj.deviceproxy.command_inout_asynch.side_effect = (
         raise_devfailed_exception
     )
     with pytest.raises(tango.DevFailed) as df:
-        device_proxy.Off()
+        device_proxy.TelescopeOff()
     assert "This is error message for devfailed" in str(df.value)
 
 
@@ -272,7 +272,7 @@ def test_command_for_allowed_Obstate_with_arg(
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     cmd_name, input_arg, requested_cmd, obs_state, callback_str = command_with_arg
     tango_client_obj.get_attribute.side_effect = Mock(return_value = obs_state)
-    device_proxy.On()
+    device_proxy.TelescopeOn()
     device_proxy.command_inout(cmd_name, input_arg)
     tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(
         requested_cmd, input_arg, any_method(with_name=callback_str)
@@ -282,7 +282,7 @@ def test_command_for_allowed_Obstate_with_arg(
 def test_command_with_arg_should_raise_devfailed_exception(mock_obstate_check, mock_sdp_subarray_proxy, event_subscription_mock, command_with_arg, mock_tsh):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     cmd_name, input_arg, requested_cmd, obs_state, _ = command_with_arg
-    device_proxy.On()
+    device_proxy.TelescopeOn()
     tango_client_obj.get_attribute.side_effect = Mock(return_value = obs_state)
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name, input_arg)
@@ -450,7 +450,7 @@ def command_with_argin_should_not_allowed_in_obstate(request):
 def test_command_with_argin_should_failed_when_device_is_not_in_required_obstate(mock_obstate_check, mock_sdp_subarray_proxy, command_with_argin_should_not_allowed_in_obstate, mock_tsh):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     cmd_name, input_str, obs_state, err_msg = command_with_argin_should_not_allowed_in_obstate
-    device_proxy.On()
+    device_proxy.TelescopeOn()
     tango_client_obj.get_attribute.side_effect = Mock(return_value=obs_state)
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name, input_str)
@@ -459,7 +459,7 @@ def test_command_with_argin_should_failed_when_device_is_not_in_required_obstate
 
 def test_scan_device_not_ready(mock_obstate_check, mock_sdp_subarray_proxy, mock_tsh):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
-    device_proxy.On()
+    device_proxy.TelescopeOn()
     tango_client_obj.get_attribute.side_effect = Mock(return_value=ObsState.IDLE)
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.Scan(scan_input_str)
@@ -468,7 +468,7 @@ def test_scan_device_not_ready(mock_obstate_check, mock_sdp_subarray_proxy, mock
 
 def test_end_device_not_ready(mock_obstate_check, mock_sdp_subarray_proxy, mock_tsh):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
-    device_proxy.On()
+    device_proxy.TelescopeOn()
     tango_client_obj.get_attribute.side_effect = Mock(return_value=ObsState.IDLE)
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.End()
@@ -477,7 +477,7 @@ def test_end_device_not_ready(mock_obstate_check, mock_sdp_subarray_proxy, mock_
 
 def test_endscan_invalid_state(mock_obstate_check, mock_sdp_subarray_proxy, mock_tsh):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
-    device_proxy.On()
+    device_proxy.TelescopeOn()
     tango_client_obj.get_attribute.side_effect = Mock(return_value=ObsState.IDLE)
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.EndScan()
@@ -513,7 +513,7 @@ def command_should_not_allowed_in_obstate(request):
 def test_command_should_failed_when_device_is_not_in_required_obstate(mock_obstate_check, mock_tsh, mock_sdp_subarray_proxy, command_should_not_allowed_in_obstate):
     cmd_name, obs_state, err_msg = command_should_not_allowed_in_obstate
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
-    device_proxy.On()
+    device_proxy.TelescopeOn()
     tango_client_obj.get_attribute.side_effect = Mock(return_value=obs_state)
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name)
