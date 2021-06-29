@@ -9,18 +9,13 @@ import time
 import pytest
 
 from tango_simlib import tango_sim_generator
-from dishmaster.dish_master_behaviour import OverrideDish, set_enum, get_enum_str
+from dishmaster.dish_master_behaviour import AzEl, OverrideDish, get_enum_str, set_enum
 
 FGO_FILE_PATH = pkg_resources.resource_filename("dishmaster", "dish_master.fgo")
 JSON_FILE_PATH = pkg_resources.resource_filename("dishmaster", "dish_master_SimDD.json")
 
 
 class TestMpiDshModel:
-
-    def _almost_equal(self, x, y, abs_threshold=5e-3):
-        """Takes two values return true if they are almost equal"""
-        return abs(x - y) <= abs_threshold
-
     @pytest.fixture(scope="function")
     def provision_setup(self):
         model = tango_sim_generator.configure_device_models(
@@ -148,17 +143,26 @@ class TestMpiDshModel:
 
     def test_achieved_pointing_update_when_dish_is_stowing(self, provision_setup):
         device_model, dish_override = provision_setup
-        now = time.time()
+        # send the dish closer to the stow position
+        dish_override.requested_position = AzEl(azim=0.0, elev=82.0)
+        dish_override.actual_position = AzEl(azim=0.0, elev=82.0)
+        # record initial elevation before movement
         initial_el = device_model.sim_quantities["achievedPointing"].last_val[2]
-        # request the stow mode and move the dish close to the stow position
+
+        # request stow mode and move the dish close to the stow position
         dish_override.action_setstowmode(device_model)
-        stow_position = 90.0
+        stow_position = dish_override.STOW_ELEV_POSITION
         dish_far_from_target = True
+        last_time = time.time()
         while dish_far_from_target:
-            dish_override.pre_update(device_model, now, 0.99)
+            start_time = time.time()
+            dish_override.pre_update(device_model, start_time, start_time - last_time)
+            last_time = start_time
             current_el = device_model.sim_quantities["achievedPointing"].last_val[2]
-            dish_far_from_target = not self._almost_equal(current_el, stow_position, 1)
+            dish_far_from_target = not (stow_position - current_el == pytest.approx(1, abs=1))
 
         current_el = device_model.sim_quantities["achievedPointing"].last_val[2]
         assert current_el != initial_el, "The stow command did not move the dish at all"
-        assert self._almost_equal(current_el, stow_position, 1), "The dish did not arrive in stow position"
+        assert stow_position - current_el == pytest.approx(
+            1, abs=1
+        ), "The dish did not arrive in stow position"

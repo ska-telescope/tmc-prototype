@@ -26,6 +26,7 @@ class OverrideDish(object):
     ELEV_IDX = 2
     # az & el limits for desired/achieved pointing
     MAINT_AZIM = 90.0
+    STOW_ELEV_POSITION = 85.0
     MAX_DESIRED_AZIM = 270.0
     MIN_DESIRED_AZIM = -270.0
     MAX_DESIRED_ELEV = 90.0
@@ -413,19 +414,7 @@ class OverrideDish(object):
             return
 
         if dish_mode in _allowed_modes:
-            elev = self.MAX_DESIRED_ELEV
-            current_azim = model.sim_quantities["achievedPointing"].last_val[
-                self.AZIM_IDX
-            ]
-            desiredPointing = [0.0] * len(
-                model.sim_quantities["desiredPointing"].last_val
-            )
-            desiredPointing[self.TS_IDX] = (model.time_func() * 1000) + 5 # this has to be a millisecond timestamp in the future
-            desiredPointing[self.AZIM_IDX] = current_azim
-            desiredPointing[self.ELEV_IDX] = elev
-            model.sim_quantities["desiredPointing"].set_val(
-                desiredPointing, model.time_func()
-            )
+            # movement to stow position is handled in find_next_position
             set_enum(dish_mode_quantity, stow, model.time_func())
             model.logger.info("Dish transitioned to the '%s' Dish Element Mode.", stow)
             self._reset_pointing_state(model)
@@ -580,9 +569,12 @@ class OverrideDish(object):
         """Return the latest desiredPointing not in the future, or last requested."""
         best_pointing = None
         dish_mode = get_enum_str(model.sim_quantities["dishMode"])
+        # move to stow position regardless of timestamp
+        if dish_mode == "STOW":
+            return AzEl(azim=self.actual_position.azim, elev=self.STOW_ELEV_POSITION)
         for pointing in desired_pointings:
             timestamp = pointing[self.TS_IDX] / 1000.0  # convert ms to sec
-            if timestamp <= sim_time or dish_mode == "STOW": # move to stow position regardless of timestamp
+            if timestamp <= sim_time:
                 best_pointing = pointing
             else:
                 break  # all other samples are in the future
