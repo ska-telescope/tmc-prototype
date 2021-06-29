@@ -110,7 +110,7 @@ class AssignResourcesCommand(BaseCommand):
 
         Example:
             {
-                    "interface": "https: //schema.skao.int/ska-mid-csp-assignresources/1.0",
+                    "interface": "https: //schema.skao.int/ska-mid-csp-assignresources/2.0",
                     "subarray_id": 1,
                     "dish": {
                     "receptor_ids": [
