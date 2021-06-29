@@ -263,6 +263,9 @@ class OverrideDish(object):
         else:
             self._throw_exception("SetMaintenanceMode", _allowed_modes)
 
+        tango_dev.set_state(DevState.DISABLE)
+        model.logger.info("Dish state set to 'DISABLE'.")
+
     def action_setoperatemode(
         self, model, tango_dev=None, data_input=None
     ):  # pylint: disable=W0613
@@ -420,6 +423,9 @@ class OverrideDish(object):
             self._reset_pointing_state(model)
         else:
             self._throw_exception("SetStowMode", _allowed_modes)
+
+        tango_dev.set_state(DevState.DISABLE)
+        model.logger.info("Dish state set to 'DISABLE'.")
 
     def action_startcapture(
         self, model, tango_dev=None, data_input=None
