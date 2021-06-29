@@ -1,11 +1,9 @@
 # Tango import
 import tango
-from tango import DevFailed
+from tango import DevFailed, DevState
 
 # Additional import
-from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode
-
+from ska.base.commands import BaseCommand
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -17,17 +15,38 @@ from .attribute_callbacks import (
 )
 
 
-class On(SKABaseDevice.OnCommand):
+class TelescopeOn(BaseCommand):
     """
-    A class for CspMasterLeafNode's On() command. On command is inherited from SKABaseDevice.
+    A class for CspMasterLeafNode's TelescopeOn() command. On command is inherited from BaseCommand.
 
     It Sets the State to On.
     """
 
-    def on_cmd_ended_cb(self, event):
+    def check_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state
+
+        :return: True if this command is allowed to be run in current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run in current device state
+
+        """
+        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
+            tango.Except.throw_exception(
+                f"Command TelescopeOn is not allowed in current state {self.state_model.op_state}.",
+                "Failed to invoke On command on CspMasterLeafNode.",
+                "CspMasterLeafNode.TelescopeOn()",
+                tango.ErrSeverity.ERR,
+            )
+
+        return True
+
+    def telescope_on_cmd_ended_cb(self, event):
         """
         Callback function immediately executed when the asynchronous invoked
-        command returns. Checks whether the On command has been successfully invoked on CSPMaster.
+        command returns. Checks whether the Telescope On command has been successfully invoked on CSPMaster.
 
         :param event: a CmdDoneEvent object. This class is used to pass data
             to the callback method in asynchronous callback model for command
@@ -61,13 +80,6 @@ class On(SKABaseDevice.OnCommand):
         param argin:
             None
 
-        return:
-            A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
-
-        rtype:
-            (ResultCode, str)
-
         raises:
             DevFailed on communication failure with CspMaster or CspMaster is in error state.
 
@@ -77,7 +89,7 @@ class On(SKABaseDevice.OnCommand):
         try:
             csp_mln_client_obj = TangoClient(this_device.read_property("CspMasterFQDN")[0])
             csp_mln_client_obj.send_command_async(
-                const.CMD_ON, [], self.on_cmd_ended_cb
+                const.CMD_ON, [], self.telescope_on_cmd_ended_cb
             )
             self.logger.debug(const.STR_ON_CMD_ISSUED)
             this_device.write_attr("activityMessage", const.STR_ON_CMD_ISSUED, False)
@@ -87,7 +99,6 @@ class On(SKABaseDevice.OnCommand):
             device_data.pss_health_updator.start()
             device_data.pst_health_updator = PstHealthStateAttributeUpdator()
             device_data.pst_health_updator.start()
-            return (ResultCode.OK, const.STR_ON_CMD_ISSUED)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_EXE_ON_CMD}{dev_failed}"
@@ -97,6 +108,6 @@ class On(SKABaseDevice.OnCommand):
                 dev_failed,
                 const.STR_ON_EXEC,
                 log_msg,
-                "CspMasterLeafNode.OnCommand",
+                "CspMasterLeafNode.TelescopeOnCommand",
                 tango.ErrSeverity.ERR,
             )

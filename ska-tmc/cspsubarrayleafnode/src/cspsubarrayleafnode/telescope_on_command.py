@@ -1,35 +1,54 @@
 """
-Off class for CspSubarrayLeafNode.
+On class for CspSubarrayLeafNode.
 """
 # PROTECTED REGION ID(cspsubarrayleafnode.additionnal_import) ENABLED START #
 # Standard Python imports
 # PyTango imports
 import tango
-from tango import DevFailed
+from tango import DevFailed, DevState
 
 # Additional import
-from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode
+from ska.base.commands import BaseCommand
+from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
 from .delay_model import DelayManager
-from tmc.common.tango_server_helper import TangoServerHelper
 
 
-class Off(SKABaseDevice.OffCommand):
+class TelescopeOn(BaseCommand):
     """
-    A class for CSP Subarray's Off() command.
+    A class for CSP Subarray's TelescopeOn() command.
 
-    Invokes Off command on the CSP Subarray.
+    Invokes method to start Delay Calculation.
+
     """
+    def check_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state
 
-    def off_cmd_ended_cb(self, event):
+        :return: True if this command is allowed to be run in current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run in current device state
+
+        """
+        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
+            tango.Except.throw_exception(
+                f"Command TelescopeOn is not allowed in current state {self.state_model.op_state}.",
+                "Failed to invoke On command on CspMasterLeafNode.",
+                "CspMasterLeafNode.TelescopeOn()",
+                tango.ErrSeverity.ERR,
+            )
+
+        return True
+
+    def telescope_on_cmd_ended_cb(self, event):
         """
         Callback function executes when the command invoked asynchronously returns from the server.
 
-        :param event: A CmdDoneEvent object.
-        This class is used to pass data to the callback method in asynchronous callback model
-        for command execution.
+        :param event: A CmdDoneEvent object. This class is used to pass data to the callback method in asynchronous
+                        callback model for command execution.
 
         :type: CmdDoneEvent object
 
@@ -56,33 +75,31 @@ class Off(SKABaseDevice.OffCommand):
 
     def do(self):
         """
-        Method to invoke Off command on CSP Subarray.
+        Method to start Delay calculation.
 
         param argin:
             None
 
         return:
-            A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
-
-        rtype:
-            (ResultCode, str)
+            None
 
         """
         this_server = TangoServerHelper.get_instance()
         try:
-            log_msg = const.CMD_OFF + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+            log_msg = const.CMD_TELESCOPE_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
             self.logger.debug(log_msg)
             delay_manager_obj = DelayManager.get_instance()
-            delay_manager_obj.stop()
-            return (ResultCode.OK, log_msg)
+            delay_manager_obj.start()
+            this_server.set_status(log_msg)
+
         except DevFailed as dev_failed:
-            log_msg = f"{const.ERR_OFF_INVOKING_CMD}{dev_failed}"
+            log_msg = f"{const.ERR_TELESCOPE_ON_INVOKING_CMD}{dev_failed}"
             this_server.write_attr("activityMessage", log_msg, False)
             self.logger.exception(log_msg)
             tango.Except.throw_exception(
-                const.ERR_OFF_INVOKING_CMD,
+                const.ERR_TELESCOPE_ON_INVOKING_CMD,
                 log_msg,
-                "CspSubarrayLeafNode.OffCommand",
+                "CspSubarrayLeafNode.TelescopeOnCommand",
                 tango.ErrSeverity.ERR,
             )
+
