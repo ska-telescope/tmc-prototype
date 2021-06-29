@@ -420,7 +420,7 @@ class OverrideDish(object):
             desiredPointing = [0.0] * len(
                 model.sim_quantities["desiredPointing"].last_val
             )
-            desiredPointing[self.TS_IDX] = model.time_func()
+            desiredPointing[self.TS_IDX] = (model.time_func() * 1000) + 5 # this has to be a millisecond timestamp in the future
             desiredPointing[self.AZIM_IDX] = current_azim
             desiredPointing[self.ELEV_IDX] = elev
             model.sim_quantities["desiredPointing"].set_val(
@@ -576,12 +576,13 @@ class OverrideDish(object):
         self._change_pointing_state(model, "SCAN", ("OPERATE",))
         model.logger.info("'Scan' command executed successfully.")
 
-    def find_next_position(self, desired_pointings, sim_time):
+    def find_next_position(self, desired_pointings, model, sim_time):
         """Return the latest desiredPointing not in the future, or last requested."""
         best_pointing = None
+        dish_mode = get_enum_str(model.sim_quantities["dishMode"])
         for pointing in desired_pointings:
             timestamp = pointing[self.TS_IDX] / 1000.0  # convert ms to sec
-            if timestamp <= sim_time:
+            if timestamp <= sim_time or dish_mode == "STOW": # move to stow position regardless of timestamp
                 best_pointing = pointing
             else:
                 break  # all other samples are in the future
@@ -678,8 +679,8 @@ class OverrideDish(object):
                 ErrSeverity.WARN,
             )
 
-    def move_towards_target(self, sim_time, dt):
-        next_requested_pos = self.find_next_position(self.desired_pointings, sim_time)
+    def move_towards_target(self, model, sim_time, dt):
+        next_requested_pos = self.find_next_position(self.desired_pointings, model, sim_time)
         self.requested_position = next_requested_pos
 
         self.ensure_within_mechanical_limits(next_requested_pos)
@@ -741,7 +742,7 @@ class OverrideDish(object):
     def pre_update(self, model, sim_time, dt):
         if self.is_movement_allowed(model):
             self.update_desired_pointing_history(model)
-            self.move_towards_target(sim_time, dt)
+            self.move_towards_target(model, sim_time, dt)
             self.update_movement_attributes(model, sim_time)
         else:
             model.logger.debug("Skipping quantity updates - movement not allowed")
