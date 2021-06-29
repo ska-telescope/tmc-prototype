@@ -66,11 +66,10 @@ class ReleaseResources(BaseCommand):
                 Boolean(True or False). Mandatory. True when all the resources to be released from Subarray.
 
             Example:
-                {"interface":"https://schema.skatelescope.org/ska-low-tmc-releaseresources/1.0","subarray_id":1,
-                "release_all":true}
+                {"interface":"https://schema.skao.int/ska-low-tmc-releaseresources/2.0","transaction_id":"txn-....-00001","subarray_id":1,"release_all":true}
             Note: From Jive, enter input as:
-                {"interface":"https://schema.skatelescope.org/ska-low-tmc-releaseresources/1.0","subarray_id":1,
-                "release_all":true} without any space.
+                {"interface":"https://schema.skao.int/ska-low-tmc-releaseresources/2.0","transaction_id":"txn-....-00001","subarray_id":1,"release_all":true}
+                without any space.
         return:
             None
 
@@ -95,7 +94,8 @@ class ReleaseResources(BaseCommand):
                 subarray_client.send_command(const.CMD_RELEASE_RESOURCES)
                 # Invoke ReleaseAllResources on MCCS Master Leaf Node
                 # Send updated input string with inteface key to MCCS Master for ReleaseResource Command
-                input_mccs_release["interface"] = "https://schema.skatelescope.org/ska-low-mccs-releaseresources/1.0"
+                input_mccs_release["interface"] = "https://schema.skao.int/ska-low-tmc-releaseresources/2.0"
+                del jsonArgument["transaction_id"]
                 self.mccs_master_ln_fqdn = ""
                 property_value = this_server.read_property("MCCSMasterLeafNodeFQDN")
                 self.mccs_master_ln_fqdn = self.mccs_master_ln_fqdn.join(property_value)

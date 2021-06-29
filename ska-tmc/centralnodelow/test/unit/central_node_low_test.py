@@ -146,7 +146,7 @@ def test_release_resources(mock_subarraynode_proxy, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_subarraynode_proxy[:2]
     device_proxy.ReleaseResources(release_input_str)
     input_mccs_release = json.loads(release_input_str)
-    input_mccs_release["interface"] = "https://schema.skatelescope.org/ska-low-mccs-releaseresources/1.0"
+    input_mccs_release["interface"] = "https://schema.skao.int/ska-low-tmc-releaseresources/2.0"
     tango_client_obj.deviceproxy.command_inout.assert_called_with(
         const.CMD_RELEASE_MCCS_RESOURCES, json.dumps(input_mccs_release)
     )
