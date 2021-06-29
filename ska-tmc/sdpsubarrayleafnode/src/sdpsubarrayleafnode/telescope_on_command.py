@@ -1,14 +1,13 @@
 """
-On class for SDPSubarrayLeafNode.
+TelescopeOn class for SDPSubarrayLeafNode.
 """
 # PROTECTED REGION ID(sdpsubarrayleafnode.additionnal_import) ENABLED START #
 # Tango imports
 import tango
-from tango import DevFailed
+from tango import DevFailed, DevState
 
 # Additional import
-from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode
+from ska.base.commands import BaseCommand
 
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
@@ -16,14 +15,35 @@ from tmc.common.tango_server_helper import TangoServerHelper
 from . import const
 
 
-class On(SKABaseDevice.OnCommand):
+class TelescopeOn(BaseCommand):
     """
     A class for SDP Subarray's On() command.
 
     Invokes On command on the SDP Subarray.
     """
 
-    def on_cmd_ended_cb(self, event):
+    def check_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state
+
+        :return: True if this command is allowed to be run in current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run in current device state
+
+        """
+        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
+            tango.Except.throw_exception(
+                f"Command TelescopeOn is not allowed in current state {self.state_model.op_state}.",
+                "Failed to invoke On command on SdpSubarrayLeafNode.",
+                "SdpSubarrayLeafNode.TelescopeOn()",
+                tango.ErrSeverity.ERR,
+            )
+
+        return True
+
+    def telescopeon_cmd_ended_cb(self, event):
         """
         Callback function executes when the command invoked asynchronously returns from the server.
 
@@ -62,13 +82,8 @@ class On(SKABaseDevice.OnCommand):
 
         :param argin: None.
 
-        return:
-            A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
-
-        rtype:
-            (ResultCode, str)
-
+        return: None
+        
         raises:
             DevFailed if error occurs while invoking command on SDPSubarray.
 
@@ -77,13 +92,12 @@ class On(SKABaseDevice.OnCommand):
         try:
             sdp_sa_ln_client_obj=TangoClient(this_server.read_property("SdpSubarrayFQDN")[0])
             sdp_sa_ln_client_obj.send_command_async(
-                const.CMD_ON, None, self.on_cmd_ended_cb
+                const.CMD_ON, None, self.telescopeon_cmd_ended_cb
             )
             log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
             this_server.set_status(log_msg)
             self.logger.debug(log_msg)
 
-            return (ResultCode.OK, log_msg)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_INVOKING_ON_CMD} {dev_failed}"
@@ -93,6 +107,6 @@ class On(SKABaseDevice.OnCommand):
             tango.Except.throw_exception(
                 const.STR_ON_EXEC,
                 log_msg,
-                "SdpSubarrayLeafNode.On()",
+                "SdpSubarrayLeafNode.TelescopeOn()",
                 tango.ErrSeverity.ERR,
             )
