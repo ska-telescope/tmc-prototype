@@ -38,8 +38,8 @@ from .end_command import End
 from .abort_command import Abort
 from .restart_command import Restart
 from .obsreset_command import ObsReset
-from .on_command import On
-from .off_command import Off
+from .telescope_on_command import TelescopeOn
+from .telescope_off_command import TelescopeOff
 from .device_data import DeviceData
 from .exceptions import InvalidObsStateError
 
@@ -53,8 +53,8 @@ __all__ = [
     "const",
     "release",
     "ReleaseAllResources",
-    "On",
-    "Off",
+    "TelescopeOn",
+    "TelescopeOff",
     "Configure",
     "Abort",
     "Restart",
@@ -228,6 +228,74 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         from SDP Subarray which depicts the active Processing Blocks in the SDP Subarray"""
         return self.attr_map["activeProcessingBlocks"]
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.activeProcessingBlocks_read
+
+
+    # --------
+    # Commands
+    # --------
+    
+    def is_telescope_on_allowed(self):
+        """
+        Checks Whether this command is allowed to be run in current device state.
+
+        return:
+            True if this command is allowed to be run in current device state.
+
+        rtype:
+            boolean
+
+        raises: DevF
+            ailed if this command is not allowed to be run in current device state.
+
+        """
+        handler = self.get_command_object("TelescopeOn")
+        return handler.check_allowed()
+
+    @command()
+    @DebugIt()
+    def TelescopeOn(self):
+        """
+        Sets the opState to ON.
+
+        :param argin: None
+
+        :return: None
+
+        """
+        handler = self.get_command_object("TelescopeOn")
+        handler()
+
+    def is_telescope_off_allowed(self):
+        """
+        Checks Whether this command is allowed to be run in current device state.
+
+        return:
+            True if this command is allowed to be run in current device state.
+
+        rtype:
+            boolean
+
+        raises: DevF
+            ailed if this command is not allowed to be run in current device state.
+
+        """
+        handler = self.get_command_object("TelescopeOff")
+        return handler.check_allowed()
+
+    @command()
+    @DebugIt()
+    def TelescopeOff(self):
+        """
+        Sets the opState to Off.
+
+        :param argin: None
+
+        :return: None
+
+        """
+        handler = self.get_command_object("TelescopeOff")
+        handler()
+
 
     @command()
     @DebugIt()
@@ -492,8 +560,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         self.register_command_object("EndScan", EndScan(*args))
         self.register_command_object("Abort", Abort(*args))
         self.register_command_object("ObsReset", ObsReset(*args))
-        self.register_command_object("Off", Off(*args))
-        self.register_command_object("On", On(*args))
+        self.register_command_object("TelescopeOff", TelescopeOff(*args))
+        self.register_command_object("TelescopeOn", TelescopeOn(*args))
 
 
 # ----------
