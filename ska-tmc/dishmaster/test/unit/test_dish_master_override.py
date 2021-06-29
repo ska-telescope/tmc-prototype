@@ -165,4 +165,4 @@ class TestMpiDshModel:
         assert current_el != initial_el, "The stow command did not move the dish at all"
         assert stow_position - current_el == pytest.approx(
             1, abs=1
-        ), "The dish did not arrive in stow position"
+        ), "Dish did not arrive at stow position"
