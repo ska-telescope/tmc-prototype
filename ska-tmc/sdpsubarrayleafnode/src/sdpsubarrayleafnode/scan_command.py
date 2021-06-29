@@ -93,7 +93,7 @@ class Scan(BaseCommand):
 
         Example:
         {
-             "interface": "https://schema.skao.int/ska-sdp-scan/1.0",
+             "interface": "https://schema.skao.int/ska-sdp-scan/0.3",
              "scan_id": 1
         }
 
