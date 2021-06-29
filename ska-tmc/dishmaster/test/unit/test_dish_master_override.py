@@ -141,7 +141,7 @@ class TestMpiDshModel:
         current_pointing_state = get_enum_str(device_model.sim_quantities["pointingState"])
         assert current_pointing_state == "TRACK"
 
-    def test_achieved_pointing_update_when_dish_is_stowing(self, provision_setup):
+    def test_achieved_pointing_changes_when_dish_is_stowing(self, provision_setup):
         device_model, dish_override = provision_setup
         # send the dish closer to the stow position
         dish_override.requested_position = AzEl(azim=0.0, elev=82.0)
