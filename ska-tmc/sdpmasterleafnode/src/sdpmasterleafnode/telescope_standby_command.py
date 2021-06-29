@@ -1,29 +1,53 @@
 # Tango imports
 import tango
-from tango import DevFailed
+from tango import DevState, DevFailed
 
 # Additional import
-from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode
+from ska.base.commands import BaseCommand
 
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
 
-class Off(SKABaseDevice.OffCommand):
+class TelescopeStandby(BaseCommand):
     """
-    A class for SDP master's Off() command. Off command is inherited from SKABaseDevice.
+    A class for TelescopeStandby() command of SDP Master Leaf Node..
 
-    It Sets the State  to Off.
-
+    Informs the SDP to stop any executing Processing. To get into the STANDBY state all running
+    PBs will be aborted. In normal operation we expect diable should be triggered without first going
+    into STANDBY.
     """
+    
+    def check_allowed(self):
+        """
+        Check Whether this command is allowed to be run in current device
+        state.
 
-    def off_cmd_ended_cb(self, event):
+         :return: True if this command is allowed to be run in
+             current device state.
+
+         :rtype: boolean
+
+         :raises: DevFailed if this command is not allowed to be run
+             in current device state.
+
+        """
+
+        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
+            tango.Except.throw_exception(
+                f"TelescopeStandby() is not allowed in current state {self.state_model.op_state}",
+                "Failed to invoke Standby command on SdpMasterLeafNode.",
+                "SdpMasterLeafNode.TelescopeStandby() ",
+                tango.ErrSeverity.ERR,
+            )
+        return True
+
+    def telescopestandby_cmd_ended_cb(self, event):
 
         """
         Callback function immediately executed when the asynchronous invoked
-        command returns. Checks whether the OFF command has been successfully invoked on SDP Master.
+        command returns. Checks whether the standby command has been successfully invoked on SDP Master.
 
         :param event: a CmdDoneEvent object. This class is used to pass data
             to the callback method in asynchronous callback model for command
@@ -53,17 +77,12 @@ class Off(SKABaseDevice.OffCommand):
 
     def do(self):
         """
-        Method to invoke Off command on SDP Master.
+        Method to invoke Standby command on SDP Master.
 
         :param argin: None.
 
         return:
-            A tuple containing a return code and a string message indicating status.
-            The message is for information purpose only.
-
-        rtype:
-            (ResultCode, str)
-
+            None
         """
         this_server = TangoServerHelper.get_instance()
         try:
@@ -72,19 +91,18 @@ class Off(SKABaseDevice.OffCommand):
             sdp_master_ln_fqdn = sdp_master_ln_fqdn.join(property_val)
             sdp_mln_client_obj = TangoClient(sdp_master_ln_fqdn)
             sdp_mln_client_obj.send_command_async(
-                const.CMD_OFF, None, self.off_cmd_ended_cb
-            )
-            self.logger.debug(const.STR_OFF_CMD_SUCCESS)
-            this_server.write_attr("activityMessage", const.STR_OFF_CMD_SUCCESS, False)
-            return (ResultCode.OK, const.STR_OFF_CMD_SUCCESS)
+                const.CMD_STANDBY, callback_method=self.telescopestandby_cmd_ended_cb
+                )
+            log_msg = const.CMD_STANDBY + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+            self.logger.debug(log_msg)
 
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
-            log_msg = f"{const.ERR_OFF_CMD_FAIL}{dev_failed}"
+            log_msg = f"{const.ERR_STANDBY_CMD_FAIL}{dev_failed}"
             tango.Except.re_throw_exception(
                 dev_failed,
                 const.ERR_INVOKING_CMD,
                 log_msg,
-                "SdpMasterLeafNode.OffCommand()",
+                "SdpMasterLeafNode.TelescopeStandby()",
                 tango.ErrSeverity.ERR,
             )
