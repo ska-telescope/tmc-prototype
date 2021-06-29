@@ -7,6 +7,7 @@ Tests for the SKA Dish simulator.
 import pkg_resources
 import time
 import pytest
+from unittest import mock
 
 from tango_simlib import tango_sim_generator
 from dishmaster.dish_master_behaviour import AzEl, OverrideDish, get_enum_str, set_enum
@@ -151,7 +152,7 @@ class TestMpiDshModel:
         initial_el = device_model.sim_quantities["achievedPointing"].last_val[2]
 
         # request stow mode and move the dish close to the stow position
-        dish_override.action_setstowmode(device_model)
+        dish_override.action_setstowmode(device_model, tango_dev=mock.Mock())
         stow_position = dish_override.STOW_ELEV_POSITION
         dish_far_from_target = True
         last_time = time.time()
