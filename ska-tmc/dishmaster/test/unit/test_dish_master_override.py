@@ -146,7 +146,8 @@ class TestMpiDshModel:
         # send the dish closer to the stow position
         dish_override.requested_position = AzEl(azim=0.0, elev=82.0)
         dish_override.actual_position = AzEl(azim=0.0, elev=82.0)
-        # record initial elevation before movement
+        # record initial az, el before movement
+        initial_az = device_model.sim_quantities["achievedPointing"].last_val[1]
         initial_el = device_model.sim_quantities["achievedPointing"].last_val[2]
 
         # request stow mode and move the dish close to the stow position
@@ -154,15 +155,24 @@ class TestMpiDshModel:
         stow_position = dish_override.STOW_ELEV_POSITION
         dish_far_from_target = True
         last_time = time.time()
+        timeout = time.time() + 5  # 5 seconds from now
         while dish_far_from_target:
             start_time = time.time()
             dish_override.pre_update(device_model, start_time, start_time - last_time)
             last_time = start_time
             current_el = device_model.sim_quantities["achievedPointing"].last_val[2]
             dish_far_from_target = not (stow_position - current_el == pytest.approx(1, abs=1))
+            time.sleep(1)
+            if timeout < start_time:
+                raise(Exception("Timeout occurred"))
 
+        current_az = device_model.sim_quantities["achievedPointing"].last_val[1]
         current_el = device_model.sim_quantities["achievedPointing"].last_val[2]
+
         assert current_el != initial_el, "The stow command did not move the dish at all"
+        assert (
+            current_az == initial_az
+        ), "The dish should only move in elevation to stow, azimuth movement detected"
         assert stow_position - current_el == pytest.approx(
             1, abs=1
         ), "Dish did not arrive at stow position"
