@@ -250,6 +250,6 @@ class DelayManager:
         delay_model_per_epoch["epoch"] = str(time_t0_utc)
         delay_model_per_epoch["delay_details"] = receptor_delay_model
         delay_model.append(delay_model_per_epoch)
-        self.delay_model_json["delayModel"] = delay_model
+        self.delay_model_json["delay_model"] = delay_model
         log_msg = f"delay_model_json: {self.delay_model_json}"
         self.logger.info(log_msg)
