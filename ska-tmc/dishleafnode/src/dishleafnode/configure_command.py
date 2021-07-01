@@ -59,8 +59,7 @@ class Configure(BaseCommand):
             Elevation Angle.
 
                 Example:
-                {"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},
-                "dish":{"receiverBand":"1"}}
+                {"pointing":{"target":{"reference_frame":"ICRS","target_name":"Polaris Australis","ra":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiver_band":"1"}}
 
         return:
             None
@@ -80,7 +79,7 @@ class Configure(BaseCommand):
             property_value = this_server.read_property("DishMasterFQDN")
             self.dish_master_fqdn = self.dish_master_fqdn.join(property_value)
             json_argument = device_data._load_config_string(argin)
-            receiver_band = json_argument["dish"]["receiverBand"]
+            receiver_band = json_argument["dish"]["receiver_band"]
             self._configure_band(receiver_band)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)

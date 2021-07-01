@@ -87,7 +87,7 @@ class AssignedResourcesMaintainer:
             input_json_arg = json.loads(mccs_assigned_resources)
             del input_json_arg["interface"]
             json_argument={}
-            json_argument["interface"] = "https://schema.skatelescope.org/ska-low-tmc-assignedresources/1.0"
+            json_argument["interface"] = "https://schema.skao.int/ska-low-tmc-assignedresources/1.0"
             json_argument["mccs"]=input_json_arg
             self.this_server.write_attr("assigned_resources", json.dumps(json_argument))
             log_msg = "assigned_resources attribute value is: {}".format(str(json.dumps(json_argument)))
