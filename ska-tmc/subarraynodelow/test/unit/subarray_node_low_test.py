@@ -492,7 +492,7 @@ def test_subarray_assigned_resources_attr_changes_as_per_mccs_subarray_ln_assign
             device_proxy.On()
             device_proxy.AssignResources(assign_input_str)
     test1 = {
-    "interface": "https://schema.skao.int/ska-low-mccs-assignresources/2.0",
+    "interface": "https://schema.skao.int/ska-low-mccs-assignresources/1.0",
     "subarray_beam_ids": [1],
     "station_ids": [[1,2]],
     "channel_blocks": [3]
@@ -506,7 +506,7 @@ def dummy_subscriber_mccs(attribute, callback_method):
     fake_event.err = False
     fake_event.attr_name = f"ska_mid/tm_leaf_node/mccs_subarray01/{attribute}"
     test1 = {
-    "interface": "https://schema.skao.int/ska-low-mccs-assignresources/2.0",
+    "interface": "https://schema.skao.int/ska-low-mccs-assignresources/1.0",
     "subarray_beam_ids": [1],
     "station_ids": [[1,2]],
     "channel_blocks": [3]
@@ -587,7 +587,7 @@ def create_dummy_event_assign_resource_attr_with_error(attribute, callback_metho
     fake_event = Mock()
     fake_event.err = True
     fake_event.attr_name = f"ska_mid/tm_leaf_node/mccs_subarray01/{attribute}"
-    fake_event.attr_value.value = {"dummy_interface": "https://schema.skao.int/ska-low-tmc-assignresources/2.0",
+    fake_event.attr_value.value = {"dummy_interface": "https://schema.skao.int/ska-low-tmc-assignresources/1.0",
     "subarray_beam_ids": [1],
     "station_ids": [[1,2]],
     "channel_blocks": [3]
