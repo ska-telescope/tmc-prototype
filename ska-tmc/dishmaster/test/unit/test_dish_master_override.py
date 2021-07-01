@@ -7,9 +7,10 @@ Tests for the SKA Dish simulator.
 import pkg_resources
 import time
 import pytest
+from unittest import mock
 
 from tango_simlib import tango_sim_generator
-from dishmaster.dish_master_behaviour import OverrideDish, set_enum, get_enum_str
+from dishmaster.dish_master_behaviour import AzEl, OverrideDish, get_enum_str, set_enum
 
 FGO_FILE_PATH = pkg_resources.resource_filename("dishmaster", "dish_master.fgo")
 JSON_FILE_PATH = pkg_resources.resource_filename("dishmaster", "dish_master_SimDD.json")
@@ -140,3 +141,39 @@ class TestMpiDshModel:
         dish_override.update_movement_attributes(device_model, now)
         current_pointing_state = get_enum_str(device_model.sim_quantities["pointingState"])
         assert current_pointing_state == "TRACK"
+
+    def test_achieved_pointing_changes_when_dish_is_stowing(self, provision_setup):
+        device_model, dish_override = provision_setup
+        # send the dish closer to the stow position
+        dish_override.requested_position = AzEl(azim=0.0, elev=82.0)
+        dish_override.actual_position = AzEl(azim=0.0, elev=82.0)
+        # record initial az, el before movement
+        initial_az = device_model.sim_quantities["achievedPointing"].last_val[1]
+        initial_el = device_model.sim_quantities["achievedPointing"].last_val[2]
+
+        # request stow mode and move the dish close to the stow position
+        dish_override.action_setstowmode(device_model, tango_dev=mock.Mock())
+        stow_position = dish_override.STOW_ELEV_POSITION
+        dish_far_from_target = True
+        last_time = time.time()
+        timeout = time.time() + 5  # 5 seconds from now
+        while dish_far_from_target:
+            start_time = time.time()
+            dish_override.pre_update(device_model, start_time, start_time - last_time)
+            last_time = start_time
+            current_el = device_model.sim_quantities["achievedPointing"].last_val[2]
+            dish_far_from_target = not (stow_position - current_el == pytest.approx(1, abs=1))
+            time.sleep(1)
+            if timeout < start_time:
+                raise(Exception("Timeout occurred"))
+
+        current_az = device_model.sim_quantities["achievedPointing"].last_val[1]
+        current_el = device_model.sim_quantities["achievedPointing"].last_val[2]
+
+        assert current_el != initial_el, "The stow command did not move the dish at all"
+        assert (
+            current_az == initial_az
+        ), "The dish should only move in elevation to stow, azimuth movement detected"
+        assert stow_position - current_el == pytest.approx(
+            1, abs=1
+        ), "Dish did not arrive at stow position"
