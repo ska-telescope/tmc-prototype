@@ -79,10 +79,9 @@ class AssignResources(BaseCommand):
 
 
         Example:
-            {"interface":"https://schema.skatelescope.org/ska-low-tmc-assignresources/1.0","subarray_id":1,"mccs":{"subarray_beam_ids":[1],"station_ids":[[1,2]],"channel_blocks":[3]},"sdp":{}}
+            {"interface":"https://schema.skao.int/ska-low-tmc-assignresources/2.0","transaction_id":"txn-....-00001","subarray_id":1,"mccs":{"subarray_beam_ids":[1],"station_ids":[[1,2]],"channel_blocks":[3]},"sdp":{}}
 
-        Note: Enter input without spaces as: {"interface":"https://schema.skatelescope.org/ska-low-tmc-assignresources/1.0","subarray_id":1,"mccs":{"subarray_beam_ids":[1],"station_ids":[[1,2]],"channel_blocks":[3]},"sdp":{}}
-
+        Note: Enter input without spaces as: {"interface":"https://schema.skao.int/ska-low-tmc-assignresources/2.0","transaction_id":"txn-....-00001","subarray_id":1,"mccs":{"subarray_beam_ids":[1],"station_ids":[[1,2]],"channel_blocks":[3]},"sdp":{}}
         return:
             None
 
@@ -178,7 +177,8 @@ class AssignResources(BaseCommand):
         :return: The string in JSON format.
         """
         mccs_value = json_argument["mccs"]
-        json_argument["interface"] = "https://schema.skatelescope.org/ska-low-mccs-assignresources/1.0"
+        json_argument["interface"] = "https://schema.skao.int/ska-low-mccs-assignresources/2.0"
+        del json_argument["transaction_id"]
         if 'sdp' in json_argument:
             del json_argument["sdp"]
         del json_argument["mccs"]

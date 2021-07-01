@@ -37,7 +37,7 @@ class Scan(SKASubarray.ScanCommand):
 
         JSON string example as follows:
 
-        {"interface":"https://schema.skatelescope.org/ska-low-tmc-scan/1.0","scan_id":1}       
+        {"interface":"https://schema.skao.int/ska-low-tmc-scan/2.0","transaction_id":"txn-....-00001","scan_id":1}       
         Note: Above JSON string can be used as an input argument while invoking this command from JIVE.
 
         return:
@@ -119,7 +119,8 @@ class Scan(SKASubarray.ScanCommand):
         This Scan command input string is updated to send to MCCS SubarrayLeafNode.
         """
         input_scan = json.loads(input_argin)
-        input_scan["interface"] = "https://schema.skatelescope.org/ska-low-mccs-scan/1.0"
+        input_scan["interface"] = "https://schema.skao.int/ska-low-mccs-scan/2.0"
+        del input_scan["transaction_id"]
         start_time = {"start_time":0.0}
         input_scan.update(start_time)
         return input_scan

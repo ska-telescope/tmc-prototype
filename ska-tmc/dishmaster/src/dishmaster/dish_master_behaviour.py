@@ -26,6 +26,7 @@ class OverrideDish(object):
     ELEV_IDX = 2
     # az & el limits for desired/achieved pointing
     MAINT_AZIM = 90.0
+    STOW_ELEV_POSITION = 85.0
     MAX_DESIRED_AZIM = 270.0
     MIN_DESIRED_AZIM = -270.0
     MAX_DESIRED_ELEV = 90.0
@@ -262,6 +263,9 @@ class OverrideDish(object):
         else:
             self._throw_exception("SetMaintenanceMode", _allowed_modes)
 
+        tango_dev.set_state(DevState.DISABLE)
+        model.logger.info("Dish state set to 'DISABLE'.")
+
     def action_setoperatemode(
         self, model, tango_dev=None, data_input=None
     ):  # pylint: disable=W0613
@@ -413,24 +417,15 @@ class OverrideDish(object):
             return
 
         if dish_mode in _allowed_modes:
-            elev = self.MAX_DESIRED_ELEV
-            current_azim = model.sim_quantities["achievedPointing"].last_val[
-                self.AZIM_IDX
-            ]
-            desiredPointing = [0.0] * len(
-                model.sim_quantities["desiredPointing"].last_val
-            )
-            desiredPointing[self.TS_IDX] = model.time_func()
-            desiredPointing[self.AZIM_IDX] = current_azim
-            desiredPointing[self.ELEV_IDX] = elev
-            model.sim_quantities["desiredPointing"].set_val(
-                desiredPointing, model.time_func()
-            )
+            # movement to stow position is handled in find_next_position
             set_enum(dish_mode_quantity, stow, model.time_func())
             model.logger.info("Dish transitioned to the '%s' Dish Element Mode.", stow)
             self._reset_pointing_state(model)
         else:
             self._throw_exception("SetStowMode", _allowed_modes)
+
+        tango_dev.set_state(DevState.DISABLE)
+        model.logger.info("Dish state set to 'DISABLE'.")
 
     def action_startcapture(
         self, model, tango_dev=None, data_input=None
@@ -576,9 +571,13 @@ class OverrideDish(object):
         self._change_pointing_state(model, "SCAN", ("OPERATE",))
         model.logger.info("'Scan' command executed successfully.")
 
-    def find_next_position(self, desired_pointings, sim_time):
+    def find_next_position(self, desired_pointings, model, sim_time):
         """Return the latest desiredPointing not in the future, or last requested."""
         best_pointing = None
+        dish_mode = get_enum_str(model.sim_quantities["dishMode"])
+        # move to stow position regardless of timestamp
+        if dish_mode == "STOW":
+            return AzEl(azim=self.actual_position.azim, elev=self.STOW_ELEV_POSITION)
         for pointing in desired_pointings:
             timestamp = pointing[self.TS_IDX] / 1000.0  # convert ms to sec
             if timestamp <= sim_time:
@@ -596,7 +595,8 @@ class OverrideDish(object):
     @staticmethod
     def is_movement_allowed(model):
         pointing_state = get_enum_str(model.sim_quantities["pointingState"])
-        return pointing_state in ["SLEW", "TRACK", "SCAN"]
+        dish_mode = get_enum_str(model.sim_quantities["dishMode"])
+        return pointing_state in ["SLEW", "TRACK", "SCAN"] or dish_mode == "STOW"
 
     def is_on_target(self):
         actual = self.actual_position
@@ -677,8 +677,8 @@ class OverrideDish(object):
                 ErrSeverity.WARN,
             )
 
-    def move_towards_target(self, sim_time, dt):
-        next_requested_pos = self.find_next_position(self.desired_pointings, sim_time)
+    def move_towards_target(self, model, sim_time, dt):
+        next_requested_pos = self.find_next_position(self.desired_pointings, model, sim_time)
         self.requested_position = next_requested_pos
 
         self.ensure_within_mechanical_limits(next_requested_pos)
@@ -740,7 +740,7 @@ class OverrideDish(object):
     def pre_update(self, model, sim_time, dt):
         if self.is_movement_allowed(model):
             self.update_desired_pointing_history(model)
-            self.move_towards_target(sim_time, dt)
+            self.move_towards_target(model, sim_time, dt)
             self.update_movement_attributes(model, sim_time)
         else:
             model.logger.debug("Skipping quantity updates - movement not allowed")
