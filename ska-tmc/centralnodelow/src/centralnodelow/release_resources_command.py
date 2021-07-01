@@ -94,7 +94,7 @@ class ReleaseResources(BaseCommand):
                 subarray_client.send_command(const.CMD_RELEASE_RESOURCES)
                 # Invoke ReleaseAllResources on MCCS Master Leaf Node
                 # Send updated input string with inteface key to MCCS Master for ReleaseResource Command
-                input_mccs_release["interface"] = "https://schema.skao.int/ska-low-tmc-releaseresources/2.0"
+                input_mccs_release["interface"] = "https://schema.skao.int/ska-low-tmc-releaseresources/1.0"
                 del jsonArgument["transaction_id"]
                 self.mccs_master_ln_fqdn = ""
                 property_value = this_server.read_property("MCCSMasterLeafNodeFQDN")
