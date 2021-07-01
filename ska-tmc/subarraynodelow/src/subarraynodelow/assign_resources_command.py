@@ -37,7 +37,7 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
 
         Example:
 
-        {"interface":"https://schema.skatelescope.org/ska-low-tmc-assignedresources/1.0","mccs":{"subarray_beam_ids":[1],"station_ids":[[1,2]],"channel_blocks":[3]}}
+        {"interface":"https://schema.skao.int/ska-low-tmc-assignedresources/2.0","mccs":{"subarray_beam_ids":[1],"station_ids":[[1,2]],"channel_blocks":[3]}}
 
         return:
             A tuple containing ResultCode and string.
