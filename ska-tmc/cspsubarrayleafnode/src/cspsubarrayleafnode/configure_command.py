@@ -123,8 +123,6 @@ class ConfigureCommand(BaseCommand):
             ValueError if input argument json string contains invalid value
         """
         device_data = self.target
-        target_ra = ""
-        target_dec = ""
         this_server = TangoServerHelper.get_instance()
         device_data.fsp_ids_object = []
         try:
@@ -134,12 +132,12 @@ class ConfigureCommand(BaseCommand):
             delay_manager_obj = DelayManager.get_instance()
             delay_manager_obj.update_config_params()
             pointing_params = argin_json["pointing"]
-            target_Ra = pointing_params["target"]["ra"]
-            target_Dec = pointing_params["target"]["dec"]
+            target_ra = pointing_params["target"]["ra"]
+            target_dec = pointing_params["target"]["dec"]
 
             # Create target object
             device_data.target = katpoint.Target(
-                f"radec , {target_Ra} , {target_Dec}"
+                f"radec , {target_ra} , {target_dec}"
             )
             csp_configuration = argin_json.copy()
             # Keep configuration specific to CSP and delete pointing configuration
