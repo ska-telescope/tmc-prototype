@@ -9,7 +9,7 @@
     "subarray_id": "1"
   },
   "cbf": {
-    "delayModelSubscriptionPoint": "ska_mid/tm_leaf_node/csp_subarray01/delayModel",
+    "delay_model_subscription_point": "ska_mid/tm_leaf_node/csp_subarray01/delayModel",
     "fsp": [
       {
         "fsp_id": 1,
@@ -38,7 +38,6 @@
             1
           ]
         ]
-
       },
       {
         "fsp_id": 2,
@@ -82,7 +81,7 @@
   },
   "pointing": {
     "target": {
-      "system": "ICRS",
+      "reference_frame": "ICRS",
       "target_name": "Polaris Australis",
       "ra": "21:08:47.92",
       "dec": "-88:57:22.9"
