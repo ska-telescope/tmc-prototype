@@ -38,6 +38,7 @@
             1
           ]
         ]
+
       },
       {
         "fsp_id": 2,
@@ -45,6 +46,7 @@
         "frequency_slice_id": 2,
         "integration_factor": 1,
         "zoom_factor": 1,
+        "zoom_window_tuning": 650000,
         "channel_averaging_map": [
           [
             0,
@@ -66,7 +68,19 @@
             5
           ]
         ],
-        "zoom_window_tuning": 650000
+        "output_host": [
+          [
+            0,
+            "192.168.1.1"
+          ]
+        ],
+        "output_port": [
+          [
+            0,
+            9744,
+            1
+          ]
+        ]
       }
     ],
     "vlbi": {
