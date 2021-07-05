@@ -33,7 +33,8 @@ def required_obstate(request):
     obs_state = request.param
     return obs_state
 
-@pytest.mark.low
+@pytest.mark.skip
+# @pytest.mark.low
 def test_abort(required_obstate):
     try:
         obs_state_val = required_obstate
