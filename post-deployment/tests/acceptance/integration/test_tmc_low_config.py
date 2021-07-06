@@ -25,7 +25,6 @@ devices_to_log = [
 LOGGER = logging.getLogger(__name__)
 
 
-# @pytest.mark.skip()
 @pytest.mark.low
 def test_configure_scan():
 

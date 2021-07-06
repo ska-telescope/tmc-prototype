@@ -18,9 +18,8 @@ devices_to_log = ["ska_low/tm_subarray_node/1", "low-mccs/subarray/01"]
 
 LOGGER = logging.getLogger(__name__)
 
-@pytest.mark.skip()
 
-# @pytest.mark.low
+@pytest.mark.low
 def test_endscan():
 
     try:
