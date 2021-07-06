@@ -13,7 +13,7 @@ maintainers:
   - name: Kalyani Thigale
     email: kalyanit.ska@gmail.com
 dependencies:
-- name: tango-base
+- name: ska-tango-base
   version: 0.2.23
   repository: https://artefact.skao.int/repository/helm-internal
 - name: webjive
@@ -25,6 +25,6 @@ dependencies:
 - name: ska-low-mccs
   version: 0.8.2
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
-- name: tango-util
+- name: ska-tango-util
   version: 0.2.14
   repository: https://artefact.skao.int/repository/helm-internal
