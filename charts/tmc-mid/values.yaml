@@ -20,7 +20,7 @@ global:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc
     tag: 0.7.3
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
 
 
   ##  Order of instances resolution ##
@@ -60,15 +60,15 @@ centralnodemid:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc-centralnode-mid
-    tag: 0.1.7
-    pullPolicy: IfNotPresent
+    tag: 0.1.8
+    pullPolicy: Always
 
 subarraynodemid:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc-subarraynode-mid
     tag: 0.2.1
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
 
 alarmhandler:
   image:

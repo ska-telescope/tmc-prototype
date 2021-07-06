@@ -53,3 +53,161 @@ def telescope_is_in_standby():
         resource("mid_csp/elt/subarray_01").get("State"),
         resource("mid_csp_cbf/sub_elt/subarray_01").get("State"),
     ] == ["OFF", "OFF", "OFF"]
+
+
+#Note: make use of this method while updatating integration tests for sp-1623
+def tmc_is_in_off():
+    LOGGER.info(
+        'resource("ska_mid/tm_central/central_node").get("State")'
+        + str(resource("ska_mid/tm_central/central_node").get("State"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_subarray_node/1").get("State")'
+        + str(resource("ska_mid/tm_subarray_node/1").get("State"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_leaf_node/csp_subarray01").get("State")'
+        + str(resource("ska_mid/tm_leaf_node/csp_subarray01").get("State"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_leaf_node/sdp_subarray01").get("State")'
+        + str(resource("ska_mid/tm_leaf_node/sdp_subarray01").get("State"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_leaf_node/csp_master").get("State")'
+        + str(resource("ska_mid/tm_leaf_node/csp_master").get("State"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_leaf_node/sdp_master").get("State")'
+        + str(resource("ska_mid/tm_leaf_node/sdp_master").get("State"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_leaf_node/d0001").get("State")'
+        + str(resource("ska_mid/tm_leaf_node/d0001").get("State"))
+    )
+    return [
+        resource("ska_mid/tm_central/central_node").get("State"),
+        resource("ska_mid/tm_subarray_node/1").get("State"),
+        resource("ska_mid/tm_leaf_node/csp_subarray01").get("State"),
+        resource("ska_mid/tm_leaf_node/sdp_subarray01").get("State"),
+        resource("ska_mid/tm_leaf_node/csp_master").get("State"),
+        resource("ska_mid/tm_leaf_node/sdp_master").get("State"),
+        resource("ska_mid/tm_leaf_node/d0001").get("State"),
+    ] == ["OFF", "OFF", "OFF", "OFF", "OFF", "OFF", "OFF"]
+
+
+
+#Note: make use of this method while updatating integration tests for sp-1623
+def tmc_is_in_on():
+    LOGGER.info(
+        'resource("ska_mid/tm_central/central_node").get("State")'
+        + str(resource("ska_mid/tm_central/central_node").get("State"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_subarray_node/1").get("State")'
+        + str(resource("ska_mid/tm_subarray_node/1").get("State"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_leaf_node/csp_subarray01").get("State")'
+        + str(resource("ska_mid/tm_leaf_node/csp_subarray01").get("State"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_leaf_node/sdp_subarray01").get("State")'
+        + str(resource("ska_mid/tm_leaf_node/sdp_subarray01").get("State"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_leaf_node/csp_master").get("State")'
+        + str(resource("ska_mid/tm_leaf_node/csp_master").get("State"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_leaf_node/sdp_master").get("State")'
+        + str(resource("ska_mid/tm_leaf_node/sdp_master").get("State"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_leaf_node/d0001").get("State")'
+        + str(resource("ska_mid/tm_leaf_node/d0001").get("State"))
+    )
+    return [
+        resource("ska_mid/tm_central/central_node").get("State"),
+        resource("ska_mid/tm_subarray_node/1").get("State"),
+        resource("ska_mid/tm_leaf_node/csp_subarray01").get("State"),
+        resource("ska_mid/tm_leaf_node/sdp_subarray01").get("State"),
+        resource("ska_mid/tm_leaf_node/csp_master").get("State"),
+        resource("ska_mid/tm_leaf_node/sdp_master").get("State"),
+        resource("ska_mid/tm_leaf_node/d0001").get("State"),
+    ] == ["ON", "ON", "ON", "ON", "ON", "ON", "ON"]
+
+#Note: make use of this method while updatating integration tests for sp-1623
+def telescope_is_on():
+    LOGGER.info(
+        'resource("ska_mid/tm_central/central_node").get("State")'
+        + str(resource("ska_mid/tm_central/central_node").get("State"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_subarray_node/1").get("State")'
+        + str(resource("ska_mid/tm_subarray_node/1").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_csp/elt/subarray_01").get("State")'
+        + str(resource("mid_csp/elt/subarray_01").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_csp_cbf/sub_elt/subarray_01").get("State")'
+        + str(resource("mid_csp_cbf/sub_elt/subarray_01").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_sdp/elt/subarray_1").get("State")'
+        + str(resource("mid_sdp/elt/subarray_1").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_csp/elt/master").get("State")'
+        + str(resource("mid_csp/elt/master").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_sdp/elt/master").get("State")'
+        + str(resource("mid_sdp/elt/master").get("State"))
+    )
+    return [
+        resource("ska_mid/tm_central/central_node").get("State"),
+        resource("ska_mid/tm_subarray_node/1").get("State"),
+        resource("mid_csp/elt/subarray_01").get("State"),
+        resource("mid_sdp/elt/subarray_1").get("State"),
+        resource("mid_csp/elt/master").get("State"),
+        resource("mid_sdp/elt/master").get("State"),
+    ] == ["ON", "ON", "ON", "ON", "ON", "ON"]
+
+#Note: make use of this method while updatating integration tests for sp-1623
+def telescope_is_off():
+    LOGGER.info(
+        'resource("ska_mid/tm_central/central_node").get("State")'
+        + str(resource("ska_mid/tm_central/central_node").get("State"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_subarray_node/1").get("State")'
+        + str(resource("ska_mid/tm_subarray_node/1").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_csp/elt/subarray_01").get("State")'
+        + str(resource("mid_csp/elt/subarray_01").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_sdp/elt/subarray_1").get("State")'
+        + str(resource("mid_sdp/elt/subarray_1").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_csp/elt/master").get("State")'
+        + str(resource("mid_csp/elt/master").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_sdp/elt/master").get("State")'
+        + str(resource("mid_sdp/elt/master").get("State"))
+    )
+    return [
+        resource("ska_mid/tm_central/central_node").get("State"),
+        resource("ska_mid/tm_subarray_node/1").get("State"),
+        resource("mid_csp/elt/subarray_01").get("State"),
+        resource("mid_csp_cbf/sub_elt/subarray_01").get("State"),
+        resource("mid_sdp/elt/subarray_1").get("State"),
+        resource("mid_csp/elt/master").get("State"),
+        resource("mid_sdp/elt/master").get("State"),
+    ] == ["ON", "ON", "OFF", "OFF", "OFF", "OFF"]
