@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc"""
-version="0.7.2"
+version="0.7.4"
 version_info=version.split(".")
 description="""SKA-TMC"""
 author="Team NCRA"
@@ -10,10 +10,10 @@ license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
 
-release=0.7.2
-tag=0.7.2
-tag_description=Remove forwarded attributes from ska-tmc leaf nodes as a part of resolution of SKB-10.
-release_notes=This release contains:<br/><ul><li>Removed pod dependencies of tmc leaf nodes on lower level devices.</li><li>Removed forwarded attributes from ska-tmc leaf nodes.</li></ul><br/>
-gitlab_username=JayantKumbhar
-private_token=qbx9w8iZw5st2dxAZ2MF
+release=0.7.4
+tag=0.7.4
+tag_description=Update TMC low devices as per ADR-35
+release_notes=This release contains:<br/><ul><li>Updated TMC low devices as per ADR-35.</li></ul><br/>
+gitlab_username=apurvapatkar
+private_token=fB_g8sRKMY1jseV2ZUqP
 
