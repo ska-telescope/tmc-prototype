@@ -64,7 +64,7 @@ def test_configure_scan():
         assert telescope_is_in_standby()
         LOGGER.info("Staring up the Telescope")
         tmc.start_up()
-        fixture["state"] = "Telescope On"
+        fixture["telescopeState"] = "Telescope On"
 
         # and a subarray composed of two resources configured as perTMC_integration/assign_resources.json
         LOGGER.info("Composing the Subarray")
@@ -114,7 +114,7 @@ def test_configure_scan():
 
     except:
         LOGGER.info("Tearing down failed test, state = {}".format(fixture["state"]))
-        if fixture["state"] == "Telescope On":
+        if fixture["telescopeState"] == "Telescope On":
             tmc.set_to_standby()
         elif fixture["state"] == "Subarray Assigned":
             tmc.release_resources()
