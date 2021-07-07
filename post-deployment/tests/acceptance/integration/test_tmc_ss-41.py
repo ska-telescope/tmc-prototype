@@ -61,7 +61,7 @@ def test_multi_scan():
         LOGGER.info("Telescope is in StandBy")
         tmc.start_up()
         LOGGER.info("Staring up the Telescope")
-        fixture["state"] = "Telescope On"
+        fixture["telescopeState"] = "Telescope On"
 
         # and a subarray composed of two resources configured as perTMC_integration/assign_resources1.json
         sdp_block = tmc.compose_sub()
@@ -155,7 +155,7 @@ def test_multi_scan():
         logging.info(f"Exception raised: {e.args}")
         LOGGER.info("Gathering logs")
         LOGGER.info("Tearing down failed test, state = {}".format(fixture["state"]))
-        if fixture["state"] == "Telescope On":
+        if fixture["telescopeState"] == "Telescope On":
             tmc.set_to_standby()
             the_waiter.wait()
         elif fixture["state"] == "Subarray Assigned":
