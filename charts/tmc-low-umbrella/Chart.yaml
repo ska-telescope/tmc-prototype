@@ -19,8 +19,8 @@ dependencies:
 - name: webjive
   version: 1.0.18
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
-- name: tmc-low
-  version: ska-tmc-low-0.3.4
+- name: ska-tmc-low
+  version: 0.3.4
   repository: file://../tmc-low
 - name: ska-low-mccs
   version: 0.8.2
