@@ -78,39 +78,39 @@ def test_feature_sp_1623():
         LOGGER.info("Composing the Subarray")
         fixture["state"] = "Subarray Assigned"
 
-        # and for which the subarray is configured to perform a scan as per 'TMC_integration/configure1.json'
-        fixture["state"] = "Subarray CONFIGURING"
-        configure_file = "resources/test_data/TMC_integration/configure2.json"
-        tmc.configure_sub(sdp_block, configure_file)
-        LOGGER.info("Configuring the Subarray")
-        fixture["state"] = "Subarray Configured for SCAN"
+        # # and for which the subarray is configured to perform a scan as per 'TMC_integration/configure1.json'
+        # fixture["state"] = "Subarray CONFIGURING"
+        # configure_file = "resources/test_data/TMC_integration/configure2.json"
+        # tmc.configure_sub(sdp_block, configure_file)
+        # LOGGER.info("Configuring the Subarray")
+        # fixture["state"] = "Subarray Configured for SCAN"
 
-        # and for which the subarray has successfully completed a scan durating 6 seconds based on previos configuration
-        resource("ska_mid/tm_subarray_node/1").assert_attribute("obsState").equals(
-            "READY"
-        )
-        LOGGER.info("Starting a scan of 6 seconds")
+        # # and for which the subarray has successfully completed a scan durating 6 seconds based on previos configuration
+        # resource("ska_mid/tm_subarray_node/1").assert_attribute("obsState").equals(
+        #     "READY"
+        # )
+        # LOGGER.info("Starting a scan of 6 seconds")
 
-        with log_states("TMC Scan", devices_to_log, non_default_states_to_check):
-            with sync_scanning(200):
-                SubarrayNode = DeviceProxy("ska_mid/tm_subarray_node/1")
-                SubarrayNode.Scan('{"id":1}')
-                fixture["state"] = "Subarray SCANNING"
-                LOGGER.info("Subarray obsState is: " + str(SubarrayNode.obsState))
-                LOGGER.info("Scan 1  is executing on Subarray")
+        # with log_states("TMC Scan", devices_to_log, non_default_states_to_check):
+        #     with sync_scanning(200):
+        #         SubarrayNode = DeviceProxy("ska_mid/tm_subarray_node/1")
+        #         SubarrayNode.Scan('{"id":1}')
+        #         fixture["state"] = "Subarray SCANNING"
+        #         LOGGER.info("Subarray obsState is: " + str(SubarrayNode.obsState))
+        #         LOGGER.info("Scan 1  is executing on Subarray")
 
-        LOGGER.info("Scan1 complete")
-        fixture["state"] = "Subarray Configured for SCAN"
-        # the scanning should complete without any exceptions
+        # LOGGER.info("Scan1 complete")
+        # fixture["state"] = "Subarray Configured for SCAN"
+        # # the scanning should complete without any exceptions
 
-        # tear down
-        LOGGER.info("TMC Functionality test complete: tearing down...")
-        tmc.end_sb()
-        the_waiter.wait()
-        LOGGER.info("Invoked EndSB on Subarray")
-        tmc.release_resources()
-        the_waiter.wait()
-        LOGGER.info("Invoked ReleaseResources on Subarray")
+        # # tear down
+        # LOGGER.info("TMC Functionality test complete: tearing down...")
+        # tmc.end_sb()
+        # the_waiter.wait()
+        # LOGGER.info("Invoked EndSB on Subarray")
+        # tmc.release_resources()
+        # the_waiter.wait()
+        # LOGGER.info("Invoked ReleaseResources on Subarray")
 
         LOGGER.info("Calling TelescopeOff command now.")
         tmc.set_telescope_off()

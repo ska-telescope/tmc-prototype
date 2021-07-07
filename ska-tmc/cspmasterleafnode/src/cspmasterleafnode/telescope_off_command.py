@@ -63,9 +63,9 @@ class TelescopeOff(BaseCommand):
         this_device = TangoServerHelper.get_instance()
         try:
             csp_mln_client_obj = TangoClient(this_device.read_property("CspMasterFQDN")[0])
-            csp_mln_client_obj.send_command_async(
-                const.CMD_OFF, [], self.telescope_off_cmd_ended_cb
-            )
+            # csp_mln_client_obj.send_command_async(
+            #     const.CMD_OFF, [], self.telescope_off_cmd_ended_cb
+            # )
             self.logger.debug(const.STR_OFF_CMD_ISSUED)
             this_device.write_attr("activityMessage", const.STR_OFF_CMD_ISSUED, False)
             device_data.cbf_health_updator.stop()
