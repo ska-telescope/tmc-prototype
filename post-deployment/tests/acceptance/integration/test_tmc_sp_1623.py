@@ -112,10 +112,10 @@ def test_feature_sp_1623():
         # the_waiter.wait()
         # LOGGER.info("Invoked ReleaseResources on Subarray")
 
-        LOGGER.info("Calling TelescopeOff command now.")
-        tmc.set_telescope_off()
-        assert telescope_is_off
-        fixture["state"] = "Telescope Off"
+        LOGGER.info("Calling Telescope standby command now.")
+        tmc.set_telescope_standby()
+        # assert telescope_is_off
+        fixture["state"] = "Telescope standby"
 
     except:
         LOGGER.info("Gathering logs")
