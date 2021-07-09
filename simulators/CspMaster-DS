@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+from tango.server import server_run
+from tango_simlib.tango_sim_generator import (configure_device_models, get_tango_device_server)
+
+
+# File generated on Fri Jul  9 17:25:11 2021 by tango-simlib-generator
+
+
+def main():
+    sim_data_files = ['CspMaster.xmi']
+    models = configure_device_models(sim_data_files)
+    TangoDeviceServers = get_tango_device_server(models, sim_data_files)
+    server_run(TangoDeviceServers)
+
+if __name__ == "__main__":
+    main()

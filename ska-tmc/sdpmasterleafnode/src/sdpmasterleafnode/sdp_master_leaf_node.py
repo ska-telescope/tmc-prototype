@@ -16,10 +16,15 @@ execution. There is one to one mapping between SDP Subarray Leaf Node and SDP su
 # PROTECTED REGION ID(SdpMasterLeafNode.additional_import) ENABLED START #
 # Third party imports
 import threading
+import asyncio
+
 # Tango imports
 import tango
 from tango import ApiUtil, DebugIt, AttrWriteType
 from tango.server import run, command, device_property, attribute
+from tango.server import server_run
+from tango_simlib.tango_sim_generator import (configure_device_models, get_tango_device_server)
+
 
 # PROTECTED REGION ID(SdpMasterLeafNode.additional_import) ENABLED START #
 from ska.base import SKABaseDevice
@@ -264,6 +269,12 @@ class SdpMasterLeafNode(SKABaseDevice):
         self.register_command_object("Standby", Standby(*args))
 
 
+async def run_sdp_master_simulator():
+    sim_data_files = ['SdpMaster.xmi']
+    models = configure_device_models(sim_data_files)
+    TangoDeviceServers = get_tango_device_server(models, sim_data_files)
+    server_run(TangoDeviceServers)
+
 # ----------
 # Run server
 # ----------
@@ -271,6 +282,13 @@ class SdpMasterLeafNode(SKABaseDevice):
 
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(SdpMasterLeafNode.main) ENABLED START #
+
+    standalone_mode = True
+
+    if standalone_mode == True:
+        print("Running in standalone mode")
+        asyncio.run(run_sdp_master_simulator())
+
     return run((SdpMasterLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  SdpMasterLeafNode.main
 
