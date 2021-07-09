@@ -35,14 +35,14 @@ def assert_telescope_is_standby():
     # TODO ignoring csp master as the events and get of attributes are out of sync
     # resource('mid_csp/elt/master').assert_attribute('State').equals('ON')
     # resource('mid_csp/elt/master').assert_attribute('State').equals('STANDBY')
-    resource("ska_mid/tm_central/central_node").assert_attribute("telescopeState").equals("OFF")
+    resource("ska_mid/tm_central/central_node").assert_attribute("State").equals("OFF")
 
 
 def assert_telescope_is_running():
     resource("ska_mid/tm_subarray_node/1").assert_attribute("State").equals("ON")
     # TODO ignoring csp master as the events and get of attributes are out of sync
     # resource('mid_csp/elt/master').assert_attribute('State').equals('ON')
-    resource("ska_mid/tm_central/central_node").assert_attribute("telescopeState").equals("ON")
+    resource("ska_mid/tm_central/central_node").assert_attribute("State").equals("ON")
 
 
 def assert_subarray_is_idle(id):

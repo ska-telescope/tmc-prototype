@@ -9,6 +9,7 @@ from resources.test_support.sync_decorators import (
     sync_abort,
     sync_restart,
     sync_obsreset,
+    
 )
 from resources.test_support.logging_decorators import log_it
 from tango import DeviceProxy
@@ -30,7 +31,7 @@ def start_up():
     CentralNode = DeviceProxy("ska_mid/tm_central/central_node")
     LOGGER.info(
         "Before Sending StartupTelescope command on CentralNode state :"
-        + str(CentralNode.telescopeState())
+        + str(CentralNode.State())
     )
     CentralNode.TelescopeOn()
 
@@ -88,7 +89,7 @@ def set_to_standby():
         + str(SubarrayNode.State())
         + str(SubarrayNode.ObsState)
     )
-    LOGGER.info("After Standby CentralNode State:" + str(CentralNode.telescopeState()))
+    LOGGER.info("After Standby CentralNode State:" + str(CentralNode.State()))
     LOGGER.info("Standby the Telescope")
 
 
