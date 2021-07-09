@@ -67,16 +67,17 @@ def test_feature_sp_1623():
         assert tmc_is_in_on()
         LOGGER.info("TMC devices are up")
         LOGGER.info("Calling TelescopeOn command now.")
-        tmc.set_telescope_on()
+        #tmc.set_telescope_on()
+        the_waiter.wait()
         assert telescope_is_on()
         LOGGER.info("Telescope is on")
         fixture["state"] = "Telescope On"
 
 
-        # and a subarray composed of two resources configured as perTMC_integration/assign_resources1.json
-        sdp_block = tmc.compose_sub()
-        LOGGER.info("Composing the Subarray")
-        fixture["state"] = "Subarray Assigned"
+        # # and a subarray composed of two resources configured as perTMC_integration/assign_resources1.json
+        # sdp_block = tmc.compose_sub()
+        # LOGGER.info("Composing the Subarray")
+        # fixture["state"] = "Subarray Assigned"
 
         # # and for which the subarray is configured to perform a scan as per 'TMC_integration/configure1.json'
         # fixture["state"] = "Subarray CONFIGURING"
@@ -112,10 +113,16 @@ def test_feature_sp_1623():
         # the_waiter.wait()
         # LOGGER.info("Invoked ReleaseResources on Subarray")
 
-        LOGGER.info("Calling Telescope standby command now.")
-        tmc.set_telescope_standby()
-        # assert telescope_is_off
-        fixture["state"] = "Telescope standby"
+        LOGGER.info("Calling Telescope Off command now.")
+        tmc.set_telescope_off()
+        the_waiter.wait()
+        assert telescope_is_off()
+        LOGGER.info("Telescope is Off")
+        fixture["state"] = "Telescope Off"
+
+        # tmc.set_telescope_standby()
+        # assert telescope_is_off()
+        # fixture["state"] = "Telescope standby"
 
     except:
         LOGGER.info("Gathering logs")

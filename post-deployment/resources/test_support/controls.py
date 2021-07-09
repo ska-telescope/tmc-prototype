@@ -167,6 +167,38 @@ def telescope_is_on():
         'resource("mid_sdp/elt/master").get("State")'
         + str(resource("mid_sdp/elt/master").get("State"))
     )
+    LOGGER.info(
+        'resource("ska_mid/tm_leaf_node/d0001").get("State")'
+        + str(resource("ska_mid/tm_leaf_node/d0001").get("State"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_leaf_node/d0002").get("State")'
+        + str(resource("ska_mid/tm_leaf_node/d0002").get("State"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_leaf_node/d0003").get("State")'
+        + str(resource("ska_mid/tm_leaf_node/d0003").get("State"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_leaf_node/d0004").get("State")'
+        + str(resource("ska_mid/tm_leaf_node/d0004").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_d0001/elt/master").get("State")'
+        + str(resource("mid_d0001/elt/master").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_d0002/elt/master").get("State")'
+        + str(resource("mid_d0002/elt/master").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_d0003/elt/master").get("State")'
+        + str(resource("mid_d0003/elt/master").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_d0004/elt/master").get("State")'
+        + str(resource("mid_d0004/elt/master").get("State"))
+    )
     return [
         resource("ska_mid/tm_central/central_node").get("State"),
         resource("ska_mid/tm_subarray_node/1").get("State"),
@@ -174,7 +206,15 @@ def telescope_is_on():
         resource("mid_sdp/elt/subarray_1").get("State"),
         resource("mid_csp/elt/master").get("State"),
         resource("mid_sdp/elt/master").get("State"),
-    ] == ["ON", "ON", "ON", "ON", "ON", "ON"]
+        resource("ska_mid/tm_leaf_node/d0001").get("State"),
+        resource("ska_mid/tm_leaf_node/d0002").get("State"),
+        resource("ska_mid/tm_leaf_node/d0003").get("State"),
+        resource("ska_mid/tm_leaf_node/d0004").get("State"),
+        resource("mid_d0001/elt/master").get("State"),
+        resource("mid_d0002/elt/master").get("State"),
+        resource("mid_d0003/elt/master").get("State"),
+        resource("mid_d0004/elt/master").get("State")
+    ] == ["ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON"]
 
 #Note: make use of this method while updatating integration tests for sp-1623
 def telescope_is_off():
@@ -202,6 +242,38 @@ def telescope_is_off():
         'resource("mid_sdp/elt/master").get("State")'
         + str(resource("mid_sdp/elt/master").get("State"))
     )
+    LOGGER.info(
+        'resource("ska_mid/tm_leaf_node/d0001").get("State")'
+        + str(resource("ska_mid/tm_leaf_node/d0001").get("State"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_leaf_node/d0002").get("State")'
+        + str(resource("ska_mid/tm_leaf_node/d0002").get("State"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_leaf_node/d0003").get("State")'
+        + str(resource("ska_mid/tm_leaf_node/d0003").get("State"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_leaf_node/d0004").get("State")'
+        + str(resource("ska_mid/tm_leaf_node/d0004").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_d0001/elt/master").get("State")'
+        + str(resource("mid_d0001/elt/master").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_d0002/elt/master").get("State")'
+        + str(resource("mid_d0002/elt/master").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_d0003/elt/master").get("State")'
+        + str(resource("mid_d0003/elt/master").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_d0004/elt/master").get("State")'
+        + str(resource("mid_d0004/elt/master").get("State"))
+    )
     return [
         resource("ska_mid/tm_central/central_node").get("State"),
         resource("ska_mid/tm_subarray_node/1").get("State"),
@@ -210,4 +282,8 @@ def telescope_is_off():
         resource("mid_sdp/elt/subarray_1").get("State"),
         resource("mid_csp/elt/master").get("State"),
         resource("mid_sdp/elt/master").get("State"),
-    ] == ["ON", "ON", "OFF", "OFF", "OFF", "OFF"]
+        resource("mid_d0001/elt/master").get("State"),
+        resource("mid_d0002/elt/master").get("State"),
+        resource("mid_d0003/elt/master").get("State"),
+        resource("mid_d0004/elt/master").get("State")
+    ] == ["ON", "ON", "OFF", "OFF", "OFF", "OFF", "OFF", "OFF", "OFF", "OFF"]

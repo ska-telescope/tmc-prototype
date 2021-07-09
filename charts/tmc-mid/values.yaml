@@ -60,7 +60,7 @@ centralnodemid:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc-centralnode-mid
-    tag: 0.1.8
+    tag: 0.1.10
     pullPolicy: Always
 
 subarraynodemid:
