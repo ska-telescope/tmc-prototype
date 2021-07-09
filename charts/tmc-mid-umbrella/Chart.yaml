@@ -16,7 +16,6 @@ dependencies:
 - name: ska-tango-base
   version: 0.2.23
   repository: https://artefact.skao.int/repository/helm-internal
-  condition: ska-tango-base.enabled,global.sub-system.ska-tango-base.enabled
 - name: mid-cbf
   version: 0.1.1
   condition: mid-cbf.enabled

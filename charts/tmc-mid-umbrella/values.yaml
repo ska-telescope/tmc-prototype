@@ -30,7 +30,6 @@ global:
       pullPolicy: IfNotPresent
 
 ska-tango-base:
-  enabled: true
   vnc:
     replicas: 1
     enabled: true
@@ -39,9 +38,6 @@ ska-tango-base:
     replicas: 1
   tangodb:
     use_pv: false
-
-tango-base:
-    enabled: false
 
 webjive:
   enabled: false
@@ -72,7 +68,7 @@ sdp:
   lmc:
     prefix: mid
     nsubarray: 3
-  ska-tango-base:
+  tango-base:
     enabled: false
 
 ## tm
