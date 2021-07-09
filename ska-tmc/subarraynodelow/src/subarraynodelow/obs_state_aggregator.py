@@ -8,7 +8,7 @@ from tmc.common.tango_server_helper import TangoServerHelper
 
 from .device_data import DeviceData
 from . import const
-
+from time import sleep
 
 class ObsStateAggregator:
     """
@@ -24,12 +24,12 @@ class ObsStateAggregator:
         self.mccs_obs_state_event_id = {}
         self.this_server = TangoServerHelper.get_instance()
         self.device_data = DeviceData.get_instance()
+        
+    def subscribe(self):
         mccs_subarray_ln_fqdn = ""
         property_val = self.this_server.read_property("MccsSubarrayLNFQDN")
         mccs_subarray_ln_fqdn = mccs_subarray_ln_fqdn.join(property_val)
         self.mccs_client = TangoClient(mccs_subarray_ln_fqdn)
-
-    def subscribe(self):
         # Subscribe mccsSubarrayObsState (forwarded attribute) of mccsSubarray
         mccs_event_id = self.mccs_client.subscribe_attribute(
             const.EVT_MCCSSA_OBS_STATE, self.observation_state_cb
@@ -108,6 +108,9 @@ class ObsStateAggregator:
                     "Calling ReleaseAllResource command succeeded() method"
                 )
                 self.this_server.device.release.succeeded()
+            elif self.device_data.is_restart_command_executed:
+                self.logger.info("Calling Restart command succeeded() method")
+                self.this_server.device.restart.succeeded()
         elif self._mccs_sa_obs_state == ObsState.READY:
             if self.device_data.is_scan_completed:
                 self.logger.info("Calling EndScan command succeeded() method")
@@ -130,7 +133,15 @@ class ObsStateAggregator:
                 self.logger.info("Calling AssignResource command succeeded() method")
                 self.this_server.device.assign.succeeded()
         elif self._mccs_sa_obs_state == ObsState.ABORTED:
-            if self.device_data.is_abort_command_executed:
-                # Abort command success
-                self.logger.info("Calling Abort command succeeded() method")
-                self.this_server.device.abort.succeeded()
+            try:
+                retry_count = 0
+                while retry_count < 3:
+                    if self.device_data.is_abort_command_executed:
+                        # Abort command success
+                        self.logger.info("Calling Abort command succeeded() method")
+                        self.this_server.device.abort.succeeded()
+                        break
+                    sleep(0.1)
+                    retry_count+=1
+            except Exception as e:
+                self.logger(str(e))

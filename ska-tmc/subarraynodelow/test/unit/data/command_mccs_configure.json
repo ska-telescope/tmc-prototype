@@ -1,5 +1,5 @@
 {
-  "interface": "https://schema.skatelescope.org/ska-low-mccs-configure/1.0",
+  "interface": "https://schema.skao.int/ska-low-mccs-configure/1.0",
   "stations": [
     {
       "station_id": 1

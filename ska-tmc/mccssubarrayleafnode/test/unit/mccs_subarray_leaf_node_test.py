@@ -21,6 +21,7 @@ from mccssubarrayleafnode import MccsSubarrayLeafNode, const, release
 from ska.base.control_model import HealthState, ObsState, LoggingLevel
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
+from mccssubarrayleafnode.device_data import DeviceData
 
 
 @pytest.fixture(scope="function")
@@ -65,10 +66,38 @@ def mock_tango_server_helper():
 
 
 @pytest.fixture(scope="function")
-def mock_mccs_subarray_proxy():
+def mock_tango_client():
+    with mock.patch.object(
+        TangoClient, "_get_deviceproxy", return_value=MagicMock()
+    ) as mock_obj:
+        tango_client_obj = TangoClient("low-mccs/subarray/01")
+        yield tango_client_obj
+
+
+@pytest.fixture(scope="function")
+def mock_mccs_subarray_proxy(mock_tango_client):
+    with fake_tango_system(MccsSubarrayLeafNode) as tango_context:
+        tango_client_object = mock_tango_client
+        yield tango_context.device, tango_client_object
+       
+
+@pytest.fixture(scope="function")
+def mock_obstate_check():
+    dut_properties = {"MccsSubarrayFQDN": "low-mccs/subarray/01"}
+    with mock.patch.object(
+            TangoClient, "_get_deviceproxy", return_value=Mock()
+        ) as mock_obj:
+        tango_client_obj = TangoClient(dut_properties["MccsSubarrayFQDN"])
+        with mock.patch.object(
+            TangoClient, "get_attribute", Mock(return_value = ObsState.EMPTY)
+        ) as mock_obj_obstate:
+            yield tango_client_obj
+            
+@pytest.fixture(scope="function")
+def mock_mccs_controller_proxy():
     with fake_tango_system(MccsSubarrayLeafNode) as tango_context:
         with mock.patch.object(TangoClient, "_get_deviceproxy", return_value=Mock()):
-            tango_client_object = TangoClient("low-mccs/subarray/01")
+            tango_client_object = TangoClient("low-mccs/control/control")
             yield tango_context.device, tango_client_object
 
 
@@ -125,6 +154,8 @@ def command_with_arg(request):
             ObsState.FAULT,
             const.ERR_OBSRESET_INVOKING_CMD,
         ),
+        ("Restart", const.CMD_RESTART, ObsState.ABORTED, const.ERR_RESTART_COMMAND),
+        ("Restart", const.CMD_RESTART, ObsState.FAULT, const.ERR_RESTART_COMMAND),
     ],
 )
 def command_without_arg(request):
@@ -133,11 +164,11 @@ def command_without_arg(request):
 
 
 def test_command_with_arg_in_allowed_obsstate_with_callback_method(
-    mock_mccs_subarray_proxy, event_subscription, command_with_arg, mock_tango_server_helper
+    mock_obstate_check, mock_mccs_subarray_proxy, event_subscription, command_with_arg, mock_tango_server_helper
 ):
     device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
     cmd_name, cmd_arg, requested_cmd, obs_state, _ = command_with_arg
-    mccs_subarray_client.deviceproxy.obsState = obs_state
+    mccs_subarray_client.get_attribute.side_effect = Mock(return_value = obs_state)
     device_proxy.command_inout(cmd_name, cmd_arg)
     dummy_event = command_callback(requested_cmd)
     event_subscription[requested_cmd](dummy_event)
@@ -145,11 +176,11 @@ def test_command_with_arg_in_allowed_obsstate_with_callback_method(
 
 
 def test_command_without_arg_in_allowed_obsstate_with_callback_method(
-    mock_mccs_subarray_proxy, event_subscription, command_without_arg, mock_tango_server_helper
+    mock_obstate_check, mock_mccs_subarray_proxy, event_subscription, command_without_arg, mock_tango_server_helper
 ):
     device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
     cmd_name, requested_cmd, obs_state, _ = command_without_arg
-    mccs_subarray_client.deviceproxy.obsState = obs_state
+    mccs_subarray_client.get_attribute.side_effect = Mock(return_value = obs_state)
     device_proxy.command_inout(cmd_name)
     dummy_event = command_callback(requested_cmd)
     event_subscription[requested_cmd](dummy_event)
@@ -158,7 +189,7 @@ def test_command_without_arg_in_allowed_obsstate_with_callback_method(
 
 @pytest.mark.xfail
 def test_configure_with_correct_configuration_data_when_mccs_subarray_is_idle(
-    mock_mccs_subarray_proxy,
+    mock_mccs_subarray_proxy
 ):
     device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
     mccs_subarray_client.deviceproxy.obsState = ObsState.IDLE
@@ -193,10 +224,10 @@ def test_configure_with_correct_configuration_data_when_mccs_subarray_is_idle(
 
     # Remove target block from station_beam_pointings
     station_beam_pointings.pop("target", None)
-
     argin_json["subarray_beams"][0] = station_beam_pointings
     argin_json["station_beams"] = argin_json["subarray_beams"]
     argin_json.pop("subarray_beams", None)
+
     mccs_subarray_client.deviceproxy.command_inout_asynch.assert_called_with(
         const.CMD_CONFIGURE,
         json.dumps(argin_json),
@@ -205,11 +236,11 @@ def test_configure_with_correct_configuration_data_when_mccs_subarray_is_idle(
 
 
 def test_command_with_callback_method_with_event_error(
-    mock_mccs_subarray_proxy, event_subscription, command_without_arg, mock_tango_server_helper
+    mock_obstate_check, mock_mccs_subarray_proxy, event_subscription, command_without_arg, mock_tango_server_helper
 ):
     device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
     cmd_name, requested_cmd, obs_state, _ = command_without_arg
-    mccs_subarray_client.deviceproxy.obsState = obs_state
+    mccs_subarray_client.get_attribute.side_effect = Mock(return_value = obs_state)
     device_proxy.command_inout(cmd_name)
     dummy_event = command_callback_with_event_error(requested_cmd)
     event_subscription[requested_cmd](dummy_event)
@@ -217,11 +248,11 @@ def test_command_with_callback_method_with_event_error(
 
 
 def test_command_with_callback_method_with_event_error_with_arg(
-    mock_mccs_subarray_proxy, event_subscription, command_with_arg, mock_tango_server_helper
+    mock_obstate_check, mock_mccs_subarray_proxy, event_subscription, command_with_arg, mock_tango_server_helper
 ):
     device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
     cmd_name, cmd_arg, requested_cmd, obs_state, _ = command_with_arg
-    mccs_subarray_client.deviceproxy.obsState = obs_state
+    mccs_subarray_client.get_attribute.side_effect = Mock(return_value = obs_state)
     device_proxy.command_inout(cmd_name, cmd_arg)
     dummy_event = command_callback_with_event_error(requested_cmd)
     event_subscription[requested_cmd](dummy_event)
@@ -229,11 +260,11 @@ def test_command_with_callback_method_with_event_error_with_arg(
 
 
 def test_command_with_arg_to_raise_devfailed_exception(
-    mock_mccs_subarray_proxy, command_with_arg, mock_tango_server_helper
+    mock_obstate_check, mock_mccs_subarray_proxy, command_with_arg, mock_tango_server_helper
 ):
     device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
     cmd_name, cmd_arg, _, obs_state, error_msg = command_with_arg
-    mccs_subarray_client.deviceproxy.obsState = obs_state
+    mccs_subarray_client.get_attribute.side_effect = Mock(return_value = obs_state)
     mccs_subarray_client.deviceproxy.command_inout_asynch.side_effect = (
         raise_devfailed_exception
     )
@@ -259,26 +290,23 @@ def command_with_arg_incorrect_obstate(request):
     return cmd_name, cmd_arg, obs_state, error_msg
 
 
-@pytest.mark.xfail(
-    reason="This test case is not applicable for now as obsState is not getting checked"
-)
 def test_command_incorrect_obsstate_with_arg(
-    mock_mccs_subarray_proxy, command_with_arg_incorrect_obstate
+    mock_obstate_check, mock_mccs_subarray_proxy, command_with_arg_incorrect_obstate, mock_tango_server_helper
 ):
     device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
     cmd_name, cmd_arg, obs_state, error_msg = command_with_arg_incorrect_obstate
-    mccs_subarray_client.deviceproxy.obsState = obs_state
+    mccs_subarray_client.get_attribute.side_effect = Mock(return_value = obs_state)
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.command_inout(cmd_name, cmd_arg)
     assert error_msg in str(df)
 
 
 def test_command_without_arg_to_raise_devfailed_exception(
-    mock_mccs_subarray_proxy, command_without_arg
+    mock_obstate_check, mock_mccs_subarray_proxy, command_without_arg, mock_tango_server_helper
 ):
     device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
     cmd_name, _, obs_state, error_msg = command_without_arg
-    mccs_subarray_client.deviceproxy.obsState = obs_state
+    mccs_subarray_client.get_attribute.side_effect = Mock(return_value = obs_state)
     mccs_subarray_client.deviceproxy.command_inout_asynch.side_effect = (
         raise_devfailed_exception
     )
@@ -299,6 +327,8 @@ def test_command_without_arg_to_raise_devfailed_exception(
         ("Abort", ObsState.SCANNING, const.CMD_ABORT, "abort_cmd_ended_cb"),
         ("ObsReset", ObsState.ABORTED, const.CMD_OBSRESET, "obsreset_cmd_ended_cb"),
         ("ObsReset", ObsState.FAULT, const.CMD_OBSRESET, "obsreset_cmd_ended_cb"),
+        # ("Restart",  ObsState.ABORTED, const.CMD_RESTART, "restart_cmd_ended_cb"),
+        # ("Restart",  ObsState.FAULT, const.CMD_RESTART, "restart_cmd_ended_cb"),
     ],
 )
 def command_with_correct_obsstate(request):
@@ -306,18 +336,40 @@ def command_with_correct_obsstate(request):
     return cmd_name, obs_state, requested_cmd, cmd_callbk
 
 
-@pytest.mark.xfail(
-    reason="This test case is not applicable for now as obsState is not getting checked"
-)
 def test_command_with_correct_obsstate(
-    mock_mccs_subarray_proxy, command_with_correct_obsstate
+    mock_obstate_check, mock_mccs_subarray_proxy, command_with_correct_obsstate, mock_tango_server_helper
 ):
     device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
     cmd_name, obs_state, requested_cmd, cmd_callbk = command_with_correct_obsstate
-    mccs_subarray_client.deviceproxy.obsState = obs_state
+    mccs_subarray_client.get_attribute.side_effect = Mock(return_value = obs_state)
     device_proxy.command_inout(cmd_name)
     mccs_subarray_client.deviceproxy.command_inout_asynch.assert_called_with(
-        requested_cmd, any_method(with_name=cmd_callbk)
+        requested_cmd, None, any_method(with_name=cmd_callbk)
+    )
+
+
+@pytest.fixture(
+    scope="function",
+    params=[
+        ("Restart",  ObsState.ABORTED, const.CMD_RESTART, "restart_cmd_ended_cb"),
+        ("Restart",  ObsState.FAULT, const.CMD_RESTART, "restart_cmd_ended_cb"),
+    ],
+)
+def test_command_with_correct_obsstate_for_restart(request):
+    cmd_name, obs_state, requested_cmd, cmd_callbk = request.param
+    return cmd_name, obs_state, requested_cmd, cmd_callbk
+
+def test_command_with_correct_obsstate_for_restart_aborted_fault(
+    mock_obstate_check, mock_mccs_subarray_proxy, test_command_with_correct_obsstate_for_restart, mock_tango_server_helper
+):
+    device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
+    inp_arg = {"subarray_id": 1}
+    input_mccs = json.dumps(inp_arg)
+    cmd_name, obs_state, requested_cmd, cmd_callbk = test_command_with_correct_obsstate_for_restart
+    mccs_subarray_client.get_attribute.side_effect = Mock(return_value = obs_state)
+    device_proxy.command_inout(cmd_name)
+    mccs_subarray_client.deviceproxy.command_inout_asynch.assert_called_with(
+        requested_cmd, input_mccs, any_method(with_name=cmd_callbk)
     )
 
 
@@ -343,52 +395,68 @@ def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):
 
 
 def test_scan_should_command_mccs_subarray_to_start_its_scan_when_it_is_ready(
-    mock_mccs_subarray_proxy,mock_tango_server_helper
+    mock_obstate_check, mock_mccs_subarray_proxy, mock_tango_server_helper
 ):
     device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
-    mccs_subarray_client.deviceproxy.obsState = ObsState.READY
+    mccs_subarray_client.get_attribute.side_effect = Mock(return_value = ObsState.READY)
     device_proxy.Scan(scan_input_str)
     mccs_subarray_client.deviceproxy.command_inout_asynch.assert_called_with(
         const.CMD_SCAN, scan_input_str, any_method(with_name="scan_cmd_ended_cb")
     )
 
 
-@pytest.mark.xfail(
-    reason="This test case is not applicable for now as obsState is not getting checked"
-)
 def test_end_should_command_mccs_subarray_should_not_end_when_it_is_not_idle_or_ready(
-    mock_mccs_subarray_proxy,
+    mock_obstate_check, mock_mccs_subarray_proxy, mock_tango_server_helper
 ):
-    device_proxy = mock_mccs_subarray_proxy[0]
+    device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
+    mccs_subarray_client.get_attribute.side_effect = Mock(return_value = ObsState.EMPTY)
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.End()
     assert const.ERR_DEVICE_NOT_READY in str(df)
 
 
-@pytest.mark.xfail(
-    reason="This test case is not applicable for now as obsState is not getting checked"
-)
 def test_end_scan_should_not_command_mccs_subarray_to_end_scan_when_it_is_idle(
-    mock_mccs_subarray_proxy,
+    mock_obstate_check, mock_mccs_subarray_proxy, mock_tango_server_helper
 ):
     device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
-    mccs_subarray_client.deviceproxy.obsState = ObsState.IDLE
+    mccs_subarray_client.get_attribute.side_effect = Mock(return_value = ObsState.IDLE)
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.EndScan()
     assert const.ERR_DEVICE_NOT_SCANNING in str(df)
 
 
-@pytest.mark.xfail(
-    reason="This test case is not applicable for now as obsState is not getting checked"
-)
 def test_abort_should_not_command_mccs_subarray_when_it_is_aborted(
-    mock_mccs_subarray_proxy,
+    mock_mccs_subarray_proxy, mock_obstate_check, mock_tango_server_helper
 ):
     device_proxy, mccs_subarray_client = mock_mccs_subarray_proxy
-    mccs_subarray_client.deviceproxy.obsState = ObsState.ABORTED
+    mccs_subarray_client.get_attribute.side_effect = Mock(return_value = ObsState.ABORTED)
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.Abort()
     assert const.ERR_ABORT_COMMAND in str(df)
+
+
+def test_restart_command_when_mccs_subarray_is_not_in_aborted(
+    mock_obstate_check, mock_mccs_controller_proxy, mock_tango_server_helper
+):
+    device_proxy, mccs_subarray_client = mock_mccs_controller_proxy
+    mccs_subarray_client.get_attribute.side_effect = Mock(return_value = ObsState.READY)
+    mccs_subarray_client.deviceproxy.command_inout_asynch.side_effect = raise_devfailed_exception
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.Restart()
+    assert const.ERR_RESTART_COMMAND in str(df)
+
+
+def test_restart_when_mccs_subarray_is_in_aborted(
+    mock_obstate_check, mock_mccs_controller_proxy, mock_tango_server_helper
+):
+    device_proxy, mccs_subarray_client = mock_mccs_controller_proxy
+    inp_arg = {"subarray_id": 1}
+    input_mccs = json.dumps(inp_arg)
+    mccs_subarray_client.get_attribute.side_effect = Mock(return_value = ObsState.ABORTED)
+    device_proxy.Restart()
+    mccs_subarray_client.deviceproxy.command_inout_asynch.assert_called_with(
+        const.CMD_RESTART, input_mccs, any_method(with_name="restart_cmd_ended_cb")
+    )
 
 
 def any_method(with_name=None):

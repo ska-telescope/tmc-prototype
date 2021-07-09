@@ -1,3 +1,5 @@
+import json
+
 # PyTango imports
 import tango
 from tango import DevState, DevFailed
@@ -96,25 +98,26 @@ class AssignResourcesCommand(BaseCommand):
         Method to invoke AssignResources command on CSP Subarray.
 
         :param argin:DevString. The string in JSON format. The JSON contains following values:
-            subarrayID: integer
+            subarray_id: integer
 
             dish:
                 Mandatory JSON object consisting of
 
-                receptorIDList:
+                receptor_ids:
                     DevVarString
                     The individual string should contain dish numbers in string format
                     with preceding zeroes upto 3 digits. E.g. 0001, 0002.
 
         Example:
             {
-                    "subarrayID":1,
+                    "interface": "https: //schema.skao.int/ska-mid-csp-assignresources/2.0",
+                    "subarray_id": 1,
                     "dish": {
-                    "receptorIDList": [
-                        "0001",
-                        "0002"
+                    "receptor_ids": [
+                         "0001",
+                         "0002"
                     ]
-                    }
+                  }
             }
 
 
@@ -130,7 +133,10 @@ class AssignResourcesCommand(BaseCommand):
 
             DevFailed if the command execution is not successful
         """
+        device_data = self.target
         try:
+            json_argument = json.loads(argin)
+            device_data.receptor_ids_str = json_argument[const.STR_DISH][const.STR_RECEPTOR_IDS]
             delay_manager_obj = DelayManager.get_instance()
             delay_manager_obj.update_config_params()
             # Invoke AssignResources command on CspSubarray
@@ -143,7 +149,7 @@ class AssignResourcesCommand(BaseCommand):
             csp_sub_client_obj.send_command_async(
                 const.CMD_ASSIGN_RESOURCES, argin, self.assign_resources_ended
             )
-            self.logger.info("After invoking AssignResources on CSP subarray")
+            self.logger.debug("After invoking AssignResources on CSP subarray")
             this_server.write_attr("activityMessage", const.STR_ASSIGN_RESOURCES_SUCCESS, False)
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
 

@@ -14,7 +14,7 @@ maintainers:
     email: kalyanit.ska@gmail.com
 dependencies:
 - name: tango-base
-  version: 0.2.20
+  version: 0.2.23
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
 - name: mid-cbf
   version: 0.1.1
@@ -28,8 +28,8 @@ dependencies:
   version: 0.4.0
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
   condition: sdp.enabled
-- name: tmc-mid
-  version: 0.3.2
+- name: ska-tmc-mid
+  version: 0.3.9
   repository: file://../tmc-mid
   condition: tmc-mid.enabled
 - name: webjive

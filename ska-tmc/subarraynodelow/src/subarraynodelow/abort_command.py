@@ -44,19 +44,17 @@ class Abort(SKASubarray.AbortCommand):
         device_data.is_release_resources = False
         device_data.is_end_command = False
         device_data.is_obsreset_command_executed = False
+        device_data.is_restart_command_executed = False
         this_server = TangoServerHelper.get_instance()
         try:
             if device_data.scan_timer_handler.is_scan_running():
                 device_data.scan_timer_handler.stop_scan_timer()
-                mccs_subarray_ln_fqdn = ""
-                property_val = this_server.read_property("MccsSubarrayLNFQDN")
-                mccs_subarray_ln_fqdn = mccs_subarray_ln_fqdn.join(property_val)
-                self.abort_mccs(mccs_subarray_ln_fqdn)
-                self.logger.info(const.STR_ABORT_SUCCESS)
-                this_server.write_attr("activityMessage", const.STR_ABORT_SUCCESS, False)
-                this_server.set_status(const.STR_ABORT_SUCCESS)
-                device_data.is_abort_command_executed = True
-                return (ResultCode.STARTED, const.STR_ABORT_SUCCESS)
+            mccs_subarray_ln_fqdn = ""
+            property_val = this_server.read_property("MccsSubarrayLNFQDN")
+            mccs_subarray_ln_fqdn = mccs_subarray_ln_fqdn.join(property_val)
+            self.abort_mccs(mccs_subarray_ln_fqdn)
+            device_data.is_abort_command_executed = True
+            return (ResultCode.STARTED, const.STR_ABORT_SUCCESS)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_ABORT_INVOKING_CMD}{dev_failed}"

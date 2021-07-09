@@ -8,7 +8,7 @@ from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
-
+from ska.base.control_model import ObsState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -34,6 +34,10 @@ class ReleaseAllResources(BaseCommand):
         :raises: Exception if command execution throws any type of exception
 
         """
+        self.this_server = TangoServerHelper.get_instance()
+        sdp_subarray_fqdn = self.this_server.read_property("SdpSubarrayFQDN")[0]
+        self.sdp_sa_ln_client_obj = TangoClient(sdp_subarray_fqdn)
+
         if self.state_model.op_state in [
             DevState.FAULT,
             DevState.UNKNOWN,
@@ -47,14 +51,10 @@ class ReleaseAllResources(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
 
-        # TODO: Mock obs_state issue to be resolved
-        # device_data = self.target
-        # sdp_sa_ln_client_obj = TangoClient(device_data._sdp_sa_fqdn)
-        # if sdp_sa_ln_client_obj.get_attribute("obsState") != ObsState.IDLE:
-        #     tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, "Failed to invoke ReleaseAllResources command on "
-        #                                     "SdpSubarrayLeafNode.",
-        #                                     "SdpSubarrayLeafNode.ReleaseAllResources()",
-        #                                     tango.ErrSeverity.ERR)
+        if self.sdp_sa_ln_client_obj.get_attribute("obsState").value != ObsState.IDLE:
+            tango.Except.throw_exception(const.STR_RELEASE_RES_EXEC, const.ERR_RELEASE_RESOURCES,
+                                            "SdpSubarrayLeafNode.ReleaseAllResources()",
+                                            tango.ErrSeverity.ERR)
         return True
 
     def releaseallresources_cmd_ended_cb(self, event):
@@ -78,14 +78,13 @@ class ReleaseAllResources(BaseCommand):
 
         :return: none
         """
-        this_server = TangoServerHelper.get_instance()
         if event.err:
             log = f"{const.ERR_INVOKING_CMD}{event.cmd_name} {event.errors}"
-            this_server.write_attr("activityMessage", log, False)
+            self.this_server.write_attr("activityMessage", log, False)
             self.logger.error(log)
         else:
             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            this_server.write_attr("activityMessage", log, False)
+            self.this_server.write_attr("activityMessage", log, False)
             self.logger.info(log)
 
     def do(self):
@@ -100,20 +99,18 @@ class ReleaseAllResources(BaseCommand):
         raises:
             DevFailed if the command execution is not successful.
         """
-        this_server = TangoServerHelper.get_instance()
         try:
             # Call SDP Subarray Command asynchronously
-            sdp_sa_ln_client_obj=TangoClient(this_server.read_property("SdpSubarrayFQDN")[0])
-            sdp_sa_ln_client_obj.send_command_async(
+            self.sdp_sa_ln_client_obj.send_command_async(
                 const.CMD_RELEASE_RESOURCES, None, self.releaseallresources_cmd_ended_cb
             )
             # Update the status of command execution status in activity message
-            this_server.write_attr("activityMessage", const.STR_REL_RESOURCES, False)
+            self.this_server.write_attr("activityMessage", const.STR_REL_RESOURCES, False)
             self.logger.info(const.STR_REL_RESOURCES)
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_RELEASE_RESOURCES}{dev_failed}"
-            this_server.write_attr("activityMessage", log_msg, False)
+            self.this_server.write_attr("activityMessage", log_msg, False)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_RELEASE_RES_EXEC,

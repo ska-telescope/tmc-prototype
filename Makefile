@@ -56,7 +56,7 @@ CI_PROJECT_DIR ?= .
 KUBE_CONFIG_BASE64 ?=  ## base64 encoded kubectl credentials for KUBECONFIG
 KUBECONFIG ?= /etc/deploy/config ## KUBECONFIG location
 
-VALUES_FILE ?= charts/tmc-mid/values.yaml
+#VALUES_FILE ?= charts/tmc-mid/values.yaml
 CUSTOM_VALUES = 
 
 ifneq ($(CI_JOB_ID),)
@@ -66,11 +66,6 @@ CUSTOM_VALUES = --set global.skatmc.registry=registry.gitlab.com/ska-telescope \
 	--set global.skatmc.tag=$(CI_COMMIT_SHORT_SHA)
 
 
-else
-endif
-
-ifneq ($(VALUES_FILE),)
-CUSTOM_VALUES := --values $(VALUES_FILE) $(CUSTOM_VALUES)
 else
 endif
 

@@ -10,7 +10,7 @@
 """Release information for Python Package"""
 
 name = """sdpmasterleafnode"""
-version = "0.5.3"
+version = "0.6.7"
 version_info = version.split(".")
 description = """ The primary responsibility of the SDP Subarray 
                   Leaf node is to monitor the SDP Subarray 

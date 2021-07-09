@@ -27,20 +27,14 @@ server:
                     - "healthstate"
                     - "1000"
               attribute_properties:
-                - attribute: "sdpHealthState"
-                  properties:
-                    - name: "__root_att"
-                      values:
-                        - "mid_sdp/elt/master/healthState"
                 - attribute: "healthState"
                   properties:
                     - name: "abs_change"
                       values:
                         - "-1"
                         - "1"
-
 depends_on:
-  - device: mid_sdp/elt/master
+  - device: sys/database/2
 image:
   registry: "{{.Values.global.skatmc.registry}}"
   image: "{{.Values.global.skatmc.image}}"

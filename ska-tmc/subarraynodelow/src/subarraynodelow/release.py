@@ -10,7 +10,7 @@
 """Release information for Python Package"""
 
 name = """subarraynodelow"""
-version = "0.5.3"
+version = "0.6.7"
 version_info = version.split(".")
 description = """Provides the monitoring and control interface required by users as well as
 other TM Components (such as OET, Central Node) for a SKA Low Subarray."""

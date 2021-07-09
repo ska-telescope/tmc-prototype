@@ -38,8 +38,8 @@ from .end_command import End
 from .abort_command import Abort
 from .restart_command import Restart
 from .obsreset_command import ObsReset
-from .on_command import On
-from .off_command import Off
+from .telescope_on_command import TelescopeOn
+from .telescope_off_command import TelescopeOff
 from .device_data import DeviceData
 from .exceptions import InvalidObsStateError
 
@@ -53,8 +53,8 @@ __all__ = [
     "const",
     "release",
     "ReleaseAllResources",
-    "On",
-    "Off",
+    "TelescopeOn",
+    "TelescopeOff",
     "Configure",
     "Abort",
     "Restart",
@@ -87,11 +87,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             This is a attribute from SDP Subarray which depicts the active Processing
             Blocks in the SDP Subarray.
 
-        sdpSubarrayHealthState:
-            Attribute to provide SDP Subarray Health State.
-
-        sdpSubarrayObsState:
-            Attribute to show ObsState of Tango Device.
 
     """
 
@@ -124,13 +119,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         "the SDP Subarray.",
     )
 
-    sdpSubarrayHealthState = attribute(
-        name="sdpSubarrayHealthState", label="sdpSubarrayHealthState", forwarded=True
-    )
-
-    sdpSubarrayObsState = attribute(
-        name="sdpSubarrayObsState", label="sdpSubarrayObsState", forwarded=True
-    )
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
@@ -151,8 +139,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             super().do()
             device = self.target
-            this_server = TangoServerHelper.get_instance()
-            this_server.set_tango_class(device)
+            self.this_server = TangoServerHelper.get_instance()
+            self.this_server.set_tango_class(device)
             device.attr_map = {}
             device.attr_map["receiveAddresses"] = ""
             device.attr_map["activeProcessingBlocks"] = ""
@@ -172,7 +160,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
-            this_server.write_attr("activityMessage", const.STR_SDPSALN_INIT_SUCCESS, False)
+            self.this_server.write_attr("activityMessage", const.STR_SDPSALN_INIT_SUCCESS, False)
             # Initialise Device status
             device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
             self.logger.info(const.STR_SDPSALN_INIT_SUCCESS)
@@ -241,6 +229,74 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         return self.attr_map["activeProcessingBlocks"]
         # PROTECTED REGION END #    //  SdpSubarrayLeafNode.activeProcessingBlocks_read
 
+
+    # --------
+    # Commands
+    # --------
+    
+    def is_telescope_on_allowed(self):
+        """
+        Checks Whether this command is allowed to be run in current device state.
+
+        return:
+            True if this command is allowed to be run in current device state.
+
+        rtype:
+            boolean
+
+        raises: DevF
+            ailed if this command is not allowed to be run in current device state.
+
+        """
+        handler = self.get_command_object("TelescopeOn")
+        return handler.check_allowed()
+
+    @command()
+    @DebugIt()
+    def TelescopeOn(self):
+        """
+        Sets the opState to ON.
+
+        :param argin: None
+
+        :return: None
+
+        """
+        handler = self.get_command_object("TelescopeOn")
+        handler()
+
+    def is_telescope_off_allowed(self):
+        """
+        Checks Whether this command is allowed to be run in current device state.
+
+        return:
+            True if this command is allowed to be run in current device state.
+
+        rtype:
+            boolean
+
+        raises: DevF
+            ailed if this command is not allowed to be run in current device state.
+
+        """
+        handler = self.get_command_object("TelescopeOff")
+        return handler.check_allowed()
+
+    @command()
+    @DebugIt()
+    def TelescopeOff(self):
+        """
+        Sets the opState to Off.
+
+        :param argin: None
+
+        :return: None
+
+        """
+        handler = self.get_command_object("TelescopeOff")
+        handler()
+
+
     @command()
     @DebugIt()
     def Abort(self):
@@ -277,7 +333,15 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         Assigns resources to given SDP subarray.
         """
+
         handler = self.get_command_object("AssignResources")
+        try:
+            self.validate_obs_state()
+        except InvalidObsStateError as error:
+            self.logger.exception(error)
+            tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_EMPTY_IDLE, const.ERR_ASSGN_RESOURCES,
+                                        "SdpSubarrayLeafNode.AssignResources()",
+                                        tango.ErrSeverity.ERR)
         handler(argin)
 
     def is_AssignResources_allowed(self):
@@ -464,21 +528,17 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler(argin)
 
     def validate_obs_state(self):
-        device_data = self.target
-        device_data = DeviceData.get_instance()
-        this_server = TangoServerHelper.get_instance()
-        sdp_sa_ln_client_obj=TangoClient(this_server.read_property("SdpSubarrayFQDN")[0])
-        if sdp_sa_ln_client_obj.deviceproxy.obsState in [
-            ObsState.EMPTY,
-            ObsState.IDLE,
-        ]:
+        self.this_server = TangoServerHelper.get_instance()
+        sdp_subarray_fqdn = self.this_server.read_property("SdpSubarrayFQDN")[0]
+        sdp_sa_client = TangoClient(sdp_subarray_fqdn)
+        if sdp_sa_client.get_attribute("obsState").value in [ObsState.EMPTY, ObsState.IDLE]:
             self.logger.info(
                 "SDP subarray is in required obstate,Hence resources to SDP can be assign."
             )
         else:
             self.logger.error("Subarray is not in EMPTY obstate")
             log_msg = "Error in device obstate."
-            this_server.write_attr("activityMessage", log_msg, False)
+            self.this_server.write_attr("activityMessage", log_msg, False)
             raise InvalidObsStateError("SDP subarray is not in EMPTY obstate.")
 
     def init_command_objects(self):
@@ -500,8 +560,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         self.register_command_object("EndScan", EndScan(*args))
         self.register_command_object("Abort", Abort(*args))
         self.register_command_object("ObsReset", ObsReset(*args))
-        self.register_command_object("Off", Off(*args))
-        self.register_command_object("On", On(*args))
+        self.register_command_object("TelescopeOff", TelescopeOff(*args))
+        self.register_command_object("TelescopeOn", TelescopeOn(*args))
 
 
 # ----------

@@ -22,6 +22,9 @@ from ska.base.control_model import HealthState, ObsMode, ObsState
 from ska.base import SKASubarray
 from .device_data import DeviceData
 from tmc.common.tango_server_helper import TangoServerHelper
+from subarraynodelow.health_state_aggregator import HealthStateAggregator
+from subarraynodelow.obs_state_aggregator import ObsStateAggregator
+from .assigned_resources_maintainer import AssignedResourcesMaintainer
 from . import const, release
 from .on_command import On
 from .off_command import Off
@@ -33,6 +36,7 @@ from .end_scan_command import EndScan
 from .release_all_resources_command import ReleaseAllResources
 from .abort_command import Abort
 from .obsreset_command import ObsReset
+from .restart_command import Restart
 
 __all__ = [
     "SubarrayNode",
@@ -46,6 +50,7 @@ __all__ = [
     "On",
     "ObsReset",
     "Abort",
+    "Restart",
     "Off",
 ]
 
@@ -141,6 +146,7 @@ class SubarrayNode(SKASubarray):
             device.attr_map = {}
             device.attr_map["scanID"] = ""
             device.attr_map["assigned_resources"] = ""
+            device.attr_map["activityMessage"] = ""
             device._obs_mode = ObsMode.IDLE
             device._resource_list = []
             device.is_end_command = False
@@ -155,6 +161,13 @@ class SubarrayNode(SKASubarray):
             device._subarray_health_state = (
                 HealthState.OK
             )  # Aggregated Subarray Health State
+            device.device_data.obs_state_aggr = ObsStateAggregator(self.logger)
+            device.device_data.obs_state_aggr.subscribe()
+            # subscribe to HealthState
+            device.device_data.health_state_aggr = HealthStateAggregator(self.logger)
+            device.device_data.health_state_aggr.subscribe()
+            device_data.assigned_resources_maintainer = AssignedResourcesMaintainer()
+            device_data.assigned_resources_maintainer.subscribe()
             this_server.write_attr("activityMessage", const.STR_SA_INIT_SUCCESS, False)
             self.logger.info(const.STR_SA_INIT_SUCCESS)
             return (ResultCode.OK, const.STR_SA_INIT_SUCCESS)
@@ -243,6 +256,7 @@ class SubarrayNode(SKASubarray):
         self.assign = AssignResources(*args)
         self.obsreset = ObsReset(*args)
         self.abort = Abort(*args)
+        self.restart = Restart(*args)
 
         self.register_command_object("AssignResources", self.assign)
         self.register_command_object("ReleaseAllResources", self.release)
@@ -254,6 +268,7 @@ class SubarrayNode(SKASubarray):
         self.register_command_object("EndScan", self.endscan)
         self.register_command_object("ObsReset", self.obsreset)
         self.register_command_object("Abort", self.abort)
+        self.register_command_object("Restart", self.restart)
 
 
 # ----------

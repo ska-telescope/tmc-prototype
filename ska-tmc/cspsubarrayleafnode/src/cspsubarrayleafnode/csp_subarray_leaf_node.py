@@ -39,10 +39,11 @@ from .end_command import GoToIdleCommand
 from .abort_command import AbortCommand
 from .restart_command import RestartCommand
 from .obsreset_command import ObsResetCommand
-from .on_command import On
-from .off_command import Off
+from .telescope_on_command import TelescopeOn
+from .telescope_off_command import TelescopeOff
 from . import const, release
 from .exceptions import InvalidObsStateError
+from .delay_model import DelayManager
 
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additional_import
 
@@ -58,8 +59,8 @@ __all__ = [
     "AbortCommand",
     "RestartCommand",
     "ObsResetCommand",
-    "On",
-    "Off",
+    "TelescopeOn",
+    "TelescopeOff",
 ]
 
 
@@ -73,12 +74,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
             Property to provide FQDN of CSP Subarray Device
 
     :Device Attributes:
-
-        cspsubarrayHealthState:
-            Forwarded attribute to provide CSP Subarray Health State
-
-        cspSubarrayObsState:
-            Forwarded attribute to provide CSP Subarray Observation State
 
         activityMessage:
             String providing information about the current activity in CspSubarrayLeaf Node.
@@ -115,13 +110,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
         access=AttrWriteType.READ_WRITE,
     )
 
-    cspsubarrayHealthState = attribute(
-        name="cspsubarrayHealthState", label="cspsubarrayHealthState", forwarded=True
-    )
-
-    cspSubarrayObsState = attribute(
-        name="cspSubarrayObsState", label="cspSubarrayObsState", forwarded=True
-    )
 
     # ---------------
     # General methods
@@ -157,10 +145,33 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device._version_id = release.version
             device._versioninfo = " "
 
+            # The IERS_A file needs to be downloaded each time when the MVP is deployed.
+            delay_manager_obj = DelayManager.get_instance()
+            try:
+                download_iers_thread = threading.Thread(
+                    None, delay_manager_obj.download_IERS_file, "CspSubarrayLeafNode"
+                )
+                download_iers_thread.start()
+            except Exception as delay_execption:
+                log_msg = f"Exception in DelayCorrection Katpoint API {delay_execption}"
+                self.logger.exception(log_msg)
+                tango.Except.throw_exception(
+                    const.STR_CMD_FAILED,
+                    log_msg,
+                    "CspSubarrayLeafNode.InitCommand.do()",
+                    tango.ErrSeverity.ERR,
+                )
+
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
-            this_server.write_attr("activityMessage", f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}", False)
+            this_server.write_attr(
+                "activityMessage",
+                f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}",
+                False,
+            )
             this_server.set_status(const.STR_CSPSALN_INIT_SUCCESS)
-            this_server.write_attr("activityMessage", const.STR_CSPSALN_INIT_SUCCESS, False)
+            this_server.write_attr(
+                "activityMessage", const.STR_CSPSALN_INIT_SUCCESS, False
+            )
             self.logger.info(const.STR_CSPSALN_INIT_SUCCESS)
             return (ResultCode.OK, const.STR_CSPSALN_INIT_SUCCESS)
 
@@ -221,6 +232,52 @@ class CspSubarrayLeafNode(SKABaseDevice):
     # --------
     # Commands
     # --------
+
+    @command()
+    @DebugIt()
+    def TelescopeOn(self):
+        """ Invokes TelescopeOn command on cspsubarrayleafnode"""
+        handler = self.get_command_object("TelescopeOn")
+        handler()
+
+    def is_TelescopeOn_allowed(self):
+        """
+        Checks whether the command is allowed to be run in the current state
+
+        :return: True if this command is allowed to be run in
+                 current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run
+                 in current device state
+        """
+        handler = self.get_command_object("TelescopeOff")
+        return handler.check_allowed()
+
+
+    @command()
+    @DebugIt()
+    def TelescopeOff(self):
+        """ Invokes TelescopeOff command on cspsubarrayleafnode"""
+        handler = self.get_command_object("TelescopeOff")
+        handler()
+
+    def is_TelescopeOff_allowed(self):
+        """
+        Checks whether the command is allowed to be run in the current state
+
+        :return: True if this command is allowed to be run in
+                 current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run
+                 in current device state
+        """
+        handler = self.get_command_object("TelescopeOff")
+        return handler.check_allowed()
+
 
     def is_Configure_allowed(self):
         """
@@ -341,15 +398,17 @@ class CspSubarrayLeafNode(SKABaseDevice):
     def AssignResources(self, argin):
         """ Invokes AssignResources command on CspSubarrayLeafNode. """
         handler = self.get_command_object("AssignResources")
-        # try:
-        #     self.validate_obs_state()
+        try:
+            self.validate_obs_state()
 
-        # except InvalidObsStateError as error:
-        #     self.logger.exception(error)
-        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_EMPTY_OR_IDLE,
-        #                                  "CSP subarray leaf node raised exception",
-        #                                  "CSP.AddReceptors",
-        #                                  tango.ErrSeverity.ERR)
+        except InvalidObsStateError as error:
+            self.logger.exception(error)
+            tango.Except.throw_exception(
+                const.ERR_DEVICE_NOT_EMPTY_OR_IDLE,
+                "CSP subarray leaf node raised exception",
+                "CSP.AddReceptors",
+                tango.ErrSeverity.ERR,
+            )
         handler(argin)
 
     def is_GoToIdle_allowed(self):
@@ -377,11 +436,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     def validate_obs_state(self):
         this_server = TangoServerHelper.get_instance()
-        csp_subarray_fqdn = ""
-        property_val = this_server.read_property("CspSubarrayFQDN")
-        csp_subarray_fqdn = csp_subarray_fqdn.join(property_val)
-        csp_sub_client_obj = TangoClient(csp_subarray_fqdn)
-        if csp_sub_client_obj.deviceproxy.obsState in [ObsState.EMPTY, ObsState.IDLE]:
+        csp_subarray_fqdn = this_server.read_property("CspSubarrayFQDN")[0]
+        csp_sa_client = TangoClient(csp_subarray_fqdn)
+        if csp_sa_client.get_attribute("obsState").value in [
+            ObsState.EMPTY,
+            ObsState.IDLE,
+        ]:
             self.logger.info(
                 "CSP Subarray is in required obsState, resources will be assigned"
             )
@@ -475,8 +535,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
         self.register_command_object("Abort", AbortCommand(*args))
         self.register_command_object("Restart", RestartCommand(*args))
         self.register_command_object("ObsReset", ObsResetCommand(*args))
-        self.register_command_object("Off", Off(*args))
-        self.register_command_object("On", On(*args))
+        self.register_command_object("TelescopeOff", TelescopeOff(*args))
+        self.register_command_object("TelescopeOn", TelescopeOn(*args))
 
 
 # ----------

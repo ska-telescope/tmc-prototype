@@ -1,4 +1,5 @@
-# PyTango imports
+import json
+# Third party imports
 import tango
 from tango import DevState, DevFailed
 
@@ -12,26 +13,24 @@ from tmc.common.tango_server_helper import TangoServerHelper
 from . import const
 
 
-class EndScanCommand(BaseCommand):
+class Restart(BaseCommand):
     """
-    A class for CspSubarrayLeafNode's EndScan() command. EndScan command is inherited from BaseCommand.
+    A class for MccsSubarrayLeafNode's Restart() command.
 
-    It invokes EndScan command on CSP Subarray. This command is allowed when CSP Subarray is in
-    obsState SCANNING.
-
+    Restart command is inherited from BaseCommand. This command Invokes Restart command on MCCS Controller.
     """
 
     def check_allowed(self):
         """
-        Checks whether the command is allowed to be run in the current state
+        Checks whether the command is allowed to be executed in the current state
 
         :return: True if this command is allowed to be run in
-        current device state
+            current device state
 
         :rtype: boolean
 
         :raises: DevFailed if this command is not allowed to be run
-        in current device state
+            in current device state
 
         """
         if self.state_model.op_state in [
@@ -40,22 +39,23 @@ class EndScanCommand(BaseCommand):
             DevState.DISABLE,
         ]:
             tango.Except.throw_exception(
-                f"EndScan() is not allowed in current state {self.state_model.op_state}",
-                "Failed to invoke EndScan command on cspsubarrayleafnode.",
-                "cspsubarrayleafnode.EndScan()",
+                f"Restart() is not allowed in current state {self.state_model.op_state}",
+                "Failed to invoke Restart command on MccsSubarrayLeafNode.",
+                "Mccssubarrayleafnode.Restart()",
                 tango.ErrSeverity.ERR,
             )
-
-        this_server = TangoServerHelper.get_instance()
-        csp_subarray_fqdn = this_server.read_property("CspSubarrayFQDN")[0]
-        csp_sa_client = TangoClient(csp_subarray_fqdn)
-        if csp_sa_client.get_attribute("obsState").value != ObsState.SCANNING:
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_SCAN, "Failed to invoke EndScan command on cspsubarrayleafnode.",
-                                        "CspSubarrayLeafNode.EndScanCommand",
-                                        tango.ErrSeverity.ERR)
+        self.this_server = TangoServerHelper.get_instance()
+        self.mccs_sa_fqdn = self.this_server.read_property("MccsSubarrayFQDN")[0]
+        self.mccs_sa_client = TangoClient(self.mccs_sa_fqdn)
+        if self.mccs_sa_client.get_attribute("obsState").value not in [ObsState.ABORTED, ObsState.FAULT]:
+            tango.Except.throw_exception(const.ERR_INVOKING_CMD, const.ERR_RESTART_COMMAND,
+                                            "MccsSubarrayLeafNode.RestartCommand",
+                                            tango.ErrSeverity.ERR)
+        
         return True
 
-    def endscan_cmd_ended_cb(self, event):
+
+    def restart_cmd_ended_cb(self, event):
         """
         Callback function immediately executed when the asynchronous invoked
         command returns.
@@ -76,20 +76,21 @@ class EndScanCommand(BaseCommand):
 
         :return: none
         """
-        this_server = TangoServerHelper.get_instance()
         # Update logs and activity message attribute with received event
         if event.err:
             log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
             self.logger.error(log_msg)
-            this_server.write_attr("activityMessage", log_msg, False)
+            self.this_server.write_attr("activityMessage", log_msg, False)
         else:
             log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
-            this_server.write_attr("activityMessage", log_msg, False)
+            self.this_server.write_attr("activityMessage", log_msg, False)
 
     def do(self):
         """
-        Method to invoke Endscan command on CSP Subarray.
+         Method to invoke Restart command on MCCS Controller.
+
+        :param argin: None
 
         return:
             None
@@ -99,24 +100,25 @@ class EndScanCommand(BaseCommand):
 
         """
         try:
-            this_server = TangoServerHelper.get_instance()
-            csp_subarray_fqdn = ""
-            property_val = this_server.read_property("CspSubarrayFQDN")
-            csp_subarray_fqdn = csp_subarray_fqdn.join(property_val)
-            csp_sub_client_obj = TangoClient(csp_subarray_fqdn)
-            csp_sub_client_obj.send_command_async(
-                const.CMD_ENDSCAN, None, self.endscan_cmd_ended_cb
+            # On mccs side this implementation is not finalize yet modifications are expected.
+            # Hence hardcoded controller FQDN and input arguement (subarray ID).
+            mccs_controller_fqdn = "low-mccs/control/control"
+            input_to_mccs_controller = {"subarray_id":1}
+            argin = json.dumps(input_to_mccs_controller)
+            mccs_controller_client = TangoClient(mccs_controller_fqdn)
+            mccs_controller_client.send_command_async(
+                const.CMD_RESTART, argin, self.restart_cmd_ended_cb
             )
-            this_server.write_attr("activityMessage", const.STR_ENDSCAN_SUCCESS, False)
-            self.logger.info(const.STR_ENDSCAN_SUCCESS)
+            self.this_server.write_attr("activityMessage", const.STR_RESTART_SUCCESS, False)
+            self.logger.info(const.STR_RESTART_SUCCESS)
 
         except DevFailed as dev_failed:
-            log_msg = f"{const.ERR_ENDSCAN_INVOKING_CMD}{dev_failed}"
-            this_server.write_attr("activityMessage", log_msg, False)
+            log_msg = f"{const.ERR_RESTART_COMMAND}{dev_failed}"
+            self.this_server.write_attr("activityMessage", log_msg, False)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
-                const.STR_ENDSCAN_EXEC,
+                const.ERR_RESTART_COMMAND,
                 log_msg,
-                "CspSubarrayLeafNode.EndScanCommand",
+                "MccsSubarrayLeafNode.Restart",
                 tango.ErrSeverity.ERR,
             )

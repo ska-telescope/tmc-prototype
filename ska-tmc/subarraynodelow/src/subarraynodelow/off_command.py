@@ -13,7 +13,6 @@ from ska.base import SKASubarray
 
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
-from .assigned_resources_maintainer import AssignedResourcesMaintainer
 
 from . import const
 
@@ -41,25 +40,21 @@ class Off(SKASubarray.OffCommand):
         raises:
             DevFailed if the command execution is not successful
         """
-        device = self.target
-        device.is_release_resources = False
-        device.is_abort_command_executed = False
-        device.is_obsreset_command_executed = False
+        device_data = self.target
         this_server = TangoServerHelper.get_instance()
+        device_data.is_release_resources = False
+        device_data.is_abort_command_executed = False
+        device_data.is_obsreset_command_executed = False
+        device_data.is_restart_command_executed = False
         try:
             mccs_subarray_ln_fqdn = ""
             property_val = this_server.read_property("MccsSubarrayLNFQDN")
             mccs_subarray_ln_fqdn = mccs_subarray_ln_fqdn.join(property_val)
             mccs_subarray_ln_client = TangoClient(mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(const.CMD_OFF, None)
-            device.health_state_aggregator.unsubscribe()
-            device.obs_state_aggregator.unsubscribe()
             message = "Off command completed OK"
             self.logger.info(message)
             this_server.write_attr("activityMessage", message, False)
-            if device.assigned_resources_maintainer == None:
-                device.assigned_resources_maintainer = AssignedResourcesMaintainer()
-            device.assigned_resources_maintainer.unsubscribe()
             return (ResultCode.OK, message)
 
         except DevFailed as dev_failed:

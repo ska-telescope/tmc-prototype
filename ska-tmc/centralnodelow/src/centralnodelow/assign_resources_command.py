@@ -4,7 +4,7 @@
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 # Standard Python imports
 import json
-
+import time
 # Tango imports
 import tango
 from tango import DevState, DevFailed
@@ -79,10 +79,9 @@ class AssignResources(BaseCommand):
 
 
         Example:
-            {"interface":"https://schema.skatelescope.org/ska-low-tmc-assignresources/1.0","subarray_id":1,"mccs":{"subarray_beam_ids":[1],"station_ids":[[1,2]],"channel_blocks":[3]},"sdp":{}}
+            {"interface":"https://schema.skao.int/ska-low-tmc-assignresources/2.0","transaction_id":"txn-....-00001","subarray_id":1,"mccs":{"subarray_beam_ids":[1],"station_ids":[[1,2]],"channel_blocks":[3]},"sdp":{}}
 
-        Note: Enter input without spaces as: {"interface":"https://schema.skatelescope.org/ska-low-tmc-assignresources/1.0","subarray_id":1,"mccs":{"subarray_beam_ids":[1],"station_ids":[[1,2]],"channel_blocks":[3]},"sdp":{}}
-
+        Note: Enter input without spaces as: {"interface":"https://schema.skao.int/ska-low-tmc-assignresources/2.0","transaction_id":"txn-....-00001","subarray_id":1,"mccs":{"subarray_beam_ids":[1],"station_ids":[[1,2]],"channel_blocks":[3]},"sdp":{}}
         return:
             None
 
@@ -98,7 +97,19 @@ class AssignResources(BaseCommand):
         try:
             self.this_server = TangoServerHelper.get_instance()
             # Check if Mccs On command is completed
-            assert device_data.cmd_res_evt_val == 0
+            cmd_res = json.loads(device_data.cmd_res_evt_val)
+            log_msg = "commandresult attribute value in StandByTelescope command", cmd_res
+            self.logger.debug(log_msg)
+
+            if cmd_res["result_code"] != 0:
+                retry = 0
+                while retry < 3:
+                    if cmd_res["result_code"] == 0:
+                        break
+                    retry += 1
+                    time.sleep(0.1)
+
+            assert cmd_res["result_code"] == 0, "Startup command completed OK"
             json_argument = json.loads(argin)
             subarray_id = int(json_argument["subarray_id"])
             subarray_cmd_data = self._create_subarray_cmd_data(json_argument)
@@ -144,12 +155,12 @@ class AssignResources(BaseCommand):
                                          "CentralNode.AssignResourcesCommand",
                                          tango.ErrSeverity.ERR)
         except AssertionError:
-            log_msg = "Exception in AssignResources command: " + const.ERR_STARTUP_CMD_UNCOMPLETE
+            log_msg = "Exception in AssignResources command: " + const.ERR_STARTUP_CMD_INCOMPLETE
             self.logger.exception(log_msg)
-            log_msg = const.STR_ASSIGN_RES_EXEC + const.ERR_STARTUP_CMD_UNCOMPLETE
+            log_msg = const.STR_ASSIGN_RES_EXEC + const.ERR_STARTUP_CMD_INCOMPLETE
             self.logger.exception(log_msg)
             self.this_server.write_attr("activityMessage", log_msg, False)
-            tango.Except.throw_exception(const.ERR_STARTUP_CMD_UNCOMPLETE, log_msg,
+            tango.Except.throw_exception(const.ERR_STARTUP_CMD_INCOMPLETE, log_msg,
                                          "CentralNode.AssignResourcesCommand",
                                          tango.ErrSeverity.ERR)
 
@@ -166,8 +177,10 @@ class AssignResources(BaseCommand):
         :return: The string in JSON format.
         """
         mccs_value = json_argument["mccs"]
-        json_argument["interface"] = "https://schema.skatelescope.org/ska-low-mccs-assignresources/1.0"
-        del json_argument["sdp"]
+        json_argument["interface"] = "https://schema.skao.int/ska-low-mccs-assignresources/1.0"
+        del json_argument["transaction_id"]
+        if 'sdp' in json_argument:
+            del json_argument["sdp"]
         del json_argument["mccs"]
         json_argument.update(mccs_value)
         input_to_mccs= json.dumps(json_argument)
@@ -183,7 +196,8 @@ class AssignResources(BaseCommand):
         """
         # Remove subarray_id key from input json argument and send the json to subarray node
         del json_argument["subarray_id"]
-        del json_argument["sdp"]
+        if 'sdp' in json_argument:
+            del json_argument["sdp"]
         input_to_subarray = json.dumps(json_argument)
         return input_to_subarray
 

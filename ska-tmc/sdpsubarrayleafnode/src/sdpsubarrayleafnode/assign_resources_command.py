@@ -7,12 +7,10 @@ from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
-
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
-from .exceptions import InvalidObsStateError
 from .transaction_id import identify_with_id
 
 
@@ -40,6 +38,7 @@ class AssignResources(BaseCommand):
         :raises: Exception if command execution throws any type of exception.
 
         """
+        self.this_server = TangoServerHelper.get_instance()
         if self.state_model.op_state in [
             DevState.FAULT,
             DevState.UNKNOWN,
@@ -65,10 +64,9 @@ class AssignResources(BaseCommand):
 
         return: None
         """
-        this_server = TangoServerHelper.get_instance()
         if event.err:
             log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
-            this_server.write_attr("activityMessage", log, False)
+            self.this_server.write_attr("activityMessage", log, False)
             self.logger.error(log)
             tango.Except.throw_exception(
                 "SDP Subarray returned error while assigning resources",
@@ -78,7 +76,7 @@ class AssignResources(BaseCommand):
             )
         else:
             log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            this_server.write_attr("activityMessage", log, False)
+            self.this_server.write_attr("activityMessage", log, False)
             self.logger.debug(log)
 
     @identify_with_id("assign", "argin")
@@ -88,16 +86,16 @@ class AssignResources(BaseCommand):
 
         :param argin: The string in JSON format. The JSON contains following values:
 
-            SBI ID and maximum length of the SBI:
+            eb_id and maximum length of the SBI:
             Mandatory JSON object consisting of
 
-            SBI ID :
+             eb_id :
                 String
 
             max_length:
                 Float
 
-        Scan types:
+        scan_types:
             Consist of Scan type id name
 
             scan_type:
@@ -110,21 +108,22 @@ class AssignResources(BaseCommand):
                     DevVarStringArray
 
         Example:
-            {"id":"sbi-mvp01-20200325-00001","max_length":100.0,"scan_types":[{"id":"science_A",
-            "coordinate_system":"ICRS","ra":"02:42:40.771","dec":"-00:00:47.84","channels":[{"count"
-            :744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1],
-            [744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,
-            "link_map":[[2000,4],[2200,5]]}]},{"id":"calibration_B","coordinate_system":"ICRS","ra":
-            "12:29:06.699","dec":"02:03:08.598","channels":[{"count":744,"start":0,"stride":2,
-            "freq_min":0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},{"count":744,
-            "start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]}]
-            ,"processing_blocks":[{"id":"pb-mvp01-20200325-00001","workflow":{"type":"realtime","id":
-            "vis_receive","version":"0.1.0"},"parameters":{}},{"id":"pb-mvp01-20200325-00002","workflow":
-            {"type":"realtime","id":"test_realtime","version":"0.1.0"},"parameters":{}},{"id":
-            "pb-mvp01-20200325-00003","workflow":{"type":"batch","id":"ical","version":"0.1.0"},"parameters"
-            :{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001","type":["visibilities"]}]},{"id":
-            "pb-mvp01-20200325-00004","workflow":{"type":"batch","id":"dpreb","version":"0.1.0"},"parameters"
-            :{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","type":["calibration"]}]}]}
+            {"interface":"https://schema.skao.int/ska-sdp-assignres/0.3",
+            "eb_id":"eb-mvp01-20200325-00001","max_length":100.0,"scan_types":[{"scan_type_id":"science_A",
+            "reference_frame":"ICRS","ra":"02:42:40.771","dec":"-00:00:47.84","channels":[{"count":744,"start":0,
+            "stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},
+            {"count":744,"start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]}
+            ,{"scan_type_id":"calibration_B","reference_frame":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598",
+            "channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map":[[0,0],
+            [200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,
+            "link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":[{"pb_id":"pb-mvp01-20200325-00001","workflow":
+            {"kind":"realtime","name":"vis_receive","version":"0.1.0"},"parameters":{}},{"pb_id":
+            "pb-mvp01-20200325-00002","workflow":{"kind":"realtime","name":"test_realtime","version":"0.1.0"},
+            "parameters":{}},{"pb_id":"pb-mvp01-20200325-00003","workflow":{"kind":"batch","name":"ical",
+            "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001",
+            "kind":["visibilities"]}]},{"pb_id":"pb-mvp01-20200325-00004","workflow":{"kind":"batch","name":"dpreb",
+            "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","kind":
+            ["calibration"]}]}]}
 
         Note: Enter input without spaces
 
@@ -136,32 +135,20 @@ class AssignResources(BaseCommand):
 
             DevFailed if the command execution is not successful.
         """
-        this_server = TangoServerHelper.get_instance()
         try:
-            # TODO: When ObsState check related issue is resolved
-            # device.validate_obs_state()
             # Call SDP Subarray Command asynchronously
-            sdp_sa_ln_client_obj=TangoClient(this_server.read_property("SdpSubarrayFQDN")[0])
+            sdp_sa_ln_client_obj=TangoClient(self.this_server.read_property("SdpSubarrayFQDN")[0])
             sdp_sa_ln_client_obj.send_command_async(
                 const.CMD_ASSIGN_RESOURCES, command_data=argin, callback_method=self.assign_resources_ended
                 )
             # Update the status of command execution status in activity message
-            this_server.write_attr("activityMessage", const.STR_ASSIGN_RESOURCES_SUCCESS, False)
+            self.this_server.write_attr("activityMessage", const.STR_ASSIGN_RESOURCES_SUCCESS, False)
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
-
-        except InvalidObsStateError as error:
-            self.logger.exception(error)
-            tango.Except.throw_exception(
-                const.ERR_DEVICE_NOT_EMPTY_OR_IDLE,
-                "Failed to invoke AssignResources command on ",
-                "SDP.AssignResources",
-                tango.ErrSeverity.ERR,
-            )
 
         except ValueError as value_error:
             log_msg = f"{const.ERR_INVALID_JSON}{value_error}"
             self.logger.exception(log_msg)
-            this_server.write_attr("activityMessage", f"{const.ERR_INVALID_JSON}{value_error}", False)
+            self.this_server.write_attr("activityMessage", f"{const.ERR_INVALID_JSON}{value_error}", False)
             tango.Except.throw_exception(
                 const.STR_CMD_FAILED,
                 log_msg,
@@ -171,7 +158,7 @@ class AssignResources(BaseCommand):
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_ASSGN_RESOURCES}{dev_failed}"
-            this_server.write_attr("activityMessage", log_msg)
+            self.this_server.write_attr("activityMessage", log_msg)
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_ASSIGN_RES_EXEC,

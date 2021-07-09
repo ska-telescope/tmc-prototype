@@ -78,7 +78,6 @@ class HealthStateAggreegator:
         for subarray_fqdn in self.this_server.read_property("TMLowSubarrayNodes"):
             subarray_client = TangoClient(subarray_fqdn)
             # updating the subarray_health_state_map with device name (as ska_mid/tm_subarray_node/1) and its value which is required in callback
-            self.subarray_health_state_map[subarray_fqdn] = -1
             try:
                 event_id = subarray_client.subscribe_attribute(
                     const.EVT_SUBSR_HEALTH_STATE, self.health_state_cb

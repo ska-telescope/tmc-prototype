@@ -9,9 +9,7 @@ from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 
 from . import const
-from subarraynodelow.device_data import DeviceData
 from tmc.common.tango_server_helper import TangoServerHelper
-from .assigned_resources_maintainer import AssignedResourcesMaintainer
 
 
 class AssignResources(SKASubarray.AssignResourcesCommand):
@@ -39,24 +37,22 @@ class AssignResources(SKASubarray.AssignResourcesCommand):
 
         Example:
 
-        {"interface":"https://schema.skatelescope.org/ska-low-tmc-assignedresources/1.0","mccs":{"subarray_beam_ids":[1],"station_ids":[[1,2]],"channel_blocks":[3]}}
+        {"interface":"https://schema.skao.int/ska-low-tmc-assignedresources/2.0","mccs":{"subarray_beam_ids":[1],"station_ids":[[1,2]],"channel_blocks":[3]}}
 
         return:
             A tuple containing ResultCode and string.
         """
-        device_data = DeviceData.get_instance()
+        device_data = self.target
         this_server = TangoServerHelper.get_instance()
         device_data.is_end_command = False
         device_data.is_release_resources = False
         device_data.is_abort_command_executed = False
         device_data.is_obsreset_command_executed = False
+        device_data.is_restart_command_executed = False
         # TODO: For now storing resources as station ids
         input_str = json.loads(argin)
         device_data.resource_list = input_str["mccs"]["station_ids"]
         log_msg = f"{const.STR_ASSIGN_RES_EXEC}STARTED"
         self.logger.debug(log_msg)
         this_server.write_attr("activityMessage", log_msg, False)
-        device_data.assigned_resources_maintainer = AssignedResourcesMaintainer()
-        device_data.assigned_resources_maintainer.subscribe()
-
         return (ResultCode.STARTED, log_msg)

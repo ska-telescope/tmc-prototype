@@ -153,7 +153,7 @@ class TestDishLeafNode:
         self.wait_until_dish_attribute_equals(
             DishMode.STANDBY_FP, "dishMode", dish_master_dp
         )
-        input_string = '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiverBand":"1"}}'
+        input_string = '{"pointing":{"target":{"reference_frame":"ICRS","target_name":"Polaris Australis","ra":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiver_band":"1"}}'
         dish_leaf_node_dp.Configure(input_string)
         # '1' here represents 'B1' in the configuredBand enum labels
         self.wait_until_dish_attribute_equals(1, "configuredBand", dish_master_dp)
@@ -202,8 +202,10 @@ class TestDishLeafNode:
 
     def test_Track(self, dish_leaf_node_dp, dish_master_dp):
         self._set_dish_to_operate_mode(dish_leaf_node_dp, dish_master_dp)
-        input_string = '{"pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiverBand":"1"}}'
+        input_string = '{"pointing":{"target":{"reference_frame":"ICRS","target_name":"Polaris Australis","ra":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiver_band":"1"}}'
         dish_leaf_node_dp.Track(input_string)
+        # Wait for Dish to change pointingState to Track
+        time.sleep(10)
         assert dish_master_dp.pointingState == PointingState.TRACK
         dish_leaf_node_dp.StopTrack()
         assert dish_master_dp.pointingState == PointingState.READY

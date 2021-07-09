@@ -25,11 +25,9 @@ class CommandResultFetcher:
         Attribute callback for commandResult.
         """
         device_data = DeviceData.get_instance()
-        log_msg = 'MccsController.commandResult change event is : ' + str(event)
-        self.logger.debug(log_msg)
         try:
             device_data.cmd_res_evt_val = event.attr_value.value
-            log_msg="commandResult attribute value is :" + str(device_data.cmd_res_evt_val)
+            log_msg="commandResult attribute value is" + str(device_data.cmd_res_evt_val)
             self.logger.info(log_msg)
         except Exception as exp:
             self.logger.exception(const.ERR_SUB_CMD_RES_ATTR)

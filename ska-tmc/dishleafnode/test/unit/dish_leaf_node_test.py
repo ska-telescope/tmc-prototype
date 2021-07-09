@@ -267,11 +267,11 @@ def test_configure_to_send_correct_configuration_data_when_dish_is_idle(
     device_proxy.Configure(json.dumps(dish_config))
 
     json_argument = dish_config
-    receiver_band = int(json_argument["dish"]["receiverBand"])
+    receiver_band = int(json_argument["dish"]["receiver_band"])
 
     arg_list = {
         "pointing": {"AZ": 181.6281105048956, "EL": 27.336666294459825},
-        "dish": {"receiverBand": receiver_band},
+        "dish": {"receiver_band": receiver_band},
     }
     dish_str_ip = json.dumps(arg_list)
 

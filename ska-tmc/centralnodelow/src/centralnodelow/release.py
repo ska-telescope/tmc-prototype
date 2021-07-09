@@ -10,7 +10,7 @@
 """Release information for Python Package"""
 
 name = """centralnodelow"""
-version = "0.5.3"
+version = "0.6.7"
 version_info = version.split(".")
 description = """Central Node low is a coordinator of the complete M&C system."""
 author = "Team NCRA"

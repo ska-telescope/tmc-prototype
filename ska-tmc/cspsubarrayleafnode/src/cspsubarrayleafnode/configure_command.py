@@ -6,6 +6,7 @@ from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
+from ska.base.control_model import ObsState
 
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
@@ -50,12 +51,13 @@ class ConfigureCommand(BaseCommand):
                 "cspsubarrayleafnode.Configure()",
                 tango.ErrSeverity.ERR,
             )
-
-        # csp_sa_client = TangoClient(device_data.csp_subarray_fqdn)
-        # if csp_sa_client.get_attribute("obsState") not in [ObsState.IDLE, ObsState.READY]:
-        #     tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_OR_IDLE, const.ERR_CONFIGURE_INVOKING_CMD,
-        #                                     "CspSubarrayLeafNode.ConfigureCommand",
-        #                                     tango.ErrSeverity.ERR)
+        this_server = TangoServerHelper.get_instance()
+        csp_subarray_fqdn = this_server.read_property("CspSubarrayFQDN")[0]
+        csp_sa_client = TangoClient(csp_subarray_fqdn)
+        if csp_sa_client.get_attribute("obsState").value not in [ObsState.IDLE, ObsState.READY]:
+            tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_OR_IDLE, const.ERR_CONFIGURE_INVOKING_CMD,
+                                            "CspSubarrayLeafNode.ConfigureCommand",
+                                            tango.ErrSeverity.ERR)
         return True
 
     def configure_cmd_ended_cb(self, event):
@@ -98,11 +100,17 @@ class ConfigureCommand(BaseCommand):
         :param argin:DevString. The string in JSON format. The JSON contains following values:
 
         Example:
-        {"interface":"https://schema.skatelescope.org/ska-csp-configure/1.0","subarray":{"subarrayName":"science period 23"},"common":{"id":"sbi-mvp01-20200325-00001-science_A","frequencyBand":"1","subarrayID":"1"},
-        "cbf":{"fsp":[{"fspID":1,"functionMode":"CORR","frequencySliceID":1,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],"ChannelOffset":0,"outputLinkMap":[[0,0],[200,1]],"outputHost"
-        :[[0,"192.168.1.1"]],"outputPort":[[0,9000,1]]},{"fspID":2,"functionMode":"CORR","frequencySliceID":2,"integrationTime":1400,"corrBandwidth":0,"channelAveragingMap":[[0,2],[744,0]],"fspChannelOffset":744,
-        "outputLinkMap":[[0,4],[200,5]],"outputHost":[[0,"192.168.1.1"]],"outputPort":[[0,9744,1]]}],"vlbi":{},"delayModelSubscriptionPoint":"ska_mid/tm_leaf_node/csp_subarray01/delayModel"},"pss":{},"pst":{},
-        "pointing":{"target":{"system":"ICRS","name":"Polaris Australis","RA":"21:08:47.92","dec":"-88:57:22.9"}}}
+        {"interface":"https://schema.skao.int/ska-csp-configure/2.0","subarray":{"subarray_name":
+        "science period 23"},"common":{"config_id":"sbi-mvp01-20200325-00001-science_A",
+        "frequency_band":"1","subarray_id":"1"},"cbf":{"delay_model_subscription_point":
+        "ska_mid/tm_leaf_node/csp_subarray01/delayModel","fsp":[{"fsp_id":1,"function_mode":
+        "CORR","frequency_slice_id":1,"integration_factor":1,"zoom_factor":0,
+        "channel_averaging_map":[[0,2],[744,0]],"channel_offset":0,"output_link_map":[[0,0],
+        [200,1]],},{"fsp_id":2,"function_mode":"CORR","frequency_slice_id":2,"integration_factor":1,
+        "zoom_factor":1,"zoom_window_tuning":650000,"channel_averaging_map":[[0,2],[744,0]],
+        "channel_offset":744,"output_link_map":[[0,4],[200,5]],"output_host":[[0,"192.168.1.1"]],
+        "output_port":[[0,9744,1]]}],"vlbi":{}},"pss":{},"pst":{},"pointing":{"target":{"reference_frame":
+        "ICRS","target_name":"Polaris Australis","ra":"21:08:47.92","dec":"-88:57:22.9"}}}
 
         Note: Enter the json string without spaces as a input.
 
@@ -115,9 +123,8 @@ class ConfigureCommand(BaseCommand):
             ValueError if input argument json string contains invalid value
         """
         device_data = self.target
-        target_Ra = ""
-        target_Dec = ""
         this_server = TangoServerHelper.get_instance()
+        device_data.fsp_ids_object = []
         try:
             argin_json = json.loads(argin)
             # Used to extract FSP IDs
@@ -125,12 +132,12 @@ class ConfigureCommand(BaseCommand):
             delay_manager_obj = DelayManager.get_instance()
             delay_manager_obj.update_config_params()
             pointing_params = argin_json["pointing"]
-            target_Ra = pointing_params["target"]["RA"]
-            target_Dec = pointing_params["target"]["dec"]
+            target_ra = pointing_params["target"]["ra"]
+            target_dec = pointing_params["target"]["dec"]
 
             # Create target object
             device_data.target = katpoint.Target(
-                f"radec , {target_Ra} , {target_Dec}"
+                f"radec , {target_ra} , {target_dec}"
             )
             csp_configuration = argin_json.copy()
             # Keep configuration specific to CSP and delete pointing configuration
