@@ -278,7 +278,6 @@ def telescope_is_off():
         resource("ska_mid/tm_central/central_node").get("State"),
         resource("ska_mid/tm_subarray_node/1").get("State"),
         resource("mid_csp/elt/subarray_01").get("State"),
-        resource("mid_csp_cbf/sub_elt/subarray_01").get("State"),
         resource("mid_sdp/elt/subarray_1").get("State"),
         resource("mid_csp/elt/master").get("State"),
         resource("mid_sdp/elt/master").get("State"),
@@ -286,4 +285,107 @@ def telescope_is_off():
         resource("mid_d0002/elt/master").get("State"),
         resource("mid_d0003/elt/master").get("State"),
         resource("mid_d0004/elt/master").get("State")
-    ] == ["ON", "ON", "OFF", "OFF", "OFF", "OFF", "OFF", "OFF", "OFF", "OFF"]
+    ] == ["ON", "ON", "OFF", "OFF", "STANDBY", "OFF", "STANDBY", "STANDBY", "STANDBY", "STANDBY"]
+
+def telescope_is_standby():
+    LOGGER.info(
+        'resource("ska_mid/tm_central/central_node").get("State")'
+        + str(resource("ska_mid/tm_central/central_node").get("State"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_subarray_node/1").get("State")'
+        + str(resource("ska_mid/tm_subarray_node/1").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_csp/elt/subarray_01").get("State")'
+        + str(resource("mid_csp/elt/subarray_01").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_sdp/elt/subarray_1").get("State")'
+        + str(resource("mid_sdp/elt/subarray_1").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_csp/elt/master").get("State")'
+        + str(resource("mid_csp/elt/master").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_sdp/elt/master").get("State")'
+        + str(resource("mid_sdp/elt/master").get("State"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_leaf_node/d0001").get("State")'
+        + str(resource("ska_mid/tm_leaf_node/d0001").get("State"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_leaf_node/d0002").get("State")'
+        + str(resource("ska_mid/tm_leaf_node/d0002").get("State"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_leaf_node/d0003").get("State")'
+        + str(resource("ska_mid/tm_leaf_node/d0003").get("State"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_leaf_node/d0004").get("State")'
+        + str(resource("ska_mid/tm_leaf_node/d0004").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_d0001/elt/master").get("State")'
+        + str(resource("mid_d0001/elt/master").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_d0002/elt/master").get("State")'
+        + str(resource("mid_d0002/elt/master").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_d0003/elt/master").get("State")'
+        + str(resource("mid_d0003/elt/master").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_d0004/elt/master").get("State")'
+        + str(resource("mid_d0004/elt/master").get("State"))
+    )
+    return [
+        resource("ska_mid/tm_central/central_node").get("State"),
+        resource("ska_mid/tm_subarray_node/1").get("State"),
+        resource("mid_csp/elt/subarray_01").get("State"),
+        resource("mid_sdp/elt/subarray_1").get("State"),
+        resource("mid_csp/elt/master").get("State"),
+        resource("mid_sdp/elt/master").get("State"),
+        resource("mid_d0001/elt/master").get("State"),
+        resource("mid_d0002/elt/master").get("State"),
+        resource("mid_d0003/elt/master").get("State"),
+        resource("mid_d0004/elt/master").get("State")
+    ] == ["ON", "ON", "OFF", "OFF", "STANDBY", "STANDBY", "STANDBY", "STANDBY", "STANDBY", "STANDBY"]
+
+def telescope_state_after_telescope_on():
+    LOGGER.info(
+        'resource("ska_mid/tm_central/central_node").get("telescopeState")'
+        + str(resource("ska_mid/tm_central/central_node").get("telescopeState"))
+    )
+    LOGGER.info(
+        'resource("mid_csp/elt/master").get("State")'
+        + str(resource("mid_csp/elt/master").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_sdp/elt/master").get("State")'
+        + str(resource("mid_sdp/elt/master").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_d0001/elt/master").get("State")'
+        + str(resource("mid_d0001/elt/master").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_d0002/elt/master").get("State")'
+        + str(resource("mid_d0002/elt/master").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_d0003/elt/master").get("State")'
+        + str(resource("mid_d0003/elt/master").get("State"))
+    )
+    LOGGER.info(
+        'resource("mid_d0004/elt/master").get("State")'
+        + str(resource("mid_d0004/elt/master").get("State"))
+    )
+    return [
+        resource("ska_mid/tm_central/central_node").get("telescopeState")
+    ] == ["ON"]
