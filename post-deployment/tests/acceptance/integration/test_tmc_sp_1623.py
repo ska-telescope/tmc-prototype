@@ -72,8 +72,9 @@ def test_feature_sp_1623():
         the_waiter.wait()
         time.sleep(5)
         assert telescope_is_on()
-        assert telescope_state_after_telescope_on()
         LOGGER.info("Telescope is on")
+        assert telescope_state_after_telescope_on()
+        LOGGER.info("TelescopeState is on")
         fixture["state"] = "Telescope On"
 
 
@@ -116,21 +117,21 @@ def test_feature_sp_1623():
         the_waiter.wait()
         LOGGER.info("Invoked ReleaseResources on Subarray")
 
-        # LOGGER.info("Calling Telescope Off command now.")
-        # tmc.set_telescope_off()
-        # the_waiter.wait()
-        # time.sleep(5)
-        # assert telescope_is_off()
-        # LOGGER.info("Telescope is Off")
-        # fixture["state"] = "Telescope Off"
-
-        LOGGER.info("Calling Telescope StandBy command now.")
-        tmc.set_telescope_standby()
+        LOGGER.info("Calling Telescope Off command now.")
+        tmc.set_telescope_off()
         the_waiter.wait()
         time.sleep(5)
-        assert telescope_is_standby()
-        LOGGER.info("Telescope is StandBy")
-        fixture["state"] = "Telescope StandBy"
+        assert telescope_is_off()
+        LOGGER.info("Telescope is Off")
+        fixture["state"] = "Telescope Off"
+
+        # LOGGER.info("Calling Telescope StandBy command now.")
+        # tmc.set_telescope_standby()
+        # the_waiter.wait()
+        # time.sleep(5)
+        # assert telescope_is_standby()
+        # LOGGER.info("Telescope is StandBy")
+        # fixture["state"] = "Telescope StandBy"
 
     except:
         LOGGER.info("Gathering logs")

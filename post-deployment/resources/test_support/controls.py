@@ -223,6 +223,10 @@ def telescope_is_off():
         + str(resource("ska_mid/tm_central/central_node").get("State"))
     )
     LOGGER.info(
+        'resource("ska_mid/tm_central/central_node").get("telescopeState")'
+        + str(resource("ska_mid/tm_central/central_node").get("telescopeState"))
+    )
+    LOGGER.info(
         'resource("ska_mid/tm_subarray_node/1").get("State")'
         + str(resource("ska_mid/tm_subarray_node/1").get("State"))
     )
@@ -276,6 +280,7 @@ def telescope_is_off():
     )
     return [
         resource("ska_mid/tm_central/central_node").get("State"),
+        resource("ska_mid/tm_central/central_node").get("telescopeState"),
         resource("ska_mid/tm_subarray_node/1").get("State"),
         resource("mid_csp/elt/subarray_01").get("State"),
         resource("mid_sdp/elt/subarray_1").get("State"),
@@ -285,7 +290,7 @@ def telescope_is_off():
         resource("mid_d0002/elt/master").get("State"),
         resource("mid_d0003/elt/master").get("State"),
         resource("mid_d0004/elt/master").get("State")
-    ] == ["ON", "ON", "OFF", "OFF", "STANDBY", "OFF", "STANDBY", "STANDBY", "STANDBY", "STANDBY"]
+    ] == ["ON", "STANDBY","ON", "OFF", "OFF", "STANDBY", "OFF", "STANDBY", "STANDBY", "STANDBY", "STANDBY"]
 
 def telescope_is_standby():
     LOGGER.info(
@@ -293,6 +298,10 @@ def telescope_is_standby():
         + str(resource("ska_mid/tm_central/central_node").get("State"))
     )
     LOGGER.info(
+        'resource("ska_mid/tm_central/central_node").get("telescopeState")'
+        + str(resource("ska_mid/tm_central/central_node").get("telescopeState"))
+    )
+    LOGGER.info(
         'resource("ska_mid/tm_subarray_node/1").get("State")'
         + str(resource("ska_mid/tm_subarray_node/1").get("State"))
     )
@@ -346,6 +355,7 @@ def telescope_is_standby():
     )
     return [
         resource("ska_mid/tm_central/central_node").get("State"),
+        resource("ska_mid/tm_central/central_node").get("telescopeState"),
         resource("ska_mid/tm_subarray_node/1").get("State"),
         resource("mid_csp/elt/subarray_01").get("State"),
         resource("mid_sdp/elt/subarray_1").get("State"),
@@ -355,7 +365,7 @@ def telescope_is_standby():
         resource("mid_d0002/elt/master").get("State"),
         resource("mid_d0003/elt/master").get("State"),
         resource("mid_d0004/elt/master").get("State")
-    ] == ["ON", "ON", "OFF", "OFF", "STANDBY", "STANDBY", "STANDBY", "STANDBY", "STANDBY", "STANDBY"]
+    ] == ["ON", "STANDBY", "ON", "OFF", "OFF", "STANDBY", "STANDBY", "STANDBY", "STANDBY", "STANDBY", "STANDBY"]
 
 def telescope_state_after_telescope_on():
     LOGGER.info(
