@@ -28,8 +28,6 @@ from .telescope_on_command import TelescopeOn
 from .telescope_off_command import TelescopeOff
 from .telescope_standby_command import TelescopeStandby
 from .device_data import DeviceData
-from .on_command import On
-from .off_command import Off
 
 
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
@@ -219,14 +217,9 @@ class CspMasterLeafNode(SKABaseDevice):
         device_data = DeviceData.get_instance()
         super().init_command_objects()
         args = (device_data, self.state_model, self.logger)
-        self.on_object = On(*args)
-        self.off_object = Off(*args)
         self.register_command_object("TelescopeOff", TelescopeOff(*args))
         self.register_command_object("TelescopeOn", TelescopeOn(*args))
         self.register_command_object("TelescopeStandby", TelescopeStandby(*args))
-        self.register_command_object("On", self.on_object)
-        self.register_command_object("Off", self.off_object)
-        self.on_object.do()
         
         
 
