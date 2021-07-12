@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="ASCII"?>
+<pogoDsl:PogoSystem xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pogoDsl="http://www.esrf.fr/tango/pogo/PogoDsl">
+  <classes name="CspMaster" pogoRevision="9.6">
+    <description description="This is simulator for Csp Master." title="CspMasterSimulator" sourcePath="/home/ncra/projects/ska-tmc/ska-tmc/cspmasterleafnode/src/cspmaster_simulator" language="PythonHL" filestogenerate="XMI   file" license="GPL" copyright="" hasMandatoryProperty="false" hasConcreteProperty="false" hasAbstractCommand="false" hasAbstractAttribute="false">
+      <inheritances classname="Device_Impl" sourcePath=""/>
+      <identification contact="at gmail.com - akashk.ska" author="akashk.ska" emailDomain="gmail.com" classFamily="Simulators" siteSpecific="" platform="All Platforms" bus="Not Applicable" manufacturer="none" reference=""/>
+    </description>
+    <commands name="State" description="This command gets the device state (stored in its device_state data member) and returns it to the caller." execMethod="dev_state" displayLevel="OPERATOR" polledPeriod="0">
+      <argin description="none">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argin>
+      <argout description="Device state">
+        <type xsi:type="pogoDsl:StateType"/>
+      </argout>
+      <status abstract="true" inherited="true" concrete="true"/>
+    </commands>
+    <commands name="Status" description="This command gets the device status (stored in its device_status data member) and returns it to the caller." execMethod="dev_status" displayLevel="OPERATOR" polledPeriod="0">
+      <argin description="none">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argin>
+      <argout description="Device status">
+        <type xsi:type="pogoDsl:ConstStringType"/>
+      </argout>
+      <status abstract="true" inherited="true" concrete="true"/>
+    </commands>
+    <commands name="On" description="Switch-on the CSP sub-elements specified by the input argument. If no argument is&amp;#xA;specified, the command is issued on all the CSP sub-elements.&amp;#xA;The command is executed if the *AdminMode* is ONLINE or *MAINTENANCE*.&amp;#xA;If the AdminMode is *OFFLINE*, *NOT-FITTED* or *RESERVED*, the method throws an &amp;#xA;exception." execMethod="on" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
+      <argin description="">
+        <type xsi:type="pogoDsl:StringArrayType"/>
+      </argin>
+      <argout description="">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argout>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <excludedStates>FAULT</excludedStates>
+      <excludedStates>UNKNOWN</excludedStates>
+    </commands>
+    <commands name="Off" description="Switch-off the CSP sub-elements specified by the input argument. &amp;#xA;If no argument is specified, the command is issued to all the CSP &amp;#xA;sub-elements." execMethod="off" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
+      <argin description="">
+        <type xsi:type="pogoDsl:StringArrayType"/>
+      </argin>
+      <argout description="">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argout>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <excludedStates>FAULT</excludedStates>
+      <excludedStates>UNKNOWN</excludedStates>
+    </commands>
+    <commands name="Standby" description="Transit CSP or one or more CSP SubElements from ON/OFF to &amp;#xA;STANDBY." execMethod="standby" displayLevel="OPERATOR" polledPeriod="0" isDynamic="false">
+      <argin description="">
+        <type xsi:type="pogoDsl:StringArrayType"/>
+      </argin>
+      <argout description="">
+        <type xsi:type="pogoDsl:VoidType"/>
+      </argout>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <excludedStates>FAULT</excludedStates>
+      <excludedStates>UNKNOWN</excludedStates>
+    </commands>
+    <attributes name="cspCbfHealthState" attType="Scalar" rwType="READ" displayLevel="OPERATOR" polledPeriod="3000" maxX="" maxY="" allocReadMember="true" isDynamic="false">
+      <dataType xsi:type="pogoDsl:EnumType"/>
+      <changeEvent fire="false" libCheckCriteria="false"/>
+      <archiveEvent fire="false" libCheckCriteria="false"/>
+      <dataReadyEvent fire="false" libCheckCriteria="true"/>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <properties description="" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
+      <enumLabels>OK</enumLabels>
+      <enumLabels>DEGRADED</enumLabels>
+      <enumLabels>FAILED</enumLabels>
+      <enumLabels>UNKNOWN</enumLabels>
+    </attributes>
+    <attributes name="cspPssHealthState" attType="Scalar" rwType="READ" displayLevel="OPERATOR" polledPeriod="3000" maxX="" maxY="" allocReadMember="true" isDynamic="false">
+      <dataType xsi:type="pogoDsl:EnumType"/>
+      <changeEvent fire="false" libCheckCriteria="false"/>
+      <archiveEvent fire="false" libCheckCriteria="false"/>
+      <dataReadyEvent fire="false" libCheckCriteria="true"/>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <properties description="" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
+      <enumLabels>OK</enumLabels>
+      <enumLabels>DEGRADED</enumLabels>
+      <enumLabels>FAILED</enumLabels>
+      <enumLabels>UNKNOWN</enumLabels>
+    </attributes>
+    <attributes name="cspPstHealthState" attType="Scalar" rwType="READ" displayLevel="OPERATOR" polledPeriod="3000" maxX="" maxY="" allocReadMember="true" isDynamic="false">
+      <dataType xsi:type="pogoDsl:EnumType"/>
+      <changeEvent fire="false" libCheckCriteria="false"/>
+      <archiveEvent fire="false" libCheckCriteria="false"/>
+      <dataReadyEvent fire="false" libCheckCriteria="true"/>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <properties description="" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
+      <enumLabels>OK</enumLabels>
+      <enumLabels>DEGRADED</enumLabels>
+      <enumLabels>FAILED</enumLabels>
+      <enumLabels>UNKNOWN</enumLabels>
+    </attributes>
+    <attributes name="healthState" attType="Scalar" rwType="READ" displayLevel="OPERATOR" polledPeriod="1000" maxX="" maxY="" allocReadMember="true" isDynamic="false">
+      <dataType xsi:type="pogoDsl:EnumType"/>
+      <changeEvent fire="false" libCheckCriteria="false"/>
+      <archiveEvent fire="false" libCheckCriteria="false"/>
+      <dataReadyEvent fire="false" libCheckCriteria="true"/>
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+      <properties description="" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
+      <enumLabels>OK</enumLabels>
+      <enumLabels>DEGRADED</enumLabels>
+      <enumLabels>FAILED</enumLabels>
+      <enumLabels>UNKNOWN</enumLabels>
+    </attributes>
+    <states name="ON" description="">
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+    </states>
+    <states name="OFF" description="">
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+    </states>
+    <states name="FAULT" description="">
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+    </states>
+    <states name="INIT" description="">
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+    </states>
+    <states name="ALARM" description="">
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+    </states>
+    <states name="UNKNOWN" description="">
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+    </states>
+    <states name="DISABLE" description="">
+      <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
+    </states>
+    <preferences docHome="./doc_html" makefileHome="/home/ncra/tango-9.3.3-rc2/share/pogo/preferences"/>
+  </classes>
+</pogoDsl:PogoSystem>
