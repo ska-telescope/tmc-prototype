@@ -87,7 +87,7 @@ class ReleaseResources(BaseCommand):
 
         Example:
             {
-                "interface":"https://schema.skao.int/ska-low-tmc-releaseresources/2.0",
+                "interface":"https://schema.skao.int/ska-low-tmc-releaseresources/1.0",
                 "subarray_id":1,
                 "release_all":true
             }

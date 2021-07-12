@@ -95,8 +95,10 @@ class Configure(BaseCommand):
         :param argin: The string in JSON format. The JSON contains following values:
 
         Example:
-
-        { "scan_type": "science_A" }
+        {
+          "interface": "https://schema.skao.int/ska-sdp-configure/0.3",
+          "scan_type": "science_A"
+        }
 
         return:
             None

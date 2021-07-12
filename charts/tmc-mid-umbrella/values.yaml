@@ -8,6 +8,8 @@ global:
   sub-system:
     tango-util:
       enabled: false
+    ska-tango-base:
+      enabled: false
     tango-base:
       enabled: false
     webjive:
@@ -27,8 +29,7 @@ global:
       tag: 9.3.1
       pullPolicy: IfNotPresent
 
-tango-base:
-  enabled: true
+ska-tango-base:
   vnc:
     replicas: 1
     enabled: true

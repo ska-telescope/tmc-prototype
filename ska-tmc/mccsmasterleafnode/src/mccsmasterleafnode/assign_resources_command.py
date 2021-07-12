@@ -101,7 +101,7 @@ class AssignResources(BaseCommand):
 
         Example:
                 {
-                  "interface": "https://schema.skao.int/ska-low-mccs-assignresources/2.0",
+                  "interface": "https://schema.skao.int/ska-low-mccs-assignresources/1.0",
                   "subarray_id": 1,
                   "subarray_beam_ids": [
                     1
