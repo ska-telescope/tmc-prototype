@@ -144,6 +144,18 @@ def telescope_is_on():
         + str(resource("ska_mid/tm_central/central_node").get("State"))
     )
     LOGGER.info(
+        'resource("ska_mid/tm_central/central_node").get("telescopeState")'
+        + str(resource("ska_mid/tm_central/central_node").get("telescopeState"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_central/central_node").get("desiredTelescopeState")'
+        + str(resource("ska_mid/tm_central/central_node").get("desiredTelescopeState"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_central/central_node").get("commandInProgress")'
+        + str(resource("ska_mid/tm_central/central_node").get("commandInProgress"))
+    )
+    LOGGER.info(
         'resource("ska_mid/tm_subarray_node/1").get("State")'
         + str(resource("ska_mid/tm_subarray_node/1").get("State"))
     )
@@ -201,6 +213,7 @@ def telescope_is_on():
     )
     return [
         resource("ska_mid/tm_central/central_node").get("State"),
+        resource("ska_mid/tm_central/central_node").get("telescopeState"),
         resource("ska_mid/tm_subarray_node/1").get("State"),
         resource("mid_csp/elt/subarray_01").get("State"),
         resource("mid_sdp/elt/subarray_1").get("State"),
@@ -214,7 +227,7 @@ def telescope_is_on():
         resource("mid_d0002/elt/master").get("State"),
         resource("mid_d0003/elt/master").get("State"),
         resource("mid_d0004/elt/master").get("State")
-    ] == ["ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON"]
+    ] == ["ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON"]
 
 #Note: make use of this method while updatating integration tests for sp-1623
 def telescope_is_off():
@@ -225,6 +238,14 @@ def telescope_is_off():
     LOGGER.info(
         'resource("ska_mid/tm_central/central_node").get("telescopeState")'
         + str(resource("ska_mid/tm_central/central_node").get("telescopeState"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_central/central_node").get("desiredTelescopeState")'
+        + str(resource("ska_mid/tm_central/central_node").get("desiredTelescopeState"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_central/central_node").get("commandInProgress")'
+        + str(resource("ska_mid/tm_central/central_node").get("commandInProgress"))
     )
     LOGGER.info(
         'resource("ska_mid/tm_subarray_node/1").get("State")'
@@ -366,36 +387,3 @@ def telescope_is_standby():
         resource("mid_d0003/elt/master").get("State"),
         resource("mid_d0004/elt/master").get("State")
     ] == ["ON", "STANDBY", "ON", "OFF", "OFF", "STANDBY", "STANDBY", "STANDBY", "STANDBY", "STANDBY", "STANDBY"]
-
-def telescope_state_after_telescope_on():
-    LOGGER.info(
-        'resource("ska_mid/tm_central/central_node").get("telescopeState")'
-        + str(resource("ska_mid/tm_central/central_node").get("telescopeState"))
-    )
-    LOGGER.info(
-        'resource("mid_csp/elt/master").get("State")'
-        + str(resource("mid_csp/elt/master").get("State"))
-    )
-    LOGGER.info(
-        'resource("mid_sdp/elt/master").get("State")'
-        + str(resource("mid_sdp/elt/master").get("State"))
-    )
-    LOGGER.info(
-        'resource("mid_d0001/elt/master").get("State")'
-        + str(resource("mid_d0001/elt/master").get("State"))
-    )
-    LOGGER.info(
-        'resource("mid_d0002/elt/master").get("State")'
-        + str(resource("mid_d0002/elt/master").get("State"))
-    )
-    LOGGER.info(
-        'resource("mid_d0003/elt/master").get("State")'
-        + str(resource("mid_d0003/elt/master").get("State"))
-    )
-    LOGGER.info(
-        'resource("mid_d0004/elt/master").get("State")'
-        + str(resource("mid_d0004/elt/master").get("State"))
-    )
-    return [
-        resource("ska_mid/tm_central/central_node").get("telescopeState")
-    ] == ["ON"]

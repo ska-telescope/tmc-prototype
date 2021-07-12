@@ -5,7 +5,7 @@ import os
 import logging
 import time
 from resources.test_support.helpers import waiter, watch, resource
-from resources.test_support.controls import tmc_is_in_off, tmc_is_in_on, telescope_is_on, telescope_is_off, telescope_is_standby, telescope_state_after_telescope_on
+from resources.test_support.controls import tmc_is_in_off, tmc_is_in_on, telescope_is_on, telescope_is_off, telescope_is_standby
 from resources.test_support.state_checking import StateChecker
 from resources.test_support.log_helping import DeviceLogging
 from resources.test_support.logging_decorators import log_states
@@ -73,7 +73,6 @@ def test_feature_sp_1623():
         time.sleep(5)
         assert telescope_is_on()
         LOGGER.info("Telescope is on")
-        assert telescope_state_after_telescope_on()
         LOGGER.info("TelescopeState is on")
         fixture["state"] = "Telescope On"
 
@@ -106,7 +105,8 @@ def test_feature_sp_1623():
 
         LOGGER.info("Scan1 complete")
         fixture["state"] = "Subarray Configured for SCAN"
-        # the scanning should complete without any exceptions
+        
+        the scanning should complete without any exceptions
 
         # tear down
         LOGGER.info("TMC Functionality test complete: tearing down...")
@@ -120,7 +120,7 @@ def test_feature_sp_1623():
         LOGGER.info("Calling Telescope Off command now.")
         tmc.set_telescope_off()
         the_waiter.wait()
-        time.sleep(5)
+        time.sleep(10)
         assert telescope_is_off()
         LOGGER.info("Telescope is Off")
         fixture["state"] = "Telescope Off"
