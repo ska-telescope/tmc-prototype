@@ -3,8 +3,9 @@ from datetime import date, datetime
 import pytest
 import os
 import logging
+import time
 from resources.test_support.helpers import waiter, watch, resource
-from resources.test_support.controls import telescope_is_in_standby
+from resources.test_support.controls import telescope_is_in_standby, tmc_is_in_on, telescope_is_on, telescope_is_off
 from resources.test_support.state_checking import StateChecker
 from resources.test_support.log_helping import DeviceLogging
 from resources.test_support.persistance_helping import (
@@ -63,7 +64,17 @@ def test_scan():
         # given a started up telescope
         assert telescope_is_in_standby()
         LOGGER.info("Starting up the Telescope")
-        tmc.start_up()
+        # tmc.start_up()
+        # fixture["state"] = "Telescope On"
+
+        assert tmc_is_in_on()
+        LOGGER.info("TMC devices are up")
+        
+        LOGGER.info("Calling TelescopeOn command now.")
+        tmc.set_telescope_on()
+        time.sleep(5)
+        assert telescope_is_on()
+        LOGGER.info("Telescope is on")
         fixture["state"] = "Telescope On"
 
         # and a subarray composed of two resources configured as perTMC_integration/assign_resources.json
@@ -86,7 +97,7 @@ def test_scan():
         fixture["state"] = "Subarray SCANNING"
 
         @log_it("TMC_int_scan", devices_to_log, non_default_states_to_check)
-        @sync_scan(200)
+        @sync_scan(500)
         def scan():
             SubarrayNode = DeviceProxy("ska_mid/tm_subarray_node/1")
             SubarrayNode.Scan('{"id":1}')
@@ -101,20 +112,28 @@ def test_scan():
         LOGGER.info("Invoked EndSB on Subarray")
         tmc.release_resources()
         LOGGER.info("Invoked ReleaseResources on Subarray")
-        tmc.set_to_standby()
-        LOGGER.info("Invoked StandBy on Subarray")
+        # tmc.set_to_standby()
+        # LOGGER.info("Invoked StandBy on Subarray")
+
+        LOGGER.info("Calling TelescopeOff command now.")
+        tmc.set_telescope_off()
+        assert telescope_is_off
+        fixture["state"] = "Telescope Off"
 
     except:
         LOGGER.info("Tearing down failed test, state = {}".format(fixture["state"]))
         if fixture["state"] == "Telescope On":
-            tmc.set_to_standby()
+            # tmc.set_to_standby()
+            tmc.set_telescope_off()
         elif fixture["state"] == "Subarray Assigned":
             tmc.release_resources()
-            tmc.set_to_standby()
+            # tmc.set_to_standby()
+            tmc.set_telescope_off()
         elif fixture["state"] == "Subarray Configured for SCAN":
             tmc.end_sb()
             tmc.release_resources()
-            tmc.set_to_standby()
+            # tmc.set_to_standby()
+            tmc.set_telescope_off()
         elif fixture["state"] == "Subarray SCANNING":
             raise Exception("unable to teardown subarray from being in SCANNING")
         elif fixture["state"] == "Subarray CONFIGURING":
