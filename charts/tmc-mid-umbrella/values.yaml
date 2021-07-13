@@ -30,6 +30,7 @@ global:
       pullPolicy: IfNotPresent
 
 ska-tango-base:
+  enabled: false
   vnc:
     replicas: 1
     enabled: true
@@ -55,14 +56,22 @@ webjive:
     #     cpu: 1000m     # 1000m = 1 CPU
     #     memory: 1024Mi # 1024Mi = 1 GB mem
 
+tango-base:
+    enabled: false
+
 ska-mid-cbf:
   enabled: true
+  tango-base: 
+    enabled: false
 
 # mid-cbf:
 #   enabled: false
 
 ska-csp-lmc-mid:
   enabled: true
+  ska-tango-base: 
+    enabled: false
+
 
 ## mid-csp
 # mid-csp:
@@ -74,7 +83,7 @@ sdp:
   lmc:
     prefix: mid
     nsubarray: 3
-  tango-base:
+  ska-tango-base:
     enabled: false
 
 ska-tmc-mid:

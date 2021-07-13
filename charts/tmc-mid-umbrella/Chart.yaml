@@ -18,11 +18,11 @@ dependencies:
   repository: https://artefact.skao.int/repository/helm-internal
 - name: ska-mid-cbf
   version: 0.2.1
-  condition: ska-mid-cbf.enabled
+  condition: ska-mid-cbf.enabled,tango-base.enabled
   repository: https://artefact.skao.int/repository/helm-internal
 - name: ska-csp-lmc-mid
   version: 0.1.8
-  condition: ska-csp-lmc-mid.enabled
+  condition: ska-csp-lmc-mid.enabled,ska-tango-base.enabled
   repository: https://artefact.skao.int/repository/helm-internal
 - name: sdp
   version: 0.6.1
