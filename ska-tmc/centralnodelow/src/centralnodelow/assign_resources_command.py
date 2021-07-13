@@ -178,7 +178,8 @@ class AssignResources(BaseCommand):
         """
         mccs_value = json_argument["mccs"]
         json_argument["interface"] = "https://schema.skao.int/ska-low-mccs-assignresources/1.0"
-        del json_argument["transaction_id"]
+        if 'transaction_id' in json_argument:
+            del json_argument["transaction_id"]
         if 'sdp' in json_argument:
             del json_argument["sdp"]
         del json_argument["mccs"]
