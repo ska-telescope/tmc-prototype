@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc"""
-version="0.7.3"
+version="0.8.0"
 version_info=version.split(".")
 description="""SKA-TMC"""
 author="Team NCRA"
@@ -10,10 +10,10 @@ license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
 
-release=0.7.3
-tag=0.7.3
-tag_description=Implementation of SP-1623.
-release_notes=This release contains:<br/><ul><li>Implementation of SP-1623.</li></ul><br/>
-gitlab_username=JayantKumbhar
-private_token=qbx9w8iZw5st2dxAZ2MF
+release=0.8.0
+tag=0.8.0
+tag_description=Update TMC-Mid to support SP-1623.
+release_notes=This release contains:<br/><ul><li>Update TMC-Mid to support SP-1623.</li></ul><br/>
+gitlab_username=shraddhabajare
+private_token=9yzM1vb4R7j5xmdcNPy8
 
