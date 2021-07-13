@@ -5,7 +5,7 @@ enabled: true
 
 system: TM-mid
 telescope: SKA-mid
-subsystem: tmc-mid
+subsystem: ska-tmc-mid
 
 labels:
   app: ska-tmc
