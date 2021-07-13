@@ -19,7 +19,7 @@ global:
   skatmc:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc
-    tag: 0.7.3
+    tag: 0.8.0
     pullPolicy: IfNotPresent
 
 
@@ -60,14 +60,14 @@ centralnodemid:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc-centralnode-mid
-    tag: 0.1.10
+    tag: 0.2.0
     pullPolicy: IfNotPresent
 
 subarraynodemid:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc-subarraynode-mid
-    tag: 0.2.1
+    tag: 0.3.0
     pullPolicy: IfNotPresent
 
 alarmhandler:
