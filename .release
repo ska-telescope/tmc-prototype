@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc"""
-version="0.7.4"
+version="0.7.5"
 version_info=version.split(".")
 description="""SKA-TMC"""
 author="Team NCRA"
@@ -10,10 +10,10 @@ license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
 
-release=0.7.4
-tag=0.7.4
-tag_description=Update TMC low devices as per ADR-35
-release_notes=This release contains:<br/><ul><li>Updated TMC low devices as per ADR-35.</li></ul><br/>
+release=0.7.5
+tag=0.7.5
+tag_description=Update CentralNodeLow.AssignResources command
+release_notes=This release contains:<br/><ul><li>Updated CentralNodeLow.AssignResources command to make transaction_id optional.</li></ul><br/>
 gitlab_username=apurvapatkar
-private_token=fB_g8sRKMY1jseV2ZUqP
+private_token=42kFA7ZyGMR6Tk4ofaHp
 

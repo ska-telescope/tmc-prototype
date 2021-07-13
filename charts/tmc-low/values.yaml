@@ -18,7 +18,7 @@ global:
   skatmc:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc
-    tag: 0.7.4
+    tag: 0.7.5
     pullPolicy: IfNotPresent
 
 dsconfig:
