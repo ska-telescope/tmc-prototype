@@ -46,8 +46,8 @@ non_default_states_to_check = {
 
 LOGGER = logging.getLogger(__name__)
 
-
-@pytest.mark.mid
+@pytest.mark.skip()
+# @pytest.mark.mid
 # @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_obsreset():
     try:
