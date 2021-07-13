@@ -93,7 +93,7 @@ class Scan(BaseCommand):
         :param argin: JSON string consists of scan id (int) and start_time.
 
         Example:
-        {"interface":"https://schema.skao.int/ska-low-mccs-scan/2.0","scan_id":1,"start_time":0.0}
+        {"interface":"https://schema.skao.int/ska-low-mccs-scan/1.0","scan_id":1,"start_time":0.0}
 
 
         Note: Enter the json string without spaces as a input.

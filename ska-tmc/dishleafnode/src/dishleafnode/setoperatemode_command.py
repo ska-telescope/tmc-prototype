@@ -52,7 +52,6 @@ class SetOperateMode(BaseCommand):
             "capturing",
             "achievedPointing",
             "desiredPointing",
-            "state"
         )
         command_name = "SetOperateMode"
         cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb

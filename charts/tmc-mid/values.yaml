@@ -20,7 +20,7 @@ global:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc
     tag: 0.7.3
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
 
 
   ##  Order of instances resolution ##
@@ -39,7 +39,7 @@ global:
     - "cspsubarrayleafnode"
     - "sdpsubarrayleafnode"
     - "subarraynode"
-  subarray_count: 1
+  subarray_count: 3
 
 dsconfig:
   configuration_file: data/tmc-mid-config.json
@@ -61,14 +61,14 @@ centralnodemid:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc-centralnode-mid
     tag: 0.1.10
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
 
 subarraynodemid:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc-subarraynode-mid
     tag: 0.2.1
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
 
 alarmhandler:
   image:
@@ -77,13 +77,13 @@ alarmhandler:
     tag: 0.1.5
     pullPolicy: IfNotPresent
 
-# resources:
-#   limits:
-#     cpu: 300m
-#     memory: 500Mi
-#   requests:
-#     cpu: 100m
-#     memory: 128Mi
+resources:
+  limits:
+    cpu: 300m
+    memory: 500Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
 
 deviceServers:
   dishmaster:

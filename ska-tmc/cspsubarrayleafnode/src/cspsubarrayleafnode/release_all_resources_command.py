@@ -103,7 +103,7 @@ class ReleaseAllResourcesCommand(BaseCommand):
         device_data = self.target
         try:
             # Invoke RemoveAllResources command on CspSubarray
-            device_data.receptorIDList_str = []
+            device_data.receptor_ids_str = []
             device_data.fsids_list = []
             this_server = TangoServerHelper.get_instance()
             csp_subarray_fqdn = ""
