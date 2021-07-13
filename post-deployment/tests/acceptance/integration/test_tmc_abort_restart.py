@@ -57,6 +57,7 @@ def test_abort_restart():
 
         LOGGER.info("Calling TelescopeOn command now.")
         tmc.set_telescope_on()
+        time.sleep(5)
         assert telescope_is_on()
         LOGGER.info("Telescope is on")
         fixture["state"] = "Telescope On"

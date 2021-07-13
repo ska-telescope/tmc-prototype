@@ -4,6 +4,7 @@ from time import sleep
 import os
 import pytest
 import logging
+import time
 from resources.test_support.helpers import waiter, watch, resource
 from resources.test_support.state_checking import StateChecker
 from resources.test_support.log_helping import DeviceLogging
@@ -64,13 +65,13 @@ def test_multi_scan():
 
         assert tmc_is_in_on()
         LOGGER.info("TMC devices are up")
+
         LOGGER.info("Calling TelescopeOn command now.")
         tmc.set_telescope_on()
-
+        time.sleep(5)
         assert telescope_is_on()
         LOGGER.info("Telescope is on")
         fixture["state"] = "Telescope On"
-        fixture["telescopeState"] = "Telescope On"
 
         # and a subarray composed of two resources configured as perTMC_integration/assign_resources1.json
         sdp_block = tmc.compose_sub()
@@ -169,8 +170,8 @@ def test_multi_scan():
     except Exception as e:
         logging.info(f"Exception raised: {e.args}")
         LOGGER.info("Gathering logs")
-        LOGGER.info("Tearing down failed test, state = {} {}".format(fixture["state"], fixture["telescopeState"]))
-        if (fixture["state"] or fixture["telescopeState"]) == "Telescope On":
+        LOGGER.info("Tearing down failed test, state = {}".format(fixture["state"]))
+        if fixture["state"] == "Telescope On":
             # tmc.set_to_standby()
             tmc.set_telescope_off()
         elif fixture["state"] == "Subarray Assigned":
