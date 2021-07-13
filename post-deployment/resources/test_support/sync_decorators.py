@@ -184,7 +184,7 @@ class WaitScanning:
         self.w2.wait_until_value_changed_to("READY", timeout)
 
 
-def sync_assign_resources(nr_of_receptors=4, timeout=200):
+def sync_assign_resources(nr_of_receptors=4, timeout=500):
     # defined as a decorator
     def decorator_sync_assign_resources(func):
         @functools.wraps(func)
@@ -407,7 +407,7 @@ def sync_going_to_standby(timeout=50):
     the_waiter.wait(timeout)
 
 
-def sync_scan(timeout=200):
+def sync_scan(timeout=500):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
