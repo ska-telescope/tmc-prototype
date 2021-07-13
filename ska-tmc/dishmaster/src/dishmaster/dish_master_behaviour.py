@@ -55,7 +55,7 @@ class OverrideDish(object):
         ds_indexer_position = model.sim_quantities["dsIndexerPosition"]
         configured_band = model.sim_quantities["configuredBand"]
         dish_mode_quantity = model.sim_quantities["dishMode"]
-        dish_mode = get_enum_str(dish_mode_quantity)
+        dish_mode = get_enum_sget_enum_str(dish_mode_quantity)
         if dish_mode in _allowed_modes:
             set_enum(dish_mode_quantity, "CONFIG", model.time_func())
             model.logger.info(
