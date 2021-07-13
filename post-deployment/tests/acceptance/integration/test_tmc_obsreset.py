@@ -58,19 +58,19 @@ def test_obsreset():
 
         # given a started up telescope
         assert telescope_is_in_standby()
-        LOGGER.info("Staring up the Telescope")
+        LOGGER.info("Starting up the Telescope")
         # tmc.start_up()
         # fixture["state"] = "Telescope On"
 
         assert tmc_is_in_on()
         LOGGER.info("TMC devices are up")
+
         LOGGER.info("Calling TelescopeOn command now.")
         tmc.set_telescope_on()
-
+        time.sleep(5)
         assert telescope_is_on()
         LOGGER.info("Telescope is on")
         fixture["state"] = "Telescope On"
-        fixture["telescopeState"] = "Telescope On"
 
         # and a subarray composed of two resources configured as perTMC_integration/assign_resources.json
         LOGGER.info("Composing the Subarray")
@@ -160,8 +160,8 @@ def test_obsreset():
         LOGGER.info("TMC-ObsReset tests complete: tearing down...")
 
     except:
-        LOGGER.info("Tearing down failed test, state = {} {}".format(fixture["state"], fixture["telescopeState"]))
-        if (fixture["state"] or fixture["telescopeState"]) == "Telescope On":
+        LOGGER.info("Tearing down failed test, state = {}".format(fixture["state"]))
+        if fixture["state"]  == "Telescope On":
             # tmc.set_to_standby()
             tmc.set_telescope_off()
         elif fixture["state"] == "Subarray Assigned":
