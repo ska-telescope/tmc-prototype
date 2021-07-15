@@ -56,8 +56,8 @@ webjive:
     #     cpu: 1000m     # 1000m = 1 CPU
     #     memory: 1024Mi # 1024Mi = 1 GB mem
 
-tango-base:
-  enabled: false
+# tango-base:
+#   enabled: false
 
 ska-mid-cbf:
   enabled: true
@@ -88,7 +88,7 @@ sdp:
   ska-tango-base:
     enabled: false
 
-ska-tmc-mid:
+tmc-mid:
   enabled: true
 
 ## tm

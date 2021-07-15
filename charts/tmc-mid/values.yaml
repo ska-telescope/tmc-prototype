@@ -5,7 +5,7 @@ enabled: true
 
 system: TM-mid
 telescope: SKA-mid
-subsystem: ska-tmc-mid
+subsystem: tmc-mid
 
 labels:
   app: ska-tmc
@@ -19,7 +19,7 @@ global:
   skatmc:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc
-    tag: 0.8.0
+    tag: 0.8.1
     pullPolicy: IfNotPresent
 
 
