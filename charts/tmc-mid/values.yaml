@@ -5,7 +5,7 @@ enabled: true
 
 system: TM-mid
 telescope: SKA-mid
-subsystem: tmc-mid
+subsystem: ska-tmc-mid
 
 labels:
   app: ska-tmc
@@ -19,8 +19,13 @@ global:
   skatmc:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc
+<<<<<<< HEAD
     tag: 0.8.0
     pullPolicy: IfNotPresent
+=======
+    tag:  0.7.4
+    pullPolicy: Always
+>>>>>>> dc6f442be0f5ed9d2ec25b26baafb6b3539f4108
 
 
   ##  Order of instances resolution ##
@@ -60,15 +65,24 @@ centralnodemid:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc-centralnode-mid
+<<<<<<< HEAD
     tag: 0.2.0
+=======
+    tag: 0.1.9
+>>>>>>> dc6f442be0f5ed9d2ec25b26baafb6b3539f4108
     pullPolicy: IfNotPresent
 
 subarraynodemid:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc-subarraynode-mid
+<<<<<<< HEAD
     tag: 0.3.0
     pullPolicy: IfNotPresent
+=======
+    tag: 0.2.2
+    pullPolicy: Always
+>>>>>>> dc6f442be0f5ed9d2ec25b26baafb6b3539f4108
 
 alarmhandler:
   image:
