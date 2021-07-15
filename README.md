@@ -92,6 +92,7 @@ SKA-TMC addresses the  following architectural aspects and functionality:
 * [x] Convert delay values (in seconds) to 5th order polynomial coefficients for TMC-Mid
 * [x] Abort an ongoing operation, and Restart the control nodes, catch exceptions in the AssignResource workflow, log the exception details and raise them to the calling components for TMC-Mid.
 * [x] Implementation of obsReset functinality (as per ADR-8) in which resource allocation in Subarray is retained and only the scan configuration parameters are cleared for TMC-Mid.
+* [x] Update the JSON strings (command inputs and attributes) in the TMC as per ADR-35
 
 **NOTE:** Refer to the Demo link provided in the [Documentation](#6-documentation) section for more details.
 
