@@ -71,8 +71,8 @@ ska-csp-lmc-mid:
   enabled: true
   ska-tango-base: 
     enabled: false
-  tango-base:
-    enabled: false
+  # tango-base:
+  #   enabled: false
 
 
 ## mid-csp
