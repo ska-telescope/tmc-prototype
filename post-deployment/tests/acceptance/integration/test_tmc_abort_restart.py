@@ -49,7 +49,6 @@ def test_abort_restart():
         # given a started up telescope
         assert telescope_is_in_standby()
         LOGGER.info("Starting up the Telescope")
-        # tmc.start_up()
         fixture["state"] = "Telescope On"
 
         assert tmc_is_in_on()
@@ -119,10 +118,6 @@ def test_abort_restart():
         LOGGER.info("Restart is complete on Subarray")
         fixture["state"] = "Subarray empty"
 
-        # tmc.set_to_standby()
-        # LOGGER.info("Invoked StandBy on Subarray")
-        # fixture["state"] = "Subarray off"
-
         LOGGER.info("Calling TelescopeOff command now.")
         tmc.set_telescope_off()
         time.sleep(5)
@@ -135,11 +130,9 @@ def test_abort_restart():
     except:
         LOGGER.info("Tearing down failed test, state = {}".format(fixture["state"]))
         if fixture["state"] == "Telescope On":
-            # tmc.set_to_standby()
             tmc.set_telescope_off()
         elif fixture["state"] == "Subarray Assigned":
             tmc.release_resources()
-            # tmc.set_to_standby()
             tmc.set_telescope_off()
         elif fixture["state"] == "Subarray ABORTING":
             # restart_subarray(1)

@@ -64,9 +64,7 @@ def test_assign_resources():
         # given a started up telescope
         assert telescope_is_in_standby()
         LOGGER.info("Starting up the Telescope")
-        # tmc.start_up()
-        # fixture["state"] = "Telescope On"
-
+        
         assert tmc_is_in_on()
         LOGGER.info("TMC devices are up")
 
@@ -103,7 +101,6 @@ def test_assign_resources():
         LOGGER.info("Tests complete: tearing down...")
         tmc.release_resources()
         fixture["state"] = "Complete"
-        # tmc.set_to_standby()
 
         LOGGER.info("Calling TelescopeOff command now.")
         tmc.set_telescope_off()
@@ -115,11 +112,9 @@ def test_assign_resources():
     except:
         LOGGER.info("Tearing down failed test, state = {} ".format(fixture["state"]))
         if fixture["state"]  == "Telescope On":
-            # tmc.set_to_standby()
             tmc.set_telescope_off()
         elif fixture["state"] == "Subarray Assigned":
             tmc.release_resources()
-            # tmc.set_to_standby()
             tmc.set_telescope_off()
         else:
             LOGGER.info("Tearing down completed...")

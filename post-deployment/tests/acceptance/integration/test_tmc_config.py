@@ -65,8 +65,6 @@ def test_configure_scan():
         # given a started up telescope
         assert telescope_is_in_standby()
         LOGGER.info("Starting up the Telescope")
-        # tmc.start_up()
-        # fixture["state"] = "Telescope On"
         
         assert tmc_is_in_on()
         LOGGER.info("TMC devices are up")
@@ -128,32 +126,24 @@ def test_configure_scan():
         assert telescope_is_off
         fixture["state"] = "Telescope Off"
 
-        # tmc.set_to_standby()
-        # LOGGER.info("Invoked StandBy on Subarray")
-
     except:
         LOGGER.info("Tearing down failed test, state = {} ".format(fixture["state"]))
         if fixture["state"] == "Telescope On":
-            # tmc.set_to_standby()
             tmc.set_telescope_off()
         elif fixture["state"] == "Subarray Assigned":
             tmc.release_resources()
-            # tmc.set_to_standby()
             tmc.set_telescope_off()
         elif fixture["state"] == "Subarray Configured for SCAN":
             LOGGER.info("Tearing down in , state = {}".format(fixture["state"]))
             tmc.end_sb()
             tmc.release_resources()
-            # tmc.set_to_standby()
             tmc.set_telescope_off()
         elif fixture["state"] == "Subarray is in IDLE after EndCommand":
             LOGGER.info("Tearing down in , state = {}".format(fixture["state"]))
             tmc.release_resources()
-            # tmc.set_to_standby()
             tmc.set_telescope_off()
         elif fixture["state"] == "Released Resources":
             LOGGER.info("Tearing down in , state = {}".format(fixture["state"]))
-            # tmc.set_to_standby()
             tmc.set_telescope_off()
         elif fixture["state"] == "Subarray CONFIGURING":
             raise Exception("unable to teardown subarray from being in CONFIGURING")

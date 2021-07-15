@@ -33,6 +33,16 @@ server:
                     {{- range  ( regexSplit " " ((.Values.global.subarray_count | int) | seq ) -1 )  }}
                     - "ska_mid/tm_subarray_node/{{ . }}"
                     {{- end }}
+                - name: "TMMidCspSubarrayLeafNodes"
+                  values:
+                    {{- range  ( regexSplit " " ((.Values.global.subarray_count | int) | seq ) -1 )  }}
+                    - "ska_mid/tm_leaf_node/csp_subarray0{{ . }}"
+                    {{- end }}
+                - name: "TMMidSdpSubarrayLeafNodes"
+                  values:
+                    {{- range  ( regexSplit " " ((.Values.global.subarray_count | int) | seq ) -1 )  }}
+                    - "ska_mid/tm_leaf_node/sdp_subarray0{{ . }}"
+                    {{- end }}
                 - name: "NumDishes"
                   values:
                     - "{{ coalesce (len .Values.global.dishes) .instances }}"

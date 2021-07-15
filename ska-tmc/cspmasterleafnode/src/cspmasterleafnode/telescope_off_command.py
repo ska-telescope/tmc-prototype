@@ -63,8 +63,10 @@ class TelescopeOff(BaseCommand):
         this_device = TangoServerHelper.get_instance()
         try:
             csp_mln_client_obj = TangoClient(this_device.read_property("CspMasterFQDN")[0])
+            # Off command on CSP-Master in not allowed, hence called Standby command instead as a part of 
+            # telescopeOff command. 
             csp_mln_client_obj.send_command_async(
-                const.CMD_OFF, [], self.telescope_off_cmd_ended_cb
+                const.CMD_STANDBY, [], self.telescope_off_cmd_ended_cb
             )
             self.logger.debug(const.STR_OFF_CMD_ISSUED)
             this_device.write_attr("activityMessage", const.STR_OFF_CMD_ISSUED, False)

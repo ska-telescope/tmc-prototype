@@ -60,7 +60,6 @@ def test_multi_scan():
         LOGGER.info("Checking if Telescope is in StandBy")
         assert telescope_is_in_standby()
         LOGGER.info("Telescope is in StandBy")
-        # tmc.start_up()
         LOGGER.info("Starting up the Telescope")
 
         assert tmc_is_in_on()
@@ -155,9 +154,7 @@ def test_multi_scan():
         tmc.release_resources()
         the_waiter.wait()
         LOGGER.info("Invoked ReleaseResources on Subarray")
-        # tmc.set_to_standby()
-        # LOGGER.info("Invoked StandBy on Subarray")
-
+        
         LOGGER.info("Calling TelescopeOff command now.")
         tmc.set_telescope_off()
         time.sleep(5)
@@ -165,7 +162,6 @@ def test_multi_scan():
         fixture["state"] = "Telescope Off"
 
         the_waiter.wait()
-        # LOGGER.info("Invoked StandBy on Subarray")
         LOGGER.info("Tests complete: tearing down...")
 
     except Exception as e:
@@ -173,12 +169,10 @@ def test_multi_scan():
         LOGGER.info("Gathering logs")
         LOGGER.info("Tearing down failed test, state = {}".format(fixture["state"]))
         if fixture["state"] == "Telescope On":
-            # tmc.set_to_standby()
             tmc.set_telescope_off()
         elif fixture["state"] == "Subarray Assigned":
             tmc.release_resources()
             the_waiter.wait()
-            # tmc.set_to_standby()
             tmc.set_telescope_off()
             the_waiter.wait()
         elif fixture["state"] == "Subarray Configured for SCAN":
@@ -186,7 +180,6 @@ def test_multi_scan():
             the_waiter.wait()
             tmc.release_resources()
             the_waiter.wait()
-            # tmc.set_to_standby()
             tmc.set_telescope_off()
             the_waiter.wait()
         elif fixture["state"] == "Subarray SCANNING":
@@ -206,7 +199,6 @@ def test_multi_scan():
             raise Exception("unable to teardown subarray from being in CONFIGURING")
         elif fixture["state"] == "Unknown":
             LOGGER.info("Put telescope back to standby")
-            # tmc.set_to_standby()
             tmc.set_telescope_off()
             the_waiter.wait()
         pytest.fail("unable to complete test without exceptions")

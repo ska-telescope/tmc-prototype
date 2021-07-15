@@ -59,9 +59,7 @@ def test_obsreset():
         # given a started up telescope
         assert telescope_is_in_standby()
         LOGGER.info("Starting up the Telescope")
-        # tmc.start_up()
-        # fixture["state"] = "Telescope On"
-
+       
         assert tmc_is_in_on()
         LOGGER.info("TMC devices are up")
 
@@ -148,8 +146,6 @@ def test_obsreset():
 
         tmc.release_resources()
         LOGGER.info("Invoked ReleaseResources on Subarray")
-        # tmc.set_to_standby()
-        # LOGGER.info("Invoked StandBy on Subarray")
 
         LOGGER.info("Calling TelescopeOff command now.")
         tmc.set_telescope_off()
@@ -163,11 +159,9 @@ def test_obsreset():
     except:
         LOGGER.info("Tearing down failed test, state = {}".format(fixture["state"]))
         if fixture["state"]  == "Telescope On":
-            # tmc.set_to_standby()
             tmc.set_telescope_off()
         elif fixture["state"] == "Subarray Assigned":
             tmc.release_resources()
-            # tmc.set_to_standby()
             tmc.set_telescope_off()
         elif fixture["state"] == "Subarray ABORTING":
             raise Exception("unable to teardown subarray from being in ABORTING")
@@ -177,6 +171,5 @@ def test_obsreset():
             raise Exception("unable to teardown subarray from being in Restarting")
         elif fixture["state"] == "Subarray IDLE":
             tmc.release_resources()
-            # tmc.set_to_standby()
             tmc.set_telescope_off()
         pytest.fail("unable to complete test without exceptions")
