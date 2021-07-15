@@ -28,13 +28,8 @@ dependencies:
   version: 0.6.1
   repository: https://nexus.engageska-portugal.pt/repository/helm-chart
   condition: sdp.enabled
-<<<<<<< HEAD
-- name: tmc-mid
-  version: 0.4.0
-=======
 - name: ska-tmc-mid
-  version: 0.3.9
->>>>>>> dc6f442be0f5ed9d2ec25b26baafb6b3539f4108
+  version: 0.4.0
   repository: file://../tmc-mid
   condition: ska-tmc-mid.enabled
 - name: webjive
