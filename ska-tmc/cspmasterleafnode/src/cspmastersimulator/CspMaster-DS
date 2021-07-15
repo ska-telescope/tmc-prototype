@@ -3,12 +3,12 @@ from tango.server import server_run
 from tango_simlib.tango_sim_generator import (configure_device_models, get_tango_device_server)
 
 
-# File generated on Tue Jul 13 13:19:29 2021 by tango-simlib-generator
+# File generated on Tue Jul 13 14:32:08 2021 by tango-simlib-generator
 
 
 def main():
     sim_data_files = ['CspMaster.xmi','csp_master_simDD.json']
-    models = configure_device_models(sim_data_files,)
+    models = configure_device_models(sim_data_files)
     TangoDeviceServers = get_tango_device_server(models, sim_data_files)
     server_run(TangoDeviceServers)
 
