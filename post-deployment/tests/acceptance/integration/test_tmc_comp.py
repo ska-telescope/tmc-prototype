@@ -51,7 +51,7 @@ non_default_states_to_check = {
 LOGGER = logging.getLogger(__name__)
 
 
-@pytest.mark.mid_assign
+@pytest.mark.mid
 # @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_assign_resources():
 
@@ -77,7 +77,7 @@ def test_assign_resources():
         assert telescope_is_on()
         LOGGER.info("Telescope is on")
         fixture["state"] = "Telescope On"
-        
+
         # then when I assign a subarray composed of two resources configured as perTMC_integration/assign_resources.json
         @log_it("TMC_int_comp", devices_to_log, non_default_states_to_check)
         @sync_assign_resources(2, 500)
@@ -107,6 +107,7 @@ def test_assign_resources():
 
         LOGGER.info("Calling TelescopeOff command now.")
         tmc.set_telescope_off()
+        time.sleep(5)
         assert telescope_is_off
         fixture["state"] = "Telescope Off"
 

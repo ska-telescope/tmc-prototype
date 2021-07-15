@@ -52,7 +52,7 @@ non_default_states_to_check = {
 LOGGER = logging.getLogger(__name__)
 
 
-@pytest.mark.mid_config
+@pytest.mark.mid
 # @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_configure_scan():
 
@@ -124,6 +124,7 @@ def test_configure_scan():
 
         LOGGER.info("Calling TelescopeOff command now.")
         tmc.set_telescope_off()
+        time.sleep(5)
         assert telescope_is_off
         fixture["state"] = "Telescope Off"
 

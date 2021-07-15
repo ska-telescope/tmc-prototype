@@ -112,7 +112,7 @@ def telescope_is_in_standby():
         resource("mid_csp/elt/subarray_01").get("State"),
         resource("mid_csp_cbf/sub_elt/subarray_01").get("State"),
         resource("mid_sdp/elt/subarray_1").get("State")
-    ] == ["ON","ON", "OFF", "OFF", "OFF"]
+    ] == ["ON", "ON", "OFF", "OFF", "OFF"]
 
 
 #Note: make use of this method while updatating integration tests for sp-1623

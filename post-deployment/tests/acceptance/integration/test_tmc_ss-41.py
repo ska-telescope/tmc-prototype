@@ -160,6 +160,7 @@ def test_multi_scan():
 
         LOGGER.info("Calling TelescopeOff command now.")
         tmc.set_telescope_off()
+        time.sleep(5)
         assert telescope_is_off
         fixture["state"] = "Telescope Off"
 
