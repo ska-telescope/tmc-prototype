@@ -13,7 +13,7 @@ global:
     tango-base:
       enabled: false
     webjive:
-      enabled: true
+      enabled: false
   tango_host: databaseds-tango-base-test:10000
   dsconfig:
     timeout: 300s
@@ -41,20 +41,20 @@ ska-tango-base:
     use_pv: false
 
 webjive:
-  enabled: true
+  enabled: false
   minikube: false
   ingress:
     enabled: true
     nginx: true
   tangogql:
     replicas: 3
-    resources:
-      requests:
-        cpu: 600m     # 600m = 0.6 CPU
-        memory: 512Mi # 512Mi = 0.5 GB mem
-      limits:
-        cpu: 1000m     # 1000m = 1 CPU
-        memory: 1024Mi # 1024Mi = 1 GB mem
+    # resources:
+    #   requests:
+    #     cpu: 600m     # 600m = 0.6 CPU
+    #     memory: 512Mi # 512Mi = 0.5 GB mem
+    #   limits:
+    #     cpu: 1000m     # 1000m = 1 CPU
+    #     memory: 1024Mi # 1024Mi = 1 GB mem
 
 tango-base:
     enabled: false
@@ -70,6 +70,8 @@ ska-mid-cbf:
 ska-csp-lmc-mid:
   enabled: true
   ska-tango-base: 
+    enabled: false
+  tango-base:
     enabled: false
 
 
@@ -90,5 +92,5 @@ ska-tmc-mid:
   enabled: true
 
 ## tm
-# tmc-mid:
-#   enabled: false
+tmc-mid:
+  enabled: false
