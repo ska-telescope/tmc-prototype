@@ -63,7 +63,7 @@ def set_telescope_standby():
     )
     CentralNode.TelescopeStandby()
 
-@sync_assign_resources(2, 300)
+@sync_assign_resources(2, 600)
 def compose_sub():
     resource("ska_mid/tm_subarray_node/1").assert_attribute("State").equals("ON")
     resource("ska_mid/tm_subarray_node/1").assert_attribute("obsState").equals("EMPTY")
@@ -108,6 +108,7 @@ def release_resources():
 
 @sync_set_to_standby
 def set_to_standby():
+    print("INSIDE SET TO STANDBY----")
     CentralNode = DeviceProxy("ska_mid/tm_central/central_node")
     CentralNode.StandByTelescope()
     SubarrayNode = DeviceProxy("ska_mid/tm_subarray_node/1")

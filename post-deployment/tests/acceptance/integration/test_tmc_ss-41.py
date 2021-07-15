@@ -4,6 +4,7 @@ from time import sleep
 import os
 import pytest
 import logging
+import time
 from resources.test_support.helpers import waiter, watch, resource
 from resources.test_support.state_checking import StateChecker
 from resources.test_support.log_helping import DeviceLogging
@@ -14,7 +15,7 @@ from resources.test_support.persistance_helping import (
     update_resource_config_file,
 )
 import resources.test_support.tmc_helpers as tmc
-from resources.test_support.controls import telescope_is_in_standby
+from resources.test_support.controls import telescope_is_in_standby, tmc_is_in_on, telescope_is_on, telescope_is_off
 from resources.test_support.sync_decorators import sync_scanning
 
 DEV_TEST_TOGGLE = os.environ.get("DISABLE_DEV_TESTS")
@@ -61,8 +62,16 @@ def test_multi_scan():
         LOGGER.info("Checking if Telescope is in StandBy")
         assert telescope_is_in_standby()
         LOGGER.info("Telescope is in StandBy")
-        tmc.start_up()
-        LOGGER.info("Staring up the Telescope")
+        LOGGER.info("Starting up the Telescope")
+
+        assert tmc_is_in_on()
+        LOGGER.info("TMC devices are up")
+
+        LOGGER.info("Calling TelescopeOn command now.")
+        tmc.set_telescope_on()
+        time.sleep(5)
+        assert telescope_is_on()
+        LOGGER.info("Telescope is on")
         fixture["state"] = "Telescope On"
 
         # and a subarray composed of two resources configured as perTMC_integration/assign_resources1.json
@@ -147,10 +156,14 @@ def test_multi_scan():
         tmc.release_resources()
         the_waiter.wait()
         LOGGER.info("Invoked ReleaseResources on Subarray")
-        tmc.set_to_standby()
-        LOGGER.info("Invoked StandBy on Subarray")
+        
+        LOGGER.info("Calling TelescopeOff command now.")
+        tmc.set_telescope_off()
+        time.sleep(5)
+        assert telescope_is_off
+        fixture["state"] = "Telescope Off"
+
         the_waiter.wait()
-        LOGGER.info("Invoked StandBy on Subarray")
         LOGGER.info("Tests complete: tearing down...")
 
     except Exception as e:
@@ -158,19 +171,18 @@ def test_multi_scan():
         LOGGER.info("Gathering logs")
         LOGGER.info("Tearing down failed test, state = {}".format(fixture["state"]))
         if fixture["state"] == "Telescope On":
-            tmc.set_to_standby()
-            the_waiter.wait()
+            tmc.set_telescope_off()
         elif fixture["state"] == "Subarray Assigned":
             tmc.release_resources()
             the_waiter.wait()
-            tmc.set_to_standby()
+            tmc.set_telescope_off()
             the_waiter.wait()
         elif fixture["state"] == "Subarray Configured for SCAN":
             tmc.end_sb()
             the_waiter.wait()
             tmc.release_resources()
             the_waiter.wait()
-            tmc.set_to_standby()
+            tmc.set_telescope_off()
             the_waiter.wait()
         elif fixture["state"] == "Subarray SCANNING":
             if resource("ska_mid/tm_subarray_node/1").get("obsState") == "SCANNING":
@@ -189,6 +201,6 @@ def test_multi_scan():
             raise Exception("unable to teardown subarray from being in CONFIGURING")
         elif fixture["state"] == "Unknown":
             LOGGER.info("Put telescope back to standby")
-            tmc.set_to_standby()
+            tmc.set_telescope_off()
             the_waiter.wait()
         pytest.fail("unable to complete test without exceptions")
