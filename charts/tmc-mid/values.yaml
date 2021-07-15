@@ -60,14 +60,14 @@ centralnodemid:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc-centralnode-mid
-    tag: 0.2.0
+    tag: 0.2.2
     pullPolicy: IfNotPresent
 
 subarraynodemid:
   image:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc-subarraynode-mid
-    tag: 0.3.0
+    tag: 0.3.1
     pullPolicy: IfNotPresent
 
 alarmhandler:

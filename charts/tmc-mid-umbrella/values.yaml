@@ -57,11 +57,11 @@ webjive:
     #     memory: 1024Mi # 1024Mi = 1 GB mem
 
 tango-base:
-    enabled: false
+  enabled: false
 
 ska-mid-cbf:
   enabled: true
-  tango-base: 
+  ska-tango-base: 
     enabled: false
 
 # mid-cbf:
@@ -92,5 +92,5 @@ ska-tmc-mid:
   enabled: true
 
 ## tm
-tmc-mid:
-  enabled: false
+# tmc-mid:
+#   enabled: false
