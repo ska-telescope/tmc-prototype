@@ -1,16 +1,17 @@
 #
 # Project makefile for a ska-tmc project. You should normally only need to modify
-# DOCKER_REGISTRY_USER and PROJECT below.
+# CAR_OCI_REGISTRY_USER and PROJECT below.
 #
 
 #
-# DOCKER_REGISTRY_HOST, DOCKER_REGISTRY_USER and PROJECT are combined to define
+# CAR_OCI_REGISTRY_HOST, CAR_OCI_REGISTRY_USER and PROJECT are combined to define
 # the Docker tag for this project. The definition below inherits the standard
-# value for DOCKER_REGISTRY_HOST (=rnexus.engageska-portugal.pt) and overwrites
-# DOCKER_REGISTRY_USER and PROJECT to give a final Docker tag of
-# nexus.engageska-portugal.pt/ska-tmc/ska-tmc
+# value for CAR_OCI_REGISTRY_HOST (artefact.skao.int) and overwrites
+# CAR_OCI_REGISTRY_USER and PROJECT to give a final Docker tag of
+# artefact.skao.int/ska-telescope/ska-tmc
 #
-DOCKER_REGISTRY_USER:=ska-telescope
+CAR_OCI_REGISTRY_HOST:=artefact.skao.int
+CAR_OCI_REGISTRY_USER:=ska-telescope
 PROJECT = ska-tmc
 
 # KUBE_NAMESPACE defines the Kubernetes Namespace that will be deployed to
@@ -24,10 +25,10 @@ DASHBOARD ?= webjive-dash.dump
 HELM_RELEASE ?= test
 
 # HELM_CHART the chart name
-HELM_CHART ?= tmc-mid-umbrella
+HELM_CHART ?= ska-tmc-mid-umbrella
 
 # UMBRELLA_CHART_PATH Path of the umbrella chart to work with
-UMBRELLA_CHART_PATH ?= charts/tmc-mid-umbrella/
+UMBRELLA_CHART_PATH ?= charts/ska-tmc-mid-umbrella/
 
 # Fixed variables
 # Timeout for gitlab-runner when run locally
@@ -56,7 +57,7 @@ CI_PROJECT_DIR ?= .
 KUBE_CONFIG_BASE64 ?=  ## base64 encoded kubectl credentials for KUBECONFIG
 KUBECONFIG ?= /etc/deploy/config ## KUBECONFIG location
 
-#VALUES_FILE ?= charts/tmc-mid/values.yaml
+#VALUES_FILE ?= charts/ska-tmc-mid/values.yaml
 CUSTOM_VALUES = 
 
 ifneq ($(CI_JOB_ID),)

@@ -8,12 +8,17 @@ RUN ipython profile create
 USER root
 
 RUN python3 -m pip install ska-logging==0.3.0 \
-                           lmcbaseclasses==0.7.2 \
-                           cdm-shared-library==2.0.0 \
-                           ska-telescope-model==0.3.0 \
-                           ska-log-transactions \
-                           skatmccommon==0.1.6+3aaa7bbe \
-                           katpoint==1.0a1
+    lmcbaseclasses==0.7.2 \
+    ska-telescope-model==0.3.0 \
+    ska-log-transactions \
+    katpoint==1.0a1
+
+FROM artefact.skao.int/ska-tango-images-pytango-builder:9.3.10 
+FROM artefact.skao.int/ska-tango-images-pytango-runtime:9.3.10
+
+RUN python3 -m pip install ska-tmc-cdm==0.6.0 \
+    ska-tmc-common==0.1.7+d39e6423
+
 # install all local TMC packages
 RUN python3 -m pip install \
     /app/ska-tmc/centralnodelow \

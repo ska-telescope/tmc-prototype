@@ -10,7 +10,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "alarm-configuration-{{ template "tmc-mid.name" . }}-{{ .Release.Name }}"
+  name: "alarm-configuration-{{ template "ska-tmc-mid.name" . }}-{{ .Release.Name }}"
   namespace: {{ .Release.Namespace }}
   labels:
 {{ toYaml (coalesce .Values.global.labels .Values.labels "label:none") | indent 4 }}
@@ -25,7 +25,7 @@ data:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: configure-alarm-{{ template "tmc-mid.name" . }}-{{ .Release.Name }}
+  name: configure-alarm-{{ template "ska-tmc-mid.name" . }}-{{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
   labels:
 {{ toYaml (coalesce .Values.global.labels .Values.labels "label:none") | indent 4 }}
@@ -38,7 +38,7 @@ spec:
       volumes:
       - name: configure-alarm
         configMap:
-          name: "alarm-configuration-{{ template "tmc-mid.name" . }}-{{ .Release.Name }}"
+          name: "alarm-configuration-{{ template "ska-tmc-mid.name" . }}-{{ .Release.Name }}"
       initContainers:
         - name: wait-for-devices
           image: "{{ $dsconfig.image.registry }}/{{ $dsconfig.image.image }}:{{ $dsconfig.image.tag }}"

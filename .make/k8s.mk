@@ -1,12 +1,12 @@
-HELM_HOST ?= https://nexus.engageska-portugal.pt## helm host url https
+CAR_HELM_REPOSITORY_URL ?= https://artefact.skao.int/repository/helm-internal ## helm host url https
 MINIKUBE ?= true## Minikube or not
 MARK ?= all
-IMAGE_TO_TEST ?= $(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/$(PROJECT):latest## docker image that will be run for testing purpose
+# IMAGE_TO_TEST ?= $(CAR_OCI_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/$(PROJECT):latest## docker image that will be run for testing purpose
 TANGO_DATABASE_DS ?= tango-host-databaseds-from-makefile-$(RELEASE_NAME) ## Stable name for the Tango DB
 TANGO_HOST ?= $(TANGO_DATABASE_DS):10000## TANGO_HOST is an input!
 
 
-CHARTS ?= tmc-mid tmc-low tmc-mid-umbrella tmc-low-umbrella ## list of charts to be published on gitlab -- umbrella charts for testing purpose
+CHARTS ?= ska-tmc-mid ska-tmc-low ska-tmc-mid-umbrella ska-tmc-low-umbrella ## list of charts to be published on gitlab -- umbrella charts for testing purpose
 
 CUSTOM_SUBARRAY_COUNT ?= 1
 CUSTOM_DISHES_LIST ?= {01}
@@ -83,8 +83,8 @@ dep-up: ## update dependencies for every charts in the env var CHARTS
 	helm dependency update $${i}; \
 	done;
 
-# This job is used to create a deployment of tmc-mid charts
-# Currently umbrealla chart for tmc-mid path is given
+# This job is used to create a deployment of ska-tmc-mid charts
+# Currently umbrealla chart for ska-tmc-mid path is given
 install-chart: dep-up namespace namespace_sdp ## install the helm chart with name HELM_RELEASE and path UMBRELLA_CHART_PATH on the namespace KUBE_NAMESPACE
 	# Understand this better
 	@sed -e 's/CI_PROJECT_PATH_SLUG/$(CI_PROJECT_PATH_SLUG)/' $(UMBRELLA_CHART_PATH)values.yaml > generated_values.yaml; \
@@ -140,15 +140,15 @@ template-chart: clean dep-up## install the helm chart with name RELEASE_NAME and
 	 rm generated_values.yaml; \
 	 rm values.yaml
 
-# This job is used to delete a deployment of tmc-mid charts
-# Currently umbreall chart for tmc-mid path is given
-uninstall-chart: ## uninstall the tmc-mid helm chart on the namespace ska-tmc
+# This job is used to delete a deployment of ska-tmc-mid charts
+# Currently umbreall chart for ska-tmc-mid path is given
+uninstall-chart: ## uninstall the ska-tmc-mid helm chart on the namespace ska-tmc
 	helm template  $(HELM_RELEASE) $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE)  | kubectl delete -f - ; \
 	helm uninstall  $(HELM_RELEASE) --namespace $(KUBE_NAMESPACE)
 
-reinstall-chart: uninstall-chart install-chart ## reinstall the tmc-mid helm chart on the namespace ska-tmc
+reinstall-chart: uninstall-chart install-chart ## reinstall the ska-tmc-mid helm chart on the namespace ska-tmc
 
-upgrade-chart: ## upgrade the tmc-mid helm chart on the namespace ska-tmc
+upgrade-chart: ## upgrade the ska-tmc-mid helm chart on the namespace ska-tmc
 	helm upgrade --set minikube=$(MINIKUBE) $(HELM_RELEASE) $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE) 
 
 wait:## wait for pods to be ready
@@ -167,7 +167,7 @@ show: ## show the helm chart
 		--set xauthority="$(XAUTHORITYx)" \
 		--set display="$(DISPLAY)"
 
-# Linting chart tmc-mid
+# Linting chart ska-tmc-mid
 chart_lint: ## lint check the helm chart
 	@helm lint $(UMBRELLA_CHART_PATH) \
 		--namespace $(KUBE_NAMESPACE)

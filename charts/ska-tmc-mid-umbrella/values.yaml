@@ -71,5 +71,5 @@ sdp:
     enabled: false
 
 ## tm
-tmc-mid:
+ska-tmc-mid:
   enabled: true
