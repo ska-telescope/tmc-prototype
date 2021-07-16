@@ -95,7 +95,8 @@ class ReleaseResources(BaseCommand):
                 # Invoke ReleaseAllResources on MCCS Master Leaf Node
                 # Send updated input string with inteface key to MCCS Master for ReleaseResource Command
                 input_mccs_release["interface"] = "https://schema.skao.int/ska-low-mccs-releaseresources/1.0"
-                del jsonArgument["transaction_id"]
+                if 'transaction_id' in jsonArgument:
+                    del jsonArgument["transaction_id"]
                 self.mccs_master_ln_fqdn = ""
                 property_value = this_server.read_property("MCCSMasterLeafNodeFQDN")
                 self.mccs_master_ln_fqdn = self.mccs_master_ln_fqdn.join(property_value)
