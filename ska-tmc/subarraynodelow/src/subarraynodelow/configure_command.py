@@ -86,8 +86,10 @@ class Configure(SKASubarray.ConfigureCommand):
             del json_argument["transaction_id"]
         if 'sdp' in json_argument:
             del json_argument["sdp"]
-        del json_argument["tmc"]
-        del json_argument["mccs"]
+        if 'tmc' in json_argument:
+            del json_argument["tmc"]
+        if 'mccs' in json_argument:
+            del json_argument["mccs"]
         json_argument.update(mccs_value)
         input_to_mccs= json.dumps(json_argument)
         self._configure_mccs_subarray("Configure", input_to_mccs)

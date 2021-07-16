@@ -182,7 +182,8 @@ class AssignResources(BaseCommand):
             del json_argument["transaction_id"]
         if 'sdp' in json_argument:
             del json_argument["sdp"]
-        del json_argument["mccs"]
+        if 'mccs' in json_argument:
+            del json_argument["mccs"]
         json_argument.update(mccs_value)
         input_to_mccs= json.dumps(json_argument)
         return input_to_mccs
@@ -196,7 +197,8 @@ class AssignResources(BaseCommand):
         :return: The string in JSON format.
         """
         # Remove subarray_id key from input json argument and send the json to subarray node
-        del json_argument["subarray_id"]
+        if 'subarray_id' in json_argument:
+            del json_argument["subarray_id"]
         if 'sdp' in json_argument:
             del json_argument["sdp"]
         input_to_subarray = json.dumps(json_argument)
