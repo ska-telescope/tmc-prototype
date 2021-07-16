@@ -1,0 +1,145 @@
+{
+    "attributes": {
+        "State": {
+            "alarms": {
+                "delta_t": "Not specified",
+                "delta_val": "Not specified",
+                "extensions": "[]",
+                "max_alarm": "Not specified",
+                "max_warning": "Not specified",
+                "min_alarm": "Not specified",
+                "min_warning": "Not specified"
+            },
+            "color": "Lime",
+            "data_format": "SCALAR",
+            "data_type": "DevState",
+            "database": "192.168.1.5:10000",
+            "description": "",
+            "device": "mid_sdp/elt/master",
+            "dim_x": 1,
+            "dim_y": 0,
+            "display_unit": "No display unit",
+            "enum_labels": [],
+            "events": {
+                "arch_event": {
+                    "archive_abs_change": "Not specified",
+                    "archive_period": "Not specified",
+                    "archive_rel_change": "Not specified",
+                    "extensions": "[]"
+                },
+                "ch_event": {
+                    "abs_change": "Not specified",
+                    "extensions": "[]",
+                    "rel_change": "Not specified"
+                },
+                "per_event": {
+                    "extensions": "[]",
+                    "period": "1000"
+                }
+            },
+            "format": "Not specified",
+            "label": "State",
+            "max_alarm": "Not specified",
+            "max_dim_x": 1,
+            "max_dim_y": 0,
+            "max_value": "Not specified",
+            "min_alarm": "Not specified",
+            "min_value": "Not specified",
+            "model": "192.168.1.5:10000/mid_sdp/elt/master/State",
+            "name": "State",
+            "polling": 3000,
+            "quality": "ATTR_VALID",
+            "standard_unit": "No standard unit",
+            "string": "STANDBY",
+            "time": 1602497011.473705,
+            "unit": "",
+            "value": 7,
+            "writable": "READ"
+        },
+        "Status": {
+            "alarms": {
+                "delta_t": "Not specified",
+                "delta_val": "Not specified",
+                "extensions": "[]",
+                "max_alarm": "Not specified",
+                "max_warning": "Not specified",
+                "min_alarm": "Not specified",
+                "min_warning": "Not specified"
+            },
+            "color": "Lime",
+            "data_format": "SCALAR",
+            "data_type": "DevString",
+            "database": "192.168.1.5:10000",
+            "description": "",
+            "device": "mid_sdp/elt/master",
+            "dim_x": 1,
+            "dim_y": 0,
+            "display_unit": "No display unit",
+            "enum_labels": [],
+            "events": {
+                "arch_event": {
+                    "archive_abs_change": "Not specified",
+                    "archive_period": "Not specified",
+                    "archive_rel_change": "Not specified",
+                    "extensions": "[]"
+                },
+                "ch_event": {
+                    "abs_change": "Not specified",
+                    "extensions": "[]",
+                    "rel_change": "Not specified"
+                },
+                "per_event": {
+                    "extensions": "[]",
+                    "period": "1000"
+                }
+            },
+            "format": "%s",
+            "label": "Status",
+            "max_alarm": "Not specified",
+            "max_dim_x": 1,
+            "max_dim_y": 0,
+            "max_value": "Not specified",
+            "min_alarm": "Not specified",
+            "min_value": "Not specified",
+            "model": "192.168.1.5:10000/mid_sdp/elt/master/Status",
+            "name": "Status",
+            "polling": 3000,
+            "quality": "ATTR_VALID",
+            "standard_unit": "No standard unit",
+            "string": "Device mid_sdp/elt/master in standby",
+            "time": 1602497011.473706,
+            "unit": "",
+            "value": "Device mid_sdp/elt/master is standby",
+            "writable": "READ"
+        }
+    },
+    "commands": {
+        "On": {
+            "cmd_name": "On",
+            "cmd_tag": 0,
+            "device": "mid_sdp/elt/master",
+            "disp_level": "OPERATOR",
+            "in_type": "DevVoid",
+            "in_type_desc": "None",
+            "name": "Capture",
+            "out_type": "DevVoid",
+            "out_type_desc": "Uninitialised"
+        },
+        "Off": {
+            "cmd_name": "Off",
+            "cmd_tag": 0,
+            "device": "mid_sdp/elt/master",
+            "disp_level": "OPERATOR",
+            "in_type": "DevVoid",
+            "in_type_desc": "None",
+            "name": "Capture",
+            "out_type": "DevVoid",
+            "out_type_desc": "Uninitialised"
+        }
+    },
+    "properties": {},
+    "dev_class": "SdpMaster",
+    "host": "ska-sdp-master",
+    "level": "5",
+    "name": "mid_sdp/elt/master"
+}

@@ -17,6 +17,7 @@ execution. There is one to one mapping between SDP Subarray Leaf Node and SDP su
 # Third party imports
 import threading
 import asyncio
+from multiprocessing import Process
 
 # Tango imports
 import tango
@@ -343,28 +344,47 @@ class SdpMasterLeafNode(SKABaseDevice):
         self.register_command_object("TelescopeStandby", TelescopeStandby(*args))
 
 
-async def run_sdp_master_simulator():
-    sim_data_files = ['SdpMaster.xmi']
-    models = configure_device_models(sim_data_files)
-    TangoDeviceServers = get_tango_device_server(models, sim_data_files)
-    server_run(TangoDeviceServers)
-
 # ----------
 # Run server
 # ----------
+def get_sdp_master_sim(sim_data_files):
+    print("getting device model")
+    models = configure_device_models(sim_data_files)
+    print("getting tango ds")
+    print("model:", models)
+    tango_ds = get_tango_device_server(models, sim_data_files)
+    return tango_ds
 
 
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(SdpMasterLeafNode.main) ENABLED START #
 
     standalone_mode = True
-
+    # devices = []
+    # devices.append(SdpMasterLeafNode)
+    
     if standalone_mode == True:
         print("Running in standalone mode")
-        asyncio.run(run_sdp_master_simulator())
 
-    return run((SdpMasterLeafNode,), args=args, **kwargs)
+        ## Using tango simlib simulator
+        sim_data_files = []
+        sim_data_files.append("/home/1009728/projects/ska-tmc/simulators/SdpMaster.fgo")
+        sim_data_files.append("/home/1009728/projects/ska-tmc/simulators/sdp_master_sim_dd.json")
+        sdp_master_simulator = get_sdp_master_sim(sim_data_files)
+
+        # devices.append(sdp_master_simulator)
+        sdp_master_simulator.append(SdpMasterLeafNode)
+        ret_val = run((sdp_master_simulator), args=args, **kwargs)
+    else:
+        print("Running in normal mode")
+        ret_val = run((SdpMasterLeafNode,), args=args, **kwargs)
+
+    return ret_val
+
+    ## Original implementation
+    # return run((SdpMasterLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  SdpMasterLeafNode.main
+
 
 
 if __name__ == "__main__":

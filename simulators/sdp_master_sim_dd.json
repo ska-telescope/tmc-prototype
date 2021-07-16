@@ -1,0 +1,32 @@
+{
+    "class_name": "SdpMaster",
+    "class_overrides": [
+      {
+        "override_class": {
+          "name": "Sim_sdp_master_leaf_node_hehavior",
+          "module_directory": "None",
+          "module_name": "sdpmasterleafnode.sdp_master_leaf_node",
+          "class_name": "OverrideSdpMaster"
+        }
+      }
+    ],
+    "dynamicAttributes": [
+    ],
+    "commands": [
+      {
+        "basicCommandData": {
+          "name": "On",
+          "input_parameters": {
+            "dtype_in": "Void",
+            "doc_in": "",
+            "dformat_in": "Scalar"
+          },
+          "output_parameters": {
+            "dtype_out": "Void",
+            "doc_out": "",
+            "dformat_out": "Scalar"
+          }
+        }
+      }
+    ]
+  }
