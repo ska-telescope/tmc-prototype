@@ -84,27 +84,27 @@ class ReleaseResources(BaseCommand):
         device_data = self.target
         try:
             this_server = TangoServerHelper.get_instance()
-            jsonArgument = json.loads(argin)
+            json_argument = json.loads(argin)
             # input_mccs_release = json.loads(argin)
-            subarray_id = jsonArgument["subarray_id"]
+            subarray_id = json_argument["subarray_id"]
             subarray_fqdn = device_data.subarray_FQDN_dict[subarray_id]
-            if jsonArgument["release_all"] == True:
+            if json_argument["release_all"] == True:
                 # Invoke ReleaseAllResources on SubarrayNode
                 subarray_client = TangoClient(subarray_fqdn)
                 subarray_client.send_command(const.CMD_RELEASE_RESOURCES)
                 # Invoke ReleaseAllResources on MCCS Master Leaf Node
                 # Send updated input string with inteface key to MCCS Master for ReleaseResource Command
                 # input_mccs_release["interface"] = "https://schema.skao.int/ska-low-mccs-releaseresources/1.0"
-                jsonArgument["interface"] = "https://schema.skao.int/ska-low-mccs-releaseresources/1.0"
-                if 'transaction_id' in jsonArgument:
-                    del jsonArgument["transaction_id"]
+                json_argument["interface"] = "https://schema.skao.int/ska-low-mccs-releaseresources/1.0"
+                if 'transaction_id' in json_argument:
+                    del json_argument["transaction_id"]
                 self.mccs_master_ln_fqdn = ""
                 property_value = this_server.read_property("MCCSMasterLeafNodeFQDN")
                 self.mccs_master_ln_fqdn = self.mccs_master_ln_fqdn.join(property_value)
 
                 mccs_mln_client = TangoClient(self.mccs_master_ln_fqdn)
                 mccs_mln_client.send_command(
-                    const.CMD_RELEASE_MCCS_RESOURCES, json.dumps(jsonArgument)
+                    const.CMD_RELEASE_MCCS_RESOURCES, json.dumps(json_argument)
                 )
                 log_msg = const.STR_REL_RESOURCES
                 self.logger.info(log_msg)
