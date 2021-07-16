@@ -130,14 +130,14 @@
       <dataReadyEvent fire="false" libCheckCriteria="true"/>
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
       <properties description="" label="" unit="" standardUnit="" displayUnit="" format="" maxValue="" minValue="" maxAlarm="" minAlarm="" maxWarning="" minWarning="" deltaTime="" deltaValue=""/>
-      <enumLabels>EMPTY</enumLabels>
+      <enumLabels>ABORTED</enumLabels>
       <enumLabels>RESOURCING</enumLabels>
       <enumLabels>IDLE</enumLabels>
       <enumLabels>CONFIGURING</enumLabels>
       <enumLabels>READY</enumLabels>
       <enumLabels>SCANNING</enumLabels>
       <enumLabels>ABORTING</enumLabels>
-      <enumLabels>ABORTED</enumLabels>
+      <enumLabels>EMPTY</enumLabels>
       <enumLabels>RESETTING</enumLabels>
       <enumLabels>FAULT</enumLabels>
       <enumLabels>RESTARTING</enumLabels>
