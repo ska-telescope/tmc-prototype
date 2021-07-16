@@ -7,30 +7,30 @@ RUN ipython profile create
 #install lmc-base-classes
 USER root
 
-RUN python3 -m pip install ska-logging==0.3.0 \
-    lmcbaseclasses==0.7.2 \
+RUN python3 -m pip install lmcbaseclasses==0.7.2 \
     ska-telescope-model==0.3.0 \
-    ska-log-transactions \
     katpoint==1.0a1
 
 FROM artefact.skao.int/ska-tango-images-pytango-builder:9.3.10 
 FROM artefact.skao.int/ska-tango-images-pytango-runtime:9.3.10
 
-RUN python3 -m pip install ska-tmc-cdm==0.6.0 \
-    ska-tmc-common==0.1.7+d39e6423
+RUN python3 -m pip install ska-tmc-cdm==6.0.0 \
+    ska-tmc-common==0.1.7+d39e6423 \
+    ska-ser-logging==0.4.0 \
+    ska-ser-log-transactions 
 
 # install all local TMC packages
 RUN python3 -m pip install \
-    /app/ska-tmc/centralnodelow \
-    /app/ska-tmc/cspmasterleafnode \
-    /app/ska-tmc/cspsubarrayleafnode \
-    /app/ska-tmc/dishleafnode \
-    /app/ska-tmc/dishmaster \
-    /app/ska-tmc/sdpmasterleafnode \
-    /app/ska-tmc/sdpsubarrayleafnode \
-    /app/ska-tmc/mccsmasterleafnode \
-    /app/ska-tmc/mccssubarrayleafnode \
-    /app/ska-tmc/subarraynodelow 
+    /app/ska-tmc/centralnodelow 
+# /app/ska-tmc/cspmasterleafnode \
+# /app/ska-tmc/cspsubarrayleafnode \
+# /app/ska-tmc/dishleafnode \
+# /app/ska-tmc/dishmaster \
+# /app/ska-tmc/sdpmasterleafnode \
+# /app/ska-tmc/sdpsubarrayleafnode \
+# /app/ska-tmc/mccsmasterleafnode \
+# /app/ska-tmc/mccssubarrayleafnode \
+# /app/ska-tmc/subarraynodelow 
 
 USER tango
 

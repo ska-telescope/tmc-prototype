@@ -44,11 +44,11 @@ setup(
     url="https://www.skatelescope.org",
     platforms="Linux",
     install_requires=[
-        "pytango==9.3.2",
+        "pytango==9.3.3",
         "mock",
         "ska_logging==0.3.0",
         "lmcbaseclasses==0.7.2",
-        "skatmccommon==0.1.6+3aaa7bbe",
+        "ska-tmc-common==0.1.7+d39e6423",
     ],
     # test_suite='test',
     setup_requires=[

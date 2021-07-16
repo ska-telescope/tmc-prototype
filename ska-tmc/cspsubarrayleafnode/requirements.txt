@@ -1,10 +1,10 @@
 numpy == 1.17.2
-pytango >= 9.3.2
+pytango >= 9.3.3
 jsonschema >= 3.2.0
 ska-logging==0.3.0
 lmcbaseclasses == 0.7.2
 ska-log-transactions == 0.1.0
-skatmccommon==0.1.6+3aaa7bbe
+ska-tmc-common==0.1.7+d39e6423
 marshmallow
 cdm-shared-library
 ska-telescope-model

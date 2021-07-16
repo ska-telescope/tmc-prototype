@@ -4,7 +4,7 @@ Central Node Low is a coordinator of the complete M&C system.
 
 ## Requirement
 
-- PyTango >= 9.3.2
+- PyTango >= 9.3.3
 - devicetest (for using tests)
 - sphinx (for building sphinx documentation)
 
