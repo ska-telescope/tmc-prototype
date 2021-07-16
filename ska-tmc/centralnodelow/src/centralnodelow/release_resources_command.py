@@ -85,7 +85,6 @@ class ReleaseResources(BaseCommand):
         try:
             this_server = TangoServerHelper.get_instance()
             json_argument = json.loads(argin)
-            # input_mccs_release = json.loads(argin)
             subarray_id = json_argument["subarray_id"]
             subarray_fqdn = device_data.subarray_FQDN_dict[subarray_id]
             if json_argument["release_all"] == True:
@@ -94,7 +93,6 @@ class ReleaseResources(BaseCommand):
                 subarray_client.send_command(const.CMD_RELEASE_RESOURCES)
                 # Invoke ReleaseAllResources on MCCS Master Leaf Node
                 # Send updated input string with inteface key to MCCS Master for ReleaseResource Command
-                # input_mccs_release["interface"] = "https://schema.skao.int/ska-low-mccs-releaseresources/1.0"
                 json_argument["interface"] = "https://schema.skao.int/ska-low-mccs-releaseresources/1.0"
                 if 'transaction_id' in json_argument:
                     del json_argument["transaction_id"]
