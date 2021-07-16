@@ -85,7 +85,8 @@ class AssignedResourcesMaintainer:
         """
         if mccs_assigned_resources:
             input_json_arg = json.loads(mccs_assigned_resources)
-            del input_json_arg["interface"]
+            if 'interface' in input_json_arg:
+                del input_json_arg["interface"]
             json_argument={}
             json_argument["interface"] = "https://schema.skao.int/ska-low-tmc-assignedresources/1.0"
             json_argument["mccs"]=input_json_arg

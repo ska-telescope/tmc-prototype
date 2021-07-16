@@ -147,6 +147,8 @@ def test_release_resources(mock_subarraynode_proxy, mock_tango_server_helper):
     device_proxy.ReleaseResources(release_input_str)
     input_mccs_release = json.loads(release_input_str)
     input_mccs_release["interface"] = "https://schema.skao.int/ska-low-mccs-releaseresources/1.0"
+    if 'transaction_id' in input_mccs_release:
+        del input_mccs_release["transaction_id"]
     tango_client_obj.deviceproxy.command_inout.assert_called_with(
         const.CMD_RELEASE_MCCS_RESOURCES, json.dumps(input_mccs_release)
     )
