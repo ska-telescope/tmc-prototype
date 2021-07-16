@@ -7,7 +7,7 @@ import sys
 from tango.server import server_run
 
 # Additional import
-from cspsubarraysimulator.utils import get_tango_server_class
+from utils import get_tango_server_class
 
 # File generated on Mon Jul 12 13:24:36 2021 by tango-simlib-generator
 

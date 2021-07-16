@@ -9,24 +9,24 @@ import logging
 from collections import namedtuple
 
 # Tango import
-from tango import DevState, ObsState, Except, ErrSeverity
+from tango import DevState, Except, ErrSeverity
 
 # Additional import
-from ska.logging import configure_logging
+# from ska.logging import configure_logging
 
-configure_logging()
+# configure_logging()
 MODULE_LOGGER = logging.getLogger(__name__)
 
 
 class OverrideCspSubarray(object):
     
-    def action_assign_resources(self, model, tango_dev=None, data_input=None):
+    def action_assignresources(self, model, tango_dev=None, data_input=None):
         """Changes the State of the device to .
         """
         print("assign_resources is invoked")
 
 
-    def action_end_scan(self, model, tango_dev=None, data_input=None):
+    def action_endscan(self, model, tango_dev=None, data_input=None):
         """Changes the State of the device to .
         """
         print("end_scan is invoked")
@@ -34,9 +34,14 @@ class OverrideCspSubarray(object):
     def action_abort(self, model, tango_dev=None, data_input=None):
         """Changes the State of the device to .
         """
-        print("abort is invoked")
+        quantity = model.sim_quantities
+        print("quantity::::",quantity)
+        obstate_quantity = model.sim_quantities['obsState']
+        print("obstate_quantity::::",obstate_quantity)
+        obstate = get_enum_str(obstate_quantity)
+        print("abort is invoked::::",obstate)
 
-    def action_release_all_resources(self, model, tango_dev=None, data_input=None):
+    def action_releaseallresources(self, model, tango_dev=None, data_input=None):
         """Changes the State of the device to .
         """
         print("release_all_resources is invoked")
@@ -51,7 +56,7 @@ class OverrideCspSubarray(object):
         """
         print("scan is invoked")
 
-    def action_go_to_idle(self, model, tango_dev=None, data_input=None):
+    def action_gotoidle(self, model, tango_dev=None, data_input=None):
         """Changes the State of the device to .
         """
         print("go_to_idle is invoked")

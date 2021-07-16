@@ -133,13 +133,14 @@
       <enumLabels>EMPTY</enumLabels>
       <enumLabels>RESOURCING</enumLabels>
       <enumLabels>IDLE</enumLabels>
-      <enumLabels>READY</enumLabels>
       <enumLabels>CONFIGURING</enumLabels>
+      <enumLabels>READY</enumLabels>
       <enumLabels>SCANNING</enumLabels>
       <enumLabels>ABORTING</enumLabels>
       <enumLabels>ABORTED</enumLabels>
-      <enumLabels>RESTARTING</enumLabels>
       <enumLabels>RESETTING</enumLabels>
+      <enumLabels>FAULT</enumLabels>
+      <enumLabels>RESTARTING</enumLabels>
     </attributes>
     <states name="ON" description="">
       <status abstract="false" inherited="false" concrete="true" concreteHere="true"/>
