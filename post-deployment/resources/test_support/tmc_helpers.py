@@ -63,7 +63,7 @@ def set_telescope_standby():
     )
     CentralNode.TelescopeStandby()
 
-@sync_assign_resources(2, 600)
+@sync_assign_resources(2, 2000)
 def compose_sub():
     resource("ska_mid/tm_subarray_node/1").assert_attribute("State").equals("ON")
     resource("ska_mid/tm_subarray_node/1").assert_attribute("obsState").equals("EMPTY")
@@ -95,7 +95,7 @@ def release_resources():
     resource("ska_mid/tm_subarray_node/1").assert_attribute("obsState").equals("IDLE")
     CentralNode = DeviceProxy("ska_mid/tm_central/central_node")
     CentralNode.ReleaseResources(
-        '{"subarrayID":1,"releaseALL":true,"receptorIDList":[]}'
+        '{"interface":"https://schema.skao.int/ska-tmc-releaseresources/2.0","transaction_id":"txn-....-00001","subarray_id":1,"release_all":true,"receptor_ids":[]}'
     )
     SubarrayNode = DeviceProxy("ska_mid/tm_subarray_node/1")
     LOGGER.info(

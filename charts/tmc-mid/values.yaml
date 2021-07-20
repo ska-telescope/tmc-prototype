@@ -19,7 +19,7 @@ global:
   skatmc:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc
-    tag: 0.8.1
+    tag: 0.8.2
     pullPolicy: IfNotPresent
 
 
@@ -39,7 +39,7 @@ global:
     - "cspsubarrayleafnode"
     - "sdpsubarrayleafnode"
     - "subarraynode"
-  subarray_count: 3
+  subarray_count: 1
 
 dsconfig:
   configuration_file: data/tmc-mid-config.json
@@ -58,10 +58,11 @@ itango:
 
 centralnodemid:
   image:
-    registry: nexus.engageska-portugal.pt/ska-telescope
+    registry: artefact.skao.int/ska-telescope
     image: ska-tmc-centralnode-mid
-    tag: 0.2.3
+    tag: 0.2.4
     pullPolicy: IfNotPresent
+
 
 subarraynodemid:
   image:

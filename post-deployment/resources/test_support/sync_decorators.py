@@ -8,7 +8,7 @@ from contextlib import contextmanager
 # pre cheks
 def check_going_out_of_empty():
     ##verify once for obstate = EMPTY
-    resource("mid_csp/elt/subarray_01").assert_attribute("obsState").equals("EMPTY")
+    # resource("mid_csp/elt/subarray_01").assert_attribute("obsState").equals("EMPTY")
     resource("mid_sdp/elt/subarray_1").assert_attribute("obsState").equals("EMPTY")
     resource("ska_mid/tm_subarray_node/1").assert_attribute("obsState").equals("EMPTY")
 
@@ -204,7 +204,7 @@ class WaitScanning:
         self.w2.wait_until_value_changed_to("READY", timeout)
 
 
-def sync_assign_resources(nr_of_receptors=4, timeout=500):
+def sync_assign_resources(nr_of_receptors=2, timeout=1200):
     # defined as a decorator
     def decorator_sync_assign_resources(func):
         @functools.wraps(func)
