@@ -41,15 +41,7 @@ setup(
     long_description=long_description,
     url="https://www.skatelescope.org",
     platforms="Linux",
-    install_requires=[
-        "pytango>=9.3.3",
-        "mock",
-        "astropy>=4.1",
-        "katpoint==1.0a1",
-        "ska_logging>=0.3.0",
-        "lmcbaseclasses>=0.7.2",
-        "ska-tmc-common==0.1.7+3aaa7bbe",
-    ],
+    install_requires=["pytango>=9.3.3", "mock", "astropy>=4.1", "katpoint==1.0a1"],
     dependency_links=["https://artefact.skao.int/repository/pypi-internal/simple"],
     # test_suite='test',
     setup_requires=[

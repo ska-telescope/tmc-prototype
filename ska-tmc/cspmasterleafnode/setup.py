@@ -46,9 +46,6 @@ setup(
     install_requires=[
         "pytango==9.3.3",
         "mock",
-        "ska_logging==0.3.0",
-        "lmcbaseclasses==0.7.2",
-        "ska-tmc-common==0.1.7+d39e6423",
     ],
     # test_suite='test',
     setup_requires=[

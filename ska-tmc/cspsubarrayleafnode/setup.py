@@ -43,16 +43,7 @@ setup(
     long_description=long_description,
     url="https://www.skatelescope.org",
     platforms="Linux",
-    install_requires=[
-        "pytango==9.3.3",
-        "mock",
-        "astropy>=4.1",
-        "katpoint==1.0a1",
-        "ska_logging==0.3.0",
-        "lmcbaseclasses==0.7.2",
-        "ska-tmc-common==0.1.7+d39e6423",
-        "ska-log-transactions == 0.1.0"
-    ],
+    install_requires=["pytango==9.3.3", "mock", "astropy>=4.1", "katpoint==1.0a1"],
     # test_suite='test',
     setup_requires=[
         # dependency for `python setup.py test`
