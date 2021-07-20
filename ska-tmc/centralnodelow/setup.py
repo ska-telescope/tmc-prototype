@@ -40,13 +40,7 @@ setup(
     long_description=long_description,
     url="https://www.skatelescope.org",
     platforms="Linux",
-    install_requires=[
-        "pytango==9.3.3",
-        "mock"
-        # "ska-ser-logging==0.4.0",
-        # "lmcbaseclasses==0.7.2",
-        # "ska-tmc-common==0.1.7+d39e6423",
-    ],
+    install_requires=["pytango==9.3.3", "mock"],
     setup_requires=[
         # dependency for `python setup.py test`
         "pytest-runner",

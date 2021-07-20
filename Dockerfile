@@ -8,7 +8,6 @@ RUN ipython profile create
 USER root
 
 RUN python3 -m pip install lmcbaseclasses==0.7.2 \
-    ska-telescope-model==0.3.0 \
     katpoint==1.0a1
 
 FROM artefact.skao.int/ska-tango-images-pytango-builder:9.3.10 
@@ -17,7 +16,8 @@ FROM artefact.skao.int/ska-tango-images-pytango-runtime:9.3.10
 RUN python3 -m pip install ska-tmc-cdm==6.0.0 \
     ska-tmc-common==0.1.7+d39e6423 \
     ska-ser-logging==0.4.0 \
-    ska-ser-log-transactions 
+    ska-ser-log-transactions \
+    ska-telescope-model==1.3.0
 
 # install all local TMC packages
 RUN python3 -m pip install \
