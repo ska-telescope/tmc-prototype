@@ -5,6 +5,7 @@ ska-ser-logging
 marshmallow
 ska-tmc-cdm
 ska-telescope-model
+ska-ser-log-transactions == 0.2.2+ae0f5c92
 fire
 ska-tmc-common==0.1.7+d39e6423
 astropy>=4.1

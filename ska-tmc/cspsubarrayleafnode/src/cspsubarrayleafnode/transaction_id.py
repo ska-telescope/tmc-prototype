@@ -1,4 +1,4 @@
-from ska.log_transactions import transaction
+from ska_ser_log_transactions import transaction
 import logging
 import json
 import functools
