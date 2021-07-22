@@ -1,0 +1,57 @@
+{
+    "class_name": "SdpMaster",
+    "class_overrides": [
+      {
+        "override_class": {
+          "name": "Sim_sdp_master_leaf_node_hehavior",
+          "module_directory": "None",
+          "module_name": "sdpmasterleafnode.sdp_master_leaf_node",
+          "class_name": "OverrideSdpMaster"
+        }
+      }
+    ],
+    "dynamicAttributes": [
+      {
+        "basicAttributeData": {
+          "name": "TestAttr",
+          "unit": "",
+          "label": "TestAttr",
+          "description": "Attribute for push event test.",
+          "data_type": "String",
+          "data_format": "Scalar",
+          "format": "",
+          "data_shape": {
+            "max_dim_x": 1,
+            "max_dim_y": 0
+          },
+          "attributeInterlocks": {
+            "writable": "READ"
+          },
+          "dataSimulationParameters": {
+            "quantity_simulation_type": "ConstantQuantity"
+          },
+          "attributeControlSystem": {
+            "display_level": "OPERATOR",
+            "period": 1000
+          }
+        }
+      }
+    ],
+    "commands": [
+      {
+        "basicCommandData": {
+          "name": "On",
+          "input_parameters": {
+            "dtype_in": "Void",
+            "doc_in": "",
+            "dformat_in": "Scalar"
+          },
+          "output_parameters": {
+            "dtype_out": "Void",
+            "doc_out": "",
+            "dformat_out": "Scalar"
+          }
+        }
+      }
+    ]
+  }
