@@ -21,16 +21,16 @@ RUN python3 -m pip install ska-tmc-cdm==6.0.0 \
 
 # install all local TMC packages
 RUN python3 -m pip install \
-    /app/ska-tmc/centralnodelow 
-# /app/ska-tmc/cspmasterleafnode \
-# /app/ska-tmc/cspsubarrayleafnode \
-# /app/ska-tmc/dishleafnode \
-# /app/ska-tmc/dishmaster \
-# /app/ska-tmc/sdpmasterleafnode \
-# /app/ska-tmc/sdpsubarrayleafnode \
-# /app/ska-tmc/mccsmasterleafnode \
-# /app/ska-tmc/mccssubarrayleafnode \
-# /app/ska-tmc/subarraynodelow 
+    /app/ska-tmc/centralnodelow \
+    /app/ska-tmc/cspmasterleafnode \
+    /app/ska-tmc/cspsubarrayleafnode \
+    /app/ska-tmc/dishleafnode \
+    /app/ska-tmc/dishmaster \
+    /app/ska-tmc/sdpmasterleafnode \
+    /app/ska-tmc/sdpsubarrayleafnode \
+    /app/ska-tmc/mccsmasterleafnode \
+    /app/ska-tmc/mccssubarrayleafnode \
+    /app/ska-tmc/subarraynodelow 
 
 USER tango
 

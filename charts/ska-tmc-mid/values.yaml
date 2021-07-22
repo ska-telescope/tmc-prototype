@@ -67,23 +67,30 @@ subarraynodemid:
   image:
     registry: artefact.skao.int/ska-telescope
     image: ska-tmc-subarraynode-mid
-    tag: 0.3.0
+    tag: 0.3.1
     pullPolicy: IfNotPresent
 
 alarmhandler:
   image:
-    registry: artefact.skao.int/ska-telescope
-    image: ska-alarmhandler
+    registry: nexus.engageska-portugal.pt/tango-example
+    image: tmalarmhandler
     tag: 0.1.5
     pullPolicy: IfNotPresent
 
-resources:
-  limits:
-    cpu: 300m
-    memory: 500Mi
-  requests:
-    cpu: 100m
-    memory: 128Mi
+# alarmhandler:
+#   image:
+#     registry: artefact.skao.int/ska-telescope
+#     image: ska-alarmhandler
+#     tag: 0.1.5
+#     pullPolicy: IfNotPresent
+
+# resources:
+#   limits:
+#     cpu: 300m
+#     memory: 500Mi
+#   requests:
+#     cpu: 100m
+#     memory: 128Mi
 
 deviceServers:
   dishmaster:
