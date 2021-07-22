@@ -18,9 +18,9 @@ execution. There is one to one mapping between SDP Subarray Leaf Node and SDP su
 
 # Tango imports
 import tango
-from tango import ApiUtil, DebugIt, AttrWriteType, DevState
-from tango.server import run, command, device_property, attribute, Device
-from tango.server import server_run
+from tango import ApiUtil, DebugIt, AttrWriteType #, DevState
+from tango.server import run, command, device_property, attribute # , Device
+# from tango.server import server_run
 from tango_simlib.tango_sim_generator import (configure_device_models, get_tango_device_server)
 
 
@@ -29,32 +29,18 @@ from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, SimulationMode, TestMode
 from tmc.common.tango_server_helper import TangoServerHelper
+from tmc.common.tango_client import TangoClient
 from . import const, release
 from .telescope_on_command import TelescopeOn
 from .telescope_off_command import TelescopeOff
 from .telescope_standby_command import TelescopeStandby
 from .disable_command import Disable
 from .device_data import DeviceData
+from .simulator import get_sdp_master_sim
 
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additional_import
 
-__all__ = ["OverrideSdpMaster","SdpMasterLeafNode", "main", "TelescopeOn", "TelescopeOff", "TelescopeStandby", "Disable"]
-
-class OverrideSdpMaster():
-    """Test class for sdp master simulator device"""
-
-    def action_on(self, model, tango_dev=None, data_input=None):
-        tango_dev.set_state(DevState.ON)
-        model.sim_quantities["TestAttr"].set_val("On command", model.time_func())
-        tango_dev.push_change_event("TestAttr", "test value on")
-        tango_dev.set_status("device turned on successfully")
-
-    def action_off(self, model, tango_dev=None, data_input=None):
-        tango_dev.set_state(DevState.OFF)
-        model.sim_quantities["TestAttr"].set_val("On command", model.time_func())
-        tango_dev.push_change_event("TestAttr", "test value off")
-        tango_dev.set_status("device turned off successfully")
-
+__all__ = ["SdpMasterLeafNode", "main", "TelescopeOn", "TelescopeOff", "TelescopeStandby", "Disable"]
 
 
 class SdpMasterLeafNode(SKABaseDevice):
@@ -118,8 +104,6 @@ class SdpMasterLeafNode(SKABaseDevice):
             self.logger.debug(log_msg)
         else:
             self.logger.debug(f"Error event received. Error: {event.errors}")
-        
-        # self.logger.debug("callback function")
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
@@ -378,39 +362,24 @@ class SdpMasterLeafNode(SKABaseDevice):
 # ----------
 # Run server
 # ----------
-def get_sdp_master_sim(sim_data_files):
-    print("getting device model")
-    models = configure_device_models(sim_data_files)
-    print("model:", models)
-    tango_ds = get_tango_device_server(models, sim_data_files)
-    for ds in tango_ds:
-        print("ds: ", ds)
-    return tango_ds[0]
 
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(SdpMasterLeafNode.main) ENABLED START #
 
     standalone_mode = True
-    # devices = []
-    # devices.append(SdpMasterLeafNode)
     
     if standalone_mode == True:
         print("Running in standalone mode")
 
         ## Using tango simlib simulator
-        sim_data_files = []
-        sim_data_files.append("/home/1009728/projects/ska-tmc/ska-tmc/sdpmasterleafnode/src/sdpmasterleafnode/simulator/SdpMaster.fgo")
-        sim_data_files.append("/home/1009728/projects/ska-tmc/ska-tmc/sdpmasterleafnode/src/sdpmasterleafnode/simulator/sdp_master_sim_dd.json")
-        sdp_master_simulator = get_sdp_master_sim(sim_data_files)
+        device_name = "mid_sdp/elt/master"
+        sdp_master_simulator = get_sdp_master_sim(device_name)
 
         devices = []
         devices.append(sdp_master_simulator)
         devices.append(SdpMasterLeafNode)
 
         ret_val = run((devices), args=args, **kwargs)
-        # sdp_master_simulator.append(SdpMasterLeafNode)
-        # ret_val = run((sdp_master_simulator), args=args, **kwargs)
-        # ret_val = server_run(sdp_master_simulator)
     else:
         print("Running in normal mode")
         ret_val = run((SdpMasterLeafNode,), args=args, **kwargs)
