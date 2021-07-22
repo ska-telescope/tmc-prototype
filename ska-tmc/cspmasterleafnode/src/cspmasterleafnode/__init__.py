@@ -14,6 +14,7 @@
 from . import release
 from . import const
 from .csp_master_leaf_node import CspMasterLeafNode
+from .cspmastersimulator.cspmaster import CspMasterSimulator
 from .device_data import DeviceData
 from .attribute_callbacks import (
     CbfHealthStateAttributeUpdator,
@@ -29,6 +30,7 @@ __all__ = [
     "CbfHealthStateAttributeUpdator",
     "PssHealthStateAttributeUpdator",
     "PstHealthStateAttributeUpdator",
+    "CspMasterSimulator",
 ]
 
 __version__ = release.version

@@ -89,7 +89,7 @@ class TelescopeOn(BaseCommand):
         try:
             csp_mln_client_obj = TangoClient(this_device.read_property("CspMasterFQDN")[0])
             csp_mln_client_obj.send_command_async(
-                const.CMD_ON, [], self.telescope_on_cmd_ended_cb
+                const.CMD_ON, "", self.telescope_on_cmd_ended_cb
             )
             self.logger.debug(const.STR_ON_CMD_ISSUED)
             this_device.write_attr("activityMessage", const.STR_ON_CMD_ISSUED, False)

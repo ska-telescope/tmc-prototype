@@ -11,7 +11,7 @@
 
 SKA Dish Master TANGO device server
 """
-from . import csp_master_behaviour, CspMaster-DS, csp_master_simDD
+from . import csp_master_behaviour, cspmaster
 
-__all__ = ["CspMaster-DS", "csp_master_behaviour", "csp_master_simDD"]
+__all__ = ["cspmaster", "csp_master_behaviour"]
 

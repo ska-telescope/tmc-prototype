@@ -16,22 +16,26 @@ CSP Master Leaf node monitors the CSP Master and issues control actions during a
 import tango
 from tango import ApiUtil, DebugIt, AttrWriteType
 from tango.server import run, command, device_property, attribute
+# from tango.server import server_run
+# from tango_simlib.tango_sim_generator import (configure_device_models, get_tango_device_server)
 
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 
 from tmc.common.tango_server_helper import TangoServerHelper
+from tmc.common.tango_client import TangoClient
 
 from . import const
 from .telescope_on_command import TelescopeOn
 from .telescope_off_command import TelescopeOff
 from .telescope_standby_command import TelescopeStandby
 from .device_data import DeviceData
+from .cspmastersimulator.cspmaster import CspMasterSimulator
 
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
 
-__all__ = ["CspMasterLeafNode", "main", "TelescopeOn", "TelescopeOff", "TelescopeStandby"]
+__all__ = ["CspMasterLeafNode", "main", "TelescopeOn", "TelescopeOff", "TelescopeStandby", "CspMasterSimulator"]
 
 
 class CspMasterLeafNode(SKABaseDevice):
@@ -69,6 +73,16 @@ class CspMasterLeafNode(SKABaseDevice):
     # ---------------
     # General methods
     # ---------------
+    
+    def test_callback(self, event):
+        self.logger.debug("executing callback function")
+        self.logger.debug(f"Error event: {event.err}")
+        if not event.err:
+            log_msg = f"Attribute value: {event.attr_value.value}"
+            self.logger.debug(log_msg)
+        else:
+            self.logger.debug(f"Error event received. Error: {event.errors}")
+        
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
@@ -98,6 +112,14 @@ class CspMasterLeafNode(SKABaseDevice):
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
+
+            #### Push event testing
+            self.logger.debug("Subscribing attribute event")
+            device_client = TangoClient("mid_csp/elt/master")
+            device_client.subscribe_attribute("TestAttr", device.test_callback)
+
+            #### Push event testing ends
+
 
             this_device.write_attr("activityMessage", const.STR_INIT_SUCCESS, False)
             self.logger.info(const.STR_INIT_SUCCESS)
@@ -226,6 +248,7 @@ class CspMasterLeafNode(SKABaseDevice):
 # ----------
 
 
+
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(CspMasterLeafNode.main) ENABLED START #
     """
@@ -238,9 +261,20 @@ def main(args=None, **kwargs):
     :return: CspMasterLeafNode TANGO object.
 
     """
-    return run((CspMasterLeafNode,), args=args, **kwargs)
+    #return run((CspMasterLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  CspMasterLeafNode.main
+    standalone_mode = True
+    if standalone_mode == True:
+        print("Running in standalone mode")
+        csp_master_simulator = []
+        csp_master_simulator = CspMasterSimulator.simulator()
+        csp_master_simulator.append(CspMasterLeafNode)
+        ret_val = run((csp_master_simulator), args=args, **kwargs)
+    else:
+        print("Running in normal mode")
+        ret_val = run((CspMasterLeafNode,), args=args, **kwargs)
 
+    return ret_val
 
 if __name__ == "__main__":
     main()
