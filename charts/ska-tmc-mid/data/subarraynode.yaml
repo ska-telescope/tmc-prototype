@@ -3,7 +3,7 @@ function: dish-monitoring
 domain: general-monitoring
 instances: ["01", "02", "03"]
 entrypoints:
-  - name: "tmc.subarraynode.subarray_node.SubarrayNode"
+  - name: "ska_tmc_subarraynode_mid.subarray_node.SubarrayNode"
 server:
   name: "SubarrayNodeDS"
   instances:
