@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc"""
-version="0.8.1"
+version="0.8.2"
 version_info=version.split(".")
 description="""SKA-TMC"""
 author="Team NCRA"
@@ -9,10 +9,10 @@ author_email="telmgt-internal@googlegroups.com"
 license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
+release=0.8.2
+tag=0.8.2
+tag_description=Update TMC Low commands to make the transaction_id optional.
+release_notes=This release contains:<br/><ul><li>Updated TMC Low commands to make the transaction_id optional.</li></ul><br/>
+gitlab_username=apurvapatkar
+private_token=iwkFSe4t7AVoR57HUzbi
 
-release=0.8.1
-tag=0.8.1
-tag_description=Update TMC-Mid to test SP-1643. 
-release_notes=This release contains:<br/><ul><li>Updated csp and cbf chart versions. Update TMC-Mid to test SP-1643.</li></ul><br/>
-gitlab_username=HandeSnehal
-private_token=FZW8AKcYrbE7PRktnZjY
