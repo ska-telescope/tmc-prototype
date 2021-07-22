@@ -1,0 +1,352 @@
+{
+    "attributes": {
+        "State": {
+            "alarms": {
+                "delta_t": "Not specified",
+                "delta_val": "Not specified",
+                "extensions": "[]",
+                "max_alarm": "Not specified",
+                "max_warning": "Not specified",
+                "min_alarm": "Not specified",
+                "min_warning": "Not specified"
+            },
+            "color": "Lime",
+            "data_format": "SCALAR",
+            "data_type": "DevState",
+            "database": "localhost:10000",
+            "description": "",
+            "device": "mid_csp/elt/subarray_01",
+            "dim_x": 1,
+            "dim_y": 0,
+            "display_unit": "No display unit",
+            "enum_labels": [],
+            "events": {
+                "arch_event": {
+                    "archive_abs_change": "Not specified",
+                    "archive_period": "Not specified",
+                    "archive_rel_change": "Not specified",
+                    "extensions": "[]"
+                },
+                "ch_event": {
+                    "abs_change": "Not specified",
+                    "extensions": "[]",
+                    "rel_change": "Not specified"
+                },
+                "per_event": {
+                    "extensions": "[]",
+                    "period": "1000"
+                }
+            },
+            "format": "Not specified",
+            "label": "State",
+            "max_alarm": "Not specified",
+            "max_dim_x": 1,
+            "max_dim_y": 0,
+            "max_value": "Not specified",
+            "min_alarm": "Not specified",
+            "min_value": "Not specified",
+            "model": "localhost:10000/mid_csp/elt/subarray_01",
+            "name": "State",
+            "polling": 3000,
+            "quality": "ATTR_VALID",
+            "standard_unit": "No standard unit",
+            "string": "STANDBY",
+            "time": 1602497011.473705,
+            "unit": "",
+            "value": 7,
+            "writable": "READ"
+        },
+        "Status": {
+            "alarms": {
+                "delta_t": "Not specified",
+                "delta_val": "Not specified",
+                "extensions": "[]",
+                "max_alarm": "Not specified",
+                "max_warning": "Not specified",
+                "min_alarm": "Not specified",
+                "min_warning": "Not specified"
+            },
+            "color": "Lime",
+            "data_format": "SCALAR",
+            "data_type": "DevString",
+            "database": "localhost:10000",
+            "description": "",
+            "device": "mid_csp/elt/subarray_01",
+            "dim_x": 1,
+            "dim_y": 0,
+            "display_unit": "No display unit",
+            "enum_labels": [],
+            "events": {
+                "arch_event": {
+                    "archive_abs_change": "Not specified",
+                    "archive_period": "Not specified",
+                    "archive_rel_change": "Not specified",
+                    "extensions": "[]"
+                },
+                "ch_event": {
+                    "abs_change": "Not specified",
+                    "extensions": "[]",
+                    "rel_change": "Not specified"
+                },
+                "per_event": {
+                    "extensions": "[]",
+                    "period": "1000"
+                }
+            },
+            "format": "%s",
+            "label": "Status",
+            "max_alarm": "Not specified",
+            "max_dim_x": 1,
+            "max_dim_y": 0,
+            "max_value": "Not specified",
+            "min_alarm": "Not specified",
+            "min_value": "Not specified",
+            "model": "localhost:10000/mid_csp/elt/subarray_01/Status",
+            "name": "Status",
+            "polling": 3000,
+            "quality": "ATTR_VALID",
+            "standard_unit": "No standard unit",
+            "string": "Device mid_csp/elt/subarray_01 in standby",
+            "time": 1602497011.473706,
+            "unit": "",
+            "value": "Device mid_csp/elt/subarray_01 is standby",
+            "writable": "READ"
+        },
+        "obsState": {
+            "alarms": {
+                "delta_t": "Not specified",
+                "delta_val": "Not specified",
+                "extensions": "[]",
+                "max_alarm": "Not specified",
+                "max_warning": "Not specified",
+                "min_alarm": "Not specified",
+                "min_warning": "Not specified"
+            },
+            "color": "Lime",
+            "data_format": "SCALAR",
+            "data_type": "DevEnum",
+            "database": "localhost:10000",
+            "description": " ObsState status ",
+            "device": "mid_csp/elt/subarray_01",
+            "dim_x": 1,
+            "dim_y": 0,
+            "display_unit": "No display unit",
+            "enum_labels": [
+                "ABORTED",
+                "RESOURCING",
+                "IDLE",
+                "CONFIGURING",
+                "READY",
+                "SCANNING",
+                "ABORTING",
+                "EMPTY",
+                "RESETTING",
+                "FAULT",
+                "RESTARTING"
+            ],
+            "events": {
+                "arch_event": {
+                    "archive_abs_change": "Not specified",
+                    "archive_period": "Not specified",
+                    "archive_rel_change": "Not specified",
+                    "extensions": "[]"
+                },
+                "ch_event": {
+                    "abs_change": "1",
+                    "extensions": "[]",
+                    "rel_change": "1"
+                },
+                "per_event": {
+                    "extensions": "[]",
+                    "period": "10000"
+                }
+            },
+            "format": "%s",
+            "label": "obsState",
+            "max_alarm": "Not specified",
+            "max_dim_x": 1,
+            "max_dim_y": 0,
+            "max_value": "Not specified",
+            "min_alarm": "Not specified",
+            "min_value": "Not specified",
+            "model": "localhost:10000/mid_csp/elt/subarray_01/obsState",
+            "name": "obsState",
+            "polling": 3000,
+            "quality": "ATTR_VALID",
+            "standard_unit": "No standard unit",
+            "string": "1",
+            "time": 1602497000.703696,
+            "unit": "",
+            "value": 7,
+            "writable": "READ"
+        },
+        "healthState": {
+            "alarms": {
+                "delta_t": "Not specified",
+                "delta_val": "Not specified",
+                "extensions": "[]",
+                "max_alarm": "Not specified",
+                "max_warning": "Not specified",
+                "min_alarm": "Not specified",
+                "min_warning": "Not specified"
+            },
+            "color": "Lime",
+            "data_format": "SCALAR",
+            "data_type": "DevEnum",
+            "database": "localhost:10000",
+            "description": " Health status ",
+            "device": "mid_csp/elt/subarray_01",
+            "dim_x": 1,
+            "dim_y": 0,
+            "display_unit": "No display unit",
+            "enum_labels": [
+                "UNKNOWN",
+                "OK",
+                "DEGRADED",
+                "FAILED"
+            ],
+            "events": {
+                "arch_event": {
+                    "archive_abs_change": "Not specified",
+                    "archive_period": "Not specified",
+                    "archive_rel_change": "Not specified",
+                    "extensions": "[]"
+                },
+                "ch_event": {
+                    "abs_change": "1",
+                    "extensions": "[]",
+                    "rel_change": "1"
+                },
+                "per_event": {
+                    "extensions": "[]",
+                    "period": "10000"
+                }
+            },
+            "format": "%s",
+            "label": "healthState",
+            "max_alarm": "Not specified",
+            "max_dim_x": 1,
+            "max_dim_y": 0,
+            "max_value": "Not specified",
+            "min_alarm": "Not specified",
+            "min_value": "Not specified",
+            "model": "localhost:10000/mid_csp/elt/subarray_01/healthState",
+            "name": "healthState",
+            "polling": 3000,
+            "quality": "ATTR_VALID",
+            "standard_unit": "No standard unit",
+            "string": "1",
+            "time": 1602497000.703696,
+            "unit": "",
+            "value": 5,
+            "writable": "READ"
+        }
+    },
+    "commands": {
+        "On": {
+            "cmd_name": "On",
+            "cmd_tag": 0,
+            "device": "mid_csp/elt/subarray_01",
+            "disp_level": "OPERATOR",
+            "in_type": "DevVoid",
+            "in_type_desc": "None",
+            "name": "On",
+            "out_type": "DevVoid",
+            "out_type_desc": "Uninitialised"
+        },
+        "Off": {
+            "cmd_name": "Off",
+            "cmd_tag": 0,
+            "device": "mid_csp/elt/subarray_01",
+            "disp_level": "OPERATOR",
+            "in_type": "DevVoid",
+            "in_type_desc": "None",
+            "name": "Off",
+            "out_type": "DevVoid",
+            "out_type_desc": "Uninitialised"
+        },
+        "Abort": {
+            "cmd_name": "Abort",
+            "cmd_tag": 0,
+            "device": "mid_csp/elt/subarray_01",
+            "disp_level": "OPERATOR",
+            "in_type": "DevVoid",
+            "in_type_desc": "None",
+            "name": "Abort",
+            "out_type": "DevVoid",
+            "out_type_desc": "Uninitialised"
+        },
+        "AssignResources": {
+            "cmd_name": "AssignResources",
+            "cmd_tag": 0,
+            "device": "mid_csp/elt/subarray_01",
+            "disp_level": "OPERATOR",
+            "in_type": "DevString",
+            "in_type_desc": "None",
+            "name": "AssignResources",
+            "out_type": "DevString",
+            "out_type_desc": "Uninitialised"
+        },
+        "EndScan": {
+            "cmd_name": "EndScan",
+            "cmd_tag": 0,
+            "device": "mid_csp/elt/subarray_01",
+            "disp_level": "OPERATOR",
+            "in_type": "DevVoid",
+            "in_type_desc": "None",
+            "name": "EndScan",
+            "out_type": "DevVoid",
+            "out_type_desc": "Uninitialised"
+        },
+        "ReleaseAllResources": {
+            "cmd_name": "ReleaseAllResources",
+            "cmd_tag": 0,
+            "device": "mid_csp/elt/subarray_01",
+            "disp_level": "OPERATOR",
+            "in_type": "DevVoid",
+            "in_type_desc": "None",
+            "name": "ReleaseAllResources",
+            "out_type": "DevString",
+            "out_type_desc": "Uninitialised"
+        },
+        "Scan": {
+            "cmd_name": "Scan",
+            "cmd_tag": 0,
+            "device": "mid_csp/elt/subarray_01",
+            "disp_level": "OPERATOR",
+            "in_type": "DevString",
+            "in_type_desc": "None",
+            "name": "Scan",
+            "out_type": "DevVoid",
+            "out_type_desc": "Uninitialised"
+        },
+        "Configure": {
+            "cmd_name": "Configure",
+            "cmd_tag": 0,
+            "device": "mid_csp/elt/subarray_01",
+            "disp_level": "OPERATOR",
+            "in_type": "DevString",
+            "in_type_desc": "None",
+            "name": "Configure",
+            "out_type": "DevVoid",
+            "out_type_desc": "Uninitialised"
+        },
+        "GoToIdle": {
+            "cmd_name": "GoToIdle",
+            "cmd_tag": 0,
+            "device": "mid_csp/elt/subarray_01",
+            "disp_level": "OPERATOR",
+            "in_type": "DevVoid",
+            "in_type_desc": "None",
+            "name": "GoToIdle",
+            "out_type": "DevVoid",
+            "out_type_desc": "Uninitialised"
+        }        
+    },
+    "properties": {},
+    "dev_class": "CspSubarray",
+    "host": "ska-csp-subarray_01",
+    "level": "5",
+    "name": "mid_csp/elt/subarray_01",
+    "server": "CspSubarray/1"
+}

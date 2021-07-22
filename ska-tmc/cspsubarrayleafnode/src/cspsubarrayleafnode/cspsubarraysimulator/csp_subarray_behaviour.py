@@ -20,7 +20,60 @@ MODULE_LOGGER = logging.getLogger(__name__)
 
 
 class OverrideCspSubarray(object):
-    
+
+    def action_on(self, models, tango_dev=None, data_input=[]):
+        """Changes the State of the device to ON.
+        """
+        on = "ON"
+        ok = "OK"
+        _allowed_modes = (
+            "OFF",
+            "STANDBY"
+        )
+        if str(tango_dev.get_state()) in ["ON"]:
+            print(f"CSP Subarray is already in {on} state")
+            return
+
+        if str(tango_dev.get_state()) in _allowed_modes:
+            tango_dev.set_state(DevState.ON)
+            print (f"Csp Subarray transitioned to the {on} state.")
+            csp_mode_healthState = models.sim_quantities["healthState"]
+            set_enum(csp_mode_healthState, ok, models.time_func())
+            print(f"heathState transitioned to {ok} state")
+        else:
+            Except.throw_exception(
+                    "ON Command Failed",
+                    "Not allowed",
+                    ErrSeverity.WARN,
+                )
+
+    def action_off(self, models, tango_dev=None, data_input=[]):
+        """Changes the State of the device to OFF.
+        """
+        off = "OFF"
+        ok = "OK"
+        _allowed_modes = (
+            "ON",
+            "ALARM",
+            "STANDBY"
+        )
+        if str(tango_dev.get_state()) in ["OFF"]:
+            print(f"CSP master is already in {off} state")
+            return
+
+        if str(tango_dev.get_state()) in _allowed_modes:
+            tango_dev.set_state(DevState.OFF)
+            print (f"Csp Subarray transitioned to the {off} state.")
+            csp_mode_healthState = models.sim_quantities["healthState"]
+            set_enum(csp_mode_healthState, ok, models.time_func())
+            print(f"heathState transitioned to {ok} state")
+        else:
+            Except.throw_exception(
+                    "ON Command Failed",
+                    "Not allowed",
+                    ErrSeverity.WARN,
+                )
+
     def action_assignresources(self, models, tango_dev=None, data_input=None):
         """Changes the State of the device to .
         """
@@ -29,20 +82,17 @@ class OverrideCspSubarray(object):
         obsstate = get_enum_str(obsstate_attribute)
         print("obsstate::::::::::::",obsstate)
         if (obsstate == "EMPTY"):
-            if('subarray_id' in data_input):
-                set_enum(obsstate_attribute, "RESOURCING", models.time_func())
-                print("obsstate in resourcing ::::::::::::",get_enum_str(obsstate_attribute))
+            set_enum(obsstate_attribute, "RESOURCING", models.time_func())
+            tango_dev.push_change_event("obsState", "ObsState in Idle")
+            tango_dev.set_status("ObsState in RESOURCING")
+            print("obsstate in resourcing ::::::::::::",get_enum_str(obsstate_attribute))
 
-                time.sleep(1)
-                set_enum(obsstate_attribute, "IDLE", models.time_func())
-                print("obsstate after set to Idle::::::::::::",get_enum_str(obsstate_attribute))
+            time.sleep(1)
+            set_enum(obsstate_attribute, "IDLE", models.time_func())
+            tango_dev.push_change_event("obsState", "ObsState in Idle")
+            tango_dev.set_status("ObsState in Idle")
+            print("obsstate after set to Idle::::::::::::",get_enum_str(obsstate_attribute))
 
-            else:
-                Except.throw_exception(
-                    "Assign Command Failed",
-                    "wrong input arguement.",
-                    ErrSeverity.WARN,
-                )
         else:
             Except.throw_exception(
                 "Assign Command Failed",
@@ -59,6 +109,8 @@ class OverrideCspSubarray(object):
         print("obsstate::::::::::::",obsstate)
         if (obsstate == "SCANNING"):
             set_enum(obsstate_attribute, "READY", models.time_func())
+            tango_dev.push_change_event("obsState", "ObsState in READY")
+            tango_dev.set_status("ObsState in READY")
             print("obsstate in Ready after endscan performed::::::::::",get_enum_str(obsstate_attribute))
             
         else:
@@ -84,9 +136,13 @@ class OverrideCspSubarray(object):
         print("obsstate::::::::::::",obsstate)
         if (obsstate in _allowed_obsstate):
            set_enum(obsstate_attribute, "ABORTING", models.time_func())
+           tango_dev.push_change_event("obsState", "ObsState in ABORTING")
+           tango_dev.set_status("ObsState in ABORTING")
            print("obsstate in Aborting ::::::::::::",get_enum_str(obsstate_attribute))
            time.sleep(1)
            set_enum(obsstate_attribute, "ABORTED", models.time_func())
+           tango_dev.push_change_event("obsState", "ObsState in ABORTED")
+           tango_dev.set_status("ObsState in ABORTED")
            print("obsstate after set to ABORTED::::::::::::",get_enum_str(obsstate_attribute))
             
         else:
@@ -105,10 +161,14 @@ class OverrideCspSubarray(object):
         print("obsstate::::::::::::",obsstate)
         if (obsstate == "IDLE"):
             set_enum(obsstate_attribute, "RESOURCING", models.time_func())
+            tango_dev.push_change_event("obsState", "ObsState in RESOURCING")
+            tango_dev.set_status("ObsState in RESOURCING")
             print("obsstate in resourcing ::::::::::::",get_enum_str(obsstate_attribute))
 
             time.sleep(1)
             set_enum(obsstate_attribute, "EMPTY", models.time_func())
+            tango_dev.push_change_event("obsState", "ObsState in EMPTY")
+            tango_dev.set_status("ObsState in EMPTY")
             print("obsstate after set to EMPTY::::::::::::",get_enum_str(obsstate_attribute))
            
         else:
@@ -130,21 +190,18 @@ class OverrideCspSubarray(object):
         obsstate = get_enum_str(obsstate_attribute)
         print("obsstate::::::::::::",obsstate)
         if (obsstate in _allowed_obsstate):
-            if('csp' in data_input):
-                set_enum(obsstate_attribute, "CONFIGURING", models.time_func())
-                print("obsstate in configuring ::::::::::::",get_enum_str(obsstate_attribute))
+            set_enum(obsstate_attribute, "CONFIGURING", models.time_func())
+            tango_dev.push_change_event("obsState", "ObsState in CONFIGURING")
+            tango_dev.set_status("ObsState in CONFIGURING")
+            print("obsstate in configuring ::::::::::::",get_enum_str(obsstate_attribute))
 
-                time.sleep(1)
-                set_enum(obsstate_attribute, "READY", models.time_func())
-                print("obsstate after set to Ready::::::::::::",get_enum_str(obsstate_attribute))
+            time.sleep(1)
+            set_enum(obsstate_attribute, "READY", models.time_func())
+            tango_dev.push_change_event("obsState", "ObsState in READY")
+            tango_dev.set_status("ObsState in READY")
+            print("obsstate after set to Ready::::::::::::",get_enum_str(obsstate_attribute))
 
-                print("Configure command is invoked")
-            else:
-                Except.throw_exception(
-                    "Configure Command Failed",
-                    "wrong input arguement.",
-                    ErrSeverity.WARN,
-                )
+            print("Configure command is invoked")
         else:
             Except.throw_exception(
                 "Configure Command Failed",
@@ -160,21 +217,18 @@ class OverrideCspSubarray(object):
         obsstate = get_enum_str(obsstate_attribute)
         print("obsstate::::::::::::",obsstate)
         if (obsstate == "READY"):
-            if('scan_id' in data_input):
-                set_enum(obsstate_attribute, "SCANNING", models.time_func())
-                print("obsstate in SCANNING ::::::::::::",get_enum_str(obsstate_attribute))
+            set_enum(obsstate_attribute, "SCANNING", models.time_func())
+            tango_dev.push_change_event("obsState", "ObsState in SCANNING")
+            tango_dev.set_status("ObsState in SCANNING")
+            print("obsstate in SCANNING ::::::::::::",get_enum_str(obsstate_attribute))
 
-                time.sleep(10)
-                set_enum(obsstate_attribute, "READY", models.time_func())
-                print("obsstate after set to Ready::::::::::::",get_enum_str(obsstate_attribute))
+            time.sleep(10)
+            set_enum(obsstate_attribute, "READY", models.time_func())
+            tango_dev.push_change_event("obsState", "ObsState in READY")
+            tango_dev.set_status("ObsState in READY")
+            print("obsstate after set to Ready::::::::::::",get_enum_str(obsstate_attribute))
 
-                print("Scan command is invoked")
-            else:
-                Except.throw_exception(
-                    "Scan Command Failed",
-                    "wrong input arguement.",
-                    ErrSeverity.WARN,
-                )
+            print("Scan command is invoked")
         else:
             Except.throw_exception(
                 "Scan Command Failed",
@@ -192,6 +246,8 @@ class OverrideCspSubarray(object):
         print("obsstate::::::::::::",obsstate)
         if (obsstate == "READY"):
             set_enum(obsstate_attribute, "IDLE", models.time_func())
+            tango_dev.push_change_event("obsState", "ObsState in IDLE")
+            tango_dev.set_status("ObsState in IDLE")
             print("obsstate in IDLE after gotoidle performed::::::::::",get_enum_str(obsstate_attribute))
             
         else:
@@ -210,6 +266,8 @@ class OverrideCspSubarray(object):
         print("obsstate::::::::::::",obsstate)
         if (obsstate == "ABORTED"):
             set_enum(obsstate_attribute, "EMPTY", models.time_func())
+            tango_dev.push_change_event("obsState", "ObsState in EMPTY")
+            tango_dev.set_status("ObsState in EMPTY")
             print("obsstate INITIATION performed::::::::::",get_enum_str(obsstate_attribute))
             
 def get_enum_str(quantity):

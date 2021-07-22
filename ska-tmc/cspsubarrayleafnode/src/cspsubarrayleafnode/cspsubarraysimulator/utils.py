@@ -40,7 +40,7 @@ def get_tango_server_class(device_name):
     if device_name == "test/nodb/cspsubarray":
         configure_args["test_device_name"] = device_name
     
-    sim_data_files = ['CspSubarray.xmi','csp_subarray_SimDD.json']
+    sim_data_files = ['/home/ubuntu/projects/ska-tmc/ska-tmc/cspsubarrayleafnode/src/cspsubarrayleafnode/cspsubarraysimulator/CspSubarray.fgo','/home/ubuntu/projects/ska-tmc/ska-tmc/cspsubarrayleafnode/src/cspsubarrayleafnode/cspsubarraysimulator/csp_subarray_SimDD.json']
     models = configure_device_models(sim_data_files)
     TangoDeviceServers = get_tango_device_server(models, sim_data_files)
     # server_run(TangoDeviceServers)

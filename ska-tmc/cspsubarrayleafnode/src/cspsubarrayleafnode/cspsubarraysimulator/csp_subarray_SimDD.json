@@ -1,0 +1,152 @@
+{
+    "class_name": "CspSubarray",
+    "class_overrides": [
+      {
+        "override_class": {
+          "name": "Sim_csp_subarray_behaviour",
+          "module_directory": "None",
+          "module_name": "cspsubarrayleafnode.cspsubarraysimulator.csp_subarray_behaviour",
+          "class_name": "OverrideCspSubarray"
+        }
+      }
+    ],
+    "dynamicAttributes": [
+    ],
+    "commands": [
+      {
+        "basicCommandData": {
+          "name": "On",
+          "input_parameters": {
+            "dtype_in": "Void",
+            "doc_in": "",
+            "dformat_in": "Scalar"
+          },
+          "output_parameters": {
+            "dtype_out": "Void",
+            "doc_out": "",
+            "dformat_out": "Scalar"
+          }
+        }
+      },
+      {
+        "basicCommandData": {
+          "name": "Off",
+          "input_parameters": {
+            "dtype_in": "Void",
+            "doc_in": "",
+            "dformat_in": "Scalar"
+          },
+          "output_parameters": {
+            "dtype_out": "Void",
+            "doc_out": "",
+            "dformat_out": "Scalar"
+          }
+        }
+      },
+      {
+        "basicCommandData": {
+          "name": "Abort",
+          "input_parameters": {
+            "dtype_in": "Void",
+            "doc_in": "",
+            "dformat_in": "Scalar"
+          },
+          "output_parameters": {
+            "dtype_out": "Void",
+            "doc_out": "",
+            "dformat_out": "Scalar"
+          }
+        }
+      },
+      {
+        "basicCommandData": {
+          "name": "AssignResources",
+          "input_parameters": {
+            "dtype_in": "VarStringArray",
+            "doc_in": "",
+            "dformat_in": "Scalar"
+          },
+          "output_parameters": {
+            "dtype_out": "VarStringArray",
+            "doc_out": "",
+            "dformat_out": "Scalar"
+          }
+        }
+      },
+      {
+        "basicCommandData": {
+          "name": "EndScan",
+          "input_parameters": {
+            "dtype_in": "Void",
+            "doc_in": "",
+            "dformat_in": "Scalar"
+          },
+          "output_parameters": {
+            "dtype_out": "Void",
+            "doc_out": "",
+            "dformat_out": "Scalar"
+          }
+        }
+      },
+      {
+        "basicCommandData": {
+          "name": "ReleaseAllResources",
+          "input_parameters": {
+            "dtype_in": "Void",
+            "doc_in": "",
+            "dformat_in": "Scalar"
+          },
+          "output_parameters": {
+            "dtype_out": "VarStringArray",
+            "doc_out": "",
+            "dformat_out": "Scalar"
+          }
+        }
+      },
+      {
+        "basicCommandData": {
+          "name": "Configure",
+          "input_parameters": {
+            "dtype_in": "VarStringArray",
+            "doc_in": "",
+            "dformat_in": "Scalar"
+          },
+          "output_parameters": {
+            "dtype_out": "Void",
+            "doc_out": "",
+            "dformat_out": "Scalar"
+          }
+        }
+      },
+      {
+        "basicCommandData": {
+          "name": "GoToIdle",
+          "input_parameters": {
+            "dtype_in": "Void",
+            "doc_in": "",
+            "dformat_in": "Scalar"
+          },
+          "output_parameters": {
+            "dtype_out": "Void",
+            "doc_out": "",
+            "dformat_out": "Scalar"
+          }
+        }
+      },
+      {
+        "basicCommandData": {
+          "name": "Scan",
+          "input_parameters": {
+            "dtype_in": "VarStringArray",
+            "doc_in": "",
+            "dformat_in": "Scalar"
+          },
+          "output_parameters": {
+            "dtype_out": "Void",
+            "doc_out": "",
+            "dformat_out": "Scalar"
+          }
+        }
+      }
+    ]
+  }

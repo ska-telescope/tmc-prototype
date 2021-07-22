@@ -15,8 +15,9 @@ from . import release
 from . import const
 from .csp_subarray_leaf_node import CspSubarrayLeafNode
 from .device_data import DeviceData
+from .cspsubarraysimulator.csp_subarray import CspSubarraySimulator
 
-__all__ = ["release", "const", "CspSubarrayLeafNode", "exceptions", "DeviceData"]
+__all__ = ["release", "const", "CspSubarrayLeafNode", "exceptions", "DeviceData", "CspSubarraySimulator"]
 
 __version__ = release.version
 __version_info__ = release.version_info
