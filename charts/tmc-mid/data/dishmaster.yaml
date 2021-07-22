@@ -46,7 +46,7 @@ server:
                     - "1000"
                     - "pointingState"
                     - "1000"
-                    - "state"
+                    - "State"
                     - "1000"
               attribute_properties:
                 - attribute: "achievedPointing"

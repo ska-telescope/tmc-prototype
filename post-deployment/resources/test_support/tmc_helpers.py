@@ -9,6 +9,9 @@ from resources.test_support.sync_decorators import (
     sync_abort,
     sync_restart,
     sync_obsreset,
+    sync_tmc_on,
+    sync_tmc_off,
+    sync_tmc_standby
 )
 from resources.test_support.logging_decorators import log_it
 from tango import DeviceProxy
@@ -34,8 +37,33 @@ def start_up():
     )
     CentralNode.StartUpTelescope()
 
+def set_telescope_on():
+    CentralNode = DeviceProxy("ska_mid/tm_central/central_node")
+    LOGGER.info(
+        "Before Sending TelescopeOn command on CentralNode state :"
+        + str(CentralNode.State())
+    )
+    CentralNode.TelescopeOn()
 
-@sync_assign_resources(2, 300)
+
+def set_telescope_off():
+    CentralNode = DeviceProxy("ska_mid/tm_central/central_node")
+    LOGGER.info(
+        "Before Sending TelescopeOff command on CentralNode state :"
+        + str(CentralNode.State())
+    )
+    CentralNode.TelescopeOff()
+
+
+def set_telescope_standby():
+    CentralNode = DeviceProxy("ska_mid/tm_central/central_node")
+    LOGGER.info(
+        "Before Sending TelescopeStandby command on CentralNode state :"
+        + str(CentralNode.State())
+    )
+    CentralNode.TelescopeStandby()
+
+@sync_assign_resources(2, 600)
 def compose_sub():
     resource("ska_mid/tm_subarray_node/1").assert_attribute("State").equals("ON")
     resource("ska_mid/tm_subarray_node/1").assert_attribute("obsState").equals("EMPTY")
@@ -80,6 +108,7 @@ def release_resources():
 
 @sync_set_to_standby
 def set_to_standby():
+    print("INSIDE SET TO STANDBY----")
     CentralNode = DeviceProxy("ska_mid/tm_central/central_node")
     CentralNode.StandByTelescope()
     SubarrayNode = DeviceProxy("ska_mid/tm_subarray_node/1")
@@ -135,3 +164,68 @@ def obsreset():
     SubarrayNode.ObsReset()
     LOGGER.info("Subarray obsState is: " + str(SubarrayNode.obsState))
     LOGGER.info("Invoked Obsreset on Subarray")
+
+
+#Note: make use of this method while updating integration tests for sp-1623
+@sync_tmc_on
+def set_tmc_on():
+    CentralNode = DeviceProxy("ska_mid/tm_central/central_node")
+    LOGGER.info(
+        "Before Sending ON command on CentralNode state :"
+        + str(CentralNode.State())
+    )
+    CentralNode.On()
+
+
+#Note: make use of this method while updating integration tests for sp-1623
+@sync_tmc_off
+def set_tmc_off():
+    CentralNode = DeviceProxy("ska_mid/tm_central/central_node")
+    CentralNode.Off()
+    SubarrayNode = DeviceProxy("ska_mid/tm_subarray_node/1")
+    LOGGER.info(
+        "After Off command, SubarrayNode State and ObsState:"
+        + str(SubarrayNode.State())
+        + str(SubarrayNode.ObsState)
+    )
+    LOGGER.info("After Off command, CentralNode State:" + str(CentralNode.State()))
+    LOGGER.info("TMC is OFF")
+
+
+#Note: make use of this method while updating integration tests for sp-1623
+@sync_tmc_standby
+def set_tmc_standby():
+    CentralNode = DeviceProxy("ska_mid/tm_central/central_node")
+    CentralNode.Standby()
+    SubarrayNode = DeviceProxy("ska_mid/tm_subarray_node/1")
+    CspSubarrayLeafNode = DeviceProxy("ska_mid/tm_leaf_node/csp_subarray01")
+    SdpSubarrayLeafNode = DeviceProxy("ska_mid/tm_leaf_node/sdp_subarray01")
+    CspMasterLeafNode = DeviceProxy("ska_mid/tm_leaf_node/csp_master")
+    SdpMasterLeafNode = DeviceProxy("ska_mid/tm_leaf_node/sdp_master")
+    LOGGER.info(
+        "After Standby command, SubarrayNode State and ObsState:"
+        + str(SubarrayNode.State())
+        + str(SubarrayNode.ObsState)
+    )
+    LOGGER.info(
+        "After Standby command, CspSubarrayLeafNode State and ObsState:"
+        + str(CspSubarrayLeafNode.State())
+        + str(CspSubarrayLeafNode.ObsState)
+    )
+    LOGGER.info(
+        "After Standby command, SdpSubarrayLeafNode State and ObsState:"
+        + str(SdpSubarrayLeafNode.State())
+        + str(SdpSubarrayLeafNode.ObsState)
+    )
+    LOGGER.info(
+        "After Standby command, CspMasterLeafNode State and ObsState:"
+        + str(CspMasterLeafNode.State())
+        + str(CspMasterLeafNode.ObsState)
+    )
+    LOGGER.info(
+        "After Standby command, SdpMasterLeafNode State and ObsState:"
+        + str(SdpMasterLeafNode.State())
+        + str(SdpMasterLeafNode.ObsState)
+    )
+    LOGGER.info("After Standby command, CentralNode State:" + str(CentralNode.State()))
+    LOGGER.info("TMC is in Standby")
