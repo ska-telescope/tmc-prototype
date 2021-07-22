@@ -379,7 +379,7 @@ def main(args=None, **kwargs):
         devices.append(sdp_master_simulator)
         devices.append(SdpMasterLeafNode)
 
-        ret_val = run((devices), args=args, **kwargs)
+        ret_val = run(devices, args=args, **kwargs)
     else:
         print("Running in normal mode")
         ret_val = run((SdpMasterLeafNode,), args=args, **kwargs)
