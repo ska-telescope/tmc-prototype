@@ -62,8 +62,8 @@ def test_assign_resources():
         the_waiter = waiter()
 
         # given a started up telescope
-        assert telescope_is_in_standby()
-        LOGGER.info("Starting up the Telescope")
+        # assert telescope_is_in_standby()
+        # LOGGER.info("Starting up the Telescope")
         
         assert tmc_is_in_on()
         LOGGER.info("TMC devices are up")

@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc"""
-version="0.8.2"
+version="9.9.9"
 version_info=version.split(".")
 description="""SKA-TMC"""
 author="Team NCRA"
@@ -9,8 +9,8 @@ author_email="telmgt-internal@googlegroups.com"
 license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
-release=0.8.2
-tag=0.8.2
+release=9.9.9
+tag=9.9.9
 tag_description=Update TMC Low commands to make the transaction_id optional.
 release_notes=This release contains:<br/><ul><li>Updated TMC Low commands to make the transaction_id optional.</li></ul><br/>
 gitlab_username=apurvapatkar

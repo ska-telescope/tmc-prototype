@@ -19,8 +19,8 @@ global:
   skatmc:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc
-    tag: 0.8.2
-    pullPolicy: IfNotPresent
+    tag: 9.9.9-dirty
+    pullPolicy: Never
 
 
   ##  Order of instances resolution ##
@@ -60,8 +60,8 @@ centralnodemid:
   image:
     registry: artefact.skao.int/ska-telescope
     image: ska-tmc-centralnode-mid
-    tag: 0.2.5
-    pullPolicy: IfNotPresent
+    tag: 0.2.6
+    pullPolicy: Never
 
 
 subarraynodemid:
