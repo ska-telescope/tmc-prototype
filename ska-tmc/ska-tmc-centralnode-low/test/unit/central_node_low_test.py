@@ -23,8 +23,8 @@ from tango import DevState
 from tango.test_context import DeviceTestContext
 
 # Additional import
-from centralnodelow import CentralNode, const, release
-from centralnodelow.const import STR_ON_CMD_ISSUED, STR_STANDBY_CMD_ISSUED
+from ska_tmc_centralnode_low import CentralNode, const, release
+from ska_tmc_centralnode_low.const import STR_ON_CMD_ISSUED, STR_STANDBY_CMD_ISSUED
 from ska.base.control_model import HealthState
 from ska.base.control_model import LoggingLevel
 from tmc.common.tango_client import TangoClient

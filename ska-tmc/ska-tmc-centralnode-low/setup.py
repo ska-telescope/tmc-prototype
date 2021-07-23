@@ -21,7 +21,7 @@ readme_filename = os.path.join(setup_dir, "README.rst")
 with open(readme_filename) as file:
     long_description = file.read()
 
-release_filename = os.path.join(setup_dir, "src", "centralnodelow", "release.py")
+release_filename = os.path.join(setup_dir, "src", "ska_tmc_centralnode_low", "release.py")
 exec(open(release_filename).read())
 
 setup(
@@ -32,13 +32,13 @@ setup(
     package_dir={"": "src"},
     include_package_data=True,
     entry_points={
-        "console_scripts": ["CentralNodeLowDS=centralnodelow.central_node_low:main"]
+        "console_scripts": ["CentralNodeLowDS=ska_tmc_centralnode_low.central_node_low:main"]
     },
     author="Team NCRA",
     author_email="telmgt-internal@googlegroups.com",
     license="BSD-3-Clause",
     long_description=long_description,
-    url="https://www.skatelescope.org",
+    url="https://www.skaobservatory.org",
     platforms="Linux",
     install_requires=["pytango==9.3.3", "mock"],
     setup_requires=[

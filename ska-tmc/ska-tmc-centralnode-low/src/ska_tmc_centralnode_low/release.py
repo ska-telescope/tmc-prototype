@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# This file is part of the SubarrayNode Low project
+# This file is part of the CentralNode Low project
 #
 #
 #
@@ -9,13 +9,12 @@
 
 """Release information for Python Package"""
 
-name = """subarraynodelow"""
-version = "0.6.7"
+name = """ska-tmc-centralnode-low"""
+version = "0.8.3"
 version_info = version.split(".")
-description = """Provides the monitoring and control interface required by users as well as
-other TM Components (such as OET, Central Node) for a SKA Low Subarray."""
+description = """Central Node low is a coordinator of the complete M&C system."""
 author = "Team NCRA"
 author_email = "telmgt-internal@googlegroups.com"
 license = """BSD-3-Clause"""
-url = """https://www.skatelescope.org"""
+url = """https://www.skaobservatory.org"""
 copyright = """"""

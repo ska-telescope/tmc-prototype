@@ -20,10 +20,10 @@ import threading
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, ObsMode, ObsState
 from ska.base import SKASubarray
-from .device_data import DeviceData
 from tmc.common.tango_server_helper import TangoServerHelper
-from subarraynodelow.health_state_aggregator import HealthStateAggregator
-from subarraynodelow.obs_state_aggregator import ObsStateAggregator
+from .device_data import DeviceData
+from .health_state_aggregator import HealthStateAggregator
+from .obs_state_aggregator import ObsStateAggregator
 from .assigned_resources_maintainer import AssignedResourcesMaintainer
 from . import const, release
 from .on_command import On
