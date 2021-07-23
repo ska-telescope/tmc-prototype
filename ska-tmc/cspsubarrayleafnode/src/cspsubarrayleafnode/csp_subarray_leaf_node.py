@@ -425,7 +425,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         """ Invokes AssignResources command on CspSubarrayLeafNode. """
         handler = self.get_command_object("AssignResources")
         try:
-            # self.validate_obs_state()
+            self.validate_obs_state()
             pass
 
         except InvalidObsStateError as error:
@@ -581,23 +581,13 @@ def main(args=None, **kwargs):
 
     :return: CspSubarrayLeafNode TANGO object.
 
-    """
-    # return run((CspSubarrayLeafNode,), args=args, **kwargs)
-    
+    """    
     standalone_mode = True
-    # devices = []
-    # devices.append(SdpMasterLeafNode)
     
     if standalone_mode == True:
         print("Running in standalone mode")
         csp_subarray_simulator = []
-        ## Using tango simlib simulator
-        # sim_data_files = []
-        # sim_data_files.append("/home/1009728/projects/ska-tmc/simulators/SdpMaster.fgo")
-        # sim_data_files.append("/home/1009728/projects/ska-tmc/simulators/sdp_master_sim_dd.json")
-        # sdp_master_simulator = get_sdp_master_sim(sim_data_files)
         csp_subarray_simulator = CspSubarraySimulator.simulator()
-        # devices.append(sdp_master_simulator)
         csp_subarray_simulator.append(CspSubarrayLeafNode)
         ret_val = run((csp_subarray_simulator), args=args, **kwargs)
     else:

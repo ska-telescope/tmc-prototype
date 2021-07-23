@@ -3,7 +3,7 @@ import logging
 
 from tango_simlib.tango_sim_generator import (configure_device_models, get_tango_device_server)
 
-# from ska.logging import configure_logging
+from ska.logging import configure_logging
 
 
 def get_tango_server_class(device_name):
@@ -14,15 +14,6 @@ def get_tango_server_class(device_name):
     :return CspSubarray: tango.server.Device
         The Tango device class for CspSubarray
     """
-    # data_descr_files = []
-    # data_descr_files.append(
-    #     pkg_resources.resource_filename("dishmaster", "dish_master.fgo")
-    # )
-    # data_descr_files.append(
-    #     pkg_resources.resource_filename("dishmaster", "dish_master_SimDD.json")
-    # )
-
-    # add a filter with this device's name
     device_name_tag = f"tango-device:{device_name}"
 
     class TangoDeviceTagsFilter(logging.Filter):
@@ -30,8 +21,15 @@ def get_tango_server_class(device_name):
             record.tags = device_name_tag
             return True
 
+    sim_data_files = []
+    sim_data_files.append(
+        pkg_resources.resource_filename("cspsubarrayleafnode.cspsubarraysimulator", "CspSubarray.fgo")
+    )
+    sim_data_files.append(
+        pkg_resources.resource_filename("cspsubarrayleafnode.cspsubarraysimulator", "csp_subarray_SimDD.json")
+    )
     # set up Python logging
-    # configure_logging(tags_filter=TangoDeviceTagsFilter)
+    configure_logging(tags_filter=TangoDeviceTagsFilter)
     logger_name = f"csp-subarray-{device_name}"
     logger = logging.getLogger(logger_name)
     logger.info("Logging started for %s.", device_name)
@@ -40,11 +38,6 @@ def get_tango_server_class(device_name):
     if device_name == "test/nodb/cspsubarray":
         configure_args["test_device_name"] = device_name
     
-    sim_data_files = ['/home/ubuntu/projects/ska-tmc/ska-tmc/cspsubarrayleafnode/src/cspsubarrayleafnode/cspsubarraysimulator/CspSubarray.fgo','/home/ubuntu/projects/ska-tmc/ska-tmc/cspsubarrayleafnode/src/cspsubarrayleafnode/cspsubarraysimulator/csp_subarray_SimDD.json']
     models = configure_device_models(sim_data_files)
-    TangoDeviceServers = get_tango_device_server(models, sim_data_files)
-    # server_run(TangoDeviceServers)
-
-    # model = configure_device_model(data_descr_files, **configure_args)
-    # DishMaster, _ = get_tango_device_server(model, data_descr_files)
-    return TangoDeviceServers
+    tango_ds = get_tango_device_server(models, sim_data_files)
+    return tango_ds

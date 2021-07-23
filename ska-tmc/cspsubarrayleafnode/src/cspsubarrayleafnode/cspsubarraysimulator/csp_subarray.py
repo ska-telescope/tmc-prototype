@@ -21,10 +21,5 @@ class CspSubarraySimulator():
         else:
             device_name = "mid_csp_unset/elt/master"
 
-        TangoDeviceServers = get_tango_server_class(device_name)
-        # server_run(TangoDeviceServers)
-        return TangoDeviceServers
-
-
-# if __name__ == "__main__":
-#     main()
+        tango_ds = get_tango_server_class(device_name)
+        return tango_ds

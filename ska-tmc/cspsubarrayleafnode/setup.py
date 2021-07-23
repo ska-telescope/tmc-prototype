@@ -30,11 +30,17 @@ setup(
     description="",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
-    package_data={"": ["ska_antennas.txt"]},
+    package_data={
+        "": [
+            "ska_antennas.txt",
+            "cspsubarraysimulator/csp_subarray_SimDD.json",
+            "cspsubarraysimulator/CspSubarray.fgo",
+        ]
+    },
     test_suite="test",
     entry_points={
         "console_scripts": [
-            "CspSubarrayLeafNodeDS=cspsubarrayleafnode.csp_subarray_leaf_node:main"
+            "CspSubarrayLeafNode=cspsubarrayleafnode.csp_subarray_leaf_node:main"
         ]
     },
     author="Team NCRA",
@@ -44,7 +50,7 @@ setup(
     url="https://www.skatelescope.org",
     platforms="Linux",
     install_requires=[
-        "pytango==9.3.2",
+        "pytango==9.3.3",
         "mock",
         "astropy>=4.1",
         "katpoint==1.0a1",
