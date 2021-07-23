@@ -75,7 +75,7 @@ def test_feature_sp_1623():
         LOGGER.info("Calling TelescopeOn command now.")
         tmc.set_telescope_on()
         the_waiter.wait()
-        time.sleep(10)
+        time.sleep(50)
         assert telescope_is_on()
         LOGGER.info("Telescope is on")
         LOGGER.info("TelescopeState is on")
@@ -124,7 +124,7 @@ def test_feature_sp_1623():
         LOGGER.info("Calling Telescope Off command now.")
         tmc.set_telescope_off()
         the_waiter.wait()
-        time.sleep(10)
+        time.sleep(50)
         assert telescope_is_off()
         LOGGER.info("Telescope is Off")
         fixture["state"] = "Telescope Off"

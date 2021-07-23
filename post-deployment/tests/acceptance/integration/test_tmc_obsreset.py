@@ -55,16 +55,12 @@ def test_obsreset():
         fixture["state"] = "Unknown"
         the_waiter = waiter()
 
-        # given a started up telescope
-        assert telescope_is_in_standby()
-        LOGGER.info("Starting up the Telescope")
-       
         assert tmc_is_in_on()
         LOGGER.info("TMC devices are up")
 
         LOGGER.info("Calling TelescopeOn command now.")
         tmc.set_telescope_on()
-        time.sleep(5)
+        time.sleep(50)
         assert telescope_is_on()
         LOGGER.info("Telescope is on")
         fixture["state"] = "Telescope On"
@@ -148,7 +144,7 @@ def test_obsreset():
 
         LOGGER.info("Calling TelescopeOff command now.")
         tmc.set_telescope_off()
-        time.sleep(5)
+        time.sleep(50)
         assert telescope_is_off()
         fixture["state"] = "Telescope Off"
 
