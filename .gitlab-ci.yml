@@ -405,26 +405,23 @@ publish to nexus:
   stage: publish
   tags:
     - docker-executor
-  variables:
-    CAR_PYPI_USERNAME: $CAR_PYPI_USERNAME
-    CAR_PYPI_PASSWORD: $CAR_PYPI_PASSWORD
   script:
     - python3 -m pip install twine
-    - twine upload --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/centralnodelow/dist/*
-    - twine upload --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/subarraynodelow/dist/*
-    - twine upload --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/dishleafnode/dist/*
-    - twine upload --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/cspmasterleafnode/dist/*
-    - twine upload --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/sdpmasterleafnode/dist/*
-    - twine upload --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/mccsmasterleafnode/dist/*
-    - twine upload --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/dishmaster/dist/*
-    - twine upload --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/sdpsubarrayleafnode/dist/*
-    - twine upload --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/cspsubarrayleafnode/dist/*
-    - twine upload --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/mccssubarrayleafnode/dist/*
-
-  only:
-    variables:
-      - $CI_COMMIT_MESSAGE =~ /^.+$/ # Confirm tag message exists
-      - $CI_COMMIT_TAG =~ /^((([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)$/ # Confirm semantic versioning of tag
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/centralnodelow/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/subarraynodelow/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/dishleafnode/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/cspmasterleafnode/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/sdpmasterleafnode/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/mccsmasterleafnode/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/dishmaster/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/sdpsubarrayleafnode/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/cspsubarrayleafnode/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/mccssubarrayleafnode/dist/*
+  when: manual
+  # only:
+  #   variables:
+  #     - $CI_COMMIT_MESSAGE =~ /^.+$/ # Confirm tag message exists
+  #     - $CI_COMMIT_TAG =~ /^((([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)$/ # Confirm semantic versioning of tag
 
 pages:
   stage: pages
