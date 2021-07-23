@@ -41,43 +41,30 @@ ska-tango-base:
     use_pv: false
 
 webjive:
-  enabled: false
+  enabled: true
   minikube: false
   ingress:
     enabled: true
     nginx: true
   tangogql:
     replicas: 3
-    # resources:
-    #   requests:
-    #     cpu: 600m     # 600m = 0.6 CPU
-    #     memory: 512Mi # 512Mi = 0.5 GB mem
-    #   limits:
-    #     cpu: 1000m     # 1000m = 1 CPU
-    #     memory: 1024Mi # 1024Mi = 1 GB mem
-
-# tango-base:
-#   enabled: false
+    resources:
+      requests:
+        cpu: 600m     # 600m = 0.6 CPU
+        memory: 512Mi # 512Mi = 0.5 GB mem
+      limits:
+        cpu: 1000m     # 1000m = 1 CPU
+        memory: 1024Mi # 1024Mi = 1 GB mem
 
 ska-mid-cbf:
   enabled: true
   ska-tango-base: 
     enabled: false
 
-# mid-cbf:
-#   enabled: false
-
 ska-csp-lmc-mid:
   enabled: true
   ska-tango-base: 
     enabled: false
-  # tango-base:
-  #   enabled: false
-
-
-## mid-csp
-# mid-csp:
-#   enabled: false
 
 ## sdp
 sdp:
@@ -91,6 +78,4 @@ sdp:
 tmc-mid:
   enabled: true
 
-## tm
-# tmc-mid:
-#   enabled: false
+
