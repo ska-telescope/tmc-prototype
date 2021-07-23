@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc"""
-version="0.8.2"
+version="0.8.3"
 version_info=version.split(".")
 description="""SKA-TMC"""
 author="Team NCRA"
@@ -9,11 +9,12 @@ author_email="telmgt-internal@googlegroups.com"
 license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
-
-release=0.8.2
-tag=0.8.2
-tag_description=Update TMC Low commands to make the transaction_id optional.
-release_notes=This release contains:<br/><ul><li>Updated TMC Low commands to make the transaction_id optional.</li></ul><br/>
-gitlab_username=apurvapatkar
-private_token=iwkFSe4t7AVoR57HUzbi
+release=0.8.3
+tag=0.8.3
+tag_description=Migration of ska-tmc to Central Artefact Repository.
+release_notes=This release contains:<br/><ul><li>Updated TMC Low commands to make the transaction_id optional.</li>
+<li>Rename tmc-mid chart to ska-tmc-mid</li><li>Update the folder from tmc-mid to ska-tmc-mid and from tmc-low to ska-tmc-low.</li>
+<li>Update URL which point to CAR Nexus</li><li>Update environment variables</li><li>Fix unit test cases</li></ul><br/>
+gitlab_username=kalyanithigale
+private_token=4QxYhMuKRckxu_TQsJAF
 

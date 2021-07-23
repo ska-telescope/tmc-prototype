@@ -1,7 +1,8 @@
 #
 # IMAGE_TO_TEST defines the tag of the Docker image to test
 #
-IMAGE_TO_TEST = $(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/$(PROJECT):latest
+IMAGE_TO_TEST ?= $(CAR_OCI_REGISTRY_HOST)/$(CAR_OCI_REGISTRY_USER)/$(PROJECT):latest## docker image that will be run for testing purpose
+
 
 #
 # Never use the network=host mode when running CI jobs, and add extra

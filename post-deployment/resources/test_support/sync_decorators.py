@@ -8,7 +8,7 @@ from contextlib import contextmanager
 # pre cheks
 def check_going_out_of_empty():
     ##verify once for obstate = EMPTY
-    resource("mid_csp/elt/subarray_01").assert_attribute("obsState").equals("EMPTY")
+    # resource("mid_csp/elt/subarray_01").assert_attribute("obsState").equals("EMPTY")
     resource("mid_sdp/elt/subarray_1").assert_attribute("obsState").equals("EMPTY")
     resource("ska_mid/tm_subarray_node/1").assert_attribute("obsState").equals("EMPTY")
 
@@ -204,7 +204,7 @@ class WaitScanning:
         self.w2.wait_until_value_changed_to("READY", timeout)
 
 
-def sync_assign_resources(nr_of_receptors=4, timeout=500):
+def sync_assign_resources(nr_of_receptors=2, timeout=500):
     # defined as a decorator
     def decorator_sync_assign_resources(func):
         @functools.wraps(func)
@@ -238,15 +238,7 @@ def sync_configure(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         ##Can ony configure a subarray that is in IDLE/ON
-        # Branch changes
-        # resource('ska_mid/tm_subarray_node/1').assert_attribute('obsState').equals(['IDLE','READY'])
-        # resource('ska_mid/tm_subarray_node/1').assert_attribute('State').equals('ON')
-        # w  = watch(resource('ska_mid/tm_subarray_node/1')).for_a_change_on("obsState")
-        # ################
-        # result = func(*args, **kwargs)
-        # ################
-        # #w.wait_until_value_changed_to('CONFIGURING')
-        # w.wait_until_value_changed_to('READY',timeout=200)
+
         check_going_into_configure()
         w = WaitConfigure()
         ################

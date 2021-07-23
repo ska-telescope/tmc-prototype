@@ -109,11 +109,12 @@ class StartScanCommand(BaseCommand):
         try:
             this_server = TangoServerHelper.get_instance()
             csp_subarray_fqdn = ""
+            self.logger.info("Scan argin is: " + str(argin))
             property_val = this_server.read_property("CspSubarrayFQDN")
             csp_subarray_fqdn = csp_subarray_fqdn.join(property_val)
             csp_sub_client_obj = TangoClient(csp_subarray_fqdn)
             csp_sub_client_obj.send_command_async(
-                const.CMD_STARTSCAN, "0", self.startscan_cmd_ended_cb
+                const.CMD_STARTSCAN, argin[0], self.startscan_cmd_ended_cb
             )
             this_server.write_attr("activityMessage", const.STR_STARTSCAN_SUCCESS, False)
             self.logger.info(const.STR_STARTSCAN_SUCCESS)

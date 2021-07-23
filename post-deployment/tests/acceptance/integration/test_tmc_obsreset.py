@@ -46,7 +46,7 @@ non_default_states_to_check = {
 
 LOGGER = logging.getLogger(__name__)
 
-
+# @pytest.mark.skip()
 @pytest.mark.mid
 # @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_obsreset():
@@ -65,7 +65,7 @@ def test_obsreset():
 
         LOGGER.info("Calling TelescopeOn command now.")
         tmc.set_telescope_on()
-        time.sleep(5)
+        time.sleep(50)
         assert telescope_is_on()
         LOGGER.info("Telescope is on")
         fixture["state"] = "Telescope On"

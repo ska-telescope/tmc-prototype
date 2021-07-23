@@ -51,7 +51,6 @@ non_default_states_to_check = {
 
 LOGGER = logging.getLogger(__name__)
 
-
 @pytest.mark.mid
 # @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_configure_scan():
@@ -71,7 +70,7 @@ def test_configure_scan():
 
         LOGGER.info("Calling TelescopeOn command now.")
         tmc.set_telescope_on()
-        time.sleep(5)
+        time.sleep(50)
 
         assert telescope_is_on()
         LOGGER.info("Telescope is on")
@@ -81,6 +80,7 @@ def test_configure_scan():
         LOGGER.info("Composing the Subarray")
         sdp_block = tmc.compose_sub()
         fixture["state"] = "Subarray Assigned"
+        time.sleep(100)
 
         # then when I configure a subarray to perform a scan as per 'TMC_integration/configure1.json'
         @log_it("TMC_int_configure", devices_to_log, non_default_states_to_check)
@@ -101,6 +101,7 @@ def test_configure_scan():
 
         configure_sub(sdp_block)
         fixture["state"] = "Subarray Configured for SCAN"
+        time.sleep(60)
 
         # tear down
         LOGGER.info("TMC-configure tests complete: tearing down...")

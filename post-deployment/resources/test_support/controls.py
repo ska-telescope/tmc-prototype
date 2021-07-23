@@ -32,6 +32,11 @@ LOGGER = logging.getLogger(__name__)
 
 def telescope_is_in_standby():
     LOGGER.info(
+        'resource("ska_mid/tm_central/central_node").get("State")'
+        + str(resource("ska_mid/tm_central/central_node").get("State"))
+    )
+
+    LOGGER.info(
         'resource("ska_mid/tm_subarray_node/1").get("State")'
         + str(resource("ska_mid/tm_subarray_node/1").get("State"))
     )

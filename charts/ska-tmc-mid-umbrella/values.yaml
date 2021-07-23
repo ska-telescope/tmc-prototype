@@ -6,7 +6,7 @@ global:
   - "--sleep=1"
   - "--tries=100"
   sub-system:
-    tango-util:
+    ska-tango-util:
       enabled: false
     ska-tango-base:
       enabled: false
@@ -46,20 +46,20 @@ ska-webjive:
     nginx: true
   tangogql:
     replicas: 3
-    resources:
-      requests:
-        cpu: 600m     # 600m = 0.6 CPU
-        memory: 512Mi # 512Mi = 0.5 GB mem
-      limits:
-        cpu: 1000m     # 1000m = 1 CPU
-        memory: 1024Mi # 1024Mi = 1 GB mem
+    # resources:
+    #   requests:
+    #     cpu: 600m     # 600m = 0.6 CPU
+    #     memory: 512Mi # 512Mi = 0.5 GB mem
+    #   limits:
+    #     cpu: 1000m     # 1000m = 1 CPU
+    #     memory: 1024Mi # 1024Mi = 1 GB mem
+
 
 ska-mid-cbf:
   enabled: true
   ska-tango-base: 
     enabled: false
 
-## mid-csp
 ska-csp-lmc-mid:
   enabled: true
   ska-tango-base: 
@@ -77,3 +77,4 @@ sdp:
 ## tm
 ska-tmc-mid:
   enabled: true
+

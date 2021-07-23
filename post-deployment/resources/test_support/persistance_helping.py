@@ -72,31 +72,31 @@ def update_resource_config_file(file, disable_logging=False):
         data = json.load(f)
     if not disable_logging:
         LOGGER.info("READ file before update:" + str(data))
-    data["sdp"]["id"] = inc_from_old_nr(
-        data["sdp"]["id"], disable_logging=disable_logging
+    data["sdp"]["eb_id"] = inc_from_old_nr(
+        data["sdp"]["eb_id"], disable_logging=disable_logging
     )
     # assumes index nrs are following inbrokenly from loweest nr to highest nr in the list
     # this means each indix needs to inc by their range = size of the list
     incremental = len(data["sdp"]["processing_blocks"])
     for index, item in enumerate(data["sdp"]["processing_blocks"]):
         if index == 0:
-            data["sdp"]["processing_blocks"][index]["id"] = inc_from_old_nr(
-                item["id"], incremental, disable_logging
+            data["sdp"]["processing_blocks"][index]["pb_id"] = inc_from_old_nr(
+                item["pb_id"], incremental, disable_logging
             )
-            first_pb_id_num = data["sdp"]["processing_blocks"][index]["id"]
+            first_pb_id_num = data["sdp"]["processing_blocks"][index]["pb_id"]
             next_pb_id_num = int(re.findall(r"\d{5}(?=$|-\D)", first_pb_id_num)[0])
             if not disable_logging:
                 LOGGER.info("Last 5 digits of ID:" + str(next_pb_id_num))
         else:
             next_pb_id_num += 1
-            data["sdp"]["processing_blocks"][index]["id"] = re.sub(
+            data["sdp"]["processing_blocks"][index]["pb_id"] = re.sub(
                 r"\d{5}(?=$|-\D)", str(next_pb_id_num).zfill(5), first_pb_id_num
             )
         if "dependencies" in item.keys():
             for index2, item2 in enumerate(item["dependencies"]):
                 data["sdp"]["processing_blocks"][index]["dependencies"][index2][
                     "pb_id"
-                ] = data["sdp"]["processing_blocks"][0]["id"]
+                ] = data["sdp"]["processing_blocks"][0]["pb_id"]
     with open(file, "w") as f:
         json.dump(data, f)
         # f.write(json.dump(data))
@@ -120,16 +120,16 @@ def update_scan_config_file(file, sdp_block, disable_logging=False):
         LOGGER.info(
             "________Configure string before update function _______" + str(file)
         )
-    sdp_sbi_id = sdp_block["id"]
+    sdp_sbi_id = sdp_block["eb_id"]
     if not disable_logging:
         LOGGER.info(
             "________Updated sdp_sbi_id from configure string _______" + str(sdp_sbi_id)
         )
-    data["csp"]["common"]["id"] = sdp_sbi_id + "-" + data["sdp"]["scan_type"]
+    data["csp"]["common"]["config_id"] = sdp_sbi_id + "-" + data["sdp"]["scan_type"]
     if not disable_logging:
         LOGGER.info(
             "________Updated csp-id from configure string _______"
-            + str(data["csp"]["common"]["id"])
+            + str(data["csp"]["common"]["config_id"])
         )
     with open(file, "w") as f:
         json.dump(data, f)
