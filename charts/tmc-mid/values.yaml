@@ -20,7 +20,7 @@ global:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc
     tag: 0.8.3
-    pullPolicy: Never
+    pullPolicy: IfNotPresent
 
 
   ##  Order of instances resolution ##
