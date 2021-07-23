@@ -45,8 +45,6 @@ non_default_states_to_check = {
 LOGGER = logging.getLogger(__name__)
 
 
-# @pytest.mark.skip()
-
 @pytest.mark.mid
 # @pytest.mark.skip(reason="Fails randomly")
 # @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
@@ -95,7 +93,7 @@ def test_multi_scan():
         with log_states("TMC_ss-41-scan1", devices_to_log, non_default_states_to_check):
             with sync_scanning(200):
                 SubarrayNode = DeviceProxy("ska_mid/tm_subarray_node/1")
-                SubarrayNode.Scan('{"id":1}')
+                SubarrayNode.Scan('{"interface":"https://schema.skao.intg/ska-tmc-scan/2.0","transaction_id":"txn-....-00001","scan_id":1}')
                 fixture["state"] = "Subarray SCANNING"
                 LOGGER.info("Subarray obsState is: " + str(SubarrayNode.obsState))
                 LOGGER.info("Scan 1  is executing on Subarray")
@@ -139,7 +137,7 @@ def test_multi_scan():
                 )
 
                 SubarrayNode = DeviceProxy("ska_mid/tm_subarray_node/1")
-                SubarrayNode.Scan('{"id":1}')
+                SubarrayNode.Scan('{"interface":"https://schema.skao.intg/ska-tmc-scan/2.0","transaction_id":"txn-....-00001","scan_id":1}')
                 fixture["state"] = "Subarray SCANNING"
                 LOGGER.info("Subarray obsState is: " + str(SubarrayNode.obsState))
         LOGGER.info("Scan2 complete")

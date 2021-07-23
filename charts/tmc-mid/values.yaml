@@ -19,7 +19,7 @@ global:
   skatmc:
     registry: nexus.engageska-portugal.pt/ska-telescope
     image: ska-tmc
-    tag: 9.9.9-dirty
+    tag: 0.8.3
     pullPolicy: Never
 
 
@@ -39,7 +39,7 @@ global:
     - "cspsubarrayleafnode"
     - "sdpsubarrayleafnode"
     - "subarraynode"
-  subarray_count: 1
+  subarray_count: 3
 
 dsconfig:
   configuration_file: data/tmc-mid-config.json
@@ -61,14 +61,14 @@ centralnodemid:
     registry: artefact.skao.int/ska-telescope
     image: ska-tmc-centralnode-mid
     tag: 0.2.6
-    pullPolicy: Never
+    pullPolicy: IfNotPresent
 
 
 subarraynodemid:
   image:
-    registry: nexus.engageska-portugal.pt/ska-telescope
+    registry: artefact.skao.int/ska-telescope
     image: ska-tmc-subarraynode-mid
-    tag: 0.3.1
+    tag: 0.3.3
     pullPolicy: IfNotPresent
 
 alarmhandler:
