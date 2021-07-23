@@ -30,7 +30,6 @@ __all__ = [
     "CbfHealthStateAttributeUpdator",
     "PssHealthStateAttributeUpdator",
     "PstHealthStateAttributeUpdator",
-    "CspMasterSimulator",
 ]
 
 __version__ = release.version

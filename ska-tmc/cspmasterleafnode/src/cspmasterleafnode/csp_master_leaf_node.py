@@ -31,11 +31,11 @@ from .telescope_on_command import TelescopeOn
 from .telescope_off_command import TelescopeOff
 from .telescope_standby_command import TelescopeStandby
 from .device_data import DeviceData
-from .cspmastersimulator.cspmaster import CspMasterSimulator
+from .cspmastersimulator import simulator
 
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
 
-__all__ = ["CspMasterLeafNode", "main", "TelescopeOn", "TelescopeOff", "TelescopeStandby", "CspMasterSimulator"]
+__all__ = ["CspMasterLeafNode", "main", "TelescopeOn", "TelescopeOff", "TelescopeStandby"]
 
 
 class CspMasterLeafNode(SKABaseDevice):
@@ -264,10 +264,14 @@ def main(args=None, **kwargs):
     #return run((CspMasterLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  CspMasterLeafNode.main
     standalone_mode = True
+
+    
+
     if standalone_mode == True:
         print("Running in standalone mode")
+        device_name = "mid_csp/elt/master"
         csp_master_simulator = []
-        csp_master_simulator = CspMasterSimulator.simulator()
+        csp_master_simulator = get_csp_master_sim(device_name)
         csp_master_simulator.append(CspMasterLeafNode)
         ret_val = run((csp_master_simulator), args=args, **kwargs)
     else:

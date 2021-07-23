@@ -11,7 +11,7 @@
 
 SKA Dish Master TANGO device server
 """
-from . import csp_master_behaviour, cspmaster
+from .csp_master_behaviour import OverrideCspMaster, get_csp_master_sim
 
-__all__ = ["cspmaster", "csp_master_behaviour"]
+__all__ = ["get_csp_master_sim", "OverrideCspMaster"]
 
