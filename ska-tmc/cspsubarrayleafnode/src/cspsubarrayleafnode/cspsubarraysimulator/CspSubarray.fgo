@@ -132,14 +132,14 @@
             "dim_y": 0,
             "display_unit": "No display unit",
             "enum_labels": [
-                "ABORTED",
+                "EMPTY",
                 "RESOURCING",
                 "IDLE",
                 "CONFIGURING",
                 "READY",
                 "SCANNING",
                 "ABORTING",
-                "EMPTY",
+                "ABORTED",
                 "RESETTING",
                 "FAULT",
                 "RESTARTING"
@@ -177,7 +177,7 @@
             "string": "1",
             "time": 1602497000.703696,
             "unit": "",
-            "value": 7,
+            "value": 0,
             "writable": "READ"
         },
         "healthState": {
