@@ -13,6 +13,7 @@ CSP Master Leaf node monitors the CSP Master and issues control actions during a
 
 # PROTECTED REGION ID(CspMasterLeafNode.import) ENABLED START #
 # Tango imports
+import os
 import tango
 from tango import ApiUtil, DebugIt, AttrWriteType
 from tango.server import run, command, device_property, attribute
@@ -31,7 +32,7 @@ from .telescope_on_command import TelescopeOn
 from .telescope_off_command import TelescopeOff
 from .telescope_standby_command import TelescopeStandby
 from .device_data import DeviceData
-from .cspmastersimulator import simulator
+from .cspmastersimulator import get_csp_master_sim
 
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
 
@@ -263,17 +264,22 @@ def main(args=None, **kwargs):
     """
     #return run((CspMasterLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  CspMasterLeafNode.main
-    standalone_mode = True
-
     
+    # Check if standalone mode is enabled
+    standalone_mode = os.environ['STANDALONE_MODE']
+
+    standalone_mode = True    
 
     if standalone_mode == True:
         print("Running in standalone mode")
         device_name = "mid_csp/elt/master"
-        csp_master_simulator = []
         csp_master_simulator = get_csp_master_sim(device_name)
-        csp_master_simulator.append(CspMasterLeafNode)
-        ret_val = run((csp_master_simulator), args=args, **kwargs)
+        
+        devices = []
+        devices.append(csp_master_simulator)
+        devices.append(CspMasterLeafNode)
+        
+        ret_val = run(devices, args=args, **kwargs)
     else:
         print("Running in normal mode")
         ret_val = run((CspMasterLeafNode,), args=args, **kwargs)

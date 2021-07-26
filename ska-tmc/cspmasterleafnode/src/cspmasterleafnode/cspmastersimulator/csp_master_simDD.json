@@ -11,39 +11,13 @@
       }
     ],
     "dynamicAttributes": [
-      {
-        "basicAttributeData": {
-          "name": "healthState",
-          "unit": "",
-          "label": "healthState",
-          "description": "Attribute for push event test.",
-          "data_type": "DevEnum",
-          "data_format": "Scalar",
-          "format": "",
-          "data_shape": {
-            "max_dim_x": 1,
-            "max_dim_y": 0
-          },
-          "attributeInterlocks": {
-            "writable": "READ"
-          },
-          "dataSimulationParameters": {
-            "quantity_simulation_type": "ConstantQuantity"
-          },
-          "attributeControlSystem": {
-            "display_level": "OPERATOR",
-            "period": 1000
-          }
-        }
-      }
-
-    ],
+      ],
     "commands": [
       {
         "basicCommandData": {
           "name": "On",
           "input_parameters": {
-            "dtype_in": "String",
+            "dtype_in": "VarStringArray",
             "doc_in": "",
             "dformat_in": "Scalar"
           },
@@ -58,7 +32,7 @@
         "basicCommandData": {
           "name": "Off",
           "input_parameters": {
-            "dtype_in": "String",
+            "dtype_in": "VarStringArray",
             "doc_in": "",
             "dformat_in": "Scalar"
           },
@@ -73,7 +47,7 @@
         "basicCommandData": {
           "name": "Standby",
           "input_parameters": {
-            "dtype_in": "String",
+            "dtype_in": "VarStringArray",
             "doc_in": "",
             "dformat_in": "Scalar"
           },

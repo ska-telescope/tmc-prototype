@@ -15,7 +15,7 @@ It also acts as a CSP contact point for Subarray Node for observation execution 
 # Standard python imports
 
 import threading
-
+import os
 # PyTango imports
 import tango
 from tango import DebugIt, AttrWriteType, ApiUtil
@@ -582,17 +582,17 @@ def main(args=None, **kwargs):
     :return: CspSubarrayLeafNode TANGO object.
 
     """    
-    standalone_mode = True
-    
+    standalone_mode = os.environ['STANDALONE_MODE']     
+           
     if standalone_mode == True:
         print("Running in standalone mode")
         csp_subarray_simulator = []
         csp_subarray_simulator = CspSubarraySimulator.simulator()
         csp_subarray_simulator.append(CspSubarrayLeafNode)
-        ret_val = run((csp_subarray_simulator), args=args, **kwargs)
+        ret_val = run(csp_subarray_simulator, args=args, **kwargs)
     else:
         print("Running in normal mode")
-        ret_val = run((CspSubarrayLeafNode,), args=args, **kwargs)
+        ret_val = run(CspSubarrayLeafNode, args=args, **kwargs)
 
     return ret_val
 

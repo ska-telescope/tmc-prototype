@@ -12,6 +12,7 @@ from collections import namedtuple
 # Tango import
 from tango import DevState, Except, ErrSeverity
 from ska.logging import configure_logging
+from tango_simlib.tango_sim_generator import (configure_device_models, get_tango_device_server)
 
 class OverrideCspMaster(object):
 
@@ -31,7 +32,7 @@ class OverrideCspMaster(object):
 
         if str(tango_dev.get_state()) in _allowed_modes:
             tango_dev.set_state(DevState.ON)
-            models.logger.info("Csp Master transitioned to the '%s' state."on)
+            models.logger.info("Csp Master transitioned to the '%s' state.",on)
             csp_mode_healthState = models.sim_quantities["healthState"]
             set_enum(csp_mode_healthState, ok, models.time_func())
             tango_dev.push_change_event("healthState", 1)
@@ -118,7 +119,7 @@ def get_csp_master_sim(device_name):
         pkg_resources.resource_filename("cspmasterleafnode.cspmastersimulator", "csp_master_simDD.json")
     )
 
-    device_name = "mid"
+    device_name = "mid-csp/elt/master"
     device_name_tag = f"tango-device:{device_name}"
 
     class TangoDeviceTagsFilter(logging.Filter):
