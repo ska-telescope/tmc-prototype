@@ -15,6 +15,7 @@ execution. There is one to one mapping between SDP Subarray Leaf Node and SDP su
 
 # PROTECTED REGION ID(SdpMasterLeafNode.additional_import) ENABLED START #
 # Standard python imports
+import os
 
 # Tango imports
 import tango
@@ -366,9 +367,10 @@ class SdpMasterLeafNode(SKABaseDevice):
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(SdpMasterLeafNode.main) ENABLED START #
 
-    standalone_mode = True
-    
-    if standalone_mode == True:
+    # Check if standalone mode is enabled
+    standalone_mode = os.environ['STANDALONE_MODE']
+
+    if standalone_mode == "TRUE":
         print("Running in standalone mode")
 
         ## Using tango simlib simulator
