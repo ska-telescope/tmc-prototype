@@ -111,62 +111,6 @@
             "unit": "",
             "value": "Device mid_sdp/elt/master is standby",
             "writable": "READ"
-        },
-        "TestAttr": {
-            "alarms": {
-                "delta_t": "Not specified",
-                "delta_val": "Not specified",
-                "extensions": "[]",
-                "max_alarm": "Not specified",
-                "max_warning": "Not specified",
-                "min_alarm": "Not specified",
-                "min_warning": "Not specified"
-            },
-            "color": "Lime",
-            "data_format": "SCALAR",
-            "data_type": "DevString",
-            "database": "localhost:10000",
-            "description": "",
-            "device": "mid_sdp/elt/master",
-            "dim_x": 1,
-            "dim_y": 0,
-            "display_unit": "No display unit",
-            "enum_labels": [],
-            "events": {
-                "arch_event": {
-                    "archive_abs_change": "Not specified",
-                    "archive_period": "Not specified",
-                    "archive_rel_change": "Not specified",
-                    "extensions": "[]"
-                },
-                "ch_event": {
-                    "abs_change": "Not specified",
-                    "extensions": "[]",
-                    "rel_change": "Not specified"
-                },
-                "per_event": {
-                    "extensions": "[]",
-                    "period": "Not specified"
-                }
-            },
-            "format": "%s",
-            "label": "TestAttr",
-            "max_alarm": "Not specified",
-            "max_dim_x": 1,
-            "max_dim_y": 0,
-            "max_value": "Not specified",
-            "min_alarm": "Not specified",
-            "min_value": "Not specified",
-            "model": "localhost:10000/mid_sdp/elt/master/TestAttr",
-            "name": "TestAttr",
-            "polling": 3000,
-            "quality": "ATTR_VALID",
-            "standard_unit": "No standard unit",
-            "string": "Initial value of TestAttr",
-            "time": 1602497011.473706,
-            "unit": "",
-            "value": "Initial value of TestAttr",
-            "writable": "READ"
         }
     },
     "commands": {

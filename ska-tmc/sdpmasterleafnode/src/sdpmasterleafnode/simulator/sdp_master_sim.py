@@ -24,15 +24,11 @@ class OverrideSdpMaster():
     def action_on(self, model, tango_dev=None, data_input=None):
         model.logger.info("Executing On command")
         tango_dev.set_state(DevState.ON)
-        model.sim_quantities["TestAttr"].set_val("On command", model.time_func())
-        tango_dev.push_change_event("TestAttr", "test value on")
         tango_dev.set_status("device turned on successfully")
 
     def action_off(self, model, tango_dev=None, data_input=None):
         model.logger.info("Executing Off command")
         tango_dev.set_state(DevState.OFF)
-        model.sim_quantities["TestAttr"].set_val("Off command", model.time_func())
-        tango_dev.push_change_event("TestAttr", "test value off")
         tango_dev.set_status("device turned off successfully")
 
 
