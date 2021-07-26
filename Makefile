@@ -56,18 +56,18 @@ CI_PROJECT_DIR ?= .
 KUBE_CONFIG_BASE64 ?=  ## base64 encoded kubectl credentials for KUBECONFIG
 KUBECONFIG ?= /etc/deploy/config ## KUBECONFIG location
 
-#VALUES_FILE ?= charts/tmc-mid/values.yaml
-CUSTOM_VALUES = 
+# #VALUES_FILE ?= charts/tmc-mid/values.yaml
+# CUSTOM_VALUES = 
 
-ifneq ($(CI_JOB_ID),)
-CI_PROJECT_IMAGE := 
-CUSTOM_VALUES = --set global.skatmc.registry=registry.gitlab.com/ska-telescope \
-	--set global.skatmc.image=ska-tmc \
-	--set global.skatmc.tag=$(CI_COMMIT_SHORT_SHA)
+# ifneq ($(CI_JOB_ID),)
+# CI_PROJECT_IMAGE := 
+# CUSTOM_VALUES = --set global.skatmc.registry=registry.gitlab.com/ska-telescope \
+# 	--set global.skatmc.image=ska-tmc \
+# 	--set global.skatmc.tag=$(CI_COMMIT_SHORT_SHA)
 
 
-else
-endif
+# else
+# endif
 
 XAUTHORITYx ?= ${XAUTHORITY}
 THIS_HOST := $(shell ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n1)

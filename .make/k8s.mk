@@ -95,7 +95,6 @@ install-chart: dep-up namespace namespace_sdp ## install the helm chart with nam
 	--set global.tango_host=$(TANGO_HOST) \
 	--set tangoDatabaseDS=$(TANGO_DATABASE_DS) \
 	--set sdp.helmdeploy.namespace=$(SDP_KUBE_NAMESPACE) \
-	--values values.yaml $(CUSTOM_VALUES) \
 	 $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE); \
 	 rm generated_values.yaml; \
 	 rm values.yaml
@@ -117,7 +116,6 @@ install-custom-chart: dep-up namespace namespace_sdp ## Specify the number of su
 	--set global.tango_host=$(TANGO_HOST) \
 	--set tangoDatabaseDS=$(TANGO_DATABASE_DS) \
 	--set sdp.helmdeploy.namespace=$(SDP_KUBE_NAMESPACE) \
-	--values values.yaml $(CUSTOM_VALUES) \
 	 $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE) $(CHART_DEBUG); \
 	 rm generated_values.yaml; \
 	 rm values.yaml
@@ -134,7 +132,6 @@ template-chart: clean dep-up## install the helm chart with name RELEASE_NAME and
 	--set global.tango_host=$(TANGO_HOST) \
 	--set tangoDatabaseDS=$(TANGO_DATABASE_DS) \
 	--set sdp.helmdeploy.namespace=$(SDP_KUBE_NAMESPACE) \
-	--values values.yaml $(CUSTOM_VALUES) \
 	--debug \
 	 $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE); \
 	 rm generated_values.yaml; \
