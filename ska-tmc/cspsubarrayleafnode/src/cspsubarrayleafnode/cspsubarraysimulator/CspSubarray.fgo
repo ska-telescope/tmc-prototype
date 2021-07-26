@@ -10,12 +10,9 @@
                 "min_alarm": "Not specified",
                 "min_warning": "Not specified"
             },
-            "color": "Lime",
             "data_format": "SCALAR",
             "data_type": "DevState",
-            "database": "localhost:10000",
             "description": "",
-            "device": "mid_csp/elt/subarray_01",
             "dim_x": 1,
             "dim_y": 0,
             "display_unit": "No display unit",
@@ -45,13 +42,10 @@
             "max_value": "Not specified",
             "min_alarm": "Not specified",
             "min_value": "Not specified",
-            "model": "localhost:10000/mid_csp/elt/subarray_01",
             "name": "State",
             "polling": 3000,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "STANDBY",
-            "time": 1602497011.473705,
             "unit": "",
             "value": 7,
             "writable": "READ"
@@ -66,12 +60,9 @@
                 "min_alarm": "Not specified",
                 "min_warning": "Not specified"
             },
-            "color": "Lime",
             "data_format": "SCALAR",
             "data_type": "DevString",
-            "database": "localhost:10000",
             "description": "",
-            "device": "mid_csp/elt/subarray_01",
             "dim_x": 1,
             "dim_y": 0,
             "display_unit": "No display unit",
@@ -106,8 +97,6 @@
             "polling": 3000,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "Device mid_csp/elt/subarray_01 in standby",
-            "time": 1602497011.473706,
             "unit": "",
             "value": "Device mid_csp/elt/subarray_01 is standby",
             "writable": "READ"
@@ -122,12 +111,9 @@
                 "min_alarm": "Not specified",
                 "min_warning": "Not specified"
             },
-            "color": "Lime",
             "data_format": "SCALAR",
             "data_type": "DevEnum",
-            "database": "localhost:10000",
             "description": " ObsState status ",
-            "device": "mid_csp/elt/subarray_01",
             "dim_x": 1,
             "dim_y": 0,
             "display_unit": "No display unit",
@@ -169,13 +155,10 @@
             "max_value": "Not specified",
             "min_alarm": "Not specified",
             "min_value": "Not specified",
-            "model": "localhost:10000/mid_csp/elt/subarray_01/obsState",
             "name": "obsState",
             "polling": 3000,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "1",
-            "time": 1602497000.703696,
             "unit": "",
             "value": 0,
             "writable": "READ"
@@ -190,12 +173,9 @@
                 "min_alarm": "Not specified",
                 "min_warning": "Not specified"
             },
-            "color": "Lime",
             "data_format": "SCALAR",
             "data_type": "DevEnum",
-            "database": "localhost:10000",
             "description": " Health status ",
-            "device": "mid_csp/elt/subarray_01",
             "dim_x": 1,
             "dim_y": 0,
             "display_unit": "No display unit",
@@ -230,13 +210,10 @@
             "max_value": "Not specified",
             "min_alarm": "Not specified",
             "min_value": "Not specified",
-            "model": "localhost:10000/mid_csp/elt/subarray_01/healthState",
             "name": "healthState",
             "polling": 3000,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
-            "string": "1",
-            "time": 1602497000.703696,
             "unit": "",
             "value": 5,
             "writable": "READ"
@@ -246,7 +223,6 @@
         "On": {
             "cmd_name": "On",
             "cmd_tag": 0,
-            "device": "mid_csp/elt/subarray_01",
             "disp_level": "OPERATOR",
             "in_type": "DevVoid",
             "in_type_desc": "None",
@@ -257,7 +233,6 @@
         "Off": {
             "cmd_name": "Off",
             "cmd_tag": 0,
-            "device": "mid_csp/elt/subarray_01",
             "disp_level": "OPERATOR",
             "in_type": "DevVoid",
             "in_type_desc": "None",
@@ -268,7 +243,6 @@
         "Abort": {
             "cmd_name": "Abort",
             "cmd_tag": 0,
-            "device": "mid_csp/elt/subarray_01",
             "disp_level": "OPERATOR",
             "in_type": "DevVoid",
             "in_type_desc": "None",
@@ -279,7 +253,6 @@
         "AssignResources": {
             "cmd_name": "AssignResources",
             "cmd_tag": 0,
-            "device": "mid_csp/elt/subarray_01",
             "disp_level": "OPERATOR",
             "in_type": "DevString",
             "in_type_desc": "None",
@@ -290,7 +263,6 @@
         "EndScan": {
             "cmd_name": "EndScan",
             "cmd_tag": 0,
-            "device": "mid_csp/elt/subarray_01",
             "disp_level": "OPERATOR",
             "in_type": "DevVoid",
             "in_type_desc": "None",
@@ -301,7 +273,6 @@
         "ReleaseAllResources": {
             "cmd_name": "ReleaseAllResources",
             "cmd_tag": 0,
-            "device": "mid_csp/elt/subarray_01",
             "disp_level": "OPERATOR",
             "in_type": "DevVoid",
             "in_type_desc": "None",
@@ -312,7 +283,6 @@
         "Scan": {
             "cmd_name": "Scan",
             "cmd_tag": 0,
-            "device": "mid_csp/elt/subarray_01",
             "disp_level": "OPERATOR",
             "in_type": "DevString",
             "in_type_desc": "None",
@@ -323,7 +293,6 @@
         "Configure": {
             "cmd_name": "Configure",
             "cmd_tag": 0,
-            "device": "mid_csp/elt/subarray_01",
             "disp_level": "OPERATOR",
             "in_type": "DevString",
             "in_type_desc": "None",
@@ -334,7 +303,6 @@
         "GoToIdle": {
             "cmd_name": "GoToIdle",
             "cmd_tag": 0,
-            "device": "mid_csp/elt/subarray_01",
             "disp_level": "OPERATOR",
             "in_type": "DevVoid",
             "in_type_desc": "None",
@@ -344,9 +312,5 @@
         }        
     },
     "properties": {},
-    "dev_class": "CspSubarray",
-    "host": "ska-csp-subarray_01",
-    "level": "5",
-    "name": "mid_csp/elt/subarray_01",
-    "server": "CspSubarray/1"
+    "dev_class": "CspSubarray"
 }
