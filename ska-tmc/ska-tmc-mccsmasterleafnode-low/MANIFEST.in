@@ -1,4 +1,4 @@
-recursive-include src/mccsmasterleafnode *.py
+recursive-include src/ska_tmc_mccsmasterleafnode_low *.py
 recursive-include test *.py
 recursive-include pogo MccsMasterLeafNode.xmi
 include *.rst

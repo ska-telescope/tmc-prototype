@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# This file is part of the MccsMasterLeafNode project
+# This file is part of the MccsSubarrayLeafNode project
 #
 #
 #
@@ -21,20 +21,20 @@ readme_filename = os.path.join(setup_dir, "README.rst")
 with open(readme_filename) as file:
     long_description = file.read()
 
-release_filename = os.path.join(setup_dir, "src", "mccsmasterleafnode", "release.py")
+release_filename = os.path.join(setup_dir, "src", "ska_tmc_mccssubarrayleafnode_low", "release.py")
 exec(open(release_filename).read())
 
 setup(
     name=name,
     version=version,
-    description="MCCS Master Leaf Node is the component that interfaces with MCCS Master.",
+    description=" ",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
-    include_package_data=True,
+    package_data={"": ["ska_antennas.txt"]},
     test_suite="test",
     entry_points={
         "console_scripts": [
-            "MccsMasterLeafNodeDS = mccsmasterleafnode.mccs_master_leaf_node:main"
+            "MccsSubarrayLeafNodeDS=ska_tmc_mccssubarrayleafnode_low.mccs_subarray_leaf_node:main"
         ]
     },
     author="Team NCRA",
@@ -43,8 +43,7 @@ setup(
     long_description=long_description,
     url="https://www.skatelescope.org",
     platforms="Linux",
-    install_requires=["pytango==9.3.3", "mock"],
-    # test_suite='test',
+    install_requires=["pytango==9.3.3", "mock", "katpoint"],
     setup_requires=[
         # dependency for `python setup.py test`
         "pytest-runner",

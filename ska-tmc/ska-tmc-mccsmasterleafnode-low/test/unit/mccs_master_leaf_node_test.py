@@ -15,13 +15,12 @@ import tango
 from tango.test_context import DeviceTestContext
 
 # Additional import
-from mccsmasterleafnode import MccsMasterLeafNode, const, release
 from ska.base.control_model import HealthState, ObsState
 from ska.base.commands import ResultCode
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
-from mccsmasterleafnode import MccsMasterLeafNode, const, release, device_data
-from mccsmasterleafnode.device_data import DeviceData
+from ska_tmc_mccsmasterleafnode_low import MccsMasterLeafNode, const, release, device_data
+from ska_tmc_mccsmasterleafnode_low.device_data import DeviceData
 
 
 # PROTECTED REGION END #    //  MccsMasterLeafNode imports
