@@ -66,7 +66,7 @@ def test_configure_scan():
 
         LOGGER.info("Calling TelescopeOn command now.")
         tmc.set_telescope_on()
-        time.sleep(20)
+        time.sleep(50)
 
         assert telescope_is_on()
         LOGGER.info("Telescope is on")

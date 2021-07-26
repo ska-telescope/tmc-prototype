@@ -102,6 +102,7 @@ def test_assign_resources():
         tmc.set_telescope_off()
         time.sleep(20)
         assert telescope_is_off()
+        fixture["state"] = "Telescope Off"
 
 
     except:
@@ -112,7 +113,6 @@ def test_assign_resources():
             tmc.release_resources()
             tmc.set_telescope_off()
         elif fixture["state"] == "Released Resources":
-            LOGGER.info("Tearing down in , state = {}".format(fixture["state"]))
             tmc.set_telescope_off()
         else:
             LOGGER.info("Tearing down completed...")

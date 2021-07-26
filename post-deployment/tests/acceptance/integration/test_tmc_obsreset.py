@@ -141,7 +141,8 @@ def test_obsreset():
 
         tmc.release_resources()
         LOGGER.info("Invoked ReleaseResources on Subarray")
-
+        fixture["state"] = "Released Resources"
+        
         LOGGER.info("Calling TelescopeOff command now.")
         tmc.set_telescope_off()
         time.sleep(20)
