@@ -52,7 +52,7 @@ def get_sdp_master_sim(device_name):
         pkg_resources.resource_filename("sdpmasterleafnode.simulator", "sdp_master_sim_dd.json")
     )
     # add a filter with this device's name
-    device_name = "mid"
+    device_name = "mid_sdp/elt/master"
     device_name_tag = f"tango-device:{device_name}"
 
     class TangoDeviceTagsFilter(logging.Filter):
