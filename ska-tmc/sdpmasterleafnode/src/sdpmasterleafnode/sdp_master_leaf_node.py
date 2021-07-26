@@ -359,20 +359,12 @@ def main(args=None, **kwargs):
         ## Using tango simlib simulator
         device_name = "mid_sdp/elt/master"
         sdp_master_simulator = get_sdp_master_sim(device_name)
-
-        devices = []
-        devices.append(sdp_master_simulator)
-        devices.append(SdpMasterLeafNode)
-
-        ret_val = run(devices, args=args, **kwargs)
+        ret_val = run((SdpMasterLeafNode, sdp_master_simulator), args=args, **kwargs)
     else:
         print("Running in normal mode")
         ret_val = run((SdpMasterLeafNode,), args=args, **kwargs)
 
     return ret_val
-
-    ## Original implementation
-    # return run((SdpMasterLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  SdpMasterLeafNode.main
 
 
