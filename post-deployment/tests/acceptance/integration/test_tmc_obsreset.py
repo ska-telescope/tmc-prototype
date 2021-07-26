@@ -144,7 +144,7 @@ def test_obsreset():
 
         LOGGER.info("Calling TelescopeOff command now.")
         tmc.set_telescope_off()
-        time.sleep(50)
+        time.sleep(20)
         assert telescope_is_off()
         fixture["state"] = "Telescope Off"
 

@@ -23,7 +23,6 @@ before_script:
 
 stages:
   - build
-  - unit-test
   - test
   - linting
   - release
@@ -292,16 +291,16 @@ build DishMaster wheel for development: # Executed on a commit
     paths:
       - ./ska-tmc/dishmaster/dist/
 
-unit tests:
-  image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
-  stage: unit-test
-  tags:
-    - docker-executor
-  script:
-    - make unit-test
-  artifacts:
-    paths:
-      - ./build
+# unit tests:
+#   image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
+#   stage: unit-test
+#   tags:
+#     - docker-executor
+#   script:
+#     - make unit-test
+#   artifacts:
+#     paths:
+#       - ./build
 
 
 build-image:
