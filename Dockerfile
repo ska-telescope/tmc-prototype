@@ -8,16 +8,16 @@ USER root
 
 # install all local TMC packages
 RUN python3 -m pip install -r requirements.txt \
-    /app/ska-tmc/centralnodelow \
+    /app/ska-tmc/ska-tmc-centralnode-low \
     /app/ska-tmc/cspmasterleafnode \
     /app/ska-tmc/cspsubarrayleafnode \
     /app/ska-tmc/dishleafnode \
     /app/ska-tmc/dishmaster \
     /app/ska-tmc/sdpmasterleafnode \
     /app/ska-tmc/sdpsubarrayleafnode \
-    /app/ska-tmc/mccsmasterleafnode \
-    /app/ska-tmc/mccssubarrayleafnode \
-    /app/ska-tmc/subarraynodelow 
+    /app/ska-tmc/ska-tmc-mccsmasterleafnode-low \
+    /app/ska-tmc/ska-tmc-mccssubarrayleafnode-low \
+    /app/ska-tmc/ska-tmc-subarraynode-low 
 
 USER tango
 

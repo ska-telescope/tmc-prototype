@@ -14,10 +14,10 @@ init-hook='
     sys.path.append("./ska-tmc/cspmasterleafnode");
     sys.path.append("./ska-tmc/sdpsubarrayleafnode");
     sys.path.append("./ska-tmc/sdpmasterleafnode");
-    sys.path.append("./ska-tmc/mccssubarrayleafnode");
-    sys.path.append("./ska-tmc/mccsmasterleafnode");
-    sys.path.append("./ska-tmc/subarraynodelow");
-    sys.path.append("./ska-tmc/centralnodelow");
+    sys.path.append("./ska-tmc/ska-tmc-mccssubarrayleafnode-low");
+    sys.path.append("./ska-tmc/ska-tmc-mccsmasterleafnode-low");
+    sys.path.append("./ska-tmc/ska-tmc-subarraynode-low");
+    sys.path.append("./ska-tmc/ska-tmc-centralnode-low");
     sys.path.append("/usr/local/lib/python3.5/dist-packages");
     sys.path.append("/venv/lib/python3.5/site-packages")'
 

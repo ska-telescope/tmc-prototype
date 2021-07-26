@@ -60,8 +60,8 @@ centralnodemid:
   image:
     registry: artefact.skao.int/ska-telescope
     image: ska-tmc-centralnode-mid
-    tag: 0.2.7
-    pullPolicy: Never
+    tag: 0.2.8
+    pullPolicy: IfNotPresent
 
 
 subarraynodemid:
