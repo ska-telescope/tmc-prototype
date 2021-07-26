@@ -4,7 +4,7 @@ import pytest
 from assertpy import assert_that
 from functools import reduce
 from resources.test_support.helpers import resource, subarray_devices, tmc_devices
-
+import time
 LOGGER = logging.getLogger(__name__)
 
 
@@ -21,7 +21,7 @@ LOGGER = logging.getLogger(__name__)
 @pytest.mark.last
 @pytest.mark.ncra
 def test_smell_mvp(pre_or_post="#PRE"):
-
+    time.sleep(90)
     header = f"\n###{pre_or_post}-TEST STATES###\n{'Device Name:':<34} {'State':<15}{'obsState':<15}\n"
     output = [
         f"{device:<35}{resource(device).get('State'):<15}{resource(device).get('obsState'):<15}"
