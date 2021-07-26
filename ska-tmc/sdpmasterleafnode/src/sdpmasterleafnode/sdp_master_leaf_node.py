@@ -15,13 +15,13 @@ execution. There is one to one mapping between SDP Subarray Leaf Node and SDP su
 
 # PROTECTED REGION ID(SdpMasterLeafNode.additional_import) ENABLED START #
 # Standard python imports
+import os
+import threading
 
 # Tango imports
 import tango
-from tango import ApiUtil, DebugIt, AttrWriteType #, DevState
-from tango.server import run, command, device_property, attribute # , Device
-# from tango.server import server_run
-from tango_simlib.tango_sim_generator import (configure_device_models, get_tango_device_server)
+from tango import ApiUtil, DebugIt, AttrWriteType
+from tango.server import run, command, device_property, attribute
 
 
 # PROTECTED REGION ID(SdpMasterLeafNode.additional_import) ENABLED START #
@@ -29,7 +29,6 @@ from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, SimulationMode, TestMode
 from tmc.common.tango_server_helper import TangoServerHelper
-from tmc.common.tango_client import TangoClient
 from . import const, release
 from .telescope_on_command import TelescopeOn
 from .telescope_off_command import TelescopeOff
@@ -96,14 +95,6 @@ class SdpMasterLeafNode(SKABaseDevice):
     # ---------------
     # General methods
     # ---------------
-    def test_callback(self, event):
-        self.logger.debug("executing callback function")
-        self.logger.debug(f"Error event: {event.err}")
-        if not event.err:
-            log_msg = f"Attribute value: {event.attr_value.value}"
-            self.logger.debug(log_msg)
-        else:
-            self.logger.debug(f"Error event received. Error: {event.errors}")
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
@@ -150,13 +141,6 @@ class SdpMasterLeafNode(SKABaseDevice):
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
-
-            #### Push event testing
-            self.logger.debug("Subscribing attribute event")
-            device_client = TangoClient("mid_sdp/elt/master")
-            device_client.subscribe_attribute("TestAttr", device.test_callback)
-
-            #### Push event testing ends
 
             self.this_server.write_attr("activityMessage", const.STR_INIT_SUCCESS, False)
             self.logger.info(const.STR_INIT_SUCCESS)
@@ -366,28 +350,21 @@ class SdpMasterLeafNode(SKABaseDevice):
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(SdpMasterLeafNode.main) ENABLED START #
 
-    standalone_mode = True
-    
-    if standalone_mode == True:
+    # Check if standalone mode is enabled
+    standalone_mode = os.environ['STANDALONE_MODE']
+
+    if standalone_mode == "TRUE":
         print("Running in standalone mode")
 
         ## Using tango simlib simulator
         device_name = "mid_sdp/elt/master"
         sdp_master_simulator = get_sdp_master_sim(device_name)
-
-        devices = []
-        devices.append(sdp_master_simulator)
-        devices.append(SdpMasterLeafNode)
-
-        ret_val = run(devices, args=args, **kwargs)
+        ret_val = run((SdpMasterLeafNode, sdp_master_simulator), args=args, **kwargs)
     else:
         print("Running in normal mode")
         ret_val = run((SdpMasterLeafNode,), args=args, **kwargs)
 
     return ret_val
-
-    ## Original implementation
-    # return run((SdpMasterLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  SdpMasterLeafNode.main
 
 
