@@ -16,12 +16,12 @@ execution. There is one to one mapping between SDP Subarray Leaf Node and SDP su
 # PROTECTED REGION ID(SdpMasterLeafNode.additional_import) ENABLED START #
 # Standard python imports
 import os
+import threading
 
 # Tango imports
 import tango
 from tango import ApiUtil, DebugIt, AttrWriteType
 from tango.server import run, command, device_property, attribute
-from tango_simlib.tango_sim_generator import (configure_device_models, get_tango_device_server)
 
 
 # PROTECTED REGION ID(SdpMasterLeafNode.additional_import) ENABLED START #
