@@ -131,7 +131,7 @@ def test_multi_scan():
                 )
 
                 SubarrayNode = DeviceProxy("ska_mid/tm_subarray_node/1")
-                SubarrayNode.Scan('{"interface":"https://schema.skao.intg/ska-tmc-scan/2.0","transaction_id":"txn-....-00001","scan_id":1}')
+                SubarrayNode.Scan('{"interface":"https://schema.skao.intg/ska-tmc-scan/2.0","transaction_id":"txn-....-00001","scan_id":2}')
                 fixture["state"] = "Subarray SCANNING"
                 LOGGER.info("Subarray obsState is: " + str(SubarrayNode.obsState))
         LOGGER.info("Scan2 complete")
