@@ -116,14 +116,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
     # ---------------
     # General methods
     # ---------------
-    def simulator_obsstate_callback(self, event):
-        self.logger.debug("executing callback function")
-        self.logger.debug(f"Error event: {event.err}")
-        if not event.err:
-            log_msg = f"Attribute value: {event.attr_value.value}"
-            self.logger.debug(log_msg)
-        else:
-            self.logger.debug(f"Error event received. Error: {event.errors}")
 
     def simulator_healthstate_callback(self, event):
         self.logger.debug("executing callback function")
@@ -192,12 +184,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
             this_server.write_attr(
                 "activityMessage", const.STR_CSPSALN_INIT_SUCCESS, False
             )
-            #### Push event testing
-            self.logger.debug("Subscribing attribute event")
-            device_client = TangoClient("mid_csp/elt/subarray_01")
-            device_client.subscribe_attribute("obsState", device.simulator_obsstate_callback)
-
-            #### Push event testing ends
             self.logger.info(const.STR_CSPSALN_INIT_SUCCESS)
             return (ResultCode.OK, const.STR_CSPSALN_INIT_SUCCESS)
 
