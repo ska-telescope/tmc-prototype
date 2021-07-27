@@ -355,19 +355,14 @@ def main(args=None, **kwargs):
         standalone_mode = os.environ['STANDALONE_MODE']
     except KeyError:
         standalone_mode = "FALSE"
-        print("Environment variable 'STANDALONE_MODE' is not defined. Defaulting to 'FALSE'.")
 
     if standalone_mode == "TRUE":
-        print("Running in standalone mode")
-
-        ## Using tango simlib simulator
+        ## Get simulator object
         device_name = "mid_sdp/elt/master"
         sdp_master_simulator = get_sdp_master_sim(device_name)
         ret_val = run((SdpMasterLeafNode, sdp_master_simulator), args=args, **kwargs)
     else:
-        print("Running in normal mode")
         ret_val = run((SdpMasterLeafNode,), args=args, **kwargs)
-
 
     return ret_val
     # PROTECTED REGION END #    //  SdpMasterLeafNode.main
