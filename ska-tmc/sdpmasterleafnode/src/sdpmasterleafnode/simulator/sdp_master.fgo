@@ -12,7 +12,9 @@
             },
             "data_format": "SCALAR",
             "data_type": "DevState",
+            "database": "localhost:10000",
             "description": "",
+            "device": "mid_sdp/elt/master",
             "dim_x": 1,
             "dim_y": 0,
             "display_unit": "No display unit",
@@ -42,10 +44,12 @@
             "max_value": "Not specified",
             "min_alarm": "Not specified",
             "min_value": "Not specified",
+            "model": "localhost:10000/mid_sdp/elt/master/State",
             "name": "State",
-            "polling": 3000,
+            "polling": 1000,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
+            "string": "OFF",
             "unit": "",
             "value": 1,
             "writable": "READ"
@@ -62,7 +66,9 @@
             },
             "data_format": "SCALAR",
             "data_type": "DevString",
+            "database": "localhost:10000",
             "description": "",
+            "device": "mid_sdp/elt/master",
             "dim_x": 1,
             "dim_y": 0,
             "display_unit": "No display unit",
@@ -92,12 +98,13 @@
             "max_value": "Not specified",
             "min_alarm": "Not specified",
             "min_value": "Not specified",
+            "model": "localhost:10000/mid_sdp/elt/master/Status",
             "name": "Status",
-            "polling": 3000,
+            "polling": 1000,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
             "unit": "",
-            "value": "Device mid_sdp/elt/master is OFF",
+            "value": "Device is off",
             "writable": "READ"
         }
     },
@@ -105,14 +112,21 @@
         "On": {
             "in_type": "DevVoid",
             "in_type_desc": "None",
-            "name": "Capture",
+            "name": "On",
             "out_type": "DevVoid",
             "out_type_desc": "Uninitialised"
         },
         "Off": {
             "in_type": "DevVoid",
             "in_type_desc": "None",
-            "name": "Capture",
+            "name": "Off",
+            "out_type": "DevVoid",
+            "out_type_desc": "Uninitialised"
+        },
+        "Standby": {
+            "in_type": "DevVoid",
+            "in_type_desc": "None",
+            "name": "Standby",
             "out_type": "DevVoid",
             "out_type_desc": "Uninitialised"
         }

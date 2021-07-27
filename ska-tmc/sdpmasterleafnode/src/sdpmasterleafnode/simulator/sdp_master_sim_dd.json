@@ -27,6 +27,36 @@
             "dformat_out": "Scalar"
           }
         }
+      },
+      {
+        "basicCommandData": {
+          "name": "Off",
+          "input_parameters": {
+            "dtype_in": "Void",
+            "doc_in": "",
+            "dformat_in": "Scalar"
+          },
+          "output_parameters": {
+            "dtype_out": "Void",
+            "doc_out": "",
+            "dformat_out": "Scalar"
+          }
+        }
+      },
+      {
+        "basicCommandData": {
+          "name": "Standby",
+          "input_parameters": {
+            "dtype_in": "Void",
+            "doc_in": "",
+            "dformat_in": "Scalar"
+          },
+          "output_parameters": {
+            "dtype_out": "Void",
+            "doc_out": "",
+            "dformat_out": "Scalar"
+          }
+        }
       }
     ]
   }
