@@ -351,7 +351,11 @@ def main(args=None, **kwargs):
     # PROTECTED REGION ID(SdpMasterLeafNode.main) ENABLED START #
 
     # Check if standalone mode is enabled
-    standalone_mode = os.environ['STANDALONE_MODE']
+    try:
+        standalone_mode = os.environ['STANDALONE_MODE']
+    except KeyError:
+        standalone_mode = "FALSE"
+        print("Environment variable 'STANDALONE_MODE' is not defined. Defaulting to 'FALSE'.")
 
     if standalone_mode == "TRUE":
         print("Running in standalone mode")
@@ -363,6 +367,7 @@ def main(args=None, **kwargs):
     else:
         print("Running in normal mode")
         ret_val = run((SdpMasterLeafNode,), args=args, **kwargs)
+
 
     return ret_val
     # PROTECTED REGION END #    //  SdpMasterLeafNode.main

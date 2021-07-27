@@ -8,4 +8,3 @@ cdm-shared-library
 ska-telescope-model
 fire
 skatmccommon==0.1.6+3aaa7bbe
-# tango-simlib>=0.9.2
