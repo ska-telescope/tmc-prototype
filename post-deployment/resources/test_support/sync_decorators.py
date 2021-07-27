@@ -78,9 +78,29 @@ def check_going_into_standby():
     resource("ska_mid/tm_subarray_node/1").assert_attribute("State").equals("ON")
 
 
+#Note: make use of this decorator while updatating integration tests for sp-1623
+def check_coming_out_of_tmc_off():
+    ##Can  only start up a disabled telescope
+    resource("ska_mid/tm_subarray_node/1").assert_attribute("State").equals("OFF")
+    resource("ska_mid/tm_leaf_node/csp_subarray01").assert_attribute("State").equals("OFF")
+    resource("ska_mid/tm_leaf_node/sdp_subarray01").assert_attribute("State").equals("OFF")
+    resource("ska_mid/tm_leaf_node/csp_master").assert_attribute("State").equals("OFF")
+    resource("ska_mid/tm_leaf_node/csp_master").assert_attribute("State").equals("OFF")
+    resource("ska_mid/tm_leaf_node/d0001").assert_attribute("State").equals("OFF")
+
+
+#Note: make use of this decorator while updating integration tests for sp-1623
+def check_going_into_tmc_off_or_standby():
+    print("In check_going_into_tmc_off")
+    resource("ska_mid/tm_subarray_node/1").assert_attribute("State").equals("ON")
+    resource("ska_mid/tm_leaf_node/csp_subarray01").assert_attribute("State").equals("ON")
+    resource("ska_mid/tm_leaf_node/sdp_subarray01").assert_attribute("State").equals("ON")
+    resource("ska_mid/tm_leaf_node/csp_master").assert_attribute("State").equals("ON")
+    resource("ska_mid/tm_leaf_node/csp_master").assert_attribute("State").equals("ON")
+    resource("ska_mid/tm_leaf_node/d0001").assert_attribute("State").equals("ON")
+
+
 # pre waitings
-
-
 class WaitConfigure:
     def __init__(self):
         self.w = watch(resource("ska_mid/tm_subarray_node/1")).for_a_change_on(
@@ -184,7 +204,7 @@ class WaitScanning:
         self.w2.wait_until_value_changed_to("READY", timeout)
 
 
-def sync_assign_resources(nr_of_receptors=4, timeout=200):
+def sync_assign_resources(nr_of_receptors=4, timeout=500):
     # defined as a decorator
     def decorator_sync_assign_resources(func):
         @functools.wraps(func)
@@ -407,7 +427,7 @@ def sync_going_to_standby(timeout=50):
     the_waiter.wait(timeout)
 
 
-def sync_scan(timeout=200):
+def sync_scan(timeout=500):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
@@ -505,3 +525,45 @@ def sync_oet_scanning():
     the_waiter.set_wait_for_going_into_scanning()
     yield
     the_waiter.wait()
+
+
+#Note: make use of this method while updating integration tests for sp-1623
+def sync_tmc_on(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        check_coming_out_of_tmc_off()
+        the_waiter = waiter()
+        the_waiter.set_wait_for_tmc_up()
+        result = func(*args, **kwargs)
+        the_waiter.wait(50)
+        return result
+
+    return wrapper
+
+
+#Note: make use of this method while updating integration tests for sp-1623
+def sync_tmc_off(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        check_going_into_tmc_off_or_standby()
+        the_waiter = waiter()
+        the_waiter.set_wait_for_going_to_off()
+        result = func(*args, **kwargs)
+        the_waiter.wait(100)
+        return result
+
+    return wrapper
+
+
+#Note: make use of this method while updating integration tests for sp-1623
+def sync_tmc_standby(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        check_going_into_tmc_off_or_standby()
+        the_waiter = waiter()
+        the_waiter.set_wait_for_going_to_standby()
+        result = func(*args, **kwargs)
+        the_waiter.wait(100)
+        return result
+
+    return wrapper

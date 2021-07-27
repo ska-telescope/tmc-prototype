@@ -24,9 +24,29 @@ subarray_devices = [
     "ska_mid/tm_subarray_node/1",
     "mid_csp/elt/subarray_01",
     "mid_csp_cbf/sub_elt/subarray_01",
-    "mid_sdp/elt/subarray_1",
+    "mid_sdp/elt/subarray_1"
 ]
 
+tmc_devices = [
+    "ska_mid/tm_central/central_node",
+    "ska_mid/tm_subarray_node/1",
+    "mid_csp/elt/subarray_01",
+    "mid_sdp/elt/subarray_1",
+    "ska_mid/tm_leaf_node/csp_subarray01",
+    "ska_mid/tm_leaf_node/sdp_subarray01",
+    "ska_mid/tm_leaf_node/csp_master",
+    "ska_mid/tm_leaf_node/sdp_master",
+    "mid_csp/elt/master",
+    "mid_sdp/elt/master",
+    "ska_mid/tm_leaf_node/d0001",
+    "mid_d0001/elt/master",
+    "ska_mid/tm_leaf_node/d0002",
+    "mid_d0002/elt/master",
+    "ska_mid/tm_leaf_node/d0003",
+    "mid_d0003/elt/master",
+    "ska_mid/tm_leaf_node/d0004",
+    "mid_d0004/elt/master"
+]
 
 def map_dish_nr_to_device_name(dish_nr):
     digits = str(10000 + dish_nr)[1::]
@@ -576,6 +596,115 @@ class waiter:
         # self.waits.append(watch(resource('mid_csp/elt/subarray_01')).to_become("State",changed_to='OFF'))
         # self.waits.append(watch(resource('mid_csp_cbf/sub_elt/subarray_01')).to_become("State",changed_to='OFF'))
         # self.waits.append(watch(resource('mid_sdp/elt/subarray_1')).for_a_change_on("State"))
+
+    #Note: make use of this method while updatating integration tests for sp-1623
+    def set_wait_for_tmc_up(self):
+        self.waits.append(
+            watch(resource("ska_mid/tm_subarray_node/1")).to_become("State", changed_to="ON")
+        )
+        self.waits.append(
+            watch(resource("ska_mid/tm_leaf_node/csp_subarray01")).to_become(
+                "State", changed_to="ON"
+            )
+        )
+        self.waits.append(
+            watch(resource("ska_mid/tm_leaf_node/sdp_subarray01")).to_become(
+                "State", changed_to="ON"
+            )
+        )
+        self.waits.append(
+            watch(resource("ska_mid/tm_leaf_node/csp_master")).to_become(
+                "State", changed_to="ON"
+            )
+        )
+        self.waits.append(
+            watch(resource("ska_mid/tm_leaf_node/sdp_master")).to_become(
+                "State", changed_to="ON"
+            )
+        )
+        self.waits.append(
+            watch(resource("ska_mid/tm_leaf_node/d0001")).to_become(
+                "State", changed_to="ON"
+            )
+        )
+        self.waits.append(
+            watch(resource("ska_mid/tm_central/central_node")).to_become(
+                "State", changed_to="ON"
+            )
+        )
+
+    #Note: make use of this method while updatating integration tests for sp-1623
+    def set_wait_for_going_to_off(self):
+        self.waits.append(
+            watch(resource("ska_mid/tm_subarray_node/1")).to_become("State", changed_to="OFF")
+        )
+        self.waits.append(
+            watch(resource("ska_mid/tm_leaf_node/csp_subarray01")).to_become(
+                "State", changed_to="OFF"
+            )
+        )
+        self.waits.append(
+            watch(resource("ska_mid/tm_leaf_node/sdp_subarray01")).to_become(
+                "State", changed_to="OFF"
+            )
+        )
+        self.waits.append(
+            watch(resource("ska_mid/tm_leaf_node/csp_master")).to_become(
+                "State", changed_to="OFF"
+            )
+        )
+        self.waits.append(
+            watch(resource("ska_mid/tm_leaf_node/sdp_master")).to_become(
+                "State", changed_to="OFF"
+            )
+        )
+        self.waits.append(
+            watch(resource("ska_mid/tm_leaf_node/d0001")).to_become(
+                "State", changed_to="OFF"
+            )
+        )
+        self.waits.append(
+            watch(resource("ska_mid/tm_central/central_node")).to_become(
+                "State", changed_to="OFF"
+            )
+        )
+
+    #Note: make use of this method while updatating integration tests for sp-1623
+    def set_wait_for_going_to_standby(self):
+        self.waits.append(
+            watch(resource("ska_mid/tm_subarray_node/1")).to_become("State", changed_to="Standby")
+        )
+        self.waits.append(
+            watch(resource("ska_mid/tm_leaf_node/csp_subarray01")).to_become(
+                "State", changed_to="Standby"
+            )
+        )
+        self.waits.append(
+            watch(resource("ska_mid/tm_leaf_node/sdp_subarray01")).to_become(
+                "State", changed_to="Standby"
+            )
+        )
+        self.waits.append(
+            watch(resource("ska_mid/tm_leaf_node/csp_master")).to_become(
+                "State", changed_to="Standby"
+            )
+        )
+        self.waits.append(
+            watch(resource("ska_mid/tm_leaf_node/sdp_master")).to_become(
+                "State", changed_to="Standby"
+            )
+        )
+        self.waits.append(
+            watch(resource("ska_mid/tm_leaf_node/d0001")).to_become(
+                "State", changed_to="Standby"
+            )
+        )
+        self.waits.append(
+            watch(resource("ska_mid/tm_central/central_node")).to_become(
+                "State", changed_to="Standby"
+            )
+        )
+
 
     def wait(self, timeout=30, resolution=0.1):
         self.logs = ""
