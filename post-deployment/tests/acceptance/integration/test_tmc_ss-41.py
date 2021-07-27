@@ -56,18 +56,12 @@ def test_multi_scan():
         fixture = {}
         fixture["state"] = "Unknown"
 
-        # given a started up telescope
-        LOGGER.info("Checking if Telescope is in StandBy")
-        assert telescope_is_in_standby()
-        LOGGER.info("Telescope is in StandBy")
-        LOGGER.info("Starting up the Telescope")
-
         assert tmc_is_in_on()
         LOGGER.info("TMC devices are up")
 
         LOGGER.info("Calling TelescopeOn command now.")
         tmc.set_telescope_on()
-        time.sleep(5)
+        time.sleep(50)
         assert telescope_is_on()
         LOGGER.info("Telescope is on")
         fixture["state"] = "Telescope On"
@@ -93,7 +87,7 @@ def test_multi_scan():
         with log_states("TMC_ss-41-scan1", devices_to_log, non_default_states_to_check):
             with sync_scanning(200):
                 SubarrayNode = DeviceProxy("ska_mid/tm_subarray_node/1")
-                SubarrayNode.Scan('{"id":1}')
+                SubarrayNode.Scan('{"interface":"https://schema.skao.intg/ska-tmc-scan/2.0","transaction_id":"txn-....-00001","scan_id":1}')
                 fixture["state"] = "Subarray SCANNING"
                 LOGGER.info("Subarray obsState is: " + str(SubarrayNode.obsState))
                 LOGGER.info("Scan 1  is executing on Subarray")
@@ -137,7 +131,7 @@ def test_multi_scan():
                 )
 
                 SubarrayNode = DeviceProxy("ska_mid/tm_subarray_node/1")
-                SubarrayNode.Scan('{"id":1}')
+                SubarrayNode.Scan('{"interface":"https://schema.skao.intg/ska-tmc-scan/2.0","transaction_id":"txn-....-00001","scan_id":2}')
                 fixture["state"] = "Subarray SCANNING"
                 LOGGER.info("Subarray obsState is: " + str(SubarrayNode.obsState))
         LOGGER.info("Scan2 complete")
@@ -157,7 +151,7 @@ def test_multi_scan():
         
         LOGGER.info("Calling TelescopeOff command now.")
         tmc.set_telescope_off()
-        time.sleep(5)
+        time.sleep(20)
         assert telescope_is_off()
         fixture["state"] = "Telescope Off"
 

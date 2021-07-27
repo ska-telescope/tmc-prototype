@@ -51,7 +51,6 @@ non_default_states_to_check = {
 
 LOGGER = logging.getLogger(__name__)
 
-
 @pytest.mark.mid
 # @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_scan():
@@ -61,16 +60,12 @@ def test_scan():
         fixture = {}
         fixture["state"] = "Unknown"
 
-        # given a started up telescope
-        assert telescope_is_in_standby()
-        LOGGER.info("Starting up the Telescope")
-      
         assert tmc_is_in_on()
         LOGGER.info("TMC devices are up")
         
         LOGGER.info("Calling TelescopeOn command now.")
         tmc.set_telescope_on()
-        time.sleep(5)
+        time.sleep(50)
         assert telescope_is_on()
         LOGGER.info("Telescope is on")
         fixture["state"] = "Telescope On"
@@ -79,6 +74,7 @@ def test_scan():
         LOGGER.info("Composing the Subarray")
         sdp_block = tmc.compose_sub()
         fixture["state"] = "Subarray Assigned"
+        time.sleep(100)
 
         # and a subarray configured to perform a scan as per 'TMC_integration/configure1.json'
         LOGGER.info("Configuring the Subarray")
@@ -86,6 +82,7 @@ def test_scan():
         configure_file = "resources/test_data/TMC_integration/configure1.json"
         tmc.configure_sub(sdp_block, configure_file)
         fixture["state"] = "Subarray Configured for SCAN"
+        time.sleep(60)
 
         # When I run a scan of 4 seconds based on previos configuration
         resource("ska_mid/tm_subarray_node/1").assert_attribute("obsState").equals(
@@ -98,7 +95,7 @@ def test_scan():
         @sync_scan(500)
         def scan():
             SubarrayNode = DeviceProxy("ska_mid/tm_subarray_node/1")
-            SubarrayNode.Scan('{"id":1}')
+            SubarrayNode.Scan('{"interface":"https://schema.skao.intg/ska-tmc-scan/2.0","transaction_id":"txn-....-00001","scan_id":1}')
 
         scan()
         LOGGER.info("Scan complete")
@@ -113,7 +110,7 @@ def test_scan():
 
         LOGGER.info("Calling TelescopeOff command now.")
         tmc.set_telescope_off()
-        time.sleep(5)
+        time.sleep(20)
         assert telescope_is_off()
         fixture["state"] = "Telescope Off"
 
