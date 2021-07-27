@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-override class with command handlers for dsh-lmc.
+override class with command handlers for csp master.
 """
 # Standard python imports
 import pkg_resources
@@ -16,92 +16,85 @@ from tango_simlib.tango_sim_generator import (configure_device_models, get_tango
 
 class OverrideCspMaster():
 
-    def action_on(self, models, tango_dev=None, data_input=[]):
+    def action_on(self, model, tango_dev=None, data_input=[]):
         """Changes the State of the device to ON.
         """
-        models.logger.info("Executing On command")
-        on = "ON"
-        ok = "OK"
+        model.logger.info("Executing On command")
         _allowed_modes = (
             "OFF",
             "STANDBY"
         )
-        if str(tango_dev.get_state()) in ["ON"]:
-            models.logger.info("CSP master is already in '%s' state",on)
+        if tango_dev.get_state() == DevState.ON:
+            model.logger.info("CSP master is already in ON state")
             return
 
         if str(tango_dev.get_state()) in _allowed_modes:
             tango_dev.set_state(DevState.ON)
-            models.logger.info("Csp Master transitioned to the '%s' state.",on)
-            csp_mode_healthState = models.sim_quantities["healthState"]
-            set_enum(csp_mode_healthState, ok, models.time_func())
+            model.logger.info("Csp Master transitioned to the ON state.")
+            csp_health_state = model.sim_quantities["healthState"]
+            set_enum(csp_health_state, "OK", model.time_func())
             tango_dev.push_change_event("healthState", 1)
             tango_dev.set_status("device turned On successfully")
-            models.logger.info("heathState transitioned to '%s' state",ok)
+            model.logger.info("heathState transitioned to OK state")
         else:
             Except.throw_exception(
-                    "ON Command Failed",
-                    "Not allowed",
-                    ErrSeverity.WARN,
+                "ON Command Failed",
+                "Not allowed",
+                ErrSeverity.WARN,
                 )
 
-    def action_off(self, models, tango_dev=None, data_input=[]):
+    def action_off(self, model, tango_dev=None, data_input=[]):
         """Changes the State of the device to OFF.
         """
-        off = "OFF"
-        ok = "OK"
         _allowed_modes = (
             "ON",
             "ALARM",
             "STANDBY"
         )
-        if str(tango_dev.get_state()) in ["OFF"]:
-            models.logger.info("CSP master is already in '%s' state",off)
+        if tango_dev.get_state() == DevState.OFF:
+            model.logger.info("CSP master is already in OFF state")
             return
 
         if str(tango_dev.get_state()) in _allowed_modes:
             tango_dev.set_state(DevState.OFF)
-            models.logger.info("Csp Master transitioned to the '%s' state.",off)
-            csp_mode_healthState = models.sim_quantities["healthState"]
-            set_enum(csp_mode_healthState, ok, models.time_func())
+            model.logger.info("Csp Master transitioned to the OFF state.")
+            csp_health_state = model.sim_quantities["healthState"]
+            set_enum(csp_health_state, "OK", model.time_func())
             tango_dev.push_change_event("healthState", 1)
             tango_dev.set_status("device turned off successfully")
-            models.logger.info("heathState transitioned to '%s' state",ok)
+            model.logger.info("heathState transitioned to OK state")
 
         else:
             Except.throw_exception(
-                    "Off Command Failed",
-                    "Not allowed",
-                    ErrSeverity.WARN,
+                "Off Command Failed",
+                "Not allowed",
+                ErrSeverity.WARN,
                 )
 
-    def action_standby(self, models, tango_dev=None, data_input=[]):
+    def action_standby(self, model, tango_dev=None, data_input=[]):
         """Changes the State of the device to STANDBY.
         """
-        standby = "STANDBY"
-        ok = "OK"
         _allowed_modes = (
             "ON",
             "ALARM",
             "OFF"
         )
-        if str(tango_dev.get_state()) in ["STANDBY"]:
-            models.logger.info("CSP master is already in '%s' state",standby)
+        if tango_dev.get_state() == DevState.STANDBY:
+            model.logger.info("CSP master is already in OK state")
             return
 
         if str(tango_dev.get_state()) in _allowed_modes:
             tango_dev.set_state(DevState.STANDBY)
-            print(f"Csp Master transitioned to the {standby} state.")
-            csp_mode_healthState = models.sim_quantities["healthState"]
-            set_enum(csp_mode_healthState, ok, models.time_func())
+            csp_health_state = model.sim_quantities["healthState"]
+            set_enum(csp_health_state, "OK", model.time_func())
             tango_dev.push_change_event("healthState", 1)
             tango_dev.set_status("invoked Standby successfully")
-            models.logger.info("heathState transitioned to '%s' state",ok)
+            model.logger.info("heathState transitioned to OK state")
         else:
             Except.throw_exception(
-                    "STANDBY Command Failed",
-                    "Not allowed",
-                    ErrSeverity.WARN,
+                "STANDBY Command Failed",
+                "Not allowed",
+                ErrSeverity.WARN,
                 )
 
 def get_csp_master_sim(device_name):
@@ -139,8 +132,8 @@ def get_csp_master_sim(device_name):
 
     logger.debug("Configuring device model")
     
-    models = configure_device_models(sim_data_files, **configure_args)
-    tango_device_servers = get_tango_device_server(models, sim_data_files)
+    model = configure_device_models(sim_data_files, **configure_args)
+    tango_device_servers = get_tango_device_server(model, sim_data_files)
     return tango_device_servers[0]
 
 
@@ -160,7 +153,7 @@ def set_enum(quantity, label, timestamp):
     """Sets the quantity last_val attribute to index of label
 
     :param quantity: object
-        The quantity object from models
+        The quantity object from model
     :param label: str
         The desired label from enum list
     :param timestamp: float

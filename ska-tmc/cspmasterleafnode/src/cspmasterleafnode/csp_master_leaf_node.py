@@ -17,15 +17,12 @@ import os
 import tango
 from tango import ApiUtil, DebugIt, AttrWriteType
 from tango.server import run, command, device_property, attribute
-# from tango.server import server_run
-# from tango_simlib.tango_sim_generator import (configure_device_models, get_tango_device_server)
 
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 
 from tmc.common.tango_server_helper import TangoServerHelper
-from tmc.common.tango_client import TangoClient
 
 from . import const
 from .telescope_on_command import TelescopeOn
