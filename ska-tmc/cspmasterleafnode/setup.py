@@ -41,7 +41,7 @@ setup(
     test_suite="test",
     entry_points={
         "console_scripts": [
-            "CspMasterLeafNode = cspmasterleafnode.csp_master_leaf_node:main"
+            "CspMasterLeafNodeDS = cspmasterleafnode.csp_master_leaf_node:main"
         ]
     },
     author="Team NCRA",
@@ -51,7 +51,7 @@ setup(
     url="https://www.skatelescope.org",
     platforms="Linux",
     install_requires=[
-        "pytango==9.3.2",
+        "pytango==9.3.3",
         "mock",
         "ska_logging==0.3.0",
         "lmcbaseclasses==0.7.2",

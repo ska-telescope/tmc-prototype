@@ -7,9 +7,9 @@
 # Distributed under the terms of the BSD-3-Clause license.
 # See LICENSE.txt for more info.
 
-"""DishMaster Simulator
+"""CspMaster Simulator
 
-SKA Dish Master TANGO device server
+SKA CspMaster TANGO device server
 """
 from .csp_master_behaviour import OverrideCspMaster, get_csp_master_sim
 

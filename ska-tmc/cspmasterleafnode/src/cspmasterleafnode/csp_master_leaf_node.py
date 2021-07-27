@@ -75,7 +75,7 @@ class CspMasterLeafNode(SKABaseDevice):
     # General methods
     # ---------------
     
-    def test_callback(self, event):
+    def healthState_callback(self, event):
         self.logger.debug("executing callback function")
         self.logger.debug(f"Error event: {event.err}")
         if not event.err:
@@ -117,7 +117,7 @@ class CspMasterLeafNode(SKABaseDevice):
             #### Push event testing
             self.logger.debug("Subscribing attribute event")
             device_client = TangoClient("mid_csp/elt/master")
-            device_client.subscribe_attribute("TestAttr", device.test_callback)
+            device_client.subscribe_attribute("healthState", device.healthState_callback)
 
             #### Push event testing ends
 
@@ -266,20 +266,13 @@ def main(args=None, **kwargs):
     # PROTECTED REGION END #    //  CspMasterLeafNode.main
     
     # Check if standalone mode is enabled
-    standalone_mode = os.environ['STANDALONE_MODE']
+    standalone_mode = os.environ['STANDALONE_MODE']  
 
-    standalone_mode = True    
-
-    if standalone_mode == True:
+    if standalone_mode == "TRUE":
         print("Running in standalone mode")
         device_name = "mid_csp/elt/master"
         csp_master_simulator = get_csp_master_sim(device_name)
-        
-        devices = []
-        devices.append(csp_master_simulator)
-        devices.append(CspMasterLeafNode)
-        
-        ret_val = run(devices, args=args, **kwargs)
+        ret_val = run((CspMasterLeafNode,csp_master_simulator), args=args, **kwargs)
     else:
         print("Running in normal mode")
         ret_val = run((CspMasterLeafNode,), args=args, **kwargs)

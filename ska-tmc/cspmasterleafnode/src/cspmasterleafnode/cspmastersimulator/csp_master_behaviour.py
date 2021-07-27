@@ -14,7 +14,7 @@ from tango import DevState, Except, ErrSeverity
 from ska.logging import configure_logging
 from tango_simlib.tango_sim_generator import (configure_device_models, get_tango_device_server)
 
-class OverrideCspMaster(object):
+class OverrideCspMaster():
 
     def action_on(self, models, tango_dev=None, data_input=[]):
         """Changes the State of the device to ON.
@@ -119,7 +119,7 @@ def get_csp_master_sim(device_name):
         pkg_resources.resource_filename("cspmasterleafnode.cspmastersimulator", "csp_master_simDD.json")
     )
 
-    device_name = "mid-csp/elt/master"
+    device_name = "mid_csp/elt/master"
     device_name_tag = f"tango-device:{device_name}"
 
     class TangoDeviceTagsFilter(logging.Filter):
@@ -139,9 +139,9 @@ def get_csp_master_sim(device_name):
 
     logger.debug("Configuring device model")
     
-    models = configure_device_models(sim_data_files)
+    models = configure_device_models(sim_data_files, **configure_args)
     tango_device_servers = get_tango_device_server(models, sim_data_files)
-    return(tango_device_servers)
+    return tango_device_servers[0]
 
 
 def get_enum_str(quantity):
