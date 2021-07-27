@@ -584,7 +584,7 @@ def main(args=None, **kwargs):
     """    
     standalone_mode = os.environ['STANDALONE_MODE']     
            
-    if standalone_mode == True:
+    if standalone_mode == "TRUE":
         print("Running in standalone mode")
         csp_subarray_simulator = []
         csp_subarray_simulator = CspSubarraySimulator.simulator()

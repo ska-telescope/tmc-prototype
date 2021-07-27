@@ -40,7 +40,7 @@ setup(
     test_suite="test",
     entry_points={
         "console_scripts": [
-            "CspSubarrayLeafNode=cspsubarrayleafnode.csp_subarray_leaf_node:main"
+            "CspSubarrayLeafNodeDS=cspsubarrayleafnode.csp_subarray_leaf_node:main"
         ]
     },
     author="Team NCRA",
