@@ -100,6 +100,9 @@ server:
                         - "1"
 depends_on:
   - device: sys/database/2
+  - device: mid_csp/elt/master
+  - device: mid_sdp/elt/master
+
 image:
   registry: "{{.Values.centralnodemid.image.registry}}"
   image: "{{.Values.centralnodemid.image.image}}"
