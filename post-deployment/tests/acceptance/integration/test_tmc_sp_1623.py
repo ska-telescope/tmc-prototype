@@ -60,9 +60,8 @@ non_default_states_to_check = {
 
 LOGGER = logging.getLogger(__name__)
 
-
-@pytest.mark.mid
-#@pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
+# @pytest.mark.mid
+@pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_feature_sp_1623():
 
     try:
@@ -125,7 +124,7 @@ def test_feature_sp_1623():
         LOGGER.info("Calling Telescope Off command now.")
         tmc.set_telescope_off()
         the_waiter.wait()
-        time.sleep(10)
+        time.sleep(20)
         assert telescope_is_off()
         LOGGER.info("Telescope is Off")
         fixture["state"] = "Telescope Off"

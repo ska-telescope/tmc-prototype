@@ -4,7 +4,7 @@ set -eo pipefail
 echo "Coding analysis will be performed shortly..."
 python3 -m pip install pylint2junit junitparser; \
 python3 -m pip install --index-url https://nexus.engageska-portugal.pt/repository/pypi/simple lmcbaseclasses==0.7.2 ; \
-python3 -m pip install --index-url https://artefact.skao.int/repository/pypi-internal/simple  ska-ser-logging==0.4.0 ska-tmc-cdm==6.0.0 ska-tmc-common==0.1.7+d39e6423 ska-telescope-model==1.3.0 ska-ser-log-transactions
+python3 -m pip install --index-url https://artefact.skao.int/repository/pypi-internal/simple  ska-ser-logging==0.4.0 ska-tmc-cdm==6.0.0 ska-tmc-common==0.1.7+d39e6423 ska-telescope-model==1.3.1 ska-ser-log-transactions
 for path in $(find ./*/test  -type d -name unit); do
 	export TMC_ELEMENT=$(basename $(dirname $(dirname $path)));
 	echo +++ Trying tests for $TMC_ELEMENT;

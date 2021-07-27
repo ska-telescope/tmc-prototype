@@ -60,10 +60,6 @@ def test_configure_scan():
         fixture = {}
         fixture["state"] = "Unknown"
         the_waiter = waiter()
-
-        # given a started up telescope
-        # assert telescope_is_in_standby()
-        LOGGER.info("Starting up the Telescope")
         
         assert tmc_is_in_on()
         LOGGER.info("TMC devices are up")
@@ -123,7 +119,7 @@ def test_configure_scan():
 
         LOGGER.info("Calling TelescopeOff command now.")
         tmc.set_telescope_off()
-        time.sleep(5)
+        time.sleep(20)
         assert telescope_is_off()
         fixture["state"] = "Telescope Off"
 

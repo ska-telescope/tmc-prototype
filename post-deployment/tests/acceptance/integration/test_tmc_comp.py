@@ -90,17 +90,17 @@ def test_assign_resources():
             CentralNode.AssignResources(config)
             LOGGER.info("Invoked AssignResources on CentralNode")
         compose_sub()
-  
+        fixture["state"] = "Subarray Assigned"
+
         # tear down
         LOGGER.info("Tests complete: tearing down...")
         tmc.release_resources()
         time.sleep(20)
-        fixture["state"] = "Complete"
-
+        fixture["state"] = "Released Resources"
+        
         LOGGER.info("Calling TelescopeOff command now.")
         tmc.set_telescope_off()
-        time.sleep(10)
-
+        time.sleep(20)
         assert telescope_is_off()
         fixture["state"] = "Telescope Off"
 
@@ -112,6 +112,7 @@ def test_assign_resources():
         elif fixture["state"] == "Subarray Assigned":
             tmc.release_resources()
             tmc.set_telescope_off()
+        elif fixture["state"] == "Released Resources":
+            tmc.set_telescope_off()
         else:
             LOGGER.info("Tearing down completed...")
-        raise
