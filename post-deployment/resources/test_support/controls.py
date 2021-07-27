@@ -1,6 +1,7 @@
 import pytest
 from datetime import date, datetime
 import os
+import time
 import logging
 
 
@@ -219,6 +220,10 @@ def telescope_is_on():
         'resource("mid_d0004/elt/master").get("State")'
         + str(resource("mid_d0004/elt/master").get("State"))
     )
+
+    if ((resource("ska_mid/tm_central/central_node").get("telescopeState")) != "ON"):
+        time.sleep(2)
+
     return [
         resource("ska_mid/tm_central/central_node").get("State"),
         resource("ska_mid/tm_central/central_node").get("telescopeState"),
