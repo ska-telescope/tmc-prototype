@@ -5,18 +5,18 @@
 
 SDP Master Leaf Node
 ================================================
-.. autoclass:: ska-tmc.sdpmasterleafnode.src.sdpmasterleafnode.sdp_master_leaf_node.SdpMasterLeafNode
+.. autoclass:: ska-tmc.ska-tmc-sdpmasterleafnode-mid.src.ska_tmc_sdpmasterleafnode_mid.sdp_master_leaf_node.SdpMasterLeafNode
     :members: None
     :undoc-members: Disable
-.. autoclass:: ska-tmc.sdpmasterleafnode.src.sdpmasterleafnode.off_command.Off
+.. autoclass:: ska-tmc.ska-tmc-sdpmasterleafnode-mid.src.ska_tmc_sdpmasterleafnode_mid.off_command.Off
     :members: do
     :undoc-members:
-.. autoclass:: ska-tmc.sdpmasterleafnode.src.sdpmasterleafnode.disable_command.Disable
+.. autoclass:: ska-tmc.ska-tmc-sdpmasterleafnode-mid.src.ska_tmc_sdpmasterleafnode_mid.disable_command.Disable
     :members: do
     :undoc-members:
-.. autoclass:: ska-tmc.sdpmasterleafnode.src.sdpmasterleafnode.on_command.On
+.. autoclass:: ska-tmc.ska-tmc-sdpmasterleafnode-mid.src.ska_tmc_sdpmasterleafnode_mid.on_command.On
     :members: do
     :undoc-members:
-.. autoclass:: ska-tmc.sdpmasterleafnode.src.sdpmasterleafnode.standby_command.Standby
+.. autoclass:: ska-tmc.ska-tmc-sdpmasterleafnode-mid.src.ska_tmc_sdpmasterleafnode_mid.standby_command.Standby
     :members: do
     :undoc-members:

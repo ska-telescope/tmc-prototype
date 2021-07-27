@@ -9,11 +9,11 @@ init-hook='
     import sys;
     sys.path.append("./ska-tmc/dishmaster");
     sys.path.append("./ska-tmc/dishmaster/src");
-    sys.path.append("./ska-tmc/cspsubarrayleafnode");
+    sys.path.append("./ska-tmc/ska-tmc-cspsubarrayleafnode-mid");
     sys.path.append("./ska-tmc/dishleafnode");
-    sys.path.append("./ska-tmc/cspmasterleafnode");
-    sys.path.append("./ska-tmc/sdpsubarrayleafnode");
-    sys.path.append("./ska-tmc/sdpmasterleafnode");
+    sys.path.append("./ska-tmc/ska-tmc-cspmasterleafnode-mid");
+    sys.path.append("./ska-tmc/ska-tmc-sdpsubarrayleafnode-mid");
+    sys.path.append("./ska-tmc/ska-tmc-sdpmasterleafnode-mid");
     sys.path.append("./ska-tmc/ska-tmc-mccssubarrayleafnode-low");
     sys.path.append("./ska-tmc/ska-tmc-mccsmasterleafnode-low");
     sys.path.append("./ska-tmc/ska-tmc-subarraynode-low");

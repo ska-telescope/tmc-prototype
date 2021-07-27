@@ -36,7 +36,7 @@ build CentralNodeLow wheel for publication: # Executed on a tag
     - docker-executor
   script:
     - cd ./ska-tmc/ska-tmc-centralnode-low
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info sdist bdist_wheel
   only:
     - tags
   artifacts:
@@ -49,7 +49,7 @@ build CentralNodeLow wheel for development: # Executed on a commit
     - docker-executor
   script:
     - cd ./ska-tmc/ska-tmc-centralnode-low
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info sdist bdist_wheel
   except:
     - tags
   artifacts:
@@ -62,7 +62,7 @@ build SubarrayNodeLow wheel for publication: # Executed on a tag
     - docker-executor
   script:
     - cd ./ska-tmc/ska-tmc-subarraynode-low
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info sdist bdist_wheel
   only:
     - tags
   artifacts:
@@ -75,7 +75,7 @@ build SubarrayNodeLow wheel for development: # Executed on a commit
     - docker-executor
   script:
     - cd ./ska-tmc/ska-tmc-subarraynode-low
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info sdist bdist_wheel
   except:
     - tags
   artifacts:
@@ -88,7 +88,7 @@ build DishLeafNode wheel for publication: # Executed on a tag
     - docker-executor
   script:
     - cd ./ska-tmc/dishleafnode
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info sdist bdist_wheel
   only:
     - tags
   artifacts:
@@ -101,7 +101,7 @@ build DishLeafNode wheel for development: # Executed on a commit
     - docker-executor
   script:
     - cd ./ska-tmc/dishleafnode
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info sdist bdist_wheel
   except:
     - tags
   artifacts:
@@ -113,13 +113,13 @@ build CspMasterLeafNode wheel for publication: # Executed on a tag
   tags:
     - docker-executor
   script:
-    - cd ./ska-tmc/cspmasterleafnode
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-tmc-cspmasterleafnode-mid
+    - python3 setup.py egg_info sdist bdist_wheel
   only:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/cspmasterleafnode/dist/
+      - ./ska-tmc/ska-tmc-cspmasterleafnode-mid/dist/
 
 build CspMasterLeafNode wheel for development: # Executed on a commit
   stage: build
@@ -127,7 +127,7 @@ build CspMasterLeafNode wheel for development: # Executed on a commit
     - docker-executor
   script:
     - cd ./ska-tmc/cspmasterleafnode
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info sdist bdist_wheel
   except:
     - tags
   artifacts:
@@ -139,13 +139,13 @@ build CspSubarrayLeafNode wheel for publication: # Executed on a tag
   tags:
     - docker-executor
   script:
-    - cd ./ska-tmc/cspsubarrayleafnode
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-tmc-cspsubarrayleafnode-mid
+    - python3 setup.py egg_info sdist bdist_wheel
   only:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/cspsubarrayleafnode/dist/
+      - ./ska-tmc/ska-tmc-cspsubarrayleafnode-mid/dist/
 
 
 build SdpMasterLeafNode wheel for publication: # Executed on a tag
@@ -153,13 +153,13 @@ build SdpMasterLeafNode wheel for publication: # Executed on a tag
   tags:
     - docker-executor
   script:
-    - cd ./ska-tmc/sdpmasterleafnode
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-tmc-sdpmasterleafnode-mid
+    - python3 setup.py egg_info sdist bdist_wheel
   only:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/sdpmasterleafnode/dist/
+      - ./ska-tmc/ska-tmc-sdpmasterleafnode-mid/dist/
 
 
 build SdpMasterLeafNode wheel for development: # Executed on a commit
@@ -167,52 +167,52 @@ build SdpMasterLeafNode wheel for development: # Executed on a commit
   tags:
     - docker-executor
   script:
-    - cd ./ska-tmc/sdpmasterleafnode
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-tmc-sdpmasterleafnode-mid
+    - python3 setup.py egg_info sdist bdist_wheel
   except:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/sdpmasterleafnode/dist/
+      - ./ska-tmc/ska-tmc-sdpmasterleafnode-mid/dist/
 
 build CspSubarrayLeafNode wheel for development: # Executed on a commit
   stage: build
   tags:
     - docker-executor
   script:
-    - cd ./ska-tmc/cspsubarrayleafnode
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-tmc-cspsubarrayleafnode-mid
+    - python3 setup.py egg_info sdist bdist_wheel
   except:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/cspsubarrayleafnode/dist/
+      - ./ska-tmc/ska-tmc-cspsubarrayleafnode-mid/dist/
 
-build SdpSubarrayLeafNode wheel for publication: # Executed on a tag
+build ska-tmc-sdpsubarrayleafnode-mid wheel for publication: # Executed on a tag
   stage: build
   tags:
     - docker-executor
   script:
-    - cd ./ska-tmc/sdpsubarrayleafnode
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-tmc-sdpsubarrayleafnode-mid
+    - python3 setup.py egg_info sdist bdist_wheel
   only:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/sdpsubarrayleafnode/dist/
+      - ./ska-tmc/ska-tmc-sdpsubarrayleafnode-mid/dist/
 
 build SdpSubarrayLeafNode wheel for development: # Executed on a commit
   stage: build
   tags:
     - docker-executor
   script:
-    - cd ./ska-tmc/sdpsubarrayleafnode
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-tmc-sdpsubarrayleafnode-mid
+    - python3 setup.py egg_info sdist bdist_wheel
   except:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/sdpsubarrayleafnode/dist/
+      - ./ska-tmc/ska-tmc-sdpsubarrayleafnode-mid/dist/
 
 build MccsMasterLeafNode wheel for publication: # Executed on a tag
   stage: build
@@ -220,7 +220,7 @@ build MccsMasterLeafNode wheel for publication: # Executed on a tag
     - docker-executor
   script:
     - cd ./ska-tmc/ska-tmc-mccsmasterleafnode-low
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info sdist bdist_wheel
   only:
     - tags
   artifacts:
@@ -233,7 +233,7 @@ build MccsMasterLeafNode wheel for development: # Executed on a commit
     - docker-executor
   script:
     - cd ./ska-tmc/ska-tmc-mccsmasterleafnode-low
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info sdist bdist_wheel
   except:
     - tags
   artifacts:
@@ -246,7 +246,7 @@ build MccsSubarrayLeafNode wheel for publication: # Executed on a tag
     - docker-executor
   script:
     - cd ./ska-tmc/ska-tmc-mccssubarrayleafnode-low
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info sdist bdist_wheel
   only:
     - tags
   artifacts:
@@ -259,7 +259,7 @@ build MccsSubarrayLeafNode wheel for development: # Executed on a commit
     - docker-executor
   script:
     - cd ./ska-tmc/ska-tmc-mccssubarrayleafnode-low
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info sdist bdist_wheel
   except:
     - tags
   artifacts:
@@ -272,7 +272,7 @@ build DishMaster wheel for publication: # Executed on a tag
     - docker-executor
   script:
     - cd ./ska-tmc/dishmaster
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info sdist bdist_wheel
   only:
     - tags
   artifacts:
@@ -285,23 +285,23 @@ build DishMaster wheel for development: # Executed on a commit
     - docker-executor
   script:
     - cd ./ska-tmc/dishmaster
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - python3 setup.py egg_info sdist bdist_wheel
   except:
     - tags
   artifacts:
     paths:
       - ./ska-tmc/dishmaster/dist/
 
-# unit tests:
-#   image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
-#   stage: unit-test
-#   tags:
-#     - docker-executor
-#   script:
-#     - make unit-test
-#   artifacts:
-#     paths:
-#       - ./build
+unit tests:
+  image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
+  stage: unit-test
+  tags:
+    - docker-executor
+  script:
+    - make unit-test
+  artifacts:
+    paths:
+      - ./build
 
 
 build-image:
@@ -318,75 +318,75 @@ build-image:
     paths:
       - current_tag.txt
 
-# test-mid:
-#    stage: test
-#    dependencies:
-#      - build-image
-#    tags:
-#      - k8srunner
-#    image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
-#    before_script:
-#      - kubectl get namespace
-#    script:
-#      - kubectl version
-#      - make clean
-#      - make install-chart MINIKUBE=false
-#      - make wait
-#      - make smoketest
-#      - make test MARK=mid && [ -f "build/report.xml" ]
-#    after_script:
-#      - make uninstall-chart
-#      - make clean
-#      - make delete_namespace-sdp
-#      - make delete_namespace
-#      - mkdir -p build
-#      - ls -la build
-#    environment:
-#      name: test
-#      kubernetes:
-#        namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-mid
-#    artifacts:
-#      name: "$CI_PROJECT_NAME-$CI_JOB_ID"
-#      paths:
-#        - build
-#      reports:
-#        junit: build/report.xml
-#      when: always
+test-mid:
+   stage: test
+   dependencies:
+     - build-image
+   tags:
+     - k8srunner
+   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
+   before_script:
+     - kubectl get namespace
+   script:
+     - kubectl version
+     - make clean
+     - make install-chart MINIKUBE=false
+     - make wait
+     - make smoketest
+     - make test MARK=mid && [ -f "build/report.xml" ]
+   after_script:
+     - make uninstall-chart
+     - make clean
+     - make delete_namespace-sdp
+     - make delete_namespace
+     - mkdir -p build
+     - ls -la build
+   environment:
+     name: test
+     kubernetes:
+       namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-mid
+   artifacts:
+     name: "$CI_PROJECT_NAME-$CI_JOB_ID"
+     paths:
+       - build
+     reports:
+       junit: build/report.xml
+     when: always
 
 
-# test-low:
-#   stage: test
-#   dependencies:
-#     - build-image
-#   tags:
-#     - k8srunner
-#   image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
-#   before_script:
-#     - kubectl get namespace
-#   script:
-#     - kubectl version
-#     - make clean
-#     - make install-chart MINIKUBE=false HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
-#     - make wait
-#     - make smoketest
-#     - make test MARK=low && [ -f "build/report.xml" ]
-#   after_script:
-#     - make uninstall-chart HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
-#     - make clean
-#     - make delete_namespace-sdp
-#     - make delete_namespace
-#     - mkdir -p build
-#     - ls -la build
-#   environment:
-#     name: test
-#     kubernetes:
-#       namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-low
-#   artifacts:
-#     name: "$CI_PROJECT_NAME-$CI_JOB_ID"
-#     paths:
-#       - build
-#     reports:
-#       junit: build/report.xml
+test-low:
+  stage: test
+  dependencies:
+    - build-image
+  tags:
+    - k8srunner
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
+  before_script:
+    - kubectl get namespace
+  script:
+    - kubectl version
+    - make clean
+    - make install-chart MINIKUBE=false HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
+    - make wait
+    - make smoketest
+    - make test MARK=low && [ -f "build/report.xml" ]
+  after_script:
+    - make uninstall-chart HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
+    - make clean
+    - make delete_namespace-sdp
+    - make delete_namespace
+    - mkdir -p build
+    - ls -la build
+  environment:
+    name: test
+    kubernetes:
+      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-low
+  artifacts:
+    name: "$CI_PROJECT_NAME-$CI_JOB_ID"
+    paths:
+      - build
+    reports:
+      junit: build/report.xml
 
 
 linting:
@@ -411,10 +411,10 @@ publish to nexus:
     - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-subarraynode-low/dist/*
     - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/dishleafnode/dist/*
     - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/cspmasterleafnode/dist/*
-    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/sdpmasterleafnode/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-sdpmasterleafnode-mid/dist/*
     - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-mccsmasterleafnode-low/dist/*
     - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/dishmaster/dist/*
-    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/sdpsubarrayleafnode/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-sdpsubarrayleafnode-mid/dist/*
     - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/cspsubarrayleafnode/dist/*
     - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-mccssubarrayleafnode-low/dist/*
   when: manual
