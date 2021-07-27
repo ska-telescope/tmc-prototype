@@ -126,13 +126,13 @@ build CspMasterLeafNode wheel for development: # Executed on a commit
   tags:
     - docker-executor
   script:
-    - cd ./ska-tmc/cspmasterleafnode
+    - cd ./ska-tmc/ska-tmc-cspmasterleafnode-mid
     - python3 setup.py egg_info sdist bdist_wheel
   except:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/cspmasterleafnode/dist/
+      - ./ska-tmc/ska-tmc-cspmasterleafnode-mid/dist/
 
 build CspSubarrayLeafNode wheel for publication: # Executed on a tag
   stage: build
