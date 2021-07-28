@@ -116,7 +116,8 @@ SKA-TMC addresses the  following architectural aspects and functionality:
 * [pylint](https://pypi.org/project/pylint/)
 * [Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/) (for running the ska-tmc in a containerised environment)
 * [Kubernetes (K8s)/Minikube](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/)
-* [tango-simlib] (https://tango-simlib.readthedocs.io/en/latest/)
+* [tango-simlib](https://tango-simlib.readthedocs.io/en/latest/)
+
 # 3 Installing, configuring and running the ska-tmc
 
 ## 3.1 Install SKA Base classes
