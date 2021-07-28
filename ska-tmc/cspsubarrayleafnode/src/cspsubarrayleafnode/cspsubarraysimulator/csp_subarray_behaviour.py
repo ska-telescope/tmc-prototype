@@ -74,13 +74,15 @@ class OverrideCspSubarray(object):
         obsstate = get_enum_str(obsstate_attribute)
         if (obsstate == "EMPTY"):
             set_enum(obsstate_attribute, "RESOURCING", model.time_func())
-            tango_dev.push_change_event("obsState", 1)
+            Enum_init = get_enum_int("RESOURCING")
+            tango_dev.push_change_event("obsState", Enum_init)
             tango_dev.set_status("ObsState in RESOURCING")
             model.logger.info("ObsState trasnitioned to RESOURCING")
 
             time.sleep(1)
             set_enum(obsstate_attribute, "IDLE", model.time_func())
-            tango_dev.push_change_event("obsState", 2)
+            Enum_init = get_enum_int("IDLE")
+            tango_dev.push_change_event("obsState", Enum_init)
             tango_dev.set_status("ObsState in Idle")
             model.logger.info("ObsState trasnitioned to IDLE")
             
@@ -279,6 +281,17 @@ def get_enum_str(quantity):
     EnumClass = enum.IntEnum("EnumLabels", quantity.meta["enum_labels"], start=0)
     return EnumClass(quantity.last_val).name
 
+def get_enum_int(value):
+    """Returns the enum label of an enumerated data type
+
+    :param quantity: object
+        The quantity object of a DevEnum attribute
+    :return: str
+        Current string value of a DevEnum attribute
+    """
+    Enum_int = model.sim_quantities["healthState"].meta["enum_labels"].index(value)
+    print("Enum_int::::::::::::::::::::::::::::",Enum_int)
+    return Enum_int
 
 def set_enum(quantity, label, timestamp):
     """Sets the quantity last_val attribute to index of label

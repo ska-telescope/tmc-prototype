@@ -44,7 +44,7 @@ from .telescope_off_command import TelescopeOff
 from . import const, release
 from .exceptions import InvalidObsStateError
 from .delay_model import DelayManager
-from .cspsubarraysimulator.csp_subarray import CspSubarraySimulator
+from .cspsubarraysimulator.csp_subarray import simulator
 
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additional_import
 
@@ -567,7 +567,7 @@ def main(args=None, **kwargs):
     if standalone_mode == "TRUE":
         print("Running in standalone mode")
         csp_subarray_simulator = []
-        csp_subarray_simulator = CspSubarraySimulator.simulator()
+        csp_subarray_simulator = simulator
         csp_subarray_simulator.append(CspSubarrayLeafNode)
         ret_val = run(csp_subarray_simulator, args=args, **kwargs)
     else:
