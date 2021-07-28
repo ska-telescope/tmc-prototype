@@ -240,7 +240,7 @@ def telescope_is_on():
         resource("mid_d0002/elt/master").get("State"),
         resource("mid_d0003/elt/master").get("State"),
         resource("mid_d0004/elt/master").get("State")
-    ] == ["ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON"]
+    ] == ["ON", "STANDBY", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON", "ON"]
 
 #Note: make use of this method while updatating integration tests for sp-1623
 def telescope_is_off():
