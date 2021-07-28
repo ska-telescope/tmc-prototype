@@ -558,7 +558,11 @@ def main(args=None, **kwargs):
     :return: CspSubarrayLeafNode TANGO object.
 
     """    
-    standalone_mode = os.environ['STANDALONE_MODE']     
+    
+    try:
+        standalone_mode = os.environ['STANDALONE_MODE']
+    except KeyError:
+        standalone_mode = "FALSE"
            
     if standalone_mode == "TRUE":
         print("Running in standalone mode")

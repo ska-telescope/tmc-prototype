@@ -12,7 +12,7 @@ from .utils import get_tango_server_class
 
 class CspSubarraySimulator: 
                
-    def simulator():
+    def simulator(self):
         if len(sys.argv) > 0:
             device_name = sys.argv[1]
             if device_name.isdigit():
