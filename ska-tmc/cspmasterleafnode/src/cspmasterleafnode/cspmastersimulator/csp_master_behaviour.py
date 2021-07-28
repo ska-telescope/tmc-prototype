@@ -14,9 +14,9 @@ from tango import DevState, Except, ErrSeverity
 from ska.logging import configure_logging
 from tango_simlib.tango_sim_generator import (configure_device_models, get_tango_device_server)
 
-class OverrideCspMaster():
+class OverrideCspMaster:
 
-    def action_on(self, model, tango_dev=None, data_input=[]):
+    def action_on(self, model, tango_dev=None, data_input=None):# pylint: disable=W0613
         """Changes the State of the device to ON.
         """
         model.logger.info("Executing On command")
@@ -43,7 +43,8 @@ class OverrideCspMaster():
                 ErrSeverity.WARN,
                 )
 
-    def action_off(self, model, tango_dev=None, data_input=[]):
+    def action_off(self, model, tango_dev=None, data_input=None):# pylint: disable=W0613
+
         """Changes the State of the device to OFF.
         """
         _allowed_modes = (
@@ -71,7 +72,7 @@ class OverrideCspMaster():
                 ErrSeverity.WARN,
                 )
 
-    def action_standby(self, model, tango_dev=None, data_input=[]):
+    def action_standby(self, model, tango_dev=None, data_input=None):# pylint: disable=W0613
         """Changes the State of the device to STANDBY.
         """
         _allowed_modes = (

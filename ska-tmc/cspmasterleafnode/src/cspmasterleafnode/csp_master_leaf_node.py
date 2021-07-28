@@ -245,15 +245,17 @@ def main(args=None, **kwargs):
     # PROTECTED REGION END #    //  CspMasterLeafNode.main
     
     # Check if standalone mode is enabled
-    standalone_mode = os.environ['STANDALONE_MODE']  
+    try:
+        standalone_mode = os.environ['STANDALONE_MODE'] 
+    except: KeyError:
+        standalone_mode = "FALSE" 
 
     if standalone_mode == "TRUE":
-        print("Running in standalone mode")
+        ## Get simulator object
         device_name = "mid_csp/elt/master"
         csp_master_simulator = get_csp_master_sim(device_name)
         ret_val = run((CspMasterLeafNode,csp_master_simulator), args=args, **kwargs)
     else:
-        print("Running in normal mode")
         ret_val = run((CspMasterLeafNode,), args=args, **kwargs)
 
     return ret_val
