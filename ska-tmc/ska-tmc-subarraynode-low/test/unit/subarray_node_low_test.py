@@ -20,7 +20,7 @@ from tango.test_context import DeviceTestContext
 from ska_tmc_subarraynode_low import SubarrayNode, const, release
 from ska.base.control_model import HealthState, ObsState
 from ska.base.commands import ResultCode
-from .device_data import DeviceData
+from ska_tmc_subarraynode_low.device_data import DeviceData
 from tmc.common.tango_client import TangoClient
 from ska.base import SKASubarrayStateModel
 from ska_tmc_subarraynode_low.release_all_resources_command import ReleaseAllResources
