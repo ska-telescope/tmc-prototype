@@ -17,23 +17,23 @@ from tango import DevState
 from tango.test_context import DeviceTestContext
 
 # Additional import
-from ska-tmc-subarraynode-low import SubarrayNode, const, release
+from ska_tmc_subarraynode_low import SubarrayNode, const, release
 from ska.base.control_model import HealthState, ObsState
 from ska.base.commands import ResultCode
 from .device_data import DeviceData
 from tmc.common.tango_client import TangoClient
 from ska.base import SKASubarrayStateModel
-from .release_all_resources_command import ReleaseAllResources
-from .configure_command import Configure
-from .scan_command import Scan
-from .end_scan_command import EndScan
-from .end_command import End
-from .obsreset_command import ObsReset
-from .abort_command import Abort
-from .restart_command import Restart
-from .device_data import DeviceData
+from ska_tmc_subarraynode_low.release_all_resources_command import ReleaseAllResources
+from ska_tmc_subarraynode_low.configure_command import Configure
+from ska_tmc_subarraynode_low.scan_command import Scan
+from ska_tmc_subarraynode_low.end_scan_command import EndScan
+from ska_tmc_subarraynode_low.end_command import End
+from ska_tmc_subarraynode_low.obsreset_command import ObsReset
+from ska_tmc_subarraynode_low.abort_command import Abort
+from ska_tmc_subarraynode_low.restart_command import Restart
+from ska_tmc_subarraynode_low.device_data import DeviceData
 from tmc.common.tango_server_helper import TangoServerHelper
-from .health_state_aggregator import HealthStateAggregator
+from ska_tmc_subarraynode_low.health_state_aggregator import HealthStateAggregator
 
 assign_input_file = "command_AssignResources.json"
 path = join(dirname(__file__), "data", assign_input_file)
