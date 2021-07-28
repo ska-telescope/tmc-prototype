@@ -17,23 +17,23 @@ from tango import DevState
 from tango.test_context import DeviceTestContext
 
 # Additional import
-from subarraynodelow import SubarrayNode, const, release
+from ska-tmc-subarraynode-low import SubarrayNode, const, release
 from ska.base.control_model import HealthState, ObsState
 from ska.base.commands import ResultCode
-from subarraynodelow.device_data import DeviceData
+from .device_data import DeviceData
 from tmc.common.tango_client import TangoClient
 from ska.base import SKASubarrayStateModel
-from subarraynodelow.release_all_resources_command import ReleaseAllResources
-from subarraynodelow.configure_command import Configure
-from subarraynodelow.scan_command import Scan
-from subarraynodelow.end_scan_command import EndScan
-from subarraynodelow.end_command import End
-from subarraynodelow.obsreset_command import ObsReset
-from subarraynodelow.abort_command import Abort
-from subarraynodelow.restart_command import Restart
-from subarraynodelow.device_data import DeviceData
+from .release_all_resources_command import ReleaseAllResources
+from .configure_command import Configure
+from .scan_command import Scan
+from .end_scan_command import EndScan
+from .end_command import End
+from .obsreset_command import ObsReset
+from .abort_command import Abort
+from .restart_command import Restart
+from .device_data import DeviceData
 from tmc.common.tango_server_helper import TangoServerHelper
-from subarraynodelow.health_state_aggregator import HealthStateAggregator
+from .health_state_aggregator import HealthStateAggregator
 
 assign_input_file = "command_AssignResources.json"
 path = join(dirname(__file__), "data", assign_input_file)

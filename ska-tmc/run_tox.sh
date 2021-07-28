@@ -22,20 +22,20 @@ done
 # Combine coverage reports
 cd $REPORTS_DIR
 coverage combine ska-tmc-cspmasterleafnode-mid_coverage dishmaster_coverage \
-                  cspsubarrayleafnode_coverage dishleafnode_coverage \
-                  sdpmasterleafnode_coverage sdpsubarrayleafnode_coverage \
-                  subarraynodelow_coverage ska-tmc-centralnode-low_coverage \
-                  mccsmasterleafnode_coverage mccssubarrayleafnode_coverage && coverage xml
+                  ska-tmc-cspsubarrayleafnode-mid_coverage dishleafnode_coverage \
+                  ska-tmc-sdpmasterleafnode-mid_coverage ska-tmc-sdpsubarrayleafnode-low_coverage \
+                  ska-tmc-subarraynode-low_coverage ska-tmc-centralnode-low_coverage \
+                  ska-tmc-mccsmasterleafnode-low_coverage ska-tmc-mccssubarrayleafnode-low_coverage && coverage xml
 mv coverage.xml code-coverage.xml
 python3 -m pip install junitparser
 junitparser merge dishmaster-unit-tests.xml \
                   ska-tmc-centralnode-low-unit-tests.xml \
                   ska-tmc-cspmasterleafnode-mid-unit-tests.xml \
-                  cspsubarrayleafnode-unit-tests.xml \
+                  ska-tmc-cspsubarrayleafnode-mid-unit-tests.xml \
                   dishleafnode-unit-tests.xml \
-                  sdpmasterleafnode-unit-tests.xml \
-                  sdpsubarrayleafnode-unit-tests.xml \
-                  mccsmasterleafnode-unit-tests.xml \
-                  mccssubarrayleafnode-unit-tests.xml \
-                  subarraynodelow-unit-tests.xml \
+                  ska-tmc-sdpmasterleafnode-mid-unit-tests.xml \
+                  ska-tmc-sdpsubarrayleafnode-mid-unit-tests.xml \
+                  ska-tmc-mccsmasterleafnode-low-unit-tests.xml \
+                  ska-tmc-mccssubarrayleafnode-low-unit-tests.xml \
+                  ska-tmc-subarraynode-low-unit-tests.xml \
                   unit-tests.xml

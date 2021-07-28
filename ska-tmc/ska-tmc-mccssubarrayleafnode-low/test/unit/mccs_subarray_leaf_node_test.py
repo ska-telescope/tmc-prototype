@@ -17,11 +17,11 @@ import pytz
 from tango.test_context import DeviceTestContext
 
 # Additional import
-from mccssubarrayleafnode import MccsSubarrayLeafNode, const, release
+from . import MccsSubarrayLeafNode, const, release
 from ska.base.control_model import HealthState, ObsState, LoggingLevel
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
-from mccssubarrayleafnode.device_data import DeviceData
+from .device_data import DeviceData
 
 
 @pytest.fixture(scope="function")

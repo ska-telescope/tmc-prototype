@@ -148,7 +148,7 @@ build ska-tmc-cspsubarrayleafnode-mid wheel for publication: # Executed on a tag
       - ./ska-tmc/ska-tmc-cspsubarrayleafnode-mid/dist/
 
 
-build SdpMasterLeafNode wheel for publication: # Executed on a tag
+build ska-tmc-sdpmasterleafnode-mid wheel for publication: # Executed on a tag
   stage: build
   tags:
     - docker-executor
@@ -162,7 +162,7 @@ build SdpMasterLeafNode wheel for publication: # Executed on a tag
       - ./ska-tmc/ska-tmc-sdpmasterleafnode-mid/dist/
 
 
-build SdpMasterLeafNode wheel for development: # Executed on a commit
+build ska-tmc-sdpmasterleafnode-mid wheel for development: # Executed on a commit
   stage: build
   tags:
     - docker-executor
@@ -214,7 +214,7 @@ build SdpSubarrayLeafNode wheel for development: # Executed on a commit
     paths:
       - ./ska-tmc/ska-tmc-sdpsubarrayleafnode-mid/dist/
 
-build MccsMasterLeafNode wheel for publication: # Executed on a tag
+build ska-tmc-mccsmasterleafnode-low wheel for publication: # Executed on a tag
   stage: build
   tags:
     - docker-executor
@@ -227,7 +227,7 @@ build MccsMasterLeafNode wheel for publication: # Executed on a tag
     paths:
       - ./ska-tmc/ska-tmc-mccsmasterleafnode-low/dist/
 
-build MccsMasterLeafNode wheel for development: # Executed on a commit
+build ska-tmc-mccsmasterleafnode-low wheel for development: # Executed on a commit
   stage: build
   tags:
     - docker-executor
