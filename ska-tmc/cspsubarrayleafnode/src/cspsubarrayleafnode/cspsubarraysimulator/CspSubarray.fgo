@@ -309,6 +309,26 @@
             "name": "GoToIdle",
             "out_type": "DevVoid",
             "out_type_desc": "Uninitialised"
+        },
+        "ObsReset": {
+            "cmd_name": "ObsReset",
+            "cmd_tag": 0,
+            "disp_level": "OPERATOR",
+            "in_type": "DevVoid",
+            "in_type_desc": "None",
+            "name": "ObsReset",
+            "out_type": "DevVoid",
+            "out_type_desc": "Uninitialised"
+        },
+        "Restart": {
+            "cmd_name": "Restart",
+            "cmd_tag": 0,
+            "disp_level": "OPERATOR",
+            "in_type": "DevVoid",
+            "in_type_desc": "None",
+            "name": "Restart",
+            "out_type": "DevVoid",
+            "out_type_desc": "Uninitialised"
         }        
     },
     "properties": {},

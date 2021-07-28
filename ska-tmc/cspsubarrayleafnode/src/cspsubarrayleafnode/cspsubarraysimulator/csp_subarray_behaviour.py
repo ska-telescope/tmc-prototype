@@ -7,8 +7,6 @@ import enum
 import logging
 import time
 
-from collections import namedtuple
-
 # Tango import
 from tango import DevState, Except, ErrSeverity
 
@@ -21,7 +19,7 @@ MODULE_LOGGER = logging.getLogger(__name__)
 
 class OverrideCspSubarray(object):
 
-    def action_on(self, model, tango_dev=None, data_input=[]):
+    def action_on(self, model, tango_dev=None, _):
         """Changes the State of the device to ON.
         """
         _allowed_modes = (
@@ -44,7 +42,7 @@ class OverrideCspSubarray(object):
                     ErrSeverity.WARN,
                 )
 
-    def action_off(self, model, tango_dev=None, data_input=[]):
+    def action_off(self, model, tango_dev=None, _):
         """Changes the State of the device to OFF.
         """
         _allowed_modes = (
@@ -69,7 +67,7 @@ class OverrideCspSubarray(object):
                     ErrSeverity.WARN,
                 )
 
-    def action_assignresources(self, model, tango_dev=None, data_input=None):
+    def action_assignresources(self, model, tango_dev=None, _):
         """Changes the State of the device to .
         """
         obsstate_attribute = model.sim_quantities['obsState']
@@ -93,7 +91,7 @@ class OverrideCspSubarray(object):
                 ErrSeverity.WARN,
             )
 
-    def action_endscan(self, model, tango_dev=None, data_input=None):
+    def action_endscan(self, model, tango_dev=None, _):
         """Changes the State of the device to .
         """
         obsstate_attribute = model.sim_quantities['obsState']
@@ -110,7 +108,7 @@ class OverrideCspSubarray(object):
                 ErrSeverity.WARN,
             )
         
-    def action_abort(self, model, tango_dev=None, data_input=None):
+    def action_abort(self, model, tango_dev=None, _):
         """Changes the State of the device to .
         """
         _allowed_obsstate = (
@@ -123,15 +121,15 @@ class OverrideCspSubarray(object):
         obsstate_attribute = model.sim_quantities['obsState']
         obsstate = get_enum_str(obsstate_attribute)
         if (obsstate in _allowed_obsstate):
-           set_enum(obsstate_attribute, "ABORTING", model.time_func())
-           tango_dev.push_change_event("obsState", 6)
-           tango_dev.set_status("ObsState in ABORTING")
-           model.logger.info("ObsState trasnitioned to ABORTING")
-           time.sleep(1)
-           set_enum(obsstate_attribute, "ABORTED", model.time_func())
-           tango_dev.push_change_event("obsState", 7)
-           tango_dev.set_status("ObsState in ABORTED")
-           model.logger.info("ObsState trasnitioned to ABORTED")
+            set_enum(obsstate_attribute, "ABORTING", model.time_func())
+            tango_dev.push_change_event("obsState", 6)
+            tango_dev.set_status("ObsState in ABORTING")
+            model.logger.info("ObsState trasnitioned to ABORTING")
+            time.sleep(1)
+            set_enum(obsstate_attribute, "ABORTED", model.time_func())
+            tango_dev.push_change_event("obsState", 7)
+            tango_dev.set_status("ObsState in ABORTED")
+            model.logger.info("ObsState trasnitioned to ABORTED")
             
         else:
             Except.throw_exception(
@@ -140,7 +138,7 @@ class OverrideCspSubarray(object):
                 ErrSeverity.WARN,
             )
 
-    def action_releaseallresources(self, model, tango_dev=None, data_input=None):
+    def action_releaseallresources(self, model, tango_dev=None, _):
         """Changes the State of the device to .
         """
         obsstate_attribute = model.sim_quantities['obsState']
@@ -164,7 +162,7 @@ class OverrideCspSubarray(object):
                 ErrSeverity.WARN,
             )
 
-    def action_configure(self, model, tango_dev=None, data_input=None):
+    def action_configure(self, model, tango_dev=None, _):
         """Changes the State of the device to .
         """
         _allowed_obsstate = (
@@ -192,7 +190,7 @@ class OverrideCspSubarray(object):
                 ErrSeverity.WARN,
             )
 
-    def action_scan(self, model, tango_dev=None, data_input=None):
+    def action_scan(self, model, tango_dev=None, _):
         """Changes the State of the device to .
         """
         obsstate_attribute = model.sim_quantities['obsState']
@@ -216,7 +214,7 @@ class OverrideCspSubarray(object):
             )
         
 
-    def action_gotoidle(self, model, tango_dev=None, data_input=None):
+    def action_gotoidle(self, model, tango_dev=None, _):
         """Changes the State of the device to .
         """
         obsstate_attribute = model.sim_quantities['obsState']
@@ -234,6 +232,41 @@ class OverrideCspSubarray(object):
                 ErrSeverity.WARN,
             )
 
+    def action_restart(self, model, tango_dev=None, _):
+        """Changes the State of the device to .
+        """
+        obsstate_attribute = model.sim_quantities['obsState']
+        obsstate = get_enum_str(obsstate_attribute)
+        if (obsstate == "ABORTED"):
+            set_enum(obsstate_attribute, "EMPTY", model.time_func())
+            tango_dev.push_change_event("obsState", 0)
+            tango_dev.set_status("ObsState in EMPTY")
+            model.logger.info("ObsState trasnitioned to EMPTY")
+            
+        else:
+            Except.throw_exception(
+                "Restart Command Failed",
+                "Not allowed in current Obstate.",
+                ErrSeverity.WARN,
+            )
+            
+    def action_obsreset(self, model, tango_dev=None, _):
+        """Changes the State of the device to .
+        """
+        obsstate_attribute = model.sim_quantities['obsState']
+        obsstate = get_enum_str(obsstate_attribute)
+        if (obsstate == "ABORTED"):
+            set_enum(obsstate_attribute, "IDLE", model.time_func())
+            tango_dev.push_change_event("obsState", 2)
+            tango_dev.set_status("ObsState in IDLE")
+            model.logger.info("ObsState trasnitioned to IDLE")
+            
+        else:
+            Except.throw_exception(
+                "Obsreset Command Failed",
+                "Not allowed in current Obstate.",
+                ErrSeverity.WARN,
+            )
             
 def get_enum_str(quantity):
     """Returns the enum label of an enumerated data type

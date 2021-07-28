@@ -117,15 +117,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
     # General methods
     # ---------------
 
-    def simulator_healthstate_callback(self, event):
-        self.logger.debug("executing callback function")
-        self.logger.debug(f"Error event: {event.err}")
-        if not event.err:
-            log_msg = f"Attribute value: {event.attr_value.value}"
-            self.logger.debug(log_msg)
-        else:
-            self.logger.debug(f"Error event received. Error: {event.errors}")
-
     class InitCommand(SKABaseDevice.InitCommand):
         """
         A class for the CspSubarrayLeafNode's init_device() method"
@@ -412,7 +403,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("AssignResources")
         try:
             self.validate_obs_state()
-            pass
 
         except InvalidObsStateError as error:
             self.logger.exception(error)
