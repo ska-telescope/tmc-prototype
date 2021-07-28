@@ -50,7 +50,6 @@ non_default_states_to_check = {
 
 LOGGER = logging.getLogger(__name__)
 
-
 @pytest.mark.mid
 # @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_assign_resources():
@@ -61,16 +60,12 @@ def test_assign_resources():
         fixture["state"] = "Unknown"
         the_waiter = waiter()
 
-        # given a started up telescope
-        assert telescope_is_in_standby()
-        LOGGER.info("Starting up the Telescope")
-        
         assert tmc_is_in_on()
         LOGGER.info("TMC devices are up")
 
         LOGGER.info("Calling TelescopeOn command now.")
         tmc.set_telescope_on()
-        time.sleep(5)
+        time.sleep(50)
 
         assert telescope_is_on()
         LOGGER.info("Telescope is on")
@@ -94,18 +89,18 @@ def test_assign_resources():
             CentralNode = DeviceProxy("ska_mid/tm_central/central_node")
             CentralNode.AssignResources(config)
             LOGGER.info("Invoked AssignResources on CentralNode")
-
         compose_sub()
+        fixture["state"] = "Subarray Assigned"
 
         # tear down
         LOGGER.info("Tests complete: tearing down...")
         tmc.release_resources()
-        fixture["state"] = "Complete"
-
+        time.sleep(20)
+        fixture["state"] = "Released Resources"
+        
         LOGGER.info("Calling TelescopeOff command now.")
         tmc.set_telescope_off()
-        time.sleep(5)
-
+        time.sleep(20)
         assert telescope_is_off()
         fixture["state"] = "Telescope Off"
 
@@ -117,6 +112,7 @@ def test_assign_resources():
         elif fixture["state"] == "Subarray Assigned":
             tmc.release_resources()
             tmc.set_telescope_off()
+        elif fixture["state"] == "Released Resources":
+            tmc.set_telescope_off()
         else:
             LOGGER.info("Tearing down completed...")
-        raise

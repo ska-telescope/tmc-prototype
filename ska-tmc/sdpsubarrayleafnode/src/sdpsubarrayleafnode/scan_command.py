@@ -12,7 +12,7 @@ from ska.base.control_model import ObsState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 from . import const
-
+import json
 
 class Scan(BaseCommand):
     """
@@ -108,8 +108,14 @@ class Scan(BaseCommand):
         try:
             log_msg = "Input JSON for SDP Subarray Leaf Node Scan command is: " + argin
             self.logger.debug(log_msg)
+            #As, SKA logtransaction is not utilised in scan command across tmc devices.
+            #Hence, Interface URL needs to be updated explicitly for SDP.
+            #TODO: Incorporate transaction id implementation for scan command across TMC.
+            input_json = json.loads(argin)
+            input_json["interface"] = "https://schema.skao.int/ska-sdp-scan/0.3"
+            updated_argin = json.dumps(input_json)
             self.sdp_sa_ln_client_obj.send_command_async(
-                const.CMD_SCAN, command_data=argin, callback_method=self.scan_cmd_ended_cb
+                const.CMD_SCAN, command_data=updated_argin, callback_method=self.scan_cmd_ended_cb
                 )
             self.this_server.write_attr("activityMessage", const.STR_SCAN_SUCCESS, False)
             self.logger.info(const.STR_SCAN_SUCCESS)

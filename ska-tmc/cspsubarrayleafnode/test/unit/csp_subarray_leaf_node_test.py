@@ -533,9 +533,10 @@ def test_start_scan_should_command_csp_subarray_to_start_its_scan_when_it_is_rea
 ):
     device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
     tango_client_obj.get_attribute.side_effect = Mock(return_value = ObsState.READY)
-    device_proxy.StartScan(scan_input_str)
+    scan_list=[scan_input_str]
+    device_proxy.StartScan(scan_list)
     tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(
-        const.CMD_STARTSCAN, "0", any_method(with_name="startscan_cmd_ended_cb")
+        const.CMD_STARTSCAN, scan_list[0], any_method(with_name="startscan_cmd_ended_cb")
     )
 
 

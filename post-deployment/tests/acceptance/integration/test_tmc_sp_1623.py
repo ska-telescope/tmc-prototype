@@ -60,9 +60,8 @@ non_default_states_to_check = {
 
 LOGGER = logging.getLogger(__name__)
 
-
-@pytest.mark.mid
-# @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
+# @pytest.mark.mid
+@pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_feature_sp_1623():
 
     try:
@@ -76,7 +75,7 @@ def test_feature_sp_1623():
         LOGGER.info("Calling TelescopeOn command now.")
         tmc.set_telescope_on()
         the_waiter.wait()
-        time.sleep(5)
+        time.sleep(50)
         assert telescope_is_on()
         LOGGER.info("Telescope is on")
         LOGGER.info("TelescopeState is on")
@@ -103,7 +102,7 @@ def test_feature_sp_1623():
         with log_states("TMC Scan", devices_to_log, non_default_states_to_check):
             with sync_scanning(200):
                 SubarrayNode = DeviceProxy("ska_mid/tm_subarray_node/1")
-                SubarrayNode.Scan('{"id":1}')
+                SubarrayNode.Scan('{"interface":"https://schema.skao.intg/ska-tmc-scan/2.0","transaction_id":"txn-....-00001","scan_id":1}')
                 fixture["state"] = "Subarray SCANNING"
                 LOGGER.info("Subarray obsState is: " + str(SubarrayNode.obsState))
                 LOGGER.info("Scan 1  is executing on Subarray")
@@ -125,7 +124,7 @@ def test_feature_sp_1623():
         LOGGER.info("Calling Telescope Off command now.")
         tmc.set_telescope_off()
         the_waiter.wait()
-        time.sleep(10)
+        time.sleep(20)
         assert telescope_is_off()
         LOGGER.info("Telescope is Off")
         fixture["state"] = "Telescope Off"
