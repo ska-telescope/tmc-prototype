@@ -116,7 +116,7 @@ SKA-TMC addresses the  following architectural aspects and functionality:
 * [pylint](https://pypi.org/project/pylint/)
 * [Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/) (for running the ska-tmc in a containerised environment)
 * [Kubernetes (K8s)/Minikube](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/)
-
+* [tango-simlib] (https://tango-simlib.readthedocs.io/en/latest/)
 # 3 Installing, configuring and running the ska-tmc
 
 ## 3.1 Install SKA Base classes
@@ -180,6 +180,11 @@ The `make watch` command can be used to monitor the pods to ensure all required 
 By default, this command deploys the components of TMC-Mid. In order to deploy TMC Low, the command is `make install-chart`
 Once, the deployment is done, Webjive can be accessed from browser with url:
 `http://integration.engageska-portugal.pt/testdb`
+
+**Deployment in standalone mode**
+
+Note: This section is WIP. The simulator work is in progress.
+TMC can be deployed in standalone mode as well. That means, for smaller setup other subsystem devices are not required to be deployed along with TMC. Simulators for the devices which interact with TMC are developed. Currently simulator for SDP Master device is developed. It can be executed withing SDP Master Leaf Node device. To deploy Sdp Subarray Leaf Node in standalone mode, an environment variable STANDALONE_MODE should be exported with the value "TRUE".
 
 ### 4.3.3 Deleting the deployment and clean up
 
