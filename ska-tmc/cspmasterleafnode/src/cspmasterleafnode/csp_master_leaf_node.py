@@ -247,7 +247,7 @@ def main(args=None, **kwargs):
     # Check if standalone mode is enabled
     try:
         standalone_mode = os.environ['STANDALONE_MODE'] 
-    except: KeyError:
+    except KeyError:
         standalone_mode = "FALSE" 
 
     if standalone_mode == "TRUE":
