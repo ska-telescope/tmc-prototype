@@ -10,11 +10,9 @@ from .utils import get_tango_server_class
 
 # File generated on Mon Jul 12 13:24:36 2021 by tango-simlib-generator
 
-class CspSubarraySimulator:
-    def __init__(self, log):
-        self.logger = log
-        
-    def simulator(self):
+class CspSubarraySimulator: 
+               
+    def simulator():
         if len(sys.argv) > 0:
             device_name = sys.argv[1]
             if device_name.isdigit():

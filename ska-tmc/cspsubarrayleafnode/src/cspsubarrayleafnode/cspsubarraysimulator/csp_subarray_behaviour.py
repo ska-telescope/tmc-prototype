@@ -19,7 +19,7 @@ MODULE_LOGGER = logging.getLogger(__name__)
 
 class OverrideCspSubarray(object):
 
-    def action_on(self, model, tango_dev=None):
+    def action_on(self, model, tango_dev=None, data_input=None):
         """Changes the State of the device to ON.
         """
         _allowed_modes = (
@@ -27,12 +27,12 @@ class OverrideCspSubarray(object):
             "STANDBY"
         )
         if str(tango_dev.get_state())== DevState.ON:
-            model.logger.info(f"CSP Subarray is already in ON state")
+            model.logger.info("CSP Subarray is already in ON state")
             return
 
         if str(tango_dev.get_state()) in _allowed_modes:
             tango_dev.set_state(DevState.ON)
-            model.logger.info(f"Csp Subarray transitioned to the ON state.")
+            model.logger.info("Csp Subarray transitioned to the ON state.")
             csp_mode_healthState = model.sim_quantities["healthState"]
             set_enum(csp_mode_healthState, "OK", model.time_func())
         else:
@@ -42,7 +42,7 @@ class OverrideCspSubarray(object):
                     ErrSeverity.WARN,
                 )
 
-    def action_off(self, model, tango_dev=None):
+    def action_off(self, model, tango_dev=None, data_input=None):
         """Changes the State of the device to OFF.
         """
         _allowed_modes = (
@@ -51,15 +51,15 @@ class OverrideCspSubarray(object):
             "STANDBY"
         )
         if str(tango_dev.get_state()) == DevState.OFF:
-            model.logger.info(f"CSP master is already in {off} state")
+            model.logger.info("CSP master is already in OFF state")
             return
 
         if str(tango_dev.get_state()) in _allowed_modes:
             tango_dev.set_state(DevState.OFF)
-            model.logger.info(f"Csp Subarray transitioned to the OFF state.")
+            model.logger.info("Csp Subarray transitioned to the OFF state.")
             csp_mode_healthState = model.sim_quantities["healthState"]
             set_enum(csp_mode_healthState, "OK" , model.time_func())
-            model.logger.info(f"heathState transitioned to OK state")
+            model.logger.info("heathState transitioned to OK state")
         else:
             Except.throw_exception(
                     "ON Command Failed",
@@ -67,7 +67,7 @@ class OverrideCspSubarray(object):
                     ErrSeverity.WARN,
                 )
 
-    def action_assignresources(self, model, tango_dev=None):
+    def action_assignresources(self, model, tango_dev=None, data_input=None):
         """Changes the State of the device to .
         """
         obsstate_attribute = model.sim_quantities['obsState']
@@ -91,7 +91,7 @@ class OverrideCspSubarray(object):
                 ErrSeverity.WARN,
             )
 
-    def action_endscan(self, model, tango_dev=None):
+    def action_endscan(self, model, tango_dev=None, data_input=None):
         """Changes the State of the device to .
         """
         obsstate_attribute = model.sim_quantities['obsState']
@@ -108,7 +108,7 @@ class OverrideCspSubarray(object):
                 ErrSeverity.WARN,
             )
         
-    def action_abort(self, model, tango_dev=None):
+    def action_abort(self, model, tango_dev=None, data_input=None):
         """Changes the State of the device to .
         """
         _allowed_obsstate = (
@@ -138,7 +138,7 @@ class OverrideCspSubarray(object):
                 ErrSeverity.WARN,
             )
 
-    def action_releaseallresources(self, model, tango_dev=None):
+    def action_releaseallresources(self, model, tango_dev=None, data_input=None):
         """Changes the State of the device to .
         """
         obsstate_attribute = model.sim_quantities['obsState']
@@ -162,7 +162,7 @@ class OverrideCspSubarray(object):
                 ErrSeverity.WARN,
             )
 
-    def action_configure(self, model, tango_dev=None):
+    def action_configure(self, model, tango_dev=None, data_input=None):
         """Changes the State of the device to .
         """
         _allowed_obsstate = (
@@ -190,7 +190,7 @@ class OverrideCspSubarray(object):
                 ErrSeverity.WARN,
             )
 
-    def action_scan(self, model, tango_dev=None):
+    def action_scan(self, model, tango_dev=None, data_input=None):
         """Changes the State of the device to .
         """
         obsstate_attribute = model.sim_quantities['obsState']
@@ -214,7 +214,7 @@ class OverrideCspSubarray(object):
             )
         
 
-    def action_gotoidle(self, model, tango_dev=None):
+    def action_gotoidle(self, model, tango_dev=None, data_input=None):
         """Changes the State of the device to .
         """
         obsstate_attribute = model.sim_quantities['obsState']
@@ -232,7 +232,7 @@ class OverrideCspSubarray(object):
                 ErrSeverity.WARN,
             )
 
-    def action_restart(self, model, tango_dev=None):
+    def action_restart(self, model, tango_dev=None, data_input=None):
         """Changes the State of the device to .
         """
         obsstate_attribute = model.sim_quantities['obsState']
@@ -250,7 +250,7 @@ class OverrideCspSubarray(object):
                 ErrSeverity.WARN,
             )
             
-    def action_obsreset(self, model, tango_dev=None):
+    def action_obsreset(self, model, tango_dev=None, data_input=None):
         """Changes the State of the device to .
         """
         obsstate_attribute = model.sim_quantities['obsState']
