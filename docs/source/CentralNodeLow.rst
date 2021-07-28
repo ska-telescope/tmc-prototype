@@ -6,18 +6,18 @@
 Central Node
 ************
 
-.. autoclass::  ska-tmc.centralnodelow.src.centralnodelow.central_node_low.CentralNode
+.. autoclass::  ska-tmc.ska-tmc-centralnode-low.src.ska_tmc_centralnode_low.central_node_low.CentralNode
     :members: do
     :undoc-members:
-.. autoclass::  ska-tmc.centralnodelow.src.centralnodelow.assign_resources_command.AssignResources
+.. autoclass::  ska-tmc.ska-tmc-centralnode-low.src.ska_tmc_centralnode_low.assign_resources_command.AssignResources
     :members: do
     :undoc-members:
-.. autoclass::  ska-tmc.centralnodelow.src.centralnodelow.release_resources_command.ReleaseResources
+.. autoclass::  ska-tmc.ska-tmc-centralnode-low.src.ska_tmc_centralnode_low.release_resources_command.ReleaseResources
     :members: do
     :undoc-members:
-.. autoclass::  ska-tmc.centralnodelow.src.centralnodelow.standby_telescope_command.StandByTelescope
+.. autoclass::  ska-tmc.ska-tmc-centralnode-low.src.ska_tmc_centralnode_low.standby_telescope_command.StandByTelescope
     :members: do
     :undoc-members:
-.. autoclass::  ska-tmce.centralnodelow.src.centralnodelow.startup_telescope_command.StartUpTelescope
+.. autoclass::  ska-tmce.ska-tmc-centralnode-low.src.ska_tmc_centralnode_low.startup_telescope_command.StartUpTelescope
     :members: do
     :undoc-members:

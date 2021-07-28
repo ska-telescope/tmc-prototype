@@ -24,12 +24,12 @@ cd $REPORTS_DIR
 coverage combine cspmasterleafnode_coverage dishmaster_coverage \
                   cspsubarrayleafnode_coverage dishleafnode_coverage \
                   sdpmasterleafnode_coverage sdpsubarrayleafnode_coverage \
-                  subarraynodelow_coverage centralnodelow_coverage \
+                  subarraynodelow_coverage ska-tmc-centralnode-low_coverage \
                   mccsmasterleafnode_coverage mccssubarrayleafnode_coverage && coverage xml
 mv coverage.xml code-coverage.xml
 python3 -m pip install junitparser
 junitparser merge dishmaster-unit-tests.xml \
-                  centralnodelow-unit-tests.xml \
+                  ska-tmc-centralnode-low-unit-tests.xml \
                   cspmasterleafnode-unit-tests.xml \
                   cspsubarrayleafnode-unit-tests.xml \
                   dishleafnode-unit-tests.xml \
