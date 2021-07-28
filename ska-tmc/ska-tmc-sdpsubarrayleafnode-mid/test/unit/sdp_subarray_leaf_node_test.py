@@ -27,8 +27,8 @@ from ska.base.control_model import LoggingLevel
 from ska.base.commands import ResultCode
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
-from . import SdpSubarrayLeafNode, const, release, device_data
-from .device_data import DeviceData
+from ska_tmc_sdpsubarrayleafnode_mid. import SdpSubarrayLeafNode, const, release, device_data
+from ska_tmc_sdpsubarrayleafnode_mid.device_data import DeviceData
 
 
 assign_input_file = "command_AssignResources.json"
