@@ -41,7 +41,7 @@ setup(
     author_email="telmgt-internal@googlegroups.com",
     license="BSD-3-Clause",
     long_description=long_description,
-    url="https://www.skatelescope.org",
+    url="https://www.skaobservatory.org",
     platforms="Linux",
     install_requires=["pytango==9.3.3", "mock"],
     # test_suite='test',

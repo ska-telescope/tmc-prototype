@@ -17,7 +17,7 @@ import pytz
 from tango.test_context import DeviceTestContext
 
 # Additional import
-from ska_tmc_mccssubarrayleafnode_low. import MccsSubarrayLeafNode, const, release
+from ska_tmc_mccssubarrayleafnode_low import MccsSubarrayLeafNode, const, release
 from ska.base.control_model import HealthState, ObsState, LoggingLevel
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
