@@ -30,6 +30,23 @@ stages:
   - publish
   - pages
 
+
+# .build:
+#   stage: build
+#   image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
+#   tags:
+#     - k8srunner
+#   after_script:
+#     - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+#     - for filename in dist/*.whl dist/*.tar.gz; do
+#     -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+#     - done
+#   artifacts:
+#     paths:
+#       - dist/
+#     expire_in: 1 week
+
+
 build ska-tmc-centralnode-low wheel for publication: # Executed on a tag
   stage: build
   tags:
@@ -37,6 +54,11 @@ build ska-tmc-centralnode-low wheel for publication: # Executed on a tag
   script:
     - cd ./ska-tmc/ska-tmc-centralnode-low
     - python3 setup.py egg_info sdist bdist_wheel
+  after_script:
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in dist/*.whl dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   only:
     - tags
   artifacts:
@@ -50,6 +72,11 @@ build ska-tmc-centralnode-low wheel for development: # Executed on a commit
   script:
     - cd ./ska-tmc/ska-tmc-centralnode-low
     - python3 setup.py egg_info sdist bdist_wheel
+  after_script:
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in dist/*.whl dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   except:
     - tags
   artifacts:
