@@ -6,7 +6,7 @@ execution. There is one to one mapping between SDP Subarray Leaf Node and SDP su
 
 ## Requirement
 
-- PyTango >= 8.1.6
+- PyTango >= 9.3.3
 - devicetest (for using tests)
 - sphinx (for building sphinx documentation)
 

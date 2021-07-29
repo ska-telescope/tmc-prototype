@@ -18,5 +18,5 @@ description = """ The primary responsibility of the SDP Subarray
 author = "Team NCRA"
 author_email = "telmgt-internal@googlegroups.com"
 license = """BSD-3-Clause"""
-url = """https://www.skatelescope.org"""
+url = """https://www.skaobservatory.org"""
 copyright = """"""
