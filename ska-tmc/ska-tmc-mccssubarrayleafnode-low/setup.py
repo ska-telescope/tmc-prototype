@@ -43,7 +43,7 @@ setup(
     long_description=long_description,
     url="https://www.skaobservatory.org",
     platforms="Linux",
-    install_requires=["pytango==9.3.3", "mock", "katpoint"],
+    install_requires=["pytango==9.3.3", "mock"],
     setup_requires=[
         # dependency for `python setup.py test`
         "pytest-runner",

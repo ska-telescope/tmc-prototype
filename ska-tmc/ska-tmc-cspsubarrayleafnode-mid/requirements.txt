@@ -4,7 +4,6 @@ pytango >= 9.3.3
 jsonschema >= 3.2.0
 ska-ser-logging
 marshmallow
-ska-tmc-cdm == 6.0.0
 fire
 ska-tmc-common==0.1.7+d39e6423
 ska-ser-log-transactions
