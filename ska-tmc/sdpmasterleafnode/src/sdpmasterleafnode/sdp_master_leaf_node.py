@@ -14,12 +14,15 @@ execution. There is one to one mapping between SDP Subarray Leaf Node and SDP su
 """
 
 # PROTECTED REGION ID(SdpMasterLeafNode.additional_import) ENABLED START #
-# Third party imports
+# Standard python imports
+import os
 import threading
+
 # Tango imports
 import tango
 from tango import ApiUtil, DebugIt, AttrWriteType
 from tango.server import run, command, device_property, attribute
+
 
 # PROTECTED REGION ID(SdpMasterLeafNode.additional_import) ENABLED START #
 from ska.base import SKABaseDevice
@@ -32,6 +35,7 @@ from .telescope_off_command import TelescopeOff
 from .telescope_standby_command import TelescopeStandby
 from .disable_command import Disable
 from .device_data import DeviceData
+from .simulator import get_sdp_master_sim
 
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additional_import
 
@@ -91,6 +95,7 @@ class SdpMasterLeafNode(SKABaseDevice):
     # ---------------
     # General methods
     # ---------------
+
     class InitCommand(SKABaseDevice.InitCommand):
         """
         A class for the SDP master's init_device() method"
@@ -342,10 +347,24 @@ class SdpMasterLeafNode(SKABaseDevice):
 # Run server
 # ----------
 
-
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(SdpMasterLeafNode.main) ENABLED START #
-    return run((SdpMasterLeafNode,), args=args, **kwargs)
+
+    # Check if standalone mode is enabled
+    try:
+        standalone_mode = os.environ['STANDALONE_MODE']
+    except KeyError:
+        standalone_mode = "FALSE"
+
+    if standalone_mode == "TRUE":
+        ## Get simulator object
+        device_name = "mid_sdp/elt/master"
+        sdp_master_simulator = get_sdp_master_sim(device_name)
+        ret_val = run((SdpMasterLeafNode, sdp_master_simulator), args=args, **kwargs)
+    else:
+        ret_val = run((SdpMasterLeafNode,), args=args, **kwargs)
+
+    return ret_val
     # PROTECTED REGION END #    //  SdpMasterLeafNode.main
 
 

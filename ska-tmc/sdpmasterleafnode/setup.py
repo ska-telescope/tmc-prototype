@@ -31,6 +31,12 @@ setup(
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     include_package_data=True,
+    package_data={
+        "": [
+            "simulator/*.json",
+            "simulator/*.fgo",
+        ]
+    },
     test_suite="test",
     entry_points={
         "console_scripts": [

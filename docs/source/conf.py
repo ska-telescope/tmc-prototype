@@ -51,7 +51,8 @@ autodoc_mock_imports = [
     "dishmaster", 
     "tango_simlib", 
     "dishleafnode", 
-    "dishleafnode.dish_leaf_node"
+    "dishleafnode.dish_leaf_node",
+    "tango-simlib"
 ]
 
 import os
