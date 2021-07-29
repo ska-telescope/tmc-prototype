@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc"""
-version="0.7.4"
+version="0.8.3"
 version_info=version.split(".")
 description="""SKA-TMC"""
 author="Team NCRA"
@@ -9,11 +9,10 @@ author_email="telmgt-internal@googlegroups.com"
 license="""BSD-3-Clause"""
 url="""https://www.skatelescope.org"""
 copyright=""""""
-
-release=0.7.4
-tag=0.7.4
-tag_description=Update TMC low devices as per ADR-35
-release_notes=This release contains:<br/><ul><li>Updated TMC low devices as per ADR-35.</li></ul><br/>
+release=0.8.3
+tag=0.8.3
+tag_description=Update TMC MID commands inline with SP-1643.
+release_notes=This release contains:<br/><ul><li>Updated TMC MID commands inline with SP-1643</li></ul><br/>
 gitlab_username=apurvapatkar
-private_token=fB_g8sRKMY1jseV2ZUqP
+private_token=iwkFSe4t7AVoR57HUzbi
 

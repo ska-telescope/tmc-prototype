@@ -17,9 +17,9 @@ global:
   minikube: false
   tango_host: databaseds-tango-base-test:10000
   skatmc:
-    registry: nexus.engageska-portugal.pt/ska-telescope
+    registry: artefact.skao.int/ska-telescope
     image: ska-tmc
-    tag: 0.7.2
+    tag: 0.8.3
     pullPolicy: IfNotPresent
 
 
@@ -58,16 +58,17 @@ itango:
 
 centralnodemid:
   image:
-    registry: nexus.engageska-portugal.pt/ska-telescope
+    registry: artefact.skao.int/ska-telescope
     image: ska-tmc-centralnode-mid
-    tag: 0.1.11
+    tag: 0.2.8
     pullPolicy: IfNotPresent
+
 
 subarraynodemid:
   image:
-    registry: nexus.engageska-portugal.pt/ska-telescope
+    registry: artefact.skao.int/ska-telescope
     image: ska-tmc-subarraynode-mid
-    tag: 0.2.0
+    tag: 0.3.3
     pullPolicy: IfNotPresent
 
 alarmhandler:

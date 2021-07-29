@@ -35,19 +35,19 @@
 {{- end }}
 
 {{- $context := dict "name" $key "deviceserver" $filedeviceserver "image" $deviceserver.image "local" $localchart }}
-{{ template "tango-util.multidevice-config.tpl" $context }}
-{{ template "tango-util.multidevice-sacc-role.tpl" $context }}
-{{ template "tango-util.multidevice-job.tpl" $context }}
-{{ template "tango-util.multidevice-svc.tpl" $context }}
+{{ template "ska-tango-util.multidevice-config.tpl" $context }}
+{{ template "ska-tango-util.multidevice-sacc-role.tpl" $context }}
+{{ template "ska-tango-util.multidevice-job.tpl" $context }}
+{{ template "ska-tango-util.multidevice-svc.tpl" $context }}
 
 {{- else }}
 
 {{- $_ := set $deviceserver "instances" $deviceserver.instances }}
 {{- $context := dict "name" $key "deviceserver" $deviceserver "image" $deviceserver.image "local" $localchart }}
-{{ template "tango-util.multidevice-config.tpl" $context }}
-{{ template "tango-util.multidevice-sacc-role.tpl" $context }}
-{{ template "tango-util.multidevice-job.tpl" $context }}
-{{ template "tango-util.multidevice-svc.tpl" $context }}
+{{ template "ska-tango-util.multidevice-config.tpl" $context }}
+{{ template "ska-tango-util.multidevice-sacc-role.tpl" $context }}
+{{ template "ska-tango-util.multidevice-job.tpl" $context }}
+{{ template "ska-tango-util.multidevice-svc.tpl" $context }}
 
 {{- end }}
 

@@ -1,0 +1,17 @@
+{
+    "class_name": "SdpMaster",
+    "class_overrides": [
+      {
+        "override_class": {
+          "name": "Sim_sdp_master_leaf_node_hehavior",
+          "module_directory": "None",
+          "module_name": "sdpmasterleafnode.simulator.sdp_master_sim",
+          "class_name": "OverrideSdpMaster"
+        }
+      }
+    ],
+    "dynamicAttributes": [
+    ],
+    "commands": [
+    ]
+  }

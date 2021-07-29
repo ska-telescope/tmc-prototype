@@ -1,10 +1,11 @@
+import time
 from tango import DeviceProxy
 from datetime import date, datetime
 import pytest
 import os
 import logging
 from resources.test_support.helpers import waiter, watch, resource
-from resources.test_support.controls import telescope_is_in_standby
+from resources.test_support.controls import telescope_is_in_standby, tmc_is_in_on, telescope_is_on, telescope_is_off
 from resources.test_support.state_checking import StateChecker
 from resources.test_support.log_helping import DeviceLogging
 from resources.test_support.persistance_helping import (
@@ -49,7 +50,6 @@ non_default_states_to_check = {
 
 LOGGER = logging.getLogger(__name__)
 
-
 @pytest.mark.mid
 # @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_assign_resources():
@@ -58,11 +58,17 @@ def test_assign_resources():
         # given an interface to TMC to interact with a subarray node and a central node
         fixture = {}
         fixture["state"] = "Unknown"
+        the_waiter = waiter()
 
-        # given a started up telescope
-        assert telescope_is_in_standby()
-        LOGGER.info("Staring up the Telescope")
-        tmc.start_up()
+        assert tmc_is_in_on()
+        LOGGER.info("TMC devices are up")
+
+        LOGGER.info("Calling TelescopeOn command now.")
+        tmc.set_telescope_on()
+        time.sleep(50)
+
+        assert telescope_is_on()
+        LOGGER.info("Telescope is on")
         fixture["state"] = "Telescope On"
 
         # then when I assign a subarray composed of two resources configured as perTMC_integration/assign_resources.json
@@ -83,22 +89,30 @@ def test_assign_resources():
             CentralNode = DeviceProxy("ska_mid/tm_central/central_node")
             CentralNode.AssignResources(config)
             LOGGER.info("Invoked AssignResources on CentralNode")
-
         compose_sub()
+        fixture["state"] = "Subarray Assigned"
 
         # tear down
         LOGGER.info("Tests complete: tearing down...")
         tmc.release_resources()
-        fixture["state"] = "Complete"
-        tmc.set_to_standby()
+        time.sleep(20)
+        fixture["state"] = "Released Resources"
+        
+        LOGGER.info("Calling TelescopeOff command now.")
+        tmc.set_telescope_off()
+        time.sleep(20)
+        assert telescope_is_off()
+        fixture["state"] = "Telescope Off"
+
 
     except:
-        LOGGER.info("Tearing down failed test, state = {}".format(fixture["state"]))
-        if fixture["state"] == "Telescope On":
-            tmc.set_to_standby()
+        LOGGER.info("Tearing down failed test, state = {} ".format(fixture["state"]))
+        if fixture["state"]  == "Telescope On":
+            tmc.set_telescope_off()
         elif fixture["state"] == "Subarray Assigned":
             tmc.release_resources()
-            tmc.set_to_standby()
+            tmc.set_telescope_off()
+        elif fixture["state"] == "Released Resources":
+            tmc.set_telescope_off()
         else:
             LOGGER.info("Tearing down completed...")
-        raise

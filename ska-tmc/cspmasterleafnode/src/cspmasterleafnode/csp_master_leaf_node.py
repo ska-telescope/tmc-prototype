@@ -31,7 +31,13 @@ from .cspmastersimulator import get_csp_master_sim
 
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
 
-__all__ = ["CspMasterLeafNode", "main", "TelescopeOn", "TelescopeOff", "TelescopeStandby"]
+__all__ = [
+    "CspMasterLeafNode",
+    "main",
+    "TelescopeOn",
+    "TelescopeOff",
+    "TelescopeStandby",
+]
 
 
 class CspMasterLeafNode(SKABaseDevice):
@@ -50,6 +56,7 @@ class CspMasterLeafNode(SKABaseDevice):
             Attribute to provide activity message
 
     """
+
     # -----------------
     # Device Properties
     # -----------------
@@ -64,7 +71,6 @@ class CspMasterLeafNode(SKABaseDevice):
         access=AttrWriteType.READ_WRITE,
         doc="Activity Message",
     )
-
 
     # ---------------
     # General methods
@@ -93,7 +99,9 @@ class CspMasterLeafNode(SKABaseDevice):
 
             this_device = TangoServerHelper.get_instance()
             this_device.set_tango_class(device)
-            this_device.write_attr("activityMessage", const.STR_CSP_INIT_LEAF_NODE, False)
+            this_device.write_attr(
+                "activityMessage", const.STR_CSP_INIT_LEAF_NODE, False
+            )
 
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
@@ -150,7 +158,6 @@ class CspMasterLeafNode(SKABaseDevice):
         handler = self.get_command_object("TelescopeOn")
         handler()
 
-
     def is_telescope_off_allowed(self):
         """
         Checks Whether this command is allowed to be run in current device state.
@@ -181,7 +188,6 @@ class CspMasterLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("TelescopeOff")
         handler()
-
 
     def is_TelescopeStandby_allowed(self):
         """
