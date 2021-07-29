@@ -294,12 +294,13 @@ def get_enum_str(quantity):
     return EnumClass(quantity.last_val).name
 
 def get_enum_int(value,model):
-    """Returns the enum label of an enumerated data type
-
-    :param quantity: object
-        The quantity object of a DevEnum attribute
-    :return: str
-        Current string value of a DevEnum attribute
+    """Returns the integer index value of an enumerated data type
+    :param value: str
+        The desired value of enum attribute
+    :param model: object
+        The model object of a device server
+    :return: Int
+        Current integer value of a DevEnum attribute
     """
     enum_int = model.sim_quantities["obsState"].meta["enum_labels"].index(value)
     return enum_int

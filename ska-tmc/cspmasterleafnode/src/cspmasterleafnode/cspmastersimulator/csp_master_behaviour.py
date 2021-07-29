@@ -164,7 +164,7 @@ def set_enum(quantity, label, timestamp):
     value = quantity.meta["enum_labels"].index(label)
     quantity.set_val(value, timestamp)
     
-def get_enum_int(value, ):
+def get_enum_int(value, model):
     """Returns the integer index value of an enumerated data type
 
     :param model: object
