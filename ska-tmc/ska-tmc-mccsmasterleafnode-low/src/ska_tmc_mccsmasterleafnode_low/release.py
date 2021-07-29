@@ -9,7 +9,7 @@
 
 """Release information for Python Package"""
 
-name = """ska_tmc_mccsmasterleafnode_low"""
+name = """ska-tmc-mccsmasterleafnode-low"""
 version = "0.8.3"
 version_info = version.split(".")
 description = """MCCS Master Leaf Node monitors and controls the MCCS Master device."""
