@@ -7,8 +7,6 @@ import pkg_resources
 import enum
 import logging
 
-from collections import namedtuple
-
 # Tango import
 from tango import DevState, Except, ErrSeverity
 from ska.logging import configure_logging
@@ -33,7 +31,8 @@ class OverrideCspMaster:
             model.logger.info("Csp Master transitioned to the ON state.")
             csp_health_state = model.sim_quantities["healthState"]
             set_enum(csp_health_state, "OK", model.time_func())
-            tango_dev.push_change_event("healthState", 1)
+            enum_int = get_enum_int("OK",model)
+            tango_dev.push_change_event("healthState", enum_int)
             tango_dev.set_status("device turned On successfully")
             model.logger.info("heathState transitioned to OK state")
         else:
@@ -61,7 +60,8 @@ class OverrideCspMaster:
             model.logger.info("Csp Master transitioned to the OFF state.")
             csp_health_state = model.sim_quantities["healthState"]
             set_enum(csp_health_state, "OK", model.time_func())
-            tango_dev.push_change_event("healthState", 1)
+            enum_int = get_enum_int("OK",model)
+            tango_dev.push_change_event("healthState", enum_int)
             tango_dev.set_status("device turned off successfully")
             model.logger.info("heathState transitioned to OK state")
 
@@ -88,7 +88,8 @@ class OverrideCspMaster:
             tango_dev.set_state(DevState.STANDBY)
             csp_health_state = model.sim_quantities["healthState"]
             set_enum(csp_health_state, "OK", model.time_func())
-            tango_dev.push_change_event("healthState", 1)
+            enum_int = get_enum_int("OK",model)
+            tango_dev.push_change_event("healthState", enum_int)
             tango_dev.set_status("invoked Standby successfully")
             model.logger.info("heathState transitioned to OK state")
         else:
@@ -162,3 +163,14 @@ def set_enum(quantity, label, timestamp):
     """
     value = quantity.meta["enum_labels"].index(label)
     quantity.set_val(value, timestamp)
+    
+def get_enum_int(value, ):
+    """Returns the integer index value of an enumerated data type
+
+    :param model: object
+        The model object of a device server
+    :return: Int
+        Current integer value of a DevEnum attribute
+    """
+    Enum_int = model.sim_quantities["healthState"].meta["enum_labels"].index(value)
+    return Enum_int

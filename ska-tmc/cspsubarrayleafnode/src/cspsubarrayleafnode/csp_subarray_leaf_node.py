@@ -62,7 +62,6 @@ __all__ = [
     "ObsResetCommand",
     "TelescopeOn",
     "TelescopeOff",
-    "CspSubarraySimulator",
 ]
 
 
