@@ -49,14 +49,14 @@ stages:
 
 build ska-tmc-centralnode-low wheel for publication: # Executed on a tag
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
     - cd ./ska-tmc/ska-tmc-centralnode-low
     - python3 setup.py egg_info sdist bdist_wheel
-  after_script:
     - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
-    - for filename in dist/*.whl dist/*.tar.gz; do
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
     -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
     - done
   only:
@@ -67,14 +67,14 @@ build ska-tmc-centralnode-low wheel for publication: # Executed on a tag
 
 build ska-tmc-centralnode-low wheel for development: # Executed on a commit
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
     - cd ./ska-tmc/ska-tmc-centralnode-low
     - python3 setup.py egg_info sdist bdist_wheel
-  after_script:
     - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
-    - for filename in dist/*.whl dist/*.tar.gz; do
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
     -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
     - done
   except:
@@ -319,16 +319,16 @@ build DishMaster wheel for development: # Executed on a commit
     paths:
       - ./ska-tmc/dishmaster/dist/
 
-unit tests:
-  image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
-  stage: unit-test
-  tags:
-    - docker-executor
-  script:
-    - make unit-test
-  artifacts:
-    paths:
-      - ./build
+# unit tests:
+#   image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
+#   stage: unit-test
+#   tags:
+#     - docker-executor
+#   script:
+#     - make unit-test
+#   artifacts:
+#     paths:
+#       - ./build
 
 
 build-image:
@@ -416,17 +416,17 @@ build-image:
 #       junit: build/report.xml
 
 
-linting:
-  stage: linting
-  image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
-  tags:
-    - docker-executor
-  script:
-    - make lint
-  allow_failure: true
-  artifacts:
-    paths:
-      - ./build
+# linting:
+#   stage: linting
+#   image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
+#   tags:
+#     - docker-executor
+#   script:
+#     - make lint
+#   allow_failure: true
+#   artifacts:
+#     paths:
+#       - ./build
 
 publish to nexus:
   stage: publish
