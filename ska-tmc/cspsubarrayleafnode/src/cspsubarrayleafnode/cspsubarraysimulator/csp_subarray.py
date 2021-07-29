@@ -19,4 +19,4 @@ def simulator():
         device_name = "mid_csp_unset/elt/master"
 
     tango_ds = get_tango_server_class(device_name)
-    return tango_ds
+    return tango_ds[0]

@@ -74,15 +74,15 @@ class OverrideCspSubarray(object):
         obsstate = get_enum_str(obsstate_attribute)
         if (obsstate == "EMPTY"):
             set_enum(obsstate_attribute, "RESOURCING", model.time_func())
-            Enum_init = get_enum_int("RESOURCING")
-            tango_dev.push_change_event("obsState", Enum_init)
+            Enum_int = get_enum_int("RESOURCING",model)
+            tango_dev.push_change_event("obsState", Enum_int)
             tango_dev.set_status("ObsState in RESOURCING")
             model.logger.info("ObsState trasnitioned to RESOURCING")
 
             time.sleep(1)
             set_enum(obsstate_attribute, "IDLE", model.time_func())
-            Enum_init = get_enum_int("IDLE")
-            tango_dev.push_change_event("obsState", Enum_init)
+            Enum_int = get_enum_int("IDLE",model)
+            tango_dev.push_change_event("obsState", Enum_int)
             tango_dev.set_status("ObsState in Idle")
             model.logger.info("ObsState trasnitioned to IDLE")
             
@@ -100,7 +100,8 @@ class OverrideCspSubarray(object):
         obsstate = get_enum_str(obsstate_attribute)
         if (obsstate == "SCANNING"):
             set_enum(obsstate_attribute, "READY", model.time_func())
-            tango_dev.push_change_event("obsState", 4)
+            Enum_int = get_enum_int("READY",model)
+            tango_dev.push_change_event("obsState", Enum_int)
             tango_dev.set_status("ObsState in READY")
             model.logger.info("ObsState trasnitioned to READY")            
         else:
@@ -124,12 +125,14 @@ class OverrideCspSubarray(object):
         obsstate = get_enum_str(obsstate_attribute)
         if (obsstate in _allowed_obsstate):
             set_enum(obsstate_attribute, "ABORTING", model.time_func())
-            tango_dev.push_change_event("obsState", 6)
+            Enum_int = get_enum_int("ABORTING",model)
+            tango_dev.push_change_event("obsState", Enum_int)
             tango_dev.set_status("ObsState in ABORTING")
             model.logger.info("ObsState trasnitioned to ABORTING")
             time.sleep(1)
             set_enum(obsstate_attribute, "ABORTED", model.time_func())
-            tango_dev.push_change_event("obsState", 7)
+            Enum_int = get_enum_int("ABORTED",model)
+            tango_dev.push_change_event("obsState", Enum_int)
             tango_dev.set_status("ObsState in ABORTED")
             model.logger.info("ObsState trasnitioned to ABORTED")
             
@@ -147,13 +150,15 @@ class OverrideCspSubarray(object):
         obsstate = get_enum_str(obsstate_attribute)
         if (obsstate == "IDLE"):
             set_enum(obsstate_attribute, "RESOURCING", model.time_func())
-            tango_dev.push_change_event("obsState",1)
+            Enum_int = get_enum_int("RESOURCING",model)
+            tango_dev.push_change_event("obsState",Enum_int)
             tango_dev.set_status("ObsState in RESOURCING")
             model.logger.info("ObsState trasnitioned to RESOURCING")
 
             time.sleep(1)
             set_enum(obsstate_attribute, "EMPTY", model.time_func())
-            tango_dev.push_change_event("obsState", 0)
+            Enum_int = get_enum_int("EMPTY",model)
+            tango_dev.push_change_event("obsState", Enum_int)
             tango_dev.set_status("ObsState in EMPTY")
             model.logger.info("ObsState trasnitioned to EMPTY")
            
@@ -175,13 +180,15 @@ class OverrideCspSubarray(object):
         obsstate = get_enum_str(obsstate_attribute)
         if (obsstate in _allowed_obsstate):
             set_enum(obsstate_attribute, "CONFIGURING", model.time_func())
-            tango_dev.push_change_event("obsState", 3)
+            Enum_int = get_enum_int("CONFIGURING",model)
+            tango_dev.push_change_event("obsState", Enum_int)
             tango_dev.set_status("ObsState in CONFIGURING")
             model.logger.info("ObsState trasnitioned to CONFIGURING")
 
             time.sleep(1)
             set_enum(obsstate_attribute, "READY", model.time_func())
-            tango_dev.push_change_event("obsState", 4)
+            Enum_int = get_enum_int("READY",model)
+            tango_dev.push_change_event("obsState", Enum_int)
             tango_dev.set_status("ObsState in READY")
             model.logger.info("ObsState trasnitioned to READY")
 
@@ -199,13 +206,15 @@ class OverrideCspSubarray(object):
         obsstate = get_enum_str(obsstate_attribute)
         if (obsstate == "READY"):
             set_enum(obsstate_attribute, "SCANNING", model.time_func())
-            tango_dev.push_change_event("obsState", 5)
+            Enum_int = get_enum_int("SCANNING",model)
+            tango_dev.push_change_event("obsState", Enum_int)
             tango_dev.set_status("ObsState in SCANNING")
             model.logger.info("ObsState trasnitioned to SCANNING")
 
             time.sleep(10)
             set_enum(obsstate_attribute, "READY", model.time_func())
-            tango_dev.push_change_event("obsState", 4)
+            Enum_int = get_enum_int("READY",model)
+            tango_dev.push_change_event("obsState", Enum_int)
             tango_dev.set_status("ObsState in READY")
             model.logger.info("ObsState trasnitioned to READY")
         else:
@@ -223,7 +232,8 @@ class OverrideCspSubarray(object):
         obsstate = get_enum_str(obsstate_attribute)
         if (obsstate == "READY"):
             set_enum(obsstate_attribute, "IDLE", model.time_func())
-            tango_dev.push_change_event("obsState", 2)
+            Enum_int = get_enum_int("IDLE",model)
+            tango_dev.push_change_event("obsState", Enum_int)
             tango_dev.set_status("ObsState in IDLE")
             model.logger.info("ObsState trasnitioned to IDLE")
             
@@ -241,7 +251,8 @@ class OverrideCspSubarray(object):
         obsstate = get_enum_str(obsstate_attribute)
         if (obsstate == "ABORTED"):
             set_enum(obsstate_attribute, "EMPTY", model.time_func())
-            tango_dev.push_change_event("obsState", 0)
+            Enum_int = get_enum_int("EMPTY",model)
+            tango_dev.push_change_event("obsState", Enum_int)
             tango_dev.set_status("ObsState in EMPTY")
             model.logger.info("ObsState trasnitioned to EMPTY")
             
@@ -259,7 +270,8 @@ class OverrideCspSubarray(object):
         obsstate = get_enum_str(obsstate_attribute)
         if (obsstate == "ABORTED"):
             set_enum(obsstate_attribute, "IDLE", model.time_func())
-            tango_dev.push_change_event("obsState", 2)
+            Enum_int = get_enum_int("IDLE",model)
+            tango_dev.push_change_event("obsState", Enum_int)
             tango_dev.set_status("ObsState in IDLE")
             model.logger.info("ObsState trasnitioned to IDLE")
             
@@ -281,7 +293,7 @@ def get_enum_str(quantity):
     EnumClass = enum.IntEnum("EnumLabels", quantity.meta["enum_labels"], start=0)
     return EnumClass(quantity.last_val).name
 
-def get_enum_int(value):
+def get_enum_int(value,model):
     """Returns the enum label of an enumerated data type
 
     :param quantity: object
@@ -289,8 +301,7 @@ def get_enum_int(value):
     :return: str
         Current string value of a DevEnum attribute
     """
-    Enum_int = model.sim_quantities["healthState"].meta["enum_labels"].index(value)
-    print("Enum_int::::::::::::::::::::::::::::",Enum_int)
+    Enum_int = model.sim_quantities["obsState"].meta["enum_labels"].index(value)
     return Enum_int
 
 def set_enum(quantity, label, timestamp):
