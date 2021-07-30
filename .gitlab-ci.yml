@@ -418,75 +418,75 @@ build-image:
     paths:
       - current_tag.txt
 
-# test-mid:
-#    stage: test
-#    dependencies:
-#      - build-image
-#    tags:
-#      - k8srunner
-#    image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
-#    before_script:
-#      - kubectl get namespace
-#    script:
-#      - kubectl version
-#      - make clean
-#      - make install-chart MINIKUBE=false
-#      - make wait
-#      - make smoketest
-#      - make test MARK=mid && [ -f "build/report.xml" ]
-#    after_script:
-#      - make uninstall-chart
-#      - make clean
-#      - make delete_namespace-sdp
-#      - make delete_namespace
-#      - mkdir -p build
-#      - ls -la build
-#    environment:
-#      name: test
-#      kubernetes:
-#        namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-mid
-#    artifacts:
-#      name: "$CI_PROJECT_NAME-$CI_JOB_ID"
-#      paths:
-#        - build
-#      reports:
-#        junit: build/report.xml
-#      when: always
+test-mid:
+   stage: test
+   dependencies:
+     - build-image
+   tags:
+     - k8srunner
+   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
+   before_script:
+     - kubectl get namespace
+   script:
+     - kubectl version
+     - make clean
+     - make install-chart MINIKUBE=false
+     - make wait
+     - make smoketest
+     - make test MARK=mid && [ -f "build/report.xml" ]
+   after_script:
+     - make uninstall-chart
+     - make clean
+     - make delete_namespace-sdp
+     - make delete_namespace
+     - mkdir -p build
+     - ls -la build
+   environment:
+     name: test
+     kubernetes:
+       namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-mid
+   artifacts:
+     name: "$CI_PROJECT_NAME-$CI_JOB_ID"
+     paths:
+       - build
+     reports:
+       junit: build/report.xml
+     when: always
 
 
-# test-low:
-#   stage: test
-#   dependencies:
-#     - build-image
-#   tags:
-#     - k8srunner
-#   image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
-#   before_script:
-#     - kubectl get namespace
-#   script:
-#     - kubectl version
-#     - make clean
-#     - make install-chart MINIKUBE=false HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
-#     - make wait
-#     - make smoketest
-#     - make test MARK=low && [ -f "build/report.xml" ]
-#   after_script:
-#     - make uninstall-chart HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
-#     - make clean
-#     - make delete_namespace-sdp
-#     - make delete_namespace
-#     - mkdir -p build
-#     - ls -la build
-#   environment:
-#     name: test
-#     kubernetes:
-#       namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-low
-#   artifacts:
-#     name: "$CI_PROJECT_NAME-$CI_JOB_ID"
-#     paths:
-#       - build
-#     reports:
-#       junit: build/report.xml
+test-low:
+  stage: test
+  dependencies:
+    - build-image
+  tags:
+    - k8srunner
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
+  before_script:
+    - kubectl get namespace
+  script:
+    - kubectl version
+    - make clean
+    - make install-chart MINIKUBE=false HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
+    - make wait
+    - make smoketest
+    - make test MARK=low && [ -f "build/report.xml" ]
+  after_script:
+    - make uninstall-chart HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
+    - make clean
+    - make delete_namespace-sdp
+    - make delete_namespace
+    - mkdir -p build
+    - ls -la build
+  environment:
+    name: test
+    kubernetes:
+      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-low
+  artifacts:
+    name: "$CI_PROJECT_NAME-$CI_JOB_ID"
+    paths:
+      - build
+    reports:
+      junit: build/report.xml
 
 
 linting:
@@ -507,16 +507,16 @@ publish to nexus:
     - docker-executor
   script:
     - python3 -m pip install twine
-    # - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-dishleafnode-mid/dist/*
-    # - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-centralnode-low/dist/*
-    # - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-subarraynode-low/dist/*
-    # - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-cspmasterleafnode-mid/dist/*
-    # - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-sdpmasterleafnode-mid/dist/*
-    # - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-mccsmasterleafnode-low/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-dishleafnode-mid/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-centralnode-low/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-subarraynode-low/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-cspmasterleafnode-mid/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-sdpmasterleafnode-mid/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-mccsmasterleafnode-low/dist/*
     - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-dish-master-mid/dist/*
-    # - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-sdpsubarrayleafnode-mid/dist/*
-    # - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-cspsubarrayleafnode-mid/dist/*
-    # - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-mccssubarrayleafnode-low/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-sdpsubarrayleafnode-mid/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-cspsubarrayleafnode-mid/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-mccssubarrayleafnode-low/dist/*
   when: manual
   # only:
   #   variables:
