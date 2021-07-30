@@ -1,6 +1,6 @@
 ARG DOCKER_REGISTRY_USER
 ARG DOCKER_REGISTRY_HOST
-FROM ${DOCKER_REGISTRY_HOST}/ska-docker/tango-cpp:9.3.4-rc7
+FROM artefact.skao.int/ska-tango-images-tango-cpp:9.3.5
 
 USER root
 RUN apt-get update && \
