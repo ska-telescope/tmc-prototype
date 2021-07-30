@@ -22,7 +22,7 @@ done
 # Combine coverage reports
 cd $REPORTS_DIR
 coverage combine ska-tmc-cspmasterleafnode-mid_coverage dishmaster_coverage \
-                  ska-tmc-cspsubarrayleafnode-mid_coverage dishleafnode_coverage \
+                  ska-tmc-cspsubarrayleafnode-mid_coverage ska-tmc-dishleafnode-mid_coverage \
                   ska-tmc-sdpmasterleafnode-mid_coverage ska-tmc-sdpsubarrayleafnode-mid_coverage \
                   ska-tmc-subarraynode-low_coverage ska-tmc-centralnode-low_coverage \
                   ska-tmc-mccsmasterleafnode-low_coverage ska-tmc-mccssubarrayleafnode-low_coverage && coverage xml
@@ -32,7 +32,7 @@ junitparser merge dishmaster-unit-tests.xml \
                   ska-tmc-centralnode-low-unit-tests.xml \
                   ska-tmc-cspmasterleafnode-mid-unit-tests.xml \
                   ska-tmc-cspsubarrayleafnode-mid-unit-tests.xml \
-                  dishleafnode-unit-tests.xml \
+                  ska-tmc-dishleafnode-mid-unit-tests.xml \
                   ska-tmc-sdpmasterleafnode-mid-unit-tests.xml \
                   ska-tmc-sdpsubarrayleafnode-mid-unit-tests.xml \
                   ska-tmc-mccsmasterleafnode-low-unit-tests.xml \

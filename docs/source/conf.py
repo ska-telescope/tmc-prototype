@@ -41,8 +41,8 @@ autodoc_mock_imports = [
     "ska-tmc-centralnode-low",
     "ska-tmc-centralnode-low.ska_tmc_centralnode_low",
     "tmc",
-    "cspsubarrayleafnode",
-    "cspsubarrayleafnode.csp_subarray_leaf_node",
+    "ska-tmc-cspsubarrayleafnode-mid",
+    "ska-tmc-cspsubarrayleafnode-mid.csp_subarray_leaf_node",
     "importlib.resources", 
     "ska-tmc-mccsmasterleafnode-low", 
     "ska-tmc-mccsmasterleafnode-low.ska_tmc_mccsmasterleafnode_low",
@@ -50,8 +50,8 @@ autodoc_mock_imports = [
     "ska-tmc-mccssubarrayleafnode-low.ska_tmc_mccssubarrayleafnode_low", 
     "dishmaster", 
     "tango_simlib", 
-    "dishleafnode", 
-    "dishleafnode.dish_leaf_node"
+    "ska-tmc-dishleafnode-mid", 
+    "ska-tmc-dishleafnode-mid.dish_leaf_node"
 ]
 
 import os
