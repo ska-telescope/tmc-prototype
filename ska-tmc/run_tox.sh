@@ -21,14 +21,14 @@ done
 
 # Combine coverage reports
 cd $REPORTS_DIR
-coverage combine ska-tmc-cspmasterleafnode-mid_coverage dishmaster_coverage \
+coverage combine ska-tmc-cspmasterleafnode-mid_coverage ska-dish-master-mid_coverage \
                   ska-tmc-cspsubarrayleafnode-mid_coverage ska-tmc-dishleafnode-mid_coverage \
                   ska-tmc-sdpmasterleafnode-mid_coverage ska-tmc-sdpsubarrayleafnode-mid_coverage \
                   ska-tmc-subarraynode-low_coverage ska-tmc-centralnode-low_coverage \
                   ska-tmc-mccsmasterleafnode-low_coverage ska-tmc-mccssubarrayleafnode-low_coverage && coverage xml
 mv coverage.xml code-coverage.xml
 python3 -m pip install junitparser
-junitparser merge dishmaster-unit-tests.xml \
+junitparser merge ska-dish-master-mid-unit-tests.xml \
                   ska-tmc-centralnode-low-unit-tests.xml \
                   ska-tmc-cspmasterleafnode-mid-unit-tests.xml \
                   ska-tmc-cspsubarrayleafnode-mid-unit-tests.xml \

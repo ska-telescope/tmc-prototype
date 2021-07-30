@@ -7,8 +7,8 @@
 # pygtk.require().
 init-hook='
     import sys;
-    sys.path.append("./ska-tmc/dishmaster");
-    sys.path.append("./ska-tmc/dishmaster/src");
+    sys.path.append("./ska-tmc/ska-dish-master-mid");
+    sys.path.append("./ska-tmc/ska-dish-master-mid/src");
     sys.path.append("./ska-tmc/ska-tmc-cspsubarrayleafnode-mid");
     sys.path.append("./ska-tmc/ska-tmc-dishleafnode-mid");
     sys.path.append("./ska-tmc/ska-tmc-cspmasterleafnode-mid");
