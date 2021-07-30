@@ -21,7 +21,7 @@ readme_filename = os.path.join(setup_dir, "README.rst")
 with open(readme_filename) as file:
     long_description = file.read()
 
-release_filename = os.path.join(setup_dir, "src", "dishleafnode", "release.py")
+release_filename = os.path.join(setup_dir, "src", "ska_tmc_dishleafnode_mid", "release.py")
 exec(open(release_filename).read())
 
 setup(
@@ -33,7 +33,7 @@ setup(
     package_data={"": ["ska_antennas.txt"]},
     test_suite="test",
     entry_points={
-        "console_scripts": ["DishLeafNodeDS = dishleafnode.dish_leaf_node:main"]
+        "console_scripts": ["DishLeafNodeDS = ska_tmc_dishleafnode_mid.dish_leaf_node:main"]
     },
     author="Team NCRA",
     author_email="telmgt-internal@googlegroups.com",

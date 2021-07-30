@@ -11,7 +11,7 @@ RUN python3 -m pip install -r requirements.txt \
     /app/ska-tmc/ska-tmc-centralnode-low \
     /app/ska-tmc/ska-tmc-cspmasterleafnode-mid \
     /app/ska-tmc/ska-tmc-cspsubarrayleafnode-mid \
-    /app/ska-tmc/dishleafnode \
+    /app/ska-tmc/ska-tmc-dishleafnode-mid \
     /app/ska-tmc/dishmaster \
     /app/ska-tmc/ska-tmc-sdpmasterleafnode-mid \
     /app/ska-tmc/ska-tmc-sdpsubarrayleafnode-mid \

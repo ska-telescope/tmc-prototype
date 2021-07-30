@@ -11,8 +11,8 @@
 # import pytest
 
 # from tango import EventType
-# from dishleafnode import DishLeafNode
-# from dishleafnode.utils import DishMode, PointingState
+# from ska_tmc_dishleafnode_mid import DishLeafNode
+# from ska_tmc_dishleafnode_mid.utils import DishMode, PointingState
 # from tango_simlib.tango_sim_generator import (
 #     configure_device_model,
 #     get_tango_device_server,

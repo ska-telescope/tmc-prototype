@@ -3,7 +3,7 @@ function: dish-monitoring
 domain: general-monitoring
 instances: ["01", "02", "03", "04"]
 entrypoints:
-  - name: "dishleafnode.DishLeafNode"
+  - name: "ska_tmc_dishleafnode_mid.dish_leaf_node.DishLeafNode"
 server:
   name: "DishLeafNodeDS"
   instances:

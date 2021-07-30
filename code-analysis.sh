@@ -7,7 +7,7 @@ echo "MODULE ANALYSIS"
 echo "---------------"
 pylint --rcfile=.pylintrc ska-tmc/dishmaster/src/dishmaster
 pylint --rcfile=.pylintrc ska-tmc/ska-tmc-cspmasterleafnode-mid/src/ska_tmc_cspmasterleafnode_mid
-pylint --rcfile=.pylintrc ska-tmc/dishleafnode/src/dishleafnode
+pylint --rcfile=.pylintrc ska-tmc/dishleafnode/src/ska-tmc-dishleafnode-mid
 pylint --rcfile=.pylintrc ska-tmc/ska-tmc-cspsubarrayleafnode-mid/src/ska_tmc_cspsubarrayleafnode_mid
 pylint --rcfile=.pylintrc ska-tmc/ska-tmc-sdpsubarrayleafnode-mid/src/ska_tmc_sdpsubarrayleafnode_mid
 pylint --rcfile=.pylintrc ska-tmc/ska-tmc-sdpmasterleafnode-mid/src/ska_tmc_sdpmasterleafnode_mid

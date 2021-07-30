@@ -4,7 +4,7 @@ Test cases for DishLeafNode's utils module.
 
 # import statements
 import math
-from dishleafnode.utils import UnitConverter
+from ska_tmc_dishleafnode_mid.utils import UnitConverter
 
 
 class TestUnitConverter:

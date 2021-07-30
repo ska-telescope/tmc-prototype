@@ -50,8 +50,8 @@ autodoc_mock_imports = [
     "ska-tmc-mccssubarrayleafnode-low.ska_tmc_mccssubarrayleafnode_low", 
     "dishmaster", 
     "tango_simlib", 
-    "dishleafnode", 
-    "dishleafnode.dish_leaf_node"
+    "ska-tmc-dishleafnode-mid", 
+    "ska-tmc-dishleafnode-mid.dish_leaf_node"
 ]
 
 import os

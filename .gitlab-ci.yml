@@ -102,31 +102,41 @@ build ska-tmc-subarraynode-low wheel for development: # Executed on a commit
     paths:
       - ./ska-tmc/ska-tmc-subarraynode-low/dist/
 
-build DishLeafNode wheel for publication: # Executed on a tag
+build ska-tmc-dishleafnode-mid wheel for publication: # Executed on a tag
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
-    - cd ./ska-tmc/dishleafnode
+    - cd ./ska-tmc/ska-tmc-dishleafnode-mid
     - python3 setup.py egg_info sdist bdist_wheel
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   only:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/dishleafnode/dist/
+      - ./ska-tmc/ska-tmc-dishleafnode-mid/dist/
 
-build DishLeafNode wheel for development: # Executed on a commit
+build ska-tmc-dishleafnode-mid wheel for development: # Executed on a commit
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
-    - cd ./ska-tmc/dishleafnode
+    - cd ./ska-tmc/ska-tmc-dishleafnode-mid
     - python3 setup.py egg_info sdist bdist_wheel
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   except:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/dishleafnode/dist/
+      - ./ska-tmc/ska-tmc-dishleafnode-mid/dist/
 
 build ska-tmc-cspmasterleafnode-mid wheel for publication: # Executed on a tag
   stage: build
@@ -495,16 +505,16 @@ publish to nexus:
     - docker-executor
   script:
     - python3 -m pip install twine
-    #- twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-centralnode-low/dist/*
-    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-subarraynode-low/dist/*
-    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/dishleafnode/dist/*
-    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-cspmasterleafnode-mid/dist/*
-    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-sdpmasterleafnode-mid/dist/*
-    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-mccsmasterleafnode-low/dist/*
-    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/dishmaster/dist/*
-    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-sdpsubarrayleafnode-mid/dist/*
-    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-cspsubarrayleafnode-mid/dist/*
-    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-mccssubarrayleafnode-low/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-dishleafnode-mid/dist/*
+    # - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-centralnode-low/dist/*
+    # - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-subarraynode-low/dist/*
+    # - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-cspmasterleafnode-mid/dist/*
+    # - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-sdpmasterleafnode-mid/dist/*
+    # - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-mccsmasterleafnode-low/dist/*
+    # - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/dishmaster/dist/*
+    # - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-sdpsubarrayleafnode-mid/dist/*
+    # - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-cspsubarrayleafnode-mid/dist/*
+    # - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-mccssubarrayleafnode-low/dist/*
   when: manual
   # only:
   #   variables:
