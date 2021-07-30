@@ -464,7 +464,7 @@ release ska-alarm-handler:
   stage: release-alarm-handler
   image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
   before_script:
-  - docker login -u $CAR_OCI_REGISTRY_USERNAME -p $CAR_OCI_REGISTRY_PASSWORD
+  - docker login -u $CAR_OCI_REGISTRY_USERNAME -p $CAR_OCI_REGISTRY_PASSWORD $CAR_OCI_REGISTRY_HOST
   tags:
     - docker-executor
   script:
