@@ -14,6 +14,8 @@ It also acts as a SDP contact point for Subarray Node for observation execution.
 """
 # PROTECTED REGION ID(sdpsubarrayleafnode.additionnal_import) ENABLED START #
 # Third party imports
+import os
+
 # PyTango imports
 import tango
 import threading
@@ -42,6 +44,7 @@ from .telescope_on_command import TelescopeOn
 from .telescope_off_command import TelescopeOff
 from .device_data import DeviceData
 from .exceptions import InvalidObsStateError
+from .sdpsubarraysimulator.sdp_subarray import simulator
 
 
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
@@ -581,7 +584,22 @@ def main(args=None, **kwargs):
     :return: SdpSubarrayLeafNode TANGO object
 
     """
-    return run((SdpSubarrayLeafNode,), args=args, **kwargs)
+    try:
+        standalone_mode = os.environ['STANDALONE_MODE']
+    except KeyError:
+        standalone_mode = "FALSE"
+           
+    if standalone_mode == "TRUE":
+        print("Running in standalone mode")
+        sdp_subarray_simulator = []
+        sdp_subarray_simulator.append(simulator())
+        sdp_subarray_simulator.append(SdpSubarrayLeafNode)
+        ret_val = run(sdp_subarray_simulator, args=args, **kwargs)
+    else:
+        print("Running in normal mode")
+        ret_val = run(SdpSubarrayLeafNode, args=args, **kwargs)
+
+    return ret_val
     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.main
 
 
