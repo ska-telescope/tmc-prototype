@@ -5,7 +5,7 @@
         "override_class": {
           "name": "Sim_dish_master_behaviour",
           "module_directory": "None",
-          "module_name": "dishmaster.dish_master_behaviour",
+          "module_name": "ska_dish_master_mid.dish_master_behaviour",
           "class_name": "OverrideDish"
         }
       }

@@ -18,10 +18,10 @@ def get_tango_server_class(device_name):
     """
     data_descr_files = []
     data_descr_files.append(
-        pkg_resources.resource_filename("dishmaster", "dish_master.fgo")
+        pkg_resources.resource_filename("ska_dish_master_mid", "dish_master.fgo")
     )
     data_descr_files.append(
-        pkg_resources.resource_filename("dishmaster", "dish_master_SimDD.json")
+        pkg_resources.resource_filename("ska_dish_master_mid", "dish_master_SimDD.json")
     )
 
     # add a filter with this device's name

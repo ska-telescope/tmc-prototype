@@ -11,7 +11,7 @@ from tango import Database
 from tango.test_context import DeviceTestContext
 
 from tango_simlib.utilities import helper_module
-from dishmaster.utils import get_tango_server_class
+from ska_dish_master_mid.utils import get_tango_server_class
 
 
 @pytest.fixture(scope="class")

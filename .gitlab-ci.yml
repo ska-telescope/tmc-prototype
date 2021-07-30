@@ -346,31 +346,39 @@ build ska-tmc-mccssubarrayleafnode-low wheel for development: # Executed on a co
     paths:
       - ./ska-tmc/ska-tmc-mccssubarrayleafnode-low/dist/
 
-build DishMaster wheel for publication: # Executed on a tag
+build ska-dish-master-mid wheel for publication: # Executed on a tag
   stage: build
   tags:
     - docker-executor
   script:
-    - cd ./ska-tmc/dishmaster
+    - cd ./ska-tmc/ska-dish-master-mid
     - python3 setup.py egg_info sdist bdist_wheel
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   only:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/dishmaster/dist/
+      - ./ska-tmc/ska-dish-master-mid/dist/
 
-build DishMaster wheel for development: # Executed on a commit
+build ska-dish-master-mid wheel for development: # Executed on a commit
   stage: build
   tags:
     - docker-executor
   script:
-    - cd ./ska-tmc/dishmaster
+    - cd ./ska-tmc/ska-dish-master-mid
     - python3 setup.py egg_info sdist bdist_wheel
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   except:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/dishmaster/dist/
+      - ./ska-tmc/ska-dish-master-mid/dist/
 
 # unit tests:
 #   image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10

@@ -21,7 +21,7 @@ readme_filename = os.path.join(setup_dir, "README.rst")
 with open(readme_filename) as file:
     long_description = file.read()
 
-release_filename = os.path.join(setup_dir, "src", "dishmaster", "release.py")
+release_filename = os.path.join(setup_dir, "src", "ska_dish_master_mid", "release.py")
 exec(open(release_filename).read())
 
 setup(
@@ -32,18 +32,18 @@ setup(
     package_dir={"": "src"},
     include_package_data=True,
     package_data={
-        "dishmaster": [
+        "ska-dish-master-mid": [
             "src/*.json",
             "src/*.fgo",
         ]
     },
     test_suite="test",
-    entry_points={"console_scripts": ["DishMasterDS = dishmaster.dish_master:main"]},
+    entry_points={"console_scripts": ["DishMasterDS = ska_dish_master_mid.dish_master:main"]},
     author="Team Karoo",
     author_email="cam+karoo@ska.ac.za",
     license="BSD-3-Clause",
     long_description=long_description,
-    url="https://www.skatelescope.org",
+    url="https://www.skaobservatory.org",
     platforms="All Platforms",
     install_requires=["pytango>=9.3.3", "mock", "tango-simlib>=0.9.2"],
     # test_suite='test',
