@@ -68,8 +68,9 @@ build ska-tmc-centralnode-low wheel for development: # Executed on a commit
 
 build ska-tmc-subarraynode-low wheel for publication: # Executed on a tag
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
     - cd ./ska-tmc/ska-tmc-subarraynode-low
     - python3 setup.py egg_info sdist bdist_wheel
@@ -85,8 +86,9 @@ build ska-tmc-subarraynode-low wheel for publication: # Executed on a tag
 
 build ska-tmc-subarraynode-low wheel for development: # Executed on a commit
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
     - cd ./ska-tmc/ska-tmc-subarraynode-low
     - python3 setup.py egg_info sdist bdist_wheel
@@ -128,8 +130,9 @@ build DishLeafNode wheel for development: # Executed on a commit
 
 build ska-tmc-cspmasterleafnode-mid wheel for publication: # Executed on a tag
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
     - cd ./ska-tmc/ska-tmc-cspmasterleafnode-mid
     - python3 setup.py egg_info sdist bdist_wheel
@@ -145,8 +148,9 @@ build ska-tmc-cspmasterleafnode-mid wheel for publication: # Executed on a tag
 
 build ska-tmc-cspmasterleafnode-mid wheel for development: # Executed on a commit
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
     - cd ./ska-tmc/ska-tmc-cspmasterleafnode-mid
     - python3 setup.py egg_info sdist bdist_wheel
@@ -162,8 +166,9 @@ build ska-tmc-cspmasterleafnode-mid wheel for development: # Executed on a commi
 
 build ska-tmc-cspsubarrayleafnode-mid wheel for publication: # Executed on a tag
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
     - cd ./ska-tmc/ska-tmc-cspsubarrayleafnode-mid
     - python3 setup.py egg_info sdist bdist_wheel
@@ -180,8 +185,9 @@ build ska-tmc-cspsubarrayleafnode-mid wheel for publication: # Executed on a tag
 
 build ska-tmc-sdpmasterleafnode-mid wheel for publication: # Executed on a tag
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
     - cd ./ska-tmc/ska-tmc-sdpmasterleafnode-mid
     - python3 setup.py egg_info sdist bdist_wheel
@@ -198,8 +204,9 @@ build ska-tmc-sdpmasterleafnode-mid wheel for publication: # Executed on a tag
 
 build ska-tmc-sdpmasterleafnode-mid wheel for development: # Executed on a commit
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
     - cd ./ska-tmc/ska-tmc-sdpmasterleafnode-mid
     - python3 setup.py egg_info sdist bdist_wheel
@@ -215,8 +222,9 @@ build ska-tmc-sdpmasterleafnode-mid wheel for development: # Executed on a commi
 
 build ska-tmc-cspsubarrayleafnode-mid wheel for development: # Executed on a commit
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
     - cd ./ska-tmc/ska-tmc-cspsubarrayleafnode-mid
     - python3 setup.py egg_info sdist bdist_wheel
@@ -232,8 +240,9 @@ build ska-tmc-cspsubarrayleafnode-mid wheel for development: # Executed on a com
 
 build ska-tmc-sdpsubarrayleafnode-mid wheel for publication: # Executed on a tag
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
     - cd ./ska-tmc/ska-tmc-sdpsubarrayleafnode-mid
     - python3 setup.py egg_info sdist bdist_wheel
@@ -249,8 +258,9 @@ build ska-tmc-sdpsubarrayleafnode-mid wheel for publication: # Executed on a tag
 
 build ska-tmc-sdpsubarrayleafnode-mid wheel for development: # Executed on a commit
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
     - cd ./ska-tmc/ska-tmc-sdpsubarrayleafnode-mid
     - python3 setup.py egg_info sdist bdist_wheel
@@ -266,8 +276,9 @@ build ska-tmc-sdpsubarrayleafnode-mid wheel for development: # Executed on a com
 
 build ska-tmc-mccsmasterleafnode-low wheel for publication: # Executed on a tag
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
     - cd ./ska-tmc/ska-tmc-mccsmasterleafnode-low
     - python3 setup.py egg_info sdist bdist_wheel
@@ -283,8 +294,9 @@ build ska-tmc-mccsmasterleafnode-low wheel for publication: # Executed on a tag
 
 build ska-tmc-mccsmasterleafnode-low wheel for development: # Executed on a commit
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
     - cd ./ska-tmc/ska-tmc-mccsmasterleafnode-low
     - python3 setup.py egg_info sdist bdist_wheel
@@ -300,8 +312,9 @@ build ska-tmc-mccsmasterleafnode-low wheel for development: # Executed on a comm
 
 build ska-tmc-mccssubarrayleafnode-low wheel for publication: # Executed on a tag
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
     - cd ./ska-tmc/ska-tmc-mccssubarrayleafnode-low
     - python3 setup.py egg_info sdist bdist_wheel
@@ -317,8 +330,9 @@ build ska-tmc-mccssubarrayleafnode-low wheel for publication: # Executed on a ta
 
 build ska-tmc-mccssubarrayleafnode-low wheel for development: # Executed on a commit
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
     - cd ./ska-tmc/ska-tmc-mccssubarrayleafnode-low
     - python3 setup.py egg_info sdist bdist_wheel
