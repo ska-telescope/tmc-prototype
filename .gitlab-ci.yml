@@ -392,16 +392,16 @@ build ska-dish-master-mid wheel for development: # Executed on a commit
     paths:
       - ./ska-tmc/ska-dish-master-mid/dist/
 
-# unit tests:
-#   image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
-#   stage: unit-test
-#   tags:
-#     - docker-executor
-#   script:
-#     - make unit-test
-#   artifacts:
-#     paths:
-#       - ./build
+unit tests:
+  image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
+  stage: unit-test
+  tags:
+    - docker-executor
+  script:
+    - make unit-test
+  artifacts:
+    paths:
+      - ./build
 
 
 build-image:
@@ -489,17 +489,17 @@ build-image:
 #       junit: build/report.xml
 
 
-# linting:
-#   stage: linting
-#   image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
-#   tags:
-#     - docker-executor
-#   script:
-#     - make lint
-#   allow_failure: true
-#   artifacts:
-#     paths:
-#       - ./build
+linting:
+  stage: linting
+  image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
+  tags:
+    - docker-executor
+  script:
+    - make lint
+  allow_failure: true
+  artifacts:
+    paths:
+      - ./build
 
 publish to nexus:
   stage: publish

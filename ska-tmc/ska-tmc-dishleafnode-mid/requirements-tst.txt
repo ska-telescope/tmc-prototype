@@ -10,4 +10,4 @@ flake8-rst-docstrings
 docstr-coverage
 darglint
 tango-simlib
-# ska-dish-master-mid==0.0.0+4502e122
+ska-dish-master-mid
