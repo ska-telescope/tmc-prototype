@@ -19,8 +19,8 @@ global:
   skatmc:
     registry: artefact.skao.int/ska-telescope
     image: ska-tmc
-    tag: 0.8.3-dirty
-    pullPolicy: Never
+    tag: 0.8.3
+    pullPolicy: IfNotPresent
 
 
   ##  Order of instances resolution ##
