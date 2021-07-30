@@ -25,6 +25,7 @@ stages:
   - build
   - linting
   - release
+  - release-alarm-handler
   - publish
   - pages
 
