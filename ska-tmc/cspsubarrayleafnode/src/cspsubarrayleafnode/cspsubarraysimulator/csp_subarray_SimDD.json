@@ -67,7 +67,7 @@
             "dformat_in": "Scalar"
           },
           "output_parameters": {
-            "dtype_out": "VarStringArray",
+            "dtype_out": "Void",
             "doc_out": "",
             "dformat_out": "Scalar"
           }
@@ -97,7 +97,7 @@
             "dformat_in": "Scalar"
           },
           "output_parameters": {
-            "dtype_out": "VarStringArray",
+            "dtype_out": "Void",
             "doc_out": "",
             "dformat_out": "Scalar"
           }

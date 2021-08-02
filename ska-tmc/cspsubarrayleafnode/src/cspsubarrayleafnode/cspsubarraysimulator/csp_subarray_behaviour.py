@@ -6,6 +6,7 @@ override class with command handlers for CspSubarray.
 import enum
 import logging
 import time
+from ska.base.commands import ResultCode
 
 # Tango import
 from tango import DevState, Except, ErrSeverity
@@ -74,14 +75,14 @@ class OverrideCspSubarray(object):
         obsstate = get_enum_str(obsstate_attribute)
         if (obsstate == "EMPTY"):
             set_enum(obsstate_attribute, "RESOURCING", model.time_func())
-            enum_int = get_enum_int("RESOURCING",model)
+            enum_int = get_enum_int(obsstate_attribute,"RESOURCING")
             tango_dev.push_change_event("obsState", enum_int)
             tango_dev.set_status("ObsState in RESOURCING")
             model.logger.info("ObsState trasnitioned to RESOURCING")
 
             time.sleep(1)
             set_enum(obsstate_attribute, "IDLE", model.time_func())
-            enum_int = get_enum_int("IDLE",model)
+            enum_int = get_enum_int(obsstate_attribute,"IDLE")
             tango_dev.push_change_event("obsState", enum_int)
             tango_dev.set_status("ObsState in Idle")
             model.logger.info("ObsState trasnitioned to IDLE")
@@ -92,7 +93,8 @@ class OverrideCspSubarray(object):
                 "Not allowed in current Obstate.",
                 ErrSeverity.WARN,
             )
-
+        return (ResultCode.OK, "Assign resources command successful on simulator.")
+    
     def action_endscan(self, model, tango_dev=None, data_input=None):# pylint: disable=W0613
         """Changes the State of the device to .
         """
@@ -100,7 +102,7 @@ class OverrideCspSubarray(object):
         obsstate = get_enum_str(obsstate_attribute)
         if (obsstate == "SCANNING"):
             set_enum(obsstate_attribute, "READY", model.time_func())
-            enum_int = get_enum_int("READY",model)
+            enum_int = get_enum_int(obsstate_attribute,"READY")
             tango_dev.push_change_event("obsState", enum_int)
             tango_dev.set_status("ObsState in READY")
             model.logger.info("ObsState trasnitioned to READY")            
@@ -110,7 +112,8 @@ class OverrideCspSubarray(object):
                 "Not allowed in current Obstate.",
                 ErrSeverity.WARN,
             )
-        
+        return (ResultCode.OK, "EndScan command successful on simulator.")
+    
     def action_abort(self, model, tango_dev=None, data_input=None):# pylint: disable=W0613
         """Changes the State of the device to .
         """
@@ -125,13 +128,13 @@ class OverrideCspSubarray(object):
         obsstate = get_enum_str(obsstate_attribute)
         if (obsstate in _allowed_obsstate):
             set_enum(obsstate_attribute, "ABORTING", model.time_func())
-            enum_int = get_enum_int("ABORTING",model)
+            enum_int = get_enum_int(obsstate_attribute,"ABORTING")
             tango_dev.push_change_event("obsState", enum_int)
             tango_dev.set_status("ObsState in ABORTING")
             model.logger.info("ObsState trasnitioned to ABORTING")
             time.sleep(1)
             set_enum(obsstate_attribute, "ABORTED", model.time_func())
-            enum_int = get_enum_int("ABORTED",model)
+            enum_int = get_enum_int(obsstate_attribute,"ABORTED")
             tango_dev.push_change_event("obsState", enum_int)
             tango_dev.set_status("ObsState in ABORTED")
             model.logger.info("ObsState trasnitioned to ABORTED")
@@ -142,7 +145,8 @@ class OverrideCspSubarray(object):
                 "Not allowed in current Obstate.",
                 ErrSeverity.WARN,
             )
-
+        return (ResultCode.OK, "Abort command successful on simulator.")
+    
     def action_releaseallresources(self, model, tango_dev=None, data_input=None):# pylint: disable=W0613
         """Changes the State of the device to .
         """
@@ -150,14 +154,14 @@ class OverrideCspSubarray(object):
         obsstate = get_enum_str(obsstate_attribute)
         if (obsstate == "IDLE"):
             set_enum(obsstate_attribute, "RESOURCING", model.time_func())
-            enum_int = get_enum_int("RESOURCING",model)
+            enum_int = get_enum_int(obsstate_attribute,"RESOURCING")
             tango_dev.push_change_event("obsState",enum_int)
             tango_dev.set_status("ObsState in RESOURCING")
             model.logger.info("ObsState trasnitioned to RESOURCING")
 
             time.sleep(1)
             set_enum(obsstate_attribute, "EMPTY", model.time_func())
-            enum_int = get_enum_int("EMPTY",model)
+            enum_int = get_enum_int(obsstate_attribute,"EMPTY")
             tango_dev.push_change_event("obsState", enum_int)
             tango_dev.set_status("ObsState in EMPTY")
             model.logger.info("ObsState trasnitioned to EMPTY")
@@ -168,7 +172,8 @@ class OverrideCspSubarray(object):
                 "Not allowed in current Obstate.",
                 ErrSeverity.WARN,
             )
-
+        return (ResultCode.OK, "Release_all_resources command successful on simulator.")
+    
     def action_configure(self, model, tango_dev=None, data_input=None):# pylint: disable=W0613
         """Changes the State of the device to .
         """
@@ -180,14 +185,14 @@ class OverrideCspSubarray(object):
         obsstate = get_enum_str(obsstate_attribute)
         if (obsstate in _allowed_obsstate):
             set_enum(obsstate_attribute, "CONFIGURING", model.time_func())
-            enum_int = get_enum_int("CONFIGURING",model)
+            enum_int = get_enum_int(obsstate_attribute,"CONFIGURING")
             tango_dev.push_change_event("obsState", enum_int)
             tango_dev.set_status("ObsState in CONFIGURING")
             model.logger.info("ObsState trasnitioned to CONFIGURING")
 
             time.sleep(1)
             set_enum(obsstate_attribute, "READY", model.time_func())
-            enum_int = get_enum_int("READY",model)
+            enum_int = get_enum_int(obsstate_attribute,"READY")
             tango_dev.push_change_event("obsState", enum_int)
             tango_dev.set_status("ObsState in READY")
             model.logger.info("ObsState trasnitioned to READY")
@@ -198,7 +203,8 @@ class OverrideCspSubarray(object):
                 "Not allowed in current Obstate.",
                 ErrSeverity.WARN,
             )
-
+        return (ResultCode.OK, "Configure command successful on simulator.")
+    
     def action_scan(self, model, tango_dev=None, data_input=None):# pylint: disable=W0613
         """Changes the State of the device to .
         """
@@ -206,14 +212,14 @@ class OverrideCspSubarray(object):
         obsstate = get_enum_str(obsstate_attribute)
         if (obsstate == "READY"):
             set_enum(obsstate_attribute, "SCANNING", model.time_func())
-            enum_int = get_enum_int("SCANNING",model)
+            enum_int = get_enum_int(obsstate_attribute,"SCANNING")
             tango_dev.push_change_event("obsState", enum_int)
             tango_dev.set_status("ObsState in SCANNING")
             model.logger.info("ObsState trasnitioned to SCANNING")
 
             time.sleep(10)
             set_enum(obsstate_attribute, "READY", model.time_func())
-            enum_int = get_enum_int("READY",model)
+            enum_int = get_enum_int(obsstate_attribute,"READY")
             tango_dev.push_change_event("obsState", enum_int)
             tango_dev.set_status("ObsState in READY")
             model.logger.info("ObsState trasnitioned to READY")
@@ -223,7 +229,7 @@ class OverrideCspSubarray(object):
                 "Not allowed in current Obstate.",
                 ErrSeverity.WARN,
             )
-        
+        return (ResultCode.OK, "Scan command successful on simulator.")
 
     def action_gotoidle(self, model, tango_dev=None, data_input=None):# pylint: disable=W0613
         """Changes the State of the device to .
@@ -232,7 +238,7 @@ class OverrideCspSubarray(object):
         obsstate = get_enum_str(obsstate_attribute)
         if (obsstate == "READY"):
             set_enum(obsstate_attribute, "IDLE", model.time_func())
-            enum_int = get_enum_int("IDLE",model)
+            enum_int = get_enum_int(obsstate_attribute,"IDLE")
             tango_dev.push_change_event("obsState", enum_int)
             tango_dev.set_status("ObsState in IDLE")
             model.logger.info("ObsState trasnitioned to IDLE")
@@ -243,7 +249,8 @@ class OverrideCspSubarray(object):
                 "Not allowed in current Obstate.",
                 ErrSeverity.WARN,
             )
-
+        return (ResultCode.OK, "GoToIdle command successful on simulator.")
+    
     def action_restart(self, model, tango_dev=None, data_input=None):# pylint: disable=W0613
         """Changes the State of the device to .
         """
@@ -251,7 +258,7 @@ class OverrideCspSubarray(object):
         obsstate = get_enum_str(obsstate_attribute)
         if (obsstate == "ABORTED"):
             set_enum(obsstate_attribute, "EMPTY", model.time_func())
-            enum_int = get_enum_int("EMPTY",model)
+            enum_int = get_enum_int(obsstate_attribute,"EMPTY")
             tango_dev.push_change_event("obsState", enum_int)
             tango_dev.set_status("ObsState in EMPTY")
             model.logger.info("ObsState trasnitioned to EMPTY")
@@ -262,7 +269,8 @@ class OverrideCspSubarray(object):
                 "Not allowed in current Obstate.",
                 ErrSeverity.WARN,
             )
-            
+        return (ResultCode.OK, "Restart command successful on simulator.")   
+    
     def action_obsreset(self, model, tango_dev=None, data_input=None): # pylint: disable=W0613
         """Changes the State of the device to .
         """
@@ -270,7 +278,7 @@ class OverrideCspSubarray(object):
         obsstate = get_enum_str(obsstate_attribute)
         if (obsstate == "ABORTED"):
             set_enum(obsstate_attribute, "IDLE", model.time_func())
-            enum_int = get_enum_int("IDLE",model)
+            enum_int = get_enum_int(obsstate_attribute,"IDLE")
             tango_dev.push_change_event("obsState", enum_int)
             tango_dev.set_status("ObsState in IDLE")
             model.logger.info("ObsState trasnitioned to IDLE")
@@ -281,7 +289,8 @@ class OverrideCspSubarray(object):
                 "Not allowed in current Obstate.",
                 ErrSeverity.WARN,
             )
-            
+        return (ResultCode.OK, "ObsReset command successful on simulator.")
+      
 def get_enum_str(quantity):
     """Returns the enum label of an enumerated data type
 
@@ -293,17 +302,16 @@ def get_enum_str(quantity):
     EnumClass = enum.IntEnum("EnumLabels", quantity.meta["enum_labels"], start=0)
     return EnumClass(quantity.last_val).name
 
-def get_enum_int(value,model):
+def get_enum_int(quantity,label):
     """Returns the integer index value of an enumerated data type
-    :param value: str
-        The desired value of enum attribute
-    :param model: object
-        The model object of a device server
+    :param quantity: object
+        The quantity object of a DevEnum attribute
+    :param label: str
+        The desired value in enum list
     :return: Int
         Current integer value of a DevEnum attribute
     """
-    enum_int = model.sim_quantities["obsState"].meta["enum_labels"].index(value)
-    return enum_int
+    return quantity.meta["enum_labels"].index(label)
 
 def set_enum(quantity, label, timestamp):
     """Sets the quantity last_val attribute to index of label
