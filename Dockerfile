@@ -14,7 +14,6 @@ RUN python3 -m pip install ska-logging==0.3.0
 RUN apt-get -y update && \
     apt-get install -y git && \
     python3 -m pip install -U git+https://gitlab.com/ska-telescope/ska-tango-base@0.7.2
-    # python -m pip install -U git+https://github.com/ska-sa/tango-simlib.git@kmadisa/Configure-device-server-to-manually-push-events#egg=tango-simlib
 RUN python3 -m pip install cdm-shared-library==2.0.0 \
                            ska-telescope-model==0.3.0 \
                            ska-log-transactions \
