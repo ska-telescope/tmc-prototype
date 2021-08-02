@@ -6,6 +6,7 @@ override class with command handlers for csp master.
 import pkg_resources
 import enum
 import logging
+from ska.base.commands import ResultCode
 
 # Tango import
 from tango import DevState, Except, ErrSeverity
@@ -31,7 +32,7 @@ class OverrideCspMaster:
             model.logger.info("Csp Master transitioned to the ON state.")
             csp_health_state = model.sim_quantities["healthState"]
             set_enum(csp_health_state, "OK", model.time_func())
-            enum_int = get_enum_int("OK",model)
+            enum_int = get_enum_int(csp_health_state,"OK")
             tango_dev.push_change_event("healthState", enum_int)
             tango_dev.set_status("device turned On successfully")
             model.logger.info("heathState transitioned to OK state")
@@ -41,6 +42,7 @@ class OverrideCspMaster:
                 "Not allowed",
                 ErrSeverity.WARN,
                 )
+        return (ResultCode.OK, "ON command invoked successfully on simulator.")
 
     def action_off(self, model, tango_dev=None, data_input=None):# pylint: disable=W0613
 
@@ -60,7 +62,7 @@ class OverrideCspMaster:
             model.logger.info("Csp Master transitioned to the OFF state.")
             csp_health_state = model.sim_quantities["healthState"]
             set_enum(csp_health_state, "OK", model.time_func())
-            enum_int = get_enum_int("OK",model)
+            enum_int = get_enum_int(csp_health_state,"OK")
             tango_dev.push_change_event("healthState", enum_int)
             tango_dev.set_status("device turned off successfully")
             model.logger.info("heathState transitioned to OK state")
@@ -71,6 +73,7 @@ class OverrideCspMaster:
                 "Not allowed",
                 ErrSeverity.WARN,
                 )
+        return (ResultCode.OK, "OFF command invoked successfully on simulator.")
 
     def action_standby(self, model, tango_dev=None, data_input=None):# pylint: disable=W0613
         """Changes the State of the device to STANDBY.
@@ -88,7 +91,7 @@ class OverrideCspMaster:
             tango_dev.set_state(DevState.STANDBY)
             csp_health_state = model.sim_quantities["healthState"]
             set_enum(csp_health_state, "OK", model.time_func())
-            enum_int = get_enum_int("OK",model)
+            enum_int = get_enum_int(csp_health_state,"OK")
             tango_dev.push_change_event("healthState", enum_int)
             tango_dev.set_status("invoked Standby successfully")
             model.logger.info("heathState transitioned to OK state")
@@ -98,6 +101,7 @@ class OverrideCspMaster:
                 "Not allowed",
                 ErrSeverity.WARN,
                 )
+        return (ResultCode.OK, "STANDBY command invoked successfully on simulator.")
 
 def get_csp_master_sim(device_name):
     """Create and return the Tango device class for Csp Master device
@@ -164,7 +168,7 @@ def set_enum(quantity, label, timestamp):
     value = quantity.meta["enum_labels"].index(label)
     quantity.set_val(value, timestamp)
     
-def get_enum_int(value, model):
+def get_enum_int(quantity,label):
     """Returns the integer index value of an enumerated data type
 
     :param model: object
@@ -172,5 +176,4 @@ def get_enum_int(value, model):
     :return: Int
         Current integer value of a DevEnum attribute
     """
-    Enum_int = model.sim_quantities["healthState"].meta["enum_labels"].index(value)
-    return Enum_int
+    return quantity.meta["enum_labels"].index(label)
