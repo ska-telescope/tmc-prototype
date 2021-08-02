@@ -255,7 +255,7 @@
             "in_type": "DevVarStringArray",
             "in_type_desc": "None",
             "name": "AssignResources",
-            "out_type": "DevVarStringArray",
+            "out_type": "DevVoid",
             "out_type_desc": "Uninitialised"
         },
         "EndScan": {
@@ -269,13 +269,13 @@
             "out_type_desc": "Uninitialised"
         },
         "ReleaseAllResources": {
-            "cmd_name": "ReleaseAllResources",
+            "cmd_name": "ReleaseResources",
             "cmd_tag": 0,
             "disp_level": "OPERATOR",
             "in_type": "DevVoid",
             "in_type_desc": "None",
             "name": "ReleaseAllResources",
-            "out_type": "DevVarStringArray",
+            "out_type": "DevVoid",
             "out_type_desc": "Uninitialised"
         },
         "Scan": {
