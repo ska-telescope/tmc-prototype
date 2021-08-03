@@ -14,4 +14,3 @@ SKA Csp Subarray TANGO device server
 from . import csp_subarray, csp_subarray_behaviour, utils
 
 __all__ = ["csp_subarray", "csp_subarray_behaviour", "utils"]
-

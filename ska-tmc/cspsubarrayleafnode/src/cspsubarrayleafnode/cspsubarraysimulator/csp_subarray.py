@@ -2,14 +2,12 @@
 # Standard python import
 import sys
 
-# Tango import
-#!/usr/bin/env python
-
 # Additional import
 from .utils import get_tango_server_class
 
 # File generated on Mon Jul 12 13:24:36 2021 by tango-simlib-generator
-            
+
+
 def simulator():
     if len(sys.argv) > 0:
         device_name = sys.argv[1]
