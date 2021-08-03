@@ -5,6 +5,7 @@ image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:9.3.2
 
 variables:
   DOCKER_DRIVER: overlay2
+  SKA_ALARM_HANDLER_VERSION: 0.1.6-testing2
 
 # cache is used to specify a list of files and directories which should be cached between jobs. You can only use paths that are within the project workspace.
 # If cache is defined outside the scope of jobs, it means it is set globally and all jobs will use that definition
@@ -23,8 +24,6 @@ before_script:
 
 stages:
   - build
-  - unit-test
-  - test
   - linting
   - release
   - release-alarm-handler
@@ -293,16 +292,16 @@ build DishMaster wheel for development: # Executed on a commit
     paths:
       - ./ska-tmc/dishmaster/dist/
 
-unit tests:
-  image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
-  stage: unit-test
-  tags:
-    - docker-executor
-  script:
-    - make unit-test
-  artifacts:
-    paths:
-      - ./build
+#unit tests:
+#  image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
+#  stage: unit-test
+#  tags:
+#    - docker-executor
+#  script:
+#    - make unit-test
+#  artifacts:
+#    paths:
+#      - ./build
 
 
 build-image:
@@ -319,75 +318,75 @@ build-image:
     paths:
       - current_tag.txt
 
-test-mid:
-   stage: test
-   dependencies:
-     - build-image
-   tags:
-     - k8srunner
-   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
-   before_script:
-     - kubectl get namespace
-   script:
-     - kubectl version
-     - make clean
-     - make install-chart MINIKUBE=false
-     - make wait
-     - make smoketest
-     - make test MARK=mid && [ -f "build/report.xml" ]
-   after_script:
-     - make uninstall-chart
-     - make clean
-     - make delete_namespace-sdp
-     - make delete_namespace
-     - mkdir -p build
-     - ls -la build
-   environment:
-     name: test
-     kubernetes:
-       namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-mid
-   artifacts:
-     name: "$CI_PROJECT_NAME-$CI_JOB_ID"
-     paths:
-       - build
-     reports:
-       junit: build/report.xml
-     when: always
+#test-mid:
+#   stage: test
+#   dependencies:
+#     - build-image
+#   tags:
+#     - k8srunner
+#   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
+#   before_script:
+#     - kubectl get namespace
+#   script:
+#     - kubectl version
+#     - make clean
+#     - make install-chart MINIKUBE=false
+#     - make wait
+#     - make smoketest
+#     - make test MARK=mid && [ -f "build/report.xml" ]
+#   after_script:
+#     - make uninstall-chart
+#     - make clean
+#     - make delete_namespace-sdp
+#     - make delete_namespace
+#     - mkdir -p build
+#     - ls -la build
+#   environment:
+#     name: test
+#     kubernetes:
+#       namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-mid
+#   artifacts:
+#     name: "$CI_PROJECT_NAME-$CI_JOB_ID"
+#     paths:
+#       - build
+#     reports:
+#       junit: build/report.xml
+#     when: always
 
-
-test-low:
-  stage: test
-  dependencies:
-    - build-image
-  tags:
-    - k8srunner
-  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
-  before_script:
-    - kubectl get namespace
-  script:
-    - kubectl version
-    - make clean
-    - make install-chart MINIKUBE=false HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
-    - make wait
-    - make smoketest
-    - make test MARK=low && [ -f "build/report.xml" ]
-  after_script:
-    - make uninstall-chart HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
-    - make clean
-    - make delete_namespace-sdp
-    - make delete_namespace
-    - mkdir -p build
-    - ls -la build
-  environment:
-    name: test
-    kubernetes:
-      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-low
-  artifacts:
-    name: "$CI_PROJECT_NAME-$CI_JOB_ID"
-    paths:
-      - build
-    reports:
-      junit: build/report.xml
+#
+#test-low:
+#  stage: test
+#  dependencies:
+#    - build-image
+#  tags:
+#    - k8srunner
+#  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
+#  before_script:
+#    - kubectl get namespace
+#  script:
+#    - kubectl version
+#    - make clean
+#    - make install-chart MINIKUBE=false HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
+#    - make wait
+#    - make smoketest
+#    - make test MARK=low && [ -f "build/report.xml" ]
+#  after_script:
+#    - make uninstall-chart HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
+#    - make clean
+#    - make delete_namespace-sdp
+#    - make delete_namespace
+#    - mkdir -p build
+#    - ls -la build
+#  environment:
+#    name: test
+#    kubernetes:
+#      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-low
+#  artifacts:
+#    name: "$CI_PROJECT_NAME-$CI_JOB_ID"
+#    paths:
+#      - build
+#    reports:
+#      junit: build/report.xml
 
 
 linting:
@@ -471,8 +470,8 @@ release ska-alarm-handler:
     - docker-executor
   script:
     - cd ./ska-tmc/tmalarmhandler
-    - docker build -t artefact.skao.int/ska-tango-examples/ska-alarm-handler:0.1.6-testing1 .
-    - docker push artefact.skao.int/ska-tango-examples/ska-alarm-handler:0.1.6-testing1
+    - docker build -t artefact.skao.int/ska-tango-examples/ska-alarm-handler:$SKA_ALARM_HANDLER_VERSION .
+    - docker push artefact.skao.int/ska-tango-examples/ska-alarm-handler:$SKA_ALARM_HANDLER_VERSION
   when: manual
 
 # Standardised included jobs
