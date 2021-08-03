@@ -71,7 +71,7 @@ class OverrideCspSubarray(object):
             tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)
             tango_dev.set_status("ObsState in RESOURCING")
             model.logger.info("ObsState trasnitioned to RESOURCING")
-            timer = threading.Timer(1.0, in_tansition_state(model, obs_state))
+            timer = threading.Timer(1.0, in_tansition_state(model))
             timer.start()
             set_enum(obsstate_attribute, "IDLE", model.time_func())
             csp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "IDLE")
@@ -113,14 +113,14 @@ class OverrideCspSubarray(object):
         """Changes the ObsState of the device to Transition state ABORTING and then to ABORTED."""
         _allowed_obsstate = ("IDLE", "READY", "SCANNING", "CONFIGURING", "RESETTING")
         obsstate_attribute = model.sim_quantities["obsState"]
-        obsstate = get_enum_str(obsstate_attribute)
-        if obsstate in _allowed_obsstate:
+        obs_state = get_enum_str(obsstate_attribute)
+        if obs_state in _allowed_obsstate:
             set_enum(obsstate_attribute, "ABORTING", model.time_func())
             csp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "ABORTING")
             tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)
             tango_dev.set_status("ObsState in ABORTING")
             model.logger.info("ObsState trasnitioned to ABORTING")
-            timer = threading.Timer(1.0, in_tansition_state(model, obs_state))
+            timer = threading.Timer(1.0, in_tansition_state(model))
             timer.start()
             set_enum(obsstate_attribute, "ABORTED", model.time_func())
             csp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "ABORTED")
@@ -148,7 +148,7 @@ class OverrideCspSubarray(object):
             tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)
             tango_dev.set_status("ObsState in RESOURCING")
             model.logger.info("ObsState trasnitioned to RESOURCING")
-            timer = threading.Timer(1.0, in_tansition_state(model, obs_state))
+            timer = threading.Timer(1.0, in_tansition_state(model))
             timer.start()
             set_enum(obsstate_attribute, "EMPTY", model.time_func())
             csp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "EMPTY")
@@ -170,8 +170,8 @@ class OverrideCspSubarray(object):
         """Changes the ObsState of the device to Transition state CONFIGURING and then to READY."""
         _allowed_obsstate = ("IDLE", "READY")
         obsstate_attribute = model.sim_quantities["obsState"]
-        obsstate = get_enum_str(obsstate_attribute)
-        if obsstate in _allowed_obsstate:
+        obs_state = get_enum_str(obsstate_attribute)
+        if obs_state in _allowed_obsstate:
             set_enum(obsstate_attribute, "CONFIGURING", model.time_func())
             csp_subarray_obs_state_enum = get_enum_int(
                 obsstate_attribute, "CONFIGURING"
@@ -179,7 +179,7 @@ class OverrideCspSubarray(object):
             tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)
             tango_dev.set_status("ObsState in CONFIGURING")
             model.logger.info("ObsState trasnitioned to CONFIGURING")
-            timer = threading.Timer(1.0, in_tansition_state(model, obs_state))
+            timer = threading.Timer(1.0, in_tansition_state(model))
             timer.start()
             set_enum(obsstate_attribute, "READY", model.time_func())
             csp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "READY")
@@ -207,7 +207,7 @@ class OverrideCspSubarray(object):
             tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)
             tango_dev.set_status("ObsState in SCANNING")
             model.logger.info("ObsState trasnitioned to SCANNING")
-            timer = threading.Timer(10.0, in_tansition_state(model, obs_state))
+            timer = threading.Timer(10.0, in_tansition_state(model))
             timer.start()
             set_enum(obsstate_attribute, "READY", model.time_func())
             csp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "READY")
@@ -323,7 +323,7 @@ def set_enum(quantity, label, timestamp):
     quantity.set_val(value, timestamp)
 
 
-def in_tansition_state(model, obs_state):
+def in_tansition_state(model):
     "Instead of wait this function is implemented to iterate for required time."
     model.logger.info("Inside transition state")
 
