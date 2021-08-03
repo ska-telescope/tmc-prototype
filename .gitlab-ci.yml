@@ -1,7 +1,7 @@
 # GitLab CI in conjunction with GitLab Runner can use Docker Engine to test and build any application.
 # Docker, when used with GitLab CI, runs each job in a separate and isolated container using the predefined image that is set up in .gitlab-ci.yml.
 # In this case we use the latest python docker image to build and test this project.
-image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:9.3.2
+image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
 
 variables:
   DOCKER_DRIVER: overlay2
@@ -30,270 +30,370 @@ stages:
   - publish
   - pages
 
-build CentralNodeLow wheel for publication: # Executed on a tag
+build ska-tmc-centralnode-low wheel for publication: # Executed on a tag
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
-    - cd ./ska-tmc/centralnodelow
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-tmc-centralnode-low
+    - python3 setup.py egg_info sdist bdist_wheel
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   only:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/centralnodelow/dist/
+      - ./ska-tmc/ska-tmc-centralnode-low/dist/
 
-build CentralNodeLow wheel for development: # Executed on a commit
+build ska-tmc-centralnode-low wheel for development: # Executed on a commit
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
-    - cd ./ska-tmc/centralnodelow
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-tmc-centralnode-low
+    - python3 setup.py egg_info sdist bdist_wheel
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   except:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/centralnodelow/dist/
+      - ./ska-tmc/ska-tmc-centralnode-low/dist/
 
-build SubarrayNodeLow wheel for publication: # Executed on a tag
+build ska-tmc-subarraynode-low wheel for publication: # Executed on a tag
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
-    - cd ./ska-tmc/subarraynodelow
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-tmc-subarraynode-low
+    - python3 setup.py egg_info sdist bdist_wheel
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   only:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/subarraynodelow/dist/
+      - ./ska-tmc/ska-tmc-subarraynode-low/dist/
 
-build SubarrayNodeLow wheel for development: # Executed on a commit
+build ska-tmc-subarraynode-low wheel for development: # Executed on a commit
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
-    - cd ./ska-tmc/subarraynodelow
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-tmc-subarraynode-low
+    - python3 setup.py egg_info sdist bdist_wheel
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   except:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/subarraynodelow/dist/
+      - ./ska-tmc/ska-tmc-subarraynode-low/dist/
 
-build DishLeafNode wheel for publication: # Executed on a tag
+build ska-tmc-dishleafnode-mid wheel for publication: # Executed on a tag
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
-    - cd ./ska-tmc/dishleafnode
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-tmc-dishleafnode-mid
+    - python3 setup.py egg_info sdist bdist_wheel
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   only:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/dishleafnode/dist/
+      - ./ska-tmc/ska-tmc-dishleafnode-mid/dist/
 
-build DishLeafNode wheel for development: # Executed on a commit
+build ska-tmc-dishleafnode-mid wheel for development: # Executed on a commit
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
-    - cd ./ska-tmc/dishleafnode
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-tmc-dishleafnode-mid
+    - python3 setup.py egg_info sdist bdist_wheel
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   except:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/dishleafnode/dist/
+      - ./ska-tmc/ska-tmc-dishleafnode-mid/dist/
 
-build CspMasterLeafNode wheel for publication: # Executed on a tag
+build ska-tmc-cspmasterleafnode-mid wheel for publication: # Executed on a tag
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
-    - cd ./ska-tmc/cspmasterleafnode
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-tmc-cspmasterleafnode-mid
+    - python3 setup.py egg_info sdist bdist_wheel
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   only:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/cspmasterleafnode/dist/
+      - ./ska-tmc/ska-tmc-cspmasterleafnode-mid/dist/
 
-build CspMasterLeafNode wheel for development: # Executed on a commit
+build ska-tmc-cspmasterleafnode-mid wheel for development: # Executed on a commit
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
-    - cd ./ska-tmc/cspmasterleafnode
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-tmc-cspmasterleafnode-mid
+    - python3 setup.py egg_info sdist bdist_wheel
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   except:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/cspmasterleafnode/dist/
+      - ./ska-tmc/ska-tmc-cspmasterleafnode-mid/dist/
 
-build CspSubarrayLeafNode wheel for publication: # Executed on a tag
+build ska-tmc-cspsubarrayleafnode-mid wheel for publication: # Executed on a tag
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
-    - cd ./ska-tmc/cspsubarrayleafnode
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-tmc-cspsubarrayleafnode-mid
+    - python3 setup.py egg_info sdist bdist_wheel
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   only:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/cspsubarrayleafnode/dist/
+      - ./ska-tmc/ska-tmc-cspsubarrayleafnode-mid/dist/
 
 
-build SdpMasterLeafNode wheel for publication: # Executed on a tag
+build ska-tmc-sdpmasterleafnode-mid wheel for publication: # Executed on a tag
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
-    - cd ./ska-tmc/sdpmasterleafnode
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-tmc-sdpmasterleafnode-mid
+    - python3 setup.py egg_info sdist bdist_wheel
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   only:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/sdpmasterleafnode/dist/
+      - ./ska-tmc/ska-tmc-sdpmasterleafnode-mid/dist/
 
 
-build SdpMasterLeafNode wheel for development: # Executed on a commit
+build ska-tmc-sdpmasterleafnode-mid wheel for development: # Executed on a commit
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
-    - cd ./ska-tmc/sdpmasterleafnode
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-tmc-sdpmasterleafnode-mid
+    - python3 setup.py egg_info sdist bdist_wheel
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   except:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/sdpmasterleafnode/dist/
+      - ./ska-tmc/ska-tmc-sdpmasterleafnode-mid/dist/
 
-build CspSubarrayLeafNode wheel for development: # Executed on a commit
+build ska-tmc-cspsubarrayleafnode-mid wheel for development: # Executed on a commit
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
-    - cd ./ska-tmc/cspsubarrayleafnode
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-tmc-cspsubarrayleafnode-mid
+    - python3 setup.py egg_info sdist bdist_wheel
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   except:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/cspsubarrayleafnode/dist/
+      - ./ska-tmc/ska-tmc-cspsubarrayleafnode-mid/dist/
 
-build SdpSubarrayLeafNode wheel for publication: # Executed on a tag
+build ska-tmc-sdpsubarrayleafnode-mid wheel for publication: # Executed on a tag
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
-    - cd ./ska-tmc/sdpsubarrayleafnode
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-tmc-sdpsubarrayleafnode-mid
+    - python3 setup.py egg_info sdist bdist_wheel
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   only:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/sdpsubarrayleafnode/dist/
+      - ./ska-tmc/ska-tmc-sdpsubarrayleafnode-mid/dist/
 
-build SdpSubarrayLeafNode wheel for development: # Executed on a commit
+build ska-tmc-sdpsubarrayleafnode-mid wheel for development: # Executed on a commit
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
-    - cd ./ska-tmc/sdpsubarrayleafnode
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-tmc-sdpsubarrayleafnode-mid
+    - python3 setup.py egg_info sdist bdist_wheel
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   except:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/sdpsubarrayleafnode/dist/
+      - ./ska-tmc/ska-tmc-sdpsubarrayleafnode-mid/dist/
 
-build MccsMasterLeafNode wheel for publication: # Executed on a tag
+build ska-tmc-mccsmasterleafnode-low wheel for publication: # Executed on a tag
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
-    - cd ./ska-tmc/mccsmasterleafnode
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-tmc-mccsmasterleafnode-low
+    - python3 setup.py egg_info sdist bdist_wheel
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   only:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/mccsmasterleafnode/dist/
+      - ./ska-tmc/ska-tmc-mccsmasterleafnode-low/dist/
 
-build MccsMasterLeafNode wheel for development: # Executed on a commit
+build ska-tmc-mccsmasterleafnode-low wheel for development: # Executed on a commit
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
-    - cd ./ska-tmc/mccsmasterleafnode
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-tmc-mccsmasterleafnode-low
+    - python3 setup.py egg_info sdist bdist_wheel
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   except:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/mccsmasterleafnode/dist/
+      - ./ska-tmc/ska-tmc-mccsmasterleafnode-low/dist/
 
-build MccsSubarrayLeafNode wheel for publication: # Executed on a tag
+build ska-tmc-mccssubarrayleafnode-low wheel for publication: # Executed on a tag
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
-    - cd ./ska-tmc/mccssubarrayleafnode
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-tmc-mccssubarrayleafnode-low
+    - python3 setup.py egg_info sdist bdist_wheel
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   only:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/mccssubarrayleafnode/dist/
+      - ./ska-tmc/ska-tmc-mccssubarrayleafnode-low/dist/
 
-build MccsSubarrayLeafNode wheel for development: # Executed on a commit
+build ska-tmc-mccssubarrayleafnode-low wheel for development: # Executed on a commit
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
-    - cd ./ska-tmc/mccssubarrayleafnode
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-tmc-mccssubarrayleafnode-low
+    - python3 setup.py egg_info sdist bdist_wheel
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   except:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/mccssubarrayleafnode/dist/
+      - ./ska-tmc/ska-tmc-mccssubarrayleafnode-low/dist/
 
-build DishMaster wheel for publication: # Executed on a tag
+build ska-dish-master-mid wheel for publication: # Executed on a tag
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
-    - cd ./ska-tmc/dishmaster
-    - python3 setup.py egg_info -b+$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-dish-master-mid
+    - python3 setup.py egg_info sdist bdist_wheel
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   only:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/dishmaster/dist/
+      - ./ska-tmc/ska-dish-master-mid/dist/
 
-build DishMaster wheel for development: # Executed on a commit
+build ska-dish-master-mid wheel for development: # Executed on a commit
   stage: build
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   tags:
-    - docker-executor
+    - k8srunner
   script:
-    - cd ./ska-tmc/dishmaster
-    - python3 setup.py egg_info -b+dev.$CI_COMMIT_SHORT_SHA sdist bdist_wheel
+    - cd ./ska-tmc/ska-dish-master-mid
+    - python3 setup.py egg_info sdist bdist_wheel
+    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
+    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
+    -   /usr/local/bin/patch-metadata.sh $filename MANIFEST.skao.int
+    - done
   except:
     - tags
   artifacts:
     paths:
-      - ./ska-tmc/dishmaster/dist/
+      - ./ska-tmc/ska-dish-master-mid/dist/
 
 unit tests:
-  image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
+  image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
   stage: unit-test
   tags:
     - docker-executor
@@ -306,7 +406,7 @@ unit tests:
 
 build-image:
   stage: build
-  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
+  image: $SKA_K8S_TOOLS_DOCKER_BUILDER_IMAGE
   tags:
     - k8srunner
   script:
@@ -324,7 +424,7 @@ test-mid:
      - build-image
    tags:
      - k8srunner
-   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
+   image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
    before_script:
      - kubectl get namespace
    script:
@@ -360,18 +460,18 @@ test-low:
     - build-image
   tags:
     - k8srunner
-  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   before_script:
     - kubectl get namespace
   script:
     - kubectl version
     - make clean
-    - make install-chart MINIKUBE=false HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
+    - make install-chart MINIKUBE=false HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
     - make wait
     - make smoketest
     - make test MARK=low && [ -f "build/report.xml" ]
   after_script:
-    - make uninstall-chart HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
+    - make uninstall-chart HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
     - make clean
     - make delete_namespace-sdp
     - make delete_namespace
@@ -391,7 +491,7 @@ test-low:
 
 linting:
   stage: linting
-  image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
+  image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
   tags:
     - docker-executor
   script:
@@ -405,34 +505,28 @@ publish to nexus:
   stage: publish
   tags:
     - docker-executor
-  variables:
-    TWINE_USERNAME: $TWINE_USERNAME
-    TWINE_PASSWORD: $TWINE_PASSWORD
   script:
     - python3 -m pip install twine
-    - twine upload --repository-url $PYPI_REPOSITORY_URL ./ska-tmc/centralnodelow/dist/*
-    - twine upload --repository-url $PYPI_REPOSITORY_URL ./ska-tmc/subarraynodelow/dist/*
-    - twine upload --repository-url $PYPI_REPOSITORY_URL ./ska-tmc/dishleafnode/dist/*
-    - twine upload --repository-url $PYPI_REPOSITORY_URL ./ska-tmc/cspmasterleafnode/dist/*
-    - twine upload --repository-url $PYPI_REPOSITORY_URL ./ska-tmc/sdpmasterleafnode/dist/*
-    - twine upload --repository-url $PYPI_REPOSITORY_URL ./ska-tmc/mccsmasterleafnode/dist/*
-    - twine upload --repository-url $PYPI_REPOSITORY_URL ./ska-tmc/dishmaster/dist/*
-    - twine upload --repository-url $PYPI_REPOSITORY_URL ./ska-tmc/sdpsubarrayleafnode/dist/*
-    - twine upload --repository-url $PYPI_REPOSITORY_URL ./ska-tmc/cspsubarrayleafnode/dist/*
-    - twine upload --repository-url $PYPI_REPOSITORY_URL ./ska-tmc/mccssubarrayleafnode/dist/*
-
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-dishleafnode-mid/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-centralnode-low/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-subarraynode-low/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-cspmasterleafnode-mid/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-sdpmasterleafnode-mid/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-mccsmasterleafnode-low/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-dish-master-mid/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-sdpsubarrayleafnode-mid/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-cspsubarrayleafnode-mid/dist/*
+    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-mccssubarrayleafnode-low/dist/*
+  when: manual
   only:
     variables:
       - $CI_COMMIT_MESSAGE =~ /^.+$/ # Confirm tag message exists
       - $CI_COMMIT_TAG =~ /^((([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)$/ # Confirm semantic versioning of tag
 
 pages:
-  image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
-  before_script:
-  - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD $DOCKER_REGISTRY_HOST
+  stage: pages
   tags:
     - docker-executor
-  stage: pages
   only:
     - master
   script:
@@ -452,9 +546,9 @@ pages:
 
 release tmc:
   stage: release
-  image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
+  image: $SKA_K8S_TOOLS_DOCKER_BUILDER_IMAGE
   before_script:
-  - docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD $DOCKER_REGISTRY_HOST
+  - docker login -u $CAR_OCI_REGISTRY_USERNAME -p $CAR_OCI_REGISTRY_PASSWORD $CAR_OCI_REGISTRY_HOST
   tags:
     - docker-executor
   script:
@@ -463,7 +557,7 @@ release tmc:
 
 # Standardised included jobs
 variables:
-  CHARTS_TO_PUBLISH: tmc-low tmc-mid
+  CHARTS_TO_PUBLISH: ska-tmc-low ska-tmc-mid
 include:
 # Helm Chart Publish
 # https://developer.skatelescope.org/en/latest/development/software_package_release_procedure.html#package-and-publish-helm-charts-to-the-ska-helm-chart-repository

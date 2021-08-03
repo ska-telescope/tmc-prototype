@@ -36,6 +36,12 @@ def test_smell_mvp(pre_or_post="#PRE"):
     assert_that(resource("low-mccs/subarray/01").get("State")).is_equal_to(
         resource("low-mccs/subarray/01").get("State")
     )
+    assert_that(resource("ska_low/tm_central/central_node").get("State")).is_equal_to(
+        resource("ska_low/tm_central/central_node").get("State")
+    )
+    assert_that(resource("low-mccs/control/control").get("State")).is_equal_to(
+        resource("low-mccs/control/control").get("State")
+    )
 
 
 @pytest.mark.select

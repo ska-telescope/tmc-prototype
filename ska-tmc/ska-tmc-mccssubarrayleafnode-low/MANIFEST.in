@@ -1,0 +1,8 @@
+recursive-include src/ska_tmc_mccssubarrayleafnode_low *.py
+recursive-include test *.py
+recursive-include pogo MccsSubarrayLeafNode.xmi
+include *.rst
+include *.txt
+graft docs
+global-exclude *.pyc
+global-exclude *.pyo

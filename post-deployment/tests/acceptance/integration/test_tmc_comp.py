@@ -73,7 +73,7 @@ def test_assign_resources():
 
         # then when I assign a subarray composed of two resources configured as perTMC_integration/assign_resources.json
         @log_it("TMC_int_comp", devices_to_log, non_default_states_to_check)
-        @sync_assign_resources(2, 500)
+        @sync_assign_resources(2, 800)
         def compose_sub():
             resource("ska_mid/tm_subarray_node/1").assert_attribute("State").equals(
                 "ON"

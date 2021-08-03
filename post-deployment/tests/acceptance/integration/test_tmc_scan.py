@@ -59,7 +59,6 @@ def test_scan():
         # given an interface to TMC to interact with a subarray node and a central node
         fixture = {}
         fixture["state"] = "Unknown"
-
         assert tmc_is_in_on()
         LOGGER.info("TMC devices are up")
         
