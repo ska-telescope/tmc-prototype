@@ -24,7 +24,6 @@ RUN echo "deb http://deb.debian.org/debian buster-backports main contrib non-fre
 RUN git clone http://github.com/ELETTRA-SincrotroneTrieste/makefiles.git
 RUN git clone http://github.com/ELETTRA-SincrotroneTrieste/alarm-handler.git
 COPY Makefile-9.3.3.in /makefiles
-RUN cd alarm-handler && \
-    TANGO_DIR=/usr/local/tango make
+RUN cd alarm-handler && make
 
 CMD ["/bin/bash", "-c", "/alarm-handler/bin/alarm-handler-srv 01"]
