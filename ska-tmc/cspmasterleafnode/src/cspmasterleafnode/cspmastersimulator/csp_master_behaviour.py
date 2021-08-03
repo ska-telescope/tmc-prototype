@@ -169,8 +169,10 @@ def set_enum(quantity, label, timestamp):
 def get_enum_int(quantity, label):
     """Returns the integer index value of an enumerated data type
 
-    :param model: object
-        The model object of a device server
+    :param quantity: tango_simlib.quantities.Quantity
+        The quantity object from model
+    :param label: str
+        The desired label from enum list
     :return: Int
         Current integer value of a DevEnum attribute
     """

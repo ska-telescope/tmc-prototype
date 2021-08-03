@@ -566,7 +566,7 @@ def main(args=None, **kwargs):
     if standalone_mode == "TRUE":
         print("Running in standalone mode")
         csp_subarray_simulator = []
-        csp_subarray_simulator.append(simulator())
+        csp_subarray_simulator.append(csp_subarray_simulator())
         csp_subarray_simulator.append(CspSubarrayLeafNode)
         ret_val = run(csp_subarray_simulator, args=args, **kwargs)
     else:
