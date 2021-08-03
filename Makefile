@@ -86,8 +86,9 @@ TEST_RUNNER = test-runner-$(CI_JOB_ID)-$(KUBE_NAMESPACE)-$(HELM_RELEASE)
 # build, 'make push' docker push procedure, etc. The other Make targets
 # ('make interactive', 'make test', etc.) are defined in this file.
 #
-include .make/release.mk
+
 include .make/docker.mk
+include .make/release.mk
 include .make/k8s.mk
 include .make/test.mk
 

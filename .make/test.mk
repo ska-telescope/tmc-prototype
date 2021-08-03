@@ -3,7 +3,7 @@
 #
 # IMAGE_TO_TEST defines the tag of the Docker image to test
 #
-IMAGE_TO_TEST ?= artefact.skao.int/ska-tango-images-tango-itango:9.3.4 ## docker image that will be run for testing purpose
+IMAGE_TO_TEST ?= artefact.skao.int/ska-tango-images-tango-itango:9.3.3.7 ## docker image that will be run for testing purpose
 # Test runner - run to completion job in K8s
 TEST_RUNNER = test-runner-$(CI_JOB_ID)-$(KUBE_NAMESPACE)-$(HELM_RELEASE)##name of the pod running the k8s_tests
 #

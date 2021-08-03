@@ -20,7 +20,7 @@ dependencies:
   version: 0.2.14
   repository: https://artefact.skao.int/repository/helm-internal
 - name: ska-webjive
-  version: 1.0.23
+  version: 1.0.24
   repository: https://artefact.skao.int/repository/helm-internal
 - name: ska-tmc-low
   version: 0.3.7
