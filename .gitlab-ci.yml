@@ -5,7 +5,6 @@ image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:9.3.2
 
 variables:
   DOCKER_DRIVER: overlay2
-  SKA_ALARM_HANDLER_VERSION: 0.1.6-testing2
 
 # cache is used to specify a list of files and directories which should be cached between jobs. You can only use paths that are within the project workspace.
 # If cache is defined outside the scope of jobs, it means it is set globally and all jobs will use that definition
@@ -462,6 +461,8 @@ release tmc:
   when: manual
 
 release ska-alarm-handler:
+  variables:
+    SKA_ALARM_HANDLER_VERSION: "0.1.6-testing2"
   stage: release-alarm-handler
   image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   before_script:
