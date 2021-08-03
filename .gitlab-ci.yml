@@ -464,7 +464,7 @@ release tmc:
 
 release ska-alarm-handler:
   variables:
-    SKA_ALARM_HANDLER_VERSION: "0.1.6-testing2"
+    IMAGE_VERSION: "0.1.6"  # Update alarm handler image version before publishing an image
   stage: release-alarm-handler
   image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   before_script:
@@ -473,8 +473,8 @@ release ska-alarm-handler:
     - docker-executor
   script:
     - cd ./ska-tmc/tmalarmhandler
-    - docker build -t artefact.skao.int/ska-tango-examples/ska-alarm-handler:$SKA_ALARM_HANDLER_VERSION .
-    - docker push artefact.skao.int/ska-tango-examples/ska-alarm-handler:$SKA_ALARM_HANDLER_VERSION
+    - docker build -t artefact.skao.int/ska-tango-examples/ska-alarm-handler:$IMAGE_VERSION .
+    - docker push artefact.skao.int/ska-tango-examples/ska-alarm-handler:$IMAGE_VERSION
   when: manual
 
 # Standardised included jobs
