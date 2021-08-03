@@ -469,7 +469,7 @@ release ska-alarm-handler:
     - docker-executor
   script:
     - cd ./ska-tmc/tmalarmhandler
-    - docker build -t ska-alarm-handler:0.1.6-testing1 .
+    - docker build -t artefact.skao.int/ska-tango-examples/ska-alarm-handler:0.1.6-testing1 .
     - docker push artefact.skao.int/ska-tango-examples/ska-alarm-handler:0.1.6-testing1
   when: manual
 
