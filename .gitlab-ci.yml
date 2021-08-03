@@ -23,11 +23,8 @@ before_script:
 
 stages:
   - build
-  - unit-test
-  - test
   - linting
   - release
-  - release-alarm-handler
   - publish
   - pages
 
@@ -293,17 +290,6 @@ build DishMaster wheel for development: # Executed on a commit
     paths:
       - ./ska-tmc/dishmaster/dist/
 
-unit tests:
-  image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:latest
-  stage: unit-test
-  tags:
-    - docker-executor
-  script:
-    - make unit-test
-  artifacts:
-    paths:
-      - ./build
-
 
 build-image:
   stage: build
@@ -318,76 +304,6 @@ build-image:
   artifacts:
     paths:
       - current_tag.txt
-
-test-mid:
-   stage: test
-   dependencies:
-     - build-image
-   tags:
-     - k8srunner
-   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
-   before_script:
-     - kubectl get namespace
-   script:
-     - kubectl version
-     - make clean
-     - make install-chart MINIKUBE=false
-     - make wait
-     - make smoketest
-     - make test MARK=mid && [ -f "build/report.xml" ]
-   after_script:
-     - make uninstall-chart
-     - make clean
-     - make delete_namespace-sdp
-     - make delete_namespace
-     - mkdir -p build
-     - ls -la build
-   environment:
-     name: test
-     kubernetes:
-       namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-mid
-   artifacts:
-     name: "$CI_PROJECT_NAME-$CI_JOB_ID"
-     paths:
-       - build
-     reports:
-       junit: build/report.xml
-     when: always
-
-
-test-low:
-  stage: test
-  dependencies:
-    - build-image
-  tags:
-    - k8srunner
-  image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
-  before_script:
-    - kubectl get namespace
-  script:
-    - kubectl version
-    - make clean
-    - make install-chart MINIKUBE=false HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
-    - make wait
-    - make smoketest
-    - make test MARK=low && [ -f "build/report.xml" ]
-  after_script:
-    - make uninstall-chart HELM_CHART=tmc-low-umbrella UMBRELLA_CHART_PATH=charts/tmc-low-umbrella/
-    - make clean
-    - make delete_namespace-sdp
-    - make delete_namespace
-    - mkdir -p build
-    - ls -la build
-  environment:
-    name: test
-    kubernetes:
-      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-low
-  artifacts:
-    name: "$CI_PROJECT_NAME-$CI_JOB_ID"
-    paths:
-      - build
-    reports:
-      junit: build/report.xml
 
 
 linting:
@@ -464,8 +380,8 @@ release tmc:
 
 release ska-alarm-handler:
   variables:
-    IMAGE_VERSION: "0.1.6"  # Update alarm handler image version before publishing an image
-  stage: release-alarm-handler
+    IMAGE_VERSION: "0.1.6-testing3"  # Update alarm handler image version before publishing an image
+  stage: release
   image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   before_script:
   - docker login -u $CAR_OCI_REGISTRY_USERNAME -p $CAR_OCI_REGISTRY_PASSWORD $CAR_OCI_REGISTRY_HOST
@@ -473,8 +389,8 @@ release ska-alarm-handler:
     - docker-executor
   script:
     - cd ./ska-tmc/tmalarmhandler
-    - docker build -t artefact.skao.int/ska-tango-examples/ska-alarm-handler:$IMAGE_VERSION .
-    - docker push artefact.skao.int/ska-tango-examples/ska-alarm-handler:$IMAGE_VERSION
+    - docker build -t $CAR_OCI_REGISTRY_HOST/ska-tango-examples/ska-alarm-handler:$IMAGE_VERSION .
+    - docker push $CAR_OCI_REGISTRY_HOST/ska-tango-examples/ska-alarm-handler:$IMAGE_VERSION
   when: manual
 
 # Standardised included jobs
