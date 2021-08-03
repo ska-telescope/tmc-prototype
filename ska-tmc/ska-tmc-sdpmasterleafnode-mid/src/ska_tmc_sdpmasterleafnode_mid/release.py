@@ -10,7 +10,7 @@
 """Release information for Python Package"""
 
 name = """ska-tmc-sdpmasterleafnode-mid"""
-version = "0.8.3"
+version = "0.8.4"
 version_info = version.split(".")
 description = """ The primary responsibility of the SDP Subarray 
                   Leaf node is to monitor the SDP Subarray 

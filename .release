@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc"""
-version="0.8.3"
+version="0.8.4"
 version_info=version.split(".")
 description="""SKA-TMC"""
 author="Team NCRA"
@@ -9,8 +9,8 @@ author_email="telmgt-internal@googlegroups.com"
 license="""BSD-3-Clause"""
 url="""https://www.skaobservatory.org"""
 copyright=""""""
-release=0.8.3
-tag=0.8.3
+release=0.8.4
+tag=0.8.4
 tag_description=Migration of ska-tmc to Central Artefact Repository.
 release_notes=This release contains:<br/><ul><li>Updated TMC Low commands to make the transaction_id optional.</li>
 <li>Rename tmc-mid chart to ska-tmc-mid</li><li>Update the folder from tmc-mid to ska-tmc-mid and from tmc-low to ska-tmc-low.</li>

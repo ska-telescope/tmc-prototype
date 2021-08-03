@@ -170,16 +170,12 @@ Storage      | 64 GB      | 100 GB
 ### 4.3.2 Deploying TMC
 
 This section is TBD:
-There are few settings required before the TMC is available for manual testing. First, in order to acces the Webjive, update the `/etc/hosts` file of the local system add and entry as follows:
-`<ip-of-the-machine> integration.engageska-portugal.pt`
-where, \<ip-of-the-machine> is the ip of the machine where is TMC is deployed.
-
-Then deploy the TMC using `make install-chart` command.
+Deploy the TMC using `make install-chart` command.
 The `make watch` command can be used to monitor the pods to ensure all required pods are up and running.
 
 By default, this command deploys the components of TMC-Mid. In order to deploy TMC Low, the command is `make install-chart`
 Once, the deployment is done, Webjive can be accessed from browser with url:
-`http://integration.engageska-portugal.pt/testdb`
+`http://<IP_OF_YOUR_VM>/<NAMESPACE>/taranta` e.g. `http://192.168.93.86/tmclow/taranta/devices`
 
 ### 4.3.3 Deleting the deployment and clean up
 

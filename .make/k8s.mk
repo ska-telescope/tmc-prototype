@@ -1,7 +1,7 @@
 CAR_HELM_REPOSITORY_URL ?= https://artefact.skao.int/repository/helm-internal ## helm host url https
 MINIKUBE ?= true## Minikube or not
 MARK ?= all
-#IMAGE_TO_TEST ?= $(CAR_OCI_REGISTRY_HOST)/$(CAR_OCI_REGISTRY_USER)/$(PROJECT):0.8.3## docker image that will be run for testing purpose
+#IMAGE_TO_TEST ?= $(CAR_OCI_REGISTRY_HOST)/$(CAR_OCI_REGISTRY_USER)/$(PROJECT):0.8.4## docker image that will be run for testing purpose
 TANGO_DATABASE_DS ?= tango-host-databaseds-from-makefile-$(RELEASE_NAME) ## Stable name for the Tango DB
 TANGO_HOST ?= $(TANGO_DATABASE_DS):10000## TANGO_HOST is an input!
 
@@ -94,7 +94,7 @@ install-chart: dep-up namespace namespace_sdp ## install the helm chart with nam
 	--set global.minikube=$(MINIKUBE) \
 	--set global.tango_host=$(TANGO_HOST) \
 	--set tangoDatabaseDS=$(TANGO_DATABASE_DS) \
-	--set sdp.helmdeploy.namespace=$(SDP_KUBE_NAMESPACE) \
+	--set ska-sdp.helmdeploy.namespace=$(SDP_KUBE_NAMESPACE) \
 	--values values.yaml $(CUSTOM_VALUES) \
 	 $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE); \
 	 rm generated_values.yaml; \
