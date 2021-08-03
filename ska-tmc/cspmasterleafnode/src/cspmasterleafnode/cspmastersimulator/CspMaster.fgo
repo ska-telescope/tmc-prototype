@@ -373,7 +373,7 @@
             "disp_level": "OPERATOR",
             "in_type": "DevVarStringArray",
             "in_type_desc": "None",
-            "name": "Off",
+            "name": "Standby",
             "out_type": "DevVoid",
             "out_type_desc": "Uninitialised"
         }

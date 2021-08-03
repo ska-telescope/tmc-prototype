@@ -14,4 +14,3 @@ SKA CspMaster TANGO device server
 from .csp_master_behaviour import OverrideCspMaster, get_csp_master_sim
 
 __all__ = ["get_csp_master_sim", "OverrideCspMaster"]
-

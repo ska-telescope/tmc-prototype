@@ -11,29 +11,30 @@ from ska.base.commands import ResultCode
 # Tango import
 from tango import DevState, Except, ErrSeverity
 from ska.logging import configure_logging
-from tango_simlib.tango_sim_generator import (configure_device_models, get_tango_device_server)
+from tango_simlib.tango_sim_generator import (
+    configure_device_models,
+    get_tango_device_server,
+)
+
 
 class OverrideCspMaster:
-
-    def action_on(self, model, tango_dev=None, data_input=None):# pylint: disable=W0613
-        """Changes the State of the device to ON.
-        """
+    def action_on(
+        self, model, tango_dev=None, data_input=None
+    ):  # pylint: disable=W0613
+        """Changes the State of the device to ON."""
         model.logger.info("Executing On command")
-        _allowed_modes = (
-            "OFF",
-            "STANDBY"
-        )
+        _allowed_modes = (DevState.OFF, DevState.STANDBY)
         if tango_dev.get_state() == DevState.ON:
             model.logger.info("CSP master is already in ON state")
             return
 
-        if str(tango_dev.get_state()) in _allowed_modes:
+        if tango_dev.get_state() in _allowed_modes:
             tango_dev.set_state(DevState.ON)
             model.logger.info("Csp Master transitioned to the ON state.")
             csp_health_state = model.sim_quantities["healthState"]
             set_enum(csp_health_state, "OK", model.time_func())
-            enum_int = get_enum_int(csp_health_state,"OK")
-            tango_dev.push_change_event("healthState", enum_int)
+            csp_health_state_enum = get_enum_int(csp_health_state, "OK")
+            tango_dev.push_change_event("healthState", csp_health_state_enum)
             tango_dev.set_status("device turned On successfully")
             model.logger.info("heathState transitioned to OK state")
         else:
@@ -41,58 +42,50 @@ class OverrideCspMaster:
                 "ON Command Failed",
                 "Not allowed",
                 ErrSeverity.WARN,
-                )
+            )
         return (ResultCode.OK, "ON command invoked successfully on simulator.")
 
-    def action_off(self, model, tango_dev=None, data_input=None):# pylint: disable=W0613
-
-        """Changes the State of the device to OFF.
-        """
-        _allowed_modes = (
-            "ON",
-            "ALARM",
-            "STANDBY"
-        )
+    def action_off(
+        self, model, tango_dev=None, data_input=None
+    ):  # pylint: disable=W0613
+        """Changes the State of the device to OFF."""
+        _allowed_modes = (DevState.ON, DevState.ALARM, DevState.STANDBY)
         if tango_dev.get_state() == DevState.OFF:
             model.logger.info("CSP master is already in OFF state")
             return
 
-        if str(tango_dev.get_state()) in _allowed_modes:
+        if tango_dev.get_state() in _allowed_modes:
             tango_dev.set_state(DevState.OFF)
             model.logger.info("Csp Master transitioned to the OFF state.")
             csp_health_state = model.sim_quantities["healthState"]
             set_enum(csp_health_state, "OK", model.time_func())
-            enum_int = get_enum_int(csp_health_state,"OK")
-            tango_dev.push_change_event("healthState", enum_int)
+            csp_health_state_enum = get_enum_int(csp_health_state, "OK")
+            tango_dev.push_change_event("healthState", csp_health_state_enum)
             tango_dev.set_status("device turned off successfully")
             model.logger.info("heathState transitioned to OK state")
-
         else:
             Except.throw_exception(
                 "Off Command Failed",
                 "Not allowed",
                 ErrSeverity.WARN,
-                )
+            )
         return (ResultCode.OK, "OFF command invoked successfully on simulator.")
 
-    def action_standby(self, model, tango_dev=None, data_input=None):# pylint: disable=W0613
-        """Changes the State of the device to STANDBY.
-        """
-        _allowed_modes = (
-            "ON",
-            "ALARM",
-            "OFF"
-        )
+    def action_standby(
+        self, model, tango_dev=None, data_input=None
+    ):  # pylint: disable=W0613
+        """Changes the State of the device to STANDBY."""
+        _allowed_modes = (DevState.ALARM, DevState.OFF, DevState.ON)
         if tango_dev.get_state() == DevState.STANDBY:
             model.logger.info("CSP master is already in OK state")
             return
 
-        if str(tango_dev.get_state()) in _allowed_modes:
+        if tango_dev.get_state() in _allowed_modes:
             tango_dev.set_state(DevState.STANDBY)
             csp_health_state = model.sim_quantities["healthState"]
             set_enum(csp_health_state, "OK", model.time_func())
-            enum_int = get_enum_int(csp_health_state,"OK")
-            tango_dev.push_change_event("healthState", enum_int)
+            csp_health_state_enum = get_enum_int(csp_health_state, "OK")
+            tango_dev.push_change_event("healthState", csp_health_state_enum)
             tango_dev.set_status("invoked Standby successfully")
             model.logger.info("heathState transitioned to OK state")
         else:
@@ -100,25 +93,29 @@ class OverrideCspMaster:
                 "STANDBY Command Failed",
                 "Not allowed",
                 ErrSeverity.WARN,
-                )
+            )
         return (ResultCode.OK, "STANDBY command invoked successfully on simulator.")
+
 
 def get_csp_master_sim(device_name):
     """Create and return the Tango device class for Csp Master device
-    :params: 
+    :params:
         device_name: String. Name of the Csp master device
     :return: tango.server.Device
     The Tango device class for csp Master
     """
     sim_data_files = []
     sim_data_files.append(
-        pkg_resources.resource_filename("cspmasterleafnode.cspmastersimulator", "CspMaster.fgo")
+        pkg_resources.resource_filename(
+            "cspmasterleafnode.cspmastersimulator", "CspMaster.fgo"
+        )
     )
     sim_data_files.append(
-        pkg_resources.resource_filename("cspmasterleafnode.cspmastersimulator", "csp_master_simDD.json")
+        pkg_resources.resource_filename(
+            "cspmasterleafnode.cspmastersimulator", "csp_master_simDD.json"
+        )
     )
 
-    device_name = "mid_csp/elt/master"
     device_name_tag = f"tango-device:{device_name}"
 
     class TangoDeviceTagsFilter(logging.Filter):
@@ -137,7 +134,7 @@ def get_csp_master_sim(device_name):
         configure_args["test_device_name"] = device_name
 
     logger.debug("Configuring device model")
-    
+
     model = configure_device_models(sim_data_files, **configure_args)
     tango_device_servers = get_tango_device_server(model, sim_data_files)
     return tango_device_servers[0]
@@ -146,7 +143,7 @@ def get_csp_master_sim(device_name):
 def get_enum_str(quantity):
     """Returns the enum label of an enumerated data type
 
-    :param quantity: object
+    :param quantity: tango_simlib.quantities.Quantity
         The quantity object of a DevEnum attribute
     :return: str
         Current string value of a DevEnum attribute
@@ -158,7 +155,7 @@ def get_enum_str(quantity):
 def set_enum(quantity, label, timestamp):
     """Sets the quantity last_val attribute to index of label
 
-    :param quantity: object
+    :param quantity: tango_simlib.quantities.Quantity
         The quantity object from model
     :param label: str
         The desired label from enum list
@@ -167,8 +164,9 @@ def set_enum(quantity, label, timestamp):
     """
     value = quantity.meta["enum_labels"].index(label)
     quantity.set_val(value, timestamp)
-    
-def get_enum_int(quantity,label):
+
+
+def get_enum_int(quantity, label):
     """Returns the integer index value of an enumerated data type
 
     :param model: object

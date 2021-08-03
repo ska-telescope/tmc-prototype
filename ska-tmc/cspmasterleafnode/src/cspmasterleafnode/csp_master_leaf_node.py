@@ -74,7 +74,7 @@ class CspMasterLeafNode(SKABaseDevice):
 
     # ---------------
     # General methods
-    # ---------------    
+    # ---------------
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
@@ -113,12 +113,12 @@ class CspMasterLeafNode(SKABaseDevice):
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(CspMasterLeafNode.always_executed_hook) ENABLED START #
-        """ Internal construct of TANGO. """
+        """Internal construct of TANGO."""
         # PROTECTED REGION END #    //  CspMasterLeafNode.always_executed_hook
 
     def delete_device(self):
         # PROTECTED REGION ID(CspMasterLeafNode.delete_device) ENABLED START #
-        """ Internal construct of TANGO. """
+        """Internal construct of TANGO."""
         # PROTECTED REGION END #    //  CspMasterLeafNode.delete_device
 
     # ------------------
@@ -127,13 +127,13 @@ class CspMasterLeafNode(SKABaseDevice):
 
     def read_activityMessage(self):
         # PROTECTED REGION ID(CspMasterLeafNode.activityMessage_read) ENABLED START #
-        """ Internal construct of TANGO. Returns the activityMessage. """
+        """Internal construct of TANGO. Returns the activityMessage."""
         return self.attr_map["activityMessage"]
         # PROTECTED REGION END #    //  CspMasterLeafNode.activityMessage_read
 
     def write_activityMessage(self, value):
         # PROTECTED REGION ID(CspMasterLeafNode.activityMessage_write) ENABLED START #
-        """Internal construct of TANGO. Sets the activityMessage. """
+        """Internal construct of TANGO. Sets the activityMessage."""
         self.attr_map["activityMessage"] = value
         # PROTECTED REGION END #    //  CspMasterLeafNode.activityMessage_write
 
@@ -154,7 +154,7 @@ class CspMasterLeafNode(SKABaseDevice):
     @command()
     @DebugIt()
     def TelescopeOn(self):
-        """ Sets On Mode on the CSP Element. """
+        """Sets On Mode on the CSP Element."""
         handler = self.get_command_object("TelescopeOn")
         handler()
 
@@ -211,7 +211,7 @@ class CspMasterLeafNode(SKABaseDevice):
     )
     @DebugIt()
     def TelescopeStandby(self, argin):
-        """ Sets Standby Mode on the CSP Element. """
+        """Sets Standby Mode on the CSP Element."""
         handler = self.get_command_object("TelescopeStandby")
         handler(argin)
 
@@ -232,7 +232,6 @@ class CspMasterLeafNode(SKABaseDevice):
 # ----------
 
 
-
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(CspMasterLeafNode.main) ENABLED START #
     """
@@ -245,24 +244,24 @@ def main(args=None, **kwargs):
     :return: CspMasterLeafNode TANGO object.
 
     """
-    #return run((CspMasterLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  CspMasterLeafNode.main
-    
+
     # Check if standalone mode is enabled
     try:
-        standalone_mode = os.environ['STANDALONE_MODE'] 
+        standalone_mode = os.environ["STANDALONE_MODE"]
     except KeyError:
-        standalone_mode = "FALSE" 
+        standalone_mode = "FALSE"
 
     if standalone_mode == "TRUE":
         ## Get simulator object
         device_name = "mid_csp/elt/master"
         csp_master_simulator = get_csp_master_sim(device_name)
-        ret_val = run((CspMasterLeafNode,csp_master_simulator), args=args, **kwargs)
+        ret_val = run((CspMasterLeafNode, csp_master_simulator), args=args, **kwargs)
     else:
         ret_val = run((CspMasterLeafNode,), args=args, **kwargs)
 
     return ret_val
+
 
 if __name__ == "__main__":
     main()
