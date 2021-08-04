@@ -22,7 +22,7 @@ class OverrideCspSubarray(object):
         _allowed_modes = (DevState.OFF, DevState.STANDBY)
         if tango_dev.get_state() == DevState.ON:
             model.logger.info("CSP Subarray is already in ON state")
-            return
+            return [[ResultCode.OK], ["CSP Subarray is already in ON state"]]
 
         if tango_dev.get_state() in _allowed_modes:
             tango_dev.set_state(DevState.ON)
@@ -35,6 +35,7 @@ class OverrideCspSubarray(object):
                 "Not allowed",
                 ErrSeverity.WARN,
             )
+        return [[ResultCode.OK], ["ON command successful on simulator."]]
 
     def action_off(
         self, model, tango_dev=None, data_input=None
@@ -43,8 +44,8 @@ class OverrideCspSubarray(object):
         _allowed_modes = (DevState.ON, DevState.ALARM, DevState.STANDBY)
 
         if tango_dev.get_state() == DevState.OFF:
-            model.logger.info("CSP master is already in OFF state")
-            return
+            model.logger.info("CSP Subarray is already in OFF state")
+            return [[ResultCode.OK], ["CSP Subarray is already in OFF state."]]
 
         if tango_dev.get_state() in _allowed_modes:
             tango_dev.set_state(DevState.OFF)
@@ -58,6 +59,7 @@ class OverrideCspSubarray(object):
                 "Not allowed",
                 ErrSeverity.WARN,
             )
+        return [[ResultCode.OK], ["OFF command successful on simulator."]]
 
     def action_assignresources(
         self, model, tango_dev=None, data_input=None

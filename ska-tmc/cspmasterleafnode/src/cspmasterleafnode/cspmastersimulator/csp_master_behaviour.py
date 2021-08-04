@@ -26,7 +26,7 @@ class OverrideCspMaster:
         _allowed_modes = (DevState.OFF, DevState.STANDBY)
         if tango_dev.get_state() == DevState.ON:
             model.logger.info("CSP master is already in ON state")
-            return
+            return [[ResultCode.OK], ["CSP master is already in ON state"]]
 
         if tango_dev.get_state() in _allowed_modes:
             tango_dev.set_state(DevState.ON)
@@ -52,7 +52,7 @@ class OverrideCspMaster:
         _allowed_modes = (DevState.ON, DevState.ALARM, DevState.STANDBY)
         if tango_dev.get_state() == DevState.OFF:
             model.logger.info("CSP master is already in OFF state")
-            return
+            return [[ResultCode.OK], ["CSP master is already in Off state"]]
 
         if tango_dev.get_state() in _allowed_modes:
             tango_dev.set_state(DevState.OFF)
@@ -77,8 +77,8 @@ class OverrideCspMaster:
         """Changes the State of the device to STANDBY."""
         _allowed_modes = (DevState.ALARM, DevState.OFF, DevState.ON)
         if tango_dev.get_state() == DevState.STANDBY:
-            model.logger.info("CSP master is already in OK state")
-            return
+            model.logger.info("CSP master is already in Standby state")
+            return [[ResultCode.OK], ["CSP master is already in Standby state"]]
 
         if tango_dev.get_state() in _allowed_modes:
             tango_dev.set_state(DevState.STANDBY)
