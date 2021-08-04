@@ -1,6 +1,6 @@
-ARG CAR_OCI_REGISTRY_USERNAME
-ARG CAR_OCI_REGISTRY_HOST
-FROM ${CAR_OCI_REGISTRY_HOST}/ska-tango-images-tango-cpp:9.3.5
+ARG CAR_REGISTRY_USER
+ARG CAR_REGISTRY_HOST
+FROM ${CAR_REGISTRY_HOST}/ska-tango-images-tango-cpp:9.3.5
 
 USER root
 RUN apt-get update && \
