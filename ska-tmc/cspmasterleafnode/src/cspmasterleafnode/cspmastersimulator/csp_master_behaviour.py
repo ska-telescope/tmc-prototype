@@ -43,7 +43,7 @@ class OverrideCspMaster:
                 "Not allowed",
                 ErrSeverity.WARN,
             )
-        return (ResultCode.OK, "ON command invoked successfully on simulator.")
+        return [[ResultCode.OK], ["ON command invoked successfully on simulator."]]
 
     def action_off(
         self, model, tango_dev=None, data_input=None
@@ -69,7 +69,7 @@ class OverrideCspMaster:
                 "Not allowed",
                 ErrSeverity.WARN,
             )
-        return (ResultCode.OK, "OFF command invoked successfully on simulator.")
+        return [[ResultCode.OK], ["OFF command invoked successfully on simulator."]]
 
     def action_standby(
         self, model, tango_dev=None, data_input=None
@@ -94,7 +94,7 @@ class OverrideCspMaster:
                 "Not allowed",
                 ErrSeverity.WARN,
             )
-        return (ResultCode.OK, "STANDBY command invoked successfully on simulator.")
+        return [[ResultCode.OK], ["STANDBY command invoked successfully on simulator."]]
 
 
 def get_csp_master_sim(device_name):

@@ -349,10 +349,10 @@
             "cmd_tag": 0,
             "device": "mid_csp/elt/master",
             "disp_level": "OPERATOR",
-            "in_type": "DevVoid",
+            "in_type": "DevVarStringArray",
             "in_type_desc": "None",
             "name": "On",
-            "out_type": "DevVoid",
+            "out_type": "DevVarLongStringArray",
             "out_type_desc": "Uninitialised"
         },
         "Off": {
@@ -360,10 +360,10 @@
             "cmd_tag": 0,
             "device": "mid_csp/elt/master",
             "disp_level": "OPERATOR",
-            "in_type": "DevVoid",
+            "in_type": "DevVarStringArray",
             "in_type_desc": "None",
             "name": "Off",
-            "out_type": "DevVoid",
+            "out_type": "DevVarLongStringArray",
             "out_type_desc": "Uninitialised"
         },
         "Standby": {
@@ -374,7 +374,7 @@
             "in_type": "DevVarStringArray",
             "in_type_desc": "None",
             "name": "Standby",
-            "out_type": "DevVoid",
+            "out_type": "DevVarLongStringArray",
             "out_type_desc": "Uninitialised"
         }
     },
