@@ -315,8 +315,3 @@ def set_enum(quantity, label, timestamp):
     """
     value = quantity.meta["enum_labels"].index(label)
     quantity.set_val(value, timestamp)
-
-
-def get_direction_sign(here, there):
-    """Return sign (+1 or -1) required to move from here to there."""
-    return 1 if here < there else -1
