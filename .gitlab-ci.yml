@@ -387,8 +387,8 @@ release ska-alarm-handler:
     - docker-executor
   script:
     - cd ./ska-tmc/tmalarmhandler
-    - docker build -t artefact.skao.int/ska-tango-examples/ska-alarm-handler:$ALARM_HANDLER_IMG_VER .
-    - docker push artefact.skao.int/ska-tango-examples/ska-alarm-handler:$ALARM_HANDLER_IMG_VER
+    - docker build -t $CAR_OCI_REGISTRY_HOST/ska-tango-examples/ska-alarm-handler:$ALARM_HANDLER_IMG_VER .
+    - docker push $CAR_OCI_REGISTRY_HOST/ska-tango-examples/ska-alarm-handler:$ALARM_HANDLER_IMG_VER
   when: manual
 
 # Standardised included jobs
