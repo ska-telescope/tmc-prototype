@@ -1,4 +1,5 @@
 import os, sys
+import time
 import logging
 import pytest
 from assertpy import assert_that
@@ -42,7 +43,8 @@ def test_smell_mvp(pre_or_post="#PRE"):
     assert_that(resource("low-mccs/control/control").get("State")).is_equal_to(
         resource("low-mccs/control/control").get("State")
     )
-
+    time.sleep(60)
+    
 
 @pytest.mark.select
 @pytest.mark.last
