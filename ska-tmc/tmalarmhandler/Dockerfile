@@ -1,6 +1,4 @@
-ARG DOCKER_REGISTRY_USER
-ARG DOCKER_REGISTRY_HOST
-FROM ${DOCKER_REGISTRY_HOST}/ska-docker/tango-cpp:9.3.4-rc7
+FROM artefact.skao.int/ska-tango-images-tango-cpp:9.3.5
 
 USER root
 RUN apt-get update && \
@@ -24,7 +22,6 @@ RUN echo "deb http://deb.debian.org/debian buster-backports main contrib non-fre
 RUN git clone http://github.com/ELETTRA-SincrotroneTrieste/makefiles.git
 RUN git clone http://github.com/ELETTRA-SincrotroneTrieste/alarm-handler.git
 COPY Make-9.3.3.in /makefiles
-RUN cd alarm-handler && \
-    TANGO_DIR=/usr/local/tango make
+RUN cd alarm-handler && make
 
 CMD ["/bin/bash", "-c", "/alarm-handler/bin/alarm-handler-srv 01"]
