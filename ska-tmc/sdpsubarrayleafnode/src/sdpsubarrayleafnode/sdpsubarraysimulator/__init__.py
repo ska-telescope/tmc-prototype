@@ -14,4 +14,3 @@ SKA SDP Subarray TANGO device server
 from . import sdp_subarray, sdp_subarray_behaviour, utils
 
 __all__ = ["sdp_subarray", "sdp_subarray_behaviour", "utils"]
-

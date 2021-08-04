@@ -9,8 +9,9 @@ import sys
 from .utils import get_tango_server_class
 
 # File generated on Mon Jul 12 13:24:36 2021 by tango-simlib-generator
-            
-def simulator():
+
+
+def sdp_subarray_simulator():
     if len(sys.argv) > 0:
         device_name = sys.argv[1]
         if device_name.isdigit():

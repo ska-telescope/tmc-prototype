@@ -245,7 +245,7 @@
             "in_type": "DevVoid",
             "in_type_desc": "None",
             "name": "Abort",
-            "out_type": "DevVoid",
+            "out_type": "DevVarLongStringArray",
             "out_type_desc": "Uninitialised"
         },
         "AssignResources": {
@@ -255,7 +255,7 @@
             "in_type": "DevVarStringArray",
             "in_type_desc": "None",
             "name": "AssignResources",
-            "out_type": "DevVoid",
+            "out_type": "DevVarLongStringArray",
             "out_type_desc": "Uninitialised"
         },
         "EndScan": {
@@ -265,7 +265,7 @@
             "in_type": "DevVoid",
             "in_type_desc": "None",
             "name": "EndScan",
-            "out_type": "DevVoid",
+            "out_type": "DevVarLongStringArray",
             "out_type_desc": "Uninitialised"
         },
         "ReleaseAllResources": {
@@ -275,7 +275,7 @@
             "in_type": "DevVoid",
             "in_type_desc": "None",
             "name": "ReleaseAllResources",
-            "out_type": "DevVoid",
+            "out_type": "DevVarLongStringArray",
             "out_type_desc": "Uninitialised"
         },
         "Scan": {
@@ -285,7 +285,7 @@
             "in_type": "DevVarStringArray",
             "in_type_desc": "None",
             "name": "Scan",
-            "out_type": "DevVoid",
+            "out_type": "DevVarLongStringArray",
             "out_type_desc": "Uninitialised"
         },
         "Configure": {
@@ -295,7 +295,7 @@
             "in_type": "DevVarStringArray",
             "in_type_desc": "None",
             "name": "Configure",
-            "out_type": "DevVoid",
+            "out_type": "DevVarLongStringArray",
             "out_type_desc": "Uninitialised"
         },
         "End": {
@@ -305,7 +305,7 @@
             "in_type": "DevVoid",
             "in_type_desc": "None",
             "name": "End",
-            "out_type": "DevVoid",
+            "out_type": "DevVarLongStringArray",
             "out_type_desc": "Uninitialised"
         },
         "ObsReset": {
@@ -315,7 +315,7 @@
             "in_type": "DevVoid",
             "in_type_desc": "None",
             "name": "ObsReset",
-            "out_type": "DevVoid",
+            "out_type": "DevVarLongStringArray",
             "out_type_desc": "Uninitialised"
         },
         "Restart": {
@@ -325,7 +325,7 @@
             "in_type": "DevVoid",
             "in_type_desc": "None",
             "name": "Restart",
-            "out_type": "DevVoid",
+            "out_type": "DevVarLongStringArray",
             "out_type_desc": "Uninitialised"
         }        
     },
