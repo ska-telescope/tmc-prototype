@@ -23,7 +23,7 @@
 
 This is the repository for the TMC evolutionary prototype. The ska-tmc aims to realize Telescope Monitoring and Control functionality, and utilizes the platform, tools and technology specified for the SKA construction.
 
-The ska-tmc utilizes the base classes created in-line with the SKA Control System Guidelines and Tango coding standards. Developed in **Python 3.7** (PyTango 9.3.2), it is a single repository consisting ten packages - CentralNodeLow, SubarrayNodeLow, DishLeafNode, CspMasterLeafNode, CspSubarrayLeafNode, SdpMasterLeafNode, SdpSubarrayLeafNode, MccsMasterLeafNode, MccsSubarrayLeafNode and DishMaster.
+The ska-tmc utilizes the base classes created in-line with the SKA Control System Guidelines and Tango coding standards. Developed in **Python 3.7** (PyTango 9.3.3), it is a single repository consisting ten packages - CentralNodeLow, SubarrayNodeLow, DishLeafNode, CspMasterLeafNode, CspSubarrayLeafNode, SdpMasterLeafNode, SdpSubarrayLeafNode, MccsMasterLeafNode, MccsSubarrayLeafNode and DishMaster.
 CentralNode device is implementated in a separate gitlab repository which is available at <https://gitlab.com/ska-telescope/ska-tmc-centralnode-mid> .
 SubarrayNode device is implemented in a separate gitlab repository which is available at <https://gitlab.com/ska-telescope/ska-tmc-subarraynode-mid> .
 SKA-TMC addresses the  following architectural aspects and functionality:
@@ -102,7 +102,7 @@ SKA-TMC addresses the  following architectural aspects and functionality:
 * Python 3.7
 * [python3-pip](https://packages.ubuntu.com/xenial/python3-pip)
 * [Tango (9.3.4-rc2)](https://docs.google.com/document/d/1TMp5n380YMvaeqeKZvRHHXa7yVxT8oBn5xsEymyNFC4/edit?usp=sharing)
-* [PyTango (9.3.2)](https://docs.google.com/document/d/1DtuIs1PeYGHlDXx8RyOzZyRQ-_Eiup-ncqeDDCtcNxk/edit?usp=sharing)
+* [PyTango (9.3.3)](https://docs.google.com/document/d/1DtuIs1PeYGHlDXx8RyOzZyRQ-_Eiup-ncqeDDCtcNxk/edit?usp=sharing)
 * skabase (LMC Base classes for SKA): Refer Section 3.1 for installation guide
 * [ska-logging](https://gitlab.com/ska-telescope/ska-logging)
 * [cdm-shared-library](https://gitlab.com/ska-telescope/cdm-shared-library)
@@ -175,16 +175,12 @@ Storage      | 64 GB      | 100 GB
 ### 4.3.2 Deploying TMC
 
 This section is TBD:
-There are few settings required before the TMC is available for manual testing. First, in order to acces the Webjive, update the `/etc/hosts` file of the local system add and entry as follows:
-`<ip-of-the-machine> integration.engageska-portugal.pt`
-where, \<ip-of-the-machine> is the ip of the machine where is TMC is deployed.
-
-Then deploy the TMC using `make install-chart` command.
+Deploy the TMC using `make install-chart` command.
 The `make watch` command can be used to monitor the pods to ensure all required pods are up and running.
 
 By default, this command deploys the components of TMC-Mid. In order to deploy TMC Low, the command is `make install-chart`
 Once, the deployment is done, Webjive can be accessed from browser with url:
-`http://integration.engageska-portugal.pt/testdb`
+`http://<IP_OF_YOUR_VM>/<NAMESPACE>/taranta` e.g. `http://192.168.93.86/tmclow/taranta/devices`
 
 **Deployment in standalone mode**
 

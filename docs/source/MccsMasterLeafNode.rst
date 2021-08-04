@@ -5,18 +5,18 @@
 
 MCCS Master Leaf Node
 ************
-.. autoclass:: ska-tmc.mccsmasterleafnode.src.mccsmasterleafnode.mccs_master_leaf_node.MccsMasterLeafNode
+.. autoclass:: ska-tmc.ska-tmc-mccsmasterleafnode-low.src.ska_tmc_mccsmasterleafnode_low.mccs_master_leaf_node.MccsMasterLeafNode
    :members: None
    :undoc-members:
-.. autoclass:: ska-tmc.mccsmasterleafnode.src.mccsmasterleafnode.assign_resources_command.AssignResources
+.. autoclass:: ska-tmc.ska-tmc-mccsmasterleafnode-low.src.ska_tmc_mccsmasterleafnode_low.assign_resources_command.AssignResources
    :members: do
    :undoc-members:
-.. autoclass:: ska-tmc.mccsmasterleafnode.src.mccsmasterleafnode.off_command.Off
+.. autoclass:: ska-tmc.ska-tmc-mccsmasterleafnode-low.src.ska_tmc_mccsmasterleafnode_low.off_command.Off
    :members: do
    :undoc-members:
-.. autoclass:: ska-tmc.mccsmasterleafnode.src.mccsmasterleafnode.on_command.On
+.. autoclass:: ska-tmc.ska-tmc-mccsmasterleafnode-low.src.ska_tmc_mccsmasterleafnode_low.on_command.On
    :members: do
    :undoc-members:
-.. autoclass:: ska-tmc.mccsmasterleafnode.src.mccsmasterleafnode.release_resources_command.ReleaseResources
+.. autoclass:: ska-tmc.ska-tmc-mccsmasterleafnode-low.src.ska_tmc_mccsmasterleafnode_low.release_resources_command.ReleaseResources
    :members: do
    :undoc-members:

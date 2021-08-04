@@ -165,6 +165,10 @@ def telescope_is_on():
         + str(resource("ska_mid/tm_central/central_node").get("commandInProgress"))
     )
     LOGGER.info(
+        'resource("ska_mid/tm_central/central_node").get("imaging")'
+        + str(resource("ska_mid/tm_central/central_node").get("imaging"))
+    )
+    LOGGER.info(
         'resource("ska_mid/tm_subarray_node/1").get("State")'
         + str(resource("ska_mid/tm_subarray_node/1").get("State"))
     )
@@ -259,6 +263,10 @@ def telescope_is_off():
     LOGGER.info(
         'resource("ska_mid/tm_central/central_node").get("commandInProgress")'
         + str(resource("ska_mid/tm_central/central_node").get("commandInProgress"))
+    )
+    LOGGER.info(
+        'resource("ska_mid/tm_central/central_node").get("imaging")'
+        + str(resource("ska_mid/tm_central/central_node").get("imaging"))
     )
     LOGGER.info(
         'resource("ska_mid/tm_subarray_node/1").get("State")'

@@ -1,0 +1,13 @@
+--extra-index-url https://nexus.engageska-portugal.pt/repository/pypi/simple
+numpy == 1.17.2
+pytango >= 9.3.3
+jsonschema >= 3.2.0
+ska-ser-logging
+marshmallow
+fire
+ska-tmc-common==0.1.7+d39e6423
+ska-ser-log-transactions
+astropy>=4.1
+katpoint==1.0a1
+pytz
+lmcbaseclasses == 0.7.2

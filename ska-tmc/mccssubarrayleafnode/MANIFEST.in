@@ -1,8 +1,0 @@
-recursive-include src/mccssubarrayleafnode *.py
-recursive-include test *.py
-recursive-include pogo MccsSubarrayLeafNode.xmi
-include *.rst
-include *.txt
-graft docs
-global-exclude *.pyc
-global-exclude *.pyo

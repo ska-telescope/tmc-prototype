@@ -1,0 +1,57 @@
+name: "cspsubarayleafnode-{{.Release.Name}}"
+function: observation-execution
+domain: subarray
+instances: ["01", "02", "03"]
+entrypoints:
+  - name: "ska_tmc_cspsubarrayleafnode_mid.csp_subarray_leaf_node.CspSubarrayLeafNode"
+server:
+  name: "CspSubarrayLeafNodeDS"
+  instances:
+  {{- range  .Values.coalesced_subarray_devices }}
+    - name: "{{ . }}"
+      classes:
+        - name: "CspSubarrayLeafNode"
+          devices:
+            - name: "ska_mid/tm_leaf_node/csp_subarray{{ . }}"
+              properties:
+                - name: "CspSubarrayFQDN"
+                  values:
+                    - "mid_csp/elt/subarray_{{ . }}"
+                - name: "SkaLevel"
+                  values:
+                    - "3"
+                - name: "LoggingTargetsDefault"
+                  values:
+                    - "tango::logger"
+                - name: "LoggingLevelDefault"
+                  values:
+                    - "5"
+                - name: "polled_attr"
+                  values:
+                    - "adminmode"
+                    - "1000"
+                    - "healthstate"
+                    - "1000"
+                    - "delayModel"
+                    - "1000"
+              attribute_properties:
+                - attribute: "healthState"
+                  properties:
+                    - name: "abs_change"
+                      values:
+                        - "-1"
+                        - "1"
+                - attribute: "adminMode"
+                  properties:
+                    - name: "abs_change"
+                      values:
+                        - "-1"
+                        - "1"
+  {{- end }}
+depends_on: 
+  - device: sys/database/2
+image:
+  registry: "{{.Values.global.skatmc.registry}}"
+  image: "{{.Values.global.skatmc.image}}"
+  tag: "{{.Values.global.skatmc.tag}}"
+  pullPolicy: "{{.Values.global.skatmc.pullPolicy}}"

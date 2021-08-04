@@ -18,7 +18,7 @@ from tango import DeviceProxy, DevState, CmdArgType, EventType
 LOGGER = logging.getLogger(__name__)
 
 ####typical device sets
-subarray_devices = ["ska_low/tm_subarray_node/1", "low-mccs/subarray/01"]
+subarray_devices = ["ska_low/tm_central/central_node", "ska_low/tm_subarray_node/1", "low-mccs/control/control", "low-mccs/subarray/01", ]
 
 
 def wait_before_test(timeout=1):

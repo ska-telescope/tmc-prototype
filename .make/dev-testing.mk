@@ -176,9 +176,6 @@ check_log_consumer_running:
 make get_web_logs:
 	kubectl logs $(testing-pod) --namespace $(KUBE_NAMESPACE) -c web-pytest 
 
-ping_web_py:
-	@curl -H "HOST: dev-testing.engageska-portugal.pt" http://$(THIS_HOST)/dev-testing/ping
-
 KEY_NAME=""
 
 cp_key:

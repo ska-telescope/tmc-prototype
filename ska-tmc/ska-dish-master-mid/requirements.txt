@@ -1,0 +1,4 @@
+--extra-index-url https://nexus.engageska-portugal.pt/repository/pypi/simple
+pytango>=9.3.3
+ska-ser-logging==0.4.0
+tango-simlib>=0.9.2
