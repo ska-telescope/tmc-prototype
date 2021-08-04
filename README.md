@@ -134,6 +134,10 @@ document for installation guide.
 A k8s job does the alarm configuration when TMC chart is deployed. This is currently done for  
 tmc mid chart only.
 
+The version of the alarm handler image is maintained in the gitlab-ci.yml file. In order to publish alarm handler image:
+1. Update alarm handler image version in the gitlab-ci.yml file.
+2. Trigger *ska-alarm-handler* job in the release stage.
+
 # 4 Testing
 
 ## 4.1 Unit Testing

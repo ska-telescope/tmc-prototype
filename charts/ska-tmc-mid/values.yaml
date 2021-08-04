@@ -73,9 +73,9 @@ subarraynodemid:
 
 alarmhandler:
   image:
-    registry: nexus.engageska-portugal.pt/tango-example
-    image: tmalarmhandler
-    tag: 0.1.5
+    registry: artefact.skao.int
+    image: ska-alarm-handler
+    tag: 0.1.7
     pullPolicy: IfNotPresent
 
 resources:
