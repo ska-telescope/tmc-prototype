@@ -303,7 +303,6 @@ unit tests:
     paths:
       - ./build
 
-
 build-image:
   stage: build
   image: nexus.engageska-portugal.pt/ska-docker/deploy:0.4.3
@@ -353,7 +352,6 @@ test-mid:
        junit: build/report.xml
      when: always
 
-
 test-low:
   stage: test
   dependencies:
@@ -387,7 +385,6 @@ test-low:
       - build
     reports:
       junit: build/report.xml
-
 
 linting:
   stage: linting
@@ -461,9 +458,23 @@ release tmc:
     - make release-ska-tmc USERNAME=$GITLAB_USER_NAME EMAILID=$GITLAB_USER_EMAIL # Publish tag on the gitlab and tagged image on Nexus
   when: manual
 
+release ska-alarm-handler:
+  stage: release
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
+  before_script:
+  - docker login -u $CAR_OCI_REGISTRY_USERNAME -p $CAR_OCI_REGISTRY_PASSWORD $CAR_OCI_REGISTRY_HOST
+  tags:
+    - docker-executor
+  script:
+    - cd ./ska-tmc/tmalarmhandler
+    - docker build -t $CAR_OCI_REGISTRY_HOST/ska-tango-examples/ska-alarm-handler:$ALARM_HANDLER_IMG_VER .
+    - docker push $CAR_OCI_REGISTRY_HOST/ska-tango-examples/ska-alarm-handler:$ALARM_HANDLER_IMG_VER
+  when: manual
+
 # Standardised included jobs
 variables:
   CHARTS_TO_PUBLISH: tmc-low tmc-mid
+  ALARM_HANDLER_IMG_VER: "0.1.6"  # Update alarm handler image version before publishing an image
 include:
 # Helm Chart Publish
 # https://developer.skatelescope.org/en/latest/development/software_package_release_procedure.html#package-and-publish-helm-charts-to-the-ska-helm-chart-repository
