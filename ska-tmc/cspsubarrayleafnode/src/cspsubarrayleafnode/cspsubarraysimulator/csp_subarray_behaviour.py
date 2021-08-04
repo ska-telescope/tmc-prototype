@@ -5,7 +5,7 @@ override class with command handlers for CspSubarray.
 # Standard python imports
 import enum
 import logging
-import threading
+import time
 from ska.base.commands import ResultCode
 
 # Tango import
@@ -71,8 +71,7 @@ class OverrideCspSubarray(object):
             tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)
             tango_dev.set_status("ObsState in RESOURCING")
             model.logger.info("ObsState trasnitioned to RESOURCING")
-            timer = threading.Timer(1.0, in_tansition_state(model))
-            timer.start()
+            time.sleep(2)
             set_enum(obsstate_attribute, "IDLE", model.time_func())
             csp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "IDLE")
             tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)
@@ -85,7 +84,7 @@ class OverrideCspSubarray(object):
                 "Not allowed in current Obstate.",
                 ErrSeverity.WARN,
             )
-        return (ResultCode.OK, "Assign resources command successful on simulator.")
+        return [[ResultCode.OK], ["Assign resources command successful on simulator."]]
 
     def action_endscan(
         self, model, tango_dev=None, data_input=None
@@ -105,7 +104,7 @@ class OverrideCspSubarray(object):
                 "Not allowed in current Obstate.",
                 ErrSeverity.WARN,
             )
-        return (ResultCode.OK, "EndScan command successful on simulator.")
+        return [[ResultCode.OK], ["EndScan command successful on simulator."]]
 
     def action_abort(
         self, model, tango_dev=None, data_input=None
@@ -120,8 +119,7 @@ class OverrideCspSubarray(object):
             tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)
             tango_dev.set_status("ObsState in ABORTING")
             model.logger.info("ObsState trasnitioned to ABORTING")
-            timer = threading.Timer(1.0, in_tansition_state(model))
-            timer.start()
+            time.sleep(2)
             set_enum(obsstate_attribute, "ABORTED", model.time_func())
             csp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "ABORTED")
             tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)
@@ -134,7 +132,7 @@ class OverrideCspSubarray(object):
                 "Not allowed in current Obstate.",
                 ErrSeverity.WARN,
             )
-        return (ResultCode.OK, "Abort command successful on simulator.")
+        return [[ResultCode.OK], ["Abort command successful on simulator."]]
 
     def action_releaseallresources(
         self, model, tango_dev=None, data_input=None
@@ -148,8 +146,7 @@ class OverrideCspSubarray(object):
             tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)
             tango_dev.set_status("ObsState in RESOURCING")
             model.logger.info("ObsState trasnitioned to RESOURCING")
-            timer = threading.Timer(1.0, in_tansition_state(model))
-            timer.start()
+            time.sleep(2)
             set_enum(obsstate_attribute, "EMPTY", model.time_func())
             csp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "EMPTY")
             tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)
@@ -162,7 +159,7 @@ class OverrideCspSubarray(object):
                 "Not allowed in current Obstate.",
                 ErrSeverity.WARN,
             )
-        return (ResultCode.OK, "Release_all_resources command successful on simulator.")
+        return [[ResultCode.OK], ["Release_all_resources command successful on simulator."]]
 
     def action_configure(
         self, model, tango_dev=None, data_input=None
@@ -179,8 +176,7 @@ class OverrideCspSubarray(object):
             tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)
             tango_dev.set_status("ObsState in CONFIGURING")
             model.logger.info("ObsState trasnitioned to CONFIGURING")
-            timer = threading.Timer(1.0, in_tansition_state(model))
-            timer.start()
+            time.sleep(2)
             set_enum(obsstate_attribute, "READY", model.time_func())
             csp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "READY")
             tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)
@@ -193,7 +189,7 @@ class OverrideCspSubarray(object):
                 "Not allowed in current Obstate.",
                 ErrSeverity.WARN,
             )
-        return (ResultCode.OK, "Configure command successful on simulator.")
+        return [[ResultCode.OK], ["Configure command successful on simulator."]]
 
     def action_scan(
         self, model, tango_dev=None, data_input=None
@@ -207,8 +203,7 @@ class OverrideCspSubarray(object):
             tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)
             tango_dev.set_status("ObsState in SCANNING")
             model.logger.info("ObsState trasnitioned to SCANNING")
-            timer = threading.Timer(10.0, in_tansition_state(model))
-            timer.start()
+            time.sleep(2)
             set_enum(obsstate_attribute, "READY", model.time_func())
             csp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "READY")
             tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)
@@ -220,7 +215,7 @@ class OverrideCspSubarray(object):
                 "Not allowed in current Obstate.",
                 ErrSeverity.WARN,
             )
-        return (ResultCode.OK, "Scan command successful on simulator.")
+        return [[ResultCode.OK], ["Scan command successful on simulator."]]
 
     def action_gotoidle(
         self, model, tango_dev=None, data_input=None
@@ -241,7 +236,7 @@ class OverrideCspSubarray(object):
                 "Not allowed in current Obstate.",
                 ErrSeverity.WARN,
             )
-        return (ResultCode.OK, "GoToIdle command successful on simulator.")
+        return [[ResultCode.OK], ["GoToIdle command successful on simulator."]]
 
     def action_restart(
         self, model, tango_dev=None, data_input=None
@@ -262,7 +257,7 @@ class OverrideCspSubarray(object):
                 "Not allowed in current Obstate.",
                 ErrSeverity.WARN,
             )
-        return (ResultCode.OK, "Restart command successful on simulator.")
+        return [[ResultCode.OK], ["Restart command successful on simulator."]]
 
     def action_obsreset(
         self, model, tango_dev=None, data_input=None
@@ -283,8 +278,7 @@ class OverrideCspSubarray(object):
                 "Not allowed in current Obstate.",
                 ErrSeverity.WARN,
             )
-        return (ResultCode.OK, "ObsReset command successful on simulator.")
-
+        return [[ResultCode.OK], ["ObsReset command successful on simulator."]]
 
 def get_enum_str(quantity):
     """Returns the enum label of an enumerated data type
@@ -321,11 +315,6 @@ def set_enum(quantity, label, timestamp):
     """
     value = quantity.meta["enum_labels"].index(label)
     quantity.set_val(value, timestamp)
-
-
-def in_tansition_state(model):
-    "Instead of wait this function is implemented to iterate for required time."
-    model.logger.info("Inside transition state")
 
 
 def get_direction_sign(here, there):
