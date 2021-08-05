@@ -12,9 +12,8 @@ copyright=""""""
 release=0.8.5
 tag=0.8.5
 tag_description=Migration of ska-tmc to Central Artefact Repository.
-release_notes=This release contains:<br/><ul><li>Updated TMC Low commands to make the transaction_id optional.</li>
-<li>Rename tmc-mid chart to ska-tmc-mid</li><li>Update the folder from tmc-mid to ska-tmc-mid and from tmc-low to ska-tmc-low.</li>
-<li>Update URL which point to CAR Nexus</li><li>Update environment variables</li><li>Fix unit test cases</li></ul><br/>
+release_notes=This release contains:<br/><ul><li>Utilisation of ska-tango-base 0.7.2 from CAR</li>
+<li>Utilisation of ska-ser-logging 0.4.0 from CAR</li></ul><br/>
 gitlab_username=kalyanithigale
 private_token=4QxYhMuKRckxu_TQsJAF
 

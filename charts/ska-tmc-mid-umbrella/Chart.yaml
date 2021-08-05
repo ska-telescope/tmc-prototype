@@ -32,7 +32,7 @@ dependencies:
   repository: https://artefact.skao.int/repository/helm-internal
   condition: ska-sdp.enabled
 - name: ska-tmc-mid
-  version: 0.4.7
+  version: 0.4.8
   repository: file://../ska-tmc-mid
   condition: ska-tmc-mid.enabled
 - name: ska-webjive
