@@ -30,13 +30,7 @@ setup(
     description="",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
-    package_data={
-        "": [
-            "ska_antennas.txt",
-            "cspsubarraysimulator/csp_subarray_SimDD.json",
-            "cspsubarraysimulator/CspSubarray.fgo",
-        ]
-    },
+    package_data={"": ["ska_antennas.txt"]},
     test_suite="test",
     entry_points={
         "console_scripts": [

@@ -13,7 +13,6 @@ CSP Master Leaf node monitors the CSP Master and issues control actions during a
 
 # PROTECTED REGION ID(CspMasterLeafNode.import) ENABLED START #
 # Tango imports
-import os
 import tango
 from tango import ApiUtil, DebugIt, AttrWriteType
 from tango.server import run, command, device_property, attribute
@@ -21,13 +20,14 @@ from tango.server import run, command, device_property, attribute
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
+
 from tmc.common.tango_server_helper import TangoServerHelper
+
 from . import const
 from .telescope_on_command import TelescopeOn
 from .telescope_off_command import TelescopeOff
 from .telescope_standby_command import TelescopeStandby
 from .device_data import DeviceData
-from .cspmastersimulator import get_csp_master_sim
 
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
 
@@ -74,7 +74,7 @@ class CspMasterLeafNode(SKABaseDevice):
 
     # ---------------
     # General methods
-    # ---------------    
+    # ---------------
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
@@ -232,7 +232,6 @@ class CspMasterLeafNode(SKABaseDevice):
 # ----------
 
 
-
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(CspMasterLeafNode.main) ENABLED START #
     """
@@ -245,24 +244,9 @@ def main(args=None, **kwargs):
     :return: CspMasterLeafNode TANGO object.
 
     """
-    #return run((CspMasterLeafNode,), args=args, **kwargs)
+    return run((CspMasterLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  CspMasterLeafNode.main
     
-    # Check if standalone mode is enabled
-    try:
-        standalone_mode = os.environ['STANDALONE_MODE'] 
-    except KeyError:
-        standalone_mode = "FALSE" 
-
-    if standalone_mode == "TRUE":
-        ## Get simulator object
-        device_name = "mid_csp/elt/master"
-        csp_master_simulator = get_csp_master_sim(device_name)
-        ret_val = run((CspMasterLeafNode,csp_master_simulator), args=args, **kwargs)
-    else:
-        ret_val = run((CspMasterLeafNode,), args=args, **kwargs)
-
-    return ret_val
-
+    
 if __name__ == "__main__":
     main()

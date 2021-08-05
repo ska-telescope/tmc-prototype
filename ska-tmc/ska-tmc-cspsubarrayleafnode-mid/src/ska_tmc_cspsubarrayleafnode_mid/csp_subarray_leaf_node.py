@@ -554,7 +554,7 @@ def main(args=None, **kwargs):
 
     :return: CspSubarrayLeafNode TANGO object.
 
-    """    
+    """
     return run((CspSubarrayLeafNode,), args=args, **kwargs)
     # PROTECTED REGION END #    //  CspSubarrayLeafNode.main
 
