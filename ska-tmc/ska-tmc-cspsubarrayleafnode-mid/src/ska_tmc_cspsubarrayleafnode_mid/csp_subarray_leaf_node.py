@@ -15,6 +15,7 @@ It also acts as a CSP contact point for Subarray Node for observation execution 
 # Standard python imports
 
 import threading
+import os
 
 # PyTango imports
 import tango
@@ -44,6 +45,7 @@ from .telescope_off_command import TelescopeOff
 from . import const, release
 from .exceptions import InvalidObsStateError
 from .delay_model import DelayManager
+from .cspsubarraysimulator.csp_subarray import csp_subarray_simulator
 
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additional_import
 
@@ -109,7 +111,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
         dtype="str",
         access=AttrWriteType.READ_WRITE,
     )
-
 
     # ---------------
     # General methods
@@ -177,12 +178,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.always_executed_hook) ENABLED START #
-        """ Internal construct of TANGO. """
+        """Internal construct of TANGO."""
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.always_executed_hook
 
     def delete_device(self):
         # PROTECTED REGION ID(CspSubarrayLeafNode.delete_device) ENABLED START #
-        """ Internal construct of TANGO. """
+        """Internal construct of TANGO."""
         self.logger.debug("Exiting.")
         # PROTECTED REGION END #    //  CspSubarrayLeafNode.delete_device
 
@@ -236,7 +237,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
     @command()
     @DebugIt()
     def TelescopeOn(self):
-        """ Invokes TelescopeOn command on cspsubarrayleafnode"""
+        """Invokes TelescopeOn command on cspsubarrayleafnode"""
         handler = self.get_command_object("TelescopeOn")
         handler()
 
@@ -255,11 +256,10 @@ class CspSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("TelescopeOff")
         return handler.check_allowed()
 
-
     @command()
     @DebugIt()
     def TelescopeOff(self):
-        """ Invokes TelescopeOff command on cspsubarrayleafnode"""
+        """Invokes TelescopeOff command on cspsubarrayleafnode"""
         handler = self.get_command_object("TelescopeOff")
         handler()
 
@@ -277,7 +277,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("TelescopeOff")
         return handler.check_allowed()
-
 
     def is_Configure_allowed(self):
         """
@@ -302,7 +301,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
     )
     @DebugIt()
     def Configure(self, argin):
-        """ Invokes Configure command on CspSubarrayLeafNode """
+        """Invokes Configure command on CspSubarrayLeafNode"""
         handler = self.get_command_object("Configure")
         handler(argin)
 
@@ -312,7 +311,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
     )
     @DebugIt()
     def StartScan(self, argin):
-        """ Invokes StartScan command on cspsubarrayleafnode"""
+        """Invokes StartScan command on cspsubarrayleafnode"""
         handler = self.get_command_object("StartScan")
         handler(argin)
 
@@ -349,7 +348,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
     @command()
     @DebugIt()
     def EndScan(self):
-        """ Invokes EndScan command on CspSubarrayLeafNode"""
+        """Invokes EndScan command on CspSubarrayLeafNode"""
         handler = self.get_command_object("EndScan")
         handler()
 
@@ -372,7 +371,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
     @command()
     @DebugIt()
     def ReleaseAllResources(self):
-        """ Invokes ReleaseAllResources command on CspSubarrayLeafNode"""
+        """Invokes ReleaseAllResources command on CspSubarrayLeafNode"""
         handler = self.get_command_object("ReleaseAllResources")
         handler()
 
@@ -396,7 +395,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
     )
     @DebugIt()
     def AssignResources(self, argin):
-        """ Invokes AssignResources command on CspSubarrayLeafNode. """
+        """Invokes AssignResources command on CspSubarrayLeafNode."""
         handler = self.get_command_object("AssignResources")
         try:
             self.validate_obs_state()
@@ -430,7 +429,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
     @command()
     @DebugIt()
     def GoToIdle(self):
-        """ Invokes GoToIdle command on CspSubarrayLeafNode. """
+        """Invokes GoToIdle command on CspSubarrayLeafNode."""
         handler = self.get_command_object("GoToIdle")
         handler()
 
@@ -453,7 +452,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
     @command()
     @DebugIt()
     def Abort(self):
-        """ Invokes Abort command on CspSubarrayLeafNode"""
+        """Invokes Abort command on CspSubarrayLeafNode"""
         handler = self.get_command_object("Abort")
         handler()
 
@@ -475,7 +474,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
     @command()
     @DebugIt()
     def Restart(self):
-        """ Invokes Restart command on cspsubarrayleafnode"""
+        """Invokes Restart command on cspsubarrayleafnode"""
         handler = self.get_command_object("Restart")
         handler()
 
@@ -497,7 +496,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
     @command()
     @DebugIt()
     def ObsReset(self):
-        """ Invokes ObsReset command on cspsubarrayleafnode"""
+        """Invokes ObsReset command on cspsubarrayleafnode"""
         handler = self.get_command_object("ObsReset")
         handler()
 
@@ -555,7 +554,24 @@ def main(args=None, **kwargs):
     :return: CspSubarrayLeafNode TANGO object.
 
     """
-    return run((CspSubarrayLeafNode,), args=args, **kwargs)
+
+    try:
+        standalone_mode = os.environ["STANDALONE_MODE"]
+    except KeyError:
+        standalone_mode = "FALSE"
+
+    if standalone_mode == "TRUE":
+        print("Running in standalone mode")
+        csp_subarray_simulator_list = []
+        csp_subarray_simulator_list.append(csp_subarray_simulator())
+        csp_subarray_simulator_list.append(CspSubarrayLeafNode)
+        ret_val = run(csp_subarray_simulator_list, args=args, **kwargs)
+    else:
+        print("Running in normal mode")
+        ret_val = run(CspSubarrayLeafNode, args=args, **kwargs)
+
+    return ret_val
+
     # PROTECTED REGION END #    //  CspSubarrayLeafNode.main
 
 
