@@ -115,7 +115,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
     # ---------------
     # General methods
     # ---------------
-    
+
     class InitCommand(SKABaseDevice.InitCommand):
         """
         A class for the CspSubarrayLeafNode's init_device() method"

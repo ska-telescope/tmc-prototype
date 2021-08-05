@@ -150,7 +150,7 @@ class OverrideSdpSubarray(object):
         if obs_state == "IDLE":
             set_enum(obsstate_attribute, "RESOURCING", model.time_func())
             sdp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "RESOURCING")
-            tango_dev.push_change_event("obsState", enum_int)
+            tango_dev.push_change_event("obsState", sdp_subarray_obs_state_enum)
             tango_dev.set_status("ObsState in RESOURCING")
             model.logger.info("ObsState trasnitioned to RESOURCING")
 
@@ -169,14 +169,14 @@ class OverrideSdpSubarray(object):
             )
         return [
             [ResultCode.OK],
-            ["Release_all_resources command successful on simulator."],
+            ["Release_resources command successful on simulator."],
         ]
 
     def action_configure(
         self, model, tango_dev=None, data_input=None
     ):  # pylint: disable=W0613
         """Changes the State of the device to ."""
-        _allowed_obs_state = ("IDLE", "READY")
+        _allowed_obsstate = ("IDLE", "READY")
         obsstate_attribute = model.sim_quantities["obsState"]
         obs_state = get_enum_str(obsstate_attribute)
         if obs_state in _allowed_obsstate:

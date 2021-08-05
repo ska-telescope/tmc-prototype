@@ -592,7 +592,7 @@ def main(args=None, **kwargs):
     if standalone_mode == "TRUE":
         print("Running in standalone mode")
         sdp_subarray_simulator_list = []
-        sdp_subarray_simulator_list.append(simulator())
+        sdp_subarray_simulator_list.append(sdp_subarray_simulator())
         sdp_subarray_simulator_list.append(SdpSubarrayLeafNode)
         ret_val = run(sdp_subarray_simulator_list, args=args, **kwargs)
     else:

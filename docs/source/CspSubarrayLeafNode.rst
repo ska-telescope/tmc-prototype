@@ -43,7 +43,7 @@ CSP Subarray Leaf Node
     :members: do
     :undoc-members:
     
-Note: Simulator for cspsubarray device is available. It enables cspsubarray Leaf Node to be deployed
+Note: Simulator for cspsubarray device is available. It enables cspsubarray Leaf Node to be deployed 
 to execute in standalone mode. To run cspsubarray Leaf Node in standalone mode, set STANDALONE_MODE
-environment variable to "TRUE". The cspsubarray simulator device executes inside the cspsubarray Leaf
+environment variable to "TRUE". The cspsubarray simulator device executes inside the cspsubarray Leaf 
 Node device server. As of now the device has to be manually added in tango database.

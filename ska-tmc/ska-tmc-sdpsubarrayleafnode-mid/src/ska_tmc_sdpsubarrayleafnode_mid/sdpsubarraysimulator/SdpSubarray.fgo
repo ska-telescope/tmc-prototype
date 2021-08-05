@@ -268,13 +268,13 @@
             "out_type": "DevVarLongStringArray",
             "out_type_desc": "Uninitialised"
         },
-        "ReleaseAllResources": {
+        "ReleaseResources": {
             "cmd_name": "ReleaseResources",
             "cmd_tag": 0,
             "disp_level": "OPERATOR",
             "in_type": "DevVoid",
             "in_type_desc": "None",
-            "name": "ReleaseAllResources",
+            "name": "ReleaseResources",
             "out_type": "DevVarLongStringArray",
             "out_type_desc": "Uninitialised"
         },
