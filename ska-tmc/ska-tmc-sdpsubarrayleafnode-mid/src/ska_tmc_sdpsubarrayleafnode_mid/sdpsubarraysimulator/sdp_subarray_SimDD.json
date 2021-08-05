@@ -5,7 +5,7 @@
         "override_class": {
           "name": "Sim_sdp_subarray_behaviour",
           "module_directory": "None",
-          "module_name": "sdpsubarrayleafnode.sdpsubarraysimulator.sdp_subarray_behaviour",
+          "module_name": "ska_tmc_sdpsubarrayleafnode_mid.sdpsubarraysimulator.sdp_subarray_behaviour",
           "class_name": "OverrideSdpSubarray"
         }
       }
