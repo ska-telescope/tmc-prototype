@@ -16,7 +16,7 @@ from tango import DevState
 from tango_simlib.tango_sim_generator import (configure_device_models, get_tango_device_server)
 
 # SKA imports
-from ska.logging import configure_logging
+from ska_ser_logging import configure_logging
 
 class OverrideSdpMaster:
     """Test class for sdp master simulator device"""
