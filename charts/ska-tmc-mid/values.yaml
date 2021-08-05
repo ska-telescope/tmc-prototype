@@ -21,6 +21,7 @@ global:
     image: ska-tmc
     tag: 0.8.4
     pullPolicy: IfNotPresent
+    standalone_mode: "TRUE"
 
 
   ##  Order of instances resolution ##
@@ -78,13 +79,13 @@ alarmhandler:
     tag: 0.1.7
     pullPolicy: IfNotPresent
 
-resources:
-  limits:
-    cpu: 300m
-    memory: 500Mi
-  requests:
-    cpu: 100m
-    memory: 128Mi
+# resources:
+#   limits:
+#     cpu: 300m
+#     memory: 500Mi
+#   requests:
+#     cpu: 100m
+#     memory: 128Mi
 
 deviceServers:
   dishmaster:
