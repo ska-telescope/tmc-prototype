@@ -27,12 +27,12 @@ def get_tango_server_class(device_name):
     sim_data_files = []
     sim_data_files.append(
         pkg_resources.resource_filename(
-            "cspsubarrayleafnode.cspsubarraysimulator", "CspSubarray.fgo"
+            "ska_tmc_cspsubarrayleafnode_mid.cspsubarraysimulator", "CspSubarray.fgo"
         )
     )
     sim_data_files.append(
         pkg_resources.resource_filename(
-            "cspsubarrayleafnode.cspsubarraysimulator", "csp_subarray_SimDD.json"
+            "ska_tmc_cspsubarrayleafnode_mid.cspsubarraysimulator", "csp_subarray_SimDD.json"
         )
     )
     # set up Python logging

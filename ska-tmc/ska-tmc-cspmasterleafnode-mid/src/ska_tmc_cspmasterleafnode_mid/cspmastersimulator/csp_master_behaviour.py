@@ -107,12 +107,12 @@ def get_csp_master_sim(device_name):
     sim_data_files = []
     sim_data_files.append(
         pkg_resources.resource_filename(
-            "cspmasterleafnode.cspmastersimulator", "CspMaster.fgo"
+            "ska_tmc_cspmasterleafnode_mid.cspmastersimulator", "CspMaster.fgo"
         )
     )
     sim_data_files.append(
         pkg_resources.resource_filename(
-            "cspmasterleafnode.cspmastersimulator", "csp_master_simDD.json"
+            "ska_tmc_cspmasterleafnode_mid.cspmastersimulator", "csp_master_simDD.json"
         )
     )
 
