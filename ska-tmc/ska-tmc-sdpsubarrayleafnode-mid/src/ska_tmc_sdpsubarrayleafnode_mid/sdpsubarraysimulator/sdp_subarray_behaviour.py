@@ -49,7 +49,7 @@ class OverrideSdpSubarray(object):
         _allowed_modes = (DevState.ON, DevState.STANDBY, DevState.ALARM)
         if tango_dev.get_state() == DevState.OFF:
             model.logger.info("SDP Subarray is already in OFF state")
-            return return [[ResultCode.OK], ["SDP Subarray is already in OFF state"]]
+            return [[ResultCode.OK], ["SDP Subarray is already in OFF state"]]
 
         if tango_dev.get_state() in _allowed_modes:
             tango_dev.set_state(DevState.OFF)

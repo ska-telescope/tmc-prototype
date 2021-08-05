@@ -13,6 +13,7 @@ CSP Master Leaf node monitors the CSP Master and issues control actions during a
 
 # PROTECTED REGION ID(CspMasterLeafNode.import) ENABLED START #
 # Tango imports
+import os
 import tango
 from tango import ApiUtil, DebugIt, AttrWriteType
 from tango.server import run, command, device_property, attribute
@@ -20,14 +21,13 @@ from tango.server import run, command, device_property, attribute
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
-
 from tmc.common.tango_server_helper import TangoServerHelper
-
 from . import const
 from .telescope_on_command import TelescopeOn
 from .telescope_off_command import TelescopeOff
 from .telescope_standby_command import TelescopeStandby
 from .device_data import DeviceData
+from .cspmastersimulator import get_csp_master_sim
 
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
 
