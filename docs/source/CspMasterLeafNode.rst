@@ -18,3 +18,8 @@ CSP Master Leaf Node
 .. autoclass:: ska-tmc.ska-tmc-cspmasterleafnode-mid.src.ska_tmc_cspmasterleafnode_mid.standby_command.Standby
     :members: do
     :undoc-members:
+
+Note: Simulator for CSP Master device is available. It enables CSP Master Leaf Node to be deployed 
+to execute in standalone mode. To run CSP Master Leaf Node in standalone mode, set STANDALONE_MODE
+environment variable to "TRUE". The CSP Master simulator device executes inside the CSP Master Leaf 
+Node device server. As of now the device has to be manually added in tango database
