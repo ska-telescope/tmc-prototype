@@ -18,7 +18,7 @@ global:
   skatmc:
     registry: artefact.skao.int/ska-telescope
     image: ska-tmc
-    tag: 0.8.4
+    tag: 0.8.5
     pullPolicy: IfNotPresent
 
 dsconfig:

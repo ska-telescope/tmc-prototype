@@ -19,8 +19,8 @@ global:
   skatmc:
     registry: artefact.skao.int/ska-telescope
     image: ska-tmc
-    tag: 0.8.4
-    pullPolicy: IfNotPresent
+    tag: 0.8.5-dirty
+    pullPolicy: Never
 
 
   ##  Order of instances resolution ##
@@ -60,16 +60,16 @@ centralnodemid:
   image:
     registry: artefact.skao.int/ska-telescope
     image: ska-tmc-centralnode-mid
-    tag: 0.2.11
-    pullPolicy: IfNotPresent
+    tag: 0.2.12
+    pullPolicy: Never
 
 
 subarraynodemid:
   image:
     registry: artefact.skao.int/ska-telescope
     image: ska-tmc-subarraynode-mid
-    tag: 0.3.4
-    pullPolicy: IfNotPresent
+    tag: 0.3.5
+    pullPolicy: Never
 
 alarmhandler:
   image:
