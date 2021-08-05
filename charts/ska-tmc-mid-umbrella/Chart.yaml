@@ -1,0 +1,41 @@
+apiVersion: v2
+name: ska-tmc-mid-umbrella
+description: An umbrella Helm chart for SKA-TMC-Mid deployment.
+type: application
+version: 0.0.2
+appVersion: 1.16.0
+icon: https://www.skatelescope.org/wp-content/uploads/2016/07/09545_NEW_LOGO_2014.png
+maintainers:
+  - name: Aditya Dange
+    email: adityadange.ska@gmail.com
+  - name: Snehal Nakave
+    email: snehal.ska@gmail.com
+  - name: Kalyani Thigale
+    email: kalyanit.ska@gmail.com
+dependencies:
+- name: ska-tango-base
+  version: 0.2.24
+  repository: https://artefact.skao.int/repository/helm-internal
+- name: ska-tango-util
+  version: 0.2.14
+  repository: https://artefact.skao.int/repository/helm-internal
+- name: ska-mid-cbf
+  version: 0.2.2
+  condition: ska-mid-cbf.enabled,ska-tango-base.enabled
+  repository: https://artefact.skao.int/repository/helm-internal
+- name: ska-csp-lmc-mid
+  version: 0.1.9
+  condition: ska-csp-lmc-mid.enabled,ska-tango-base.enabled
+  repository: https://artefact.skao.int/repository/helm-internal
+- name: ska-sdp
+  version: 0.7.0
+  repository: https://artefact.skao.int/repository/helm-internal
+  condition: ska-sdp.enabled
+- name: ska-tmc-mid
+  version: 0.4.7
+  repository: file://../ska-tmc-mid
+  condition: ska-tmc-mid.enabled
+- name: ska-webjive
+  version: 1.0.24
+  repository: https://artefact.skao.int/repository/helm-internal
+  condition: ska-webjive.enabled

@@ -6,6 +6,6 @@
 Dish Master
 ==================================
 
-.. automodule:: ska-tmc.dishmaster.src.dishmaster.dish_master_behaviour
+.. automodule:: ska-tmc.ska-dish-master-mid.src.ska_dish_master_mid.dish_master_behaviour
    :members:
    :undoc-members:
