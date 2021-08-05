@@ -27,7 +27,7 @@ class OverrideSdpSubarray(object):
         _allowed_modes = (DevState.OFF, DevState.STANDBY)
         if tango_dev.get_state() == DevState.ON:
             model.logger.info("SDP Subarray is already in ON state")
-            return
+            return [[ResultCode.OK], ["SDP Subarray is already in ON state"]]
 
         if tango_dev.get_state() in _allowed_modes:
             tango_dev.set_state(DevState.ON)
@@ -40,6 +40,7 @@ class OverrideSdpSubarray(object):
                 "Not allowed",
                 ErrSeverity.WARN,
             )
+        return [[ResultCode.OK], ["On command successful on simulator."]]
 
     def action_off(
         self, model, tango_dev=None, data_input=None
@@ -47,8 +48,8 @@ class OverrideSdpSubarray(object):
         """Changes the State of the device to OFF."""
         _allowed_modes = (DevState.ON, DevState.STANDBY, DevState.ALARM)
         if tango_dev.get_state() == DevState.OFF:
-            model.logger.info("SDP master is already in OFF state")
-            return
+            model.logger.info("SDP Subarray is already in OFF state")
+            return return [[ResultCode.OK], ["SDP Subarray is already in OFF state"]]
 
         if tango_dev.get_state() in _allowed_modes:
             tango_dev.set_state(DevState.OFF)
@@ -62,6 +63,7 @@ class OverrideSdpSubarray(object):
                 "Not allowed",
                 ErrSeverity.WARN,
             )
+        return [[ResultCode.OK], ["Off command successful on simulator."]]
 
     def action_assignresources(
         self, model, tango_dev=None, data_input=None
