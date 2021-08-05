@@ -185,7 +185,7 @@ Once, the deployment is done, Webjive can be accessed from browser with url:
 **Deployment in standalone mode**
 
 Note: This section is WIP. The simulator work is in progress.
-TMC can be deployed in standalone mode as well. That means, for smaller setup other subsystem devices are not required to be deployed along with TMC. Simulators for the devices which interact with TMC are developed. Currently simulator for SDP Master,CSP Master and CSP Subarray Leaf Node devices are developed. It can be executed within Leaf Node device. To deploy any Leaf Node in standalone mode, an environment variable STANDALONE_MODE should be exported with the value "TRUE".
+TMC can be deployed in standalone mode as well. That means, for smaller setup other subsystem devices are not required to be deployed along with TMC. Simulators for the devices which interact with TMC are developed. Simulator for SDP Master,CSP Master, CSP Subarray and SDP Subarray devices are developed. It can be executed within Leaf Node device. To deploy any Leaf Node in standalone mode, an environment variable STANDALONE_MODE should be exported with the value "TRUE".
 
 ### 4.3.3 Deleting the deployment and clean up
 
