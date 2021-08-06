@@ -6,7 +6,7 @@ from tango_simlib.tango_sim_generator import (
     get_tango_device_server,
 )
 
-from ska.logging import configure_logging
+from ska_ser_logging import configure_logging
 
 
 def get_tango_server_class(device_name):
