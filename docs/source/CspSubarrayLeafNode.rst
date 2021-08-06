@@ -42,7 +42,7 @@ CSP Subarray Leaf Node
 .. autoclass:: ska-tmc.ska-tmc-cspsubarrayleafnode-mid.src.ska_tmc_cspsubarrayleafnode_mid.obsreset_command.ObsResetCommand
     :members: do
     :undoc-members:
-
+    
 Note: Simulator for cspsubarray device is available. It enables cspsubarray Leaf Node to be deployed 
 to execute in standalone mode. To run cspsubarray Leaf Node in standalone mode, set STANDALONE_MODE
 environment variable to "TRUE". The cspsubarray simulator device executes inside the cspsubarray Leaf 

@@ -30,6 +30,12 @@ setup(
     description="A Leaf control node for DishMaster.",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
+    package_data={
+        "": [
+            "sdpsubarraysimulator/sdp_subarray_SimDD.json",
+            "sdpsubarraysimulator/SdpSubarray.fgo",
+        ]
+    },
     include_package_data=True,
     test_suite="test",
     entry_points={
