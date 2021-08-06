@@ -142,6 +142,10 @@ class SdpMasterLeafNode(SKABaseDevice):
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
 
+            standalone_mode = os.environ['STANDALONE_MODE']
+            log_msg = f"standalone_mode: {standalone_mode}"
+            self.logger.debug(log_msg)
+
             self.this_server.write_attr("activityMessage", const.STR_INIT_SUCCESS, False)
             self.logger.info(const.STR_INIT_SUCCESS)
             return (ResultCode.OK, const.STR_INIT_SUCCESS)
@@ -364,7 +368,7 @@ def main(args=None, **kwargs):
         sdp_master_simulator = get_sdp_master_sim(device_name)
         ret_val = run((SdpMasterLeafNode, sdp_master_simulator), args=args, **kwargs)
     else:
-        print("running in standalone mode")
+        print("running in regular mode")
         ret_val = run((SdpMasterLeafNode,), args=args, **kwargs)
 
     return ret_val
