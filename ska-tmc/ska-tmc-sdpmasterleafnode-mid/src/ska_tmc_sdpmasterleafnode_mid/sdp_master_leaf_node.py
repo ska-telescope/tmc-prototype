@@ -353,15 +353,18 @@ def main(args=None, **kwargs):
     # Check if standalone mode is enabled
     try:
         standalone_mode = os.environ['STANDALONE_MODE']
+        print(f"standalone_mode: {standalone_mode}")
     except KeyError:
         standalone_mode = "FALSE"
 
     if standalone_mode == "TRUE":
+        print("running in standalone mode")
         ## Get simulator object
         device_name = "mid_sdp/elt/master"
         sdp_master_simulator = get_sdp_master_sim(device_name)
         ret_val = run((SdpMasterLeafNode, sdp_master_simulator), args=args, **kwargs)
     else:
+        print("running in standalone mode")
         ret_val = run((SdpMasterLeafNode,), args=args, **kwargs)
 
     return ret_val

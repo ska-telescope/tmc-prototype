@@ -26,6 +26,9 @@ global:
       image: ska-tango-images-tango-itango
       tag: 9.3.5
       pullPolicy: IfNotPresent
+  skatmc:
+    standalone_mode: "TRUE"
+
 
 ska-tango-base:
   enabled: false
@@ -40,7 +43,7 @@ ska-tango-base:
 
 ska-webjive:
   enabled: true
-  minikube: false
+  minikube: true
   ingress:
     enabled: true
     nginx: true
@@ -67,7 +70,7 @@ ska-csp-lmc-mid:
 
 ## sdp
 ska-sdp:
-  enabled: true
+  enabled: false
   lmc:
     prefix: mid
     nsubarray: 3
