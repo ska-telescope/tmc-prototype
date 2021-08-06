@@ -13,9 +13,6 @@ from tango import DevState, Except, ErrSeverity
 # Additional import
 from ska.base.commands import ResultCode
 
-# from ska.logging import configure_logging
-
-# configure_logging()
 MODULE_LOGGER = logging.getLogger(__name__)
 
 

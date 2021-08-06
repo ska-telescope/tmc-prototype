@@ -6,9 +6,6 @@ from tango_simlib.tango_sim_generator import (
     get_tango_device_server,
 )
 
-from ska.logging import configure_logging
-
-
 def get_tango_server_class(device_name):
     """Build and return the Tango device class for SdpSubarray
 
@@ -36,7 +33,6 @@ def get_tango_server_class(device_name):
         )
     )
     # set up Python logging
-    configure_logging(tags_filter=TangoDeviceTagsFilter)
     logger_name = f"sdp-subarray-{device_name}"
     logger = logging.getLogger(logger_name)
     logger.info("Logging started for %s.", device_name)
