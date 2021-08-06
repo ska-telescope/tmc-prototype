@@ -12,7 +12,7 @@ from collections import namedtuple
 from tango import DevState, Except, ErrSeverity
 
 # Additional import
-from ska.logging import configure_logging
+from ska_ser_logging import configure_logging
 
 configure_logging()
 MODULE_LOGGER = logging.getLogger(__name__)

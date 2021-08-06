@@ -10,7 +10,7 @@ from ska.base.commands import ResultCode
 
 # Tango import
 from tango import DevState, Except, ErrSeverity
-from ska.logging import configure_logging
+from ska_ser_logging import configure_logging
 from tango_simlib.tango_sim_generator import (
     configure_device_models,
     get_tango_device_server,

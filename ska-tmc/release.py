@@ -8,7 +8,7 @@
 """Release information for Python Package"""
 
 name = """ska-tmc"""
-version = "0.8.4"
+version = "0.8.5"
 version_info = version.split(".")
 description = (
     """A package consisting of Telescope Monitoring and Control Functionalty."""
@@ -16,5 +16,5 @@ description = (
 author = "ncra"
 author_email = ""
 license = """BSD-3-Clause"""
-url = """www.tango-controls.org"""
+url = """https://www.skaobservatory.org"""
 copyright = """"""

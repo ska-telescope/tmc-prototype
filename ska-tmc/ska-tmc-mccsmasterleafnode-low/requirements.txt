@@ -1,4 +1,3 @@
---extra-index-url https://nexus.engageska-portugal.pt/repository/pypi/simple
 numpy == 1.17.2
 pytango >= 9.3.3
 jsonschema >= 3.2.0
@@ -7,4 +6,4 @@ marshmallow
 fire
 ska-tmc-common==0.1.7+d39e6423
 ska-ser-log-transactions
-lmcbaseclasses == 0.7.2
+ska-tango-base == 0.7.2
