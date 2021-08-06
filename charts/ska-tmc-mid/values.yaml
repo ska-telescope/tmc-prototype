@@ -19,8 +19,8 @@ global:
   skatmc:
     registry: artefact.skao.int/ska-telescope
     image: ska-tmc
-    tag: 0.8.3-dirty
-    pullPolicy: Never
+    tag: 0.8.5
+    pullPolicy: IfNotPresent
     standalone_mode: "TRUE"
 
 
@@ -61,7 +61,7 @@ centralnodemid:
   image:
     registry: artefact.skao.int/ska-telescope
     image: ska-tmc-centralnode-mid
-    tag: 0.2.11
+    tag: 0.2.12
     pullPolicy: IfNotPresent
 
 
@@ -69,7 +69,7 @@ subarraynodemid:
   image:
     registry: artefact.skao.int/ska-telescope
     image: ska-tmc-subarraynode-mid
-    tag: 0.3.4
+    tag: 0.3.6
     pullPolicy: IfNotPresent
 
 alarmhandler:
