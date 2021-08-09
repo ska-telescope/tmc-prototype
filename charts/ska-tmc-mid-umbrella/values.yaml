@@ -40,19 +40,19 @@ ska-tango-base:
 
 ska-webjive:
   enabled: true
-  minikube: false
+  minikube: true
   ingress:
     enabled: true
     nginx: true
   tangogql:
     replicas: 3
-    resources:
-      requests:
-        cpu: 600m     # 600m = 0.6 CPU
-        memory: 512Mi # 512Mi = 0.5 GB mem
-      limits:
-        cpu: 1000m     # 1000m = 1 CPU
-        memory: 1024Mi # 1024Mi = 1 GB mem
+    # resources:
+    #   requests:
+    #     cpu: 600m     # 600m = 0.6 CPU
+    #     memory: 512Mi # 512Mi = 0.5 GB mem
+    #   limits:
+    #     cpu: 1000m     # 1000m = 1 CPU
+    #     memory: 1024Mi # 1024Mi = 1 GB mem
 
 
 ska-mid-cbf:
@@ -67,7 +67,7 @@ ska-csp-lmc-mid:
 
 ## sdp
 ska-sdp:
-  enabled: true
+  enabled: false
   lmc:
     prefix: mid
     nsubarray: 3

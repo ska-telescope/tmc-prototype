@@ -40,3 +40,6 @@ image:
   image: "{{.Values.global.skatmc.image}}"
   tag: "{{.Values.global.skatmc.tag}}"
   pullPolicy: "{{.Values.global.skatmc.pullPolicy}}"
+environment_variables:
+  - name: STANDALONE_MODE
+    value: "'TRUE'"
