@@ -37,8 +37,41 @@ server:
                   properties:
                     - name: "abs_change"
                       values:
-                        - "-1"
+                        - "-1"x
                         - "1"
+        {{if (.Values.global.skatmc.standalone_mode true)}}
+        - name: "SdpSubarray"
+          devices:
+            - name: "ska_mid/sdp_subarray{{ . }}"
+              properties:
+                - name: "SdpSubarrayFQDN"
+                  values:
+                    - "mid_sdp/elt/subarray_{{ (split "0" .)._1}}"
+                - name: "SkaLevel"
+                  values:
+                    - "3"
+                - name: "LoggingTargetsDefault"
+                  values:
+                    - "tango::logger"
+                - name: "LoggingLevelDefault"
+                  values:
+                    - "5"
+                - name: "polled_attr"
+                  values:
+                    - "healthstate"
+                    - "1000"
+                    - "receiveAddresses"
+                    - "1000"
+              attribute_properties:
+                - attribute: "healthState"
+                  properties:
+                    - name: "abs_change"
+                      values:
+                        - "-1"x
+                        - "1" 
+
+        {{- end }}
+
   {{- end }}
 depends_on:
   - device: sys/database/2
@@ -47,3 +80,7 @@ image:
   image: "{{.Values.global.skatmc.image}}"
   tag: "{{.Values.global.skatmc.tag}}"
   pullPolicy: "{{.Values.global.skatmc.pullPolicy}}"
+env:
+  - name: STANDALONE_MODE
+    value: "{{.Values.global.skatmc.standalone_mode}}"
+
