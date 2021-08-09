@@ -21,7 +21,6 @@ global:
     image: ska-tmc
     tag: 0.8.5-dirty
     pullPolicy: Never
-    standalone_mode: "TRUE"
 
 
   ##  Order of instances resolution ##
