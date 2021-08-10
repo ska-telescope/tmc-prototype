@@ -13,7 +13,10 @@ import logging
 
 # Tango imports
 from tango import DevState
+from tango import Database, DbDevInfo
+
 from tango_simlib.tango_sim_generator import (configure_device_models, get_tango_device_server)
+from tango_simlib.utilities.helper_module import get_server_name
 
 # SKA imports
 from ska_ser_logging import configure_logging
@@ -40,6 +43,22 @@ class OverrideSdpMaster:
         tango_dev.set_status("Device put to standby mode successfully.")
 
 
+def _register_sim_device(device_name):
+    """Registers simulator device in tango database
+    :params: 
+        device_name: String. Name of the Sdp master device
+    :return: None
+    """
+
+    dev_info = DbDevInfo()
+    dev_info._class = "SdpMaster"
+    dev_info.name = device_name
+    dev_info.server = get_server_name()
+
+    db = Database()
+    db.add_device(dev_info)
+
+
 def get_sdp_master_sim(device_name):
     """Create and return the Tango device class for Sdp Master device
     :params: 
@@ -48,17 +67,24 @@ def get_sdp_master_sim(device_name):
     The Tango device class for Sdp Master
     """
 
+    logger_name = f"sdp-master-{device_name}"
+    logger = logging.getLogger(logger_name)
+
+    ## Register simulator device
+    log_msg=f"registering device: {device_name}"
+    logger.info(log_msg)
+    _register_sim_device(device_name)
+
+    ## Create Simulator
     sim_data_files = []
     sim_data_files.append(
-        pkg_resources.resource_filename("sdpmasterleafnode.simulator", "sdp_master.fgo")
+        pkg_resources.resource_filename("ska_tmc_sdpmasterleafnode_mid.simulator", "sdp_master.fgo")
     )
     sim_data_files.append(
-        pkg_resources.resource_filename("sdpmasterleafnode.simulator", "sdp_master_sim_dd.json")
+        pkg_resources.resource_filename("ska_tmc_sdpmasterleafnode_mid.simulator", "sdp_master_sim_dd.json")
     )
     # add a filter with this device's name
-    device_name = "mid_sdp/elt/master"
     device_name_tag = f"tango-device:{device_name}"
-
     class TangoDeviceTagsFilter(logging.Filter):
         def filter(self, record):
             record.tags = device_name_tag
