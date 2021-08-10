@@ -107,7 +107,7 @@ class CspMasterLeafNode(SKABaseDevice):
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
 
-            tandalone_mode = os.environ.get('STANDALONE_MODE')
+            standalone_mode = os.environ.get('STANDALONE_MODE')
             log_msg = f"standalone_mode: {standalone_mode}"
             self.logger.debug(log_msg)
 
