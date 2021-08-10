@@ -359,9 +359,9 @@ def main(args=None, **kwargs):
         standalone_mode = os.environ.get('STANDALONE_MODE')
         print(f"standalone_mode: {standalone_mode}")
     except KeyError:
-        standalone_mode = "FALSE"
+        standalone_mode = "false"
 
-    if standalone_mode == "TRUE":
+    if standalone_mode == "true":
         print("running in standalone mode")
         ## Get simulator object
         device_name = "mid_sdp/elt/master"
