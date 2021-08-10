@@ -3,7 +3,7 @@ MINIKUBE ?= true## Minikube or not
 MARK ?= all
 TANGO_DATABASE_DS ?= tango-host-databaseds-from-makefile-$(RELEASE_NAME) ## Stable name for the Tango DB
 TANGO_HOST ?= $(TANGO_DATABASE_DS):10000## TANGO_HOST is an input!
-STANDALONE_MODE ?= "FALSE"
+STANDALONE_MODE ?= false
 
 CHARTS ?= ska-tmc-mid ska-tmc-low ska-tmc-mid-umbrella ska-tmc-low-umbrella ## list of charts to be published on gitlab -- umbrella charts for testing purpose
 

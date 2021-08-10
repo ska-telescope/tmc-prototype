@@ -14,6 +14,8 @@ It also acts as a SDP contact point for Subarray Node for observation execution.
 """
 # PROTECTED REGION ID(sdpsubarrayleafnode.additionnal_import) ENABLED START #
 # Third party imports
+import os
+
 # PyTango imports
 import tango
 import threading
@@ -42,6 +44,7 @@ from .telescope_on_command import TelescopeOn
 from .telescope_off_command import TelescopeOff
 from .device_data import DeviceData
 from .exceptions import InvalidObsStateError
+from .sdpsubarraysimulator.sdp_subarray import sdp_subarray_simulator
 
 
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
@@ -160,6 +163,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
+
+            standalone_mode = os.environ.get('STANDALONE_MODE')
+            log_msg = f"standalone_mode: {standalone_mode}"
+            self.logger.debug(log_msg)
+
             self.this_server.write_attr("activityMessage", const.STR_SDPSALN_INIT_SUCCESS, False)
             # Initialise Device status
             device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
@@ -581,7 +589,23 @@ def main(args=None, **kwargs):
     :return: SdpSubarrayLeafNode TANGO object
 
     """
-    return run((SdpSubarrayLeafNode,), args=args, **kwargs)
+    try:
+        standalone_mode = os.environ.get('STANDALONE_MODE')
+        print(f"standalone_mode: {standalone_mode}")
+    except KeyError:
+        standalone_mode = "false"
+           
+    if standalone_mode == "true":
+        print("Running in standalone mode")
+        sdp_subarray_simulator_list = []
+        sdp_subarray_simulator_list.append(sdp_subarray_simulator())
+        sdp_subarray_simulator_list.append(SdpSubarrayLeafNode)
+        ret_val = run(sdp_subarray_simulator_list, args=args, **kwargs)
+    else:
+        print("Running in normal mode")
+        ret_val = run(SdpSubarrayLeafNode, args=args, **kwargs)
+
+    return ret_val
     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.main
 
 

@@ -174,6 +174,11 @@ class CspSubarrayLeafNode(SKABaseDevice):
             this_server.write_attr(
                 "activityMessage", const.STR_CSPSALN_INIT_SUCCESS, False
             )
+
+            standalone_mode = os.environ.get('STANDALONE_MODE')
+            log_msg = f"standalone_mode: {standalone_mode}"
+            self.logger.debug(log_msg)
+
             self.logger.info(const.STR_CSPSALN_INIT_SUCCESS)
             return (ResultCode.OK, const.STR_CSPSALN_INIT_SUCCESS)
 
@@ -557,11 +562,12 @@ def main(args=None, **kwargs):
     """
 
     try:
-        standalone_mode = os.environ["STANDALONE_MODE"]
+        standalone_mode = os.environ.get('STANDALONE_MODE')
+        print(f"standalone_mode: {standalone_mode}")
     except KeyError:
-        standalone_mode = "FALSE"
+        standalone_mode = "false"
 
-    if standalone_mode == "TRUE":
+    if standalone_mode == "true":
         print("Running in standalone mode")
         csp_subarray_simulator_list = []
         csp_subarray_simulator_list.append(csp_subarray_simulator())

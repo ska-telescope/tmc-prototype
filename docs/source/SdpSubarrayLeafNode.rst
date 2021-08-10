@@ -42,3 +42,7 @@ SDP Subarray Leaf Node
 .. autoclass:: ska-tmc.ska-tmc-sdpsubarrayleafnode-mid.src.ska_tmc_sdpsubarrayleafnode_mid.scan_command.Scan
     :members: do
     :undoc-members:
+Note: Simulator for SDP Subarray device is available. It enables SDP Subarray Leaf Node to be deployed 
+to execute in standalone mode. To run SDP Subarray Leaf Node in standalone mode, set STANDALONE_MODE
+environment variable to "TRUE". The SDP Subarray simulator device executes inside the SDP Subarray Leaf 
+Node device server. As of now the device has to be manually added in tango database.
