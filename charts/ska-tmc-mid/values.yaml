@@ -68,7 +68,7 @@ subarraynodemid:
   image:
     registry: artefact.skao.int/ska-telescope
     image: ska-tmc-subarraynode-mid
-    tag: 0.3.6
+    tag: 0.3.7
     pullPolicy: IfNotPresent
 
 alarmhandler:
