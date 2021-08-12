@@ -56,18 +56,18 @@ ska-webjive:
 
 
 ska-mid-cbf:
-  enabled: true
+  enabled: false
   ska-tango-base: 
     enabled: false
 
 ska-csp-lmc-mid:
-  enabled: true
+  enabled: false
   ska-tango-base: 
     enabled: false
 
 ## sdp
 ska-sdp:
-  enabled: true
+  enabled: false
   lmc:
     prefix: mid
     nsubarray: 3
