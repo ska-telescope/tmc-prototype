@@ -163,6 +163,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
+
+            standalone_mode = os.environ.get('STANDALONE_MODE')
+            log_msg = f"standalone_mode: {standalone_mode}"
+            self.logger.debug(log_msg)
+
             self.this_server.write_attr("activityMessage", const.STR_SDPSALN_INIT_SUCCESS, False)
             # Initialise Device status
             device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
@@ -585,11 +590,12 @@ def main(args=None, **kwargs):
 
     """
     try:
-        standalone_mode = os.environ['STANDALONE_MODE']
+        standalone_mode = os.environ.get('STANDALONE_MODE')
+        print(f"standalone_mode: {standalone_mode}")
     except KeyError:
-        standalone_mode = "FALSE"
+        standalone_mode = "false"
            
-    if standalone_mode == "TRUE":
+    if standalone_mode == "true":
         print("Running in standalone mode")
         sdp_subarray_simulator_list = []
         sdp_subarray_simulator_list.append(sdp_subarray_simulator())

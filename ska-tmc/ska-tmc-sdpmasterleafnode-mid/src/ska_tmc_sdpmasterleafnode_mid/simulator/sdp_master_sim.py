@@ -13,7 +13,11 @@ import logging
 
 # Tango imports
 from tango import DevState
+from tango import Database, DbDevInfo
+
 from tango_simlib.tango_sim_generator import (configure_device_models, get_tango_device_server)
+from tango_simlib.utilities.helper_module import get_server_name
+from tango_simlib.tango_launcher import register_device
 
 # SKA imports
 from ska_ser_logging import configure_logging
@@ -48,17 +52,27 @@ def get_sdp_master_sim(device_name):
     The Tango device class for Sdp Master
     """
 
+    logger_name = f"sdp-master-{device_name}"
+    logger = logging.getLogger(logger_name)
+
+    ## Register simulator device
+    log_msg=f"registering device: {device_name}"
+    logger.info(log_msg)
+    server_name, instance = get_server_name().split("/")
+    log_msg = f"server name: {server_name}, instance {instance}"
+    logger.info(log_msg)
+    register_device(device_name, "SdpMaster", server_name, instance, Database())
+
+    ## Create Simulator
     sim_data_files = []
     sim_data_files.append(
-        pkg_resources.resource_filename("sdpmasterleafnode.simulator", "sdp_master.fgo")
+        pkg_resources.resource_filename("ska_tmc_sdpmasterleafnode_mid.simulator", "sdp_master.fgo")
     )
     sim_data_files.append(
-        pkg_resources.resource_filename("sdpmasterleafnode.simulator", "sdp_master_sim_dd.json")
+        pkg_resources.resource_filename("ska_tmc_sdpmasterleafnode_mid.simulator", "sdp_master_sim_dd.json")
     )
     # add a filter with this device's name
-    device_name = "mid_sdp/elt/master"
     device_name_tag = f"tango-device:{device_name}"
-
     class TangoDeviceTagsFilter(logging.Filter):
         def filter(self, record):
             record.tags = device_name_tag

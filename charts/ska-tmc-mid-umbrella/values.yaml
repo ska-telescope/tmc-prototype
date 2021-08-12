@@ -40,7 +40,7 @@ ska-tango-base:
 
 ska-webjive:
   enabled: true
-  minikube: false
+  minikube: true
   ingress:
     enabled: true
     nginx: true

@@ -107,6 +107,10 @@ class CspMasterLeafNode(SKABaseDevice):
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
 
+            standalone_mode = os.environ.get('STANDALONE_MODE')
+            log_msg = f"standalone_mode: {standalone_mode}"
+            self.logger.debug(log_msg)
+
             this_device.write_attr("activityMessage", const.STR_INIT_SUCCESS, False)
             self.logger.info(const.STR_INIT_SUCCESS)
             return (ResultCode.OK, const.STR_INIT_SUCCESS)
@@ -248,11 +252,12 @@ def main(args=None, **kwargs):
 
     # Check if standalone mode is enabled
     try:
-        standalone_mode = os.environ["STANDALONE_MODE"]
+        standalone_mode = os.environ.get('STANDALONE_MODE')
+        print(f"standalone_mode: {standalone_mode}")
     except KeyError:
-        standalone_mode = "FALSE"
+        standalone_mode = "false"
 
-    if standalone_mode == "TRUE":
+    if standalone_mode == "true":
         ## Get simulator object
         device_name = "mid_csp/elt/master"
         csp_master_simulator = get_csp_master_sim(device_name)

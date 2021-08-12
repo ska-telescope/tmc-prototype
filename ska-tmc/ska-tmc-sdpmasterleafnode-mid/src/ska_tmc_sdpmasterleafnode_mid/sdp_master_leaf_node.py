@@ -101,6 +101,10 @@ class SdpMasterLeafNode(SKABaseDevice):
         A class for the SDP master's init_device() method"
         """
 
+        def dev_callback(self, device_name):
+            log_msg = f"Device created: {device_name}"
+            self.logger.debug(log_msg)
+
         def do(self):
             """
             Initializes the attributes and properties of the SdpMasterLeafNode.
@@ -126,7 +130,6 @@ class SdpMasterLeafNode(SKABaseDevice):
             device.attr_map["versionInfo"]=""
             device.attr_map["activityMessage"]=""
             device.attr_map["ProcessingBlockList"]= "test"
-
 
             device._health_state = HealthState.OK  # Setting healthState to "OK"
             device._simulation_mode = (
@@ -349,19 +352,23 @@ class SdpMasterLeafNode(SKABaseDevice):
 
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(SdpMasterLeafNode.main) ENABLED START #
-
     # Check if standalone mode is enabled
     try:
-        standalone_mode = os.environ['STANDALONE_MODE']
+        standalone_mode = os.environ.get('STANDALONE_MODE')
+        print(f"standalone_mode: {standalone_mode}")
     except KeyError:
-        standalone_mode = "FALSE"
+        standalone_mode = "false"
 
-    if standalone_mode == "TRUE":
+    if standalone_mode == "true":
+        print("Running in standalone mode")
         ## Get simulator object
         device_name = "mid_sdp/elt/master"
         sdp_master_simulator = get_sdp_master_sim(device_name)
+
+        # Run server
         ret_val = run((SdpMasterLeafNode, sdp_master_simulator), args=args, **kwargs)
     else:
+        print("Running in regular mode")
         ret_val = run((SdpMasterLeafNode,), args=args, **kwargs)
 
     return ret_val
