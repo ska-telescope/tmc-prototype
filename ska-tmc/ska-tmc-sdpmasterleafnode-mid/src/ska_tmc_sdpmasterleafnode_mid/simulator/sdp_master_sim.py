@@ -17,6 +17,7 @@ from tango import Database, DbDevInfo
 
 from tango_simlib.tango_sim_generator import (configure_device_models, get_tango_device_server)
 from tango_simlib.utilities.helper_module import get_server_name
+from tango_simlib.tango_launcher import register_device
 
 # SKA imports
 from ska_ser_logging import configure_logging
@@ -43,22 +44,6 @@ class OverrideSdpMaster:
         tango_dev.set_status("Device put to standby mode successfully.")
 
 
-def _register_sim_device(device_name):
-    """Registers simulator device in tango database
-    :params: 
-        device_name: String. Name of the Sdp master device
-    :return: None
-    """
-
-    dev_info = DbDevInfo()
-    dev_info._class = "SdpMaster"
-    dev_info.name = device_name
-    dev_info.server = get_server_name()
-
-    db = Database()
-    db.add_device(dev_info)
-
-
 def get_sdp_master_sim(device_name):
     """Create and return the Tango device class for Sdp Master device
     :params: 
@@ -73,7 +58,10 @@ def get_sdp_master_sim(device_name):
     ## Register simulator device
     log_msg=f"registering device: {device_name}"
     logger.info(log_msg)
-    _register_sim_device(device_name)
+    server_name, instance = get_server_name().split("/")
+    log_msg = f"server name: {server_name}, instance {instance}"
+    logger.info(log_msg)
+    register_device(device_name, "SdpMaster", server_name, instance, Database())
 
     ## Create Simulator
     sim_data_files = []
