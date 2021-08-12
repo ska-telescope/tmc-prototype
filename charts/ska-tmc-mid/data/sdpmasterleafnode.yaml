@@ -42,4 +42,4 @@ image:
   pullPolicy: "{{.Values.global.skatmc.pullPolicy}}"
 environment_variables:
   - name: STANDALONE_MODE
-    value: "'{{.Values.global.skatmc.standalone_mode}}'"
+    value: "'{{.Values.global.standalone_mode}}'"

@@ -21,7 +21,6 @@ global:
     image: ska-tmc
     tag: 0.8.5
     pullPolicy: IfNotPresent
-    standalone_mode: "true"
 
 
   ##  Order of instances resolution ##
@@ -41,8 +40,12 @@ global:
     - "sdpsubarrayleafnode"
     - "subarraynode"
   subarray_count: 3
+  
+  ## Decide deployment mode of TMC. if standalone_mode is set to "true", then simulators for subsystem devices 
+  # are deployed. If the value is "false", then simulators are not deployed.
+  standalone_mode: "true"
 
-dsconfig:
+  dsconfig:
   configuration_file: data/tmc-mid-config.json
   image:
     registry: artefact.skao.int

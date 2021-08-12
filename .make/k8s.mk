@@ -94,7 +94,7 @@ install-chart: dep-up namespace namespace_sdp ## install the helm chart with nam
 	--set global.tango_host=$(TANGO_HOST) \
 	--set tangoDatabaseDS=$(TANGO_DATABASE_DS) \
 	--set ska-sdp.helmdeploy.namespace=$(SDP_KUBE_NAMESPACE) \
-	--set global.skatmc.standalone_mode=$(STANDALONE_MODE) \
+	--set global.standalone_mode=$(STANDALONE_MODE) \
 	--values values.yaml $(CUSTOM_VALUES) \
 	 $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE); \
 	 rm generated_values.yaml; \
