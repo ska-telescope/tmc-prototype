@@ -2,8 +2,9 @@ name: "cspmasterleafnode-{{.Release.Name}}"
 function: csp-monitoring
 domain: general-monitoring
 instances: ["01"]
-entrypoints:
-  - name: "ska_tmc_cspmasterleafnode_mid.csp_master_leaf_node.CspMasterLeafNode"
+command: "CspMasterLeafNodeDS 01"
+# entrypoints:
+#   - name: "ska_tmc_cspmasterleafnode_mid.csp_master_leaf_node.CspMasterLeafNode"
 server:
   name: "CspMasterLeafNodeDS"
   instances:

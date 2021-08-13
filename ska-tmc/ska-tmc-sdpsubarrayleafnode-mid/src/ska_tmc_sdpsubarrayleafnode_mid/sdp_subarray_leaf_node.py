@@ -590,7 +590,7 @@ def main(args=None, **kwargs):
 
     """
     try:
-        standalone_mode = os.environ.get('STANDALONE_MODE')
+        standalone_mode = os.environ['STANDALONE_MODE']
         print(f"standalone_mode: {standalone_mode}")
     except KeyError:
         standalone_mode = "false"
