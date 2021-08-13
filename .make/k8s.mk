@@ -3,7 +3,7 @@ MINIKUBE ?= true## Minikube or not
 MARK ?= all
 TANGO_DATABASE_DS ?= tango-host-databaseds-from-makefile-$(RELEASE_NAME) ## Stable name for the Tango DB
 TANGO_HOST ?= $(TANGO_DATABASE_DS):10000## TANGO_HOST is an input!
-# STANDALONE_MODE ?= false
+STANDALONE_MODE ?= false
 
 CHARTS ?= ska-tmc-mid ska-tmc-low ska-tmc-mid-umbrella ska-tmc-low-umbrella ## list of charts to be published on gitlab -- umbrella charts for testing purpose
 
@@ -93,13 +93,13 @@ install-chart: dep-up namespace namespace_sdp ## install the helm chart with nam
 	--set global.minikube=$(MINIKUBE) \
 	--set global.tango_host=$(TANGO_HOST) \
 	--set tangoDatabaseDS=$(TANGO_DATABASE_DS) \
+	--set global.standalone_mode=$(STANDALONE_MODE) \
 	--set ska-sdp.helmdeploy.namespace=$(SDP_KUBE_NAMESPACE) \
 	--values values.yaml $(CUSTOM_VALUES) \
 	 $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE); \
 	 rm generated_values.yaml; \
 	 rm values.yaml
 
-# --set global.standalone_mode=$(STANDALONE_MODE)
 # A Custom deployment
 # Default settings:
 #   CUSTOM_DISHES_LIST ?= {01}

@@ -2,8 +2,9 @@ name: "cspsubarayleafnode-{{.Release.Name}}"
 function: observation-execution
 domain: subarray
 instances: ["01", "02", "03"]
-entrypoints:
-  - name: "ska_tmc_cspsubarrayleafnode_mid.csp_subarray_leaf_node.CspSubarrayLeafNode"
+command: "CspSubarrayLeafNodeDS 01"
+# entrypoints:
+#   - name: "ska_tmc_cspsubarrayleafnode_mid.csp_subarray_leaf_node.CspSubarrayLeafNode"
 server:
   name: "CspSubarrayLeafNodeDS"
   instances:

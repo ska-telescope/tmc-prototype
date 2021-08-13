@@ -120,10 +120,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
         """
         A class for the CspSubarrayLeafNode's init_device() method"
         """
-        def dev_callback(self, device_name):
-            log_msg = f"Device created: {device_name}"
-            self.logger.debug(log_msg) kbmo;p0[nu-]
-
         def do(self):
             """
             Initializes the attributes and properties of the CspSubarrayLeafNode.
@@ -565,7 +561,7 @@ def main(args=None, **kwargs):
     """
 
     try:
-        standalone_mode = os.environ('STANDALONE_MODE')
+        standalone_mode = os.environ['STANDALONE_MODE']
         print(f"standalone_mode: {standalone_mode}")
     except KeyError:
         standalone_mode = "false"

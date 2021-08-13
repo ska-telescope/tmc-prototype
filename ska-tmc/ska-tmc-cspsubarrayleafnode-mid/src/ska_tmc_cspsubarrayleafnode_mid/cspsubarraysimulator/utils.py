@@ -20,9 +20,10 @@ def get_tango_server_class(device_name):
     :return CspSubarray: tango.server.Device
         The Tango device class for CspSubarray
     """
-    
-    logger_name = f"csp-master-{device_name}"
+    # set up Python logging
+    logger_name = f"csp-subarray-{device_name}"
     logger = logging.getLogger(logger_name)
+    logger.info("Logging started for %s.", device_name)
 
     ## Register simulator device
     log_msg=f"registering device: {device_name}"
@@ -30,14 +31,8 @@ def get_tango_server_class(device_name):
     server_name, instance = get_server_name().split("/")
     log_msg = f"server name: {server_name}, instance {instance}"
     logger.info(log_msg)
-    register_device(device_name, "CspMaster", server_name, instance, Database())
-    
-    device_name_tag = f"tango-device:{device_name}"
-
-    class TangoDeviceTagsFilter(logging.Filter):
-        def filter(self, record):
-            record.tags = device_name_tag
-            return True
+    register_device(device_name, "CspSubarray", server_name, instance, Database())
+   
 
     sim_data_files = []
     sim_data_files.append(
@@ -50,11 +45,17 @@ def get_tango_server_class(device_name):
             "ska_tmc_cspsubarrayleafnode_mid.cspsubarraysimulator", "csp_subarray_SimDD.json"
         )
     )
-    # set up Python logging
-    configure_logging(tags_filter=TangoDeviceTagsFilter)
-    logger_name = f"csp-subarray-{device_name}"
-    logger = logging.getLogger(logger_name)
-    logger.info("Logging started for %s.", device_name)
+    
+    # Add a filter with this device name
+    device_name_tag = f"tango-device:{device_name}"
+
+    class TangoDeviceTagsFilter(logging.Filter):
+        def filter(self, record):
+            record.tags = device_name_tag
+            return True
+
+    configure_logging(tags_filter=TangoDeviceTagsFilter)    
+    
     configure_args = {"logger": logger}
     # test/nodb/cspsubarray is used for testing
     if device_name == "test/nodb/cspsubarray":
