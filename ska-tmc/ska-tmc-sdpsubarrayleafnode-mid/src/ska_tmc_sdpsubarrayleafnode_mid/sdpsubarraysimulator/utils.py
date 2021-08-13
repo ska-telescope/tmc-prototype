@@ -29,7 +29,7 @@ def get_tango_server_class(device_name):
     server_name, instance = get_server_name().split("/")
     log_msg = f"server name: {server_name}, instance {instance}"
     logger.info(log_msg)
-    register_device(device_name, "CspSubarray", server_name, instance, Database())
+    register_device(device_name, "SdpSubarray", server_name, instance, Database())
     
 
     sim_data_files = []
@@ -46,7 +46,7 @@ def get_tango_server_class(device_name):
     
     # Add a filter with this device name
     device_name_tag = f"tango-device:{device_name}"
-    
+
     class TangoDeviceTagsFilter(logging.Filter):
         def filter(self, record):
             record.tags = device_name_tag

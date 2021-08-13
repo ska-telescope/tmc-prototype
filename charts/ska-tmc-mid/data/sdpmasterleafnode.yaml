@@ -2,7 +2,7 @@ name: "sdpmasterleafnode-{{.Release.Name}}"
 function: observation-execution
 domain: subarray
 instances: ["01"]
-command: "SdpMasterLeafNodeDS 01" 
+command: "SdpMasterLeafNodeDS" 
 # entrypoints:
 #   - name: "ska_tmc_sdpmasterleafnode_mid.sdp_master_leaf_node.SdpMasterLeafNode"
 server:
