@@ -45,7 +45,7 @@ global:
   # are deployed. If the value is "false", then simulators are not deployed.
   standalone_mode: "true"
 
-  dsconfig:
+dsconfig:
   configuration_file: data/tmc-mid-config.json
   image:
     registry: artefact.skao.int

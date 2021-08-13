@@ -62,7 +62,7 @@ def get_sdp_master_sim(device_name):
     log_msg = f"server name: {server_name}, instance {instance}"
     logger.info(log_msg)
     register_device(device_name, "SdpMaster", server_name, instance, Database())
-
+    
     ## Create Simulator
     sim_data_files = []
     sim_data_files.append(
