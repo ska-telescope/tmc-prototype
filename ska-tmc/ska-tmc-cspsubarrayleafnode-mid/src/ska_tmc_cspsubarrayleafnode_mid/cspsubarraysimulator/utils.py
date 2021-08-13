@@ -7,6 +7,9 @@ from tango_simlib.tango_sim_generator import (
 )
 
 from ska_ser_logging import configure_logging
+from tango import Database, DbDevInfo
+from tango_simlib.utilities.helper_module import get_server_name
+from tango_simlib.tango_launcher import register_device
 
 
 def get_tango_server_class(device_name):
@@ -17,6 +20,18 @@ def get_tango_server_class(device_name):
     :return CspSubarray: tango.server.Device
         The Tango device class for CspSubarray
     """
+    
+    logger_name = f"csp-master-{device_name}"
+    logger = logging.getLogger(logger_name)
+
+    ## Register simulator device
+    log_msg=f"registering device: {device_name}"
+    logger.info(log_msg)
+    server_name, instance = get_server_name().split("/")
+    log_msg = f"server name: {server_name}, instance {instance}"
+    logger.info(log_msg)
+    register_device(device_name, "CspMaster", server_name, instance, Database())
+    
     device_name_tag = f"tango-device:{device_name}"
 
     class TangoDeviceTagsFilter(logging.Filter):

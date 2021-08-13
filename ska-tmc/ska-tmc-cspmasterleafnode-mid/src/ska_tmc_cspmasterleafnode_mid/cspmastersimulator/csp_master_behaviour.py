@@ -9,7 +9,9 @@ import logging
 from ska.base.commands import ResultCode
 
 # Tango import
-from tango import DevState, Except, ErrSeverity
+from tango import DevState, Except, ErrSeverity, Database, DbDevInfo
+from tango_simlib.utilities.helper_module import get_server_name
+from tango_simlib.tango_launcher import register_device
 from ska_ser_logging import configure_logging
 from tango_simlib.tango_sim_generator import (
     configure_device_models,
@@ -104,6 +106,18 @@ def get_csp_master_sim(device_name):
     :return: tango.server.Device
     The Tango device class for csp Master
     """
+    
+    logger_name = f"sdp-master-{device_name}"
+    logger = logging.getLogger(logger_name)
+    
+    ## Register simulator device
+    log_msg=f"registering device: {device_name}"
+    logger.info(log_msg)
+    server_name, instance = get_server_name().split("/")
+    log_msg = f"server name: {server_name}, instance {instance}"
+    logger.info(log_msg)
+    register_device(device_name, "CspMaster", server_name, instance, Database())
+
     sim_data_files = []
     sim_data_files.append(
         pkg_resources.resource_filename(

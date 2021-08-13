@@ -144,7 +144,10 @@ class SdpMasterLeafNode(SKABaseDevice):
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
-
+            standalone_mode = os.environ['STANDALONE_MODE']
+            print(f"standalone_mode: {standalone_mode}")
+            tango_host = os.environ.get('TANGO_HOST')
+            print(f"value of tango host:{tango_host}")
             self.this_server.write_attr("activityMessage", const.STR_INIT_SUCCESS, False)
             self.logger.info(const.STR_INIT_SUCCESS)
             return (ResultCode.OK, const.STR_INIT_SUCCESS)
@@ -353,10 +356,12 @@ class SdpMasterLeafNode(SKABaseDevice):
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(SdpMasterLeafNode.main) ENABLED START #
     # Check if standalone mode is enabled
+    print("Entering in main:::::::::::::::::::::::")
     try:
-        standalone_mode = os.environ.get('STANDALONE_MODE')
+        standalone_mode = os.environ['STANDALONE_MODE']
         print(f"standalone_mode: {standalone_mode}")
-    except KeyError:
+    except:
+        print("Entering in Keyerror:::::::::::::::::::::::")
         standalone_mode = "false"
 
     if standalone_mode == "true":

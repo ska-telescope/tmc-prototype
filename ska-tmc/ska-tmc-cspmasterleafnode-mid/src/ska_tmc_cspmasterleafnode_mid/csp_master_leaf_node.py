@@ -81,6 +81,11 @@ class CspMasterLeafNode(SKABaseDevice):
         A class for the TMC CSP Master Leaf Node's init_device() method.
         """
 
+        def dev_callback(self, device_name):
+            log_msg = f"Device created: {device_name}"
+            self.logger.debug(log_msg)
+
+        
         def do(self):
             """
             Initializes the attributes and properties of the CspMasterLeafNode.
