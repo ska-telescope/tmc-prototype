@@ -431,7 +431,7 @@ test-mid:
      - make install-chart MINIKUBE=false
      - make wait
      - make smoketest
-     - make test MARK=snehal COUNT="$(COUNT)" && [ -f "build/report.xml" ]
+     - make test MARK=snehal COUNT=$(COUNT) && [ -f "build/report.xml" ]
    after_script:
      - make uninstall-chart
      - make clean
