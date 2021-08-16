@@ -23,6 +23,7 @@ before_script:
 
 stages:
   - build
+  - unit-test
   - test
   - linting
   - release
@@ -391,16 +392,16 @@ build ska-dish-master-mid wheel for development: # Executed on a commit
     paths:
       - ./ska-tmc/ska-dish-master-mid/dist/
 
-# unit tests:
-#   image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
-#   stage: unit-test
-#   tags:
-#     - docker-executor
-#   script:
-#     - make unit-test
-#   artifacts:
-#     paths:
-#       - ./build
+unit tests:
+  image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
+  stage: unit-test
+  tags:
+    - docker-executor
+  script:
+    - make unit-test
+  artifacts:
+    paths:
+      - ./build
 
 build-image:
   stage: build
@@ -415,7 +416,6 @@ build-image:
   artifacts:
     paths:
       - current_tag.txt
-
 
 test-mid:
    stage: test
@@ -451,8 +451,6 @@ test-mid:
      reports:
        junit: build/report.xml
      when: always
-
-
 
 test-low:
   stage: test
