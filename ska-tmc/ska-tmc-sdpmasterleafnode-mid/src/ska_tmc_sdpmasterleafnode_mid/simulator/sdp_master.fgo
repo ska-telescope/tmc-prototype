@@ -131,7 +131,12 @@
             "out_type_desc": "Uninitialised"
         }
     },
-    "properties": {},
+    "properties": {
+        "polled_attr": [
+            "State",
+            "1000"
+        ]
+    }, 
     "dev_class": "SdpMaster",
     "name": "mid_sdp/elt/master"
 }

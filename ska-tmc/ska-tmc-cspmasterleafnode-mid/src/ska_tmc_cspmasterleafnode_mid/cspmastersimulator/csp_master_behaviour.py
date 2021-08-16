@@ -9,7 +9,7 @@ import logging
 from ska.base.commands import ResultCode
 
 # Tango import
-from tango import DevState, Except, ErrSeverity, Database, DbDevInfo
+from tango import DevState, Except, ErrSeverity, Database, DeviceProxy
 from tango_simlib.utilities.helper_module import get_server_name
 from tango_simlib.tango_launcher import register_device
 from ska_ser_logging import configure_logging
@@ -36,9 +36,13 @@ class OverrideCspMaster:
             csp_health_state = model.sim_quantities["healthState"]
             set_enum(csp_health_state, "OK", model.time_func())
             csp_health_state_enum = get_enum_int(csp_health_state, "OK")
+            tango_dev.push_change_event("state", tango_dev.get_state())
             tango_dev.push_change_event("healthState", csp_health_state_enum)
             tango_dev.set_status("device turned On successfully")
             model.logger.info("heathState transitioned to OK state")
+            device_proxy = DeviceProxy("mid_csp/elt/subarray_01")
+            device_proxy.command_inout("On")
+            model.logger.info("On command invoked on Csp Subarray.")
         else:
             Except.throw_exception(
                 "ON Command Failed",
@@ -62,6 +66,7 @@ class OverrideCspMaster:
             csp_health_state = model.sim_quantities["healthState"]
             set_enum(csp_health_state, "OK", model.time_func())
             csp_health_state_enum = get_enum_int(csp_health_state, "OK")
+            tango_dev.push_change_event("state", tango_dev.get_state())
             tango_dev.push_change_event("healthState", csp_health_state_enum)
             tango_dev.set_status("device turned off successfully")
             model.logger.info("heathState transitioned to OK state")
@@ -87,6 +92,7 @@ class OverrideCspMaster:
             csp_health_state = model.sim_quantities["healthState"]
             set_enum(csp_health_state, "OK", model.time_func())
             csp_health_state_enum = get_enum_int(csp_health_state, "OK")
+            tango_dev.push_change_event("state", tango_dev.get_state())
             tango_dev.push_change_event("healthState", csp_health_state_enum)
             tango_dev.set_status("invoked Standby successfully")
             model.logger.info("heathState transitioned to OK state")

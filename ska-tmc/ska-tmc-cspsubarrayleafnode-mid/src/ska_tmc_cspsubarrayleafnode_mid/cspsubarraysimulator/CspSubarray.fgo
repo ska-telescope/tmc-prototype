@@ -331,6 +331,11 @@
             "out_type_desc": "Uninitialised"
         }        
     },
-    "properties": {},
+    "properties": {
+        "polled_attr": [
+            "state",
+            "1000"
+        ]
+    }, 
     "dev_class": "CspSubarray"
 }

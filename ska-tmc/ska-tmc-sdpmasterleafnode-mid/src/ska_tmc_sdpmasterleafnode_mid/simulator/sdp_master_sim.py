@@ -30,18 +30,21 @@ class OverrideSdpMaster:
         model.logger.info("Executing On command")
         tango_dev.set_state(DevState.ON)
         tango_dev.set_status("device turned on successfully.")
+        tango_dev.push_change_event("state", tango_dev.get_state())
 
     def action_off(self, model, tango_dev=None, data_input=None
     ): # pylint: disable=W0613
         model.logger.info("Executing Off command")
         tango_dev.set_state(DevState.OFF)
         tango_dev.set_status("Device turned off successfully.")
+        tango_dev.push_change_event("state", tango_dev.get_state())
 
     def action_standby(self, model, tango_dev=None, data_input=None
     ): # pylint: disable=W0613
         model.logger.info("Executing standby command")
         tango_dev.set_state(DevState.STANDBY)
         tango_dev.set_status("Device put to standby mode successfully.")
+        tango_dev.push_change_event("state", tango_dev.get_state())
 
 
 def get_sdp_master_sim(device_name):
