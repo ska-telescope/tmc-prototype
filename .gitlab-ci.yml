@@ -416,6 +416,7 @@ build-image:
     paths:
       - current_tag.txt
 
+
 test-mid:
    stage: test
    dependencies:
@@ -423,8 +424,6 @@ test-mid:
    tags:
      - k8srunner
    image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
-   variables: 
-     - COUNT: "1 or more"
    before_script:
      - kubectl get namespace
    script:
@@ -433,7 +432,7 @@ test-mid:
      - make install-chart MINIKUBE=false
      - make wait
      - make smoketest
-     - make test MARK=snehal COUNT=$COUNT && [ -f "build/report.xml" ]
+     - make test MARK=snehal COUNT=$(COUNT) && [ -f "build/report.xml" ]
    after_script:
      - make uninstall-chart
      - make clean
@@ -451,10 +450,9 @@ test-mid:
        - build
      reports:
        junit: build/report.xml
-     When: manual
-     except:
-       variables:
-         - $COUNT
+     when: always
+
+
 
 test-low:
   stage: test

@@ -14,7 +14,7 @@ TEST_RUNNER = test-runner-$(CI_JOB_ID)-$(KUBE_NAMESPACE)-$(HELM_RELEASE)##name o
 TESTING_ACCOUNT = testing-pod ## this is the service acount name that is used by testing pod enabling it roles to manipulate k8
 TANGO_HOST = databaseds-tango-base-$(HELM_RELEASE):10000
 MARK ?= fast## this will allow to add the mark parameter of pytest
-COUNT ?= 1## this will allow to add the COUNT parameter of pytest
+COUNT ?= 3## this will allow to add the COUNT parameter of pytest
 SLEEPTIME ?= 30s ##amount of sleep time for the smoketest target
 
 #
