@@ -498,8 +498,8 @@ test-mid:
 #     - make lint
 #   allow_failure: true
 #   artifacts:
-#     paths:
-      - ./build
+# #     paths:
+#       - ./build
 
 publish to nexus:
   stage: publish
