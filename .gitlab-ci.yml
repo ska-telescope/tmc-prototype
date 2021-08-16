@@ -23,9 +23,7 @@ before_script:
 
 stages:
   - build
-  - unit-test
   - test
-  - linting
   - release
   - publish
   - pages
@@ -392,16 +390,16 @@ build ska-dish-master-mid wheel for development: # Executed on a commit
     paths:
       - ./ska-tmc/ska-dish-master-mid/dist/
 
-unit tests:
-  image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
-  stage: unit-test
-  tags:
-    - docker-executor
-  script:
-    - make unit-test
-  artifacts:
-    paths:
-      - ./build
+# unit tests:
+#   image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
+#   stage: unit-test
+#   tags:
+#     - docker-executor
+#   script:
+#     - make unit-test
+#   artifacts:
+#     paths:
+#       - ./build
 
 build-image:
   stage: build
@@ -424,6 +422,8 @@ test-mid:
    tags:
      - k8srunner
    image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
+   variables: 
+     - COUNT: "1 or more"
    before_script:
      - kubectl get namespace
    script:
@@ -432,7 +432,7 @@ test-mid:
      - make install-chart MINIKUBE=false
      - make wait
      - make smoketest
-     - make test MARK=snehal COUNT=3 && [ -f "build/report.xml" ]
+     - make test MARK=snehal COUNT=$COUNT && [ -f "build/report.xml" ]
    after_script:
      - make uninstall-chart
      - make clean
@@ -450,52 +450,55 @@ test-mid:
        - build
      reports:
        junit: build/report.xml
-     when: always
+     When: manual
+     except:
+      variables:
+        - $COUNT
 
-test-low:
-  stage: test
-  dependencies:
-    - build-image
-  tags:
-    - k8srunner
-  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
-  before_script:
-    - kubectl get namespace
-  script:
-    - kubectl version
-    - make clean
-    - make install-chart MINIKUBE=false HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
-    - make wait
-    - make smoketest
-    - make test MARK=low && [ -f "build/report.xml" ]
-  after_script:
-    - make uninstall-chart HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
-    - make clean
-    - make delete_namespace-sdp
-    - make delete_namespace
-    - mkdir -p build
-    - ls -la build
-  environment:
-    name: test
-    kubernetes:
-      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-low
-  artifacts:
-    name: "$CI_PROJECT_NAME-$CI_JOB_ID"
-    paths:
-      - build
-    reports:
-      junit: build/report.xml
+# test-low:
+#   stage: test
+#   dependencies:
+#     - build-image
+#   tags:
+#     - k8srunner
+#   image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
+#   before_script:
+#     - kubectl get namespace
+#   script:
+#     - kubectl version
+#     - make clean
+#     - make install-chart MINIKUBE=false HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
+#     - make wait
+#     - make smoketest
+#     - make test MARK=low && [ -f "build/report.xml" ]
+#   after_script:
+#     - make uninstall-chart HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
+#     - make clean
+#     - make delete_namespace-sdp
+#     - make delete_namespace
+#     - mkdir -p build
+#     - ls -la build
+#   environment:
+#     name: test
+#     kubernetes:
+#       namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-low
+#   artifacts:
+#     name: "$CI_PROJECT_NAME-$CI_JOB_ID"
+#     paths:
+#       - build
+#     reports:
+#       junit: build/report.xml
 
-linting:
-  stage: linting
-  image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
-  tags:
-    - docker-executor
-  script:
-    - make lint
-  allow_failure: true
-  artifacts:
-    paths:
+# linting:
+#   stage: linting
+#   image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
+#   tags:
+#     - docker-executor
+#   script:
+#     - make lint
+#   allow_failure: true
+#   artifacts:
+#     paths:
       - ./build
 
 publish to nexus:
