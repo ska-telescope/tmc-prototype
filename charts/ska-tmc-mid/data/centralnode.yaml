@@ -67,6 +67,10 @@ server:
                     - "1000"
                     - "healthstate"
                     - "1000"
+                    - "telescopestate"
+                    - "1000"
+                    - "State"
+                    - "1000"
               attribute_properties:
                 - attribute: "subarray1HealthState"
                   properties:
