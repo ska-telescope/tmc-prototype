@@ -1,7 +1,6 @@
 CAR_HELM_REPOSITORY_URL ?= https://artefact.skao.int/repository/helm-internal ## helm host url https
 MINIKUBE ?= true## Minikube or not
 MARK ?= all
-COUNT ?= all
 TANGO_DATABASE_DS ?= tango-host-databaseds-from-makefile-$(RELEASE_NAME) ## Stable name for the Tango DB
 TANGO_HOST ?= $(TANGO_DATABASE_DS):10000## TANGO_HOST is an input!
 
