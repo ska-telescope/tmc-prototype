@@ -39,21 +39,12 @@ class OverrideSdpMaster:
             return [[ResultCode.OK], ["SDP master is already in ON state"]]
 
         if tango_dev.get_state() in _allowed_modes:
-            # Turn on CSP Subarrays
-            subarrays = Group()
-            for i in range(1, 4):
-                subarray_fqdn = f"mid_sdp/elt/subarray_0{i}"
-                log_msg = f"Adding subarray {subarray_fqdn} in the group"
-                model.logger.info(log_msg)
-                subarrays.add(subarray_fqdn)
-            subarrays.command_inout("On")
-            model.logger.info("On command invoked on Csp Subarray.")
-
+           
             # set health state
-            csp_health_state = model.sim_quantities["healthState"]
-            set_enum(csp_health_state, "OK", model.time_func())
-            csp_health_state_enum = get_enum_int(csp_health_state, "OK")
-            tango_dev.push_change_event("healthState", csp_health_state_enum)
+            sdp_health_state = model.sim_quantities["healthState"]
+            set_enum(sdp_health_state, "OK", model.time_func())
+            sdp_health_state_enum = get_enum_int(sdp_health_state, "OK")
+            tango_dev.push_change_event("healthState", sdp_health_state_enum)
             model.logger.info("heathState transitioned to OK state")
 
             # Set device state
@@ -77,36 +68,13 @@ class OverrideSdpMaster:
             return [[ResultCode.OK], ["SDP master is already in Off state"]]
 
         if tango_dev.get_state() in _allowed_modes:
-            # Turn off SDP Subarrays
-            subarrays = Group()
-            for i in range(1, 4):
-                subarray_fqdn = f"mid_sdp/elt/subarray_0{i}"
-                log_msg = f"Adding subarray {subarray_fqdn} in the group"
-                model.logger.info(log_msg)
-                subarrays.add(subarray_fqdn)
-            subarrays.command_inout("Off")
-            # device_proxy = DeviceProxy("mid_sdp/elt/subarray_01")
-            # device_proxy.command_inout("Off")
-            model.logger.info("Off command invoked on Sdp Subarray.")
-
+            
             # Set device state
             tango_dev.set_status("device turned off successfully")
             tango_dev.set_state(DevState.OFF)
             tango_dev.push_change_event("State", tango_dev.get_state())
             model.logger.info("Sdp Master transitioned to the OFF state.")
-        # if tango_dev.get_state() in _allowed_modes:
-        #     tango_dev.set_state(DevState.OFF)
-        #     model.logger.info("Csp Master transitioned to the OFF state.")
-        #     csp_health_state = model.sim_quantities["healthState"]
-        #     set_enum(csp_health_state, "OK", model.time_func())
-        #     csp_health_state_enum = get_enum_int(csp_health_state, "OK")
-        #     tango_dev.push_change_event("State", tango_dev.get_state())
-        #     tango_dev.push_change_event("healthState", csp_health_state_enum)
-        #     tango_dev.set_status("device turned off successfully")
-        #     model.logger.info("heathState transitioned to OK state")
-        #     device_proxy = DeviceProxy("mid_csp/elt/subarray_01")
-        #     device_proxy.command_inout("Off")
-        #     model.logger.info("Off command invoked on Csp Subarray.")
+    
         else:
             Except.throw_exception(
                 "Off Command Failed",
@@ -122,36 +90,12 @@ class OverrideSdpMaster:
             return [[ResultCode.OK], ["SDP master is already in Off state"]]
 
         if tango_dev.get_state() in _allowed_modes:
-            # Turn off SDP Subarrays
-            subarrays = Group()
-            for i in range(1, 4):
-                subarray_fqdn = f"mid_sdp/elt/subarray_0{i}"
-                log_msg = f"Adding subarray {subarray_fqdn} in the group"
-                model.logger.info(log_msg)
-                subarrays.add(subarray_fqdn)
-            subarrays.command_inout("Off")
-            # device_proxy = DeviceProxy("mid_sdp/elt/subarray_01")
-            # device_proxy.command_inout("Off")
-            model.logger.info("Off command invoked on Sdp Subarray.")
-
             # Set device state
             tango_dev.set_status("device turned off successfully")
             tango_dev.set_state(DevState.OFF)
             tango_dev.push_change_event("State", tango_dev.get_state())
             model.logger.info("Sdp Master transitioned to the OFF state.")
-        # if tango_dev.get_state() in _allowed_modes:
-        #     tango_dev.set_state(DevState.OFF)
-        #     model.logger.info("Csp Master transitioned to the OFF state.")
-        #     csp_health_state = model.sim_quantities["healthState"]
-        #     set_enum(csp_health_state, "OK", model.time_func())
-        #     csp_health_state_enum = get_enum_int(csp_health_state, "OK")
-        #     tango_dev.push_change_event("State", tango_dev.get_state())
-        #     tango_dev.push_change_event("healthState", csp_health_state_enum)
-        #     tango_dev.set_status("device turned off successfully")
-        #     model.logger.info("heathState transitioned to OK state")
-        #     device_proxy = DeviceProxy("mid_csp/elt/subarray_01")
-        #     device_proxy.command_inout("Off")
-        #     model.logger.info("Off command invoked on Csp Subarray.")
+       
         else:
             Except.throw_exception(
                 "Off Command Failed",
