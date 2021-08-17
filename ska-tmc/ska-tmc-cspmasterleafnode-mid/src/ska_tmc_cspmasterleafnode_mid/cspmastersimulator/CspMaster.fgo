@@ -43,7 +43,7 @@
             "min_alarm": "Not specified",
             "min_value": "Not specified",
             "name": "State",
-            "polling": 3000,
+            "polling": 1000,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
             "unit": "",
@@ -93,7 +93,7 @@
             "min_alarm": "Not specified",
             "min_value": "Not specified",
             "name": "Status",
-            "polling": 3000,
+            "polling": 1000,
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
             "unit": "",
@@ -152,7 +152,7 @@
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
             "unit": "",
-            "value": 5,
+            "value": 2,
             "writable": "READ"
         },
         "cspCbfHealthState": {
@@ -380,6 +380,11 @@
     },
     "dev_class": "CspMaster",
     "name": "mid_csp/elt/master",
-    "properties": {},
+    "properties": {
+        "polled_attr": [
+            "state",
+            "1000"
+        ]
+    }, 
     "server": "CspMaster/1"
 }
