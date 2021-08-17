@@ -78,3 +78,10 @@ ska-sdp:
 ska-tmc-mid:
   enabled: true
 
+## SKUID
+ska-ser-skuid:
+  enabled: true
+  skuid:
+    use_pv: false
+    config:
+      generator_id: mvp01

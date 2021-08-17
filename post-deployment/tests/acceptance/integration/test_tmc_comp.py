@@ -24,6 +24,7 @@ from resources.test_support.sync_decorators import (
 )
 from resources.test_support.logging_decorators import log_it
 import resources.test_support.tmc_helpers as tmc
+from ska_ser_skuid.client import SkuidClient
 
 DEV_TEST_TOGGLE = os.environ.get("DISABLE_DEV_TESTS")
 if DEV_TEST_TOGGLE == "False":
@@ -50,11 +51,17 @@ non_default_states_to_check = {
 
 LOGGER = logging.getLogger(__name__)
 
-@pytest.mark.mid
+@pytest.mark.Digvijay
 # @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_assign_resources():
 
     try:
+
+        client = SkuidClient(os.environ['SKUID_URL'])
+        # New type of id "eb_id" is used to distinguish between real SB and id used during testing
+        eb_id = client.fetch_skuid("eb")
+        print("eb is is:::::::::::::::::::::::::::::::::::::::::::::::",eb_id)
+
         # given an interface to TMC to interact with a subarray node and a central node
         fixture = {}
         fixture["state"] = "Unknown"
@@ -116,3 +123,4 @@ def test_assign_resources():
             tmc.set_telescope_off()
         else:
             LOGGER.info("Tearing down completed...")
+        assert 0

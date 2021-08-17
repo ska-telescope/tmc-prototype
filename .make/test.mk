@@ -28,6 +28,7 @@ k8s_test = tar -c post-deployment/ | \
 		--image-pull-policy=IfNotPresent \
 		--image=$(IMAGE_TO_TEST) \
 		--serviceaccount=$(TESTING_ACCOUNT) -- \
+		make -s SKUID_URL=skuid-ska-ser-skuid-$(KUBE_NAMESPACE)-$(HELM_RELEASE).$(KUBE_NAMESPACE).svc.cluster.local:9870 \
 		/bin/bash -c "mkdir skatmc && tar xv --directory skatmc --strip-components 1 --warning=all && cd skatmc && \
 		make KUBE_NAMESPACE=$(KUBE_NAMESPACE) HELM_RELEASE=$(HELM_RELEASE) TANGO_HOST=$(TANGO_HOST) MARK=$(MARK) TEST_RUN_SPEC=$(TEST_RUN_SPEC) CI_JOB_TOKEN=$(CI_JOB_TOKEN) $1 && \
 		tar -czvf /tmp/build.tgz build && \

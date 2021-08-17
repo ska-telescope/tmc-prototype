@@ -432,7 +432,7 @@ test-mid:
      - make install-chart MINIKUBE=false
      - make wait
      - make smoketest
-     - make test MARK=mid && [ -f "build/report.xml" ]
+     - make test MARK=Digvijay && [ -f "build/report.xml" ]
    after_script:
      - make uninstall-chart
      - make clean
