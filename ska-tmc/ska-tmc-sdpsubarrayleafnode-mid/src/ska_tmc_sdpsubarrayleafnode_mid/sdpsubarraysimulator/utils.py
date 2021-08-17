@@ -31,7 +31,9 @@ def get_tango_server_class(device_name):
     logger.info(log_msg)
     tangodb = Database()
     register_device(device_name, "SdpSubarray", server_name, instance, tangodb)
-    tangodb.put_device_property(device_name, {"polled_attr": ["State", "1000"]})
+    polling_attribute = {"polled_attr": ["receiveAddresses", "10000"]}
+    tangodb.put_device_property(device_name, polling_attribute)
+    logger.info("attribute polled on sdp subarray.")
 
     sim_data_files = []
     sim_data_files.append(

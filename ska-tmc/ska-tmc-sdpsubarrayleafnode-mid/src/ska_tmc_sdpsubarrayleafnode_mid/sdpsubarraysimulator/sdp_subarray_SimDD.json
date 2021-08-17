@@ -11,6 +11,32 @@
       }
     ],
     "dynamicAttributes": [
+      {
+        "basicAttributeData": {
+          "name": "receiveAddresses",
+          "unit": "",
+          "label": "receiveAddresses",
+          "description": "Receive Addresses attribute",
+          "data_type": "String",
+          "data_format": "Scalar",
+          "format": "",
+          "value": "test",
+          "data_shape": {
+            "max_dim_x": 1,
+            "max_dim_y": 0
+          },
+          "attributeInterlocks": {
+            "writable": "READ"
+          },
+          "dataSimulationParameters": {
+            "quantity_simulation_type": "ConstantQuantity"
+          },
+          "attributeControlSystem": {
+            "display_level": "OPERATOR",
+            "period": 1000
+          }
+        }
+      }
     ],
     "commands": [
     ]

@@ -6,6 +6,7 @@ override class with command handlers for CspSubarray.
 import enum
 import logging
 import time
+import threading
 from ska.base.commands import ResultCode
 
 # Tango import
@@ -205,12 +206,12 @@ class OverrideCspSubarray(object):
             tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)
             tango_dev.set_status("ObsState in SCANNING")
             model.logger.info("ObsState trasnitioned to SCANNING")
-            time.sleep(2)
-            set_enum(obsstate_attribute, "READY", model.time_func())
-            csp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "READY")
-            tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)
-            tango_dev.set_status("ObsState in READY")
-            model.logger.info("ObsState trasnitioned to READY")
+            # create thread
+            self.logger.info("Starting thread to to execute scan.")
+            scan_thread = threading.Thread(
+            target=self.execute_scan(obsstate_attribute, model, tango_dev))
+            scan_thread.start() 
+            
         else:
             Except.throw_exception(
                 "Scan Command Failed",
@@ -281,6 +282,14 @@ class OverrideCspSubarray(object):
                 ErrSeverity.WARN,
             )
         return [[ResultCode.OK], ["ObsReset command successful on simulator."]]
+
+    def execute_scan(self, obsstate_attribute, model, tango_dev):
+        time.sleep(10)
+        set_enum(obsstate_attribute, "READY", model.time_func())
+        csp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "READY")
+        tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)
+        tango_dev.set_status("ObsState in READY")
+        model.logger.info("ObsState trasnitioned to READY")
 
 def get_enum_str(quantity):
     """Returns the enum label of an enumerated data type

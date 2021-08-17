@@ -33,7 +33,6 @@ def get_tango_server_class(device_name):
     logger.info(log_msg)
     tangodb = Database()
     register_device(device_name, "CspSubarray", server_name, instance, tangodb)
-    tangodb.put_device_property(device_name, {"polled_attr": ["State", "1000"]})
 
     sim_data_files = []
     sim_data_files.append(
