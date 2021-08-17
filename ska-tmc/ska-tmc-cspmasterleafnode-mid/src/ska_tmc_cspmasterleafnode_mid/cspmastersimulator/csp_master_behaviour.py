@@ -100,8 +100,8 @@ class OverrideCspMaster:
             tango_dev.set_status("invoked Standby successfully")
             model.logger.info("heathState transitioned to OK state")
             device_proxy = DeviceProxy("mid_csp/elt/subarray_01")
-            device_proxy.command_inout("Standby")
-            model.logger.info("StandBy command invoked on Csp Subarray.")
+            device_proxy.command_inout("Off")
+            model.logger.info("Off command invoked on Csp Subarray.")
         else:
             Except.throw_exception(
                 "STANDBY Command Failed",
@@ -128,7 +128,9 @@ def get_csp_master_sim(device_name):
     server_name, instance = get_server_name().split("/")
     log_msg = f"server name: {server_name}, instance {instance}"
     logger.info(log_msg)
-    register_device(device_name, "CspMaster", server_name, instance, Database())
+    tangodb = Database()
+    register_device(device_name, "CspMaster", server_name, instance, tangodb)
+    tangodb.put_device_property(device_name, {"polled_attr": ["State", "1000"]})
     
     sim_data_files = []
     sim_data_files.append(

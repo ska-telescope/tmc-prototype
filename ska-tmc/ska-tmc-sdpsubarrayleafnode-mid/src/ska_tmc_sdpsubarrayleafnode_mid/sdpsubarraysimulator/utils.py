@@ -3,7 +3,7 @@ import logging
 from tango import Database
 from ska_ser_logging import configure_logging
 from tango_simlib.utilities.helper_module import get_server_name
-from tango_simlib.tango_launcher import register_device
+from tango_simlib.tango_launcher import register_device, put_device_property
 from tango_simlib.tango_sim_generator import (
     configure_device_models,
     get_tango_device_server,
@@ -29,8 +29,9 @@ def get_tango_server_class(device_name):
     server_name, instance = get_server_name().split("/")
     log_msg = f"server name: {server_name}, instance {instance}"
     logger.info(log_msg)
-    register_device(device_name, "SdpSubarray", server_name, instance, Database())
-    
+    tangodb = Database()
+    register_device(device_name, "SdpSubarray", server_name, instance, tangodb)
+    tangodb.put_device_property(device_name, {"polled_attr": ["State", "1000"]})
 
     sim_data_files = []
     sim_data_files.append(

@@ -13,11 +13,11 @@ import logging
 
 # Tango imports
 from tango import DevState
-from tango import Database, DbDevInfo
+from tango import Database
 
 from tango_simlib.tango_sim_generator import (configure_device_models, get_tango_device_server)
 from tango_simlib.utilities.helper_module import get_server_name
-from tango_simlib.tango_launcher import register_device
+from tango_simlib.tango_launcher import register_device, put_device_property
 
 # SKA imports
 from ska_ser_logging import configure_logging
@@ -64,8 +64,10 @@ def get_sdp_master_sim(device_name):
     server_name, instance = get_server_name().split("/")
     log_msg = f"server name: {server_name}, instance {instance}"
     logger.info(log_msg)
-    register_device(device_name, "SdpMaster", server_name, instance, Database())
-    
+    tangodb = Database() 
+    register_device(device_name, "SdpMaster", server_name, instance, tangodb)
+    tangodb.put_device_property(device_name, {"polled_attr": ["State", "1000"]})
+
     ## Create Simulator
     sim_data_files = []
     sim_data_files.append(
