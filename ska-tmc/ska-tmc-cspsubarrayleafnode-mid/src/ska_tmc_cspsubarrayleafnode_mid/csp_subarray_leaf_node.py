@@ -574,7 +574,7 @@ def main(args=None, **kwargs):
         ret_val = run(csp_subarray_simulator_list, args=args, **kwargs)
     else:
         print("Running in normal mode")
-        ret_val = run(CspSubarrayLeafNode, args=args, **kwargs)
+        ret_val = run((CspSubarrayLeafNode,), args=args, **kwargs)
 
     return ret_val
 

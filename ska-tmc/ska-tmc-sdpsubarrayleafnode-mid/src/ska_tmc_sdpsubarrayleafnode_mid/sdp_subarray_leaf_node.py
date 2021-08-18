@@ -603,7 +603,7 @@ def main(args=None, **kwargs):
         ret_val = run(sdp_subarray_simulator_list, args=args, **kwargs)
     else:
         print("Running in normal mode")
-        ret_val = run(SdpSubarrayLeafNode, args=args, **kwargs)
+        ret_val = run((SdpSubarrayLeafNode,), args=args, **kwargs)
 
     return ret_val
     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.main

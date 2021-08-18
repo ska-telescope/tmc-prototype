@@ -40,7 +40,7 @@ ska-tango-base:
 
 ska-webjive:
   enabled: true
-  minikube: true
+  minikube: false
   ingress:
     enabled: true
     nginx: true
@@ -56,18 +56,18 @@ ska-webjive:
 
 
 ska-mid-cbf:
-  enabled: false
+  enabled: true
   ska-tango-base: 
     enabled: false
 
 ska-csp-lmc-mid:
-  enabled: false
+  enabled: true
   ska-tango-base: 
     enabled: false
 
 ## sdp
 ska-sdp:
-  enabled: false
+  enabled: true
   lmc:
     prefix: mid
     nsubarray: 3
