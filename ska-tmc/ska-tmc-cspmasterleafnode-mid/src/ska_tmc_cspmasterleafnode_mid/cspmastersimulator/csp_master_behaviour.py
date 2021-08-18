@@ -13,7 +13,7 @@ import enum
 import logging
 
 # Tango import
-from tango import DevState, Except, ErrSeverity, Database, Group
+from tango import DevState, Except, ErrSeverity, Database, Group, DeviceProxy
 
 from tango_simlib.utilities.helper_module import get_server_name
 from tango_simlib.tango_launcher import register_device
@@ -41,13 +41,10 @@ class OverrideCspMaster:
 
         if tango_dev.get_state() in _allowed_modes:
             # Turn on CSP Subarrays
-            subarrays = Group("subarray_group")
             for i in range(1, 4):
                 subarray_fqdn = f"mid_csp/elt/subarray_0{i}"
-                log_msg = f"Adding subarray {subarray_fqdn} in the group"
-                model.logger.info(log_msg)
-                subarrays.add(subarray_fqdn)
-            subarrays.command_inout("On")
+                subarray_dev_proxy = DeviceProxy(subarray_fqdn)
+                subarray_dev_proxy.command_inout_asynch("On", self.command_callback_method(model))
             model.logger.info("On command invoked on Csp Subarray.")
 
             # set health state
@@ -70,6 +67,9 @@ class OverrideCspMaster:
             )
         return [[ResultCode.OK], ["ON command invoked successfully on simulator."]]
 
+    def command_callback_method(self, model):
+        model.logger.info("command callback for async command executed.")
+
     def action_off(self, model, tango_dev=None, data_input=None
     ):  # pylint: disable=W0613
         """Changes the State of the device to OFF."""
@@ -80,13 +80,10 @@ class OverrideCspMaster:
 
         if tango_dev.get_state() in _allowed_modes:
             # Turn off CSP Subarrays
-            subarrays = Group("subarray_group")
             for i in range(1, 4):
                 subarray_fqdn = f"mid_csp/elt/subarray_0{i}"
-                log_msg = f"Adding subarray {subarray_fqdn} in the group"
-                model.logger.info(log_msg)
-                subarrays.add(subarray_fqdn)
-            subarrays.command_inout("Off")
+                subarray_dev_proxy = DeviceProxy(subarray_fqdn)
+                subarray_dev_proxy.command_inout_asynch("Off", self.command_callback_method(model))
             model.logger.info("Off command invoked on Csp Subarray.")
 
             # Set device state
@@ -113,20 +110,17 @@ class OverrideCspMaster:
 
         if tango_dev.get_state() in _allowed_modes:
             # Turn off CSP Subarrays
-            subarrays = Group("subarray_group")
             for i in range(1, 4):
                 subarray_fqdn = f"mid_csp/elt/subarray_0{i}"
-                log_msg = f"Adding subarray {subarray_fqdn} in the group"
-                model.logger.info(log_msg)
-                subarrays.add(subarray_fqdn)
-            subarrays.command_inout("Off")
+                subarray_dev_proxy = DeviceProxy(subarray_fqdn)
+                subarray_dev_proxy.command_inout_asynch("Off", self.command_callback_method(model))
             model.logger.info("Off command invoked on Csp Subarray.")
 
             # Set device state
             tango_dev.set_status("device turned off successfully")
-            tango_dev.set_state(DevState.OFF)
+            tango_dev.set_state(DevState.STANDBY)
             tango_dev.push_change_event("State", tango_dev.get_state())
-            model.logger.info("Csp Master transitioned to the OFF state.")
+            model.logger.info("Csp Master transitioned to the STANDBY state.")
         else:
             Except.throw_exception(
                 "STANDBY Command Failed",
