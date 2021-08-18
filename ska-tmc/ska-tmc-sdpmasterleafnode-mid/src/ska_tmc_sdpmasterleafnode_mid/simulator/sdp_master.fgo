@@ -51,7 +51,7 @@
             "standard_unit": "No standard unit",
             "string": "OFF",
             "unit": "",
-            "value": 1,
+            "value": 7,
             "writable": "READ"
         },
         "Status": {

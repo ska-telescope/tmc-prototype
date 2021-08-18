@@ -248,6 +248,12 @@ class OverrideCspSubarray(object):
         obsstate_attribute = model.sim_quantities["obsState"]
         obs_state = get_enum_str(obsstate_attribute)
         if obs_state == "ABORTED":
+            set_enum(obsstate_attribute, "RESTARTING", model.time_func())
+            csp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "RESTARTING")
+            tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)
+            tango_dev.set_status("ObsState in RESTARTING")
+            model.logger.info("ObsState trasnitioned to RESTARTING")
+            time.sleep(2)
             set_enum(obsstate_attribute, "EMPTY", model.time_func())
             csp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "EMPTY")
             tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)
@@ -269,6 +275,12 @@ class OverrideCspSubarray(object):
         obsstate_attribute = model.sim_quantities["obsState"]
         obs_state = get_enum_str(obsstate_attribute)
         if obs_state == "ABORTED":
+            set_enum(obsstate_attribute, "RESETTING", model.time_func())
+            csp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "RESETTING")
+            tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)
+            tango_dev.set_status("ObsState in RESETTING")
+            model.logger.info("ObsState trasnitioned to RESETTING")
+            time.sleep(2)
             set_enum(obsstate_attribute, "IDLE", model.time_func())
             csp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "IDLE")
             tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)

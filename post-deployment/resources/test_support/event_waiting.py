@@ -332,9 +332,6 @@ def set_wating_for_start_up() -> MessageBoardBuilder:
     b.set_waiting_on("mid_d0004/elt/master").for_attribute("State").to_become_equal_to(
         "ON"
     )
-    b.set_waiting_on("mid_csp_cbf/sub_elt/master").for_attribute(
-        "State"
-    ).to_become_equal_to("ON")
     b.set_waiting_on("mid_csp/elt/master").for_attribute("State").to_become_equal_to(
         "ON"
     )
@@ -343,9 +340,6 @@ def set_wating_for_start_up() -> MessageBoardBuilder:
     ).to_become_equal_to("ON")
     # subarray devices
     b.set_waiting_on("ska_mid/tm_subarray_node/1").for_attribute(
-        "State"
-    ).to_become_equal_to("ON")
-    b.set_waiting_on("mid_csp_cbf/sub_elt/subarray_01").for_attribute(
         "State"
     ).to_become_equal_to("ON")
     b.set_waiting_on("mid_csp/elt/subarray_01").for_attribute(
@@ -377,9 +371,6 @@ def set_wating_for_shut_down() -> MessageBoardBuilder:
     b.set_waiting_on("mid_d0004/elt/master").for_attribute("State").to_become_equal_to(
         "STANDBY"
     )
-    b.set_waiting_on("mid_csp_cbf/sub_elt/master").for_attribute(
-        "State"
-    ).to_become_equal_to("STANDBY")
     b.set_waiting_on("mid_csp/elt/master").for_attribute("State").to_become_equal_to(
         "STANDBY"
     )
@@ -388,9 +379,6 @@ def set_wating_for_shut_down() -> MessageBoardBuilder:
     ).to_become_equal_to("OFF")
     # subarray devices
     b.set_waiting_on("ska_mid/tm_subarray_node/1").for_attribute(
-        "State"
-    ).to_become_equal_to("OFF")
-    b.set_waiting_on("mid_csp_cbf/sub_elt/subarray_01").for_attribute(
         "State"
     ).to_become_equal_to("OFF")
     b.set_waiting_on("mid_csp/elt/subarray_01").for_attribute(

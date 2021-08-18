@@ -82,23 +82,24 @@ class OverrideSdpMaster:
                 ErrSeverity.WARN,
             )
         return [[ResultCode.OK], ["OFF command invoked successfully on simulator."]]
+    
     def action_standby(self, model, tango_dev=None, data_input=None
     ): # pylint: disable=W0613
-        _allowed_modes = (DevState.ON, DevState.ALARM, DevState.STANDBY)
-        if tango_dev.get_state() == DevState.OFF:
-            model.logger.info("SDP master is already in OFF state")
-            return [[ResultCode.OK], ["SDP master is already in Off state"]]
+        _allowed_modes = (DevState.ON, DevState.ALARM, DevState.OFF)
+        if tango_dev.get_state() == DevState.STANDBY:
+            model.logger.info("SDP master is already in STANDBY state")
+            return [[ResultCode.OK], ["SDP master is already in STANDBY state"]]
 
         if tango_dev.get_state() in _allowed_modes:
             # Set device state
-            tango_dev.set_status("device turned off successfully")
-            tango_dev.set_state(DevState.OFF)
+            tango_dev.set_status("device turned to STANDBY successfully")
+            tango_dev.set_state(DevState.STANDBY)
             tango_dev.push_change_event("State", tango_dev.get_state())
-            model.logger.info("Sdp Master transitioned to the OFF state.")
+            model.logger.info("Sdp Master transitioned to the STANDBY state.")
        
         else:
             Except.throw_exception(
-                "Off Command Failed",
+                "STANDBY Command Failed",
                 "Not allowed",
                 ErrSeverity.WARN,
             )

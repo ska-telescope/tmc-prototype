@@ -47,7 +47,7 @@
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
             "unit": "",
-            "value": 7,
+            "value": 1,
             "writable": "READ"
         },
         "Status": {

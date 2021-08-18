@@ -20,7 +20,6 @@ LOGGER = logging.getLogger(__name__)
 @pytest.mark.last
 @pytest.mark.ncra
 def test_smell_mvp(pre_or_post="#PRE"):
-    time.sleep(20)
     header = f"\n###{pre_or_post}-TEST STATES###\n{'Device Name:':<34} {'State':<15}{'obsState':<15}\n"
     output = [
         f"{device:<35}{resource(device).get('State'):<15}{resource(device).get('obsState'):<15}"
