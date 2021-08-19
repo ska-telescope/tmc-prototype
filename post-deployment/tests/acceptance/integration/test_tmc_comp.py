@@ -51,16 +51,14 @@ non_default_states_to_check = {
 
 LOGGER = logging.getLogger(__name__)
 
-@pytest.mark.Digvijay
+@pytest.mark.NCRA
 # @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_assign_resources():
 
     try:
-
         client = SkuidClient(os.environ['SKUID_URL'])
         # New type of id "eb_id" is used to distinguish between real SB and id used during testing
         eb_id = client.fetch_skuid("eb")
-        print("eb is is:::::::::::::::::::::::::::::::::::::::::::::::",eb_id)
 
         # given an interface to TMC to interact with a subarray node and a central node
         fixture = {}

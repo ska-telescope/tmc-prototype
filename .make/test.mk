@@ -14,6 +14,7 @@ TEST_RUNNER = test-runner-$(CI_JOB_ID)-$(KUBE_NAMESPACE)-$(HELM_RELEASE)##name o
 TESTING_ACCOUNT = testing-pod ## this is the service acount name that is used by testing pod enabling it roles to manipulate k8
 TANGO_HOST = databaseds-tango-base-$(HELM_RELEASE):10000
 MARK ?= fast## this will allow to add the mark parameter of pytest
+COUNT ?= 1## this will allow to add the COUNT parameter of pytest
 SLEEPTIME ?= 30s ##amount of sleep time for the smoketest target
 
 #
@@ -28,9 +29,10 @@ k8s_test = tar -c post-deployment/ | \
 		--image-pull-policy=IfNotPresent \
 		--image=$(IMAGE_TO_TEST) \
 		--serviceaccount=$(TESTING_ACCOUNT) -- \
-		make -s SKUID_URL=skuid-ska-ser-skuid-$(KUBE_NAMESPACE)-$(HELM_RELEASE).$(KUBE_NAMESPACE).svc.cluster.local:9870 \
 		/bin/bash -c "mkdir skatmc && tar xv --directory skatmc --strip-components 1 --warning=all && cd skatmc && \
-		make KUBE_NAMESPACE=$(KUBE_NAMESPACE) HELM_RELEASE=$(HELM_RELEASE) TANGO_HOST=$(TANGO_HOST) MARK=$(MARK) TEST_RUN_SPEC=$(TEST_RUN_SPEC) CI_JOB_TOKEN=$(CI_JOB_TOKEN) $1 && \
+		make \
+			SKUID_URL=ska-ser-skuid-$(HELM_RELEASE)-svc.$(KUBE_NAMESPACE).svc.cluster.local:9870 \
+			KUBE_NAMESPACE=$(KUBE_NAMESPACE) HELM_RELEASE=$(HELM_RELEASE) TANGO_HOST=$(TANGO_HOST) MARK=$(MARK) COUNT=$(COUNT) CI_JOB_TOKEN=$(CI_JOB_TOKEN) $1 && \
 		tar -czvf /tmp/build.tgz build && \
 		echo '~~~~BOUNDARY~~~~' && \
 		cat /tmp/build.tgz | base64 && \
