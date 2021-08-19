@@ -116,12 +116,9 @@ def get_sdp_master_sim(device_name):
     logger_name = f"sdp-master-{device_name}"
     logger = logging.getLogger(logger_name)
 
-    ## Register simulator device
-    log_msg=f"registering device: {device_name}"
-    logger.info(log_msg)
+    logger.info("Registering device: %s.", device_name)
     server_name, instance = get_server_name().split("/")
-    log_msg = f"server name: {server_name}, instance {instance}"
-    logger.info(log_msg)
+    logger.info("server name: %s, instance %s",server_name,instance)
     tangodb = Database() 
     register_device(device_name, "SdpMaster", server_name, instance, tangodb)
     tangodb.put_device_property(device_name, {"polled_attr": ["State", "1000"]})

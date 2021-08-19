@@ -135,6 +135,8 @@ class SdpMasterLeafNode(SKABaseDevice):
             device._build_state = "{},{},{}".format(
                 release.name, release.version, release.description
             )
+            standalone_mode = os.environ['STANDALONE_MODE']
+            self.logger.info("Device running in standalone_mode:%s",standalone_mode)
             device._version_id = release.version
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
@@ -347,16 +349,12 @@ class SdpMasterLeafNode(SKABaseDevice):
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(SdpMasterLeafNode.main) ENABLED START #
     # Check if standalone mode is enabled
-    print("Entering in main:::::::::::::::::::::::")
     try:
         standalone_mode = os.environ['STANDALONE_MODE']
-        print(f"standalone_mode: {standalone_mode}")
-    except:
-        print("Entering in Keyerror:::::::::::::::::::::::")
+    except KeyError:
         standalone_mode = "false"
 
     if standalone_mode == "true":
-        print("Running in standalone mode")
         ## Get simulator object
         device_name = "mid_sdp/elt/master"
         sdp_master_simulator = get_sdp_master_sim(device_name)
@@ -364,7 +362,6 @@ def main(args=None, **kwargs):
         # Run server
         ret_val = run((SdpMasterLeafNode, sdp_master_simulator), args=args, **kwargs)
     else:
-        print("Running in regular mode")
         ret_val = run((SdpMasterLeafNode,), args=args, **kwargs)
 
     return ret_val

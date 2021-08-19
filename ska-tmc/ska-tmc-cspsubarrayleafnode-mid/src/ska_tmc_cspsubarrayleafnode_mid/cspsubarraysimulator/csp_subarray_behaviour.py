@@ -314,7 +314,6 @@ def get_enum_str(quantity):
     EnumClass = enum.IntEnum("EnumLabels", quantity.meta["enum_labels"], start=0)
     return EnumClass(quantity.last_val).name
 
-
 def get_enum_int(quantity, label):
     """Returns the integer index value of an enumerated data type
     :param quantity: tango_simlib.quantities.Quantity
@@ -325,7 +324,6 @@ def get_enum_int(quantity, label):
         Current integer value of a DevEnum attribute
     """
     return quantity.meta["enum_labels"].index(label)
-
 
 def set_enum(quantity, label, timestamp):
     """Sets the quantity last_val attribute to index of label

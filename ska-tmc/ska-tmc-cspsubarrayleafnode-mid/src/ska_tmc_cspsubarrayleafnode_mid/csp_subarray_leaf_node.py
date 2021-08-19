@@ -145,7 +145,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
             )
             device._version_id = release.version
             device._versioninfo = " "
-
+            standalone_mode = os.environ['STANDALONE_MODE']
+            self.logger.info("Device running in standalone_mode:%s",standalone_mode)
             # The IERS_A file needs to be downloaded each time when the MVP is deployed.
             delay_manager_obj = DelayManager.get_instance()
             try:
@@ -173,11 +174,6 @@ class CspSubarrayLeafNode(SKABaseDevice):
             this_server.write_attr(
                 "activityMessage", const.STR_CSPSALN_INIT_SUCCESS, False
             )
-
-            standalone_mode = os.environ.get('STANDALONE_MODE')
-            log_msg = f"standalone_mode: {standalone_mode}"
-            self.logger.debug(log_msg)
-
             self.logger.info(const.STR_CSPSALN_INIT_SUCCESS)
             return (ResultCode.OK, const.STR_CSPSALN_INIT_SUCCESS)
 

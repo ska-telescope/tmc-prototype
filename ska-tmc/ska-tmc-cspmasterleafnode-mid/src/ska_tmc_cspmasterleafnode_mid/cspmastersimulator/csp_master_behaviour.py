@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# This file is part of the SdpMasterLeafNode project
+# This file is part of the CspMasterLeafNode project
 #
 #
 #
@@ -13,7 +13,7 @@ import enum
 import logging
 
 # Tango import
-from tango import DevState, Except, ErrSeverity, Database, Group, DeviceProxy
+from tango import DevState, Except, ErrSeverity, Database, DeviceProxy
 
 from tango_simlib.utilities.helper_module import get_server_name
 from tango_simlib.tango_launcher import register_device
@@ -28,7 +28,7 @@ from ska.base.commands import ResultCode
 
 
 class OverrideCspMaster:
-    """Class for sdp master simulator device"""
+    """Class for csp master simulator device"""
 
     def action_on(self, model, tango_dev=None, data_input=None
     ):  # pylint: disable=W0613
@@ -138,15 +138,13 @@ def get_csp_master_sim(device_name):
     The Tango device class for csp Master
     """
     
-    logger_name = f"sdp-master-{device_name}"
+    logger_name = f"csp-master-{device_name}"
     logger = logging.getLogger(logger_name)
     
     ## Register simulator device
-    log_msg=f"registering device: {device_name}"
-    logger.info(log_msg)
+    logger.info("registering device:%s",device_name)
     server_name, instance = get_server_name().split("/")
-    log_msg = f"server name: {server_name}, instance {instance}"
-    logger.info(log_msg)
+    logger.info("server name: %s, instance %s",server_name,instance)
     tangodb = Database()
     register_device(device_name, "CspMaster", server_name, instance, tangodb)
     tangodb.put_device_property(device_name, {"polled_attr": ["State", "1000"]})
