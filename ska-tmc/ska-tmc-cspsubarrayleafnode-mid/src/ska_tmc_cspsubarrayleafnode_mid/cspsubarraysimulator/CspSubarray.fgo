@@ -47,7 +47,7 @@
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
             "unit": "",
-            "value": 7,
+            "value": 1,
             "writable": "READ"
         },
         "Status": {
@@ -215,7 +215,7 @@
             "quality": "ATTR_VALID",
             "standard_unit": "No standard unit",
             "unit": "",
-            "value": 5,
+            "value": 2,
             "writable": "READ"
         }
     },
@@ -331,6 +331,11 @@
             "out_type_desc": "Uninitialised"
         }        
     },
-    "properties": {},
+    "properties": {
+        "polled_attr": [
+            "state",
+            "1000"
+        ]
+    }, 
     "dev_class": "CspSubarray"
 }

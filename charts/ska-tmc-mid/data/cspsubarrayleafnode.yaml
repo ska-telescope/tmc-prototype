@@ -2,8 +2,7 @@ name: "cspsubarayleafnode-{{.Release.Name}}"
 function: observation-execution
 domain: subarray
 instances: ["01", "02", "03"]
-entrypoints:
-  - name: "ska_tmc_cspsubarrayleafnode_mid.csp_subarray_leaf_node.CspSubarrayLeafNode"
+command: "CspSubarrayLeafNodeDS"
 server:
   name: "CspSubarrayLeafNodeDS"
   instances:
@@ -55,3 +54,7 @@ image:
   image: "{{.Values.global.skatmc.image}}"
   tag: "{{.Values.global.skatmc.tag}}"
   pullPolicy: "{{.Values.global.skatmc.pullPolicy}}"
+environment_variables:
+  - name: STANDALONE_MODE
+    value: "'{{.Values.global.standalone_mode}}'"
+    

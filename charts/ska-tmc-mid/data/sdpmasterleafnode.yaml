@@ -2,8 +2,7 @@ name: "sdpmasterleafnode-{{.Release.Name}}"
 function: observation-execution
 domain: subarray
 instances: ["01"]
-entrypoints:
-  - name: "ska_tmc_sdpmasterleafnode_mid.sdp_master_leaf_node.SdpMasterLeafNode"
+command: "SdpMasterLeafNodeDS" 
 server:
   name: "SdpMasterLeafNodeDS"
   instances:
@@ -40,3 +39,6 @@ image:
   image: "{{.Values.global.skatmc.image}}"
   tag: "{{.Values.global.skatmc.tag}}"
   pullPolicy: "{{.Values.global.skatmc.pullPolicy}}"
+environment_variables:
+  - name: STANDALONE_MODE
+    value: "'{{.Values.global.standalone_mode}}'"

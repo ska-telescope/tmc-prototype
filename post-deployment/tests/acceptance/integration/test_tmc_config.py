@@ -35,7 +35,6 @@ else:
 devices_to_log = [
     "ska_mid/tm_subarray_node/1",
     "mid_csp/elt/subarray_01",
-    "mid_csp_cbf/sub_elt/subarray_01",
     "mid_sdp/elt/subarray_1",
     "mid_d0001/elt/master",
     "mid_d0002/elt/master",

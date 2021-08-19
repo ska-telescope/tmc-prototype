@@ -2,8 +2,7 @@ name: "cspmasterleafnode-{{.Release.Name}}"
 function: csp-monitoring
 domain: general-monitoring
 instances: ["01"]
-entrypoints:
-  - name: "ska_tmc_cspmasterleafnode_mid.csp_master_leaf_node.CspMasterLeafNode"
+command: "CspMasterLeafNodeDS"
 server:
   name: "CspMasterLeafNodeDS"
   instances:
@@ -40,3 +39,7 @@ image:
   image: "{{.Values.global.skatmc.image}}"
   tag: "{{.Values.global.skatmc.tag}}"
   pullPolicy: "{{.Values.global.skatmc.pullPolicy}}"
+environment_variables:
+  - name: STANDALONE_MODE
+    value: "'{{.Values.global.standalone_mode}}'"
+    

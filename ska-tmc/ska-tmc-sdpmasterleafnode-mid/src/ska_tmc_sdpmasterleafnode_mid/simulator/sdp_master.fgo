@@ -51,7 +51,7 @@
             "standard_unit": "No standard unit",
             "string": "OFF",
             "unit": "",
-            "value": 1,
+            "value": 7,
             "writable": "READ"
         },
         "Status": {
@@ -106,6 +106,61 @@
             "unit": "",
             "value": "Device is off",
             "writable": "READ"
+        },
+        "healthState": {
+            "alarms": {
+                "delta_t": "Not specified",
+                "delta_val": "Not specified",
+                "extensions": "[]",
+                "max_alarm": "Not specified",
+                "max_warning": "Not specified",
+                "min_alarm": "Not specified",
+                "min_warning": "Not specified"
+            },
+            "data_format": "SCALAR",
+            "data_type": "DevEnum",
+            "description": " Health status ",
+            "dim_x": 1,
+            "dim_y": 0,
+            "display_unit": "No display unit",
+            "enum_labels": [
+                "UNKNOWN",
+                "OK",
+                "DEGRADED",
+                "FAILED"
+            ],
+            "events": {
+                "arch_event": {
+                    "archive_abs_change": "Not specified",
+                    "archive_period": "Not specified",
+                    "archive_rel_change": "Not specified",
+                    "extensions": "[]"
+                },
+                "ch_event": {
+                    "abs_change": "1",
+                    "extensions": "[]",
+                    "rel_change": "1"
+                },
+                "per_event": {
+                    "extensions": "[]",
+                    "period": "10000"
+                }
+            },
+            "format": "%s",
+            "label": "healthState",
+            "max_alarm": "Not specified",
+            "max_dim_x": 1,
+            "max_dim_y": 0,
+            "max_value": "Not specified",
+            "min_alarm": "Not specified",
+            "min_value": "Not specified",
+            "name": "healthState",
+            "polling": 3000,
+            "quality": "ATTR_VALID",
+            "standard_unit": "No standard unit",
+            "unit": "",
+            "value": 2,
+            "writable": "READ"
         }
     },
     "commands": {
@@ -131,7 +186,12 @@
             "out_type_desc": "Uninitialised"
         }
     },
-    "properties": {},
+    "properties": {
+        "polled_attr": [
+            "State",
+            "1000"
+        ]
+    }, 
     "dev_class": "SdpMaster",
     "name": "mid_sdp/elt/master"
 }

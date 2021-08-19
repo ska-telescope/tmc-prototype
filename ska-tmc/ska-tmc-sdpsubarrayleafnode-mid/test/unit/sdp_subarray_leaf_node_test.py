@@ -61,13 +61,13 @@ def mock_tango_client():
     with mock.patch.object(
         TangoClient, "_get_deviceproxy", return_value=MagicMock()
     ) as mock_obj:
-        tango_client_obj = TangoClient("mid_sdp/elt/subarray_01")
+        tango_client_obj = TangoClient("mid_sdp/elt/subarray_1")
         yield tango_client_obj
 
 @pytest.fixture(scope="function")
 def mock_sdp_subarray_proxy(mock_tango_client):
     tango_client_obj = mock_tango_client
-    dut_properties = {"SdpSubarrayFQDN": "mid_sdp/elt/subarray_01"}
+    dut_properties = {"SdpSubarrayFQDN": "mid_sdp/elt/subarray_1"}
     event_subscription_map = {}
     Mock().subscribe_event.side_effect = lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update(
         {attr_name: callback}
@@ -84,7 +84,7 @@ def mock_obstate_check():
     with mock.patch.object(
             TangoClient, "_get_deviceproxy", return_value=Mock()
         ) as mock_obj:
-        tango_client_obj = TangoClient("mid_sdp/elt/subarray_01")
+        tango_client_obj = TangoClient("mid_sdp/elt/subarray_1")
         with mock.patch.object(
             TangoClient, "get_attribute", Mock(return_value = ObsState.EMPTY)
         ) as mock_obj_obstate:
@@ -92,7 +92,7 @@ def mock_obstate_check():
 
 @pytest.fixture(scope="function")
 def event_subscription_mock():
-    dut_properties = {"SdpSubarrayFQDN": "mid_sdp/elt/subarray_01"}
+    dut_properties = {"SdpSubarrayFQDN": "mid_sdp/elt/subarray_1"}
     event_subscription_map = {}
     with mock.patch.object(
         TangoClient, "_get_deviceproxy", return_value=Mock()

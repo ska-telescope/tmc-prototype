@@ -22,7 +22,6 @@ global:
     tag: 0.8.5
     pullPolicy: IfNotPresent
 
-
   ##  Order of instances resolution ##
   # .Values.global.dishes & .Values.global.subarray_count
   # .Values.deviceServers.<device>.instances
@@ -40,6 +39,10 @@ global:
     - "sdpsubarrayleafnode"
     - "subarraynode"
   subarray_count: 3
+  
+  ## Decide deployment mode of TMC. if standalone_mode is set to "true", then simulators for subsystem devices 
+  # are deployed. If the value is "false", then simulators are not deployed.
+  standalone_mode: "false"
 
 dsconfig:
   configuration_file: data/tmc-mid-config.json
@@ -62,7 +65,6 @@ centralnodemid:
     image: ska-tmc-centralnode-mid
     tag: 0.2.12
     pullPolicy: IfNotPresent
-
 
 subarraynodemid:
   image:

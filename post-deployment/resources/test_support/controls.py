@@ -46,10 +46,7 @@ def telescope_is_in_standby():
         'resource("mid_csp/elt/subarray_01").get("State")'
         + str(resource("mid_csp/elt/subarray_01").get("State"))
     )
-    LOGGER.info(
-        'resource("mid_csp_cbf/sub_elt/subarray_01").get("State")'
-        + str(resource("mid_csp_cbf/sub_elt/subarray_01").get("State"))
-    )
+    
     LOGGER.info(
         'resource("mid_sdp/elt/subarray_1").get("State")'
         + str(resource("mid_sdp/elt/subarray_1").get("State"))
@@ -59,9 +56,8 @@ def telescope_is_in_standby():
         resource("ska_mid/tm_central/central_node").get("State"),
         resource("ska_mid/tm_subarray_node/1").get("State"),
         resource("mid_csp/elt/subarray_01").get("State"),
-        resource("mid_csp_cbf/sub_elt/subarray_01").get("State"),
         resource("mid_sdp/elt/subarray_1").get("State")
-    ] == ["ON", "ON", "OFF", "OFF", "OFF"]
+    ] == ["ON", "ON", "OFF", "OFF"]
 
 
 #Note: make use of this method while updatating integration tests for sp-1623
@@ -176,10 +172,7 @@ def telescope_is_on():
         'resource("mid_csp/elt/subarray_01").get("State")'
         + str(resource("mid_csp/elt/subarray_01").get("State"))
     )
-    LOGGER.info(
-        'resource("mid_csp_cbf/sub_elt/subarray_01").get("State")'
-        + str(resource("mid_csp_cbf/sub_elt/subarray_01").get("State"))
-    )
+    
     LOGGER.info(
         'resource("mid_sdp/elt/subarray_1").get("State")'
         + str(resource("mid_sdp/elt/subarray_1").get("State"))

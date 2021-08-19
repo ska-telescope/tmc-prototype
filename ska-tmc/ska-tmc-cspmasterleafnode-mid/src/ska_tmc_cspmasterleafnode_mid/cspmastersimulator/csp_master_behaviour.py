@@ -1,23 +1,35 @@
 # -*- coding: utf-8 -*-
-"""
-override class with command handlers for csp master.
-"""
+#
+# This file is part of the CspMasterLeafNode project
+#
+#
+#
+# Distributed under the terms of the BSD-3-Clause license.
+# See LICENSE.txt for more info.
+
 # Standard python imports
 import pkg_resources
 import enum
 import logging
-from ska.base.commands import ResultCode
 
 # Tango import
-from tango import DevState, Except, ErrSeverity
-from ska_ser_logging import configure_logging
+from tango import DevState, Except, ErrSeverity, Database, DeviceProxy
+
+from tango_simlib.utilities.helper_module import get_server_name
+from tango_simlib.tango_launcher import register_device
 from tango_simlib.tango_sim_generator import (
     configure_device_models,
     get_tango_device_server,
 )
 
+# SKA imports
+from ska_ser_logging import configure_logging
+from ska.base.commands import ResultCode
+
 
 class OverrideCspMaster:
+    """Class for csp master simulator device"""
+
     def action_on(
         self, model, tango_dev=None, data_input=None
     ):  # pylint: disable=W0613
@@ -29,14 +41,27 @@ class OverrideCspMaster:
             return [[ResultCode.OK], ["CSP master is already in ON state"]]
 
         if tango_dev.get_state() in _allowed_modes:
-            tango_dev.set_state(DevState.ON)
-            model.logger.info("Csp Master transitioned to the ON state.")
+            # Turn on CSP Subarrays
+            for i in range(1, 4):
+                subarray_fqdn = f"mid_csp/elt/subarray_0{i}"
+                subarray_dev_proxy = DeviceProxy(subarray_fqdn)
+                subarray_dev_proxy.command_inout_asynch(
+                    "On", self.command_callback_method(model)
+                )
+            model.logger.info("On command invoked on Csp Subarray.")
+
+            # set health state
             csp_health_state = model.sim_quantities["healthState"]
             set_enum(csp_health_state, "OK", model.time_func())
             csp_health_state_enum = get_enum_int(csp_health_state, "OK")
             tango_dev.push_change_event("healthState", csp_health_state_enum)
-            tango_dev.set_status("device turned On successfully")
             model.logger.info("heathState transitioned to OK state")
+
+            # Set device state
+            tango_dev.set_status("device turned on successfully")
+            tango_dev.set_state(DevState.ON)
+            tango_dev.push_change_event("State", tango_dev.get_state())
+            model.logger.info("Csp Master transitioned to the ON state.")
         else:
             Except.throw_exception(
                 "ON Command Failed",
@@ -44,6 +69,9 @@ class OverrideCspMaster:
                 ErrSeverity.WARN,
             )
         return [[ResultCode.OK], ["ON command invoked successfully on simulator."]]
+
+    def command_callback_method(self, model):
+        model.logger.info("command callback for async command executed.")
 
     def action_off(
         self, model, tango_dev=None, data_input=None
@@ -55,14 +83,21 @@ class OverrideCspMaster:
             return [[ResultCode.OK], ["CSP master is already in Off state"]]
 
         if tango_dev.get_state() in _allowed_modes:
-            tango_dev.set_state(DevState.OFF)
-            model.logger.info("Csp Master transitioned to the OFF state.")
-            csp_health_state = model.sim_quantities["healthState"]
-            set_enum(csp_health_state, "OK", model.time_func())
-            csp_health_state_enum = get_enum_int(csp_health_state, "OK")
-            tango_dev.push_change_event("healthState", csp_health_state_enum)
+            # Turn off CSP Subarrays
+            for i in range(1, 4):
+                subarray_fqdn = f"mid_csp/elt/subarray_0{i}"
+                subarray_dev_proxy = DeviceProxy(subarray_fqdn)
+                subarray_dev_proxy.command_inout_asynch(
+                    "Off", self.command_callback_method(model)
+                )
+            model.logger.info("Off command invoked on Csp Subarray.")
+
+            # Set device state
             tango_dev.set_status("device turned off successfully")
-            model.logger.info("heathState transitioned to OK state")
+            tango_dev.set_state(DevState.OFF)
+            tango_dev.push_change_event("State", tango_dev.get_state())
+            model.logger.info("Csp Master transitioned to the OFF state.")
+
         else:
             Except.throw_exception(
                 "Off Command Failed",
@@ -81,13 +116,20 @@ class OverrideCspMaster:
             return [[ResultCode.OK], ["CSP master is already in Standby state"]]
 
         if tango_dev.get_state() in _allowed_modes:
+            # Turn off CSP Subarrays
+            for i in range(1, 4):
+                subarray_fqdn = f"mid_csp/elt/subarray_0{i}"
+                subarray_dev_proxy = DeviceProxy(subarray_fqdn)
+                subarray_dev_proxy.command_inout_asynch(
+                    "Off", self.command_callback_method(model)
+                )
+            model.logger.info("Off command invoked on Csp Subarray.")
+
+            # Set device state
+            tango_dev.set_status("device turned off successfully")
             tango_dev.set_state(DevState.STANDBY)
-            csp_health_state = model.sim_quantities["healthState"]
-            set_enum(csp_health_state, "OK", model.time_func())
-            csp_health_state_enum = get_enum_int(csp_health_state, "OK")
-            tango_dev.push_change_event("healthState", csp_health_state_enum)
-            tango_dev.set_status("invoked Standby successfully")
-            model.logger.info("heathState transitioned to OK state")
+            tango_dev.push_change_event("State", tango_dev.get_state())
+            model.logger.info("Csp Master transitioned to the STANDBY state.")
         else:
             Except.throw_exception(
                 "STANDBY Command Failed",
@@ -104,6 +146,18 @@ def get_csp_master_sim(device_name):
     :return: tango.server.Device
     The Tango device class for csp Master
     """
+
+    logger_name = f"csp-master-{device_name}"
+    logger = logging.getLogger(logger_name)
+
+    ## Register simulator device
+    logger.info("registering device:%s", device_name)
+    server_name, instance = get_server_name().split("/")
+    logger.info("server name: %s, instance %s", server_name, instance)
+    tangodb = Database()
+    register_device(device_name, "CspMaster", server_name, instance, tangodb)
+    tangodb.put_device_property(device_name, {"polled_attr": ["State", "1000"]})
+
     sim_data_files = []
     sim_data_files.append(
         pkg_resources.resource_filename(

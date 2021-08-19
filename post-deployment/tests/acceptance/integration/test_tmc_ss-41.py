@@ -28,7 +28,6 @@ else:
 devices_to_log = [
     "ska_mid/tm_subarray_node/1",
     "mid_csp/elt/subarray_01",
-    "mid_csp_cbf/sub_elt/subarray_01",
     "mid_sdp/elt/subarray_1",
     "mid_d0001/elt/master",
     "mid_d0002/elt/master",
@@ -105,9 +104,6 @@ def test_multi_scan():
 
         # and run a new scan bsed on that configuration
         resource("mid_csp/elt/subarray_01").assert_attribute("obsState").equals("READY")
-        resource("mid_csp_cbf/sub_elt/subarray_01").assert_attribute("obsState").equals(
-            "READY"
-        )
         resource("mid_sdp/elt/subarray_1").assert_attribute("obsState").equals("READY")
         resource("ska_mid/tm_subarray_node/1").assert_attribute("obsState").equals(
             "READY"
@@ -123,9 +119,6 @@ def test_multi_scan():
                 resource("mid_csp/elt/subarray_01").assert_attribute("obsState").equals(
                     "READY"
                 )
-                resource("mid_csp_cbf/sub_elt/subarray_01").assert_attribute(
-                    "obsState"
-                ).equals("READY")
                 resource("mid_sdp/elt/subarray_1").assert_attribute("obsState").equals(
                     "READY"
                 )
