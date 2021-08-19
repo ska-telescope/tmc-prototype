@@ -30,7 +30,8 @@ from ska.base.commands import ResultCode
 class OverrideCspMaster:
     """Class for csp master simulator device"""
 
-    def action_on(self, model, tango_dev=None, data_input=None
+    def action_on(
+        self, model, tango_dev=None, data_input=None
     ):  # pylint: disable=W0613
         """Changes the State of the device to ON."""
         model.logger.info("Executing On command")
@@ -44,7 +45,9 @@ class OverrideCspMaster:
             for i in range(1, 4):
                 subarray_fqdn = f"mid_csp/elt/subarray_0{i}"
                 subarray_dev_proxy = DeviceProxy(subarray_fqdn)
-                subarray_dev_proxy.command_inout_asynch("On", self.command_callback_method(model))
+                subarray_dev_proxy.command_inout_asynch(
+                    "On", self.command_callback_method(model)
+                )
             model.logger.info("On command invoked on Csp Subarray.")
 
             # set health state
@@ -70,7 +73,8 @@ class OverrideCspMaster:
     def command_callback_method(self, model):
         model.logger.info("command callback for async command executed.")
 
-    def action_off(self, model, tango_dev=None, data_input=None
+    def action_off(
+        self, model, tango_dev=None, data_input=None
     ):  # pylint: disable=W0613
         """Changes the State of the device to OFF."""
         _allowed_modes = (DevState.ON, DevState.ALARM, DevState.STANDBY)
@@ -83,7 +87,9 @@ class OverrideCspMaster:
             for i in range(1, 4):
                 subarray_fqdn = f"mid_csp/elt/subarray_0{i}"
                 subarray_dev_proxy = DeviceProxy(subarray_fqdn)
-                subarray_dev_proxy.command_inout_asynch("Off", self.command_callback_method(model))
+                subarray_dev_proxy.command_inout_asynch(
+                    "Off", self.command_callback_method(model)
+                )
             model.logger.info("Off command invoked on Csp Subarray.")
 
             # Set device state
@@ -100,7 +106,8 @@ class OverrideCspMaster:
             )
         return [[ResultCode.OK], ["OFF command invoked successfully on simulator."]]
 
-    def action_standby(self, model, tango_dev=None, data_input=None
+    def action_standby(
+        self, model, tango_dev=None, data_input=None
     ):  # pylint: disable=W0613
         """Changes the State of the device to STANDBY."""
         _allowed_modes = (DevState.ALARM, DevState.OFF, DevState.ON)
@@ -113,7 +120,9 @@ class OverrideCspMaster:
             for i in range(1, 4):
                 subarray_fqdn = f"mid_csp/elt/subarray_0{i}"
                 subarray_dev_proxy = DeviceProxy(subarray_fqdn)
-                subarray_dev_proxy.command_inout_asynch("Off", self.command_callback_method(model))
+                subarray_dev_proxy.command_inout_asynch(
+                    "Off", self.command_callback_method(model)
+                )
             model.logger.info("Off command invoked on Csp Subarray.")
 
             # Set device state
@@ -137,18 +146,18 @@ def get_csp_master_sim(device_name):
     :return: tango.server.Device
     The Tango device class for csp Master
     """
-    
+
     logger_name = f"csp-master-{device_name}"
     logger = logging.getLogger(logger_name)
-    
+
     ## Register simulator device
-    logger.info("registering device:%s",device_name)
+    logger.info("registering device:%s", device_name)
     server_name, instance = get_server_name().split("/")
-    logger.info("server name: %s, instance %s",server_name,instance)
+    logger.info("server name: %s, instance %s", server_name, instance)
     tangodb = Database()
     register_device(device_name, "CspMaster", server_name, instance, tangodb)
     tangodb.put_device_property(device_name, {"polled_attr": ["State", "1000"]})
-    
+
     sim_data_files = []
     sim_data_files.append(
         pkg_resources.resource_filename(

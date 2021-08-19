@@ -78,8 +78,32 @@ class OverrideSdpSubarray(object):
             model.logger.info("ObsState trasnitioned to RESOURCING")
 
             time.sleep(1)
-            receive_address_value = json.dumps({"science_A":{"host":[[0,"192.168.0.1"],[400,"192.168.0.2"],[744,"192.168.0.3"],[1144,"192.168.0.4"]],"mac":[[0,"06-00-00-00-00-00"],[744,"06-00-00-00-00-01"]],"port":[[0,9000,1],[400,9000,1],[744,9000,1],[1144,9000,1]]},"calibration_B":{"host":[[0,"192.168.1.1"]],"port":[[0,9000,1]]}})
-            model.sim_quantities["receiveAddresses"].set_val(receive_address_value, model.time_func()) 
+            receive_address_value = json.dumps(
+                {
+                    "science_A": {
+                        "host": [
+                            [0, "192.168.0.1"],
+                            [400, "192.168.0.2"],
+                            [744, "192.168.0.3"],
+                            [1144, "192.168.0.4"],
+                        ],
+                        "mac": [[0, "06-00-00-00-00-00"], [744, "06-00-00-00-00-01"]],
+                        "port": [
+                            [0, 9000, 1],
+                            [400, 9000, 1],
+                            [744, 9000, 1],
+                            [1144, 9000, 1],
+                        ],
+                    },
+                    "calibration_B": {
+                        "host": [[0, "192.168.1.1"]],
+                        "port": [[0, 9000, 1]],
+                    },
+                }
+            )
+            model.sim_quantities["receiveAddresses"].set_val(
+                receive_address_value, model.time_func()
+            )
             tango_dev.push_change_event("receiveAddresses", receive_address_value)
             set_enum(obsstate_attribute, "IDLE", model.time_func())
             sdp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "IDLE")
@@ -219,8 +243,9 @@ class OverrideSdpSubarray(object):
             # create thread
             self.logger.info("Starting thread to to execute scan.")
             scan_thread = threading.Thread(
-            target=self.execute_scan(obsstate_attribute, model, tango_dev))
-            scan_thread.start() 
+                target=self.execute_scan(obsstate_attribute, model, tango_dev)
+            )
+            scan_thread.start()
 
         else:
             Except.throw_exception(
@@ -312,6 +337,7 @@ class OverrideSdpSubarray(object):
         tango_dev.push_change_event("obsState", sdp_subarray_obs_state_enum)
         tango_dev.set_status("ObsState in READY")
         model.logger.info("ObsState trasnitioned to READY")
+
 
 def get_enum_str(quantity):
     """Returns the enum label of an enumerated data type

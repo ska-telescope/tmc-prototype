@@ -39,7 +39,14 @@ from .simulator import get_sdp_master_sim
 
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additional_import
 
-__all__ = ["SdpMasterLeafNode", "main", "TelescopeOn", "TelescopeOff", "TelescopeStandby", "Disable"]
+__all__ = [
+    "SdpMasterLeafNode",
+    "main",
+    "TelescopeOn",
+    "TelescopeOff",
+    "TelescopeStandby",
+    "Disable",
+]
 
 
 class SdpMasterLeafNode(SKABaseDevice):
@@ -68,9 +75,7 @@ class SdpMasterLeafNode(SKABaseDevice):
     # -----------------
     # Device Properties
     # -----------------
-    SdpMasterFQDN = device_property(
-        dtype='str'
-    )
+    SdpMasterFQDN = device_property(dtype="str")
     # ----------
     # Attributes
     # ----------
@@ -91,7 +96,6 @@ class SdpMasterLeafNode(SKABaseDevice):
         doc="List of Processing Block devices.",
     )
 
-
     # ---------------
     # General methods
     # ---------------
@@ -100,6 +104,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         """
         A class for the SDP master's init_device() method"
         """
+
         def do(self):
             """
             Initializes the attributes and properties of the SdpMasterLeafNode.
@@ -121,10 +126,10 @@ class SdpMasterLeafNode(SKABaseDevice):
             self.this_server.device = device
 
             device.attr_map = {}
-            # Initialising Attributes 
-            device.attr_map["versionInfo"]=""
-            device.attr_map["activityMessage"]=""
-            device.attr_map["ProcessingBlockList"]= "test"
+            # Initialising Attributes
+            device.attr_map["versionInfo"] = ""
+            device.attr_map["activityMessage"] = ""
+            device.attr_map["ProcessingBlockList"] = "test"
 
             device._health_state = HealthState.OK  # Setting healthState to "OK"
             device._simulation_mode = (
@@ -135,24 +140,26 @@ class SdpMasterLeafNode(SKABaseDevice):
             device._build_state = "{},{},{}".format(
                 release.name, release.version, release.description
             )
-            standalone_mode = os.environ['STANDALONE_MODE']
-            self.logger.info("Device running in standalone_mode:%s",standalone_mode)
+            standalone_mode = os.environ.get("STANDALONE_MODE")
+            self.logger.info("Device running in standalone_mode:%s", standalone_mode)
             device._version_id = release.version
             ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
-            self.this_server.write_attr("activityMessage", const.STR_INIT_SUCCESS, False)
+            self.this_server.write_attr(
+                "activityMessage", const.STR_INIT_SUCCESS, False
+            )
             self.logger.info(const.STR_INIT_SUCCESS)
             return (ResultCode.OK, const.STR_INIT_SUCCESS)
 
     def always_executed_hook(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.always_executed_hook) ENABLED START #
-        """ Internal construct of TANGO. """
+        """Internal construct of TANGO."""
         # PROTECTED REGION END #    //  SdpMasterLeafNode.always_executed_hook
 
     def delete_device(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.delete_device) ENABLED START #
-        """ Internal construct of TANGO. """
+        """Internal construct of TANGO."""
         # PROTECTED REGION END #    //  SdpMasterLeafNode.delete_device
 
     # ------------------
@@ -161,7 +168,7 @@ class SdpMasterLeafNode(SKABaseDevice):
 
     def read_versionInfo(self):
         # PROTECTED REGION ID(SdpMasterLeafNode.versionInfo_read) ENABLED START #
-        """ Internal construct of TANGO. Version information of TANGO device."""
+        """Internal construct of TANGO. Version information of TANGO device."""
         return self.attr_map["versionInfo"]
         # PROTECTED REGION END #    //  SdpMasterLeafNode.versionInfo_read
 
@@ -244,7 +251,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         rtype:
             boolean
 
-        raises: 
+        raises:
             DevFailed if this command is not allowed to be run in current device state.
 
         """
@@ -275,7 +282,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         rtype:
             boolean
 
-        raises: 
+        raises:
             DevFailed if this command is not allowed to be run in current device state.
 
         """
@@ -296,7 +303,6 @@ class SdpMasterLeafNode(SKABaseDevice):
         handler = self.get_command_object("TelescopeOff")
         handler()
 
-    
     def is_telescope_standby_allowed(self):
         """
         Checks Whether this command is allowed to be run in current device state.
@@ -307,7 +313,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         rtype:
             boolean
 
-        raises: 
+        raises:
             DevFailed if this command is not allowed to be run in current device state.
 
         """
@@ -346,11 +352,12 @@ class SdpMasterLeafNode(SKABaseDevice):
 # Run server
 # ----------
 
+
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(SdpMasterLeafNode.main) ENABLED START #
     # Check if standalone mode is enabled
     try:
-        standalone_mode = os.environ['STANDALONE_MODE']
+        standalone_mode = os.environ["STANDALONE_MODE"]
     except KeyError:
         standalone_mode = "false"
 

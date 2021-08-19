@@ -14,14 +14,13 @@ annotations:
   app.gitlab.com/env: CI_ENVIRONMENT_SLUG
 
 global:
-  minikube: true
+  minikube: false
   tango_host: databaseds-tango-base-test:10000
   skatmc:
     registry: artefact.skao.int/ska-telescope
     image: ska-tmc
     tag: 0.8.5
     pullPolicy: IfNotPresent
-
 
   ##  Order of instances resolution ##
   # .Values.global.dishes & .Values.global.subarray_count
@@ -66,7 +65,6 @@ centralnodemid:
     image: ska-tmc-centralnode-mid
     tag: 0.2.12
     pullPolicy: IfNotPresent
-
 
 subarraynodemid:
   image:

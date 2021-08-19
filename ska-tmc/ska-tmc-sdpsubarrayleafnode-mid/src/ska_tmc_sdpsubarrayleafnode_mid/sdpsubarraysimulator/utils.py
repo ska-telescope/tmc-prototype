@@ -9,6 +9,7 @@ from tango_simlib.tango_sim_generator import (
     get_tango_device_server,
 )
 
+
 def get_tango_server_class(device_name):
     """Build and return the Tango device class for SdpSubarray
 
@@ -24,9 +25,9 @@ def get_tango_server_class(device_name):
     logger.info("Logging started for %s.", device_name)
 
     ## Register simulator device
-    logger.info("registering device: %s",device_name)
+    logger.info("registering device: %s", device_name)
     server_name, instance = get_server_name().split("/")
-    logger.info("server name: %s, instance %s",server_name,instance)
+    logger.info("server name: %s, instance %s", server_name, instance)
     tangodb = Database()
     register_device(device_name, "SdpSubarray", server_name, instance, tangodb)
     polling_attribute = {"polled_attr": ["receiveAddresses", "10000"]}
@@ -41,10 +42,11 @@ def get_tango_server_class(device_name):
     )
     sim_data_files.append(
         pkg_resources.resource_filename(
-            "ska_tmc_sdpsubarrayleafnode_mid.sdpsubarraysimulator", "sdp_subarray_SimDD.json"
+            "ska_tmc_sdpsubarrayleafnode_mid.sdpsubarraysimulator",
+            "sdp_subarray_SimDD.json",
         )
     )
-    
+
     # Add a filter with this device name
     device_name_tag = f"tango-device:{device_name}"
 
@@ -52,8 +54,8 @@ def get_tango_server_class(device_name):
         def filter(self, record):
             record.tags = device_name_tag
             return True
-    
-    configure_logging(tags_filter=TangoDeviceTagsFilter)    
+
+    configure_logging(tags_filter=TangoDeviceTagsFilter)
 
     configure_args = {"logger": logger}
     # test/nodb/sdpsubarray is used for testing

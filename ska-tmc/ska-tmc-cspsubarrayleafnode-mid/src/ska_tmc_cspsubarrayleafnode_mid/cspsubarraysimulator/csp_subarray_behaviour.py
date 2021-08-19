@@ -162,7 +162,10 @@ class OverrideCspSubarray(object):
                 "Not allowed in current Obstate.",
                 ErrSeverity.WARN,
             )
-        return [[ResultCode.OK], ["Release_all_resources command successful on simulator."]]
+        return [
+            [ResultCode.OK],
+            ["Release_all_resources command successful on simulator."],
+        ]
 
     def action_configure(
         self, model, tango_dev=None, data_input=None
@@ -209,9 +212,10 @@ class OverrideCspSubarray(object):
             # create thread
             self.logger.info("Starting thread to to execute scan.")
             scan_thread = threading.Thread(
-            target=self.execute_scan(obsstate_attribute, model, tango_dev))
-            scan_thread.start() 
-            
+                target=self.execute_scan(obsstate_attribute, model, tango_dev)
+            )
+            scan_thread.start()
+
         else:
             Except.throw_exception(
                 "Scan Command Failed",
@@ -303,6 +307,7 @@ class OverrideCspSubarray(object):
         tango_dev.set_status("ObsState in READY")
         model.logger.info("ObsState trasnitioned to READY")
 
+
 def get_enum_str(quantity):
     """Returns the enum label of an enumerated data type
 
@@ -314,6 +319,7 @@ def get_enum_str(quantity):
     EnumClass = enum.IntEnum("EnumLabels", quantity.meta["enum_labels"], start=0)
     return EnumClass(quantity.last_val).name
 
+
 def get_enum_int(quantity, label):
     """Returns the integer index value of an enumerated data type
     :param quantity: tango_simlib.quantities.Quantity
@@ -324,6 +330,7 @@ def get_enum_int(quantity, label):
         Current integer value of a DevEnum attribute
     """
     return quantity.meta["enum_labels"].index(label)
+
 
 def set_enum(quantity, label, timestamp):
     """Sets the quantity last_val attribute to index of label

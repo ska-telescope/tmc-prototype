@@ -120,6 +120,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         """
         A class for the CspSubarrayLeafNode's init_device() method"
         """
+
         def do(self):
             """
             Initializes the attributes and properties of the CspSubarrayLeafNode.
@@ -145,8 +146,8 @@ class CspSubarrayLeafNode(SKABaseDevice):
             )
             device._version_id = release.version
             device._versioninfo = " "
-            standalone_mode = os.environ['STANDALONE_MODE']
-            self.logger.info("Device running in standalone_mode:%s",standalone_mode)
+            standalone_mode = os.environ.get("STANDALONE_MODE")
+            self.logger.info("Device running in standalone_mode:%s", standalone_mode)
             # The IERS_A file needs to be downloaded each time when the MVP is deployed.
             delay_manager_obj = DelayManager.get_instance()
             try:
@@ -557,19 +558,16 @@ def main(args=None, **kwargs):
     """
 
     try:
-        standalone_mode = os.environ['STANDALONE_MODE']
-        print(f"standalone_mode: {standalone_mode}")
+        standalone_mode = os.environ["STANDALONE_MODE"]
     except KeyError:
         standalone_mode = "false"
 
     if standalone_mode == "true":
-        print("Running in standalone mode")
         csp_subarray_simulator_list = []
         csp_subarray_simulator_list.append(csp_subarray_simulator())
         csp_subarray_simulator_list.append(CspSubarrayLeafNode)
         ret_val = run(csp_subarray_simulator_list, args=args, **kwargs)
     else:
-        print("Running in normal mode")
         ret_val = run((CspSubarrayLeafNode,), args=args, **kwargs)
 
     return ret_val
