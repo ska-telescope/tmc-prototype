@@ -30,7 +30,9 @@ k8s_test = tar -c post-deployment/ | \
 		--image=$(IMAGE_TO_TEST) \
 		--serviceaccount=$(TESTING_ACCOUNT) -- \
 		/bin/bash -c "mkdir skatmc && tar xv --directory skatmc --strip-components 1 --warning=all && cd skatmc && \
-		make KUBE_NAMESPACE=$(KUBE_NAMESPACE) HELM_RELEASE=$(HELM_RELEASE) TANGO_HOST=$(TANGO_HOST) MARK=$(MARK) COUNT=$(COUNT) CI_JOB_TOKEN=$(CI_JOB_TOKEN) $1 && \
+		make \
+			SKUID_URL=ska-ser-skuid-$(HELM_RELEASE)-svc.$(KUBE_NAMESPACE).svc.cluster.local:9870 \
+			KUBE_NAMESPACE=$(KUBE_NAMESPACE) HELM_RELEASE=$(HELM_RELEASE) TANGO_HOST=$(TANGO_HOST) MARK=$(MARK) COUNT=$(COUNT) CI_JOB_TOKEN=$(CI_JOB_TOKEN) $1 && \
 		tar -czvf /tmp/build.tgz build && \
 		echo '~~~~BOUNDARY~~~~' && \
 		cat /tmp/build.tgz | base64 && \

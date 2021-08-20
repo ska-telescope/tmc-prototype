@@ -2,6 +2,7 @@
 
 {{ $default_tango_host := printf "%s-%s" "databaseds-tango-base-" .Release.Name }}
 {{ $tango_host := tpl (coalesce .Values.global.tango_host .Values.tango_host $default_tango_host | toString) . }}
+{{ $SKUID_URL := tpl (coalesce .Values.global.SKUID_URL .Values.SKUID_URL | toString) . }}
 {{ $dsconfig := coalesce .Values.global.dsconfig .Values.dsconfig}}
 {{ $itango := coalesce .Values.global.itango .Values.itango}}
 {{ $alarmhandler := coalesce .Values.global.alarmhandler .Values.alarmhandler}}
@@ -51,6 +52,8 @@ spec:
           env:
           - name: TANGO_HOST
             value: {{ $tango_host }}
+          - name: SKUID_URL
+            value: {{ $SKUID_URL }}
       containers:
       - name: configure-alarm
         image: "{{ $itango.image.registry }}/{{ $itango.image.image }}:{{ $itango.image.tag }}"
