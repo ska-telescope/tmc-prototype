@@ -10,7 +10,7 @@
 """Release information for Python Package"""
 
 name = """ska-tmc-centralnode-low"""
-version = "0.8.5"
+version = "0.8.6"
 version_info = version.split(".")
 description = """Central Node low is a coordinator of the complete M&C system."""
 author = "Team NCRA"
