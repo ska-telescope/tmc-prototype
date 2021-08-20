@@ -74,6 +74,7 @@ def update_resource_config_file(file, disable_logging=False):
     if not disable_logging:
         LOGGER.info("READ file before update:" + str(data))
     client = SkuidClient(os.environ['SKUID_URL'])
+    print("client is :::::::::::::::::::::", str(client))
     # New type of id "eb_id" is used to distinguish between real SB and id used during testing
     eb_id = client.fetch_skuid("eb")
     data["sdp"]["eb_id"] = eb_id
