@@ -8,7 +8,7 @@
 """Release information for Python Package"""
 
 name = """ska-tmc"""
-version = "0.8.5"
+version = "0.8.6"
 version_info = version.split(".")
 description = (
     """A package consisting of Telescope Monitoring and Control Functionalty."""

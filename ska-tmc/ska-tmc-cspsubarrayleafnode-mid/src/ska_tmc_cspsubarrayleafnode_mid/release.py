@@ -10,7 +10,7 @@
 """Release information for Python Package"""
 
 name = """ska-tmc-cspsubarrayleafnode-mid"""
-version = "0.8.5"
+version = "0.8.6"
 version_info = version.split(".")
 description = """"""
 author = "Team NCRA"
