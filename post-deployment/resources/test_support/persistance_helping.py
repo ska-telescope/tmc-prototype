@@ -74,7 +74,6 @@ def update_resource_config_file(file, disable_logging=False):
     if not disable_logging:
         LOGGER.info("READ file before update:" + str(data))
     client = SkuidClient(os.environ['SKUID_URL'])
-    print("client is :::::::::::::::::::::", str(client))
     # New type of id "eb_id" is used to distinguish between real SB and id used during testing
     eb_id = client.fetch_skuid("eb")
     data["sdp"]["eb_id"] = eb_id
@@ -90,34 +89,8 @@ def update_resource_config_file(file, disable_logging=False):
                     data["sdp"]["processing_blocks"][i]["dependencies"][0]["pb_id"] = \
                     data["sdp"]["processing_blocks"][i - 1]["pb_id"]
     LOGGER.info(data)
-    # data["sdp"]["eb_id"] = inc_from_old_nr(
-    #     data["sdp"]["eb_id"], disable_logging=disable_logging
-    # )
-    # # assumes index nrs are following inbrokenly from loweest nr to highest nr in the list
-    # # this means each indix needs to inc by their range = size of the list
-    # incremental = len(data["sdp"]["processing_blocks"])
-    # for index, item in enumerate(data["sdp"]["processing_blocks"]):
-    #     if index == 0:
-    #         data["sdp"]["processing_blocks"][index]["pb_id"] = inc_from_old_nr(
-    #             item["pb_id"], incremental, disable_logging
-    #         )
-    #         first_pb_id_num = data["sdp"]["processing_blocks"][index]["pb_id"]
-    #         next_pb_id_num = int(re.findall(r"\d{5}(?=$|-\D)", first_pb_id_num)[0])
-    #         if not disable_logging:
-    #             LOGGER.info("Last 5 digits of ID:" + str(next_pb_id_num))
-    #     else:
-    #         next_pb_id_num += 1
-    #         data["sdp"]["processing_blocks"][index]["pb_id"] = re.sub(
-    #             r"\d{5}(?=$|-\D)", str(next_pb_id_num).zfill(5), first_pb_id_num
-    #         )
-    #     if "dependencies" in item.keys():
-    #         for index2, item2 in enumerate(item["dependencies"]):
-    #             data["sdp"]["processing_blocks"][index]["dependencies"][index2][
-    #                 "pb_id"
-    #             ] = data["sdp"]["processing_blocks"][0]["pb_id"]
     with open(file, "w") as f:
         json.dump(data, f)
-        # f.write(json.dump(data))
     if not disable_logging:
         LOGGER.info(
             "________ AssignResources Updated string for next iteration_______"

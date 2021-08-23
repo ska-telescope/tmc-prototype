@@ -10,7 +10,7 @@
   },
   "sdp": {
     "interface": "https://schema.skao.int/ska-sdp-assignres/0.3",
-    "eb_id": "eb-mvp01-20200325-09059",
+    "eb_id": "",
     "max_length": 100.0,
     "scan_types": [
       {
@@ -116,7 +116,7 @@
     ],
     "processing_blocks": [
       {
-        "pb_id": "pb-mvp01-20200325-09059",
+        "pb_id": "",
         "workflow": {
           "kind": "realtime",
           "name": "test_receive_addresses",
