@@ -18,15 +18,6 @@ def inc_from_old_nr(oldnr, incremental=1, disable_logging=False):
     # TODO : Commenting this logic to generate the number inc by 1
     if not disable_logging:
         LOGGER.info("Old nr:" + str(oldnr))
-    # with 1 increment in id value
-    # inc =  int(re.findall(r'\d{5}(?=$|-\D)',oldnr)[0])
-    # LOGGER.info("Last 5 digits of ID:" + str(inc))
-    # old_inc = '{:05d}'.format(inc+incremental)
-    # LOGGER.info("With inc by 1 logic updated increamented ID: " + str(old_inc))
-    # random.seed(datetime.now())
-    # new_inc = f'{choice(range(0,99999)):05d}'
-    # (dt, micro) = datetime.utcnow().strftime('%S.%f').split('.')
-    # new_inc = "%s%03d" % (dt, int(micro) / 1000)
     new_inc = datetime.utcnow().strftime("%M%3S")
     if not disable_logging:
         LOGGER.info(
