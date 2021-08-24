@@ -97,10 +97,6 @@ def update_resource_config_file(file, disable_logging=False):
             + str(data)
         )
         LOGGER.info("________ SDP block is_______" + str(data["sdp"]))
-    with open(file, "r") as f:
-        data1 = json.load(f)
-    if not disable_logging:
-        LOGGER.info("READ file after update:" + str(data1))
     return data["sdp"]
 
 
