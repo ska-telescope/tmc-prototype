@@ -63,7 +63,7 @@ centralnodemid:
   image:
     registry: artefact.skao.int/ska-telescope
     image: ska-tmc-centralnode-mid
-    tag: 0.2.13
+    tag: 0.2.14
     pullPolicy: Always
 
 subarraynodemid:
