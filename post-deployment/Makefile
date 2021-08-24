@@ -44,7 +44,6 @@ test_multiple_runs: install
 install:
 	pip3 install -r test_requirements.txt
 
-
 setup_ipython:
 	ipython profile create &&  \
 	cp resources/ipython_config.py /home/tango/.ipython/profile_default/ipython_config.py 
