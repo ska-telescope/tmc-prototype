@@ -427,7 +427,7 @@ test-mid:
      - kubectl get namespace
      - bash scripts/gitlab_section.sh creds "Create K8s Credentials"
        apt-get -y update && apt-get install -y curl ca-certificates jq --no-install-recommends
-     - curl -s https://gitlab.com/ska-telescope/templates-repository/-/raw/master/scripts/namespace_auth.sh | bash -s "ci-svc-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH" "ci-ska-tmc-$CI_COMMIT_BRANCH-mid" "ci-ska-tmc-$CI_COMMIT_BRANCH-mid-sdp" || true
+     - curl -s https://gitlab.com/ska-telescope/templates-repository/-/raw/master/scripts/namespace_auth.sh | bash -s "ci-svc-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH" "ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-mid" "ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-mid-sdp" || true
    script:
      - kubectl version
      - make clean
