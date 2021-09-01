@@ -123,24 +123,34 @@ class TestMpiDshModel:
         assert dish_override.desired_pointings == current_pointings
 
     def test_pointing_state_reports_track_when_on_target(self, provision_setup):
+        def _request_track(device_model, dish_override):
+            now = time.time()
+            # ensure dish is in allowed mode before requesting track
+            # track command will change pointing state to slew
+            set_enum(device_model.sim_quantities["dishMode"], "OPERATE", now)
+            dish_override.action_track(device_model)
+            # update pointing state to TRACK if dish is on target, otherwise report slew
+            dish_override.update_movement_attributes(device_model, now)
+            current_pointing_state = get_enum_str(
+                device_model.sim_quantities["pointingState"]
+            )
+            return current_pointing_state
+
         device_model, dish_override = provision_setup
-        now = time.time()
+
+        # ensure pointing state reports TRACK for requested and
+        # actual position default values of AzEl(0, 30)
+        current_pointing_state = _request_track(device_model, dish_override)
+        assert current_pointing_state == "TRACK"
+
+        # ensure pointing state reports SLEW when the dish is not on target
         dish_override.requested_position = AzEl(azim=10.0, elev=40.0)
-        # ensure dish is in allowed mode before requesting track and
-        # check pointing state is SLEW
-        set_enum(device_model.sim_quantities["dishMode"], "OPERATE", now)
-        dish_override.action_track(device_model)
-        current_pointing_state = get_enum_str(
-            device_model.sim_quantities["pointingState"]
-        )
+        current_pointing_state = _request_track(device_model, dish_override)
         assert current_pointing_state == "SLEW"
 
         # move the dish to the desired position and check that pointing state is TRACK
         dish_override.actual_position = AzEl(azim=10.0, elev=40.0)
-        dish_override.update_movement_attributes(device_model, now)
-        current_pointing_state = get_enum_str(
-            device_model.sim_quantities["pointingState"]
-        )
+        current_pointing_state = _request_track(device_model, dish_override)
         assert current_pointing_state == "TRACK"
 
     def test_achieved_pointing_changes_when_dish_is_stowing(self, provision_setup):
