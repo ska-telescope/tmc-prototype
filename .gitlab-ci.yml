@@ -23,7 +23,6 @@ before_script:
 
 stages:
   - build
-  - unit-test
   - test
   - linting
   - release
@@ -392,16 +391,16 @@ build ska-dish-master-mid wheel for development: # Executed on a commit
     paths:
       - ./ska-tmc/ska-dish-master-mid/dist/
 
-unit tests:
-  image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
-  stage: unit-test
-  tags:
-    - docker-executor
-  script:
-    - make unit-test
-  artifacts:
-    paths:
-      - ./build
+#unit tests:
+#  image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
+#  stage: unit-test
+#  tags:
+#    - docker-executor
+#  script:
+#    - make unit-test
+#  artifacts:
+#    paths:
+#      - ./build
 
 build-image:
   stage: build
@@ -426,6 +425,9 @@ test-mid:
    image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
    before_script:
      - kubectl get namespace
+     - bash scripts/gitlab_section.sh creds "Create K8s Credentials"
+       apt-get -y update && apt-get install -y curl ca-certificates jq --no-install-recommends
+     - curl -s https://gitlab.com/ska-telescope/templates-repository/-/raw/master/scripts/namespace_auth.sh | bash -s "ci-svc-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH" "ci-ska-tmc-$CI_COMMIT_BRANCH-mid" "ci-ska-tmc-$CI_COMMIT_BRANCH-mid-sdp" || true
    script:
      - kubectl version
      - make clean
