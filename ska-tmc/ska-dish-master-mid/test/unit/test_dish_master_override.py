@@ -125,6 +125,7 @@ class TestMpiDshModel:
     def test_pointing_state_reports_track_when_on_target(self, provision_setup):
         device_model, dish_override = provision_setup
         now = time.time()
+        dish_override.requested_position = AzEl(azim=10.0, elev=40.0)
         # ensure dish is in allowed mode before requesting track and
         # check pointing state is SLEW
         set_enum(device_model.sim_quantities["dishMode"], "OPERATE", now)
@@ -135,7 +136,6 @@ class TestMpiDshModel:
         assert current_pointing_state == "SLEW"
 
         # move the dish to the desired position and check that pointing state is TRACK
-        dish_override.requested_position = AzEl(azim=10.0, elev=40.0)
         dish_override.actual_position = AzEl(azim=10.0, elev=40.0)
         dish_override.update_movement_attributes(device_model, now)
         current_pointing_state = get_enum_str(
