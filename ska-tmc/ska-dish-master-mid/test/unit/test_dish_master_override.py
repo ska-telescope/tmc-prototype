@@ -131,9 +131,7 @@ class TestMpiDshModel:
             dish_override.action_track(device_model)
             # update pointing state to TRACK if dish is on target, otherwise report slew
             dish_override.update_movement_attributes(device_model, now)
-            current_pointing_state = get_enum_str(
-                device_model.sim_quantities["pointingState"]
-            )
+            current_pointing_state = get_enum_str(device_model.sim_quantities["pointingState"])
             return current_pointing_state
 
         device_model, dish_override = provision_setup
@@ -176,7 +174,7 @@ class TestMpiDshModel:
             dish_far_from_target = not (stow_position - current_el == pytest.approx(1, abs=1))
             time.sleep(1)
             if timeout < start_time:
-                raise(Exception("Timeout occurred"))
+                raise Exception("Timeout occurred")
 
         current_az = device_model.sim_quantities["achievedPointing"].last_val[1]
         current_el = device_model.sim_quantities["achievedPointing"].last_val[2]
