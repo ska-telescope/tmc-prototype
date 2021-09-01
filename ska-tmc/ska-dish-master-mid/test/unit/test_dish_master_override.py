@@ -123,7 +123,7 @@ class TestMpiDshModel:
         assert dish_override.desired_pointings == current_pointings
 
     def test_pointing_state_reports_track_when_on_target(self, provision_setup):
-        def _request_track(device_model, dish_override):
+        def _update_pointing_state(device_model, dish_override):
             now = time.time()
             # ensure dish is in allowed mode before requesting track
             # track command will change pointing state to slew
@@ -140,17 +140,17 @@ class TestMpiDshModel:
 
         # ensure pointing state reports TRACK for requested and
         # actual position default values of AzEl(0, 30)
-        current_pointing_state = _request_track(device_model, dish_override)
+        current_pointing_state = _update_pointing_state(device_model, dish_override)
         assert current_pointing_state == "TRACK"
 
         # ensure pointing state reports SLEW when the dish is not on target
         dish_override.requested_position = AzEl(azim=10.0, elev=40.0)
-        current_pointing_state = _request_track(device_model, dish_override)
+        current_pointing_state = _update_pointing_state(device_model, dish_override)
         assert current_pointing_state == "SLEW"
 
         # move the dish to the desired position and check that pointing state is TRACK
         dish_override.actual_position = AzEl(azim=10.0, elev=40.0)
-        current_pointing_state = _request_track(device_model, dish_override)
+        current_pointing_state = _update_pointing_state(device_model, dish_override)
         assert current_pointing_state == "TRACK"
 
     def test_achieved_pointing_changes_when_dish_is_stowing(self, provision_setup):
