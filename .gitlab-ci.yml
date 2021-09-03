@@ -436,8 +436,8 @@ test-mid:
      - make smoketest
      - make test MARK=mid COUNT=1 && [ -f "build/report.xml" ]
    after_script:
-     - make uninstall-chart
-     - make clean
+    #  - make uninstall-chart
+    #  - make clean
     #  - make delete_namespace-sdp
     #  - make delete_namespace
      - mkdir -p build
