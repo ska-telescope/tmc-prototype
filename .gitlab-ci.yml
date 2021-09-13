@@ -463,6 +463,9 @@ test-low:
   image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   before_script:
     - kubectl get namespace
+    - bash scripts/gitlab_section.sh creds "Create K8s Credentials"
+      apt-get -y update && apt-get install -y curl ca-certificates jq --no-install-recommends
+    - curl -s https://gitlab.com/ska-telescope/templates-repository/-/raw/master/scripts/namespace_auth.sh | bash -s "ci-svc-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH" "ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-low" "ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-low-sdp" || true
   script:
     - kubectl version
     - make clean
@@ -480,7 +483,7 @@ test-low:
   environment:
     name: test
     kubernetes:
-      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-low
+      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-low
   artifacts:
     name: "$CI_PROJECT_NAME-$CI_JOB_ID"
     paths:
