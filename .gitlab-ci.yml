@@ -425,13 +425,13 @@ test-mid:
    image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
    before_script:
      - kubectl get namespace
-     - bash scripts/gitlab_section.sh creds "Create K8s Credentials"
-       apt-get -y update && apt-get install -y curl ca-certificates jq --no-install-recommends
-     - curl -s https://gitlab.com/ska-telescope/templates-repository/-/raw/master/scripts/namespace_auth.sh | bash -s "ci-svc-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH" "ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-mid" "ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-mid-sdp" || true
    script:
      - kubectl version
      - make clean
      - make install-chart MINIKUBE=false
+     - bash scripts/gitlab_section.sh creds "Create K8s Credentials"
+       apt-get -y update && apt-get install -y curl ca-certificates jq --no-install-recommends
+     - curl -s https://gitlab.com/ska-telescope/templates-repository/-/raw/master/scripts/namespace_auth.sh | bash -s "ci-svc-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH" "ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-mid" "ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-mid-sdp" || true
      - make wait
      - make smoketest
      - make test MARK=mid COUNT=1 && [ -f "build/report.xml" ]
@@ -463,13 +463,13 @@ test-low:
   image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   before_script:
     - kubectl get namespace
-    - bash scripts/gitlab_section.sh creds "Create K8s Credentials"
-      apt-get -y update && apt-get install -y curl ca-certificates jq --no-install-recommends
-    - curl -s https://gitlab.com/ska-telescope/templates-repository/-/raw/master/scripts/namespace_auth.sh | bash -s "ci-svc-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH" "ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-low" "ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-low-sdp" || true
   script:
     - kubectl version
     - make clean
     - make install-chart MINIKUBE=false HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
+    - bash scripts/gitlab_section.sh creds "Create K8s Credentials"
+      apt-get -y update && apt-get install -y curl ca-certificates jq --no-install-recommends
+    - curl -s https://gitlab.com/ska-telescope/templates-repository/-/raw/master/scripts/namespace_auth.sh | bash -s "ci-svc-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH" "ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-low" "ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-low-sdp" || true
     - make wait
     - make smoketest
     - make test MARK=low COUNT=1 && [ -f "build/report.xml" ]
