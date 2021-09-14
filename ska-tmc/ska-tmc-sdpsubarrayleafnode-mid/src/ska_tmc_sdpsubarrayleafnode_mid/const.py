@@ -12,6 +12,8 @@ CMD_TELESCOPE_ON = "TelescopeOn"
 CMD_TELESCOPE_OFF = "TelescopeOff"
 CMD_ON = "On"
 CMD_OFF = "Off"
+CMD_RESET = "Reset"
+
 
 # #Error messages
 ERR_INIT_PROP_ATTR_CN = (
@@ -19,6 +21,7 @@ ERR_INIT_PROP_ATTR_CN = (
     "on Sdp Subarray Leaf Node Node device."
 )
 ERR_INVALID_JSON = "Invalid JSON format"
+ERR_RESET_INVOKING_CMD = "Error while invoking Reset command on CSP Subarray."
 ERR_JSON_KEY_NOT_FOUND = "JSON key not found "
 ERR_ENDSCAN_INVOKING_CMD = "Error while invoking EndScan command on SDP Subarray."
 ERR_END_INVOKING_CMD = "Error while invoking End command on SDP Subarray."
@@ -39,6 +42,7 @@ ERR_INVALID_JSON_CONFIG = (
 ERR_INVALID_JSON_SCAN = (
     "Invalid JSON format while invoking Scan command on SDP Subarray."
 )
+ERR_UNABLE_RESET_CMD = "Unable to invoke Reset command"
 ERR_DEVICE_NOT_IN_SCAN = "SdpSubarray is not in SCANNING state."
 ERR_DEVICE_NOT_IN_EMPTY_IDLE = "SdpSubarray is not in EMPTY/IDLE state."
 ERR_EXCEPT_CMD_CB = "Exception in CommandCallback: \n"
@@ -77,6 +81,7 @@ STR_HEALTH_STATE_UNKNOWN_VAL = (
     "SDP Subarray leaf healthState event returned unknown value \n"
 )
 STR_ERR_MSG = "Error message is: "
+STR_RESET_SUCCESS = "Reset command is invoked successfully on CSP Subarray."
 STR_INIT_SUCCESS = "SDP Subarray Leaf Node is initialized successfully."
 STR_FALSE = "False"
 STR_SDPSALN_INIT_SUCCESS = "SdpSubarrayLeafNode initialized successfully."
@@ -99,6 +104,7 @@ STR_OBSRESET_EXEC = "ObsReset command execution"
 STR_TELESCOPE_ON_EXEC = "TelescopeOn command execution"
 STR_TELESCOPE_OFF_EXEC = "TelescopeOff command execution"
 STR_OFF_EXEC = "Off command execution"
+STR_RESET_EXEC = "Reset command execution"
 STR_ON_EXEC = "On command execution"
 STR_ABORT_SUCCESS = "Abort invoked successfully on SdpSubarray."
 STR_RESTART_SUCCESS = "Restart invoked successfully on SdpSubarray."

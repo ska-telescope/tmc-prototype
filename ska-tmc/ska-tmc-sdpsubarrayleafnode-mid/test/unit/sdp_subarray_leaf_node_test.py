@@ -128,6 +128,16 @@ def test_on_should_command_with_callback_method(
     event_subscription_mock[const.CMD_ON](dummy_event)
     assert const.STR_COMMAND + const.CMD_ON in device_proxy.activityMessage
 
+def test_reset_should_command_sdp_subarray_to_off_when_it_is_in_fault(
+    mock_obstate_check, mock_sdp_subarray_proxy, mock_tango_server_helper
+):
+    device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
+    tango_client_obj.get_attribute.side_effect = Mock(return_value = ObsState.FAULT)
+    device_proxy.Off()
+    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(
+        const.CMD_RESET, None, any_method(with_name="reset_cmd_ended_cb")
+    )
+
 
 def test_off_should_command_sdp_subarray_to_stop(mock_sdp_subarray_proxy, mock_tsh):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
