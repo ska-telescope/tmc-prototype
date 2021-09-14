@@ -23,8 +23,8 @@ before_script:
 
 stages:
   - build
-  - test
   - clean
+  - test
   - linting
   - release
   - publish
