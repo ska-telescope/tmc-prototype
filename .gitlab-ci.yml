@@ -443,7 +443,7 @@ test-mid:
      name: test
      kubernetes:
        namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-mid
-     on_stop: uninstall_tmc-mid
+     on_stop: tmc-mid_uninstall
      auto_stop_in: 2 hours
    artifacts:
      name: "$CI_PROJECT_NAME-$CI_JOB_ID"
@@ -453,10 +453,11 @@ test-mid:
        junit: build/report.xml
      when: always
 
-uninstall_tmc-mid:
+tmc-mid_uninstall:
   stage: clean
   tags:
     - k8srunner
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   script:
     - make uninstall-chart
     - make clean
@@ -496,7 +497,7 @@ test-low:
     name: test
     kubernetes:
       namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-low
-    on_stop: uninstall_tmc-low
+    on_stop: tmc-low_uninstall
     auto_stop_in: 2 hours
   artifacts:
     name: "$CI_PROJECT_NAME-$CI_JOB_ID"
@@ -505,10 +506,11 @@ test-low:
     reports:
       junit: build/report.xml
 
-uninstall_tmc-low:
+tmc-low_uninstall:
   stage: clean
   tags:
     - k8srunner
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   script:
     - make uninstall-chart HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
     - make clean
