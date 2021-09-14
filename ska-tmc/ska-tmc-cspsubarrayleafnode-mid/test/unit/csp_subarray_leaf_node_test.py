@@ -549,6 +549,15 @@ def test_start_scan_should_not_command_csp_subarray_to_start_scan_when_it_is_idl
         device_proxy.StartScan(scan_input_str)
     assert const.ERR_DEVICE_NOT_READY in str(df.value)
 
+def test_reset_should_command_csp_subarray_to_off_when_it_is_in_fault(
+    mock_obstate_check, mock_csp_subarray_proxy, mock_tango_server_helper
+):
+    device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
+    tango_client_obj.get_attribute.side_effect = Mock(return_value = ObsState.FAULT)
+    device_proxy.Off()
+    tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(
+        const.CMD_RESET, None, any_method(with_name="reset_cmd_ended_cb")
+    )
 
 def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):
     fake_event = Mock()
