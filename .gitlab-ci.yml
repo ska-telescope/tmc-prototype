@@ -515,9 +515,7 @@ tmc-low_uninstall:
   image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   before_script:
     - kubectl get namespace
-    - cd ./charts/ska-tmc-low
-    - helm dependency update
-    - cd ../../
+    - helm list -n ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-low
   script:
     - make uninstall-chart HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
     - make clean
