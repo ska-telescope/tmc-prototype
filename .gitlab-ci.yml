@@ -518,6 +518,8 @@ tmc-low_uninstall:
     - helm list -n ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-low
   script:
     - make uninstall-chart HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
+    - kubectl -n ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-low delete pods,svc,daemonsets,deployments,replicasets,statefulsets,cronjobs,jobs,ingresses,configmaps --all
+    - kubectl -n ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-low-sdp delete pods,svc,daemonsets,deployments,replicasets,statefulsets,cronjobs,jobs,ingresses,configmaps --all
     - make clean
     - make delete_namespace-sdp
     - make delete_namespace
