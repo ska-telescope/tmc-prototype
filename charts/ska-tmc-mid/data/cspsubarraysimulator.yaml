@@ -1,0 +1,52 @@
+name: "cspsubaraysimulator-{{.Release.Name}}"
+function: observation-execution
+domain: subarray
+instances: ["01", "02", "03"]
+command: "CspSubarraySimulatorDS"
+server:
+  name: "CspSubarraySimulatorDS"
+  instances:
+  {{- range  .Values.coalesced_subarray_devices }}
+    - name: "{{ . }}"
+      classes:
+        - name: "CspSubarraySimulator"
+          devices:
+            - name: "mid_csp/elt/subarray_{{ . }}"
+              properties:
+                - name: "SkaLevel"
+                  values:
+                    - "3"
+                - name: "LoggingTargetsDefault"
+                  values:
+                    - "tango::logger"
+                - name: "LoggingLevelDefault"
+                  values:
+                    - "5"
+                - name: "polled_attr"
+                  values:
+                    - "healthstate"
+                    - "1000"
+                    - "delayModel"
+                    - "1000"
+              attribute_properties:
+                - attribute: "healthState"
+                  properties:
+                    - name: "abs_change"
+                      values:
+                        - "-1"
+                        - "1"
+                - attribute: "obsState"
+                  properties:
+                    - name: "abs_change"
+                      values:
+                        - "-1"
+                        - "1"
+  {{- end }}
+# depends_on: 
+#   - device: sys/database/2
+image:
+  registry: "{{.Values.global.skatmc.registry}}"
+  image: "{{.Values.global.skatmc.image}}"
+  tag: "{{.Values.global.skatmc.tag}}"
+  pullPolicy: "{{.Values.global.skatmc.pullPolicy}}"
+    

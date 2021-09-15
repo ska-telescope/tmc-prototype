@@ -21,24 +21,21 @@ readme_filename = os.path.join(setup_dir, "README.rst")
 with open(readme_filename) as file:
     long_description = file.read()
 
-release_filename = os.path.join(setup_dir, "src", "ska_tmc_cspsubarrayleafnode_mid", "release.py")
-exec(open(release_filename).read())
-
 setup(
-    name=name,
-    version=version,
+    name= "simulators",
+    version= "0.0.0",
     description="",
-    packages=find_packages(where="src"),
-    package_dir={"": "src"},
+    packages=find_packages(where="."),
     package_data={
         "": [
-            "ska_antennas.txt",
+            "cspsubarraysimulator.csp_subarray_SimDD.json",
+            "cspsubarraysimulator.CspSubarray.fgo",
         ]
     },
     test_suite="test",
     entry_points={
         "console_scripts": [
-            "CspSubarrayLeafNodeDS=ska_tmc_cspsubarrayleafnode_mid.csp_subarray_leaf_node:main"
+            "CspSubarraySimulatorDS=cspsubarraysimulator.csp_subarray:main",
         ]
     },
     author="Team NCRA",
@@ -47,7 +44,7 @@ setup(
     long_description=long_description,
     url="https://www.skaobservatory.org",
     platforms="Linux",
-    install_requires=["pytango==9.3.3", "mock", "astropy>=4.1", "katpoint==1.0a1"],
+    install_requires=["pytango==9.3.3", "mock"],
     # test_suite='test',
     setup_requires=[
         # dependency for `python setup.py test`

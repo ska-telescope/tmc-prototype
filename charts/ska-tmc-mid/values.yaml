@@ -19,8 +19,8 @@ global:
   skatmc:
     registry: artefact.skao.int/ska-telescope
     image: ska-tmc
-    tag: 0.8.6
-    pullPolicy: IfNotPresent
+    tag: 0.8.6-dirty
+    pullPolicy: Never
 
   ##  Order of instances resolution ##
   # .Values.global.dishes & .Values.global.subarray_count
@@ -98,6 +98,9 @@ deviceServers:
   cspsubarrayleafnode:
     instances: ["01", "02", "03"]
     file: "data/cspsubarrayleafnode.yaml"
+  cspsubarraysimulator:
+    instances: ["01", "02", "03"]
+    file: "data/cspsubarraysimulator.yaml"
   cspmasterleafnode:
     instances: ["01"]
     file: "data/cspmasterleafnode.yaml"
