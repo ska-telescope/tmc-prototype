@@ -222,4 +222,4 @@ doc_html/
 
 # Helm Charts
 Chart.lock
-# charts/*/charts/*
+charts/*/charts/*
