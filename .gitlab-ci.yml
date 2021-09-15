@@ -477,6 +477,8 @@ test-low:
     - build-image
   tags:
     - k8srunner
+  variables:
+    HELM_RELEASE: "test-low-$CI_COMMIT_BRANCH"
   image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   before_script:
     - kubectl get namespace
@@ -491,16 +493,14 @@ test-low:
     - make smoketest
     - make test MARK=low COUNT=1 && [ -f "build/report.xml" ]
   after_script:
-    - make uninstall-chart HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
-    - make clean
-    - make delete_namespace-sdp
-    - make delete_namespace
     - mkdir -p build
     - ls -la build
   environment:
     name: test
     kubernetes:
       namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-low
+    on_stop: tmc-low_uninstall
+    auto_stop_in: 2 hours
   artifacts:
     name: "$CI_PROJECT_NAME-$CI_JOB_ID"
     paths:
@@ -508,30 +508,32 @@ test-low:
     reports:
       junit: build/report.xml
 
-#tmc-low_uninstall:
-#  stage: clean
-#  dependencies:
-#    - build-image
-#  tags:
-#    - k8srunner
-#  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
-#  before_script:
-#    - kubectl get namespace
-#    - helm list -n ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-low
-#  script:
-#    - make uninstall-chart HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
-#    - kubectl -n ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-low delete pods,svc,daemonsets,deployments,replicasets,statefulsets,cronjobs,jobs,ingresses,configmaps --all
-#    - kubectl -n ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-low-sdp delete pods,svc,daemonsets,deployments,replicasets,statefulsets,cronjobs,jobs,ingresses,configmaps --all
-#    - make clean
-#    - make delete_namespace-sdp
-#    - make delete_namespace
-#  environment:
-#    name: test
-#    kubernetes:
-#      # This repetition is needed for gitlab to parse the namespace correctly
-#      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-low
-#    action: stop
-#  when: manual
+tmc-low_uninstall:
+  stage: clean
+  dependencies:
+    - build-image
+  tags:
+    - k8srunner
+  variables:
+    HELM_RELEASE: "test-low-$CI_COMMIT_BRANCH"
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
+  before_script:
+    - kubectl get namespace
+    - helm list -n ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-low
+  script:
+    - make uninstall-chart HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
+    - kubectl -n ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-low delete pods,svc,daemonsets,deployments,replicasets,statefulsets,cronjobs,jobs,ingresses,configmaps --all
+    - kubectl -n ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-low-sdp delete pods,svc,daemonsets,deployments,replicasets,statefulsets,cronjobs,jobs,ingresses,configmaps --all
+    - make clean
+    - make delete_namespace-sdp
+    - make delete_namespace
+  environment:
+    name: test
+    kubernetes:
+      # This repetition is needed for gitlab to parse the namespace correctly
+      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-low
+    action: stop
+  when: manual
 
 linting:
   stage: linting
