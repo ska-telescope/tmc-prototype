@@ -510,31 +510,6 @@ test-low:
     reports:
       junit: build/report.xml
 
-#tmc-low_uninstall:
-#  stage: clean
-#  dependencies:
-#    - build-image
-#  tags:
-#    - k8srunner
-#  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
-#  before_script:
-#    - kubectl get namespace
-#    - helm list -n ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-low
-#  script:
-#    - make uninstall-chart HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
-#    - kubectl -n ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-low delete pods,svc,daemonsets,deployments,replicasets,statefulsets,cronjobs,jobs,ingresses,configmaps --all
-#    - kubectl -n ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-low-sdp delete pods,svc,daemonsets,deployments,replicasets,statefulsets,cronjobs,jobs,ingresses,configmaps --all
-#    - make clean
-#    - make delete_namespace-sdp
-#    - make delete_namespace
-#  environment:
-#    name: test
-#    kubernetes:
-#      # This repetition is needed for gitlab to parse the namespace correctly
-#      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_BRANCH-low
-#    action: stop
-#  when: manual
-
 linting:
   stage: linting
   image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
