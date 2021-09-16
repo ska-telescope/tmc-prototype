@@ -21,7 +21,7 @@ ERR_INIT_PROP_ATTR_CN = (
     "on Sdp Subarray Leaf Node Node device."
 )
 ERR_INVALID_JSON = "Invalid JSON format"
-ERR_RESET_INVOKING_CMD = "Error while invoking Reset command on CSP Subarray."
+ERR_RESET_INVOKING_CMD = "Error while invoking Reset command on SDP Subarray."
 ERR_JSON_KEY_NOT_FOUND = "JSON key not found "
 ERR_ENDSCAN_INVOKING_CMD = "Error while invoking EndScan command on SDP Subarray."
 ERR_END_INVOKING_CMD = "Error while invoking End command on SDP Subarray."
@@ -81,7 +81,7 @@ STR_HEALTH_STATE_UNKNOWN_VAL = (
     "SDP Subarray leaf healthState event returned unknown value \n"
 )
 STR_ERR_MSG = "Error message is: "
-STR_RESET_SUCCESS = "Reset command is invoked successfully on CSP Subarray."
+STR_RESET_SUCCESS = "Reset command is invoked successfully on SDP Subarray."
 STR_INIT_SUCCESS = "SDP Subarray Leaf Node is initialized successfully."
 STR_FALSE = "False"
 STR_SDPSALN_INIT_SUCCESS = "SdpSubarrayLeafNode initialized successfully."

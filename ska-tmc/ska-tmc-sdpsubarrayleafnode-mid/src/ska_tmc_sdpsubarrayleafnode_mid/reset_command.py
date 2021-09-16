@@ -10,10 +10,11 @@ from ska.base.control_model import ObsState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 from ska.base.commands import ResultCode
+from ska.base import SKABaseDevice
 
 from . import const
 
-class ResetCommand(BaseCommand.Reset):
+class ResetCommand(SKABaseDevice.ResetCommand):
     """
     A class for SDPSubarrayLeafNode's Reset() command.
 
