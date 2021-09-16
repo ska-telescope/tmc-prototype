@@ -481,8 +481,6 @@ test-low:
     - build-image
   tags:
     - k8srunner
-  variables:
-    HELM_RELEASE: "test-low-$CI_COMMIT_BRANCH"
   image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   before_script:
     - kubectl get namespace
