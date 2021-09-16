@@ -44,7 +44,7 @@ from .telescope_on_command import TelescopeOn
 from .telescope_off_command import TelescopeOff
 from .device_data import DeviceData
 from .exceptions import InvalidObsStateError
-from .sdpsubarraysimulator.sdp_subarray import sdp_subarray_simulator
+# from .sdpsubarraysimulator.sdp_subarray import sdp_subarray_simulator
 
 
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
@@ -592,18 +592,18 @@ def main(args=None, **kwargs):
     :return: SdpSubarrayLeafNode TANGO object
 
     """
-    try:
-        standalone_mode = os.environ["STANDALONE_MODE"]
-    except KeyError:
-        standalone_mode = "false"
+    # try:
+    #     standalone_mode = os.environ["STANDALONE_MODE"]
+    # except KeyError:
+    #     standalone_mode = "false"
 
-    if standalone_mode == "true":
-        sdp_subarray_simulator_list = []
-        sdp_subarray_simulator_list.append(sdp_subarray_simulator())
-        sdp_subarray_simulator_list.append(SdpSubarrayLeafNode)
-        ret_val = run(sdp_subarray_simulator_list, args=args, **kwargs)
-    else:
-        ret_val = run((SdpSubarrayLeafNode,), args=args, **kwargs)
+    # if standalone_mode == "true":
+    #     sdp_subarray_simulator_list = []
+    #     sdp_subarray_simulator_list.append(sdp_subarray_simulator())
+    #     sdp_subarray_simulator_list.append(SdpSubarrayLeafNode)
+    #     ret_val = run(sdp_subarray_simulator_list, args=args, **kwargs)
+    # else:
+    ret_val = run((SdpSubarrayLeafNode,), args=args, **kwargs)
 
     return ret_val
     # PROTECTED REGION END #    //  SdpSubarrayLeafNode.main

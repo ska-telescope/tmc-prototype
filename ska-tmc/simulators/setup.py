@@ -25,18 +25,25 @@ setup(
     name= "simulators",
     version= "0.0.0",
     description="",
-    packages=find_packages(where="."),
+    packages=find_packages(where="src"),
+    package_dir={"": "src"},
     package_data={
-        "": [
-            "cspsubarraysimulator.csp_subarray_SimDD.json",
-            "cspsubarraysimulator.CspSubarray.fgo",
+        "cspsubarraysimulator": [
+            "csp_subarray_SimDD.json",
+            "CspSubarray.fgo",
+        ],
+        "sdpsubarraysimulator": [
+            "sdp_subarray_SimDD.json",
+            "SdpSubarray.fgo",
         ]
     },
     test_suite="test",
     entry_points={
         "console_scripts": [
             "CspSubarraySimulatorDS=cspsubarraysimulator.csp_subarray:main",
+            "SdpSubarraySimulatorDS=sdpsubarraysimulator.sdp_subarray:main",
         ]
+        
     },
     author="Team NCRA",
     author_email="telmgt-internal@googlegroups.com",
@@ -44,15 +51,8 @@ setup(
     long_description=long_description,
     url="https://www.skaobservatory.org",
     platforms="Linux",
-    install_requires=["pytango==9.3.3", "mock"],
-    # test_suite='test',
-    setup_requires=[
-        # dependency for `python setup.py test`
-        "pytest-runner",
-        # dependencies for `python setup.py build_sphinx`
-        "sphinx",
-        "recommonmark",
-    ],
+    install_requires=["pytango==9.3.3", "mock", "katpoint"],
+    setup_requires=["pytest-runner", "sphinx", "recommonmark"],
     tests_require=[
         "pytest",
         "coverage",

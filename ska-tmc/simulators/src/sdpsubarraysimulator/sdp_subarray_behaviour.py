@@ -13,6 +13,9 @@ import threading
 from tango import DevState, Except, ErrSeverity
 
 # Additional import
+
+from ska.base import SKABaseDevice
+from ska.base.control_model import ObsState
 from ska.base.commands import ResultCode
 
 MODULE_LOGGER = logging.getLogger(__name__)

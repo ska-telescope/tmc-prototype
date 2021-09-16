@@ -32,8 +32,7 @@ setup(
     package_dir={"": "src"},
     package_data={
         "": [
-            "sdpsubarraysimulator/sdp_subarray_SimDD.json",
-            "sdpsubarraysimulator/SdpSubarray.fgo",
+
         ]
     },
     include_package_data=True,

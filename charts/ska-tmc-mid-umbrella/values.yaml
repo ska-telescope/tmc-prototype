@@ -67,7 +67,7 @@ ska-csp-lmc-mid:
 
 ## sdp
 ska-sdp:
-  enabled: true
+  enabled: false
   lmc:
     prefix: mid
     nsubarray: 3

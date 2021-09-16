@@ -101,6 +101,9 @@ deviceServers:
   cspsubarraysimulator:
     instances: ["01", "02", "03"]
     file: "data/cspsubarraysimulator.yaml"
+  sdpsubarraysimulator:
+    instances: ["01", "02", "03"]
+    file: "data/sdpsubarraysimulator.yaml"
   cspmasterleafnode:
     instances: ["01"]
     file: "data/cspmasterleafnode.yaml"
