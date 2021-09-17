@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc"""
-version="0.8.6"
+version="0.8.7"
 version_info=version.split(".")
 description="""SKA-TMC"""
 author="Team NCRA"
@@ -9,8 +9,8 @@ author_email="telmgt-internal@googlegroups.com"
 license="""BSD-3-Clause"""
 url="""https://www.skaobservatory.org"""
 copyright=""""""
-release=0.8.6
-tag=0.8.6
+release=0.8.7
+tag=0.8.7
 tag_description=Device registration and simulator deployment from chart.
 release_notes=This release contains:<br/><ul><li>Deployment of simulator devices from TMC chart</li>
 <li>Simulator device is registered in tangodb from the code at startup</li></ul><br/>

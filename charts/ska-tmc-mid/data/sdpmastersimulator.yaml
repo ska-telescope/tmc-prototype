@@ -1,0 +1,39 @@
+name: "sdpmastersimulator-{{.Release.Name}}"
+function: sdp-monitoring
+domain: general-monitoring
+instances: ["01"]
+command: "SdpMasterSimulatorDS"
+server:
+  name: "SdpMasterSimulatorDS"
+  instances:
+    - name: "01"
+      classes:
+        - name: "SdpMasterSimulator"
+          devices:
+            - name: "mid_sdp/elt/master"
+              properties:
+                - name: "LoggingTargetsDefault"
+                  values:
+                    - "tango::logger"
+                - name: "LoggingLevelDefault"
+                  values:
+                    - "5"
+                - name: "polled_attr"
+                  values:
+                    - "healthstate"
+                    - "1000"
+              attribute_properties:
+                - attribute: "healthState"
+                  properties:
+                    - name: "abs_change"
+                      values:
+                        - "-1"
+                        - "1"
+depends_on:
+  - device: sys/database/2
+image:
+  registry: "{{.Values.global.skatmc.registry}}"
+  image: "{{.Values.global.skatmc.image}}"
+  tag: "{{.Values.global.skatmc.tag}}"
+  pullPolicy: "{{.Values.global.skatmc.pullPolicy}}"
+    

@@ -35,6 +35,14 @@ setup(
         "sdpsubarraysimulator": [
             "sdp_subarray_SimDD.json",
             "SdpSubarray.fgo",
+        ],
+        "cspmastersimulator": [
+            "csp_master_SimDD.json",
+            "CspMaster.fgo",
+        ],
+        "sdpmastersimulator": [
+            "sdp_master_SimDD.json",
+            "SdpMaster.fgo",
         ]
     },
     test_suite="test",
@@ -42,6 +50,8 @@ setup(
         "console_scripts": [
             "CspSubarraySimulatorDS=cspsubarraysimulator.csp_subarray:main",
             "SdpSubarraySimulatorDS=sdpsubarraysimulator.sdp_subarray:main",
+            "CspMasterSimulatorDS=cspmastersimulator.csp_master:main",
+            "SdpMasterSimulatorDS=sdpmastersimulator.sdp_master:main",
         ]
         
     },
