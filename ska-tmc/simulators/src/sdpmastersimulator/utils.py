@@ -60,7 +60,7 @@ def get_tango_server_class(device_name):
         configure_args["test_device_name"] = device_name
 
     logger.debug("Configuring device model")
-    models = configure_device_models(sim_data_files, **configure_args)
-    tango_ds = get_tango_device_server(models, sim_data_files)
+    model = configure_device_models(sim_data_files, **configure_args)
+    tango_ds = get_tango_device_server(model, sim_data_files)
 
     return tango_ds

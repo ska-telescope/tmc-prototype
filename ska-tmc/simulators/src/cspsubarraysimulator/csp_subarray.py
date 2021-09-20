@@ -31,15 +31,7 @@ def main(args=None, **kwargs):
     :return: CspSubarrayLeafNodeSimulator TANGO object.
 
     """
-    # try:
-    #     standalone_mode = os.environ["STANDALONE_MODE"]
-    # except KeyError:
-    #     standalone_mode = "false"
-
-    # if standalone_mode == "true":
     CspSubarrayLeafNodeSimulator = csp_subarray_simulator()
-    # csp_subarray_simulator_list.append(csp_subarray_server())
-    # csp_subarray_simulator_list.append(CspSubarrayLeafNode)
     ret_val = run((CspSubarrayLeafNodeSimulator,), args=args, **kwargs)
 
     return ret_val

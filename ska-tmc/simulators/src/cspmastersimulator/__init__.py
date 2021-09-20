@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# This file is part of the DishMaster project
+# This file is part of the CspMasterSimulator project
 #
 #
 #
