@@ -5,11 +5,13 @@ from tango import DevState, DevFailed
 
 # Additional import
 from ska.base import SKABaseDevice
+from ska.base.commands import ResultCode
 from ska.base.control_model import ObsState
 
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
+from .delay_model import DelayManager
 from . import const
 
 class ResetCommand(SKABaseDevice.ResetCommand):
