@@ -143,7 +143,6 @@ template-chart: clean dep-up## install the helm chart with name RELEASE_NAME and
 # This job is used to delete a deployment of ska-tmc-mid charts
 # Currently umbreall chart for ska-tmc-mid path is given
 uninstall-chart: ## uninstall the ska-tmc-mid helm chart on the namespace ska-tmc
-	helm template  $(HELM_RELEASE) $(UMBRELLA_CHART_PATH) --namespace $(KUBE_NAMESPACE)  | kubectl delete -f - ; \
 	helm uninstall  $(HELM_RELEASE) --namespace $(KUBE_NAMESPACE)
 
 reinstall-chart: uninstall-chart install-chart ## reinstall the ska-tmc-mid helm chart on the namespace ska-tmc
