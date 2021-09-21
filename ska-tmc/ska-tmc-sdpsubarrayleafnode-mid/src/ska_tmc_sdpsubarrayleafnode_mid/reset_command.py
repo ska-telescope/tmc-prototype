@@ -16,7 +16,7 @@ from . import const
 
 class ResetCommand(SKABaseDevice.ResetCommand):
     """
-    A class for SDPSubarrayLeafNode's Reset() command.
+    A class for SDP Subarray Leaf Node's Reset() command.
 
     Command to reset the current operation being done on the SDP Subarray.
 
@@ -47,13 +47,13 @@ class ResetCommand(SKABaseDevice.ResetCommand):
 
     def do(self):
         """
-        This command invokes Reset command on SDP Subarray.
+        This command invokes Reset command on SDP Subarray Leaf Node.
 
         return:
             None
 
         raises:
-            DevFailed if error occurs while invoking command on SDP Subarray.
+            DevFailed if error occurs while invoking command on SDP Subarray Leaf Node.
 
         """
         try:
