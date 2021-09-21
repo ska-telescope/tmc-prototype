@@ -18,7 +18,7 @@ class ResetCommand(SKABaseDevice.ResetCommand):
     """
     A class for CSPSubarrayLeafNode's Reset() command.
 
-    Command to reset the current operation being done on the CSP Subarray.
+    Command to reset the current operation being done on the CSP Subarray Leaf Node.
 
     """
     def check_allowed(self):
