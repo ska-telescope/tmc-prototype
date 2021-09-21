@@ -18,7 +18,7 @@ class ResetCommand(SKABaseDevice.ResetCommand):
     """
     A class for SDP Subarray Leaf Node's Reset() command.
 
-    Command to reset the current operation being done on the SDP Subarray.
+    Command to reset the current operation being done on the SDP Subarray Leaf Node.
 
     """
     def check_allowed(self):
