@@ -252,14 +252,23 @@ def command_with_arg(request):
     ) = request.param
     return cmd_name, input_arg, requested_cmd, obs_state, callback_str
 
-def test_command_reset_to_set_sdpsln_off_when_in_fault(mock_sdp_subarray_proxy):
+def test_command_reset_to_set_sdpsln_off_when_in_fault(mock_obstate_check, mock_sdp_subarray_proxy, mock_tsh):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
-    device_proxy.TelescopeOn()
-    device_proxy.command_inout("AssignResources", "wrong json")
+    device_proxy.On()
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.command_inout("AssignResources", '"wrong string"')
+        raise_devfailed_exception()
+    tango_client_obj.get_attribute.side_effect = Mock(return_value = ObsState.FAULT)
     device_proxy.Reset()
-    assert device_proxy.State() == DevState.FAULT
-
-
+    assert device_proxy.State() == DevState.OFF
+    
+def test_command_reset_should_raise_devfail_exception_in_off_state(mock_sdp_subarray_proxy, mock_tsh):
+    device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.Reset()
+        raise_devfailed_exception()
+    assert "Command Reset not allowed when the device is in OFF state" in str(df.value)
+    
 def test_command_with_callback_method_with_arg(
     mock_obstate_check, mock_sdp_subarray_proxy, event_subscription_mock, command_with_arg, mock_tsh
 ):
