@@ -562,6 +562,14 @@ def test_command_reset_to_set_cspsln_off_when_in_fault(mock_obstate_check, mock_
     device_proxy.Reset()
     assert device_proxy.State() == DevState.OFF
 
+def test_command_reset_should_raise_devfail_exception_in_off_state(mock_obstate_check, mock_csp_subarray_proxy, mock_tango_server_helper):
+    device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
+    tango_client_obj.get_attribute.side_effect = Mock(return_value = ObsState.EMPTY)
+    device_proxy.TelescopeOn()
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.Reset()
+    assert "Command Reset not allowed when the device is in OFF state" in str(df.value)
+
 def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):
     fake_event = Mock()
     fake_event.err = False
