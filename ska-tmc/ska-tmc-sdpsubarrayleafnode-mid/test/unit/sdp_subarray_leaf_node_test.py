@@ -13,6 +13,7 @@ from os.path import dirname, join
 # Tango imports
 import tango
 from tango.test_context import DeviceTestContext
+from tango import DevState
 
 # Additional import
 from ska.base.control_model import (
@@ -128,7 +129,6 @@ def test_on_should_command_with_callback_method(
     event_subscription_mock[const.CMD_ON](dummy_event)
     assert const.STR_COMMAND + const.CMD_ON in device_proxy.activityMessage
 
-
 def test_off_should_command_sdp_subarray_to_stop(mock_sdp_subarray_proxy, mock_tsh):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     device_proxy.TelescopeOn()
@@ -241,7 +241,22 @@ def command_with_arg(request):
     ) = request.param
     return cmd_name, input_arg, requested_cmd, obs_state, callback_str
 
-
+def test_command_reset_to_set_sdpsln_off_when_in_fault(mock_obstate_check, mock_sdp_subarray_proxy, mock_tsh):
+    device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
+    device_proxy.On()
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.command_inout("AssignResources", '"wrong string"')
+        raise_devfailed_exception()
+    device_proxy.Reset()
+    assert device_proxy.State() == DevState.OFF
+    
+def test_command_reset_should_raise_devfailed_exception_when_not_in_fault_state(mock_sdp_subarray_proxy, mock_tsh):
+    device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.Reset()
+        raise_devfailed_exception()
+    assert "Command Reset not allowed when the device is in OFF state" in str(df.value)
+    
 def test_command_with_callback_method_with_arg(
     mock_obstate_check, mock_sdp_subarray_proxy, event_subscription_mock, command_with_arg, mock_tsh
 ):

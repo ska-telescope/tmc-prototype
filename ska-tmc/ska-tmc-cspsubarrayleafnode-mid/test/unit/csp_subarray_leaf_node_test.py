@@ -13,6 +13,7 @@ from os.path import dirname, join
 
 # Tango imports
 from tango.test_context import DeviceTestContext
+from tango import DevState
 
 # Additional import
 from ska_tmc_cspsubarrayleafnode_mid import CspSubarrayLeafNode, const, release
@@ -549,6 +550,22 @@ def test_start_scan_should_not_command_csp_subarray_to_start_scan_when_it_is_idl
         device_proxy.StartScan(scan_input_str)
     assert const.ERR_DEVICE_NOT_READY in str(df.value)
 
+def test_command_reset_to_set_cspsln_off_when_in_fault(mock_obstate_check, mock_csp_subarray_proxy, mock_tango_server_helper):
+    device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
+    tango_server_obj = mock_tango_server_helper
+    tango_client_obj.get_attribute.side_effect = Mock(return_value = ObsState.EMPTY)
+    device_proxy.TelescopeOn()
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.AssignResources('"wrong json"')
+    device_proxy.Reset()
+    assert device_proxy.State() == DevState.OFF
+
+def test_command_reset_should_raise_devfailed_exception_when_not_in_fault_state(mock_obstate_check, mock_csp_subarray_proxy, mock_tango_server_helper):
+    device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
+    tango_client_obj.get_attribute.side_effect = Mock(return_value = ObsState.EMPTY)
+    with pytest.raises(tango.DevFailed) as df:
+        device_proxy.Reset()
+    assert "Command Reset not allowed when the device is in OFF state" in str(df.value)
 
 def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):
     fake_event = Mock()

@@ -42,6 +42,7 @@ from .restart_command import Restart
 from .obsreset_command import ObsReset
 from .telescope_on_command import TelescopeOn
 from .telescope_off_command import TelescopeOff
+from .reset_command import ResetCommand
 from .device_data import DeviceData
 from .exceptions import InvalidObsStateError
 from .sdpsubarraysimulator.sdp_subarray import sdp_subarray_simulator
@@ -65,6 +66,7 @@ __all__ = [
     "Scan",
     "End",
     "EndScan",
+    "ResetCommand"
 ]
 
 # pylint: disable=unused-argument,unused-variable, implicit-str-concat
@@ -573,6 +575,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         self.register_command_object("ObsReset", ObsReset(*args))
         self.register_command_object("TelescopeOff", TelescopeOff(*args))
         self.register_command_object("TelescopeOn", TelescopeOn(*args))
+        self.register_command_object("Reset", ResetCommand(*args))
+
 
 
 # ----------
