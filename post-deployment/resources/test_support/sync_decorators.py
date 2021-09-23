@@ -99,6 +99,10 @@ def check_going_into_tmc_off_or_standby():
     resource("ska_mid/tm_leaf_node/csp_master").assert_attribute("State").equals("ON")
     resource("ska_mid/tm_leaf_node/d0001").assert_attribute("State").equals("ON")
 
+def check_going_into_fault():
+    resource("ska_mid/tm_subarray_node/1").assert_attribute("State").equals("FAULT")
+    print("Check device going into Fault")
+
 
 # pre waitings
 class WaitConfigure:
@@ -180,6 +184,24 @@ class WaitObsReset:
         self.w1.wait_until_value_changed_to("IDLE", timeout=200)
         self.w2.wait_until_value_changed_to("IDLE", timeout=200)
 
+class WaitReset:
+    def __init__(self):
+        self.w = watch(resource("ska_mid/tm_subarray_node/1")).for_a_change_on(
+            "obsState"
+        )
+        self.w1 = watch(resource("mid_csp/elt/subarray_01")).for_a_change_on("obsState")
+        self.w2 = watch(resource("mid_sdp/elt/subarray_1")).for_a_change_on("obsState")
+
+    def wait(self, timeout):
+        logging.info(
+            "Reset command dispatched, checking that the state transitioned to RESETTING"
+        )
+        logging.info(
+            "state transitioned to RESETTING, waiting for it to return to OFF"
+        )
+        self.w.wait_until_value_changed_to("OFF", timeout=200)
+        self.w1.wait_until_value_changed_to("OFF", timeout=200)
+        self.w2.wait_until_value_changed_to("OFF", timeout=200)
 
 class WaitScanning:
     def __init__(self):
@@ -486,6 +508,22 @@ def sync_obsreset(timeout=200):
 
     return decorator
 
+def sync_reset(timeout=200):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            # check_going_into_resetting()
+            check_going_into_fault()
+            w = WaitReset()
+            ################
+            result = func(*args, **kwargs)
+            ################
+            w.wait(timeout)
+            return result
+
+        return wrapper
+
+    return decorator
 
 # defined as a context manager
 @contextmanager
