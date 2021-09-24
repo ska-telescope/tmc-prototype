@@ -1,13 +1,14 @@
 import pytest
 import os
 import logging
+import time
 from tango import DeviceProxy
 from datetime import date, datetime
-from resources.test_support.helpers_low import waiter, watch, resource
-from resources.test_support.controls_low import telescope_is_in_standby
-from resources.test_support.sync_decorators_low import sync_reset
+from resources.test_support.helpers import waiter, watch, resource
+from resources.test_support.controls import telescope_is_in_standby, tmc_is_in_on, telescope_is_on
+from resources.test_support.sync_decorators import sync_reset
 from resources.test_support.logging_decorators import log_it
-import resources.test_support.tmc_helpers_low as tmc
+import resources.test_support.tmc_helpers as tmc
 
 DEV_TEST_TOGGLE = os.environ.get("DISABLE_DEV_TESTS")
 if DEV_TEST_TOGGLE == "False":
@@ -33,7 +34,8 @@ non_default_states_to_check = {
 
 LOGGER = logging.getLogger(__name__)
 
-@pytest.mark.mid
+#@pytest.mark.mid
+@pytest.mark.shraddha
 # @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_reset():
     try:
@@ -59,9 +61,12 @@ def test_reset():
             "EMPTY"
         )
 
-        CspSubarrayLeafNode = DeviceProxy("ska_mid/tm_leaf_node/csp_subarray1")
-        CspSubarrayLeafNode.AssignResources('"wrong json"')
-        resource("ska_mid/tm_leaf_node/csp_subarray1").assert_attribute("State").equals(
+        CspSubarrayLeafNode = DeviceProxy("ska_mid/tm_leaf_node/csp_subarray01")
+        try:
+            CspSubarrayLeafNode.AssignResources('"wrong json"')
+        except:
+            LOGGER.info("Assign Resources command is failed")
+        resource("ska_mid/tm_leaf_node/csp_subarray01").assert_attribute("State").equals(
                 "FAULT"
             )
         LOGGER.info("AssignResources is in FAULT state")
@@ -71,7 +76,7 @@ def test_reset():
         @sync_reset()
         def reset():
             
-            CspSubarrayLeafNode = DeviceProxy("ska_mid/tm_leaf_node/csp_subarray1")
+            CspSubarrayLeafNode = DeviceProxy("ska_mid/tm_leaf_node/csp_subarray01")
             CspSubarrayLeafNode.Reset()
             LOGGER.info("Invoked Reset on CspSubarrayLeafNode")
 
