@@ -54,30 +54,28 @@ def test_reset():
 
         # and a subarray composed of two resources configured as perTMC_integration/assign_resources.json
         LOGGER.info("Composing the Subarray")
-        tmc.compose_sub()
-        fixture["state"] = "Subarray Assigned"
 
         resource("ska_mid/tm_subarray_node/1").assert_attribute("obsState").equals(
             "IDLE"
         )
-        LOGGER.info("Aborting the subarray")
-        fixture["state"] = "Subarray ABORTING"
+
+        CspSubarrayLeafNode = DeviceProxy("ska_mid/tm_leaf_node/csp_subarray1")
+        CspSubarrayLeafNode.AssignResources('"wrong json"')
+        resource("ska_mid/tm_leaf_node/csp_subarray1").assert_attribute("State").equals(
+                "FAULT"
+            )
+        LOGGER.info("AssignResources is in FAULT state")
 
         @log_it("TMC_reset", devices_to_log, non_default_states_to_check)
         @sync_reset()
         def reset():
-            resource("ska_mid/tm_subarray_node/1").assert_attribute("State").equals(
-                "ON"
-            )
-            resource("ska_mid/tm_subarray_node/1").assert_attribute("obsState").equals(
-                "IDLE"
-            )
-            SubarrayNode = DeviceProxy("ska_mid/tm_subarray_node/1")
-            SubarrayNode.Reset()
-            LOGGER.info("Invoked Reset on Subarray")
+            
+            CspSubarrayLeafNode = DeviceProxy("ska_mid/tm_leaf_node/csp_subarray1")
+            CspSubarrayLeafNode.Reset()
+            LOGGER.info("Invoked Reset on CspSubarrayLeafNode")
 
         reset()
-        LOGGER.info("Reset is complete on Subarray")
+        LOGGER.info("Reset is complete on CspSubarrayLeafNode")
         fixture["state"] = "Subarray Resetting"
 
         LOGGER.info("Calling TelescopeOff command now.")
@@ -89,7 +87,7 @@ def test_reset():
         # tear down
         LOGGER.info("TMC-Reset tests complete: tearing down...")
 
-        except:
+    except:
         LOGGER.info("Tearing down failed test, state = {}".format(fixture["state"]))
         if fixture["state"]  == "Telescope On":
             tmc.set_telescope_off()
