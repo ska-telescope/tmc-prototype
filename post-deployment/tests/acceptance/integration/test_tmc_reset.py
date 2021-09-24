@@ -56,7 +56,7 @@ def test_reset():
         LOGGER.info("Composing the Subarray")
 
         resource("ska_mid/tm_subarray_node/1").assert_attribute("obsState").equals(
-            "IDLE"
+            "EMPTY"
         )
 
         CspSubarrayLeafNode = DeviceProxy("ska_mid/tm_leaf_node/csp_subarray1")
@@ -65,6 +65,7 @@ def test_reset():
                 "FAULT"
             )
         LOGGER.info("AssignResources is in FAULT state")
+        fixture["state"]  == "Device FAULT"
 
         @log_it("TMC_reset", devices_to_log, non_default_states_to_check)
         @sync_reset()
@@ -76,7 +77,15 @@ def test_reset():
 
         reset()
         LOGGER.info("Reset is complete on CspSubarrayLeafNode")
-        fixture["state"] = "Subarray Resetting"
+
+        resource("ska_mid/tm_leaf_node/csp_subarray1").assert_attribute("State").equals(
+                "OFF"
+            )
+        CspSubarrayLeafNode.On()
+
+        resource("ska_mid/tm_leaf_node/csp_subarray1").assert_attribute("State").equals(
+                "ON"
+            )
 
         LOGGER.info("Calling TelescopeOff command now.")
         tmc.set_telescope_off()
@@ -91,16 +100,9 @@ def test_reset():
         LOGGER.info("Tearing down failed test, state = {}".format(fixture["state"]))
         if fixture["state"]  == "Telescope On":
             tmc.set_telescope_off()
-        elif fixture["state"] == "Subarray Assigned":
-            tmc.release_resources()
-            tmc.set_telescope_off()
-        elif fixture["state"] == "Subarray ABORTING":
-            raise Exception("unable to teardown subarray from being in ABORTING")
-        elif fixture["state"] == "Subarray Aborted":
-            raise Exception("unable to teardown subarray from being in Aborted")
-        elif fixture["state"] == "Subarray Resetting":
-            raise Exception("unable to teardown subarray from being in Resetting")
-        elif fixture["state"] == "Subarray FAULT":
+        elif fixture["state"]  == "Device FAULT":
+            CspSubarrayLeafNode.Reset()
+            CspSubarrayLeafNode.On()
             tmc.set_telescope_off()
         pytest.fail("unable to complete test without exceptions")
 
