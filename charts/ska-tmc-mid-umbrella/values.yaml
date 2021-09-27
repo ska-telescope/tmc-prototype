@@ -78,6 +78,10 @@ ska-sdp:
 ska-tmc-mid:
   enabled: true
 
+## tm-simulator
+ska-tmc-mid-simulator:
+  enabled: true
+
 ## SKUID
 ska-ser-skuid:
   enabled: true
