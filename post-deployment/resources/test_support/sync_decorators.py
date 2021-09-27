@@ -99,9 +99,13 @@ def check_going_into_tmc_off_or_standby():
     resource("ska_mid/tm_leaf_node/csp_master").assert_attribute("State").equals("ON")
     resource("ska_mid/tm_leaf_node/d0001").assert_attribute("State").equals("ON")
 
-def check_going_into_fault():
-    resource("ska_mid/tm_leaf_node/csp_subarray1").assert_attribute("State").equals("FAULT")
-    print("Check device going into Fault")
+def check_going_into_fault_for_cspsln():
+    resource("ska_mid/tm_leaf_node/csp_subarray01").assert_attribute("State").equals("FAULT")
+    print("Check csp device going into Fault")
+
+def check_going_into_fault_for_sdpsln():
+    resource("ska_mid/tm_leaf_node/sdp_subarray01").assert_attribute("State").equals("FAULT")
+    print("Check sdp device going into Fault")
 
 
 # pre waitings
@@ -184,24 +188,25 @@ class WaitObsReset:
         self.w1.wait_until_value_changed_to("IDLE", timeout=200)
         self.w2.wait_until_value_changed_to("IDLE", timeout=200)
 
-class WaitReset:
+class WaitResetCSPSLN:
     def __init__(self):
-        # self.w = watch(resource("ska_mid/tm_subarray_node/1")).for_a_change_on(
-        #     "obsState"
-        # )
-        self.w1 = watch(resource("ska_mid/tm_leaf_node/csp_subarray1")).for_a_change_on("State")
-        self.w2 = watch(resource("ska_mid/tm_leaf_node/sdp_subarray1")).for_a_change_on("State")
+        self.w1 = watch(resource("ska_mid/tm_leaf_node/csp_subarray01")).for_a_change_on("State")
 
     def wait(self, timeout):
         logging.info(
             "Reset command dispatched, checking that the state transitioned to OFF"
         )
-        # logging.info(
-        #     "state transitioned to RESETTING, waiting for it to return to OFF"
-        # )
-        # self.w.wait_until_value_changed_to("OFF", timeout=200)
         self.w1.wait_until_value_changed_to("OFF", timeout=200)
-        self.w2.wait_until_value_changed_to("OFF", timeout=200)
+
+class WaitResetSDPSLN:
+    def __init__(self):
+        self.w = watch(resource("ska_mid/tm_leaf_node/sdp_subarray01")).for_a_change_on("State")
+
+    def wait(self, timeout):
+        logging.info(
+            "Reset command dispatched, checking that the state transitioned to OFF"
+        )
+        self.w.wait_until_value_changed_to("OFF", timeout=200)
 
 class WaitScanning:
     def __init__(self):
@@ -508,13 +513,30 @@ def sync_obsreset(timeout=200):
 
     return decorator
 
-def sync_reset(timeout=200):
+def sync_cspsln_reset(timeout=200):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             # check_going_into_resetting()
-            check_going_into_fault()
-            w = WaitReset()
+            check_going_into_fault_for_cspsln()
+            w = WaitResetCSPSLN()
+            ################
+            result = func(*args, **kwargs)
+            ################
+            w.wait(timeout)
+            return result
+
+        return wrapper
+
+    return decorator
+
+def sync_sdpsln_reset(timeout=200):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            # check_going_into_resetting()
+            check_going_into_fault_for_sdpsln()
+            w = WaitResetSDPSLN()
             ################
             result = func(*args, **kwargs)
             ################

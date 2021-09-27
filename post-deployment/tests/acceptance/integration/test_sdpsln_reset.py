@@ -6,7 +6,7 @@ from tango import DeviceProxy
 from datetime import date, datetime
 from resources.test_support.helpers import waiter, watch, resource
 from resources.test_support.controls import telescope_is_in_standby, tmc_is_in_on, telescope_is_on, telescope_is_off
-from resources.test_support.sync_decorators import sync_cspsln_reset
+from resources.test_support.sync_decorators import sync_sdpsln_reset
 from resources.test_support.logging_decorators import log_it
 import resources.test_support.tmc_helpers as tmc
 
@@ -36,7 +36,7 @@ LOGGER = logging.getLogger(__name__)
 
 @pytest.mark.mid
 # @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
-def test_cspsln_reset():
+def test_sdpsln_reset():
     
     # given an interface to TMC to interact with a subarray node and a central node
     fixture = {}
@@ -60,35 +60,35 @@ def test_cspsln_reset():
         "EMPTY"
     )
 
-    CspSubarrayLeafNode = DeviceProxy("ska_mid/tm_leaf_node/csp_subarray01")
+    SdpSubarrayLeafNode = DeviceProxy("ska_mid/tm_leaf_node/sdp_subarray01")
     try:
-        CspSubarrayLeafNode.AssignResources('"wrong json"')
+        SdpSubarrayLeafNode.AssignResources('"wrong json"')
     except:
         LOGGER.info("Assign Resources command is failed")
-    resource("ska_mid/tm_leaf_node/csp_subarray01").assert_attribute("State").equals(
+    resource("ska_mid/tm_leaf_node/sdp_subarray01").assert_attribute("State").equals(
             "FAULT"
         )
-    LOGGER.info("CspSubarrayLeafNode is in FAULT state")
+    LOGGER.info("SdpSubarrayLeafNode is in FAULT state")
     fixture["state"]  == "Device FAULT"
 
     @log_it("TMC_reset", devices_to_log, non_default_states_to_check)
-    @sync_cspsln_reset()
+    @sync_sdpsln_reset()
     def reset():
         
-        CspSubarrayLeafNode = DeviceProxy("ska_mid/tm_leaf_node/csp_subarray01")
-        CspSubarrayLeafNode.Reset()
-        LOGGER.info("Invoked Reset on CspSubarrayLeafNode")
+        SdpSubarrayLeafNode = DeviceProxy("ska_mid/tm_leaf_node/sdp_subarray01")
+        SdpSubarrayLeafNode.Reset()
+        LOGGER.info("Invoked Reset on SdpSubarrayLeafNode")
 
     reset()
-    LOGGER.info("Reset is complete on CspSubarrayLeafNode")
+    LOGGER.info("Reset is complete on SdpSubarrayLeafNode")
 
-    resource("ska_mid/tm_leaf_node/csp_subarray01").assert_attribute("State").equals(
+    resource("ska_mid/tm_leaf_node/sdp_subarray01").assert_attribute("State").equals(
             "OFF"
         )
-    CspSubarrayLeafNode.On()
-    LOGGER.info("Invoking On command on CspSubarrayLeafNode.")
+    SdpSubarrayLeafNode.On()
+    LOGGER.info("Invoking On command on SdpSubarrayLeafNode.")
 
-    resource("ska_mid/tm_leaf_node/csp_subarray01").assert_attribute("State").equals(
+    resource("ska_mid/tm_leaf_node/sdp_subarray01").assert_attribute("State").equals(
             "ON"
         )
     
