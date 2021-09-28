@@ -27,7 +27,6 @@ from .telescope_on_command import TelescopeOn
 from .telescope_off_command import TelescopeOff
 from .telescope_standby_command import TelescopeStandby
 from .device_data import DeviceData
-from .cspmastersimulator import get_csp_master_sim
 
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
 
@@ -246,19 +245,7 @@ def main(args=None, **kwargs):
     """
     # PROTECTED REGION END #    //  CspMasterLeafNode.main
 
-    # Check if standalone mode is enabled
-    try:
-        standalone_mode = os.environ["STANDALONE_MODE"]
-    except KeyError:
-        standalone_mode = "false"
-
-    if standalone_mode == "true":
-        ## Get simulator object
-        device_name = "mid_csp/elt/master"
-        csp_master_simulator = get_csp_master_sim(device_name)
-        ret_val = run((CspMasterLeafNode, csp_master_simulator), args=args, **kwargs)
-    else:
-        ret_val = run((CspMasterLeafNode,), args=args, **kwargs)
+    ret_val = run((CspMasterLeafNode,), args=args, **kwargs)
 
     return ret_val
 

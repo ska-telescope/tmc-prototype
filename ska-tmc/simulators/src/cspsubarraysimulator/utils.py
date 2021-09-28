@@ -35,12 +35,12 @@ def get_tango_server_class(device_name):
     sim_data_files = []
     sim_data_files.append(
         pkg_resources.resource_filename(
-            "ska_tmc_cspsubarrayleafnode_mid.cspsubarraysimulator", "CspSubarray.fgo"
+            "cspsubarraysimulator", "CspSubarray.fgo"
         )
     )
     sim_data_files.append(
         pkg_resources.resource_filename(
-            "ska_tmc_cspsubarrayleafnode_mid.cspsubarraysimulator",
+            "cspsubarraysimulator",
             "csp_subarray_SimDD.json",
         )
     )
