@@ -62,9 +62,10 @@ def test_cspsln_reset():
 
     CspSubarrayLeafNode = DeviceProxy("ska_mid/tm_leaf_node/csp_subarray01")
     try:
+        LOGGER.info("Invoking Assign Resources command on CspsubarrayLeafNode")
         CspSubarrayLeafNode.AssignResources('"wrong json"')
     except:
-        LOGGER.info("Assign Resources command is failed")
+        LOGGER.info("Assign Resources command is failed on CspSubarrayLeafNode")
     resource("ska_mid/tm_leaf_node/csp_subarray01").assert_attribute("State").equals(
             "FAULT"
         )
@@ -77,7 +78,7 @@ def test_cspsln_reset():
         
         CspSubarrayLeafNode = DeviceProxy("ska_mid/tm_leaf_node/csp_subarray01")
         CspSubarrayLeafNode.Reset()
-        LOGGER.info("Invoked Reset on CspSubarrayLeafNode")
+        LOGGER.info("Invoked Reset command on CspSubarrayLeafNode")
 
     reset()
     LOGGER.info("Reset is complete on CspSubarrayLeafNode")
@@ -85,8 +86,10 @@ def test_cspsln_reset():
     resource("ska_mid/tm_leaf_node/csp_subarray01").assert_attribute("State").equals(
             "OFF"
         )
+    
+    LOGGER.info("Invoking On command on CspSubarrayLeafNode to continue the standard operation.")
     CspSubarrayLeafNode.On()
-    LOGGER.info("Invoking On command on CspSubarrayLeafNode.")
+    LOGGER.info("Invoked On command on CspSubarrayLeafNode.")
 
     resource("ska_mid/tm_leaf_node/csp_subarray01").assert_attribute("State").equals(
             "ON"

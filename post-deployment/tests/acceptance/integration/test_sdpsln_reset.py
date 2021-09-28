@@ -62,9 +62,10 @@ def test_sdpsln_reset():
 
     SdpSubarrayLeafNode = DeviceProxy("ska_mid/tm_leaf_node/sdp_subarray01")
     try:
+        LOGGER.info("Invoking Assign Resources command on SdpsubarrayLeafNode")
         SdpSubarrayLeafNode.AssignResources('"wrong json"')
     except:
-        LOGGER.info("Assign Resources command is failed")
+        LOGGER.info("Assign Resources command is failed on SdpSubarrayLeafNode")
     resource("ska_mid/tm_leaf_node/sdp_subarray01").assert_attribute("State").equals(
             "FAULT"
         )
@@ -77,7 +78,7 @@ def test_sdpsln_reset():
         
         SdpSubarrayLeafNode = DeviceProxy("ska_mid/tm_leaf_node/sdp_subarray01")
         SdpSubarrayLeafNode.Reset()
-        LOGGER.info("Invoked Reset on SdpSubarrayLeafNode")
+        LOGGER.info("Invoked Reset command on SdpSubarrayLeafNode")
 
     reset()
     LOGGER.info("Reset is complete on SdpSubarrayLeafNode")
@@ -85,6 +86,8 @@ def test_sdpsln_reset():
     resource("ska_mid/tm_leaf_node/sdp_subarray01").assert_attribute("State").equals(
             "OFF"
         )
+
+    LOGGER.info("Invoking On command on SdpSubarrayLeafNode to continue the standard operation.")
     SdpSubarrayLeafNode.On()
     LOGGER.info("Invoking On command on SdpSubarrayLeafNode.")
 
