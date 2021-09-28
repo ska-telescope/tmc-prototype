@@ -1,0 +1,17 @@
+{
+    "class_name": "SdpMaster",
+    "class_overrides": [
+      {
+        "override_class": {
+          "name": "Sim_sdp_master_behaviour",
+          "module_directory": "None",
+          "module_name": "sdpmastersimulator.sdp_master_behaviour",
+          "class_name": "OverrideSdpMaster"
+        }
+      }
+    ],
+    "dynamicAttributes": [
+    ],
+    "commands": [
+    ]
+  }
