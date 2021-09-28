@@ -1,0 +1,17 @@
+{
+    "class_name": "CspMaster",
+    "class_overrides": [
+      {
+        "override_class": {
+          "name": "Sim_csp_master_behaviour",
+          "module_directory": "None",
+          "module_name": "cspmastersimulator.csp_master_behaviour",
+          "class_name": "OverrideCspMaster"
+        }
+      }
+    ],
+    "dynamicAttributes": [
+      ],
+    "commands": [
+    ]
+  }
