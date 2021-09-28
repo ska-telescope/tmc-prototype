@@ -11,9 +11,8 @@ url="""https://www.skaobservatory.org"""
 copyright=""""""
 release=0.8.7
 tag=0.8.7
-tag_description=Device registration and simulator deployment from chart.
-release_notes=This release contains:<br/><ul><li>Deployment of simulator devices from TMC chart</li>
-<li>Simulator device is registered in tangodb from the code at startup</li></ul><br/>
-gitlab_username=kalyanithigale
-private_token=4QxYhMuKRckxu_TQsJAF
+tag_description=Implement Reset command on CSPSubarrayLeafNode and SDPSubarrayLeafNode.
+release_notes=This release contains:<br/><ul><li>Implement Reset command on CSPSubarrayLeafNode and SDPSubarrayLeafNode.</li></ul><br/>
+gitlab_username=shraddhabajare
+private_token=BjSDA3KXtCGzzgfqrFyA
 

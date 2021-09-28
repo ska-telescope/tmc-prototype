@@ -40,6 +40,7 @@ from .end_command import GoToIdleCommand
 from .abort_command import AbortCommand
 from .restart_command import RestartCommand
 from .obsreset_command import ObsResetCommand
+from .reset_command import ResetCommand
 from .telescope_on_command import TelescopeOn
 from .telescope_off_command import TelescopeOff
 from . import const, release
@@ -60,6 +61,7 @@ __all__ = [
     "AbortCommand",
     "RestartCommand",
     "ObsResetCommand",
+    "ResetCommand",
     "TelescopeOn",
     "TelescopeOff",
 ]
@@ -535,6 +537,7 @@ class CspSubarrayLeafNode(SKABaseDevice):
         self.register_command_object("Abort", AbortCommand(*args))
         self.register_command_object("Restart", RestartCommand(*args))
         self.register_command_object("ObsReset", ObsResetCommand(*args))
+        self.register_command_object("Reset", ResetCommand(*args))
         self.register_command_object("TelescopeOff", TelescopeOff(*args))
         self.register_command_object("TelescopeOn", TelescopeOn(*args))
 

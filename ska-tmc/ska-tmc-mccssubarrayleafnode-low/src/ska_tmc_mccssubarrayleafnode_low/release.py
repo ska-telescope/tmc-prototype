@@ -10,7 +10,7 @@
 """Release information for Python Package"""
 
 name = """ska-tmc-mccssubarrayleafnode-low"""
-version = "0.8.6"
+version = "0.8.7"
 version_info = version.split(".")
 description = (
     """MCCS Subarray Leaf Node monitors and controls the MCCS Subarray device."""

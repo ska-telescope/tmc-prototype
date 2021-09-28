@@ -10,7 +10,7 @@
 """Release information for Python Package"""
 
 name = """ska-tmc-dishleafnode-mid"""
-version = "0.8.6"
+version = "0.8.7"
 version_info = version.split(".")
 description = """A Leaf control node for DishMaster."""
 author = "Team NCRA"

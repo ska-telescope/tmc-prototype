@@ -24,6 +24,7 @@ before_script:
 stages:
   - build
   - unit-test
+  - clean
   - test
   - linting
   - release
@@ -426,24 +427,23 @@ test-mid:
    image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
    before_script:
      - kubectl get namespace
+     - make clean
    script:
      - kubectl version
-     - make clean
      - make install-chart MINIKUBE=false
+     - curl -s https://gitlab.com/ska-telescope/templates-repository/-/raw/master/scripts/namespace_auth.sh | bash -s "ci-svc-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG" "ci-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG-mid" "ci-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG-mid-sdp" || true
      - make wait
      - make smoketest
      - make test MARK=mid COUNT=1 && [ -f "build/report.xml" ]
    after_script:
-     - make uninstall-chart
-     - make clean
-     - make delete_namespace-sdp
-     - make delete_namespace
      - mkdir -p build
      - ls -la build
    environment:
-     name: test
+     name: test/$CI_COMMIT_REF_SLUG
      kubernetes:
-       namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-mid
+       namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG-mid
+     on_stop: tmc-mid_uninstall
+     auto_stop_in: 2 hours
    artifacts:
      name: "$CI_PROJECT_NAME-$CI_JOB_ID"
      paths:
@@ -451,6 +451,26 @@ test-mid:
      reports:
        junit: build/report.xml
      when: always
+
+tmc-mid_uninstall:
+  stage: clean
+  tags:
+    - k8srunner
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
+  before_script:
+    - kubectl get namespace
+  script:
+    - make uninstall-chart
+    - make clean
+    - make delete_namespace-sdp
+    - make delete_namespace
+  environment:
+    name: test/$CI_COMMIT_REF_SLUG
+    kubernetes:
+      # This repetition is needed for gitlab to parse the namespace correctly
+      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG-mid
+    action: stop
+  when: manual
 
 test-low:
   stage: test
@@ -461,30 +481,51 @@ test-low:
   image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
   before_script:
     - kubectl get namespace
+    - make clean
   script:
     - kubectl version
-    - make clean
     - make install-chart MINIKUBE=false HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
+    - curl -s https://gitlab.com/ska-telescope/templates-repository/-/raw/master/scripts/namespace_auth.sh | bash -s "ci-svc-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG" "ci-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG-low" "ci-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG-low-sdp" || true
     - make wait
     - make smoketest
     - make test MARK=low COUNT=1 && [ -f "build/report.xml" ]
   after_script:
-    - make uninstall-chart HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
-    - make clean
-    - make delete_namespace-sdp
-    - make delete_namespace
     - mkdir -p build
     - ls -la build
   environment:
-    name: test
+    name: test/$CI_COMMIT_REF_SLUG
     kubernetes:
-      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-low
+      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG-low
+    on_stop: tmc-low_uninstall
+    auto_stop_in: 2 hours
   artifacts:
     name: "$CI_PROJECT_NAME-$CI_JOB_ID"
     paths:
       - build
     reports:
       junit: build/report.xml
+
+tmc-low_uninstall:
+  stage: clean
+  dependencies:
+    - build-image
+  tags:
+    - k8srunner
+  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
+  before_script:
+    - kubectl get namespace
+  script:
+    - make uninstall-chart HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
+    - make clean
+    - make delete_namespace-sdp
+    - make delete_namespace
+  environment:
+    name: test/$CI_COMMIT_REF_SLUG
+    kubernetes:
+      # This repetition is needed for gitlab to parse the namespace correctly
+      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG-low
+    action: stop
+  when: manual
 
 linting:
   stage: linting
