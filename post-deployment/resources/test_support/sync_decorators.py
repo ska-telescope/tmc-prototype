@@ -188,7 +188,7 @@ class WaitObsReset:
         self.w1.wait_until_value_changed_to("IDLE", timeout=200)
         self.w2.wait_until_value_changed_to("IDLE", timeout=200)
 
-class WaitResetCSPSLN:
+class WaitResetCspsaln:
     def __init__(self):
         self.w1 = watch(resource("ska_mid/tm_leaf_node/csp_subarray01")).for_a_change_on("State")
 
@@ -198,7 +198,7 @@ class WaitResetCSPSLN:
         )
         self.w1.wait_until_value_changed_to("OFF", timeout=200)
 
-class WaitResetSDPSLN:
+class WaitResetSdpsaln:
     def __init__(self):
         self.w = watch(resource("ska_mid/tm_leaf_node/sdp_subarray01")).for_a_change_on("State")
 
@@ -519,7 +519,7 @@ def sync_cspsln_reset(timeout=200):
         def wrapper(*args, **kwargs):
             # check_going_into_resetting()
             check_going_into_fault_for_cspsln()
-            w = WaitResetCSPSLN()
+            w = WaitResetCspsaln()
             ################
             result = func(*args, **kwargs)
             ################
@@ -536,7 +536,7 @@ def sync_sdpsln_reset(timeout=200):
         def wrapper(*args, **kwargs):
             # check_going_into_resetting()
             check_going_into_fault_for_sdpsln()
-            w = WaitResetSDPSLN()
+            w = WaitResetSdpsaln()
             ################
             result = func(*args, **kwargs)
             ################

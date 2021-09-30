@@ -53,16 +53,13 @@ def test_cspsln_reset():
     LOGGER.info("Telescope is on")
     fixture["state"] = "Telescope On"
 
-    # and a subarray composed of two resources configured as perTMC_integration/assign_resources.json
-    LOGGER.info("Composing the Subarray")
-
     resource("ska_mid/tm_subarray_node/1").assert_attribute("obsState").equals(
         "EMPTY"
     )
 
     CspSubarrayLeafNode = DeviceProxy("ska_mid/tm_leaf_node/csp_subarray01")
     try:
-        LOGGER.info("Invoking Assign Resources command on CspsubarrayLeafNode")
+        LOGGER.info("Invoking Assign Resources command on CspsubarrayLeafNode with wrong json input string.")
         CspSubarrayLeafNode.AssignResources('"wrong json"')
     except:
         LOGGER.info("Assign Resources command is failed on CspSubarrayLeafNode")
@@ -77,16 +74,17 @@ def test_cspsln_reset():
     def reset():
         
         CspSubarrayLeafNode = DeviceProxy("ska_mid/tm_leaf_node/csp_subarray01")
+        LOGGER.info("Invoking Reset command on CspSubarrayLeafNode")
         CspSubarrayLeafNode.Reset()
-        LOGGER.info("Invoked Reset command on CspSubarrayLeafNode")
 
     reset()
-    LOGGER.info("Reset is complete on CspSubarrayLeafNode")
+    LOGGER.info("Reset is invoked successfully on CspSubarrayLeafNode")
 
     resource("ska_mid/tm_leaf_node/csp_subarray01").assert_attribute("State").equals(
             "OFF"
         )
     
+    LOGGER.info("CspSubarrayLeafNode is in OFF state.")   
     LOGGER.info("Invoking On command on CspSubarrayLeafNode to continue the standard operation.")
     CspSubarrayLeafNode.On()
     LOGGER.info("Invoked On command on CspSubarrayLeafNode.")
