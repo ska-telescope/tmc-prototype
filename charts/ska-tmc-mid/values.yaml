@@ -92,18 +92,18 @@ deviceServers:
   dishmaster:
     instances: ["01", "02", "03", "04"]
     file: "data/dishmaster.yaml"
-  cspmastersimulator:
-    instances: ["01"]
-    file: "data/cspmastersimulator.yaml"
-  sdpmastersimulator:
-    instances: ["01"]
-    file: "data/sdpmastersimulator.yaml"
-  cspsubarraysimulator:
-    instances: ["01", "02", "03"]
-    file: "data/cspsubarraysimulator.yaml"
-  sdpsubarraysimulator:
-    instances: ["01", "02", "03"]
-    file: "data/sdpsubarraysimulator.yaml"
+  # cspmastersimulator:
+  #   instances: ["01"]
+  #   file: "data/cspmastersimulator.yaml"
+  # sdpmastersimulator:
+  #   instances: ["01"]
+  #   file: "data/sdpmastersimulator.yaml"
+  # cspsubarraysimulator:
+  #   instances: ["01", "02", "03"]
+  #   file: "data/cspsubarraysimulator.yaml"
+  # sdpsubarraysimulator:
+  #   instances: ["01", "02", "03"]
+  #   file: "data/sdpsubarraysimulator.yaml"
   dishleafnode:
     instances: ["01", "02", "03", "04"]
     file: "data/dishleafnode.yaml"
