@@ -65,6 +65,11 @@ def check_going_out_of_abort():
         "ABORTED"
     )
 
+def check_sa_going_into_fault():
+    ##Can only return to IDLE if in FAULT
+    resource("ska_mid/tm_subarray_node/1").assert_attribute("obsState").equals(
+        "FAULT"
+    )
 
 def check_going_into_empty():
     ##Can only release resources if subarray is in ON/IDLE
@@ -99,11 +104,11 @@ def check_going_into_tmc_off_or_standby():
     resource("ska_mid/tm_leaf_node/csp_master").assert_attribute("State").equals("ON")
     resource("ska_mid/tm_leaf_node/d0001").assert_attribute("State").equals("ON")
 
-def check_going_into_fault_for_cspsln():
+def check_going_into_fault_for_cspsaln():
     resource("ska_mid/tm_leaf_node/csp_subarray01").assert_attribute("State").equals("FAULT")
     print("Check csp device going into Fault")
 
-def check_going_into_fault_for_sdpsln():
+def check_going_into_fault_for_sdpsaln():
     resource("ska_mid/tm_leaf_node/sdp_subarray01").assert_attribute("State").equals("FAULT")
     print("Check sdp device going into Fault")
 
@@ -513,12 +518,27 @@ def sync_obsreset(timeout=200):
 
     return decorator
 
-def sync_cspsln_reset(timeout=200):
+def sync_obsreset_sa(timeout=200):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            # check_going_into_resetting()
-            check_going_into_fault_for_cspsln()
+            check_sa_going_into_fault()
+            w = WaitObsReset()
+            ################
+            result = func(*args, **kwargs)
+            ################
+            w.wait(timeout)
+            return result
+
+        return wrapper
+
+    return decorator
+
+def sync_cspsaln_reset(timeout=200):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            check_going_into_fault_for_cspsaln()
             w = WaitResetCspsaln()
             ################
             result = func(*args, **kwargs)
@@ -530,12 +550,12 @@ def sync_cspsln_reset(timeout=200):
 
     return decorator
 
-def sync_sdpsln_reset(timeout=200):
+def sync_sdpsaln_reset(timeout=200):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             # check_going_into_resetting()
-            check_going_into_fault_for_sdpsln()
+            check_going_into_fault_for_sdpsaln()
             w = WaitResetSdpsaln()
             ################
             result = func(*args, **kwargs)

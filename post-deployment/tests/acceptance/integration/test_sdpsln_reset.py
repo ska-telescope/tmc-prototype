@@ -6,7 +6,7 @@ from tango import DeviceProxy
 from datetime import date, datetime
 from resources.test_support.helpers import waiter, watch, resource
 from resources.test_support.controls import telescope_is_in_standby, tmc_is_in_on, telescope_is_on, telescope_is_off
-from resources.test_support.sync_decorators import sync_sdpsln_reset
+from resources.test_support.sync_decorators import sync_sdpsaln_reset
 from resources.test_support.logging_decorators import log_it
 import resources.test_support.tmc_helpers as tmc
 
@@ -70,7 +70,7 @@ def test_sdpsln_reset():
     fixture["state"]  == "Device FAULT"
 
     @log_it("TMC_reset", devices_to_log, non_default_states_to_check)
-    @sync_sdpsln_reset()
+    @sync_sdpsaln_reset()
     def reset():
         
         SdpSubarrayLeafNode = DeviceProxy("ska_mid/tm_leaf_node/sdp_subarray01")
