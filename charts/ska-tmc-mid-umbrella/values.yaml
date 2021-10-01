@@ -79,7 +79,7 @@ ska-tmc-mid:
   enabled: true
   
 ## tm-simulator
-ska-tmc-mid-simulator:
+ska-tmc-mid-simulators:
   enabled: false
 
 ## SKUID
