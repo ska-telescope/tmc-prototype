@@ -58,8 +58,7 @@ def get_tango_server_class(device_name):
     # test/nodb/sdpmaster is used for testing
     if device_name == "test/nodb/sdpmaster":
         configure_args["test_device_name"] = device_name
-
-    logger.debug("Configuring device model")
+        
     model = configure_device_models(sim_data_files, **configure_args)
     tango_ds = get_tango_device_server(model, sim_data_files)
 

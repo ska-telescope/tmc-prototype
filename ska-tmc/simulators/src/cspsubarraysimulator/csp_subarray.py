@@ -10,7 +10,7 @@ from tango.server import run
 # File generated on Mon Jul 12 13:24:36 2021 by tango-simlib-generator
 
 
-def csp_subarray_simulator():
+def get_csp_subarray_simulator():
     if len(sys.argv) > 0:
         device_name = sys.argv[1]
         if device_name.isdigit():
@@ -23,16 +23,16 @@ def csp_subarray_simulator():
 
 def main(args=None, **kwargs):    
     """
-    Runs the CspSubarrayLeafNodeSimulator.
+    Runs the CspSubarraySimulator.
 
     :param args: Arguments internal to TANGO
     :param kwargs: Arguments internal to TANGO
 
-    :return: CspSubarrayLeafNodeSimulator TANGO object.
+    :return: CspSubarraySimulator TANGO object.
 
     """
-    CspSubarrayLeafNodeSimulator = csp_subarray_simulator()
-    ret_val = run((CspSubarrayLeafNodeSimulator,), args=args, **kwargs)
+    CspSubarraySimulator = get_csp_subarray_simulator()
+    ret_val = run((CspSubarraySimulator,), args=args, **kwargs)
 
     return ret_val
 

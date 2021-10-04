@@ -33,7 +33,6 @@ global:
   subarray_devices:
     - "cspsubarraysimulator"
     - "sdpsubarraysimulator"
-    - "subarraynode"
   subarray_count: 3
 
 dsconfig:

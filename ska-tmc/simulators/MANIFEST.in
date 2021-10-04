@@ -1,6 +1,3 @@
-recursive-include src/ska_tmc_cspsubarrayleafnode_mid *.py
-recursive-include test *.py
-recursive-include pogo CspSubarrayLeafNode.xmi
 include *.rst
 include *.txt
 graft docs

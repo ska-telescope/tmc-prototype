@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# This file is part of the CspSubarrayLeafNode project
+# This file is part of the CspSubarraySimulator project
 #
 #
 #
@@ -45,7 +45,6 @@ setup(
             "SdpMaster.fgo",
         ]
     },
-    test_suite="test",
     entry_points={
         "console_scripts": [
             "CspSubarraySimulatorDS=cspsubarraysimulator.csp_subarray:main",
@@ -61,7 +60,7 @@ setup(
     long_description=long_description,
     url="https://www.skaobservatory.org",
     platforms="Linux",
-    install_requires=["pytango==9.3.3", "mock", "katpoint"],
+    install_requires=["pytango==9.3.3"],
     setup_requires=["pytest-runner", "sphinx", "recommonmark"],
     tests_require=[
         "pytest",
