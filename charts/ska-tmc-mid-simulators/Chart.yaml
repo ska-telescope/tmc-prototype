@@ -6,12 +6,12 @@ version: 0.0.1
 appVersion: 1.16.0
 icon: https://www.skatelescope.org/wp-content/uploads/2016/07/09545_NEW_LOGO_2014.png
 maintainers:
-  - name: Aditya Dange
-    email: adityadange.ska@gmail.com
-  - name: Snehal Nakave
-    email: snehal.ska@gmail.com
-  - name: Kalyani Thigale
-    email: kalyanit.ska@gmail.com
+  - name: Akash Karangale
+    email: akashk.ska@gmail.com
+  - name: Rushikesh Kulkarni
+    email: rushikesh.ska@gmail.com
+  - name: Jayant Kumbhar
+    email: jayant.ska@gmail.com
 dependencies:
 - name: ska-tango-base
   version: 0.2.24
