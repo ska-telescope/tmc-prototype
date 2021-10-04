@@ -5,9 +5,10 @@ import pytest
 import logging
 from resources.test_support.helpers import waiter, resource
 from resources.test_support.controls import tmc_is_in_on, telescope_is_on, telescope_is_off
-from resources.test_support.sync_decorators import sync_obsreset_sa
+from resources.test_support.sync_decorators import sync_obsreset_sa, sync_configure
 from resources.test_support.persistance_helping import (
-    load_config_from_file
+    load_config_from_file,
+    update_scan_config_file
 )
 import resources.test_support.tmc_helpers as tmc
 from resources.test_support.logging_decorators import log_it
@@ -38,7 +39,7 @@ non_default_states_to_check = {
 
 LOGGER = logging.getLogger(__name__)
 
-@pytest.mark.mid
+@pytest.mark.fault
 # @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_fault_obsreset():
     # given an interface to TMC to interact with a subarray node and a central node
@@ -98,11 +99,31 @@ def test_fault_obsreset():
         
     obsreset()
 
+    LOGGER.info("Subarray is in IDLE state")
     LOGGER.info("Obsreset is complete on Subarray")
     fixture["state"] = "Subarray IDLE"
 
+    @sync_configure
+    def configure_sub(sdp_block):
+        configure1_file = "resources/test_data/TMC_integration/configure1.json"
+        update_scan_config_file(configure1_file, sdp_block)
+        config = load_config_from_file(configure1_file)
+        fixture["state"] = "Subarray CONFIGURING"
+        SubarrayNode = DeviceProxy("ska_mid/tm_subarray_node/1")
+        LOGGER.info("Invoking Configure on SubarrayNode again with the correct JSON.")
+        SubarrayNode.Configure(config)
+        LOGGER.info("Invoked Configure on Subarray")
+
+    configure_sub(sdp_block)
+    fixture["state"] = "Subarray Configured for SCAN"
+    time.sleep(60)
+
+    tmc.end_sb()
+    fixture["state"] = "Subarray is in IDLE after EndCommand"
+
+    LOGGER.info("Invoking Release Resources on Subarray")
     tmc.release_resources()
-    fixture["state"] = "Released Resources"
+    fixture["state"] = "Released Resources" 
     
     LOGGER.info("Calling TelescopeOff command now.")
     tmc.set_telescope_off()
