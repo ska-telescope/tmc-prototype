@@ -39,7 +39,7 @@ non_default_states_to_check = {
 
 LOGGER = logging.getLogger(__name__)
 
-@pytest.mark.fault
+@pytest.mark.mid
 # @pytest.mark.skipif(DISABLE_TESTS_UNDER_DEVELOPMENT, reason="disabaled by local env")
 def test_fault_obsreset():
     # given an interface to TMC to interact with a subarray node and a central node
