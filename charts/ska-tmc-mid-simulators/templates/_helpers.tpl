@@ -2,15 +2,15 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "ska-tmc-mid.name" }}
+{{- define "ska-tmc-mid-simulators.name" }}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end }}
 {{/*
 Common labels
 */}}
-{{- define "ska-tmc-mid.labels" }}
-app: {{ template "ska-tmc-mid.name" . }}
-chart: {{ template "ska-tmc-mid.chart" . }}
+{{- define "ska-tmc-mid-simulators.labels" }}
+app: {{ template "ska-tmc-mid-simulators.name" . }}
+chart: {{ template "ska-tmc-mid-simulators.chart" . }}
 release: {{ .Release.Name }}
 heritage: {{ .Release.Service }}
 system: {{ .Values.system }}
@@ -21,7 +21,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "ska-tmc-mid.fullname" -}}
+{{- define "ska-tmc-mid-simulators.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -37,6 +37,6 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "ska-tmc-mid.chart" -}}
+{{- define "ska-tmc-mid-simulators.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
