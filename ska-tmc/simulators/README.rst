@@ -4,6 +4,7 @@
 ## Requirement
 
 - PyTango >= 9.3.3
+- tango-simlib (for developing TANGO device simulators)
 
 ## Installation
 
