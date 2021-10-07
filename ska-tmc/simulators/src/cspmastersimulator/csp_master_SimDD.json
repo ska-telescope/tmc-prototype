@@ -5,7 +5,7 @@
         "override_class": {
           "name": "Sim_csp_master_behaviour",
           "module_directory": "None",
-          "module_name": "ska_tmc_cspmasterleafnode_mid.cspmastersimulator.csp_master_behaviour",
+          "module_name": "cspmastersimulator.csp_master_behaviour",
           "class_name": "OverrideCspMaster"
         }
       }

@@ -5,7 +5,7 @@
         "override_class": {
           "name": "Sim_csp_subarray_behaviour",
           "module_directory": "None",
-          "module_name": "ska_tmc_cspsubarrayleafnode_mid.cspsubarraysimulator.csp_subarray_behaviour",
+          "module_name": "cspsubarraysimulator.csp_subarray_behaviour",
           "class_name": "OverrideCspSubarray"
         }
       }

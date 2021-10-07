@@ -3,9 +3,9 @@
     "class_overrides": [
       {
         "override_class": {
-          "name": "Sim_sdp_master_leaf_node_hehavior",
+          "name": "Sim_sdp_master_behaviour",
           "module_directory": "None",
-          "module_name": "ska_tmc_sdpmasterleafnode_mid.simulator.sdp_master_sim",
+          "module_name": "sdpmastersimulator.sdp_master_behaviour",
           "class_name": "OverrideSdpMaster"
         }
       }

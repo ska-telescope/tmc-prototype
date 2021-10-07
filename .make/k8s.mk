@@ -5,7 +5,7 @@ TANGO_DATABASE_DS ?= tango-host-databaseds-from-makefile-$(RELEASE_NAME) ## Stab
 TANGO_HOST ?= $(TANGO_DATABASE_DS):10000## TANGO_HOST is an input!
 STANDALONE_MODE ?= false
 
-CHARTS ?= ska-tmc-mid ska-tmc-low ska-tmc-mid-umbrella ska-tmc-low-umbrella ## list of charts to be published on gitlab -- umbrella charts for testing purpose
+CHARTS ?= ska-tmc-mid ska-tmc-low ska-tmc-mid-simulators ska-tmc-mid-umbrella ska-tmc-low-umbrella ## list of charts to be published on gitlab -- umbrella charts for testing purpose
 
 CUSTOM_SUBARRAY_COUNT ?= 1
 CUSTOM_DISHES_LIST ?= {01}

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# This file is part of the CspSubarrayLeafNode project
+# This file is part of the CspSubarraySimulator project
 #
 #
 #
@@ -21,25 +21,38 @@ readme_filename = os.path.join(setup_dir, "README.rst")
 with open(readme_filename) as file:
     long_description = file.read()
 
-release_filename = os.path.join(setup_dir, "src", "ska_tmc_cspsubarrayleafnode_mid", "release.py")
-exec(open(release_filename).read())
-
 setup(
-    name=name,
-    version=version,
+    name= "simulators",
+    version= "0.0.0",
     description="",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     package_data={
-        "": [
-            "ska_antennas.txt",
+        "cspsubarraysimulator": [
+            "csp_subarray_SimDD.json",
+            "CspSubarray.fgo",
+        ],
+        "sdpsubarraysimulator": [
+            "sdp_subarray_SimDD.json",
+            "SdpSubarray.fgo",
+        ],
+        "cspmastersimulator": [
+            "csp_master_SimDD.json",
+            "CspMaster.fgo",
+        ],
+        "sdpmastersimulator": [
+            "sdp_master_SimDD.json",
+            "SdpMaster.fgo",
         ]
     },
-    test_suite="test",
     entry_points={
         "console_scripts": [
-            "CspSubarrayLeafNodeDS=ska_tmc_cspsubarrayleafnode_mid.csp_subarray_leaf_node:main"
+            "CspSubarraySimulatorDS=cspsubarraysimulator.csp_subarray:main",
+            "SdpSubarraySimulatorDS=sdpsubarraysimulator.sdp_subarray:main",
+            "CspMasterSimulatorDS=cspmastersimulator.csp_master:main",
+            "SdpMasterSimulatorDS=sdpmastersimulator.sdp_master:main",
         ]
+        
     },
     author="Team NCRA",
     author_email="telmgt-internal@googlegroups.com",
@@ -47,15 +60,8 @@ setup(
     long_description=long_description,
     url="https://www.skaobservatory.org",
     platforms="Linux",
-    install_requires=["pytango==9.3.3", "mock", "astropy>=4.1", "katpoint==1.0a1"],
-    # test_suite='test',
-    setup_requires=[
-        # dependency for `python setup.py test`
-        "pytest-runner",
-        # dependencies for `python setup.py build_sphinx`
-        "sphinx",
-        "recommonmark",
-    ],
+    install_requires=["pytango==9.3.3"],
+    setup_requires=["pytest-runner", "sphinx", "recommonmark"],
     tests_require=[
         "pytest",
         "coverage",

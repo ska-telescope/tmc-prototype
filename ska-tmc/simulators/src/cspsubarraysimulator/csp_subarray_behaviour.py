@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-override class with command handlers for CspSubarray.
-"""
 # Standard python imports
 import enum
 import logging

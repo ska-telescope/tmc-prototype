@@ -1,20 +1,21 @@
-name: "sdpmasterleafnode-{{.Release.Name}}"
+name: "cspsubaraysimulator-{{.Release.Name}}"
 function: observation-execution
 domain: subarray
-instances: ["01"]
-command: "SdpMasterLeafNodeDS" 
+instances: ["01", "02", "03"]
+command: "CspSubarraySimulatorDS"
 server:
-  name: "SdpMasterLeafNodeDS"
+  name: "CspSubarraySimulatorDS"
   instances:
-    - name: "01"
+  {{- range  .Values.coalesced_subarray_devices }}
+    - name: "{{ . }}"
       classes:
-        - name: "SdpMasterLeafNode"
+        - name: "CspSubarraySimulator"
           devices:
-            - name: "ska_mid/tm_leaf_node/sdp_master"
+            - name: "mid_csp/elt/subarray_{{ . }}"
               properties:
-                - name: "SdpMasterFQDN"
+                - name: "SkaLevel"
                   values:
-                    - "mid_sdp/elt/master"
+                    - "3"
                 - name: "LoggingTargetsDefault"
                   values:
                     - "tango::logger"
@@ -25,6 +26,8 @@ server:
                   values:
                     - "healthstate"
                     - "1000"
+                    - "delayModel"
+                    - "1000"
               attribute_properties:
                 - attribute: "healthState"
                   properties:
@@ -32,10 +35,18 @@ server:
                       values:
                         - "-1"
                         - "1"
-depends_on:
-  - device: sys/database/2
+                - attribute: "obsState"
+                  properties:
+                    - name: "abs_change"
+                      values:
+                        - "-1"
+                        - "1"
+  {{- end }}
+# depends_on: 
+#   - device: sys/database/2
 image:
   registry: "{{.Values.global.skatmc.registry}}"
   image: "{{.Values.global.skatmc.image}}"
   tag: "{{.Values.global.skatmc.tag}}"
   pullPolicy: "{{.Values.global.skatmc.pullPolicy}}"
+    

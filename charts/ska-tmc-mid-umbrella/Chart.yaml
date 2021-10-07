@@ -35,6 +35,10 @@ dependencies:
   version: 0.4.10
   repository: file://../ska-tmc-mid
   condition: ska-tmc-mid.enabled
+- name: ska-tmc-mid-simulators
+  version: 0.0.1
+  repository: file://../ska-tmc-mid-simulators
+  condition: ska-tmc-mid-simulators.enabled
 - name: ska-webjive
   version: 1.0.24
   repository: https://artefact.skao.int/repository/helm-internal

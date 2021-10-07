@@ -1,20 +1,17 @@
-name: "sdpmasterleafnode-{{.Release.Name}}"
-function: observation-execution
-domain: subarray
+name: "sdpmastersimulator-{{.Release.Name}}"
+function: sdp-monitoring
+domain: general-monitoring
 instances: ["01"]
-command: "SdpMasterLeafNodeDS" 
+command: "SdpMasterSimulatorDS"
 server:
-  name: "SdpMasterLeafNodeDS"
+  name: "SdpMasterSimulatorDS"
   instances:
     - name: "01"
       classes:
-        - name: "SdpMasterLeafNode"
+        - name: "SdpMasterSimulator"
           devices:
-            - name: "ska_mid/tm_leaf_node/sdp_master"
+            - name: "mid_sdp/elt/master"
               properties:
-                - name: "SdpMasterFQDN"
-                  values:
-                    - "mid_sdp/elt/master"
                 - name: "LoggingTargetsDefault"
                   values:
                     - "tango::logger"
@@ -39,3 +36,4 @@ image:
   image: "{{.Values.global.skatmc.image}}"
   tag: "{{.Values.global.skatmc.tag}}"
   pullPolicy: "{{.Values.global.skatmc.pullPolicy}}"
+    

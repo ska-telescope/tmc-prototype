@@ -14,9 +14,8 @@ SdpSubarrayLeafNode
 from . import release, const, exceptions
 from .sdp_subarray_leaf_node import SdpSubarrayLeafNode
 from .device_data import DeviceData
-from .sdpsubarraysimulator.sdp_subarray import sdp_subarray_simulator
 
-__all__ = ["const", "release", "SdpSubarrayLeafNode", "DeviceData", "exceptions", "sdp_subarray_simulator"]
+__all__ = ["const", "release", "SdpSubarrayLeafNode", "DeviceData", "exceptions"]
 
 __version__ = release.version
 __version_info__ = release.version_info

@@ -35,7 +35,6 @@ from .telescope_off_command import TelescopeOff
 from .telescope_standby_command import TelescopeStandby
 from .disable_command import Disable
 from .device_data import DeviceData
-from .simulator import get_sdp_master_sim
 
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additional_import
 
@@ -355,21 +354,7 @@ class SdpMasterLeafNode(SKABaseDevice):
 
 def main(args=None, **kwargs):
     # PROTECTED REGION ID(SdpMasterLeafNode.main) ENABLED START #
-    # Check if standalone mode is enabled
-    try:
-        standalone_mode = os.environ["STANDALONE_MODE"]
-    except KeyError:
-        standalone_mode = "false"
-
-    if standalone_mode == "true":
-        ## Get simulator object
-        device_name = "mid_sdp/elt/master"
-        sdp_master_simulator = get_sdp_master_sim(device_name)
-
-        # Run server
-        ret_val = run((SdpMasterLeafNode, sdp_master_simulator), args=args, **kwargs)
-    else:
-        ret_val = run((SdpMasterLeafNode,), args=args, **kwargs)
+    ret_val = run((SdpMasterLeafNode,), args=args, **kwargs)
 
     return ret_val
     # PROTECTED REGION END #    //  SdpMasterLeafNode.main
