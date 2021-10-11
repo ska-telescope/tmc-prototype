@@ -19,8 +19,8 @@ global:
   skatmc:
     registry: artefact.skao.int/ska-telescope
     image: ska-tmc
-    tag: 0.8.7
-    pullPolicy: IfNotPresent
+    tag: 0.8.7-latest-dirty
+    pullPolicy: Never
 
   ##  Order of instances resolution ##
   # .Values.global.dishes & .Values.global.subarray_count
@@ -60,15 +60,19 @@ resources:
 
 deviceServers:
   cspmastersimulator:
+    enabled: false
     instances: ["01"]
     file: "data/cspmastersimulator.yaml"
   sdpmastersimulator:
+    enabled: false
     instances: ["01"]
     file: "data/sdpmastersimulator.yaml"
   cspsubarraysimulator:
+    enabled: false
     instances: ["01", "02", "03"]
     file: "data/cspsubarraysimulator.yaml"
   sdpsubarraysimulator:
+    enabled: false
     instances: ["01", "02", "03"]
     file: "data/sdpsubarraysimulator.yaml"
  

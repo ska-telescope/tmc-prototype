@@ -2,6 +2,8 @@
 
 {{- range $key, $deviceserver := .Values.deviceServers }}
 
+{{- if $deviceserver.enabled }}
+
 {{- if hasKey $deviceserver "file"}}
 
 {{- $filedeviceserver := tpl ($.Files.Get $deviceserver.file) $ | fromYaml }}
@@ -42,7 +44,7 @@
 
 {{- else }}
 
-{{- $_ := set $deviceserver "instances" $deviceserver.instances }}
+{{- $_ := set $deviceserver "instances" (coalesce $localchart.Values.global.instances $deviceserver.instances) }}
 {{- $context := dict "name" $key "deviceserver" $deviceserver "image" $deviceserver.image "local" $localchart }}
 {{ template "ska-tango-util.multidevice-config.tpl" $context }}
 {{ template "ska-tango-util.multidevice-sacc-role.tpl" $context }}
@@ -51,5 +53,6 @@
 
 {{- end }}
 
+{{- end }} # if enabled
 
 {{- end }} # deviceservers
