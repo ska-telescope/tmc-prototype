@@ -337,7 +337,7 @@
             "in_type": "DevVoid",
             "in_type_desc": "None",
             "name": "CspSubarrayFault",
-            "out_type": "DevVarLongStringArray",
+            "out_type": "DevVoid",
             "out_type_desc": "Uninitialised"
         },
         "Reset": {
@@ -347,7 +347,7 @@
             "in_type": "DevVoid",
             "in_type_desc": "None",
             "name": "Reset",
-            "out_type": "DevVarLongStringArray",
+            "out_type": "DevVoid",
             "out_type_desc": "Uninitialised"
         }
     },

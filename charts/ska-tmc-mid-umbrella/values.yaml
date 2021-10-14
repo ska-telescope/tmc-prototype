@@ -67,7 +67,7 @@ ska-csp-lmc-mid:
 
 ## sdp
 ska-sdp:
-  enabled: true
+  enabled: false
   lmc:
     prefix: mid
     nsubarray: 3
@@ -85,13 +85,13 @@ ska-tmc-mid-simulators:
       enabled: true
      
     sdpmastersimulator:
-      enabled: false
+      enabled: true
      
     cspsubarraysimulator:
       enabled: true
     
     sdpsubarraysimulator:
-      enabled: false
+      enabled: true
   
 
 ## SKUID
