@@ -184,6 +184,26 @@
             "name": "Standby",
             "out_type": "DevVoid",
             "out_type_desc": "Uninitialised"
+        },
+        "SdpMasterFault": {
+            "cmd_name": "SdpMasterFault",
+            "cmd_tag": 0,
+            "disp_level": "OPERATOR",
+            "in_type": "DevVoid",
+            "in_type_desc": "None",
+            "name": "SdpMasterFault",
+            "out_type": "DevVoid",
+            "out_type_desc": "Uninitialised"
+        },
+        "Reset": {
+            "cmd_name": "Reset",
+            "cmd_tag": 0,
+            "disp_level": "OPERATOR",
+            "in_type": "DevVoid",
+            "in_type_desc": "None",
+            "name": "Reset",
+            "out_type": "DevVoid",
+            "out_type_desc": "Uninitialised"
         }
     },
     "properties": {

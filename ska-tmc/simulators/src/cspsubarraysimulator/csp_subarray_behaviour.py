@@ -87,11 +87,13 @@ class OverrideCspSubarray(object):
 
     def action_cspsubarrayfault(self, model, tango_dev=None, data_input=None):
         tango_dev.set_state(DevState.FAULT)
+        tango_dev.push_change_event("State", tango_dev.get_state())
 
     def action_reset(self, model, tango_dev=None, data_input=None
     ):
         if tango_dev.get_state() == DevState.FAULT:
             tango_dev.set_state(DevState.OFF)
+            tango_dev.push_change_event("State", tango_dev.get_state())
             model.logger.info("Reset command successful on simulator.")
 
     def action_endscan(
