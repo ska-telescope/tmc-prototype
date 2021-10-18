@@ -327,6 +327,26 @@
             "name": "Restart",
             "out_type": "DevVarLongStringArray",
             "out_type_desc": "Uninitialised"
+        },
+        "SdpSubarrayFault": {
+            "cmd_name": "SdpSubarrayFault",
+            "cmd_tag": 0,
+            "disp_level": "OPERATOR",
+            "in_type": "DevVoid",
+            "in_type_desc": "None",
+            "name": "SdpSubarrayFault",
+            "out_type": "DevVoid",
+            "out_type_desc": "Uninitialised"
+        },
+        "Reset": {
+            "cmd_name": "Reset",
+            "cmd_tag": 0,
+            "disp_level": "OPERATOR",
+            "in_type": "DevVoid",
+            "in_type_desc": "None",
+            "name": "Reset",
+            "out_type": "DevVoid",
+            "out_type_desc": "Uninitialised"
         }        
     },
     "properties": {

@@ -61,13 +61,13 @@ ska-mid-cbf:
     enabled: false
 
 ska-csp-lmc-mid:
-  enabled: true
+  enabled: false
   ska-tango-base: 
     enabled: false
 
 ## sdp
 ska-sdp:
-  enabled: true
+  enabled: false
   lmc:
     prefix: mid
     nsubarray: 3
@@ -80,7 +80,19 @@ ska-tmc-mid:
   
 ## tm-simulator
 ska-tmc-mid-simulators:
-  enabled: false
+  deviceServers:
+    cspmastersimulator:
+      enabled: true
+     
+    sdpmastersimulator:
+      enabled: true
+     
+    cspsubarraysimulator:
+      enabled: true
+    
+    sdpsubarraysimulator:
+      enabled: true
+  
 
 ## SKUID
 ska-ser-skuid:

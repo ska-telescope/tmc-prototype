@@ -376,6 +376,26 @@
             "name": "Standby",
             "out_type": "DevVarLongStringArray",
             "out_type_desc": "Uninitialised"
+        },
+         "CspMasterFault": {
+            "cmd_name": "CspMasterFault",
+            "cmd_tag": 0,
+            "disp_level": "OPERATOR",
+            "in_type": "DevVoid",
+            "in_type_desc": "None",
+            "name": "CspMasterFault",
+            "out_type": "DevVoid",
+            "out_type_desc": "Uninitialised"
+        },
+        "Reset": {
+            "cmd_name": "Reset",
+            "cmd_tag": 0,
+            "disp_level": "OPERATOR",
+            "in_type": "DevVoid",
+            "in_type_desc": "None",
+            "name": "Reset",
+            "out_type": "DevVoid",
+            "out_type_desc": "Uninitialised"
         }
     },
     "dev_class": "CspMaster",
