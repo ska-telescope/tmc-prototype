@@ -23,7 +23,7 @@ before_script:
 
 stages:
   - build
-  - unit-test
+  #- unit-test
   - clean
   - test
   - linting
@@ -393,16 +393,16 @@ build ska-dish-master-mid wheel for development: # Executed on a commit
     paths:
       - ./ska-tmc/ska-dish-master-mid/dist/
 
-unit tests:
-  image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
-  stage: unit-test
-  tags:
-    - docker-executor
-  script:
-    - make unit-test
-  artifacts:
-    paths:
-      - ./build
+# unit tests:
+#   image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
+#   stage: unit-test
+#   tags:
+#     - docker-executor
+#   script:
+#     - make unit-test
+#   artifacts:
+#     paths:
+#       - ./build
 
 build-image:
   stage: build
@@ -434,7 +434,7 @@ test-mid:
      - curl -s https://gitlab.com/ska-telescope/templates-repository/-/raw/master/scripts/namespace_auth.sh | bash -s "ci-svc-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG" "ci-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG-mid" "ci-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG-mid-sdp" || true
      - make wait
      - make smoketest
-     - make test MARK=mid COUNT=1 && [ -f "build/report.xml" ]
+     #- make test MARK=mid COUNT=1 && [ -f "build/report.xml" ]
    after_script:
      - mkdir -p build
      - ls -la build
