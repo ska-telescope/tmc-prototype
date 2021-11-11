@@ -217,7 +217,7 @@
             "unit": "",
             "value": 2,
             "writable": "READ"
-        },
+        }
     },
     "commands": {
         "On": {
