@@ -218,62 +218,6 @@
             "value": 2,
             "writable": "READ"
         },
-        "simulationMode": {
-            "alarms": {
-                "delta_t": "Not specified",
-                "delta_val": "Not specified",
-                "extensions": "[]",
-                "max_alarm": "Not specified",
-                "max_warning": "Not specified",
-                "min_alarm": "Not specified",
-                "min_warning": "Not specified"
-            },
-            "color": "Lime",
-            "data_format": "SCALAR",
-            "data_type": "DevBoolean",
-            "database": "10.96.64.100:10000",
-            "description": " Flag indicating whether the CspSubarray element is simulated or not ",
-            "device": "mid_csp/elt/subarray_01",
-            "dim_x": 1,
-            "dim_y": 0,
-            "display_unit": "No display unit",
-            "enum_labels": [],
-            "events": {
-                "arch_event": {
-                    "archive_abs_change": "Not specified",
-                    "archive_period": "60000",
-                    "archive_rel_change": "Not specified",
-                    "extensions": "[]"
-                },
-                "ch_event": {
-                    "abs_change": "Not specified",
-                    "extensions": "[]",
-                    "rel_change": "Not specified"
-                },
-                "per_event": {
-                    "extensions": "[]",
-                    "period": "10000"
-                }
-            },
-            "format": "Not specified",
-            "label": "simulationMode",
-            "max_alarm": "Not specified",
-            "max_dim_x": 1,
-            "max_dim_y": 0,
-            "max_value": "Not specified",
-            "min_alarm": "Not specified",
-            "min_value": "Not specified",
-            "model": "10.96.64.100:10000/mid_csp/elt/master/simulationMode",
-            "name": "simulationMode",
-            "polling": 0,
-            "quality": "ATTR_VALID",
-            "standard_unit": "No standard unit",
-            "string": "True",
-            "time": 1602496997.847563,
-            "unit": "",
-            "value": 1,
-            "writable": "READ"
-        }
     },
     "commands": {
         "On": {
