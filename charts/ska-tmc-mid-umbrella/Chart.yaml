@@ -20,7 +20,7 @@ dependencies:
   version: 0.2.14
   repository: https://artefact.skao.int/repository/helm-internal
 - name: ska-mid-cbf
-  version: 0.2.3
+  version: 0.2.4
   condition: ska-mid-cbf.enabled,ska-tango-base.enabled
   repository: https://artefact.skao.int/repository/helm-internal
 - name: ska-csp-lmc-mid
