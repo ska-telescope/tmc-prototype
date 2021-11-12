@@ -161,7 +161,7 @@
             "unit": "",
             "value": 2,
             "writable": "READ"
-        }
+        },
         "simulationMode": {
             "alarms": {
                 "delta_t": "Not specified",
