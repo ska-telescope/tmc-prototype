@@ -480,8 +480,6 @@ test-low:
   before_script:
     - kubectl get namespace
     - make clean
-    - make delete_namespace-sdp
-    - make delete_namespace
   script:
     - kubectl version
     - make install-chart MINIKUBE=false HELM_CHART=ska-tmc-low-umbrella UMBRELLA_CHART_PATH=charts/ska-tmc-low-umbrella/
