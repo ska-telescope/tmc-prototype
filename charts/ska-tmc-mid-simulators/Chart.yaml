@@ -14,9 +14,9 @@ maintainers:
     email: jayant.ska@gmail.com
 dependencies:
 - name: ska-tango-base
-  version: 0.2.24
+  version: 0.3.2
   repository: https://artefact.skao.int/repository/helm-internal
   condition: ska-tango-base.enabled,global.sub-system.ska-tango-base.enabled
 - name: ska-tango-util
-  version: 0.2.14
+  version: 0.3.2
   repository: https://artefact.skao.int/repository/helm-internal

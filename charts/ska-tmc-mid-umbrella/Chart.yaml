@@ -14,21 +14,21 @@ maintainers:
     email: kalyanit.ska@gmail.com
 dependencies:
 - name: ska-tango-base
-  version: 0.2.24
+  version: 0.3.2
   repository: https://artefact.skao.int/repository/helm-internal
 - name: ska-tango-util
-  version: 0.2.14
+  version: 0.3.2
   repository: https://artefact.skao.int/repository/helm-internal
 - name: ska-mid-cbf
-  version: 0.2.4
+  version: 0.2.5
   condition: ska-mid-cbf.enabled,ska-tango-base.enabled
   repository: https://artefact.skao.int/repository/helm-internal
 - name: ska-csp-lmc-mid
-  version: 0.1.9
+  version: 0.1.10
   condition: ska-csp-lmc-mid.enabled,ska-tango-base.enabled
   repository: https://artefact.skao.int/repository/helm-internal
 - name: ska-sdp
-  version: 0.7.0
+  version: 0.8.1
   repository: https://artefact.skao.int/repository/helm-internal
   condition: ska-sdp.enabled
 - name: ska-tmc-mid
@@ -39,7 +39,7 @@ dependencies:
   version: 0.0.1
   repository: file://../ska-tmc-mid-simulators
 - name: ska-webjive
-  version: 1.0.24
+  version: 1.0.27
   repository: https://artefact.skao.int/repository/helm-internal
   condition: ska-webjive.enabled
 - name: ska-ser-skuid

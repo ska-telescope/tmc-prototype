@@ -14,18 +14,18 @@ maintainers:
     email: kalyanit.ska@gmail.com
 dependencies:
 - name: ska-tango-base
-  version: 0.2.24
+  version: 0.3.2
   repository: https://artefact.skao.int/repository/helm-internal
 - name: ska-tango-util
-  version: 0.2.14
+  version: 0.3.2
   repository: https://artefact.skao.int/repository/helm-internal
 - name: ska-webjive
-  version: 1.0.24
+  version: 1.0.27
   repository: https://artefact.skao.int/repository/helm-internal
 - name: ska-tmc-low
   version: 0.3.8
   repository: file://../ska-tmc-low
 - name: ska-low-mccs
-  version: 0.8.3
+  version: 0.8.6
   repository: https://artefact.skao.int/repository/helm-internal
 
