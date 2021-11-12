@@ -365,7 +365,6 @@
             "max_value": "Not specified",
             "min_alarm": "Not specified",
             "min_value": "Not specified",
-            "model": "10.96.64.100:10000/mid_csp/elt/master/simulationMode",
             "name": "simulationMode",
             "polling": 0,
             "quality": "ATTR_VALID",
@@ -375,7 +374,7 @@
             "unit": "",
             "value": 1,
             "writable": "READ"
-        },
+        }
     },
     "commands": {
         "State": {
