@@ -271,7 +271,7 @@
             "string": "True",
             "time": 1602496997.847563,
             "unit": "",
-            "value": 0,
+            "value": 1,
             "writable": "READ"
         }
     },

@@ -174,14 +174,17 @@
             },
             "color": "Lime",
             "data_format": "SCALAR",
-            "data_type": "DevBoolean",
+            "data_type": "DevEnum",
             "database": "10.96.64.100:10000",
-            "description": " Flag indicating whether the SdpMaster element is simulated or not ",
-            "device": "mid_sdp/elt/master",
+            "description": " Flag indicating whether the SdpSubarray element is simulated or not ",
+            "device": "mid_sdp/elt/subarray_1",
             "dim_x": 1,
             "dim_y": 0,
             "display_unit": "No display unit",
-            "enum_labels": [],
+            "enum_labels": [
+            "False",
+            "True"
+            ],
             "events": {
                 "arch_event": {
                     "archive_abs_change": "Not specified",
@@ -199,7 +202,7 @@
                     "period": "10000"
                 }
             },
-            "format": "Not specified",
+            "format": "%s",
             "label": "simulationMode",
             "max_alarm": "Not specified",
             "max_dim_x": 1,
