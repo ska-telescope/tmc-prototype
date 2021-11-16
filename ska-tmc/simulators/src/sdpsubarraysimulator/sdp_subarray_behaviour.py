@@ -10,7 +10,6 @@ import json
 import threading
 
 # Tango import
-import tango
 from tango import DevState, Except, ErrSeverity
 
 # Additional import
@@ -77,13 +76,12 @@ class OverrideSdpSubarray(object):
             input_str = input_str.join(data_input)
             model.logger.info(input_str)
             interface = input_str["interface"]
-        except KeyError as ke:
-            model.logger.error(ke)
-            tango.Except.throw_exception(
+        except :
+            model.logger.error("Error occurred while invoking AssignResources command")
+            Except.throw_exception(
                 "AssignResources command failed on Sdp Subarray.",
-                ke,
                 "Invalid input json string",
-                tango.ErrSeverity.ERR,
+                ErrSeverity.ERR,
             )
 
         obsstate_attribute = model.sim_quantities["obsState"]
