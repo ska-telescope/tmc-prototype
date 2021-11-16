@@ -75,7 +75,8 @@ class OverrideSdpSubarray(object):
             input_str = ""
             input_str = input_str.join(data_input)
             model.logger.info(input_str)
-            interface = input_str["interface"]
+            a = json.loads(input_str)
+            interface = a["interface"]
         except DevFailed as df:
             model.logger.error("Error occurred while invoking AssignResources command")
             Except.re_throw_exception(
