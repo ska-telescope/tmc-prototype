@@ -427,8 +427,6 @@ test-mid:
    before_script:
      - kubectl get namespace
      - make clean
-     - make delete_namespace-sdp
-     - make delete_namespace
    script:
      - kubectl version
      - make install-chart MINIKUBE=false
