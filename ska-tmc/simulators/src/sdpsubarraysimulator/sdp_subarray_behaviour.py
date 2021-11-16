@@ -71,8 +71,7 @@ class OverrideSdpSubarray(object):
         self, model, tango_dev=None, data_input=None
     ):  # pylint: disable=W0613
         """Changes the State of the device to ."""
-        log_msg = "Data Input: {}".format(data_input[0])
-        model.logger.info(log_msg)
+        model.logger.info(data_input)
         obsstate_attribute = model.sim_quantities["obsState"]
         obs_state = get_enum_str(obsstate_attribute)
         if obs_state == "EMPTY":
