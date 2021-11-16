@@ -83,7 +83,7 @@ class AssignResources(BaseCommand):
             tango.Except.throw_exception(
                 "SDP Subarray returned error while assigning resources",
                 str(event.errors),
-                event.cmd_name,
+                "SdpSubarrayLeafNode.AssignResources",
                 tango.ErrSeverity.ERR,
             )
 
