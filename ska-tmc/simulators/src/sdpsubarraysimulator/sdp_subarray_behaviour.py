@@ -76,11 +76,13 @@ class OverrideSdpSubarray(object):
             input_str = input_str.join(data_input)
             model.logger.info(input_str)
             interface = input_str["interface"]
-        except :
+        except Exception as ex:
             model.logger.error("Error occurred while invoking AssignResources command")
-            Except.throw_exception(
+            Except.re_throw_exception(
+                ex,
                 "AssignResources command failed on Sdp Subarray.",
                 "Invalid input json string",
+                "SdpSubarraySimulator",
                 ErrSeverity.ERR,
             )
 
