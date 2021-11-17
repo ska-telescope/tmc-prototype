@@ -64,22 +64,22 @@ class AssignResources(BaseCommand):
 
         return: None
         """
-        try:
-            if event.err:
-                log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
-                self.logger.error(log)
-                tango.Except.throw_exception(
-                    "SDP Subarray returned error while assigning resources",
-                    "Error on SDP SA LN",
-                    "SspSbarrayLeafnode.AssignResources",
-                    tango.ErrSeverity.ERR,
-                )
-            else:
-                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-                self.this_server.write_attr("activityMessage", log, False)
-                self.logger.debug(log)
-        except Exception as e:
-            self.logger.info(e)
+        # try:
+        if event.err:
+            log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            self.logger.error(log)
+            tango.Except.throw_exception(
+                "SDP Subarray returned error while assigning resources",
+                "Error on SDP SA LN",
+                "SspSbarrayLeafnode.AssignResources",
+                tango.ErrSeverity.ERR,
+            )
+        else:
+            log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+            self.this_server.write_attr("activityMessage", log, False)
+            self.logger.debug(log)
+        # except Exception as e:
+        #     self.logger.info(e)
 
     @identify_with_id("assign", "argin")
     def do(self, argin):
