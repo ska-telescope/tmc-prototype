@@ -1,12 +1,13 @@
 # Standard python imports
 import enum
+import json
 import logging
 import time
 import threading
 from ska.base.commands import ResultCode
 
 # Tango import
-from tango import DevState, Except, ErrSeverity
+from tango import DevState, Except, ErrSeverity, DevFailed
 
 MODULE_LOGGER = logging.getLogger(__name__)
 
@@ -62,6 +63,18 @@ class OverrideCspSubarray(object):
         self, model, tango_dev=None, data_input=None
     ):  # pylint: disable=W0613
         """Changes the ObsState of the device to Transition state RESOURCING and then to IDLE."""
+        try:
+            input_string = json.loads(data_input)
+            a = input_string["UnexistingKey"]
+        except DevFailed as df:
+            model.logger.info("Error while invoking AssignResources on CspSubarray")
+            Except.throw_exception(
+                "Assign Command Failed",
+                "Wrong input json string",
+                ErrSeverity.ERR,
+            )
+
+
         obsstate_attribute = model.sim_quantities["obsState"]
         obs_state = get_enum_str(obsstate_attribute)
         if obs_state == "EMPTY":
