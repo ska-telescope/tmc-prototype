@@ -70,8 +70,8 @@ class AssignResources(BaseCommand):
                 self.logger.error(log)
                 tango.Except.throw_exception(
                     "SDP Subarray returned error while assigning resources",
-                    str(event.errors),
-                    event.cmd_name,
+                    "Error on SDP SA LN",
+                    "SspSbarrayLeafnode.AssignResources",
                     tango.ErrSeverity.ERR,
                 )
             else:
@@ -80,12 +80,6 @@ class AssignResources(BaseCommand):
                 self.logger.debug(log)
         except Exception as e:
             self.logger.info(e)
-            tango.Except.throw_exception(
-                "SDP Subarray returned error while assigning resources",
-                str(event.errors),
-                "SdpSubarrayLeafNode.AssignResources",
-                tango.ErrSeverity.ERR,
-            )
 
     @identify_with_id("assign", "argin")
     def do(self, argin):
