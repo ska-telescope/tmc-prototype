@@ -73,51 +73,58 @@ class OverrideSdpSubarray(object):
         """Changes the State of the device to ."""
         obsstate_attribute = model.sim_quantities["obsState"]
         obs_state = get_enum_str(obsstate_attribute)
-        if obs_state == "EMPTY":
-            set_enum(obsstate_attribute, "RESOURCING", model.time_func())
-            sdp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "RESOURCING")
-            tango_dev.push_change_event("obsState", sdp_subarray_obs_state_enum)
-            tango_dev.set_status("ObsState in RESOURCING")
-            model.logger.info("ObsState trasnitioned to RESOURCING")
+        if tango_dev.get_state() == DevState.ON:
+            if obs_state == "EMPTY":
+                set_enum(obsstate_attribute, "RESOURCING", model.time_func())
+                sdp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "RESOURCING")
+                tango_dev.push_change_event("obsState", sdp_subarray_obs_state_enum)
+                tango_dev.set_status("ObsState in RESOURCING")
+                model.logger.info("ObsState trasnitioned to RESOURCING")
 
-            time.sleep(1)
-            receive_address_value = json.dumps(
-                {
-                    "science_A": {
-                        "host": [
-                            [0, "192.168.0.1"],
-                            [400, "192.168.0.2"],
-                            [744, "192.168.0.3"],
-                            [1144, "192.168.0.4"],
-                        ],
-                        "mac": [[0, "06-00-00-00-00-00"], [744, "06-00-00-00-00-01"]],
-                        "port": [
-                            [0, 9000, 1],
-                            [400, 9000, 1],
-                            [744, 9000, 1],
-                            [1144, 9000, 1],
-                        ],
-                    },
-                    "calibration_B": {
-                        "host": [[0, "192.168.1.1"]],
-                        "port": [[0, 9000, 1]],
-                    },
-                }
-            )
-            model.sim_quantities["receiveAddresses"].set_val(
-                receive_address_value, model.time_func()
-            )
-            tango_dev.push_change_event("receiveAddresses", receive_address_value)
-            set_enum(obsstate_attribute, "IDLE", model.time_func())
-            sdp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "IDLE")
-            tango_dev.push_change_event("obsState", sdp_subarray_obs_state_enum)
-            tango_dev.set_status("ObsState in Idle")
-            model.logger.info("ObsState trasnitioned to IDLE")
+                time.sleep(1)
+                receive_address_value = json.dumps(
+                    {
+                        "science_A": {
+                            "host": [
+                                [0, "192.168.0.1"],
+                                [400, "192.168.0.2"],
+                                [744, "192.168.0.3"],
+                                [1144, "192.168.0.4"],
+                            ],
+                            "mac": [[0, "06-00-00-00-00-00"], [744, "06-00-00-00-00-01"]],
+                            "port": [
+                                [0, 9000, 1],
+                                [400, 9000, 1],
+                                [744, 9000, 1],
+                                [1144, 9000, 1],
+                            ],
+                        },
+                        "calibration_B": {
+                            "host": [[0, "192.168.1.1"]],
+                            "port": [[0, 9000, 1]],
+                        },
+                    }
+                )
+                model.sim_quantities["receiveAddresses"].set_val(
+                    receive_address_value, model.time_func()
+                )
+                tango_dev.push_change_event("receiveAddresses", receive_address_value)
+                set_enum(obsstate_attribute, "IDLE", model.time_func())
+                sdp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "IDLE")
+                tango_dev.push_change_event("obsState", sdp_subarray_obs_state_enum)
+                tango_dev.set_status("ObsState in Idle")
+                model.logger.info("ObsState trasnitioned to IDLE")
 
+            else:
+                Except.throw_exception(
+                    "Assign Command Failed",
+                    "Not allowed in current Obstate.",
+                    ErrSeverity.WARN,
+                )
         else:
             Except.throw_exception(
                 "Assign Command Failed",
-                "Not allowed in current Obstate.",
+                "Not allowed in current device state.",
                 ErrSeverity.WARN,
             )
         return [[ResultCode.OK], ["Assign resources command successful on simulator."]]
