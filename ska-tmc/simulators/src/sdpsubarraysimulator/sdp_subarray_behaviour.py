@@ -71,22 +71,6 @@ class OverrideSdpSubarray(object):
         self, model, tango_dev=None, data_input=None
     ):  # pylint: disable=W0613
         """Changes the State of the device to ."""
-        try:
-            input_str = ""
-            input_str = input_str.join(data_input)
-            model.logger.info(input_str)
-            a = json.loads(input_str)
-            interface = a["interface"]
-        except KeyError as ke:
-            model.logger.error("Error occurred while invoking AssignResources command")
-            Except.re_throw_exception(
-                ke,
-                "AssignResources command failed on Sdp Subarray.",
-                "Invalid input json string",
-                "SdpSubarraySimulator.AssignResources",
-                ErrSeverity.ERR,
-            )
-
         obsstate_attribute = model.sim_quantities["obsState"]
         obs_state = get_enum_str(obsstate_attribute)
         if obs_state == "EMPTY":
