@@ -64,30 +64,23 @@ class OverrideCspSubarray(object):
         """Changes the ObsState of the device to Transition state RESOURCING and then to IDLE."""
         obsstate_attribute = model.sim_quantities["obsState"]
         obs_state = get_enum_str(obsstate_attribute)
-        if tango_dev.get_state() == DevState.ON:
-            if obs_state == "EMPTY":
-                set_enum(obsstate_attribute, "RESOURCING", model.time_func())
-                csp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "RESOURCING")
-                tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)
-                tango_dev.set_status("ObsState in RESOURCING")
-                model.logger.info("ObsState trasnitioned to RESOURCING")
-                time.sleep(2)
-                set_enum(obsstate_attribute, "IDLE", model.time_func())
-                csp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "IDLE")
-                tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)
-                tango_dev.set_status("ObsState in Idle")
-                model.logger.info("ObsState trasnitioned to IDLE")
+        if obs_state == "EMPTY":
+            set_enum(obsstate_attribute, "RESOURCING", model.time_func())
+            csp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "RESOURCING")
+            tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)
+            tango_dev.set_status("ObsState in RESOURCING")
+            model.logger.info("ObsState trasnitioned to RESOURCING")
+            time.sleep(2)
+            set_enum(obsstate_attribute, "IDLE", model.time_func())
+            csp_subarray_obs_state_enum = get_enum_int(obsstate_attribute, "IDLE")
+            tango_dev.push_change_event("obsState", csp_subarray_obs_state_enum)
+            tango_dev.set_status("ObsState in Idle")
+            model.logger.info("ObsState trasnitioned to IDLE")
 
-            else:
-                Except.throw_exception(
-                    "Assign Command Failed",
-                    "Not allowed in current Obstate.",
-                    ErrSeverity.WARN,
-                )
         else:
             Except.throw_exception(
                 "Assign Command Failed",
-                "Not allowed in current device state.",
+                "Not allowed in current Obstate.",
                 ErrSeverity.WARN,
             )
         return [[ResultCode.OK], ["Assign resources command successful on simulator."]]
