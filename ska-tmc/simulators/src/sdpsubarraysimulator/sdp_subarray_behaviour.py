@@ -71,6 +71,19 @@ class OverrideSdpSubarray(object):
         self, model, tango_dev=None, data_input=None
     ):  # pylint: disable=W0613
         """Changes the State of the device to ."""
+        try:
+            Input_str = ""
+            Input_str = Input_str.join(data_input)
+            a = json.loads(Input_str)
+            interface = a["interface"]
+        except DevFailed as df:
+            Except.throw_exception(
+                "Assign Command Failed",
+                "Error while assigning SDP resources.",
+                "SDPSimulator.AssignResources",
+                ErrSeverity.WARN,
+            )
+
         obsstate_attribute = model.sim_quantities["obsState"]
         obs_state = get_enum_str(obsstate_attribute)
         if obs_state == "EMPTY":
