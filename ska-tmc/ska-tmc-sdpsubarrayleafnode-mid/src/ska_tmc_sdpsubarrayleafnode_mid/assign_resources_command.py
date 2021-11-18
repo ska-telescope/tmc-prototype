@@ -75,12 +75,13 @@ class AssignResources(BaseCommand):
                 self.this_server.write_attr("activityMessage", log, False)
                 self.logger.debug(log)
         except Exception as e:
+            self.logger.error("Error while assigning res")
             tango.Except.re_throw_exception(
                 e,
                 "SDP Subarray returned error while assigning resources",
                 "Error",
                 "SdpSubarrayLeafNode.AssignResources",
-                tango.ErrSeverity.ERR,
+                tango.ErrSeverity.WARN,
             )
 
     @identify_with_id("assign", "argin")

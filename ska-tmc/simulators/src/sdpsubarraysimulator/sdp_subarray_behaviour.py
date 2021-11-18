@@ -77,6 +77,7 @@ class OverrideSdpSubarray(object):
             a = json.loads(Input_str)
             interface = a["interface"]
         except DevFailed as df:
+            model.logger.info("Error while assigning SDP resources")
             Except.throw_exception(
                 "Assign Command Failed",
                 "Error while assigning SDP resources.",
