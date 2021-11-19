@@ -72,9 +72,11 @@ class OverrideSdpSubarray(object):
     ):  # pylint: disable=W0613
         """Changes the State of the device to ."""
         try:
+            model.logger.info(data_input)
             Input_str = ""
             Input_str = Input_str.join(data_input)
             a = json.loads(Input_str)
+            model.logger.info(a)
             interface = a["interface"]
         except DevFailed as df:
             model.logger.info("Error while assigning SDP resources")
