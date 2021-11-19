@@ -27,8 +27,7 @@ exec(open(release_filename).read())
 setup(
     name=name,
     version=version,
-    description="Provides the monitoring and control interface for SKA Low required by users as well as \n"
-    "other TM Components (such as OET, Central Node) for a Subarray.",
+    description="Provides the monitoring and control interface for SKA Low required by users as well as other TM Components (such as OET, Central Node) for a Subarray.",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     include_package_data=True,
