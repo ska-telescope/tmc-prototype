@@ -82,7 +82,7 @@ class OverrideSdpSubarray(object):
                 "Assign Command Failed",
                 "Error while assigning SDP resources.",
                 "SDPSimulator.AssignResources",
-                ErrSeverity.WARN,
+                ErrSeverity.WARN
             )
 
         obsstate_attribute = model.sim_quantities["obsState"]
