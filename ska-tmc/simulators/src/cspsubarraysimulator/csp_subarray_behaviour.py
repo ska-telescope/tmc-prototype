@@ -63,20 +63,6 @@ class OverrideCspSubarray(object):
         self, model, tango_dev=None, data_input=None
     ):  # pylint: disable=W0613
         """Changes the ObsState of the device to Transition state RESOURCING and then to IDLE."""
-        try:
-            model.logger.info(data_input)
-            a = json.loads(data_input)
-            model.logger.info(a)
-            wrongjson = a["wrongjson"]
-        except DevFailed as df:
-            model.logger.info("Error while assigning CSP resources")
-            Except.throw_exception(
-                "Assign Command Failed",
-                "Error while assigning CSP resources.",
-                "CSPSimulator.AssignResources",
-                ErrSeverity.WARN
-            )
-
         obsstate_attribute = model.sim_quantities["obsState"]
         obs_state = get_enum_str(obsstate_attribute)
         if obs_state == "EMPTY":
