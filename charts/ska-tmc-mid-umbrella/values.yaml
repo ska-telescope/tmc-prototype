@@ -56,12 +56,12 @@ ska-webjive:
 
 
 ska-mid-cbf:
-  enabled: false
+  enabled: true
   ska-tango-base: 
     enabled: false
 
 ska-csp-lmc-mid:
-  enabled: false
+  enabled: true
   ska-tango-base: 
     enabled: false
 
@@ -82,13 +82,13 @@ ska-tmc-mid:
 ska-tmc-mid-simulators:
   deviceServers:
     cspmastersimulator:
-      enabled: true
+      enabled: false
      
     sdpmastersimulator:
       enabled: true
      
     cspsubarraysimulator:
-      enabled: true
+      enabled: false
     
     sdpsubarraysimulator:
       enabled: true
