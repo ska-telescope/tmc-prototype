@@ -1,6 +1,6 @@
 {{ $localchart := . }}
 
-{{ template "tango-util.configuration.tpl" . }}
+{{ template "ska-tango-util.configuration.tpl" . }}
 
 {{ range $deviceserver := .Values.deviceServers }}
 
@@ -8,7 +8,7 @@
 
 {{ $context := dict "deviceserver" $deviceserver "image" $deviceserver.image "local" $localchart "instance" $instance  }}
 
-{{ template "tango-util.deviceserver.tpl" $context }}
+{{ template "ska-tango-util.deviceserver.tpl" $context }}
 
 {{ end }} ## instances
 

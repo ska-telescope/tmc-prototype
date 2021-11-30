@@ -8,7 +8,6 @@ USER root
 # install all local TMC packages
 RUN python3 -m pip install -r requirements.txt \
     /app/ska-tmc/ska-tmc-centralnode-low \
-    /app/ska-tmc/simulators \
     /app/ska-tmc/ska-tmc-cspmasterleafnode-mid \
     /app/ska-tmc/ska-tmc-cspsubarrayleafnode-mid \
     /app/ska-tmc/ska-tmc-dishleafnode-mid \

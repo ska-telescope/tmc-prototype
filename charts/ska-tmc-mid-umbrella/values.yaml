@@ -77,7 +77,7 @@ ska-sdp:
 ## tm
 ska-tmc-mid:
   enabled: true
-  
+
 ## tm-simulator
 ska-tmc-mid-simulators:
   deviceServers:
@@ -92,8 +92,7 @@ ska-tmc-mid-simulators:
     
     sdpsubarraysimulator:
       enabled: false
-  
-
+ 
 ## SKUID
 ska-ser-skuid:
   enabled: true
