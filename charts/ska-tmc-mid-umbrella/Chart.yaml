@@ -31,6 +31,9 @@ dependencies:
   version: 0.7.0
   repository: https://artefact.skao.int/repository/helm-internal
   condition: ska-sdp.enabled
+- name: ska-tmc-simulators
+  version: 0.0.1
+  repository: https://artefact.skao.int/repository/helm-internal
 - name: ska-tmc-mid
   version: 0.4.10
   repository: file://../ska-tmc-mid
