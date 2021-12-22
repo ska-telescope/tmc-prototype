@@ -5,6 +5,20 @@ description = "SKA-TMC"
 authors = ["Team NCRA"]
 license = "BSD-3-Clause"
 
+packages = [
+    { include = "ska-dish-master-mid", from = "src" },
+    { include = "ska-tmc-cspmasterleafnode-mid", from = "src" },
+    { include = "ska-tmc-cspsubarrayleafnode-mid", from = "src" },
+    { include = "ska-tmc-sdpmasterleafnode-mid", from = "src" },
+    { include = "ska-tmc-sdpsubarrayleafnode-mid", from = "src" },
+    { include = "ska-tmc-dishleafnode-mid", from = "src" },
+    { include = "ska-tmc-mccsmasterleafnode-low", from = "src" },
+    { include = "ska-tmc-mccssubarrayleafnode-low", from = "src" },
+    { include = "ska-tmc-subarraynode-low", from = "src" }
+]
+include = [
+    { path = 'tests'}
+]
 
 [[tool.poetry.source]]
 name = 'ska-nexus'
