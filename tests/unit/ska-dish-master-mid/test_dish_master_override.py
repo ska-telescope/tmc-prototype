@@ -12,8 +12,8 @@ from unittest import mock
 from tango_simlib import tango_sim_generator
 from src.ska_dish_master_mid.src.ska_dish_master_mid.dish_master_behaviour import AzEl, OverrideDish, get_enum_str, set_enum
 
-FGO_FILE_PATH = pkg_resources.resource_filename("ska_dish_master_mid", "dish_master.fgo")
-JSON_FILE_PATH = pkg_resources.resource_filename("ska_dish_master_mid", "dish_master_SimDD.json")
+FGO_FILE_PATH = pkg_resources.resource_filename("src.ska_dish_master_mid.src.ska_dish_master_mid", "dish_master.fgo")
+JSON_FILE_PATH = pkg_resources.resource_filename("src.ska_dish_master_mid.src.ska_dish_master_mid", "dish_master_SimDD.json")
 
 
 class TestMpiDshModel:
