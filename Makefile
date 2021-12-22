@@ -87,14 +87,29 @@ TEST_RUNNER = test-runner-$(CI_JOB_ID)-$(KUBE_NAMESPACE)-$(HELM_RELEASE)
 # ('make interactive', 'make test', etc.) are defined in this file.
 #
 
-include .make/release.mk
-include .make/k8s.mk
-include .make/test.mk
+TANGO_HOST ?= tango-databaseds:10000 ## TANGO_HOST connection to the Tango DS
+
+PYTHON_VARS_BEFORE_PYTEST ?= PYTHONPATH=.:./src \
+							 TANGO_HOST=$(TANGO_HOST)
+
+MARK ?= ## What -m opt to pass to pytest
+# run one test with FILE=acceptance/test_subarray_node.py::test_check_internal_model_according_to_the_tango_ecosystem_deployed
+FILE ?= tests## A specific test file to pass to pytest
+ADD_ARGS ?= ## Additional args to pass to pytest
+
+# override for python-test - must not have the above --true-context
+ifeq ($(MAKECMDGOALS),python-test)
+ADD_ARGS +=  --forked
+MARK = not post_deployment and not acceptance
+endif
+PYTHON_VARS_AFTER_PYTEST ?= -m '$(MARK)' $(ADD_ARGS) $(FILE)
+
+
+-include .make/*.mk
+-include PrivateRules.mak
 
 #
 # Defines a default make target so that help is printed if make is called
 # without a target
 #
 .DEFAULT_GOAL := help
-
-.PHONY: all test up down help k8s show lint deploy delete logs describe mkcerts localip namespace delete_namespace ingress_check kubeconfig kubectl_dependencies helm_dependencies rk8s_test k8s_test rlint
