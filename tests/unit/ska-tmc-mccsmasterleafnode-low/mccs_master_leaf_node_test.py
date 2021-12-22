@@ -19,8 +19,8 @@ from ska.base.control_model import HealthState, ObsState
 from ska.base.commands import ResultCode
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
-from ska_tmc_mccsmasterleafnode_low import MccsMasterLeafNode, const, release, device_data
-from ska_tmc_mccsmasterleafnode_low.device_data import DeviceData
+from src.ska_tmc_mccsmasterleafnode_low.src.ska_tmc_mccsmasterleafnode_low import MccsMasterLeafNode, const, release, device_data
+from src.ska_tmc_mccsmasterleafnode_low.src.ska_tmc_mccsmasterleafnode_low.device_data import DeviceData
 
 
 # PROTECTED REGION END #    //  MccsMasterLeafNode imports

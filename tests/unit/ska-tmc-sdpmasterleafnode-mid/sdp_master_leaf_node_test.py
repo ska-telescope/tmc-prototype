@@ -13,7 +13,7 @@ from tango.test_context import DeviceTestContext
 from tango import DevState, DevFailed
 
 # Additional import
-from ska_tmc_sdpmasterleafnode_mid import SdpMasterLeafNode, const, release
+from src.ska_tmc_sdpmasterleafnode_mid.src.ska_tmc_sdpmasterleafnode_mid import SdpMasterLeafNode, const, release
 from ska.base.control_model import (
     HealthState,
     AdminMode,

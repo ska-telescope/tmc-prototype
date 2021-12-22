@@ -16,9 +16,9 @@ from tango.test_context import DeviceTestContext
 from tango import DevState
 
 # Additional import
-from src.ska_tmc_cspsubarrayleafnode_mid import CspSubarrayLeafNode, const, release
+from src.ska_tmc_cspsubarrayleafnode_mid.src.ska_tmc_cspsubarrayleafnode_mid import CspSubarrayLeafNode, const, release
 from ska.base.control_model import HealthState, ObsState, LoggingLevel
-from src.ska_tmc_cspsubarrayleafnode_mid.device_data import DeviceData
+#from src.ska_tmc_cspsubarrayleafnode_mid.device_data import DeviceData
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
