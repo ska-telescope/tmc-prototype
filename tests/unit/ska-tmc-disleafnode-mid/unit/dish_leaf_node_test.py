@@ -28,7 +28,7 @@ from ska.base.control_model import (
 from ska.base.control_model import LoggingLevel
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
-from src.ska_tmc_dishleafnode_mid.src.ska_tmc_dishleafnode_mid.src.ska_tmc_dishleafnode_mid.device_data import DeviceData
+from src.ska_tmc_dishleafnode_mid.src.ska_tmc_dishleafnode_mid.device_data import DeviceData
 
 
 config_input_file = "command_Config.json"
