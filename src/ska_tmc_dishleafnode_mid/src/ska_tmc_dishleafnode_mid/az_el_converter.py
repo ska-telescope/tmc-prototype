@@ -11,7 +11,7 @@ class AzElConverter:
         try:
             device_data = DeviceData.get_instance()
 
-            with importlib.resources.open_text("ska_tmc_dishleafnode_mid", "ska_antennas.txt") as f:
+            with importlib.resources.open_text("src.ska_tmc_dishleafnode_mid.src.ska_tmc_dishleafnode_mid", "ska_antennas.txt") as f:
                 ska_antennas = f.readlines()
             antennas = [
                 katpoint.Antenna(antenna_details) for antenna_details in ska_antennas
