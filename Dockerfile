@@ -1,23 +1,26 @@
-FROM artefact.skao.int/ska-tango-images-pytango-builder:9.3.10 AS buildenv
-FROM artefact.skao.int/ska-tango-images-pytango-runtime:9.3.10 AS runtime
-# create ipython profile to so that itango doesn't fail if ipython hasn't run yet
-RUN ipython profile create
+ARG BUILD_IMAGE="artefact.skao.int/ska-tango-images-pytango-builder:9.3.14"
+ARG BASE_IMAGE="artefact.skao.int/ska-tango-images-pytango-runtime:9.3.14"
+FROM $BUILD_IMAGE AS buildenv
 
+FROM $BASE_IMAGE
+
+# Install Poetry
 USER root
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | POETRY_HOME=/opt/poetry python - && \
+    cd /usr/local/bin && \
+    chmod a+x /opt/poetry/bin/poetry && \
+    ln -s /opt/poetry/bin/poetry && \
+    poetry config virtualenvs.create false
 
-# install all local TMC packages
-RUN python3 -m pip install -r requirements.txt \
-    /app/ska-tmc/ska-tmc-centralnode-low \
-    /app/ska-tmc/ska-tmc-cspmasterleafnode-mid \
-    /app/ska-tmc/ska-tmc-cspsubarrayleafnode-mid \
-    /app/ska-tmc/ska-tmc-dishleafnode-mid \
-    /app/ska-tmc/ska-dish-master-mid \
-    /app/ska-tmc/ska-tmc-sdpmasterleafnode-mid \
-    /app/ska-tmc/ska-tmc-sdpsubarrayleafnode-mid \
-    /app/ska-tmc/ska-tmc-mccsmasterleafnode-low \
-    /app/ska-tmc/ska-tmc-mccssubarrayleafnode-low \
-    /app/ska-tmc/ska-tmc-subarraynode-low 
+# Copy poetry.lock* in case it doesn't exist in the repo
+COPY pyproject.toml poetry.lock* ./
+
+# Install runtime dependencies and the app
+RUN poetry install --no-dev
 
 USER tango
 
-CMD ["/usr/local/bin/CentralNodeLowDS"]
+RUN poetry config virtualenvs.create false
+
+# create ipython profile too so that itango doesn't fail if ipython hasn't run yet
+RUN ipython profile create
