@@ -9,7 +9,7 @@
 
 """Release information for Python Package"""
 
-name = """ska-tmc-cspmasterleafnode-mid"""
+name = """ska_tmc_cspmasterleafnode_mid"""
 version = "0.8.7"
 version_info = version.split(".")
 description = """CspMasterLeafNode - Leaf Node to monitor and control CSP Master."""

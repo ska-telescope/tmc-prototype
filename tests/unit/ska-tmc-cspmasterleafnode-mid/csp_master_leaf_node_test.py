@@ -17,8 +17,8 @@ from tango.test_context import DeviceTestContext
 from ska.base.control_model import HealthState
 from ska.base.control_model import LoggingLevel
 from ska.base.commands import ResultCode
-from ska_tmc_cspmasterleafnode_mid import CspMasterLeafNode, const, release
-from ska_tmc_cspmasterleafnode_mid.device_data import DeviceData
+from src.ska_tmc_cspmasterleafnode_mid.src.ska_tmc_cspmasterleafnode_mid import CspMasterLeafNode, const, release
+from src.ska_tmc_cspmasterleafnode_mid.src.ska_tmc_cspmasterleafnode_mid.device_data import DeviceData
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
