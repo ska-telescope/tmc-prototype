@@ -21,8 +21,8 @@ from tango_simlib.tango_sim_generator import (
 
 DISH_DEVICE_NAME = "mid_d0001/nodb/master"
 LEAF_NODE_DEVICE_NAME = "test/tm_leaf_node/d0001"
-FGO_FILE_PATH = pkg_resources.resource_filename("ska_dish_master_mid", "dish_master.fgo")
-JSON_FILE_PATH = pkg_resources.resource_filename("ska_dish_master_mid", "dish_master_SimDD.json")
+FGO_FILE_PATH = pkg_resources.resource_filename("src.ska_dish_master_mid.src.ska_dish_master_mid", "dish_master.fgo")
+JSON_FILE_PATH = pkg_resources.resource_filename("src.ska_dish_master_mid.src.ska_dish_master_mid", "dish_master_SimDD.json")
 
 
 def get_dishmaster_server_class(DISH_DEVICE_NAME):
