@@ -1,9 +1,0 @@
-numpy == 1.17.2
-pytango >= 9.3.3
-jsonschema >= 3.2.0
-ska-ser-logging
-marshmallow
-fire
-ska-tmc-common==0.1.7+d39e6423
-ska-ser-log-transactions
-ska-tango-base == 0.7.2
