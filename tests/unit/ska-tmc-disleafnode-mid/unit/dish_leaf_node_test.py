@@ -21,15 +21,15 @@ from tango.test_context import DeviceTestContext
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
-from src.ska_tmc_dishleafnode_mid.src.ska_tmc_dishleafnode_mid import (
+from src.ska_tmc_dishleafnode_mid import (
     DishLeafNode,
     const,
     release,
 )
-from src.ska_tmc_dishleafnode_mid.src.ska_tmc_dishleafnode_mid.device_data import (
+from src.ska_tmc_dishleafnode_mid.device_data import (
     DeviceData,
 )
-from src.ska_tmc_dishleafnode_mid.src.ska_tmc_dishleafnode_mid.utils import (
+from src.ska_tmc_dishleafnode_mid.utils import (
     DishMode,
 )
 

@@ -10,7 +10,7 @@ from tango import Database
 from tango.test_context import DeviceTestContext
 from tango_simlib.utilities import helper_module
 
-from src.ska_dish_master_mid.src.ska_dish_master_mid.utils import (
+from src.ska_dish_master_mid.utils import (
     get_tango_server_class,
 )
 

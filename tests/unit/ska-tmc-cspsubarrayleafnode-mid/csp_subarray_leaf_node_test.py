@@ -15,13 +15,11 @@ from tango import DevState
 
 # Tango imports
 from tango.test_context import DeviceTestContext
-
-# from src.ska_tmc_cspsubarrayleafnode_mid.device_data import DeviceData
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
 # Additional import
-from src.ska_tmc_cspsubarrayleafnode_mid.src.ska_tmc_cspsubarrayleafnode_mid import (
+from src.ska_tmc_cspsubarrayleafnode_mid import (
     CspSubarrayLeafNode,
     const,
     release,

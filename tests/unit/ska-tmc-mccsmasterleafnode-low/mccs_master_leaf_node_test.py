@@ -21,11 +21,11 @@ from tango.test_context import DeviceTestContext
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
-from src.ska_tmc_mccsmasterleafnode_low.src.ska_tmc_mccsmasterleafnode_low import (
+from src.ska_tmc_mccsmasterleafnode_low import (
     MccsMasterLeafNode,
     const,
 )
-from src.ska_tmc_mccsmasterleafnode_low.src.ska_tmc_mccsmasterleafnode_low.device_data import (
+from src.ska_tmc_mccsmasterleafnode_low.device_data import (
     DeviceData,
 )
 

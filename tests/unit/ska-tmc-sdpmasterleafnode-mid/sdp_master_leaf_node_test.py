@@ -23,7 +23,7 @@ from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
 # Additional import
-from src.ska_tmc_sdpmasterleafnode_mid.src.ska_tmc_sdpmasterleafnode_mid import (
+from src.ska_tmc_sdpmasterleafnode_mid import (
     SdpMasterLeafNode,
     const,
     release,

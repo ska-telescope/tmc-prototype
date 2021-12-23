@@ -16,10 +16,10 @@ from tango_simlib.tango_sim_generator import (
     get_tango_device_server,
 )
 
-from src.ska_tmc_dishleafnode_mid.src.ska_tmc_dishleafnode_mid import (
+from src.ska_tmc_dishleafnode_mid import (
     DishLeafNode,
 )
-from src.ska_tmc_dishleafnode_mid.src.ska_tmc_dishleafnode_mid.utils import (
+from src.ska_tmc_dishleafnode_mid.utils import (
     DishMode,
     PointingState,
 )
@@ -27,10 +27,10 @@ from src.ska_tmc_dishleafnode_mid.src.ska_tmc_dishleafnode_mid.utils import (
 DISH_DEVICE_NAME = "mid_d0001/nodb/master"
 LEAF_NODE_DEVICE_NAME = "test/tm_leaf_node/d0001"
 FGO_FILE_PATH = pkg_resources.resource_filename(
-    "src.ska_dish_master_mid.src.ska_dish_master_mid", "dish_master.fgo"
+    "src.ska_dish_master_mid", "dish_master.fgo"
 )
 JSON_FILE_PATH = pkg_resources.resource_filename(
-    "src.ska_dish_master_mid.src.ska_dish_master_mid", "dish_master_SimDD.json"
+    "src.ska_dish_master_mid", "dish_master_SimDD.json"
 )
 
 

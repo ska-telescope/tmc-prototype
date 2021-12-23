@@ -23,38 +23,38 @@ from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
 # Additional import
-from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low import (
+from src.ska_tmc_subarraynode_low import (
     SubarrayNode,
     const,
 )
-from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.abort_command import (
+from src.ska_tmc_subarraynode_low.abort_command import (
     Abort,
 )
-from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.configure_command import (
+from src.ska_tmc_subarraynode_low.configure_command import (
     Configure,
 )
-from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.device_data import (
+from src.ska_tmc_subarraynode_low.device_data import (
     DeviceData,
 )
-from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.end_command import (
+from src.ska_tmc_subarraynode_low.end_command import (
     End,
 )
-from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.end_scan_command import (
+from src.ska_tmc_subarraynode_low.end_scan_command import (
     EndScan,
 )
-from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.health_state_aggregator import (
+from src.ska_tmc_subarraynode_low.health_state_aggregator import (
     HealthStateAggregator,
 )
-from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.obsreset_command import (
+from src.ska_tmc_subarraynode_low.obsreset_command import (
     ObsReset,
 )
-from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.release_all_resources_command import (
+from src.ska_tmc_subarraynode_low.release_all_resources_command import (
     ReleaseAllResources,
 )
-from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.restart_command import (
+from src.ska_tmc_subarraynode_low.restart_command import (
     Restart,
 )
-from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.scan_command import (
+from src.ska_tmc_subarraynode_low.scan_command import (
     Scan,
 )
 

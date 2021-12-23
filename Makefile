@@ -11,7 +11,6 @@
 # artefact.skao.int/ska-telescope/ska-tmc
 #
 CAR_OCI_REGISTRY_HOST:=artefact.skao.int
-CAR_OCI_REGISTRY_USER:=ska-telescope
 PROJECT = ska-tmc
 
 PYTHON_SWITCHES_FOR_FLAKE8=--ignore=W503,E203 --max-line-length=180
