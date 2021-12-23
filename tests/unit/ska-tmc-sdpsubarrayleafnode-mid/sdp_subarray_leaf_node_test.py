@@ -29,9 +29,7 @@ from src.ska_tmc_sdpsubarrayleafnode_mid import (
     const,
     release,
 )
-from src.ska_tmc_sdpsubarrayleafnode_mid.device_data import (
-    DeviceData,
-)
+from src.ska_tmc_sdpsubarrayleafnode_mid.device_data import DeviceData
 
 assign_input_file = "command_AssignResources.json"
 path = join(dirname(__file__), "data", assign_input_file)

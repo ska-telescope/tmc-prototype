@@ -20,10 +20,7 @@ from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
 # Additional import
-from src.ska_tmc_mccssubarrayleafnode_low import (
-    MccsSubarrayLeafNode,
-    const,
-)
+from src.ska_tmc_mccssubarrayleafnode_low import MccsSubarrayLeafNode, const
 
 
 @pytest.fixture(scope="function")
