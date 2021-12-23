@@ -87,7 +87,7 @@ class DelayManager:
 
         # Load a set of antenna descriptions and construct Antenna objects from them
         with importlib.resources.open_text(
-            "src.ska_tmc_cspsubarrayleafnode_mid.src.ska_tmc_cspsubarrayleafnode_mid",
+            "src.ska_tmc_cspsubarrayleafnode_mid",
             "ska_antennas.txt",
         ) as f:
             descriptions = f.readlines()

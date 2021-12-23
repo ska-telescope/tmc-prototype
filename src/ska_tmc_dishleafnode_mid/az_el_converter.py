@@ -15,7 +15,7 @@ class AzElConverter:
             device_data = DeviceData.get_instance()
 
             with importlib.resources.open_text(
-                "src.ska_tmc_dishleafnode_mid.src.ska_tmc_dishleafnode_mid",
+                "src.ska_tmc_dishleafnode_mid",
                 "ska_antennas.txt",
             ) as f:
                 ska_antennas = f.readlines()
