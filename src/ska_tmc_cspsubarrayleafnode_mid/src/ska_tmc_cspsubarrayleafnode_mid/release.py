@@ -9,7 +9,7 @@
 
 """Release information for Python Package"""
 
-name = """ska-tmc-cspsubarrayleafnode-mid"""
+name = """ska_tmc_cspsubarrayleafnode_mid"""
 version = "0.8.7"
 version_info = version.split(".")
 description = """"""

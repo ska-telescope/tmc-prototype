@@ -9,7 +9,7 @@
 
 """Release information for Python Package"""
 
-name = """ska-tmc-subarraynode-low"""
+name = """ska_tmc_subarraynode_low"""
 version = "0.8.7"
 version_info = version.split(".")
 description = """Provides the monitoring and control interface required by users as well as

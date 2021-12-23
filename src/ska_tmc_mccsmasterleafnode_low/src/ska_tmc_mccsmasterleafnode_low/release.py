@@ -9,7 +9,7 @@
 
 """Release information for Python Package"""
 
-name = """ska-tmc-mccsmasterleafnode-low"""
+name = """ska_tmc_mccsmasterleafnode_low"""
 version = "0.8.7"
 version_info = version.split(".")
 description = (

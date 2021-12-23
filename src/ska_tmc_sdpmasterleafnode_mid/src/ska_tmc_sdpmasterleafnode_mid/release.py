@@ -9,7 +9,7 @@
 
 """Release information for Python Package"""
 
-name = """ska-tmc-sdpmasterleafnode-mid"""
+name = """ska_tmc_sdpmasterleafnode_mid"""
 version = "0.8.7"
 version_info = version.split(".")
 description = """ The primary responsibility of the SDP Subarray 
