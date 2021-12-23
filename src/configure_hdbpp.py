@@ -16,7 +16,7 @@ def cm_configure_attributes():
         attribute_list = json.load(attrib_list_file)
         for attribute in attribute_list:
             total_attrib_count += 1
-            ## Set appropriate CM attributes
+            # Set appropriate CM attributes
             try:
                 # SetAttributeName
                 conf_manager_proxy.write_attribute(
@@ -44,7 +44,7 @@ def cm_configure_attributes():
                 configure_fail_count += 1
                 continue
 
-            ## Add Attribute for archiving
+            # Add Attribute for archiving
             try:
                 conf_manager_proxy.command_inout("AttributeAdd")
             except DevFailed as df:
@@ -77,7 +77,7 @@ conf_manager_device_fqdn = ""
 evt_subscriber_device_fqdn = ""
 attr_list_file = ""
 
-## parse arguments
+# parse arguments
 try:
     opts, args = getopt.getopt(
         sys.argv[1:], "c:e:a:", ["cm=", "es=", "attrfile="]

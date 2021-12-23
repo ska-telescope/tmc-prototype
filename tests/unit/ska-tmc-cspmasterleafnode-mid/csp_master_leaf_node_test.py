@@ -44,7 +44,7 @@ def mock_csp_master_proxy():
     ) as tango_context:
         with mock.patch.object(
             TangoClient, "_get_deviceproxy", return_value=Mock()
-        ) as mock_obj:
+        ):
             tango_client_obj = TangoClient(dut_properties["CspMasterFQDN"])
             yield tango_context.device, tango_client_obj, dut_properties[
                 "CspMasterFQDN"
@@ -220,11 +220,10 @@ def test_activity_message_attribute_reports_correct_csp_health_state_callbacks(
     ) = mock_csp_master_proxy
     with mock.patch.object(
         TangoClient, "_get_deviceproxy", return_value=Mock()
-    ) as mock_obj:
+    ):
         with mock.patch.object(
             TangoClient, "subscribe_attribute", side_effect=dummy_subscriber
         ):
-            tango_client_obj = TangoClient("mid_csp/elt/master")
             device_proxy.TelescopeOn()
     device_data = DeviceData.get_instance()
     assert (
@@ -261,13 +260,12 @@ def test_activity_message_reports_correct_health_state_when_attribute_event_has_
     ) = mock_csp_master_proxy
     with mock.patch.object(
         TangoClient, "_get_deviceproxy", return_value=Mock()
-    ) as mock_obj:
+    ):
         with mock.patch.object(
             TangoClient,
             "subscribe_attribute",
             side_effect=dummy_subscriber_with_error,
         ):
-            tango_client_obj = TangoClient("mid_csp/elt/master")
             device_proxy.TelescopeOn()
     device_data = DeviceData.get_instance()
     assert (

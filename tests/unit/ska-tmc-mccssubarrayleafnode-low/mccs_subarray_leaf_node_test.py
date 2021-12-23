@@ -77,7 +77,7 @@ def mock_tango_server_helper():
 def mock_tango_client():
     with mock.patch.object(
         TangoClient, "_get_deviceproxy", return_value=MagicMock()
-    ) as mock_obj:
+    ):
         tango_client_obj = TangoClient("low-mccs/subarray/01")
         yield tango_client_obj
 
@@ -94,11 +94,11 @@ def mock_obstate_check():
     dut_properties = {"MccsSubarrayFQDN": "low-mccs/subarray/01"}
     with mock.patch.object(
         TangoClient, "_get_deviceproxy", return_value=Mock()
-    ) as mock_obj:
+    ):
         tango_client_obj = TangoClient(dut_properties["MccsSubarrayFQDN"])
         with mock.patch.object(
             TangoClient, "get_attribute", Mock(return_value=ObsState.EMPTY)
-        ) as mock_obj_obstate:
+        ):
             yield tango_client_obj
 
 

@@ -77,7 +77,7 @@ def mock_dish_master_proxy():
     ) as tango_context:
         with mock.patch.object(
             TangoClient, "_get_deviceproxy", return_value=Mock()
-        ) as mock_obj:
+        ):
             tango_client_obj = TangoClient(dut_properties["DishMasterFQDN"])
             yield tango_context.device, tango_client_obj, dut_properties[
                 "DishMasterFQDN"
@@ -90,7 +90,7 @@ def event_subscription_mock():
     event_subscription_map = {}
     with mock.patch.object(
         TangoClient, "_get_deviceproxy", return_value=Mock()
-    ) as mock_obj:
+    ):
         tango_client_obj = TangoClient(dut_properties["DishMasterFQDN"])
         tango_client_obj.deviceproxy.command_inout_asynch.side_effect = lambda command_name, arg, callback, *args, **kwargs: event_subscription_map.update(
             {command_name: callback}
@@ -104,7 +104,7 @@ def event_subscription_attr_mock():
     event_subscription_map = {}
     with mock.patch.object(
         TangoClient, "_get_deviceproxy", return_value=Mock()
-    ) as mock_obj:
+    ):
         tango_client_obj = TangoClient(dut_properties["DishMasterFQDN"])
         tango_client_obj.deviceproxy.subscribe_event.side_effect = lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update(
             {attr_name: callback}
@@ -336,7 +336,6 @@ def test_track_should_command_dish_to_start_tracking(mock_dish_master_proxy):
     json_argument = config_input_str
     ra_value = json_argument["pointing"]["target"]["RA"]
     dec_value = json_argument["pointing"]["target"]["dec"]
-    radec_value = "radec" + "," + str(ra_value) + "," + str(dec_value)
     tango_client.deviceproxy.command_inout_asynch.assert_called_with(
         const.CMD_TRACK, "0", any_method(with_name="cmd_ended_cb")
     )

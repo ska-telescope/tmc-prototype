@@ -83,7 +83,7 @@ def mock_csp_subarray():
 def mock_tango_client():
     with mock.patch.object(
         TangoClient, "_get_deviceproxy", return_value=MagicMock()
-    ) as mock_obj:
+    ):
         tango_client_obj = TangoClient("mid_csp/elt/subarray_01")
         yield tango_client_obj
 
@@ -112,7 +112,7 @@ def event_subscription_mock():
     event_subscription_map = {}
     with mock.patch.object(
         TangoClient, "_get_deviceproxy", return_value=Mock()
-    ) as mock_obj:
+    ):
         tango_client_obj = TangoClient(dut_properties["CspSubarrayFQDN"])
         tango_client_obj.deviceproxy.command_inout_asynch.side_effect = lambda command_name, arg, callback, *args, **kwargs: event_subscription_map.update(
             {command_name: callback}
@@ -613,11 +613,11 @@ def mock_obstate_check():
     dut_properties = {"CspSubarrayFQDN": "mid_csp/elt/subarray_01"}
     with mock.patch.object(
         TangoClient, "_get_deviceproxy", return_value=Mock()
-    ) as mock_obj:
+    ):
         tango_client_obj = TangoClient(dut_properties["CspSubarrayFQDN"])
         with mock.patch.object(
             TangoClient, "get_attribute", Mock(return_value=ObsState.EMPTY)
-        ) as mock_obj_obstate:
+        ):
             yield tango_client_obj
 
 
@@ -700,12 +700,11 @@ def test_command_reset_to_set_cspsln_off_when_in_fault(
     mock_obstate_check, mock_csp_subarray_proxy, mock_tango_server_helper
 ):
     device_proxy, tango_client_obj = mock_csp_subarray_proxy[:2]
-    tango_server_obj = mock_tango_server_helper
     tango_client_obj.get_attribute.side_effect = Mock(
         return_value=ObsState.EMPTY
     )
     device_proxy.TelescopeOn()
-    with pytest.raises(tango.DevFailed) as df:
+    with pytest.raises(tango.DevFailed):
         device_proxy.AssignResources('"wrong json"')
     device_proxy.Reset()
     assert device_proxy.State() == DevState.OFF

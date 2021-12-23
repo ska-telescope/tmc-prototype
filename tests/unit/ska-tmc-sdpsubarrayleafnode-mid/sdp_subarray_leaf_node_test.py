@@ -69,7 +69,7 @@ def mock_tsh():
 def mock_tango_client():
     with mock.patch.object(
         TangoClient, "_get_deviceproxy", return_value=MagicMock()
-    ) as mock_obj:
+    ):
         tango_client_obj = TangoClient("mid_sdp/elt/subarray_1")
         yield tango_client_obj
 
@@ -94,11 +94,11 @@ def mock_sdp_subarray_proxy(mock_tango_client):
 def mock_obstate_check():
     with mock.patch.object(
         TangoClient, "_get_deviceproxy", return_value=Mock()
-    ) as mock_obj:
+    ):
         tango_client_obj = TangoClient("mid_sdp/elt/subarray_1")
         with mock.patch.object(
             TangoClient, "get_attribute", Mock(return_value=ObsState.EMPTY)
-        ) as mock_obj_obstate:
+        ):
             yield tango_client_obj
 
 
@@ -108,7 +108,7 @@ def event_subscription_mock():
     event_subscription_map = {}
     with mock.patch.object(
         TangoClient, "_get_deviceproxy", return_value=Mock()
-    ) as mock_obj:
+    ):
         tango_client_obj = TangoClient(dut_properties["SdpSubarrayFQDN"])
         tango_client_obj.deviceproxy.command_inout_asynch.side_effect = lambda command_name, arg, callback, *args, **kwargs: event_subscription_map.update(
             {command_name: callback}
@@ -124,7 +124,6 @@ def tango_context():
 
 def test_on(mock_sdp_subarray_proxy, mock_tsh):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
-    tango_server_obj = mock_tsh
     device_proxy.TelescopeOn()
     tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(
         const.CMD_ON, None, any_method(with_name="telescopeon_cmd_ended_cb")
@@ -267,7 +266,7 @@ def test_command_reset_to_set_sdpsln_off_when_in_fault(
 ):
     device_proxy, tango_client_obj = mock_sdp_subarray_proxy[:2]
     device_proxy.On()
-    with pytest.raises(tango.DevFailed) as df:
+    with pytest.raises(tango.DevFailed):
         device_proxy.command_inout("AssignResources", '"wrong string"')
         raise_devfailed_exception()
     device_proxy.Reset()

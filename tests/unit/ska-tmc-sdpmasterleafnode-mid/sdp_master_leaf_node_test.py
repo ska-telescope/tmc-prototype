@@ -52,7 +52,7 @@ def event_subscription_mock():
     event_subscription_map = {}
     with mock.patch.object(
         TangoClient, "_get_deviceproxy", return_value=Mock()
-    ) as mock_obj:
+    ):
         tango_client_obj = TangoClient(dut_properties["SdpMasterFQDN"])
         tango_client_obj.deviceproxy.command_inout_asynch.side_effect = lambda command_name, arg, callback, *args, **kwargs: event_subscription_map.update(
             {command_name: callback}
@@ -72,7 +72,7 @@ def mock_sdp_master_proxy():
     ) as tango_context:
         with mock.patch.object(
             TangoClient, "_get_deviceproxy", return_value=Mock()
-        ) as mock_obj:
+        ):
             tango_client_obj = TangoClient(dut_properties["SdpMasterFQDN"])
             yield tango_context.device, tango_client_obj, dut_properties[
                 "SdpMasterFQDN"
