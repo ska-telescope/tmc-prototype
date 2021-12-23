@@ -79,9 +79,14 @@ class AssignResources(BaseCommand):
 
 
         Example:
-            {"interface":"https://schema.skao.int/ska-low-tmc-assignresources/2.0","transaction_id":"txn-....-00001","subarray_id":1,"mccs":{"subarray_beam_ids":[1],"station_ids":[[1,2]],"channel_blocks":[3]},"sdp":{}}
+            {"interface":"https://schema.skao.int/ska-low-tmc-assignresources/2.0",
+            "transaction_id":"txn-....-00001","subarray_id":1,"mccs":{"subarray_beam_ids":
+            [1],"station_ids":[[1,2]],"channel_blocks":[3]},"sdp":{}}
 
-        Note: Enter input without spaces as: {"interface":"https://schema.skao.int/ska-low-tmc-assignresources/2.0","transaction_id":"txn-....-00001","subarray_id":1,"mccs":{"subarray_beam_ids":[1],"station_ids":[[1,2]],"channel_blocks":[3]},"sdp":{}}
+        Note: Enter input without spaces as: {"interface":
+        "https://schema.skao.int/ska-low-tmc-assignresources/2.0","transaction_id":
+        "txn-....-00001","subarray_id":1,"mccs":{"subarray_beam_ids":[1],"station_ids":
+        [[1,2]],"channel_blocks":[3]},"sdp":{}}
         return:
             None
 

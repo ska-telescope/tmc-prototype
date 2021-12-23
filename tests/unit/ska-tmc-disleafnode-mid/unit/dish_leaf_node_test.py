@@ -331,8 +331,6 @@ def test_track_should_command_dish_to_start_tracking(mock_dish_master_proxy):
     device_proxy, tango_client, _, _ = mock_dish_master_proxy
     device_proxy.Track(config_input_str)
     json_argument = config_input_str
-    ra_value = json_argument["pointing"]["target"]["RA"]
-    dec_value = json_argument["pointing"]["target"]["dec"]
     tango_client.deviceproxy.command_inout_asynch.assert_called_with(
         const.CMD_TRACK, "0", any_method(with_name="cmd_ended_cb")
     )
