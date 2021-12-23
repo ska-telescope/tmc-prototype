@@ -12,7 +12,6 @@ import mock
 import pytest
 import tango
 from mock import MagicMock, Mock
-from ska.base.commands import ResultCode
 
 # Additional import
 from ska.base.control_model import HealthState, LoggingLevel
@@ -23,7 +22,6 @@ from tmc.common.tango_server_helper import TangoServerHelper
 from src.ska_tmc_cspmasterleafnode_mid.src.ska_tmc_cspmasterleafnode_mid import (
     CspMasterLeafNode,
     const,
-    release,
 )
 from src.ska_tmc_cspmasterleafnode_mid.src.ska_tmc_cspmasterleafnode_mid.device_data import (
     DeviceData,

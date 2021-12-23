@@ -7,13 +7,10 @@ from os.path import dirname, join
 from unittest import mock
 from unittest.mock import MagicMock, Mock
 
-import mock
 import numpy as np
 import pytest
 import tango
-from mock import MagicMock, Mock
 from ska.base.control_model import (
-    AdminMode,
     ControlMode,
     HealthState,
     LoggingLevel,
@@ -331,7 +328,7 @@ def test_track_should_raise_exception_when_called_with_invalid_json(
 
 @pytest.mark.xfail
 def test_track_should_command_dish_to_start_tracking(mock_dish_master_proxy):
-    device_proxy, device_proxy, _, _ = mock_dish_master_proxy
+    device_proxy, tango_client, _, _ = mock_dish_master_proxy
     device_proxy.Track(config_input_str)
     json_argument = config_input_str
     ra_value = json_argument["pointing"]["target"]["RA"]

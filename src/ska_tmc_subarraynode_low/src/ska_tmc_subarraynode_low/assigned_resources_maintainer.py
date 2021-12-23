@@ -16,7 +16,7 @@ class AssignedResourcesMaintainer:
     """
 
     def __init__(self, logger=None):
-        if logger == None:
+        if logger is None:
             self.logger = logging.getLogger(__name__)
         else:
             self.logger = logger

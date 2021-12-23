@@ -22,7 +22,7 @@ class CbfHealthStateAttributeUpdator:
     """
 
     def __init__(self, logger=None):
-        if logger == None:
+        if logger is None:
             self.logger = logging.getLogger(__name__)
         else:
             self.logger = logger
@@ -82,7 +82,7 @@ class PssHealthStateAttributeUpdator:
     """
 
     def __init__(self, logger=None):
-        if logger == None:
+        if logger is None:
             self.logger = logging.getLogger(__name__)
         else:
             self.logger = logger
@@ -150,7 +150,7 @@ class PstHealthStateAttributeUpdator:
     """
 
     def __init__(self, logger=None):
-        if logger == None:
+        if logger is None:
             self.logger = logging.getLogger(__name__)
         else:
             self.logger = logger

@@ -11,16 +11,12 @@ import pytest
 # Tango imports
 import tango
 from mock import MagicMock, Mock
-from ska.base.commands import ResultCode
 
 # Additional import
 from ska.base.control_model import (
-    AdminMode,
     ControlMode,
-    HealthState,
     LoggingLevel,
     ObsState,
-    SimulationMode,
     TestMode,
 )
 from tango import DevState
@@ -31,7 +27,6 @@ from tmc.common.tango_server_helper import TangoServerHelper
 from src.ska_tmc_sdpsubarrayleafnode_mid.src.ska_tmc_sdpsubarrayleafnode_mid import (
     SdpSubarrayLeafNode,
     const,
-    device_data,
     release,
 )
 from src.ska_tmc_sdpsubarrayleafnode_mid.src.ska_tmc_sdpsubarrayleafnode_mid.device_data import (

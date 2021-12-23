@@ -4,11 +4,8 @@ import tango
 from ska.base import SKABaseDevice
 
 # Additional import
-from ska.base.commands import BaseCommand, ResultCode
-from ska.base.control_model import ObsState
+from ska.base.commands import ResultCode
 from tango import DevFailed, DevState
-from tmc.common.tango_client import TangoClient
-from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
 

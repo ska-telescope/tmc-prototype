@@ -156,7 +156,7 @@ class Track(BaseCommand):
                 "desiredPointing coordinates: %s", desired_pointing
             )
             dish_client.deviceproxy.desiredPointing = desired_pointing
-            if self.track_on_dish == False:
+            if self.track_on_dish is False:
                 command_name = "Track"
                 dish_client = TangoClient(self.dish_master_fqdn)
                 cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb

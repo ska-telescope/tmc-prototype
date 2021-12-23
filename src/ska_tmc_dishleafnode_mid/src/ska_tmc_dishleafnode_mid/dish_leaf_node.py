@@ -63,6 +63,7 @@ __all__ = [
     "StopTrack",
 ]
 
+
 # pylint: disable=unused-variable, logging-fstring-interpolation
 class DishLeafNode(SKABaseDevice):
     """

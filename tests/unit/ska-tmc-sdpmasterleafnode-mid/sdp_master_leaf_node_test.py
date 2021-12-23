@@ -10,16 +10,14 @@ import pytest
 # Tango imports
 import tango
 from mock import MagicMock, Mock
-from ska.base.commands import ResultCode
 from ska.base.control_model import (
-    AdminMode,
     ControlMode,
     HealthState,
     LoggingLevel,
     SimulationMode,
     TestMode,
 )
-from tango import DevFailed, DevState
+from tango import DevState
 from tango.test_context import DeviceTestContext
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper

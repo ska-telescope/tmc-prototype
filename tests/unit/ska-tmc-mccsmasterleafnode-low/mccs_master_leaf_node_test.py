@@ -16,7 +16,7 @@ from mock import MagicMock, Mock
 from ska.base.commands import ResultCode
 
 # Additional import
-from ska.base.control_model import HealthState, ObsState
+from ska.base.control_model import ObsState
 from tango.test_context import DeviceTestContext
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
@@ -24,8 +24,6 @@ from tmc.common.tango_server_helper import TangoServerHelper
 from src.ska_tmc_mccsmasterleafnode_low.src.ska_tmc_mccsmasterleafnode_low import (
     MccsMasterLeafNode,
     const,
-    device_data,
-    release,
 )
 from src.ska_tmc_mccsmasterleafnode_low.src.ska_tmc_mccsmasterleafnode_low.device_data import (
     DeviceData,
@@ -86,16 +84,6 @@ def event_subscription_mock():
             {command_name: callback}
         )
         yield event_subscription_map
-
-
-def raise_devfailed_exception(*args):
-    # "This function is called to raise DevFailed exception."
-    tango.Except.throw_exception(
-        "MccsMasterLeafNode_CommandFailed",
-        const.ERR_DEVFAILED_MSG,
-        " ",
-        tango.ErrSeverity.ERR,
-    )
 
 
 def test_on_should_command_mccs_master_leaf_node_to_start(

@@ -26,7 +26,6 @@ from tmc.common.tango_server_helper import TangoServerHelper
 from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low import (
     SubarrayNode,
     const,
-    release,
 )
 from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.abort_command import (
     Abort,

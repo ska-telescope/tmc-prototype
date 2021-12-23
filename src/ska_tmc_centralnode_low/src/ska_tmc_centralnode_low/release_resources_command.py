@@ -85,7 +85,7 @@ class ReleaseResources(BaseCommand):
             json_argument = json.loads(argin)
             subarray_id = json_argument["subarray_id"]
             subarray_fqdn = device_data.subarray_FQDN_dict[subarray_id]
-            if json_argument["release_all"] == True:
+            if json_argument["release_all"] is True:
                 # Invoke ReleaseAllResources on SubarrayNode
                 subarray_client = TangoClient(subarray_fqdn)
                 subarray_client.send_command(const.CMD_RELEASE_RESOURCES)
