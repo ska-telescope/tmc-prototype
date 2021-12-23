@@ -1,5 +1,4 @@
 # Standard Python imports
-import datetime
 import importlib.resources
 import json
 import logging
@@ -49,7 +48,6 @@ class DelayManager:
         return DelayManager.__instance
 
     def start(self):
-        ## Start thread to update delay model ##
         # Start thread to update delay model
         # Create event
         self._stop_delay_model_event = threading.Event()

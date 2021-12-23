@@ -12,7 +12,7 @@ import pytest
 import pytz
 import tango
 from mock import MagicMock, Mock
-from ska.base.control_model import HealthState, LoggingLevel, ObsState
+from ska.base.control_model import ObsState
 
 # Tango imports
 from tango.test_context import DeviceTestContext
@@ -23,10 +23,6 @@ from tmc.common.tango_server_helper import TangoServerHelper
 from src.ska_tmc_mccssubarrayleafnode_low.src.ska_tmc_mccssubarrayleafnode_low import (
     MccsSubarrayLeafNode,
     const,
-    release,
-)
-from src.ska_tmc_mccssubarrayleafnode_low.src.ska_tmc_mccssubarrayleafnode_low.device_data import (
-    DeviceData,
 )
 
 

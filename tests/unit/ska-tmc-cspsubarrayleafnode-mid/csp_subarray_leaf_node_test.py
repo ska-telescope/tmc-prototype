@@ -88,7 +88,7 @@ def mock_tango_client():
         yield tango_client_obj
 
 
-##### This fixture is used for SP-1420
+# This fixture is used for SP-1420
 @pytest.fixture(scope="function")
 def mock_csp_subarray_proxy(mock_tango_client):
     dut_properties = {"CspSubarrayFQDN": "mid_csp/elt/subarray_01"}
@@ -105,7 +105,7 @@ def mock_csp_subarray_proxy(mock_tango_client):
         ], event_subscription_map
 
 
-### This fixture is used for SP-1420
+# This fixture is used for SP-1420
 @pytest.fixture(scope="function")
 def event_subscription_mock():
     dut_properties = {"CspSubarrayFQDN": "mid_csp/elt/subarray_01"}

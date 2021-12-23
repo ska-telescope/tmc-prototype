@@ -66,6 +66,7 @@ __all__ = [
     "ResetCommand",
 ]
 
+
 # pylint: disable=unused-argument,unused-variable, implicit-str-concat
 class SdpSubarrayLeafNode(SKABaseDevice):
     """
