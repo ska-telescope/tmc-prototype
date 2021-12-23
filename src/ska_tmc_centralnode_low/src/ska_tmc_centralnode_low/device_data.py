@@ -41,7 +41,6 @@ class DeviceData:
         self.cmd_res_evt_val = ""
         self.attr_event_map = {}
 
-
     @staticmethod
     def get_instance():
         if DeviceData.__instance == None:

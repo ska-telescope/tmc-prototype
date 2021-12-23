@@ -1,11 +1,10 @@
 # PyTango imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
 from ska.base.control_model import ObsState
-
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -45,19 +44,24 @@ class GoToIdleCommand(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
 
-        # if device._csp_subarray_proxy.obsState != ObsState.READY:
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, "Failed to invoke GoToIdle command on cspsubarrayleafnode.",
-                                            "CspSubarrayLeafNode.GoToIdleCommand",
-                                            tango.ErrSeverity.ERR)
-
+            # if device._csp_subarray_proxy.obsState != ObsState.READY:
+            tango.Except.throw_exception(
+                const.ERR_DEVICE_NOT_READY,
+                "Failed to invoke GoToIdle command on cspsubarrayleafnode.",
+                "CspSubarrayLeafNode.GoToIdleCommand",
+                tango.ErrSeverity.ERR,
+            )
 
         this_server = TangoServerHelper.get_instance()
         csp_subarray_fqdn = this_server.read_property("CspSubarrayFQDN")[0]
         csp_sa_client = TangoClient(csp_subarray_fqdn)
         if csp_sa_client.get_attribute("obsState").value != ObsState.READY:
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, "Failed to invoke GoToIdle command on cspsubarrayleafnode.",
-                                    "CspSubarrayLeafNode.GoToIdleCommand",
-                                    tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.ERR_DEVICE_NOT_READY,
+                "Failed to invoke GoToIdle command on cspsubarrayleafnode.",
+                "CspSubarrayLeafNode.GoToIdleCommand",
+                tango.ErrSeverity.ERR,
+            )
         return True
 
     def gotoidle_cmd_ended_cb(self, event):
@@ -84,10 +88,12 @@ class GoToIdleCommand(BaseCommand):
         this_server = TangoServerHelper.get_instance()
         # Update logs and activity message attribute with received event
         if event.err:
-            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            log_msg = (
+                f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            )
             self.logger.error(log_msg)
             this_server.write_attr("activityMessage", log_msg, False)
-            
+
         else:
             log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
@@ -113,7 +119,9 @@ class GoToIdleCommand(BaseCommand):
             csp_sub_client_obj.send_command_async(
                 const.CMD_GOTOIDLE, None, self.gotoidle_cmd_ended_cb
             )
-            this_server.write_attr("activityMessage", const.STR_GOTOIDLE_SUCCESS, False)
+            this_server.write_attr(
+                "activityMessage", const.STR_GOTOIDLE_SUCCESS, False
+            )
             self.logger.info(const.STR_GOTOIDLE_SUCCESS)
 
         except DevFailed as dev_failed:

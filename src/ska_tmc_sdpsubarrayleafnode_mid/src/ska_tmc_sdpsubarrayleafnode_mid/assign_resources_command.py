@@ -3,10 +3,10 @@ AssignResouces class for SDPSubarrayLeafNode.
 """
 # Tango imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -137,18 +137,28 @@ class AssignResources(BaseCommand):
         """
         try:
             # Call SDP Subarray Command asynchronously
-            sdp_sa_ln_client_obj=TangoClient(self.this_server.read_property("SdpSubarrayFQDN")[0])
+            sdp_sa_ln_client_obj = TangoClient(
+                self.this_server.read_property("SdpSubarrayFQDN")[0]
+            )
             sdp_sa_ln_client_obj.send_command_async(
-                const.CMD_ASSIGN_RESOURCES, command_data=argin, callback_method=self.assign_resources_ended
-                )
+                const.CMD_ASSIGN_RESOURCES,
+                command_data=argin,
+                callback_method=self.assign_resources_ended,
+            )
             # Update the status of command execution status in activity message
-            self.this_server.write_attr("activityMessage", const.STR_ASSIGN_RESOURCES_SUCCESS, False)
+            self.this_server.write_attr(
+                "activityMessage", const.STR_ASSIGN_RESOURCES_SUCCESS, False
+            )
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
 
         except ValueError as value_error:
             log_msg = f"{const.ERR_INVALID_JSON}{value_error}"
             self.logger.exception(log_msg)
-            self.this_server.write_attr("activityMessage", f"{const.ERR_INVALID_JSON}{value_error}", False)
+            self.this_server.write_attr(
+                "activityMessage",
+                f"{const.ERR_INVALID_JSON}{value_error}",
+                False,
+            )
             tango.Except.throw_exception(
                 const.STR_CMD_FAILED,
                 log_msg,

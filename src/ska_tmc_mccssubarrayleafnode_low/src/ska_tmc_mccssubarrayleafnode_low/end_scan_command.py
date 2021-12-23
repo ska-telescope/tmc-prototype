@@ -3,17 +3,16 @@
 
 # Third party imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
 from ska.base.control_model import ObsState
-
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
-from .device_data import DeviceData
 
 from . import const
+from .device_data import DeviceData
 
 # PROTECTED REGION END #    //  MccsSubarrayLeafNode.additional_import
 
@@ -77,7 +76,9 @@ class EndScan(BaseCommand):
         this_server = TangoServerHelper.get_instance()
         # Update logs and activity message attribute with received event
         if event.err:
-            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            log_msg = (
+                f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            )
             self.logger.error(log_msg)
             this_server.write_attr("activityMessage", log_msg, False)
         else:
@@ -102,19 +103,27 @@ class EndScan(BaseCommand):
             property_value = this_server.read_property("MccsSubarrayFQDN")[0]
             mccs_subarray_fqdn = mccs_subarray_fqdn.join(property_value)
             mccs_subarray_client = TangoClient(mccs_subarray_fqdn)
-            assert mccs_subarray_client.get_attribute("obsState").value == ObsState.SCANNING
+            assert (
+                mccs_subarray_client.get_attribute("obsState").value
+                == ObsState.SCANNING
+            )
             mccs_subarray_client.send_command_async(
                 const.CMD_ENDSCAN, None, self.endscan_cmd_ended_cb
             )
-            this_server.write_attr("activityMessage", const.STR_ENDSCAN_SUCCESS, False)
+            this_server.write_attr(
+                "activityMessage", const.STR_ENDSCAN_SUCCESS, False
+            )
             self.logger.info(const.STR_ENDSCAN_SUCCESS)
 
         except AssertionError:
             device_data._read_activity_message = const.ERR_DEVICE_NOT_SCANNING
             self.logger.error(const.ERR_DEVICE_NOT_SCANNING)
-            tango.Except.throw_exception(const.STR_END_SCAN_EXEC, const.ERR_DEVICE_NOT_SCANNING,
-                                         "MCCSSubarrayLeafNode.EndScan",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_END_SCAN_EXEC,
+                const.ERR_DEVICE_NOT_SCANNING,
+                "MCCSSubarrayLeafNode.EndScan",
+                tango.ErrSeverity.ERR,
+            )
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_ENDSCAN_COMMAND}{dev_failed}"

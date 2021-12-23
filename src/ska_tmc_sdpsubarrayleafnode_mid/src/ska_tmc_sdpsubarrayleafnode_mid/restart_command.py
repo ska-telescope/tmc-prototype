@@ -4,11 +4,11 @@ Restart class for SDPSubarrayLeafNode.
 # PROTECTED REGION ID(sdpsubarrayleafnode.additionnal_import) ENABLED START #
 # Tango imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
 from ska.base.control_model import ObsState
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -35,7 +35,9 @@ class Restart(BaseCommand):
 
         """
         self.this_server = TangoServerHelper.get_instance()
-        sdp_subarray_fqdn = self.this_server.read_property("SdpSubarrayFQDN")[0]
+        sdp_subarray_fqdn = self.this_server.read_property("SdpSubarrayFQDN")[
+            0
+        ]
         self.sdp_sa_ln_client_obj = TangoClient(sdp_subarray_fqdn)
 
         if self.state_model.op_state in [DevState.UNKNOWN, DevState.DISABLE]:
@@ -46,10 +48,16 @@ class Restart(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
 
-        if self.sdp_sa_ln_client_obj.get_attribute("obsState").value not in [ObsState.ABORTED, ObsState.FAULT]:
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_ABORTED_FAULT, const.ERR_RESTART_INVOKING_CMD,
-                                        "SdpSubarrayLeafNode.Restart()",
-                                        tango.ErrSeverity.ERR)
+        if self.sdp_sa_ln_client_obj.get_attribute("obsState").value not in [
+            ObsState.ABORTED,
+            ObsState.FAULT,
+        ]:
+            tango.Except.throw_exception(
+                const.ERR_DEVICE_NOT_ABORTED_FAULT,
+                const.ERR_RESTART_INVOKING_CMD,
+                "SdpSubarrayLeafNode.Restart()",
+                tango.ErrSeverity.ERR,
+            )
         return True
 
     def restart_cmd_ended_cb(self, event):
@@ -96,9 +104,11 @@ class Restart(BaseCommand):
         """
         try:
             self.sdp_sa_ln_client_obj.send_command_async(
-               const.CMD_RESTART, callback_method=self.restart_cmd_ended_cb
-               )
-            self.this_server.write_attr("activityMessage", const.STR_RESTART_SUCCESS, False)
+                const.CMD_RESTART, callback_method=self.restart_cmd_ended_cb
+            )
+            self.this_server.write_attr(
+                "activityMessage", const.STR_RESTART_SUCCESS, False
+            )
             self.logger.info(const.STR_RESTART_SUCCESS)
 
         except DevFailed as dev_failed:

@@ -1,20 +1,20 @@
 import json
 
+import katpoint
+
 # PyTango imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
 from ska.base.control_model import ObsState
-
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
-import katpoint
-from .transaction_id import identify_with_id
 from . import const
 from .delay_model import DelayManager
+from .transaction_id import identify_with_id
 
 
 class ConfigureCommand(BaseCommand):
@@ -54,10 +54,16 @@ class ConfigureCommand(BaseCommand):
         this_server = TangoServerHelper.get_instance()
         csp_subarray_fqdn = this_server.read_property("CspSubarrayFQDN")[0]
         csp_sa_client = TangoClient(csp_subarray_fqdn)
-        if csp_sa_client.get_attribute("obsState").value not in [ObsState.IDLE, ObsState.READY]:
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_OR_IDLE, const.ERR_CONFIGURE_INVOKING_CMD,
-                                            "CspSubarrayLeafNode.ConfigureCommand",
-                                            tango.ErrSeverity.ERR)
+        if csp_sa_client.get_attribute("obsState").value not in [
+            ObsState.IDLE,
+            ObsState.READY,
+        ]:
+            tango.Except.throw_exception(
+                const.ERR_DEVICE_NOT_READY_OR_IDLE,
+                const.ERR_CONFIGURE_INVOKING_CMD,
+                "CspSubarrayLeafNode.ConfigureCommand",
+                tango.ErrSeverity.ERR,
+            )
         return True
 
     def configure_cmd_ended_cb(self, event):
@@ -84,7 +90,9 @@ class ConfigureCommand(BaseCommand):
         this_server = TangoServerHelper.get_instance()
         # Update logs and activity message attribute with received event
         if event.err:
-            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            log_msg = (
+                f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            )
             self.logger.error(log_msg)
             this_server.write_attr("activityMessage", log_msg, False)
         else:
@@ -144,7 +152,8 @@ class ConfigureCommand(BaseCommand):
             if "pointing" in csp_configuration:
                 del csp_configuration["pointing"]
             log_msg = (
-                "Input JSON for CSP Subarray Leaf Node Configure command is: " + argin
+                "Input JSON for CSP Subarray Leaf Node Configure command is: "
+                + argin
             )
             self.logger.debug(log_msg)
             csp_subarray_fqdn = ""
@@ -156,7 +165,9 @@ class ConfigureCommand(BaseCommand):
                 json.dumps(csp_configuration),
                 self.configure_cmd_ended_cb,
             )
-            this_server.write_attr("activityMessage", const.STR_CONFIGURE_SUCCESS, False)
+            this_server.write_attr(
+                "activityMessage", const.STR_CONFIGURE_SUCCESS, False
+            )
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
 
         except ValueError as value_error:

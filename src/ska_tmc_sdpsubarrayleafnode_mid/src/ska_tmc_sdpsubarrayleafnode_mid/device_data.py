@@ -27,7 +27,6 @@ class DeviceData:
         else:
             DeviceData.__instance = self
 
-
     @staticmethod
     def get_instance():
         if DeviceData.__instance == None:

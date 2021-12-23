@@ -13,8 +13,7 @@ Provides the monitoring and control interface required by users as well as
 other TM Components (such as OET, Central Node) for a SKA Low Subarray.
 """
 
-from . import release
-from . import const
+from . import const, release
 from .subarray_node_low import SubarrayNode
 
 # from .configure_command import ElementDeviceData

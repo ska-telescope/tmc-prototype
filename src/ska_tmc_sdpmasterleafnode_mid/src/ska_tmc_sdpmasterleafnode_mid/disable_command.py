@@ -1,14 +1,14 @@
 # Tango imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
-
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
+
 
 class Disable(BaseCommand):
     """
@@ -28,7 +28,11 @@ class Disable(BaseCommand):
          :raises: DevFailed if this command is not allowed to be run
              in current device state.
         """
-        if self.state_model.op_state in [DevState.FAULT, DevState.UNKNOWN, DevState.ON]:
+        if self.state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.ON,
+        ]:
             tango.Except.throw_exception(
                 f"Disable() is not allowed in current state {self.state_model.op_state}",
                 "Failed to invoke Disable command on SdpMasterLeafNode.",
@@ -60,7 +64,9 @@ class Disable(BaseCommand):
         """
         this_server = TangoServerHelper.get_instance()
         if event.err:
-            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            log_msg = (
+                f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            )
             self.logger.error(log_msg)
             this_server.write_attr("activityMessage", log_msg, False)
         else:
@@ -88,7 +94,9 @@ class Disable(BaseCommand):
                 const.CMD_Disable, None, self.disable_cmd_ended_cb
             )
             self.logger.debug(const.STR_DISABLE_CMS_SUCCESS)
-            this_server.write_attr("activityMessage", const.STR_DISABLE_CMS_SUCCESS, False)
+            this_server.write_attr(
+                "activityMessage", const.STR_DISABLE_CMS_SUCCESS, False
+            )
 
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)

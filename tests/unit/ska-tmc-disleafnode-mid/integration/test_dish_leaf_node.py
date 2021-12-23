@@ -5,24 +5,33 @@
 """Contain the tests for DishLeafNode."""
 from __future__ import print_function
 
-import pkg_resources
-from unittest import mock
 import time
-import pytest
+from unittest import mock
 
+import pkg_resources
+import pytest
 from tango import EventType
-from src.ska_tmc_dishleafnode_mid.src.ska_tmc_dishleafnode_mid import DishLeafNode
-from src.ska_tmc_dishleafnode_mid.src.ska_tmc_dishleafnode_mid.utils import DishMode, PointingState
 from tango_simlib.tango_sim_generator import (
     configure_device_model,
     get_tango_device_server,
 )
 
+from src.ska_tmc_dishleafnode_mid.src.ska_tmc_dishleafnode_mid import (
+    DishLeafNode,
+)
+from src.ska_tmc_dishleafnode_mid.src.ska_tmc_dishleafnode_mid.utils import (
+    DishMode,
+    PointingState,
+)
 
 DISH_DEVICE_NAME = "mid_d0001/nodb/master"
 LEAF_NODE_DEVICE_NAME = "test/tm_leaf_node/d0001"
-FGO_FILE_PATH = pkg_resources.resource_filename("src.ska_dish_master_mid.src.ska_dish_master_mid", "dish_master.fgo")
-JSON_FILE_PATH = pkg_resources.resource_filename("src.ska_dish_master_mid.src.ska_dish_master_mid", "dish_master_SimDD.json")
+FGO_FILE_PATH = pkg_resources.resource_filename(
+    "src.ska_dish_master_mid.src.ska_dish_master_mid", "dish_master.fgo"
+)
+JSON_FILE_PATH = pkg_resources.resource_filename(
+    "src.ska_dish_master_mid.src.ska_dish_master_mid", "dish_master_SimDD.json"
+)
 
 
 def get_dishmaster_server_class(DISH_DEVICE_NAME):
@@ -132,7 +141,9 @@ class TestDishLeafNode:
             DishMode.STANDBY_FP, "dishMode", dish_proxy
         )
         leaf_proxy.SetOperateMode()
-        self.wait_until_dish_attribute_equals(DishMode.OPERATE, "dishMode", dish_proxy)
+        self.wait_until_dish_attribute_equals(
+            DishMode.OPERATE, "dishMode", dish_proxy
+        )
 
     def test_SetStandByLPMode(self, dish_master_dp):
         assert dish_master_dp.dishMode.name == "STANDBY_LP"
@@ -156,7 +167,9 @@ class TestDishLeafNode:
         input_string = '{"pointing":{"target":{"reference_frame":"ICRS","target_name":"Polaris Australis","ra":"21:08:47.92","dec":"-88:57:22.9"}},"dish":{"receiver_band":"1"}}'
         dish_leaf_node_dp.Configure(input_string)
         # '1' here represents 'B1' in the configuredBand enum labels
-        self.wait_until_dish_attribute_equals(1, "configuredBand", dish_master_dp)
+        self.wait_until_dish_attribute_equals(
+            1, "configuredBand", dish_master_dp
+        )
         assert dish_master_dp.configuredBand.name == "B1"
         assert dish_master_dp.dsIndexerPosition.name == "B1"
 

@@ -12,8 +12,7 @@
 Central Node Low is a coordinator of the complete M&C system.
 """
 
-from . import release
-from . import const
+from . import const, release
 from .central_node_low import CentralNode
 
 __all__ = ["release", "const", "CentralNode"]

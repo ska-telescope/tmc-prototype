@@ -35,13 +35,13 @@ include:
   file: 'gitlab-ci/includes/python.gitlab-ci.yml'
 
 
-#build ska-tmc-centralnode-low wheel for publication: # Executed on a tag
+#build ska_tmc_centralnode_low wheel for publication: # Executed on a tag
 #  stage: build
 #  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
 #  tags:
 #    - k8srunner
 #  script:
-#    - cd ./ska-tmc/ska-tmc-centralnode-low
+#    - cd ./ska-tmc/ska_tmc_centralnode_low
 #    - python3 setup.py egg_info sdist bdist_wheel
 #    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
 #    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
@@ -51,15 +51,15 @@ include:
 #    - tags
 #  artifacts:
 #    paths:
-#      - ./ska-tmc/ska-tmc-centralnode-low/dist/
+#      - ./ska-tmc/ska_tmc_centralnode_low/dist/
 #
-#build ska-tmc-centralnode-low wheel for development: # Executed on a commit
+#build ska_tmc_centralnode_low wheel for development: # Executed on a commit
 #  stage: build
 #  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
 #  tags:
 #    - k8srunner
 #  script:
-#    - cd ./ska-tmc/ska-tmc-centralnode-low
+#    - cd ./ska-tmc/ska_tmc_centralnode_low
 #    - python3 setup.py egg_info sdist bdist_wheel
 #    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
 #    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
@@ -69,7 +69,7 @@ include:
 #    - tags
 #  artifacts:
 #    paths:
-#      - ./ska-tmc/ska-tmc-centralnode-low/dist/
+#      - ./ska-tmc/ska_tmc_centralnode_low/dist/
 #
 #build ska-tmc-subarraynode-low wheel for publication: # Executed on a tag
 #  stage: build
@@ -143,13 +143,13 @@ include:
 #    paths:
 #      - ./ska-tmc/ska-tmc-dishleafnode-mid/dist/
 #
-#build ska-tmc-cspmasterleafnode-mid wheel for publication: # Executed on a tag
+#build ska_tmc_cspmasterleafnode_mid wheel for publication: # Executed on a tag
 #  stage: build
 #  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
 #  tags:
 #    - k8srunner
 #  script:
-#    - cd ./ska-tmc/ska-tmc-cspmasterleafnode-mid
+#    - cd ./ska-tmc/ska_tmc_cspmasterleafnode_mid
 #    - python3 setup.py egg_info sdist bdist_wheel
 #    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
 #    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
@@ -159,15 +159,15 @@ include:
 #    - tags
 #  artifacts:
 #    paths:
-#      - ./ska-tmc/ska-tmc-cspmasterleafnode-mid/dist/
+#      - ./ska-tmc/ska_tmc_cspmasterleafnode_mid/dist/
 #
-#build ska-tmc-cspmasterleafnode-mid wheel for development: # Executed on a commit
+#build ska_tmc_cspmasterleafnode_mid wheel for development: # Executed on a commit
 #  stage: build
 #  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
 #  tags:
 #    - k8srunner
 #  script:
-#    - cd ./ska-tmc/ska-tmc-cspmasterleafnode-mid
+#    - cd ./ska-tmc/ska_tmc_cspmasterleafnode_mid
 #    - python3 setup.py egg_info sdist bdist_wheel
 #    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
 #    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
@@ -177,7 +177,7 @@ include:
 #    - tags
 #  artifacts:
 #    paths:
-#      - ./ska-tmc/ska-tmc-cspmasterleafnode-mid/dist/
+#      - ./ska-tmc/ska_tmc_cspmasterleafnode_mid/dist/
 #
 #build ska-tmc-cspsubarrayleafnode-mid wheel for publication: # Executed on a tag
 #  stage: build
@@ -361,13 +361,13 @@ include:
 #    paths:
 #      - ./ska-tmc/ska-tmc-mccssubarrayleafnode-low/dist/
 #
-#build ska-dish-master-mid wheel for publication: # Executed on a tag
+#build ska_dish_master_mid wheel for publication: # Executed on a tag
 #  stage: build
 #  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
 #  tags:
 #    - k8srunner
 #  script:
-#    - cd ./ska-tmc/ska-dish-master-mid
+#    - cd ./ska-tmc/ska_dish_master_mid
 #    - python3 setup.py egg_info sdist bdist_wheel
 #    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
 #    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
@@ -377,15 +377,15 @@ include:
 #    - tags
 #  artifacts:
 #    paths:
-#      - ./ska-tmc/ska-dish-master-mid/dist/
+#      - ./ska-tmc/ska_dish_master_mid/dist/
 #
-#build ska-dish-master-mid wheel for development: # Executed on a commit
+#build ska_dish_master_mid wheel for development: # Executed on a commit
 #  stage: build
 #  image: $SKA_K8S_TOOLS_DEPLOY_IMAGE
 #  tags:
 #    - k8srunner
 #  script:
-#    - cd ./ska-tmc/ska-dish-master-mid
+#    - cd ./ska-tmc/ska_dish_master_mid
 #    - python3 setup.py egg_info sdist bdist_wheel
 #    - /usr/local/bin/extract-metadata.sh MANIFEST.skao.int
 #    - for filename in ./dist/*.whl ./dist/*.tar.gz; do
@@ -395,7 +395,7 @@ include:
 #    - tags
 #  artifacts:
 #    paths:
-#      - ./ska-tmc/ska-dish-master-mid/dist/
+#      - ./ska-tmc/ska_dish_master_mid/dist/
 #
 #unit tests:
 #  image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.10
@@ -550,12 +550,12 @@ include:
 #  script:
 #    - python3 -m pip install twine
 #    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-dishleafnode-mid/dist/*
-#    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-centralnode-low/dist/*
+#    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska_tmc_centralnode_low/dist/*
 #    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-subarraynode-low/dist/*
-#    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-cspmasterleafnode-mid/dist/*
+#    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska_tmc_cspmasterleafnode_mid/dist/*
 #    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-sdpmasterleafnode-mid/dist/*
 #    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-mccsmasterleafnode-low/dist/*
-#    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-dish-master-mid/dist/*
+#    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska_dish_master_mid/dist/*
 #    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-sdpsubarrayleafnode-mid/dist/*
 #    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-cspsubarrayleafnode-mid/dist/*
 #    - twine upload --username ${CAR_PYPI_USERNAME} --password ${CAR_PYPI_PASSWORD} --repository-url $CAR_PYPI_REPOSITORY_URL ./ska-tmc/ska-tmc-mccssubarrayleafnode-low/dist/*

@@ -7,11 +7,10 @@ import json
 
 # Tango imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
-
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -45,7 +44,6 @@ class ReleaseResources(BaseCommand):
             DevState.DISABLE,
         ]:
             tango.Except.throw_exception(
-
                 f"Command ReleaseResources is not allowed in current state {self.state_model.op_state}.",
                 "Failed to invoke ReleaseResources command on CentralNode.",
                 "CentralNode.ReleaseResources()",
@@ -93,12 +91,18 @@ class ReleaseResources(BaseCommand):
                 subarray_client.send_command(const.CMD_RELEASE_RESOURCES)
                 # Invoke ReleaseAllResources on MCCS Master Leaf Node
                 # Send updated input string with inteface key to MCCS Master for ReleaseResource Command
-                json_argument["interface"] = "https://schema.skao.int/ska-low-mccs-releaseresources/1.0"
-                if 'transaction_id' in json_argument:
+                json_argument[
+                    "interface"
+                ] = "https://schema.skao.int/ska-low-mccs-releaseresources/1.0"
+                if "transaction_id" in json_argument:
                     del json_argument["transaction_id"]
                 self.mccs_master_ln_fqdn = ""
-                property_value = this_server.read_property("MCCSMasterLeafNodeFQDN")
-                self.mccs_master_ln_fqdn = self.mccs_master_ln_fqdn.join(property_value)
+                property_value = this_server.read_property(
+                    "MCCSMasterLeafNodeFQDN"
+                )
+                self.mccs_master_ln_fqdn = self.mccs_master_ln_fqdn.join(
+                    property_value
+                )
 
                 mccs_mln_client = TangoClient(self.mccs_master_ln_fqdn)
                 mccs_mln_client.send_command(
@@ -109,12 +113,18 @@ class ReleaseResources(BaseCommand):
 
                 this_server.write_attr("activityMessage", log_msg, False)
             else:
-                this_server.write_attr("activityMessage", const.STR_FALSE_TAG, False)
+                this_server.write_attr(
+                    "activityMessage", const.STR_FALSE_TAG, False
+                )
                 self.logger.info(const.STR_FALSE_TAG)
 
         except ValueError as value_error:
             self.logger.error(const.ERR_INVALID_JSON)
-            this_server.write_attr("activityMessage", f"{const.ERR_INVALID_JSON}{value_error}", False)
+            this_server.write_attr(
+                "activityMessage",
+                f"{const.ERR_INVALID_JSON}{value_error}",
+                False,
+            )
             log_msg = f"{const.ERR_INVALID_JSON}{value_error}"
             self.logger.exception(value_error)
             tango.Except.throw_exception(
@@ -126,7 +136,11 @@ class ReleaseResources(BaseCommand):
 
         except KeyError as key_error:
             self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
-            this_server.write_attr("activityMessage", f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}", False)
+            this_server.write_attr(
+                "activityMessage",
+                f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}",
+                False,
+            )
             log_msg = f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}"
             self.logger.exception(key_error)
             tango.Except.throw_exception(
@@ -138,7 +152,9 @@ class ReleaseResources(BaseCommand):
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_RELEASE_RESOURCES}{dev_failed}"
-            this_server.write_attr("activityMessage", const.ERR_RELEASE_RESOURCES, False)
+            this_server.write_attr(
+                "activityMessage", const.ERR_RELEASE_RESOURCES, False
+            )
             self.logger.exception(dev_failed)
             tango.Except.throw_exception(
                 const.STR_RELEASE_RES_EXEC,

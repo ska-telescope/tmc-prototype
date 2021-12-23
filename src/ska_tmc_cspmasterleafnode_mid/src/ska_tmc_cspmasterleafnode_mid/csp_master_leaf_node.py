@@ -14,19 +14,21 @@ CSP Master Leaf node monitors the CSP Master and issues control actions during a
 # PROTECTED REGION ID(CspMasterLeafNode.import) ENABLED START #
 # Tango imports
 import os
+
 import tango
-from tango import ApiUtil, DebugIt, AttrWriteType
-from tango.server import run, command, device_property, attribute
 
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
+from tango import ApiUtil, AttrWriteType, DebugIt
+from tango.server import attribute, command, device_property, run
 from tmc.common.tango_server_helper import TangoServerHelper
+
 from . import const
-from .telescope_on_command import TelescopeOn
-from .telescope_off_command import TelescopeOff
-from .telescope_standby_command import TelescopeStandby
 from .device_data import DeviceData
+from .telescope_off_command import TelescopeOff
+from .telescope_on_command import TelescopeOn
+from .telescope_standby_command import TelescopeStandby
 
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
 
@@ -101,12 +103,18 @@ class CspMasterLeafNode(SKABaseDevice):
             this_device.write_attr(
                 "activityMessage", const.STR_CSP_INIT_LEAF_NODE, False
             )
-            standalone_mode = os.environ.get('STANDALONE_MODE')
-            self.logger.info("Device running in standalone_mode:%s",standalone_mode)
-            ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
+            standalone_mode = os.environ.get("STANDALONE_MODE")
+            self.logger.info(
+                "Device running in standalone_mode:%s", standalone_mode
+            )
+            ApiUtil.instance().set_asynch_cb_sub_model(
+                tango.cb_sub_model.PUSH_CALLBACK
+            )
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
-            this_device.write_attr("activityMessage", const.STR_INIT_SUCCESS, False)
+            this_device.write_attr(
+                "activityMessage", const.STR_INIT_SUCCESS, False
+            )
             self.logger.info(const.STR_INIT_SUCCESS)
             return (ResultCode.OK, const.STR_INIT_SUCCESS)
 
@@ -223,7 +231,9 @@ class CspMasterLeafNode(SKABaseDevice):
         args = (device_data, self.state_model, self.logger)
         self.register_command_object("TelescopeOff", TelescopeOff(*args))
         self.register_command_object("TelescopeOn", TelescopeOn(*args))
-        self.register_command_object("TelescopeStandby", TelescopeStandby(*args))
+        self.register_command_object(
+            "TelescopeStandby", TelescopeStandby(*args)
+        )
 
 
 # ----------

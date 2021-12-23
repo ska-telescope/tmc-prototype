@@ -5,10 +5,10 @@ On class for CspSubarrayLeafNode.
 # Standard Python imports
 # PyTango imports
 import tango
-from tango import DevFailed, DevState
 
 # Additional import
 from ska.base.commands import BaseCommand
+from tango import DevFailed, DevState
 from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
@@ -22,6 +22,7 @@ class TelescopeOn(BaseCommand):
     Invokes method to start Delay Calculation.
 
     """
+
     def check_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state
@@ -86,7 +87,11 @@ class TelescopeOn(BaseCommand):
         """
         this_server = TangoServerHelper.get_instance()
         try:
-            log_msg = const.CMD_TELESCOPE_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+            log_msg = (
+                const.CMD_TELESCOPE_ON
+                + const.STR_COMMAND
+                + const.STR_INVOKE_SUCCESS
+            )
             self.logger.debug(log_msg)
             delay_manager_obj = DelayManager.get_instance()
             delay_manager_obj.start()
@@ -102,4 +107,3 @@ class TelescopeOn(BaseCommand):
                 "CspSubarrayLeafNode.TelescopeOnCommand",
                 tango.ErrSeverity.ERR,
             )
-

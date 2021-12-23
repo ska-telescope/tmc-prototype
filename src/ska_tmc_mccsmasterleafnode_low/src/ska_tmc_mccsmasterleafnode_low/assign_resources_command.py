@@ -1,13 +1,13 @@
 # PROTECTED REGION ID(MccsMasterLeafNode.import) ENABLED START #
 # Tango imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
-
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
+
 from . import const
 
 # PROTECTED REGION END #    //  MccsMasterLeafNode imports
@@ -40,7 +40,8 @@ class AssignResources(BaseCommand):
         ]:
             tango.Except.throw_exception(
                 f"AssignResources() is not allowed in current state {self.state_model.op_state}",
-                "Failed to invoke AssignResources command on " "mccsmasterleafnode.",
+                "Failed to invoke AssignResources command on "
+                "mccsmasterleafnode.",
                 "mccsmasterleafnode.AssignResources()",
                 tango.ErrSeverity.ERR,
             )
@@ -73,12 +74,19 @@ class AssignResources(BaseCommand):
         try:
 
             if event.err:
-                self.this_server.write_attr("activityMessage",
-                                    f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}", False)
+                self.this_server.write_attr(
+                    "activityMessage",
+                    f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}",
+                    False,
+                )
                 log = const.ERR_INVOKING_CMD + event.cmd_name
                 self.logger.error(log)
             else:
-                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                log = (
+                    const.STR_COMMAND
+                    + event.cmd_name
+                    + const.STR_INVOKE_SUCCESS
+                )
                 self.this_server.write_attr("activityMessage", log, False)
                 self.logger.info(log)
 
@@ -145,7 +153,9 @@ class AssignResources(BaseCommand):
             mccs_master_client.send_command_async(
                 const.CMD_ALLOCATE, argin, self.allocate_ended
             )
-            self.this_server.write_attr("activityMessage", const.STR_ALLOCATE_SUCCESS, False)
+            self.this_server.write_attr(
+                "activityMessage", const.STR_ALLOCATE_SUCCESS, False
+            )
             self.logger.info(const.STR_ALLOCATE_SUCCESS)
 
         except DevFailed as dev_failed:

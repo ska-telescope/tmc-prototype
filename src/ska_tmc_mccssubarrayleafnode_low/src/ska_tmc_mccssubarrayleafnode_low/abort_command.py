@@ -1,11 +1,10 @@
-    # Third party imports
+# Third party imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
 from ska.base.control_model import ObsState
-
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -45,13 +44,23 @@ class Abort(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
         self.this_server = TangoServerHelper.get_instance()
-        self.mccs_sa_fqdn = self.this_server.read_property("MccsSubarrayFQDN")[0]
+        self.mccs_sa_fqdn = self.this_server.read_property("MccsSubarrayFQDN")[
+            0
+        ]
         self.mccs_sa_client = TangoClient(self.mccs_sa_fqdn)
-        if self.mccs_sa_client.get_attribute("obsState").value not in [ObsState.READY, ObsState.CONFIGURING, ObsState.SCANNING,
-                                                        ObsState.IDLE, ObsState.RESETTING]:
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_VALID_OBSTATE, const.ERR_ABORT_COMMAND,
-                                            "MccsSubarrayLeafNode.Abort()",
-                                            tango.ErrSeverity.ERR)
+        if self.mccs_sa_client.get_attribute("obsState").value not in [
+            ObsState.READY,
+            ObsState.CONFIGURING,
+            ObsState.SCANNING,
+            ObsState.IDLE,
+            ObsState.RESETTING,
+        ]:
+            tango.Except.throw_exception(
+                const.ERR_DEVICE_NOT_IN_VALID_OBSTATE,
+                const.ERR_ABORT_COMMAND,
+                "MccsSubarrayLeafNode.Abort()",
+                tango.ErrSeverity.ERR,
+            )
         return True
 
     def abort_cmd_ended_cb(self, event):
@@ -77,7 +86,9 @@ class Abort(BaseCommand):
         """
         # Update logs and activity message attribute with received event
         if event.err:
-            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            log_msg = (
+                f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            )
             self.logger.error(log_msg)
             self.this_server.write_attr("activityMessage", log_msg, False)
         else:
@@ -102,7 +113,9 @@ class Abort(BaseCommand):
             self.mccs_sa_client.send_command_async(
                 const.CMD_ABORT, None, self.abort_cmd_ended_cb
             )
-            self.this_server.write_attr("activityMessage", const.STR_ABORT_SUCCESS, False)
+            self.this_server.write_attr(
+                "activityMessage", const.STR_ABORT_SUCCESS, False
+            )
             self.logger.info(const.STR_ABORT_SUCCESS)
 
         except DevFailed as dev_failed:

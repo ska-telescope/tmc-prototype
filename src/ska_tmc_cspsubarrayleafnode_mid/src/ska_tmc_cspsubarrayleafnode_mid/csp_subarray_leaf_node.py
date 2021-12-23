@@ -14,38 +14,37 @@ It also acts as a CSP contact point for Subarray Node for observation execution 
 # PROTECTED REGION ID(CspSubarrayLeafNode.additional_import) ENABLED START #
 # Standard python imports
 
-import threading
 import os
+import threading
 
 # PyTango imports
 import tango
-from tango import DebugIt, AttrWriteType, ApiUtil
-from tango.server import run, attribute, command, device_property
+from ska.base import SKABaseDevice
 
 # Additional import
 from ska.base.commands import ResultCode
-from ska.base import SKABaseDevice
 from ska.base.control_model import ObsState
-
+from tango import ApiUtil, AttrWriteType, DebugIt
+from tango.server import attribute, command, device_property, run
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
-from .device_data import DeviceData
-from .assign_resources_command import AssignResourcesCommand
-from .release_all_resources_command import ReleaseAllResourcesCommand
-from .configure_command import ConfigureCommand
-from .scan_command import StartScanCommand
-from .end_scan_command import EndScanCommand
-from .end_command import GoToIdleCommand
-from .abort_command import AbortCommand
-from .restart_command import RestartCommand
-from .obsreset_command import ObsResetCommand
-from .reset_command import ResetCommand
-from .telescope_on_command import TelescopeOn
-from .telescope_off_command import TelescopeOff
 from . import const, release
-from .exceptions import InvalidObsStateError
+from .abort_command import AbortCommand
+from .assign_resources_command import AssignResourcesCommand
+from .configure_command import ConfigureCommand
 from .delay_model import DelayManager
+from .device_data import DeviceData
+from .end_command import GoToIdleCommand
+from .end_scan_command import EndScanCommand
+from .exceptions import InvalidObsStateError
+from .obsreset_command import ObsResetCommand
+from .release_all_resources_command import ReleaseAllResourcesCommand
+from .reset_command import ResetCommand
+from .restart_command import RestartCommand
+from .scan_command import StartScanCommand
+from .telescope_off_command import TelescopeOff
+from .telescope_on_command import TelescopeOn
 
 # PROTECTED REGION END #    //  CspSubarrayLeafNode.additional_import
 
@@ -148,12 +147,16 @@ class CspSubarrayLeafNode(SKABaseDevice):
             device._version_id = release.version
             device._versioninfo = " "
             standalone_mode = os.environ.get("STANDALONE_MODE")
-            self.logger.info("Device running in standalone_mode:%s", standalone_mode)
+            self.logger.info(
+                "Device running in standalone_mode:%s", standalone_mode
+            )
             # The IERS_A file needs to be downloaded each time when the MVP is deployed.
             delay_manager_obj = DelayManager.get_instance()
             try:
                 download_iers_thread = threading.Thread(
-                    None, delay_manager_obj.download_IERS_file, "CspSubarrayLeafNode"
+                    None,
+                    delay_manager_obj.download_IERS_file,
+                    "CspSubarrayLeafNode",
                 )
                 download_iers_thread.start()
             except Exception as delay_execption:
@@ -166,7 +169,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
                     tango.ErrSeverity.ERR,
                 )
 
-            ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
+            ApiUtil.instance().set_asynch_cb_sub_model(
+                tango.cb_sub_model.PUSH_CALLBACK
+            )
             this_server.write_attr(
                 "activityMessage",
                 f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}",
@@ -449,8 +454,12 @@ class CspSubarrayLeafNode(SKABaseDevice):
             )
         else:
             self.logger.error("CSP Subarray is not in EMPTY/IDLE obsState")
-            this_server.write_attr("activityMessage", "Error in device obsState", False)
-            raise InvalidObsStateError("CSP Subarray is not in EMPTY/IDLE obsState")
+            this_server.write_attr(
+                "activityMessage", "Error in device obsState", False
+            )
+            raise InvalidObsStateError(
+                "CSP Subarray is not in EMPTY/IDLE obsState"
+            )
 
     @command()
     @DebugIt()
@@ -526,7 +535,9 @@ class CspSubarrayLeafNode(SKABaseDevice):
         super().init_command_objects()
         device_data = DeviceData.get_instance()
         args = (device_data, self.state_model, self.logger)
-        self.register_command_object("AssignResources", AssignResourcesCommand(*args))
+        self.register_command_object(
+            "AssignResources", AssignResourcesCommand(*args)
+        )
         self.register_command_object(
             "ReleaseAllResources", ReleaseAllResourcesCommand(*args)
         )

@@ -1,12 +1,11 @@
 # Tango import
 import tango
-from tango import DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
-from tmc.common.tango_server_helper import TangoServerHelper
+from tango import DevFailed
 from tmc.common.tango_client import TangoClient
-
+from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
 
@@ -41,7 +40,9 @@ class TelescopeOff(BaseCommand):
         """
         this_server = TangoServerHelper.get_instance()
         if event.err:
-            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            log_msg = (
+                f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            )
             self.logger.error(log_msg)
             this_server.write_attr("activityMessage", log_msg, False)
 
@@ -49,7 +50,6 @@ class TelescopeOff(BaseCommand):
             log_msg = f"{const.STR_COMMAND}{event.cmd_name}{const.STR_INVOKE_SUCCESS}"
             self.logger.info(log_msg)
             this_server.write_attr("activityMessage", log_msg, False)
-
 
     def do(self):
         """
@@ -59,17 +59,21 @@ class TelescopeOff(BaseCommand):
             None.
 
         """
-        device_data = self.target  
+        device_data = self.target
         this_device = TangoServerHelper.get_instance()
         try:
-            csp_mln_client_obj = TangoClient(this_device.read_property("CspMasterFQDN")[0])
-            # Off command on CSP-Master in not allowed, hence called Standby command instead as a part of 
-            # telescopeOff command. 
+            csp_mln_client_obj = TangoClient(
+                this_device.read_property("CspMasterFQDN")[0]
+            )
+            # Off command on CSP-Master in not allowed, hence called Standby command instead as a part of
+            # telescopeOff command.
             csp_mln_client_obj.send_command_async(
                 const.CMD_STANDBY, [], self.telescope_off_cmd_ended_cb
             )
             self.logger.debug(const.STR_OFF_CMD_ISSUED)
-            this_device.write_attr("activityMessage", const.STR_OFF_CMD_ISSUED, False)
+            this_device.write_attr(
+                "activityMessage", const.STR_OFF_CMD_ISSUED, False
+            )
             device_data.cbf_health_updator.stop()
             device_data.pss_health_updator.stop()
             device_data.pst_health_updator.stop()
@@ -77,7 +81,9 @@ class TelescopeOff(BaseCommand):
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_EXE_OFF_CMD}{dev_failed}"
             self.logger.exception(dev_failed)
-            this_device.write_attr("activityMessage", const.ERR_EXE_OFF_CMD, False)
+            this_device.write_attr(
+                "activityMessage", const.ERR_EXE_OFF_CMD, False
+            )
             tango.Except.re_throw_exception(
                 dev_failed,
                 const.STR_ON_EXEC,

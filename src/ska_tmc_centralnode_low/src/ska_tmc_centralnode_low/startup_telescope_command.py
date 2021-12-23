@@ -7,18 +7,18 @@ import time
 
 # Tango imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
-
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
-from .health_state_aggreegator import HealthStateAggreegator
 from .command_result_fetcher import CommandResultFetcher
+from .health_state_aggreegator import HealthStateAggreegator
+
 
 class StartUpTelescope(SKABaseDevice.OnCommand):
     """
@@ -73,13 +73,12 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
 
         """
         device_data = self.target
-        attributes_to_subscribe_to = (
-            "commandResult",
-        )
+        attributes_to_subscribe_to = ("commandResult",)
         # Subscribe to commandResult attribute of MccsController
         cmd_res_subscriber_unsubscriber_obj = CommandResultFetcher()
         cmd_res_subscriber_unsubscriber_obj._subscribe_cmd_res_attribute_events(
-            attributes_to_subscribe_to)
+            attributes_to_subscribe_to
+        )
         device_data.health_aggreegator = HealthStateAggreegator(self.logger)
         device_data.health_aggreegator.subscribe_event()
         try:
@@ -90,16 +89,25 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
                 if cmd_res["result_code"] != 0 or cmd_res["result_code"] != 4:
                     retry = 0
                     while retry < 3:
-                        if cmd_res["result_code"] == 0 or cmd_res["result_code"] == 4:
+                        if (
+                            cmd_res["result_code"] == 0
+                            or cmd_res["result_code"] == 4
+                        ):
                             break
                         retry += 1
                         time.sleep(0.1)
-                        
-                assert cmd_res["result_code"] == 0 or cmd_res["result_code"] == 4, const.ERR_STANDBY_CMD_INCOMPLETE
+
+                assert (
+                    cmd_res["result_code"] == 0 or cmd_res["result_code"] == 4
+                ), const.ERR_STANDBY_CMD_INCOMPLETE
 
             self.mccs_master_ln_fqdn = ""
-            property_value = self.this_server.read_property("MCCSMasterLeafNodeFQDN")
-            self.mccs_master_ln_fqdn = self.mccs_master_ln_fqdn.join(property_value)
+            property_value = self.this_server.read_property(
+                "MCCSMasterLeafNodeFQDN"
+            )
+            self.mccs_master_ln_fqdn = self.mccs_master_ln_fqdn.join(
+                property_value
+            )
 
             self.create_mccs_client(self.mccs_master_ln_fqdn)
             subarray_low = self.this_server.read_property("TMLowSubarrayNodes")
@@ -111,11 +119,16 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         except AssertionError as assertion_err:
             log_msg = const.ERR_STANDBY_CMD_INCOMPLETE
             self.logger.exception(log_msg)
-            self.this_server.write_attr("activityMessage", const.ERR_STANDBY_CMD_INCOMPLETE, False)
-            tango.Except.re_throw_exception(assertion_err, const.ERR_STANDBY_CMD_INCOMPLETE,
-                                            log_msg, "CentralNodeLow.StartUpTelescopeCommand",
-                                            tango.ErrSeverity.ERR)
-
+            self.this_server.write_attr(
+                "activityMessage", const.ERR_STANDBY_CMD_INCOMPLETE, False
+            )
+            tango.Except.re_throw_exception(
+                assertion_err,
+                const.ERR_STANDBY_CMD_INCOMPLETE,
+                log_msg,
+                "CentralNodeLow.StartUpTelescopeCommand",
+                tango.ErrSeverity.ERR,
+            )
 
     def create_subarray_client(self, subarray_fqdn_list):
         """
@@ -159,8 +172,14 @@ class StartUpTelescope(SKABaseDevice.OnCommand):
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_EXE_ON_CMD}{dev_failed}"
             self.logger.exception(dev_failed)
-            self.this_server.write_attr("activityMessage", const.ERR_EXE_ON_CMD, False)
-            tango.Except.re_throw_exception(dev_failed, const.STR_ON_EXEC, log_msg,
-                                            "CentralNodeLow.StartUpTelescopeCommand",
-                                            tango.ErrSeverity.ERR)
+            self.this_server.write_attr(
+                "activityMessage", const.ERR_EXE_ON_CMD, False
+            )
+            tango.Except.re_throw_exception(
+                dev_failed,
+                const.STR_ON_EXEC,
+                log_msg,
+                "CentralNodeLow.StartUpTelescopeCommand",
+                tango.ErrSeverity.ERR,
+            )
         return (ResultCode.OK, self.this_server.read_attr("activityMessage"))

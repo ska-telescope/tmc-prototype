@@ -5,12 +5,11 @@ EndScanCommand class for SubarrayNodeLow.
 # Third party imports
 # Tango imports
 import tango
-from tango import DevFailed
+from ska.base import SKASubarray
 
 # Additional import
 from ska.base.commands import ResultCode
-from ska.base import SKASubarray
-
+from tango import DevFailed
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -58,10 +57,14 @@ class EndScan(SKASubarray.EndScanCommand):
             mccs_subarray_ln_client = TangoClient(mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(const.CMD_END_SCAN)
             self.logger.debug(const.STR_MCCS_END_SCAN_INIT)
-            this_server.write_attr("activityMessage", const.STR_MCCS_END_SCAN_INIT, False)
+            this_server.write_attr(
+                "activityMessage", const.STR_MCCS_END_SCAN_INIT, False
+            )
             this_server.write_attr("scanID", "")
             self.logger.info(const.STR_SCAN_COMPLETE)
-            this_server.write_attr("activityMessage", const.STR_END_SCAN_SUCCESS, False)
+            this_server.write_attr(
+                "activityMessage", const.STR_END_SCAN_SUCCESS, False
+            )
             return (ResultCode.OK, const.STR_END_SCAN_SUCCESS)
 
         except DevFailed as dev_failed:

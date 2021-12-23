@@ -15,37 +15,35 @@ It also acts as a SDP contact point for Subarray Node for observation execution.
 # PROTECTED REGION ID(sdpsubarrayleafnode.additionnal_import) ENABLED START #
 # Third party imports
 import os
+import threading
 
 # PyTango imports
 import tango
-import threading
-from tango import DebugIt, AttrWriteType, ApiUtil
-from tango.server import run, command, device_property, attribute
 
 # Additional imports
 from ska.base import SKABaseDevice
-from ska.base.control_model import HealthState, ObsState
 from ska.base.commands import ResultCode
-
+from ska.base.control_model import HealthState, ObsState
+from tango import ApiUtil, AttrWriteType, DebugIt
+from tango.server import attribute, command, device_property, run
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const, release
-from .assign_resources_command import AssignResources
-from .release_resources_command import ReleaseAllResources
-from .configure_command import Configure
-from .scan_command import Scan
-from .endscan_command import EndScan
-from .end_command import End
 from .abort_command import Abort
-from .restart_command import Restart
-from .obsreset_command import ObsReset
-from .telescope_on_command import TelescopeOn
-from .telescope_off_command import TelescopeOff
-from .reset_command import ResetCommand
+from .assign_resources_command import AssignResources
+from .configure_command import Configure
 from .device_data import DeviceData
+from .end_command import End
+from .endscan_command import EndScan
 from .exceptions import InvalidObsStateError
-
+from .obsreset_command import ObsReset
+from .release_resources_command import ReleaseAllResources
+from .reset_command import ResetCommand
+from .restart_command import Restart
+from .scan_command import Scan
+from .telescope_off_command import TelescopeOff
+from .telescope_on_command import TelescopeOn
 
 # PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
 
@@ -65,7 +63,7 @@ __all__ = [
     "Scan",
     "End",
     "EndScan",
-    "ResetCommand"
+    "ResetCommand",
 ]
 
 # pylint: disable=unused-argument,unused-variable, implicit-str-concat
@@ -160,9 +158,13 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             device_data = DeviceData.get_instance()
             device.device_data = device_data
             standalone_mode = os.environ.get("STANDALONE_MODE")
-            self.logger.info("Device running in standalone_mode:%s", standalone_mode)
+            self.logger.info(
+                "Device running in standalone_mode:%s", standalone_mode
+            )
 
-            ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
+            ApiUtil.instance().set_asynch_cb_sub_model(
+                tango.cb_sub_model.PUSH_CALLBACK
+            )
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
 
@@ -538,7 +540,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     def validate_obs_state(self):
         self.this_server = TangoServerHelper.get_instance()
-        sdp_subarray_fqdn = self.this_server.read_property("SdpSubarrayFQDN")[0]
+        sdp_subarray_fqdn = self.this_server.read_property("SdpSubarrayFQDN")[
+            0
+        ]
         sdp_sa_client = TangoClient(sdp_subarray_fqdn)
         if sdp_sa_client.get_attribute("obsState").value in [
             ObsState.EMPTY,
@@ -564,7 +568,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         device_data = DeviceData.get_instance()
         args = (device_data, self.state_model, self.logger)
         self.register_command_object("AssignResources", AssignResources(*args))
-        self.register_command_object("ReleaseAllResources", ReleaseAllResources(*args))
+        self.register_command_object(
+            "ReleaseAllResources", ReleaseAllResources(*args)
+        )
         self.register_command_object("Scan", Scan(*args))
         self.register_command_object("End", End(*args))
         self.register_command_object("Restart", Restart(*args))
@@ -575,7 +581,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         self.register_command_object("TelescopeOff", TelescopeOff(*args))
         self.register_command_object("TelescopeOn", TelescopeOn(*args))
         self.register_command_object("Reset", ResetCommand(*args))
-
 
 
 # ----------

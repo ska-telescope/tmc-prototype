@@ -14,20 +14,20 @@ import threading
 
 # Tango imports
 import tango
-from tango import ApiUtil, AttrWriteType
-from tango.server import run, command, device_property, attribute
+from ska.base import SKABaseDevice
 
 # Additional import
 from ska.base.commands import ResultCode
-from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState, SimulationMode
-
+from tango import ApiUtil, AttrWriteType
+from tango.server import attribute, command, device_property, run
 from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import release
-from .device_data import DeviceData
 from .abort_command import Abort
+from .az_el_converter import AzElConverter
 from .configure_command import Configure
+from .device_data import DeviceData
 from .endscan_command import EndScan
 from .obsreset_command import ObsReset
 from .restart_command import Restart
@@ -41,8 +41,6 @@ from .startcapture_command import StartCapture
 from .stopcapture_command import StopCapture
 from .stoptrack_command import StopTrack
 from .track_command import Track
-from .az_el_converter import AzElConverter
-
 
 __all__ = [
     "DishLeafNode",
@@ -94,14 +92,18 @@ class DishLeafNode(SKABaseDevice):
         args = (device_data, self.state_model, self.logger)
 
         self.register_command_object("SetStowMode", SetStowMode(*args))
-        self.register_command_object("SetStandbyLPMode", SetStandbyLPMode(*args))
+        self.register_command_object(
+            "SetStandbyLPMode", SetStandbyLPMode(*args)
+        )
         self.register_command_object("SetOperateMode", SetOperateMode(*args))
         self.register_command_object("Scan", Scan(*args))
         self.register_command_object("EndScan", EndScan(*args))
         self.register_command_object("Configure", Configure(*args))
         self.register_command_object("StartCapture", StartCapture(*args))
         self.register_command_object("StopCapture", StopCapture(*args))
-        self.register_command_object("SetStandbyFPMode", SetStandbyFPMode(*args))
+        self.register_command_object(
+            "SetStandbyFPMode", SetStandbyFPMode(*args)
+        )
         self.register_command_object("Slew", Slew(*args))
         self.register_command_object("Track", Track(*args))
         self.register_command_object("StopTrack", StopTrack(*args))
@@ -145,7 +147,6 @@ class DishLeafNode(SKABaseDevice):
         self.attr_map[attr] = val
         lock.release()
 
-
     class InitCommand(SKABaseDevice.InitCommand):
         """
         A class for the TMC DishLeafNode's init_device() method.
@@ -185,13 +186,17 @@ class DishLeafNode(SKABaseDevice):
             this_server.write_attr("activityMessage", log_message, False)
             device._health_state = HealthState.OK
             device._simulation_mode = SimulationMode.FALSE
-            ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
+            ApiUtil.instance().set_asynch_cb_sub_model(
+                tango.cb_sub_model.PUSH_CALLBACK
+            )
             log_message = f"Setting CallBack Model as :-> {ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_message)
             this_server.write_attr("activityMessage", log_message, False)
-            
+
             # Download IERS file from internet
-            self.download_iers_thread = threading.Thread(None, azel_converter.download_IERS_file, "DishLeafNode")
+            self.download_iers_thread = threading.Thread(
+                None, azel_converter.download_IERS_file, "DishLeafNode"
+            )
             self.download_iers_thread.start()
 
             log_message = "Dish Leaf Node initialized successfully."

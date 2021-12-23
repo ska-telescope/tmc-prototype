@@ -8,12 +8,11 @@ import json
 # Third party imports
 # Tango imports
 import tango
-from tango import DevFailed
+from ska.base import SKASubarray
 
 # Additional import
 from ska.base.commands import ResultCode
-from ska.base import SKASubarray
-
+from tango import DevFailed
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -59,13 +58,15 @@ class Configure(SKASubarray.ConfigureCommand):
         log_msg = f"{const.STR_CONFIGURE_IP_ARG}{argin}"
         self.logger.info(log_msg)
         self.this_server = TangoServerHelper.get_instance()
-        self.this_server.write_attr("activityMessage", const.STR_CONFIGURE_CMD_INVOKED_SA_LOW, False)    
+        self.this_server.write_attr(
+            "activityMessage", const.STR_CONFIGURE_CMD_INVOKED_SA_LOW, False
+        )
         try:
             scan_configuration = json.loads(argin)
         except json.JSONDecodeError as jerror:
             log_message = f"{const.ERR_INVALID_JSON}{jerror}"
             self.logger.error(log_message)
-            self.this_server.write_attr("activityMessage", log_message, False)    
+            self.this_server.write_attr("activityMessage", log_message, False)
             tango.Except.throw_exception(
                 const.STR_CMD_FAILED,
                 log_message,
@@ -81,17 +82,19 @@ class Configure(SKASubarray.ConfigureCommand):
 
     def _create_mccs_cmd_data(self, json_argument):
         mccs_value = json_argument["mccs"]
-        json_argument["interface"] = "https://schema.skao.int/ska-low-mccs-configure/1.0"
-        if 'transaction_id' in json_argument:
+        json_argument[
+            "interface"
+        ] = "https://schema.skao.int/ska-low-mccs-configure/1.0"
+        if "transaction_id" in json_argument:
             del json_argument["transaction_id"]
-        if 'sdp' in json_argument:
+        if "sdp" in json_argument:
             del json_argument["sdp"]
-        if 'tmc' in json_argument:
+        if "tmc" in json_argument:
             del json_argument["tmc"]
-        if 'mccs' in json_argument:
+        if "mccs" in json_argument:
             del json_argument["mccs"]
         json_argument.update(mccs_value)
-        input_to_mccs= json.dumps(json_argument)
+        input_to_mccs = json.dumps(json_argument)
         self._configure_mccs_subarray("Configure", input_to_mccs)
 
     def _configure_mccs_subarray(self, cmd_name, cmd_data):

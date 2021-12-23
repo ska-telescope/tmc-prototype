@@ -1,39 +1,63 @@
 # Standard Python imports
 import contextlib
 import importlib
-import sys
-import types
-import pytest
-import mock
-from mock import Mock, MagicMock
-from os.path import dirname, join
-import threading
-import logging
 import json
+import logging
+import sys
+import threading
+import types
+from os.path import dirname, join
+
+import mock
+import pytest
 
 # Tango imports
 import tango
+from mock import MagicMock, Mock
+from ska.base import SKASubarrayStateModel
+from ska.base.commands import ResultCode
+from ska.base.control_model import HealthState, ObsState
 from tango import DevState
 from tango.test_context import DeviceTestContext
+from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 
 # Additional import
-from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low import SubarrayNode, const, release
-from ska.base.control_model import HealthState, ObsState
-from ska.base.commands import ResultCode
-from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.device_data import DeviceData
-from tmc.common.tango_client import TangoClient
-from ska.base import SKASubarrayStateModel
-from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.release_all_resources_command import ReleaseAllResources
-from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.configure_command import Configure
-from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.scan_command import Scan
-from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.end_scan_command import EndScan
-from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.end_command import End
-from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.obsreset_command import ObsReset
-from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.abort_command import Abort
-from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.restart_command import Restart
-from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.device_data import DeviceData
-from tmc.common.tango_server_helper import TangoServerHelper
-from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.health_state_aggregator import HealthStateAggregator
+from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low import (
+    SubarrayNode,
+    const,
+    release,
+)
+from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.abort_command import (
+    Abort,
+)
+from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.configure_command import (
+    Configure,
+)
+from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.device_data import (
+    DeviceData,
+)
+from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.end_command import (
+    End,
+)
+from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.end_scan_command import (
+    EndScan,
+)
+from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.health_state_aggregator import (
+    HealthStateAggregator,
+)
+from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.obsreset_command import (
+    ObsReset,
+)
+from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.release_all_resources_command import (
+    ReleaseAllResources,
+)
+from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.restart_command import (
+    Restart,
+)
+from src.ska_tmc_subarraynode_low.src.ska_tmc_subarraynode_low.scan_command import (
+    Scan,
+)
 
 assign_input_file = "command_AssignResources.json"
 path = join(dirname(__file__), "data", assign_input_file)
@@ -65,6 +89,7 @@ path = join(dirname(__file__), "data", scan_invalid_input_file)
 with open(path, "r") as f:
     invalid_scan_input = f.read()
 
+
 @pytest.fixture
 def subarray_state_model():
     """
@@ -89,7 +114,8 @@ def wait_for(tango_context, obs_state_to_change, timeout=10):
 
     # wait till timeout or obsState to change
     while (
-        not timer_event.isSet() and tango_context.device.obsState != obs_state_to_change
+        not timer_event.isSet()
+        and tango_context.device.obsState != obs_state_to_change
     ):
         print("tango_context.device.obsState: ", tango_context.device.obsState)
         continue
@@ -100,11 +126,12 @@ def wait_for(tango_context, obs_state_to_change, timeout=10):
         timer_thread.cancel()
         return True
 
+
 @pytest.fixture(scope="function")
 def mock_tango_server_helper():
     mccs_subarray1_ln_fqdn = "ska_low/tm_leaf_node/mccs_subarray01"
     tango_server_obj = TangoServerHelper.get_instance()
-    tango_server_obj.read_property = Mock(return_value = mccs_subarray1_ln_fqdn)
+    tango_server_obj.read_property = Mock(return_value=mccs_subarray1_ln_fqdn)
     yield tango_server_obj
 
 
@@ -168,6 +195,7 @@ def mock_lower_devices():
     ) as tango_context:
         yield tango_context, mccs_subarray1_ln_proxy_mock, mccs_subarray1_proxy_mock, mccs_subarray1_ln_fqdn, mccs_subarray1_fqdn, event_subscription_map
 
+
 def test_scan_id():
     """Test for scanID"""
     with fake_tango_system(SubarrayNode) as tango_context:
@@ -177,7 +205,9 @@ def test_scan_id():
 def test_read_activity_message(mock_tango_server_helper, mock_tango_client):
     """Test for activityMessage"""
     with fake_tango_system(SubarrayNode) as tango_context:
-        assert tango_context.device.activityMessage == const.STR_SA_INIT_SUCCESS
+        assert (
+            tango_context.device.activityMessage == const.STR_SA_INIT_SUCCESS
+        )
 
 
 def test_write_activity_message():
@@ -188,7 +218,9 @@ def test_write_activity_message():
 
 
 # Test cases for Commands
-def test_on_command_should_change_subarray_device_state_to_on(mock_lower_devices_proxy, mock_tango_server_helper):
+def test_on_command_should_change_subarray_device_state_to_on(
+    mock_lower_devices_proxy, mock_tango_server_helper
+):
     device_proxy, tango_client = mock_lower_devices_proxy
     tango_server_obj = mock_tango_server_helper
     assert device_proxy.On() == [[ResultCode.OK], ["On command completed OK"]]
@@ -202,7 +234,10 @@ def test_off_command_should_change_subarray_device_state_to_off(
     device_proxy, tango_client = mock_lower_devices_proxy
     tango_server_obj = mock_tango_server_helper
     device_proxy.On()
-    assert device_proxy.Off() == [[ResultCode.OK], ["Off command completed OK"]]
+    assert device_proxy.Off() == [
+        [ResultCode.OK],
+        ["Off command completed OK"],
+    ]
     assert device_proxy.state() == DevState.OFF
     assert device_proxy.obsState == ObsState.EMPTY
 
@@ -221,7 +256,7 @@ def test_start_scan_should_command_subarray_to_start_scan_when_it_is_ready(
 
 
 def test_invalid_json_scan_should_command_subarray_to_raise_invalid_json_error(
-    mock_lower_devices_proxy
+    mock_lower_devices_proxy,
 ):
     device_proxy, tango_client = mock_lower_devices_proxy
     scan_cmd = Scan(device_data, subarray_state_model)
@@ -229,23 +264,30 @@ def test_invalid_json_scan_should_command_subarray_to_raise_invalid_json_error(
         scan_cmd.do(invalid_scan_input)
     assert const.ERR_INVALID_JSON in str(df.value)
 
+
 def test_start_scan_should_raise_devfailed_exception(
     mock_lower_devices_proxy, subarray_state_model, mock_tango_server_helper
 ):
     device_proxy, tango_client = mock_lower_devices_proxy
     tango_server_obj = mock_tango_server_helper
     device_data = DeviceData.get_instance()
-    tango_client.deviceproxy.command_inout.side_effect = raise_devfailed_exception
+    tango_client.deviceproxy.command_inout.side_effect = (
+        raise_devfailed_exception
+    )
     scan_cmd = Scan(device_data, subarray_state_model)
     with pytest.raises(tango.DevFailed) as df:
         scan_cmd.do(scan_input_str)
     assert "This is error message for devfailed" in str(df.value)
 
 
-def test_off_should_raise_devfailed_exception(mock_lower_devices_proxy, mock_tango_server_helper):
+def test_off_should_raise_devfailed_exception(
+    mock_lower_devices_proxy, mock_tango_server_helper
+):
     device_proxy, tango_client = mock_lower_devices_proxy
     tango_server_obj = mock_tango_server_helper
-    tango_client.deviceproxy.command_inout.side_effect = raise_devfailed_exception
+    tango_client.deviceproxy.command_inout.side_effect = (
+        raise_devfailed_exception
+    )
     with pytest.raises(tango.DevFailed) as df:
         device_proxy.Off()
     assert "This is error message for devfailed" in str(df.value)
@@ -272,14 +314,21 @@ def test_end_should_raise_devfailed_exception_when_mccs_subarray_throws_devfaile
     device_proxy, tango_client = mock_lower_devices_proxy
     tango_server_obj = mock_tango_server_helper
     device_data = DeviceData.get_instance()
-    tango_client.deviceproxy.command_inout.side_effect = raise_devfailed_exception
+    tango_client.deviceproxy.command_inout.side_effect = (
+        raise_devfailed_exception
+    )
     end_cmd = End(device_data, subarray_state_model)
     with pytest.raises(tango.DevFailed) as df:
         end_cmd.do()
     assert "This is error message for devfailed" in str(df.value)
 
 
-def test_abort_command(device_data, subarray_state_model, mock_lower_devices_proxy, mock_tango_server_helper):
+def test_abort_command(
+    device_data,
+    subarray_state_model,
+    mock_lower_devices_proxy,
+    mock_tango_server_helper,
+):
     _, _ = mock_lower_devices_proxy
     tango_server_obj = mock_tango_server_helper
     device_data.scan_timer_handler.start_scan_timer(10)
@@ -288,11 +337,16 @@ def test_abort_command(device_data, subarray_state_model, mock_lower_devices_pro
 
 
 def test_abort_raise_devfailed(
-    device_data, subarray_state_model, mock_lower_devices_proxy, mock_tango_server_helper
+    device_data,
+    subarray_state_model,
+    mock_lower_devices_proxy,
+    mock_tango_server_helper,
 ):
     device_proxy, tango_client_obj = mock_lower_devices_proxy
     tango_server_obj = mock_tango_server_helper
-    tango_client_obj.deviceproxy.command_inout.side_effect = raise_devfailed_exception
+    tango_client_obj.deviceproxy.command_inout.side_effect = (
+        raise_devfailed_exception
+    )
     device_data.scan_timer_handler.start_scan_timer(10)
     abort_cmd = Abort(device_data, subarray_state_model)
     with pytest.raises(tango.DevFailed) as df:
@@ -300,21 +354,29 @@ def test_abort_raise_devfailed(
     assert "This is error message for devfailed" in str(df.value)
 
 
-def test_restart_command(device_data, subarray_state_model, mock_lower_devices_proxy):
+def test_restart_command(
+    device_data, subarray_state_model, mock_lower_devices_proxy
+):
     restart_cmd = Restart(device_data, subarray_state_model)
     assert restart_cmd.do() == (ResultCode.STARTED, const.STR_RESTART_SUCCESS)
 
 
-def test_restart_raise_devfailed(device_data, subarray_state_model, mock_lower_devices_proxy):
+def test_restart_raise_devfailed(
+    device_data, subarray_state_model, mock_lower_devices_proxy
+):
     device_proxy, tango_client_obj = mock_lower_devices_proxy
-    tango_client_obj.deviceproxy.command_inout.side_effect = raise_devfailed_exception
+    tango_client_obj.deviceproxy.command_inout.side_effect = (
+        raise_devfailed_exception
+    )
     restart_cmd = Restart(device_data, subarray_state_model)
     with pytest.raises(tango.DevFailed) as df:
         restart_cmd.do()
     assert "This is error message for devfailed" in str(df.value)
 
 
-def test_assign_resource_should_raise_exception_when_called_when_device_state_off(mock_tango_server_helper, mock_tango_client):
+def test_assign_resource_should_raise_exception_when_called_when_device_state_off(
+    mock_tango_server_helper, mock_tango_client
+):
     with fake_tango_system(SubarrayNode) as tango_context:
         with pytest.raises(tango.DevFailed) as df:
             tango_context.device.AssignResources(assign_input_str)
@@ -323,7 +385,9 @@ def test_assign_resource_should_raise_exception_when_called_when_device_state_of
         assert "Error executing command AssignResources" in str(df.value)
 
 
-def test_configure_command(subarray_state_model, mock_lower_devices_proxy, mock_tango_server_helper):
+def test_configure_command(
+    subarray_state_model, mock_lower_devices_proxy, mock_tango_server_helper
+):
     device_proxy, tango_client = mock_lower_devices_proxy
     device_data = DeviceData.get_instance()
     tango_server_obj = mock_tango_server_helper
@@ -354,7 +418,9 @@ def test_end_scan_should_command_subarray_to_end_scan_when_it_is_scanning(
     tango_server_obj = mock_tango_server_helper
     device_data = DeviceData.get_instance()
     end_scan_cmd = EndScan(device_data, subarray_state_model)
-    subarray_state_model._straight_to_state(DevState.ON, None, ObsState.SCANNING)
+    subarray_state_model._straight_to_state(
+        DevState.ON, None, ObsState.SCANNING
+    )
     device_data.scan_timer_handler.start_scan_timer(10)
     assert end_scan_cmd.do() == (
         ResultCode.OK,
@@ -368,7 +434,9 @@ def test_end_scan_should_raise_devfailed_exception_when_mccs_subbarray_ln_throws
     device_proxy, tango_client = mock_lower_devices_proxy
     tango_server_obj = mock_tango_server_helper
     device_data = DeviceData.get_instance()
-    tango_client.deviceproxy.command_inout.side_effect = raise_devfailed_exception
+    tango_client.deviceproxy.command_inout.side_effect = (
+        raise_devfailed_exception
+    )
     end_scan_cmd = EndScan(device_data, subarray_state_model)
     device_data.scan_timer_handler.start_scan_timer(10)
     with pytest.raises(tango.DevFailed) as df:
@@ -376,18 +444,27 @@ def test_end_scan_should_raise_devfailed_exception_when_mccs_subbarray_ln_throws
     assert "This is error message for devfailed" in str(df.value)
 
 
-def test_obsreset_command(mock_lower_devices_proxy, subarray_state_model, mock_tango_server_helper):
+def test_obsreset_command(
+    mock_lower_devices_proxy, subarray_state_model, mock_tango_server_helper
+):
     tango_server_obj = mock_tango_server_helper
     device_data = DeviceData.get_instance()
     obsreset_cmd = ObsReset(device_data, subarray_state_model)
-    assert obsreset_cmd.do() == (ResultCode.STARTED, const.STR_OBSRESET_SUCCESS)
+    assert obsreset_cmd.do() == (
+        ResultCode.STARTED,
+        const.STR_OBSRESET_SUCCESS,
+    )
 
 
-def test_obsreset_raise_devfailed(mock_lower_devices_proxy, subarray_state_model, mock_tango_server_helper):
+def test_obsreset_raise_devfailed(
+    mock_lower_devices_proxy, subarray_state_model, mock_tango_server_helper
+):
     device_proxy, tango_client = mock_lower_devices_proxy
     tango_server_obj = mock_tango_server_helper
     device_data = DeviceData.get_instance()
-    tango_client.deviceproxy.command_inout.side_effect = raise_devfailed_exception
+    tango_client.deviceproxy.command_inout.side_effect = (
+        raise_devfailed_exception
+    )
     obsreset_cmd = ObsReset(device_data, subarray_state_model)
     with pytest.raises(tango.DevFailed) as df:
         obsreset_cmd.do()
@@ -465,8 +542,9 @@ def error_in_health_state():
             yield error_health_state, device
 
 
-
-def test_subarray_health_state_with_error_event(error_in_health_state, mock_lower_devices_proxy, mock_tango_server_helper):
+def test_subarray_health_state_with_error_event(
+    error_in_health_state, mock_lower_devices_proxy, mock_tango_server_helper
+):
     device_proxy, tango_client = mock_lower_devices_proxy
     tango_server_obj = mock_tango_server_helper
 
@@ -487,15 +565,17 @@ def test_subarray_assigned_resources_attr_changes_as_per_mccs_subarray_ln_assign
         TangoClient, "_get_deviceproxy", return_value=Mock()
     ) as mock_obj:
         with mock.patch.object(
-            TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_mccs
+            TangoClient,
+            "subscribe_attribute",
+            side_effect=dummy_subscriber_mccs,
         ):
             device_proxy.On()
             device_proxy.AssignResources(assign_input_str)
     test1 = {
-    "interface": "https://schema.skao.int/ska-low-mccs-assignresources/1.0",
-    "subarray_beam_ids": [1],
-    "station_ids": [[1,2]],
-    "channel_blocks": [3]
+        "interface": "https://schema.skao.int/ska-low-mccs-assignresources/1.0",
+        "subarray_beam_ids": [1],
+        "station_ids": [[1, 2]],
+        "channel_blocks": [3],
     }
     result = json.dumps(test1)
     assert device_data.assignd_resources_by_mccs == result
@@ -506,10 +586,10 @@ def dummy_subscriber_mccs(attribute, callback_method):
     fake_event.err = False
     fake_event.attr_name = f"ska_mid/tm_leaf_node/mccs_subarray01/{attribute}"
     test1 = {
-    "interface": "https://schema.skao.int/ska-low-mccs-assignresources/1.0",
-    "subarray_beam_ids": [1],
-    "station_ids": [[1,2]],
-    "channel_blocks": [3]
+        "interface": "https://schema.skao.int/ska-low-mccs-assignresources/1.0",
+        "subarray_beam_ids": [1],
+        "station_ids": [[1, 2]],
+        "channel_blocks": [3],
     }
     result = json.dumps(test1)
     fake_event.attr_value.value = result
@@ -519,7 +599,9 @@ def dummy_subscriber_mccs(attribute, callback_method):
 
 
 @pytest.mark.xfail(reason="Need to update the implementation")
-def test_subarray_assigned_resources_attr_callback_with_error_event(mock_lower_devices_proxy, mock_tango_server_helper):
+def test_subarray_assigned_resources_attr_callback_with_error_event(
+    mock_lower_devices_proxy, mock_tango_server_helper
+):
     device_proxy, tango_client = mock_lower_devices_proxy
     tango_server_obj = mock_tango_server_helper
     device_data = DeviceData.get_instance()
@@ -533,7 +615,10 @@ def test_subarray_assigned_resources_attr_callback_with_error_event(mock_lower_d
         ):
             device_proxy.On()
             device_proxy.AssignResources(assign_input_str)
-    assert const.ERR_SUBSR_MCCSSA_ASSIGNED_RES_ATTR in device_proxy.activityMessage
+    assert (
+        const.ERR_SUBSR_MCCSSA_ASSIGNED_RES_ATTR
+        in device_proxy.activityMessage
+    )
 
 
 def test_assign_resources_should_assign_resources_when_device_state_on(
@@ -550,16 +635,16 @@ def test_assign_resources_should_assign_resources_when_device_state_on(
 
 
 def test_release_all_resources_should_release_resources_when_obstate_idle(
-    mock_lower_devices_proxy,
-    subarray_state_model,
-    mock_tango_server_helper
+    mock_lower_devices_proxy, subarray_state_model, mock_tango_server_helper
 ):
     device_proxy, tango_client = mock_lower_devices_proxy
     tango_server_obj = mock_tango_server_helper
     device_proxy.On()
     device_proxy.AssignResources(assign_input_str)
     device_data = DeviceData.get_instance()
-    release_resources_cmd = ReleaseAllResources(device_data, subarray_state_model)
+    release_resources_cmd = ReleaseAllResources(
+        device_data, subarray_state_model
+    )
     assert release_resources_cmd.do() == (
         ResultCode.STARTED,
         "RELEASEALLRESOURCES command invoked successfully.",
@@ -583,17 +668,22 @@ def create_dummy_event_healthstate_with_error(attribute, callback_method):
     callback_method(fake_event)
     return 10
 
-def create_dummy_event_assign_resource_attr_with_error(attribute, callback_method):
+
+def create_dummy_event_assign_resource_attr_with_error(
+    attribute, callback_method
+):
     fake_event = Mock()
     fake_event.err = True
     fake_event.attr_name = f"ska_mid/tm_leaf_node/mccs_subarray01/{attribute}"
-    fake_event.attr_value.value = {"dummy_interface": "https://schema.skao.int/ska-low-tmc-assignresources/1.0",
-    "subarray_beam_ids": [1],
-    "station_ids": [[1,2]],
-    "channel_blocks": [3]
+    fake_event.attr_value.value = {
+        "dummy_interface": "https://schema.skao.int/ska-low-tmc-assignresources/1.0",
+        "subarray_beam_ids": [1],
+        "station_ids": [[1, 2]],
+        "channel_blocks": [3],
     }
     callback_method(fake_event)
     return 10
+
 
 def any_method(with_name=None):
     class AnyMethod:
@@ -615,7 +705,9 @@ def create_dummy_event_state(proxy_mock, device_fqdn, attribute, attr_value):
     return fake_event
 
 
-def create_dummy_event_state_with_error(proxy_mock, device_fqdn, attribute, attr_value):
+def create_dummy_event_state_with_error(
+    proxy_mock, device_fqdn, attribute, attr_value
+):
     fake_event = MagicMock()
     fake_event.err = True
     fake_event.errors = "Invalid Value"
@@ -625,7 +717,9 @@ def create_dummy_event_state_with_error(proxy_mock, device_fqdn, attribute, attr
     return fake_event
 
 
-def create_dummy_event_custom_exception(proxy_mock, device_fqdn, attribute, attr_value):
+def create_dummy_event_custom_exception(
+    proxy_mock, device_fqdn, attribute, attr_value
+):
     fake_event = MagicMock()
     fake_event.err = True
     fake_event.errors = "Custom Exception"
@@ -716,10 +810,12 @@ def fake_tango_system(
 ):
 
     with mock.patch(device_proxy_import_path) as patched_constructor:
-        patched_constructor.side_effect = lambda device_fqdn: proxies_to_mock.get(
-            device_fqdn, Mock()
+        patched_constructor.side_effect = (
+            lambda device_fqdn: proxies_to_mock.get(device_fqdn, Mock())
         )
-        patched_module = importlib.reload(sys.modules[device_under_test.__module__])
+        patched_module = importlib.reload(
+            sys.modules[device_under_test.__module__]
+        )
 
     device_under_test = getattr(patched_module, device_under_test.__name__)
 

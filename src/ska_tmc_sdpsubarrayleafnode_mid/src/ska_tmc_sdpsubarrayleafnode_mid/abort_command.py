@@ -3,14 +3,15 @@ Abort class for SDPSubarrayLeafNode.
 """
 # Tango imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
 from ska.base.control_model import ObsState
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
-from . import const
 from tmc.common.tango_server_helper import TangoServerHelper
+
+from . import const
 
 
 class Abort(BaseCommand):
@@ -32,7 +33,9 @@ class Abort(BaseCommand):
 
         """
         self.this_server = TangoServerHelper.get_instance()
-        sdp_subarray_fqdn = self.this_server.read_property("SdpSubarrayFQDN")[0]
+        sdp_subarray_fqdn = self.this_server.read_property("SdpSubarrayFQDN")[
+            0
+        ]
         self.sdp_sa_ln_client_obj = TangoClient(sdp_subarray_fqdn)
 
         if self.state_model.op_state in [
@@ -47,12 +50,19 @@ class Abort(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
 
-        if self.sdp_sa_ln_client_obj.get_attribute("obsState").value not in [ObsState.READY, ObsState.CONFIGURING,
-                                                                 ObsState.SCANNING,
-                                                                 ObsState.IDLE, ObsState.RESETTING]:
-            tango.Except.throw_exception(const.ERR_ABORT_INVOKING_CMD, const.ERR_ABORT_INVOKING_CMD,
-                                         "SdpSubarrayLeafNode.AbortCommand",
-                                         tango.ErrSeverity.ERR)
+        if self.sdp_sa_ln_client_obj.get_attribute("obsState").value not in [
+            ObsState.READY,
+            ObsState.CONFIGURING,
+            ObsState.SCANNING,
+            ObsState.IDLE,
+            ObsState.RESETTING,
+        ]:
+            tango.Except.throw_exception(
+                const.ERR_ABORT_INVOKING_CMD,
+                const.ERR_ABORT_INVOKING_CMD,
+                "SdpSubarrayLeafNode.AbortCommand",
+                tango.ErrSeverity.ERR,
+            )
 
         return True
 
@@ -101,8 +111,10 @@ class Abort(BaseCommand):
         try:
             self.sdp_sa_ln_client_obj.send_command_async(
                 const.CMD_ABORT, callback_method=self.abort_cmd_ended_cb
-                )
-            self.this_server.write_attr("activityMessage", const.STR_ABORT_SUCCESS, False)
+            )
+            self.this_server.write_attr(
+                "activityMessage", const.STR_ABORT_SUCCESS, False
+            )
             self.logger.info(const.STR_ABORT_SUCCESS)
 
         except DevFailed as dev_failed:

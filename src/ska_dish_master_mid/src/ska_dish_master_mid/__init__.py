@@ -11,7 +11,7 @@
 
 SKA Dish Master TANGO device server
 """
-from . import release, dish_master_behaviour, dish_master, utils
+from . import dish_master, dish_master_behaviour, release, utils
 
 __all__ = ["release", "dish_master", "dish_master_behaviour", "utils"]
 

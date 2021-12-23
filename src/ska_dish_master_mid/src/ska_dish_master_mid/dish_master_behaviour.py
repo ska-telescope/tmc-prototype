@@ -5,14 +5,13 @@ override class with command handlers for dsh-lmc.
 # Standard python imports
 import enum
 import logging
-
 from collections import namedtuple
-
-# Tango import
-from tango import DevState, Except, ErrSeverity
 
 # Additional import
 from ska_ser_logging import configure_logging
+
+# Tango import
+from tango import DevState, ErrSeverity, Except
 
 configure_logging()
 MODULE_LOGGER = logging.getLogger(__name__)
@@ -59,18 +58,30 @@ class OverrideDish(object):
         if dish_mode in _allowed_modes:
             set_enum(dish_mode_quantity, "CONFIG", model.time_func())
             model.logger.info(
-                "Configuring DISH to operate in frequency band {}.".format(band_number)
+                "Configuring DISH to operate in frequency band {}.".format(
+                    band_number
+                )
             )
 
             # TODO (p.dube 19-05-2021) Implement sleep in a background thread to allow the
             # dishMode to remain in 'CONFIG' to simulate the real DSH LMC.
 
-            set_enum(ds_indexer_position, "B{}".format(band_number), model.time_func())
-            set_enum(configured_band, "B{}".format(band_number), model.time_func())
-            model.logger.info(
-                "Done configuring DISH to operate in frequency band {}.".format(band_number)
+            set_enum(
+                ds_indexer_position,
+                "B{}".format(band_number),
+                model.time_func(),
             )
-            model.logger.info("DISH reverting back to '{}' mode.".format(dish_mode))
+            set_enum(
+                configured_band, "B{}".format(band_number), model.time_func()
+            )
+            model.logger.info(
+                "Done configuring DISH to operate in frequency band {}.".format(
+                    band_number
+                )
+            )
+            model.logger.info(
+                "DISH reverting back to '{}' mode.".format(dish_mode)
+            )
             set_enum(dish_mode_quantity, dish_mode, model.time_func())
         else:
             Except.throw_exception(
@@ -206,7 +217,9 @@ class OverrideDish(object):
         _allowed_modes = ("STOW", "MAINTENANCE")
         dish_mode = get_enum_str(model.sim_quantities["dishMode"])
         if dish_mode in _allowed_modes:
-            set_enum(model.sim_quantities["powerState"], "LOW", model.time_func())
+            set_enum(
+                model.sim_quantities["powerState"], "LOW", model.time_func()
+            )
             model.logger.info("Dish transitioning to 'LOW' power state.")
         else:
             self._throw_exception("LowPower", _allowed_modes)
@@ -216,11 +229,15 @@ class OverrideDish(object):
         pointing_state_quantity = model.sim_quantities["pointingState"]
         pointing_state = get_enum_str(pointing_state_quantity)
         if pointing_state != action:
-            model.logger.info("Current pointingState is {}.".format(pointing_state))
+            model.logger.info(
+                "Current pointingState is {}.".format(pointing_state)
+            )
             set_enum(pointing_state_quantity, action, model.time_func())
             model.logger.info("pointingState reset to 'NONE'.")
         else:
-            model.logger.warning("pointingState is already '{}'.".format(action))
+            model.logger.warning(
+                "pointingState is already '{}'.".format(action)
+            )
 
     def action_setmaintenancemode(
         self, model, tango_dev=None, data_input=None
@@ -258,7 +275,9 @@ class OverrideDish(object):
                 desiredPointing, model.time_func()
             )
             set_enum(dish_mode_quantity, maintenance, model.time_func())
-            model.logger.info("Dish transitioned to the '%s' mode.", maintenance)
+            model.logger.info(
+                "Dish transitioned to the '%s' mode.", maintenance
+            )
             self._reset_pointing_state(model)
         else:
             self._throw_exception("SetMaintenanceMode", _allowed_modes)
@@ -298,7 +317,9 @@ class OverrideDish(object):
                     ErrSeverity.WARN,
                 )
             set_enum(dish_mode_quantity, operate, model.time_func())
-            model.logger.info("Dish transitioned to the %s Dish Element Mode.", operate)
+            model.logger.info(
+                "Dish transitioned to the %s Dish Element Mode.", operate
+            )
             pointing_state_quantity = model.sim_quantities["pointingState"]
             set_enum(pointing_state_quantity, "READY", model.time_func())
             model.logger.info("Dish pointing state set to 'READY'.")
@@ -419,7 +440,9 @@ class OverrideDish(object):
         if dish_mode in _allowed_modes:
             # movement to stow position is handled in find_next_position
             set_enum(dish_mode_quantity, stow, model.time_func())
-            model.logger.info("Dish transitioned to the '%s' Dish Element Mode.", stow)
+            model.logger.info(
+                "Dish transitioned to the '%s' Dish Element Mode.", stow
+            )
             self._reset_pointing_state(model)
         else:
             self._throw_exception("SetStowMode", _allowed_modes)
@@ -485,7 +508,9 @@ class OverrideDish(object):
             set_enum(pointing_state_quantity, action, model.time_func())
             model.logger.info("Dish pointingState set to {}.".format(action))
         else:
-            model.logger.warning("pointingState is already '{}'.".format(action))
+            model.logger.warning(
+                "pointingState is already '{}'.".format(action)
+            )
 
     def action_track(
         self, model, tango_dev=None, data_input=None
@@ -540,7 +565,9 @@ class OverrideDish(object):
         :param data_input: None
         """
         self.desired_pointings = []
-        model.logger.info("'ResetTrackTableBuffer' command executed successfully.")
+        model.logger.info(
+            "'ResetTrackTableBuffer' command executed successfully."
+        )
 
     def action_slew(
         self, model, tango_dev=None, data_input=None
@@ -577,7 +604,9 @@ class OverrideDish(object):
         dish_mode = get_enum_str(model.sim_quantities["dishMode"])
         # move to stow position regardless of timestamp
         if dish_mode == "STOW":
-            return AzEl(azim=self.actual_position.azim, elev=self.STOW_ELEV_POSITION)
+            return AzEl(
+                azim=self.actual_position.azim, elev=self.STOW_ELEV_POSITION
+            )
         for pointing in desired_pointings:
             timestamp = pointing[self.TS_IDX] / 1000.0  # convert ms to sec
             if timestamp <= sim_time:
@@ -586,7 +615,8 @@ class OverrideDish(object):
                 break  # all other samples are in the future
         if best_pointing is not None:
             return AzEl(
-                azim=best_pointing[self.AZIM_IDX], elev=best_pointing[self.ELEV_IDX]
+                azim=best_pointing[self.AZIM_IDX],
+                elev=best_pointing[self.ELEV_IDX],
             )
         else:
             # no useful samples, so use last requested position
@@ -596,18 +626,22 @@ class OverrideDish(object):
     def is_movement_allowed(model):
         pointing_state = get_enum_str(model.sim_quantities["pointingState"])
         dish_mode = get_enum_str(model.sim_quantities["dishMode"])
-        return pointing_state in ["SLEW", "TRACK", "SCAN"] or dish_mode == "STOW"
+        return (
+            pointing_state in ["SLEW", "TRACK", "SCAN"] or dish_mode == "STOW"
+        )
 
     def is_on_target(self):
         actual = self.actual_position
         target = self.requested_position
-        return self._almost_equal(actual.azim, target.azim) and self._almost_equal(
-            actual.elev, target.elev
-        )
+        return self._almost_equal(
+            actual.azim, target.azim
+        ) and self._almost_equal(actual.elev, target.elev)
 
     def update_movement_attributes(self, model, sim_time):
         self.set_lock_attribute(model, self.is_on_target())
-        self.set_achieved_pointing_attribute(model, sim_time, self.actual_position)
+        self.set_achieved_pointing_attribute(
+            model, sim_time, self.actual_position
+        )
         self.set_track_pointing_state_on_target(model)
 
     @staticmethod
@@ -615,7 +649,9 @@ class OverrideDish(object):
         target_lock = model.sim_quantities["targetLock"]
         if target_lock.last_val != target_reached:
             target_lock.last_val = target_reached
-            model.logger.info("Attribute 'targetLock' set to %s.", target_reached)
+            model.logger.info(
+                "Attribute 'targetLock' set to %s.", target_reached
+            )
 
     def set_track_pointing_state_on_target(self, model):
         pointing_state = get_enum_str(model.sim_quantities["pointingState"])
@@ -626,10 +662,14 @@ class OverrideDish(object):
 
     def set_achieved_pointing_attribute(self, model, sim_time, position):
         achievedPointing = [0, 0, 0]
-        achievedPointing[self.TS_IDX] = sim_time * 1000.0  # millisecond timestamp
+        achievedPointing[self.TS_IDX] = (
+            sim_time * 1000.0
+        )  # millisecond timestamp
         achievedPointing[self.AZIM_IDX] = position.azim
         achievedPointing[self.ELEV_IDX] = position.elev
-        model.sim_quantities["achievedPointing"].set_val(achievedPointing, sim_time)
+        model.sim_quantities["achievedPointing"].set_val(
+            achievedPointing, sim_time
+        )
 
     def get_rate_limited_position(self, current_pos, next_pos, dt):
         # calc required deltas in az and el
@@ -661,7 +701,10 @@ class OverrideDish(object):
             Except.throw_exception(
                 "Skipping dish movement.",
                 "Desired azimuth angle '%s' is out of pointing limits %s."
-                % (next_pos.azim, [self.MIN_DESIRED_AZIM, self.MAX_DESIRED_AZIM]),
+                % (
+                    next_pos.azim,
+                    [self.MIN_DESIRED_AZIM, self.MAX_DESIRED_AZIM],
+                ),
                 "ensure_within_mechanical_limits()",
                 ErrSeverity.WARN,
             )
@@ -672,13 +715,18 @@ class OverrideDish(object):
             Except.throw_exception(
                 "Skipping dish movement.",
                 "Desired elevation angle '%s' is out of pointing limits %s."
-                % (next_pos.elev, [self.MIN_DESIRED_ELEV, self.MAX_DESIRED_ELEV]),
+                % (
+                    next_pos.elev,
+                    [self.MIN_DESIRED_ELEV, self.MAX_DESIRED_ELEV],
+                ),
                 "ensure_within_mechanical_limits()",
                 ErrSeverity.WARN,
             )
 
     def move_towards_target(self, model, sim_time, dt):
-        next_requested_pos = self.find_next_position(self.desired_pointings, model, sim_time)
+        next_requested_pos = self.find_next_position(
+            self.desired_pointings, model, sim_time
+        )
         self.requested_position = next_requested_pos
 
         self.ensure_within_mechanical_limits(next_requested_pos)
@@ -706,8 +754,13 @@ class OverrideDish(object):
         ].last_update_time
 
         if programTrackTable_last_update > desiredPointing_last_update:
-            if programTrackTable_last_update > self.last_coordinate_update_timestamp:
-                self.last_coordinate_update_timestamp = programTrackTable_last_update
+            if (
+                programTrackTable_last_update
+                > self.last_coordinate_update_timestamp
+            ):
+                self.last_coordinate_update_timestamp = (
+                    programTrackTable_last_update
+                )
                 all_values = model.sim_quantities["programTrackTable"].last_val
                 assert len(all_values) % 3 == 0, (
                     "Length of programTrackTable should ",
@@ -716,8 +769,13 @@ class OverrideDish(object):
                 # Group in 3s
                 return list(map(list, zip(*(iter(all_values),) * 3)))
         else:
-            if desiredPointing_last_update > self.last_coordinate_update_timestamp:
-                self.last_coordinate_update_timestamp = desiredPointing_last_update
+            if (
+                desiredPointing_last_update
+                > self.last_coordinate_update_timestamp
+            ):
+                self.last_coordinate_update_timestamp = (
+                    desiredPointing_last_update
+                )
                 return [model.sim_quantities["desiredPointing"].last_val]
         return []
 
@@ -735,7 +793,9 @@ class OverrideDish(object):
         self.desired_pointings.extend(latest_pointings)
         if len(self.desired_pointings) > self.MAX_SAMPLE_HISTORY:
             # drop older samples
-            self.desired_pointings = self.desired_pointings[-self.MAX_SAMPLE_HISTORY :]
+            self.desired_pointings = self.desired_pointings[
+                -self.MAX_SAMPLE_HISTORY :
+            ]
 
     def pre_update(self, model, sim_time, dt):
         if self.is_movement_allowed(model):
@@ -743,7 +803,9 @@ class OverrideDish(object):
             self.move_towards_target(model, sim_time, dt)
             self.update_movement_attributes(model, sim_time)
         else:
-            model.logger.debug("Skipping quantity updates - movement not allowed")
+            model.logger.debug(
+                "Skipping quantity updates - movement not allowed"
+            )
 
     def _almost_equal(self, x, y, abs_threshold=5e-3):
         """Takes two values return true if they are almost equal"""
@@ -758,7 +820,9 @@ def get_enum_str(quantity):
     :return: str
         Current string value of a DevEnum attribute
     """
-    EnumClass = enum.IntEnum("EnumLabels", quantity.meta["enum_labels"], start=0)
+    EnumClass = enum.IntEnum(
+        "EnumLabels", quantity.meta["enum_labels"], start=0
+    )
     return EnumClass(quantity.last_val).name
 
 

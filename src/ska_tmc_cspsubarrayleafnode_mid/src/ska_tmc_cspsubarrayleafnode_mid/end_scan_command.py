@@ -1,11 +1,10 @@
 # PyTango imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
 from ska.base.control_model import ObsState
-
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -50,9 +49,12 @@ class EndScanCommand(BaseCommand):
         csp_subarray_fqdn = this_server.read_property("CspSubarrayFQDN")[0]
         csp_sa_client = TangoClient(csp_subarray_fqdn)
         if csp_sa_client.get_attribute("obsState").value != ObsState.SCANNING:
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_IN_SCAN, "Failed to invoke EndScan command on cspsubarrayleafnode.",
-                                        "CspSubarrayLeafNode.EndScanCommand",
-                                        tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.ERR_DEVICE_NOT_IN_SCAN,
+                "Failed to invoke EndScan command on cspsubarrayleafnode.",
+                "CspSubarrayLeafNode.EndScanCommand",
+                tango.ErrSeverity.ERR,
+            )
         return True
 
     def endscan_cmd_ended_cb(self, event):
@@ -79,7 +81,9 @@ class EndScanCommand(BaseCommand):
         this_server = TangoServerHelper.get_instance()
         # Update logs and activity message attribute with received event
         if event.err:
-            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            log_msg = (
+                f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            )
             self.logger.error(log_msg)
             this_server.write_attr("activityMessage", log_msg, False)
         else:
@@ -107,7 +111,9 @@ class EndScanCommand(BaseCommand):
             csp_sub_client_obj.send_command_async(
                 const.CMD_ENDSCAN, None, self.endscan_cmd_ended_cb
             )
-            this_server.write_attr("activityMessage", const.STR_ENDSCAN_SUCCESS, False)
+            this_server.write_attr(
+                "activityMessage", const.STR_ENDSCAN_SUCCESS, False
+            )
             self.logger.info(const.STR_ENDSCAN_SUCCESS)
 
         except DevFailed as dev_failed:

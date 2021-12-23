@@ -13,10 +13,14 @@ CMD_RESTART = "Restart"
 # Event messages
 
 # Error messages
-ERR_IN_CREATE_PROXY_MCCSSA = "Error in creating proxy of the MCCS Subarray device."
+ERR_IN_CREATE_PROXY_MCCSSA = (
+    "Error in creating proxy of the MCCS Subarray device."
+)
 ERR_INVOKING_CMD = "Error in invoking command: "
 ERR_JSON_KEY_NOT_FOUND = "JSON key not found."
-ERR_CONFIGURE_INVOKING_CMD = "Error while invoking Configure command on MCCS Subarray."
+ERR_CONFIGURE_INVOKING_CMD = (
+    "Error while invoking Configure command on MCCS Subarray."
+)
 ERR_DEVFAILED_MSG = "This is error message for devfailed"
 ERR_CALLBACK_CMD_FAILED = "MccsSubarrayLeafNode_Commandfailed in callback"
 ERR_INVALID_JSON_CONFIG = (
@@ -32,7 +36,9 @@ ERR_ENDSCAN_COMMAND = "Error while invoking EndScan command on MCCS Subarray."
 ERR_ABORT_COMMAND = "Error while invoking Abort command on MCCS Subarray."
 ERR_RESTART_COMMAND = "Error while invoking Restart command on MCCS Subarray."
 STR_END_EXEC = "End command execution"
-ERR_OBSRESET_INVOKING_CMD = "Error while invoking ObsReset command on MCCS Subarray."
+ERR_OBSRESET_INVOKING_CMD = (
+    "Error while invoking ObsReset command on MCCS Subarray."
+)
 
 
 # strings
@@ -56,7 +62,9 @@ STR_ABORT_SUCCESS = "Abort command is executed successfully."
 STR_RESTART_SUCCESS = "Restart command is executed successfully."
 
 STR_SETTING_CB_MODEL = "Setting CallBack Model as :-> "
-STR_OBSRESET_SUCCESS = "ObsReset command is invoked successfully on MCCS Subarray."
+STR_OBSRESET_SUCCESS = (
+    "ObsReset command is invoked successfully on MCCS Subarray."
+)
 STR_END_EXEC = "End command execution"
 # INTEGERS
 INT_SKA_LEVEL = 3

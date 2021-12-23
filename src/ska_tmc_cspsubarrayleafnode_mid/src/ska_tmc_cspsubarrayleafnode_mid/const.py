@@ -20,9 +20,13 @@ EVT_SUBSR_SA_RECEPTOR_ID_LIST = "receptorIDList"
 
 # Error messages
 ERR_IN_CREATE_PROXY = "Error in creating proxy of the Leaf Node device: "
-ERR_INVALID_JSON = "Invalid JSON format while invoking command on CSP Subarray."
+ERR_INVALID_JSON = (
+    "Invalid JSON format while invoking command on CSP Subarray."
+)
 ERR_JSON_KEY_NOT_FOUND = "JSON key not found."
-ERR_ASSGN_RESOURCES = "Error occurred while assigning resources to the CSP Subarray \n"
+ERR_ASSGN_RESOURCES = (
+    "Error occurred while assigning resources to the CSP Subarray \n"
+)
 ERR_INVOKING_CMD = "Error in invoking command: "
 ERR_EXCEPT_CMD_CB = "Exception in CommandCallback: \n"
 ERR_EXCEPT_CONFIGURE_CMD_CB = "Exception in Configure CommandCallback: \n"
@@ -42,28 +46,44 @@ ERR_MSG = "Error message is: "
 ERR_RELEASE_ALL_RESOURCES = (
     "Error while invoking ReleaseAllResources command on CSP Subarray."
 )
-ERR_CONFIGURE_INVOKING_CMD = "Error while invoking Configure command on CSP Subarray."
-ERR_ENDSCAN_INVOKING_CMD = "Error while invoking EndScan command on CSP Subarray."
+ERR_CONFIGURE_INVOKING_CMD = (
+    "Error while invoking Configure command on CSP Subarray."
+)
+ERR_ENDSCAN_INVOKING_CMD = (
+    "Error while invoking EndScan command on CSP Subarray."
+)
 ERR_INVALID_JSON_CONFIG = (
     "Invalid JSON format while invoking Configure command on CSP Subarray."
 )
 ERR_INVALID_JSON_ASSIGN_RES = (
     "Invalid JSON format while invoking AddReceptors command on CSP Subarray."
 )
-ERR_STARTSCAN_RESOURCES = "Error while invoking StartScan command on CSP Subarray."
+ERR_STARTSCAN_RESOURCES = (
+    "Error while invoking StartScan command on CSP Subarray."
+)
 ERR_DEVICE_NOT_READY = "CSP subarray is not in READY obsState."
 ERR_DEVICE_NOT_READY_OR_IDLE = "CSP subarray is not in READY or IDLE obsState."
 ERR_DEVICE_NOT_FAULT_ABORT = "CSP subarray is not in FAULT, ABORTED obsState."
 ERR_DEVICE_NOT_IN_SCAN = "CSP Subarray is not in SCANNING obsState."
 ERR_DEVICE_NOT_EMPTY_OR_IDLE = "CSP Subarray is not in EMPTY/IDLE obsState."
-ERR_GOTOIDLE_INVOKING_CMD = "Error while invoking GoToIdle command on CSP Subarray."
+ERR_GOTOIDLE_INVOKING_CMD = (
+    "Error while invoking GoToIdle command on CSP Subarray."
+)
 ERR_ABORT_INVOKING_CMD = "Error while invoking Abort command on CSP Subarray."
-ERR_RESET_INVOKING_CMD = "Error while invoking Reset command on CSP Subarray Leaf Node."
-ERR_RESTART_INVOKING_CMD = "Error while invoking Restart command on CSP Subarray."
-ERR_OBSRESET_INVOKING_CMD = "Error while invoking ObsReset command on CSP Subarray."
+ERR_RESET_INVOKING_CMD = (
+    "Error while invoking Reset command on CSP Subarray Leaf Node."
+)
+ERR_RESTART_INVOKING_CMD = (
+    "Error while invoking Restart command on CSP Subarray."
+)
+ERR_OBSRESET_INVOKING_CMD = (
+    "Error while invoking ObsReset command on CSP Subarray."
+)
 ERR_TELESCOPE_ON_INVOKING_CMD = "Error while invoking Telescope On command."
 ERR_TELESCOPE_OFF_INVOKING_CMD = "Error while invoking Telescope Off command."
-ERR_IN_CREATE_PROXY_CSPSA = "Error in creating proxy of the CSP Subarray device."
+ERR_IN_CREATE_PROXY_CSPSA = (
+    "Error in creating proxy of the CSP Subarray device."
+)
 ERR_DEVFAILED_MSG = "This is error message for devfailed"
 ERR_CALLBACK_CMD_FAILED = "CSP Subarray Leaf Node_Commandfailed in callback"
 ERR_UNABLE_RESTART_CMD = "Unable to invoke Restart command"
@@ -77,7 +97,9 @@ ERR_DEVICE_NOT_IDLE = "CSP Subarray is not in IDLE obsState."
 STR_RECEPTOR_IDS = "receptor_ids"
 STR_DISH = "dish"
 STR_ERR_MSG = "Error message is: "
-STR_ASSIGN_RESOURCES_SUCCESS = "Resources are assigned successfully on CSP Subarray."
+STR_ASSIGN_RESOURCES_SUCCESS = (
+    "Resources are assigned successfully on CSP Subarray."
+)
 STR_RELEASE_ALL_RESOURCES_SUCCESS = (
     "All the resources are removed from CSP Subarray successfully."
 )
@@ -85,9 +107,7 @@ STR_CONFIGURE_SUCCESS = (
     "Configure command invoked successfully on CSP Subarray from "
     "CSP Subarray Leaf Node."
 )
-STR_ENDSCAN_SUCCESS = (
-    "EndScan command invoked successfully on CspSubarray from CSP Subarray Leaf Node."
-)
+STR_ENDSCAN_SUCCESS = "EndScan command invoked successfully on CspSubarray from CSP Subarray Leaf Node."
 STR_CSPSALN_INIT_SUCCESS = "CSP Subarray Leaf Node initialized successfully."
 STR_CMD_FAILED = "CSP Subarray Leaf Node_CommandFailed"
 STR_ASSIGN_RES_EXEC = "AssignResources command execution"
@@ -114,17 +134,29 @@ STR_STARTSCAN_SUCCESS = "Scan command is executed successfully."
 PROP_DEF_VAL_CSP_MID_SA1 = "mid_csp/elt/subarray_01"
 STR_START_SCAN_EXEC = "StartScan command execution"
 STR_CSPSA_FQDN = "CspSubarrayFQDN :-> "
-STR_GOTOIDLE_SUCCESS = "GoToIdle command is invoked successfully on CSP Subarray."
+STR_GOTOIDLE_SUCCESS = (
+    "GoToIdle command is invoked successfully on CSP Subarray."
+)
 STR_ABORT_SUCCESS = "Abort command is invoked successfully on CSP Subarray."
-STR_RESET_SUCCESS = "Reset command is invoked successfully on CSP Subarray Leaf Node."
-STR_RESTART_SUCCESS = "Restart command is invoked successfully on CSP Subarray."
-STR_OBSRESET_SUCCESS = "ObsReset command is invoked successfully on CSP Subarray."
+STR_RESET_SUCCESS = (
+    "Reset command is invoked successfully on CSP Subarray Leaf Node."
+)
+STR_RESTART_SUCCESS = (
+    "Restart command is invoked successfully on CSP Subarray."
+)
+STR_OBSRESET_SUCCESS = (
+    "ObsReset command is invoked successfully on CSP Subarray."
+)
 STR_GOTOIDLE_EXEC = "GoToIdle command execution"
 STR_ABORT_EXEC = "Abort command execution"
 STR_RESET_EXEC = "Reset command execution"
 STR_OBS_STATE = "CSP Subarray Leaf Node obsState is: "
-STR_ON_CMD_ISSUED = "ON command invoked successfully from CSP Subarray Leaf Node."
-STR_OFF_CMD_ISSUED = "OFF command invoked successfully from CSP Subarray Leaf Node."
+STR_ON_CMD_ISSUED = (
+    "ON command invoked successfully from CSP Subarray Leaf Node."
+)
+STR_OFF_CMD_ISSUED = (
+    "OFF command invoked successfully from CSP Subarray Leaf Node."
+)
 
 # INTEGERS
 INT_SKA_LEVEL = 3

@@ -13,11 +13,11 @@ Slew class for DishLeafNode.
 """
 
 import tango
-from tango import DevFailed, DevState
-
 from ska.base.commands import BaseCommand
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
+
 from .command_callback import CommandCallBack
 
 
@@ -72,12 +72,12 @@ class Slew(BaseCommand):
             dish_client.send_command_async(
                 command_name, command_data=argin, callback_method=cmd_ended_cb
             )
-            self.logger.info("'%s' command executed successfully.", command_name)
+            self.logger.info(
+                "'%s' command executed successfully.", command_name
+            )
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
-            log_message = (
-                f"Exception occured while executing the '{command_name}' command."
-            )
+            log_message = f"Exception occured while executing the '{command_name}' command."
             this_server.write_attr("activityMessage", log_message, False)
             tango.Except.re_throw_exception(
                 dev_failed,

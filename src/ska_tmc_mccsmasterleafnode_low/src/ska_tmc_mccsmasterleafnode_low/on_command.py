@@ -1,12 +1,11 @@
 # PROTECTED REGION ID(MccsMasterLeafNode.import) ENABLED START #
 # Tango imports
 import tango
-from tango import DevFailed
 
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
-
+from tango import DevFailed
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -45,7 +44,9 @@ class On(SKABaseDevice.OnCommand):
         """
         # Update logs and activity message attribute with received event
         if event.err:
-            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            log_msg = (
+                f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            )
             self.logger.error(log_msg)
             self.this_server.write_attr("activityMessage", log_msg, False)
         else:

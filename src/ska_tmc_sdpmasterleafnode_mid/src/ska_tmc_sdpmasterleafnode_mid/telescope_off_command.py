@@ -1,13 +1,14 @@
 # Tango imports
 import tango
-from tango import DevFailed, DevState
 
 # Additional import
 from ska.base.commands import BaseCommand
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
+
 
 class TelescopeOff(BaseCommand):
     """
@@ -64,7 +65,9 @@ class TelescopeOff(BaseCommand):
         """
         this_server = TangoServerHelper.get_instance()
         if event.err:
-            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            log_msg = (
+                f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            )
             self.logger.error(log_msg)
             this_server.write_attr("activityMessage", log_msg, False)
 
@@ -93,7 +96,9 @@ class TelescopeOff(BaseCommand):
                 const.CMD_OFF, None, self.telescopeoff_cmd_ended_cb
             )
             self.logger.debug(const.STR_OFF_CMD_SUCCESS)
-            this_server.write_attr("activityMessage", const.STR_OFF_CMD_SUCCESS, False)
+            this_server.write_attr(
+                "activityMessage", const.STR_OFF_CMD_SUCCESS, False
+            )
 
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)

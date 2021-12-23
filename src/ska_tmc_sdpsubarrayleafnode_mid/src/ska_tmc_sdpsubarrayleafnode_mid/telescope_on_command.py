@@ -4,11 +4,10 @@ TelescopeOn class for SDPSubarrayLeafNode.
 # PROTECTED REGION ID(sdpsubarrayleafnode.additionnal_import) ENABLED START #
 # Tango imports
 import tango
-from tango import DevFailed, DevState
 
 # Additional import
 from ska.base.commands import BaseCommand
-
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -83,21 +82,24 @@ class TelescopeOn(BaseCommand):
         :param argin: None.
 
         return: None
-        
+
         raises:
             DevFailed if error occurs while invoking command on SDPSubarray.
 
         """
         this_server = TangoServerHelper.get_instance()
         try:
-            sdp_sa_ln_client_obj=TangoClient(this_server.read_property("SdpSubarrayFQDN")[0])
+            sdp_sa_ln_client_obj = TangoClient(
+                this_server.read_property("SdpSubarrayFQDN")[0]
+            )
             sdp_sa_ln_client_obj.send_command_async(
                 const.CMD_ON, None, self.telescopeon_cmd_ended_cb
             )
-            log_msg = const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+            log_msg = (
+                const.CMD_ON + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+            )
             this_server.set_status(log_msg)
             self.logger.debug(log_msg)
-
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_INVOKING_ON_CMD} {dev_failed}"

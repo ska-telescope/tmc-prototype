@@ -1,9 +1,10 @@
 """
 ReleaseAllResourcesCommand for SubarrayNodeLow
 """
+from ska.base import SKASubarray
+
 # Additional import
 from ska.base.commands import ResultCode
-from ska.base import SKASubarray
 
 from . import const
 

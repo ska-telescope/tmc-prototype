@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-from tango import DeviceProxy
 import json
+
+from tango import DeviceProxy
 
 # Update file path to devices.json in order to test locally
 # To test on docker environment use path : /app/ska-tmc/devices.json

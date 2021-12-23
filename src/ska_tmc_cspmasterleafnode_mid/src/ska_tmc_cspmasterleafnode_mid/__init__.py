@@ -11,15 +11,14 @@
 
 """
 
-from . import release
-from . import const
-from .csp_master_leaf_node import CspMasterLeafNode
-from .device_data import DeviceData
+from . import const, release
 from .attribute_callbacks import (
     CbfHealthStateAttributeUpdator,
     PssHealthStateAttributeUpdator,
     PstHealthStateAttributeUpdator,
 )
+from .csp_master_leaf_node import CspMasterLeafNode
+from .device_data import DeviceData
 
 __all__ = [
     "CspMasterLeafNode",

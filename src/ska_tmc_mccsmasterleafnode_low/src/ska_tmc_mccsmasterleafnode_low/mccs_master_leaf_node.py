@@ -9,22 +9,24 @@
 
 # PROTECTED REGION ID(MccsMasterLeafNode.import) ENABLED START #
 import threading
+
 # Tango imports
 import tango
-from tango import ApiUtil, DebugIt, AttrWriteType
-from tango.server import run, command, device_property, attribute
 
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, SimulationMode, TestMode
+from tango import ApiUtil, AttrWriteType, DebugIt
+from tango.server import attribute, command, device_property, run
 from tmc.common.tango_server_helper import TangoServerHelper
+
 from . import const, release
 from .assign_resources_command import AssignResources
-from .release_resources_command import ReleaseResources
-from .on_command import On
-from .off_command import Off
 from .device_data import DeviceData
+from .off_command import Off
+from .on_command import On
+from .release_resources_command import ReleaseResources
 
 # PROTECTED REGION END #    //  MccsMasterLeafNode imports
 
@@ -100,7 +102,9 @@ class MccsMasterLeafNode(SKABaseDevice):
             """
             super().do()
             device = self.target
-            device._health_state = HealthState.OK  # Setting healthState to "OK"
+            device._health_state = (
+                HealthState.OK
+            )  # Setting healthState to "OK"
             device._simulation_mode = (
                 SimulationMode.FALSE
             )  # Enabling the simulation mode
@@ -118,17 +122,26 @@ class MccsMasterLeafNode(SKABaseDevice):
             # Create DeviceData class instance
             device_data = DeviceData.get_instance()
             device.device_data = device_data
-            self.this_server.write_attr("activityMessage", const.STR_MCCS_INIT_LEAF_NODE, False)
-            self.this_server.write_attr("activityMessage",
-                                        f"{const.STR_MCCSMASTER_FQDN}{device.MccsMasterFQDN}", False)
+            self.this_server.write_attr(
+                "activityMessage", const.STR_MCCS_INIT_LEAF_NODE, False
+            )
+            self.this_server.write_attr(
+                "activityMessage",
+                f"{const.STR_MCCSMASTER_FQDN}{device.MccsMasterFQDN}",
+                False,
+            )
             # Creating proxy to the CSPMaster
             log_msg = f"MCCS Master name: {device.MccsMasterFQDN}"
             self.logger.debug(log_msg)
 
-            ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
+            ApiUtil.instance().set_asynch_cb_sub_model(
+                tango.cb_sub_model.PUSH_CALLBACK
+            )
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
-            self.this_server.write_attr("activityMessage", const.STR_INIT_SUCCESS, False)
+            self.this_server.write_attr(
+                "activityMessage", const.STR_INIT_SUCCESS, False
+            )
             self.logger.info(const.STR_INIT_SUCCESS)
             return (ResultCode.OK, const.STR_INIT_SUCCESS)
 
@@ -219,7 +232,9 @@ class MccsMasterLeafNode(SKABaseDevice):
 
         args = (device_data, self.state_model, self.logger)
         self.register_command_object("AssignResources", AssignResources(*args))
-        self.register_command_object("ReleaseResources", ReleaseResources(*args))
+        self.register_command_object(
+            "ReleaseResources", ReleaseResources(*args)
+        )
         self.register_command_object(
             "On", On(device_data, self.state_model, self.logger)
         )

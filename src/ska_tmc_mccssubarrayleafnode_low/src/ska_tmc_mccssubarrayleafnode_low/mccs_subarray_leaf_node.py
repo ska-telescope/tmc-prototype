@@ -15,25 +15,27 @@ It also acts as a MCCS contact point for Subarray Node for observation execution
 
 # Third party imports
 import threading
-# Tango imports
-from tango import DebugIt, AttrWriteType
-from tango.server import run, attribute, command, device_property
+
+from ska.base import SKABaseDevice
 
 # Additional import
 from ska.base.commands import ResultCode
-from ska.base import SKABaseDevice
 from ska.base.control_model import HealthState
+
+# Tango imports
+from tango import AttrWriteType, DebugIt
+from tango.server import attribute, command, device_property, run
 from tmc.common.tango_server_helper import TangoServerHelper
 
-from .device_data import DeviceData
 from . import const, release
+from .abort_command import Abort
 from .configure_command import Configure
-from .scan_command import Scan
+from .device_data import DeviceData
 from .end_command import End
 from .end_scan_command import EndScan
-from .abort_command import Abort
-from .restart_command import Restart
 from .obsreset_command import ObsReset
+from .restart_command import Restart
+from .scan_command import Scan
 
 __all__ = [
     "MccsSubarrayLeafNode",
@@ -89,13 +91,19 @@ class MccsSubarrayLeafNode(SKABaseDevice):
     )
 
     mccsSubarrayHealthState = attribute(
-        name="mccsSubarrayHealthState", label="mccsSubarrayHealthState", forwarded=True
+        name="mccsSubarrayHealthState",
+        label="mccsSubarrayHealthState",
+        forwarded=True,
     )
     mccsSubarrayObsState = attribute(
-        name="mccsSubarrayObsState", label="mccsSubarrayObsState", forwarded=True
+        name="mccsSubarrayObsState",
+        label="mccsSubarrayObsState",
+        forwarded=True,
     )
     mccs_assigned_resources = attribute(
-        name="mccs_assigned_resources", label="mccs_assigned_resources", forwarded=True
+        name="mccs_assigned_resources",
+        label="mccs_assigned_resources",
+        forwarded=True,
     )
     # ---------------
     # General methods
@@ -138,7 +146,9 @@ class MccsSubarrayLeafNode(SKABaseDevice):
             device.set_status(const.STR_MCCSSALN_INIT_SUCCESS)
             device._mccs_subarray_health_state = HealthState.OK
             self.logger.info(const.STR_MCCSSALN_INIT_SUCCESS)
-            this_server.write_attr("activityMessage", const.STR_MCCSSALN_INIT_SUCCESS, False)
+            this_server.write_attr(
+                "activityMessage", const.STR_MCCSSALN_INIT_SUCCESS, False
+            )
             return (ResultCode.OK, const.STR_MCCSSALN_INIT_SUCCESS)
 
     def always_executed_hook(self):
@@ -384,6 +394,7 @@ class MccsSubarrayLeafNode(SKABaseDevice):
         self.register_command_object("Abort", self.abort)
         self.register_command_object("ObsReset", self.obsreset)
         self.register_command_object("Restart", self.restart)
+
 
 # ----------
 # Run server

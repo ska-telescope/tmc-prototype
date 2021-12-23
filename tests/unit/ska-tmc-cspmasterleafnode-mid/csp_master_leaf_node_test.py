@@ -3,24 +3,31 @@
 # Standard Python imports
 import contextlib
 import importlib
-import types
 import sys
+import types
+
 import mock
-from mock import Mock, MagicMock
 
 # Tango imports
 import pytest
 import tango
-from tango.test_context import DeviceTestContext
+from mock import MagicMock, Mock
+from ska.base.commands import ResultCode
 
 # Additional import
-from ska.base.control_model import HealthState
-from ska.base.control_model import LoggingLevel
-from ska.base.commands import ResultCode
-from src.ska_tmc_cspmasterleafnode_mid.src.ska_tmc_cspmasterleafnode_mid import CspMasterLeafNode, const, release
-from src.ska_tmc_cspmasterleafnode_mid.src.ska_tmc_cspmasterleafnode_mid.device_data import DeviceData
+from ska.base.control_model import HealthState, LoggingLevel
+from tango.test_context import DeviceTestContext
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
+
+from src.ska_tmc_cspmasterleafnode_mid.src.ska_tmc_cspmasterleafnode_mid import (
+    CspMasterLeafNode,
+    const,
+    release,
+)
+from src.ska_tmc_cspmasterleafnode_mid.src.ska_tmc_cspmasterleafnode_mid.device_data import (
+    DeviceData,
+)
 
 # PROTECTED REGION END #    //  CspMasterLeafNode imports
 
@@ -71,7 +78,7 @@ def mock_tango_server_helper():
 
 def test_on(mock_csp_master_proxy, mock_tango_server_helper):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
-    device_proxy.TelescopeOn() 
+    device_proxy.TelescopeOn()
     tango_client_obj.deviceproxy.command_inout_asynch.assert_called_with(
         const.CMD_ON, [], any_method(with_name="telescope_on_cmd_ended_cb")
     )
@@ -84,7 +91,9 @@ def test_telescope_standby_should_command_to_standby_with_callback_method(
     device_proxy.TelescopeStandby([])
     dummy_event = command_callback(const.CMD_STANDBY)
     event_subscription_mock[const.CMD_STANDBY](dummy_event)
-    assert const.STR_COMMAND + const.CMD_STANDBY in device_proxy.activityMessage
+    assert (
+        const.STR_COMMAND + const.CMD_STANDBY in device_proxy.activityMessage
+    )
 
 
 def test_telescope_on_should_command_to_on_with_callback_method(
@@ -97,7 +106,9 @@ def test_telescope_on_should_command_to_on_with_callback_method(
     assert const.STR_COMMAND + const.CMD_ON in device_proxy.activityMessage
 
 
-def test_telescope_off_should_command_to_off(mock_csp_master_proxy, mock_tango_server_helper):
+def test_telescope_off_should_command_to_off(
+    mock_csp_master_proxy, mock_tango_server_helper
+):
     device_proxy, tango_client_obj = mock_csp_master_proxy[:2]
     device_proxy.TelescopeOn()
     device_proxy.TelescopeOff()
@@ -111,7 +122,10 @@ def test_telescope_standby_should_command_with_callback_method_with_event_error(
     device_proxy.TelescopeStandby([])
     dummy_event = command_callback_with_event_error(const.CMD_STANDBY)
     event_subscription_mock[const.CMD_STANDBY](dummy_event)
-    assert const.ERR_INVOKING_CMD + const.CMD_STANDBY in device_proxy.activityMessage
+    assert (
+        const.ERR_INVOKING_CMD + const.CMD_STANDBY
+        in device_proxy.activityMessage
+    )
 
 
 def test_on_should_command_with_callback_method_with_event_error(
@@ -122,7 +136,9 @@ def test_on_should_command_with_callback_method_with_event_error(
     dummy_event = command_callback_with_event_error(const.CMD_ON)
     event_subscription_mock[const.CMD_ON](dummy_event)
 
-    assert const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
+    assert (
+        const.ERR_INVOKING_CMD + const.CMD_ON in device_proxy.activityMessage
+    )
 
 
 def test_on_command_should_raise_dev_failed(
@@ -153,7 +169,10 @@ def test_telescope_standby_command_should_raise_dev_failed(
 def raise_devfailed_exception(*args):
     # "This function is called to raise DevFailed exception with arguments."
     tango.Except.throw_exception(
-        const.STR_CMD_FAILED, const.ERR_DEVFAILED_MSG, "", tango.ErrSeverity.ERR
+        const.STR_CMD_FAILED,
+        const.ERR_DEVFAILED_MSG,
+        "",
+        tango.ErrSeverity.ERR,
     )
 
 
@@ -244,14 +263,25 @@ def test_activity_message_reports_correct_health_state_when_attribute_event_has_
         TangoClient, "_get_deviceproxy", return_value=Mock()
     ) as mock_obj:
         with mock.patch.object(
-            TangoClient, "subscribe_attribute", side_effect=dummy_subscriber_with_error
+            TangoClient,
+            "subscribe_attribute",
+            side_effect=dummy_subscriber_with_error,
         ):
             tango_client_obj = TangoClient("mid_csp/elt/master")
             device_proxy.TelescopeOn()
     device_data = DeviceData.get_instance()
-    assert const.ERR_ON_SUBS_CSP_CBF_HEALTH in device_data._csp_cbf_health_state_log
-    assert const.ERR_ON_SUBS_CSP_PSS_HEALTH in device_data._csp_pss_health_state_log
-    assert const.ERR_ON_SUBS_CSP_PST_HEALTH in device_data._csp_pst_health_state_log
+    assert (
+        const.ERR_ON_SUBS_CSP_CBF_HEALTH
+        in device_data._csp_cbf_health_state_log
+    )
+    assert (
+        const.ERR_ON_SUBS_CSP_PSS_HEALTH
+        in device_data._csp_pss_health_state_log
+    )
+    assert (
+        const.ERR_ON_SUBS_CSP_PST_HEALTH
+        in device_data._csp_pst_health_state_log
+    )
 
 
 def dummy_subscriber(attribute, callback_method):
@@ -315,10 +345,12 @@ def fake_tango_system(
     device_proxy_import_path="tango.DeviceProxy",
 ):
     with mock.patch(device_proxy_import_path) as patched_constructor:
-        patched_constructor.side_effect = lambda device_fqdn: proxies_to_mock.get(
-            device_fqdn, Mock()
+        patched_constructor.side_effect = (
+            lambda device_fqdn: proxies_to_mock.get(device_fqdn, Mock())
         )
-        patched_module = importlib.reload(sys.modules[device_under_test.__module__])
+        patched_module = importlib.reload(
+            sys.modules[device_under_test.__module__]
+        )
 
     device_under_test = getattr(patched_module, device_under_test.__name__)
 

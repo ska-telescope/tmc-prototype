@@ -13,13 +13,13 @@ Abort class for DishLeafNode.
 """
 # Tango imports
 import tango
-from tango import DevFailed, DevState
 
 # Additional import
 from ska.base.commands import BaseCommand
-
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
+
 from .command_callback import CommandCallBack
 from .utils import PointingState
 
@@ -70,14 +70,16 @@ class Abort(BaseCommand):
             self.dish_master_fqdn = self.dish_master_fqdn.join(property_value)
             dish_client = TangoClient(self.dish_master_fqdn)
             dish_pointing_state = dish_client.get_attribute("pointingState")
-            if (dish_pointing_state.value is not PointingState.READY):
-                dish_client.send_command_async("TrackStop", callback_method=cmd_ended_cb)
-            self.logger.info("'%s' command executed successfully.", command_name)
+            if dish_pointing_state.value is not PointingState.READY:
+                dish_client.send_command_async(
+                    "TrackStop", callback_method=cmd_ended_cb
+                )
+            self.logger.info(
+                "'%s' command executed successfully.", command_name
+            )
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
-            log_message = (
-                f"Exception occured while executing the '{command_name}' command."
-            )
+            log_message = f"Exception occured while executing the '{command_name}' command."
             this_server.write_attr("activityMessage", log_message, False)
             tango.Except.re_throw_exception(
                 dev_failed,

@@ -1,19 +1,21 @@
 # Standard python import
 import logging
+from time import sleep
 
 # Additional import
 from ska.base.control_model import ObsState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
-from .device_data import DeviceData
 from . import const
-from time import sleep
+from .device_data import DeviceData
+
 
 class ObsStateAggregator:
     """
     Observation State Aggregator class
     """
+
     def __init__(self, logger=None):
         if logger is None:
             self.logger = logging.getLogger(__name__)
@@ -24,7 +26,7 @@ class ObsStateAggregator:
         self.mccs_obs_state_event_id = {}
         self.this_server = TangoServerHelper.get_instance()
         self.device_data = DeviceData.get_instance()
-        
+
     def subscribe(self):
         mccs_subarray_ln_fqdn = ""
         property_val = self.this_server.read_property("MccsSubarrayLNFQDN")
@@ -81,10 +83,16 @@ class ObsStateAggregator:
                 if const.PROP_DEF_VAL_TMMCCS_MID_SALN in evt.attr_name:
                     # Typacasted the event values to obsState ENUM labels.
                     self._mccs_sa_obs_state = ObsState(event_observation_state)
-                    self.this_server.write_attr("activityMessage", f"{const.STR_MCCS_SUBARRAY_OBS_STATE}{event_observation_state}", False)
+                    self.this_server.write_attr(
+                        "activityMessage",
+                        f"{const.STR_MCCS_SUBARRAY_OBS_STATE}{event_observation_state}",
+                        False,
+                    )
                 else:
                     self.logger.info(const.EVT_UNKNOWN)
-                    self.this_server.write_attr("activityMessage", const.EVT_UNKNOWN, False)
+                    self.this_server.write_attr(
+                        "activityMessage", const.EVT_UNKNOWN, False
+                    )
                 self.calculate_observation_state()
 
             else:
@@ -94,7 +102,11 @@ class ObsStateAggregator:
         except KeyError as key_error:
             log_msg = f"{const.ERR_MCCS_SUBARRAY_OBS_STATE}{key_error}"
             self.logger.error(log_msg)
-            self.this_server.write_attr("activityMessage", f"{const.ERR_MCCS_SUBARRAY_OBS_STATE}{key_error}", False)
+            self.this_server.write_attr(
+                "activityMessage",
+                f"{const.ERR_MCCS_SUBARRAY_OBS_STATE}{key_error}",
+                False,
+            )
 
     def calculate_observation_state(self):
         """
@@ -117,7 +129,9 @@ class ObsStateAggregator:
                 self.this_server.device.endscan.succeeded()
             else:
                 # Configure command success
-                self.logger.info("Calling Configure command succeeded() method")
+                self.logger.info(
+                    "Calling Configure command succeeded() method"
+                )
                 self.this_server.device.configure.succeeded()
         elif self._mccs_sa_obs_state == ObsState.IDLE:
             if self.device_data.is_end_command:
@@ -130,7 +144,9 @@ class ObsStateAggregator:
                 self.this_server.device.obsreset.succeeded()
             else:
                 # Assign Resource command success
-                self.logger.info("Calling AssignResource command succeeded() method")
+                self.logger.info(
+                    "Calling AssignResource command succeeded() method"
+                )
                 self.this_server.device.assign.succeeded()
         elif self._mccs_sa_obs_state == ObsState.ABORTED:
             try:
@@ -138,10 +154,12 @@ class ObsStateAggregator:
                 while retry_count < 3:
                     if self.device_data.is_abort_command_executed:
                         # Abort command success
-                        self.logger.info("Calling Abort command succeeded() method")
+                        self.logger.info(
+                            "Calling Abort command succeeded() method"
+                        )
                         self.this_server.device.abort.succeeded()
                         break
                     sleep(0.1)
-                    retry_count+=1
+                    retry_count += 1
             except Exception as e:
                 self.logger(str(e))

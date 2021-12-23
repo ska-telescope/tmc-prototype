@@ -1,18 +1,18 @@
 # Third Party imports
 # PyTango imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import ObsState
-
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
-from .delay_model import DelayManager
 from . import const
+from .delay_model import DelayManager
+
 
 class ResetCommand(SKABaseDevice.ResetCommand):
     """
@@ -21,6 +21,7 @@ class ResetCommand(SKABaseDevice.ResetCommand):
     Command to reset the current operation being done on the CSP Subarray Leaf Node.
 
     """
+
     def check_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state
@@ -58,7 +59,9 @@ class ResetCommand(SKABaseDevice.ResetCommand):
         """
         try:
             this_server = TangoServerHelper.get_instance()
-            log_msg = const.CMD_RESET + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+            log_msg = (
+                const.CMD_RESET + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+            )
             self.logger.debug(log_msg)
             delay_manager_obj = DelayManager.get_instance()
             delay_manager_obj.stop()

@@ -6,16 +6,16 @@ import logging
 
 # Tango imports
 import tango
-from tango import DevFailed
 
 # Additional import
 from ska.base.control_model import HealthState
-
+from tango import DevFailed
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
 from .device_data import DeviceData
+
 
 class HealthStateAggreegator:
     """
@@ -31,10 +31,14 @@ class HealthStateAggreegator:
         self.device_data = DeviceData.get_instance()
         self.subarray_health_state_map = {}
         self.this_server = TangoServerHelper.get_instance()
-        #self.mccs_master_ln_fqdn = self.this_server.read_property("MCCSMasterLeafNodeFQDN")[0]
+        # self.mccs_master_ln_fqdn = self.this_server.read_property("MCCSMasterLeafNodeFQDN")[0]
         self.mccs_master_ln_fqdn = ""
-        property_value = self.this_server.read_property("MCCSMasterLeafNodeFQDN")
-        self.mccs_master_ln_fqdn = self.mccs_master_ln_fqdn.join(property_value)
+        property_value = self.this_server.read_property(
+            "MCCSMasterLeafNodeFQDN"
+        )
+        self.mccs_master_ln_fqdn = self.mccs_master_ln_fqdn.join(
+            property_value
+        )
         self.health_state_event_map = {}
 
     def subscribe_event(self):
@@ -61,7 +65,11 @@ class HealthStateAggreegator:
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_SUBSR_MCCS_MASTER_LEAF_HEALTH}{dev_failed}"
             self.logger.exception(dev_failed)
-            self.this_server.write_attr("activityMessage", const.ERR_SUBSR_MCCS_MASTER_LEAF_HEALTH, False)
+            self.this_server.write_attr(
+                "activityMessage",
+                const.ERR_SUBSR_MCCS_MASTER_LEAF_HEALTH,
+                False,
+            )
             tango.Except.throw_exception(
                 const.STR_CMD_FAILED,
                 log_msg,
@@ -75,7 +83,9 @@ class HealthStateAggreegator:
 
         :raises: Devfailed exception if erroe occures while subscribing event.
         """
-        for subarray_fqdn in self.this_server.read_property("TMLowSubarrayNodes"):
+        for subarray_fqdn in self.this_server.read_property(
+            "TMLowSubarrayNodes"
+        ):
             subarray_client = TangoClient(subarray_fqdn)
             # updating the subarray_health_state_map with device name (as ska_mid/tm_subarray_node/1) and its value which is required in callback
             try:
@@ -87,7 +97,9 @@ class HealthStateAggreegator:
             except DevFailed as dev_failed:
                 log_msg = f"{const.ERR_SUBSR_SA_HEALTH_STATE}{dev_failed}"
                 self.logger.exception(dev_failed)
-                self.this_server.write_attr("activityMessage", const.ERR_SUBSR_SA_HEALTH_STATE, False)
+                self.this_server.write_attr(
+                    "activityMessage", const.ERR_SUBSR_SA_HEALTH_STATE, False
+                )
                 tango.Except.throw_exception(
                     const.STR_CMD_FAILED,
                     log_msg,
@@ -142,7 +154,9 @@ class HealthStateAggreegator:
             if not evt.err:
                 health_state = evt.attr_value.value
                 if const.PROP_DEF_VAL_TM_LOW_SA1 in evt.attr_name:
-                    self.this_server.write_attr("subarray1HealthState", health_state)
+                    self.this_server.write_attr(
+                        "subarray1HealthState", health_state
+                    )
                     self.subarray_health_state_map[evt.device] = health_state
                 elif self.mccs_master_ln_fqdn in evt.attr_name:
                     device_data._mccs_master_leaf_health = health_state
@@ -163,7 +177,9 @@ class HealthStateAggreegator:
                     )
                     counts[health_state] += 1
 
-                for subarray_health_state in self.subarray_health_state_map.values():
+                for (
+                    subarray_health_state
+                ) in self.subarray_health_state_map.values():
                     counts[subarray_health_state] += 1
 
                 # Calculating health_state for SubarrayNode, MCCSMasterLeafNode
@@ -171,33 +187,63 @@ class HealthStateAggreegator:
                     counts[HealthState.OK]
                     == len(self.subarray_health_state_map.values()) + 1
                 ):
-                    self.this_server.write_attr("telescopeHealthState", HealthState.OK)
-                    str_log = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_OK}"
+                    self.this_server.write_attr(
+                        "telescopeHealthState", HealthState.OK
+                    )
+                    str_log = (
+                        f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_OK}"
+                    )
                     self.logger.info(str_log)
-                    self.this_server.write_attr("activityMessage",
-                                                f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_OK}", False)
+                    self.this_server.write_attr(
+                        "activityMessage",
+                        f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_OK}",
+                        False,
+                    )
                 elif counts[HealthState.FAILED] != 0:
-                    self.this_server.write_attr("telescopeHealthState", HealthState.FAILED)
+                    self.this_server.write_attr(
+                        "telescopeHealthState", HealthState.FAILED
+                    )
                     str_log = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_FAILED}"
                     self.logger.info(str_log)
-                    self.this_server.write_attr("activityMessage",
-                                                f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_FAILED}", False)
+                    self.this_server.write_attr(
+                        "activityMessage",
+                        f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_FAILED}",
+                        False,
+                    )
                 elif counts[HealthState.DEGRADED] != 0:
-                    self.this_server.write_attr("telescopeHealthState", HealthState.DEGRADED)
+                    self.this_server.write_attr(
+                        "telescopeHealthState", HealthState.DEGRADED
+                    )
                     str_log = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_DEGRADED}"
                     self.logger.info(str_log)
-                    self.this_server.write_attr("activityMessage",
-                                                f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_DEGRADED}", False)
+                    self.this_server.write_attr(
+                        "activityMessage",
+                        f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_DEGRADED}",
+                        False,
+                    )
                 else:
-                    self.this_server.write_attr("telescopeHealthState", HealthState.UNKNOWN)
+                    self.this_server.write_attr(
+                        "telescopeHealthState", HealthState.UNKNOWN
+                    )
                     str_log = f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_UNKNOWN}"
                     self.logger.info(str_log)
-                    self.this_server.write_attr("activityMessage",
-                                                f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_UNKNOWN}", False)
+                    self.this_server.write_attr(
+                        "activityMessage",
+                        f"{const.STR_HEALTH_STATE}{evt.device}{const.STR_UNKNOWN}",
+                        False,
+                    )
             else:
-                self.this_server.write_attr("activityMessage", f"{const.ERR_SUBSR_SA_HEALTH_STATE}{evt}", False)
+                self.this_server.write_attr(
+                    "activityMessage",
+                    f"{const.ERR_SUBSR_SA_HEALTH_STATE}{evt}",
+                    False,
+                )
                 self.logger.critical(const.ERR_SUBSR_SA_HEALTH_STATE)
         except KeyError as key_error:
-            self.this_server.write_attr("activityMessage", f"{const.ERR_SUBARRAY_HEALTHSTATE}{key_error}", False)
+            self.this_server.write_attr(
+                "activityMessage",
+                f"{const.ERR_SUBARRAY_HEALTHSTATE}{key_error}",
+                False,
+            )
             log_msg = f"{const.ERR_SUBARRAY_HEALTHSTATE} : {key_error}"
             self.logger.error(log_msg)

@@ -1,14 +1,14 @@
 # Tango imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
-
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
+
 
 class TelescopeStandby(BaseCommand):
     """
@@ -18,7 +18,7 @@ class TelescopeStandby(BaseCommand):
     PBs will be aborted. In normal operation we expect diable should be triggered without first going
     into STANDBY.
     """
-    
+
     def check_allowed(self):
         """
         Check Whether this command is allowed to be run in current device
@@ -66,7 +66,9 @@ class TelescopeStandby(BaseCommand):
         """
         this_server = TangoServerHelper.get_instance()
         if event.err:
-            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            log_msg = (
+                f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            )
             self.logger.error(log_msg)
             this_server.write_attr("activityMessage", log_msg, False)
 
@@ -91,9 +93,14 @@ class TelescopeStandby(BaseCommand):
             sdp_master_ln_fqdn = sdp_master_ln_fqdn.join(property_val)
             sdp_mln_client_obj = TangoClient(sdp_master_ln_fqdn)
             sdp_mln_client_obj.send_command_async(
-                const.CMD_STANDBY, callback_method=self.telescopestandby_cmd_ended_cb
-                )
-            log_msg = const.CMD_STANDBY + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+                const.CMD_STANDBY,
+                callback_method=self.telescopestandby_cmd_ended_cb,
+            )
+            log_msg = (
+                const.CMD_STANDBY
+                + const.STR_COMMAND
+                + const.STR_INVOKE_SUCCESS
+            )
             self.logger.debug(log_msg)
 
         except DevFailed as dev_failed:

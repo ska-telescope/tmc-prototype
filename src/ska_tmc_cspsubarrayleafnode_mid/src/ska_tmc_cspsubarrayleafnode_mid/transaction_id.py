@@ -1,7 +1,8 @@
-from ska_ser_log_transactions import transaction
-import logging
-import json
 import functools
+import json
+import logging
+
+from ska_ser_log_transactions import transaction
 
 
 def identify_with_id(name: str, arg_name: str):
@@ -23,7 +24,9 @@ def identify_with_id(name: str, arg_name: str):
                     "unable to use transaction id as not able to parse input arguments into a dictionary"
                 )
                 return func(obj, argin)
-            with transaction(name, parameters, logger=obj.logger) as transaction_id:
+            with transaction(
+                name, parameters, logger=obj.logger
+            ) as transaction_id:
                 obj.transaction_id = transaction_id
                 return func(obj, argin)
 

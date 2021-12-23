@@ -1,18 +1,21 @@
 """
 Scan class for SDPSubarrayLeafNode.
 """
+import json
+
 # PROTECTED REGION ID(sdpsubarrayleafnode.additionnal_import) ENABLED START #
 # Tango imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
 from ska.base.control_model import ObsState
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
+
 from . import const
-import json
+
 
 class Scan(BaseCommand):
     """
@@ -33,7 +36,9 @@ class Scan(BaseCommand):
 
         """
         self.this_server = TangoServerHelper.get_instance()
-        sdp_subarray_fqdn = self.this_server.read_property("SdpSubarrayFQDN")[0]
+        sdp_subarray_fqdn = self.this_server.read_property("SdpSubarrayFQDN")[
+            0
+        ]
         self.sdp_sa_ln_client_obj = TangoClient(sdp_subarray_fqdn)
 
         if self.state_model.op_state in [
@@ -48,10 +53,16 @@ class Scan(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
 
-        if self.sdp_sa_ln_client_obj.get_attribute("obsState").value != ObsState.READY:
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, const.STR_SCAN_EXEC,
-                                         "SdpSubarrayLeafNode.StartScanCommand",
-                                         tango.ErrSeverity.ERR)
+        if (
+            self.sdp_sa_ln_client_obj.get_attribute("obsState").value
+            != ObsState.READY
+        ):
+            tango.Except.throw_exception(
+                const.ERR_DEVICE_NOT_READY,
+                const.STR_SCAN_EXEC,
+                "SdpSubarrayLeafNode.StartScanCommand",
+                tango.ErrSeverity.ERR,
+            )
         return True
 
     def scan_cmd_ended_cb(self, event):
@@ -106,18 +117,27 @@ class Scan(BaseCommand):
             DevFailed if the command execution is not successful.
         """
         try:
-            log_msg = "Input JSON for SDP Subarray Leaf Node Scan command is: " + argin
+            log_msg = (
+                "Input JSON for SDP Subarray Leaf Node Scan command is: "
+                + argin
+            )
             self.logger.debug(log_msg)
-            #As, SKA logtransaction is not utilised in scan command across tmc devices.
-            #Hence, Interface URL needs to be updated explicitly for SDP.
-            #TODO: Incorporate transaction id implementation for scan command across TMC.
+            # As, SKA logtransaction is not utilised in scan command across tmc devices.
+            # Hence, Interface URL needs to be updated explicitly for SDP.
+            # TODO: Incorporate transaction id implementation for scan command across TMC.
             input_json = json.loads(argin)
-            input_json["interface"] = "https://schema.skao.int/ska-sdp-scan/0.3"
+            input_json[
+                "interface"
+            ] = "https://schema.skao.int/ska-sdp-scan/0.3"
             updated_argin = json.dumps(input_json)
             self.sdp_sa_ln_client_obj.send_command_async(
-                const.CMD_SCAN, command_data=updated_argin, callback_method=self.scan_cmd_ended_cb
-                )
-            self.this_server.write_attr("activityMessage", const.STR_SCAN_SUCCESS, False)
+                const.CMD_SCAN,
+                command_data=updated_argin,
+                callback_method=self.scan_cmd_ended_cb,
+            )
+            self.this_server.write_attr(
+                "activityMessage", const.STR_SCAN_SUCCESS, False
+            )
             self.logger.info(const.STR_SCAN_SUCCESS)
 
         except DevFailed as dev_failed:

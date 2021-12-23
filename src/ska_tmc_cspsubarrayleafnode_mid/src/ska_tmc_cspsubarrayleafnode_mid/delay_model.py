@@ -1,18 +1,20 @@
 # Standard Python imports
 import datetime
 import importlib.resources
-import threading
-from datetime import datetime, timedelta
 import json
 import logging
-import pytz
-import numpy as np
+import threading
+from datetime import datetime, timedelta
+
 import katpoint
+import numpy as np
+import pytz
 
 # Additional import
 from ska.base.control_model import ObsState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
+
 from .device_data import DeviceData
 
 
@@ -39,7 +41,6 @@ class DelayManager:
         # delay coefficients.
         self._delay_in_advance = 60
         self.this_server = TangoServerHelper.get_instance()
-        
 
     @staticmethod
     def get_instance():
@@ -88,7 +89,8 @@ class DelayManager:
 
         # Load a set of antenna descriptions and construct Antenna objects from them
         with importlib.resources.open_text(
-            "src.ska_tmc_cspsubarrayleafnode_mid.src.ska_tmc_cspsubarrayleafnode_mid", "ska_antennas.txt"
+            "src.ska_tmc_cspsubarrayleafnode_mid.src.ska_tmc_cspsubarrayleafnode_mid",
+            "ska_antennas.txt",
         ) as f:
             descriptions = f.readlines()
         antennas = [katpoint.Antenna(line) for line in descriptions]
@@ -106,7 +108,9 @@ class DelayManager:
         self.delay_correction_object = katpoint.DelayCorrection(
             assigned_receptors, ref_ant
         )
-        self.antenna_names = list(self.delay_correction_object.ant_models.keys())
+        self.antenna_names = list(
+            self.delay_correction_object.ant_models.keys()
+        )
         # list of frequency slice ids
         for fsp_entry in self.device_data.fsp_ids_object:
             self.fsids_list.append(fsp_entry["fsp_id"])
@@ -138,7 +142,9 @@ class DelayManager:
             (time_t0 + timedelta(seconds=25)),
         ]
         # Calculate geometric delay values.
-        delays = self.delay_correction_object.delays(self.device_data.target, timestamp_array)
+        delays = self.delay_correction_object.delays(
+            self.device_data.target, timestamp_array
+        )
         # Convert delays in seconds to 5th order polynomial coefficients
         # x is always [-25, -15, -5, 5, 15, 25] as the delays are calculated for the timestamps between
         # "t0 - 25" to "t0 + 25" at an interval of 10 seconds.
@@ -152,7 +158,7 @@ class DelayManager:
             polynomial = np.polynomial.Polynomial.fit(x, y, 5)
             polynomial_coefficients = polynomial.convert().coef
             delay_corrections_h_array_dict[
-            self.antenna_names[antenna]
+                self.antenna_names[antenna]
             ] = polynomial_coefficients
         return delay_corrections_h_array_dict
 
@@ -184,7 +190,9 @@ class DelayManager:
                 self.delay_model_calculator()
                 # update the attribute
                 self.delay_model_lock.acquire()
-                self.this_server.write_attr("delayModel", json.dumps(self.delay_model_json), False)
+                self.this_server.write_attr(
+                    "delayModel", json.dumps(self.delay_model_json), False
+                )
                 self.delay_model_lock.release()
 
                 # wait for timer event
@@ -194,29 +202,33 @@ class DelayManager:
                 self.this_server.write_attr("delayModel", None, False)
                 self._stop_delay_model_event.wait(0.02)
         self.logger.info("Stop event received. Thread exit.")
-    
+
     def download_IERS_file(self):
-        """ This method performs one delay calculation with dummy values to download the IERS file in advanced 
+        """This method performs one delay calculation with dummy values to download the IERS file in advanced
         to the delay calcualtions at the initialization of the device ."""
         # Create an example radec target
-        ra = '21:08:47.92'
-        dec = '-88:57:22.9'
+        ra = "21:08:47.92"
+        dec = "-88:57:22.9"
         target = katpoint.Target.from_radec(ra, dec)
-        descriptions = '''
+        descriptions = """
         ref_ant, -30:42:39.8, 21:26:38.0, 1086, 13.5, 0 0 0 0 0 0,0, 0
         ref_ant, -30:42:39.8, 21:26:38.0, 1086, 13.5, 0 0 0 0 0 0,0, 0
-        '''.strip().split('\n')
+        """.strip().split(
+            "\n"
+        )
         antennas = [katpoint.Antenna(line) for line in descriptions]
         ref_ant = antennas[0]
         ants = antennas[1:]
         try:
             delay_correction = katpoint.DelayCorrection(ants, ref_ant)
         except Exception as delay_execption:
-            log_msg = f"Exception in DelayCorrection Katpoint API {delay_execption}"
+            log_msg = (
+                f"Exception in DelayCorrection Katpoint API {delay_execption}"
+            )
             self.logger.exception(log_msg)
         # Get delays towards target for example timestamp
-        exa_time_t0 = '2021-05-04 12:54:09.686556'
-        time_t0_obj = datetime.strptime(exa_time_t0, '%Y-%m-%d %H:%M:%S.%f')
+        exa_time_t0 = "2021-05-04 12:54:09.686556"
+        time_t0_obj = datetime.strptime(exa_time_t0, "%Y-%m-%d %H:%M:%S.%f")
         delays = delay_correction.delays(target, time_t0_obj)
         self.logger.info("delays are: '%s'", delays)
 
@@ -225,7 +237,9 @@ class DelayManager:
         time_t0 = datetime.today() + timedelta(seconds=self._delay_in_advance)
         time_t0_utc = (time_t0.astimezone(pytz.UTC)).timestamp()
         self.logger.info("calling Calculate_geometric delays.")
-        delay_corrections_h_array_dict = self.calculate_geometric_delays(time_t0)
+        delay_corrections_h_array_dict = self.calculate_geometric_delays(
+            time_t0
+        )
         delay_model = []
         receptor_delay_model = []
         delay_model_per_epoch = {}
@@ -237,7 +251,9 @@ class DelayManager:
                 fsid_delay_object = {}
                 fsid_delay_object["fsid"] = fsid
                 delay_coeff_array = []
-                receptor_delay_coeffs = delay_corrections_h_array_dict[receptor]
+                receptor_delay_coeffs = delay_corrections_h_array_dict[
+                    receptor
+                ]
                 for i in range(0, len(receptor_delay_coeffs)):
                     delay_coeff_array.append(receptor_delay_coeffs[i])
                 fsid_delay_object["delay_coeff"] = delay_coeff_array
@@ -246,7 +262,7 @@ class DelayManager:
                 "receptor_delay_details"
             ] = receptor_specific_delay_details
             receptor_delay_model.append(receptor_delay_object)
-        
+
         delay_model_per_epoch["epoch"] = str(time_t0_utc)
         delay_model_per_epoch["delay_details"] = receptor_delay_model
         delay_model.append(delay_model_per_epoch)

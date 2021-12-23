@@ -5,13 +5,13 @@
 # Standard Python imports
 import json
 import time
+
 # Tango imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
-
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -98,7 +98,10 @@ class AssignResources(BaseCommand):
             self.this_server = TangoServerHelper.get_instance()
             # Check if Mccs On command is completed
             cmd_res = json.loads(device_data.cmd_res_evt_val)
-            log_msg = "commandresult attribute value in StandByTelescope command", cmd_res
+            log_msg = (
+                "commandresult attribute value in StandByTelescope command",
+                cmd_res,
+            )
             self.logger.debug(log_msg)
 
             if cmd_res["result_code"] != 0:
@@ -123,19 +126,32 @@ class AssignResources(BaseCommand):
             mccs_string = json.loads(argin)
             input_mccs_master = self._create_mccs_cmd_data(mccs_string)
             self.mccs_master_ln_fqdn = ""
-            property_value = self.this_server.read_property("MCCSMasterLeafNodeFQDN")
-            self.mccs_master_ln_fqdn = self.mccs_master_ln_fqdn.join(property_value)
+            property_value = self.this_server.read_property(
+                "MCCSMasterLeafNodeFQDN"
+            )
+            self.mccs_master_ln_fqdn = self.mccs_master_ln_fqdn.join(
+                property_value
+            )
 
-            mccs_master_ln_client = self.create_client(self.mccs_master_ln_fqdn)
-            self.invoke_assign_resources(mccs_master_ln_client, input_mccs_master)
+            mccs_master_ln_client = self.create_client(
+                self.mccs_master_ln_fqdn
+            )
+            self.invoke_assign_resources(
+                mccs_master_ln_client, input_mccs_master
+            )
 
-            self.this_server.write_attr("activityMessage", const.STR_ASSIGN_RESOURCES_SUCCESS, False)
+            self.this_server.write_attr(
+                "activityMessage", const.STR_ASSIGN_RESOURCES_SUCCESS, False
+            )
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
-
 
         except KeyError as key_error:
             self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
-            self.this_server.write_attr("activityMessage", f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}", False)
+            self.this_server.write_attr(
+                "activityMessage",
+                f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}",
+                False,
+            )
             log_msg = f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}"
             self.logger.exception(key_error)
             tango.Except.throw_exception(
@@ -148,21 +164,36 @@ class AssignResources(BaseCommand):
             self.logger.exception(
                 "Exception in AssignResources command: %s", str(val_error)
             )
-            self.this_server.write_attr("activityMessage", f"Invalid value in input: {val_error}", False)
+            self.this_server.write_attr(
+                "activityMessage",
+                f"Invalid value in input: {val_error}",
+                False,
+            )
             log_msg = f"{const.STR_ASSIGN_RES_EXEC}{val_error}"
             self.logger.exception(val_error)
-            tango.Except.throw_exception(const.STR_RESOURCE_ALLOCATION_FAILED, log_msg,
-                                         "CentralNode.AssignResourcesCommand",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_RESOURCE_ALLOCATION_FAILED,
+                log_msg,
+                "CentralNode.AssignResourcesCommand",
+                tango.ErrSeverity.ERR,
+            )
         except AssertionError:
-            log_msg = "Exception in AssignResources command: " + const.ERR_STARTUP_CMD_INCOMPLETE
+            log_msg = (
+                "Exception in AssignResources command: "
+                + const.ERR_STARTUP_CMD_INCOMPLETE
+            )
             self.logger.exception(log_msg)
-            log_msg = const.STR_ASSIGN_RES_EXEC + const.ERR_STARTUP_CMD_INCOMPLETE
+            log_msg = (
+                const.STR_ASSIGN_RES_EXEC + const.ERR_STARTUP_CMD_INCOMPLETE
+            )
             self.logger.exception(log_msg)
             self.this_server.write_attr("activityMessage", log_msg, False)
-            tango.Except.throw_exception(const.ERR_STARTUP_CMD_INCOMPLETE, log_msg,
-                                         "CentralNode.AssignResourcesCommand",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.ERR_STARTUP_CMD_INCOMPLETE,
+                log_msg,
+                "CentralNode.AssignResourcesCommand",
+                tango.ErrSeverity.ERR,
+            )
 
         message = const.STR_RETURN_MSG_ASSIGN_RESOURCES_SUCCESS
         self.logger.info(message)
@@ -177,15 +208,17 @@ class AssignResources(BaseCommand):
         :return: The string in JSON format.
         """
         mccs_value = json_argument["mccs"]
-        json_argument["interface"] = "https://schema.skao.int/ska-low-mccs-assignresources/1.0"
-        if 'transaction_id' in json_argument:
+        json_argument[
+            "interface"
+        ] = "https://schema.skao.int/ska-low-mccs-assignresources/1.0"
+        if "transaction_id" in json_argument:
             del json_argument["transaction_id"]
-        if 'sdp' in json_argument:
+        if "sdp" in json_argument:
             del json_argument["sdp"]
-        if 'mccs' in json_argument:
+        if "mccs" in json_argument:
             del json_argument["mccs"]
         json_argument.update(mccs_value)
-        input_to_mccs= json.dumps(json_argument)
+        input_to_mccs = json.dumps(json_argument)
         return input_to_mccs
 
     def _create_subarray_cmd_data(self, json_argument):
@@ -197,9 +230,9 @@ class AssignResources(BaseCommand):
         :return: The string in JSON format.
         """
         # Remove subarray_id key from input json argument and send the json to subarray node
-        if 'subarray_id' in json_argument:
+        if "subarray_id" in json_argument:
             del json_argument["subarray_id"]
-        if 'sdp' in json_argument:
+        if "sdp" in json_argument:
             del json_argument["sdp"]
         input_to_subarray = json.dumps(json_argument)
         return input_to_subarray
@@ -225,8 +258,10 @@ class AssignResources(BaseCommand):
         """
         try:
             tango_client.send_command(const.CMD_ASSIGN_RESOURCES, input_arg)
-            log_msg = "Assign resurces command invoked successfully on {}".format(
-                tango_client.get_device_fqdn
+            log_msg = (
+                "Assign resurces command invoked successfully on {}".format(
+                    tango_client.get_device_fqdn
+                )
             )
             self.logger.debug(log_msg)
             self.this_server.write_attr("activityMessage", log_msg, False)

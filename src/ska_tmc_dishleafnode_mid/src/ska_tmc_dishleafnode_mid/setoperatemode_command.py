@@ -13,13 +13,13 @@ SetOperateMode class for DishLeafNode.
 """
 # Tango import
 import tango
-from tango import DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
-
+from tango import DevFailed
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
+
 from .command_callback import CommandCallBack
 from .device_data import DeviceData
 
@@ -63,15 +63,19 @@ class SetOperateMode(BaseCommand):
             self.dish_master_fqdn = self.dish_master_fqdn.join(property_value)
             dish_client = TangoClient(self.dish_master_fqdn)
             # Subscribe the DishMaster attributes
-            self._subscribe_to_attribute_events(attributes_to_subscribe_to, dish_client)
-            dish_client.send_command_async(command_name, callback_method=cmd_ended_cb)
-            self.logger.info("'%s' command executed successfully.", command_name)
+            self._subscribe_to_attribute_events(
+                attributes_to_subscribe_to, dish_client
+            )
+            dish_client.send_command_async(
+                command_name, callback_method=cmd_ended_cb
+            )
+            self.logger.info(
+                "'%s' command executed successfully.", command_name
+            )
 
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
-            log_message = (
-                f"Exception occured while executing the '{command_name}' command."
-            )
+            log_message = f"Exception occured while executing the '{command_name}' command."
             self.this_server.write_attr("activityMessage", log_message, False)
             tango.Except.re_throw_exception(
                 dev_failed,
@@ -94,7 +98,9 @@ class SetOperateMode(BaseCommand):
             except DevFailed as dev_failed:
                 self.logger.exception(dev_failed)
                 log_message = f"Exception occurred while subscribing to Dish attribute: {attribute_name}"
-                self.this_server.write_attr("activityMessage", log_message, False)
+                self.this_server.write_attr(
+                    "activityMessage", log_message, False
+                )
                 tango.Except.re_throw_exception(
                     dev_failed,
                     "Exception in Init command",

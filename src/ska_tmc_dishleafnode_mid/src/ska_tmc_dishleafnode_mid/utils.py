@@ -4,9 +4,9 @@ Module for DishLeafNode utils
 
 # Imports
 import enum
+import logging
 import math
 import re
-import logging
 
 module_logger = logging.getLogger(__name__)
 
@@ -43,7 +43,9 @@ class UnitConverter:
             degrees = float(argin[0])
             minutes = float(argin[1])
             seconds = float(argin[2])
-            rad_value = (math.pi / 180) * (degrees + (minutes / 60) + (seconds / 3600))
+            rad_value = (math.pi / 180) * (
+                degrees + (minutes / 60) + (seconds / 3600)
+            )
             return rad_value
         except IndexError as error:
             log_msg = f"Error while converting Deg:Min:Sec to radians.{error}"
@@ -94,7 +96,9 @@ class UnitConverter:
         try:
             dd = re.split("[:]+", argin)
             deg_dec = (
-                abs(float(dd[0])) + ((float(dd[1])) / 60) + ((float(dd[2])) / 3600)
+                abs(float(dd[0]))
+                + ((float(dd[1])) / 60)
+                + ((float(dd[2])) / 3600)
             )
             if "-" in dd[0]:
                 return deg_dec * (-1)

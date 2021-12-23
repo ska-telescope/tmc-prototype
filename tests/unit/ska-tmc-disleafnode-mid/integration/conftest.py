@@ -7,7 +7,6 @@ from unittest import mock
 
 import pytest
 import tango
-
 from tango.test_context import MultiDeviceTestContext, get_host_ip
 
 
@@ -17,7 +16,9 @@ def devices_info(request):
 
 
 @pytest.fixture(scope="function")
-def tango_context(mocker, devices_info):  # pylint: disable=redefined-outer-name
+def tango_context(
+    mocker, devices_info
+):  # pylint: disable=redefined-outer-name
     """
     Creates and returns a TANGO MultiDeviceTestContext object, with
     tango.DeviceProxy patched to work around a name-resolving issue.

@@ -11,11 +11,17 @@
 SdpSubarrayLeafNode
 """
 
-from . import release, const, exceptions
-from .sdp_subarray_leaf_node import SdpSubarrayLeafNode
+from . import const, exceptions, release
 from .device_data import DeviceData
+from .sdp_subarray_leaf_node import SdpSubarrayLeafNode
 
-__all__ = ["const", "release", "SdpSubarrayLeafNode", "DeviceData", "exceptions"]
+__all__ = [
+    "const",
+    "release",
+    "SdpSubarrayLeafNode",
+    "DeviceData",
+    "exceptions",
+]
 
 __version__ = release.version
 __version_info__ = release.version_info

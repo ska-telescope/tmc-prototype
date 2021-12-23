@@ -4,13 +4,14 @@ Configure class for SDPSubarrayLeafNode.
 # PROTECTED REGION ID(SDPSubarrayLeafNode.additionnal_import) ENABLED START #
 # Tango imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
 from ska.base.control_model import ObsState
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
+
 from . import const
 from .transaction_id import identify_with_id
 
@@ -36,7 +37,9 @@ class Configure(BaseCommand):
 
         """
         self.this_server = TangoServerHelper.get_instance()
-        sdp_subarray_fqdn = self.this_server.read_property("SdpSubarrayFQDN")[0]
+        sdp_subarray_fqdn = self.this_server.read_property("SdpSubarrayFQDN")[
+            0
+        ]
         self.sdp_sa_ln_client_obj = TangoClient(sdp_subarray_fqdn)
 
         if self.state_model.op_state in [
@@ -51,10 +54,16 @@ class Configure(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
 
-        if self.sdp_sa_ln_client_obj.get_attribute("obsState").value not in [ObsState.IDLE, ObsState.READY]:
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY_OR_IDLE, const.ERR_CONFIGURE,
-                                         "SdpSubarrayLeafNode.ConfigureCommand",
-                                         tango.ErrSeverity.ERR)
+        if self.sdp_sa_ln_client_obj.get_attribute("obsState").value not in [
+            ObsState.IDLE,
+            ObsState.READY,
+        ]:
+            tango.Except.throw_exception(
+                const.ERR_DEVICE_NOT_READY_OR_IDLE,
+                const.ERR_CONFIGURE,
+                "SdpSubarrayLeafNode.ConfigureCommand",
+                tango.ErrSeverity.ERR,
+            )
         return True
 
     def configure_cmd_ended_cb(self, event):
@@ -112,13 +121,18 @@ class Configure(BaseCommand):
         """
         try:
             log_msg = (
-                "Input JSON for SDP Subarray Leaf Node Configure command is: " + argin
+                "Input JSON for SDP Subarray Leaf Node Configure command is: "
+                + argin
             )
             self.logger.debug(log_msg)
             self.sdp_sa_ln_client_obj.send_command_async(
-                const.CMD_CONFIGURE, command_data=argin, callback_method=self.configure_cmd_ended_cb
-                )
-            self.this_server.write_attr("activityMessage", const.STR_CONFIGURE_SUCCESS, False)
+                const.CMD_CONFIGURE,
+                command_data=argin,
+                callback_method=self.configure_cmd_ended_cb,
+            )
+            self.this_server.write_attr(
+                "activityMessage", const.STR_CONFIGURE_SUCCESS, False
+            )
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
 
         except DevFailed as dev_failed:

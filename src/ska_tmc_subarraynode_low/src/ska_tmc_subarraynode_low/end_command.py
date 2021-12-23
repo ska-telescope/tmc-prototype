@@ -5,12 +5,11 @@ EndCommand class for SubarrayNodeLow.
 # Third party imports
 # Tango imports
 import tango
-from tango import DevFailed
+from ska.base import SKASubarray
 
 # Additional import
 from ska.base.commands import ResultCode
-from ska.base import SKASubarray
-
+from tango import DevFailed
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -54,7 +53,9 @@ class End(SKASubarray.EndCommand):
             mccs_subarray_ln_client = TangoClient(mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(const.CMD_END)
             self.logger.info(const.STR_CMD_END_INV_MCCS)
-            this_server.write_attr("activityMessage", const.STR_END_SUCCESS, False)
+            this_server.write_attr(
+                "activityMessage", const.STR_END_SUCCESS, False
+            )
             self.logger.info(const.STR_END_SUCCESS)
             device_data.is_end_command = True
             return (ResultCode.OK, const.STR_END_SUCCESS)

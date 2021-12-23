@@ -1,11 +1,10 @@
 # PyTango imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
 from ska.base.control_model import ObsState
-
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -50,9 +49,12 @@ class StartScanCommand(BaseCommand):
         csp_subarray_fqdn = this_server.read_property("CspSubarrayFQDN")[0]
         csp_sa_client = TangoClient(csp_subarray_fqdn)
         if csp_sa_client.get_attribute("obsState").value != ObsState.READY:
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_READY, const.STR_OBS_STATE,
-                                            "CspSubarrayLeafNode.StartScanCommand",
-                                            tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.ERR_DEVICE_NOT_READY,
+                const.STR_OBS_STATE,
+                "CspSubarrayLeafNode.StartScanCommand",
+                tango.ErrSeverity.ERR,
+            )
         return True
 
     def startscan_cmd_ended_cb(self, event):
@@ -80,7 +82,9 @@ class StartScanCommand(BaseCommand):
         # Update logs and activity message attribute with received event
         # TODO: This code does not generate exception so refactoring is required
         if event.err:
-            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            log_msg = (
+                f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            )
             self.logger.error(log_msg)
             this_server.write_attr("activityMessage", log_msg, False)
         else:
@@ -115,7 +119,9 @@ class StartScanCommand(BaseCommand):
             csp_sub_client_obj.send_command_async(
                 const.CMD_STARTSCAN, argin[0], self.startscan_cmd_ended_cb
             )
-            this_server.write_attr("activityMessage", const.STR_STARTSCAN_SUCCESS, False)
+            this_server.write_attr(
+                "activityMessage", const.STR_STARTSCAN_SUCCESS, False
+            )
             self.logger.info(const.STR_STARTSCAN_SUCCESS)
 
         except DevFailed as dev_failed:

@@ -1,11 +1,10 @@
 # PROTECTED REGION ID(MccsMasterLeafNode.import) ENABLED START #
 # Tango imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
-
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -21,7 +20,6 @@ class ReleaseResources(BaseCommand):
     It invokes ReleaseResources command on MccsMaster and releases all the resources assigned to
     MccsMaster.
     """
-
 
     def check_allowed(self):
         """
@@ -42,7 +40,8 @@ class ReleaseResources(BaseCommand):
         ]:
             tango.Except.throw_exception(
                 f"ReleaseResources() is not allowed in current state {self.state_model.op_state}",
-                "Failed to invoke ReleaseResources command on " "mccsmasterleafnode.",
+                "Failed to invoke ReleaseResources command on "
+                "mccsmasterleafnode.",
                 "mccsmasterleafnode.ReleaseResources()",
                 tango.ErrSeverity.ERR,
             )
@@ -70,7 +69,9 @@ class ReleaseResources(BaseCommand):
         """
         # Update logs and activity message attribute with received event
         if event.err:
-            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            log_msg = (
+                f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            )
             self.logger.error(log_msg)
             self.this_server.write_attr("activityMessage", log_msg, False)
         else:
@@ -101,7 +102,9 @@ class ReleaseResources(BaseCommand):
             ValueError if invalid json string.
 
         """
-        log_msg = "Input JSON for MCCS master leaf node Release command is: " + argin
+        log_msg = (
+            "Input JSON for MCCS master leaf node Release command is: " + argin
+        )
         self.logger.debug(log_msg)
         self.logger.info("Invoking Release on MCCS master")
 
@@ -114,13 +117,20 @@ class ReleaseResources(BaseCommand):
             mccs_master_client.send_command_async(
                 const.CMD_Release, argin, self.releaseresources_cmd_ended_cb
             )
-            self.this_server.write_attr("activityMessage", const.STR_REMOVE_ALL_RECEPTORS_SUCCESS, False)
+            self.this_server.write_attr(
+                "activityMessage",
+                const.STR_REMOVE_ALL_RECEPTORS_SUCCESS,
+                False,
+            )
             self.logger.info(const.STR_REMOVE_ALL_RECEPTORS_SUCCESS)
 
         except ValueError as value_error:
             log_msg = f"{const.ERR_INVALID_JSON_RELEASE_RES_MCCS}{value_error}"
-            self.this_server.write_attr("activityMessage",
-                                        f"{const.ERR_INVALID_JSON_RELEASE_RES_MCCS}{value_error}", False)
+            self.this_server.write_attr(
+                "activityMessage",
+                f"{const.ERR_INVALID_JSON_RELEASE_RES_MCCS}{value_error}",
+                False,
+            )
             self.logger.exception(value_error)
             tango.Except.re_throw_exception(
                 value_error,

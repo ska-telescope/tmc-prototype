@@ -12,7 +12,9 @@
 name = """ska-tmc-mccsmasterleafnode-low"""
 version = "0.8.7"
 version_info = version.split(".")
-description = """MCCS Master Leaf Node monitors and controls the MCCS Master device."""
+description = (
+    """MCCS Master Leaf Node monitors and controls the MCCS Master device."""
+)
 author = "Team NCRA"
 author_email = "telmgt-internal@googlegroups.com"
 license = """BSD-3-Clause"""

@@ -11,8 +11,7 @@
 MccsSubarrayLeafNode - Leaf Node to monitor and control MCCS Subarray
 """
 
-from . import release
-from . import const
+from . import const, release
 from .mccs_subarray_leaf_node import MccsSubarrayLeafNode
 
 __all__ = ["release", "const", "MccsSubarrayLeafNode"]

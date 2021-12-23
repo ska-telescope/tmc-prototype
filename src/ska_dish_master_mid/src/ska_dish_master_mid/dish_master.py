@@ -6,7 +6,9 @@ import sys
 from tango.server import run
 
 # Additional import
-from src.ska_dish_master_mid.src.ska_dish_master_mid.utils import get_tango_server_class
+from src.ska_dish_master_mid.src.ska_dish_master_mid.utils import (
+    get_tango_server_class,
+)
 
 
 def main():

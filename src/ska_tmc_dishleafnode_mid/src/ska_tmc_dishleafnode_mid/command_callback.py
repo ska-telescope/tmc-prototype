@@ -37,7 +37,9 @@ class CommandCallBack:
         """
         this_server = TangoServerHelper.get_instance()
         if event.err:
-            log_message = f"Error in invoking command: {event.cmd_name}\n{event.errors}"
+            log_message = (
+                f"Error in invoking command: {event.cmd_name}\n{event.errors}"
+            )
             self.logger.error(log_message)
             this_server.write_attr("activityMessage", log_message, False)
         else:

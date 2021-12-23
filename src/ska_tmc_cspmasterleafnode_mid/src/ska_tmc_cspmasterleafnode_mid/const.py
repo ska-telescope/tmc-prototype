@@ -10,7 +10,7 @@ CMD_TELESCOPE_ON = "TelescopeOn"
 CMD_TELESCOPE_OFF = "TelescopeOff"
 CMD_TELESCOPE_STANDBY = "TelescopeStandby"
 CMD_ON = "On"
-CMD_STANDBY ="Standby"
+CMD_STANDBY = "Standby"
 CMD_OFF = "Off"
 
 # String constants
@@ -28,7 +28,9 @@ STR_CSP_PST_HEALTH_DEGRADED = "CSP PST health is DEGRADED."
 STR_CSP_PST_HEALTH_FAILED = "CSP PST health is FAILED."
 STR_CSP_PST_HEALTH_UNKNOWN = "CSP PST health is UNKNOWN."
 # STR_TELESCOPE_ON_CMD_ISSUED = "TelescopeON command invoked successfully from CSP Master leaf node."
-STR_ON_CMD_ISSUED = "ON command invoked successfully from CSP Master leaf node."
+STR_ON_CMD_ISSUED = (
+    "ON command invoked successfully from CSP Master leaf node."
+)
 # STR_TELESCOPE_STANDBY_CMD_ISSUED = (
 #     "TelescopeStandby command invoked successfully from CSP Master leaf node."
 # )
@@ -36,7 +38,9 @@ STR_STANDBY_CMD_ISSUED = (
     "Standby command invoked successfully from CSP Master leaf node."
 )
 # STR_TELESCOPE_OFF_CMD_ISSUED = "Telescope OFF command invoked successfully from CSP Master leaf node."
-STR_OFF_CMD_ISSUED = "OFF command invoked successfully from CSP Master leaf node."
+STR_OFF_CMD_ISSUED = (
+    "OFF command invoked successfully from CSP Master leaf node."
+)
 
 STR_COMMAND = "Command :-> "
 STR_INVOKE_SUCCESS = "Command invoked successfully."
@@ -61,7 +65,9 @@ ERR_ON_SUBS_CSP_PST_HEALTH = "Error in subscribing CspPstHealth attribute "
 ERR_SUBS_CSP_MASTER_LEAF_ATTR = (
     "Exception occurred while subscribing to Csp Master attribute"
 )
-ERR_CSP_MASTER_LEAF_INIT = "Error occured in Csp Master Leaf Node initialization "
+ERR_CSP_MASTER_LEAF_INIT = (
+    "Error occured in Csp Master Leaf Node initialization "
+)
 ERR_INVOKING_CMD = "Error in invoking command: "
 # ERR_EXE_TELESCOPE_ON_CMD = "Error in executing Telescope On command"
 ERR_EXE_ON_CMD = "Error in executing On command"

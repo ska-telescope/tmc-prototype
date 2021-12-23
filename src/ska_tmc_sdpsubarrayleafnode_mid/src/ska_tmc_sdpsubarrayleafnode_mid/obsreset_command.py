@@ -4,11 +4,11 @@ ObsReset class for SDPSubarrayLeafNode.
 # PROTECTED REGION ID(sdpsubarrayleafnode.additionnal_import) ENABLED START #
 # Tango imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
 from ska.base.control_model import ObsState
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -34,7 +34,9 @@ class ObsReset(BaseCommand):
 
         """
         self.this_server = TangoServerHelper.get_instance()
-        sdp_subarray_fqdn = self.this_server.read_property("SdpSubarrayFQDN")[0]
+        sdp_subarray_fqdn = self.this_server.read_property("SdpSubarrayFQDN")[
+            0
+        ]
         self.sdp_sa_ln_client_obj = TangoClient(sdp_subarray_fqdn)
 
         if self.state_model.op_state in [DevState.UNKNOWN, DevState.DISABLE]:
@@ -49,10 +51,16 @@ class ObsReset(BaseCommand):
         # device_data = self.target
         # sdp_sa_ln_client = TangoClient(device_data._sdp_sa_fqdn)
 
-        if self.sdp_sa_ln_client_obj.get_attribute("obsState").value not in [ObsState.ABORTED, ObsState.FAULT]:
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_ABORTED_FAULT, const.ERR_OBSRESET_INVOKING_CMD,
-                                            "SdpSubarrayLeafNode.ObsReset()",
-                                            tango.ErrSeverity.ERR)
+        if self.sdp_sa_ln_client_obj.get_attribute("obsState").value not in [
+            ObsState.ABORTED,
+            ObsState.FAULT,
+        ]:
+            tango.Except.throw_exception(
+                const.ERR_DEVICE_NOT_ABORTED_FAULT,
+                const.ERR_OBSRESET_INVOKING_CMD,
+                "SdpSubarrayLeafNode.ObsReset()",
+                tango.ErrSeverity.ERR,
+            )
         return True
 
     def obsreset_cmd_ended_cb(self, event):
@@ -103,7 +111,9 @@ class ObsReset(BaseCommand):
             self.sdp_sa_ln_client_obj.send_command_async(
                 const.CMD_OBSRESET, None, self.obsreset_cmd_ended_cb
             )
-            self.this_server.write_attr("activityMessage", const.STR_OBSRESET_SUCCESS, False)
+            self.this_server.write_attr(
+                "activityMessage", const.STR_OBSRESET_SUCCESS, False
+            )
             self.logger.info(const.STR_OBSRESET_SUCCESS)
 
         except DevFailed as dev_failed:

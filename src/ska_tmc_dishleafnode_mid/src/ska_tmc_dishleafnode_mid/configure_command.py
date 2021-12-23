@@ -14,13 +14,15 @@ Configure class for DishLeafNode.
 
 # Tango imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
+
 from .command_callback import CommandCallBack
+
 
 class Configure(BaseCommand):
     """
@@ -83,9 +85,7 @@ class Configure(BaseCommand):
             self._configure_band(receiver_band)
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
-            log_message = (
-                f"Exception occured while executing the '{command_name}' command."
-            )
+            log_message = f"Exception occured while executing the '{command_name}' command."
             this_server.write_attr("activityMessage", log_message, False)
             tango.Except.re_throw_exception(
                 dev_failed,
@@ -95,7 +95,9 @@ class Configure(BaseCommand):
                 tango.ErrSeverity.ERR,
             )
         except KeyError as key_error:
-            raise Exception(f"JSON key not found.'{key_error}'in Configure.do().")
+            raise Exception(
+                f"JSON key not found.'{key_error}'in Configure.do()."
+            )
         self.logger.info("'%s' command executed successfully.", command_name)
 
     def _configure_band(self, band):
@@ -105,7 +107,9 @@ class Configure(BaseCommand):
         try:
             dish_client = TangoClient(self.dish_master_fqdn)
             cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
-            dish_client.send_command_async(command_name, callback_method=cmd_ended_cb)
+            dish_client.send_command_async(
+                command_name, callback_method=cmd_ended_cb
+            )
         except DevFailed as dev_failed:
             raise dev_failed
 

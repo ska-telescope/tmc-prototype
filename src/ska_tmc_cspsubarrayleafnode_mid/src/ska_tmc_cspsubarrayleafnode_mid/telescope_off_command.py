@@ -5,13 +5,15 @@ Off class for CspSubarrayLeafNode.
 # Standard Python imports
 # PyTango imports
 import tango
-from tango import DevFailed, DevState
 
 # Additional import
 from ska.base.commands import BaseCommand
+from tango import DevFailed, DevState
+from tmc.common.tango_server_helper import TangoServerHelper
+
 from . import const
 from .delay_model import DelayManager
-from tmc.common.tango_server_helper import TangoServerHelper
+
 
 class TelescopeOff(BaseCommand):
     """
@@ -85,7 +87,11 @@ class TelescopeOff(BaseCommand):
         """
         this_server = TangoServerHelper.get_instance()
         try:
-            log_msg = const.CMD_TELESCOPE_OFF + const.STR_COMMAND + const.STR_INVOKE_SUCCESS
+            log_msg = (
+                const.CMD_TELESCOPE_OFF
+                + const.STR_COMMAND
+                + const.STR_INVOKE_SUCCESS
+            )
             self.logger.debug(log_msg)
             delay_manager_obj = DelayManager.get_instance()
             delay_manager_obj.stop()

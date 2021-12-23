@@ -4,7 +4,10 @@ Test cases for DishLeafNode's utils module.
 
 # import statements
 import math
-from src.ska_tmc_dishleafnode_mid.src.ska_tmc_dishleafnode_mid.utils import UnitConverter
+
+from src.ska_tmc_dishleafnode_mid.src.ska_tmc_dishleafnode_mid.utils import (
+    UnitConverter,
+)
 
 
 class TestUnitConverter:
@@ -33,7 +36,9 @@ class TestUnitConverter:
         ref_input_dd = ref_input * (180 / math.pi)
         expected_output = []
         expected_output.append(float(int(ref_input_dd)))
-        expected_output.append(float(int((ref_input_dd - int(ref_input_dd)) * 60)))
+        expected_output.append(
+            float(int((ref_input_dd - int(ref_input_dd)) * 60))
+        )
         expected_output.append(
             (
                 ((ref_input_dd - int(ref_input_dd)) * 60)

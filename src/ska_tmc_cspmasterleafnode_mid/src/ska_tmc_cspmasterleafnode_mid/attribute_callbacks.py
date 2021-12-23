@@ -6,9 +6,8 @@ import tango
 
 # Additional import
 from ska.base.control_model import HealthState
-
-from tmc.common.tango_server_helper import TangoServerHelper
 from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
 from .device_data import DeviceData
@@ -31,7 +30,9 @@ class CbfHealthStateAttributeUpdator:
         self.device_data = DeviceData.get_instance()
         self.this_server = TangoServerHelper.get_instance()
         self.event_id = None
-        self.csp_master = TangoClient(self.this_server.read_property("CspMasterFQDN")[0])
+        self.csp_master = TangoClient(
+            self.this_server.read_property("CspMasterFQDN")[0]
+        )
 
     def start(self):
         try:
@@ -60,11 +61,15 @@ class CbfHealthStateAttributeUpdator:
         self.logger.debug(log_msg)
         if not evt.err:
             self._csp_cbf_health = evt.attr_value.value
-            log_message = f"CSP CBF health is {HealthState(self._csp_cbf_health).name}"
+            log_message = (
+                f"CSP CBF health is {HealthState(self._csp_cbf_health).name}"
+            )
             self.logger.debug(log_message)
             self.device_data._csp_cbf_health_state_log = log_message
         else:
-            self.device_data._csp_cbf_health_state_log = f"{const.ERR_ON_SUBS_CSP_CBF_HEALTH}{evt.errors}"
+            self.device_data._csp_cbf_health_state_log = (
+                f"{const.ERR_ON_SUBS_CSP_CBF_HEALTH}{evt.errors}"
+            )
             self.logger.error(const.ERR_ON_SUBS_CSP_CBF_HEALTH)
 
 
@@ -85,7 +90,9 @@ class PssHealthStateAttributeUpdator:
         self.device_data = DeviceData.get_instance()
         self.this_server = TangoServerHelper.get_instance()
         self.event_id = None
-        self.csp_master = TangoClient(self.this_server.read_property("CspMasterFQDN")[0])
+        self.csp_master = TangoClient(
+            self.this_server.read_property("CspMasterFQDN")[0]
+        )
 
     def start(self):
         try:
@@ -114,7 +121,11 @@ class PssHealthStateAttributeUpdator:
         self.logger.debug(log_msg)
         if not evt.err:
             self._csp_pss_health = evt.attr_value.value
-            if self._csp_pss_health in (HealthState.OK, HealthState.DEGRADED, HealthState.FAILED):
+            if self._csp_pss_health in (
+                HealthState.OK,
+                HealthState.DEGRADED,
+                HealthState.FAILED,
+            ):
                 log_message = f"CSP PSS health is {HealthState(self._csp_pss_health).name}."
                 self.logger.debug(log_message)
                 self.device_data._csp_pss_health_state_log = log_message
@@ -124,7 +135,9 @@ class PssHealthStateAttributeUpdator:
                 self.device_data._csp_pss_health_state_log = log_message
 
         else:
-            self.device_data._csp_pss_health_state_log = f"{const.ERR_ON_SUBS_CSP_PSS_HEALTH}{evt.errors}"
+            self.device_data._csp_pss_health_state_log = (
+                f"{const.ERR_ON_SUBS_CSP_PSS_HEALTH}{evt.errors}"
+            )
             self.logger.error(const.ERR_ON_SUBS_CSP_PSS_HEALTH)
 
 
@@ -145,7 +158,9 @@ class PstHealthStateAttributeUpdator:
         self.device_data = DeviceData.get_instance()
         self.this_server = TangoServerHelper.get_instance()
         self.event_id = None
-        self.csp_master = TangoClient(self.this_server.read_property("CspMasterFQDN")[0])
+        self.csp_master = TangoClient(
+            self.this_server.read_property("CspMasterFQDN")[0]
+        )
 
     def start(self):
         try:
@@ -174,7 +189,11 @@ class PstHealthStateAttributeUpdator:
         self.logger.debug(log_msg)
         if not evt.err:
             self._csp_pst_health = evt.attr_value.value
-            if self._csp_pst_health in (HealthState.OK, HealthState.DEGRADED, HealthState.FAILED):
+            if self._csp_pst_health in (
+                HealthState.OK,
+                HealthState.DEGRADED,
+                HealthState.FAILED,
+            ):
                 log_message = f"CSP PST health is {HealthState(self._csp_pst_health).name}."
                 self.logger.debug(log_message)
                 self.device_data._csp_pst_health_state_log = log_message
@@ -184,5 +203,7 @@ class PstHealthStateAttributeUpdator:
                 self.device_data._csp_pst_health_state_log = log_message
 
         else:
-            self.device_data._csp_pst_health_state_log = f"{const.ERR_ON_SUBS_CSP_PST_HEALTH}{evt.errors}"
+            self.device_data._csp_pst_health_state_log = (
+                f"{const.ERR_ON_SUBS_CSP_PST_HEALTH}{evt.errors}"
+            )
             self.logger.error(const.ERR_ON_SUBS_CSP_PST_HEALTH)

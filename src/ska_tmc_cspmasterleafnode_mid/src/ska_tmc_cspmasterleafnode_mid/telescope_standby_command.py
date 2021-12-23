@@ -1,10 +1,9 @@
 # Tango import
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
-
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -64,7 +63,9 @@ class TelescopeStandby(BaseCommand):
         """
         this_device = TangoServerHelper.get_instance()
         if event.err:
-            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            log_msg = (
+                f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            )
             self.logger.error(log_msg)
             this_device.write_attr("activityMessage", log_msg, False)
         else:
@@ -90,17 +91,25 @@ class TelescopeStandby(BaseCommand):
         this_device = TangoServerHelper.get_instance()
 
         try:
-            csp_mln_client_obj = TangoClient(this_device.read_property("CspMasterFQDN")[0])
+            csp_mln_client_obj = TangoClient(
+                this_device.read_property("CspMasterFQDN")[0]
+            )
             csp_mln_client_obj.send_command_async(
-                const.CMD_STANDBY, command_data=argin, callback_method=self.telescope_standby_cmd_ended_cb
+                const.CMD_STANDBY,
+                command_data=argin,
+                callback_method=self.telescope_standby_cmd_ended_cb,
             )
             self.logger.debug(const.STR_STANDBY_CMD_ISSUED)
-            this_device.write_attr("activityMessage", const.STR_STANDBY_CMD_ISSUED, False)
+            this_device.write_attr(
+                "activityMessage", const.STR_STANDBY_CMD_ISSUED, False
+            )
 
         except DevFailed as dev_failed:
             log_msg = f"{const.ERR_EXE_STANDBY_CMD}{dev_failed}"
             self.logger.exception(dev_failed)
-            this_device.write_attr("activityMessage", const.ERR_EXE_STANDBY_CMD, False)
+            this_device.write_attr(
+                "activityMessage", const.ERR_EXE_STANDBY_CMD, False
+            )
             tango.Except.re_throw_exception(
                 dev_failed,
                 const.STR_STANDBY_EXEC,

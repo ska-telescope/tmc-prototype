@@ -70,16 +70,22 @@ ERR_ON_SUBS_DISH_POINT_ATTR = "Error in subscribing DishPointing attribute "
 ERR_DISH_POINT_STATE_UNKNOWN = "Dish is in UNKNOWN pointing state \n"
 
 ERR_DISH_HEALTH_STATE_CB = "Error in DishHealthStateCallback "
-ERR_SUBSR_DISH_HEALTH_STATE = "Error in subscribing Dish HealthState attribute \n"
+ERR_SUBSR_DISH_HEALTH_STATE = (
+    "Error in subscribing Dish HealthState attribute \n"
+)
 
 ERR_DISH_CAPTURING_CB = "Error in DishCapturingCallback "
 ERR_SUBSR_CAPTURING_ATTR = "Error in subscribing Capturing attribute \n"
 
 ERR_DISH_ACHVD_POINT = "Error in DishAchievedPointingCallback "
-ERR_ON_SUBS_DISH_ACHVD_ATTR = "Error in subscribing AchievedPointing attribute "
+ERR_ON_SUBS_DISH_ACHVD_ATTR = (
+    "Error in subscribing AchievedPointing attribute "
+)
 
 ERR_DISH_DESIRED_POINT = "Error in DishDesiredPointingCallback "
-ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR = "Error in subscribing DesiredPointing attribute "
+ERR_ON_SUBS_DISH_DESIRED_POINT_ATTR = (
+    "Error in subscribing DesiredPointing attribute "
+)
 
 ERR_EXCEPT_CMD_CB = "Exception in CommandCallback: \n"
 ERR_EXCEPT_SSM_CMD_CB = "Exception in SetStowMode CommandCallback: \n"
@@ -130,21 +136,33 @@ ERR_EXE_RESTART_CMD = "Exception occurred in Restart command"
 ERR_EXE_OBSRESET_CMD = "Exception occurred in ObsReset command"
 
 # commands success string
-STR_SET_STOW_MODE_SUCCESS = "SETSTOWMODE command invoked on DishLeafNode device."
-STR_SETSTANDBYLP_SUCCESS = "STANDBYLPMODE command invoked on DishLeafNode device."
+STR_SET_STOW_MODE_SUCCESS = (
+    "SETSTOWMODE command invoked on DishLeafNode device."
+)
+STR_SETSTANDBYLP_SUCCESS = (
+    "STANDBYLPMODE command invoked on DishLeafNode device."
+)
 STR_SETOPERATE_SUCCESS = "STOPCAPTURE command invoked on DishLeafNode device."
 STR_CONFIGURE_SUCCESS = "CONFIGURE command invoked on DishLeafNode device."
 STR_SCAN_SUCCESS = "SCAN command invoked on DishLeafNode device."
 STR_ENDSCAN_SUCCESS = "ENDSCAN command invoked on DishLeafNode device."
-STR_STARTCAPTURE_SUCCESS = "STARTCAPTURE command invoked on DishLeafNode device."
+STR_STARTCAPTURE_SUCCESS = (
+    "STARTCAPTURE command invoked on DishLeafNode device."
+)
 STR_STOPCAPTURE_SUCCESS = "STOPCAPTURE command invoked on DishLeafNode device."
 STR_STANDBYFP_SUCCESS = "SETSTANDBYFP command invoked on DishLeafNode device."
 STR_SLEW_SUCCESS = "SLEW command invoked on DishLeafNode device."
 STR_TRACK_SUCCESS = "TRACK command invoked on DishLeafNode device."
 STR_STOP_TRACK_SUCCESS = "STOPTRACK command invoked on DishLeafNode device."
-STR_ABORT_SUCCESS = "ABORT command invoked successfully on DishLeafNode device."
-STR_RESTART_SUCCESS = "RESTART command invoked successfully on DishLeafNode device."
-STR_OBSRESET_SUCCESS = "ObsReset command invoked successfully on DishLeafNode device."
+STR_ABORT_SUCCESS = (
+    "ABORT command invoked successfully on DishLeafNode device."
+)
+STR_RESTART_SUCCESS = (
+    "RESTART command invoked successfully on DishLeafNode device."
+)
+STR_OBSRESET_SUCCESS = (
+    "ObsReset command invoked successfully on DishLeafNode device."
+)
 
 STR_CMD_FAILED = "DishLeafNode_Commandfailed"
 STR_SLEW_EXEC = "Slew command execution"
@@ -163,13 +181,17 @@ STR_ENDSCAN_EXEC = "EndScan command execution"
 STR_SCAN_EXEC = "Scan command execution"
 STR_STOPCAPTURE_CMD_CALLBK = "DishLeafNode StopCapture Command Callback"
 STR_SET_STOW_MODE_CMD_CALLBK = "DishLeafNode SetStowMode Command Callback"
-STR_SET_SETSTANDBYLP_CMD_CALLBK = "DishLeafNode SetStandByLPMode Command Callback"
+STR_SET_SETSTANDBYLP_CMD_CALLBK = (
+    "DishLeafNode SetStandByLPMode Command Callback"
+)
 STR_SET_SETOPERATE_CMD_CALLBK = "DishLeafNode SetOperateMode Command Callback"
 STR_SCAN_CMD_CALLBK = "DishLeafNode Scan Command Callback"
 # STR_ENDSCAN_CMD_CALLBK = "DishLeafNode EndScan Command Callback"
 STR_CONFIGURE_CMD_CALLBK = "DishLeafNode Configure Command Callback"
 STR_STARTCAPTURE_CMD_CALLBK = "DishLeafNode StartCapture Command Callback"
-STR_SET_SETSTANDBYFP_CMD_CALLBK = "DishLeafNode SetStandByFPMode Command Callback"
+STR_SET_SETSTANDBYFP_CMD_CALLBK = (
+    "DishLeafNode SetStandByFPMode Command Callback"
+)
 STR_SLEW_CMD_CALLBK = "DishLeafNode Slew Command Callback"
 STR_STOPTRACK_CMD_CALLBK = "DishLeafNode StopTrack Command Callback"
 STR_ABORT_CMD_CALLBK = "DishLeafNode Abort Command Callback"

@@ -1,11 +1,10 @@
 # PyTango imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
 from ska.base.control_model import ObsState
-
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -33,21 +32,29 @@ class ObsResetCommand(BaseCommand):
         """
         # device = self.target
         if self.state_model.op_state in [DevState.UNKNOWN, DevState.DISABLE]:
-            log_msg = f"ObsReset() is not allowed in {self.state_model.op_state}"
+            log_msg = (
+                f"ObsReset() is not allowed in {self.state_model.op_state}"
+            )
             tango.Except.throw_exception(
                 log_msg,
                 "Failed to invoke ObsReset command on CspSubarrayLeafNode.",
                 "cspsubarrayleafnode.ObsReset()",
                 tango.ErrSeverity.ERR,
             )
-   
+
         this_server = TangoServerHelper.get_instance()
         csp_subarray_fqdn = this_server.read_property("CspSubarrayFQDN")[0]
         csp_sa_client = TangoClient(csp_subarray_fqdn)
-        if csp_sa_client.get_attribute("obsState").value not in [ObsState.ABORTED, ObsState.FAULT]:
-            tango.Except.throw_exception(const.ERR_UNABLE_OBSRESET_CMD, const.ERR_OBSRESET_INVOKING_CMD,
-                                    "CspSubarrayLeafNode.ObsResetCommand",
-                                    tango.ErrSeverity.ERR)
+        if csp_sa_client.get_attribute("obsState").value not in [
+            ObsState.ABORTED,
+            ObsState.FAULT,
+        ]:
+            tango.Except.throw_exception(
+                const.ERR_UNABLE_OBSRESET_CMD,
+                const.ERR_OBSRESET_INVOKING_CMD,
+                "CspSubarrayLeafNode.ObsResetCommand",
+                tango.ErrSeverity.ERR,
+            )
 
         return True
 
@@ -75,7 +82,9 @@ class ObsResetCommand(BaseCommand):
         this_server = TangoServerHelper.get_instance()
         # Update logs and activity message attribute with received event
         if event.err:
-            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            log_msg = (
+                f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            )
             self.logger.error(log_msg)
             this_server.write_attr("activityMessage", log_msg, False)
         else:
@@ -106,7 +115,9 @@ class ObsResetCommand(BaseCommand):
             csp_sub_client_obj.send_command_async(
                 const.CMD_OBSRESET, None, self.obsreset_cmd_ended_cb
             )
-            this_server.write_attr("activityMessage", const.STR_OBSRESET_SUCCESS, False)
+            this_server.write_attr(
+                "activityMessage", const.STR_OBSRESET_SUCCESS, False
+            )
             self.logger.info(const.STR_OBSRESET_SUCCESS)
 
         except DevFailed as dev_failed:

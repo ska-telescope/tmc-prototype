@@ -11,32 +11,34 @@
 Provides the monitoring and control interface required by users as well as
 other TM Components (such as OET, Central Node) for a Subarray.
 """
-# Tango imports
-from tango import AttrWriteType
-from tango.server import run, attribute, device_property
-
 # Additional imports
 import threading
+
+from ska.base import SKASubarray
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, ObsMode, ObsState
-from ska.base import SKASubarray
+
+# Tango imports
+from tango import AttrWriteType
+from tango.server import attribute, device_property, run
 from tmc.common.tango_server_helper import TangoServerHelper
-from .device_data import DeviceData
-from .health_state_aggregator import HealthStateAggregator
-from .obs_state_aggregator import ObsStateAggregator
-from .assigned_resources_maintainer import AssignedResourcesMaintainer
+
 from . import const, release
-from .on_command import On
-from .off_command import Off
+from .abort_command import Abort
 from .assign_resources_command import AssignResources
+from .assigned_resources_maintainer import AssignedResourcesMaintainer
 from .configure_command import Configure
-from .scan_command import Scan
+from .device_data import DeviceData
 from .end_command import End
 from .end_scan_command import EndScan
-from .release_all_resources_command import ReleaseAllResources
-from .abort_command import Abort
+from .health_state_aggregator import HealthStateAggregator
+from .obs_state_aggregator import ObsStateAggregator
 from .obsreset_command import ObsReset
+from .off_command import Off
+from .on_command import On
+from .release_all_resources_command import ReleaseAllResources
 from .restart_command import Restart
+from .scan_command import Scan
 
 __all__ = [
     "SubarrayNode",
@@ -164,11 +166,17 @@ class SubarrayNode(SKASubarray):
             device.device_data.obs_state_aggr = ObsStateAggregator(self.logger)
             device.device_data.obs_state_aggr.subscribe()
             # subscribe to HealthState
-            device.device_data.health_state_aggr = HealthStateAggregator(self.logger)
+            device.device_data.health_state_aggr = HealthStateAggregator(
+                self.logger
+            )
             device.device_data.health_state_aggr.subscribe()
-            device_data.assigned_resources_maintainer = AssignedResourcesMaintainer()
+            device_data.assigned_resources_maintainer = (
+                AssignedResourcesMaintainer()
+            )
             device_data.assigned_resources_maintainer.subscribe()
-            this_server.write_attr("activityMessage", const.STR_SA_INIT_SUCCESS, False)
+            this_server.write_attr(
+                "activityMessage", const.STR_SA_INIT_SUCCESS, False
+            )
             self.logger.info(const.STR_SA_INIT_SUCCESS)
             return (ResultCode.OK, const.STR_SA_INIT_SUCCESS)
 

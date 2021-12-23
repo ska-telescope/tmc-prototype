@@ -13,22 +13,24 @@ of state and mode attributes defined by the SKA Control Model.
 
 # PROTECTED REGION ID(CentralNode.additionnal_import) ENABLED START #
 import threading
+
 # Tango imports
 import tango
-from tango import DebugIt, AttrWriteType, DevFailed
-from tango.server import run, attribute, command, device_property
 
 # Additional import
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState
+from tango import AttrWriteType, DebugIt, DevFailed
+from tango.server import attribute, command, device_property, run
 from tmc.common.tango_server_helper import TangoServerHelper
+
 from . import const, release
-from .device_data import DeviceData
-from .startup_telescope_command import StartUpTelescope
-from .standby_telescope_command import StandByTelescope
 from .assign_resources_command import AssignResources
+from .device_data import DeviceData
 from .release_resources_command import ReleaseResources
+from .standby_telescope_command import StandByTelescope
+from .startup_telescope_command import StartUpTelescope
 
 # PROTECTED REGION END #    //  CentralNode.additional_import
 
@@ -113,7 +115,6 @@ class CentralNode(SKABaseDevice):
         doc="Activity Message",
     )
 
-
     # ---------------
     # General methods
     # ---------------
@@ -147,9 +148,9 @@ class CentralNode(SKABaseDevice):
                 this_server.set_tango_class(device)
                 device.attr_map = {}
                 # Initialise Attributes
-                device.attr_map["telescopeHealthState"]=HealthState.UNKNOWN
-                device.attr_map["subarray1HealthState"]=HealthState.UNKNOWN
-                device.attr_map["activityMessage"]=""
+                device.attr_map["telescopeHealthState"] = HealthState.UNKNOWN
+                device.attr_map["subarray1HealthState"] = HealthState.UNKNOWN
+                device.attr_map["activityMessage"] = ""
 
                 device._health_state = HealthState.OK
                 device._build_state = "{},{},{}".format(
@@ -162,7 +163,9 @@ class CentralNode(SKABaseDevice):
             except DevFailed as dev_failed:
                 log_msg = f"{const.ERR_INIT_PROP_ATTR_CN}{dev_failed}"
                 self.logger.exception(dev_failed)
-                this_server.write_attr("activityMessage", const.ERR_INIT_PROP_ATTR_CN, False)
+                this_server.write_attr(
+                    "activityMessage", const.ERR_INIT_PROP_ATTR_CN, False
+                )
                 tango.Except.throw_exception(
                     const.STR_CMD_FAILED,
                     log_msg,
@@ -174,11 +177,13 @@ class CentralNode(SKABaseDevice):
                 # populate subarray_id-subarray proxy map
                 tokens = device.TMLowSubarrayNodes[subarray].split("/")
                 subarray_id = int(tokens[2])
-                device_data.subarray_FQDN_dict[subarray_id] = device.TMLowSubarrayNodes[
-                    subarray
-                ]
+                device_data.subarray_FQDN_dict[
+                    subarray_id
+                ] = device.TMLowSubarrayNodes[subarray]
 
-            this_server.write_attr("activityMessage", const.STR_CN_INIT_SUCCESS, False)
+            this_server.write_attr(
+                "activityMessage", const.STR_CN_INIT_SUCCESS, False
+            )
             self.logger.info(device.attr_map["activityMessage"])
             return (ResultCode.OK, device.attr_map["activityMessage"])
 
@@ -347,10 +352,16 @@ class CentralNode(SKABaseDevice):
         self.startup_telescope = StartUpTelescope(*args)
         self.standby_telescope = StandByTelescope(*args)
 
-        self.register_command_object("StartUpTelescope", self.startup_telescope)
-        self.register_command_object("StandByTelescope", self.standby_telescope)
+        self.register_command_object(
+            "StartUpTelescope", self.startup_telescope
+        )
+        self.register_command_object(
+            "StandByTelescope", self.standby_telescope
+        )
         self.register_command_object("AssignResources", self.assign_resources)
-        self.register_command_object("ReleaseResources", self.release_resources)
+        self.register_command_object(
+            "ReleaseResources", self.release_resources
+        )
 
 
 # ----------

@@ -1,11 +1,10 @@
 # PyTango imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
 from ska.base.control_model import ObsState
-
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -44,14 +43,17 @@ class ReleaseAllResourcesCommand(BaseCommand):
                 "cspsubarrayleafnode.ReleaseAllResources()",
                 tango.ErrSeverity.ERR,
             )
-        
+
         this_server = TangoServerHelper.get_instance()
         csp_subarray_fqdn = this_server.read_property("CspSubarrayFQDN")[0]
         csp_sa_client = TangoClient(csp_subarray_fqdn)
         if csp_sa_client.get_attribute("obsState").value != ObsState.IDLE:
-            tango.Except.throw_exception(const.ERR_DEVICE_NOT_IDLE, "Failed to invoke ReleaseAllResourcesCommand command on cspsubarrayleafnode.",
-                                            "CspSubarrayLeafNode.ReleaseAllResourcesCommand",
-                                            tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.ERR_DEVICE_NOT_IDLE,
+                "Failed to invoke ReleaseAllResourcesCommand command on cspsubarrayleafnode.",
+                "CspSubarrayLeafNode.ReleaseAllResourcesCommand",
+                tango.ErrSeverity.ERR,
+            )
 
         return True
 
@@ -115,7 +117,11 @@ class ReleaseAllResourcesCommand(BaseCommand):
                 None,
                 self.releaseallresources_cmd_ended_cb,
             )
-            this_server.write_attr("activityMessage", const.STR_RELEASE_ALL_RESOURCES_SUCCESS, False)
+            this_server.write_attr(
+                "activityMessage",
+                const.STR_RELEASE_ALL_RESOURCES_SUCCESS,
+                False,
+            )
             self.logger.info(const.STR_RELEASE_ALL_RESOURCES_SUCCESS)
 
         except DevFailed as dev_failed:

@@ -20,21 +20,21 @@ import threading
 
 # Tango imports
 import tango
-from tango import ApiUtil, DebugIt, AttrWriteType
-from tango.server import run, command, device_property, attribute
-
 
 # PROTECTED REGION ID(SdpMasterLeafNode.additional_import) ENABLED START #
 from ska.base import SKABaseDevice
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, SimulationMode, TestMode
+from tango import ApiUtil, AttrWriteType, DebugIt
+from tango.server import attribute, command, device_property, run
 from tmc.common.tango_server_helper import TangoServerHelper
+
 from . import const, release
-from .telescope_on_command import TelescopeOn
-from .telescope_off_command import TelescopeOff
-from .telescope_standby_command import TelescopeStandby
-from .disable_command import Disable
 from .device_data import DeviceData
+from .disable_command import Disable
+from .telescope_off_command import TelescopeOff
+from .telescope_on_command import TelescopeOn
+from .telescope_standby_command import TelescopeStandby
 
 # PROTECTED REGION END #    //  SdpMasterLeafNode.additional_import
 
@@ -130,7 +130,9 @@ class SdpMasterLeafNode(SKABaseDevice):
             device.attr_map["activityMessage"] = ""
             device.attr_map["ProcessingBlockList"] = "test"
 
-            device._health_state = HealthState.OK  # Setting healthState to "OK"
+            device._health_state = (
+                HealthState.OK
+            )  # Setting healthState to "OK"
             device._simulation_mode = (
                 SimulationMode.FALSE
             )  # Enabling the simulation mode
@@ -140,9 +142,13 @@ class SdpMasterLeafNode(SKABaseDevice):
                 release.name, release.version, release.description
             )
             standalone_mode = os.environ.get("STANDALONE_MODE")
-            self.logger.info("Device running in standalone_mode:%s", standalone_mode)
+            self.logger.info(
+                "Device running in standalone_mode:%s", standalone_mode
+            )
             device._version_id = release.version
-            ApiUtil.instance().set_asynch_cb_sub_model(tango.cb_sub_model.PUSH_CALLBACK)
+            ApiUtil.instance().set_asynch_cb_sub_model(
+                tango.cb_sub_model.PUSH_CALLBACK
+            )
             log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
             self.logger.debug(log_msg)
             self.this_server.write_attr(
@@ -344,7 +350,9 @@ class SdpMasterLeafNode(SKABaseDevice):
         self.register_command_object("TelescopeOn", TelescopeOn(*args))
         self.register_command_object("TelescopeOff", TelescopeOff(*args))
         self.register_command_object("Disable", Disable(*args))
-        self.register_command_object("TelescopeStandby", TelescopeStandby(*args))
+        self.register_command_object(
+            "TelescopeStandby", TelescopeStandby(*args)
+        )
 
 
 # ----------

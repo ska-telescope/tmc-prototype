@@ -3,12 +3,11 @@ Abort Command for SubarrayNodeLow.
 """
 # Tango imports
 import tango
-from tango import DevFailed
+from ska.base import SKASubarray
 
 # Additional import
 from ska.base.commands import ResultCode
-from ska.base import SKASubarray
-
+from tango import DevFailed
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 

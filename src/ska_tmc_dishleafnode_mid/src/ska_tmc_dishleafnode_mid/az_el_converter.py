@@ -1,6 +1,9 @@
-import katpoint
 import importlib.resources
+
+import katpoint
+
 from .device_data import DeviceData
+
 
 class AzElConverter:
     def __init__(self, log):
@@ -11,17 +14,25 @@ class AzElConverter:
         try:
             device_data = DeviceData.get_instance()
 
-            with importlib.resources.open_text("src.ska_tmc_dishleafnode_mid.src.ska_tmc_dishleafnode_mid", "ska_antennas.txt") as f:
+            with importlib.resources.open_text(
+                "src.ska_tmc_dishleafnode_mid.src.ska_tmc_dishleafnode_mid",
+                "ska_antennas.txt",
+            ) as f:
                 ska_antennas = f.readlines()
             antennas = [
-                katpoint.Antenna(antenna_details) for antenna_details in ska_antennas
+                katpoint.Antenna(antenna_details)
+                for antenna_details in ska_antennas
             ]
         except OSError as err:
             self.logger.exception(err)
-            raise Exception(f"OSError.'{err}'in device_data.create_antenna_obj.")
+            raise Exception(
+                f"OSError.'{err}'in device_data.create_antenna_obj."
+            )
         except ValueError as verr:
             self.logger.exception(verr)
-            raise Exception(f"ValueError.'{verr}'in device_data.create_antenna_obj.")
+            raise Exception(
+                f"ValueError.'{verr}'in device_data.create_antenna_obj."
+            )
 
         for ant in antennas:
             if ant.name == device_data.dish_number:
@@ -41,13 +52,15 @@ class AzElConverter:
         return az_el_coordinates
 
     def download_IERS_file(self):
-        """ This method performs one pointing calculation with dummy values to download the IERS file in advanced 
+        """This method performs one pointing calculation with dummy values to download the IERS file in advanced
         to the potinting calcualtions on DishLeafNode."""
         # Create an example radec target
-        ra = '21:08:47.92'
-        dec = '-88:57:22.9'
+        ra = "21:08:47.92"
+        dec = "-88:57:22.9"
         target = katpoint.Target.from_radec(ra, dec)
-        ant = katpoint.Antenna('0001, -30:42:39.8d, 21:26:38d, 1086, 13.5, 1.1205 -171.762 8.4705, , 0.0')
-        timestamp = '2021-04-29 05:36:50.031567'
+        ant = katpoint.Antenna(
+            "0001, -30:42:39.8d, 21:26:38d, 1086, 13.5, 1.1205 -171.762 8.4705, , 0.0"
+        )
+        timestamp = "2021-04-29 05:36:50.031567"
         azel = target.azel(timestamp, ant)
         self.logger.info("IERS file downloading is completed: '%s'", azel)

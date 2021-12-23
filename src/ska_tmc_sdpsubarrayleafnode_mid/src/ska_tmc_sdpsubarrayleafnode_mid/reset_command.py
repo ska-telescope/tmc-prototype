@@ -1,18 +1,17 @@
 # Third Party imports
 # PyTango imports
 import tango
-from tango import DevState, DevFailed
-
-# Additional import
-from ska.base.commands import BaseCommand
-from ska.base.control_model import ObsState
-
-from tmc.common.tango_client import TangoClient
-from tmc.common.tango_server_helper import TangoServerHelper
-from ska.base.commands import ResultCode
 from ska.base import SKABaseDevice
 
+# Additional import
+from ska.base.commands import BaseCommand, ResultCode
+from ska.base.control_model import ObsState
+from tango import DevFailed, DevState
+from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
+
 from . import const
+
 
 class ResetCommand(SKABaseDevice.ResetCommand):
     """
@@ -21,6 +20,7 @@ class ResetCommand(SKABaseDevice.ResetCommand):
     Command to reset the current operation being done on the SDP Subarray Leaf Node.
 
     """
+
     def check_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state
@@ -35,7 +35,7 @@ class ResetCommand(SKABaseDevice.ResetCommand):
         if self.state_model.op_state in [
             DevState.OFF,
             DevState.DISABLE,
-            DevState.ON
+            DevState.ON,
         ]:
             tango.Except.throw_exception(
                 f"Reset() is not allowed in current state {self.state_model.op_state}",

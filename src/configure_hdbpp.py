@@ -1,7 +1,9 @@
 # Imports
-import sys, getopt
+import getopt
 import json
-from tango import DeviceProxy, DevFailed
+import sys
+
+from tango import DevFailed, DeviceProxy
 
 
 def cm_configure_attributes():
@@ -17,7 +19,9 @@ def cm_configure_attributes():
             ## Set appropriate CM attributes
             try:
                 # SetAttributeName
-                conf_manager_proxy.write_attribute("SetAttributeName", attribute)
+                conf_manager_proxy.write_attribute(
+                    "SetAttributeName", attribute
+                )
 
                 # SetArchiver
                 conf_manager_proxy.write_attribute(
@@ -75,13 +79,17 @@ attr_list_file = ""
 
 ## parse arguments
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "c:e:a:", ["cm=", "es=", "attrfile="])
+    opts, args = getopt.getopt(
+        sys.argv[1:], "c:e:a:", ["cm=", "es=", "attrfile="]
+    )
 except getopt.GetoptError:
     print("Please provide proper arguments.")
     print(
         "Usage: $python configure_hdbpp.py --cm=<FQDN> --es=<FQDN> --attrfile=<filepath> OR"
     )
-    print("       $python configure_hdbpp.py -cm <FQDN> -e <FQDN> -a <filepath>")
+    print(
+        "       $python configure_hdbpp.py -cm <FQDN> -e <FQDN> -a <filepath>"
+    )
     print("       cm: FQDN of HDB++ Configuration Manager")
     print("       es: FQDN of HDB++ Event subscriber")
     print("       infile: File containing FQDNs of attributes to archive")

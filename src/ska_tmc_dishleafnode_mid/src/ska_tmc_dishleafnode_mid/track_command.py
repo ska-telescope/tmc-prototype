@@ -10,19 +10,20 @@
 """
 Track class for DishLeafNode.
 """
-import threading
 import datetime
+import threading
 import time
 from datetime import timezone
 
 import tango
-from tango import DevState, DevFailed
-
 from ska.base.commands import BaseCommand
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
-from .command_callback import CommandCallBack
+
 from .az_el_converter import AzElConverter
+from .command_callback import CommandCallBack
+
 
 class Track(BaseCommand):
     """
@@ -80,10 +81,14 @@ class Track(BaseCommand):
             property_value = self.this_server.read_property("DishMasterFQDN")
             self.dish_master_fqdn = self.dish_master_fqdn.join(property_value)
             json_argin = device_data._load_config_string(argin)
-            self.ra_value, self.dec_value = device_data._get_targets(json_argin)
+            self.ra_value, self.dec_value = device_data._get_targets(
+                json_argin
+            )
             device_data.event_track_time.clear()
             # Start pointing calculations in a Track Thread
-            self.tracking_thread = threading.Thread(None, self.track_thread, "DishLeafNode")
+            self.tracking_thread = threading.Thread(
+                None, self.track_thread, "DishLeafNode"
+            )
             self.tracking_thread.start()
             radec_value = f"{self.ra_value}, {self.dec_value}"
             self.logger.info(
@@ -94,9 +99,7 @@ class Track(BaseCommand):
 
         except DevFailed as dev_failed:
             self.logger.exception(dev_failed)
-            log_message = (
-                f"Exception occured while executing the '{command_name}' command."
-            )
+            log_message = f"Exception occured while executing the '{command_name}' command."
             self.this_server.write_attr("activityMessage", log_message, False)
             tango.Except.re_throw_exception(
                 dev_failed,
@@ -123,8 +126,10 @@ class Track(BaseCommand):
             utc_time = now.replace(tzinfo=timezone.utc)
             utc_timestamp = utc_time.timestamp()
             # pylint: disable=unbalanced-tuple-unpacking
-            device_data.az, device_data.el = azel_converter.point(self.ra_value, self.dec_value, timestamp)
-            
+            device_data.az, device_data.el = azel_converter.point(
+                self.ra_value, self.dec_value, timestamp
+            )
+
             if not self._is_elevation_within_mechanical_limits():
                 time.sleep(0.05)
                 continue
@@ -133,26 +138,34 @@ class Track(BaseCommand):
                 device_data.az = 360 - abs(device_data.az)
 
             if device_data.event_track_time.is_set():
-                log_message = f"Break loop: {device_data.event_track_time.is_set()}"
+                log_message = (
+                    f"Break loop: {device_data.event_track_time.is_set()}"
+                )
                 self.logger.debug(log_message)
                 break
 
             # TODO (kmadisa 11-12-2020) Add a pointing lead time to the current time (like we do on MeerKAT)
-            # utc_timestamp is the time used for AzEl calculation. For the timestamp to be a future timestamp 
-            # on DishMaster, 100 ms are added to it. 
+            # utc_timestamp is the time used for AzEl calculation. For the timestamp to be a future timestamp
+            # on DishMaster, 100 ms are added to it.
             desired_pointing = [
                 (utc_timestamp * 1000) + 100,
                 round(device_data.az, 12),
                 round(device_data.el, 12),
             ]
-            self.logger.debug("desiredPointing coordinates: %s", desired_pointing)
+            self.logger.debug(
+                "desiredPointing coordinates: %s", desired_pointing
+            )
             dish_client.deviceproxy.desiredPointing = desired_pointing
-            if (self.track_on_dish == False):
+            if self.track_on_dish == False:
                 command_name = "Track"
                 dish_client = TangoClient(self.dish_master_fqdn)
                 cmd_ended_cb = CommandCallBack(self.logger).cmd_ended_cb
-                dish_client.send_command_async(command_name, callback_method=cmd_ended_cb)
-                self.logger.info("'%s' command executed successfully.", command_name)
+                dish_client.send_command_async(
+                    command_name, callback_method=cmd_ended_cb
+                )
+                self.logger.info(
+                    "'%s' command executed successfully.", command_name
+                )
                 self.track_on_dish = True
 
             time.sleep(0.05)
@@ -162,7 +175,11 @@ class Track(BaseCommand):
     def _is_elevation_within_mechanical_limits(self):
         device_data = self.target
 
-        if not (device_data.ele_min_lim <= device_data.el <= device_data.ele_max_lim):
+        if not (
+            device_data.ele_min_lim
+            <= device_data.el
+            <= device_data.ele_max_lim
+        ):
             device_data.el_limit = True
             log_message = "Minimum/maximum elevation limit has been reached."
             self.logger.info(log_message)

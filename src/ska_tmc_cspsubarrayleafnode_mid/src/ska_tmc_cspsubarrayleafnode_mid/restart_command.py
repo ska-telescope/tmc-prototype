@@ -1,11 +1,10 @@
 # PyTango imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
 from ska.base.control_model import ObsState
-
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -45,10 +44,16 @@ class RestartCommand(BaseCommand):
         this_server = TangoServerHelper.get_instance()
         csp_subarray_fqdn = this_server.read_property("CspSubarrayFQDN")[0]
         csp_sa_client = TangoClient(csp_subarray_fqdn)
-        if csp_sa_client.get_attribute("obsState").value not in [ObsState.FAULT, ObsState.ABORTED]:
-            tango.Except.throw_exception(const.ERR_UNABLE_RESTART_CMD, const.ERR_RESTART_INVOKING_CMD,
-                                            "CspSubarrayLeafNode.RestartCommand",
-                                            tango.ErrSeverity.ERR)
+        if csp_sa_client.get_attribute("obsState").value not in [
+            ObsState.FAULT,
+            ObsState.ABORTED,
+        ]:
+            tango.Except.throw_exception(
+                const.ERR_UNABLE_RESTART_CMD,
+                const.ERR_RESTART_INVOKING_CMD,
+                "CspSubarrayLeafNode.RestartCommand",
+                tango.ErrSeverity.ERR,
+            )
         return True
 
     def restart_cmd_ended_cb(self, event):
@@ -75,7 +80,9 @@ class RestartCommand(BaseCommand):
         this_server = TangoServerHelper.get_instance()
         # Update logs and activity message attribute with received event
         if event.err:
-            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            log_msg = (
+                f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            )
             self.logger.error(log_msg)
             this_server.write_attr("activityMessage", log_msg, False)
         else:
@@ -103,7 +110,9 @@ class RestartCommand(BaseCommand):
             csp_sub_client_obj.send_command_async(
                 const.CMD_RESTART, None, self.restart_cmd_ended_cb
             )
-            this_server.write_attr("activityMessage", const.STR_RESTART_SUCCESS, False)
+            this_server.write_attr(
+                "activityMessage", const.STR_RESTART_SUCCESS, False
+            )
             self.logger.info(const.STR_RESTART_SUCCESS)
 
         except DevFailed as dev_failed:

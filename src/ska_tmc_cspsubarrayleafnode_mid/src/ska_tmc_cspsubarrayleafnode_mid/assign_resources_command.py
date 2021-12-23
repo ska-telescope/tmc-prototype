@@ -2,17 +2,16 @@ import json
 
 # PyTango imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
-
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
 from . import const
-from .transaction_id import identify_with_id
 from .delay_model import DelayManager
+from .transaction_id import identify_with_id
 
 
 class AssignResourcesCommand(BaseCommand):
@@ -42,7 +41,8 @@ class AssignResourcesCommand(BaseCommand):
         ]:
             tango.Except.throw_exception(
                 f"AssignResources() is not allowed in current state {self.state_model.op_state}",
-                "Failed to invoke AssignResources command on " "cspsubarrayleafnode.",
+                "Failed to invoke AssignResources command on "
+                "cspsubarrayleafnode.",
                 "cspsubarrayleafnode.AssignResources()",
                 tango.ErrSeverity.ERR,
             )
@@ -74,11 +74,19 @@ class AssignResourcesCommand(BaseCommand):
         this_server = TangoServerHelper.get_instance()
         try:
             if event.err:
-                this_server.write_attr("activityMessage", f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}", False)
+                this_server.write_attr(
+                    "activityMessage",
+                    f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}",
+                    False,
+                )
                 log = const.ERR_INVOKING_CMD + event.cmd_name
                 self.logger.error(log)
             else:
-                log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
+                log = (
+                    const.STR_COMMAND
+                    + event.cmd_name
+                    + const.STR_INVOKE_SUCCESS
+                )
                 this_server.write_attr("activityMessage", log, False)
                 self.logger.info(log)
 
@@ -136,7 +144,9 @@ class AssignResourcesCommand(BaseCommand):
         device_data = self.target
         try:
             json_argument = json.loads(argin)
-            device_data.receptor_ids_str = json_argument[const.STR_DISH][const.STR_RECEPTOR_IDS]
+            device_data.receptor_ids_str = json_argument[const.STR_DISH][
+                const.STR_RECEPTOR_IDS
+            ]
             delay_manager_obj = DelayManager.get_instance()
             delay_manager_obj.update_config_params()
             # Invoke AssignResources command on CspSubarray
@@ -150,7 +160,9 @@ class AssignResourcesCommand(BaseCommand):
                 const.CMD_ASSIGN_RESOURCES, argin, self.assign_resources_ended
             )
             self.logger.debug("After invoking AssignResources on CSP subarray")
-            this_server.write_attr("activityMessage", const.STR_ASSIGN_RESOURCES_SUCCESS, False)
+            this_server.write_attr(
+                "activityMessage", const.STR_ASSIGN_RESOURCES_SUCCESS, False
+            )
             self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
 
         except DevFailed as dev_failed:

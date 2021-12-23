@@ -14,7 +14,7 @@ actions during an observation. It also acts as a SDP contact point for Subarray 
 execution. There is one to one mapping between SDP Subarray Leaf Node and SDP subarray.
 """
 
-from . import release, const
+from . import const, release
 from .device_data import DeviceData
 from .sdp_master_leaf_node import SdpMasterLeafNode
 

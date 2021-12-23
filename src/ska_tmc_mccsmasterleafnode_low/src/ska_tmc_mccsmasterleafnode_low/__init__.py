@@ -12,8 +12,7 @@ MccsMasterLeafNode - Leaf Node to monitor and control MCCS Master
 
 """
 
-from . import release
-from . import const
+from . import const, release
 from .mccs_master_leaf_node import MccsMasterLeafNode
 
 __all__ = ["release", "const", "MccsMasterLeafNode"]

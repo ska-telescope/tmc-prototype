@@ -2,22 +2,21 @@
 # Standard python imports
 import json
 from datetime import datetime, timedelta
+
 import pytz
 
 # Third party imports
 import tango
-from tango import DevState, DevFailed
 
 # Additional import
 from ska.base.commands import BaseCommand
 from ska.base.control_model import ObsState
-
+from tango import DevFailed, DevState
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
-from .device_data import DeviceData
-
 
 from . import const
+from .device_data import DeviceData
 
 # PROTECTED REGION END #    //  MccsSubarrayLeafNode.additional_import
 
@@ -80,7 +79,9 @@ class Configure(BaseCommand):
         this_server = TangoServerHelper.get_instance()
         # Update logs and activity message attribute with received event
         if event.err:
-            log_msg = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            log_msg = (
+                f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
+            )
             self.logger.error(log_msg)
             this_server.write_attr("activityMessage", log_msg, False)
         else:
@@ -116,9 +117,13 @@ class Configure(BaseCommand):
             property_value = this_server.read_property("MccsSubarrayFQDN")[0]
             mccs_subarray_fqdn = mccs_subarray_fqdn.join(property_value)
             mccs_subarray_client = TangoClient(mccs_subarray_fqdn)
-            assert (mccs_subarray_client.get_attribute("obsState").value in (ObsState.IDLE, ObsState.READY))
+            assert mccs_subarray_client.get_attribute("obsState").value in (
+                ObsState.IDLE,
+                ObsState.READY,
+            )
             log_msg = (
-                "Input JSON for MCCS Subarray Leaf Node Configure command is: " + argin
+                "Input JSON for MCCS Subarray Leaf Node Configure command is: "
+                + argin
             )
             self.logger.debug(log_msg)
 
@@ -131,19 +136,26 @@ class Configure(BaseCommand):
             mccs_subarray_client.send_command_async(
                 const.CMD_CONFIGURE, cmd_data, self.configure_cmd_ended_cb
             )
-            this_server.write_attr("activityMessage", const.STR_CONFIGURE_SUCCESS, False)
+            this_server.write_attr(
+                "activityMessage", const.STR_CONFIGURE_SUCCESS, False
+            )
 
             self.logger.info(const.STR_CONFIGURE_SUCCESS)
 
         except AssertionError:
             obsState_val = mccs_subarray_client.get_attribute("obsState").value
             log_msg = (
-                f"Mccs Subarray is in ObsState {obsState_val}.""Unable to invoke Configure command")
+                f"Mccs Subarray is in ObsState {obsState_val}."
+                "Unable to invoke Configure command"
+            )
             device_data._read_activity_message = log_msg
             self.logger.exception(log_msg)
-            tango.Except.throw_exception(const.STR_CONFIGURE_EXEC, log_msg,
-                                         "MccsSubarrayLeafNode.ConfigureCommand",
-                                         tango.ErrSeverity.ERR)
+            tango.Except.throw_exception(
+                const.STR_CONFIGURE_EXEC,
+                log_msg,
+                "MccsSubarrayLeafNode.ConfigureCommand",
+                tango.ErrSeverity.ERR,
+            )
 
         except ValueError as value_error:
             log_msg = f"{const.ERR_INVALID_JSON_CONFIG}{value_error}"
@@ -215,9 +227,13 @@ class Configure(BaseCommand):
 
         return sky_coordinates
 
-    def update_configuration_json(self, station_beam_pointings, configuration_string):
+    def update_configuration_json(
+        self, station_beam_pointings, configuration_string
+    ):
         # Update station_beam_pointings into output Configure JSON
         configuration_string["subarray_beams"][0] = station_beam_pointings
-        configuration_string["station_beams"] = configuration_string["subarray_beams"]
+        configuration_string["station_beams"] = configuration_string[
+            "subarray_beams"
+        ]
         configuration_string.pop("subarray_beams", None)
         return configuration_string

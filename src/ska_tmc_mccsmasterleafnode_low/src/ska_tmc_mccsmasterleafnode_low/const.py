@@ -22,7 +22,9 @@ ERR_DEVFAILED_MSG = "This is error message for devfailed"
 ERR_CALLBACK_CMD_FAILED = "MccsMasterLeafNode_Commandfailed in callback"
 ERR_RAISED_EXCEPTION = "Mccs master node raised exception"
 ERR_ON_RESOURCES = "Error while invoking On command on MCCS master Leaf Node."
-ERR_OFF_RESOURCES = "Error while invoking Off command on MCCS master Leaf Node."
+ERR_OFF_RESOURCES = (
+    "Error while invoking Off command on MCCS master Leaf Node."
+)
 # General strings
 STR_ALLOCATE_SUCCESS = "Resources are assigned successfully on MccsMaster."
 STR_REMOVE_ALL_RECEPTORS_SUCCESS = (
@@ -39,8 +41,12 @@ STR_COMMAND = "Command :-> "
 STR_ASSIGN_RES_EXEC = "AssignResources command execution"
 STR_COMMAND = "Command :-> "
 STR_INVOKE_SUCCESS = "Command invoked successfully."
-STR_ON_CMD_ISSUED = "ON command invoked successfully from MCCS Master leaf node."
-STR_OFF_CMD_ISSUED = "OFF command invoked successfully from MCCS Master leaf node."
+STR_ON_CMD_ISSUED = (
+    "ON command invoked successfully from MCCS Master leaf node."
+)
+STR_OFF_CMD_ISSUED = (
+    "OFF command invoked successfully from MCCS Master leaf node."
+)
 STR_ON_EXEC = "On command execution"
 STR_OFF_EXEC = "Off command execution"
 

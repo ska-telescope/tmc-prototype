@@ -6,12 +6,11 @@ import json
 
 # Tango imports
 import tango
-from tango import DevFailed
+from ska.base import SKASubarray
 
 # Additional import
 from ska.base.commands import ResultCode
-from ska.base import SKASubarray
-
+from tango import DevFailed
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -37,7 +36,7 @@ class Scan(SKASubarray.ScanCommand):
 
         JSON string example as follows:
 
-        {"interface":"https://schema.skao.int/ska-low-tmc-scan/2.0","transaction_id":"txn-....-00001","scan_id":1}       
+        {"interface":"https://schema.skao.int/ska-low-tmc-scan/2.0","transaction_id":"txn-....-00001","scan_id":1}
         Note: Above JSON string can be used as an input argument while invoking this command from JIVE.
 
         return:
@@ -72,12 +71,18 @@ class Scan(SKASubarray.ScanCommand):
                 const.CMD_SCAN, json.dumps(input_to_mccs)
             )
             self.logger.info(const.STR_MCCS_SCAN_INIT)
-            this_server.write_attr("activityMessage", const.STR_MCCS_SCAN_INIT, False)
+            this_server.write_attr(
+                "activityMessage", const.STR_MCCS_SCAN_INIT, False
+            )
             self.logger.info(const.STR_SA_SCANNING)
             # Once Scan Duration is complete call EndScan Command
             self.logger.info("Starting Scan Thread")
-            device_data.scan_timer_handler.start_scan_timer(device_data.scan_duration)
-            this_server.write_attr("activityMessage", const.STR_SCAN_SUCCESS, False)
+            device_data.scan_timer_handler.start_scan_timer(
+                device_data.scan_duration
+            )
+            this_server.write_attr(
+                "activityMessage", const.STR_SCAN_SUCCESS, False
+            )
             self.logger.info("Scan thread started")
             return (ResultCode.STARTED, const.STR_SCAN_SUCCESS)
 
@@ -94,7 +99,11 @@ class Scan(SKASubarray.ScanCommand):
 
         except KeyError as key_error:
             self.logger.error(const.ERR_JSON_KEY_NOT_FOUND)
-            this_server.write_attr("activityMessage", (const.ERR_JSON_KEY_NOT_FOUND + str(key_error)), False)
+            this_server.write_attr(
+                "activityMessage",
+                (const.ERR_JSON_KEY_NOT_FOUND + str(key_error)),
+                False,
+            )
             log_message = f"{const.ERR_JSON_KEY_NOT_FOUND}{key_error}"
             self.logger.exception(key_error)
             tango.Except.throw_exception(
@@ -119,9 +128,11 @@ class Scan(SKASubarray.ScanCommand):
         This Scan command input string is updated to send to MCCS SubarrayLeafNode.
         """
         input_scan = json.loads(input_argin)
-        input_scan["interface"] = "https://schema.skao.int/ska-low-mccs-scan/1.0"
-        if 'transaction_id' in input_scan:
+        input_scan[
+            "interface"
+        ] = "https://schema.skao.int/ska-low-mccs-scan/1.0"
+        if "transaction_id" in input_scan:
             del input_scan["transaction_id"]
-        start_time = {"start_time":0.0}
+        start_time = {"start_time": 0.0}
         input_scan.update(start_time)
         return input_scan

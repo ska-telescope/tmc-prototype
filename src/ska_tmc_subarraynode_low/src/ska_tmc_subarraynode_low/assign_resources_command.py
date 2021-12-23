@@ -4,12 +4,13 @@ AssignResourcesCommand class for SubarrayNodeLow.
 # Standard python imports
 import json
 
-# Additional import
-from ska.base.commands import ResultCode
 from ska.base import SKASubarray
 
-from . import const
+# Additional import
+from ska.base.commands import ResultCode
 from tmc.common.tango_server_helper import TangoServerHelper
+
+from . import const
 
 
 class AssignResources(SKASubarray.AssignResourcesCommand):

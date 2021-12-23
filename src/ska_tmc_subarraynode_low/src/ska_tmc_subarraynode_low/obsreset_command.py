@@ -5,12 +5,11 @@ ObsReset Command for SubarrayNode.
 # Third party imports
 # Tango imports
 import tango
-from tango import DevFailed
+from ska.base import SKASubarray
 
 # Additional import
 from ska.base.commands import ResultCode
-from ska.base import SKASubarray
-
+from tango import DevFailed
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
@@ -50,7 +49,9 @@ class ObsReset(SKASubarray.ObsResetCommand):
             mccs_subarray_ln_fqdn = mccs_subarray_ln_fqdn.join(property_val)
             mccs_subarray_ln_client = TangoClient(mccs_subarray_ln_fqdn)
             mccs_subarray_ln_client.send_command(const.CMD_OBSRESET)
-            this_server.write_attr("activityMessage", const.STR_OBSRESET_SUCCESS, False)
+            this_server.write_attr(
+                "activityMessage", const.STR_OBSRESET_SUCCESS, False
+            )
             self.logger.info(const.STR_OBSRESET_SUCCESS)
             this_server.set_status(const.STR_OBSRESET_SUCCESS)
             device_data.is_obsreset_command_executed = True

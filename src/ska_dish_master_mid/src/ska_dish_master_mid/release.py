@@ -9,7 +9,7 @@
 
 """Release information for Python Package"""
 
-name = """ska-dish-master-mid"""
+name = """ska_dish_master_mid"""
 version = "0.8.7"
 version_info = version.split(".")
 description = """SKA Dish Master TANGO device server"""

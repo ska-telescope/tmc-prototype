@@ -11,12 +11,17 @@
 
 """
 
-from . import release
-from . import const
+from . import const, release
 from .csp_subarray_leaf_node import CspSubarrayLeafNode
 from .device_data import DeviceData
 
-__all__ = ["release", "const", "CspSubarrayLeafNode", "exceptions", "DeviceData"]
+__all__ = [
+    "release",
+    "const",
+    "CspSubarrayLeafNode",
+    "exceptions",
+    "DeviceData",
+]
 
 __version__ = release.version
 __version_info__ = release.version_info
