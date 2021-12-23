@@ -794,7 +794,7 @@ class OverrideDish(object):
         if len(self.desired_pointings) > self.MAX_SAMPLE_HISTORY:
             # drop older samples
             self.desired_pointings = self.desired_pointings[
-                -self.MAX_SAMPLE_HISTORY:
+                -self.MAX_SAMPLE_HISTORY :
             ]
 
     def pre_update(self, model, sim_time, dt):

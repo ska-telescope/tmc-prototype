@@ -12,7 +12,6 @@ import pytest
 import tango
 from mock import MagicMock, Mock
 
-
 # Additional import
 from ska.base.control_model import (
     ControlMode,

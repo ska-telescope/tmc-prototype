@@ -6,6 +6,7 @@ from ska.base import SKABaseDevice
 # Additional import
 from ska.base.commands import ResultCode
 from tango import DevFailed, DevState
+
 from . import const
 
 
