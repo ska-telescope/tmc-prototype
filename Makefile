@@ -14,7 +14,7 @@ CAR_OCI_REGISTRY_HOST:=artefact.skao.int
 CAR_OCI_REGISTRY_USER:=ska-telescope
 PROJECT = ska-tmc
 
-PYTHON_SWITCHES_FOR_FLAKE8=--ignore=W503,E501 --max-line-length=180
+PYTHON_SWITCHES_FOR_FLAKE8=--ignore=W503,E203 --max-line-length=180
 
 # KUBE_NAMESPACE defines the Kubernetes Namespace that will be deployed to
 # using Helm.  If this does not already exist it will be created
