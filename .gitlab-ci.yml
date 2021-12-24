@@ -61,3 +61,7 @@ include:
 # https://developer.skatelescope.org/en/latest/tools/continuousintegration.html#automated-collection-of-ci-health-metrics-as-part-of-the-ci-pipeline
 - project: 'ska-telescope/templates-repository'
   file: 'gitlab-ci/includes/finaliser.gitlab-ci.yml'
+
+# retry to template job for python-test
+python-test:
+  retry: 2
