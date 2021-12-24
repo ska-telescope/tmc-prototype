@@ -20,10 +20,18 @@ include = [
     { path = 'tests'}
 ]
 
+[tool.poetry.scripts]
+SdpMasterLeafNodeDS = 'ska_tmc_sdpmasterleafnode_mid.sdp_master_leaf_node:main'
+SdpSubarrayLeafNodeDS = 'ska_tmc_sdpsubarrayleafnode_mid.sdp_subarray_leaf_node:main'
+CspMasterLeafNodeDS = 'ska_tmc_cspmasterleafnode_mid.csp_master_leaf_node:main'
+CspSubarrayLeafNodeDS = 'ska_tmc_cspsubarrayleafnode_mid.csp_subarray_leaf_node:main'
+DishLeafNodeDS = 'ska_tmc_dishleafnode_mid.dish_leaf_node:main'
+MccsMasterLeafNodeDS = 'ska_tmc_mccsmasterleafnode_low.mccs_master_leaf_node:main'
+MccsSubarrayLeafNodeDS = 'ska_tmc_mccssubarrayleafnode_low.mccs_subarray_leaf_node:main'
+
 [[tool.poetry.source]]
 name = 'ska-nexus'
 url = 'https://artefact.skao.int/repository/pypi-internal/simple'
-
 
 [tool.poetry.dependencies]
 python = "^3.7"
