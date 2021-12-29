@@ -23,7 +23,6 @@ class SdpsubarrayleafnodeComponent:
         self.logger = logger
         self.lock = threading.Lock()  # needs to check, if required
 
-    
     @property
     def devices(self):
         """
