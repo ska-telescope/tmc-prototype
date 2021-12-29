@@ -1,9 +1,10 @@
 import json
 import threading
 
-from ska_tango_base.control_model import HealthState, ObsState
-from ska_tmc_centralnode.model.enum import ModesAvailability
-from ska_tmc_common.device_info import DeviceInfo
+from ska_tango_base.control_model import ObsState
+
+# TODO: Enable this import once the ska-tmc-common pacakge is available
+# from ska_tmc_common.device_info import DeviceInfo
 from tango import DevState
 
 
@@ -86,6 +87,69 @@ class SdpsubarrayleafnodeComponent:
             intDevInfo.state = DevState.UNKNOWN
             intDevInfo.update_unresponsive(True, exception)
             self._invoke_device_callback(intDevInfo)
+
+
+# TODO: Remove DeviceInfo class once the ska-tmc-common pacakge is available
+class DeviceInfo:
+    def __init__(self, dev_name: str, _unresponsive=False):
+        self.dev_name = dev_name
+        self.state = DevState.UNKNOWN
+        self.obsState = ObsState.EMPTY
+        self.ping = -1
+        self.last_event_arrived = None
+        self.exception = None
+        self._unresponsive = _unresponsive
+        self.lock = threading.Lock()
+
+    def from_dev_info(self, devInfo):
+        self.dev_name = devInfo.dev_name
+        self.state = devInfo.state
+        self.ping = devInfo.ping
+        self.last_event_arrived = devInfo.last_event_arrived
+        self.lock = devInfo.lock
+
+    def update_unresponsive(self, value, exception=None):
+        """
+        Set device unresponsive
+
+        :param: value unresponsive boolean
+        """
+        self._unresponsive = value
+        self.exception = exception
+        if self._unresponsive:
+            self.state = DevState.UNKNOWN
+            self.obsState = ObsState.EMPTY
+            self.ping = -1
+
+    @property
+    def unresponsive(self):
+        """
+        Return whether this device is currently unresponsive.
+
+        :return: whether this device is faulting
+        :rtype: bool
+        """
+        return self._unresponsive
+
+    def __eq__(self, other):
+        if isinstance(other, DeviceInfo):
+            return self.dev_name == other.dev_name
+        else:
+            return False
+
+    def to_json(self):
+        return json.dumps(self.to_dict())
+
+    def to_dict(self):
+        result = {
+            "dev_name": self.dev_name,
+            "obsState": str(ObsState(self.obsState)),
+            "ping": str(self.ping),
+            "last_event_arrived": str(self.last_event_arrived),
+            "unresponsive": str(self.unresponsive),
+            "exception": str(self.exception),
+        }
+        return result
 
 
 class SdpSubArrayDeviceInfo(DeviceInfo):
