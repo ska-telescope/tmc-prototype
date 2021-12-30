@@ -25,9 +25,8 @@ SdpSubarrayLeafNode
 
 
 from ska_tmc_sdpsubarrayleafnode import input_validator, release
-from ska_tmc_sdpsubarrayleafnode.dev_factory import DevFactory
 
-__all__ = ["release", "input_validator", "DevFactory"]
+__all__ = ["release", "input_validator"]
 
 __version__ = release.version
 __version_info__ = release.version_info
