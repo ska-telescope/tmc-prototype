@@ -10,7 +10,7 @@ packages = [
     { include = "ska_tmc_cspmasterleafnode_mid", from = "src" },
     { include = "ska_tmc_cspsubarrayleafnode_mid", from = "src" },
     { include = "ska_tmc_sdpmasterleafnode_mid", from = "src" },
-    { include = "ska_tmc_sdpsubarrayleafnode_mid", from = "src" },
+    { include = "ska_tmc_sdpsubarrayleafnode", from = "src" },
     { include = "ska_tmc_dishleafnode_mid", from = "src" },
     { include = "ska_tmc_mccsmasterleafnode_low", from = "src" },
     { include = "ska_tmc_mccssubarrayleafnode_low", from = "src" },
@@ -22,7 +22,7 @@ include = [
 
 [tool.poetry.scripts]
 SdpMasterLeafNodeDS = 'ska_tmc_sdpmasterleafnode_mid.sdp_master_leaf_node:main'
-SdpSubarrayLeafNodeDS = 'ska_tmc_sdpsubarrayleafnode_mid.sdp_subarray_leaf_node:main'
+SdpSubarrayLeafNodeDS = 'ska_tmc_sdpsubarrayleafnode.sdp_subarray_leaf_node:main'
 CspMasterLeafNodeDS = 'ska_tmc_cspmasterleafnode_mid.csp_master_leaf_node:main'
 CspSubarrayLeafNodeDS = 'ska_tmc_cspsubarrayleafnode_mid.csp_subarray_leaf_node:main'
 DishLeafNodeDS = 'ska_tmc_dishleafnode_mid.dish_leaf_node:main'

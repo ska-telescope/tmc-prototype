@@ -6,40 +6,40 @@
 SDP Subarray Leaf Node
 ========================================================
 
-.. autoclass:: ska-tmc.ska-tmc-sdpsubarrayleafnode-mid.src.ska_tmc_sdpsubarrayleafnode_mid.sdp_subarray_leaf_node.SdpSubarrayLeafNode
+.. autoclass:: ska-tmc.ska-tmc-sdpsubarrayleafnode-mid.src.ska_tmc_sdpsubarrayleafnode.sdp_subarray_leaf_node.SdpSubarrayLeafNode
     :members: None
     :undoc-members:
-.. autoclass:: ska-tmc.ska-tmc-sdpsubarrayleafnode-mid.src.ska_tmc_sdpsubarrayleafnode_mid.abort_command.Abort
+.. autoclass:: ska-tmc.ska-tmc-sdpsubarrayleafnode-mid.src.ska_tmc_sdpsubarrayleafnode.abort_command.Abort
     :members: do
     :undoc-members:
-.. autoclass:: ska-tmc.ska-tmc-sdpsubarrayleafnode-mid.src.ska_tmc_sdpsubarrayleafnode_mid.assign_resources_command.AssignResources
+.. autoclass:: ska-tmc.ska-tmc-sdpsubarrayleafnode-mid.src.ska_tmc_sdpsubarrayleafnode.assign_resources_command.AssignResources
     :members: do
     :undoc-members:
-.. autoclass:: ska-tmc.ska-tmc-sdpsubarrayleafnode-mid.src.ska_tmc_sdpsubarrayleafnode_mid.configure_command.Configure
+.. autoclass:: ska-tmc.ska-tmc-sdpsubarrayleafnode-mid.src.ska_tmc_sdpsubarrayleafnode.configure_command.Configure
     :members: do
     :undoc-members:
-.. autoclass:: ska-tmc.ska-tmc-sdpsubarrayleafnode-mid.src.ska_tmc_sdpsubarrayleafnode_mid.end_command.End
+.. autoclass:: ska-tmc.ska-tmc-sdpsubarrayleafnode-mid.src.ska_tmc_sdpsubarrayleafnode.end_command.End
     :members: do
     :undoc-members:
-.. autoclass:: ska-tmc.ska-tmc-sdpsubarrayleafnode-mid.src.ska_tmc_sdpsubarrayleafnode_mid.endscan_command.EndScan
+.. autoclass:: ska-tmc.ska-tmc-sdpsubarrayleafnode-mid.src.ska_tmc_sdpsubarrayleafnode.endscan_command.EndScan
     :members: do
     :undoc-members:
-.. autoclass:: ska-tmc.ska-tmc-sdpsubarrayleafnode-mid.src.ska_tmc_sdpsubarrayleafnode_mid.obsreset_command.ObsReset
+.. autoclass:: ska-tmc.ska-tmc-sdpsubarrayleafnode-mid.src.ska_tmc_sdpsubarrayleafnode.obsreset_command.ObsReset
     :members: do
     :undoc-members:
-.. autoclass:: ska-tmc.ska-tmc-sdpsubarrayleafnode-mid.src.ska_tmc_sdpsubarrayleafnode_mid.off_command.Off
+.. autoclass:: ska-tmc.ska-tmc-sdpsubarrayleafnode-mid.src.ska_tmc_sdpsubarrayleafnode.off_command.Off
     :members: do
     :undoc-members:
-.. autoclass:: ska-tmc.ska-tmc-sdpsubarrayleafnode-mid.src.ska_tmc_sdpsubarrayleafnode_mid.on_command.On
+.. autoclass:: ska-tmc.ska-tmc-sdpsubarrayleafnode-mid.src.ska_tmc_sdpsubarrayleafnode.on_command.On
     :members: do
     :undoc-members:
-.. autoclass:: ska-tmc.ska-tmc-sdpsubarrayleafnode-mid.src.ska_tmc_sdpsubarrayleafnode_mid.release_resources_command.ReleaseAllResources
+.. autoclass:: ska-tmc.ska-tmc-sdpsubarrayleafnode-mid.src.ska_tmc_sdpsubarrayleafnode.release_resources_command.ReleaseAllResources
     :members: do
     :undoc-members:
-.. autoclass:: ska-tmc.ska-tmc-sdpsubarrayleafnode-mid.src.ska_tmc_sdpsubarrayleafnode_mid.restart_command.Restart
+.. autoclass:: ska-tmc.ska-tmc-sdpsubarrayleafnode-mid.src.ska_tmc_sdpsubarrayleafnode.restart_command.Restart
     :members: do
     :undoc-members:
-.. autoclass:: ska-tmc.ska-tmc-sdpsubarrayleafnode-mid.src.ska_tmc_sdpsubarrayleafnode_mid.scan_command.Scan
+.. autoclass:: ska-tmc.ska-tmc-sdpsubarrayleafnode-mid.src.ska_tmc_sdpsubarrayleafnode.scan_command.Scan
     :members: do
     :undoc-members:
 Note: Simulator for SDP Subarray device is available. It enables SDP Subarray Leaf Node to be deployed 

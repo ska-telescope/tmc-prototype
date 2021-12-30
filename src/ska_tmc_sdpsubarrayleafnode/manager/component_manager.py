@@ -8,13 +8,13 @@ import threading
 import time
 
 from ska_tango_base.base import BaseComponentManager
-from ska_tmc_sdpsubarraynode.manager.command_executor import CommandExecutor
-from ska_tmc_sdpsubarraynode.model.component import (
+from ska_tmc_sdpsubarrayleafnode.manager.command_executor import CommandExecutor
+from ska_tmc_sdpsubarrayleafnode.model.component import (
     DeviceInfo,
     SdpSLNComponent,
     SdpSubArrayDeviceInfo,
 )
-from ska_tmc_sdpsubarraynode.model.input import (
+from ska_tmc_sdpsubarrayleafnode.model.input import (
     InputParameterLow,
     InputParameterMid,
 )

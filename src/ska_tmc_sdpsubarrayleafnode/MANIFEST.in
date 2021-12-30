@@ -1,4 +1,4 @@
-recursive-include src/ska_tmc_sdpsubarrayleafnode_mid *.py
+recursive-include src/ska_tmc_sdpsubarrayleafnode *.py
 recursive-include test *.py
 recursive-include pogo SdpSubarrayLeafNode.xmi
 include *.rst
