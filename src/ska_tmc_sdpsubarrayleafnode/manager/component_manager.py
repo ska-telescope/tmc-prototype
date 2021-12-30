@@ -8,7 +8,6 @@ import threading
 import time
 
 from ska_tango_base.base import BaseComponentManager
-from tango import DevState
 
 from ska_tmc_sdpsubarrayleafnode.manager.command_executor import (
     CommandExecutor,
@@ -17,10 +16,6 @@ from ska_tmc_sdpsubarrayleafnode.model.component import (
     DeviceInfo,
     SdpSLNComponent,
     SdpSubArrayDeviceInfo,
-)
-from ska_tmc_sdpsubarrayleafnode.model.input import (
-    InputParameterLow,
-    InputParameterMid,
 )
 
 
@@ -58,7 +53,7 @@ class SdpSLNComponentManager(BaseComponentManager):
         """
         self.logger = logger
         self.lock = threading.Lock()
-        self._component = _component or Component(logger)
+        self._component = _component or SdpSLNComponent(logger)
 
         self._component.set_op_callbacks(_update_device_callback)
 
@@ -153,7 +148,7 @@ class SdpSLNComponentManager(BaseComponentManager):
             return
 
         if "subarray" in dev_name.lower():
-            devInfo = SubArrayDeviceInfo(dev_name, False)
+            devInfo = SdpSubArrayDeviceInfo(dev_name, False)
         else:
             devInfo = DeviceInfo(dev_name, False)
 
