@@ -146,6 +146,23 @@ class SdpSLNComponentManager(BaseComponentManager):
         with self.lock:
             self.input_parameter.update(self)
 
+    def add_device(self, dev_name):
+        """
+        Add device to the monitoring loop
+
+        :param dev_name: device name
+        :type dev_name: str
+        """
+        if dev_name is None:
+            return
+
+        if "subarray" in dev_name.lower():
+            devInfo = SubArrayDeviceInfo(dev_name, False)
+        else:
+            devInfo = DeviceInfo(dev_name, False)
+
+        self.component.update_device(devInfo)
+        
     def device_failed(self, device_info, exception):
         """
         Set a device to failed and call the relative callback if available
