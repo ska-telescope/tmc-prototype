@@ -8,7 +8,11 @@ import threading
 import time
 
 from ska_tango_base.base import BaseComponentManager
-from ska_tmc_sdpsubarrayleafnode.manager.command_executor import CommandExecutor
+from tango import DevState
+
+from ska_tmc_sdpsubarrayleafnode.manager.command_executor import (
+    CommandExecutor,
+)
 from ska_tmc_sdpsubarrayleafnode.model.component import (
     DeviceInfo,
     SdpSLNComponent,
@@ -18,7 +22,6 @@ from ska_tmc_sdpsubarrayleafnode.model.input import (
     InputParameterLow,
     InputParameterMid,
 )
-from tango import DevState
 
 
 class SdpSLNComponentManager(BaseComponentManager):
@@ -155,7 +158,7 @@ class SdpSLNComponentManager(BaseComponentManager):
             devInfo = DeviceInfo(dev_name, False)
 
         self.component.update_device(devInfo)
-        
+
     def device_failed(self, device_info, exception):
         """
         Set a device to failed and call the relative callback if available

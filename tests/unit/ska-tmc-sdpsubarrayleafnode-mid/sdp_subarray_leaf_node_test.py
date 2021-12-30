@@ -24,11 +24,7 @@ from tango.test_context import DeviceTestContext
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
 
-from src.ska_tmc_sdpsubarrayleafnode import (
-    SdpSubarrayLeafNode,
-    const,
-    release,
-)
+from src.ska_tmc_sdpsubarrayleafnode import SdpSubarrayLeafNode, const, release
 from src.ska_tmc_sdpsubarrayleafnode.device_data import DeviceData
 
 assign_input_file = "command_AssignResources.json"
