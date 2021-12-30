@@ -2,9 +2,6 @@ import json
 import threading
 
 from ska_tango_base.control_model import ObsState
-
-# TODO: Enable this import once the ska-tmc-common pacakge is available
-# from ska_tmc_common.device_info import DeviceInfo
 from tango import DevState
 
 
