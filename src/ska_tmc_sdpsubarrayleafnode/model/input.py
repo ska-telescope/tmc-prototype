@@ -1,7 +1,6 @@
 class InputParameter:
     def __init__(self, changed_callback) -> None:
         self._changed_callback = changed_callback
-        self._tm_subarray_dev_names = []
 
     def update(self, component_manager):
         raise NotImplementedError("This class must be inherited!")
@@ -9,6 +8,7 @@ class InputParameter:
 
 class InputParameterMid(InputParameter):
     def __init__(self, changed_callback) -> None:
+        super().__init__(changed_callback)
         self._sdp_subarray_dev_names = ["mid_sdp/elt/subarray_01"]
         self._changed_callback = changed_callback
 
@@ -52,4 +52,8 @@ class InputParameterMid(InputParameter):
 
 class InputParameterLow(InputParameter):
     def __init__(self, changed_callback) -> None:
-        super.__init__(self, changed_callback)
+        super().__init__(changed_callback)
+        self._changed_callback = changed_callback
+
+    def update(self, component_manager):
+        pass
