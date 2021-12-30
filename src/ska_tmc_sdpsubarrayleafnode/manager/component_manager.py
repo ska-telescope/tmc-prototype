@@ -10,8 +10,8 @@ import time
 from ska_tango_base.base import BaseComponentManager
 from ska_tmc_sdpsubarraynode.manager.command_executor import CommandExecutor
 from ska_tmc_sdpsubarraynode.model.component import (
-    Component,
     DeviceInfo,
+    SdpSLNComponent,
     SdpSubArrayDeviceInfo,
 )
 from ska_tmc_sdpsubarraynode.model.input import (

@@ -48,3 +48,8 @@ class InputParameterMid(InputParameter):
         for devInfo in component_manager.devices:
             if devInfo.dev_name not in list_dev_names:
                 component_manager.component.remove_device(devInfo.dev_name)
+
+
+class InputParameterLow(InputParameter):
+    def __init__(self, changed_callback) -> None:
+        super.__init__(self, changed_callback)
