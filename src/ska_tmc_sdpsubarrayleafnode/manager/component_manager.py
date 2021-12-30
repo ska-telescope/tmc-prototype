@@ -8,19 +8,17 @@ import threading
 import time
 
 from ska_tango_base.base import BaseComponentManager
-from tango import DevState
-
-
 from ska_tmc_sdpsubarraynode.manager.command_executor import CommandExecutor
 from ska_tmc_sdpsubarraynode.model.component import (
-    Component,
     DeviceInfo,
+    SdpSLNComponent,
     SdpSubArrayDeviceInfo,
 )
 from ska_tmc_sdpsubarraynode.model.input import (
     InputParameterLow,
     InputParameterMid,
 )
+from tango import DevState
 
 
 class SdpSLNComponentManager(BaseComponentManager):
@@ -59,16 +57,12 @@ class SdpSLNComponentManager(BaseComponentManager):
         self.lock = threading.Lock()
         self._component = _component or Component(logger)
 
-        self._component.set_op_callbacks(
-            _update_device_callback
-        )
+        self._component.set_op_callbacks(_update_device_callback)
 
         super().__init__(op_state_model, *args, **kwargs)
 
-        
         self._input_parameter = _input_parameter
 
-        
         self._command_executor = CommandExecutor(
             logger,
             _update_command_in_progress_callback=_update_command_in_progress_callback,
@@ -141,7 +135,6 @@ class SdpSLNComponentManager(BaseComponentManager):
     def command_executed(self):
         return self._command_executor._command_executed
 
-    
     def update_input_parameter(self):
         with self.lock:
             self.input_parameter.update(self)

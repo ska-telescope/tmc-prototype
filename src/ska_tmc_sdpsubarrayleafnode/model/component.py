@@ -8,7 +8,7 @@ from ska_tango_base.control_model import ObsState
 from tango import DevState
 
 
-class SdpsubarrayleafnodeComponent:
+class SdpSLNComponent:
     """
     A component class for Sdpsubarrayleafnode Node
 
@@ -94,7 +94,7 @@ class DeviceInfo:
     def __init__(self, dev_name: str, _unresponsive=False):
         self.dev_name = dev_name
         self.state = DevState.UNKNOWN
-        self.obsState = ObsState.EMPTY
+        self.obsState = ObsState.EMPTY  # why it is required here ?
         self.ping = -1
         self.last_event_arrived = None
         self.exception = None
@@ -105,7 +105,6 @@ class DeviceInfo:
         self.dev_name = devInfo.dev_name
         self.state = devInfo.state
         self.ping = devInfo.ping
-        self.last_event_arrived = devInfo.last_event_arrived
         self.lock = devInfo.lock
 
     def update_unresponsive(self, value, exception=None):
@@ -145,7 +144,6 @@ class DeviceInfo:
             "dev_name": self.dev_name,
             "obsState": str(ObsState(self.obsState)),
             "ping": str(self.ping),
-            "last_event_arrived": str(self.last_event_arrived),
             "unresponsive": str(self.unresponsive),
             "exception": str(self.exception),
         }
