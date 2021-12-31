@@ -15,7 +15,6 @@ from ska_tmc_sdpsubarrayleafnode.manager.command_executor import (
 from ska_tmc_sdpsubarrayleafnode.model.component import (
     DeviceInfo,
     SdpSLNComponent,
-    SdpSubArrayDeviceInfo,
 )
 
 
@@ -37,8 +36,6 @@ class SdpSLNComponentManager(BaseComponentManager):
         _component=None,
         _update_device_callback=None,
         _update_command_in_progress_callback=None,
-        *args,
-        **kwargs,
     ):
         """
         Initialise a new ComponentManager instance.
@@ -55,7 +52,7 @@ class SdpSLNComponentManager(BaseComponentManager):
 
         self._component.set_op_callbacks(_update_device_callback)
 
-        super().__init__(op_state_model, *args, **kwargs)
+        super().__init__(op_state_model)
 
         self._input_parameter = _input_parameter
 
@@ -145,10 +142,10 @@ class SdpSLNComponentManager(BaseComponentManager):
         if dev_name is None:
             return
 
-        if "subarray" in dev_name.lower():
-            devInfo = SdpSubArrayDeviceInfo(dev_name, False)
-        else:
-            devInfo = DeviceInfo(dev_name, False)
+        # if "subarray" in dev_name.lower():
+        #     devInfo = SdpSubArrayDeviceInfo(dev_name, False)
+        # else:
+        devInfo = DeviceInfo(dev_name, False)
 
         self.component.update_device(devInfo)
 

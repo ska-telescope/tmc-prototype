@@ -14,13 +14,13 @@ import tango
 from mock import MagicMock, Mock
 from ska.base.control_model import ObsState
 
+# Additional import
+from src.ska_tmc_mccssubarrayleafnode_low import MccsSubarrayLeafNode, const
+
 # Tango imports
 from tango.test_context import DeviceTestContext
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
-
-# Additional import
-from src.ska_tmc_mccssubarrayleafnode_low import MccsSubarrayLeafNode, const
 
 
 @pytest.fixture(scope="function")

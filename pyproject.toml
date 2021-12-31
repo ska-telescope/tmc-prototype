@@ -6,28 +6,15 @@ authors = ["Team NCRA"]
 license = "BSD-3-Clause"
 
 packages = [
-    { include = "ska_dish_master_mid", from = "src" },
-    { include = "ska_tmc_cspmasterleafnode_mid", from = "src" },
-    { include = "ska_tmc_cspsubarrayleafnode_mid", from = "src" },
-    { include = "ska_tmc_sdpmasterleafnode_mid", from = "src" },
     { include = "ska_tmc_sdpsubarrayleafnode", from = "src" },
-    { include = "ska_tmc_dishleafnode_mid", from = "src" },
-    { include = "ska_tmc_mccsmasterleafnode_low", from = "src" },
-    { include = "ska_tmc_mccssubarrayleafnode_low", from = "src" },
-    { include = "ska_tmc_subarraynode_low", from = "src" }
 ]
 include = [
     { path = 'tests'}
 ]
 
 [tool.poetry.scripts]
-SdpMasterLeafNodeDS = 'ska_tmc_sdpmasterleafnode_mid.sdp_master_leaf_node:main'
 SdpSubarrayLeafNodeDS = 'ska_tmc_sdpsubarrayleafnode.sdp_subarray_leaf_node:main'
-CspMasterLeafNodeDS = 'ska_tmc_cspmasterleafnode_mid.csp_master_leaf_node:main'
-CspSubarrayLeafNodeDS = 'ska_tmc_cspsubarrayleafnode_mid.csp_subarray_leaf_node:main'
-DishLeafNodeDS = 'ska_tmc_dishleafnode_mid.dish_leaf_node:main'
-MccsMasterLeafNodeDS = 'ska_tmc_mccsmasterleafnode_low.mccs_master_leaf_node:main'
-MccsSubarrayLeafNodeDS = 'ska_tmc_mccssubarrayleafnode_low.mccs_subarray_leaf_node:main'
+
 
 [[tool.poetry.source]]
 name = 'ska-nexus'
@@ -45,7 +32,7 @@ ska-telescope-model = "1.3.1"
 fire = "^0.4.0"
 ska-tmc-common = "0.1.7+d39e6423"
 ska-ser-logging = "0.4.0"
-ska-tango-base = "0.7.2"
+ska-tango-base = "0.11.3+5e1f0fee"
 astropy = "^4.1"
 katpoint = "1.0a1"
 pytz = "2021.3"

@@ -17,13 +17,12 @@ from ska.base.control_model import (
     SimulationMode,
     TestMode,
 )
-from tango.test_context import DeviceTestContext
-from tmc.common.tango_client import TangoClient
-from tmc.common.tango_server_helper import TangoServerHelper
-
 from src.ska_tmc_dishleafnode_mid import DishLeafNode, const, release
 from src.ska_tmc_dishleafnode_mid.device_data import DeviceData
 from src.ska_tmc_dishleafnode_mid.utils import DishMode
+from tango.test_context import DeviceTestContext
+from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 
 config_input_file = "command_Config.json"
 path = join(dirname(__file__), "data", config_input_file)

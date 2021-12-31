@@ -11,12 +11,6 @@ import pytest
 import tango
 from mock import MagicMock, Mock
 from ska.base.control_model import HealthState, LoggingLevel, ObsState
-from tango import DevState
-
-# Tango imports
-from tango.test_context import DeviceTestContext
-from tmc.common.tango_client import TangoClient
-from tmc.common.tango_server_helper import TangoServerHelper
 
 # Additional import
 from src.ska_tmc_cspsubarrayleafnode_mid import (
@@ -24,6 +18,12 @@ from src.ska_tmc_cspsubarrayleafnode_mid import (
     const,
     release,
 )
+from tango import DevState
+
+# Tango imports
+from tango.test_context import DeviceTestContext
+from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 
 obs_state_global = ObsState.IDLE
 

@@ -17,10 +17,6 @@ from mock import MagicMock, Mock
 from ska.base import SKASubarrayStateModel
 from ska.base.commands import ResultCode
 from ska.base.control_model import HealthState, ObsState
-from tango import DevState
-from tango.test_context import DeviceTestContext
-from tmc.common.tango_client import TangoClient
-from tmc.common.tango_server_helper import TangoServerHelper
 
 # Additional import
 from src.ska_tmc_subarraynode_low import SubarrayNode, const
@@ -38,6 +34,10 @@ from src.ska_tmc_subarraynode_low.release_all_resources_command import (
 )
 from src.ska_tmc_subarraynode_low.restart_command import Restart
 from src.ska_tmc_subarraynode_low.scan_command import Scan
+from tango import DevState
+from tango.test_context import DeviceTestContext
+from tmc.common.tango_client import TangoClient
+from tmc.common.tango_server_helper import TangoServerHelper
 
 assign_input_file = "command_AssignResources.json"
 path = join(dirname(__file__), "data", assign_input_file)

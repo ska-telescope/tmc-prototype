@@ -17,13 +17,13 @@ from ska.base.control_model import (
     SimulationMode,
     TestMode,
 )
+
+# Additional import
+from src.ska_tmc_sdpmasterleafnode_mid import SdpMasterLeafNode, const, release
 from tango import DevState
 from tango.test_context import DeviceTestContext
 from tmc.common.tango_client import TangoClient
 from tmc.common.tango_server_helper import TangoServerHelper
-
-# Additional import
-from src.ska_tmc_sdpmasterleafnode_mid import SdpMasterLeafNode, const, release
 
 
 @pytest.fixture(scope="function")

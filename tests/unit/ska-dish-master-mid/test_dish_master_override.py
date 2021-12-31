@@ -9,14 +9,13 @@ from unittest import mock
 
 import pkg_resources
 import pytest
-from tango_simlib import tango_sim_generator
-
 from src.ska_dish_master_mid.dish_master_behaviour import (
     AzEl,
     OverrideDish,
     get_enum_str,
     set_enum,
 )
+from tango_simlib import tango_sim_generator
 
 FGO_FILE_PATH = pkg_resources.resource_filename(
     "src.ska_dish_master_mid", "dish_master.fgo"

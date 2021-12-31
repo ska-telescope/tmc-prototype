@@ -147,28 +147,28 @@ class DeviceInfo:
         return result
 
 
-class SdpSubArrayDeviceInfo(DeviceInfo):
-    def __init__(self, dev_name, _unresponsive=False):
-        super(SdpSubArrayDeviceInfo, self).__init__(dev_name, _unresponsive)
-        self.obsState = ObsState.EMPTY
+# class SdpSubArrayDeviceInfo(DeviceInfo):
+#     def __init__(self, dev_name, _unresponsive=False):
+#         super(SdpSubArrayDeviceInfo, self).__init__(dev_name, _unresponsive)
+#         self.obsState = ObsState.EMPTY
 
-    def from_dev_info(self, sdpsubarrayDevInfo):
-        super().from_dev_info(sdpsubarrayDevInfo)
-        if isinstance(sdpsubarrayDevInfo, SdpSubArrayDeviceInfo):
-            self.obsState = sdpsubarrayDevInfo.obsState
+#     def from_dev_info(self, sdpsubarrayDevInfo):
+#         super().from_dev_info(sdpsubarrayDevInfo)
+#         if isinstance(sdpsubarrayDevInfo, SdpSubArrayDeviceInfo):
+#             self.obsState = sdpsubarrayDevInfo.obsState
 
-    def __eq__(self, other):
-        if isinstance(other, SdpSubArrayDeviceInfo) or isinstance(
-            other, DeviceInfo
-        ):
-            return self.dev_name == other.dev_name
-        else:
-            return False
+#     def __eq__(self, other):
+#         if isinstance(other, SdpSubArrayDeviceInfo) or isinstance(
+#             other, DeviceInfo
+#         ):
+#             return self.dev_name == other.dev_name
+#         else:
+#             return False
 
-    def to_json(self):
-        return json.dumps(self.to_dict())
+#     def to_json(self):
+#         return json.dumps(self.to_dict())
 
-    def to_dict(self):
-        super_dict = super().to_dict()
-        super_dict["obsState"] = str(ObsState(self.obsState))
-        return super_dict
+#     def to_dict(self):
+#         super_dict = super().to_dict()
+#         super_dict["obsState"] = str(ObsState(self.obsState))
+#         return super_dict
