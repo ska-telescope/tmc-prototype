@@ -1,95 +1,26 @@
-# -*- coding: utf-8 -*-
-#
-# This file is part of the SdpSubarrayLeafNode project
-#
-#
-#
-# Distributed under the terms of the BSD-3-Clause license.
-# See LICENSE.txt for more info.
-
 """
 SDP Subarray Leaf node is to monitor the SDP Subarray and issue control actions during an observation.
-It also acts as a SDP contact point for Subarray Node for observation execution.
-
+It also acts as a SDP contact point for Subarray Node for observation execution
 """
-# PROTECTED REGION ID(sdpsubarrayleafnode.additionnal_import) ENABLED START #
-# Third party imports
-import os
-import threading
+import json
 
-# PyTango imports
-import tango
+from ska_tango_base import SKABaseDevice
+from ska_tango_base.commands import ResultCode
+from ska_tango_base.control_model import HealthState
+from tango import AttrWriteType, DebugIt
+from tango.server import attribute, command, device_property
 
-# Additional imports
-from ska.base import SKABaseDevice
-from ska.base.commands import ResultCode
-from ska.base.control_model import HealthState, ObsState
-from tango import ApiUtil, AttrWriteType, DebugIt
-from tango.server import attribute, command, device_property, run
-from tmc.common.tango_client import TangoClient
-from tmc.common.tango_server_helper import TangoServerHelper
-
-from . import const, release
-from .abort_command import Abort
-from .assign_resources_command import AssignResources
-from .configure_command import Configure
-from .device_data import DeviceData
-from .end_command import End
-from .endscan_command import EndScan
-from .exceptions import InvalidObsStateError
-from .obsreset_command import ObsReset
-from .release_resources_command import ReleaseAllResources
-from .reset_command import ResetCommand
-from .restart_command import Restart
-from .scan_command import Scan
-from .telescope_off_command import TelescopeOff
-from .telescope_on_command import TelescopeOn
-
-# PROTECTED REGION END #    //  SdpSubarrayLeafNode.additionnal_import
-
-__all__ = [
-    "SdpSubarrayLeafNode",
-    "main",
-    "AssignResources",
-    "const",
-    "release",
-    "ReleaseAllResources",
-    "TelescopeOn",
-    "TelescopeOff",
-    "Configure",
-    "Abort",
-    "Restart",
-    "ObsReset",
-    "Scan",
-    "End",
-    "EndScan",
-    "ResetCommand",
-]
+from ska_tmc_sdpsubarrayleafnode import release
+from ska_tmc_sdpsubarrayleafnode.manager.component_manager import (
+    SdpSLNComponentManager,
+)
+from ska_tmc_sdpsubarrayleafnode.model.input import InputParameterMid
+from ska_tmc_sdpsubarrayleafnode.model.op_state_model import TMCOpStateModel
 
 
-# pylint: disable=unused-argument,unused-variable, implicit-str-concat
-class SdpSubarrayLeafNode(SKABaseDevice):
+class AbstractSdpSubarrayLeafNode(SKABaseDevice):
     """
     SDP Subarray Leaf node is to monitor the SDP Subarray and issue control actions during an observation.
-
-    :Device Properties:
-
-        SdpSubarrayFQDN:
-            FQDN of the SDP Subarray Tango Device Server.
-
-    :Device Attributes:
-
-        receiveAddresses:
-            This attribute is used for testing purposes. In the unit test cases
-            it is used to provide FQDN of receiveAddresses attribute from SDP.
-
-        activityMessage:
-            String providing information about the current activity in SDP Subarray Leaf Node.
-
-        activeProcessingBlocks:
-            This is a attribute from SDP Subarray which depicts the active Processing
-            Blocks in the SDP Subarray.
-
 
     """
 
@@ -100,9 +31,14 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         dtype="str", doc="FQDN of the SDP Subarray Tango Device Server."
     )
 
+    SleepTime = device_property(
+        dtype="DevFloat", default_value=1
+    )  # kept it for now, might delete in further refactoring
+
     # ----------
     # Attributes
     # ----------
+
     receiveAddresses = attribute(
         dtype="str",
         access=AttrWriteType.READ_WRITE,
@@ -122,6 +58,13 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         "the SDP Subarray.",
     )
 
+    def update_device_callback(self, devInfo):
+        self._LastDeviceInfoChanged = devInfo.to_json()
+        self.push_change_event("lastDeviceInfoChanged", devInfo.to_json())
+
+    # ---------------
+    # General methods
+    # ---------------
     class InitCommand(SKABaseDevice.InitCommand):
         """
         A class for the TMC SdpSubarrayLeafNode's init_device() method.
@@ -137,476 +80,187 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             rtype:
                 (ResultCode, str)
-
             """
             super().do()
             device = self.target
-            self.this_server = TangoServerHelper.get_instance()
-            self.this_server.set_tango_class(device)
-            device.attr_map = {}
-            device.attr_map["receiveAddresses"] = ""
-            device.attr_map["activeProcessingBlocks"] = ""
-            device.attr_map["activityMessage"] = ""
 
-            # Initialise attributes
-            device._sdp_subarray_health_state = HealthState.OK
             device._build_state = "{},{},{}".format(
                 release.name, release.version, release.description
             )
             device._version_id = release.version
+            device._LastDeviceInfoChanged = ""
 
-            # Create DeviceData class instance
-            device_data = DeviceData.get_instance()
-            device.device_data = device_data
-            standalone_mode = os.environ.get("STANDALONE_MODE")
-            self.logger.info(
-                "Device running in standalone_mode:%s", standalone_mode
+            # Need to check below how to initialise the sdpsaln attr
+
+            # device.set_change_event("receiveAddresses", True, False)
+            # device.set_change_event("activityMessage", True, False)
+            # device.set_change_event("activeProcessingBlocks", True, False)
+
+            device.op_state_model.perform_action("component_on")
+            device.component_manager.command_executor.add_command_execution(
+                "0", "Init", ResultCode.OK, ""
             )
-
-            ApiUtil.instance().set_asynch_cb_sub_model(
-                tango.cb_sub_model.PUSH_CALLBACK
-            )
-            log_msg = f"{const.STR_SETTING_CB_MODEL}{ApiUtil.instance().get_asynch_cb_sub_model()}"
-            self.logger.debug(log_msg)
-
-            self.this_server.write_attr(
-                "activityMessage", const.STR_SDPSALN_INIT_SUCCESS, False
-            )
-            # Initialise Device status
-            device.set_status(const.STR_SDPSALN_INIT_SUCCESS)
-            self.logger.info(const.STR_SDPSALN_INIT_SUCCESS)
-            return (ResultCode.OK, const.STR_SDPSALN_INIT_SUCCESS)
-
-    # ---------------
-    # General methods
-    # ---------------
+            return (ResultCode.OK, "")
 
     def always_executed_hook(self):
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.always_executed_hook) ENABLED START #
-        """Internal construct of TANGO."""
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.always_executed_hook
+        pass
 
     def delete_device(self):
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.delete_device) ENABLED START #
-        """Internal construct of TANGO."""
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.delete_device
+        # if the init is called more than once
+        # I need to stop all threads
+        if hasattr(self, "component_manager"):
+            self.component_manager.stop()
 
     # ------------------
     # Attributes methods
     # ------------------
+    def read_sdpSubarrayDevName(self):
+        """Return the sdpsubarraydevname attribute."""
+        return self.component_manager.input_parameter.sdp_subarray_dev_name
 
-    def read_receiveAddresses(self):
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.receiveAddresses_read) ENABLED START #
-        """Internal construct of TANGO. Returns the Receive Addresses.
-        receiveAddresses is a forwarded attribute from SDP Master which depicts State of the SDP."""
-        return self.attr_map["receiveAddresses"]
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.receiveAddresses_read
-
-    def write_receiveAddresses(self, value):
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.receiveAddresses_read) ENABLED START #
-        """Internal construct of TANGO. Sets the Receive Addresses.
-        receiveAddresses is a forwarded attribute from SDP Master which depicts State of the SDP."""
-        self.attr_map["receiveAddresses"] = value
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.receiveAddresses_read
-
-    def read_activityMessage(self):
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.activityMessage_read) ENABLED START #
-        """Internal construct of TANGO. Returns Activity Messages.
-        activityMessage is a String providing information about the current activity in SDP Subarray Leaf Node"""
-        return self.attr_map["activityMessage"]
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.activityMessage_read
-
-    def write_activityMessage(self, value):
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.activityMessage_write) ENABLED START #
-        """Internal construct of TANGO. Sets the activity message.
-        activityMessage is a String providing information about the current activity in SDP Subarray Leaf Node"""
-        self.update_attr_map("activityMessage", value)
-        # PROTECTED REGION END # // SdpSubarrayLeafNode.activityMessage_write
-
-    def update_attr_map(self, attr, val):
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.update_attr_map) ENABLED START #
-        """This method updates attribute value in attribute map. Once a thread has acquired a lock,
-        subsequent attempts to acquire it are blocked, until it is released."""
-        lock = threading.Lock()
-        lock.acquire()
-        self.attr_map[attr] = val
-        lock.release()
-        # PROTECTED REGION END # // SdpSubarrayLeafNode.update_attr_map
-
-    def read_activeProcessingBlocks(self):
-        # PROTECTED REGION ID(SdpSubarrayLeafNode.activeProcessingBlocks_read) ENABLED START #
-        """Internal construct of TANGO. Returns Active Processing Blocks.activeProcessingBlocks is a forwarded attribute
-        from SDP Subarray which depicts the active Processing Blocks in the SDP Subarray"""
-        return self.attr_map["activeProcessingBlocks"]
-        # PROTECTED REGION END #    //  SdpSubarrayLeafNode.activeProcessingBlocks_read
+    def write_sdpSubarrayDevName(self, value):
+        """Set the sdpsubarraydevname attribute."""
+        self.component_manager.input_parameter.sdp_subarray_dev_name = value
+        self.component_manager.update_input_parameter()
 
     # --------
     # Commands
     # --------
 
-    def is_telescope_on_allowed(self):
+    def is_TelescopeOff_allowed(self):
         """
-        Checks Whether this command is allowed to be run in current device state.
+        Checks whether this command is allowed to be run in current device state.
 
-        return:
-            True if this command is allowed to be run in current device state.
+        :return: True if this command is allowed to be run in current device state.
 
-        rtype:
-            boolean
+        :rtype: boolean
+        """
+        handler = self.get_command_object("TelescopeOff")
+        return handler.check_allowed()
 
-        raises: DevF
-            ailed if this command is not allowed to be run in current device state.
+    @command(dtype_out="DevVarLongStringArray")
+    def TelescopeOff(self):
+        """
+        This command invokes SetStandbyLPMode() command on DishLeafNode, Off() command
+        on CspMasterLeafNode and SdpMasterLeafNode.
 
+        """
+        handler = self.get_command_object("TelescopeOff")
+        if self.component_manager.command_executor.queue_full:
+            return [[ResultCode.FAILED], ["Queue is full!"]]
+        unique_id = self.component_manager.command_executor.enqueue_command(
+            handler
+        )
+        return [[ResultCode.QUEUED], [str(unique_id)]]
+
+    def is_TelescopeOn_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state.
+
+        :return: True if this command is allowed to be run in current device state.
+
+        :rtype: boolean
         """
         handler = self.get_command_object("TelescopeOn")
         return handler.check_allowed()
 
-    @command()
+    @command(dtype_out="DevVarLongStringArray")
     @DebugIt()
     def TelescopeOn(self):
         """
-        Sets the opState to ON.
-
-        :param argin: None
-
-        :return: None
-
+        This command invokes TelescopeOn() command on DishLeadNode, CspMasterLeafNode,
+        SdpMasterLeafNode.
         """
         handler = self.get_command_object("TelescopeOn")
-        handler()
+        if self.component_manager.command_executor.queue_full:
+            return [[ResultCode.FAILED], ["Queue is full!"]]
+        unique_id = self.component_manager.command_executor.enqueue_command(
+            handler
+        )
+        return [[ResultCode.QUEUED], [str(unique_id)]]
 
-    def is_telescope_off_allowed(self):
+    def is_AssignResources_allowed(self):
         """
-        Checks Whether this command is allowed to be run in current device state.
+        Checks whether this command is allowed to be run in current device state.
 
-        return:
-            True if this command is allowed to be run in current device state.
+        :return: True if this command is allowed to be run in current device state
 
-        rtype:
-            boolean
-
-        raises: DevF
-            ailed if this command is not allowed to be run in current device state.
-
+        :rtype: boolean
         """
-        handler = self.get_command_object("TelescopeOff")
-        return handler.check_allowed()
-
-    @command()
-    @DebugIt()
-    def TelescopeOff(self):
-        """
-        Sets the opState to Off.
-
-        :param argin: None
-
-        :return: None
-
-        """
-        handler = self.get_command_object("TelescopeOff")
-        handler()
-
-    @command()
-    @DebugIt()
-    def Abort(self):
-        """
-        Invoke Abort on SdpSubarrayLeafNode.
-        """
-        handler = self.get_command_object("Abort")
-        handler()
-
-    def is_Abort_allowed(self):
-        """
-        Checks whether this command is allowed to be run in current device state
-
-        return:
-            True if this command is allowed to be run in current device state
-
-        rtype:
-            boolean
-
-        raises:
-            DevFailed if this command is not allowed to be run in current device state
-
-        """
-        handler = self.get_command_object("Abort")
+        handler = self.get_command_object("AssignResources")
         return handler.check_allowed()
 
     @command(
-        dtype_in=("str"),
-        doc_in="The input JSON string consists of information related to id, max_length, scan_types"
-        " and processing_blocks.",
+        dtype_in="str",
+        doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
+        "DevShort\ndish: JSON object consisting\n- receptor_ids: DevVarStringArray. "
+        "The individual string should contain dish numbers in string format with "
+        "preceding zeroes upto 3 digits. E.g. 0001, 0002",
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
     )
     @DebugIt()
     def AssignResources(self, argin):
         """
-        Assigns resources to given SDP subarray.
-        """
-
-        handler = self.get_command_object("AssignResources")
-        try:
-            self.validate_obs_state()
-        except InvalidObsStateError as error:
-            self.logger.exception(error)
-            tango.Except.throw_exception(
-                const.ERR_DEVICE_NOT_IN_EMPTY_IDLE,
-                const.ERR_ASSGN_RESOURCES,
-                "SdpSubarrayLeafNode.AssignResources()",
-                tango.ErrSeverity.ERR,
-            )
-        handler(argin)
-
-    def is_AssignResources_allowed(self):
-        """
-        Checks whether this command is allowed to be run in current device state
-
-        return:
-        True if this command is allowed to be run in current device state
-
-        rtype:
-            boolean
-
+        AssignResources command invokes the AssignResources command on lower level devices.
         """
         handler = self.get_command_object("AssignResources")
-        return handler.check_allowed()
+        if self.component_manager.command_executor.queue_full:
+            return [[ResultCode.FAILED], ["Queue is full!"]]
+        unique_id = self.component_manager.command_executor.enqueue_command(
+            handler, argin
+        )
+        return [[ResultCode.QUEUED], [str(unique_id)]]
 
-    def is_Configure_allowed(self):
+    def is_ReleaseResources_allowed(self):
         """
-        Checks whether this command is allowed to be run in current device state
+        Checks whether this command is allowed to be run in current device state.
 
-        return:
-            True if this command is allowed to be run in current device state
+        :return: True if this command is allowed to be run in current device state.
 
-        rtype:
-            boolean
-
+        :rtype: boolean
         """
-        handler = self.get_command_object("Configure")
+        handler = self.get_command_object("ReleaseResources")
         return handler.check_allowed()
 
     @command(
-        dtype_in=("str"),
-        doc_in="The JSON input string consists of scan type.",
+        dtype_in="str",
+        doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
+        "releaseALL boolean as true and receptor_ids.",
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
     )
     @DebugIt()
-    def Configure(self, argin):
+    def ReleaseResources(self, argin):
         """
-        Invokes Configure on SdpSubarrayLeafNode.
+        Release all the resources assigned to the given Subarray.
         """
-        handler = self.get_command_object("Configure")
-        handler(argin)
+        handler = self.get_command_object("ReleaseResources")
+        if self.component_manager.command_executor.queue_full:
+            return [[ResultCode.FAILED], ["Queue is full!"]]
+        unique_id = self.component_manager.command_executor.enqueue_command(
+            handler, argin
+        )
+        return [[ResultCode.QUEUED], [str(unique_id)]]
 
-    def is_End_allowed(self):
-        """
-        Checks whether this command is allowed to be run in current device state.
-
-        return:
-            True if this command is allowed to be run in current device state.
-
-        rtype:
-            boolean
-
-        """
-        handler = self.get_command_object("End")
-        return handler.check_allowed()
-
-    @command()
-    @DebugIt()
-    def End(self):
-        """This command invokes End command on SDP subarray to end the current Scheduling block."""
-        handler = self.get_command_object("End")
-        handler()
-
-    def is_EndScan_allowed(self):
-        """
-        Checks whether this command is allowed to be run in current device state.
-        return:
-            True if this command is allowed to be run in current device state.
-
-        rtype:
-            boolean
-        """
-        handler = self.get_command_object("EndScan")
-        return handler.check_allowed()
-
-    @command()
-    @DebugIt()
-    def EndScan(self):
-        """
-        Invokes EndScan on SdpSubarrayLeafNode.
-
-        """
-        handler = self.get_command_object("EndScan")
-        handler()
-
-    @command()
-    @DebugIt()
-    def ObsReset(self):
-        """
-        Invoke ObsReset command on SdpSubarrayLeafNode.
-        """
-        handler = self.get_command_object("ObsReset")
-        handler()
-
-    def is_ObsReset_allowed(self):
-        """
-        Checks whether this command is allowed to be run in current device state
-
-        return:
-            True if this command is allowed to be run in current device state
-
-        rtype:
-            boolean
-
-        """
-        handler = self.get_command_object("ObsReset")
-        return handler.check_allowed()
-
-    def is_ReleaseAllResources_allowed(self):
-        """
-        Checks whether this command is allowed to be run in current device state
-
-        return:
-            True if this command is allowed to be run in current device state
-
-        rtype:
-            boolean
-
-        raises:
-            DevFailed if this command is not allowed to be run in current device state
-
-        """
-        handler = self.get_command_object("ReleaseAllResources")
-        return handler.check_allowed()
-
-    @command()
-    @DebugIt()
-    def ReleaseAllResources(self):
-        """
-        Invokes ReleaseAllResources command on SdpSubarrayLeafNode.
-        """
-        handler = self.get_command_object("ReleaseAllResources")
-        handler()
-
-    @command()
-    @DebugIt()
-    def Restart(self):
-        """
-        Invoke Restart command on SdpSubarrayLeafNode.
-        """
-        handler = self.get_command_object("Restart")
-        handler()
-
-    def is_Restart_allowed(self):
-        """
-        Checks whether this command is allowed to be run in current device state
-
-        return:
-            True if this command is allowed to be run in current device state
-
-        rtype:
-            boolean
-
-        raises:
-            DevFailed if this command is not allowed to be run in current device state
-
-        """
-        handler = self.get_command_object("Restart")
-        return handler.check_allowed()
-
-    def is_Scan_allowed(self):
-        """
-        Checks whether this command is allowed to be run in current device state.
-
-        return:
-            True if this command is allowed to be run in current device state.
-
-        rtype:
-            boolean
-
-        """
-        handler = self.get_command_object("Scan")
-        return handler.check_allowed()
-
-    @command(
-        dtype_in=("str"),
-        doc_in="The JSON input string consists of SB ID.",
-    )
-    @DebugIt()
-    def Scan(self, argin):
-        """Invoke Scan command to SDP subarray."""
-
-        handler = self.get_command_object("Scan")
-        handler(argin)
-
-    def validate_obs_state(self):
-        self.this_server = TangoServerHelper.get_instance()
-        sdp_subarray_fqdn = self.this_server.read_property("SdpSubarrayFQDN")[
-            0
-        ]
-        sdp_sa_client = TangoClient(sdp_subarray_fqdn)
-        if sdp_sa_client.get_attribute("obsState").value in [
-            ObsState.EMPTY,
-            ObsState.IDLE,
-        ]:
-            self.logger.info(
-                "SDP subarray is in required obstate,Hence resources to SDP can be assign."
-            )
-        else:
-            self.logger.error("Subarray is not in EMPTY obstate")
-            log_msg = "Error in device obstate."
-            self.this_server.write_attr("activityMessage", log_msg, False)
-            raise InvalidObsStateError("SDP subarray is not in EMPTY obstate.")
+    # default ska mid
+    def create_component_manager(self):
+        self.op_state_model = TMCOpStateModel(
+            logger=self.logger, callback=super()._update_state
+        )
+        cm = SdpSLNComponentManager(
+            self.op_state_model,
+            logger=self.logger,
+            _update_device_callback=self.update_device_callback,
+            _input_parameter=InputParameterMid(None),
+            sleep_time=self.SleepTime,
+        )
+        cm.input_parameter.sdp_subarray_dev_name = self.SdpSubarrayFQDN or ""
+        cm.update_input_parameter()
+        return cm
 
     def init_command_objects(self):
         """
-        Initialises the command handlers for commands supported by this
-        device.
+        Initialises the command handlers for commands supported by this device.
         """
         super().init_command_objects()
-
-        # Create device_data class object
-        device_data = DeviceData.get_instance()
-        args = (device_data, self.state_model, self.logger)
-        self.register_command_object("AssignResources", AssignResources(*args))
-        self.register_command_object(
-            "ReleaseAllResources", ReleaseAllResources(*args)
-        )
-        self.register_command_object("Scan", Scan(*args))
-        self.register_command_object("End", End(*args))
-        self.register_command_object("Restart", Restart(*args))
-        self.register_command_object("Configure", Configure(*args))
-        self.register_command_object("EndScan", EndScan(*args))
-        self.register_command_object("Abort", Abort(*args))
-        self.register_command_object("ObsReset", ObsReset(*args))
-        self.register_command_object("TelescopeOff", TelescopeOff(*args))
-        self.register_command_object("TelescopeOn", TelescopeOn(*args))
-        self.register_command_object("Reset", ResetCommand(*args))
-
-
-# ----------
-# Run server
-# ----------
-
-
-def main(args=None, **kwargs):
-    # PROTECTED REGION ID(SdpSubarrayLeafNode.main) ENABLED START #
-    """
-    Runs the SdpSubarrayLeafNode
-
-    :param args: Arguments internal to TANGO
-
-    :param kwargs: Arguments internal to TANGO
-
-    :return: SdpSubarrayLeafNode TANGO object
-
-    """
-    # PROTECTED REGION ID(SdpSubarrayLeafNode.main) ENABLED START #
-    ret_val = run((SdpSubarrayLeafNode,), args=args, **kwargs)
-
-    return ret_val
-    # PROTECTED REGION END #    //  SdpSubarrayLeafNode.main
-
-
-if __name__ == "__main__":
-    main()
