@@ -50,7 +50,7 @@ class SdpSLNComponentManager(BaseComponentManager):
         self.lock = threading.Lock()
         self._component = _component or SdpSLNComponent(logger)
 
-        self._component.set_op_callbacks(_update_device_callback)
+        # self._component.set_op_callbacks(_update_device_callback)  # need to check it its required in case of ln
 
         super().__init__(op_state_model)
 

@@ -24,9 +24,9 @@ SdpSubarrayLeafNode
 # ]
 
 
-from ska_tmc_sdpsubarrayleafnode import input_validator, release
+from ska_tmc_sdpsubarrayleafnode import release
 
-__all__ = ["release", "input_validator"]
+__all__ = ["release"]
 
 __version__ = release.version
 __version_info__ = release.version_info

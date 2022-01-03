@@ -19,7 +19,18 @@ class SdpSLNComponent:
     def __init__(self, logger):
         self._devices = []
         self.logger = logger
+        self._update_device_callback = None
         self.lock = threading.Lock()  # needs to check, if required
+
+    def set_op_callbacks(
+        self,
+        _update_device_callback=None,
+    ):
+        self._update_device_callback = _update_device_callback
+
+    def _invoke_device_callback(self, devInfo):
+        if self._update_device_callback is not None:
+            self._update_device_callback(devInfo)
 
     @property
     def devices(self):
