@@ -69,7 +69,7 @@ class AbstractTelescopeOnOffCommand(TMCCommand):
         super().__init__(target, args, logger, kwargs)
         self.op_state_model = pop_state_model
         self._adapter_factory = adapter_factory
-        self.sdp_subarray_adapters = []
+        self.sdp_subarray_adapter = None
 
     def check_allowed_mid(self):
         """
@@ -168,7 +168,6 @@ class AbstractAssignReleaseResources(TMCCommand):
 
     def init_adapters_mid(self):
 
-        self.sdp_subarray_adapters = []
         component_manager = self.target
 
         self.sdp_subarray_adapter = None
