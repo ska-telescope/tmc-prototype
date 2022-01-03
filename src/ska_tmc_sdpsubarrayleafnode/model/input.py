@@ -13,47 +13,46 @@ class InputParameterMid(InputParameter):
         self._changed_callback = changed_callback
 
     @property
-    def sdp_subarray_dev_names(self):
+    def sdp_subarray_dev_name(self):
         """
         Input parameter
-        Return the SDP Subarray device names
+        Return the SDP Subarray device name
 
-        :return: the SDP Subarray device names
-        :rtype: tuple
+        :return: the SDP Subarray device name
+        :rtype: str
         """
-        return self._sdp_subarray_dev_names
+        return self._sdp_subarray_dev_name
 
-    @sdp_subarray_dev_names.setter
-    def sdp_subarray_dev_names(self, value):
+    @sdp_subarray_dev_name.setter
+    def sdp_subarray_dev_name(self, value):
         """
         Input parameter
-        Set the SDP Subarray device names to be
-        managed by the CentralNode
+        Return the SDP Subarray device name
 
-        :param value: the SDP Subarray device names
-        :type value: tuple
+        :return: the SDP Subarray device name
+        :rtype: str
         """
-        self._sdp_subarray_dev_names = value
+        self._sdp_subarray_dev_name = value
         if self._changed_callback is not None:
             self._changed_callback()
 
     def update(self, component_manager):
         list_dev_names = []
 
-        for dev_name in self.sdp_subarray_dev_names:
-            if component_manager.get_device(dev_name) is None:
-                component_manager.add_device(dev_name)
-                list_dev_names.append(dev_name)
+        dev_name = self.sdp_subarray_dev_name
+        if dev_name != "" and component_manager.get_device(dev_name) is None:
+            component_manager.add_device(dev_name)
+            list_dev_names.append(dev_name)
 
         for devInfo in component_manager.devices:
             if devInfo.dev_name not in list_dev_names:
                 component_manager.component.remove_device(devInfo.dev_name)
 
 
-class InputParameterLow(InputParameter):
-    def __init__(self, changed_callback) -> None:
-        super().__init__(changed_callback)
-        self._changed_callback = changed_callback
+# class InputParameterLow(InputParameter):
+#     def __init__(self, changed_callback) -> None:
+#         super().__init__(changed_callback)
+#         self._changed_callback = changed_callback
 
-    def update(self, component_manager):
-        pass
+#     def update(self, component_manager):
+#         pass

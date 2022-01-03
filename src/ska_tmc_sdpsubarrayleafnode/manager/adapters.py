@@ -71,7 +71,9 @@ class SdpsubarrayAdapter(BaseAdapter):
         super().__init__(dev_name, proxy)
 
     def AssignResources(self, argin):
-        return self._proxy.AssignResources(argin)
+        return self._proxy.AssignResources(
+            argin
+        )  # return self._proxy.command_inout_async("commandname", argin, callback_mathod)
 
     def ReleaseAllResources(self):
         return self._proxy.ReleaseAllResources()
