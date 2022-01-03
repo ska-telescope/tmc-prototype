@@ -1,12 +1,12 @@
 from ska_tango_base.commands import ResultCode
 
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import (
-    AbstractTelescopeOnCommand,
+    AbstractTelescopeOnOffCommand,
 )
 from ska_tmc_sdpsubarrayleafnode.manager.adapters import AdapterFactory
 
 
-class TelescopeOn(AbstractTelescopeOnCommand):
+class TelescopeOn(AbstractTelescopeOnOffCommand):
     """
     A class for SdpsubarrayleafNode's TelescopeOn() command.
 
@@ -58,4 +58,4 @@ class TelescopeOn(AbstractTelescopeOnCommand):
                     f"Error in calling Telescope On in TM Subarray {adapter.dev_name}: {e}",
                 )
 
-        return (ResultCode.OK, "")
+        return (ResultCode.OK, "")  # do we need return code here?

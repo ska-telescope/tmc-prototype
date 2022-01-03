@@ -59,7 +59,7 @@ class TMCCommand(BaseCommand):
         raise NotImplementedError("This class must be inherited!")
 
 
-class AbstractTelescopeOnCommand(TMCCommand):
+class AbstractTelescopeOnOffCommand(TMCCommand):
     def __init__(
         self,
         target,
@@ -138,3 +138,88 @@ class AbstractTelescopeOnCommand(TMCCommand):
             return self.generate_command_result(ResultCode.FAILED, message)
 
         return ResultCode.OK, ""
+
+
+class AbstractAssignReleaseResources(TMCCommand):
+    def __init__(
+        self,
+        target,
+        pop_state_model,
+        adapter_factory=AdapterFactory(),
+        *args,
+        logger=None,
+        **kwargs,
+    ):
+        super().__init__(target, args, logger, kwargs)
+        self.op_state_model = pop_state_model
+        self._adapter_factory = adapter_factory
+        self.sdp_subarray_adapters = []
+
+    def check_allowed_mid(self):
+        """
+        Checks whether this command is allowed to be run in current device state
+
+        :return: True if this command is allowed to be run in current device state
+
+        :rtype: boolean
+
+        :raises: DevFailed if this command is not allowed to be run in current device state
+
+        """
+        component_manager = self.target
+
+        if self.op_state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
+            raise CommandNotAllowed(
+                "AssignReleaseResources() is not allowed in current state %s",
+                self.op_state_model.op_state,
+            )
+
+        subarray_count = 0
+        for (
+            dev_name
+        ) in component_manager.input_parameter.sdp_subarray_dev_names:
+            devInfo = component_manager.get_device(dev_name)
+            if devInfo is not None and not devInfo.unresponsive:
+                subarray_count += 1
+        if subarray_count == 0:
+            raise CommandNotAllowed("No sdp Subarray available")
+
+        return True
+
+    def init_adapters_mid(self):
+
+        self.sdp_subarray_adapters = []
+        component_manager = self.target
+
+        error_dev_names = []
+        num_working = 0
+
+        for (
+            dev_name
+        ) in component_manager.input_parameter.sdp_subarray_dev_names:
+            devInfo = component_manager.get_device(dev_name)
+            if not devInfo.unresponsive:
+                try:
+                    self.sdp_subarray_adapters.append(
+                        self._adapter_factory.get_or_create_adapter(
+                            dev_name, AdapterType.SDPSUBARRAY
+                        )
+                    )
+                    num_working += 1
+                except Exception as e:
+                    self.logger.warning(
+                        "Error in creating adapter for %s: %s", dev_name, e
+                    )
+                    error_dev_names.append(dev_name)
+
+        if num_working == 0:
+            return self.generate_command_result(
+                ResultCode.FAILED,
+                f"Error in creating sdp subarray adapters {'.'.join(error_dev_names)}",
+            )
+
+        return (ResultCode.OK, "")
