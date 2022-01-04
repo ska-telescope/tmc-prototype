@@ -110,12 +110,12 @@ class SdpSLNComponentManager(BaseComponentManager):
             if dev.unresponsive:
                 result.append(dev)
                 continue
-            if dev.ping > 0:
-                result.append(dev)
-                continue
-            if dev.last_event_arrived is not None:
-                result.append(dev)
-                continue
+            # if dev.ping > 0:
+            #     result.append(dev)
+            #     continue
+            # if dev.last_event_arrived is not None:
+            #     result.append(dev)
+            #     continue
         return result
 
     @property
@@ -129,6 +129,17 @@ class SdpSLNComponentManager(BaseComponentManager):
     @property
     def command_executed(self):
         return self._command_executor._command_executed
+
+    def get_device(self, dev_name):
+        """
+        Return the device info our of the monitoring loop with name dev_name
+
+        :param dev_name: name of the device
+        :type dev_name: str
+        :return: a device info
+        :rtype: DeviceInfo
+        """
+        return self.component.get_device(dev_name)
 
     def update_input_parameter(self):
         with self.lock:
