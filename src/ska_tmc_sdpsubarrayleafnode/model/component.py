@@ -95,4 +95,3 @@ class SdpSLNComponent:
             intDevInfo.state = DevState.UNKNOWN
             intDevInfo.update_unresponsive(True, exception)
             self._invoke_device_callback(intDevInfo)
-

@@ -7,7 +7,7 @@ from ska_tmc_sdpsubarrayleafnode.manager.component_manager import (
     SdpSLNComponentManager,
 )
 from ska_tmc_sdpsubarrayleafnode.model.input import InputParameterMid
-from ska_tmc_sdpsubarrayleafnode.model.op_state_model import TMCOpStateModel
+from ska_tmc_common.op_state_model import TMCOpStateModel
 
 logger = logging.getLogger(__name__)
 

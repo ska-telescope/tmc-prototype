@@ -8,7 +8,7 @@ from ska_tmc_sdpsubarrayleafnode.commands.telescope_off_command import (
     TelescopeOff,
 )
 from ska_tmc_sdpsubarrayleafnode.exceptions import CommandNotAllowed
-from ska_tmc_sdpsubarrayleafnode.manager.adapters import SdpsubarrayAdapter
+from ska_tmc_common.adapters import SdpSubArrayAdapter
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
 from tests.settings import create_cm, logger
 
@@ -39,7 +39,7 @@ def test_telescope_off_command(tango_context):
     (result_code, _) = off_command.do()
     assert result_code == ResultCode.OK
     for adapter in my_adapter_factory.adapters:
-        if isinstance(adapter, SdpsubarrayAdapter):
+        if isinstance(adapter, SdpSubArrayAdapter):
             adapter.proxy.Off.assert_called()
             continue
         adapter.proxy.TelescopeOff.assert_called()

@@ -3,7 +3,7 @@ from ska_tango_base.commands import ResultCode
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import (
     AbstractTelescopeOnOffCommand,
 )
-from ska_tmc_sdpsubarrayleafnode.manager.adapters import AdapterFactory
+from ska_tmc_common.adapters import AdapterFactory
 
 
 class TelescopeOn(AbstractTelescopeOnOffCommand):

@@ -7,15 +7,14 @@ package.
 import threading
 import time
 
-# from ska_tango_base.base import BaseComponentManager
+from ska_tmc_common.tmc_component_manager import TmcComponentManager
 
 # from ska_tmc_sdpsubarrayleafnode.manager.command_executor import (
 #     CommandExecutor,
 # )
-from ska_tmc_sdpsubarrayleafnode.model.component import (
-    SdpSLNComponent,
-)
-from ska_tmc_common.tmc_component_manager import TmcComponentManager
+from ska_tmc_sdpsubarrayleafnode.model.component import SdpSLNComponent
+
+# from ska_tango_base.base import BaseComponentManager
 
 
 class SdpSLNComponentManager(TmcComponentManager):

@@ -2,9 +2,9 @@ from ska_tango_base.commands import BaseCommand, ResultCode
 from tango import DevState
 
 from ska_tmc_sdpsubarrayleafnode.exceptions import CommandNotAllowed
-from ska_tmc_sdpsubarrayleafnode.manager.adapters import AdapterFactory
+from ska_tmc_common.adapters import AdapterFactory
+from ska_tmc_common.tmc_command import TMCCommand
 from ska_tmc_sdpsubarrayleafnode.model.input import InputParameterMid
-
 
 class AbstractTelescopeOnOffCommand(TMCCommand):
     def __init__(

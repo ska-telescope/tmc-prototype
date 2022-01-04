@@ -1,10 +1,10 @@
 import mock
 
-from ska_tmc_sdpsubarrayleafnode.manager.adapters import (
+from ska_tmc_common.adapters import (
     AdapterFactory,
     AdapterType,
     BaseAdapter,
-    SdpsubarrayAdapter,
+    SdpSubArrayAdapter,
 )
 
 
@@ -24,7 +24,7 @@ class HelperAdapterFactory(AdapterFactory):
 
         new_adapter = None
         if adapter_type == AdapterType.SDPSUBARRAY:
-            new_adapter = SdpsubarrayAdapter(dev_name, proxy)
+            new_adapter = SdpSubArrayAdapter(dev_name, proxy)
         else:
             new_adapter = BaseAdapter(dev_name, proxy)
 
