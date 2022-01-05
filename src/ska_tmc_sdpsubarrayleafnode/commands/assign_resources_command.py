@@ -2,19 +2,18 @@
 AssignResouces class for SDPSubarrayLeafNode.
 """
 # Tango imports
-import tango
+import json
 
-# Additional import
-from ska.base.commands import BaseCommand
-from tango import DevFailed, DevState
-from tmc.common.tango_client import TangoClient
-from tmc.common.tango_server_helper import TangoServerHelper
+from ska_tango_base.commands import ResultCode
+from ska_tmc_common.adapters import AdapterFactory
 
-from . import const
-from .transaction_id import identify_with_id
+from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import (
+    AbstractAssignReleaseResources,
+)
+from ska_tmc_sdpsubarrayleafnode.model.input import InputParameterMid
 
 
-class AssignResources(BaseCommand):
+class AssignResources(AbstractAssignReleaseResources):
     """
     A class for SdpSubarayLeafNode's AssignResources() command.
 
@@ -23,64 +22,31 @@ class AssignResources(BaseCommand):
     Eventually this will likely take a JSON string specifying the resource request.
     """
 
-    def check_allowed(self):
-        """
-        Checks whether this command is allowed to be run in current device state.
+    def __init__(
+        self,
+        target,
+        pop_state_model,
+        adapter_factory=AdapterFactory(),
+        timeout_sdp=3000,
+        step_sleep=0.1,
+        *args,
+        logger=None,
+        **kwargs,
+    ):
+        super().__init__(
+            target, pop_state_model, adapter_factory, args, logger, kwargs
+        )
+        self._timeout_sdp = timeout_sdp
+        self._step_sleep = step_sleep
 
-        Assigns resources to given SDP subarray.
-        This command is provided as a noop placeholder from SDP subarray.
-        Eventually this will likely take a JSON string specifying the resource request.
+    def do(self, argin=None):
+        component_manager = self.target
+        if isinstance(component_manager.input_parameter, InputParameterMid):
+            result = self.do_mid(argin)
+        return result
 
-        :return: True if this command is allowed to be run in current device state.
-
-        :rtype: boolean
-
-        :raises: Exception if command execution throws any type of exception.
-
-        """
-        self.this_server = TangoServerHelper.get_instance()
-        if self.state_model.op_state in [
-            DevState.FAULT,
-            DevState.UNKNOWN,
-            DevState.DISABLE,
-        ]:
-            tango.Except.throw_exception(
-                f"AssignResources() is not allowed in current state {self.state_model.op_state}",
-                "Failed to invoke AssignResources command on SdpSubarrayLeafNode.",
-                "sdpsubarrayleafnode.AssignResources()",
-                tango.ErrSeverity.ERR,
-            )
-
-        return True
-
-    def assign_resources_ended(self, event):
-        """
-        This is the callback method of AssignResources command of the SDP Subarray.
-        It checks whether the AssignResources command on SDP subarray is successful.
-
-        :param argin:
-
-            event: response from SDP Subarray for the invoked assign resource command.
-
-        return: None
-        """
-        if event.err:
-            log = f"{const.ERR_INVOKING_CMD}{event.cmd_name}\n{event.errors}"
-            self.this_server.write_attr("activityMessage", log, False)
-            self.logger.error(log)
-            tango.Except.throw_exception(
-                "SDP Subarray returned error while assigning resources",
-                str(event.errors),
-                event.cmd_name,
-                tango.ErrSeverity.ERR,
-            )
-        else:
-            log = const.STR_COMMAND + event.cmd_name + const.STR_INVOKE_SUCCESS
-            self.this_server.write_attr("activityMessage", log, False)
-            self.logger.debug(log)
-
-    @identify_with_id("assign", "argin")
-    def do(self, argin):
+    # @identify_with_id("assign", "argin")  do we need to replace this decorator?
+    def do_mid(self, argin):
         """
         Method to invoke AssignResources command on SDP Subarray.
 
@@ -135,44 +101,41 @@ class AssignResources(BaseCommand):
 
             DevFailed if the command execution is not successful.
         """
+        ret_code, message = self.init_adapters()
+        if ret_code == ResultCode.FAILED:
+            return ret_code, message
+
         try:
-            # Call SDP Subarray Command asynchronously
-            sdp_sa_ln_client_obj = TangoClient(
-                self.this_server.read_property("SdpSubarrayFQDN")[0]
-            )
-            sdp_sa_ln_client_obj.send_command_async(
-                const.CMD_ASSIGN_RESOURCES,
-                command_data=argin,
-                callback_method=self.assign_resources_ended,
-            )
-            # Update the status of command execution status in activity message
-            self.this_server.write_attr(
-                "activityMessage", const.STR_ASSIGN_RESOURCES_SUCCESS, False
-            )
-            self.logger.info(const.STR_ASSIGN_RESOURCES_SUCCESS)
-
-        except ValueError as value_error:
-            log_msg = f"{const.ERR_INVALID_JSON}{value_error}"
-            self.logger.exception(log_msg)
-            self.this_server.write_attr(
-                "activityMessage",
-                f"{const.ERR_INVALID_JSON}{value_error}",
-                False,
-            )
-            tango.Except.throw_exception(
-                const.STR_CMD_FAILED,
-                log_msg,
-                const.ERR_INVALID_JSON,
-                tango.ErrSeverity.ERR,
+            json_argument = json.loads(argin)
+        except Exception as e:
+            return self.generate_command_result(
+                ResultCode.FAILED,
+                ("Problem in loading the JSON string: %s", e),
             )
 
-        except DevFailed as dev_failed:
-            log_msg = f"{const.ERR_ASSGN_RESOURCES}{dev_failed}"
-            self.this_server.write_attr("activityMessage", log_msg)
-            self.logger.exception(dev_failed)
-            tango.Except.throw_exception(
-                const.STR_ASSIGN_RES_EXEC,
-                log_msg,
-                "SdpSubarrayLeafNode.AssignResources()",
-                tango.ErrSeverity.ERR,
+        if "eb_id" not in json_argument:
+            return self.generate_command_result(
+                ResultCode.FAILED,
+                "eb_id key is not present in the input json argument.",
             )
+
+        if "scan_types" not in json_argument:
+            return self.generate_command_result(
+                ResultCode.FAILED,
+                "scan_types key is not present in the input json argument.",
+            )
+
+        try:
+            self.sdp_subarray_adapter.AssignResources(
+                json.dumps(json_argument.copy())
+            )
+        except Exception as e:
+            return self.generate_command_result(
+                ResultCode.FAILED,
+                (
+                    "Error in calling AssignResources on subarray %s: %s",
+                    self.sdp_subarray_adapter.dev_name,
+                    e,
+                ),
+            )
+        return (ResultCode.OK, "")
