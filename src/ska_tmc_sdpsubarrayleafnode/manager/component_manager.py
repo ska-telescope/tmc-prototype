@@ -4,19 +4,15 @@ This module provided a reference implementation of a BaseComponentManager.
 It is provided for explanatory purposes, and to support testing of this
 package.
 """
-import threading
+import time
 
-from ska_tango_base.base import BaseComponentManager
 from ska_tmc_common.device_info import DeviceInfo, SubArrayDeviceInfo
 from ska_tmc_common.tmc_component_manager import TmcComponentManager
 
-# from ska_tmc_sdpsubarrayleafnode.manager.command_executor import (
-#     CommandExecutor,
-# )
 from ska_tmc_sdpsubarrayleafnode.model.component import SdpSLNComponent
 
 
-class SdpSLNComponentManager(BaseComponentManager):
+class SdpSLNComponentManager(TmcComponentManager):
     """
     A component manager for The SDP Subarray Leaf Node component.
 
@@ -33,6 +29,11 @@ class SdpSLNComponentManager(BaseComponentManager):
         logger=None,
         _component=None,
         _update_device_callback=None,
+        _monitoring_loop=False,
+        _event_receiver=False,
+        max_workers=5,
+        proxy_timeout=500,
+        sleep_time=1,
         *args,
         **kwargs,
     ):
@@ -45,17 +46,25 @@ class SdpSLNComponentManager(BaseComponentManager):
         :param _component: allows setting of the component to be
             managed; for testing purposes only
         """
-        self.logger = logger
-        self.lock = threading.Lock()
-        self._component = _component or SdpSLNComponent(logger)
+        super(SdpSLNComponentManager, self).__init__(
+            op_state_model,
+            _component,
+            logger,
+            _monitoring_loop,
+            _event_receiver,
+            max_workers,
+            proxy_timeout,
+            sleep_time,
+            *args,
+            **kwargs,
+        )
 
-        self._component.set_op_callbacks(
+        self.component = _component or SdpSLNComponent(logger)
+
+        self.component.set_op_callbacks(
             _update_device_callback
         )  # need to check it its required in case of ln
-
-        super().__init__(op_state_model, *args, **kwargs)
         self._input_parameter = _input_parameter
-        # super().__init__(op_state_model, self._input_parameter, self.logger, self.component)
 
     def reset(self):
         pass
@@ -74,25 +83,6 @@ class SdpSLNComponentManager(BaseComponentManager):
         return self._input_parameter
 
     @property
-    def component(self):
-        """
-        Return the managed component
-
-        :return: the managed component
-        :rtype: Component
-        """
-        return self._component
-
-    @property
-    def devices(self):
-        """
-        Return the list of the monitored devices
-
-        :return: list of the monitored devices
-        """
-        return self._component.devices
-
-    @property
     def checked_devices(self):
         """
         Return the list of the checked monitored devices
@@ -104,12 +94,6 @@ class SdpSLNComponentManager(BaseComponentManager):
             if dev.unresponsive:
                 result.append(dev)
                 continue
-            # if dev.ping > 0:
-            #     result.append(dev)
-            #     continue
-            # if dev.last_event_arrived is not None:
-            #     result.append(dev)
-            #     continue
         return result
 
     @property

@@ -1,9 +1,8 @@
-import threading
-
+from ska_tmc_common.tmc_component_manager import TmcComponent
 from tango import DevState
 
 
-class SdpSLNComponent:
+class SdpSLNComponent(TmcComponent):
     """
     A component class for Sdpsubarrayleafnode Node
 
@@ -15,10 +14,11 @@ class SdpSLNComponent:
     """
 
     def __init__(self, logger):
+        super(SdpSLNComponent, self).__init__(logger)
         self._devices = []
-        self.logger = logger
+        # self.logger = logger
         self._update_device_callback = None
-        self.lock = threading.Lock()  # needs to check, if required
+        # self.lock = threading.Lock()  # needs to check, if required
 
     def set_op_callbacks(
         self,
