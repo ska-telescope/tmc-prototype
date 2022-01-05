@@ -129,7 +129,7 @@ class AbstractAssignReleaseResources(TMCCommand):
             DevState.DISABLE,
         ]:
             raise CommandNotAllowed(
-                "AssignResources and ReleaseReleases command is not allowed in current state %s",
+                "AssignResources and ReleaseResources command is not allowed in current state %s",
                 self.op_state_model.op_state,
             )
 
