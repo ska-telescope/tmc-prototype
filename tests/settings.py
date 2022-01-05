@@ -2,12 +2,13 @@ import logging
 import time
 
 import pytest
+from ska_tmc_common.op_state_model import TMCOpStateModel
 
 from ska_tmc_sdpsubarrayleafnode.manager.component_manager import (
     SdpSLNComponentManager,
 )
+from ska_tmc_sdpsubarrayleafnode.model.component import SdpSLNComponent
 from ska_tmc_sdpsubarrayleafnode.model.input import InputParameterMid
-from ska_tmc_common.op_state_model import TMCOpStateModel
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +35,8 @@ def create_cm(
         logger=logger,
         _input_parameter=input_parameter,
     )
+
+    # cm._component = cm._component or SdpSLNComponent(logger)
 
     if isinstance(input_parameter, InputParameterMid):
         DEVICE_LIST = DEVICE_LIST_MID

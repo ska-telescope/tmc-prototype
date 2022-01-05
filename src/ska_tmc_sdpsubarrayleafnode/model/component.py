@@ -1,7 +1,5 @@
-import json
 import threading
 
-from ska_tango_base.control_model import ObsState
 from tango import DevState
 
 

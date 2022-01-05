@@ -3,12 +3,12 @@ import time
 import pytest
 from ska_tango_base.base.base_device import SKABaseDevice
 from ska_tango_base.commands import ResultCode
+from ska_tmc_common.adapters import SdpSubArrayAdapter
 
 from ska_tmc_sdpsubarrayleafnode.commands.telescope_off_command import (
     TelescopeOff,
 )
 from ska_tmc_sdpsubarrayleafnode.exceptions import CommandNotAllowed
-from ska_tmc_common.adapters import SdpSubArrayAdapter
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
 from tests.settings import create_cm, logger
 

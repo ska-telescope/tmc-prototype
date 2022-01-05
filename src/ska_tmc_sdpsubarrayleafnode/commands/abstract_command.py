@@ -1,10 +1,11 @@
-from ska_tango_base.commands import BaseCommand, ResultCode
+from ska_tango_base.commands import ResultCode
+from ska_tmc_common.adapters import AdapterFactory
+from ska_tmc_common.tmc_command import TMCCommand
 from tango import DevState
 
 from ska_tmc_sdpsubarrayleafnode.exceptions import CommandNotAllowed
-from ska_tmc_common.adapters import AdapterFactory
-from ska_tmc_common.tmc_command import TMCCommand
 from ska_tmc_sdpsubarrayleafnode.model.input import InputParameterMid
+
 
 class AbstractTelescopeOnOffCommand(TMCCommand):
     def __init__(
@@ -20,6 +21,14 @@ class AbstractTelescopeOnOffCommand(TMCCommand):
         self.op_state_model = pop_state_model
         self._adapter_factory = adapter_factory
         self.sdp_subarray_adapter = None
+
+    def check_allowed(self):
+        component_manager = self.target
+
+        if isinstance(component_manager.input_parameter, InputParameterMid):
+            result = self.check_allowed_mid()
+
+        return result
 
     def check_allowed_mid(self):
         """
@@ -50,6 +59,13 @@ class AbstractTelescopeOnOffCommand(TMCCommand):
             raise CommandNotAllowed("SDP subarray device is not available")
 
         return True
+
+    def init_adapters(self):
+        component_manager = self.target
+
+        if isinstance(component_manager.input_parameter, InputParameterMid):
+            result, message = self.init_adapters_mid()
+        return result, message
 
     def init_adapters_mid(self):
 
