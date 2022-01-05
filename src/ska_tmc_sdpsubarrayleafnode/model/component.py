@@ -77,18 +77,18 @@ class SdpSLNComponent(TmcComponent):
 
         self._invoke_device_callback(devInfo)
 
-    def update_device_exception(self, devInfo, exception):
+    def update_device_exception(self, device_info, exception):
         """
         Update (or add if missing) Device Information into the list of the component.
 
         :param devInfo: a DeviceInfo object
         """
-        if devInfo not in self._devices:
-            devInfo.update_unresponsive(True, exception)
-            self._devices.append(devInfo)
-            self._invoke_device_callback(devInfo)
+        if device_info not in self._devices:
+            device_info.update_unresponsive(True, exception)
+            self._devices.append(device_info)
+            self._invoke_device_callback(device_info)
         else:
-            index = self._devices.index(devInfo)
+            index = self._devices.index(device_info)
             intDevInfo = self._devices[index]
             intDevInfo.state = DevState.UNKNOWN
             intDevInfo.update_unresponsive(True, exception)

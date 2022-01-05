@@ -9,7 +9,7 @@
 
 CAR_OCI_REGISTRY_HOST:=artefact.skao.int
 PROJECT = ska-tmc
-PYTHON_SWITCHES_FOR_FLAKE8=--ignore=W503,E203 --max-line-length=180
+PYTHON_SWITCHES_FOR_FLAKE8=--ignore=W503,W0223,E203 --max-line-length=180
 TANGO_HOST ?= tango-databaseds:10000 ## TANGO_HOST connection to the Tango DS
 PYTHON_VARS_BEFORE_PYTEST ?= PYTHONPATH=.:./src \
 							 TANGO_HOST=$(TANGO_HOST)

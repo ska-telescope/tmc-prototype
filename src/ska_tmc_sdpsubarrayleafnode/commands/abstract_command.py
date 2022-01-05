@@ -13,11 +13,9 @@ class AbstractTelescopeOnOffCommand(TMCCommand):
         target,
         pop_state_model,
         adapter_factory=AdapterFactory(),
-        *args,
         logger=None,
-        **kwargs,
     ):
-        super().__init__(target, args, logger, kwargs)
+        super().__init__(target, logger)
         self.op_state_model = pop_state_model
         self._adapter_factory = adapter_factory
         self.sdp_subarray_adapter = None

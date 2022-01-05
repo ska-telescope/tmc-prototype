@@ -34,8 +34,6 @@ class SdpSLNComponentManager(TmcComponentManager):
         max_workers=5,
         proxy_timeout=500,
         sleep_time=1,
-        *args,
-        **kwargs,
     ):
         """
         Initialise a new ComponentManager instance.
@@ -55,8 +53,6 @@ class SdpSLNComponentManager(TmcComponentManager):
             max_workers,
             proxy_timeout,
             sleep_time,
-            *args,
-            **kwargs,
         )
 
         self.component = _component or SdpSLNComponent(logger)

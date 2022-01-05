@@ -8,9 +8,9 @@ from tango.server import command
 
 
 class EmptyComponentManager(BaseComponentManager):
-    def __init__(self, op_state_model, logger=None, *args, **kwargs):
+    def __init__(self, op_state_model, logger=None):
         self.logger = logger
-        super().__init__(op_state_model, *args, **kwargs)
+        super().__init__(op_state_model)
 
 
 class HelperStateDevice(SKABaseDevice):
