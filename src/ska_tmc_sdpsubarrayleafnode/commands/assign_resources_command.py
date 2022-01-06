@@ -8,12 +8,12 @@ from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterFactory
 
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import (
-    AbstractAssignReleaseResources,
+    AbstractAssignResources,
 )
 from ska_tmc_sdpsubarrayleafnode.model.input import InputParameterMid
 
 
-class AssignResources(AbstractAssignReleaseResources):
+class AssignResources(AbstractAssignResources):
     """
     A class for SdpSubarayLeafNode's AssignResources() command.
 
@@ -38,12 +38,6 @@ class AssignResources(AbstractAssignReleaseResources):
         )
         self._timeout_sdp = timeout_sdp
         self._step_sleep = step_sleep
-
-    def do(self, argin=None):
-        component_manager = self.target
-        if isinstance(component_manager.input_parameter, InputParameterMid):
-            result = self.do_mid(argin)
-        return result
 
     # @identify_with_id("assign", "argin")  do we need to replace this decorator?
     def do_mid(self, argin):
