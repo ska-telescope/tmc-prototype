@@ -1,9 +1,13 @@
 from ska_tango_base.commands import ResultCode
+from ska_tango_base.control_model import ObsState
 from ska_tmc_common.adapters import AdapterFactory, AdapterType
 from ska_tmc_common.tmc_command import TMCCommand
 from tango import DevState
 
-from ska_tmc_sdpsubarrayleafnode.exceptions import CommandNotAllowed
+from ska_tmc_sdpsubarrayleafnode.exceptions import (
+    CommandNotAllowed,
+    InvalidObsStateError,
+)
 from ska_tmc_sdpsubarrayleafnode.model.input import InputParameterMid
 
 
@@ -98,11 +102,9 @@ class AbstractAssignResources(SdpSLNCommand):
         target,
         pop_state_model,
         adapter_factory=AdapterFactory(),
-        *args,
         logger=None,
-        **kwargs,
     ):
-        super().__init__(target, args, logger, kwargs)
+        super().__init__(target, logger)
         self.op_state_model = pop_state_model
         self._adapter_factory = adapter_factory
         self.sdp_subarray_adapter = None
@@ -162,17 +164,16 @@ class AbstractAssignResources(SdpSLNCommand):
 
         return ResultCode.OK, ""
 
+
 class AbstractReleaseResources(SdpSLNCommand):
     def __init__(
         self,
         target,
         pop_state_model,
         adapter_factory=AdapterFactory(),
-        *args,
         logger=None,
-        **kwargs,
     ):
-        super().__init__(target, args, logger, kwargs)
+        super().__init__(target, logger)
         self.op_state_model = pop_state_model
         self._adapter_factory = adapter_factory
         self.sdp_subarray_adapter = None
@@ -206,15 +207,9 @@ class AbstractReleaseResources(SdpSLNCommand):
         devInfo = component_manager.get_device(
             component_manager.input_parameter.sdp_subarray_dev_name
         )
-        # if devInfo.obsState is not ObsState.IDLE:
-        #     raise InvalidObsStateError(
-        #         "ReleaseResources command is not allowed in current obsState %s",
-        #         devInfo.obsState,
-        #     )
-        print(
-            "component_manager.input_parameter.sdp_subarray_dev_name Dev_name is",
-            component_manager.input_parameter.sdp_subarray_dev_name,
-        )
+        if devInfo is None or devInfo.unresponsive:
+            raise CommandNotAllowed("SDP subarray device is not available")
+
         if (
             component_manager.get_device(
                 component_manager.input_parameter.sdp_subarray_dev_name
@@ -224,9 +219,6 @@ class AbstractReleaseResources(SdpSLNCommand):
             raise InvalidObsStateError(
                 "ReleaseResources command is not allowed in current obsState"
             )
-
-        if devInfo is None or devInfo.unresponsive:
-            raise CommandNotAllowed("SDP subarray device is not available")
 
         return True
 

@@ -32,7 +32,7 @@ class SdpSLNEventReceiver(EventReceiver):
         try:
             # import debugpy; debugpy.debug_this_thread()
             proxy = self._dev_factory.get_device(devInfo.dev_name)
-            
+
             if "subarray" in devInfo.dev_name:
                 proxy.subscribe_event(
                     "ObsState",

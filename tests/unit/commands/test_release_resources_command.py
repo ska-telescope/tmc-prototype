@@ -1,11 +1,9 @@
-import json
 import time
-from os.path import dirname, join
 
-import mock
 import pytest
 from ska_tango_base.base.base_device import SKABaseDevice
 from ska_tango_base.commands import ResultCode
+from ska_tango_base.control_model import ObsState
 from ska_tmc_common.adapters import SdpSubArrayAdapter
 
 from ska_tmc_sdpsubarrayleafnode.commands.release_resources_command import (
@@ -34,7 +32,9 @@ def get_release_resources_command_obj():
     logger.info(
         "checked %s devices in %s", len(cm.checked_devices), elapsed_time
     )
+    dev_name = "mid_sdp/elt/subarray_01"
 
+    cm.update_device_obs_state(dev_name, ObsState.IDLE)
     my_adapter_factory = HelperAdapterFactory()
 
     release_command = ReleaseAllResources(
@@ -68,6 +68,7 @@ def test_telescope_release_resources_command_fail_subarray(tango_context):
 
     # include exception in ReleaseResources command
     failing_dev = "mid_sdp/elt/subarray_01"
+    cm.update_device_obs_state(failing_dev, ObsState.IDLE)
     my_adapter_factory.get_or_create_adapter(
         failing_dev, attrs={"ReleaseAllResources.side_effect": Exception}
     )

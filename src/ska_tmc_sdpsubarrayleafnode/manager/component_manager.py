@@ -8,8 +8,10 @@ import time
 
 from ska_tmc_common.device_info import DeviceInfo, SubArrayDeviceInfo
 from ska_tmc_common.tmc_component_manager import TmcComponentManager
+
 from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
-    SdpSLNEventReceiver)
+    SdpSLNEventReceiver,
+)
 from ska_tmc_sdpsubarrayleafnode.model.component import SdpSLNComponent
 
 
@@ -72,7 +74,6 @@ class SdpSLNComponentManager(TmcComponentManager):
 
         self.component.set_op_callbacks(_update_device_callback)
         self._input_parameter = _input_parameter
-        
 
     @property
     def input_parameter(self):
