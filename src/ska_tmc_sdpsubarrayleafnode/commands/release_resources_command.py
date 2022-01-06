@@ -46,7 +46,7 @@ class ReleaseAllResources(AbstractReleaseResources):
             DevFailed if the command execution is not successful.
         """
 
-        res_code, message = self.init_adapters()
+        res_code, message = self.init_adapters_mid()
         if res_code == ResultCode.FAILED:
             return res_code, message
 

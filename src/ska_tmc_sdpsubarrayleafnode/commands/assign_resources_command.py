@@ -26,13 +26,9 @@ class AssignResources(AbstractAssignResources):
         target,
         pop_state_model,
         adapter_factory=AdapterFactory(),
-        timeout_sdp=3000,
-        step_sleep=0.1,
         logger=None,
     ):
         super().__init__(target, pop_state_model, adapter_factory, logger)
-        self._timeout_sdp = timeout_sdp
-        self._step_sleep = step_sleep
 
     # @identify_with_id("assign", "argin")  do we need to replace this decorator?
     def do_mid(self, argin):
@@ -86,11 +82,11 @@ class AssignResources(AbstractAssignResources):
             None
 
         raises:
-            ValueError if input argument json string contains invalid value.
+            KeyError if input argument json string contains invalid key.
 
             DevFailed if the command execution is not successful.
         """
-        ret_code, message = self.init_adapters()
+        ret_code, message = self.init_adapters_mid()
         if ret_code == ResultCode.FAILED:
             return ret_code, message
 
