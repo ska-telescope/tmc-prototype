@@ -59,9 +59,6 @@ class SdpSLNComponentManager(TmcComponentManager):
         self.component.set_op_callbacks(_update_device_callback)
         self._input_parameter = _input_parameter
 
-    def stop(self):
-        self._command_executor.stop()
-
     @property
     def input_parameter(self):
         """
@@ -85,18 +82,6 @@ class SdpSLNComponentManager(TmcComponentManager):
                 result.append(dev)
                 continue
         return result
-
-    @property
-    def command_in_progress(self):
-        return self._command_executor.command_in_progress
-
-    @property
-    def command_executor(self):
-        return self._command_executor
-
-    @property
-    def command_executed(self):
-        return self._command_executor._command_executed
 
     def update_input_parameter(self):
         with self.lock:
