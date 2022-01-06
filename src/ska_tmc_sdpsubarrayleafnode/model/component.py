@@ -15,8 +15,6 @@ class SdpSLNComponent(TmcComponent):
 
     def __init__(self, logger):
         super(SdpSLNComponent, self).__init__(logger)
-        self._devices = []
-        # self.logger = logger
         self._update_device_callback = None
         # self.lock = threading.Lock()  # needs to check, if required
 
