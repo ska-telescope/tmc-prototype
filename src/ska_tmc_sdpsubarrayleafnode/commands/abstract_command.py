@@ -7,7 +7,30 @@ from ska_tmc_sdpsubarrayleafnode.exceptions import CommandNotAllowed
 from ska_tmc_sdpsubarrayleafnode.model.input import InputParameterMid
 
 
-class AbstractTelescopeOnOffCommand(TMCCommand):
+class SdpSLNCommand(TMCCommand):
+    def check_allowed(self):
+        component_manager = self.target
+
+        if isinstance(component_manager.input_parameter, InputParameterMid):
+            result = self.check_allowed_mid()
+
+        return result
+
+    def init_adapters(self):
+        component_manager = self.target
+
+        if isinstance(component_manager.input_parameter, InputParameterMid):
+            result, message = self.init_adapters_mid()
+        return result, message
+
+    def do(self, argin=None):
+        component_manager = self.target
+        if isinstance(component_manager.input_parameter, InputParameterMid):
+            result = self.do_mid(argin)
+        return result
+
+
+class AbstractTelescopeOnOff(SdpSLNCommand):
     def __init__(
         self,
         target,
@@ -20,13 +43,13 @@ class AbstractTelescopeOnOffCommand(TMCCommand):
         self._adapter_factory = adapter_factory
         self.sdp_subarray_adapter = None
 
-    def check_allowed(self):
-        component_manager = self.target
+    # def check_allowed(self):
+    #     component_manager = self.target
 
-        if isinstance(component_manager.input_parameter, InputParameterMid):
-            result = self.check_allowed_mid()
+    #     if isinstance(component_manager.input_parameter, InputParameterMid):
+    #         result = self.check_allowed_mid()
 
-        return result
+    #     return result
 
     def check_allowed_mid(self):
         """
@@ -58,12 +81,12 @@ class AbstractTelescopeOnOffCommand(TMCCommand):
 
         return True
 
-    def init_adapters(self):
-        component_manager = self.target
+    # def init_adapters(self):
+    #     component_manager = self.target
 
-        if isinstance(component_manager.input_parameter, InputParameterMid):
-            result, message = self.init_adapters_mid()
-        return result, message
+    #     if isinstance(component_manager.input_parameter, InputParameterMid):
+    #         result, message = self.init_adapters_mid()
+    #     return result, message
 
     def init_adapters_mid(self):
 
