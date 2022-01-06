@@ -4,19 +4,15 @@ This module provided a reference implementation of a BaseComponentManager.
 It is provided for explanatory purposes, and to support testing of this
 package.
 """
-import threading
 
-from ska_tango_base.base import BaseComponentManager
 from ska_tmc_common.device_info import DeviceInfo, SubArrayDeviceInfo
 from ska_tmc_common.tmc_component_manager import TmcComponentManager
-
-# from ska_tmc_sdpsubarrayleafnode.manager.command_executor import (
-#     CommandExecutor,
-# )
+from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
+    SdpSLNEventReceiver)
 from ska_tmc_sdpsubarrayleafnode.model.component import SdpSLNComponent
 
 
-class SdpSLNComponentManager(BaseComponentManager):
+class SdpSLNComponentManager(TmcComponentManager):
     """
     A component manager for The SDP Subarray Leaf Node component.
 
@@ -33,8 +29,11 @@ class SdpSLNComponentManager(BaseComponentManager):
         logger=None,
         _component=None,
         _update_device_callback=None,
-        *args,
-        **kwargs,
+        _monitoring_loop=False,
+        _event_receiver=True,
+        max_workers=5,
+        proxy_timeout=500,
+        sleep_time=1,
     ):
         """
         Initialise a new ComponentManager instance.
@@ -45,23 +44,34 @@ class SdpSLNComponentManager(BaseComponentManager):
         :param _component: allows setting of the component to be
             managed; for testing purposes only
         """
-        self.logger = logger
-        self.lock = threading.Lock()
-        self._component = _component or SdpSLNComponent(logger)
+        super(SdpSLNComponentManager, self).__init__(
+            op_state_model,
+            _component,
+            logger,
+            _monitoring_loop,
+            _event_receiver,
+            max_workers,
+            proxy_timeout,
+            sleep_time,
+        )
 
-        self._component.set_op_callbacks(
-            _update_device_callback
-        )  # need to check it its required in case of ln
+        self.component = _component or SdpSLNComponent(logger)
+        self.devices = self.component.devices
 
-        super().__init__(op_state_model, *args, **kwargs)
+        if _event_receiver:
+            self._event_receiver = SdpSLNEventReceiver(
+                self,
+                logger,
+                proxy_timeout=proxy_timeout,
+                sleep_time=sleep_time,
+            )
+
+        if _event_receiver:
+            self._event_receiver.start()
+            
+        self.component.set_op_callbacks(_update_device_callback)
         self._input_parameter = _input_parameter
-        # super().__init__(op_state_model, self._input_parameter, self.logger, self.component)
-
-    def reset(self):
-        pass
-
-    def stop(self):
-        self._command_executor.stop()
+        
 
     @property
     def input_parameter(self):
@@ -72,25 +82,6 @@ class SdpSLNComponentManager(BaseComponentManager):
         :rtype: InputParameter
         """
         return self._input_parameter
-
-    @property
-    def component(self):
-        """
-        Return the managed component
-
-        :return: the managed component
-        :rtype: Component
-        """
-        return self._component
-
-    @property
-    def devices(self):
-        """
-        Return the list of the monitored devices
-
-        :return: list of the monitored devices
-        """
-        return self._component.devices
 
     @property
     def checked_devices(self):
@@ -104,36 +95,7 @@ class SdpSLNComponentManager(BaseComponentManager):
             if dev.unresponsive:
                 result.append(dev)
                 continue
-            # if dev.ping > 0:
-            #     result.append(dev)
-            #     continue
-            # if dev.last_event_arrived is not None:
-            #     result.append(dev)
-            #     continue
         return result
-
-    @property
-    def command_in_progress(self):
-        return self._command_executor.command_in_progress
-
-    @property
-    def command_executor(self):
-        return self._command_executor
-
-    @property
-    def command_executed(self):
-        return self._command_executor._command_executed
-
-    def get_device(self, dev_name):
-        """
-        Return the device info our of the monitoring loop with name dev_name
-
-        :param dev_name: name of the device
-        :type dev_name: str
-        :return: a device info
-        :rtype: DeviceInfo
-        """
-        return self.component.get_device(dev_name)
 
     def update_input_parameter(self):
         with self.lock:
@@ -155,32 +117,3 @@ class SdpSLNComponentManager(BaseComponentManager):
             devInfo = DeviceInfo(dev_name, False)
 
         self.component.update_device(devInfo)
-
-    def device_failed(self, device_info, exception):
-        """
-        Set a device to failed and call the relative callback if available
-
-        :param device_info: a device info
-        :type device_info: DeviceInfo
-        :param exception: an exception
-        :type: Exception
-        """
-        with self.lock:
-            self.component.update_device_exception(device_info, exception)
-
-    def update_event_failure(self, dev_name):
-        with self.lock:
-            devInfo = self.component.get_device(dev_name)
-            devInfo.last_event_arrived = time.time()
-            devInfo.update_unresponsive(False)
-
-    def update_device_info(self, device_info):
-        """
-        Update a device with correct monitoring information
-        and call the relative callback if available
-
-        :param device_info: a device info
-        :type device_info: DeviceInfo
-        """
-        with self.lock:
-            self.component.update_device(device_info)

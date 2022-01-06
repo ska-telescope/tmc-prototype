@@ -49,10 +49,7 @@ class InputParameterMid(InputParameter):
                 component_manager.component.remove_device(devInfo.dev_name)
 
 
+# TODO: Sdp element device is not present for MVP-Low currently
+# In future as the requirements are updated, InputParameterLow class can be added
 # class InputParameterLow(InputParameter):
-#     def __init__(self, changed_callback) -> None:
-#         super().__init__(changed_callback)
-#         self._changed_callback = changed_callback
-
-#     def update(self, component_manager):
 #         pass

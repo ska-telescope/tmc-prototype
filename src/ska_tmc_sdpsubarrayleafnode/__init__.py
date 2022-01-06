@@ -24,15 +24,15 @@ SdpSubarrayLeafNode
 # ]
 
 
-from ska_tmc_sdpsubarrayleafnode import release
+# from ska_tmc_sdpsubarrayleafnode import release
 
-__all__ = ["release"]
+# __all__ = ["release"]
 
-__version__ = release.version
-__version_info__ = release.version_info
-__author__ = release.author
+# __version__ = release.version
+# __version_info__ = release.version_info
+# __author__ = release.author
 
 
-__version__ = release.version
-__version_info__ = release.version_info
-__author__ = release.author
+# __version__ = release.version
+# __version_info__ = release.version_info
+# __author__ = release.author

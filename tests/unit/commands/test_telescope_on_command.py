@@ -42,7 +42,6 @@ def test_telescope_on_command(tango_context):
         if isinstance(my_adapter_factory.adapters, SdpSubArrayAdapter):
             adapter.proxy.On.assert_called()
             continue
-        adapter.proxy.TelescopeOn.assert_called()
 
 
 def test_telescope_on_command_fail_sdp_subarray(tango_context):

@@ -2,12 +2,13 @@ from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterFactory
 
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import (
-    AbstractTelescopeOnOffCommand,
+    AbstractTelescopeOnOff,
 )
-from ska_tmc_sdpsubarrayleafnode.model.input import InputParameterMid
+
+# from ska_tmc_sdpsubarrayleafnode.model.input import InputParameterMid
 
 
-class TelescopeOn(AbstractTelescopeOnOffCommand):
+class TelescopeOn(AbstractTelescopeOnOff):
     """
     A class for SdpsubarrayleafNode's TelescopeOn() command.
 
@@ -21,23 +22,20 @@ class TelescopeOn(AbstractTelescopeOnOffCommand):
         target,
         pop_state_model,
         adapter_factory=AdapterFactory(),
-        timeout_sdp=3000,
-        step_sleep=0.1,
-        *args,
         logger=None,
-        **kwargs,
     ):
         super().__init__(
-            target, pop_state_model, adapter_factory, args, logger, kwargs
+            target,
+            pop_state_model,
+            adapter_factory,
+            logger,
         )
-        self._timeout_sdp = timeout_sdp
-        self._step_sleep = step_sleep
 
-    def do(self, argin=None):
-        component_manager = self.target
-        if isinstance(component_manager.input_parameter, InputParameterMid):
-            result = self.do_mid(argin)
-        return result
+    # def do(self, argin=None):
+    #     component_manager = self.target
+    #     if isinstance(component_manager.input_parameter, InputParameterMid):
+    #         result = self.do_mid(argin)
+    #     return result
 
     def do_mid(self, argin=None):
         """

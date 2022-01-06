@@ -1,9 +1,8 @@
-import threading
-
+from ska_tmc_common.tmc_component_manager import TmcComponent
 from tango import DevState
 
 
-class SdpSLNComponent:
+class SdpSLNComponent(TmcComponent):
     """
     A component class for Sdpsubarrayleafnode Node
 
@@ -15,10 +14,9 @@ class SdpSLNComponent:
     """
 
     def __init__(self, logger):
-        self._devices = []
-        self.logger = logger
+        super(SdpSLNComponent, self).__init__(logger)
         self._update_device_callback = None
-        self.lock = threading.Lock()  # needs to check, if required
+        # self.lock = threading.Lock()  # needs to check, if required
 
     def set_op_callbacks(
         self,
@@ -77,18 +75,18 @@ class SdpSLNComponent:
 
         self._invoke_device_callback(devInfo)
 
-    def update_device_exception(self, devInfo, exception):
+    def update_device_exception(self, device_info, exception):
         """
         Update (or add if missing) Device Information into the list of the component.
 
         :param devInfo: a DeviceInfo object
         """
-        if devInfo not in self._devices:
-            devInfo.update_unresponsive(True, exception)
-            self._devices.append(devInfo)
-            self._invoke_device_callback(devInfo)
+        if device_info not in self._devices:
+            device_info.update_unresponsive(True, exception)
+            self._devices.append(device_info)
+            self._invoke_device_callback(device_info)
         else:
-            index = self._devices.index(devInfo)
+            index = self._devices.index(device_info)
             intDevInfo = self._devices[index]
             intDevInfo.state = DevState.UNKNOWN
             intDevInfo.update_unresponsive(True, exception)

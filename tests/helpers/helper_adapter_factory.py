@@ -17,7 +17,7 @@ class HelperAdapterFactory(AdapterFactory):
         if proxy is None:
             proxy = mock.Mock(attrs)
 
-        for adapter in self.adapters:  # why exctly this for loop is required?
+        for adapter in self.adapters:
             if adapter.dev_name == dev_name:
                 return adapter
 
