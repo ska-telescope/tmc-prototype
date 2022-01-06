@@ -4,7 +4,6 @@ This module provided a reference implementation of a BaseComponentManager.
 It is provided for explanatory purposes, and to support testing of this
 package.
 """
-import time
 
 from ska_tmc_common.device_info import DeviceInfo, SubArrayDeviceInfo
 from ska_tmc_common.tmc_component_manager import TmcComponentManager
@@ -57,13 +56,8 @@ class SdpSLNComponentManager(TmcComponentManager):
 
         self.component = _component or SdpSLNComponent(logger)
 
-        self.component.set_op_callbacks(
-            _update_device_callback
-        )  # need to check it its required in case of ln
+        self.component.set_op_callbacks(_update_device_callback)
         self._input_parameter = _input_parameter
-
-    def reset(self):
-        pass
 
     def stop(self):
         self._command_executor.stop()
@@ -104,17 +98,6 @@ class SdpSLNComponentManager(TmcComponentManager):
     def command_executed(self):
         return self._command_executor._command_executed
 
-    def get_device(self, dev_name):
-        """
-        Return the device info our of the monitoring loop with name dev_name
-
-        :param dev_name: name of the device
-        :type dev_name: str
-        :return: a device info
-        :rtype: DeviceInfo
-        """
-        return self.component.get_device(dev_name)
-
     def update_input_parameter(self):
         with self.lock:
             self.input_parameter.update(self)
@@ -135,32 +118,3 @@ class SdpSLNComponentManager(TmcComponentManager):
             devInfo = DeviceInfo(dev_name, False)
 
         self.component.update_device(devInfo)
-
-    def device_failed(self, device_info, exception):
-        """
-        Set a device to failed and call the relative callback if available
-
-        :param device_info: a device info
-        :type device_info: DeviceInfo
-        :param exception: an exception
-        :type: Exception
-        """
-        with self.lock:
-            self.component.update_device_exception(device_info, exception)
-
-    def update_event_failure(self, dev_name):
-        with self.lock:
-            devInfo = self.component.get_device(dev_name)
-            devInfo.last_event_arrived = time.time()
-            devInfo.update_unresponsive(False)
-
-    def update_device_info(self, device_info):
-        """
-        Update a device with correct monitoring information
-        and call the relative callback if available
-
-        :param device_info: a device info
-        :type device_info: DeviceInfo
-        """
-        with self.lock:
-            self.component.update_device(device_info)
