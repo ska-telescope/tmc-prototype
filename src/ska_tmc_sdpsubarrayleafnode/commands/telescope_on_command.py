@@ -31,12 +31,6 @@ class TelescopeOn(AbstractTelescopeOnOff):
             logger,
         )
 
-    # def do(self, argin=None):
-    #     component_manager = self.target
-    #     if isinstance(component_manager.input_parameter, InputParameterMid):
-    #         result = self.do_mid(argin)
-    #     return result
-
     def do_mid(self, argin=None):
         """
         Method to invoke Telescope On command on Sdp Subarray.

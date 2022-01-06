@@ -1,4 +1,4 @@
-# TODO: Refactoring for this command will be done as a part of separate story
+# TODO: Refactoring for this command will be done as a part of separate story. Hence commented the code for now.
 # """
 # ReleaseResources class for SDPSubarrayLeafNode.
 # """

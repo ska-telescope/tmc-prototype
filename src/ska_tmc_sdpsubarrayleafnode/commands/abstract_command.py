@@ -43,14 +43,6 @@ class AbstractTelescopeOnOff(SdpSLNCommand):
         self._adapter_factory = adapter_factory
         self.sdp_subarray_adapter = None
 
-    # def check_allowed(self):
-    #     component_manager = self.target
-
-    #     if isinstance(component_manager.input_parameter, InputParameterMid):
-    #         result = self.check_allowed_mid()
-
-    #     return result
-
     def check_allowed_mid(self):
         """
         Checks whether this command is allowed
@@ -80,13 +72,6 @@ class AbstractTelescopeOnOff(SdpSLNCommand):
             raise CommandNotAllowed("SDP subarray device is not available")
 
         return True
-
-    # def init_adapters(self):
-    #     component_manager = self.target
-
-    #     if isinstance(component_manager.input_parameter, InputParameterMid):
-    #         result, message = self.init_adapters_mid()
-    #     return result, message
 
     def init_adapters_mid(self):
 

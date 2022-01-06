@@ -26,12 +26,6 @@ class TelescopeOff(AbstractTelescopeOnOff):
     ):
         super().__init__(target, pop_state_model, adapter_factory, logger)
 
-    # def do(self, argin=None):
-    #     component_manager = self.target
-    #     if isinstance(component_manager.input_parameter, InputParameterMid):
-    #         result = self.do_mid(argin)
-    #     return result
-
     def do_mid(self, argin):
         """
         Method to invoke Telescope Off command on Sdp Subarray.
