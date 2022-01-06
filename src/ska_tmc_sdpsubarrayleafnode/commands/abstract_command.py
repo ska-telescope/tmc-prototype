@@ -27,6 +27,26 @@ class SdpSLNCommand(TMCCommand):
             result, message = self.init_adapters_mid()
         return result, message
 
+    def init_adapters_mid(self):
+        self.sdp_subarray_adapter = None
+        component_manager = self.target
+        dev_name = component_manager.input_parameter.sdp_subarray_dev_name
+        devInfo = component_manager.get_device(dev_name)
+        try:
+            if not devInfo.unresponsive:
+                self.sdp_subarray_adapter = (
+                    self._adapter_factory.get_or_create_adapter(
+                        dev_name, AdapterType.SDPSUBARRAY
+                    )
+                )
+        except Exception as e:
+            return self.adapter_error_message_result(
+                component_manager.input_parameter.sdp_subarray_dev_name,
+                e,
+            )
+
+        return ResultCode.OK, ""
+
     def do(self, argin=None):
         component_manager = self.target
         if isinstance(component_manager.input_parameter, InputParameterMid):
@@ -77,24 +97,6 @@ class AbstractTelescopeOnOff(SdpSLNCommand):
 
         return True
 
-    def init_adapters_mid(self):
-
-        self.sdp_subarray_adapter = None
-        component_manager = self.target
-        try:
-            self.sdp_subarray_adapter = (
-                self._adapter_factory.get_or_create_adapter(
-                    component_manager.input_parameter.sdp_subarray_dev_name
-                )
-            )
-        except Exception as e:
-            return self.adapter_error_message_result(
-                component_manager.input_parameter.sdp_subarray_dev_name,
-                e,
-            )
-
-        return ResultCode.OK, ""
-
 
 class AbstractAssignResources(SdpSLNCommand):
     def __init__(
@@ -142,27 +144,6 @@ class AbstractAssignResources(SdpSLNCommand):
             raise CommandNotAllowed("SDP subarray device is not available")
 
         return True
-
-    def init_adapters_mid(self):
-
-        self.sdp_subarray_adapter = None
-        component_manager = self.target
-        dev_name = component_manager.input_parameter.sdp_subarray_dev_name
-        devInfo = component_manager.get_device(dev_name)
-        try:
-            if not devInfo.unresponsive:
-                self.sdp_subarray_adapter = (
-                    self._adapter_factory.get_or_create_adapter(
-                        dev_name, AdapterType.SDPSUBARRAY
-                    )
-                )
-        except Exception as e:
-            return self.adapter_error_message_result(
-                component_manager.input_parameter.sdp_subarray_dev_name,
-                e,
-            )
-
-        return ResultCode.OK, ""
 
 
 class AbstractReleaseResources(SdpSLNCommand):
@@ -221,24 +202,3 @@ class AbstractReleaseResources(SdpSLNCommand):
             )
 
         return True
-
-    def init_adapters_mid(self):
-
-        self.sdp_subarray_adapter = None
-        component_manager = self.target
-        dev_name = component_manager.input_parameter.sdp_subarray_dev_name
-        devInfo = component_manager.get_device(dev_name)
-        try:
-            if not devInfo.unresponsive:
-                self.sdp_subarray_adapter = (
-                    self._adapter_factory.get_or_create_adapter(
-                        dev_name, AdapterType.SDPSUBARRAY
-                    )
-                )
-        except Exception as e:
-            return self.adapter_error_message_result(
-                component_manager.input_parameter.sdp_subarray_dev_name,
-                e,
-            )
-
-        return ResultCode.OK, ""
