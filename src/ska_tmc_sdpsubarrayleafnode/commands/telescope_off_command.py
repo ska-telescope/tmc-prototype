@@ -10,9 +10,9 @@ from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import (
 
 class TelescopeOff(AbstractTelescopeOnOff):
     """
-    A class for SdpsubarrayleafNode's TelescopeOff() command.
+    A class for SdpsubarrayLeafNode's TelescopeOff() command.
 
-    TelescopeOff command on SdpsubarrayleafNode enables the telescope to perform further operations
+    TelescopeOff command on SdpsubarrayLeafNode enables the telescope to perform further operations
     and observations. It Invokes Off command on Sdp Subarray device.
 
     """
