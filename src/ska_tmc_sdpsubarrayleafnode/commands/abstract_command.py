@@ -204,7 +204,7 @@ class AbstractReleaseResources(SdpSLNCommand):
         return True
 
 
-class AbstractConfigure(SdpSLNCommand):
+class AbstractConfigureEnd(SdpSLNCommand):
     def __init__(
         self,
         target,
@@ -253,7 +253,7 @@ class AbstractConfigure(SdpSLNCommand):
             component_manager.input_parameter.sdp_subarray_dev_name
         ).obsState
 
-        if obs_state_val is not ObsState.IDLE:
+        if obs_state_val is not ObsState.READY:
             raise InvalidObsStateError(
                 "Configure command is not allowed in current obsState"
             )

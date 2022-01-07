@@ -41,7 +41,7 @@ def get_configure_command_obj():
     )
     dev_name = "mid_sdp/elt/subarray_01"
 
-    cm.update_device_obs_state(dev_name, ObsState.IDLE)
+    cm.update_device_obs_state(dev_name, ObsState.READY)
     my_adapter_factory = HelperAdapterFactory()
 
     attrs = {"fetch_skuid.return_value": 123}
@@ -105,7 +105,7 @@ def test_telescope_assign_resources_command_fail_subarray(tango_context):
     configure_command = Configure(
         cm, cm.op_state_model, my_adapter_factory, skuid
     )
-    cm.update_device_obs_state(failing_dev, ObsState.IDLE)
+    cm.update_device_obs_state(failing_dev, ObsState.READY)
     configure_input_str = get_configure_input_str()
     assert configure_command.check_allowed()
     (result_code, message) = configure_command.do(configure_input_str)
