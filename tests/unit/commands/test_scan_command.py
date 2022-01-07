@@ -122,7 +122,7 @@ def test_telescope_scan_command_empty_input_json(tango_context):
     assert result_code == ResultCode.FAILED
 
 
-def test_telescope_release_resources_fail_check_allowed_with_invalid_obsState(
+def test_telescope_scan_command_fail_check_allowed_with_invalid_obsState(
     tango_context,
 ):
 
@@ -137,12 +137,12 @@ def test_telescope_release_resources_fail_check_allowed_with_invalid_obsState(
     cm.update_device_obs_state(dev_name, ObsState.IDLE)
     my_adapter_factory = HelperAdapterFactory()
     # cm.input_parameter.sdp_subarray_dev_name = ""
-    release_command = Scan(cm, cm.op_state_model, my_adapter_factory)
+    scan_command = Scan(cm, cm.op_state_model, my_adapter_factory)
     with pytest.raises(InvalidObsStateError):
-        release_command.check_allowed()
+        scan_command.check_allowed()
 
 
-def test_telescope_release_resources_fail_check_allowed(tango_context):
+def test_telescope_scan_fail_check_allowed(tango_context):
 
     logger.info("%s", tango_context)
     cm, start_time = create_cm()
@@ -153,6 +153,6 @@ def test_telescope_release_resources_fail_check_allowed(tango_context):
 
     my_adapter_factory = HelperAdapterFactory()
     cm.input_parameter.sdp_subarray_dev_name = ""
-    release_command = Scan(cm, cm.op_state_model, my_adapter_factory)
+    scan_command = Scan(cm, cm.op_state_model, my_adapter_factory)
     with pytest.raises(CommandNotAllowed):
-        release_command.check_allowed()
+        scan_command.check_allowed()
