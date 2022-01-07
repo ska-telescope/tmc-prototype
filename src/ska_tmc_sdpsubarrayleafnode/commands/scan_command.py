@@ -70,11 +70,6 @@ class Scan(AbstractScan):
             # As, SKA logtransaction is not utilised in scan command across tmc devices.
             # Hence, Interface URL needs to be updated explicitly for SDP.
             # TODO: Incorporate transaction id implementation for scan command across TMC.
-            # input_json = json.loads(json_argument)
-            # input_json[
-            #     "interface"
-            # ] = "https://schema.skao.int/ska-sdp-scan/0.3"
-            # updated_argin = json.dumps(input_json)
             json_argument[
                 "inteface"
             ] = "https://schema.skao.int/ska-sdp-scan/0.3"
