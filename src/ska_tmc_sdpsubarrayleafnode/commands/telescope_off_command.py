@@ -37,6 +37,9 @@ class TelescopeOff(AbstractTelescopeOnOff):
 
         try:
             self.sdp_subarray_adapter.Off()
+            self.logger.info(
+                "Off command is successful on Sdp Subarray device."
+            )
         except Exception as e:
             return self.generate_command_result(
                 ResultCode.FAILED,
