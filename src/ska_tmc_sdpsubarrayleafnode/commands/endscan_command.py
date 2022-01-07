@@ -5,7 +5,11 @@ EndScan class for SDPSubarrayLeafNode.
 
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterFactory
-from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import AbstractEndScan
+
+from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import (
+    AbstractEndScan,
+)
+
 
 class EndScan(AbstractEndScan):
     """
@@ -28,7 +32,7 @@ class EndScan(AbstractEndScan):
             adapter_factory,
             logger,
         )
-    
+
     def do_mid(self, argin):
         """
         Method to invoke EndScan command on SDP Subarray.

@@ -3,13 +3,13 @@ End class for SDPSubarrayLeafNode.
 """
 # PROTECTED REGION ID(sdpsubarrayleafnode.additionnal_import) ENABLED START #
 # Tango imports
-import tango
-
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterFactory
+
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import (
     AbstractScanEnd,
 )
+
 
 class End(AbstractScanEnd):
     """
@@ -18,6 +18,7 @@ class End(AbstractScanEnd):
     Invokes End command on SDP Subarray to end the current Scheduling Block.
 
     """
+
     def __init__(
         self,
         target,
@@ -25,11 +26,7 @@ class End(AbstractScanEnd):
         adapter_factory=AdapterFactory(),
         logger=None,
     ):
-        super().__init__(
-            target,
-            pop_state_model,
-            adapter_factory,
-            logger)
+        super().__init__(target, pop_state_model, adapter_factory, logger)
 
     def do_mid(self, argin=None):
         """
