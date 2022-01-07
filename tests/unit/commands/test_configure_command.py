@@ -83,7 +83,7 @@ def test_telescope_configure_resources_command_missing_interface_key(
             adapter.proxy.Configure.assert_called()
 
 
-def test_telescope_assign_resources_command_fail_subarray(tango_context):
+def test_telescope_configure_command_fail_subarray(tango_context):
     logger.info("%s", tango_context)
     cm, start_time = create_cm()
     elapsed_time = time.time() - start_time
@@ -98,7 +98,7 @@ def test_telescope_assign_resources_command_fail_subarray(tango_context):
 
     # include exception in AssignResources command
     failing_dev = "mid_sdp/elt/subarray_01"
-    attrs = {"AssignResources.side_effect": Exception}
+    attrs = {"Configure.side_effect": Exception}
     subarrayMock = mock.Mock(**attrs)
     my_adapter_factory.get_or_create_adapter(failing_dev, proxy=subarrayMock)
 
@@ -113,7 +113,7 @@ def test_telescope_assign_resources_command_fail_subarray(tango_context):
     assert failing_dev in message
 
 
-def test_telescope_assign_resources_command_empty_input_json(tango_context):
+def test_telescope_configure_command_empty_input_json(tango_context):
     logger.info("%s", tango_context)
     # import debugpy; debugpy.debug_this_thread()
     configure_command, _ = get_configure_command_obj()
@@ -122,7 +122,7 @@ def test_telescope_assign_resources_command_empty_input_json(tango_context):
     assert result_code == ResultCode.FAILED
 
 
-def test_telescope_assign_resources_command_missing_scan_type(tango_context):
+def test_telescope_configure_command_missing_scan_type(tango_context):
     logger.info("%s", tango_context)
     # import debugpy; debugpy.debug_this_thread()
     configure_command, _ = get_configure_command_obj()

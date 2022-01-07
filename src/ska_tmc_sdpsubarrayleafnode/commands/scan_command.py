@@ -7,12 +7,14 @@ import json
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterFactory
 
-from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import AbstractScan
+from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import (
+    AbstractScanEnd,
+)
 
 # PROTECTED REGION ID(sdpsubarrayleafnode.additionnal_import) ENABLED START #
 
 
-class Scan(AbstractScan):
+class Scan(AbstractScanEnd):
     """
     A class for SdpSubarrayLeafNode's Scan() command.
 
@@ -70,13 +72,8 @@ class Scan(AbstractScan):
             # As, SKA logtransaction is not utilised in scan command across tmc devices.
             # Hence, Interface URL needs to be updated explicitly for SDP.
             # TODO: Incorporate transaction id implementation for scan command across TMC.
-            # input_json = json.loads(json_argument)
-            # input_json[
-            #     "interface"
-            # ] = "https://schema.skao.int/ska-sdp-scan/0.3"
-            # updated_argin = json.dumps(input_json)
             json_argument[
-                "inteface"
+                "interface"
             ] = "https://schema.skao.int/ska-sdp-scan/0.3"
             log_msg = (
                 "Updated Input JSON for SDP Subarray Leaf Node Scan command is: %s",
@@ -85,6 +82,9 @@ class Scan(AbstractScan):
             self.logger.debug(log_msg)
 
             self.sdp_subarray_adapter.Scan(json.dumps(json_argument.copy()))
+            self.logger.info(
+                "Scan command is successful on Sdp Subarray leaf node"
+            )
         except Exception as e:
             return self.generate_command_result(
                 ResultCode.FAILED,

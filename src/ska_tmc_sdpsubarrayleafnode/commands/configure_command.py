@@ -9,11 +9,11 @@ from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterFactory
 
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import (
-    AbstractConfigureEnd,
+    AbstractConfigure,
 )
 
 
-class Configure(AbstractConfigureEnd):
+class Configure(AbstractConfigure):
     """
     A class for SdpSubarrayLeafNode's Configure() command.
 
