@@ -34,12 +34,12 @@ class AbstractTelescopeOnOff(SdpSLNCommand):
     def __init__(
         self,
         target,
-        pop_state_model,
+        op_state_model,
         adapter_factory=AdapterFactory(),
         logger=None,
     ):
         super().__init__(target, logger)
-        self.op_state_model = pop_state_model
+        self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
         self.sdp_subarray_adapter = None
 
