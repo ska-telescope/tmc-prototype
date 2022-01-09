@@ -428,12 +428,79 @@ class AbstractRestartObsReset(SdpSLNCommand):
         obs_state_val = component_manager.get_device(
             component_manager.input_parameter.sdp_subarray_dev_name
         ).obsState
+        print("obstate is:::::::::::::::::::::::::::::::::", obs_state_val)
 
         if (
             obs_state_val is not ObsState.ABORTED
         ):  # need to add ObState.FAULT as well
             raise InvalidObsStateError(
                 "ObsReset, Restart command is not allowed in current obsState"
+            )
+        # if (
+        #     obs_state_val is not ObsState.FAULT
+        # ):  # need to add ObState.FAULT as well
+        #     raise InvalidObsStateError(
+        #         "ObsReset, Restart command is not allowed in current obsState"
+        #     )
+
+        return True
+
+
+class AbstractAbort(SdpSLNCommand):
+    def __init__(
+        self,
+        target,
+        pop_state_model,
+        adapter_factory=AdapterFactory(),
+        logger=None,
+    ):
+        super().__init__(target, logger)
+        self.op_state_model = pop_state_model
+        self._adapter_factory = adapter_factory
+        self.sdp_subarray_adapter = None
+
+    def check_allowed_mid(self):
+        """
+        Checks whether this command is allowed
+        It checks that the device is in a state
+        to perform this command and that all the
+        component needed for the operation are not unresponsive
+
+        :return: True if this command is allowed
+
+        :rtype: boolean
+
+        """
+        component_manager = self.target
+
+        if self.op_state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
+            raise CommandNotAllowed(
+                "Abort command is not allowed in current state %s",
+                self.op_state_model.op_state,
+            )
+
+        # for this command I need a number of sub-devices
+        # import debugpy; debugpy.debug_this_thread()
+        devInfo = component_manager.get_device(
+            component_manager.input_parameter.sdp_subarray_dev_name
+        )
+        if devInfo is None or devInfo.unresponsive:
+            raise CommandNotAllowed("SDP subarray device is not available")
+
+        obs_state_val = component_manager.get_device(
+            component_manager.input_parameter.sdp_subarray_dev_name
+        ).obsState
+        print("obstate is:::::::::::::::::::::::::::::::::", obs_state_val)
+
+        if (
+            obs_state_val is not ObsState.CONFIGURING
+        ):  # need to add  ObsState.CONFIGURING, ObsState.SCANNING, ObsState.IDLE, ObsState.RESETTING as well
+            raise InvalidObsStateError(
+                "Abort command is not allowed in current obsState"
             )
 
         return True

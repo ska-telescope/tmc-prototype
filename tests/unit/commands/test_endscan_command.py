@@ -47,29 +47,6 @@ def test_endscan_command(tango_context):
             adapter.proxy.EndScan.assert_called()
 
 
-# def test_endscan_command_fail_sdp_subarray(tango_context):
-#     logger.info("%s", tango_context)
-#     cm, start_time = create_cm()
-#     elapsed_time = time.time() - start_time
-#     logger.info(
-#         "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-#     )
-#     my_adapter_factory = HelperAdapterFactory()
-
-#     # include exception in EndScan command
-#     failing_dev = "mid_sdp/elt/subarray_01"
-#     cm.update_device_obs_state(failing_dev, ObsState.SCANNING)
-#     my_adapter_factory.get_or_create_adapter(
-#         failing_dev, attrs={"EndScan.side_effect": Exception}
-#     )
-
-#     endscan_command = EndScan(cm, cm.op_state_model, my_adapter_factory)
-#     assert endscan_command.check_allowed()
-#     (result_code, message) = endscan_command.do()
-#     assert result_code == ResultCode.FAILED
-#     assert failing_dev in message
-
-
 def test_endscan_fail_check_allowed(tango_context):
 
     logger.info("%s", tango_context)
