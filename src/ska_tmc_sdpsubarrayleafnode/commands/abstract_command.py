@@ -198,7 +198,7 @@ class AbstractReleaseResources(SdpSLNCommand):
             is not ObsState.IDLE
         ):
             raise InvalidObsStateError(
-                "ReleaseResources command is not allowed in current observation state"
+                "ReleaseResources command is permitted only in IDLE observation states"
             )
 
         return True
@@ -255,7 +255,7 @@ class AbstractConfigure(SdpSLNCommand):
 
         if obs_state_val not in (ObsState.READY, ObsState.IDLE):
             raise InvalidObsStateError(
-                "Configure command is not allowed in current observation state"
+                "Configure command is permitted only in READY and IDLE observation states."
             )
 
         return True
@@ -312,7 +312,7 @@ class AbstractScanEnd(SdpSLNCommand):
 
         if obs_state_val is not ObsState.READY:
             raise InvalidObsStateError(
-                "Scan and End commands are not allowed in current observation state"
+                "Scan and End commands are permitted only in READY observation state."
             )
 
         return True
@@ -369,7 +369,7 @@ class AbstractEndScan(SdpSLNCommand):
 
         if obs_state_val is not ObsState.SCANNING:
             raise InvalidObsStateError(
-                "EndScan command is not allowed in current observation state"
+                "EndScan command is permitted only in SCANNING observation state"
             )
 
         return True
@@ -425,7 +425,7 @@ class AbstractRestartObsReset(SdpSLNCommand):
 
         if obs_state_val not in (ObsState.ABORTED, ObsState.FAULT):
             raise InvalidObsStateError(
-                "ObsReset and Restart commands are not allowed in current observation state"
+                "ObsReset and Restart commands are permitted only in ABORTED and FAULT observation states."
             )
 
         return True
@@ -487,7 +487,7 @@ class AbstractAbort(SdpSLNCommand):
             ObsState.RESETTING,
         ):
             raise InvalidObsStateError(
-                "Abort command is not allowed in current observation state"
+                "Abort command is permitted only in CONFIGURING, SCANNING, IDLE and RESETTING observation states"
             )
 
         return True
