@@ -20,11 +20,11 @@ class TelescopeOff(AbstractTelescopeOnOff):
     def __init__(
         self,
         target,
-        pop_state_model,
+        op_state_model,
         adapter_factory=AdapterFactory(),
         logger=None,
     ):
-        super().__init__(target, pop_state_model, adapter_factory, logger)
+        super().__init__(target, op_state_model, adapter_factory, logger)
 
     # def do(self, argin=None):
     #     component_manager = self.target

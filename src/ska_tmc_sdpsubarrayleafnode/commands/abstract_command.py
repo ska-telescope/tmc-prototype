@@ -58,12 +58,12 @@ class AbstractTelescopeOnOff(SdpSLNCommand):
     def __init__(
         self,
         target,
-        pop_state_model,
+        op_state_model,
         adapter_factory=AdapterFactory(),
         logger=None,
     ):
         super().__init__(target, logger)
-        self.op_state_model = pop_state_model
+        self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
         self.sdp_subarray_adapter = None
 
@@ -102,12 +102,12 @@ class AbstractAssignResources(SdpSLNCommand):
     def __init__(
         self,
         target,
-        pop_state_model,
+        op_state_model,
         adapter_factory=AdapterFactory(),
         logger=None,
     ):
         super().__init__(target, logger)
-        self.op_state_model = pop_state_model
+        self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
         self.sdp_subarray_adapter = None
 
@@ -150,12 +150,12 @@ class AbstractReleaseResources(SdpSLNCommand):
     def __init__(
         self,
         target,
-        pop_state_model,
+        op_state_model,
         adapter_factory=AdapterFactory(),
         logger=None,
     ):
         super().__init__(target, logger)
-        self.op_state_model = pop_state_model
+        self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
         self.sdp_subarray_adapter = None
 
@@ -208,12 +208,12 @@ class AbstractConfigure(SdpSLNCommand):
     def __init__(
         self,
         target,
-        pop_state_model,
+        op_state_model,
         adapter_factory=AdapterFactory(),
         logger=None,
     ):
         super().__init__(target, logger)
-        self.op_state_model = pop_state_model
+        self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
         self.sdp_subarray_adapter = None
 
@@ -265,12 +265,12 @@ class AbstractScanEnd(SdpSLNCommand):
     def __init__(
         self,
         target,
-        pop_state_model,
+        op_state_model,
         adapter_factory=AdapterFactory(),
         logger=None,
     ):
         super().__init__(target, logger)
-        self.op_state_model = pop_state_model
+        self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
         self.sdp_subarray_adapter = None
 
@@ -322,12 +322,12 @@ class AbstractEndScan(SdpSLNCommand):
     def __init__(
         self,
         target,
-        pop_state_model,
+        op_state_model,
         adapter_factory=AdapterFactory(),
         logger=None,
     ):
         super().__init__(target, logger)
-        self.op_state_model = pop_state_model
+        self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
         self.sdp_subarray_adapter = None
 
@@ -379,12 +379,12 @@ class AbstractRestartObsReset(SdpSLNCommand):
     def __init__(
         self,
         target,
-        pop_state_model,
+        op_state_model,
         adapter_factory=AdapterFactory(),
         logger=None,
     ):
         super().__init__(target, logger)
-        self.op_state_model = pop_state_model
+        self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
         self.sdp_subarray_adapter = None
 
@@ -435,12 +435,12 @@ class AbstractAbort(SdpSLNCommand):
     def __init__(
         self,
         target,
-        pop_state_model,
+        op_state_model,
         adapter_factory=AdapterFactory(),
         logger=None,
     ):
         super().__init__(target, logger)
-        self.op_state_model = pop_state_model
+        self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
         self.sdp_subarray_adapter = None
 
@@ -497,12 +497,12 @@ class AbstractReset(SdpSLNCommand):
     def __init__(
         self,
         target,
-        pop_state_model,
+        op_state_model,
         adapter_factory=AdapterFactory(),
         logger=None,
     ):
         super().__init__(target, logger)
-        self.op_state_model = pop_state_model
+        self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
         self.sdp_subarray_adapter = None
 

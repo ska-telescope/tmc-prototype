@@ -24,11 +24,11 @@ class AssignResources(AbstractAssignResources):
     def __init__(
         self,
         target,
-        pop_state_model,
+        op_state_model,
         adapter_factory=AdapterFactory(),
         logger=None,
     ):
-        super().__init__(target, pop_state_model, adapter_factory, logger)
+        super().__init__(target, op_state_model, adapter_factory, logger)
 
     def do_mid(self, argin):
         """
