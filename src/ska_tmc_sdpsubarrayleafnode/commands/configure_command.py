@@ -1,5 +1,5 @@
 """
-Configure class for SDPSubarrayLeafNode.
+Configure command class for SDPSubarrayLeafNode.
 """
 # PROTECTED REGION ID(SDPSubarrayLeafNode.additionnal_import) ENABLED START #
 import json
@@ -80,7 +80,7 @@ class Configure(AbstractConfigure):
             self.logger.info(
                 f"Invoking Configure command on:{self.sdp_subarray_adapter.dev_name}"
             )
-            self.sdp_subarray_adapter.Configure(argin)
+            self.sdp_subarray_adapter.Configure(json_argument)
 
         except Exception as e:
             return self.generate_command_result(

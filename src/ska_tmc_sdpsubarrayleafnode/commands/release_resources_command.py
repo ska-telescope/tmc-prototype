@@ -1,5 +1,5 @@
 """
-ReleaseResources class for SDPSubarrayLeafNode.
+ReleaseResources command class for SDPSubarrayLeafNode.
 """
 # PROTECTED REGION ID(SDPSubarrayLeafNode.additionnal_import) ENABLED START #
 

@@ -11,8 +11,6 @@ class SdpSLNEventReceiver(EventReceiver):
     for the attribute of interest.
     For each of them a callback is defined.
 
-    TBD: what about scalability? what if we have 1000 devices?
-
     """
 
     def __init__(
@@ -33,15 +31,13 @@ class SdpSLNEventReceiver(EventReceiver):
             # import debugpy; debugpy.debug_this_thread()
             proxy = self._dev_factory.get_device(devInfo.dev_name)
 
-            if "subarray" in devInfo.dev_name:
-                proxy.subscribe_event(
-                    "ObsState",
-                    tango.EventType.CHANGE_EVENT,
-                    self.handle_obs_state_event,
-                    stateless=True,
-                )
-            else:
-                pass
+            proxy.subscribe_event(
+                "ObsState",
+                tango.EventType.CHANGE_EVENT,
+                self.handle_obs_state_event,
+                stateless=True,
+            )
+
         except Exception as e:
             self._logger.debug(
                 "event not working for device %s/%s", proxy.dev_name, e

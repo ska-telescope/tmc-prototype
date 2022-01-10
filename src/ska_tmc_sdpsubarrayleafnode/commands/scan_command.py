@@ -1,5 +1,5 @@
 """
-Scan class for SDPSubarrayLeafNode.
+Scan command class for SDPSubarrayLeafNode.
 """
 import json
 

@@ -1,5 +1,5 @@
 """
-AssignResouces class for SDPSubarrayLeafNode.
+AssignResouces command class for SDPSubarrayLeafNode.
 """
 # Tango imports
 import json
@@ -108,7 +108,7 @@ class AssignResources(AbstractAssignResources):
             self.logger.info(
                 f"Invoking AssignResources command on:{self.sdp_subarray_adapter.dev_name}"
             )
-            self.sdp_subarray_adapter.AssignResources(argin)
+            self.sdp_subarray_adapter.AssignResources(json_argument)
 
         except Exception as e:
             return self.generate_command_result(

@@ -1,5 +1,5 @@
 """
-ObsReset class for SDPSubarrayLeafNode.
+ObsReset command class for SDPSubarrayLeafNode.
 """
 # PROTECTED REGION ID(sdpsubarrayleafnode.additionnal_import) ENABLED START #
 

@@ -1,5 +1,5 @@
 """
-Abort class for SDPSubarrayLeafNode.
+Abort command class for SDPSubarrayLeafNode.
 """
 # PROTECTED REGION ID(sdpsubarrayleafnode.additionnal_import) ENABLED START #
 

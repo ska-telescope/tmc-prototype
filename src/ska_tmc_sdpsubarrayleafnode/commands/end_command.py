@@ -1,5 +1,5 @@
 """
-End class for SDPSubarrayLeafNode.
+End command class for SDPSubarrayLeafNode.
 """
 # PROTECTED REGION ID(sdpsubarrayleafnode.additionnal_import) ENABLED START #
 # Tango imports

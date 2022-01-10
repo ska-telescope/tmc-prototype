@@ -1,5 +1,5 @@
 """
-Restart class for SDPSubarrayLeafNode.
+Restart command class for SDPSubarrayLeafNode.
 """
 # PROTECTED REGION ID(sdpsubarrayleafnode.additionnal_import) ENABLED START #
 
