@@ -1,3 +1,6 @@
+"""
+TelescopeOff command class for SDPSubarrayLeafNode.
+"""
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterFactory
 
@@ -34,6 +37,9 @@ class TelescopeOff(AbstractTelescopeOnOff):
             return ret_code, message
 
         try:
+            self.logger.info(
+                f"Invoking TelescopeOff command on:{self.sdp_subarray_adapter.dev_name}"
+            )
             self.sdp_subarray_adapter.Off()
             self.logger.info(
                 "Off command is successful on Sdp Subarray device."

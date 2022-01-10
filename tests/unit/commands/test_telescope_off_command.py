@@ -1,7 +1,6 @@
 import time
 
 import pytest
-from ska_tango_base.base.base_device import SKABaseDevice
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import SdpSubArrayAdapter
 
@@ -11,18 +10,6 @@ from ska_tmc_sdpsubarrayleafnode.commands.telescope_off_command import (
 from ska_tmc_sdpsubarrayleafnode.exceptions import CommandNotAllowed
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
 from tests.settings import create_cm, logger
-
-
-@pytest.fixture()
-def devices_to_load():
-    return (
-        {
-            "class": SKABaseDevice,
-            "devices": [
-                {"name": "mid_sdp/elt/subarray_01"},
-            ],
-        },
-    )
 
 
 def test_telescope_off_command(tango_context):
@@ -38,10 +25,10 @@ def test_telescope_off_command(tango_context):
     assert off_command.check_allowed()
     (result_code, _) = off_command.do()
     assert result_code == ResultCode.OK
-    for adapter in my_adapter_factory.adapters:
-        if isinstance(adapter, SdpSubArrayAdapter):
-            adapter.proxy.Off.assert_called()
-            continue
+    dev_name = "mid_sdp/elt/subarray_01"
+    adapter = my_adapter_factory.get_or_create_adapter(dev_name)
+    if isinstance(adapter, SdpSubArrayAdapter):
+        adapter.proxy.Off.assert_called()
 
 
 def test_telescope_off_command_fail_sdp_subarray(tango_context):
