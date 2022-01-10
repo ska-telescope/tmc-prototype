@@ -70,8 +70,8 @@ class AbstractTelescopeOnOff(SdpSLNCommand):
     def check_allowed_mid(self):
         """
         Checks whether this command is allowed
-        It checks that the device is in a state
-        to perform this command and that all the
+        It checks that the device is in the right state
+        to execute this command and that all the
         component needed for the operation are not unresponsive
 
         :return: True if this command is allowed
@@ -87,8 +87,6 @@ class AbstractTelescopeOnOff(SdpSLNCommand):
                 self.op_state_model.op_state,
             )
 
-        # for this command I need a number of sub-devices
-        # import debugpy; debugpy.debug_this_thread()
         devInfo = component_manager.get_device(
             component_manager.input_parameter.sdp_subarray_dev_name
         )
@@ -114,8 +112,8 @@ class AbstractAssignResources(SdpSLNCommand):
     def check_allowed_mid(self):
         """
         Checks whether this command is allowed
-        It checks that the device is in a state
-        to perform this command and that all the
+        It checks that the device is in the right state
+        to execute this command and that all the
         component needed for the operation are not unresponsive
 
         :return: True if this command is allowed
@@ -135,8 +133,6 @@ class AbstractAssignResources(SdpSLNCommand):
                 self.op_state_model.op_state,
             )
 
-        # for this command I need a number of sub-devices
-        # import debugpy; debugpy.debug_this_thread()
         devInfo = component_manager.get_device(
             component_manager.input_parameter.sdp_subarray_dev_name
         )
@@ -162,8 +158,8 @@ class AbstractReleaseResources(SdpSLNCommand):
     def check_allowed_mid(self):
         """
         Checks whether this command is allowed
-        It checks that the device is in a state
-        to perform this command and that all the
+        It checks that the device is in the right state
+        to execute this command and that all the
         component needed for the operation are not unresponsive
 
         :return: True if this command is allowed
@@ -183,8 +179,6 @@ class AbstractReleaseResources(SdpSLNCommand):
                 self.op_state_model.op_state,
             )
 
-        # for this command I need a number of sub-devices
-        # import debugpy; debugpy.debug_this_thread()
         devInfo = component_manager.get_device(
             component_manager.input_parameter.sdp_subarray_dev_name
         )
@@ -220,8 +214,8 @@ class AbstractConfigure(SdpSLNCommand):
     def check_allowed_mid(self):
         """
         Checks whether this command is allowed
-        It checks that the device is in a state
-        to perform this command and that all the
+        It checks that the device is in the right state
+        to execute this command and that all the
         component needed for the operation are not unresponsive
 
         :return: True if this command is allowed
@@ -241,8 +235,6 @@ class AbstractConfigure(SdpSLNCommand):
                 self.op_state_model.op_state,
             )
 
-        # for this command I need a number of sub-devices
-        # import debugpy; debugpy.debug_this_thread()
         devInfo = component_manager.get_device(
             component_manager.input_parameter.sdp_subarray_dev_name
         )
@@ -277,8 +269,8 @@ class AbstractScanEnd(SdpSLNCommand):
     def check_allowed_mid(self):
         """
         Checks whether this command is allowed
-        It checks that the device is in a state
-        to perform this command and that all the
+        It checks that the device is in the right state
+        to execute this command and that all the
         component needed for the operation are not unresponsive
 
         :return: True if this command is allowed
@@ -298,8 +290,6 @@ class AbstractScanEnd(SdpSLNCommand):
                 self.op_state_model.op_state,
             )
 
-        # for this command I need a number of sub-devices
-        # import debugpy; debugpy.debug_this_thread()
         devInfo = component_manager.get_device(
             component_manager.input_parameter.sdp_subarray_dev_name
         )
@@ -334,8 +324,8 @@ class AbstractEndScan(SdpSLNCommand):
     def check_allowed_mid(self):
         """
         Checks whether this command is allowed
-        It checks that the device is in a state
-        to perform this command and that all the
+        It checks that the device is in the right state
+        to execute this command and that all the
         component needed for the operation are not unresponsive
 
         :return: True if this command is allowed
@@ -355,8 +345,6 @@ class AbstractEndScan(SdpSLNCommand):
                 self.op_state_model.op_state,
             )
 
-        # for this command I need a number of sub-devices
-        # import debugpy; debugpy.debug_this_thread()
         devInfo = component_manager.get_device(
             component_manager.input_parameter.sdp_subarray_dev_name
         )
@@ -391,8 +379,8 @@ class AbstractRestartObsReset(SdpSLNCommand):
     def check_allowed_mid(self):
         """
         Checks whether this command is allowed
-        It checks that the device is in a state
-        to perform this command and that all the
+        It checks that the device is in the right state
+        to execute this command and that all the
         component needed for the operation are not unresponsive
 
         :return: True if this command is allowed
@@ -411,8 +399,6 @@ class AbstractRestartObsReset(SdpSLNCommand):
                 self.op_state_model.op_state,
             )
 
-        # for this command I need a number of sub-devices
-        # import debugpy; debugpy.debug_this_thread()
         devInfo = component_manager.get_device(
             component_manager.input_parameter.sdp_subarray_dev_name
         )
@@ -447,8 +433,8 @@ class AbstractAbort(SdpSLNCommand):
     def check_allowed_mid(self):
         """
         Checks whether this command is allowed
-        It checks that the device is in a state
-        to perform this command and that all the
+        It checks that the device is in the right state
+        to execute this command and that all the
         component needed for the operation are not unresponsive
 
         :return: True if this command is allowed
@@ -468,8 +454,6 @@ class AbstractAbort(SdpSLNCommand):
                 self.op_state_model.op_state,
             )
 
-        # for this command I need a number of sub-devices
-        # import debugpy; debugpy.debug_this_thread()
         devInfo = component_manager.get_device(
             component_manager.input_parameter.sdp_subarray_dev_name
         )
@@ -509,8 +493,8 @@ class AbstractReset(SdpSLNCommand):
     def check_allowed_mid(self):
         """
         Checks whether this command is allowed
-        It checks that the device is in a state
-        to perform this command and that all the
+        It checks that the device is in the right state
+        to execute this command and that all the
         component needed for the operation are not unresponsive
 
         :return: True if this command is allowed
@@ -530,8 +514,6 @@ class AbstractReset(SdpSLNCommand):
                 self.op_state_model.op_state,
             )
 
-        # for this command I need a number of sub-devices
-        # import debugpy; debugpy.debug_this_thread()
         devInfo = component_manager.get_device(
             component_manager.input_parameter.sdp_subarray_dev_name
         )
