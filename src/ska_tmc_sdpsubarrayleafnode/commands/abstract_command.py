@@ -83,7 +83,7 @@ class AbstractTelescopeOnOff(SdpSLNCommand):
 
         if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
             raise CommandNotAllowed(
-                "TelescopeOnOff() is not allowed in current state %s",
+                "TelescopeOnOff() is not allowed in current operational state %s",
                 self.op_state_model.op_state,
             )
 
@@ -131,7 +131,7 @@ class AbstractAssignResources(SdpSLNCommand):
             DevState.DISABLE,
         ]:
             raise CommandNotAllowed(
-                "AssignResources command is not allowed in current state %s",
+                "AssignResources command is not allowed in current operational state %s",
                 self.op_state_model.op_state,
             )
 
@@ -179,7 +179,7 @@ class AbstractReleaseResources(SdpSLNCommand):
             DevState.DISABLE,
         ]:
             raise CommandNotAllowed(
-                "ReleaseResources command is not allowed in current state %s",
+                "ReleaseResources command is not allowed in current operational state %s",
                 self.op_state_model.op_state,
             )
 
@@ -198,7 +198,7 @@ class AbstractReleaseResources(SdpSLNCommand):
             is not ObsState.IDLE
         ):
             raise InvalidObsStateError(
-                "ReleaseResources command is not allowed in current obsState"
+                "ReleaseResources command is not allowed in current observation state"
             )
 
         return True
@@ -237,7 +237,7 @@ class AbstractConfigure(SdpSLNCommand):
             DevState.DISABLE,
         ]:
             raise CommandNotAllowed(
-                "Configure command is not allowed in current state %s",
+                "Configure command is not allowed in current operational state %s",
                 self.op_state_model.op_state,
             )
 
@@ -253,11 +253,9 @@ class AbstractConfigure(SdpSLNCommand):
             component_manager.input_parameter.sdp_subarray_dev_name
         ).obsState
 
-        if (
-            obs_state_val is not ObsState.READY
-        ):  # need to add ObsState.IDLE as well
+        if obs_state_val not in (ObsState.READY, ObsState.IDLE):
             raise InvalidObsStateError(
-                "Configure command is not allowed in current obsState"
+                "Configure command is not allowed in current observation state"
             )
 
         return True
@@ -296,7 +294,7 @@ class AbstractScanEnd(SdpSLNCommand):
             DevState.DISABLE,
         ]:
             raise CommandNotAllowed(
-                "Scan command is not allowed in current state %s",
+                "Scan and End commands are not allowed in current operational state %s",
                 self.op_state_model.op_state,
             )
 
@@ -314,7 +312,7 @@ class AbstractScanEnd(SdpSLNCommand):
 
         if obs_state_val is not ObsState.READY:
             raise InvalidObsStateError(
-                "Scan command is not allowed in current obsState"
+                "Scan and End commands are not allowed in current observation state"
             )
 
         return True
@@ -353,7 +351,7 @@ class AbstractEndScan(SdpSLNCommand):
             DevState.DISABLE,
         ]:
             raise CommandNotAllowed(
-                "EndScan command is not allowed in current state %s",
+                "EndScan command is not allowed in current operational state %s",
                 self.op_state_model.op_state,
             )
 
@@ -371,7 +369,7 @@ class AbstractEndScan(SdpSLNCommand):
 
         if obs_state_val is not ObsState.SCANNING:
             raise InvalidObsStateError(
-                "EndScan command is not allowed in current obsState"
+                "EndScan command is not allowed in current observation state"
             )
 
         return True
@@ -409,7 +407,7 @@ class AbstractRestartObsReset(SdpSLNCommand):
             DevState.DISABLE,
         ]:
             raise CommandNotAllowed(
-                "ObsReset, Restart command is not allowed in current state %s",
+                "ObsReset, Restart command is not allowed in current operational state %s",
                 self.op_state_model.op_state,
             )
 
@@ -425,11 +423,9 @@ class AbstractRestartObsReset(SdpSLNCommand):
             component_manager.input_parameter.sdp_subarray_dev_name
         ).obsState
 
-        if (
-            obs_state_val is not ObsState.ABORTED
-        ):  # need to add ObState.FAULT as well
+        if obs_state_val not in (ObsState.ABORTED, ObsState.FAULT):
             raise InvalidObsStateError(
-                "ObsReset, Restart command is not allowed in current obsState"
+                "ObsReset and Restart commands are not allowed in current observation state"
             )
 
         return True
@@ -468,7 +464,7 @@ class AbstractAbort(SdpSLNCommand):
             DevState.DISABLE,
         ]:
             raise CommandNotAllowed(
-                "Abort command is not allowed in current state %s",
+                "Abort command is not allowed in current operational state %s",
                 self.op_state_model.op_state,
             )
 
@@ -484,11 +480,14 @@ class AbstractAbort(SdpSLNCommand):
             component_manager.input_parameter.sdp_subarray_dev_name
         ).obsState
 
-        if (
-            obs_state_val is not ObsState.CONFIGURING
-        ):  # need to add  ObsState.CONFIGURING, ObsState.SCANNING, ObsState.IDLE, ObsState.RESETTING as well
+        if obs_state_val not in (
+            ObsState.CONFIGURING,
+            ObsState.SCANNING,
+            ObsState.IDLE,
+            ObsState.RESETTING,
+        ):
             raise InvalidObsStateError(
-                "Abort command is not allowed in current obsState"
+                "Abort command is not allowed in current observation state"
             )
 
         return True
@@ -527,7 +526,7 @@ class AbstractReset(SdpSLNCommand):
             DevState.ON,
         ]:
             raise CommandNotAllowed(
-                "Reset command is not allowed in current state %s",
+                "Reset command is not allowed in current operational state %s",
                 self.op_state_model.op_state,
             )
 

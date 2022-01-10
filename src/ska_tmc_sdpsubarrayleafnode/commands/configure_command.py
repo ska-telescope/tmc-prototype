@@ -84,9 +84,14 @@ class Configure(AbstractConfigure):
             )
 
         try:
+            self.logger.info(
+                "Invoking Configure command on sdp subarray device"
+            )
             self.sdp_subarray_adapter.Configure(
                 json.dumps(json_argument.copy())
             )
+            self.logger.info("Configure command is successful on Sdp Subarray")
+
         except Exception as e:
             return self.generate_command_result(
                 ResultCode.FAILED,

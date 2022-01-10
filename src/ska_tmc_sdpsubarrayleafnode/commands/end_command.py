@@ -46,7 +46,10 @@ class End(AbstractScanEnd):
             return ret_code, message
 
         try:
+            self.logger.info("Invoking End command on sdp subarray device")
             self.sdp_subarray_adapter.End()
+            self.logger.info("End command is successful on Sdp Subarray")
+
         except Exception as e:
             return self.generate_command_result(
                 ResultCode.FAILED,

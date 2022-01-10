@@ -30,7 +30,6 @@ class AssignResources(AbstractAssignResources):
     ):
         super().__init__(target, pop_state_model, adapter_factory, logger)
 
-    # @identify_with_id("assign", "argin")  do we need to replace this decorator?
     def do_mid(self, argin):
         """
         Method to invoke AssignResources command on SDP Subarray.
