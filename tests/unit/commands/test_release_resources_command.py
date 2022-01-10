@@ -1,7 +1,6 @@
 import time
 
 import pytest
-from ska_tango_base.base.base_device import SKABaseDevice
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.adapters import SdpSubArrayAdapter
@@ -12,18 +11,6 @@ from ska_tmc_sdpsubarrayleafnode.commands.release_resources_command import (
 from ska_tmc_sdpsubarrayleafnode.exceptions import CommandNotAllowed
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
 from tests.settings import create_cm, logger
-
-
-@pytest.fixture()
-def devices_to_load():
-    return (
-        {
-            "class": SKABaseDevice,
-            "devices": [
-                {"name": "mid_sdp/elt/subarray_01"},
-            ],
-        },
-    )
 
 
 def get_release_resources_command_obj():
@@ -40,6 +27,8 @@ def get_release_resources_command_obj():
     release_command = ReleaseAllResources(
         cm, cm.op_state_model, my_adapter_factory
     )
+    cm.get_device(dev_name).obsState == ObsState.EMPTY
+
     return release_command, my_adapter_factory
 
 
@@ -51,9 +40,10 @@ def test_telescope_release_resources_command(tango_context):
     assert release_command.check_allowed()
     (result_code, _) = release_command.do()
     assert result_code == ResultCode.OK
-    for adapter in my_adapter_factory.adapters:
-        if isinstance(adapter, SdpSubArrayAdapter):
-            adapter.proxy.ReleaseResources.assert_called()
+    dev_name = "mid_sdp/elt/subarray_01"
+    adapter = my_adapter_factory.get_or_create_adapter(dev_name)
+    if isinstance(adapter, SdpSubArrayAdapter):
+        adapter.proxy.ReleaseResources.assert_called()
 
 
 def test_telescope_release_resources_command_fail_subarray(tango_context):

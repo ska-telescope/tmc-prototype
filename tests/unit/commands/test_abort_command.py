@@ -2,7 +2,6 @@ import time
 
 import mock
 import pytest
-from ska_tango_base.base.base_device import SKABaseDevice
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.adapters import SdpSubArrayAdapter
@@ -16,18 +15,6 @@ from tests.helpers.helper_adapter_factory import HelperAdapterFactory
 from tests.settings import create_cm, logger
 
 
-@pytest.fixture()
-def devices_to_load():
-    return (
-        {
-            "class": SKABaseDevice,
-            "devices": [
-                {"name": "mid_sdp/elt/subarray_01"},
-            ],
-        },
-    )
-
-
 def get_abort_command_obj():
     cm, start_time = create_cm()
     elapsed_time = time.time() - start_time
@@ -35,15 +22,15 @@ def get_abort_command_obj():
         "checked %s devices in %s", len(cm.checked_devices), elapsed_time
     )
     dev_name = "mid_sdp/elt/subarray_01"
-
     cm.update_device_obs_state(dev_name, ObsState.CONFIGURING)
-    # cm.update_device_obs_state(dev_name, ObsState.FAULT)
     my_adapter_factory = HelperAdapterFactory()
 
     attrs = {"fetch_skuid.return_value": 123}
-    skuid = mock.Mock(**attrs)  # is skauid required here?
+    skuid = mock.Mock(**attrs)
 
     abort_command = Abort(cm, cm.op_state_model, my_adapter_factory, skuid)
+    cm.get_device(dev_name).obsState == ObsState.ABORTED
+
     return abort_command, my_adapter_factory
 
 
@@ -54,9 +41,10 @@ def test_telescope_abort_command(tango_context):
     assert abort_command.check_allowed()
     (result_code, _) = abort_command.do()
     assert result_code == ResultCode.OK
-    for adapter in my_adapter_factory.adapters:
-        if isinstance(adapter, SdpSubArrayAdapter):
-            adapter.proxy.Abort.assert_called()
+    dev_name = "mid_sdp/elt/subarray_01"
+    adapter = my_adapter_factory.get_or_create_adapter(dev_name)
+    if isinstance(adapter, SdpSubArrayAdapter):
+        adapter.proxy.Abort.assert_called()
 
 
 def test_telescope_abort_command_fail_subarray(tango_context):
@@ -84,6 +72,7 @@ def test_telescope_abort_command_fail_subarray(tango_context):
     (result_code, message) = abort_command.do()
     assert result_code == ResultCode.FAILED
     assert failing_dev in message
+    cm.get_device(failing_dev).obsState == ObsState.ABORTED
 
 
 def test_telescope_abort_command_fail_check_allowed_with_invalid_obsState(

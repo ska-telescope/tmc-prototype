@@ -2,7 +2,6 @@ import time
 
 import mock
 import pytest
-from ska_tango_base.base.base_device import SKABaseDevice
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.adapters import SdpSubArrayAdapter
@@ -14,18 +13,6 @@ from ska_tmc_sdpsubarrayleafnode.exceptions import (
 )
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
 from tests.settings import create_cm, logger
-
-
-@pytest.fixture()
-def devices_to_load():
-    return (
-        {
-            "class": SKABaseDevice,
-            "devices": [
-                {"name": "mid_sdp/elt/subarray_01"},
-            ],
-        },
-    )
 
 
 def get_obsreset_command_obj():
@@ -45,6 +32,7 @@ def get_obsreset_command_obj():
     obsreset_command = ObsReset(
         cm, cm.op_state_model, my_adapter_factory, skuid
     )
+    cm.get_device(dev_name).obsState == ObsState.IDLE
     return obsreset_command, my_adapter_factory
 
 
@@ -55,9 +43,10 @@ def test_telescope_obsreset_command(tango_context):
     assert obsreset_command.check_allowed()
     (result_code, _) = obsreset_command.do()
     assert result_code == ResultCode.OK
-    for adapter in my_adapter_factory.adapters:
-        if isinstance(adapter, SdpSubArrayAdapter):
-            adapter.proxy.ObsReset.assert_called()
+    dev_name = "mid_sdp/elt/subarray_01"
+    adapter = my_adapter_factory.get_or_create_adapter(dev_name)
+    if isinstance(adapter, SdpSubArrayAdapter):
+        adapter.proxy.ObsReset.assert_called()
 
 
 def test_telescope_obsreset_command_fail_subarray(tango_context):
