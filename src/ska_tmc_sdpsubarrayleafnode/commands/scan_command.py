@@ -3,15 +3,12 @@ Scan command class for SDPSubarrayLeafNode.
 """
 import json
 
-# Additional import
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterFactory
 
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import (
     AbstractScanEnd,
 )
-
-# PROTECTED REGION ID(sdpsubarrayleafnode.additionnal_import) ENABLED START #
 
 
 class Scan(AbstractScanEnd):

@@ -1,7 +1,6 @@
 """
 AssignResouces command class for SDPSubarrayLeafNode.
 """
-# Tango imports
 import json
 
 from ska_tango_base.commands import ResultCode

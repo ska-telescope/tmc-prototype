@@ -9,8 +9,6 @@ from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import (
     AbstractTelescopeOnOff,
 )
 
-# from ska_tmc_sdpsubarrayleafnode.model.input import InputParameterMid
-
 
 class TelescopeOn(AbstractTelescopeOnOff):
     """

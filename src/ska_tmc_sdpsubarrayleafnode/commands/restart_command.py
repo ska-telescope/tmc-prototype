@@ -1,9 +1,6 @@
 """
 Restart command class for SDPSubarrayLeafNode.
 """
-# PROTECTED REGION ID(sdpsubarrayleafnode.additionnal_import) ENABLED START #
-
-# Additional import
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterFactory
 

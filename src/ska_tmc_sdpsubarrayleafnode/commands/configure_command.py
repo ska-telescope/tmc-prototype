@@ -1,10 +1,8 @@
 """
 Configure command class for SDPSubarrayLeafNode.
 """
-# PROTECTED REGION ID(SDPSubarrayLeafNode.additionnal_import) ENABLED START #
 import json
 
-# Tango imports
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterFactory
 
