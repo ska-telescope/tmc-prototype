@@ -47,8 +47,6 @@ class Scan(AbstractScanEnd):
         return:
             None
 
-        raises:
-            DevFailed if the command execution is not successful.
         """
 
         res_code, message = self.init_adapters_mid()
@@ -80,7 +78,7 @@ class Scan(AbstractScanEnd):
                 json_argument,
             )
             self.logger.debug(log_msg)
-            self.sdp_subarray_adapter.Scan(json.dumps(json_argument.copy()))
+            self.sdp_subarray_adapter.Scan(json_argument)
         except Exception as e:
             return self.generate_command_result(
                 ResultCode.FAILED,

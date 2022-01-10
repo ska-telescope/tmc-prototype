@@ -35,9 +35,6 @@ class Reset(AbstractReset):
         return:
             None
 
-        raises:
-            Exception if error occurs while invoking command on SDP Subarray Leaf Node.
-
         """
         res_code, message = self.init_adapters_mid()
         if res_code == ResultCode.FAILED:

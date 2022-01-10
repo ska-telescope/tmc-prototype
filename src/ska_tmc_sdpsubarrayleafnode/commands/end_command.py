@@ -37,8 +37,6 @@ class End(AbstractScanEnd):
         return:
             None
 
-        raises:
-            DevFailed if the command execution is not successful
         """
         ret_code, message = self.init_adapters()
 

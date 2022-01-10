@@ -45,15 +45,8 @@ class Configure(AbstractConfigure):
 
         return:
             None
-
-        raises:
-            ValueError if input argument json string contains invalid value.
-
-            KeyError if input argument json string contains invalid key.
-
-            DevFailed if the command execution is not successful
         """
-        ret_code, message = self.init_adapters()
+        ret_code, message = self.init_adapters_mid()
         if ret_code == ResultCode.FAILED:
             return ret_code, message
 
@@ -77,19 +70,17 @@ class Configure(AbstractConfigure):
                 "scan_type key is not present in the input json argument.",
             )
 
-        if json_argument["scan_type"] != "science_A":
+        if json_argument["scan_type"] == "":
             return self.generate_command_result(
                 ResultCode.FAILED,
-                "science_A value is not present in the input json argument.",
+                "scan_type is not present in the input json argument.",
             )
 
         try:
             self.logger.info(
                 f"Invoking Configure command on:{self.sdp_subarray_adapter.dev_name}"
             )
-            self.sdp_subarray_adapter.Configure(
-                json.dumps(json_argument.copy())
-            )
+            self.sdp_subarray_adapter.Configure(argin)
 
         except Exception as e:
             return self.generate_command_result(

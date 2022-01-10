@@ -37,9 +37,6 @@ class ObsReset(AbstractRestartObsReset):
         return:
             None
 
-        raises:
-            DevFailed if error occurs while invoking command on SDP Subarray.
-
         """
         res_code, message = self.init_adapters_mid()
         if res_code == ResultCode.FAILED:

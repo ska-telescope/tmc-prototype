@@ -79,11 +79,6 @@ class AssignResources(AbstractAssignResources):
 
         return:
             None
-
-        raises:
-            KeyError if input argument json string contains invalid key.
-
-            DevFailed if the command execution is not successful.
         """
         ret_code, message = self.init_adapters_mid()
         if ret_code == ResultCode.FAILED:
@@ -113,9 +108,8 @@ class AssignResources(AbstractAssignResources):
             self.logger.info(
                 f"Invoking AssignResources command on:{self.sdp_subarray_adapter.dev_name}"
             )
-            self.sdp_subarray_adapter.AssignResources(
-                json.dumps(json_argument.copy())
-            )
+            self.sdp_subarray_adapter.AssignResources(argin)
+
         except Exception as e:
             return self.generate_command_result(
                 ResultCode.FAILED,

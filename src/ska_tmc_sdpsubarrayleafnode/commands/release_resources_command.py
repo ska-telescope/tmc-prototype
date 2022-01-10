@@ -25,13 +25,9 @@ class ReleaseAllResources(AbstractReleaseResources):
         target,
         op_state_model,
         adapter_factory=AdapterFactory(),
-        timeout_sdp=3000,
-        step_sleep=0.1,
         logger=None,
     ):
         super().__init__(target, op_state_model, adapter_factory, logger)
-        self._timeout_sdp = timeout_sdp
-        self._step_sleep = step_sleep
 
     def do_mid(self, argin=None):
         """
@@ -41,9 +37,6 @@ class ReleaseAllResources(AbstractReleaseResources):
 
         return:
             None
-
-        raises:
-            DevFailed if the command execution is not successful.
         """
 
         res_code, message = self.init_adapters_mid()
