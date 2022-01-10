@@ -46,9 +46,8 @@ class Restart(AbstractRestartObsReset):
             return res_code, message
 
         try:
-            self.logger.info("Invoking Restart command on sdp subarray device")
+            f"Invoking Restart command on:{self.sdp_subarray_adapter.dev_name}"
             self.sdp_subarray_adapter.Restart()
-            self.logger.info("Restart command is successful on Sdp Subarray")
         except Exception as e:
             return self.generate_command_result(
                 ResultCode.FAILED,

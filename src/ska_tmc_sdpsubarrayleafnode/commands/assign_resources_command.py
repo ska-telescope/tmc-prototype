@@ -110,6 +110,7 @@ class AssignResources(AbstractAssignResources):
             )
 
         try:
+            f"Invoking AssignResources command on:{self.sdp_subarray_adapter.dev_name}"
             self.sdp_subarray_adapter.AssignResources(
                 json.dumps(json_argument.copy())
             )

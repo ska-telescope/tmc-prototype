@@ -44,9 +44,8 @@ class EndScan(AbstractEndScan):
             return res_code, message
 
         try:
-            self.logger.info("Invoking EndScan command on sdp subarray device")
+            f"Invoking EndScan command on:{self.sdp_subarray_adapter.dev_name}"
             self.sdp_subarray_adapter.EndScan()
-            self.logger.info("EndScan command is successful on Sdp Subarray")
 
         except Exception as e:
             return self.generate_command_result(

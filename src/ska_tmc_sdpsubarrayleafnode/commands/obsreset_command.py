@@ -46,11 +46,8 @@ class ObsReset(AbstractRestartObsReset):
             return res_code, message
 
         try:
-            self.logger.info(
-                "Invoking ObsReset command on sdp subarray device"
-            )
+            f"Invoking ObsReset command on:{self.sdp_subarray_adapter.dev_name}"
             self.sdp_subarray_adapter.ObsReset()
-            self.logger.info("ObsReset command is successful on Sdp Subarray")
         except Exception as e:
             return self.generate_command_result(
                 ResultCode.FAILED,

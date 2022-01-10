@@ -80,11 +80,8 @@ class Scan(AbstractScanEnd):
                 json_argument,
             )
             self.logger.debug(log_msg)
-
+            f"Invoking Scan command on:{self.sdp_subarray_adapter.dev_name}"
             self.sdp_subarray_adapter.Scan(json.dumps(json_argument.copy()))
-            self.logger.info(
-                "Scan command is successful on Sdp Subarray leaf node"
-            )
         except Exception as e:
             return self.generate_command_result(
                 ResultCode.FAILED,
