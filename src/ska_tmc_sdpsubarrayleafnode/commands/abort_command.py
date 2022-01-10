@@ -44,7 +44,9 @@ class Abort(AbstractAbort):
             return res_code, message
 
         try:
-            f"Invoking Abort command on:{self.sdp_subarray_adapter.dev_name}"
+            self.logger.info(
+                f"Invoking Abort command on:{self.sdp_subarray_adapter.dev_name}"
+            )
             self.sdp_subarray_adapter.Abort()
         except Exception as e:
             return self.generate_command_result(

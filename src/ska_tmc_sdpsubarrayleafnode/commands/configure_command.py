@@ -31,7 +31,7 @@ class Configure(AbstractConfigure):
     ):
         super().__init__(target, op_state_model, adapter_factory, logger)
 
-    def do(self, argin):
+    def do_mid(self, argin):
         """
         Method to invoke Configure command on SDP Subarray.
 
@@ -84,7 +84,9 @@ class Configure(AbstractConfigure):
             )
 
         try:
-            f"Invoking Configure command on:{self.sdp_subarray_adapter.dev_name}"
+            self.logger.info(
+                f"Invoking Configure command on:{self.sdp_subarray_adapter.dev_name}"
+            )
             self.sdp_subarray_adapter.Configure(
                 json.dumps(json_argument.copy())
             )

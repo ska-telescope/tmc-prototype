@@ -46,7 +46,9 @@ class End(AbstractScanEnd):
             return ret_code, message
 
         try:
-            f"Invoking End command on:{self.sdp_subarray_adapter.dev_name}"
+            self.logger.info(
+                f"Invoking End command on:{self.sdp_subarray_adapter.dev_name}"
+            )
             self.sdp_subarray_adapter.End()
 
         except Exception as e:

@@ -44,7 +44,9 @@ class EndScan(AbstractEndScan):
             return res_code, message
 
         try:
-            f"Invoking EndScan command on:{self.sdp_subarray_adapter.dev_name}"
+            self.logger.info(
+                f"Invoking EndScan command on:{self.sdp_subarray_adapter.dev_name}"
+            )
             self.sdp_subarray_adapter.EndScan()
 
         except Exception as e:

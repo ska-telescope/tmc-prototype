@@ -51,7 +51,9 @@ class ReleaseAllResources(AbstractReleaseResources):
             return res_code, message
 
         try:
-            f"Invoking ReleaseResources command on:{self.sdp_subarray_adapter.dev_name}"
+            self.logger.info(
+                f"Invoking ReleaseResources command on:{self.sdp_subarray_adapter.dev_name}"
+            )
             self.sdp_subarray_adapter.ReleaseResources(argin=None)
         except Exception as e:
             return self.generate_command_result(

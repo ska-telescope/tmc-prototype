@@ -42,6 +42,9 @@ class TelescopeOff(AbstractTelescopeOnOff):
             return ret_code, message
 
         try:
+            self.logger.info(
+                f"Invoking TelescopeOff command on:{self.sdp_subarray_adapter.dev_name}"
+            )
             self.sdp_subarray_adapter.Off()
         except Exception as e:
             return self.generate_command_result(

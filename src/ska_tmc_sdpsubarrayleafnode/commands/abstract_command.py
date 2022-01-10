@@ -12,6 +12,14 @@ from ska_tmc_sdpsubarrayleafnode.model.input import InputParameterMid
 
 
 class SdpSLNCommand(TMCCommand):
+    def check_unresponsive(self):
+        component_manager = self.target
+        devInfo = component_manager.get_device(
+            component_manager.input_parameter.sdp_subarray_dev_name
+        )
+        if devInfo is None or devInfo.unresponsive:
+            raise CommandNotAllowed("SDP subarray device is not available")
+
     def check_allowed(self):
         component_manager = self.target
 
@@ -65,7 +73,6 @@ class AbstractTelescopeOnOff(SdpSLNCommand):
         super().__init__(target, logger)
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
-        self.sdp_subarray_adapter = None
 
     def check_allowed_mid(self):
         """
@@ -79,19 +86,13 @@ class AbstractTelescopeOnOff(SdpSLNCommand):
         :rtype: boolean
 
         """
-        component_manager = self.target
-
         if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
             raise CommandNotAllowed(
                 "TelescopeOnOff() is not allowed in current operational state %s",
                 self.op_state_model.op_state,
             )
 
-        devInfo = component_manager.get_device(
-            component_manager.input_parameter.sdp_subarray_dev_name
-        )
-        if devInfo is None or devInfo.unresponsive:
-            raise CommandNotAllowed("SDP subarray device is not available")
+        self.check_unresponsive()
 
         return True
 
@@ -107,7 +108,6 @@ class AbstractAssignResources(SdpSLNCommand):
         super().__init__(target, logger)
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
-        self.sdp_subarray_adapter = None
 
     def check_allowed_mid(self):
         """
@@ -121,8 +121,6 @@ class AbstractAssignResources(SdpSLNCommand):
         :rtype: boolean
 
         """
-        component_manager = self.target
-
         if self.op_state_model.op_state in [
             DevState.FAULT,
             DevState.UNKNOWN,
@@ -133,11 +131,7 @@ class AbstractAssignResources(SdpSLNCommand):
                 self.op_state_model.op_state,
             )
 
-        devInfo = component_manager.get_device(
-            component_manager.input_parameter.sdp_subarray_dev_name
-        )
-        if devInfo is None or devInfo.unresponsive:
-            raise CommandNotAllowed("SDP subarray device is not available")
+        self.check_unresponsive()
 
         return True
 
@@ -153,7 +147,6 @@ class AbstractReleaseResources(SdpSLNCommand):
         super().__init__(target, logger)
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
-        self.sdp_subarray_adapter = None
 
     def check_allowed_mid(self):
         """
@@ -179,11 +172,7 @@ class AbstractReleaseResources(SdpSLNCommand):
                 self.op_state_model.op_state,
             )
 
-        devInfo = component_manager.get_device(
-            component_manager.input_parameter.sdp_subarray_dev_name
-        )
-        if devInfo is None or devInfo.unresponsive:
-            raise CommandNotAllowed("SDP subarray device is not available")
+        self.check_unresponsive()
 
         if (
             component_manager.get_device(
@@ -209,7 +198,6 @@ class AbstractConfigure(SdpSLNCommand):
         super().__init__(target, logger)
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
-        self.sdp_subarray_adapter = None
 
     def check_allowed_mid(self):
         """
@@ -235,11 +223,7 @@ class AbstractConfigure(SdpSLNCommand):
                 self.op_state_model.op_state,
             )
 
-        devInfo = component_manager.get_device(
-            component_manager.input_parameter.sdp_subarray_dev_name
-        )
-        if devInfo is None or devInfo.unresponsive:
-            raise CommandNotAllowed("SDP subarray device is not available")
+        self.check_unresponsive()
 
         obs_state_val = component_manager.get_device(
             component_manager.input_parameter.sdp_subarray_dev_name
@@ -264,7 +248,6 @@ class AbstractScanEnd(SdpSLNCommand):
         super().__init__(target, logger)
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
-        self.sdp_subarray_adapter = None
 
     def check_allowed_mid(self):
         """
@@ -290,11 +273,7 @@ class AbstractScanEnd(SdpSLNCommand):
                 self.op_state_model.op_state,
             )
 
-        devInfo = component_manager.get_device(
-            component_manager.input_parameter.sdp_subarray_dev_name
-        )
-        if devInfo is None or devInfo.unresponsive:
-            raise CommandNotAllowed("SDP subarray device is not available")
+        self.check_unresponsive()
 
         obs_state_val = component_manager.get_device(
             component_manager.input_parameter.sdp_subarray_dev_name
@@ -319,7 +298,6 @@ class AbstractEndScan(SdpSLNCommand):
         super().__init__(target, logger)
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
-        self.sdp_subarray_adapter = None
 
     def check_allowed_mid(self):
         """
@@ -345,11 +323,7 @@ class AbstractEndScan(SdpSLNCommand):
                 self.op_state_model.op_state,
             )
 
-        devInfo = component_manager.get_device(
-            component_manager.input_parameter.sdp_subarray_dev_name
-        )
-        if devInfo is None or devInfo.unresponsive:
-            raise CommandNotAllowed("SDP subarray device is not available")
+        self.check_unresponsive()
 
         obs_state_val = component_manager.get_device(
             component_manager.input_parameter.sdp_subarray_dev_name
@@ -374,7 +348,6 @@ class AbstractRestartObsReset(SdpSLNCommand):
         super().__init__(target, logger)
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
-        self.sdp_subarray_adapter = None
 
     def check_allowed_mid(self):
         """
@@ -398,12 +371,7 @@ class AbstractRestartObsReset(SdpSLNCommand):
                 "ObsReset, Restart command is not allowed in current operational state %s",
                 self.op_state_model.op_state,
             )
-
-        devInfo = component_manager.get_device(
-            component_manager.input_parameter.sdp_subarray_dev_name
-        )
-        if devInfo is None or devInfo.unresponsive:
-            raise CommandNotAllowed("SDP subarray device is not available")
+        self.check_unresponsive()
 
         obs_state_val = component_manager.get_device(
             component_manager.input_parameter.sdp_subarray_dev_name
@@ -428,7 +396,6 @@ class AbstractAbort(SdpSLNCommand):
         super().__init__(target, logger)
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
-        self.sdp_subarray_adapter = None
 
     def check_allowed_mid(self):
         """
@@ -454,11 +421,7 @@ class AbstractAbort(SdpSLNCommand):
                 self.op_state_model.op_state,
             )
 
-        devInfo = component_manager.get_device(
-            component_manager.input_parameter.sdp_subarray_dev_name
-        )
-        if devInfo is None or devInfo.unresponsive:
-            raise CommandNotAllowed("SDP subarray device is not available")
+        self.check_unresponsive()
 
         obs_state_val = component_manager.get_device(
             component_manager.input_parameter.sdp_subarray_dev_name
@@ -488,7 +451,6 @@ class AbstractReset(SdpSLNCommand):
         super().__init__(target, logger)
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
-        self.sdp_subarray_adapter = None
 
     def check_allowed_mid(self):
         """
@@ -502,8 +464,6 @@ class AbstractReset(SdpSLNCommand):
         :rtype: boolean
 
         """
-        component_manager = self.target
-
         if self.op_state_model.op_state in [
             DevState.OFF,
             DevState.DISABLE,
@@ -514,10 +474,6 @@ class AbstractReset(SdpSLNCommand):
                 self.op_state_model.op_state,
             )
 
-        devInfo = component_manager.get_device(
-            component_manager.input_parameter.sdp_subarray_dev_name
-        )
-        if devInfo is None or devInfo.unresponsive:
-            raise CommandNotAllowed("SDP subarray device is not available")
+        self.check_unresponsive()
 
         return True
