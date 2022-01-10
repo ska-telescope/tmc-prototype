@@ -259,10 +259,6 @@ class AbstractConfigure(SdpSLNCommand):
             raise InvalidObsStateError(
                 "Configure command is not allowed in current obsState"
             )
-        # elif obs_state_val is not ObsState.IDLE:
-        #     raise InvalidObsStateError(
-        #         "Configure command is not allowed in current obsState"
-        #     )
 
         return True
 
@@ -428,7 +424,6 @@ class AbstractRestartObsReset(SdpSLNCommand):
         obs_state_val = component_manager.get_device(
             component_manager.input_parameter.sdp_subarray_dev_name
         ).obsState
-        print("obstate is:::::::::::::::::::::::::::::::::", obs_state_val)
 
         if (
             obs_state_val is not ObsState.ABORTED
@@ -436,12 +431,6 @@ class AbstractRestartObsReset(SdpSLNCommand):
             raise InvalidObsStateError(
                 "ObsReset, Restart command is not allowed in current obsState"
             )
-        # if (
-        #     obs_state_val is not ObsState.FAULT
-        # ):  # need to add ObState.FAULT as well
-        #     raise InvalidObsStateError(
-        #         "ObsReset, Restart command is not allowed in current obsState"
-        #     )
 
         return True
 
@@ -494,7 +483,6 @@ class AbstractAbort(SdpSLNCommand):
         obs_state_val = component_manager.get_device(
             component_manager.input_parameter.sdp_subarray_dev_name
         ).obsState
-        print("obstate is:::::::::::::::::::::::::::::::::", obs_state_val)
 
         if (
             obs_state_val is not ObsState.CONFIGURING
