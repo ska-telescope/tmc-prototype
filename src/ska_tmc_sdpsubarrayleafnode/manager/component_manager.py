@@ -4,10 +4,14 @@ This module provided a reference implementation of a BaseComponentManager.
 It is provided for explanatory purposes, and to support testing of this
 package.
 """
+import time
 
 from ska_tmc_common.device_info import DeviceInfo, SubArrayDeviceInfo
 from ska_tmc_common.tmc_component_manager import TmcComponentManager
 
+from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
+    SdpSLNEventReceiver,
+)
 from ska_tmc_sdpsubarrayleafnode.model.component import SdpSLNComponent
 
 
@@ -29,7 +33,7 @@ class SdpSLNComponentManager(TmcComponentManager):
         _component=None,
         _update_device_callback=None,
         _monitoring_loop=False,
-        _event_receiver=False,
+        _event_receiver=True,
         max_workers=5,
         proxy_timeout=500,
         sleep_time=1,
@@ -55,6 +59,18 @@ class SdpSLNComponentManager(TmcComponentManager):
         )
 
         self.component = _component or SdpSLNComponent(logger)
+        self.devices = self.component.devices
+
+        if _event_receiver:
+            self._event_receiver = SdpSLNEventReceiver(
+                self,
+                logger,
+                proxy_timeout=proxy_timeout,
+                sleep_time=sleep_time,
+            )
+
+        if _event_receiver:
+            self._event_receiver.start()
 
         self.component.set_op_callbacks(_update_device_callback)
         self._input_parameter = _input_parameter
@@ -103,3 +119,19 @@ class SdpSLNComponentManager(TmcComponentManager):
             devInfo = DeviceInfo(dev_name, False)
 
         self.component.update_device(devInfo)
+
+    def update_device_obs_state(self, dev_name, obs_state):
+        """
+        Update a monitored device obs state,
+        and call the relative callbacks if available
+
+        :param dev_name: name of the device
+        :type dev_name: str
+        :param obs_state: obs state of the device
+        :type obs_state: ObsState
+        """
+        with self.lock:
+            devInfo = self.component.get_device(dev_name)
+            devInfo.obsState = obs_state
+            devInfo.last_event_arrived = time.time()
+            devInfo.update_unresponsive(False)

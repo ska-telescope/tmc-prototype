@@ -3,6 +3,7 @@ import logging
 
 import pytest
 import tango
+from ska_tango_base.base.base_device import SKABaseDevice
 from ska_tmc_common.dev_factory import DevFactory
 from tango.test_context import MultiDeviceTestContext
 
@@ -32,6 +33,18 @@ def pytest_addoption(parser):
             "Tell pytest that you have a true Tango context and don't "
             "need to spin up a Tango test context"
         ),
+    )
+
+
+@pytest.fixture()
+def devices_to_load():
+    return (
+        {
+            "class": SKABaseDevice,
+            "devices": [
+                {"name": "mid_sdp/elt/subarray_01"},
+            ],
+        },
     )
 
 
