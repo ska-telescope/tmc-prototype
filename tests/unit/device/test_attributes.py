@@ -27,7 +27,6 @@ def sdpsln_device(request):
             break
 
 
-@pytest.mark.shraddha
 def test_attributes(sdpsln_device):
     assert sdpsln_device.State() == DevState.ON
     sdpsln_device.loggingTargets = ["console::cout"]
