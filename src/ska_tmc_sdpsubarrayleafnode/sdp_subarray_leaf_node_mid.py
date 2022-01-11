@@ -12,6 +12,22 @@ from ska_tmc_sdpsubarrayleafnode.commands.telescope_off_command import (
 from ska_tmc_sdpsubarrayleafnode.commands.telescope_on_command import (
     TelescopeOn,
 )
+from ska_tmc_sdpsubarrayleafnode.commands.abort_command import Abort
+from ska_tmc_sdpsubarrayleafnode.commands.assign_resources_command import (
+    AssignResources,
+)
+from ska_tmc_sdpsubarrayleafnode.commands.configure_command import Configure
+from ska_tmc_sdpsubarrayleafnode.commands.end_command import End
+from ska_tmc_sdpsubarrayleafnode.commands.end_scan_command import EndScan
+from ska_tmc_sdpsubarrayleafnode.commands.obsreset_command import ObsReset
+
+from ska_tmc_sdpsubarrayleafnode.commands.release_resources_command import (
+    ReleaseResources,
+)
+from ska_tmc_sdpsubarrayleafnode.commands.reset_command import Reset
+from ska_tmc_sdpsubarrayleafnode.commands.restart_command import Restart
+from ska_tmc_sdpsubarrayleafnode.commands.scan_command import Scan
+
 from ska_tmc_sdpsubarrayleafnode.sdp_subarray_leaf_node import (
     AbstractSdpSubarrayLeafNode,
 )
@@ -92,8 +108,18 @@ class SdpSubarrayLeafNodeMid(AbstractSdpSubarrayLeafNode):
         super().init_command_objects()
         args = ()
         for (command_name, command_class) in [
-            ("On", TelescopeOn),
-            ("Off", TelescopeOff),
+            ("TelescopeOn", TelescopeOn),
+            ("TelescopeOff", TelescopeOff),
+            ("AssignResources", AssignResources),
+            ("ReleaseResources", ReleaseResources),
+            ("Configure", Configure),
+            ("Scan", Scan),
+            ("EndScan", EndScan),
+            ("End", End),
+            ("ObsReset", ObsReset),
+            ("Abort", Abort),
+            ("Restart", Restart)
+
         ]:
             command_obj = command_class(
                 self.component_manager,
@@ -102,13 +128,15 @@ class SdpSubarrayLeafNodeMid(AbstractSdpSubarrayLeafNode):
                 logger=self.logger,
             )
             self.register_command_object(command_name, command_obj)
-        # assign_resources_obj = AssignResources(
-        #     self.component_manager,
-        #     self.op_state_model,
-        #     *args,
-        #     logger=self.logger,
-        # )
-        # self.register_command_object("AssignResources", assign_resources_obj)
+        self.register_command_object(
+            "Reset",
+            Reset(
+                self.component_manager,
+                self.op_state_model,
+                self.logger,
+            ),
+        )
+
 
 
 # ----------

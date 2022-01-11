@@ -1,5 +1,6 @@
 """
-SDP Subarray Leaf node is to monitor the SDP Subarray and issue control actions during an observation.
+SDP Subarray Leaf node is to monitor the SDP Subarray and 
+issue control actions during an observation.
 It also acts as a SDP contact point for Subarray Node for observation execution
 """
 
@@ -44,12 +45,7 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         "it is used to provide FQDN of receiveAddresses attribute from SDP.",
     )
 
-    activityMessage = attribute(
-        dtype="str",
-        access=AttrWriteType.READ_WRITE,
-        doc="String providing information about the current activity in SDP Subarray Leaf Node",
-    )
-
+    
     activeProcessingBlocks = attribute(
         dtype="str",
         doc="This is a attribute from SDP Subarray which depicts the active Processing Blocks in "
@@ -87,12 +83,6 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
             )
             device._version_id = release.version
             device._LastDeviceInfoChanged = ""
-
-            # Need to check below how to initialise the sdpsaln attr
-
-            # device.set_change_event("receiveAddresses", True, False)
-            # device.set_change_event("activityMessage", True, False)
-            # device.set_change_event("activeProcessingBlocks", True, False)
 
             device.op_state_model.perform_action("component_on")
             device.component_manager.command_executor.add_command_execution(
@@ -241,6 +231,212 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
 
+
+    def is_Configure_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state
+
+        return:
+            True if this command is allowed to be run in current device state
+
+        rtype:
+            boolean
+
+        """
+        handler = self.get_command_object("Configure")
+        return handler.check_allowed()
+
+    @command(
+        dtype_in=("str"),
+        doc_in="The JSON input string consists of scan type.",
+    )
+    @DebugIt()
+    def Configure(self, argin):
+        """
+        Invokes Configure on SdpSubarrayLeafNode.
+        """
+        handler = self.get_command_object("Configure")
+        if self.component_manager.command_executor.queue_full:
+            return [[ResultCode.FAILED], ["Queue is full!"]]
+        unique_id = self.component_manager.command_executor.enqueue_command(
+            handler, argin
+        )
+        return [[ResultCode.QUEUED], [str(unique_id)]]
+
+    def is_Scan_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state.
+
+        return:
+            True if this command is allowed to be run in current device state.
+
+        rtype:
+            boolean
+
+        """
+        handler = self.get_command_object("Scan")
+        return handler.check_allowed()
+
+    @command(
+        dtype_in=("str"),
+        doc_in="The JSON input string consists of SB ID.",
+    )
+    @DebugIt()
+    def Scan(self, argin):
+        """Invoke Scan command to SDP subarray. """
+
+        handler = self.get_command_object("Scan")
+        if self.component_manager.command_executor.queue_full:
+            return [[ResultCode.FAILED], ["Queue is full!"]]
+        unique_id = self.component_manager.command_executor.enqueue_command(
+            handler, argin
+        )
+        return [[ResultCode.QUEUED], [str(unique_id)]]
+
+    def is_EndScan_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state.
+        return:
+            True if this command is allowed to be run in current device state.
+
+        rtype:
+            boolean
+        """
+        handler = self.get_command_object("EndScan")
+        return handler.check_allowed()
+
+    @command()
+    @DebugIt()
+    def EndScan(self):
+        """
+        Invokes EndScan on SdpSubarrayLeafNode.
+
+        """
+        handler = self.get_command_object("EndScan")
+        if self.component_manager.command_executor.queue_full:
+            return [[ResultCode.FAILED], ["Queue is full!"]]
+        unique_id = self.component_manager.command_executor.enqueue_command(
+            handler
+        )
+        return [[ResultCode.QUEUED], [str(unique_id)]]
+
+    def is_End_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state.
+
+        return:
+            True if this command is allowed to be run in current device state.
+
+        rtype:
+            boolean
+
+        """
+        handler = self.get_command_object("End")
+        return handler.check_allowed()
+
+    @command()
+    @DebugIt()
+    def End(self):
+        """This command invokes End command on SDP subarray to end the current Scheduling block."""
+        handler = self.get_command_object("End")
+        if self.component_manager.command_executor.queue_full:
+            return [[ResultCode.FAILED], ["Queue is full!"]]
+        unique_id = self.component_manager.command_executor.enqueue_command(
+            handler
+        )
+        return [[ResultCode.QUEUED], [str(unique_id)]]
+
+    def is_ObsReset_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state
+
+        return:
+            True if this command is allowed to be run in current device state
+
+        rtype:
+            boolean
+
+        """
+        handler = self.get_command_object("ObsReset")
+        return handler.check_allowed()
+
+
+    @command()
+    @DebugIt()
+    def ObsReset(self):
+        """
+        Invoke ObsReset command on SdpSubarrayLeafNode.
+        """
+        handler = self.get_command_object("ObsReset")
+        if self.component_manager.command_executor.queue_full:
+            return [[ResultCode.FAILED], ["Queue is full!"]]
+        unique_id = self.component_manager.command_executor.enqueue_command(
+            handler
+        )
+        return [[ResultCode.QUEUED], [str(unique_id)]]
+
+    def is_Abort_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state
+
+        return:
+            True if this command is allowed to be run in current device state
+
+        rtype:
+            boolean
+
+        raises:
+            DevFailed if this command is not allowed to be run in current device state
+
+        """
+        handler = self.get_command_object("Abort")
+        return handler.check_allowed()
+
+    @command()
+    @DebugIt()
+    def Abort(self):
+        """
+        Invoke Abort on SdpSubarrayLeafNode.
+        """
+        handler = self.get_command_object("Abort")
+        if self.component_manager.command_executor.queue_full:
+            return [[ResultCode.FAILED], ["Queue is full!"]]
+        unique_id = self.component_manager.command_executor.enqueue_command(
+            handler
+        )
+        return [[ResultCode.QUEUED], [str(unique_id)]]
+
+    def is_Restart_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state
+
+        return:
+            True if this command is allowed to be run in current device state
+
+        rtype:
+            boolean
+
+        raises:
+            DevFailed if this command is not allowed to be run in current device state
+
+        """
+        handler = self.get_command_object("Restart")
+        return handler.check_allowed()
+
+    @command()
+    @DebugIt()
+    def Restart(self):
+        """
+        Invoke Restart command on SdpSubarrayLeafNode.
+        """
+        handler = self.get_command_object("Restart")
+        if self.component_manager.command_executor.queue_full:
+            return [[ResultCode.FAILED], ["Queue is full!"]]
+        unique_id = self.component_manager.command_executor.enqueue_command(
+            handler
+        )
+        return [[ResultCode.QUEUED], [str(unique_id)]]
+        
     # default ska mid
     def create_component_manager(self):
         self.op_state_model = TMCOpStateModel(
