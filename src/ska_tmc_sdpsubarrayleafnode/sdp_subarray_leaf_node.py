@@ -127,8 +127,7 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
     @command(dtype_out="DevVarLongStringArray")
     def TelescopeOff(self):
         """
-        This command invokes SetStandbyLPMode() command on DishLeafNode, Off() command
-        on CspMasterLeafNode and SdpMasterLeafNode.
+        
 
         """
         handler = self.get_command_object("TelescopeOff")
