@@ -6,28 +6,26 @@ from ska_tango_base.commands import ResultCode
 from tango import AttrWriteType
 from tango.server import attribute, device_property, run
 
-from ska_tmc_sdpsubarrayleafnode.commands.telescope_off_command import (
-    TelescopeOff,
-)
-from ska_tmc_sdpsubarrayleafnode.commands.telescope_on_command import (
-    TelescopeOn,
-)
 from ska_tmc_sdpsubarrayleafnode.commands.abort_command import Abort
 from ska_tmc_sdpsubarrayleafnode.commands.assign_resources_command import (
     AssignResources,
 )
 from ska_tmc_sdpsubarrayleafnode.commands.configure_command import Configure
 from ska_tmc_sdpsubarrayleafnode.commands.end_command import End
-from ska_tmc_sdpsubarrayleafnode.commands.end_scan_command import EndScan
+from ska_tmc_sdpsubarrayleafnode.commands.endscan_command import EndScan
 from ska_tmc_sdpsubarrayleafnode.commands.obsreset_command import ObsReset
-
 from ska_tmc_sdpsubarrayleafnode.commands.release_resources_command import (
-    ReleaseResources,
+    ReleaseAllResources,
 )
 from ska_tmc_sdpsubarrayleafnode.commands.reset_command import Reset
 from ska_tmc_sdpsubarrayleafnode.commands.restart_command import Restart
 from ska_tmc_sdpsubarrayleafnode.commands.scan_command import Scan
-
+from ska_tmc_sdpsubarrayleafnode.commands.telescope_off_command import (
+    TelescopeOff,
+)
+from ska_tmc_sdpsubarrayleafnode.commands.telescope_on_command import (
+    TelescopeOn,
+)
 from ska_tmc_sdpsubarrayleafnode.sdp_subarray_leaf_node import (
     AbstractSdpSubarrayLeafNode,
 )
@@ -111,15 +109,14 @@ class SdpSubarrayLeafNodeMid(AbstractSdpSubarrayLeafNode):
             ("TelescopeOn", TelescopeOn),
             ("TelescopeOff", TelescopeOff),
             ("AssignResources", AssignResources),
-            ("ReleaseResources", ReleaseResources),
+            ("ReleaseResources", ReleaseAllResources),
             ("Configure", Configure),
             ("Scan", Scan),
             ("EndScan", EndScan),
             ("End", End),
             ("ObsReset", ObsReset),
             ("Abort", Abort),
-            ("Restart", Restart)
-
+            ("Restart", Restart),
         ]:
             command_obj = command_class(
                 self.component_manager,
@@ -136,7 +133,6 @@ class SdpSubarrayLeafNodeMid(AbstractSdpSubarrayLeafNode):
                 self.logger,
             ),
         )
-
 
 
 # ----------

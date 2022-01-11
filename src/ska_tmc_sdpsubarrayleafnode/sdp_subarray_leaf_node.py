@@ -1,6 +1,5 @@
 """
-SDP Subarray Leaf node is to monitor the SDP Subarray and 
-issue control actions during an observation.
+SDP Subarray Leaf node is to monitor the SDP Subarray and issue control actions during an observation.
 It also acts as a SDP contact point for Subarray Node for observation execution
 """
 
@@ -45,7 +44,6 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         "it is used to provide FQDN of receiveAddresses attribute from SDP.",
     )
 
-    
     activeProcessingBlocks = attribute(
         dtype="str",
         doc="This is a attribute from SDP Subarray which depicts the active Processing Blocks in "
@@ -231,7 +229,6 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
 
-
     def is_Configure_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state
@@ -283,7 +280,7 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
     )
     @DebugIt()
     def Scan(self, argin):
-        """Invoke Scan command to SDP subarray. """
+        """Invoke Scan command to SDP subarray."""
 
         handler = self.get_command_object("Scan")
         if self.component_manager.command_executor.queue_full:
@@ -360,7 +357,6 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("ObsReset")
         return handler.check_allowed()
 
-
     @command()
     @DebugIt()
     def ObsReset(self):
@@ -436,7 +432,7 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
             handler
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
-        
+
     # default ska mid
     def create_component_manager(self):
         self.op_state_model = TMCOpStateModel(
@@ -457,4 +453,4 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         """
         Initialises the command handlers for commands supported by this device.
         """
-        super().init_command_objects()
+        raise NotImplementedError("This class must be inherited!")
