@@ -1,13 +1,6 @@
-import json
-
 import pytest
 import tango
-from ska_tango_base.control_model import (
-    ControlMode,
-    HealthState,
-    SimulationMode,
-    TestMode,
-)
+from ska_tango_base.control_model import ControlMode, SimulationMode, TestMode
 from tango import DevState
 from tango.test_utils import DeviceTestContext
 
@@ -26,9 +19,7 @@ def sdpsln_device(request):
             yield proxy
     else:
         database = tango.Database()
-        instance_list = database.get_device_exported_for_class(
-            "SdpSubarrayLeafNodeMid"
-        )
+        instance_list = database.get_device_exported_for_class("SdpSubarrayLeafNodeMid")
         for instance in instance_list.value_string:
             yield tango.DeviceProxy(instance)
             break
