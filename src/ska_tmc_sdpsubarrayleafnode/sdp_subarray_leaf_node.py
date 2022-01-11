@@ -93,7 +93,9 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
 
     @command(dtype_out="DevVarLongStringArray")
     def TelescopeOff(self):
-        """ """
+        """ 
+        This command invokes Off() command on Sdp Subarray.
+        """
         handler = self.get_command_object("TelescopeOff")
         if self.component_manager.command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
@@ -115,8 +117,7 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
     @DebugIt()
     def TelescopeOn(self):
         """
-        This command invokes TelescopeOn() command on DishLeadNode, CspMasterLeafNode,
-        SdpMasterLeafNode.
+        This command invokes On() command on Sdp Subarray.
         """
         handler = self.get_command_object("TelescopeOn")
         if self.component_manager.command_executor.queue_full:
@@ -136,18 +137,15 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in="str",
-        doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
-        "DevShort\ndish: JSON object consisting\n- receptor_ids: DevVarStringArray. "
-        "The individual string should contain dish numbers in string format with "
-        "preceding zeroes upto 3 digits. E.g. 0001, 0002",
-        dtype_out="DevVarLongStringArray",
-        doc_out="information-only string",
+        dtype_in=("str"),
+        doc_in="The input JSON string consists of information related to id, max_length, scan_types"
+        " and processing_blocks.",
     )
+
     @DebugIt()
     def AssignResources(self, argin):
         """
-        AssignResources command invokes the AssignResources command on lower level devices.
+        This command invokes the AssignResources() command on Sdp Subarray..
         """
         handler = self.get_command_object("AssignResources")
         if self.component_manager.command_executor.queue_full:
@@ -168,17 +166,11 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("ReleaseResources")
         return handler.check_allowed()
 
-    @command(
-        dtype_in="str",
-        doc_in="The string in JSON format. The JSON contains following values:\nsubarrayID: "
-        "releaseALL boolean as true and receptor_ids.",
-        dtype_out="DevVarLongStringArray",
-        doc_out="information-only string",
-    )
+    @command()
     @DebugIt()
     def ReleaseResources(self, argin):
         """
-        Release all the resources assigned to the given Subarray.
+        This command invokes ReleaseResources() command on command on Sdp Subarray.
         """
         handler = self.get_command_object("ReleaseResources")
         if self.component_manager.command_executor.queue_full:
@@ -209,7 +201,7 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
     @DebugIt()
     def Configure(self, argin):
         """
-        Invokes Configure on SdpSubarrayLeafNode.
+        Invokes Configure command on Sdp Subarray.
         """
         handler = self.get_command_object("Configure")
         if self.component_manager.command_executor.queue_full:
@@ -239,7 +231,7 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
     )
     @DebugIt()
     def Scan(self, argin):
-        """Invoke Scan command to SDP subarray."""
+        """Invoke Scan command on Sdp Subarray."""
 
         handler = self.get_command_object("Scan")
         if self.component_manager.command_executor.queue_full:
@@ -265,7 +257,7 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
     @DebugIt()
     def EndScan(self):
         """
-        Invokes EndScan on SdpSubarrayLeafNode.
+        Invokes EndScan command on Sdp Subarray.
 
         """
         handler = self.get_command_object("EndScan")
@@ -291,7 +283,7 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
     @command()
     @DebugIt()
     def End(self):
-        """This command invokes End command on SDP subarray to end the current Scheduling block."""
+        """This command invokes End command on Sdp Subarray to end the current Scheduling block."""
         handler = self.get_command_object("End")
         if self.component_manager.command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
@@ -316,7 +308,7 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
     @DebugIt()
     def ObsReset(self):
         """
-        Invoke ObsReset command on SdpSubarrayLeafNode.
+        Invoke ObsReset command on Sdp Subarray.
         """
         handler = self.get_command_object("ObsReset")
         if self.component_manager.command_executor.queue_full:
@@ -345,7 +337,7 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
     @DebugIt()
     def Abort(self):
         """
-        Invoke Abort on SdpSubarrayLeafNode.
+        Invoke Abort command on Sdp Subarray.
         """
         handler = self.get_command_object("Abort")
         if self.component_manager.command_executor.queue_full:
@@ -374,7 +366,7 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
     @DebugIt()
     def Restart(self):
         """
-        Invoke Restart command on SdpSubarrayLeafNode.
+        Invoke Restart command on Sdp Subarray.
         """
         handler = self.get_command_object("Restart")
         if self.component_manager.command_executor.queue_full:
