@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 SLEEP_TIME = 0.5
 TIMEOUT = 50
 
-DEVICE_LIST_MID = "mid_sdp/elt/subarray_01"
+DEVICE_MID = "mid_sdp/elt/subarray_01"
 
 
 def count_faulty_devices(cm):
@@ -35,17 +35,11 @@ def create_cm(
         _input_parameter=input_parameter,
     )
 
-    # cm._component = cm._component or SdpSLNComponent(logger)
-
     if isinstance(input_parameter, InputParameterMid):
-        DEVICE_LIST = DEVICE_LIST_MID
+        DEVICE = DEVICE_MID
 
-    # for dev in DEVICE_LIST:
-    #     cm.add_device(dev)
-    cm.add_device(DEVICE_LIST)
+    cm.add_device(DEVICE)
     start_time = time.time()
-    # num_devices = len(DEVICE_LIST)
-    # while num_devices != len(cm.checked_devices):
     time.sleep(SLEEP_TIME)
     elapsed_time = time.time() - start_time
     if elapsed_time > TIMEOUT:
