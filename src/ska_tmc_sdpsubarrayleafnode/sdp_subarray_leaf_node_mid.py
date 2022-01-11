@@ -49,6 +49,8 @@ class SdpSubarrayLeafNodeMid(AbstractSdpSubarrayLeafNode):
         max_dim_x=1,
     )
 
+    SleepTime = device_property(dtype="DevFloat", default_value=1)
+
     # ---------------
     # General methods
     # ---------------

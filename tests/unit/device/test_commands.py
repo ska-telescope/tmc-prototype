@@ -2,7 +2,9 @@ import pytest
 import tango
 from tango.test_utils import DeviceTestContext
 
-from ska_tmc_sdpsubarrayleafnode.sdp_subarray_leaf_node_mid import SdpSubarrayLeafNodeMid
+from ska_tmc_sdpsubarrayleafnode.sdp_subarray_leaf_node_mid import (
+    SdpSubarrayLeafNodeMid,
+)
 
 
 @pytest.fixture
@@ -26,4 +28,3 @@ def test_commands(sdpsln_device):
     with pytest.raises(Exception):
         sdpsln_device.TelescopeOn()
         sdpsln_device.TelescopeOff()
-        

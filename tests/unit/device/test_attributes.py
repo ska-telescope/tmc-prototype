@@ -12,8 +12,9 @@ from tango import DevState
 from tango.test_utils import DeviceTestContext
 
 from ska_tmc_sdpsubarrayleafnode import release
-from ska_tmc_sdpsubarrayleafnode.sdp_subarray_leaf_node_mid import SdpSubarrayLeafNodeMid
-
+from ska_tmc_sdpsubarrayleafnode.sdp_subarray_leaf_node_mid import (
+    SdpSubarrayLeafNodeMid,
+)
 
 
 @pytest.fixture
@@ -33,8 +34,8 @@ def sdpsln_device(request):
             break
 
 
+@pytest.mark.shraddha
 def test_attributes(sdpsln_device):
-    assert sdpsln_device.HealthState == HealthState.OK
     assert sdpsln_device.State() == DevState.ON
     sdpsln_device.loggingTargets = ["console::cout"]
     assert "console::cout" in sdpsln_device.loggingTargets

@@ -72,7 +72,7 @@ class SdpSLNComponentManager(TmcComponentManager):
         if _event_receiver:
             self._event_receiver.start()
 
-        self.component.set_op_callbacks(_update_device_callback)
+        # self.component.set_op_callbacks(_update_device_callback)
         self._input_parameter = _input_parameter
 
     @property

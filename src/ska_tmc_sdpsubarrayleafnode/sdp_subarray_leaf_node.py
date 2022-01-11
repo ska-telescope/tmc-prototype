@@ -93,10 +93,7 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
 
     @command(dtype_out="DevVarLongStringArray")
     def TelescopeOff(self):
-        """
-        
-
-        """
+        """ """
         handler = self.get_command_object("TelescopeOff")
         if self.component_manager.command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
@@ -407,9 +404,7 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         cm = SdpSLNComponentManager(
             self.op_state_model,
             logger=self.logger,
-            _update_device_callback=self.update_device_callback,
             _input_parameter=InputParameterMid(None),
-            sleep_time=self.SleepTime,
         )
         cm.input_parameter.sdp_subarray_dev_name = self.SdpSubarrayFQDN or ""
         cm.update_input_parameter()
