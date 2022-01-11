@@ -29,30 +29,9 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         dtype="str", doc="FQDN of the SDP Subarray Tango Device Server."
     )
 
-    SleepTime = device_property(
-        dtype="DevFloat", default_value=1
-    )  # kept it for now, might delete in further refactoring
-
     # ----------
     # Attributes
     # ----------
-
-    receiveAddresses = attribute(
-        dtype="str",
-        access=AttrWriteType.READ_WRITE,
-        doc="This attribute is used for testing purposes. In the unit test cases, "
-        "it is used to provide FQDN of receiveAddresses attribute from SDP.",
-    )
-
-    activeProcessingBlocks = attribute(
-        dtype="str",
-        doc="This is a attribute from SDP Subarray which depicts the active Processing Blocks in "
-        "the SDP Subarray.",
-    )
-
-    def update_device_callback(self, devInfo):
-        self._LastDeviceInfoChanged = devInfo.to_json()
-        self.push_change_event("lastDeviceInfoChanged", devInfo.to_json())
 
     # ---------------
     # General methods
@@ -96,18 +75,6 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         # I need to stop all threads
         if hasattr(self, "component_manager"):
             self.component_manager.stop()
-
-    # ------------------
-    # Attributes methods
-    # ------------------
-    def read_sdpSubarrayDevName(self):
-        """Return the sdpsubarraydevname attribute."""
-        return self.component_manager.input_parameter.sdp_subarray_dev_name
-
-    def write_sdpSubarrayDevName(self, value):
-        """Set the sdpsubarraydevname attribute."""
-        self.component_manager.input_parameter.sdp_subarray_dev_name = value
-        self.component_manager.update_input_parameter()
 
     # --------
     # Commands

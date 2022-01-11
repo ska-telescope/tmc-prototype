@@ -39,25 +39,14 @@ class SdpSubarrayLeafNodeMid(AbstractSdpSubarrayLeafNode):
 
     """
 
-    # -----------------
-    # Device Properties
-    # -----------------
-    SdpSubarrayFQDN = device_property(
-        dtype="str", doc="FQDN of the SDP Subarray Tango Device Server."
-    )
-
-    SleepTime = device_property(
-        dtype="DevFloat", default_value=1
-    )  # kept it for now, might delete in further refactoring
-
     # ----------
     # Attributes
     # ----------
 
-    sdpSubarrayDevNames = attribute(
+    sdpSubarrayDevName = attribute(
         dtype=("DevString",),
         access=AttrWriteType.READ_WRITE,
-        max_dim_x=16,
+        max_dim_x=1,
     )
 
     # ---------------
