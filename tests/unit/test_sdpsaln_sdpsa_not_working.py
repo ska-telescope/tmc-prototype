@@ -1,6 +1,5 @@
 import time
 
-import pytest
 from ska_tmc_common.device_info import SubArrayDeviceInfo
 
 from tests.settings import DEVICE_MID, count_faulty_devices, create_cm, logger

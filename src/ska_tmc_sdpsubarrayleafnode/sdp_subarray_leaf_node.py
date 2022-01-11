@@ -28,9 +28,10 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
     SdpSubarrayFQDN = device_property(
         dtype="str", doc="FQDN of the SDP Subarray Tango Device Server."
     )
-    git# ---------------
+    # ---------------
     # General methods
     # ---------------
+
     class InitCommand(SKABaseDevice.InitCommand):
         """
         A class for the TMC SdpSubarrayLeafNode's init_device() method.
@@ -88,7 +89,7 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
 
     @command(dtype_out="DevVarLongStringArray")
     def TelescopeOff(self):
-        """ 
+        """
         This command invokes Off() command on Sdp Subarray.
         """
         handler = self.get_command_object("TelescopeOff")
@@ -140,7 +141,6 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         doc_in="The input JSON string consists of information related to id, max_length, scan_types"
         " and processing_blocks.",
     )
-
     @DebugIt()
     def AssignResources(self, argin):
         """
