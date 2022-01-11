@@ -28,12 +28,7 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
     SdpSubarrayFQDN = device_property(
         dtype="str", doc="FQDN of the SDP Subarray Tango Device Server."
     )
-
-    # ----------
-    # Attributes
-    # ----------
-
-    # ---------------
+    git# ---------------
     # General methods
     # ---------------
     class InitCommand(SKABaseDevice.InitCommand):
