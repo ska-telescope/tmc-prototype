@@ -19,7 +19,9 @@ def sdpsln_device(request):
             yield proxy
     else:
         database = tango.Database()
-        instance_list = database.get_device_exported_for_class("SdpSubarrayLeafNodeMid")
+        instance_list = database.get_device_exported_for_class(
+            "SdpSubarrayLeafNodeMid"
+        )
         for instance in instance_list.value_string:
             yield tango.DeviceProxy(instance)
             break
