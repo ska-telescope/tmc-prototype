@@ -1,69 +1,56 @@
-# TODO: Refactoring for this command will be done as a part of separate story. Hence commented the code for now.
-# # Third Party imports
-# # PyTango imports
-# import tango
-# from ska.base import SKABaseDevice
+"""
+Reset command class for SDPSubarrayLeafNode.
+"""
+from ska_tango_base.commands import ResultCode
+from ska_tmc_common.adapters import AdapterFactory
 
-# # Additional import
-# from ska.base.commands import ResultCode
-# from tango import DevFailed, DevState
-
-# from . import const
+from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import AbstractReset
 
 
-# class ResetCommand(SKABaseDevice.ResetCommand):
-#     """
-#     A class for SDP Subarray Leaf Node's Reset() command.
+class Reset(AbstractReset):
+    """
+    A class for SdpSubarrayLeafNode's Reset() command.
 
-#     Command to reset the current operation being done on the SDP Subarray Leaf Node.
+    Command to reset the SDP Subarray and bring it to its initial state.
+    """
 
-#     """
+    def __init__(
+        self,
+        target,
+        op_state_model,
+        adapter_factory=AdapterFactory(),
+        logger=None,
+    ):
+        super().__init__(target, op_state_model, adapter_factory, logger)
 
-#     def check_allowed(self):
-#         """
-#         Checks whether this command is allowed to be run in current device state
+    def do_mid(self, argin=None):
+        """
+        Method to invoke Reset command on SDP Subarray.
 
-#         :return: True if this command is allowed to be run in current device state
+        :param argin: None
 
-#         :rtype: boolean
+        return:
+            None
 
-#         :raises: DevFailed if this command is not allowed to be run in current device state
+        """
+        res_code, message = self.init_adapters_mid()
+        if res_code == ResultCode.FAILED:
+            return res_code, message
 
-#         """
-#         if self.state_model.op_state in [
-#             DevState.OFF,
-#             DevState.DISABLE,
-#             DevState.ON,
-#         ]:
-#             tango.Except.throw_exception(
-#                 f"Reset() is not allowed in current state {self.state_model.op_state}",
-#                 "Failed to invoke Reset command on SdpSubarrayLeafNode.",
-#                 "sdpsubarrayleafnode.Reset()",
-#                 tango.ErrSeverity.ERR,
-#             )
-#         return True
-
-#     def do(self):
-#         """
-#         This command invokes Reset command on SDP Subarray Leaf Node.
-
-#         return:
-#             None
-
-#         raises:
-#             DevFailed if error occurs while invoking command on SDP Subarray Leaf Node.
-
-#         """
-#         try:
-#             self.logger.info(const.STR_RESET_SUCCESS)
-#             return (ResultCode.OK, const.STR_RESET_SUCCESS)
-
-#         except DevFailed as dev_failed:
-#             log_msg = f"{const.ERR_RESET_INVOKING_CMD}{dev_failed}"
-#             self.logger.exception(dev_failed)
-#             tango.Except.throw_exception(
-#                 const.STR_RESET_EXEC,
-#                 log_msg,
-#                 "sdpSubarrayLeafNode.ResetCommand",
-#                 tango.ErrSeverity.ERR,
-#             )
+        try:
+            self.logger.info(
+                "Invoking Reset command on Sdp Subarray Leaf Node"
+            )
+            self.logger.info(
+                "Reset command is successful on Sdp Subarray Leaf Node"
+            )
+        except Exception as e:
+            return self.generate_command_result(
+                ResultCode.FAILED,
+                (
+                    "Error in calling Reset on sdp subarray %s: %s",
+                    self.sdp_subarray_adapter.dev_name,
+                    e,
+                ),
+            )
+        return (ResultCode.OK, "")
