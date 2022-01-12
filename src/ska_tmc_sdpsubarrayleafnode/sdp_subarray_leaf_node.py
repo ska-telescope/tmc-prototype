@@ -6,8 +6,8 @@ It also acts as a SDP contact point for Subarray Node for observation execution
 from ska_tango_base import SKABaseDevice
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.op_state_model import TMCOpStateModel
-from tango import DebugIt
-from tango.server import command, device_property
+from tango import AttrWriteType, DebugIt
+from tango.server import attribute, command, device_property
 
 from ska_tmc_sdpsubarrayleafnode import release
 from ska_tmc_sdpsubarrayleafnode.manager.component_manager import (
@@ -28,9 +28,24 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
     SdpSubarrayFQDN = device_property(
         dtype="str", doc="FQDN of the SDP Subarray Tango Device Server."
     )
+
+    # -----------------
+    # Attributes
+    # -----------------
+
+    lastDeviceInfoChanged = attribute(
+        dtype="DevString",
+        access=AttrWriteType.READ,
+        doc="Json String representing the last device changed in the internal model.",
+    )
+
     # ---------------
     # General methods
     # ---------------
+
+    def update_device_callback(self, devInfo):
+        self._LastDeviceInfoChanged = devInfo.to_json()
+        self.push_change_event("lastDeviceInfoChanged", devInfo.to_json())
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
@@ -58,7 +73,7 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
             device._LastDeviceInfoChanged = ""
 
             device.op_state_model.perform_action("component_on")
-            device.component_manager.command_executor.add_command_execution(
+            device.component_manager._command_executor.add_command_execution(
                 "0", "Init", ResultCode.OK, ""
             )
             return (ResultCode.OK, "")
@@ -71,6 +86,9 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         # I need to stop all threads
         if hasattr(self, "component_manager"):
             self.component_manager.stop()
+
+    def read_lastDeviceInfoChanged(self):
+        return self._LastDeviceInfoChanged
 
     # --------
     # Commands
@@ -390,8 +408,10 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         )
         cm = SdpSLNComponentManager(
             self.op_state_model,
-            logger=self.logger,
             _input_parameter=InputParameterMid(None),
+            logger=self.logger,
+            _update_device_callback=self.update_device_callback,
+            sleep_time=self.SleepTime,
         )
         cm.input_parameter.sdp_subarray_dev_name = self.SdpSubarrayFQDN or ""
         cm.update_input_parameter()
@@ -401,4 +421,4 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         """
         Initialises the command handlers for commands supported by this device.
         """
-        raise NotImplementedError("This class must be inherited!")
+        super().init_command_objects()

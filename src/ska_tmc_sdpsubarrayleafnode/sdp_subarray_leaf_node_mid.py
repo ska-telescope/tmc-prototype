@@ -44,9 +44,8 @@ class SdpSubarrayLeafNodeMid(AbstractSdpSubarrayLeafNode):
     # ----------
 
     sdpSubarrayDevName = attribute(
-        dtype=("DevString",),
+        dtype="DevString",
         access=AttrWriteType.READ_WRITE,
-        max_dim_x=1,
     )
 
     SleepTime = device_property(dtype="DevFloat", default_value=1)

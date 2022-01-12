@@ -37,8 +37,8 @@ def test_attributes(sdpsln_device):
     assert sdpsln_device.testMode == SimulationMode.FALSE
     sdpsln_device.controlMode = ControlMode.REMOTE
     assert sdpsln_device.controlMode == ControlMode.REMOTE
-    sdpsln_device.sdpSubarrayDevName = "sdpSubarray"
-    assert sdpsln_device.sdpSubarrayDevName == "sdpSubarray"
+    sdpsln_device.sdpSubarrayDevName = "sdpsa"
+    assert sdpsln_device.sdpSubarrayDevName == "sdpsa"
     assert sdpsln_device.versionId == release.version
     assert sdpsln_device.buildState == (
         "{},{},{}".format(release.name, release.version, release.description)

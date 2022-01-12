@@ -9,6 +9,9 @@ import time
 from ska_tmc_common.device_info import DeviceInfo, SubArrayDeviceInfo
 from ska_tmc_common.tmc_component_manager import TmcComponentManager
 
+from ska_tmc_sdpsubarrayleafnode.manager.command_executor import (
+    CommandExecutor,
+)
 from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
     SdpSLNEventReceiver,
 )
@@ -32,6 +35,7 @@ class SdpSLNComponentManager(TmcComponentManager):
         logger=None,
         _component=None,
         _update_device_callback=None,
+        _update_command_in_progress_callback=None,
         _monitoring_loop=False,
         _event_receiver=True,
         max_workers=5,
@@ -72,8 +76,13 @@ class SdpSLNComponentManager(TmcComponentManager):
         if _event_receiver:
             self._event_receiver.start()
 
-        # self.component.set_op_callbacks(_update_device_callback)
+        self.component.set_op_callbacks(_update_device_callback)
         self._input_parameter = _input_parameter
+
+        self._command_executor = CommandExecutor(
+            logger,
+            _update_command_in_progress_callback=_update_command_in_progress_callback,
+        )
 
     @property
     def input_parameter(self):
@@ -103,6 +112,9 @@ class SdpSLNComponentManager(TmcComponentManager):
         with self.lock:
             self.input_parameter.update(self)
 
+    def stop(self):
+        self._event_receiver.stop()
+
     def add_device(self, dev_name):
         """
         Add device to the monitoring loop
@@ -113,7 +125,7 @@ class SdpSLNComponentManager(TmcComponentManager):
         if dev_name is None:
             return
 
-        if "subarray" in dev_name.lower():
+        if "subarray" in dev_name:
             devInfo = SubArrayDeviceInfo(dev_name, False)
         else:
             devInfo = DeviceInfo(dev_name, False)
