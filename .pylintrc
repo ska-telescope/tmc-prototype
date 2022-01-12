@@ -54,7 +54,8 @@ load-plugins=
 # --disable=W"
 disable=C,R,attribute-defined-outside-init,invalid-name,no-member,no-self-use,
         fixme,broad-except,redefined-builtin,protected-access,arguments-differ,
-        signature-differs, raise-missing-from, abstract-method, raising-format-tuple, super-init-not-called, redefined-outer-name
+        signature-differs, raise-missing-from, abstract-method, raising-format-tuple, 
+        super-init-not-called, redefined-outer-name, useless-super-delegation
 
 
 [REPORTS]
