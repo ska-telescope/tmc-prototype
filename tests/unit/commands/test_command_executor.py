@@ -17,14 +17,14 @@ from tests.unit.commands.test_assign_resources_command import (
 )
 
 
-@pytest.fixture()
-def devices_to_load():
-    return (
-        {
-            "class": HelperSubArrayDevice,
-            "devices": [{"name": "mid_sdp/elt/subarray_01"}],
-        }
-    )
+# @pytest.fixture()
+# def devices_to_load():
+#     return (
+#         {
+#             "class": HelperSubArrayDevice,
+#             "devices": [{"name": "mid_sdp/elt/subarray_01"}],
+#         }
+#     )
 
 
 def test_command_executor(tango_context):
