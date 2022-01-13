@@ -6,7 +6,6 @@ import tango
 from ska_tmc_common.dev_factory import DevFactory
 from tango.test_context import MultiDeviceTestContext
 
-# from ska_tango_base.base.base_device import SKABaseDevice
 from tests.helpers.helper_subarray_device import HelperSubArrayDevice
 
 

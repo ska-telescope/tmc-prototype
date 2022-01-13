@@ -7,24 +7,17 @@ from ska_tango_base.commands import ResultCode
 from ska_tmc_sdpsubarrayleafnode.commands.assign_resources_command import (
     AssignResources,
 )
-from ska_tmc_sdpsubarrayleafnode.commands.telescope_on_command import TelescopeOn
-from ska_tmc_sdpsubarrayleafnode.manager.command_executor import CommandExecutor
+from ska_tmc_sdpsubarrayleafnode.commands.telescope_on_command import (
+    TelescopeOn,
+)
+from ska_tmc_sdpsubarrayleafnode.manager.command_executor import (
+    CommandExecutor,
+)
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
-from tests.helpers.helper_subarray_device import HelperSubArrayDevice
 from tests.settings import SLEEP_TIME, TIMEOUT, create_cm, logger
 from tests.unit.commands.test_assign_resources_command import (
     get_assign_input_str,
 )
-
-
-# @pytest.fixture()
-# def devices_to_load():
-#     return (
-#         {
-#             "class": HelperSubArrayDevice,
-#             "devices": [{"name": "mid_sdp/elt/subarray_01"}],
-#         }
-#     )
 
 
 def test_command_executor(tango_context):
