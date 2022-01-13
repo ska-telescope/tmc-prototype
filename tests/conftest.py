@@ -3,9 +3,11 @@ import logging
 
 import pytest
 import tango
-from ska_tango_base.base.base_device import SKABaseDevice
 from ska_tmc_common.dev_factory import DevFactory
 from tango.test_context import MultiDeviceTestContext
+
+# from ska_tango_base.base.base_device import SKABaseDevice
+from tests.helpers.helper_subarray_device import HelperSubArrayDevice
 
 
 def pytest_sessionstart(session):
@@ -40,7 +42,7 @@ def pytest_addoption(parser):
 def devices_to_load():
     return (
         {
-            "class": SKABaseDevice,
+            "class": HelperSubArrayDevice,
             "devices": [
                 {"name": "mid_sdp/elt/subarray_01"},
             ],
