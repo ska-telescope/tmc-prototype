@@ -32,6 +32,11 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
     # -----------------
     # Attributes
     # -----------------
+    commandExecuted = attribute(
+        dtype=(("DevString",),),
+        max_dim_x=4,
+        max_dim_y=100,
+    )
 
     lastDeviceInfoChanged = attribute(
         dtype="DevString",
@@ -89,6 +94,26 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
 
     def read_lastDeviceInfoChanged(self):
         return self._LastDeviceInfoChanged
+
+    def read_commandExecuted(self):
+        """Return the commandExecuted attribute."""
+        result = []
+        i = 0
+        for command_executed in reversed(
+            self.component_manager.command_executor.command_executed
+        ):
+            if i == 100:
+                break
+            single_res = [
+                str(command_executed["Id"]),
+                str(command_executed["Command"]),
+                str(command_executed["ResultCode"]),
+                str(command_executed["Message"]),
+            ]
+            result.append(single_res)
+            i += 1
+        return result
+
 
     # --------
     # Commands
