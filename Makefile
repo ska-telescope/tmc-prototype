@@ -60,11 +60,6 @@ PYTHON_TEST_FILE ?=
 PYTHON_VARS_BEFORE_PYTEST ?= PYTHONPATH=.:./src \
 							 TANGO_HOST=$(TANGO_HOST)
 
-MARK ?= ## What -m opt to pass to pytest
-# run one test with FILE=acceptance/test_central_node.py::test_check_internal_model_according_to_the_tango_ecosystem_deployed
-FILE ?= tests## A specific test file to pass to pytest
-ADD_ARGS ?= ## Additional args to pass to pytest
-
 
 CI_REGISTRY ?= gitlab.com
 CUSTOM_VALUES = --set sdpsln_mid.sdpslnmid.image.tag=$(VERSION)
@@ -111,8 +106,6 @@ clean:
 			charts/build charts/test-parent/charts charts/ska-tmc/Chart.lock charts/test-parent/Chart.lock code-coverage \
 			tests/.pytest_cache
 
-unit-test: python-test
-
 HELM_CHARTS_TO_PUBLISH ?= ska-tmc
 
 PYTHON_BUILD_TYPE = non_tag_setup
@@ -127,14 +120,3 @@ K8S_CHART_PARAMS = --set global.minikube=$(MINIKUBE) \
 	--set ska-taranta.enabled=$(TARANTA) \
 	$(CUSTOM_VALUES) \
 	--values gilab_values.yaml
-
-test-requirements:
-	@poetry export --without-hashes --dev --format requirements.txt --output tests/requirements.txt
-
-k8s-pre-test: python-pre-test test-requirements
-
-requirements: ## Install Dependencies
-	poetry install
-
-# .PHONY is additive
-.PHONY: unit-test
