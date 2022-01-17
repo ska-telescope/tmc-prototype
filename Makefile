@@ -18,6 +18,17 @@ MARK ?= ## What -m opt to pass to pytest
 FILE ?= tests## A specific test file to pass to pytest
 ADD_ARGS ?= ## Additional args to pass to pytest
 
+CI_REGISTRY ?= gitlab.com
+CUSTOM_VALUES = --set sdpsln_mid.sdpslnmid.image.tag=$(VERSION)
+K8S_TEST_IMAGE_TO_TEST=$(CAR_OCI_REGISTRY_HOST)/$(PROJECT):$(VERSION)
+ifneq ($(CI_JOB_ID),)
+CUSTOM_VALUES = --set sdpsln_mid.sdpslnmid.image.image=$(PROJECT) \
+	--set sdpsln_mid.sdpslnmid.image.registry=$(CI_REGISTRY)/ska-telescope/$(PROJECT) \
+	--set sdpsln_mid.sdpslnmid.image.tag=$(VERSION)-dev.$(CI_COMMIT_SHORT_SHA)
+K8S_TEST_IMAGE_TO_TEST=$(CI_REGISTRY)/ska-telescope/$(PROJECT)/$(PROJECT):$(VERSION)-dev.$(CI_COMMIT_SHORT_SHA)
+endif
+
+
 ifeq ($(MAKECMDGOALS),python-test)
 ADD_ARGS +=  --forked
 MARK = not post_deployment and not acceptance
