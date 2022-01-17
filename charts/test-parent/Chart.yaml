@@ -1,0 +1,32 @@
+apiVersion: v2
+name: test-parent
+description: An umbrella Helm chart for SKA-TMC-Mid deployment.
+type: application
+version: 0.0.6
+appVersion: 0.3.6
+icon: https://www.skatelescope.org/wp-content/uploads/2016/07/09545_NEW_LOGO_2014.png
+maintainers:
+  - name: Aditya Dange
+    email: adityadange.ska@gmail.com
+  - name: Snehal Nakave
+    email: snehal.ska@gmail.com
+  - name: Kalyani Thigale
+    email: kalyanit.ska@gmail.com
+dependencies:
+- name: ska-tango-base
+  version: 0.3.5
+  repository: https://artefact.skao.int/repository/helm-internal
+- name: ska-tango-util
+  version: 0.3.5
+  repository: https://artefact.skao.int/repository/helm-internal
+- name: ska-tmc-sdpsln
+  version: 0.3.6
+  repository: file://../ska-tmc-sdpsln
+  alias: central_node
+- name: ska-ser-skuid
+  version: 0.3.0
+  repository: https://artefact.skao.int/repository/helm-internal
+- name: ska-taranta
+  version: 1.0.29
+  repository: https://artefact.skao.int/repository/helm-internal
+  condition: ska-taranta.enabled
