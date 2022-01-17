@@ -4,14 +4,14 @@ xauthority: "~/.Xauthority"
 enabled: true
 
 system: SW-infrastructure
-subsystem: ska-tmc-sdpsln
+subsystem: ska-tmc
 telescope: SKA-mid
 
 subarray_count: 1
 dishes: ["01"]
 
 labels:
-  app: ska-tmc-sdpsln
+  app: ska-tmc
 
 global:
   minikube: true
@@ -41,7 +41,7 @@ sdpslnmid:
   image:
     registry: artefact.skao.int
     image: ska-tmc
-    tag: 0.3.6
+    tag: 0.8.9
     pullPolicy: IfNotPresent
 
 resources:
@@ -54,7 +54,7 @@ resources:
 
 deviceServers:
   mocks:
-    enabled: false
+    enabled: true
     instances: ["01"]
     file: "data/mockdevices.yaml"
 

@@ -1,6 +1,6 @@
 apiVersion: v2
-name: ska-tmc-sdpsln
-description: An umbrella Helm chart for ska-tmc-sdpsln deployment.
+name: ska-tmc
+description: An umbrella Helm chart for ska-tmc deployment.
 type: application
 version: 0.3.6
 appVersion: 0.3.6

@@ -4,18 +4,17 @@ domain: general-monitoring
 instances: ["01", "02", "03"]
 command: "python3 /app/src/ska_tmc_sdpsubarrayleafnode/sdp_subarray_leaf_node_mid.py"
 server:
-  name: "sdp_subarray_leaf_node_mid"
+  name: "sdpsln"
   instances:
-  {{- range  .Values.coalesced_subarray_devices }}
-  - name: "{{ . }}"
+  - name: "01"
     classes:
     - name: "SdpSubarrayLeafNode"
       devices:
-      - name: "ska_mid/tm_leaf_node/sdp_subarray{{ . }}"
+      - name: "ska_mid/tm_leaf_node/sdp_subarray01"
         properties:
         - name: "SdpSubarrayFQDN"
           values:
-          - "mid_sdp/elt/subarray_{{ (split "0" .)._1}}"
+          - "{{.Values.deviceServers.sdpsln.mid.SdpSubarrayFQDN}}"
         - name: "SkaLevel"
           values:
             - "3"
@@ -25,7 +24,6 @@ server:
         - name: "LoggingLevelDefault"
           values:
             - "5"
-  {{- end }}
 depends_on:
   - device: sys/database/2
 image:

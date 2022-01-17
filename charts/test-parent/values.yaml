@@ -38,7 +38,7 @@ sdpsln_mid:
     mocks:
       enabled: true
 
-    sdp_subarray_leaf_node_mid:
+    sdpsln:
       enabled: true
 
 ska-taranta:

@@ -114,7 +114,6 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
             i += 1
         return result
 
-
     # --------
     # Commands
     # --------
