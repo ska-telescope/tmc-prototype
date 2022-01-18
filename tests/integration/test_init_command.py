@@ -3,6 +3,7 @@ import time
 import pytest
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.dev_factory import DevFactory
+from tango import DevState
 
 from tests.settings import SLEEP_TIME, TIMEOUT, logger
 
@@ -14,6 +15,9 @@ def init_command(tango_context, sdpsaln_name):
     initial_len = len(sdpsal_node.commandExecuted)
     (result, unique_id) = sdpsal_node.TelescopeOn()
     assert result[0] == ResultCode.QUEUED
+
+    sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_01")
+    sdp_subarray.SetDirectState(DevState.OFF)
 
     start_time = time.time()
     while len(sdpsal_node.commandExecuted) != initial_len + 1:

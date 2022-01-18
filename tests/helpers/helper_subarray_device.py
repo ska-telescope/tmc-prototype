@@ -85,7 +85,6 @@ class HelperSubArrayDevice(SKASubarray):
     def init_device(self):
         super().init_device()
         self._health_state = HealthState.OK
-        self.set_state(DevState.OFF)
 
     class InitCommand(SKASubarray.InitCommand):
         def do(self):
