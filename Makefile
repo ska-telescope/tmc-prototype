@@ -43,6 +43,20 @@ CUSTOM_VALUES = --set sdpsln_mid.sdpslnmid.image.image=$(PROJECT) \
 K8S_TEST_IMAGE_TO_TEST=$(CI_REGISTRY)/ska-telescope/$(PROJECT)/$(PROJECT):$(VERSION)-dev.$(CI_COMMIT_SHORT_SHA)
 endif
 
+CI_PROJECT_DIR ?= .
+
+XAUTHORITY ?= $(HOME)/.Xauthority
+THIS_HOST := $(shell ip a 2> /dev/null | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n1)
+DISPLAY ?= $(THIS_HOST):0
+JIVE ?= false# Enable jive
+TARANTA ?= false
+MINIKUBE ?= true ## Minikube or not
+FAKE_DEVICES ?= true ## Install fake devices or not
+TANGO_HOST ?= tango-databaseds:10000## TANGO_HOST connection to the Tango DS
+
+CI_PROJECT_PATH_SLUG ?= ska-tmc
+CI_ENVIRONMENT_SLUG ?= ska-tmc
+$(shell echo 'global:\n  annotations:\n    app.gitlab.com/app: $(CI_PROJECT_PATH_SLUG)\n    app.gitlab.com/env: $(CI_ENVIRONMENT_SLUG)' > gilab_values.yaml)
 
 ifeq ($(MAKECMDGOALS),python-test)
 ADD_ARGS +=  --forked
