@@ -13,6 +13,7 @@ PYTHON_SWITCHES_FOR_FLAKE8=--ignore=W503,E203 --max-line-length=180
 TANGO_HOST ?= tango-databaseds:10000 ## TANGO_HOST connection to the Tango DS
 PYTHON_VARS_BEFORE_PYTEST ?= PYTHONPATH=.:./src \
 							 TANGO_HOST=$(TANGO_HOST)
+TELESCOPE ?= SKA-mid
 MARK ?= ## What -m opt to pass to pytest
 # run one test with FILE=acceptance/test_subarray_node.py::test_check_internal_model_according_to_the_tango_ecosystem_deployed
 FILE ?= tests## A specific test file to pass to pytest
@@ -62,6 +63,11 @@ ifeq ($(MAKECMDGOALS),python-test)
 ADD_ARGS +=  --forked
 MARK = not post_deployment and not acceptance
 endif
+ifeq ($(MAKECMDGOALS),k8s-test)
+ADD_ARGS +=  --true-context
+MARK = $(shell echo $(TELESCOPE) | sed s/-/_/) and (post_deployment or acceptance)
+endif
+
 PYTHON_VARS_AFTER_PYTEST ?= -m '$(MARK)' $(ADD_ARGS) $(FILE)
 
 K8S_CHART_PARAMS = --set global.minikube=$(MINIKUBE) \
