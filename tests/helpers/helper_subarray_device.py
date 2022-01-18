@@ -91,6 +91,7 @@ class HelperSubArrayDevice(SKASubarray):
             super().do()
             device = self.target
             device._command_in_progress = ""
+            device.set_change_event("State", True, False)
             device.set_change_event("obsState", True, False)
             device.set_change_event("commandInProgress", True, False)
             return (ResultCode.OK, "")
@@ -111,6 +112,19 @@ class HelperSubArrayDevice(SKASubarray):
             self.op_state_model, self.obs_state_model, logger=self.logger
         )
         return cm
+
+    @command(
+        dtype_in="DevState",
+        doc_in="state to assign",
+    )
+    def SetDirectState(self, argin):
+        """
+        Trigger a DevState change
+        """
+        # import debugpy; debugpy.debug_this_thread()
+        if self.dev_state() != argin:
+            self.set_state(argin)
+            self.push_change_event("State", self.dev_state())
 
     def is_TelescopeOn_allowed(self):
         return True
