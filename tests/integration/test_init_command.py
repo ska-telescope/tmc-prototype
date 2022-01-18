@@ -21,6 +21,7 @@ def init_command(tango_context, sdpsaln_name):
         elapsed_time = time.time() - start_time
         if elapsed_time > TIMEOUT:
             pytest.fail("Timeout occurred while executing the test")
+    print("Command Executed attr:", sdpsal_node.commandExecuted)
 
     for command in sdpsal_node.commandExecuted:
         if command[0] == unique_id[0]:
