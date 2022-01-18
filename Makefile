@@ -55,6 +55,12 @@ MINIKUBE ?= true ## Minikube or not
 FAKE_DEVICES ?= true ## Install fake devices or not
 TANGO_HOST ?= tango-databaseds:10000## TANGO_HOST connection to the Tango DS
 
+ITANGO_DOCKER_IMAGE = $(CAR_OCI_REGISTRY_HOST)/ska-tango-images-tango-itango:9.3.5
+
+# Test runner - run to completion job in K8s
+# name of the pod running the k8s_tests
+K8S_TEST_RUNNER = test-runner-$(HELM_RELEASE)
+
 CI_PROJECT_PATH_SLUG ?= ska-tmc
 CI_ENVIRONMENT_SLUG ?= ska-tmc
 $(shell echo 'global:\n  annotations:\n    app.gitlab.com/app: $(CI_PROJECT_PATH_SLUG)\n    app.gitlab.com/env: $(CI_ENVIRONMENT_SLUG)' > gilab_values.yaml)
@@ -81,7 +87,10 @@ K8S_CHART_PARAMS = --set global.minikube=$(MINIKUBE) \
 	$(CUSTOM_VALUES) \
 	--values gilab_values.yaml
 
-
+K8S_TEST_TEST_COMMAND = cd .. && $(PYTHON_VARS_BEFORE_PYTEST) $(PYTHON_RUNNER) \
+						pytest \
+						$(PYTHON_VARS_AFTER_PYTEST) ./tests \
+						 | tee pytest.stdout && mv build tests/
 -include .make/*.mk
 -include PrivateRules.mak
 
