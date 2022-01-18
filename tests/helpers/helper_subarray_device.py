@@ -82,16 +82,15 @@ class EmptySubArrayComponentManager(SubarrayComponentManager):
 class HelperSubArrayDevice(SKASubarray):
     """A generic device for triggering state changes with a command"""
 
-    def init_device(self):
-        super().init_device()
-        self._health_state = HealthState.OK
+    # def init_device(self):
+    #     super().init_device()
+    #     self._health_state = HealthState.OK
 
     class InitCommand(SKASubarray.InitCommand):
         def do(self):
             super().do()
             device = self.target
             device._command_in_progress = ""
-            device.set_state(DevState.OFF)
             device.set_change_event("State", True, False)
             device.set_change_event("obsState", True, False)
             device.set_change_event("commandInProgress", True, False)
