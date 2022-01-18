@@ -16,8 +16,8 @@ def init_command(tango_context, sdpsaln_name):
     (result, unique_id) = sdpsal_node.TelescopeOn()
     assert result[0] == ResultCode.QUEUED
 
-    sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_01")
-    sdp_subarray.SetDirectState(DevState.OFF)
+    # sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_01")
+    # sdp_subarray.SetDirectState(DevState.OFF)
 
     start_time = time.time()
     while len(sdpsal_node.commandExecuted) != initial_len + 1:

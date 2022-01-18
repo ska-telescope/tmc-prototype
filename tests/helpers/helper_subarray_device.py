@@ -91,6 +91,7 @@ class HelperSubArrayDevice(SKASubarray):
             super().do()
             device = self.target
             device._command_in_progress = ""
+            device.set_state(DevState.OFF)
             device.set_change_event("State", True, False)
             device.set_change_event("obsState", True, False)
             device.set_change_event("commandInProgress", True, False)
