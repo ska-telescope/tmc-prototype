@@ -94,3 +94,8 @@ K8S_TEST_TEST_COMMAND = cd .. && $(PYTHON_VARS_BEFORE_PYTEST) $(PYTHON_RUNNER) \
 -include .make/*.mk
 -include PrivateRules.mak
 
+test-requirements:
+	@poetry export --without-hashes --dev --format requirements.txt --output tests/requirements.txt
+
+k8s-pre-test: python-pre-test test-requirements
+
