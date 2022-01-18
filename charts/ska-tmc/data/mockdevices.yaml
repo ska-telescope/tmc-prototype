@@ -3,8 +3,6 @@ function: testing
 domain: mocks
 instances: ["01"]
 entrypoints:
-  - name: "helper_state_device.HelperStateDevice"
-    path: "/app/tests/helpers/helper_state_device.py"
   - name: "helper_subarray_device.HelperSubArrayDevice"
     path: "/app/tests/helpers/helper_subarray_device.py"
 server:

@@ -100,7 +100,7 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         result = []
         i = 0
         for command_executed in reversed(
-            self.component_manager.command_executor.command_executed
+            self.component_manager._command_executor.command_executed
         ):
             if i == 100:
                 break
