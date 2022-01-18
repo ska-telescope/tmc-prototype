@@ -135,9 +135,9 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         This command invokes Off() command on Sdp Subarray.
         """
         handler = self.get_command_object("TelescopeOff")
-        if self.component_manager.command_executor.queue_full:
+        if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
-        unique_id = self.component_manager.command_executor.enqueue_command(
+        unique_id = self.component_manager._command_executor.enqueue_command(
             handler
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
@@ -160,9 +160,9 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         This command invokes On() command on Sdp Subarray.
         """
         handler = self.get_command_object("TelescopeOn")
-        if self.component_manager.command_executor.queue_full:
+        if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
-        unique_id = self.component_manager.command_executor.enqueue_command(
+        unique_id = self.component_manager._command_executor.enqueue_command(
             handler
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
@@ -189,9 +189,9 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         This command invokes the AssignResources() command on Sdp Subarray..
         """
         handler = self.get_command_object("AssignResources")
-        if self.component_manager.command_executor.queue_full:
+        if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
-        unique_id = self.component_manager.command_executor.enqueue_command(
+        unique_id = self.component_manager._command_executor.enqueue_command(
             handler, argin
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
@@ -214,9 +214,9 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         This command invokes ReleaseResources() command on command on Sdp Subarray.
         """
         handler = self.get_command_object("ReleaseResources")
-        if self.component_manager.command_executor.queue_full:
+        if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
-        unique_id = self.component_manager.command_executor.enqueue_command(
+        unique_id = self.component_manager._command_executor.enqueue_command(
             handler, argin
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
@@ -245,9 +245,9 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         Invokes Configure command on Sdp Subarray.
         """
         handler = self.get_command_object("Configure")
-        if self.component_manager.command_executor.queue_full:
+        if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
-        unique_id = self.component_manager.command_executor.enqueue_command(
+        unique_id = self.component_manager._command_executor.enqueue_command(
             handler, argin
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
@@ -275,9 +275,9 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         """Invoke Scan command on Sdp Subarray."""
 
         handler = self.get_command_object("Scan")
-        if self.component_manager.command_executor.queue_full:
+        if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
-        unique_id = self.component_manager.command_executor.enqueue_command(
+        unique_id = self.component_manager._command_executor.enqueue_command(
             handler, argin
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
@@ -302,9 +302,9 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
 
         """
         handler = self.get_command_object("EndScan")
-        if self.component_manager.command_executor.queue_full:
+        if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
-        unique_id = self.component_manager.command_executor.enqueue_command(
+        unique_id = self.component_manager._command_executor.enqueue_command(
             handler
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
@@ -328,9 +328,9 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
     def End(self):
         """This command invokes End command on Sdp Subarray to end the current Scheduling block."""
         handler = self.get_command_object("End")
-        if self.component_manager.command_executor.queue_full:
+        if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
-        unique_id = self.component_manager.command_executor.enqueue_command(
+        unique_id = self.component_manager._command_executor.enqueue_command(
             handler
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
@@ -356,9 +356,9 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         Invoke ObsReset command on Sdp Subarray.
         """
         handler = self.get_command_object("ObsReset")
-        if self.component_manager.command_executor.queue_full:
+        if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
-        unique_id = self.component_manager.command_executor.enqueue_command(
+        unique_id = self.component_manager._command_executor.enqueue_command(
             handler
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
@@ -387,9 +387,9 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         Invoke Abort command on Sdp Subarray.
         """
         handler = self.get_command_object("Abort")
-        if self.component_manager.command_executor.queue_full:
+        if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
-        unique_id = self.component_manager.command_executor.enqueue_command(
+        unique_id = self.component_manager._command_executor.enqueue_command(
             handler
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
@@ -418,9 +418,9 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         Invoke Restart command on Sdp Subarray.
         """
         handler = self.get_command_object("Restart")
-        if self.component_manager.command_executor.queue_full:
+        if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
-        unique_id = self.component_manager.command_executor.enqueue_command(
+        unique_id = self.component_manager._command_executor.enqueue_command(
             handler
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]

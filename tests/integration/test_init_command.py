@@ -12,7 +12,7 @@ def init_command(tango_context, sdpsaln_name):
     dev_factory = DevFactory()
     sdpsal_node = dev_factory.get_device(sdpsaln_name)
     initial_len = len(sdpsal_node.commandExecuted)
-    (result, unique_id) = sdpsal_node.On()
+    (result, unique_id) = sdpsal_node.TelescopeOn()
     assert result[0] == ResultCode.QUEUED
 
     start_time = time.time()
