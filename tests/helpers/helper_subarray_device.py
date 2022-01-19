@@ -126,14 +126,14 @@ class HelperSubArrayDevice(SKASubarray):
             self.set_state(argin)
             self.push_change_event("State", self.dev_state())
 
-    def is_TelescopeOn_allowed(self):
+    def is_On_allowed(self):
         return True
 
     @command(
         dtype_out="DevVarLongStringArray",
         doc_out="(ReturnType, 'informational message')",
     )
-    def TelescopeOn(self):
+    def On(self):
         if self.dev_state() != DevState.ON:
             self.set_state(DevState.ON)
         return [[ResultCode.OK], [""]]
