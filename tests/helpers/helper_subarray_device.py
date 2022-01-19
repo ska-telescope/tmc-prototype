@@ -176,7 +176,8 @@ class HelperSubArrayDevice(SKASubarray):
         doc_out="(ReturnType, 'informational message')",
     )
     def AssignResources(self, argin):
-        self._obs_state = ObsState.IDLE
+        if self._obs_state != ObsState.IDLE:
+            self._obs_state = ObsState.IDLE
         return [[ResultCode.OK], [""]]
 
     def is_ReleaseAllResources_allowed(self):
@@ -196,3 +197,21 @@ class HelperSubArrayDevice(SKASubarray):
         :rtype: boolean
         """
         return True
+
+    def is_configure_allowed(self):
+        """
+        Check if command `Configure` is allowed in the current device state.
+
+        :return: ``True`` if the command is allowed
+        :rtype: boolean
+        """
+        return True
+    
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="(ReturnType, 'informational message')",
+    )
+    def Configure(self, argin):
+        if self._obs_state != ObsState.READY:
+            self._obs_state = ObsState.READY
+        return [[ResultCode.OK], [""]]

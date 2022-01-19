@@ -20,7 +20,7 @@ def get_configure_input_str(path):
     return configure_input_str
 
 
-def assign_resouces(
+def configure(
     tango_context, sdpsaln_name, assign_input_str, configure_input_str
 ):
     logger.info("%s", tango_context)
@@ -29,7 +29,7 @@ def assign_resouces(
 
     initial_len = len(sdpsal_node.commandExecuted)
     (result, unique_id) = sdpsal_node.TelescopeOn()
-    (result, unique_id) = sdpsal_node.AssignResources(assign_input_str)
+    sdpsal_node.AssignResources(assign_input_str)
     (result, unique_id) = sdpsal_node.Configure(configure_input_str)
     assert result[0] == ResultCode.QUEUED
     start_time = time.time()
@@ -51,8 +51,8 @@ def assign_resouces(
     "sdpsaln_name",
     [("ska_mid/tm_leaf_node/sdp_subarray01")],
 )
-def test_assign_res_command_mid(tango_context, sdpsaln_name):
-    return assign_resouces(
+def test_configure_command_mid(tango_context, sdpsaln_name):
+    return configure(
         tango_context,
         sdpsaln_name,
         get_assign_input_str(

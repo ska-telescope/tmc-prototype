@@ -8,7 +8,13 @@ from ska_tmc_common.dev_factory import DevFactory
 from tests.settings import SLEEP_TIME, TIMEOUT, logger
 
 
-def get_assign_input_str(path):
+# def get_assign_input_str(path):
+#     with open(path, "r") as f:
+#         assign_input_str = f.read()
+#     return assign_input_str
+
+def get_assign_input_str(assign_input_file="command_AssignResources.json"):
+    path = join(dirname(__file__), "..", "data", assign_input_file)
     with open(path, "r") as f:
         assign_input_str = f.read()
     return assign_input_str
@@ -21,7 +27,7 @@ def assign_resouces(tango_context, sdpsaln_name, assign_input_str):
 
     initial_len = len(sdpsal_node.commandExecuted)
     (result, unique_id) = sdpsal_node.TelescopeOn()
-    (result, unique_id) = sdpsal_node.AssignResources(assign_input_str)
+    sdpsal_node.AssignResources(assign_input_str)
     assert result[0] == ResultCode.QUEUED
     start_time = time.time()
     while len(sdpsal_node.commandExecuted) != initial_len + 2:
@@ -66,9 +72,5 @@ def test_assign_res_command_mid(tango_context, sdpsaln_name):
     return assign_resouces(
         tango_context,
         sdpsaln_name,
-        get_assign_input_str(
-            join(
-                dirname(__file__), "..", "data", "command_AssignResources.json"
-            )
-        ),
+        assign_input_str = get_assign_input_str(),
     )
