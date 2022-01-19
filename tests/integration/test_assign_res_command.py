@@ -4,11 +4,9 @@ from os.path import dirname, join
 
 import pytest
 from ska_tango_base.commands import ResultCode
-
 from ska_tmc_common.dev_factory import DevFactory
-from tests.integration.common import (  # noqa F401
-    ensure_checked_devices,
-)
+
+from tests.integration.common import ensure_checked_devices  # noqa F401
 from tests.settings import SLEEP_TIME, TIMEOUT, logger
 
 
@@ -46,7 +44,6 @@ def assign_resouces(tango_context, sdpsaln_name, assign_input_str):
     #             return device
     #     return None
 
-
     # if "ska_mid" in sdpsal_node:
     #     device = get_subarray_device(json.loads(sdpsal_node.internalModel))
     #     start_time = time.time()
@@ -60,6 +57,7 @@ def assign_resouces(tango_context, sdpsaln_name, assign_input_str):
     #             pytest.fail("Timeout occurred while executing the test")
 
     #     assert len(device["resources"]) > 0
+
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
