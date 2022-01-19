@@ -1,6 +1,6 @@
 from ska_tango_base.base import OpStateModel
 from ska_tango_base.commands import ResultCode
-from ska_tango_base.control_model import HealthState
+from ska_tango_base.control_model import HealthState, ObsState
 from ska_tango_base.subarray import (
     SKASubarray,
     SubarrayComponentManager,
@@ -138,26 +138,26 @@ class HelperSubArrayDevice(SKASubarray):
             self.set_state(DevState.ON)
         return [[ResultCode.OK], [""]]
 
-    def is_TelescopeOff_allowed(self):
+    def is_Off_allowed(self):
         return True
 
     @command(
         dtype_out="DevVarLongStringArray",
         doc_out="(ReturnType, 'informational message')",
     )
-    def TelescopeOff(self):
+    def Off(self):
         if self.dev_state() != DevState.OFF:
             self.set_state(DevState.OFF)
         return [[ResultCode.OK], [""]]
 
-    def is_TelescopeStandBy_allowed(self):
+    def is_StandBy_allowed(self):
         return True
 
     @command(
         dtype_out="DevVarLongStringArray",
         doc_out="(ReturnType, 'informational message')",
     )
-    def TelescopeStandBy(self):
+    def StandBy(self):
         if self.dev_state() != DevState.STANDBY:
             self.set_state(DevState.STANDBY)
         return [[ResultCode.OK], [""]]
@@ -170,6 +170,14 @@ class HelperSubArrayDevice(SKASubarray):
         :rtype: boolean
         """
         return True
+    
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="(ReturnType, 'informational message')",
+    )
+    def AssignResources(self):
+        self._obs_state = ObsState.IDLE
+        return [[ResultCode.OK], [""]]
 
     def is_ReleaseAllResources_allowed(self):
         """
