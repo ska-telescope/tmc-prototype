@@ -78,17 +78,17 @@ k8s-test:
     name: test/$CI_COMMIT_REF_SLUG-mid
     kubernetes:
       namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-mid
-  after_script:
-    - &after_script |
-        echo $CI_JOB_NAME - $CI_JOB_STAGE
-        make k8s-uninstall-chart
-        kubectl -n $KUBE_NAMESPACE delete pods,svc,daemonsets,deployments,replicasets,statefulsets,cronjobs,jobs,ingresses,configmaps --all
-        make k8s-delete-namespace
-        if [ -f build/cucumber.json ]; then
-        pip3 install -U "ska-ser-skallop>=$SKALLOP_VERSION" --extra-index-url https://artefact.skao.int/repository/pypi-internal/simple
-        /usr/local/bin/xtp-xray-upload -f build/cucumber.json -i test-exec.json -v
-        fi
-    - mv build build_k8s_test
+  # after_script:
+  #   - &after_script |
+  #       echo $CI_JOB_NAME - $CI_JOB_STAGE
+  #       make k8s-uninstall-chart
+  #       kubectl -n $KUBE_NAMESPACE delete pods,svc,daemonsets,deployments,replicasets,statefulsets,cronjobs,jobs,ingresses,configmaps --all
+  #       make k8s-delete-namespace
+  #       if [ -f build/cucumber.json ]; then
+  #       pip3 install -U "ska-ser-skallop>=$SKALLOP_VERSION" --extra-index-url https://artefact.skao.int/repository/pypi-internal/simple
+  #       /usr/local/bin/xtp-xray-upload -f build/cucumber.json -i test-exec.json -v
+  #       fi
+  #   - mv build build_k8s_test
   artifacts:
     name: "$CI_PROJECT_NAME-$CI_JOB_ID"
     paths:
