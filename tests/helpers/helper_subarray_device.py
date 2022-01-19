@@ -175,7 +175,7 @@ class HelperSubArrayDevice(SKASubarray):
         dtype_out="DevVarLongStringArray",
         doc_out="(ReturnType, 'informational message')",
     )
-    def AssignResources(self):
+    def AssignResources(self, argin):
         self._obs_state = ObsState.IDLE
         return [[ResultCode.OK], [""]]
 
