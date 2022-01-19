@@ -8,12 +8,6 @@ from ska_tmc_common.dev_factory import DevFactory
 from tests.settings import SLEEP_TIME, TIMEOUT, logger
 
 
-# def get_assign_input_str(path):
-#     with open(path, "r") as f:
-#         assign_input_str = f.read()
-#     return assign_input_str
-
-
 def get_assign_input_str(assign_input_file="command_AssignResources.json"):
     path = join(dirname(__file__), "..", "data", assign_input_file)
     with open(path, "r") as f:
