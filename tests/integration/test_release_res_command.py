@@ -45,6 +45,8 @@ def test_release_res_command_mid(tango_context):
         tango_context,
         "ska_mid/tm_central/central_node",
         get_input_str(
-            join(dirname(__file__), "..", "data", "command_AssignResources.json")
+            join(
+                dirname(__file__), "..", "data", "command_AssignResources.json"
+            )
         ),
     )

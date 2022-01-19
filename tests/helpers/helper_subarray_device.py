@@ -208,7 +208,7 @@ class HelperSubArrayDevice(SKASubarray):
         :rtype: boolean
         """
         return True
-    
+
     @command(
         dtype_out="DevVarLongStringArray",
         doc_out="(ReturnType, 'informational message')",
