@@ -13,13 +13,16 @@ def get_assign_input_str(path):
         assign_input_str = f.read()
     return assign_input_str
 
+
 def get_configure_input_str(path):
     with open(path, "r") as f:
         configure_input_str = f.read()
     return configure_input_str
 
 
-def assign_resouces(tango_context, sdpsaln_name, assign_input_str, configure_input_str):
+def assign_resouces(
+    tango_context, sdpsaln_name, assign_input_str, configure_input_str
+):
     logger.info("%s", tango_context)
     dev_factory = DevFactory()
     sdpsal_node = dev_factory.get_device(sdpsaln_name)
@@ -58,8 +61,6 @@ def test_assign_res_command_mid(tango_context, sdpsaln_name):
             )
         ),
         get_configure_input_str(
-            join(
-                dirname(__file__), "..", "data", "command_Configure.json"
-            )
+            join(dirname(__file__), "..", "data", "command_Configure.json")
         ),
     )
