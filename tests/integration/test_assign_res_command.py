@@ -13,6 +13,7 @@ from tests.settings import SLEEP_TIME, TIMEOUT, logger
 #         assign_input_str = f.read()
 #     return assign_input_str
 
+
 def get_assign_input_str(assign_input_file="command_AssignResources.json"):
     path = join(dirname(__file__), "..", "data", assign_input_file)
     with open(path, "r") as f:
@@ -27,7 +28,7 @@ def assign_resouces(tango_context, sdpsaln_name, assign_input_str):
 
     initial_len = len(sdpsal_node.commandExecuted)
     (result, unique_id) = sdpsal_node.TelescopeOn()
-    sdpsal_node.AssignResources(assign_input_str)
+    (result, unique_id) = sdpsal_node.AssignResources(assign_input_str)
     assert result[0] == ResultCode.QUEUED
     start_time = time.time()
     while len(sdpsal_node.commandExecuted) != initial_len + 2:
@@ -52,5 +53,5 @@ def test_assign_res_command_mid(tango_context, sdpsaln_name):
     return assign_resouces(
         tango_context,
         sdpsaln_name,
-        assign_input_str = get_assign_input_str(),
+        assign_input_str=get_assign_input_str(),
     )
