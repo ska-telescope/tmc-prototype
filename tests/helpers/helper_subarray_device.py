@@ -210,6 +210,8 @@ class HelperSubArrayDevice(SKASubarray):
         return True
 
     @command(
+        dtype_in=("str"),
+        doc_in="The input string in JSON format.",
         dtype_out="DevVarLongStringArray",
         doc_out="(ReturnType, 'informational message')",
     )
