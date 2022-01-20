@@ -281,6 +281,8 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
     @command(
         dtype_in=("str"),
         doc_in="The JSON input string consists of SB ID.",
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
     )
     @DebugIt()
     def Scan(self, argin):
@@ -306,7 +308,10 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("EndScan")
         return handler.check_allowed()
 
-    @command()
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+        )
     @DebugIt()
     def EndScan(self):
         """
@@ -335,7 +340,10 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("End")
         return handler.check_allowed()
 
-    @command()
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+        )
     @DebugIt()
     def End(self):
         """This command invokes End command on Sdp Subarray to end the current Scheduling block."""

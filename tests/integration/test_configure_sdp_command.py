@@ -4,6 +4,9 @@ from os.path import dirname, join
 import pytest
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.dev_factory import DevFactory
+from ska_tango_base.control_model import (
+    ObsState,
+)
 
 from tests.settings import SLEEP_TIME, TIMEOUT, logger
 
@@ -21,7 +24,11 @@ def get_configure_input_str(path):
 
 
 def configure(
-    tango_context, sdpsaln_name, assign_input_str, configure_input_str
+    tango_context,
+    sdpsaln_name,
+    assign_input_str,
+    configure_input_str,
+    tango_change_event_helper,
 ):
     logger.info("%s", tango_context)
     dev_factory = DevFactory()
@@ -30,6 +37,9 @@ def configure(
     initial_len = len(sdpsal_node.commandExecuted)
     (result, unique_id) = sdpsal_node.TelescopeOn()
     (result, unique_id) = sdpsal_node.AssignResources(assign_input_str)
+    obs_state_callback = tango_change_event_helper.subscribe("obsState")
+    obs_state_callback.assert_call(ObsState.READY)
+
     (result, unique_id) = sdpsal_node.Configure(configure_input_str)
     assert result[0] == ResultCode.QUEUED
     start_time = time.time()
@@ -51,16 +61,15 @@ def configure(
     "sdpsaln_name",
     [("ska_mid/tm_leaf_node/sdp_subarray01")],
 )
-def test_configure_command_mid(tango_context, sdpsaln_name):
+def test_configure_command_mid(tango_context, sdpsaln_name, tango_change_event_helper):
     return configure(
         tango_context,
         sdpsaln_name,
         get_assign_input_str(
-            join(
-                dirname(__file__), "..", "data", "command_AssignResources.json"
-            )
+            join(dirname(__file__), "..", "data", "command_AssignResources.json")
         ),
         get_configure_input_str(
             join(dirname(__file__), "..", "data", "command_Configure.json")
         ),
+        tango_change_event_helper,
     )
