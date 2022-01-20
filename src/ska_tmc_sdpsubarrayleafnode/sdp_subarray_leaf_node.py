@@ -369,7 +369,10 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("ObsReset")
         return handler.check_allowed()
 
-    @command()
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
     @DebugIt()
     def ObsReset(self):
         """
@@ -400,7 +403,10 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Abort")
         return handler.check_allowed()
 
-    @command()
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
     @DebugIt()
     def Abort(self):
         """
@@ -431,7 +437,10 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Restart")
         return handler.check_allowed()
 
-    @command()
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
     @DebugIt()
     def Restart(self):
         """
