@@ -51,7 +51,7 @@ def configure(
     initial_len = len(sdpsal_node.commandExecuted)
     (result, unique_id) = sdpsal_node.TelescopeOn()
     (result, unique_id) = sdpsal_node.AssignResources(assign_input_str)
-    sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_01")
+    sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
     sdp_subarray.SetDirectObsState(ObsState.IDLE)
     (result, unique_id) = sdpsal_node.Configure(configure_input_str)
     assert result[0] == ResultCode.QUEUED

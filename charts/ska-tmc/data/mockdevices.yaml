@@ -12,7 +12,7 @@ server:
       classes:
         - name: "HelperSubArrayDevice"
           devices:
-            - name: "mid_sdp/elt/subarray_01"
+            - name: "mid_sdp/elt/subarray_1"
 depends_on:
   - device: sys/database/2
 image:
