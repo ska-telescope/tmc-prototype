@@ -67,7 +67,6 @@ def configure(
             logger.info("command result: %s", command)
             assert command[2] == "ResultCode.OK"
 
-   
     # assert_event_arrived()
     # sdpsal_node.unsubscribe_event(event_id)
 
