@@ -246,8 +246,10 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in=("str"),
-        doc_in="The JSON input string consists of scan type.",
+        dtype_in="str",
+        doc_in="The string in JSON format",
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
     )
     @DebugIt()
     def Configure(self, argin):
