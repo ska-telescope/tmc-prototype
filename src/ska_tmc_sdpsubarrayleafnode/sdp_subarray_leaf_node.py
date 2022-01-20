@@ -311,7 +311,7 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
     @command(
         dtype_out="DevVarLongStringArray",
         doc_out="information-only string",
-        )
+    )
     @DebugIt()
     def EndScan(self):
         """
@@ -343,7 +343,7 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
     @command(
         dtype_out="DevVarLongStringArray",
         doc_out="information-only string",
-        )
+    )
     @DebugIt()
     def End(self):
         """This command invokes End command on Sdp Subarray to end the current Scheduling block."""

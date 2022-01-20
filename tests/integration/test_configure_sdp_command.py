@@ -3,6 +3,7 @@ from os.path import dirname, join
 
 import pytest
 from ska_tango_base.commands import ResultCode
+from ska_tango_base.control_model import ObsState
 from ska_tmc_common.dev_factory import DevFactory
 
 from tests.settings import SLEEP_TIME, TIMEOUT, logger
@@ -59,7 +60,9 @@ def test_configure_command_mid(tango_context, sdpsaln_name,):
         tango_context,
         sdpsaln_name,
         get_assign_input_str(
-            join(dirname(__file__), "..", "data", "command_AssignResources.json")
+            join(
+                dirname(__file__), "..", "data", "command_AssignResources.json"
+            )
         ),
         get_configure_input_str(
             join(dirname(__file__), "..", "data", "command_Configure.json")
