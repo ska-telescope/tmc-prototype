@@ -114,6 +114,19 @@ class HelperSubArrayDevice(SKASubarray):
         return cm
 
     @command(
+        dtype_in="Str",
+        doc_in="Set ObsState",
+    )
+    def SetDirectObsState(self, argin):
+        """
+        Trigger a ObsState change
+        """
+        # import debugpy; debugpy.debug_this_thread()
+        if self._obs_state != argin:
+            self._obs_state = argin
+            self.push_change_event("obsState", argin)
+    
+    @command(
         dtype_in="DevState",
         doc_in="state to assign",
     )
