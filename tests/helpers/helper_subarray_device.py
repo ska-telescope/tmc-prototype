@@ -114,7 +114,7 @@ class HelperSubArrayDevice(SKASubarray):
         return cm
 
     @command(
-        dtype_in=("str"),
+        dtype_in=ObsState,
         doc_in="Set ObsState",
     )
     def SetDirectObsState(self, argin):

@@ -19,7 +19,7 @@ def release_resources(tango_context, sdpsaln_name, assign_input_str):
     dev_factory = DevFactory()
     sdpsal_node = dev_factory.get_device(sdpsaln_name)
     initial_len = len(sdpsal_node.commandExecuted)
-    (result, unique_id) = sdpsal_node.TelescopOn()
+    (result, unique_id) = sdpsal_node.TelescopeOn()
     (result, unique_id) = sdpsal_node.AssignResources(assign_input_str)
     (result, unique_id) = sdpsal_node.ReleaseResources()
     if result[0] != ResultCode.QUEUED:
