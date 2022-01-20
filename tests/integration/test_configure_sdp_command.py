@@ -2,10 +2,13 @@ import time
 from os.path import dirname, join
 
 import pytest
+import tango
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.dev_factory import DevFactory
+from tango import DevState
 
+from tests.integration.common import assert_event_arrived
 from tests.settings import SLEEP_TIME, TIMEOUT, logger
 
 
@@ -27,13 +30,31 @@ def configure(
     assign_input_str,
     configure_input_str,
 ):
+    pytest.event_arrived = False
+
+
+    def event_callback(evt):
+        assert not evt.err
+        logger.info(evt.attr_value.value)
+        if evt.attr_value.value == ObsState.IDLE:
+            pytest.event_arrived = True
+
     logger.info("%s", tango_context)
     dev_factory = DevFactory()
     sdpsal_node = dev_factory.get_device(sdpsaln_name)
+    
+    event_id = sdpsal_node.subscribe_event(
+        "obsState",
+        tango.EventType.CHANGE_EVENT,
+        event_callback,
+        stateless=True,
+    )
 
     initial_len = len(sdpsal_node.commandExecuted)
     (result, unique_id) = sdpsal_node.TelescopeOn()
     (result, unique_id) = sdpsal_node.AssignResources(assign_input_str)
+    sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_01")
+    sdp_subarray.SetDirectObsState(ObsState.IDLE)
     (result, unique_id) = sdpsal_node.Configure(configure_input_str)
     assert result[0] == ResultCode.QUEUED
     start_time = time.time()
@@ -47,6 +68,11 @@ def configure(
         if command[0] == unique_id[0]:
             logger.info("command result: %s", command)
             assert command[2] == "ResultCode.OK"
+
+    # sdp_subarray = dev_factory.get_device("mid_csp/elt/master")
+    # sdp_subarray.SetDirectObsState(ObsState.IDLE)
+    assert_event_arrived()
+    sdpsal_node.unsubscribe_event(event_id)
 
 
 @pytest.mark.post_deployment
