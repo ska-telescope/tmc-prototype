@@ -125,7 +125,7 @@ class HelperSubArrayDevice(SKASubarray):
         if self._obs_state != argin:
             self._obs_state = argin
             self.push_change_event("obsState", argin)
-    
+
     @command(
         dtype_in="DevState",
         doc_in="state to assign",

@@ -32,7 +32,6 @@ def configure(
 ):
     pytest.event_arrived = False
 
-
     def event_callback(evt):
         assert not evt.err
         logger.info(evt.attr_value.value)
@@ -42,7 +41,7 @@ def configure(
     logger.info("%s", tango_context)
     dev_factory = DevFactory()
     sdpsal_node = dev_factory.get_device(sdpsaln_name)
-    
+
     event_id = sdpsal_node.subscribe_event(
         "obsState",
         tango.EventType.CHANGE_EVENT,
@@ -81,7 +80,10 @@ def configure(
     "sdpsaln_name",
     [("ska_mid/tm_leaf_node/sdp_subarray01")],
 )
-def test_configure_command_mid(tango_context, sdpsaln_name,):
+def test_configure_command_mid(
+    tango_context,
+    sdpsaln_name,
+):
     return configure(
         tango_context,
         sdpsaln_name,
