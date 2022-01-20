@@ -179,9 +179,10 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in=("str"),
-        doc_in="The input JSON string consists of information related to id, max_length, scan_types"
-        " and processing_blocks.",
+        dtype_in="str",
+        doc_in="The string in JSON format",
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
     )
     @DebugIt()
     def AssignResources(self, argin):
@@ -211,7 +212,12 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("ReleaseResources")
         return handler.check_allowed()
 
-    @command()
+    @command(
+        dtype_in="str",
+        doc_in="The string in JSON format",
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
     @DebugIt()
     def ReleaseResources(self, argin):
         """

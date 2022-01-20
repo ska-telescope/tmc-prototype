@@ -22,7 +22,7 @@ def assign_resouces(tango_context, sdpsaln_name, assign_input_str):
 
     initial_len = len(sdpsal_node.commandExecuted)
     (result, unique_id) = sdpsal_node.TelescopeOn()
-    sdpsal_node.AssignResources(assign_input_str)
+    (result, unique_id) = sdpsal_node.AssignResources(assign_input_str)
     assert result[0] == ResultCode.QUEUED
     start_time = time.time()
     while len(sdpsal_node.commandExecuted) != initial_len + 2:
