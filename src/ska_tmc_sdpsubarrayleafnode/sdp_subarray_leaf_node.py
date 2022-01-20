@@ -194,7 +194,10 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         unique_id = self.component_manager._command_executor.enqueue_command(
             handler, argin
         )
-        print(":::::::unique id after Assign Resources command:::::::::::::::", unique_id)
+        print(
+            ":::::::unique id after Assign Resources command:::::::::::::::",
+            unique_id,
+        )
         return [[ResultCode.QUEUED], [str(unique_id)]]
 
     def is_ReleaseResources_allowed(self):
