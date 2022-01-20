@@ -1,10 +1,11 @@
 # pylint: disable=unused-argument
 import logging
 from queue import Empty, Queue
+
 import pytest
-from tango import EventType
 import tango
 from ska_tmc_common.dev_factory import DevFactory
+from tango import EventType
 from tango.test_context import MultiDeviceTestContext
 
 from tests.helpers.helper_subarray_device import HelperSubArrayDevice
@@ -158,7 +159,8 @@ def tango_change_event_helper(device_under_test):
             if event_data.err:
                 error = event_data.errors[0]
                 self._errors.append(
-                    "Event callback error: [%s] %s" % (error.reason, error.desc)
+                    "Event callback error: [%s] %s"
+                    % (error.reason, error.desc)
                 )
             else:
                 self._values_queue.put(event_data.attr_value.value)
