@@ -142,6 +142,7 @@ class SdpSLNComponentManager(TmcComponentManager):
         :param obs_state: obs state of the device
         :type obs_state: ObsState
         """
+        print("update_device_obs_state")
         with self.lock:
             devInfo = self.component.get_device(dev_name)
             devInfo.obsState = obs_state

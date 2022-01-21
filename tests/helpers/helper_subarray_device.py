@@ -114,7 +114,7 @@ class HelperSubArrayDevice(SKASubarray):
         return cm
 
     @command(
-        dtype_in="enum",
+        dtype_in=int,
         doc_in="Set ObsState",
     )
     def SetDirectObsState(self, argin):
@@ -122,9 +122,9 @@ class HelperSubArrayDevice(SKASubarray):
         Trigger a ObsState change
         """
         # import debugpy; debugpy.debug_this_thread()
-        # value = ObsState(argin)
-        if self._obs_state != argin:
-            self._obs_state = argin
+        value = ObsState(argin)
+        if self._obs_state != value:
+            self._obs_state = value
             self.push_change_event("obsState", self._obs_state)
 
     @command(
