@@ -229,7 +229,7 @@ class AbstractConfigure(SdpSLNCommand):
             component_manager.input_parameter.sdp_subarray_dev_name
         ).obsState
 
-        if obs_state_val not in (ObsState.READY, ObsState.IDLE):
+        if obs_state_val not in [ObsState.IDLE or ObsState.READY]:
             raise InvalidObsStateError(
                 "Configure command is permitted only in READY and IDLE observation states."
             )
