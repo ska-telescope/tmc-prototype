@@ -206,7 +206,7 @@ class HelperSubArrayDevice(SKASubarray):
 
     def is_ReleaseResources_allowed(self):
         """
-        Check if command `ReleaseAllResources` is allowed in the current device state.
+        Check if command `ReleaseResources` is allowed in the current device state.
 
         :return: ``True`` if the command is allowed
         :rtype: boolean
