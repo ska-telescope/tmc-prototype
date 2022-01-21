@@ -27,7 +27,7 @@ def configure(
     assign_input_str,
     configure_input_str,
 ):
-    
+
     logger.info("%s", tango_context)
     dev_factory = DevFactory()
     sdpsal_node = dev_factory.get_device(sdpsaln_name)
@@ -61,6 +61,7 @@ def configure(
 
     # assert_event_arrived()
     # sdpsal_node.unsubscribe_event(event_id)
+
 
 @pytest.mark.shraddha
 @pytest.mark.post_deployment
