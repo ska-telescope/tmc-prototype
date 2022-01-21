@@ -49,6 +49,7 @@ def scan(
     assert sdp_subarray.obsState == ObsState.IDLE
 
     (result, unique_id) = sdpsal_node.Configure(configure_input_str)
+    sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
     sdp_subarray.SetDirectObsState(ObsState.READY)
     assert sdp_subarray.obsState == ObsState.READY
 
@@ -81,14 +82,10 @@ def test_scan_command_mid(
         tango_context,
         sdpsaln_name,
         get_assign_input_str(
-            join(
-                dirname(__file__), "..", "data", "command_AssignResources.json"
-            )
+            join(dirname(__file__), "..", "data", "command_AssignResources.json")
         ),
         get_configure_input_str(
             join(dirname(__file__), "..", "data", "command_Configure.json")
         ),
-        get_scan_input_str(
-            join(dirname(__file__), "..", "data", "command_Scan.json")
-        ),
+        get_scan_input_str(join(dirname(__file__), "..", "data", "command_Scan.json")),
     )

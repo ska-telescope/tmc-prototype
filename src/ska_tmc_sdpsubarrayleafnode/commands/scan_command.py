@@ -58,24 +58,20 @@ class Scan(AbstractScanEnd):
                 ("Problem in loading the JSON string: %s", e),
             )
 
-        log_msg = (
-            "Input JSON for SDP Subarray Leaf Node Scan command is: " + argin
-        )
+        log_msg = "Input JSON for SDP Subarray Leaf Node Scan command is: " + argin
         self.logger.debug(log_msg)
 
         try:
             # As, SKA logtransaction is not utilised in scan command across tmc devices.
             # Hence, Interface URL needs to be updated explicitly for SDP.
             # TODO: Incorporate transaction id implementation for scan command across TMC.
-            json_argument[
-                "interface"
-            ] = "https://schema.skao.int/ska-sdp-scan/0.3"
+            json_argument["interface"] = "https://schema.skao.int/ska-sdp-scan/0.3"
             log_msg = (
                 "Updated Input JSON for SDP Subarray Leaf Node Scan command is: %s",
                 json_argument,
             )
             self.logger.debug(log_msg)
-            self.sdp_subarray_adapter.Scan(json_argument)
+            self.sdp_subarray_adapter.Scan(json.dumps(json_argument.copy()))
         except Exception as e:
             return self.generate_command_result(
                 ResultCode.FAILED,
