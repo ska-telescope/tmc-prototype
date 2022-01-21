@@ -239,7 +239,6 @@ class AbstractConfigure(SdpSLNCommand):
         ).obsState.value
         print("obs_state_val_val is", obs_state_val_val)
 
-
         return True
 
 
