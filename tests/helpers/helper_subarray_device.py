@@ -1,3 +1,5 @@
+import enum
+
 from ska_tango_base.base import OpStateModel
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import HealthState, ObsState
@@ -114,7 +116,7 @@ class HelperSubArrayDevice(SKASubarray):
         return cm
 
     @command(
-        dtype_in=int,
+        dtype_in=enum,
         doc_in="Set ObsState",
     )
     def SetDirectObsState(self, argin):
@@ -122,9 +124,9 @@ class HelperSubArrayDevice(SKASubarray):
         Trigger a ObsState change
         """
         # import debugpy; debugpy.debug_this_thread()
-        value = ObsState(argin)
-        if self._obs_state != value:
-            self._obs_state = value
+        # value = ObsState(argin)
+        if self._obs_state != argin:
+            self._obs_state = argin
             self.push_change_event("obsState", self._obs_state)
 
     @command(
