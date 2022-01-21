@@ -228,7 +228,6 @@ class AbstractConfigure(SdpSLNCommand):
         for dev in component_manager.checked_devices:
             if isinstance(dev, SubArrayDeviceInfo):
                 sdp_subarray_obs_state = dev.obsState
-        print("ObsState value is :", sdp_subarray_obs_state)
         # obs_state_val = component_manager.get_device(
         #     component_manager.input_parameter.sdp_subarray_dev_name
         # ).obsState
