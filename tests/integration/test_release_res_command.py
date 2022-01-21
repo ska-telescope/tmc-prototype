@@ -21,7 +21,7 @@ def release_resources(tango_context, sdpsaln_name, assign_input_str):
     initial_len = len(sdpsal_node.commandExecuted)
     (result, unique_id) = sdpsal_node.TelescopeOn()
     (result, unique_id) = sdpsal_node.AssignResources(assign_input_str)
-    (result, unique_id) = sdpsal_node.ReleaseAllResources()
+    (result, unique_id) = sdpsal_node.ReleaseResources()
     if result[0] != ResultCode.QUEUED:
         logger.error("Result: %s message: %s", result[0], unique_id)
     assert result[0] == ResultCode.QUEUED
