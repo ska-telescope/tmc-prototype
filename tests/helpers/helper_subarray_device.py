@@ -1,5 +1,3 @@
-import enum
-
 from ska_tango_base.base import OpStateModel
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import HealthState, ObsState
