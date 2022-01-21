@@ -27,24 +27,10 @@ def configure(
     assign_input_str,
     configure_input_str,
 ):
-    # pytest.event_arrived = False
-
-    # def event_callback(evt):
-    #     assert not evt.err
-    #     logger.info(evt.attr_value.value)
-    #     if evt.attr_value.value == ObsState.IDLE:
-    #         pytest.event_arrived = True
-
+    
     logger.info("%s", tango_context)
     dev_factory = DevFactory()
     sdpsal_node = dev_factory.get_device(sdpsaln_name)
-
-    # event_id = sdpsal_node.subscribe_event(
-    #     "obsState",
-    #     tango.EventType.CHANGE_EVENT,
-    #     event_callback,
-    #     stateless=True,
-    # )
 
     initial_len = len(sdpsal_node.commandExecuted)
     (result, unique_id) = sdpsal_node.TelescopeOn()
