@@ -40,7 +40,9 @@ class SdpSLNEventReceiver(EventReceiver):
             )
 
         except Exception as e:
-            self._logger.debug("event not working for device %s/%s", proxy.dev_name, e)
+            self._logger.debug(
+                "event not working for device %s/%s", proxy.dev_name, e
+            )
 
     def handle_obs_state_event(self, evt):
         # import debugpy; debugpy.debug_this_thread()
