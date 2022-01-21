@@ -225,15 +225,15 @@ class AbstractConfigure(SdpSLNCommand):
             )
 
         self.check_unresponsive()
-        for dev in component_manager.checked_devices:
-            if isinstance(dev, SubArrayDeviceInfo):
-                sdp_subarray_obs_state = dev.obsState
-        # obs_state_val = component_manager.get_device(
-        #     component_manager.input_parameter.sdp_subarray_dev_name
-        # ).obsState
+        # for dev in component_manager.checked_devices:
+        #     if isinstance(dev, SubArrayDeviceInfo):
+        #         sdp_subarray_obs_state = dev.obsState
+        obs_state_val = component_manager.get_device(
+            component_manager.input_parameter.sdp_subarray_dev_name
+        ).obsState
         # print("obs_state_val is", obs_state_val)
 
-        if sdp_subarray_obs_state not in (ObsState.READY, ObsState.IDLE):
+        if obs_state_val not in (ObsState.READY, ObsState.IDLE):
             raise InvalidObsStateError(
                 "Configure command is permitted only in READY and IDLE observation states."
             )
