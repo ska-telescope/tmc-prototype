@@ -51,7 +51,7 @@ def scan(
     (result, unique_id) = sdpsal_node.Configure(configure_input_str)
     sdp_subarray.SetDirectObsState(ObsState.READY)
     assert sdp_subarray.obsState == ObsState.READY
-    
+
     (result, unique_id) = sdpsal_node.Scan(scan_input_str)
     assert result[0] == ResultCode.QUEUED
     start_time = time.time()
