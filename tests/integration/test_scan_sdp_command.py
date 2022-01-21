@@ -3,6 +3,7 @@ from os.path import dirname, join
 
 import pytest
 from ska_tango_base.commands import ResultCode
+from ska_tango_base.control_model import ObsState
 from ska_tmc_common.dev_factory import DevFactory
 
 from tests.settings import SLEEP_TIME, TIMEOUT, logger
@@ -41,7 +42,16 @@ def scan(
     initial_len = len(sdpsal_node.commandExecuted)
     (result, unique_id) = sdpsal_node.TelescopeOn()
     (result, unique_id) = sdpsal_node.AssignResources(assign_input_str)
+
+    sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
+
+    sdp_subarray.SetDirectObsState(ObsState.IDLE)
+    assert sdp_subarray.obsState == ObsState.IDLE
+
     (result, unique_id) = sdpsal_node.Configure(configure_input_str)
+    sdp_subarray.SetDirectObsState(ObsState.READY)
+    assert sdp_subarray.obsState == ObsState.READY
+    
     (result, unique_id) = sdpsal_node.Scan(scan_input_str)
     assert result[0] == ResultCode.QUEUED
     start_time = time.time()
