@@ -42,3 +42,16 @@ class SdpSLNEventReceiver(EventReceiver):
             self._logger.debug(
                 "event not working for device %s/%s", proxy.dev_name, e
             )
+
+    def handle_obs_state_event(self, evt):
+        # import debugpy; debugpy.debug_this_thread()
+        if evt.err:
+            error = evt.errors[0]
+            self._logger.error("%s %s", error.reason, error.desc)
+            self._component_manager.update_event_failure(evt.device.dev_name())
+            return
+
+        new_value = evt.attr_value.value
+        self._component_manager.update_device_obs_state(
+            evt.device.dev_name(), new_value
+        )

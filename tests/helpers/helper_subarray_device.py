@@ -116,7 +116,7 @@ class HelperSubArrayDevice(SKASubarray):
         return cm
 
     @command(
-        dtype_in=enum,
+        dtype_in="enum",
         doc_in="Set ObsState",
     )
     def SetDirectObsState(self, argin):

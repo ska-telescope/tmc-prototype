@@ -147,3 +147,9 @@ class SdpSLNComponentManager(TmcComponentManager):
             devInfo.obsState = obs_state
             devInfo.last_event_arrived = time.time()
             devInfo.update_unresponsive(False)
+
+    def update_event_failure(self, dev_name):
+        with self.lock:
+            devInfo = self.component.get_device(dev_name)
+            devInfo.last_event_arrived = time.time()
+            devInfo.update_unresponsive(False)
