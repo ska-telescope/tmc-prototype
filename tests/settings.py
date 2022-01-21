@@ -55,7 +55,9 @@ def create_cm_parametrize(cm_class, input_parameter, device):
     op_state_model = TMCOpStateModel(logger)
     if cm_class == "SdpMLNComponentManager":
         cm = SdpMLNComponentManager(
-            op_state_model, _input_parameter=input_parameter, logger=logger,
+            op_state_model,
+            _input_parameter=input_parameter,
+            logger=logger,
         )
     elif cm_class == "SdpSLNComponentManager":
         cm = SdpSLNComponentManager(
