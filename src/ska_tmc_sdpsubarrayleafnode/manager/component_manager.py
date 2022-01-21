@@ -106,6 +106,12 @@ class SdpSLNComponentManager(TmcComponentManager):
             if dev.unresponsive:
                 result.append(dev)
                 continue
+            if dev.ping > 0:
+                result.append(dev)
+                continue
+            if dev.last_event_arrived is not None:
+                result.append(dev)
+                continue
         return result
 
     def update_input_parameter(self):
