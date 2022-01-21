@@ -58,6 +58,16 @@ class SdpMLNComponent(TmcComponent):
 
         self._invoke_device_callback(devInfo)
 
+    def set_op_callbacks(
+        self,
+        _update_device_callback=None,
+    ):
+        self._update_device_callback = _update_device_callback
+
+    def _invoke_device_callback(self, devInfo):
+        if self._update_device_callback is not None:
+            self._update_device_callback(devInfo)
+
     def update_device_exception(self, device_info, exception):
         """
         Update (or add if missing) Device Information into the list of the component.

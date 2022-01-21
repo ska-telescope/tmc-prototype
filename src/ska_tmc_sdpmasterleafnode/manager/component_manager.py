@@ -24,6 +24,7 @@ class SdpMLNComponentManager(TmcComponentManager):
     def __init__(
         self,
         op_state_model,
+        _input_parameter,
         _component=None,
         logger=None,
         _update_device_callback=None,
@@ -72,7 +73,7 @@ class SdpMLNComponentManager(TmcComponentManager):
             self._event_receiver.start()
 
         self.component.set_op_callbacks(_update_device_callback)
-        # self._input_parameter = _input_parameter
+        self._input_parameter = _input_parameter
         self._command_executor = CommandExecutor(
             logger,
             _update_command_in_progress_callback=_update_command_in_progress_callback,
