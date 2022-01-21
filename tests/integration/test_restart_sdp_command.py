@@ -45,7 +45,7 @@ def restart(
     assert sdp_subarray.obsState == ObsState.READY
 
     (result, unique_id) = sdpsal_node.Abort()
-    #sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
+    # sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
     sdp_subarray.SetDirectObsState(ObsState.ABORTED)
     assert sdp_subarray.obsState == ObsState.ABORTED
 
