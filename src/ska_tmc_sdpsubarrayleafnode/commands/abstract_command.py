@@ -174,13 +174,11 @@ class AbstractReleaseResources(SdpSLNCommand):
             )
 
         self.check_unresponsive()
+        for dev in component_manager.checked_devices:
+            if isinstance(dev, SubArrayDeviceInfo):
+                sdp_subarray_obs_state = dev.obsState
 
-        if (
-            component_manager.get_device(
-                component_manager.input_parameter.sdp_subarray_dev_name
-            ).obsState
-            is not ObsState.IDLE
-        ):
+        if sdp_subarray_obs_state not in (ObsState.IDLE):
             raise InvalidObsStateError(
                 "ReleaseResources command is permitted only in IDLE observation states"
             )
@@ -237,10 +235,6 @@ class AbstractConfigure(SdpSLNCommand):
             raise InvalidObsStateError(
                 "Configure command is permitted only in READY and IDLE observation states."
             )
-        # obs_state_val_val = component_manager.get_device(
-        #     component_manager.input_parameter.sdp_subarray_dev_name
-        # ).obsState.value
-        # print("obs_state_val_val is", obs_state_val_val)
 
         return True
 
@@ -283,11 +277,11 @@ class AbstractScanEnd(SdpSLNCommand):
 
         self.check_unresponsive()
 
-        obs_state_val = component_manager.get_device(
-            component_manager.input_parameter.sdp_subarray_dev_name
-        ).obsState
+        for dev in component_manager.checked_devices:
+            if isinstance(dev, SubArrayDeviceInfo):
+                sdp_subarray_obs_state = dev.obsState
 
-        if obs_state_val is not ObsState.READY:
+        if sdp_subarray_obs_state is not ObsState.READY:
             raise InvalidObsStateError(
                 "Scan and End commands are permitted only in READY observation state."
             )
@@ -333,11 +327,11 @@ class AbstractEndScan(SdpSLNCommand):
 
         self.check_unresponsive()
 
-        obs_state_val = component_manager.get_device(
-            component_manager.input_parameter.sdp_subarray_dev_name
-        ).obsState
+        for dev in component_manager.checked_devices:
+            if isinstance(dev, SubArrayDeviceInfo):
+                sdp_subarray_obs_state = dev.obsState
 
-        if obs_state_val is not ObsState.SCANNING:
+        if sdp_subarray_obs_state is not ObsState.SCANNING:
             raise InvalidObsStateError(
                 "EndScan command is permitted only in SCANNING observation state"
             )
