@@ -122,9 +122,10 @@ class HelperSubArrayDevice(SKASubarray):
         Trigger a ObsState change
         """
         # import debugpy; debugpy.debug_this_thread()
-        if self._obs_state != argin:
-            self._obs_state = argin
-            self.push_change_event("obsState", argin)
+        value = ObsState(argin)
+        if self._obs_state != value:
+            self._obs_state = value
+            self.push_change_event("obsState", self._obs_state)
 
     @command(
         dtype_in="DevState",
