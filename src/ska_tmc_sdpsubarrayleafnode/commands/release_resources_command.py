@@ -9,9 +9,9 @@ from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import (
 )
 
 
-class ReleaseAllResources(AbstractReleaseResources):
+class ReleaseResources(AbstractReleaseResources):
     """
-    A class for SdpSubarayLeafNode's ReleaseAllResources() command.
+    A class for SdpSubarayLeafNode's ReleaseResources() command.
 
     Releases all the resources of given SDP Subarray Leaf Node.
     It accepts the subarray id, releaseALL flag and receptorIDList in JSON string format.
