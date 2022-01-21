@@ -43,6 +43,7 @@ def devices_to_load():
             "class": SKABaseDevice,
             "devices": [
                 {"name": "mid_sdp/elt/subarray_01"},
+                {"name": "mid_sdp/elt/master"},
             ],
         },
     )
