@@ -178,7 +178,7 @@ class AbstractReleaseResources(SdpSLNCommand):
             if isinstance(dev, SubArrayDeviceInfo):
                 sdp_subarray_obs_state = dev.obsState
 
-        if sdp_subarray_obs_state not in (ObsState.IDLE):
+        if sdp_subarray_obs_state is not ObsState.IDLE:
             raise InvalidObsStateError(
                 "ReleaseResources command is permitted only in IDLE observation states"
             )
