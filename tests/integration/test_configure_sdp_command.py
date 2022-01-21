@@ -50,7 +50,14 @@ def configure(
     (result, unique_id) = sdpsal_node.TelescopeOn()
     (result, unique_id) = sdpsal_node.AssignResources(assign_input_str)
     sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
+
     sdp_subarray.SetDirectObsState(ObsState.IDLE)
+
+    print(
+        ":::::::::::::::sdp_subarray ObsState is:::::::::::: ",
+        sdp_subarray.obsState,
+    )
+
     (result, unique_id) = sdpsal_node.Configure(configure_input_str)
     assert result[0] == ResultCode.QUEUED
     start_time = time.time()
