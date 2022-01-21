@@ -440,10 +440,11 @@ class AbstractAbort(SdpSLNCommand):
             ObsState.CONFIGURING,
             ObsState.SCANNING,
             ObsState.IDLE,
+            ObsState.READY,
             ObsState.RESETTING,
         ):
             raise InvalidObsStateError(
-                "Abort command is permitted only in CONFIGURING, SCANNING, IDLE and RESETTING observation states"
+                "Abort command is permitted only in CONFIGURING, SCANNING, IDLE, READY and RESETTING observation states"
             )
 
         return True

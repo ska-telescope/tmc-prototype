@@ -21,7 +21,7 @@ def get_configure_input_str(path):
     return configure_input_str
 
 
-def configure(
+def abort(
     tango_context,
     sdpsaln_name,
     assign_input_str,
@@ -40,15 +40,17 @@ def configure(
     sdp_subarray.SetDirectObsState(ObsState.IDLE)
     assert sdp_subarray.obsState == ObsState.IDLE
 
-    print(
-        ":::::::::::::::sdp_subarray ObsState is:::::::::::: ",
-        sdp_subarray.obsState,
-    )
-
     (result, unique_id) = sdpsal_node.Configure(configure_input_str)
+
+    sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
+    sdp_subarray.SetDirectObsState(ObsState.READY)
+    assert sdp_subarray.obsState == ObsState.READY
+
+    (result, unique_id) = sdpsal_node.Abort()
+
     assert result[0] == ResultCode.QUEUED
     start_time = time.time()
-    while len(sdpsal_node.commandExecuted) != initial_len + 3:
+    while len(sdpsal_node.commandExecuted) != initial_len + 4:
         time.sleep(SLEEP_TIME)
         elapsed_time = time.time() - start_time
         if elapsed_time > TIMEOUT:
@@ -59,9 +61,6 @@ def configure(
             logger.info("command result: %s", command)
             assert command[2] == "ResultCode.OK"
 
-    # assert_event_arrived()
-    # sdpsal_node.unsubscribe_event(event_id)
-
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
@@ -69,11 +68,11 @@ def configure(
     "sdpsaln_name",
     [("ska_mid/tm_leaf_node/sdp_subarray01")],
 )
-def test_configure_command_mid(
+def test_abort_command_mid(
     tango_context,
     sdpsaln_name,
 ):
-    return configure(
+    return abort(
         tango_context,
         sdpsaln_name,
         get_assign_input_str(
