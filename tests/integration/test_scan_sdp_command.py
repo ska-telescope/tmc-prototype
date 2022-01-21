@@ -82,10 +82,14 @@ def test_scan_command_mid(
         tango_context,
         sdpsaln_name,
         get_assign_input_str(
-            join(dirname(__file__), "..", "data", "command_AssignResources.json")
+            join(
+                dirname(__file__), "..", "data", "command_AssignResources.json"
+            )
         ),
         get_configure_input_str(
             join(dirname(__file__), "..", "data", "command_Configure.json")
         ),
-        get_scan_input_str(join(dirname(__file__), "..", "data", "command_Scan.json")),
+        get_scan_input_str(
+            join(dirname(__file__), "..", "data", "command_Scan.json")
+        ),
     )
