@@ -194,6 +194,9 @@ class HelperSubArrayDevice(SKASubarray):
     def AssignResources(self, argin):
         if self._obs_state != ObsState.IDLE:
             self._obs_state = ObsState.IDLE
+            print("AssignResource completed....")
+            print("ObsState value is....", self._obs_state)
+            self.push_change_event("obsState", self._obs_state)
         return [[ResultCode.OK], [""]]
 
     def is_ReleaseAllResources_allowed(self):
@@ -214,7 +217,7 @@ class HelperSubArrayDevice(SKASubarray):
         """
         return True
 
-    def is_configure_allowed(self):
+    def is_Configure_allowed(self):
         """
         Check if command `Configure` is allowed in the current device state.
 
@@ -232,4 +235,5 @@ class HelperSubArrayDevice(SKASubarray):
     def Configure(self, argin):
         if self._obs_state != ObsState.READY:
             self._obs_state = ObsState.READY
+            self.push_change_event("obsState", self._obs_state)
         return [[ResultCode.OK], [""]]

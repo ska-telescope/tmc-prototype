@@ -52,6 +52,7 @@ def configure(
     sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
 
     sdp_subarray.SetDirectObsState(ObsState.IDLE)
+    assert sdp_subarray.obsState == ObsState.IDLE
 
     print(
         ":::::::::::::::sdp_subarray ObsState is:::::::::::: ",
@@ -75,7 +76,7 @@ def configure(
     # assert_event_arrived()
     # sdpsal_node.unsubscribe_event(event_id)
 
-
+@pytest.mark.shraddha
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(

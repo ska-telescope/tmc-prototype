@@ -65,6 +65,7 @@ class SdpSLNComponentManager(TmcComponentManager):
         self.component = _component or SdpSLNComponent(logger)
         self.devices = self.component.devices
 
+        self._event_receiver = None
         if _event_receiver:
             self._event_receiver = SdpSLNEventReceiver(
                 self,
