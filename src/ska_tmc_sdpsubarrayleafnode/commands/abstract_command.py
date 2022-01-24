@@ -178,7 +178,7 @@ class AbstractReleaseResources(SdpSLNCommand):
         ).obsState
         self.logger.info("sdp_subarray_obs_state value is: %s", obs_state_val)
 
-        if obs_state_val.value not in (ObsState.IDLE):
+        if obs_state_val not in (ObsState.IDLE):
             self.logger.info(
                 "sdp_subarray_obs_state value is: %s", obs_state_val
             )
