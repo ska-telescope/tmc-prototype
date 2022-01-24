@@ -233,7 +233,7 @@ class AbstractConfigure(SdpSLNCommand):
             component_manager.input_parameter.sdp_subarray_dev_name
         ).obsState
         # print("obs_state_val is", obs_state_val)
-
+        # Remove check of ObsState.READY - Temp fix
         if obs_state_val not in (ObsState.READY, ObsState.IDLE):
             raise InvalidObsStateError(
                 "Configure command is permitted only in READY and IDLE observation states."
@@ -283,10 +283,10 @@ class AbstractScanEnd(SdpSLNCommand):
         obs_state_val = component_manager.get_device(
             component_manager.input_parameter.sdp_subarray_dev_name
         ).obsState
-
-        if obs_state_val is not ObsState.READY:
+        # Remove check of ObsState.IDLE - Temp fix
+        if obs_state_val not in (ObsState.READY, ObsState.IDLE):
             raise InvalidObsStateError(
-                "Scan and End commands are permitted only in READY observation state."
+                f"Scan and End commands are permitted only when in READY observation state.:{obs_state_val}"
             )
 
         return True
@@ -384,7 +384,7 @@ class AbstractRestartObsReset(SdpSLNCommand):
 
         if obs_state_val not in (ObsState.ABORTED, ObsState.FAULT):
             raise InvalidObsStateError(
-                "ObsReset and Restart commands are permitted only in ABORTED and FAULT observation states."
+                f"ObsReset and Restart commands are permitted only when in ABORTED and FAULT observation states.:{obs_state_val}"
             )
 
         return True
