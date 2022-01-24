@@ -282,7 +282,7 @@ class AbstractScanEnd(SdpSLNCommand):
         obs_state_val = component_manager.get_device(
             component_manager.input_parameter.sdp_subarray_dev_name
         ).obsState
-        
+
         if obs_state_val != ObsState.READY:
             raise InvalidObsStateError(
                 f"Scan and End commands are permitted only when in READY observation state.:{obs_state_val}"
