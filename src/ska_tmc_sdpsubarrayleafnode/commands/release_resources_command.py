@@ -36,7 +36,7 @@ class ReleaseResources(AbstractReleaseResources):
             None
         """
 
-        res_code, message = self.init_adapters_mid()
+        res_code, message = self.init_adapters()
         if res_code == ResultCode.FAILED:
             return res_code, message
 

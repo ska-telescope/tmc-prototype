@@ -46,7 +46,7 @@ class Scan(AbstractScanEnd):
 
         """
 
-        res_code, message = self.init_adapters_mid()
+        res_code, message = self.init_adapters()
         if res_code == ResultCode.FAILED:
             return res_code, message
 
@@ -55,7 +55,10 @@ class Scan(AbstractScanEnd):
         except Exception as e:
             return self.generate_command_result(
                 ResultCode.FAILED,
-                ("Problem in loading the JSON string: %s", e),
+                (
+                    "Problem in loading JSON string in Scan command on SDP Subarray Leaf Node: %s",
+                    e,
+                ),
             )
 
         log_msg = (

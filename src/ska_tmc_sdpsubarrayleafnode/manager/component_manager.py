@@ -80,7 +80,7 @@ class SdpSLNComponentManager(TmcComponentManager):
         self.component.set_op_callbacks(_update_device_callback)
         self._input_parameter = _input_parameter
 
-        self._command_executor = CommandExecutor(
+        self.command_executor = CommandExecutor(
             logger,
             _update_command_in_progress_callback=_update_command_in_progress_callback,
         )
@@ -149,7 +149,6 @@ class SdpSLNComponentManager(TmcComponentManager):
         :param obs_state: obs state of the device
         :type obs_state: ObsState
         """
-        print("update_device_obs_state")
         with self.lock:
             devInfo = self.component.get_device(dev_name)
             devInfo.obsState = obs_state
