@@ -40,9 +40,9 @@ def obsreset(
     sdp_subarray.SetDirectObsState(ObsState.IDLE)
     assert sdp_subarray.obsState == ObsState.IDLE
 
-    (result, unique_id) = sdpsal_node.Configure(configure_input_str)
-    sdp_subarray.SetDirectObsState(ObsState.READY)
-    assert sdp_subarray.obsState == ObsState.READY
+    # (result, unique_id) = sdpsal_node.Configure(configure_input_str)
+    # sdp_subarray.SetDirectObsState(ObsState.READY)
+    # assert sdp_subarray.obsState == ObsState.READY
 
     (result, unique_id) = sdpsal_node.Abort()
     sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
@@ -53,7 +53,7 @@ def obsreset(
 
     assert result[0] == ResultCode.QUEUED
     start_time = time.time()
-    while len(sdpsal_node.commandExecuted) != initial_len + 5:
+    while len(sdpsal_node.commandExecuted) != initial_len + 4:
         time.sleep(SLEEP_TIME)
         elapsed_time = time.time() - start_time
         if elapsed_time > TIMEOUT:
@@ -64,7 +64,6 @@ def obsreset(
             logger.info("command result: %s", command)
             assert command[2] == "ResultCode.OK"
 
-@pytest.mark.shraddha
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(
