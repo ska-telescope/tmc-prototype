@@ -51,7 +51,7 @@ class SdpSLNComponentManager(TmcComponentManager):
         :param _component: allows setting of the component to be
             managed; for testing purposes only
         """
-        super(SdpSLNComponentManager, self).__init__(
+        super().__init__(
             op_state_model,
             _component,
             logger,

@@ -50,7 +50,7 @@ def test_command_executor(tango_context):
     executor.stop()
 
 
-def test_command_with_argin_executor(tango_context):
+def test_command_executor_with_argin(tango_context):
     logger.info("%s", tango_context)
     # import debugpy; debugpy.debug_this_thread()
     cm, start_time = create_cm()

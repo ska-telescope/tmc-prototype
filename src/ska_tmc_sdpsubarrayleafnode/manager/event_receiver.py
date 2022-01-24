@@ -21,7 +21,7 @@ class SdpSLNEventReceiver(EventReceiver):
         proxy_timeout=500,
         sleep_time=1,
     ):
-        super(SdpSLNEventReceiver, self).__init__(
+        super().__init__(
             component_manager, logger, max_workers, proxy_timeout, sleep_time
         )
         self._component_manager = component_manager
