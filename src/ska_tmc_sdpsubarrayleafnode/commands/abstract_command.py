@@ -1,7 +1,6 @@
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.adapters import AdapterFactory, AdapterType
-from ska_tmc_common.device_info import SubArrayDeviceInfo
 from ska_tmc_common.tmc_command import TMCCommand
 from tango import DevState
 
@@ -43,10 +42,8 @@ class SdpSLNCommand(TMCCommand):
         devInfo = component_manager.get_device(dev_name)
         try:
             if not devInfo.unresponsive:
-                self.sdp_subarray_adapter = (
-                    self._adapter_factory.get_or_create_adapter(
-                        dev_name, AdapterType.SDPSUBARRAY
-                    )
+                self.sdp_subarray_adapter = self._adapter_factory.get_or_create_adapter(
+                    dev_name, AdapterType.SDPSUBARRAY
                 )
         except Exception as e:
             return self.adapter_error_message_result(
