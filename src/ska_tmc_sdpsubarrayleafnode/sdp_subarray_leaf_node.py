@@ -271,7 +271,7 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in=("str"),
+        dtype_in="str",
         doc_in="The JSON input string consists of SB ID.",
         dtype_out="DevVarLongStringArray",
         doc_out="information-only string",
