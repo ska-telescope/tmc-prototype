@@ -130,7 +130,7 @@ class HelperSubArrayDevice(SKASubarray):
         value = ObsState(argin)
         if self._obs_state != value:
             self._obs_state = value
-            self.push_change_event("obsState", self._obs_state)
+        self.push_change_event("obsState", value)
 
     @command(
         dtype_in="DevState",
@@ -199,9 +199,9 @@ class HelperSubArrayDevice(SKASubarray):
     def AssignResources(self, argin):
         if self._obs_state != ObsState.IDLE:
             self._obs_state = ObsState.IDLE
-            print("AssignResource completed....")
-            print("ObsState value is....", self._obs_state)
-            self.push_change_event("obsState", self._obs_state)
+        print("AssignResource completed....")
+        print("ObsState value is....", self._obs_state)
+        self.push_change_event("obsState", self._obs_state)
         return [[ResultCode.OK], [""]]
 
     def is_ReleaseResources_allowed(self):
@@ -220,7 +220,7 @@ class HelperSubArrayDevice(SKASubarray):
     def ReleaseResources(self):
         if self._obs_state != ObsState.EMPTY:
             self._obs_state = ObsState.EMPTY
-            self.push_change_event("obsState", self._obs_state)
+        self.push_change_event("obsState", self._obs_state)
         return [[ResultCode.OK], [""]]
 
     def is_Configure_allowed(self):
@@ -241,7 +241,7 @@ class HelperSubArrayDevice(SKASubarray):
     def Configure(self, argin):
         if self._obs_state != ObsState.READY:
             self._obs_state = ObsState.READY
-            self.push_change_event("obsState", self._obs_state)
+        self.push_change_event("obsState", self._obs_state)
         return [[ResultCode.OK], [""]]
 
     def is_Scan_allowed(self):
@@ -262,7 +262,7 @@ class HelperSubArrayDevice(SKASubarray):
     def Scan(self, argin):
         if self._obs_state != ObsState.SCANNING:
             self._obs_state = ObsState.SCANNING
-            self.push_change_event("obsState", self._obs_state)
+        self.push_change_event("obsState", self._obs_state)
         return [[ResultCode.OK], [""]]
 
     def is_EndScan_allowed(self):
@@ -281,7 +281,7 @@ class HelperSubArrayDevice(SKASubarray):
     def EndScan(self):
         if self._obs_state != ObsState.READY:
             self._obs_state = ObsState.READY
-            self.push_change_event("obsState", self._obs_state)
+        self.push_change_event("obsState", self._obs_state)
         return [[ResultCode.OK], [""]]
 
     def is_End_allowed(self):
@@ -300,7 +300,7 @@ class HelperSubArrayDevice(SKASubarray):
     def End(self):
         if self._obs_state != ObsState.IDLE:
             self._obs_state = ObsState.IDLE
-            self.push_change_event("obsState", self._obs_state)
+        self.push_change_event("obsState", self._obs_state)
         return [[ResultCode.OK], [""]]
 
     def is_ObsReset_allowed(self):
@@ -319,7 +319,7 @@ class HelperSubArrayDevice(SKASubarray):
     def ObsReset(self):
         if self._obs_state != ObsState.IDLE:
             self._obs_state = ObsState.IDLE
-            self.push_change_event("obsState", self._obs_state)
+        self.push_change_event("obsState", self._obs_state)
         return [[ResultCode.OK], [""]]
 
     def is_Abort_allowed(self):
@@ -338,7 +338,7 @@ class HelperSubArrayDevice(SKASubarray):
     def Abort(self):
         if self._obs_state != ObsState.ABORTED:
             self._obs_state = ObsState.ABORTED
-            self.push_change_event("obsState", self._obs_state)
+        self.push_change_event("obsState", self._obs_state)
         return [[ResultCode.OK], [""]]
 
     def is_Restart_allowed(self):
@@ -357,5 +357,5 @@ class HelperSubArrayDevice(SKASubarray):
     def Restart(self):
         if self._obs_state != ObsState.EMPTY:
             self._obs_state = ObsState.EMPTY
-            self.push_change_event("obsState", self._obs_state)
+        self.push_change_event("obsState", self._obs_state)
         return [[ResultCode.OK], [""]]

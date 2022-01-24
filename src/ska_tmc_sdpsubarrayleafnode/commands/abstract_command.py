@@ -177,6 +177,7 @@ class AbstractReleaseResources(SdpSLNCommand):
         for dev in component_manager.checked_devices:
             if isinstance(dev, SubArrayDeviceInfo):
                 sdp_subarray_obs_state = dev.obsState
+        print("::::sdp_subarray_obs_state is:::::",sdp_subarray_obs_state)
 
         if sdp_subarray_obs_state is not ObsState.IDLE:
             raise InvalidObsStateError(
