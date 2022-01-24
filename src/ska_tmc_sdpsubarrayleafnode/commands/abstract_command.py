@@ -43,8 +43,10 @@ class SdpSLNCommand(TMCCommand):
         devInfo = component_manager.get_device(dev_name)
         try:
             if not devInfo.unresponsive:
-                self.sdp_subarray_adapter = self._adapter_factory.get_or_create_adapter(
-                    dev_name, AdapterType.SDPSUBARRAY
+                self.sdp_subarray_adapter = (
+                    self._adapter_factory.get_or_create_adapter(
+                        dev_name, AdapterType.SDPSUBARRAY
+                    )
                 )
         except Exception as e:
             return self.adapter_error_message_result(
