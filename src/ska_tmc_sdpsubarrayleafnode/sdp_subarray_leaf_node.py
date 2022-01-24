@@ -137,7 +137,9 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("TelescopeOff")
         if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
-        unique_id = self.component_manager._command_executor.enqueue_command(handler)
+        unique_id = self.component_manager._command_executor.enqueue_command(
+            handler
+        )
         return [[ResultCode.QUEUED], [str(unique_id)]]
 
     def is_TelescopeOn_allowed(self):
@@ -160,7 +162,9 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("TelescopeOn")
         if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
-        unique_id = self.component_manager._command_executor.enqueue_command(handler)
+        unique_id = self.component_manager._command_executor.enqueue_command(
+            handler
+        )
         return [[ResultCode.QUEUED], [str(unique_id)]]
 
     def is_AssignResources_allowed(self):
@@ -220,7 +224,9 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("ReleaseResources")
         if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
-        unique_id = self.component_manager._command_executor.enqueue_command(handler)
+        unique_id = self.component_manager._command_executor.enqueue_command(
+            handler
+        )
         return [[ResultCode.QUEUED], [str(unique_id)]]
 
     def is_Configure_allowed(self):
@@ -313,7 +319,9 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("EndScan")
         if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
-        unique_id = self.component_manager._command_executor.enqueue_command(handler)
+        unique_id = self.component_manager._command_executor.enqueue_command(
+            handler
+        )
         return [[ResultCode.QUEUED], [str(unique_id)]]
 
     def is_End_allowed(self):
@@ -340,7 +348,9 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("End")
         if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
-        unique_id = self.component_manager._command_executor.enqueue_command(handler)
+        unique_id = self.component_manager._command_executor.enqueue_command(
+            handler
+        )
         return [[ResultCode.QUEUED], [str(unique_id)]]
 
     def is_ObsReset_allowed(self):
@@ -369,7 +379,9 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("ObsReset")
         if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
-        unique_id = self.component_manager._command_executor.enqueue_command(handler)
+        unique_id = self.component_manager._command_executor.enqueue_command(
+            handler
+        )
         return [[ResultCode.QUEUED], [str(unique_id)]]
 
     def is_Abort_allowed(self):
@@ -401,7 +413,9 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Abort")
         if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
-        unique_id = self.component_manager._command_executor.enqueue_command(handler)
+        unique_id = self.component_manager._command_executor.enqueue_command(
+            handler
+        )
         return [[ResultCode.QUEUED], [str(unique_id)]]
 
     def is_Restart_allowed(self):
@@ -433,7 +447,9 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Restart")
         if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
-        unique_id = self.component_manager._command_executor.enqueue_command(handler)
+        unique_id = self.component_manager._command_executor.enqueue_command(
+            handler
+        )
         return [[ResultCode.QUEUED], [str(unique_id)]]
 
     # default ska mid
