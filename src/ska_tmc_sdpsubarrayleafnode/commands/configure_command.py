@@ -81,9 +81,7 @@ class Configure(AbstractConfigure):
             self.logger.info(
                 f"Invoking Configure command on:{self.sdp_subarray_adapter.dev_name}"
             )
-            self.sdp_subarray_adapter.Configure(
-                json.dumps(json_argument)
-            )
+            self.sdp_subarray_adapter.Configure(json.dumps(json_argument))
 
         except Exception as e:
             return self.generate_command_result(
