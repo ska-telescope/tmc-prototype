@@ -235,7 +235,7 @@ class AbstractConfigure(SdpSLNCommand):
         # print("obs_state_val is", obs_state_val)
         if obs_state_val not in (ObsState.READY, ObsState.IDLE):
             raise InvalidObsStateError(
-                "Configure command is permitted only in READY and IDLE observation states."
+                "Configure command is permitted only in READY and IDLE observation states.:{obs_state_val}"
             )
 
         return True
