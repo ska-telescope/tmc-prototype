@@ -178,12 +178,12 @@ class AbstractReleaseResources(SdpSLNCommand):
         ).obsState
         self.logger.info("sdp_subarray_obs_state value is: %s", obs_state_val)
 
-        if obs_state_val is not ObsState.IDLE:
+        if obs_state_val.value not in (ObsState.IDLE):
             self.logger.info(
                 "sdp_subarray_obs_state value is: %s", obs_state_val
             )
             raise InvalidObsStateError(
-                f"ReleaseResources command is permitted only in IDLE observation states:{obs_state_val}"
+                f"ReleaseResources command is permitted only when in IDLE observation states:{obs_state_val}"
             )
 
         return True
