@@ -29,9 +29,7 @@ class SdpSLNEventReceiver(EventReceiver):
 
     def subscribe_events(self, devInfo):
         try:
-            # import debugpy; debugpy.debug_this_thread()
             proxy = self._dev_factory.get_device(devInfo.dev_name)
-            print("Calling subscribe_events method")
             proxy.subscribe_event(
                 "ObsState",
                 tango.EventType.CHANGE_EVENT,
@@ -45,9 +43,6 @@ class SdpSLNEventReceiver(EventReceiver):
             )
 
     def handle_obs_state_event(self, evt):
-        # import debugpy; debugpy.debug_this_thread()
-        print("handle_obs_state_event")
-        print("Event received:", evt)
         if evt.err:
             error = evt.errors[0]
             self._logger.error("%s %s", error.reason, error.desc)

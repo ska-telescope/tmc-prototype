@@ -15,17 +15,10 @@ def get_assign_input_str(path):
     return assign_input_str
 
 
-def get_configure_input_str(path):
-    with open(path, "r") as f:
-        configure_input_str = f.read()
-    return configure_input_str
-
-
 def obsreset(
     tango_context,
     sdpsaln_name,
     assign_input_str,
-    configure_input_str,
 ):
 
     logger.info("%s", tango_context)
@@ -39,10 +32,6 @@ def obsreset(
 
     sdp_subarray.SetDirectObsState(ObsState.IDLE)
     assert sdp_subarray.obsState == ObsState.IDLE
-
-    # (result, unique_id) = sdpsal_node.Configure(configure_input_str)
-    # sdp_subarray.SetDirectObsState(ObsState.READY)
-    # assert sdp_subarray.obsState == ObsState.READY
 
     (result, unique_id) = sdpsal_node.Abort()
     sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
@@ -83,8 +72,5 @@ def test_obsreset_command_mid(
             join(
                 dirname(__file__), "..", "data", "command_AssignResources.json"
             )
-        ),
-        get_configure_input_str(
-            join(dirname(__file__), "..", "data", "command_Configure.json")
         ),
     )

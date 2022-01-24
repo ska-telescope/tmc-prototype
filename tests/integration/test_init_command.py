@@ -14,10 +14,6 @@ def init_command(tango_context, sdpsaln_name):
     initial_len = len(sdpsal_node.commandExecuted)
     (result, unique_id) = sdpsal_node.TelescopeOn()
     assert result[0] == ResultCode.QUEUED
-
-    # sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_01")
-    # sdp_subarray.SetDirectState(DevState.OFF)
-
     start_time = time.time()
     while len(sdpsal_node.commandExecuted) != initial_len + 1:
         time.sleep(SLEEP_TIME)
@@ -32,7 +28,6 @@ def init_command(tango_context, sdpsaln_name):
 
     sdpsal_node.Init()
     assert len(sdpsal_node.commandExecuted) == 1
-    # ensure_checked_devices(sdpsal_node)
 
 
 @pytest.mark.post_deployment
