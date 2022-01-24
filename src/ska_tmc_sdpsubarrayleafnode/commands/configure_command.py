@@ -82,7 +82,7 @@ class Configure(AbstractConfigure):
                 f"Invoking Configure command on:{self.sdp_subarray_adapter.dev_name}"
             )
             self.sdp_subarray_adapter.Configure(
-                json.dumps(json_argument.copy())
+                json.dumps(json_argument)
             )
 
         except Exception as e:

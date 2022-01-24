@@ -1,13 +1,9 @@
-import time
-
 import pytest
 
 from ska_tmc_sdpsubarrayleafnode.sdp_subarray_leaf_node_mid import (
     SdpSubarrayLeafNodeMid,
 )
-from tests.helpers.helper_state_device import HelperStateDevice
 from tests.helpers.helper_subarray_device import HelperSubArrayDevice
-from tests.settings import SLEEP_TIME, TIMEOUT
 
 pytest.event_arrived = False
 
