@@ -40,9 +40,9 @@ def obsreset(
     sdp_subarray.SetDirectObsState(ObsState.IDLE)
     assert sdp_subarray.obsState == ObsState.IDLE
 
-    # (result, unique_id) = sdpsal_node.Configure(configure_input_str)
-    # sdp_subarray.SetDirectObsState(ObsState.READY)
-    # assert sdp_subarray.obsState == ObsState.READY
+    (result, unique_id) = sdpsal_node.Configure(configure_input_str)
+    sdp_subarray.SetDirectObsState(ObsState.READY)
+    assert sdp_subarray.obsState == ObsState.READY
 
     (result, unique_id) = sdpsal_node.Abort()
     sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")

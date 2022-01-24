@@ -178,7 +178,7 @@ class AbstractReleaseResources(SdpSLNCommand):
         ).obsState
         self.logger.info("sdp_subarray_obs_state value is: %s", obs_state_val)
 
-        if obs_state_val not in (ObsState.READY, ObsState.IDLE):
+        if obs_state_val != ObsState.IDLE:
             self.logger.info(
                 "sdp_subarray_obs_state value is: %s", obs_state_val
             )
@@ -233,7 +233,6 @@ class AbstractConfigure(SdpSLNCommand):
             component_manager.input_parameter.sdp_subarray_dev_name
         ).obsState
         # print("obs_state_val is", obs_state_val)
-        # Remove check of ObsState.READY - Temp fix
         if obs_state_val not in (ObsState.READY, ObsState.IDLE):
             raise InvalidObsStateError(
                 "Configure command is permitted only in READY and IDLE observation states."
@@ -283,8 +282,8 @@ class AbstractScanEnd(SdpSLNCommand):
         obs_state_val = component_manager.get_device(
             component_manager.input_parameter.sdp_subarray_dev_name
         ).obsState
-        # Remove check of ObsState.IDLE - Temp fix
-        if obs_state_val not in (ObsState.READY, ObsState.IDLE):
+        
+        if obs_state_val != ObsState.READY:
             raise InvalidObsStateError(
                 f"Scan and End commands are permitted only when in READY observation state.:{obs_state_val}"
             )
@@ -334,7 +333,7 @@ class AbstractEndScan(SdpSLNCommand):
             component_manager.input_parameter.sdp_subarray_dev_name
         ).obsState
 
-        if obs_state_val is not ObsState.SCANNING:
+        if obs_state_val != ObsState.SCANNING:
             raise InvalidObsStateError(
                 "EndScan command is permitted only in SCANNING observation state"
             )
@@ -440,7 +439,7 @@ class AbstractAbort(SdpSLNCommand):
             ObsState.RESETTING,
         ):
             raise InvalidObsStateError(
-                "Abort command is permitted only in CONFIGURING, SCANNING, IDLE, READY and RESETTING observation states"
+                f"Abort command is permitted only in CONFIGURING, SCANNING, IDLE, READY and RESETTING observation states:{obs_state_val}"
             )
 
         return True
