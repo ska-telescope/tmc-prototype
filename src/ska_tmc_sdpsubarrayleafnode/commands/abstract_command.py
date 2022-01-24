@@ -176,10 +176,12 @@ class AbstractReleaseResources(SdpSLNCommand):
         obs_state_val = component_manager.get_device(
             component_manager.input_parameter.sdp_subarray_dev_name
         ).obsState
-        self.logger.info(f"sdp_subarray_obs_state is:{obs_state_val}")
+        self.logger.info("sdp_subarray_obs_state value is: %s", obs_state_val)
 
         if obs_state_val is not ObsState.IDLE:
-            self.logger.info(f"sdp_subarray_obs_state is:{obs_state_val}")
+            self.logger.info(
+                "sdp_subarray_obs_state value is: %s", obs_state_val
+            )
             raise InvalidObsStateError(
                 f"ReleaseResources command is permitted only in IDLE observation states:{obs_state_val}"
             )
