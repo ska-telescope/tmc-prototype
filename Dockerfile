@@ -18,6 +18,7 @@ COPY pyproject.toml poetry.lock* ./
 # Install runtime dependencies and the app
 RUN poetry install --no-dev
 
+
 USER tango
 
 RUN poetry config virtualenvs.create false

@@ -79,7 +79,7 @@ class AssignResources(AbstractAssignResources):
         return:
             None
         """
-        ret_code, message = self.init_adapters_mid()
+        ret_code, message = self.init_adapters()
         if ret_code == ResultCode.FAILED:
             return ret_code, message
 
@@ -88,7 +88,10 @@ class AssignResources(AbstractAssignResources):
         except Exception as e:
             return self.generate_command_result(
                 ResultCode.FAILED,
-                ("Problem in loading the JSON string: %s", e),
+                (
+                    "Problem in loading JSON string in AssignResources command on SDP Subarray Leaf Node: %s",
+                    e,
+                ),
             )
 
         if "eb_id" not in json_argument:
@@ -107,7 +110,9 @@ class AssignResources(AbstractAssignResources):
             self.logger.info(
                 f"Invoking AssignResources command on:{self.sdp_subarray_adapter.dev_name}"
             )
-            self.sdp_subarray_adapter.AssignResources(json_argument)
+            self.sdp_subarray_adapter.AssignResources(
+                json.dumps(json_argument)
+            )
 
         except Exception as e:
             return self.generate_command_result(

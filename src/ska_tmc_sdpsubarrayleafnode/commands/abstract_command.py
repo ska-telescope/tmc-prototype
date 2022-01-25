@@ -173,15 +173,17 @@ class AbstractReleaseResources(SdpSLNCommand):
             )
 
         self.check_unresponsive()
+        obs_state_val = component_manager.get_device(
+            component_manager.input_parameter.sdp_subarray_dev_name
+        ).obsState
+        self.logger.info("sdp_subarray_obs_state value is: %s", obs_state_val)
 
-        if (
-            component_manager.get_device(
-                component_manager.input_parameter.sdp_subarray_dev_name
-            ).obsState
-            is not ObsState.IDLE
-        ):
+        if obs_state_val != ObsState.IDLE:
+            self.logger.info(
+                "sdp_subarray_obs_state value is: %s", obs_state_val
+            )
             raise InvalidObsStateError(
-                "ReleaseResources command is permitted only in IDLE observation states"
+                f"ReleaseResources command is permitted only when in IDLE observation states:{obs_state_val}"
             )
 
         return True
@@ -224,14 +226,12 @@ class AbstractConfigure(SdpSLNCommand):
             )
 
         self.check_unresponsive()
-
         obs_state_val = component_manager.get_device(
             component_manager.input_parameter.sdp_subarray_dev_name
         ).obsState
-
         if obs_state_val not in (ObsState.READY, ObsState.IDLE):
             raise InvalidObsStateError(
-                "Configure command is permitted only in READY and IDLE observation states."
+                "Configure command is permitted only in READY and IDLE observation states.:{obs_state_val}"
             )
 
         return True
@@ -279,9 +279,9 @@ class AbstractScanEnd(SdpSLNCommand):
             component_manager.input_parameter.sdp_subarray_dev_name
         ).obsState
 
-        if obs_state_val is not ObsState.READY:
+        if obs_state_val != ObsState.READY:
             raise InvalidObsStateError(
-                "Scan and End commands are permitted only in READY observation state."
+                f"Scan and End commands are permitted only when in READY observation state.:{obs_state_val}"
             )
 
         return True
@@ -329,7 +329,7 @@ class AbstractEndScan(SdpSLNCommand):
             component_manager.input_parameter.sdp_subarray_dev_name
         ).obsState
 
-        if obs_state_val is not ObsState.SCANNING:
+        if obs_state_val != ObsState.SCANNING:
             raise InvalidObsStateError(
                 "EndScan command is permitted only in SCANNING observation state"
             )
@@ -379,7 +379,7 @@ class AbstractRestartObsReset(SdpSLNCommand):
 
         if obs_state_val not in (ObsState.ABORTED, ObsState.FAULT):
             raise InvalidObsStateError(
-                "ObsReset and Restart commands are permitted only in ABORTED and FAULT observation states."
+                f"ObsReset and Restart commands are permitted only when in ABORTED and FAULT observation states.:{obs_state_val}"
             )
 
         return True
@@ -431,10 +431,11 @@ class AbstractAbort(SdpSLNCommand):
             ObsState.CONFIGURING,
             ObsState.SCANNING,
             ObsState.IDLE,
+            ObsState.READY,
             ObsState.RESETTING,
         ):
             raise InvalidObsStateError(
-                "Abort command is permitted only in CONFIGURING, SCANNING, IDLE and RESETTING observation states"
+                f"Abort command is permitted only in CONFIGURING, SCANNING, IDLE, READY and RESETTING observation states:{obs_state_val}"
             )
 
         return True

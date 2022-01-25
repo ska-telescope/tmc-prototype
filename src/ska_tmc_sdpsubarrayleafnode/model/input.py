@@ -9,7 +9,7 @@ class InputParameter:
 class InputParameterMid(InputParameter):
     def __init__(self, changed_callback) -> None:
         super().__init__(changed_callback)
-        self._sdp_subarray_dev_name = "mid_sdp/elt/subarray_01"
+        self._sdp_subarray_dev_name = "mid_sdp/elt/subarray_1"
         self._changed_callback = changed_callback
 
     @property
