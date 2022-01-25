@@ -51,7 +51,7 @@ class SdpSLNComponentManager(TmcComponentManager):
         :param _component: allows setting of the component to be
             managed; for testing purposes only
         """
-        super(SdpSLNComponentManager, self).__init__(
+        super().__init__(
             op_state_model,
             _component,
             logger,
@@ -65,6 +65,7 @@ class SdpSLNComponentManager(TmcComponentManager):
         self.component = _component or SdpSLNComponent(logger)
         self.devices = self.component.devices
 
+        self._event_receiver = None
         if _event_receiver:
             self._event_receiver = SdpSLNEventReceiver(
                 self,
@@ -79,7 +80,7 @@ class SdpSLNComponentManager(TmcComponentManager):
         self.component.set_op_callbacks(_update_device_callback)
         self._input_parameter = _input_parameter
 
-        self._command_executor = CommandExecutor(
+        self.command_executor = CommandExecutor(
             logger,
             _update_command_in_progress_callback=_update_command_in_progress_callback,
         )
@@ -104,6 +105,12 @@ class SdpSLNComponentManager(TmcComponentManager):
         result = []
         for dev in self.component.devices:
             if dev.unresponsive:
+                result.append(dev)
+                continue
+            if dev.ping > 0:
+                result.append(dev)
+                continue
+            if dev.last_event_arrived is not None:
                 result.append(dev)
                 continue
         return result
@@ -145,5 +152,11 @@ class SdpSLNComponentManager(TmcComponentManager):
         with self.lock:
             devInfo = self.component.get_device(dev_name)
             devInfo.obsState = obs_state
+            devInfo.last_event_arrived = time.time()
+            devInfo.update_unresponsive(False)
+
+    def update_event_failure(self, dev_name):
+        with self.lock:
+            devInfo = self.component.get_device(dev_name)
             devInfo.last_event_arrived = time.time()
             devInfo.update_unresponsive(False)

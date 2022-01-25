@@ -32,6 +32,11 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
     # -----------------
     # Attributes
     # -----------------
+    commandExecuted = attribute(
+        dtype=(("DevString",),),
+        max_dim_x=4,
+        max_dim_y=100,
+    )
 
     lastDeviceInfoChanged = attribute(
         dtype="DevString",
@@ -73,7 +78,7 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
             device._LastDeviceInfoChanged = ""
 
             device.op_state_model.perform_action("component_on")
-            device.component_manager._command_executor.add_command_execution(
+            device.component_manager.command_executor.add_command_execution(
                 "0", "Init", ResultCode.OK, ""
             )
             return (ResultCode.OK, "")
@@ -89,6 +94,25 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
 
     def read_lastDeviceInfoChanged(self):
         return self._LastDeviceInfoChanged
+
+    def read_commandExecuted(self):
+        """Return the commandExecuted attribute."""
+        result = []
+        i = 0
+        for command_executed in reversed(
+            self.component_manager.command_executor.command_executed
+        ):
+            if i == 100:
+                break
+            single_res = [
+                str(command_executed["Id"]),
+                str(command_executed["Command"]),
+                str(command_executed["ResultCode"]),
+                str(command_executed["Message"]),
+            ]
+            result.append(single_res)
+            i += 1
+        return result
 
     # --------
     # Commands
@@ -155,9 +179,10 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in=("str"),
-        doc_in="The input JSON string consists of information related to id, max_length, scan_types"
-        " and processing_blocks.",
+        dtype_in="str",
+        doc_in="The string in JSON format",
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
     )
     @DebugIt()
     def AssignResources(self, argin):
@@ -169,6 +194,10 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
             return [[ResultCode.FAILED], ["Queue is full!"]]
         unique_id = self.component_manager.command_executor.enqueue_command(
             handler, argin
+        )
+        print(
+            ":::::::unique id after Assign Resources command:::::::::::::::",
+            unique_id,
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
 
@@ -183,9 +212,12 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("ReleaseResources")
         return handler.check_allowed()
 
-    @command()
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
     @DebugIt()
-    def ReleaseResources(self, argin):
+    def ReleaseResources(self):
         """
         This command invokes ReleaseResources() command on command on Sdp Subarray.
         """
@@ -193,7 +225,7 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         if self.component_manager.command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
         unique_id = self.component_manager.command_executor.enqueue_command(
-            handler, argin
+            handler
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
 
@@ -212,8 +244,10 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in=("str"),
-        doc_in="The JSON input string consists of scan type.",
+        dtype_in="str",
+        doc_in="The string in JSON format",
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
     )
     @DebugIt()
     def Configure(self, argin):
@@ -243,8 +277,10 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
-        dtype_in=("str"),
+        dtype_in="str",
         doc_in="The JSON input string consists of SB ID.",
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
     )
     @DebugIt()
     def Scan(self, argin):
@@ -270,7 +306,10 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("EndScan")
         return handler.check_allowed()
 
-    @command()
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
     @DebugIt()
     def EndScan(self):
         """
@@ -299,7 +338,10 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("End")
         return handler.check_allowed()
 
-    @command()
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
     @DebugIt()
     def End(self):
         """This command invokes End command on Sdp Subarray to end the current Scheduling block."""
@@ -325,7 +367,10 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("ObsReset")
         return handler.check_allowed()
 
-    @command()
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
     @DebugIt()
     def ObsReset(self):
         """
@@ -356,7 +401,10 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Abort")
         return handler.check_allowed()
 
-    @command()
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
     @DebugIt()
     def Abort(self):
         """
@@ -387,7 +435,10 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Restart")
         return handler.check_allowed()
 
-    @command()
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
     @DebugIt()
     def Restart(self):
         """

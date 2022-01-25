@@ -21,16 +21,15 @@ class SdpSLNEventReceiver(EventReceiver):
         proxy_timeout=500,
         sleep_time=1,
     ):
-        super(SdpSLNEventReceiver, self).__init__(
+        super().__init__(
             component_manager, logger, max_workers, proxy_timeout, sleep_time
         )
+
         self._component_manager = component_manager
 
     def subscribe_events(self, devInfo):
         try:
-            # import debugpy; debugpy.debug_this_thread()
             proxy = self._dev_factory.get_device(devInfo.dev_name)
-
             proxy.subscribe_event(
                 "ObsState",
                 tango.EventType.CHANGE_EVENT,
@@ -42,3 +41,15 @@ class SdpSLNEventReceiver(EventReceiver):
             self._logger.debug(
                 "event not working for device %s/%s", proxy.dev_name, e
             )
+
+    def handle_obs_state_event(self, evt):
+        if evt.err:
+            error = evt.errors[0]
+            self._logger.error("%s %s", error.reason, error.desc)
+            self._component_manager.update_event_failure(evt.device.dev_name())
+            return
+
+        new_value = evt.attr_value.value
+        self._component_manager.update_device_obs_state(
+            evt.device.dev_name(), new_value
+        )
