@@ -3,7 +3,6 @@ This module implements ComponentManager class for the Sdp Master Leaf Node.
 """
 
 from ska_tmc_common.device_info import DeviceInfo
-from ska_tmc_common.event_receiver import EventReceiver
 from ska_tmc_common.tmc_component_manager import TmcComponentManager
 
 from ska_tmc_sdpmasterleafnode.manager.command_executor import CommandExecutor
@@ -62,16 +61,6 @@ class SdpMLNComponentManager(TmcComponentManager):
         )
 
         self.component = _component or SdpMLNComponent(logger)
-
-        if _event_receiver:
-            self._event_receiver = EventReceiver(
-                self,
-                logger,
-                proxy_timeout=proxy_timeout,
-                sleep_time=sleep_time,
-            )
-            self._event_receiver.start()
-
         self.component.set_op_callbacks(_update_device_callback)
         self._input_parameter = _input_parameter
         self._command_executor = CommandExecutor(
@@ -106,9 +95,6 @@ class SdpMLNComponentManager(TmcComponentManager):
     def update_input_parameter(self):
         with self.lock:
             self.input_parameter.update(self)
-
-    def stop(self):
-        self._event_receiver.stop()
 
     def add_device(self, dev_name):
         """

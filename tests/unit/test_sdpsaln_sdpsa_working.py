@@ -23,6 +23,8 @@ def test_sdpsa_working(tango_context):
         assert isinstance(devInfo, SubArrayDeviceInfo)
 
 
+# Note: Sample implementation of test case that uses parametrized
+# function to create component manager class object.
 # @pytest.mark.sdpmln
 # def test_sdpsa_working(tango_context):
 #     logger.info("%s", tango_context)
