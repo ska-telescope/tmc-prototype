@@ -39,15 +39,15 @@ def restart(
 
     sdp_subarray.SetDirectObsState(ObsState.IDLE)
     assert sdp_subarray.obsState == ObsState.IDLE
-
+    time.sleep(SLEEP_TIME)
     (result, unique_id) = sdpsal_node.Configure(configure_input_str)
     sdp_subarray.SetDirectObsState(ObsState.READY)
     assert sdp_subarray.obsState == ObsState.READY
-
+    time.sleep(SLEEP_TIME)
     (result, unique_id) = sdpsal_node.Abort()
     sdp_subarray.SetDirectObsState(ObsState.ABORTED)
     assert sdp_subarray.obsState == ObsState.ABORTED
-
+    time.sleep(SLEEP_TIME)
     (result, unique_id) = sdpsal_node.Restart()
 
     assert result[0] == ResultCode.QUEUED
@@ -64,7 +64,7 @@ def restart(
             assert command[2] == "ResultCode.OK"
 
 
-@pytest.mark.xfail
+@pytest.mark.ncra
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(

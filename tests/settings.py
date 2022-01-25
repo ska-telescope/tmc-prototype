@@ -12,7 +12,7 @@ from ska_tmc_sdpsubarrayleafnode.model.input import InputParameterMid
 logger = logging.getLogger(__name__)
 
 SLEEP_TIME = 0.5
-TIMEOUT = 50
+TIMEOUT = 100
 
 DEVICE_MID = "mid_sdp/elt/subarray_01"
 
