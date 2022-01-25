@@ -21,7 +21,7 @@ def get_restart_command_obj():
     logger.info(
         "checked %s devices in %s", len(cm.checked_devices), elapsed_time
     )
-    dev_name = "mid_sdp/elt/subarray_01"
+    dev_name = "mid_sdp/elt/subarray_1"
 
     cm.update_device_obs_state(dev_name, ObsState.ABORTED)
     my_adapter_factory = HelperAdapterFactory()
@@ -41,7 +41,7 @@ def test_telescope_restart_command(tango_context):
     assert restart_command.check_allowed()
     (result_code, _) = restart_command.do()
     assert result_code == ResultCode.OK
-    dev_name = "mid_sdp/elt/subarray_01"
+    dev_name = "mid_sdp/elt/subarray_1"
     adapter = my_adapter_factory.get_or_create_adapter(dev_name)
     if isinstance(adapter, SdpSubArrayAdapter):
         adapter.proxy.Restart.assert_called()
@@ -61,7 +61,7 @@ def test_telescope_restart_command_fail_subarray(tango_context):
     skuid = mock.Mock(**attrs)
 
     # include exception in ObsReset command
-    failing_dev = "mid_sdp/elt/subarray_01"
+    failing_dev = "mid_sdp/elt/subarray_1"
     attrs = {"Restart.side_effect": Exception}
     subarrayMock = mock.Mock(**attrs)
     my_adapter_factory.get_or_create_adapter(failing_dev, proxy=subarrayMock)
@@ -84,7 +84,7 @@ def test_telescope_restart_fail_check_allowed_with_invalid_obsState(
     logger.info(
         "checked %s devices in %s", len(cm.checked_devices), elapsed_time
     )
-    dev_name = "mid_sdp/elt/subarray_01"
+    dev_name = "mid_sdp/elt/subarray_1"
 
     cm.update_device_obs_state(dev_name, ObsState.IDLE)
     my_adapter_factory = HelperAdapterFactory()

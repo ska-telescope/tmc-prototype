@@ -14,7 +14,7 @@ def devices_to_load():
         {
             "class": HelperSubArrayDevice,
             "devices": [
-                {"name": "mid_sdp/elt/subarray_01"},
+                {"name": "mid_sdp/elt/subarray_1"},
             ],
         },
         {
@@ -23,7 +23,7 @@ def devices_to_load():
                 {
                     "name": "ska_mid/tm_leaf_node/sdp_subarray01",
                     "properties": {
-                        "SdpSubarrayFQDN": ["mid_sdp/elt/subarray_01"],
+                        "SdpSubarrayFQDN": ["mid_sdp/elt/subarray_1"],
                     },
                 }
             ],

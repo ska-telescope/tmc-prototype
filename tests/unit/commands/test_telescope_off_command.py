@@ -25,7 +25,7 @@ def test_telescope_off_command(tango_context):
     assert off_command.check_allowed()
     (result_code, _) = off_command.do()
     assert result_code == ResultCode.OK
-    dev_name = "mid_sdp/elt/subarray_01"
+    dev_name = "mid_sdp/elt/subarray_1"
     adapter = my_adapter_factory.get_or_create_adapter(dev_name)
     if isinstance(adapter, SdpSubArrayAdapter):
         adapter.proxy.Off.assert_called()
@@ -41,7 +41,7 @@ def test_telescope_off_command_fail_sdp_subarray(tango_context):
     my_adapter_factory = HelperAdapterFactory()
 
     # include exception in TelescopeOff command
-    failing_dev = "mid_sdp/elt/subarray_01"
+    failing_dev = "mid_sdp/elt/subarray_1"
     my_adapter_factory.get_or_create_adapter(
         failing_dev, attrs={"TelescopeOff.side_effect": Exception}
     )

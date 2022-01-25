@@ -25,7 +25,7 @@ def get_configure_command_obj():
     logger.info(
         "checked %s devices in %s", len(cm.checked_devices), elapsed_time
     )
-    dev_name = "mid_sdp/elt/subarray_01"
+    dev_name = "mid_sdp/elt/subarray_1"
 
     cm.update_device_obs_state(dev_name, ObsState.READY)
     my_adapter_factory = HelperAdapterFactory()
@@ -49,7 +49,7 @@ def test_telescope_configure_command(tango_context):
     assert configure_command.check_allowed()
     (result_code, _) = configure_command.do(configure_input_str)
     assert result_code == ResultCode.OK
-    dev_name = "mid_sdp/elt/subarray_01"
+    dev_name = "mid_sdp/elt/subarray_1"
     adapter = my_adapter_factory.get_or_create_adapter(dev_name)
     if isinstance(adapter, SdpSubArrayAdapter):
         adapter.proxy.Configure.assert_called()
@@ -67,7 +67,7 @@ def test_telescope_configure_resources_command_missing_interface_key(
     assert configure_command.check_allowed()
     (result_code, _) = configure_command.do(json.dumps(json_argument))
     assert result_code == ResultCode.OK
-    dev_name = "mid_sdp/elt/subarray_01"
+    dev_name = "mid_sdp/elt/subarray_1"
     adapter = my_adapter_factory.get_or_create_adapter(dev_name)
     if isinstance(adapter, SdpSubArrayAdapter):
         adapter.proxy.Configure.assert_called()
@@ -87,7 +87,7 @@ def test_telescope_configure_command_fail_subarray(tango_context):
     skuid = mock.Mock(**attrs)
 
     # include exception in AssignResources command
-    failing_dev = "mid_sdp/elt/subarray_01"
+    failing_dev = "mid_sdp/elt/subarray_1"
     attrs = {"Configure.side_effect": Exception}
     subarrayMock = mock.Mock(**attrs)
     my_adapter_factory.get_or_create_adapter(failing_dev, proxy=subarrayMock)

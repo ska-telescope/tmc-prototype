@@ -19,7 +19,7 @@ def get_release_resources_command_obj():
     logger.info(
         "checked %s devices in %s", len(cm.checked_devices), elapsed_time
     )
-    dev_name = "mid_sdp/elt/subarray_01"
+    dev_name = "mid_sdp/elt/subarray_1"
 
     cm.update_device_obs_state(dev_name, ObsState.IDLE)
     my_adapter_factory = HelperAdapterFactory()
@@ -40,7 +40,7 @@ def test_telescope_release_resources_command(tango_context):
     assert release_command.check_allowed()
     (result_code, _) = release_command.do()
     assert result_code == ResultCode.OK
-    dev_name = "mid_sdp/elt/subarray_01"
+    dev_name = "mid_sdp/elt/subarray_1"
     adapter = my_adapter_factory.get_or_create_adapter(dev_name)
     if isinstance(adapter, SdpSubArrayAdapter):
         adapter.proxy.ReleaseResources.assert_called()
@@ -57,7 +57,7 @@ def test_telescope_release_resources_command_fail_subarray(tango_context):
     my_adapter_factory = HelperAdapterFactory()
 
     # include exception in ReleaseResources command
-    failing_dev = "mid_sdp/elt/subarray_01"
+    failing_dev = "mid_sdp/elt/subarray_1"
     cm.update_device_obs_state(failing_dev, ObsState.IDLE)
     my_adapter_factory.get_or_create_adapter(
         failing_dev, attrs={"ReleaseAllResources.side_effect": Exception}

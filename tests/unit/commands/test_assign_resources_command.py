@@ -27,7 +27,7 @@ def get_assign_resources_command_obj():
     logger.info(
         "checked %s devices in %s", len(cm.checked_devices), elapsed_time
     )
-    dev_name = "mid_sdp/elt/subarray_01"
+    dev_name = "mid_sdp/elt/subarray_1"
 
     my_adapter_factory = HelperAdapterFactory()
 
@@ -49,7 +49,7 @@ def test_telescope_assign_resources_command(tango_context):
     assert assign_res_command.check_allowed()
     (result_code, _) = assign_res_command.do(assign_input_str)
     assert result_code == ResultCode.OK
-    dev_name = "mid_sdp/elt/subarray_01"
+    dev_name = "mid_sdp/elt/subarray_1"
     adapter = my_adapter_factory.get_or_create_adapter(dev_name)
     if isinstance(adapter, SdpSubArrayAdapter):
         adapter.proxy.AssignResources.assert_called()
@@ -65,7 +65,7 @@ def test_telescope_assign_resources_command_missing_eb_id_key(tango_context):
     assert assign_res_command.check_allowed()
     (result_code, _) = assign_res_command.do(json.dumps(json_argument))
     assert result_code == ResultCode.OK
-    dev_name = "mid_sdp/elt/subarray_01"
+    dev_name = "mid_sdp/elt/subarray_1"
     adapter = my_adapter_factory.get_or_create_adapter(dev_name)
     if isinstance(adapter, SdpSubArrayAdapter):
         adapter.proxy.AssignResources.assert_called()
@@ -85,7 +85,7 @@ def test_telescope_assign_resources_command_fail_subarray(tango_context):
     skuid = mock.Mock(**attrs)
 
     # include exception in AssignResources command
-    failing_dev = "mid_sdp/elt/subarray_01"
+    failing_dev = "mid_sdp/elt/subarray_1"
     attrs = {"AssignResources.side_effect": Exception}
     subarrayMock = mock.Mock(**attrs)
     my_adapter_factory.get_or_create_adapter(failing_dev, proxy=subarrayMock)
