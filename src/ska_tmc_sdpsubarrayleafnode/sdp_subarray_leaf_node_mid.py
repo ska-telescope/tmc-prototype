@@ -15,7 +15,7 @@ from ska_tmc_sdpsubarrayleafnode.commands.end_command import End
 from ska_tmc_sdpsubarrayleafnode.commands.endscan_command import EndScan
 from ska_tmc_sdpsubarrayleafnode.commands.obsreset_command import ObsReset
 from ska_tmc_sdpsubarrayleafnode.commands.release_resources_command import (
-    ReleaseAllResources,
+    ReleaseResources,
 )
 from ska_tmc_sdpsubarrayleafnode.commands.reset_command import Reset
 from ska_tmc_sdpsubarrayleafnode.commands.restart_command import Restart
@@ -99,7 +99,7 @@ class SdpSubarrayLeafNodeMid(AbstractSdpSubarrayLeafNode):
             ("TelescopeOn", TelescopeOn),
             ("TelescopeOff", TelescopeOff),
             ("AssignResources", AssignResources),
-            ("ReleaseResources", ReleaseAllResources),
+            ("ReleaseResources", ReleaseResources),
             ("Configure", Configure),
             ("Scan", Scan),
             ("EndScan", EndScan),

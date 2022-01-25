@@ -43,7 +43,7 @@ def devices_to_load():
         {
             "class": HelperSubArrayDevice,
             "devices": [
-                {"name": "mid_sdp/elt/subarray_01"},
+                {"name": "mid_sdp/elt/subarray_1"},
             ],
         },
     )

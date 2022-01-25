@@ -57,6 +57,10 @@ include:
 - project: 'ska-telescope/templates-repository'
   file: 'gitlab-ci/includes/docs-pages.gitlab-ci.yml'
 
+# k8s steps
+- project: 'ska-telescope/templates-repository'
+  file: 'gitlab-ci/includes/k8s.gitlab-ci.yml'
+
 # Create Gitlab CI badges from CI metrics
 # https://developer.skatelescope.org/en/latest/tools/continuousintegration.html#automated-collection-of-ci-health-metrics-as-part-of-the-ci-pipeline
 - project: 'ska-telescope/templates-repository'
@@ -65,3 +69,30 @@ include:
 # retry to template job for python-test
 python-test:
   retry: 2
+
+k8s-test:
+  retry: 2
+  variables:
+    TELESCOPE: SKA-mid
+  environment:
+    name: test/$CI_COMMIT_REF_SLUG-mid
+    kubernetes:
+      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-mid
+  after_script:
+    - &after_script |
+        echo $CI_JOB_NAME - $CI_JOB_STAGE
+        make k8s-uninstall-chart
+        kubectl -n $KUBE_NAMESPACE delete pods,svc,daemonsets,deployments,replicasets,statefulsets,cronjobs,jobs,ingresses,configmaps --all
+        make k8s-delete-namespace
+        if [ -f build/cucumber.json ]; then
+        pip3 install -U "ska-ser-skallop>=$SKALLOP_VERSION" --extra-index-url https://artefact.skao.int/repository/pypi-internal/simple
+        /usr/local/bin/xtp-xray-upload -f build/cucumber.json -i test-exec.json -v
+        fi
+    - mv build build_k8s_test
+  artifacts:
+    name: "$CI_PROJECT_NAME-$CI_JOB_ID"
+    paths:
+      - "build_k8s_test/"
+    reports:
+      junit: build_k8s_test/reports/unit-tests.xml
+    when: always

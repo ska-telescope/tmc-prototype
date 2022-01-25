@@ -23,7 +23,7 @@ def test_endscan_command(tango_context):
     )
 
     my_adapter_factory = HelperAdapterFactory()
-    dev_name = "mid_sdp/elt/subarray_01"
+    dev_name = "mid_sdp/elt/subarray_1"
     cm.update_device_obs_state(dev_name, ObsState.SCANNING)
     endscan_command = EndScan(cm, cm.op_state_model, my_adapter_factory)
 
@@ -32,7 +32,7 @@ def test_endscan_command(tango_context):
     assert endscan_command.check_allowed()
     (result_code, _) = endscan_command.do()
     assert result_code == ResultCode.OK
-    dev_name = "mid_sdp/elt/subarray_01"
+    dev_name = "mid_sdp/elt/subarray_1"
     adapter = my_adapter_factory.get_or_create_adapter(dev_name)
     if isinstance(adapter, SdpSubArrayAdapter):
         adapter.proxy.EndScan.assert_called()
@@ -63,7 +63,7 @@ def test_endscan_fail_check_allowed_with_invalid_obsState(
     logger.info(
         "checked %s devices in %s", len(cm.checked_devices), elapsed_time
     )
-    dev_name = "mid_sdp/elt/subarray_01"
+    dev_name = "mid_sdp/elt/subarray_1"
 
     cm.update_device_obs_state(dev_name, ObsState.IDLE)
     my_adapter_factory = HelperAdapterFactory()

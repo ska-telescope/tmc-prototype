@@ -88,7 +88,7 @@ def test_command_executor_with_argin(tango_context):
     assert not executor.queue_full
 
 
-def test_command_executor_raise_exception(tango_context):
+def testcommand_executor_raise_exception(tango_context):
     logger.info("%s", tango_context)
     cm, start_time = create_cm()
     elapsed_time = time.time() - start_time
