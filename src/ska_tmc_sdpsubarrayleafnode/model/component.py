@@ -14,7 +14,7 @@ class SdpSLNComponent(TmcComponent):
     """
 
     def __init__(self, logger):
-        super(SdpSLNComponent, self).__init__(logger)
+        super().__init__(logger)
         self._update_device_callback = None
 
     def set_op_callbacks(

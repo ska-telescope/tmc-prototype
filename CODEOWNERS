@@ -1,0 +1,15 @@
+# Further information on how the assignment are based
+# could be found here: 
+# https://confluence.skatelescope.org/display/SWSI/Skampi+Change+Management
+
+# Overall Default Reviewers
+# This covers all the files that are not part of the above and will be used to orchestrate those parts of the repository.
+# Files are matched as the last statement in order so this will act like a filter that catches any file that's been left out
+# by the rest of the file 
+# Members:
+# - All
+* @kalyanithigale, @shraddhabajare, @adityadangeska, @apurvapatkar, @JayantKumbhar, @rushikesh.ska
+
+# Other
+# Members:
+# - Owner: Team NCRA
