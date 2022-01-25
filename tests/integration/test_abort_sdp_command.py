@@ -62,7 +62,7 @@ def abort(
             assert command[2] == "ResultCode.OK"
 
 
-@pytest.mark.xfail
+
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(
