@@ -34,18 +34,19 @@ def abort(
 
     initial_len = len(sdpsal_node.commandExecuted)
     (result, unique_id) = sdpsal_node.TelescopeOn()
+    time.sleep(SLEEP_TIME)
     (result, unique_id) = sdpsal_node.AssignResources(assign_input_str)
     sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
 
     sdp_subarray.SetDirectObsState(ObsState.IDLE)
     assert sdp_subarray.obsState == ObsState.IDLE
-
+    time.sleep(SLEEP_TIME)
     (result, unique_id) = sdpsal_node.Configure(configure_input_str)
 
     sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
     sdp_subarray.SetDirectObsState(ObsState.READY)
     assert sdp_subarray.obsState == ObsState.READY
-
+    time.sleep(SLEEP_TIME)
     (result, unique_id) = sdpsal_node.Abort()
 
     assert result[0] == ResultCode.QUEUED
