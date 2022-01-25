@@ -4,6 +4,9 @@ import time
 import pytest
 from ska_tmc_common.op_state_model import TMCOpStateModel
 
+from ska_tmc_sdpmasterleafnode.manager.component_manager import (
+    SdpMLNComponentManager,
+)
 from ska_tmc_sdpsubarrayleafnode.manager.component_manager import (
     SdpSLNComponentManager,
 )
@@ -39,6 +42,35 @@ def create_cm(
         DEVICE = DEVICE_MID
 
     cm.add_device(DEVICE)
+    start_time = time.time()
+    time.sleep(SLEEP_TIME)
+    elapsed_time = time.time() - start_time
+    if elapsed_time > TIMEOUT:
+        pytest.fail("Timeout occurred while executing the test")
+
+    return cm, start_time
+
+
+def create_cm_parametrize(cm_class, input_parameter, device):
+    op_state_model = TMCOpStateModel(logger)
+    if cm_class == "SdpMLNComponentManager":
+        cm = SdpMLNComponentManager(
+            op_state_model,
+            _input_parameter=input_parameter,
+            logger=logger,
+        )
+    elif cm_class == "SdpSLNComponentManager":
+        cm = SdpSLNComponentManager(
+            op_state_model, _input_parameter=input_parameter, logger=logger
+        )
+    else:
+        log_msg = f"Unknown component manager class {cm_class}"
+        logger.error(log_msg)
+
+    # if isinstance(input_parameter, InputParameterMid):
+    # DEVICE = device
+
+    cm.add_device(device)
     start_time = time.time()
     time.sleep(SLEEP_TIME)
     elapsed_time = time.time() - start_time
