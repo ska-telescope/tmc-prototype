@@ -183,7 +183,7 @@ class AbstractReleaseResources(SdpSLNCommand):
                 "sdp_subarray_obs_state value is: %s", obs_state_val
             )
             raise InvalidObsStateError(
-                f"ReleaseResources command is permitted only when in IDLE observation states:{obs_state_val}"
+                f"ReleaseResources command is not allowed in current observation state:{obs_state_val}"
             )
 
         return True
@@ -231,7 +231,7 @@ class AbstractConfigure(SdpSLNCommand):
         ).obsState
         if obs_state_val not in (ObsState.READY, ObsState.IDLE):
             raise InvalidObsStateError(
-                "Configure command is permitted only in READY and IDLE observation states.:{obs_state_val}"
+                "Configure command is not allowed in current observation state:{obs_state_val}"
             )
 
         return True
@@ -281,7 +281,7 @@ class AbstractScanEnd(SdpSLNCommand):
 
         if obs_state_val != ObsState.READY:
             raise InvalidObsStateError(
-                f"Scan and End commands are permitted only when in READY observation state.:{obs_state_val}"
+                f"Scan and End commands are not allowed in current observation state:{obs_state_val}"
             )
 
         return True
@@ -331,7 +331,7 @@ class AbstractEndScan(SdpSLNCommand):
 
         if obs_state_val != ObsState.SCANNING:
             raise InvalidObsStateError(
-                "EndScan command is permitted only in SCANNING observation state"
+                f"EndScan command is not allowed in current observation state:{obs_state_val}"
             )
 
         return True
@@ -379,7 +379,7 @@ class AbstractRestartObsReset(SdpSLNCommand):
 
         if obs_state_val not in (ObsState.ABORTED, ObsState.FAULT):
             raise InvalidObsStateError(
-                f"ObsReset and Restart commands are permitted only when in ABORTED and FAULT observation states.:{obs_state_val}"
+                f"ObsReset and Restart commands are not allowed in current observation state:{obs_state_val}"
             )
 
         return True
@@ -435,7 +435,7 @@ class AbstractAbort(SdpSLNCommand):
             ObsState.RESETTING,
         ):
             raise InvalidObsStateError(
-                f"Abort command is permitted only in CONFIGURING, SCANNING, IDLE, READY and RESETTING observation states:{obs_state_val}"
+                f"Abort command is not allowed in current observation state:{obs_state_val}"
             )
 
         return True

@@ -11,8 +11,9 @@ url="""https://www.skaobservatory.org"""
 copyright=""""""
 release=0.8.9
 tag=0.8.9
-tag_description=Removed simulators code from ska-tmc repository.
-release_notes=This release contains:<br/><ul><li>Removed simulators code from ska-tmc repository.</li></ul><br/>
-gitlab_username=JayantKumbhar
-private_token=glpat-csVdFRJ3VVqcttVdzyxq
+tag_description=Refactored SdpSubarrayLeafNode to utilise lmc base classes v0.11.3.
+release_notes=This release contains:<br/><ul><li>Updated SdpSubarrayLeafNode code.Implemented unit, component and integration test cases to support updated functionality.</li></ul><br/>
+gitlab_username=kalyanithigale
+private_token=4QxYhMuKRckxu_TQsJAF
+
 
