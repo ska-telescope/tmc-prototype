@@ -6,7 +6,7 @@ class InputParameter:
         raise NotImplementedError("This class must be inherited!")
 
 
-class InputParameterMid(InputParameter):
+class SdpMLNInputParameter(InputParameter):
     def __init__(self, changed_callback) -> None:
         super().__init__(changed_callback)
         self._sdp_master_dev_name = "mid_sdp/elt/master"
