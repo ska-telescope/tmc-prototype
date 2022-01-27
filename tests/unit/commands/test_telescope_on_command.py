@@ -10,7 +10,7 @@ from ska_tmc_sdpsubarrayleafnode.commands.telescope_on_command import (
 from ska_tmc_sdpsubarrayleafnode.exceptions import CommandNotAllowed
 from ska_tmc_sdpsubarrayleafnode.model.input import InputParameterMid
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
-from tests.settings import create_cm, create_cm_parametrize, logger
+from tests.settings import create_cm_parametrize, logger
 
 SDP_SUBARRAY_DEVICE = "mid_sdp/elt/subarray_1"
 
