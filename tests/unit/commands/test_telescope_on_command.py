@@ -8,13 +8,21 @@ from ska_tmc_sdpsubarrayleafnode.commands.telescope_on_command import (
     TelescopeOn,
 )
 from ska_tmc_sdpsubarrayleafnode.exceptions import CommandNotAllowed
+from ska_tmc_sdpsubarrayleafnode.model.input import InputParameterMid
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
-from tests.settings import create_cm, logger
+from tests.settings import create_cm, create_cm_parametrize, logger
+
+SDP_SUBARRAY_DEVICE = "mid_sdp/elt/subarray_1"
 
 
+@pytest.mark.telescopeon
 def test_telescope_on_command(tango_context):
     logger.info("%s", tango_context)
-    cm, start_time = create_cm()
+    # cm, start_time = create_cm()
+    input_parameter = InputParameterMid(None)
+    cm, start_time = create_cm_parametrize(
+        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
+    )
     elapsed_time = time.time() - start_time
     logger.info(
         "checked %s devices in %s", len(cm.checked_devices), elapsed_time
@@ -31,9 +39,14 @@ def test_telescope_on_command(tango_context):
         adapter.proxy.On.assert_called()
 
 
+@pytest.mark.telescopeon
 def test_telescope_on_command_fail_sdp_subarray(tango_context):
     logger.info("%s", tango_context)
-    cm, start_time = create_cm()
+    # cm, start_time = create_cm()
+    input_parameter = InputParameterMid(None)
+    cm, start_time = create_cm_parametrize(
+        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
+    )
     elapsed_time = time.time() - start_time
     logger.info(
         "checked %s devices in %s", len(cm.checked_devices), elapsed_time
@@ -54,10 +67,15 @@ def test_telescope_on_command_fail_sdp_subarray(tango_context):
     assert failing_dev in message
 
 
+@pytest.mark.telescopeon
 def test_telescope_on_fail_check_allowed(tango_context):
 
     logger.info("%s", tango_context)
-    cm, start_time = create_cm()
+    input_parameter = InputParameterMid(None)
+    cm, start_time = create_cm_parametrize(
+        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
+    )
+    # cm, start_time = create_cm()
     elapsed_time = time.time() - start_time
     logger.info(
         "checked %s devices in %s", len(cm.checked_devices), elapsed_time
