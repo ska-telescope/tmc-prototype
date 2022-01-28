@@ -80,10 +80,16 @@ def test_restart_command_mid(
         sdpsaln_name,
         get_assign_input_str(
             join(
-                dirname(__file__), "..", "data", "command_AssignResources.json"
+                dirname(__file__),
+                "..",
+                "..",
+                "data",
+                "command_AssignResources.json",
             )
         ),
         get_configure_input_str(
-            join(dirname(__file__), "..", "data", "command_Configure.json")
+            join(
+                dirname(__file__), "..", "..", "data", "command_Configure.json"
+            )
         ),
     )

@@ -52,7 +52,11 @@ def test_release_res_command_mid(tango_context):
         "ska_mid/tm_leaf_node/sdp_subarray01",
         get_input_str(
             join(
-                dirname(__file__), "..", "data", "command_AssignResources.json"
+                dirname(__file__),
+                "..",
+                "..",
+                "data",
+                "command_AssignResources.json",
             )
         ),
     )
