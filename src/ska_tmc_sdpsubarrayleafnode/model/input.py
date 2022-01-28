@@ -1,4 +1,4 @@
-# TODO: Ucomment below import when ska-tmc-common package is available
+# TODO: Uncomment below import when ska-tmc-common package is available
 # from ska_tmc_common.input import InputParameter
 class InputParameter:
     def __init__(self, changed_callback) -> None:
