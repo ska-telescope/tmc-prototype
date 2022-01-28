@@ -8,12 +8,18 @@ from ska_tmc_common.adapters import SdpSubArrayAdapter
 
 from ska_tmc_sdpsubarrayleafnode.commands.end_command import End
 from ska_tmc_sdpsubarrayleafnode.exceptions import InvalidObsStateError
+from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
-from tests.settings import create_cm, logger
+from tests.settings import create_cm_parametrize, logger
+
+SDP_SUBARRAY_DEVICE = "mid_sdp/elt/subarray_1"
 
 
 def get_end_command_obj():
-    cm, start_time = create_cm()
+    input_parameter = SdpSLNInputParameter(None)
+    cm, start_time = create_cm_parametrize(
+        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
+    )
     elapsed_time = time.time() - start_time
     logger.info(
         "checked %s devices in %s", len(cm.checked_devices), elapsed_time
@@ -47,7 +53,10 @@ def test_telescope_end_command(tango_context):
 
 def test_telescope_assign_resources_command_fail_subarray(tango_context):
     logger.info("%s", tango_context)
-    cm, start_time = create_cm()
+    input_parameter = SdpSLNInputParameter(None)
+    cm, start_time = create_cm_parametrize(
+        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
+    )
     elapsed_time = time.time() - start_time
     logger.info(
         "checked %s devices in %s", len(cm.checked_devices), elapsed_time
@@ -76,7 +85,10 @@ def test_telescope_end_command_fail_check_allowed_with_invalid_obsState(
     tango_context,
 ):
     logger.info("%s", tango_context)
-    cm, start_time = create_cm()
+    input_parameter = SdpSLNInputParameter(None)
+    cm, start_time = create_cm_parametrize(
+        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
+    )
     elapsed_time = time.time() - start_time
     logger.info(
         "checked %s devices in %s", len(cm.checked_devices), elapsed_time

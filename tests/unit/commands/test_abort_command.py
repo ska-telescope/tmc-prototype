@@ -11,12 +11,18 @@ from ska_tmc_sdpsubarrayleafnode.exceptions import (
     CommandNotAllowed,
     InvalidObsStateError,
 )
+from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
-from tests.settings import create_cm, logger
+from tests.settings import create_cm_parametrize, logger
+
+SDP_SUBARRAY_DEVICE = "mid_sdp/elt/subarray_1"
 
 
 def get_abort_command_obj():
-    cm, start_time = create_cm()
+    input_parameter = SdpSLNInputParameter(None)
+    cm, start_time = create_cm_parametrize(
+        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
+    )
     elapsed_time = time.time() - start_time
     logger.info(
         "checked %s devices in %s", len(cm.checked_devices), elapsed_time
@@ -49,7 +55,10 @@ def test_telescope_abort_command(tango_context):
 
 def test_telescope_abort_command_fail_subarray(tango_context):
     logger.info("%s", tango_context)
-    cm, start_time = create_cm()
+    input_parameter = SdpSLNInputParameter(None)
+    cm, start_time = create_cm_parametrize(
+        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
+    )
     elapsed_time = time.time() - start_time
     logger.info(
         "checked %s devices in %s", len(cm.checked_devices), elapsed_time
@@ -80,7 +89,10 @@ def test_telescope_abort_command_fail_check_allowed_with_invalid_obsState(
 ):
 
     logger.info("%s", tango_context)
-    cm, start_time = create_cm()
+    input_parameter = SdpSLNInputParameter(None)
+    cm, start_time = create_cm_parametrize(
+        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
+    )
     elapsed_time = time.time() - start_time
     logger.info(
         "checked %s devices in %s", len(cm.checked_devices), elapsed_time
@@ -97,7 +109,10 @@ def test_telescope_abort_command_fail_check_allowed_with_invalid_obsState(
 def test_telescope_abort_command_fail_check_allowed(tango_context):
 
     logger.info("%s", tango_context)
-    cm, start_time = create_cm()
+    input_parameter = SdpSLNInputParameter(None)
+    cm, start_time = create_cm_parametrize(
+        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
+    )
     elapsed_time = time.time() - start_time
     logger.info(
         "checked %s devices in %s", len(cm.checked_devices), elapsed_time
