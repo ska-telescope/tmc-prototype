@@ -8,7 +8,7 @@ from ska_tmc_sdpsubarrayleafnode.commands.telescope_on_command import (
     TelescopeOn,
 )
 from ska_tmc_sdpsubarrayleafnode.exceptions import CommandNotAllowed
-from ska_tmc_sdpsubarrayleafnode.model.input import InputParameterMid
+from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
 from tests.settings import create_cm_parametrize, logger
 
@@ -19,7 +19,7 @@ SDP_SUBARRAY_DEVICE = "mid_sdp/elt/subarray_1"
 def test_telescope_on_command(tango_context):
     logger.info("%s", tango_context)
     # cm, start_time = create_cm()
-    input_parameter = InputParameterMid(None)
+    input_parameter = SdpSLNInputParameter(None)
     cm, start_time = create_cm_parametrize(
         "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
     )
@@ -43,7 +43,7 @@ def test_telescope_on_command(tango_context):
 def test_telescope_on_command_fail_sdp_subarray(tango_context):
     logger.info("%s", tango_context)
     # cm, start_time = create_cm()
-    input_parameter = InputParameterMid(None)
+    input_parameter = SdpSLNInputParameter(None)
     cm, start_time = create_cm_parametrize(
         "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
     )
@@ -71,7 +71,7 @@ def test_telescope_on_command_fail_sdp_subarray(tango_context):
 def test_telescope_on_fail_check_allowed(tango_context):
 
     logger.info("%s", tango_context)
-    input_parameter = InputParameterMid(None)
+    input_parameter = SdpSLNInputParameter(None)
     cm, start_time = create_cm_parametrize(
         "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
     )
