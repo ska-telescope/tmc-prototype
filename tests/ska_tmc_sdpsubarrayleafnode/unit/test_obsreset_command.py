@@ -8,7 +8,7 @@ from ska_tmc_common.adapters import SdpSubArrayAdapter
 
 from ska_tmc_sdpsubarrayleafnode.commands.obsreset_command import ObsReset
 from ska_tmc_sdpsubarrayleafnode.exceptions import (
-    CommandNotAllowed,
+    DeviceUnresponsive,
     InvalidObsStateError,
 )
 from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
@@ -19,29 +19,6 @@ from tests.settings import (
     get_sdpsln_command_obj,
     logger,
 )
-
-# def get_obsreset_command_obj():
-#     input_parameter = SdpSLNInputParameter(None)
-#     cm, start_time = create_cm(
-#         "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
-#     )
-#     elapsed_time = time.time() - start_time
-#     logger.info(
-#         "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-#     )
-#     dev_name = "mid_sdp/elt/subarray_1"
-
-#     cm.update_device_obs_state(dev_name, ObsState.ABORTED)
-#     my_adapter_factory = HelperAdapterFactory()
-
-#     attrs = {"fetch_skuid.return_value": 123}
-#     skuid = mock.Mock(**attrs)  # is skauid required here?
-
-#     obsreset_command = ObsReset(
-#         cm, cm.op_state_model, my_adapter_factory, skuid
-#     )
-#     cm.get_device(dev_name).obsState == ObsState.IDLE
-#     return obsreset_command, my_adapter_factory
 
 
 @pytest.mark.sdpsaln
@@ -100,19 +77,6 @@ def test_telescope_obsreset_fail_check_allowed_with_invalid_obsState(
 ):
 
     logger.info("%s", tango_context)
-    # input_parameter = SdpSLNInputParameter(None)
-    # cm, start_time = create_cm(
-    #     "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
-    # )
-    # elapsed_time = time.time() - start_time
-    # logger.info(
-    #     "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-    # )
-    # dev_name = "mid_sdp/elt/subarray_1"
-
-    # cm.update_device_obs_state(dev_name, ObsState.IDLE)
-    # my_adapter_factory = HelperAdapterFactory()
-    # obsreset_command = ObsReset(cm, cm.op_state_model, my_adapter_factory)
     _, obsreset_command, _ = get_sdpsln_command_obj(
         ObsReset, obsstate_value=ObsState.IDLE
     )
@@ -124,20 +88,10 @@ def test_telescope_obsreset_fail_check_allowed_with_invalid_obsState(
 def test_telescope_obsreset_fail_check_allowed(tango_context):
 
     logger.info("%s", tango_context)
-    # input_parameter = SdpSLNInputParameter(None)
-    # cm, start_time = create_cm(
-    #     "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
-    # )
-    # elapsed_time = time.time() - start_time
-    # logger.info(
-    #     "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-    # )
-
-    # my_adapter_factory = HelperAdapterFactory()
     cm, obsreset_command, my_adapter_factory = get_sdpsln_command_obj(
         ObsReset, obsstate_value=ObsState.IDLE
     )
     cm.input_parameter.sdp_subarray_dev_name = ""
     obsreset_command = ObsReset(cm, cm.op_state_model, my_adapter_factory)
-    with pytest.raises(CommandNotAllowed):
+    with pytest.raises(DeviceUnresponsive):
         obsreset_command.check_allowed()

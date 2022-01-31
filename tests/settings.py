@@ -76,5 +76,4 @@ def get_sdpsln_command_obj(command_class, obsstate_value=None):
     command_obj = command_class(
         cm, cm.op_state_model, my_adapter_factory, skuid
     )
-    cm.get_device(dev_name).obsState == obsstate_value
     return cm, command_obj, my_adapter_factory

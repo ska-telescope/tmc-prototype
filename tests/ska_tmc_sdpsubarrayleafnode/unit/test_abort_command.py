@@ -8,7 +8,7 @@ from ska_tmc_common.adapters import SdpSubArrayAdapter
 
 from ska_tmc_sdpsubarrayleafnode.commands.abort_command import Abort
 from ska_tmc_sdpsubarrayleafnode.exceptions import (
-    CommandNotAllowed,
+    DeviceUnresponsive,
     InvalidObsStateError,
 )
 from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
@@ -72,19 +72,6 @@ def test_telescope_abort_command_fail_check_allowed_with_invalid_obsState(
 ):
 
     logger.info("%s", tango_context)
-    # input_parameter = SdpSLNInputParameter(None)
-    # cm, start_time = create_cm(
-    #     "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
-    # )
-    # elapsed_time = time.time() - start_time
-    # logger.info(
-    #     "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-    # )
-    # dev_name = "mid_sdp/elt/subarray_1"
-
-    # cm.update_device_obs_state(dev_name, ObsState.ABORTED)
-    # my_adapter_factory = HelperAdapterFactory()
-    # abort_command = Abort(cm, cm.op_state_model, my_adapter_factory)
     _, abort_command, _ = get_sdpsln_command_obj(Abort, ObsState.ABORTED)
     with pytest.raises(InvalidObsStateError):
         abort_command.check_allowed()
@@ -93,17 +80,7 @@ def test_telescope_abort_command_fail_check_allowed_with_invalid_obsState(
 def test_telescope_abort_command_fail_check_allowed(tango_context):
 
     logger.info("%s", tango_context)
-    # input_parameter = SdpSLNInputParameter(None)
-    # cm, start_time = create_cm(
-    #     "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
-    # )
-    # elapsed_time = time.time() - start_time
-    # logger.info(
-    #     "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-    # )
-
-    # my_adapter_factory = HelperAdapterFactory()
     cm, abort_command, _ = get_sdpsln_command_obj(Abort, ObsState.ABORTED)
     cm.input_parameter.sdp_subarray_dev_name = ""
-    with pytest.raises(CommandNotAllowed):
+    with pytest.raises(DeviceUnresponsive):
         abort_command.check_allowed()

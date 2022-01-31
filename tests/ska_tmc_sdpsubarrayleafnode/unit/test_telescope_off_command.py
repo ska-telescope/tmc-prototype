@@ -7,7 +7,7 @@ from ska_tmc_common.adapters import SdpSubArrayAdapter
 from ska_tmc_sdpsubarrayleafnode.commands.telescope_off_command import (
     TelescopeOff,
 )
-from ska_tmc_sdpsubarrayleafnode.exceptions import CommandNotAllowed
+from ska_tmc_sdpsubarrayleafnode.exceptions import DeviceUnresponsive
 from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
 from tests.settings import (
@@ -21,17 +21,6 @@ from tests.settings import (
 @pytest.mark.sdpsln
 def test_telescope_off_command(tango_context):
     logger.info("%s", tango_context)
-    # input_parameter = SdpSLNInputParameter(None)
-    # cm, start_time = create_cm(
-    #     "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
-    # )
-    # elapsed_time = time.time() - start_time
-    # logger.info(
-    #     "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-    # )
-
-    # my_adapter_factory = HelperAdapterFactory()
-    # off_command = TelescopeOff(cm, cm.op_state_model, my_adapter_factory)
     _, off_command, my_adapter_factory = get_sdpsln_command_obj(
         TelescopeOff, None
     )
@@ -74,19 +63,10 @@ def test_telescope_off_command_fail_sdp_subarray(tango_context):
 def test_telescope_off_fail_check_allowed(tango_context):
 
     logger.info("%s", tango_context)
-    # input_parameter = SdpSLNInputParameter(None)
-    # cm, start_time = create_cm(
-    #     "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
-    # )
-    # elapsed_time = time.time() - start_time
-    # logger.info(
-    #     "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-    # )
-    # my_adapter_factory = HelperAdapterFactory()
     cm, off_command, my_adapter_factory = get_sdpsln_command_obj(
         TelescopeOff, None
     )
     cm.input_parameter.sdp_subarray_dev_name = ""
     off_command = TelescopeOff(cm, cm.op_state_model, my_adapter_factory)
-    with pytest.raises(CommandNotAllowed):
+    with pytest.raises(DeviceUnresponsive):
         off_command.check_allowed()

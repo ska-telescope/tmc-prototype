@@ -26,31 +26,6 @@ def get_configure_input_str(configure_input_file="command_Configure.json"):
     return configure_input_file
 
 
-# def get_configure_command_obj():
-#     input_parameter = SdpSLNInputParameter(None)
-#     cm, start_time = create_cm(
-#         "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
-#     )
-#     elapsed_time = time.time() - start_time
-#     logger.info(
-#         "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-#     )
-#     dev_name = "mid_sdp/elt/subarray_1"
-
-#     cm.update_device_obs_state(dev_name, ObsState.READY)
-#     my_adapter_factory = HelperAdapterFactory()
-
-#     attrs = {"fetch_skuid.return_value": 123}
-#     skuid = mock.Mock(**attrs)
-
-#     configure_command = Configure(
-#         cm, cm.op_state_model, my_adapter_factory, skuid
-#     )
-#     cm.get_device(dev_name).obsState == ObsState.READY
-
-#     return configure_command, my_adapter_factory
-
-
 @pytest.mark.sdpsln
 def test_telescope_configure_command(tango_context):
     logger.info("%s", tango_context)

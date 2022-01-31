@@ -17,28 +17,6 @@ from tests.settings import (
     logger,
 )
 
-# def get_end_command_obj():
-#     input_parameter = SdpSLNInputParameter(None)
-#     cm, start_time = create_cm(
-#         "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
-#     )
-#     elapsed_time = time.time() - start_time
-#     logger.info(
-#         "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-#     )
-#     dev_name = "mid_sdp/elt/subarray_1"
-
-#     cm.update_device_obs_state(dev_name, ObsState.READY)
-#     my_adapter_factory = HelperAdapterFactory()
-
-#     attrs = {"fetch_skuid.return_value": 123}
-#     skuid = mock.Mock(**attrs)
-
-#     end_command = End(cm, cm.op_state_model, my_adapter_factory, skuid)
-#     cm.get_device(dev_name).obsState == ObsState.IDLE
-
-#     return end_command, my_adapter_factory
-
 
 @pytest.mark.sdpsaln
 def test_telescope_end_command(tango_context):
@@ -92,19 +70,6 @@ def test_telescope_end_command_fail_check_allowed_with_invalid_obsState(
     tango_context,
 ):
     logger.info("%s", tango_context)
-    # input_parameter = SdpSLNInputParameter(None)
-    # cm, start_time = create_cm(
-    #     "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
-    # )
-    # elapsed_time = time.time() - start_time
-    # logger.info(
-    #     "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-    # )
-    # dev_name = "mid_sdp/elt/subarray_1"
-
-    # cm.update_device_obs_state(dev_name, ObsState.IDLE)
-    # my_adapter_factory = HelperAdapterFactory()
-    # end_command = End(cm, cm.op_state_model, my_adapter_factory)
     _, end_command, _ = get_sdpsln_command_obj(
         End, obsstate_value=ObsState.IDLE
     )

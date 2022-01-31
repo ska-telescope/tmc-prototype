@@ -28,29 +28,6 @@ def get_assign_input_str(assign_input_file="command_AssignResources.json"):
     return assign_input_str
 
 
-# def get_assign_resources_command_obj():
-#     input_parameter = SdpSLNInputParameter(None)
-#     cm, start_time = create_cm(
-#         "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
-#     )
-#     elapsed_time = time.time() - start_time
-#     logger.info(
-#         "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-#     )
-#     dev_name = "mid_sdp/elt/subarray_1"
-
-#     my_adapter_factory = HelperAdapterFactory()
-
-#     attrs = {"fetch_skuid.return_value": 123}
-#     skuid = mock.Mock(**attrs)
-
-#     assign_res_command = AssignResources(
-#         cm, cm.op_state_model, my_adapter_factory, skuid
-#     )
-#     cm.get_device(dev_name).obsState == ObsState.IDLE
-#     return assign_res_command, my_adapter_factory
-
-
 @pytest.mark.sdpsaln
 def test_telescope_assign_resources_command(tango_context):
     logger.info("%s", tango_context)
