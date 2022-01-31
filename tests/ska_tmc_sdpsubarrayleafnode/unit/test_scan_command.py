@@ -15,9 +15,7 @@ from ska_tmc_sdpsubarrayleafnode.exceptions import (
 )
 from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
-from tests.settings import create_cm_parametrize, logger
-
-SDP_SUBARRAY_DEVICE = "mid_sdp/elt/subarray_1"
+from tests.settings import SDP_SUBARRAY_DEVICE, create_cm, logger
 
 
 def get_scan_input_str(scan_input_file="command_Scan.json"):
@@ -29,7 +27,7 @@ def get_scan_input_str(scan_input_file="command_Scan.json"):
 
 def get_scan_command_obj():
     input_parameter = SdpSLNInputParameter(None)
-    cm, start_time = create_cm_parametrize(
+    cm, start_time = create_cm(
         "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
     )
     elapsed_time = time.time() - start_time
@@ -83,7 +81,7 @@ def test_telescope_scan_command_missing_interface_key(
 def test_telescope_scan_command_fail_subarray(tango_context):
     logger.info("%s", tango_context)
     input_parameter = SdpSLNInputParameter(None)
-    cm, start_time = create_cm_parametrize(
+    cm, start_time = create_cm(
         "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
     )
     elapsed_time = time.time() - start_time
@@ -126,7 +124,7 @@ def test_telescope_scan_command_fail_check_allowed_with_invalid_obsState(
 
     logger.info("%s", tango_context)
     input_parameter = SdpSLNInputParameter(None)
-    cm, start_time = create_cm_parametrize(
+    cm, start_time = create_cm(
         "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
     )
     elapsed_time = time.time() - start_time
@@ -146,7 +144,7 @@ def test_telescope_scan_fail_check_allowed(tango_context):
 
     logger.info("%s", tango_context)
     input_parameter = SdpSLNInputParameter(None)
-    cm, start_time = create_cm_parametrize(
+    cm, start_time = create_cm(
         "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
     )
     elapsed_time = time.time() - start_time

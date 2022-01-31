@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 SLEEP_TIME = 0.5
 TIMEOUT = 100
 
-DEVICE_MID = "mid_sdp/elt/subarray_1"
+SDP_SUBARRAY_DEVICE = "mid_sdp/elt/subarray_1"
 
 
 def count_faulty_devices(cm):
@@ -27,7 +27,7 @@ def count_faulty_devices(cm):
     return result
 
 
-def create_cm_parametrize(cm_class, input_parameter, device):
+def create_cm(cm_class, input_parameter, device):
     op_state_model = TMCOpStateModel(logger)
     if cm_class == "SdpMLNComponentManager":
         cm = SdpMLNComponentManager(

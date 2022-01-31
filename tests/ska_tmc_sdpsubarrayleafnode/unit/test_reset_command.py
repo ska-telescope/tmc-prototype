@@ -8,14 +8,12 @@ from ska_tmc_sdpsubarrayleafnode.commands.reset_command import Reset
 from ska_tmc_sdpsubarrayleafnode.exceptions import CommandNotAllowed
 from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
-from tests.settings import create_cm_parametrize, logger
-
-SDP_SUBARRAY_DEVICE = "mid_sdp/elt/subarray_1"
+from tests.settings import SDP_SUBARRAY_DEVICE, create_cm, logger
 
 
 def get_reset_command_obj():
     input_parameter = SdpSLNInputParameter(None)
-    cm, start_time = create_cm_parametrize(
+    cm, start_time = create_cm(
         "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
     )
     elapsed_time = time.time() - start_time
@@ -45,7 +43,7 @@ def test_telescope_reset_fail_check_allowed(tango_context):
 
     logger.info("%s", tango_context)
     input_parameter = SdpSLNInputParameter(None)
-    cm, start_time = create_cm_parametrize(
+    cm, start_time = create_cm(
         "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
     )
     elapsed_time = time.time() - start_time

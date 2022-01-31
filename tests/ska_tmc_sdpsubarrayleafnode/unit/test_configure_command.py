@@ -10,9 +10,7 @@ from ska_tmc_common.adapters import SdpSubArrayAdapter
 from ska_tmc_sdpsubarrayleafnode.commands.configure_command import Configure
 from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
-from tests.settings import create_cm_parametrize, logger
-
-SDP_SUBARRAY_DEVICE = "mid_sdp/elt/subarray_1"
+from tests.settings import SDP_SUBARRAY_DEVICE, create_cm, logger
 
 
 def get_configure_input_str(configure_input_file="command_Configure.json"):
@@ -24,7 +22,7 @@ def get_configure_input_str(configure_input_file="command_Configure.json"):
 
 def get_configure_command_obj():
     input_parameter = SdpSLNInputParameter(None)
-    cm, start_time = create_cm_parametrize(
+    cm, start_time = create_cm(
         "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
     )
     elapsed_time = time.time() - start_time
@@ -82,7 +80,7 @@ def test_telescope_configure_resources_command_missing_interface_key(
 def test_telescope_configure_command_fail_subarray(tango_context):
     logger.info("%s", tango_context)
     input_parameter = SdpSLNInputParameter(None)
-    cm, start_time = create_cm_parametrize(
+    cm, start_time = create_cm(
         "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
     )
     elapsed_time = time.time() - start_time
