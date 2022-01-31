@@ -10,22 +10,31 @@ from ska_tmc_sdpsubarrayleafnode.commands.telescope_on_command import (
 from ska_tmc_sdpsubarrayleafnode.exceptions import CommandNotAllowed
 from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
-from tests.settings import SDP_SUBARRAY_DEVICE, create_cm, logger
+from tests.settings import (
+    SDP_SUBARRAY_DEVICE,
+    create_cm,
+    get_sdpsln_command_obj,
+    logger,
+)
 
 
+@pytest.mark.sdpsln
 def test_telescope_on_command(tango_context):
     logger.info("%s", tango_context)
-    input_parameter = SdpSLNInputParameter(None)
-    cm, start_time = create_cm(
-        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
+    _, on_command, my_adapter_factory = get_sdpsln_command_obj(
+        TelescopeOn, None
     )
-    elapsed_time = time.time() - start_time
-    logger.info(
-        "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-    )
+    # input_parameter = SdpSLNInputParameter(None)
+    # cm, start_time = create_cm(
+    #     "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
+    # )
+    # elapsed_time = time.time() - start_time
+    # logger.info(
+    #     "checked %s devices in %s", len(cm.checked_devices), elapsed_time
+    # )
 
-    my_adapter_factory = HelperAdapterFactory()
-    on_command = TelescopeOn(cm, cm.op_state_model, my_adapter_factory)
+    # my_adapter_factory = HelperAdapterFactory()
+    # on_command = TelescopeOn(cm, cm.op_state_model, my_adapter_factory)
     assert on_command.check_allowed()
     (result_code, _) = on_command.do()
     assert result_code == ResultCode.OK
@@ -35,7 +44,7 @@ def test_telescope_on_command(tango_context):
         adapter.proxy.On.assert_called()
 
 
-@pytest.mark.telescopeon
+@pytest.mark.sdpsln
 def test_telescope_on_command_fail_sdp_subarray(tango_context):
     logger.info("%s", tango_context)
     input_parameter = SdpSLNInputParameter(None)
@@ -62,18 +71,22 @@ def test_telescope_on_command_fail_sdp_subarray(tango_context):
     assert failing_dev in message
 
 
+@pytest.mark.sdpsln
 def test_telescope_on_fail_check_allowed(tango_context):
 
     logger.info("%s", tango_context)
-    input_parameter = SdpSLNInputParameter(None)
-    cm, start_time = create_cm(
-        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
+    # input_parameter = SdpSLNInputParameter(None)
+    # cm, start_time = create_cm(
+    #     "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
+    # )
+    # elapsed_time = time.time() - start_time
+    # logger.info(
+    #     "checked %s devices in %s", len(cm.checked_devices), elapsed_time
+    # )
+    # my_adapter_factory = HelperAdapterFactory()
+    cm, on_command, my_adapter_factory = get_sdpsln_command_obj(
+        TelescopeOn, None
     )
-    elapsed_time = time.time() - start_time
-    logger.info(
-        "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-    )
-    my_adapter_factory = HelperAdapterFactory()
     cm.input_parameter.sdp_subarray_dev_name = ""
     on_command = TelescopeOn(cm, cm.op_state_model, my_adapter_factory)
     with pytest.raises(CommandNotAllowed):

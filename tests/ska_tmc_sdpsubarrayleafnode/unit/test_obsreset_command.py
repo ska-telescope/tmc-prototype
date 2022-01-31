@@ -13,46 +13,55 @@ from ska_tmc_sdpsubarrayleafnode.exceptions import (
 )
 from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
-from tests.settings import SDP_SUBARRAY_DEVICE, create_cm, logger
+from tests.settings import (
+    SDP_SUBARRAY_DEVICE,
+    create_cm,
+    get_sdpsln_command_obj,
+    logger,
+)
+
+# def get_obsreset_command_obj():
+#     input_parameter = SdpSLNInputParameter(None)
+#     cm, start_time = create_cm(
+#         "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
+#     )
+#     elapsed_time = time.time() - start_time
+#     logger.info(
+#         "checked %s devices in %s", len(cm.checked_devices), elapsed_time
+#     )
+#     dev_name = "mid_sdp/elt/subarray_1"
+
+#     cm.update_device_obs_state(dev_name, ObsState.ABORTED)
+#     my_adapter_factory = HelperAdapterFactory()
+
+#     attrs = {"fetch_skuid.return_value": 123}
+#     skuid = mock.Mock(**attrs)  # is skauid required here?
+
+#     obsreset_command = ObsReset(
+#         cm, cm.op_state_model, my_adapter_factory, skuid
+#     )
+#     cm.get_device(dev_name).obsState == ObsState.IDLE
+#     return obsreset_command, my_adapter_factory
 
 
-def get_obsreset_command_obj():
-    input_parameter = SdpSLNInputParameter(None)
-    cm, start_time = create_cm(
-        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
-    )
-    elapsed_time = time.time() - start_time
-    logger.info(
-        "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-    )
-    dev_name = "mid_sdp/elt/subarray_1"
-
-    cm.update_device_obs_state(dev_name, ObsState.ABORTED)
-    my_adapter_factory = HelperAdapterFactory()
-
-    attrs = {"fetch_skuid.return_value": 123}
-    skuid = mock.Mock(**attrs)  # is skauid required here?
-
-    obsreset_command = ObsReset(
-        cm, cm.op_state_model, my_adapter_factory, skuid
-    )
-    cm.get_device(dev_name).obsState == ObsState.IDLE
-    return obsreset_command, my_adapter_factory
-
-
+@pytest.mark.sdpsaln
 def test_telescope_obsreset_command(tango_context):
     logger.info("%s", tango_context)
-    obsreset_command, my_adapter_factory = get_obsreset_command_obj()
-
+    # obsreset_command, my_adapter_factory = get_obsreset_command_obj()
+    cm, obsreset_command, my_adapter_factory = get_sdpsln_command_obj(
+        ObsReset, obsstate_value=ObsState.ABORTED
+    )
     assert obsreset_command.check_allowed()
     (result_code, _) = obsreset_command.do()
     assert result_code == ResultCode.OK
     dev_name = "mid_sdp/elt/subarray_1"
+    cm.get_device(dev_name).obsState == ObsState.IDLE
     adapter = my_adapter_factory.get_or_create_adapter(dev_name)
     if isinstance(adapter, SdpSubArrayAdapter):
         adapter.proxy.ObsReset.assert_called()
 
 
+@pytest.mark.sdpsaln
 def test_telescope_obsreset_command_fail_subarray(tango_context):
     logger.info("%s", tango_context)
     input_parameter = SdpSLNInputParameter(None)
@@ -85,41 +94,49 @@ def test_telescope_obsreset_command_fail_subarray(tango_context):
     assert failing_dev in message
 
 
+@pytest.mark.sdpsaln
 def test_telescope_obsreset_fail_check_allowed_with_invalid_obsState(
     tango_context,
 ):
 
     logger.info("%s", tango_context)
-    input_parameter = SdpSLNInputParameter(None)
-    cm, start_time = create_cm(
-        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
-    )
-    elapsed_time = time.time() - start_time
-    logger.info(
-        "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-    )
-    dev_name = "mid_sdp/elt/subarray_1"
+    # input_parameter = SdpSLNInputParameter(None)
+    # cm, start_time = create_cm(
+    #     "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
+    # )
+    # elapsed_time = time.time() - start_time
+    # logger.info(
+    #     "checked %s devices in %s", len(cm.checked_devices), elapsed_time
+    # )
+    # dev_name = "mid_sdp/elt/subarray_1"
 
-    cm.update_device_obs_state(dev_name, ObsState.IDLE)
-    my_adapter_factory = HelperAdapterFactory()
-    obsreset_command = ObsReset(cm, cm.op_state_model, my_adapter_factory)
+    # cm.update_device_obs_state(dev_name, ObsState.IDLE)
+    # my_adapter_factory = HelperAdapterFactory()
+    # obsreset_command = ObsReset(cm, cm.op_state_model, my_adapter_factory)
+    _, obsreset_command, _ = get_sdpsln_command_obj(
+        ObsReset, obsstate_value=ObsState.IDLE
+    )
     with pytest.raises(InvalidObsStateError):
         obsreset_command.check_allowed()
 
 
+@pytest.mark.sdpsaln
 def test_telescope_obsreset_fail_check_allowed(tango_context):
 
     logger.info("%s", tango_context)
-    input_parameter = SdpSLNInputParameter(None)
-    cm, start_time = create_cm(
-        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
-    )
-    elapsed_time = time.time() - start_time
-    logger.info(
-        "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-    )
+    # input_parameter = SdpSLNInputParameter(None)
+    # cm, start_time = create_cm(
+    #     "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
+    # )
+    # elapsed_time = time.time() - start_time
+    # logger.info(
+    #     "checked %s devices in %s", len(cm.checked_devices), elapsed_time
+    # )
 
-    my_adapter_factory = HelperAdapterFactory()
+    # my_adapter_factory = HelperAdapterFactory()
+    cm, obsreset_command, my_adapter_factory = get_sdpsln_command_obj(
+        ObsReset, obsstate_value=ObsState.IDLE
+    )
     cm.input_parameter.sdp_subarray_dev_name = ""
     obsreset_command = ObsReset(cm, cm.op_state_model, my_adapter_factory)
     with pytest.raises(CommandNotAllowed):

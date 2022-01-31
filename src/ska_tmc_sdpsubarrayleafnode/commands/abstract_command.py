@@ -230,6 +230,7 @@ class AbstractConfigure(SdpSLNCommand):
             component_manager.input_parameter.sdp_subarray_dev_name
         ).obsState
         if obs_state_val not in (ObsState.READY, ObsState.IDLE):
+            print("::::::::::::::::obsstateis:::::::::::::::", obs_state_val)
             raise InvalidObsStateError(
                 "Configure command is not allowed in current observation state:{obs_state_val}"
             )

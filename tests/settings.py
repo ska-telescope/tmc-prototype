@@ -1,6 +1,7 @@
 import logging
 import time
 
+import mock
 import pytest
 from ska_tmc_common.op_state_model import TMCOpStateModel
 
@@ -10,6 +11,8 @@ from ska_tmc_sdpmasterleafnode.manager.component_manager import (
 from ska_tmc_sdpsubarrayleafnode.manager.component_manager import (
     SdpSLNComponentManager,
 )
+from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
+from tests.helpers.helper_adapter_factory import HelperAdapterFactory
 
 logger = logging.getLogger(__name__)
 
@@ -51,3 +54,27 @@ def create_cm(cm_class, input_parameter, device):
         pytest.fail("Timeout occurred while executing the test")
 
     return cm, start_time
+
+
+def get_sdpsln_command_obj(command_class, obsstate_value=None):
+    input_parameter = SdpSLNInputParameter(None)
+    cm, start_time = create_cm(
+        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
+    )
+    elapsed_time = time.time() - start_time
+    logger.info(
+        "checked %s devices in %s", len(cm.checked_devices), elapsed_time
+    )
+    dev_name = "mid_sdp/elt/subarray_1"
+    cm.update_device_obs_state(dev_name, obsstate_value)
+
+    my_adapter_factory = HelperAdapterFactory()
+
+    attrs = {"fetch_skuid.return_value": 123}
+    skuid = mock.Mock(**attrs)
+
+    command_obj = command_class(
+        cm, cm.op_state_model, my_adapter_factory, skuid
+    )
+    cm.get_device(dev_name).obsState == obsstate_value
+    return cm, command_obj, my_adapter_factory
