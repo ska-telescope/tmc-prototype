@@ -1,5 +1,5 @@
 """
-TelescopeOff command class for SDPMasterLeafNode.
+TelescopeStandby command class for SDPMasterLeafNode.
 """
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterFactory
@@ -9,12 +9,11 @@ from ska_tmc_sdpmasterleafnode.commands.abstract_command import (
 )
 
 
-class TelescopeOff(AbstractTelescopeOnOff):
+class TelescopeStandby(AbstractTelescopeOnOff):
     """
-    A class for SdpMasterLeafNode's TelescopeOff() command.
+    A class for SdpMasterLeafNode's TelescopeStandby() command.
 
-    TelescopeOff command on SdpMasterLeafNode enables the telescope to perform further operations
-    and observations. It Invokes Off command on Sdp Master device.
+    TelescopeStandby command on SdpMasterLeafNode invokes Standby command on Sdp Master device.
 
     """
 
@@ -29,7 +28,7 @@ class TelescopeOff(AbstractTelescopeOnOff):
 
     def do_mid(self, argin):
         """
-        Method to invoke Telescope Off command on Sdp Master.
+        Method to invoke Telescope Standby command on Sdp Master.
 
         """
         ret_code, message = self.init_adapters()
@@ -38,15 +37,13 @@ class TelescopeOff(AbstractTelescopeOnOff):
 
         try:
             self.logger.info(
-                f"Invoking TelescopeOff command on:{self.sdp_master_adapter.dev_name}"
+                f"Invoking TelescopeStandby command on:{self.sdp_master_adapter.dev_name}"
             )
-            self.sdp_master_adapter.Off()
-            self.logger.info(
-                "Off command is successful on Sdp Master device."
-            )
+            self.sdp_master_adapter.Standby()
+            self.logger.info("Standby command is successful on Sdp Master device.")
         except Exception as e:
             return self.generate_command_result(
                 ResultCode.FAILED,
-                f"Error in calling Telescope Off Sdp Master Device {self.sdp_master_adapter.dev_name}: {e}",
+                f"Error in calling Telescope Standby Sdp Master Device {self.sdp_master_adapter.dev_name}: {e}",
             )
         return (ResultCode.OK, "")
