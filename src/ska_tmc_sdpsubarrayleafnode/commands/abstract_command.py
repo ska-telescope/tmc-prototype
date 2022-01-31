@@ -6,9 +6,10 @@ from tango import DevState
 
 from ska_tmc_sdpsubarrayleafnode.exceptions import (
     CommandNotAllowed,
+    DeviceUnresponsive,
     InvalidObsStateError,
 )
-from ska_tmc_sdpsubarrayleafnode.model.input import InputParameterMid
+from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
 
 
 class SdpSLNCommand(TMCCommand):
@@ -18,12 +19,12 @@ class SdpSLNCommand(TMCCommand):
             component_manager.input_parameter.sdp_subarray_dev_name
         )
         if devInfo is None or devInfo.unresponsive:
-            raise CommandNotAllowed("SDP subarray device is not available")
+            raise DeviceUnresponsive("SDP subarray device is not available")
 
     def check_allowed(self):
         component_manager = self.target
 
-        if isinstance(component_manager.input_parameter, InputParameterMid):
+        if isinstance(component_manager.input_parameter, SdpSLNInputParameter):
             result = self.check_allowed_mid()
 
         return result
@@ -31,7 +32,7 @@ class SdpSLNCommand(TMCCommand):
     def init_adapters(self):
         component_manager = self.target
 
-        if isinstance(component_manager.input_parameter, InputParameterMid):
+        if isinstance(component_manager.input_parameter, SdpSLNInputParameter):
             result, message = self.init_adapters_mid()
         return result, message
 
@@ -57,7 +58,7 @@ class SdpSLNCommand(TMCCommand):
 
     def do(self, argin=None):
         component_manager = self.target
-        if isinstance(component_manager.input_parameter, InputParameterMid):
+        if isinstance(component_manager.input_parameter, SdpSLNInputParameter):
             result = self.do_mid(argin)
         return result
 
