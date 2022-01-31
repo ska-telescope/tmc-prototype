@@ -27,29 +27,6 @@ def count_faulty_devices(cm):
     return result
 
 
-# def create_cm(
-#     input_parameter=SdpSLNInputParameter(None),
-# ):
-#     op_state_model = TMCOpStateModel(logger)
-#     cm = SdpSLNComponentManager(
-#         op_state_model,
-#         logger=logger,
-#         _input_parameter=input_parameter,
-#     )
-
-#     if isinstance(input_parameter, SdpSLNInputParameter):
-#         DEVICE = DEVICE_MID
-
-#     cm.add_device(DEVICE)
-#     start_time = time.time()
-#     time.sleep(SLEEP_TIME)
-#     elapsed_time = time.time() - start_time
-#     if elapsed_time > TIMEOUT:
-#         pytest.fail("Timeout occurred while executing the test")
-
-#     return cm, start_time
-
-
 def create_cm_parametrize(cm_class, input_parameter, device):
     op_state_model = TMCOpStateModel(logger)
     if cm_class == "SdpMLNComponentManager":

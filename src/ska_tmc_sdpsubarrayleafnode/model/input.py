@@ -1,11 +1,4 @@
-# TODO: Uncomment below import when ska-tmc-common package is available
-# from ska_tmc_common.input import InputParameter
-class InputParameter:
-    def __init__(self, changed_callback) -> None:
-        self._changed_callback = changed_callback
-
-    def update(self, component_manager):
-        raise NotImplementedError("This class must be inherited!")
+from ska_tmc_common.input import InputParameter
 
 
 class SdpSLNInputParameter(InputParameter):
