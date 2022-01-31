@@ -13,34 +13,19 @@ from ska_tmc_sdpsubarrayleafnode.exceptions import (
 )
 from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
-from tests.settings import SDP_SUBARRAY_DEVICE, create_cm, logger
-
-
-def get_abort_command_obj():
-    input_parameter = SdpSLNInputParameter(None)
-    cm, start_time = create_cm(
-        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
-    )
-    elapsed_time = time.time() - start_time
-    logger.info(
-        "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-    )
-    dev_name = "mid_sdp/elt/subarray_1"
-    cm.update_device_obs_state(dev_name, ObsState.CONFIGURING)
-    my_adapter_factory = HelperAdapterFactory()
-
-    attrs = {"fetch_skuid.return_value": 123}
-    skuid = mock.Mock(**attrs)
-
-    abort_command = Abort(cm, cm.op_state_model, my_adapter_factory, skuid)
-    cm.get_device(dev_name).obsState == ObsState.ABORTED
-
-    return abort_command, my_adapter_factory
+from tests.settings import (
+    SDP_SUBARRAY_DEVICE,
+    create_cm,
+    get_sdpsln_command_obj,
+    logger,
+)
 
 
 def test_telescope_abort_command(tango_context):
     logger.info("%s", tango_context)
-    abort_command, my_adapter_factory = get_abort_command_obj()
+    _, abort_command, my_adapter_factory = get_sdpsln_command_obj(
+        Abort, ObsState.CONFIGURING
+    )
 
     assert abort_command.check_allowed()
     (result_code, _) = abort_command.do()
@@ -87,19 +72,20 @@ def test_telescope_abort_command_fail_check_allowed_with_invalid_obsState(
 ):
 
     logger.info("%s", tango_context)
-    input_parameter = SdpSLNInputParameter(None)
-    cm, start_time = create_cm(
-        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
-    )
-    elapsed_time = time.time() - start_time
-    logger.info(
-        "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-    )
-    dev_name = "mid_sdp/elt/subarray_1"
+    # input_parameter = SdpSLNInputParameter(None)
+    # cm, start_time = create_cm(
+    #     "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
+    # )
+    # elapsed_time = time.time() - start_time
+    # logger.info(
+    #     "checked %s devices in %s", len(cm.checked_devices), elapsed_time
+    # )
+    # dev_name = "mid_sdp/elt/subarray_1"
 
-    cm.update_device_obs_state(dev_name, ObsState.ABORTED)
-    my_adapter_factory = HelperAdapterFactory()
-    abort_command = Abort(cm, cm.op_state_model, my_adapter_factory)
+    # cm.update_device_obs_state(dev_name, ObsState.ABORTED)
+    # my_adapter_factory = HelperAdapterFactory()
+    # abort_command = Abort(cm, cm.op_state_model, my_adapter_factory)
+    _, abort_command, _ = get_sdpsln_command_obj(Abort, ObsState.ABORTED)
     with pytest.raises(InvalidObsStateError):
         abort_command.check_allowed()
 
@@ -107,17 +93,17 @@ def test_telescope_abort_command_fail_check_allowed_with_invalid_obsState(
 def test_telescope_abort_command_fail_check_allowed(tango_context):
 
     logger.info("%s", tango_context)
-    input_parameter = SdpSLNInputParameter(None)
-    cm, start_time = create_cm(
-        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
-    )
-    elapsed_time = time.time() - start_time
-    logger.info(
-        "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-    )
+    # input_parameter = SdpSLNInputParameter(None)
+    # cm, start_time = create_cm(
+    #     "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
+    # )
+    # elapsed_time = time.time() - start_time
+    # logger.info(
+    #     "checked %s devices in %s", len(cm.checked_devices), elapsed_time
+    # )
 
-    my_adapter_factory = HelperAdapterFactory()
+    # my_adapter_factory = HelperAdapterFactory()
+    cm, abort_command, _ = get_sdpsln_command_obj(Abort, ObsState.ABORTED)
     cm.input_parameter.sdp_subarray_dev_name = ""
-    abort_command = Abort(cm, cm.op_state_model, my_adapter_factory)
     with pytest.raises(CommandNotAllowed):
         abort_command.check_allowed()
