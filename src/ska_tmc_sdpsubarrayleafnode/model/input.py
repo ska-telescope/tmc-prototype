@@ -1,12 +1,7 @@
-class InputParameter:
-    def __init__(self, changed_callback) -> None:
-        self._changed_callback = changed_callback
-
-    def update(self, component_manager):
-        raise NotImplementedError("This class must be inherited!")
+from ska_tmc_common.input import InputParameter
 
 
-class InputParameterMid(InputParameter):
+class SdpSLNInputParameter(InputParameter):
     def __init__(self, changed_callback) -> None:
         super().__init__(changed_callback)
         self._sdp_subarray_dev_name = "mid_sdp/elt/subarray_1"

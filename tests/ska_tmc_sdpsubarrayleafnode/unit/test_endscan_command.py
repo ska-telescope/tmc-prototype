@@ -7,41 +7,43 @@ from ska_tmc_common.adapters import SdpSubArrayAdapter
 
 from ska_tmc_sdpsubarrayleafnode.commands.endscan_command import EndScan
 from ska_tmc_sdpsubarrayleafnode.exceptions import (
-    CommandNotAllowed,
+    DeviceUnresponsive,
     InvalidObsStateError,
 )
+from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
-from tests.settings import create_cm, logger
+from tests.settings import (
+    SDP_SUBARRAY_DEVICE,
+    create_cm,
+    get_sdpsln_command_obj,
+    logger,
+)
 
 
+@pytest.mark.sdpsaln
 def test_endscan_command(tango_context):
     logger.info("%s", tango_context)
-    cm, start_time = create_cm()
-    elapsed_time = time.time() - start_time
-    logger.info(
-        "checked %s devices in %s", len(cm.checked_devices), elapsed_time
+    cm, endscan_command, my_adapter_factory = get_sdpsln_command_obj(
+        EndScan, obsstate_value=ObsState.SCANNING
     )
-
-    my_adapter_factory = HelperAdapterFactory()
-    dev_name = "mid_sdp/elt/subarray_1"
-    cm.update_device_obs_state(dev_name, ObsState.SCANNING)
-    endscan_command = EndScan(cm, cm.op_state_model, my_adapter_factory)
-
-    cm.get_device(dev_name).obsState == ObsState.READY
-
     assert endscan_command.check_allowed()
     (result_code, _) = endscan_command.do()
     assert result_code == ResultCode.OK
     dev_name = "mid_sdp/elt/subarray_1"
+    cm.get_device(dev_name).obsState == ObsState.READY
     adapter = my_adapter_factory.get_or_create_adapter(dev_name)
     if isinstance(adapter, SdpSubArrayAdapter):
         adapter.proxy.EndScan.assert_called()
 
 
+@pytest.mark.sdpsaln
 def test_endscan_fail_check_allowed(tango_context):
 
     logger.info("%s", tango_context)
-    cm, start_time = create_cm()
+    input_parameter = SdpSLNInputParameter(None)
+    cm, start_time = create_cm(
+        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
+    )
     elapsed_time = time.time() - start_time
     logger.info(
         "checked %s devices in %s", len(cm.checked_devices), elapsed_time
@@ -49,24 +51,19 @@ def test_endscan_fail_check_allowed(tango_context):
     my_adapter_factory = HelperAdapterFactory()
     cm.input_parameter.sdp_subarray_dev_name = ""
     endscan_command = EndScan(cm, cm.op_state_model, my_adapter_factory)
-    with pytest.raises(CommandNotAllowed):
+    cm.input_parameter.sdp_subarray_dev_name = ""
+    with pytest.raises(DeviceUnresponsive):
         endscan_command.check_allowed()
 
 
+@pytest.mark.sdpsaln
 def test_endscan_fail_check_allowed_with_invalid_obsState(
     tango_context,
 ):
 
     logger.info("%s", tango_context)
-    cm, start_time = create_cm()
-    elapsed_time = time.time() - start_time
-    logger.info(
-        "checked %s devices in %s", len(cm.checked_devices), elapsed_time
+    _, endscan_command, _ = get_sdpsln_command_obj(
+        EndScan, obsstate_value=ObsState.IDLE
     )
-    dev_name = "mid_sdp/elt/subarray_1"
-
-    cm.update_device_obs_state(dev_name, ObsState.IDLE)
-    my_adapter_factory = HelperAdapterFactory()
-    release_command = EndScan(cm, cm.op_state_model, my_adapter_factory)
     with pytest.raises(InvalidObsStateError):
-        release_command.check_allowed()
+        endscan_command.check_allowed()
