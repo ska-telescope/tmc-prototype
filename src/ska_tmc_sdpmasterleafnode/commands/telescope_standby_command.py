@@ -40,7 +40,9 @@ class TelescopeStandby(AbstractTelescopeOnOff):
                 f"Invoking TelescopeStandby command on:{self.sdp_master_adapter.dev_name}"
             )
             self.sdp_master_adapter.Standby()
-            self.logger.info("Standby command is successful on Sdp Master device.")
+            self.logger.info(
+                "Standby command is successful on Sdp Master device."
+            )
         except Exception as e:
             return self.generate_command_result(
                 ResultCode.FAILED,

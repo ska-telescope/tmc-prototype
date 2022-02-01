@@ -44,6 +44,16 @@ class SdpMLNComponent(TmcComponent):
                 return devInfo
         return None
 
+    def remove_device(self, dev_name):
+        """
+        Remove a device from the list
+
+        :param dev_name: name of the device
+        """
+        for devInfo in self.devices:
+            if devInfo.dev_name == dev_name:
+                self.devices.remove(devInfo)
+
     def update_device(self, devInfo):
         """
         Update (or add if missing) Device Information into the list of the component.

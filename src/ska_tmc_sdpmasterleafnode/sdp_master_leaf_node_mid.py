@@ -6,13 +6,13 @@ from ska_tango_base.commands import ResultCode
 from tango import AttrWriteType
 from tango.server import attribute, device_property, run
 
-# from ska_tmc_sdpmasterleafnode.commands.telescope_off_command import (
-#     TelescopeOff,
-# )
-# from ska_tmc_sdpmasterleafnode.commands.telescope_on_command import TelescopeOn
-# from ska_tmc_sdpmasterleafnode.commands.telescope_standby_command import (
-#     TelescopeStandby,
-# )
+from ska_tmc_sdpmasterleafnode.commands.telescope_off_command import (
+    TelescopeOff,
+)
+from ska_tmc_sdpmasterleafnode.commands.telescope_on_command import TelescopeOn
+from ska_tmc_sdpmasterleafnode.commands.telescope_standby_command import (
+    TelescopeStandby,
+)
 from ska_tmc_sdpmasterleafnode.sdp_master_leaf_node import (
     AbstractSdpMasterLeafNode,
 )
@@ -82,19 +82,19 @@ class SdpMasterLeafNodeMid(AbstractSdpMasterLeafNode):
         """
         super().init_command_objects()
         # TODO:Uncomment below code once commands refactoring AT1-1061 is done
-        # args = ()
-        # for (command_name, command_class) in [
-        #     ("TelescopeOn", TelescopeOn),
-        #     ("TelescopeOff", TelescopeOff),
-        #     ("TelescopeStandby", TelescopeStandby),
-        # ]:
-        #     command_obj = command_class(
-        #         self.component_manager,
-        #         self.op_state_model,
-        #         *args,
-        #         logger=self.logger,
-        #     )
-        #     self.register_command_object(command_name, command_obj)
+        args = ()
+        for (command_name, command_class) in [
+            ("TelescopeOn", TelescopeOn),
+            ("TelescopeOff", TelescopeOff),
+            ("TelescopeStandby", TelescopeStandby),
+        ]:
+            command_obj = command_class(
+                self.component_manager,
+                self.op_state_model,
+                *args,
+                logger=self.logger,
+            )
+            self.register_command_object(command_name, command_obj)
 
 
 # ----------
