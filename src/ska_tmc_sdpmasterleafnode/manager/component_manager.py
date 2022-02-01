@@ -30,7 +30,7 @@ class SdpMLNComponentManager(TmcComponentManager):
         _update_device_callback=None,
         _update_command_in_progress_callback=None,
         _monitoring_loop=False,
-        _event_receiver=True,
+        _event_receiver=False,
         max_workers=1,
         proxy_timeout=500,
         sleep_time=1,
