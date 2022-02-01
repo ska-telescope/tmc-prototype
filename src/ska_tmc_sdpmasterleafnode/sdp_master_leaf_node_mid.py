@@ -9,15 +9,16 @@ from tango.server import attribute, device_property, run
 from ska_tmc_sdpmasterleafnode.commands.telescope_off_command import (
     TelescopeOff,
 )
-from ska_tmc_sdpmasterleafnode.commands.telescope_on_command import (
-    TelescopeOn,
-)
+from ska_tmc_sdpmasterleafnode.commands.telescope_on_command import TelescopeOn
 from ska_tmc_sdpmasterleafnode.commands.telescope_standby_command import (
     TelescopeStandby,
 )
 from ska_tmc_sdpmasterleafnode.sdp_master_leaf_node import (
     AbstractSdpMasterLeafNode,
 )
+
+# TODO:Uncomment below imports once commands refactoring AT1-1061 is done
+
 
 __all__ = ["SdpMasterLeafNodeMid", "main"]
 
@@ -59,7 +60,7 @@ class SdpMasterLeafNodeMid(AbstractSdpMasterLeafNode):
                 (ResultCode, str)
             """
             super().do()
-            
+
             return (ResultCode.OK, "")
 
     # ------------------
@@ -80,6 +81,7 @@ class SdpMasterLeafNodeMid(AbstractSdpMasterLeafNode):
         Initialises the command handlers for commands supported by this device.
         """
         super().init_command_objects()
+        # TODO:Uncomment below code once commands refactoring AT1-1061 is done
         args = ()
         for (command_name, command_class) in [
             ("TelescopeOn", TelescopeOn),
@@ -93,14 +95,6 @@ class SdpMasterLeafNodeMid(AbstractSdpMasterLeafNode):
                 logger=self.logger,
             )
             self.register_command_object(command_name, command_obj)
-        # self.register_command_object(
-        #     "Reset",
-        #     Reset(
-        #         self.component_manager,
-        #         self.op_state_model,
-        #         self.logger,
-        #     ),
-        #)
 
 
 # ----------

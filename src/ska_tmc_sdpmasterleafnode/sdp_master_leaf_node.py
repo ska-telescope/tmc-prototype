@@ -9,7 +9,7 @@ from ska_tmc_common.op_state_model import TMCOpStateModel
 from tango import AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property
 
-from ska_tmc_sdpmastereleafnode import release
+from ska_tmc_sdpmasterleafnode import release
 from ska_tmc_sdpmasterleafnode.manager.component_manager import (
     SdpMLNComponentManager,
 )
@@ -38,19 +38,12 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
         max_dim_y=100,
     )
 
-    lastDeviceInfoChanged = attribute(
-        dtype="DevString",
-        access=AttrWriteType.READ,
-        doc="Json String representing the last device changed in the internal model.",
-    )
+    
 
     # ---------------
     # General methods
     # ---------------
 
-    def update_device_callback(self, devInfo):
-        self._LastDeviceInfoChanged = devInfo.to_json()
-        self.push_change_event("lastDeviceInfoChanged", devInfo.to_json())
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
@@ -78,7 +71,7 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
             device._LastDeviceInfoChanged = ""
 
             device.op_state_model.perform_action("component_on")
-            device.component_manager.command_executor.add_command_execution(
+            device.component_manager._command_executor.add_command_execution(
                 "0", "Init", ResultCode.OK, ""
             )
             return (ResultCode.OK, "")
@@ -92,15 +85,13 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
         if hasattr(self, "component_manager"):
             self.component_manager.stop()
 
-    def read_lastDeviceInfoChanged(self):
-        return self._LastDeviceInfoChanged
 
     def read_commandExecuted(self):
         """Return the commandExecuted attribute."""
         result = []
         i = 0
         for command_executed in reversed(
-            self.component_manager.command_executor.command_executed
+            self.component_manager._command_executor.command_executed
         ):
             if i == 100:
                 break
@@ -135,9 +126,9 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
         This command invokes Off() command on Sdp Master.
         """
         handler = self.get_command_object("TelescopeOff")
-        if self.component_manager.command_executor.queue_full:
+        if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
-        unique_id = self.component_manager.command_executor.enqueue_command(
+        unique_id = self.component_manager._command_executor.enqueue_command(
             handler
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
@@ -160,13 +151,13 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
         This command invokes On() command on Sdp Master.
         """
         handler = self.get_command_object("TelescopeOn")
-        if self.component_manager.command_executor.queue_full:
+        if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
-        unique_id = self.component_manager.command_executor.enqueue_command(
+        unique_id = self.component_manager._command_executor.enqueue_command(
             handler
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
-    
+
     def is_TelescopeStandby_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state.
@@ -185,9 +176,9 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
         This command invokes Standby() command on Sdp Master.
         """
         handler = self.get_command_object("TelescopeStandby")
-        if self.component_manager.command_executor.queue_full:
+        if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
-        unique_id = self.component_manager.command_executor.enqueue_command(
+        unique_id = self.component_manager._command_executor.enqueue_command(
             handler
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
@@ -201,7 +192,6 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
             self.op_state_model,
             _input_parameter=SdpMLNInputParameter(None),
             logger=self.logger,
-            _update_device_callback=self.update_device_callback,
             sleep_time=self.SleepTime,
         )
         cm.input_parameter.sdp_master_dev_name = self.SdpMasterFQDN or ""
