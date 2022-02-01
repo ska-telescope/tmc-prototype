@@ -100,7 +100,7 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
         result = []
         i = 0
         for command_executed in reversed(
-            self.component_manager.command_executor.command_executed
+            self.component_manager._command_executor.command_executed
         ):
             if i == 100:
                 break
@@ -135,9 +135,9 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
         This command invokes Off() command on Sdp Master.
         """
         handler = self.get_command_object("TelescopeOff")
-        if self.component_manager.command_executor.queue_full:
+        if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
-        unique_id = self.component_manager.command_executor.enqueue_command(
+        unique_id = self.component_manager._command_executor.enqueue_command(
             handler
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
@@ -160,9 +160,9 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
         This command invokes On() command on Sdp Master.
         """
         handler = self.get_command_object("TelescopeOn")
-        if self.component_manager.command_executor.queue_full:
+        if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
-        unique_id = self.component_manager.command_executor.enqueue_command(
+        unique_id = self.component_manager._command_executor.enqueue_command(
             handler
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
@@ -185,9 +185,9 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
         This command invokes Standby() command on Sdp Master.
         """
         handler = self.get_command_object("TelescopeStandby")
-        if self.component_manager.command_executor.queue_full:
+        if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
-        unique_id = self.component_manager.command_executor.enqueue_command(
+        unique_id = self.component_manager._command_executor.enqueue_command(
             handler
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
