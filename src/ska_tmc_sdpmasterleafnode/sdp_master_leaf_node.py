@@ -6,7 +6,7 @@ It also acts as a SDP contact point for Master Node for observation execution
 from ska_tango_base import SKABaseDevice
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.op_state_model import TMCOpStateModel
-from tango import DebugIt
+from tango import AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property
 
 from ska_tmc_sdpmasterleafnode import release
@@ -38,9 +38,19 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
         max_dim_y=100,
     )
 
+    lastDeviceInfoChanged = attribute(
+        dtype="DevString",
+        access=AttrWriteType.READ,
+        doc="Json String representing the last device changed in the internal model.",
+    )
+
     # ---------------
     # General methods
     # ---------------
+
+    def update_device_callback(self, devInfo):
+        self._LastDeviceInfoChanged = devInfo.to_json()
+        self.push_change_event("lastDeviceInfoChanged", devInfo.to_json())
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
@@ -81,6 +91,9 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
         # I need to stop all threads
         if hasattr(self, "component_manager"):
             self.component_manager.stop()
+
+    def read_lastDeviceInfoChanged(self):
+        return self._LastDeviceInfoChanged
 
     def read_commandExecuted(self):
         """Return the commandExecuted attribute."""
@@ -188,6 +201,7 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
             self.op_state_model,
             _input_parameter=SdpMLNInputParameter(None),
             logger=self.logger,
+            _update_device_callback=self.update_device_callback,
             sleep_time=self.SleepTime,
         )
         cm.input_parameter.sdp_master_dev_name = self.SdpMasterFQDN or ""
