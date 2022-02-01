@@ -199,5 +199,5 @@ class SdpMasterAdapter(BaseAdapter):
     def Off(self):
         self._proxy.Off()
 
-    def StandBy(self):
-        self._proxy.StandBy()
+    def Standby(self):
+        self._proxy.Standby()
