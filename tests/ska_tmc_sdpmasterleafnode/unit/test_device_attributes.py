@@ -26,6 +26,7 @@ def sdpmln_device(request):
             yield tango.DeviceProxy(instance)
             break
 
+
 @pytest.mark.sdpmln
 def test_attributes(sdpmln_device):
     assert sdpmln_device.State() == DevState.ON

@@ -1,5 +1,7 @@
 import pytest
+
 from ska_tmc_sdpmasterleafnode.model.input import SdpMLNInputParameter
+
 
 @pytest.mark.sdpmln
 def test_properties():
