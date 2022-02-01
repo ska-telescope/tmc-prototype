@@ -38,6 +38,11 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
         max_dim_y=100,
     )
 
+    lastDeviceInfoChanged = attribute(
+        dtype="DevString",
+        access=AttrWriteType.READ,
+        doc="Json String representing the last device changed in the internal model.",
+    )
     
 
     # ---------------
@@ -71,9 +76,9 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
             device._LastDeviceInfoChanged = ""
 
             device.op_state_model.perform_action("component_on")
-            # device.component_manager._command_executor.add_command_execution(
-            #     "0", "Init", ResultCode.OK, ""
-            # )
+            device.component_manager._command_executor.add_command_execution(
+                "0", "Init", ResultCode.OK, ""
+            )
             return (ResultCode.OK, "")
 
     def always_executed_hook(self):
@@ -85,6 +90,8 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
         if hasattr(self, "component_manager"):
             self.component_manager.stop()
 
+    def read_lastDeviceInfoChanged(self):
+        return self._LastDeviceInfoChanged
 
     def read_commandExecuted(self):
         """Return the commandExecuted attribute."""
@@ -192,6 +199,7 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
             self.op_state_model,
             _input_parameter=SdpMLNInputParameter(None),
             logger=self.logger,
+            _update_device_callback=self.update_device_callback,
             sleep_time=self.SleepTime,
         )
         cm.input_parameter.sdp_master_dev_name = self.SdpMasterFQDN or ""
