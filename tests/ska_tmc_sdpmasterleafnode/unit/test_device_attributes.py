@@ -26,20 +26,20 @@ def sdpmln_device(request):
             yield tango.DeviceProxy(instance)
             break
 
-
-def test_attributes(sdplmn_device):
-    assert sdplmn_device.State() == DevState.ON
-    sdplmn_device.loggingTargets = ["console::cout"]
-    assert "console::cout" in sdplmn_device.loggingTargets
-    sdplmn_device.testMode = TestMode.NONE
-    assert sdplmn_device.testMode == TestMode.NONE
-    sdplmn_device.simulationMode = SimulationMode.FALSE
-    assert sdplmn_device.testMode == SimulationMode.FALSE
-    sdplmn_device.controlMode = ControlMode.REMOTE
-    assert sdplmn_device.controlMode == ControlMode.REMOTE
-    sdplmn_device.sdpMasterDevName = "sdpmln"
-    assert sdplmn_device.sdpMasterDevName == "sdpmln"
-    assert sdplmn_device.versionId == release.version
-    assert sdplmn_device.buildState == (
+@pytest.mark.sdpmln
+def test_attributes(sdpmln_device):
+    assert sdpmln_device.State() == DevState.ON
+    sdpmln_device.loggingTargets = ["console::cout"]
+    assert "console::cout" in sdpmln_device.loggingTargets
+    sdpmln_device.testMode = TestMode.NONE
+    assert sdpmln_device.testMode == TestMode.NONE
+    sdpmln_device.simulationMode = SimulationMode.FALSE
+    assert sdpmln_device.testMode == SimulationMode.FALSE
+    sdpmln_device.controlMode = ControlMode.REMOTE
+    assert sdpmln_device.controlMode == ControlMode.REMOTE
+    sdpmln_device.sdpMasterDevName = "sdpmln"
+    assert sdpmln_device.sdpMasterDevName == "sdpmln"
+    assert sdpmln_device.versionId == release.version
+    assert sdpmln_device.buildState == (
         "{},{},{}".format(release.name, release.version, release.description)
     )

@@ -9,7 +9,7 @@ from ska_tmc_common.op_state_model import TMCOpStateModel
 from tango import AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property
 
-from ska_tmc_sdpmastereleafnode import release
+from ska_tmc_sdpmasterleafnode import release
 from ska_tmc_sdpmasterleafnode.manager.component_manager import (
     SdpMLNComponentManager,
 )
@@ -78,7 +78,7 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
             device._LastDeviceInfoChanged = ""
 
             device.op_state_model.perform_action("component_on")
-            device.component_manager.command_executor.add_command_execution(
+            device.component_manager._command_executor.add_command_execution(
                 "0", "Init", ResultCode.OK, ""
             )
             return (ResultCode.OK, "")
@@ -166,7 +166,7 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
             handler
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
-    
+
     def is_TelescopeStandby_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state.
