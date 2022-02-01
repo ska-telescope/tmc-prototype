@@ -5,6 +5,10 @@ class InvalidObsStateError(ValueError):
     """Raised when the device obsState does not allow to invoke the command as per SKA state model"""
 
 
+class DeviceUnresponsive(Exception):
+    """Raised when a device is not responsive."""
+
+
 class ResourceReassignmentError(Exception):
     """Raised when the resource is already assigned to another subarray"""
 

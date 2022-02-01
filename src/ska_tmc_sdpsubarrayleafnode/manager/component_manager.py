@@ -6,12 +6,10 @@ package.
 """
 import time
 
+from ska_tmc_common.command_executor import CommandExecutor
 from ska_tmc_common.device_info import DeviceInfo, SubArrayDeviceInfo
 from ska_tmc_common.tmc_component_manager import TmcComponentManager
 
-from ska_tmc_sdpsubarrayleafnode.manager.command_executor import (
-    CommandExecutor,
-)
 from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
     SdpSLNEventReceiver,
 )

@@ -21,7 +21,7 @@ def get_configure_input_str(path):
     return configure_input_str
 
 
-def restart(
+def abort(
     tango_context,
     sdpsaln_name,
     assign_input_str,
@@ -41,18 +41,16 @@ def restart(
     assert sdp_subarray.obsState == ObsState.IDLE
     time.sleep(SLEEP_TIME)
     (result, unique_id) = sdpsal_node.Configure(configure_input_str)
+
+    sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
     sdp_subarray.SetDirectObsState(ObsState.READY)
     assert sdp_subarray.obsState == ObsState.READY
     time.sleep(SLEEP_TIME)
     (result, unique_id) = sdpsal_node.Abort()
-    sdp_subarray.SetDirectObsState(ObsState.ABORTED)
-    assert sdp_subarray.obsState == ObsState.ABORTED
-    time.sleep(SLEEP_TIME)
-    (result, unique_id) = sdpsal_node.Restart()
 
     assert result[0] == ResultCode.QUEUED
     start_time = time.time()
-    while len(sdpsal_node.commandExecuted) != initial_len + 5:
+    while len(sdpsal_node.commandExecuted) != initial_len + 4:
         time.sleep(SLEEP_TIME)
         elapsed_time = time.time() - start_time
         if elapsed_time > TIMEOUT:
@@ -71,19 +69,25 @@ def restart(
     "sdpsaln_name",
     [("ska_mid/tm_leaf_node/sdp_subarray01")],
 )
-def test_restart_command_mid(
+def test_abort_command_mid(
     tango_context,
     sdpsaln_name,
 ):
-    return restart(
+    return abort(
         tango_context,
         sdpsaln_name,
         get_assign_input_str(
             join(
-                dirname(__file__), "..", "data", "command_AssignResources.json"
+                dirname(__file__),
+                "..",
+                "..",
+                "data",
+                "command_AssignResources.json",
             )
         ),
         get_configure_input_str(
-            join(dirname(__file__), "..", "data", "command_Configure.json")
+            join(
+                dirname(__file__), "..", "..", "data", "command_Configure.json"
+            )
         ),
     )

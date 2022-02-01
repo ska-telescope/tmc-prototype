@@ -70,10 +70,6 @@ class SdpSubarrayLeafNodeMid(AbstractSdpSubarrayLeafNode):
                 (ResultCode, str)
             """
             super().do()
-            # device = self.target
-
-            # device.set_change_event("imaging", True, False)
-
             return (ResultCode.OK, "")
 
     # ------------------

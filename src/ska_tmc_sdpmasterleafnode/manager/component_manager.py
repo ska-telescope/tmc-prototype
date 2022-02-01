@@ -2,10 +2,11 @@
 This module implements ComponentManager class for the Sdp Master Leaf Node.
 """
 
+# from ska_tmc_sdpmasterleafnode.manager.command_executor import CommandExecutor
+from ska_tmc_common.command_executor import CommandExecutor
 from ska_tmc_common.device_info import DeviceInfo
 from ska_tmc_common.tmc_component_manager import TmcComponentManager
 
-from ska_tmc_sdpmasterleafnode.manager.command_executor import CommandExecutor
 from ska_tmc_sdpmasterleafnode.model.component import SdpMLNComponent
 
 
@@ -29,7 +30,7 @@ class SdpMLNComponentManager(TmcComponentManager):
         _update_device_callback=None,
         _update_command_in_progress_callback=None,
         _monitoring_loop=False,
-        _event_receiver=True,
+        _event_receiver=False,
         max_workers=1,
         proxy_timeout=500,
         sleep_time=1,
@@ -61,8 +62,11 @@ class SdpMLNComponentManager(TmcComponentManager):
         )
 
         self.component = _component or SdpMLNComponent(logger)
+        self.devices = self.component.devices
+
         self.component.set_op_callbacks(_update_device_callback)
         self._input_parameter = _input_parameter
+
         self._command_executor = CommandExecutor(
             logger,
             _update_command_in_progress_callback=_update_command_in_progress_callback,

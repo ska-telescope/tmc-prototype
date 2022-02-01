@@ -12,8 +12,8 @@
 name = """ska_tmc_sdpmasterleafnode_mid"""
 version = "0.8.7"
 version_info = version.split(".")
-description = """ The primary responsibility of the SDP Subarray
-                  Leaf node is to monitor the SDP Subarray
+description = """ The primary responsibility of the SDP Master
+                  Leaf node is to monitor the SDP Master
                   and issue control actions during an observation."""
 author = "Team NCRA"
 author_email = "telmgt-internal@googlegroups.com"

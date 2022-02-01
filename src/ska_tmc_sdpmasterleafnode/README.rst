@@ -1,8 +1,8 @@
 ## SdpMasterLeafNode
 
-The primary responsibility of the SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
-actions during an observation. It also acts as a SDP contact point for Subarray Node for observation
-execution. There is one to one mapping between SDP Subarray Leaf Node and SDP subarray.
+The primary responsibility of the SDP Master Leaf node is to monitor the SDP Master and issue control
+actions during an observation. It also acts as a SDP contact point for Master Node for observation
+execution. There is one to one mapping between SDP Master Leaf Node and SDP Master.
 
 ## Requirement
 
