@@ -7,3 +7,7 @@ class InvalidJSONError(ValidationError):
 
 class CommandNotAllowed(Exception):
     """Raised when a command is not allowed."""
+
+
+class DeviceUnresponsive(Exception):
+    """Raised when a device is not responsive."""

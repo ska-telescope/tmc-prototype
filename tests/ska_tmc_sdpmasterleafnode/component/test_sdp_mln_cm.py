@@ -5,8 +5,6 @@ import pytest
 from ska_tmc_sdpmasterleafnode.model.input import SdpMLNInputParameter
 from tests.settings import count_faulty_devices, create_cm, logger
 
-# from ska_tmc_common.device_info import DeviceInfo
-
 SDP_MASTER_DEVICE = "mid_sdp/elt/master"
 
 

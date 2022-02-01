@@ -88,13 +88,13 @@ def get_sdpmln_command_obj(command_class):
     logger.info(
         "checked %s devices in %s", len(cm.checked_devices), elapsed_time
     )
-    # dev_name = "mid_sdp/elt/subarray_1"
-    # cm.update_device_obs_state(dev_name, obsstate_value)
 
-    adapter_factory = HelperAdapterFactory()
+    my_adapter_factory = HelperAdapterFactory()
 
     attrs = {"fetch_skuid.return_value": 123}
     skuid = mock.Mock(**attrs)
 
-    command_obj = command_class(cm, cm.op_state_model, adapter_factory, skuid)
-    return cm, command_obj, adapter_factory
+    command_obj = command_class(
+        cm, cm.op_state_model, my_adapter_factory, skuid
+    )
+    return cm, command_obj, my_adapter_factory

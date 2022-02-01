@@ -1,40 +1,33 @@
-# import time
-
 import pytest
 from ska_tango_base.commands import ResultCode
-from ska_tmc_common.adapters import BaseAdapter
 
 from ska_tmc_sdpmasterleafnode.commands.telescope_on_command import TelescopeOn
+from ska_tmc_sdpmasterleafnode.manager.adapters import SdpMasterAdapter
+from tests.settings import SDP_MASTER_DEVICE, get_sdpmln_command_obj, logger
 
-# from ska_tmc_sdpsubarrayleafnode.exceptions import DeviceUnresponsive
-# from ska_tmc_sdpmasterleafnode.model.input import SdpMLNInputParameter
-# from tests.helpers.helper_adapter_factory import HelperAdapterFactory
-from tests.settings import (  # create_cm,
-    SDP_MASTER_DEVICE,
-    get_sdpmln_command_obj,
-    logger,
-)
+# TODO: Uncomment below imports while using Adapter class from ska-tmc-common library
+# from ska_tmc_common.adapters import SdpMasterAdapter
 
 
 @pytest.mark.sdpmln
 def test_telescope_on_command(tango_context):
     logger.info("%s", tango_context)
-    _, on_command, adapter_factory = get_sdpmln_command_obj(TelescopeOn, None)
+    _, on_command, adapter_factory = get_sdpmln_command_obj(TelescopeOn)
     assert on_command.check_allowed()
     (result_code, _) = on_command.do()
     assert result_code == ResultCode.OK
     # dev_name = SDP_MASTER_DEVICE
     adapter = adapter_factory.get_or_create_adapter(SDP_MASTER_DEVICE)
-    if isinstance(adapter_factory.adapters, BaseAdapter):
+    if isinstance(adapter_factory.adapters, SdpMasterAdapter):
         adapter.proxy.On.assert_called()
 
 
 # @pytest.mark.sdpmln
 # def test_telescope_on_command_fail_sdp_subarray(tango_context):
 #     logger.info("%s", tango_context)
-#     input_parameter = SdpSLNInputParameter(None)
+#     input_parameter = SdpMLNInputParameter(None)
 #     cm, start_time = create_cm(
-#         "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
+#         "SdpMLNComponentManager", input_parameter, SDP_MASTER_DEVICE
 #     )
 #     elapsed_time = time.time() - start_time
 #     logger.info(
@@ -60,7 +53,7 @@ def test_telescope_on_command(tango_context):
 # def test_telescope_on_fail_check_allowed(tango_context):
 
 #     logger.info("%s", tango_context)
-#     cm, on_command, _ = get_sdpsln_command_obj(TelescopeOn, None)
-#     cm.input_parameter.sdp_subarray_dev_name = ""
+#     cm, on_command, _ = get_sdpmln_command_obj(TelescopeOn)
+#     cm.input_parameter.sdp_master_dev_name = ""
 #     with pytest.raises(DeviceUnresponsive):
 #         on_command.check_allowed()
