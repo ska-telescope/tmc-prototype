@@ -8,13 +8,13 @@ from ska_tmc_common.op_state_model import TMCOpStateModel
 from ska_tmc_sdpmasterleafnode.manager.component_manager import (
     SdpMLNComponentManager,
 )
+from ska_tmc_sdpmasterleafnode.model.input import SdpMLNInputParameter
 from ska_tmc_sdpsubarrayleafnode.manager.component_manager import (
     SdpSLNComponentManager,
 )
 from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
 
-from ska_tmc_sdpmasterleafnode.model.input import SdpMLNInputParameter
 logger = logging.getLogger(__name__)
 
 SLEEP_TIME = 0.5
@@ -22,6 +22,7 @@ TIMEOUT = 100
 
 SDP_SUBARRAY_DEVICE = "mid_sdp/elt/subarray_1"
 SDP_MASTER_DEVICE = "mid_sdp/elt/master"
+
 
 def count_faulty_devices(cm):
     result = 0
@@ -74,9 +75,7 @@ def get_sdpsln_command_obj(command_class, obsstate_value=None):
     attrs = {"fetch_skuid.return_value": 123}
     skuid = mock.Mock(**attrs)
 
-    command_obj = command_class(
-        cm, cm.op_state_model, adapter_factory, skuid
-    )
+    command_obj = command_class(cm, cm.op_state_model, adapter_factory, skuid)
     return cm, command_obj, adapter_factory
 
 
@@ -97,7 +96,5 @@ def get_sdpmln_command_obj(command_class):
     attrs = {"fetch_skuid.return_value": 123}
     skuid = mock.Mock(**attrs)
 
-    command_obj = command_class(
-        cm, cm.op_state_model, adapter_factory, skuid
-    )
+    command_obj = command_class(cm, cm.op_state_model, adapter_factory, skuid)
     return cm, command_obj, adapter_factory

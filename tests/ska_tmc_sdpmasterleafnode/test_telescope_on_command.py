@@ -1,18 +1,16 @@
-import time
+# import time
 
 import pytest
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import BaseAdapter
 
-from ska_tmc_sdpsubarrayleafnode.commands.telescope_on_command import (
-    TelescopeOn,
-)
-from ska_tmc_sdpsubarrayleafnode.exceptions import DeviceUnresponsive
-from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
-from tests.helpers.helper_adapter_factory import HelperAdapterFactory
-from tests.settings import (
+from ska_tmc_sdpmasterleafnode.commands.telescope_on_command import TelescopeOn
+
+# from ska_tmc_sdpsubarrayleafnode.exceptions import DeviceUnresponsive
+# from ska_tmc_sdpmasterleafnode.model.input import SdpMLNInputParameter
+# from tests.helpers.helper_adapter_factory import HelperAdapterFactory
+from tests.settings import (  # create_cm,
     SDP_MASTER_DEVICE,
-    # create_cm,
     get_sdpmln_command_obj,
     logger,
 )
@@ -21,9 +19,7 @@ from tests.settings import (
 @pytest.mark.sdpmln
 def test_telescope_on_command(tango_context):
     logger.info("%s", tango_context)
-    _, on_command, adapter_factory = get_sdpmln_command_obj(
-        TelescopeOn, None
-    )
+    _, on_command, adapter_factory = get_sdpmln_command_obj(TelescopeOn, None)
     assert on_command.check_allowed()
     (result_code, _) = on_command.do()
     assert result_code == ResultCode.OK

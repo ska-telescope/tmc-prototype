@@ -6,7 +6,7 @@ It also acts as a SDP contact point for Master Node for observation execution
 from ska_tango_base import SKABaseDevice
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.op_state_model import TMCOpStateModel
-from tango import AttrWriteType, DebugIt
+from tango import DebugIt
 from tango.server import attribute, command, device_property
 
 from ska_tmc_sdpmasterleafnode import release
@@ -38,12 +38,9 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
         max_dim_y=100,
     )
 
-    
-
     # ---------------
     # General methods
     # ---------------
-
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
@@ -84,7 +81,6 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
         # I need to stop all threads
         if hasattr(self, "component_manager"):
             self.component_manager.stop()
-
 
     def read_commandExecuted(self):
         """Return the commandExecuted attribute."""

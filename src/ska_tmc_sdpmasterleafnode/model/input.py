@@ -1,5 +1,6 @@
 from ska_tmc_common.input import InputParameter
 
+
 class SdpMLNInputParameter(InputParameter):
     def __init__(self, changed_callback) -> None:
         super().__init__(changed_callback)

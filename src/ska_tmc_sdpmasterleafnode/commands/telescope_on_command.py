@@ -47,9 +47,7 @@ class TelescopeOn(AbstractTelescopeOnOff):
                 f"Invoking TelescopeOn command on:{self.sdp_master_adapter.dev_name}"
             )
             self.sdp_master_adapter.On()
-            self.logger.info(
-                "On command is successful on Sdp Master device."
-            )
+            self.logger.info("On command is successful on Sdp Master device.")
         except Exception as e:
             return self.generate_command_result(
                 ResultCode.FAILED,
