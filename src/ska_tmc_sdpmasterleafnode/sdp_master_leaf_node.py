@@ -43,12 +43,10 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
         access=AttrWriteType.READ,
         doc="Json String representing the last device changed in the internal model.",
     )
-    
 
     # ---------------
     # General methods
     # ---------------
-
 
     class InitCommand(SKABaseDevice.InitCommand):
         """

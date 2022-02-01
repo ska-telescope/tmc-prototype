@@ -57,7 +57,7 @@ class SdpMLNComponent(TmcComponent):
             self._devices[index] = devInfo
 
         self._invoke_device_callback(devInfo)
-    
+
     def remove_device(self, dev_name):
         """
         Remove a device from the list
