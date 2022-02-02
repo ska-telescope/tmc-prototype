@@ -17,10 +17,6 @@ from tests.settings import (
     logger,
 )
 
-# TODO: Uncomment below imports while using Adapter class from ska-tmc-common library
-# from ska_tmc_common.adapters import SdpMasterAdapter
-
-
 @pytest.mark.sdpmln
 def test_telescope_standby_command(tango_context):
     logger.info("%s", tango_context)
