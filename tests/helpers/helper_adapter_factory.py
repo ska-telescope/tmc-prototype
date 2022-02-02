@@ -1,12 +1,10 @@
 import mock
-
 from ska_tmc_common.adapters import (
     AdapterFactory,
     AdapterType,
     BaseAdapter,
-    SdpSubArrayAdapter,
     MasterAdapter,
-
+    SdpSubArrayAdapter,
 )
 
 
