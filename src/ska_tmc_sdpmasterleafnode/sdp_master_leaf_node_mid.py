@@ -4,8 +4,7 @@ and issue commands to the SDP Master.
 """
 
 from ska_tango_base.commands import ResultCode
-from tango import AttrWriteType
-from tango.server import attribute, device_property, run
+from tango.server import device_property, run
 
 from ska_tmc_sdpmasterleafnode.commands.telescope_off_command import (
     TelescopeOff,
