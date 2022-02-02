@@ -1,7 +1,8 @@
 """
-SDP Master Leaf node is to monitor the SDP Master and issue control actions during an observation.
-It also acts as a SDP contact point for Master Node for observation execution
+SDP Master Leaf node acts as a SDP contact point for Master Node and also to monitor
+and issue commands to the SDP Master.
 """
+
 from ska_tango_base.commands import ResultCode
 from tango.server import device_property, run
 
@@ -14,8 +15,8 @@ __all__ = ["SdpMasterLeafNodeMid", "main"]
 
 class SdpMasterLeafNodeMid(AbstractSdpMasterLeafNode):
     """
-    SDP Master Leaf node is to monitor the SDP Master and issue control actions during an observation.
-
+    SDP Master Leaf node acts as a SDP contact point for Master Node and also to monitor
+    and issue commands to the SDP Master.
     """
 
     # ----------

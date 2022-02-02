@@ -1,6 +1,6 @@
 """
-SDP Master Leaf node is to monitor the SDP Master and issue control actions during an observation.
-It also acts as a SDP contact point for Master Node for observation execution
+SDP Master Leaf node acts as a SDP contact point for Master Node and also to monitor
+and issue commands to the SDP Master.
 """
 
 from ska_tango_base import SKABaseDevice
@@ -18,8 +18,8 @@ from ska_tmc_sdpmasterleafnode.model.input import SdpMLNInputParameter
 
 class AbstractSdpMasterLeafNode(SKABaseDevice):
     """
-    SDP Master Leaf node is to monitor the SDP Master and issue control actions during an observation.
-
+    SDP Master Leaf node acts as a SDP contact point for Master Node and also to monitor
+    and issue commands to the SDP Master.
     """
 
     # -----------------
