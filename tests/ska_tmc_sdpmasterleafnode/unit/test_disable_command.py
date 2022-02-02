@@ -3,9 +3,7 @@ import time
 import pytest
 from ska_tango_base.commands import ResultCode
 
-from ska_tmc_sdpmasterleafnode.commands.telescope_standby_command import (
-    TelescopeStandby,
-)
+from ska_tmc_sdpmasterleafnode.commands.disable_command import Disable
 from ska_tmc_sdpmasterleafnode.exceptions import DeviceUnresponsive
 from ska_tmc_sdpmasterleafnode.manager.adapters import SdpMasterAdapter
 from ska_tmc_sdpmasterleafnode.model.input import SdpMLNInputParameter
@@ -22,22 +20,22 @@ from tests.settings import (
 
 
 @pytest.mark.sdpmln
-def test_telescope_standby_command(tango_context):
+def test_disable_command(tango_context):
     logger.info("%s", tango_context)
-    _, standby_command, adapter_factory = get_sdpmln_command_obj(
-        TelescopeStandby
+    _, disable_command, adapter_factory = get_sdpmln_command_obj(
+        Disable
     )
-    assert standby_command.check_allowed()
-    (result_code, _) = standby_command.do()
+    assert disable_command.check_allowed()
+    (result_code, _) = disable_command.do()
     assert result_code == ResultCode.OK
     # dev_name = SDP_MASTER_DEVICE
     adapter = adapter_factory.get_or_create_adapter(SDP_MASTER_DEVICE)
     if isinstance(adapter_factory.adapters, SdpMasterAdapter):
-        adapter.proxy.Standby.assert_called()
+        adapter.proxy.Disable.assert_called()
 
 
 @pytest.mark.sdpmln
-def test_telescope_standby_command_fail_sdp_master(tango_context):
+def test_disable_command_fail_sdp_master(tango_context):
     logger.info("%s", tango_context)
     input_parameter = SdpMLNInputParameter(None)
     cm, start_time = create_cm(
@@ -49,27 +47,27 @@ def test_telescope_standby_command_fail_sdp_master(tango_context):
     )
     my_adapter_factory = HelperAdapterFactory()
 
-    # include exception in TelescopeStandby command
+    # include exception in Disable command
     failing_dev = "mid_sdp/elt/master"
 
     my_adapter_factory.get_or_create_adapter(
-        failing_dev, attrs={"TelescopeStandby.side_effect": Exception}
+        failing_dev, attrs={"Disable.side_effect": Exception}
     )
 
-    standby_command = TelescopeStandby(
+    disable_command = Disable(
         cm, cm.op_state_model, my_adapter_factory
     )
-    assert standby_command.check_allowed()
-    (result_code, message) = standby_command.do()
+    assert disable_command.check_allowed()
+    (result_code, message) = disable_command.do()
     assert result_code == ResultCode.FAILED
     assert failing_dev in message
 
 
 @pytest.mark.sdpmln
-def test_telescope_standby_fail_check_allowed(tango_context):
+def test_disable_fail_check_allowed(tango_context):
 
     logger.info("%s", tango_context)
-    cm, standby_command, _ = get_sdpmln_command_obj(TelescopeStandby)
+    cm, disable_command, _ = get_sdpmln_command_obj(Disable)
     cm.input_parameter.sdp_master_dev_name = ""
     with pytest.raises(DeviceUnresponsive):
-        standby_command.check_allowed()
+        disable_command.check_allowed()

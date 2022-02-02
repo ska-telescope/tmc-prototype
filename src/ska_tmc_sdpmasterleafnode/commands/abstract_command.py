@@ -67,7 +67,7 @@ class SdpMLNCommand(TMCCommand):
         return result
 
 
-class AbstractTelescopeOnOff(SdpMLNCommand):
+class AbstractCommand(SdpMLNCommand):
     def __init__(
         self,
         target,
@@ -93,7 +93,7 @@ class AbstractTelescopeOnOff(SdpMLNCommand):
         """
         if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
             raise CommandNotAllowed(
-                "TelescopeOnOff() is not allowed in current operational state %s",
+                "Command is not allowed in current operational state %s",
                 self.op_state_model.op_state,
             )
 

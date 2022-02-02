@@ -6,16 +6,11 @@ and issue commands to the SDP Master.
 from ska_tango_base.commands import ResultCode
 from tango.server import device_property, run
 
-from ska_tmc_sdpmasterleafnode.commands.telescope_off_command import (
-    TelescopeOff,
-)
+from ska_tmc_sdpmasterleafnode.commands.telescope_off_command import TelescopeOff
 from ska_tmc_sdpmasterleafnode.commands.telescope_on_command import TelescopeOn
-from ska_tmc_sdpmasterleafnode.commands.telescope_standby_command import (
-    TelescopeStandby,
-)
-from ska_tmc_sdpmasterleafnode.sdp_master_leaf_node import (
-    AbstractSdpMasterLeafNode,
-)
+from ska_tmc_sdpmasterleafnode.commands.telescope_standby_command import TelescopeStandby
+from ska_tmc_sdpmasterleafnode.commands.disable_command import Disable
+from ska_tmc_sdpmasterleafnode.sdp_master_leaf_node import AbstractSdpMasterLeafNode
 
 __all__ = ["SdpMasterLeafNodeMid", "main"]
 
@@ -66,6 +61,7 @@ class SdpMasterLeafNodeMid(AbstractSdpMasterLeafNode):
             ("TelescopeOn", TelescopeOn),
             ("TelescopeOff", TelescopeOff),
             ("TelescopeStandby", TelescopeStandby),
+            ("Disable", Disable),
         ]:
             command_obj = command_class(
                 self.component_manager,

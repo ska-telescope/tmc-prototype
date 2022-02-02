@@ -1,5 +1,5 @@
 """
-TelescopeOff command class for SDPMasterLeafNode.
+Disable command class for SDPMasterLeafNode.
 """
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterFactory
@@ -9,12 +9,11 @@ from ska_tmc_sdpmasterleafnode.commands.abstract_command import (
 )
 
 
-class TelescopeOff(AbstractCommand):
+class Disable(AbstractCommand):
     """
-    A class for SdpMasterLeafNode's TelescopeOff() command.
+    A class for SdpMasterLeafNode's Disable() command.
 
-    TelescopeOff command on SdpMasterLeafNode enables the telescope to perform further operations
-    and observations. It Invokes Off command on Sdp Master device.
+    Disable command on SdpMasterLeafNode invokes disable command on Sdp Master device.
 
     """
 
@@ -29,7 +28,7 @@ class TelescopeOff(AbstractCommand):
 
     def do_mid(self, argin=None):
         """
-        Method to invoke Telescope Off command on Sdp Master.
+        Method to invoke Disable command on Sdp Master.
 
         """
         ret_code, message = self.init_adapters()
@@ -38,13 +37,15 @@ class TelescopeOff(AbstractCommand):
 
         try:
             self.logger.info(
-                f"Invoking TelescopeOff command on:{self.sdp_master_adapter.dev_name}"
+                f"Invoking Disable command on:{self.sdp_master_adapter.dev_name}"
             )
-            self.sdp_master_adapter.Off()
-            self.logger.info("Off command is successful on Sdp Master device.")
+            self.sdp_master_adapter.Disable()
+            self.logger.info(
+                "Disable command is successful on Sdp Master device."
+            )
         except Exception as e:
             return self.generate_command_result(
                 ResultCode.FAILED,
-                f"Error in calling Telescope Off Sdp Master Device {self.sdp_master_adapter.dev_name}: {e}",
+                f"Error in calling Disable command on Sdp Master Device {self.sdp_master_adapter.dev_name}: {e}",
             )
         return (ResultCode.OK, "")

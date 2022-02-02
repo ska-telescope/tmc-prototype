@@ -209,6 +209,31 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
 
+    def is_Disable_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state.
+
+        :return: True if this command is allowed to be run in current device state.
+
+        :rtype: boolean
+        """
+        handler = self.get_command_object("Disable")
+        return handler.check_allowed()
+
+    @command(dtype_out="DevVarLongStringArray")
+    @DebugIt()
+    def Disable(self):
+        """
+        This command invokes Disable() command on Sdp Master.
+        """
+        handler = self.get_command_object("Disable")
+        if self.component_manager._command_executor.queue_full:
+            return [[ResultCode.FAILED], ["Queue is full!"]]
+        unique_id = self.component_manager._command_executor.enqueue_command(
+            handler
+        )
+        return [[ResultCode.QUEUED], [str(unique_id)]]
+
     # default ska mid
     def create_component_manager(self):
         self.op_state_model = TMCOpStateModel(

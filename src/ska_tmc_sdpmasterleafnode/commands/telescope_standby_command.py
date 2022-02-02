@@ -5,11 +5,11 @@ from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterFactory
 
 from ska_tmc_sdpmasterleafnode.commands.abstract_command import (
-    AbstractTelescopeOnOff,
+    AbstractCommand,
 )
 
 
-class TelescopeStandby(AbstractTelescopeOnOff):
+class TelescopeStandby(AbstractCommand):
     """
     A class for SdpMasterLeafNode's TelescopeStandby() command.
 
@@ -26,7 +26,7 @@ class TelescopeStandby(AbstractTelescopeOnOff):
     ):
         super().__init__(target, op_state_model, adapter_factory, logger)
 
-    def do_mid(self, argin):
+    def do_mid(self, argin=None):
         """
         Method to invoke Telescope Standby command on Sdp Master.
 
