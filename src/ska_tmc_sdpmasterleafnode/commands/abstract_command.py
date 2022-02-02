@@ -43,7 +43,7 @@ class SdpMLNCommand(TMCCommand):
             if not devInfo.unresponsive:
                 self.sdp_master_adapter = (
                     self._adapter_factory.get_or_create_adapter(
-                        dev_name, AdapterType.SDPMASTER
+                        dev_name, AdapterType.MASTER
                     )
                 )
         except Exception as e:
