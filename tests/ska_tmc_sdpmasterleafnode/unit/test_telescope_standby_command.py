@@ -17,6 +17,7 @@ from tests.settings import (
     logger,
 )
 
+
 @pytest.mark.sdpmln
 def test_telescope_standby_command(tango_context):
     logger.info("%s", tango_context)
