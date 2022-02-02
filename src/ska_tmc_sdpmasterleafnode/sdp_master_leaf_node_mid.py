@@ -3,8 +3,7 @@ SDP Master Leaf node is to monitor the SDP Master and issue control actions duri
 It also acts as a SDP contact point for Master Node for observation execution
 """
 from ska_tango_base.commands import ResultCode
-from tango import AttrWriteType
-from tango.server import attribute, device_property, run
+from tango.server import device_property, run
 
 from ska_tmc_sdpmasterleafnode.sdp_master_leaf_node import (
     AbstractSdpMasterLeafNode,
@@ -22,11 +21,6 @@ class SdpMasterLeafNodeMid(AbstractSdpMasterLeafNode):
     # ----------
     # Attributes
     # ----------
-
-    sdpMasterDevName = attribute(
-        dtype="DevString",
-        access=AttrWriteType.READ_WRITE,
-    )
 
     SleepTime = device_property(dtype="DevFloat", default_value=1)
 
@@ -52,19 +46,6 @@ class SdpMasterLeafNodeMid(AbstractSdpMasterLeafNode):
             super().do()
 
             return (ResultCode.OK, "")
-
-    # ------------------
-    # Attributes methods
-    # ------------------
-
-    def read_sdpMasterDevName(self):
-        """Return the sdpmasterdevname attribute."""
-        return self.component_manager.input_parameter.sdp_master_dev_name
-
-    def write_sdpMasterDevName(self, value):
-        """Set the sdpmasterdevname attribute."""
-        self.component_manager.input_parameter.sdp_master_dev_name = value
-        self.component_manager.update_input_parameter()
 
     def init_command_objects(self):
         """

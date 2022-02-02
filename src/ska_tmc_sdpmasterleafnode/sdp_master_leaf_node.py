@@ -44,6 +44,10 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
         doc="Json String representing the last device changed in the internal model.",
     )
 
+    sdpMasterDevName = attribute(
+        dtype="DevString",
+        access=AttrWriteType.READ_WRITE,
+    )
     # ---------------
     # General methods
     # ---------------
@@ -87,6 +91,19 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
         # I need to stop all threads
         if hasattr(self, "component_manager"):
             self.component_manager.stop()
+
+    # ------------------
+    # Attributes methods
+    # ------------------
+
+    def read_sdpMasterDevName(self):
+        """Return the sdpmasterdevname attribute."""
+        return self.component_manager.input_parameter.sdp_master_dev_name
+
+    def write_sdpMasterDevName(self, value):
+        """Set the sdpmasterdevname attribute."""
+        self.component_manager.input_parameter.sdp_master_dev_name = value
+        self.component_manager.update_input_parameter()
 
     def read_lastDeviceInfoChanged(self):
         return self._LastDeviceInfoChanged
