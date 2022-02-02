@@ -2,15 +2,12 @@ import time
 
 import pytest
 from ska_tango_base.commands import ResultCode
+from ska_tmc_common.adapters import MasterAdapter
 
 from ska_tmc_sdpmasterleafnode.commands.telescope_off_command import (
     TelescopeOff,
 )
 from ska_tmc_sdpmasterleafnode.exceptions import DeviceUnresponsive
-
-# TODO: Uncomment below imports while using Adapter class from ska-tmc-common library
-# from ska_tmc_common.adapters import SdpMasterAdapter
-from ska_tmc_sdpmasterleafnode.manager.adapters import SdpMasterAdapter
 from ska_tmc_sdpmasterleafnode.model.input import SdpMLNInputParameter
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
 from tests.settings import (
@@ -30,7 +27,7 @@ def test_telescope_off_command(tango_context):
     assert result_code == ResultCode.OK
     dev_name = SDP_MASTER_DEVICE
     adapter = my_adapter_factory.get_or_create_adapter(dev_name)
-    if isinstance(adapter, SdpMasterAdapter):
+    if isinstance(adapter, MasterAdapter):
         adapter.proxy.Off.assert_called()
 
 

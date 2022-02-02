@@ -5,9 +5,7 @@ TelescopeOn command class for SDPMasterLeafNode.
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterFactory
 
-from ska_tmc_sdpmasterleafnode.commands.abstract_command import (
-    AbstractCommand,
-)
+from ska_tmc_sdpmasterleafnode.commands.abstract_command import AbstractCommand
 
 
 class TelescopeOn(AbstractCommand):

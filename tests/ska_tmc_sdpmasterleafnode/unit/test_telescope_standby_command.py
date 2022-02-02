@@ -2,12 +2,12 @@ import time
 
 import pytest
 from ska_tango_base.commands import ResultCode
+from ska_tmc_common.adapters import MasterAdapter
 
 from ska_tmc_sdpmasterleafnode.commands.telescope_standby_command import (
     TelescopeStandby,
 )
 from ska_tmc_sdpmasterleafnode.exceptions import DeviceUnresponsive
-from ska_tmc_sdpmasterleafnode.manager.adapters import SdpMasterAdapter
 from ska_tmc_sdpmasterleafnode.model.input import SdpMLNInputParameter
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
 from tests.settings import (
@@ -32,7 +32,7 @@ def test_telescope_standby_command(tango_context):
     assert result_code == ResultCode.OK
     # dev_name = SDP_MASTER_DEVICE
     adapter = adapter_factory.get_or_create_adapter(SDP_MASTER_DEVICE)
-    if isinstance(adapter_factory.adapters, SdpMasterAdapter):
+    if isinstance(adapter_factory.adapters, MasterAdapter):
         adapter.proxy.Standby.assert_called()
 
 

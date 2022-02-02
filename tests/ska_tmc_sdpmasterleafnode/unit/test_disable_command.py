@@ -2,10 +2,10 @@ import time
 
 import pytest
 from ska_tango_base.commands import ResultCode
+from ska_tmc_common.adapters import MasterAdapter
 
 from ska_tmc_sdpmasterleafnode.commands.disable_command import Disable
 from ska_tmc_sdpmasterleafnode.exceptions import DeviceUnresponsive
-from ska_tmc_sdpmasterleafnode.manager.adapters import SdpMasterAdapter
 from ska_tmc_sdpmasterleafnode.model.input import SdpMLNInputParameter
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
 from tests.settings import (
@@ -15,22 +15,17 @@ from tests.settings import (
     logger,
 )
 
-# TODO: Uncomment below imports while using Adapter class from ska-tmc-common library
-# from ska_tmc_common.adapters import SdpMasterAdapter
-
 
 @pytest.mark.sdpmln
 def test_disable_command(tango_context):
     logger.info("%s", tango_context)
-    _, disable_command, adapter_factory = get_sdpmln_command_obj(
-        Disable
-    )
+    _, disable_command, adapter_factory = get_sdpmln_command_obj(Disable)
     assert disable_command.check_allowed()
     (result_code, _) = disable_command.do()
     assert result_code == ResultCode.OK
     # dev_name = SDP_MASTER_DEVICE
     adapter = adapter_factory.get_or_create_adapter(SDP_MASTER_DEVICE)
-    if isinstance(adapter_factory.adapters, SdpMasterAdapter):
+    if isinstance(adapter_factory.adapters, MasterAdapter):
         adapter.proxy.Disable.assert_called()
 
 
@@ -54,9 +49,7 @@ def test_disable_command_fail_sdp_master(tango_context):
         failing_dev, attrs={"Disable.side_effect": Exception}
     )
 
-    disable_command = Disable(
-        cm, cm.op_state_model, my_adapter_factory
-    )
+    disable_command = Disable(cm, cm.op_state_model, my_adapter_factory)
     assert disable_command.check_allowed()
     (result_code, message) = disable_command.do()
     assert result_code == ResultCode.FAILED

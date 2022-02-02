@@ -1,4 +1,5 @@
 from ska_tango_base.commands import ResultCode
+from ska_tmc_common.adapters import AdapterFactory, AdapterType
 from ska_tmc_common.tmc_command import TMCCommand
 from tango import DevState
 
@@ -6,14 +7,7 @@ from ska_tmc_sdpmasterleafnode.exceptions import (
     CommandNotAllowed,
     DeviceUnresponsive,
 )
-from ska_tmc_sdpmasterleafnode.manager.adapters import (
-    AdapterFactory,
-    AdapterType,
-)
 from ska_tmc_sdpmasterleafnode.model.input import SdpMLNInputParameter
-
-# TODO: Uncomment below imports while using Adapter class from ska-tmc-common library
-# from ska_tmc_common.adapters import AdapterFactory, AdapterType
 
 
 class SdpMLNCommand(TMCCommand):
