@@ -1,8 +1,6 @@
 import json
 
-from ska_tmc_common.tmc_component_manager import (
-    TmcComponent,  # , dev_state_2_str
-)
+from ska_tmc_common.tmc_component_manager import TmcComponent
 from tango import DevState
 
 

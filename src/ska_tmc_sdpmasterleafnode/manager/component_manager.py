@@ -63,6 +63,7 @@ class SdpMLNComponentManager(TmcComponentManager):
         self.component = _component or SdpMLNComponent(logger)
         self.devices = self.component.devices
         self._event_receiver = None
+
         self.component.set_op_callbacks(_update_device_callback)
         self._input_parameter = _input_parameter
 

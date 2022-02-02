@@ -1,7 +1,8 @@
 """
-SDP Master Leaf node is to monitor the SDP Master and issue control actions during an observation.
-It also acts as a SDP contact point for Master Node for observation execution
+SDP Master Leaf node acts as a SDP contact point for Master Node and also to monitor
+and issue commands to the SDP Master.
 """
+
 from ska_tango_base.commands import ResultCode
 from tango import AttrWriteType
 from tango.server import attribute, device_property, run
@@ -17,26 +18,18 @@ from ska_tmc_sdpmasterleafnode.sdp_master_leaf_node import (
     AbstractSdpMasterLeafNode,
 )
 
-# TODO:Uncomment below imports once commands refactoring AT1-1061 is done
-
-
 __all__ = ["SdpMasterLeafNodeMid", "main"]
 
 
 class SdpMasterLeafNodeMid(AbstractSdpMasterLeafNode):
     """
-    SDP Master Leaf node is to monitor the SDP Master and issue control actions during an observation.
-
+    SDP Master Leaf node acts as a SDP contact point for Master Node and also to monitor
+    and issue commands to the SDP Master.
     """
 
     # ----------
     # Attributes
     # ----------
-
-    sdpMasterDevName = attribute(
-        dtype="DevString",
-        access=AttrWriteType.READ_WRITE,
-    )
 
     SleepTime = device_property(dtype="DevFloat", default_value=1)
 
@@ -62,19 +55,6 @@ class SdpMasterLeafNodeMid(AbstractSdpMasterLeafNode):
             super().do()
 
             return (ResultCode.OK, "")
-
-    # ------------------
-    # Attributes methods
-    # ------------------
-
-    def read_sdpMasterDevName(self):
-        """Return the sdpmasterdevname attribute."""
-        return self.component_manager.input_parameter.sdp_master_dev_name
-
-    def write_sdpMasterDevName(self, value):
-        """Set the sdpmasterdevname attribute."""
-        self.component_manager.input_parameter.sdp_master_dev_name = value
-        self.component_manager.update_input_parameter()
 
     def init_command_objects(self):
         """
