@@ -1,3 +1,5 @@
+# TODO: Currently Sdpmasterleafnode tests are using helpers from common repo.
+# This module will get deleted once Sdpsubarrayleafnode tests are also updated to utilise common classes.
 import mock
 from ska_tmc_common.adapters import (
     AdapterFactory,

@@ -1,3 +1,5 @@
+# TODO: Currently Sdpmasterleafnode tests are using helpers from common repo.
+# This module will get deleted once Sdpsubarrayleafnode tests are also updated to utilise common classes.
 from ska_tango_base.base import OpStateModel
 from ska_tango_base.base.base_device import SKABaseDevice
 from ska_tango_base.base.component_manager import BaseComponentManager
