@@ -4,10 +4,10 @@ Disable command class for SDPMasterLeafNode.
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterFactory
 
-from ska_tmc_sdpmasterleafnode.commands.abstract_command import AbstractCommand
+from ska_tmc_sdpmasterleafnode.commands.abstract_command import SdpMLNCommand
 
 
-class Disable(AbstractCommand):
+class Disable(SdpMLNCommand):
     """
     A class for SdpMasterLeafNode's Disable() command.
 
@@ -42,8 +42,9 @@ class Disable(AbstractCommand):
                 "Disable command is successful on Sdp Master device."
             )
         except Exception as e:
+            self.logger.exception(e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                f"Error in calling Disable command on Sdp Master Device {self.sdp_master_adapter.dev_name}: {e}",
+                f"Error in calling Disable command on Sdp Master Device {self.sdp_master_adapter.dev_name}",
             )
         return (ResultCode.OK, "")

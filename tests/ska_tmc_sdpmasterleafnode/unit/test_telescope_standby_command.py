@@ -27,39 +27,33 @@ def test_telescope_standby_command(tango_context):
     assert standby_command.check_allowed()
     (result_code, _) = standby_command.do()
     assert result_code == ResultCode.OK
-    # dev_name = SDP_MASTER_DEVICE
     adapter = adapter_factory.get_or_create_adapter(SDP_MASTER_DEVICE)
-    if isinstance(adapter_factory.adapters, MasterAdapter):
-        adapter.proxy.Standby.assert_called()
+    adapter.proxy.Standby.assert_called()
 
 
 @pytest.mark.sdpmln
 def test_telescope_standby_command_fail_sdp_master(tango_context):
     logger.info("%s", tango_context)
     input_parameter = SdpMLNInputParameter(None)
-    cm, start_time = create_cm(
+    cm, _ = create_cm(
         "SdpMLNComponentManager", input_parameter, SDP_MASTER_DEVICE
     )
-    elapsed_time = time.time() - start_time
-    logger.info(
-        "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-    )
-    my_adapter_factory = HelperAdapterFactory()
+    # elapsed_time = time.time() - start_time
+    # logger.info(
+    #     "checked %s devices in %s", len(cm.checked_devices), elapsed_time
+    # )
+    adapter_factory = HelperAdapterFactory()
 
     # include exception in TelescopeStandby command
-    failing_dev = "mid_sdp/elt/master"
-
-    my_adapter_factory.get_or_create_adapter(
-        failing_dev, attrs={"TelescopeStandby.side_effect": Exception}
+    adapter_factory.get_or_create_adapter(
+        SDP_MASTER_DEVICE, attrs={"TelescopeStandby.side_effect": Exception}
     )
 
-    standby_command = TelescopeStandby(
-        cm, cm.op_state_model, my_adapter_factory
-    )
+    standby_command = TelescopeStandby(cm, cm.op_state_model, adapter_factory)
     assert standby_command.check_allowed()
     (result_code, message) = standby_command.do()
     assert result_code == ResultCode.FAILED
-    assert failing_dev in message
+    assert SDP_MASTER_DEVICE in message
 
 
 @pytest.mark.sdpmln

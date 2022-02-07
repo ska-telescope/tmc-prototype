@@ -24,11 +24,11 @@ SDP_SUBARRAY_DEVICE = "mid_sdp/elt/subarray_1"
 SDP_MASTER_DEVICE = "mid_sdp/elt/master"
 
 
-def count_faulty_devices(cm):
-    result = 0
-    for devInfo in cm.checked_devices:
-        if devInfo.unresponsive:
-            result += 1
+def count_faulty_devices(cm): 
+    result = 0 
+    for devInfo in cm.checked_devices: 
+        if devInfo.unresponsive: 
+            result += 1 
     return result
 
 
@@ -81,20 +81,18 @@ def get_sdpsln_command_obj(command_class, obsstate_value=None):
 
 def get_sdpmln_command_obj(command_class):
     input_parameter = SdpMLNInputParameter(None)
-    cm, start_time = create_cm(
+    cm, _ = create_cm(
         "SdpMLNComponentManager", input_parameter, SDP_MASTER_DEVICE
     )
-    elapsed_time = time.time() - start_time
-    logger.info(
-        "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-    )
+    # elapsed_time = time.time() - start_time
+    # logger.info(
+    #     "checked %s devices in %s", len(cm.checked_devices), elapsed_time
+    # )
 
-    my_adapter_factory = HelperAdapterFactory()
+    adapter_factory = HelperAdapterFactory()
 
     attrs = {"fetch_skuid.return_value": 123}
     skuid = mock.Mock(**attrs)
 
-    command_obj = command_class(
-        cm, cm.op_state_model, my_adapter_factory, skuid
-    )
-    return cm, command_obj, my_adapter_factory
+    command_obj = command_class(cm, cm.op_state_model, adapter_factory, skuid)
+    return cm, command_obj, adapter_factory

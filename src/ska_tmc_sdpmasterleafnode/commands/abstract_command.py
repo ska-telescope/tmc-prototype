@@ -11,6 +11,17 @@ from ska_tmc_sdpmasterleafnode.model.input import SdpMLNInputParameter
 
 
 class SdpMLNCommand(TMCCommand):
+    def __init__(
+        self,
+        target,
+        op_state_model,
+        adapter_factory=AdapterFactory(),
+        logger=None,
+    ):
+        super().__init__(target, logger)
+        self.op_state_model = op_state_model
+        self._adapter_factory = adapter_factory
+
     def check_unresponsive(self):
         component_manager = self.target
         devInfo = component_manager.get_device(
@@ -26,6 +37,28 @@ class SdpMLNCommand(TMCCommand):
             result = self.check_allowed_mid()
 
         return result
+
+    def check_allowed_mid(self):
+        """
+        Checks whether this command is allowed
+        It checks that the device is in the right state
+        to execute this command and that all the
+        component needed for the operation are not unresponsive
+
+        :return: True if this command is allowed
+
+        :rtype: boolean
+
+        """
+        if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
+            raise CommandNotAllowed(
+                "Command is not allowed in current operational state %s",
+                self.op_state_model.op_state,
+            )
+
+        self.check_unresponsive()
+
+        return True
 
     def init_adapters(self):
         component_manager = self.target
@@ -59,38 +92,3 @@ class SdpMLNCommand(TMCCommand):
         if isinstance(component_manager.input_parameter, SdpMLNInputParameter):
             result = self.do_mid(argin)
         return result
-
-
-class AbstractCommand(SdpMLNCommand):
-    def __init__(
-        self,
-        target,
-        op_state_model,
-        adapter_factory=AdapterFactory(),
-        logger=None,
-    ):
-        super().__init__(target, logger)
-        self.op_state_model = op_state_model
-        self._adapter_factory = adapter_factory
-
-    def check_allowed_mid(self):
-        """
-        Checks whether this command is allowed
-        It checks that the device is in the right state
-        to execute this command and that all the
-        component needed for the operation are not unresponsive
-
-        :return: True if this command is allowed
-
-        :rtype: boolean
-
-        """
-        if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
-            raise CommandNotAllowed(
-                "Command is not allowed in current operational state %s",
-                self.op_state_model.op_state,
-            )
-
-        self.check_unresponsive()
-
-        return True
