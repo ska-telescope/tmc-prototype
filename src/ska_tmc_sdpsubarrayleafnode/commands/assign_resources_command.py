@@ -29,7 +29,7 @@ class AssignResources(AbstractAssignResources):
     ):
         super().__init__(target, op_state_model, adapter_factory, logger)
 
-    def do_mid(self, argin):
+    def do(self, argin):
         """
         Method to invoke AssignResources command on SDP Subarray.
 
@@ -79,7 +79,7 @@ class AssignResources(AbstractAssignResources):
         return:
             None
         """
-        ret_code, message = self.init_adapters()
+        ret_code, message = self.init_adapter()
         if ret_code == ResultCode.FAILED:
             return ret_code, message
 
