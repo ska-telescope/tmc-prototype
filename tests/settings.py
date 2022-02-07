@@ -8,7 +8,8 @@ from ska_tmc_common.op_state_model import TMCOpStateModel
 from ska_tmc_sdpmasterleafnode.manager.component_manager import (
     SdpMLNComponentManager,
 )
-from ska_tmc_sdpmasterleafnode.model.input import SdpMLNInputParameter
+
+# from ska_tmc_sdpmasterleafnode.model.input import SdpMLNInputParameter
 from ska_tmc_sdpsubarrayleafnode.manager.component_manager import (
     SdpSLNComponentManager,
 )
@@ -32,23 +33,22 @@ def count_faulty_devices(cm):
     return result
 
 
-def create_cm(cm_class, input_parameter, device):
+def create_cm(cm_class, device):
     op_state_model = TMCOpStateModel(logger)
     if cm_class == "SdpMLNComponentManager":
         cm = SdpMLNComponentManager(
             op_state_model,
-            _input_parameter=input_parameter,
             logger=logger,
         )
-    elif cm_class == "SdpSLNComponentManager":
-        cm = SdpSLNComponentManager(
-            op_state_model, _input_parameter=input_parameter, logger=logger
-        )
+    # elif cm_class == "SdpSLNComponentManager":
+    #     cm = SdpSLNComponentManager(
+    #         op_state_model, _input_parameter=input_parameter, logger=logger
+    #     )
     else:
         log_msg = f"Unknown component manager class {cm_class}"
         logger.error(log_msg)
 
-    cm.add_device(device)
+    cm.get_device()
     start_time = time.time()
     time.sleep(SLEEP_TIME)
     elapsed_time = time.time() - start_time
@@ -80,15 +80,7 @@ def get_sdpsln_command_obj(command_class, obsstate_value=None):
 
 
 def get_sdpmln_command_obj(command_class):
-    input_parameter = SdpMLNInputParameter(None)
-    cm, _ = create_cm(
-        "SdpMLNComponentManager", input_parameter, SDP_MASTER_DEVICE
-    )
-    # elapsed_time = time.time() - start_time
-    # logger.info(
-    #     "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-    # )
-
+    cm, _ = create_cm("SdpMLNComponentManager", SDP_MASTER_DEVICE)
     adapter_factory = HelperAdapterFactory()
 
     attrs = {"fetch_skuid.return_value": 123}

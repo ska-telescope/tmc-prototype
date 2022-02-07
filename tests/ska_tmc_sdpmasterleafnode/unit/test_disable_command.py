@@ -1,10 +1,10 @@
 import pytest
 from ska_tango_base.commands import ResultCode
-from ska_tmc_common.adapters import MasterAdapter
+from ska_tmc_common.exceptions import DeviceUnresponsive
 
 from ska_tmc_sdpmasterleafnode.commands.disable_command import Disable
-from ska_tmc_sdpmasterleafnode.exceptions import DeviceUnresponsive
-from ska_tmc_sdpmasterleafnode.model.input import SdpMLNInputParameter
+
+# TODO: Utilise common package
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
 from tests.settings import (
     SDP_MASTER_DEVICE,
@@ -28,14 +28,7 @@ def test_disable_command(tango_context):
 @pytest.mark.sdpmln
 def test_disable_command_fail_sdp_master(tango_context):
     logger.info("%s", tango_context)
-    input_parameter = SdpMLNInputParameter(None)
-    cm, _ = create_cm(
-        "SdpMLNComponentManager", input_parameter, SDP_MASTER_DEVICE
-    )
-    # elapsed_time = time.time() - start_time
-    # logger.info(
-    #     "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-    # )
+    cm, _ = create_cm("SdpMLNComponentManager", SDP_MASTER_DEVICE)
     adapter_factory = HelperAdapterFactory()
 
     # include exception in Disable command
@@ -55,6 +48,7 @@ def test_disable_fail_check_allowed(tango_context):
 
     logger.info("%s", tango_context)
     cm, disable_command, _ = get_sdpmln_command_obj(Disable)
-    cm.input_parameter.sdp_master_dev_name = ""
+    devInfo = cm.get_device()
+    devInfo.update_unresponsive(True)
     with pytest.raises(DeviceUnresponsive):
         disable_command.check_allowed()

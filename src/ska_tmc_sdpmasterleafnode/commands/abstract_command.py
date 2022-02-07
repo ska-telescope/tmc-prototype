@@ -1,16 +1,11 @@
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterFactory, AdapterType
-from ska_tmc_common.tmc_command import TMCCommand
+from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
+from ska_tmc_common.tmc_command import TmcLeafNodeCommand
 from tango import DevState
 
-from ska_tmc_sdpmasterleafnode.exceptions import (
-    CommandNotAllowed,
-    DeviceUnresponsive,
-)
-from ska_tmc_sdpmasterleafnode.model.input import SdpMLNInputParameter
 
-
-class SdpMLNCommand(TMCCommand):
+class SdpMLNCommand(TmcLeafNodeCommand):
     def __init__(
         self,
         target,
@@ -24,21 +19,11 @@ class SdpMLNCommand(TMCCommand):
 
     def check_unresponsive(self):
         component_manager = self.target
-        devInfo = component_manager.get_device(
-            component_manager.input_parameter.sdp_master_dev_name
-        )
+        devInfo = component_manager.get_device()
         if devInfo is None or devInfo.unresponsive:
             raise DeviceUnresponsive("SDP master device is not available")
 
     def check_allowed(self):
-        component_manager = self.target
-
-        if isinstance(component_manager.input_parameter, SdpMLNInputParameter):
-            result = self.check_allowed_mid()
-
-        return result
-
-    def check_allowed_mid(self):
         """
         Checks whether this command is allowed
         It checks that the device is in the right state
@@ -60,18 +45,11 @@ class SdpMLNCommand(TMCCommand):
 
         return True
 
-    def init_adapters(self):
-        component_manager = self.target
-
-        if isinstance(component_manager.input_parameter, SdpMLNInputParameter):
-            result, message = self.init_adapters_mid()
-        return result, message
-
-    def init_adapters_mid(self):
+    def init_adapter(self):
         self.sdp_master_adapter = None
         component_manager = self.target
-        dev_name = component_manager.input_parameter.sdp_master_dev_name
-        devInfo = component_manager.get_device(dev_name)
+        dev_name = component_manager._sdp_master_dev_name
+        devInfo = component_manager.get_device()
         try:
             if not devInfo.unresponsive:
                 self.sdp_master_adapter = (
@@ -81,14 +59,12 @@ class SdpMLNCommand(TMCCommand):
                 )
         except Exception as e:
             return self.adapter_error_message_result(
-                component_manager.input_parameter.sdp_master_dev_name,
+                component_manager.get_device(),
                 e,
             )
 
         return ResultCode.OK, ""
 
     def do(self, argin=None):
-        component_manager = self.target
-        if isinstance(component_manager.input_parameter, SdpMLNInputParameter):
-            result = self.do_mid(argin)
+        result = self.do(argin)
         return result

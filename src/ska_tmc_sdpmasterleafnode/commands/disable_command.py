@@ -24,12 +24,12 @@ class Disable(SdpMLNCommand):
     ):
         super().__init__(target, op_state_model, adapter_factory, logger)
 
-    def do_mid(self, argin=None):
+    def do(self, argin=None):
         """
         Method to invoke Disable command on Sdp Master.
 
         """
-        ret_code, message = self.init_adapters()
+        ret_code, message = self.init_adapter()
         if ret_code == ResultCode.FAILED:
             return ret_code, message
 

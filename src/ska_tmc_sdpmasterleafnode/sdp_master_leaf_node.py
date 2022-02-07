@@ -13,7 +13,6 @@ from ska_tmc_sdpmasterleafnode import release
 from ska_tmc_sdpmasterleafnode.manager.component_manager import (
     SdpMLNComponentManager,
 )
-from ska_tmc_sdpmasterleafnode.model.input import SdpMLNInputParameter
 
 
 class AbstractSdpMasterLeafNode(SKABaseDevice):
@@ -102,12 +101,11 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
 
     def read_sdpMasterDevName(self):
         """Return the sdpmasterdevname attribute."""
-        return self.component_manager.input_parameter.sdp_master_dev_name
+        return self.component_manager._sdp_master_dev_name
 
     def write_sdpMasterDevName(self, value):
         """Set the sdpmasterdevname attribute."""
-        self.component_manager.input_parameter.sdp_master_dev_name = value
-        self.component_manager.update_input_parameter()
+        self.component_manager._sdp_master_dev_name = value
 
     def read_lastDeviceInfoChanged(self):
         return self._LastDeviceInfoChanged
@@ -241,13 +239,11 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
         )
         cm = SdpMLNComponentManager(
             self.op_state_model,
-            _input_parameter=SdpMLNInputParameter(None),
             logger=self.logger,
             _update_device_callback=self.update_device_callback,
             sleep_time=self.SleepTime,
         )
-        cm.input_parameter.sdp_master_dev_name = self.SdpMasterFQDN or ""
-        cm.update_input_parameter()
+        cm._sdp_master_dev_name = self.SdpMasterFQDN or ""
         return cm
 
     def init_command_objects(self):

@@ -932,7 +932,7 @@ reference = 'ska-nexus'
 
 [[package]]
 name = "ska-tmc-common"
-version = "0.1.14"
+version = "0.1.15"
 description = "SKA TMC common contains common classes required for Telescope Monitoring and Control(TMC)."
 category = "main"
 optional = false
@@ -1101,7 +1101,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "23eab84970620005502a2a8518c356c96d2691c16826574f39a305d4699fd7b6"
+content-hash = "0408a58c4731f7e5e4ea8e83d980dee61248d9ba482f0487ca3969ad525ce19c"
 
 [metadata.files]
 argparse = [
@@ -1703,8 +1703,8 @@ ska-tmc-cdm = [
     {file = "ska_tmc_cdm-6.0.4-py3-none-any.whl", hash = "md5:c9a0f2146842bad30ed1ff2ff957c102"},
 ]
 ska-tmc-common = [
-    {file = "ska-tmc-common-0.1.14.tar.gz", hash = "md5:12f5016c682f02ee2b7fe4fc4a1a6654"},
-    {file = "ska_tmc_common-0.1.14-py3-none-any.whl", hash = "md5:26dd642e855b5bcc7da2bef800d3d668"},
+    {file = "ska-tmc-common-0.1.15.tar.gz", hash = "md5:c8e12756ed56c2c6ff610cc64c3664f9"},
+    {file = "ska_tmc_common-0.1.15-py3-none-any.whl", hash = "md5:b1c3a73db8fc4c88da69b6802b6cebb9"},
 ]
 tango-simlib = [
     {file = "tango_simlib-0.9.2-py2-none-any.whl", hash = "sha256:0417ba43514fb9de51d0e01b8f76b384fae72ade92687e12ed49149e1b90a796"},
