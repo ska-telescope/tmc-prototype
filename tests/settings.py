@@ -24,11 +24,11 @@ SDP_SUBARRAY_DEVICE = "mid_sdp/elt/subarray_1"
 SDP_MASTER_DEVICE = "mid_sdp/elt/master"
 
 
-def count_faulty_devices(cm): 
-    result = 0 
-    for devInfo in cm.checked_devices: 
-        if devInfo.unresponsive: 
-            result += 1 
+def count_faulty_devices(cm):
+    result = 0
+    for devInfo in cm.checked_devices:
+        if devInfo.unresponsive:
+            result += 1
     return result
 
 
