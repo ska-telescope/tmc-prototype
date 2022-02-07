@@ -1,12 +1,13 @@
 import pytest
 from ska_tango_base.commands import ResultCode
-from ska_tmc_common.adapters import MasterAdapter
 from ska_tmc_common.exceptions import DeviceUnresponsive
+from ska_tmc_common.test_helpers.helper_adapter_factory import (
+    HelperAdapterFactory,
+)
 
 from ska_tmc_sdpmasterleafnode.commands.telescope_standby_command import (
     TelescopeStandby,
 )
-from ska_tmc_common.test_helpers.helper_adapter_factory import HelperAdapterFactory
 from tests.settings import (
     SDP_MASTER_DEVICE,
     create_cm,

@@ -4,10 +4,12 @@ import logging
 import pytest
 import tango
 from ska_tmc_common.dev_factory import DevFactory
-from tango.test_context import MultiDeviceTestContext
 
 # from tests.helpers.helper_subarray_device import HelperSubArrayDevice
-from ska_tmc_common.test_helpers.helper_subarray_device import HelperSubArrayDevice
+from ska_tmc_common.test_helpers.helper_subarray_device import (
+    HelperSubArrayDevice,
+)
+from tango.test_context import MultiDeviceTestContext
 
 
 def pytest_sessionstart(session):

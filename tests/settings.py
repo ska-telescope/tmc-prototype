@@ -8,11 +8,6 @@ from ska_tmc_common.op_state_model import TMCOpStateModel
 from ska_tmc_sdpmasterleafnode.manager.component_manager import (
     SdpMLNComponentManager,
 )
-
-# from ska_tmc_sdpmasterleafnode.model.input import SdpMLNInputParameter
-from ska_tmc_sdpsubarrayleafnode.manager.component_manager import (
-    SdpSLNComponentManager,
-)
 from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
 
@@ -40,10 +35,6 @@ def create_cm(cm_class, device):
             op_state_model,
             logger=logger,
         )
-    # elif cm_class == "SdpSLNComponentManager":
-    #     cm = SdpSLNComponentManager(
-    #         op_state_model, _input_parameter=input_parameter, logger=logger
-    #     )
     else:
         log_msg = f"Unknown component manager class {cm_class}"
         logger.error(log_msg)
