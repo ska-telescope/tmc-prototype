@@ -8,7 +8,7 @@ SDP_MASTER_DEVICE = "mid_sdp/elt/master"
 @pytest.mark.sdpmln
 def test_sdpmaster_working(tango_context):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpMLNComponentManager", SDP_MASTER_DEVICE)
+    cm, _ = create_cm("SdpMLNComponentManager", None, SDP_MASTER_DEVICE)
     devInfo = cm.get_device()
     assert not devInfo.unresponsive
 
@@ -16,7 +16,7 @@ def test_sdpmaster_working(tango_context):
 @pytest.mark.sdpmln
 def test_sdp_master_unresponsive(tango_context):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpMLNComponentManager", SDP_MASTER_DEVICE)
+    cm, _ = create_cm("SdpMLNComponentManager", None, SDP_MASTER_DEVICE)
     devInfo = cm.get_device()
     devInfo.update_unresponsive(True)
     assert devInfo.unresponsive

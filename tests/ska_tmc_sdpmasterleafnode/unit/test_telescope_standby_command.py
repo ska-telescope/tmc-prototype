@@ -32,7 +32,7 @@ def test_telescope_standby_command(tango_context):
 @pytest.mark.sdpmln
 def test_telescope_standby_command_fail_sdp_master(tango_context):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpMLNComponentManager", SDP_MASTER_DEVICE)
+    cm, _ = create_cm("SdpMLNComponentManager", None, SDP_MASTER_DEVICE)
     adapter_factory = HelperAdapterFactory()
 
     # include exception in TelescopeStandby command

@@ -33,12 +33,12 @@ class TelescopeOn(AbstractTelescopeOnOff):
             logger,
         )
 
-    def do(self, argin=None):
+    def do_mid(self, argin=None):
         """
         Method to invoke Telescope On command on Sdp Subarray.
 
         """
-        ret_code, message = self.init_adapter()
+        ret_code, message = self.init_adapters()
         if ret_code == ResultCode.FAILED:
             return ret_code, message
 

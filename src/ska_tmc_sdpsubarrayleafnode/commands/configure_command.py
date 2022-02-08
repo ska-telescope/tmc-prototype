@@ -29,7 +29,7 @@ class Configure(AbstractConfigure):
     ):
         super().__init__(target, op_state_model, adapter_factory, logger)
 
-    def do(self, argin):
+    def do_mid(self, argin):
         """
         Method to invoke Configure command on SDP Subarray.
 
@@ -44,7 +44,7 @@ class Configure(AbstractConfigure):
         return:
             None
         """
-        ret_code, message = self.init_adapter()
+        ret_code, message = self.init_adapters()
         if ret_code == ResultCode.FAILED:
             return ret_code, message
 
