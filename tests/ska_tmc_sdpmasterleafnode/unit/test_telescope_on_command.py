@@ -31,7 +31,7 @@ def test_telescope_on_command_fail_sdp_master(tango_context):
     cm, _ = create_cm("SdpMLNComponentManager", None, SDP_MASTER_DEVICE)
     adapter_factory = HelperAdapterFactory()
     cm._sdp_master_dev_name = SDP_MASTER_DEVICE
-    
+
     # include exception in TelescopeOn command
     adapter_factory.get_or_create_adapter(
         SDP_MASTER_DEVICE, attrs={"TelescopeOn.side_effect": Exception}

@@ -35,7 +35,8 @@ class SdpMasterLeafNode(SKABaseDevice):
     # -----------------
     SdpMasterFQDN = device_property(
         default_value="mid_sdp/elt/master",
-        dtype="str", doc="FQDN of the SDP Master Tango Device Server."
+        dtype="str",
+        doc="FQDN of the SDP Master Tango Device Server.",
     )
 
     # -----------------
