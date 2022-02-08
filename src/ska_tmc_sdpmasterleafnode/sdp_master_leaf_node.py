@@ -10,12 +10,22 @@ from tango import AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property
 
 from ska_tmc_sdpmasterleafnode import release
+from ska_tmc_sdpmasterleafnode.commands.disable_command import Disable
+from ska_tmc_sdpmasterleafnode.commands.telescope_off_command import (
+    TelescopeOff,
+)
+from ska_tmc_sdpmasterleafnode.commands.telescope_on_command import TelescopeOn
+from ska_tmc_sdpmasterleafnode.commands.telescope_standby_command import (
+    TelescopeStandby,
+)
 from ska_tmc_sdpmasterleafnode.manager.component_manager import (
     SdpMLNComponentManager,
 )
 
+__all__ = ["SdpMasterLeafNode", "main"]
 
-class AbstractSdpMasterLeafNode(SKABaseDevice):
+
+class SdpMasterLeafNode(SKABaseDevice):
     """
     SDP Master Leaf node acts as a SDP contact point for Master Node and also to monitor
     and issue commands to the SDP Master.
@@ -47,6 +57,8 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
         dtype="DevString",
         access=AttrWriteType.READ_WRITE,
     )
+
+    SleepTime = device_property(dtype="DevFloat", default_value=1)
     # ---------------
     # General methods
     # ---------------
@@ -250,3 +262,38 @@ class AbstractSdpMasterLeafNode(SKABaseDevice):
         Initialises the command handlers for commands supported by this device.
         """
         super().init_command_objects()
+        args = ()
+        for (command_name, command_class) in [
+            ("TelescopeOn", TelescopeOn),
+            ("TelescopeOff", TelescopeOff),
+            ("TelescopeStandby", TelescopeStandby),
+            ("Disable", Disable),
+        ]:
+            command_obj = command_class(
+                self.component_manager,
+                self.op_state_model,
+                *args,
+                logger=self.logger,
+            )
+            self.register_command_object(command_name, command_obj)
+
+
+# ----------
+# Run server
+# ----------
+
+
+def main(args=None, **kwargs):
+    """
+    Runs the SdpMasterLeafNodeMid.
+    :param args: Arguments internal to TANGO
+
+    :param kwargs: Arguments internal to TANGO
+
+    :return: SdpMasterLeafNodeMid TANGO object.
+    """
+    return run((SdpMasterLeafNode,), args=args, **kwargs)
+
+
+if __name__ == "__main__":
+    main()

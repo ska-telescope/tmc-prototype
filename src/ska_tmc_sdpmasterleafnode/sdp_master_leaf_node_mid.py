@@ -31,8 +31,6 @@ class SdpMasterLeafNodeMid(AbstractSdpMasterLeafNode):
     # Attributes
     # ----------
 
-    SleepTime = device_property(dtype="DevFloat", default_value=1)
-
     # ---------------
     # General methods
     # ---------------

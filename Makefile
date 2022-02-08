@@ -41,6 +41,7 @@ ifneq ($(CI_JOB_ID),)
 CUSTOM_VALUES = --set sdpsln_mid.sdpslnmid.image.image=$(PROJECT) \
 	--set sdpsln_mid.sdpslnmid.image.registry=$(CI_REGISTRY)/ska-telescope/$(PROJECT) \
 	--set sdpsln_mid.sdpslnmid.image.tag=$(VERSION)-dev.c$(CI_COMMIT_SHORT_SHA)
+VERSION = 0.8.9
 K8S_TEST_IMAGE_TO_TEST=$(CI_REGISTRY)/ska-telescope/$(PROJECT)/$(PROJECT):$(VERSION)-dev.c$(CI_COMMIT_SHORT_SHA)
 endif
 
