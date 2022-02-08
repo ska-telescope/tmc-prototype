@@ -25,7 +25,7 @@ def sdpmln_device(request):
             break
 
 
-@pytest.mark.verify
+@pytest.mark.sdpmln
 def test_attributes(sdpmln_device):
     assert sdpmln_device.State() == DevState.ON
     sdpmln_device.loggingTargets = ["console::cout"]
