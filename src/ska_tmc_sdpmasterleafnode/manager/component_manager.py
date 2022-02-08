@@ -55,7 +55,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             sleep_time,
         )
 
-        self._sdp_master_dev_name = "mid_sdp/elt/master"
+        self._sdp_master_dev_name = ""
         self._device = DeviceInfo(self._sdp_master_dev_name, False)
 
         self._command_executor = CommandExecutor(
