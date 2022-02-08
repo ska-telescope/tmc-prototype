@@ -3,22 +3,21 @@ function: testing
 domain: mocks
 instances: ["01"]
 entrypoints:
+  - name: "helper_state_device.HelperStateDevice"
+    path: "/app/tests/helpers/helper_state_device.py"
   - name: "helper_subarray_device.HelperSubArrayDevice"
     path: "/app/tests/helpers/helper_subarray_device.py"
-  - name: "helper_state_device.HelperSubArrayDevice"
-    path: "/ska_tmc_common/test_helpers/helper_subarray_device.py"
 server:
   name: "mocks"
   instances:
     - name: "01"
       classes:
-        - name: "HelperSubArrayDevice"
-          devices:
-            - name: "mid_sdp/elt/subarray_1"
         - name: "HelperStateDevice"
           devices:
-            - name: "mid_sdp/elt/master"
-
+          - name: "mid_sdp/elt/master"
+        - name: "HelperSubArrayDevice"
+          devices:
+          - name: "mid_sdp/elt/subarray_1"
 depends_on:
   - device: sys/database/2
 image:
