@@ -13,8 +13,7 @@ from ska_tmc_sdpsubarrayleafnode import release
 from ska_tmc_sdpsubarrayleafnode.manager.component_manager import (
     SdpSLNComponentManager,
 )
-
-# from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
+from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
 
 
 class AbstractSdpSubarrayLeafNode(SKABaseDevice):
@@ -460,13 +459,13 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         )
         cm = SdpSLNComponentManager(
             self.op_state_model,
-            # _input_parameter=SdpSLNInputParameter(None),
+            _input_parameter=SdpSLNInputParameter(None),
             logger=self.logger,
-            # _update_device_callback=self.update_device_callback,
+            _update_device_callback=self.update_device_callback,
             sleep_time=self.SleepTime,
         )
-        cm._sdp_subarray_dev_name = self.SdpSubarrayFQDN or ""
-        # cm.update_input_parameter()
+        cm.input_parameter.sdp_subarray_dev_name = self.SdpSubarrayFQDN or ""
+        cm.update_input_parameter()
         return cm
 
     def init_command_objects(self):

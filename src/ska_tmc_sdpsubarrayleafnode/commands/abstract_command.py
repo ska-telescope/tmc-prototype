@@ -1,7 +1,7 @@
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.adapters import AdapterFactory, AdapterType
-from ska_tmc_common.tmc_command import TmcLeafNodeCommand
+from ska_tmc_common.tmc_command import TMCCommand
 from tango import DevState
 
 from ska_tmc_sdpsubarrayleafnode.exceptions import (
@@ -9,20 +9,38 @@ from ska_tmc_sdpsubarrayleafnode.exceptions import (
     DeviceUnresponsive,
     InvalidObsStateError,
 )
+from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
 
 
-class SdpSLNCommand(TmcLeafNodeCommand):
+class SdpSLNCommand(TMCCommand):
     def check_unresponsive(self):
         component_manager = self.target
-        devInfo = component_manager.get_device()
+        devInfo = component_manager.get_device(
+            component_manager.input_parameter.sdp_subarray_dev_name
+        )
         if devInfo is None or devInfo.unresponsive:
             raise DeviceUnresponsive("SDP subarray device is not available")
 
-    def init_adapter(self):
+    def check_allowed(self):
+        component_manager = self.target
+
+        if isinstance(component_manager.input_parameter, SdpSLNInputParameter):
+            result = self.check_allowed_mid()
+
+        return result
+
+    def init_adapters(self):
+        component_manager = self.target
+
+        if isinstance(component_manager.input_parameter, SdpSLNInputParameter):
+            result, message = self.init_adapters_mid()
+        return result, message
+
+    def init_adapters_mid(self):
         self.sdp_subarray_adapter = None
         component_manager = self.target
-        dev_name = component_manager._sdp_subarray_dev_name
-        devInfo = component_manager.get_device()
+        dev_name = component_manager.input_parameter.sdp_subarray_dev_name
+        devInfo = component_manager.get_device(dev_name)
         try:
             if not devInfo.unresponsive:
                 self.sdp_subarray_adapter = (
@@ -39,7 +57,9 @@ class SdpSLNCommand(TmcLeafNodeCommand):
         return ResultCode.OK, ""
 
     def do(self, argin=None):
-        result = self.do(argin)
+        component_manager = self.target
+        if isinstance(component_manager.input_parameter, SdpSLNInputParameter):
+            result = self.do_mid(argin)
         return result
 
 
@@ -55,7 +75,7 @@ class AbstractTelescopeOnOff(SdpSLNCommand):
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
 
-    def check_allowed(self):
+    def check_allowed_mid(self):
         """
         Checks whether this command is allowed
         It checks that the device is in the right state
@@ -90,7 +110,7 @@ class AbstractAssignResources(SdpSLNCommand):
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
 
-    def check_allowed(self):
+    def check_allowed_mid(self):
         """
         Checks whether this command is allowed
         It checks that the device is in the right state
@@ -129,7 +149,7 @@ class AbstractReleaseResources(SdpSLNCommand):
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
 
-    def check_allowed(self):
+    def check_allowed_mid(self):
         """
         Checks whether this command is allowed
         It checks that the device is in the right state
@@ -154,7 +174,9 @@ class AbstractReleaseResources(SdpSLNCommand):
             )
 
         self.check_unresponsive()
-        obs_state_val = component_manager.get_device().obsState
+        obs_state_val = component_manager.get_device(
+            component_manager.input_parameter.sdp_subarray_dev_name
+        ).obsState
         self.logger.info("sdp_subarray_obs_state value is: %s", obs_state_val)
 
         if obs_state_val != ObsState.IDLE:
@@ -180,7 +202,7 @@ class AbstractConfigure(SdpSLNCommand):
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
 
-    def check_allowed(self):
+    def check_allowed_mid(self):
         """
         Checks whether this command is allowed
         It checks that the device is in the right state
@@ -205,7 +227,9 @@ class AbstractConfigure(SdpSLNCommand):
             )
 
         self.check_unresponsive()
-        obs_state_val = component_manager.get_device().obsState
+        obs_state_val = component_manager.get_device(
+            component_manager.input_parameter.sdp_subarray_dev_name
+        ).obsState
         if obs_state_val not in (ObsState.READY, ObsState.IDLE):
             raise InvalidObsStateError(
                 "Configure command is not allowed in current observation state:{obs_state_val}"
@@ -226,7 +250,7 @@ class AbstractScanEnd(SdpSLNCommand):
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
 
-    def check_allowed(self):
+    def check_allowed_mid(self):
         """
         Checks whether this command is allowed
         It checks that the device is in the right state
@@ -252,7 +276,9 @@ class AbstractScanEnd(SdpSLNCommand):
 
         self.check_unresponsive()
 
-        obs_state_val = component_manager.get_device().obsState
+        obs_state_val = component_manager.get_device(
+            component_manager.input_parameter.sdp_subarray_dev_name
+        ).obsState
 
         if obs_state_val != ObsState.READY:
             raise InvalidObsStateError(
@@ -274,7 +300,7 @@ class AbstractEndScan(SdpSLNCommand):
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
 
-    def check_allowed(self):
+    def check_allowed_mid(self):
         """
         Checks whether this command is allowed
         It checks that the device is in the right state
@@ -300,7 +326,9 @@ class AbstractEndScan(SdpSLNCommand):
 
         self.check_unresponsive()
 
-        obs_state_val = component_manager.get_device().obsState
+        obs_state_val = component_manager.get_device(
+            component_manager.input_parameter.sdp_subarray_dev_name
+        ).obsState
 
         if obs_state_val != ObsState.SCANNING:
             raise InvalidObsStateError(
@@ -322,7 +350,7 @@ class AbstractRestartObsReset(SdpSLNCommand):
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
 
-    def check_allowed(self):
+    def check_allowed_mid(self):
         """
         Checks whether this command is allowed
         It checks that the device is in the right state
@@ -346,7 +374,9 @@ class AbstractRestartObsReset(SdpSLNCommand):
             )
         self.check_unresponsive()
 
-        obs_state_val = component_manager.get_device().obsState
+        obs_state_val = component_manager.get_device(
+            component_manager.input_parameter.sdp_subarray_dev_name
+        ).obsState
 
         if obs_state_val not in (ObsState.ABORTED, ObsState.FAULT):
             raise InvalidObsStateError(
@@ -368,7 +398,7 @@ class AbstractAbort(SdpSLNCommand):
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
 
-    def check_allowed(self):
+    def check_allowed_mid(self):
         """
         Checks whether this command is allowed
         It checks that the device is in the right state
@@ -394,7 +424,9 @@ class AbstractAbort(SdpSLNCommand):
 
         self.check_unresponsive()
 
-        obs_state_val = component_manager.get_device().obsState
+        obs_state_val = component_manager.get_device(
+            component_manager.input_parameter.sdp_subarray_dev_name
+        ).obsState
 
         if obs_state_val not in (
             ObsState.CONFIGURING,
@@ -422,7 +454,7 @@ class AbstractReset(SdpSLNCommand):
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
 
-    def check_allowed(self):
+    def check_allowed_mid(self):
         """
         Checks whether this command is allowed
         It checks that the device is in the right state
