@@ -3,7 +3,7 @@ import time
 # import pytest
 from ska_tmc_common.device_info import SubArrayDeviceInfo
 
-from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
+# from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
 from tests.settings import (
     SDP_SUBARRAY_DEVICE,
     count_faulty_devices,

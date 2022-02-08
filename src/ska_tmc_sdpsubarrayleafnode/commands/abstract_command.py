@@ -12,6 +12,9 @@ from ska_tmc_sdpsubarrayleafnode.exceptions import (
 
 
 class SdpSLNCommand(TmcLeafNodeCommand):
+    def __init__(self, target, *args, logger=None, **kwargs):
+        super().__init__(target, *args, logger=logger, **kwargs)
+
     def check_unresponsive(self):
         component_manager = self.target
         devInfo = component_manager.get_device()
@@ -41,6 +44,9 @@ class SdpSLNCommand(TmcLeafNodeCommand):
     def do(self, argin=None):
         result = self.do(argin)
         return result
+
+    def check_allowed(self):
+        return super().check_allowed()
 
 
 class AbstractTelescopeOnOff(SdpSLNCommand):
@@ -73,7 +79,12 @@ class AbstractTelescopeOnOff(SdpSLNCommand):
                 self.op_state_model.op_state,
             )
 
-        self.check_unresponsive()
+        # self.check_unresponsive()
+
+        component_manager = self.target
+        devInfo = component_manager.get_device()
+        if devInfo is None or devInfo.unresponsive:
+            raise DeviceUnresponsive("SDP subarray device is not available")
 
         return True
 

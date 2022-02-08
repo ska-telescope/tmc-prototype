@@ -14,8 +14,6 @@ from ska_tmc_sdpsubarrayleafnode.manager.component_manager import (
     SdpSLNComponentManager,
 )
 
-# from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
-
 
 class AbstractSdpSubarrayLeafNode(SKABaseDevice):
     """
@@ -195,10 +193,6 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
             return [[ResultCode.FAILED], ["Queue is full!"]]
         unique_id = self.component_manager.command_executor.enqueue_command(
             handler, argin
-        )
-        print(
-            ":::::::unique id after Assign Resources command:::::::::::::::",
-            unique_id,
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
 
@@ -460,13 +454,10 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         )
         cm = SdpSLNComponentManager(
             self.op_state_model,
-            # _input_parameter=SdpSLNInputParameter(None),
             logger=self.logger,
-            # _update_device_callback=self.update_device_callback,
             sleep_time=self.SleepTime,
         )
         cm._sdp_subarray_dev_name = self.SdpSubarrayFQDN or ""
-        # cm.update_input_parameter()
         return cm
 
     def init_command_objects(self):

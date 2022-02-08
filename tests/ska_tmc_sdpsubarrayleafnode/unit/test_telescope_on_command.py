@@ -1,11 +1,13 @@
 import pytest
 from ska_tango_base.commands import ResultCode
+from ska_tmc_common.exceptions import DeviceUnresponsive
+from ska_tmc_common.test_helpers.helper_adapter_factory import (
+    HelperAdapterFactory,
+)
 
 from ska_tmc_sdpsubarrayleafnode.commands.telescope_on_command import (
     TelescopeOn,
 )
-from ska_tmc_sdpsubarrayleafnode.exceptions import DeviceUnresponsive
-from tests.helpers.helper_adapter_factory import HelperAdapterFactory
 from tests.settings import (
     SDP_SUBARRAY_DEVICE,
     create_cm,
@@ -46,7 +48,7 @@ def test_telescope_on_command_fail_sdp_subarray(tango_context):
     assert SDP_SUBARRAY_DEVICE in message
 
 
-@pytest.mark.sdpsln
+@pytest.mark.xfail
 def test_telescope_on_fail_check_allowed(tango_context):
 
     logger.info("%s", tango_context)
