@@ -8,11 +8,7 @@ from ska_tmc_common.op_state_model import TMCOpStateModel
 from ska_tmc_sdpmasterleafnode.manager.component_manager import (
     SdpMLNComponentManager,
 )
-from ska_tmc_sdpsubarrayleafnode.manager.component_manager import (
-    SdpSLNComponentManager,
-)
-
-# from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
+from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
 
 logger = logging.getLogger(__name__)
@@ -39,8 +35,6 @@ def create_cm(cm_class, device):
             op_state_model,
             logger=logger,
         )
-    elif cm_class == "SdpSLNComponentManager":
-        cm = SdpSLNComponentManager(op_state_model, logger=logger)
     else:
         log_msg = f"Unknown component manager class {cm_class}"
         logger.error(log_msg)
@@ -56,14 +50,16 @@ def create_cm(cm_class, device):
 
 
 def get_sdpsln_command_obj(command_class, obsstate_value=None):
-    # input_parameter = SdpSLNInputParameter(None)
-    cm, start_time = create_cm("SdpSLNComponentManager", SDP_SUBARRAY_DEVICE)
-    # elapsed_time = time.time() - start_time
-    # logger.info(
-    #     "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-    # )
-    # dev_name = "mid_sdp/elt/subarray_1"
-    cm.update_device_obs_state(obsstate_value)
+    input_parameter = SdpSLNInputParameter(None)
+    cm, start_time = create_cm(
+        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
+    )
+    elapsed_time = time.time() - start_time
+    logger.info(
+        "checked %s devices in %s", len(cm.checked_devices), elapsed_time
+    )
+    dev_name = "mid_sdp/elt/subarray_1"
+    cm.update_device_obs_state(dev_name, obsstate_value)
 
     adapter_factory = HelperAdapterFactory()
 
