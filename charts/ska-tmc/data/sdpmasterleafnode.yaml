@@ -1,0 +1,34 @@
+name: "sdpmasterleafnode-test"
+function: telescope-monitoring
+domain: general-monitoring
+instances: ["01"]
+command: "python3 /app/src/ska_tmc_sdpmasterleafnode/sdp_master_leaf_node.py"
+server:
+  name: "sdp_master_leaf_node"
+  instances:
+  - name: "01"
+    classes:
+    - name: "SdpSubarrayLeafNode"
+      devices:
+      - name: "ska_mid/tm_leaf_node/sdp_master"
+        properties:
+        - name: "SdpMasterFQDN"
+          values:
+          - "{{.Values.deviceServers.sdpsln.mid.SdpSubarrayFQDN}}"
+        - name: "SkaLevel"
+          values:
+            - "3"
+        - name: "LoggingTargetsDefault"
+          values:
+            - "tango::logger"
+        - name: "LoggingLevelDefault"
+          values:
+            - "5"
+depends_on:
+  - device: sys/database/2
+image:
+  registry: "{{.Values.sdpslnmid.image.registry}}"
+  image: "{{.Values.sdpslnmid.image.image}}"
+  tag: "{{.Values.sdpslnmid.image.tag}}"
+  pullPolicy: "{{.Values.sdpslnmid.image.pullPolicy}}"
+

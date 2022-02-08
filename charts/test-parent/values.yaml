@@ -40,6 +40,9 @@ sdpsln_mid:
 
     sdpsln:
       enabled: true
+    
+    sdpmln:
+      enabled: true
 
 ska-taranta:
   enabled: false

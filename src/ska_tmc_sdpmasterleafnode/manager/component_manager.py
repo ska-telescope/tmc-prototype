@@ -1,15 +1,14 @@
 """
 This module implements ComponentManager class for the Sdp Master Leaf Node.
 """
+import time
 
 from ska_tmc_common.command_executor import CommandExecutor
 from ska_tmc_common.device_info import DeviceInfo
-from ska_tmc_common.tmc_component_manager import TmcComponentManager
-
-from ska_tmc_sdpmasterleafnode.model.component import SdpMLNComponent
+from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
 
 
-class SdpMLNComponentManager(TmcComponentManager):
+class SdpMLNComponentManager(TmcLeafNodeComponentManager):
     """
     A component manager for The SDP Master Leaf Node component.
 
@@ -23,10 +22,7 @@ class SdpMLNComponentManager(TmcComponentManager):
     def __init__(
         self,
         op_state_model,
-        _input_parameter,
-        _component=None,
         logger=None,
-        _update_device_callback=None,
         _update_command_in_progress_callback=None,
         _monitoring_loop=False,
         _event_receiver=False,
@@ -51,7 +47,6 @@ class SdpMLNComponentManager(TmcComponentManager):
 
         super().__init__(
             op_state_model,
-            _component,
             logger,
             _monitoring_loop,
             _event_receiver,
@@ -60,62 +55,62 @@ class SdpMLNComponentManager(TmcComponentManager):
             sleep_time,
         )
 
-        self.component = _component or SdpMLNComponent(logger)
-        self.devices = self.component.devices
-        self._event_receiver = None
-
-        self.component.set_op_callbacks(_update_device_callback)
-        self._input_parameter = _input_parameter
-
-        # if _event_receiver:
-        #     self._event_receiver.start()
+        self._sdp_master_dev_name = "mid_sdp/elt/master"
+        self._device = DeviceInfo(self._sdp_master_dev_name, False)
 
         self._command_executor = CommandExecutor(
             logger,
             _update_command_in_progress_callback=_update_command_in_progress_callback,
         )
 
-    @property
-    def input_parameter(self):
+    def get_device(self):
         """
-        Return the input parameter
+        Return the device info our of the monitoring loop with name dev_name
 
-        :return: input parameter
-        :rtype: InputParameter
+        :param None:
+        :return: a device info
+        :rtype: DeviceInfo
         """
-        return self._input_parameter
+        return self._device
 
-    @property
-    def checked_devices(self):
+    def device_failed(self, exception):
         """
-        Return the list of the checked monitored devices
+        Set a device to failed and call the relative callback if available
 
-        :return: list of the checked monitored devices
+        :param exception: an exception
+        :type: Exception
         """
-        result = []
-        for dev in self.component.devices:
-            if dev.unresponsive:
-                result.append(dev)
-                continue
-        return result
-
-    def update_input_parameter(self):
         with self.lock:
-            self.input_parameter.update(self)
+            self._device.exception = exception
 
-    # def stop(self):
-    #     self._event_receiver.stop()
+    def update_event_failure(self):
+        with self.lock:
+            self._device.last_event_arrived = time.time()
+            self._device.update_unresponsive(False)
 
-    def add_device(self, dev_name):
+    def update_device_health_state(self, health_state):
         """
-        Add device to the monitoring loop
+        Update a monitored device health state
+        aggregate the health states available
 
-        :param dev_name: device name
-        :type dev_name: str
+        :param health_state: health state of the device
+        :type health_state: HealthState
         """
-        if dev_name is None:
-            return
+        with self.lock:
+            self._device.healthState = health_state
+            self._device.last_event_arrived = time.time()
+            self._device.update_unresponsive(False)
 
-        devInfo = DeviceInfo(dev_name, False)
+    def update_device_state(self, state):
+        """
+        Update a monitored device state,
+        aggregate the states available
+        and call the relative callbacks if available
 
-        self.component.update_device(devInfo)
+        :param state: state of the device
+        :type state: DevState
+        """
+        with self.lock:
+            self._device.state = state
+            self._device.last_event_arrived = time.time()
+            self._device.update_unresponsive(False)
