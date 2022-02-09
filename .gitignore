@@ -272,7 +272,7 @@ unit-tests.xml
 
 # Miscellaneous
 .DS_Store
-gitlab_values.yaml
+gilab_values.yaml
 charts/ska-tmc/Chart.lock
 output.yaml
 charts/ska-tmc/charts/

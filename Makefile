@@ -32,7 +32,7 @@ HELM_CHART=test-parent
 UMBRELLA_CHART_PATH ?= charts/$(HELM_CHART)/
 K8S_CHARTS ?= ska-tmc test-parent## list of charts
 K8S_CHART ?= $(HELM_CHART)
-
+TEST_VERSION ?= 0.8.9
 CI_REGISTRY ?= gitlab.com
 CUSTOM_VALUES = --set sdpsln_mid.sdpslnmid.image.tag=$(VERSION)
 K8S_TEST_IMAGE_TO_TEST=$(CAR_OCI_REGISTRY_HOST)/$(PROJECT):$(VERSION)
@@ -40,7 +40,7 @@ ifneq ($(CI_JOB_ID),)
 CUSTOM_VALUES = --set sdpsln_mid.sdpslnmid.image.image=$(PROJECT) \
 	--set sdpsln_mid.sdpslnmid.image.registry=$(CI_REGISTRY)/ska-telescope/$(PROJECT) \
 	--set sdpsln_mid.sdpslnmid.image.tag=$(VERSION)-dev.c$(CI_COMMIT_SHORT_SHA)
-K8S_TEST_IMAGE_TO_TEST=$(CI_REGISTRY)/ska-telescope/$(PROJECT)/$(PROJECT):$(VERSION)-dev.c$(CI_COMMIT_SHORT_SHA)
+K8S_TEST_IMAGE_TO_TEST=$(CI_REGISTRY)/ska-telescope/$(PROJECT)/$(PROJECT):$(TEST_VERSION)-dev.c$(CI_COMMIT_SHORT_SHA)
 endif
 
 CI_PROJECT_DIR ?= .
@@ -90,8 +90,16 @@ K8S_TEST_TEST_COMMAND = cd .. && $(PYTHON_VARS_BEFORE_PYTEST) $(PYTHON_RUNNER) \
 						pytest \
 						$(PYTHON_VARS_AFTER_PYTEST) ./tests \
 						 | tee pytest.stdout && mv build tests/
--include .make/*.mk
+-include .make/k8s.mk
+-include .make/python.mk
+-include .make/helm.mk
+-include .make/oci.mk
+-include .make/docs.mk
+-include .make/release.mk
+-include .make/make.mk
+-include .make/help.mk
 -include PrivateRules.mak
+
 
 test-requirements:
 	@poetry export --without-hashes --dev --format requirements.txt --output tests/requirements.txt
