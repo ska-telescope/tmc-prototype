@@ -1,6 +1,5 @@
 import pytest
 import tango
-from ska_tango_base.commands import ResultCode
 from tango.test_utils import DeviceTestContext
 
 from ska_tmc_sdpmasterleafnode.sdp_master_leaf_node import SdpMasterLeafNode
@@ -25,7 +24,7 @@ def sdpmln_device(request):
 
 @pytest.mark.sdpmln
 def test_commands(sdpmln_device):
-    sdpmln_device.TelescopeOn() 
+    sdpmln_device.TelescopeOn()
     sdpmln_device.TelescopeOff()
     sdpmln_device.TelescopeStandby()
     sdpmln_device.Disable()

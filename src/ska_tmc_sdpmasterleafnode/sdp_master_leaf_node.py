@@ -252,12 +252,12 @@ class SdpMasterLeafNode(SKABaseDevice):
         )
         # sdp_master_dev_name = self.SdpMasterFQDN or ""
         cm = SdpMLNComponentManager(
-            self.SdpMasterFQDN, 
+            self.SdpMasterFQDN,
             self.op_state_model,
             logger=self.logger,
             sleep_time=self.SleepTime,
         )
-        
+
         return cm
 
     def init_command_objects(self):
