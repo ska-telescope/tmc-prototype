@@ -35,6 +35,7 @@ def create_cm(cm_class, input_parameter, device):
     op_state_model = TMCOpStateModel(logger)
     if cm_class == "SdpMLNComponentManager":
         cm = SdpMLNComponentManager(
+            device, 
             op_state_model,
             logger=logger,
         )

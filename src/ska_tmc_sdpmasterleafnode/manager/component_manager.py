@@ -21,6 +21,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
 
     def __init__(
         self,
+        sdp_master_dev_name,
         op_state_model,
         logger=None,
         _update_command_in_progress_callback=None,
@@ -55,7 +56,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             sleep_time,
         )
 
-        self._sdp_master_dev_name = ""
+        self._sdp_master_dev_name = sdp_master_dev_name
         self._device = DeviceInfo(self._sdp_master_dev_name, False)
 
         self._command_executor = CommandExecutor(

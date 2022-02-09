@@ -250,12 +250,14 @@ class SdpMasterLeafNode(SKABaseDevice):
         self.op_state_model = TMCOpStateModel(
             logger=self.logger, callback=super()._update_state
         )
+        # sdp_master_dev_name = self.SdpMasterFQDN or ""
         cm = SdpMLNComponentManager(
+            self.SdpMasterFQDN, 
             self.op_state_model,
             logger=self.logger,
             sleep_time=self.SleepTime,
         )
-        cm._sdp_master_dev_name = self.SdpMasterFQDN or ""
+        
         return cm
 
     def init_command_objects(self):
