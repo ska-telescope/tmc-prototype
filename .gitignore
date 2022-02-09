@@ -280,6 +280,7 @@ charts/test-parent/Chart.lock
 charts/test-parent/charts/
 code-coverage
 pytest-logs.txt
+.make/
 
 # Ignore legacy dependency and release systems
 setup.py
