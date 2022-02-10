@@ -48,12 +48,12 @@ class End(AbstractScanEnd):
             self.sdp_subarray_adapter.End()
 
         except Exception as e:
+            self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
                 (
-                    "Error in calling End on subarray %s: %s",
+                    "Error in calling End on subarray %s",
                     self.sdp_subarray_adapter.dev_name,
-                    e,
                 ),
             )
         return (ResultCode.OK, "")

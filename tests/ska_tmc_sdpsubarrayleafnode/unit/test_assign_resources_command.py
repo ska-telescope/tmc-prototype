@@ -30,7 +30,7 @@ def get_assign_input_str(assign_input_file="command_AssignResources.json"):
 @pytest.mark.sdpsln
 def test_telescope_assign_resources_command(tango_context):
     logger.info("%s", tango_context)
-    _, assign_res_command, my_adapter_factory = get_sdpsln_command_obj(
+    _, assign_res_command, adapter_factory = get_sdpsln_command_obj(
         AssignResources, ObsState.IDLE
     )
 
@@ -38,14 +38,14 @@ def test_telescope_assign_resources_command(tango_context):
     assert assign_res_command.check_allowed()
     (result_code, _) = assign_res_command.do(assign_input_str)
     assert result_code == ResultCode.OK
-    adapter = my_adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE)
+    adapter = adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE)
     adapter.proxy.AssignResources.assert_called()
 
 
 @pytest.mark.sdpsln
 def test_telescope_assign_resources_command_missing_eb_id_key(tango_context):
     logger.info("%s", tango_context)
-    _, assign_res_command, my_adapter_factory = get_sdpsln_command_obj(
+    _, assign_res_command, adapter_factory = get_sdpsln_command_obj(
         AssignResources, ObsState.IDLE
     )
     assign_input_str = get_assign_input_str()
@@ -54,7 +54,7 @@ def test_telescope_assign_resources_command_missing_eb_id_key(tango_context):
     assert assign_res_command.check_allowed()
     (result_code, _) = assign_res_command.do(json.dumps(json_argument))
     assert result_code == ResultCode.OK
-    adapter = my_adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE)
+    adapter = adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE)
     adapter.proxy.AssignResources.assert_called()
 
 

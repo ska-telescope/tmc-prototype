@@ -1,7 +1,6 @@
 """
 Abort command class for SDPSubarrayLeafNode.
 """
-# Additional import
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterFactory
 
@@ -47,9 +46,7 @@ class Abort(AbstractAbort):
             )
             self.sdp_subarray_adapter.Abort()
         except Exception as e:
-            self.logger.exception(
-                "Error in calling Abort on sdp subarray %s", e
-            )
+            self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
                 (

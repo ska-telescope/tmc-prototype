@@ -19,14 +19,11 @@ from tests.settings import (
 @pytest.mark.sdpsln
 def test_telescope_on_command(tango_context):
     logger.info("%s", tango_context)
-    _, on_command, my_adapter_factory = get_sdpsln_command_obj(
-        TelescopeOn, None
-    )
+    _, on_command, adapter_factory = get_sdpsln_command_obj(TelescopeOn, None)
     assert on_command.check_allowed()
     (result_code, _) = on_command.do()
     assert result_code == ResultCode.OK
-    dev_name = "mid_sdp/elt/subarray_1"
-    adapter = my_adapter_factory.get_or_create_adapter(dev_name)
+    adapter = adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE)
     adapter.proxy.On.assert_called()
 
 

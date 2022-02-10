@@ -45,12 +45,12 @@ class ObsReset(AbstractRestartObsReset):
             )
             self.sdp_subarray_adapter.ObsReset()
         except Exception as e:
+            self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
                 (
-                    "Error in calling ObsReset on sdp subarray %s: %s",
+                    "Error in calling ObsReset on sdp subarray %s",
                     self.sdp_subarray_adapter.dev_name,
-                    e,
                 ),
             )
         return (ResultCode.OK, "")

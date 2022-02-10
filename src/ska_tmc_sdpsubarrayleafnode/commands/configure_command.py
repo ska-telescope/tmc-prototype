@@ -51,12 +51,11 @@ class Configure(AbstractConfigure):
         try:
             json_argument = json.loads(argin)
         except Exception as e:
+            log_msg = f"JSON Parsing failed: {e}"
+            self.logger.exception(log_msg)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                (
-                    "Problem in loading JSON string in Configure command on SDP Subarray Leaf Node: %s",
-                    e,
-                ),
+                ("JSON Parsing failed"),
             )
 
         if "interface" not in json_argument:
@@ -84,12 +83,12 @@ class Configure(AbstractConfigure):
             self.sdp_subarray_adapter.Configure(json.dumps(json_argument))
 
         except Exception as e:
+            self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
                 (
-                    "Error in calling Configure on subarray %s: %s",
+                    "Error in calling Configure on subarray %s",
                     self.sdp_subarray_adapter.dev_name,
-                    e,
                 ),
             )
         return (ResultCode.OK, "")

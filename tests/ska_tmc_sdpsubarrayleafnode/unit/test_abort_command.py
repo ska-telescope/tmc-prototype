@@ -19,14 +19,14 @@ from tests.settings import (
 @pytest.mark.sdpsln
 def test_telescope_abort_command(tango_context):
     logger.info("%s", tango_context)
-    _, abort_command, my_adapter_factory = get_sdpsln_command_obj(
+    _, abort_command, adapter_factory = get_sdpsln_command_obj(
         Abort, ObsState.CONFIGURING
     )
 
     assert abort_command.check_allowed()
     (result_code, _) = abort_command.do()
     assert result_code == ResultCode.OK
-    adapter = my_adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE)
+    adapter = adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE)
     adapter.proxy.Abort.assert_called()
 
 
@@ -60,23 +60,23 @@ def test_telescope_abort_command_fail_check_allowed_with_invalid_obsState(
     tango_context,
 ):
     logger.info("%s", tango_context)
-    _, abort_command, _ = get_sdpsln_command_obj(
+    cm, abort_command, _ = get_sdpsln_command_obj(
         Abort, obsstate_value=ObsState.EMPTY
     )
-    with pytest.raises(InvalidObsStateError):
+    cm.get_device().update_unresponsive(False)
+    with pytest.raises(InvalidObsStateError) as e:
         abort_command.check_allowed()
+        assert "Abort command is not allowed in current observation state" in e
 
 
 @pytest.mark.sdpsln
-@pytest.mark.abort
 def test_telescope_abort_command_fail_check_allowed_with_device_unresponsive(
     tango_context,
 ):
     logger.info("%s", tango_context)
     cm, abort_command, _ = get_sdpsln_command_obj(
-        Abort, obsstate_value=ObsState.ABORTED
+        Abort, obsstate_value=ObsState.EMPTY
     )
-    device_info = cm.get_device()
-    device_info.update_unresponsive(True)
+    cm.get_device().update_unresponsive(True)
     with pytest.raises(DeviceUnresponsive):
         abort_command.check_allowed()

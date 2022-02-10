@@ -26,8 +26,7 @@ def test_telescope_off_command(tango_context):
     assert off_command.check_allowed()
     (result_code, _) = off_command.do()
     assert result_code == ResultCode.OK
-    dev_name = "mid_sdp/elt/subarray_1"
-    adapter = my_adapter_factory.get_or_create_adapter(dev_name)
+    adapter = my_adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE)
     if isinstance(adapter, SdpSubArrayAdapter):
         adapter.proxy.Off.assert_called()
 

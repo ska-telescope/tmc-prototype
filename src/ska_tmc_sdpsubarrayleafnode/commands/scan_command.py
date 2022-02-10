@@ -79,8 +79,7 @@ class Scan(AbstractScanEnd):
             self.logger.debug(log_msg)
             self.sdp_subarray_adapter.Scan(json.dumps(json_argument))
         except Exception as e:
-            log_msg = f"Error in invoking Scan command on {self.sdp_subarray_adapter.dev_name}: {e}"
-            self.logger.error(log_msg)
+            self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
                 (

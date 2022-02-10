@@ -28,14 +28,14 @@ def get_configure_input_str(configure_input_file="command_Configure.json"):
 @pytest.mark.sdpsln
 def test_telescope_configure_command(tango_context):
     logger.info("%s", tango_context)
-    _, configure_command, my_adapter_factory = get_sdpsln_command_obj(
+    _, configure_command, adapter_factory = get_sdpsln_command_obj(
         Configure, obsstate_value=ObsState.READY
     )
     configure_input_str = get_configure_input_str()
     assert configure_command.check_allowed()
     (result_code, _) = configure_command.do(configure_input_str)
     assert result_code == ResultCode.OK
-    adapter = my_adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE)
+    adapter = adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE)
     adapter.proxy.Configure.assert_called()
 
 
@@ -44,7 +44,7 @@ def test_telescope_configure_resources_command_missing_interface_key(
     tango_context,
 ):
     logger.info("%s", tango_context)
-    _, configure_command, my_adapter_factory = get_sdpsln_command_obj(
+    _, configure_command, adapter_factory = get_sdpsln_command_obj(
         Configure, obsstate_value=ObsState.READY
     )
 
@@ -54,7 +54,7 @@ def test_telescope_configure_resources_command_missing_interface_key(
     assert configure_command.check_allowed()
     (result_code, _) = configure_command.do(json.dumps(json_argument))
     assert result_code == ResultCode.OK
-    adapter = my_adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE)
+    adapter = adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE)
     adapter.proxy.Configure.assert_called()
 
 

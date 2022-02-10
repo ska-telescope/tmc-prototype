@@ -45,8 +45,12 @@ class TelescopeOff(AbstractTelescopeOnOff):
                 "Off command is successful on Sdp Subarray device."
             )
         except Exception as e:
+            self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                f"Error in calling Telescope Off Sdp Subarray Device {self.sdp_subarray_adapter.dev_name}: {e}",
+                (
+                    "Error in invoking Off command on %s",
+                    self.sdp_subarray_adapter.dev_name,
+                ),
             )
         return (ResultCode.OK, "")

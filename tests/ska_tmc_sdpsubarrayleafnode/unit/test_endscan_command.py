@@ -4,12 +4,9 @@ import pytest
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.adapters import SdpSubArrayAdapter
+from ska_tmc_common.exceptions import DeviceUnresponsive, InvalidObsStateError
 
 from ska_tmc_sdpsubarrayleafnode.commands.endscan_command import EndScan
-from ska_tmc_sdpsubarrayleafnode.exceptions import (
-    DeviceUnresponsive,
-    InvalidObsStateError,
-)
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
 from tests.settings import (
     SDP_SUBARRAY_DEVICE,
@@ -43,9 +40,9 @@ def test_endscan_fail_check_allowed_with_device_unresponsive(tango_context):
     logger.info(
         "checked %s device in %s", cm.get_device().dev_name, elapsed_time
     )
-    my_adapter_factory = HelperAdapterFactory()
+    adapter_factory = HelperAdapterFactory()
     cm.get_device().update_unresponsive(True)
-    endscan_command = EndScan(cm, cm.op_state_model, my_adapter_factory)
+    endscan_command = EndScan(cm, cm.op_state_model, adapter_factory)
     with pytest.raises(DeviceUnresponsive):
         endscan_command.check_allowed()
 

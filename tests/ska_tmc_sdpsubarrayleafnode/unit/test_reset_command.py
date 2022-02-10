@@ -1,8 +1,8 @@
 import pytest
 from ska_tango_base.commands import ResultCode
+from ska_tmc_common.exceptions import DeviceUnresponsive
 
 from ska_tmc_sdpsubarrayleafnode.commands.reset_command import Reset
-from ska_tmc_sdpsubarrayleafnode.exceptions import DeviceUnresponsive
 from tests.settings import get_sdpsln_command_obj, logger
 
 

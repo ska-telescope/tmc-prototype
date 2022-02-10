@@ -86,12 +86,11 @@ class AssignResources(AbstractAssignResources):
         try:
             json_argument = json.loads(argin)
         except Exception as e:
+            log_msg = f"JSON Parsing failed: {e}"
+            self.logger.exception(log_msg)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                (
-                    "Problem in loading JSON string in AssignResources command on SDP Subarray Leaf Node: %s",
-                    e,
-                ),
+                ("JSON parsing failed"),
             )
 
         if "eb_id" not in json_argument:
@@ -107,20 +106,19 @@ class AssignResources(AbstractAssignResources):
             )
 
         try:
-            self.logger.info(
-                f"Invoking AssignResources command on:{self.sdp_subarray_adapter.dev_name}"
-            )
+            log_msg = f"Invoking AssignResources command on:{self.sdp_subarray_adapter.dev_name}"
+            self.logger.info(log_msg)
             self.sdp_subarray_adapter.AssignResources(
                 json.dumps(json_argument)
             )
 
         except Exception as e:
+            self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
                 (
-                    "Error in calling AssignResources on subarray %s: %s",
+                    "Error in calling AssignResources on subarray %s",
                     self.sdp_subarray_adapter.dev_name,
-                    e,
                 ),
             )
         return (ResultCode.OK, "")
