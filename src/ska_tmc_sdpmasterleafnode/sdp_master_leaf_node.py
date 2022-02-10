@@ -118,7 +118,8 @@ class SdpMasterLeafNode(SKABaseDevice):
 
     def write_sdpMasterDevName(self, value):
         """Set the sdpmasterdevname attribute."""
-        self.component_manager._sdp_master_dev_name = value
+        # self.component_manager._sdp_master_dev_name = value
+        self.component_manager.update_device_info(value)
 
     def read_lastDeviceInfoChanged(self):
         return self._LastDeviceInfoChanged

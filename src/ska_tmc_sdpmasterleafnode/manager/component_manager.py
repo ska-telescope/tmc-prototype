@@ -56,9 +56,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             sleep_time,
         )
 
-        self._sdp_master_dev_name = sdp_master_dev_name
-        self._device = DeviceInfo(self._sdp_master_dev_name, False)
-
+        self.update_device_info(sdp_master_dev_name)
         self._command_executor = CommandExecutor(
             logger,
             _update_command_in_progress_callback=_update_command_in_progress_callback,
@@ -73,6 +71,10 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         :rtype: DeviceInfo
         """
         return self._device
+
+    def update_device_info(self, sdp_master_dev_name):
+        self._sdp_master_dev_name = sdp_master_dev_name
+        self._device = DeviceInfo(self._sdp_master_dev_name, False)
 
     def device_failed(self, exception):
         """
