@@ -4,12 +4,9 @@ import logging
 import pytest
 import tango
 from ska_tmc_common.dev_factory import DevFactory
-
+from ska_tmc_common.test_helpers.helper_state_device import HelperStateDevice
 from ska_tmc_common.test_helpers.helper_subarray_device import (
     HelperSubArrayDevice,
-)
-from ska_tmc_common.test_helpers.helper_state_device import (
-    HelperStateDevice,
 )
 from tango.test_context import MultiDeviceTestContext
 
