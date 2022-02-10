@@ -29,7 +29,6 @@ def disable_command(tango_context, sdpmln_name):
             assert command[2] == "ResultCode.OK"
 
 
-@pytest.mark.disable
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_disable_command_mid(tango_context):

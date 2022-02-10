@@ -29,7 +29,6 @@ def off_command(tango_context, sdpmln_name):
             assert command[2] == "ResultCode.OK"
 
 
-@pytest.mark.telescopeoncommand
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_off_command_mid(tango_context):
