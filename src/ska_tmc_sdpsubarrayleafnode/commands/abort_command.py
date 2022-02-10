@@ -47,12 +47,14 @@ class Abort(AbstractAbort):
             )
             self.sdp_subarray_adapter.Abort()
         except Exception as e:
-            self.logger.exception("Error in calling Abort on sdp subarray %s", e)
+            self.logger.exception(
+                "Error in calling Abort on sdp subarray %s", e
+            )
             return self.generate_command_result(
                 ResultCode.FAILED,
                 (
                     "Error in calling Abort on sdp subarray %s",
-                    self.sdp_subarray_adapter.dev_name
+                    self.sdp_subarray_adapter.dev_name,
                 ),
             )
         return (ResultCode.OK, "")

@@ -61,7 +61,7 @@ def test_telescope_abort_command_fail_check_allowed_with_invalid_obsState(
 ):
     logger.info("%s", tango_context)
     _, abort_command, _ = get_sdpsln_command_obj(
-        Abort, obsstate_value = ObsState.EMPTY
+        Abort, obsstate_value=ObsState.EMPTY
     )
     with pytest.raises(InvalidObsStateError):
         abort_command.check_allowed()
@@ -69,7 +69,9 @@ def test_telescope_abort_command_fail_check_allowed_with_invalid_obsState(
 
 @pytest.mark.sdpsln
 @pytest.mark.abort
-def test_telescope_abort_command_fail_check_allowed_with_device_unresponsive(tango_context):
+def test_telescope_abort_command_fail_check_allowed_with_device_unresponsive(
+    tango_context,
+):
     logger.info("%s", tango_context)
     cm, abort_command, _ = get_sdpsln_command_obj(
         Abort, obsstate_value=ObsState.ABORTED

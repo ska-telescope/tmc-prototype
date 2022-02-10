@@ -84,7 +84,9 @@ def test_telescope_obsreset_fail_check_allowed_with_invalid_obsState(
 
 
 @pytest.mark.sdpsln
-def test_telescope_obsreset_fail_check_allowed_with_device_unresponsive(tango_context):
+def test_telescope_obsreset_fail_check_allowed_with_device_unresponsive(
+    tango_context,
+):
 
     logger.info("%s", tango_context)
     cm, obsreset_command, my_adapter_factory = get_sdpsln_command_obj(

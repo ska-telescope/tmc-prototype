@@ -3,7 +3,6 @@ import time
 import pytest
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
-from ska_tmc_common.adapters import SdpSubArrayAdapter
 
 from ska_tmc_sdpsubarrayleafnode.commands.release_resources_command import (
     ReleaseResources,
@@ -32,7 +31,6 @@ def test_telescope_release_resources_command(tango_context):
     (result_code, _) = release_command.do()
     assert result_code == ResultCode.OK
     adapter = my_adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE)
-    # if isinstance(adapter, SdpSubArrayAdapter):
     adapter.proxy.ReleaseResources.assert_called()
 
 

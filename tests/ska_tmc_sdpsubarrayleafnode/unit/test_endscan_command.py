@@ -10,7 +10,6 @@ from ska_tmc_sdpsubarrayleafnode.exceptions import (
     DeviceUnresponsive,
     InvalidObsStateError,
 )
-
 from tests.helpers.helper_adapter_factory import HelperAdapterFactory
 from tests.settings import (
     SDP_SUBARRAY_DEVICE,

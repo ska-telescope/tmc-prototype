@@ -57,7 +57,9 @@ def test_telescope_restart_command_fail_subarray(tango_context):
     # failing_dev = "mid_sdp/elt/subarray_1"
     attrs = {"Restart.side_effect": Exception}
     subarrayMock = mock.Mock(**attrs)
-    my_adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE, proxy=subarrayMock)
+    my_adapter_factory.get_or_create_adapter(
+        SDP_SUBARRAY_DEVICE, proxy=subarrayMock
+    )
 
     restart_command = Restart(cm, cm.op_state_model, my_adapter_factory, skuid)
     cm.update_device_obs_state(ObsState.ABORTED)
@@ -81,7 +83,9 @@ def test_telescope_restart_fail_check_allowed_with_invalid_obsState(
 
 
 @pytest.mark.sdpsln
-def test_telescope_restart_fail_check_allowed_with_device_undesponsive(tango_context):
+def test_telescope_restart_fail_check_allowed_with_device_undesponsive(
+    tango_context,
+):
 
     logger.info("%s", tango_context)
     cm, restart_command, _ = get_sdpsln_command_obj(

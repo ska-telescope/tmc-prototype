@@ -50,7 +50,9 @@ def test_telescope_assign_resources_command_fail_subarray(tango_context):
     # include exception in AssignResources command
     attrs = {"End.side_effect": Exception}
     subarrayMock = mock.Mock(**attrs)
-    my_adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE, proxy=subarrayMock)
+    my_adapter_factory.get_or_create_adapter(
+        SDP_SUBARRAY_DEVICE, proxy=subarrayMock
+    )
 
     end_command = End(cm, cm.op_state_model, my_adapter_factory, skuid)
     cm.update_device_obs_state(ObsState.READY)

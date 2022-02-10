@@ -9,11 +9,6 @@ from ska_tmc_common.adapters import AdapterFactory
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import (
     AbstractScanEnd,
 )
-from ska_tmc_sdpsubarrayleafnode.exceptions import (
-    CommandNotAllowed,
-    DeviceUnresponsive,
-    InvalidObsStateError,
-)
 
 
 class Scan(AbstractScanEnd):

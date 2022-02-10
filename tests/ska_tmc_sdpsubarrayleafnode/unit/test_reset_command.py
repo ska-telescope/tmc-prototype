@@ -16,7 +16,9 @@ def test_telescope_reset_command(tango_context):
 
 
 @pytest.mark.sdpsln
-def test_telescope_reset_fail_check_allowed_with_device_unresponsive(tango_context):
+def test_telescope_reset_fail_check_allowed_with_device_unresponsive(
+    tango_context,
+):
 
     logger.info("%s", tango_context)
     cm, reset_command, _ = get_sdpsln_command_obj(Reset, None)

@@ -128,7 +128,9 @@ def test_telescope_scan_command_fail_check_allowed_with_invalid_obsState(
 
 @pytest.mark.sdpsln
 @pytest.mark.abort
-def test_telescope_scan_fail_check_allowed_with_device_undesponsive(tango_context):
+def test_telescope_scan_fail_check_allowed_with_device_undesponsive(
+    tango_context,
+):
 
     logger.info("%s", tango_context)
     cm, scan_command, my_adapter_factory = get_sdpsln_command_obj(
