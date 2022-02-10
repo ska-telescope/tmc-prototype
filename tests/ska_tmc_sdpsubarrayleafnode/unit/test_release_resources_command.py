@@ -20,7 +20,7 @@ from tests.settings import (
 )
 
 
-@pytest.mark.shraddha
+@pytest.mark.sdpsln
 def test_telescope_release_resources_command(tango_context):
     logger.info("%s", tango_context)
     # import debugpy; debugpy.debug_this_thread()
@@ -36,15 +36,14 @@ def test_telescope_release_resources_command(tango_context):
     adapter.proxy.ReleaseResources.assert_called()
 
 
-@pytest.mark.shraddha
+@pytest.mark.sdpsln
 def test_telescope_release_resources_command_fail_subarray(tango_context):
     logger.info("%s", tango_context)
-    # input_parameter = SdpSLNInputParameter(None)
-    cm, _ = create_cm("SdpSLNComponentManager", SDP_SUBARRAY_DEVICE)
-    # elapsed_time = time.time() - start_time
-    # logger.info(
-    #     "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-    # )
+    cm, start_time = create_cm("SdpSLNComponentManager", SDP_SUBARRAY_DEVICE)
+    elapsed_time = time.time() - start_time
+    logger.info(
+        "checked %s device in %s", cm.get_device().dev_name, elapsed_time
+    )
 
     adapter_factory = HelperAdapterFactory()
 
@@ -62,9 +61,8 @@ def test_telescope_release_resources_command_fail_subarray(tango_context):
     assert SDP_SUBARRAY_DEVICE in message
 
 
-@pytest.mark.shraddha
+@pytest.mark.sdpsln
 def test_telescope_release_resources_fail_check_allowed(tango_context):
-
     logger.info("%s", tango_context)
     cm, release_command, _ = get_sdpsln_command_obj(
         ReleaseResources, obsstate_value=ObsState.IDLE

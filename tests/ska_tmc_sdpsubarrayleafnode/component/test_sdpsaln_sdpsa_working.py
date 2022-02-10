@@ -14,15 +14,13 @@ from tests.settings import (
 
 def test_sdpsa_working(tango_context):
     logger.info("%s", tango_context)
-    input_parameter = SdpSLNInputParameter(None)
-    cm, start_time = create_cm(
-        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
-    )
+    # input_parameter = SdpSLNInputParameter(None)
+    cm, start_time = create_cm("SdpSLNComponentManager", SDP_SUBARRAY_DEVICE)
     num_faulty = count_faulty_devices(cm)
     assert num_faulty == 0
 
     elapsed_time = time.time() - start_time
-    logger.info("checked %s devices in %s", num_faulty, elapsed_time)
+    logger.info("checked %s device in %s", num_faulty, elapsed_time)
     for devInfo in cm.devices:
         assert not devInfo.unresponsive
     if "subarray" in devInfo.dev_name.lower():

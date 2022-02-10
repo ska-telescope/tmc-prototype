@@ -31,7 +31,7 @@ def get_scan_input_str(scan_input_file="command_Scan.json"):
     return scan_input_file
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_scan_command(tango_context):
     logger.info("%s", tango_context)
     cm, scan_command, my_adapter_factory = get_sdpsln_command_obj(
@@ -42,14 +42,14 @@ def test_telescope_scan_command(tango_context):
     assert scan_command.check_allowed()
     (result_code, _) = scan_command.do(scan_input_str)
     assert result_code == ResultCode.OK
-    dev_name = "mid_sdp/elt/subarray_1"
-    cm.get_device(dev_name).obsState == ObsState.EMPTY
-    adapter = my_adapter_factory.get_or_create_adapter(dev_name)
+    # dev_name = "mid_sdp/elt/subarray_1"
+    cm.get_device().obsState == ObsState.EMPTY
+    adapter = my_adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE)
     if isinstance(adapter, SdpSubArrayAdapter):
         adapter.proxy.Scan.assert_called()
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_scan_command_missing_interface_key(
     tango_context,
 ):
@@ -63,22 +63,20 @@ def test_telescope_scan_command_missing_interface_key(
     assert scan_command.check_allowed()
     (result_code, _) = scan_command.do(json.dumps(json_argument))
     assert result_code == ResultCode.OK
-    dev_name = "mid_sdp/elt/subarray_1"
-    adapter = my_adapter_factory.get_or_create_adapter(dev_name)
+    # dev_name = "mid_sdp/elt/subarray_1"
+    adapter = my_adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE)
     if isinstance(adapter, SdpSubArrayAdapter):
         adapter.proxy.Scan.assert_called()
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_scan_command_fail_subarray(tango_context):
     logger.info("%s", tango_context)
-    input_parameter = SdpSLNInputParameter(None)
-    cm, start_time = create_cm(
-        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
-    )
+    # input_parameter = SdpSLNInputParameter(None)
+    cm, start_time = create_cm("SdpSLNComponentManager", SDP_SUBARRAY_DEVICE)
     elapsed_time = time.time() - start_time
     logger.info(
-        "checked %s devices in %s", len(cm.checked_devices), elapsed_time
+        "checked %s device in %s", len(SDP_SUBARRAY_DEVICE), elapsed_time
     )
 
     my_adapter_factory = HelperAdapterFactory()
@@ -87,21 +85,23 @@ def test_telescope_scan_command_fail_subarray(tango_context):
     skuid = mock.Mock(**attrs)
 
     # include exception in AssignResources command
-    failing_dev = "mid_sdp/elt/subarray_1"
+    # failing_dev = "mid_sdp/elt/subarray_1"
     attrs = {"Scan.side_effect": Exception}
     subarrayMock = mock.Mock(**attrs)
-    my_adapter_factory.get_or_create_adapter(failing_dev, proxy=subarrayMock)
+    my_adapter_factory.get_or_create_adapter(
+        SDP_SUBARRAY_DEVICE, proxy=subarrayMock
+    )
 
     scan_command = Scan(cm, cm.op_state_model, my_adapter_factory, skuid)
-    cm.update_device_obs_state(failing_dev, ObsState.READY)
+    cm.update_device_obs_state(ObsState.READY)
     scan_input_str = get_scan_input_str()
     assert scan_command.check_allowed()
     (result_code, message) = scan_command.do(scan_input_str)
     assert result_code == ResultCode.FAILED
-    assert failing_dev in message
+    assert SDP_SUBARRAY_DEVICE in message
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_scan_command_empty_input_json(tango_context):
     logger.info("%s", tango_context)
     # import debugpy; debugpy.debug_this_thread()
@@ -113,7 +113,7 @@ def test_telescope_scan_command_empty_input_json(tango_context):
     assert result_code == ResultCode.FAILED
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_scan_command_fail_check_allowed_with_invalid_obsState(
     tango_context,
 ):
@@ -126,14 +126,16 @@ def test_telescope_scan_command_fail_check_allowed_with_invalid_obsState(
         scan_command.check_allowed()
 
 
-@pytest.mark.sdpsaln
-def test_telescope_scan_fail_check_allowed(tango_context):
+@pytest.mark.sdpsln
+@pytest.mark.abort
+def test_telescope_scan_fail_check_allowed_with_device_undesponsive(tango_context):
 
     logger.info("%s", tango_context)
     cm, scan_command, my_adapter_factory = get_sdpsln_command_obj(
         Scan, obsstate_value=ObsState.SCANNING
     )
-    cm.input_parameter.sdp_subarray_dev_name = ""
-    scan_command = Scan(cm, cm.op_state_model, my_adapter_factory)
+    device_info = cm.get_device()
+    device_info.update_unresponsive(True)
+    # scan_command = Scan(cm, cm.op_state_model, my_adapter_factory)
     with pytest.raises(DeviceUnresponsive):
         scan_command.check_allowed()

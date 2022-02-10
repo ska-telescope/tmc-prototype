@@ -101,10 +101,11 @@ def test_telescope_assign_resources_command_missing_scan_types(tango_context):
     _, assign_res_command, _ = get_sdpsln_command_obj(
         AssignResources, ObsState.IDLE
     )
+    scan_types_key = "scan_types"
     assign_input_str = get_assign_input_str()
     json_argument = json.loads(assign_input_str)
-    del json_argument["scan_types"]
+    del json_argument[scan_types_key]
     assert assign_res_command.check_allowed()
     (result_code, message) = assign_res_command.do(json.dumps(json_argument))
     assert result_code == ResultCode.FAILED
-    assert "scan_types" in message
+    assert scan_types_key in message

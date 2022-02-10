@@ -31,13 +31,13 @@ class EndScan(AbstractEndScan):
             logger,
         )
 
-    def do_mid(self, argin):
+    def do(self, argin):
         """
         Method to invoke EndScan command on SDP Subarray.
 
         """
 
-        res_code, message = self.init_adapters()
+        res_code, message = self.init_adapter()
         if res_code == ResultCode.FAILED:
             return res_code, message
 

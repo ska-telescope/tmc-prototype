@@ -25,7 +25,7 @@ class ObsReset(AbstractRestartObsReset):
     ):
         super().__init__(target, op_state_model, adapter_factory, logger)
 
-    def do_mid(self, argin=None):
+    def do(self, argin=None):
         """
         Method to invoke ObsReset command on SDP Subarray.
 
@@ -35,7 +35,7 @@ class ObsReset(AbstractRestartObsReset):
             None
 
         """
-        res_code, message = self.init_adapters()
+        res_code, message = self.init_adapter()
         if res_code == ResultCode.FAILED:
             return res_code, message
 

@@ -17,7 +17,7 @@ from tests.settings import (
 )
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_end_command(tango_context):
     logger.info("%s", tango_context)
     _, end_command, my_adapter_factory = get_sdpsln_command_obj(
@@ -33,16 +33,13 @@ def test_telescope_end_command(tango_context):
         adapter.proxy.End.assert_called()
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_assign_resources_command_fail_subarray(tango_context):
     logger.info("%s", tango_context)
-    input_parameter = SdpSLNInputParameter(None)
-    cm, start_time = create_cm(
-        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
-    )
+    cm, start_time = create_cm("SdpSLNComponentManager", SDP_SUBARRAY_DEVICE)
     elapsed_time = time.time() - start_time
     logger.info(
-        "checked %s devices in %s", len(cm.checked_devices), elapsed_time
+        "checked %s device in %s", cm.get_device().dev_name, elapsed_time
     )
 
     my_adapter_factory = HelperAdapterFactory()
@@ -51,20 +48,19 @@ def test_telescope_assign_resources_command_fail_subarray(tango_context):
     skuid = mock.Mock(**attrs)
 
     # include exception in AssignResources command
-    failing_dev = "mid_sdp/elt/subarray_1"
     attrs = {"End.side_effect": Exception}
     subarrayMock = mock.Mock(**attrs)
-    my_adapter_factory.get_or_create_adapter(failing_dev, proxy=subarrayMock)
+    my_adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE, proxy=subarrayMock)
 
     end_command = End(cm, cm.op_state_model, my_adapter_factory, skuid)
-    cm.update_device_obs_state(failing_dev, ObsState.READY)
+    cm.update_device_obs_state(ObsState.READY)
     assert end_command.check_allowed()
     (result_code, message) = end_command.do()
     assert result_code == ResultCode.FAILED
-    assert failing_dev in message
+    assert SDP_SUBARRAY_DEVICE in message
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_end_command_fail_check_allowed_with_invalid_obsState(
     tango_context,
 ):

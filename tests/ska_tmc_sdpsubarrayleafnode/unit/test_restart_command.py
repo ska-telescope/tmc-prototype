@@ -22,7 +22,7 @@ from tests.settings import (
 )
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_restart_command(tango_context):
     logger.info("%s", tango_context)
     cm, restart_command, my_adapter_factory = get_sdpsln_command_obj(
@@ -31,23 +31,21 @@ def test_telescope_restart_command(tango_context):
     assert restart_command.check_allowed()
     (result_code, _) = restart_command.do()
     assert result_code == ResultCode.OK
-    dev_name = "mid_sdp/elt/subarray_1"
-    cm.get_device(dev_name).obsState == ObsState.EMPTY
-    adapter = my_adapter_factory.get_or_create_adapter(dev_name)
+    # dev_name = "mid_sdp/elt/subarray_1"
+    cm.get_device().obsState == ObsState.EMPTY
+    adapter = my_adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE)
     if isinstance(adapter, SdpSubArrayAdapter):
         adapter.proxy.Restart.assert_called()
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_restart_command_fail_subarray(tango_context):
     logger.info("%s", tango_context)
-    input_parameter = SdpSLNInputParameter(None)
-    cm, start_time = create_cm(
-        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
-    )
+    # input_parameter = SdpSLNInputParameter(None)
+    cm, start_time = create_cm("SdpSLNComponentManager", SDP_SUBARRAY_DEVICE)
     elapsed_time = time.time() - start_time
     logger.info(
-        "checked %s devices in %s", len(cm.checked_devices), elapsed_time
+        "checked %s device in %s", cm.get_device().dev_name, elapsed_time
     )
 
     my_adapter_factory = HelperAdapterFactory()
@@ -56,20 +54,20 @@ def test_telescope_restart_command_fail_subarray(tango_context):
     skuid = mock.Mock(**attrs)
 
     # include exception in ObsReset command
-    failing_dev = "mid_sdp/elt/subarray_1"
+    # failing_dev = "mid_sdp/elt/subarray_1"
     attrs = {"Restart.side_effect": Exception}
     subarrayMock = mock.Mock(**attrs)
-    my_adapter_factory.get_or_create_adapter(failing_dev, proxy=subarrayMock)
+    my_adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE, proxy=subarrayMock)
 
     restart_command = Restart(cm, cm.op_state_model, my_adapter_factory, skuid)
-    cm.update_device_obs_state(failing_dev, ObsState.ABORTED)
+    cm.update_device_obs_state(ObsState.ABORTED)
     assert restart_command.check_allowed()
     (result_code, message) = restart_command.do()
     assert result_code == ResultCode.FAILED
-    assert failing_dev in message
+    assert SDP_SUBARRAY_DEVICE in message
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_restart_fail_check_allowed_with_invalid_obsState(
     tango_context,
 ):
@@ -82,13 +80,14 @@ def test_telescope_restart_fail_check_allowed_with_invalid_obsState(
         restart_command.check_allowed()
 
 
-@pytest.mark.sdpsaln
-def test_telescope_restart_fail_check_allowed(tango_context):
+@pytest.mark.sdpsln
+def test_telescope_restart_fail_check_allowed_with_device_undesponsive(tango_context):
 
     logger.info("%s", tango_context)
     cm, restart_command, _ = get_sdpsln_command_obj(
         Restart, obsstate_value=ObsState.ABORTED
     )
-    cm.input_parameter.sdp_subarray_dev_name = ""
+    device_info = cm.get_device()
+    device_info.update_unresponsive(True)
     with pytest.raises(DeviceUnresponsive):
         restart_command.check_allowed()

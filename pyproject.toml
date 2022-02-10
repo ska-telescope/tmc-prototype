@@ -15,7 +15,7 @@ include = [
 
 [tool.poetry.scripts]
 SdpSubarrayLeafNodeDS = 'ska_tmc_sdpsubarrayleafnode.sdp_subarray_leaf_node:main'
-SdpMasterLeafNodeDS = 'ska_tmc_sdpmasterleafnode.sdp_subarray_leaf_node:main'
+SdpMasterLeafNodeDS = 'ska_tmc_sdpmasterleafnode.sdp_master_leaf_node:main'
 
 [[tool.poetry.source]]
 name = 'ska-nexus'

@@ -40,7 +40,7 @@ def create_cm(cm_class, device):
             logger=logger,
         )
     elif cm_class == "SdpSLNComponentManager":
-        cm = SdpSLNComponentManager(op_state_model, logger=logger)
+        cm = SdpSLNComponentManager(device, op_state_model, logger=logger)
     else:
         log_msg = f"Unknown component manager class {cm_class}"
         logger.error(log_msg)
@@ -56,13 +56,13 @@ def create_cm(cm_class, device):
 
 
 def get_sdpsln_command_obj(command_class, obsstate_value=None):
+    """Returns component manager and command class object for Sdp Subarray Leaf Node"""
     # input_parameter = SdpSLNInputParameter(None)
     cm, start_time = create_cm("SdpSLNComponentManager", SDP_SUBARRAY_DEVICE)
-    # elapsed_time = time.time() - start_time
-    # logger.info(
-    #     "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-    # )
-    # dev_name = "mid_sdp/elt/subarray_1"
+    elapsed_time = time.time() - start_time
+    logger.info(
+        "checked %s device in %s", cm.get_device().dev_name, elapsed_time
+    )
     cm.update_device_obs_state(obsstate_value)
 
     adapter_factory = HelperAdapterFactory()
@@ -75,7 +75,12 @@ def get_sdpsln_command_obj(command_class, obsstate_value=None):
 
 
 def get_sdpmln_command_obj(command_class):
-    cm, _ = create_cm("SdpMLNComponentManager", SDP_MASTER_DEVICE)
+    """Returns component manager and command class object for Sdp Master Leaf Node"""
+    cm, start_time = create_cm("SdpMLNComponentManager", SDP_MASTER_DEVICE)
+    elapsed_time = time.time() - start_time
+    logger.info(
+        "checked %s device in %s", cm.get_device().dev_name, elapsed_time
+    )
     adapter_factory = HelperAdapterFactory()
 
     attrs = {"fetch_skuid.return_value": 123}

@@ -7,15 +7,35 @@ from ska_tango_base import SKABaseDevice
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.op_state_model import TMCOpStateModel
 from tango import AttrWriteType, DebugIt
-from tango.server import attribute, command, device_property
+from tango.server import attribute, command, device_property, run
 
 from ska_tmc_sdpsubarrayleafnode import release
+from ska_tmc_sdpsubarrayleafnode.commands.abort_command import Abort
+from ska_tmc_sdpsubarrayleafnode.commands.assign_resources_command import (
+    AssignResources,
+)
+from ska_tmc_sdpsubarrayleafnode.commands.configure_command import Configure
+from ska_tmc_sdpsubarrayleafnode.commands.end_command import End
+from ska_tmc_sdpsubarrayleafnode.commands.endscan_command import EndScan
+from ska_tmc_sdpsubarrayleafnode.commands.obsreset_command import ObsReset
+from ska_tmc_sdpsubarrayleafnode.commands.release_resources_command import (
+    ReleaseResources,
+)
+from ska_tmc_sdpsubarrayleafnode.commands.reset_command import Reset
+from ska_tmc_sdpsubarrayleafnode.commands.restart_command import Restart
+from ska_tmc_sdpsubarrayleafnode.commands.scan_command import Scan
+from ska_tmc_sdpsubarrayleafnode.commands.telescope_off_command import (
+    TelescopeOff,
+)
+from ska_tmc_sdpsubarrayleafnode.commands.telescope_on_command import (
+    TelescopeOn,
+)
 from ska_tmc_sdpsubarrayleafnode.manager.component_manager import (
     SdpSLNComponentManager,
 )
 
 
-class AbstractSdpSubarrayLeafNode(SKABaseDevice):
+class SdpSubarrayLeafNode(SKABaseDevice):
     """
     SDP Subarray Leaf node is to monitor the SDP Subarray and issue control actions during an observation.
 
@@ -27,6 +47,8 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
     SdpSubarrayFQDN = device_property(
         dtype="str", doc="FQDN of the SDP Subarray Tango Device Server."
     )
+
+    SleepTime = device_property(dtype="DevFloat", default_value=1)
 
     # -----------------
     # Attributes
@@ -41,6 +63,11 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         dtype="DevString",
         access=AttrWriteType.READ,
         doc="Json String representing the last device changed in the internal model.",
+    )
+
+    sdpSubarrayDevName = attribute(
+        dtype="DevString",
+        access=AttrWriteType.READ_WRITE,
     )
 
     # ---------------
@@ -90,6 +117,18 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         # I need to stop all threads
         if hasattr(self, "component_manager"):
             self.component_manager.stop()
+
+    def read_sdpSubarrayDevName(self):
+        """Return the sdpsubarraydevname attribute."""
+        return self.component_manager.sdp_subarray_dev_name
+
+    def write_sdpSubarrayDevName(self, value):
+        """Set the sdpsubarraydevname attribute."""
+        self.component_manager.sdp_subarray_dev_name = value
+
+    # ------------------
+    # Attributes methods
+    # ------------------
 
     def read_lastDeviceInfoChanged(self):
         return self._LastDeviceInfoChanged
@@ -453,11 +492,12 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
             logger=self.logger, callback=super()._update_state
         )
         cm = SdpSLNComponentManager(
+            self.SdpSubarrayFQDN,
             self.op_state_model,
             logger=self.logger,
             sleep_time=self.SleepTime,
         )
-        cm._sdp_subarray_dev_name = self.SdpSubarrayFQDN or ""
+        # cm._sdp_subarray_dev_name = self.SdpSubarrayFQDN or ""
         return cm
 
     def init_command_objects(self):
@@ -465,3 +505,59 @@ class AbstractSdpSubarrayLeafNode(SKABaseDevice):
         Initialises the command handlers for commands supported by this device.
         """
         super().init_command_objects()
+        args = ()
+        for (command_name, command_class) in [
+            ("TelescopeOn", TelescopeOn),
+            ("TelescopeOff", TelescopeOff),
+            ("AssignResources", AssignResources),
+            ("ReleaseResources", ReleaseResources),
+            ("Configure", Configure),
+            ("Scan", Scan),
+            ("EndScan", EndScan),
+            ("End", End),
+            ("ObsReset", ObsReset),
+            ("Abort", Abort),
+            ("Restart", Restart),
+        ]:
+            command_obj = command_class(
+                self.component_manager,
+                self.op_state_model,
+                *args,
+                logger=self.logger,
+            )
+            self.register_command_object(command_name, command_obj)
+        self.register_command_object(
+            "Reset",
+            Reset(
+                self.component_manager,
+                self.op_state_model,
+                self.logger,
+            ),
+        )
+
+    # def init_command_objects(self):
+    #     """
+    #     Initialises the command handlers for commands supported by this device.
+    #     """
+    #     super().init_command_objects()
+
+
+# ----------
+# Run server
+# ----------
+
+
+def main(args=None, **kwargs):
+    """
+    Runs the SdpSubarrayLeafNode Tango device.
+    :param args: Arguments internal to TANGO
+
+    :param kwargs: Arguments internal to TANGO
+
+    :return: integer. Exit code of the run method.
+    """
+    return run((SdpSubarrayLeafNode,), args=args, **kwargs)
+
+
+if __name__ == "__main__":
+    main()

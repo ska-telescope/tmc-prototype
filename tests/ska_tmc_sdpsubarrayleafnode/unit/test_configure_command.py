@@ -104,11 +104,11 @@ def test_telescope_configure_command_missing_scan_type(tango_context):
     _, configure_command, _ = get_sdpsln_command_obj(
         Configure, obsstate_value=ObsState.READY
     )
-
+    scan_type_key = "scan_type"
     configure_input_str = get_configure_input_str()
     json_argument = json.loads(configure_input_str)
-    del json_argument["scan_type"]
+    del json_argument[scan_type_key]
     assert configure_command.check_allowed()
     (result_code, message) = configure_command.do(json.dumps(json_argument))
     assert result_code == ResultCode.FAILED
-    assert "scan_type" in message
+    assert scan_type_key in message

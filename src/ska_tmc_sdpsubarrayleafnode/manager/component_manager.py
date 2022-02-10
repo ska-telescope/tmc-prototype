@@ -27,11 +27,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
     def __init__(
         self,
+        sdp_subarray_device,
         op_state_model,
-        # _input_parameter,
         logger=None,
-        # _component=None,
-        # _update_device_callback=None,
         _update_command_in_progress_callback=None,
         _monitoring_loop=False,
         _event_receiver=True,
@@ -59,8 +57,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             sleep_time,
         )
 
-        # self.component = _component or SdpSLNComponent(logger)
-        self._sdp_subarray_dev_name = "mid_sdp/elt/subarray_1"
+        self._sdp_subarray_dev_name = sdp_subarray_device
         self._device = DeviceInfo(self._sdp_subarray_dev_name, False)
 
         self._event_receiver = None

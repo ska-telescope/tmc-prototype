@@ -9,6 +9,11 @@ from ska_tmc_common.adapters import AdapterFactory
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import (
     AbstractScanEnd,
 )
+from ska_tmc_sdpsubarrayleafnode.exceptions import (
+    CommandNotAllowed,
+    DeviceUnresponsive,
+    InvalidObsStateError,
+)
 
 
 class Scan(AbstractScanEnd):
@@ -27,7 +32,7 @@ class Scan(AbstractScanEnd):
     ):
         super().__init__(target, op_state_model, adapter_factory, logger)
 
-    def do_mid(self, argin):
+    def do(self, argin):
         """
         Method to invoke Scan command on SDP Subarray.
 
@@ -46,19 +51,18 @@ class Scan(AbstractScanEnd):
 
         """
 
-        res_code, message = self.init_adapters()
+        res_code, message = self.init_adapter()
         if res_code == ResultCode.FAILED:
             return res_code, message
 
         try:
             json_argument = json.loads(argin)
         except Exception as e:
+            log_msg = f"JSON parsing error: {e}"
+            self.logger.error(log_msg)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                (
-                    "Problem in loading JSON string in Scan command on SDP Subarray Leaf Node: %s",
-                    e,
-                ),
+                ("JSON parsing error"),
             )
 
         log_msg = (
@@ -74,18 +78,19 @@ class Scan(AbstractScanEnd):
                 "interface"
             ] = "https://schema.skao.int/ska-sdp-scan/0.3"
             log_msg = (
-                "Updated Input JSON for SDP Subarray Leaf Node Scan command is: %s",
+                "SDP Subarray input JSON: %s",
                 json_argument,
             )
             self.logger.debug(log_msg)
             self.sdp_subarray_adapter.Scan(json.dumps(json_argument))
         except Exception as e:
+            log_msg = f"Error in invoking Scan command on {self.sdp_subarray_adapter.dev_name}: {e}"
+            self.logger.error(log_msg)
             return self.generate_command_result(
                 ResultCode.FAILED,
                 (
-                    "Error in calling Scan on sdp subarray %s: %s",
+                    "Error in invoking Scan command on %s",
                     self.sdp_subarray_adapter.dev_name,
-                    e,
                 ),
             )
         return (ResultCode.OK, "")

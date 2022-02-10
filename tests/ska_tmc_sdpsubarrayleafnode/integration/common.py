@@ -1,7 +1,7 @@
 import pytest
 
-from ska_tmc_sdpsubarrayleafnode.sdp_subarray_leaf_node_mid import (
-    SdpSubarrayLeafNodeMid,
+from ska_tmc_sdpsubarrayleafnode.sdp_subarray_leaf_node import (
+    SdpSubarrayLeafNode,
 )
 from tests.helpers.helper_subarray_device import HelperSubArrayDevice
 
@@ -18,7 +18,7 @@ def devices_to_load():
             ],
         },
         {
-            "class": SdpSubarrayLeafNodeMid,
+            "class": SdpSubarrayLeafNode,
             "devices": [
                 {
                     "name": "ska_mid/tm_leaf_node/sdp_subarray01",

@@ -8,7 +8,7 @@ server:
   instances:
   - name: "01"
     classes:
-    - name: "SdpSubarrayLeafNodeMid"
+    - name: "SdpSubarrayLeafNode"
       devices:
       - name: "ska_mid/tm_leaf_node/sdp_subarray01"
         properties:
