@@ -33,7 +33,7 @@ ska-ser-skuid:
     config:
       generator_id: mvp01
 
-sdpsln_mid:
+sdp_leafnode:
   deviceServers:
     mocks:
       enabled: true
