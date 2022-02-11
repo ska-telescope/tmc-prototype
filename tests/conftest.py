@@ -4,8 +4,7 @@ import logging
 import pytest
 import tango
 from ska_tmc_common.dev_factory import DevFactory
-
-# from tests.helpers.helper_subarray_device import HelperSubArrayDevice
+from ska_tmc_common.test_helpers.helper_state_device import HelperStateDevice
 from ska_tmc_common.test_helpers.helper_subarray_device import (
     HelperSubArrayDevice,
 )
@@ -47,6 +46,11 @@ def devices_to_load():
             "class": HelperSubArrayDevice,
             "devices": [
                 {"name": "mid_sdp/elt/subarray_1"},
+            ],
+        },
+        {
+            "class": HelperStateDevice,
+            "devices": [
                 {"name": "mid_sdp/elt/master"},
             ],
         },
