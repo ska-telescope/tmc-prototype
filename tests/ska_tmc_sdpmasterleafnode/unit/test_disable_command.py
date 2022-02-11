@@ -6,17 +6,15 @@ from ska_tmc_common.test_helpers.helper_adapter_factory import (
 )
 
 from ska_tmc_sdpmasterleafnode.commands import Disable
-from tests.settings import (
-    create_cm,
-    get_sdpmln_command_obj,
-    logger,
-)
+from tests.settings import create_cm, get_sdpmln_command_obj, logger
 
 
 @pytest.mark.sdpmln
 def test_disable_command(tango_context, sdp_master_device):
     logger.info("%s", tango_context)
-    _, disable_command, adapter_factory = get_sdpmln_command_obj(Disable, sdp_master_device )
+    _, disable_command, adapter_factory = get_sdpmln_command_obj(
+        Disable, sdp_master_device
+    )
     assert disable_command.check_allowed()
     (result_code, _) = disable_command.do()
     assert result_code == ResultCode.OK

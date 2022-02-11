@@ -3,7 +3,6 @@ import pytest
 from tests.settings import create_cm, logger
 
 
-
 @pytest.mark.sdpmln
 def test_sdpmaster_working(tango_context, sdp_master_device):
     logger.info("%s", tango_context)

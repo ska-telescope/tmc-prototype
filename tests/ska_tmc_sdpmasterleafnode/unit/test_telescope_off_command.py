@@ -5,20 +5,16 @@ from ska_tmc_common.test_helpers.helper_adapter_factory import (
     HelperAdapterFactory,
 )
 
-from ska_tmc_sdpmasterleafnode.commands import (
-    TelescopeOff,
-)
-from tests.settings import (
-    create_cm,
-    get_sdpmln_command_obj,
-    logger,
-)
+from ska_tmc_sdpmasterleafnode.commands import TelescopeOff
+from tests.settings import create_cm, get_sdpmln_command_obj, logger
 
 
 @pytest.mark.sdpmln
 def test_telescope_off_command(tango_context, sdp_master_device):
     logger.info("%s", tango_context)
-    _, off_command, adapter_factory = get_sdpmln_command_obj(TelescopeOff, sdp_master_device)
+    _, off_command, adapter_factory = get_sdpmln_command_obj(
+        TelescopeOff, sdp_master_device
+    )
     assert off_command.check_allowed()
     (result_code, _) = off_command.do()
     assert result_code == ResultCode.OK
@@ -27,7 +23,9 @@ def test_telescope_off_command(tango_context, sdp_master_device):
 
 
 @pytest.mark.sdpmln
-def test_telescope_off_command_fail_sdp_master(tango_context, sdp_master_device):
+def test_telescope_off_command_fail_sdp_master(
+    tango_context, sdp_master_device
+):
     logger.info("%s", tango_context)
     cm, _ = create_cm("SdpMLNComponentManager", None, sdp_master_device)
     adapter_factory = HelperAdapterFactory()
@@ -49,7 +47,9 @@ def test_telescope_off_command_fail_sdp_master(tango_context, sdp_master_device)
 def test_telescope_off_fail_check_allowed(tango_context, sdp_master_device):
 
     logger.info("%s", tango_context)
-    cm, off_command, _ = get_sdpmln_command_obj(TelescopeOff, sdp_master_device)
+    cm, off_command, _ = get_sdpmln_command_obj(
+        TelescopeOff, sdp_master_device
+    )
     devInfo = cm.get_device()
     devInfo.update_unresponsive(True)
     with pytest.raises(DeviceUnresponsive):
