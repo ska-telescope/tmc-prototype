@@ -23,6 +23,10 @@ dependencies:
   version: 0.3.6
   repository: file://../ska-tmc
   alias: sdp_leafnode
+- name: ska-tmc-centralnode
+  version: 0.3.5
+  repository: https://artefact.skao.int/repository/helm-internal
+  condition: ska-tmc-centralnode.enabled
 - name: ska-ser-skuid
   version: 0.3.0
   repository: https://artefact.skao.int/repository/helm-internal
