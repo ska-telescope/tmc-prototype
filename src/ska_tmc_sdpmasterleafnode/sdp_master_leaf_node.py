@@ -9,15 +9,8 @@ from tango import AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
 
 from ska_tmc_sdpmasterleafnode import release
-from ska_tmc_sdpmasterleafnode.commands.disable_command import Disable
-from ska_tmc_sdpmasterleafnode.commands.telescope_off_command import (
-    TelescopeOff,
-)
-from ska_tmc_sdpmasterleafnode.commands.telescope_on_command import TelescopeOn
-from ska_tmc_sdpmasterleafnode.commands.telescope_standby_command import (
-    TelescopeStandby,
-)
-from ska_tmc_sdpmasterleafnode.manager.component_manager import (
+from ska_tmc_sdpmasterleafnode.commands import TelescopeOn, TelescopeOff, TelescopeStandby, Disable
+from ska_tmc_sdpmasterleafnode.manager import (
     SdpMLNComponentManager,
 )
 

@@ -22,7 +22,7 @@ dependencies:
 - name: ska-tmc
   version: 0.3.6
   repository: file://../ska-tmc
-  alias: sdpsln_mid
+  alias: sdp_leafnode
 - name: ska-ser-skuid
   version: 0.3.0
   repository: https://artefact.skao.int/repository/helm-internal
