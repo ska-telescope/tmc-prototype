@@ -4,14 +4,14 @@ Configure command class for SDPSubarrayLeafNode.
 import json
 
 from ska_tango_base.commands import ResultCode
+from ska_tango_base.control_model import ObsState
 from ska_tmc_common.adapters import AdapterFactory
+from ska_tmc_common.exceptions import InvalidObsStateError
 
-from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import (
-    AbstractConfigure,
-)
+from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
 
 
-class Configure(AbstractConfigure):
+class Configure(SdpSLNCommand):
     """
     A class for SdpSubarrayLeafNode's Configure() command.
 
@@ -27,7 +27,33 @@ class Configure(AbstractConfigure):
         adapter_factory=AdapterFactory(),
         logger=None,
     ):
-        super().__init__(target, op_state_model, adapter_factory, logger)
+        super().__init__(target, logger)
+        self.op_state_model = op_state_model
+        self._adapter_factory = adapter_factory
+
+    def check_allowed(self):
+        """
+        Checks whether this command is allowed
+        It checks that the device is in the right state
+        to execute this command and that all the
+        component needed for the operation are not unresponsive
+
+        :return: True if this command is allowed
+
+        :rtype: boolean
+
+        """
+        component_manager = self.target
+
+        self.check_op_state("Configure")
+        self.check_unresponsive()
+        obs_state_val = component_manager.get_device().obsState
+        if obs_state_val not in (ObsState.READY, ObsState.IDLE):
+            raise InvalidObsStateError(
+                f"Configure command is not allowed in current observation state:{obs_state_val}"
+            )
+
+        return True
 
     def do(self, argin):
         """

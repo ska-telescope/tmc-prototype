@@ -5,17 +5,13 @@ import mock
 import pytest
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
+from ska_tmc_common.exceptions import InvalidObsStateError
 from ska_tmc_common.test_helpers.helper_adapter_factory import (
     HelperAdapterFactory,
 )
 
-from ska_tmc_sdpsubarrayleafnode.commands.configure_command import Configure
-from tests.settings import (
-    SDP_SUBARRAY_DEVICE,
-    create_cm,
-    get_sdpsln_command_obj,
-    logger,
-)
+from ska_tmc_sdpsubarrayleafnode.commands import Configure
+from tests.settings import create_cm, get_sdpsln_command_obj, logger
 
 
 def get_configure_input_str(configure_input_file="command_Configure.json"):
@@ -26,7 +22,7 @@ def get_configure_input_str(configure_input_file="command_Configure.json"):
 
 
 @pytest.mark.sdpsln
-def test_telescope_configure_command(tango_context):
+def test_telescope_configure_command(tango_context, sdp_subarray_device):
     logger.info("%s", tango_context)
     _, configure_command, adapter_factory = get_sdpsln_command_obj(
         Configure, obsstate_value=ObsState.READY
@@ -35,13 +31,13 @@ def test_telescope_configure_command(tango_context):
     assert configure_command.check_allowed()
     (result_code, _) = configure_command.do(configure_input_str)
     assert result_code == ResultCode.OK
-    adapter = adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE)
+    adapter = adapter_factory.get_or_create_adapter(sdp_subarray_device)
     adapter.proxy.Configure.assert_called()
 
 
 @pytest.mark.sdpsln
 def test_telescope_configure_resources_command_missing_interface_key(
-    tango_context,
+    tango_context, sdp_subarray_device
 ):
     logger.info("%s", tango_context)
     _, configure_command, adapter_factory = get_sdpsln_command_obj(
@@ -54,14 +50,16 @@ def test_telescope_configure_resources_command_missing_interface_key(
     assert configure_command.check_allowed()
     (result_code, _) = configure_command.do(json.dumps(json_argument))
     assert result_code == ResultCode.OK
-    adapter = adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE)
+    adapter = adapter_factory.get_or_create_adapter(sdp_subarray_device)
     adapter.proxy.Configure.assert_called()
 
 
 @pytest.mark.sdpsln
-def test_telescope_configure_command_fail_subarray(tango_context):
+def test_telescope_configure_command_fail_subarray(
+    tango_context, sdp_subarray_device
+):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpSLNComponentManager", SDP_SUBARRAY_DEVICE)
+    cm, _ = create_cm("SdpSLNComponentManager", sdp_subarray_device)
     adapter_factory = HelperAdapterFactory()
 
     attrs = {"fetch_skuid.return_value": 123}
@@ -71,7 +69,7 @@ def test_telescope_configure_command_fail_subarray(tango_context):
     attrs = {"Configure.side_effect": Exception}
     subarrayMock = mock.Mock(**attrs)
     adapter_factory.get_or_create_adapter(
-        SDP_SUBARRAY_DEVICE, proxy=subarrayMock
+        sdp_subarray_device, proxy=subarrayMock
     )
 
     configure_command = Configure(
@@ -82,7 +80,7 @@ def test_telescope_configure_command_fail_subarray(tango_context):
     assert configure_command.check_allowed()
     (result_code, message) = configure_command.do(configure_input_str)
     assert result_code == ResultCode.FAILED
-    assert SDP_SUBARRAY_DEVICE in message
+    assert sdp_subarray_device in message
 
 
 @pytest.mark.sdpsln
@@ -112,3 +110,19 @@ def test_telescope_configure_command_missing_scan_type(tango_context):
     (result_code, message) = configure_command.do(json.dumps(json_argument))
     assert result_code == ResultCode.FAILED
     assert scan_type_key in message
+
+
+@pytest.mark.sdpsln
+def test_configure_command_fail_check_allowed_with_invalid_obsState(
+    tango_context,
+):
+    logger.info("%s", tango_context)
+    cm, assign_res_command, _ = get_sdpsln_command_obj(
+        Configure, obsstate_value=ObsState.SCANNING
+    )
+    cm.get_device().update_unresponsive(False)
+    with pytest.raises(
+        InvalidObsStateError,
+        match=f"Configure command is not allowed in current observation state:{ObsState.SCANNING}",
+    ):
+        assign_res_command.check_allowed()

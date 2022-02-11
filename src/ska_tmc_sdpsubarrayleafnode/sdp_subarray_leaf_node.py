@@ -10,29 +10,21 @@ from tango import AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
 
 from ska_tmc_sdpsubarrayleafnode import release
-from ska_tmc_sdpsubarrayleafnode.commands.abort_command import Abort
-from ska_tmc_sdpsubarrayleafnode.commands.assign_resources_command import (
+from ska_tmc_sdpsubarrayleafnode.commands import (
+    Abort,
     AssignResources,
-)
-from ska_tmc_sdpsubarrayleafnode.commands.configure_command import Configure
-from ska_tmc_sdpsubarrayleafnode.commands.end_command import End
-from ska_tmc_sdpsubarrayleafnode.commands.endscan_command import EndScan
-from ska_tmc_sdpsubarrayleafnode.commands.obsreset_command import ObsReset
-from ska_tmc_sdpsubarrayleafnode.commands.release_resources_command import (
+    Configure,
+    End,
+    EndScan,
+    ObsReset,
+    Off,
+    On,
     ReleaseResources,
+    Reset,
+    Restart,
+    Scan,
 )
-from ska_tmc_sdpsubarrayleafnode.commands.reset_command import Reset
-from ska_tmc_sdpsubarrayleafnode.commands.restart_command import Restart
-from ska_tmc_sdpsubarrayleafnode.commands.scan_command import Scan
-from ska_tmc_sdpsubarrayleafnode.commands.telescope_off_command import (
-    TelescopeOff,
-)
-from ska_tmc_sdpsubarrayleafnode.commands.telescope_on_command import (
-    TelescopeOn,
-)
-from ska_tmc_sdpsubarrayleafnode.manager.component_manager import (
-    SdpSLNComponentManager,
-)
+from ska_tmc_sdpsubarrayleafnode.manager import SdpSLNComponentManager
 
 
 class SdpSubarrayLeafNode(SKABaseDevice):
@@ -156,7 +148,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # Commands
     # --------
 
-    def is_TelescopeOff_allowed(self):
+    def is_Off_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state.
 
@@ -164,15 +156,15 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         :rtype: boolean
         """
-        handler = self.get_command_object("TelescopeOff")
+        handler = self.get_command_object("Off")
         return handler.check_allowed()
 
     @command(dtype_out="DevVarLongStringArray")
-    def TelescopeOff(self):
+    def Off(self):
         """
         This command invokes Off() command on Sdp Subarray.
         """
-        handler = self.get_command_object("TelescopeOff")
+        handler = self.get_command_object("Off")
         if self.component_manager.command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
         unique_id = self.component_manager.command_executor.enqueue_command(
@@ -180,7 +172,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
 
-    def is_TelescopeOn_allowed(self):
+    def is_On_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state.
 
@@ -188,16 +180,16 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         :rtype: boolean
         """
-        handler = self.get_command_object("TelescopeOn")
+        handler = self.get_command_object("On")
         return handler.check_allowed()
 
     @command(dtype_out="DevVarLongStringArray")
     @DebugIt()
-    def TelescopeOn(self):
+    def On(self):
         """
         This command invokes On() command on Sdp Subarray.
         """
-        handler = self.get_command_object("TelescopeOn")
+        handler = self.get_command_object("On")
         if self.component_manager.command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
         unique_id = self.component_manager.command_executor.enqueue_command(
@@ -507,8 +499,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         super().init_command_objects()
         args = ()
         for (command_name, command_class) in [
-            ("TelescopeOn", TelescopeOn),
-            ("TelescopeOff", TelescopeOff),
+            ("On", On),
+            ("Off", Off),
             ("AssignResources", AssignResources),
             ("ReleaseResources", ReleaseResources),
             ("Configure", Configure),

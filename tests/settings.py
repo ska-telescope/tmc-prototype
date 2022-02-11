@@ -4,6 +4,9 @@ import time
 import mock
 import pytest
 from ska_tmc_common.op_state_model import TMCOpStateModel
+from ska_tmc_common.test_helpers.helper_adapter_factory import (
+    HelperAdapterFactory,
+)
 
 from ska_tmc_sdpmasterleafnode.manager.component_manager import (
     SdpMLNComponentManager,
@@ -11,9 +14,6 @@ from ska_tmc_sdpmasterleafnode.manager.component_manager import (
 from ska_tmc_sdpsubarrayleafnode.manager.component_manager import (
     SdpSLNComponentManager,
 )
-
-# from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
-from tests.helpers.helper_adapter_factory import HelperAdapterFactory
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +57,6 @@ def create_cm(cm_class, device):
 
 def get_sdpsln_command_obj(command_class, obsstate_value=None):
     """Returns component manager and command class object for Sdp Subarray Leaf Node"""
-    # input_parameter = SdpSLNInputParameter(None)
     cm, start_time = create_cm("SdpSLNComponentManager", SDP_SUBARRAY_DEVICE)
     elapsed_time = time.time() - start_time
     logger.info(

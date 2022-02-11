@@ -90,3 +90,8 @@ def sdpsln_device(request):
         for instance in instance_list.value_string:
             yield tango.DeviceProxy(instance)
             break
+
+
+@pytest.fixture(scope="session")
+def sdp_subarray_device():
+    return "mid_sdp/elt/subarray_1"

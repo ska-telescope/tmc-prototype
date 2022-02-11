@@ -8,15 +8,12 @@ from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.adapters import SdpSubArrayAdapter
 from ska_tmc_common.exceptions import DeviceUnresponsive, InvalidObsStateError
-
-from ska_tmc_sdpsubarrayleafnode.commands.scan_command import Scan
-from tests.helpers.helper_adapter_factory import HelperAdapterFactory
-from tests.settings import (
-    SDP_SUBARRAY_DEVICE,
-    create_cm,
-    get_sdpsln_command_obj,
-    logger,
+from ska_tmc_common.test_helpers.helper_adapter_factory import (
+    HelperAdapterFactory,
 )
+
+from ska_tmc_sdpsubarrayleafnode.commands import Scan
+from tests.settings import create_cm, get_sdpsln_command_obj, logger
 
 
 def get_scan_input_str(scan_input_file="command_Scan.json"):
@@ -27,7 +24,7 @@ def get_scan_input_str(scan_input_file="command_Scan.json"):
 
 
 @pytest.mark.sdpsln
-def test_telescope_scan_command(tango_context):
+def test_scan_command(tango_context, sdp_subarray_device):
     logger.info("%s", tango_context)
     cm, scan_command, adapter_factory = get_sdpsln_command_obj(
         Scan, obsstate_value=ObsState.READY
@@ -38,14 +35,14 @@ def test_telescope_scan_command(tango_context):
     (result_code, _) = scan_command.do(scan_input_str)
     assert result_code == ResultCode.OK
     cm.get_device().obsState == ObsState.EMPTY
-    adapter = adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE)
+    adapter = adapter_factory.get_or_create_adapter(sdp_subarray_device)
     if isinstance(adapter, SdpSubArrayAdapter):
         adapter.proxy.Scan.assert_called()
 
 
 @pytest.mark.sdpsln
-def test_telescope_scan_command_missing_interface_key(
-    tango_context,
+def test_scan_command_missing_interface_key(
+    tango_context, sdp_subarray_device
 ):
     logger.info("%s", tango_context)
     _, scan_command, adapter_factory = get_sdpsln_command_obj(
@@ -57,18 +54,18 @@ def test_telescope_scan_command_missing_interface_key(
     assert scan_command.check_allowed()
     (result_code, _) = scan_command.do(json.dumps(json_argument))
     assert result_code == ResultCode.OK
-    adapter = adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE)
+    adapter = adapter_factory.get_or_create_adapter(sdp_subarray_device)
     if isinstance(adapter, SdpSubArrayAdapter):
         adapter.proxy.Scan.assert_called()
 
 
 @pytest.mark.sdpsln
-def test_telescope_scan_command_fail_subarray(tango_context):
+def test_scan_command_fail_subarray(tango_context, sdp_subarray_device):
     logger.info("%s", tango_context)
-    cm, start_time = create_cm("SdpSLNComponentManager", SDP_SUBARRAY_DEVICE)
+    cm, start_time = create_cm("SdpSLNComponentManager", sdp_subarray_device)
     elapsed_time = time.time() - start_time
     logger.info(
-        "checked %s device in %s", len(SDP_SUBARRAY_DEVICE), elapsed_time
+        "checked %s device in %s", len(sdp_subarray_device), elapsed_time
     )
 
     adapter_factory = HelperAdapterFactory()
@@ -80,7 +77,7 @@ def test_telescope_scan_command_fail_subarray(tango_context):
     attrs = {"Scan.side_effect": Exception}
     subarrayMock = mock.Mock(**attrs)
     adapter_factory.get_or_create_adapter(
-        SDP_SUBARRAY_DEVICE, proxy=subarrayMock
+        sdp_subarray_device, proxy=subarrayMock
     )
 
     scan_command = Scan(cm, cm.op_state_model, adapter_factory, skuid)
@@ -89,11 +86,11 @@ def test_telescope_scan_command_fail_subarray(tango_context):
     assert scan_command.check_allowed()
     (result_code, message) = scan_command.do(scan_input_str)
     assert result_code == ResultCode.FAILED
-    assert SDP_SUBARRAY_DEVICE in message
+    assert sdp_subarray_device in message
 
 
 @pytest.mark.sdpsln
-def test_telescope_scan_command_empty_input_json(tango_context):
+def test_scan_command_empty_input_json(tango_context):
     logger.info("%s", tango_context)
     # import debugpy; debugpy.debug_this_thread()
     _, scan_command, _ = get_sdpsln_command_obj(
@@ -105,7 +102,7 @@ def test_telescope_scan_command_empty_input_json(tango_context):
 
 
 @pytest.mark.sdpsln
-def test_telescope_scan_command_fail_check_allowed_with_invalid_obsState(
+def test_scan_command_fail_check_allowed_with_invalid_obsState(
     tango_context,
 ):
 
@@ -113,12 +110,15 @@ def test_telescope_scan_command_fail_check_allowed_with_invalid_obsState(
     _, scan_command, _ = get_sdpsln_command_obj(
         Scan, obsstate_value=ObsState.IDLE
     )
-    with pytest.raises(InvalidObsStateError):
+    with pytest.raises(
+        InvalidObsStateError,
+        match=f"Scan and End commands are not allowed in current observation state:{ObsState.IDLE}",
+    ):
         scan_command.check_allowed()
 
 
 @pytest.mark.sdpsln
-def test_telescope_scan_fail_check_allowed_with_device_undesponsive(
+def test_scan_fail_check_allowed_with_device_undesponsive(
     tango_context,
 ):
 
@@ -128,5 +128,7 @@ def test_telescope_scan_fail_check_allowed_with_device_undesponsive(
     )
     device_info = cm.get_device()
     device_info.update_unresponsive(True)
-    with pytest.raises(DeviceUnresponsive):
+    with pytest.raises(
+        DeviceUnresponsive, match="SDP subarray device is not available"
+    ):
         scan_command.check_allowed()

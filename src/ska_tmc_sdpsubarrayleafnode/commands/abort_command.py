@@ -4,8 +4,7 @@ Abort command class for SDPSubarrayLeafNode.
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.adapters import AdapterFactory
-from ska_tmc_common.exceptions import CommandNotAllowed, InvalidObsStateError
-from tango import DevState
+from ska_tmc_common.exceptions import InvalidObsStateError
 
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
 
@@ -42,16 +41,7 @@ class Abort(SdpSLNCommand):
         """
         component_manager = self.target
 
-        if self.op_state_model.op_state in [
-            DevState.FAULT,
-            DevState.UNKNOWN,
-            DevState.DISABLE,
-        ]:
-            raise CommandNotAllowed(
-                "Abort command is not allowed in current operational state %s",
-                self.op_state_model.op_state,
-            )
-
+        self.check_op_state("Abort")
         self.check_unresponsive()
 
         obs_state_val = component_manager.get_device().obsState

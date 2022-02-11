@@ -5,9 +5,7 @@ from ska_tmc_common.test_helpers.helper_adapter_factory import (
     HelperAdapterFactory,
 )
 
-from ska_tmc_sdpsubarrayleafnode.commands.telescope_on_command import (
-    TelescopeOn,
-)
+from ska_tmc_sdpsubarrayleafnode.commands import On
 from tests.settings import (
     SDP_SUBARRAY_DEVICE,
     create_cm,
@@ -17,9 +15,9 @@ from tests.settings import (
 
 
 @pytest.mark.sdpsln
-def test_telescope_on_command(tango_context):
+def test_on_command(tango_context):
     logger.info("%s", tango_context)
-    _, on_command, adapter_factory = get_sdpsln_command_obj(TelescopeOn, None)
+    _, on_command, adapter_factory = get_sdpsln_command_obj(On, None)
     assert on_command.check_allowed()
     (result_code, _) = on_command.do()
     assert result_code == ResultCode.OK
@@ -28,7 +26,7 @@ def test_telescope_on_command(tango_context):
 
 
 @pytest.mark.sdpsln
-def test_telescope_on_command_fail_sdp_subarray(tango_context):
+def test_on_command_fail_sdp_subarray(tango_context):
     logger.info("%s", tango_context)
     cm, _ = create_cm("SdpSLNComponentManager", SDP_SUBARRAY_DEVICE)
     adapter_factory = HelperAdapterFactory()
@@ -38,7 +36,7 @@ def test_telescope_on_command_fail_sdp_subarray(tango_context):
         SDP_SUBARRAY_DEVICE, attrs={"TelescopeOn.side_effect": Exception}
     )
 
-    on_command = TelescopeOn(cm, cm.op_state_model, adapter_factory)
+    on_command = On(cm, cm.op_state_model, adapter_factory)
     assert on_command.check_allowed()
     (result_code, message) = on_command.do()
     assert result_code == ResultCode.FAILED
@@ -46,10 +44,10 @@ def test_telescope_on_command_fail_sdp_subarray(tango_context):
 
 
 @pytest.mark.xfail
-def test_telescope_on_fail_check_allowed(tango_context):
+def test_on_fail_check_allowed(tango_context):
 
     logger.info("%s", tango_context)
-    cm, on_command, _ = get_sdpsln_command_obj(TelescopeOn, None)
+    cm, on_command, _ = get_sdpsln_command_obj(On, None)
     devInfo = cm.get_device()
     devInfo.update_unresponsive(True)
     with pytest.raises(DeviceUnresponsive):

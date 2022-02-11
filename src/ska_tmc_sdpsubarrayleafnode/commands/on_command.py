@@ -1,20 +1,19 @@
 """
-TelescopeOff command class for SDPSubarrayLeafNode.
+On command class for SDPSubarrayLeafNode.
+
 """
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterFactory
 
-from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import (
-    AbstractTelescopeOnOff,
-)
+from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import AbstractOnOff
 
 
-class TelescopeOff(AbstractTelescopeOnOff):
+class On(AbstractOnOff):
     """
-    A class for SdpsubarrayLeafNode's TelescopeOff() command.
+    A class for SdpsubarrayLeafNode's On() command.
 
-    TelescopeOff command on SdpsubarrayLeafNode enables the telescope to perform further operations
-    and observations. It Invokes Off command on Sdp Subarray device.
+    On command on SdpsubarrayLeafNode enables the telescope to perform further operations
+    and observations. It Invokes On command on Sdp Subarray device.
 
     """
 
@@ -25,11 +24,16 @@ class TelescopeOff(AbstractTelescopeOnOff):
         adapter_factory=AdapterFactory(),
         logger=None,
     ):
-        super().__init__(target, op_state_model, adapter_factory, logger)
+        super().__init__(
+            target,
+            op_state_model,
+            adapter_factory,
+            logger,
+        )
 
     def do(self, argin=None):
         """
-        Method to invoke Telescope Off command on Sdp Subarray.
+        Method to invoke Telescope On command on Sdp Subarray.
 
         """
         ret_code, message = self.init_adapter()
@@ -38,18 +42,18 @@ class TelescopeOff(AbstractTelescopeOnOff):
 
         try:
             self.logger.info(
-                f"Invoking TelescopeOff command on:{self.sdp_subarray_adapter.dev_name}"
+                f"Invoking On command on:{self.sdp_subarray_adapter.dev_name}"
             )
-            self.sdp_subarray_adapter.Off()
+            self.sdp_subarray_adapter.On()
             self.logger.info(
-                "Off command is successful on Sdp Subarray device."
+                "On command is successful on Sdp Subarray device."
             )
         except Exception as e:
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
                 (
-                    "Error in invoking Off command on %s",
+                    "Error in invoking On command on %s",
                     self.sdp_subarray_adapter.dev_name,
                 ),
             )
