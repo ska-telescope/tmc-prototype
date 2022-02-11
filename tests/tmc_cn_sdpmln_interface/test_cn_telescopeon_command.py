@@ -1,9 +1,10 @@
 # WIP: This integration test is for verifying interface between TMC CentralNode and SdpMasterLeafNode device.
 # This test can be updated as per requirement.
-import time
-from tango import DeviceProxy
-import pytest
 import logging
+import time
+
+import pytest
+from tango import DeviceProxy
 
 LOGGER = logging.getLogger(__name__)
 
@@ -18,13 +19,14 @@ def test_cn_telescopeon():
         LOGGER.info("Staring up the Telescope")
         sdp_master = DeviceProxy("mid_sdp/elt/master")
         LOGGER.info(
-        "Before Sending TelescopeOn command on sdp master state :"
-        + str(sdp_master.State()))
+            "Before Sending TelescopeOn command on sdp master state :"
+            + str(sdp_master.State())
+        )
 
         CentralNode = DeviceProxy("ska_mid/tm_central/central_node")
         LOGGER.info(
-        "Before Sending TelescopeOn command on CentralNode state :"
-        + str(CentralNode.State())
+            "Before Sending TelescopeOn command on CentralNode state :"
+            + str(CentralNode.State())
         )
         # command invokation
         CentralNode.TelescopeOn()
@@ -34,8 +36,9 @@ def test_cn_telescopeon():
 
         time.sleep(10)
         LOGGER.info(
-        "After Sending TelescopeOn command on sdp master state :"
-        + str(sdp_master.State()))
+            "After Sending TelescopeOn command on sdp master state :"
+            + str(sdp_master.State())
+        )
 
         # command invokation
         CentralNode.TelescopeOff()
@@ -43,16 +46,16 @@ def test_cn_telescopeon():
 
         time.sleep(10)
         LOGGER.info(
-        "After Sending TelescopeOff command off CentralNode state :"
-        + str(CentralNode.State())
+            "After Sending TelescopeOff command off CentralNode state :"
+            + str(CentralNode.State())
         )
         LOGGER.info(
-        "After Sending TelescopeOff command off sdp master state :"
-        + str(sdp_master.State()))
+            "After Sending TelescopeOff command off sdp master state :"
+            + str(sdp_master.State())
+        )
 
         # tear down
         LOGGER.info("Tests complete: tearing down...")
 
     except:
         pytest.fail("unable to complete test without exceptions")
-
