@@ -83,8 +83,10 @@ sdp_leafnode:
 
 # tmc central node
 ska-tmc-centralnode:
-  enabled: true
+  enabled: false
   telescope: SKA-mid
   deviceServers:
     centralnode:
-      enabled: true
+      enabled: false
+
+
