@@ -1,5 +1,5 @@
 """
-TelescopeOn command class for SDPMasterLeafNode.
+On command class for SDPMasterLeafNode.
 
 """
 from ska_tango_base.commands import ResultCode
@@ -8,11 +8,11 @@ from ska_tmc_common.adapters import AdapterFactory
 from ska_tmc_sdpmasterleafnode.commands.abstract_command import SdpMLNCommand
 
 
-class TelescopeOn(SdpMLNCommand):
+class On(SdpMLNCommand):
     """
-    A class for SdpMasterLeafNode's TelescopeOn() command.
+    A class for SdpMasterLeafNode's On() command.
 
-    TelescopeOn command on SdpmasterLeafNode enables the telescope to perform further operations
+    On command on SdpmasterLeafNode enables the telescope to perform further operations
     and observations. It Invokes On command on Sdp Master device.
 
     """
@@ -42,7 +42,7 @@ class TelescopeOn(SdpMLNCommand):
 
         try:
             self.logger.info(
-                f"Invoking TelescopeOn command on:{self.sdp_master_adapter.dev_name}"
+                f"Invoking On command on:{self.sdp_master_adapter.dev_name}"
             )
             self.sdp_master_adapter.On()
             self.logger.info("On command is successful on Sdp Master device.")

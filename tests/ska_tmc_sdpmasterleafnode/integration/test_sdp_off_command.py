@@ -12,7 +12,7 @@ def off_command(tango_context, sdpmln_name):
     dev_factory = DevFactory()
     sdpmln_node = dev_factory.get_device(sdpmln_name)
     initial_len = len(sdpmln_node.commandExecuted)
-    (result, unique_id) = sdpmln_node.TelescopeOn()
+    (result, unique_id) = sdpmln_node.On()
     (result, unique_id) = sdpmln_node.TelescopeOff()
     logger.info(result)
     logger.info(unique_id)
