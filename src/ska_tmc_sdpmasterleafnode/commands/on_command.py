@@ -38,7 +38,7 @@ class On(SdpMLNCommand):
         """
         ret_code, message = self.init_adapter()
         if ret_code == ResultCode.FAILED:
-            return ret_code, message
+            return (ret_code, message)
 
         try:
             self.logger.info(
