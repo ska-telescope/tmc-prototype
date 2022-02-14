@@ -85,6 +85,8 @@ def test_abort_command(
             )
         ),
         get_configure_input_str(
-            join(dirname(__file__), "..", "..", "data", "command_Configure.json")
+            join(
+                dirname(__file__), "..", "..", "data", "command_Configure.json"
+            )
         ),
     )
