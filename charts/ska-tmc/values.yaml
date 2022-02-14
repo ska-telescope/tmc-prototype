@@ -37,11 +37,11 @@ itango:
     pullPolicy: IfNotPresent
 
 
-sdpslnmid:
+sdpsln:
   image:
     registry: artefact.skao.int
     image: ska-tmc
-    tag: 0.8.9
+    tag: 0.8.9-dirty
     pullPolicy: IfNotPresent
 
 resources:

@@ -145,8 +145,7 @@ class AssignResources(SdpSLNCommand):
             return self.generate_command_result(
                 ResultCode.FAILED,
                 (
-                    "Error in calling AssignResources on subarray %s",
-                    self.sdp_subarray_adapter.dev_name,
+                    f"Error in calling AssignResources on subarray {self.sdp_subarray_adapter.dev_name}"
                 ),
             )
         return (ResultCode.OK, "")

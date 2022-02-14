@@ -33,7 +33,7 @@ def abort(
     sdpsal_node = dev_factory.get_device(sdpsaln_name)
 
     initial_len = len(sdpsal_node.commandExecuted)
-    (result, unique_id) = sdpsal_node.TelescopeOn()
+    (result, unique_id) = sdpsal_node.On()
     (result, unique_id) = sdpsal_node.AssignResources(assign_input_str)
     sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
 
