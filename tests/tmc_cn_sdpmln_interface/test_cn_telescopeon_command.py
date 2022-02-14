@@ -103,7 +103,9 @@ def test_cn_telescopeon():
         LOGGER.info("Tests complete: tearing down...")
 
     except:
-        LOGGER.info("Tearing down failed test, state = {}".format(fixture["state"]))
+        LOGGER.info(
+            "Tearing down failed test, state = {}".format(fixture["state"])
+        )
         if fixture["state"] == "Telescope On":
             CentralNode.TelescopeOff()
         pytest.fail("unable to complete test without exceptions")
