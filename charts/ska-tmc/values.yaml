@@ -62,8 +62,9 @@ deviceServers:
     enabled: true
     instances: ["01"]
     subarray_count: 1
-    file: "data/sdpsubarrayleafnode.yaml"
-    SdpSubarrayFQDN: "mid_sdp/elt/subarray_1"
+    mid:
+      file: "data/sdpsubarrayleafnode.yaml"
+      SdpSubarrayFQDN: "mid_sdp/elt/subarray_1"
 
 nodeSelector: {}
 
