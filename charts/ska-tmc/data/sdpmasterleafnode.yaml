@@ -24,6 +24,10 @@ server:
         - name: "LoggingLevelDefault"
           values:
             - "5"
+        - name: "polled_attr"
+          values:
+            - "healthstate"
+            - "1000"
 depends_on:
   - device: sys/database/2
 image:
