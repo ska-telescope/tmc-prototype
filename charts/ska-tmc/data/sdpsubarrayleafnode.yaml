@@ -27,7 +27,7 @@ server:
         attributes:
         - name: "sdpSubarrayDevName"
           values:
-          - "{{.Values.deviceServers.sdpsln.SdpSubarrayFQDN}}"
+          - "{{.Values.deviceServers.sdpsln.mid.SdpSubarrayFQDN}}"
 depends_on:
   - device: sys/database/2
 image:
