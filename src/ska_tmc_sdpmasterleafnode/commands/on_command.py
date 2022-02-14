@@ -33,7 +33,7 @@ class On(SdpMLNCommand):
 
     def do(self, argin=None):
         """
-        Method to invoke Telescope On command on Sdp Master.
+        Method to invoke On command on Sdp Master.
 
         """
         ret_code, message = self.init_adapter()
@@ -50,6 +50,6 @@ class On(SdpMLNCommand):
             self.logger.exception(e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                f"Error in calling Telescope On Sdp Master Device {self.sdp_master_adapter.dev_name}",
+                f"Error in calling On Sdp Master Device {self.sdp_master_adapter.dev_name}",
             )
         return (ResultCode.OK, "")
