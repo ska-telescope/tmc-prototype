@@ -33,7 +33,7 @@ UMBRELLA_CHART_PATH ?= charts/$(HELM_CHART)/
 K8S_CHARTS ?= ska-tmc test-parent## list of charts
 K8S_CHART ?= $(HELM_CHART)
 
-
+TEST_VERSION ?= 0.8.9
 CI_REGISTRY ?= gitlab.com
 CUSTOM_VALUES = --set sdpsln_mid.sdpslnmid.image.tag=$(VERSION)
 K8S_TEST_IMAGE_TO_TEST=$(CAR_OCI_REGISTRY_HOST)/$(PROJECT):$(VERSION)
@@ -41,7 +41,7 @@ ifneq ($(CI_JOB_ID),)
 CUSTOM_VALUES = --set sdpsln_mid.sdpslnmid.image.image=$(PROJECT) \
 	--set sdpsln_mid.sdpslnmid.image.registry=$(CI_REGISTRY)/ska-telescope/$(PROJECT) \
 	--set sdpsln_mid.sdpslnmid.image.tag=$(VERSION)-dev.$(CI_COMMIT_SHORT_SHA)
-K8S_TEST_IMAGE_TO_TEST=$(CI_REGISTRY)/ska-telescope/$(PROJECT)/$(PROJECT):$(VERSION)-dev.$(CI_COMMIT_SHORT_SHA)
+K8S_TEST_IMAGE_TO_TEST=$(CI_REGISTRY)/ska-telescope/$(PROJECT)/$(PROJECT):$(TEST_VERSION)-dev.$(CI_COMMIT_SHORT_SHA)
 endif
 
 CI_PROJECT_DIR ?= .
