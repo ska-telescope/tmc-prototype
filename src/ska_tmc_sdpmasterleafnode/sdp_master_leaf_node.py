@@ -11,8 +11,8 @@ from tango.server import attribute, command, device_property, run
 from ska_tmc_sdpmasterleafnode import release
 from ska_tmc_sdpmasterleafnode.commands import (
     Disable,
-    TelescopeOff,
     On,
+    TelescopeOff,
     TelescopeStandby,
 )
 from ska_tmc_sdpmasterleafnode.manager import SdpMLNComponentManager
