@@ -9,12 +9,7 @@ from tango import AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
 
 from ska_tmc_sdpmasterleafnode import release
-from ska_tmc_sdpmasterleafnode.commands import (
-    Disable,
-    Off,
-    On,
-    TelescopeStandby,
-)
+from ska_tmc_sdpmasterleafnode.commands import Disable, Off, On, Standby
 from ska_tmc_sdpmasterleafnode.manager import SdpMLNComponentManager
 
 __all__ = ["SdpMasterLeafNode", "main"]
@@ -192,7 +187,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
 
-    def is_TelescopeStandby_allowed(self):
+    def is_Standby_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state.
 
@@ -200,16 +195,16 @@ class SdpMasterLeafNode(SKABaseDevice):
 
         :rtype: boolean
         """
-        handler = self.get_command_object("TelescopeStandby")
+        handler = self.get_command_object("Standby")
         return handler.check_allowed()
 
     @command(dtype_out="DevVarLongStringArray")
     @DebugIt()
-    def TelescopeStandby(self):
+    def Standby(self):
         """
         This command invokes Standby() command on Sdp Master.
         """
-        handler = self.get_command_object("TelescopeStandby")
+        handler = self.get_command_object("Standby")
         if self.component_manager._command_executor.queue_full:
             return [[ResultCode.FAILED], ["Queue is full!"]]
         unique_id = self.component_manager._command_executor.enqueue_command(
@@ -266,7 +261,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         for (command_name, command_class) in [
             ("On", On),
             ("Off", Off),
-            ("TelescopeStandby", TelescopeStandby),
+            ("Standby", Standby),
             ("Disable", Disable),
         ]:
             command_obj = command_class(

@@ -1,5 +1,5 @@
 """
-TelescopeStandby command class for SDPMasterLeafNode.
+Standby command class for SDPMasterLeafNode.
 """
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterFactory
@@ -7,11 +7,11 @@ from ska_tmc_common.adapters import AdapterFactory
 from ska_tmc_sdpmasterleafnode.commands.abstract_command import SdpMLNCommand
 
 
-class TelescopeStandby(SdpMLNCommand):
+class Standby(SdpMLNCommand):
     """
-    A class for SdpMasterLeafNode's TelescopeStandby() command.
+    A class for SdpMasterLeafNode's Standby() command.
 
-    TelescopeStandby command on SdpMasterLeafNode invokes Standby command on Sdp Master device.
+    Standby command on SdpMasterLeafNode invokes Standby command on Sdp Master device.
 
     """
 
@@ -26,7 +26,7 @@ class TelescopeStandby(SdpMLNCommand):
 
     def do(self, argin=None):
         """
-        Method to invoke Telescope Standby command on Sdp Master.
+        Method to invoke Standby command on Sdp Master.
 
         """
         ret_code, message = self.init_adapter()
@@ -35,7 +35,7 @@ class TelescopeStandby(SdpMLNCommand):
 
         try:
             self.logger.info(
-                f"Invoking TelescopeStandby command on:{self.sdp_master_adapter.dev_name}"
+                f"Invoking Standby command on:{self.sdp_master_adapter.dev_name}"
             )
             self.sdp_master_adapter.Standby()
             self.logger.info(
@@ -45,6 +45,6 @@ class TelescopeStandby(SdpMLNCommand):
             self.logger.exception(e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                f"Error in calling Telescope Standby Sdp Master Device {self.sdp_master_adapter.dev_name}",
+                f"Error in calling Standby Sdp Master Device {self.sdp_master_adapter.dev_name}",
             )
         return (ResultCode.OK, "")

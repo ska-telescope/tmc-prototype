@@ -26,5 +26,5 @@ def sdpmln_device(request):
 def test_commands(sdpmln_device):
     sdpmln_device.On()
     sdpmln_device.Off()
-    sdpmln_device.TelescopeStandby()
+    sdpmln_device.Standby()
     sdpmln_device.Disable()
