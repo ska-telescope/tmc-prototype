@@ -41,7 +41,7 @@ sdpsln:
   image:
     registry: artefact.skao.int
     image: ska-tmc
-    tag: 0.8.9-dirty
+    tag: 0.8.9
     pullPolicy: IfNotPresent
 
 resources:
