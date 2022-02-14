@@ -21,7 +21,7 @@ def assign_resouces(tango_context, sdpsaln_name, assign_input_str):
     sdpsal_node = dev_factory.get_device(sdpsaln_name)
 
     initial_len = len(sdpsal_node.commandExecuted)
-    (result, unique_id) = sdpsal_node.TelescopeOn()
+    (result, unique_id) = sdpsal_node.On()
     (result, unique_id) = sdpsal_node.AssignResources(assign_input_str)
     assert result[0] == ResultCode.QUEUED
     start_time = time.time()
@@ -43,7 +43,7 @@ def assign_resouces(tango_context, sdpsaln_name, assign_input_str):
     "sdpsaln_name",
     [("ska_mid/tm_leaf_node/sdp_subarray01")],
 )
-def test_assign_res_command_mid(tango_context, sdpsaln_name):
+def test_assign_res_command(tango_context, sdpsaln_name):
     return assign_resouces(
         tango_context,
         sdpsaln_name,

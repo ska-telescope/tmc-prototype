@@ -20,7 +20,7 @@ def release_resources(tango_context, sdpsaln_name, assign_input_str):
     dev_factory = DevFactory()
     sdpsal_node = dev_factory.get_device(sdpsaln_name)
     initial_len = len(sdpsal_node.commandExecuted)
-    (result, unique_id) = sdpsal_node.TelescopeOn()
+    (result, unique_id) = sdpsal_node.On()
     (result, unique_id) = sdpsal_node.AssignResources(assign_input_str)
     sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
     sdp_subarray.SetDirectObsState(ObsState.IDLE)
@@ -45,7 +45,7 @@ def release_resources(tango_context, sdpsaln_name, assign_input_str):
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
-def test_release_res_command_mid(tango_context):
+def test_release_res_command(tango_context):
     return release_resources(
         tango_context,
         "ska_mid/tm_leaf_node/sdp_subarray01",

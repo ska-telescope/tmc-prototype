@@ -12,8 +12,8 @@ def off_command(tango_context, sdpsaln_name):
     dev_factory = DevFactory()
     sdpsal_node = dev_factory.get_device(sdpsaln_name)
     initial_len = len(sdpsal_node.commandExecuted)
-    (result, unique_id) = sdpsal_node.TelescopeOn()
-    (result, unique_id) = sdpsal_node.TelescopeOff()
+    (result, unique_id) = sdpsal_node.On()
+    (result, unique_id) = sdpsal_node.Off()
     logger.info(result)
     logger.info(unique_id)
     assert result[0] == ResultCode.QUEUED
@@ -31,5 +31,5 @@ def off_command(tango_context, sdpsaln_name):
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
-def test_off_command_mid(tango_context):
+def test_off_command(tango_context):
     off_command(tango_context, "ska_mid/tm_leaf_node/sdp_subarray01")

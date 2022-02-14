@@ -68,7 +68,7 @@ def abort(
     "sdpsaln_name",
     [("ska_mid/tm_leaf_node/sdp_subarray01")],
 )
-def test_abort_command_mid(
+def test_abort_command(
     tango_context,
     sdpsaln_name,
 ):
@@ -79,11 +79,12 @@ def test_abort_command_mid(
             join(
                 dirname(__file__),
                 "..",
+                "..",
                 "data",
                 "command_AssignResources.json",
             )
         ),
         get_configure_input_str(
-            join(dirname(__file__), "..", "data", "command_Configure.json")
+            join(dirname(__file__), "..", "..", "data", "command_Configure.json")
         ),
     )
