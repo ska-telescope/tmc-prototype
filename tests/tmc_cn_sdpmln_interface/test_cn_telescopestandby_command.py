@@ -49,8 +49,7 @@ def test_cn_telescopestandby():
         assert sdp_master.State() == DevState.STANDBY
 
         LOGGER.info("Tests complete: tearing down...")
-
-    except:
+    except Exception:
         LOGGER.info(
             "Tearing down failed test, state = {}".format(fixture["state"])
         )
