@@ -19,7 +19,7 @@ server:
 depends_on:
   - device: sys/database/2
 image:
-  registry: "{{.Values.sdpsln.image.registry}}"
-  image: "{{.Values.sdpsln.image.image}}"
-  tag: "{{.Values.sdpsln.image.tag}}"
-  pullPolicy: "{{.Values.sdpsln.image.pullPolicy}}"
+  registry: "{{.Values.sdpslnmid.image.registry}}"
+  image: "{{.Values.sdpslnmid.image.image}}"
+  tag: "{{.Values.sdpslnmid.image.tag}}"
+  pullPolicy: "{{.Values.sdpslnmid.image.pullPolicy}}"
