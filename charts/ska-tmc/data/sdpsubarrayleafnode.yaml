@@ -24,10 +24,11 @@ server:
         - name: "LoggingLevelDefault"
           values:
             - "5"
-        attributes:
-        - name: "sdpSubarrayDevName"
-          values:
-            - "{{.Values.deviceServers.sdpsln.mid.SdpSubarrayFQDN}}"
+        attribute_properties:
+          - attribute: "sdpSubarrayDevName"
+            properties:
+              - values:
+                - "{{.Values.deviceServers.sdpsln.mid.SdpSubarrayFQDN}}"
 depends_on:
   - device: sys/database/2
 image:

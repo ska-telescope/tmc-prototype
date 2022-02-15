@@ -10,9 +10,6 @@ server:
   instances:
     - name: "01"
       classes:
-        # - name: "HelperStateDevice"
-        #   devices:
-        #   - name: "mid_sdp/elt/master"
         - name: "HelperSubArrayDevice"
           devices:
           - name: "mid_sdp/elt/subarray_1"
