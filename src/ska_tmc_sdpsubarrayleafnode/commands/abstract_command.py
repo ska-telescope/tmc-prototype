@@ -174,3 +174,54 @@ class AbstractRestartObsReset(SdpSLNCommand):
             )
 
         return True
+
+
+class AbstractReleaseResources(SdpSLNCommand):
+    def __init__(
+        self,
+        target,
+        op_state_model,
+        adapter_factory=AdapterFactory(),
+        logger=None,
+    ):
+        super().__init__(target, logger)
+        self.op_state_model = op_state_model
+        self._adapter_factory = adapter_factory
+
+    def check_allowed(self):
+        """
+        Checks whether this command is allowed
+        It checks that the device is in the right state
+        to execute this command and that all the
+        component needed for the operation are not unresponsive
+
+        :return: True if this command is allowed
+
+        :rtype: boolean
+
+        """
+        component_manager = self.target
+
+        if self.op_state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+            DevState.DISABLE,
+        ]:
+            raise CommandNotAllowed(
+                "ReleaseResources command is not allowed in current operational state %s",
+                self.op_state_model.op_state,
+            )
+
+        self.check_unresponsive()
+        obs_state_val = component_manager.get_device().obsState
+        self.logger.info("sdp_subarray_obs_state value is: %s", obs_state_val)
+
+        if obs_state_val != ObsState.IDLE:
+            self.logger.info(
+                "sdp_subarray_obs_state value is: %s", obs_state_val
+            )
+            raise InvalidObsStateError(
+                f"ReleaseResources command is not allowed in current observation state:{obs_state_val}"
+            )
+
+        return True
