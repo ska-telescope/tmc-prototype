@@ -37,7 +37,7 @@ itango:
     pullPolicy: IfNotPresent
 
 
-sdpslnmid:
+sdpleafnodes:
   image:
     registry: artefact.skao.int
     image: ska-tmc

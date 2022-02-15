@@ -10,13 +10,16 @@ server:
   instances:
     - name: "01"
       classes:
+        - name: "HelperStateDevice"
+          devices:
+          - name: "mid_sdp/elt/master"
         - name: "HelperSubArrayDevice"
           devices:
           - name: "mid_sdp/elt/subarray_1"
 depends_on:
   - device: sys/database/2
 image:
-  registry: "{{.Values.sdpslnmid.image.registry}}"
-  image: "{{.Values.sdpslnmid.image.image}}"
-  tag: "{{.Values.sdpslnmid.image.tag}}"
-  pullPolicy: "{{.Values.sdpslnmid.image.pullPolicy}}"
+  registry: "{{.Values.sdpleafnodes.image.registry}}"
+  image: "{{.Values.sdpleafnodes.image.image}}"
+  tag: "{{.Values.sdpleafnodes.image.tag}}"
+  pullPolicy: "{{.Values.sdpleafnodes.image.pullPolicy}}"
