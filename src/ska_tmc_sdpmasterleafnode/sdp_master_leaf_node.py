@@ -156,9 +156,9 @@ class SdpMasterLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("Off")
         if self.component_manager._command_executor.queue_full:
-            message = """The invocation of the Off command on this device failed.\n 
-            Reason: The command executor rejected the queuing of the command because its queue is full.\n
-            The Off command has NOT been queued and will not be executed.\n 
+            message = """The invocation of the Off command on this device failed.
+            Reason: The command executor rejected the queuing of the command because its queue is full.
+            The Off command has NOT been queued and will not be executed.
             This device will continue with normal operation."""
             return [[ResultCode.FAILED], [message]]
         unique_id = self.component_manager._command_executor.enqueue_command(
@@ -185,9 +185,9 @@ class SdpMasterLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("On")
         if self.component_manager._command_executor.queue_full:
-            message = """The invocation of the On command on this device failed.\n 
-            Reason: The command executor rejected the queuing of the command because its queue is full.\n
-            The On command has NOT been queued and will not be executed.\n 
+            message = """The invocation of the On command on this device failed.
+            Reason: The command executor rejected the queuing of the command because its queue is full.
+            The On command has NOT been queued and will not be executed.
             This device will continue with normal operation."""
             return [[ResultCode.FAILED], [message]]
         unique_id = self.component_manager._command_executor.enqueue_command(
@@ -214,9 +214,9 @@ class SdpMasterLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("Standby")
         if self.component_manager._command_executor.queue_full:
-            message = """The invocation of the Standby command on this device failed.\n 
-            Reason: The command executor rejected the queuing of the command because its queue is full.\n
-            The Standby command has NOT been queued and will not be executed.\n 
+            message = """The invocation of the Standby command on this device failed.
+            Reason: The command executor rejected the queuing of the command because its queue is full.
+            The Standby command has NOT been queued and will not be executed.
             This device will continue with normal operation."""
             return [[ResultCode.FAILED], [message]]
         unique_id = self.component_manager._command_executor.enqueue_command(
@@ -243,9 +243,9 @@ class SdpMasterLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("Disable")
         if self.component_manager._command_executor.queue_full:
-            message = """The invocation of the Disable command on this device failed.\n 
-            Reason: The command executor rejected the queuing of the command because its queue is full.\n
-            The Disable command has NOT been queued and will not be executed.\n 
+            message = """The invocation of the Disable command on this device failed.
+            Reason: The command executor rejected the queuing of the command because its queue is full.
+            The Disable command has NOT been queued and will not be executed.
             This device will continue with normal operation."""
             return [[ResultCode.FAILED], [message]]
         unique_id = self.component_manager._command_executor.enqueue_command(

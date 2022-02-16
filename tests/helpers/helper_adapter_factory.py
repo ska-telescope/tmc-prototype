@@ -7,6 +7,7 @@ from ska_tmc_common.adapters import (
     SdpSubArrayAdapter,
 )
 
+
 class HelperAdapterFactory(AdapterFactory):
     def __init__(self) -> None:
         self.adapters = []
