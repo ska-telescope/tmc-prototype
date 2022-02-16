@@ -46,10 +46,12 @@ class SdpSLNEventReceiver(EventReceiver):
         if evt.err:
             error = evt.errors[0]
             self._logger.error("%s %s", error.reason, error.desc)
-            self._component_manager.update_event_failure(evt.device.dev_name())
+            # self._component_manager.update_event_failure(evt.device.dev_name())
+            self._component_manager.update_event_failure()
             return
 
         new_value = evt.attr_value.value
-        self._component_manager.update_device_obs_state(
-            evt.device.dev_name(), new_value
-        )
+        # self._component_manager.update_device_obs_state(
+        #     evt.device.dev_name(), new_value
+        # )
+        self._component_manager.update_device_obs_state(new_value)

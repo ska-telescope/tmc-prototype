@@ -7,7 +7,7 @@ package.
 import time
 
 from ska_tmc_common.command_executor import CommandExecutor
-from ska_tmc_common.device_info import SubArrayDeviceInfo
+from ska_tmc_common.device_info import DeviceInfo
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
 
 from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
@@ -27,7 +27,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
     def __init__(
         self,
-        sdp_subarray_device,
+        sdp_subarray_dev_name,
         op_state_model,
         logger=None,
         _update_command_in_progress_callback=None,
@@ -56,8 +56,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             sleep_time,
         )
 
-        self._sdp_subarray_dev_name = sdp_subarray_device
-        self._device = SubArrayDeviceInfo(self._sdp_subarray_dev_name, False)
+        # self._sdp_subarray_dev_name = sdp_subarray_device
+        # self._device = SubArrayDeviceInfo(self._sdp_subarray_dev_name, False)
+        self.update_device_info(sdp_subarray_dev_name)
 
         self._event_receiver = None
         if _event_receiver:
@@ -89,6 +90,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         """
         return self._device
 
+    def update_device_info(self, sdp_subarray_dev_name):
+        self._sdp_subarray_dev_name = sdp_subarray_dev_name
+        self._device = DeviceInfo(self._sdp_subarray_dev_name, False)
+
     def device_failed(self, exception):
         """
         Set a device to failed and call the relative callback if available
@@ -101,8 +106,11 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
     def update_event_failure(self):
         with self.lock:
-            self._device.last_event_arrived = time.time()
-            self._device.update_unresponsive(False)
+            dev_info = self.get_device()
+            # self._device.last_event_arrived = time.time()
+            # self._device.update_unresponsive(False)
+            dev_info.last_event_arrived = time.time()
+            dev_info.update_unresponsive(False)
 
     def update_device_health_state(self, health_state):
         """
@@ -140,6 +148,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :type obs_state: ObsState
         """
         with self.lock:
-            self._device.obsState = obs_state
-            self._device.last_event_arrived = time.time()
-            self._device.update_unresponsive(False)
+            dev_info = self.get_device()
+            # self._device.obsState = obs_state
+            # self._device.last_event_arrived = time.time()
+            # self._device.update_unresponsive(False)
+            dev_info.obsState = obs_state
+            dev_info.last_event_arrived = time.time()
+            dev_info.update_unresponsive(False)
