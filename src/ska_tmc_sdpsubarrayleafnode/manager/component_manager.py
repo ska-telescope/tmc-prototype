@@ -101,8 +101,11 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
     def update_event_failure(self):
         with self.lock:
-            self._device.last_event_arrived = time.time()
-            self._device.update_unresponsive(False)
+            dev_info = self.get_device()
+            # self._device.last_event_arrived = time.time()
+            # self._device.update_unresponsive(False)
+            dev_info.last_event_arrived = time.time()
+            dev_info.update_unresponsive(False)
 
     def update_device_health_state(self, health_state):
         """
@@ -140,6 +143,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :type obs_state: ObsState
         """
         with self.lock:
-            self._device.obsState = obs_state
-            self._device.last_event_arrived = time.time()
-            self._device.update_unresponsive(False)
+            dev_info = self.get_device()
+            # self._device.obsState = obs_state
+            # self._device.last_event_arrived = time.time()
+            # self._device.update_unresponsive(False)
+            dev_info.obsState = obs_state
+            dev_info.last_event_arrived = time.time()
+            dev_info.update_unresponsive(False)
