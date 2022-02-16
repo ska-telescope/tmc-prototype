@@ -1,10 +1,14 @@
+import time
+
 import pytest
+from ska_tango_base.control_model import ObsState
+from ska_tmc_common.test_helpers.helper_subarray_device import (
+    HelperSubArrayDevice,
+)
 
 from ska_tmc_sdpsubarrayleafnode.sdp_subarray_leaf_node import (
     SdpSubarrayLeafNode,
 )
-from ska_tmc_common.test_helpers import HelperSubArrayDevice
-
 from tests.settings import logger
 
 pytest.event_arrived = False
@@ -79,4 +83,3 @@ def tear_down(dev_factory, sdp_subarray):
         sdp_subarray.Off()
         # sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
         # logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
-

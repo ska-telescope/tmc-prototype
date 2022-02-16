@@ -6,6 +6,7 @@ from ska_tango_base.commands import ResultCode
 from ska_tmc_common.dev_factory import DevFactory
 
 from tests.settings import SLEEP_TIME, TIMEOUT, logger
+from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
 def get_assign_input_str(assign_input_file="command_AssignResources.json"):
@@ -19,6 +20,7 @@ def assign_resouces(tango_context, sdpsaln_name, assign_input_str):
     logger.info("%s", tango_context)
     dev_factory = DevFactory()
     sdpsal_node = dev_factory.get_device(sdpsaln_name)
+    sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
 
     initial_len = len(sdpsal_node.commandExecuted)
     (result, unique_id) = sdpsal_node.On()
@@ -35,6 +37,8 @@ def assign_resouces(tango_context, sdpsaln_name, assign_input_str):
         if command[0] == unique_id[0]:
             logger.info("command result: %s", command)
             assert command[2] == "ResultCode.OK"
+
+    tear_down(dev_factory, sdp_subarray)
 
 
 @pytest.mark.post_deployment

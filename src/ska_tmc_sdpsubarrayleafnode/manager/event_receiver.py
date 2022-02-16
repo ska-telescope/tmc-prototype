@@ -1,5 +1,6 @@
-from time import sleep
 from concurrent import futures
+from time import sleep
+
 import tango
 from ska_tmc_common.event_receiver import EventReceiver
 
@@ -31,7 +32,6 @@ class SdpSLNEventReceiver(EventReceiver):
         self._stop = False
         self._component_manager = component_manager
 
-
     # def stop(self):
     #     self._stop = True
 
@@ -45,7 +45,6 @@ class SdpSLNEventReceiver(EventReceiver):
                 if devInfo.last_event_arrived is None:
                     executor.submit(self.subscribe_events, devInfo)
             sleep(self._sleep_time)
-
 
     def subscribe_events(self, devInfo):
         self._logger.info("Inside subscribe events:::::::::")
@@ -79,4 +78,3 @@ class SdpSLNEventReceiver(EventReceiver):
         # )
         self._component_manager.update_device_obs_state(new_value)
         self._logger.info("Obstate value is updated")
-

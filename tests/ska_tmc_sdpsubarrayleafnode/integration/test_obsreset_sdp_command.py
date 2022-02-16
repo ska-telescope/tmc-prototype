@@ -7,6 +7,7 @@ from ska_tango_base.control_model import ObsState
 from ska_tmc_common.dev_factory import DevFactory
 
 from tests.settings import SLEEP_TIME, TIMEOUT, logger
+from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
 def get_assign_input_str(path):
@@ -52,6 +53,8 @@ def obsreset(
         if command[0] == unique_id[0]:
             logger.info("command result: %s", command)
             assert command[2] == "ResultCode.OK"
+
+    tear_down(dev_factory, sdp_subarray)
 
 
 @pytest.mark.xfail

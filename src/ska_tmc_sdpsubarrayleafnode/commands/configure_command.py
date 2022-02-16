@@ -4,14 +4,14 @@ Configure command class for SDPSubarrayLeafNode.
 import json
 
 from ska_tango_base.commands import ResultCode
-from ska_tango_base.control_model import ObsState
 from ska_tmc_common.adapters import AdapterFactory
-from ska_tmc_common.exceptions import InvalidObsStateError
 
-from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
+from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import (
+    AbstractConfigure,
+)
 
 
-class Configure(SdpSLNCommand):
+class Configure(AbstractConfigure):
     """
     A class for SdpSubarrayLeafNode's Configure() command.
 
@@ -31,29 +31,29 @@ class Configure(SdpSLNCommand):
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory
 
-    def check_allowed(self):
-        """
-        Checks whether this command is allowed
-        It checks that the device is in the right state
-        to execute this command and that all the
-        component needed for the operation are not unresponsive
+    # def check_allowed(self):
+    #     """
+    #     Checks whether this command is allowed
+    #     It checks that the device is in the right state
+    #     to execute this command and that all the
+    #     component needed for the operation are not unresponsive
 
-        :return: True if this command is allowed
+    #     :return: True if this command is allowed
 
-        :rtype: boolean
+    #     :rtype: boolean
 
-        """
-        component_manager = self.target
+    #     """
+    #     component_manager = self.target
 
-        self.check_op_state("Configure")
-        self.check_unresponsive()
-        obs_state_val = component_manager.get_device().obsState
-        if obs_state_val not in (ObsState.READY, ObsState.IDLE):
-            message = """The invocation of the \"Configure\" command on this device (subarray {self.sdp_subarray_adapter.dev_name}) is not allowed. 
-                        Reason: The current observation state for observation is {obs_state_val}.
-                        The \"Configure\" command has NOT been executed. This device will continue with normal operation."""
-            raise InvalidObsStateError(message)
-        return True
+    #     self.check_op_state("Configure")
+    #     self.check_unresponsive()
+    #     obs_state_val = component_manager.get_device().obsState
+    #     if obs_state_val not in (ObsState.READY, ObsState.IDLE):
+    #         message = """The invocation of the \"Configure\" command on this device (subarray {self.sdp_subarray_adapter.dev_name}) is not allowed.
+    #                     Reason: The current observation state for observation is {obs_state_val}.
+    #                     The \"Configure\" command has NOT been executed. This device will continue with normal operation."""
+    #         raise InvalidObsStateError(message)
+    #     return True
 
     def do(self, argin):
         """

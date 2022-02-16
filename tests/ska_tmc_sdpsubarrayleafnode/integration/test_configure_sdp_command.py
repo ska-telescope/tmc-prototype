@@ -67,47 +67,7 @@ def configure(
 
     tear_down(dev_factory, sdp_subarray)
 
-# def tear_down(dev_factory, sdp_subarray):
-#     sdp_subarray = dev_factory.get_device(sdp_subarray)
-#     sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
-#     logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
 
-#     if sdp_subarray_obsstate.value == 0:
-#         sdp_subarray.Off()
-
-#     if sdp_subarray_obsstate.value == 2:
-#         sdp_subarray.ReleaseResources()
-#         sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
-#         sdp_subarray.SetDirectObsState(ObsState.EMPTY)
-#         time.sleep(0.5)
-#         sdp_subarray.Off()
-#         # sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
-#         # logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
-
-#     if sdp_subarray_obsstate.value == 4 or 5:
-#         sdp_subarray.Abort()
-#         sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
-#         sdp_subarray.SetDirectObsState(ObsState.ABORTED)
-#         time.sleep(1)
-#         sdp_subarray.Restart()
-#         sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
-#         sdp_subarray.SetDirectObsState(ObsState.EMPTY)
-#         time.sleep(1)
-#         sdp_subarray.Off()
-#         # sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
-#         # logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
-
-#     if sdp_subarray_obsstate.value == 7:
-#         sdp_subarray.Restart()
-#         sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
-#         sdp_subarray.SetDirectObsState(ObsState.EMPTY)
-#         time.sleep(1)
-#         sdp_subarray.Off()
-#         # sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
-#         # logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
-
-
-@pytest.mark.ncra
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(

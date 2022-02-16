@@ -3,7 +3,6 @@ SDP Subarray Leaf node is to monitor the SDP Subarray and issue control actions 
 It also acts as a SDP contact point for Subarray Node for observation execution
 """
 
-from email import message
 from ska_tango_base import SKABaseDevice
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.op_state_model import TMCOpStateModel
