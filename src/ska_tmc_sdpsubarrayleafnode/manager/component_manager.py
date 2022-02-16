@@ -90,7 +90,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         """
         return self._device
 
-
     def update_device_info(self, sdp_subarray_dev_name):
         self._sdp_subarray_dev_name = sdp_subarray_dev_name
         self._device = DeviceInfo(self._sdp_subarray_dev_name, False)
