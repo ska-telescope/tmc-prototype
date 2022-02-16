@@ -50,6 +50,9 @@ class On(SdpMLNCommand):
             self.logger.exception(e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                f"Error in calling On Sdp Master Device {self.sdp_master_adapter.dev_name}",
+                f"""The invocation of the On command is failed on Sdp Master Device {self.sdp_master_adapter.dev_name}.
+                Reason: Error in calling the On command on Sdp Master.
+                The command has NOT been executed.
+                This device will continue with normal operation.""",
             )
         return (ResultCode.OK, "")

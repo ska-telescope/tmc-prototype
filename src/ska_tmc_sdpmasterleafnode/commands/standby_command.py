@@ -45,6 +45,9 @@ class Standby(SdpMLNCommand):
             self.logger.exception(e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                f"Error in calling Standby Sdp Master Device {self.sdp_master_adapter.dev_name}",
+                f"""The invocation of the Standby command is failed on Sdp Master Device {self.sdp_master_adapter.dev_name}.
+                Reason: Error in calling the Standby command on Sdp Master.
+                The command has NOT been executed.
+                This device will continue with normal operation.""",
             )
         return (ResultCode.OK, "")
