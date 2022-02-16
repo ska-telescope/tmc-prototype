@@ -39,12 +39,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         max_dim_y=100,
     )
 
-    lastDeviceInfoChanged = attribute(
-        dtype="DevString",
-        access=AttrWriteType.READ,
-        doc="Json String representing the last device changed in the internal model.",
-    )
-
+    
     sdpMasterDevName = attribute(
         dtype="DevString",
         access=AttrWriteType.READ_WRITE,
@@ -54,10 +49,6 @@ class SdpMasterLeafNode(SKABaseDevice):
     # ---------------
     # General methods
     # ---------------
-
-    def update_device_callback(self, devInfo):
-        self._LastDeviceInfoChanged = devInfo.to_json()
-        self.push_change_event("lastDeviceInfoChanged", devInfo.to_json())
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
@@ -82,8 +73,6 @@ class SdpMasterLeafNode(SKABaseDevice):
                 release.name, release.version, release.description
             )
             device._version_id = release.version
-            device._LastDeviceInfoChanged = ""
-
             device.op_state_model.perform_action("component_on")
             device.component_manager._command_executor.add_command_execution(
                 "0", "Init", ResultCode.OK, ""
@@ -111,9 +100,6 @@ class SdpMasterLeafNode(SKABaseDevice):
         """Set the sdpmasterdevname attribute."""
         # self.component_manager._sdp_master_dev_name = value
         self.component_manager.update_device_info(value)
-
-    def read_lastDeviceInfoChanged(self):
-        return self._LastDeviceInfoChanged
 
     def read_commandExecuted(self):
         """Return the commandExecuted attribute."""
