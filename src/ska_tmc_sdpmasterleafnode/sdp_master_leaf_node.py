@@ -39,7 +39,6 @@ class SdpMasterLeafNode(SKABaseDevice):
         max_dim_y=100,
     )
 
-    
     sdpMasterDevName = attribute(
         dtype="DevString",
         access=AttrWriteType.READ_WRITE,

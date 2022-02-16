@@ -1,8 +1,6 @@
 """
 This module implements ComponentManager class for the Sdp Master Leaf Node.
 """
-import time
-
 from ska_tmc_common.command_executor import CommandExecutor
 from ska_tmc_common.device_info import DeviceInfo
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
