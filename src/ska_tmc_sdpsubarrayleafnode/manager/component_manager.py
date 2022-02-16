@@ -30,6 +30,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         sdp_subarray_dev_name,
         op_state_model,
         logger=None,
+        _update_device_callback=None,
         _update_command_in_progress_callback=None,
         _monitoring_loop=False,
         _event_receiver=True,
@@ -60,7 +61,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         # self._device = SubArrayDeviceInfo(self._sdp_subarray_dev_name, False)
         self.update_device_info(sdp_subarray_dev_name)
 
-        self._event_receiver = None
+        # self._event_receiver = None
         if _event_receiver:
             self._event_receiver = SdpSLNEventReceiver(
                 self,
@@ -68,8 +69,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 proxy_timeout=proxy_timeout,
                 sleep_time=sleep_time,
             )
-
-        if _event_receiver:
             self._event_receiver.start()
 
         self.command_executor = CommandExecutor(
