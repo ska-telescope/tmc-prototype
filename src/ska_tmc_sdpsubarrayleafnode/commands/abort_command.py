@@ -1,6 +1,7 @@
 """
 Abort command class for SDPSubarrayLeafNode.
 """
+from email import message
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.adapters import AdapterFactory
@@ -53,9 +54,10 @@ class Abort(SdpSLNCommand):
             ObsState.READY,
             ObsState.RESETTING,
         ):
-            raise InvalidObsStateError(
-                f"Abort command is not allowed in current observation state:{obs_state_val}"
-            )
+            message = """The invocation of the \"Abort\" command on this device (subarray {self.sdp_subarray_adapter.dev_name}) is not allowed. 
+                        Reason: The current observation state for observation is {obs_state_val}.
+                        The \"Abort\" command has NOT been executed. This device will continue with normal operation."""
+            raise InvalidObsStateError(message)
 
         return True
 
@@ -85,9 +87,9 @@ class Abort(SdpSLNCommand):
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                (
-                    "Error in calling Abort on sdp subarray %s",
-                    self.sdp_subarray_adapter.dev_name,
-                ),
+                f"""The invocation of the Abort command is failed on Sdp Subarray Device {self.sdp_subarray_adapter.dev_name}.
+                Reason: Error in calling the Abort command on Sdp Subarray.
+                The command has NOT been executed.
+                This device will continue with normal operation.""",
             )
         return (ResultCode.OK, "")

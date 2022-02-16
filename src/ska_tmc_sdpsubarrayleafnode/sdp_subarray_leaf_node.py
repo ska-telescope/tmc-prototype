@@ -3,6 +3,7 @@ SDP Subarray Leaf node is to monitor the SDP Subarray and issue control actions 
 It also acts as a SDP contact point for Subarray Node for observation execution
 """
 
+from email import message
 from ska_tango_base import SKABaseDevice
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.op_state_model import TMCOpStateModel
@@ -166,7 +167,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("Off")
         if self.component_manager.command_executor.queue_full:
-            return [[ResultCode.FAILED], ["Queue is full!"]]
+            message = """The invocation of the \"Off\" command on this device failed.
+            Reason: The command executor rejected the queuing of the command because its queue is full.
+            The \"Off\" command has NOT been queued and will not be executed.
+            This device will continue with normal operation."""
+
+            return [[ResultCode.FAILED], [message]]
         unique_id = self.component_manager.command_executor.enqueue_command(
             handler
         )
@@ -191,7 +197,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("On")
         if self.component_manager.command_executor.queue_full:
-            return [[ResultCode.FAILED], ["Queue is full!"]]
+            message = """The invocation of the \"On\" command on this device failed.
+            Reason: The command executor rejected the queuing of the command because its queue is full.
+            The \"On\" command has NOT been queued and will not be executed.
+            This device will continue with normal operation."""
+
+            return [[ResultCode.FAILED], [message]]
         unique_id = self.component_manager.command_executor.enqueue_command(
             handler
         )
@@ -221,7 +232,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("AssignResources")
         if self.component_manager.command_executor.queue_full:
-            return [[ResultCode.FAILED], ["Queue is full!"]]
+            message = """The invocation of the \"AssignResources\" command on this device failed.
+            Reason: The command executor rejected the queuing of the command because its queue is full.
+            The \"AssignResources\" command has NOT been queued and will not be executed.
+            This device will continue with normal operation."""
+
+            return [[ResultCode.FAILED], [message]]
         unique_id = self.component_manager.command_executor.enqueue_command(
             handler, argin
         )
@@ -249,7 +265,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("ReleaseResources")
         if self.component_manager.command_executor.queue_full:
-            return [[ResultCode.FAILED], ["Queue is full!"]]
+            message = """The invocation of the \"ReleaseResources\" command on this device failed.
+            Reason: The command executor rejected the queuing of the command because its queue is full.
+            The \"ReleaseResources\" command has NOT been queued and will not be executed.
+            This device will continue with normal operation."""
+
+            return [[ResultCode.FAILED], [message]]
         unique_id = self.component_manager.command_executor.enqueue_command(
             handler
         )
@@ -282,7 +303,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("Configure")
         if self.component_manager.command_executor.queue_full:
-            return [[ResultCode.FAILED], ["Queue is full!"]]
+            message = """The invocation of the \"Configure\" command on this device failed.
+            Reason: The command executor rejected the queuing of the command because its queue is full.
+            The \"Configure\" command has NOT been queued and will not be executed.
+            This device will continue with normal operation."""
+
+            return [[ResultCode.FAILED], [message]]
         unique_id = self.component_manager.command_executor.enqueue_command(
             handler, argin
         )
@@ -314,7 +340,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         handler = self.get_command_object("Scan")
         if self.component_manager.command_executor.queue_full:
-            return [[ResultCode.FAILED], ["Queue is full!"]]
+            message = """The invocation of the \"Scan\" command on this device failed.
+            Reason: The command executor rejected the queuing of the command because its queue is full.
+            The \"Scan\" command has NOT been queued and will not be executed.
+            This device will continue with normal operation."""
+
+            return [[ResultCode.FAILED], [message]]
         unique_id = self.component_manager.command_executor.enqueue_command(
             handler, argin
         )
@@ -344,7 +375,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("EndScan")
         if self.component_manager.command_executor.queue_full:
-            return [[ResultCode.FAILED], ["Queue is full!"]]
+            message = """The invocation of the \"EndScan\" command on this device failed.
+            Reason: The command executor rejected the queuing of the command because its queue is full.
+            The \"EndScan\" command has NOT been queued and will not be executed.
+            This device will continue with normal operation."""
+
+            return [[ResultCode.FAILED], [message]]
         unique_id = self.component_manager.command_executor.enqueue_command(
             handler
         )
@@ -373,7 +409,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """This command invokes End command on Sdp Subarray to end the current Scheduling block."""
         handler = self.get_command_object("End")
         if self.component_manager.command_executor.queue_full:
-            return [[ResultCode.FAILED], ["Queue is full!"]]
+            message = """The invocation of the \"End\" command on this device failed.
+            Reason: The command executor rejected the queuing of the command because its queue is full.
+            The \"End\" command has NOT been queued and will not be executed.
+            This device will continue with normal operation."""
+
+            return [[ResultCode.FAILED], [message]]
         unique_id = self.component_manager.command_executor.enqueue_command(
             handler
         )
@@ -404,7 +445,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("ObsReset")
         if self.component_manager.command_executor.queue_full:
-            return [[ResultCode.FAILED], ["Queue is full!"]]
+            message = """The invocation of the \"ObsReset\" command on this device failed.
+            Reason: The command executor rejected the queuing of the command because its queue is full.
+            The \"ObsReset\" command has NOT been queued and will not be executed.
+            This device will continue with normal operation."""
+
+            return [[ResultCode.FAILED], [message]]
         unique_id = self.component_manager.command_executor.enqueue_command(
             handler
         )
@@ -438,7 +484,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("Abort")
         if self.component_manager.command_executor.queue_full:
-            return [[ResultCode.FAILED], ["Queue is full!"]]
+            message = """The invocation of the \"Abort\" command on this device failed.
+            Reason: The command executor rejected the queuing of the command because its queue is full.
+            The \"Abort\" command has NOT been queued and will not be executed.
+            This device will continue with normal operation."""
+
+            return [[ResultCode.FAILED], [message]]
         unique_id = self.component_manager.command_executor.enqueue_command(
             handler
         )
@@ -472,7 +523,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("Restart")
         if self.component_manager.command_executor.queue_full:
-            return [[ResultCode.FAILED], ["Queue is full!"]]
+            message = """The invocation of the \"Restart\" command on this device failed.
+            Reason: The command executor rejected the queuing of the command because its queue is full.
+            The \"Restart\" command has NOT been queued and will not be executed.
+            This device will continue with normal operation."""
+
+            return [[ResultCode.FAILED], [message]]
         unique_id = self.component_manager.command_executor.enqueue_command(
             handler
         )

@@ -52,9 +52,9 @@ class On(AbstractOnOff):
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                (
-                    "Error in invoking On command on %s",
-                    self.sdp_subarray_adapter.dev_name,
-                ),
+                f"""The invocation of the On command is failed on Sdp Subarray Device {self.sdp_subarray_adapter.dev_name}.
+                Reason: Error in calling the On command on Sdp Subarray.
+                The command has NOT been executed.
+                This device will continue with normal operation.""",
             )
         return (ResultCode.OK, "")

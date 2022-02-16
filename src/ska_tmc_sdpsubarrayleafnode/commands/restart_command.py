@@ -47,9 +47,9 @@ class Restart(AbstractRestartObsReset):
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                (
-                    "Error in calling Restart on sdp subarray %s",
-                    self.sdp_subarray_adapter.dev_name,
-                ),
+                f"""The invocation of the Restart command is failed on Sdp Subarray Device {self.sdp_subarray_adapter.dev_name}.
+                Reason: Error in calling the Restart command on Sdp Subarray.
+                The command has NOT been executed.
+                This device will continue with normal operation.""",
             )
         return (ResultCode.OK, "")

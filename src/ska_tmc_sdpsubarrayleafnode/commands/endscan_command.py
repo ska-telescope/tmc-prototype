@@ -48,9 +48,10 @@ class EndScan(SdpSLNCommand):
         obs_state_val = component_manager.get_device().obsState
 
         if obs_state_val != ObsState.SCANNING:
-            raise InvalidObsStateError(
-                f"EndScan command is not allowed in current observation state:{obs_state_val}"
-            )
+            message = """The invocation of the \"EndScan\" command on this device (subarray {self.sdp_subarray_adapter.dev_name}) is not allowed. 
+                        Reason: The current observation state for observation is {obs_state_val}.
+                        The \"EndScan\" command has NOT been executed. This device will continue with normal operation."""
+            raise InvalidObsStateError(message)
 
         return True
 
@@ -74,9 +75,9 @@ class EndScan(SdpSLNCommand):
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                (
-                    "Error in calling EndScan on subarray %s",
-                    self.sdp_subarray_adapter.dev_name,
-                ),
+                f"""The invocation of the EndScan command is failed on Sdp Subarray Device {self.sdp_subarray_adapter.dev_name}.
+                Reason: Error in calling the EndScan command on Sdp Subarray.
+                The command has NOT been executed.
+                This device will continue with normal operation.""",
             )
         return (ResultCode.OK, "")

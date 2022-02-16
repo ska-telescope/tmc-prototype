@@ -51,9 +51,9 @@ class End(AbstractScanEnd):
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                (
-                    "Error in calling End on subarray %s",
-                    self.sdp_subarray_adapter.dev_name,
-                ),
+                f"""The invocation of the End command is failed on Sdp Subarray Device {self.sdp_subarray_adapter.dev_name}.
+                Reason: Error in calling the End command on Sdp Subarray.
+                The command has NOT been executed.
+                This device will continue with normal operation.""",
             )
         return (ResultCode.OK, "")
