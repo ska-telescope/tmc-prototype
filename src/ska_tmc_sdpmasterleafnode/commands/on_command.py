@@ -39,13 +39,11 @@ class On(SdpMLNCommand):
         ret_code, message = self.init_adapter()
         if ret_code == ResultCode.FAILED:
             return (ret_code, message)
-
+        self.logger.info(
+            f"Invoking On command on:{self.sdp_master_adapter.dev_name}"
+        )
         try:
-            self.logger.info(
-                f"Invoking On command on:{self.sdp_master_adapter.dev_name}"
-            )
             self.sdp_master_adapter.On()
-            self.logger.info("On command is successful on Sdp Master device.")
         except Exception as e:
             self.logger.exception(e)
             return self.generate_command_result(
@@ -55,4 +53,6 @@ class On(SdpMLNCommand):
                 The command has NOT been executed.
                 This device will continue with normal operation.""",
             )
+
+        self.logger.info("On command is successful on Sdp Master device.")
         return (ResultCode.OK, "")
