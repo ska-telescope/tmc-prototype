@@ -112,7 +112,7 @@ def test_scan_command_fail_check_allowed_with_invalid_obsState(
     )
     with pytest.raises(
         InvalidObsStateError,
-        match=f"Scan and End commands are not allowed in current observation state:{ObsState.IDLE}",
+        match="Scan and End commands are not allowed in current observation state",
     ):
         scan_command.check_allowed()
 

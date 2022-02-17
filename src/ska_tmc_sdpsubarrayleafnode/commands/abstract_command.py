@@ -130,7 +130,7 @@ class AbstractScanEnd(SdpSLNCommand):
         obs_state_val = component_manager.get_device().obsState
 
         if obs_state_val != ObsState.READY:
-            message = """The invocation of the \"Scan/End\" command on this device (subarray {self.sdp_subarray_adapter.dev_name}) is not allowed.
+            message = f"""Scan and End commands are not allowed in current observation state on device {component_manager.get_device().dev_name}.
             Reason: The current observation state for observation is {obs_state_val}.
             The \"Scan/End\" command has NOT been executed. This device will continue with normal operation."""
             raise InvalidObsStateError(message)
@@ -170,7 +170,7 @@ class AbstractRestartObsReset(SdpSLNCommand):
         obs_state_val = component_manager.get_device().obsState
 
         if obs_state_val not in (ObsState.ABORTED, ObsState.FAULT):
-            message = """The invocation of the \"Restart/ObsReset\" command on this device (subarray {self.sdp_subarray_adapter.dev_name}) is not allowed.
+            message = f"""ObsReset and Restart commands are not allowed in current observation state on {component_manager.get_device().dev_name}.
             Reason: The current observation state for observation is {obs_state_val}.
             The \"Restart/ObsReset\" command has NOT been executed. This device will continue with normal operation."""
             raise InvalidObsStateError(message)

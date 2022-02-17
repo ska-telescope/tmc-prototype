@@ -51,7 +51,7 @@ class ReleaseResources(SdpSLNCommand):
             self.logger.info(
                 "sdp_subarray_obs_state value is: %s", obs_state_val
             )
-            message = """The invocation of the \"ReleaseResources\" command on this device (subarray {self.sdp_subarray_adapter.dev_name}) is not allowed.
+            message = f"""ReleaseResources command is not allowed in current observation state on device {component_manager.get_device().dev_name}.
             Reason: The current observation state for observation is {obs_state_val}.
             The \"ReleaseResources\" command has NOT been executed. This device will continue with normal operation."""
             raise InvalidObsStateError(message)

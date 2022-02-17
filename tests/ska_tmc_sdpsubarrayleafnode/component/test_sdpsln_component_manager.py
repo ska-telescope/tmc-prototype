@@ -1,7 +1,7 @@
 import time
 
 import pytest
-from ska_tmc_common.device_info import SubArrayDeviceInfo
+from ska_tmc_common.device_info import DeviceInfo
 
 # from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
 from tests.settings import SDP_SUBARRAY_DEVICE, create_cm, logger
@@ -16,7 +16,7 @@ def test_sdpsa_working(tango_context):
 
     elapsed_time = time.time() - start_time
     logger.info("checked %s device in %s", dev_info.dev_name, elapsed_time)
-    assert isinstance(dev_info, SubArrayDeviceInfo)
+    assert isinstance(dev_info, DeviceInfo)
 
 
 # TODO: Fix test case

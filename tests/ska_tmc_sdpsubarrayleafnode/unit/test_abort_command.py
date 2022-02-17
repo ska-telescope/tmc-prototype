@@ -59,7 +59,6 @@ def test_abort_command_fail_check_allowed_with_invalid_obsState(tango_context):
     cm.get_device().update_unresponsive(False)
     with pytest.raises(
         InvalidObsStateError,
-        match=f"Abort command is not allowed in current observation state:{ObsState.EMPTY}",
     ):
         abort_command.check_allowed()
 
