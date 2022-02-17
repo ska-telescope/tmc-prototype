@@ -40,14 +40,12 @@ class On(AbstractOnOff):
         if ret_code == ResultCode.FAILED:
             return ret_code, message
 
+        log_msg = (
+            f"Invoking On command on:{self.sdp_subarray_adapter.dev_name}"
+        )
+        self.logger.info(log_msg)
         try:
-            self.logger.info(
-                f"Invoking On command on:{self.sdp_subarray_adapter.dev_name}"
-            )
             self.sdp_subarray_adapter.On()
-            self.logger.info(
-                "On command is successful on Sdp Subarray device."
-            )
         except Exception as e:
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
@@ -57,4 +55,6 @@ class On(AbstractOnOff):
                 The command has NOT been executed.
                 This device will continue with normal operation.""",
             )
+        log_msg = f"On command successfully invoked on:{self.sdp_subarray_adapter.dev_name}"
+        self.logger.info(log_msg)
         return (ResultCode.OK, "")

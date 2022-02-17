@@ -77,10 +77,11 @@ class Abort(SdpSLNCommand):
         if res_code == ResultCode.FAILED:
             return res_code, message
 
+        log_msg = (
+            f"Invoking Abort command on:{self.sdp_subarray_adapter.dev_name}"
+        )
+        self.logger.info(log_msg)
         try:
-            self.logger.info(
-                f"Invoking Abort command on:{self.sdp_subarray_adapter.dev_name}"
-            )
             self.sdp_subarray_adapter.Abort()
         except Exception as e:
             self.logger.exception("Command invocation failed: %s", e)
@@ -91,4 +92,7 @@ class Abort(SdpSLNCommand):
                 The command has NOT been executed.
                 This device will continue with normal operation.""",
             )
+
+        log_msg = f"Abort command successfully invoked on:{self.sdp_subarray_adapter.dev_name}"
+        self.logger.info(log_msg)
         return (ResultCode.OK, "")

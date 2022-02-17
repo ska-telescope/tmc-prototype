@@ -41,10 +41,11 @@ class End(AbstractScanEnd):
         if ret_code == ResultCode.FAILED:
             return ret_code, message
 
+        log_msg = (
+            f"Invoking End command on:{self.sdp_subarray_adapter.dev_name}"
+        )
+        self.logger.info(log_msg)
         try:
-            self.logger.info(
-                f"Invoking End command on:{self.sdp_subarray_adapter.dev_name}"
-            )
             self.sdp_subarray_adapter.End()
 
         except Exception as e:
@@ -56,4 +57,6 @@ class End(AbstractScanEnd):
                 The command has NOT been executed.
                 This device will continue with normal operation.""",
             )
+        log_msg = f"End command successfully invoked on:{self.sdp_subarray_adapter.dev_name}"
+        self.logger.info(log_msg)
         return (ResultCode.OK, "")

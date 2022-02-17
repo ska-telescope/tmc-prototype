@@ -61,9 +61,9 @@ class Scan(AbstractScanEnd):
             )
 
         log_msg = (
-            "Input JSON for SDP Subarray Leaf Node Scan command is: " + argin
+            f"Invoking Scan command on:{self.sdp_subarray_adapter.dev_name}"
         )
-        self.logger.debug(log_msg)
+        self.logger.info(log_msg)
 
         try:
             # As, SKA logtransaction is not utilised in scan command across tmc devices.
@@ -87,4 +87,6 @@ class Scan(AbstractScanEnd):
                 The command has NOT been executed.
                 This device will continue with normal operation.""",
             )
+        log_msg = f"Scan command successfully invoked on:{self.sdp_subarray_adapter.dev_name}"
+        self.logger.info(log_msg)
         return (ResultCode.OK, "")

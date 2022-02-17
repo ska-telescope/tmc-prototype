@@ -134,9 +134,9 @@ class AssignResources(SdpSLNCommand):
                 "scan_types key is not present in the input json argument.",
             )
 
+        log_msg = f"Invoking AssignResources command on:{self.sdp_subarray_adapter.dev_name}"
+        self.logger.info(log_msg)
         try:
-            log_msg = f"Invoking AssignResources command on:{self.sdp_subarray_adapter.dev_name}"
-            self.logger.info(log_msg)
             self.sdp_subarray_adapter.AssignResources(
                 json.dumps(json_argument)
             )
@@ -150,4 +150,6 @@ class AssignResources(SdpSLNCommand):
                 The command has NOT been executed.
                 This device will continue with normal operation.""",
             )
+        log_msg = f"AssignResources command successfully invoked on:{self.sdp_subarray_adapter.dev_name}"
+        self.logger.info(log_msg)
         return (ResultCode.OK, "")

@@ -65,10 +65,11 @@ class EndScan(SdpSLNCommand):
         if res_code == ResultCode.FAILED:
             return res_code, message
 
+        log_msg = (
+            f"Invoking EndScan command on:{self.sdp_subarray_adapter.dev_name}"
+        )
+        self.logger.info(log_msg)
         try:
-            self.logger.info(
-                f"Invoking EndScan command on:{self.sdp_subarray_adapter.dev_name}"
-            )
             self.sdp_subarray_adapter.EndScan()
 
         except Exception as e:
@@ -80,4 +81,6 @@ class EndScan(SdpSLNCommand):
                 The command has NOT been executed.
                 This device will continue with normal operation.""",
             )
+        log_msg = f"EndScan command successfully invoked on:{self.sdp_subarray_adapter.dev_name}"
+        self.logger.info(log_msg)
         return (ResultCode.OK, "")

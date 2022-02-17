@@ -102,9 +102,9 @@ class Configure(SdpSLNCommand):
                 "scan_type is not present in the input json argument.",
             )
 
+        log_msg = f"Invoking Configure command on:{self.sdp_subarray_adapter.dev_name}"
+        self.logger.info(log_msg)
         try:
-            log_msg = f"Invoking Configure command on:{self.sdp_subarray_adapter.dev_name}"
-            self.logger.info(log_msg)
             self.sdp_subarray_adapter.Configure(json.dumps(json_argument))
 
         except Exception as e:
@@ -116,4 +116,6 @@ class Configure(SdpSLNCommand):
                 The command has NOT been executed.
                 This device will continue with normal operation.""",
             )
+        log_msg = f"Configure command successfully invoked on:{self.sdp_subarray_adapter.dev_name}"
+        self.logger.info(log_msg)
         return (ResultCode.OK, "")

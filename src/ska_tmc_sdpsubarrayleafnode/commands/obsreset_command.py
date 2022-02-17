@@ -39,10 +39,9 @@ class ObsReset(AbstractRestartObsReset):
         if res_code == ResultCode.FAILED:
             return res_code, message
 
+        log_msg = f"Invoking ObsReset command on:{self.sdp_subarray_adapter.dev_name}"
+        self.logger.info(log_msg)
         try:
-            self.logger.info(
-                f"Invoking ObsReset command on:{self.sdp_subarray_adapter.dev_name}"
-            )
             self.sdp_subarray_adapter.ObsReset()
         except Exception as e:
             self.logger.exception("Command invocation failed: %s", e)
@@ -53,4 +52,6 @@ class ObsReset(AbstractRestartObsReset):
                 The command has NOT been executed.
                 This device will continue with normal operation.""",
             )
+        log_msg = f"ObsReset command successfully invoked on:{self.sdp_subarray_adapter.dev_name}"
+        self.logger.info(log_msg)
         return (ResultCode.OK, "")

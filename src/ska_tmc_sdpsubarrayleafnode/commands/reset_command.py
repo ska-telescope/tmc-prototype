@@ -58,12 +58,7 @@ class Reset(SdpSLNCommand):
             return res_code, message
 
         try:
-            self.logger.info(
-                "Invoking Reset command on Sdp Subarray Leaf Node"
-            )
-            self.logger.info(
-                "Reset command is successful on Sdp Subarray Leaf Node"
-            )
+            self.logger.info("Resetting Sdp Subarray Leaf Node")
         except Exception as e:
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(

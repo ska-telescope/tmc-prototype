@@ -71,10 +71,9 @@ class ReleaseResources(SdpSLNCommand):
         if res_code == ResultCode.FAILED:
             return res_code, message
 
+        log_msg = f"Invoking ReleaseResources command on:{self.sdp_subarray_adapter.dev_name}"
+        self.logger.info(log_msg)
         try:
-            self.logger.info(
-                f"Invoking ReleaseResources command on:{self.sdp_subarray_adapter.dev_name}"
-            )
             self.sdp_subarray_adapter.ReleaseResources(None)
         except Exception as e:
             self.logger.exception("Command invocation failed: %s", e)
@@ -85,4 +84,6 @@ class ReleaseResources(SdpSLNCommand):
                 The command has NOT been executed.
                 This device will continue with normal operation.""",
             )
+        log_msg = f"On command successfully invoked on:{self.sdp_subarray_adapter.dev_name}"
+        self.logger.info(log_msg)
         return (ResultCode.OK, "")
