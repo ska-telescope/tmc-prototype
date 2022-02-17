@@ -18,7 +18,12 @@ class SdpSLNCommand(TmcLeafNodeCommand):
         component_manager = self.target
         devInfo = component_manager.get_device()
         if devInfo is None or devInfo.unresponsive:
-            raise DeviceUnresponsive("SDP subarray device is not available")
+            raise DeviceUnresponsive(
+                """The invocation of the command on this device is not allowed.
+                Reason: SDP subarray device is not available.
+                The command has NOT been executed.
+                This device will continue with normal operation."""
+            )
 
     def check_op_state(self, command_name):
         if self.op_state_model.op_state in [
@@ -27,7 +32,10 @@ class SdpSLNCommand(TmcLeafNodeCommand):
             DevState.DISABLE,
         ]:
             raise CommandNotAllowed(
-                "%s command is not allowed in current operational state %s",
+                """The invocation of the %s command on this device is not allowed.
+                Reason: The current operational state is %s.
+                The command has NOT been executed.
+                This device will continue with normal operation.""",
                 command_name,
                 self.op_state_model.op_state,
             )
