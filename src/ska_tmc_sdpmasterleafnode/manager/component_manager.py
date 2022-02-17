@@ -62,7 +62,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
 
     def get_device(self):
         """
-        Return the device info our of the monitoring loop with name dev_name
+        Return the device information of the monitored device
 
         :param None:
         :return: a device info
