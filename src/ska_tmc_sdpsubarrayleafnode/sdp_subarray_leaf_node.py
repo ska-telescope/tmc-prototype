@@ -547,7 +547,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             _update_device_callback=self.update_device_callback,
             sleep_time=self.SleepTime,
         )
-        # cm._sdp_subarray_dev_name = self.SdpSubarrayFQDN or ""
+
         return cm
 
     def init_command_objects(self):
@@ -584,12 +584,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 self.logger,
             ),
         )
-
-    # def init_command_objects(self):
-    #     """
-    #     Initialises the command handlers for commands supported by this device.
-    #     """
-    #     super().init_command_objects()
 
 
 # ----------

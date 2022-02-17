@@ -53,11 +53,16 @@ class Scan(AbstractScanEnd):
         try:
             json_argument = json.loads(argin)
         except Exception as e:
-            log_msg = f"JSON parsing error: {e}"
-            self.logger.error(log_msg)
+            log_msg = f"""Execution of Scan command is failed.
+            Reason: JSON parsing failed with exception: {e}
+            The command is not executed successfully.
+            The device will continue with normal operation"""
+            self.logger.exception(log_msg)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                ("JSON parsing error"),
+                (
+                    "Exception occurred while parsing the JSON. Please check the logs for details."
+                ),
             )
 
         log_msg = (

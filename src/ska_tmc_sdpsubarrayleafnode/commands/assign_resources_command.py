@@ -115,11 +115,16 @@ class AssignResources(SdpSLNCommand):
         try:
             json_argument = json.loads(argin)
         except Exception as e:
-            log_msg = f"JSON Parsing failed: {e}"
+            log_msg = f"""Execution of AssignResources command is failed.
+            Reason: JSON parsing failed with exception: {e}
+            The command is not executed successfully.
+            The device will continue with normal operation"""
             self.logger.exception(log_msg)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                ("JSON parsing failed"),
+                (
+                    "Exception occurred while parsing the JSON. Please check the logs for details."
+                ),
             )
 
         if "eb_id" not in json_argument:
