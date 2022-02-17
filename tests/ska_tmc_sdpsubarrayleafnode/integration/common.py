@@ -59,8 +59,8 @@ def tear_down(dev_factory, sdp_subarray):
         sdp_subarray.SetDirectObsState(ObsState.EMPTY)
         time.sleep(0.5)
         sdp_subarray.Off()
-        # sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
-        # logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
+        sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
+        logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
 
     if sdp_subarray_obsstate.value == 4 or 5:
         sdp_subarray.Abort()
@@ -72,8 +72,8 @@ def tear_down(dev_factory, sdp_subarray):
         sdp_subarray.SetDirectObsState(ObsState.EMPTY)
         time.sleep(1)
         sdp_subarray.Off()
-        # sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
-        # logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
+        sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
+        logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
 
     if sdp_subarray_obsstate.value == 7:
         sdp_subarray.Restart()
@@ -81,5 +81,5 @@ def tear_down(dev_factory, sdp_subarray):
         sdp_subarray.SetDirectObsState(ObsState.EMPTY)
         time.sleep(1)
         sdp_subarray.Off()
-        # sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
-        # logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
+        sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
+        logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
