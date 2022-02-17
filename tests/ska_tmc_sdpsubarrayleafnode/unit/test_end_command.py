@@ -18,7 +18,7 @@ from tests.settings import (
 )
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_end_command(tango_context):
     logger.info("%s", tango_context)
     _, end_command, my_adapter_factory = get_sdpsln_command_obj(
@@ -34,7 +34,7 @@ def test_telescope_end_command(tango_context):
         adapter.proxy.End.assert_called()
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_assign_resources_command_fail_subarray(tango_context):
     logger.info("%s", tango_context)
     input_parameter = SdpSLNInputParameter(None)
@@ -65,7 +65,7 @@ def test_telescope_assign_resources_command_fail_subarray(tango_context):
     assert failing_dev in message
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_end_command_fail_check_allowed_with_invalid_obsState(
     tango_context,
 ):

@@ -7,18 +7,17 @@ from ska_tmc_common.dev_factory import DevFactory
 from tests.settings import SLEEP_TIME, TIMEOUT, logger
 
 
-def standby_command(tango_context, sdpmln_name):
+def on_command(tango_context, sdpmln_name):
     logger.info("%s", tango_context)
     dev_factory = DevFactory()
     sdpmln_node = dev_factory.get_device(sdpmln_name)
     initial_len = len(sdpmln_node.commandExecuted)
-    (result, unique_id) = sdpmln_node.TelescopeOn()
-    (result, unique_id) = sdpmln_node.TelescopeStandby()
+    (result, unique_id) = sdpmln_node.On()
     logger.info(result)
     logger.info(unique_id)
     assert result[0] == ResultCode.QUEUED
     start_time = time.time()
-    while len(sdpmln_node.commandExecuted) != initial_len + 2:
+    while len(sdpmln_node.commandExecuted) != initial_len + 1:
         time.sleep(SLEEP_TIME)
         elapsed_time = time.time() - start_time
         if elapsed_time > TIMEOUT:
@@ -31,5 +30,5 @@ def standby_command(tango_context, sdpmln_name):
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
-def test_standby_command_mid(tango_context):
-    standby_command(tango_context, "ska_mid/tm_leaf_node/sdp_master")
+def test_on_command_mid(tango_context):
+    on_command(tango_context, "ska_mid/tm_leaf_node/sdp_master")

@@ -9,17 +9,8 @@ from tango import AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
 
 from ska_tmc_sdpmasterleafnode import release
-from ska_tmc_sdpmasterleafnode.commands.disable_command import Disable
-from ska_tmc_sdpmasterleafnode.commands.telescope_off_command import (
-    TelescopeOff,
-)
-from ska_tmc_sdpmasterleafnode.commands.telescope_on_command import TelescopeOn
-from ska_tmc_sdpmasterleafnode.commands.telescope_standby_command import (
-    TelescopeStandby,
-)
-from ska_tmc_sdpmasterleafnode.manager.component_manager import (
-    SdpMLNComponentManager,
-)
+from ska_tmc_sdpmasterleafnode.commands import Disable, Off, On, Standby
+from ska_tmc_sdpmasterleafnode.manager import SdpMLNComponentManager
 
 __all__ = ["SdpMasterLeafNode", "main"]
 
@@ -48,12 +39,6 @@ class SdpMasterLeafNode(SKABaseDevice):
         max_dim_y=100,
     )
 
-    lastDeviceInfoChanged = attribute(
-        dtype="DevString",
-        access=AttrWriteType.READ,
-        doc="Json String representing the last device changed in the internal model.",
-    )
-
     sdpMasterDevName = attribute(
         dtype="DevString",
         access=AttrWriteType.READ_WRITE,
@@ -63,10 +48,6 @@ class SdpMasterLeafNode(SKABaseDevice):
     # ---------------
     # General methods
     # ---------------
-
-    def update_device_callback(self, devInfo):
-        self._LastDeviceInfoChanged = devInfo.to_json()
-        self.push_change_event("lastDeviceInfoChanged", devInfo.to_json())
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
@@ -91,8 +72,6 @@ class SdpMasterLeafNode(SKABaseDevice):
                 release.name, release.version, release.description
             )
             device._version_id = release.version
-            device._LastDeviceInfoChanged = ""
-
             device.op_state_model.perform_action("component_on")
             device.component_manager._command_executor.add_command_execution(
                 "0", "Init", ResultCode.OK, ""
@@ -118,10 +97,8 @@ class SdpMasterLeafNode(SKABaseDevice):
 
     def write_sdpMasterDevName(self, value):
         """Set the sdpmasterdevname attribute."""
-        self.component_manager._sdp_master_dev_name = value
-
-    def read_lastDeviceInfoChanged(self):
-        return self._LastDeviceInfoChanged
+        # self.component_manager._sdp_master_dev_name = value
+        self.component_manager.update_device_info(value)
 
     def read_commandExecuted(self):
         """Return the commandExecuted attribute."""
@@ -146,7 +123,7 @@ class SdpMasterLeafNode(SKABaseDevice):
     # Commands
     # --------
 
-    def is_TelescopeOff_allowed(self):
+    def is_Off_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state.
 
@@ -154,23 +131,27 @@ class SdpMasterLeafNode(SKABaseDevice):
 
         :rtype: boolean
         """
-        handler = self.get_command_object("TelescopeOff")
+        handler = self.get_command_object("Off")
         return handler.check_allowed()
 
     @command(dtype_out="DevVarLongStringArray")
-    def TelescopeOff(self):
+    def Off(self):
         """
         This command invokes Off() command on Sdp Master.
         """
-        handler = self.get_command_object("TelescopeOff")
+        handler = self.get_command_object("Off")
         if self.component_manager._command_executor.queue_full:
-            return [[ResultCode.FAILED], ["Queue is full!"]]
+            message = """The invocation of the Off command on this device failed.
+            Reason: The command executor rejected the queuing of the command because its queue is full.
+            The Off command has NOT been queued and will not be executed.
+            This device will continue with normal operation."""
+            return [[ResultCode.FAILED], [message]]
         unique_id = self.component_manager._command_executor.enqueue_command(
             handler
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
 
-    def is_TelescopeOn_allowed(self):
+    def is_On_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state.
 
@@ -178,24 +159,28 @@ class SdpMasterLeafNode(SKABaseDevice):
 
         :rtype: boolean
         """
-        handler = self.get_command_object("TelescopeOn")
+        handler = self.get_command_object("On")
         return handler.check_allowed()
 
     @command(dtype_out="DevVarLongStringArray")
     @DebugIt()
-    def TelescopeOn(self):
+    def On(self):
         """
         This command invokes On() command on Sdp Master.
         """
-        handler = self.get_command_object("TelescopeOn")
+        handler = self.get_command_object("On")
         if self.component_manager._command_executor.queue_full:
-            return [[ResultCode.FAILED], ["Queue is full!"]]
+            message = """The invocation of the On command on this device failed.
+            Reason: The command executor rejected the queuing of the command because its queue is full.
+            The On command has NOT been queued and will not be executed.
+            This device will continue with normal operation."""
+            return [[ResultCode.FAILED], [message]]
         unique_id = self.component_manager._command_executor.enqueue_command(
             handler
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
 
-    def is_TelescopeStandby_allowed(self):
+    def is_Standby_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state.
 
@@ -203,18 +188,22 @@ class SdpMasterLeafNode(SKABaseDevice):
 
         :rtype: boolean
         """
-        handler = self.get_command_object("TelescopeStandby")
+        handler = self.get_command_object("Standby")
         return handler.check_allowed()
 
     @command(dtype_out="DevVarLongStringArray")
     @DebugIt()
-    def TelescopeStandby(self):
+    def Standby(self):
         """
         This command invokes Standby() command on Sdp Master.
         """
-        handler = self.get_command_object("TelescopeStandby")
+        handler = self.get_command_object("Standby")
         if self.component_manager._command_executor.queue_full:
-            return [[ResultCode.FAILED], ["Queue is full!"]]
+            message = """The invocation of the Standby command on this device failed.
+            Reason: The command executor rejected the queuing of the command because its queue is full.
+            The Standby command has NOT been queued and will not be executed.
+            This device will continue with normal operation."""
+            return [[ResultCode.FAILED], [message]]
         unique_id = self.component_manager._command_executor.enqueue_command(
             handler
         )
@@ -239,7 +228,11 @@ class SdpMasterLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("Disable")
         if self.component_manager._command_executor.queue_full:
-            return [[ResultCode.FAILED], ["Queue is full!"]]
+            message = """The invocation of the Disable command on this device failed.
+            Reason: The command executor rejected the queuing of the command because its queue is full.
+            The Disable command has NOT been queued and will not be executed.
+            This device will continue with normal operation."""
+            return [[ResultCode.FAILED], [message]]
         unique_id = self.component_manager._command_executor.enqueue_command(
             handler
         )
@@ -250,7 +243,6 @@ class SdpMasterLeafNode(SKABaseDevice):
         self.op_state_model = TMCOpStateModel(
             logger=self.logger, callback=super()._update_state
         )
-        # sdp_master_dev_name = self.SdpMasterFQDN or ""
         cm = SdpMLNComponentManager(
             self.SdpMasterFQDN,
             self.op_state_model,
@@ -267,9 +259,9 @@ class SdpMasterLeafNode(SKABaseDevice):
         super().init_command_objects()
         args = ()
         for (command_name, command_class) in [
-            ("TelescopeOn", TelescopeOn),
-            ("TelescopeOff", TelescopeOff),
-            ("TelescopeStandby", TelescopeStandby),
+            ("On", On),
+            ("Off", Off),
+            ("Standby", Standby),
             ("Disable", Disable),
         ]:
             command_obj = command_class(

@@ -5,50 +5,47 @@ from ska_tmc_common.test_helpers.helper_adapter_factory import (
     HelperAdapterFactory,
 )
 
-from ska_tmc_sdpmasterleafnode.commands.telescope_on_command import TelescopeOn
-from tests.settings import (
-    SDP_MASTER_DEVICE,
-    create_cm,
-    get_sdpmln_command_obj,
-    logger,
-)
+from ska_tmc_sdpmasterleafnode.commands import On
+from tests.settings import create_cm, get_sdpmln_command_obj, logger
 
 
 @pytest.mark.sdpmln
-def test_telescope_on_command(tango_context):
+def test_on_command(tango_context, sdp_master_device):
     logger.info("%s", tango_context)
-    _, on_command, adapter_factory = get_sdpmln_command_obj(TelescopeOn)
+    _, on_command, adapter_factory = get_sdpmln_command_obj(
+        On, sdp_master_device
+    )
     assert on_command.check_allowed()
     (result_code, _) = on_command.do()
     assert result_code == ResultCode.OK
-    adapter = adapter_factory.get_or_create_adapter(SDP_MASTER_DEVICE)
+    adapter = adapter_factory.get_or_create_adapter(sdp_master_device)
     adapter.proxy.On.assert_called()
 
 
 @pytest.mark.sdpmln
-def test_telescope_on_command_fail_sdp_master(tango_context):
+def test_on_command_fail_sdp_master(tango_context, sdp_master_device):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpMLNComponentManager", None, SDP_MASTER_DEVICE)
+    cm, _ = create_cm("SdpMLNComponentManager", None, sdp_master_device)
     adapter_factory = HelperAdapterFactory()
-    cm._sdp_master_dev_name = SDP_MASTER_DEVICE
+    cm._sdp_master_dev_name = sdp_master_device
 
-    # include exception in TelescopeOn command
+    # include exception in On command
     adapter_factory.get_or_create_adapter(
-        SDP_MASTER_DEVICE, attrs={"TelescopeOn.side_effect": Exception}
+        sdp_master_device, attrs={"On.side_effect": Exception}
     )
 
-    on_command = TelescopeOn(cm, cm.op_state_model, adapter_factory)
+    on_command = On(cm, cm.op_state_model, adapter_factory)
     assert on_command.check_allowed()
     (result_code, message) = on_command.do()
     assert result_code == ResultCode.FAILED
-    assert SDP_MASTER_DEVICE in message
+    assert sdp_master_device in message
 
 
 @pytest.mark.sdpmln
-def test_telescope_on_fail_check_allowed(tango_context):
+def test_on_fail_check_allowed(tango_context, sdp_master_device):
 
     logger.info("%s", tango_context)
-    cm, on_command, _ = get_sdpmln_command_obj(TelescopeOn)
+    cm, on_command, _ = get_sdpmln_command_obj(On, sdp_master_device)
     devInfo = cm.get_device()
     devInfo.update_unresponsive(True)
     with pytest.raises(DeviceUnresponsive):

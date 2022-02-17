@@ -19,7 +19,7 @@ from tests.settings import (
 )
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_release_resources_command(tango_context):
     logger.info("%s", tango_context)
     # import debugpy; debugpy.debug_this_thread()
@@ -36,7 +36,7 @@ def test_telescope_release_resources_command(tango_context):
         adapter.proxy.ReleaseResources.assert_called()
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_release_resources_command_fail_subarray(tango_context):
     logger.info("%s", tango_context)
     input_parameter = SdpSLNInputParameter(None)
@@ -66,7 +66,7 @@ def test_telescope_release_resources_command_fail_subarray(tango_context):
     assert failing_dev in message
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_release_resources_fail_check_allowed(tango_context):
 
     logger.info("%s", tango_context)

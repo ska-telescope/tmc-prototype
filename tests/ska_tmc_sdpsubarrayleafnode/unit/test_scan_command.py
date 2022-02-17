@@ -30,7 +30,7 @@ def get_scan_input_str(scan_input_file="command_Scan.json"):
     return scan_input_file
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_scan_command(tango_context):
     logger.info("%s", tango_context)
     cm, scan_command, my_adapter_factory = get_sdpsln_command_obj(
@@ -48,7 +48,7 @@ def test_telescope_scan_command(tango_context):
         adapter.proxy.Scan.assert_called()
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_scan_command_missing_interface_key(
     tango_context,
 ):
@@ -68,7 +68,7 @@ def test_telescope_scan_command_missing_interface_key(
         adapter.proxy.Scan.assert_called()
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_scan_command_fail_subarray(tango_context):
     logger.info("%s", tango_context)
     input_parameter = SdpSLNInputParameter(None)
@@ -100,7 +100,7 @@ def test_telescope_scan_command_fail_subarray(tango_context):
     assert failing_dev in message
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_scan_command_empty_input_json(tango_context):
     logger.info("%s", tango_context)
     # import debugpy; debugpy.debug_this_thread()
@@ -112,7 +112,7 @@ def test_telescope_scan_command_empty_input_json(tango_context):
     assert result_code == ResultCode.FAILED
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_scan_command_fail_check_allowed_with_invalid_obsState(
     tango_context,
 ):
@@ -125,7 +125,7 @@ def test_telescope_scan_command_fail_check_allowed_with_invalid_obsState(
         scan_command.check_allowed()
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_scan_fail_check_allowed(tango_context):
 
     logger.info("%s", tango_context)

@@ -1,5 +1,5 @@
 """
-TelescopeOff command class for SDPMasterLeafNode.
+Off command class for SDPMasterLeafNode.
 """
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterFactory
@@ -7,11 +7,11 @@ from ska_tmc_common.adapters import AdapterFactory
 from ska_tmc_sdpmasterleafnode.commands.abstract_command import SdpMLNCommand
 
 
-class TelescopeOff(SdpMLNCommand):
+class Off(SdpMLNCommand):
     """
-    A class for SdpMasterLeafNode's TelescopeOff() command.
+    A class for SdpMasterLeafNode's Off() command.
 
-    TelescopeOff command on SdpMasterLeafNode enables the telescope to perform further operations
+    Off command on SdpMasterLeafNode enables the telescope to perform further operations
     and observations. It Invokes Off command on Sdp Master device.
 
     """
@@ -27,16 +27,16 @@ class TelescopeOff(SdpMLNCommand):
 
     def do(self, argin=None):
         """
-        Method to invoke Telescope Off command on Sdp Master.
+        Method to invoke Off command on Sdp Master.
 
         """
         ret_code, message = self.init_adapter()
         if ret_code == ResultCode.FAILED:
-            return ret_code, message
+            return (ret_code, message)
 
         try:
             self.logger.info(
-                f"Invoking TelescopeOff command on:{self.sdp_master_adapter.dev_name}"
+                f"Invoking Off command on:{self.sdp_master_adapter.dev_name}"
             )
             self.sdp_master_adapter.Off()
             self.logger.info("Off command is successful on Sdp Master device.")
@@ -44,6 +44,9 @@ class TelescopeOff(SdpMLNCommand):
             self.logger.exception(e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                f"Error in calling Telescope Off Sdp Master Device {self.sdp_master_adapter.dev_name}",
+                f"""The invocation of the Off command is failed on Sdp Master Device {self.sdp_master_adapter.dev_name}.
+                Reason: Error in calling the Off command on Sdp Master.
+                The command has NOT been executed.
+                This device will continue with normal operation.""",
             )
         return (ResultCode.OK, "")

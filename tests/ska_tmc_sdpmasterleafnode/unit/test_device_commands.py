@@ -24,7 +24,7 @@ def sdpmln_device(request):
 
 @pytest.mark.sdpmln
 def test_commands(sdpmln_device):
-    sdpmln_device.TelescopeOn()
-    sdpmln_device.TelescopeOff()
-    sdpmln_device.TelescopeStandby()
+    sdpmln_device.On()
+    sdpmln_device.Off()
+    sdpmln_device.Standby()
     sdpmln_device.Disable()

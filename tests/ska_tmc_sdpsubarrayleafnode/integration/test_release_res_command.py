@@ -43,7 +43,6 @@ def release_resources(tango_context, sdpsaln_name, assign_input_str):
             assert command[2] == "ResultCode.OK"
 
 
-@pytest.mark.ncra
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_release_res_command_mid(tango_context):

@@ -31,7 +31,7 @@ class Disable(SdpMLNCommand):
         """
         ret_code, message = self.init_adapter()
         if ret_code == ResultCode.FAILED:
-            return ret_code, message
+            return (ret_code, message)
 
         try:
             self.logger.info(
@@ -45,6 +45,9 @@ class Disable(SdpMLNCommand):
             self.logger.exception(e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                f"Error in calling Disable command on Sdp Master Device {self.sdp_master_adapter.dev_name}",
+                f"""The invocation of the Disable command is failed on Sdp Master Device {self.sdp_master_adapter.dev_name}.
+                Reason: Error in calling the Disable command on Sdp Master.
+                The command has NOT been executed.
+                This device will continue with normal operation.""",
             )
         return (ResultCode.OK, "")

@@ -78,7 +78,6 @@ def scan(
             assert command[2] == "ResultCode.OK"
 
 
-@pytest.mark.scan
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(
