@@ -9,7 +9,7 @@ from tango import DeviceProxy, DevState
 LOGGER = logging.getLogger(__name__)
 
 
-@pytest.mark.xfail
+@pytest.mark.tmcintegration
 def test_cn_telescopestandby():
     try:
         fixture = {}
@@ -22,9 +22,22 @@ def test_cn_telescopestandby():
         sdp_mln = DeviceProxy("ska_mid/tm_leaf_node/sdp_master")
         sdp_master = DeviceProxy("mid_sdp/elt/master")
 
-        assert CentralNode.State() == DevState.ON
-        assert CentralNode.telescopeState == DevState.UNKNOWN
-        assert sdp_mln.State() == DevState.ON
+        LOGGER.info(
+        "Before Sending TelescopeOn command on CentralNode state :"
+        + str(CentralNode.State())
+        )
+        LOGGER.info(
+        "Before Sending TelescopeOn command on CentralNode telescopeState :"
+        + str(CentralNode.telescopeState)
+        )
+        LOGGER.info(
+        "Before Sending TelescopeOn command on sdp master leaf node state :"
+        + str(sdp_mln.State())
+        )
+        LOGGER.info(
+        "Before Sending TelescopeOn command on sdp master state :"
+        + str(sdp_master.State())
+        )
 
         # command invokation
         CentralNode.TelescopeOn()
@@ -38,15 +51,48 @@ def test_cn_telescopestandby():
         assert sdp_mln.State() == DevState.ON
         assert sdp_master.State() == DevState.ON
 
+        LOGGER.info(
+        "After Sending TelescopeOn command on CentralNode state :"
+        + str(CentralNode.State())
+        )
+        LOGGER.info(
+        "After Sending TelescopeOn command on CentralNode telescopeState :"
+        + str(CentralNode.telescopeState)
+        )
+        LOGGER.info(
+        "After Sending TelescopeOn command on sdp master leaf node state :"
+        + str(sdp_mln.State())
+        )
+        LOGGER.info(
+        "After Sending TelescopeOn command on sdp master state :"
+        + str(sdp_master.State())
+        )
+
         # command invokation
         CentralNode.TelescopeStandby()
         fixture["state"] = "Telescope standby"
 
         time.sleep(10)
         assert CentralNode.State() == DevState.ON
-        assert CentralNode.telescopeState == DevState.UNKNOWN
+        assert CentralNode.telescopeState == DevState.STANDBY
         assert sdp_mln.State() == DevState.ON
         assert sdp_master.State() == DevState.STANDBY
+        LOGGER.info(
+        "After Sending TelescopeStandby command on CentralNode state :"
+        + str(CentralNode.State())
+        )
+        LOGGER.info(
+        "After Sending TelescopeStandby command on CentralNode telescopeState :"
+        + str(CentralNode.telescopeState)
+        )
+        LOGGER.info(
+        "After Sending TelescopeStandby command on sdp master leaf node state :"
+        + str(sdp_mln.State())
+        )
+        LOGGER.info(
+        "After Sending TelescopeStandby command on sdp master state :"
+        + str(sdp_master.State())
+        )
 
         LOGGER.info("Tests complete: tearing down...")
     except Exception:

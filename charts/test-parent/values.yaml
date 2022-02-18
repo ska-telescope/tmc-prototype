@@ -83,10 +83,24 @@ sdp_leafnode:
 
 # tmc central node
 ska-tmc-centralnode:
-  enabled: false
+  enabled: true
   telescope: SKA-mid
   deviceServers:
     centralnode:
+      enabled: true
+
+# tmc subarraynode
+tmc_subarray_node:
+  deviceServers:
+    mocks:
       enabled: false
+      component:
+        mccs: false
+        csp: false
+        sdp: false
+        dish: false
+  
+    subarraynode:
+      enabled: true
 
 

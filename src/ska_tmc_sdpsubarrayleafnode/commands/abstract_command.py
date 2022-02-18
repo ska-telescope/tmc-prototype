@@ -45,7 +45,7 @@ class SdpSLNCommand(TMCCommand):
             if not devInfo.unresponsive:
                 self.sdp_subarray_adapter = (
                     self._adapter_factory.get_or_create_adapter(
-                        dev_name, AdapterType.SDPSUBARRAY
+                        dev_name, AdapterType.SUBARRAY
                     )
                 )
         except Exception as e:

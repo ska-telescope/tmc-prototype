@@ -22,28 +22,22 @@ def test_cn_telescopeon():
         sdp_mln = DeviceProxy("ska_mid/tm_leaf_node/sdp_master")
         sdp_master = DeviceProxy("mid_sdp/elt/master")
 
-        assert CentralNode.State() == DevState.ON
-        assert CentralNode.telescopeState == DevState.UNKNOWN
-        assert sdp_mln.State() == DevState.ON
-        # assert sdp_master.State() == DevState.OFF
-        # assert sdp_master.State() == DevState.DISABLE
-
-        # LOGGER.info(
-        # "Before Sending TelescopeOn command on CentralNode state :"
-        # + str(CentralNode.State())
-        # )
-        # LOGGER.info(
-        # "Before Sending TelescopeOn command on CentralNode telescopeState :"
-        # + str(CentralNode.telescopeState)
-        # )
-        # LOGGER.info(
-        # "Before Sending TelescopeOn command on sdp master leaf node state :"
-        # + str(sdp_mln.State())
-        # )
-        # LOGGER.info(
-        # "Before Sending TelescopeOn command on sdp master state :"
-        # + str(sdp_master.State())
-        # )
+        LOGGER.info(
+        "Before Sending TelescopeOn command on CentralNode state :"
+        + str(CentralNode.State())
+        )
+        LOGGER.info(
+        "Before Sending TelescopeOn command on CentralNode telescopeState :"
+        + str(CentralNode.telescopeState)
+        )
+        LOGGER.info(
+        "Before Sending TelescopeOn command on sdp master leaf node state :"
+        + str(sdp_mln.State())
+        )
+        LOGGER.info(
+        "Before Sending TelescopeOn command on sdp master state :"
+        + str(sdp_master.State())
+        )
 
         # command invokation
         CentralNode.TelescopeOn()
@@ -57,44 +51,44 @@ def test_cn_telescopeon():
         assert sdp_mln.State() == DevState.ON
         assert sdp_master.State() == DevState.ON
 
-        # LOGGER.info(
-        # "After Sending TelescopeOn command on CentralNode state :"
-        # + str(CentralNode.State())
-        # )
-        # LOGGER.info(
-        # "After Sending TelescopeOn command on CentralNode telescopeState :"
-        # + str(CentralNode.telescopeState)
-        # )
-        # LOGGER.info(
-        # "After Sending TelescopeOn command on sdp master leaf node state :"
-        # + str(sdp_mln.State())
-        # )
-        # LOGGER.info(
-        # "After Sending TelescopeOn command on sdp master state :"
-        # + str(sdp_master.State())
-        # )
+        LOGGER.info(
+        "After Sending TelescopeOn command on CentralNode state :"
+        + str(CentralNode.State())
+        )
+        LOGGER.info(
+        "After Sending TelescopeOn command on CentralNode telescopeState :"
+        + str(CentralNode.telescopeState)
+        )
+        LOGGER.info(
+        "After Sending TelescopeOn command on sdp master leaf node state :"
+        + str(sdp_mln.State())
+        )
+        LOGGER.info(
+        "After Sending TelescopeOn command on sdp master state :"
+        + str(sdp_master.State())
+        )
 
         # command invokation
         CentralNode.TelescopeOff()
         fixture["state"] = "Telescope Off"
 
         time.sleep(10)
-        # LOGGER.info(
-        # "After Sending TelescopeOff command on CentralNode state :"
-        # + str(CentralNode.State())
-        # )
-        # LOGGER.info(
-        # "After Sending TelescopeOff command on CentralNode telescopeState :"
-        # + str(CentralNode.telescopeState)
-        # )
-        # LOGGER.info(
-        # "After Sending TelescopeOff command on sdp master leaf node state :"
-        # + str(sdp_mln.State())
-        # )
-        # LOGGER.info(
-        # "After Sending TelescopeOff command on sdp master state :"
-        # + str(sdp_master.State())
-        # )
+        LOGGER.info(
+        "After Sending TelescopeOff command on CentralNode state :"
+        + str(CentralNode.State())
+        )
+        LOGGER.info(
+        "After Sending TelescopeOff command on CentralNode telescopeState :"
+        + str(CentralNode.telescopeState)
+        )
+        LOGGER.info(
+        "After Sending TelescopeOff command on sdp master leaf node state :"
+        + str(sdp_mln.State())
+        )
+        LOGGER.info(
+        "After Sending TelescopeOff command on sdp master state :"
+        + str(sdp_master.State())
+        )
         assert CentralNode.State() == DevState.ON
         assert CentralNode.telescopeState == DevState.UNKNOWN
         assert sdp_mln.State() == DevState.ON

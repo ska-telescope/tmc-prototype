@@ -81,6 +81,7 @@ K8S_CHART_PARAMS = --set global.minikube=$(MINIKUBE) \
 	--set ska-tango-base.xauthority=$(XAUTHORITY) \
 	--set ska-tango-base.jive.enabled=$(JIVE) \
 	--set sdp_leafnode.telescope=$(TELESCOPE) \
+	--set tmc_subarray_node.telescope=$(TELESCOPE) \
 	--set sdp_leafnode.deviceServers.mocks.enabled=$(FAKE_DEVICES) \
 	--set ska-taranta.enabled=$(TARANTA) \
 	$(CUSTOM_VALUES) \
