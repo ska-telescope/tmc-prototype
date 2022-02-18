@@ -34,7 +34,8 @@ class Disable(SdpMLNCommand):
             return (return_code, message)
 
         self.logger.info(
-            f"Invoking Disable command on:{self.sdp_master_adapter.dev_name}"
+            f"""Invoking Disable command on:
+            {self.sdp_master_adapter.dev_name}"""
         )
         try:
             self.sdp_master_adapter.Disable()

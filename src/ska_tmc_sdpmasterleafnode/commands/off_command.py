@@ -35,7 +35,8 @@ class Off(SdpMLNCommand):
             return (return_code, message)
 
         self.logger.info(
-            f"Invoking Off command on:{self.sdp_master_adapter.dev_name}"
+            f"""Invoking Off command on:
+            {self.sdp_master_adapter.dev_name}"""
         )
         try:
             self.sdp_master_adapter.Off()

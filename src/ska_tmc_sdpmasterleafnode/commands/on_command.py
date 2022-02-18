@@ -40,7 +40,8 @@ class On(SdpMLNCommand):
         if return_code == ResultCode.FAILED:
             return (return_code, message)
         self.logger.info(
-            f"Invoking On command on:{self.sdp_master_adapter.dev_name}"
+            f"""Invoking On command on:
+            {self.sdp_master_adapter.dev_name}"""
         )
         try:
             self.sdp_master_adapter.On()
