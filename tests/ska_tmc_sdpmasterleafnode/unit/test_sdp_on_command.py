@@ -12,7 +12,9 @@ from tests.settings import create_cm, get_sdpmln_command_obj, logger
 @pytest.mark.sdpmln
 def test_on_command(tango_context, sdp_master_device):
     logger.info("%s", tango_context)
-    _, on_command, adapter_factory = get_sdpmln_command_obj(On, sdp_master_device)
+    _, on_command, adapter_factory = get_sdpmln_command_obj(
+        On, sdp_master_device
+    )
     assert on_command.check_allowed()
     (result_code, _) = on_command.do()
     assert result_code == ResultCode.OK
