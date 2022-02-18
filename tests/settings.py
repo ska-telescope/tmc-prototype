@@ -10,7 +10,7 @@ from ska_tmc_sdpsubarrayleafnode.manager.component_manager import (
     SdpSLNComponentManager,
 )
 from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
-from tests.helpers.helper_adapter_factory import HelperAdapterFactory
+from ska_tmc_common.test_helpers.helper_adapter_factory import HelperAdapterFactory
 
 logger = logging.getLogger(__name__)
 

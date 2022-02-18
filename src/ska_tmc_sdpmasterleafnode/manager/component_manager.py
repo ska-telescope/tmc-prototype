@@ -83,35 +83,3 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         """
         with self.lock:
             self._device.exception = exception
-
-    # def update_event_failure(self):
-    #     with self.lock:
-    #         self._device.last_event_arrived = time.time()
-    #         self._device.update_unresponsive(False)
-
-    # def update_device_health_state(self, health_state):
-    #     """
-    #     Update a monitored device health state
-    #     aggregate the health states available
-
-    #     :param health_state: health state of the device
-    #     :type health_state: HealthState
-    #     """
-    #     with self.lock:
-    #         self._device.healthState = health_state
-    #         self._device.last_event_arrived = time.time()
-    #         self._device.update_unresponsive(False)
-
-    # def update_device_state(self, state):
-    #     """
-    #     Update a monitored device state,
-    #     aggregate the states available
-    #     and call the relative callbacks if available
-
-    #     :param state: state of the device
-    #     :type state: DevState
-    #     """
-    #     with self.lock:
-    #         self._device.state = state
-    #         self._device.last_event_arrived = time.time()
-    #         self._device.update_unresponsive(False)

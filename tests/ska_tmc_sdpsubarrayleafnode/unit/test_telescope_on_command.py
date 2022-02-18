@@ -2,14 +2,13 @@ import time
 
 import pytest
 from ska_tango_base.commands import ResultCode
-from ska_tmc_common.adapters import SdpSubArrayAdapter
 
 from ska_tmc_sdpsubarrayleafnode.commands.telescope_on_command import (
     TelescopeOn,
 )
 from ska_tmc_sdpsubarrayleafnode.exceptions import DeviceUnresponsive
 from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
-from tests.helpers.helper_adapter_factory import HelperAdapterFactory
+from ska_tmc_common.test_helpers.helper_adapter_factory import HelperAdapterFactory
 from tests.settings import (
     SDP_SUBARRAY_DEVICE,
     create_cm,
@@ -29,8 +28,7 @@ def test_telescope_on_command(tango_context):
     assert result_code == ResultCode.OK
     dev_name = "mid_sdp/elt/subarray_1"
     adapter = my_adapter_factory.get_or_create_adapter(dev_name)
-    if isinstance(my_adapter_factory.adapters, SdpSubArrayAdapter):
-        adapter.proxy.On.assert_called()
+    adapter.proxy.On.assert_called()
 
 
 @pytest.mark.sdpsln

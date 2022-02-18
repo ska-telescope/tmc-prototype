@@ -12,9 +12,7 @@ from tests.settings import create_cm, get_sdpmln_command_obj, logger
 @pytest.mark.sdpmln
 def test_off_command(tango_context, sdp_master_device):
     logger.info("%s", tango_context)
-    _, off_command, adapter_factory = get_sdpmln_command_obj(
-        Off, sdp_master_device
-    )
+    _, off_command, adapter_factory = get_sdpmln_command_obj(Off, sdp_master_device)
     assert off_command.check_allowed()
     (result_code, _) = off_command.do()
     assert result_code == ResultCode.OK
@@ -46,7 +44,7 @@ def test_off_fail_check_allowed(tango_context, sdp_master_device):
 
     logger.info("%s", tango_context)
     cm, off_command, _ = get_sdpmln_command_obj(Off, sdp_master_device)
-    devInfo = cm.get_device()
-    devInfo.update_unresponsive(True)
+    dev_info = cm.get_device()
+    dev_info.update_unresponsive(True)
     with pytest.raises(DeviceUnresponsive):
         off_command.check_allowed()

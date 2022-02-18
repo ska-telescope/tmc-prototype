@@ -4,7 +4,6 @@ import mock
 import pytest
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
-from ska_tmc_common.adapters import SdpSubArrayAdapter
 
 from ska_tmc_sdpsubarrayleafnode.commands.restart_command import Restart
 from ska_tmc_sdpsubarrayleafnode.exceptions import (
@@ -12,7 +11,7 @@ from ska_tmc_sdpsubarrayleafnode.exceptions import (
     InvalidObsStateError,
 )
 from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
-from tests.helpers.helper_adapter_factory import HelperAdapterFactory
+from ska_tmc_common.test_helpers.helper_adapter_factory import HelperAdapterFactory
 from tests.settings import (
     SDP_SUBARRAY_DEVICE,
     create_cm,
@@ -33,8 +32,7 @@ def test_telescope_restart_command(tango_context):
     dev_name = "mid_sdp/elt/subarray_1"
     cm.get_device(dev_name).obsState == ObsState.EMPTY
     adapter = my_adapter_factory.get_or_create_adapter(dev_name)
-    if isinstance(adapter, SdpSubArrayAdapter):
-        adapter.proxy.Restart.assert_called()
+    adapter.proxy.Restart.assert_called()
 
 
 @pytest.mark.sdpsln
