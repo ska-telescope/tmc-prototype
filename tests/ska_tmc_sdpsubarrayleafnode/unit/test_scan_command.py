@@ -6,7 +6,6 @@ import mock
 import pytest
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
-# from ska_tmc_common.adapters import SubArrayAdapter
 from ska_tmc_common.exceptions import DeviceUnresponsive, InvalidObsStateError
 from ska_tmc_common.test_helpers.helper_adapter_factory import (
     HelperAdapterFactory,
@@ -36,7 +35,6 @@ def test_scan_command(tango_context, sdp_subarray_device):
     assert result_code == ResultCode.OK
     cm.get_device().obsState == ObsState.EMPTY
     adapter = adapter_factory.get_or_create_adapter(sdp_subarray_device)
-    # if isinstance(adapter, SdpSubArrayAdapter):
     adapter.proxy.Scan.assert_called()
 
 
@@ -55,7 +53,6 @@ def test_scan_command_missing_interface_key(
     (result_code, _) = scan_command.do(json.dumps(json_argument))
     assert result_code == ResultCode.OK
     adapter = adapter_factory.get_or_create_adapter(sdp_subarray_device)
-    # if isinstance(adapter, SdpSubArrayAdapter):
     adapter.proxy.Scan.assert_called()
 
 

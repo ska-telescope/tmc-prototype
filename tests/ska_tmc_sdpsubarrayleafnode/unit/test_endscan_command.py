@@ -3,7 +3,6 @@ import time
 import pytest
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
-# from ska_tmc_common.adapters import SdpSubArrayAdapter
 from ska_tmc_common.exceptions import DeviceUnresponsive, InvalidObsStateError
 from ska_tmc_common.test_helpers.helper_adapter_factory import (
     HelperAdapterFactory,
@@ -24,7 +23,6 @@ def test_endscan_command(tango_context, sdp_subarray_device):
     assert result_code == ResultCode.OK
     cm.get_device().obsState == ObsState.READY
     adapter = adapter_factory.get_or_create_adapter(sdp_subarray_device)
-    # if isinstance(adapter, SdpSubArrayAdapter):
     adapter.proxy.EndScan.assert_called()
 
 
