@@ -4,7 +4,7 @@ import mock
 import pytest
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
-from ska_tmc_common.adapters import SdpSubArrayAdapter
+# from ska_tmc_common.adapters import SdpSubArrayAdapter
 from ska_tmc_common.exceptions import DeviceUnresponsive, InvalidObsStateError
 from ska_tmc_common.test_helpers.helper_adapter_factory import (
     HelperAdapterFactory,
@@ -30,8 +30,8 @@ def test_telescope_obsreset_command(tango_context):
     assert result_code == ResultCode.OK
     cm.get_device().obsState == ObsState.IDLE
     adapter = adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE)
-    if isinstance(adapter, SdpSubArrayAdapter):
-        adapter.proxy.ObsReset.assert_called()
+    # if isinstance(adapter, SdpSubArrayAdapter):
+    adapter.proxy.ObsReset.assert_called()
 
 
 @pytest.mark.sdpsln

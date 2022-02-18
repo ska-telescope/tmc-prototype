@@ -49,12 +49,12 @@ class SdpSLNCommand(TmcLeafNodeCommand):
             if not devInfo.unresponsive:
                 self.sdp_subarray_adapter = (
                     self._adapter_factory.get_or_create_adapter(
-                        dev_name, AdapterType.SDPSUBARRAY
+                        dev_name, AdapterType.SUBARRAY
                     )
                 )
         except Exception as e:
             return self.adapter_error_message_result(
-                component_manager.input_parameter.sdp_subarray_dev_name,
+                component_manager.sdp_subarray_dev_name,
                 e,
             )
 
