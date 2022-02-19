@@ -78,7 +78,8 @@ class Scan(AbstractScanEnd):
                 "interface"
             ] = "https://schema.skao.int/ska-sdp-scan/0.3"
             log_msg = (
-                "SDP Subarray input JSON: %s",
+                "Input JSON for Scan command for SDP subarray %s: %s, ",
+                self.sdp_subarray_adapter.dev_name,
                 json_argument,
             )
             self.logger.debug(log_msg)
