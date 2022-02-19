@@ -46,7 +46,7 @@ class On(AbstractOnOff):
         self.logger.info(log_msg)
         try:
             log_msg = (
-                "On command for SDP subarray %s: ",
+                "Invoking On command on SDP Subarray %s: ",
                 self.sdp_subarray_adapter.dev_name,
             )
             self.logger.debug(log_msg)

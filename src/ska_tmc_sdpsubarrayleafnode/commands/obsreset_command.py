@@ -43,7 +43,7 @@ class ObsReset(AbstractRestartObsReset):
         self.logger.info(log_msg)
         try:
             log_msg = (
-                "Obsreset command for SDP subarray %s: ",
+                "Invoking ObsReset command on SDP Subarray %s: ",
                 self.sdp_subarray_adapter.dev_name,
             )
             self.logger.debug(log_msg)

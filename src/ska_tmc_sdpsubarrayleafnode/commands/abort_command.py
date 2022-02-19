@@ -83,7 +83,7 @@ class Abort(SdpSLNCommand):
         self.logger.info(log_msg)
         try:
             log_msg = (
-                "Abort command for SDP subarray %s: ",
+                "Invoking Abort command on SDP Subarray %s: ",
                 self.sdp_subarray_adapter.dev_name,
             )
             self.logger.debug(log_msg)

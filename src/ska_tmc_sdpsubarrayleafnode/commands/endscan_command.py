@@ -71,7 +71,7 @@ class EndScan(SdpSLNCommand):
         self.logger.info(log_msg)
         try:
             log_msg = (
-                "EndScan command for SDP subarray %s: ",
+                "Invoking EndScan command on SDP Subarray %s: ",
                 self.sdp_subarray_adapter.dev_name,
             )
             self.logger.debug(log_msg)

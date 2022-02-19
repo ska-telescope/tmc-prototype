@@ -75,7 +75,7 @@ class ReleaseResources(SdpSLNCommand):
         self.logger.info(log_msg)
         try:
             log_msg = (
-                "ReleaseResources command for SDP subarray %s: ",
+                "Invoking ReleaseResources command on SDP Subarray %s: ",
                 self.sdp_subarray_adapter.dev_name,
             )
             self.logger.debug(log_msg)

@@ -46,6 +46,11 @@ class End(AbstractScanEnd):
         )
         self.logger.info(log_msg)
         try:
+            log_msg = (
+                "Invoking End command on SDP Subarray %s: ",
+                self.sdp_subarray_adapter.dev_name,
+            )
+            self.logger.debug(log_msg)
             self.sdp_subarray_adapter.End()
 
         except Exception as e:
