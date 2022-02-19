@@ -39,6 +39,11 @@ class Off(AbstractOnOff):
         )
         self.logger.info(log_msg)
         try:
+            log_msg = (
+                "Off command for SDP subarray %s: ",
+                self.sdp_subarray_adapter.dev_name,
+            )
+            self.logger.debug(log_msg)
             self.sdp_subarray_adapter.Off()
         except Exception as e:
             self.logger.exception("Command invocation failed: %s", e)

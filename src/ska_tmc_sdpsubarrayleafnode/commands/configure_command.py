@@ -110,6 +110,15 @@ class Configure(SdpSLNCommand):
         log_msg = f"Invoking Configure command on:{self.sdp_subarray_adapter.dev_name}"
         self.logger.info(log_msg)
         try:
+            json_argument[
+                "interface"
+            ] = "https://schema.skao.int/ska-sdp-configure/0.3"
+            log_msg = (
+                "Input JSON for Configure command for SDP subarray %s: %s, ",
+                self.sdp_subarray_adapter.dev_name,
+                json_argument,
+            )
+            self.logger.debug(log_msg)
             self.sdp_subarray_adapter.Configure(json.dumps(json_argument))
 
         except Exception as e:

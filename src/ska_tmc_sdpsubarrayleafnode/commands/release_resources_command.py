@@ -74,6 +74,11 @@ class ReleaseResources(SdpSLNCommand):
         log_msg = f"Invoking ReleaseResources command on:{self.sdp_subarray_adapter.dev_name}"
         self.logger.info(log_msg)
         try:
+            log_msg = (
+                "ReleaseResources command for SDP subarray %s: ",
+                self.sdp_subarray_adapter.dev_name,
+            )
+            self.logger.debug(log_msg)
             self.sdp_subarray_adapter.ReleaseResources(None)
         except Exception as e:
             self.logger.exception("Command invocation failed: %s", e)
