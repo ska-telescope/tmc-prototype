@@ -22,10 +22,10 @@ class SdpMLNCommand(TmcLeafNodeCommand):
         devInfo = component_manager.get_device()
         if devInfo is None or devInfo.unresponsive:
             raise DeviceUnresponsive(
-                """The invocation of the command on this device is not allowed.
+                f""""The invocation of the {__class__} command on this device is not allowed.
                 Reason: SDP master device is not available.
                 The command has NOT been executed.
-                This device will continue with normal operation."""
+                This device will continue with normal operation.""",
             )
 
     def check_allowed(self):
@@ -42,7 +42,7 @@ class SdpMLNCommand(TmcLeafNodeCommand):
         """
         if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
             raise CommandNotAllowed(
-                """The invocation of the command on this device is not allowed.
+                f"""The invocation of the {__class__} command on this device is not allowed.
                 Reason: The current operational state is %s.
                 The command has NOT been executed.
                 This device will continue with normal operation.""",
