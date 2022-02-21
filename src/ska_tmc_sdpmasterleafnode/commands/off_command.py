@@ -1,10 +1,14 @@
 """
 Off command class for SDPMasterLeafNode.
 """
+import logging
+
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterFactory
 
 from ska_tmc_sdpmasterleafnode.commands.abstract_command import SdpMLNCommand
+
+module_logger = logging.getLogger(__name__)
 
 
 class Off(SdpMLNCommand):
@@ -23,7 +27,11 @@ class Off(SdpMLNCommand):
         adapter_factory=AdapterFactory(),
         logger=None,
     ):
-        super().__init__(target, op_state_model, adapter_factory, logger)
+        self.op_state_model = op_state_model
+        self.target = target
+        self._adapter_factory = adapter_factory
+        self.logger = logger or module_logger
+        # super().__init__(target, op_state_model, adapter_factory, logger)
 
     def do(self, argin=None):
         """
