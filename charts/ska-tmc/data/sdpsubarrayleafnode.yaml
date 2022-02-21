@@ -2,13 +2,13 @@ name: "sdpsubarrayleafnode-test"
 function: telescope-monitoring
 domain: general-monitoring
 instances: ["01"]
-command: "python3 /app/src/ska_tmc_sdpsubarrayleafnode/sdp_subarray_leaf_node_mid.py"
+command: "python3 /app/src/ska_tmc_sdpsubarrayleafnode/sdp_subarray_leaf_node.py"
 server:
-  name: "sdp_subarray_leaf_node_mid"
+  name: "sdp_subarray_leaf_node"
   instances:
   - name: "01"
     classes:
-    - name: "SdpSubarrayLeafNodeMid"
+    - name: "SdpSubarrayLeafNode"
       devices:
       - name: "ska_mid/tm_leaf_node/sdp_subarray01"
         properties:

@@ -10,29 +10,3 @@
 """
 SdpSubarrayLeafNode
 """
-
-# from . import const, exceptions, release
-# from .device_data import DeviceData
-# from .sdp_subarray_leaf_node import SdpSubarrayLeafNode
-
-# __all__ = [
-#     "const",
-#     "release",
-#     "SdpSubarrayLeafNode",
-#     "DeviceData",
-#     "exceptions",
-# ]
-
-
-# from ska_tmc_sdpsubarrayleafnode import release
-
-# __all__ = ["release"]
-
-# __version__ = release.version
-# __version_info__ = release.version_info
-# __author__ = release.author
-
-
-# __version__ = release.version
-# __version_info__ = release.version_info
-# __author__ = release.author

@@ -7,16 +7,15 @@ package.
 import time
 
 from ska_tmc_common.command_executor import CommandExecutor
-from ska_tmc_common.device_info import DeviceInfo, SubArrayDeviceInfo
-from ska_tmc_common.tmc_component_manager import TmcComponentManager
+from ska_tmc_common.device_info import DeviceInfo
+from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
 
 from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
     SdpSLNEventReceiver,
 )
-from ska_tmc_sdpsubarrayleafnode.model.component import SdpSLNComponent
 
 
-class SdpSLNComponentManager(TmcComponentManager):
+class SdpSLNComponentManager(TmcLeafNodeComponentManager):
     """
     A component manager for The SDP Subarray Leaf Node component.
 
@@ -28,10 +27,9 @@ class SdpSLNComponentManager(TmcComponentManager):
 
     def __init__(
         self,
+        sdp_subarray_dev_name,
         op_state_model,
-        _input_parameter,
         logger=None,
-        _component=None,
         _update_device_callback=None,
         _update_command_in_progress_callback=None,
         _monitoring_loop=False,
@@ -51,7 +49,6 @@ class SdpSLNComponentManager(TmcComponentManager):
         """
         super().__init__(
             op_state_model,
-            _component,
             logger,
             _monitoring_loop,
             _event_receiver,
@@ -60,10 +57,11 @@ class SdpSLNComponentManager(TmcComponentManager):
             sleep_time,
         )
 
-        self.component = _component or SdpSLNComponent(logger)
-        self.devices = self.component.devices
+        # self._sdp_subarray_dev_name = sdp_subarray_device
+        # self._device = SubArrayDeviceInfo(self._sdp_subarray_dev_name, False)
+        self.update_device_info(sdp_subarray_dev_name)
 
-        self._event_receiver = None
+        # self._event_receiver = None
         if _event_receiver:
             self._event_receiver = SdpSLNEventReceiver(
                 self,
@@ -71,90 +69,88 @@ class SdpSLNComponentManager(TmcComponentManager):
                 proxy_timeout=proxy_timeout,
                 sleep_time=sleep_time,
             )
-
-        if _event_receiver:
             self._event_receiver.start()
-
-        self.component.set_op_callbacks(_update_device_callback)
-        self._input_parameter = _input_parameter
 
         self.command_executor = CommandExecutor(
             logger,
             _update_command_in_progress_callback=_update_command_in_progress_callback,
         )
 
-    @property
-    def input_parameter(self):
-        """
-        Return the input parameter
-
-        :return: input parameter
-        :rtype: InputParameter
-        """
-        return self._input_parameter
-
-    @property
-    def checked_devices(self):
-        """
-        Return the list of the checked monitored devices
-
-        :return: list of the checked monitored devices
-        """
-        result = []
-        for dev in self.component.devices:
-            if dev.unresponsive:
-                result.append(dev)
-                continue
-            if dev.ping > 0:
-                result.append(dev)
-                continue
-            if dev.last_event_arrived is not None:
-                result.append(dev)
-                continue
-        return result
-
-    def update_input_parameter(self):
-        with self.lock:
-            self.input_parameter.update(self)
-
     def stop(self):
         self._event_receiver.stop()
 
-    def add_device(self, dev_name):
+    def get_device(self):
         """
-        Add device to the monitoring loop
+        Return the device info our of the monitoring loop with name dev_name
 
-        :param dev_name: device name
-        :type dev_name: str
+        :param None:
+        :return: a device info
+        :rtype: DeviceInfo
         """
-        if dev_name is None:
-            return
+        return self._device
 
-        if "subarray" in dev_name:
-            devInfo = SubArrayDeviceInfo(dev_name, False)
-        else:
-            devInfo = DeviceInfo(dev_name, False)
+    def update_device_info(self, sdp_subarray_dev_name):
+        self._sdp_subarray_dev_name = sdp_subarray_dev_name
+        self._device = DeviceInfo(self._sdp_subarray_dev_name, False)
 
-        self.component.update_device(devInfo)
+    def device_failed(self, exception):
+        """
+        Set a device to failed and call the relative callback if available
 
-    def update_device_obs_state(self, dev_name, obs_state):
+        :param exception: an exception
+        :type: Exception
+        """
+        with self.lock:
+            self._device.exception = exception
+
+    def update_event_failure(self):
+        with self.lock:
+            dev_info = self.get_device()
+            # self._device.last_event_arrived = time.time()
+            # self._device.update_unresponsive(False)
+            dev_info.last_event_arrived = time.time()
+            dev_info.update_unresponsive(False)
+
+    def update_device_health_state(self, health_state):
+        """
+        Update a monitored device health state
+        aggregate the health states available
+
+        :param health_state: health state of the device
+        :type health_state: HealthState
+        """
+        with self.lock:
+            self._device.healthState = health_state
+            self._device.last_event_arrived = time.time()
+            self._device.update_unresponsive(False)
+
+    def update_device_state(self, state):
+        """
+        Update a monitored device state,
+        aggregate the states available
+        and call the relative callbacks if available
+
+        :param state: state of the device
+        :type state: DevState
+        """
+        with self.lock:
+            self._device.state = state
+            self._device.last_event_arrived = time.time()
+            self._device.update_unresponsive(False)
+
+    def update_device_obs_state(self, obs_state):
         """
         Update a monitored device obs state,
         and call the relative callbacks if available
 
-        :param dev_name: name of the device
-        :type dev_name: str
         :param obs_state: obs state of the device
         :type obs_state: ObsState
         """
         with self.lock:
-            devInfo = self.component.get_device(dev_name)
-            devInfo.obsState = obs_state
-            devInfo.last_event_arrived = time.time()
-            devInfo.update_unresponsive(False)
-
-    def update_event_failure(self, dev_name):
-        with self.lock:
-            devInfo = self.component.get_device(dev_name)
-            devInfo.last_event_arrived = time.time()
-            devInfo.update_unresponsive(False)
+            dev_info = self.get_device()
+            # self._device.obsState = obs_state
+            # self._device.last_event_arrived = time.time()
+            # self._device.update_unresponsive(False)
+            dev_info.obsState = obs_state
+            dev_info.last_event_arrived = time.time()
+            dev_info.update_unresponsive(False)

@@ -6,6 +6,8 @@ from tango import DevState
 
 
 class SdpMLNCommand(TmcLeafNodeCommand):
+    """Abstract command class for all SdpMasterLeafNode"""
+
     def __init__(
         self,
         target,

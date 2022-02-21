@@ -27,7 +27,7 @@ class Scan(AbstractScanEnd):
     ):
         super().__init__(target, op_state_model, adapter_factory, logger)
 
-    def do_mid(self, argin):
+    def do(self, argin):
         """
         Method to invoke Scan command on SDP Subarray.
 
@@ -46,25 +46,29 @@ class Scan(AbstractScanEnd):
 
         """
 
-        res_code, message = self.init_adapters()
+        res_code, message = self.init_adapter()
         if res_code == ResultCode.FAILED:
             return res_code, message
 
         try:
             json_argument = json.loads(argin)
         except Exception as e:
+            log_msg = f"""Execution of Scan command is failed.
+            Reason: JSON parsing failed with exception: {e}
+            The command is not executed successfully.
+            The device will continue with normal operation"""
+            self.logger.exception(log_msg)
             return self.generate_command_result(
                 ResultCode.FAILED,
                 (
-                    "Problem in loading JSON string in Scan command on SDP Subarray Leaf Node: %s",
-                    e,
+                    "Exception occurred while parsing the JSON. Please check the logs for details."
                 ),
             )
 
         log_msg = (
-            "Input JSON for SDP Subarray Leaf Node Scan command is: " + argin
+            f"Invoking Scan command on:{self.sdp_subarray_adapter.dev_name}"
         )
-        self.logger.debug(log_msg)
+        self.logger.info(log_msg)
 
         try:
             # As, SKA logtransaction is not utilised in scan command across tmc devices.
@@ -74,18 +78,21 @@ class Scan(AbstractScanEnd):
                 "interface"
             ] = "https://schema.skao.int/ska-sdp-scan/0.3"
             log_msg = (
-                "Updated Input JSON for SDP Subarray Leaf Node Scan command is: %s",
+                "Input JSON for Scan command for SDP subarray %s: %s, ",
+                self.sdp_subarray_adapter.dev_name,
                 json_argument,
             )
             self.logger.debug(log_msg)
             self.sdp_subarray_adapter.Scan(json.dumps(json_argument))
         except Exception as e:
+            self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                (
-                    "Error in calling Scan on sdp subarray %s: %s",
-                    self.sdp_subarray_adapter.dev_name,
-                    e,
-                ),
+                f"""The invocation of the Scan command is failed on Sdp Subarray Device {self.sdp_subarray_adapter.dev_name}.
+                Reason: Error in calling the Scan command on Sdp Subarray.
+                The command has NOT been executed.
+                This device will continue with normal operation.""",
             )
+        log_msg = f"Scan command successfully invoked on:{self.sdp_subarray_adapter.dev_name}"
+        self.logger.info(log_msg)
         return (ResultCode.OK, "")

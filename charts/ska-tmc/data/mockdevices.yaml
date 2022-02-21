@@ -24,8 +24,6 @@ server:
         - name: "HelperSubarrayLeafDevice"
           devices:
           - name: "ska_mid/tm_leaf_node/csp_subarray01"
-          - name: "ska_mid/tm_leaf_node/sdp_subarray01"
-          - name: "ska_low/tm_subarray_node/1"
           - name: "ska_low/tm_leaf_node/mccs_subarray01"
 depends_on:
   - device: sys/database/2

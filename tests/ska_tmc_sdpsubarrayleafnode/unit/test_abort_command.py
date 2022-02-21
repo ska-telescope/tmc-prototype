@@ -4,50 +4,34 @@ import mock
 import pytest
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
+from ska_tmc_common.exceptions import DeviceUnresponsive, InvalidObsStateError
 from ska_tmc_common.test_helpers.helper_adapter_factory import (
     HelperAdapterFactory,
 )
 
-from ska_tmc_sdpsubarrayleafnode.commands.abort_command import Abort
-from ska_tmc_sdpsubarrayleafnode.exceptions import (
-    DeviceUnresponsive,
-    InvalidObsStateError,
-)
-from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
-from tests.settings import (
-    SDP_SUBARRAY_DEVICE,
-    create_cm,
-    get_sdpsln_command_obj,
-    logger,
-)
+from ska_tmc_sdpsubarrayleafnode.commands import Abort
+from tests.settings import create_cm, get_sdpsln_command_obj, logger
 
 
-def test_telescope_abort_command(tango_context):
+@pytest.mark.sdpsln
+def test_abort_command(tango_context, sdp_subarray_device):
     logger.info("%s", tango_context)
-    _, abort_command, my_adapter_factory = get_sdpsln_command_obj(
+    _, abort_command, adapter_factory = get_sdpsln_command_obj(
         Abort, ObsState.CONFIGURING
     )
 
     assert abort_command.check_allowed()
     (result_code, _) = abort_command.do()
     assert result_code == ResultCode.OK
-    dev_name = "mid_sdp/elt/subarray_1"
-    adapter = my_adapter_factory.get_or_create_adapter(dev_name)
+    adapter = adapter_factory.get_or_create_adapter(sdp_subarray_device)
     adapter.proxy.Abort.assert_called()
 
 
-def test_telescope_abort_command_fail_subarray(tango_context):
+@pytest.mark.sdpsln
+def test_abort_command_fail_subarray(tango_context, sdp_subarray_device):
     logger.info("%s", tango_context)
-    input_parameter = SdpSLNInputParameter(None)
-    cm, start_time = create_cm(
-        "SdpSLNComponentManager", input_parameter, SDP_SUBARRAY_DEVICE
-    )
-    elapsed_time = time.time() - start_time
-    logger.info(
-        "checked %s devices in %s", len(cm.checked_devices), elapsed_time
-    )
-
-    my_adapter_factory = HelperAdapterFactory()
+    cm, _ = create_cm("SdpSLNComponentManager", sdp_subarray_device)
+    adapter_factory = HelperAdapterFactory()
 
     attrs = {"fetch_skuid.return_value": 123}
     skuid = mock.Mock(**attrs)
@@ -56,31 +40,42 @@ def test_telescope_abort_command_fail_subarray(tango_context):
     failing_dev = "mid_sdp/elt/subarray_1"
     attrs = {"Abort.side_effect": Exception}
     subarrayMock = mock.Mock(**attrs)
-    my_adapter_factory.get_or_create_adapter(failing_dev, proxy=subarrayMock)
+    adapter_factory.get_or_create_adapter(
+        sdp_subarray_device, proxy=subarrayMock
+    )
 
-    abort_command = Abort(cm, cm.op_state_model, my_adapter_factory, skuid)
+    abort_command = Abort(cm, cm.op_state_model, adapter_factory, skuid)
     cm.update_device_obs_state(failing_dev, ObsState.CONFIGURING)
     assert abort_command.check_allowed()
     (result_code, message) = abort_command.do()
     assert result_code == ResultCode.FAILED
-    assert failing_dev in message
-    cm.get_device(failing_dev).obsState == ObsState.ABORTED
+    assert sdp_subarray_device in message
+    cm.get_device().obsState == ObsState.ABORTED
 
 
-def test_telescope_abort_command_fail_check_allowed_with_invalid_obsState(
-    tango_context,
-):
-
+@pytest.mark.sdpsln
+def test_abort_command_fail_check_allowed_with_invalid_obsState(tango_context):
     logger.info("%s", tango_context)
-    _, abort_command, _ = get_sdpsln_command_obj(Abort, ObsState.ABORTED)
-    with pytest.raises(InvalidObsStateError):
+    cm, abort_command, _ = get_sdpsln_command_obj(
+        Abort, obsstate_value=ObsState.EMPTY
+    )
+    cm.get_device().update_unresponsive(False)
+    with pytest.raises(
+        InvalidObsStateError,
+    ):
         abort_command.check_allowed()
 
 
-def test_telescope_abort_command_fail_check_allowed(tango_context):
-
+@pytest.mark.sdpsln
+def test_abort_command_fail_check_allowed_with_device_unresponsive(
+    tango_context,
+):
     logger.info("%s", tango_context)
-    cm, abort_command, _ = get_sdpsln_command_obj(Abort, ObsState.ABORTED)
-    cm.input_parameter.sdp_subarray_dev_name = ""
-    with pytest.raises(DeviceUnresponsive):
+    cm, abort_command, _ = get_sdpsln_command_obj(
+        Abort, obsstate_value=ObsState.EMPTY
+    )
+    cm.get_device().update_unresponsive(True)
+    with pytest.raises(
+        DeviceUnresponsive, match="SDP subarray device is not available"
+    ):
         abort_command.check_allowed()

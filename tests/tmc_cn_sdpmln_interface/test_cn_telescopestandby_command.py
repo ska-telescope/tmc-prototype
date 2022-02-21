@@ -21,6 +21,7 @@ def test_cn_telescopestandby():
         CentralNode = DeviceProxy("ska_mid/tm_central/central_node")
         sdp_mln = DeviceProxy("ska_mid/tm_leaf_node/sdp_master")
         sdp_master = DeviceProxy("mid_sdp/elt/master")
+        sdp_sa = DeviceProxy("mid_sdp/elt/subarray_1")
 
         LOGGER.info(
         "Before Sending TelescopeOn command on CentralNode state :"
@@ -37,6 +38,10 @@ def test_cn_telescopestandby():
         LOGGER.info(
         "Before Sending TelescopeOn command on sdp master state :"
         + str(sdp_master.State())
+        )
+        LOGGER.info(
+        "Before Sending TelescopeOn command on sdp subarray state :"
+        + str(sdp_sa.State())
         )
 
         # command invokation
@@ -67,7 +72,10 @@ def test_cn_telescopestandby():
         "After Sending TelescopeOn command on sdp master state :"
         + str(sdp_master.State())
         )
-
+        LOGGER.info(
+        "After Sending TelescopeOn command on sdp subarray state :"
+        + str(sdp_sa.State())
+        )
         # command invokation
         CentralNode.TelescopeStandby()
         fixture["state"] = "Telescope standby"
@@ -92,6 +100,10 @@ def test_cn_telescopestandby():
         LOGGER.info(
         "After Sending TelescopeStandby command on sdp master state :"
         + str(sdp_master.State())
+        )
+        LOGGER.info(
+        "After Sending TelescopeOff command on sdp subarray state :"
+        + str(sdp_sa.State())
         )
 
         LOGGER.info("Tests complete: tearing down...")

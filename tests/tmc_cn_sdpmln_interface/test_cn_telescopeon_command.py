@@ -9,7 +9,7 @@ from tango import DeviceProxy, DevState
 LOGGER = logging.getLogger(__name__)
 
 
-@pytest.mark.tmcintegration
+# @pytest.mark.tmcintegration
 def test_cn_telescopeon():
     try:
         fixture = {}
@@ -21,6 +21,7 @@ def test_cn_telescopeon():
         CentralNode = DeviceProxy("ska_mid/tm_central/central_node")
         sdp_mln = DeviceProxy("ska_mid/tm_leaf_node/sdp_master")
         sdp_master = DeviceProxy("mid_sdp/elt/master")
+        sdp_sa = DeviceProxy("mid_sdp/elt/subarray_1")
 
         LOGGER.info(
         "Before Sending TelescopeOn command on CentralNode state :"
@@ -37,6 +38,10 @@ def test_cn_telescopeon():
         LOGGER.info(
         "Before Sending TelescopeOn command on sdp master state :"
         + str(sdp_master.State())
+        )
+        LOGGER.info(
+        "Before Sending TelescopeOn command on sdp subarray state :"
+        + str(sdp_sa.State())
         )
 
         # command invokation
@@ -67,7 +72,10 @@ def test_cn_telescopeon():
         "After Sending TelescopeOn command on sdp master state :"
         + str(sdp_master.State())
         )
-
+        LOGGER.info(
+        "After Sending TelescopeOn command on sdp subarray state :"
+        + str(sdp_sa.State())
+        )
         # command invokation
         CentralNode.TelescopeOff()
         fixture["state"] = "Telescope Off"
@@ -88,6 +96,10 @@ def test_cn_telescopeon():
         LOGGER.info(
         "After Sending TelescopeOff command on sdp master state :"
         + str(sdp_master.State())
+        )
+        LOGGER.info(
+        "After Sending TelescopeOff command on sdp subarray state :"
+        + str(sdp_sa.State())
         )
         assert CentralNode.State() == DevState.ON
         assert CentralNode.telescopeState == DevState.UNKNOWN
