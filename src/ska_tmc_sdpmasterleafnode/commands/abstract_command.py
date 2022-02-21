@@ -19,7 +19,7 @@ class SdpMLNCommand(TmcLeafNodeCommand):
 
     def check_unresponsive(self):
         component_manager = self.target
-        devInfo = component_manager.get_device()
+        devInfo = component_manager.get_device
         if devInfo is None or devInfo.unresponsive:
             raise DeviceUnresponsive(
                 f""""The invocation of the {__class__} command on this device is not allowed.
@@ -57,7 +57,7 @@ class SdpMLNCommand(TmcLeafNodeCommand):
         self.sdp_master_adapter = None
         component_manager = self.target
         dev_name = component_manager._sdp_master_dev_name
-        devInfo = component_manager.get_device()
+        devInfo = component_manager.get_device
         try:
             if not devInfo.unresponsive:
                 self.sdp_master_adapter = (
@@ -67,7 +67,7 @@ class SdpMLNCommand(TmcLeafNodeCommand):
                 )
         except DeviceUnresponsive as e:
             return self.adapter_error_message_result(
-                component_manager.get_device(),
+                component_manager.get_device,
                 e,
             )
 
