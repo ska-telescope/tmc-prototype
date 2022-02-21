@@ -28,6 +28,7 @@ class On(SdpMLNCommand):
         adapter_factory=AdapterFactory(),
         logger=None,
     ):
+        self.name = self.__class__.__name__
         self.op_state_model = op_state_model
         self.target = target
         self._adapter_factory = adapter_factory
