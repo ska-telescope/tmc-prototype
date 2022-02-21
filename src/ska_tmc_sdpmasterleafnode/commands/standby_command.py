@@ -5,8 +5,6 @@ from ska_tango_base.commands import ResultCode
 
 from ska_tmc_sdpmasterleafnode.commands.abstract_command import SdpMLNCommand
 
-# from ska_tmc_common.adapters import AdapterFactory
-
 
 class Standby(SdpMLNCommand):
     """
@@ -15,15 +13,6 @@ class Standby(SdpMLNCommand):
     Standby command on SdpMasterLeafNode invokes Standby command on Sdp Master device.
 
     """
-
-    # def __init__(
-    #     self,
-    #     target,
-    #     op_state_model,
-    #     adapter_factory=AdapterFactory(),
-    #     logger=None,
-    # ):
-    #     super().__init__(target, op_state_model, adapter_factory, logger)
 
     def do(self, argin=None):
         """
