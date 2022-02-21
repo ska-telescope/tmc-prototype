@@ -60,17 +60,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             _update_command_in_progress_callback=_update_command_in_progress_callback,
         )
 
-    @property
-    def get_device(self):
-        """
-        Return the device information of the monitored device
-
-        :param None:
-        :return: a device info
-        :rtype: DeviceInfo
-        """
-        return self._device
-
     def update_device_info(self, sdp_master_dev_name):
         self._sdp_master_dev_name = sdp_master_dev_name
         self._device = DeviceInfo(self._sdp_master_dev_name, False)

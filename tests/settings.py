@@ -38,7 +38,7 @@ def create_cm(cm_class, input_parameter, device):
             op_state_model,
             logger=logger,
         )
-        cm.get_device
+        cm.get_device()
     elif cm_class == "SdpSLNComponentManager":
         cm = SdpSLNComponentManager(
             op_state_model, _input_parameter=input_parameter, logger=logger

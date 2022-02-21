@@ -46,7 +46,7 @@ def test_standby_fail_check_allowed(tango_context, sdp_master_device):
 
     logger.info("%s", tango_context)
     cm, standby_command, _ = get_sdpmln_command_obj(Standby, sdp_master_device)
-    dev_info = cm.get_device
+    dev_info = cm.get_device()
     dev_info.update_unresponsive(True)
     with pytest.raises(DeviceUnresponsive):
         standby_command.check_allowed()
