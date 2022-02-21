@@ -65,7 +65,7 @@ class SdpMLNCommand(TmcLeafNodeCommand):
                         dev_name, AdapterType.BASE
                     )
                 )
-        except Exception as e:
+        except DeviceUnresponsive as e:
             return self.adapter_error_message_result(
                 component_manager.get_device(),
                 e,

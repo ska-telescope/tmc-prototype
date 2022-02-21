@@ -59,7 +59,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             logger,
             _update_command_in_progress_callback=_update_command_in_progress_callback,
         )
-
+    @property
     def get_device(self):
         """
         Return the device information of the monitored device
