@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc"""
-version="0.8.9"
+version="0.8.10"
 version_info=version.split(".")
 description="""SKA-TMC"""
 author="Team NCRA"
@@ -9,10 +9,10 @@ author_email="telmgt-internal@googlegroups.com"
 license="""BSD-3-Clause"""
 url="""https://www.skaobservatory.org"""
 copyright=""""""
-release=0.8.9
-tag=0.8.9
-tag_description=Refactored SdpSubarrayLeafNode to utilise lmc base classes v0.11.3.
-release_notes=This release contains:<br/><ul><li>Updated SdpSubarrayLeafNode code.Implemented unit, component and integration test cases to support updated functionality.</li></ul><br/>
+release=0.8.10
+tag=0.8.10
+tag_description=Rename ska-tmc chart to ska-tmc-leafnodes.
+release_notes=This release contains:<br/><ul><li>Rename ska-tmc chart to ska-tmc-leafnodes.</li></ul><br/>
 gitlab_username=kalyanithigale
 private_token=4QxYhMuKRckxu_TQsJAF
 
