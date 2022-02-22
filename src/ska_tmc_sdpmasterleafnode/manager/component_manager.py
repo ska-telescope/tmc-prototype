@@ -1,15 +1,12 @@
 """
 This module implements ComponentManager class for the Sdp Master Leaf Node.
 """
-
 from ska_tmc_common.command_executor import CommandExecutor
 from ska_tmc_common.device_info import DeviceInfo
-from ska_tmc_common.tmc_component_manager import TmcComponentManager
-
-from ska_tmc_sdpmasterleafnode.model.component import SdpMLNComponent
+from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
 
 
-class SdpMLNComponentManager(TmcComponentManager):
+class SdpMLNComponentManager(TmcLeafNodeComponentManager):
     """
     A component manager for The SDP Master Leaf Node component.
 
@@ -22,11 +19,9 @@ class SdpMLNComponentManager(TmcComponentManager):
 
     def __init__(
         self,
+        sdp_master_dev_name,
         op_state_model,
-        _input_parameter,
-        _component=None,
         logger=None,
-        _update_device_callback=None,
         _update_command_in_progress_callback=None,
         _monitoring_loop=False,
         _event_receiver=False,
@@ -51,7 +46,6 @@ class SdpMLNComponentManager(TmcComponentManager):
 
         super().__init__(
             op_state_model,
-            _component,
             logger,
             _monitoring_loop,
             _event_receiver,
@@ -60,54 +54,22 @@ class SdpMLNComponentManager(TmcComponentManager):
             sleep_time,
         )
 
-        self.component = _component or SdpMLNComponent(logger)
-
-        self.component.set_op_callbacks(_update_device_callback)
-        self._input_parameter = _input_parameter
-
+        self.update_device_info(sdp_master_dev_name)
         self._command_executor = CommandExecutor(
             logger,
             _update_command_in_progress_callback=_update_command_in_progress_callback,
         )
 
-    @property
-    def input_parameter(self):
-        """
-        Return the input parameter
+    def update_device_info(self, sdp_master_dev_name):
+        self._sdp_master_dev_name = sdp_master_dev_name
+        self._device = DeviceInfo(self._sdp_master_dev_name, False)
 
-        :return: input parameter
-        :rtype: InputParameter
+    def device_failed(self, exception):
         """
-        return self._input_parameter
+        Set a device to failed and call the relative callback if available
 
-    @property
-    def checked_devices(self):
+        :param exception: an exception
+        :type: Exception
         """
-        Return the list of the checked monitored devices
-
-        :return: list of the checked monitored devices
-        """
-        result = []
-        for dev in self.component.devices:
-            if dev.unresponsive:
-                result.append(dev)
-                continue
-        return result
-
-    def update_input_parameter(self):
         with self.lock:
-            self.input_parameter.update(self)
-
-    def add_device(self, dev_name):
-        """
-        Add device to the monitoring loop
-
-        :param dev_name: device name
-        :type dev_name: str
-        """
-        if dev_name is None:
-            return
-
-        devInfo = DeviceInfo(dev_name, False)
-
-        self.component.update_device(devInfo)
+            self._device.exception = exception

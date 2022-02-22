@@ -3,14 +3,15 @@ import time
 import pytest
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
-from ska_tmc_common.adapters import SdpSubArrayAdapter
+from ska_tmc_common.test_helpers.helper_adapter_factory import (
+    HelperAdapterFactory,
+)
 
 from ska_tmc_sdpsubarrayleafnode.commands.release_resources_command import (
     ReleaseResources,
 )
 from ska_tmc_sdpsubarrayleafnode.exceptions import DeviceUnresponsive
 from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
-from tests.helpers.helper_adapter_factory import HelperAdapterFactory
 from tests.settings import (
     SDP_SUBARRAY_DEVICE,
     create_cm,
@@ -19,7 +20,7 @@ from tests.settings import (
 )
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_release_resources_command(tango_context):
     logger.info("%s", tango_context)
     # import debugpy; debugpy.debug_this_thread()
@@ -32,11 +33,10 @@ def test_telescope_release_resources_command(tango_context):
     (result_code, _) = release_command.do()
     assert result_code == ResultCode.OK
     adapter = my_adapter_factory.get_or_create_adapter(dev_name)
-    if isinstance(adapter, SdpSubArrayAdapter):
-        adapter.proxy.ReleaseResources.assert_called()
+    adapter.proxy.ReleaseResources.assert_called()
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_release_resources_command_fail_subarray(tango_context):
     logger.info("%s", tango_context)
     input_parameter = SdpSLNInputParameter(None)
@@ -66,7 +66,7 @@ def test_telescope_release_resources_command_fail_subarray(tango_context):
     assert failing_dev in message
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_release_resources_fail_check_allowed(tango_context):
 
     logger.info("%s", tango_context)

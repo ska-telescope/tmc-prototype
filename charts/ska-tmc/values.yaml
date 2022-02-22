@@ -37,7 +37,7 @@ itango:
     pullPolicy: IfNotPresent
 
 
-sdpslnmid:
+sdpleafnodes:
   image:
     registry: artefact.skao.int
     image: ska-tmc
@@ -65,6 +65,14 @@ deviceServers:
     mid:
       file: "data/sdpsubarrayleafnode_mid.yaml"
       SdpSubarrayFQDN: "mid_sdp/elt/subarray_1"
+  
+  sdpmln:
+    enabled: true
+    instances: ["01"]
+    subarray_count: 1
+    mid:
+      file: "data/sdpmasterleafnode.yaml"
+      SdpMasterFQDN: "mid_sdp/elt/master"
 
 nodeSelector: {}
 

@@ -1,20 +1,20 @@
-name: "sdpsubarrayleafnode-test"
+name: "sdpmasterleafnode-test"
 function: telescope-monitoring
 domain: general-monitoring
 instances: ["01"]
-command: "python3 /app/src/ska_tmc_sdpsubarrayleafnode/sdp_subarray_leaf_node_mid.py"
+command: "python3 /app/src/ska_tmc_sdpmasterleafnode/sdp_master_leaf_node.py"
 server:
-  name: "sdp_subarray_leaf_node_mid"
+  name: "sdp_master_leaf_node"
   instances:
   - name: "01"
     classes:
-    - name: "SdpSubarrayLeafNodeMid"
+    - name: "SdpMasterLeafNode"
       devices:
-      - name: "ska_mid/tm_leaf_node/sdp_subarray01"
+      - name: "ska_mid/tm_leaf_node/sdp_master"
         properties:
-        - name: "SdpSubarrayFQDN"
+        - name: "SdpMasterFQDN"
           values:
-          - "{{.Values.deviceServers.sdpsln.mid.SdpSubarrayFQDN}}"
+          - "{{.Values.deviceServers.sdpmln.mid.SdpMasterFQDN}}"
         - name: "SkaLevel"
           values:
             - "3"

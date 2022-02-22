@@ -6,7 +6,7 @@ from ska_tmc_sdpsubarrayleafnode.exceptions import DeviceUnresponsive
 from tests.settings import get_sdpsln_command_obj, logger
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_reset_command(tango_context):
     logger.info("%s", tango_context)
     _, reset_command, _ = get_sdpsln_command_obj(Reset, None)
@@ -15,7 +15,7 @@ def test_telescope_reset_command(tango_context):
     assert result_code == ResultCode.OK
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_reset_fail_check_allowed(tango_context):
 
     logger.info("%s", tango_context)

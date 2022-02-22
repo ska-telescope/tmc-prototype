@@ -6,13 +6,14 @@ import mock
 import pytest
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
-from ska_tmc_common.adapters import SdpSubArrayAdapter
+from ska_tmc_common.test_helpers.helper_adapter_factory import (
+    HelperAdapterFactory,
+)
 
 from ska_tmc_sdpsubarrayleafnode.commands.assign_resources_command import (
     AssignResources,
 )
 from ska_tmc_sdpsubarrayleafnode.model.input import SdpSLNInputParameter
-from tests.helpers.helper_adapter_factory import HelperAdapterFactory
 from tests.settings import (
     SDP_SUBARRAY_DEVICE,
     create_cm,
@@ -28,7 +29,7 @@ def get_assign_input_str(assign_input_file="command_AssignResources.json"):
     return assign_input_str
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_assign_resources_command(tango_context):
     logger.info("%s", tango_context)
     _, assign_res_command, my_adapter_factory = get_sdpsln_command_obj(
@@ -41,11 +42,10 @@ def test_telescope_assign_resources_command(tango_context):
     assert result_code == ResultCode.OK
     dev_name = "mid_sdp/elt/subarray_1"
     adapter = my_adapter_factory.get_or_create_adapter(dev_name)
-    if isinstance(adapter, SdpSubArrayAdapter):
-        adapter.proxy.AssignResources.assert_called()
+    adapter.proxy.AssignResources.assert_called()
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_assign_resources_command_missing_eb_id_key(tango_context):
     logger.info("%s", tango_context)
     _, assign_res_command, my_adapter_factory = get_sdpsln_command_obj(
@@ -59,11 +59,10 @@ def test_telescope_assign_resources_command_missing_eb_id_key(tango_context):
     assert result_code == ResultCode.OK
     dev_name = "mid_sdp/elt/subarray_1"
     adapter = my_adapter_factory.get_or_create_adapter(dev_name)
-    if isinstance(adapter, SdpSubArrayAdapter):
-        adapter.proxy.AssignResources.assert_called()
+    adapter.proxy.AssignResources.assert_called()
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_assign_resources_command_fail_subarray(tango_context):
     logger.info("%s", tango_context)
     input_parameter = SdpSLNInputParameter(None)
@@ -96,7 +95,7 @@ def test_telescope_assign_resources_command_fail_subarray(tango_context):
     assert failing_dev in message
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_assign_resources_command_empty_input_json(tango_context):
     logger.info("%s", tango_context)
     _, assign_res_command, _ = get_sdpsln_command_obj(
@@ -107,7 +106,7 @@ def test_telescope_assign_resources_command_empty_input_json(tango_context):
     assert result_code == ResultCode.FAILED
 
 
-@pytest.mark.sdpsaln
+@pytest.mark.sdpsln
 def test_telescope_assign_resources_command_missing_scan_types(tango_context):
     logger.info("%s", tango_context)
     _, assign_res_command, _ = get_sdpsln_command_obj(

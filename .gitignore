@@ -223,3 +223,68 @@ doc_html/
 # Helm Charts
 Chart.lock
 charts/*/charts/*
+
+*.py[cod]
+
+# Packages
+*.egg
+*.eggs
+*.egg-info
+dist
+build
+eggs
+parts
+bin
+venv
+var
+sdist
+develop-eggs
+.installed.cfg
+lib
+lib64
+__pycache__
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+.cache
+nosetests.xml
+results.xml
+htmlcov
+coverage.xml
+
+# Developer tools
+*~
+.ropeproject
+.idea
+
+# Ansible
+*.retry
+
+# Metrics
+ci-metrics.json
+code-coverage.xml
+linting.xml
+unit-tests.xml
+
+# Miscellaneous
+.DS_Store
+gilab_values.yaml
+charts/ska-tmc/Chart.lock
+output.yaml
+charts/ska-tmc/charts/
+charts/test-parent/Chart.lock
+charts/test-parent/charts/
+code-coverage
+pytest-logs.txt
+.make/
+
+# Ignore legacy dependency and release systems
+setup.py
+setup.cfg
+tests/requirements*
+.vscode
+.devcontainer
