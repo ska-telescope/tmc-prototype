@@ -19,9 +19,9 @@ dependencies:
 - name: ska-tango-util
   version: 0.3.5
   repository: https://artefact.skao.int/repository/helm-internal
-- name: ska-tmc
-  version: 0.3.6
-  repository: file://../ska-tmc
+- name: ska-tmc-leafnodes
+  version: 0.3.7
+  repository: file://../ska-tmc-leafnodes
   alias: sdp_leafnode
 - name: ska-ser-skuid
   version: 0.3.0
