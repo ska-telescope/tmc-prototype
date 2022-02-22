@@ -40,8 +40,8 @@ K8S_TEST_IMAGE_TO_TEST=$(CAR_OCI_REGISTRY_HOST)/$(PROJECT):$(VERSION)
 ifneq ($(CI_JOB_ID),)
 CUSTOM_VALUES = --set sdp_leafnode.sdpleafnodes.image.image=$(PROJECT) \
 	--set sdp_leafnode.sdpleafnodes.image.registry=$(CI_REGISTRY)/ska-telescope/$(PROJECT) \
-	--set sdp_leafnode.sdpleafnodes.image.tag=$(VERSION)-dev.c$(CI_COMMIT_SHORT_SHA)
-K8S_TEST_IMAGE_TO_TEST=$(CI_REGISTRY)/ska-telescope/$(PROJECT)/$(PROJECT):$(TEST_VERSION)-dev.c$(CI_COMMIT_SHORT_SHA)
+	--set sdp_leafnode.sdpleafnodes.image.tag=$(VERSION)-dev.$(CI_COMMIT_SHORT_SHA)
+K8S_TEST_IMAGE_TO_TEST=$(CI_REGISTRY)/ska-telescope/$(PROJECT)/$(PROJECT):$(TEST_VERSION)-dev.$(CI_COMMIT_SHORT_SHA)
 endif
 
 CI_PROJECT_DIR ?= .

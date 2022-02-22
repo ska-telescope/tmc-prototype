@@ -7,16 +7,15 @@ package.
 import time
 
 from ska_tmc_common.command_executor import CommandExecutor
-from ska_tmc_common.device_info import DeviceInfo, SubArrayDeviceInfo
-from ska_tmc_common.tmc_component_manager import TmcComponentManager
+from ska_tmc_common.device_info import DeviceInfo
+from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
 
 from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
     SdpSLNEventReceiver,
 )
-from ska_tmc_sdpsubarrayleafnode.model.component import SdpSLNComponent
 
 
-class SdpSLNComponentManager(TmcComponentManager):
+class SdpSLNComponentManager(TmcLeafNodeComponentManager):
     """
     A component manager for The SDP Subarray Leaf Node component.
 
@@ -28,10 +27,9 @@ class SdpSLNComponentManager(TmcComponentManager):
 
     def __init__(
         self,
+        sdp_subarray_dev_name,
         op_state_model,
-        _input_parameter,
         logger=None,
-        _component=None,
         _update_device_callback=None,
         _update_command_in_progress_callback=None,
         _monitoring_loop=False,
@@ -51,7 +49,6 @@ class SdpSLNComponentManager(TmcComponentManager):
         """
         super().__init__(
             op_state_model,
-            _component,
             logger,
             _monitoring_loop,
             _event_receiver,
@@ -60,10 +57,7 @@ class SdpSLNComponentManager(TmcComponentManager):
             sleep_time,
         )
 
-        self.component = _component or SdpSLNComponent(logger)
-        self.devices = self.component.devices
-
-        self._event_receiver = None
+        self.update_device_info(sdp_subarray_dev_name)
         if _event_receiver:
             self._event_receiver = SdpSLNEventReceiver(
                 self,
@@ -71,30 +65,31 @@ class SdpSLNComponentManager(TmcComponentManager):
                 proxy_timeout=proxy_timeout,
                 sleep_time=sleep_time,
             )
-
-        if _event_receiver:
             self._event_receiver.start()
-
-        self.component.set_op_callbacks(_update_device_callback)
-        self._input_parameter = _input_parameter
 
         self.command_executor = CommandExecutor(
             logger,
             _update_command_in_progress_callback=_update_command_in_progress_callback,
         )
 
-    @property
-    def input_parameter(self):
-        """
-        Return the input parameter
+    def stop(self):
+        self._event_receiver.stop()
 
-        :return: input parameter
-        :rtype: InputParameter
+    def get_device(self):
         """
-        return self._input_parameter
+        Return the device info our of the monitoring loop with name dev_name
 
-    @property
-    def checked_devices(self):
+        :param None:
+        :return: a device info
+        :rtype: DeviceInfo
+        """
+        return self._device
+
+    def update_device_info(self, sdp_subarray_dev_name):
+        self._sdp_subarray_dev_name = sdp_subarray_dev_name
+        self._device = DeviceInfo(self._sdp_subarray_dev_name, False)
+
+    def device_failed(self, exception):
         """
         Return the list of the checked monitored devices
 
@@ -117,27 +112,13 @@ class SdpSLNComponentManager(TmcComponentManager):
         with self.lock:
             self.input_parameter.update(self)
 
-    def stop(self):
-        self._event_receiver.stop()
+    def update_event_failure(self):
+        with self.lock:
+            dev_info = self.get_device()
+            dev_info.last_event_arrived = time.time()
+            dev_info.update_unresponsive(False)
 
-    def add_device(self, dev_name):
-        """
-        Add device to the monitoring loop
-
-        :param dev_name: device name
-        :type dev_name: str
-        """
-        if dev_name is None:
-            return
-
-        if "subarray" in dev_name:
-            devInfo = SubArrayDeviceInfo(dev_name, False)
-        else:
-            devInfo = DeviceInfo(dev_name, False)
-
-        self.component.update_device(devInfo)
-
-    def update_device_obs_state(self, dev_name, obs_state):
+    def update_device_obs_state(self, obs_state):
         """
         Update a monitored device obs state,
         and call the relative callbacks if available
@@ -148,13 +129,7 @@ class SdpSLNComponentManager(TmcComponentManager):
         :type obs_state: ObsState
         """
         with self.lock:
-            devInfo = self.component.get_device(dev_name)
-            devInfo.obsState = obs_state
-            devInfo.last_event_arrived = time.time()
-            devInfo.update_unresponsive(False)
-
-    def update_event_failure(self, dev_name):
-        with self.lock:
-            devInfo = self.component.get_device(dev_name)
-            devInfo.last_event_arrived = time.time()
-            devInfo.update_unresponsive(False)
+            dev_info = self.get_device()
+            dev_info.obsState = obs_state
+            dev_info.last_event_arrived = time.time()
+            dev_info.update_unresponsive(False)

@@ -12,9 +12,7 @@ from tests.settings import create_cm, get_sdpmln_command_obj, logger
 @pytest.mark.sdpmln
 def test_standby_command(tango_context, sdp_master_device):
     logger.info("%s", tango_context)
-    _, standby_command, adapter_factory = get_sdpmln_command_obj(
-        Standby, sdp_master_device
-    )
+    _, standby_command, adapter_factory = get_sdpmln_command_obj(Standby)
     assert standby_command.check_allowed()
     (result_code, _) = standby_command.do()
     assert result_code == ResultCode.OK
@@ -25,7 +23,7 @@ def test_standby_command(tango_context, sdp_master_device):
 @pytest.mark.sdpmln
 def test_standby_command_fail_sdp_master(tango_context, sdp_master_device):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpMLNComponentManager", None, sdp_master_device)
+    cm, _ = create_cm("SdpMLNComponentManager", sdp_master_device)
     adapter_factory = HelperAdapterFactory()
     cm._sdp_master_dev_name = sdp_master_device
 
@@ -45,7 +43,7 @@ def test_standby_command_fail_sdp_master(tango_context, sdp_master_device):
 def test_standby_fail_check_allowed(tango_context, sdp_master_device):
 
     logger.info("%s", tango_context)
-    cm, standby_command, _ = get_sdpmln_command_obj(Standby, sdp_master_device)
+    cm, standby_command, _ = get_sdpmln_command_obj(Standby)
     dev_info = cm.get_device()
     dev_info.update_unresponsive(True)
     with pytest.raises(DeviceUnresponsive):

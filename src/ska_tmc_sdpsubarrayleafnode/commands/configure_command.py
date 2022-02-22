@@ -4,14 +4,14 @@ Configure command class for SDPSubarrayLeafNode.
 import json
 
 from ska_tango_base.commands import ResultCode
+from ska_tango_base.control_model import ObsState
 from ska_tmc_common.adapters import AdapterFactory
+from ska_tmc_common.exceptions import InvalidObsStateError
 
-from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import (
-    AbstractConfigure,
-)
+from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
 
 
-class Configure(AbstractConfigure):
+class Configure(SdpSLNCommand):
     """
     A class for SdpSubarrayLeafNode's Configure() command.
 
@@ -27,7 +27,33 @@ class Configure(AbstractConfigure):
         adapter_factory=AdapterFactory(),
         logger=None,
     ):
-        super().__init__(target, op_state_model, adapter_factory, logger)
+        super().__init__(target, logger)
+        self.op_state_model = op_state_model
+        self._adapter_factory = adapter_factory
+
+    def check_allowed(self):
+        """
+        Checks whether this command is allowed
+        It checks that the device is in the right state
+        to execute this command and that all the
+        component needed for the operation are not unresponsive
+
+        :return: True if this command is allowed
+
+        :rtype: boolean
+
+        """
+        component_manager = self.target
+
+        self.check_op_state("Configure")
+        self.check_unresponsive()
+        obs_state_val = component_manager.get_device().obsState
+        if obs_state_val not in (ObsState.READY, ObsState.IDLE):
+            message = f"""Configure command is not allowed in current observation state on device {component_manager.get_device().dev_name}.
+                        Reason: The current observation state for observation is {obs_state_val}.
+                        The \"Configure\" command has NOT been executed. This device will continue with normal operation."""
+            raise InvalidObsStateError(message)
+        return True
 
     def do_mid(self, argin):
         """
@@ -44,18 +70,22 @@ class Configure(AbstractConfigure):
         return:
             None
         """
-        ret_code, message = self.init_adapters()
+        ret_code, message = self.init_adapter()
         if ret_code == ResultCode.FAILED:
             return ret_code, message
 
         try:
             json_argument = json.loads(argin)
         except Exception as e:
+            log_msg = f"""Execution of Configure command is failed.
+            Reason: JSON parsing failed with exception: {e}
+            The command is not executed successfully.
+            The device will continue with normal operation"""
+            self.logger.exception(log_msg)
             return self.generate_command_result(
                 ResultCode.FAILED,
                 (
-                    "Problem in loading JSON string in Configure command on SDP Subarray Leaf Node: %s",
-                    e,
+                    "Exception occurred while parsing the JSON. Please check the logs for details."
                 ),
             )
 
@@ -77,19 +107,29 @@ class Configure(AbstractConfigure):
                 "scan_type is not present in the input json argument.",
             )
 
+        log_msg = f"Invoking Configure command on:{self.sdp_subarray_adapter.dev_name}"
+        self.logger.info(log_msg)
         try:
-            self.logger.info(
-                f"Invoking Configure command on:{self.sdp_subarray_adapter.dev_name}"
+            json_argument[
+                "interface"
+            ] = "https://schema.skao.int/ska-sdp-configure/0.3"
+            log_msg = (
+                "Input JSON for Configure command for SDP subarray %s: %s, ",
+                self.sdp_subarray_adapter.dev_name,
+                json_argument,
             )
+            self.logger.debug(log_msg)
             self.sdp_subarray_adapter.Configure(json.dumps(json_argument))
 
         except Exception as e:
+            self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                (
-                    "Error in calling Configure on subarray %s: %s",
-                    self.sdp_subarray_adapter.dev_name,
-                    e,
-                ),
+                f"""The invocation of the Configure command is failed on Sdp Subarray Device {self.sdp_subarray_adapter.dev_name}.
+                Reason: Error in calling the Configure command on Sdp Subarray.
+                The command has NOT been executed.
+                This device will continue with normal operation.""",
             )
+        log_msg = f"Configure command successfully invoked on:{self.sdp_subarray_adapter.dev_name}"
+        self.logger.info(log_msg)
         return (ResultCode.OK, "")
