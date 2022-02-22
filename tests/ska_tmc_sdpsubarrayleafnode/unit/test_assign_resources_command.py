@@ -57,7 +57,6 @@ def test_telescope_assign_resources_command_missing_eb_id_key(
 
 
 @pytest.mark.sdpsln
-@pytest.mark.assign
 def test_assign_resources_command_fail_subarray(
     tango_context, sdp_subarray_device
 ):

@@ -2,7 +2,6 @@
 Restart command class for SDPSubarrayLeafNode.
 """
 from ska_tango_base.commands import ResultCode
-from ska_tmc_common.adapters import AdapterFactory
 
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import (
     AbstractRestartObsReset,
@@ -15,15 +14,6 @@ class Restart(AbstractRestartObsReset):
 
     Command to reset the SDP Subarray and bring it to its RESTARTING state.
     """
-
-    def __init__(
-        self,
-        target,
-        op_state_model,
-        adapter_factory=AdapterFactory(),
-        logger=None,
-    ):
-        super().__init__(target, op_state_model, adapter_factory, logger)
 
     def do(self, argin=None):
         """

@@ -18,12 +18,12 @@ class Reset(SdpSLNCommand):
         self,
         target,
         op_state_model,
-        adapter_factory=AdapterFactory(),
+        adapter_factory=None,
         logger=None,
     ):
         super().__init__(target, logger)
         self.op_state_model = op_state_model
-        self._adapter_factory = adapter_factory
+        self._adapter_factory = adapter_factory or AdapterFactory()
 
     def check_allowed(self):
         """

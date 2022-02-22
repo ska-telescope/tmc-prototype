@@ -2,7 +2,6 @@
 End command class for SDPSubarrayLeafNode.
 """
 from ska_tango_base.commands import ResultCode
-from ska_tmc_common.adapters import AdapterFactory
 
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import (
     AbstractScanEnd,
@@ -16,15 +15,6 @@ class End(AbstractScanEnd):
     Invokes End command on SDP Subarray to end the current Scheduling Block.
 
     """
-
-    def __init__(
-        self,
-        target,
-        op_state_model,
-        adapter_factory=AdapterFactory(),
-        logger=None,
-    ):
-        super().__init__(target, op_state_model, adapter_factory, logger)
 
     def do(self, argin=None):
         """
