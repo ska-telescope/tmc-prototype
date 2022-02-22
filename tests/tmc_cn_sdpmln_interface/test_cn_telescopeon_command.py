@@ -9,7 +9,7 @@ from tango import DeviceProxy, DevState
 LOGGER = logging.getLogger(__name__)
 
 
-# @pytest.mark.tmcintegration
+@pytest.mark.tmcintegration
 def test_cn_telescopeon():
     try:
         fixture = {}

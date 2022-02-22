@@ -24,12 +24,12 @@ dependencies:
   repository: file://../ska-tmc
   alias: sdp_leafnode
 - name: ska-tmc-centralnode
-  version: 0.3.6
-  repository: file://../../../ska-tmc-centralnode/charts/ska-tmc-centralnode
+  version: 0.3.9
+  repository: https://artefact.skao.int/repository/helm-internal
   condition: ska-tmc-centralnode.enabled
 - name: ska-tmc-subarraynode
-  version: 0.3.8
-  repository: file://../../../ska-tmc-subarraynode/charts/ska-tmc-subarraynode
+  version: 0.3.13
+  repository: https://artefact.skao.int/repository/helm-internal
   alias: tmc_subarray_node
 - name: ska-ser-skuid
   version: 0.3.0
