@@ -5,6 +5,7 @@ instances: ["01"]
 entrypoints:
   - name: "ska_tmc_common.test_helpers.helper_state_device.HelperStateDevice"
   - name: "ska_tmc_common.test_helpers.helper_subarray_device.HelperSubArrayDevice"
+  - name: "ska_tmc_common.test_helpers.helper_subarray_leaf_device.HelperSubarrayLeafDevice"
 server:
   name: "mocks"
   instances:
@@ -13,9 +14,17 @@ server:
         - name: "HelperStateDevice"
           devices:
           - name: "mid_sdp/elt/master"
+          - name: "ska_mid/tm_leaf_node/csp_master"
+          - name: "mid_csp/elt/master"
+          - name: "mid_d0001/elt/master"
+          - name: "ska_mid/tm_leaf_node/d0001"
         - name: "HelperSubArrayDevice"
           devices:
           - name: "mid_sdp/elt/subarray_1"
+        - name: "HelperSubarrayLeafDevice"
+          devices:
+          - name: "ska_mid/tm_leaf_node/csp_subarray01"
+          - name: "ska_low/tm_leaf_node/mccs_subarray01"
 depends_on:
   - device: sys/database/2
 image:

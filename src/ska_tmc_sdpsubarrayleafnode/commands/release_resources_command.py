@@ -57,7 +57,7 @@ class ReleaseResources(SdpSLNCommand):
             raise InvalidObsStateError(message)
         return True
 
-    def do_mid(self, argin=None):
+    def do(self, argin=None):
         """
         Method to invoke ReleaseResources command on SDP Subarray.
 

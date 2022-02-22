@@ -60,7 +60,7 @@ class Abort(SdpSLNCommand):
 
         return True
 
-    def do_mid(self, argin=None):
+    def do(self, argin=None):
         """
         Method to invoke Abort command on SDP Subarray.
 

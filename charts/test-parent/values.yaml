@@ -6,7 +6,24 @@ global:
   sub-system:
     ska-tango-base:
       enabled: false
+    ska-tango-util:
+      enabled: false
+    ska-webjive:
+      enabled: true
   tango_host: databaseds-tango-base-test:10000
+  dsconfig:
+    timeout: 300s
+    image:
+      registry: artefact.skao.int
+      image: ska-tango-images-tango-dsconfig
+      tag: 1.5.1
+      pullPolicy: IfNotPresent
+  itango:
+    image:
+      registry: artefact.skao.int
+      image: ska-tango-images-tango-itango
+      tag: 9.3.5
+      pullPolicy: IfNotPresent
   retry:
   - "--tries=10"
   - "--sleep=5"
@@ -33,10 +50,30 @@ ska-ser-skuid:
     config:
       generator_id: mvp01
 
+ska-taranta:
+  enabled: false
+
+ska-webjive:
+  enabled: true
+  minikube: false
+  ingress:
+    enabled: true
+    nginx: true
+  tangogql:
+    replicas: 3
+    resources:
+      requests:
+        cpu: 600m     # 600m = 0.6 CPU
+        memory: 512Mi # 512Mi = 0.5 GB mem
+      limits:
+        cpu: 1000m     # 1000m = 1 CPU
+        memory: 1024Mi # 1024Mi = 1 GB mem
+
+# tmc leaf nodes
 sdp_leafnode:
   deviceServers:
     mocks:
-      enabled: true
+      enabled: false
 
     sdpsln:
       enabled: true
@@ -44,5 +81,24 @@ sdp_leafnode:
     sdpmln:
       enabled: true
 
-ska-taranta:
-  enabled: false
+# tmc central node
+ska-tmc-centralnode:
+  enabled: true
+  telescope: SKA-mid
+  deviceServers:
+    centralnode:
+      enabled: true
+
+# tmc subarraynode
+tmc_subarray_node:
+  deviceServers:
+    mocks:
+      enabled: false
+      component:
+        mccs: false
+        csp: false
+        sdp: false
+        dish: false
+  
+    subarraynode:
+      enabled: true

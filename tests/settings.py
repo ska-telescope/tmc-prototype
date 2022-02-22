@@ -35,18 +35,14 @@ def count_faulty_devices(cm):
 def create_cm(cm_class, device):
     op_state_model = TMCOpStateModel(logger)
     if cm_class == "SdpMLNComponentManager":
-        cm = SdpMLNComponentManager(
-            device,
-            op_state_model,
-            logger=logger,
-        )
-        cm.get_device()
+        cm = SdpMLNComponentManager(device, op_state_model, logger=logger)
     elif cm_class == "SdpSLNComponentManager":
         cm = SdpSLNComponentManager(device, op_state_model, logger=logger)
     else:
         log_msg = f"Unknown component manager class {cm_class}"
         logger.error(log_msg)
 
+    cm.get_device()
     start_time = time.time()
     time.sleep(SLEEP_TIME)
     elapsed_time = time.time() - start_time

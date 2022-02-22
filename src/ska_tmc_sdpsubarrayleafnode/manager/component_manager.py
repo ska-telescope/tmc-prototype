@@ -91,26 +91,13 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
     def device_failed(self, exception):
         """
-        Return the list of the checked monitored devices
+        Set a device to failed and call the relative callback if available
 
-        :return: list of the checked monitored devices
+        :param exception: an exception
+        :type: Exception
         """
-        result = []
-        for dev in self.component.devices:
-            if dev.unresponsive:
-                result.append(dev)
-                continue
-            if dev.ping > 0:
-                result.append(dev)
-                continue
-            if dev.last_event_arrived is not None:
-                result.append(dev)
-                continue
-        return result
-
-    def update_input_parameter(self):
         with self.lock:
-            self.input_parameter.update(self)
+            self._device.exception = exception
 
     def update_event_failure(self):
         with self.lock:
@@ -123,8 +110,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         Update a monitored device obs state,
         and call the relative callbacks if available
 
-        :param dev_name: name of the device
-        :type dev_name: str
         :param obs_state: obs state of the device
         :type obs_state: ObsState
         """
