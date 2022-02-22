@@ -12,7 +12,7 @@ def init_command(tango_context, sdpsaln_name):
     dev_factory = DevFactory()
     sdpsal_node = dev_factory.get_device(sdpsaln_name)
     initial_len = len(sdpsal_node.commandExecuted)
-    (result, unique_id) = sdpsal_node.TelescopeOn()
+    (result, unique_id) = sdpsal_node.On()
     assert result[0] == ResultCode.QUEUED
     start_time = time.time()
     while len(sdpsal_node.commandExecuted) != initial_len + 1:
@@ -36,5 +36,5 @@ def init_command(tango_context, sdpsaln_name):
     "sdpsaln_name",
     [("ska_mid/tm_leaf_node/sdp_subarray01")],
 )
-def test_init_command_mid(tango_context, sdpsaln_name):
+def test_init_command(tango_context, sdpsaln_name):
     init_command(tango_context, sdpsaln_name)
