@@ -41,7 +41,6 @@ tmc-leafnodes:
         csp: false
         sdp: false
         dish: false
-        mccs: false
 
     sdpsln:
       enabled: true

@@ -6,7 +6,6 @@ entrypoints:
   - name: "ska_tmc_common.test_helpers.helper_state_device.HelperStateDevice"
   - name: "ska_tmc_common.test_helpers.helper_subarray_device.HelperSubArrayDevice"
   - name: "ska_tmc_common.test_helpers.helper_subarray_leaf_device.HelperSubarrayLeafDevice"
-  - name: "ska_tmc_common.test_helpers.helper_state_mccsdevice.HelperMCCSStateDevice"
 server:
   name: "mocks"
   instances:
@@ -37,15 +36,6 @@ server:
           devices:
           {{- if .Values.deviceServers.mocks.component.csp }}
           - name: "ska_mid/tm_leaf_node/csp_subarray01"
-          {{- end }}
-          {{- if .Values.deviceServers.mocks.component.csp }}
-          - name: "ska_low/tm_leaf_node/mccs_subarray01"
-          {{- end }}
-        - name: "HelperMCCSStateDevice"
-          devices:
-          {{- if .Values.deviceServers.mocks.component.mccs }}
-          - name: "ska_low/tm_leaf_node/mccs_master"
-          - name: "low-mccs/control/control"
           {{- end }}
 depends_on:
   - device: sys/database/2
