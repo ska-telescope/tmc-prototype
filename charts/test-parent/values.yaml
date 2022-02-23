@@ -36,11 +36,11 @@ ska-ser-skuid:
 tmc-leafnodes:
   deviceServers:
     mocks:
-      enabled: false
+      enabled: true
       component:
-        csp: false
-        sdp: false
-        dish: false
+        csp: true
+        sdp: true
+        dish: true
 
     sdpsln:
       enabled: true
