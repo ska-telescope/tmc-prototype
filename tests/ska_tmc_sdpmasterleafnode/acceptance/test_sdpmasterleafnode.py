@@ -22,7 +22,7 @@ def device_list():
     parsers.parse("a SdpMasterLeafNode device"),
     target_fixture="sdpmasterleaf_node",
 )
-def subarray_node():
+def sdpmasterleaf_node():
     database = Database()
     instance_list = database.get_device_exported_for_class("SdpMasterLeafNode")
     for instance in instance_list.value_string:
