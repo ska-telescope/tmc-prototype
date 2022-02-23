@@ -32,20 +32,11 @@ server:
           {{- if .Values.deviceServers.mocks.component.csp }}
           - name: "mid_csp/elt/subarray_01"
           {{- end }}
-          # {{- if .Values.deviceServers.mocks.component.mccs }}
-          # - name: "low-mccs/subarray/01"
-          # {{- end }}
         - name: "HelperSubarrayLeafDevice"
           devices:
-          {{- if .Values.deviceServers.mocks.component.sdp }}
-          - name: "ska_mid/tm_leaf_node/sdp_subarray01"
-          {{- end }}
           {{- if .Values.deviceServers.mocks.component.csp }}
           - name: "ska_mid/tm_leaf_node/csp_subarray01"
           {{- end }}
-          # {{- if .Values.deviceServers.mocks.component.mccs }}
-          # - name: "ska_low/tm_leaf_node/mccs_subarray01"
-          # {{- end }}
 depends_on:
   - device: sys/database/2
 image:
