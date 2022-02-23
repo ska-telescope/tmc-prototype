@@ -5,6 +5,7 @@ instances: ["01"]
 entrypoints:
   - name: "ska_tmc_common.test_helpers.helper_state_device.HelperStateDevice"
   - name: "ska_tmc_common.test_helpers.helper_subarray_device.HelperSubArrayDevice"
+  - name: "ska_tmc_common.test_helpers.helper_subarray_leaf_device.HelperSubarrayLeafDevice"
 server:
   name: "mocks"
   instances:
@@ -12,10 +13,39 @@ server:
       classes:
         - name: "HelperStateDevice"
           devices:
+          {{- if .Values.deviceServers.mocks.component.sdp }}
           - name: "mid_sdp/elt/master"
+          {{- end }}
+          {{- if .Values.deviceServers.mocks.component.csp }}
+          - name: "ska_mid/tm_leaf_node/csp_master"
+          - name: "mid_csp/elt/master"
+          {{- end }}
+          {{- if .Values.deviceServers.mocks.component.dish }}
+          - name: "ska_mid/tm_leaf_node/d0001"
+          - name: "mid_d0001/elt/master"
+          {{- end }}
         - name: "HelperSubArrayDevice"
           devices:
+          {{- if .Values.deviceServers.mocks.component.sdp }}
           - name: "mid_sdp/elt/subarray_1"
+          {{- end }}
+          {{- if .Values.deviceServers.mocks.component.csp }}
+          - name: "mid_csp/elt/subarray_01"
+          {{- end }}
+          # {{- if .Values.deviceServers.mocks.component.mccs }}
+          # - name: "low-mccs/subarray/01"
+          # {{- end }}
+        - name: "HelperSubarrayLeafDevice"
+          devices:
+          {{- if .Values.deviceServers.mocks.component.sdp }}
+          - name: "ska_mid/tm_leaf_node/sdp_subarray01"
+          {{- end }}
+          {{- if .Values.deviceServers.mocks.component.csp }}
+          - name: "ska_mid/tm_leaf_node/csp_subarray01"
+          {{- end }}
+          # {{- if .Values.deviceServers.mocks.component.mccs }}
+          # - name: "ska_low/tm_leaf_node/mccs_subarray01"
+          # {{- end }}
 depends_on:
   - device: sys/database/2
 image:

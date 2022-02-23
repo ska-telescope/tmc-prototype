@@ -37,6 +37,10 @@ tmc-leafnodes:
   deviceServers:
     mocks:
       enabled: true
+      component:
+        csp: true
+        sdp: true
+        dish: true
 
     sdpsln:
       enabled: true
