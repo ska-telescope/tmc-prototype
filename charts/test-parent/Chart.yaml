@@ -8,10 +8,10 @@ icon: https://www.skatelescope.org/wp-content/uploads/2016/07/09545_NEW_LOGO_201
 maintainers:
   - name: Aditya Dange
     email: adityadange.ska@gmail.com
-  - name: Snehal Nakave
-    email: snehal.ska@gmail.com
   - name: Kalyani Thigale
     email: kalyanit.ska@gmail.com
+  - name: Shraddha Bajare
+    email: shraddhab.ska@gmail.com
 dependencies:
 - name: ska-tango-base
   version: 0.3.5
