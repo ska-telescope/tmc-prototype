@@ -1,13 +1,12 @@
-import json
 import time
-from os.path import dirname, join
 
-import numpy as np
 import pytest
 from pytest_bdd import given, parsers, scenarios, then, when
 from ska_tango_base.commands import ResultCode
 from tango import Database, DeviceProxy
+
 from tests.settings import SLEEP_TIME, logger
+
 
 @given(
     "a TANGO ecosystem with a set of devices deployed",
@@ -37,6 +36,7 @@ def call_command(sdpmasterleaf_node, command_name):
         assert "CommandNotAllowed" in str(ex)
         pytest.command_result = "CommandNotAllowed"
 
+
 @then(
     parsers.parse(
         "the command is queued and executed in less than {seconds} ss"
@@ -59,7 +59,6 @@ def check_command(sdpmasterleaf_node, seconds):
                     or command[2] == str(ResultCode.FAILED)
                     or command[2] == str(ResultCode.STARTED)
                 )
-                command_name = command[1]
                 executed = True
         if executed:
             break
