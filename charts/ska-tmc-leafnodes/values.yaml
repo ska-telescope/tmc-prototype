@@ -54,7 +54,7 @@ resources:
 
 deviceServers:
   mocks:
-    enabled: false
+    enabled: true
     instances: ["01"]
     file: "data/mockdevices.yaml"
 
