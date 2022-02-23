@@ -2,14 +2,12 @@ import json
 import time
 from os.path import dirname, join
 
-import numpy as np
 import pytest
 from pytest_bdd import given, parsers, scenarios, then, when
 from ska_tango_base.commands import ResultCode
-from ska_tango_base.control_model import HealthState, ObsState
+from ska_tango_base.control_model import ObsState
 from ska_tmc_common.dev_factory import DevFactory
 from tango import Database, DeviceProxy
-
 
 from tests.settings import SLEEP_TIME, logger
 
@@ -35,10 +33,12 @@ def device_list():
 )
 def sdpsubarrayleaf_node():
     database = Database()
-    instance_list = database.get_device_exported_for_class("SdpSubarrayLeafNode")
+    instance_list = database.get_device_exported_for_class(
+        "SdpSubarrayLeafNode"
+    )
     for instance in instance_list.value_string:
         return DeviceProxy(instance)
-    
+
 
 @when(parsers.parse("I call the command {command_name}"))
 def call_command(sdpsubarrayleaf_node, command_name):
@@ -46,7 +46,9 @@ def call_command(sdpsubarrayleaf_node, command_name):
     sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
     try:
         if command_name == "AssignResources":
-            logger.info(f"sdpsubarrayleaf_node: {sdpsubarrayleaf_node.dev_name()}")
+            logger.info(
+                f"sdpsubarrayleaf_node: {sdpsubarrayleaf_node.dev_name()}"
+            )
             assign_res_string = get_json_input_str(
                 join(
                     dirname(__file__),
@@ -78,7 +80,9 @@ def call_command(sdpsubarrayleaf_node, command_name):
             )
         elif command_name == "Scan":
             scan_string = get_json_input_str(
-                join(dirname(__file__), "..", "..", "data", "command_Scan.json")
+                join(
+                    dirname(__file__), "..", "..", "data", "command_Scan.json"
+                )
             )
             sdp_subarray.SetDirectObsState(ObsState.READY)
             assert sdp_subarray.obsState == ObsState.READY
@@ -122,7 +126,9 @@ def call_command(sdpsubarrayleaf_node, command_name):
                 command_name
             )
         else:
-            pytest.command_result = sdpsubarrayleaf_node.command_inout(command_name)
+            pytest.command_result = sdpsubarrayleaf_node.command_inout(
+                command_name
+            )
     except Exception as ex:
         assert "CommandNotAllowed" in str(ex)
         pytest.command_result = "CommandNotAllowed"
@@ -150,7 +156,6 @@ def check_command(sdpsubarrayleaf_node, seconds):
                     or command[2] == str(ResultCode.FAILED)
                     or command[2] == str(ResultCode.STARTED)
                 )
-                command_name = command[1]
                 executed = True
         if executed:
             break
@@ -160,4 +165,6 @@ def check_command(sdpsubarrayleaf_node, seconds):
             pytest.fail("Timeout occurred while executing the test")
 
 
-scenarios("../ska_tmc_sdpsubarrayleafnode/features/sdpsubarrayleafnode.feature")
+scenarios(
+    "../ska_tmc_sdpsubarrayleafnode/features/sdpsubarrayleafnode.feature"
+)
