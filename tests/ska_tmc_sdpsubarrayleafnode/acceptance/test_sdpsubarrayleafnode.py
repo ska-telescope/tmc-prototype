@@ -58,7 +58,9 @@ def call_command(sdpsubarrayleaf_node, command_name):
                     "command_AssignResources.json",
                 )
             )
-            sdp_subarray.SetDirectObsState(ObsState.EMPTY)
+            if sdp_subarray.obsState != ObsState.EMPTY:
+                # Set ObsState of the mocked SDP Subarray
+                sdp_subarray.SetDirectObsState(ObsState.EMPTY)
             assert sdp_subarray.obsState == ObsState.EMPTY
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name, assign_res_string
@@ -73,8 +75,10 @@ def call_command(sdpsubarrayleaf_node, command_name):
                     "command_Configure.json",
                 )
             )
-            sdp_subarray.SetDirectObsState(ObsState.READY)
-            assert sdp_subarray.obsState == ObsState.READY
+            if sdp_subarray.obsState != ObsState.IDLE:
+                # Set ObsState of the mocked SDP Subarray
+                sdp_subarray.SetDirectObsState(ObsState.IDLE)
+            assert sdp_subarray.obsState == ObsState.IDLE
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name, configure_string
             )
@@ -84,44 +88,58 @@ def call_command(sdpsubarrayleaf_node, command_name):
                     dirname(__file__), "..", "..", "data", "command_Scan.json"
                 )
             )
-            sdp_subarray.SetDirectObsState(ObsState.READY)
+            if sdp_subarray.obsState != ObsState.READY:
+                # Set ObsState of the mocked SDP Subarray
+                sdp_subarray.SetDirectObsState(ObsState.READY)
             assert sdp_subarray.obsState == ObsState.READY
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name, scan_string
             )
-        elif command_name == "EndScan":
-            sdp_subarray.SetDirectObsState(ObsState.SCANNING)
-            assert sdp_subarray.obsState == ObsState.SCANNING
-            pytest.command_result = sdpsubarrayleaf_node.command_inout(
-                command_name
-            )
+        # elif command_name == "EndScan":
+        #     if sdp_subarray.obsState != ObsState.SCANNING:
+        #         # Set ObsState of the mocked SDP Subarray
+        #         sdp_subarray.SetDirectObsState(ObsState.SCANNING)
+        #     assert sdp_subarray.obsState == ObsState.SCANNING
+        #     pytest.command_result = sdpsubarrayleaf_node.command_inout(
+        #         command_name
+        #     )
         elif command_name == "End":
-            sdp_subarray.SetDirectObsState(ObsState.READY)
+            if sdp_subarray.obsState != ObsState.READY:
+                # Set ObsState of the mocked SDP Subarray
+                sdp_subarray.SetDirectObsState(ObsState.READY)
             assert sdp_subarray.obsState == ObsState.READY
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name
             )
-        elif command_name == "ReleaseResources":
-            sdp_subarray.SetDirectObsState(ObsState.IDLE)
-            assert sdp_subarray.obsState == ObsState.IDLE
-            pytest.command_result = sdpsubarrayleaf_node.command_inout(
-                command_name
-            )
         elif command_name == "Abort":
-            sdp_subarray.SetDirectObsState(ObsState.IDLE)
+            if sdp_subarray.obsState != ObsState.IDLE:
+                # Set ObsState of the mocked SDP Subarray
+                sdp_subarray.SetDirectObsState(ObsState.IDLE)
             assert sdp_subarray.obsState == ObsState.IDLE
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name
             )
-        elif command_name == "Restart":
-            sdp_subarray.SetDirectObsState(ObsState.ABORTED)
+        # elif command_name == "Restart":
+        #     if sdp_subarray.obsState != ObsState.ABORTED:
+        #         # Set ObsState of the mocked SDP Subarray
+        #         sdp_subarray.SetDirectObsState(ObsState.ABORTED)
+        #     assert sdp_subarray.obsState == ObsState.ABORTED
+        #     pytest.command_result = sdpsubarrayleaf_node.command_inout(
+        #         command_name
+        #     )
+        elif command_name == "ObsReset":
+            if sdp_subarray.obsState != ObsState.ABORTED:
+                # Set ObsState of the mocked SDP Subarray
+                sdp_subarray.SetDirectObsState(ObsState.ABORTED)
             assert sdp_subarray.obsState == ObsState.ABORTED
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name
             )
-        elif command_name == "ObsReset":
-            sdp_subarray.SetDirectObsState(ObsState.ABORTED)
-            assert sdp_subarray.obsState == ObsState.ABORTED
+        elif command_name == "ReleaseResources":
+            if sdp_subarray.obsState != ObsState.IDLE:
+                # Set ObsState of the mocked SDP Subarray
+                sdp_subarray.SetDirectObsState(ObsState.IDLE)
+            assert sdp_subarray.obsState == ObsState.IDLE
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name
             )

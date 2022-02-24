@@ -11,16 +11,18 @@ Feature: SdpSubarrayLeafNode Node acceptance
 		Examples:
 		| command_name		   |
 		| On                   |
-        | Off                  |
         | AssignResources      |
 		| Configure            |
 		| Scan                 |
-		| EndScan              |
 		| End                  |
+		| Abort                |
+		| ObsReset             |
 		| ReleaseResources     |
+        | AssignResources      |
 		| Abort                |
 		| Restart              |
-		| ObsReset             |
+		| Off                  |
+
 
 
 	#Check SdpSubarrayLeafNode node correctly report failed and working devices defined within its scope of monitoring (internal model)
