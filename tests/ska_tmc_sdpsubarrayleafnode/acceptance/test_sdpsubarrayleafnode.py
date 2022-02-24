@@ -94,14 +94,6 @@ def call_command(sdpsubarrayleaf_node, command_name):
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name, scan_string
             )
-        # elif command_name == "EndScan":
-        #     if sdp_subarray.obsState != ObsState.SCANNING:
-        #         # Set ObsState of the mocked SDP Subarray
-        #         sdp_subarray.SetDirectObsState(ObsState.SCANNING)
-        #     assert sdp_subarray.obsState == ObsState.SCANNING
-        #     pytest.command_result = sdpsubarrayleaf_node.command_inout(
-        #         command_name
-        #     )
         elif command_name == "End":
             if sdp_subarray.obsState != ObsState.READY:
                 # Set ObsState of the mocked SDP Subarray
@@ -118,14 +110,6 @@ def call_command(sdpsubarrayleaf_node, command_name):
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name
             )
-        # elif command_name == "Restart":
-        #     if sdp_subarray.obsState != ObsState.ABORTED:
-        #         # Set ObsState of the mocked SDP Subarray
-        #         sdp_subarray.SetDirectObsState(ObsState.ABORTED)
-        #     assert sdp_subarray.obsState == ObsState.ABORTED
-        #     pytest.command_result = sdpsubarrayleaf_node.command_inout(
-        #         command_name
-        #     )
         elif command_name == "ObsReset":
             if sdp_subarray.obsState != ObsState.ABORTED:
                 # Set ObsState of the mocked SDP Subarray
