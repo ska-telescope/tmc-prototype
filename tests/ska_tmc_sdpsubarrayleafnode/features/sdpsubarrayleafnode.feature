@@ -24,6 +24,6 @@ Feature: SdpSubarrayLeafNode acceptance
 
 
 	#Check SdpSubarrayLeafNode node correctly report failed and working devices defined within its scope of monitoring (internal model)
-	@XTP-4910 @post_deployment @acceptance @SKA_mid
+	@XTP-4911 @post_deployment @acceptance @SKA_mid
 	Scenario Outline: Monitor SdpSubarrayLeafNode sub-devices
 		Given a TANGO ecosystem with a set of devices deployed
