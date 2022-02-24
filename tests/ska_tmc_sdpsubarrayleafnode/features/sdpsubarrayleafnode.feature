@@ -18,9 +18,6 @@ Feature: SdpSubarrayLeafNode Node acceptance
 		| Abort                |
 		| ObsReset             |
 		| ReleaseResources     |
-        | AssignResources      |
-		| Abort                |
-		| Restart              |
 		| Off                  |
 
 
