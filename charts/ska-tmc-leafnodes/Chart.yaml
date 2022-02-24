@@ -1,9 +1,9 @@
 apiVersion: v2
-name: ska-tmc
+name: ska-tmc-leafnodes
 description: An umbrella Helm chart for ska-tmc deployment.
 type: application
-version: 0.3.6
-appVersion: 0.3.6
+version: 0.3.7
+appVersion: 0.3.7
 icon: https://www.skatelescope.org/wp-content/uploads/2016/07/09545_NEW_LOGO_2014.png
 maintainers:
   - name: Aditya Dange

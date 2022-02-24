@@ -33,10 +33,14 @@ ska-ser-skuid:
     config:
       generator_id: mvp01
 
-sdp_leafnode:
+tmc-leafnodes:
   deviceServers:
     mocks:
       enabled: true
+      component:
+        csp: true
+        sdp: true
+        dish: true
 
     sdpsln:
       enabled: true

@@ -8,10 +8,10 @@ icon: https://www.skatelescope.org/wp-content/uploads/2016/07/09545_NEW_LOGO_201
 maintainers:
   - name: Aditya Dange
     email: adityadange.ska@gmail.com
-  - name: Snehal Nakave
-    email: snehal.ska@gmail.com
   - name: Kalyani Thigale
     email: kalyanit.ska@gmail.com
+  - name: Shraddha Bajare
+    email: shraddhab.ska@gmail.com
 dependencies:
 - name: ska-tango-base
   version: 0.3.5
@@ -19,10 +19,10 @@ dependencies:
 - name: ska-tango-util
   version: 0.3.5
   repository: https://artefact.skao.int/repository/helm-internal
-- name: ska-tmc
-  version: 0.3.6
-  repository: file://../ska-tmc
-  alias: sdp_leafnode
+- name: ska-tmc-leafnodes
+  version: 0.3.7
+  repository: file://../ska-tmc-leafnodes
+  alias: tmc-leafnodes
 - name: ska-ser-skuid
   version: 0.3.0
   repository: https://artefact.skao.int/repository/helm-internal

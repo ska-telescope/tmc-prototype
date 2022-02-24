@@ -2,7 +2,6 @@ import time
 from os.path import dirname, join
 
 import pytest
-from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.dev_factory import DevFactory
 
@@ -59,16 +58,16 @@ def scan(
     sdp_subarray.SetDirectObsState(ObsState.SCANNING)
     assert sdp_subarray.obsState == ObsState.SCANNING
     time.sleep(SLEEP_TIME)
-    (result, unique_id) = sdpsal_node.EndScan()
-    sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
-    sdp_subarray.SetDirectObsState(ObsState.READY)
-    assert sdp_subarray.obsState == ObsState.READY
-    time.sleep(SLEEP_TIME)
-    (result, unique_id) = sdpsal_node.End()
-    assert result[0] == ResultCode.QUEUED
+    # (result, unique_id) = sdpsal_node.EndScan()
+    # sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
+    # sdp_subarray.SetDirectObsState(ObsState.READY)
+    # assert sdp_subarray.obsState == ObsState.READY
+    # time.sleep(SLEEP_TIME)
+    # (result, unique_id) = sdpsal_node.End()
+    # assert result[0] == ResultCode.QUEUED
     start_time = time.time()
 
-    while len(sdpsal_node.commandExecuted) != initial_len + 6:
+    while len(sdpsal_node.commandExecuted) != initial_len + 4:
         time.sleep(SLEEP_TIME)
         elapsed_time = time.time() - start_time
         if elapsed_time > TIMEOUT:

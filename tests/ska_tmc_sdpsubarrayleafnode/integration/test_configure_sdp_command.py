@@ -43,14 +43,6 @@ def configure(
     (result, unique_id) = sdpsal_node.Configure(configure_input_str)
     sdp_subarray.SetDirectObsState(ObsState.READY)
     assert sdp_subarray.obsState == ObsState.READY
-    # time.sleep(SLEEP_TIME)
-    # (result, unique_id) = sdpsal_node.End()
-    # sdp_subarray.SetDirectObsState(ObsState.IDLE)
-    # assert sdp_subarray.obsState == ObsState.IDLE
-    # time.sleep(SLEEP_TIME)
-    # (result, unique_id) = sdpsal_node.ReleaseResources(configure_input_str)
-    # sdp_subarray.SetDirectObsState(ObsState.EMPTY)
-    # assert sdp_subarray.obsState == ObsState.EMPTY
 
     assert result[0] == ResultCode.QUEUED
     start_time = time.time()
