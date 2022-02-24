@@ -15,7 +15,7 @@ from tests.settings import SLEEP_TIME, logger
 def get_json_input_str(path):
     with open(path, "r") as f:
         input_json_str = f.read()
-    return json.dumps(input_json_str)
+    return input_json_str
 
 
 @given(
