@@ -14,6 +14,7 @@ Feature: SdpSubarrayLeafNode acceptance
         | AssignResources      |
 		| Configure            |
 		| Scan                 |
+		| EndScan              |
 		| End                  |
 		| Abort                |
 		| ObsReset             |
