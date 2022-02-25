@@ -55,7 +55,7 @@ class Configure(SdpSLNCommand):
             raise InvalidObsStateError(message)
         return True
 
-    def do_mid(self, argin):
+    def do(self, argin):
         """
         Method to invoke Configure command on SDP Subarray.
 

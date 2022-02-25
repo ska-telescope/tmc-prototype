@@ -58,7 +58,7 @@ class AssignResources(SdpSLNCommand):
 
         return True
 
-    def do_mid(self, argin):
+    def do(self, argin):
         """
         Method to invoke AssignResources command on SDP Subarray.
 
