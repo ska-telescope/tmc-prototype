@@ -113,7 +113,7 @@ def call_command(sdpsubarrayleaf_node, command_name):
                 command_name
             )
         elif command_name == "ReleaseResources":
-            check_sdp_subarray_obsstate(sdp_subarray, ObsState.ABORTED)
+            check_sdp_subarray_obsstate(sdp_subarray, ObsState.IDLE)
             assert sdp_subarray.obsState == ObsState.IDLE
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name
