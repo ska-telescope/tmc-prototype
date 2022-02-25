@@ -88,6 +88,12 @@ def call_command(sdpsubarrayleaf_node, command_name):
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name, scan_string
             )
+        elif command_name == "EndScan":
+            check_sdp_subarray_obsstate(sdp_subarray, ObsState.SCANNING)
+            assert sdp_subarray.obsState == ObsState.SCANNING
+            pytest.command_result = sdpsubarrayleaf_node.command_inout(
+                command_name
+            )
         elif command_name == "End":
             check_sdp_subarray_obsstate(sdp_subarray, ObsState.READY)
             assert sdp_subarray.obsState == ObsState.READY
