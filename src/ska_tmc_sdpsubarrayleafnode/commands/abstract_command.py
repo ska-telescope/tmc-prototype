@@ -60,7 +60,6 @@ class SdpSLNCommand(TmcLeafNodeCommand):
 
         return ResultCode.OK, ""
 
-
     def check_allowed(self):
         return super().check_allowed()
 
