@@ -60,10 +60,6 @@ class SdpSLNCommand(TmcLeafNodeCommand):
 
         return ResultCode.OK, ""
 
-    def do(self, argin=None):
-        result = self.do_mid(argin)
-        return result
-
     def check_allowed(self):
         return super().check_allowed()
 

@@ -55,7 +55,7 @@ class EndScan(SdpSLNCommand):
 
         return True
 
-    def do(self, argin):
+    def do(self, argin=None):
         """
         Method to invoke EndScan command on SDP Subarray.
 

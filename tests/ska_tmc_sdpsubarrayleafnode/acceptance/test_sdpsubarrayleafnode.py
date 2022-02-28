@@ -8,7 +8,7 @@ from ska_tango_base.control_model import ObsState
 from ska_tmc_common.dev_factory import DevFactory
 from tango import Database, DeviceProxy
 
-from tests.settings import SLEEP_TIME, logger
+from tests.settings import SLEEP_TIME, TIMEOUT, logger
 
 
 def get_json_input_str(path):
@@ -57,9 +57,7 @@ def call_command(sdpsubarrayleaf_node, command_name):
                     "command_AssignResources.json",
                 )
             )
-            if sdp_subarray.obsState != ObsState.EMPTY:
-                # Set ObsState of the mocked SDP Subarray
-                sdp_subarray.SetDirectObsState(ObsState.EMPTY)
+            check_sdp_subarray_obsstate(sdp_subarray, ObsState.EMPTY)
             assert sdp_subarray.obsState == ObsState.EMPTY
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name, assign_res_string
@@ -74,9 +72,7 @@ def call_command(sdpsubarrayleaf_node, command_name):
                     "command_Configure.json",
                 )
             )
-            if sdp_subarray.obsState != ObsState.IDLE:
-                # Set ObsState of the mocked SDP Subarray
-                sdp_subarray.SetDirectObsState(ObsState.IDLE)
+            check_sdp_subarray_obsstate(sdp_subarray, ObsState.IDLE)
             assert sdp_subarray.obsState == ObsState.IDLE
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name, configure_string
@@ -87,41 +83,37 @@ def call_command(sdpsubarrayleaf_node, command_name):
                     dirname(__file__), "..", "..", "data", "command_Scan.json"
                 )
             )
-            if sdp_subarray.obsState != ObsState.READY:
-                # Set ObsState of the mocked SDP Subarray
-                sdp_subarray.SetDirectObsState(ObsState.READY)
+            check_sdp_subarray_obsstate(sdp_subarray, ObsState.READY)
             assert sdp_subarray.obsState == ObsState.READY
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name, scan_string
             )
+        elif command_name == "EndScan":
+            check_sdp_subarray_obsstate(sdp_subarray, ObsState.SCANNING)
+            assert sdp_subarray.obsState == ObsState.SCANNING
+            pytest.command_result = sdpsubarrayleaf_node.command_inout(
+                command_name
+            )
         elif command_name == "End":
-            if sdp_subarray.obsState != ObsState.READY:
-                # Set ObsState of the mocked SDP Subarray
-                sdp_subarray.SetDirectObsState(ObsState.READY)
+            check_sdp_subarray_obsstate(sdp_subarray, ObsState.READY)
             assert sdp_subarray.obsState == ObsState.READY
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name
             )
         elif command_name == "Abort":
-            if sdp_subarray.obsState != ObsState.IDLE:
-                # Set ObsState of the mocked SDP Subarray
-                sdp_subarray.SetDirectObsState(ObsState.IDLE)
+            check_sdp_subarray_obsstate(sdp_subarray, ObsState.IDLE)
             assert sdp_subarray.obsState == ObsState.IDLE
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name
             )
         elif command_name == "ObsReset":
-            if sdp_subarray.obsState != ObsState.ABORTED:
-                # Set ObsState of the mocked SDP Subarray
-                sdp_subarray.SetDirectObsState(ObsState.ABORTED)
+            check_sdp_subarray_obsstate(sdp_subarray, ObsState.ABORTED)
             assert sdp_subarray.obsState == ObsState.ABORTED
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name
             )
         elif command_name == "ReleaseResources":
-            if sdp_subarray.obsState != ObsState.IDLE:
-                # Set ObsState of the mocked SDP Subarray
-                sdp_subarray.SetDirectObsState(ObsState.IDLE)
+            check_sdp_subarray_obsstate(sdp_subarray, ObsState.IDLE)
             assert sdp_subarray.obsState == ObsState.IDLE
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name
@@ -164,6 +156,32 @@ def check_command(sdpsubarrayleaf_node, seconds):
         elapsed_time = time.time() - start_time
         if elapsed_time > float(seconds):
             pytest.fail("Timeout occurred while executing the test")
+
+
+def check_sdp_subarray_obsstate(sdp_subarray, obs_state):
+    sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
+    logger.info(f"SDP Subarray Device : {sdp_subarray}")
+    logger.info(f"SDP Subarray obsState is {sdp_subarray_obsstate}")
+    # if "Helper" in sdp_subarray:
+    #     # Set ObsState of the mocked SDP Subarray
+    #     logger.info(
+    #         f"In helper SDP Subarray Device : {sdp_subarray}, setting ObsState"
+    #     )
+    #     sdp_subarray.SetDirectObsState(ObsState.EMPTY)
+    # else:
+    logger.info(f"In SDP Subarray Device : {sdp_subarray}, checking ObsState")
+    wait_time = 0
+    while (sdp_subarray_obsstate.value) != obs_state:
+        time.sleep(SLEEP_TIME)
+        obsstate_val = sdp_subarray.read_attribute("obsState")
+        logger.info(f"Current SDP Subarray obsState is: {obsstate_val.value}")
+        logger.info(f"Expected SDP Subarray obsState is : {obs_state}")
+        wait_time = wait_time + 1
+        logger.info(f"wait_time in teardown  {wait_time}")
+        if wait_time > TIMEOUT:
+            pytest.fail(
+                f"Timeout occurred in transitioning SDP Subarray obsState to {sdp_subarray_obsstate.value}"
+            )
 
 
 scenarios(
