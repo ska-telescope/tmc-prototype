@@ -68,7 +68,7 @@ def setup(app):
 
 # -- Project information -----------------------------------------------------
 
-project = "ska-tmc"
+project = "ska-tmc-leafnodes"
 copyright = "2019, NCRA India"
 author = "NCRA India"
 
@@ -179,8 +179,8 @@ latex_elements = {
 latex_documents = [
     (
         master_doc,
-        "ska-tmc.tex",
-        "ska-tmc Documentation",
+        "ska-tmc-leafnodes.tex",
+        "ska-tmc-leafnodes Documentation",
         "NCRA India",
         "manual",
     ),
@@ -191,7 +191,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "ska-tmc", "SKA-TMC Documentation", [author], 1)]
+man_pages = [(master_doc, "ska-tmc-leafnodes", "SKA-TMC-LEAFNODES Documentation", [author], 1)]
 
 
 # -- Options for Texinfo output ----------------------------------------------
@@ -202,10 +202,10 @@ man_pages = [(master_doc, "ska-tmc", "SKA-TMC Documentation", [author], 1)]
 texinfo_documents = [
     (
         master_doc,
-        "SKA-TMC",
-        "SKA-TMC Documentation",
+        "SKA-TMC-LEAFNODES",
+        "SKA-TMC-LEAFNODES Documentation",
         author,
-        "SKA-TMC",
+        "SKA-TMC-LEAFNODES",
         "One line description of project.",
         "Miscellaneous",
     ),
