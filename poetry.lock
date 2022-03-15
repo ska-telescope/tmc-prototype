@@ -236,7 +236,7 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "importlib-metadata"
-version = "4.11.1"
+version = "4.11.3"
 description = "Read metadata from Python packages"
 category = "main"
 optional = false
@@ -247,7 +247,7 @@ typing-extensions = {version = ">=3.6.4", markers = "python_version < \"3.8\""}
 zipp = ">=0.5"
 
 [package.extras]
-docs = ["sphinx", "jaraco.packaging (>=8.2)", "rst.linker (>=1.9)"]
+docs = ["sphinx", "jaraco.packaging (>=9)", "rst.linker (>=1.9)"]
 perf = ["ipython"]
 testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-cov", "pytest-enabler (>=1.0.1)", "packaging", "pyfakefs", "flufl.flake8", "pytest-perf (>=0.9.2)", "pytest-black (>=0.3.7)", "pytest-mypy (>=0.9.1)", "importlib-resources (>=1.3)"]
 
@@ -357,18 +357,20 @@ python-versions = "*"
 
 [[package]]
 name = "mako"
-version = "1.1.6"
-description = "A super-fast templating language that borrows the  best ideas from the existing templating languages."
+version = "1.2.0"
+description = "A super-fast templating language that borrows the best ideas from the existing templating languages."
 category = "dev"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+python-versions = ">=3.7"
 
 [package.dependencies]
+importlib-metadata = {version = "*", markers = "python_version < \"3.8\""}
 MarkupSafe = ">=0.9.2"
 
 [package.extras]
 babel = ["babel"]
 lingua = ["lingua"]
+testing = ["pytest"]
 
 [[package]]
 name = "markupsafe"
@@ -380,16 +382,19 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "marshmallow"
-version = "3.14.1"
+version = "3.15.0"
 description = "A lightweight library for converting complex datatypes to and from native Python datatypes."
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
+
+[package.dependencies]
+packaging = "*"
 
 [package.extras]
-dev = ["pytest", "pytz", "simplejson", "mypy (==0.910)", "flake8 (==4.0.1)", "flake8-bugbear (==21.9.2)", "pre-commit (>=2.4,<3.0)", "tox"]
-docs = ["sphinx (==4.3.0)", "sphinx-issues (==1.2.0)", "alabaster (==0.7.12)", "sphinx-version-warning (==1.1.2)", "autodocsumm (==0.2.7)"]
-lint = ["mypy (==0.910)", "flake8 (==4.0.1)", "flake8-bugbear (==21.9.2)", "pre-commit (>=2.4,<3.0)"]
+dev = ["pytest", "pytz", "simplejson", "mypy (==0.940)", "flake8 (==4.0.1)", "flake8-bugbear (==22.1.11)", "pre-commit (>=2.4,<3.0)", "tox"]
+docs = ["sphinx (==4.4.0)", "sphinx-issues (==3.0.1)", "alabaster (==0.7.12)", "sphinx-version-warning (==1.1.2)", "autodocsumm (==0.2.7)"]
+lint = ["mypy (==0.940)", "flake8 (==4.0.1)", "flake8-bugbear (==22.1.11)", "pre-commit (>=2.4,<3.0)"]
 tests = ["pytest", "pytz", "simplejson"]
 
 [[package]]
@@ -433,7 +438,7 @@ python-versions = ">=3.5"
 name = "packaging"
 version = "21.3"
 description = "Core utilities for Python packages"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -579,7 +584,7 @@ pylint = "*"
 name = "pyparsing"
 version = "3.0.7"
 description = "Python parsing module"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -799,27 +804,6 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
-name = "ska-dish-master-mid"
-version = "0.8.5"
-description = "SKA Dish Master TANGO device server"
-category = "dev"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-mock = "*"
-pytango = ">=9.3.3"
-tango-simlib = ">=0.9.2"
-
-[package.extras]
-dev = ["prospector", "yapf", "isort"]
-
-[package.source]
-type = "legacy"
-url = "https://artefact.skao.int/repository/pypi-internal/simple"
-reference = 'ska-nexus'
-
-[[package]]
 name = "ska-ser-log-transactions"
 version = "0.2.2+ae0f5c92"
 description = "Square Kilometre Array transaction logging utility"
@@ -872,7 +856,7 @@ reference = 'ska-nexus'
 
 [[package]]
 name = "ska-tango-base"
-version = "0.11.3+5e1f0fee"
+version = "0.13.0"
 description = "A set of generic base devices for SKA Telescope."
 category = "main"
 optional = false
@@ -932,7 +916,7 @@ reference = 'ska-nexus'
 
 [[package]]
 name = "ska-tmc-common"
-version = "0.1.18"
+version = "0.1.19"
 description = "SKA TMC common contains common classes required for Telescope Monitoring and Control(TMC)."
 category = "main"
 optional = false
@@ -946,7 +930,7 @@ marshmallow = ">=3.14.1,<4.0.0"
 numpy = "1.17.2"
 pytango = "9.3.3"
 ska-ser-logging = ">=0.4.1,<0.5.0"
-ska-tango-base = ">=0.11.3,<0.12.0"
+ska-tango-base = "0.13.0"
 
 [package.source]
 type = "legacy"
@@ -1010,7 +994,7 @@ linecache2 = "*"
 
 [[package]]
 name = "transitions"
-version = "0.8.10"
+version = "0.8.11"
 description = "A lightweight, object-oriented Python state machine implementation with many extensions."
 category = "main"
 optional = false
@@ -1101,7 +1085,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "70ca50b9803802ca2903972a0251e070f67e16a1b5aaf47a610c07a7eeb5be59"
+content-hash = "225c2c7c7d1a612dd91c8705efd80689a0fd5441c76c757b3069eb30d0f3f900"
 
 [metadata.files]
 argparse = [
@@ -1259,8 +1243,8 @@ idna = [
     {file = "idna-3.3.tar.gz", hash = "sha256:9d643ff0a55b762d5cdb124b8eaa99c66322e2157b69160bc32796e824360e6d"},
 ]
 importlib-metadata = [
-    {file = "importlib_metadata-4.11.1-py3-none-any.whl", hash = "sha256:e0bc84ff355328a4adfc5240c4f211e0ab386f80aa640d1b11f0618a1d282094"},
-    {file = "importlib_metadata-4.11.1.tar.gz", hash = "sha256:175f4ee440a0317f6e8d81b7f8d4869f93316170a65ad2b007d2929186c8052c"},
+    {file = "importlib_metadata-4.11.3-py3-none-any.whl", hash = "sha256:1208431ca90a8cca1a6b8af391bb53c1a2db74e5d1cef6ddced95d4b2062edc6"},
+    {file = "importlib_metadata-4.11.3.tar.gz", hash = "sha256:ea4c597ebf37142f827b8f39299579e31685c31d3a438b59f469406afd0f2539"},
 ]
 importlib-resources = [
     {file = "importlib_resources-5.4.0-py3-none-any.whl", hash = "sha256:33a95faed5fc19b4bc16b29a6eeae248a3fe69dd55d4d229d2b480e23eeaad45"},
@@ -1334,8 +1318,8 @@ linecache2 = [
     {file = "linecache2-1.0.0.tar.gz", hash = "sha256:4b26ff4e7110db76eeb6f5a7b64a82623839d595c2038eeda662f2a2db78e97c"},
 ]
 mako = [
-    {file = "Mako-1.1.6-py2.py3-none-any.whl", hash = "sha256:afaf8e515d075b22fad7d7b8b30e4a1c90624ff2f3733a06ec125f5a5f043a57"},
-    {file = "Mako-1.1.6.tar.gz", hash = "sha256:4e9e345a41924a954251b95b4b28e14a301145b544901332e658907a7464b6b2"},
+    {file = "Mako-1.2.0-py3-none-any.whl", hash = "sha256:23aab11fdbbb0f1051b93793a58323ff937e98e34aece1c4219675122e57e4ba"},
+    {file = "Mako-1.2.0.tar.gz", hash = "sha256:9a7c7e922b87db3686210cf49d5d767033a41d4010b284e747682c92bddd8b39"},
 ]
 markupsafe = [
     {file = "MarkupSafe-2.1.0-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:3028252424c72b2602a323f70fbf50aa80a5d3aa616ea6add4ba21ae9cc9da4c"},
@@ -1380,8 +1364,8 @@ markupsafe = [
     {file = "MarkupSafe-2.1.0.tar.gz", hash = "sha256:80beaf63ddfbc64a0452b841d8036ca0611e049650e20afcb882f5d3c266d65f"},
 ]
 marshmallow = [
-    {file = "marshmallow-3.14.1-py3-none-any.whl", hash = "sha256:04438610bc6dadbdddb22a4a55bcc7f6f8099e69580b2e67f5a681933a1f4400"},
-    {file = "marshmallow-3.14.1.tar.gz", hash = "sha256:4c05c1684e0e97fe779c62b91878f173b937fe097b356cd82f793464f5bc6138"},
+    {file = "marshmallow-3.15.0-py3-none-any.whl", hash = "sha256:ff79885ed43b579782f48c251d262e062bce49c65c52412458769a4fb57ac30f"},
+    {file = "marshmallow-3.15.0.tar.gz", hash = "sha256:2aaaab4f01ef4f5a011a21319af9fce17ab13bf28a026d1252adab0e035648d5"},
 ]
 mccabe = [
     {file = "mccabe-0.6.1-py2.py3-none-any.whl", hash = "sha256:ab8a6258860da4b6677da4bd2fe5dc2c659cff31b3ee4f7f5d64e79735b80d42"},
@@ -1645,10 +1629,6 @@ six = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
     {file = "six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"},
 ]
-ska-dish-master-mid = [
-    {file = "ska-dish-master-mid-0.8.5.tar.gz", hash = "md5:1099eb3f8f3518dcb74a3ea387c2e95e"},
-    {file = "ska_dish_master_mid-0.8.5-py3-none-any.whl", hash = "md5:93d7a3c875d1a5d18da2423905a2bec0"},
-]
 ska-ser-log-transactions = [
     {file = "ska_ser_log_transactions-0.2.2+ae0f5c92-py3-none-any.whl", hash = "md5:1cfedd3c6dbde4e158cb56c24301bc4d"},
     {file = "ska_ser_log_transactions-0.2.2+ae0f5c92.tar.gz", hash = "md5:69f848132c2d5b3e104563c10812c94e"},
@@ -1662,8 +1642,8 @@ ska-ser-skuid = [
     {file = "ska_ser_skuid-3.3.3-py3-none-any.whl", hash = "md5:d5803861cfe56450540360b445c9dfcc"},
 ]
 ska-tango-base = [
-    {file = "ska_tango_base-0.11.3+5e1f0fee-py3-none-any.whl", hash = "md5:11f63b9cbad5095f9ea439b9d41262b3"},
-    {file = "ska_tango_base-0.11.3+5e1f0fee.tar.gz", hash = "md5:e16fe481c7bed2adfa222fe92c9fd3a0"},
+    {file = "ska_tango_base-0.13.0-py3-none-any.whl", hash = "md5:845a1bdd56ebac92e0d5c5ff3838d5c5"},
+    {file = "ska_tango_base-0.13.0.tar.gz", hash = "md5:4b1af01cd9168f8f0f7e6ed81f0cac3d"},
 ]
 ska-telescope-model = [
     {file = "ska-telescope-model-1.3.1.tar.gz", hash = "md5:f15441afc500f210c3f21f2474973767"},
@@ -1674,8 +1654,8 @@ ska-tmc-cdm = [
     {file = "ska_tmc_cdm-6.0.4-py3-none-any.whl", hash = "md5:c9a0f2146842bad30ed1ff2ff957c102"},
 ]
 ska-tmc-common = [
-    {file = "ska-tmc-common-0.1.18.tar.gz", hash = "md5:3055c516c10afd07b40c623418f39d4b"},
-    {file = "ska_tmc_common-0.1.18-py3-none-any.whl", hash = "md5:86bcc9bfcca2e71964849a98ee56342c"},
+    {file = "ska-tmc-common-0.1.19.tar.gz", hash = "md5:5d0bcb3613fac6a56acd96f7f7a965a7"},
+    {file = "ska_tmc_common-0.1.19-py3-none-any.whl", hash = "md5:d3da1e0579e87c97ce0096af2495d93f"},
 ]
 tango-simlib = [
     {file = "tango_simlib-0.9.2-py2-none-any.whl", hash = "sha256:0417ba43514fb9de51d0e01b8f76b384fae72ade92687e12ed49149e1b90a796"},
@@ -1697,8 +1677,8 @@ traceback2 = [
     {file = "traceback2-1.4.0.tar.gz", hash = "sha256:05acc67a09980c2ecfedd3423f7ae0104839eccb55fc645773e1caa0951c3030"},
 ]
 transitions = [
-    {file = "transitions-0.8.10-py2.py3-none-any.whl", hash = "sha256:2e9de3c453fafe3a8afef2c2bdc47e30a7a73e32d88f793ad4c1b6246f0cc364"},
-    {file = "transitions-0.8.10.tar.gz", hash = "sha256:b0385975a842e885c1a55c719d2f90164471665794d39d51f9eb3f11e1d9c8ac"},
+    {file = "transitions-0.8.11-py2.py3-none-any.whl", hash = "sha256:9525dd9b708b0a54bb4562a06a483d237e75c94547ba9831c81c6872d0ea1522"},
+    {file = "transitions-0.8.11.tar.gz", hash = "sha256:7b20d32906ea4d60ee6f6c1f5dc9c9f178802425c5b155213eb0f25c277f04e4"},
 ]
 typed-ast = [
     {file = "typed_ast-1.5.2-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:183b183b7771a508395d2cbffd6db67d6ad52958a5fdc99f450d954003900266"},

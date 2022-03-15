@@ -54,6 +54,9 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             sleep_time,
         )
 
+        # New change for v0.13.0
+        self.op_state_model = op_state_model
+
         self.update_device_info(sdp_master_dev_name)
         self._command_executor = CommandExecutor(
             logger,

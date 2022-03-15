@@ -66,16 +66,22 @@ class SdpMasterLeafNode(SKABaseDevice):
                 (ResultCode, str)
             """
             super().do()
-            device = self.target
+            # device = self.target
 
-            device._build_state = "{},{},{}".format(
-                release.name, release.version, release.description
-            )
-            device._version_id = release.version
-            device.op_state_model.perform_action("component_on")
-            device.component_manager._command_executor.add_command_execution(
-                "0", "Init", ResultCode.OK, ""
-            )
+            # device._build_state = "{},{},{}".format(
+            #     release.name, release.version, release.description
+            # )
+            # device._version_id = release.version
+            # device.op_state_model.perform_action("component_on")
+
+            # device.component_manager._command_executor.add_command_execution(
+            #     "0", "Init", ResultCode.OK, ""
+            # )
+
+            # New change for v0.13.0
+            self.op_state_model = TMCOpStateModel(logger=self.logger)
+            self.op_state_model.perform_action("component_on")
+
             return (ResultCode.OK, "")
 
     def always_executed_hook(self):

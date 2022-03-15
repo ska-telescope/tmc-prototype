@@ -15,9 +15,16 @@ class SdpMLNCommand(TmcLeafNodeCommand):
         adapter_factory=None,
         logger=None,
     ):
-        super().__init__(target, logger)
+        # super().__init__(target, logger)
+
+        # New change for v0.13.0
+        super().__init__(logger)
+
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory or AdapterFactory()
+
+        # New change for v0.13.0
+        self.target = target
 
     def check_unresponsive(self):
         component_manager = self.target
