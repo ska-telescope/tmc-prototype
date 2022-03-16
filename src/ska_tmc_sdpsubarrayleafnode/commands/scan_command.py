@@ -24,16 +24,13 @@ class Scan(AbstractScanEnd):
         :param argin: The string in JSON format. The JSON contains following values:
 
         Example:
-        {
+            {
              "interface": "https://schema.skao.int/ska-sdp-scan/0.3",
              "scan_id": 1
-        }
-
-        Note: Enter input as without spaces: {"interface":"https://schema.skao.int/ska-sdp-scan/0.3","scan_id":1}
-
+            }
+        
         return:
             None
-
         """
 
         res_code, message = self.init_adapter()

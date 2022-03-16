@@ -5,21 +5,6 @@
 
 # Python code to execute, usually for sys.path manipulation such as
 # pygtk.require().
-# init-hook='
-;     import sys;
-;     sys.path.append("./ska-tmc/ska-dish-master-mid");
-;     sys.path.append("./ska-tmc/ska-dish-master-mid/src");
-;     sys.path.append("./ska-tmc/ska-tmc-cspsubarrayleafnode-mid");
-;     sys.path.append("./ska-tmc/ska-tmc-dishleafnode-mid");
-;     sys.path.append("./ska-tmc/ska-tmc-cspmasterleafnode-mid");
-;     sys.path.append("./ska-tmc/ska-tmc-sdpsubarrayleafnode-mid");
-;     sys.path.append("./ska-tmc/ska-tmc-sdpmasterleafnode-mid");
-;     sys.path.append("./ska-tmc/ska-tmc-mccssubarrayleafnode-low");
-;     sys.path.append("./ska-tmc/ska-tmc-mccsmasterleafnode-low");
-;     sys.path.append("./ska-tmc/ska-tmc-subarraynode-low");
-;     sys.path.append("./ska-tmc/ska-tmc-centralnode-low");
-;     sys.path.append("/usr/local/lib/python3.5/dist-packages");
-;     sys.path.append("/venv/lib/python3.5/site-packages")'
 
 # Profiled execution.
 profile=no

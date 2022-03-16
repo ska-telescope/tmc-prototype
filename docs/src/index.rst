@@ -4,20 +4,14 @@
    contain the root `toctree` directive.
 
 Welcome to SKA-TMC-LEAFNODES documentation!
-=========================================
+===========================================
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 4
    :caption: Contents:
 
-   Dish Leaf Node<DishLeafNode>
-   CSP Master Leaf Node<CspMasterLeafNode>
-   SDP Subarray Leaf Node<SdpSubarrayLeafNode>
-   CSP Subarray Leaf Node<CspSubarrayLeafNode>
-   SDP Master Leaf Node<SdpMasterLeafNode>
-   MCCS Master Leaf Node<MccsMasterLeafNode>
-   MCCS Subarray Leaf Node<MccsSubarrayLeafNode>
-
+   ska_tmc_sdpmasterleafnode
+   
 
 Indices and tables
 ==================
