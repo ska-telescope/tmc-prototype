@@ -49,6 +49,11 @@ def sdp_master_device():
     return "mid_sdp/elt/master"
 
 
+@pytest.fixture
+def csp_master_device():
+    return "mid_csp/elt/master"
+
+
 @pytest.fixture()
 def devices_to_load():
     return (
