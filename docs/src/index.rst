@@ -19,14 +19,14 @@ This project is developing the TMC Leaf Nodes component of the Telescope Monitor
    :maxdepth: 1
    :caption: SDP Master Leaf Node
 
-   sdpmasterleafnode/index
+   sdpmasterleafnode/ska_tmc_sdpmasterleafnode
 
 
 .. toctree::
    :maxdepth: 1
    :caption: SDP Subarray Leaf Node
 
-   sdpsubarrayleafnode/index
+   sdpsubarrayleafnode/ska_tmc_sdpsubarrayleafnode
 
 Indices and tables
 ------------------
