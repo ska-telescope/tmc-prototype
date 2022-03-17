@@ -1,21 +1,37 @@
-.. SKA-TMC-LEAFNODES documentation master file, created by
-   sphinx-quickstart on Thu Jan 31 16:54:35 2019.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+This project is developing the TMC Leaf Nodes component of the Telescope Monitoring and Control (TMC) prototype, for the `Square Kilometre Array`_.
 
-Welcome to SKA-TMC-LEAFNODES documentation!
-===========================================
+.. _Square Kilometre Array: https://skatelescope.org/
 
 .. toctree::
-   :maxdepth: 4
-   :caption: Contents:
+   :maxdepth: 1
+   :caption: Getting started
 
-   ska_tmc_sdpmasterleafnode
+   getting_started/getting_started
    
+.. toctree::
+   :maxdepth: 1
+   :caption: Developer guide
+
+   developer_guide/code_quality
+
+
+.. toctree::
+   :maxdepth: 1
+   :caption: SDP Master Leaf Node
+
+   sdpmasterleafnode/index
+
+
+.. toctree::
+   :maxdepth: 1
+   :caption: SDP Subarray Leaf Node
+
+   sdpsubarrayleafnode/index
 
 Indices and tables
-==================
-
+------------------
 * :ref:`genindex`
 * :ref:`modindex`
+* :ref:`search`
+
 * :ref:`search`
