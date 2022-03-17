@@ -35,8 +35,3 @@ Test coverage
 
 TMC Leaf Nodes uses pytest to test its code, with the pytest-cov plugin for
 measuring coverage.
-
-
-
-
-

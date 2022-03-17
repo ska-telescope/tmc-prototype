@@ -1,6 +1,6 @@
 apiVersion: v2
 name: test-parent
-description: An umbrella Helm chart for SKA-TMC-LEAFNODES deployment.
+description: An umbrella Helm chart for ska-tmc-leafnodes deployment.
 type: application
 version: 0.0.6
 appVersion: 0.3.6

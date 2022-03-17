@@ -22,14 +22,6 @@ ska\_tmc\_sdpsubarrayleafnode._sdp\_subarray\_leaf\_node module
    :show-inheritance:
 
 
-ska\_tmc\_sdpsubarrayleafnode.release module
---------------------------------------------
-
-.. automodule:: ska_tmc_sdpsubarrayleafnode.release
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Module contents
 ---------------
 

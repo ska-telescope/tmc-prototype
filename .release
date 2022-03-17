@@ -13,7 +13,5 @@ release=0.8.13
 tag=0.8.13
 tag_description=Rename repository ska-tmc to ska-tmc-leafnodes.
 release_notes=This release contains:<br/><ul><li>Rename repository from ska-tmc to ska-tmc-leafnodes.</li></ul><br/>
-gitlab_username=kalyanithigale
-private_token=4QxYhMuKRckxu_TQsJAF
 
 

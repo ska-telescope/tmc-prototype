@@ -22,14 +22,6 @@ ska\_tmc\_sdpmasterleafnode._sdp\_master\_leaf\_node module
    :show-inheritance:
 
 
-ska\_tmc\_sdpmasterleafnode.release module
-------------------------------------------
-
-.. automodule:: ska_tmc_sdpmasterleafnode.release
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Module contents
 ---------------
 
