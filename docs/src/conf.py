@@ -14,7 +14,17 @@
 #
 
 autodoc_mock_imports = [
-    "PyTango",
+    "astropy",
+    "backoff",
+    "fire",
+    "jsonschema",
+    "numpy",
+    "pyfabil",
+    "scipy",
+    "ska_tango_base",
+    "tango",
+    "uritools",
+    "yaml",
     "tango",
     "tango.server",
     "run",
@@ -22,54 +32,31 @@ autodoc_mock_imports = [
     "command",
     "future",
     "future.utils",
-    "ska",
-    "ska.base",
-    "ska.base.SKABaseDevice",
-    "ska.base.SKAMaster",
-    "ska.base.SKASubarray",
-    "katpoint",
     "numpy",
     "marshmallow",
-    "ska-tmc-cdm.messages",
-    "ska-tmc-cdm.schemas",
-    "AssignResourcesRequest",
+    "ska_tmc_cdm",
     "CODEC",
     "ValidationError",
     "ska_telmodel",
-    "ska_tmc_subarraynode_low",
-    "ska_tmc_subarraynode_low.ska_tmc_subarraynode_low",
-    "ska_tmc_centralnode_low",
-    "ska_tmc_centralnode_low.ska_tmc_centralnode_low",
-    "tmc",
-    "ska_tmc_cspsubarrayleafnode_mid",
-    "ska_tmc_cspsubarrayleafnode_mid.ska_tmc_cspsubarrayleafnode_mid",
-    "importlib.resources", 
-    "ska_tmc_mccsmasterleafnode_low", 
-    "ska_tmc_mccsmasterleafnode_low.ska_tmc_mccsmasterleafnode_low",
-    "ska_tmc_mccssubarrayleafnode_low", 
-    "ska_tmc_mccssubarrayleafnode-low.ska_tmc_mccssubarrayleafnode_low", 
-    "ska_dish_master_mid",
-    "tango_simlib", 
-    "ska_tmc_dishleafnode-mid", 
-    "ska_tmc_dishleafnode_mid.dish_leaf_node",
+    "ska_ser_skuid",
+    "transitions",
+    "ska_tmc_common",
+    "ska_ser_log_transactions"
 ]
 
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath("../../"))
-
-import sphinx_rtd_theme
+sys.path.insert(0, os.path.abspath("../../src"))
 
 
 def setup(app):
-    app.add_stylesheet("css/custom.css")
-
+    app.add_css_file('css/custom.css')
 
 # -- Project information -----------------------------------------------------
 
-project = "ska-tmc"
-copyright = "2019, NCRA India"
+project = "ska-tmc-leafnodes"
+copyright = "2021, NCRA India"
 author = "NCRA India"
 
 # The short X.Y version
@@ -91,6 +78,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.doctest",
     "sphinx.ext.githubpages",
+    "sphinx.ext.napoleon"
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -153,7 +141,7 @@ html_static_path = ["_static"]
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "ska-tmcdoc"
+htmlhelp_basename = "tmcleafnodesdoc"
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -162,12 +150,15 @@ latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     #
     # 'papersize': 'letterpaper',
+
     # The font size ('10pt', '11pt' or '12pt').
     #
     # 'pointsize': '10pt',
+
     # Additional stuff for the LaTeX preamble.
     #
     # 'preamble': '',
+
     # Latex figure (float) alignment
     #
     # 'figure_align': 'htbp',
@@ -177,13 +168,8 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (
-        master_doc,
-        "ska-tmc.tex",
-        "ska-tmc Documentation",
-        "NCRA India",
-        "manual",
-    ),
+    (master_doc, "TMCLeafnodes.tex", "TMC Leaf Nodes Documentation",
+     "NCRA India", "manual"),
 ]
 
 
@@ -191,7 +177,10 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "ska-tmc", "SKA-TMC Documentation", [author], 1)]
+man_pages = [
+    (master_doc, "tmcleafnodes", "TMC Leaf Nodes Documentation",
+     [author], 1)
+]
 
 
 # -- Options for Texinfo output ----------------------------------------------
@@ -200,15 +189,9 @@ man_pages = [(master_doc, "ska-tmc", "SKA-TMC Documentation", [author], 1)]
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (
-        master_doc,
-        "SKA-TMC",
-        "SKA-TMC Documentation",
-        author,
-        "SKA-TMC",
-        "One line description of project.",
-        "Miscellaneous",
-    ),
+    (master_doc, "tmcleafnodes", "TMC Leaf Nodes Documentation",
+     author, "tmcleafnodes", "One line description of project.",
+     "Miscellaneous"),
 ]
 
 
