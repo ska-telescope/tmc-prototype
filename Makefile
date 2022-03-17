@@ -1,14 +1,14 @@
-# Project makefile for a ska-tmc project. You should normally only need to modify
+# Project makefile for a ska-tmc-leafnodes project. You should normally only need to modify
 # CAR_OCI_REGISTRY_USER and PROJECT below.
 
 # CAR_OCI_REGISTRY_HOST, CAR_OCI_REGISTRY_USER and PROJECT are combined to define
 # the Docker tag for this project. The definition below inherits the standard
 # value for CAR_OCI_REGISTRY_HOST (artefact.skao.int) and overwrites
 # CAR_OCI_REGISTRY_USER and PROJECT to give a final Docker tag of
-# artefact.skao.int/ska-tmc
+# artefact.skao.int/ska-tmc-leafnodes
 
 CAR_OCI_REGISTRY_HOST:=artefact.skao.int
-PROJECT = ska-tmc
+PROJECT = ska-tmc-leafnodes
 PYTHON_SWITCHES_FOR_FLAKE8=--ignore=W503,E203 --max-line-length=180
 TANGO_HOST ?= tango-databaseds:10000 ## TANGO_HOST connection to the Tango DS
 PYTHON_VARS_BEFORE_PYTEST ?= PYTHONPATH=.:./src \
@@ -21,7 +21,7 @@ ADD_ARGS ?= ## Additional args to pass to pytest
 
 # KUBE_NAMESPACE defines the Kubernetes Namespace that will be deployed to
 # using Helm.  If this does not already exist it will be created
-KUBE_NAMESPACE ?= ska-tmc
+KUBE_NAMESPACE ?= ska-tmc-leafnodes
 
 # HELM_RELEASE is the release that all Kubernetes resources will be labelled
 # with
@@ -33,7 +33,7 @@ UMBRELLA_CHART_PATH ?= charts/$(HELM_CHART)/
 K8S_CHARTS ?= ska-tmc-leafnodes test-parent## list of charts
 K8S_CHART ?= $(HELM_CHART)
 
-TEST_VERSION ?= 0.8.12
+TEST_VERSION ?= 0.8.14
 CI_REGISTRY ?= gitlab.com
 CUSTOM_VALUES = --set tmc-leafnodes.sdpleafnodes.image.tag=$(VERSION)
 K8S_TEST_IMAGE_TO_TEST=$(CAR_OCI_REGISTRY_HOST)/$(PROJECT):$(VERSION)
@@ -61,8 +61,8 @@ ITANGO_DOCKER_IMAGE = $(CAR_OCI_REGISTRY_HOST)/ska-tango-images-tango-itango:9.3
 # name of the pod running the k8s_tests
 K8S_TEST_RUNNER = test-runner-$(HELM_RELEASE)
 
-CI_PROJECT_PATH_SLUG ?= ska-tmc
-CI_ENVIRONMENT_SLUG ?= ska-tmc
+CI_PROJECT_PATH_SLUG ?= ska-tmc-leafnodes
+CI_ENVIRONMENT_SLUG ?= ska-tmc-leafnodes
 $(shell echo 'global:\n  annotations:\n    app.gitlab.com/app: $(CI_PROJECT_PATH_SLUG)\n    app.gitlab.com/env: $(CI_ENVIRONMENT_SLUG)' > gilab_values.yaml)
 
 ifeq ($(MAKECMDGOALS),python-test)

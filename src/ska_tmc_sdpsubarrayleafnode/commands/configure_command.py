@@ -62,10 +62,10 @@ class Configure(SdpSLNCommand):
         :param argin: The string in JSON format. The JSON contains following values:
 
         Example:
-        {
-          "interface": "https://schema.skao.int/ska-sdp-configure/0.3",
-          "scan_type": "science_A"
-        }
+            {
+            "interface": "https://schema.skao.int/ska-sdp-configure/0.3",
+            "scan_type": "science_A"
+            }
 
         return:
             None

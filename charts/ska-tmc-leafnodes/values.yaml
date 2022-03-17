@@ -4,14 +4,14 @@ xauthority: "~/.Xauthority"
 enabled: true
 
 system: SW-infrastructure
-subsystem: ska-tmc
+subsystem: ska-tmc-leafnodes
 telescope: SKA-mid
 
 subarray_count: 1
 dishes: ["01"]
 
 labels:
-  app: ska-tmc
+  app: ska-tmc-leafnodes
 
 global:
   minikube: true
@@ -40,8 +40,8 @@ itango:
 sdpleafnodes:
   image:
     registry: artefact.skao.int
-    image: ska-tmc
-    tag: 0.8.12
+    image: ska-tmc-leafnodes
+    tag: 0.8.14
     pullPolicy: IfNotPresent
 
 resources:
