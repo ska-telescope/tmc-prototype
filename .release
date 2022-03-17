@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc-leafnodes"""
-version="0.8.13"
+version="0.8.14"
 version_info=version.split(".")
 description="""SKA-TMC-LEAFNODES"""
 author="Team NCRA"
@@ -9,9 +9,9 @@ author_email="telmgt-internal@googlegroups.com"
 license="""BSD-3-Clause"""
 url="""https://www.skaobservatory.org"""
 copyright=""""""
-release=0.8.13
-tag=0.8.13
-tag_description=Rename repository ska-tmc to ska-tmc-leafnodes.
+release=0.8.14
+tag=0.8.14
+tag_description=Rename ska-tmc repository  to ska-tmc-leafnodes.
 release_notes=This release contains:<br/><ul><li>Rename repository from ska-tmc to ska-tmc-leafnodes.</li></ul><br/>
 
 
