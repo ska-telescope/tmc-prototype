@@ -38,8 +38,3 @@ Module contents
    :undoc-members:
    :show-inheritance:
 
-
-Note: Simulator for SDP Master device is available. It enables SDP Master Leaf Node to be deployed 
-to execute in standalone mode. To run SDP Master Leaf Node in standalone mode, set STANDALONE_MODE
-environment variable to "TRUE". The SDP Master simulator device executes inside the SDP Master Leaf 
-Node device server. As of now the device has to be manually added in tango database.
