@@ -95,18 +95,3 @@ def get_sdpmln_command_obj(command_class):
     command_obj = command_class(cm, cm.op_state_model, adapter_factory, skuid)
     return cm, command_obj, adapter_factory
 
-
-def get_cspmln_command_obj(command_class):
-    """Returns component manager and command class object for Csp Master Leaf Node"""
-    cm, start_time = create_cm("CspMLNComponentManager", CSP_MASTER_DEVICE)
-    elapsed_time = time.time() - start_time
-    logger.info(
-        "checked %s device in %s", cm.get_device().dev_name, elapsed_time
-    )
-    adapter_factory = HelperAdapterFactory()
-
-    attrs = {"fetch_skuid.return_value": 123}
-    skuid = mock.Mock(**attrs)
-    cm._csp_master_dev_name = CSP_MASTER_DEVICE
-    command_obj = command_class(cm, cm.op_state_model, adapter_factory, skuid)
-    return cm, command_obj, adapter_factory
