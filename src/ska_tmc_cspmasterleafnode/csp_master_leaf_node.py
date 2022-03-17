@@ -9,7 +9,6 @@ from tango import AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
 
 from ska_tmc_cspmasterleafnode import release
-
 from ska_tmc_cspmasterleafnode.manager import CspMLNComponentManager
 
 __all__ = ["CspMasterLeafNode", "main"]

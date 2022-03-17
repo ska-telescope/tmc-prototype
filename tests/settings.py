@@ -94,4 +94,3 @@ def get_sdpmln_command_obj(command_class):
     cm._sdp_master_dev_name = SDP_MASTER_DEVICE
     command_obj = command_class(cm, cm.op_state_model, adapter_factory, skuid)
     return cm, command_obj, adapter_factory
-
