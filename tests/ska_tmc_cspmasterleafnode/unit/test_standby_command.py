@@ -6,7 +6,7 @@ from ska_tmc_common.test_helpers.helper_adapter_factory import (
 )
 
 from ska_tmc_cspmasterleafnode.commands.standby_command import Standby
-from tests.settings import create_cm, get_cspmln_command_obj, logger
+from tests.settings import create_cm, get_cspmln_command_obj
 
 
 @pytest.mark.cspmln
