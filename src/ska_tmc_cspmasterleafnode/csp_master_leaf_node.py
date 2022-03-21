@@ -9,6 +9,7 @@ from tango import AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
 
 from ska_tmc_cspmasterleafnode import release
+from ska_tmc_cspmasterleafnode.commands import Off, On, Standby
 from ska_tmc_cspmasterleafnode.manager import CspMLNComponentManager
 
 __all__ = ["CspMasterLeafNode", "main"]
@@ -221,25 +222,24 @@ class CspMasterLeafNode(SKABaseDevice):
 
         return cm
 
-    # TODO: This block of code will be uncommented on On, Off and Standby commands are implemented
-    # def init_command_objects(self):
-    #     """
-    #     Initialises the command handlers for commands supported by this device.
-    #     """
-    #     super().init_command_objects()
-    #     args = ()
-    #     for (command_name, command_class) in [
-    #         ("On", On),
-    #         ("Off", Off),
-    #         ("Standby", Standby),
-    #     ]:
-    #         command_obj = command_class(
-    #             self.component_manager,
-    #             self.op_state_model,
-    #             *args,
-    #             logger=self.logger,
-    #         )
-    #         self.register_command_object(command_name, command_obj)
+    def init_command_objects(self):
+        """
+        Initialises the command handlers for commands supported by this device.
+        """
+        super().init_command_objects()
+        args = ()
+        for (command_name, command_class) in [
+            ("On", On),
+            ("Off", Off),
+            ("Standby", Standby),
+        ]:
+            command_obj = command_class(
+                self.component_manager,
+                self.op_state_model,
+                *args,
+                logger=self.logger,
+            )
+            self.register_command_object(command_name, command_obj)
 
 
 # ----------
