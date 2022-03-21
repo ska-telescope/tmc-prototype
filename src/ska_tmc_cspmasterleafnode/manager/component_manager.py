@@ -10,11 +10,7 @@ class CspMLNComponentManager(TmcLeafNodeComponentManager):
     """
     A component manager for The CSP Master Leaf Node component.
 
-    It supports:
-
-    * Monitoring its component, e.g. detect that it has been turned off
-      or on
-    * Controlling the behaviour of CSP Master.
+    It supports in controlling the behaviour of CSP Master.
     """
 
     def __init__(
