@@ -8,6 +8,9 @@ from ska_tmc_common.test_helpers.helper_adapter_factory import (
     HelperAdapterFactory,
 )
 
+from ska_tmc_cspmasterleafnode.manager.component_manager import (
+    CspMLNComponentManager,
+)
 from ska_tmc_sdpmasterleafnode.manager.component_manager import (
     SdpMLNComponentManager,
 )
@@ -22,6 +25,7 @@ TIMEOUT = 100
 
 SDP_SUBARRAY_DEVICE = "mid_sdp/elt/subarray_1"
 SDP_MASTER_DEVICE = "mid_sdp/elt/master"
+CSP_MASTER_DEVICE = "mid_csp/elt/master"
 
 
 def count_faulty_devices(cm):
@@ -43,6 +47,8 @@ def create_cm(cm_class, device):
         cm.get_device()
     elif cm_class == "SdpSLNComponentManager":
         cm = SdpSLNComponentManager(device, op_state_model, logger=logger)
+    elif cm_class == "CspMLNComponentManager":
+        cm = CspMLNComponentManager(device, op_state_model, logger=logger)
     else:
         log_msg = f"Unknown component manager class {cm_class}"
         logger.error(log_msg)
