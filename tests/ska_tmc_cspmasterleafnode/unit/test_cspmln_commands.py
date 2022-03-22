@@ -25,4 +25,5 @@ def cspmln_device(request):
 @pytest.mark.cspmln
 def test_commands(cspmln_device):
     cspmln_device.On()
+    cspmln_device.Off()
     cspmln_device.Standby()
