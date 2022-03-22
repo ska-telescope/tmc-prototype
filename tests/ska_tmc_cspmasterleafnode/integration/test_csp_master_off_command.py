@@ -6,6 +6,7 @@ from ska_tmc_common.dev_factory import DevFactory
 
 from tests.settings import SLEEP_TIME, TIMEOUT, logger
 
+
 def off_command(tango_context, cspmln_name):
     logger.info("%s", tango_context)
     dev_factory = DevFactory()
