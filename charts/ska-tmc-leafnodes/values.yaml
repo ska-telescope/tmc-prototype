@@ -36,7 +36,7 @@ itango:
     tag: 9.3.5
     pullPolicy: IfNotPresent
 
-
+#TODO: We can change it from sdpleafnodes to generic name say leafnodes
 sdpleafnodes:
   image:
     registry: artefact.skao.int
@@ -73,6 +73,14 @@ deviceServers:
     mid:
       file: "data/sdpmasterleafnode.yaml"
       SdpMasterFQDN: "mid_sdp/elt/master"
+  
+  cspmln:
+    enabled: true
+    instances: ["01"]
+    subarray_count: 1
+    mid:
+      file: "data/cspmasterleafnode.yaml"
+      CspMasterFQDN: "mid_csp/elt/master"
 
 nodeSelector: {}
 
