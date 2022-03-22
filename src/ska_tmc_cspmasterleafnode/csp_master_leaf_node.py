@@ -9,6 +9,7 @@ from tango import AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
 
 from ska_tmc_cspmasterleafnode import release
+from ska_tmc_cspmasterleafnode.commands import On, Standby
 from ska_tmc_cspmasterleafnode.manager import CspMLNComponentManager
 
 __all__ = ["CspMasterLeafNode", "main"]
@@ -121,34 +122,6 @@ class CspMasterLeafNode(SKABaseDevice):
     # Commands
     # --------
 
-    def is_Off_allowed(self):
-        """
-        Checks whether this command is allowed to be run in current device state.
-
-        :return: True if this command is allowed to be run in current device state.
-
-        :rtype: boolean
-        """
-        handler = self.get_command_object("Off")
-        return handler.check_allowed()
-
-    @command(dtype_out="DevVarLongStringArray")
-    def Off(self):
-        """
-        This command invokes Off() command on Csp Master.
-        """
-        handler = self.get_command_object("Off")
-        if self.component_manager._command_executor.queue_full:
-            message = """The invocation of the Off command on this device failed.
-            Reason: The command executor rejected the queuing of the command because its queue is full.
-            The Off command has NOT been queued and will not be executed.
-            This device will continue with normal operation."""
-            return [[ResultCode.FAILED], [message]]
-        unique_id = self.component_manager._command_executor.enqueue_command(
-            handler
-        )
-        return [[ResultCode.QUEUED], [str(unique_id)]]
-
     def is_On_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state.
@@ -171,6 +144,34 @@ class CspMasterLeafNode(SKABaseDevice):
             message = """The invocation of the On command on this device failed.
             Reason: The command executor rejected the queuing of the command because its queue is full.
             The On command has NOT been queued and will not be executed.
+            This device will continue with normal operation."""
+            return [[ResultCode.FAILED], [message]]
+        unique_id = self.component_manager._command_executor.enqueue_command(
+            handler
+        )
+        return [[ResultCode.QUEUED], [str(unique_id)]]
+
+    def is_Off_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device state.
+
+        :return: True if this command is allowed to be run in current device state.
+
+        :rtype: boolean
+        """
+        handler = self.get_command_object("Off")
+        return handler.check_allowed()
+
+    @command(dtype_out="DevVarLongStringArray")
+    def Off(self):
+        """
+        This command invokes Off() command on Csp Master.
+        """
+        handler = self.get_command_object("Off")
+        if self.component_manager._command_executor.queue_full:
+            message = """The invocation of the Off command on this device failed.
+            Reason: The command executor rejected the queuing of the command because its queue is full.
+            The Off command has NOT been queued and will not be executed.
             This device will continue with normal operation."""
             return [[ResultCode.FAILED], [message]]
         unique_id = self.component_manager._command_executor.enqueue_command(
@@ -221,25 +222,24 @@ class CspMasterLeafNode(SKABaseDevice):
 
         return cm
 
-    # TODO: This block of code will be uncommented on On, Off and Standby commands are implemented
-    # def init_command_objects(self):
-    #     """
-    #     Initialises the command handlers for commands supported by this device.
-    #     """
-    #     super().init_command_objects()
-    #     args = ()
-    #     for (command_name, command_class) in [
-    #         ("On", On),
-    #         ("Off", Off),
-    #         ("Standby", Standby),
-    #     ]:
-    #         command_obj = command_class(
-    #             self.component_manager,
-    #             self.op_state_model,
-    #             *args,
-    #             logger=self.logger,
-    #         )
-    #         self.register_command_object(command_name, command_obj)
+    def init_command_objects(self):
+        """
+        Initialises the command handlers for commands supported by this device.
+        """
+        super().init_command_objects()
+        args = ()
+        for (command_name, command_class) in [
+            ("On", On),
+            ("Off", Standby),
+            ("Standby", Standby),
+        ]:
+            command_obj = command_class(
+                self.component_manager,
+                self.op_state_model,
+                *args,
+                logger=self.logger,
+            )
+            self.register_command_object(command_name, command_obj)
 
 
 # ----------
