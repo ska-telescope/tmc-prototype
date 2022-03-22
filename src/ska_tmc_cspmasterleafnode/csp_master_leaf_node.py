@@ -151,7 +151,6 @@ class CspMasterLeafNode(SKABaseDevice):
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
 
-    
     def is_Off_allowed(self):
         """
         Checks whether this command is allowed to be run in current device state.
@@ -179,7 +178,6 @@ class CspMasterLeafNode(SKABaseDevice):
             handler
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
-
 
     def is_Standby_allowed(self):
         """
