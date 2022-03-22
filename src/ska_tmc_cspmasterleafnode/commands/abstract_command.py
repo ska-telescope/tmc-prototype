@@ -19,6 +19,10 @@ class CspMLNCommand(TmcLeafNodeCommand):
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory or AdapterFactory()
 
+        # return_code, message = self.init_adapter()
+        # if return_code == ResultCode.FAILED:
+        #     return (return_code, message)
+
     def check_unresponsive(self):
         component_manager = self.target
         devInfo = component_manager.get_device()
@@ -59,15 +63,13 @@ class CspMLNCommand(TmcLeafNodeCommand):
         self.csp_master_adapter = None
         component_manager = self.target
         dev_name = component_manager._csp_master_dev_name
-        devInfo = component_manager.get_device()
         try:
-            if not devInfo.unresponsive:
-                self.csp_master_adapter = (
-                    self._adapter_factory.get_or_create_adapter(
-                        dev_name, AdapterType.BASE
-                    )
+            self.csp_master_adapter = (
+                self._adapter_factory.get_or_create_adapter(
+                    dev_name, AdapterType.BASE
                 )
-        except DeviceUnresponsive as e:
+            )
+        except Exception as e:
             return self.adapter_error_message_result(
                 component_manager.get_device(),
                 e,

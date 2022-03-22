@@ -105,8 +105,6 @@ def get_cspmln_command_obj(command_class):
     )
     adapter_factory = HelperAdapterFactory()
 
-    # attrs = {"fetch_skuid.return_value": 123}
-    # skuid = mock.Mock(**attrs)
     cm._csp_master_dev_name = CSP_MASTER_DEVICE
     command_obj = command_class(cm, cm.op_state_model, adapter_factory)
     return cm, command_obj, adapter_factory
