@@ -16,9 +16,6 @@ class Standby(CspMLNCommand):
         Method to invoke Standby command on Csp Master.
 
         """
-        return_code, message = self.init_adapter()
-        if return_code == ResultCode.FAILED:
-            return (return_code, message)
         self.logger.info(
             f"Invoking Standby command on:{self.csp_master_adapter.dev_name}"
         )
@@ -29,8 +26,6 @@ class Standby(CspMLNCommand):
             return self.generate_command_result(
                 ResultCode.FAILED,
                 f"""The invocation of the Standby command is failed on Csp Master Device {self.csp_master_adapter.dev_name}.
-                Reason: Error in calling the Standby command on Csp Master.
-                The command has NOT been executed.
                 This device will continue with normal operation.""",
             )
         self.logger.info("Standby command is successful on Csp Master device.")

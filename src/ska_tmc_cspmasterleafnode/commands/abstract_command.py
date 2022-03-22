@@ -18,10 +18,7 @@ class CspMLNCommand(TmcLeafNodeCommand):
         super().__init__(target, logger)
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory or AdapterFactory()
-
-        # return_code, message = self.init_adapter()
-        # if return_code == ResultCode.FAILED:
-        #     return (return_code, message)
+        self.init_adapter()
 
     def check_unresponsive(self):
         component_manager = self.target

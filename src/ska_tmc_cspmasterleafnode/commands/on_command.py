@@ -21,12 +21,8 @@ class On(CspMLNCommand):
         Method to invoke On command on Csp Master.
 
         """
-        return_code, message = self.init_adapter()
-        if return_code == ResultCode.FAILED:
-            return (return_code, message)
         self.logger.info(
-            f"""Invoking On command on:
-            {self.csp_master_adapter.dev_name}"""
+            f"Invoking On command on:{self.csp_master_adapter.dev_name}"
         )
         try:
             self.csp_master_adapter.On()
@@ -35,8 +31,6 @@ class On(CspMLNCommand):
             return self.generate_command_result(
                 ResultCode.FAILED,
                 f"""The invocation of the On command is failed on csp Master Device {self.csp_master_adapter.dev_name}.
-                Reason: Error in calling the On command on Csp Master.
-                The command has NOT been executed.
                 This device will continue with normal operation.""",
             )
 
