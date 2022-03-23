@@ -62,25 +62,22 @@ deviceServers:
     enabled: true
     instances: ["01"]
     subarray_count: 1
-    mid:
-      file: "data/sdpsubarrayleafnode.yaml"
-      SdpSubarrayFQDN: "mid_sdp/elt/subarray_1"
+    file: "data/sdpsubarrayleafnode.yaml"
+    SdpSubarrayFQDN: "mid_sdp/elt/subarray_1"
   
   sdpmln:
     enabled: true
     instances: ["01"]
     subarray_count: 1
-    mid:
-      file: "data/sdpmasterleafnode.yaml"
-      SdpMasterFQDN: "mid_sdp/elt/master"
+    file: "data/sdpmasterleafnode.yaml"
+    SdpMasterFQDN: "mid_sdp/elt/master"
   
   cspmln:
     enabled: true
     instances: ["01"]
     subarray_count: 1
-    mid:
-      file: "data/cspmasterleafnode.yaml"
-      CspMasterFQDN: "mid_csp/elt/master"
+    file: "data/cspmasterleafnode.yaml"
+    CspMasterFQDN: "mid_csp/elt/master"
 
 nodeSelector: {}
 
