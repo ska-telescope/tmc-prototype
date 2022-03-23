@@ -1,8 +1,8 @@
-@XTP-4912
+@XTP-5329
 Feature: SdpMasterLeafNode acceptance
 
 	#Test the ability to generically run a a set of commands and that the execution is completed withing 5 seconds.
-	@XTP-4908 @post_deployment @acceptance @SKA_mid
+	@XTP-5330 @post_deployment @acceptance @SKA_mid
 	Scenario: Ability to run commands on SdpMasterLeafNode
 		Given a SdpMasterLeafNode device
 		When I call the command <command_name>
@@ -16,6 +16,6 @@ Feature: SdpMasterLeafNode acceptance
 
 
 	#Check SdpMasterLeafNode node correctly report failed and working devices defined within its scope of monitoring (internal model)
-	@XTP-4909 @post_deployment @acceptance @SKA_mid
+	@XTP-5331 @post_deployment @acceptance @SKA_mid
 	Scenario Outline: Monitor SdpMasterLeafNode sub-devices
 		Given a TANGO ecosystem with a set of devices deployed
