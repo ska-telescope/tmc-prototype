@@ -32,11 +32,7 @@ class SdpSLNEventReceiver(EventReceiver):
         self._stop = False
         self._component_manager = component_manager
 
-    # def stop(self):
-    #     self._stop = True
-
     def run(self):
-        self._logger.info("Inside run method:::::::::")
         while not self._stop:
             with futures.ThreadPoolExecutor(
                 max_workers=self._max_workers
@@ -47,7 +43,6 @@ class SdpSLNEventReceiver(EventReceiver):
             sleep(self._sleep_time)
 
     def subscribe_events(self, devInfo):
-        self._logger.info("Inside subscribe events:::::::::")
         try:
             proxy = self._dev_factory.get_device(devInfo.dev_name)
             proxy.subscribe_event(
@@ -63,18 +58,11 @@ class SdpSLNEventReceiver(EventReceiver):
             )
 
     def handle_obs_state_event(self, evt):
-        self._logger.info("Inside handle obsState method:::::::::")
         if evt.err:
             error = evt.errors[0]
             self._logger.error("%s %s", error.reason, error.desc)
-            # self._component_manager.update_event_failure(evt.device.dev_name())
             self._component_manager.update_event_failure()
             return
-        self._logger.info("Inside handle obs_state:::::::::::::")
         new_value = evt.attr_value.value
-        self._logger.info("New value is::::::::::::: %s", new_value)
-        # self._component_manager.update_device_obs_state(
-        #     evt.device.dev_name(), new_value
-        # )
         self._component_manager.update_device_obs_state(new_value)
         self._logger.info("Obstate value is updated")
