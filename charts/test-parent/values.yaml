@@ -48,5 +48,8 @@ tmc-leafnodes:
     sdpmln:
       enabled: true
 
+    cspmln:
+      enabled: true
+
 ska-taranta:
   enabled: false
