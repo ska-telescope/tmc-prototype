@@ -56,6 +56,10 @@ resources:
 deviceServers:
   mocks:
     enabled: true
+    component:
+      sdp: true
+      csp: true
+      dish: true
     instances: ["01"]
     file: "data/mockdevices.yaml"
 
