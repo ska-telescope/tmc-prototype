@@ -42,7 +42,7 @@ sdpleafnodes:
   image:
     registry: artefact.skao.int
     image: ska-tmc-leafnodes
-    tag: 0.8.14
+    tag: 0.8.15
     pullPolicy: IfNotPresent
 
 resources:
@@ -56,6 +56,10 @@ resources:
 deviceServers:
   mocks:
     enabled: true
+    component:
+      sdp: true
+      csp: true
+      dish: true
     instances: ["01"]
     file: "data/mockdevices.yaml"
 
