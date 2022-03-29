@@ -14,10 +14,10 @@ maintainers:
     email: shraddhab.ska@gmail.com
 dependencies:
 - name: ska-tango-base
-  version: 0.3.5
+  version: 0.3.8
   repository: https://artefact.skao.int/repository/helm-internal
 - name: ska-tango-util
-  version: 0.3.5
+  version: 0.3.7
   repository: https://artefact.skao.int/repository/helm-internal
 - name: ska-tmc-leafnodes
   version: 0.8.14

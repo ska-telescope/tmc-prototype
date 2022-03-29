@@ -36,7 +36,7 @@ K8S_CHART ?= $(HELM_CHART)
 TEST_VERSION ?= 0.8.14
 CI_REGISTRY ?= gitlab.com
 CUSTOM_VALUES = --set tmc-leafnodes.sdpleafnodes.image.tag=$(VERSION)
-K8S_TEST_IMAGE_TO_TEST=$(CAR_OCI_REGISTRY_HOST)/$(PROJECT):$(VERSION)
+K8S_TEST_IMAGE_TO_TEST=$(CAR_OCI_REGISTRY_HOST)/$(PROJECT):$(TEST_VERSION)
 ifneq ($(CI_JOB_ID),)
 CUSTOM_VALUES = --set tmc-leafnodes.sdpleafnodes.image.image=$(PROJECT) \
 	--set tmc-leafnodes.sdpleafnodes.image.registry=$(CI_REGISTRY)/ska-telescope/$(PROJECT) \
@@ -55,7 +55,7 @@ MINIKUBE ?= true ## Minikube or not
 FAKE_DEVICES ?= true ## Install fake devices or not
 TANGO_HOST ?= tango-databaseds:10000## TANGO_HOST connection to the Tango DS
 
-ITANGO_DOCKER_IMAGE = $(CAR_OCI_REGISTRY_HOST)/ska-tango-images-tango-itango:9.3.5
+ITANGO_DOCKER_IMAGE = $(CAR_OCI_REGISTRY_HOST)/ska-tango-images-tango-itango:9.3.8
 
 # Test runner - run to completion job in K8s
 # name of the pod running the k8s_tests
