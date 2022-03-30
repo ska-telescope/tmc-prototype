@@ -17,7 +17,6 @@ server:
           - name: "mid_sdp/elt/master"
           {{- end }}
           {{- if .Values.deviceServers.mocks.component.csp }}
-          - name: "ska_mid/tm_leaf_node/csp_master"
           - name: "mid_csp/elt/master"
           {{- end }}
           {{- if .Values.deviceServers.mocks.component.dish }}

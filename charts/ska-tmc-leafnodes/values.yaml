@@ -36,12 +36,13 @@ itango:
     tag: 9.3.8
     pullPolicy: IfNotPresent
 
-
+#TODO: We can change it from sdpleafnodes to generic name leafnodes. 
+# waiting till the TMC repository organization is agreed as a part of SP-1800
 sdpleafnodes:
   image:
     registry: artefact.skao.int
     image: ska-tmc-leafnodes
-    tag: 0.8.14
+    tag: 0.8.15
     pullPolicy: IfNotPresent
 
 resources:
@@ -55,6 +56,10 @@ resources:
 deviceServers:
   mocks:
     enabled: true
+    component:
+      sdp: true
+      csp: true
+      dish: true
     instances: ["01"]
     file: "data/mockdevices.yaml"
 
@@ -62,17 +67,22 @@ deviceServers:
     enabled: true
     instances: ["01"]
     subarray_count: 1
-    mid:
-      file: "data/sdpsubarrayleafnode.yaml"
-      SdpSubarrayFQDN: "mid_sdp/elt/subarray_1"
+    file: "data/sdpsubarrayleafnode.yaml"
+    SdpSubarrayFQDN: "mid_sdp/elt/subarray_1"
   
   sdpmln:
     enabled: true
     instances: ["01"]
     subarray_count: 1
-    mid:
-      file: "data/sdpmasterleafnode.yaml"
-      SdpMasterFQDN: "mid_sdp/elt/master"
+    file: "data/sdpmasterleafnode.yaml"
+    SdpMasterFQDN: "mid_sdp/elt/master"
+  
+  cspmln:
+    enabled: true
+    instances: ["01"]
+    subarray_count: 1
+    file: "data/cspmasterleafnode.yaml"
+    CspMasterFQDN: "mid_csp/elt/master"
 
 nodeSelector: {}
 
