@@ -38,9 +38,7 @@ tmc-sdpleafnodes:
     mocks:
       enabled: true
       component:
-        csp: true
         sdp: true
-        dish: true
     sdpsln:
       enabled: true
     sdpmln:
