@@ -33,7 +33,7 @@ UMBRELLA_CHART_PATH ?= charts/$(HELM_CHART)/
 K8S_CHARTS ?= ska-tmc-leafnodes test-parent## list of charts
 K8S_CHART ?= $(HELM_CHART)
 
-TEST_VERSION ?= 0.8.15
+TEST_VERSION ?= 0.8.15-dirty
 CI_REGISTRY ?= gitlab.com
 CUSTOM_VALUES = --set tmc-leafnodes.sdpleafnodes.image.tag=$(VERSION)
 K8S_TEST_IMAGE_TO_TEST=$(CAR_OCI_REGISTRY_HOST)/$(PROJECT):$(TEST_VERSION)
@@ -55,7 +55,7 @@ MINIKUBE ?= true ## Minikube or not
 FAKE_DEVICES ?= true ## Install fake devices or not
 TANGO_HOST ?= tango-databaseds:10000## TANGO_HOST connection to the Tango DS
 
-ITANGO_DOCKER_IMAGE = $(CAR_OCI_REGISTRY_HOST)/ska-tango-images-tango-itango:9.3.8
+ITANGO_DOCKER_IMAGE = $(CAR_OCI_REGISTRY_HOST)/ska-tango-images-tango-itango:9.3.9
 
 # Test runner - run to completion job in K8s
 # name of the pod running the k8s_tests
