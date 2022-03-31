@@ -111,7 +111,7 @@ SKA-TMC-SDPLEAFNODES addresses the  following architectural aspects and function
 * [tango-simlib](https://tango-simlib.readthedocs.io/en/latest/)
 * [poetry (1.1.13)](https://python-poetry.org/docs/)
  
-# 3 Installing, configuring and running the ska-tmc-leafnodes
+# 3 Installing, configuring and running the ska-tmc-sdpleafnodes
  
 ## 3.1 Installing dependencies
  

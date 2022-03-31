@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 #
-# This file is part of the SKA-TMC-LEAFNODES project
+# This file is part of the SKA-TMC-SDPLEAFNODES project
 #
 #
 #
 
 """Release information for Python Package"""
 
-name = """ska-tmc-leafnodes"""
+name = """ska-tmc-sdpleafnodes"""
 version = "0.8.7"
 version_info = version.split(".")
 description = """A package consisting of Telescope Monitoring and Control Functionalty."""
