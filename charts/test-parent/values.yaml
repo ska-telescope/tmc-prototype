@@ -41,14 +41,9 @@ tmc-sdpleafnodes:
         csp: true
         sdp: true
         dish: true
-
     sdpsln:
       enabled: true
-    
     sdpmln:
-      enabled: true
-
-    cspmln:
       enabled: true
 
 ska-taranta:

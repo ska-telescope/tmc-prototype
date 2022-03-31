@@ -42,7 +42,7 @@ sdpleafnodes:
     registry: artefact.skao.int
     image: ska-tmc-sdpleafnodes
     tag: 0.1.0
-    pullPolicy: IfNotPresent
+    pullPolicy: Never
 
 resources:
   limits:
@@ -61,27 +61,18 @@ deviceServers:
       dish: true
     instances: ["01"]
     file: "data/mockdevices.yaml"
-
   sdpsln:
     enabled: true
     instances: ["01"]
     subarray_count: 1
     file: "data/sdpsubarrayleafnode.yaml"
     SdpSubarrayFQDN: "mid_sdp/elt/subarray_1"
-  
   sdpmln:
     enabled: true
     instances: ["01"]
     subarray_count: 1
     file: "data/sdpmasterleafnode.yaml"
     SdpMasterFQDN: "mid_sdp/elt/master"
-  
-  cspmln:
-    enabled: true
-    instances: ["01"]
-    subarray_count: 1
-    file: "data/cspmasterleafnode.yaml"
-    CspMasterFQDN: "mid_csp/elt/master"
 
 nodeSelector: {}
 
