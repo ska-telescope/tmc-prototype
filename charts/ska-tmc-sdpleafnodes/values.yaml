@@ -4,14 +4,14 @@ xauthority: "~/.Xauthority"
 enabled: true
 
 system: SW-infrastructure
-subsystem: ska-tmc-leafnodes
+subsystem: ska-tmc-sdpleafnodes
 telescope: SKA-mid
 
 subarray_count: 1
 dishes: ["01"]
 
 labels:
-  app: ska-tmc-leafnodes
+  app: ska-tmc-sdpleafnodes
 
 global:
   minikube: true
@@ -36,13 +36,12 @@ itango:
     tag: 9.3.5
     pullPolicy: IfNotPresent
 
-#TODO: We can change it from sdpleafnodes to generic name leafnodes. 
-# waiting till the TMC repository organization is agreed as a part of SP-1800
+
 sdpleafnodes:
   image:
     registry: artefact.skao.int
-    image: ska-tmc-leafnodes
-    tag: 0.8.15
+    image: ska-tmc-sdpleafnodes
+    tag: 0.1.0
     pullPolicy: IfNotPresent
 
 resources:

@@ -2,7 +2,7 @@ Getting started
 ===============
 
 This page contains instructions for software developers who want to get
-started with usage and development of the TMC Leaf Nodes.
+started with usage and development of the TMC SDP Leaf Nodes.
 
 Background
 ----------
@@ -32,8 +32,8 @@ How to Use
 
 Clone this repo:
 ::
-git clone https://gitlab.com/ska-telescope/ska-tmc-leafnodes.git
-cd ska-tmc-leafnodes
+git clone https://gitlab.com/ska-telescope/ska-tmc-sdpleafnodes.git
+cd ska-tmc-sdpleafnodes
 
 Install dependencies
 ::
