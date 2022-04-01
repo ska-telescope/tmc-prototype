@@ -6,7 +6,7 @@
  * 1.1 - Architecture
  * 1.2 - TMC Functionality
 * 2   - Prerequisites
-* 3   - Installing, configuring and running the ska-tmc-leafnodes (non-containerised environment)
+* 3   - Installing, configuring and running the ska-tmc-sdpleafnodes (non-containerised environment)
  * 3.1 - Installing Dependencies
 * 4   - Testing
  * 4.1 - Unit Testing
@@ -17,15 +17,15 @@
  
 # 1 Introduction
  
-This is the repository for the TMC evolutionary prototype. Ska-tmc-leafnodes aims to realize TMC LeafNodes Monitoring and Control functionality, and utilizes the platform, tools and technology specified for the SKA construction.
+This is the repository for the TMC evolutionary prototype. Ska-tmc-sdpleafnodes aims to realize TMC SdpLeafNodes Monitoring and Control functionality, and utilizes the platform, tools and technology specified for the SKA construction.
  
-The ska-tmc-leafnodes utilizes the base classes created in-line with the SKA Control System Guidelines and Tango coding standards. Developed in **Python 3.7** (PyTango 9.3.3), it is a single repository consisting seven packages - DishLeafNode, CspMasterLeafNode, CspSubarrayLeafNode, SdpMasterLeafNode, SdpSubarrayLeafNode, MccsMasterLeafNode and MccsSubarrayLeafNode.
+The ska-tmc-sdpleafnodes utilizes the base classes created in-line with the SKA Control System Guidelines and Tango coding standards. Developed in **Python 3.7** (PyTango 9.3.3), it is a single repository which releases a single package called ska-tmc-sdpleafnodes. ska-tmc-sdpleafnodes contains two sub packages - SdpMasterLeafNode and SdpSubarrayLeafNode.
 CentralNode device is implementated in a separate gitlab repository which is available at <https://gitlab.com/ska-telescope/ska-tmc-centralnode> .
 SubarrayNode device is implemented in a separate gitlab repository which is available at <https://gitlab.com/ska-telescope/ska-tmc-subarraynode> .
-SKA-TMC-LEAFNODES addresses the  following architectural aspects and functionality:
+SKA-TMC-SDPLEAFNODES addresses the  following architectural aspects and functionality:
  
 ## 1.1 Architecture
-* [x] Use of LMC base classes for development of TMC Leaf nodes.
+* [x] Use of LMC base classes for development of TMC SDP Leaf nodes.
 * [x] Hierarchy of control nodes for Mid and Low- Central Node, Subarray Node, Leaf Node
  
 * [x] Interface between the Dish Leaf Node and Dish(Master simulator)
@@ -111,11 +111,11 @@ SKA-TMC-LEAFNODES addresses the  following architectural aspects and functionali
 * [tango-simlib](https://tango-simlib.readthedocs.io/en/latest/)
 * [poetry (1.1.13)](https://python-poetry.org/docs/)
  
-# 3 Installing, configuring and running the ska-tmc-leafnodes
+# 3 Installing, configuring and running the ska-tmc-sdpleafnodes
  
 ## 3.1 Installing dependencies
  
-Since the SKA-TMC-LEAFNODES is developed using LMC Base and SKA-TMC_Common classes, we need to install them prior to running ska-tmc-leafnodes.
+Since the SKA-TMC-SDPLEAFNODES is developed using LMC Base and SKA-TMC_Common classes, we need to install them prior to running ska-tmc-sdpleafnodes.
  
 Use following commmand to install all necessary dependencies on your virtual environment:       `poetry install`
  
@@ -123,7 +123,7 @@ Use following commmand to install all necessary dependencies on your virtual env
  
 ## 4.1 Unit Testing
  
-As depicted above, the higher level of TMC leaf nodes are dependent on lower level devices in normal operation.
+As depicted above, the higher level of TMC SDP leaf nodes are dependent on lower level devices in normal operation.
 However for better testability, the unit testing is carried out by mocking the dependent devices.
 This enables us to test each of the nodes independently without setting up the entire hierarchy of control nodes.
 In order to execute the entire suit of test cases in the repository, a command in makefile is implemented. \
@@ -133,18 +133,18 @@ The command to run the unit tests in python virtual environment is: `make python
  
 _Note: This section will soon be updated._
  
-Integration Testing is performed on SKA Integration on K8S environment. For this testing TMC-LEAFNODES image is required to
+Integration Testing is performed on SKA Integration on K8S environment. For this testing TMC-SDPLEAFNODES image is required to
 build locally or need to be available on Nexus repository.
 All the Dependent Nodes are mocked in our kubernetes cluster, while integration testing.
 The command to run the Integration tests is: `make k8s-test` \
  
 ## 4.3 Manual Testing
  
-The SKA-TMC-LEAFNODES can be deployed in the development environment. The TMC-LEAFNODES needs to be deployed in kubernetes environment. The deployment consists of real TMC leaf nodes and mocked dependent nodes(CSP,SDP,MCCS).
+The SKA-TMC-SDPLEAFNODES can be deployed in the development environment. The TMC-SDPLEAFNODES needs to be deployed in kubernetes environment. The deployment consists of real TMC SDP leaf nodes and mocked dependent nodes(SDP).
  
 ### 4.3.1 System Requirements
  
-Following are the system requirements to deploy the TMC-LEAFNODES:
+Following are the system requirements to deploy the TMC-SDPLEAFNODES:
  
 Requirement | Minimum | Recommended
 ---- | ---- | ----
@@ -155,7 +155,7 @@ Storage      | 64 GB      | 100 GB
 ### 4.3.2 Deploying TMC
  
 This section is TBD:
-Deploy the TMC-LEAFNODES using `make k8s-install-chart` command.
+Deploy the TMC-SDPLEAFNODES using `make k8s-install-chart` command.
 The `make k8s-watch` command can be used to monitor the pods to ensure all required pods are up and running.
  
  
@@ -171,8 +171,8 @@ The command `make k8s-clean` performs cleanup like deleting the kubernetes names
  
 # 5 Formatting & Linting
  
-[Pylint](http://pylint.pycqa.org/en/stable/), code analysis tool used for the linting in the SKA-TMC-LEAFNODES.
-Configuration for linting is provided in *.pylintrc* file. For the code analysis of entire TMC-LEAFNODES, a command in the
+[Pylint](http://pylint.pycqa.org/en/stable/), code analysis tool used for the linting in the SKA-TMC-SDPLEAFNODES.
+Configuration for linting is provided in *.pylintrc* file. For the code analysis of entire TMC-SDPLEAFNODES, a command in the
 makefile is implemented.
  
 The command used for formatting is: `make python-format`

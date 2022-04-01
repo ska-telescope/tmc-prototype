@@ -8,9 +8,6 @@ from ska_tmc_common.test_helpers.helper_adapter_factory import (
     HelperAdapterFactory,
 )
 
-from ska_tmc_cspmasterleafnode.manager.component_manager import (
-    CspMLNComponentManager,
-)
 from ska_tmc_sdpmasterleafnode.manager.component_manager import (
     SdpMLNComponentManager,
 )
@@ -25,7 +22,6 @@ TIMEOUT = 100
 
 SDP_SUBARRAY_DEVICE = "mid_sdp/elt/subarray_1"
 SDP_MASTER_DEVICE = "mid_sdp/elt/master"
-CSP_MASTER_DEVICE = "mid_csp/elt/master"
 
 
 def count_faulty_devices(cm):
@@ -47,8 +43,6 @@ def create_cm(cm_class, device):
         cm.get_device()
     elif cm_class == "SdpSLNComponentManager":
         cm = SdpSLNComponentManager(device, op_state_model, logger=logger)
-    elif cm_class == "CspMLNComponentManager":
-        cm = CspMLNComponentManager(device, op_state_model, logger=logger)
     else:
         log_msg = f"Unknown component manager class {cm_class}"
         logger.error(log_msg)
@@ -93,18 +87,4 @@ def get_sdpmln_command_obj(command_class):
     skuid = mock.Mock(**attrs)
     cm._sdp_master_dev_name = SDP_MASTER_DEVICE
     command_obj = command_class(cm, cm.op_state_model, adapter_factory, skuid)
-    return cm, command_obj, adapter_factory
-
-
-def get_cspmln_command_obj(command_class):
-    """Returns component manager and command class object for Csp Master Leaf Node"""
-    cm, start_time = create_cm("CspMLNComponentManager", CSP_MASTER_DEVICE)
-    elapsed_time = time.time() - start_time
-    logger.info(
-        "checked %s device in %s", cm.get_device().dev_name, elapsed_time
-    )
-    adapter_factory = HelperAdapterFactory()
-
-    cm._csp_master_dev_name = CSP_MASTER_DEVICE
-    command_obj = command_class(cm, cm.op_state_model, adapter_factory)
     return cm, command_obj, adapter_factory
