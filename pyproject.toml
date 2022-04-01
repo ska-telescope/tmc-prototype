@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "ska-tmc-leafnodes"
-version = "0.8.15"
-description = "SKA-TMC-LEAFNODES"
+name = "ska-tmc-sdpleafnodes"
+version = "0.1.0"
+description = "SKA-TMC-SDPLEAFNODES"
 authors = ["Team NCRA"]
 license = "BSD-3-Clause"
 

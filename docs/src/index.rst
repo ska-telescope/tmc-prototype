@@ -1,4 +1,4 @@
-This project is developing the TMC Leaf Nodes component of the Telescope Monitoring and Control (TMC) prototype, for the `Square Kilometre Array`_.
+This project is developing the TMC SDP Leaf Nodes component of the Telescope Monitoring and Control (TMC) prototype, for the `Square Kilometre Array`_.
 
 .. _Square Kilometre Array: https://skatelescope.org/
 

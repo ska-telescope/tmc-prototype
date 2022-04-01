@@ -2,15 +2,15 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "ska-tmc-leafnodes.name" }}
+{{- define "ska-tmc-sdpleafnodes.name" }}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end }}
 {{/*
 Common labels
 */}}
-{{- define "ska-tmc-leafnodes.labels" }}
-app: {{ template "ska-tmc-leafnodes.name" . }}
-chart: {{ template "ska-tmc-leafnodes.chart" . }}
+{{- define "ska-tmc-sdpleafnodes.labels" }}
+app: {{ template "ska-tmc-sdpleafnodes.name" . }}
+chart: {{ template "ska-tmc-sdpleafnodes.chart" . }}
 release: {{ .Release.Name }}
 heritage: {{ .Release.Service }}
 system: {{ .Values.system }}
@@ -21,7 +21,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "ska-tmc-leafnodes.fullname" -}}
+{{- define "ska-tmc-sdpleafnodes.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -37,6 +37,6 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "ska-tmc-leafnodes.chart" -}}
+{{- define "ska-tmc-sdpleafnodes.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}

@@ -273,9 +273,9 @@ unit-tests.xml
 # Miscellaneous
 .DS_Store
 gilab_values.yaml
-charts/ska-tmc-leafnodes/Chart.lock
+charts/ska-tmc-sdpleafnodes/Chart.lock
 output.yaml
-charts/ska-tmc-leafnodes/charts/
+charts/ska-tmc-sdpleafnodes/charts/
 charts/test-parent/Chart.lock
 charts/test-parent/charts/
 code-coverage

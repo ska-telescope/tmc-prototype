@@ -1,9 +1,9 @@
 apiVersion: v2
-name: ska-tmc-leafnodes
-description: A subchart for ska-tmc-leafnodes deployment.
+name: ska-tmc-sdpleafnodes
+description: A subchart for ska-tmc-sdpleafnodes deployment.
 type: application
-version: 0.8.15
-appVersion: 0.8.15
+version: 0.1.0
+appVersion: 0.1.0
 icon: https://www.skatelescope.org/wp-content/uploads/2016/07/09545_NEW_LOGO_2014.png
 maintainers:
   - name: Aditya Dange
