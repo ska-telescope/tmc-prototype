@@ -19,7 +19,7 @@
  
 This is the repository for the TMC evolutionary prototype. Ska-tmc-sdpleafnodes aims to realize TMC SdpLeafNodes Monitoring and Control functionality, and utilizes the platform, tools and technology specified for the SKA construction.
  
-The ska-tmc-sdpleafnodes utilizes the base classes created in-line with the SKA Control System Guidelines and Tango coding standards. Developed in **Python 3.7** (PyTango 9.3.3), it is a single repository consisting two packages - SdpMasterLeafNode and SdpSubarrayLeafNode.
+The ska-tmc-sdpleafnodes utilizes the base classes created in-line with the SKA Control System Guidelines and Tango coding standards. Developed in **Python 3.7** (PyTango 9.3.3), it is a single repository which releases a single package called ska-tmc-sdpleafnodes. ska-tmc-sdpleafnodes contains two sub packages - SdpMasterLeafNode and SdpSubarrayLeafNode.
 CentralNode device is implementated in a separate gitlab repository which is available at <https://gitlab.com/ska-telescope/ska-tmc-centralnode> .
 SubarrayNode device is implemented in a separate gitlab repository which is available at <https://gitlab.com/ska-telescope/ska-tmc-subarraynode> .
 SKA-TMC-SDPLEAFNODES addresses the  following architectural aspects and functionality:
