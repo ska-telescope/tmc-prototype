@@ -55,7 +55,7 @@ MINIKUBE ?= true ## Minikube or not
 FAKE_DEVICES ?= true ## Install fake devices or not
 TANGO_HOST ?= tango-databaseds:10000## TANGO_HOST connection to the Tango DS
 
-ITANGO_DOCKER_IMAGE = $(CAR_OCI_REGISTRY_HOST)/ska-tango-images-tango-itango:9.3.5
+ITANGO_DOCKER_IMAGE = $(CAR_OCI_REGISTRY_HOST)/ska-tango-images-tango-itango:9.3.9
 
 # Test runner - run to completion job in K8s
 # name of the pod running the k8s_tests
