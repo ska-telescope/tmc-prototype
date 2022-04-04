@@ -39,7 +39,7 @@ katpoint = "1.0a1"
 pytz = "2021.3"
 
 [tool.poetry.dev-dependencies]
-black = "^22.1.0"
+black = "22.3.0"
 pylint = "^2.6.0"
 pytest = "^7.1"
 pytest-bdd = "^5.0.0"
