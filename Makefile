@@ -30,7 +30,7 @@ HELM_RELEASE ?= test
 # UMBRELLA_CHART_PATH Path of the umbrella chart to work with
 HELM_CHART=test-parent
 UMBRELLA_CHART_PATH ?= charts/$(HELM_CHART)/
-HELM_CHARTS_TO_PUBLISH ?= 
+HELM_CHARTS_TO_PUBLISH ?= test-parent
 #K8S_CHARTS ?= ska-tmc-sdpleafnodes test-parent## list of charts
 K8S_CHART ?= $(HELM_CHART)
 
