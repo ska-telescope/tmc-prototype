@@ -42,7 +42,7 @@ join_linting_reports:
 
 include:
 # # # Helm Chart linting and Publish
-# Note: Commenting this part in order to Disable helm chart linting and Publish job on the pipeline 
+# Note: Commenting this part to Disable helm chart linting and Publish job from the pipeline 
 # - project: 'ska-telescope/templates-repository'
 #   file: 'gitlab-ci/includes/helm-chart.gitlab-ci.yml'
 
@@ -56,7 +56,7 @@ include:
 
 # # Docs pages
 - project: 'ska-telescope/templates-repository'
-  file: 'gitlab-ci/includes/docs-pages.gitlab-ci.yml'
+  file: 'gitlab-ci/includes/docs.gitlab-ci.yml'
 
 # k8s steps
 - project: 'ska-telescope/templates-repository'
@@ -67,6 +67,9 @@ include:
 - project: 'ska-telescope/templates-repository'
   file: 'gitlab-ci/includes/finaliser.gitlab-ci.yml'
 
+# Release Automation
+- project: 'ska-telescope/templates-repository'
+  file: 'gitlab-ci/includes/release.gitlab-ci.yml'
 # retry to template job for python-test
 python-test:
   retry: 2
