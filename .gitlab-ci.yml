@@ -42,6 +42,7 @@ join_linting_reports:
 
 include:
 # # # Helm Chart linting and Publish
+# Note: Commenting this part in order to Disable helm chart linting and Publish job on the pipeline 
 # - project: 'ska-telescope/templates-repository'
 #   file: 'gitlab-ci/includes/helm-chart.gitlab-ci.yml'
 
