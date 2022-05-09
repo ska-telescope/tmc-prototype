@@ -72,6 +72,7 @@ class SdpMasterLeafNode(SKABaseDevice):
                 release.name, release.version, release.description
             )
             device._version_id = release.version
+            device.set_change_event("healthState", True, False)
             device.op_state_model.perform_action("component_on")
             device.component_manager._command_executor.add_command_execution(
                 "0", "Init", ResultCode.OK, ""
