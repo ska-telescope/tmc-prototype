@@ -33,7 +33,7 @@ UMBRELLA_CHART_PATH ?= charts/$(HELM_CHART)/
 K8S_CHARTS ?= ska-tmc-sdpleafnodes test-parent## list of charts
 K8S_CHART ?= $(HELM_CHART)
 
-TEST_VERSION ?= 0.8.17
+TEST_VERSION ?= 0.8.18
 CI_REGISTRY ?= gitlab.com
 CUSTOM_VALUES = --set tmc-sdpleafnodes.sdpleafnodes.image.tag=$(VERSION)
 K8S_TEST_IMAGE_TO_TEST=$(CAR_OCI_REGISTRY_HOST)/$(PROJECT):$(VERSION)
@@ -87,10 +87,10 @@ K8S_CHART_PARAMS = --set global.minikube=$(MINIKUBE) \
 	$(CUSTOM_VALUES) \
 	--values gilab_values.yaml
 
-K8S_TEST_TEST_COMMAND = cd .. && $(PYTHON_VARS_BEFORE_PYTEST) $(PYTHON_RUNNER) \
+K8S_TEST_TEST_COMMAND = $(PYTHON_VARS_BEFORE_PYTEST) $(PYTHON_RUNNER) \
 						pytest \
 						$(PYTHON_VARS_AFTER_PYTEST) ./tests \
-						 | tee pytest.stdout && mv build tests/
+						 | tee pytest.stdout
 -include .make/k8s.mk
 -include .make/python.mk
 -include .make/helm.mk
