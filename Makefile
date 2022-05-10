@@ -87,10 +87,10 @@ K8S_CHART_PARAMS = --set global.minikube=$(MINIKUBE) \
 	$(CUSTOM_VALUES) \
 	--values gilab_values.yaml
 
-K8S_TEST_TEST_COMMAND = cd .. && $(PYTHON_VARS_BEFORE_PYTEST) $(PYTHON_RUNNER) \
+K8S_TEST_TEST_COMMAND = $(PYTHON_VARS_BEFORE_PYTEST) $(PYTHON_RUNNER) \
 						pytest \
 						$(PYTHON_VARS_AFTER_PYTEST) ./tests \
-						 | tee pytest.stdout && mv build tests/
+						 | tee pytest.stdout
 -include .make/k8s.mk
 -include .make/python.mk
 -include .make/helm.mk
