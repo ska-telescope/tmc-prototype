@@ -47,7 +47,7 @@ class Configure(SdpSLNCommand):
 
         self.check_op_state("Configure")
         self.check_unresponsive()
-        obs_state_val = component_manager.get_device().obsState
+        obs_state_val = component_manager.get_device().obs_state
         if obs_state_val not in (ObsState.READY, ObsState.IDLE):
             message = f"""Configure command is not allowed in current observation state on device {component_manager.get_device().dev_name}.
                         Reason: The current observation state for observation is {obs_state_val}.

@@ -45,7 +45,7 @@ class EndScan(SdpSLNCommand):
         self.check_op_state("EndScan")
         self.check_unresponsive()
 
-        obs_state_val = component_manager.get_device().obsState
+        obs_state_val = component_manager.get_device().obs_state
 
         if obs_state_val != ObsState.SCANNING:
             message = f"""EndScan command is not allowed in current observation state on device {component_manager.get_device().dev_name}.

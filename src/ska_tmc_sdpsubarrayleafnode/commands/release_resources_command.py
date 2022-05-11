@@ -44,7 +44,7 @@ class ReleaseResources(SdpSLNCommand):
 
         self.check_op_state("ReleaseResources")
         self.check_unresponsive()
-        obs_state_val = component_manager.get_device().obsState
+        obs_state_val = component_manager.get_device().obs_state
         self.logger.info("sdp_subarray_obs_state value is: %s", obs_state_val)
 
         if obs_state_val != ObsState.IDLE:

@@ -47,7 +47,7 @@ class AssignResources(SdpSLNCommand):
         self.check_op_state("AssignResources")
         self.check_unresponsive()
 
-        obs_state_val = component_manager.get_device().obsState
+        obs_state_val = component_manager.get_device().obs_state
         self.logger.info("sdp_subarray_obs_state: %s", obs_state_val)
 
         if obs_state_val not in [ObsState.IDLE, ObsState.EMPTY]:
