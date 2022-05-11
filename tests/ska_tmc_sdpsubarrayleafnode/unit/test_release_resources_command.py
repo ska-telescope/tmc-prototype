@@ -21,7 +21,7 @@ def test_telescope_release_resources_command(
     cm, release_command, adapter_factory = get_sdpsln_command_obj(
         ReleaseResources, obsstate_value=ObsState.IDLE
     )
-    cm.get_device().obsState == ObsState.EMPTY
+    cm.get_device().obs_state == ObsState.EMPTY
     assert release_command.check_allowed()
     (result_code, _) = release_command.do()
     assert result_code == ResultCode.OK

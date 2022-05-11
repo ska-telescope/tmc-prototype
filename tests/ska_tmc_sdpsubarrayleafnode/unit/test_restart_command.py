@@ -22,7 +22,7 @@ def test_telescope_restart_command(tango_context, sdp_subarray_device):
     assert restart_command.check_allowed()
     (result_code, _) = restart_command.do()
     assert result_code == ResultCode.OK
-    cm.get_device().obsState == ObsState.EMPTY
+    cm.get_device().obs_state == ObsState.EMPTY
     adapter = my_adapter_factory.get_or_create_adapter(sdp_subarray_device)
     adapter.proxy.Restart.assert_called()
 

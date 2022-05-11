@@ -47,7 +47,7 @@ def test_abort_command_fail_subarray(tango_context, sdp_subarray_device):
     (result_code, message) = abort_command.do()
     assert result_code == ResultCode.FAILED
     assert sdp_subarray_device in message
-    cm.get_device().obsState == ObsState.ABORTED
+    cm.get_device().obs_state == ObsState.ABORTED
 
 
 @pytest.mark.sdpsln
