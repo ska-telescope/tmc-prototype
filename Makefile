@@ -26,6 +26,7 @@ KUBE_NAMESPACE ?= ska-tmc-sdpleafnodes
 # HELM_RELEASE is the release that all Kubernetes resources will be labelled
 # with
 HELM_RELEASE ?= test
+HELM_CHARTS_TO_PUBLISH=
 
 # UMBRELLA_CHART_PATH Path of the umbrella chart to work with
 HELM_CHART=test-parent
