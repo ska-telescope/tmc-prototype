@@ -44,7 +44,7 @@ class Abort(SdpSLNCommand):
         self.check_op_state("Abort")
         self.check_unresponsive()
 
-        obs_state_val = component_manager.get_device().obsState
+        obs_state_val = component_manager.get_device().obs_state
 
         if obs_state_val not in (
             ObsState.CONFIGURING,

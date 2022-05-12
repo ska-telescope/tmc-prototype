@@ -27,7 +27,7 @@ def test_telescope_obsreset_command(tango_context):
     assert obsreset_command.check_allowed()
     (result_code, _) = obsreset_command.do()
     assert result_code == ResultCode.OK
-    cm.get_device().obsState == ObsState.IDLE
+    cm.get_device().obs_state == ObsState.IDLE
     adapter = adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE)
     adapter.proxy.ObsReset.assert_called()
 

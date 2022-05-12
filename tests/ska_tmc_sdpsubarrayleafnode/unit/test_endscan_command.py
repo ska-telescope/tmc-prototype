@@ -21,7 +21,7 @@ def test_endscan_command(tango_context, sdp_subarray_device):
     assert endscan_command.check_allowed()
     (result_code, _) = endscan_command.do("")
     assert result_code == ResultCode.OK
-    cm.get_device().obsState == ObsState.READY
+    cm.get_device().obs_state == ObsState.READY
     adapter = adapter_factory.get_or_create_adapter(sdp_subarray_device)
     adapter.proxy.EndScan.assert_called()
 
