@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ska-tmc-sdpleafnodes"
-version = "0.8.18"
+version = "0.8.19"
 description = "SKA-TMC-SDPLEAFNODES"
 authors = ["Team NCRA"]
 license = "BSD-3-Clause"
