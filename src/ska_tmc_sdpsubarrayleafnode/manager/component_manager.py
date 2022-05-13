@@ -137,6 +137,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         """
         with self.lock:
             dev_info = self.get_device()
-            dev_info.obsState = obs_state
+            dev_info.obs_state = obs_state
             dev_info.last_event_arrived = time.time()
             dev_info.update_unresponsive(False)

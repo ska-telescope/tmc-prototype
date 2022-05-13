@@ -148,7 +148,7 @@ class AbstractScanEnd(SdpSLNCommand):
         self.check_op_state("Scan/End")
         self.check_unresponsive()
 
-        obs_state_val = component_manager.get_device().obsState
+        obs_state_val = component_manager.get_device().obs_state
 
         if obs_state_val != ObsState.READY:
             message = f"""Scan and End commands are not allowed in current
@@ -194,7 +194,7 @@ class AbstractRestartObsReset(SdpSLNCommand):
         self.check_op_state("Restart/ObsReset")
         self.check_unresponsive()
 
-        obs_state_val = component_manager.get_device().obsState
+        obs_state_val = component_manager.get_device().obs_state
 
         if obs_state_val not in (ObsState.ABORTED, ObsState.FAULT):
             message = f"""ObsReset and Restart commands are not allowed in
