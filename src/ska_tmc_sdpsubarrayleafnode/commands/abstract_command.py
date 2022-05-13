@@ -1,3 +1,6 @@
+# pylint: disable=no-member
+# pylint: disable=abstract-method
+"""Abstract Command for SDP Subarray Leaf Node"""
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.adapters import AdapterFactory, AdapterType
@@ -11,10 +14,10 @@ from tango import DevState
 
 
 class SdpSLNCommand(TmcLeafNodeCommand):
-    def __init__(self, target, *args, logger=None, **kwargs):
-        super().__init__(target, *args, logger=logger, **kwargs)
+    """SDP Subarray Leaf Node Class"""
 
     def check_unresponsive(self):
+        """Checks whether the device is unresponsive"""
         component_manager = self.target
         devInfo = component_manager.get_device()
         if devInfo is None or devInfo.unresponsive:
@@ -26,20 +29,22 @@ class SdpSLNCommand(TmcLeafNodeCommand):
             )
 
     def check_op_state(self, command_name):
+        """Checks the operational state of the device"""
         if self.op_state_model.op_state in [
             DevState.FAULT,
             DevState.UNKNOWN,
             DevState.DISABLE,
         ]:
             raise CommandNotAllowed(
-                """The invocation of the %s command on this device is not allowed.
-                Reason: The current operational state is %s.
+                f"""The invocation of the {command_name} command on this
+                device is not allowed.
+                Reason: The current operational state is
+                {self.op_state_model.op_state}.
                 The command has NOT been executed.
-                This device will continue with normal operation.""",
-                command_name,
-                self.op_state_model.op_state,
+                This device will continue with normal operation."""
             )
 
+    # pylint: disable=attribute-defined-outside-init
     def init_adapter(self):
         self.sdp_subarray_adapter = None
         component_manager = self.target
@@ -60,11 +65,12 @@ class SdpSLNCommand(TmcLeafNodeCommand):
 
         return ResultCode.OK, ""
 
-    def check_allowed(self):
-        return super().check_allowed()
+    # pylint: enable=attribute-defined-outside-init
 
 
 class AbstractOnOff(SdpSLNCommand):
+    """Abstract On and Off class"""
+
     def __init__(
         self,
         target,
@@ -90,11 +96,12 @@ class AbstractOnOff(SdpSLNCommand):
         """
         if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
             raise CommandNotAllowed(
-                """The invocation of the command on this device is not allowed.
-                Reason: The current operational state is %s.
+                f"""The invocation of the command on this device
+                is not allowed.
+                Reason: The current operational state is
+                {self.op_state_model.op_state}.
                 The command has NOT been executed.
-                This device will continue with normal operation.""",
-                self.op_state_model.op_state,
+                This device will continue with normal operation."""
             )
 
         component_manager = self.target
@@ -111,6 +118,8 @@ class AbstractOnOff(SdpSLNCommand):
 
 
 class AbstractScanEnd(SdpSLNCommand):
+    """Abstract Scan and End Class"""
+
     def __init__(
         self,
         target,
@@ -139,18 +148,24 @@ class AbstractScanEnd(SdpSLNCommand):
         self.check_op_state("Scan/End")
         self.check_unresponsive()
 
-        obs_state_val = component_manager.get_device().obs_state
+        obs_state_val = component_manager.get_device().obsState
 
         if obs_state_val != ObsState.READY:
-            message = f"""Scan and End commands are not allowed in current observation state on device {component_manager.get_device().dev_name}.
-            Reason: The current observation state for observation is {obs_state_val}.
-            The \"Scan/End\" command has NOT been executed. This device will continue with normal operation."""
+            message = f"""Scan and End commands are not allowed in current
+            observation state on device
+            {component_manager.get_device().dev_name}.
+            Reason: The current observation state for observation is
+            {obs_state_val}.
+            The \"Scan/End\" command has NOT been executed.
+            This device will continue with normal operation."""
             raise InvalidObsStateError(message)
 
         return True
 
 
 class AbstractRestartObsReset(SdpSLNCommand):
+    """Abstract Restart and Observation Reset Class"""
+
     def __init__(
         self,
         target,
@@ -179,12 +194,16 @@ class AbstractRestartObsReset(SdpSLNCommand):
         self.check_op_state("Restart/ObsReset")
         self.check_unresponsive()
 
-        obs_state_val = component_manager.get_device().obs_state
+        obs_state_val = component_manager.get_device().obsState
 
         if obs_state_val not in (ObsState.ABORTED, ObsState.FAULT):
-            message = f"""ObsReset and Restart commands are not allowed in current observation state on {component_manager.get_device().dev_name}.
-            Reason: The current observation state for observation is {obs_state_val}.
-            The \"Restart/ObsReset\" command has NOT been executed. This device will continue with normal operation."""
+            message = f"""ObsReset and Restart commands are not allowed in
+            current observation state on
+            {component_manager.get_device().dev_name}.
+            Reason: The current observation state for observation is
+            {obs_state_val}.
+            The \"Restart/ObsReset\" command has NOT been executed.
+            This device will continue with normal operation."""
             raise InvalidObsStateError(message)
 
         return True

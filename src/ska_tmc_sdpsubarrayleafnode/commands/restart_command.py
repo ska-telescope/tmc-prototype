@@ -34,8 +34,8 @@ class Restart(AbstractRestartObsReset):
         self.logger.info(log_msg)
         try:
             log_msg = (
-                "Invoking Restart command on SDP Subarray %s: ",
-                self.sdp_subarray_adapter.dev_name,
+                f"""Invoking Restart command on SDP Subarray
+                {self.sdp_subarray_adapter.dev_name}: """,
             )
             self.logger.debug(log_msg)
             self.sdp_subarray_adapter.Restart()
@@ -43,11 +43,13 @@ class Restart(AbstractRestartObsReset):
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                f"""The invocation of the Restart command is failed on Sdp Subarray Device {self.sdp_subarray_adapter.dev_name}.
+                f"""The invocation of the Restart command is failed on Sdp
+                Subarray Device {self.sdp_subarray_adapter.dev_name}.
                 Reason: Error in calling the Restart command on Sdp Subarray.
                 The command has NOT been executed.
                 This device will continue with normal operation.""",
             )
-        log_msg = f"Restart command successfully invoked on:{self.sdp_subarray_adapter.dev_name}"
+        log_msg = f"""Restart command successfully invoked on:
+        {self.sdp_subarray_adapter.dev_name}"""
         self.logger.info(log_msg)
         return (ResultCode.OK, "")

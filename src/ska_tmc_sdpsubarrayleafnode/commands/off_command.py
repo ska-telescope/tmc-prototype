@@ -10,8 +10,9 @@ class Off(AbstractOnOff):
     """
     A class for SdpsubarrayLeafNode's Off() command.
 
-    Off command on SdpsubarrayLeafNode enables the telescope to perform further operations
-    and observations. It Invokes Off command on Sdp Subarray device.
+    Off command on SdpsubarrayLeafNode enables the telescope to perform
+    further operations and observations.
+    It Invokes Off command on Sdp Subarray device.
 
     """
 
@@ -39,11 +40,13 @@ class Off(AbstractOnOff):
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                f"""The invocation of the Off command is failed on Sdp Subarray Device {self.sdp_subarray_adapter.dev_name}.
+                f"""The invocation of the Off command is failed on Sdp Subarray
+                Device {self.sdp_subarray_adapter.dev_name}.
                 Reason: Error in calling the Off command on Sdp Subarray.
                 The command has NOT been executed.
                 This device will continue with normal operation.""",
             )
-        log_msg = f"Off command successfully invoked on:{self.sdp_subarray_adapter.dev_name}"
+        log_msg = f"""Off command successfully invoked on:
+        {self.sdp_subarray_adapter.dev_name}"""
         self.logger.info(log_msg)
         return (ResultCode.OK, "")

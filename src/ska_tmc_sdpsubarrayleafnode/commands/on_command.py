@@ -11,8 +11,9 @@ class On(AbstractOnOff):
     """
     A class for SdpsubarrayLeafNode's On() command.
 
-    On command on SdpsubarrayLeafNode enables the telescope to perform further operations
-    and observations. It Invokes On command on Sdp Subarray device.
+    On command on SdpsubarrayLeafNode enables the telescope to perform further
+    operations and observations.
+    It Invokes On command on Sdp Subarray device.
 
     """
 
@@ -31,8 +32,8 @@ class On(AbstractOnOff):
         self.logger.info(log_msg)
         try:
             log_msg = (
-                "Invoking On command on SDP Subarray %s: ",
-                self.sdp_subarray_adapter.dev_name,
+                f"""Invoking On command on SDP Subarray
+                {self.sdp_subarray_adapter.dev_name}: """,
             )
             self.logger.debug(log_msg)
             self.sdp_subarray_adapter.On()
@@ -40,11 +41,13 @@ class On(AbstractOnOff):
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                f"""The invocation of the On command is failed on Sdp Subarray Device {self.sdp_subarray_adapter.dev_name}.
+                f"""The invocation of the On command is failed on Sdp Subarray
+                Device {self.sdp_subarray_adapter.dev_name}.
                 Reason: Error in calling the On command on Sdp Subarray.
                 The command has NOT been executed.
                 This device will continue with normal operation.""",
             )
-        log_msg = f"On command successfully invoked on:{self.sdp_subarray_adapter.dev_name}"
+        log_msg = f"""On command successfully invoked on:
+        {self.sdp_subarray_adapter.dev_name}"""
         self.logger.info(log_msg)
         return (ResultCode.OK, "")

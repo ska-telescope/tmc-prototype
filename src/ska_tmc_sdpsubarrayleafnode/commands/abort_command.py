@@ -44,7 +44,7 @@ class Abort(SdpSLNCommand):
         self.check_op_state("Abort")
         self.check_unresponsive()
 
-        obs_state_val = component_manager.get_device().obs_state
+        obs_state_val = component_manager.get_device().obsState
 
         if obs_state_val not in (
             ObsState.CONFIGURING,
@@ -53,9 +53,12 @@ class Abort(SdpSLNCommand):
             ObsState.READY,
             ObsState.RESETTING,
         ):
-            message = f"""Abort command is not allowed in current observation on device {component_manager.get_device().dev_name}.
-            Reason: The current observation state for observation is {obs_state_val}.
-            The \"Abort\" command has NOT been executed. This device will continue with normal operation."""
+            message = f"""Abort command is not allowed in current observation
+            on device {component_manager.get_device().dev_name}.
+            Reason: The current observation state for observation is
+            {obs_state_val}.
+            The \"Abort\" command has NOT been executed. This device will
+            continue with normal operation."""
             raise InvalidObsStateError(message)
 
         return True
@@ -92,12 +95,14 @@ class Abort(SdpSLNCommand):
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                f"""The invocation of the Abort command is failed on Sdp Subarray Device {self.sdp_subarray_adapter.dev_name}.
+                f"""The invocation of the Abort command is failed on Sdp
+                Subarray Device {self.sdp_subarray_adapter.dev_name}.
                 Reason: Error in calling the Abort command on Sdp Subarray.
                 The command has NOT been executed.
                 This device will continue with normal operation.""",
             )
 
-        log_msg = f"Abort command successfully invoked on:{self.sdp_subarray_adapter.dev_name}"
+        log_msg = f"""Abort command successfully invoked on:
+        {self.sdp_subarray_adapter.dev_name}"""
         self.logger.info(log_msg)
         return (ResultCode.OK, "")

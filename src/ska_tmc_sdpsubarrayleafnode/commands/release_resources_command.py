@@ -14,7 +14,8 @@ class ReleaseResources(SdpSLNCommand):
     A class for SdpSubarayLeafNode's ReleaseResources() command.
 
     Releases all the resources of given SDP Subarray Leaf Node.
-    It accepts the subarray id, releaseALL flag and receptorIDList in JSON string format.
+    It accepts the subarray id, releaseALL flag and receptorIDList in
+    JSON string format.
     """
 
     def __init__(
@@ -44,16 +45,20 @@ class ReleaseResources(SdpSLNCommand):
 
         self.check_op_state("ReleaseResources")
         self.check_unresponsive()
-        obs_state_val = component_manager.get_device().obs_state
+        obs_state_val = component_manager.get_device().obsState
         self.logger.info("sdp_subarray_obs_state value is: %s", obs_state_val)
 
         if obs_state_val != ObsState.IDLE:
             self.logger.info(
                 "sdp_subarray_obs_state value is: %s", obs_state_val
             )
-            message = f"""ReleaseResources command is not allowed in current observation state on device {component_manager.get_device().dev_name}.
-            Reason: The current observation state for observation is {obs_state_val}.
-            The \"ReleaseResources\" command has NOT been executed. This device will continue with normal operation."""
+            message = f"""ReleaseResources command is not allowed in current
+            observation state on device
+            {component_manager.get_device().dev_name}.
+            Reason: The current observation state for observation is
+            {obs_state_val}.
+            The \"ReleaseResources\" command has NOT been executed.
+            This device will continue with normal operation."""
             raise InvalidObsStateError(message)
         return True
 
@@ -71,12 +76,13 @@ class ReleaseResources(SdpSLNCommand):
         if res_code == ResultCode.FAILED:
             return res_code, message
 
-        log_msg = f"Invoking ReleaseResources command on:{self.sdp_subarray_adapter.dev_name}"
+        log_msg = f"""Invoking ReleaseResources command on:
+        {self.sdp_subarray_adapter.dev_name}"""
         self.logger.info(log_msg)
         try:
             log_msg = (
-                "Invoking ReleaseResources command on SDP Subarray %s: ",
-                self.sdp_subarray_adapter.dev_name,
+                f"""Invoking ReleaseResources command on SDP Subarray
+                {self.sdp_subarray_adapter.dev_name}: """,
             )
             self.logger.debug(log_msg)
             self.sdp_subarray_adapter.ReleaseResources(None)
@@ -84,11 +90,13 @@ class ReleaseResources(SdpSLNCommand):
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                f"""The invocation of the ReleaseResources command is failed on Sdp Subarray Device {self.sdp_subarray_adapter.dev_name}.
-                Reason: Error in calling the ReleaseResources command on Sdp Subarray.
-                The command has NOT been executed.
+                f"""The invocation of the ReleaseResources command is failed
+                on Sdp Subarray Device {self.sdp_subarray_adapter.dev_name}.
+                Reason: Error in calling the ReleaseResources command on Sdp
+                Subarray. The command has NOT been executed.
                 This device will continue with normal operation.""",
             )
-        log_msg = f"On command successfully invoked on:{self.sdp_subarray_adapter.dev_name}"
+        log_msg = f"""On command successfully invoked on:
+        {self.sdp_subarray_adapter.dev_name}"""
         self.logger.info(log_msg)
         return (ResultCode.OK, "")

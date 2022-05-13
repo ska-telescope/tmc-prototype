@@ -45,12 +45,15 @@ class EndScan(SdpSLNCommand):
         self.check_op_state("EndScan")
         self.check_unresponsive()
 
-        obs_state_val = component_manager.get_device().obs_state
+        obs_state_val = component_manager.get_device().obsState
 
         if obs_state_val != ObsState.SCANNING:
-            message = f"""EndScan command is not allowed in current observation state on device {component_manager.get_device().dev_name}.
-            Reason: The current observation state for observation is {obs_state_val}.
-            The \"EndScan\" command has NOT been executed. This device will continue with normal operation."""
+            message = f"""EndScan command is not allowed in current observation
+            state on device {component_manager.get_device().dev_name}.
+            Reason: The current observation state for observation is
+            {obs_state_val}.
+            The \"EndScan\" command has NOT been executed.
+            This device will continue with normal operation."""
             raise InvalidObsStateError(message)
 
         return True
@@ -81,11 +84,13 @@ class EndScan(SdpSLNCommand):
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                f"""The invocation of the EndScan command is failed on Sdp Subarray Device {self.sdp_subarray_adapter.dev_name}.
+                f"""The invocation of the EndScan command is failed on Sdp
+                Subarray Device {self.sdp_subarray_adapter.dev_name}.
                 Reason: Error in calling the EndScan command on Sdp Subarray.
                 The command has NOT been executed.
                 This device will continue with normal operation.""",
             )
-        log_msg = f"EndScan command successfully invoked on:{self.sdp_subarray_adapter.dev_name}"
+        log_msg = f"""EndScan command successfully invoked on:
+        {self.sdp_subarray_adapter.dev_name}"""
         self.logger.info(log_msg)
         return (ResultCode.OK, "")
