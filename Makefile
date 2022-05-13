@@ -9,7 +9,7 @@
 
 CAR_OCI_REGISTRY_HOST:=artefact.skao.int
 PROJECT = ska-tmc-sdpleafnodes
-PYTHON_SWITCHES_FOR_FLAKE8=--ignore=W503,E203 --max-line-length=180
+PYTHON_SWITCHES_FOR_FLAKE8=--ignore=W503,E203 --max-line-length=79
 TANGO_HOST ?= tango-databaseds:10000 ## TANGO_HOST connection to the Tango DS
 PYTHON_VARS_BEFORE_PYTEST ?= PYTHONPATH=.:./src \
 							 TANGO_HOST=$(TANGO_HOST)
@@ -26,7 +26,6 @@ KUBE_NAMESPACE ?= ska-tmc-sdpleafnodes
 # HELM_RELEASE is the release that all Kubernetes resources will be labelled
 # with
 HELM_RELEASE ?= test
-HELM_CHARTS_TO_PUBLISH=
 
 # UMBRELLA_CHART_PATH Path of the umbrella chart to work with
 HELM_CHART=test-parent
@@ -34,7 +33,7 @@ UMBRELLA_CHART_PATH ?= charts/$(HELM_CHART)/
 K8S_CHARTS ?= ska-tmc-sdpleafnodes test-parent## list of charts
 K8S_CHART ?= $(HELM_CHART)
 
-TEST_VERSION ?= 0.8.19
+TEST_VERSION ?= 0.8.18
 CI_REGISTRY ?= gitlab.com
 CUSTOM_VALUES = --set tmc-sdpleafnodes.sdpleafnodes.image.tag=$(VERSION)
 K8S_TEST_IMAGE_TO_TEST=$(CAR_OCI_REGISTRY_HOST)/$(PROJECT):$(VERSION)
@@ -107,5 +106,4 @@ test-requirements:
 	@poetry export --without-hashes --dev --format requirements.txt --output tests/requirements.txt
 
 k8s-pre-test: python-pre-test test-requirements
-
 

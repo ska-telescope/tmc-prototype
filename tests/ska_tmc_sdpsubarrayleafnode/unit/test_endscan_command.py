@@ -57,6 +57,6 @@ def test_endscan_fail_check_allowed_with_invalid_obsState(
     )
     with pytest.raises(
         InvalidObsStateError,
-        match="EndScan command is not allowed in current observation state",
+        match="EndScan command is not allowed in current observation",
     ):
         endscan_command.check_allowed()
