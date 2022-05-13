@@ -9,8 +9,6 @@ USER root
 
 ENV SETUPTOOLS_USE_DISTUTILS=stdlib
 
-RUN apt-get update && apt-get install pkg-config build-essential libboost-python-dev  -y
-
 RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | POETRY_HOME=/opt/poetry python3 - && \
     rm /usr/local/bin/poetry && \
     chmod a+x /opt/poetry/bin/poetry && \

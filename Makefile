@@ -63,7 +63,7 @@ K8S_TEST_RUNNER = test-runner-$(HELM_RELEASE)
 
 CI_PROJECT_PATH_SLUG ?= ska-tmc-sdpleafnodes
 CI_ENVIRONMENT_SLUG ?= ska-tmc-sdpleafnodes
-$(shell echo 'global:\n  annotations:\n    app.gitlab.com/app: $(CI_PROJECT_PATH_SLUG)\n    app.gitlab.com/env: $(CI_ENVIRONMENT_SLUG)' > gilab_values.yaml)
+$(shell echo 'global:\n  annotations:\n    app.gitlab.com/app: $(CI_PROJECT_PATH_SLUG)\n    app.gitlab.com/env: $(CI_ENVIRONMENT_SLUG)' > gitlab_values.yaml)
 
 ifeq ($(MAKECMDGOALS),python-test)
 ADD_ARGS +=  --forked
@@ -85,7 +85,8 @@ K8S_CHART_PARAMS = --set global.minikube=$(MINIKUBE) \
 	--set tmc-sdpleafnodes.deviceServers.mocks.enabled=$(FAKE_DEVICES) \
 	--set ska-taranta.enabled=$(TARANTA) \
 	$(CUSTOM_VALUES) \
-	--values gilab_values.yaml
+	--values git
+	lab_values.yaml
 
 K8S_TEST_TEST_COMMAND = $(PYTHON_VARS_BEFORE_PYTEST) $(PYTHON_RUNNER) \
 						pytest \
