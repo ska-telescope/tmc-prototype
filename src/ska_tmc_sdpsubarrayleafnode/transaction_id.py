@@ -1,3 +1,4 @@
+"""Transaction ID"""
 import functools
 import json
 import logging
@@ -6,6 +7,8 @@ from ska_ser_log_transactions import transaction
 
 
 def identify_with_id(name: str, arg_name: str):
+    """Wrapper function"""
+
     def wrapper(func):
         @functools.wraps(func)
         def wrap(obj, *args, **kwargs):
@@ -21,7 +24,8 @@ def identify_with_id(name: str, arg_name: str):
                 parameters = json.loads(argin)
             except Exception:
                 logging.warning(
-                    "unable to use transaction id as not able to parse input arguments into a dictionary"
+                    """unable to use transaction id as not able to parse input
+                    arguments into a dictionary"""
                 )
                 return func(obj, argin)
             with transaction(

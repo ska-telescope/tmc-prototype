@@ -1,3 +1,5 @@
+# pylint: disable=no-member
+# pylint: disable=abstract-method
 """
 This module provided a reference implementation of a BaseComponentManager.
 
@@ -31,9 +33,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         op_state_model,
         logger=None,
         _update_device_callback=None,
-        _update_command_in_progress_callback=None,
-        _monitoring_loop=False,
-        _event_receiver=True,
+        update_command_in_progress_callback=None,
+        monitoring_loop=False,
+        event_receiver=True,
         max_workers=5,
         proxy_timeout=500,
         sleep_time=1,
@@ -50,27 +52,29 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         super().__init__(
             op_state_model,
             logger,
-            _monitoring_loop,
-            _event_receiver,
+            monitoring_loop,
+            event_receiver,
             max_workers,
             proxy_timeout,
             sleep_time,
         )
 
         self.update_device_info(sdp_subarray_dev_name)
-        if _event_receiver:
-            self._event_receiver = SdpSLNEventReceiver(
+        if event_receiver:
+            self.event_receiver = SdpSLNEventReceiver(
                 self,
                 logger,
                 proxy_timeout=proxy_timeout,
                 sleep_time=sleep_time,
             )
-            self._event_receiver.start()
+            self.event_receiver.start()
 
+        # pylint: disable=line-too-long
         self.command_executor = CommandExecutor(
             logger,
-            _update_command_in_progress_callback=_update_command_in_progress_callback,
+            _update_command_in_progress_callback=update_command_in_progress_callback,  # noqa:E501
         )
+        # pylint: enable=line-too-long
 
     def stop(self):
         self._event_receiver.stop()
@@ -86,6 +90,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         return self._device
 
     def update_device_info(self, sdp_subarray_dev_name):
+        """Updates the device info"""
         self._sdp_subarray_dev_name = sdp_subarray_dev_name
         self._device = DeviceInfo(self._sdp_subarray_dev_name, False)
 
@@ -109,10 +114,12 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         return result
 
     def update_input_parameter(self):
+        """Update input parameter"""
         with self.lock:
             self.input_parameter.update(self)
 
     def update_event_failure(self):
+        """Update event failures"""
         with self.lock:
             dev_info = self.get_device()
             dev_info.last_event_arrived = time.time()
@@ -130,6 +137,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         """
         with self.lock:
             dev_info = self.get_device()
-            dev_info.obs_state = obs_state
+            dev_info.obsState = obs_state
             dev_info.last_event_arrived = time.time()
             dev_info.update_unresponsive(False)

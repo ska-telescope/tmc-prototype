@@ -1,3 +1,4 @@
+"""Event Reciever for SDP Subarray Leaf Node Manager"""
 from concurrent import futures
 from time import sleep
 
