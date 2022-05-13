@@ -1,3 +1,4 @@
+# pylint: disable=abstract-method
 """
 This module implements ComponentManager class for the Sdp Master Leaf Node.
 """
@@ -37,10 +38,13 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         :param _component: Optional. Allows setting of the component to be
             managed; for testing purposes only
         :param logger: Optional. A logger for this component manager
-        :param _monitoring_loop: Optional. Monitoring loop for the component manager
+        :param _monitoring_loop: Optional. Monitoring loop for the component
+        manager
         :param _event_receiver: Optional. Object of EventReceiver class
-        :param max_workers: Optional. Maximum worker threads for monitoring purpose. Default 1
-        :param proxy_timeout: Optional. Time period to wait for event and responses. Default 500 milliseconds
+        :param max_workers: Optional. Maximum worker threads for monitoring
+        purpose. Default 1
+        :param proxy_timeout: Optional. Time period to wait for event and
+        responses. Default 500 milliseconds
         :param sleep_time: Optional. Sleep time between reties. Default 1 Sec
         """
 
@@ -53,14 +57,16 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             proxy_timeout,
             sleep_time,
         )
-
+        # pylint: disable=line-too-long
         self.update_device_info(sdp_master_dev_name)
         self._command_executor = CommandExecutor(
             logger,
-            _update_command_in_progress_callback=_update_command_in_progress_callback,
+            _update_command_in_progress_callback=_update_command_in_progress_callback,  # noqa:E501
         )
+        # pylint: enable=line-too-long
 
     def update_device_info(self, sdp_master_dev_name):
+        """Updates the device info"""
         self._sdp_master_dev_name = sdp_master_dev_name
         self._device = DeviceInfo(self._sdp_master_dev_name, False)
 
