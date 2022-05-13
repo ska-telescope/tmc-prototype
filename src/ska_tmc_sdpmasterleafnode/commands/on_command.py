@@ -11,8 +11,9 @@ class On(SdpMLNCommand):
     """
     A class for SdpMasterLeafNode's On() command.
 
-    On command on SdpmasterLeafNode enables the telescope to perform further operations
-    and observations. It Invokes On command on Sdp Master device.
+    On command on SdpmasterLeafNode enables the telescope to perform
+    further operations and observations.
+    It Invokes On command on Sdp Master device.
 
     """
 
@@ -34,7 +35,8 @@ class On(SdpMLNCommand):
             self.logger.exception(e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                f"""The invocation of the On command is failed on Sdp Master Device {self.sdp_master_adapter.dev_name}.
+                f"""The invocation of the On command is failed on Sdp
+                Master Device {self.sdp_master_adapter.dev_name}.
                 Reason: Error in calling the On command on Sdp Master.
                 The command has NOT been executed.
                 This device will continue with normal operation.""",
