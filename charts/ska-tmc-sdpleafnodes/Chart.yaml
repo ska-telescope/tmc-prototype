@@ -2,8 +2,8 @@ apiVersion: v2
 name: ska-tmc-sdpleafnodes
 description: A subchart for ska-tmc-sdpleafnodes deployment.
 type: application
-version: 0.8.19
-appVersion: 0.8.19
+version: 0.8.20
+appVersion: 0.8.20
 icon: https://www.skatelescope.org/wp-content/uploads/2016/07/09545_NEW_LOGO_2014.png
 maintainers:
   - name: Aditya Dange
@@ -13,10 +13,10 @@ maintainers:
   - name: Kalyani Thigale
     email: kalyanit.ska@gmail.com
 dependencies:
-- name: ska-tango-base
-  version: 0.3.9
-  repository: https://artefact.skao.int/repository/helm-internal
-  condition: ska-tango-base.enabled,global.sub-system.ska-tango-base.enabled
-- name: ska-tango-util
-  version: 0.3.9
-  repository: https://artefact.skao.int/repository/helm-internal
+  - name: ska-tango-base
+    version: 0.3.9
+    repository: https://artefact.skao.int/repository/helm-internal
+    condition: ska-tango-base.enabled,global.sub-system.ska-tango-base.enabled
+  - name: ska-tango-util
+    version: 0.3.9
+    repository: https://artefact.skao.int/repository/helm-internal
