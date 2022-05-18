@@ -256,11 +256,13 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         return handler.check_allowed()
 
     @command(
+        dtype_in="str",
+        doc_in="The string in JSON format",
         dtype_out="DevVarLongStringArray",
         doc_out="information-only string",
     )
     @DebugIt()
-    def ReleaseResources(self):
+    def ReleaseResources(self, argin):
         """
         This command invokes ReleaseResources() command on command on Sdp Subarray.
         """
@@ -273,7 +275,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
             return [[ResultCode.FAILED], [message]]
         unique_id = self.component_manager.command_executor.enqueue_command(
-            handler
+            handler, argin
         )
         return [[ResultCode.QUEUED], [str(unique_id)]]
 
