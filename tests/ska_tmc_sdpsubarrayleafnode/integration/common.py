@@ -54,7 +54,7 @@ def tear_down(dev_factory, sdp_subarray):
         sdp_subarray.Off()
 
     if sdp_subarray_obsstate.value == 2:
-        sdp_subarray.ReleaseResources("")
+        sdp_subarray.ReleaseResources()
         sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
         sdp_subarray.SetDirectObsState(ObsState.EMPTY)
         time.sleep(0.5)
