@@ -30,6 +30,7 @@ class Configure(SdpSLNCommand):
         super().__init__(target, logger)
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory or AdapterFactory()
+        self.init_adapter()
 
     def check_allowed(self):
         """
@@ -75,9 +76,6 @@ class Configure(SdpSLNCommand):
         return: \
             None
         """
-        ret_code, message = self.init_adapter()
-        if ret_code == ResultCode.FAILED:
-            return ret_code, message
 
         try:
             json_argument = json.loads(argin)

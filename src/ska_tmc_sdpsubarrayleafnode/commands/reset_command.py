@@ -24,6 +24,7 @@ class Reset(SdpSLNCommand):
         super().__init__(target, logger)
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory or AdapterFactory()
+        self.init_adapter()
 
     def check_allowed(self):
         """
@@ -53,9 +54,6 @@ class Reset(SdpSLNCommand):
             None
 
         """
-        res_code, message = self.init_adapter()
-        if res_code == ResultCode.FAILED:
-            return res_code, message
 
         try:
             self.logger.info("Resetting Sdp Subarray Leaf Node")

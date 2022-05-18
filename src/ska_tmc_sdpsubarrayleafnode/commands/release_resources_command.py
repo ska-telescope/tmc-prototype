@@ -28,6 +28,7 @@ class ReleaseResources(SdpSLNCommand):
         super().__init__(target, logger)
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory or AdapterFactory()
+        self.init_adapter()
 
     def check_allowed(self):
         """
@@ -71,10 +72,6 @@ class ReleaseResources(SdpSLNCommand):
         return:
             None
         """
-
-        res_code, message = self.init_adapter()
-        if res_code == ResultCode.FAILED:
-            return res_code, message
 
         log_msg = f"""Invoking ReleaseResources command on:
         {self.sdp_subarray_adapter.dev_name}"""

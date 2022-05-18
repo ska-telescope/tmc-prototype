@@ -17,6 +17,12 @@ class Scan(AbstractScanEnd):
     Invoke Scan command to SDP Subarray.
     """
 
+    def __init__(
+        self, target, op_state_model, adapter_factory=None, logger=None
+    ):
+        super().__init__(target, op_state_model, adapter_factory, logger)
+        self.init_adapter()
+
     def do(self, argin=None):
         """
         Method to invoke Scan command on SDP Subarray. \
@@ -33,10 +39,6 @@ class Scan(AbstractScanEnd):
         return: \
             None
         """
-
-        res_code, message = self.init_adapter()
-        if res_code == ResultCode.FAILED:
-            return res_code, message
 
         try:
             json_argument = json.loads(argin)
