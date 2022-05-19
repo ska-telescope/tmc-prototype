@@ -13,13 +13,20 @@ class Disable(SdpMLNCommand):
     Sdp Master device.
 
     """
+    def __init__(
+        self, target, op_state_model, adapter_factory=None, logger=None
+        ):
+        super().__init__(target, op_state_model, adapter_factory, logger)
+        try:
+            self.init_adapter()
+        except Exception as e:
+            logger.info(f"Exception:, {e}")
 
     def do(self, argin=None):
         """
         Method to invoke Disable command on Sdp Master.
 
         """
-        self.init_adapter()
         result = self.call_adapter_method(
             "Sdp Master", self.sdp_master_adapter, "Disable"
         )
