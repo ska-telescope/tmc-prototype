@@ -1,5 +1,6 @@
 """
-SDP Subarray Leaf node is to monitor the SDP Subarray and issue control actions during an observation.
+SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
+actions during an observation.
 It also acts as a SDP contact point for Subarray Node for observation execution
 """
 
@@ -29,7 +30,8 @@ from ska_tmc_sdpsubarrayleafnode.manager import SdpSLNComponentManager
 
 class SdpSubarrayLeafNode(SKABaseDevice):
     """
-    SDP Subarray Leaf node is to monitor the SDP Subarray and issue control actions during an observation.
+    SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
+    actions during an observation.
 
     """
 
@@ -54,7 +56,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     lastDeviceInfoChanged = attribute(
         dtype="DevString",
         access=AttrWriteType.READ,
-        doc="Json String representing the last device changed in the internal model.",
+        doc="""Json String representing the last device changed in the
+        internal model.""",
     )
 
     sdpSubarrayDevName = attribute(
@@ -66,9 +69,13 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # General methods
     # ---------------
 
+    # pylint: disable=attribute-defined-outside-init
     def update_device_callback(self, devInfo):
+        """Updates device callback info"""
         self._LastDeviceInfoChanged = devInfo.to_json()
         self.push_change_event("lastDeviceInfoChanged", devInfo.to_json())
+
+    # pylint: enable=attribute-defined-outside-init
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
@@ -77,10 +84,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         def do(self):
             """
-            Initializes the attributes and properties of the SdpSubarrayLeafNode.
+            Initializes the attributes and properties of the
+            SdpSubarrayLeafNode.
 
             return:
-                A tuple containing a return code and a string message indicating status.
+                A tuple containing a return code and a string message
+                indicating status.
                 The message is for information purpose only.
 
             rtype:
@@ -89,8 +98,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             super().do()
             device = self.target
 
-            device._build_state = "{},{},{}".format(
-                release.name, release.version, release.description
+            device._build_state = (
+                f"{release.name},{release.version},{release.description}"
             )
             device._version_id = release.version
             device._LastDeviceInfoChanged = ""
@@ -125,6 +134,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # ------------------
 
     def read_lastDeviceInfoChanged(self):
+        """Return the last device info change"""
         return self._LastDeviceInfoChanged
 
     def read_commandExecuted(self):
@@ -152,9 +162,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     def is_Off_allowed(self):
         """
-        Checks whether this command is allowed to be run in current device state.
+        Checks whether this command is allowed to be run in current \
+        device state. \
 
-        :return: True if this command is allowed to be run in current device state.
+        :return: True if this command is allowed to be run in current \
+        device state. \
 
         :rtype: boolean
         """
@@ -168,8 +180,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("Off")
         if self.component_manager.command_executor.queue_full:
-            message = """The invocation of the \"Off\" command on this device failed.
-            Reason: The command executor rejected the queuing of the command because its queue is full.
+            message = """The invocation of the \"Off\" command on this device
+            failed.
+            Reason: The command executor rejected the queuing of the command
+            because its queue is full.
             The \"Off\" command has NOT been queued and will not be executed.
             This device will continue with normal operation."""
 
@@ -181,9 +195,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     def is_On_allowed(self):
         """
-        Checks whether this command is allowed to be run in current device state.
+        Checks whether this command is allowed to be run in current device \
+        state. \
 
-        :return: True if this command is allowed to be run in current device state.
+        :return: True if this command is allowed to be run in current device \
+        state. \
 
         :rtype: boolean
         """
@@ -198,8 +214,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("On")
         if self.component_manager.command_executor.queue_full:
-            message = """The invocation of the \"On\" command on this device failed.
-            Reason: The command executor rejected the queuing of the command because its queue is full.
+            message = """The invocation of the \"On\" command on this device
+            failed.
+            Reason: The command executor rejected the queuing of the command
+            because its queue is full.
             The \"On\" command has NOT been queued and will not be executed.
             This device will continue with normal operation."""
 
@@ -211,9 +229,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     def is_AssignResources_allowed(self):
         """
-        Checks whether this command is allowed to be run in current device state.
+        Checks whether this command is allowed to be run in current device \
+        state. \
 
-        :return: True if this command is allowed to be run in current device state
+        :return: True if this command is allowed to be run in current device \
+        state \
 
         :rtype: boolean
         """
@@ -233,9 +253,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("AssignResources")
         if self.component_manager.command_executor.queue_full:
-            message = """The invocation of the \"AssignResources\" command on this device failed.
-            Reason: The command executor rejected the queuing of the command because its queue is full.
-            The \"AssignResources\" command has NOT been queued and will not be executed.
+            message = """The invocation of the \"AssignResources\" command on
+            this device failed.
+            Reason: The command executor rejected the queuing of the command
+            because its queue is full.
+            The \"AssignResources\" command has NOT been queued and will not
+            be executed.
             This device will continue with normal operation."""
 
             return [[ResultCode.FAILED], [message]]
@@ -246,9 +269,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     def is_ReleaseResources_allowed(self):
         """
-        Checks whether this command is allowed to be run in current device state.
+        Checks whether this command is allowed to be run in current device \
+        state. \
 
-        :return: True if this command is allowed to be run in current device state.
+        :return: True if this command is allowed to be run in current device
+        state.
 
         :rtype: boolean
         """
@@ -264,13 +289,17 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     @DebugIt()
     def ReleaseResources(self, argin):
         """
-        This command invokes ReleaseResources() command on command on Sdp Subarray.
+        This command invokes ReleaseResources() command on command on Sdp
+        Subarray.
         """
         handler = self.get_command_object("ReleaseResources")
         if self.component_manager.command_executor.queue_full:
-            message = """The invocation of the \"ReleaseResources\" command on this device failed.
-            Reason: The command executor rejected the queuing of the command because its queue is full.
-            The \"ReleaseResources\" command has NOT been queued and will not be executed.
+            message = """The invocation of the \"ReleaseResources\" command on
+            this device failed.
+            Reason: The command executor rejected the queuing of the command
+            because its queue is full.
+            The \"ReleaseResources\" command has NOT been queued and will not
+            be executed.
             This device will continue with normal operation."""
 
             return [[ResultCode.FAILED], [message]]
@@ -281,7 +310,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     def is_Configure_allowed(self):
         """
-        Checks whether this command is allowed to be run in current device state
+        Checks whether this command is allowed to be run in current device \
+        state \
 
         return:
             True if this command is allowed to be run in current device state
@@ -306,9 +336,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("Configure")
         if self.component_manager.command_executor.queue_full:
-            message = """The invocation of the \"Configure\" command on this device failed.
-            Reason: The command executor rejected the queuing of the command because its queue is full.
-            The \"Configure\" command has NOT been queued and will not be executed.
+            message = """The invocation of the \"Configure\" command on this
+            device failed.
+            Reason: The command executor rejected the queuing of the command
+            because its queue is full.
+            The \"Configure\" command has NOT been queued and will not be
+            executed.
             This device will continue with normal operation."""
 
             return [[ResultCode.FAILED], [message]]
@@ -319,7 +352,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     def is_Scan_allowed(self):
         """
-        Checks whether this command is allowed to be run in current device state.
+        Checks whether this command is allowed to be run in current device \
+        state. \
 
         return:
             True if this command is allowed to be run in current device state.
@@ -343,8 +377,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         handler = self.get_command_object("Scan")
         if self.component_manager.command_executor.queue_full:
-            message = """The invocation of the \"Scan\" command on this device failed.
-            Reason: The command executor rejected the queuing of the command because its queue is full.
+            message = """The invocation of the \"Scan\" command on this device
+            failed.
+            Reason: The command executor rejected the queuing of the command
+            because its queue is full.
             The \"Scan\" command has NOT been queued and will not be executed.
             This device will continue with normal operation."""
 
@@ -356,7 +392,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     def is_EndScan_allowed(self):
         """
-        Checks whether this command is allowed to be run in current device state.
+        Checks whether this command is allowed to be run in current device \
+        state. \
+
         return:
             True if this command is allowed to be run in current device state.
 
@@ -378,9 +416,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("EndScan")
         if self.component_manager.command_executor.queue_full:
-            message = """The invocation of the \"EndScan\" command on this device failed.
-            Reason: The command executor rejected the queuing of the command because its queue is full.
-            The \"EndScan\" command has NOT been queued and will not be executed.
+            message = """The invocation of the \"EndScan\" command on this
+            device failed.
+            Reason: The command executor rejected the queuing of the command
+            because its queue is full.
+            The \"EndScan\" command has NOT been queued and will not be
+            executed.
             This device will continue with normal operation."""
 
             return [[ResultCode.FAILED], [message]]
@@ -391,10 +432,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     def is_End_allowed(self):
         """
-        Checks whether this command is allowed to be run in current device state.
+        Checks whether this command is allowed to be run in current device \
+        state. \
 
         return:
-            True if this command is allowed to be run in current device state.
+            True if this command is allowed to be run in current device \
+            state. \
 
         rtype:
             boolean
@@ -409,11 +452,14 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     )
     @DebugIt()
     def End(self):
-        """This command invokes End command on Sdp Subarray to end the current Scheduling block."""
+        """This command invokes End command on Sdp Subarray to end the current
+        Scheduling block."""
         handler = self.get_command_object("End")
         if self.component_manager.command_executor.queue_full:
-            message = """The invocation of the \"End\" command on this device failed.
-            Reason: The command executor rejected the queuing of the command because its queue is full.
+            message = """The invocation of the \"End\" command on this device
+            failed.
+            Reason: The command executor rejected the queuing of the command
+            because its queue is full.
             The \"End\" command has NOT been queued and will not be executed.
             This device will continue with normal operation."""
 
@@ -425,7 +471,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     def is_ObsReset_allowed(self):
         """
-        Checks whether this command is allowed to be run in current device state
+        Checks whether this command is allowed to be run in current device \
+        state \
 
         return:
             True if this command is allowed to be run in current device state
@@ -448,9 +495,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("ObsReset")
         if self.component_manager.command_executor.queue_full:
-            message = """The invocation of the \"ObsReset\" command on this device failed.
-            Reason: The command executor rejected the queuing of the command because its queue is full.
-            The \"ObsReset\" command has NOT been queued and will not be executed.
+            message = """The invocation of the \"ObsReset\" command on this
+            device failed.
+            Reason: The command executor rejected the queuing of the command
+            because its queue is full.
+            The \"ObsReset\" command has NOT been queued and will not be
+            executed.
             This device will continue with normal operation."""
 
             return [[ResultCode.FAILED], [message]]
@@ -461,7 +511,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     def is_Abort_allowed(self):
         """
-        Checks whether this command is allowed to be run in current device state
+        Checks whether this command is allowed to be run in current device \
+        state \
 
         return:
             True if this command is allowed to be run in current device state
@@ -470,7 +521,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             boolean
 
         raises:
-            DevFailed if this command is not allowed to be run in current device state
+            DevFailed if this command is not allowed to be run in current \
+            device state \
 
         """
         handler = self.get_command_object("Abort")
@@ -487,8 +539,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("Abort")
         if self.component_manager.command_executor.queue_full:
-            message = """The invocation of the \"Abort\" command on this device failed.
-            Reason: The command executor rejected the queuing of the command because its queue is full.
+            message = """The invocation of the \"Abort\" command on this device
+            failed.
+            Reason: The command executor rejected the queuing of the command
+            because its queue is full.
             The \"Abort\" command has NOT been queued and will not be executed.
             This device will continue with normal operation."""
 
@@ -500,16 +554,18 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     def is_Restart_allowed(self):
         """
-        Checks whether this command is allowed to be run in current device state
+        Checks whether this command is allowed to be run in current device \
+        state \
 
         return:
-            True if this command is allowed to be run in current device state
+            True if this command is allowed to be run in current device state \
 
         rtype:
             boolean
 
         raises:
-            DevFailed if this command is not allowed to be run in current device state
+            DevFailed if this command is not allowed to be run in current \
+            device state
 
         """
         handler = self.get_command_object("Restart")
@@ -526,9 +582,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("Restart")
         if self.component_manager.command_executor.queue_full:
-            message = """The invocation of the \"Restart\" command on this device failed.
-            Reason: The command executor rejected the queuing of the command because its queue is full.
-            The \"Restart\" command has NOT been queued and will not be executed.
+            message = """The invocation of the \"Restart\" command on this
+            device failed.
+            Reason: The command executor rejected the queuing of the command
+            because its queue is full.
+            The \"Restart\" command has NOT been queued and will not be
+            executed.
             This device will continue with normal operation."""
 
             return [[ResultCode.FAILED], [message]]
@@ -538,7 +597,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         return [[ResultCode.QUEUED], [str(unique_id)]]
 
     # default ska mid
+    # pylint: disable=attribute-defined-outside-init
     def create_component_manager(self):
+        """Creates component manager"""
         self.op_state_model = TMCOpStateModel(
             logger=self.logger, callback=super()._update_state
         )
@@ -550,6 +611,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             sleep_time=self.SleepTime,
         )
         return cm
+
+    # pylint: enable=attribute-defined-outside-init
 
     def init_command_objects(self):
         """

@@ -24,6 +24,7 @@ class Reset(SdpSLNCommand):
         super().__init__(target, logger)
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory or AdapterFactory()
+        self.init_adapter()
 
     def check_allowed(self):
         """
@@ -53,9 +54,6 @@ class Reset(SdpSLNCommand):
             None
 
         """
-        res_code, message = self.init_adapter()
-        if res_code == ResultCode.FAILED:
-            return res_code, message
 
         try:
             self.logger.info("Resetting Sdp Subarray Leaf Node")
@@ -63,7 +61,8 @@ class Reset(SdpSLNCommand):
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                f"""The invocation of the Reset command is failed on Sdp Subarray Device {self.sdp_subarray_adapter.dev_name}.
+                f"""The invocation of the Reset command is failed on Sdp
+                Subarray Device {self.sdp_subarray_adapter.dev_name}.
                 Reason: Error in calling the Reset command on Sdp Subarray.
                 The command has NOT been executed.
                 This device will continue with normal operation.""",

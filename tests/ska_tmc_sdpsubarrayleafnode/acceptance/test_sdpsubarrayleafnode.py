@@ -165,7 +165,7 @@ def check_sdp_subarray_obsstate(sdp_subarray, obs_state):
     # if "Helper" in sdp_subarray:
     #     # Set ObsState of the mocked SDP Subarray
     #     logger.info(
-    #         f"In helper SDP Subarray Device : {sdp_subarray}, setting ObsState"
+    #       f"In helper SDP Subarray Device : {sdp_subarray}, setting ObsState"
     #     )
     #     sdp_subarray.SetDirectObsState(ObsState.EMPTY)
     # else:
@@ -180,7 +180,8 @@ def check_sdp_subarray_obsstate(sdp_subarray, obs_state):
         logger.info(f"wait_time in teardown  {wait_time}")
         if wait_time > TIMEOUT:
             pytest.fail(
-                f"Timeout occurred in transitioning SDP Subarray obsState to {sdp_subarray_obsstate.value}"
+                f"""Timeout occurred in transitioning SDP Subarray obsState to
+                {sdp_subarray_obsstate.value}"""
             )
 
 

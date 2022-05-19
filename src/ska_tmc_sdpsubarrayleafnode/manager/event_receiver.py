@@ -1,3 +1,4 @@
+"""Event Reciever for SDP Subarray Leaf Node Manager"""
 from concurrent import futures
 from time import sleep
 
@@ -42,9 +43,9 @@ class SdpSLNEventReceiver(EventReceiver):
                     executor.submit(self.subscribe_events, devInfo)
             sleep(self._sleep_time)
 
-    def subscribe_events(self, devInfo):
+    def subscribe_events(self, dev_info):
         try:
-            proxy = self._dev_factory.get_device(devInfo.dev_name)
+            proxy = self._dev_factory.get_device(dev_info.dev_name)
             proxy.subscribe_event(
                 "ObsState",
                 tango.EventType.CHANGE_EVENT,

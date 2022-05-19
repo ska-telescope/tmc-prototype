@@ -122,13 +122,13 @@ def test_assign_resources_command_fail_check_allowed_with_invalid_obsState(
     cm.get_device().update_unresponsive(False)
     with pytest.raises(
         InvalidObsStateError,
-        match="AssignResources command is not allowed in current observation state",
+        match="AssignResources command is not allowed in",
     ):
         assign_res_command.check_allowed()
 
 
 @pytest.mark.sdpsln
-def test_telescope_assign_resources_command_fail_check_allowed_with_device_unresponsive(
+def test_telescope_assign_resources_command_fail_check_allowed_with_device_unresponsive(  # noqa:E501
     tango_context,
 ):
     logger.info("%s", tango_context)

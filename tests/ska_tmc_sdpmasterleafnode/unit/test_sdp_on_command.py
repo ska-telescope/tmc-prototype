@@ -9,6 +9,7 @@ from ska_tmc_sdpmasterleafnode.commands import On
 from tests.settings import create_cm, get_sdpmln_command_obj, logger
 
 
+@pytest.mark.on
 @pytest.mark.sdpmln
 def test_on_command(tango_context, sdp_master_device):
     logger.info("%s", tango_context)
@@ -20,6 +21,7 @@ def test_on_command(tango_context, sdp_master_device):
     adapter.proxy.On.assert_called()
 
 
+@pytest.mark.on
 @pytest.mark.sdpmln
 def test_on_command_fail_sdp_master(tango_context, sdp_master_device):
     logger.info("%s", tango_context)
@@ -39,6 +41,7 @@ def test_on_command_fail_sdp_master(tango_context, sdp_master_device):
     assert sdp_master_device in message
 
 
+@pytest.mark.on
 @pytest.mark.sdpmln
 def test_on_fail_check_allowed(tango_context, sdp_master_device):
 

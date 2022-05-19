@@ -1,3 +1,4 @@
+"""Common Settings for testing of SDP Leaf Node"""
 import logging
 import time
 
@@ -25,6 +26,7 @@ SDP_MASTER_DEVICE = "mid_sdp/elt/master"
 
 
 def count_faulty_devices(cm):
+    """Count faulty devices"""
     result = 0
     for devInfo in cm.checked_devices:
         if devInfo.unresponsive:
@@ -33,6 +35,7 @@ def count_faulty_devices(cm):
 
 
 def create_cm(cm_class, device):
+    """Create Component Manager"""
     op_state_model = TMCOpStateModel(logger)
     if cm_class == "SdpMLNComponentManager":
         cm = SdpMLNComponentManager(
@@ -57,7 +60,8 @@ def create_cm(cm_class, device):
 
 
 def get_sdpsln_command_obj(command_class, obsstate_value=None):
-    """Returns component manager and command class object for Sdp Subarray Leaf Node"""
+    """Returns component manager and command class object for Sdp
+    Subarray Leaf Node"""
     cm, start_time = create_cm("SdpSLNComponentManager", SDP_SUBARRAY_DEVICE)
     elapsed_time = time.time() - start_time
     logger.info(
@@ -75,7 +79,8 @@ def get_sdpsln_command_obj(command_class, obsstate_value=None):
 
 
 def get_sdpmln_command_obj(command_class):
-    """Returns component manager and command class object for Sdp Master Leaf Node"""
+    """Returns component manager and command class object for Sdp Master Leaf
+    Node"""
     cm, start_time = create_cm("SdpMLNComponentManager", SDP_MASTER_DEVICE)
     elapsed_time = time.time() - start_time
     logger.info(

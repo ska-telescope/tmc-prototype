@@ -1,4 +1,5 @@
 # pylint: disable=unused-argument
+"""Conftest file for SDP Leaf Node"""
 import logging
 
 import pytest
@@ -46,16 +47,20 @@ def pytest_addoption(parser):
 
 @pytest.fixture
 def sdp_master_device():
+    """Return SDP Master Device"""
     return "mid_sdp/elt/master"
 
 
 @pytest.fixture
 def csp_master_device():
+    """Return CSP Master Device"""
     return "mid_csp/elt/master"
 
 
+# pylint: disable=redefined-outer-name
 @pytest.fixture()
 def devices_to_load():
+    """Returns all devices to load"""
     return (
         {
             "class": HelperSubArrayDevice,
@@ -74,6 +79,7 @@ def devices_to_load():
 
 @pytest.fixture
 def tango_context(devices_to_load, request):
+    """Provide context to run devices without database"""
     true_context = request.config.getoption("--true-context")
     logging.info("true context: %s", true_context)
     if not true_context:
@@ -83,6 +89,9 @@ def tango_context(devices_to_load, request):
             yield context
     else:
         yield None
+
+
+# pylint: enable=redefined-outer-name
 
 
 @pytest.fixture
@@ -104,4 +113,5 @@ def sdpsln_device(request):
 
 @pytest.fixture(scope="session")
 def sdp_subarray_device():
+    """SDP Subarray Device"""
     return "mid_sdp/elt/subarray_1"
