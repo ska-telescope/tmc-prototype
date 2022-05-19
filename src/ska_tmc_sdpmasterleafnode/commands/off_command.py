@@ -1,10 +1,6 @@
 """
 Off command class for SDPMasterLeafNode.
 """
-
-from ska_tmc_common.exceptions import CommandNotAllowed
-from tango import DevState
-
 from ska_tmc_sdpmasterleafnode.commands.abstract_command import SdpMLNCommand
 
 
@@ -17,9 +13,10 @@ class Off(SdpMLNCommand):
     It Invokes Off command on Sdp Master device.
 
     """
+
     def __init__(
         self, target, op_state_model, adapter_factory=None, logger=None
-        ):
+    ):
         super().__init__(target, op_state_model, adapter_factory, logger)
         try:
             self.init_adapter()
