@@ -113,5 +113,5 @@ def sdpsln_device(request):
 
 @pytest.fixture(scope="session")
 def sdp_subarray_device():
-    """SDP Subarray Device"""
+    """Returns SDP Subarray 1 device name"""
     return "mid_sdp/elt/subarray_1"

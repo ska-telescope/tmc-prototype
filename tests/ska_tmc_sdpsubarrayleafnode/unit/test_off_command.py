@@ -22,7 +22,7 @@ def test_off_command(tango_context):
     (result_code, _) = off_command.do()
     assert result_code == ResultCode.OK
     adapter = adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE)
-    adapter.proxy.Off.assert_called()
+    adapter.proxy.Off.assert_called_once_with()
 
 
 @pytest.mark.sdpsln
