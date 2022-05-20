@@ -1,6 +1,7 @@
 """
 Off command class for SDPMasterLeafNode.
 """
+
 from ska_tmc_sdpmasterleafnode.commands.abstract_command import SdpMLNCommand
 
 
@@ -21,7 +22,7 @@ class Off(SdpMLNCommand):
         try:
             self.init_adapter()
         except Exception as e:
-            logger.info(f"Exception:, {e}")
+            logger.info(f"Exception: {e}")
 
     def do(self, argin=None):
         """

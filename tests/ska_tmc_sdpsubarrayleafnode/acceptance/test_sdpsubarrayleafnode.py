@@ -162,13 +162,6 @@ def check_sdp_subarray_obsstate(sdp_subarray, obs_state):
     sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
     logger.info(f"SDP Subarray Device : {sdp_subarray}")
     logger.info(f"SDP Subarray obsState is {sdp_subarray_obsstate}")
-    # if "Helper" in sdp_subarray:
-    #     # Set ObsState of the mocked SDP Subarray
-    #     logger.info(
-    #       f"In helper SDP Subarray Device : {sdp_subarray}, setting ObsState"
-    #     )
-    #     sdp_subarray.SetDirectObsState(ObsState.EMPTY)
-    # else:
     logger.info(f"In SDP Subarray Device : {sdp_subarray}, checking ObsState")
     wait_time = 0
     while (sdp_subarray_obsstate.value) != obs_state:

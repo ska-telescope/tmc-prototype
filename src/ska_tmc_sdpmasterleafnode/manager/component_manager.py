@@ -3,7 +3,6 @@
 This module implements ComponentManager class for the Sdp Master Leaf Node.
 """
 from ska_tmc_common.command_executor import CommandExecutor
-from ska_tmc_common.device_info import DeviceInfo
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
 
 
@@ -57,25 +56,10 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             proxy_timeout,
             sleep_time,
         )
+        self.sdp_master_dev_name = sdp_master_dev_name
         # pylint: disable=line-too-long
-        self.update_device_info(sdp_master_dev_name)
         self._command_executor = CommandExecutor(
             logger,
             _update_command_in_progress_callback=_update_command_in_progress_callback,  # noqa:E501
         )
         # pylint: enable=line-too-long
-
-    def update_device_info(self, sdp_master_dev_name):
-        """Updates the device info"""
-        self._sdp_master_dev_name = sdp_master_dev_name
-        self._device = DeviceInfo(self._sdp_master_dev_name, False)
-
-    def device_failed(self, exception):
-        """
-        Set a device to failed and call the relative callback if available
-
-        :param exception: an exception
-        :type: Exception
-        """
-        with self.lock:
-            self._device.exception = exception

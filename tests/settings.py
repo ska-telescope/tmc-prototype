@@ -43,7 +43,6 @@ def create_cm(cm_class, device):
             op_state_model,
             logger=logger,
         )
-        cm.get_device()
     elif cm_class == "SdpSLNComponentManager":
         cm = SdpSLNComponentManager(device, op_state_model, logger=logger)
     else:
@@ -81,15 +80,10 @@ def get_sdpsln_command_obj(command_class, obsstate_value=None):
 def get_sdpmln_command_obj(command_class):
     """Returns component manager and command class object for Sdp Master Leaf
     Node"""
-    cm, start_time = create_cm("SdpMLNComponentManager", SDP_MASTER_DEVICE)
-    elapsed_time = time.time() - start_time
-    logger.info(
-        "checked %s device in %s", cm.get_device().dev_name, elapsed_time
-    )
+    cm, _ = create_cm("SdpMLNComponentManager", SDP_MASTER_DEVICE)
     adapter_factory = HelperAdapterFactory()
-
     attrs = {"fetch_skuid.return_value": 123}
     skuid = mock.Mock(**attrs)
-    cm._sdp_master_dev_name = SDP_MASTER_DEVICE
+    cm.sdp_master_dev_name = SDP_MASTER_DEVICE
     command_obj = command_class(cm, cm.op_state_model, adapter_factory, skuid)
     return cm, command_obj, adapter_factory

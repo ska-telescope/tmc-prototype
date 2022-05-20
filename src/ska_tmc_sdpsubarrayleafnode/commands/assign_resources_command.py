@@ -17,9 +17,6 @@ class AssignResources(SdpSLNCommand):
     A class for SdpSubarayLeafNode's AssignResources() command.
 
     Assigns resources to given SDP Subarray.
-    This command is provided as a noop placeholder from SDP Subarray.
-    Eventually this will likely take a JSON string specifying the resource
-    request.
     """
 
     def __init__(

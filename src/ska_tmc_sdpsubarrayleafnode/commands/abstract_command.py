@@ -69,7 +69,7 @@ class SdpSLNCommand(TmcLeafNodeCommand):
 
 
 class AbstractOnOff(SdpSLNCommand):
-    """Abstract On and Off class"""
+    """Abstract class to process On and Off commands"""
 
     def __init__(
         self,
@@ -118,7 +118,7 @@ class AbstractOnOff(SdpSLNCommand):
 
 
 class AbstractScanEnd(SdpSLNCommand):
-    """Abstract Scan and End Class"""
+    """Abstract class to process Scan and End commands"""
 
     def __init__(
         self,
@@ -164,7 +164,7 @@ class AbstractScanEnd(SdpSLNCommand):
 
 
 class AbstractRestartObsReset(SdpSLNCommand):
-    """Abstract Restart and Observation Reset Class"""
+    """Abstract class to process Restart and Observation Reset commands"""
 
     def __init__(
         self,

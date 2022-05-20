@@ -93,7 +93,7 @@ class ReleaseResources(SdpSLNCommand):
                 Subarray. The command has NOT been executed.
                 This device will continue with normal operation.""",
             )
-        log_msg = f"""On command successfully invoked on:
+        log_msg = f"""Release Resources command successfully invoked on:
         {self.sdp_subarray_adapter.dev_name}"""
         self.logger.info(log_msg)
         return (ResultCode.OK, "")

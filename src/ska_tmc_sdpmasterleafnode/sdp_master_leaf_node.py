@@ -1,6 +1,6 @@
 """
-SDP Master Leaf node acts as a SDP contact point for Master Node and also
-to monitor and issue commands to the SDP Master.
+SDP Master Leaf node acts as a SDP contact point for the Master Node and also
+monitors and issues commands to the SDP Master.
 """
 from ska_tango_base import SKABaseDevice
 from ska_tango_base.commands import ResultCode
@@ -96,11 +96,11 @@ class SdpMasterLeafNode(SKABaseDevice):
 
     def read_sdpMasterDevName(self):
         """Return the sdpmasterdevname attribute."""
-        return self.component_manager._sdp_master_dev_name
+        return self.component_manager.sdp_master_dev_name
 
     def write_sdpMasterDevName(self, value):
         """Set the sdpmasterdevname attribute."""
-        self.component_manager.update_device_info(value)
+        self.component_manager.sdp_master_dev_name = value
 
     def read_commandExecuted(self):
         """Return the commandExecuted attribute."""
@@ -259,7 +259,7 @@ class SdpMasterLeafNode(SKABaseDevice):
     # default ska mid
     # pylint: disable=attribute-defined-outside-init
     def create_component_manager(self):
-        """Creates a component manager"""
+        """Returns Sdp Master Leaf Node component manager object"""
         self.op_state_model = TMCOpStateModel(
             logger=self.logger, callback=super()._update_state
         )

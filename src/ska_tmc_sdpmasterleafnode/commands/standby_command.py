@@ -21,7 +21,7 @@ class Standby(SdpMLNCommand):
         try:
             self.init_adapter()
         except Exception as e:
-            logger.info(f"Exception:, {e}")
+            logger.info(f"Exception: {e}")
 
     def do(self, argin=None):
         """
