@@ -599,7 +599,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # default ska mid
     # pylint: disable=attribute-defined-outside-init
     def create_component_manager(self):
-        """Creates component manager"""
+        """Returns Sdp Subarray Leaf Node component manager object"""
         self.op_state_model = TMCOpStateModel(
             logger=self.logger, callback=super()._update_state
         )
