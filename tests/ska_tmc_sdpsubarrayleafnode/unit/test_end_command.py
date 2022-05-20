@@ -68,6 +68,7 @@ def test_telescope_end_command_fail_check_allowed_with_invalid_obsState(
     )
     with pytest.raises(
         InvalidObsStateError,
-        match="Scan and End commands are not allowed",
+        match=f"""The current observation state for observation is
+            {ObsState.IDLE}""",
     ):
         end_command.check_allowed()

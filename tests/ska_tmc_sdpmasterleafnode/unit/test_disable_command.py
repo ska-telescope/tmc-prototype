@@ -15,7 +15,7 @@ def test_disable_command(tango_context, sdp_master_device):
     (result_code, _) = disable_command.do()
     assert result_code == ResultCode.OK
     adapter = adapter_factory.get_or_create_adapter(sdp_master_device)
-    adapter.proxy.Disable.assert_called()
+    adapter.proxy.Disable.assert_called_once_with()
 
 
 @pytest.mark.sdpmln

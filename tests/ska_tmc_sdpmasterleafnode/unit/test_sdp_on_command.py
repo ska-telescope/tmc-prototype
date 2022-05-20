@@ -15,7 +15,7 @@ def test_on_command(tango_context, sdp_master_device):
     (result_code, _) = on_command.do()
     assert result_code == ResultCode.OK
     adapter = adapter_factory.get_or_create_adapter(sdp_master_device)
-    adapter.proxy.On.assert_called()
+    adapter.proxy.On.assert_called_once_with()
 
 
 @pytest.mark.sdpmln
