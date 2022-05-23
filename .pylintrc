@@ -37,11 +37,7 @@ load-plugins=
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use"--disable=all --enable=classes
 # --disable=W"
-disable=C,R,attribute-defined-outside-init,invalid-name,no-member,no-self-use,
-        fixme,broad-except,redefined-builtin,protected-access,arguments-differ,
-        signature-differs, raise-missing-from, abstract-method, raising-format-tuple, 
-        super-init-not-called, redefined-outer-name, useless-super-delegation, trailing whitespace,
-        unused-argument, arguments-renamed
+disable=invalid-name,broad-except,redefined-builtin,protected-access,fixme
 
 
 [REPORTS]
@@ -78,7 +74,7 @@ comment=no
 [SIMILARITIES]
 
 # Minimum lines number of a similarity.
-min-similarity-lines=4
+min-similarity-lines=40
 
 # Ignore comments when computing similarities.
 ignore-comments=yes
@@ -127,7 +123,7 @@ additional-builtins=
 [FORMAT]
 
 # Maximum number of characters on a single line.
-max-line-length=110
+max-line-length=79
 
 # Regexp for a line that is allowed to be longer than the limit.
 ignore-long-lines=^\s*(# )?<?https?://\S+>?$
@@ -246,7 +242,7 @@ valid-metaclass-classmethod-first-arg=mcs
 [DESIGN]
 
 # Maximum number of arguments for function / method
-max-args=5
+max-args=12
 
 # Argument names that match this expression will be ignored. Default to name
 # with leading underscore
@@ -256,7 +252,7 @@ ignored-argument-names=_.*
 max-locals=20
 
 # Maximum number of return / yield for function / method body
-max-returns=6
+max-returns=8
 
 # Maximum number of branch for function / method body
 max-branches=15

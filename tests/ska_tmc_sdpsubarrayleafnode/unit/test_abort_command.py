@@ -22,7 +22,7 @@ def test_abort_command(tango_context, sdp_subarray_device):
     (result_code, _) = abort_command.do()
     assert result_code == ResultCode.OK
     adapter = adapter_factory.get_or_create_adapter(sdp_subarray_device)
-    adapter.proxy.Abort.assert_called()
+    adapter.proxy.Abort.assert_called_once_with()
 
 
 @pytest.mark.sdpsln

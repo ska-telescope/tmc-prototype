@@ -9,7 +9,7 @@
 
 CAR_OCI_REGISTRY_HOST:=artefact.skao.int
 PROJECT = ska-tmc-sdpleafnodes
-PYTHON_SWITCHES_FOR_FLAKE8=--ignore=W503,E203 --max-line-length=180
+PYTHON_SWITCHES_FOR_FLAKE8=--ignore=W503,E203 --max-line-length=79
 TANGO_HOST ?= tango-databaseds:10000 ## TANGO_HOST connection to the Tango DS
 PYTHON_VARS_BEFORE_PYTEST ?= PYTHONPATH=.:./src \
 							 TANGO_HOST=$(TANGO_HOST)
@@ -26,7 +26,6 @@ KUBE_NAMESPACE ?= ska-tmc-sdpleafnodes
 # HELM_RELEASE is the release that all Kubernetes resources will be labelled
 # with
 HELM_RELEASE ?= test
-HELM_CHARTS_TO_PUBLISH=
 
 # UMBRELLA_CHART_PATH Path of the umbrella chart to work with
 HELM_CHART=test-parent
@@ -64,7 +63,7 @@ K8S_TEST_RUNNER = test-runner-$(HELM_RELEASE)
 
 CI_PROJECT_PATH_SLUG ?= ska-tmc-sdpleafnodes
 CI_ENVIRONMENT_SLUG ?= ska-tmc-sdpleafnodes
-$(shell echo 'global:\n  annotations:\n    app.gitlab.com/app: $(CI_PROJECT_PATH_SLUG)\n    app.gitlab.com/env: $(CI_ENVIRONMENT_SLUG)' > gilab_values.yaml)
+$(shell echo 'global:\n  annotations:\n    app.gitlab.com/app: $(CI_PROJECT_PATH_SLUG)\n    app.gitlab.com/env: $(CI_ENVIRONMENT_SLUG)' > gitlab_values.yaml)
 
 ifeq ($(MAKECMDGOALS),python-test)
 ADD_ARGS +=  --forked
@@ -86,7 +85,7 @@ K8S_CHART_PARAMS = --set global.minikube=$(MINIKUBE) \
 	--set tmc-sdpleafnodes.deviceServers.mocks.enabled=$(FAKE_DEVICES) \
 	--set ska-taranta.enabled=$(TARANTA) \
 	$(CUSTOM_VALUES) \
-	--values gilab_values.yaml
+	--values gitlab_values.yaml
 
 K8S_TEST_TEST_COMMAND = $(PYTHON_VARS_BEFORE_PYTEST) $(PYTHON_RUNNER) \
 						pytest \
@@ -107,5 +106,4 @@ test-requirements:
 	@poetry export --without-hashes --dev --format requirements.txt --output tests/requirements.txt
 
 k8s-pre-test: python-pre-test test-requirements
-
 

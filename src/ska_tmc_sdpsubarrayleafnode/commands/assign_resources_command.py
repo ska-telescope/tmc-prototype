@@ -1,3 +1,4 @@
+# flake8: noqa:E501
 """
 AssignResouces command class for SDPSubarrayLeafNode.
 """
@@ -16,8 +17,6 @@ class AssignResources(SdpSLNCommand):
     A class for SdpSubarayLeafNode's AssignResources() command.
 
     Assigns resources to given SDP Subarray.
-    This command is provided as a noop placeholder from SDP Subarray.
-    Eventually this will likely take a JSON string specifying the resource request.
     """
 
     def __init__(
@@ -30,6 +29,7 @@ class AssignResources(SdpSLNCommand):
         super().__init__(target, logger)
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory or AdapterFactory()
+        self.init_adapter()
 
     def check_allowed(self):
         """
@@ -51,14 +51,19 @@ class AssignResources(SdpSLNCommand):
         self.logger.info("sdp_subarray_obs_state: %s", obs_state_val)
 
         if obs_state_val not in [ObsState.IDLE, ObsState.EMPTY]:
-            message = f"""AssignResources command is not allowed in current observation state on device {component_manager.get_device().dev_name}.
-            Reason: The current observation state for observation is {obs_state_val}.
-            The \"AssignResources\" command has NOT been executed. This device will continue with normal operation."""
+            message = f"""AssignResources command is not allowed in current
+            observation state on device
+            {component_manager.get_device().dev_name}.
+            Reason: The current observation state for observation is
+            {obs_state_val}.
+            The \"AssignResources\" command has NOT been executed.
+            This device will continue with normal operation."""
             raise InvalidObsStateError(message)
 
         return True
 
-    def do(self, argin):
+    # pylint: disable=line-too-long
+    def do(self, argin=None):
         """
         Method to invoke AssignResources command on SDP Subarray.
 
@@ -67,7 +72,7 @@ class AssignResources(SdpSLNCommand):
             eb_id and maximum length of the SBI:
             Mandatory JSON object consisting of
 
-             eb_id :
+            eb_id :
                 String
 
             max_length:
@@ -108,9 +113,7 @@ class AssignResources(SdpSLNCommand):
         return:
             None
         """
-        ret_code, message = self.init_adapter()
-        if ret_code == ResultCode.FAILED:
-            return ret_code, message
+        # pylint: enable=line-too-long
 
         try:
             json_argument = json.loads(argin)
@@ -123,7 +126,8 @@ class AssignResources(SdpSLNCommand):
             return self.generate_command_result(
                 ResultCode.FAILED,
                 (
-                    "Exception occurred while parsing the JSON. Please check the logs for details."
+                    """Exception occurred while parsing the JSON.
+                    Please check the logs for details."""
                 ),
             )
 
@@ -139,17 +143,15 @@ class AssignResources(SdpSLNCommand):
                 "scan_types key is not present in the input json argument.",
             )
 
-        log_msg = f"Invoking AssignResources command on:{self.sdp_subarray_adapter.dev_name}"
+        log_msg = f"""Invoking AssignResources command on:
+        {self.sdp_subarray_adapter.dev_name}"""
         self.logger.info(log_msg)
         try:
             json_argument[
                 "interface"
             ] = "https://schema.skao.int/ska-sdp-assignres/0.3"
-            log_msg = (
-                "Input JSON for AssignResources command for SDP subarray %s: %s, ",
-                self.sdp_subarray_adapter.dev_name,
-                json_argument,
-            )
+            log_msg = f"""Input JSON for AssignResources command for SDP
+            subarray {self.sdp_subarray_adapter.dev_name}: {json_argument}"""
             self.logger.debug(log_msg)
             self.sdp_subarray_adapter.AssignResources(
                 json.dumps(json_argument)
@@ -159,11 +161,14 @@ class AssignResources(SdpSLNCommand):
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                f"""The invocation of the AssignResources command is failed on Sdp Subarray Device {self.sdp_subarray_adapter.dev_name}.
-                Reason: Error in calling the AssignResources command on Sdp Subarray.
+                f"""The invocation of the AssignResources command is failed on
+                Sdp Subarray Device {self.sdp_subarray_adapter.dev_name}.
+                Reason: Error in calling the AssignResources command on Sdp
+                Subarray.
                 The command has NOT been executed.
                 This device will continue with normal operation.""",
             )
-        log_msg = f"AssignResources command successfully invoked on:{self.sdp_subarray_adapter.dev_name}"
+        log_msg = f"""AssignResources command successfully invoked on:
+        {self.sdp_subarray_adapter.dev_name}"""
         self.logger.info(log_msg)
         return (ResultCode.OK, "")

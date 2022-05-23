@@ -123,6 +123,6 @@ def test_configure_command_fail_check_allowed_with_invalid_obsState(
     cm.get_device().update_unresponsive(False)
     with pytest.raises(
         InvalidObsStateError,
-        match="Configure command is not allowed in current observation state",
+        match="Configure command is not allowed",
     ):
         assign_res_command.check_allowed()

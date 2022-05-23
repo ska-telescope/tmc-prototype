@@ -67,7 +67,7 @@ def test_release_resources_command_fail_check_allowed_with_invalid_obsState(
     cm.get_device().update_unresponsive(False)
     with pytest.raises(
         InvalidObsStateError,
-        match="ReleaseResources command is not allowed in current observation state",
+        match="ReleaseResources command is not allowed",
     ):
         release_command.check_allowed()
 

@@ -23,7 +23,7 @@ def test_endscan_command(tango_context, sdp_subarray_device):
     assert result_code == ResultCode.OK
     cm.get_device().obs_state == ObsState.READY
     adapter = adapter_factory.get_or_create_adapter(sdp_subarray_device)
-    adapter.proxy.EndScan.assert_called()
+    adapter.proxy.EndScan.assert_called_once_with()
 
 
 @pytest.mark.sdpsln
@@ -57,6 +57,6 @@ def test_endscan_fail_check_allowed_with_invalid_obsState(
     )
     with pytest.raises(
         InvalidObsStateError,
-        match="EndScan command is not allowed in current observation state",
+        match="EndScan command is not allowed",
     ):
         endscan_command.check_allowed()

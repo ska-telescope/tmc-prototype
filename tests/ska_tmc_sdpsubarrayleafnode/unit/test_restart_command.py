@@ -67,7 +67,8 @@ def test_restart_fail_check_allowed_with_invalid_obsState(
     )
     with pytest.raises(
         InvalidObsStateError,
-        match="ObsReset and Restart commands are not allowed in current observation state",
+        match=f"""The current observation state for observation is
+            {ObsState.IDLE}""",
     ):
         restart_command.check_allowed()
 

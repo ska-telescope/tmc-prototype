@@ -109,7 +109,8 @@ def test_scan_command_fail_check_allowed_with_invalid_obsState(
     )
     with pytest.raises(
         InvalidObsStateError,
-        match="Scan and End commands are not allowed in current observation state",
+        match=f"""The current observation state for observation is
+            {ObsState.IDLE}""",
     ):
         scan_command.check_allowed()
 
@@ -118,7 +119,6 @@ def test_scan_command_fail_check_allowed_with_invalid_obsState(
 def test_scan_fail_check_allowed_with_device_undesponsive(
     tango_context,
 ):
-
     logger.info("%s", tango_context)
     cm, scan_command, _ = get_sdpsln_command_obj(
         Scan, obsstate_value=ObsState.SCANNING

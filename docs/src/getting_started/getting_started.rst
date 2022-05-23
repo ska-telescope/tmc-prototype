@@ -7,7 +7,7 @@ started with usage and development of the TMC SDP Leaf Nodes.
 Background
 ----------
 Detailed information on how the SKA Software development
-community works is available at the `SKA software developer portal <https://developer.skao.int/en/latest/>`_.
+community works is available at the `SKA software developer portal <https://developer.skao.int/en/latest/>`__.
 There you will find guidelines, policies, standards and a range of other
 documentation.
 
@@ -18,7 +18,7 @@ This project is structured to use k8s for development and testing so that the bu
 Install minikube
 ^^^^^^^^^^^^^^^^
 
-You will need to install `minikube` or equivalent k8s installation in order to set up your test environment. You can follow the instruction `here <https://gitlab.com/ska-telescope/sdi/deploy-minikube/>`_:
+You will need to install `minikube` or equivalent k8s installation in order to set up your test environment. You can follow the instruction `here <https://gitlab.com/ska-telescope/sdi/deploy-minikube/>`__:
 ::
 git clone git@gitlab.com:ska-telescope/sdi/deploy-minikube.git
 cd deploy-minikube
@@ -56,9 +56,6 @@ $ poetry install
 Activate the poetry environment:
 ::
 $ source $(poetry env info --path)/bin/activate
-
-Alternate way to install and activate poetry
-::
 
 Follow the steps till installation of dependencies then run below command:
 ::

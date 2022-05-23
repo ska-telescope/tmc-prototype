@@ -29,7 +29,7 @@ def test_telescope_obsreset_command(tango_context):
     assert result_code == ResultCode.OK
     cm.get_device().obs_state == ObsState.IDLE
     adapter = adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE)
-    adapter.proxy.ObsReset.assert_called()
+    adapter.proxy.ObsReset.assert_called_once_with()
 
 
 @pytest.mark.sdpsln

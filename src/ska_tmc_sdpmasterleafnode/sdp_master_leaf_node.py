@@ -1,6 +1,6 @@
 """
-SDP Master Leaf node acts as a SDP contact point for Master Node and also to monitor
-and issue commands to the SDP Master.
+SDP Master Leaf node acts as a SDP contact point for the Master Node and also
+monitors and issues commands to the SDP Master.
 """
 from ska_tango_base import SKABaseDevice
 from ska_tango_base.commands import ResultCode
@@ -17,7 +17,8 @@ __all__ = ["SdpMasterLeafNode", "main"]
 
 class SdpMasterLeafNode(SKABaseDevice):
     """
-    SDP Master Leaf node acts as a SDP contact point for Master Node and also to monitor
+    SDP Master Leaf node acts as a SDP contact point for Master Node and
+    also to monitor
     and issue commands to the SDP Master.
     """
 
@@ -59,7 +60,8 @@ class SdpMasterLeafNode(SKABaseDevice):
             Initializes the attributes and properties of the SdpMasterLeafNode.
 
             return:
-                A tuple containing a return code and a string message indicating status.
+                A tuple containing a return code and a string message
+                indicating status.
                 The message is for information purpose only.
 
             rtype:
@@ -68,8 +70,8 @@ class SdpMasterLeafNode(SKABaseDevice):
             super().do()
             device = self.target
 
-            device._build_state = "{},{},{}".format(
-                release.name, release.version, release.description
+            device._build_state = (
+                f"{release.name},{release.version},{release.description}"
             )
             device._version_id = release.version
             device.set_change_event("healthState", True, False)
@@ -94,11 +96,11 @@ class SdpMasterLeafNode(SKABaseDevice):
 
     def read_sdpMasterDevName(self):
         """Return the sdpmasterdevname attribute."""
-        return self.component_manager._sdp_master_dev_name
+        return self.component_manager.sdp_master_dev_name
 
     def write_sdpMasterDevName(self, value):
         """Set the sdpmasterdevname attribute."""
-        self.component_manager.update_device_info(value)
+        self.component_manager.sdp_master_dev_name = value
 
     def read_commandExecuted(self):
         """Return the commandExecuted attribute."""
@@ -125,9 +127,11 @@ class SdpMasterLeafNode(SKABaseDevice):
 
     def is_Off_allowed(self):
         """
-        Checks whether this command is allowed to be run in current device state.
+        Checks whether this command is allowed to be run in current \
+        device state. \
 
-        :return: True if this command is allowed to be run in current device state.
+        :return: True if this command is allowed to be run in current device \
+        state. \
 
         :rtype: boolean
         """
@@ -141,8 +145,10 @@ class SdpMasterLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("Off")
         if self.component_manager._command_executor.queue_full:
-            message = """The invocation of the Off command on this device failed.
-            Reason: The command executor rejected the queuing of the command because its queue is full.
+            message = """The invocation of the Off command on this device
+            failed.
+            Reason: The command executor rejected the queuing of the command
+            because its queue is full.
             The Off command has NOT been queued and will not be executed.
             This device will continue with normal operation."""
             return [[ResultCode.FAILED], [message]]
@@ -153,9 +159,11 @@ class SdpMasterLeafNode(SKABaseDevice):
 
     def is_On_allowed(self):
         """
-        Checks whether this command is allowed to be run in current device state.
+        Checks whether this command is allowed to be run in current device \
+        state. \
 
-        :return: True if this command is allowed to be run in current device state.
+        :return: True if this command is allowed to be run in current device \
+        state. \
 
         :rtype: boolean
         """
@@ -170,8 +178,10 @@ class SdpMasterLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("On")
         if self.component_manager._command_executor.queue_full:
-            message = """The invocation of the On command on this device failed.
-            Reason: The command executor rejected the queuing of the command because its queue is full.
+            message = """The invocation of the On command on this device
+            failed.
+            Reason: The command executor rejected the queuing of the command
+            because its queue is full.
             The On command has NOT been queued and will not be executed.
             This device will continue with normal operation."""
             return [[ResultCode.FAILED], [message]]
@@ -182,9 +192,11 @@ class SdpMasterLeafNode(SKABaseDevice):
 
     def is_Standby_allowed(self):
         """
-        Checks whether this command is allowed to be run in current device state.
+        Checks whether this command is allowed to be run in current device \
+        state. \
 
-        :return: True if this command is allowed to be run in current device state.
+        :return: True if this command is allowed to be run in current device \
+        state. \
 
         :rtype: boolean
         """
@@ -199,8 +211,10 @@ class SdpMasterLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("Standby")
         if self.component_manager._command_executor.queue_full:
-            message = """The invocation of the Standby command on this device failed.
-            Reason: The command executor rejected the queuing of the command because its queue is full.
+            message = """The invocation of the Standby command on this device
+            failed.
+            Reason: The command executor rejected the queuing of the command
+            because its queue is full.
             The Standby command has NOT been queued and will not be executed.
             This device will continue with normal operation."""
             return [[ResultCode.FAILED], [message]]
@@ -211,9 +225,11 @@ class SdpMasterLeafNode(SKABaseDevice):
 
     def is_Disable_allowed(self):
         """
-        Checks whether this command is allowed to be run in current device state.
+        Checks whether this command is allowed to be run in current device \
+        state. \
 
-        :return: True if this command is allowed to be run in current device state.
+        :return: True if this command is allowed to be run in current device \
+        state. \
 
         :rtype: boolean
         """
@@ -228,8 +244,10 @@ class SdpMasterLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("Disable")
         if self.component_manager._command_executor.queue_full:
-            message = """The invocation of the Disable command on this device failed.
-            Reason: The command executor rejected the queuing of the command because its queue is full.
+            message = """The invocation of the Disable command on this device
+            failed.
+            Reason: The command executor rejected the queuing of the command
+            because its queue is full.
             The Disable command has NOT been queued and will not be executed.
             This device will continue with normal operation."""
             return [[ResultCode.FAILED], [message]]
@@ -239,7 +257,9 @@ class SdpMasterLeafNode(SKABaseDevice):
         return [[ResultCode.QUEUED], [str(unique_id)]]
 
     # default ska mid
+    # pylint: disable=attribute-defined-outside-init
     def create_component_manager(self):
+        """Returns Sdp Master Leaf Node component manager object"""
         self.op_state_model = TMCOpStateModel(
             logger=self.logger, callback=super()._update_state
         )
@@ -251,6 +271,8 @@ class SdpMasterLeafNode(SKABaseDevice):
         )
 
         return cm
+
+    # pylint: enable=attribute-defined-outside-init
 
     def init_command_objects(self):
         """

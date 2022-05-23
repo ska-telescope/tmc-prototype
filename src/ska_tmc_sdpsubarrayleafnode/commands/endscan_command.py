@@ -1,7 +1,6 @@
 """
 EndScan command class for SDPSubarrayLeafNode.
 """
-from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.adapters import AdapterFactory
 from ska_tmc_common.exceptions import InvalidObsStateError
@@ -27,6 +26,7 @@ class EndScan(SdpSLNCommand):
         super().__init__(target, logger)
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory or AdapterFactory()
+        self.init_adapter()
 
     def check_allowed(self):
         """
@@ -48,9 +48,12 @@ class EndScan(SdpSLNCommand):
         obs_state_val = component_manager.get_device().obs_state
 
         if obs_state_val != ObsState.SCANNING:
-            message = f"""EndScan command is not allowed in current observation state on device {component_manager.get_device().dev_name}.
-            Reason: The current observation state for observation is {obs_state_val}.
-            The \"EndScan\" command has NOT been executed. This device will continue with normal operation."""
+            message = f"""EndScan command is not allowed in current observation
+            state on device {component_manager.get_device().dev_name}.
+            Reason: The current observation state for observation is
+            {obs_state_val}.
+            The \"EndScan\" command has NOT been executed.
+            This device will continue with normal operation."""
             raise InvalidObsStateError(message)
 
         return True
@@ -60,32 +63,7 @@ class EndScan(SdpSLNCommand):
         Method to invoke EndScan command on SDP Subarray.
 
         """
-
-        res_code, message = self.init_adapter()
-        if res_code == ResultCode.FAILED:
-            return res_code, message
-
-        log_msg = (
-            f"Invoking EndScan command on:{self.sdp_subarray_adapter.dev_name}"
+        result = self.call_adapter_method(
+            "Sdp Subarray", self.sdp_subarray_adapter, "EndScan"
         )
-        self.logger.info(log_msg)
-        try:
-            log_msg = (
-                "Invoking EndScan command on SDP Subarray %s: ",
-                self.sdp_subarray_adapter.dev_name,
-            )
-            self.logger.debug(log_msg)
-            self.sdp_subarray_adapter.EndScan()
-
-        except Exception as e:
-            self.logger.exception("Command invocation failed: %s", e)
-            return self.generate_command_result(
-                ResultCode.FAILED,
-                f"""The invocation of the EndScan command is failed on Sdp Subarray Device {self.sdp_subarray_adapter.dev_name}.
-                Reason: Error in calling the EndScan command on Sdp Subarray.
-                The command has NOT been executed.
-                This device will continue with normal operation.""",
-            )
-        log_msg = f"EndScan command successfully invoked on:{self.sdp_subarray_adapter.dev_name}"
-        self.logger.info(log_msg)
-        return (ResultCode.OK, "")
+        return result
