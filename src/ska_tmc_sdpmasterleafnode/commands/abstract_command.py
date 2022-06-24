@@ -52,19 +52,22 @@ class SdpMLNCommand(TmcLeafNodeCommand):
         component_manager = self.target
         dev_name = component_manager.sdp_master_dev_name
         try:
-            trials = 0
-            sleep = 0
-            while self.sdp_master_adapter is None and trials != 5:
-                time.sleep(sleep)
+            time_out = 30
+            elapsed_time = 0
+            start_time = time.time()
+            while self.sdp_master_adapter is None and elapsed_time < time_out:
                 self.sdp_master_adapter = (
                     self._adapter_factory.get_or_create_adapter(
                         dev_name, AdapterType.BASE
                     )
                 )
-                sleep += 5
-                trials += 1
+                elapsed_time = time.time() - start_time
             if self.sdp_master_adapter is None:
-                raise Exception("Failed to create adapter")
+                return self.adapter_error_message_result(
+                    component_manager.get_device(),
+                    "failed to create adapter",
+                )
+
         except Exception as e:
             return self.adapter_error_message_result(
                 component_manager.get_device(),
