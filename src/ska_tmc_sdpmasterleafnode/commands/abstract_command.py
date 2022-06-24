@@ -1,9 +1,12 @@
 """Abstract Command module for SDP Master Leaf Node"""
+import time
+
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterFactory, AdapterType
 from ska_tmc_common.exceptions import CommandNotAllowed
-from ska_tmc_common.tmc_command import TmcLeafNodeCommand
 from tango import DevState
+
+from ska_tmc_sdpmasterleafnode.commands.tmc_command import TmcLeafNodeCommand
 
 
 class SdpMLNCommand(TmcLeafNodeCommand):
@@ -50,11 +53,19 @@ class SdpMLNCommand(TmcLeafNodeCommand):
         component_manager = self.target
         dev_name = component_manager.sdp_master_dev_name
         try:
-            self.sdp_master_adapter = (
-                self._adapter_factory.get_or_create_adapter(
-                    dev_name, AdapterType.BASE
+            trials=0 
+            sleep = 0
+            while self.sdp_master_adapter is None and trials != 5:
+                time.sleep(sleep)
+                self.sdp_master_adapter = (
+                    self._adapter_factory.get_or_create_adapter(
+                        dev_name, AdapterType.BASE
+                    )
                 )
-            )
+                sleep += 5
+                trials += 1
+            if self.sdp_master_adapter is None:
+                raise Exception("Failed to create adapter")
         except Exception as e:
             return self.adapter_error_message_result(
                 component_manager.get_device(),
