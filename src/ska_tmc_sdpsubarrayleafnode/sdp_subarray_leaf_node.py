@@ -43,6 +43,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     )
 
     SleepTime = device_property(dtype="DevFloat", default_value=1)
+    TimeOut = device_property(dtype="DevFloat", default_value=30)
 
     # -----------------
     # Attributes
@@ -609,6 +610,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             logger=self.logger,
             _update_device_callback=self.update_device_callback,
             sleep_time=self.SleepTime,
+            time_out=self.TimeOut,
         )
         return cm
 

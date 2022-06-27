@@ -52,7 +52,7 @@ class SdpMLNCommand(TmcLeafNodeCommand):
         component_manager = self.target
         dev_name = component_manager.sdp_master_dev_name
         try:
-            time_out = 30
+            time_out = component_manager.time_out
             elapsed_time = 0
             start_time = time.time()
             while self.sdp_master_adapter is None and elapsed_time < time_out:
