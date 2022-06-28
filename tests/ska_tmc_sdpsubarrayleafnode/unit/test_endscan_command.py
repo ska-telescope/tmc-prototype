@@ -27,7 +27,6 @@ def test_endscan_command(tango_context, sdp_subarray_device):
 
 
 @pytest.mark.sdpsln
-@pytest.mark.dev
 def test_endscan_fail_check_allowed_with_device_unresponsive(
     tango_context, sdp_subarray_device
 ):
