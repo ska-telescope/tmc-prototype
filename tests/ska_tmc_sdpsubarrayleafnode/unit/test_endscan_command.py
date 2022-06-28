@@ -27,6 +27,7 @@ def test_endscan_command(tango_context, sdp_subarray_device):
 
 
 @pytest.mark.sdpsln
+@pytest.mark.dev
 def test_endscan_fail_check_allowed_with_device_unresponsive(
     tango_context, sdp_subarray_device
 ):
@@ -40,6 +41,7 @@ def test_endscan_fail_check_allowed_with_device_unresponsive(
     adapter_factory = HelperAdapterFactory()
     cm.get_device().update_unresponsive(True)
     endscan_command = EndScan(cm, cm.op_state_model, adapter_factory)
+    cm.get_device().update_unresponsive(True)
     with pytest.raises(
         DeviceUnresponsive, match="SDP subarray device is not available"
     ):

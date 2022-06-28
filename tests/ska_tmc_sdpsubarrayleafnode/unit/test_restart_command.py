@@ -74,7 +74,7 @@ def test_restart_fail_check_allowed_with_invalid_obsState(
 
 
 @pytest.mark.sdpsln
-def test_restart_fail_check_allowed_with_device_undesponsive(
+def test_restart_fail_check_allowed_with_device_unresponsive(
     tango_context,
 ):
 

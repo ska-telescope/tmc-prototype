@@ -65,7 +65,7 @@ class SdpSLNCommand(TmcLeafNodeCommand):
                             dev_name, AdapterType.SUBARRAY
                         )
                     )
-                    elapsed_time = time.time() - start_time
+                elapsed_time = time.time() - start_time
             if self.sdp_subarray_adapter is None:
                 return self.adapter_error_message_result(
                     component_manager.get_device(),
