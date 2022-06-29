@@ -610,7 +610,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             logger=self.logger,
             _update_device_callback=self.update_device_callback,
             sleep_time=self.SleepTime,
-            time_out=self.TimeOut,
+            timeout=self.TimeOut,
         )
         return cm
 
