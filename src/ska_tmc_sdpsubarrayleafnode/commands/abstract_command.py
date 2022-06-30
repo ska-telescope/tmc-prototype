@@ -1,6 +1,8 @@
 # pylint: disable=no-member
 # pylint: disable=abstract-method
 """Abstract Command for SDP Subarray Leaf Node"""
+import time
+
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.adapters import AdapterFactory, AdapterType
@@ -50,12 +52,22 @@ class SdpSLNCommand(TmcLeafNodeCommand):
         component_manager = self.target
         dev_name = component_manager._sdp_subarray_dev_name
         devInfo = component_manager.get_device()
+        timeout = component_manager.timeout
+        elapsed_time = 0
+        start_time = time.time()
         try:
-            if not devInfo.unresponsive:
-                self.sdp_subarray_adapter = (
-                    self._adapter_factory.get_or_create_adapter(
-                        dev_name, AdapterType.SUBARRAY
+            while self.sdp_subarray_adapter is None and elapsed_time < timeout:
+                if not devInfo.unresponsive:
+                    self.sdp_subarray_adapter = (
+                        self._adapter_factory.get_or_create_adapter(
+                            dev_name, AdapterType.SUBARRAY
+                        )
                     )
+                elapsed_time = time.time() - start_time
+            if self.sdp_subarray_adapter is None:
+                return self.adapter_error_message_result(
+                    component_manager.get_device(),
+                    "failed to create adapter",
                 )
         except Exception as e:
             return self.adapter_error_message_result(

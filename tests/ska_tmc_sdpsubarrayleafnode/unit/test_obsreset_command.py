@@ -83,7 +83,6 @@ def test_telescope_obsreset_fail_check_allowed_with_device_unresponsive(
     cm, obsreset_command, my_adapter_factory = get_sdpsln_command_obj(
         ObsReset, obsstate_value=ObsState.IDLE
     )
-    cm.get_device().update_unresponsive((True))
-    obsreset_command = ObsReset(cm, cm.op_state_model, my_adapter_factory)
+    cm.get_device().update_unresponsive(True)
     with pytest.raises(DeviceUnresponsive):
         obsreset_command.check_allowed()

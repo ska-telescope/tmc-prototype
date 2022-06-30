@@ -28,6 +28,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         max_workers=1,
         proxy_timeout=500,
         sleep_time=1,
+        timeout=30,
     ):
         """
         Initialise a new ComponentManager instance.
@@ -62,4 +63,5 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             logger,
             _update_command_in_progress_callback=_update_command_in_progress_callback,  # noqa:E501
         )
+        self.timeout = timeout
         # pylint: enable=line-too-long
