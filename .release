@@ -11,7 +11,7 @@ url="""https://www.skaobservatory.org"""
 copyright=""""""
 release=0.8.21
 tag=0.8.21
-tag_description=Rename ska-tmc-leafnodes repository  to ska-tmc-sdpleafnodes.
-release_notes=This release contains:<br/><ul><li>Rename repository from ska-tmc-leafnodes to ska-tmc-sdpleafnodes.</li></ul><br/>
+tag_description=Implement retry mechanism in init adapter.
+release_notes=This release contains:<br/><ul><li>Implement retry mechanism in init adapter.</li></ul><br/>
 
 
