@@ -21,7 +21,6 @@ class Scan(AbstractScanEnd):
         self, target, op_state_model, adapter_factory=None, logger=None
     ):
         super().__init__(target, op_state_model, adapter_factory, logger)
-        self.init_adapter()
 
     def do(self, argin=None):
         """
@@ -39,7 +38,9 @@ class Scan(AbstractScanEnd):
         return: \
             None
         """
-
+        ret_code, message = self.init_adapter()
+        if ret_code == ResultCode.FAILED:
+            return ret_code, message
         try:
             json_argument = json.loads(argin)
         except Exception as e:

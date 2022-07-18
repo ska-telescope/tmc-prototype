@@ -45,7 +45,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         access=AttrWriteType.READ_WRITE,
     )
     SleepTime = device_property(dtype="DevFloat", default_value=1)
-    TimeOut = device_property(dtype="DevFloat", default_value=30)
+    TimeOut = device_property(dtype="DevFloat", default_value=2)
     # ---------------
     # General methods
     # ---------------

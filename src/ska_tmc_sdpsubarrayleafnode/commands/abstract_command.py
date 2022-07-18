@@ -12,7 +12,7 @@ from ska_tmc_common.exceptions import (
     InvalidObsStateError,
 )
 from ska_tmc_common.tmc_command import TmcLeafNodeCommand
-from tango import DevState
+from tango import DevFailed, DevState
 
 
 class SdpSLNCommand(TmcLeafNodeCommand):
@@ -55,25 +55,27 @@ class SdpSLNCommand(TmcLeafNodeCommand):
         timeout = component_manager.timeout
         elapsed_time = 0
         start_time = time.time()
-        try:
-            while self.sdp_subarray_adapter is None and elapsed_time < timeout:
+
+        while self.sdp_subarray_adapter is None and elapsed_time < timeout:
+            try:
                 if not devInfo.unresponsive:
                     self.sdp_subarray_adapter = (
                         self._adapter_factory.get_or_create_adapter(
                             dev_name, AdapterType.SUBARRAY
                         )
                     )
+            except DevFailed as df:
                 elapsed_time = time.time() - start_time
-            if self.sdp_subarray_adapter is None:
+                if elapsed_time > timeout:
+                    return self.adapter_error_message_result(
+                        component_manager._sdp_subarray_dev_name,
+                        df,
+                    )
+            except Exception as e:
                 return self.adapter_error_message_result(
-                    component_manager.get_device(),
-                    "failed to create adapter",
+                    component_manager._sdp_subarray_dev_name,
+                    e,
                 )
-        except Exception as e:
-            return self.adapter_error_message_result(
-                component_manager._sdp_subarray_dev_name,
-                e,
-            )
 
         return ResultCode.OK, ""
 
