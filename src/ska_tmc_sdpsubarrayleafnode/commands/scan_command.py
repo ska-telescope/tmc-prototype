@@ -17,11 +17,6 @@ class Scan(AbstractScanEnd):
     Invoke Scan command to SDP Subarray.
     """
 
-    def __init__(
-        self, target, op_state_model, adapter_factory=None, logger=None
-    ):
-        super().__init__(target, op_state_model, adapter_factory, logger)
-
     def do(self, argin=None):
         """
         Method to invoke Scan command on SDP Subarray. \
