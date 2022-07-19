@@ -12,7 +12,7 @@ from ska_tmc_common.exceptions import (
     InvalidObsStateError,
 )
 from ska_tmc_common.tmc_command import TmcLeafNodeCommand
-from tango import DevFailed, DevState,ConnectionFailed
+from tango import ConnectionFailed, DevFailed, DevState
 
 
 class SdpSLNCommand(TmcLeafNodeCommand):

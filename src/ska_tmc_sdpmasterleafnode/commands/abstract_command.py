@@ -5,7 +5,7 @@ from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterFactory, AdapterType
 from ska_tmc_common.exceptions import CommandNotAllowed
 from ska_tmc_common.tmc_command import TmcLeafNodeCommand
-from tango import DevFailed, DevState,ConnectionFailed
+from tango import ConnectionFailed, DevFailed, DevState
 
 
 class SdpMLNCommand(TmcLeafNodeCommand):
