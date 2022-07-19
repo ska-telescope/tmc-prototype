@@ -30,7 +30,6 @@ class Configure(SdpSLNCommand):
         super().__init__(target, logger)
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory or AdapterFactory()
-        self.init_adapter()
 
     def check_allowed(self):
         """
@@ -52,7 +51,7 @@ class Configure(SdpSLNCommand):
         if obs_state_val not in (ObsState.READY, ObsState.IDLE):
             message = f"""Configure command is not allowed in current
                 observation state on device
-                {component_manager.get_device().dev_name}.
+                {component_manager._sdp_subarray_dev_name}.
                 Reason: The current observation state for observation is
                 {obs_state_val}.
                 The \"Configure\" command has NOT been executed.
@@ -76,7 +75,9 @@ class Configure(SdpSLNCommand):
         return: \
             None
         """
-
+        ret_code, message = self.init_adapter()
+        if ret_code == ResultCode.FAILED:
+            return ret_code, message
         try:
             json_argument = json.loads(argin)
         except Exception as e:

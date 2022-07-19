@@ -28,7 +28,6 @@ class ReleaseResources(SdpSLNCommand):
         super().__init__(target, logger)
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory or AdapterFactory()
-        self.init_adapter()
 
     def check_allowed(self):
         """
@@ -55,7 +54,7 @@ class ReleaseResources(SdpSLNCommand):
             )
             message = f"""ReleaseResources command is not allowed in current
             observation state on device
-            {component_manager.get_device().dev_name}.
+            {component_manager._sdp_subarray_dev_name}.
             Reason: The current observation state for observation is
             {obs_state_val}.
             The \"ReleaseResources\" command has NOT been executed.
@@ -72,7 +71,9 @@ class ReleaseResources(SdpSLNCommand):
         return:
             None
         """
-
+        ret_code, message = self.init_adapter()
+        if ret_code == ResultCode.FAILED:
+            return ret_code, message
         log_msg = f"""Invoking ReleaseResources command on:
         {self.sdp_subarray_adapter.dev_name}"""
         self.logger.info(log_msg)

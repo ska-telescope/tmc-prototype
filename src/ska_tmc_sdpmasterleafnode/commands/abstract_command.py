@@ -5,7 +5,7 @@ from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterFactory, AdapterType
 from ska_tmc_common.exceptions import CommandNotAllowed
 from ska_tmc_common.tmc_command import TmcLeafNodeCommand
-from tango import DevState
+from tango import ConnectionFailed, DevFailed, DevState
 
 
 class SdpMLNCommand(TmcLeafNodeCommand):
@@ -51,28 +51,35 @@ class SdpMLNCommand(TmcLeafNodeCommand):
         self.sdp_master_adapter = None
         component_manager = self.target
         dev_name = component_manager.sdp_master_dev_name
-        try:
-            timeout = component_manager.timeout
-            elapsed_time = 0
-            start_time = time.time()
-            while self.sdp_master_adapter is None and elapsed_time < timeout:
+        timeout = component_manager.timeout
+        elapsed_time = 0
+        start_time = time.time()
+        while self.sdp_master_adapter is None and elapsed_time < timeout:
+            try:
                 self.sdp_master_adapter = (
                     self._adapter_factory.get_or_create_adapter(
                         dev_name, AdapterType.BASE
                     )
                 )
+            except ConnectionFailed as cf:
                 elapsed_time = time.time() - start_time
-            if self.sdp_master_adapter is None:
+                if elapsed_time > timeout:
+                    return self.adapter_error_message_result(
+                        component_manager.sdp_master_dev_name,
+                        cf,
+                    )
+            except DevFailed as df:
+                elapsed_time = time.time() - start_time
+                if elapsed_time > timeout:
+                    return self.adapter_error_message_result(
+                        component_manager.sdp_master_dev_name,
+                        df,
+                    )
+            except Exception as e:
                 return self.adapter_error_message_result(
-                    component_manager.get_device(),
-                    "failed to create adapter",
+                    component_manager.sdp_master_dev_name,
+                    e,
                 )
-
-        except Exception as e:
-            return self.adapter_error_message_result(
-                component_manager.get_device(),
-                e,
-            )
 
         return ResultCode.OK, ""
 
