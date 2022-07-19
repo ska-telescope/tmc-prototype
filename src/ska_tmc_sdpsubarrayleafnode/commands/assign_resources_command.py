@@ -52,7 +52,7 @@ class AssignResources(SdpSLNCommand):
         if obs_state_val not in [ObsState.IDLE, ObsState.EMPTY]:
             message = f"""AssignResources command is not allowed in current
             observation state on device
-            {component_manager.get_device().dev_name}.
+            {component_manager._sdp_subarray_dev_name}.
             Reason: The current observation state for observation is
             {obs_state_val}.
             The \"AssignResources\" command has NOT been executed.

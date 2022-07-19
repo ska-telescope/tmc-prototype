@@ -167,7 +167,7 @@ class AbstractScanEnd(SdpSLNCommand):
         if obs_state_val != ObsState.READY:
             message = f"""Scan and End commands are not allowed in current
             observation state on device
-            {component_manager.get_device().dev_name}.
+            {component_manager._sdp_subarray_dev_name}.
             Reason: The current observation state for observation is
             {obs_state_val}.
             The \"Scan/End\" command has NOT been executed.
@@ -213,7 +213,7 @@ class AbstractRestartObsReset(SdpSLNCommand):
         if obs_state_val not in (ObsState.ABORTED, ObsState.FAULT):
             message = f"""ObsReset and Restart commands are not allowed in
             current observation state on
-            {component_manager.get_device().dev_name}.
+            {component_manager._sdp_subarray_dev_name}.
             Reason: The current observation state for observation is
             {obs_state_val}.
             The \"Restart/ObsReset\" command has NOT been executed.

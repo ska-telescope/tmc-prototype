@@ -54,7 +54,7 @@ class Abort(SdpSLNCommand):
             ObsState.RESETTING,
         ):
             message = f"""Abort command is not allowed in current observation
-            on device {component_manager.get_device().dev_name}.
+            on device {component_manager._sdp_subarray_dev_name}.
             Reason: The current observation state for observation is
             {obs_state_val}.
             The \"Abort\" command has NOT been executed. This device will
