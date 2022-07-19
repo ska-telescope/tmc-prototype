@@ -9,7 +9,7 @@ package.
 import time
 
 from ska_tmc_common.command_executor import CommandExecutor
-from ska_tmc_common.device_info import DeviceInfo
+from ska_tmc_common.device_info import SubArrayDeviceInfo
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
 
 from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
@@ -94,7 +94,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
     def update_device_info(self, sdp_subarray_dev_name):
         """Updates the device info"""
         self._sdp_subarray_dev_name = sdp_subarray_dev_name
-        self._device = DeviceInfo(self._sdp_subarray_dev_name, False)
+        self._device = SubArrayDeviceInfo(self._sdp_subarray_dev_name, False)
 
     def device_failed(self, exception):
         """
