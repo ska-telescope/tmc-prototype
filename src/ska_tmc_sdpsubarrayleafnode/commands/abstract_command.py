@@ -12,7 +12,7 @@ from ska_tmc_common.exceptions import (
     InvalidObsStateError,
 )
 from ska_tmc_common.tmc_command import TmcLeafNodeCommand
-from tango import DevFailed, DevState
+from tango import DevFailed, DevState,ConnectionFailed
 
 
 class SdpSLNCommand(TmcLeafNodeCommand):
@@ -63,6 +63,13 @@ class SdpSLNCommand(TmcLeafNodeCommand):
                         self._adapter_factory.get_or_create_adapter(
                             dev_name, AdapterType.SUBARRAY
                         )
+                    )
+            except ConnectionFailed as cf:
+                elapsed_time = time.time() - start_time
+                if elapsed_time > timeout:
+                    return self.adapter_error_message_result(
+                        component_manager._sdp_subarray_dev_name,
+                        cf,
                     )
             except DevFailed as df:
                 elapsed_time = time.time() - start_time
