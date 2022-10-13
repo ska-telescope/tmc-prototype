@@ -90,22 +90,29 @@ class AssignResources(SdpSLNCommand):
                     DevVarStringArray
 
         Example:
-            {"interface":"https://schema.skao.int/ska-sdp-assignres/0.3",
-            "eb_id":"eb-mvp01-20200325-00001","max_length":100.0,"scan_types":[{"scan_type_id":"science_A",
-            "reference_frame":"ICRS","ra":"02:42:40.771","dec":"-00:00:47.84","channels":[{"count":744,"start":0,
-            "stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map":[[0,0],[200,1],[744,2],[944,3]]},
-            {"count":744,"start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,"link_map":[[2000,4],[2200,5]]}]}
-            ,{"scan_type_id":"calibration_B","reference_frame":"ICRS","ra":"12:29:06.699","dec":"02:03:08.598",
-            "channels":[{"count":744,"start":0,"stride":2,"freq_min":0.35e9,"freq_max":0.368e9,"link_map":[[0,0],
-            [200,1],[744,2],[944,3]]},{"count":744,"start":2000,"stride":1,"freq_min":0.36e9,"freq_max":0.368e9,
-            "link_map":[[2000,4],[2200,5]]}]}],"processing_blocks":[{"pb_id":"pb-mvp01-20200325-00001","workflow":
-            {"kind":"realtime","name":"vis_receive","version":"0.1.0"},"parameters":{}},{"pb_id":
-            "pb-mvp01-20200325-00002","workflow":{"kind":"realtime","name":"test_realtime","version":"0.1.0"},
-            "parameters":{}},{"pb_id":"pb-mvp01-20200325-00003","workflow":{"kind":"batch","name":"ical",
-            "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00001",
-            "kind":["visibilities"]}]},{"pb_id":"pb-mvp01-20200325-00004","workflow":{"kind":"batch","name":"dpreb",
-            "version":"0.1.0"},"parameters":{},"dependencies":[{"pb_id":"pb-mvp01-20200325-00003","kind":
-            ["calibration"]}]}]}
+           "sdp":{"interface":"https://schema.skao.int/ska-sdp-assignres/0.4","execution_block": {"eb_id":
+        "eb-mvp01-20200325-00001","max_length": 100,"context":{},"beams":[{"beam_id": "vis0",
+        "function":"visibilities"},{"beam_id": "pss1","search_beam_id": 1,"function": "pulsar search"},
+        {"beam_id": "pss2","search_beam_id": 2,"function":"pulsar search"},{"beam_id": "pst1",
+        "timing_beam_id": 1,"function": "pulsar timing"},{"beam_id":"pst2","timing_beam_id":2,
+        "function": "pulsar timing"},{"beam_id": "vlbi1","vlbi_beam_id":1,"function": "vlbi"}],
+        "channels": [{"channels_id":"vis_channels","spectral_windows":[{"spectral_window_id":
+        "fsp_1_channels","count": 744,"start": 0,"stride": 2,"freq_min": 350000000,"freq_max":
+        368000000,"link_map": [[0,0],[200,1],[744,2],[944,3]]},{"spectral_window_id":"fsp_2_channels",
+        "count": 744,"start": 2000,"stride": 1,"freq_min": 360000000,"freq_max":368000000,
+        "link_map": [[2000,4],[2200,5]]},{"spectral_window_id": "zoom_window_1","count": 744,"start":
+        4000,"stride": 1,"freq_min": 360000000,"freq_max": 361000000,"link_map": [[4000,6],[4200,7]]}]},
+        {"channels_id":"pulsar_channels","spectral_windows":[{"spectral_window_id":
+        "pulsar_fsp_channels","count": 744,"start": 0,"freq_min": 350000000,"freq_max": 368000000}]}],
+        "polarisations": [{"polarisations_id": "all","corr_type":["XX","XY","YY","YX"]}],"fields":
+        [{"field_id": "field_a","phase_dir":{"ra":[123,0.1],"dec":[123,0.1],"reference_time": "...",
+        "reference_frame": "ICRF3"},"pointing_fqdn": "low-tmc/telstate/0/pointing"}]},
+        "processing_blocks":[{"pb_id": "pb-mvp01-20200325-00001","sbi_ids":["sbi-mvp01-20200325-00001"],
+        "script":{},"parameters":{},"dependencies":{}},{"pb_id": "pb-mvp01-20200325-00002","sbi_ids":
+        ["sbi-mvp01-20200325-00002"],"script":{},"parameters":{},"dependencies":{}},{"pb_id":
+        "pb-mvp01-20200325-00003","sbi_ids":["sbi-mvp01-20200325-00001","sbi-mvp01-20200325-00002"],
+        "script":{},"parameters": {},"dependencies":{}}],"resources":{"csp_links":[1,2,3,4],
+        "receptors":["FS4","FS8"],"receive_nodes":10}}}
 
         Note: Enter input without spaces
 
@@ -132,7 +139,7 @@ class AssignResources(SdpSLNCommand):
                 ),
             )
 
-        if "eb_id" not in json_argument:
+        if "eb_id" not in json_argument["execution_block"]:
             return self.generate_command_result(
                 ResultCode.FAILED,
                 "eb_id key is not present in the input json argument.",
@@ -150,7 +157,7 @@ class AssignResources(SdpSLNCommand):
         try:
             json_argument[
                 "interface"
-            ] = "https://schema.skao.int/ska-sdp-assignres/0.3"
+            ] = "https://schema.skao.int/ska-sdp-assignres/0.4"
             log_msg = f"""Input JSON for AssignResources command for SDP
             subarray {self.sdp_subarray_adapter.dev_name}: {json_argument}"""
             self.logger.debug(log_msg)
