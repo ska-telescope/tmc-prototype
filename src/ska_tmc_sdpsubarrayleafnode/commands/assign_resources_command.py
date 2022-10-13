@@ -145,7 +145,7 @@ class AssignResources(SdpSLNCommand):
                 "eb_id key is not present in the input json argument.",
             )
 
-        if "scan_types" not in json_argument:
+        if "scan_types" not in json_argument["execution_block"]:
             return self.generate_command_result(
                 ResultCode.FAILED,
                 "scan_types key is not present in the input json argument.",
