@@ -10,10 +10,10 @@
 """Release information for Python Package"""
 
 name = """ska_tmc_sdpsubarrayleafnode"""
-version = "0.8.23"
+version = "0.8.24"
 version_info = version.split(".")
 description = """"""
-author = "Team NCRA"
+author = "Team Himalaya, Team Sahyadri"
 author_email = "telmgt-internal@googlegroups.com"
 license = """BSD-3-Clause"""
 url = """https://www.skaobservatory.org"""
