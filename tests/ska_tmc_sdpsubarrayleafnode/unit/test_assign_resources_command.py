@@ -104,7 +104,7 @@ def test_assign_resources_command_missing_scan_types(tango_context):
     scan_types_key = "scan_types"
     assign_input_str = get_assign_input_str()
     json_argument = json.loads(assign_input_str)
-    del json_argument[scan_types_key]
+    del json_argument["execution_block"][scan_types_key]
     assert assign_res_command.check_allowed()
     (result_code, message) = assign_res_command.do(json.dumps(json_argument))
     assert result_code == ResultCode.FAILED

@@ -3,7 +3,7 @@
 # the code, add it instead to autodoc_mock_imports in
 # docs/source/conf.py.
 docutils < 0.17
-Sphinx == 4.1.2
+Sphinx == 5.1.1
 sphinx-rtd-theme
 sphinx-autodoc-typehints
 sphinxcontrib-plantuml
