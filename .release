@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc-sdpleafnodes"""
-version="0.8.23"
+version="0.8.24"
 version_info=version.split(".")
 description="""SKA-TMC-SDPLEAFNODES"""
 author="Team NCRA"
