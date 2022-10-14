@@ -9,8 +9,8 @@ author_email="telmgt-internal@googlegroups.com"
 license="""BSD-3-Clause"""
 url="""https://www.skaobservatory.org"""
 copyright=""""""
-release=0.8.23
-tag=0.8.23
+release=0.8.24
+tag=0.8.24
 tag_description=Created Subarraydevinfo for sdp subarray device.
 release_notes=This release contains:<br/><ul><li>Created Subarraydevinfo for sdp subarray device.</li></ul><br/>
 
