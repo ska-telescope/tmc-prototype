@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "ska-tmc-sdpleafnodes"
-version = "0.8.23"
+version = "0.8.24"
 description = "SKA-TMC-SDPLEAFNODES"
-authors = ["Team NCRA"]
+authors = ["Team HIMALAYA" , "Team SAHYADRI"]
 license = "BSD-3-Clause"
 
 packages = [
@@ -22,8 +22,8 @@ name = 'ska-nexus'
 url = 'https://artefact.skao.int/repository/pypi-internal/simple'
 
 [tool.poetry.dependencies]
-python = "^3.7"
-numpy = "1.17.2"
+python = "^3.8"
+numpy = "1.23.0"
 pytango = "^9.3.3"
 jsonschema = ">=4.0.1"
 marshmallow = "^3.13.0"
@@ -31,21 +31,19 @@ ska-ser-log-transactions = "0.2.2+ae0f5c92"
 ska-tmc-cdm = "6.0.4"
 ska-telescope-model = "1.3.1"
 fire = "^0.4.0"
-ska-tmc-common = "0.1.26"
+ska-tmc-common = "0.1.52"
 ska-ser-logging = "^0.4.1"
 ska-tango-base = "0.11.3+5e1f0fee"
-astropy = "^4.1"
+astropy = "^5.0.4"
 katpoint = "1.0a1"
 pytz = "2021.3"
+ipython = "8.5.0"
 
 [tool.poetry.dev-dependencies]
-black = "^22.1.0"
 pylint = "^2.6.0"
 pytest = "^7.1"
 pytest-bdd = "^5.0.0"
 pytest-cov = "^2.10.1"
-isort = "^5.6.4"
-flake8 = "^3.8.4"
 pylint-junit = "^0.3.2"
 coverage = "^6.1.1"
 pytest-json-report = "^1.4.1"
@@ -54,9 +52,13 @@ pytest-mock = "^3.6.1"
 pytest-xdist = "^1.34.0"
 pytest-repeat = "^0.9.1"
 mock = "^4.0.3"
-
 unittest2 = "1.1.0"
 datetime = "4.3"
+
+[tool.poetry.group.dev.dependencies]
+black = "^22.8.0"
+isort = "^5.10.1"
+flake8 = "^5.0.4"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

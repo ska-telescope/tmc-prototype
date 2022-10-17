@@ -1,17 +1,16 @@
 """Release information for Python Package"""
 
 name="""ska-tmc-sdpleafnodes"""
-version="0.8.23"
+version="0.8.24"
 version_info=version.split(".")
 description="""SKA-TMC-SDPLEAFNODES"""
-author="Team NCRA"
+author="Team Himalaya, Team Sahyadri"
 author_email="telmgt-internal@googlegroups.com"
 license="""BSD-3-Clause"""
 url="""https://www.skaobservatory.org"""
 copyright=""""""
-release=0.8.23
-tag=0.8.23
-tag_description=Created Subarraydevinfo for sdp subarray device.
+release=0.8.24
+tag=0.8.24
 release_notes=This release contains:<br/><ul><li>Created Subarraydevinfo for sdp subarray device.</li></ul><br/>
 
 
