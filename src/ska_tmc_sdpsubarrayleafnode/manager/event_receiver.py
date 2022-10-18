@@ -66,4 +66,4 @@ class SdpSLNEventReceiver(EventReceiver):
             return
         new_value = evt.attr_value.value
         self._component_manager.update_device_obs_state(new_value)
-        self._logger.info("ObsState value is updated to ", new_value)
+        self._logger.info("ObsState value is updated to %s", new_value)
