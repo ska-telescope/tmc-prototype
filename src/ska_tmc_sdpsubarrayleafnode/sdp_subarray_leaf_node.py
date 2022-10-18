@@ -51,7 +51,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     commandExecuted = attribute(
         dtype=(("DevString",),),
         max_dim_x=4,
-        max_dim_y=100,
+        max_dim_y=10000,
     )
 
     lastDeviceInfoChanged = attribute(

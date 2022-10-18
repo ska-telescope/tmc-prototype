@@ -30,6 +30,7 @@ def init_command(tango_context, sdpsaln_name):
     assert len(sdpsal_node.commandExecuted) == 1
 
 
+@pytest.mark.skip("")
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(
