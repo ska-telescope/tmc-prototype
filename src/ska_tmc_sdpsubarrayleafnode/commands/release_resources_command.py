@@ -83,7 +83,7 @@ class ReleaseResources(SdpSLNCommand):
                 {self.sdp_subarray_adapter.dev_name}: """,
             )
             self.logger.debug(log_msg)
-            self.sdp_subarray_adapter.ReleaseResources(None)
+            self.sdp_subarray_adapter.ReleaseAllResources()
         except Exception as e:
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(

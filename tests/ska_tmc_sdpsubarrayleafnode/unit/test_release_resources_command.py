@@ -26,7 +26,7 @@ def test_telescope_release_resources_command(
     (result_code, _) = release_command.do()
     assert result_code == ResultCode.OK
     adapter = adapter_factory.get_or_create_adapter(sdp_subarray_device)
-    adapter.proxy.ReleaseResources.assert_called()
+    adapter.proxy.ReleaseAllResources.assert_called()
 
 
 @pytest.mark.sdpsln

@@ -55,7 +55,7 @@ class SdpSLNEventReceiver(EventReceiver):
 
         except Exception as e:
             self._logger.debug(
-                "event not working for device %s/%s", proxy.dev_name, e
+                "Event not working for the device %s, %s", proxy.dev_name, e
             )
 
     def handle_obs_state_event(self, evt):
@@ -66,4 +66,4 @@ class SdpSLNEventReceiver(EventReceiver):
             return
         new_value = evt.attr_value.value
         self._component_manager.update_device_obs_state(new_value)
-        self._logger.info("Obstate value is updated")
+        self._logger.info("ObsState value is updated to %s", new_value)
