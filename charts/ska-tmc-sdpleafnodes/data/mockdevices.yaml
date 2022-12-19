@@ -13,13 +13,23 @@ server:
       classes:
         - name: "HelperStateDevice"
           devices:
-          {{- if .Values.deviceServers.mocks.component.sdp }}
-          - name: "mid_sdp/elt/master"
+          {{- if .Values.deviceServers.mocks.component.mid.sdp }}
+          - name: "mid-sdp/control/0"
           {{- end }}
         - name: "HelperSubArrayDevice"
           devices:
-          {{- if .Values.deviceServers.mocks.component.sdp }}
-          - name: "mid_sdp/elt/subarray_1"
+          {{- if .Values.deviceServers.mocks.component.mid.sdp }}
+          - name: "mid-sdp/subarray/01"
+          {{- end }}
+        - name: "HelperStateDevice"
+          devices:
+          {{- if .Values.deviceServers.mocks.component.low.sdp }}
+          - name: "low-sdp/control/0"
+          {{- end }}
+        - name: "HelperSubArrayDevice"
+          devices:
+          {{- if .Values.deviceServers.mocks.component.low.sdp }}
+          - name: "low-sdp/subarray/01"
           {{- end }}
 depends_on:
   - device: sys/database/2
