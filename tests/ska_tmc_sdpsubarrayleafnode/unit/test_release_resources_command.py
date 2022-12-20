@@ -9,32 +9,42 @@ from ska_tmc_common.test_helpers.helper_adapter_factory import (
 )
 
 from ska_tmc_sdpsubarrayleafnode.commands import ReleaseResources
-from tests.settings import create_cm, get_sdpsln_command_obj, logger
+from tests.settings import (
+    SDP_SUBARRAY_DEVICE_LOW,
+    SDP_SUBARRAY_DEVICE_MID,
+    create_cm,
+    get_sdpsln_command_obj,
+    logger,
+)
 
 
 @pytest.mark.sdpsln
-def test_telescope_release_resources_command(
-    tango_context, sdp_subarray_device
-):
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
+def test_telescope_release_resources_command(tango_context, devices):
     logger.info("%s", tango_context)
     # import debugpy; debugpy.debug_this_thread()
     cm, release_command, adapter_factory = get_sdpsln_command_obj(
-        ReleaseResources, obsstate_value=ObsState.IDLE
+        ReleaseResources, devices, obsstate_value=ObsState.IDLE
     )
     cm.get_device().obs_state == ObsState.EMPTY
     assert release_command.check_allowed()
     (result_code, _) = release_command.do()
     assert result_code == ResultCode.OK
-    adapter = adapter_factory.get_or_create_adapter(sdp_subarray_device)
+    adapter = adapter_factory.get_or_create_adapter(devices)
     adapter.proxy.ReleaseAllResources.assert_called()
 
 
 @pytest.mark.sdpsln
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
 def test_telescope_release_resources_command_fail_subarray(
-    tango_context, sdp_subarray_device
+    tango_context, devices
 ):
     logger.info("%s", tango_context)
-    cm, start_time = create_cm("SdpSLNComponentManager", sdp_subarray_device)
+    cm, start_time = create_cm("SdpSLNComponentManager", devices)
     elapsed_time = time.time() - start_time
     logger.info(
         "checked %s device in %s", cm.get_device().dev_name, elapsed_time
@@ -45,7 +55,7 @@ def test_telescope_release_resources_command_fail_subarray(
     # include exception in ReleaseResources command
     cm.update_device_obs_state(ObsState.IDLE)
     adapter_factory.get_or_create_adapter(
-        sdp_subarray_device,
+        devices,
         attrs={"ReleaseAllResources.side_effect": Exception},
     )
 
@@ -53,16 +63,19 @@ def test_telescope_release_resources_command_fail_subarray(
     assert release_command.check_allowed()
     (result_code, message) = release_command.do()
     assert result_code == ResultCode.FAILED
-    assert sdp_subarray_device in message
+    assert devices in message
 
 
 @pytest.mark.sdpsln
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
 def test_release_resources_command_fail_check_allowed_with_invalid_obsState(
-    tango_context,
+    tango_context, devices
 ):
     logger.info("%s", tango_context)
     cm, release_command, _ = get_sdpsln_command_obj(
-        ReleaseResources, obsstate_value=ObsState.EMPTY
+        ReleaseResources, devices, obsstate_value=ObsState.EMPTY
     )
     cm.get_device().update_unresponsive(False)
     with pytest.raises(
@@ -73,12 +86,15 @@ def test_release_resources_command_fail_check_allowed_with_invalid_obsState(
 
 
 @pytest.mark.sdpsln
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
 def test_release_resources_fail_check_allowed_with_device_unresponsive(
-    tango_context,
+    tango_context, devices
 ):
     logger.info("%s", tango_context)
     cm, release_command, _ = get_sdpsln_command_obj(
-        ReleaseResources, obsstate_value=ObsState.IDLE
+        ReleaseResources, devices, obsstate_value=ObsState.IDLE
     )
     devInfo = cm.get_device()
     devInfo.update_unresponsive(True)

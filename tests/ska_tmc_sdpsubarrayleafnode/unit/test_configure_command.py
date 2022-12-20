@@ -11,7 +11,13 @@ from ska_tmc_common.test_helpers.helper_adapter_factory import (
 )
 
 from ska_tmc_sdpsubarrayleafnode.commands import Configure
-from tests.settings import create_cm, get_sdpsln_command_obj, logger
+from tests.settings import (
+    SDP_SUBARRAY_DEVICE_LOW,
+    SDP_SUBARRAY_DEVICE_MID,
+    create_cm,
+    get_sdpsln_command_obj,
+    logger,
+)
 
 
 def get_configure_input_str(configure_input_file="command_Configure.json"):
@@ -22,26 +28,32 @@ def get_configure_input_str(configure_input_file="command_Configure.json"):
 
 
 @pytest.mark.sdpsln
-def test_telescope_configure_command(tango_context, sdp_subarray_device):
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
+def test_telescope_configure_command(tango_context, devices):
     logger.info("%s", tango_context)
     _, configure_command, adapter_factory = get_sdpsln_command_obj(
-        Configure, obsstate_value=ObsState.READY
+        Configure, devices, obsstate_value=ObsState.READY
     )
     configure_input_str = get_configure_input_str()
     assert configure_command.check_allowed()
     (result_code, _) = configure_command.do(configure_input_str)
     assert result_code == ResultCode.OK
-    adapter = adapter_factory.get_or_create_adapter(sdp_subarray_device)
+    adapter = adapter_factory.get_or_create_adapter(devices)
     adapter.proxy.Configure.assert_called()
 
 
 @pytest.mark.sdpsln
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
 def test_telescope_configure_resources_command_missing_interface_key(
-    tango_context, sdp_subarray_device
+    tango_context, devices
 ):
     logger.info("%s", tango_context)
     _, configure_command, adapter_factory = get_sdpsln_command_obj(
-        Configure, obsstate_value=ObsState.READY
+        Configure, devices, obsstate_value=ObsState.READY
     )
 
     configure_input_str = get_configure_input_str()
@@ -50,16 +62,17 @@ def test_telescope_configure_resources_command_missing_interface_key(
     assert configure_command.check_allowed()
     (result_code, _) = configure_command.do(json.dumps(json_argument))
     assert result_code == ResultCode.OK
-    adapter = adapter_factory.get_or_create_adapter(sdp_subarray_device)
+    adapter = adapter_factory.get_or_create_adapter(devices)
     adapter.proxy.Configure.assert_called()
 
 
 @pytest.mark.sdpsln
-def test_telescope_configure_command_fail_subarray(
-    tango_context, sdp_subarray_device
-):
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
+def test_telescope_configure_command_fail_subarray(tango_context, devices):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpSLNComponentManager", sdp_subarray_device)
+    cm, _ = create_cm("SdpSLNComponentManager", devices)
     adapter_factory = HelperAdapterFactory()
 
     attrs = {"fetch_skuid.return_value": 123}
@@ -68,9 +81,7 @@ def test_telescope_configure_command_fail_subarray(
     # include exception in AssignResources command
     attrs = {"Configure.side_effect": Exception}
     subarrayMock = mock.Mock(**attrs)
-    adapter_factory.get_or_create_adapter(
-        sdp_subarray_device, proxy=subarrayMock
-    )
+    adapter_factory.get_or_create_adapter(devices, proxy=subarrayMock)
 
     configure_command = Configure(
         cm, cm.op_state_model, adapter_factory, skuid
@@ -80,15 +91,18 @@ def test_telescope_configure_command_fail_subarray(
     assert configure_command.check_allowed()
     (result_code, message) = configure_command.do(configure_input_str)
     assert result_code == ResultCode.FAILED
-    assert sdp_subarray_device in message
+    assert devices in message
 
 
 @pytest.mark.sdpsln
-def test_telescope_configure_command_empty_input_json(tango_context):
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
+def test_telescope_configure_command_empty_input_json(tango_context, devices):
     logger.info("%s", tango_context)
     # import debugpy; debugpy.debug_this_thread()
     _, configure_command, _ = get_sdpsln_command_obj(
-        Configure, obsstate_value=ObsState.READY
+        Configure, devices, obsstate_value=ObsState.READY
     )
     assert configure_command.check_allowed()
     (result_code, _) = configure_command.do("")
@@ -96,11 +110,14 @@ def test_telescope_configure_command_empty_input_json(tango_context):
 
 
 @pytest.mark.sdpsln
-def test_telescope_configure_command_missing_scan_type(tango_context):
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
+def test_telescope_configure_command_missing_scan_type(tango_context, devices):
     logger.info("%s", tango_context)
     # import debugpy; debugpy.debug_this_thread()
     _, configure_command, _ = get_sdpsln_command_obj(
-        Configure, obsstate_value=ObsState.READY
+        Configure, devices, obsstate_value=ObsState.READY
     )
     scan_type_key = "scan_type"
     configure_input_str = get_configure_input_str()
@@ -113,12 +130,15 @@ def test_telescope_configure_command_missing_scan_type(tango_context):
 
 
 @pytest.mark.sdpsln
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
 def test_configure_command_fail_check_allowed_with_invalid_obsState(
-    tango_context,
+    tango_context, devices
 ):
     logger.info("%s", tango_context)
     cm, assign_res_command, _ = get_sdpsln_command_obj(
-        Configure, obsstate_value=ObsState.SCANNING
+        Configure, devices, obsstate_value=ObsState.SCANNING
     )
     cm.get_device().update_unresponsive(False)
     with pytest.raises(

@@ -7,8 +7,8 @@ from ska_tmc_common.test_helpers.helper_adapter_factory import (
 
 from ska_tmc_sdpsubarrayleafnode.commands import Off
 from tests.settings import (
-    SDP_SUBARRAY_DEVICE_MID,
     SDP_SUBARRAY_DEVICE_LOW,
+    SDP_SUBARRAY_DEVICE_MID,
     create_cm,
     get_sdpsln_command_obj,
     logger,
@@ -16,38 +16,49 @@ from tests.settings import (
 
 
 @pytest.mark.sdpsln
-def test_off_command(tango_context):
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
+def test_off_command(tango_context, devices):
     logger.info("%s", tango_context)
-    _, off_command, adapter_factory = get_sdpsln_command_obj(Off, None)
+    _, off_command, adapter_factory = get_sdpsln_command_obj(
+        Off, devices, None
+    )
     assert off_command.check_allowed()
     (result_code, _) = off_command.do()
     assert result_code == ResultCode.OK
-    adapter = adapter_factory.get_or_create_adapter(SDP_SUBARRAY_DEVICE)
+    adapter = adapter_factory.get_or_create_adapter(devices)
     adapter.proxy.Off.assert_called_once_with()
 
 
 @pytest.mark.sdpsln
-def test_off_command_fail_sdp_subarray(tango_context):
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
+def test_off_command_fail_sdp_subarray(tango_context, devices):
     logger.info("%s", tango_context)
-    cm, start_time = create_cm("SdpSLNComponentManager", SDP_SUBARRAY_DEVICE)
+    cm, start_time = create_cm("SdpSLNComponentManager", devices)
     adapter_factory = HelperAdapterFactory()
 
     # include exception in TelescopeOff command
     adapter_factory.get_or_create_adapter(
-        SDP_SUBARRAY_DEVICE, attrs={"Off.side_effect": Exception}
+        devices, attrs={"Off.side_effect": Exception}
     )
 
     off_command = Off(cm, cm.op_state_model, adapter_factory)
     assert off_command.check_allowed()
     (result_code, message) = off_command.do()
     assert result_code == ResultCode.FAILED
-    assert SDP_SUBARRAY_DEVICE in message
+    assert devices in message
 
 
 @pytest.mark.sdpsln
-def test_off_fail_check_allowed(tango_context):
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
+def test_off_fail_check_allowed(tango_context, devices):
     logger.info("%s", tango_context)
-    cm, off_command, _ = get_sdpsln_command_obj(Off, None)
+    cm, off_command, _ = get_sdpsln_command_obj(Off, devices, None)
     devInfo = cm.get_device()
     devInfo.update_unresponsive(True)
     with pytest.raises(DeviceUnresponsive):

@@ -11,7 +11,13 @@ from ska_tmc_common.test_helpers.helper_adapter_factory import (
 )
 
 from ska_tmc_sdpsubarrayleafnode.commands import AssignResources
-from tests.settings import create_cm, get_sdpsln_command_obj, logger
+from tests.settings import (
+    SDP_SUBARRAY_DEVICE_LOW,
+    SDP_SUBARRAY_DEVICE_MID,
+    create_cm,
+    get_sdpsln_command_obj,
+    logger,
+)
 
 
 def get_assign_input_str(assign_input_file="command_AssignResources.json"):
@@ -22,29 +28,33 @@ def get_assign_input_str(assign_input_file="command_AssignResources.json"):
 
 
 @pytest.mark.sdpsln
-def test_telescope_assign_resources_command(
-    tango_context, sdp_subarray_device
-):
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
+def test_telescope_assign_resources_command(tango_context, devices):
     logger.info("%s", tango_context)
     _, assign_res_command, adapter_factory = get_sdpsln_command_obj(
-        AssignResources, ObsState.IDLE
+        AssignResources, devices, ObsState.IDLE
     )
 
     assign_input_str = get_assign_input_str()
     assert assign_res_command.check_allowed()
     (result_code, _) = assign_res_command.do(assign_input_str)
     assert result_code == ResultCode.OK
-    adapter = adapter_factory.get_or_create_adapter(sdp_subarray_device)
+    adapter = adapter_factory.get_or_create_adapter(devices)
     adapter.proxy.AssignResources.assert_called()
 
 
 @pytest.mark.sdpsln
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
 def test_telescope_assign_resources_command_missing_eb_id_key(
-    tango_context, sdp_subarray_device
+    tango_context, devices
 ):
     logger.info("%s", tango_context)
     _, assign_res_command, adapter_factory = get_sdpsln_command_obj(
-        AssignResources, ObsState.IDLE
+        AssignResources, devices, ObsState.IDLE
     )
     assign_input_str = get_assign_input_str()
     json_argument = json.loads(assign_input_str)
@@ -52,16 +62,17 @@ def test_telescope_assign_resources_command_missing_eb_id_key(
     assert assign_res_command.check_allowed()
     (result_code, _) = assign_res_command.do(json.dumps(json_argument))
     assert result_code == ResultCode.OK
-    adapter = adapter_factory.get_or_create_adapter(sdp_subarray_device)
+    adapter = adapter_factory.get_or_create_adapter(devices)
     adapter.proxy.AssignResources.assert_called()
 
 
 @pytest.mark.sdpsln
-def test_assign_resources_command_fail_subarray(
-    tango_context, sdp_subarray_device
-):
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
+def test_assign_resources_command_fail_subarray(tango_context, devices):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpSLNComponentManager", sdp_subarray_device)
+    cm, _ = create_cm("SdpSLNComponentManager", devices)
     adapter_factory = HelperAdapterFactory()
 
     attrs = {"fetch_skuid.return_value": 123}
@@ -70,9 +81,7 @@ def test_assign_resources_command_fail_subarray(
     # include exception in AssignResources command
     attrs = {"AssignResources.side_effect": Exception}
     subarrayMock = mock.Mock(**attrs)
-    adapter_factory.get_or_create_adapter(
-        sdp_subarray_device, proxy=subarrayMock
-    )
+    adapter_factory.get_or_create_adapter(devices, proxy=subarrayMock)
     cm.update_device_obs_state(ObsState.EMPTY)
     assign_res_command = AssignResources(
         cm, cm.op_state_model, adapter_factory, skuid
@@ -81,14 +90,17 @@ def test_assign_resources_command_fail_subarray(
     assert assign_res_command.check_allowed()
     (result_code, message) = assign_res_command.do(assign_input_str)
     assert result_code == ResultCode.FAILED
-    assert sdp_subarray_device in message
+    assert devices in message
 
 
 @pytest.mark.sdpsln
-def test_assign_resources_command_empty_input_json(tango_context):
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
+def test_assign_resources_command_empty_input_json(tango_context, devices):
     logger.info("%s", tango_context)
     _, assign_res_command, _ = get_sdpsln_command_obj(
-        AssignResources, ObsState.IDLE
+        AssignResources, devices, ObsState.IDLE
     )
     assert assign_res_command.check_allowed()
     (result_code, _) = assign_res_command.do("")
@@ -96,10 +108,13 @@ def test_assign_resources_command_empty_input_json(tango_context):
 
 
 @pytest.mark.sdpsln
-def test_assign_resources_command_missing_scan_types(tango_context):
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
+def test_assign_resources_command_missing_scan_types(tango_context, devices):
     logger.info("%s", tango_context)
     _, assign_res_command, _ = get_sdpsln_command_obj(
-        AssignResources, ObsState.IDLE
+        AssignResources, devices, ObsState.IDLE
     )
     scan_types_key = "scan_types"
     assign_input_str = get_assign_input_str()
@@ -112,12 +127,15 @@ def test_assign_resources_command_missing_scan_types(tango_context):
 
 
 @pytest.mark.sdpsln
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
 def test_assign_resources_command_fail_check_allowed_with_invalid_obsState(
-    tango_context,
+    tango_context, devices
 ):
     logger.info("%s", tango_context)
     cm, assign_res_command, _ = get_sdpsln_command_obj(
-        AssignResources, obsstate_value=ObsState.READY
+        AssignResources, devices, obsstate_value=ObsState.READY
     )
     cm.get_device().update_unresponsive(False)
     with pytest.raises(
@@ -128,12 +146,15 @@ def test_assign_resources_command_fail_check_allowed_with_invalid_obsState(
 
 
 @pytest.mark.sdpsln
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
 def test_telescope_assign_resources_command_fail_check_allowed_with_device_unresponsive(  # noqa:E501
-    tango_context,
+    tango_context, devices
 ):
     logger.info("%s", tango_context)
     cm, assign_res_command, _ = get_sdpsln_command_obj(
-        AssignResources, obsstate_value=ObsState.EMPTY
+        AssignResources, devices, obsstate_value=ObsState.EMPTY
     )
     cm.get_device().update_unresponsive(True)
     with pytest.raises(
