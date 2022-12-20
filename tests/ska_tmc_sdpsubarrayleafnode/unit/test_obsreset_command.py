@@ -11,7 +11,8 @@ from ska_tmc_common.test_helpers.helper_adapter_factory import (
 
 from ska_tmc_sdpsubarrayleafnode.commands import ObsReset
 from tests.settings import (
-    SDP_SUBARRAY_DEVICE,
+    SDP_SUBARRAY_DEVICE_MID,
+    SDP_SUBARRAY_DEVICE_LOW,
     create_cm,
     get_sdpsln_command_obj,
     logger,

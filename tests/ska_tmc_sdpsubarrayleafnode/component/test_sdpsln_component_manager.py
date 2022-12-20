@@ -3,7 +3,7 @@ import time
 import pytest
 from ska_tmc_common.device_info import DeviceInfo
 
-from tests.settings import SDP_SUBARRAY_DEVICE, create_cm, logger
+from tests.settings import SDP_SUBARRAY_DEVICE_LOW, SDP_MASTER_DEVICE_MID, create_cm, logger
 
 
 @pytest.mark.sdpsln

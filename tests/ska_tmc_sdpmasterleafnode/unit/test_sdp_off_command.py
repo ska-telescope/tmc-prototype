@@ -5,12 +5,22 @@ from ska_tmc_common.test_helpers.helper_adapter_factory import (
 )
 
 from ska_tmc_sdpmasterleafnode.commands import Off
-from tests.settings import create_cm, get_sdpmln_command_obj
+from tests.settings import (
+    SDP_MASTER_DEVICE_LOW,
+    SDP_MASTER_DEVICE_MID,
+    create_cm,
+    get_sdpmln_command_obj,
+)
 
 
 @pytest.mark.sdpmln
+@pytest.mark.parametrize(
+    "sdp_master_device", [SDP_MASTER_DEVICE_MID, SDP_MASTER_DEVICE_LOW]
+)
 def test_off_command(tango_context, sdp_master_device):
-    _, off_command, adapter_factory = get_sdpmln_command_obj(Off)
+    _, off_command, adapter_factory = get_sdpmln_command_obj(
+        Off, sdp_master_device
+    )
     assert off_command.check_allowed()
     (result_code, _) = off_command.do()
     assert result_code == ResultCode.OK
@@ -19,6 +29,9 @@ def test_off_command(tango_context, sdp_master_device):
 
 
 @pytest.mark.sdpmln
+@pytest.mark.parametrize(
+    "sdp_master_device", [SDP_MASTER_DEVICE_MID, SDP_MASTER_DEVICE_LOW]
+)
 def test_off_command_fail_sdp_master(tango_context, sdp_master_device):
     cm, _ = create_cm("SdpMLNComponentManager", sdp_master_device)
     adapter_factory = HelperAdapterFactory()
