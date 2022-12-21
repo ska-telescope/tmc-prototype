@@ -3,10 +3,18 @@ import time
 import pytest
 from ska_tmc_common.device_info import DeviceInfo
 
-from tests.settings import create_cm, logger
+from tests.settings import (
+    SDP_SUBARRAY_DEVICE_LOW,
+    SDP_SUBARRAY_DEVICE_MID,
+    create_cm,
+    logger,
+)
 
 
 @pytest.mark.sdpsln
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
 def test_sdpsa_working(tango_context, devices):
     logger.info("%s", tango_context)
     cm, start_time = create_cm("SdpSLNComponentManager", devices)
@@ -19,6 +27,9 @@ def test_sdpsa_working(tango_context, devices):
 
 
 @pytest.mark.sdpsln
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
 def test_sdpsa_faulty(tango_context, devices):
     logger.info("%s", tango_context)
     cm, _ = create_cm("SdpSLNComponentManager", devices)

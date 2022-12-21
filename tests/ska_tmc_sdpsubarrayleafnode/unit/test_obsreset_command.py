@@ -35,8 +35,11 @@ def test_telescope_obsreset_command(tango_context, devices):
     adapter = adapter_factory.get_or_create_adapter(devices)
     adapter.proxy.ObsReset.assert_called_once_with()
 
-
+@pytest.mark.aki
 @pytest.mark.sdpsln
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
 def test_telescope_obsreset_command_fail_subarray(tango_context, devices):
     logger.info("%s", tango_context)
     cm, start_time = create_cm("SdpSLNComponentManager", devices)
