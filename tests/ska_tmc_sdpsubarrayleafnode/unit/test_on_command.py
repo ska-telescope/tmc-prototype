@@ -30,6 +30,9 @@ def test_on_command(tango_context, devices):
 
 
 @pytest.mark.sdpsln
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
 def test_on_command_fail_sdp_subarray(tango_context, devices):
     logger.info("%s", tango_context)
     cm, start_time = create_cm("SdpSLNComponentManager", devices)
@@ -50,6 +53,9 @@ def test_on_command_fail_sdp_subarray(tango_context, devices):
 
 
 @pytest.mark.sdpsln
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
 def test_on_fail_check_allowed(tango_context, devices):
 
     logger.info("%s", tango_context)
