@@ -48,7 +48,7 @@ def pytest_addoption(parser):
 @pytest.fixture
 def sdp_master_device():
     """Return SDP Master Device"""
-    return "low_sdp/elt/master"
+    return "mid_sdp/elt/master"
 
 
 @pytest.fixture
@@ -66,14 +66,12 @@ def devices_to_load():
             "class": HelperSubArrayDevice,
             "devices": [
                 {"name": "mid_sdp/elt/subarray_1"},
-                {"name": "low_sdp/elt/subarray_1"},
             ],
         },
         {
             "class": HelperStateDevice,
             "devices": [
                 {"name": "mid_sdp/elt/master"},
-                {"name": "low_sdp/elt/master"},
             ],
         },
     )
@@ -116,4 +114,4 @@ def sdpsln_device(request):
 @pytest.fixture(scope="session")
 def sdp_subarray_device():
     """Returns SDP Subarray 1 device name"""
-    return "low_sdp/elt/subarray_1"
+    return "mid_sdp/elt/subarray_1"

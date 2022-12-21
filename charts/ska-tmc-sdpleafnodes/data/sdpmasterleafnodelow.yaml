@@ -14,7 +14,7 @@ server:
         properties:
         - name: "SdpMasterFQDN"
           values:
-          - "{{.Values.deviceServers.sdpmln.SdpMasterFQDN}}"
+          - "{{.Values.deviceServers.sdpmln.low.SdpMasterFQDN}}"
         - name: "SkaLevel"
           values:
             - "3"

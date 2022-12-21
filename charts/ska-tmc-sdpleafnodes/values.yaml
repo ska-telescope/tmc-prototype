@@ -55,15 +55,12 @@ deviceServers:
   mocks:
     enabled: true
     component:
-      mid:
-        sdp: true
-        csp: true
-      low:
-        sdp: true
-        csp: true
-      dish: true
+      sdp: true
+    mid:
+      file: "data/mockdevicesmid.yaml"
+    low:
+      file: "data/mockdeviceslow.yaml"
     instances: ["01"]
-    file: "data/mockdevices.yaml"
   sdpsln:
     enabled: true
     instances: ["01"]
