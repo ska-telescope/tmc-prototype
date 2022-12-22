@@ -50,7 +50,7 @@ def release_resources(tango_context, sdpsaln_name, device, assign_input_str):
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(
     "device",
-    [("mid_sdp/elt/subarray_1")],
+    [("mid-sdp/subarray/01")],
 )
 def test_release_res_command_mid(tango_context, device):
     return release_resources(
@@ -73,7 +73,7 @@ def test_release_res_command_mid(tango_context, device):
 @pytest.mark.SKA_low
 @pytest.mark.parametrize(
     "device",
-    [("low_sdp/elt/subarray_1")],
+    [("low-sdp/subarray/01")],
 )
 def test_release_res_command_low(tango_context, device):
     return release_resources(

@@ -44,9 +44,9 @@ def call_command(sdpsubarrayleaf_node, command_name):
     dev_factory = DevFactory()
     if "ska_mid" in sdpsubarrayleaf_node.dev_name():
 
-        sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
+        sdp_subarray = dev_factory.get_device("mid-sdp/subarray/01")
     else:
-        sdp_subarray = dev_factory.get_device("low_sdp/elt/subarray_1")
+        sdp_subarray = dev_factory.get_device("low-sdp/subarray/01")
     try:
         if command_name == "AssignResources":
             logger.info(

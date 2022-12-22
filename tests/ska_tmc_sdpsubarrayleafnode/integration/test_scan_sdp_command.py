@@ -60,7 +60,7 @@ def scan(
     assert sdp_subarray.obsState == ObsState.SCANNING
     time.sleep(SLEEP_TIME)
     # (result, unique_id) = sdpsal_node.EndScan()
-    # sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
+    # sdp_subarray = dev_factory.get_device("mid-sdp/subarray/01")
     # sdp_subarray.SetDirectObsState(ObsState.READY)
     # assert sdp_subarray.obsState == ObsState.READY
     # time.sleep(SLEEP_TIME)
@@ -86,7 +86,7 @@ def scan(
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(
     ["sdpsaln_name", "device"],
-    [("ska_mid/tm_leaf_node/sdp_subarray01", "mid_sdp/elt/subarray_1")],
+    [("ska_mid/tm_leaf_node/sdp_subarray01", "mid-sdp/subarray/01")],
 )
 def test_scan_command_mid(
     tango_context,
@@ -121,7 +121,7 @@ def test_scan_command_mid(
 @pytest.mark.SKA_low
 @pytest.mark.parametrize(
     ["sdpsaln_name", "device"],
-    [("ska_low/tm_leaf_node/sdp_subarray01", "low_sdp/elt/subarray_1")],
+    [("ska_low/tm_leaf_node/sdp_subarray01", "low-sdp/subarray/01")],
 )
 def test_scan_command_low(
     tango_context,

@@ -21,10 +21,10 @@ logger = logging.getLogger(__name__)
 SLEEP_TIME = 0.5
 TIMEOUT = 100
 
-SDP_SUBARRAY_DEVICE_MID = "mid_sdp/elt/subarray_1"
-SDP_SUBARRAY_DEVICE_LOW = "low_sdp/elt/subarray_1"
-SDP_MASTER_DEVICE_MID = "mid_sdp/elt/master"
-SDP_MASTER_DEVICE_LOW = "low_sdp/elt/master"
+SDP_SUBARRAY_DEVICE_MID = "mid-sdp/subarray/01"
+SDP_SUBARRAY_DEVICE_LOW = "low-sdp/subarray/01"
+SDP_MASTER_DEVICE_MID = "mid-sdp/control/0"
+SDP_MASTER_DEVICE_LOW = "low-sdp/control/0"
 
 
 def count_faulty_devices(cm):

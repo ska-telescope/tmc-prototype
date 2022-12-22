@@ -70,7 +70,7 @@ def abort(
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(
     ["sdpsaln_name", "device"],
-    [("ska_mid/tm_leaf_node/sdp_subarray01", "mid_sdp/elt/subarray_1")],
+    [("ska_mid/tm_leaf_node/sdp_subarray01", "mid-sdp/subarray/01")],
 )
 def test_abort_command_mid(
     tango_context,
@@ -102,7 +102,7 @@ def test_abort_command_mid(
 @pytest.mark.SKA_low
 @pytest.mark.parametrize(
     ["sdpsaln_name", "device"],
-    [("ska_low/tm_leaf_node/sdp_subarray01", "low_sdp/elt/subarray_1")],
+    [("ska_low/tm_leaf_node/sdp_subarray01", "low-sdp/subarray/01")],
 )
 def test_abort_command_low(
     tango_context,
