@@ -21,17 +21,12 @@ def devices_to_load():
             "class": HelperSubArrayDevice,
             "devices": [
                 {"name": "mid_sdp/elt/subarray_1"},
-                {"name": "low_sdp/elt/subarray_1"},
             ],
         },
         {
             "class": SdpSubarrayLeafNode,
             "devices": [
                 {
-                    "name": "ska_mid/tm_leaf_node/sdp_subarray01",
-                    "properties": {
-                        "SdpSubarrayFQDN": ["mid_sdp/elt/subarray_1"],
-                    },
                     "name": "ska_mid/tm_leaf_node/sdp_subarray01",
                     "properties": {
                         "SdpSubarrayFQDN": ["mid_sdp/elt/subarray_1"],
@@ -50,7 +45,7 @@ def checked_devices(json_model):
     return result
 
 
-def tear_down(sdp_subarray):
+def tear_down(dev_factory, sdp_subarray):
     sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
     logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
 

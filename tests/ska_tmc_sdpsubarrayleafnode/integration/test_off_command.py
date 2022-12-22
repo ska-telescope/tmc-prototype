@@ -31,5 +31,11 @@ def off_command(tango_context, sdpsaln_name):
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
-def test_off_command(tango_context):
+def test_off_command_mid(tango_context):
     off_command(tango_context, "ska_mid/tm_leaf_node/sdp_subarray01")
+
+
+@pytest.mark.post_deployment
+@pytest.mark.SKA_low
+def test_off_command_low(tango_context):
+    off_command(tango_context, "ska_low/tm_leaf_node/sdp_subarray01")

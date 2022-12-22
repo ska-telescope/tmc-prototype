@@ -25,6 +25,7 @@ def get_configure_input_str(path):
 def abort(
     tango_context,
     sdpsaln_name,
+    device,
     assign_input_str,
     configure_input_str,
 ):
@@ -36,14 +37,14 @@ def abort(
     initial_len = len(sdpsal_node.commandExecuted)
     (result, unique_id) = sdpsal_node.On()
     (result, unique_id) = sdpsal_node.AssignResources(assign_input_str)
-    sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
+    sdp_subarray = dev_factory.get_device(device)
 
     sdp_subarray.SetDirectObsState(ObsState.IDLE)
     assert sdp_subarray.obsState == ObsState.IDLE
     time.sleep(SLEEP_TIME)
     (result, unique_id) = sdpsal_node.Configure(configure_input_str)
 
-    sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
+    sdp_subarray = dev_factory.get_device(device)
     sdp_subarray.SetDirectObsState(ObsState.READY)
     assert sdp_subarray.obsState == ObsState.READY
     time.sleep(SLEEP_TIME)
@@ -68,16 +69,50 @@ def abort(
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(
-    "sdpsaln_name",
-    [("ska_mid/tm_leaf_node/sdp_subarray01")],
+    ["sdpsaln_name", "device"],
+    [("ska_mid/tm_leaf_node/sdp_subarray01", "mid_sdp/elt/subarray_1")],
 )
-def test_abort_command(
+def test_abort_command_mid(
     tango_context,
     sdpsaln_name,
+    device,
 ):
     return abort(
         tango_context,
         sdpsaln_name,
+        device,
+        get_assign_input_str(
+            join(
+                dirname(__file__),
+                "..",
+                "..",
+                "data",
+                "command_AssignResources.json",
+            )
+        ),
+        get_configure_input_str(
+            join(
+                dirname(__file__), "..", "..", "data", "command_Configure.json"
+            )
+        ),
+    )
+
+
+@pytest.mark.post_deployment
+@pytest.mark.SKA_low
+@pytest.mark.parametrize(
+    ["sdpsaln_name", "device"],
+    [("ska_low/tm_leaf_node/sdp_subarray01", "low_sdp/elt/subarray_1")],
+)
+def test_abort_command_low(
+    tango_context,
+    sdpsaln_name,
+    device,
+):
+    return abort(
+        tango_context,
+        sdpsaln_name,
+        device,
         get_assign_input_str(
             join(
                 dirname(__file__),

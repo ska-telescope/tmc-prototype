@@ -36,7 +36,6 @@ def test_telescope_obsreset_command(tango_context, devices):
     adapter.proxy.ObsReset.assert_called_once_with()
 
 
-@pytest.mark.aki
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]

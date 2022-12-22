@@ -16,14 +16,14 @@ def get_input_str(path):
     return assign_input_str
 
 
-def release_resources(tango_context, sdpsaln_name, assign_input_str):
+def release_resources(tango_context, sdpsaln_name, device, assign_input_str):
     logger.info("%s", tango_context)
     dev_factory = DevFactory()
     sdpsal_node = dev_factory.get_device(sdpsaln_name)
     initial_len = len(sdpsal_node.commandExecuted)
     (result, unique_id) = sdpsal_node.On()
     (result, unique_id) = sdpsal_node.AssignResources(assign_input_str)
-    sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
+    sdp_subarray = dev_factory.get_device(device)
     sdp_subarray.SetDirectObsState(ObsState.IDLE)
     assert sdp_subarray.obsState == ObsState.IDLE
 
@@ -48,10 +48,38 @@ def release_resources(tango_context, sdpsaln_name, assign_input_str):
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
-def test_release_res_command(tango_context):
+@pytest.mark.parametrize(
+    "device",
+    [("mid_sdp/elt/subarray_1")],
+)
+def test_release_res_command_mid(tango_context, device):
     return release_resources(
         tango_context,
         "ska_mid/tm_leaf_node/sdp_subarray01",
+        device,
+        get_input_str(
+            join(
+                dirname(__file__),
+                "..",
+                "..",
+                "data",
+                "command_AssignResources.json",
+            )
+        ),
+    )
+
+
+@pytest.mark.post_deployment
+@pytest.mark.SKA_low
+@pytest.mark.parametrize(
+    "device",
+    [("low_sdp/elt/subarray_1")],
+)
+def test_release_res_command_low(tango_context, device):
+    return release_resources(
+        tango_context,
+        "ska_low/tm_leaf_node/sdp_subarray01",
+        device,
         get_input_str(
             join(
                 dirname(__file__),
