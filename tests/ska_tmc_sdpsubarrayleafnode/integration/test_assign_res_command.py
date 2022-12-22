@@ -16,11 +16,11 @@ def get_assign_input_str(assign_input_file="command_AssignResources.json"):
     return assign_input_str
 
 
-def assign_resouces(tango_context, sdpsaln_name, assign_input_str):
+def assign_resouces(tango_context, sdpsaln_name,sdp_subarray,assign_input_str):
     logger.info("%s", tango_context)
     dev_factory = DevFactory()
     sdpsal_node = dev_factory.get_device(sdpsaln_name)
-    sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
+    sdp_subarray_node = dev_factory.get_device(sdp_subarray)
 
     initial_len = len(sdpsal_node.commandExecuted)
     (result, unique_id) = sdpsal_node.On()
@@ -38,18 +38,33 @@ def assign_resouces(tango_context, sdpsaln_name, assign_input_str):
             logger.info("command result: %s", command)
             assert command[2] == "ResultCode.OK"
 
-    tear_down(dev_factory, sdp_subarray)
+    tear_down( sdp_subarray_node)
 
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(
-    "sdpsaln_name",
-    [("ska_mid/tm_leaf_node/sdp_subarray01")],
+    ["sdpsaln_name", "sdp_subarray"],
+    [("ska_mid/tm_leaf_node/sdp_subarray01","mid_sdp/elt/subarray_1")],
 )
-def test_assign_res_command(tango_context, sdpsaln_name):
+def test_assign_res_command_mid(tango_context, sdpsaln_name,sdp_subarray):
     return assign_resouces(
         tango_context,
         sdpsaln_name,
+        sdp_subarray,
+        assign_input_str=get_assign_input_str(),
+    )
+
+@pytest.mark.post_deployment
+@pytest.mark.SKA_low
+@pytest.mark.parametrize(
+    ["sdpsaln_name", "sdp_subarray"],
+    [("ska_low/tm_leaf_node/sdp_subarray01","low_sdp/elt/subarray_1")],
+)
+def test_assign_res_command_low(tango_context, sdpsaln_name,sdp_subarray):
+    return assign_resouces(
+        tango_context,
+        sdpsaln_name,
+        sdp_subarray,
         assign_input_str=get_assign_input_str(),
     )

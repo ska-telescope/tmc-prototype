@@ -21,12 +21,17 @@ def devices_to_load():
             "class": HelperSubArrayDevice,
             "devices": [
                 {"name": "mid_sdp/elt/subarray_1"},
+                {"name": "low_sdp/elt/subarray_1"},
             ],
         },
         {
             "class": SdpSubarrayLeafNode,
             "devices": [
                 {
+                    "name": "ska_mid/tm_leaf_node/sdp_subarray01",
+                    "properties": {
+                        "SdpSubarrayFQDN": ["mid_sdp/elt/subarray_1"],
+                    },
                     "name": "ska_mid/tm_leaf_node/sdp_subarray01",
                     "properties": {
                         "SdpSubarrayFQDN": ["mid_sdp/elt/subarray_1"],
@@ -45,8 +50,7 @@ def checked_devices(json_model):
     return result
 
 
-def tear_down(dev_factory, sdp_subarray):
-    sdp_subarray = dev_factory.get_device(sdp_subarray)
+def tear_down(sdp_subarray):
     sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
     logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
 
@@ -55,7 +59,6 @@ def tear_down(dev_factory, sdp_subarray):
 
     if sdp_subarray_obsstate.value == 2:
         sdp_subarray.ReleaseResources()
-        sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
         sdp_subarray.SetDirectObsState(ObsState.EMPTY)
         time.sleep(0.5)
         sdp_subarray.Off()
@@ -64,11 +67,9 @@ def tear_down(dev_factory, sdp_subarray):
 
     if sdp_subarray_obsstate.value == 4 or 5:
         sdp_subarray.Abort()
-        sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
         sdp_subarray.SetDirectObsState(ObsState.ABORTED)
         time.sleep(1)
         sdp_subarray.Restart()
-        sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
         sdp_subarray.SetDirectObsState(ObsState.EMPTY)
         time.sleep(1)
         sdp_subarray.Off()
@@ -77,7 +78,6 @@ def tear_down(dev_factory, sdp_subarray):
 
     if sdp_subarray_obsstate.value == 7:
         sdp_subarray.Restart()
-        sdp_subarray = dev_factory.get_device("mid_sdp/elt/subarray_1")
         sdp_subarray.SetDirectObsState(ObsState.EMPTY)
         time.sleep(1)
         sdp_subarray.Off()
