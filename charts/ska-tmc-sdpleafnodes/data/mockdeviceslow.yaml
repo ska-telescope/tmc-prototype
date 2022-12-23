@@ -1,0 +1,30 @@
+name: "mocks-{{.Release.Name}}"
+function: testing
+domain: mocks
+instances: ["01"]
+entrypoints:
+  - name: "ska_tmc_common.test_helpers.helper_state_device.HelperStateDevice"
+  - name: "ska_tmc_common.test_helpers.helper_subarray_device.HelperSubArrayDevice"
+  - name: "ska_tmc_common.test_helpers.helper_subarray_leaf_device.HelperSubarrayLeafDevice"
+server:
+  name: "mocks"
+  instances:
+    - name: "01"
+      classes:
+        - name: "HelperStateDevice"
+          devices:
+          {{- if .Values.deviceServers.mocks.component.sdp }}
+          - name: "low-sdp/control/0"
+          {{- end }}
+        - name: "HelperSubArrayDevice"
+          devices:
+          {{- if .Values.deviceServers.mocks.component.sdp }}
+          - name: "low-sdp/subarray/01"
+          {{- end }}
+depends_on:
+  - device: sys/database/2
+image:
+  registry: "{{.Values.sdpleafnodes.image.registry}}"
+  image: "{{.Values.sdpleafnodes.image.image}}"
+  tag: "{{.Values.sdpleafnodes.image.tag}}"
+  pullPolicy: "{{.Values.sdpleafnodes.image.pullPolicy}}"

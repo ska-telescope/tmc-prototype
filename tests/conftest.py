@@ -1,6 +1,8 @@
 # pylint: disable=unused-argument
 """Conftest file for SDP Leaf Node"""
+import json
 import logging
+from os.path import dirname, join
 
 import pytest
 import tango
@@ -48,7 +50,7 @@ def pytest_addoption(parser):
 @pytest.fixture
 def sdp_master_device():
     """Return SDP Master Device"""
-    return "mid_sdp/elt/master"
+    return "mid-sdp/control/0"
 
 
 @pytest.fixture
@@ -65,13 +67,13 @@ def devices_to_load():
         {
             "class": HelperSubArrayDevice,
             "devices": [
-                {"name": "mid_sdp/elt/subarray_1"},
+                {"name": "mid-sdp/subarray/01"},
             ],
         },
         {
             "class": HelperStateDevice,
             "devices": [
-                {"name": "mid_sdp/elt/master"},
+                {"name": "mid-sdp/control/0"},
             ],
         },
     )
@@ -114,4 +116,26 @@ def sdpsln_device(request):
 @pytest.fixture(scope="session")
 def sdp_subarray_device():
     """Returns SDP Subarray 1 device name"""
-    return "mid_sdp/elt/subarray_1"
+    return "mid-sdp/subarray/01"
+
+
+def get_input_str(path):
+    """
+    Returns input json string
+    :rtype: String
+    """
+    with open(path, "r", encoding="utf-8") as f:
+        input_arg = json.load(f)
+    return json.dumps(input_arg)
+
+
+@pytest.fixture
+def json_factory():
+    """
+    Json factory for getting json files
+    """
+
+    def _get_json(slug):
+        return get_input_str(join(dirname(__file__), "data", f"{slug}.json"))
+
+    return _get_json

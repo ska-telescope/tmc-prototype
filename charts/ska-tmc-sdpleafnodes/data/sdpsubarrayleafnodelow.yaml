@@ -10,11 +10,11 @@ server:
     classes:
     - name: "SdpSubarrayLeafNode"
       devices:
-      - name: "ska_mid/tm_leaf_node/sdp_subarray01"
+      - name: "ska_low/tm_leaf_node/sdp_subarray01"
         properties:
         - name: "SdpSubarrayFQDN"
           values:
-          - "{{.Values.deviceServers.sdpsln.SdpSubarrayFQDN}}"
+          - "{{.Values.deviceServers.sdpsln.low.SdpSubarrayFQDN}}"
         - name: "SkaLevel"
           values:
             - "3"

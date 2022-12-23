@@ -14,12 +14,12 @@ server:
         - name: "HelperStateDevice"
           devices:
           {{- if .Values.deviceServers.mocks.component.sdp }}
-          - name: "mid_sdp/elt/master"
+          - name: "mid-sdp/control/0"
           {{- end }}
         - name: "HelperSubArrayDevice"
           devices:
           {{- if .Values.deviceServers.mocks.component.sdp }}
-          - name: "mid_sdp/elt/subarray_1"
+          - name: "mid-sdp/subarray/01"
           {{- end }}
 depends_on:
   - device: sys/database/2

@@ -56,22 +56,31 @@ deviceServers:
     enabled: true
     component:
       sdp: true
-      csp: true
-      dish: true
+    mid:
+      file: "data/mockdevicesmid.yaml"
+    low:
+      file: "data/mockdeviceslow.yaml"
     instances: ["01"]
-    file: "data/mockdevices.yaml"
   sdpsln:
     enabled: true
     instances: ["01"]
     subarray_count: 1
-    file: "data/sdpsubarrayleafnode.yaml"
-    SdpSubarrayFQDN: "mid_sdp/elt/subarray_1"
+    mid:
+      file: "data/sdpsubarrayleafnodemid.yaml"
+      SdpSubarrayFQDN: "mid-sdp/subarray/01"
+    low:
+      file: "data/sdpsubarrayleafnodelow.yaml"
+      SdpSubarrayFQDN: "low-sdp/subarray/01"
   sdpmln:
     enabled: true
     instances: ["01"]
     subarray_count: 1
-    file: "data/sdpmasterleafnode.yaml"
-    SdpMasterFQDN: "mid_sdp/elt/master"
+    mid:
+      file: "data/sdpmasterleafnodemid.yaml"
+      SdpMasterFQDN: "mid-sdp/control/0"
+    low:
+      file: "data/sdpmasterleafnodelow.yaml"
+      SdpMasterFQDN: "low-sdp/control/0"
 
 nodeSelector: {}
 

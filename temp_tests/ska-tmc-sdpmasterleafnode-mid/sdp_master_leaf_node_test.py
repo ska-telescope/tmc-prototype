@@ -28,7 +28,7 @@ from tmc.common.tango_server_helper import TangoServerHelper
 
 @pytest.fixture(scope="function")
 def mock_tango_server_helper():
-    sdp_master_ln_fqdn = "mid_sdp/elt/master"
+    sdp_master_ln_fqdn = "mid-sdp/control/0"
     tango_server_obj = TangoServerHelper.get_instance()
     tango_server_obj.read_property = Mock(return_value=sdp_master_ln_fqdn)
     yield tango_server_obj
@@ -42,7 +42,7 @@ def tango_context():
 
 @pytest.fixture(scope="function")
 def event_subscription_mock():
-    dut_properties = {"SdpMasterFQDN": "mid_sdp/elt/master"}
+    dut_properties = {"SdpMasterFQDN": "mid-sdp/control/0"}
     event_subscription_map = {}
     with mock.patch.object(
         TangoClient, "_get_deviceproxy", return_value=Mock()
@@ -56,7 +56,7 @@ def event_subscription_mock():
 
 @pytest.fixture(scope="function")
 def mock_sdp_master_proxy():
-    dut_properties = {"SdpMasterFQDN": "mid_sdp/elt/master"}
+    dut_properties = {"SdpMasterFQDN": "mid-sdp/control/0"}
     event_subscription_map = {}
     Mock().subscribe_event.side_effect = lambda attr_name, event_type, callback, *args, **kwargs: event_subscription_map.update(
         {attr_name: callback}
