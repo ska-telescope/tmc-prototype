@@ -51,13 +51,7 @@ def create_cm(cm_class, device):
         log_msg = f"Unknown component manager class {cm_class}"
         logger.error(log_msg)
 
-    start_time = time.time()
-    time.sleep(SLEEP_TIME)
-    elapsed_time = time.time() - start_time
-    if elapsed_time > TIMEOUT:
-        pytest.fail("Timeout occurred while executing the test")
-
-    return cm, start_time
+    return cm
 
 
 def get_sdpsln_command_obj(
