@@ -1,5 +1,4 @@
 import time
-from os.path import dirname, join
 
 import pytest
 from ska_tango_base.commands import ResultCode
@@ -9,16 +8,7 @@ from tests.settings import SLEEP_TIME, TIMEOUT, logger
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
-def get_assign_input_str(assign_input_file="command_AssignResources.json"):
-    path = join(dirname(__file__), "..", "..", "data", assign_input_file)
-    with open(path, "r") as f:
-        assign_input_str = f.read()
-    return assign_input_str
-
-
-def assign_resouces(
-    tango_context, sdpsaln_name, sdp_subarray, assign_input_str
-):
+def assign_resouces(tango_context, sdpsaln_name, sdp_subarray, json_factory):
     logger.info("%s", tango_context)
     dev_factory = DevFactory()
     sdpsal_node = dev_factory.get_device(sdpsaln_name)
@@ -26,6 +16,7 @@ def assign_resouces(
 
     initial_len = len(sdpsal_node.commandExecuted)
     (result, unique_id) = sdpsal_node.On()
+    assign_input_str = json_factory("command_AssignResources")
     (result, unique_id) = sdpsal_node.AssignResources(assign_input_str)
     assert result[0] == ResultCode.QUEUED
     start_time = time.time()
@@ -49,12 +40,14 @@ def assign_resouces(
     ["sdpsaln_name", "sdp_subarray"],
     [("ska_mid/tm_leaf_node/sdp_subarray01", "mid-sdp/subarray/01")],
 )
-def test_assign_res_command_mid(tango_context, sdpsaln_name, sdp_subarray):
+def test_assign_res_command_mid(
+    tango_context, sdpsaln_name, sdp_subarray, json_factory
+):
     return assign_resouces(
         tango_context,
         sdpsaln_name,
         sdp_subarray,
-        assign_input_str=get_assign_input_str(),
+        json_factory,
     )
 
 
@@ -64,10 +57,12 @@ def test_assign_res_command_mid(tango_context, sdpsaln_name, sdp_subarray):
     ["sdpsaln_name", "sdp_subarray"],
     [("ska_low/tm_leaf_node/sdp_subarray01", "low-sdp/subarray/01")],
 )
-def test_assign_res_command_low(tango_context, sdpsaln_name, sdp_subarray):
+def test_assign_res_command_low(
+    tango_context, sdpsaln_name, sdp_subarray, json_factory
+):
     return assign_resouces(
         tango_context,
         sdpsaln_name,
         sdp_subarray,
-        assign_input_str=get_assign_input_str(),
+        json_factory,
     )

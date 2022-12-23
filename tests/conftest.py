@@ -1,6 +1,8 @@
 # pylint: disable=unused-argument
 """Conftest file for SDP Leaf Node"""
+import json
 import logging
+from os.path import dirname, join
 
 import pytest
 import tango
@@ -115,3 +117,25 @@ def sdpsln_device(request):
 def sdp_subarray_device():
     """Returns SDP Subarray 1 device name"""
     return "mid-sdp/subarray/01"
+
+
+def get_input_str(path):
+    """
+    Returns input json string
+    :rtype: String
+    """
+    with open(path, "r", encoding="utf-8") as f:
+        input_arg = json.load(f)
+    return json.dumps(input_arg)
+
+
+@pytest.fixture
+def json_factory():
+    """
+    Json factory for getting json files
+    """
+
+    def _get_json(slug):
+        return get_input_str(join(dirname(__file__), "data", f"{slug}.json"))
+
+    return _get_json

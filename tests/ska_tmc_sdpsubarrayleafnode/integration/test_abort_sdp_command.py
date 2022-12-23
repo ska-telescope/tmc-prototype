@@ -1,5 +1,4 @@
 import time
-from os.path import dirname, join
 
 import pytest
 from ska_tango_base.commands import ResultCode
@@ -10,29 +9,18 @@ from tests.settings import SLEEP_TIME, TIMEOUT, logger
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
-def get_assign_input_str(path):
-    with open(path, "r") as f:
-        assign_input_str = f.read()
-    return assign_input_str
-
-
-def get_configure_input_str(path):
-    with open(path, "r") as f:
-        configure_input_str = f.read()
-    return configure_input_str
-
-
 def abort(
     tango_context,
     sdpsaln_name,
     device,
-    assign_input_str,
-    configure_input_str,
+    json_factory,
 ):
 
     logger.info("%s", tango_context)
     dev_factory = DevFactory()
     sdpsal_node = dev_factory.get_device(sdpsaln_name)
+    assign_input_str = json_factory("command_AssignResources")
+    configure_input_str = json_factory("command_Configure")
 
     initial_len = len(sdpsal_node.commandExecuted)
     (result, unique_id) = sdpsal_node.On()
@@ -72,29 +60,12 @@ def abort(
     ["sdpsaln_name", "device"],
     [("ska_mid/tm_leaf_node/sdp_subarray01", "mid-sdp/subarray/01")],
 )
-def test_abort_command_mid(
-    tango_context,
-    sdpsaln_name,
-    device,
-):
+def test_abort_command_mid(tango_context, sdpsaln_name, device, json_factory):
     return abort(
         tango_context,
         sdpsaln_name,
         device,
-        get_assign_input_str(
-            join(
-                dirname(__file__),
-                "..",
-                "..",
-                "data",
-                "command_AssignResources.json",
-            )
-        ),
-        get_configure_input_str(
-            join(
-                dirname(__file__), "..", "..", "data", "command_Configure.json"
-            )
-        ),
+        json_factory,
     )
 
 
@@ -104,27 +75,10 @@ def test_abort_command_mid(
     ["sdpsaln_name", "device"],
     [("ska_low/tm_leaf_node/sdp_subarray01", "low-sdp/subarray/01")],
 )
-def test_abort_command_low(
-    tango_context,
-    sdpsaln_name,
-    device,
-):
+def test_abort_command_low(tango_context, sdpsaln_name, device, json_factory):
     return abort(
         tango_context,
         sdpsaln_name,
         device,
-        get_assign_input_str(
-            join(
-                dirname(__file__),
-                "..",
-                "..",
-                "data",
-                "command_AssignResources.json",
-            )
-        ),
-        get_configure_input_str(
-            join(
-                dirname(__file__), "..", "..", "data", "command_Configure.json"
-            )
-        ),
+        json_factory,
     )
