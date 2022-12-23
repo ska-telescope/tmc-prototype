@@ -38,7 +38,6 @@ def test_abort_command(tango_context, devices):
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
-@pytest.mark.sdpsln
 def test_abort_command_fail_subarray(tango_context, devices):
     logger.info("%s", tango_context)
     cm, _ = create_cm("SdpSLNComponentManager", devices)
@@ -65,7 +64,6 @@ def test_abort_command_fail_subarray(tango_context, devices):
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
-@pytest.mark.sdpsln
 def test_abort_command_fail_check_allowed_with_invalid_obsState(
     tango_context, devices
 ):
@@ -84,7 +82,6 @@ def test_abort_command_fail_check_allowed_with_invalid_obsState(
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
-@pytest.mark.sdpsln
 def test_abort_command_fail_check_allowed_with_device_unresponsive(
     tango_context, devices
 ):
