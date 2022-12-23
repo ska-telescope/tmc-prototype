@@ -3,6 +3,7 @@ import logging
 import time
 
 import mock
+import pytest
 from ska_tmc_common.op_state_model import TMCOpStateModel
 from ska_tmc_common.test_helpers.helper_adapter_factory import (
     HelperAdapterFactory,
@@ -50,7 +51,8 @@ def create_cm(cm_class, device):
         log_msg = f"Unknown component manager class {cm_class}"
         logger.error(log_msg)
 
-    return cm
+    start_time = time.time()
+    return cm, start_time
 
 
 def get_sdpsln_command_obj(
