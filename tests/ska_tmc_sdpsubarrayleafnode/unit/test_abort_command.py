@@ -46,6 +46,7 @@ def test_abort_command_in_resourcing(tango_context, devices):
     adapter = adapter_factory.get_or_create_adapter(devices)
     adapter.proxy.Abort.assert_called_once_with()
 
+
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
