@@ -34,6 +34,18 @@ def test_abort_command(tango_context, devices):
     adapter.proxy.Abort.assert_called_once_with()
 
 
+def test_abort_command_in_resourcing(tango_context, devices):
+    logger.info("%s", tango_context)
+    _, abort_command, adapter_factory = get_sdpsln_command_obj(
+        Abort, devices, ObsState.RESOURCING
+    )
+
+    assert abort_command.check_allowed()
+    (result_code, _) = abort_command.do()
+    assert result_code == ResultCode.OK
+    adapter = adapter_factory.get_or_create_adapter(devices)
+    adapter.proxy.Abort.assert_called_once_with()
+
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]

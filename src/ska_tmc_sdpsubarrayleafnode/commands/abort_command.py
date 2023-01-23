@@ -47,6 +47,7 @@ class Abort(SdpSLNCommand):
         obs_state_val = component_manager.get_device().obs_state
 
         if obs_state_val not in (
+            ObsState.RESOURCING,
             ObsState.CONFIGURING,
             ObsState.SCANNING,
             ObsState.IDLE,
