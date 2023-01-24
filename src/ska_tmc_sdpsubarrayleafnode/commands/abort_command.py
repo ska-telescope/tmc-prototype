@@ -47,11 +47,11 @@ class Abort(SdpSLNCommand):
         obs_state_val = component_manager.get_device().obs_state
 
         if obs_state_val not in (
+            ObsState.RESOURCING,
             ObsState.CONFIGURING,
             ObsState.SCANNING,
             ObsState.IDLE,
             ObsState.READY,
-            ObsState.RESETTING,
         ):
             message = f"""Abort command is not allowed in current observation
             on device {component_manager._sdp_subarray_dev_name}.
