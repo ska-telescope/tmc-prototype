@@ -37,7 +37,7 @@ ska-tango-base = "0.11.3+5e1f0fee"
 astropy = "^5.0.4"
 katpoint = "1.0a1"
 pytz = "2021.3"
-ipython = "8.5.0"
+ipython = "8.10.0"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.12.0"
