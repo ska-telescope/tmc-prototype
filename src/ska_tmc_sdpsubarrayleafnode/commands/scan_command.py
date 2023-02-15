@@ -39,10 +39,12 @@ class Scan(AbstractScanEnd):
         try:
             json_argument = json.loads(argin)
         except Exception as e:
-            log_msg = f"""Execution of Scan command is failed.
-            Reason: JSON parsing failed with exception: {e}
-            The command is not executed successfully.
-            The device will continue with normal operation"""
+            log_msg = (
+                "Execution of Scan command is failed."
+                + "Reason: JSON parsing failed with exception: {}".format(e)
+                + "The command is not executed successfully."
+                + "The device will continue with normal operation"
+            )
             self.logger.exception(log_msg)
             return self.generate_command_result(
                 ResultCode.FAILED,
@@ -67,8 +69,10 @@ class Scan(AbstractScanEnd):
                 "interface"
             ] = "https://schema.skao.int/ska-sdp-scan/0.3"
             log_msg = (
-                f"""Input JSON for Scan command for SDP subarray
-                {self.sdp_subarray_adapter.dev_name}: {json_argument}, """,
+                "Input JSON for Scan command for SDP subarray"
+                "{}: {} ".format(
+                    self.sdp_subarray_adapter.dev_name, json_argument
+                )
             )
             self.logger.debug(log_msg)
             self.sdp_subarray_adapter.Scan(json.dumps(json_argument))
@@ -76,13 +80,17 @@ class Scan(AbstractScanEnd):
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                f"""The invocation of the Scan command is failed on Sdp
-                Subarray Device {self.sdp_subarray_adapter.dev_name}.
-                Reason: Error in calling the Scan command on Sdp Subarray.
-                The command has NOT been executed.
-                This device will continue with normal operation.""",
+                "The invocation of the Scan command is failed on Sdp"
+                + "Subarray Device {}".format(
+                    self.sdp_subarray_adapter.dev_name
+                )
+                + "Reason: Error in calling the Scan command on Sdp Subarray."
+                + "The command has NOT been executed."
+                + "This device will continue with normal operation."
+                "",
             )
-        log_msg = f"""Scan command successfully invoked on:
-        {self.sdp_subarray_adapter.dev_name}"""
+        log_msg = "Scan command successfully invoked on:" + "{}".format(
+            self.sdp_subarray_adapter.dev_name
+        )
         self.logger.info(log_msg)
         return (ResultCode.OK, "")

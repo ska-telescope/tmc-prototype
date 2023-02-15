@@ -49,13 +49,15 @@ class Configure(SdpSLNCommand):
         self.check_unresponsive()
         obs_state_val = component_manager.get_device().obs_state
         if obs_state_val not in (ObsState.READY, ObsState.IDLE):
-            message = f"""Configure command is not allowed in current
-                observation state on device
-                {component_manager._sdp_subarray_dev_name}.
-                Reason: The current observation state for observation is
-                {obs_state_val}.
-                The \"Configure\" command has NOT been executed.
-                This device will continue with normal operation."""
+            message = (
+                "Configure command is not allowed in current"
+                + "observation state on device"
+                + "{}".format(component_manager._sdp_subarray_dev_name)
+                + "Reason: The current observation state for observation is"
+                + "{}".format(obs_state_val)
+                + 'The "Configure" command has NOT been executed.'
+                + "This device will continue with normal operation."
+            )
             raise InvalidObsStateError(message)
         return True
 
@@ -81,10 +83,12 @@ class Configure(SdpSLNCommand):
         try:
             json_argument = json.loads(argin)
         except Exception as e:
-            log_msg = f"""Execution of Configure command is failed.
-            Reason: JSON parsing failed with exception: {e}
-            The command is not executed successfully.
-            The device will continue with normal operation"""
+            log_msg = (
+                "Execution of Configure command is failed."
+                + "Reason: JSON parsing failed with exception: {}".format(e)
+                + "The command is not executed successfully."
+                + "The device will continue with normal operation"
+            )
             self.logger.exception(log_msg)
             return self.generate_command_result(
                 ResultCode.FAILED,
@@ -112,15 +116,19 @@ class Configure(SdpSLNCommand):
                 "scan_type is not present in the input json argument.",
             )
 
-        log_msg = f"""Invoking Configure command on:
-        {self.sdp_subarray_adapter.dev_name}"""
+        log_msg = "Invoking Configure command on:"
+        "{}".format(self.sdp_subarray_adapter.dev_name)
         self.logger.info(log_msg)
         try:
             json_argument[
                 "interface"
             ] = "https://schema.skao.int/ska-sdp-configure/0.3"
-            log_msg = f"""Input JSON for Configure command for SDP subarray
-                {self.sdp_subarray_adapter.dev_name}: {json_argument}"""
+            log_msg = (
+                "Input JSON for Configure command for SDP subarray"
+                + "{}: {}".format(
+                    self.sdp_subarray_adapter.dev_name, json_argument
+                )
+            )
             self.logger.debug(log_msg)
             self.sdp_subarray_adapter.Configure(json.dumps(json_argument))
 
@@ -128,13 +136,17 @@ class Configure(SdpSLNCommand):
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                f"""The invocation of the Configure command is failed on
-                Sdp Subarray Device {self.sdp_subarray_adapter.dev_name}.
-                Reason: Error in calling the Configure command on Sdp Subarray.
-                The command has NOT been executed.
-                This device will continue with normal operation.""",
+                "The invocation of the Configure command is failed on"
+                + "Sdp Subarray Device {}".format(
+                    self.sdp_subarray_adapter.dev_name
+                )
+                + "Reason: Error in calling the Configure command on"
+                "Sdp Subarray."
+                + "The command has NOT been executed."
+                + "This device will continue with normal operation.",
             )
-        log_msg = f"""Configure command successfully invoked on:
-        {self.sdp_subarray_adapter.dev_name}"""
+        log_msg = "Configure command successfully invoked on:" + "{}".format(
+            self.sdp_subarray_adapter.dev_name
+        )
         self.logger.info(log_msg)
         return (ResultCode.OK, "")

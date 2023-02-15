@@ -36,11 +36,13 @@ class SdpMLNCommand(TmcLeafNodeCommand):
         """
         if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
             raise CommandNotAllowed(
-                f"""The invocation of the {__class__} command on this device
-                is not allowed.
-                Reason: The current operational state is %s.
-                The command has NOT been executed.
-                This device will continue with normal operation.""",
+                "The invocation of the {} command on this device".format(
+                    __class__
+                )
+                + "is not allowed."
+                + "Reason: The current operational state is %s."
+                + "The command has NOT been executed."
+                + "This device will continue with normal operation.",
                 self.op_state_model.op_state,
             )
 

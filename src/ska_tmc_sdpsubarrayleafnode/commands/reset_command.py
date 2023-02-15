@@ -62,10 +62,12 @@ class Reset(SdpSLNCommand):
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
-                f"""The invocation of the Reset command is failed on Sdp
-                Subarray Device {self.sdp_subarray_adapter.dev_name}.
-                Reason: Error in calling the Reset command on Sdp Subarray.
-                The command has NOT been executed.
-                This device will continue with normal operation.""",
+                "The invocation of the Reset command is failed on Sdp"
+                + "Subarray Device {}".format(
+                    self.sdp_subarray_adapter.dev_name
+                )
+                + "Reason: Error in calling the Reset command on Sdp Subarray."
+                + "The command has NOT been executed."
+                + "This device will continue with normal operation.",
             )
         return (ResultCode.OK, "")

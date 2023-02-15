@@ -38,12 +38,12 @@ class SdpSLNCommand(TmcLeafNodeCommand):
             DevState.DISABLE,
         ]:
             raise CommandNotAllowed(
-                f"""The invocation of the {command_name} command on this
-                device is not allowed.
-                Reason: The current operational state is
-                {self.op_state_model.op_state}.
-                The command has NOT been executed.
-                This device will continue with normal operation."""
+                "The invocation of the {} command on this".format(command_name)
+                + "device is not allowed."
+                + "Reason: The current operational state is"
+                + "{}".format(self.op_state_model.op_state)
+                + "The command has NOT been executed."
+                + "This device will continue with normal operation."
             )
 
     # pylint: disable=attribute-defined-outside-init
@@ -117,12 +117,12 @@ class AbstractOnOff(SdpSLNCommand):
         """
         if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
             raise CommandNotAllowed(
-                f"""The invocation of the command on this device
-                is not allowed.
-                Reason: The current operational state is
-                {self.op_state_model.op_state}.
-                The command has NOT been executed.
-                This device will continue with normal operation."""
+                "The invocation of the command on this device"
+                + "is not allowed."
+                + "Reason: The current operational state is"
+                + "{}".format(self.op_state_model.op_state)
+                + "The command has NOT been executed."
+                + "This device will continue with normal operation."
             )
 
         component_manager = self.target
@@ -172,13 +172,15 @@ class AbstractScanEnd(SdpSLNCommand):
         obs_state_val = component_manager.get_device().obs_state
 
         if obs_state_val != ObsState.READY:
-            message = f"""Scan and End commands are not allowed in current
-            observation state on device
-            {component_manager._sdp_subarray_dev_name}.
-            Reason: The current observation state for observation is
-            {obs_state_val}.
-            The \"Scan/End\" command has NOT been executed.
-            This device will continue with normal operation."""
+            message = (
+                "Scan and End commands are not allowed in current"
+                + "observation state on device"
+                + "{}".format(component_manager._sdp_subarray_dev_name)
+                + "Reason: The current observation state for observation is"
+                + "{}".format(obs_state_val)
+                + 'The "Scan/End" command has NOT been executed.'
+                + "This device will continue with normal operation."
+            )
             raise InvalidObsStateError(message)
 
         return True
@@ -218,13 +220,15 @@ class AbstractRestartObsReset(SdpSLNCommand):
         obs_state_val = component_manager.get_device().obs_state
 
         if obs_state_val not in (ObsState.ABORTED, ObsState.FAULT):
-            message = f"""ObsReset and Restart commands are not allowed in
-            current observation state on
-            {component_manager._sdp_subarray_dev_name}.
-            Reason: The current observation state for observation is
-            {obs_state_val}.
-            The \"Restart/ObsReset\" command has NOT been executed.
-            This device will continue with normal operation."""
+            message = (
+                "ObsReset and Restart commands are not allowed in"
+                + "current observation state on"
+                + "{}".format(component_manager._sdp_subarray_dev_name)
+                + "Reason: The current observation state for observation is"
+                + "{}".format(obs_state_val)
+                + 'The "Restart/ObsReset" command has NOT been executed.'
+                + "This device will continue with normal operation."
+            )
             raise InvalidObsStateError(message)
 
         return True
