@@ -140,7 +140,7 @@ class Configure(SdpSLNCommand):
                 + "Sdp Subarray Device {}".format(
                     self.sdp_subarray_adapter.dev_name
                 )
-                + "Reason: Error in calling the Configure command on"
+                + "Reason: Error in invoking the Configure command on"
                 "Sdp Subarray."
                 + "The command has NOT been executed."
                 + "This device will continue with normal operation.",

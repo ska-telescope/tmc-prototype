@@ -66,7 +66,8 @@ class Reset(SdpSLNCommand):
                 + "Subarray Device {}".format(
                     self.sdp_subarray_adapter.dev_name
                 )
-                + "Reason: Error in calling the Reset command on Sdp Subarray."
+                + "Reason: Error in invoking the Reset command on"
+                + "Sdp Subarray."
                 + "The command has NOT been executed."
                 + "This device will continue with normal operation.",
             )

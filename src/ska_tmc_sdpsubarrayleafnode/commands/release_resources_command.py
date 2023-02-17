@@ -95,7 +95,7 @@ class ReleaseResources(SdpSLNCommand):
                 + "on Sdp Subarray Device {}".format(
                     self.sdp_subarray_adapter.dev_name
                 )
-                + "Reason: Error in calling the ReleaseResources command"
+                + "Reason: Error in invoking the ReleaseResources command"
                 "on Sdp"
                 + "Subarray. The command has NOT been executed."
                 + "This device will continue with normal operation.",
