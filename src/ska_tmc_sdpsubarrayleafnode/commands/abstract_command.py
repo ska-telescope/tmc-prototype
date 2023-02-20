@@ -117,7 +117,9 @@ class AbstractOnOff(SdpSLNCommand):
         """
         if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
             raise CommandNotAllowed(
-                "The invocation of the command on this device"
+                "The invocation of the {} command on this device".format(
+                    __class__
+                )
                 + "is not allowed."
                 + "Reason: The current operational state is"
                 + "{}".format(self.op_state_model.op_state)
@@ -173,8 +175,8 @@ class AbstractScanEnd(SdpSLNCommand):
 
         if obs_state_val != ObsState.READY:
             message = (
-                "The invocation of the {} and {} command on this".format(
-                    "scan", "EndScan"
+                "The invocation of the {} command on this device".format(
+                    __class__
                 )
                 + "observation state on device"
                 + "{}".format(component_manager._sdp_subarray_dev_name)
