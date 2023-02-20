@@ -63,3 +63,32 @@ flake8 = "^5.0.4"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.pytest.ini_options]
+testpaths = "tests/"
+addopts = "--json-report --json-report-file=build/reports/report.json --cov-report html:build/htmlcov --cov-report xml:build/reports/code-coverage.xml --cov-report term:skip-covered --cov=src --junitxml=build/reports/unit-tests.xml --verbose"
+console_output_style = "progress"
+junit_family = "legacy"
+
+[tool.coverage.paths]
+source = ["src"]
+
+[tool.coverage.run]
+data_file = ".coverage/.coverage"
+branch = true
+source = ["src"]
+
+omit=[
+    # team decision that testing of CLIs is unnecessary
+    "*/*_cli.py",
+    # legacy code, no point investing in test coverage
+    "*/tile_1_2.py",
+]
+
+[tool.coverage.report]
+show_missing = false
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

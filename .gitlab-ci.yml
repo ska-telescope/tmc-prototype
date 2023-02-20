@@ -72,8 +72,10 @@ include:
   file: 'gitlab-ci/includes/release.gitlab-ci.yml'
 # retry to template job for python-test
 python-test:
+  image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.32
   retry: 2
-
+python-lint:
+  image: artefact.skao.int/ska-tango-images-pytango-builder:9.3.32
 
 # k8s test stage template
 
