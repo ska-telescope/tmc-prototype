@@ -1,5 +1,5 @@
 """
-ReleaseAllResources command class for SDPSubarrayLeafNode.
+ReleaseResources command class for SDPSubarrayLeafNode.
 """
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
@@ -43,7 +43,7 @@ class ReleaseResources(SdpSLNCommand):
         """
         component_manager = self.target
 
-        self.check_op_state("ReleaseAllResources")
+        self.check_op_state("ReleaseResources")
         self.check_unresponsive()
         obs_state_val = component_manager.get_device().obs_state
         self.logger.info("sdp_subarray_obs_state value is: %s", obs_state_val)
