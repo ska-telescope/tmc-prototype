@@ -67,7 +67,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 testpaths = "tests/"
-addopts = "--json-report --json-report-file=build/reports/report.json --cov-report html:build/htmlcov --cov-report xml:build/reports/code-coverage.xml --cov-report term:skip-covered --cov=src --junitxml=build/reports/unit-tests.xml --verbose"
+addopts = "--json-report --json-report-file=build/reports/report.json --cov-report html:build/htmlcov --cov-report xml:build/reports/code-coverage.xml --cov-report term:skip-covered --cov=ska_tmc_sdpsubarrayleafnode --junitxml=build/reports/unit-tests.xml --verbose"
 console_output_style = "progress"
 junit_family = "legacy"
 
@@ -77,7 +77,7 @@ source = ["src"]
 [tool.coverage.run]
 data_file = ".coverage/.coverage"
 branch = true
-source = ["src"]
+source = ["ska_tmc_sdpsubarrayleafnode"]
 
 omit=[
     # team decision that testing of CLIs is unnecessary
