@@ -173,7 +173,9 @@ class AbstractScanEnd(SdpSLNCommand):
 
         if obs_state_val != ObsState.READY:
             message = (
-                "Scan and End commands are not allowed in current"
+                "The invocation of the {} and {} command on this".format(
+                    "scan", "EndScan"
+                )
                 + "observation state on device"
                 + "{}".format(component_manager._sdp_subarray_dev_name)
                 + "Reason: The current observation state for observation is"
