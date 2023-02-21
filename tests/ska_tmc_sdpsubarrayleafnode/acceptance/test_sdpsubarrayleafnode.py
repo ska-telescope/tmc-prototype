@@ -177,8 +177,8 @@ def check_sdp_subarray_obsstate(sdp_subarray, obs_state):
         logger.info(f"wait_time in teardown  {wait_time}")
         if wait_time > TIMEOUT:
             pytest.fail(
-                f"""Timeout occurred in transitioning SDP Subarray obsState to
-                {sdp_subarray_obsstate.value}"""
+                "Timeout occurred in transitioning SDP Subarray obsState to"
+                + "{}".format(sdp_subarray_obsstate.value)
             )
 
 

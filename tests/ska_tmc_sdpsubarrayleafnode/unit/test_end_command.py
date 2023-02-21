@@ -81,7 +81,7 @@ def test_telescope_end_command_fail_check_allowed_with_invalid_obsState(
     )
     with pytest.raises(
         InvalidObsStateError,
-        match=f"""The current observation state for observation is
-            {ObsState.IDLE}""",
+        match="The current observation state for observation is"
+        + "{}".format(ObsState.IDLE),
     ):
         end_command.check_allowed()

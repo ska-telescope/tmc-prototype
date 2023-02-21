@@ -48,12 +48,16 @@ class EndScan(SdpSLNCommand):
         obs_state_val = component_manager.get_device().obs_state
 
         if obs_state_val != ObsState.SCANNING:
-            message = f"""EndScan command is not allowed in current observation
-            state on device {component_manager._sdp_subarray_dev_name}.
-            Reason: The current observation state for observation is
-            {obs_state_val}.
-            The \"EndScan\" command has NOT been executed.
-            This device will continue with normal operation."""
+            message = (
+                "EndScan command is not allowed in current observation"
+                + "state on device {}".format(
+                    component_manager._sdp_subarray_dev_name
+                )
+                + "Reason: The current observation state for observation is"
+                + "{}".format(obs_state_val)
+                + 'The "EndScan" command has NOT been executed.'
+                + "This device will continue with normal operation."
+            )
             raise InvalidObsStateError(message)
 
         return True
