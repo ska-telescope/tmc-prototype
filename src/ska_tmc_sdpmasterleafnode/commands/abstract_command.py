@@ -77,7 +77,7 @@ class SdpMLNCommand(TmcLeafNodeCommand):
                         component_manager.sdp_master_dev_name,
                         df,
                     )
-            except Exception as e:
+            except (AttributeError, ValueError, TypeError) as e:
                 return self.adapter_error_message_result(
                     component_manager.sdp_master_dev_name,
                     e,

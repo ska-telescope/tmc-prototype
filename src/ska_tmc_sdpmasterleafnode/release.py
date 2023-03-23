@@ -17,6 +17,8 @@ description = """ The primary responsibility of the SDP Master
                   and issue control actions during an observation."""
 author = "Team Himalaya, Team Sahyadri"
 author_email = "telmgt-internal@googlegroups.com"
+# pylint: disable=redefined-builtin
 license = """BSD-3-Clause"""
 url = """https://www.skaobservatory.org"""
+# pylint: disable=redefined-builtin
 copyright = """"""

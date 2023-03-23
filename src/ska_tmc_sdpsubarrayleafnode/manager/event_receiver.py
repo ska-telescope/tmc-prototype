@@ -53,7 +53,7 @@ class SdpSLNEventReceiver(EventReceiver):
                 stateless=True,
             )
 
-        except Exception as e:
+        except (AttributeError, ValueError, TypeError) as e:
             self._logger.debug(
                 "Event not working for the device %s, %s", proxy.dev_name, e
             )

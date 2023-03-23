@@ -64,6 +64,7 @@ def test_telescope_release_resources_command_fail_subarray(
     (result_code, message) = release_command.do()
     assert result_code == ResultCode.FAILED
     assert devices in message
+    print(message)
 
 
 @pytest.mark.sdpsln

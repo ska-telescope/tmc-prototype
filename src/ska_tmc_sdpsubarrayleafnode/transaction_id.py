@@ -2,6 +2,7 @@
 import functools
 import json
 import logging
+from json import JSONDecodeError
 
 from ska_ser_log_transactions import transaction
 
@@ -22,10 +23,11 @@ def identify_with_id(name: str, arg_name: str):
                 )
             try:
                 parameters = json.loads(argin)
-            except Exception:
+            except JSONDecodeError as e:
                 logging.warning(
                     """unable to use transaction id as not able to parse input
-                    arguments into a dictionary"""
+                    arguments into a dictionary: %s""",
+                    e,
                 )
                 return func(obj, argin)
             with transaction(

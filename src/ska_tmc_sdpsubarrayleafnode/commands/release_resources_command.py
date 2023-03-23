@@ -87,7 +87,7 @@ class ReleaseResources(SdpSLNCommand):
             )
             self.logger.debug(log_msg)
             self.sdp_subarray_adapter.ReleaseAllResources()
-        except Exception as e:
+        except (AttributeError, ValueError, TypeError) as e:
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,

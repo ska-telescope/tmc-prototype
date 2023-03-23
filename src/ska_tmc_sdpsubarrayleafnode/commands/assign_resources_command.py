@@ -3,6 +3,7 @@
 AssignResouces command class for SDPSubarrayLeafNode.
 """
 import json
+from json import JSONDecodeError
 
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
@@ -127,7 +128,7 @@ class AssignResources(SdpSLNCommand):
             return ret_code, message
         try:
             json_argument = json.loads(argin)
-        except Exception as e:
+        except JSONDecodeError as e:
             log_msg = (
                 "Execution of AssignResources command is failed."
                 + "Reason: JSON parsing failed with exception: {}".format(e)
@@ -174,7 +175,7 @@ class AssignResources(SdpSLNCommand):
                 json.dumps(json_argument)
             )
 
-        except Exception as e:
+        except (AttributeError, ValueError, TypeError) as e:
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,

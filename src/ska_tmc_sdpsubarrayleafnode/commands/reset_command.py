@@ -58,7 +58,7 @@ class Reset(SdpSLNCommand):
             return ret_code, message
         try:
             self.logger.info("Resetting Sdp Subarray Leaf Node")
-        except Exception as e:
+        except (AttributeError, ValueError, TypeError) as e:
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
