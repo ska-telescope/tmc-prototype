@@ -11,6 +11,6 @@ url="""https://www.skaobservatory.org"""
 copyright=""""""
 release=0.8.26
 tag=0.8.26
-release_notes=This release contains:<br/><ul><li>Implemented Abort commands on low Sdpleafnode.</li></ul><br/>
+release_notes=This release contains:<br/><ul><li>Implemented Abort and Restart commands on low Sdpleafnode.</li></ul><br/>
 
 
