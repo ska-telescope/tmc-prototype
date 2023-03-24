@@ -16,19 +16,18 @@ from tests.settings import (
     logger,
 )
 
-device_obsstate = []
-devices = [SDP_SUBARRAY_DEVICE_LOW, SDP_SUBARRAY_DEVICE_MID]
-obsstates = [
-    ObsState.RESOURCING,
-    ObsState.IDLE,
-    ObsState.CONFIGURING,
-    ObsState.READY,
-    ObsState.SCANNING,
+device_obsstate = [
+    (SDP_SUBARRAY_DEVICE_LOW, ObsState.RESOURCING),
+    (SDP_SUBARRAY_DEVICE_LOW, ObsState.IDLE),
+    (SDP_SUBARRAY_DEVICE_LOW, ObsState.CONFIGURING),
+    (SDP_SUBARRAY_DEVICE_LOW, ObsState.READY),
+    (SDP_SUBARRAY_DEVICE_LOW, ObsState.SCANNING),
+    (SDP_SUBARRAY_DEVICE_MID, ObsState.RESOURCING),
+    (SDP_SUBARRAY_DEVICE_MID, ObsState.IDLE),
+    (SDP_SUBARRAY_DEVICE_MID, ObsState.CONFIGURING),
+    (SDP_SUBARRAY_DEVICE_MID, ObsState.READY),
+    (SDP_SUBARRAY_DEVICE_MID, ObsState.SCANNING),
 ]
-for device in devices:
-    for obsstate in obsstates:
-        device_obsstate.append((device, obsstate))
-
 
 @pytest.mark.sdpsln
 @pytest.mark.parametrize("devices ,obsstate", device_obsstate)
