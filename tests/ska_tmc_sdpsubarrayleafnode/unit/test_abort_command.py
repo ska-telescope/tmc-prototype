@@ -29,6 +29,7 @@ device_obsstate = [
     (SDP_SUBARRAY_DEVICE_MID, ObsState.SCANNING),
 ]
 
+
 @pytest.mark.sdpsln
 @pytest.mark.parametrize("devices ,obsstate", device_obsstate)
 def test_abort_command(tango_context, devices, obsstate):
