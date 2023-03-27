@@ -4,6 +4,7 @@ from time import sleep
 
 import tango
 from ska_tmc_common.event_receiver import EventReceiver
+from tango import DevFailed
 
 
 class SdpSLNEventReceiver(EventReceiver):
@@ -53,7 +54,7 @@ class SdpSLNEventReceiver(EventReceiver):
                 stateless=True,
             )
 
-        except (AttributeError, ValueError, TypeError) as e:
+        except (AttributeError, ValueError, TypeError, DevFailed) as e:
             self._logger.debug(
                 "Event not working for the device %s, %s", proxy.dev_name, e
             )

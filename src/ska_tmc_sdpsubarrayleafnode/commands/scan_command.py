@@ -5,6 +5,7 @@ import json
 from json import JSONDecodeError
 
 from ska_tango_base.commands import ResultCode
+from tango import DevFailed
 
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import (
     AbstractScanEnd,
@@ -78,7 +79,7 @@ class Scan(AbstractScanEnd):
             )
             self.logger.debug(log_msg)
             self.sdp_subarray_adapter.Scan(json.dumps(json_argument))
-        except (AttributeError, ValueError, TypeError) as e:
+        except (AttributeError, ValueError, TypeError, DevFailed) as e:
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,

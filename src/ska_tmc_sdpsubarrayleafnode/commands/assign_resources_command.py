@@ -9,6 +9,7 @@ from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.adapters import AdapterFactory
 from ska_tmc_common.exceptions import InvalidObsStateError
+from tango import DevFailed
 
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
 
@@ -175,7 +176,7 @@ class AssignResources(SdpSLNCommand):
                 json.dumps(json_argument)
             )
 
-        except (AttributeError, ValueError, TypeError) as e:
+        except (AttributeError, ValueError, TypeError, DevFailed) as e:
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
