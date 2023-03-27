@@ -2,8 +2,10 @@
 Scan command class for SDPSubarrayLeafNode.
 """
 import json
+from json import JSONDecodeError
 
 from ska_tango_base.commands import ResultCode
+from tango import DevFailed
 
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import (
     AbstractScanEnd,
@@ -38,7 +40,7 @@ class Scan(AbstractScanEnd):
             return ret_code, message
         try:
             json_argument = json.loads(argin)
-        except Exception as e:
+        except JSONDecodeError as e:
             log_msg = (
                 "Execution of Scan command is failed."
                 + "Reason: JSON parsing failed with exception: {}".format(e)
@@ -63,6 +65,7 @@ class Scan(AbstractScanEnd):
             # As, SKA logtransaction is not utilised in scan command across
             # tmc devices.
             # Hence, Interface URL needs to be updated explicitly for SDP.
+            # pylint: disable=fixme
             # TODO: Incorporate transaction id implementation for scan
             # command across TMC.
             json_argument[
@@ -76,7 +79,7 @@ class Scan(AbstractScanEnd):
             )
             self.logger.debug(log_msg)
             self.sdp_subarray_adapter.Scan(json.dumps(json_argument))
-        except Exception as e:
+        except (AttributeError, ValueError, TypeError, DevFailed) as e:
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,

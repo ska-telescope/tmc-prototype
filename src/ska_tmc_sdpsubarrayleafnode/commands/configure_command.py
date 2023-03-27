@@ -2,11 +2,13 @@
 Configure command class for SDPSubarrayLeafNode.
 """
 import json
+from json import JSONDecodeError
 
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.adapters import AdapterFactory
 from ska_tmc_common.exceptions import InvalidObsStateError
+from tango import DevFailed
 
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
 
@@ -82,7 +84,7 @@ class Configure(SdpSLNCommand):
             return ret_code, message
         try:
             json_argument = json.loads(argin)
-        except Exception as e:
+        except JSONDecodeError as e:
             log_msg = (
                 "Execution of Configure command is failed."
                 + "Reason: JSON parsing failed with exception: {}".format(e)
@@ -132,7 +134,7 @@ class Configure(SdpSLNCommand):
             self.logger.debug(log_msg)
             self.sdp_subarray_adapter.Configure(json.dumps(json_argument))
 
-        except Exception as e:
+        except (AttributeError, ValueError, TypeError, DevFailed) as e:
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
                 ResultCode.FAILED,
