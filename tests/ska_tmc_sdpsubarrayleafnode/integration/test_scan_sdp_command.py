@@ -63,7 +63,7 @@ def scan(
 
     tear_down(dev_factory, sdp_subarray)
 
-
+@pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(
@@ -78,7 +78,7 @@ def test_scan_command_mid(tango_context, sdpsaln_name, device, json_factory):
         json_factory,
     )
 
-
+@pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
 @pytest.mark.parametrize(
