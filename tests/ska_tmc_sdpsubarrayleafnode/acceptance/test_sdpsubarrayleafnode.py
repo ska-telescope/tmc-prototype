@@ -84,7 +84,8 @@
 #         elif command_name == "Scan":
 #             scan_string = get_json_input_str(
 #                 join(
-#                     dirname(__file__), "..", "..", "data", "command_Scan.json"
+#                     dirname(__file__), "..", "..", "data",
+# "command_Scan.json"
 #                 )
 #             )
 #             check_sdp_subarray_obsstate(sdp_subarray, ObsState.READY)
@@ -166,12 +167,14 @@
 #     sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
 #     logger.info(f"SDP Subarray Device : {sdp_subarray}")
 #     logger.info(f"SDP Subarray obsState is {sdp_subarray_obsstate}")
-#     logger.info(f"In SDP Subarray Device : {sdp_subarray}, checking ObsState")
+#     logger.info(f"In SDP Subarray Device : {sdp_subarray},
+# checking ObsState")
 #     wait_time = 0
 #     while (sdp_subarray_obsstate.value) != obs_state:
 #         time.sleep(SLEEP_TIME)
 #         obsstate_val = sdp_subarray.read_attribute("obsState")
-#         logger.info(f"Current SDP Subarray obsState is: {obsstate_val.value}")
+#         logger.info(f"Current SDP Subarray obsState is:
+# {obsstate_val.value}")
 #         logger.info(f"Expected SDP Subarray obsState is : {obs_state}")
 #         wait_time = wait_time + 1
 #         logger.info(f"wait_time in teardown  {wait_time}")
