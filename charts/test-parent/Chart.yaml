@@ -20,7 +20,7 @@ dependencies:
     version: 0.3.9
     repository: https://artefact.skao.int/repository/helm-internal
   - name: ska-tmc-sdpleafnodes
-    version: 0.8.26
+    version: 0.8.27
     repository: file://../ska-tmc-sdpleafnodes
     alias: tmc-sdpleafnodes
   - name: ska-ser-skuid

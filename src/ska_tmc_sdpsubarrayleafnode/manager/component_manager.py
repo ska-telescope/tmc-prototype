@@ -34,6 +34,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         logger=None,
         _update_device_callback=None,
         update_command_in_progress_callback=None,
+        _update_lrcr_callback=None,
         monitoring_loop=False,
         event_receiver=True,
         max_workers=5,
@@ -77,6 +78,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         self.timeout = timeout
         # pylint: enable=line-too-long
+
+        self._update_lrcr_callback = _update_lrcr_callback
+        self._lrc_result = ("", "")
 
     def stop(self):
         self._event_receiver.stop()
@@ -142,3 +146,62 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             dev_info.obs_state = obs_state
             dev_info.last_event_arrived = time.time()
             dev_info.update_unresponsive(False)
+
+    def cmd_ended_cb(self, event):
+        """
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the command has been successfully
+        invoked on SdpSubarray.
+
+        :param event: a CmdDoneEvent object. This object is used to pass data
+            to the callback method in asynchronous callback model for command
+            execution.
+        :type: CmdDoneEvent object
+            It has the following members:
+            - cmd_name   : (str) The command name
+            - argout_raw : (DeviceData) The command argout
+            - argout     : The command argout
+            - err        : (bool) A boolean flag set to True if the command
+                           failed. False otherwise
+            - errors     : (sequence<DevError>) The error stack
+            - ext
+        """
+
+        if event.err:
+            log_message = (
+                f"Error in invoking command: {event.cmd_name}\n{event.errors}"
+            )
+            self.logger.error(log_message)
+            self.lrc_result = (event.cmd_name, str(event.err))
+
+        else:
+            log_message = f"Command :-> {event.cmd_name} invoked successfully."
+            self.logger.info(log_message)
+            self.lrc_result = (event.cmd_name, log_message)
+
+    @property
+    def lrc_result(self) -> str:
+        """
+        Returns the longRunningCommandResult attribute.
+
+        :return: the longRunningCommandResult
+        :rtype: spectrum
+        """
+        return self._delay_model
+
+    @lrc_result.setter
+    def lrc_result(self, value: str) -> None:
+        """
+        Sets the longRunningCommandResult value
+
+        :param value: the new longRunningCommandResult value
+        :type value: str
+        """
+        if self._lrc_result != value:
+            self._lrc_result = value
+            self._invoke_lrcr_callback()
+
+    def _invoke_lrcr_callback(self):
+        """This method calls longRunningCommandResult callback"""
+        if self._update_lrcr_callback is not None:
+            self._update_lrcr_callback(self._lrc_result)

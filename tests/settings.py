@@ -4,9 +4,6 @@ import time
 
 import mock
 from ska_tmc_common.op_state_model import TMCOpStateModel
-from ska_tmc_common.test_helpers.helper_adapter_factory import (
-    HelperAdapterFactory,
-)
 
 from ska_tmc_sdpmasterleafnode.manager.component_manager import (
     SdpMLNComponentManager,
@@ -14,6 +11,13 @@ from ska_tmc_sdpmasterleafnode.manager.component_manager import (
 from ska_tmc_sdpsubarrayleafnode.manager.component_manager import (
     SdpSLNComponentManager,
 )
+
+from .helper_adapter_factory import HelperAdapterFactory
+
+# from ska_tmc_common.test_helpers.helper_adapter_factory import (
+#     HelperAdapterFactory,
+# )
+
 
 logger = logging.getLogger(__name__)
 

@@ -7,10 +7,11 @@ from json import JSONDecodeError
 
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
-from ska_tmc_common.adapters import AdapterFactory
 from ska_tmc_common.exceptions import InvalidObsStateError
 from tango import DevFailed
 
+# from ska_tmc_common.adapters import AdapterFactory
+from ska_tmc_sdpsubarrayleafnode.adapters import AdapterFactory
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
 
 
@@ -31,6 +32,7 @@ class AssignResources(SdpSLNCommand):
         super().__init__(target, logger)
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory or AdapterFactory()
+        self.component_manager = self.target
 
     def check_allowed(self):
         """
@@ -44,18 +46,17 @@ class AssignResources(SdpSLNCommand):
         :rtype: boolean
 
         """
-        component_manager = self.target
         self.check_op_state("AssignResources")
         self.check_unresponsive()
 
-        obs_state_val = component_manager.get_device().obs_state
+        obs_state_val = self.component_manager.get_device().obs_state
         self.logger.info("sdp_subarray_obs_state: %s", obs_state_val)
 
         if obs_state_val not in [ObsState.IDLE, ObsState.EMPTY]:
             message = (
                 "AssignResources command is not allowed in current"
                 + "observation state on device"
-                + "{}".format(component_manager._sdp_subarray_dev_name)
+                + "{}".format(self.component_manager._sdp_subarray_dev_name)
                 + "Reason: The current observation state for observation is"
                 + "{}".format(obs_state_val)
                 + 'The "AssignResources" command has NOT been executed.'
@@ -145,12 +146,6 @@ class AssignResources(SdpSLNCommand):
                 ),
             )
 
-        if "eb_id" not in json_argument["execution_block"]:
-            return self.generate_command_result(
-                ResultCode.FAILED,
-                "eb_id key is not present in the input json argument.",
-            )
-
         if "scan_types" not in json_argument["execution_block"]:
             return self.generate_command_result(
                 ResultCode.FAILED,
@@ -173,7 +168,7 @@ class AssignResources(SdpSLNCommand):
             )
             self.logger.debug(log_msg)
             self.sdp_subarray_adapter.AssignResources(
-                json.dumps(json_argument)
+                json.dumps(json_argument), self.component_manager.cmd_ended_cb
             )
 
         except (AttributeError, ValueError, TypeError, DevFailed) as e:

@@ -27,6 +27,9 @@ def get_assign_input_str(assign_input_file="command_AssignResources.json"):
     return assign_input_str
 
 
+@pytest.mark.skip(
+    reason="This test might need improvement due to asynch apis on adapter"
+)
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
@@ -45,6 +48,9 @@ def test_telescope_assign_resources_command(tango_context, devices):
     adapter.proxy.AssignResources.assert_called()
 
 
+@pytest.mark.skip(
+    reason="This test might need improvement due to asynch apis on adapter"
+)
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]

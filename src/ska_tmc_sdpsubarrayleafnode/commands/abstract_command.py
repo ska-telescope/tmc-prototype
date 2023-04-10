@@ -5,7 +5,6 @@ import time
 
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
-from ska_tmc_common.adapters import AdapterFactory, AdapterType
 from ska_tmc_common.exceptions import (
     CommandNotAllowed,
     DeviceUnresponsive,
@@ -13,6 +12,9 @@ from ska_tmc_common.exceptions import (
 )
 from ska_tmc_common.tmc_command import TmcLeafNodeCommand
 from tango import ConnectionFailed, DevFailed, DevState
+
+# from ska_tmc_common.adapters import AdapterFactory, AdapterType
+from ska_tmc_sdpsubarrayleafnode.adapters import AdapterFactory, AdapterType
 
 
 class SdpSLNCommand(TmcLeafNodeCommand):
@@ -61,7 +63,7 @@ class SdpSLNCommand(TmcLeafNodeCommand):
                 if not devInfo.unresponsive:
                     self.sdp_subarray_adapter = (
                         self._adapter_factory.get_or_create_adapter(
-                            dev_name, AdapterType.SUBARRAY
+                            dev_name, AdapterType.SDPSUBARRAY
                         )
                     )
             except ConnectionFailed as cf:

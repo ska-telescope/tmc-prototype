@@ -66,6 +66,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         access=AttrWriteType.READ_WRITE,
     )
 
+    longRunningCommandResult = attribute(
+        dtype=("str",),
+        max_dim_x=2,  # Always the last result (unique_id, JSON-encoded result)
+        access=AttrWriteType.READ,
+    )
+
     # ---------------
     # General methods
     # ---------------
@@ -75,6 +81,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """Updates device callback info"""
         self._LastDeviceInfoChanged = devInfo.to_json()
         self.push_change_event("lastDeviceInfoChanged", devInfo.to_json())
+
+    def update_lrcr_callback(self, lrc_result):
+        """Change event callback for longRunningCommandResult"""
+        self.push_change_event("longRunningCommandResult", lrc_result)
 
     # pylint: enable=attribute-defined-outside-init
 
@@ -104,6 +114,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             )
             device._version_id = release.version
             device._LastDeviceInfoChanged = ""
+            device._command_result = ("", "")
             device.set_change_event("healthState", True, False)
             device.op_state_model.perform_action("component_on")
             device.component_manager.command_executor.add_command_execution(
@@ -152,6 +163,18 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             ]
             result.append(single_res)
         return result
+
+    def read_longRunningCommandResult(self):
+        """
+        Read the result of the completed long running command.
+
+        Reports unique_id, json-encoded result.
+        Clients can subscribe to on_change event and wait for
+        the ID they are interested in.
+
+        :return: ID, result.
+        """
+        return self._command_result
 
     # --------
     # Commands
@@ -605,6 +628,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             self.op_state_model,
             logger=self.logger,
             _update_device_callback=self.update_device_callback,
+            _update_lrcr_callback=self.update_lrcr_callback,
             sleep_time=self.SleepTime,
             timeout=self.TimeOut,
         )
