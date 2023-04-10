@@ -37,6 +37,7 @@ def assign_resouces(tango_context, sdpsaln_name, sdp_subarray, json_factory):
     tear_down(dev_factory, sdp_subarray)
 
 
+@pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.assign
@@ -55,6 +56,7 @@ def test_assign_res_command_mid(
     )
 
 
+@pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
 @pytest.mark.parametrize(

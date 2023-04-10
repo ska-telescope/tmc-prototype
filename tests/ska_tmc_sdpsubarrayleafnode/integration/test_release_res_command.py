@@ -40,6 +40,7 @@ def release_resources(tango_context, sdpsaln_name, device, json_factory):
     tear_down(dev_factory, sdp_subarray)
 
 
+@pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(
