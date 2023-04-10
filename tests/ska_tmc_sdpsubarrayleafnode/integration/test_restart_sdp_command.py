@@ -62,6 +62,7 @@ def restart(tango_context, sdpsaln_name, device, json_factory):
 
     tear_down(dev_factory, sdp_subarray)
 
+
 @pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
@@ -78,6 +79,7 @@ def test_restart_command_mid(
         device,
         json_factory,
     )
+
 
 @pytest.mark.skip
 @pytest.mark.post_deployment
