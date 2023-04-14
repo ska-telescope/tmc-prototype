@@ -147,38 +147,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             dev_info.last_event_arrived = time.time()
             dev_info.update_unresponsive(False)
 
-    def cmd_ended_cb(self, event):
-        """
-        Callback function immediately executed when the asynchronous invoked
-        command returns. Checks whether the command has been successfully
-        invoked on SdpSubarray.
-
-        :param event: a CmdDoneEvent object. This object is used to pass data
-            to the callback method in asynchronous callback model for command
-            execution.
-        :type: CmdDoneEvent object
-            It has the following members:
-            - cmd_name   : (str) The command name
-            - argout_raw : (DeviceData) The command argout
-            - argout     : The command argout
-            - err        : (bool) A boolean flag set to True if the command
-                           failed. False otherwise
-            - errors     : (sequence<DevError>) The error stack
-            - ext
-        """
-
-        if event.err:
-            log_message = (
-                f"Error in invoking command: {event.cmd_name}\n{event.errors}"
-            )
-            self.logger.error(log_message)
-            self.lrc_result = (event.cmd_name, str(event.err))
-
-        else:
-            log_message = f"Command :-> {event.cmd_name} invoked successfully."
-            self.logger.info(log_message)
-            self.lrc_result = (event.cmd_name, log_message)
-
     @property
     def lrc_result(self) -> str:
         """

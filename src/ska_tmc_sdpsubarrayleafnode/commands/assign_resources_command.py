@@ -3,6 +3,7 @@
 AssignResouces command class for SDPSubarrayLeafNode.
 """
 import json
+import threading
 from json import JSONDecodeError
 
 from ska_tango_base.commands import ResultCode
@@ -33,6 +34,7 @@ class AssignResources(SdpSLNCommand):
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory or AdapterFactory()
         self.component_manager = self.target
+        self.callback = MyDeviceCallback()
 
     def check_allowed(self):
         """
@@ -168,8 +170,14 @@ class AssignResources(SdpSLNCommand):
             )
             self.logger.debug(log_msg)
             self.sdp_subarray_adapter.AssignResources(
-                json.dumps(json_argument), self.component_manager.cmd_ended_cb
+                json.dumps(json_argument), self.callback.callback_function
             )
+            self.callback.event.wait()
+
+            if self.callback.response_data is not None:
+                self.logger.info("Callback data is not None")
+            else:
+                self.logger.info("Callback data is None")
 
         except (AttributeError, ValueError, TypeError, DevFailed) as e:
             self.logger.exception("Command invocation failed: %s", e)
@@ -190,3 +198,51 @@ class AssignResources(SdpSLNCommand):
         )
         self.logger.info(log_msg)
         return (ResultCode.OK, "")
+
+    def cmd_ended_cb(self, event):
+        """
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the command has been successfully
+        invoked on SdpSubarray.
+
+        :param event: a CmdDoneEvent object. This object is used to pass data
+            to the callback method in asynchronous callback model for command
+            execution.
+        :type: CmdDoneEvent object
+            It has the following members:
+            - cmd_name   : (str) The command name
+            - argout_raw : (DeviceData) The command argout
+            - argout     : The command argout
+            - err        : (bool) A boolean flag set to True if the command
+                           failed. False otherwise
+            - errors     : (sequence<DevError>) The error stack
+            - ext
+        """
+
+        if event.err:
+            log_message = (
+                f"Error in invoking command: {event.cmd_name}\n{event.errors}"
+            )
+            self.logger.error(log_message)
+            self.component_manager.lrc_result = (
+                event.cmd_name,
+                str(event.err),
+            )
+
+        else:
+            log_message = f"Command :-> {event.cmd_name} invoked successfully."
+            self.logger.info(log_message)
+            self.component_manager.lrc_result = (event.cmd_name, log_message)
+
+
+class MyDeviceCallback:  # pylint: disable=too-few-public-methods
+    """Class MyDeviceCallback"""
+
+    def __init__(self):
+        self.response_data = None
+        self.event = threading.Event()
+
+    def callback_function(self, data):
+        """Method callback_function"""
+        self.response_data = data
+        self.event.set()
