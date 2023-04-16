@@ -3,7 +3,6 @@
 AssignResouces command class for SDPSubarrayLeafNode.
 """
 import json
-import threading
 from json import JSONDecodeError
 
 from ska_tango_base.commands import ResultCode
@@ -34,7 +33,6 @@ class AssignResources(SdpSLNCommand):
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory or AdapterFactory()
         self.component_manager = self.target
-        self.callback = MyDeviceCallback()
 
     def check_allowed(self):
         """
@@ -170,9 +168,8 @@ class AssignResources(SdpSLNCommand):
             )
             self.logger.debug(log_msg)
             self.sdp_subarray_adapter.AssignResources(
-                json.dumps(json_argument), self.callback.callback_function
+                json.dumps(json_argument), self.cmd_ended_cb
             )
-            self.callback.event.wait()
 
             if self.callback.response_data is not None:
                 self.logger.info("Callback data is not None")
@@ -233,16 +230,3 @@ class AssignResources(SdpSLNCommand):
             log_message = f"Command :-> {event.cmd_name} invoked successfully."
             self.logger.info(log_message)
             self.component_manager.lrc_result = (event.cmd_name, log_message)
-
-
-class MyDeviceCallback:  # pylint: disable=too-few-public-methods
-    """Class MyDeviceCallback"""
-
-    def __init__(self):
-        self.response_data = None
-        self.event = threading.Event()
-
-    def callback_function(self, data):
-        """Method callback_function"""
-        self.response_data = data
-        self.event.set()
