@@ -38,6 +38,7 @@ astropy = "^5.0.4"
 katpoint = "1.0a1"
 pytz = "2021.3"
 ipython = "8.5.0"
+ska-tango-testing = "0.4.1"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.12.0"

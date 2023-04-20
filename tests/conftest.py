@@ -11,6 +11,7 @@ from ska_tmc_common.test_helpers.helper_state_device import HelperStateDevice
 from ska_tmc_common.test_helpers.helper_subarray_device import (
     HelperSubArrayDevice,
 )
+from ska_tango_testing.mock.tango import MockTangoEventCallbackGroup
 from tango.test_context import MultiDeviceTestContext
 from tango.test_utils import DeviceTestContext
 
@@ -139,3 +140,18 @@ def json_factory():
         return get_input_str(join(dirname(__file__), "data", f"{slug}.json"))
 
     return _get_json
+
+
+@pytest.fixture()
+def change_event_callbacks() -> MockTangoEventCallbackGroup:
+    """
+    Return a dictionary of Tango device change event callbacks with asynchrony
+    support.
+
+    :return: a collections.defaultdict that returns change event
+        callbacks by name.
+    """
+    return MockTangoEventCallbackGroup(
+        "longRunningCommandResult",
+        timeout=30.0,
+    )

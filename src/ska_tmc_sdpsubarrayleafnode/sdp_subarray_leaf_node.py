@@ -115,6 +115,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             device._version_id = release.version
             device._LastDeviceInfoChanged = ""
             device.set_change_event("healthState", True, False)
+            device.set_change_event("longRunningCommandResult", True)
             ApiUtil.instance().set_asynch_cb_sub_model(
                 tango.cb_sub_model.PUSH_CALLBACK
             )
