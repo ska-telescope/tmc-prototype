@@ -81,6 +81,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
         self._update_lrcr_callback = _update_lrcr_callback
         self._lrc_result = ("", "")
+        self.logger = logger
 
     def stop(self):
         self._event_receiver.stop()
@@ -155,7 +156,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :return: the longRunningCommandResult
         :rtype: spectrum
         """
-        return self._delay_model
+        return self._lrc_result
 
     @lrc_result.setter
     def lrc_result(self, value: str) -> None:

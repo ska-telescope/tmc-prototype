@@ -3,11 +3,11 @@ SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
 actions during an observation.
 It also acts as a SDP contact point for Subarray Node for observation execution
 """
-
+import tango
 from ska_tango_base import SKABaseDevice
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.op_state_model import TMCOpStateModel
-from tango import AttrWriteType, DebugIt
+from tango import ApiUtil, AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
 
 from ska_tmc_sdpsubarrayleafnode import release
@@ -114,8 +114,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             )
             device._version_id = release.version
             device._LastDeviceInfoChanged = ""
-            device._command_result = ("", "")
             device.set_change_event("healthState", True, False)
+            ApiUtil.instance().set_asynch_cb_sub_model(
+                tango.cb_sub_model.PUSH_CALLBACK
+            )
             device.op_state_model.perform_action("component_on")
             device.component_manager.command_executor.add_command_execution(
                 "0", "Init", ResultCode.OK, ""
@@ -174,7 +176,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         :return: ID, result.
         """
-        return self._command_result
+        return self.component_manager.lrc_result
 
     # --------
     # Commands

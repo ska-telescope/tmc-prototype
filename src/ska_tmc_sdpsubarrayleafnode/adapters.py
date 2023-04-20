@@ -219,9 +219,7 @@ class SdpSubArrayAdapter(BaseAdapter):
         self._dev_name = dev_name
 
     def AssignResources(self, argin, callback=None):
-        return self._proxy.command_inout_asynch(
-            "AssignResources", argin, callback
-        )
+        self._proxy.command_inout_asynch("AssignResources", argin, callback)
 
     def ReleaseAllResources(self):
         return self._proxy.ReleaseAllResources()

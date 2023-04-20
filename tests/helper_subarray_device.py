@@ -259,16 +259,19 @@ class HelperSubArrayDevice(SKASubarray):
         if "eb_id" not in input["execution_block"]:
             self.logger.info("eb_id is not present in Assign input json")
             raise tango.Except.throw_exception(
-                "eb_id not found in the input",
-                " ",
-                "SdpSubarry.Assign",
+                "eb_id not found in the input json string",
+                "eb_id not found in the input json string",
+                "SdpSubarry.AssignResources",
                 tango.ErrSeverity.ERR,
             )
 
         if self._obs_state != ObsState.IDLE:
             self._obs_state = ObsState.IDLE
             self.push_change_event("obsState", self._obs_state)
-        return [[ResultCode.OK], [""]]
+        return [
+            [ResultCode.OK],
+            ["AssignResources invoked successfully on SDP SA"],
+        ]
 
     def is_ReleaseResources_allowed(self):
         """

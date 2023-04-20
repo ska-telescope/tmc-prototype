@@ -171,11 +171,6 @@ class AssignResources(SdpSLNCommand):
                 json.dumps(json_argument), self.cmd_ended_cb
             )
 
-            if self.callback.response_data is not None:
-                self.logger.info("Callback data is not None")
-            else:
-                self.logger.info("Callback data is None")
-
         except (AttributeError, ValueError, TypeError, DevFailed) as e:
             self.logger.exception("Command invocation failed: %s", e)
             return self.generate_command_result(
@@ -221,12 +216,13 @@ class AssignResources(SdpSLNCommand):
                 f"Error in invoking command: {event.cmd_name}\n{event.errors}"
             )
             self.logger.error(log_message)
+            error = event.errors[0]
             self.component_manager.lrc_result = (
                 event.cmd_name,
-                str(event.err),
+                error.desc,
             )
 
         else:
-            log_message = f"Command :-> {event.cmd_name} invoked successfully."
+            log_message = f"Command {event.cmd_name} invoked successfully."
             self.logger.info(log_message)
             self.component_manager.lrc_result = (event.cmd_name, log_message)
