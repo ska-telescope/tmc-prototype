@@ -36,7 +36,6 @@ def assign_resouces(tango_context, sdpsaln_name, sdp_subarray, json_factory):
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
-@pytest.mark.skip
 @pytest.mark.parametrize(
     ["sdpsaln_name", "sdp_subarray"],
     [("ska_mid/tm_leaf_node/sdp_subarray01", "mid-sdp/subarray/01")],

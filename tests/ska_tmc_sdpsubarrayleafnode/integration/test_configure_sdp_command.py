@@ -69,7 +69,6 @@ def test_configure_command_mid(
     )
 
 
-@pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
 @pytest.mark.parametrize(
