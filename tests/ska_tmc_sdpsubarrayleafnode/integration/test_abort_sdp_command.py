@@ -54,7 +54,6 @@ def abort(
     tear_down(dev_factory, sdp_subarray)
 
 
-@pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(
@@ -70,7 +69,6 @@ def test_abort_command_mid(tango_context, sdpsaln_name, device, json_factory):
     )
 
 
-@pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
 @pytest.mark.parametrize(

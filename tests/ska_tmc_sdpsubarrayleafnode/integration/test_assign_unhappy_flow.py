@@ -36,7 +36,6 @@ def assign_resources(
     tear_down(dev_factory, sdp_subarray)
 
 
-@pytest.mark.assign
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_assign_without_ebid_mid(

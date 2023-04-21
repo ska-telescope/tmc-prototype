@@ -3,9 +3,11 @@ Abort command class for SDPSubarrayLeafNode.
 """
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
-from ska_tmc_common.adapters import AdapterFactory
+
+# from ska_tmc_common.adapters import AdapterFactory
 from ska_tmc_common.exceptions import InvalidObsStateError
 
+from ska_tmc_sdpsubarrayleafnode.adapters import AdapterFactory
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
 
 
