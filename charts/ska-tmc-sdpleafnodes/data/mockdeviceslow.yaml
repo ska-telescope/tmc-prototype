@@ -4,7 +4,8 @@ domain: mocks
 instances: ["01"]
 entrypoints:
   - name: "ska_tmc_common.test_helpers.helper_state_device.HelperStateDevice"
-  - name: "ska_tmc_common.test_helpers.helper_subarray_device.HelperSubArrayDevice"
+  - name: "helper_subarray_device.HelperSubArrayDevice"
+    path: "/app/tests/helper_subarray_device.py"
   - name: "ska_tmc_common.test_helpers.helper_subarray_leaf_device.HelperSubarrayLeafDevice"
 server:
   name: "mocks"
