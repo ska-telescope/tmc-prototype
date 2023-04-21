@@ -1,7 +1,7 @@
 import pytest
-import time
 import tango
 from ska_tmc_common.dev_factory import DevFactory
+
 from tests.settings import logger
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
@@ -12,8 +12,8 @@ def assign_resources(
     logger.info(f"{tango_context}")
     dev_factory = DevFactory()
     sdpsln_device = dev_factory.get_device(sdpsln_name)
-    
-    if "mid" in  sdpsln_name:
+
+    if "mid" in sdpsln_name:
         sdp_subarray = dev_factory.get_device("mid-sdp/subarray/01")
     else:
         sdp_subarray = dev_factory.get_device("low-sdp/subarray/01")
@@ -30,7 +30,8 @@ def assign_resources(
     )
 
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        ('AssignResources', 'eb_id not found in the input json string'))
+        ("AssignResources", "eb_id not found in the input json string")
+    )
 
     tear_down(dev_factory, sdp_subarray)
 

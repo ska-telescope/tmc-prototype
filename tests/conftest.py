@@ -6,12 +6,12 @@ from os.path import dirname, join
 
 import pytest
 import tango
+from ska_tango_testing.mock.tango import MockTangoEventCallbackGroup
 from ska_tmc_common.dev_factory import DevFactory
 from ska_tmc_common.test_helpers.helper_state_device import HelperStateDevice
 from ska_tmc_common.test_helpers.helper_subarray_device import (
     HelperSubArrayDevice,
 )
-from ska_tango_testing.mock.tango import MockTangoEventCallbackGroup
 from tango.test_context import MultiDeviceTestContext
 from tango.test_utils import DeviceTestContext
 
