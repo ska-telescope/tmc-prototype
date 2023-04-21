@@ -55,7 +55,6 @@ def test_release_res_command_mid(tango_context, device, json_factory):
     )
 
 
-@pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
 @pytest.mark.parametrize(
