@@ -68,6 +68,7 @@ def test_configure_command_mid(
         json_factory,
     )
 
+
 @pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
