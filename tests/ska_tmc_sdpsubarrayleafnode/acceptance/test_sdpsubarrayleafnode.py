@@ -1,5 +1,5 @@
 # TODO: These tests need updates due to tango asynch apis in
-# SdpSubarrayLeafNode.AssignResources 
+# SdpSubarrayLeafNode.AssignResources
 # import time
 # from os.path import dirname, join
 
