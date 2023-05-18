@@ -12,6 +12,10 @@ from ska_tmc_common.command_executor import CommandExecutor
 from ska_tmc_common.device_info import SubArrayDeviceInfo
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
 
+from ska_tmc_sdpsubarrayleafnode.liveliness_probe import (
+    LivelinessProbeType,
+    SingleDeviceLivelinessProbe,
+)
 from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
     SdpSLNEventReceiver,
 )
@@ -32,6 +36,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         sdp_subarray_dev_name,
         op_state_model,
         logger=None,
+        _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
         _update_device_callback=None,
         update_command_in_progress_callback=None,
         monitoring_loop=False,
@@ -40,6 +45,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         proxy_timeout=500,
         sleep_time=1,
         timeout=30,
+        _update_availablity_callback=None,
     ):
         """
         Initialise a new ComponentManager instance.
@@ -58,9 +64,13 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             max_workers,
             proxy_timeout,
             sleep_time,
+            _liveliness_probe=_liveliness_probe,
         )
-
+        self.proxy_timeout = proxy_timeout
+        self.sleep_time = sleep_time
         self.update_device_info(sdp_subarray_dev_name)
+        self.start_liveliness_probe(_liveliness_probe)
+
         if event_receiver:
             self.event_receiver = SdpSLNEventReceiver(
                 self,
@@ -76,6 +86,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             _update_command_in_progress_callback=update_command_in_progress_callback,  # noqa:E501
         )
         self.timeout = timeout
+        self.update_availablity_callback = _update_availablity_callback
         # pylint: enable=line-too-long
 
     def stop(self):
@@ -96,24 +107,24 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self._sdp_subarray_dev_name = sdp_subarray_dev_name
         self._device = SubArrayDeviceInfo(self._sdp_subarray_dev_name, False)
 
-    def device_failed(self, exception):
-        """
-        Return the list of the checked monitored devices
+    # def device_failed(self, exception):
+    #     """
+    #     Return the list of the checked monitored devices
 
-        :return: list of the checked monitored devices
-        """
-        result = []
-        for dev in self.component.devices:
-            if dev.unresponsive:
-                result.append(dev)
-                continue
-            if dev.ping > 0:
-                result.append(dev)
-                continue
-            if dev.last_event_arrived is not None:
-                result.append(dev)
-                continue
-        return result
+    #     :return: list of the checked monitored devices
+    #     """
+    #     result = []
+    #     for dev in self.component.devices:
+    #         if dev.unresponsive:
+    #             result.append(dev)
+    #             continue
+    #         if dev.ping > 0:
+    #             result.append(dev)
+    #             continue
+    #         if dev.last_event_arrived is not None:
+    #             result.append(dev)
+    #             continue
+    #     return result
 
     def update_input_parameter(self):
         """Update input parameter"""
@@ -142,3 +153,56 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             dev_info.obs_state = obs_state
             dev_info.last_event_arrived = time.time()
             dev_info.update_unresponsive(False)
+
+    def start_liveliness_probe(self, lp: LivelinessProbeType) -> None:
+        """Starts Liveliness Probe for the given device.
+
+        :param lp: enum of class LivelinessProbeType
+        """
+        if lp == LivelinessProbeType.SINGLE_DEVICE:
+            self.liveliness_probe_object = SingleDeviceLivelinessProbe(
+                self,
+                logger=self.logger,
+                proxy_timeout=self.proxy_timeout,
+                sleep_time=self.sleep_time,
+            )
+            self.liveliness_probe_object.start()
+        else:
+            self.logger.warning("Liveliness Probe is not running")
+
+    def stop_liveliness_probe(self) -> None:
+        """Stops the liveliness probe"""
+        if self.liveliness_probe_object:
+            self.liveliness_probe_object.stop()
+
+    def device_failed(self, device_info, exception):
+        """
+        Set a device to failed and call the relative callback if available
+
+        :param device_info: a device info
+        :type device_info: DeviceInfo
+        :param exception: an exception
+        :type: Exception
+        """
+        self.logger.info("Inside device_failed  ")
+        device_info.update_unresponsive(True, exception)
+
+        with self.lock:
+            if self._update_availablity_callback is not None:
+                self._update_availablity_callback(False)
+
+    def update_ping_info(self, ping, dev_name):
+        """
+        Update a device with correct ping information.
+
+        :param dev_name: name of the device
+        :type dev_name: str
+        :param ping: device response time
+        :type ping: int
+        """
+        with self.lock:
+
+            dev_info = self.get_device()
+            dev_info.ping = ping
+            if self._update_availablity_callback is not None:
+                self._update_availablity_callback(True)

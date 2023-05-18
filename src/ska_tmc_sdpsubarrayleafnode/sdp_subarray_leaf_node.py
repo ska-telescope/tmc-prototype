@@ -27,6 +27,18 @@ from ska_tmc_sdpsubarrayleafnode.commands import (
 )
 from ska_tmc_sdpsubarrayleafnode.manager import SdpSLNComponentManager
 
+isSubsystemAvailable = attribute(
+    dtype="DevBoolean",
+    access=AttrWriteType.READ,
+)
+
+
+def update_availablity_callback(self, availablity):
+    """Change event callback for isSubstemAvailable"""
+    self.logger.info("Inside update_availablity_callback ")
+    self._isSubsystemAvailable = availablity
+    self.push_change_event("isSubstemAvailable", availablity)
+
 
 class SdpSubarrayLeafNode(SKABaseDevice):
     """
@@ -105,6 +117,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             device._version_id = release.version
             device._LastDeviceInfoChanged = ""
             device.set_change_event("healthState", True, False)
+            device._isSubsystemAvailable = False
             device.op_state_model.perform_action("component_on")
             device.component_manager.command_executor.add_command_execution(
                 "0", "Init", ResultCode.OK, ""
@@ -137,6 +150,14 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     def read_lastDeviceInfoChanged(self):
         """Return the last device info change"""
         return self._LastDeviceInfoChanged
+
+    def read_isSubsystemAvailable(self):
+        """Read method for is subsystem available"""
+        return self._isSubsystemAvailable
+
+    def write_isSubsystemAvailable(self):
+        """Read method for is subsystem available"""
+        return self._isSubsystemAvailable
 
     def read_commandExecuted(self):
         """Return the commandExecuted attribute."""
