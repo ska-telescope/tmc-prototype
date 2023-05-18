@@ -8,10 +8,15 @@ package.
 """
 import time
 
+from ska_tango_base.commands import ResultCode
 from ska_tmc_common.command_executor import CommandExecutor
 from ska_tmc_common.device_info import SubArrayDeviceInfo
+from ska_tmc_common.lrcr_callback import LRCRCallback
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
 
+from ska_tmc_sdpsubarrayleafnode.commands.assign_resources_command import (
+    AssignResources,
+)
 from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
     SdpSLNEventReceiver,
 )
@@ -34,12 +39,14 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         logger=None,
         _update_device_callback=None,
         update_command_in_progress_callback=None,
+        _update_sdp_subarray_obs_state_callback=None,
         monitoring_loop=False,
         event_receiver=True,
         max_workers=5,
         proxy_timeout=500,
         sleep_time=1,
         timeout=30,
+        command_timeout: int = 15,
     ):
         """
         Initialise a new ComponentManager instance.
@@ -76,7 +83,13 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             _update_command_in_progress_callback=update_command_in_progress_callback,  # noqa:E501
         )
         self.timeout = timeout
+        self.command_timeout = command_timeout
+        self.assign_id = None
         # pylint: enable=line-too-long
+        self.long_running_result_callback = LRCRCallback(self.logger)
+        self._update_sdp_subarray_obs_state_callback = (
+            _update_sdp_subarray_obs_state_callback
+        )
 
     def stop(self):
         self._event_receiver.stop()
@@ -137,8 +150,58 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :param obs_state: obs state of the device
         :type obs_state: ObsState
         """
+        self.logger.info(f"Obs State value {obs_state}")
         with self.lock:
             dev_info = self.get_device()
             dev_info.obs_state = obs_state
             dev_info.last_event_arrived = time.time()
             dev_info.update_unresponsive(False)
+            self.logger.info(f"Obs State value updated to {obs_state}")
+            if self._update_sdp_subarray_obs_state_callback:
+                self._update_sdp_subarray_obs_state_callback(obs_state)
+
+    def get_obs_state(self):
+        """
+        Get Current device obsState
+        """
+        return self.get_device().obs_state
+
+    # Added method for Error Propogation
+    # Updates the LRCR Callback with values in case of Exception only.
+    # Does not deal with ResultCodes for now (Can be added easily).
+    def update_lrcr(self, dev_name: str, value: tuple):
+        """Updates the long running command result callback"""
+        self.logger.info(
+            "Recieved longRunningCommandResult event for device: %s, with value: %s",
+            dev_name,
+            value,
+        )
+        try:
+            # Ignoring ResultCode events
+            int(value[1])
+        except ValueError:
+            if "AssignResources" in value[0]:
+                self.logger.info(
+                    "Updating LRCRCallback with value: %s for Assign for device: %s",
+                    value,
+                    dev_name,
+                )
+                self.long_running_result_callback(
+                    self.assign_id, ResultCode.FAILED, exception_msg=value[1]
+                )
+
+    def assign_resources(self, argin: str) -> tuple:
+        """
+        Submit the AssignResources command in queue.
+
+        :return: a result code and message
+        """
+        assign_resources_command = AssignResources(
+            self,
+            self.target,
+            self.op_state_model,
+            logger=self.logger,
+        )
+
+        result_code, message = assign_resources_command.assign_resources(argin)
+        return result_code, message

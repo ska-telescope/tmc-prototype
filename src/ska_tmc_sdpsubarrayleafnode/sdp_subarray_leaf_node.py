@@ -6,6 +6,7 @@ It also acts as a SDP contact point for Subarray Node for observation execution
 
 from ska_tango_base import SKABaseDevice
 from ska_tango_base.commands import ResultCode
+from ska_tango_base.control_model import ObsState
 from ska_tmc_common.op_state_model import TMCOpStateModel
 from tango import AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
@@ -34,6 +35,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     actions during an observation.
 
     """
+
+    def init_device(self):
+        super().init_device()
+        self._sdp_subarray_obs_state = ObsState.EMPTY
 
     # -----------------
     # Device Properties
@@ -66,6 +71,17 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         access=AttrWriteType.READ_WRITE,
     )
 
+    longRunningCommandResult = attribute(
+        dtype=("str",),
+        max_dim_x=2,
+        access=AttrWriteType.READ_WRITE,
+    )
+
+    sdp_subarray_obs_state = attribute(
+        dtype=int,
+        access=AttrWriteType.READ_WRITE,
+    )
+
     # ---------------
     # General methods
     # ---------------
@@ -77,6 +93,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         self.push_change_event("lastDeviceInfoChanged", devInfo.to_json())
 
     # pylint: enable=attribute-defined-outside-init
+
+    def update_sdp_subarray_obs_state_callback(
+        self, obs_state: ObsState
+    ) -> None:
+        """Updates SDP Subarray ObsState"""
+        self._sdp_subarray_obs_state = obs_state
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
@@ -152,6 +174,33 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             ]
             result.append(single_res)
         return result
+
+    def read_longRunningCommandResult(self):
+        """
+        Read the result of the completed long running command.
+
+        Reports unique_id, json-encoded result.
+        Clients can subscribe to on_change event and wait for
+        the ID they are interested in.
+
+        :return: ID, result.
+        """
+        return self.lrc_result
+
+    def write_longRunningCommandResult(self, lrc_result):
+        """
+        Write the result of the completed long running command.
+        """
+        self.lrc_result = lrc_result
+        self.push_change_event("longRunningCommandResult", lrc_result)
+
+    def read_sdp_subarray_obs_state(self):
+        """Read method for sdp_subarray_obs_state"""
+        return self._sdp_subarray_obs_state
+
+    def write_sdp_subarray_obs_state(self, obs_state):
+        """Read method for sdp_subarray_obs_state"""
+        self._sdp_subarray_obs_state = obs_state
 
     # --------
     # Commands

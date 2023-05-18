@@ -3,12 +3,15 @@
 AssignResouces command class for SDPSubarrayLeafNode.
 """
 import json
+import time
 from json import JSONDecodeError
+from typing import Callable
 
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.adapters import AdapterFactory
 from ska_tmc_common.exceptions import InvalidObsStateError
+from ska_tmc_common.timeout_callback import TimeoutCallback
 from tango import DevFailed
 
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
@@ -23,14 +26,17 @@ class AssignResources(SdpSLNCommand):
 
     def __init__(
         self,
-        target,
+        component_manager,
         op_state_model,
         adapter_factory=None,
         logger=None,
     ):
-        super().__init__(target, logger)
+        super().__init__(component_manager, logger)
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory or AdapterFactory()
+        self.timeout_id = f"{time.time()}_{__class__.__name__}"
+        self.timeout_callback = TimeoutCallback(self.timeout_id, self.logger)
+        self.task_callback: Callable
 
     def check_allowed(self):
         """
@@ -64,6 +70,45 @@ class AssignResources(SdpSLNCommand):
             raise InvalidObsStateError(message)
 
         return True
+
+    def assign_resources(
+        self,
+        argin: str,
+        task_callback: Callable = None,
+    ) -> None:
+        """
+        A AssignResources class
+        """
+        self.task_callback = task_callback
+
+        self.component_manager.start_timer(
+            self.timeout_id,
+            self.component_manager.command_timeout,
+            self.timeout_callback,
+        )
+        result_code, message = self.do(json.dumps(argin))
+
+        if result_code == ResultCode.FAILED:
+            self.update_task_status(result_code, message)
+        else:
+            self.start_tracker_thread(
+                self.component_manager.get_obs_state,
+                ObsState.IDLE,
+                self.timeout_id,
+                self.timeout_callback,
+                command_id=self.component_manager.assign_id,
+                lrcr_callback=self.component_manager.long_running_result_callback,
+            )
+        return result_code, message
+
+    def update_task_status(self, result: ResultCode, message: str = ""):
+        if result == ResultCode.FAILED:
+            self.task_callback(
+                result=result,
+                exception=message,
+            )
+        else:
+            self.task_callback(result=result)
 
     # pylint: disable=line-too-long
     def do(self, argin=None):
