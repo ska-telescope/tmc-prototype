@@ -188,7 +188,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         device_info.update_unresponsive(True, exception)
 
         with self.lock:
-            if self._update_availablity_callback is not None:
+
+            if  _update_availablity_callback is not None:
                 self._update_availablity_callback(False)
 
     def update_ping_info(self, ping, dev_name):

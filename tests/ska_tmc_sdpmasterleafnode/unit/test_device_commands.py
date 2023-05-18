@@ -23,6 +23,7 @@ def sdpmln_device(request):
 
 
 @pytest.mark.sdpmln
+@pytest.mark.sdpmln12
 def test_commands(sdpmln_device):
     sdpmln_device.On()
     sdpmln_device.Off()

@@ -628,6 +628,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             _update_device_callback=self.update_device_callback,
             sleep_time=self.SleepTime,
             timeout=self.TimeOut,
+            _update_availablity_callback=self.update_availablity_callback,
         )
         return cm
 
