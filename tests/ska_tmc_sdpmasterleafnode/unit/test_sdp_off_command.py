@@ -1,5 +1,7 @@
 import pytest
 from ska_tango_base.commands import ResultCode
+from ska_tmc_common.device_info import DeviceInfo
+from ska_tmc_common.exceptions import DeviceUnresponsive
 from ska_tmc_common.test_helpers.helper_adapter_factory import (
     HelperAdapterFactory,
 )
@@ -28,7 +30,6 @@ def test_off_command(tango_context, sdp_master_device):
     adapter.proxy.Off.assert_called_once_with()
 
 
-@pytest.mark.sdpmln
 @pytest.mark.parametrize(
     "sdp_master_device", [SDP_MASTER_DEVICE_MID, SDP_MASTER_DEVICE_LOW]
 )
@@ -45,3 +46,14 @@ def test_off_command_fail_sdp_master(tango_context, sdp_master_device):
     (result_code, message) = off_command.do()
     assert result_code == ResultCode.FAILED
     assert sdp_master_device in message
+
+
+@pytest.mark.parametrize(
+    "sdp_master_device", [SDP_MASTER_DEVICE_MID, SDP_MASTER_DEVICE_LOW]
+)
+def test_off_command_is_allowed_device_unresponsive(
+    tango_context, sdp_master_device
+):
+    cm, _ = create_cm("SdpMLNComponentManager", sdp_master_device)
+    cm._device = DeviceInfo(sdp_master_device, _unresponsive=True)
+    pytest.raises(DeviceUnresponsive)

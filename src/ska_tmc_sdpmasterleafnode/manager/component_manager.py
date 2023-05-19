@@ -3,7 +3,13 @@
 This module implements ComponentManager class for the Sdp Master Leaf Node.
 """
 from ska_tmc_common.command_executor import CommandExecutor
+from ska_tmc_common.exceptions import DeviceUnresponsive
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
+
+from ska_tmc_sdpsubarrayleafnode.liveliness_probe import (
+    LivelinessProbeType,
+    SingleDeviceLivelinessProbe,
+)
 
 
 class SdpMLNComponentManager(TmcLeafNodeComponentManager):
@@ -29,6 +35,8 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         proxy_timeout=500,
         sleep_time=1,
         timeout=30,
+        _update_availablity_callback=None,
+        _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
     ):
         """
         Initialise a new ComponentManager instance.
@@ -65,3 +73,33 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         )
         self.timeout = timeout
         # pylint: enable=line-too-long
+        self.update_availablity_callback = _update_availablity_callback
+        self.liveliness_probe_object = SingleDeviceLivelinessProbe(
+            self,
+            logger=self.logger,
+            proxy_timeout=500,
+            sleep_time=1,
+        )
+
+    def _check_if_sdp_mn_is_responsive(self) -> None:
+        """Checks if CspSubarray device is responsive."""
+        if self._device is None or self._device.unresponsive:
+            raise DeviceUnresponsive(
+                f"{self.sdp_master_dev_name} not available"
+            )
+
+    def start_liveliness_probe(self, lp: LivelinessProbeType) -> None:
+        """Starts Liveliness Probe for the given device.
+
+        :param lp: enum of class LivelinessProbeType
+        """
+        if lp == LivelinessProbeType.SINGLE_DEVICE:
+            self.liveliness_probe_object.start()
+
+        else:
+            self.logger.warning("Liveliness Probe is not running")
+
+    def stop_liveliness_probe(self) -> None:
+        """Stops the liveliness probe"""
+        if self.liveliness_probe_object:
+            self.liveliness_probe_object.stop()

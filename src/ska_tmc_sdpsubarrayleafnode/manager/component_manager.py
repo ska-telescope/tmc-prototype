@@ -36,6 +36,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         sdp_subarray_dev_name,
         op_state_model,
         logger=None,
+        _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
         _update_device_callback=None,
         update_command_in_progress_callback=None,
         monitoring_loop=False,
