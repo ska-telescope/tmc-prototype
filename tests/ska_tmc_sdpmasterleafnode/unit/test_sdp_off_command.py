@@ -51,7 +51,7 @@ def test_off_command_fail_sdp_master(tango_context, sdp_master_device):
 @pytest.mark.parametrize(
     "sdp_master_device", [SDP_MASTER_DEVICE_MID, SDP_MASTER_DEVICE_LOW]
 )
-def test_off_command_is_allowed_device_unresponsive(
+def test_off_command_is_not_allowed_device_unresponsive(
     tango_context, sdp_master_device
 ):
     cm, _ = create_cm("SdpMLNComponentManager", sdp_master_device)

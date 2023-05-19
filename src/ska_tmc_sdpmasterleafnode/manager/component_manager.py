@@ -81,8 +81,8 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             sleep_time=1,
         )
 
-    def _check_if_sdp_mn_is_responsive(self) -> None:
-        """Checks if CspSubarray device is responsive."""
+    def _check_if_sdp_master_is_responsive(self) -> None:
+        """Checks if CSP master/controller device is responsive."""
         if self._device is None or self._device.unresponsive:
             raise DeviceUnresponsive(
                 f"{self.sdp_master_dev_name} not available"

@@ -147,7 +147,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         self.push_change_event("isSubsystemAvailable", availablity)
 
     def read_isSubsystemAvailable(self):
-        """Read method for is subsystem available"""
+        """Read method for isSubsystemAvailable"""
         return self._isSubsystemAvailable
 
     def read_lastDeviceInfoChanged(self):
