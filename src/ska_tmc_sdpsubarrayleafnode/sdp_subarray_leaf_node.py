@@ -27,18 +27,6 @@ from ska_tmc_sdpsubarrayleafnode.commands import (
 )
 from ska_tmc_sdpsubarrayleafnode.manager import SdpSLNComponentManager
 
-isSubsystemAvailable = attribute(
-    dtype="DevBoolean",
-    access=AttrWriteType.READ,
-)
-
-
-def update_availablity_callback(self, availablity):
-    """Change event callback for isSubstemAvailable"""
-    self.logger.info("Inside update_availablity_callback ")
-    self._isSubsystemAvailable = availablity
-    self.push_change_event("isSubstemAvailable", availablity)
-
 
 class SdpSubarrayLeafNode(SKABaseDevice):
     """
@@ -60,6 +48,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # -----------------
     # Attributes
     # -----------------
+
+    isSubsystemAvailable = attribute(
+        dtype="DevBoolean",
+        access=AttrWriteType.READ,
+    )
+
     commandExecuted = attribute(
         dtype=(("DevString",),),
         max_dim_x=4,
@@ -147,17 +141,18 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # Attributes methods
     # ------------------
 
-    def read_lastDeviceInfoChanged(self):
-        """Return the last device info change"""
-        return self._LastDeviceInfoChanged
+    def update_availablity_callback(self, availablity):
+        """Change event callback for isSubsystemAvailable"""
+        self._isSubsystemAvailable = availablity  # pylint: disable=W0201
+        self.push_change_event("isSubsystemAvailable", availablity)
 
     def read_isSubsystemAvailable(self):
         """Read method for is subsystem available"""
         return self._isSubsystemAvailable
 
-    def write_isSubsystemAvailable(self):
-        """Read method for is subsystem available"""
-        return self._isSubsystemAvailable
+    def read_lastDeviceInfoChanged(self):
+        """Return the last device info change"""
+        return self._LastDeviceInfoChanged
 
     def read_commandExecuted(self):
         """Return the commandExecuted attribute."""

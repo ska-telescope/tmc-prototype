@@ -88,7 +88,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         # I need to stop all threads
         if hasattr(self, "component_manager"):
             self.component_manager.stop()
-            
+
     # ------------------
     # Attributes methods
     # ------------------

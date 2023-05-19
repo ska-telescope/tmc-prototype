@@ -36,7 +36,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         sdp_subarray_dev_name,
         op_state_model,
         logger=None,
-        _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
         _update_device_callback=None,
         update_command_in_progress_callback=None,
         monitoring_loop=False,
@@ -64,13 +63,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             max_workers,
             proxy_timeout,
             sleep_time,
-            _liveliness_probe=_liveliness_probe,
         )
-        self.proxy_timeout = proxy_timeout
-        self.sleep_time = sleep_time
-        self.update_device_info(sdp_subarray_dev_name)
-        self.start_liveliness_probe(_liveliness_probe)
 
+        self.update_device_info(sdp_subarray_dev_name)
         if event_receiver:
             self.event_receiver = SdpSLNEventReceiver(
                 self,
@@ -86,8 +81,18 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             _update_command_in_progress_callback=update_command_in_progress_callback,  # noqa:E501
         )
         self.timeout = timeout
-        self.update_availablity_callback = _update_availablity_callback
+        self._update_availablity_callback = _update_availablity_callback
+
+        self.liveliness_probe_object = SingleDeviceLivelinessProbe(
+            self,
+            logger=self.logger,
+            proxy_timeout=500,
+            sleep_time=1,
+        )
         # pylint: enable=line-too-long
+
+        self.start_liveliness_probe(LivelinessProbeType.SINGLE_DEVICE)
+        # self.stop_liveliness_probe()
 
     def stop(self):
         self._event_receiver.stop()
@@ -101,6 +106,22 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :rtype: DeviceInfo
         """
         return self._device
+
+    def start_liveliness_probe(self, lp: LivelinessProbeType) -> None:
+        """Starts Liveliness Probe for the given device.
+
+        :param lp: enum of class LivelinessProbeType
+        """
+        if lp == LivelinessProbeType.SINGLE_DEVICE:
+            self.liveliness_probe_object.start()
+
+        else:
+            self.logger.warning("Liveliness Probe is not running")
+
+    def stop_liveliness_probe(self) -> None:
+        """Stops the liveliness probe"""
+        if self.liveliness_probe_object:
+            self.liveliness_probe_object.stop()
 
     def update_device_info(self, sdp_subarray_dev_name):
         """Updates the device info"""
@@ -154,28 +175,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             dev_info.last_event_arrived = time.time()
             dev_info.update_unresponsive(False)
 
-    def start_liveliness_probe(self, lp: LivelinessProbeType) -> None:
-        """Starts Liveliness Probe for the given device.
-
-        :param lp: enum of class LivelinessProbeType
-        """
-        if lp == LivelinessProbeType.SINGLE_DEVICE:
-            self.liveliness_probe_object = SingleDeviceLivelinessProbe(
-                self,
-                logger=self.logger,
-                proxy_timeout=self.proxy_timeout,
-                sleep_time=self.sleep_time,
-            )
-            self.liveliness_probe_object.start()
-        else:
-            self.logger.warning("Liveliness Probe is not running")
-
-    def stop_liveliness_probe(self) -> None:
-        """Stops the liveliness probe"""
-        if self.liveliness_probe_object:
-            self.liveliness_probe_object.stop()
-
-    def device_failed(self, device_info, exception):
+    def device_failed(
+        self, device_info, exception
+    ):  # pylint: disable=arguments-differ
         """
         Set a device to failed and call the relative callback if available
 
@@ -188,11 +190,12 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         device_info.update_unresponsive(True, exception)
 
         with self.lock:
-
-            if  _update_availablity_callback is not None:
+            if self._update_availablity_callback is not None:
                 self._update_availablity_callback(False)
+            else:
+                print("inside device not found")
 
-    def update_ping_info(self, ping, dev_name):
+    def update_ping_info(self, ping):
         """
         Update a device with correct ping information.
 
@@ -207,3 +210,5 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             dev_info.ping = ping
             if self._update_availablity_callback is not None:
                 self._update_availablity_callback(True)
+            else:
+                print("inside device not found")
