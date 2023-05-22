@@ -3,7 +3,7 @@ import time
 
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterFactory, AdapterType
-from ska_tmc_common.exceptions import CommandNotAllowed
+from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
 from ska_tmc_common.tmc_command import TmcLeafNodeCommand
 from tango import ConnectionFailed, DevFailed, DevState
 
@@ -21,6 +21,18 @@ class SdpMLNCommand(TmcLeafNodeCommand):
         super().__init__(target, logger)
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory or AdapterFactory()
+
+    def check_unresponsive(self):
+        """Checks whether the device is unresponsive"""
+        component_manager = self.target
+        devInfo = component_manager.get_device()
+        if devInfo is None or devInfo.unresponsive:
+            raise DeviceUnresponsive(
+                """The invocation of the command on this device is not allowed.
+                Reason: SDP subarray device is not available.
+                The command has NOT been executed.
+                This device will continue with normal operation."""
+            )
 
     def check_allowed(self):
         """

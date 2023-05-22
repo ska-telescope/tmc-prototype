@@ -44,6 +44,7 @@ def test_telescope_configure_command(tango_context, devices):
     adapter.proxy.Configure.assert_called()
 
 
+@pytest.mark.test1
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]

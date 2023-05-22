@@ -196,9 +196,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             else:
                 print("inside device not found")
 
-    def update_ping_info(self, ping):
+    def update_ping_info(self, ping: int) -> None:
         """
-        Update a device with correct ping information.
+        Update a device with the correct ping information.
 
         :param dev_name: name of the device
         :type dev_name: str
@@ -206,10 +206,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :type ping: int
         """
         with self.lock:
-
-            dev_info = self.get_device()
-            dev_info.ping = ping
+            self._device.ping = ping
+            self._device.update_unresponsive(False)
             if self._update_availablity_callback is not None:
+                self.logger.info(
+                    "Calling update_availablity_callback from update_ping_info"
+                )
                 self._update_availablity_callback(True)
-            else:
-                print("inside device not found")
