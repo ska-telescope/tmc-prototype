@@ -48,7 +48,6 @@ def test_standby_command_fail_sdp_master(tango_context, sdp_master_device):
     assert sdp_master_device in message
 
 
-@pytest.mark.test1
 @pytest.mark.parametrize(
     "sdp_master_device", [SDP_MASTER_DEVICE_MID, SDP_MASTER_DEVICE_LOW]
 )
