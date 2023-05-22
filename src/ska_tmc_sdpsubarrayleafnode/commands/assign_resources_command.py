@@ -26,17 +26,21 @@ class AssignResources(SdpSLNCommand):
 
     def __init__(
         self,
-        component_manager,
+        target,
         op_state_model,
         adapter_factory=None,
         logger=None,
+        update_lrcr_callback=None,
     ):
-        super().__init__(component_manager, logger)
+        super().__init__(target, logger)
+        self.assign_id = None
+        self.component_manager = self.target
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory or AdapterFactory()
         self.timeout_id = f"{time.time()}_{__class__.__name__}"
         self.timeout_callback = TimeoutCallback(self.timeout_id, self.logger)
         self.task_callback: Callable
+        self.update_lrcr_callback = update_lrcr_callback
 
     def check_allowed(self):
         """
@@ -50,18 +54,18 @@ class AssignResources(SdpSLNCommand):
         :rtype: boolean
 
         """
-        component_manager = self.target
+        # component_manager = self.target
         self.check_op_state("AssignResources")
         self.check_unresponsive()
 
-        obs_state_val = component_manager.get_device().obs_state
+        obs_state_val = self.component_manager.get_device().obs_state
         self.logger.info("sdp_subarray_obs_state: %s", obs_state_val)
 
         if obs_state_val not in [ObsState.IDLE, ObsState.EMPTY]:
             message = (
                 "AssignResources command is not allowed in current"
                 + "observation state on device"
-                + "{}".format(component_manager._sdp_subarray_dev_name)
+                + "{}".format(self.component_manager._sdp_subarray_dev_name)
                 + "Reason: The current observation state for observation is"
                 + "{}".format(obs_state_val)
                 + 'The "AssignResources" command has NOT been executed.'
@@ -71,23 +75,20 @@ class AssignResources(SdpSLNCommand):
 
         return True
 
-    def assign_resources(
-        self,
-        argin: str,
-        task_callback: Callable = None,
-    ) -> None:
+    def do(self, argin=None):
         """
         A AssignResources class
         """
-        self.task_callback = task_callback
 
         self.component_manager.start_timer(
             self.timeout_id,
             self.component_manager.command_timeout,
             self.timeout_callback,
         )
-        result_code, message = self.do(json.dumps(argin))
-
+        result_code, message = self.invoke_assign_resources(argin)
+        self.component_manager.assign_id = (
+            f"{time.time()}-{AssignResources.__name__}"
+        )
         if result_code == ResultCode.FAILED:
             self.update_task_status(result_code, message)
         else:
@@ -103,15 +104,12 @@ class AssignResources(SdpSLNCommand):
 
     def update_task_status(self, result: ResultCode, message: str = ""):
         if result == ResultCode.FAILED:
-            self.task_callback(
-                result=result,
-                exception=message,
-            )
+            self.update_lrcr_callback((str(result), message))
         else:
-            self.task_callback(result=result)
+            self.update_lrcr_callback((str(result),))
 
     # pylint: disable=line-too-long
-    def do(self, argin=None):
+    def invoke_assign_resources(self, argin=None):
         """
         Method to invoke AssignResources command on SDP Subarray.
 
@@ -190,11 +188,11 @@ class AssignResources(SdpSLNCommand):
                 ),
             )
 
-        if "eb_id" not in json_argument["execution_block"]:
-            return self.generate_command_result(
-                ResultCode.FAILED,
-                "eb_id key is not present in the input json argument.",
-            )
+        # if "eb_id" not in json_argument["execution_block"]:
+        #     return self.generate_command_result(
+        #         ResultCode.FAILED,
+        #         "eb_id key is not present in the input json argument.",
+        #     )
 
         if "scan_types" not in json_argument["execution_block"]:
             return self.generate_command_result(
@@ -218,7 +216,7 @@ class AssignResources(SdpSLNCommand):
             )
             self.logger.debug(log_msg)
             self.sdp_subarray_adapter.AssignResources(
-                json.dumps(json_argument)
+                json.dumps(json_argument), self.cmd_ended_cb
             )
 
         except (AttributeError, ValueError, TypeError, DevFailed) as e:
@@ -240,3 +238,42 @@ class AssignResources(SdpSLNCommand):
         )
         self.logger.info(log_msg)
         return (ResultCode.OK, "")
+
+    def cmd_ended_cb(self, event):
+        """
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the command has been successfully
+        invoked on SdpSubarray.
+
+        :param event: a CmdDoneEvent object. This object is used to pass data
+            to the callback method in asynchronous callback model for command
+            execution.
+        :type: CmdDoneEvent object
+            It has the following members:
+            - cmd_name   : (str) The command name
+            - argout_raw : (DeviceData) The command argout
+            - argout     : The command argout
+            - err        : (bool) A boolean flag set to True if the command
+                           failed. False otherwise
+            - errors     : (sequence<DevError>) The error stack
+            - ext
+        """
+
+        if event.err:
+            log_message = (
+                f"Error in invoking command: {event.cmd_name}\n{event.errors}"
+            )
+            self.logger.error(log_message)
+            error = event.errors[0]
+            # self.component_manager.lrc_result = (
+            #     event.cmd_name,
+            #     error.desc,
+            # )
+            self.component_manager.update_command_result(
+                event.cmd_name, error.desc
+            )
+
+        else:
+            log_message = f"Command {event.cmd_name} invoked successfully."
+            self.logger.info(log_message)
+            # self.component_manager.update_command_result = (event.cmd_name, log_message)

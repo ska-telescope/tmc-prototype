@@ -3,12 +3,14 @@ SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
 actions during an observation.
 It also acts as a SDP contact point for Subarray Node for observation execution
 """
+import tango
 
+# from logging import Logger
 from ska_tango_base import SKABaseDevice
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.op_state_model import TMCOpStateModel
-from tango import AttrWriteType, DebugIt
+from tango import ApiUtil, AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
 
 from ska_tmc_sdpsubarrayleafnode import release
@@ -39,6 +41,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     def init_device(self):
         super().init_device()
         self._sdp_subarray_obs_state = ObsState.EMPTY
+        self._command_result = ("", "")
+        self.set_change_event("longRunningCommandResult", True)
 
     # -----------------
     # Device Properties
@@ -71,11 +75,21 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         access=AttrWriteType.READ_WRITE,
     )
 
-    longRunningCommandResult = attribute(
+    @attribute(  # type: ignore[misc]  # "Untyped decorator makes function untyped"
         dtype=("str",),
-        max_dim_x=2,
-        access=AttrWriteType.READ_WRITE,
+        max_dim_x=2,  # Always the last result (unique_id, JSON-encoded result)
     )
+    def longRunningCommandResult(self) -> tuple[str, str]:
+        """
+        Read the result of the completed long running command.
+
+        Reports unique_id, json-encoded result.
+        Clients can subscribe to on_change event and wait for
+        the ID they are interested in.
+
+        :return: ID, result.
+        """
+        return self._command_result
 
     sdp_subarray_obs_state = attribute(
         dtype=int,
@@ -99,6 +113,13 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     ) -> None:
         """Updates SDP Subarray ObsState"""
         self._sdp_subarray_obs_state = obs_state
+
+    def update_lrcr_callback(self, lrc_result):
+        """Change event callback for longRunningCommandResult"""
+        self._command_result = lrc_result
+        self.push_change_event(
+            "longRunningCommandResult", self._command_result
+        )
 
     class InitCommand(SKABaseDevice.InitCommand):
         """
@@ -127,6 +148,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             device._version_id = release.version
             device._LastDeviceInfoChanged = ""
             device.set_change_event("healthState", True, False)
+            device.set_change_event("longRunningCommandResult", True)
+            ApiUtil.instance().set_asynch_cb_sub_model(
+                tango.cb_sub_model.PUSH_CALLBACK
+            )
             device.op_state_model.perform_action("component_on")
             device.component_manager.command_executor.add_command_execution(
                 "0", "Init", ResultCode.OK, ""
@@ -185,14 +210,14 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         :return: ID, result.
         """
-        return self.lrc_result
+        return self.component_manager.lrc_result
 
-    def write_longRunningCommandResult(self, lrc_result):
-        """
-        Write the result of the completed long running command.
-        """
-        self.lrc_result = lrc_result
-        self.push_change_event("longRunningCommandResult", lrc_result)
+    # def write_longRunningCommandResult(self, lrc_result):
+    #     """
+    #     Write the result of the completed long running command.
+    #     """
+    #     self.lrc_result = lrc_result
+    #     self.push_change_event("longRunningCommandResult", lrc_result)
 
     def read_sdp_subarray_obs_state(self):
         """Read method for sdp_subarray_obs_state"""
@@ -654,6 +679,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             self.op_state_model,
             logger=self.logger,
             _update_device_callback=self.update_device_callback,
+            _update_lrcr_callback=self.update_lrcr_callback,
             sleep_time=self.SleepTime,
             timeout=self.TimeOut,
         )
@@ -680,12 +706,21 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             ("Abort", Abort),
             ("Restart", Restart),
         ]:
-            command_obj = command_class(
-                self.component_manager,
-                self.op_state_model,
-                *args,
-                logger=self.logger,
-            )
+            if command_name == "AssignResources":
+                command_obj = command_class(
+                    self.component_manager,
+                    self.op_state_model,
+                    *args,
+                    logger=self.logger,
+                    update_lrcr_callback=self.update_lrcr_callback,
+                )
+            else:
+                command_obj = command_class(
+                    self.component_manager,
+                    self.op_state_model,
+                    *args,
+                    logger=self.logger,
+                )
             self.register_command_object(command_name, command_obj)
         self.register_command_object(
             "Reset",

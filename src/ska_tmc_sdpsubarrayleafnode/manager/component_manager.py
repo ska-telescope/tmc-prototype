@@ -40,6 +40,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         _update_device_callback=None,
         update_command_in_progress_callback=None,
         _update_sdp_subarray_obs_state_callback=None,
+        _update_lrcr_callback=None,
         monitoring_loop=False,
         event_receiver=True,
         max_workers=5,
@@ -84,12 +85,16 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         self.timeout = timeout
         self.command_timeout = command_timeout
-        self.assign_id = None
+        self.assign_id: str
         # pylint: enable=line-too-long
         self.long_running_result_callback = LRCRCallback(self.logger)
         self._update_sdp_subarray_obs_state_callback = (
             _update_sdp_subarray_obs_state_callback
         )
+
+        self._update_lrcr_callback = _update_lrcr_callback
+        self._lrc_result = ("", "")
+        self.logger = logger
 
     def stop(self):
         self._event_receiver.stop()
@@ -169,25 +174,23 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
     # Added method for Error Propogation
     # Updates the LRCR Callback with values in case of Exception only.
     # Does not deal with ResultCodes for now (Can be added easily).
-    def update_lrcr(self, dev_name: str, value: tuple):
+    def update_command_result(self, command_name, value: str):
         """Updates the long running command result callback"""
         self.logger.info(
-            "Recieved longRunningCommandResult event for device: %s, with value: %s",
-            dev_name,
+            "Recieved longRunningCommandResult event with value: %s",
             value,
         )
         try:
             # Ignoring ResultCode events
-            int(value[1])
+            int(value)
         except ValueError:
-            if "AssignResources" in value[0]:
+            if command_name == "AssignResources":
                 self.logger.info(
-                    "Updating LRCRCallback with value: %s for Assign for device: %s",
+                    "Updating LRCRCallback with value: %s for Assign",
                     value,
-                    dev_name,
                 )
                 self.long_running_result_callback(
-                    self.assign_id, ResultCode.FAILED, exception_msg=value[1]
+                    self.assign_id, ResultCode.FAILED, exception_msg=value
                 )
 
     def assign_resources(self, argin: str) -> tuple:
@@ -205,3 +208,30 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
         result_code, message = assign_resources_command.assign_resources(argin)
         return result_code, message
+
+    @property
+    def lrc_result(self) -> str:
+        """
+        Returns the longRunningCommandResult attribute.
+
+        :return: the longRunningCommandResult
+        :rtype: spectrum
+        """
+        return self._lrc_result
+
+    @lrc_result.setter
+    def lrc_result(self, value: str) -> None:
+        """
+        Sets the longRunningCommandResult value
+
+        :param value: the new longRunningCommandResult value
+        :type value: str
+        """
+        if self._lrc_result != value:
+            self._lrc_result = value
+            self._invoke_lrcr_callback()
+
+    def _invoke_lrcr_callback(self):
+        """This method calls longRunningCommandResult callback"""
+        if self._update_lrcr_callback is not None:
+            self._update_lrcr_callback(self._lrc_result)

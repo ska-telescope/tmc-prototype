@@ -27,6 +27,7 @@ def get_assign_input_str(assign_input_file="command_AssignResources.json"):
     return assign_input_str
 
 
+@pytest.mark.akii
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
@@ -39,7 +40,9 @@ def test_telescope_assign_resources_command(tango_context, devices):
 
     assign_input_str = get_assign_input_str()
     assert assign_res_command.check_allowed()
-    (result_code, _) = assign_res_command.do(assign_input_str)
+    (result_code, _) = assign_res_command.invoke_assign_resources(
+        assign_input_str
+    )
     assert result_code == ResultCode.OK
     adapter = adapter_factory.get_or_create_adapter(devices)
     adapter.proxy.AssignResources.assert_called()
