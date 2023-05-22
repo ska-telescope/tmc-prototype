@@ -686,6 +686,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         return cm
 
     # pylint: enable=attribute-defined-outside-init
+    # pylint: disable=unexpected-keyword-arg
 
     def init_command_objects(self):
         """

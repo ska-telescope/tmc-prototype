@@ -32,7 +32,7 @@ class AssignResources(SdpSLNCommand):
         logger=None,
         update_lrcr_callback=None,
     ):
-        super().__init__(target, logger)
+        super().__init__(target, logger, update_lrcr_callback)
         self.assign_id = None
         self.component_manager = self.target
         self.op_state_model = op_state_model
@@ -187,12 +187,6 @@ class AssignResources(SdpSLNCommand):
                     Please check the logs for details."""
                 ),
             )
-
-        # if "eb_id" not in json_argument["execution_block"]:
-        #     return self.generate_command_result(
-        #         ResultCode.FAILED,
-        #         "eb_id key is not present in the input json argument.",
-        #     )
 
         if "scan_types" not in json_argument["execution_block"]:
             return self.generate_command_result(
