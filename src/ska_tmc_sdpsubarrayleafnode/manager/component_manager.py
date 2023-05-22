@@ -93,9 +93,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         # pylint: enable=line-too-long
 
         self.start_liveliness_probe(LivelinessProbeType.SINGLE_DEVICE)
-        # self.stop_liveliness_probe()
 
     def stop(self):
+        self.stop_liveliness_probe()
         self._event_receiver.stop()
 
     def get_device(self):

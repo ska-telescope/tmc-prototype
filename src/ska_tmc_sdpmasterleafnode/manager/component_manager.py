@@ -86,6 +86,9 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
 
         self.start_liveliness_probe(LivelinessProbeType.SINGLE_DEVICE)
 
+    def stop(self):
+        self.stop_liveliness_probe()
+
     def _check_if_sdp_master_is_responsive(self) -> None:
         """Checks if CSP master/controller device is responsive."""
         if self._device is None or self._device.unresponsive:
