@@ -30,9 +30,8 @@ class AssignResources(SdpSLNCommand):
         op_state_model,
         adapter_factory=None,
         logger=None,
-        update_lrcr_callback=None,
     ):
-        super().__init__(target, logger, update_lrcr_callback)
+        super().__init__(target, logger)
         self.assign_id = None
         self.component_manager = self.target
         self.op_state_model = op_state_model
@@ -40,7 +39,6 @@ class AssignResources(SdpSLNCommand):
         self.timeout_id = f"{time.time()}_{__class__.__name__}"
         self.timeout_callback = TimeoutCallback(self.timeout_id, self.logger)
         self.task_callback: Callable
-        self.update_lrcr_callback = update_lrcr_callback
 
     def check_allowed(self):
         """
@@ -104,9 +102,9 @@ class AssignResources(SdpSLNCommand):
 
     def update_task_status(self, result: ResultCode, message: str = ""):
         if result == ResultCode.FAILED:
-            self.update_lrcr_callback((str(result), message))
+            self.component_manager.update_lrcr_callback((str(result), message))
         else:
-            self.update_lrcr_callback((str(result),))
+            self.component_manager.update_lrcr_callback((str(result),))
 
     # pylint: disable=line-too-long
     def invoke_assign_resources(self, argin=None):

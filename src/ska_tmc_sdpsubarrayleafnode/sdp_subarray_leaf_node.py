@@ -701,21 +701,13 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             ("Abort", Abort),
             ("Restart", Restart),
         ]:
-            if command_name == "AssignResources":
-                command_obj = command_class(
-                    self.component_manager,
-                    self.op_state_model,
-                    *args,
-                    logger=self.logger,
-                    update_lrcr_callback=self.update_lrcr_callback,
-                )
-            else:
-                command_obj = command_class(
-                    self.component_manager,
-                    self.op_state_model,
-                    *args,
-                    logger=self.logger,
-                )
+
+            command_obj = command_class(
+                self.component_manager,
+                self.op_state_model,
+                *args,
+                logger=self.logger,
+            )
             self.register_command_object(command_name, command_obj)
         self.register_command_object(
             "Reset",
