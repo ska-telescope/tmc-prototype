@@ -9,6 +9,7 @@ package.
 import time
 
 from ska_tango_base.commands import ResultCode
+from ska_tango_base.control_model import ObsState
 from ska_tmc_common.command_executor import CommandExecutor
 from ska_tmc_common.device_info import SubArrayDeviceInfo
 from ska_tmc_common.lrcr_callback import LRCRCallback
@@ -164,7 +165,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             if self._update_sdp_subarray_obs_state_callback:
                 self._update_sdp_subarray_obs_state_callback(obs_state)
 
-    def get_obs_state(self) -> None:
+    def get_obs_state(self) -> ObsState:
         """
         Get Current device obsState
         """

@@ -42,7 +42,7 @@ def test_telescope_assign_resources_command(tango_context, devices):
     (result_code, msg) = assign_res_command.invoke_assign_resources(
         assign_input_str
     )
-    assert result_code == ResultCode.OK
+    assert result_code == ResultCode.STARTED
     adapter = adapter_factory.get_or_create_adapter(devices)
     adapter.proxy.command_inout_asynch.assert_called_with(
         "AssignResources",
