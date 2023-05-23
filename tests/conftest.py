@@ -162,9 +162,3 @@ def change_event_callbacks() -> MockTangoEventCallbackGroup:
         "longRunningCommandResult",
         timeout=30.0,
     )
-
-
-def remove_data(self, command_id: str) -> None:
-    """Remove command id from command data"""
-    removed_data = self.command_data.pop(command_id, None)
-    self.logger.info(f"Removed command data {removed_data}")

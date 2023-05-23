@@ -75,9 +75,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         access=AttrWriteType.READ_WRITE,
     )
 
-    @attribute(  # type: ignore[misc]  # "Untyped decorator makes function untyped"
+    # Always the last result (unique_id, JSON-encoded result)
+    @attribute(  # type: ignore[misc]
         dtype=("str",),
-        max_dim_x=2,  # Always the last result (unique_id, JSON-encoded result)
+        max_dim_x=2,
     )
     def longRunningCommandResult(self) -> tuple[str, str]:
         """
@@ -211,13 +212,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         :return: ID, result.
         """
         return self.component_manager.lrc_result
-
-    # def write_longRunningCommandResult(self, lrc_result):
-    #     """
-    #     Write the result of the completed long running command.
-    #     """
-    #     self.lrc_result = lrc_result
-    #     self.push_change_event("longRunningCommandResult", lrc_result)
 
     def read_sdp_subarray_obs_state(self):
         """Read method for sdp_subarray_obs_state"""

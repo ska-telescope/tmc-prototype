@@ -1,5 +1,3 @@
-import time
-
 import pytest
 import tango
 from ska_tmc_common.dev_factory import DevFactory
@@ -37,7 +35,6 @@ def assign_resources_timeout(
     )
 
     sdp_subarray.SetDefective(False)
-    time.sleep(2)
 
     tear_down(dev_factory, sdp_subarray)
 

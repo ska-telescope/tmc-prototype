@@ -79,7 +79,7 @@ class AssignResources(SdpSLNCommand):
         """
         A AssignResources class
         """
-
+        # pylint: disable=C0301
         self.component_manager.start_timer(
             self.timeout_id,
             self.component_manager.command_timeout,
@@ -259,10 +259,6 @@ class AssignResources(SdpSLNCommand):
             )
             self.logger.error(log_message)
             error = event.errors[0]
-            # self.component_manager.lrc_result = (
-            #     event.cmd_name,
-            #     error.desc,
-            # )
             self.component_manager.update_command_result(
                 event.cmd_name, error.desc
             )
@@ -270,4 +266,3 @@ class AssignResources(SdpSLNCommand):
         else:
             log_message = f"Command {event.cmd_name} invoked successfully."
             self.logger.info(log_message)
-            # self.component_manager.update_command_result = (event.cmd_name, log_message)

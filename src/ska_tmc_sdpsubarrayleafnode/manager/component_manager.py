@@ -171,9 +171,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         """
         return self.get_device().obs_state
 
-    # Added method for Error Propogation
-    # Updates the LRCR Callback with values in case of Exception only.
-    # Does not deal with ResultCodes for now (Can be added easily).
     def update_command_result(self, command_name, value: str):
         """Updates the long running command result callback"""
         self.logger.info(
@@ -210,7 +207,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         return result_code, message
 
     @property
-    def lrc_result(self) -> str:
+    def lrc_result(self) -> tuple[str]:
         """
         Returns the longRunningCommandResult attribute.
 
