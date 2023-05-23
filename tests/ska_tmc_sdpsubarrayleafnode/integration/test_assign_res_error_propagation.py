@@ -1,3 +1,5 @@
+import time
+
 import pytest
 import tango
 from ska_tmc_common.dev_factory import DevFactory
@@ -36,7 +38,7 @@ def assign_resources_error_propagation(
         ),
         lookahead=5,
     )
-
+    time.sleep(2)
     tear_down(dev_factory, sdp_subarray)
 
 
@@ -48,19 +50,19 @@ def test_assign_resources_error_propagation(
     return assign_resources_error_propagation(
         tango_context,
         "ska_mid/tm_leaf_node/sdp_subarray01",
-        json_factory("command_AssignResources"),
+        json_factory("command_AssignResources_without_ebid"),
         change_event_callbacks,
     )
 
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
-def test_assign_resources_timeout_error_propagation_low(
+def test_assign_resources_error_propagation_low(
     tango_context, json_factory, change_event_callbacks
 ):
     return assign_resources_error_propagation(
         tango_context,
         "ska_low/tm_leaf_node/sdp_subarray01",
-        json_factory("command_AssignResources"),
+        json_factory("command_AssignResources_without_ebid"),
         change_event_callbacks,
     )
