@@ -60,7 +60,7 @@ def tear_down(dev_factory, sdp_subarray):
         sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
         logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
 
-    if sdp_subarray_obsstate.value == 4 or 5:
+    if sdp_subarray_obsstate.value in (ObsState.READY, ObsState.SCANNING):
         sdp_subarray.Abort()
         sdp_subarray.SetDirectObsState(ObsState.ABORTED)
         time.sleep(1)
