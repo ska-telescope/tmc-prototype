@@ -48,7 +48,7 @@ class SdpSLNEventReceiver(EventReceiver):
         try:
             proxy = self._dev_factory.get_device(dev_info.dev_name)
             proxy.subscribe_event(
-                "ObsState",
+                "obsState",
                 tango.EventType.CHANGE_EVENT,
                 self.handle_obs_state_event,
                 stateless=True,

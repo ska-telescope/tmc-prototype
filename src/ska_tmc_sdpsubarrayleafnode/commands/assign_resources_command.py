@@ -3,12 +3,15 @@
 AssignResouces command class for SDPSubarrayLeafNode.
 """
 import json
+import time
 from json import JSONDecodeError
+from typing import Callable
 
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.adapters import AdapterFactory
 from ska_tmc_common.exceptions import InvalidObsStateError
+from ska_tmc_common.timeout_callback import TimeoutCallback
 from tango import DevFailed
 
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
@@ -29,8 +32,12 @@ class AssignResources(SdpSLNCommand):
         logger=None,
     ):
         super().__init__(target, logger)
+        self.component_manager = self.target
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory or AdapterFactory()
+        self.timeout_id = f"{time.time()}_{__class__.__name__}"
+        self.timeout_callback = TimeoutCallback(self.timeout_id, self.logger)
+        self.task_callback: Callable
 
     def check_allowed(self):
         """
@@ -44,18 +51,17 @@ class AssignResources(SdpSLNCommand):
         :rtype: boolean
 
         """
-        component_manager = self.target
         self.check_op_state("AssignResources")
         self.check_unresponsive()
 
-        obs_state_val = component_manager.get_device().obs_state
+        obs_state_val = self.component_manager.get_device().obs_state
         self.logger.info("sdp_subarray_obs_state: %s", obs_state_val)
 
         if obs_state_val not in [ObsState.IDLE, ObsState.EMPTY]:
             message = (
                 "AssignResources command is not allowed in current"
                 + "observation state on device"
-                + "{}".format(component_manager._sdp_subarray_dev_name)
+                + "{}".format(self.component_manager._sdp_subarray_dev_name)
                 + "Reason: The current observation state for observation is"
                 + "{}".format(obs_state_val)
                 + 'The "AssignResources" command has NOT been executed.'
@@ -65,8 +71,42 @@ class AssignResources(SdpSLNCommand):
 
         return True
 
-    # pylint: disable=line-too-long
     def do(self, argin=None):
+        """
+        A AssignResources class
+        """
+        # pylint: disable=C0301
+        self.component_manager.start_timer(
+            self.timeout_id,
+            self.component_manager.command_timeout,
+            self.timeout_callback,
+        )
+        result_code, message = self.invoke_assign_resources(argin)
+        if result_code == ResultCode.FAILED:
+            self.update_task_status(result_code, message)
+        else:
+            self.start_tracker_thread(
+                self.component_manager.get_obs_state,
+                ObsState.IDLE,
+                self.timeout_id,
+                self.timeout_callback,
+                command_id=self.component_manager.assign_id,
+                lrcr_callback=self.component_manager.long_running_result_callback,
+            )
+        return result_code, message
+
+    def update_task_status(self, result: ResultCode, message: str = ""):
+        if result == ResultCode.FAILED:
+            self.component_manager.update_lrcr_callback(
+                (self.component_manager.assign_id, message)
+            )
+        else:
+            self.component_manager.update_lrcr_callback(
+                (self.component_manager.assign_id, str(result))
+            )
+
+    # pylint: disable=line-too-long
+    def invoke_assign_resources(self, argin=None):
         """
         Method to invoke AssignResources command on SDP Subarray.
 
@@ -145,12 +185,6 @@ class AssignResources(SdpSLNCommand):
                 ),
             )
 
-        if "eb_id" not in json_argument["execution_block"]:
-            return self.generate_command_result(
-                ResultCode.FAILED,
-                "eb_id key is not present in the input json argument.",
-            )
-
         if "scan_types" not in json_argument["execution_block"]:
             return self.generate_command_result(
                 ResultCode.FAILED,
@@ -173,7 +207,7 @@ class AssignResources(SdpSLNCommand):
             )
             self.logger.debug(log_msg)
             self.sdp_subarray_adapter.AssignResources(
-                json.dumps(json_argument)
+                json.dumps(json_argument), self.cmd_ended_cb
             )
 
         except (AttributeError, ValueError, TypeError, DevFailed) as e:
@@ -194,4 +228,38 @@ class AssignResources(SdpSLNCommand):
             + "{}".format(self.sdp_subarray_adapter.dev_name)
         )
         self.logger.info(log_msg)
-        return (ResultCode.OK, "")
+        return (ResultCode.STARTED, "")
+
+    def cmd_ended_cb(self, event):
+        """
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the command has been successfully
+        invoked on SdpSubarray.
+
+        :param event: a CmdDoneEvent object. This object is used to pass data
+            to the callback method in asynchronous callback model for command
+            execution.
+        :type: CmdDoneEvent object
+            It has the following members:
+            - cmd_name   : (str) The command name
+            - argout_raw : (DeviceData) The command argout
+            - argout     : The command argout
+            - err        : (bool) A boolean flag set to True if the command
+                           failed. False otherwise
+            - errors     : (sequence<DevError>) The error stack
+            - ext
+        """
+
+        if event.err:
+            log_message = (
+                f"Error in invoking command: {event.cmd_name}\n{event.errors}"
+            )
+            self.logger.error(log_message)
+            error = event.errors[0]
+            self.component_manager.update_command_result(
+                event.cmd_name, error.desc
+            )
+
+        else:
+            log_message = f"Command {event.cmd_name} invoked successfully."
+            self.logger.info(log_message)

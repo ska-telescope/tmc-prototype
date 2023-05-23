@@ -6,6 +6,9 @@ from os.path import dirname, join
 
 import pytest
 import tango
+
+# from ska_tango_testing.mock.tango import MockTangoEventCallbackGroup
+from ska_tango_testing.mock.tango import MockTangoEventCallbackGroup
 from ska_tmc_common.dev_factory import DevFactory
 from ska_tmc_common.test_helpers.helper_state_device import HelperStateDevice
 from ska_tmc_common.test_helpers.helper_subarray_device import (
@@ -17,6 +20,11 @@ from tango.test_utils import DeviceTestContext
 from ska_tmc_sdpsubarrayleafnode.sdp_subarray_leaf_node import (
     SdpSubarrayLeafNode,
 )
+
+SDPSUBARRAYLEAFNODE_MID = "ska_mid/tm_leaf_node/sdp_subarray01"
+SDPSUBARRAYLEAFNODE_LOW = "ska_low/tm_leaf_node/sdp_subarray01"
+MID_SDP_SUBARRAY = "mid-sdp/subarray/01"
+LOW_SDP_SUBARRAY = "low-sdp/subarray/01"
 
 
 def pytest_sessionstart(session):
@@ -139,3 +147,18 @@ def json_factory():
         return get_input_str(join(dirname(__file__), "data", f"{slug}.json"))
 
     return _get_json
+
+
+@pytest.fixture()
+def change_event_callbacks() -> MockTangoEventCallbackGroup:
+    """
+    Return a dictionary of Tango device change event callbacks with asynchrony
+    support.
+
+    :return: a collections.defaultdict that returns change event
+        callbacks by name.
+    """
+    return MockTangoEventCallbackGroup(
+        "longRunningCommandResult",
+        timeout=30.0,
+    )
