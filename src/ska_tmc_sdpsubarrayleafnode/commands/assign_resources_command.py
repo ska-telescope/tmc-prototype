@@ -51,7 +51,6 @@ class AssignResources(SdpSLNCommand):
         :rtype: boolean
 
         """
-        # component_manager = self.target
         self.check_op_state("AssignResources")
         self.check_unresponsive()
 

@@ -94,7 +94,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
         self.update_lrcr_callback = _update_lrcr_callback
         self._lrc_result = ("", "")
-        self.logger = logger
 
     def stop(self):
         self._event_receiver.stop()
