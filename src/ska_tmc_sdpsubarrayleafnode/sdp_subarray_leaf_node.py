@@ -107,8 +107,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         self._LastDeviceInfoChanged = devInfo.to_json()
         self.push_change_event("lastDeviceInfoChanged", devInfo.to_json())
 
-    # pylint: enable=attribute-defined-outside-init
-
+    # pylint: disable=attribute-defined-outside-init
     def update_sdp_subarray_obs_state_callback(
         self, obs_state: ObsState
     ) -> None:
@@ -327,9 +326,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             This device will continue with normal operation."""
 
             return [[ResultCode.FAILED], [message]]
-        unique_id = self.component_manager.command_executor.enqueue_command(
-            handler, argin
-        )
+        unique_id = self.component_manager.add_to_queue(handler, argin)
         return [[ResultCode.QUEUED], [str(unique_id)]]
 
     def is_ReleaseResources_allowed(self):

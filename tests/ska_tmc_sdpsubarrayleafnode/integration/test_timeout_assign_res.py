@@ -30,7 +30,7 @@ def assign_resources_timeout(
         change_event_callbacks["longRunningCommandResult"],
     )
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        ("ResultCode.FAILED", "Timeout has occured, command failed"),
+        (unique_id[0], "Timeout has occured, command failed"),
         lookahead=5,
     )
 

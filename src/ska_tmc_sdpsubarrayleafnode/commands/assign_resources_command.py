@@ -98,9 +98,13 @@ class AssignResources(SdpSLNCommand):
 
     def update_task_status(self, result: ResultCode, message: str = ""):
         if result == ResultCode.FAILED:
-            self.component_manager.update_lrcr_callback((str(result), message))
+            self.component_manager.update_lrcr_callback(
+                (self.component_manager.assign_id, message)
+            )
         else:
-            self.component_manager.update_lrcr_callback((str(result),))
+            self.component_manager.update_lrcr_callback(
+                (self.component_manager.assign_id, str(result))
+            )
 
     # pylint: disable=line-too-long
     def invoke_assign_resources(self, argin=None):
