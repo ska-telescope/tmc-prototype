@@ -85,14 +85,14 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         self.timeout = timeout
         self.command_timeout = command_timeout
-        self.assign_id: str
+        self.assign_id = f"{time.time()}-{AssignResources.__name__}"
         # pylint: enable=line-too-long
         self.long_running_result_callback = LRCRCallback(self.logger)
         self._update_sdp_subarray_obs_state_callback = (
             _update_sdp_subarray_obs_state_callback
         )
 
-        self._update_lrcr_callback = _update_lrcr_callback
+        self.update_lrcr_callback = _update_lrcr_callback
         self._lrc_result = ("", "")
         self.logger = logger
 
@@ -230,5 +230,5 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
     def _invoke_lrcr_callback(self):
         """This method calls longRunningCommandResult callback"""
-        if self._update_lrcr_callback is not None:
-            self._update_lrcr_callback(self._lrc_result)
+        if self.update_lrcr_callback is not None:
+            self.update_lrcr_callback(self._lrc_result)

@@ -32,7 +32,6 @@ class AssignResources(SdpSLNCommand):
         logger=None,
     ):
         super().__init__(target, logger)
-        self.assign_id = None
         self.component_manager = self.target
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory or AdapterFactory()
@@ -84,9 +83,6 @@ class AssignResources(SdpSLNCommand):
             self.timeout_callback,
         )
         result_code, message = self.invoke_assign_resources(argin)
-        self.component_manager.assign_id = (
-            f"{time.time()}-{AssignResources.__name__}"
-        )
         if result_code == ResultCode.FAILED:
             self.update_task_status(result_code, message)
         else:
