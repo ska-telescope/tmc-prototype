@@ -68,6 +68,7 @@ def devices_to_load():
             "class": HelperSubArrayDevice,
             "devices": [
                 {"name": "mid-sdp/subarray/01"},
+                {"name": "low-sdp/subarray/01"},
             ],
         },
         {
