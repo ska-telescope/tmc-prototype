@@ -13,12 +13,12 @@ class SdpMLNCommand(TmcLeafNodeCommand):
 
     def __init__(
         self,
-        target,
+        component_manager,
         op_state_model,
         adapter_factory=None,
         logger=None,
     ):
-        super().__init__(target, logger)
+        super().__init__(component_manager, logger)
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory or AdapterFactory()
 
