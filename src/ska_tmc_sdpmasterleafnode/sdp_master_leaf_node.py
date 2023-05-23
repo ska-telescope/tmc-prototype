@@ -96,7 +96,6 @@ class SdpMasterLeafNode(SKABaseDevice):
         # I need to stop all threads
         if hasattr(self, "component_manager"):
             self.component_manager.stop()
-            self.component_manager.stop_liveliness_probe()
 
     # ------------------
     # Attributes methods
@@ -108,7 +107,8 @@ class SdpMasterLeafNode(SKABaseDevice):
         self.push_change_event("isSubsystemAvailable", availablity)
 
     def read_isSubsystemAvailable(self):
-        """Read method for is isSubsystemAvailable"""
+        """Returns the TMC Sdp MasterLeafNode
+        isSubsystemAvailable attribute."""
         return self._isSubsystemAvailable
 
     def read_sdpMasterDevName(self):

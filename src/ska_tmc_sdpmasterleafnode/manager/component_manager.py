@@ -77,7 +77,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         self.timeout = timeout
         # pylint: enable=line-too-long
         self.update_availablity_callback = _update_availablity_callback
-        self.liveliness_probe_object = SingleDeviceLivelinessProbe(
+        self.liveliness_probe = SingleDeviceLivelinessProbe(
             self,
             logger=self.logger,
             proxy_timeout=500,
@@ -102,15 +102,15 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         :param lp: enum of class LivelinessProbeType
         """
         if lp == LivelinessProbeType.SINGLE_DEVICE:
-            self.liveliness_probe_object.start()
+            self.liveliness_probe.start()
 
         else:
             self.logger.warning("Liveliness Probe is not running")
 
     def stop_liveliness_probe(self) -> None:
         """Stops the liveliness probe"""
-        if self.liveliness_probe_object:
-            self.liveliness_probe_object.stop()
+        if self.liveliness_probe:
+            self.liveliness_probe.stop()
 
     def update_ping_info(self, ping: int) -> None:
         """

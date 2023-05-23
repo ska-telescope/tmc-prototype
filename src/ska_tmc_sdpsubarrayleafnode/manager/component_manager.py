@@ -84,7 +84,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.timeout = timeout
         self._update_availablity_callback = _update_availablity_callback
 
-        self.liveliness_probe_object = SingleDeviceLivelinessProbe(
+        self.liveliness_probe = SingleDeviceLivelinessProbe(
             self,
             logger=self.logger,
             proxy_timeout=500,
@@ -114,39 +114,20 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :param lp: enum of class LivelinessProbeType
         """
         if lp == LivelinessProbeType.SINGLE_DEVICE:
-            self.liveliness_probe_object.start()
+            self.liveliness_probe.start()
 
         else:
             self.logger.warning("Liveliness Probe is not running")
 
     def stop_liveliness_probe(self) -> None:
         """Stops the liveliness probe"""
-        if self.liveliness_probe_object:
-            self.liveliness_probe_object.stop()
+        if self.liveliness_probe:
+            self.liveliness_probe.stop()
 
     def update_device_info(self, sdp_subarray_dev_name):
         """Updates the device info"""
         self._sdp_subarray_dev_name = sdp_subarray_dev_name
         self._device = SubArrayDeviceInfo(self._sdp_subarray_dev_name, False)
-
-    # def device_failed(self, exception):
-    #     """
-    #     Return the list of the checked monitored devices
-
-    #     :return: list of the checked monitored devices
-    #     """
-    #     result = []
-    #     for dev in self.component.devices:
-    #         if dev.unresponsive:
-    #             result.append(dev)
-    #             continue
-    #         if dev.ping > 0:
-    #             result.append(dev)
-    #             continue
-    #         if dev.last_event_arrived is not None:
-    #             result.append(dev)
-    #             continue
-    #     return result
 
     def update_input_parameter(self):
         """Update input parameter"""
