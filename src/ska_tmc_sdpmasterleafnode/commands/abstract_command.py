@@ -46,7 +46,7 @@ class SdpMLNCommand(TmcLeafNodeCommand):
         :rtype: boolean
 
         """
-        self.check_unresponsive()
+
         if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
             raise CommandNotAllowed(
                 "The invocation of the {} command on this device".format(
