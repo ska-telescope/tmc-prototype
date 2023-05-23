@@ -228,7 +228,7 @@ class AssignResources(SdpSLNCommand):
             + "{}".format(self.sdp_subarray_adapter.dev_name)
         )
         self.logger.info(log_msg)
-        return (ResultCode.OK, "")
+        return (ResultCode.STARTED, "")
 
     def cmd_ended_cb(self, event):
         """

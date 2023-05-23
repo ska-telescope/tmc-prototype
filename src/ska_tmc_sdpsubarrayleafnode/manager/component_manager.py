@@ -164,7 +164,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             if self._update_sdp_subarray_obs_state_callback:
                 self._update_sdp_subarray_obs_state_callback(obs_state)
 
-    def get_obs_state(self):
+    def get_obs_state(self) -> None:
         """
         Get Current device obsState
         """
