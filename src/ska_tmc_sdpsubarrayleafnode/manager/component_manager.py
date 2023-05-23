@@ -207,7 +207,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         return result_code, message
 
     @property
-    def lrc_result(self) -> tuple[str]:
+    def lrc_result(self) -> tuple[str, str]:
         """
         Returns the longRunningCommandResult attribute.
 
