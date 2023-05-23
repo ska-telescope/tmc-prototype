@@ -24,7 +24,6 @@ class Standby(SdpMLNCommand):
         ret_code, message = self.init_adapter()
         if ret_code == ResultCode.FAILED:
             return ret_code, message
-        self.check_unresponsive()
         result = self.call_adapter_method(
             "Sdp Master", self.sdp_master_adapter, "Standby"
         )
