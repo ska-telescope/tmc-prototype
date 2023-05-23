@@ -15,9 +15,6 @@ from ska_tmc_common.device_info import SubArrayDeviceInfo
 from ska_tmc_common.lrcr_callback import LRCRCallback
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
 
-from ska_tmc_sdpsubarrayleafnode.commands.assign_resources_command import (
-    AssignResources,
-)
 from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
     SdpSLNEventReceiver,
 )
@@ -189,22 +186,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 self.long_running_result_callback(
                     self.assign_id, ResultCode.FAILED, exception_msg=value
                 )
-
-    def assign_resources(self, argin: str) -> tuple:
-        """
-        Submit the AssignResources command in queue.
-
-        :return: a result code and message
-        """
-        assign_resources_command = AssignResources(
-            self,
-            self.target,
-            self.op_state_model,
-            logger=self.logger,
-        )
-
-        result_code, message = assign_resources_command.assign_resources(argin)
-        return result_code, message
 
     @property
     def lrc_result(self) -> tuple[str, str]:
