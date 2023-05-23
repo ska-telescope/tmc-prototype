@@ -67,7 +67,6 @@ def get_sdpsln_command_obj(
     logger.info(
         "checked %s device in %s", cm.get_device().dev_name, elapsed_time
     )
-    time.sleep(1)
     cm.update_device_obs_state(obsstate_value)
 
     adapter_factory = HelperAdapterFactory()
