@@ -141,10 +141,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         :param exception: an exception
         :type: Exception
         """
-        self.logger.info("Inside device_failed  ")
         device_info.update_unresponsive(True, exception)
         with self.lock:
             if self.update_availablity_callback is not None:
                 self.update_availablity_callback(False)
-            else:
-                print("inside device not found")

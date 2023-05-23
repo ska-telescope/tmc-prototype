@@ -13,6 +13,10 @@ from ska_tmc_common.dev_factory import DevFactory
 from ska_tmc_common.device_info import DeviceInfo
 
 
+# pylint: disable=fixme
+# TODO:This liveliness implementation setup on sdp leaf nodes,
+# will get removed once the sdp leaf nodes utilises latest base
+# classes and there in latest ska-tmc-common package
 class BaseLivelinessProbe:
     """
     The BaseLivelinessProbe class has the responsibility
