@@ -101,11 +101,16 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
 
         :param lp: enum of class LivelinessProbeType
         """
-        if lp == LivelinessProbeType.SINGLE_DEVICE:
-            self.liveliness_probe.start()
-
-        else:
-            self.logger.warning("Liveliness Probe is not running")
+        try:
+            if lp == LivelinessProbeType.SINGLE_DEVICE:
+                self.liveliness_probe.start()
+            else:
+                self.logger.warning("Liveliness Probe is not running")
+        except Exception as e:
+            self.logger.error(
+                f"An error occurred during\
+                            Liveliness Probe start: {str(e)}"
+            )
 
     def stop_liveliness_probe(self) -> None:
         """Stops the liveliness probe"""
