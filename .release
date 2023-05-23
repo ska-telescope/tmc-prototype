@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc-sdpleafnodes"""
-version="0.0."
+version="0.0.26"
 version_info=version.split(".")
 description="""SKA-TMC-SDPLEAFNODES"""
 author="Team Himalaya, Team Sahyadri"
