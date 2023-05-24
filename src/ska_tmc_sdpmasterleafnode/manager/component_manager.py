@@ -4,7 +4,6 @@ This module implements ComponentManager class for the Sdp Master Leaf Node.
 """
 from ska_tmc_common.command_executor import CommandExecutor
 from ska_tmc_common.device_info import DeviceInfo
-from ska_tmc_common.exceptions import DeviceUnresponsive
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
 
 from ska_tmc_sdpsubarrayleafnode.liveliness_probe import (
@@ -88,13 +87,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
 
     def stop(self):
         self.stop_liveliness_probe()
-
-    def _check_if_sdp_master_is_responsive(self) -> None:
-        """Checks if CSP master/controller device is responsive."""
-        if self._device is None or self._device.unresponsive:
-            raise DeviceUnresponsive(
-                f"{self.sdp_master_dev_name} not available"
-            )
 
     def start_liveliness_probe(self, lp: LivelinessProbeType) -> None:
         """Starts Liveliness Probe for the given device.
