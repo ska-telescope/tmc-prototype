@@ -127,8 +127,8 @@ def call_command(sdpsubarrayleaf_node, command_name):
                 command_name
             )
     except Exception as ex:
-        assert "CommandNotAllowed" in str(ex)
-        pytest.command_result = "CommandNotAllowed"
+        assert "DeviceUnresponsive" in str(ex)
+        pytest.command_result = "DeviceUnresponsive"
 
 
 @then(

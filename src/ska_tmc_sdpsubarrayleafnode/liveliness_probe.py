@@ -69,6 +69,7 @@ class BaseLivelinessProbe:
         try:
             proxy = self._dev_factory.get_device(dev_info.dev_name)
             proxy.set_timeout_millis(self._proxy_timeout)
+            self._logger.info(str(proxy.ping()))
             self._component_manager.update_ping_info(proxy.ping())
         except Exception as exp_msg:
             self._logger.error(
