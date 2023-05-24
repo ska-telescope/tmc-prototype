@@ -7,6 +7,7 @@ from ska_tmc_common.dev_factory import DevFactory
 from tests.settings import SLEEP_TIME, TIMEOUT, logger
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
+
 def assign_resouces(tango_context, sdpsaln_name, sdp_subarray, json_factory):
     logger.info("%s", tango_context)
     dev_factory = DevFactory()
@@ -36,7 +37,7 @@ def assign_resouces(tango_context, sdpsaln_name, sdp_subarray, json_factory):
 
     tear_down(dev_factory, sdp_subarray)
 
-@pytest.mark.test1
+
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(
