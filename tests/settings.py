@@ -62,6 +62,7 @@ def get_sdpsln_command_obj(
     """Returns component manager and command class object for Sdp
     Subarray Leaf Node"""
     cm, start_time = create_cm("SdpSLNComponentManager", devices)
+    cm.stop_liveliness_probe()
     elapsed_time = time.time() - start_time
     logger.info(
         "checked %s device in %s", cm.get_device().dev_name, elapsed_time

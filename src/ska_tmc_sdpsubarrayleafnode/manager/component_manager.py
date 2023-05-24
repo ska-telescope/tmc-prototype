@@ -15,6 +15,10 @@ from ska_tmc_common.device_info import SubArrayDeviceInfo
 from ska_tmc_common.lrcr_callback import LRCRCallback
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
 
+from ska_tmc_sdpsubarrayleafnode.liveliness_probe import (
+    LivelinessProbeType,
+    SingleDeviceLivelinessProbe,
+)
 from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
     SdpSLNEventReceiver,
 )
@@ -35,6 +39,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         sdp_subarray_dev_name,
         op_state_model,
         logger=None,
+        _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
         _update_device_callback=None,
         update_command_in_progress_callback=None,
         _update_sdp_subarray_obs_state_callback=None,
@@ -45,6 +50,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         proxy_timeout=500,
         sleep_time=1,
         timeout=30,
+        _update_availablity_callback=None,
         command_timeout: int = 15,
     ):
         """
@@ -82,6 +88,14 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             _update_command_in_progress_callback=update_command_in_progress_callback,  # noqa:E501
         )
         self.timeout = timeout
+        self._update_availablity_callback = _update_availablity_callback
+
+        self.liveliness_probe = SingleDeviceLivelinessProbe(
+            self,
+            logger=self.logger,
+            proxy_timeout=500,
+            sleep_time=1,
+        )
         self.command_timeout = command_timeout
         self.assign_id = None
         # pylint: enable=line-too-long
@@ -93,7 +107,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.update_lrcr_callback = _update_lrcr_callback
         self._lrc_result = ("", "")
 
+        self.start_liveliness_probe(LivelinessProbeType.SINGLE_DEVICE)
+
     def stop(self):
+        self.stop_liveliness_probe()
         self._event_receiver.stop()
 
     def get_device(self):
@@ -106,29 +123,31 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         """
         return self._device
 
+    def start_liveliness_probe(self, lp: LivelinessProbeType) -> None:
+        """Starts Liveliness Probe for the given device.
+
+        :param lp: enum of class LivelinessProbeType
+        """
+        try:
+            if lp == LivelinessProbeType.SINGLE_DEVICE:
+                self.liveliness_probe.start()
+            else:
+                self.logger.warning("Liveliness Probe is not running")
+        except Exception as e:
+            self.logger.error(
+                f"An error occurred during\
+                    Liveliness Probe start: {str(e)}"
+            )
+
+    def stop_liveliness_probe(self) -> None:
+        """Stops the liveliness probe"""
+        if self.liveliness_probe:
+            self.liveliness_probe.stop()
+
     def update_device_info(self, sdp_subarray_dev_name):
         """Updates the device info"""
         self._sdp_subarray_dev_name = sdp_subarray_dev_name
         self._device = SubArrayDeviceInfo(self._sdp_subarray_dev_name, False)
-
-    def device_failed(self, exception):
-        """
-        Return the list of the checked monitored devices
-
-        :return: list of the checked monitored devices
-        """
-        result = []
-        for dev in self.component.devices:
-            if dev.unresponsive:
-                result.append(dev)
-                continue
-            if dev.ping > 0:
-                result.append(dev)
-                continue
-            if dev.last_event_arrived is not None:
-                result.append(dev)
-                continue
-        return result
 
     def update_input_parameter(self):
         """Update input parameter"""
@@ -161,6 +180,41 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             self.logger.info(f"Obs State value updated to {obs_state}")
             if self._update_sdp_subarray_obs_state_callback:
                 self._update_sdp_subarray_obs_state_callback(obs_state)
+
+    def device_failed(
+        self, device_info, exception
+    ):  # pylint: disable=arguments-differ
+        """
+        Set a device to failed and call the relative callback if available
+
+        :param device_info: a device info
+        :type device_info: DeviceInfo
+        :param exception: an exception
+        :type: Exception
+        """
+        device_info.update_unresponsive(True, exception)
+
+        with self.lock:
+            if self._update_availablity_callback is not None:
+                self._update_availablity_callback(False)
+
+    def update_ping_info(self, ping: int) -> None:
+        """
+        Update a device with the correct ping information.
+
+        :param dev_name: name of the device
+        :type dev_name: str
+        :param ping: device response time
+        :type ping: int
+        """
+        with self.lock:
+            self._device.ping = ping
+            self._device.update_unresponsive(False)
+            if self._update_availablity_callback:
+                self.logger.info(
+                    "Calling update_availablity_callback from update_ping_info"
+                )
+                self._update_availablity_callback(True)
 
     def get_obs_state(self) -> ObsState:
         """

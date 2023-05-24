@@ -33,8 +33,8 @@ def call_command(sdpmasterleaf_node, command_name):
     try:
         pytest.command_result = sdpmasterleaf_node.command_inout(command_name)
     except Exception as ex:
-        assert "CommandNotAllowed" in str(ex)
-        pytest.command_result = "CommandNotAllowed"
+        assert "DeviceUnresponsive" in str(ex)
+        pytest.command_result = "DeviceUnresponsive"
 
 
 @then(

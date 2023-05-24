@@ -12,6 +12,10 @@ def on_command(tango_context, sdpmln_name):
     dev_factory = DevFactory()
     sdpmln_node = dev_factory.get_device(sdpmln_name)
     initial_len = len(sdpmln_node.commandExecuted)
+    availablity_value = sdpmln_node.read_attribute(
+        "isSubsystemAvailable"
+    ).value
+    assert availablity_value
     (result, unique_id) = sdpmln_node.On()
     logger.info(result)
     logger.info(unique_id)

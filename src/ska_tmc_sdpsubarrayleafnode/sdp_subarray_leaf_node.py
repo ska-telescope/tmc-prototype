@@ -57,6 +57,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # -----------------
     # Attributes
     # -----------------
+
+    isSubsystemAvailable = attribute(
+        dtype="DevBoolean",
+        access=AttrWriteType.READ,
+    )
+
     commandExecuted = attribute(
         dtype=(("DevString",),),
         max_dim_x=4,
@@ -148,6 +154,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             device._version_id = release.version
             device._LastDeviceInfoChanged = ""
             device.set_change_event("healthState", True, False)
+            device._isSubsystemAvailable = False
             device.set_change_event("longRunningCommandResult", True)
             ApiUtil.instance().set_asynch_cb_sub_model(
                 tango.cb_sub_model.PUSH_CALLBACK
@@ -180,6 +187,15 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # ------------------
     # Attributes methods
     # ------------------
+
+    def update_availablity_callback(self, availablity):
+        """Change event callback for isSubsystemAvailable"""
+        self._isSubsystemAvailable = availablity  # pylint: disable=W0201
+        self.push_change_event("isSubsystemAvailable", availablity)
+
+    def read_isSubsystemAvailable(self):
+        """Read method for isSubsystemAvailable"""
+        return self._isSubsystemAvailable
 
     def read_lastDeviceInfoChanged(self):
         """Return the last device info change"""
@@ -673,6 +689,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             _update_lrcr_callback=self.update_lrcr_callback,
             sleep_time=self.SleepTime,
             timeout=self.TimeOut,
+            _update_availablity_callback=self.update_availablity_callback,
         )
         return cm
 

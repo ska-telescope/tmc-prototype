@@ -11,6 +11,7 @@ from tango.server import attribute, command, device_property, run
 from ska_tmc_sdpmasterleafnode import release
 from ska_tmc_sdpmasterleafnode.commands import Disable, Off, On, Standby
 from ska_tmc_sdpmasterleafnode.manager import SdpMLNComponentManager
+from ska_tmc_sdpsubarrayleafnode.liveliness_probe import LivelinessProbeType
 
 __all__ = ["SdpMasterLeafNode", "main"]
 
@@ -33,6 +34,12 @@ class SdpMasterLeafNode(SKABaseDevice):
     # -----------------
     # Attributes
     # -----------------
+
+    isSubsystemAvailable = attribute(
+        dtype="DevBoolean",
+        access=AttrWriteType.READ,
+    )
+
     commandExecuted = attribute(
         dtype=(("DevString",),),
         max_dim_x=4,
@@ -74,6 +81,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             )
             device._version_id = release.version
             device.set_change_event("healthState", True, False)
+            device._isSubsystemAvailable = False
             device.op_state_model.perform_action("component_on")
             device.component_manager._command_executor.add_command_execution(
                 "0", "Init", ResultCode.OK, ""
@@ -92,6 +100,16 @@ class SdpMasterLeafNode(SKABaseDevice):
     # ------------------
     # Attributes methods
     # ------------------
+
+    def update_availablity_callback(self, availablity):
+        """Change event callback for isSubsystemAvailable"""
+        self._isSubsystemAvailable = availablity  # pylint: disable=W0201
+        self.push_change_event("isSubsystemAvailable", availablity)
+
+    def read_isSubsystemAvailable(self):
+        """Returns the TMC Sdp MasterLeafNode
+        isSubsystemAvailable attribute."""
+        return self._isSubsystemAvailable
 
     def read_sdpMasterDevName(self):
         """Return the sdpmasterdevname attribute."""
@@ -266,8 +284,10 @@ class SdpMasterLeafNode(SKABaseDevice):
             self.SdpMasterFQDN,
             self.op_state_model,
             logger=self.logger,
+            _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
             sleep_time=self.SleepTime,
             timeout=self.TimeOut,
+            _update_availablity_callback=self.update_availablity_callback,
         )
 
         return cm
