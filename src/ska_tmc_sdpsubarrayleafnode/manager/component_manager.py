@@ -8,8 +8,11 @@ package.
 """
 import time
 
+from ska_tango_base.commands import ResultCode
+from ska_tango_base.control_model import ObsState
 from ska_tmc_common.command_executor import CommandExecutor
 from ska_tmc_common.device_info import SubArrayDeviceInfo
+from ska_tmc_common.lrcr_callback import LRCRCallback
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
 
 from ska_tmc_sdpsubarrayleafnode.liveliness_probe import (
@@ -39,6 +42,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
         _update_device_callback=None,
         update_command_in_progress_callback=None,
+        _update_sdp_subarray_obs_state_callback=None,
+        _update_lrcr_callback=None,
         monitoring_loop=False,
         event_receiver=True,
         max_workers=5,
@@ -46,6 +51,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         sleep_time=1,
         timeout=30,
         _update_availablity_callback=None,
+        command_timeout: int = 15,
     ):
         """
         Initialise a new ComponentManager instance.
@@ -90,7 +96,16 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             proxy_timeout=500,
             sleep_time=1,
         )
+        self.command_timeout = command_timeout
+        self.assign_id = None
         # pylint: enable=line-too-long
+        self.long_running_result_callback = LRCRCallback(self.logger)
+        self._update_sdp_subarray_obs_state_callback = (
+            _update_sdp_subarray_obs_state_callback
+        )
+
+        self.update_lrcr_callback = _update_lrcr_callback
+        self._lrc_result = ("", "")
 
         self.start_liveliness_probe(LivelinessProbeType.SINGLE_DEVICE)
 
@@ -156,11 +171,15 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :param obs_state: obs state of the device
         :type obs_state: ObsState
         """
+        self.logger.info(f"Obs State value {obs_state}")
         with self.lock:
             dev_info = self.get_device()
             dev_info.obs_state = obs_state
             dev_info.last_event_arrived = time.time()
             dev_info.update_unresponsive(False)
+            self.logger.info(f"Obs State value updated to {obs_state}")
+            if self._update_sdp_subarray_obs_state_callback:
+                self._update_sdp_subarray_obs_state_callback(obs_state)
 
     def device_failed(
         self, device_info, exception
@@ -196,3 +215,61 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                     "Calling update_availablity_callback from update_ping_info"
                 )
                 self._update_availablity_callback(True)
+
+    def get_obs_state(self) -> ObsState:
+        """
+        Get Current device obsState
+        """
+        return self.get_device().obs_state
+
+    def update_command_result(self, command_name, value: str):
+        """Updates the long running command result callback"""
+        self.logger.info(
+            "Recieved longRunningCommandResult event with value: %s",
+            value,
+        )
+        try:
+            # Ignoring ResultCode events
+            int(value)
+        except ValueError:
+            if command_name == "AssignResources":
+                self.logger.info(
+                    "Updating LRCRCallback with value: %s for Assign",
+                    value,
+                )
+                self.long_running_result_callback(
+                    self.assign_id, ResultCode.FAILED, exception_msg=value
+                )
+
+    @property
+    def lrc_result(self) -> tuple[str, str]:
+        """
+        Returns the longRunningCommandResult attribute.
+
+        :return: the longRunningCommandResult
+        :rtype: spectrum
+        """
+        return self._lrc_result
+
+    @lrc_result.setter
+    def lrc_result(self, value: str) -> None:
+        """
+        Sets the longRunningCommandResult value
+
+        :param value: the new longRunningCommandResult value
+        :type value: str
+        """
+        if self._lrc_result != value:
+            self._lrc_result = value
+            self._invoke_lrcr_callback()
+
+    def _invoke_lrcr_callback(self):
+        """This method calls longRunningCommandResult callback"""
+        if self.update_lrcr_callback is not None:
+            self.update_lrcr_callback(self._lrc_result)
+
+    def add_to_queue(self, handler, argin=None):
+        """This methods add command to queue"""
+        unique_id = self.command_executor.enqueue_command(handler, argin)
+        self.assign_id = unique_id
+        return unique_id

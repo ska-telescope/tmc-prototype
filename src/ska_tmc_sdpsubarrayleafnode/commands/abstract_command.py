@@ -61,7 +61,7 @@ class SdpSLNCommand(TmcLeafNodeCommand):
                 if not devInfo.unresponsive:
                     self.sdp_subarray_adapter = (
                         self._adapter_factory.get_or_create_adapter(
-                            dev_name, AdapterType.SUBARRAY
+                            dev_name, AdapterType.SDPSUBARRAY
                         )
                     )
             except ConnectionFailed as cf:

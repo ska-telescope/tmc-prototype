@@ -29,7 +29,7 @@ def assign_resouces(tango_context, sdpsaln_name, sdp_subarray, json_factory):
     for command in sdpsal_node.commandExecuted:
         if command[0] == unique_id[0]:
             logger.info("command result: %s", command)
-            assert command[2] == "ResultCode.OK"
+            assert command[2] == "ResultCode.STARTED"
 
     tear_down(dev_factory, sdp_subarray)
 

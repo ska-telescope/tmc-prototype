@@ -37,7 +37,7 @@ load-plugins=
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use"--disable=all --enable=classes
 # --disable=W"
-disable=invalid-name,protected-access,broad-except
+disable=invalid-name,protected-access,abstract-method,no-member,broad-except
 
 
 [REPORTS]
@@ -277,4 +277,4 @@ max-public-methods=40
 
 # Exceptions that will emit a warning when being caught. Defaults to
 # "Exception"
-overgeneral-exceptions=Exception
+overgeneral-exceptions=builtins.Exception
