@@ -101,8 +101,9 @@ class AssignResources(SdpSLNCommand):
                 (self.component_manager.assign_id, message)
             )
         else:
+            result_int = int(result)
             self.component_manager.update_lrcr_callback(
-                (self.component_manager.assign_id, str(result))
+                (self.component_manager.assign_id, str(result_int))
             )
 
     # pylint: disable=line-too-long
