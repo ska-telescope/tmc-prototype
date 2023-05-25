@@ -86,6 +86,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             device.component_manager._command_executor.add_command_execution(
                 "0", "Init", ResultCode.OK, ""
             )
+            device.set_change_event("isSubsystemAvailable", True, False)
             return (ResultCode.OK, "")
 
     def always_executed_hook(self):
