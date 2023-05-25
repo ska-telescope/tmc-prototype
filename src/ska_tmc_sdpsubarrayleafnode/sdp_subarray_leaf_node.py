@@ -87,7 +87,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         dtype=("str",),
         max_dim_x=2,
     )
-    def longRunningCommandResult(self):
+    def longRunningCommandResult(self) -> tuple[str, str]:
         """
         Read the result of the completed long running command.
 
