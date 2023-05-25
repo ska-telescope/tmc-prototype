@@ -42,7 +42,6 @@ def assign_resources_error_propagation(
     tear_down(dev_factory, sdp_subarray)
 
 
-@pytest.mark.aki
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_assign_resources_error_propagation(
