@@ -102,7 +102,7 @@ class AssignResources(SdpSLNCommand):
             )
         else:
             self.component_manager.update_lrcr_callback(
-                (self.component_manager.assign_id, str(result))
+                (self.component_manager.assign_id, result)
             )
 
     # pylint: disable=line-too-long

@@ -3,6 +3,7 @@ SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
 actions during an observation.
 It also acts as a SDP contact point for Subarray Node for observation execution
 """
+
 import tango
 
 # from logging import Logger
@@ -86,7 +87,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         dtype=("str",),
         max_dim_x=2,
     )
-    def longRunningCommandResult(self) -> tuple[str, str]:
+    def longRunningCommandResult(self):
         """
         Read the result of the completed long running command.
 
