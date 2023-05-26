@@ -42,6 +42,7 @@ class BaseLivelinessProbe:
         self._proxy_timeout = proxy_timeout
         self._sleep_time = sleep_time
         self._dev_factory = DevFactory()
+        self._previous_ping = True
 
     def start(self) -> None:
         """
@@ -64,18 +65,23 @@ class BaseLivelinessProbe:
 
     def device_task(self, dev_info: DeviceInfo) -> None:
         """
-        Checks device status
+        Checks device status and logs error messages on state change
         """
         try:
             proxy = self._dev_factory.get_device(dev_info.dev_name)
             proxy.set_timeout_millis(self._proxy_timeout)
-            self._logger.info(str(proxy.ping()))
-            self._component_manager.update_ping_info(proxy.ping())
-        except Exception as exp_msg:
-            self._logger.error(
-                "Device not working %s: %s", dev_info.dev_name, exp_msg
-            )
-            self._component_manager.device_failed(dev_info, exp_msg)
+            current_ping = proxy.ping()
+            if self._previous_ping:
+                self._component_manager.update_ping_info(current_ping)
+                self._logger.info(f"{dev_info.dev_name} is up and running.")
+                self._previous_ping = False
+        except Exception:
+            if not self._previous_ping:
+                self._logger.info(f"Unable to ping device {dev_info.dev_name}")
+                self._component_manager.device_failed(
+                    dev_info, f"Unable to ping device {dev_info.dev_name}"
+                )
+                self._previous_ping = True
 
 
 class SingleDeviceLivelinessProbe(BaseLivelinessProbe):
