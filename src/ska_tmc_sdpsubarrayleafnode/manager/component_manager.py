@@ -211,9 +211,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             self._device.ping = ping
             self._device.update_unresponsive(False)
             if self._update_availablity_callback:
-                self.logger.info(
-                    "Calling update_availablity_callback from update_ping_info"
-                )
                 self._update_availablity_callback(True)
 
     def get_obs_state(self) -> ObsState:

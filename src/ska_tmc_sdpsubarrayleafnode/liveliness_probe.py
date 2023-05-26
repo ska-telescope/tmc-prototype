@@ -64,18 +64,17 @@ class BaseLivelinessProbe:
 
     def device_task(self, dev_info: DeviceInfo) -> None:
         """
-        Checks device status
+        Checks device status and logs error messages on state change
         """
         try:
             proxy = self._dev_factory.get_device(dev_info.dev_name)
             proxy.set_timeout_millis(self._proxy_timeout)
-            self._logger.info(str(proxy.ping()))
             self._component_manager.update_ping_info(proxy.ping())
-        except Exception as exp_msg:
-            self._logger.error(
-                "Device not working %s: %s", dev_info.dev_name, exp_msg
+        except Exception as err:
+            self._logger.exception(f"Error on {dev_info.dev_name}: {err} ")
+            self._component_manager.device_failed(
+                dev_info, f"Unable to ping device {dev_info.dev_name}"
             )
-            self._component_manager.device_failed(dev_info, exp_msg)
 
 
 class SingleDeviceLivelinessProbe(BaseLivelinessProbe):
