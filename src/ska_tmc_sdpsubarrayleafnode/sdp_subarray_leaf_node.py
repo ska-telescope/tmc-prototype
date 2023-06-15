@@ -43,7 +43,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         self._sdp_subarray_obs_state = ObsState.EMPTY
         self._command_result = ("", "")
         self.set_change_event("longRunningCommandResult", True)
-        self.set_change_event("ObsState", True)
+        self.set_change_event("sdpSubarrayObsState", True)
 
     # -----------------
     # Device Properties
@@ -82,7 +82,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         access=AttrWriteType.READ_WRITE,
     )
 
-    sdp_subarray_obs_state = attribute(
+    sdpSubarrayObsState = attribute(
         dtype=int,
         access=AttrWriteType.READ_WRITE,
     )
@@ -231,13 +231,13 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         return self.component_manager.lrc_result
 
-    def read_sdp_subarray_obs_state(self):
-        """Read method for sdp_subarray_obs_state"""
-        return self._sdp_subarray_obs_state
+    def read_sdpSubarrayObsState(self):
+        """Read method for sdpSubarrayObsState"""
+        return self._sdpSubarrayObsState
 
-    def write_sdp_subarray_obs_state(self, obs_state):
-        """Read method for sdp_subarray_obs_state"""
-        self._sdp_subarray_obs_state = obs_state
+    def write_sdpSubarrayObsState(self, obs_state):
+        """Read method for sdpSubarrayObsState"""
+        self._sdpSubarrayObsState = obs_state
 
     # --------
     # Commands
