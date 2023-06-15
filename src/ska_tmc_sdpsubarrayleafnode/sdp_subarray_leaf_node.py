@@ -40,7 +40,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     def init_device(self):
         super().init_device()
-        self._sdp_subarray_obs_state = ObsState.EMPTY
+        self._sdpSubarrayObsState = ObsState.EMPTY
         self._command_result = ("", "")
         self.set_change_event("longRunningCommandResult", True)
         self.set_change_event("sdpSubarrayObsState", True)
@@ -120,7 +120,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     ) -> None:
         """Updates SDP Subarray ObsState"""
         self._sdp_subarray_obs_state = obs_state
-        self.push_change_event("ObsState", self._command_result)
+        self.push_change_event("sdpSubarrayObsState", self._command_result)
 
     def update_lrcr_callback(self, lrc_result):
         """Change event callback for longRunningCommandResult"""
