@@ -10,7 +10,7 @@ import tango
 # from ska_tango_testing.mock.tango import MockTangoEventCallbackGroup
 from ska_tango_testing.mock.tango import MockTangoEventCallbackGroup
 from ska_tmc_common.dev_factory import DevFactory
-from ska_tmc_common.test_helpers.helper_state_device import HelperStateDevice
+from ska_tmc_common.test_helpers.helper_base_device import HelperBaseDevice
 from ska_tmc_common.test_helpers.helper_subarray_device import (
     HelperSubArrayDevice,
 )
@@ -80,7 +80,7 @@ def devices_to_load():
             ],
         },
         {
-            "class": HelperStateDevice,
+            "class": HelperBaseDevice,
             "devices": [
                 {"name": "mid-sdp/control/0"},
             ],

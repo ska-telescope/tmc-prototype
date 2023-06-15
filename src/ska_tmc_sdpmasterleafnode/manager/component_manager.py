@@ -2,14 +2,15 @@
 """
 This module implements ComponentManager class for the Sdp Master Leaf Node.
 """
-from ska_tmc_common.command_executor import CommandExecutor
+# from ska_tmc_common.command_executor import CommandExecutor
 from ska_tmc_common.device_info import DeviceInfo
+from ska_tmc_common.enum import LivelinessProbeType
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
 
-from ska_tmc_sdpsubarrayleafnode.liveliness_probe import (
-    LivelinessProbeType,
-    SingleDeviceLivelinessProbe,
-)
+# from ska_tmc_sdpsubarrayleafnode.liveliness_probe import (
+#     LivelinessProbeType,
+#     SingleDeviceLivelinessProbe,
+# )
 
 
 class SdpMLNComponentManager(TmcLeafNodeComponentManager):
@@ -26,17 +27,18 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
     def __init__(
         self,
         sdp_master_dev_name,
-        op_state_model,
+        _adapter_factory,
         logger=None,
-        _update_command_in_progress_callback=None,
-        _monitoring_loop=False,
+        _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
+        # _update_command_in_progress_callback=None,
+        # _monitoring_loop=False,
         _event_receiver=False,
         max_workers=1,
         proxy_timeout=500,
         sleep_time=1,
         timeout=30,
         _update_availablity_callback=None,
-        _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
+        # _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
     ):
         """
         Initialise a new ComponentManager instance.
@@ -57,57 +59,57 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         """
 
         super().__init__(
-            op_state_model,
             logger,
-            _monitoring_loop,
-            _event_receiver,
-            max_workers,
-            proxy_timeout,
-            sleep_time,
+            _liveliness_probe=_liveliness_probe,
+            _event_receiver=False,
+            max_workers=max_workers,
+            proxy_timeout=proxy_timeout,
+            sleep_time=sleep_time,
         )
         self.sdp_master_dev_name = sdp_master_dev_name
         # pylint: disable=line-too-long
-        self._command_executor = CommandExecutor(
-            logger,
-            _update_command_in_progress_callback=_update_command_in_progress_callback,  # noqa:E501
-        )
-        self.logger = logger
+        # self._command_executor = CommandExecutor(
+        #     logger,
+        #     _update_command_in_progress_callback=_update_command_in_progress_callback,  # noqa:E501
+        # )
+        self._adapter_factory = _adapter_factory
         self._device = DeviceInfo(sdp_master_dev_name)
         self.timeout = timeout
         # pylint: enable=line-too-long
         self.update_availablity_callback = _update_availablity_callback
-        self.liveliness_probe = SingleDeviceLivelinessProbe(
-            self,
-            logger=self.logger,
-            proxy_timeout=500,
-            sleep_time=1,
-        )
+        # self.liveliness_probe = SingleDeviceLivelinessProbe(
+        #     self,
+        #     logger=self.logger,
+        #     proxy_timeout=500,
+        #     sleep_time=1,
+        # )
+        self.update_availablity_callback = _update_availablity_callback
 
-        self.start_liveliness_probe(LivelinessProbeType.SINGLE_DEVICE)
+    #     self.start_liveliness_probe(LivelinessProbeType.SINGLE_DEVICE)
 
-    def stop(self):
-        self.stop_liveliness_probe()
+    # def stop(self):
+    #     self.stop_liveliness_probe()
 
-    def start_liveliness_probe(self, lp: LivelinessProbeType) -> None:
-        """Starts Liveliness Probe for the given device.
+    # def start_liveliness_probe(self, lp: LivelinessProbeType) -> None:
+    #     """Starts Liveliness Probe for the given device.
 
-        :param lp: enum of class LivelinessProbeType
-        """
-        try:
-            if lp == LivelinessProbeType.SINGLE_DEVICE:
-                self.liveliness_probe.start()
-            else:
-                self.logger.warning("Liveliness Probe is not running")
-        except Exception as e:
-            self.logger.error(
-                f"An error occurred during\
-                            Liveliness Probe start: {str(e)}"
-            )
+    #     :param lp: enum of class LivelinessProbeType
+    #     """
+    #     try:
+    #         if lp == LivelinessProbeType.SINGLE_DEVICE:
+    #             self.liveliness_probe.start()
+    #         else:
+    #             self.logger.warning("Liveliness Probe is not running")
+    #     except Exception as e:
+    #         self.logger.error(
+    #             f"An error occurred during\
+    #                         Liveliness Probe start: {str(e)}"
+    #         )
 
-    def stop_liveliness_probe(self) -> None:
-        """Stops the liveliness probe"""
-        if self.liveliness_probe:
-            self.liveliness_probe.stop()
+    # def stop_liveliness_probe(self) -> None:
+    #     """Stops the liveliness probe"""
+    #     if self.liveliness_probe:
+    #         self.liveliness_probe.stop()
 
     def update_ping_info(self, ping: int) -> None:
         """
@@ -127,18 +129,18 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
                 )
                 self.update_availablity_callback(True)
 
-    def device_failed(
-        self, device_info, exception
-    ):  # pylint: disable=arguments-differ
-        """
-        Set a device to failed and call the relative callback if available
+    # def device_failed(
+    #     self, device_info, exception
+    # ):  # pylint: disable=arguments-differ
+    #     """
+    #     Set a device to failed and call the relative callback if available
 
-        :param device_info: a device info
-        :type device_info: DeviceInfo
-        :param exception: an exception
-        :type: Exception
-        """
-        device_info.update_unresponsive(True, exception)
-        with self.lock:
-            if self.update_availablity_callback is not None:
-                self.update_availablity_callback(False)
+    #     :param device_info: a device info
+    #     :type device_info: DeviceInfo
+    #     :param exception: an exception
+    #     :type: Exception
+    #     """
+    #     device_info.update_unresponsive(True, exception)
+    #     with self.lock:
+    #         if self.update_availablity_callback is not None:
+    #             self.update_availablity_callback(False)

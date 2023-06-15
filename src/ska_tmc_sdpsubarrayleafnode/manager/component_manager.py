@@ -10,7 +10,8 @@ import time
 
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
-from ska_tmc_common.command_executor import CommandExecutor
+
+# from ska_tmc_common.command_executor import CommandExecutor
 from ska_tmc_common.device_info import SubArrayDeviceInfo
 from ska_tmc_common.lrcr_callback import LRCRCallback
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
@@ -83,10 +84,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             self.event_receiver.start()
 
         # pylint: disable=line-too-long
-        self.command_executor = CommandExecutor(
-            logger,
-            _update_command_in_progress_callback=update_command_in_progress_callback,  # noqa:E501
-        )
+        # self.command_executor = CommandExecutor(
+        #     logger,
+        #     _update_command_in_progress_callback=update_command_in_progress_callback,  # noqa:E501
+        # )
         self.timeout = timeout
         self._update_availablity_callback = _update_availablity_callback
 
