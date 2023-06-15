@@ -6,6 +6,7 @@ from os.path import dirname, join
 
 import pytest
 import tango
+from ska_tango_testing.mock import MockCallable
 
 # from ska_tango_testing.mock.tango import MockTangoEventCallbackGroup
 from ska_tango_testing.mock.tango import MockTangoEventCallbackGroup
@@ -163,3 +164,13 @@ def change_event_callbacks() -> MockTangoEventCallbackGroup:
         "longRunningCommandResult",
         timeout=30.0,
     )
+
+
+@pytest.fixture
+def task_callback() -> MockCallable:
+    """Creates a mock callable for asynchronous testing
+
+    :rtype: MockCallable
+    """
+    task_callback = MockCallable(5)
+    return task_callback

@@ -3,9 +3,16 @@
 This module implements ComponentManager class for the Sdp Master Leaf Node.
 """
 # from ska_tmc_common.command_executor import CommandExecutor
+from typing import Tuple
+
+from ska_tango_base.executor import TaskStatus
 from ska_tmc_common.device_info import DeviceInfo
 from ska_tmc_common.enum import LivelinessProbeType
+from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
+from tango import DevState
+
+from ska_tmc_sdpmasterleafnode.commands import On
 
 # from ska_tmc_sdpsubarrayleafnode.liveliness_probe import (
 #     LivelinessProbeType,
@@ -84,6 +91,9 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         #     sleep_time=1,
         # )
         self.update_availablity_callback = _update_availablity_callback
+        self.on_command_object = On(
+            self, self.op_state_model, self._adapter_factory, logger
+        )
 
     #     self.start_liveliness_probe(LivelinessProbeType.SINGLE_DEVICE)
 
@@ -144,3 +154,55 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
     #     with self.lock:
     #         if self.update_availablity_callback is not None:
     #             self.update_availablity_callback(False)
+
+    def _check_if_sdp_master_is_responsive(self) -> None:
+        """Checks if SDP master/controller device is responsive."""
+
+        if self._device is None or self._device.unresponsive:
+
+            raise DeviceUnresponsive(
+                f"{self.sdp_master_dev_name} not available"
+            )
+
+    def is_command_allowed(self, command_name: str) -> bool:
+        """
+        Checks whether this command is allowed.
+        It checks that the device is in the right state to execute this command
+        and that all the components needed for the operation are not
+        unresponsive.
+
+        :return: True if this command is allowed
+
+        :rtype: boolean
+        """
+
+        if command_name in ["On"]:
+            if self.op_state_model.op_state in [
+                DevState.FAULT,
+                DevState.UNKNOWN,
+            ]:
+                raise CommandNotAllowed(
+                    f"The invocation of the {__class__} command on this "
+                    + "device is not allowed.\n"
+                    + "Reason: The current operational state "
+                    + f"is {self.op_state_model.op_state}."
+                    + "The command has NOT been executed."
+                    + "This device will continue with normal operation.",
+                    self.op_state_model.op_state,
+                )
+            self._check_if_sdp_master_is_responsive()
+            return True
+        return False
+
+    def on_command(self, task_callback=None) -> Tuple[TaskStatus, str]:
+        """Submits the On command for execution.
+
+        :rtype: tuple
+        """
+        task_status, response = self.submit_task(
+            self.on_command_object.on,
+            args=[self.logger],
+            task_callback=task_callback,
+        )
+        self.logger.info("On command queued for execution")
+        return task_status, response

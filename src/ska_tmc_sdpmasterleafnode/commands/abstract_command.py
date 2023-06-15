@@ -24,8 +24,8 @@ class SdpMLNCommand(TmcLeafNodeCommand):
 
     def check_unresponsive(self):
         """Checks whether the device is unresponsive"""
-        component_manager = self.target
-        devInfo = component_manager.get_device()
+        # component_manager = self.target
+        devInfo = self.component_manager.get_device()
         if devInfo is None or devInfo.unresponsive:
             raise DeviceUnresponsive(
                 """The invocation of the command on this device is not allowed.
@@ -34,39 +34,39 @@ class SdpMLNCommand(TmcLeafNodeCommand):
                 This device will continue with normal operation."""
             )
 
-    def check_allowed(self):
-        """
-        Checks whether this command is allowed
-        It checks that the device is in the right state
-        to execute this command and that all the
-        component needed for the operation are not unresponsive
+    # def check_allowed(self):
+    #     """
+    #     Checks whether this command is allowed
+    #     It checks that the device is in the right state
+    #     to execute this command and that all the
+    #     component needed for the operation are not unresponsive
 
-        :return: True if this command is allowed
+    #     :return: True if this command is allowed
 
-        :rtype: boolean
+    #     :rtype: boolean
 
-        """
+    #     """
 
-        if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
-            raise CommandNotAllowed(
-                "The invocation of the {} command on this device".format(
-                    __class__
-                )
-                + "is not allowed."
-                + "Reason: The current operational state is %s."
-                + "The command has NOT been executed."
-                + "This device will continue with normal operation.",
-                self.op_state_model.op_state,
-            )
+    #     if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
+    #         raise CommandNotAllowed(
+    #             "The invocation of the {} command on this device".format(
+    #                 __class__
+    #             )
+    #             + "is not allowed."
+    #             + "Reason: The current operational state is %s."
+    #             + "The command has NOT been executed."
+    #             + "This device will continue with normal operation.",
+    #             self.op_state_model.op_state,
+    #         )
 
-        return True
+    #     return True
 
     # pylint: disable=attribute-defined-outside-init
     def init_adapter(self):
         self.sdp_master_adapter = None
-        component_manager = self.target
-        dev_name = component_manager.sdp_master_dev_name
-        timeout = component_manager.timeout
+        # component_manager = self.target
+        dev_name = self.component_manager.sdp_master_dev_name
+        timeout = self.component_manager.timeout
         elapsed_time = 0
         start_time = time.time()
         while self.sdp_master_adapter is None and elapsed_time < timeout:
@@ -79,22 +79,25 @@ class SdpMLNCommand(TmcLeafNodeCommand):
             except ConnectionFailed as cf:
                 elapsed_time = time.time() - start_time
                 if elapsed_time > timeout:
-                    return self.adapter_error_message_result(
-                        component_manager.sdp_master_dev_name,
-                        cf,
+                    message = (
+                        f"Error in creating adapter for "
+                        f"{self.component_manager.sdp_master_dev_name}: {cf}"
                     )
+                    return ResultCode.FAILED, message
             except DevFailed as df:
                 elapsed_time = time.time() - start_time
                 if elapsed_time > timeout:
-                    return self.adapter_error_message_result(
-                        component_manager.sdp_master_dev_name,
-                        df,
+                    message = (
+                        f"Error in creating adapter for "
+                        f"{self.component_manager.sdp_master_dev_name}: {df}"
                     )
+                    return ResultCode.FAILED, message
             except (AttributeError, ValueError, TypeError) as e:
-                return self.adapter_error_message_result(
-                    component_manager.sdp_master_dev_name,
-                    e,
+                message = (
+                    f"Error in creating adapter for "
+                    f"{self.component_manager.sdp_master_dev_name}: {e}"
                 )
+                return ResultCode.FAILED, message
 
         return ResultCode.OK, ""
 

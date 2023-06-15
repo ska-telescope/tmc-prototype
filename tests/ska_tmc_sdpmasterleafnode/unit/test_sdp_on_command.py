@@ -1,5 +1,5 @@
 import pytest
-from ska_tango_base.commands import ResultCode
+from ska_tango_base.commands import ResultCode, TaskStatus
 from ska_tmc_common.device_info import DeviceInfo
 from ska_tmc_common.exceptions import DeviceUnresponsive
 from ska_tmc_common.test_helpers.helper_adapter_factory import (
@@ -15,18 +15,29 @@ from tests.settings import (
 )
 
 
+@pytest.mark.ontest
 @pytest.mark.parametrize(
     "sdp_master_device", [SDP_MASTER_DEVICE_MID, SDP_MASTER_DEVICE_LOW]
 )
-def test_on_command(tango_context, sdp_master_device):
-    _, on_command, adapter_factory = get_sdpmln_command_obj(
+def test_on_command(tango_context, sdp_master_device, task_callback):
+    cm, on_command, adapter_factory = get_sdpmln_command_obj(
         On, sdp_master_device
     )
-    assert on_command.check_allowed()
-    (result_code, _) = on_command.do()
-    assert result_code == ResultCode.OK
-    adapter = adapter_factory.get_or_create_adapter(sdp_master_device)
-    adapter.proxy.On.assert_called_once_with()
+    assert cm.is_command_allowed("On")
+    # result_code, _ = cm.on_command()
+    # assert result_code == ResultCode.OK
+    # adapter = adapter_factory.get_or_create_adapter(sdp_master_device)
+    # adapter.proxy.On.assert_called_once_with()
+    cm.on_command(task_callback=task_callback)
+    task_callback.assert_against_call(
+        call_kwargs={"status": TaskStatus.QUEUED}
+    )
+    task_callback.assert_against_call(
+        call_kwargs={"status": TaskStatus.IN_PROGRESS}
+    )
+    task_callback.assert_against_call(
+        call_kwargs={"status": TaskStatus.COMPLETED, "result": ResultCode.OK}
+    )
 
 
 @pytest.mark.sdpmln
