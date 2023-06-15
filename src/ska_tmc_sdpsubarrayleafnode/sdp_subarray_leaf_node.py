@@ -14,20 +14,21 @@ from tango import ApiUtil, AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
 
 from ska_tmc_sdpsubarrayleafnode import release
-from ska_tmc_sdpsubarrayleafnode.commands import (
-    Abort,
-    AssignResources,
-    Configure,
-    End,
-    EndScan,
-    ObsReset,
-    Off,
-    On,
-    ReleaseResources,
-    Reset,
-    Restart,
-    Scan,
-)
+# TODO : Will get Uncommented after refactoring for command is done.
+# from ska_tmc_sdpsubarrayleafnode.commands import (
+#     Abort,
+#     AssignResources,
+#     Configure,
+#     End,
+#     EndScan,
+#     ObsReset,
+#     Off,
+#     On,
+#     ReleaseResources,
+#     Reset,
+#     Restart,
+#     Scan,
+# )
 from ska_tmc_sdpsubarrayleafnode.manager import SdpSLNComponentManager
 
 

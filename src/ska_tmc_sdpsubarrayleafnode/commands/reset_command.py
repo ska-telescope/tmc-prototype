@@ -1,61 +1,62 @@
-"""
-Reset command class for SDPSubarrayLeafNode.
-"""
-from ska_tango_base.commands import ResultCode
-from ska_tmc_common.adapters import AdapterFactory
+# TODO : Will get Uncommented after refactoring for command is done.
+# """
+# Reset command class for SDPSubarrayLeafNode.
+# """
+# from ska_tango_base.commands import ResultCode
+# from ska_tmc_common.adapters import AdapterFactory
 
-from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
+# from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
 
 
-class Reset(SdpSLNCommand):
-    """
-    A class for SdpSubarrayLeafNode's Reset() command.
+# class Reset(SdpSLNCommand):
+#     """
+#     A class for SdpSubarrayLeafNode's Reset() command.
 
-    Command to reset the SDP Subarray and bring it to its initial state.
-    """
+#     Command to reset the SDP Subarray and bring it to its initial state.
+#     """
 
-    def __init__(
-        self,
-        target,
-        op_state_model,
-        adapter_factory=None,
-        logger=None,
-    ):
-        super().__init__(target, logger)
-        self.op_state_model = op_state_model
-        self._adapter_factory = adapter_factory or AdapterFactory()
+#     def __init__(
+#         self,
+#         target,
+#         op_state_model,
+#         adapter_factory=None,
+#         logger=None,
+#     ):
+#         super().__init__(target, logger)
+#         self.op_state_model = op_state_model
+#         self._adapter_factory = adapter_factory or AdapterFactory()
 
-    def check_allowed(self):
-        """
-        Checks whether this command is allowed
-        It checks that the device is in the right state
-        to execute this command and that all the
-        component needed for the operation are not unresponsive
+#     def check_allowed(self):
+#         """
+#         Checks whether this command is allowed
+#         It checks that the device is in the right state
+#         to execute this command and that all the
+#         component needed for the operation are not unresponsive
 
-        :return: True if this command is allowed
+#         :return: True if this command is allowed
 
-        :rtype: boolean
+#         :rtype: boolean
 
-        """
+#         """
 
-        self.check_op_state("Reset")
-        self.check_unresponsive()
+#         self.check_op_state("Reset")
+#         self.check_unresponsive()
 
-        return True
+#         return True
 
-    def do(self, argin=None):
-        """
-        Method to invoke Reset command on SDP Subarray.
+#     def do(self, argin=None):
+#         """
+#         Method to invoke Reset command on SDP Subarray.
 
-        :param argin: None
+#         :param argin: None
 
-        return:
-            None
+#         return:
+#             None
 
-        """
-        ret_code, message = self.init_adapter()
-        if ret_code == ResultCode.FAILED:
-            return ret_code, message
+#         """
+#         ret_code, message = self.init_adapter()
+#         if ret_code == ResultCode.FAILED:
+#             return ret_code, message
 
-        self.logger.info("Resetting Sdp Subarray Leaf Node")
-        return (ResultCode.OK, "")
+#         self.logger.info("Resetting Sdp Subarray Leaf Node")
+#         return (ResultCode.OK, "")
