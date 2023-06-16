@@ -11,6 +11,6 @@ url="""https://www.skaobservatory.org"""
 copyright=""""""
 release=0.9.3
 tag=0.9.3
-release_notes=This release contains:<br/><ul><li> Modify SdpLeafNodes to handle the unavailability of SDP system.</li></ul><br/>
+release_notes=This release contains:<br/><ul><li> Introduce the new attribute `sdpSubarrayObsState` to track the observation state of the SDP subarray.</li></ul><br/>
 
 

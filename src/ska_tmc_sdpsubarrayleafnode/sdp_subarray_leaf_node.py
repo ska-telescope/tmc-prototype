@@ -234,7 +234,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         return self.component_manager.lrc_result
 
     def read_sdpSubarrayObsState(self):
-        """Read method for sdpSubarrayObsState"""
+        """Reads the current observation state of the SDP subarray"""
         return self._sdp_subarray_obs_state
 
     # --------
