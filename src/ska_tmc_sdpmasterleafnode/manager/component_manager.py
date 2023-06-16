@@ -12,7 +12,7 @@ from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
 from tango import DevState
 
-from ska_tmc_sdpmasterleafnode.commands import On
+from ska_tmc_sdpmasterleafnode.commands import Off, On
 
 # from ska_tmc_sdpsubarrayleafnode.liveliness_probe import (
 #     LivelinessProbeType,
@@ -92,6 +92,10 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         # )
         self.update_availablity_callback = _update_availablity_callback
         self.on_command_object = On(
+            self, self.op_state_model, self._adapter_factory, logger
+        )
+
+        self.off_command_object = Off(
             self, self.op_state_model, self._adapter_factory, logger
         )
 
@@ -175,7 +179,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         :rtype: boolean
         """
 
-        if command_name in ["On"]:
+        if command_name in ["On", "Off"]:
             if self.op_state_model.op_state in [
                 DevState.FAULT,
                 DevState.UNKNOWN,
@@ -204,4 +208,17 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             task_callback=task_callback,
         )
         self.logger.info("On command queued for execution")
+        return task_status, response
+
+    def off_command(self, task_callback=None) -> Tuple[TaskStatus, str]:
+        """Submits the Off command for execution.
+
+        :rtype: tuple
+        """
+        task_status, response = self.submit_task(
+            self.off_command_object.off,
+            args=[self.logger],
+            task_callback=task_callback,
+        )
+        self.logger.info("Off command queued for execution")
         return task_status, response

@@ -5,10 +5,11 @@ import pytest
 from ska_tango_base.commands import ResultCode, TaskStatus
 from ska_tmc_common.adapters import AdapterType
 from ska_tmc_common.device_info import DeviceInfo
-from ska_tmc_common.exceptions import DeviceUnresponsive
+from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
 from ska_tmc_common.test_helpers.helper_adapter_factory import (
     HelperAdapterFactory,
 )
+from tango import DevState
 
 from ska_tmc_sdpmasterleafnode.commands import On
 from tests.settings import (
@@ -76,3 +77,14 @@ def test_on_command_is_not_allowed_device_unresponsive(
     cm, _ = create_cm("SdpMLNComponentManager", sdp_master_device)
     cm._device = DeviceInfo(sdp_master_device, _unresponsive=True)
     pytest.raises(DeviceUnresponsive)
+
+
+@pytest.mark.parametrize(
+    "sdp_master_device", [SDP_MASTER_DEVICE_MID, SDP_MASTER_DEVICE_LOW]
+)
+def test_on_fail_is_allowed(tango_context, sdp_master_device):
+    logger.info("%s", tango_context)
+    cm, _ = create_cm("SdpMLNComponentManager", sdp_master_device)
+    cm.op_state_model._op_state = DevState.FAULT
+    with pytest.raises(CommandNotAllowed):
+        cm.is_command_allowed("On")

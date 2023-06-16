@@ -147,38 +147,26 @@ class SdpMasterLeafNode(SKABaseDevice):
     # Commands
     # --------
 
-    # TODO : Will get Uncommented after refactoring for command is done.
-    # def is_Off_allowed(self):
-    #     """
-    #     Checks whether this command is allowed to be run in current \
-    #     device state. \
+    def is_Off_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current \
+        device state. \
 
-    #     :return: True if this command is allowed to be run in current device \
-    #     state. \
+        :return: True if this command is allowed to be run in current device \
+        state. \
 
-    #     :rtype: boolean
-    #     """
-    #     handler = self.get_command_object("Off")
-    #     return handler.check_allowed()
+        :rtype: boolean
+        """
+        return self.component_manager.is_command_allowed("Off")
 
-    # @command(dtype_out="DevVarLongStringArray")
-    # def Off(self):
-    #     """
-    #     This command invokes Off() command on Sdp Master.
-    #     """
-    #     handler = self.get_command_object("Off")
-    #     if self.component_manager._command_executor.queue_full:
-    #         message = """The invocation of the Off command on this device
-    #         failed.
-    #         Reason: The command executor rejected the queuing of the command
-    #         because its queue is full.
-    #         The Off command has NOT been queued and will not be executed.
-    #         This device will continue with normal operation."""
-    #         return [[ResultCode.FAILED], [message]]
-    #     unique_id = self.component_manager._command_executor.enqueue_command(
-    #         handler
-    #     )
-    #     return [[ResultCode.QUEUED], [str(unique_id)]]
+    @command(dtype_out="DevVarLongStringArray")
+    def Off(self):
+        """
+        This command invokes Off() command on Sdp Master.
+        """
+        handler = self.get_command_object("On")
+        return_code, message = handler()
+        return return_code, message
 
     def is_On_allowed(self):
         """
@@ -314,7 +302,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         args = ()
         for command_name, method_name in [
             ("On", "on_command"),
-            # ("Off", Off),
+            ("Off", "off_command"),
             # ("Standby", Standby),
             # ("Disable", Disable),
         ]:
