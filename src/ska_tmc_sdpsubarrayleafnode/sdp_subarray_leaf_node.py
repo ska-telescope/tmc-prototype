@@ -688,6 +688,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             logger=self.logger,
             _update_device_callback=self.update_device_callback,
             _update_lrcr_callback=self.update_lrcr_callback,
+            _update_sdp_subarray_obs_state_callback=(
+                self.update_sdp_subarray_obs_state_callback
+            ),
             sleep_time=self.SleepTime,
             timeout=self.TimeOut,
             _update_availablity_callback=self.update_availablity_callback,
