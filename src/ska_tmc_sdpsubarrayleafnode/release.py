@@ -10,7 +10,7 @@
 """Release information for Python Package"""
 
 name = """ska_tmc_sdpsubarrayleafnode"""
-version = "0.9.3"
+version = "0.10.0"
 version_info = version.split(".")
 description = """"""
 author = "Team Himalaya, Team Sahyadri"
