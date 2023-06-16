@@ -12,7 +12,7 @@ from tango import AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
 
 from ska_tmc_sdpmasterleafnode import release
-from ska_tmc_sdpmasterleafnode.commands import Disable, Off, On, Standby
+from ska_tmc_sdpmasterleafnode.commands import On
 from ska_tmc_sdpmasterleafnode.manager import SdpMLNComponentManager
 
 # from ska_tmc_sdpsubarrayleafnode.liveliness_probe import LivelinessProbeType
@@ -44,11 +44,11 @@ class SdpMasterLeafNode(SKABaseDevice):
         access=AttrWriteType.READ,
     )
 
-    commandExecuted = attribute(
-        dtype=(("DevString",),),
-        max_dim_x=4,
-        max_dim_y=100,
-    )
+    # commandExecuted = attribute(
+    #     dtype=(("DevString",),),
+    #     max_dim_x=4,
+    #     max_dim_y=100,
+    # )
 
     sdpMasterDevName = attribute(
         dtype="DevString",
@@ -313,7 +313,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         super().init_command_objects()
         args = ()
         for command_name, method_name in [
-            ("On", On),
+            ("On", "on_command"),
             # ("Off", Off),
             # ("Standby", Standby),
             # ("Disable", Disable),

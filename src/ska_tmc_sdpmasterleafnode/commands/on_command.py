@@ -49,7 +49,7 @@ class On(SdpMLNCommand):
         else:
             logger.info(
                 "The On command is invoked successfully on %s",
-                self.csp_master_adapter.dev_name,
+                self.sdp_master_adapter.dev_name,
             )
             task_callback(
                 status=TaskStatus.COMPLETED,
@@ -62,10 +62,10 @@ class On(SdpMLNCommand):
 
         """
 
-        ret_code, message = self.init_adapter()
-        if ret_code == ResultCode.FAILED:
-            return ret_code, message
-        result = self.call_adapter_method(
+        return_code, message = self.init_adapter()
+        if return_code == ResultCode.FAILED:
+            return return_code, message
+        result, msg = self.call_adapter_method(
             "Sdp Master", self.sdp_master_adapter, "On"
         )
-        return result
+        return result, msg

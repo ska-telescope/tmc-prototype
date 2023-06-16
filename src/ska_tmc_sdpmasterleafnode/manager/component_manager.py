@@ -159,7 +159,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         """Checks if SDP master/controller device is responsive."""
 
         if self._device is None or self._device.unresponsive:
-
             raise DeviceUnresponsive(
                 f"{self.sdp_master_dev_name} not available"
             )

@@ -174,3 +174,18 @@ def task_callback() -> MockCallable:
     """
     task_callback = MockCallable(5)
     return task_callback
+
+
+@pytest.fixture
+def group_callback() -> MockTangoEventCallbackGroup:
+    """Creates a mock callback group for asynchronous testing
+
+    :rtype: MockTangoEventCallbackGroup
+    """
+    group_callback = MockTangoEventCallbackGroup(
+        "longRunningCommandsInQueue",
+        "longRunningCommandResult",
+        "longRunningCommandIDsInQueue",
+        timeout=15,
+    )
+    return group_callback

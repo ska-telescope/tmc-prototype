@@ -705,7 +705,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         super().init_command_objects()
         args = ()
-        for (command_name, command_class) in [
+        for command_name, command_class in [
             ("On", On),
             ("Off", Off),
             ("AssignResources", AssignResources),
@@ -718,7 +718,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             ("Abort", Abort),
             ("Restart", Restart),
         ]:
-
             command_obj = command_class(
                 self.component_manager,
                 self.op_state_model,
