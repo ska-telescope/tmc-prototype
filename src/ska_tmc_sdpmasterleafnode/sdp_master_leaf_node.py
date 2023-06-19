@@ -166,8 +166,8 @@ class SdpMasterLeafNode(SKABaseDevice):
         This command invokes Off() command on Sdp Master.
         """
         handler = self.get_command_object("Off")
-        return_code, message = handler()
-        return return_code, message
+        return_code, unique_id = handler()
+        return [[return_code], [str(unique_id)]]
 
     def is_On_allowed(self):
         """

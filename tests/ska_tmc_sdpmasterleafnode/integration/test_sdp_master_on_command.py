@@ -3,15 +3,16 @@ import tango
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.dev_factory import DevFactory
 
-from tests.settings import event_remover, logger
+from tests.settings import (
+    SDP_MASTER_LEAF_DEVICE_LOW,
+    SDP_MASTER_LEAF_DEVICE_MID,
+    event_remover,
+    logger,
+)
 
 
-@pytest.mark.ontest5
-@pytest.mark.post_deployment
-@pytest.mark.SKA_mid
-def test_on_command(tango_context, group_callback):
+def on_command(tango_context, sdpmln_name, group_callback):
     logger.info("%s", tango_context)
-    sdpmln_name = "ska_mid/tm_leaf_node/sdp_master"
     dev_factory = DevFactory()
     sdpmln_node = dev_factory.get_device(sdpmln_name)
     sdpmln_node.subscribe_event(
@@ -66,18 +67,13 @@ def test_on_command(tango_context, group_callback):
     )
 
 
-# @pytest.mark.ontest5
-# @pytest.mark.post_deployment
-# @pytest.mark.SKA_mid
-# def test_on_command_mid(tango_context, group_callback):
-#     on_command(
-#         tango_context, "ska_mid/tm_leaf_node/sdp_master", group_callback
-#     )
+@pytest.mark.post_deployment
+@pytest.mark.SKA_mid
+def test_on_command_mid(tango_context, group_callback):
+    on_command(tango_context, SDP_MASTER_LEAF_DEVICE_MID, group_callback)
 
 
-# @pytest.mark.post_deployment
-# @pytest.mark.SKA_low
-# def test_on_command_low(tango_context, group_callback):
-#     on_command(
-#         tango_context, "ska_low/tm_leaf_node/sdp_master", group_callback
-#     )
+@pytest.mark.post_deployment
+@pytest.mark.SKA_low
+def test_on_command_low(tango_context, group_callback):
+    on_command(tango_context, SDP_MASTER_LEAF_DEVICE_LOW, group_callback)
