@@ -116,7 +116,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     # pylint: disable=attribute-defined-outside-init
     def update_sdp_subarray_obs_state_callback(
-        self, obs_state: ObsState
+            self, obs_state: ObsState
     ) -> None:
         """Updates SDP Subarray ObsState"""
         self._sdp_subarray_obs_state = obs_state
@@ -195,8 +195,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     def update_availablity_callback(self, availablity):
         """Change event callback for isSubsystemAvailable"""
-        self._isSubsystemAvailable = availablity  # pylint: disable=W0201
-        self.push_change_event("isSubsystemAvailable", availablity)
+        if availablity != self._isSubsystemAvailable:
+            self._isSubsystemAvailable = availablity  # pylint: disable=W0201
+            self.push_change_event("isSubsystemAvailable", availablity)
 
     def read_isSubsystemAvailable(self):
         """Read method for isSubsystemAvailable"""
@@ -210,7 +211,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """Return the commandExecuted attribute."""
         result = []
         for command_executed in reversed(
-            self.component_manager.command_executor.command_executed
+                self.component_manager.command_executor.command_executed
         ):
             single_res = [
                 str(command_executed["Id"]),
@@ -719,7 +720,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             ("Abort", Abort),
             ("Restart", Restart),
         ]:
-
             command_obj = command_class(
                 self.component_manager,
                 self.op_state_model,
