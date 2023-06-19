@@ -2,6 +2,7 @@ import time
 
 import pytest
 import tango
+from ska_tango_base.control_model import ObsState
 from ska_tmc_common.dev_factory import DevFactory
 
 from tests.settings import logger
@@ -9,21 +10,25 @@ from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
 def assign_resources_error_propagation(
-    tango_context, sdpsln_name, assign_input_str, change_event_callbacks
+    tango_context, sdpsal_node, assign_input_str, change_event_callbacks
 ) -> None:
 
     dev_factory = DevFactory()
-    sdpsln_device = dev_factory.get_device(sdpsln_name)
+    sdpsln_device = dev_factory.get_device(sdpsal_node)
 
-    if "mid" in sdpsln_name:
+    if "mid" in sdpsal_node:
         sdp_subarray = dev_factory.get_device("mid-sdp/subarray/01")
     else:
         sdp_subarray = dev_factory.get_device("low-sdp/subarray/01")
 
+    sdpsal_node.SetDirectObsState(ObsState.EMPTY)
+    assert sdpsal_node.obsState == ObsState.EMPTY
     result, unique_id = sdpsln_device.AssignResources(assign_input_str)
     logger.info(
         f"AssignResources Command ID: {unique_id} Returned result: {result}"
     )
+    time.sleep(2)
+    assert sdpsal_node.obsState == ObsState.IDLE
 
     sdpsln_device.subscribe_event(
         "longRunningCommandResult",
