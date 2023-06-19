@@ -53,7 +53,7 @@ class SdpSLNCommand(TmcLeafNodeCommand):
         timeout = self.component_manager.timeout
         elapsed_time = 0
         start_time = time.time()
-        
+
         while self.sdp_subarray_adapter is None and elapsed_time < timeout:
             try:
                 if not devInfo.unresponsive:

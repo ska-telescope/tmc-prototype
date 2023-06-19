@@ -6,12 +6,12 @@ It also acts as a SDP contact point for Subarray Node for observation execution
 import tango
 from ska_control_model import HealthState
 from ska_tango_base import SKABaseDevice
-from ska_tango_base.commands import ResultCode
+from ska_tango_base.commands import ResultCode, SubmittedSlowCommand
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.op_state_model import TMCOpStateModel
 from tango import ApiUtil, AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
-from ska_tango_base.commands import ResultCode, SubmittedSlowCommand
+
 from ska_tmc_sdpsubarrayleafnode import release
 from ska_tmc_sdpsubarrayleafnode.manager import SdpSLNComponentManager
 
@@ -223,7 +223,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # --------
     # Commands
     # --------
-    
+
     def is_On_allowed(self):
         """
         Checks whether this command is allowed to be run in current device \
@@ -236,7 +236,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         return self.component_manager.is_command_allowed()
 
-
     @command(dtype_out="DevVarLongStringArray")
     @DebugIt()
     def On(self):
@@ -247,21 +246,32 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         result_code, unique_id = handler()
 
         return [[result_code], [unique_id]]
-    
 
     # TODO: This code will be enabled as part of SP-3237
-    # def is_Off_allowed(self):
-    #     """
-    #     Checks whether this command is allowed to be run in current \
-    #     device state. \
+    def is_Off_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current \
+        device state. \
 
-    #     :return: True if this command is allowed to be run in current \
-    #     device state. \
+        :return: True if this command is allowed to be run in current \
+        device state. \
 
-    #     :rtype: boolean
-    #     """
-    #     handler = self.get_command_object("Off")
-    #     return handler.check_allowed()
+        :rtype: boolean
+        """
+        # handler = self.get_command_object("Off")
+        # return handler.check_allowed()
+        return self.component_manager.is_command_allowed()
+
+    @command(dtype_out="DevVarLongStringArray")
+    @DebugIt()
+    def Off(self):
+        """
+        This command invokes Off() command on SDP Subarray.
+        """
+        handler = self.get_command_object("Off")
+        result_code, unique_id = handler()
+
+        return [[result_code], [unique_id]]
 
     # @command(dtype_out="DevVarLongStringArray")
     # def Off(self):
@@ -663,7 +673,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             communication_state_callback=None,
             component_state_callback=None,
             _update_device_callback=self.update_device_callback,
-            _update_sdp_subarray_obs_state_callback = self.update_sdp_subarray_obs_state_callback,
+            _update_sdp_subarray_obs_state_callback=self.update_sdp_subarray_obs_state_callback,
             _update_lrcr_callback=self.update_lrcr_callback,
             sleep_time=self.SleepTime,
             timeout=self.TimeOut,
@@ -680,9 +690,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         super().init_command_objects()
 
-        for command_name, method_name in [
-            ("On", "on"),
-        ]:
+        for command_name, method_name in [("On", "on"), ("Off", "Off")]:
             self.register_command_object(
                 command_name,
                 SubmittedSlowCommand(
@@ -693,6 +701,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     logger=None,
                 ),
             )
+
 
 # ----------
 # Run server

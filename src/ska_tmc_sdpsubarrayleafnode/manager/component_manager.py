@@ -6,31 +6,31 @@ This module provided a reference implementation of a BaseComponentManager.
 It is provided for explanatory purposes, and to support testing of this
 package.
 """
-from typing import Tuple
 import time
-from ska_tango_base.executor import TaskStatus
+from typing import Tuple
+
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
+from ska_tango_base.executor import TaskStatus
 
 # from ska_tmc_common.command_executor import CommandExecutor
 from ska_tmc_common.device_info import SubArrayDeviceInfo
-from ska_tmc_common.lrcr_callback import LRCRCallback
-from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
 
 # from ska_tmc_sdpsubarrayleafnode.liveliness_probe import (
 #     LivelinessProbeType,
 #     SingleDeviceLivelinessProbe,
 # )
 from ska_tmc_common.enum import LivelinessProbeType
+from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
+from ska_tmc_common.lrcr_callback import LRCRCallback
+from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
+from tango import DevState
+
+from ska_tmc_sdpsubarrayleafnode.commands.off_command import Off
+from ska_tmc_sdpsubarrayleafnode.commands.on_command import On
 from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
     SdpSLNEventReceiver,
 )
-from ska_tmc_sdpsubarrayleafnode.commands.on_command import On
-from ska_tmc_common.exceptions import (
-    CommandNotAllowed,
-    DeviceUnresponsive,
-)
-from tango import DevState
 
 
 class SdpSLNComponentManager(TmcLeafNodeComponentManager):
@@ -51,8 +51,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         _event_receiver: bool = True,
         communication_state_callback=None,
         component_state_callback=None,
-        _update_device_callback=None,         # ??
-        update_command_in_progress_callback=None,   # ??
+        _update_device_callback=None,  # ??
+        update_command_in_progress_callback=None,  # ??
         _update_sdp_subarray_obs_state_callback=None,
         _update_lrcr_callback=None,
         max_workers=5,
@@ -108,9 +108,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.update_lrcr_callback = _update_lrcr_callback
         self._lrc_result = ("", "")
         self.on_command_object = On(self, self.logger)
-
+        self.off_command_object = Off(self, self.logger)
 
     def stop(self):
+        """Stops the event receiver and liveliness probe"""
         self.stop_liveliness_probe()
         self._event_receiver.stop()
 
@@ -178,7 +179,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             if self.update_availablity_callback is not None:
                 self.update_availablity_callback(False)
 
-
     def update_ping_info(self, ping: int, dev_name: str) -> None:
         """
         Update a device with the correct ping information.
@@ -196,7 +196,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                     "Calling update_availablity_callback from update_ping_info"
                 )
                 self.update_availablity_callback(True)
-
 
     def get_obs_state(self) -> ObsState:
         """
@@ -250,7 +249,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         if self.update_lrcr_callback is not None:
             self.update_lrcr_callback(self._lrc_result)
 
-    
     def is_command_allowed(self):
         """
         Checks whether this command is allowed
@@ -285,7 +283,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             )
 
         return True
-    
 
     def on_command(self, task_callback=None) -> Tuple[TaskStatus, str]:
         """Submits the On command for execution.
@@ -300,3 +297,15 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.logger.info("On command queued for execution")
         return task_status, response
 
+    def off_command(self, task_callback=None) -> Tuple[TaskStatus, str]:
+        """Submits the Off command for execution.
+
+        :rtype: tuple
+        """
+        task_status, response = self.submit_task(
+            self.off_command_object.off,
+            args=[self.logger],
+            task_callback=task_callback,
+        )
+        self.logger.info("Off command queued for execution")
+        return task_status, response

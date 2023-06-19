@@ -3,9 +3,10 @@
 import json
 import logging
 from os.path import dirname, join
-from ska_tango_testing.mock import MockCallable
+
 import pytest
 import tango
+from ska_tango_testing.mock import MockCallable
 
 # from ska_tango_testing.mock.tango import MockTangoEventCallbackGroup
 from ska_tango_testing.mock.tango import MockTangoEventCallbackGroup
