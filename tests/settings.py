@@ -25,6 +25,8 @@ SDP_SUBARRAY_DEVICE_MID = "mid-sdp/subarray/01"
 SDP_SUBARRAY_DEVICE_LOW = "low-sdp/subarray/01"
 SDP_MASTER_DEVICE_MID = "mid-sdp/control/0"
 SDP_MASTER_DEVICE_LOW = "low-sdp/control/0"
+SDP_MASTER_LEAF_DEVICE_MID = "ska_mid/tm_leaf_node/sdp_master"
+SDP_MASTER_LEAF_DEVICE_LOW = "ska_low/tm_leaf_node/sdp_master"
 
 
 def count_faulty_devices(cm):

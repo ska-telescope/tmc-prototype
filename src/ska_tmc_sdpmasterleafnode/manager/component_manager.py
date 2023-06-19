@@ -110,7 +110,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
     #         self.liveliness_probe.stop()
 
     # pylint: disable= arguments-differ
-    def update_ping_info(self, ping: int) -> None:
+    def update_ping_info(self, ping: int, dev_name: str) -> None:
         """
         Update a device with the correct ping information.
         :param ping: device response time
