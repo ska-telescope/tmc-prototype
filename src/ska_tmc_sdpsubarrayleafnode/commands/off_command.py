@@ -1,11 +1,12 @@
-# TODO : Will get Uncommented after refactoring for command is done.
+# Will get Uncommented after refactoring for command is done.
 # """
 # Off command class for SDPSubarrayLeafNode.
 # """
 
 # from ska_tango_base.commands import ResultCode
 
-# from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import AbstractOnOff
+# from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import
+# AbstractOnOff
 
 
 # class Off(AbstractOnOff):

@@ -72,4 +72,3 @@ class On(SdpSLNCommand):
             "SDP Subarray", self.sdp_subarray_adapter, "On"
         )
         return result, message
-

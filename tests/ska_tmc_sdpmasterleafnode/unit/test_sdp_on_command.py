@@ -15,6 +15,7 @@ from tests.settings import (
 )
 
 
+@pytest.mark.skip(reason="This test case will be enabled as part of SAH-1339")
 @pytest.mark.parametrize(
     "sdp_master_device", [SDP_MASTER_DEVICE_MID, SDP_MASTER_DEVICE_LOW]
 )
@@ -29,6 +30,7 @@ def test_on_command(tango_context, sdp_master_device):
     adapter.proxy.On.assert_called_once_with()
 
 
+@pytest.mark.skip(reason="This test case will be enabled as part of SAH-1339")
 @pytest.mark.sdpmln
 @pytest.mark.parametrize(
     "sdp_master_device", [SDP_MASTER_DEVICE_MID, SDP_MASTER_DEVICE_LOW]

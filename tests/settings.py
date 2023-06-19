@@ -2,12 +2,14 @@
 import logging
 import time
 from typing import List
+
 import mock
+from ska_tmc_common.enum import LivelinessProbeType
 from ska_tmc_common.op_state_model import TMCOpStateModel
 from ska_tmc_common.test_helpers.helper_adapter_factory import (
     HelperAdapterFactory,
 )
-from ska_tmc_common.enum import LivelinessProbeType
+
 from ska_tmc_sdpmasterleafnode.manager.component_manager import (
     SdpMLNComponentManager,
 )
@@ -47,7 +49,9 @@ def create_cm(cm_class, device):
             logger=logger,
         )
     elif cm_class == "SdpSLNComponentManager":
-        cm = SdpSLNComponentManager(device, logger=logger, _liveliness_probe=LivelinessProbeType.NONE)
+        cm = SdpSLNComponentManager(
+            device, logger=logger, _liveliness_probe=LivelinessProbeType.NONE
+        )
     else:
         log_msg = f"Unknown component manager class {cm_class}"
         logger.error(log_msg)

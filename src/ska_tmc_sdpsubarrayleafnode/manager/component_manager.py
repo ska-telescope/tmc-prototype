@@ -6,31 +6,23 @@ This module provided a reference implementation of a BaseComponentManager.
 It is provided for explanatory purposes, and to support testing of this
 package.
 """
-from typing import Tuple
 import time
-from ska_tango_base.executor import TaskStatus
+from typing import Tuple
+
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
-
-# from ska_tmc_common.command_executor import CommandExecutor
+from ska_tango_base.executor import TaskStatus
 from ska_tmc_common.device_info import SubArrayDeviceInfo
+from ska_tmc_common.enum import LivelinessProbeType
+from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
 from ska_tmc_common.lrcr_callback import LRCRCallback
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
+from tango import DevState
 
-# from ska_tmc_sdpsubarrayleafnode.liveliness_probe import (
-#     LivelinessProbeType,
-#     SingleDeviceLivelinessProbe,
-# )
-from ska_tmc_common.enum import LivelinessProbeType
+from ska_tmc_sdpsubarrayleafnode.commands.on_command import On
 from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
     SdpSLNEventReceiver,
 )
-from ska_tmc_sdpsubarrayleafnode.commands.on_command import On
-from ska_tmc_common.exceptions import (
-    CommandNotAllowed,
-    DeviceUnresponsive,
-)
-from tango import DevState
 
 
 class SdpSLNComponentManager(TmcLeafNodeComponentManager):
@@ -51,8 +43,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         _event_receiver: bool = True,
         communication_state_callback=None,
         component_state_callback=None,
-        _update_device_callback=None,         # ??
-        update_command_in_progress_callback=None,   # ??
         _update_sdp_subarray_obs_state_callback=None,
         _update_lrcr_callback=None,
         max_workers=5,
@@ -84,7 +74,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             sleep_time=sleep_time,
         )
 
-        self.update_device_info(sdp_subarray_dev_name)
+        self._sdp_subarray_dev_name = sdp_subarray_dev_name
+        self._device = SubArrayDeviceInfo(self._sdp_subarray_dev_name, False)
+
         if _event_receiver:
             self.event_receiver = SdpSLNEventReceiver(
                 self,
@@ -109,8 +101,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self._lrc_result = ("", "")
         self.on_command_object = On(self, self.logger)
 
-
     def stop(self):
+        """Method to stop the liveliness probe."""
         self.stop_liveliness_probe()
         self._event_receiver.stop()
 
@@ -123,11 +115,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :rtype: DeviceInfo
         """
         return self._device
-
-    def update_device_info(self, sdp_subarray_dev_name):
-        """Updates the device info"""
-        self._sdp_subarray_dev_name = sdp_subarray_dev_name
-        self._device = SubArrayDeviceInfo(self._sdp_subarray_dev_name, False)
 
     def update_input_parameter(self):
         """Update input parameter"""
@@ -178,7 +165,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             if self.update_availablity_callback is not None:
                 self.update_availablity_callback(False)
 
-
     def update_ping_info(self, ping: int, dev_name: str) -> None:
         """
         Update a device with the correct ping information.
@@ -196,7 +182,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                     "Calling update_availablity_callback from update_ping_info"
                 )
                 self.update_availablity_callback(True)
-
 
     def get_obs_state(self) -> ObsState:
         """
@@ -250,8 +235,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         if self.update_lrcr_callback is not None:
             self.update_lrcr_callback(self._lrc_result)
 
-    
-    def is_command_allowed(self):
+    def is_command_allowed(self, command_name: str):
         """
         Checks whether this command is allowed
         It checks that the device is in the right state
@@ -284,8 +268,53 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 This device will continue with normal operation."""
             )
 
+        self.logger.debug(f"Checking is command allowed for {command_name}")
+
+        if command_name in ["AssignResources", "ReleaseAllResources"]:
+            # Checking obsState of Csp Subarray device
+            if self.get_device().obs_state not in [
+                ObsState.IDLE,
+                ObsState.EMPTY,
+            ]:
+                self.raise_invalid_obsstate_error(command_name)
+
+        elif command_name in ["Configure", "End"]:
+            if self.get_device().obs_state not in [
+                ObsState.IDLE,
+                ObsState.READY,
+            ]:
+                self.raise_invalid_obsstate_error(command_name)
+
+        elif command_name == "Scan":
+            if self.get_device().obs_state not in [ObsState.READY]:
+                self.raise_invalid_obsstate_error(command_name)
+
+        elif command_name == "EndScan":
+            if self.get_device().obs_state not in [
+                ObsState.SCANNING,
+            ]:
+                self.raise_invalid_obsstate_error(command_name)
+        elif command_name == "Restart":
+            if self.get_device().obs_state not in [
+                ObsState.FAULT,
+                ObsState.ABORTED,
+            ]:
+                self.raise_invalid_obsstate_error(command_name)
+
+        elif command_name == "Abort":
+            if self.get_device().obs_state not in [
+                ObsState.SCANNING,
+                ObsState.CONFIGURING,
+                ObsState.RESOURCING,
+                ObsState.IDLE,
+                ObsState.READY,
+            ]:
+                self.raise_invalid_obsstate_error(command_name)
+        else:
+            self.logger.info(
+                "Command is not refactored yet on CspSubarrayLeafNode."
+            )
         return True
-    
 
     def on_command(self, task_callback=None) -> Tuple[TaskStatus, str]:
         """Submits the On command for execution.
@@ -299,4 +328,3 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         self.logger.info("On command queued for execution")
         return task_status, response
-

@@ -3,9 +3,10 @@
 import json
 import logging
 from os.path import dirname, join
-from ska_tango_testing.mock import MockCallable
+
 import pytest
 import tango
+from ska_tango_testing.mock import MockCallable
 
 # from ska_tango_testing.mock.tango import MockTangoEventCallbackGroup
 from ska_tango_testing.mock.tango import MockTangoEventCallbackGroup
@@ -144,7 +145,7 @@ def task_callback() -> MockCallable:
 
     :rtype: MockCallable
     """
-    task_callback = MockCallable(5)
+    task_callback = MockCallable(5)  # pylint:disable=redefined-outer-name
     return task_callback
 
 

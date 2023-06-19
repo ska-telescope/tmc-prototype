@@ -1,4 +1,4 @@
-# TODO : Will get Uncommented after refactoring for command is done.
+# Will get Uncommented after refactoring for command is done.
 # """
 # Configure command class for SDPSubarrayLeafNode.
 # """
@@ -11,7 +11,8 @@
 # from ska_tmc_common.exceptions import InvalidObsStateError
 # from tango import DevFailed
 
-# from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
+# from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import
+# SdpSLNCommand
 
 
 # class Configure(SdpSLNCommand):
@@ -148,7 +149,8 @@
 #                 + "The command has NOT been executed."
 #                 + "This device will continue with normal operation.",
 #             )
-#         log_msg = "Configure command successfully invoked on:" + "{}".format(
+#         log_msg = "Configure command successfully invoked on:" + "{}".
+# format(
 #             self.sdp_subarray_adapter.dev_name
 #         )
 #         self.logger.info(log_msg)

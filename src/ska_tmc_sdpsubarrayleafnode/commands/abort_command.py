@@ -1,4 +1,4 @@
-# TODO : Will get Uncommented after refactoring for command is done.
+# Will get Uncommented after refactoring for command is done.
 # """
 # Abort command class for SDPSubarrayLeafNode.
 # """
@@ -7,7 +7,8 @@
 # from ska_tmc_common.adapters import AdapterFactory
 # from ska_tmc_common.exceptions import InvalidObsStateError
 
-# from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
+# from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import
+# SdpSLNCommand
 
 
 # class Abort(SdpSLNCommand):
@@ -61,7 +62,8 @@
 #                 )
 #                 + "Reason: The current observation state for observation is"
 #                 + "{}".format(obs_state_val)
-#                 + 'The "Abort" command has NOT been executed. This device will'
+#                 + 'The "Abort" command has NOT been executed. This device
+# will'
 #                 + "continue with normal operation."
 #             )
 #             raise InvalidObsStateError(message)
@@ -78,7 +80,7 @@
 #             None
 
 #         raises:
-#             Exception if error occurs while invoking command on SDP Subarray.
+#             Exception if error occurs while invoking command on SDPSubarray.
 
 #         """
 #         ret_code, message = self.init_adapter()

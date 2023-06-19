@@ -2,8 +2,10 @@
 SDP Master Leaf node acts as a SDP contact point for the Master Node and also
 monitors and issues commands to the SDP Master.
 """
+# pylint: disable=no-name-in-module,arguments-differ,too-few-public-methods
 from ska_tango_base import SKABaseDevice
 from ska_tango_base.commands import ResultCode
+from ska_tmc_common.enum import LivelinessProbeType
 from ska_tmc_common.op_state_model import TMCOpStateModel
 from tango import AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
@@ -11,7 +13,6 @@ from tango.server import attribute, command, device_property, run
 from ska_tmc_sdpmasterleafnode import release
 from ska_tmc_sdpmasterleafnode.commands import Disable, Off, On, Standby
 from ska_tmc_sdpmasterleafnode.manager import SdpMLNComponentManager
-from ska_tmc_sdpsubarrayleafnode.liveliness_probe import LivelinessProbeType
 
 __all__ = ["SdpMasterLeafNode", "main"]
 

@@ -4,8 +4,8 @@ from ska_tango_base.commands import ResultCode
 from ska_tmc_common.dev_factory import DevFactory
 
 from tests.settings import (
-    SDP_SUBARRAY_LEAF_NODE_MID,
     SDP_SUBARRAY_LEAF_NODE_LOW,
+    SDP_SUBARRAY_LEAF_NODE_MID,
     event_remover,
     logger,
 )
@@ -53,10 +53,14 @@ def on_command(tango_context, sdpsa_fqdn, change_event_callbacks):
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_on_command_mid(tango_context, change_event_callbacks):
-    on_command(tango_context, SDP_SUBARRAY_LEAF_NODE_MID, change_event_callbacks)
+    on_command(
+        tango_context, SDP_SUBARRAY_LEAF_NODE_MID, change_event_callbacks
+    )
 
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
 def test_on_command_low(tango_context, change_event_callbacks):
-    on_command(tango_context, SDP_SUBARRAY_LEAF_NODE_LOW, change_event_callbacks)
+    on_command(
+        tango_context, SDP_SUBARRAY_LEAF_NODE_LOW, change_event_callbacks
+    )
