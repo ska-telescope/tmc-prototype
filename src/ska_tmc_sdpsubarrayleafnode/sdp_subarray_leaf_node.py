@@ -204,8 +204,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # Attributes methods
     # ------------------
 
-    def read_issubsystemavailable(self):
-        """Read method for isSubsystemAvailable"""
+    def read_isSubsystemAvailable(self):
+        """Read method for issubsystemavailable"""
         return self._issubsystemavailable
 
     def read_lastDeviceInfoChanged(self):
