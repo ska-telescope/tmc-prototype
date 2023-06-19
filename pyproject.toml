@@ -46,7 +46,7 @@ pytest = "^7.1"
 pytest-bdd = "^5.0.0"
 pytest-cov = "^2.10.1"
 pylint-junit = "^0.3.2"
-coverage = "^6.1.1"
+coverage = "^7.2.7"
 pytest-json-report = "^1.4.1"
 pytest-forked = "^1.3.0"
 pytest-mock = "^3.6.1"
@@ -59,7 +59,7 @@ datetime = "4.3"
 [tool.poetry.group.dev.dependencies]
 black = "^22.8.0"
 isort = "^5.10.1"
-flake8 = "^5.0.4"
+flake8 = "^6.0.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

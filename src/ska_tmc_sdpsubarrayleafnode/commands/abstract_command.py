@@ -20,8 +20,7 @@ class SdpSLNCommand(TmcLeafNodeCommand):
 
     def check_unresponsive(self):
         """Checks whether the device is unresponsive"""
-        component_manager = self.target
-        devInfo = component_manager.get_device()
+        devInfo = self.component_manager.get_device()
         if devInfo is None or devInfo.unresponsive:
             raise DeviceUnresponsive(
                 """The invocation of the command on this device is not allowed.
@@ -49,95 +48,43 @@ class SdpSLNCommand(TmcLeafNodeCommand):
     # pylint: disable=attribute-defined-outside-init
     def init_adapter(self):
         self.sdp_subarray_adapter = None
-        component_manager = self.target
-        dev_name = component_manager._sdp_subarray_dev_name
-        devInfo = component_manager.get_device()
-        timeout = component_manager.timeout
+        dev_name = self.component_manager._sdp_subarray_dev_name
+        devInfo = self.component_manager.get_device()
+        timeout = self.component_manager.timeout
         elapsed_time = 0
         start_time = time.time()
-
+        
         while self.sdp_subarray_adapter is None and elapsed_time < timeout:
             try:
                 if not devInfo.unresponsive:
                     self.sdp_subarray_adapter = (
-                        self._adapter_factory.get_or_create_adapter(
-                            dev_name, AdapterType.SDPSUBARRAY
+                        self.adapter_factory.get_or_create_adapter(
+                            dev_name, AdapterType.SUBARRAY
                         )
                     )
             except ConnectionFailed as cf:
                 elapsed_time = time.time() - start_time
                 if elapsed_time > timeout:
                     return self.adapter_error_message_result(
-                        component_manager._sdp_subarray_dev_name,
+                        self.component_manager._sdp_subarray_dev_name,
                         cf,
                     )
             except DevFailed as df:
                 elapsed_time = time.time() - start_time
                 if elapsed_time > timeout:
                     return self.adapter_error_message_result(
-                        component_manager._sdp_subarray_dev_name,
+                        self.component_manager._sdp_subarray_dev_name,
                         df,
                     )
             except (AttributeError, ValueError, TypeError) as e:
                 return self.adapter_error_message_result(
-                    component_manager._sdp_subarray_dev_name,
+                    self.component_manager._sdp_subarray_dev_name,
                     e,
                 )
+            except Exception as e:
+                self.logger.error(e)
 
         return ResultCode.OK, ""
-
-    # pylint: enable=attribute-defined-outside-init
-
-
-class AbstractOnOff(SdpSLNCommand):
-    """Abstract class to process On and Off commands"""
-
-    def __init__(
-        self,
-        target,
-        op_state_model,
-        adapter_factory=None,
-        logger=None,
-    ):
-        super().__init__(target, logger)
-        self.op_state_model = op_state_model
-        self._adapter_factory = adapter_factory or AdapterFactory()
-
-    def check_allowed(self):
-        """
-        Checks whether this command is allowed
-        It checks that the device is in the right state
-        to execute this command and that all the
-        component needed for the operation are not unresponsive
-
-        :return: True if this command is allowed
-
-        :rtype: boolean
-
-        """
-        if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
-            raise CommandNotAllowed(
-                "The invocation of the {} command on this device".format(
-                    __class__
-                )
-                + "is not allowed."
-                + "Reason: The current operational state is"
-                + "{}".format(self.op_state_model.op_state)
-                + "The command has NOT been executed."
-                + "This device will continue with normal operation."
-            )
-
-        component_manager = self.target
-        devInfo = component_manager.get_device()
-        if devInfo is None or devInfo.unresponsive:
-            raise DeviceUnresponsive(
-                """The invocation of the command on this device is not allowed.
-                Reason: SDP subarray device is not available.
-                The command has NOT been executed.
-                This device will continue with normal operation."""
-            )
-
-        return True
 
 
 class AbstractScanEnd(SdpSLNCommand):

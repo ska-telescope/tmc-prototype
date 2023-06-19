@@ -1,13 +1,13 @@
 """Common Settings for testing of SDP Leaf Node"""
 import logging
 import time
-
+from typing import List
 import mock
 from ska_tmc_common.op_state_model import TMCOpStateModel
 from ska_tmc_common.test_helpers.helper_adapter_factory import (
     HelperAdapterFactory,
 )
-
+from ska_tmc_common.enum import LivelinessProbeType
 from ska_tmc_sdpmasterleafnode.manager.component_manager import (
     SdpMLNComponentManager,
 )
@@ -24,6 +24,8 @@ SDP_SUBARRAY_DEVICE_MID = "mid-sdp/subarray/01"
 SDP_SUBARRAY_DEVICE_LOW = "low-sdp/subarray/01"
 SDP_MASTER_DEVICE_MID = "mid-sdp/control/0"
 SDP_MASTER_DEVICE_LOW = "low-sdp/control/0"
+SDP_SUBARRAY_LEAF_NODE_MID = "ska_mid/tm_leaf_node/sdp_subarray01"
+SDP_SUBARRAY_LEAF_NODE_LOW = "ska_low/tm_leaf_node/sdp_subarray01"
 
 
 def count_faulty_devices(cm):
@@ -45,7 +47,7 @@ def create_cm(cm_class, device):
             logger=logger,
         )
     elif cm_class == "SdpSLNComponentManager":
-        cm = SdpSLNComponentManager(device, op_state_model, logger=logger)
+        cm = SdpSLNComponentManager(device, logger=logger, _liveliness_probe=LivelinessProbeType.NONE)
     else:
         log_msg = f"Unknown component manager class {cm_class}"
         logger.error(log_msg)
@@ -88,3 +90,17 @@ def get_sdpmln_command_obj(command_class, devices):
     cm.sdp_master_dev_name = devices
     command_obj = command_class(cm, cm.op_state_model, adapter_factory, skuid)
     return cm, command_obj, adapter_factory
+
+
+def event_remover(change_event_callbacks, attributes: List[str]) -> None:
+    """Removes residual events from the queue."""
+    for attribute in attributes:
+        try:
+            iterable = change_event_callbacks._mock_consumer_group._views[
+                attribute
+            ]._iterable
+            for node in iterable:
+                logger.info("Payload is: %s", repr(node.payload))
+                node.drop()
+        except KeyError:
+            pass

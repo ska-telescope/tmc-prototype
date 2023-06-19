@@ -3,7 +3,7 @@
 import json
 import logging
 from os.path import dirname, join
-
+from ska_tango_testing.mock import MockCallable
 import pytest
 import tango
 
@@ -139,6 +139,16 @@ def get_input_str(path):
 
 
 @pytest.fixture
+def task_callback() -> MockCallable:
+    """Creates a mock callable for asynchronous testing
+
+    :rtype: MockCallable
+    """
+    task_callback = MockCallable(5)
+    return task_callback
+
+
+@pytest.fixture
 def json_factory():
     """
     Json factory for getting json files
@@ -161,5 +171,6 @@ def change_event_callbacks() -> MockTangoEventCallbackGroup:
     """
     return MockTangoEventCallbackGroup(
         "longRunningCommandResult",
+        "longRunningCommandsInQueue",
         timeout=30.0,
     )
