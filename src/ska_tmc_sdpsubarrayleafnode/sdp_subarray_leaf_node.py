@@ -3,6 +3,7 @@ SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
 actions during an observation.
 It also acts as a SDP contact point for Subarray Node for observation execution
 """
+# pylint: disable=access-member-before-definition
 import tango
 
 # from logging import Logger
@@ -116,7 +117,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     # pylint: disable=attribute-defined-outside-init
     def update_sdp_subarray_obs_state_callback(
-            self, obs_state: ObsState
+        self, obs_state: ObsState
     ) -> None:
         """Updates SDP Subarray ObsState"""
         self._sdp_subarray_obs_state = obs_state
@@ -211,7 +212,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """Return the commandExecuted attribute."""
         result = []
         for command_executed in reversed(
-                self.component_manager.command_executor.command_executed
+            self.component_manager.command_executor.command_executed
         ):
             single_res = [
                 str(command_executed["Id"]),

@@ -2,6 +2,8 @@
 SDP Master Leaf node acts as a SDP contact point for the Master Node and also
 monitors and issues commands to the SDP Master.
 """
+
+# pylint: disable=access-member-before-definition
 from ska_tango_base import SKABaseDevice
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.op_state_model import TMCOpStateModel
