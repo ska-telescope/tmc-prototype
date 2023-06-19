@@ -1,14 +1,22 @@
 import time
 
 import pytest
+import tango
 from ska_tango_base.commands import ResultCode
+from ska_tango_base.control_model import ObsState
 from ska_tmc_common.dev_factory import DevFactory
 
 from tests.settings import SLEEP_TIME, TIMEOUT, logger
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
-def assign_resouces(tango_context, sdpsaln_name, sdp_subarray, json_factory):
+def assign_resouces(
+    tango_context,
+    sdpsaln_name,
+    sdp_subarray,
+    json_factory,
+    change_event_callbacks,
+):
     logger.info("%s", tango_context)
     dev_factory = DevFactory()
     sdpsal_node = dev_factory.get_device(sdpsaln_name)
@@ -17,8 +25,19 @@ def assign_resouces(tango_context, sdpsaln_name, sdp_subarray, json_factory):
     initial_len = len(sdpsal_node.commandExecuted)
     (result, unique_id) = sdpsal_node.On()
     assign_input_str = json_factory("command_AssignResources")
+    assert sdpsal_node.sdpSubarrayObsState == ObsState.EMPTY
     (result, unique_id) = sdpsal_node.AssignResources(assign_input_str)
     assert result[0] == ResultCode.QUEUED
+    time.sleep(5)
+    sdpsal_node.subscribe_event(
+        "sdpSubarrayObsState",
+        tango.EventType.CHANGE_EVENT,
+        change_event_callbacks["sdpSubarrayObsState"],
+    )
+    change_event_callbacks["sdpSubarrayObsState"].assert_change_event(
+        ObsState.IDLE,
+        lookahead=4,
+    )
     start_time = time.time()
     while len(sdpsal_node.commandExecuted) != initial_len + 2:
         time.sleep(SLEEP_TIME)
@@ -41,13 +60,18 @@ def assign_resouces(tango_context, sdpsaln_name, sdp_subarray, json_factory):
     [("ska_mid/tm_leaf_node/sdp_subarray01", "mid-sdp/subarray/01")],
 )
 def test_assign_res_command_mid(
-    tango_context, sdpsaln_name, sdp_subarray, json_factory
+    tango_context,
+    sdpsaln_name,
+    sdp_subarray,
+    json_factory,
+    change_event_callbacks,
 ):
     return assign_resouces(
         tango_context,
         sdpsaln_name,
         sdp_subarray,
         json_factory,
+        change_event_callbacks,
     )
 
 

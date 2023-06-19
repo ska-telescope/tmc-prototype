@@ -2,7 +2,6 @@ import time
 
 import pytest
 import tango
-from ska_tango_base.control_model import ObsState
 from ska_tmc_common.dev_factory import DevFactory
 
 from tests.settings import logger
@@ -20,16 +19,11 @@ def assign_resources_error_propagation(
         sdp_subarray = dev_factory.get_device("mid-sdp/subarray/01")
     else:
         sdp_subarray = dev_factory.get_device("low-sdp/subarray/01")
-    sdp_subarray.SetDirectObsState(ObsState.EMPTY)
-    assert sdp_subarray.obsState == ObsState.EMPTY
 
     result, unique_id = sdpsln_device.AssignResources(assign_input_str)
     logger.info(
         f"AssignResources Command ID: {unique_id} Returned result: {result}"
     )
-    time.sleep(2)
-    sdp_subarray.SetDirectObsState(ObsState.IDLE)
-    assert sdp_subarray.obsState == ObsState.IDLE
 
     sdpsln_device.subscribe_event(
         "longRunningCommandResult",
