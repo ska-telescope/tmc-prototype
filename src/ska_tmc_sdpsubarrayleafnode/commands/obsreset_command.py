@@ -1,4 +1,4 @@
-# TODO : Will get Uncommented after refactoring for command is done.
+# Will get Uncommented after refactoring for command is done.
 # """
 # ObsReset command class for SDPSubarrayLeafNode.
 # """

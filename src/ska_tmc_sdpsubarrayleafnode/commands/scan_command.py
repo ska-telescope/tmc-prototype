@@ -1,4 +1,4 @@
-# TODO : Will get Uncommented after refactoring for command is done.
+# Will get Uncommented after refactoring for command is done.
 # """
 # Scan command class for SDPSubarrayLeafNode.
 # """
@@ -24,7 +24,8 @@
 #         """
 #         Method to invoke Scan command on SDP Subarray. \
 
-#         :param argin: The string in JSON format. The JSON contains following \
+#         :param argin: The string in JSON format. The JSON contains
+# following \
 #         values: \
 
 #         Example: \
@@ -67,7 +68,7 @@
 #             # tmc devices.
 #             # Hence, Interface URL needs to be updated explicitly for SDP.
 #             # pylint: disable=fixme
-#             # TODO: Incorporate transaction id implementation for scan
+#             # Incorporate transaction id implementation for scan
 #             # command across TMC.
 #             json_argument[
 #                 "interface"
@@ -88,7 +89,7 @@
 #                 + "Subarray Device {}".format(
 #                     self.sdp_subarray_adapter.dev_name
 #                 )
-#                 + "Reason: Error in calling the Scan command on Sdp Subarray."
+#                 + "Reason: Error in calling the Scan command onSdpSubarray."
 #                 + "The command has NOT been executed."
 #                 + "This device will continue with normal operation."
 #                 "",

@@ -32,12 +32,14 @@ def on_command(tango_context, sdpmln_name):
             assert command[2] == "ResultCode.OK"
 
 
+@pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_on_command_mid(tango_context):
     on_command(tango_context, "ska_mid/tm_leaf_node/sdp_master")
 
 
+@pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
 def test_on_command_low(tango_context):

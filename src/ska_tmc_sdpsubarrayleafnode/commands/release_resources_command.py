@@ -1,4 +1,4 @@
-# TODO : Will get Uncommented after refactoring for command is done.
+# Will get Uncommented after refactoring for command is done.
 # """
 # ReleaseResources command class for SDPSubarrayLeafNode.
 # """
@@ -8,7 +8,8 @@
 # from ska_tmc_common.exceptions import InvalidObsStateError
 # from tango import DevFailed
 
-# from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
+# from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import
+# SdpSLNCommand
 
 
 # class ReleaseResources(SdpSLNCommand):
@@ -48,7 +49,8 @@
 #         self.check_op_state("ReleaseResources")
 #         self.check_unresponsive()
 #         obs_state_val = component_manager.get_device().obs_state
-#         self.logger.info("sdp_subarray_obs_state value is: %s", obs_state_val)
+#         self.logger.info("sdp_subarray_obs_state value is: %s",
+# obs_state_val)
 
 #         if obs_state_val != ObsState.IDLE:
 #             self.logger.info(
@@ -93,11 +95,11 @@
 #             self.logger.exception("Command invocation failed: %s", e)
 #             return self.generate_command_result(
 #                 ResultCode.FAILED,
-#                 "The invocation of the ReleaseAllResources command is failed"
+#                 "The invocation of the ReleaseAllResources command isfailed"
 #                 + "on Sdp Subarray Device {}".format(
 #                     self.sdp_subarray_adapter.dev_name
 #                 )
-#                 + "Reason: Error in invoking the ReleaseAllResources command"
+#                 + "Reason: Error in invoking the ReleaseAllResourcescommand"
 #                 "on Sdp"
 #                 + "Subarray. The command has NOT been executed."
 #                 + "This device will continue with normal operation.",

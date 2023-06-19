@@ -1,4 +1,4 @@
-# pylint: disable=abstract-method
+# pylint: disable=abstract-method,arguments-differ
 """
 This module implements ComponentManager class for the Sdp Master Leaf Node.
 """

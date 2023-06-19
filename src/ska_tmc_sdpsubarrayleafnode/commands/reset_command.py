@@ -1,11 +1,12 @@
-# TODO : Will get Uncommented after refactoring for command is done.
+# Will get Uncommented after refactoring for command is done.
 # """
 # Reset command class for SDPSubarrayLeafNode.
 # """
 # from ska_tango_base.commands import ResultCode
 # from ska_tmc_common.adapters import AdapterFactory
 
-# from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
+# from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import
+# SdpSLNCommand
 
 
 # class Reset(SdpSLNCommand):

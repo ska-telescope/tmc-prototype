@@ -1,4 +1,4 @@
-# TODO : Will get Uncommented after refactoring for command is done.
+# Will get Uncommented after refactoring for command is done.
 # """
 # EndScan command class for SDPSubarrayLeafNode.
 # """
@@ -7,7 +7,8 @@
 # from ska_tmc_common.adapters import AdapterFactory
 # from ska_tmc_common.exceptions import InvalidObsStateError
 
-# from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
+# from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import
+# SdpSLNCommand
 
 
 # class EndScan(SdpSLNCommand):

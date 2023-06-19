@@ -12,14 +12,7 @@ from typing import Tuple
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tango_base.executor import TaskStatus
-
-# from ska_tmc_common.command_executor import CommandExecutor
 from ska_tmc_common.device_info import SubArrayDeviceInfo
-
-# from ska_tmc_sdpsubarrayleafnode.liveliness_probe import (
-#     LivelinessProbeType,
-#     SingleDeviceLivelinessProbe,
-# )
 from ska_tmc_common.enum import LivelinessProbeType
 from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
 from ska_tmc_common.lrcr_callback import LRCRCallback
@@ -51,8 +44,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         _event_receiver: bool = True,
         communication_state_callback=None,
         component_state_callback=None,
-        _update_device_callback=None,  # ??
-        update_command_in_progress_callback=None,  # ??
+        # _update_device_callback=None,  # ??
+        # update_command_in_progress_callback=None,  # ??
         _update_sdp_subarray_obs_state_callback=None,
         _update_lrcr_callback=None,
         max_workers=5,
@@ -84,7 +77,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             sleep_time=sleep_time,
         )
 
-        self.update_device_info(sdp_subarray_dev_name)
+        self._sdp_subarray_dev_name = sdp_subarray_dev_name
+        self._device = SubArrayDeviceInfo(self._sdp_subarray_dev_name, False)
+
         if _event_receiver:
             self.event_receiver = SdpSLNEventReceiver(
                 self,
@@ -125,10 +120,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         """
         return self._device
 
-    def update_device_info(self, sdp_subarray_dev_name):
-        """Updates the device info"""
-        self._sdp_subarray_dev_name = sdp_subarray_dev_name
-        self._device = SubArrayDeviceInfo(self._sdp_subarray_dev_name, False)
+    # def update_device_info(self, sdp_subarray_dev_name):
+    #     """Updates the device info"""
+    #     self._sdp_subarray_dev_name = sdp_subarray_dev_name
+    #     self._device = SubArrayDeviceInfo(self._sdp_subarray_dev_name, False)
 
     def update_input_parameter(self):
         """Update input parameter"""
@@ -249,7 +244,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         if self.update_lrcr_callback is not None:
             self.update_lrcr_callback(self._lrc_result)
 
-    def is_command_allowed(self):
+    def is_command_allowed(self, command_name: str):
         """
         Checks whether this command is allowed
         It checks that the device is in the right state
