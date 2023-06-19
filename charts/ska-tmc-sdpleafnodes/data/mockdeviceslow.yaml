@@ -3,7 +3,7 @@ function: testing
 domain: mocks
 instances: ["01"]
 entrypoints:
-  - name: "ska_tmc_common.test_helpers.helper_state_device.HelperStateDevice"
+  - name: "ska_tmc_common.test_helpers.helper_base_device.HelperBaseDevice"
   - name: "ska_tmc_common.test_helpers.helper_subarray_device.HelperSubArrayDevice"
   - name: "ska_tmc_common.test_helpers.helper_subarray_leaf_device.HelperSubarrayLeafDevice"
 server:
@@ -11,7 +11,7 @@ server:
   instances:
     - name: "01"
       classes:
-        - name: "HelperStateDevice"
+        - name: "HelperBaseDevice"
           devices:
           {{- if .Values.deviceServers.mocks.component.sdp }}
           - name: "low-sdp/control/0"

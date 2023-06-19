@@ -133,7 +133,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
     #     if self.liveliness_probe:
     #         self.liveliness_probe.stop()
 
-    def update_ping_info(self, ping: int) -> None:
+    def update_ping_info(self, ping: int, dev_name: str) -> None:
         """
         Update a device with the correct ping information.
 

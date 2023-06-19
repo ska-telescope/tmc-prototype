@@ -2,7 +2,7 @@
 SDP Master Leaf node acts as a SDP contact point for the Master Node and also
 monitors and issues commands to the SDP Master.
 """
-from ska_tango_base import SKABaseDevice
+from ska_tango_base.base.base_device import SKABaseDevice
 from ska_tango_base.commands import ResultCode, SubmittedSlowCommand
 from ska_tmc_common.adapters import AdapterFactory
 from ska_tmc_common.enum import LivelinessProbeType
@@ -165,7 +165,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         """
         This command invokes Off() command on Sdp Master.
         """
-        handler = self.get_command_object("On")
+        handler = self.get_command_object("Off")
         return_code, message = handler()
         return return_code, message
 
@@ -190,7 +190,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         This command invokes On() command on Sdp Master.
         """
         handler = self.get_command_object("On")
-        return_code, message = handler()
+        return_code, unique_id = handler()
         # if self.component_manager._command_executor.queue_full:
         #     message = """The invocation of the On command on this device
         #     failed.
@@ -202,8 +202,8 @@ class SdpMasterLeafNode(SKABaseDevice):
         # unique_id = self.component_manager._command_executor.enqueue_command(
         #     handler
         # )
-        # return [[ResultCode.QUEUED], [str(unique_id)]]
-        return return_code, message
+        return [[return_code], [str(unique_id)]]
+        # return return_code, message
 
     # TODO : Will get Uncommented after refactoring for command is done.
     # def is_Standby_allowed(self):
@@ -290,7 +290,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             timeout=self.TimeOut,
             _update_availablity_callback=self.update_availablity_callback,
         )
-
+        cm.sdp_master_dev_name = self.SdpMasterFQDN or ""
         return cm
 
     # pylint: enable=attribute-defined-outside-init
