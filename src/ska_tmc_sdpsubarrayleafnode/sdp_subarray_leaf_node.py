@@ -8,6 +8,7 @@ from ska_control_model import HealthState
 from ska_tango_base import SKABaseDevice
 from ska_tango_base.commands import ResultCode, SubmittedSlowCommand
 from ska_tango_base.control_model import ObsState
+from ska_tmc_common.enum import LivelinessProbeType
 from ska_tmc_common.op_state_model import TMCOpStateModel
 from tango import ApiUtil, AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
@@ -20,8 +21,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     """
     SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
     actions during an observation.
-
     """
+
+    def init_device(self):
+        super().init_device()
+        self._sdp_subarray_obs_state = ObsState.EMPTY
 
     # -----------------
     # Device Properties
@@ -57,28 +61,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     sdpSubarrayDevName = attribute(
         dtype="DevString",
-        access=AttrWriteType.READ_WRITE,
-    )
-
-    # Always the last result (unique_id, JSON-encoded result)
-    @attribute(  # type: ignore[misc]
-        dtype=("str",),
-        max_dim_x=2,
-    )
-    def longRunningCommandResult(self) -> tuple[str, str]:
-        """
-        Read the result of the completed long running command.
-
-        Reports unique_id, json-encoded result.
-        Clients can subscribe to on_change event and wait for
-        the ID they are interested in.
-
-        :return: ID, result.
-        """
-        return self._command_result
-
-    sdp_subarray_obs_state = attribute(
-        dtype=int,
         access=AttrWriteType.READ_WRITE,
     )
 
@@ -137,18 +119,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             device._LastDeviceInfoChanged = ""
             device.set_change_event("healthState", True, False)
             device._isSubsystemAvailable = False
-            device.set_change_event("longRunningCommandResult", True)
             ApiUtil.instance().set_asynch_cb_sub_model(
                 tango.cb_sub_model.PUSH_CALLBACK
             )
             device.op_state_model.perform_action("component_on")
-            device.component_manager.command_executor.add_command_execution(
-                "0", "Init", ResultCode.OK, ""
-            )
             device.set_change_event("isSubsystemAvailable", True, False)
-            self._sdp_subarray_obs_state = ObsState.EMPTY
-            self._command_result = ("", "")
-            self.set_change_event("longRunningCommandResult", True)
             return (ResultCode.OK, "")
 
     def always_executed_hook(self):
@@ -201,18 +176,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             ]
             result.append(single_res)
         return result
-
-    def read_longRunningCommandResult(self):
-        """
-        Read the result of the completed long running command.
-
-        Reports unique_id, json-encoded result.
-        Clients can subscribe to on_change event and wait for
-        the ID they are interested in.
-
-        :return: ID, result.
-        """
-        return self.component_manager.lrc_result
 
     def read_sdp_subarray_obs_state(self):
         """Read method for sdp_subarray_obs_state"""
@@ -662,6 +625,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             logger=self.logger,
             communication_state_callback=None,
             component_state_callback=None,
+            _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
+            _event_receiver=True,
             _update_sdp_subarray_obs_state_callback=self.update_sdp_subarray_obs_state_callback,
             _update_lrcr_callback=self.update_lrcr_callback,
             sleep_time=self.SleepTime,
@@ -675,7 +640,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     def init_command_objects(self) -> None:
         """
-        Initialises the command handlers for commandssupported by this device.
+        Initialises the command handlers for commands supported by this
+        device.
         """
         super().init_command_objects()
 
