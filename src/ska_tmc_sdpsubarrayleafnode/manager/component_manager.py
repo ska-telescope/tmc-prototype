@@ -1,5 +1,5 @@
 # pylint: disable=no-member
-# pylint: disable=abstract-method
+# pylint: disable=abstract-method, missing-function-docstring
 """
 This module provided a reference implementation of a BaseComponentManager.
 

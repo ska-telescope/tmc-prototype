@@ -1,3 +1,4 @@
+# pylint: disable=arguments-differ, no-value-for-parameter
 """
 SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
 actions during an observation.
@@ -706,17 +707,18 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         super().init_command_objects()
         args = ()
         for command_name, command_class in [
-            ("On", On),
-            ("Off", Off),
-            ("AssignResources", AssignResources),
-            ("ReleaseResources", ReleaseResources),
-            ("Configure", Configure),
-            ("Scan", Scan),
-            ("EndScan", EndScan),
-            ("End", End),
-            ("ObsReset", ObsReset),
-            ("Abort", Abort),
-            ("Restart", Restart),
+            # TODO : Will get Uncommented after refactoring for command is done.
+            # ("On", On),
+            # ("Off", Off),
+            # ("AssignResources", AssignResources),
+            # ("ReleaseResources", ReleaseResources),
+            # ("Configure", Configure),
+            # ("Scan", Scan),
+            # ("EndScan", EndScan),
+            # ("End", End),
+            # ("ObsReset", ObsReset),
+            # ("Abort", Abort),
+            # ("Restart", Restart),
         ]:
             command_obj = command_class(
                 self.component_manager,
@@ -727,11 +729,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             self.register_command_object(command_name, command_obj)
         self.register_command_object(
             "Reset",
-            Reset(
-                self.component_manager,
-                self.op_state_model,
-                self.logger,
-            ),
+            # TODO : Will get Uncommented after refactoring for command is done.
+            # Reset(
+            #     self.component_manager,
+            #     self.op_state_model,
+            #     self.logger,
+            # ),
         )
 
 

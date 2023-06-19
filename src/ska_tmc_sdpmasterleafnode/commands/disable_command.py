@@ -1,4 +1,4 @@
-# TODO : Will get Uncommented after refactoring for command is done.
+# TODO: Uncommented this after refactoring for command is done.
 # """
 # Disable command class for SDPMasterLeafNode.
 # """

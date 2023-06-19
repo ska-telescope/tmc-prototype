@@ -1,4 +1,4 @@
-# TODO : Will get Uncommented after refactoring for command is done.
+# TODO: Will get Uncommented after refactoring for command is done.
 # import time
 
 # import pytest

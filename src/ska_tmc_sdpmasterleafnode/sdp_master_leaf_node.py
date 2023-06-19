@@ -12,7 +12,8 @@ from tango import AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
 
 from ska_tmc_sdpmasterleafnode import release
-from ska_tmc_sdpmasterleafnode.commands import On
+
+# from ska_tmc_sdpmasterleafnode.commands import On
 from ska_tmc_sdpmasterleafnode.manager import SdpMLNComponentManager
 
 # from ska_tmc_sdpsubarrayleafnode.liveliness_probe import LivelinessProbeType
@@ -299,7 +300,6 @@ class SdpMasterLeafNode(SKABaseDevice):
         Initialises the command handlers for commands supported by this device.
         """
         super().init_command_objects()
-        args = ()
         for command_name, method_name in [
             ("On", "on_command"),
             ("Off", "off_command"),

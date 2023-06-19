@@ -4,9 +4,7 @@ import time
 from typing import List
 
 import mock
-import pytest
 from ska_tmc_common.enum import LivelinessProbeType
-from ska_tmc_common.op_state_model import TMCOpStateModel
 from ska_tmc_common.test_helpers.helper_adapter_factory import (
     HelperAdapterFactory,
 )

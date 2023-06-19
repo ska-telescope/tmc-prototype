@@ -1,4 +1,4 @@
-# pylint: disable=abstract-method
+# pylint: disable=abstract-method, arguments-differ
 """
 This module implements ComponentManager class for the Sdp Master Leaf Node.
 """
@@ -73,6 +73,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             proxy_timeout=proxy_timeout,
             sleep_time=sleep_time,
         )
+        self._device = DeviceInfo(sdp_master_dev_name)
         self.sdp_master_dev_name = sdp_master_dev_name
         # pylint: disable=line-too-long
         # self._command_executor = CommandExecutor(
@@ -80,7 +81,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         #     _update_command_in_progress_callback=_update_command_in_progress_callback,  # noqa:E501
         # )
         self._adapter_factory = _adapter_factory
-        self._device = DeviceInfo(sdp_master_dev_name)
         self.timeout = timeout
         # pylint: enable=line-too-long
         self.update_availablity_callback = _update_availablity_callback
@@ -90,7 +90,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         #     proxy_timeout=500,
         #     sleep_time=1,
         # )
-        self.update_availablity_callback = _update_availablity_callback
         self.on_command_object = On(
             self, self.op_state_model, self._adapter_factory, logger
         )
@@ -98,8 +97,17 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         self.off_command_object = Off(
             self, self.op_state_model, self._adapter_factory, logger
         )
+        # self.start_liveliness_probe(LivelinessProbeType.SINGLE_DEVICE)
 
-    #     self.start_liveliness_probe(LivelinessProbeType.SINGLE_DEVICE)
+    @property
+    def sdp_master_device_name(self) -> str:
+        """Returns device name for the SDP Master Device."""
+        return self.sdp_master_dev_name
+
+    @sdp_master_device_name.setter
+    def sdp_master_device_name(self, device_name: str) -> None:
+        """Sets the device name for SDP Master Device."""
+        self.sdp_master_dev_name = device_name
 
     # def stop(self):
     #     self.stop_liveliness_probe()

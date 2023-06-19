@@ -16,7 +16,6 @@ from tests.settings import (
     SDP_MASTER_DEVICE_LOW,
     SDP_MASTER_DEVICE_MID,
     create_cm,
-    get_sdpmln_command_obj,
     logger,
 )
 
