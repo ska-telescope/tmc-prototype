@@ -10,25 +10,26 @@ from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
 def assign_resources_error_propagation(
-    tango_context, sdpsal_node, assign_input_str, change_event_callbacks
+    tango_context, sdpsln_name, assign_input_str, change_event_callbacks
 ) -> None:
 
     dev_factory = DevFactory()
-    sdpsln_device = dev_factory.get_device(sdpsal_node)
+    sdpsln_device = dev_factory.get_device(sdpsln_name)
 
-    if "mid" in sdpsal_node:
+    if "mid" in sdpsln_name:
         sdp_subarray = dev_factory.get_device("mid-sdp/subarray/01")
     else:
         sdp_subarray = dev_factory.get_device("low-sdp/subarray/01")
+    sdp_subarray.SetDirectObsState(ObsState.EMPTY)
+    assert sdp_subarray.obsState == ObsState.EMPTY
 
-    sdpsal_node.SetDirectObsState(ObsState.EMPTY)
-    assert sdpsal_node.obsState == ObsState.EMPTY
     result, unique_id = sdpsln_device.AssignResources(assign_input_str)
     logger.info(
         f"AssignResources Command ID: {unique_id} Returned result: {result}"
     )
     time.sleep(2)
-    assert sdpsal_node.obsState == ObsState.IDLE
+    sdp_subarray.SetDirectObsState(ObsState.IDLE)
+    assert sdp_subarray.obsState == ObsState.IDLE
 
     sdpsln_device.subscribe_event(
         "longRunningCommandResult",
