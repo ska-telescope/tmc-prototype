@@ -28,7 +28,6 @@ def assign_resouces(
     assert sdpsal_node.sdpSubarrayObsState == ObsState.EMPTY
     (result, unique_id) = sdpsal_node.AssignResources(assign_input_str)
     assert result[0] == ResultCode.QUEUED
-    time.sleep(5)
     sdpsal_node.subscribe_event(
         "sdpSubarrayObsState",
         tango.EventType.CHANGE_EVENT,
@@ -82,11 +81,16 @@ def test_assign_res_command_mid(
     [("ska_low/tm_leaf_node/sdp_subarray01", "low-sdp/subarray/01")],
 )
 def test_assign_res_command_low(
-    tango_context, sdpsaln_name, sdp_subarray, json_factory
+    tango_context,
+    sdpsaln_name,
+    sdp_subarray,
+    json_factory,
+    change_event_callbacks,
 ):
     return assign_resouces(
         tango_context,
         sdpsaln_name,
         sdp_subarray,
         json_factory,
+        change_event_callbacks,
     )
