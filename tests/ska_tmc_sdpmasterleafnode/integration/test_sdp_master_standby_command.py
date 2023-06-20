@@ -28,6 +28,11 @@ def standby_command(tango_context, sdpmln_name, group_callback):
     group_callback["longRunningCommandsInQueue"].assert_change_event(
         None,
     )
+    availablity_value = sdpmln_node.read_attribute(
+        "isSubsystemAvailable"
+    ).value
+    assert availablity_value
+
     result, unique_id = sdpmln_node.On()
 
     group_callback["longRunningCommandsInQueue"].assert_change_event(

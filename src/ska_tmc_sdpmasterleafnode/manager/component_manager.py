@@ -83,32 +83,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             self, self.op_state_model, self._adapter_factory, logger
         )
 
-    #     self.start_liveliness_probe(LivelinessProbeType.SINGLE_DEVICE)
-
-    # def stop(self):
-    #     self.stop_liveliness_probe()
-
-    # def start_liveliness_probe(self, lp: LivelinessProbeType) -> None:
-    #     """Starts Liveliness Probe for the given device.
-
-    #     :param lp: enum of class LivelinessProbeType
-    #     """
-    #     try:
-    #         if lp == LivelinessProbeType.SINGLE_DEVICE:
-    #             self.liveliness_probe.start()
-    #         else:
-    #             self.logger.warning("Liveliness Probe is not running")
-    #     except Exception as e:
-    #         self.logger.error(
-    #             f"An error occurred during\
-    #                         Liveliness Probe start: {str(e)}"
-    #         )
-
-    # def stop_liveliness_probe(self) -> None:
-    #     """Stops the liveliness probe"""
-    #     if self.liveliness_probe:
-    #         self.liveliness_probe.stop()
-
     # pylint: disable= arguments-differ
     def update_ping_info(self, ping: int, dev_name: str) -> None:
         """
@@ -124,22 +98,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
                     "Calling update_availablity_callback from update_ping_info"
                 )
                 self.update_availablity_callback(True)
-
-    # def device_failed(
-    #     self, device_info, exception
-    # ):  # pylint: disable=arguments-differ
-    #     """
-    #     Set a device to failed and call the relative callback if available
-
-    #     :param device_info: a device info
-    #     :type device_info: DeviceInfo
-    #     :param exception: an exception
-    #     :type: Exception
-    #     """
-    #     device_info.update_unresponsive(True, exception)
-    #     with self.lock:
-    #         if self.update_availablity_callback is not None:
-    #             self.update_availablity_callback(False)
 
     def _check_if_sdp_master_is_responsive(self) -> None:
         """Checks if SDP master/controller device is responsive."""
