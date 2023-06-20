@@ -2,6 +2,8 @@
 SDP Master Leaf node acts as a SDP contact point for the Master Node and also
 monitors and issues commands to the SDP Master.
 """
+
+# pylint: disable=access-member-before-definition
 from ska_tango_base import SKABaseDevice
 from ska_tango_base.commands import ResultCode, SubmittedSlowCommand
 from ska_tmc_common.adapters import AdapterFactory
@@ -80,7 +82,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             )
             device._version_id = release.version
             device.set_change_event("healthState", True, False)
-            device._isSubsystemAvailable = False
+            device._issubsystemavailable = False
             device.op_state_model.perform_action("component_on")
             # device.component_manager._command_executor.add_command_execution(
             #     "0", "Init", ResultCode.OK, ""
@@ -103,13 +105,16 @@ class SdpMasterLeafNode(SKABaseDevice):
 
     def update_availablity_callback(self, availablity):
         """Change event callback for isSubsystemAvailable"""
-        self._isSubsystemAvailable = availablity  # pylint: disable=W0201
-        self.push_change_event("isSubsystemAvailable", availablity)
+        if availablity != self._issubsystemavailable:
+            self._issubsystemavailable = availablity  # pylint: disable=W0201
+            self.push_change_event(
+                "isSubsystemAvailable", self._issubsystemavailable
+            )
 
     def read_isSubsystemAvailable(self):
         """Returns the TMC Sdp MasterLeafNode
         isSubsystemAvailable attribute."""
-        return self._isSubsystemAvailable
+        return self._issubsystemavailable
 
     def read_sdpMasterDevName(self):
         """Return the sdpmasterdevname attribute."""
