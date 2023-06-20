@@ -108,7 +108,9 @@ class SdpMasterLeafNode(SKABaseDevice):
         """Change event callback for isSubsystemAvailable"""
         if availablity != self._issubsystemavailable:
             self._issubsystemavailable = availablity  # pylint: disable=W0201
-            self.push_change_event("isSubsystemAvailable", availablity)
+            self.push_change_event(
+                "isSubsystemAvailable", self._issubsystemavailable
+            )
 
     def read_isSubsystemAvailable(self):
         """Returns the TMC Sdp MasterLeafNode
