@@ -67,7 +67,7 @@ class On(SdpMLNCommand):
         return_code, message = self.init_adapter()
         if return_code == ResultCode.FAILED:
             return return_code, message
-        result, msg = self.call_adapter_method(
+        result, message = self.call_adapter_method(
             "Sdp Master", self.sdp_master_adapter, "On"
         )
-        return result, msg
+        return result, message

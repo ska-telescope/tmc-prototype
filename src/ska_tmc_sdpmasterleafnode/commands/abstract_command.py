@@ -21,6 +21,7 @@ class SdpMLNCommand(TmcLeafNodeCommand):
         super().__init__(component_manager, logger)
         self.op_state_model = op_state_model
         self._adapter_factory = adapter_factory or AdapterFactory()
+        self.sdp_master_adapter = None
 
     def check_unresponsive(self):
         """Checks whether the device is unresponsive"""
@@ -33,9 +34,7 @@ class SdpMLNCommand(TmcLeafNodeCommand):
                 This device will continue with normal operation."""
             )
 
-    # pylint: disable=attribute-defined-outside-init
     def init_adapter(self):
-        self.sdp_master_adapter = None
         dev_name = self.component_manager.sdp_master_dev_name
         timeout = self.component_manager.timeout
         elapsed_time = 0
