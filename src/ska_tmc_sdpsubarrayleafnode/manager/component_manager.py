@@ -41,7 +41,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         communication_state_callback=None,
         component_state_callback=None,
         _liveliness_probe=None,
-        _event_receiver: bool = True,
+        _event_receiver=True,
         _update_sdp_subarray_obs_state_callback=None,
         _update_lrcr_callback=None,
         max_workers=5,
@@ -315,7 +315,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             )
         return True
 
-    def on_command(self, task_callback=None) -> Tuple[TaskStatus, str]:
+    def on(self, task_callback=None) -> Tuple[TaskStatus, str]:
         """Submits the On command for execution.
 
         :rtype: tuple
