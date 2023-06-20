@@ -12,7 +12,6 @@ Feature: SdpMasterLeafNode acceptance
 		| command_name		   |
 		| On                   |
         | Off                  |
-        | Standby              |
 
 
 	#Check SdpMasterLeafNode node correctly report failed and working devices defined within its scope of monitoring (internal model)
