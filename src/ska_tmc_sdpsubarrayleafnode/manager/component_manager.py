@@ -317,10 +317,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
         :rtype: tuple
         """
-        sdp_sa_state = self._device.get_state()
-        if sdp_sa_state == DevState.ON:
-            return TaskStatus.REJECTED, "SdpSubarray is already in ON state."
-
         task_status, response = self.submit_task(
             self.on_command_object.on,
             args=[self.logger],
