@@ -40,16 +40,23 @@ class Off(SdpMLNCommand):
         """
 
         task_callback(status=TaskStatus.IN_PROGRESS)
-
+        exception = ""
         return_code, message = self.do()
 
-        logger.info(message)
+        logger.info(
+            "Off command invoked on: %s: Result: %s, %s",
+            self.sdp_master_adapter.dev_name,
+            return_code,
+            message,
+        )
         if return_code == ResultCode.FAILED:
+            exception = message
             task_callback(
                 status=TaskStatus.COMPLETED,
                 result=return_code,
-                exception=message,
+                exception=exception,
             )
+
         else:
             logger.info(
                 "The Off command is invoked successfully on %s",

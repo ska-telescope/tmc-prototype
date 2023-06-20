@@ -69,11 +69,11 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         self._adapter_factory = _adapter_factory
         self.timeout = timeout
         self.update_availablity_callback = _update_availablity_callback
-        self.on_command_object = On(
+        self.on_command = On(
             self, self.op_state_model, self._adapter_factory, logger
         )
 
-        self.off_command_object = Off(
+        self.off_command = Off(
             self, self.op_state_model, self._adapter_factory, logger
         )
 
@@ -143,26 +143,26 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             return True
         return False
 
-    def on_command(self, task_callback=None) -> Tuple[TaskStatus, str]:
+    def submit_on_command(self, task_callback=None) -> Tuple[TaskStatus, str]:
         """Submits the On command for execution.
 
         :rtype: tuple
         """
         task_status, response = self.submit_task(
-            self.on_command_object.on,
+            self.on_command.on,
             args=[self.logger],
             task_callback=task_callback,
         )
         self.logger.info("On command queued for execution")
         return task_status, response
 
-    def off_command(self, task_callback=None) -> Tuple[TaskStatus, str]:
+    def submit_off_command(self, task_callback=None) -> Tuple[TaskStatus, str]:
         """Submits the Off command for execution.
 
         :rtype: tuple
         """
         task_status, response = self.submit_task(
-            self.off_command_object.off,
+            self.off_command.off,
             args=[self.logger],
             task_callback=task_callback,
         )
