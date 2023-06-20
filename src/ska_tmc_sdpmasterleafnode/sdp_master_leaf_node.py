@@ -41,12 +41,6 @@ class SdpMasterLeafNode(SKABaseDevice):
         access=AttrWriteType.READ,
     )
 
-    # commandExecuted = attribute(
-    #     dtype=(("DevString",),),
-    #     max_dim_x=4,
-    #     max_dim_y=100,
-    # )
-
     sdpMasterDevName = attribute(
         dtype="DevString",
         access=AttrWriteType.READ_WRITE,
@@ -84,9 +78,6 @@ class SdpMasterLeafNode(SKABaseDevice):
             device.set_change_event("healthState", True, False)
             device._issubsystemavailable = False
             device.op_state_model.perform_action("component_on")
-            # device.component_manager._command_executor.add_command_execution(
-            #     "0", "Init", ResultCode.OK, ""
-            # )
             device.set_change_event("isSubsystemAvailable", True, False)
             return (ResultCode.OK, "")
 
@@ -171,7 +162,6 @@ class SdpMasterLeafNode(SKABaseDevice):
         result_code, unique_id = handler()
         return [[result_code], [unique_id]]
 
-    # TODO : Will get Uncommented after refactoring for command is done.
     def is_Standby_allowed(self):
         """
         Checks whether this command is allowed to be run in current device \

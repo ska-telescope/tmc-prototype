@@ -1,8 +1,9 @@
 """
-Disable command class for SDPMasterLeafNode.
+Disable command class for SdpMasterLeafNode.
 """
 
 import threading
+from logging import Logger
 from typing import Callable, Optional
 
 from ska_tango_base.commands import ResultCode
@@ -23,7 +24,7 @@ class Disable(SdpMLNCommand):
     # pylint: disable=unused-argument
     def disable(
         self,
-        logger,
+        logger: Logger,
         task_callback: Callable = None,
         task_abort_event: Optional[threading.Event] = None,
     ) -> None:
@@ -46,7 +47,7 @@ class Disable(SdpMLNCommand):
         if return_code == ResultCode.FAILED:
             task_callback(
                 status=TaskStatus.COMPLETED,
-                result=ResultCode.FAILED,
+                result=return_code,
                 exception=message,
             )
         else:
@@ -70,4 +71,4 @@ class Disable(SdpMLNCommand):
         result = self.call_adapter_method(
             "Sdp Master", self.sdp_master_adapter, "Disable"
         )
-        return result
+        return result, message

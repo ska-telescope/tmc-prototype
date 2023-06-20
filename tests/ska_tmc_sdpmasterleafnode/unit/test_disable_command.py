@@ -47,7 +47,7 @@ def test_disable_command_fail_sdp_master(
     cm, _ = create_cm("SdpMLNComponentManager", sdp_master_device)
     adapter_factory = HelperAdapterFactory()
     cm.sdp_master_dev_name = sdp_master_device
-    # include exception in Standby command
+    # include exception in Disable Command
     attrs = {"Disable.side_effect": Exception}
     sdpcontrollerMock = mock.Mock(**attrs)
     adapter_factory.get_or_create_adapter(

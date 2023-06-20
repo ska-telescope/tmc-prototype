@@ -24,9 +24,8 @@ class SdpMLNCommand(TmcLeafNodeCommand):
 
     def check_unresponsive(self):
         """Checks whether the device is unresponsive"""
-        # component_manager = self.target
-        devInfo = self.component_manager.get_device()
-        if devInfo is None or devInfo.unresponsive:
+        dev_info = self.component_manager.get_device()
+        if dev_info is None or dev_info.unresponsive:
             raise DeviceUnresponsive(
                 """Command invocation failed as the SDP subarray device is not available
                 The command has NOT been executed.
@@ -36,7 +35,6 @@ class SdpMLNCommand(TmcLeafNodeCommand):
     # pylint: disable=attribute-defined-outside-init
     def init_adapter(self):
         self.sdp_master_adapter = None
-        # component_manager = self.target
         dev_name = self.component_manager.sdp_master_dev_name
         timeout = self.component_manager.timeout
         elapsed_time = 0
