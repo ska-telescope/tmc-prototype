@@ -2,6 +2,7 @@
 Off command class for SDPMasterLeafNode.
 """
 import threading
+from logging import Logger
 from typing import Callable, Optional
 
 from ska_tango_base.commands import ResultCode
@@ -22,7 +23,7 @@ class Off(SdpMLNCommand):
 
     def off(
         self,
-        logger,
+        logger: Logger,
         task_callback: Callable = None,
         # pylint: disable= unused-argument
         task_abort_event: Optional[threading.Event] = None,
@@ -46,7 +47,7 @@ class Off(SdpMLNCommand):
         if return_code == ResultCode.FAILED:
             task_callback(
                 status=TaskStatus.COMPLETED,
-                result=ResultCode.FAILED,
+                result=return_code,
                 exception=message,
             )
         else:
@@ -56,7 +57,7 @@ class Off(SdpMLNCommand):
             )
             task_callback(
                 status=TaskStatus.COMPLETED,
-                result=ResultCode.OK,
+                result=return_code,
             )
 
     def do(self, argin=None):

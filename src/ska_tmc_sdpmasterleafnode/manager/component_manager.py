@@ -68,7 +68,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         self.sdp_master_dev_name = sdp_master_dev_name
         self._adapter_factory = _adapter_factory
         self.timeout = timeout
-        # pylint: enable=line-too-long
         self.update_availablity_callback = _update_availablity_callback
         self.on_command_object = On(
             self, self.op_state_model, self._adapter_factory, logger
