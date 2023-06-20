@@ -179,7 +179,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """Change event callback for isSubsystemAvailable"""
 
         if availablity != self._issubsystemavailable:
-
             self._issubsystemavailable = availablity
             self.push_change_event(
                 "isSubsystemAvailable", self._issubsystemavailable
