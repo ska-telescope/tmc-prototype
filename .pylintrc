@@ -37,7 +37,7 @@ load-plugins=
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use"--disable=all --enable=classes
 # --disable=W"
-disable=invalid-name,protected-access,abstract-method,no-member,broad-except,fixme,W
+disable=invalid-name,protected-access,abstract-method,no-member,broad-except
 
 
 [REPORTS]
@@ -201,7 +201,7 @@ docstring-min-length=-1
 [MISCELLANEOUS]
 
 # List of note tags to take in consideration, separated by a comma.
-notes=FIXME,XXX,TODO
+notes=FIXME,XXX
 
 
 [IMPORTS]

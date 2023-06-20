@@ -167,6 +167,7 @@ def change_event_callbacks() -> MockTangoEventCallbackGroup:
     )
 
 
+# pylint: disable= redefined-outer-name
 @pytest.fixture
 def task_callback() -> MockCallable:
     """Creates a mock callable for asynchronous testing

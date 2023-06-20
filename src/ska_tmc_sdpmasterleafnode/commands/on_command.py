@@ -25,6 +25,7 @@ class On(SdpMLNCommand):
         self,
         logger,
         task_callback: Callable = None,
+        # pylint: disable= unused-argument
         task_abort_event: Optional[threading.Event] = None,
     ) -> None:
         """A method to invoke the On command.

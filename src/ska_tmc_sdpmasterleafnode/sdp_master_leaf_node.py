@@ -54,6 +54,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         A class for the TMC SdpMasterLeafNode's init_device() method.
         """
 
+        # pylint: disable= arguments-differ
         def do(self):
             """
             Initializes the attributes and properties of the SdpMasterLeafNode.

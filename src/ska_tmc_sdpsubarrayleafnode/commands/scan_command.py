@@ -66,7 +66,7 @@
 #             # As, SKA logtransaction is not utilised in scan command across
 #             # tmc devices.
 #             # Hence, Interface URL needs to be updated explicitly for SDP.
-#             # pylint: disable=fixme
+#
 #             # TODO: Incorporate transaction id implementation for scan
 #             # command across TMC.
 #             json_argument[
