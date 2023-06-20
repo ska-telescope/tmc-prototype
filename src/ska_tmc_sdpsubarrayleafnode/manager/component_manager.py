@@ -98,7 +98,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
         self.update_lrcr_callback = _update_lrcr_callback
         self._lrc_result = ("", "")
-        self.on_command_object = On(self, self.logger)
+        self.on_command = On(self, self.logger)
 
     def stop(self):
         """Method to stop the liveliness probe."""
@@ -308,7 +308,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 self.raise_invalid_obsstate_error(command_name)
         else:
             self.logger.info(
-                "Command is not refactored yet on CspSubarrayLeafNode."
+                f"{command_name} is not supported by SdpSubarrayLeafNode."
             )
         return True
 
@@ -318,7 +318,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :rtype: tuple
         """
         task_status, response = self.submit_task(
-            self.on_command_object.on,
+            self.on_command.on,
             args=[self.logger],
             task_callback=task_callback,
         )

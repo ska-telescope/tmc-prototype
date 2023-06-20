@@ -188,7 +188,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("On")
         result_code, unique_id = handler()
 
-        return [[result_code], [unique_id]]
+        return [result_code], [unique_id]
 
     # This code will be enabled as part of SP-3237
     # def is_Off_allowed(self):
