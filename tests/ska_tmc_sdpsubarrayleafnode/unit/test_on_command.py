@@ -22,7 +22,7 @@ from tests.settings import (
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
-def test_mid_on(tango_context, devices, task_callback):
+def test_command_on(tango_context, devices, task_callback):
     cm, _ = create_cm("SdpSLNComponentManager", devices)
     assert cm.is_command_allowed("On")
 

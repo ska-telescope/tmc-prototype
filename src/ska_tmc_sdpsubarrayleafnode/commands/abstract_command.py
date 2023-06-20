@@ -18,6 +18,15 @@ from tango import ConnectionFailed, DevFailed, DevState
 class SdpSLNCommand(TmcLeafNodeCommand):
     """SDP Subarray Leaf Node Class"""
 
+    def __init__(
+        self,
+        component_manager,
+        logger=None,
+    ) -> None:
+        super().__init__(component_manager, logger=logger)
+        self.component_manager = component_manager
+        self.sdp_subarray_adapter = None
+
     def check_unresponsive(self):
         """Checks whether the device is unresponsive"""
         devInfo = self.component_manager.get_device()
@@ -45,45 +54,31 @@ class SdpSLNCommand(TmcLeafNodeCommand):
                 + "This device will continue with normal operation."
             )
 
-    # pylint: disable=attribute-defined-outside-init
     def init_adapter(self):
-        self.sdp_subarray_adapter = None
-        dev_name = self.component_manager._sdp_subarray_dev_name
-        devInfo = self.component_manager.get_device()
         timeout = self.component_manager.timeout
         elapsed_time = 0
         start_time = time.time()
-
+        device = self.component_manager._sdp_subarray_dev_name
         while self.sdp_subarray_adapter is None and elapsed_time < timeout:
             try:
-                if not devInfo.unresponsive:
-                    self.sdp_subarray_adapter = (
-                        self.adapter_factory.get_or_create_adapter(
-                            dev_name, AdapterType.SUBARRAY
-                        )
-                    )
+                get_adapter = self.adapter_factory.get_or_create_adapter
+                self.sdp_subarray_adapter = get_adapter(
+                    device,
+                    AdapterType.SUBARRAY,
+                )
             except ConnectionFailed as cf:
                 elapsed_time = time.time() - start_time
                 if elapsed_time > timeout:
-                    return self.adapter_error_message_result(
-                        self.component_manager._sdp_subarray_dev_name,
-                        cf,
-                    )
+                    message = f"Error in creating adapter for {device}: {cf}"
+                    return ResultCode.FAILED, message
             except DevFailed as df:
                 elapsed_time = time.time() - start_time
                 if elapsed_time > timeout:
-                    return self.adapter_error_message_result(
-                        self.component_manager._sdp_subarray_dev_name,
-                        df,
-                    )
+                    message = f"Error in creating adapter for {device}: {df}"
+                    return ResultCode.FAILED, message
             except (AttributeError, ValueError, TypeError) as e:
-                return self.adapter_error_message_result(
-                    self.component_manager._sdp_subarray_dev_name,
-                    e,
-                )
-            except Exception as e:
-                self.logger.error(e)
-
+                message = f"Error in creating adapter for {device}: {e}"
+                return ResultCode.FAILED, message
         return ResultCode.OK, ""
 
 

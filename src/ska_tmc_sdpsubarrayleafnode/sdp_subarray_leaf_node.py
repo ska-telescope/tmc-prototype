@@ -47,12 +47,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         access=AttrWriteType.READ,
     )
 
-    commandExecuted = attribute(
-        dtype=(("DevString",),),
-        max_dim_x=4,
-        max_dim_y=10000,
-    )
-
     lastDeviceInfoChanged = attribute(
         dtype="DevString",
         access=AttrWriteType.READ,
@@ -164,21 +158,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     def read_lastDeviceInfoChanged(self):
         """Return the last device info change"""
         return self._LastDeviceInfoChanged
-
-    def read_commandExecuted(self):
-        """Return the commandExecuted attribute."""
-        result = []
-        for command_executed in reversed(
-            self.component_manager.command_executor.command_executed
-        ):
-            single_res = [
-                str(command_executed["Id"]),
-                str(command_executed["Command"]),
-                str(command_executed["ResultCode"]),
-                str(command_executed["Message"]),
-            ]
-            result.append(single_res)
-        return result
 
     def read_sdpSubarrayObsState(self):
         """Reads the current observation state of the SDP subarray"""
