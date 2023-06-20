@@ -11,12 +11,12 @@ from tests.settings import (
 )
 
 
-def on_command(tango_context, sdpsa_fqdn, change_event_callbacks):
+def on_command(tango_context, sdpsaln_fqdn, change_event_callbacks):
     logger.info("%s", tango_context)
     dev_factory = DevFactory()
-    sdp_subarray_proxy = dev_factory.get_device(sdpsa_fqdn)
+    sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_fqdn)
 
-    sdp_subarray_proxy.subscribe_event(
+    sdp_subarray_ln_proxy.subscribe_event(
         "longRunningCommandsInQueue",
         tango.EventType.CHANGE_EVENT,
         change_event_callbacks["longRunningCommandsInQueue"],
@@ -24,13 +24,13 @@ def on_command(tango_context, sdpsa_fqdn, change_event_callbacks):
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
         None,
     )
-    result, unique_id = sdp_subarray_proxy.On()
+    result, unique_id = sdp_subarray_ln_proxy.On()
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
         ("On",),
     )
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
-    sdp_subarray_proxy.subscribe_event(
+    sdp_subarray_ln_proxy.subscribe_event(
         "longRunningCommandResult",
         tango.EventType.CHANGE_EVENT,
         change_event_callbacks["longRunningCommandResult"],

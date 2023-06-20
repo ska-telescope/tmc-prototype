@@ -13,7 +13,6 @@ from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tango_base.executor import TaskStatus
 from ska_tmc_common.device_info import SubArrayDeviceInfo
-from ska_tmc_common.enum import LivelinessProbeType
 from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
 from ska_tmc_common.lrcr_callback import LRCRCallback
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
@@ -40,12 +39,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self,
         sdp_subarray_dev_name,
         logger=None,
-        _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
-        _event_receiver: bool = True,
         communication_state_callback=None,
         component_state_callback=None,
-        # _update_device_callback=None,  # ??
-        # update_command_in_progress_callback=None,  # ??
+        _liveliness_probe=None,
+        _event_receiver=True,
         _update_sdp_subarray_obs_state_callback=None,
         _update_lrcr_callback=None,
         max_workers=5,
@@ -244,6 +241,11 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         if self.update_lrcr_callback is not None:
             self.update_lrcr_callback(self._lrc_result)
 
+    def _check_if_sdp_sa_is_responsive(self) -> None:
+        """Checks if SdpSubarray device is responsive."""
+        if self._device is None or self._device.unresponsive:
+            raise DeviceUnresponsive(f"{self._device} not available")
+
     def is_command_allowed(self, command_name: str):
         """
         Checks whether this command is allowed
@@ -268,18 +270,56 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 + "This device will continue with normal operation."
             )
 
-        device_info = self.get_device()
-        if device_info is None or device_info.unresponsive:
-            raise DeviceUnresponsive(
-                """The invocation of the command on this device is not allowed.
-                Reason: SDP subarray device is not available.
-                The command has NOT been executed.
-                This device will continue with normal operation."""
-            )
+        self._check_if_sdp_sa_is_responsive()
+        self.logger.debug(f"Checking is command allowed for {command_name}")
 
+        if command_name in ["AssignResources", "ReleaseAllResources"]:
+            # Checking obsState of Csp Subarray device
+            if self.get_device().obs_state not in [
+                ObsState.IDLE,
+                ObsState.EMPTY,
+            ]:
+                self.raise_invalid_obsstate_error(command_name)
+
+        elif command_name in ["Configure", "End"]:
+            if self.get_device().obs_state not in [
+                ObsState.IDLE,
+                ObsState.READY,
+            ]:
+                self.raise_invalid_obsstate_error(command_name)
+
+        elif command_name == "Scan":
+            if self.get_device().obs_state not in [ObsState.READY]:
+                self.raise_invalid_obsstate_error(command_name)
+
+        elif command_name == "EndScan":
+            if self.get_device().obs_state not in [
+                ObsState.SCANNING,
+            ]:
+                self.raise_invalid_obsstate_error(command_name)
+        elif command_name == "Restart":
+            if self.get_device().obs_state not in [
+                ObsState.FAULT,
+                ObsState.ABORTED,
+            ]:
+                self.raise_invalid_obsstate_error(command_name)
+
+        elif command_name == "Abort":
+            if self.get_device().obs_state not in [
+                ObsState.SCANNING,
+                ObsState.CONFIGURING,
+                ObsState.RESOURCING,
+                ObsState.IDLE,
+                ObsState.READY,
+            ]:
+                self.raise_invalid_obsstate_error(command_name)
+        else:
+            self.logger.info(
+                "Command is not refactored yet on CspSubarrayLeafNode."
+            )
         return True
 
-    def on_command(self, task_callback=None) -> Tuple[TaskStatus, str]:
+    def on(self, task_callback=None) -> Tuple[TaskStatus, str]:
         """Submits the On command for execution.
 
         :rtype: tuple
