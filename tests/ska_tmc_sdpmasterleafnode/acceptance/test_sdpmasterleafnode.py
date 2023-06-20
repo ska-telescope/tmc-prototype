@@ -78,24 +78,6 @@ def check_command(sdpmasterleaf_node, group_callback):
         group_callback,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
-    # start_time = time.time()
-    # executed = False
-    # while not executed:
-    #     for command in sdpmasterleaf_node.commandExecuted:
-    #         if command[0] == unique_id:
-    #             logger.info("command result: %s", command)
-    #             assert (
-    #                 command[2] == str(ResultCode.OK)
-    #                 or command[2] == str(ResultCode.FAILED)
-    #                 or command[2] == str(ResultCode.STARTED)
-    #             )
-    #             executed = True
-    #     if executed:
-    #         break
-    #     time.sleep(SLEEP_TIME)
-    #     elapsed_time = time.time() - start_time
-    #     if elapsed_time > float(seconds):
-    #         pytest.fail("Timeout occurred while executing the test")
 
 
 scenarios("../ska_tmc_sdpmasterleafnode/features/sdpmasterleafnode.feature")

@@ -6,17 +6,11 @@ from ska_tango_base.base.base_device import SKABaseDevice
 from ska_tango_base.commands import ResultCode, SubmittedSlowCommand
 from ska_tmc_common.adapters import AdapterFactory
 from ska_tmc_common.enum import LivelinessProbeType
-
-# from ska_tmc_common.op_state_model import TMCOpStateModel
 from tango import AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
 
 from ska_tmc_sdpmasterleafnode import release
-
-# from ska_tmc_sdpmasterleafnode.commands import On
 from ska_tmc_sdpmasterleafnode.manager import SdpMLNComponentManager
-
-# from ska_tmc_sdpsubarrayleafnode.liveliness_probe import LivelinessProbeType
 
 __all__ = ["SdpMasterLeafNode", "main"]
 
@@ -44,12 +38,6 @@ class SdpMasterLeafNode(SKABaseDevice):
         dtype="DevBoolean",
         access=AttrWriteType.READ,
     )
-
-    # commandExecuted = attribute(
-    #     dtype=(("DevString",),),
-    #     max_dim_x=4,
-    #     max_dim_y=100,
-    # )
 
     sdpMasterDevName = attribute(
         dtype="DevString",
@@ -125,25 +113,6 @@ class SdpMasterLeafNode(SKABaseDevice):
         """Set the sdpmasterdevname attribute."""
         self.component_manager.sdp_master_dev_name = value
 
-    # def read_commandExecuted(self):
-    #     """Return the commandExecuted attribute."""
-    #     result = []
-    #     i = 0
-    #     for command_executed in reversed(
-    #         self.component_manager._command_executor.command_executed
-    #     ):
-    #         if i == 100:
-    #             break
-    #         single_res = [
-    #             str(command_executed["Id"]),
-    #             str(command_executed["Command"]),
-    #             str(command_executed["ResultCode"]),
-    #             str(command_executed["Message"]),
-    #         ]
-    #         result.append(single_res)
-    #         i += 1
-    #     return result
-
     # --------
     # Commands
     # --------
@@ -179,8 +148,6 @@ class SdpMasterLeafNode(SKABaseDevice):
 
         :rtype: boolean
         """
-        # handler = self.get_command_object("On")
-        # return handler.check_allowed()
         return self.component_manager.is_command_allowed("On")
 
     @command(dtype_out="DevVarLongStringArray")
@@ -191,19 +158,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("On")
         return_code, unique_id = handler()
-        # if self.component_manager._command_executor.queue_full:
-        #     message = """The invocation of the On command on this device
-        #     failed.
-        #     Reason: The command executor rejected the queuing of the command
-        #     because its queue is full.
-        #     The On command has NOT been queued and will not be executed.
-        #     This device will continue with normal operation."""
-        #     return [[ResultCode.FAILED], [message]]
-        # unique_id = self.component_manager._command_executor.enqueue_command(
-        #     handler
-        # )
         return [[return_code], [str(unique_id)]]
-        # return return_code, message
 
     # TODO : Will get Uncommented after refactoring for command is done.
     # def is_Standby_allowed(self):
@@ -303,16 +258,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         for command_name, method_name in [
             ("On", "on_command"),
             ("Off", "off_command"),
-            # ("Standby", Standby),
-            # ("Disable", Disable),
         ]:
-            # command_obj = command_class(
-            #     self.component_manager,
-            #     self.op_state_model,
-            #     *args,
-            #     logger=self.logger,
-            # )
-            # self.register_command_object(command_name, command_obj)
             self.register_command_object(
                 command_name,
                 SubmittedSlowCommand(

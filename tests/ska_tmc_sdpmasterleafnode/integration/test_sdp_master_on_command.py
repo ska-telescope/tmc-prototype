@@ -23,7 +23,6 @@ def on_command(tango_context, sdpmln_name, group_callback):
     group_callback["longRunningCommandsInQueue"].assert_change_event(
         None,
     )
-    # initial_len = len(sdpmln_node.commandExecuted)
     availablity_value = sdpmln_node.read_attribute(
         "isSubsystemAvailable"
     ).value
@@ -31,17 +30,6 @@ def on_command(tango_context, sdpmln_name, group_callback):
     result, unique_id = sdpmln_node.On()
     logger.info(result)
     logger.info(unique_id)
-    # assert result[0] == ResultCode.QUEUED
-    # start_time = time.time()
-    # while len(sdpmln_node.commandExecuted) != initial_len + 1:
-    #     time.sleep(SLEEP_TIME)
-    #     elapsed_time = time.time() - start_time
-    #     if elapsed_time > TIMEOUT:
-    #         pytest.fail("Timeout occurred while executing the test")
-
-    # for command in sdpmln_node.commandExecuted:
-    #     if command[0] == unique_id[0]:
-    #         assert command[2] == "ResultCode.OK"
     group_callback["longRunningCommandsInQueue"].assert_change_event(
         ("On",),
     )
