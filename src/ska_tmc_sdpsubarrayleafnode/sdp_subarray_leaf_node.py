@@ -67,7 +67,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             device._version_id = release.version
             device._LastDeviceInfoChanged = ""
             device.set_change_event("healthState", True, False)
-            device._issubsystemavailable = False
+            # device._issubsystemavailable = False
             device.set_change_event("longRunningCommandResult", True)
             ApiUtil.instance().set_asynch_cb_sub_model(
                 tango.cb_sub_model.PUSH_CALLBACK
@@ -85,6 +85,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         self._command_result = ("", "")
         self.set_change_event("longRunningCommandResult", True)
         self.set_change_event("sdpSubarrayObsState", True)
+        self._issubsystemavailable = False
 
     # -----------------
     # Device Properties
@@ -172,14 +173,15 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             "longRunningCommandResult", self._command_result
         )
 
-    # pylint: disable=access-member-before-definition
     def update_availablity_callback(self, availablity):
         """Change event callback for isSubsystemAvailable"""
 
         if availablity != self._issubsystemavailable:
 
             self._issubsystemavailable = availablity
-            self.push_change_event("isSubsystemAvailable", availablity)
+            self.push_change_event(
+                "isSubsystemAvailable", self._issubsystemavailable
+            )
 
     def always_executed_hook(self):
         pass
