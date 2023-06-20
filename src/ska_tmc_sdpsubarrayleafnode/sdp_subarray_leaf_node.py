@@ -26,6 +26,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     def init_device(self):
         super().init_device()
         self._sdp_subarray_obs_state = ObsState.EMPTY
+        self.set_change_event("sdpSubarrayObsState", True)
 
     # -----------------
     # Device Properties
@@ -64,6 +65,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         access=AttrWriteType.READ_WRITE,
     )
 
+    sdpSubarrayObsState = attribute(
+        dtype=ObsState,
+        access=AttrWriteType.READ,
+    )
+
     # ---------------
     # General methods
     # ---------------
@@ -83,10 +89,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     def update_lrcr_callback(self, lrc_result):
         """Change event callback for longRunningCommandResult"""
-        self._command_result = lrc_result
-        self.push_change_event(
-            "longRunningCommandResult", self._command_result
-        )
+        self.push_change_event("longRunningCommandResult", lrc_result)
 
     class InitCommand(
         SKABaseDevice.InitCommand
@@ -177,13 +180,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             result.append(single_res)
         return result
 
-    def read_sdp_subarray_obs_state(self):
-        """Read method for sdp_subarray_obs_state"""
+    def read_sdpSubarrayObsState(self):
+        """Reads the current observation state of the SDP subarray"""
         return self._sdp_subarray_obs_state
-
-    def write_sdp_subarray_obs_state(self, obs_state):
-        """Read method for sdp_subarray_obs_state"""
-        self._sdp_subarray_obs_state = obs_state
 
     # --------
     # Commands

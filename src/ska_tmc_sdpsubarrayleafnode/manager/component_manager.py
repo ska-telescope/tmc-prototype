@@ -234,6 +234,11 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         if self.update_lrcr_callback is not None:
             self.update_lrcr_callback(self._lrc_result)
 
+    def _check_if_sdp_sa_is_responsive(self) -> None:
+        """Checks if SdpSubarray device is responsive."""
+        if self._device is None or self._device.unresponsive:
+            raise DeviceUnresponsive(f"{self._device} not available")
+
     def is_command_allowed(self, command_name: str):
         """
         Checks whether this command is allowed
@@ -258,15 +263,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 + "This device will continue with normal operation."
             )
 
-        device_info = self.get_device()
-        if device_info is None or device_info.unresponsive:
-            raise DeviceUnresponsive(
-                """The invocation of the command on this device is not allowed.
-                Reason: SDP subarray device is not available.
-                The command has NOT been executed.
-                This device will continue with normal operation."""
-            )
-
+        self._check_if_sdp_sa_is_responsive()
         self.logger.debug(f"Checking is command allowed for {command_name}")
 
         if command_name in ["AssignResources", "ReleaseAllResources"]:
@@ -320,6 +317,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
         :rtype: tuple
         """
+        sdp_sa_state = self._device.get_state()
+        if sdp_sa_state == DevState.ON:
+            return TaskStatus.REJECTED, "SdpSubarray is already in ON state."
+
         task_status, response = self.submit_task(
             self.on_command_object.on,
             args=[self.logger],
