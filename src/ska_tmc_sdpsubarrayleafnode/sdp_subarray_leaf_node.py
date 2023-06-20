@@ -46,6 +46,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         self._sdp_subarray_obs_state = ObsState.EMPTY
         self._command_result = ("", "")
         self.set_change_event("longRunningCommandResult", True)
+        self.set_change_event("sdpSubarrayObsState", True)
 
     # -----------------
     # Device Properties
@@ -84,6 +85,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         access=AttrWriteType.READ_WRITE,
     )
 
+    sdpSubarrayObsState = attribute(
+        dtype=ObsState,
+        access=AttrWriteType.READ,
+    )
+
     # Always the last result (unique_id, JSON-encoded result)
     @attribute(  # type: ignore[misc]
         dtype=("str",),
@@ -101,11 +107,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         return self._command_result
 
-    sdp_subarray_obs_state = attribute(
-        dtype=int,
-        access=AttrWriteType.READ_WRITE,
-    )
-
     # ---------------
     # General methods
     # ---------------
@@ -122,6 +123,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     ) -> None:
         """Updates SDP Subarray ObsState"""
         self._sdp_subarray_obs_state = obs_state
+        self.push_change_event(
+            "sdpSubarrayObsState", self._sdp_subarray_obs_state
+        )
 
     def update_lrcr_callback(self, lrc_result):
         """Change event callback for longRunningCommandResult"""
@@ -232,13 +236,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         return self.component_manager.lrc_result
 
-    def read_sdp_subarray_obs_state(self):
-        """Read method for sdp_subarray_obs_state"""
+    def read_sdpSubarrayObsState(self):
+        """Reads the current observation state of the SDP subarray"""
         return self._sdp_subarray_obs_state
-
-    def write_sdp_subarray_obs_state(self, obs_state):
-        """Read method for sdp_subarray_obs_state"""
-        self._sdp_subarray_obs_state = obs_state
 
     # --------
     # Commands
@@ -691,6 +691,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             logger=self.logger,
             _update_device_callback=self.update_device_callback,
             _update_lrcr_callback=self.update_lrcr_callback,
+            _update_sdp_subarray_obs_state_callback=(
+                self.update_sdp_subarray_obs_state_callback
+            ),
             sleep_time=self.SleepTime,
             timeout=self.TimeOut,
             _update_availablity_callback=self.update_availablity_callback,

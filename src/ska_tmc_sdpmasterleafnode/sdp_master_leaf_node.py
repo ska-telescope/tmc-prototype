@@ -232,9 +232,6 @@ class SdpMasterLeafNode(SKABaseDevice):
     def create_component_manager(self):
         """Returns Sdp Master Leaf Node component manager object"""
         _adapter_factory = AdapterFactory()
-        # self.op_state_model = TMCOpStateModel(
-        #     logger=self.logger, callback=super()._update_state
-        # )
         cm = SdpMLNComponentManager(
             self.SdpMasterFQDN,
             _adapter_factory=_adapter_factory,
