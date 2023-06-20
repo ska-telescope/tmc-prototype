@@ -28,38 +28,10 @@ class SdpMLNCommand(TmcLeafNodeCommand):
         devInfo = self.component_manager.get_device()
         if devInfo is None or devInfo.unresponsive:
             raise DeviceUnresponsive(
-                """The invocation of the command on this device is not allowed.
-                Reason: SDP subarray device is not available.
+                """Command invocation failed as the SDP subarray device is not available
                 The command has NOT been executed.
                 This device will continue with normal operation."""
             )
-
-    # def check_allowed(self):
-    #     """
-    #     Checks whether this command is allowed
-    #     It checks that the device is in the right state
-    #     to execute this command and that all the
-    #     component needed for the operation are not unresponsive
-
-    #     :return: True if this command is allowed
-
-    #     :rtype: boolean
-
-    #     """
-
-    #     if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
-    #         raise CommandNotAllowed(
-    #             "The invocation of the {} command on this device".format(
-    #                 __class__
-    #             )
-    #             + "is not allowed."
-    #             + "Reason: The current operational state is %s."
-    #             + "The command has NOT been executed."
-    #             + "This device will continue with normal operation.",
-    #             self.op_state_model.op_state,
-    #         )
-
-    #     return True
 
     # pylint: disable=attribute-defined-outside-init
     def init_adapter(self):
