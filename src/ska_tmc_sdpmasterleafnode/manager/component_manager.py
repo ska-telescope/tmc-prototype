@@ -27,7 +27,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
 
     def __init__(
         self,
-        sdp_master_dev_name,
+        sdp_master_device_name,
         logger=None,
         _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
         _event_receiver=False,
@@ -63,8 +63,8 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             proxy_timeout=proxy_timeout,
             sleep_time=sleep_time,
         )
-        self._device = DeviceInfo(sdp_master_dev_name)
-        self.sdp_master_dev_name = sdp_master_dev_name
+        self._device = DeviceInfo(sdp_master_device_name)
+        self.sdp_master_device_name = sdp_master_device_name
         self.timeout = timeout
         self.update_availablity_callback = _update_availablity_callback
         self.on_command = On(self, logger)
@@ -74,12 +74,12 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
     @property
     def sdp_master_device_name(self) -> str:
         """Returns device name for the SDP Master Device."""
-        return self.sdp_master_dev_name
+        return self._sdp_master_device_name
 
     @sdp_master_device_name.setter
     def sdp_master_device_name(self, device_name: str) -> None:
         """Sets the device name for SDP Master Device."""
-        self.sdp_master_dev_name = device_name
+        self._sdp_master_device_name = device_name
 
     def update_ping_info(self, ping: int, dev_name: str) -> None:
         """
@@ -104,15 +104,15 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
 
         if self._device is None or self._device.unresponsive:
             raise DeviceUnresponsive(
-                f"{self.sdp_master_dev_name} not available"
+                f"{self.sdp_master_device_name} not available"
             )
 
     def is_command_allowed(self, command_name: str) -> bool:
         """
         Checks whether this command is allowed.
-        It checks that the device is in the right state to execute this command
-        and that all the components needed for the operation are not
-        unresponsive.
+        It checks that the device is not in the FAULT and UNKNOWN state
+        before executing the command and that all the
+        components needed for the operation are not unresponsive.
 
         :return: True if this command is allowed
 
@@ -145,7 +145,11 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             args=[self.logger],
             task_callback=task_callback,
         )
-        self.logger.info("On command queued for execution")
+        self.logger.debug(
+            "Taskstatus: %s, Response: %s of On command:",
+            task_status,
+            response,
+        )
         return task_status, response
 
     def submit_off_command(self, task_callback=None) -> Tuple[TaskStatus, str]:
@@ -158,5 +162,9 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             args=[self.logger],
             task_callback=task_callback,
         )
-        self.logger.info("Off command queued for execution")
+        self.logger.debug(
+            "Taskstatus: %s, Response: %s of Off command:",
+            task_status,
+            response,
+        )
         return task_status, response

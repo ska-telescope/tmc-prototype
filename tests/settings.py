@@ -92,7 +92,7 @@ def get_sdpmln_command_obj(command_class, devices):
     cm, _ = create_cm("SdpMLNComponentManager", devices)
     attrs = {"fetch_skuid.return_value": 123}
     skuid = mock.Mock(**attrs)
-    cm.sdp_master_dev_name = devices
+    cm.sdp_master_device_name = devices
     command_obj = command_class(cm, skuid)
     return cm, command_obj
 

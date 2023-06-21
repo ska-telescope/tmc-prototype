@@ -104,11 +104,11 @@ class SdpMasterLeafNode(SKABaseDevice):
 
     def read_sdpMasterDevName(self):
         """Return the sdpmasterdevname attribute."""
-        return self.component_manager.sdp_master_dev_name
+        return self.component_manager.sdp_master_device_name
 
     def write_sdpMasterDevName(self, value):
         """Set the sdpmasterdevname attribute."""
-        self.component_manager.sdp_master_dev_name = value
+        self.component_manager.sdp_master_device_name = value
 
     # --------
     # Commands
@@ -237,7 +237,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             timeout=self.TimeOut,
             _update_availablity_callback=self.update_availablity_callback,
         )
-        cm.sdp_master_dev_name = self.SdpMasterFQDN or ""
+        cm.sdp_master_device_name = self.SdpMasterFQDN or ""
         return cm
 
     # pylint: enable=attribute-defined-outside-init

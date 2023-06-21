@@ -105,7 +105,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.start_liveliness_probe(LivelinessProbeType.SINGLE_DEVICE)
 
     def stop(self):
-        "Stop the liveliness probe and event receiver."
+        """
+        Method used to Stop the liveliness probe and event receiver for given devices.
+        """
         self.stop_liveliness_probe()
         self._event_receiver.stop()
 

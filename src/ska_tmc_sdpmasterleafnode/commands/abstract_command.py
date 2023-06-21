@@ -31,7 +31,7 @@ class SdpMLNCommand(TmcLeafNodeCommand):
             )
 
     def init_adapter(self):
-        dev_name = self.component_manager.sdp_master_dev_name
+        dev_name = self.component_manager.sdp_master_device_name
         timeout = self.component_manager.timeout
         elapsed_time = 0
         start_time = time.time()

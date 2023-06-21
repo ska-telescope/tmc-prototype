@@ -44,7 +44,7 @@ def test_off_command_fail_sdp_master(
 ):
     cm, _ = create_cm("SdpMLNComponentManager", sdp_master_device)
     adapter_factory = HelperAdapterFactory()
-    cm.sdp_master_dev_name = sdp_master_device
+    cm.sdp_master_device_name = sdp_master_device
     # include exception in Off command
     adapter_factory.get_or_create_adapter(
         sdp_master_device, attrs={"Off.side_effect": Exception}
