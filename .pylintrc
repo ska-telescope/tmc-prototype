@@ -38,8 +38,7 @@ load-plugins=
 # no Warning level messages displayed, use"--disable=all --enable=classes
 # --disable=W"
 disable=invalid-name,protected-access,abstract-method,no-member,broad-except,
-        line-too-long,fixme,unused-argument,arguments-renamed, arguments-differ, 
-        redefined-outer-name
+        line-too-long,fixme,unused-argument,arguments-renamed, arguments-differ
 
 
 [REPORTS]

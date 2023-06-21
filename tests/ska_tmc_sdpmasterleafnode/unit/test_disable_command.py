@@ -38,6 +38,7 @@ def test_disable_command(tango_context, sdp_master_device, task_callback):
     )
 
 
+@pytest.mark.kk
 @pytest.mark.parametrize(
     "sdp_master_device", [SDP_MASTER_DEVICE_MID, SDP_MASTER_DEVICE_LOW]
 )
@@ -67,7 +68,7 @@ def test_disable_command_fail_sdp_master(
 @pytest.mark.parametrize(
     "sdp_master_device", [SDP_MASTER_DEVICE_MID, SDP_MASTER_DEVICE_LOW]
 )
-def test_standby_command_is_not_allowed_device_unresponsive(
+def test_disable_command_is_not_allowed_device_unresponsive(
     tango_context, sdp_master_device
 ):
     cm, _ = create_cm("SdpMLNComponentManager", sdp_master_device)
@@ -78,7 +79,7 @@ def test_standby_command_is_not_allowed_device_unresponsive(
 @pytest.mark.parametrize(
     "sdp_master_device", [SDP_MASTER_DEVICE_MID, SDP_MASTER_DEVICE_LOW]
 )
-def test_standby_fail_is_allowed(tango_context, sdp_master_device):
+def test_disable_fail_is_allowed(tango_context, sdp_master_device):
     logger.info("%s", tango_context)
     cm, _ = create_cm("SdpMLNComponentManager", sdp_master_device)
     cm.op_state_model._op_state = DevState.FAULT
