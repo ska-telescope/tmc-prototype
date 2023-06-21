@@ -14,7 +14,7 @@ class Off(SdpSLNCommand):
     """
     A class for SdpSubarrayLeafNode's Off() command.
 
-    This command turns on SDP Subarray device.
+    This command turns off SDP Subarray device.
     """
 
     # pylint: disable=unused-argument

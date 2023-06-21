@@ -48,7 +48,7 @@ def off_command(tango_context, sdpsaln_fqdn, change_event_callbacks):
 
     result, unique_id = sdp_subarray_ln_proxy.Off()
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        ("Off"),
+        ("Off",),
     )
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
