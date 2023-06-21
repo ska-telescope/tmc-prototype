@@ -41,13 +41,13 @@ class Disable(SdpMLNCommand):
 
         task_callback(status=TaskStatus.IN_PROGRESS)
 
-        return_code, message = self.do()
+        result_code, message = self.do()
 
         logger.info(message)
-        if return_code == ResultCode.FAILED:
+        if result_code == ResultCode.FAILED:
             task_callback(
                 status=TaskStatus.COMPLETED,
-                result=return_code,
+                result=result_code,
                 exception=message,
             )
         else:

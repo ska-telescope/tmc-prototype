@@ -100,7 +100,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
                 self.update_availablity_callback(True)
 
     def _check_if_sdp_master_is_responsive(self) -> None:
-        """Checks if SDP master/controller device is responsive."""
+        """Checks if SDP master is responsive."""
 
         if self._device is None or self._device.unresponsive:
             raise DeviceUnresponsive(

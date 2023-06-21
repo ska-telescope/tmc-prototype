@@ -65,12 +65,12 @@ def create_cm(cm_class, device):
 
 def get_sdpsln_command_obj(
     command_class,
-    devices,
+    device,
     obsstate_value=None,
 ):
     """Returns component manager and command class object for Sdp
     Subarray Leaf Node"""
-    cm, start_time = create_cm("SdpSLNComponentManager", devices)
+    cm, start_time = create_cm("SdpSLNComponentManager", device)
     cm.stop_liveliness_probe()
     elapsed_time = time.time() - start_time
     logger.info(
@@ -87,14 +87,14 @@ def get_sdpsln_command_obj(
     return cm, command_obj, adapter_factory
 
 
-def get_sdpmln_command_obj(command_class, devices):
+def get_sdpmln_command_obj(command_class, device):
     """Returns component manager and command class object for Sdp Master Leaf
     Node"""
-    cm, _ = create_cm("SdpMLNComponentManager", devices)
+    cm, _ = create_cm("SdpMLNComponentManager", device)
     adapter_factory = HelperAdapterFactory()
     attrs = {"fetch_skuid.return_value": 123}
     skuid = mock.Mock(**attrs)
-    cm.sdp_master_dev_name = devices
+    cm.sdp_master_dev_name = device
     command_obj = command_class(cm, cm.op_state_model, adapter_factory, skuid)
     return cm, command_obj, adapter_factory
 
