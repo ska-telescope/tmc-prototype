@@ -106,7 +106,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
                 self.update_availablity_callback(True)
 
     def _check_if_sdp_master_is_responsive(self) -> None:
-        """Checks if SDP master/controller device is responsive."""
+        """Checks if SDP Master device is responsive."""
 
         if self._device is None or self._device.unresponsive:
             raise DeviceUnresponsive(
@@ -125,23 +125,21 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         :rtype: boolean
         """
 
-        if command_name in ["On", "Off"]:
-            if self.op_state_model.op_state in [
-                DevState.FAULT,
-                DevState.UNKNOWN,
-            ]:
-                raise CommandNotAllowed(
-                    f"The invocation of the {__class__} command on this "
-                    + "device is not allowed.\n"
-                    + "Reason: The current operational state "
-                    + f"is {self.op_state_model.op_state}."
-                    + "The command has NOT been executed."
-                    + "This device will continue with normal operation.",
-                    self.op_state_model.op_state,
-                )
-            self._check_if_sdp_master_is_responsive()
-            return True
-        return False
+        if command_name in ["On", "Off"] and self.op_state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+        ]:
+            raise CommandNotAllowed(
+                f"The invocation of the {__class__} command on this "
+                + "device is not allowed.\n"
+                + "Reason: The current operational state "
+                + f"is {self.op_state_model.op_state}."
+                + "The command has NOT been executed."
+                + "This device will continue with normal operation.",
+                self.op_state_model.op_state,
+            )
+        self._check_if_sdp_master_is_responsive()
+        return True
 
     def submit_on_command(self, task_callback=None) -> Tuple[TaskStatus, str]:
         """Submits the On command for execution.

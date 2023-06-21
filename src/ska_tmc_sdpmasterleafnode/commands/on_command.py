@@ -1,5 +1,5 @@
 """
-On command class for SDPMasterLeafNode.
+On command class for SdpMasterLeafNode.
 
 """
 import threading
@@ -41,18 +41,18 @@ class On(SdpMLNCommand):
         """
         task_callback(status=TaskStatus.IN_PROGRESS)
         exception = ""
-        return_code, message = self.do()
+        result_code, message = self.do()
         logger.info(
             "On command invoked on: %s: Result: %s, %s",
             self.sdp_master_adapter.dev_name,
-            return_code,
+            result_code,
             message,
         )
-        if return_code == ResultCode.FAILED:
+        if result_code == ResultCode.FAILED:
             exception = message
             task_callback(
                 status=TaskStatus.COMPLETED,
-                result=return_code,
+                result=result_code,
                 exception=exception,
             )
         else:
@@ -62,7 +62,7 @@ class On(SdpMLNCommand):
             )
             task_callback(
                 status=TaskStatus.COMPLETED,
-                result=return_code,
+                result=result_code,
             )
 
     def do(self, argin=None):
@@ -71,9 +71,9 @@ class On(SdpMLNCommand):
 
         """
 
-        return_code, message = self.init_adapter()
-        if return_code == ResultCode.FAILED:
-            return return_code, message
+        result_code, message = self.init_adapter()
+        if result_code == ResultCode.FAILED:
+            return result_code, message
         result, message = self.call_adapter_method(
             "Sdp Master", self.sdp_master_adapter, "On"
         )

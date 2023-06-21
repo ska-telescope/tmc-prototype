@@ -1,5 +1,5 @@
 """
-Off command class for SDPMasterLeafNode.
+Off command class for SdpMasterLeafNode.
 """
 import threading
 from logging import Logger
@@ -41,19 +41,19 @@ class Off(SdpMLNCommand):
 
         task_callback(status=TaskStatus.IN_PROGRESS)
         exception = ""
-        return_code, message = self.do()
+        result_code, message = self.do()
 
         logger.info(
             "Off command invoked on: %s: Result: %s, %s",
             self.sdp_master_adapter.dev_name,
-            return_code,
+            result_code,
             message,
         )
-        if return_code == ResultCode.FAILED:
+        if result_code == ResultCode.FAILED:
             exception = message
             task_callback(
                 status=TaskStatus.COMPLETED,
-                result=return_code,
+                result=result_code,
                 exception=exception,
             )
 
@@ -64,7 +64,7 @@ class Off(SdpMLNCommand):
             )
             task_callback(
                 status=TaskStatus.COMPLETED,
-                result=return_code,
+                result=result_code,
             )
 
     def do(self, argin=None):
@@ -72,9 +72,9 @@ class Off(SdpMLNCommand):
         Method to invoke Off command on Sdp Master.
 
         """
-        ret_code, message = self.init_adapter()
-        if ret_code == ResultCode.FAILED:
-            return ret_code, message
+        result_code, message = self.init_adapter()
+        if result_code == ResultCode.FAILED:
+            return result_code, message
         result, message = self.call_adapter_method(
             "Sdp Master", self.sdp_master_adapter, "Off"
         )
