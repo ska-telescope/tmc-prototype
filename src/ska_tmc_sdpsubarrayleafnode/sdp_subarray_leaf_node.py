@@ -4,6 +4,8 @@ SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
 actions during an observation.
 It also acts as a SDP contact point for Subarray Node for observation execution
 """
+
+# pylint: disable=attribute-defined-outside-init
 import tango
 
 # from logging import Logger
@@ -25,12 +27,52 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     """
 
+    class InitCommand(SKABaseDevice.InitCommand):
+        """
+        A class for the TMC SdpSubarrayLeafNode's init_device() method.
+        """
+
+        def do(self):
+            """
+            Initializes the attributes and properties of the
+            SdpSubarrayLeafNode.
+
+            return:
+                A tuple containing a return code and a string message
+                indicating status.
+                The message is for information purpose only.
+
+            rtype:
+                (ResultCode, str)
+            """
+            super().do()
+            device = self.target
+
+            device._build_state = (
+                f"{release.name},{release.version},{release.description}"
+            )
+            device._version_id = release.version
+            device._LastDeviceInfoChanged = ""
+            device.set_change_event("healthState", True, False)
+            # device._issubsystemavailable = False
+            device.set_change_event("longRunningCommandResult", True)
+            ApiUtil.instance().set_asynch_cb_sub_model(
+                tango.cb_sub_model.PUSH_CALLBACK
+            )
+            device.op_state_model.perform_action("component_on")
+            device.component_manager.command_executor.add_command_execution(
+                "0", "Init", ResultCode.OK, ""
+            )
+            device.set_change_event("isSubsystemAvailable", True, False)
+            return (ResultCode.OK, "")
+
     def init_device(self):
         super().init_device()
         self._sdp_subarray_obs_state = ObsState.EMPTY
         self._command_result = ("", "")
         self.set_change_event("longRunningCommandResult", True)
         self.set_change_event("sdpSubarrayObsState", True)
+        self._issubsystemavailable = False
 
     # -----------------
     # Device Properties
@@ -118,44 +160,15 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             "longRunningCommandResult", self._command_result
         )
 
-    class InitCommand(SKABaseDevice.InitCommand):
-        """
-        A class for the TMC SdpSubarrayLeafNode's init_device() method.
-        """
+    def update_availablity_callback(self, availablity):
+        """Change event callback for isSubsystemAvailable"""
 
-        def do(self):
-            """
-            Initializes the attributes and properties of the
-            SdpSubarrayLeafNode.
+        if availablity != self._issubsystemavailable:
 
-            return:
-                A tuple containing a return code and a string message
-                indicating status.
-                The message is for information purpose only.
-
-            rtype:
-                (ResultCode, str)
-            """
-            super().do()
-            device = self.target
-
-            device._build_state = (
-                f"{release.name},{release.version},{release.description}"
+            self._issubsystemavailable = availablity
+            self.push_change_event(
+                "isSubsystemAvailable", self._issubsystemavailable
             )
-            device._version_id = release.version
-            device._LastDeviceInfoChanged = ""
-            device.set_change_event("healthState", True, False)
-            device._isSubsystemAvailable = False
-            device.set_change_event("longRunningCommandResult", True)
-            ApiUtil.instance().set_asynch_cb_sub_model(
-                tango.cb_sub_model.PUSH_CALLBACK
-            )
-            device.op_state_model.perform_action("component_on")
-            device.component_manager.command_executor.add_command_execution(
-                "0", "Init", ResultCode.OK, ""
-            )
-            device.set_change_event("isSubsystemAvailable", True, False)
-            return (ResultCode.OK, "")
 
     def always_executed_hook(self):
         pass
@@ -180,14 +193,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # Attributes methods
     # ------------------
 
-    def update_availablity_callback(self, availablity):
-        """Change event callback for isSubsystemAvailable"""
-        self._isSubsystemAvailable = availablity  # pylint: disable=W0201
-        self.push_change_event("isSubsystemAvailable", availablity)
-
     def read_isSubsystemAvailable(self):
-        """Read method for isSubsystemAvailable"""
-        return self._isSubsystemAvailable
+        """Read method for issubsystemavailable"""
+        return self._issubsystemavailable
 
     def read_lastDeviceInfoChanged(self):
         """Return the last device info change"""

@@ -74,7 +74,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             )
             device._version_id = release.version
             device.set_change_event("healthState", True, False)
-            device._isSubsystemAvailable = False
+            device._issubsystemavailable = False
             device.op_state_model.perform_action("component_on")
             device.set_change_event("isSubsystemAvailable", True, False)
             return (ResultCode.OK, "")
@@ -94,13 +94,16 @@ class SdpMasterLeafNode(SKABaseDevice):
 
     def update_availablity_callback(self, availablity):
         """Change event callback for isSubsystemAvailable"""
-        self._isSubsystemAvailable = availablity  # pylint: disable=W0201
-        self.push_change_event("isSubsystemAvailable", availablity)
+        if availablity != self._issubsystemavailable:
+            self._issubsystemavailable = availablity  # pylint: disable=W0201
+            self.push_change_event(
+                "isSubsystemAvailable", self._issubsystemavailable
+            )
 
     def read_isSubsystemAvailable(self):
         """Returns the TMC Sdp MasterLeafNode
         isSubsystemAvailable attribute."""
-        return self._isSubsystemAvailable
+        return self._issubsystemavailable
 
     def read_sdpMasterDevName(self):
         """Return the sdpmasterdevname attribute."""
