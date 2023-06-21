@@ -251,8 +251,8 @@ class SdpMasterLeafNode(SKABaseDevice):
         """
         super().init_command_objects()
         for command_name, method_name in [
-            ("On", "on_command"),
-            ("Off", "off_command"),
+            ("On", "submit_on_command"),
+            ("Off", "submit_off_command"),
         ]:
             self.register_command_object(
                 command_name,
