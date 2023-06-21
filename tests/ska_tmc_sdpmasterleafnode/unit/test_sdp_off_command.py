@@ -49,7 +49,8 @@ def test_off_command_fail_sdp_master(
     adapter_factory.get_or_create_adapter(
         sdp_master_device, attrs={"Off.side_effect": Exception}
     )
-    off_command = Off(cm, cm.op_state_model, adapter_factory, logger)
+    off_command = Off(cm, logger)
+    off_command.adapter_factory = adapter_factory
     off_command.off(logger, task_callback=task_callback)
     caplog.set_level(logging.DEBUG, logger="ska_tango_testing.mock")
     task_callback.assert_against_call(

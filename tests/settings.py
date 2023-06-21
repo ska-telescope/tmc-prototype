@@ -44,7 +44,6 @@ def create_cm(cm_class, device):
     if cm_class == "SdpMLNComponentManager":
         cm = SdpMLNComponentManager(
             device,
-            adapter_factory,
             logger,
             _liveliness_probe=LivelinessProbeType.NONE,
         )
@@ -91,12 +90,11 @@ def get_sdpmln_command_obj(command_class, devices):
     """Returns component manager and command class object for Sdp Master Leaf
     Node"""
     cm, _ = create_cm("SdpMLNComponentManager", devices)
-    adapter_factory = HelperAdapterFactory()
     attrs = {"fetch_skuid.return_value": 123}
     skuid = mock.Mock(**attrs)
     cm.sdp_master_dev_name = devices
-    command_obj = command_class(cm, cm.op_state_model, adapter_factory, skuid)
-    return cm, command_obj, adapter_factory
+    command_obj = command_class(cm, skuid)
+    return cm, command_obj
 
 
 def event_remover(group_callback, attributes: List[str]) -> None:

@@ -2,7 +2,7 @@
 import time
 
 from ska_tango_base.commands import ResultCode
-from ska_tmc_common.adapters import AdapterFactory, AdapterType
+from ska_tmc_common.adapters import AdapterType
 from ska_tmc_common.exceptions import DeviceUnresponsive
 from ska_tmc_common.tmc_command import TmcLeafNodeCommand
 from tango import ConnectionFailed, DevFailed
@@ -14,13 +14,9 @@ class SdpMLNCommand(TmcLeafNodeCommand):
     def __init__(
         self,
         component_manager,
-        op_state_model,
-        adapter_factory=None,
         logger=None,
     ):
         super().__init__(component_manager, logger)
-        self.op_state_model = op_state_model
-        self._adapter_factory = adapter_factory or AdapterFactory()
         self.sdp_master_adapter = None
 
     def check_unresponsive(self):
@@ -42,7 +38,7 @@ class SdpMLNCommand(TmcLeafNodeCommand):
         while self.sdp_master_adapter is None and elapsed_time < timeout:
             try:
                 self.sdp_master_adapter = (
-                    self._adapter_factory.get_or_create_adapter(
+                    self.adapter_factory.get_or_create_adapter(
                         dev_name, AdapterType.BASE
                     )
                 )

@@ -4,7 +4,6 @@ monitors and issues commands to the SDP Master.
 """
 from ska_tango_base.base.base_device import SKABaseDevice
 from ska_tango_base.commands import ResultCode, SubmittedSlowCommand
-from ska_tmc_common.adapters import AdapterFactory
 from ska_tmc_common.enum import LivelinessProbeType
 from tango import AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
@@ -229,10 +228,8 @@ class SdpMasterLeafNode(SKABaseDevice):
     # pylint: disable=attribute-defined-outside-init
     def create_component_manager(self):
         """Returns Sdp Master Leaf Node component manager object"""
-        _adapter_factory = AdapterFactory()
         cm = SdpMLNComponentManager(
             self.SdpMasterFQDN,
-            _adapter_factory=_adapter_factory,
             logger=self.logger,
             _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
             _event_receiver=False,

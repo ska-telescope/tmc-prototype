@@ -28,7 +28,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
     def __init__(
         self,
         sdp_master_dev_name,
-        _adapter_factory,
         logger=None,
         _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
         _event_receiver=False,
@@ -66,16 +65,11 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         )
         self._device = DeviceInfo(sdp_master_dev_name)
         self.sdp_master_dev_name = sdp_master_dev_name
-        self._adapter_factory = _adapter_factory
         self.timeout = timeout
         self.update_availablity_callback = _update_availablity_callback
-        self.on_command = On(
-            self, self.op_state_model, self._adapter_factory, logger
-        )
+        self.on_command = On(self, logger)
 
-        self.off_command = Off(
-            self, self.op_state_model, self._adapter_factory, logger
-        )
+        self.off_command = Off(self, logger)
 
     @property
     def sdp_master_device_name(self) -> str:
