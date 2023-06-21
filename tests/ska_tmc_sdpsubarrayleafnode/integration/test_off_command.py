@@ -72,7 +72,6 @@ def off_command(tango_context, sdpsaln_fqdn, change_event_callbacks):
     )
 
 
-@pytest.mark.test
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_off_command_mid(tango_context, change_event_callbacks):
