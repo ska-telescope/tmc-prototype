@@ -69,10 +69,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # ---------------
 
     # pylint: disable=attribute-defined-outside-init
-    def update_device_callback(self, devInfo):
+    def update_device_callback(self, dev_info):
         """Updates device callback info"""
-        self._LastDeviceInfoChanged = devInfo.to_json()
-        self.push_change_event("lastDeviceInfoChanged", devInfo.to_json())
+        self._LastDeviceInfoChanged = dev_info.to_json()
+        self.push_change_event("lastDeviceInfoChanged", dev_info.to_json())
 
     # pylint: disable=attribute-defined-outside-init
     def update_sdp_subarray_obs_state_callback(

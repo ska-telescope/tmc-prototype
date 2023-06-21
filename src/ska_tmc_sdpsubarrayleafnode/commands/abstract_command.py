@@ -30,7 +30,7 @@ class SdpSLNCommand(TmcLeafNodeCommand):
     def check_unresponsive(self):
         """Checks whether the device is unresponsive"""
         dev_info = self.component_manager.get_device()
-        if dev_nfo is None or dev_info.unresponsive:
+        if dev_info is None or dev_info.unresponsive:
             raise DeviceUnresponsive(
                 """The invocation of the command on this device is not allowed.
                 Reason: SDP subarray device is not available.
