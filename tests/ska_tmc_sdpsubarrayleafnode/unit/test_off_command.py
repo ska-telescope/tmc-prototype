@@ -26,7 +26,7 @@ def test_mid_off(tango_context, devices, task_callback):
     cm, _ = create_cm("SdpSLNComponentManager", devices)
     assert cm.is_command_allowed("off")
 
-    cm.off_command(task_callback=task_callback)
+    cm.off(task_callback=task_callback)
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.QUEUED}
     )

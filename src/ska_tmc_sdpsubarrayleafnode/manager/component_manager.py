@@ -99,8 +99,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
         self.update_lrcr_callback = _update_lrcr_callback
         self._lrc_result = ("", "")
-        self.on_command_object = On(self, self.logger)
-        self.off_command_object = Off(self, self.logger)
+        self.on_command = On(self, self.logger)
+        self.off_command = Off(self, self.logger)
 
     def stop(self):
         """Stops the event receiver and liveliness probe"""
@@ -315,7 +315,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 self.raise_invalid_obsstate_error(command_name)
         else:
             self.logger.info(
-                "Command is not refactored yet on CspSubarrayLeafNode."
+                f"{command_name} is not supported by SdpSubarrayLeafNode."
             )
         return True
 
@@ -325,20 +325,20 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :rtype: tuple
         """
         task_status, response = self.submit_task(
-            self.on_command_object.on,
+            self.on_command.on,
             args=[self.logger],
             task_callback=task_callback,
         )
         self.logger.info("On command queued for execution")
         return task_status, response
 
-    def off_command(self, task_callback=None) -> Tuple[TaskStatus, str]:
+    def off(self, task_callback=None) -> Tuple[TaskStatus, str]:
         """Submits the Off command for execution.
 
         :rtype: tuple
         """
         task_status, response = self.submit_task(
-            self.off_command_object.off,
+            self.off_command.off,
             args=[self.logger],
             task_callback=task_callback,
         )
