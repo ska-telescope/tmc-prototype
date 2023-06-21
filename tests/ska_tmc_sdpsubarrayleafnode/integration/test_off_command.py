@@ -41,6 +41,11 @@ def off_command(tango_context, sdpsaln_fqdn, change_event_callbacks):
         lookahead=2,
     )
 
+    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
+        None,
+        lookahead=2,
+    )
+
     result, unique_id = sdp_subarray_ln_proxy.Off()
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
         ("Off"),
