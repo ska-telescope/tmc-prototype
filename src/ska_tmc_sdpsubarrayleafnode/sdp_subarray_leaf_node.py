@@ -211,7 +211,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("Off")
         result_code, unique_id = handler()
 
-        return [[result_code], [unique_id]]
+        return [result_code], [unique_id]
 
     # This code will be enabled as part of SP-3237
     # @command(dtype_out="DevVarLongStringArray")
@@ -633,7 +633,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         super().init_command_objects()
 
-        for command_name, method_name in [("On", "on"), ("Off", "Off")]:
+        for command_name, method_name in [("On", "on"), ("Off", "off")]:
             self.register_command_object(
                 command_name,
                 SubmittedSlowCommand(
