@@ -59,6 +59,7 @@ class SdpSLNEventReceiver(EventReceiver):
                 "Event not working for the device %s, %s", proxy.dev_name, e
             )
 
+    # pylint: disable= arguments-renamed
     def handle_obs_state_event(self, evt):
         if evt.err:
             error = evt.errors[0]

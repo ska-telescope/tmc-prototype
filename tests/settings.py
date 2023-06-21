@@ -1,9 +1,10 @@
 """Common Settings for testing of SDP Leaf Node"""
 import logging
 import time
+from typing import List
 
 import mock
-from ska_tmc_common.op_state_model import TMCOpStateModel
+from ska_tmc_common.enum import LivelinessProbeType
 from ska_tmc_common.test_helpers.helper_adapter_factory import (
     HelperAdapterFactory,
 )
@@ -24,6 +25,8 @@ SDP_SUBARRAY_DEVICE_MID = "mid-sdp/subarray/01"
 SDP_SUBARRAY_DEVICE_LOW = "low-sdp/subarray/01"
 SDP_MASTER_DEVICE_MID = "mid-sdp/control/0"
 SDP_MASTER_DEVICE_LOW = "low-sdp/control/0"
+SDP_MASTER_LEAF_DEVICE_MID = "ska_mid/tm_leaf_node/sdp_master"
+SDP_MASTER_LEAF_DEVICE_LOW = "ska_low/tm_leaf_node/sdp_master"
 
 
 def count_faulty_devices(cm):
@@ -37,15 +40,20 @@ def count_faulty_devices(cm):
 
 def create_cm(cm_class, device):
     """Create Component Manager"""
-    op_state_model = TMCOpStateModel(logger)
+    adapter_factory = HelperAdapterFactory()
     if cm_class == "SdpMLNComponentManager":
         cm = SdpMLNComponentManager(
             device,
-            op_state_model,
-            logger=logger,
+            logger,
+            _liveliness_probe=LivelinessProbeType.NONE,
         )
     elif cm_class == "SdpSLNComponentManager":
-        cm = SdpSLNComponentManager(device, op_state_model, logger=logger)
+        cm = SdpSLNComponentManager(
+            device,
+            adapter_factory,
+            logger,
+            _liveliness_probe=LivelinessProbeType.NONE,
+        )
     else:
         log_msg = f"Unknown component manager class {cm_class}"
         logger.error(log_msg)
@@ -82,9 +90,22 @@ def get_sdpmln_command_obj(command_class, devices):
     """Returns component manager and command class object for Sdp Master Leaf
     Node"""
     cm, _ = create_cm("SdpMLNComponentManager", devices)
-    adapter_factory = HelperAdapterFactory()
     attrs = {"fetch_skuid.return_value": 123}
     skuid = mock.Mock(**attrs)
-    cm.sdp_master_dev_name = devices
-    command_obj = command_class(cm, cm.op_state_model, adapter_factory, skuid)
-    return cm, command_obj, adapter_factory
+    cm.sdp_master_device_name = devices
+    command_obj = command_class(cm, skuid)
+    return cm, command_obj
+
+
+def event_remover(group_callback, attributes: List[str]) -> None:
+    """Removes residual events from the queue."""
+    for attribute in attributes:
+        try:
+            iterable = group_callback._mock_consumer_group._views[
+                attribute
+            ]._iterable
+            for node in iterable:
+                logger.info("Payload is: %s", repr(node.payload))
+                node.drop()
+        except KeyError:
+            pass

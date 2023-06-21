@@ -1,15 +1,17 @@
-# pylint: disable=abstract-method
+# pylint: disable=abstract-method, arguments-differ
 """
 This module implements ComponentManager class for the Sdp Master Leaf Node.
 """
-from ska_tmc_common.command_executor import CommandExecutor
-from ska_tmc_common.device_info import DeviceInfo
-from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
+from typing import Tuple
 
-from ska_tmc_sdpsubarrayleafnode.liveliness_probe import (
-    LivelinessProbeType,
-    SingleDeviceLivelinessProbe,
-)
+from ska_tango_base.executor import TaskStatus
+from ska_tmc_common.device_info import DeviceInfo
+from ska_tmc_common.enum import LivelinessProbeType
+from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
+from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
+from tango import DevState
+
+from ska_tmc_sdpmasterleafnode.commands import Off, On
 
 
 class SdpMLNComponentManager(TmcLeafNodeComponentManager):
@@ -25,18 +27,15 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
 
     def __init__(
         self,
-        sdp_master_dev_name,
-        op_state_model,
+        sdp_master_device_name,
         logger=None,
-        _update_command_in_progress_callback=None,
-        _monitoring_loop=False,
+        _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
         _event_receiver=False,
         max_workers=1,
         proxy_timeout=500,
         sleep_time=1,
         timeout=30,
         _update_availablity_callback=None,
-        _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
     ):
         """
         Initialise a new ComponentManager instance.
@@ -57,59 +56,32 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         """
 
         super().__init__(
-            op_state_model,
             logger,
-            _monitoring_loop,
-            _event_receiver,
-            max_workers,
-            proxy_timeout,
-            sleep_time,
+            _liveliness_probe=_liveliness_probe,
+            _event_receiver=False,
+            max_workers=max_workers,
+            proxy_timeout=proxy_timeout,
+            sleep_time=sleep_time,
         )
-        self.sdp_master_dev_name = sdp_master_dev_name
-        # pylint: disable=line-too-long
-        self._command_executor = CommandExecutor(
-            logger,
-            _update_command_in_progress_callback=_update_command_in_progress_callback,  # noqa:E501
-        )
-        self.logger = logger
-        self._device = DeviceInfo(sdp_master_dev_name)
+        self._device = DeviceInfo(sdp_master_device_name)
+        self.sdp_master_device_name = sdp_master_device_name
         self.timeout = timeout
-        # pylint: enable=line-too-long
         self.update_availablity_callback = _update_availablity_callback
-        self.liveliness_probe = SingleDeviceLivelinessProbe(
-            self,
-            logger=self.logger,
-            proxy_timeout=500,
-            sleep_time=1,
-        )
+        self.on_command = On(self, logger)
 
-        self.start_liveliness_probe(LivelinessProbeType.SINGLE_DEVICE)
+        self.off_command = Off(self, logger)
 
-    def stop(self):
-        self.stop_liveliness_probe()
+    @property
+    def sdp_master_device_name(self) -> str:
+        """Returns device name for the SDP Master Device."""
+        return self._sdp_master_device_name
 
-    def start_liveliness_probe(self, lp: LivelinessProbeType) -> None:
-        """Starts Liveliness Probe for the given device.
+    @sdp_master_device_name.setter
+    def sdp_master_device_name(self, device_name: str) -> None:
+        """Sets the device name for SDP Master Device."""
+        self._sdp_master_device_name = device_name
 
-        :param lp: enum of class LivelinessProbeType
-        """
-        try:
-            if lp == LivelinessProbeType.SINGLE_DEVICE:
-                self.liveliness_probe.start()
-            else:
-                self.logger.warning("Liveliness Probe is not running")
-        except Exception as e:
-            self.logger.error(
-                f"An error occurred during\
-                            Liveliness Probe start: {str(e)}"
-            )
-
-    def stop_liveliness_probe(self) -> None:
-        """Stops the liveliness probe"""
-        if self.liveliness_probe:
-            self.liveliness_probe.stop()
-
-    def update_ping_info(self, ping: int) -> None:
+    def update_ping_info(self, ping: int, dev_name: str) -> None:
         """
         Update a device with the correct ping information.
 
@@ -127,18 +99,72 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
                 )
                 self.update_availablity_callback(True)
 
-    def device_failed(
-        self, device_info, exception
-    ):  # pylint: disable=arguments-differ
-        """
-        Set a device to failed and call the relative callback if available
+    def _check_if_sdp_master_is_responsive(self) -> None:
+        """Checks if SDP Master device is responsive."""
 
-        :param device_info: a device info
-        :type device_info: DeviceInfo
-        :param exception: an exception
-        :type: Exception
+        if self._device is None or self._device.unresponsive:
+            raise DeviceUnresponsive(
+                f"{self.sdp_master_device_name} not available"
+            )
+
+    def is_command_allowed(self, command_name: str) -> bool:
         """
-        device_info.update_unresponsive(True, exception)
-        with self.lock:
-            if self.update_availablity_callback is not None:
-                self.update_availablity_callback(False)
+        Checks whether this command is allowed.
+        It checks that the device is not in the FAULT and UNKNOWN state
+        before executing the command and that all the
+        components needed for the operation are not unresponsive.
+
+        :return: True if this command is allowed
+
+        :rtype: boolean
+        """
+
+        if command_name in ["On", "Off"] and self.op_state_model.op_state in [
+            DevState.FAULT,
+            DevState.UNKNOWN,
+        ]:
+            raise CommandNotAllowed(
+                f"The invocation of the {__class__} command on this "
+                + "device is not allowed.\n"
+                + "Reason: The current operational state "
+                + f"is {self.op_state_model.op_state}."
+                + "The command has NOT been executed."
+                + "This device will continue with normal operation.",
+                self.op_state_model.op_state,
+            )
+        self._check_if_sdp_master_is_responsive()
+        return True
+
+    def submit_on_command(self, task_callback=None) -> Tuple[TaskStatus, str]:
+        """Submits the On command for execution.
+
+        :rtype: tuple
+        """
+        task_status, response = self.submit_task(
+            self.on_command.on,
+            args=[self.logger],
+            task_callback=task_callback,
+        )
+        self.logger.debug(
+            "Taskstatus: %s, Response: %s of On command:",
+            task_status,
+            response,
+        )
+        return task_status, response
+
+    def submit_off_command(self, task_callback=None) -> Tuple[TaskStatus, str]:
+        """Submits the Off command for execution.
+
+        :rtype: tuple
+        """
+        task_status, response = self.submit_task(
+            self.off_command.off,
+            args=[self.logger],
+            task_callback=task_callback,
+        )
+        self.logger.debug(
+            "Taskstatus: %s, Response: %s of Off command:",
+            task_status,
+            response,
+        )
+        return task_status, response

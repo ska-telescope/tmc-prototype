@@ -6,11 +6,12 @@ from os.path import dirname, join
 
 import pytest
 import tango
+from ska_tango_testing.mock import MockCallable
 
 # from ska_tango_testing.mock.tango import MockTangoEventCallbackGroup
 from ska_tango_testing.mock.tango import MockTangoEventCallbackGroup
 from ska_tmc_common.dev_factory import DevFactory
-from ska_tmc_common.test_helpers.helper_state_device import HelperStateDevice
+from ska_tmc_common.test_helpers.helper_base_device import HelperBaseDevice
 from ska_tmc_common.test_helpers.helper_subarray_device import (
     HelperSubArrayDevice,
 )
@@ -80,9 +81,10 @@ def devices_to_load():
             ],
         },
         {
-            "class": HelperStateDevice,
+            "class": HelperBaseDevice,
             "devices": [
                 {"name": "mid-sdp/control/0"},
+                {"name": "low-sdp/control/0"},
             ],
         },
     )
@@ -164,3 +166,29 @@ def change_event_callbacks() -> MockTangoEventCallbackGroup:
         "sdpSubarrayObsState",
         timeout=30.0,
     )
+
+
+# pylint: disable= redefined-outer-name
+@pytest.fixture
+def task_callback() -> MockCallable:
+    """Creates a mock callable for asynchronous testing
+
+    :rtype: MockCallable
+    """
+    task_callback = MockCallable(5)
+    return task_callback
+
+
+@pytest.fixture
+def group_callback() -> MockTangoEventCallbackGroup:
+    """Creates a mock callback group for asynchronous testing
+
+    :rtype: MockTangoEventCallbackGroup
+    """
+    group_callback = MockTangoEventCallbackGroup(
+        "longRunningCommandsInQueue",
+        "longRunningCommandResult",
+        "longRunningCommandIDsInQueue",
+        timeout=15,
+    )
+    return group_callback
