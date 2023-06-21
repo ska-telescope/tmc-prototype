@@ -91,7 +91,7 @@ class SdpMasterLeafNode(SKABaseDevice):
     # ------------------
     # Attributes methods
     # ------------------
-
+    # pylint: disable=access-member-before-definition
     def update_availablity_callback(self, availablity):
         """Change event callback for isSubsystemAvailable"""
         if availablity != self._issubsystemavailable:
