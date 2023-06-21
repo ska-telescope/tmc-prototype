@@ -125,13 +125,11 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
                 DevState.UNKNOWN,
             ]:
                 raise CommandNotAllowed(
-                    f"The invocation of the {__class__} command on this "
-                    + "device is not allowed.\n"
+                    f"The invocation of the {__class__} command on the device."
                     + "Reason: The current operational state "
                     + f"is {self.op_state_model.op_state}."
                     + "The command has NOT been executed."
-                    + "This device will continue with normal operation.",
-                    self.op_state_model.op_state,
+                    + "This device will continue with normal operation."
                 )
             self._check_if_sdp_master_is_responsive()
             return True
