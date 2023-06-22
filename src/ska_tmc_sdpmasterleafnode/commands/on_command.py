@@ -1,8 +1,9 @@
 """
-On command class for SDPMasterLeafNode.
+On command class for SdpMasterLeafNode.
 
 """
 import threading
+from logging import Logger
 from typing import Callable, Optional
 
 from ska_tango_base.commands import ResultCode
@@ -23,8 +24,9 @@ class On(SdpMLNCommand):
 
     def on(
         self,
-        logger,
+        logger: Logger,
         task_callback: Callable = None,
+        # pylint: disable= unused-argument
         task_abort_event: Optional[threading.Event] = None,
     ) -> None:
         """A method to invoke the On command.
@@ -38,13 +40,20 @@ class On(SdpMLNCommand):
         :type task_abort_event: Event, optional
         """
         task_callback(status=TaskStatus.IN_PROGRESS)
-        return_code, message = self.do()
-        logger.info(message)
-        if return_code == ResultCode.FAILED:
+        exception = ""
+        result_code, message = self.do()
+        logger.info(
+            "On command invoked on: %s: Result: %s, %s",
+            self.sdp_master_adapter.dev_name,
+            result_code,
+            message,
+        )
+        if result_code == ResultCode.FAILED:
+            exception = message
             task_callback(
                 status=TaskStatus.COMPLETED,
-                result=ResultCode.FAILED,
-                exception=message,
+                result=result_code,
+                exception=exception,
             )
         else:
             logger.info(
@@ -53,7 +62,7 @@ class On(SdpMLNCommand):
             )
             task_callback(
                 status=TaskStatus.COMPLETED,
-                result=ResultCode.OK,
+                result=result_code,
             )
 
     def do(self, argin=None):
@@ -62,10 +71,10 @@ class On(SdpMLNCommand):
 
         """
 
-        return_code, message = self.init_adapter()
-        if return_code == ResultCode.FAILED:
-            return return_code, message
-        result, msg = self.call_adapter_method(
+        result_code, message = self.init_adapter()
+        if result_code == ResultCode.FAILED:
+            return result_code, message
+        result, message = self.call_adapter_method(
             "Sdp Master", self.sdp_master_adapter, "On"
         )
-        return result, msg
+        return result, message

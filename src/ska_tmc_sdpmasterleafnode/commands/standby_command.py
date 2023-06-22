@@ -38,16 +38,23 @@ class Standby(SdpMLNCommand):
         """
 
         task_callback(status=TaskStatus.IN_PROGRESS)
-
+        exception = ""
         result_code, message = self.do()
 
-        logger.info(message)
+        logger.info(
+            "Standby command invoked on: %s: Result: %s, %s",
+            self.sdp_master_adapter.dev_name,
+            result_code,
+            message,
+        )
         if result_code == ResultCode.FAILED:
+            exception = message
             task_callback(
                 status=TaskStatus.COMPLETED,
                 result=result_code,
-                exception=message,
+                exception=exception,
             )
+
         else:
             logger.info(
                 "The Standby command is invoked successfully on %s",
@@ -55,20 +62,18 @@ class Standby(SdpMLNCommand):
             )
             task_callback(
                 status=TaskStatus.COMPLETED,
-                result=ResultCode.OK,
+                result=result_code,
             )
-
-    # pylint: enable=unused-argument
 
     def do(self, argin=None):
         """
-        Method to invoke Standby command on SDP Master.
-        """
-        return_code, message = self.init_adapter()
-        if return_code == ResultCode.FAILED:
-            return return_code, message
+        Method to invoke Standby command on Sdp Master.
 
+        """
+        result_code, message = self.init_adapter()
+        if result_code == ResultCode.FAILED:
+            return result_code, message
         result, message = self.call_adapter_method(
-            "SDP Master", self.sdp_master_adapter, "Standby"
+            "Sdp Master", self.sdp_master_adapter, "Standby"
         )
         return result, message

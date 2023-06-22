@@ -85,6 +85,7 @@ def devices_to_load():
             "class": HelperBaseDevice,
             "devices": [
                 {"name": "mid-sdp/control/0"},
+                {"name": "low-sdp/control/0"},
             ],
         },
     )

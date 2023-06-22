@@ -2,11 +2,8 @@
 SDP Master Leaf node acts as a SDP contact point for the Master Node and also
 monitors and issues commands to the SDP Master.
 """
-
-# pylint: disable=access-member-before-definition
-from ska_tango_base import SKABaseDevice
+from ska_tango_base.base.base_device import SKABaseDevice
 from ska_tango_base.commands import ResultCode, SubmittedSlowCommand
-from ska_tmc_common.adapters import AdapterFactory
 from ska_tmc_common.enum import LivelinessProbeType
 from tango import AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
@@ -56,6 +53,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         A class for the TMC SdpMasterLeafNode's init_device() method.
         """
 
+        # pylint: disable= arguments-differ
         def do(self):
             """
             Initializes the attributes and properties of the SdpMasterLeafNode.
@@ -93,7 +91,7 @@ class SdpMasterLeafNode(SKABaseDevice):
     # ------------------
     # Attributes methods
     # ------------------
-
+    # pylint: disable=access-member-before-definition
     def update_availablity_callback(self, availablity):
         """Change event callback for isSubsystemAvailable"""
         if availablity != self._issubsystemavailable:
@@ -109,11 +107,11 @@ class SdpMasterLeafNode(SKABaseDevice):
 
     def read_sdpMasterDevName(self):
         """Return the sdpmasterdevname attribute."""
-        return self.component_manager.sdp_master_dev_name
+        return self.component_manager.sdp_master_device_name
 
     def write_sdpMasterDevName(self, value):
         """Set the sdpmasterdevname attribute."""
-        self.component_manager.sdp_master_dev_name = value
+        self.component_manager.sdp_master_device_name = value
 
     # --------
     # Commands
@@ -137,8 +135,8 @@ class SdpMasterLeafNode(SKABaseDevice):
         This command invokes Off() command on Sdp Master.
         """
         handler = self.get_command_object("Off")
-        result_code, unique_id = handler()
-        return [[result_code], [unique_id]]
+        return_code, unique_id = handler()
+        return [[return_code], [str(unique_id)]]
 
     def is_On_allowed(self):
         """
@@ -159,16 +157,16 @@ class SdpMasterLeafNode(SKABaseDevice):
         This command invokes On() command on Sdp Master.
         """
         handler = self.get_command_object("On")
-        result_code, unique_id = handler()
-        return [[result_code], [unique_id]]
+        return_code, unique_id = handler()
+        return [[return_code], [str(unique_id)]]
 
     def is_Standby_allowed(self):
         """
         Checks whether this command is allowed to be run in current device \
         state. \
 
-        :return: True if this command is allowed to be run in current device \
-        state. \
+    #     :return: True if this command is allowed to be  \
+    #     run in current device state. \
 
         :rtype: boolean
         """
@@ -181,17 +179,16 @@ class SdpMasterLeafNode(SKABaseDevice):
         This command invokes Standby() command on Sdp Master.
         """
         handler = self.get_command_object("Standby")
-        result_code, unique_id = handler()
-
-        return [[result_code], [unique_id]]
+        return_code, unique_id = handler()
+        return [[return_code], [str(unique_id)]]
 
     def is_Disable_allowed(self):
         """
         Checks whether this command is allowed to be run in current device \
         state. \
 
-        :return: True if this command is allowed to be run in current device \
-        state. \
+        :return: True if this command is allowed to be  \
+        run in current device state. \
 
         :rtype: boolean
         """
@@ -208,14 +205,13 @@ class SdpMasterLeafNode(SKABaseDevice):
 
         return [[result_code], [unique_id]]
 
-    # default ska mid
+        # default ska mid
+
     # pylint: disable=attribute-defined-outside-init
     def create_component_manager(self):
         """Returns Sdp Master Leaf Node component manager object"""
-        _adapter_factory = AdapterFactory()
         cm = SdpMLNComponentManager(
             self.SdpMasterFQDN,
-            _adapter_factory=_adapter_factory,
             logger=self.logger,
             _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
             _event_receiver=False,
@@ -223,7 +219,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             timeout=self.TimeOut,
             _update_availablity_callback=self.update_availablity_callback,
         )
-
+        cm.sdp_master_device_name = self.SdpMasterFQDN or ""
         return cm
 
     # pylint: enable=attribute-defined-outside-init
@@ -234,10 +230,10 @@ class SdpMasterLeafNode(SKABaseDevice):
         """
         super().init_command_objects()
         for command_name, method_name in [
-            ("On", "on_command"),
-            ("Off", "off_command"),
-            ("Standby", "standby_command"),
-            ("Disable", "disable_command"),
+            ("On", "submit_on_command"),
+            ("Off", "submit_off_command"),
+            ("Standby", "submit_standby_command"),
+            ("Disable", "submit_disable_command"),
         ]:
             self.register_command_object(
                 command_name,

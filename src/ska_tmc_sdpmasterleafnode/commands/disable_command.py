@@ -40,16 +40,23 @@ class Disable(SdpMLNCommand):
         """
 
         task_callback(status=TaskStatus.IN_PROGRESS)
-
+        exception = ""
         result_code, message = self.do()
 
-        logger.info(message)
+        logger.info(
+            "Disable command invoked on: %s: Result: %s, %s",
+            self.sdp_master_adapter.dev_name,
+            result_code,
+            message,
+        )
         if result_code == ResultCode.FAILED:
+            exception = message
             task_callback(
                 status=TaskStatus.COMPLETED,
                 result=result_code,
-                exception=message,
+                exception=exception,
             )
+
         else:
             logger.info(
                 "The Disable command is invoked successfully on %s",
@@ -57,7 +64,7 @@ class Disable(SdpMLNCommand):
             )
             task_callback(
                 status=TaskStatus.COMPLETED,
-                result=ResultCode.OK,
+                result=result_code,
             )
 
     def do(self, argin=None):
@@ -65,9 +72,9 @@ class Disable(SdpMLNCommand):
         Method to invoke Disable command on Sdp Master.
 
         """
-        ret_code, message = self.init_adapter()
-        if ret_code == ResultCode.FAILED:
-            return ret_code, message
+        result_code, message = self.init_adapter()
+        if result_code == ResultCode.FAILED:
+            return result_code, message
         result, message = self.call_adapter_method(
             "Sdp Master", self.sdp_master_adapter, "Disable"
         )

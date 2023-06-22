@@ -1,8 +1,7 @@
-# pylint: disable=abstract-method
+# pylint: disable=abstract-method, arguments-differ
 """
 This module implements ComponentManager class for the Sdp Master Leaf Node.
 """
-
 from typing import Tuple
 
 from ska_tango_base.executor import TaskStatus
@@ -28,8 +27,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
 
     def __init__(
         self,
-        sdp_master_dev_name,
-        _adapter_factory,
+        sdp_master_device_name,
         logger=None,
         _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
         _event_receiver=False,
@@ -65,25 +63,26 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             proxy_timeout=proxy_timeout,
             sleep_time=sleep_time,
         )
-        self.sdp_master_dev_name = sdp_master_dev_name
-        self._adapter_factory = _adapter_factory
-        self._device = DeviceInfo(sdp_master_dev_name)
+        self._device = DeviceInfo(sdp_master_device_name)
+        self.sdp_master_device_name = sdp_master_device_name
         self.timeout = timeout
         self.update_availablity_callback = _update_availablity_callback
-        self.on_command_object = On(
-            self, self.op_state_model, self._adapter_factory, logger
-        )
-        self.off_command_object = Off(
-            self, self.op_state_model, self._adapter_factory, logger
-        )
-        self.standby_command_object = Standby(
-            self, self.op_state_model, self._adapter_factory, logger
-        )
-        self.disable_command_object = Disable(
-            self, self.op_state_model, self._adapter_factory, logger
-        )
+        self.on_command = On(self, logger)
 
-    # pylint: disable= arguments-differ
+        self.off_command = Off(self, logger)
+        self.standby_command = Standby(self, logger)
+        self.disable_command = Disable(self, logger)
+
+    @property
+    def sdp_master_device_name(self) -> str:
+        """Returns device name for the SDP Master Device."""
+        return self._sdp_master_device_name
+
+    @sdp_master_device_name.setter
+    def sdp_master_device_name(self, device_name: str) -> None:
+        """Sets the device name for SDP Master Device."""
+        self._sdp_master_device_name = device_name
+
     def update_ping_info(self, ping: int, dev_name: str) -> None:
         """
         Update a device with the correct ping information.
@@ -100,19 +99,19 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
                 self.update_availablity_callback(True)
 
     def _check_if_sdp_master_is_responsive(self) -> None:
-        """Checks if SDP master is responsive."""
+        """Checks if SDP Master device is responsive."""
 
         if self._device is None or self._device.unresponsive:
             raise DeviceUnresponsive(
-                f"{self.sdp_master_dev_name} not available"
+                f"{self.sdp_master_device_name} not available"
             )
 
     def is_command_allowed(self, command_name: str) -> bool:
         """
         Checks whether this command is allowed.
-        It checks that the device is in the right state to execute this command
-        and that all the components needed for the operation are not
-        unresponsive.
+        It checks that the device is not in the FAULT and UNKNOWN state
+        before executing the command and that all the
+        components needed for the operation are not unresponsive.
 
         :return: True if this command is allowed
 
@@ -125,9 +124,12 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
                 DevState.UNKNOWN,
             ]:
                 raise CommandNotAllowed(
-                    f"The invocation of the {__class__} command on the device."
-                    + "Reason: The current operational state "
-                    + f"is {self.op_state_model.op_state}."
+                    "The invocation of the {} command on this".format(
+                        command_name
+                    )
+                    + "device is not allowed."
+                    + "Reason: The current operational state is"
+                    + "{}".format(self.op_state_model.op_state)
                     + "The command has NOT been executed."
                     + "This device will continue with normal operation."
                 )
@@ -135,52 +137,64 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             return True
         return False
 
-    def on_command(self, task_callback=None) -> Tuple[TaskStatus, str]:
+    def submit_on_command(self, task_callback=None) -> Tuple[TaskStatus, str]:
         """Submits the On command for execution.
 
         :rtype: tuple
         """
         task_status, response = self.submit_task(
-            self.on_command_object.on,
+            self.on_command.on,
             args=[self.logger],
             task_callback=task_callback,
         )
-        self.logger.info("On command queued for execution")
+        self.logger.debug(
+            "Taskstatus: %s, Response: %s of On command:",
+            task_status,
+            response,
+        )
         return task_status, response
 
-    def off_command(self, task_callback=None) -> Tuple[TaskStatus, str]:
+    def submit_off_command(self, task_callback=None) -> Tuple[TaskStatus, str]:
         """Submits the Off command for execution.
 
         :rtype: tuple
         """
         task_status, response = self.submit_task(
-            self.off_command_object.off,
+            self.off_command.off,
             args=[self.logger],
             task_callback=task_callback,
         )
-        self.logger.info("Off command queued for execution")
+        self.logger.debug(
+            "Taskstatus: %s, Response: %s of Off command:",
+            task_status,
+            response,
+        )
         return task_status, response
 
-    def standby_command(self, task_callback=None) -> Tuple[TaskStatus, str]:
+    def submit_standby_command(
+        self, task_callback=None
+    ) -> Tuple[TaskStatus, str]:
         """Submits the Standby command for execution.
 
         :rtype: tuple
         """
         task_status, response = self.submit_task(
-            self.standby_command_object.standby,
+            self.standby_command.standby,
             args=[self.logger],
             task_callback=task_callback,
         )
         self.logger.info("Standby command queued for execution")
         return task_status, response
 
-    def disable_command(self, task_callback=None) -> Tuple[TaskStatus, str]:
+    def submit_disable_command(
+        self, task_callback=None
+    ) -> Tuple[TaskStatus, str]:
         """Submits the Disable command for execution.
 
         :rtype: tuple
         """
         task_status, response = self.submit_task(
-            self.disable_command_object.disable,
+            self.disable_command.disable,
             args=[self.logger],
             task_callback=task_callback,
         )

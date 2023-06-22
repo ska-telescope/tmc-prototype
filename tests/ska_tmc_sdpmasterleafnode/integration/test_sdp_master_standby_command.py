@@ -68,6 +68,8 @@ def standby_command(tango_context, sdpmln_name, group_callback):
         group_callback,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
+    # Teardown
+    sdpmln_node.Off()
 
 
 @pytest.mark.post_deployment

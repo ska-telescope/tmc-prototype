@@ -1,4 +1,4 @@
-# pylint: disable=no-member
+# pylint: disable=no-member, arguments-renamed, arguments-differ
 # pylint: disable=abstract-method
 """
 This module provided a reference implementation of a BaseComponentManager.
@@ -42,7 +42,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         logger=None,
         _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
         _update_device_callback=None,
-        update_command_in_progress_callback=None,
         _update_sdp_subarray_obs_state_callback=None,
         _update_lrcr_callback=None,
         monitoring_loop=False,
@@ -83,11 +82,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             )
             self.event_receiver.start()
 
-        # pylint: disable=line-too-long
-        # self.command_executor = CommandExecutor(
-        #     logger,
-        #     _update_command_in_progress_callback=update_command_in_progress_callback,  # noqa:E501
-        # )
         self.timeout = timeout
         self._update_availablity_callback = _update_availablity_callback
 
@@ -111,7 +105,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.start_liveliness_probe(LivelinessProbeType.SINGLE_DEVICE)
 
     def stop(self):
-        """stop the liveliness probe"""
+        """
+        Method used to Stop the liveliness probe and event receiver
+        for given devices.
+        """
         self.stop_liveliness_probe()
         self._event_receiver.stop()
 

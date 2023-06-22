@@ -2,7 +2,7 @@
 import time
 
 from ska_tango_base.commands import ResultCode
-from ska_tmc_common.adapters import AdapterFactory, AdapterType
+from ska_tmc_common.adapters import AdapterType
 from ska_tmc_common.exceptions import DeviceUnresponsive
 from ska_tmc_common.tmc_command import TmcLeafNodeCommand
 from tango import ConnectionFailed, DevFailed
@@ -14,35 +14,30 @@ class SdpMLNCommand(TmcLeafNodeCommand):
     def __init__(
         self,
         component_manager,
-        op_state_model,
-        adapter_factory=None,
         logger=None,
     ):
         super().__init__(component_manager, logger)
-        self.op_state_model = op_state_model
-        self._adapter_factory = adapter_factory or AdapterFactory()
+        self.sdp_master_adapter = None
 
     def check_unresponsive(self):
         """Checks whether the device is unresponsive"""
         dev_info = self.component_manager.get_device()
         if dev_info is None or dev_info.unresponsive:
             raise DeviceUnresponsive(
-                """Command invocation failed as the SDP subarray device is not available
-                The command has NOT been executed.
+                """Command invocation failed as the SDP subarray device is not
+                available The command has NOT been executed.
                 This device will continue with normal operation."""
             )
 
-    # pylint: disable=attribute-defined-outside-init
     def init_adapter(self):
-        self.sdp_master_adapter = None
-        dev_name = self.component_manager.sdp_master_dev_name
+        dev_name = self.component_manager.sdp_master_device_name
         timeout = self.component_manager.timeout
         elapsed_time = 0
         start_time = time.time()
         while self.sdp_master_adapter is None and elapsed_time < timeout:
             try:
                 self.sdp_master_adapter = (
-                    self._adapter_factory.get_or_create_adapter(
+                    self.adapter_factory.get_or_create_adapter(
                         dev_name, AdapterType.BASE
                     )
                 )
@@ -50,29 +45,18 @@ class SdpMLNCommand(TmcLeafNodeCommand):
                 elapsed_time = time.time() - start_time
                 if elapsed_time > timeout:
                     message = (
-                        f"Error in creating adapter for "
-                        f"{self.component_manager.sdp_master_dev_name}: {cf}"
+                        f"Error in creating adapter for " f"{dev_name}: {cf}"
                     )
                     return ResultCode.FAILED, message
             except DevFailed as df:
                 elapsed_time = time.time() - start_time
                 if elapsed_time > timeout:
                     message = (
-                        f"Error in creating adapter for "
-                        f"{self.component_manager.sdp_master_dev_name}: {df}"
+                        f"Error in creating adapter for " f"{dev_name}: {df}"
                     )
                     return ResultCode.FAILED, message
             except (AttributeError, ValueError, TypeError) as e:
-                message = (
-                    f"Error in creating adapter for "
-                    f"{self.component_manager.sdp_master_dev_name}: {e}"
-                )
+                message = f"Error in creating adapter for " f"{dev_name}: {e}"
                 return ResultCode.FAILED, message
 
         return ResultCode.OK, ""
-
-    # pylint: enable=attribute-defined-outside-init
-
-    def do(self, argin=None):
-        result = self.do(argin)
-        return result

@@ -24,7 +24,7 @@ from tests.settings import (
 def test_off_command(tango_context, sdp_master_device, task_callback):
     cm, _ = create_cm("SdpMLNComponentManager", sdp_master_device)
     assert cm.is_command_allowed("Off")
-    cm.off_command(task_callback=task_callback)
+    cm.submit_off_command(task_callback=task_callback)
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.QUEUED}
     )
@@ -44,12 +44,13 @@ def test_off_command_fail_sdp_master(
 ):
     cm, _ = create_cm("SdpMLNComponentManager", sdp_master_device)
     adapter_factory = HelperAdapterFactory()
-    cm.sdp_master_dev_name = sdp_master_device
+    cm.sdp_master_device_name = sdp_master_device
     # include exception in Off command
     adapter_factory.get_or_create_adapter(
         sdp_master_device, attrs={"Off.side_effect": Exception}
     )
-    off_command = Off(cm, cm.op_state_model, adapter_factory, logger)
+    off_command = Off(cm, logger)
+    off_command.adapter_factory = adapter_factory
     off_command.off(logger, task_callback=task_callback)
     caplog.set_level(logging.DEBUG, logger="ska_tango_testing.mock")
     task_callback.assert_against_call(

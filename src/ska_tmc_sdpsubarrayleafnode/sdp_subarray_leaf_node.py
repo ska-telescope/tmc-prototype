@@ -1,3 +1,4 @@
+# pylint: disable=arguments-differ, no-value-for-parameter
 """
 SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
 actions during an observation.
@@ -16,22 +17,6 @@ from tango import ApiUtil, AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
 
 from ska_tmc_sdpsubarrayleafnode import release
-
-# TODO : Will get Uncommented after refactoring for command is done.
-# from ska_tmc_sdpsubarrayleafnode.commands import (
-#     Abort,
-#     AssignResources,
-#     Configure,
-#     End,
-#     EndScan,
-#     ObsReset,
-#     Off,
-#     On,
-#     ReleaseResources,
-#     Reset,
-#     Restart,
-#     Scan,
-# )
 from ska_tmc_sdpsubarrayleafnode.manager import SdpSLNComponentManager
 
 
@@ -715,19 +700,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         super().init_command_objects()
         args = ()
-        for command_name, command_class in [
-            #     ("On", On),
-            #     ("Off", Off),
-            #     ("AssignResources", AssignResources),
-            #     ("ReleaseResources", ReleaseResources),
-            #     ("Configure", Configure),
-            #     ("Scan", Scan),
-            #     ("EndScan", EndScan),
-            #     ("End", End),
-            #     ("ObsReset", ObsReset),
-            #     ("Abort", Abort),
-            #     ("Restart", Restart),
-        ]:
+        for command_name, command_class in []:
             command_obj = command_class(
                 self.component_manager,
                 self.op_state_model,
@@ -735,14 +708,14 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 logger=self.logger,
             )
             self.register_command_object(command_name, command_obj)
-        # self.register_command_object(
-        #     "Reset",
-        #     Reset(
-        #         self.component_manager,
-        #         self.op_state_model,
-        #         self.logger,
-        #     ),
-        # )
+        self.register_command_object(
+            "Reset",
+            # Reset(
+            #     self.component_manager,
+            #     self.op_state_model,
+            #     self.logger,
+            # ),
+        )
 
 
 # ----------

@@ -26,7 +26,7 @@ from tests.settings import (
 def test_on_command(tango_context, sdp_master_device, task_callback):
     cm, _ = create_cm("SdpMLNComponentManager", sdp_master_device)
     assert cm.is_command_allowed("On")
-    cm.on_command(task_callback=task_callback)
+    cm.submit_on_command(task_callback=task_callback)
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.QUEUED}
     )
@@ -47,15 +47,15 @@ def test_on_command_fail_sdp_master1(
 ):
     cm, _ = create_cm("SdpMLNComponentManager", sdp_master_device)
     adapter_factory = HelperAdapterFactory()
-    cm.sdp_master_dev_name = sdp_master_device
+    cm.sdp_master_device_name = sdp_master_device
     assert cm.is_command_allowed("On")
     attrs = {"On.side_effect": Exception}
     sdpcontrollerMock = mock.Mock(**attrs)
     adapter_factory.get_or_create_adapter(
         sdp_master_device, AdapterType.BASE, proxy=sdpcontrollerMock
     )
-    cm._adapter_factory = adapter_factory
-    on_command = On(cm, cm.op_state_model, adapter_factory, logger)
+    on_command = On(cm, logger)
+    on_command.adapter_factory = adapter_factory
     on_command.on(logger, task_callback=task_callback)
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
