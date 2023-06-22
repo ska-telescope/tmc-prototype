@@ -11,7 +11,7 @@ from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
 from tango import DevState
 
-from ska_tmc_sdpmasterleafnode.commands import Off, On
+from ska_tmc_sdpmasterleafnode.commands import Disable, Off, On, Standby
 
 
 class SdpMLNComponentManager(TmcLeafNodeComponentManager):
@@ -70,6 +70,8 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         self.on_command = On(self, logger)
 
         self.off_command = Off(self, logger)
+        self.standby_command = Standby(self, logger)
+        self.disable_command = Disable(self, logger)
 
     @property
     def sdp_master_device_name(self) -> str:
@@ -84,9 +86,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
     def update_ping_info(self, ping: int, dev_name: str) -> None:
         """
         Update a device with the correct ping information.
-
-        :param dev_name: name of the device
-        :type dev_name: str
         :param ping: device response time
         :type ping: int
         """
@@ -119,21 +118,24 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         :rtype: boolean
         """
 
-        if command_name in ["On", "Off"] and self.op_state_model.op_state in [
-            DevState.FAULT,
-            DevState.UNKNOWN,
-        ]:
-            raise CommandNotAllowed(
-                f"The invocation of the {__class__} command on this "
-                + "device is not allowed.\n"
-                + "Reason: The current operational state "
-                + f"is {self.op_state_model.op_state}."
-                + "The command has NOT been executed."
-                + "This device will continue with normal operation.",
-                self.op_state_model.op_state,
-            )
-        self._check_if_sdp_master_is_responsive()
-        return True
+        if command_name in ["On", "Off", "Standby", "Disable"]:
+            if self.op_state_model.op_state in [
+                DevState.FAULT,
+                DevState.UNKNOWN,
+            ]:
+                raise CommandNotAllowed(
+                    "The invocation of the {} command on this".format(
+                        command_name
+                    )
+                    + "device is not allowed."
+                    + "Reason: The current operational state is"
+                    + "{}".format(self.op_state_model.op_state)
+                    + "The command has NOT been executed."
+                    + "This device will continue with normal operation."
+                )
+            self._check_if_sdp_master_is_responsive()
+            return True
+        return False
 
     def submit_on_command(self, task_callback=None) -> Tuple[TaskStatus, str]:
         """Submits the On command for execution.
@@ -167,4 +169,34 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             task_status,
             response,
         )
+        return task_status, response
+
+    def submit_standby_command(
+        self, task_callback=None
+    ) -> Tuple[TaskStatus, str]:
+        """Submits the Standby command for execution.
+
+        :rtype: tuple
+        """
+        task_status, response = self.submit_task(
+            self.standby_command.standby,
+            args=[self.logger],
+            task_callback=task_callback,
+        )
+        self.logger.info("Standby command queued for execution")
+        return task_status, response
+
+    def submit_disable_command(
+        self, task_callback=None
+    ) -> Tuple[TaskStatus, str]:
+        """Submits the Disable command for execution.
+
+        :rtype: tuple
+        """
+        task_status, response = self.submit_task(
+            self.disable_command.disable,
+            args=[self.logger],
+            task_callback=task_callback,
+        )
+        self.logger.info("Disable command queued for execution")
         return task_status, response

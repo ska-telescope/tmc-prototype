@@ -160,74 +160,53 @@ class SdpMasterLeafNode(SKABaseDevice):
         return_code, unique_id = handler()
         return [[return_code], [str(unique_id)]]
 
-    # TODO : Will get Uncommented after refactoring for command is done.
-    # def is_Standby_allowed(self):
-    #     """
-    #     Checks whether this command is allowed to be run in current device \
-    #     state. \
+    def is_Standby_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device \
+        state. \
 
     #     :return: True if this command is allowed to be  \
     #     run in current device state. \
 
-    #     :rtype: boolean
-    #     """
-    #     handler = self.get_command_object("Standby")
-    #     return handler.check_allowed()
+        :rtype: boolean
+        """
+        return self.component_manager.is_command_allowed("Standby")
 
-    # @command(dtype_out="DevVarLongStringArray")
-    # @DebugIt()
-    # def Standby(self):
-    #     """
-    #     This command invokes Standby() command on Sdp Master.
-    #     """
-    #     handler = self.get_command_object("Standby")
-    #     if self.component_manager._command_executor.queue_full:
-    #         message = """The invocation of the Standby command on this device
-    #         failed.
-    #         Reason: The command executor rejected the queuing of the command
-    #         because its queue is full.
-    #         The Standby command has NOT been queued and will not be executed.
-    #         This device will continue with normal operation."""
-    #         return [[ResultCode.FAILED], [message]]
-    #     unique_id = self.component_manager._command_executor.enqueue_command(
-    #         handler
-    #     )
-    #     return [[ResultCode.QUEUED], [str(unique_id)]]
+    @command(dtype_out="DevVarLongStringArray")
+    @DebugIt()
+    def Standby(self):
+        """
+        This command invokes Standby() command on Sdp Master.
+        """
+        handler = self.get_command_object("Standby")
+        return_code, unique_id = handler()
+        return [[return_code], [str(unique_id)]]
 
-    # def is_Disable_allowed(self):
-    #     """
-    #     Checks whether this command is allowed to be run in current device \
-    #     state. \
+    def is_Disable_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device \
+        state. \
 
-    #     :return: True if this command is allowed to be run  \
-    #     in current device state. \
+        :return: True if this command is allowed to be  \
+        run in current device state. \
 
-    #     :rtype: boolean
-    #     """
-    #     handler = self.get_command_object("Disable")
-    #     return handler.check_allowed()
+        :rtype: boolean
+        """
+        return self.component_manager.is_command_allowed("Disable")
 
-    # @command(dtype_out="DevVarLongStringArray")
-    # @DebugIt()
-    # def Disable(self):
-    #     """
-    #     This command invokes Disable() command on Sdp Master.
-    #     """
-    #     handler = self.get_command_object("Disable")
-    #     if self.component_manager._command_executor.queue_full:
-    #         message = """The invocation of the Disable command on this device
-    #         failed.
-    #         Reason: The command executor rejected the queuing of the command
-    #         because its queue is full.
-    #         The Disable command has NOT been queued and will not be executed.
-    #         This device will continue with normal operation."""
-    #         return [[ResultCode.FAILED], [message]]
-    #     unique_id = self.component_manager._command_executor.enqueue_command(
-    #         handler
-    #     )
-    #     return [[ResultCode.QUEUED], [str(unique_id)]]
+    @command(dtype_out="DevVarLongStringArray")
+    @DebugIt()
+    def Disable(self):
+        """
+        This command invokes Disable() command on Sdp Master.
+        """
+        handler = self.get_command_object("Disable")
+        result_code, unique_id = handler()
 
-    # default ska mid
+        return [[result_code], [unique_id]]
+
+        # default ska mid
+
     # pylint: disable=attribute-defined-outside-init
     def create_component_manager(self):
         """Returns Sdp Master Leaf Node component manager object"""
@@ -253,6 +232,8 @@ class SdpMasterLeafNode(SKABaseDevice):
         for command_name, method_name in [
             ("On", "submit_on_command"),
             ("Off", "submit_off_command"),
+            ("Standby", "submit_standby_command"),
+            ("Disable", "submit_disable_command"),
         ]:
             self.register_command_object(
                 command_name,

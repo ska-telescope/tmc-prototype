@@ -24,9 +24,8 @@ class SdpMLNCommand(TmcLeafNodeCommand):
         dev_info = self.component_manager.get_device()
         if dev_info is None or dev_info.unresponsive:
             raise DeviceUnresponsive(
-                """The invocation of the command on this device is not allowed.
-                Reason: SDP subarray device is not available.
-                The command has NOT been executed.
+                """Command invocation failed as the SDP subarray device is not
+                available The command has NOT been executed.
                 This device will continue with normal operation."""
             )
 

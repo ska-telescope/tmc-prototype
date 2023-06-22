@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc-sdpleafnodes"""
-version="0.10.1"
+version="0.11.0"
 version_info=version.split(".")
 description="""SKA-TMC-SDPLEAFNODES"""
 author="Team Himalaya, Team Sahyadri"
@@ -9,8 +9,8 @@ author_email="telmgt-internal@googlegroups.com"
 license="""BSD-3-Clause"""
 url="""https://www.skaobservatory.org"""
 copyright=""""""
-release=0.10.1
-tag=0.10.1
-release_notes=This release contains:<br/><ul><li> SDP was pushing event for isSubsystemAvailable every 1 second , even though value was not changed.This has been updated to conditional logic , and hence change will now be pushed only of there is any change in logic</li></ul><br/>
+release=0.11.0
+tag=0.11.0
+release_notes=This release contains:<br/><ul><li>Refactored On, Off, Standby, Disable command as a longrunning command with updated base class version 18.1</li></ul><br/>
 
 
