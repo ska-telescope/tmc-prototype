@@ -1,15 +1,17 @@
+# pylint: disable=arguments-differ, no-value-for-parameter
 """
 SDP Subarray Leaf node is to monitor the SDP Subarray and issue control
 actions during an observation.
 It also acts as a SDP contact point for Subarray Node for observation execution
 """
+
+# pylint: disable=attribute-defined-outside-init
 import tango
 from ska_control_model import HealthState
 from ska_tango_base import SKABaseDevice
 from ska_tango_base.commands import ResultCode, SubmittedSlowCommand
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.enum import LivelinessProbeType
-from ska_tmc_common.op_state_model import TMCOpStateModel
 from tango import ApiUtil, AttrWriteType, DebugIt
 from tango.server import attribute, command, device_property, run
 
@@ -27,6 +29,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         super().init_device()
         self._sdp_subarray_obs_state = ObsState.EMPTY
         self.set_change_event("sdpSubarrayObsState", True)
+        self._command_result = ("", "")
+        self.set_change_event("longRunningCommandResult", True)
+        self._issubsystemavailable = False
+        self.set_change_event("isSubsystemAvailable", True, False)
 
     # -----------------
     # Device Properties
@@ -80,10 +86,21 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     ) -> None:
         """Updates SDP Subarray ObsState"""
         self._sdp_subarray_obs_state = obs_state
+        self.push_change_event(
+            "sdpSubarrayObsState", self._sdp_subarray_obs_state
+        )
 
     def update_lrcr_callback(self, lrc_result):
         """Change event callback for longRunningCommandResult"""
         self.push_change_event("longRunningCommandResult", lrc_result)
+
+    def update_availablity_callback(self, availablity):
+        """Change event callback for isSubsystemAvailable"""
+        if availablity != self._issubsystemavailable:
+            self._issubsystemavailable = availablity
+            self.push_change_event(
+                "isSubsystemAvailable", self._issubsystemavailable
+            )
 
     class InitCommand(
         SKABaseDevice.InitCommand
@@ -107,7 +124,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             """
             super().do()
             device = self._device
-
             device._build_state = (
                 f"{release.name},{release.version},{release.description}"
             )
@@ -120,7 +136,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 tango.cb_sub_model.PUSH_CALLBACK
             )
             device.op_state_model.perform_action("component_on")
-            device.set_change_event("isSubsystemAvailable", True, False)
             return (ResultCode.OK, "")
 
     def always_executed_hook(self):
@@ -146,14 +161,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # Attributes methods
     # ------------------
 
-    def update_availablity_callback(self, availablity):
-        """Change event callback for isSubsystemAvailable"""
-        self._isSubsystemAvailable = availablity  # pylint: disable=W0201
-        self.push_change_event("isSubsystemAvailable", availablity)
-
     def read_isSubsystemAvailable(self):
-        """Read method for isSubsystemAvailable"""
-        return self._isSubsystemAvailable
+        """Read method for issubsystemavailable"""
+        return self._issubsystemavailable
 
     def read_lastDeviceInfoChanged(self):
         """Return the last device info change"""
@@ -592,12 +602,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     #     return [[ResultCode.QUEUED], [str(unique_id)]]
 
     # default ska mid
-    # pylint: disable=attribute-defined-outside-init, line-too-long
     def create_component_manager(self):
         """Returns Sdp Subarray Leaf Node component manager object"""
-        self.op_state_model = TMCOpStateModel(
-            logger=self.logger, callback=super()._update_state
-        )
         cm = SdpSLNComponentManager(
             self.SdpSubarrayFQDN,
             logger=self.logger,
@@ -605,17 +611,18 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             component_state_callback=None,
             _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
             _event_receiver=True,
-            _update_sdp_subarray_obs_state_callback=self.update_sdp_subarray_obs_state_callback,
+            _update_sdp_subarray_obs_state_callback=self.update_sdp_subarray_obs_state_callback,  # noqa: E501
             _update_lrcr_callback=self.update_lrcr_callback,
+            _update_sdp_subarray_obs_state_callback=(
+                self.update_sdp_subarray_obs_state_callback
+            ),
             sleep_time=self.SleepTime,
             timeout=self.TimeOut,
             _update_availablity_callback=self.update_availablity_callback,
         )
         return cm
 
-    # pylint: enable=attribute-defined-outside-init, line-too-long
     # pylint: disable=unexpected-keyword-arg
-
     def init_command_objects(self) -> None:
         """
         Initialises the command handlers for commands supported by this

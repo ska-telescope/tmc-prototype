@@ -1,4 +1,4 @@
-# pylint: disable=no-member
+# pylint: disable=no-member, arguments-renamed, arguments-differ
 # pylint: disable=abstract-method
 """
 This module provided a reference implementation of a BaseComponentManager.
@@ -101,7 +101,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.on_command = On(self, self.logger)
 
     def stop(self):
-        """Method to stop the liveliness probe."""
+        """
+        Method used to Stop the liveliness probe and event receiver
+        for given devices.
+        """
         self.stop_liveliness_probe()
         self._event_receiver.stop()
 
