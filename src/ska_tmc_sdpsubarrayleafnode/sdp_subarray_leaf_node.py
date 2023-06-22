@@ -262,46 +262,35 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     #     unique_id = self.component_manager.add_to_queue(handler, argin)
     #     return [[ResultCode.QUEUED], [str(unique_id)]]
 
-    # def is_ReleaseResources_allowed(self):
-    #     """
-    #     Checks whether this command is allowed to be run in current device \
-    #     state. \
+    def is_ReleaseAllResources_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device \
+        state. \
 
-    #     :return: True if this command is allowed to be run in current device
-    #     state.
+        :return: True if this command is allowed to be run in current device
+        state.
 
-    #     :rtype: boolean
-    #     """
-    #     handler = self.get_command_object("ReleaseResources")
-    #     return handler.check_allowed()
+        :rtype: boolean
+        """
+        return self.component_manager.is_command_allowed("ReleaseAllResources")
 
-    # @command(
-    #     dtype_in="str",
-    #     doc_in="The string in JSON format",
-    #     dtype_out="DevVarLongStringArray",
-    #     doc_out="information-only string",
-    # )
-    # @DebugIt()
-    # def ReleaseResources(self, argin):
-    #     """
-    #     This command invokes ReleaseResources() command on command on Sdp
-    #     Subarray.
-    #     """
-    #     handler = self.get_command_object("ReleaseResources")
-    #     if self.component_manager.command_executor.queue_full:
-    #         message = """The invocation of the \"ReleaseResources\"commandon
-    #         this device failed.
-    #         Reason: The command executor rejected the queuing of the command
-    #         because its queue is full.
-    #         The \"ReleaseResources\" command has NOT been queued and willnot
-    #         be executed.
-    #         This device will continue with normal operation."""
+    @command(
+        dtype_in="str",
+        doc_in="The string in JSON format",
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
+    @DebugIt()
+    def ReleaseAllResources(self):
+        """
+        This command invokes ReleaseAllResources() command on command on Sdp
+        Subarray.
+        """
 
-    #         return [[ResultCode.FAILED], [message]]
-    #     unique_id = self.component_manager.command_executor.enqueue_command(
-    #         handler, argin
-    #     )
-    #     return [[ResultCode.QUEUED], [str(unique_id)]]
+        handler = self.get_command_object("ReleaseAllResources")
+        return_code, unique_id = handler()
+
+        return [[return_code], [str(unique_id)]]
 
     # def is_Configure_allowed(self):
     #     """
@@ -625,6 +614,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         for command_name, method_name in [
             ("On", "on"),
+            ("ReleaseAllResources", "submit_release_resource"),
         ]:
             self.register_command_object(
                 command_name,

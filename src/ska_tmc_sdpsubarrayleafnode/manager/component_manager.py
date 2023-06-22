@@ -13,12 +13,19 @@ from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tango_base.executor import TaskStatus
 from ska_tmc_common.device_info import SubArrayDeviceInfo
-from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
+from ska_tmc_common.exceptions import (
+    CommandNotAllowed,
+    DeviceUnresponsive,
+    InvalidObsStateError,
+)
 from ska_tmc_common.lrcr_callback import LRCRCallback
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
 from tango import DevState
 
 from ska_tmc_sdpsubarrayleafnode.commands.on_command import On
+from ska_tmc_sdpsubarrayleafnode.commands.release_resources_command import (
+    ReleaseAllResources,
+)
 from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
     SdpSLNEventReceiver,
 )
@@ -99,6 +106,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.update_lrcr_callback = _update_lrcr_callback
         self._lrc_result = ("", "")
         self.on_command = On(self, self.logger)
+        self.release_command = ReleaseAllResources(self, self.logger)
 
     def stop(self):
         """Method to stop the liveliness probe."""
@@ -234,10 +242,34 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         if self.update_lrcr_callback is not None:
             self.update_lrcr_callback(self._lrc_result)
 
+    def generate_command_result(self, result_code, message):
+        """This method is used for generating command result"""
+        if result_code == ResultCode.FAILED:
+            self.logger.error(message)
+        self.logger.info(message)
+        return result_code, message
+
     def _check_if_sdp_sa_is_responsive(self) -> None:
         """Checks if SdpSubarray device is responsive."""
         if self._device is None or self._device.unresponsive:
             raise DeviceUnresponsive(f"{self._device} not available")
+
+    def raise_invalid_obsstate_error(self, command_name: str):
+        """
+        checking the InvalidObsState of Csp Subarray device
+        :param command_name: The name of command
+        :type command_name: str
+        """
+        message = (
+            f"{command_name} command is not allowed in current "
+            + "observation state on device."
+            + "Reason: The current observation state of "
+            + f"{self._sdp_subarray_dev_name} "
+            + f"for observation is {self.get_device().obs_state}\n"
+            + f"The {command_name} command has NOT been executed. "
+            + "This device will continue with normal operation."
+        )
+        raise InvalidObsStateError(message)
 
     def is_command_allowed(self, command_name: str):
         """
@@ -272,6 +304,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 ObsState.IDLE,
                 ObsState.EMPTY,
             ]:
+
                 self.raise_invalid_obsstate_error(command_name)
 
         elif command_name in ["Configure", "End"]:
@@ -323,4 +356,24 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             task_callback=task_callback,
         )
         self.logger.info("On command queued for execution")
+        return task_status, response
+
+    def submit_release_resource(
+        self, task_callback=None
+    ) -> Tuple[TaskStatus, str]:
+        """Submits the On command for execution.
+
+        :rtype: tuple
+        """
+        task_status, response = self.submit_task(
+            self.release_command.release_resources,
+            args=[self.logger],
+            task_callback=task_callback,
+        )
+        self.logger.info(
+            "TaskStatus: %s and Response: %s of ReleaseResource \
+                  command after queued to execution",
+            task_status,
+            response,
+        )
         return task_status, response
