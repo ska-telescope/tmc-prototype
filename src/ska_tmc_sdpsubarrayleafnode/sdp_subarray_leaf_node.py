@@ -611,7 +611,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             component_state_callback=None,
             _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
             _event_receiver=True,
-            _update_sdp_subarray_obs_state_callback=self.update_sdp_subarray_obs_state_callback,  # noqa: E501
+            _update_sdp_subarray_obs_state_callback=(
+                self.update_sdp_subarray_obs_state_callback
+            ),
             _update_lrcr_callback=self.update_lrcr_callback,
             sleep_time=self.SleepTime,
             timeout=self.TimeOut,
