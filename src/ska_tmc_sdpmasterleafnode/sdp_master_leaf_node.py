@@ -302,7 +302,7 @@ class SdpMasterLeafNode(SKABaseDevice):
         """
         super().init_command_objects()
         args = ()
-        for (command_name, command_class) in [
+        for command_name, command_class in [
             ("On", On),
             ("Off", Off),
             ("Standby", Standby),

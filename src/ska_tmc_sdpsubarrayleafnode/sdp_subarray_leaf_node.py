@@ -190,6 +190,33 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         return [result_code], [unique_id]
 
+    def is_AssignResources_allowed(self) -> bool:
+        """
+        Checks whether AssignResources command is allowed to be run in \
+        current device state. \
+
+        :return: True if AssignResources command is allowed to be run in \
+        current device state \
+
+        :rtype: boolean
+        """
+        return self.component_manager.is_command_allowed("AssignResources")
+
+    @command(
+        dtype_in="str",
+        doc_in="The string in JSON format",
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
+    @DebugIt()
+    def AssignResources(self, argin: str) -> tuple:
+        """
+        This command invokes the AssignResources() command on Csp Subarray.
+        """
+        handler = self.get_command_object("AssignResources")
+        result_code, unique_id = handler(argin)
+        return ([result_code], [unique_id])
+
     # This code will be enabled as part of SP-3237
     # def is_Off_allowed(self):
     #     """
@@ -222,44 +249,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     #     unique_id = self.component_manager.command_executor.enqueue_command(
     #         handler
     #     )
-    #     return [[ResultCode.QUEUED], [str(unique_id)]]
-
-    # def is_AssignResources_allowed(self):
-    #     """
-    #     Checks whether this command is allowed to be run in current device \
-    #     state. \
-
-    #     :return: True if this command is allowed to be run in current device
-    #     state \
-
-    #     :rtype: boolean
-    #     """
-    #     handler = self.get_command_object("AssignResources")
-    #     return handler.check_allowed()
-
-    # @command(
-    #     dtype_in="str",
-    #     doc_in="The string in JSON format",
-    #     dtype_out="DevVarLongStringArray",
-    #     doc_out="information-only string",
-    # )
-    # @DebugIt()
-    # def AssignResources(self, argin):
-    #     """
-    #     This command invokes the AssignResources() command on Sdp Subarray..
-    #     """
-    #     handler = self.get_command_object("AssignResources")
-    #     if self.component_manager.command_executor.queue_full:
-    #         message = """The invocation of the \"AssignResources\"command on
-    #         this device failed.
-    #         Reason: The command executor rejected the queuing of the command
-    #         because its queue is full.
-    #         The \"AssignResources\" command has NOT been queued and will not
-    #         be executed.
-    #         This device will continue with normal operation."""
-
-    #         return [[ResultCode.FAILED], [message]]
-    #     unique_id = self.component_manager.add_to_queue(handler, argin)
     #     return [[ResultCode.QUEUED], [str(unique_id)]]
 
     # def is_ReleaseResources_allowed(self):
@@ -613,7 +602,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         )
         return cm
 
-    # pylint: enable=attribute-defined-outside-init, line-too-long
+    # pylint: enable=attribute-defined-outside-init,
     # pylint: disable=unexpected-keyword-arg
 
     def init_command_objects(self) -> None:
@@ -622,9 +611,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         device.
         """
         super().init_command_objects()
-
         for command_name, method_name in [
             ("On", "on"),
+            ("AssignResources", "assign_resources"),
         ]:
             self.register_command_object(
                 command_name,

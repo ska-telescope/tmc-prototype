@@ -18,6 +18,9 @@ from ska_tmc_common.lrcr_callback import LRCRCallback
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
 from tango import DevState
 
+from ska_tmc_sdpsubarrayleafnode.commands.assign_resources_command import (
+    AssignResources,
+)
 from ska_tmc_sdpsubarrayleafnode.commands.on_command import On
 from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
     SdpSLNEventReceiver,
@@ -99,6 +102,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.update_lrcr_callback = _update_lrcr_callback
         self._lrc_result = ("", "")
         self.on_command = On(self, self.logger)
+        self.assign_resources = AssignResources(self, logger=self.logger)
 
     def stop(self):
         """Method to stop the liveliness probe."""
@@ -324,3 +328,51 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         self.logger.info("On command queued for execution")
         return task_status, response
+
+    def assign_resources(
+        self, argin: str, task_callback: Optional[Callable] = None
+    ) -> tuple:
+        """
+        Submit the AssignResources command in queue.
+
+        :return: a result code and message
+        """
+        self.assign_id = f"{time.time()}-{AssignResources.__name__}"
+        task_status, response = self.submit_task(
+            self.assign_resources.assign_resources,
+            args=[argin],
+            task_callback=task_callback,
+        )
+        return task_status, response
+
+    def cmd_ended_cb(self, event):
+        """
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the command has been successfully
+        invoked on SdpSubarray.
+
+        :param event: a CmdDoneEvent object. This object is used to passdata
+            to the callback method in asynchronous callback model forcommand
+            execution.
+        :type: CmdDoneEvent object
+            It has the following members:
+            - cmd_name   : (str) The command name
+            - argout_raw : (DeviceData) The command argout
+            - argout     : The command argout
+            - err        : (bool) A boolean flag set to True if the command
+                           failed. False otherwise
+            - errors     : (sequence<DevError>) The error stack
+            - ext
+        """
+
+        if event.err:
+            log_message = (
+                f"Error ininvoking command:{event.cmd_name}\n{event.errors}"
+            )
+            self.logger.error(log_message)
+            error = event.errors[0]
+            self.update_command_result(event.cmd_name, error.desc)
+
+        else:
+            log_message = f"Command {event.cmd_name} invoked successfully."
+            self.logger.info(log_message)
