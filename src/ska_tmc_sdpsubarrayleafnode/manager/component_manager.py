@@ -117,11 +117,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         """
         return self._device
 
-    # def update_device_info(self, sdp_subarray_dev_name):
-    #     """Updates the device info"""
-    #     self._sdp_subarray_dev_name = sdp_subarray_dev_name
-    #     self._device = SubArrayDeviceInfo(self._sdp_subarray_dev_name, False)
-
     def update_input_parameter(self):
         """Update input parameter"""
         with self.lock:
