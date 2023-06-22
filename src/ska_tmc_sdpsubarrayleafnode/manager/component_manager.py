@@ -84,13 +84,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 sleep_time=sleep_time,
             )
             self.event_receiver.start()
-
+        self._update_availablity_callback = _update_availablity_callback
         self.timeout = timeout
-
-        self.liveliness_probe = _liveliness_probe
         self.command_timeout = command_timeout
         self.assign_id = None
-        # pylint: enable=line-too-long
         self.long_running_result_callback = LRCRCallback(self.logger)
         self._update_sdp_subarray_obs_state_callback = (
             _update_sdp_subarray_obs_state_callback
@@ -164,8 +161,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         device_info.update_unresponsive(True, exception)
 
         with self.lock:
-            if self.update_availablity_callback is not None:
-                self.update_availablity_callback(False)
+            if self._update_availablity_callback is not None:
+                self._update_availablity_callback(False)
 
     def update_ping_info(self, ping: int, dev_name: str) -> None:
         """
@@ -179,11 +176,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         with self.lock:
             self._device.ping = ping
             self._device.update_unresponsive(False)
-            if self.update_availablity_callback is not None:
-                self.logger.info(
-                    "Calling update_availablity_callback from update_ping_info"
-                )
-                self.update_availablity_callback(True)
+            if self._update_availablity_callback is not None:
+                self._update_availablity_callback(True)
 
     def get_obs_state(self) -> ObsState:
         """

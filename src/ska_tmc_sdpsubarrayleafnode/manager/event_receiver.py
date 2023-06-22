@@ -39,9 +39,9 @@ class SdpSLNEventReceiver(EventReceiver):
             with futures.ThreadPoolExecutor(
                 max_workers=self._max_workers
             ) as executor:
-                devInfo = self._component_manager.get_device()
-                if devInfo.last_event_arrived is None:
-                    executor.submit(self.subscribe_events, devInfo)
+                dev_info = self._component_manager.get_device()
+                if dev_info.last_event_arrived is None:
+                    executor.submit(self.subscribe_events, dev_info)
             sleep(self._sleep_time)
 
     def subscribe_events(self, dev_info):
