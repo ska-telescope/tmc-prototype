@@ -613,9 +613,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             _event_receiver=True,
             _update_sdp_subarray_obs_state_callback=self.update_sdp_subarray_obs_state_callback,  # noqa: E501
             _update_lrcr_callback=self.update_lrcr_callback,
-            _update_sdp_subarray_obs_state_callback=(
-                self.update_sdp_subarray_obs_state_callback
-            ),
             sleep_time=self.SleepTime,
             timeout=self.TimeOut,
             _update_availablity_callback=self.update_availablity_callback,
