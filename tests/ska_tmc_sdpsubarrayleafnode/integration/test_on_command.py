@@ -1,13 +1,14 @@
+import time
+
 import pytest
 import tango
-import time
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.dev_factory import DevFactory
 
 from tests.settings import (
+    SDP_SUBARRAY_DEVICE_MID,
     SDP_SUBARRAY_LEAF_NODE_LOW,
     SDP_SUBARRAY_LEAF_NODE_MID,
-    SDP_SUBARRAY_DEVICE_MID,
     event_remover,
     logger,
 )
@@ -66,10 +67,11 @@ def test_on_command_low(tango_context, change_event_callbacks):
     on_command(
         tango_context, SDP_SUBARRAY_LEAF_NODE_LOW, change_event_callbacks
     )
-    
-    
-    
-def on_command_exception_on_sdp_subarray(tango_context, sdpsaln_fqdn, change_event_callbacks):
+
+
+def on_command_exception_on_sdp_subarray(
+    tango_context, sdpsaln_fqdn, change_event_callbacks
+):
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_fqdn)
     sdp_subarray_proxy = dev_factory.get_device(SDP_SUBARRAY_DEVICE_MID)
@@ -80,23 +82,31 @@ def on_command_exception_on_sdp_subarray(tango_context, sdpsaln_fqdn, change_eve
     assert unique_id[0].endswith("On")
     assert result[0] == ResultCode.QUEUED
     time.sleep(2)
-    
+
     # Asserting the raised error
     change_event_callbacks.assert_change_event(
         "longRunningCommandResult",
-        (unique_id[0], f"Exception occurred on device: {SDP_SUBARRAY_DEVICE_MID}: Exception occured on device: {SDP_SUBARRAY_DEVICE_MID}"),
+        (
+            unique_id[0],
+            f"Exception occurred on device: {SDP_SUBARRAY_DEVICE_MID}: \
+                Exception occured on device: {SDP_SUBARRAY_DEVICE_MID}",
+        ),
         lookahead=4,
     )
     sdp_subarray_proxy.SetDefective(False)
     event_remover(
         change_event_callbacks,
-        ["longRunningCommandResult",],
+        [
+            "longRunningCommandResult",
+        ],
     )
 
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
-def test_on_command_mid_with_exception_on_sdpsubarray(tango_context, change_event_callbacks):
+def test_on_command_mid_with_exception_on_sdpsubarray(
+    tango_context, change_event_callbacks
+):
     on_command_exception_on_sdp_subarray(
         tango_context, SDP_SUBARRAY_LEAF_NODE_MID, change_event_callbacks
     )
@@ -104,7 +114,8 @@ def test_on_command_mid_with_exception_on_sdpsubarray(tango_context, change_even
 
 # @pytest.mark.post_deployment
 # @pytest.mark.SKA_low
-# def test_on_command_low_with_exception_on_sdpsubarray(tango_context, change_event_callbacks):
+# def test_on_command_low_with_exception_on_sdpsubarray(tango_context,
+# change_event_callbacks):
 #     on_command_exception_on_sdp_subarray(
 #         tango_context, SDP_SUBARRAY_LEAF_NODE_LOW, change_event_callbacks
 #     )
