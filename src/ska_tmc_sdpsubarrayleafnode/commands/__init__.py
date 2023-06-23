@@ -1,6 +1,7 @@
 """Init module for SDP Subarray Leaf Node"""
 # from .abort_command import Abort
-# from .assign_resources_command import AssignResources
+from .assign_resources_command import AssignResources
+
 # from .configure_command import Configure
 # from .end_command import End
 # from .endscan_command import EndScan
@@ -13,6 +14,4 @@ from .on_command import On
 # from .restart_command import Restart
 # from .scan_command import Scan
 
-__all__ = [
-    "On",
-]
+__all__ = ["On", "AssignResources"]

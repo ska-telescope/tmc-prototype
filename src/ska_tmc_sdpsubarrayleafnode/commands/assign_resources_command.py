@@ -3,19 +3,18 @@
 AssignResouces command class for SDPSubarrayLeafNode.
 """
 import json
+import threading
 import time
 from json import JSONDecodeError
-from typing import Callable
+from typing import Callable, Optional
 
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tango_base.executor import TaskStatus
-from ska_tmc_common.adapters import AdapterFactory
-from ska_tmc_common.exceptions import InvalidObsStateError
 from ska_tmc_common.timeout_callback import TimeoutCallback
 from tango import DevFailed
 
-fromska_tmc_sdpsubarrayleafnode.commands.abstract_commandimportSdpSLNCommand
+from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
 
 
 class AssignResources(SdpSLNCommand):
@@ -43,7 +42,7 @@ class AssignResources(SdpSLNCommand):
         logger=None,
         task_callback: Callable = None,
         task_abort_event: Optional[threading.Event] = None,
-    ) -> None:
+    ) -> tuple:
         """This is a long running method for AssignResources command, it
         executes do hook, invokes AssignResources command on CspSubarray.
 
@@ -65,6 +64,7 @@ class AssignResources(SdpSLNCommand):
             self.timeout_callback,
         )
         result_code, message = self.do(argin)
+        self.logger.info(result_code)
         if result_code == ResultCode.FAILED:
             self.update_task_status(result_code, message)
             self.component_manager.stop_timer()
@@ -75,8 +75,12 @@ class AssignResources(SdpSLNCommand):
                 self.timeout_id,
                 self.timeout_callback,
                 command_id=self.component_manager.assign_id,
+                # pylint: disable=line-too-long
                 lrcr_callback=self.component_manager.long_running_result_callback,
             )
+            self.update_task_status(result_code, message)
+
+        return result_code, message
 
     def update_task_status(self, result: ResultCode, message: str = ""):
         if result == ResultCode.FAILED:
@@ -179,13 +183,14 @@ class AssignResources(SdpSLNCommand):
                 )
             )
             self.logger.debug(log_msg)
+
             self.sdp_subarray_adapter.AssignResources(
                 json.dumps(json_argument), self.component_manager.cmd_ended_cb
             )
 
         except (AttributeError, ValueError, TypeError, DevFailed) as e:
             self.logger.exception("Command invocation failed: %s", e)
-            return self.generate_command_result(
+            return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
                 "The invocation of the AssignResources command is failed on"
                 + "Sdp Subarray Device {}".format(

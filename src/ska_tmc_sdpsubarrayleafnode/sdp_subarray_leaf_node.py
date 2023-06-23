@@ -613,7 +613,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         super().init_command_objects()
         for command_name, method_name in [
             ("On", "on"),
-            ("AssignResources", "assign_resources"),
+            ("AssignResources", "submit_assign_resources"),
         ]:
             self.register_command_object(
                 command_name,
