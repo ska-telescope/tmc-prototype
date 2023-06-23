@@ -263,52 +263,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             )
 
         self._check_if_sdp_sa_is_responsive()
-        self.logger.debug(f"Checking is command allowed for {command_name}")
 
-        if command_name in ["AssignResources", "ReleaseAllResources"]:
-            # Checking obsState of Csp Subarray device
-            if self.get_device().obs_state not in [
-                ObsState.IDLE,
-                ObsState.EMPTY,
-            ]:
-                self.raise_invalid_obsstate_error(command_name)
-
-        elif command_name in ["Configure", "End"]:
-            if self.get_device().obs_state not in [
-                ObsState.IDLE,
-                ObsState.READY,
-            ]:
-                self.raise_invalid_obsstate_error(command_name)
-
-        elif command_name == "Scan":
-            if self.get_device().obs_state not in [ObsState.READY]:
-                self.raise_invalid_obsstate_error(command_name)
-
-        elif command_name == "EndScan":
-            if self.get_device().obs_state not in [
-                ObsState.SCANNING,
-            ]:
-                self.raise_invalid_obsstate_error(command_name)
-        elif command_name == "Restart":
-            if self.get_device().obs_state not in [
-                ObsState.FAULT,
-                ObsState.ABORTED,
-            ]:
-                self.raise_invalid_obsstate_error(command_name)
-
-        elif command_name == "Abort":
-            if self.get_device().obs_state not in [
-                ObsState.SCANNING,
-                ObsState.CONFIGURING,
-                ObsState.RESOURCING,
-                ObsState.IDLE,
-                ObsState.READY,
-            ]:
-                self.raise_invalid_obsstate_error(command_name)
-        else:
-            self.logger.info(
-                f"{command_name} is not supported by SdpSubarrayLeafNode."
-            )
         return True
 
     def on(self, task_callback=None) -> Tuple[TaskStatus, str]:
