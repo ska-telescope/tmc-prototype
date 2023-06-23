@@ -18,6 +18,7 @@ from ska_tmc_common.lrcr_callback import LRCRCallback
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
 from tango import DevState
 
+from ska_tmc_sdpsubarrayleafnode.commands.off_command import Off
 from ska_tmc_sdpsubarrayleafnode.commands.on_command import On
 from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
     SdpSLNEventReceiver,
@@ -96,6 +97,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.update_lrcr_callback = _update_lrcr_callback
         self._lrc_result = ("", "")
         self.on_command = On(self, self.logger)
+        self.off_command = Off(self, self.logger)
 
     def stop(self):
         """
@@ -275,4 +277,17 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             task_callback=task_callback,
         )
         self.logger.info("On command queued for execution")
+        return task_status, response
+
+    def off(self, task_callback=None) -> Tuple[TaskStatus, str]:
+        """Submits the Off command for execution.
+
+        :rtype: tuple
+        """
+        task_status, response = self.submit_task(
+            self.off_command.off,
+            args=[self.logger],
+            task_callback=task_callback,
+        )
+        self.logger.info("Off command queued for execution")
         return task_status, response
