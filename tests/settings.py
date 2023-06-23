@@ -5,7 +5,6 @@ from typing import List
 
 import mock
 from ska_tmc_common.enum import LivelinessProbeType
-from ska_tmc_common.op_state_model import TMCOpStateModel
 from ska_tmc_common.test_helpers.helper_adapter_factory import (
     HelperAdapterFactory,
 )
@@ -28,6 +27,9 @@ SDP_MASTER_DEVICE_MID = "mid-sdp/control/0"
 SDP_MASTER_DEVICE_LOW = "low-sdp/control/0"
 SDP_SUBARRAY_LEAF_NODE_MID = "ska_mid/tm_leaf_node/sdp_subarray01"
 SDP_SUBARRAY_LEAF_NODE_LOW = "ska_low/tm_leaf_node/sdp_subarray01"
+SDP_MASTER_LEAF_DEVICE_MID = "ska_mid/tm_leaf_node/sdp_master"
+SDP_MASTER_LEAF_DEVICE_LOW = "ska_low/tm_leaf_node/sdp_master"
+
 
 
 def count_faulty_devices(cm):
@@ -41,11 +43,9 @@ def count_faulty_devices(cm):
 
 def create_cm(cm_class, device):
     """Create Component Manager"""
-    op_state_model = TMCOpStateModel(logger)
     if cm_class == "SdpMLNComponentManager":
         cm = SdpMLNComponentManager(
             device,
-            op_state_model,
             logger=logger,
         )
     elif cm_class == "SdpSLNComponentManager":

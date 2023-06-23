@@ -1,66 +1,89 @@
-# TODO : Will get Uncommented after refactoring for command is done.
-# import pytest
-# from ska_tango_base.commands import ResultCode
-# from ska_tmc_common.exceptions import DeviceUnresponsive
-# from ska_tmc_common.test_helpers.helper_adapter_factory import (
-#     HelperAdapterFactory,
-# )
+import mock
+import pytest
+from ska_tango_base.commands import ResultCode, TaskStatus
+from ska_tmc_common.adapters import AdapterType
+from ska_tmc_common.device_info import DeviceInfo
+from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
+from ska_tmc_common.test_helpers.helper_adapter_factory import (
+    HelperAdapterFactory,
+)
+from tango import DevState
 
-# from ska_tmc_sdpsubarrayleafnode.commands import Off
-# from tests.settings import (
-#     SDP_SUBARRAY_DEVICE_LOW,
-#     SDP_SUBARRAY_DEVICE_MID,
-#     create_cm,
-#     get_sdpsln_command_obj,
-#     logger,
-# )
-
-
-# @pytest.mark.sdpsln
-# @pytest.mark.parametrize(
-#     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
-# )
-# def test_off_command(tango_context, devices):
-#     logger.info("%s", tango_context)
-#     _, off_command, adapter_factory = get_sdpsln_command_obj(
-#         Off, devices, None
-#     )
-#     assert off_command.check_allowed()
-#     (result_code, _) = off_command.do()
-#     assert result_code == ResultCode.OK
-#     adapter = adapter_factory.get_or_create_adapter(devices)
-#     adapter.proxy.Off.assert_called_once_with()
+from ska_tmc_sdpsubarrayleafnode.commands.off_command import Off
+from tests.settings import (
+    SDP_SUBARRAY_DEVICE_LOW,
+    SDP_SUBARRAY_DEVICE_MID,
+    create_cm,
+    logger,
+)
 
 
-# @pytest.mark.sdpsln
-# @pytest.mark.parametrize(
-#     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
-# )
-# def test_off_command_fail_sdp_subarray(tango_context, devices):
-#     logger.info("%s", tango_context)
-#     cm, start_time = create_cm("SdpSLNComponentManager", devices)
-#     adapter_factory = HelperAdapterFactory()
+@pytest.mark.sdpsln
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
+def test_mid_off(tango_context, devices, task_callback):
+    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    assert cm.is_command_allowed("off")
 
-#     # include exception in TelescopeOff command
-#     adapter_factory.get_or_create_adapter(
-#         devices, attrs={"Off.side_effect": Exception}
-#     )
+    cm.off(task_callback=task_callback)
+    task_callback.assert_against_call(
+        call_kwargs={"status": TaskStatus.QUEUED}
+    )
+    task_callback.assert_against_call(
+        call_kwargs={"status": TaskStatus.IN_PROGRESS}
+    )
+    task_callback.assert_against_call(
+        call_kwargs={"status": TaskStatus.COMPLETED, "result": ResultCode.OK}
+    )
 
-#     off_command = Off(cm, cm.op_state_model, adapter_factory)
-#     assert off_command.check_allowed()
-#     (result_code, message) = off_command.do()
-#     assert result_code == ResultCode.FAILED
-#     assert devices in message
+
+@pytest.mark.sdpsln
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
+def test_command_off_not_allowed(tango_context, devices):
+    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm.op_state_model._op_state = DevState.FAULT
+    with pytest.raises(CommandNotAllowed):
+        cm.is_command_allowed("off")
 
 
-# @pytest.mark.sdpsln
-# @pytest.mark.parametrize(
-#     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
-# )
-# def test_off_fail_check_allowed(tango_context, devices):
-#     logger.info("%s", tango_context)
-#     cm, off_command, _ = get_sdpsln_command_obj(Off, devices, None)
-#     devInfo = cm.get_device()
-#     devInfo.update_unresponsive(True)
-#     with pytest.raises(DeviceUnresponsive):
-#         off_command.check_allowed()
+@pytest.mark.sdpsln
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
+def test_command_off_with_failed_sdp_subarray(
+    tango_context, devices, task_callback
+):
+    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    adapter_factory = HelperAdapterFactory()
+    failing_dev = devices
+
+    # include exception in Off command
+    attrs = {"Off.side_effect": Exception}
+
+    sdp_subarray_mock = mock.Mock(**attrs)
+    adapter_factory.get_or_create_adapter(
+        failing_dev, AdapterType.SUBARRAY, proxy=sdp_subarray_mock
+    )
+    off_command = Off(cm, logger)
+    off_command.adapter_factory = adapter_factory
+    assert cm.is_command_allowed("off")
+    off_command.off(logger, task_callback=task_callback)
+    task_callback.assert_against_call(
+        call_kwargs={"status": TaskStatus.IN_PROGRESS}
+    )
+    task_callback.assert_against_call(
+        status=TaskStatus.COMPLETED, result=ResultCode.FAILED
+    )
+
+
+@pytest.mark.sdpsln
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
+def test_off_command_is_allowed_device_unresponsive(tango_context, devices):
+    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm._device = DeviceInfo(devices, _unresponsive=True)
+    pytest.raises(DeviceUnresponsive)

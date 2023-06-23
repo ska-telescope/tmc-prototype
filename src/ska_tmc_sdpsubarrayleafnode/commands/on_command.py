@@ -35,17 +35,20 @@ class On(SdpSLNCommand):
         :type task_abort_event: Event, optional
         """
         task_callback(status=TaskStatus.IN_PROGRESS)
+        exception = ""
         result_code, message = self.do()
-        logger.info(message)
+        logger.info(
+            "On command invoked on: %s: Result: %s, %s",
+            self.sdp_subarray_adapter.dev_name,
+            result_code,
+            message,
+        )
         if result_code == ResultCode.FAILED:
+            exception = message
             task_callback(
                 status=TaskStatus.COMPLETED,
                 result=ResultCode.FAILED,
-                exception=message,
-            )
-            logger.info(
-                "The On command is failed on %s",
-                self.sdp_subarray_adapter.dev_name,
+                exception=exception,
             )
         else:
             logger.info(
