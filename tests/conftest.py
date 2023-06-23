@@ -7,8 +7,6 @@ from os.path import dirname, join
 import pytest
 import tango
 from ska_tango_testing.mock import MockCallable
-
-# from ska_tango_testing.mock.tango import MockTangoEventCallbackGroup
 from ska_tango_testing.mock.tango import MockTangoEventCallbackGroup
 from ska_tmc_common.dev_factory import DevFactory
 from ska_tmc_common.test_helpers.helper_base_device import HelperBaseDevice
@@ -106,8 +104,6 @@ def tango_context(devices_to_load, request):
 
 
 # pylint: enable=redefined-outer-name
-
-
 # @pytest.fixture
 # def sdpsln_device(request):
 #     """Create DeviceProxy for tests"""
@@ -142,6 +138,16 @@ def get_input_str(path):
 
 
 @pytest.fixture
+def task_callback() -> MockCallable:
+    """Creates a mock callable for asynchronous testing
+
+    :rtype: MockCallable
+    """
+    task_callback = MockCallable(5)  # pylint:disable=redefined-outer-name
+    return task_callback
+
+
+@pytest.fixture
 def json_factory():
     """
     Json factory for getting json files
@@ -164,20 +170,10 @@ def change_event_callbacks() -> MockTangoEventCallbackGroup:
     """
     return MockTangoEventCallbackGroup(
         "longRunningCommandResult",
+        "longRunningCommandsInQueue",
         "sdpSubarrayObsState",
         timeout=30.0,
     )
-
-
-# pylint: disable= redefined-outer-name
-@pytest.fixture
-def task_callback() -> MockCallable:
-    """Creates a mock callable for asynchronous testing
-
-    :rtype: MockCallable
-    """
-    task_callback = MockCallable(5)
-    return task_callback
 
 
 # pylint: disable= redefined-outer-name

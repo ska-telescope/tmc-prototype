@@ -7,19 +7,18 @@ It is provided for explanatory purposes, and to support testing of this
 package.
 """
 import time
+from typing import Tuple
 
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
-
-# from ska_tmc_common.command_executor import CommandExecutor
+from ska_tango_base.executor import TaskStatus
 from ska_tmc_common.device_info import SubArrayDeviceInfo
+from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
 from ska_tmc_common.lrcr_callback import LRCRCallback
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
+from tango import DevState
 
-from ska_tmc_sdpsubarrayleafnode.liveliness_probe import (
-    LivelinessProbeType,
-    SingleDeviceLivelinessProbe,
-)
+from ska_tmc_sdpsubarrayleafnode.commands.on_command import On
 from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
     SdpSLNEventReceiver,
 )
@@ -38,14 +37,13 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
     def __init__(
         self,
         sdp_subarray_dev_name,
-        op_state_model,
         logger=None,
-        _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
-        _update_device_callback=None,
+        communication_state_callback=None,
+        component_state_callback=None,
+        _liveliness_probe=None,
+        _event_receiver=True,
         _update_sdp_subarray_obs_state_callback=None,
         _update_lrcr_callback=None,
-        monitoring_loop=False,
-        event_receiver=True,
         max_workers=5,
         proxy_timeout=500,
         sleep_time=1,
@@ -62,18 +60,23 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :param _component: allows setting of the component to be
             managed; for testing purposes only
         """
+        self._device = None
+        self.update_availablity_callback = _update_availablity_callback
         super().__init__(
-            op_state_model,
             logger,
-            monitoring_loop,
-            event_receiver,
-            max_workers,
-            proxy_timeout,
-            sleep_time,
+            _liveliness_probe=_liveliness_probe,
+            _event_receiver=False,
+            communication_state_callback=communication_state_callback,
+            component_state_callback=component_state_callback,
+            max_workers=max_workers,
+            proxy_timeout=proxy_timeout,
+            sleep_time=sleep_time,
         )
 
-        self.update_device_info(sdp_subarray_dev_name)
-        if event_receiver:
+        self._sdp_subarray_dev_name = sdp_subarray_dev_name
+        self._device = SubArrayDeviceInfo(self._sdp_subarray_dev_name, False)
+
+        if _event_receiver:
             self.event_receiver = SdpSLNEventReceiver(
                 self,
                 logger,
@@ -81,19 +84,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 sleep_time=sleep_time,
             )
             self.event_receiver.start()
-
-        self.timeout = timeout
         self._update_availablity_callback = _update_availablity_callback
-
-        self.liveliness_probe = SingleDeviceLivelinessProbe(
-            self,
-            logger=self.logger,
-            proxy_timeout=500,
-            sleep_time=1,
-        )
+        self.timeout = timeout
         self.command_timeout = command_timeout
         self.assign_id = None
-        # pylint: enable=line-too-long
         self.long_running_result_callback = LRCRCallback(self.logger)
         self._update_sdp_subarray_obs_state_callback = (
             _update_sdp_subarray_obs_state_callback
@@ -101,8 +95,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
         self.update_lrcr_callback = _update_lrcr_callback
         self._lrc_result = ("", "")
-
-        self.start_liveliness_probe(LivelinessProbeType.SINGLE_DEVICE)
+        self.on_command = On(self, self.logger)
 
     def stop(self):
         """
@@ -121,32 +114,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :rtype: DeviceInfo
         """
         return self._device
-
-    def start_liveliness_probe(self, lp: LivelinessProbeType) -> None:
-        """Starts Liveliness Probe for the given device.
-
-        :param lp: enum of class LivelinessProbeType
-        """
-        try:
-            if lp == LivelinessProbeType.SINGLE_DEVICE:
-                self.liveliness_probe.start()
-            else:
-                self.logger.warning("Liveliness Probe is not running")
-        except Exception as e:
-            self.logger.error(
-                f"An error occurred during\
-                    Liveliness Probe start: {str(e)}"
-            )
-
-    def stop_liveliness_probe(self) -> None:
-        """Stops the liveliness probe"""
-        if self.liveliness_probe:
-            self.liveliness_probe.stop()
-
-    def update_device_info(self, sdp_subarray_dev_name):
-        """Updates the device info"""
-        self._sdp_subarray_dev_name = sdp_subarray_dev_name
-        self._device = SubArrayDeviceInfo(self._sdp_subarray_dev_name, False)
 
     def update_input_parameter(self):
         """Update input parameter"""
@@ -197,7 +164,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             if self._update_availablity_callback is not None:
                 self._update_availablity_callback(False)
 
-    def update_ping_info(self, ping: int) -> None:
+    def update_ping_info(self, ping: int, dev_name: str) -> None:
         """
         Update a device with the correct ping information.
 
@@ -209,7 +176,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         with self.lock:
             self._device.ping = ping
             self._device.update_unresponsive(False)
-            if self._update_availablity_callback:
+            if self._update_availablity_callback is not None:
                 self._update_availablity_callback(True)
 
     def get_obs_state(self) -> ObsState:
@@ -264,8 +231,48 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         if self.update_lrcr_callback is not None:
             self.update_lrcr_callback(self._lrc_result)
 
-    def add_to_queue(self, handler, argin=None):
-        """This methods add command to queue"""
-        unique_id = self.command_executor.enqueue_command(handler, argin)
-        self.assign_id = unique_id
-        return unique_id
+    def _check_if_sdp_sa_is_responsive(self) -> None:
+        """Checks if SdpSubarray device is responsive."""
+        if self._device is None or self._device.unresponsive:
+            raise DeviceUnresponsive(f"{self._device} not available")
+
+    def is_command_allowed(self, command_name: str):
+        """
+        Checks whether this command is allowed
+        It checks that the device is in the right state
+        to execute this command and that all the
+        component needed for the operation are not unresponsive
+
+        :return: True if this command is allowed
+
+        :rtype: boolean
+
+        """
+        if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
+            raise CommandNotAllowed(
+                "The invocation of the {} command on this device".format(
+                    __class__
+                )
+                + "is not allowed."
+                + "Reason: The current operational state is"
+                + "{}".format(self.op_state_model.op_state)
+                + "The command has NOT been executed."
+                + "This device will continue with normal operation."
+            )
+
+        self._check_if_sdp_sa_is_responsive()
+
+        return True
+
+    def on(self, task_callback=None) -> Tuple[TaskStatus, str]:
+        """Submits the On command for execution.
+
+        :rtype: tuple
+        """
+        task_status, response = self.submit_task(
+            self.on_command.on,
+            args=[self.logger],
+            task_callback=task_callback,
+        )
+        self.logger.info("On command queued for execution")
+        return task_status, response

@@ -68,7 +68,6 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         self.timeout = timeout
         self.update_availablity_callback = _update_availablity_callback
         self.on_command = On(self, logger)
-
         self.off_command = Off(self, logger)
         self.standby_command = Standby(self, logger)
         self.disable_command = Disable(self, logger)
