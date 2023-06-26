@@ -28,7 +28,6 @@ def get_assign_input_str(assign_input_file="command_AssignResources.json"):
     return assign_input_str
 
 
-@pytest.mark.assigntest
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
@@ -53,7 +52,6 @@ def test_telescope_assign_resources_command(
     )
 
 
-@pytest.mark.assigntest
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
@@ -83,59 +81,29 @@ def test_assign_resources_command_fail_subarray(
     )
 
 
-# @pytest.mark.sdpsln
-# @pytest.mark.parametrize(
-#     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
-# )
-# def test_assign_resources_command_empty_input_json(
-#     tango_context, devices, task_callback
-# ):
-#     logger.info("%s", tango_context)
-#     cm, _ = create_cm("SdpSLNComponentManager", devices)
-#     assign_input_str = get_assign_input_str(
-#         assign_input_file="empty_AssignResource.json"
-#     )
-#     cm.submit_assign_resources(assign_input_str, task_callback=task_callback)
-#     task_callback.assert_against_call(
-#         call_kwargs={"status": TaskStatus.QUEUED}
-#     )
-#     task_callback.assert_against_call(
-#         call_kwargs={"status": TaskStatus.IN_PROGRESS}
-#     )
-#     task_callback.assert_against_call(
-#         status=TaskStatus.COMPLETED, result=ResultCode.FAILED
-#     )
+@pytest.mark.test
+@pytest.mark.sdpsln
+@pytest.mark.parametrize(
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+)
+def test_assign_resources_command_empty_input_json(
+    tango_context, devices, task_callback
+):
+    logger.info("%s", tango_context)
+    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    assign_input_str = ""
+    cm.submit_assign_resources(assign_input_str, task_callback=task_callback)
+    task_callback.assert_against_call(
+        call_kwargs={"status": TaskStatus.QUEUED}
+    )
+    task_callback.assert_against_call(
+        call_kwargs={"status": TaskStatus.IN_PROGRESS}
+    )
+    task_callback.assert_against_call(
+        status=TaskStatus.COMPLETED, result=ResultCode.FAILED
+    )
 
 
-# @pytest.mark.sdpsln
-# @pytest.mark.parametrize(
-#     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
-# )
-# def test_assign_resources_command_missing_scan_types(
-#     tango_context, devices, task_callback, caplog
-# ):
-#     logger.info("%s", tango_context)
-#     cm, _ = create_cm("SdpSLNComponentManager", devices)
-#     scan_types_key = "scan_types"
-#     assign_input_str = get_assign_input_str()
-#     json_argument = json.loads(assign_input_str)
-#     del json_argument["execution_block"]["scan_types"]
-#     json_argument = json.dumps(json_argument)
-#     cm.submit_assign_resources(json_argument, task_callback=task_callback)
-#     caplog.set_level(logging.DEBUG, logger="ska_tango_testing.mock")
-
-#     task_callback.assert_against_call(
-#         call_kwargs={"status": TaskStatus.QUEUED}
-#     )
-#     task_callback.assert_against_call(
-#         call_kwargs={"status": TaskStatus.IN_PROGRESS}
-#     )
-#     task_callback.assert_against_call(
-#         status=TaskStatus.COMPLETED, result=ResultCode.FAILED
-#     )
-
-
-@pytest.mark.assigntest
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
@@ -151,7 +119,6 @@ def test_assign_resources_command_fail_check_allowed_with_invalid_obsState(
         cm.is_command_allowed("AssignResources")
 
 
-@pytest.mark.assigntest
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]

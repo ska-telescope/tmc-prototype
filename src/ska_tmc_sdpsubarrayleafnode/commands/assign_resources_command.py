@@ -164,12 +164,9 @@ class AssignResources(SdpSLNCommand):
                 + "The device will continue with normal operation"
             )
             self.logger.exception(log_msg)
-            return self.generate_command_result(
+            return (
                 ResultCode.FAILED,
-                (
-                    """Exception occurred while parsing the JSON.
-                    Please check the logs for details."""
-                ),
+                "Exception occurred while parsing the JSON. Please check the logs for details.",
             )
 
         try:

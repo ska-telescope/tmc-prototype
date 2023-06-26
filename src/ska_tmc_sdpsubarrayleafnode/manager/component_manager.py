@@ -255,7 +255,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
     def raise_invalid_obsstate_error(self, command_name: str):
         """
-        checking the InvalidObsState of Csp Subarray device
+        checking the InvalidObsState of SdpSubarray device
         :param command_name: The name of command
         :type command_name: str
         """
@@ -295,6 +295,14 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             )
 
         self._check_if_sdp_sa_is_responsive()
+
+        if command_name in ["AssignResources", "ReleaseAllResources"]:
+            # Checking obsState of Sdp Subarray device
+            if self.get_device().obs_state not in [
+                ObsState.IDLE,
+                ObsState.EMPTY,
+            ]:
+                self.raise_invalid_obsstate_error(command_name)
 
         return True
 
