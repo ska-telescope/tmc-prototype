@@ -186,7 +186,7 @@ class AssignResources(SdpSLNCommand):
             )
 
         except (AttributeError, ValueError, TypeError, DevFailed) as e:
-            self.logger.exception("Command invocation failed: %s", e)
+            self.logger.exception("AssignResources Command failed: %s", e)
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
                 "The invocation of the AssignResources command is failed on"

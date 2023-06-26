@@ -107,8 +107,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.update_lrcr_callback = _update_lrcr_callback
         self._lrc_result = ("", "")
         self.on_command = On(self, self.logger)
-        self.release_command = ReleaseAllResources(self, self.logger)
-        self.assign_command = AssignResources(self, self.logger)
         self.off_command = Off(self, self.logger)
 
     def stop(self):
@@ -310,35 +308,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
         return True
 
-    def on(self, task_callback=None) -> Tuple[TaskStatus, str]:
-        """Submits the On command for execution.
-
-        :rtype: tuple
-        """
-        task_status, response = self.submit_task(
-            self.on_command.on,
-            args=[self.logger],
-            task_callback=task_callback,
-        )
-        self.logger.info("On command queued for execution")
-        return task_status, response
-
-    def assign_resources(
-        self, argin: str, task_callback: Optional[Callable] = None
-    ) -> tuple:
-        """
-        Submit the AssignResources command in queue.
-
-        :return: a result code and message
-        """
-        self.assign_id = f"{time.time()}-{AssignResources.__name__}"
-        task_status, response = self.submit_task(
-            self.assign_command.assign_resources,
-            args=[argin],
-            task_callback=task_callback,
-        )
-        return task_status, response
-
     def cmd_ended_cb(self, event):
         """
         Callback function immediately executed when the asynchronous invoked
@@ -371,6 +340,36 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             log_message = f"Command {event.cmd_name} invoked successfully."
             self.logger.info(log_message)
 
+    def on(self, task_callback=None) -> Tuple[TaskStatus, str]:
+        """Submits the On command for execution.
+
+        :rtype: tuple
+        """
+        task_status, response = self.submit_task(
+            self.on_command.on,
+            args=[self.logger],
+            task_callback=task_callback,
+        )
+        self.logger.info("On command queued for execution")
+        return task_status, response
+
+    def assign_resources(
+        self, argin: str, task_callback: Optional[Callable] = None
+    ) -> tuple:
+        """
+        Submit the AssignResources command in queue.
+
+        :return: a result code and message
+        """
+        assign_resources_command = AssignResources(self, self.logger)
+        self.assign_id = f"{time.time()}-{AssignResources.__name__}"
+        task_status, response = self.submit_task(
+            assign_resources_command.assign_resources,
+            args=[argin],
+            task_callback=task_callback,
+        )
+        return task_status, response
+
     def off(self, task_callback=None) -> Tuple[TaskStatus, str]:
         """Submits the Off command for execution.
 
@@ -391,8 +390,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
         :rtype: tuple
         """
+        release_command = ReleaseAllResources(self, self.logger)
         task_status, response = self.submit_task(
-            self.release_command.release_resources,
+            release_command.release_resources,
             args=[self.logger],
             task_callback=task_callback,
         )

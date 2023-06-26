@@ -20,9 +20,6 @@ def release_resources(
         tango.EventType.CHANGE_EVENT,
         change_event_callbacks["longRunningCommandsInQueue"],
     )
-    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        None,
-    )
 
     sdp_subarray_ln_proxy.subscribe_event(
         "longRunningCommandResult",
@@ -30,7 +27,11 @@ def release_resources(
         change_event_callbacks["longRunningCommandResult"],
     )
 
+    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
+        None,
+    )
     result, unique_id = sdp_subarray_ln_proxy.On()
+    logger.info(f"Command ID: {unique_id} Returned result: {result}")
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
         ("On",),
     )
@@ -68,7 +69,7 @@ def release_resources(
     #     lookahead=6,
     # )
 
-    result, unique_id = sdp_subarray_ln_proxy.ReleaseResources()
+    result, unique_id = sdp_subarray_ln_proxy.ReleaseAllResources()
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
         (
             "On",
@@ -110,7 +111,7 @@ def release_resources(
     tear_down(dev_factory, sdp_subarray)
 
 
-@pytest.mark.test1
+@pytest.mark.rel_1
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(
@@ -135,13 +136,10 @@ def test_release_res_command_mid(
     "device",
     [("low-sdp/subarray/01")],
 )
-def test_release_res_command_low(
-    tango_context, device, json_factory, change_event_callbacks
-):
+def test_release_res_command_low(tango_context, device, json_factory):
     return release_resources(
         tango_context,
         "ska_low/tm_leaf_node/sdp_subarray01",
         device,
         json_factory,
-        change_event_callbacks,
     )
