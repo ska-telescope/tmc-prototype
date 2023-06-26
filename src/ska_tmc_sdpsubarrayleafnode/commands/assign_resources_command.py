@@ -31,7 +31,7 @@ class AssignResources(SdpSLNCommand):
     ):
         super().__init__(component_manager, logger)
         self.component_manager = component_manager
-        self.timeout_id = f"{time.time()}_{__class__.__name__}"
+        self.timeout_id = f"{time.time()}_{AssignResources.__name__}"
         self.timeout_callback = TimeoutCallback(self.timeout_id, self.logger)
         self.task_callback: Callable
 
@@ -186,7 +186,7 @@ class AssignResources(SdpSLNCommand):
             )
 
         except (AttributeError, ValueError, TypeError, DevFailed) as e:
-            self.logger.exception("Command invocation failed: %s", e)
+            self.logger.exception("AssignResources Command failed: %s", e)
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
                 "The invocation of the AssignResources command is failed on"
