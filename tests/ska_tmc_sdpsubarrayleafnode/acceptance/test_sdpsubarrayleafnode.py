@@ -6,10 +6,10 @@ from ska_tango_base.commands import ResultCode
 from ska_tmc_common.dev_factory import DevFactory
 from tango import Database, DeviceProxy
 
-from ska_tmc_sdpsubarrayleafnode.integration.common import (
+from tests.settings import event_remover, logger
+from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
     wait_for_final_sdp_subarray_obsstate,
 )
-from tests.settings import event_remover, logger
 
 
 @given(
