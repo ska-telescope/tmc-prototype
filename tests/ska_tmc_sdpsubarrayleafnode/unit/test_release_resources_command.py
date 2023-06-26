@@ -73,6 +73,7 @@ def test_telescope_release_resources_command_fail_subarray(
     )
 
 
+@pytest.mark.test1
 @pytest.mark.releasetest
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(

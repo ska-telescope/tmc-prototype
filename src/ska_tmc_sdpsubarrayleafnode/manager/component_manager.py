@@ -1,4 +1,4 @@
-# pylint: disable=no-member
+# pylint: disable=no-member, arguments-renamed, arguments-differ
 # pylint: disable=abstract-method
 """
 This module provided a reference implementation of a BaseComponentManager.
@@ -22,6 +22,7 @@ from ska_tmc_common.lrcr_callback import LRCRCallback
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
 from tango import DevState
 
+from ska_tmc_sdpsubarrayleafnode.commands.off_command import Off
 from ska_tmc_sdpsubarrayleafnode.commands.on_command import On
 from ska_tmc_sdpsubarrayleafnode.commands.release_resources_command import (
     ReleaseAllResources,
@@ -91,13 +92,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 sleep_time=sleep_time,
             )
             self.event_receiver.start()
-
+        self._update_availablity_callback = _update_availablity_callback
         self.timeout = timeout
-
-        self.liveliness_probe = _liveliness_probe
         self.command_timeout = command_timeout
         self.assign_id = None
-        # pylint: enable=line-too-long
         self.long_running_result_callback = LRCRCallback(self.logger)
         self._update_sdp_subarray_obs_state_callback = (
             _update_sdp_subarray_obs_state_callback
@@ -107,9 +105,13 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self._lrc_result = ("", "")
         self.on_command = On(self, self.logger)
         self.release_command = ReleaseAllResources(self, self.logger)
+        self.off_command = Off(self, self.logger)
 
     def stop(self):
-        """Method to stop the liveliness probe."""
+        """
+        Method used to Stop the liveliness probe and event receiver
+        for given devices.
+        """
         self.stop_liveliness_probe()
         self._event_receiver.stop()
 
@@ -169,8 +171,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         device_info.update_unresponsive(True, exception)
 
         with self.lock:
-            if self.update_availablity_callback is not None:
-                self.update_availablity_callback(False)
+            if self._update_availablity_callback is not None:
+                self._update_availablity_callback(False)
 
     def update_ping_info(self, ping: int, dev_name: str) -> None:
         """
@@ -184,11 +186,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         with self.lock:
             self._device.ping = ping
             self._device.update_unresponsive(False)
-            if self.update_availablity_callback is not None:
-                self.logger.info(
-                    "Calling update_availablity_callback from update_ping_info"
-                )
-                self.update_availablity_callback(True)
+            if self._update_availablity_callback is not None:
+                self._update_availablity_callback(True)
 
     def get_obs_state(self) -> ObsState:
         """
@@ -296,7 +295,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             )
 
         self._check_if_sdp_sa_is_responsive()
-        self.logger.debug(f"Checking is command allowed for {command_name}")
 
         if command_name in ["AssignResources", "ReleaseAllResources"]:
             # Checking obsState of Csp Subarray device
@@ -304,7 +302,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 ObsState.IDLE,
                 ObsState.EMPTY,
             ]:
-
                 self.raise_invalid_obsstate_error(command_name)
 
         elif command_name in ["Configure", "End"]:
@@ -356,6 +353,19 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             task_callback=task_callback,
         )
         self.logger.info("On command queued for execution")
+        return task_status, response
+
+    def off(self, task_callback=None) -> Tuple[TaskStatus, str]:
+        """Submits the Off command for execution.
+
+        :rtype: tuple
+        """
+        task_status, response = self.submit_task(
+            self.off_command.off,
+            args=[self.logger],
+            task_callback=task_callback,
+        )
+        self.logger.info("Off command queued for execution")
         return task_status, response
 
     def submit_release_resource(
