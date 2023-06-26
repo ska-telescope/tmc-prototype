@@ -319,7 +319,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.logger.info("On command queued for execution")
         return task_status, response
 
-    def submit_assign_resources(
+    def assign_resources(
         self, argin: str, task_callback: Optional[Callable] = None
     ) -> tuple:
         """

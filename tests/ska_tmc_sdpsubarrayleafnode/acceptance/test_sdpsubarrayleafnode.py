@@ -1,10 +1,15 @@
 import pytest
 import tango
 from pytest_bdd import given, parsers, scenarios, then, when
+from ska_control_model import HealthState, ObsState
 from ska_tango_base.commands import ResultCode
+from ska_tmc_common.dev_factory import DevFactory
 from tango import Database, DeviceProxy
 
-from tests.settings import event_remover
+from ska_tmc_sdpsubarrayleafnode.integration.common import (
+    wait_for_final_sdp_subarray_obsstate,
+)
+from tests.settings import event_remover, logger
 
 
 @given(
@@ -30,11 +35,22 @@ def sdpsubarrayleaf_node():
 
 
 @when(parsers.parse("I call the command {command_name}"))
-def call_command(sdpsubarrayleaf_node, command_name):
+def call_command(
+    sdpsubarrayleaf_node, command_name: str, json_factory
+) -> None:
     try:
-        pytest.command_result = sdpsubarrayleaf_node.command_inout(
-            command_name
-        )
+        if command_name == "AssignResources":
+            logger.info(
+                f"cspsubarrayleaf_node: {sdpsubarrayleaf_node.dev_name()}"
+            )
+            assign_res_string = json_factory("command_AssignResources")
+            pytest.command_result = sdpsubarrayleaf_node.command_inout(
+                command_name, assign_res_string
+            )
+        else:
+            pytest.command_result = sdpsubarrayleaf_node.command_inout(
+                command_name
+            )
     except Exception as ex:
         assert "DeviceUnresponsive" in str(ex)
         pytest.command_result = "DeviceUnresponsive"
@@ -45,42 +61,56 @@ def call_command(sdpsubarrayleaf_node, command_name):
         "the command is queued and executed in less than {seconds} ss"
     )
 )
-def check_command(sdpsubarrayleaf_node, group_callback):
+def check_command(
+    sdpsubarrayleaf_node, command_name: str, change_event_callbacks
+) -> None:
+    dev_factory = DevFactory()
+
+    sdpsubarrayleaf_node_dev = dev_factory.get_device(sdpsubarrayleaf_node)
+    sdp_subarray_leafnode_healthState = (
+        sdpsubarrayleaf_node_dev.read_attribute("healthState").value
+    )
+    logger.info(
+        "Current SdpSubarray leaf node healthstate is {}".format(
+            sdp_subarray_leafnode_healthState
+        )
+    )
+    assert sdp_subarray_leafnode_healthState == HealthState.OK
+
     if pytest.command_result == "CommandNotAllowed":
         return
 
     assert pytest.command_result[0][0] == ResultCode.QUEUED
     unique_id = pytest.command_result[1][0]
-    sdpsubarrayleaf_node.subscribe_event(
-        "longRunningCommandIDsInQueue",
-        tango.EventType.CHANGE_EVENT,
-        group_callback["longRunningCommandIDsInQueue"],
-    )
-    sdpsubarrayleaf_node.subscribe_event(
-        "longRunningCommandsInQueue",
-        tango.EventType.CHANGE_EVENT,
-        group_callback["longRunningCommandsInQueue"],
-    )
+
+    assert unique_id.endswith(str(command_name))
     sdpsubarrayleaf_node.subscribe_event(
         "longRunningCommandResult",
         tango.EventType.CHANGE_EVENT,
-        group_callback["longRunningCommandResult"],
-    )
-    group_callback["longRunningCommandIDsInQueue"].assert_change_event(
-        (str(unique_id),),
+        change_event_callbacks["longRunningCommandResult"],
     )
 
-    group_callback["longRunningCommandResult"].assert_change_event(
-        (unique_id, str(int(ResultCode.OK))), lookahead=2
+    if command_name == "AssignResources":
+        wait_for_final_sdp_subarray_obsstate(
+            sdpsubarrayleaf_node_dev, ObsState.IDLE
+        )
+
+    sdpsubarrayleaf_node.subscribe_event(
+        "longRunningCommandResult",
+        tango.EventType.CHANGE_EVENT,
+        change_event_callbacks["longRunningCommandResult"],
     )
 
-    group_callback["longRunningCommandsInQueue"].assert_change_event(
-        None,
-        lookahead=2,
+    change_event_callbacks["longRunningCommandResult"].assert_change_event(
+        (unique_id, str(ResultCode.OK.value)),
+        lookahead=4,
     )
+
     event_remover(
-        group_callback,
-        ["longRunningCommandResult", "longRunningCommandsInQueue"],
+        change_event_callbacks,
+        [
+            "longRunningCommandResult",
+        ],
     )
 
 

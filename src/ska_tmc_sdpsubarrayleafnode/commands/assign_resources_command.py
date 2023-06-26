@@ -151,9 +151,9 @@ class AssignResources(SdpSLNCommand):
             None
         """
         # pylint: enable=line-too-long
-        ret_code, message = self.init_adapter()
-        if ret_code == ResultCode.FAILED:
-            return ret_code, message
+        result_code, message = self.init_adapter()
+        if result_code == ResultCode.FAILED:
+            return result_code, message
         try:
             json_argument = json.loads(argin)
         except JSONDecodeError as e:
@@ -174,8 +174,8 @@ class AssignResources(SdpSLNCommand):
                 "interface"
             ] = "https://schema.skao.int/ska-sdp-assignres/0.4"
             log_msg = (
-                "Input JSON for AssignResources command for SDP"
-                + "subarray {}: {}".format(
+                "Input JSON for AssignResources command for "
+                "{}: {}".format(
                     self.sdp_subarray_adapter.dev_name, json_argument
                 )
             )

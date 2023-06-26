@@ -12,6 +12,7 @@ Feature: SdpSubarrayLeafNode acceptance
 		| command_name		   |
 		| On                   |
 		| Off				   |
+		| AssignResources      |
 
 	#Check SdpSubarrayLeafNode node correctly report failed and working devices defined within its scope of monitoring (internal model)
 	@XTP-4911 @post_deployment @acceptance @SKA_mid @SKA_low
