@@ -39,7 +39,7 @@ def test_telescope_assign_resources_command(
     cm, _ = create_cm("SdpSLNComponentManager", devices)
     assert cm.is_command_allowed("AssignResources")
     assign_input_str = get_assign_input_str()
-    cm.submit_assign_resources(assign_input_str, task_callback=task_callback)
+    cm.assign_resources(assign_input_str, task_callback=task_callback)
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.QUEUED}
     )
@@ -81,7 +81,6 @@ def test_assign_resources_command_fail_subarray(
     )
 
 
-@pytest.mark.test
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
@@ -92,7 +91,7 @@ def test_assign_resources_command_empty_input_json(
     logger.info("%s", tango_context)
     cm, _ = create_cm("SdpSLNComponentManager", devices)
     assign_input_str = ""
-    cm.submit_assign_resources(assign_input_str, task_callback=task_callback)
+    cm.assign_resources(assign_input_str, task_callback=task_callback)
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.QUEUED}
     )
