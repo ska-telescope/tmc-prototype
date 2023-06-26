@@ -34,8 +34,8 @@ SDP_MASTER_LEAF_DEVICE_LOW = "ska_low/tm_leaf_node/sdp_master"
 def count_faulty_devices(cm):
     """Count faulty devices"""
     result = 0
-    for devInfo in cm.checked_devices:
-        if devInfo.unresponsive:
+    for dev_info in cm.checked_devices:
+        if dev_info.unresponsive:
             result += 1
     return result
 

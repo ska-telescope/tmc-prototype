@@ -199,4 +199,4 @@ class AssignResources(SdpSLNCommand):
                 + "This device will continue with normal operation.",
             )
 
-        return (ResultCode.OK, "")  # ResultCode OK or STARTED ?
+        return (ResultCode.OK, "")
