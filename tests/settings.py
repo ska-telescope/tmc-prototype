@@ -45,8 +45,7 @@ def create_cm(cm_class, device):
     if cm_class == "SdpMLNComponentManager":
         cm = SdpMLNComponentManager(
             device,
-            logger,
-            _liveliness_probe=LivelinessProbeType.NONE,
+            logger=logger,
         )
     elif cm_class == "SdpSLNComponentManager":
         cm = SdpSLNComponentManager(

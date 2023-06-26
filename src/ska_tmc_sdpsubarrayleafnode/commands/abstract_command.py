@@ -59,7 +59,7 @@ class SdpSLNCommand(TmcLeafNodeCommand):
                 get_adapter = self.adapter_factory.get_or_create_adapter
                 self.sdp_subarray_adapter = get_adapter(
                     device,
-                    AdapterType.SUBARRAY,
+                    AdapterType.SDPSUBARRAY,
                 )
             except ConnectionFailed as cf:
                 elapsed_time = time.time() - start_time

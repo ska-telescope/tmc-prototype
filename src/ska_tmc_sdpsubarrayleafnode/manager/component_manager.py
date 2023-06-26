@@ -7,7 +7,7 @@ It is provided for explanatory purposes, and to support testing of this
 package.
 """
 import time
-from typing import Tuple
+from typing import Callable, Optional, Tuple
 
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
@@ -22,6 +22,9 @@ from ska_tmc_common.lrcr_callback import LRCRCallback
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
 from tango import DevState
 
+from ska_tmc_sdpsubarrayleafnode.commands.assign_resources_command import (
+    AssignResources,
+)
 from ska_tmc_sdpsubarrayleafnode.commands.off_command import Off
 from ska_tmc_sdpsubarrayleafnode.commands.on_command import On
 from ska_tmc_sdpsubarrayleafnode.commands.release_resources_command import (
@@ -105,6 +108,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self._lrc_result = ("", "")
         self.on_command = On(self, self.logger)
         self.release_command = ReleaseAllResources(self, self.logger)
+        self.assign_command = AssignResources(self, self.logger)
         self.off_command = Off(self, self.logger)
 
     def stop(self):
@@ -241,6 +245,11 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         if self.update_lrcr_callback is not None:
             self.update_lrcr_callback(self._lrc_result)
 
+    def _check_if_sdp_sa_is_responsive(self) -> None:
+        """Checks if SdpSubarray device is responsive."""
+        if self._device is None or self._device.unresponsive:
+            raise DeviceUnresponsive(f"{self._device} not available")
+
     def generate_command_result(self, result_code, message):
         """This method is used for generating command result"""
         if result_code == ResultCode.FAILED:
@@ -248,14 +257,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.logger.info(message)
         return result_code, message
 
-    def _check_if_sdp_sa_is_responsive(self) -> None:
-        """Checks if SdpSubarray device is responsive."""
-        if self._device is None or self._device.unresponsive:
-            raise DeviceUnresponsive(f"{self._device} not available")
-
     def raise_invalid_obsstate_error(self, command_name: str):
         """
-        checking the InvalidObsState of Csp Subarray device
+        checking the InvalidObsState of SdpSubarray device
         :param command_name: The name of command
         :type command_name: str
         """
@@ -297,49 +301,13 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self._check_if_sdp_sa_is_responsive()
 
         if command_name in ["AssignResources", "ReleaseAllResources"]:
-            # Checking obsState of Csp Subarray device
+            # Checking obsState of Sdp Subarray device
             if self.get_device().obs_state not in [
                 ObsState.IDLE,
                 ObsState.EMPTY,
             ]:
                 self.raise_invalid_obsstate_error(command_name)
 
-        elif command_name in ["Configure", "End"]:
-            if self.get_device().obs_state not in [
-                ObsState.IDLE,
-                ObsState.READY,
-            ]:
-                self.raise_invalid_obsstate_error(command_name)
-
-        elif command_name == "Scan":
-            if self.get_device().obs_state not in [ObsState.READY]:
-                self.raise_invalid_obsstate_error(command_name)
-
-        elif command_name == "EndScan":
-            if self.get_device().obs_state not in [
-                ObsState.SCANNING,
-            ]:
-                self.raise_invalid_obsstate_error(command_name)
-        elif command_name == "Restart":
-            if self.get_device().obs_state not in [
-                ObsState.FAULT,
-                ObsState.ABORTED,
-            ]:
-                self.raise_invalid_obsstate_error(command_name)
-
-        elif command_name == "Abort":
-            if self.get_device().obs_state not in [
-                ObsState.SCANNING,
-                ObsState.CONFIGURING,
-                ObsState.RESOURCING,
-                ObsState.IDLE,
-                ObsState.READY,
-            ]:
-                self.raise_invalid_obsstate_error(command_name)
-        else:
-            self.logger.info(
-                f"{command_name} is not supported by SdpSubarrayLeafNode."
-            )
         return True
 
     def on(self, task_callback=None) -> Tuple[TaskStatus, str]:
@@ -354,6 +322,54 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         self.logger.info("On command queued for execution")
         return task_status, response
+
+    def assign_resources(
+        self, argin: str, task_callback: Optional[Callable] = None
+    ) -> tuple:
+        """
+        Submit the AssignResources command in queue.
+
+        :return: a result code and message
+        """
+        self.assign_id = f"{time.time()}-{AssignResources.__name__}"
+        task_status, response = self.submit_task(
+            self.assign_command.assign_resources,
+            args=[argin],
+            task_callback=task_callback,
+        )
+        return task_status, response
+
+    def cmd_ended_cb(self, event):
+        """
+        Callback function immediately executed when the asynchronous invoked
+        command returns. Checks whether the command has been successfully
+        invoked on SdpSubarray.
+
+        :param event: a CmdDoneEvent object. This object is used to passdata
+            to the callback method in asynchronous callback model forcommand
+            execution.
+        :type: CmdDoneEvent object
+            It has the following members:
+            - cmd_name   : (str) The command name
+            - argout_raw : (DeviceData) The command argout
+            - argout     : The command argout
+            - err        : (bool) A boolean flag set to True if the command
+                           failed. False otherwise
+            - errors     : (sequence<DevError>) The error stack
+            - ext
+        """
+
+        if event.err:
+            log_message = (
+                f"Error ininvoking command:{event.cmd_name}\n{event.errors}"
+            )
+            self.logger.error(log_message)
+            error = event.errors[0]
+            self.update_command_result(event.cmd_name, error.desc)
+
+        else:
+            log_message = f"Command {event.cmd_name} invoked successfully."
+            self.logger.info(log_message)
 
     def off(self, task_callback=None) -> Tuple[TaskStatus, str]:
         """Submits the Off command for execution.
