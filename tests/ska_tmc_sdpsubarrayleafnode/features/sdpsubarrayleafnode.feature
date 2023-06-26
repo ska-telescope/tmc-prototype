@@ -2,7 +2,7 @@
 Feature: SdpSubarrayLeafNode acceptance
 
 	#Test the ability to generically run a a set of commands and that the execution is completed withing 5 seconds.
-	@XTP-4910 @post_deployment @acceptance @SKA_mid @SKA_low
+	@XTP-4910 @post_deployment @acceptance @SKA_mid @SKA_low @test1
 	Scenario: Ability to run commands on SdpSubarrayLeafNode
 		Given a SdpSubarrayLeafNode device
 		When I call the command <command_name>
@@ -11,8 +11,8 @@ Feature: SdpSubarrayLeafNode acceptance
 		Examples:
 		| command_name		   |
 		| On                   |
-		| Off				   |
 		| AssignResources      |
+		| Off				   |
 
 	#Check SdpSubarrayLeafNode node correctly report failed and working devices defined within its scope of monitoring (internal model)
 	@XTP-4911 @post_deployment @acceptance @SKA_mid @SKA_low
