@@ -83,14 +83,14 @@ def tear_down(dev_factory, sdp_subarray):
 def wait_for_final_sdp_subarray_obsstate(sdp_subarray_leaf_node, obs_state):
     logger.debug(f"Waiting for SdpSubarray obsState to be {obs_state}")
     sdp_subarray_obsstate = sdp_subarray_leaf_node.read_attribute(
-        "sdp_subarray_obs_state"
+        "sdpSubarrayObsState"
     )
     logger.debug(f"SdpSubarray obsState is {sdp_subarray_obsstate}")
     wait_time = 0
     while (sdp_subarray_obsstate.value) != obs_state:
         time.sleep(0.5)
         sdp_subarray_obsstate = sdp_subarray_leaf_node.read_attribute(
-            "sdp_subarray_obs_state"
+            "sdpSubarrayObsState"
         )
         logger.debug(
             f"SppSubarray obsState in loop: {sdp_subarray_obsstate.value}"
