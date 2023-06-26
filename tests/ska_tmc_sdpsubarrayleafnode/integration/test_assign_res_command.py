@@ -4,10 +4,10 @@ from ska_tango_base.commands import ResultCode
 from ska_tmc_common.dev_factory import DevFactory
 
 from tests.conftest import (
-    SDPSUBARRAYLEAFNODE_LOW,
-    SDPSUBARRAYLEAFNODE_MID,
     LOW_SDP_SUBARRAY,
     MID_SDP_SUBARRAY,
+    SDPSUBARRAYLEAFNODE_LOW,
+    SDPSUBARRAYLEAFNODE_MID,
 )
 from tests.settings import event_remover, logger
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
