@@ -39,9 +39,9 @@ class ReleaseAllResources(SdpSLNCommand):
         :type task_abort_event: Event, optional
         """
         task_callback(status=TaskStatus.IN_PROGRESS)
-        ret_code, message = self.do()
+        result_code, message = self.do()
         logger.info(message)
-        if ret_code == ResultCode.FAILED:
+        if result_code == ResultCode.FAILED:
             task_callback(
                 status=TaskStatus.COMPLETED,
                 result=ResultCode.FAILED,
@@ -62,9 +62,9 @@ class ReleaseAllResources(SdpSLNCommand):
         return:
             None
         """
-        ret_code, message = self.init_adapter()
-        if ret_code == ResultCode.FAILED:
-            return ret_code, message
+        result_code, message = self.init_adapter()
+        if result_code == ResultCode.FAILED:
+            return result_code, message
         log_msg = "Invoking ReleaseAllResources command on:" + "{}".format(
             self.sdp_subarray_adapter.dev_name
         )
