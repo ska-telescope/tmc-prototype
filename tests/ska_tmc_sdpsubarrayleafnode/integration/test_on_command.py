@@ -4,18 +4,23 @@ from ska_tango_base.commands import ResultCode
 from ska_tmc_common.dev_factory import DevFactory
 
 from tests.settings import (
+    SDP_SUBARRAY_DEVICE_LOW,
+    SDP_SUBARRAY_DEVICE_MID,
     SDP_SUBARRAY_LEAF_NODE_LOW,
     SDP_SUBARRAY_LEAF_NODE_MID,
     event_remover,
     logger,
 )
+from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
 
 
-def on_command(tango_context, sdpsaln_fqdn, change_event_callbacks):
+def on_command(
+    tango_context, sdpsaln_fqdn, sdpsa_fqdn, change_event_callbacks
+):
     logger.info("%s", tango_context)
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_fqdn)
-
+    sdp_subarray_proxy = dev_factory.get_device(sdpsa_fqdn)
     sdp_subarray_ln_proxy.subscribe_event(
         "longRunningCommandsInQueue",
         tango.EventType.CHANGE_EVENT,
@@ -48,13 +53,17 @@ def on_command(tango_context, sdpsaln_fqdn, change_event_callbacks):
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
+    tear_down(dev_factory, sdp_subarray_proxy)
 
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_on_command_mid(tango_context, change_event_callbacks):
     on_command(
-        tango_context, SDP_SUBARRAY_LEAF_NODE_MID, change_event_callbacks
+        tango_context,
+        SDP_SUBARRAY_LEAF_NODE_MID,
+        SDP_SUBARRAY_DEVICE_MID,
+        change_event_callbacks,
     )
 
 
@@ -62,5 +71,8 @@ def test_on_command_mid(tango_context, change_event_callbacks):
 @pytest.mark.SKA_low
 def test_on_command_low(tango_context, change_event_callbacks):
     on_command(
-        tango_context, SDP_SUBARRAY_LEAF_NODE_LOW, change_event_callbacks
+        tango_context,
+        SDP_SUBARRAY_LEAF_NODE_LOW,
+        SDP_SUBARRAY_DEVICE_LOW,
+        change_event_callbacks,
     )

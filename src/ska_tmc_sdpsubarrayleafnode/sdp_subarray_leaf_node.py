@@ -28,6 +28,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     def init_device(self):
         super().init_device()
         self._sdp_subarray_obs_state = ObsState.EMPTY
+        self._LastDeviceInfoChanged = ""
         self.set_change_event("sdpSubarrayObsState", True)
         self._command_result = ("", "")
         self.set_change_event("longRunningCommandResult", True)
@@ -74,13 +75,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     # General methods
     # ---------------
 
-    # pylint: disable=attribute-defined-outside-init
     def update_device_callback(self, dev_info):
         """Updates device callback info"""
         self._LastDeviceInfoChanged = dev_info.to_json()
         self.push_change_event("lastDeviceInfoChanged", dev_info.to_json())
 
-    # pylint: disable=attribute-defined-outside-init
     def update_sdp_subarray_obs_state_callback(
         self, obs_state: ObsState
     ) -> None:
@@ -129,7 +128,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             )
             device._health_state = HealthState.OK
             device._version_id = release.version
-            device._LastDeviceInfoChanged = ""
             device.set_change_event("healthState", True, False)
             device._isSubsystemAvailable = False
             ApiUtil.instance().set_asynch_cb_sub_model(
@@ -200,6 +198,33 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         return [result_code], [unique_id]
 
+    def is_AssignResources_allowed(self) -> bool:
+        """
+        Checks whether AssignResources command is allowed to be run in \
+        current device state. \
+
+        :return: True if AssignResources command is allowed to be run in \
+        current device state \
+
+        :rtype: boolean
+        """
+        return self.component_manager.is_command_allowed("AssignResources")
+
+    @command(
+        dtype_in="str",
+        doc_in="The string in JSON format",
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
+    @DebugIt()
+    def AssignResources(self, argin: str) -> tuple:
+        """
+        This command invokes the AssignResources() command on Csp Subarray.
+        """
+        handler = self.get_command_object("AssignResources")
+        result_code, unique_id = handler(argin)
+        return ([result_code], [unique_id])
+
     def is_Off_allowed(self):
         """
         Checks whether this command is allowed to be run in current \
@@ -249,8 +274,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         device.
         """
         super().init_command_objects()
-
-        for command_name, method_name in [("On", "on"), ("Off", "off")]:
+        for command_name, method_name in [
+            ("On", "on"),
+            ("Off", "off"),
+            ("AssignResources", "assign_resources"),
+        ]:
             self.register_command_object(
                 command_name,
                 SubmittedSlowCommand(
