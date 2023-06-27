@@ -383,10 +383,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.logger.info("Off command queued for execution")
         return task_status, response
 
-    def submit_release_resource(
+    def release_all_resource(
         self, task_callback=None
     ) -> Tuple[TaskStatus, str]:
-        """Submits the On command for execution.
+        """Submits the ReleaseAllResources command for execution.
 
         :rtype: tuple
         """
@@ -397,7 +397,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             task_callback=task_callback,
         )
         self.logger.info(
-            "TaskStatus: %s and Response: %s of ReleaseResource \
+            "TaskStatus: %s and Response: %s of ReleaseAllResource \
                   command after queued to execution",
             task_status,
             response,

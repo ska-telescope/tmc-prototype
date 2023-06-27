@@ -147,12 +147,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     def read_sdpSubarrayDevName(self):
         """Return the sdpsubarraydevname attribute."""
-        # return self.component_manager.sdp_subarray_dev_name
         return self.component_manager._sdp_subarray_dev_name
 
     def write_sdpSubarrayDevName(self, value):
         """Set the sdpsubarraydevname attribute."""
-        # self.component_manager.sdp_subarray_dev_name = value
         self.component_manager.update_device_info(value)
 
     # ------------------
@@ -248,44 +246,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         return [result_code], [unique_id]
 
-    # def is_AssignResources_allowed(self):
-    #     """
-    #     Checks whether this command is allowed to be run in current device \
-    #     state. \
-
-    #     :return: True if this command is allowed to be run in current device
-    #     state \
-
-    #     :rtype: boolean
-    #     """
-    #     handler = self.get_command_object("AssignResources")
-    #     return handler.check_allowed()
-
-    # @command(
-    #     dtype_in="str",
-    #     doc_in="The string in JSON format",
-    #     dtype_out="DevVarLongStringArray",
-    #     doc_out="information-only string",
-    # )
-    # @DebugIt()
-    # def AssignResources(self, argin):
-    #     """
-    #     This command invokes the AssignResources() command on Sdp Subarray..
-    #     """
-    #     handler = self.get_command_object("AssignResources")
-    #     if self.component_manager.command_executor.queue_full:
-    #         message = """The invocation of the \"AssignResources\"command on
-    #         this device failed.
-    #         Reason: The command executor rejected the queuing of the command
-    #         because its queue is full.
-    #         The \"AssignResources\" command has NOT been queued and will not
-    #         be executed.
-    #         This device will continue with normal operation."""
-
-    #         return [[ResultCode.FAILED], [message]]
-    #     unique_id = self.component_manager.add_to_queue(handler, argin)
-    #     return [[ResultCode.QUEUED], [str(unique_id)]]
-
     def is_ReleaseAllResources_allowed(self):
         """
         Checks whether this command is allowed to be run in current device \
@@ -315,7 +275,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         return [[return_code], [str(unique_id)]]
 
     # default ska mid
-    # pylint: disable=attribute-defined-outside-init, line-too-long
     def create_component_manager(self):
         """Returns Sdp Subarray Leaf Node component manager object"""
         cm = SdpSLNComponentManager(
@@ -347,7 +306,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             ("On", "on"),
             ("Off", "off"),
             ("AssignResources", "assign_resources"),
-            ("ReleaseAllResources", "submit_release_resource"),
+            ("ReleaseAllResources", "release_all_resource"),
         ]:
             self.register_command_object(
                 command_name,

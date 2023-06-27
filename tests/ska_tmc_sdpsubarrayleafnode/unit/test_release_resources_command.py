@@ -29,7 +29,7 @@ def test_telescope_release_resources_command(
     cm, _ = create_cm("SdpSLNComponentManager", devices)
     assert cm.is_command_allowed("ReleaseAllResources")
 
-    cm.submit_release_resource(task_callback=task_callback)
+    cm.release_all_resource(task_callback=task_callback)
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.QUEUED}
     )
@@ -59,7 +59,6 @@ def test_telescope_release_resources_command_fail_subarray(
         AdapterType.SUBARRAY,
         attrs={"ReleaseAllResources.side_effect": Exception},
     )
-    # cm.update_device_obs_state(ObsState.IDLE)
     release_command = ReleaseAllResources(cm, logger)
     release_command.adapter_factory = adapter_factory
     release_command.release_resources(logger, task_callback)

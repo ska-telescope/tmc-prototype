@@ -1,5 +1,5 @@
 """
-ReleaseAllResources command class for SDPSubarrayLeafNode.
+ReleaseAllResources command class for SdpSubarrayLeafNode.
 """
 import threading
 from logging import Logger
@@ -39,13 +39,20 @@ class ReleaseAllResources(SdpSLNCommand):
         :type task_abort_event: Event, optional
         """
         task_callback(status=TaskStatus.IN_PROGRESS)
+        exception = ""
         result_code, message = self.do()
-        logger.info(message)
+        logger.info(
+            "ReleaseAllResource command invoked on: %s: Result: %s, %s",
+            self.sdp_subarray_adapter.dev_name,
+            result_code,
+            message,
+        )
         if result_code == ResultCode.FAILED:
+            exception = message
             task_callback(
                 status=TaskStatus.COMPLETED,
                 result=ResultCode.FAILED,
-                exception=message,
+                exception=exception,
             )
         else:
             task_callback(
@@ -65,25 +72,21 @@ class ReleaseAllResources(SdpSLNCommand):
         result_code, message = self.init_adapter()
         if result_code == ResultCode.FAILED:
             return result_code, message
-        log_msg = "Invoking ReleaseAllResources command on:" + "{}".format(
-            self.sdp_subarray_adapter.dev_name
-        )
-        self.logger.info(log_msg)
         try:
             log_msg = (
-                "Invoking ReleaseAllResources command on SDP Subarray"
+                "Invoking ReleaseAllResources command on "
                 + "{}".format(self.sdp_subarray_adapter.dev_name),
             )
             self.logger.debug(log_msg)
             self.sdp_subarray_adapter.ReleaseAllResources()
         except (AttributeError, ValueError, TypeError, DevFailed) as e:
-            self.logger.exception("Command invocation failed: %s", e)
+            self.logger.exception(
+                "Command invocation failed on ReleaseAllResources: %s", e
+            )
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
                 "The invocation of the ReleaseAllResources command isfailed"
-                + "on Sdp Subarray Device {}".format(
-                    self.sdp_subarray_adapter.dev_name
-                )
+                + "on {}".format(self.sdp_subarray_adapter.dev_name)
                 + "Reason: Error in invoking the ReleaseAllResourcescommand"
                 "on Sdp"
                 + "Subarray. The command has NOT been executed."
