@@ -47,7 +47,7 @@ def assign_resources(
         (unique_id[0], str(ResultCode.OK.value)),
         lookahead=4,
     )
-    wait_for_final_sdp_subarray_obsstate(sdpsln_name, ObsState.IDLE)
+    wait_for_final_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
     event_remover(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
