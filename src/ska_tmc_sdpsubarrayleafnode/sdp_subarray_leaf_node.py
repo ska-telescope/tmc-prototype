@@ -147,13 +147,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     def read_sdpSubarrayDevName(self):
         """Return the sdpsubarraydevname attribute."""
-        # return self.component_manager.sdp_subarray_dev_name
         return self.component_manager._sdp_subarray_dev_name
 
     def write_sdpSubarrayDevName(self, value):
         """Set the sdpsubarraydevname attribute."""
-        # self.component_manager.sdp_subarray_dev_name = value
-        self.component_manager.update_device_info(value)
+        self.component_manager._sdp_subarray_dev_name = value
 
     # ------------------
     # Attributes methods
@@ -248,6 +246,35 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         return [result_code], [unique_id]
 
+    def is_ReleaseAllResources_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device \
+        state. \
+
+        :return: True if this command is allowed to be run in current device
+        state.
+
+        :rtype: boolean
+        """
+        return self.component_manager.is_command_allowed("ReleaseAllResources")
+
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
+    @DebugIt()
+    def ReleaseAllResources(self):
+        """
+        This command invokes ReleaseAllResources() command on Sdp
+        Subarray.
+        """
+
+        handler = self.get_command_object("ReleaseAllResources")
+        return_code, unique_id = handler()
+
+        return [[return_code], [str(unique_id)]]
+
+    # default ska mid
     def create_component_manager(self):
         """Returns Sdp Subarray Leaf Node component manager object"""
         cm = SdpSLNComponentManager(
@@ -274,10 +301,12 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         device.
         """
         super().init_command_objects()
+
         for command_name, method_name in [
             ("On", "on"),
             ("Off", "off"),
             ("AssignResources", "assign_resources"),
+            ("ReleaseAllResources", "release_all_resource"),
         ]:
             self.register_command_object(
                 command_name,

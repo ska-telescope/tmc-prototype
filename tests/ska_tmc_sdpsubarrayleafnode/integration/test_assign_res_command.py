@@ -1,6 +1,7 @@
 import pytest
 import tango
 from ska_tango_base.commands import ResultCode
+from ska_tango_base.control_model import ObsState
 from ska_tmc_common.dev_factory import DevFactory
 
 from tests.conftest import (
@@ -10,7 +11,10 @@ from tests.conftest import (
     SDPSUBARRAYLEAFNODE_MID,
 )
 from tests.settings import event_remover, logger
-from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
+from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
+    tear_down,
+    wait_for_final_sdp_subarray_obsstate,
+)
 
 
 def assign_resources(
@@ -43,6 +47,7 @@ def assign_resources(
         (unique_id[0], str(ResultCode.OK.value)),
         lookahead=4,
     )
+    wait_for_final_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
     event_remover(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],

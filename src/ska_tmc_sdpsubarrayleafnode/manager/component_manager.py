@@ -27,6 +27,9 @@ from ska_tmc_sdpsubarrayleafnode.commands.assign_resources_command import (
 )
 from ska_tmc_sdpsubarrayleafnode.commands.off_command import Off
 from ska_tmc_sdpsubarrayleafnode.commands.on_command import On
+from ska_tmc_sdpsubarrayleafnode.commands.release_resources_command import (
+    ReleaseAllResources,
+)
 from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
     SdpSLNEventReceiver,
 )
@@ -378,4 +381,25 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             task_callback=task_callback,
         )
         self.logger.info("Off command queued for execution")
+        return task_status, response
+
+    def release_all_resource(
+        self, task_callback=None
+    ) -> Tuple[TaskStatus, str]:
+        """Submits the ReleaseAllResources command for execution.
+
+        :rtype: tuple
+        """
+        release_command = ReleaseAllResources(self, self.logger)
+        task_status, response = self.submit_task(
+            release_command.release_resources,
+            args=[self.logger],
+            task_callback=task_callback,
+        )
+        self.logger.info(
+            "TaskStatus: %s and Response: %s of ReleaseAllResource \
+                  command after queued to execution",
+            task_status,
+            response,
+        )
         return task_status, response

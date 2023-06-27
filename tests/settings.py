@@ -89,7 +89,7 @@ def get_sdpmln_command_obj(command_class, devices):
     adapter_factory = HelperAdapterFactory()
     attrs = {"fetch_skuid.return_value": 123}
     skuid = mock.Mock(**attrs)
-    cm.sdp_master_dev_name = devices
+    cm.sdp_master_device_name = devices
     command_obj = command_class(cm, cm.op_state_model, adapter_factory, skuid)
     return cm, command_obj, adapter_factory
 
