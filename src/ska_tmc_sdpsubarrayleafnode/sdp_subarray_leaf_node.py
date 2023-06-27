@@ -299,8 +299,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         return self.component_manager.is_command_allowed("ReleaseAllResources")
 
     @command(
-        dtype_in="str",
-        doc_in="The string in JSON format",
         dtype_out="DevVarLongStringArray",
         doc_out="information-only string",
     )

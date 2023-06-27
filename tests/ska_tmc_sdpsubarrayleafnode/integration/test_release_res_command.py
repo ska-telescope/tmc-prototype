@@ -5,7 +5,10 @@ from ska_tango_base.control_model import ObsState
 from ska_tmc_common.dev_factory import DevFactory
 
 from tests.settings import event_remover, logger
-from tests.ska_tmc_sdpsubarrayleafnode.integration.common import tear_down
+from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
+    tear_down,
+    wait_for_final_sdp_subarray_obsstate,
+)
 
 
 def release_resources(
@@ -14,7 +17,7 @@ def release_resources(
     logger.info("%s", tango_context)
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)
-    # initial_len = len(sdp_subarray_ln_proxy.commandExecuted)
+    sdp_subarray = dev_factory.get_device(device)
     sdp_subarray_ln_proxy.subscribe_event(
         "longRunningCommandsInQueue",
         tango.EventType.CHANGE_EVENT,
@@ -42,12 +45,6 @@ def release_resources(
         (unique_id[0], str(int(ResultCode.OK))),
         lookahead=2,
     )
-
-    # change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-    #     None,
-    #     lookahead=4,
-    # )
-
     assign_input_str = json_factory("command_AssignResources")
     result, unique_id = sdp_subarray_ln_proxy.AssignResources(assign_input_str)
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
@@ -63,18 +60,13 @@ def release_resources(
         (unique_id[0], str(int(ResultCode.OK))),
         lookahead=4,
     )
-
-    # change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-    #     None,
-    #     lookahead=6,
-    # )
-
+    wait_for_final_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.IDLE)
     result, unique_id = sdp_subarray_ln_proxy.ReleaseAllResources()
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
         (
             "On",
             "AssignResources",
-            "ReleaseResources",
+            "ReleaseAllResources",
         ),
     )
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
@@ -84,34 +76,14 @@ def release_resources(
         (unique_id[0], str(int(ResultCode.OK))),
         lookahead=6,
     )
-
+    wait_for_final_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.EMPTY)
     event_remover(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
-    sdp_subarray = dev_factory.get_device(device)
-    sdp_subarray.SetDirectObsState(ObsState.IDLE)
-    assert sdp_subarray.obsState == ObsState.IDLE
-
-    # if result[0] != ResultCode.QUEUED:
-    #     logger.error("Result: %s message: %s", result[0], unique_id)
-    # assert result[0] == ResultCode.QUEUED
-    # start_time = time.time()
-    # while len(sdp_subarray_ln_proxy.commandExecuted) != initial_len + 3:
-    #     time.sleep(SLEEP_TIME)
-    #     elapsed_time = time.time() - start_time
-    #     if elapsed_time > 100:
-    #         pytest.fail("Timeout occurred while executing the test")
-    #
-    # for command in sdp_subarray_ln_proxy.commandExecuted:
-    #     if command[0] == unique_id[0]:
-    #         logger.info("command result: %s", command)
-    #         assert command[2] == "ResultCode.OK"
-
     tear_down(dev_factory, sdp_subarray)
 
 
-@pytest.mark.rel_1
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(
@@ -136,10 +108,16 @@ def test_release_res_command_mid(
     "device",
     [("low-sdp/subarray/01")],
 )
-def test_release_res_command_low(tango_context, device, json_factory):
+def test_release_res_command_low(
+    tango_context,
+    device,
+    json_factory,
+    change_event_callbacks,
+):
     return release_resources(
         tango_context,
         "ska_low/tm_leaf_node/sdp_subarray01",
         device,
         json_factory,
+        change_event_callbacks,
     )

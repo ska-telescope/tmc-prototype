@@ -12,6 +12,7 @@ Feature: SdpSubarrayLeafNode acceptance
 		| command_name		   |
 		| On                   |
 		| AssignResources      |
+		| ReleaseAllResources  |
 		| Off				   |
 
 	#Check SdpSubarrayLeafNode node correctly report failed and working devices defined within its scope of monitoring (internal model)
