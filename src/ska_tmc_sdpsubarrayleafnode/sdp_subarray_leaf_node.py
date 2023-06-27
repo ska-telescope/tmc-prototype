@@ -151,7 +151,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
     def write_sdpSubarrayDevName(self, value):
         """Set the sdpsubarraydevname attribute."""
-        self.component_manager.update_device_info(value)
+        self.component_manager._sdp_subarray_dev_name = value
 
     # ------------------
     # Attributes methods
