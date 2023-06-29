@@ -35,7 +35,8 @@ def get_configure_input_str(configure_input_file="command_Configure.json"):
 def test_telescope_configure_command(tango_context, devices, task_callback):
     logger.info("%s", tango_context)
     cm, _ = create_cm("SdpSLNComponentManager", devices)
-    configure_input_str = ""
+    assert cm.is_command_allowed("AssignResources")
+    configure_input_str = get_configure_input_str()
     cm.configure(configure_input_str, task_callback=task_callback)
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.QUEUED}
