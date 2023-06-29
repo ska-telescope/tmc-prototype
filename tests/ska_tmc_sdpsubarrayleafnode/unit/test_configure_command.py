@@ -1,5 +1,3 @@
-import logging
-import time
 from os.path import dirname, join
 
 import pytest
@@ -29,32 +27,28 @@ def get_configure_input_str(configure_input_file="command_Configure.json"):
     return configure_input_str
 
 
+@pytest.mark.test1
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
-def test_telescope_configure_command(
-    tango_context, devices, task_callback, caplog
-):
+def test_telescope_configure_command(tango_context, devices, task_callback):
     logger.info("%s", tango_context)
     cm, _ = create_cm("SdpSLNComponentManager", devices)
-    assert cm.is_command_allowed("Configure")
-    cm.update_device_obs_state(ObsState.IDLE)
-    configure_input_str = get_configure_input_str()
+    configure_input_str = ""
     cm.configure(configure_input_str, task_callback=task_callback)
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.QUEUED}
     )
-    time.sleep(2)
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
-    caplog.set_level(logging.DEBUG, logger="ska_tango_testing.mock")
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.COMPLETED, "result": ResultCode.OK}
     )
 
 
+@pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )

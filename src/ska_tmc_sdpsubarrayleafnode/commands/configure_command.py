@@ -78,9 +78,9 @@ class Configure(SdpSLNCommand):
         return: \
             None
         """
-        ret_code, message = self.init_adapter()
-        if ret_code == ResultCode.FAILED:
-            return ret_code, message
+        result_code, message = self.init_adapter()
+        if result_code == ResultCode.FAILED:
+            return result_code, message
         try:
             json_argument = json.loads(argin)
         except JSONDecodeError as e:

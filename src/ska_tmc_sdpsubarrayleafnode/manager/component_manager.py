@@ -391,7 +391,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         configure_command = Configure(self, self.logger)
         task_status, response = self.submit_task(
             configure_command.configure,
-            args=[argin],
+            args=[argin, self.logger],
             task_callback=task_callback,
         )
         self.logger.info(
