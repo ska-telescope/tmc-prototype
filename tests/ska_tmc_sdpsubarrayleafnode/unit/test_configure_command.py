@@ -29,7 +29,6 @@ def get_configure_input_str(configure_input_file="command_Configure.json"):
     return configure_input_str
 
 
-@pytest.mark.test5
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
@@ -38,10 +37,9 @@ def test_telescope_configure_command(
     tango_context, devices, task_callback, caplog
 ):
     logger.info("%s", tango_context)
-    cm, configure_command, _ = get_sdpsln_command_obj(
-        Configure, devices, obsstate_value=ObsState.IDLE
-    )
+    cm, _ = create_cm("SdpSLNComponentManager", devices)
     assert cm.is_command_allowed("Configure")
+    cm.update_device_obs_state(ObsState.IDLE)
     configure_input_str = get_configure_input_str()
     cm.configure(configure_input_str, task_callback=task_callback)
     task_callback.assert_against_call(
