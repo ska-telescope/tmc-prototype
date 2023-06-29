@@ -223,6 +223,33 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         result_code, unique_id = handler(argin)
         return ([result_code], [unique_id])
 
+    def is_Configure_allowed(self) -> bool:
+        """
+        Checks whether Configure command is allowed to be run in \
+        current device state. \
+
+        :return: True if Configure command is allowed to be run in \
+        current device state \
+
+        :rtype: boolean
+        """
+        return self.component_manager.is_command_allowed("Configure")
+
+    @command(
+        dtype_in="str",
+        doc_in="The string in JSON format",
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
+    @DebugIt()
+    def Configure(self, argin: str) -> tuple:
+        """
+        This command invokes the Configure() command on Csp Subarray.
+        """
+        handler = self.get_command_object("Configure")
+        result_code, unique_id = handler(argin)
+        return ([result_code], [unique_id])
+
     def is_Off_allowed(self):
         """
         Checks whether this command is allowed to be run in current \

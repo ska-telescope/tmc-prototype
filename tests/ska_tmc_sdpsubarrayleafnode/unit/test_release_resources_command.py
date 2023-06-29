@@ -79,7 +79,7 @@ def test_release_resources_command_fail_check_allowed_with_invalid_obsState(
 ):
     logger.info("%s", tango_context)
     cm, release_command, _ = get_sdpsln_command_obj(
-        ReleaseAllResources, devices, obsstate_value=ObsState.READY
+        ReleaseAllResources, devices, obsstate_value=ObsState.SCANNING
     )
     with pytest.raises(InvalidObsStateError):
         cm.is_command_allowed("ReleaseAllResources")
