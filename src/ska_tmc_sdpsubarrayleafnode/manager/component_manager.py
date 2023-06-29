@@ -25,6 +25,7 @@ from tango import DevState
 from ska_tmc_sdpsubarrayleafnode.commands.assign_resources_command import (
     AssignResources,
 )
+from ska_tmc_sdpsubarrayleafnode.commands.end_command import End
 from ska_tmc_sdpsubarrayleafnode.commands.off_command import Off
 from ska_tmc_sdpsubarrayleafnode.commands.on_command import On
 from ska_tmc_sdpsubarrayleafnode.commands.release_resources_command import (
@@ -286,10 +287,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         """
         if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
             raise CommandNotAllowed(
-                "The invocation of the {} command on this device".format(
-                    __class__
-                )
-                + "is not allowed."
+                "The invocation of the {} command on this".format(command_name)
+                + "device is not allowed."
                 + "Reason: The current operational state is"
                 + "{}".format(self.op_state_model.op_state)
                 + "The command has NOT been executed."
@@ -303,6 +302,12 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             if self.get_device().obs_state not in [
                 ObsState.IDLE,
                 ObsState.EMPTY,
+            ]:
+                self.raise_invalid_obsstate_error(command_name)
+        if command_name in ["End"]:
+            if self.get_device().obs_state not in [
+                ObsState.IDLE,
+                ObsState.READY,
             ]:
                 self.raise_invalid_obsstate_error(command_name)
 
@@ -399,6 +404,25 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.logger.info(
             "TaskStatus: %s and Response: %s of ReleaseAllResource \
                   command after queued to execution",
+            task_status,
+            response,
+        )
+        return task_status, response
+
+    def end(self, task_callback=None) -> Tuple[TaskStatus, str]:
+        """Submits the End command for execution.
+
+        :rtype: tuple
+        """
+        end_command = End(self, self.logger)
+        task_status, response = self.submit_task(
+            end_command.end,
+            args=[self.logger],
+            task_callback=task_callback,
+        )
+        self.logger.info(
+            "TaskStatus: %s and Response: %s of End command after queued\
+                 to execution",
             task_status,
             response,
         )

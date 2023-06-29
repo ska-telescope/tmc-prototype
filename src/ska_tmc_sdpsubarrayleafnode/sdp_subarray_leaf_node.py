@@ -274,6 +274,34 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         return [[return_code], [str(unique_id)]]
 
+    def is_End_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device \
+        state. \
+
+        :return: True if this command is allowed to be run in current device
+        state.
+
+        :rtype: boolean
+        """
+        return self.component_manager.is_command_allowed("End")
+
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
+    @DebugIt()
+    def end(self):
+        """
+        This command invokes End() command on Sdp
+        Subarray.
+        """
+
+        handler = self.get_command_object("End")
+        return_code, unique_id = handler()
+
+        return [[return_code], [str(unique_id)]]
+
     # default ska mid
     def create_component_manager(self):
         """Returns Sdp Subarray Leaf Node component manager object"""
@@ -307,6 +335,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             ("Off", "off"),
             ("AssignResources", "assign_resources"),
             ("ReleaseAllResources", "release_all_resource"),
+            ("End", "end"),
         ]:
             self.register_command_object(
                 command_name,
