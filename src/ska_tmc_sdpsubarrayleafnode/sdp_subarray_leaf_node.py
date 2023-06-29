@@ -272,7 +272,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("ReleaseAllResources")
         return_code, unique_id = handler()
 
-        return [[return_code], [str(unique_id)]]
+        return ([return_code], [str(unique_id)])
 
     def is_End_allowed(self):
         """
@@ -300,7 +300,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("End")
         return_code, unique_id = handler()
 
-        return [[return_code], [str(unique_id)]]
+        return ([return_code], [str(unique_id)])
 
     # default ska mid
     def create_component_manager(self):

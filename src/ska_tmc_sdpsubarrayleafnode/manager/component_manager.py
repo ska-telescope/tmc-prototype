@@ -288,10 +288,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
             raise CommandNotAllowed(
                 "The invocation of the {} command on this".format(command_name)
-                + "device is not allowed."
+                + " device is not allowed."
                 + "Reason: The current operational state is"
-                + "{}".format(self.op_state_model.op_state)
-                + "The command has NOT been executed."
+                + " {} ".format(self.op_state_model.op_state)
+                + "The command has NOT been executed. "
                 + "This device will continue with normal operation."
             )
 
@@ -306,7 +306,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 self.raise_invalid_obsstate_error(command_name)
         if command_name in ["End"]:
             if self.get_device().obs_state not in [
-                ObsState.IDLE,
                 ObsState.READY,
             ]:
                 self.raise_invalid_obsstate_error(command_name)

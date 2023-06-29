@@ -69,9 +69,9 @@ class End(SdpSLNCommand):
             None
 
         """
-        ret_code, message = self.init_adapter()
-        if ret_code == ResultCode.FAILED:
-            return ret_code, message
+        return_code, message = self.init_adapter()
+        if return_code == ResultCode.FAILED:
+            return return_code, message
         result, message = self.call_adapter_method(
             "Sdp Subarray", self.sdp_subarray_adapter, "End"
         )
