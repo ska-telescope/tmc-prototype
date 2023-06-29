@@ -16,7 +16,6 @@ from tests.settings import (
     SDP_SUBARRAY_DEVICE_LOW,
     SDP_SUBARRAY_DEVICE_MID,
     create_cm,
-    get_sdpsln_command_obj,
     logger,
 )
 
@@ -111,9 +110,8 @@ def test_assign_resources_command_fail_check_allowed_with_invalid_obsState(
     tango_context, devices
 ):
     logger.info("%s", tango_context)
-    cm, _, _ = get_sdpsln_command_obj(
-        AssignResources, devices, obsstate_value=ObsState.READY
-    )
+    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm.update_device_obs_state(ObsState.READY)
     with pytest.raises(InvalidObsStateError):
         cm.is_command_allowed("AssignResources")
 
