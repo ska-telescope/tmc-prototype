@@ -16,12 +16,12 @@ from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
 
 class Configure(SdpSLNCommand):
     """
-    A class for SdpSubarrayLeafNode's Configure() command.
+    This class implements the Configure command for SdpSubarray.
 
-    Configures the SDP Subarray device by providing the SDP PB
-    configuration needed to execute the receive workflow
-
+    It provides methods to configure the SdpSubarray device and handle the execution
+    of the Configure command.
     """
+    
 
     def configure(
         self,
@@ -102,19 +102,19 @@ class Configure(SdpSLNCommand):
         if "interface" not in json_argument:
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
-                "Missing interface key",
+                 "Missing interface key",
             )
 
         if "scan_type" not in json_argument:
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
-                "Missing scan_type key",
+                 "Missing scan_type key",
             )
 
         if json_argument["scan_type"] == "":
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
-                "Missing scan_type value.",
+                 "Missing scan_type value.",
             )
 
         log_msg = "Invoking Configure command on:"
