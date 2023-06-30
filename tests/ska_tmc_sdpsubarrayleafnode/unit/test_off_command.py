@@ -23,7 +23,7 @@ from tests.settings import (
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
 def test_mid_off(tango_context, devices, task_callback):
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     assert cm.is_command_allowed("off")
 
     cm.off(task_callback=task_callback)
@@ -43,7 +43,7 @@ def test_mid_off(tango_context, devices, task_callback):
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
 def test_command_off_not_allowed(tango_context, devices):
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     cm.op_state_model._op_state = DevState.FAULT
     with pytest.raises(CommandNotAllowed):
         cm.is_command_allowed("off")
@@ -56,7 +56,7 @@ def test_command_off_not_allowed(tango_context, devices):
 def test_command_off_with_failed_sdp_subarray(
     tango_context, devices, task_callback
 ):
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     adapter_factory = HelperAdapterFactory()
     failing_dev = devices
 
@@ -84,6 +84,6 @@ def test_command_off_with_failed_sdp_subarray(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
 def test_off_command_is_allowed_device_unresponsive(tango_context, devices):
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     cm._device = DeviceInfo(devices, _unresponsive=True)
     pytest.raises(DeviceUnresponsive)

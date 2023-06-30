@@ -25,6 +25,7 @@ from tango import DevState
 from ska_tmc_sdpsubarrayleafnode.commands.assign_resources_command import (
     AssignResources,
 )
+from ska_tmc_sdpsubarrayleafnode.commands.configure_command import Configure
 from ska_tmc_sdpsubarrayleafnode.commands.end_command import End
 from ska_tmc_sdpsubarrayleafnode.commands.off_command import Off
 from ska_tmc_sdpsubarrayleafnode.commands.on_command import On
@@ -290,22 +291,26 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 "The invocation of the {} command on this".format(command_name)
                 + " device is not allowed."
                 + "Reason: The current operational state is"
-                + " {} ".format(self.op_state_model.op_state)
+                + f"{self.op_state_model.op_state}"
                 + "The command has NOT been executed. "
                 + "This device will continue with normal operation."
             )
 
         self._check_if_sdp_sa_is_responsive()
 
-        if command_name in ["AssignResources", "ReleaseAllResources"]:
+        if command_name in [
+            "AssignResources",
+            "ReleaseAllResources",
+        ]:
             # Checking obsState of Sdp Subarray device
             if self.get_device().obs_state not in [
                 ObsState.IDLE,
                 ObsState.EMPTY,
             ]:
                 self.raise_invalid_obsstate_error(command_name)
-        if command_name in ["End"]:
+        if command_name in ["Configure", "End"]:
             if self.get_device().obs_state not in [
+                ObsState.IDLE,
                 ObsState.READY,
             ]:
                 self.raise_invalid_obsstate_error(command_name)
@@ -371,6 +376,27 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             assign_resources_command.assign_resources,
             args=[argin],
             task_callback=task_callback,
+        )
+        return task_status, response
+
+    def configure(
+        self, argin: str, task_callback: Optional[Callable] = None
+    ) -> Tuple[TaskStatus, str]:
+        """Submits the Configure command for execution.
+
+        :rtype: tuple
+        """
+        configure_command = Configure(self, self.logger)
+        task_status, response = self.submit_task(
+            configure_command.configure,
+            args=[argin, self.logger],
+            task_callback=task_callback,
+        )
+        self.logger.info(
+            "TaskStatus: %s and Response: %s of Configure \
+                  command after queued to execution",
+            task_status,
+            response,
         )
         return task_status, response
 

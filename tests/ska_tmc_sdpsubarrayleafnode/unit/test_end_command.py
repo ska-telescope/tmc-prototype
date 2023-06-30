@@ -23,7 +23,7 @@ from tests.settings import (
 )
 def test_telescope_end_command(tango_context, devices, task_callback):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     cm.update_device_obs_state(ObsState.READY)
     assert cm.is_command_allowed("End")
     cm.end(task_callback=task_callback)
@@ -46,7 +46,7 @@ def test_telescope_end_command_fail_subarray(
     tango_context, devices, task_callback
 ):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     adapter_factory = HelperAdapterFactory()
     failing_dev = devices
 
@@ -75,7 +75,7 @@ def test_end_command_fail_check_allowed_with_invalid_obsState(
     tango_context, devices
 ):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     cm.update_device_obs_state(ObsState.EMPTY)
     with pytest.raises(InvalidObsStateError):
         cm.is_command_allowed("End")
@@ -89,7 +89,7 @@ def test_end_fail_check_allowed_with_device_unresponsive(
     tango_context, devices
 ):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     cm._device = DeviceInfo(devices, _unresponsive=True)
     with pytest.raises(DeviceUnresponsive):
         cm.is_command_allowed("End")

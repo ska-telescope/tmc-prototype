@@ -1,5 +1,5 @@
 """
-End command class for SDPSubarrayLeafNode.
+End command class for SdpSubarrayLeafNode.
 """
 
 import threading
@@ -16,7 +16,7 @@ class End(SdpSLNCommand):
     """
     A class for SdpSubarrayLeafNode's End() command.
 
-    Invokes End command on SDP Subarray to end the current Scheduling Block.
+    Invokes End command on SdpSubarray to end the current Scheduling Block.
 
     """
 
@@ -61,7 +61,7 @@ class End(SdpSLNCommand):
 
     def do(self, argin=None):
         """
-        Method to invoke End command on SDP Subarray.
+        Method to invoke End command on SdpSubarray.
 
         :param argin: None
 
@@ -73,6 +73,6 @@ class End(SdpSLNCommand):
         if return_code == ResultCode.FAILED:
             return return_code, message
         result, message = self.call_adapter_method(
-            "Sdp Subarray", self.sdp_subarray_adapter, "End"
+            "SdpSubarray", self.sdp_subarray_adapter, "End"
         )
         return result, message
