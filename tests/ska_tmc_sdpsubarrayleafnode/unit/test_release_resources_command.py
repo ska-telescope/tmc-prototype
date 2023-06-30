@@ -28,7 +28,7 @@ def test_telescope_release_resources_command(
     cm = create_cm("SdpSLNComponentManager", devices)
     assert cm.is_command_allowed("ReleaseAllResources")
 
-    cm.release_all_resource(task_callback=task_callback)
+    cm.release_all_resources(task_callback=task_callback)
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.QUEUED}
     )
