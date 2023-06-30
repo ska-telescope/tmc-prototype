@@ -53,9 +53,11 @@ def release_all_res_resources_timeout(
     sdp_subarray.SetDefective(True)
 
     result, unique_id = sdpsal_node.ReleaseAllResources()
+
     logger.info(
         # pylint: disable=line-too-long
-        f"ReleaseAllResources Command ID: {unique_id} Returned result: {result}"
+        f"ReleaseAllResources Command ID: \
+            {unique_id} Returned result: {result}"
     )
 
     assert unique_id[0].endswith("ReleaseAllResources")
@@ -76,7 +78,7 @@ def release_all_res_resources_timeout(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_mid1
+@pytest.mark.SKA_mid
 def test_release_all_res_command_timeout_mid(
     tango_context,
     json_factory,
