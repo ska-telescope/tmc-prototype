@@ -27,7 +27,6 @@ def get_configure_input_str(configure_input_file="command_Configure.json"):
     return configure_input_str
 
 
-@pytest.mark.test1
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
@@ -35,7 +34,7 @@ def get_configure_input_str(configure_input_file="command_Configure.json"):
 def test_telescope_configure_command(tango_context, devices, task_callback):
     logger.info("%s", tango_context)
     cm, _ = create_cm("SdpSLNComponentManager", devices)
-    assert cm.is_command_allowed("AssignResources")
+    assert cm.is_command_allowed("Configure")
     configure_input_str = get_configure_input_str()
     cm.configure(configure_input_str, task_callback=task_callback)
     task_callback.assert_against_call(
