@@ -81,7 +81,8 @@ def configure(
         (
             "On",
             "AssignResources",
-            "Configure" "ReleaseAllResources",
+            "Configure",
+            "ReleaseAllResources",
         ),
     )
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
@@ -99,6 +100,7 @@ def configure(
     tear_down(dev_factory, sdp_subarray)
 
 
+@pytest.mark.test1
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(
