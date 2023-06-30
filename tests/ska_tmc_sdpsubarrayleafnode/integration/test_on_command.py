@@ -55,6 +55,7 @@ def on_command(
     )
     tear_down(dev_factory, sdp_subarray_proxy)
 
+
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_on_command_mid(tango_context, change_event_callbacks):
