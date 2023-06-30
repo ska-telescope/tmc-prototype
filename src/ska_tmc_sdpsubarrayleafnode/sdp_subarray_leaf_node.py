@@ -246,7 +246,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         return [result_code], [unique_id]
 
-    def is_ReleaseAllResources_allowed(self):
+    def is_ReleaseResources_allowed(self):
         """
         Checks whether this command is allowed to be run in current device \
         state. \
@@ -256,20 +256,20 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         :rtype: boolean
         """
-        return self.component_manager.is_command_allowed("ReleaseAllResources")
+        return self.component_manager.is_command_allowed("ReleaseResources")
 
     @command(
         dtype_out="DevVarLongStringArray",
         doc_out="information-only string",
     )
     @DebugIt()
-    def ReleaseAllResources(self):
+    def ReleaseResources(self):
         """
-        This command invokes ReleaseAllResources() command on Sdp
+        This command invokes ReleaseResources() command on Sdp
         Subarray.
         """
 
-        handler = self.get_command_object("ReleaseAllResources")
+        handler = self.get_command_object("ReleaseResources")
         return_code, unique_id = handler()
 
         return [[return_code], [str(unique_id)]]
@@ -306,7 +306,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             ("On", "on"),
             ("Off", "off"),
             ("AssignResources", "assign_resources"),
-            ("ReleaseAllResources", "release_all_resource"),
+            ("ReleaseResources", "release_all_resource"),
         ]:
             self.register_command_object(
                 command_name,

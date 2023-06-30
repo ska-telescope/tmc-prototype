@@ -12,9 +12,9 @@ from tango import DevFailed
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
 
 
-class ReleaseAllResources(SdpSLNCommand):
+class ReleaseResources(SdpSLNCommand):
     """
-    A class for SdpSubarayLeafNode's ReleaseAllResources() command.
+    A class for SdpSubarayLeafNode's ReleaseResources() command.
 
     Releases all the resources of given SDP Subarray Leaf Node.
     It accepts the subarray id, releaseALL flag and receptorIDList in
@@ -28,8 +28,8 @@ class ReleaseAllResources(SdpSLNCommand):
         # pylint: disable=unused-argument
         task_abort_event: Optional[threading.Event] = None,
     ) -> None:
-        """This is a long running method for ReleaseAllResources command, it
-        executes do hook, invokes ReleaseAllResources command on SdpSubarray.
+        """This is a long running method for ReleaseResources command, it
+        executes do hook, invokes ReleaseResources command on SdpSubarray.
 
         :param logger: logger
         :type logger: logging.Logger
@@ -62,7 +62,7 @@ class ReleaseAllResources(SdpSLNCommand):
 
     def do(self, argin=None):
         """
-        Method to invoke ReleaseAllResources command on SDP Subarray.
+        Method to invoke ReleaseResources command on SDP Subarray.
 
         :param argin: None.
 
@@ -74,7 +74,7 @@ class ReleaseAllResources(SdpSLNCommand):
             return result_code, message
         try:
             log_msg = (
-                "Invoking ReleaseAllResources command on "
+                "Invoking ReleaseResources command on "
                 + "{}".format(self.sdp_subarray_adapter.dev_name),
             )
             self.logger.debug(log_msg)

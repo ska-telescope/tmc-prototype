@@ -28,7 +28,7 @@ from ska_tmc_sdpsubarrayleafnode.commands.assign_resources_command import (
 from ska_tmc_sdpsubarrayleafnode.commands.off_command import Off
 from ska_tmc_sdpsubarrayleafnode.commands.on_command import On
 from ska_tmc_sdpsubarrayleafnode.commands.release_resources_command import (
-    ReleaseAllResources,
+    ReleaseResources,
 )
 from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
     SdpSLNEventReceiver,
@@ -298,7 +298,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
         self._check_if_sdp_sa_is_responsive()
 
-        if command_name in ["AssignResources", "ReleaseAllResources"]:
+        if command_name in ["AssignResources", "ReleaseResources"]:
             # Checking obsState of Sdp Subarray device
             if self.get_device().obs_state not in [
                 ObsState.IDLE,
@@ -386,11 +386,11 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
     def release_all_resource(
         self, task_callback=None
     ) -> Tuple[TaskStatus, str]:
-        """Submits the ReleaseAllResources command for execution.
+        """Submits the ReleaseResources command for execution.
 
         :rtype: tuple
         """
-        release_command = ReleaseAllResources(self, self.logger)
+        release_command = ReleaseResources(self, self.logger)
         task_status, response = self.submit_task(
             release_command.release_resources,
             args=[self.logger],

@@ -61,12 +61,12 @@ def release_resources(
         lookahead=4,
     )
     wait_for_final_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.IDLE)
-    result, unique_id = sdp_subarray_ln_proxy.ReleaseAllResources()
+    result, unique_id = sdp_subarray_ln_proxy.ReleaseResources()
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
         (
             "On",
             "AssignResources",
-            "ReleaseAllResources",
+            "ReleaseResources",
         ),
     )
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
