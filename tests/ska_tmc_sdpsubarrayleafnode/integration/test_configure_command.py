@@ -64,9 +64,13 @@ def configure(
 
     configure_input_str = json_factory("command_Configure")
     result, unique_id = sdp_subarray_ln_proxy.Configure(configure_input_str)
-    # change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-    #     ("On", "AssignResources", "Configure",),
-    # )
+    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
+        (
+            "On",
+            "AssignResources",
+            "Configure",
+        ),
+    )
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
 
