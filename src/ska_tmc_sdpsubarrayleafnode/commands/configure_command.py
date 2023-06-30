@@ -71,7 +71,7 @@ class Configure(SdpSLNCommand):
 
         Example: \
             { \
-            "interface": "https://schema.skao.int/ska-sdp-configure/0.3", \
+            "interface": "https://schema.skao.int/ska-sdp-configure/0.4", \
             "scan_type": "science_A" \
             } \
 
@@ -102,19 +102,19 @@ class Configure(SdpSLNCommand):
         if "interface" not in json_argument:
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
-                "interface key is not present in the input json argument.",
+                "Missing interface key",
             )
 
         if "scan_type" not in json_argument:
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
-                "scan_type key is not present in the input json argument.",
+                "Missing scan_type key",
             )
 
         if json_argument["scan_type"] == "":
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
-                "scan_type is not present in the input json argument.",
+                "Missing scan_type value.",
             )
 
         log_msg = "Invoking Configure command on:"
