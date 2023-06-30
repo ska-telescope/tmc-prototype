@@ -17,7 +17,7 @@ from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
 )
 
 
-def assign_resources(
+def release_all_res_resources_timeout(
     tango_context,
     sdpsln_name,
     assign_input_str,
@@ -47,14 +47,14 @@ def assign_resources(
         (unique_id[0], str(ResultCode.OK.value)),
         lookahead=4,
     )
-    
+
     wait_for_final_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
 
-    
     sdp_subarray.SetDefective(True)
 
     result, unique_id = sdpsal_node.ReleaseAllResources()
     logger.info(
+        # pylint: disable=line-too-long
         f"ReleaseAllResources Command ID: {unique_id} Returned result: {result}"
     )
 
@@ -76,15 +76,28 @@ def assign_resources(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_Test
-def test_assign_res_command_mid(
+@pytest.mark.SKA_mid1
+def test_release_all_res_command_timeout_mid(
     tango_context,
     json_factory,
     change_event_callbacks,
 ):
-    return assign_resources(
+    return release_all_res_resources_timeout(
         tango_context,
         SDPSUBARRAYLEAFNODE_MID,
+        json_factory("command_AssignResources"),
+        change_event_callbacks,
+    )
+
+
+@pytest.mark.post_deployment
+@pytest.mark.SKA_low
+def test_release_all_res_command_timeout_low(
+    tango_context, json_factory, change_event_callbacks
+):
+    return release_all_res_resources_timeout(
+        tango_context,
+        SDPSUBARRAYLEAFNODE_LOW,
         json_factory("command_AssignResources"),
         change_event_callbacks,
     )

@@ -65,6 +65,7 @@ class ReleaseAllResources(SdpSLNCommand):
                 ObsState.EMPTY,
                 self.timeout_id,
                 self.timeout_callback,
+                # pylint: disable=line-too-long
                 command_id=self.component_manager.releaseAllResource_command_id,
                 # pylint: disable=line-too-long
                 lrcr_callback=self.component_manager.long_running_result_callback,

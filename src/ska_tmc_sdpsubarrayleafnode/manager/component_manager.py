@@ -224,7 +224,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 self.long_running_result_callback(
                     self.releaseAllResource_command_id,
                     ResultCode.FAILED,
-                    exception_msg=f"ReleaseAllResources command resultCode:{value}",
+                    exception_msg=value,
                 )
 
     @property
