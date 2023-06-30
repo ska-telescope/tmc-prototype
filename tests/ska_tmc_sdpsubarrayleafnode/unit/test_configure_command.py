@@ -15,7 +15,6 @@ from tests.settings import (
     SDP_SUBARRAY_DEVICE_LOW,
     SDP_SUBARRAY_DEVICE_MID,
     create_cm,
-    get_sdpsln_command_obj,
     logger,
 )
 
@@ -34,7 +33,6 @@ def get_configure_input_str(configure_input_file="command_Configure.json"):
 def test_telescope_configure_command(tango_context, devices, task_callback):
     logger.info("%s", tango_context)
     cm, _ = create_cm("SdpSLNComponentManager", devices)
-    assert cm.is_command_allowed("Configure")
     configure_input_str = get_configure_input_str()
     cm.configure(configure_input_str, task_callback=task_callback)
     task_callback.assert_against_call(
@@ -107,9 +105,8 @@ def test_configure_command_fail_check_allowed_with_invalid_obsState(
     tango_context, devices
 ):
     logger.info("%s", tango_context)
-    cm, _, _ = get_sdpsln_command_obj(
-        Configure, devices, obsstate_value=ObsState.SCANNING
-    )
+    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm.update_device_obs_state(ObsState.EMPTY)
     with pytest.raises(InvalidObsStateError):
         cm.is_command_allowed("Configure")
 

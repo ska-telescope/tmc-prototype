@@ -333,7 +333,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             ("On", "on"),
             ("Off", "off"),
             ("AssignResources", "assign_resources"),
-            ("Configure, configure"),
+            ("Configure", "configure"),
             ("ReleaseAllResources", "release_all_resource"),
         ]:
             self.register_command_object(

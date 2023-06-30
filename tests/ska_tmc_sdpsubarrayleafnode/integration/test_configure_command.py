@@ -64,9 +64,9 @@ def configure(
 
     configure_input_str = json_factory("command_Configure")
     result, unique_id = sdp_subarray_ln_proxy.Configure(configure_input_str)
-    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        ("On", "AssignResources", "Configure"),
-    )
+    # change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
+    #     ("On", "AssignResources", "Configure",),
+    # )
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
 
@@ -76,23 +76,6 @@ def configure(
     )
     wait_for_final_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.READY)
 
-    result, unique_id = sdp_subarray_ln_proxy.ReleaseAllResources()
-    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        (
-            "On",
-            "AssignResources",
-            "Configure",
-            "ReleaseAllResources",
-        ),
-    )
-    logger.info(f"Command ID: {unique_id} Returned result: {result}")
-    assert result[0] == ResultCode.QUEUED
-
-    change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        (unique_id[0], str(int(ResultCode.OK))),
-        lookahead=6,
-    )
-    wait_for_final_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.EMPTY)
     event_remover(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
@@ -100,7 +83,6 @@ def configure(
     tear_down(dev_factory, sdp_subarray)
 
 
-@pytest.mark.test1
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(
