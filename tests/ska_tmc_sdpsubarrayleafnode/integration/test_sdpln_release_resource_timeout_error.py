@@ -17,7 +17,7 @@ from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
 )
 
 
-def release_all_res_resources_timeout(
+def release_all_resources_timeout(
     tango_context,
     sdpsln_name,
     assign_input_str,
@@ -32,7 +32,7 @@ def release_all_res_resources_timeout(
         sdp_subarray = dev_factory.get_device(LOW_SDP_SUBARRAY)
     result, unique_id = sdpsal_node.AssignResources(assign_input_str)
     logger.info(
-        f"AssignResources Command ID: {unique_id} Returned result: {result}"
+        f"AssignResources Command ID: {unique_id} ResultCode received: {result}"
     )
 
     assert unique_id[0].endswith("AssignResources")
@@ -57,7 +57,7 @@ def release_all_res_resources_timeout(
     logger.info(
         # pylint: disable=line-too-long
         f"ReleaseAllResources Command ID: \
-            {unique_id} Returned result: {result}"
+            {unique_id} ResultCode received: {result}"
     )
 
     assert unique_id[0].endswith("ReleaseAllResources")
@@ -69,12 +69,74 @@ def release_all_res_resources_timeout(
     )
 
     sdp_subarray.SetDefective(False)
+    
     event_remover(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
 
     tear_down(dev_factory, sdp_subarray)
+
+
+def release_all_resources_error_propagation(
+    tango_context,
+    sdpsln_name,
+    assign_input_str,
+    change_event_callbacks,
+) -> None:
+    logger.info(f"{tango_context}")
+    dev_factory = DevFactory()
+    sdpsal_node = dev_factory.get_device(sdpsln_name)
+    if sdpsln_name == SDPSUBARRAYLEAFNODE_MID:
+        sdp_subarray = dev_factory.get_device(MID_SDP_SUBARRAY)
+    else:
+        sdp_subarray = dev_factory.get_device(LOW_SDP_SUBARRAY)
+    result, unique_id = sdpsal_node.AssignResources(assign_input_str)
+    logger.info(
+        f"AssignResources Command ID: {unique_id} ResultCode received: {result}"
+    )
+
+    assert unique_id[0].endswith("AssignResources")
+    assert result[0] == ResultCode.QUEUED
+
+    sdpsal_node.subscribe_event(
+        "longRunningCommandResult",
+        tango.EventType.CHANGE_EVENT,
+        change_event_callbacks["longRunningCommandResult"],
+    )
+    change_event_callbacks["longRunningCommandResult"].assert_change_event(
+        (unique_id[0], str(ResultCode.OK.value)),
+        lookahead=4,
+    )
+
+    wait_for_final_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
+
+    sdp_subarray.SetRaiseException(True)
+    result, unique_id = sdpsal_node.ReleaseAllResources()
+    logger.info(
+        # pylint: disable=line-too-long
+        f"ReleaseAllResources Command ID: \
+            {unique_id} ResultCode received: {result}"
+    )
+
+    assert unique_id[0].endswith("ReleaseAllResources")
+    assert result[0] == ResultCode.QUEUED
+
+    change_event_callbacks["longRunningCommandResult"].assert_change_event(
+        (unique_id[0], f"Exception occured on device: {sdp_subarray.dev_name()}"),
+        lookahead=4,
+    )
+
+    sdp_subarray.SetRaiseException(False)
+    
+    event_remover(
+        change_event_callbacks,
+        ["longRunningCommandResult", "longRunningCommandsInQueue"],
+    )
+
+    tear_down(dev_factory, sdp_subarray)
+
+
 
 
 @pytest.mark.post_deployment
@@ -84,7 +146,22 @@ def test_release_all_res_command_timeout_mid(
     json_factory,
     change_event_callbacks,
 ):
-    return release_all_res_resources_timeout(
+    return release_all_resources_timeout(
+        tango_context,
+        SDPSUBARRAYLEAFNODE_MID,
+        json_factory("command_AssignResources"),
+        change_event_callbacks,
+    )
+
+
+@pytest.mark.post_deployment
+@pytest.mark.SKA_mid1
+def test_release_all_res_command_errPropagation_mid(
+    tango_context,
+    json_factory,
+    change_event_callbacks,
+):
+    return release_all_resources_error_propagation(
         tango_context,
         SDPSUBARRAYLEAFNODE_MID,
         json_factory("command_AssignResources"),
@@ -97,7 +174,7 @@ def test_release_all_res_command_timeout_mid(
 def test_release_all_res_command_timeout_low(
     tango_context, json_factory, change_event_callbacks
 ):
-    return release_all_res_resources_timeout(
+    return release_all_resources_timeout(
         tango_context,
         SDPSUBARRAYLEAFNODE_LOW,
         json_factory("command_AssignResources"),
