@@ -134,7 +134,7 @@ class Configure(SdpSLNCommand):
             self.sdp_subarray_adapter.Configure(json.dumps(json_argument))
 
         except (AttributeError, ValueError, TypeError, DevFailed) as e:
-            self.logger.exception("Command invocation failed: %s", e)
+            self.logger.exception("Configure command invocation failed: %s", e)
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
                 "The Sdp Subarray Device has failed to invoke"
