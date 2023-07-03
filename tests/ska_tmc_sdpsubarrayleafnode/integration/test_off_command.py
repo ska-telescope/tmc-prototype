@@ -11,11 +11,16 @@ from tests.settings import (
 )
 
 
-def off_command(tango_context, sdpsaln_fqdn, change_event_callbacks):
+def off_command(
+    tango_context, sdpsaln_fqdn, change_event_callbacks
+):
     logger.info("%s", tango_context)
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_fqdn)
-
+    event_remover(
+        change_event_callbacks,
+        ["longRunningCommandResult", "longRunningCommandsInQueue"],
+    )
     sdp_subarray_ln_proxy.subscribe_event(
         "longRunningCommandsInQueue",
         tango.EventType.CHANGE_EVENT,
@@ -23,7 +28,7 @@ def off_command(tango_context, sdpsaln_fqdn, change_event_callbacks):
     )
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
         None,
-        lookahead=4,
+        lookahead=2,
     )
 
     result, unique_id = sdp_subarray_ln_proxy.On()
@@ -39,27 +44,28 @@ def off_command(tango_context, sdpsaln_fqdn, change_event_callbacks):
     )
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
         (unique_id[0], str(int(ResultCode.OK))),
-        lookahead=3,
+        lookahead=2,
     )
 
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
         None,
-        lookahead=3,
+        lookahead=2,
     )
-
     result, unique_id = sdp_subarray_ln_proxy.Off()
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
         ("Off",),
     )
+    logger.info(f"Command ID: {unique_id} Returned result: {result}")
+    assert result[0] == ResultCode.QUEUED
 
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
         (unique_id[0], str(int(ResultCode.OK))),
-        lookahead=3,
+        lookahead=2,
     )
 
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
         None,
-        lookahead=3,
+        lookahead=2,
     )
     event_remover(
         change_event_callbacks,
@@ -67,11 +73,14 @@ def off_command(tango_context, sdpsaln_fqdn, change_event_callbacks):
     )
 
 
+@pytest.mark.test1
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_off_command_mid(tango_context, change_event_callbacks):
     off_command(
-        tango_context, SDP_SUBARRAY_LEAF_NODE_MID, change_event_callbacks
+        tango_context,
+        SDP_SUBARRAY_LEAF_NODE_MID,
+        change_event_callbacks,
     )
 
 

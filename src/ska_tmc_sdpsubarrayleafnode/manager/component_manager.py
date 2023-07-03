@@ -288,7 +288,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         """
         if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
             raise CommandNotAllowed(
-                "The invocation of the {} command on this".format(command_name)
+                f"The invocation of the {command_name} command on this"
                 + " device is not allowed."
                 + "Reason: The current operational state is"
                 + f"{self.op_state_model.op_state}"
