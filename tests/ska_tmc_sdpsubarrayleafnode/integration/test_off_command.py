@@ -66,6 +66,7 @@ def off_command(tango_context, sdpsaln_fqdn, change_event_callbacks):
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
 
+
 @pytest.mark.test1
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
