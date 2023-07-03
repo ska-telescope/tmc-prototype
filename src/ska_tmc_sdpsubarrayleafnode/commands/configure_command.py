@@ -16,11 +16,11 @@ from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
 
 class Configure(SdpSLNCommand):
     """
-    A class for SdpSubarrayLeafNode's Configure() command.
+    This class implements the Configure command for SdpSubarray.
 
-    Configures the SDP Subarray device by providing the SDP PB
-    configuration needed to execute the receive workflow
-
+    It provides methods to configure the SdpSubarray device and
+    handle the execution
+    of the Configure command.
     """
 
     def configure(
@@ -71,7 +71,7 @@ class Configure(SdpSLNCommand):
 
         Example: \
             { \
-            "interface": "https://schema.skao.int/ska-sdp-configure/0.3", \
+            "interface": "https://schema.skao.int/ska-sdp-configure/0.4", \
             "scan_type": "science_A" \
             } \
 
@@ -102,19 +102,19 @@ class Configure(SdpSLNCommand):
         if "interface" not in json_argument:
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
-                "interface key is not present in the input json argument.",
+                "Missing interface key",
             )
 
         if "scan_type" not in json_argument:
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
-                "scan_type key is not present in the input json argument.",
+                "Missing scan_type key",
             )
 
         if json_argument["scan_type"] == "":
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
-                "scan_type is not present in the input json argument.",
+                "Missing scan_type value.",
             )
 
         log_msg = "Invoking Configure command on:"
@@ -134,11 +134,11 @@ class Configure(SdpSLNCommand):
             self.sdp_subarray_adapter.Configure(json.dumps(json_argument))
 
         except (AttributeError, ValueError, TypeError, DevFailed) as e:
-            self.logger.exception("Command invocation failed: %s", e)
+            self.logger.exception("Configure command invocation failed: %s", e)
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
-                "The invocation of the Configure command is failed on"
-                + "Sdp Subarray Device {}".format(
+                "The Sdp Subarray Device has failed to invoke"
+                + "the Configure command {}".format(
                     self.sdp_subarray_adapter.dev_name
                 )
                 + "Reason: Error in invoking the Configure command on"

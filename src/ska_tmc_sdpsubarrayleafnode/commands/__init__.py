@@ -10,7 +10,7 @@ __all__ = [
     "On",
     "Off",
     "AssignResources",
-    "ReleaseAllResources",
     "Configure",
     "End",
+    "ReleaseAllResources",
 ]
