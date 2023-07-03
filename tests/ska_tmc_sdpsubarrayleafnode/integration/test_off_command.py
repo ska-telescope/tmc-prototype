@@ -11,9 +11,7 @@ from tests.settings import (
 )
 
 
-def off_command(
-    tango_context, sdpsaln_fqdn, change_event_callbacks
-):
+def off_command(tango_context, sdpsaln_fqdn, change_event_callbacks):
     logger.info("%s", tango_context)
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_fqdn)
@@ -73,7 +71,6 @@ def off_command(
     )
 
 
-@pytest.mark.test1
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_off_command_mid(tango_context, change_event_callbacks):
