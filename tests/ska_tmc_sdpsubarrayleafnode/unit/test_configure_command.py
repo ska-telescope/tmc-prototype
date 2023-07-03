@@ -42,7 +42,11 @@ def test_telescope_configure_command(tango_context, devices, task_callback):
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
     task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.COMPLETED, "result": ResultCode.OK}
+        call_kwargs={
+            "status": TaskStatus.COMPLETED,
+            "result": ResultCode.OK,
+            "exception": "",
+        }
     )
 
 

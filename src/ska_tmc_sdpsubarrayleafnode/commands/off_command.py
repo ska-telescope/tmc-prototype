@@ -35,7 +35,6 @@ class Off(SdpSLNCommand):
         :type task_abort_event: Event, optional
         """
         task_callback(status=TaskStatus.IN_PROGRESS)
-        exception = ""
         result_code, message = self.do()
 
         logger.info(
@@ -44,23 +43,11 @@ class Off(SdpSLNCommand):
             result_code,
             message,
         )
-        if result_code == ResultCode.FAILED:
-            exception = message
-            task_callback(
-                status=TaskStatus.COMPLETED,
-                result=result_code,
-                exception=exception,
-            )
-
-        else:
-            logger.info(
-                "The Off command is invoked successfully on %s",
-                self.sdp_subarray_adapter.dev_name,
-            )
-            task_callback(
-                status=TaskStatus.COMPLETED,
-                result=result_code,
-            )
+        task_callback(
+            status=TaskStatus.COMPLETED,
+            result=result_code,
+            exception=message,
+        )
 
     # pylint: enable=unused-argument
 

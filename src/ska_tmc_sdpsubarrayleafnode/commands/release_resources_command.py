@@ -39,7 +39,6 @@ class ReleaseAllResources(SdpSLNCommand):
         :type task_abort_event: Event, optional
         """
         task_callback(status=TaskStatus.IN_PROGRESS)
-        exception = ""
         result_code, message = self.do()
         logger.info(
             "ReleaseAllResource command invoked on: %s: Result: %s, %s",
@@ -47,18 +46,11 @@ class ReleaseAllResources(SdpSLNCommand):
             result_code,
             message,
         )
-        if result_code == ResultCode.FAILED:
-            exception = message
-            task_callback(
-                status=TaskStatus.COMPLETED,
-                result=ResultCode.FAILED,
-                exception=exception,
-            )
-        else:
-            task_callback(
-                status=TaskStatus.COMPLETED,
-                result=ResultCode.OK,
-            )
+        task_callback(
+            status=TaskStatus.COMPLETED,
+            result=result_code,
+            exception=message,
+        )
 
     def do(self, argin=None):
         """
