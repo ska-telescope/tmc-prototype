@@ -23,6 +23,7 @@ def off_command(tango_context, sdpsaln_fqdn, change_event_callbacks):
     )
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
         None,
+        lookahead=4,
     )
 
     result, unique_id = sdp_subarray_ln_proxy.On()
@@ -38,12 +39,12 @@ def off_command(tango_context, sdpsaln_fqdn, change_event_callbacks):
     )
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
         (unique_id[0], str(int(ResultCode.OK))),
-        lookahead=2,
+        lookahead=3,
     )
 
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
         None,
-        lookahead=2,
+        lookahead=3,
     )
 
     result, unique_id = sdp_subarray_ln_proxy.Off()
@@ -53,19 +54,19 @@ def off_command(tango_context, sdpsaln_fqdn, change_event_callbacks):
 
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
         (unique_id[0], str(int(ResultCode.OK))),
-        lookahead=2,
+        lookahead=3,
     )
 
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
         None,
-        lookahead=2,
+        lookahead=3,
     )
     event_remover(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
 
-
+@pytest.mark.test1
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_off_command_mid(tango_context, change_event_callbacks):

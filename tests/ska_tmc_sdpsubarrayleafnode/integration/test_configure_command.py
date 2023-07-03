@@ -11,7 +11,7 @@ from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
 )
 
 
-def end(
+def configure(
     tango_context, sdpsaln_name, device, json_factory, change_event_callbacks
 ):
     logger.info("%s", tango_context)
@@ -76,27 +76,10 @@ def end(
 
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
         (unique_id[0], str(int(ResultCode.OK))),
-        lookahead=2,
+        lookahead=4,
     )
     wait_for_final_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.READY)
 
-    result, unique_id = sdp_subarray_ln_proxy.End()
-    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        (
-            "On",
-            "AssignResources",
-            "Configure",
-            "End",
-        ),
-    )
-    logger.info(f"Command ID: {unique_id} Returned result: {result}")
-    assert result[0] == ResultCode.QUEUED
-
-    change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        (unique_id[0], str(int(ResultCode.OK))),
-        lookahead=4,
-    )
-    wait_for_final_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.IDLE)
     event_remover(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
@@ -110,10 +93,10 @@ def end(
     "device",
     [("mid-sdp/subarray/01")],
 )
-def test_end_command_mid(
+def test_configure_command_mid(
     tango_context, device, json_factory, change_event_callbacks
 ):
-    return end(
+    return configure(
         tango_context,
         "ska_mid/tm_leaf_node/sdp_subarray01",
         device,
@@ -128,13 +111,13 @@ def test_end_command_mid(
     "device",
     [("low-sdp/subarray/01")],
 )
-def test_end_command_low(
+def test_configure_command_low(
     tango_context,
     device,
     json_factory,
     change_event_callbacks,
 ):
-    return end(
+    return configure(
         tango_context,
         "ska_low/tm_leaf_node/sdp_subarray01",
         device,

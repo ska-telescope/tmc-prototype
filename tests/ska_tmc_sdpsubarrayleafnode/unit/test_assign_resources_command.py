@@ -1,4 +1,3 @@
-import logging
 from os.path import dirname, join
 
 import pytest
@@ -32,7 +31,7 @@ def get_assign_input_str(assign_input_file="command_AssignResources.json"):
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
 def test_telescope_assign_resources_command(
-    tango_context, devices, task_callback, caplog
+    tango_context, devices, task_callback
 ):
     logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
@@ -45,7 +44,6 @@ def test_telescope_assign_resources_command(
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
-    caplog.set_level(logging.DEBUG, logger="ska_tango_testing.mock")
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.COMPLETED, "result": ResultCode.OK}
     )
