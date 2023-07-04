@@ -52,11 +52,10 @@ def test_telescope_end_command_fail_subarray(
     logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
     adapter_factory = HelperAdapterFactory()
-    failing_dev = devices
 
     # include exception in End command
     adapter_factory.get_or_create_adapter(
-        failing_dev,
+        devices,
         AdapterType.SDPSUBARRAY,
         attrs={"End.side_effect": Exception},
     )
