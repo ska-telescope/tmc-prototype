@@ -20,11 +20,11 @@ class End(SdpSLNCommand):
 
     """
 
+    # pylint: disable=unused-argument
     def end(
         self,
         logger: Logger,
         task_callback: Callable = None,
-        # pylint: disable=unused-argument
         task_abort_event: Optional[threading.Event] = None,
     ) -> None:
         """This is a long running method for End command, it
