@@ -11,7 +11,7 @@ from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
 
 
 def assign_resources_error_propagation(
-    tango_context, sdpsln_name, assign_input_str, change_event_callbacks
+    tango_context, sdpsln_name, invalid_assign_input_json, change_event_callbacks
 ) -> None:
     dev_factory = DevFactory()
     sdpsln_device = dev_factory.get_device(sdpsln_name)
@@ -21,9 +21,9 @@ def assign_resources_error_propagation(
     else:
         sdp_subarray = dev_factory.get_device("low-sdp/subarray/01")
 
-    result, unique_id = sdpsln_device.AssignResources(assign_input_str)
+    unique_id, result_code = sdpsln_device.AssignResources(invalid_assign_input_json)
     logger.info(
-        f"AssignResources Command ID: {unique_id} Returned result: {result}"
+        f"AssignResources Command ID: {unique_id} Returned result: {result_code}"
     )
 
     sdpsln_device.subscribe_event(
@@ -34,7 +34,7 @@ def assign_resources_error_propagation(
 
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
         (
-            unique_id[0],
+            result_code[0],
             "Missing eb_id in the AssignResources input json",
         ),
         lookahead=5,
