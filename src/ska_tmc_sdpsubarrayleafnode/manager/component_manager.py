@@ -216,7 +216,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 self.long_running_result_callback(
                     self.assign_id, ResultCode.FAILED, exception_msg=value
                 )
-            elif command_name == "ReleaseResources":
+            elif command_name == "ReleaseAllResources":
                 self.logger.info(
                     "Updating LRCRCallback with value: %s for Release",
                     value,

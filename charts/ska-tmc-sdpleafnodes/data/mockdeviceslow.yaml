@@ -4,7 +4,7 @@ domain: mocks
 instances: ["01"]
 entrypoints:
   - name: "ska_tmc_common.test_helpers.helper_base_device.HelperBaseDevice"
-  - name: "ska_tmc_common.test_helpers.helper_subarray_device.HelperSubArrayDevice"
+  - name: "ska_tmc_common.test_helpers.helper_sdp_subarray.HelperSdpSubarray"
 server:
   name: "mocks"
   instances:
@@ -15,7 +15,7 @@ server:
           {{- if .Values.deviceServers.mocks.component.sdp }}
           - name: "low-sdp/control/0"
           {{- end }}
-        - name: "HelperSubArrayDevice"
+        - name: "HelperSdpSubArray"
           devices:
           {{- if .Values.deviceServers.mocks.component.sdp }}
           - name: "low-sdp/subarray/01"
