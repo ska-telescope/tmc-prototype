@@ -101,7 +101,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.timeout = timeout
         self.command_timeout = command_timeout
         self.assign_id = None
-        self.releaseAllResource_command_id = None
+        self.release_all_resources_command_id = None
         self.long_running_result_callback = LRCRCallback(self.logger)
         self._update_sdp_subarray_obs_state_callback = (
             _update_sdp_subarray_obs_state_callback
@@ -224,7 +224,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                     value,
                 )
                 self.long_running_result_callback(
-                    self.releaseAllResource_command_id,
+                    self.release_all_resources_command_id,
                     ResultCode.FAILED,
                     exception_msg=value,
                 )
@@ -432,7 +432,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :rtype: tuple
         """
         release_command = ReleaseAllResources(self, self.logger)
-        self.releaseAllResource_command_id = (
+        self.release_all_resources_command_id = (
             f"{time.time()}-{ReleaseAllResources.__name__}"
         )
         task_status, response = self.submit_task(
