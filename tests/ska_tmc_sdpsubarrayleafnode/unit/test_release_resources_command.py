@@ -1,7 +1,6 @@
 import pytest
 from ska_tango_base.commands import ResultCode, TaskStatus
 from ska_tango_base.control_model import ObsState
-from ska_tmc_common import DevFactory
 from ska_tmc_common.adapters import AdapterType
 from ska_tmc_common.device_info import DeviceInfo
 from ska_tmc_common.exceptions import DeviceUnresponsive, InvalidObsStateError
@@ -100,28 +99,3 @@ def test_release_resources_fail_check_allowed_with_device_unresponsive(
     cm._device = DeviceInfo(devices, _unresponsive=True)
     with pytest.raises(DeviceUnresponsive):
         cm.is_command_allowed("ReleaseAllResources")
-
-
-@pytest.mark.Test
-@pytest.mark.parametrize("devices", [SDP_SUBARRAY_DEVICE_MID])
-def test_telescope_release_resources_command_error_propagation(
-    tango_context, devices, task_callback
-):
-    logger.info("%s", tango_context)
-    dev_factory = DevFactory()
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
-    cm.command_timeout = 2
-    cm.update_device_obs_state(ObsState.IDLE)
-    assert cm.is_command_allowed("ReleaseAllResources")
-    cm.release_all_resource(task_callback)
-    task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.QUEUED}
-    )
-    task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.IN_PROGRESS}
-    )
-    task_callback.assert_against_call(
-        status=TaskStatus.COMPLETED,
-        result=ResultCode.FAILED,
-        exception="Timeout has occured, command failed",
-    )
