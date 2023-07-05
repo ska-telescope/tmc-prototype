@@ -60,19 +60,17 @@ class ReleaseAllResources(SdpSLNCommand):
             self.update_task_status(result_code, message)
             self.component_manager.stop_timer()
         else:
-            # below variables created temporarily
-            # pylint disable line too long not working
-            id1 = self.component_manager.releaseAllResource_command_id
-            id2 = self.component_manager.long_running_result_callback
             self.start_tracker_thread(
                 self.component_manager.get_obs_state,
                 ObsState.EMPTY,
                 self.timeout_id,
                 self.timeout_callback,
-                # pylint: disable=line-too-long
-                command_id=id1,
-                # pylint: disable=line-too-long
-                lrcr_callback=id2,
+                command_id=(
+                    self.component_manager.releaseAllResource_command_id
+                ),
+                lrcr_callback=(
+                    self.component_manager.long_running_result_callback
+                ),
             )
 
     def update_task_status(self, result: ResultCode, message: str = ""):

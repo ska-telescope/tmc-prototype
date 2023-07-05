@@ -26,10 +26,10 @@ def test_telescope_release_resources_command(
     tango_context, devices, task_callback
 ):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     assert cm.is_command_allowed("ReleaseAllResources")
 
-    cm.release_all_resource(task_callback=task_callback)
+    cm.release_all_resources(task_callback=task_callback)
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.QUEUED}
     )
@@ -37,7 +37,11 @@ def test_telescope_release_resources_command(
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
     task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.COMPLETED, "result": ResultCode.OK}
+        call_kwargs={
+            "status": TaskStatus.COMPLETED,
+            "result": ResultCode.OK,
+            "exception": "",
+        }
     )
 
 
@@ -49,14 +53,14 @@ def test_telescope_release_resources_command_fail_subarray(
     tango_context, devices, task_callback
 ):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     adapter_factory = HelperAdapterFactory()
     failing_dev = devices
 
     # include exception in ReleaseAllResources command
     adapter_factory.get_or_create_adapter(
         failing_dev,
-        AdapterType.SUBARRAY,
+        AdapterType.SDPSUBARRAY,
         attrs={"ReleaseAllResources.side_effect": Exception},
     )
     release_command = ReleaseAllResources(cm, logger)
@@ -78,7 +82,7 @@ def test_release_resources_command_fail_check_allowed_with_invalid_obsState(
     tango_context, devices
 ):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     cm.update_device_obs_state(ObsState.READY)
     with pytest.raises(InvalidObsStateError):
         cm.is_command_allowed("ReleaseAllResources")
@@ -92,7 +96,7 @@ def test_release_resources_fail_check_allowed_with_device_unresponsive(
     tango_context, devices
 ):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     cm._device = DeviceInfo(devices, _unresponsive=True)
     with pytest.raises(DeviceUnresponsive):
         cm.is_command_allowed("ReleaseAllResources")

@@ -1,7 +1,9 @@
 """
-Off command class for SdpSubarrayLeafNode.
+End command class for SdpSubarrayLeafNode.
 """
+
 import threading
+from logging import Logger
 from typing import Callable, Optional
 
 from ska_tango_base.commands import ResultCode
@@ -10,22 +12,23 @@ from ska_tango_base.executor import TaskStatus
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
 
 
-class Off(SdpSLNCommand):
+class End(SdpSLNCommand):
     """
-    A class for SdpSubarrayLeafNode's Off() command.
+    A class for SdpSubarrayLeafNode's End() command.
 
-    This command turns off SDP Subarray device.
+    Invokes End command on SdpSubarray to end the current Scheduling Block.
+
     """
 
     # pylint: disable=unused-argument
-    def off(
+    def end(
         self,
-        logger,
+        logger: Logger,
         task_callback: Callable = None,
         task_abort_event: Optional[threading.Event] = None,
     ) -> None:
-        """A method to invoke the Off command.
-        It sets the task_callback status according to command progress.
+        """This is a long running method for End command, it
+        executes do hook, invokes End command on SdpSubarray.
 
         :param logger: logger
         :type logger: logging.Logger
@@ -36,31 +39,33 @@ class Off(SdpSLNCommand):
         """
         task_callback(status=TaskStatus.IN_PROGRESS)
         result_code, message = self.do()
-
         logger.info(
-            "Off command invoked on: %s: Result: %s, %s",
+            "End command invoked on: %s: Result: %s, %s",
             self.sdp_subarray_adapter.dev_name,
             result_code,
             message,
         )
+
         task_callback(
             status=TaskStatus.COMPLETED,
             result=result_code,
             exception=message,
         )
 
-    # pylint: enable=unused-argument
-
     def do(self, argin=None):
         """
-        Method to invoke Off command on SdpSubarray.
+        Method to invoke End command on SdpSubarray.
+
+        :param argin: None
+
+        return:
+            None
 
         """
         return_code, message = self.init_adapter()
         if return_code == ResultCode.FAILED:
             return return_code, message
-
         result, message = self.call_adapter_method(
-            "SDP Subarray", self.sdp_subarray_adapter, "Off"
+            "SdpSubarray", self.sdp_subarray_adapter, "End"
         )
         return result, message

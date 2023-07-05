@@ -202,7 +202,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         current device state. \
 
         :return: True if AssignResources command is allowed to be run in \
-        current device state \
+        current device state.
 
         :rtype: boolean
         """
@@ -221,7 +221,34 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("AssignResources")
         result_code, unique_id = handler(argin)
-        return ([result_code], [unique_id])
+        return [result_code], [unique_id]
+
+    def is_Configure_allowed(self) -> bool:
+        """
+        Checks whether Configure command is allowed to be run in \
+        current device state. \
+
+        :return: True if Configure command is allowed to be run in \
+        current device state \
+
+        :rtype: boolean
+        """
+        return self.component_manager.is_command_allowed("Configure")
+
+    @command(
+        dtype_in="str",
+        doc_in="The string in JSON format",
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
+    @DebugIt()
+    def Configure(self, argin: str) -> tuple:
+        """
+        This command invokes the Configure() command on Csp Subarray.
+        """
+        handler = self.get_command_object("Configure")
+        result_code, unique_id = handler(argin)
+        return [result_code], [unique_id]
 
     def is_Off_allowed(self):
         """
@@ -272,7 +299,35 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         handler = self.get_command_object("ReleaseAllResources")
         return_code, unique_id = handler()
 
-        return [[return_code], [str(unique_id)]]
+        return [return_code], [str(unique_id)]
+
+    def is_End_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device \
+        state. \
+
+        :return: True if this command is allowed to be run in current device
+        state.
+
+        :rtype: boolean
+        """
+        return self.component_manager.is_command_allowed("End")
+
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
+    @DebugIt()
+    def End(self):
+        """
+        This command invokes End() command on Sdp
+        Subarray.
+        """
+
+        handler = self.get_command_object("End")
+        return_code, unique_id = handler()
+
+        return [return_code], [str(unique_id)]
 
     # default ska mid
     def create_component_manager(self):
@@ -306,7 +361,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             ("On", "on"),
             ("Off", "off"),
             ("AssignResources", "assign_resources"),
-            ("ReleaseAllResources", "release_all_resource"),
+            ("Configure", "configure"),
+            ("End", "end"),
+            ("ReleaseAllResources", "release_all_resources"),
         ]:
             self.register_command_object(
                 command_name,

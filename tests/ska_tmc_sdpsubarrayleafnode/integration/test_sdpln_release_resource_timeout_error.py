@@ -1,5 +1,3 @@
-import time
-
 import pytest
 import tango
 from ska_tango_base.commands import ResultCode
@@ -34,10 +32,11 @@ def release_all_resources_error_propagation(
     elif sdpsln_name == SDPSUBARRAYLEAFNODE_LOW:
         sdp_subarray = dev_factory.get_device(LOW_SDP_SUBARRAY)
 
-    #AssignResources    
+    # AssignResources
     result, unique_id = sdpsal_node.AssignResources(assign_input_str)
     logger.info(
-        f"AssignResources Command ID: {unique_id} ResultCode received: {result}"
+        f"AssignResources Command ID: {unique_id} \
+            ResultCode received: {result}"
     )
 
     assert unique_id[0].endswith("AssignResources")
@@ -55,7 +54,7 @@ def release_all_resources_error_propagation(
 
     wait_for_final_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
 
-    #Check error propagation
+    # Check error propagation
     sdp_subarray.SetDefective(True)
     result, unique_id = sdpsal_node.ReleaseAllResources()
 
@@ -85,8 +84,9 @@ def release_all_resources_error_propagation(
 
     tear_down(dev_factory, sdp_subarray)
 
+
 @pytest.mark.post_deployment
-@pytest.mark.SKA_mid
+@pytest.mark.SKA_mid1
 def test_release_all_res_command_error_propagation_mid(
     tango_context,
     json_factory,
@@ -98,6 +98,7 @@ def test_release_all_res_command_error_propagation_mid(
         json_factory("command_AssignResources"),
         change_event_callbacks,
     )
+
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
