@@ -101,7 +101,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.timeout = timeout
         self.command_timeout = command_timeout
         self.assign_id = None
-        self.release_all_resources_command_id = None
+        self.release_id = None
         self.long_running_result_callback = LRCRCallback(self.logger)
         self._update_sdp_subarray_obs_state_callback = (
             _update_sdp_subarray_obs_state_callback
@@ -212,7 +212,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         except ValueError:
             if command_name == "AssignResources":
                 self.logger.info(
-                    "Updating LRCRCallback with value: %s for Assign",
+                    "Updating LRCRCallback with value: %s for \
+                          AssignResources",
                     value,
                 )
                 self.long_running_result_callback(
@@ -220,11 +221,12 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 )
             elif command_name == "ReleaseAllResources":
                 self.logger.info(
-                    "Updating LRCRCallback with value: %s for Release",
+                    "Updating LRCRCallback with value: %s \
+                        for ReleaseAllResources",
                     value,
                 )
                 self.long_running_result_callback(
-                    self.release_all_resources_command_id,
+                    self.release_id,
                     ResultCode.FAILED,
                     exception_msg=value,
                 )
@@ -432,9 +434,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :rtype: tuple
         """
         release_command = ReleaseAllResources(self, self.logger)
-        self.release_all_resources_command_id = (
-            f"{time.time()}-{ReleaseAllResources.__name__}"
-        )
+        self.release_id = f"{time.time()}-{ReleaseAllResources.__name__}"
         task_status, response = self.submit_task(
             release_command.release_resources,
             args=[self.logger],

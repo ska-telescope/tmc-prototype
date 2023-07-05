@@ -15,7 +15,7 @@ server:
           {{- if .Values.deviceServers.mocks.component.sdp }}
           - name: "low-sdp/control/0"
           {{- end }}
-        - name: "HelperSdpSubArray"
+        - name: "HelperSdpSubarray"
           devices:
           {{- if .Values.deviceServers.mocks.component.sdp }}
           - name: "low-sdp/subarray/01"

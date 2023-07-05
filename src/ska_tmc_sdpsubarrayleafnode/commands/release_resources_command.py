@@ -65,9 +65,7 @@ class ReleaseAllResources(SdpSLNCommand):
                 ObsState.EMPTY,
                 self.timeout_id,
                 self.timeout_callback,
-                command_id=(
-                    self.component_manager.release_all_resources_command_id
-                ),
+                command_id=(self.component_manager.release_id),
                 lrcr_callback=(
                     self.component_manager.long_running_result_callback
                 ),
