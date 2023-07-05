@@ -1,4 +1,3 @@
-import logging
 from os.path import dirname, join
 
 import pytest
@@ -32,10 +31,10 @@ def get_assign_input_str(assign_input_file="command_AssignResources.json"):
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
 def test_telescope_assign_resources_command(
-    tango_context, devices, task_callback, caplog
+    tango_context, devices, task_callback
 ):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     assert cm.is_command_allowed("AssignResources")
     assign_input_str = get_assign_input_str()
     cm.assign_resources(assign_input_str, task_callback=task_callback)
@@ -45,7 +44,6 @@ def test_telescope_assign_resources_command(
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
-    caplog.set_level(logging.DEBUG, logger="ska_tango_testing.mock")
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.COMPLETED, "result": ResultCode.OK}
     )
@@ -59,7 +57,7 @@ def test_assign_resources_command_fail_subarray(
     tango_context, devices, task_callback
 ):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     adapter_factory = HelperAdapterFactory()
     failing_dev = devices
     assign_input_str = get_assign_input_str()
@@ -88,7 +86,7 @@ def test_assign_resources_command_empty_input_json(
     tango_context, devices, task_callback
 ):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     assign_input_str = ""
     cm.assign_resources(assign_input_str, task_callback=task_callback)
     task_callback.assert_against_call(
@@ -110,7 +108,7 @@ def test_assign_resources_command_fail_check_allowed_with_invalid_obsState(
     tango_context, devices
 ):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     cm.update_device_obs_state(ObsState.READY)
     with pytest.raises(InvalidObsStateError):
         cm.is_command_allowed("AssignResources")
@@ -124,7 +122,7 @@ def test_telescope_assign_resources_command_fail_check_allowed_with_device_unres
     tango_context, devices
 ):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     cm._device = DeviceInfo(devices, _unresponsive=True)
     with pytest.raises(DeviceUnresponsive):
         cm.is_command_allowed("AssignResources")
