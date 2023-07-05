@@ -21,7 +21,7 @@ from tests.settings import (
     "sdp_master_device", [SDP_MASTER_DEVICE_MID, SDP_MASTER_DEVICE_LOW]
 )
 def test_standby_command(tango_context, sdp_master_device, task_callback):
-    cm, _ = create_cm("SdpMLNComponentManager", sdp_master_device)
+    cm = create_cm("SdpMLNComponentManager", sdp_master_device)
     assert cm.is_command_allowed("Standby")
     cm.submit_standby_command(task_callback=task_callback)
     task_callback.assert_against_call(
@@ -41,7 +41,7 @@ def test_standby_command(tango_context, sdp_master_device, task_callback):
 def test_standby_command_fail_sdp_master(
     tango_context, sdp_master_device, task_callback
 ):
-    cm, _ = create_cm("SdpMLNComponentManager", sdp_master_device)
+    cm = create_cm("SdpMLNComponentManager", sdp_master_device)
     adapter_factory = HelperAdapterFactory()
     cm.sdp_master_device_name = sdp_master_device
     # include exception in Standby command
@@ -65,7 +65,7 @@ def test_standby_command_fail_sdp_master(
 def test_standby_command_is_not_allowed_device_unresponsive(
     tango_context, sdp_master_device
 ):
-    cm, _ = create_cm("SdpMLNComponentManager", sdp_master_device)
+    cm = create_cm("SdpMLNComponentManager", sdp_master_device)
     cm._device = DeviceInfo(sdp_master_device, _unresponsive=True)
     pytest.raises(DeviceUnresponsive)
 
@@ -75,7 +75,7 @@ def test_standby_command_is_not_allowed_device_unresponsive(
 )
 def test_standby_fail_is_allowed(tango_context, sdp_master_device):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpMLNComponentManager", sdp_master_device)
+    cm = create_cm("SdpMLNComponentManager", sdp_master_device)
     cm.op_state_model._op_state = DevState.FAULT
     with pytest.raises(CommandNotAllowed):
         cm.is_command_allowed("Standby")

@@ -32,7 +32,7 @@ def get_configure_input_str(configure_input_file="command_Configure.json"):
 )
 def test_telescope_configure_command(tango_context, devices, task_callback):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     configure_input_str = get_configure_input_str()
     cm.configure(configure_input_str, task_callback=task_callback)
     task_callback.assert_against_call(
@@ -42,7 +42,11 @@ def test_telescope_configure_command(tango_context, devices, task_callback):
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
     task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.COMPLETED, "result": ResultCode.OK}
+        call_kwargs={
+            "status": TaskStatus.COMPLETED,
+            "result": ResultCode.OK,
+            "exception": "",
+        }
     )
 
 
@@ -54,7 +58,7 @@ def test_configure_command_fail_subarray(
     tango_context, devices, task_callback
 ):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     adapter_factory = HelperAdapterFactory()
     failing_dev = devices
     configure_input_str = get_configure_input_str()
@@ -83,7 +87,7 @@ def test_configure_command_empty_input_json(
     tango_context, devices, task_callback
 ):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     configure_input_str = ""
     cm.configure(configure_input_str, task_callback=task_callback)
     task_callback.assert_against_call(
@@ -105,7 +109,7 @@ def test_configure_command_fail_check_allowed_with_invalid_obsState(
     tango_context, devices
 ):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     cm.update_device_obs_state(ObsState.EMPTY)
     with pytest.raises(InvalidObsStateError):
         cm.is_command_allowed("Configure")
@@ -119,7 +123,7 @@ def test_telescope_configure_command_fail_check_allowed_with_device_unresponsive
     tango_context, devices
 ):
     logger.info("%s", tango_context)
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     cm._device = DeviceInfo(devices, _unresponsive=True)
     with pytest.raises(DeviceUnresponsive):
         cm.is_command_allowed("configure")

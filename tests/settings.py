@@ -1,13 +1,8 @@
 """Common Settings for testing of SDP Leaf Node"""
 import logging
-import time
 from typing import List
 
-import mock
 from ska_tmc_common.enum import LivelinessProbeType
-from ska_tmc_common.test_helpers.helper_adapter_factory import (
-    HelperAdapterFactory,
-)
 
 from ska_tmc_sdpmasterleafnode.manager.component_manager import (
     SdpMLNComponentManager,
@@ -55,43 +50,7 @@ def create_cm(cm_class, device):
         log_msg = f"Unknown component manager class {cm_class}"
         logger.error(log_msg)
 
-    start_time = time.time()
-    return cm, start_time
-
-
-def get_sdpsln_command_obj(
-    command_class,
-    devices,
-    obsstate_value=None,
-):
-    """Returns component manager and command class object for Sdp
-    Subarray Leaf Node"""
-    cm, start_time = create_cm("SdpSLNComponentManager", devices)
-    elapsed_time = time.time() - start_time
-    logger.info(
-        "checked %s device in %s", cm.get_device().dev_name, elapsed_time
-    )
-    cm.update_device_obs_state(obsstate_value)
-
-    adapter_factory = HelperAdapterFactory()
-
-    attrs = {"fetch_skuid.return_value": 123}
-    skuid = mock.Mock(**attrs)
-
-    command_obj = command_class(cm, skuid)
-    return cm, command_obj, adapter_factory
-
-
-def get_sdpmln_command_obj(command_class, devices):
-    """Returns component manager and command class object for Sdp Master Leaf
-    Node"""
-    cm, _ = create_cm("SdpMLNComponentManager", devices)
-    adapter_factory = HelperAdapterFactory()
-    attrs = {"fetch_skuid.return_value": 123}
-    skuid = mock.Mock(**attrs)
-    cm.sdp_master_device_name = devices
-    command_obj = command_class(cm, cm.op_state_model, adapter_factory, skuid)
-    return cm, command_obj, adapter_factory
+    return cm
 
 
 def event_remover(change_event_callbacks, attributes: List[str]) -> None:

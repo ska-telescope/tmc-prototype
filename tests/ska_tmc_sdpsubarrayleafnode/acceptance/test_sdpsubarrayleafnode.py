@@ -41,12 +41,26 @@ def call_command(
     try:
         if command_name == "AssignResources":
             logger.info(
-                f"cspsubarrayleaf_node: {sdpsubarrayleaf_node.dev_name()}"
+                f"sdpsubarrayleaf_node: {sdpsubarrayleaf_node.dev_name()}"
             )
             assign_res_string = json_factory("command_AssignResources")
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name, assign_res_string
             )
+        elif command_name == "Configure":
+            logger.info(
+                f"sdpsubarrayleaf_node: {sdpsubarrayleaf_node.dev_name()}"
+            )
+            configure_string = json_factory("command_Configure")
+            pytest.command_result = sdpsubarrayleaf_node.command_inout(
+                command_name, configure_string
+            )
+        elif command_name == "End":
+            # Perform end logic here
+            pytest.command_result = sdpsubarrayleaf_node.command_inout(
+                command_name
+            )
+
         else:
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name
@@ -91,6 +105,14 @@ def check_command(
     )
 
     if command_name == "AssignResources":
+        wait_for_final_sdp_subarray_obsstate(
+            sdpsubarrayleaf_node_dev, ObsState.IDLE
+        )
+    elif command_name == "Configure":
+        wait_for_final_sdp_subarray_obsstate(
+            sdpsubarrayleaf_node_dev, ObsState.READY
+        )
+    elif command_name == "End":
         wait_for_final_sdp_subarray_obsstate(
             sdpsubarrayleaf_node_dev, ObsState.IDLE
         )

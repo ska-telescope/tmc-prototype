@@ -12,6 +12,8 @@ Feature: SdpSubarrayLeafNode acceptance
 		| command_name		   |
 		| On                   |
 		| AssignResources      |
+		| Configure			   |
+		| End			       |
 		| ReleaseAllResources  |
 		| Off				   |
 

@@ -23,7 +23,7 @@ from tests.settings import (
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
 def test_command_on(tango_context, devices, task_callback):
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     assert cm.is_command_allowed("On")
 
     cm.on(task_callback=task_callback)
@@ -34,7 +34,11 @@ def test_command_on(tango_context, devices, task_callback):
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
     task_callback.assert_against_call(
-        call_kwargs={"status": TaskStatus.COMPLETED, "result": ResultCode.OK}
+        call_kwargs={
+            "status": TaskStatus.COMPLETED,
+            "result": ResultCode.OK,
+            "exception": "",
+        }
     )
 
 
@@ -43,7 +47,7 @@ def test_command_on(tango_context, devices, task_callback):
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
 def test_command_on_not_allowed(tango_context, devices):
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     cm.op_state_model._op_state = DevState.FAULT
     with pytest.raises(CommandNotAllowed):
         cm.is_command_allowed("On")
@@ -56,7 +60,7 @@ def test_command_on_not_allowed(tango_context, devices):
 def test_command_on_with_failed_sdp_subarray(
     tango_context, devices, task_callback
 ):
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     adapter_factory = HelperAdapterFactory()
     failing_dev = devices
 
@@ -84,7 +88,7 @@ def test_command_on_with_failed_sdp_subarray(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
 def test_on_command_is_allowed_device_unresponsive(tango_context, devices):
-    cm, _ = create_cm("SdpSLNComponentManager", devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
     cm._device = DeviceInfo(devices, _unresponsive=True)
     with pytest.raises(DeviceUnresponsive):
         cm.is_command_allowed("On")

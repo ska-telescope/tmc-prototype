@@ -26,6 +26,7 @@ from ska_tmc_sdpsubarrayleafnode.commands.assign_resources_command import (
     AssignResources,
 )
 from ska_tmc_sdpsubarrayleafnode.commands.configure_command import Configure
+from ska_tmc_sdpsubarrayleafnode.commands.end_command import End
 from ska_tmc_sdpsubarrayleafnode.commands.off_command import Off
 from ska_tmc_sdpsubarrayleafnode.commands.on_command import On
 from ska_tmc_sdpsubarrayleafnode.commands.release_resources_command import (
@@ -287,13 +288,11 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         """
         if self.op_state_model.op_state in [DevState.FAULT, DevState.UNKNOWN]:
             raise CommandNotAllowed(
-                "The invocation of the {} command on this device".format(
-                    __class__
-                )
-                + "is not allowed."
+                f"The invocation of the {command_name} command on this"
+                + " device is not allowed."
                 + "Reason: The current operational state is"
-                + "{}".format(self.op_state_model.op_state)
-                + "The command has NOT been executed."
+                + f"{self.op_state_model.op_state}"
+                + "The command has NOT been executed. "
                 + "This device will continue with normal operation."
             )
 
@@ -309,8 +308,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 ObsState.EMPTY,
             ]:
                 self.raise_invalid_obsstate_error(command_name)
-
-        if command_name in ["Configure"]:
+        if command_name in ["Configure", "End"]:
             if self.get_device().obs_state not in [
                 ObsState.IDLE,
                 ObsState.READY,
@@ -415,7 +413,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.logger.info("Off command queued for execution")
         return task_status, response
 
-    def release_all_resource(
+    def release_all_resources(
         self, task_callback=None
     ) -> Tuple[TaskStatus, str]:
         """Submits the ReleaseAllResources command for execution.
@@ -431,6 +429,25 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.logger.info(
             "TaskStatus: %s and Response: %s of ReleaseAllResource \
                   command after queued to execution",
+            task_status,
+            response,
+        )
+        return task_status, response
+
+    def end(self, task_callback=None) -> Tuple[TaskStatus, str]:
+        """Submits the End command for execution.
+
+        :rtype: tuple
+        """
+        end_command = End(self, self.logger)
+        task_status, response = self.submit_task(
+            end_command.end,
+            args=[self.logger],
+            task_callback=task_callback,
+        )
+        self.logger.info(
+            "TaskStatus: %s and Response: %s of End command after queued\
+                 to execution",
             task_status,
             response,
         )
