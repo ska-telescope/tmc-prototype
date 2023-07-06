@@ -28,7 +28,7 @@ def assign_resources_error_propagation(
         invalid_assign_input_json
     )
     logger.info(
-        f"AssignResources Command ID: {unique_id} Returned result: \
+        f"AssignResources Command ID: {unique_id} Returned result:\
             {result_code}"
     )
 
