@@ -10,9 +10,7 @@ from ska_tango_testing.mock import MockCallable
 from ska_tango_testing.mock.tango import MockTangoEventCallbackGroup
 from ska_tmc_common.dev_factory import DevFactory
 from ska_tmc_common.test_helpers.helper_base_device import HelperBaseDevice
-from ska_tmc_common.test_helpers.helper_subarray_device import (
-    HelperSubArrayDevice,
-)
+from ska_tmc_common.test_helpers.helper_sdp_subarray import HelperSdpSubarray
 from tango.test_context import MultiDeviceTestContext
 
 # from tango.test_utils import DeviceTestContext
@@ -73,7 +71,7 @@ def devices_to_load():
     """Returns all devices to load"""
     return (
         {
-            "class": HelperSubArrayDevice,
+            "class": HelperSdpSubarray,
             "devices": [
                 {"name": "mid-sdp/subarray/01"},
                 {"name": "low-sdp/subarray/01"},

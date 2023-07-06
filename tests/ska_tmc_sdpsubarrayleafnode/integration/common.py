@@ -2,9 +2,7 @@ import time
 
 import pytest
 from ska_tango_base.control_model import ObsState
-from ska_tmc_common.test_helpers.helper_subarray_device import (
-    HelperSubArrayDevice,
-)
+from ska_tmc_common.test_helpers.helper_sdp_subarray import HelperSdpSubarray
 
 from ska_tmc_sdpsubarrayleafnode.sdp_subarray_leaf_node import (
     SdpSubarrayLeafNode,
@@ -18,7 +16,7 @@ pytest.event_arrived = False
 def devices_to_load():
     return (
         {
-            "class": HelperSubArrayDevice,
+            "class": HelperSdpSubarray,
             "devices": [
                 {"name": "mid-sdp/subarray/01"},
             ],
@@ -60,7 +58,20 @@ def tear_down(dev_factory, sdp_subarray):
         sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
         logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
 
-    if sdp_subarray_obsstate.value in (ObsState.READY, ObsState.SCANNING):
+    if sdp_subarray_obsstate.value == 4:
+        sdp_subarray.End()
+        sdp_subarray.SetDirectObsState(ObsState.IDLE)
+        time.sleep(0.5)
+        # wait_for_final_sdp_subarray_obsstate(sdp_subarray, ObsState.IDLE)
+        sdp_subarray.ReleaseResources()
+        sdp_subarray.SetDirectObsState(ObsState.EMPTY)
+        time.sleep(0.5)
+        # wait_for_final_sdp_subarray_obsstate(sdp_subarray, ObsState.EMPTY)
+        sdp_subarray.Off()
+        sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
+        logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
+
+    if sdp_subarray_obsstate.value == ObsState.SCANNING:
         sdp_subarray.Abort()
         sdp_subarray.SetDirectObsState(ObsState.ABORTED)
         time.sleep(1)
