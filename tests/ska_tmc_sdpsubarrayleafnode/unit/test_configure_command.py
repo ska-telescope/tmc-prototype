@@ -1,8 +1,9 @@
 from os.path import dirname, join
 
 import pytest
-from ska_tango_base.commands import ResultCode, TaskStatus
+from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
+from ska_tango_base.executor import TaskStatus
 from ska_tmc_common.adapters import AdapterType
 from ska_tmc_common.device_info import DeviceInfo
 from ska_tmc_common.exceptions import DeviceUnresponsive, InvalidObsStateError
@@ -42,11 +43,7 @@ def test_telescope_configure_command(tango_context, devices, task_callback):
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
     task_callback.assert_against_call(
-        call_kwargs={
-            "status": TaskStatus.COMPLETED,
-            "result": ResultCode.OK,
-            "exception": "",
-        }
+        call_kwargs={"status": TaskStatus.COMPLETED, "result": ResultCode.OK}
     )
 
 

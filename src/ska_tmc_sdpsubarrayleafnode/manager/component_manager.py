@@ -101,6 +101,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.timeout = timeout
         self.command_timeout = command_timeout
         self.assign_id = None
+        self.configure_id: str
         self.long_running_result_callback = LRCRCallback(self.logger)
         self._update_sdp_subarray_obs_state_callback = (
             _update_sdp_subarray_obs_state_callback
@@ -216,6 +217,14 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 )
                 self.long_running_result_callback(
                     self.assign_id, ResultCode.FAILED, exception_msg=value
+                )
+            elif command_name == "Configure":
+                self.logger.info(
+                    "Updating LRCRCallback with value: %s for Configure",
+                    value,
+                )
+                self.long_running_result_callback(
+                    self.configure_id, ResultCode.FAILED, exception_msg=value
                 )
 
     @property
@@ -387,6 +396,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :rtype: tuple
         """
         configure_command = Configure(self, self.logger)
+        self.configure_id = f"{time.time()}-{Configure.__name__}"
         task_status, response = self.submit_task(
             configure_command.configure,
             args=[argin, self.logger],
