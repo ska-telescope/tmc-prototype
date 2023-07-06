@@ -2,9 +2,7 @@ import time
 
 import pytest
 from ska_tango_base.control_model import ObsState
-from ska_tmc_common.test_helpers.helper_subarray_device import (
-    HelperSubArrayDevice,
-)
+from ska_tmc_common.test_helpers.helper_sdp_subarray import HelperSdpSubarray
 
 from ska_tmc_sdpsubarrayleafnode.sdp_subarray_leaf_node import (
     SdpSubarrayLeafNode,
@@ -18,7 +16,7 @@ pytest.event_arrived = False
 def devices_to_load():
     return (
         {
-            "class": HelperSubArrayDevice,
+            "class": HelperSdpSubarray,
             "devices": [
                 {"name": "mid-sdp/subarray/01"},
             ],
