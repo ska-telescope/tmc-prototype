@@ -100,7 +100,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self._update_availablity_callback = _update_availablity_callback
         self.timeout = timeout
         self.command_timeout = command_timeout
-        self.assign_id = None
+        self.assign_id: str
         self.configure_id: str
         self.long_running_result_callback = LRCRCallback(self.logger)
         self._update_sdp_subarray_obs_state_callback = (
@@ -111,6 +111,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self._lrc_result = ("", "")
         self.on_command = On(self, self.logger)
         self.off_command = Off(self, self.logger)
+        self.command_in_progress: str = ""
 
     def stop(self):
         """
@@ -210,7 +211,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             # Ignoring ResultCode events
             int(value)
         except ValueError:
-            if command_name == "AssignResources":
+            if (
+                command_name == "AssignResources"
+                and self.command_in_progress == "AssignResources"
+            ):
                 self.logger.info(
                     "Updating LRCRCallback with value: %s for Assign",
                     value,
@@ -218,7 +222,10 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 self.long_running_result_callback(
                     self.assign_id, ResultCode.FAILED, exception_msg=value
                 )
-            elif command_name == "Configure":
+            elif (
+                command_name == "Configure"
+                and self.command_in_progress == "Configure"
+            ):
                 self.logger.info(
                     "Updating LRCRCallback with value: %s for Configure",
                     value,

@@ -52,6 +52,7 @@ class Configure(SdpSLNCommand):
         :param task_abort_event: Check for abort, defaults to None
         :type task_abort_event: Event, optional
         """
+        self.component_manager.command_in_progress = "Configure"
         self.task_callback = task_callback
         task_callback(status=TaskStatus.IN_PROGRESS)
         self.component_manager.start_timer(
@@ -64,6 +65,7 @@ class Configure(SdpSLNCommand):
         if result_code == ResultCode.FAILED:
             self.update_task_status(result_code, message)
             self.component_manager.stop_timer()
+            self.component_manager.command_in_progress = ""
         else:
             self.start_tracker_thread(
                 self.component_manager.get_obs_state,
@@ -85,6 +87,7 @@ class Configure(SdpSLNCommand):
             )
         else:
             self.task_callback(status=TaskStatus.COMPLETED, result=result)
+        self.component_manager.command_in_progress = ""
 
     def do(self, argin=None):
         """
