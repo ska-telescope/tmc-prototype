@@ -250,6 +250,33 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         result_code, unique_id = handler(argin)
         return [result_code], [unique_id]
 
+    def is_Scan_allowed(self) -> bool:
+        """
+        Checks whether Scan command is allowed to be run in \
+        current device state. \
+
+        :return: True if Scan command is allowed to be run in \
+        current device state \
+
+        :rtype: boolean
+        """
+        return self.component_manager.is_command_allowed("Scan")
+
+    @command(
+        dtype_in="str",
+        doc_in="The string in JSON format",
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
+    @DebugIt()
+    def Scan(self, argin: str) -> tuple:
+        """
+        This command invokes the Scan() command on Csp Subarray.
+        """
+        handler = self.get_command_object("Scan")
+        result_code, unique_id = handler(argin)
+        return [result_code], [unique_id]
+
     def is_Off_allowed(self):
         """
         Checks whether this command is allowed to be run in current \
@@ -362,6 +389,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             ("Off", "off"),
             ("AssignResources", "assign_resources"),
             ("Configure", "configure"),
+            ("Scan", "scan"),
             ("End", "end"),
             ("ReleaseAllResources", "release_all_resources"),
         ]:

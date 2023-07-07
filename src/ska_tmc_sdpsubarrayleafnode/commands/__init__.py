@@ -5,12 +5,14 @@ from .end_command import End
 from .off_command import Off
 from .on_command import On
 from .release_resources_command import ReleaseAllResources
+from .scan_command import Scan
 
 __all__ = [
     "On",
     "Off",
     "AssignResources",
     "Configure",
+    "Scan",
     "End",
     "ReleaseAllResources",
 ]

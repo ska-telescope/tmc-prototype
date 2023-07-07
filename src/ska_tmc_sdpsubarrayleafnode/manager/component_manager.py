@@ -32,6 +32,7 @@ from ska_tmc_sdpsubarrayleafnode.commands.on_command import On
 from ska_tmc_sdpsubarrayleafnode.commands.release_resources_command import (
     ReleaseAllResources,
 )
+from ska_tmc_sdpsubarrayleafnode.commands.scan_command import Scan
 from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
     SdpSLNEventReceiver,
 )
@@ -315,6 +316,12 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             ]:
                 self.raise_invalid_obsstate_error(command_name)
 
+        if command_name in ["Scan"]:
+            if self.get_device().obs_state not in [
+                ObsState.READY,
+            ]:
+                self.raise_invalid_obsstate_error(command_name)
+
         return True
 
     def cmd_ended_cb(self, event):
@@ -394,6 +401,27 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         self.logger.info(
             "TaskStatus: %s and Response: %s of Configure \
+                  command after queued to execution",
+            task_status,
+            response,
+        )
+        return task_status, response
+
+    def scan(
+        self, argin: str, task_callback: Optional[Callable] = None
+    ) -> Tuple[TaskStatus, str]:
+        """Submits the Scan command for execution.
+
+        :rtype: tuple
+        """
+        scan_command = Scan(self, self.logger)
+        task_status, response = self.submit_task(
+            scan_command.scan,
+            args=[argin, self.logger],
+            task_callback=task_callback,
+        )
+        self.logger.info(
+            "TaskStatus: %s and Response: %s of Scan \
                   command after queued to execution",
             task_status,
             response,
