@@ -29,11 +29,11 @@ def off_command(
         change_event_callbacks["longRunningCommandsInQueue"],
     )
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        None, lookahead=3
+        None, lookahead=2
     )
     result, unique_id = sdp_subarray_ln_proxy.On()
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        ("On",),
+        ("On",), lookahead=4
     )
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED

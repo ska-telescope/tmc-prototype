@@ -213,7 +213,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             if command_name == "AssignResources":
                 self.logger.info(
                     "Updating LRCRCallback with value: %s for \
-                          AssignResources",
+                         AssignResources",
                     value,
                 )
                 self.long_running_result_callback(
