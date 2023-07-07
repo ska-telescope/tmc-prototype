@@ -1,3 +1,5 @@
+import time
+
 import pytest
 import tango
 from ska_tango_base.commands import ResultCode
@@ -23,6 +25,7 @@ def off_command(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
+
     sdp_subarray_ln_proxy.subscribe_event(
         "longRunningCommandsInQueue",
         tango.EventType.CHANGE_EVENT,
@@ -33,7 +36,7 @@ def off_command(
     )
     result, unique_id = sdp_subarray_ln_proxy.On()
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        ("On",),
+        ("On",), lookahead=4
     )
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
@@ -52,8 +55,9 @@ def off_command(
         lookahead=4,
     )
     result, unique_id = sdp_subarray_ln_proxy.Off()
+    time.sleep(0.5)
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        ("Off",),
+        ("Off",), lookahead=4
     )
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
@@ -73,6 +77,7 @@ def off_command(
     )
 
 
+@pytest.mark.test1
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_off_command_mid(tango_context, change_event_callbacks):

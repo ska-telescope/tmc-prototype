@@ -43,52 +43,56 @@ def checked_devices(json_model):
     return result
 
 
-def tear_down(dev_factory, sdp_subarray):
+def tear_down(dev_factory, sdp_subarray, sdpsal_node):
     sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
     logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
 
-    if sdp_subarray_obsstate.value == 0:
+    if sdp_subarray_obsstate.value == ObsState.EMPTY:
         sdp_subarray.Off()
+        time.sleep(0.5)
 
-    if sdp_subarray_obsstate.value == 2:
+    if sdp_subarray_obsstate.value == ObsState.IDLE:
         sdp_subarray.ReleaseResources()
-        sdp_subarray.SetDirectObsState(ObsState.EMPTY)
+        # sdp_subarray.SetDirectObsState(ObsState.EMPTY)
+        wait_for_final_sdp_subarray_obsstate(sdpsal_node, ObsState.EMPTY)
         time.sleep(0.5)
         sdp_subarray.Off()
+        time.sleep(0.5)
         sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
         logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
 
-    if sdp_subarray_obsstate.value == 4:
+    if sdp_subarray_obsstate.value == ObsState.READY:
         sdp_subarray.End()
-        sdp_subarray.SetDirectObsState(ObsState.IDLE)
+        # sdp_subarray.SetDirectObsState(ObsState.IDLE)
+        wait_for_final_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
         time.sleep(0.5)
-        # wait_for_final_sdp_subarray_obsstate(sdp_subarray, ObsState.IDLE)
         sdp_subarray.ReleaseResources()
-        sdp_subarray.SetDirectObsState(ObsState.EMPTY)
+        wait_for_final_sdp_subarray_obsstate(sdpsal_node, ObsState.EMPTY)
+        # sdp_subarray.SetDirectObsState(ObsState.EMPTY)
         time.sleep(0.5)
-        # wait_for_final_sdp_subarray_obsstate(sdp_subarray, ObsState.EMPTY)
         sdp_subarray.Off()
+        time.sleep(0.5)
         sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
         logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
 
-    if sdp_subarray_obsstate.value == ObsState.SCANNING:
-        sdp_subarray.Abort()
-        sdp_subarray.SetDirectObsState(ObsState.ABORTED)
-        time.sleep(1)
-        sdp_subarray.Restart()
-        sdp_subarray.SetDirectObsState(ObsState.EMPTY)
-        time.sleep(1)
-        sdp_subarray.Off()
-        sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
-        logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
+    # if sdp_subarray_obsstate.value == ObsState.SCANNING:
+    #     sdp_subarray.Abort()
+    #     sdp_subarray.SetDirectObsState(ObsState.ABORTED)
+    #     time.sleep(1)
+    #     sdp_subarray.Restart()
+    #     sdp_subarray.SetDirectObsState(ObsState.EMPTY)
+    #     time.sleep(1)
+    #     sdp_subarray.Off()
+    #     sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
+    #     logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
 
-    if sdp_subarray_obsstate.value == 7:
-        sdp_subarray.Restart()
-        sdp_subarray.SetDirectObsState(ObsState.EMPTY)
-        time.sleep(1)
-        sdp_subarray.Off()
-        sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
-        logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
+    # if sdp_subarray_obsstate.value == 7:
+    #     sdp_subarray.Restart()
+    #     sdp_subarray.SetDirectObsState(ObsState.EMPTY)
+    #     time.sleep(1)
+    #     sdp_subarray.Off()
+    #     sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
+    #     logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
 
 
 def wait_for_final_sdp_subarray_obsstate(sdp_subarray_leaf_node, obs_state):

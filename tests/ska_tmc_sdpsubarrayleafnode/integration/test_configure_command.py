@@ -84,9 +84,10 @@ def configure(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
-    tear_down(dev_factory, sdp_subarray)
+    tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
 
 
+@pytest.mark.test1
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(

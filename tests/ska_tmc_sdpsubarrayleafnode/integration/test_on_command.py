@@ -53,7 +53,7 @@ def on_command(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
-    tear_down(dev_factory, sdp_subarray_proxy)
+    tear_down(dev_factory, sdp_subarray_proxy, sdp_subarray_ln_proxy)
 
 
 @pytest.mark.post_deployment

@@ -50,7 +50,7 @@ def assign_resources_error_propagation(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
-    tear_down(dev_factory, sdp_subarray)
+    tear_down(dev_factory, sdp_subarray, sdpsln_name)
 
 
 @pytest.mark.post_deployment

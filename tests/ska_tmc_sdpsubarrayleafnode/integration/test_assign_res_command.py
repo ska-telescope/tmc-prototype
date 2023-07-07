@@ -26,6 +26,10 @@ def assign_resources(
     logger.info(f"{tango_context}")
     dev_factory = DevFactory()
     sdpsal_node = dev_factory.get_device(sdpsln_name)
+    event_remover(
+        change_event_callbacks,
+        ["longRunningCommandResult", "longRunningCommandsInQueue"],
+    )
     if sdpsln_name == SDPSUBARRAYLEAFNODE_MID:
         sdp_subarray = dev_factory.get_device(MID_SDP_SUBARRAY)
     else:
@@ -52,7 +56,7 @@ def assign_resources(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
-    tear_down(dev_factory, sdp_subarray)
+    tear_down(dev_factory, sdp_subarray, sdpsal_node)
 
 
 @pytest.mark.post_deployment
