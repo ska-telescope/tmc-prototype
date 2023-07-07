@@ -19,6 +19,7 @@ def configure(
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)
     sdp_subarray = dev_factory.get_device(device)
     try:
+        logger.info("inside try")
         sdp_subarray_ln_proxy.subscribe_event(
             "longRunningCommandsInQueue",
             tango.EventType.CHANGE_EVENT,
@@ -101,9 +102,10 @@ def configure(
             change_event_callbacks,
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
-    except Exception as e:
-        logger.exception("Failed due to: %s", e)
         tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
+    except Exception as e:
+        tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
+        raise Exception(e)
 
 
 @pytest.mark.test1
