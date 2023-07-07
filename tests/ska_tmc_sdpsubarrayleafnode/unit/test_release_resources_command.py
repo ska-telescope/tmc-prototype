@@ -19,7 +19,7 @@ from tests.settings import (
 
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
-    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
+    "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW ]
 )
 def test_telescope_release_resources_command(
     tango_context, devices, task_callback
@@ -39,7 +39,6 @@ def test_telescope_release_resources_command(
         call_kwargs={
             "status": TaskStatus.COMPLETED,
             "result": ResultCode.OK,
-            "exception": "",
         }
     )
 

@@ -352,7 +352,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
         if event.err:
             log_message = (
-                f"Error ininvoking command:{event.cmd_name}\n{event.errors}"
+                f"Error invoking command:{event.cmd_name}\n{event.errors}"
             )
             self.logger.error(log_message)
             error = event.errors[0]
