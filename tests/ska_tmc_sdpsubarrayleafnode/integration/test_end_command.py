@@ -29,7 +29,14 @@ def end(
         tango.EventType.CHANGE_EVENT,
         change_event_callbacks["longRunningCommandResult"],
     )
+
+    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
+        None, lookahead=2
+    )
     result, unique_id = sdp_subarray_ln_proxy.On()
+    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
+        ("On",), lookahead=4
+    )
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
 
@@ -39,6 +46,12 @@ def end(
     )
     assign_input_str = json_factory("command_AssignResources")
     result, unique_id = sdp_subarray_ln_proxy.AssignResources(assign_input_str)
+    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
+        (
+            "On",
+            "AssignResources",
+        ),
+    )
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
 
@@ -50,6 +63,13 @@ def end(
 
     configure_input_str = json_factory("command_Configure")
     result, unique_id = sdp_subarray_ln_proxy.Configure(configure_input_str)
+    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
+        (
+            "On",
+            "AssignResources",
+            "Configure",
+        ),
+    )
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
 
@@ -60,6 +80,14 @@ def end(
     wait_for_final_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.READY)
 
     result, unique_id = sdp_subarray_ln_proxy.End()
+    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
+        (
+            "On",
+            "AssignResources",
+            "Configure",
+            "End",
+        ),
+    )
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
 

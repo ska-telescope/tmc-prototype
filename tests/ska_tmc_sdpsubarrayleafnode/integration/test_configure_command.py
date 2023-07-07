@@ -30,6 +30,9 @@ def configure(
         change_event_callbacks["longRunningCommandResult"],
     )
 
+    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
+        None, lookahead=2
+    )
     result, unique_id = sdp_subarray_ln_proxy.On()
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
@@ -45,6 +48,12 @@ def configure(
 
     assign_input_str = json_factory("command_AssignResources")
     result, unique_id = sdp_subarray_ln_proxy.AssignResources(assign_input_str)
+    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
+        (
+            "On",
+            "AssignResources",
+        ),
+    )
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
 
@@ -56,6 +65,13 @@ def configure(
 
     configure_input_str = json_factory("command_Configure")
     result, unique_id = sdp_subarray_ln_proxy.Configure(configure_input_str)
+    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
+        (
+            "On",
+            "AssignResources",
+            "Configure",
+        ),
+    )
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
 

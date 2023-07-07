@@ -72,12 +72,6 @@ def release_resources(
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
 
-    sdp_subarray_ln_proxy.subscribe_event(
-        "longRunningCommandResult",
-        tango.EventType.CHANGE_EVENT,
-        change_event_callbacks["longRunningCommandResult"],
-    )
-
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
         (unique_id[0], str(int(ResultCode.OK))),
         lookahead=6,

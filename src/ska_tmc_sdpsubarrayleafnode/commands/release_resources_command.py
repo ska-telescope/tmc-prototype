@@ -26,7 +26,6 @@ class ReleaseAllResources(SdpSLNCommand):
 
     def __init__(self, component_manager, logger=None) -> None:
         super().__init__(component_manager, logger)
-        self.component_manager = component_manager
         self.timeout_id = f"{time.time()}_{__class__.__name__}"
         self.timeout_callback = TimeoutCallback(self.timeout_id, self.logger)
         self.task_callback: Callable
