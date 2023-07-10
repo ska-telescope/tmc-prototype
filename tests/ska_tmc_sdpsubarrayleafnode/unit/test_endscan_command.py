@@ -1,5 +1,3 @@
-import logging
-
 import pytest
 from ska_tango_base.commands import ResultCode, TaskStatus
 from ska_tango_base.control_model import ObsState
@@ -23,7 +21,7 @@ from tests.settings import (
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )
-def test_endscan_command(tango_context, devices, task_callback, caplog):
+def test_endscan_command(tango_context, devices, task_callback):
     logger.info("%s", tango_context)
     cm = create_cm("SdpSLNComponentManager", devices)
     cm.update_device_obs_state(ObsState.SCANNING)
@@ -35,7 +33,6 @@ def test_endscan_command(tango_context, devices, task_callback, caplog):
     task_callback.assert_against_call(
         call_kwargs={"status": TaskStatus.IN_PROGRESS}
     )
-    caplog.set_level(logging.DEBUG, logger="ska_tango_testing.mock")
     task_callback.assert_against_call(
         call_kwargs={
             "status": TaskStatus.COMPLETED,
