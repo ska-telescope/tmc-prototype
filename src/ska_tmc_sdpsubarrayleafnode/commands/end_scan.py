@@ -26,8 +26,8 @@ class EndScan(SdpSLNCommand):
         # pylint: disable=unused-argument
         task_abort_event: Optional[threading.Event] = None,
     ) -> None:
-        """This is a long running method for End command, it
-        executes do hook, invokes End command on SdpSubarray.
+        """This is a long running method for EndScan command, it
+        executes do hook, invokes EndScan command on SdpSubarray.
 
         :param logger: logger
         :type logger: logging.Logger
