@@ -42,8 +42,6 @@ def configure(
         change_event_callbacks[
             "longRunningCommandsInQueue"
         ].assert_change_event(("On",), lookahead=4)
-        # logger.info(f"Command ID: {unique_id} Returned result: {result}")
-        # assert result[0] == ResultCode.QUEUED
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (unique_id[0], str(int(ResultCode.OK))),
@@ -62,8 +60,6 @@ def configure(
             ),
             lookahead=4,
         )
-        # logger.info(f"Command ID: {unique_id} Returned result: {result}")
-        # assert result[0] == ResultCode.QUEUED
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (unique_id[0], str(int(ResultCode.OK))),
@@ -87,8 +83,6 @@ def configure(
             ),
             lookahead=4,
         )
-        # logger.info(f"Command ID: {unique_id} Returned result: {result}")
-        # assert result[0] == ResultCode.QUEUED
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (unique_id[0], str(int(ResultCode.OK))),

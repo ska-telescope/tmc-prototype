@@ -55,7 +55,6 @@ def tear_down(dev_factory, sdp_subarray, sdpsal_node):
         sdp_subarray.ReleaseResources()
         # sdp_subarray.SetDirectObsState(ObsState.EMPTY)
         wait_for_final_sdp_subarray_obsstate(sdpsal_node, ObsState.EMPTY)
-        time.sleep(0.5)
         sdp_subarray.Off()
         time.sleep(0.5)
         sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
@@ -63,13 +62,9 @@ def tear_down(dev_factory, sdp_subarray, sdpsal_node):
 
     if sdp_subarray_obsstate.value == ObsState.READY:
         sdp_subarray.End()
-        # sdp_subarray.SetDirectObsState(ObsState.IDLE)
         wait_for_final_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
-        time.sleep(0.5)
         sdp_subarray.ReleaseResources()
         wait_for_final_sdp_subarray_obsstate(sdpsal_node, ObsState.EMPTY)
-        # sdp_subarray.SetDirectObsState(ObsState.EMPTY)
-        time.sleep(0.5)
         sdp_subarray.Off()
         time.sleep(0.5)
         sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
