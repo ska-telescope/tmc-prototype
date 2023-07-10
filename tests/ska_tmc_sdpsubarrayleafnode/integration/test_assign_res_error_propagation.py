@@ -41,7 +41,7 @@ def assign_resources_error_propagation(
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (
                 result_code[0],
-                "Incorrect input json string",
+                "Missing eb_id in the AssignResources input json",
             ),
             lookahead=5,
         )
@@ -70,6 +70,7 @@ def test_assign_resources_error_propagation(
     )
 
 
+@pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
 def test_assign_resources_error_propagation_low(

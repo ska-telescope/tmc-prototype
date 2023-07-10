@@ -64,7 +64,6 @@ def assign_resources(
         raise Exception(e)
 
 
-@pytest.mark.test2
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_assign_res_command_mid(

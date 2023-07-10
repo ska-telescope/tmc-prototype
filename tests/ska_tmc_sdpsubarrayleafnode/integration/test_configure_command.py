@@ -108,7 +108,6 @@ def configure(
         raise Exception(e)
 
 
-@pytest.mark.test2
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(
