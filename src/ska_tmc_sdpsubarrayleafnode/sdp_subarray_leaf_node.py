@@ -417,6 +417,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             ("AssignResources", "assign_resources"),
             ("Configure", "configure"),
             ("Scan", "scan"),
+            ("EndScan", "end_scan"),
             ("End", "end"),
             ("ReleaseAllResources", "release_all_resources"),
         ]:
