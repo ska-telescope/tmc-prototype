@@ -271,7 +271,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     @DebugIt()
     def Scan(self, argin: str) -> tuple:
         """
-        This command invokes the Scan() command on Csp Subarray.
+        This command invokes the Scan() command on Sdp Subarray.
         """
         handler = self.get_command_object("Scan")
         result_code, unique_id = handler(argin)

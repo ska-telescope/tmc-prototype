@@ -8,7 +8,7 @@ from ska_tmc_common.test_helpers.helper_adapter_factory import (
     HelperAdapterFactory,
 )
 
-from ska_tmc_sdpsubarrayleafnode.commands.end_scan import EndScan
+from ska_tmc_sdpsubarrayleafnode.commands.end_scan_command import EndScan
 from tests.settings import (
     SDP_SUBARRAY_DEVICE_LOW,
     SDP_SUBARRAY_DEVICE_MID,

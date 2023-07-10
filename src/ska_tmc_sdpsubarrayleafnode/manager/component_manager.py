@@ -27,7 +27,7 @@ from ska_tmc_sdpsubarrayleafnode.commands.assign_resources_command import (
 )
 from ska_tmc_sdpsubarrayleafnode.commands.configure_command import Configure
 from ska_tmc_sdpsubarrayleafnode.commands.end_command import End
-from ska_tmc_sdpsubarrayleafnode.commands.end_scan import EndScan
+from ska_tmc_sdpsubarrayleafnode.commands.end_scan_command import EndScan
 from ska_tmc_sdpsubarrayleafnode.commands.off_command import Off
 from ska_tmc_sdpsubarrayleafnode.commands.on_command import On
 from ska_tmc_sdpsubarrayleafnode.commands.release_resources_command import (
@@ -317,16 +317,12 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             ]:
                 self.raise_invalid_obsstate_error(command_name)
 
-        if command_name in ["Scan"]:
-            if self.get_device().obs_state not in [
-                ObsState.READY,
-            ]:
+        if command_name == "Scan":
+            if self.get_device().obs_state != ObsState.READY:
                 self.raise_invalid_obsstate_error(command_name)
 
-        if command_name in ["EndScan"]:
-            if self.get_device().obs_state not in [
-                ObsState.SCANNING,
-            ]:
+        if command_name == "EndScan":
+            if self.get_device().obs_state != ObsState.SCANNING:
                 self.raise_invalid_obsstate_error(command_name)
 
         return True
@@ -489,7 +485,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         return task_status, response
 
     def end_scan(self, task_callback=None) -> Tuple[TaskStatus, str]:
-        """Submits the End command for execution.
+        """Submits the EndScan command for execution.
 
         :rtype: tuple
         """

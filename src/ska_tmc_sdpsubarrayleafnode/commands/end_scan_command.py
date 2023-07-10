@@ -16,7 +16,7 @@ class EndScan(SdpSLNCommand):
     A class for SdpSubarrayLeafNode's EndScan() command.
 
     It invokes EndScan command on Sdp Subarray.
-    This command is allowed when Sdp Subarray is in SCANNING state.
+    This command is allowed when Sdp Subarray is in SCANNING obsState.
     """
 
     def end_scan(
