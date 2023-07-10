@@ -27,6 +27,7 @@ from ska_tmc_sdpsubarrayleafnode.commands.assign_resources_command import (
 )
 from ska_tmc_sdpsubarrayleafnode.commands.configure_command import Configure
 from ska_tmc_sdpsubarrayleafnode.commands.end_command import End
+from ska_tmc_sdpsubarrayleafnode.commands.end_scan import EndScan
 from ska_tmc_sdpsubarrayleafnode.commands.off_command import Off
 from ska_tmc_sdpsubarrayleafnode.commands.on_command import On
 from ska_tmc_sdpsubarrayleafnode.commands.release_resources_command import (
@@ -322,6 +323,12 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             ]:
                 self.raise_invalid_obsstate_error(command_name)
 
+        if command_name in ["EndScan"]:
+            if self.get_device().obs_state not in [
+                ObsState.SCANNING,
+            ]:
+                self.raise_invalid_obsstate_error(command_name)
+
         return True
 
     def cmd_ended_cb(self, event):
@@ -475,6 +482,25 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         self.logger.info(
             "TaskStatus: %s and Response: %s of End command after queued\
+                 to execution",
+            task_status,
+            response,
+        )
+        return task_status, response
+
+    def end_scan(self, task_callback=None) -> Tuple[TaskStatus, str]:
+        """Submits the End command for execution.
+
+        :rtype: tuple
+        """
+        end_scan_command = EndScan(self, self.logger)
+        task_status, response = self.submit_task(
+            end_scan_command.end_scan,
+            args=[self.logger],
+            task_callback=task_callback,
+        )
+        self.logger.info(
+            "TaskStatus: %s and Response: %s of EndScan command after queued\
                  to execution",
             task_status,
             response,

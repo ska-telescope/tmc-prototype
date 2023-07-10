@@ -356,6 +356,33 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         return [return_code], [str(unique_id)]
 
+    def is_EndScan_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device \
+        state. \
+
+        return:
+            True if this command is allowed to be run in current device state.
+
+        rtype:
+            boolean
+        """
+        return self.component_manager.is_command_allowed("EndScan")
+
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
+    @DebugIt()
+    def EndScan(self):
+        """
+        Invokes EndScan command on Sdp Subarray.
+
+        """
+        handler = self.get_command_object("EndScan")
+        return_code, unique_id = handler()
+        return [return_code], [str(unique_id)]
+
     # default ska mid
     def create_component_manager(self):
         """Returns Sdp Subarray Leaf Node component manager object"""

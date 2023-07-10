@@ -112,7 +112,6 @@ def scan(
     tear_down(dev_factory, sdp_subarray)
 
 
-@pytest.mark.test1
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(
