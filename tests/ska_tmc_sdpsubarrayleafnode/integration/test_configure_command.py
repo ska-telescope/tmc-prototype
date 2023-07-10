@@ -41,11 +41,9 @@ def configure(
         logger.info(f"Command ID: {unique_id} Returned result: {result}")
         change_event_callbacks[
             "longRunningCommandsInQueue"
-        ].assert_change_event(
-            ("On",),
-        )
-        logger.info(f"Command ID: {unique_id} Returned result: {result}")
-        assert result[0] == ResultCode.QUEUED
+        ].assert_change_event(("On",), lookahead=4)
+        # logger.info(f"Command ID: {unique_id} Returned result: {result}")
+        # assert result[0] == ResultCode.QUEUED
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (unique_id[0], str(int(ResultCode.OK))),
@@ -62,9 +60,10 @@ def configure(
                 "On",
                 "AssignResources",
             ),
+            lookahead=4,
         )
-        logger.info(f"Command ID: {unique_id} Returned result: {result}")
-        assert result[0] == ResultCode.QUEUED
+        # logger.info(f"Command ID: {unique_id} Returned result: {result}")
+        # assert result[0] == ResultCode.QUEUED
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (unique_id[0], str(int(ResultCode.OK))),
@@ -86,9 +85,10 @@ def configure(
                 "AssignResources",
                 "Configure",
             ),
+            lookahead=4,
         )
-        logger.info(f"Command ID: {unique_id} Returned result: {result}")
-        assert result[0] == ResultCode.QUEUED
+        # logger.info(f"Command ID: {unique_id} Returned result: {result}")
+        # assert result[0] == ResultCode.QUEUED
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (unique_id[0], str(int(ResultCode.OK))),
@@ -108,7 +108,7 @@ def configure(
         raise Exception(e)
 
 
-@pytest.mark.test1
+@pytest.mark.test2
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(

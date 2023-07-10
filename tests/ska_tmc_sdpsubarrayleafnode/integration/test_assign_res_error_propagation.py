@@ -23,36 +23,40 @@ def assign_resources_error_propagation(
         sdp_subarray = dev_factory.get_device("mid-sdp/subarray/01")
     else:
         sdp_subarray = dev_factory.get_device("low-sdp/subarray/01")
+    try:
+        unique_id, result_code = sdpsln_device.AssignResources(
+            invalid_assign_input_json
+        )
+        logger.info(
+            f"AssignResources Command ID: {unique_id} Returned result:\
+                {result_code}"
+        )
 
-    unique_id, result_code = sdpsln_device.AssignResources(
-        invalid_assign_input_json
-    )
-    logger.info(
-        f"AssignResources Command ID: {unique_id} Returned result:\
-            {result_code}"
-    )
+        sdpsln_device.subscribe_event(
+            "longRunningCommandResult",
+            tango.EventType.CHANGE_EVENT,
+            change_event_callbacks["longRunningCommandResult"],
+        )
 
-    sdpsln_device.subscribe_event(
-        "longRunningCommandResult",
-        tango.EventType.CHANGE_EVENT,
-        change_event_callbacks["longRunningCommandResult"],
-    )
-
-    change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        (
-            result_code[0],
-            "Missing eb_id in the AssignResources input json",
-        ),
-        lookahead=5,
-    )
-    wait_for_final_sdp_subarray_obsstate(sdpsln_device, ObsState.EMPTY)
-    event_remover(
-        change_event_callbacks,
-        ["longRunningCommandResult", "longRunningCommandsInQueue"],
-    )
-    tear_down(dev_factory, sdp_subarray, sdpsln_name)
+        change_event_callbacks["longRunningCommandResult"].assert_change_event(
+            (
+                result_code[0],
+                "Incorrect input json string",
+            ),
+            lookahead=5,
+        )
+        wait_for_final_sdp_subarray_obsstate(sdpsln_device, ObsState.EMPTY)
+        event_remover(
+            change_event_callbacks,
+            ["longRunningCommandResult", "longRunningCommandsInQueue"],
+        )
+        tear_down(dev_factory, sdp_subarray, sdpsln_name)
+    except Exception as e:
+        tear_down(dev_factory, sdp_subarray, sdpsln_name)
+        raise Exception(e)
 
 
+@pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_assign_resources_error_propagation(

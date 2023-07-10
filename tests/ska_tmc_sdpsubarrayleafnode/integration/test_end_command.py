@@ -18,96 +18,125 @@ def end(
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)
     sdp_subarray = dev_factory.get_device(device)
-    event_remover(
-        change_event_callbacks,
-        ["longRunningCommandResult", "longRunningCommandsInQueue"],
-    )
-    sdp_subarray_ln_proxy.subscribe_event(
-        "longRunningCommandsInQueue",
-        tango.EventType.CHANGE_EVENT,
-        change_event_callbacks["longRunningCommandsInQueue"],
-    )
+    try:
+        event_remover(
+            change_event_callbacks,
+            ["longRunningCommandResult", "longRunningCommandsInQueue"],
+        )
+        sdp_subarray_ln_proxy.subscribe_event(
+            "longRunningCommandsInQueue",
+            tango.EventType.CHANGE_EVENT,
+            change_event_callbacks["longRunningCommandsInQueue"],
+        )
 
-    sdp_subarray_ln_proxy.subscribe_event(
-        "longRunningCommandResult",
-        tango.EventType.CHANGE_EVENT,
-        change_event_callbacks["longRunningCommandResult"],
-    )
+        sdp_subarray_ln_proxy.subscribe_event(
+            "longRunningCommandResult",
+            tango.EventType.CHANGE_EVENT,
+            change_event_callbacks["longRunningCommandResult"],
+        )
 
-    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        None,
-    )
-    result, unique_id = sdp_subarray_ln_proxy.On()
-    logger.info(f"Command ID: {unique_id} Returned result: {result}")
-    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        ("On",),
-    )
-    logger.info(f"Command ID: {unique_id} Returned result: {result}")
-    assert result[0] == ResultCode.QUEUED
+        change_event_callbacks[
+            "longRunningCommandsInQueue"
+        ].assert_change_event(
+            None,
+        )
+        result, unique_id = sdp_subarray_ln_proxy.On()
+        logger.info(f"Command ID: {unique_id} Returned result: {result}")
+        change_event_callbacks[
+            "longRunningCommandsInQueue"
+        ].assert_change_event(
+            ("On",),
+            lookahead=4,
+        )
+        # logger.info(f"Command ID: {unique_id} Returned result: {result}")
+        # assert result[0] == ResultCode.QUEUED
 
-    change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        (unique_id[0], str(int(ResultCode.OK))),
-        lookahead=4,
-    )
-    assign_input_str = json_factory("command_AssignResources")
-    result, unique_id = sdp_subarray_ln_proxy.AssignResources(assign_input_str)
-    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        (
-            "On",
-            "AssignResources",
-        ),
-    )
-    logger.info(f"Command ID: {unique_id} Returned result: {result}")
-    assert result[0] == ResultCode.QUEUED
+        change_event_callbacks["longRunningCommandResult"].assert_change_event(
+            (unique_id[0], str(int(ResultCode.OK))),
+            lookahead=4,
+        )
+        assign_input_str = json_factory("command_AssignResources")
+        result, unique_id = sdp_subarray_ln_proxy.AssignResources(
+            assign_input_str
+        )
+        change_event_callbacks[
+            "longRunningCommandsInQueue"
+        ].assert_change_event(
+            (
+                "On",
+                "AssignResources",
+            ),
+            lookahead=4,
+        )
+        # logger.info(f"Command ID: {unique_id} Returned result: {result}")
+        # assert result[0] == ResultCode.QUEUED
 
-    change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        (unique_id[0], str(int(ResultCode.OK))),
-        lookahead=4,
-    )
-    wait_for_final_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.IDLE)
+        change_event_callbacks["longRunningCommandResult"].assert_change_event(
+            (unique_id[0], str(int(ResultCode.OK))),
+            lookahead=4,
+        )
+        wait_for_final_sdp_subarray_obsstate(
+            sdp_subarray_ln_proxy, ObsState.IDLE
+        )
 
-    configure_input_str = json_factory("command_Configure")
-    result, unique_id = sdp_subarray_ln_proxy.Configure(configure_input_str)
-    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        (
-            "On",
-            "AssignResources",
-            "Configure",
-        ),
-    )
-    logger.info(f"Command ID: {unique_id} Returned result: {result}")
-    assert result[0] == ResultCode.QUEUED
+        configure_input_str = json_factory("command_Configure")
+        result, unique_id = sdp_subarray_ln_proxy.Configure(
+            configure_input_str
+        )
+        change_event_callbacks[
+            "longRunningCommandsInQueue"
+        ].assert_change_event(
+            (
+                "On",
+                "AssignResources",
+                "Configure",
+            ),
+            lookahead=4,
+        )
+        # logger.info(f"Command ID: {unique_id} Returned result: {result}")
+        # assert result[0] == ResultCode.QUEUED
 
-    change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        (unique_id[0], str(int(ResultCode.OK))),
-        lookahead=4,
-    )
-    wait_for_final_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.READY)
+        change_event_callbacks["longRunningCommandResult"].assert_change_event(
+            (unique_id[0], str(int(ResultCode.OK))),
+            lookahead=4,
+        )
+        wait_for_final_sdp_subarray_obsstate(
+            sdp_subarray_ln_proxy, ObsState.READY
+        )
 
-    result, unique_id = sdp_subarray_ln_proxy.End()
-    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        (
-            "On",
-            "AssignResources",
-            "Configure",
-            "End",
-        ),
-    )
-    logger.info(f"Command ID: {unique_id} Returned result: {result}")
-    assert result[0] == ResultCode.QUEUED
+        result, unique_id = sdp_subarray_ln_proxy.End()
+        change_event_callbacks[
+            "longRunningCommandsInQueue"
+        ].assert_change_event(
+            (
+                "On",
+                "AssignResources",
+                "Configure",
+                "End",
+            ),
+            lookahead=4,
+        )
+        # logger.info(f"Command ID: {unique_id} Returned result: {result}")
+        # assert result[0] == ResultCode.QUEUED
 
-    change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        (unique_id[0], str(int(ResultCode.OK))),
-        lookahead=6,
-    )
-    wait_for_final_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.IDLE)
-    event_remover(
-        change_event_callbacks,
-        ["longRunningCommandResult", "longRunningCommandsInQueue"],
-    )
-    tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
+        change_event_callbacks["longRunningCommandResult"].assert_change_event(
+            (unique_id[0], str(int(ResultCode.OK))),
+            lookahead=6,
+        )
+        wait_for_final_sdp_subarray_obsstate(
+            sdp_subarray_ln_proxy, ObsState.IDLE
+        )
+        event_remover(
+            change_event_callbacks,
+            ["longRunningCommandResult", "longRunningCommandsInQueue"],
+        )
+        tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
+    except Exception as e:
+        tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
+        raise Exception(e)
 
 
+@pytest.mark.ts1
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(

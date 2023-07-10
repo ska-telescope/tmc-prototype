@@ -34,31 +34,37 @@ def assign_resources(
         sdp_subarray = dev_factory.get_device(MID_SDP_SUBARRAY)
     else:
         sdp_subarray = dev_factory.get_device(LOW_SDP_SUBARRAY)
-    result, unique_id = sdpsal_node.AssignResources(assign_input_str)
-    logger.info(
-        f"AssignResources Command ID: {unique_id} Returned result: {result}"
-    )
+    try:
+        result, unique_id = sdpsal_node.AssignResources(assign_input_str)
+        logger.info(
+            f"AssignResources Command ID: {unique_id} Returned \
+                result: {result}"
+        )
 
-    assert unique_id[0].endswith("AssignResources")
-    assert result[0] == ResultCode.QUEUED
+        assert unique_id[0].endswith("AssignResources")
+        assert result[0] == ResultCode.QUEUED
 
-    sdpsal_node.subscribe_event(
-        "longRunningCommandResult",
-        tango.EventType.CHANGE_EVENT,
-        change_event_callbacks["longRunningCommandResult"],
-    )
-    change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        (unique_id[0], str(ResultCode.OK.value)),
-        lookahead=4,
-    )
-    wait_for_final_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
-    event_remover(
-        change_event_callbacks,
-        ["longRunningCommandResult", "longRunningCommandsInQueue"],
-    )
-    tear_down(dev_factory, sdp_subarray, sdpsal_node)
+        sdpsal_node.subscribe_event(
+            "longRunningCommandResult",
+            tango.EventType.CHANGE_EVENT,
+            change_event_callbacks["longRunningCommandResult"],
+        )
+        change_event_callbacks["longRunningCommandResult"].assert_change_event(
+            (unique_id[0], str(ResultCode.OK.value)),
+            lookahead=4,
+        )
+        wait_for_final_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
+        event_remover(
+            change_event_callbacks,
+            ["longRunningCommandResult", "longRunningCommandsInQueue"],
+        )
+        tear_down(dev_factory, sdp_subarray, sdpsal_node)
+    except Exception as e:
+        tear_down(dev_factory, sdp_subarray, sdpsal_node)
+        raise Exception(e)
 
 
+@pytest.mark.test2
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_assign_res_command_mid(

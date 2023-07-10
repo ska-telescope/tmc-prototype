@@ -116,6 +116,10 @@ def check_command(
         wait_for_final_sdp_subarray_obsstate(
             sdpsubarrayleaf_node_dev, ObsState.IDLE
         )
+    elif command_name == "ReleaseAllResources":
+        wait_for_final_sdp_subarray_obsstate(
+            sdpsubarrayleaf_node_dev, ObsState.EMPTY
+        )
 
     sdpsubarrayleaf_node.subscribe_event(
         "longRunningCommandResult",
