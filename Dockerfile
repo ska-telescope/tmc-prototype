@@ -6,7 +6,6 @@ FROM $BASE_IMAGE
 
 # Install Poetry
 USER root
-RUN apt-get update && apt-get install git -y
 ENV SETUPTOOLS_USE_DISTUTILS=stdlib
 
 RUN curl -sSL https://install.python-poetry.org | python3 - && \

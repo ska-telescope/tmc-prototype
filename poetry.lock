@@ -1233,32 +1233,30 @@ reference = 'ska-nexus'
 
 [[package]]
 name = "ska-tmc-common"
-version = "0.5.8"
+version = "0.5.9"
 description = "SKA TMC common contains common classes required for Telescope Monitoring and Control(TMC)."
 category = "main"
 optional = false
-python-versions = "~3.10"
-develop = false
+python-versions = ">=3.10,<3.11"
 
 [package.dependencies]
-black = "^23.3.0"
-fire = "^0.4.0"
-jsonschema = "^4.0.1"
+black = ">=23.3.0,<24.0.0"
+fire = ">=0.4.0,<0.5.0"
+jsonschema = ">=4.0.1,<5.0.0"
 katpoint = "1.0a2"
-marshmallow = "^3.14.1"
-mock = "^4.0.3"
-numpy = "^1.23.0"
+marshmallow = ">=3.14.1,<4.0.0"
+mock = ">=4.0.3,<5.0.0"
+numpy = ">=1.23.0,<2.0.0"
 pytango = "9.3.3"
-ska-ser-logging = "^0.4.1"
+ska-ser-logging = ">=0.4.1,<0.5.0"
 ska-tango-base = "0.18.1"
 ska-tango-testing = "0.4.1"
 ska-telmodel = "1.5.0"
 
 [package.source]
-type = "git"
-url = "https://gitlab.com/ska-telescope/ska-tmc/ska-tmc-common.git"
-reference = "hm-252"
-resolved_reference = "bb75453938039022acc6191f043b48dee31c1768"
+type = "legacy"
+url = "https://artefact.skao.int/repository/pypi-internal/simple"
+reference = 'ska-nexus'
 
 [[package]]
 name = "stack-data"
@@ -1427,7 +1425,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = "~3.10"
-content-hash = "58d8197700f5ab340d996d4effd63129d950a4430fcb7d3b40861087120301a2"
+content-hash = "1f9d75b2eccdc839876b1ab0806e2dc4b17d6a8f15015c8138a932d9b6f7e747"
 
 [metadata.files]
 appdirs = [
@@ -2327,7 +2325,10 @@ ska-tmc-cdm = [
     {file = "ska_tmc_cdm-7.3.1-py3-none-any.whl", hash = "sha256:6096dfd4d7c0211dad2ac58cfe0c3cc88b3d5448f20405c5cb7864ec44f28757"},
     {file = "ska_tmc_cdm-7.3.1.tar.gz", hash = "sha256:3129cd4ec33b207f80669f521ba80fd221a42041c841f6c2f44eb8225ed8c363"},
 ]
-ska-tmc-common = []
+ska-tmc-common = [
+    {file = "ska_tmc_common-0.5.9-py3-none-any.whl", hash = "sha256:be7c2cb03da479a7ec77ded0cd9924c9b1426e1e1bc11629cd188bcd3c469e8a"},
+    {file = "ska_tmc_common-0.5.9.tar.gz", hash = "sha256:8606a12800235d5b54cb1aec257a80fe86d94aea99b5d65e88368253cb0ae115"},
+]
 stack-data = [
     {file = "stack_data-0.6.2-py3-none-any.whl", hash = "sha256:cbb2a53eb64e5785878201a97ed7c7b94883f48b87bfb0bbe8b623c74679e4a8"},
     {file = "stack_data-0.6.2.tar.gz", hash = "sha256:32d2dd0376772d01b6cb9fc996f3c8b57a357089dec328ed4b6553d037eaf815"},
