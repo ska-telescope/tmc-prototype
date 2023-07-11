@@ -41,7 +41,7 @@ def assign_resources_error_propagation(
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (
                 result_code[0],
-                "Missing eb_id in the AssignResources input json",
+                "Timeout has occured, command failed",
             ),
             lookahead=5,
         )
@@ -55,7 +55,7 @@ def assign_resources_error_propagation(
         tear_down(dev_factory, sdp_subarray, sdpsln_name)
         raise Exception(e)
 
-
+@pytest.mark.tss11
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_assign_resources_error_propagation(

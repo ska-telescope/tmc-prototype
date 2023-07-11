@@ -112,7 +112,6 @@ def configure(
         raise Exception(e)
 
 
-@pytest.mark.t1
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_configure_command_mid(
@@ -131,7 +130,6 @@ def test_configure_command_mid(
 @pytest.mark.SKA_low
 def test_configure_command_low(
     tango_context,
-    device,
     json_factory,
     change_event_callbacks,
 ):
