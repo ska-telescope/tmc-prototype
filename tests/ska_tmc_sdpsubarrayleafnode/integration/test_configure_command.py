@@ -88,9 +88,9 @@ def configure(
     tear_down(dev_factory, sdp_subarray)
 
 
+@pytest.mark.skip(reason="Work in progress on SAH-1352")
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
-@pytest.mark.skip(reason="Work in progress on SAH-1352")
 @pytest.mark.parametrize(
     "device",
     [("mid-sdp/subarray/01")],
@@ -106,10 +106,9 @@ def test_configure_command_mid(
         change_event_callbacks,
     )
 
-
+@pytest.mark.skip(reason="Work in progress on SAH-1352")
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
-@pytest.mark.skip(reason="Work in progress on SAH-1352")
 @pytest.mark.parametrize(
     "device",
     [("low-sdp/subarray/01")],
