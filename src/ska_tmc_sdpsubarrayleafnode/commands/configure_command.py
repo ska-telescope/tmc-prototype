@@ -124,7 +124,9 @@ class Configure(SdpSLNCommand):
                 )
             )
             self.logger.debug(log_msg)
-            self.sdp_subarray_adapter.Configure(json.dumps(json_argument))
+            self.sdp_subarray_adapter.Configure(
+                json.dumps(json_argument), self.component_manager.cmd_ended_cb
+            )
 
         except (AttributeError, ValueError, TypeError, DevFailed) as e:
             self.logger.exception("Configure command invocation failed: %s", e)

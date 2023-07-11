@@ -90,10 +90,10 @@ def check_command(
 ) -> None:
     dev_factory = DevFactory()
 
-    sdpsubarrayleaf_node_dev = dev_factory.get_device(sdpsubarrayleaf_node)
-    sdp_subarray_leafnode_healthState = (
-        sdpsubarrayleaf_node_dev.read_attribute("healthState").value
-    )
+    sdp_sln_obsstate = dev_factory.get_device(sdpsubarrayleaf_node)
+    sdp_subarray_leafnode_healthState = sdp_sln_obsstate.read_attribute(
+        "healthState"
+    ).value
     logger.info(
         "Current SdpSubarray leaf node healthstate is {}".format(
             sdp_subarray_leafnode_healthState
@@ -115,54 +115,44 @@ def check_command(
     )
 
     if command_name == "AssignResources":
-        wait_for_final_sdp_subarray_obsstate(
-            sdpsubarrayleaf_node_dev, ObsState.IDLE
-        )
-        sdp_subarray_leafnode_obsstate = (
-            sdpsubarrayleaf_node_dev.read_attribute("obsState").value
-        )
+        wait_for_final_sdp_subarray_obsstate(sdp_sln_obsstate, ObsState.IDLE)
+        sdp_subarray_leafnode_obsstate = sdp_sln_obsstate.read_attribute(
+            "sdpSubarrayObsState"
+        ).value
         assert sdp_subarray_leafnode_obsstate == ObsState.IDLE
 
     elif command_name == "Configure":
-        wait_for_final_sdp_subarray_obsstate(
-            sdpsubarrayleaf_node_dev, ObsState.READY
-        )
-        sdp_subarray_leafnode_obsstate = (
-            sdpsubarrayleaf_node_dev.read_attribute("obsState").value
-        )
+        wait_for_final_sdp_subarray_obsstate(sdp_sln_obsstate, ObsState.READY)
+        sdp_subarray_leafnode_obsstate = sdp_sln_obsstate.read_attribute(
+            "sdpSubarrayObsState"
+        ).value
         assert sdp_subarray_leafnode_obsstate == ObsState.READY
 
     elif command_name == "Scan":
-        sdp_subarray_leafnode_obsstate = (
-            sdpsubarrayleaf_node_dev.read_attribute("obsState").value
-        )
+        sdp_subarray_leafnode_obsstate = sdp_sln_obsstate.read_attribute(
+            "sdpSubarrayObsState"
+        ).value
         assert sdp_subarray_leafnode_obsstate == ObsState.SCANNING
 
     elif command_name == "EndScan":
-        wait_for_final_sdp_subarray_obsstate(
-            sdpsubarrayleaf_node_dev, ObsState.READY
-        )
-        sdp_subarray_leafnode_obsstate = (
-            sdpsubarrayleaf_node_dev.read_attribute("obsState").value
-        )
+        wait_for_final_sdp_subarray_obsstate(sdp_sln_obsstate, ObsState.READY)
+        sdp_subarray_leafnode_obsstate = sdp_sln_obsstate.read_attribute(
+            "sdpSubarrayObsState"
+        ).value
         assert sdp_subarray_leafnode_obsstate == ObsState.READY
 
     elif command_name == "End":
-        wait_for_final_sdp_subarray_obsstate(
-            sdpsubarrayleaf_node_dev, ObsState.IDLE
-        )
-        sdp_subarray_leafnode_obsstate = (
-            sdpsubarrayleaf_node_dev.read_attribute("obsState").value
-        )
+        wait_for_final_sdp_subarray_obsstate(sdp_sln_obsstate, ObsState.IDLE)
+        sdp_subarray_leafnode_obsstate = sdp_sln_obsstate.read_attribute(
+            "sdpSubarrayObsState"
+        ).value
         assert sdp_subarray_leafnode_obsstate == ObsState.IDLE
 
     elif command_name == "ReleaseAllResources":
-        wait_for_final_sdp_subarray_obsstate(
-            sdpsubarrayleaf_node_dev, ObsState.EMPTY
-        )
-        sdp_subarray_leafnode_obsstate = (
-            sdpsubarrayleaf_node_dev.read_attribute("obsState").value
-        )
+        wait_for_final_sdp_subarray_obsstate(sdp_sln_obsstate, ObsState.EMPTY)
+        sdp_subarray_leafnode_obsstate = sdp_sln_obsstate.read_attribute(
+            "sdpSubarrayObsState"
+        ).value
         assert sdp_subarray_leafnode_obsstate == ObsState.EMPTY
 
     sdpsubarrayleaf_node.subscribe_event(

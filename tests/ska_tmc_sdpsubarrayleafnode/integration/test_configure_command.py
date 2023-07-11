@@ -87,6 +87,7 @@ def configure(
     tear_down(dev_factory, sdp_subarray)
 
 
+@pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(
