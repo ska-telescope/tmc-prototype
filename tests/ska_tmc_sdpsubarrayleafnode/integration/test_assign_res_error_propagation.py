@@ -41,7 +41,7 @@ def assign_resources_error_propagation(
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (
                 result_code[0],
-                "Timeout has occured, command failed",
+                "Missing eb_id in the AssignResources input json",
             ),
             lookahead=5,
         )
