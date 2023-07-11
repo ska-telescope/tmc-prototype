@@ -4,7 +4,14 @@ from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.dev_factory import DevFactory
 
-from tests.settings import event_remover, logger
+from tests.settings import (
+    SDP_SUBARRAY_DEVICE_LOW,
+    SDP_SUBARRAY_DEVICE_MID,
+    SDP_SUBARRAY_LEAF_NODE_LOW,
+    SDP_SUBARRAY_LEAF_NODE_MID,
+    event_remover,
+    logger,
+)
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
     tear_down,
     wait_for_final_sdp_subarray_obsstate,
@@ -131,17 +138,11 @@ def end(
 @pytest.mark.ts1
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
-@pytest.mark.parametrize(
-    "device",
-    [("mid-sdp/subarray/01")],
-)
-def test_end_command_mid(
-    tango_context, device, json_factory, change_event_callbacks
-):
+def test_end_command_mid(tango_context, json_factory, change_event_callbacks):
     return end(
         tango_context,
-        "ska_mid/tm_leaf_node/sdp_subarray01",
-        device,
+        SDP_SUBARRAY_LEAF_NODE_MID,
+        SDP_SUBARRAY_DEVICE_MID,
         json_factory,
         change_event_callbacks,
     )
@@ -149,20 +150,15 @@ def test_end_command_mid(
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
-@pytest.mark.parametrize(
-    "device",
-    [("low-sdp/subarray/01")],
-)
 def test_end_command_low(
     tango_context,
-    device,
     json_factory,
     change_event_callbacks,
 ):
     return end(
         tango_context,
-        "ska_low/tm_leaf_node/sdp_subarray01",
-        device,
+        SDP_SUBARRAY_LEAF_NODE_LOW,
+        SDP_SUBARRAY_DEVICE_LOW,
         json_factory,
         change_event_callbacks,
     )
