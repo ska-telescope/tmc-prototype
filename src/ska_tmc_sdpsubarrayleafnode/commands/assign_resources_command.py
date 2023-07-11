@@ -68,7 +68,6 @@ class AssignResources(SdpSLNCommand):
         if result_code == ResultCode.FAILED:
             self.update_task_status(result_code, message)
             self.component_manager.stop_timer()
-            self.component_manager.command_in_progress = ""
         else:
             self.start_tracker_thread(
                 self.component_manager.get_obs_state,

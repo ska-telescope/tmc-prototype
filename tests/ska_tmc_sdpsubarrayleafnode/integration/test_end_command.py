@@ -135,7 +135,6 @@ def end(
         raise Exception(e)
 
 
-@pytest.mark.ts1
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_end_command_mid(tango_context, json_factory, change_event_callbacks):

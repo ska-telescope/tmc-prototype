@@ -204,7 +204,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
     def update_command_result(self, command_name, value: str):
         """Updates the long running command result callback"""
         self.logger.info(
-            "Recieved longRunningCommandResult event with value: %s",
+            "Received longRunningCommandResult event with value: %s",
             value,
         )
         try:
@@ -216,7 +216,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 and self.command_in_progress == "AssignResources"
             ):
                 self.logger.info(
-                    "Updating LRCRCallback with value: %s for Assign",
+                    "Updating LRCRCallback with value: %s for AssignResources",
                     value,
                 )
                 self.long_running_result_callback(

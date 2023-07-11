@@ -23,7 +23,6 @@ def assign_resources(
     assign_input_str,
     change_event_callbacks,
 ) -> None:
-    logger.info(f"{tango_context}")
     dev_factory = DevFactory()
     sdpsal_node = dev_factory.get_device(sdpsln_name)
     event_remover(

@@ -70,25 +70,6 @@ def tear_down(dev_factory, sdp_subarray, sdpsal_node):
         sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
         logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
 
-    # if sdp_subarray_obsstate.value == ObsState.SCANNING:
-    #     sdp_subarray.Abort()
-    #     sdp_subarray.SetDirectObsState(ObsState.ABORTED)
-    #     time.sleep(1)
-    #     sdp_subarray.Restart()
-    #     sdp_subarray.SetDirectObsState(ObsState.EMPTY)
-    #     time.sleep(1)
-    #     sdp_subarray.Off()
-    #     sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
-    #     logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
-
-    # if sdp_subarray_obsstate.value == 7:
-    #     sdp_subarray.Restart()
-    #     sdp_subarray.SetDirectObsState(ObsState.EMPTY)
-    #     time.sleep(1)
-    #     sdp_subarray.Off()
-    #     sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
-    #     logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
-
 
 def wait_for_final_sdp_subarray_obsstate(sdp_subarray_leaf_node, obs_state):
     logger.debug(f"Waiting for SdpSubarray obsState to be {obs_state}")
