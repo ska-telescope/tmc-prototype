@@ -106,6 +106,7 @@ def test_configure_command_mid(
         change_event_callbacks,
     )
 
+
 @pytest.mark.skip(reason="Work in progress on SAH-1352")
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
