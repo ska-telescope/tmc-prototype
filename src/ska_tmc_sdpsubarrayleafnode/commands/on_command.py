@@ -62,7 +62,7 @@ class On(SdpSLNCommand):
             self.sdp_subarray_adapter.On()
         except Exception as e:
             self.logger.exception(f"Command invocation failed: {e}")
-            return(
+            return (
                 ResultCode.FAILED,
                 f"The invocation of the On"
                 " command is failed on SDP Subarray "

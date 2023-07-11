@@ -24,7 +24,6 @@ def release_all_resources_error_propagation(
     change_event_callbacks,
 ) -> None:
     dev_factory = DevFactory()
-    
 
     if device == MID_SDP_SUBARRAY:
         sdpsal_node = dev_factory.get_device(SDPSUBARRAYLEAFNODE_MID)
@@ -151,7 +150,6 @@ def release_all_resources_timeout(
     )
 
     tear_down(dev_factory, sdp_subarray)
-
 
 
 @pytest.mark.post_deployment

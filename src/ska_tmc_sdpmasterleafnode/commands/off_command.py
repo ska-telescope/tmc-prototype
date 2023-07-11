@@ -79,7 +79,7 @@ class Off(SdpMLNCommand):
             self.sdp_master_adapter.Off()
         except Exception as e:
             self.logger.exception(f"Command invocation failed: {e}")
-            return(
+            return (
                 ResultCode.FAILED,
                 f"The invocation of the Off"
                 " command failed on SDP master "
