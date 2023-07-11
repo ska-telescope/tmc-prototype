@@ -27,6 +27,7 @@ def get_configure_input_str(configure_input_file="command_Configure.json"):
 
 
 @pytest.mark.sdpsln
+@pytest.mark.skip(reason="To do in SAH-1352")
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
 )

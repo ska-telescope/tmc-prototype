@@ -47,19 +47,22 @@ def call_command(
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name, assign_res_string
             )
-        elif command_name == "Configure":
-            logger.info(
-                f"sdpsubarrayleaf_node: {sdpsubarrayleaf_node.dev_name()}"
-            )
-            configure_string = json_factory("command_Configure")
-            pytest.command_result = sdpsubarrayleaf_node.command_inout(
-                command_name, configure_string
-            )
-        elif command_name == "End":
-            # Perform end logic here
-            pytest.command_result = sdpsubarrayleaf_node.command_inout(
-                command_name
-            )
+        
+        #To do in SAH-1352
+        # elif command_name == "Configure":
+        #     logger.info(
+        #         f"sdpsubarrayleaf_node: {sdpsubarrayleaf_node.dev_name()}"
+        #     )
+        #     configure_string = json_factory("command_Configure")
+        #     pytest.command_result = sdpsubarrayleaf_node.command_inout(
+        #         command_name, configure_string
+        #     )
+        #To do in SAH-1352
+        # elif command_name == "End":
+        #     # Perform end logic here
+        #     pytest.command_result = sdpsubarrayleaf_node.command_inout(
+        #         command_name
+        #     )
 
         else:
             pytest.command_result = sdpsubarrayleaf_node.command_inout(

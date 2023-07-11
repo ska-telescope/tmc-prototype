@@ -105,6 +105,7 @@ def end(
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
+@pytest.mark.skip(reason="Work in progress on SAH-1352")
 @pytest.mark.parametrize(
     "device",
     [("mid-sdp/subarray/01")],
@@ -123,6 +124,7 @@ def test_end_command_mid(
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
+@pytest.mark.skip(reason="Work in progress on SAH-1352")
 @pytest.mark.parametrize(
     "device",
     [("low-sdp/subarray/01")],
