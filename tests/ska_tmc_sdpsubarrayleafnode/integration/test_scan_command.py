@@ -14,7 +14,6 @@ from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
 def scan(
     tango_context, sdpsaln_name, device, json_factory, change_event_callbacks
 ):
-    
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)
     sdp_subarray = dev_factory.get_device(device)

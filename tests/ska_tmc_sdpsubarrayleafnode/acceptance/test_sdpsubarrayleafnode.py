@@ -118,23 +118,52 @@ def check_command(
         wait_for_final_sdp_subarray_obsstate(
             sdpsubarrayleaf_node_dev, ObsState.IDLE
         )
+        sdp_subarray_leafnode_obsstate = (
+            sdpsubarrayleaf_node_dev.read_attribute("obsState").value
+        )
+        assert sdp_subarray_leafnode_obsstate == ObsState.IDLE
+
     elif command_name == "Configure":
         wait_for_final_sdp_subarray_obsstate(
             sdpsubarrayleaf_node_dev, ObsState.READY
         )
-    elif command_name == "Scan":
-        wait_for_final_sdp_subarray_obsstate(
-            sdpsubarrayleaf_node_dev, ObsState.SCANNING
+        sdp_subarray_leafnode_obsstate = (
+            sdpsubarrayleaf_node_dev.read_attribute("obsState").value
         )
+        assert sdp_subarray_leafnode_obsstate == ObsState.READY
+
+    elif command_name == "Scan":
+        sdp_subarray_leafnode_obsstate = (
+            sdpsubarrayleaf_node_dev.read_attribute("obsState").value
+        )
+        assert sdp_subarray_leafnode_obsstate == ObsState.SCANNING
+
     elif command_name == "EndScan":
         wait_for_final_sdp_subarray_obsstate(
             sdpsubarrayleaf_node_dev, ObsState.READY
         )
+        sdp_subarray_leafnode_obsstate = (
+            sdpsubarrayleaf_node_dev.read_attribute("obsState").value
+        )
+        assert sdp_subarray_leafnode_obsstate == ObsState.READY
 
     elif command_name == "End":
         wait_for_final_sdp_subarray_obsstate(
             sdpsubarrayleaf_node_dev, ObsState.IDLE
         )
+        sdp_subarray_leafnode_obsstate = (
+            sdpsubarrayleaf_node_dev.read_attribute("obsState").value
+        )
+        assert sdp_subarray_leafnode_obsstate == ObsState.IDLE
+
+    elif command_name == "ReleaseAllResources":
+        wait_for_final_sdp_subarray_obsstate(
+            sdpsubarrayleaf_node_dev, ObsState.EMPTY
+        )
+        sdp_subarray_leafnode_obsstate = (
+            sdpsubarrayleaf_node_dev.read_attribute("obsState").value
+        )
+        assert sdp_subarray_leafnode_obsstate == ObsState.EMPTY
 
     sdpsubarrayleaf_node.subscribe_event(
         "longRunningCommandResult",
