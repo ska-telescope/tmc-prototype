@@ -42,7 +42,7 @@ class AssignResources(SdpSLNCommand):
         logger=None,
         task_callback: Callable = None,
         task_abort_event: Optional[threading.Event] = None,
-    ) -> tuple:
+    ) -> None:
         """This is a long running method for AssignResources command, it
         executes do hook, invokes AssignResources command on CspSubarray.
 
@@ -79,9 +79,9 @@ class AssignResources(SdpSLNCommand):
                 # pylint: disable=line-too-long
                 lrcr_callback=self.component_manager.long_running_result_callback,
             )
-            self.update_task_status(result_code, message)
+            # self.update_task_status(result_code, message)
 
-        return result_code, message
+        # return result_code, message
 
     def update_task_status(self, result: ResultCode, message: str = ""):
         if result == ResultCode.FAILED:
