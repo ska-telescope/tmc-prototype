@@ -1,5 +1,5 @@
 """
-Configure command class for SdpSubarrayLeafNode.
+Scan command class for SdpSubarrayLeafNode.
 """
 import json
 import threading
@@ -14,16 +14,16 @@ from tango import DevFailed
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
 
 
-class Configure(SdpSLNCommand):
+class Scan(SdpSLNCommand):
     """
-    This class implements the Configure command for SdpSubarray.
+    This class implements the Scan command for SdpSubarray.
 
-    It provides methods to configure the SdpSubarray device and
+    It provides methods to Scan the SdpSubarray device and
     handle the execution
-    of the Configure command.
+    of the Scan command.
     """
 
-    def configure(
+    def scan(
         self,
         argin: str,
         logger: Logger,
@@ -31,8 +31,8 @@ class Configure(SdpSLNCommand):
         # pylint: disable=unused-argument
         task_abort_event: Optional[threading.Event] = None,
     ) -> None:
-        """This is a long running method for Configure command, it
-        executes do hook, invokes Configure command on SdpSubarray.
+        """This is a long running method for Scan command, it
+        executes do hook, invokes Scan command on SdpSubarray.
 
         :param logger: logger
         :type logger: logging.Logger
@@ -44,7 +44,7 @@ class Configure(SdpSLNCommand):
         task_callback(status=TaskStatus.IN_PROGRESS)
         result_code, message = self.do(argin)
         logger.info(
-            "Configure command invoked on: %s: Result: %s, %s",
+            "Scan command invoked on: %s: Result: %s, %s",
             self.sdp_subarray_adapter.dev_name,
             result_code,
             message,
@@ -57,15 +57,15 @@ class Configure(SdpSLNCommand):
 
     def do(self, argin=None):
         """
-        Method to invoke Configure command on SDP Subarray. \
+        Method to invoke Scan command on SDP Subarray. \
 
-        :param argin: The string in JSON format. \
-        The JSON contains following values: \
+        :param argin: The string in JSON format. The JSON contains following \
+        values: \
 
         Example: \
             { \
-            "interface": "https://schema.skao.int/ska-sdp-configure/0.4", \
-            "scan_type": "science_A" \
+             "interface": "https://schema.skao.int/ska-sdp-scan/0.4", \
+             "scan_id": 1 \
             } \
 
         return: \
@@ -78,7 +78,7 @@ class Configure(SdpSLNCommand):
             json_argument = json.loads(argin)
         except JSONDecodeError as e:
             log_msg = (
-                "Execution of Configure command is failed."
+                "Execution of Scan command is failed."
                 + "Reason: JSON parsing failed with exception: {}".format(e)
                 + "The command is not executed successfully."
                 + "The device will continue with normal operation"
@@ -92,56 +92,43 @@ class Configure(SdpSLNCommand):
                 ),
             )
 
-        if "interface" not in json_argument:
-            return self.component_manager.generate_command_result(
-                ResultCode.FAILED,
-                "Missing interface key",
-            )
-
-        if "scan_type" not in json_argument:
-            return self.component_manager.generate_command_result(
-                ResultCode.FAILED,
-                "Missing scan_type key",
-            )
-
-        if json_argument["scan_type"] == "":
-            return self.component_manager.generate_command_result(
-                ResultCode.FAILED,
-                "Missing scan_type value.",
-            )
-
-        log_msg = "Invoking Configure command on:"
-        "{}".format(self.sdp_subarray_adapter.dev_name)
+        log_msg = (
+            f"Invoking Scan command on:{self.sdp_subarray_adapter.dev_name}"
+        )
         self.logger.info(log_msg)
+
         try:
+            # As, SKA logtransaction is not utilised in scan command across
+            # tmc devices.
+            # Hence, Interface URL needs to be updated explicitly for SDP.
+            # pylint: disable=fixme
+            # TODO: Incorporate transaction id implementation for scan
+            # command across TMC.
             json_argument[
                 "interface"
-            ] = "https://schema.skao.int/ska-sdp-configure/0.3"
+            ] = "https://schema.skao.int/ska-sdp-scan/0.4"
             log_msg = (
-                "Input JSON for Configure command for SDP subarray"
-                + "{}: {}".format(
+                "Input JSON for Scan command for SDP subarray"
+                "{}: {} ".format(
                     self.sdp_subarray_adapter.dev_name, json_argument
                 )
             )
             self.logger.debug(log_msg)
-            self.sdp_subarray_adapter.Configure(
-                json.dumps(json_argument), self.component_manager.cmd_ended_cb
-            )
-
+            self.sdp_subarray_adapter.Scan(json.dumps(json_argument))
         except (AttributeError, ValueError, TypeError, DevFailed) as e:
-            self.logger.exception("Configure command invocation failed: %s", e)
+            self.logger.exception("Command invocation failed: %s", e)
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
-                "The Sdp Subarray Device has failed to invoke"
-                + "the Configure command {}".format(
+                "The invocation of the Scan command is failed on Sdp"
+                + "Subarray Device {}".format(
                     self.sdp_subarray_adapter.dev_name
                 )
-                + "Reason: Error in invoking the Configure command on"
-                "Sdp Subarray."
+                + "Reason: Error in calling the Scan command on Sdp Subarray."
                 + "The command has NOT been executed."
-                + "This device will continue with normal operation.",
+                + "This device will continue with normal operation."
+                "",
             )
-        log_msg = "Configure command successfully invoked on:" + "{}".format(
+        log_msg = "Scan command successfully invoked on:" + "{}".format(
             self.sdp_subarray_adapter.dev_name
         )
         self.logger.info(log_msg)
