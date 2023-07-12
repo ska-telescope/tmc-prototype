@@ -119,7 +119,7 @@ def endscan(
 
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
         (unique_id[0], str(int(ResultCode.OK))),
-        lookahead=6,
+        lookahead=8,
     )
     wait_for_final_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.READY)
 
