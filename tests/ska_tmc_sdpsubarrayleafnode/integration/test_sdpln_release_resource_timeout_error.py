@@ -153,7 +153,7 @@ def release_all_resources_timeout(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_mid1
+@pytest.mark.SKA_mid
 def test_release_all_res_command_error_propagation_mid(
     tango_context,
     json_factory,
@@ -181,7 +181,7 @@ def test_release_all_res_command_error_propagation_low(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_mid1
+@pytest.mark.SKA_mid
 def test_release_all_res_command_timeout_mid(
     tango_context,
     json_factory,
