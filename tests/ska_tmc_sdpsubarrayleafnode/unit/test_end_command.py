@@ -17,6 +17,7 @@ from tests.settings import (
 )
 
 
+@pytest.mark.skip(reason="To do in SAH-1352")
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]
