@@ -153,22 +153,7 @@ def release_all_resources_timeout(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_mid
-def test_release_all_res_command_timeout_mid(
-    tango_context,
-    json_factory,
-    change_event_callbacks,
-):
-    return release_all_resources_timeout(
-        tango_context,
-        SDPSUBARRAYLEAFNODE_MID,
-        json_factory("command_AssignResources"),
-        change_event_callbacks,
-    )
-
-
-@pytest.mark.post_deployment
-@pytest.mark.SKA_mid
+@pytest.mark.SKA_mid1
 def test_release_all_res_command_error_propagation_mid(
     tango_context,
     json_factory,
@@ -190,6 +175,21 @@ def test_release_all_res_command_error_propagation_low(
     return release_all_resources_error_propagation(
         tango_context,
         LOW_SDP_SUBARRAY,
+        json_factory("command_AssignResources"),
+        change_event_callbacks,
+    )
+
+
+@pytest.mark.post_deployment
+@pytest.mark.SKA_mid1
+def test_release_all_res_command_timeout_mid(
+    tango_context,
+    json_factory,
+    change_event_callbacks,
+):
+    return release_all_resources_timeout(
+        tango_context,
+        SDPSUBARRAYLEAFNODE_MID,
         json_factory("command_AssignResources"),
         change_event_callbacks,
     )
