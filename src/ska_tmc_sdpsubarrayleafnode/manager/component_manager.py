@@ -34,6 +34,7 @@ from ska_tmc_sdpsubarrayleafnode.commands.on_command import On
 from ska_tmc_sdpsubarrayleafnode.commands.release_resources_command import (
     ReleaseAllResources,
 )
+from ska_tmc_sdpsubarrayleafnode.commands.restart_command import Restart
 from ska_tmc_sdpsubarrayleafnode.commands.scan_command import Scan
 from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
     SdpSLNEventReceiver,
@@ -326,13 +327,20 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             if self.get_device().obs_state != ObsState.SCANNING:
                 self.raise_invalid_obsstate_error(command_name)
 
-        elif command_name == "Abort":
+        if command_name == "Abort":
             if self.get_device().obs_state not in [
                 ObsState.SCANNING,
                 ObsState.CONFIGURING,
                 ObsState.RESOURCING,
                 ObsState.IDLE,
                 ObsState.READY,
+            ]:
+                self.raise_invalid_obsstate_error(command_name)
+
+        elif command_name == "Restart":
+            if self.get_device().obs_state not in [
+                ObsState.FAULT,
+                ObsState.ABORTED,
             ]:
                 self.raise_invalid_obsstate_error(command_name)
 
@@ -528,3 +536,23 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         result_code, message = abort_command.invoke_abort()
         return result_code, message
+
+    def restart(self, task_callback: Optional[Callable] = None) -> tuple:
+        """
+        Submit the Restart command in queue.
+
+        :return: a result code and message
+        """
+        restart_command = Restart(self, logger=self.logger)
+        task_status, response = self.submit_task(
+            restart_command.restart,
+            args=[self.logger],
+            task_callback=task_callback,
+        )
+        self.logger.info(
+            "TaskStatus: %s and Response: %s of Restart command after queued\
+                 to execution",
+            task_status,
+            response,
+        )
+        return task_status, response

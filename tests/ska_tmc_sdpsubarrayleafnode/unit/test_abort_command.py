@@ -71,7 +71,6 @@ def test_abort_command_fail_subarray(tango_context, devices):
     assert result_code == ResultCode.FAILED
 
 
-@pytest.mark.test2
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]

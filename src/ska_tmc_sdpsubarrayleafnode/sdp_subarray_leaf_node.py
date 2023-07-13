@@ -414,6 +414,38 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         result_code, unique_id = handler()
         return ([result_code], [unique_id])
 
+    def is_Restart_allowed(self):
+        """
+        Checks whether Restart command is allowed to be run in current device
+         state
+
+         return:
+             True if Restart command is allowed to be run in current device
+             state
+
+         rtype:
+             boolean
+
+         raises:
+             DevFailed if this command is not allowed to be run in current
+             device state
+
+        """
+        return self.component_manager.is_command_allowed("Restart")
+
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
+    @DebugIt()
+    def Restart(self):
+        """
+        Invoke Restart command on Csp Subarray.
+        """
+        handler = self.get_command_object("Restart")
+        result_code, unique_id = handler()
+        return [[result_code], [unique_id]]
+
     # default ska mid
     def create_component_manager(self):
         """Returns Sdp Subarray Leaf Node component manager object"""

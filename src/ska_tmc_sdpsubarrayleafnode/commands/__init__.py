@@ -7,6 +7,7 @@ from .end_scan_command import EndScan
 from .off_command import Off
 from .on_command import On
 from .release_resources_command import ReleaseAllResources
+from .restart_command import Restart
 from .scan_command import Scan
 
 __all__ = [
@@ -19,4 +20,5 @@ __all__ = [
     "End",
     "ReleaseAllResources",
     "Abort",
+    "Restart",
 ]
