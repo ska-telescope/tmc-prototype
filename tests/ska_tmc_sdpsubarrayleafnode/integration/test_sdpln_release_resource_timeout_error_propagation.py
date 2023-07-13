@@ -33,6 +33,7 @@ def release_all_resources_error_propagation(
         sdp_subarray = dev_factory.get_device(LOW_SDP_SUBARRAY)
 
     # AssignResources
+    #sdp_subarray.SetDirectObsState(ObsState.EMPTY)
     result, unique_id = sdpsal_node.AssignResources(assign_input_str)
     logger.info(
         f"AssignResources Command ID: {unique_id} \
@@ -100,6 +101,7 @@ def release_all_resources_timeout(
         sdp_subarray = dev_factory.get_device(LOW_SDP_SUBARRAY)
 
     # AssignResources
+   # sdp_subarray.SetDirectObsState(ObsState.EMPTY)
     result, unique_id = sdpsal_node.AssignResources(assign_input_str)
     logger.info(
         f"AssignResources Command ID: {unique_id} \
@@ -153,7 +155,7 @@ def release_all_resources_timeout(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_mid1
+@pytest.mark.SKA_mid
 def test_release_all_res_command_timeout_mid(
     tango_context,
     json_factory,
@@ -168,7 +170,7 @@ def test_release_all_res_command_timeout_mid(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_mid1
+@pytest.mark.SKA_mid
 def test_release_all_res_command_error_propagation_mid(
     tango_context,
     json_factory,
