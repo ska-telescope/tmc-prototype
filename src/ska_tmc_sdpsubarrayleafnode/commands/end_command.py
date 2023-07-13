@@ -65,7 +65,21 @@ class End(SdpSLNCommand):
         return_code, message = self.init_adapter()
         if return_code == ResultCode.FAILED:
             return return_code, message
-        result, message = self.call_adapter_method(
-            "SdpSubarray", self.sdp_subarray_adapter, "End"
-        )
-        return result, message
+        if return_code == ResultCode.FAILED:
+            return return_code, message
+        try:
+            self.sdp_subarray_adapter.End()
+        except Exception as e:
+            self.logger.exception(f"Command invocation failed: {e}")
+            return (
+                ResultCode.FAILED,
+                f"The invocation of the End"
+                " command is failed on SDP Subarray "
+                "Device "
+                f"{self.sdp_subarray_adapter.dev_name} "
+                "Reason: Error in invoking "
+                "End command on SDP Subarray"
+                ".The command has NOT been executed. "
+                "This device will continue with normal operation.",
+            )
+        return ResultCode.OK, ""
