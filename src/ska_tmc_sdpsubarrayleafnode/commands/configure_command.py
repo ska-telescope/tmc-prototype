@@ -61,7 +61,6 @@ class Configure(SdpSLNCommand):
             self.timeout_callback,
         )
         result_code, message = self.do(argin)
-        self.logger.info(result_code)
         if result_code == ResultCode.FAILED:
             self.update_task_status(result_code, message)
             self.component_manager.stop_timer()
@@ -75,7 +74,6 @@ class Configure(SdpSLNCommand):
                 # pylint: disable=line-too-long
                 lrcr_callback=self.component_manager.long_running_result_callback,
             )
-            # self.update_task_status(result_code, message)
 
     def update_task_status(self, result: ResultCode, message: str = ""):
         if result == ResultCode.FAILED:
@@ -143,9 +141,10 @@ class Configure(SdpSLNCommand):
                 "Missing scan_type value.",
             )
 
-        log_msg = "Invoking Configure command on:"
-        "{}".format(self.sdp_subarray_adapter.dev_name)
-        self.logger.info(log_msg)
+        self.logger.info(
+            "Invoking Configure command on:"
+            "{}".format(self.sdp_subarray_adapter.dev_name)
+        )
         try:
             json_argument[
                 "interface"
@@ -174,8 +173,8 @@ class Configure(SdpSLNCommand):
                 + "The command has NOT been executed."
                 + "This device will continue with normal operation.",
             )
-        log_msg = "Configure command successfully invoked on:" + "{}".format(
-            self.sdp_subarray_adapter.dev_name
+        self.logger.info(
+            "Configure command successfully invoked on:"
+            + "{}".format(self.sdp_subarray_adapter.dev_name)
         )
-        self.logger.info(log_msg)
         return (ResultCode.OK, "")

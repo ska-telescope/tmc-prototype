@@ -82,7 +82,7 @@ def configure_error_propogation(
         tear_down(dev_factory, sdp_subarray, sdpsln_device)
 
     except Exception as e:
-        tear_down(dev_factory, sdp_subarray, sdpsln_name)
+        tear_down(dev_factory, sdp_subarray, sdpsln_device)
         raise Exception(e)
 
 
