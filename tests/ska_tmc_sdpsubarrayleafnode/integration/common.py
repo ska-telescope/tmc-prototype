@@ -49,14 +49,11 @@ def tear_down(dev_factory, sdp_subarray, sdpsal_node):
 
     if sdp_subarray_obsstate.value == ObsState.EMPTY:
         sdp_subarray.Off()
-        time.sleep(0.5)
 
     if sdp_subarray_obsstate.value == ObsState.IDLE:
         sdp_subarray.ReleaseResources()
-        # sdp_subarray.SetDirectObsState(ObsState.EMPTY)
         wait_for_final_sdp_subarray_obsstate(sdpsal_node, ObsState.EMPTY)
         sdp_subarray.Off()
-        time.sleep(0.5)
         sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
         logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
 
@@ -66,7 +63,6 @@ def tear_down(dev_factory, sdp_subarray, sdpsal_node):
         sdp_subarray.ReleaseResources()
         wait_for_final_sdp_subarray_obsstate(sdpsal_node, ObsState.EMPTY)
         sdp_subarray.Off()
-        time.sleep(0.5)
         sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
         logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
 

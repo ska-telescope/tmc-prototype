@@ -43,7 +43,7 @@ def assign_resources_error_propagation(
                 result_code[0],
                 "Missing eb_id in the AssignResources input json",
             ),
-            lookahead=5,
+            lookahead=2,
         )
         wait_for_final_sdp_subarray_obsstate(sdpsln_device, ObsState.EMPTY)
         event_remover(

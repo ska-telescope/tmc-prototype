@@ -51,7 +51,7 @@ def configure_error_propogation(
         )
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (unique_id[0], str(ResultCode.OK.value)),
-            lookahead=4,
+            lookahead=3,
         )
         wait_for_final_sdp_subarray_obsstate(sdpsln_device, ObsState.IDLE)
 
@@ -73,7 +73,7 @@ def configure_error_propogation(
                 unique_id[0],
                 "Missing scan_type key",
             ),
-            lookahead=5,
+            lookahead=3,
         )
         event_remover(
             change_event_callbacks,

@@ -51,7 +51,7 @@ def configure(
         logger.info(f"Command ID: {unique_id} Returned result: {result}")
         change_event_callbacks[
             "longRunningCommandsInQueue"
-        ].assert_change_event(("On",), lookahead=4)
+        ].assert_change_event(("On",), lookahead=1)
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (unique_id[0], str(int(ResultCode.OK))),
@@ -68,7 +68,7 @@ def configure(
                 "On",
                 "AssignResources",
             ),
-            lookahead=4,
+            lookahead=2,
         )
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
@@ -91,7 +91,7 @@ def configure(
                 "AssignResources",
                 "Configure",
             ),
-            lookahead=4,
+            lookahead=2,
         )
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(

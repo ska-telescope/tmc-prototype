@@ -53,7 +53,7 @@ def end(
             "longRunningCommandsInQueue"
         ].assert_change_event(
             ("On",),
-            lookahead=4,
+            lookahead=1,
         )
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
@@ -71,7 +71,7 @@ def end(
                 "On",
                 "AssignResources",
             ),
-            lookahead=4,
+            lookahead=2,
         )
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
@@ -94,12 +94,12 @@ def end(
                 "AssignResources",
                 "Configure",
             ),
-            lookahead=4,
+            lookahead=2,
         )
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (unique_id[0], str(int(ResultCode.OK))),
-            lookahead=4,
+            lookahead=3,
         )
         wait_for_final_sdp_subarray_obsstate(
             sdp_subarray_ln_proxy, ObsState.READY
@@ -115,12 +115,12 @@ def end(
                 "Configure",
                 "End",
             ),
-            lookahead=4,
+            lookahead=3,
         )
 
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (unique_id[0], str(int(ResultCode.OK))),
-            lookahead=6,
+            lookahead=4,
         )
         wait_for_final_sdp_subarray_obsstate(
             sdp_subarray_ln_proxy, ObsState.IDLE

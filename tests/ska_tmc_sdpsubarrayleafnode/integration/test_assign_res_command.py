@@ -50,7 +50,7 @@ def assign_resources(
         )
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (unique_id[0], str(ResultCode.OK.value)),
-            lookahead=4,
+            lookahead=2,
         )
         wait_for_final_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
         event_remover(
