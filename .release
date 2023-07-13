@@ -1,7 +1,7 @@
 """Release information for Python Package"""
 
 name="""ska-tmc-sdpleafnodes"""
-version="0.11.1"
+version="0.12.0"
 version_info=version.split(".")
 description="""SKA-TMC-SDPLEAFNODES"""
 author="Team Himalaya, Team Sahyadri"
@@ -9,8 +9,8 @@ author_email="telmgt-internal@googlegroups.com"
 license="""BSD-3-Clause"""
 url="""https://www.skaobservatory.org"""
 copyright=""""""
-release=0.11.1
-tag=0.11.1
-release_notes=This release contains:<br/><ul><li>Refactored Scan and EndScan command as a longrunning command with updated base class version 18.1</li></ul><br/>
+release=0.12.0
+tag=0.12.0
+release_notes=This release contains:<br/><ul><li>Implement Timeout and ErrorPropagation for Configure command.</li></ul><br/>
 
 

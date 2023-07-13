@@ -7,7 +7,7 @@ from ska_tmc_common.dev_factory import DevFactory
 from tests.settings import event_remover, logger
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
     tear_down,
-    wait_for_final_sdp_subarray_obsstate,
+    wait_and_assert_sdp_subarray_obsstate,
 )
 
 
@@ -64,7 +64,7 @@ def endscan(
         (unique_id[0], str(int(ResultCode.OK))),
         lookahead=4,
     )
-    wait_for_final_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.IDLE)
+    wait_and_assert_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.IDLE)
 
     configure_input_str = json_factory("command_Configure")
     result, unique_id = sdp_subarray_ln_proxy.Configure(configure_input_str)
@@ -82,7 +82,9 @@ def endscan(
         (unique_id[0], str(int(ResultCode.OK))),
         lookahead=4,
     )
-    wait_for_final_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.READY)
+    wait_and_assert_sdp_subarray_obsstate(
+        sdp_subarray_ln_proxy, ObsState.READY
+    )
 
     scan_input_str = json_factory("command_Scan")
     result, unique_id = sdp_subarray_ln_proxy.Scan(scan_input_str)
@@ -101,7 +103,7 @@ def endscan(
         (unique_id[0], str(int(ResultCode.OK))),
         lookahead=6,
     )
-    wait_for_final_sdp_subarray_obsstate(
+    wait_and_assert_sdp_subarray_obsstate(
         sdp_subarray_ln_proxy, ObsState.SCANNING
     )
     result, unique_id = sdp_subarray_ln_proxy.EndScan()
@@ -121,13 +123,15 @@ def endscan(
         (unique_id[0], str(int(ResultCode.OK))),
         lookahead=8,
     )
-    wait_for_final_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.READY)
+    wait_and_assert_sdp_subarray_obsstate(
+        sdp_subarray_ln_proxy, ObsState.READY
+    )
 
     event_remover(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
-    tear_down(dev_factory, sdp_subarray)
+    tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
 
 
 @pytest.mark.post_deployment

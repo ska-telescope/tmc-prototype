@@ -21,39 +21,49 @@ def on_command(
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_fqdn)
     sdp_subarray_proxy = dev_factory.get_device(sdpsa_fqdn)
-    sdp_subarray_ln_proxy.subscribe_event(
-        "longRunningCommandsInQueue",
-        tango.EventType.CHANGE_EVENT,
-        change_event_callbacks["longRunningCommandsInQueue"],
-    )
-    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        None,
-    )
-    result, unique_id = sdp_subarray_ln_proxy.On()
-    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        ("On",),
-    )
-    logger.info(f"Command ID: {unique_id} Returned result: {result}")
-    assert result[0] == ResultCode.QUEUED
-    sdp_subarray_ln_proxy.subscribe_event(
-        "longRunningCommandResult",
-        tango.EventType.CHANGE_EVENT,
-        change_event_callbacks["longRunningCommandResult"],
-    )
-    change_event_callbacks["longRunningCommandResult"].assert_change_event(
-        (unique_id[0], str(int(ResultCode.OK))),
-        lookahead=2,
-    )
+    try:
+        sdp_subarray_ln_proxy.subscribe_event(
+            "longRunningCommandsInQueue",
+            tango.EventType.CHANGE_EVENT,
+            change_event_callbacks["longRunningCommandsInQueue"],
+        )
+        change_event_callbacks[
+            "longRunningCommandsInQueue"
+        ].assert_change_event(
+            None,
+        )
+        result, unique_id = sdp_subarray_ln_proxy.On()
+        change_event_callbacks[
+            "longRunningCommandsInQueue"
+        ].assert_change_event(
+            ("On",),
+        )
+        logger.info(f"Command ID: {unique_id} Returned result: {result}")
+        assert result[0] == ResultCode.QUEUED
+        sdp_subarray_ln_proxy.subscribe_event(
+            "longRunningCommandResult",
+            tango.EventType.CHANGE_EVENT,
+            change_event_callbacks["longRunningCommandResult"],
+        )
+        change_event_callbacks["longRunningCommandResult"].assert_change_event(
+            (unique_id[0], str(int(ResultCode.OK))),
+            lookahead=2,
+        )
 
-    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        None,
-        lookahead=2,
-    )
-    event_remover(
-        change_event_callbacks,
-        ["longRunningCommandResult", "longRunningCommandsInQueue"],
-    )
-    tear_down(dev_factory, sdp_subarray_proxy)
+        change_event_callbacks[
+            "longRunningCommandsInQueue"
+        ].assert_change_event(
+            None,
+            lookahead=2,
+        )
+        event_remover(
+            change_event_callbacks,
+            ["longRunningCommandResult", "longRunningCommandsInQueue"],
+        )
+        tear_down(dev_factory, sdp_subarray_proxy, sdp_subarray_ln_proxy)
+    except Exception as e:
+        tear_down(dev_factory, sdp_subarray_proxy, sdp_subarray_ln_proxy)
+        raise Exception(e)
 
 
 @pytest.mark.post_deployment
