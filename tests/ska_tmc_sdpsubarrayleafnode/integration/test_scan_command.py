@@ -11,13 +11,16 @@ from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
 )
 
 
-def end(
+def scan(
     tango_context, sdpsaln_name, device, json_factory, change_event_callbacks
 ):
-    logger.info("%s", tango_context)
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)
     sdp_subarray = dev_factory.get_device(device)
+    event_remover(
+        change_event_callbacks,
+        ["longRunningCommandResult", "longRunningCommandsInQueue"],
+    )
     sdp_subarray_ln_proxy.subscribe_event(
         "longRunningCommandsInQueue",
         tango.EventType.CHANGE_EVENT,
@@ -31,11 +34,12 @@ def end(
     )
 
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        None, lookahead=2
+        None, lookahead=3
     )
     result, unique_id = sdp_subarray_ln_proxy.On()
+    logger.info(f"Command ID: {unique_id} Returned result: {result}")
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        ("On",), lookahead=4
+        ("On",),
     )
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
@@ -57,7 +61,7 @@ def end(
 
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
         (unique_id[0], str(int(ResultCode.OK))),
-        lookahead=4,
+        lookahead=5,
     )
     wait_for_final_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.IDLE)
 
@@ -79,13 +83,14 @@ def end(
     )
     wait_for_final_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.READY)
 
-    result, unique_id = sdp_subarray_ln_proxy.End()
+    scan_input_str = json_factory("command_Scan")
+    result, unique_id = sdp_subarray_ln_proxy.Scan(scan_input_str)
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
         (
             "On",
             "AssignResources",
             "Configure",
-            "End",
+            "Scan",
         ),
     )
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
@@ -93,9 +98,12 @@ def end(
 
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
         (unique_id[0], str(int(ResultCode.OK))),
-        lookahead=8,
+        lookahead=6,
     )
-    wait_for_final_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.IDLE)
+    wait_for_final_sdp_subarray_obsstate(
+        sdp_subarray_ln_proxy, ObsState.SCANNING
+    )
+
     event_remover(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
@@ -103,17 +111,16 @@ def end(
     tear_down(dev_factory, sdp_subarray)
 
 
-@pytest.mark.skip(reason="Work in progress on SAH-1352")
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(
     "device",
     [("mid-sdp/subarray/01")],
 )
-def test_end_command_mid(
+def test_scan_command_mid(
     tango_context, device, json_factory, change_event_callbacks
 ):
-    return end(
+    return scan(
         tango_context,
         "ska_mid/tm_leaf_node/sdp_subarray01",
         device,
@@ -122,20 +129,19 @@ def test_end_command_mid(
     )
 
 
-@pytest.mark.skip(reason="Work in progress on SAH-1352")
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
 @pytest.mark.parametrize(
     "device",
     [("low-sdp/subarray/01")],
 )
-def test_end_command_low(
+def test_scan_command_low(
     tango_context,
     device,
     json_factory,
     change_event_callbacks,
 ):
-    return end(
+    return scan(
         tango_context,
         "ska_low/tm_leaf_node/sdp_subarray01",
         device,

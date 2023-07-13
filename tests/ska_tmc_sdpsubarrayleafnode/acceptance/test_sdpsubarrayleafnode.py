@@ -47,23 +47,30 @@ def call_command(
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name, assign_res_string
             )
-
-        # To do in SAH-1352
-        # elif command_name == "Configure":
-        #     logger.info(
-        #         f"sdpsubarrayleaf_node: {sdpsubarrayleaf_node.dev_name()}"
-        #     )
-        #     configure_string = json_factory("command_Configure")
-        #     pytest.command_result = sdpsubarrayleaf_node.command_inout(
-        #         command_name, configure_string
-        #     )
-        # To do in SAH-1352
-        # elif command_name == "End":
-        #     # Perform end logic here
-        #     pytest.command_result = sdpsubarrayleaf_node.command_inout(
-        #         command_name
-        #     )
-
+        elif command_name == "Configure":
+            logger.info(
+                f"sdpsubarrayleaf_node: {sdpsubarrayleaf_node.dev_name()}"
+            )
+            configure_string = json_factory("command_Configure")
+            pytest.command_result = sdpsubarrayleaf_node.command_inout(
+                command_name, configure_string
+            )
+        elif command_name == "Scan":
+            logger.info(
+                f"sdpsubarrayleaf_node: {sdpsubarrayleaf_node.dev_name()}"
+            )
+            scan_string = json_factory("command_Scan")
+            pytest.command_result = sdpsubarrayleaf_node.command_inout(
+                command_name, scan_string
+            )
+        elif command_name == "EndScan":
+            pytest.command_result = sdpsubarrayleaf_node.command_inout(
+                command_name
+            )
+        elif command_name == "End":
+            pytest.command_result = sdpsubarrayleaf_node.command_inout(
+                command_name
+            )
         else:
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name
@@ -83,10 +90,10 @@ def check_command(
 ) -> None:
     dev_factory = DevFactory()
 
-    sdpsubarrayleaf_node_dev = dev_factory.get_device(sdpsubarrayleaf_node)
-    sdp_subarray_leafnode_healthState = (
-        sdpsubarrayleaf_node_dev.read_attribute("healthState").value
-    )
+    sdp_sln_obsstate = dev_factory.get_device(sdpsubarrayleaf_node)
+    sdp_subarray_leafnode_healthState = sdp_sln_obsstate.read_attribute(
+        "healthState"
+    ).value
     logger.info(
         "Current SdpSubarray leaf node healthstate is {}".format(
             sdp_subarray_leafnode_healthState
@@ -108,17 +115,46 @@ def check_command(
     )
 
     if command_name == "AssignResources":
-        wait_for_final_sdp_subarray_obsstate(
-            sdpsubarrayleaf_node_dev, ObsState.IDLE
-        )
+        wait_for_final_sdp_subarray_obsstate(sdp_sln_obsstate, ObsState.IDLE)
+        sdp_subarray_leafnode_obsstate = sdp_sln_obsstate.read_attribute(
+            "sdpSubarrayObsState"
+        ).value
+        assert sdp_subarray_leafnode_obsstate == ObsState.IDLE
+
     elif command_name == "Configure":
-        wait_for_final_sdp_subarray_obsstate(
-            sdpsubarrayleaf_node_dev, ObsState.READY
-        )
+        wait_for_final_sdp_subarray_obsstate(sdp_sln_obsstate, ObsState.READY)
+        sdp_subarray_leafnode_obsstate = sdp_sln_obsstate.read_attribute(
+            "sdpSubarrayObsState"
+        ).value
+        assert sdp_subarray_leafnode_obsstate == ObsState.READY
+
+    elif command_name == "Scan":
+        wait_for_final_sdp_subarray_obsstate(sdp_sln_obsstate, ObsState.SCANNING)
+        sdp_subarray_leafnode_obsstate = sdp_sln_obsstate.read_attribute(
+            "sdpSubarrayObsState"
+        ).value
+        assert sdp_subarray_leafnode_obsstate == ObsState.SCANNING
+
+    elif command_name == "EndScan":
+        wait_for_final_sdp_subarray_obsstate(sdp_sln_obsstate, ObsState.READY)
+        sdp_subarray_leafnode_obsstate = sdp_sln_obsstate.read_attribute(
+            "sdpSubarrayObsState"
+        ).value
+        assert sdp_subarray_leafnode_obsstate == ObsState.READY
+
     elif command_name == "End":
-        wait_for_final_sdp_subarray_obsstate(
-            sdpsubarrayleaf_node_dev, ObsState.IDLE
-        )
+        wait_for_final_sdp_subarray_obsstate(sdp_sln_obsstate, ObsState.IDLE)
+        sdp_subarray_leafnode_obsstate = sdp_sln_obsstate.read_attribute(
+            "sdpSubarrayObsState"
+        ).value
+        assert sdp_subarray_leafnode_obsstate == ObsState.IDLE
+
+    elif command_name == "ReleaseAllResources":
+        wait_for_final_sdp_subarray_obsstate(sdp_sln_obsstate, ObsState.EMPTY)
+        sdp_subarray_leafnode_obsstate = sdp_sln_obsstate.read_attribute(
+            "sdpSubarrayObsState"
+        ).value
+        assert sdp_subarray_leafnode_obsstate == ObsState.EMPTY
 
     sdpsubarrayleaf_node.subscribe_event(
         "longRunningCommandResult",
