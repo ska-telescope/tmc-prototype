@@ -22,6 +22,7 @@ from ska_tmc_common.lrcr_callback import LRCRCallback
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
 from tango import DevState
 
+from ska_tmc_sdpsubarrayleafnode.commands.abort_command import Abort
 from ska_tmc_sdpsubarrayleafnode.commands.assign_resources_command import (
     AssignResources,
 )
@@ -325,6 +326,16 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             if self.get_device().obs_state != ObsState.SCANNING:
                 self.raise_invalid_obsstate_error(command_name)
 
+        elif command_name == "Abort":
+            if self.get_device().obs_state not in [
+                ObsState.SCANNING,
+                ObsState.CONFIGURING,
+                ObsState.RESOURCING,
+                ObsState.IDLE,
+                ObsState.READY,
+            ]:
+                self.raise_invalid_obsstate_error(command_name)
+
         return True
 
     def cmd_ended_cb(self, event):
@@ -502,3 +513,18 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             response,
         )
         return task_status, response
+
+    def abort_commands(self, task_callback: Callable = None):
+        """
+        Invokes Abort command on lower level Csp Subarray
+        and changes the obsstate
+
+        :param task_callback: callback to be called whenever the status
+            of the task changes.
+        """
+        abort_command = Abort(
+            self,
+            logger=self.logger,
+        )
+        result_code, message = abort_command.invoke_abort()
+        return result_code, message

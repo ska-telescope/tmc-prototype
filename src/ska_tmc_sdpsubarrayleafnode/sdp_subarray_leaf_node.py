@@ -383,6 +383,37 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         return_code, unique_id = handler()
         return [return_code], [str(unique_id)]
 
+    def is_Abort_allowed(self):
+        """
+        Checks whether Abort command is allowed to be run in current device
+        state
+
+        return:
+         True if Abort command is allowed to be run in current device state
+
+        rtype:
+            boolean
+
+        raises:
+            DevFailed if this command is not allowed to be run in current
+            device state
+
+        """
+        return self.component_manager.is_command_allowed("Abort")
+
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
+    @DebugIt()
+    def Abort(self):
+        """
+        Invoke Abort command on Sdp Subarray.
+        """
+        handler = self.get_command_object("Abort")
+        result_code, unique_id = handler()
+        return ([result_code], [unique_id])
+
     # default ska mid
     def create_component_manager(self):
         """Returns Sdp Subarray Leaf Node component manager object"""
