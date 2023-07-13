@@ -7,7 +7,7 @@ from ska_tmc_common.dev_factory import DevFactory
 from tests.settings import event_remover, logger
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
     tear_down,
-    wait_for_final_sdp_subarray_obsstate,
+    wait_and_assert_sdp_subarray_obsstate,
 )
 
 
@@ -69,7 +69,7 @@ def release_resources(
             (unique_id[0], str(int(ResultCode.OK))),
             lookahead=4,
         )
-        wait_for_final_sdp_subarray_obsstate(
+        wait_and_assert_sdp_subarray_obsstate(
             sdp_subarray_ln_proxy, ObsState.IDLE
         )
         result, unique_id = sdp_subarray_ln_proxy.ReleaseAllResources()
@@ -89,7 +89,7 @@ def release_resources(
             (unique_id[0], str(int(ResultCode.OK))),
             lookahead=4,
         )
-        wait_for_final_sdp_subarray_obsstate(
+        wait_and_assert_sdp_subarray_obsstate(
             sdp_subarray_ln_proxy, ObsState.EMPTY
         )
         event_remover(

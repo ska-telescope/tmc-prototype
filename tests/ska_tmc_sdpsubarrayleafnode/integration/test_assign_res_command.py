@@ -13,7 +13,7 @@ from tests.conftest import (
 from tests.settings import event_remover, logger
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
     tear_down,
-    wait_for_final_sdp_subarray_obsstate,
+    wait_and_assert_sdp_subarray_obsstate,
 )
 
 
@@ -52,7 +52,7 @@ def assign_resources(
             (unique_id[0], str(ResultCode.OK.value)),
             lookahead=2,
         )
-        wait_for_final_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
+        wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
         event_remover(
             change_event_callbacks,
             ["longRunningCommandResult", "longRunningCommandsInQueue"],

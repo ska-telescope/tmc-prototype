@@ -6,7 +6,7 @@ from ska_tmc_common.dev_factory import DevFactory
 from tests.settings import event_remover, logger
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
     tear_down,
-    wait_for_final_sdp_subarray_obsstate,
+    wait_and_assert_sdp_subarray_obsstate,
 )
 
 
@@ -45,7 +45,7 @@ def assign_resources_error_propagation(
             ),
             lookahead=2,
         )
-        wait_for_final_sdp_subarray_obsstate(sdpsln_device, ObsState.EMPTY)
+        wait_and_assert_sdp_subarray_obsstate(sdpsln_device, ObsState.EMPTY)
         event_remover(
             change_event_callbacks,
             ["longRunningCommandResult", "longRunningCommandsInQueue"],

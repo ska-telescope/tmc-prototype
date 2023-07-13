@@ -13,7 +13,7 @@ from tests.conftest import (
 from tests.settings import event_remover, logger
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
     tear_down,
-    wait_for_final_sdp_subarray_obsstate,
+    wait_and_assert_sdp_subarray_obsstate,
 )
 
 dev_factory = DevFactory()
@@ -53,7 +53,7 @@ def configure_error_propogation(
             (unique_id[0], str(ResultCode.OK.value)),
             lookahead=3,
         )
-        wait_for_final_sdp_subarray_obsstate(sdpsln_device, ObsState.IDLE)
+        wait_and_assert_sdp_subarray_obsstate(sdpsln_device, ObsState.IDLE)
 
         result, unique_id = sdpsln_device.Configure(configure_input_str)
         logger.info(

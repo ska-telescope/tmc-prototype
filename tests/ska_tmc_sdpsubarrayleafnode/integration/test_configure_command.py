@@ -14,7 +14,7 @@ from tests.settings import (
 )
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
     tear_down,
-    wait_for_final_sdp_subarray_obsstate,
+    wait_and_assert_sdp_subarray_obsstate,
 )
 
 
@@ -75,7 +75,7 @@ def configure(
             (unique_id[0], str(int(ResultCode.OK))),
             lookahead=4,
         )
-        wait_for_final_sdp_subarray_obsstate(
+        wait_and_assert_sdp_subarray_obsstate(
             sdp_subarray_ln_proxy, ObsState.IDLE
         )
 
@@ -98,7 +98,7 @@ def configure(
             (unique_id[0], str(int(ResultCode.OK))),
             lookahead=4,
         )
-        wait_for_final_sdp_subarray_obsstate(
+        wait_and_assert_sdp_subarray_obsstate(
             sdp_subarray_ln_proxy, ObsState.READY
         )
 

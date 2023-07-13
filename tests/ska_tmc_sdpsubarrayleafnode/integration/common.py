@@ -52,22 +52,22 @@ def tear_down(dev_factory, sdp_subarray, sdpsal_node):
 
     if sdp_subarray_obsstate.value == ObsState.IDLE:
         sdp_subarray.ReleaseResources()
-        wait_for_final_sdp_subarray_obsstate(sdpsal_node, ObsState.EMPTY)
+        wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.EMPTY)
         sdp_subarray.Off()
         sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
         logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
 
     if sdp_subarray_obsstate.value == ObsState.READY:
         sdp_subarray.End()
-        wait_for_final_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
+        wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
         sdp_subarray.ReleaseResources()
-        wait_for_final_sdp_subarray_obsstate(sdpsal_node, ObsState.EMPTY)
+        wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.EMPTY)
         sdp_subarray.Off()
         sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
         logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
 
 
-def wait_for_final_sdp_subarray_obsstate(sdp_subarray_leaf_node, obs_state):
+def wait_and_assert_sdp_subarray_obsstate(sdp_subarray_leaf_node, obs_state):
     logger.debug(f"Waiting for SdpSubarray obsState to be {obs_state}")
     sdp_subarray_obsstate = sdp_subarray_leaf_node.read_attribute(
         "sdpSubarrayObsState"
@@ -90,3 +90,4 @@ def wait_for_final_sdp_subarray_obsstate(sdp_subarray_leaf_node, obs_state):
                 f"Timeout occurred in transitioning SdpSubarray\
                      obsState to {obs_state}"
             )
+    assert sdp_subarray_obsstate.value == obs_state
