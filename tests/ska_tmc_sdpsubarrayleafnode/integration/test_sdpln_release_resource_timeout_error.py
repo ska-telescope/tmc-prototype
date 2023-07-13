@@ -76,6 +76,7 @@ def release_all_resources_error_propagation(
     )
 
     sdp_subarray.SetRaiseException(False)
+    sdp_subarray.SetDirectObsState(ObsState.EMPTY)
 
     event_remover(
         change_event_callbacks,
@@ -141,8 +142,8 @@ def release_all_resources_timeout(
         ),
         lookahead=6,
     )
-
     sdp_subarray.SetDefective(False)
+    sdp_subarray.SetDirectObsState(ObsState.EMPTY)
 
     event_remover(
         change_event_callbacks,
@@ -150,6 +151,21 @@ def release_all_resources_timeout(
     )
 
     tear_down(dev_factory, sdp_subarray)
+
+
+@pytest.mark.post_deployment
+@pytest.mark.SKA_mid
+def test_release_all_res_command_timeout_mid(
+    tango_context,
+    json_factory,
+    change_event_callbacks,
+):
+    return release_all_resources_timeout(
+        tango_context,
+        SDPSUBARRAYLEAFNODE_MID,
+        json_factory("command_AssignResources"),
+        change_event_callbacks,
+    )
 
 
 @pytest.mark.post_deployment
@@ -169,27 +185,12 @@ def test_release_all_res_command_error_propagation_mid(
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
-def test_release_all_res_command_error_propagation_low(
+def test_release_all_res_command_timeout_low(
     tango_context, json_factory, change_event_callbacks
-):
-    return release_all_resources_error_propagation(
-        tango_context,
-        LOW_SDP_SUBARRAY,
-        json_factory("command_AssignResources"),
-        change_event_callbacks,
-    )
-
-
-@pytest.mark.post_deployment
-@pytest.mark.SKA_mid
-def test_release_all_res_command_timeout_mid(
-    tango_context,
-    json_factory,
-    change_event_callbacks,
 ):
     return release_all_resources_timeout(
         tango_context,
-        SDPSUBARRAYLEAFNODE_MID,
+        SDPSUBARRAYLEAFNODE_LOW,
         json_factory("command_AssignResources"),
         change_event_callbacks,
     )
@@ -197,12 +198,12 @@ def test_release_all_res_command_timeout_mid(
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
-def test_release_all_res_command_timeout_low(
+def test_release_all_res_command_error_propagation_low(
     tango_context, json_factory, change_event_callbacks
 ):
-    return release_all_resources_timeout(
+    return release_all_resources_error_propagation(
         tango_context,
-        SDPSUBARRAYLEAFNODE_LOW,
+        LOW_SDP_SUBARRAY,
         json_factory("command_AssignResources"),
         change_event_callbacks,
     )

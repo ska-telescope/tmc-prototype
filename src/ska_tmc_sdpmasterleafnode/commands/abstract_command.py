@@ -38,7 +38,7 @@ class SdpMLNCommand(TmcLeafNodeCommand):
             try:
                 self.sdp_master_adapter = (
                     self.adapter_factory.get_or_create_adapter(
-                        dev_name, AdapterType.SDPSUBARRAY
+                        dev_name, AdapterType.BASE
                     )
                 )
             except ConnectionFailed as cf:

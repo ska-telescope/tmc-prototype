@@ -71,6 +71,10 @@ def call_command(
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name
             )
+        elif command_name == "ReleaseAllResources":
+            pytest.command_result = sdpsubarrayleaf_node.command_inout(
+                command_name
+            )
         else:
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name

@@ -59,15 +59,14 @@ class ReleaseAllResources(SdpSLNCommand):
             self.update_task_status(result_code, message)
             self.component_manager.stop_timer()
         else:
+            lrcr_callback = self.component_manager.long_running_result_callback
             self.start_tracker_thread(
                 self.component_manager.get_obs_state,
                 ObsState.EMPTY,
                 self.timeout_id,
                 self.timeout_callback,
-                command_id=(self.component_manager.release_id),
-                lrcr_callback=(
-                    self.component_manager.long_running_result_callback
-                ),
+                command_id=self.component_manager.release_id,
+                lrcr_callback=lrcr_callback,
             )
 
     def update_task_status(self, result: ResultCode, message: str = ""):

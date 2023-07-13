@@ -211,22 +211,18 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         try:
             # Ignoring ResultCode events
             int(value)
-        except ValueError:
+        except ValueError as value_error:
+            self.logger.exception(
+                f"Exception occurred in command {command_name}: {value_error}"
+            )
+            self.logger.info(
+                f"Updating LRCRCallback with {value} for {command_name}"
+            )
             if command_name == "AssignResources":
-                self.logger.info(
-                    "Updating LRCRCallback with value: %s for \
-                         AssignResources",
-                    value,
-                )
                 self.long_running_result_callback(
                     self.assign_id, ResultCode.FAILED, exception_msg=value
                 )
             elif command_name == "ReleaseAllResources":
-                self.logger.info(
-                    "Updating LRCRCallback with value: %s \
-                        for ReleaseAllResources",
-                    value,
-                )
                 self.long_running_result_callback(
                     self.release_id,
                     ResultCode.FAILED,
