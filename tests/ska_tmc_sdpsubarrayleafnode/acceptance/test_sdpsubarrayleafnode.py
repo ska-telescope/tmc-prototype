@@ -129,7 +129,9 @@ def check_command(
         assert sdp_subarray_leafnode_obsstate == ObsState.READY
 
     elif command_name == "Scan":
-        wait_for_final_sdp_subarray_obsstate(sdp_sln_obsstate, ObsState.SCANNING)
+        wait_for_final_sdp_subarray_obsstate(
+            sdp_sln_obsstate, ObsState.SCANNING
+        )
         sdp_subarray_leafnode_obsstate = sdp_sln_obsstate.read_attribute(
             "sdpSubarrayObsState"
         ).value
