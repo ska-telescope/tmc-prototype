@@ -49,7 +49,7 @@ class SdpSLNCommand(TmcLeafNodeCommand):
                 + "This device will continue with normal operation."
             )
 
-    def init_adapter(self):
+    def init_adapter(self) -> tuple:
         timeout = self.component_manager.timeout
         elapsed_time = 0
         start_time = time.time()
@@ -74,4 +74,4 @@ class SdpSLNCommand(TmcLeafNodeCommand):
             except (AttributeError, ValueError, TypeError) as e:
                 message = f"Error in creating adapter for {device}: {e}"
                 return ResultCode.FAILED, message
-        return ResultCode.OK, ""
+        return (ResultCode.OK, "")

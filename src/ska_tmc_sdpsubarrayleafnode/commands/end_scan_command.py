@@ -59,9 +59,6 @@ class EndScan(SdpSLNCommand):
         return_code, message = self.init_adapter()
         if return_code == ResultCode.FAILED:
             return return_code, message
-        return_code, message = self.init_adapter()
-        if return_code == ResultCode.FAILED:
-            return return_code, message
         try:
             self.sdp_subarray_adapter.EndScan()
         except Exception as e:
