@@ -16,25 +16,26 @@ from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
     wait_and_assert_sdp_subarray_obsstate,
 )
 
+dev_factory = DevFactory()
 
-def assign_resources(
+
+def configure_error_propogation(
     tango_context,
     sdpsln_name,
     assign_input_str,
+    configure_input_str,
     change_event_callbacks,
 ) -> None:
+    logger.info(f"{tango_context}")
     dev_factory = DevFactory()
-    sdpsal_node = dev_factory.get_device(sdpsln_name)
-    event_remover(
-        change_event_callbacks,
-        ["longRunningCommandResult", "longRunningCommandsInQueue"],
-    )
+    sdpsln_device = dev_factory.get_device(sdpsln_name)
+
     if sdpsln_name == SDPSUBARRAYLEAFNODE_MID:
         sdp_subarray = dev_factory.get_device(MID_SDP_SUBARRAY)
     else:
         sdp_subarray = dev_factory.get_device(LOW_SDP_SUBARRAY)
     try:
-        result, unique_id = sdpsal_node.AssignResources(assign_input_str)
+        result, unique_id = sdpsln_device.AssignResources(assign_input_str)
         logger.info(
             f"AssignResources Command ID: {unique_id} Returned \
                 result: {result}"
@@ -43,49 +44,75 @@ def assign_resources(
         assert unique_id[0].endswith("AssignResources")
         assert result[0] == ResultCode.QUEUED
 
-        sdpsal_node.subscribe_event(
+        sdpsln_device.subscribe_event(
             "longRunningCommandResult",
             tango.EventType.CHANGE_EVENT,
             change_event_callbacks["longRunningCommandResult"],
         )
         change_event_callbacks["longRunningCommandResult"].assert_change_event(
             (unique_id[0], str(ResultCode.OK.value)),
-            lookahead=2,
+            lookahead=3,
         )
-        wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
+        wait_and_assert_sdp_subarray_obsstate(sdpsln_device, ObsState.IDLE)
+
+        result, unique_id = sdpsln_device.Configure(configure_input_str)
+        logger.info(
+            f"Configure Command ID: {unique_id} Returned result: {result}"
+        )
+
+        assert unique_id[0].endswith("Configure")
+        assert result[0] == ResultCode.QUEUED
+
+        sdpsln_device.subscribe_event(
+            "longRunningCommandResult",
+            tango.EventType.CHANGE_EVENT,
+            change_event_callbacks["longRunningCommandResult"],
+        )
+        change_event_callbacks["longRunningCommandResult"].assert_change_event(
+            (
+                unique_id[0],
+                "Missing scan_type key",
+            ),
+            lookahead=3,
+        )
         event_remover(
             change_event_callbacks,
-            ["longRunningCommandResult", "longRunningCommandsInQueue"],
+            ["longRunningCommandResult"],
         )
-        tear_down(dev_factory, sdp_subarray, sdpsal_node)
+        tear_down(dev_factory, sdp_subarray, sdpsln_device)
+
     except Exception as e:
-        tear_down(dev_factory, sdp_subarray, sdpsal_node)
+        tear_down(dev_factory, sdp_subarray, sdpsln_device)
         raise Exception(e)
 
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
-def test_assign_res_command_mid(
+def test_configure_command_error_propagation_mid(
     tango_context,
     json_factory,
     change_event_callbacks,
 ):
-    return assign_resources(
+    return configure_error_propogation(
         tango_context,
         SDPSUBARRAYLEAFNODE_MID,
         json_factory("command_AssignResources"),
+        json_factory("command_Configure_without_ScanType"),
         change_event_callbacks,
     )
 
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
-def test_assign_res_command_low(
-    tango_context, json_factory, change_event_callbacks
+def test_configure_command_error_propagation_low(
+    tango_context,
+    json_factory,
+    change_event_callbacks,
 ):
-    return assign_resources(
+    return configure_error_propogation(
         tango_context,
         SDPSUBARRAYLEAFNODE_LOW,
         json_factory("command_AssignResources"),
+        json_factory("command_Configure_without_ScanType"),
         change_event_callbacks,
     )

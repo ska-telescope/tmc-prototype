@@ -141,7 +141,7 @@ def task_callback() -> MockCallable:
 
     :rtype: MockCallable
     """
-    task_callback = MockCallable(5)  # pylint:disable=redefined-outer-name
+    task_callback = MockCallable(15)  # pylint:disable=redefined-outer-name
     return task_callback
 
 

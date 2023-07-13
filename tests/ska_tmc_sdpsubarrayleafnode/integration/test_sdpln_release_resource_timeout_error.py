@@ -13,7 +13,7 @@ from tests.conftest import (
 from tests.settings import event_remover, logger
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
     tear_down,
-    wait_for_final_sdp_subarray_obsstate,
+    wait_and_assert_sdp_subarray_obsstate,
 )
 
 
@@ -52,7 +52,7 @@ def release_all_resources_error_propagation(
         lookahead=4,
     )
 
-    wait_for_final_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
+    wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
 
     # Check error propagation
     sdp_subarray.SetRaiseException(True)
@@ -82,8 +82,7 @@ def release_all_resources_error_propagation(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
-
-    tear_down(dev_factory, sdp_subarray)
+    tear_down(dev_factory, sdp_subarray, sdpsal_node)
 
 
 def release_all_resources_timeout(
@@ -120,9 +119,9 @@ def release_all_resources_timeout(
         lookahead=4,
     )
 
-    wait_for_final_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
+    wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
 
-    # Check error propagation
+    # Check timeout
     sdp_subarray.SetDefective(True)
     result, unique_id = sdpsal_node.ReleaseAllResources()
 
@@ -150,11 +149,11 @@ def release_all_resources_timeout(
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
 
-    tear_down(dev_factory, sdp_subarray)
+    tear_down(dev_factory, sdp_subarray, sdpsal_node)
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_mid
+@pytest.mark.SKA_mid1
 def test_release_all_res_command_timeout_mid(
     tango_context,
     json_factory,
@@ -169,7 +168,7 @@ def test_release_all_res_command_timeout_mid(
 
 
 @pytest.mark.post_deployment
-@pytest.mark.SKA_mid
+@pytest.mark.SKA_mid1
 def test_release_all_res_command_error_propagation_mid(
     tango_context,
     json_factory,
