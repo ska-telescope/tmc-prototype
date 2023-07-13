@@ -250,6 +250,33 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         result_code, unique_id = handler(argin)
         return [result_code], [unique_id]
 
+    def is_Scan_allowed(self) -> bool:
+        """
+        Checks whether Scan command is allowed to be run in \
+        current device state. \
+
+        :return: True if Scan command is allowed to be run in \
+        current device state \
+
+        :rtype: boolean
+        """
+        return self.component_manager.is_command_allowed("Scan")
+
+    @command(
+        dtype_in="str",
+        doc_in="The string in JSON format",
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
+    @DebugIt()
+    def Scan(self, argin: str) -> tuple:
+        """
+        This command invokes the Scan() command on Sdp Subarray.
+        """
+        handler = self.get_command_object("Scan")
+        result_code, unique_id = handler(argin)
+        return [result_code], [unique_id]
+
     def is_Off_allowed(self):
         """
         Checks whether this command is allowed to be run in current \
@@ -329,6 +356,33 @@ class SdpSubarrayLeafNode(SKABaseDevice):
 
         return [return_code], [str(unique_id)]
 
+    def is_EndScan_allowed(self):
+        """
+        Checks whether this command is allowed to be run in current device \
+        state. \
+
+        return:
+            True if this command is allowed to be run in current device state.
+
+        rtype:
+            boolean
+        """
+        return self.component_manager.is_command_allowed("EndScan")
+
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
+    @DebugIt()
+    def EndScan(self):
+        """
+        Invokes EndScan command on Sdp Subarray.
+
+        """
+        handler = self.get_command_object("EndScan")
+        return_code, unique_id = handler()
+        return [return_code], [str(unique_id)]
+
     # default ska mid
     def create_component_manager(self):
         """Returns Sdp Subarray Leaf Node component manager object"""
@@ -362,6 +416,8 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             ("Off", "off"),
             ("AssignResources", "assign_resources"),
             ("Configure", "configure"),
+            ("Scan", "scan"),
+            ("EndScan", "end_scan"),
             ("End", "end"),
             ("ReleaseAllResources", "release_all_resources"),
         ]:

@@ -55,12 +55,22 @@ def call_command(
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name, configure_string
             )
-        elif command_name == "End":
-            # Perform end logic here
+        elif command_name == "Scan":
+            logger.info(
+                f"sdpsubarrayleaf_node: {sdpsubarrayleaf_node.dev_name()}"
+            )
+            scan_string = json_factory("command_Scan")
+            pytest.command_result = sdpsubarrayleaf_node.command_inout(
+                command_name, scan_string
+            )
+        elif command_name == "EndScan":
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name
             )
-
+        elif command_name == "End":
+            pytest.command_result = sdpsubarrayleaf_node.command_inout(
+                command_name
+            )
         else:
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name
