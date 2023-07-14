@@ -71,6 +71,10 @@ def call_command(
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name
             )
+        elif command_name == "ReleaseAllResources":
+            pytest.command_result = sdpsubarrayleaf_node.command_inout(
+                command_name
+            )
         else:
             pytest.command_result = sdpsubarrayleaf_node.command_inout(
                 command_name
@@ -119,6 +123,14 @@ def check_command(
             sdpsubarrayleaf_node_dev, ObsState.IDLE
         )
     elif command_name == "Configure":
+        wait_and_assert_sdp_subarray_obsstate(
+            sdpsubarrayleaf_node_dev, ObsState.READY
+        )
+    elif command_name == "Scan":
+        wait_and_assert_sdp_subarray_obsstate(
+            sdpsubarrayleaf_node_dev, ObsState.SCANNING
+        )
+    elif command_name == "EndScan":
         wait_and_assert_sdp_subarray_obsstate(
             sdpsubarrayleaf_node_dev, ObsState.READY
         )

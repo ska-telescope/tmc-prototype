@@ -74,7 +74,19 @@ class On(SdpMLNCommand):
         result_code, message = self.init_adapter()
         if result_code == ResultCode.FAILED:
             return result_code, message
-        result, message = self.call_adapter_method(
-            "Sdp Master", self.sdp_master_adapter, "On"
-        )
-        return result, message
+        try:
+            self.sdp_master_adapter.On()
+        except Exception as e:
+            self.logger.exception(f"Command invocation failed: {e}")
+            return (
+                ResultCode.FAILED,
+                f"The invocation of the On"
+                " command failed on SDP master "
+                "Device "
+                f"{self.sdp_master_adapter.dev_name} "
+                "Reason: Error in invoking "
+                "On command on SDP master"
+                ".The command has NOT been executed. "
+                "This device will continue with normal operation.",
+            )
+        return ResultCode.OK, ""

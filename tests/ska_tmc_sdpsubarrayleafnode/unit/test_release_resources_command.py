@@ -39,7 +39,6 @@ def test_telescope_release_resources_command(
         call_kwargs={
             "status": TaskStatus.COMPLETED,
             "result": ResultCode.OK,
-            "exception": "",
         }
     )
 

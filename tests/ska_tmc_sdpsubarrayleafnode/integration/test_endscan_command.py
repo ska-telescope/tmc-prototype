@@ -35,12 +35,12 @@ def endscan(
     )
 
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        None, lookahead=3
+        None, lookahead=2
     )
     result, unique_id = sdp_subarray_ln_proxy.On()
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
-        ("On",),
+        ("On",), lookahead=4
     )
     logger.info(f"Command ID: {unique_id} Returned result: {result}")
     assert result[0] == ResultCode.QUEUED
