@@ -58,8 +58,19 @@ class On(SdpSLNCommand):
         return_code, message = self.init_adapter()
         if return_code == ResultCode.FAILED:
             return return_code, message
-
-        result, message = self.call_adapter_method(
-            "SDP Subarray", self.sdp_subarray_adapter, "On"
-        )
-        return result, message
+        try:
+            self.sdp_subarray_adapter.On()
+        except Exception as e:
+            self.logger.exception(f"Command invocation failed: {e}")
+            return (
+                ResultCode.FAILED,
+                f"The invocation of the On"
+                " command is failed on SDP Subarray "
+                "Device "
+                f"{self.sdp_subarray_adapter.dev_name} "
+                "Reason: Error in invoking "
+                "On command on SDP Subarray"
+                ".The command has NOT been executed. "
+                "This device will continue with normal operation.",
+            )
+        return ResultCode.OK, ""

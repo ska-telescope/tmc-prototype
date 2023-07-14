@@ -106,6 +106,25 @@ def scan(
         sdp_subarray_ln_proxy, ObsState.SCANNING
     )
 
+    result, unique_id = sdp_subarray_ln_proxy.EndScan()
+
+    logger.info(
+        # pylint: disable=line-too-long
+        f"EndScan Command ID: \
+            {unique_id} ResultCode received: {result}"
+    )
+
+    assert unique_id[0].endswith("EndScan")
+    assert result[0] == ResultCode.QUEUED
+
+    change_event_callbacks["longRunningCommandResult"].assert_change_event(
+        (
+            unique_id[0],
+            str(int(ResultCode.OK)),
+        ),
+        lookahead=6,
+    )
+
     event_remover(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
