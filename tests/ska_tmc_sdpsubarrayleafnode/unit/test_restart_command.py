@@ -82,7 +82,6 @@ def test_restart_fail_check_allowed_with_invalid_obsState(
         cm.is_command_allowed("Restart")
 
 
-@pytest.mark.test1
 @pytest.mark.sdpsln
 @pytest.mark.parametrize(
     "devices", [SDP_SUBARRAY_DEVICE_MID, SDP_SUBARRAY_DEVICE_LOW]

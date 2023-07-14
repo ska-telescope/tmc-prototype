@@ -1,12 +1,13 @@
+import time
+
 import pytest
 import tango
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tmc_common.dev_factory import DevFactory
 
-from tests.settings import logger
+from tests.settings import event_remover, logger
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
-    tear_down,
     wait_for_final_sdp_subarray_obsstate,
 )
 
@@ -18,6 +19,10 @@ def abort(
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)
     sdp_subarray = dev_factory.get_device(device)
+    event_remover(
+        change_event_callbacks,
+        ["longRunningCommandResult", "longRunningCommandsInQueue"],
+    )
     sdp_subarray_ln_proxy.subscribe_event(
         "longRunningCommandsInQueue",
         tango.EventType.CHANGE_EVENT,
@@ -61,6 +66,25 @@ def abort(
         lookahead=4,
     )
     wait_for_final_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.IDLE)
+    time.sleep(5)
+
+    configure_input_str = json_factory("command_Configure")
+    result, unique_id = sdp_subarray_ln_proxy.Configure(configure_input_str)
+    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
+        (
+            "On",
+            "AssignResources",
+            "Configure",
+        ),
+    )
+    logger.info(f"Command ID: {unique_id} Returned result: {result}")
+    assert result[0] == ResultCode.QUEUED
+
+    change_event_callbacks["longRunningCommandResult"].assert_change_event(
+        (unique_id[0], str(int(ResultCode.OK))),
+        lookahead=4,
+    )
+    wait_for_final_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.READY)
 
     result, unique_id = sdp_subarray_ln_proxy.Abort()
     wait_for_final_sdp_subarray_obsstate(
@@ -68,10 +92,12 @@ def abort(
     )
     sdp_subarray_node_obs_state = sdp_subarray.read_attribute("obsState").value
     assert sdp_subarray_node_obs_state == ObsState.ABORTED
-    tear_down(dev_factory, sdp_subarray_ln_proxy)
+    event_remover(
+        change_event_callbacks,
+        ["longRunningCommandResult", "longRunningCommandsInQueue"],
+    )
 
 
-@pytest.mark.skip
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 @pytest.mark.parametrize(

@@ -494,6 +494,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     logger=None,
                 ),
             )
+        self.register_command_object(
+            "Abort",
+            self.AbortCommandsCommand(self.component_manager, self.logger),
+        )
 
 
 # ----------
