@@ -104,7 +104,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self._update_availablity_callback = _update_availablity_callback
         self.timeout = timeout
         self.command_timeout = command_timeout
-        self.assign_id = None
+        self.assign_id: str
+        self.configure_id: str
         self.long_running_result_callback = LRCRCallback(self.logger)
         self._update_sdp_subarray_obs_state_callback = (
             _update_sdp_subarray_obs_state_callback
@@ -114,6 +115,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self._lrc_result = ("", "")
         self.on_command = On(self, self.logger)
         self.off_command = Off(self, self.logger)
+        self.command_in_progress: str = ""
 
     def stop(self):
         """
@@ -206,20 +208,34 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
     def update_command_result(self, command_name, value: str):
         """Updates the long running command result callback"""
         self.logger.info(
-            "Recieved longRunningCommandResult event with value: %s",
+            "Received longRunningCommandResult event with value: %s",
             value,
         )
         try:
             # Ignoring ResultCode events
             int(value)
         except ValueError:
-            if command_name == "AssignResources":
+            if (
+                command_name == "AssignResources"
+                and self.command_in_progress == "AssignResources"
+            ):
                 self.logger.info(
-                    "Updating LRCRCallback with value: %s for Assign",
+                    "Updating LRCRCallback with value: %s for AssignResources",
                     value,
                 )
                 self.long_running_result_callback(
                     self.assign_id, ResultCode.FAILED, exception_msg=value
+                )
+            elif (
+                command_name == "Configure"
+                and self.command_in_progress == "Configure"
+            ):
+                self.logger.info(
+                    "Updating LRCRCallback with value: %s for Configure",
+                    value,
+                )
+                self.long_running_result_callback(
+                    self.configure_id, ResultCode.FAILED, exception_msg=value
                 )
 
     @property
@@ -416,6 +432,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :rtype: tuple
         """
         configure_command = Configure(self, self.logger)
+        self.configure_id = f"{time.time()}-{Configure.__name__}"
         task_status, response = self.submit_task(
             configure_command.configure,
             args=[argin, self.logger],
