@@ -1,5 +1,5 @@
 """
-Abort Command for CspSubarrayLeafNode.
+Abort Command for SdpSubarrayLeafNode.
 """
 from ska_tango_base.commands import ResultCode
 
@@ -8,8 +8,8 @@ from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
 
 class Abort(SdpSLNCommand):
     """
-    A class for CspSubarrayLeafNode's Abort() command.
-    Aborts the CSP Subarray device.
+    A class for SdpSubarrayLeafNode's Abort() command.
+    Aborts the Sdp Subarray device.
     """
 
     def __init__(
