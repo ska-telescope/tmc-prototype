@@ -33,19 +33,40 @@ class Abort(SdpSLNCommand):
 
     def do(self, argin=None):
         """
-        Method to invoke Abort command on SDP Subarray.
-
-        :param argin: None
+        This method invokes Abort command on SDP Subarray
 
         return:
-            None
+            A tuple containing a return code and a string
+            message indicating status.
+            The message is for information purpose only.
+
+        rtype:
+            (ResultCode, str)
 
         raises:
-            Exception if error occurs while invoking command on SDP Subarray.
-
+            Exception if error occurs in invoking command
+            on any of the devices like SdpSubarrayLeafNode
         """
-        ret_code, message = self.init_adapter()
-        if ret_code == ResultCode.FAILED:
-            return ret_code, message
-        self.sdp_subarray_adapter.Abort()
+        res_code, message = self.init_adapter()
+        if res_code == ResultCode.FAILED:
+            return res_code, message
+        try:
+            self.logger.info(
+                "Invoking Abort command on SDP Subarray:%s",
+                self.sdp_subarray_adapter.dev_name,
+            )
+            self.sdp_subarray_adapter.Abort()
+        except Exception as e:
+            self.logger.exception(
+                "Execution of Abort command is failed."
+                + "Reason: Error in invoking Abort command on SDP Subarray"
+                + f"Leaf Node : {e}\n"
+                + "The command is not executed successfully."
+                + "The device will continue with normal operation"
+            )
+            return self.component_manager.generate_command_result(
+                ResultCode.FAILED,
+                f"Error in calling Abort command on SDP Subarray Leaf Node \
+                {self.sdp_subarray_adapter.dev_name}",
+            )
         return ResultCode.OK, ""
