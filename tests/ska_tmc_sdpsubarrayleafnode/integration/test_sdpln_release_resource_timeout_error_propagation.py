@@ -33,7 +33,6 @@ def release_all_resources_error_propagation(
         sdp_subarray = dev_factory.get_device(LOW_SDP_SUBARRAY)
 
     # AssignResources
-    sdp_subarray.SetDirectObsState(ObsState.EMPTY)
     result, unique_id = sdpsal_node.AssignResources(assign_input_str)
     logger.info(
         f"AssignResources Command ID: {unique_id} \
@@ -77,8 +76,6 @@ def release_all_resources_error_propagation(
     )
 
     sdp_subarray.SetRaiseException(False)
-    sdp_subarray.SetDirectObsState(ObsState.EMPTY)
-
     event_remover(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
@@ -101,7 +98,6 @@ def release_all_resources_timeout(
         sdp_subarray = dev_factory.get_device(LOW_SDP_SUBARRAY)
 
     # AssignResources
-    sdp_subarray.SetDirectObsState(ObsState.EMPTY)
     result, unique_id = sdpsal_node.AssignResources(assign_input_str)
     logger.info(
         f"AssignResources Command ID: {unique_id} \
@@ -144,7 +140,6 @@ def release_all_resources_timeout(
         lookahead=6,
     )
     sdp_subarray.SetDefective(False)
-    sdp_subarray.SetDirectObsState(ObsState.EMPTY)
 
     event_remover(
         change_event_callbacks,
