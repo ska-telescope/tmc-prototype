@@ -7,7 +7,7 @@ from ska_tmc_common.dev_factory import DevFactory
 from tests.settings import event_remover, logger
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
     tear_down,
-    wait_for_final_sdp_subarray_obsstate,
+    wait_and_assert_sdp_subarray_obsstate,
 )
 
 
@@ -64,7 +64,7 @@ def abort_restart_command(
         (unique_id[0], str(int(ResultCode.OK))),
         lookahead=4,
     )
-    wait_for_final_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.IDLE)
+    wait_and_assert_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.IDLE)
 
     configure_input_str = json_factory("command_Configure")
     result, unique_id = sdp_subarray_ln_proxy.Configure(configure_input_str)
@@ -82,10 +82,12 @@ def abort_restart_command(
         (unique_id[0], str(int(ResultCode.OK))),
         lookahead=4,
     )
-    wait_for_final_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.READY)
+    wait_and_assert_sdp_subarray_obsstate(
+        sdp_subarray_ln_proxy, ObsState.READY
+    )
 
     result, unique_id = sdp_subarray_ln_proxy.Abort()
-    wait_for_final_sdp_subarray_obsstate(
+    wait_and_assert_sdp_subarray_obsstate(
         sdp_subarray_ln_proxy, ObsState.ABORTED
     )
     sdp_subarray_node_obs_state = sdp_subarray.read_attribute("obsState").value
@@ -101,7 +103,9 @@ def abort_restart_command(
         lookahead=6,
     )
 
-    wait_for_final_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.EMPTY)
+    wait_and_assert_sdp_subarray_obsstate(
+        sdp_subarray_ln_proxy, ObsState.EMPTY
+    )
     sdp_subarray_node_obs_state = sdp_subarray.read_attribute("obsState").value
     assert sdp_subarray_node_obs_state == ObsState.EMPTY
     event_remover(
