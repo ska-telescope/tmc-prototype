@@ -40,7 +40,7 @@ device_obsstate = [
 
 @pytest.mark.sdpsln
 @pytest.mark.parametrize("devices , obsstate", device_obsstate)
-def test_mid_abort_command(tango_context, devices, obsstate):
+def test_abort_command(tango_context, devices, obsstate):
     logger.info("%s", tango_context)
     abort_command, _, cm = get_abort_command_obj(devices)
 

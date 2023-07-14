@@ -47,8 +47,5 @@ class Abort(SdpSLNCommand):
         ret_code, message = self.init_adapter()
         if ret_code == ResultCode.FAILED:
             return ret_code, message
-
-        result = self.call_adapter_method(
-            "Sdp Subarray", self.sdp_subarray_adapter, "Abort"
-        )
-        return result
+        self.sdp_subarray_adapter.Abort()
+        return ResultCode.OK, ""

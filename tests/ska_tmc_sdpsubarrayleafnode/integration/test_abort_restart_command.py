@@ -112,7 +112,7 @@ def abort_restart_command(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
-    tear_down(dev_factory, sdp_subarray)
+    tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
 
 
 @pytest.mark.post_deployment
