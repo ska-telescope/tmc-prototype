@@ -482,6 +482,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             ("Scan", "scan"),
             ("EndScan", "end_scan"),
             ("End", "end"),
+            ("Restart", "restart"),
             ("ReleaseAllResources", "release_all_resources"),
         ]:
             self.register_command_object(

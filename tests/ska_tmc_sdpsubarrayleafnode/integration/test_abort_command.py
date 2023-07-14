@@ -1,5 +1,3 @@
-import time
-
 import pytest
 import tango
 from ska_tango_base.commands import ResultCode
@@ -8,11 +6,12 @@ from ska_tmc_common.dev_factory import DevFactory
 
 from tests.settings import event_remover, logger
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
+    tear_down,
     wait_for_final_sdp_subarray_obsstate,
 )
 
 
-def abort(
+def abort_restart_command(
     tango_context, sdpsaln_name, device, json_factory, change_event_callbacks
 ):
     logger.info("%s", tango_context)
@@ -66,7 +65,6 @@ def abort(
         lookahead=4,
     )
     wait_for_final_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.IDLE)
-    time.sleep(5)
 
     configure_input_str = json_factory("command_Configure")
     result, unique_id = sdp_subarray_ln_proxy.Configure(configure_input_str)
@@ -92,10 +90,25 @@ def abort(
     )
     sdp_subarray_node_obs_state = sdp_subarray.read_attribute("obsState").value
     assert sdp_subarray_node_obs_state == ObsState.ABORTED
+
+    result, unique_id = sdp_subarray_ln_proxy.Restart()
+    assert unique_id[0].endswith("Restart")
+    assert result[0] == ResultCode.QUEUED
+
+    change_event_callbacks.assert_change_event(
+        "longRunningCommandResult",
+        (unique_id[0], str(ResultCode.OK.value)),
+        lookahead=6,
+    )
+
+    wait_for_final_sdp_subarray_obsstate(sdp_subarray_ln_proxy, ObsState.EMPTY)
+    sdp_subarray_node_obs_state = sdp_subarray.read_attribute("obsState").value
+    assert sdp_subarray_node_obs_state == ObsState.EMPTY
     event_remover(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
+    tear_down(dev_factory, sdp_subarray)
 
 
 @pytest.mark.post_deployment
@@ -104,10 +117,10 @@ def abort(
     "device",
     [("mid-sdp/subarray/01")],
 )
-def test_abort_command_mid(
+def test_abort_restart_command_mid(
     tango_context, device, json_factory, change_event_callbacks
 ):
-    return abort(
+    return abort_restart_command(
         tango_context,
         "ska_mid/tm_leaf_node/sdp_subarray01",
         device,
@@ -123,13 +136,13 @@ def test_abort_command_mid(
     "device",
     [("low-sdp/subarray/01")],
 )
-def test_abort_command_low(
+def test_abort_restart_command_low(
     tango_context,
     device,
     json_factory,
     change_event_callbacks,
 ):
-    return abort(
+    return abort_restart_command(
         tango_context,
         "ska_low/tm_leaf_node/sdp_subarray01",
         device,
