@@ -27,9 +27,9 @@ class Abort(SdpSLNCommand):
     def invoke_abort(self, argin=None):
         """This method calls do for Abort command"""
 
-        res_code, message = self.do(argin)
+        result_code, message = self.do(argin)
         self.logger.info(message)
-        return res_code, message
+        return result_code, message
 
     def do(self, argin=None):
         """
@@ -47,9 +47,9 @@ class Abort(SdpSLNCommand):
             Exception if error occurs in invoking command
             on any of the devices like SdpSubarrayLeafNode
         """
-        res_code, message = self.init_adapter()
-        if res_code == ResultCode.FAILED:
-            return res_code, message
+        result_code, message = self.init_adapter()
+        if result_code == ResultCode.FAILED:
+            return result_code, message
         try:
             self.logger.info(
                 "Invoking Abort command on SDP Subarray:%s",

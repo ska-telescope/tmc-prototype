@@ -11,7 +11,7 @@ from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
 )
 
 
-def abort_restart_command(
+def scanning_abort_restart_command(
     tango_context, sdpsaln_name, device, json_factory, change_event_callbacks
 ):
     logger.info("%s", tango_context)
@@ -86,6 +86,27 @@ def abort_restart_command(
         sdp_subarray_ln_proxy, ObsState.READY
     )
 
+    scan_input_str = json_factory("command_Scan")
+    result, unique_id = sdp_subarray_ln_proxy.Scan(scan_input_str)
+    change_event_callbacks["longRunningCommandsInQueue"].assert_change_event(
+        (
+            "On",
+            "AssignResources",
+            "Configure",
+            "Scan",
+        ),
+    )
+    logger.info(f"Command ID: {unique_id} Returned result: {result}")
+    assert result[0] == ResultCode.QUEUED
+
+    change_event_callbacks["longRunningCommandResult"].assert_change_event(
+        (unique_id[0], str(int(ResultCode.OK))),
+        lookahead=6,
+    )
+    wait_and_assert_sdp_subarray_obsstate(
+        sdp_subarray_ln_proxy, ObsState.SCANNING
+    )
+
     result, unique_id = sdp_subarray_ln_proxy.Abort()
     wait_and_assert_sdp_subarray_obsstate(
         sdp_subarray_ln_proxy, ObsState.ABORTED
@@ -121,10 +142,10 @@ def abort_restart_command(
     "device",
     [("mid-sdp/subarray/01")],
 )
-def test_abort_restart_command_mid(
+def test_scanning_abort_restart_command_mid(
     tango_context, device, json_factory, change_event_callbacks
 ):
-    return abort_restart_command(
+    return scanning_abort_restart_command(
         tango_context,
         "ska_mid/tm_leaf_node/sdp_subarray01",
         device,
@@ -139,13 +160,13 @@ def test_abort_restart_command_mid(
     "device",
     [("low-sdp/subarray/01")],
 )
-def test_abort_restart_command_low(
+def test_scanning_abort_restart_command_low(
     tango_context,
     device,
     json_factory,
     change_event_callbacks,
 ):
-    return abort_restart_command(
+    return scanning_abort_restart_command(
         tango_context,
         "ska_low/tm_leaf_node/sdp_subarray01",
         device,
