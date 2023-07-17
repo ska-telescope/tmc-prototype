@@ -394,10 +394,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         rtype:
             boolean
 
-        raises:
-            DevFailed if this command is not allowed to be run in current
-            device state
-
         """
         return self.component_manager.is_command_allowed("Abort")
 

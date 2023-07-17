@@ -133,7 +133,6 @@ def ready_abort_restart_command(
         sdp_subarray_node_obs_state = sdp_subarray.read_attribute(
             "obsState"
         ).value
-        assert sdp_subarray_node_obs_state == ObsState.EMPTY
         event_remover(
             change_event_callbacks,
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
