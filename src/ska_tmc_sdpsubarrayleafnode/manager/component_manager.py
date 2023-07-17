@@ -560,7 +560,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             self,
             logger=self.logger,
         )
-        result_code, message = abort_command.invoke_abort()
+        result_code, message = abort_command.do()
         return result_code, message
 
     def restart(self, task_callback: Optional[Callable] = None) -> tuple:

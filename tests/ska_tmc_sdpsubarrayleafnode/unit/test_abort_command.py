@@ -47,7 +47,7 @@ def test_abort_command(tango_context, devices, obsstate):
     cm.update_device_obs_state(obsstate)
     cm.is_command_allowed("Abort")
     logger.info(f"Abort command is allowed in {obsstate}.")
-    result_code, _ = abort_command.invoke_abort()
+    result_code, _ = abort_command.do()
     assert result_code == ResultCode.OK
 
 
@@ -67,7 +67,7 @@ def test_abort_command_fail_subarray(tango_context, devices):
     cm.update_device_obs_state(ObsState.IDLE)
     abort_command = Abort(cm, logger=logger)
     abort_command.adapter_factory = adapter_factory
-    result_code, _ = abort_command.invoke_abort()
+    result_code, _ = abort_command.do()
     assert result_code == ResultCode.FAILED
 
 

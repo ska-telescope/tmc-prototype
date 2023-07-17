@@ -12,26 +12,8 @@ class Abort(SdpSLNCommand):
     Aborts the Sdp Subarray device.
     """
 
-    def __init__(
-        self,
-        component_manager,
-        logger=None,
-    ):
-        super().__init__(
-            component_manager=component_manager,
-            logger=logger,
-        )
-        self.component_manager = component_manager
-        self.logger = logger
 
-    def invoke_abort(self, argin=None):
-        """This method calls do for Abort command"""
-
-        result_code, message = self.do(argin)
-        self.logger.info(message)
-        return result_code, message
-
-    def do(self, argin=None):
+    def do(self, argin:str=None):
         """
         This method invokes Abort command on SDP Subarray
 
