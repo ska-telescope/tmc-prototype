@@ -444,7 +444,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         """
         handler = self.get_command_object("Restart")
         result_code, unique_id = handler()
-        return [[result_code], [unique_id]]
+        return ([result_code], [unique_id])
 
     # default ska mid
     def create_component_manager(self):
