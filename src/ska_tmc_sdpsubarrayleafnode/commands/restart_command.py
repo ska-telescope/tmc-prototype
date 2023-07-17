@@ -1,7 +1,7 @@
 """Restart command class for SdpSubarrayLeafNode."""
 
 import threading
-from typing import Any, Callable, Optional
+from typing import Callable, Optional, Tuple
 
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.executor import TaskStatus
@@ -23,7 +23,7 @@ class Restart(SdpSLNCommand):
         task_abort_event: Optional[threading.Event] = None,
     ) -> None:
         """This is a long-running method for a Restart command, it
-        executes do hook, invokes Restart command on SdpSubarray.
+        executes do hook
         :param logger: logger
         :type logger: logging.Logger
         :param task_callback: Update task state, defaults to None
@@ -46,7 +46,7 @@ class Restart(SdpSLNCommand):
             exception=message,
         )
 
-    def do(self, argin=None) -> tuple[Any, Any] | tuple[Any, str]:
+    def do(self, argin=None) -> Tuple[ResultCode, str]:
         """
         Method to invoke Restart command on SDP  Subarray.
 
@@ -60,10 +60,7 @@ class Restart(SdpSLNCommand):
         result_code, message = self.init_adapter()
         if result_code == ResultCode.FAILED:
             return result_code, message
-        self.logger.info(
-            "Invoking Restart command on: %s",
-            self.sdp_subarray_adapter.dev_name,
-        )
+
         try:
             self.logger.info(
                 "Invoking Restart command on SDP Subarray: %s",
@@ -77,9 +74,7 @@ class Restart(SdpSLNCommand):
                 "The invocation of the Restart "
                 "command is failed on Sdp Subarray "
                 f"Device {self.sdp_subarray_adapter.dev_name} "
-                "Reason: Error in invoking Restart command on Sdp Subarray. "
-                "The command has NOT been executed. This device will "
-                "continue with normal operation.",
+                "Reason: Error in invoking Restart command on Sdp Subarray. ",
             )
 
         self.logger.info(
