@@ -18,7 +18,7 @@ from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
 )
 
 
-def ready_abort_restart_command(
+def idle_abort_restart_command(
     tango_context, sdpsaln_name, device, json_factory, change_event_callbacks
 ):
     logger.info("%s", tango_context)
@@ -83,31 +83,6 @@ def ready_abort_restart_command(
         wait_and_assert_sdp_subarray_obsstate(
             sdp_subarray_ln_proxy, ObsState.IDLE
         )
-
-        configure_input_str = json_factory("command_Configure")
-        result, unique_id = sdp_subarray_ln_proxy.Configure(
-            configure_input_str
-        )
-        change_event_callbacks[
-            "longRunningCommandsInQueue"
-        ].assert_change_event(
-            (
-                "On",
-                "AssignResources",
-                "Configure",
-            ),
-        )
-        logger.info(f"Command ID: {unique_id} Returned result: {result}")
-        assert result[0] == ResultCode.QUEUED
-
-        change_event_callbacks["longRunningCommandResult"].assert_change_event(
-            (unique_id[0], str(int(ResultCode.OK))),
-            lookahead=4,
-        )
-        wait_and_assert_sdp_subarray_obsstate(
-            sdp_subarray_ln_proxy, ObsState.READY
-        )
-
         result, unique_id = sdp_subarray_ln_proxy.Abort()
         wait_and_assert_sdp_subarray_obsstate(
             sdp_subarray_ln_proxy, ObsState.ABORTED
@@ -138,6 +113,7 @@ def ready_abort_restart_command(
             change_event_callbacks,
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
+        tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
     except Exception as e:
         tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
         raise Exception(e)
@@ -145,10 +121,10 @@ def ready_abort_restart_command(
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
-def test_ready_abort_restart_command_mid(
+def test_idle_abort_restart_command_mid(
     tango_context, json_factory, change_event_callbacks
 ):
-    return ready_abort_restart_command(
+    return idle_abort_restart_command(
         tango_context,
         SDP_SUBARRAY_LEAF_NODE_MID,
         SDP_SUBARRAY_DEVICE_MID,
@@ -159,10 +135,12 @@ def test_ready_abort_restart_command_mid(
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
-def test_ready_abort_restart_command_low(
-    tango_context, json_factory, change_event_callbacks
+def test_idle_abort_restart_command_low(
+    tango_context,
+    json_factory,
+    change_event_callbacks,
 ):
-    return ready_abort_restart_command(
+    return idle_abort_restart_command(
         tango_context,
         SDP_SUBARRAY_LEAF_NODE_LOW,
         SDP_SUBARRAY_DEVICE_LOW,

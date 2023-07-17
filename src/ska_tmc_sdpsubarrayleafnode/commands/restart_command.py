@@ -66,7 +66,7 @@ class Restart(SdpSLNCommand):
         )
         try:
             self.logger.info(
-                "Invoking Restart command on CSP Subarray: %s",
+                "Invoking Restart command on SDP Subarray: %s",
                 self.sdp_subarray_adapter.dev_name,
             )
             self.sdp_subarray_adapter.Restart()

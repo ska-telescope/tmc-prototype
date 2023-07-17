@@ -161,6 +161,7 @@ def scanning_abort_restart_command(
             change_event_callbacks,
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
+        tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
     except Exception as e:
         tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
         raise Exception(e)

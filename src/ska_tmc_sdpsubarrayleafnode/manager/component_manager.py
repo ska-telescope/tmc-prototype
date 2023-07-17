@@ -550,7 +550,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
     def abort_commands(self, task_callback: Callable = None):
         """
-        Invokes Abort command on lower level Csp Subarray
+        Invokes Abort command on Sdp Subarray
         and changes the obsstate
 
         :param task_callback: callback to be called whenever the status
