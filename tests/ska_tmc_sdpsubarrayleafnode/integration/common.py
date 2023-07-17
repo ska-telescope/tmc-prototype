@@ -69,18 +69,10 @@ def tear_down(dev_factory, sdp_subarray, sdpsal_node):
     if sdp_subarray_obsstate.value in (
         ObsState.RESOURCING,
         ObsState.SCANNING,
-        ObsState.ABORTING,
-        ObsState.READY,
+        ObsState.CONFIGURING,
     ):
         sdp_subarray.Abort()
         wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.ABORTED)
-        sdp_subarray.Restart()
-        wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.EMPTY)
-        sdp_subarray.Off()
-        sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
-        logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
-
-    if sdp_subarray_obsstate.value == ObsState.RESTARTING:
         sdp_subarray.Restart()
         wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.EMPTY)
         sdp_subarray.Off()
