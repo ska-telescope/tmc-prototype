@@ -28,12 +28,16 @@ device_obsstate = [
 
 
 def abort_restart_command(
-    tango_context, sdpsaln_name, device, obsstate, change_event_callbacks
+    tango_context,
+    sdpsaln_name,
+    sdp_subarray_device,
+    obsstate,
+    change_event_callbacks,
 ):
     logger.info("%s", tango_context)
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)
-    sdp_subarray = dev_factory.get_device(device)
+    sdp_subarray = dev_factory.get_device(sdp_subarray_device)
     try:
         event_remover(
             change_event_callbacks,
@@ -59,8 +63,6 @@ def abort_restart_command(
         set_sdp_subarray_obsstate(dev_factory, obsstate, sdp_subarray)
         wait_and_assert_sdp_subarray_obsstate(sdp_subarray_ln_proxy, obsstate)
         result, unique_id = sdp_subarray_ln_proxy.Abort()
-
-        set_sdp_subarray_obsstate(dev_factory, ObsState.ABORTED, sdp_subarray)
 
         wait_and_assert_sdp_subarray_obsstate(
             sdp_subarray_ln_proxy, ObsState.ABORTED
