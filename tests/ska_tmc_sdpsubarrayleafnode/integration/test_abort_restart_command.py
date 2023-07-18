@@ -18,9 +18,17 @@ from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
     wait_and_assert_sdp_subarray_obsstate,
 )
 
+device_obsstate = [
+    ObsState.RESOURCING,
+    ObsState.IDLE,
+    ObsState.CONFIGURING,
+    ObsState.READY,
+    ObsState.SCANNING,
+]
 
-def abort_restart_in_resourcing(
-    tango_context, sdpsaln_name, device, json_factory, change_event_callbacks
+
+def abort_restart_command(
+    tango_context, sdpsaln_name, device, obsstate, change_event_callbacks
 ):
     logger.info("%s", tango_context)
     dev_factory = DevFactory()
@@ -49,51 +57,12 @@ def abort_restart_in_resourcing(
         ].assert_change_event(
             None,
         )
-        result, unique_id = sdp_subarray_ln_proxy.On()
-        logger.info(f"Command ID: {unique_id} Returned result: {result}")
-        change_event_callbacks[
-            "longRunningCommandsInQueue"
-        ].assert_change_event(
-            ("On",),
-        )
-        logger.info(f"Command ID: {unique_id} Returned result: {result}")
-        assert result[0] == ResultCode.QUEUED
-
-        change_event_callbacks["longRunningCommandResult"].assert_change_event(
-            (unique_id[0], str(int(ResultCode.OK))),
-            lookahead=4,
-        )
-        assign_input_str = json_factory("command_AssignResources")
-        result, unique_id = sdp_subarray_ln_proxy.AssignResources(
-            assign_input_str
-        )
-        change_event_callbacks[
-            "longRunningCommandsInQueue"
-        ].assert_change_event(
-            (
-                "On",
-                "AssignResources",
-            ),
-        )
-        logger.info(f"Command ID: {unique_id} Returned result: {result}")
-        assert unique_id[0].endswith("AssignResources")
-        assert result[0] == ResultCode.QUEUED
-        change_event_callbacks["longRunningCommandResult"].assert_change_event(
-            (unique_id[0], str(int(ResultCode.OK))),
-            lookahead=4,
-        )
-
-        set_sdp_subarray_obsstate(
-            dev_factory, ObsState.RESOURCING, sdp_subarray
-        )
-        wait_and_assert_sdp_subarray_obsstate(
-            sdp_subarray_ln_proxy, ObsState.RESOURCING
-        )
+        set_sdp_subarray_obsstate(dev_factory, obsstate, sdp_subarray)
+        wait_and_assert_sdp_subarray_obsstate(sdp_subarray_ln_proxy, obsstate)
         sdp_subarray_node_obs_state = sdp_subarray.read_attribute(
             "obsState"
         ).value
-        assert sdp_subarray_node_obs_state == ObsState.RESOURCING
-
+        assert sdp_subarray_node_obs_state == obsstate
         result, unique_id = sdp_subarray_ln_proxy.Abort()
 
         set_sdp_subarray_obsstate(dev_factory, ObsState.ABORTED, sdp_subarray)
@@ -125,35 +94,37 @@ def abort_restart_in_resourcing(
             change_event_callbacks,
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
+
     except Exception as e:
         tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
         raise Exception(e)
 
 
-@pytest.mark.abort
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
-def test_abort_command_mid(
-    tango_context, json_factory, change_event_callbacks
-):
-    return abort_restart_in_resourcing(
+@pytest.mark.parametrize("obsstate", device_obsstate)
+def test_abort_command_mid(tango_context, obsstate, change_event_callbacks):
+    return abort_restart_command(
         tango_context,
         SDP_SUBARRAY_LEAF_NODE_MID,
         SDP_SUBARRAY_DEVICE_MID,
-        json_factory,
+        obsstate,
         change_event_callbacks,
     )
 
 
 @pytest.mark.post_deployment
 @pytest.mark.SKA_low
-def test_abort_command_low(
-    tango_context, json_factory, change_event_callbacks
+@pytest.mark.parametrize("obsstate", device_obsstate)
+def test_abort_restart_command_low(
+    tango_context,
+    obsstate,
+    change_event_callbacks,
 ):
-    return abort_restart_in_resourcing(
+    return abort_restart_command(
         tango_context,
         SDP_SUBARRAY_LEAF_NODE_LOW,
         SDP_SUBARRAY_DEVICE_LOW,
-        json_factory,
+        obsstate,
         change_event_callbacks,
     )
