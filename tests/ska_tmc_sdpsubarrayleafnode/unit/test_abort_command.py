@@ -39,7 +39,7 @@ def test_abort_command(tango_context, devices, obsstate):
     cm.update_device_obs_state(obsstate)
     cm.is_command_allowed("Abort")
     logger.info(f"Abort command is allowed in {obsstate}.")
-    result_code, _ = cm.abort_command()
+    result_code, _ = cm.abort_commands()
     assert result_code == ResultCode.OK
 
 
