@@ -9,7 +9,7 @@ from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
 class Abort(SdpSLNCommand):
     """
     A class for SdpSubarrayLeafNode's Abort() command.
-    Aborts the Sdp Subarray device.
+    Aborts the SDP Subarray device.
     """
 
     def do(self, argin: str = None):

@@ -72,7 +72,7 @@ class Restart(SdpSLNCommand):
             return (
                 ResultCode.FAILED,
                 "The invocation of the Restart "
-                "command is failed on Sdp Subarray "
+                "command is failed on SDP Subarray "
                 f"Device {self.sdp_subarray_adapter.dev_name} "
                 "Reason: Error in invoking Restart command on Sdp Subarray. ",
             )
