@@ -217,7 +217,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     @DebugIt()
     def AssignResources(self, argin: str) -> tuple:
         """
-        This command invokes the AssignResources() command on Csp Subarray.
+        This command invokes the AssignResources() command on Sdp Subarray.
         """
         handler = self.get_command_object("AssignResources")
         result_code, unique_id = handler(argin)
@@ -244,7 +244,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     @DebugIt()
     def Configure(self, argin: str) -> tuple:
         """
-        This command invokes the Configure() command on Csp Subarray.
+        This command invokes the Configure() command on Sdp Subarray.
         """
         handler = self.get_command_object("Configure")
         result_code, unique_id = handler(argin)
@@ -422,10 +422,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
          rtype:
              boolean
 
-         raises:
-             DevFailed if this command is not allowed to be run in current
-             device state
-
         """
         return self.component_manager.is_command_allowed("Restart")
 
@@ -436,7 +432,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     @DebugIt()
     def Restart(self):
         """
-        Invoke Restart command on Csp Subarray.
+        Invoke Restart command on Sdp Subarray.
         """
         handler = self.get_command_object("Restart")
         result_code, unique_id = handler()

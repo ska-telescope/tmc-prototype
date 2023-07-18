@@ -104,3 +104,10 @@ def wait_and_assert_sdp_subarray_obsstate(sdp_subarray_leaf_node, obs_state):
                      obsState to {obs_state}"
             )
     assert sdp_subarray_obsstate.value == obs_state
+
+
+def set_sdp_subarray_obsstate(dev_factory, obs_state, sdp_subarray):
+    logger.debug("Setting Obsstate to : %s", obs_state)
+    sdp_subarray.SetDirectObsState(obs_state)
+    time.sleep(0.1)
+    logger.debug("ObsState of sdp subarray: %s", sdp_subarray.ObsState)
