@@ -47,7 +47,7 @@ class Abort(SdpSLNCommand):
             )
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
-                f"Error in calling Abort command on SDP Subarray Leaf Node \
+                f"Reason: Error in invoking Abort command on SDP Subarray \
                 {self.sdp_subarray_adapter.dev_name}",
             )
         return ResultCode.OK, ""
