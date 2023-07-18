@@ -43,13 +43,13 @@ class Abort(SdpSLNCommand):
         except Exception as ex:
             self.logger.exception(
                 "Execution of Abort command is failed."
-                + "Reason: Error in invoking Abort command on SDP Subarray - "  \
-                +f"{self.sdp_subarray_adapter.dev_name}: {ex}",
+                + "Reason: Error in invoking Abort command on SDP Subarray - "
+                + f"{self.sdp_subarray_adapter.dev_name}: {ex}",
             )
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
-               "Execution of Abort command is failed."
-                + "Reason: Error in invoking Abort command on SDP Subarray - "  \
-                +f"{self.sdp_subarray_adapter.dev_name}: {ex}",
+                "Execution of Abort command is failed."
+                + "Reason: Error in invoking Abort command on SDP Subarray - "
+                + f"{self.sdp_subarray_adapter.dev_name}: {ex}",
             )
         return ResultCode.OK, ""

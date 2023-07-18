@@ -16,10 +16,6 @@ from tests.settings import (
     logger,
 )
 
-
-
-
-
 DEVICE_OBSSTATE = [
     (SDP_SUBARRAY_DEVICE_LOW, ObsState.RESOURCING),
     (SDP_SUBARRAY_DEVICE_LOW, ObsState.IDLE),
@@ -33,7 +29,7 @@ DEVICE_OBSSTATE = [
     (SDP_SUBARRAY_DEVICE_MID, ObsState.SCANNING),
 ]
 
-@pytest.mark.test1
+
 @pytest.mark.sdpsln
 @pytest.mark.parametrize("devices , obsstate", DEVICE_OBSSTATE)
 def test_abort_command(tango_context, devices, obsstate):
