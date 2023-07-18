@@ -14,7 +14,8 @@ class Abort(SdpSLNCommand):
     Aborts the SDP Subarray device.
     """
 
-    def do(self, argin: str = None) -> Tuple[ResultCode, str]:
+    # pylint: disable=arguments-differ
+    def do(self) -> Tuple[ResultCode, str]:
         """
         This method invokes Abort command on SDP Subarray
 
@@ -47,7 +48,7 @@ class Abort(SdpSLNCommand):
             )
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
-                f"Reason: Error in invoking Abort command on SDP Subarray \
+                f"Error in calling Abort command on SDP Subarray  \
                 {self.sdp_subarray_adapter.dev_name}",
             )
         return ResultCode.OK, ""

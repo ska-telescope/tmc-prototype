@@ -81,7 +81,8 @@ class ReleaseAllResources(SdpSLNCommand):
             self.task_callback(status=TaskStatus.COMPLETED, result=result)
         self.component_manager.command_in_progress = ""
 
-    def do(self, argin: str = None) -> Tuple[ResultCode, str]:
+    # pylint: disable=arguments-differ
+    def do(self) -> Tuple[ResultCode, str]:
         """
         Method to invoke ReleaseAllResources command on SDP Subarray.
 

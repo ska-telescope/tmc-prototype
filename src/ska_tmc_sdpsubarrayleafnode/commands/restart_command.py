@@ -46,7 +46,8 @@ class Restart(SdpSLNCommand):
             exception=message,
         )
 
-    def do(self, argin: str = None) -> Tuple[ResultCode, str]:
+    # pylint: disable=arguments-differ
+    def do(self) -> Tuple[ResultCode, str]:
         """
         Method to invoke Restart command on SDP  Subarray.
 
