@@ -17,14 +17,10 @@ from tests.settings import (
 )
 
 
-def get_abort_command_obj(devices):
-    cm = create_cm("SdpSLNComponentManager", devices)
-    adapter_factory = HelperAdapterFactory()
-    abort_command = Abort(cm, logger=logger)
-    return abort_command, adapter_factory, cm
 
 
-device_obsstate = [
+
+DEVICE_OBSSTATE = [
     (SDP_SUBARRAY_DEVICE_LOW, ObsState.RESOURCING),
     (SDP_SUBARRAY_DEVICE_LOW, ObsState.IDLE),
     (SDP_SUBARRAY_DEVICE_LOW, ObsState.CONFIGURING),
@@ -37,17 +33,17 @@ device_obsstate = [
     (SDP_SUBARRAY_DEVICE_MID, ObsState.SCANNING),
 ]
 
-
+@pytest.mark.test1
 @pytest.mark.sdpsln
-@pytest.mark.parametrize("devices , obsstate", device_obsstate)
+@pytest.mark.parametrize("devices , obsstate", DEVICE_OBSSTATE)
 def test_abort_command(tango_context, devices, obsstate):
     logger.info("%s", tango_context)
-    abort_command, _, cm = get_abort_command_obj(devices)
+    cm = create_cm("SdpSLNComponentManager", devices)
 
     cm.update_device_obs_state(obsstate)
     cm.is_command_allowed("Abort")
     logger.info(f"Abort command is allowed in {obsstate}.")
-    result_code, _ = abort_command.do()
+    result_code, _ = cm.abort_command()
     assert result_code == ResultCode.OK
 
 

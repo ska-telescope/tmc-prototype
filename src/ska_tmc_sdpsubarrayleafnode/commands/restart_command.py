@@ -2,7 +2,7 @@
 
 import threading
 from typing import Callable, Optional, Tuple
-
+from logging import Logger
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.executor import TaskStatus
 
@@ -18,8 +18,8 @@ class Restart(SdpSLNCommand):
     # pylint: disable=unused-argument
     def restart(
         self,
-        logger=None,
-        task_callback: Callable = None,
+        logger: Logger,
+        task_callback: Callable ,
         task_abort_event: Optional[threading.Event] = None,
     ) -> None:
         """This is a long-running method for a Restart command, it
@@ -69,13 +69,15 @@ class Restart(SdpSLNCommand):
             )
             self.sdp_subarray_adapter.Restart()
         except Exception as e:
-            self.logger.exception(f"Command invocation failed: {e}")
+            self.logger.exception("Execution of Restart command is failed."
+                + "Reason: Error in invoking Restart command on SDP Subarray - "  \
+                +f"{self.sdp_subarray_adapter.dev_name}: {e}",)
             return (
                 ResultCode.FAILED,
-                "The invocation of the Restart "
-                "command is failed on SDP Subarray "
-                f"Device {self.sdp_subarray_adapter.dev_name} "
-                "Reason: Error in invoking Restart command on Sdp Subarray. ",
+                "Execution of Restart command is failed."
+                + "Reason: Error in invoking Restart command on SDP Subarray - "  \
+                +f"{self.sdp_subarray_adapter.dev_name}: {e}",
+
             )
 
         self.logger.info(
