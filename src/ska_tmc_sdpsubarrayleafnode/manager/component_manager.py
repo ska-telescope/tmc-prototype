@@ -529,7 +529,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         return task_status, response
 
-    def end_scan(self, task_callback=None) -> Tuple[TaskStatus, str]:
+    def end_scan(
+        self, task_callback: Optional[Callable] = None
+    ) -> Tuple[TaskStatus, str]:
         """Submits the EndScan command for execution.
 
         :rtype: tuple
@@ -548,7 +550,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         return task_status, response
 
-    def abort_commands(self):
+    def abort_commands(self) -> Tuple[ResultCode, str]:
         """
         Invokes Abort command on Sdp Subarray
         and changes the obsstate

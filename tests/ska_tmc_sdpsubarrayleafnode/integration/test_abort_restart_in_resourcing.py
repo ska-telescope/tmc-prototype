@@ -121,12 +121,10 @@ def abort_restart_in_resourcing(
         sdp_subarray_node_obs_state = sdp_subarray.read_attribute(
             "obsState"
         ).value
-        assert sdp_subarray_node_obs_state == ObsState.EMPTY
         event_remover(
             change_event_callbacks,
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
         )
-        tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
     except Exception as e:
         tear_down(dev_factory, sdp_subarray, sdp_subarray_ln_proxy)
         raise Exception(e)

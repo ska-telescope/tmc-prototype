@@ -4,7 +4,7 @@ ReleaseAllResources command class for SdpSubarrayLeafNode.
 import threading
 import time
 from logging import Logger
-from typing import Callable, Optional
+from typing import Callable, Optional, Tuple
 
 from ska_control_model.task_status import TaskStatus
 from ska_tango_base.commands import ResultCode
@@ -81,7 +81,7 @@ class ReleaseAllResources(SdpSLNCommand):
             self.task_callback(status=TaskStatus.COMPLETED, result=result)
         self.component_manager.command_in_progress = ""
 
-    def do(self, argin=None):
+    def do(self, argin: str = None) -> Tuple[ResultCode, str]:
         """
         Method to invoke ReleaseAllResources command on SDP Subarray.
 

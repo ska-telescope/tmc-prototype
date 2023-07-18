@@ -1,6 +1,8 @@
 """
 Abort Command for SdpSubarrayLeafNode.
 """
+from typing import Tuple
+
 from ska_tango_base.commands import ResultCode
 
 from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
@@ -12,7 +14,7 @@ class Abort(SdpSLNCommand):
     Aborts the SDP Subarray device.
     """
 
-    def do(self, argin: str = None):
+    def do(self, argin: str = None) -> Tuple[ResultCode, str]:
         """
         This method invokes Abort command on SDP Subarray
 

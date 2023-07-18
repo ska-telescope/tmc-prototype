@@ -5,6 +5,8 @@ actions during an observation.
 It also acts as a SDP contact point for Subarray Node for observation execution
 """
 
+from typing import List, Tuple
+
 # pylint: disable=attribute-defined-outside-init
 import tango
 from ska_control_model import HealthState
@@ -383,7 +385,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         return_code, unique_id = handler()
         return [return_code], [str(unique_id)]
 
-    def is_Abort_allowed(self):
+    def is_Abort_allowed(self) -> bool:
         """
         Checks whether Abort command is allowed to be run in current device
         state
@@ -402,7 +404,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         doc_out="information-only string",
     )
     @DebugIt()
-    def Abort(self):
+    def Abort(self) -> Tuple[List[ResultCode], List[str]]:
         """
         Invoke Abort command on Sdp Subarray.
         """
@@ -410,7 +412,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         result_code, unique_id = handler()
         return ([result_code], [unique_id])
 
-    def is_Restart_allowed(self):
+    def is_Restart_allowed(self) -> bool:
         """
         Checks whether Restart command is allowed to be run in current device
          state
@@ -430,7 +432,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         doc_out="information-only string",
     )
     @DebugIt()
-    def Restart(self):
+    def Restart(self) -> Tuple[List[ResultCode], List[str]]:
         """
         Invoke Restart command on Sdp Subarray.
         """
