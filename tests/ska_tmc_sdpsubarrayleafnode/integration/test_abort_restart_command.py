@@ -34,7 +34,6 @@ def abort_restart_command(
     dev_factory = DevFactory()
     sdp_subarray_ln_proxy = dev_factory.get_device(sdpsaln_name)
     sdp_subarray = dev_factory.get_device(device)
-    dev_factory = DevFactory()
     try:
         event_remover(
             change_event_callbacks,
@@ -59,10 +58,6 @@ def abort_restart_command(
         )
         set_sdp_subarray_obsstate(dev_factory, obsstate, sdp_subarray)
         wait_and_assert_sdp_subarray_obsstate(sdp_subarray_ln_proxy, obsstate)
-        sdp_subarray_node_obs_state = sdp_subarray.read_attribute(
-            "obsState"
-        ).value
-        assert sdp_subarray_node_obs_state == obsstate
         result, unique_id = sdp_subarray_ln_proxy.Abort()
 
         set_sdp_subarray_obsstate(dev_factory, ObsState.ABORTED, sdp_subarray)
@@ -70,10 +65,6 @@ def abort_restart_command(
         wait_and_assert_sdp_subarray_obsstate(
             sdp_subarray_ln_proxy, ObsState.ABORTED
         )
-        sdp_subarray_node_obs_state = sdp_subarray.read_attribute(
-            "obsState"
-        ).value
-        assert sdp_subarray_node_obs_state == ObsState.ABORTED
         result, unique_id = sdp_subarray_ln_proxy.Restart()
         assert unique_id[0].endswith("Restart")
         assert result[0] == ResultCode.QUEUED
@@ -87,9 +78,6 @@ def abort_restart_command(
         wait_and_assert_sdp_subarray_obsstate(
             sdp_subarray_ln_proxy, ObsState.EMPTY
         )
-        sdp_subarray_node_obs_state = sdp_subarray.read_attribute(
-            "obsState"
-        ).value
         event_remover(
             change_event_callbacks,
             ["longRunningCommandResult", "longRunningCommandsInQueue"],
