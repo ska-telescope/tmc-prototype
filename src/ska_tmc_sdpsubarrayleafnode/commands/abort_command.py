@@ -1,5 +1,5 @@
 """
-Abort Command for SdpSubarrayLeafNode.
+Abort Command for Sdp Subarray.
 """
 from typing import Tuple
 
@@ -10,14 +10,14 @@ from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
 
 class Abort(SdpSLNCommand):
     """
-    A class for SdpSubarrayLeafNode's Abort() command.
-    Aborts the SDP Subarray device.
+    A class for Sdp Subarray Abort() command.
+    Aborts the Sdp Subarray device.
     """
 
     # pylint: disable=arguments-differ
     def do(self) -> Tuple[ResultCode, str]:
         """
-        This method invokes Abort command on SDP Subarray
+        This method invokes Abort command on Sdp Subarray
 
         return:
             A tuple containing a return code and a string
@@ -29,27 +29,27 @@ class Abort(SdpSLNCommand):
 
         raises:
             Exception if error occurs in invoking command
-            on any of the devices like SdpSubarrayLeafNode
+            on any of the devices like Sdp Subarray
         """
         result_code, message = self.init_adapter()
         if result_code == ResultCode.FAILED:
             return result_code, message
         try:
             self.logger.info(
-                "Invoking Abort command on SDP Subarray:%s",
+                "Invoking Abort command on Sdp Subarray:%s",
                 self.sdp_subarray_adapter.dev_name,
             )
             self.sdp_subarray_adapter.Abort()
         except Exception as ex:
             self.logger.exception(
                 "Execution of Abort command is failed."
-                + "Reason: Error in invoking Abort command on SDP Subarray -"
+                + "Reason: Error in invoking Abort command on Sdp Subarray -"
                 + f"{self.sdp_subarray_adapter.dev_name}: {ex}"
             )
             return self.component_manager.generate_command_result(
                 ResultCode.FAILED,
                 "Execution of Abort command is failed."
-                + "Reason: Error in invoking Abort command on SDP Subarray -"
+                + "Reason: Error in invoking Abort command on Sdp Subarray -"
                 + f"{self.sdp_subarray_adapter.dev_name}: {ex}",
             )
         return ResultCode.OK, ""

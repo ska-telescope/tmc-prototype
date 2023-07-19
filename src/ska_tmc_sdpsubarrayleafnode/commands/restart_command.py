@@ -1,4 +1,4 @@
-"""Restart command class for SdpSubarrayLeafNode."""
+"""Restart command class for Sdp Subarray."""
 
 import threading
 from logging import Logger
@@ -12,8 +12,8 @@ from ska_tmc_sdpsubarrayleafnode.commands.abstract_command import SdpSLNCommand
 
 class Restart(SdpSLNCommand):
     """
-    A class for SdpSubarrayLeafNode's Restart command.
-    Restarts the SDP Subarray device.
+    A class for Sdp Subarray Restart command.
+    Restarts the Sdp Subarray device.
     """
 
     # pylint: disable=unused-argument
@@ -50,7 +50,7 @@ class Restart(SdpSLNCommand):
     # pylint: disable=arguments-differ
     def do(self) -> Tuple[ResultCode, str]:
         """
-        Method to invoke Restart command on SDP  Subarray.
+        Method to invoke Restart command on Sdp Subarray.
 
         :param  None:
 
@@ -65,7 +65,7 @@ class Restart(SdpSLNCommand):
 
         try:
             self.logger.info(
-                "Invoking Restart command on SDP Subarray: %s",
+                "Invoking Restart command on Sdp Subarray: %s",
                 self.sdp_subarray_adapter.dev_name,
             )
             self.sdp_subarray_adapter.Restart()
@@ -73,14 +73,14 @@ class Restart(SdpSLNCommand):
             self.logger.exception(
                 "Execution of Restart command is failed."
                 + "Reason: Error in invoking Restart\
-                 command on SDP Subarray - "
+                 command on Sdp Subarray - "
                 + f"{self.sdp_subarray_adapter.dev_name}: {e}",
             )
             return (
                 ResultCode.FAILED,
                 "Execution of Restart command is failed."
                 + "Reason: Error in invoking Restart\
-                 command on SDP Subarray - "
+                 command on Sdp Subarray - "
                 + f"{self.sdp_subarray_adapter.dev_name}: {e}",
             )
 
