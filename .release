@@ -11,6 +11,6 @@ url="""https://www.skaobservatory.org"""
 copyright=""""""
 release=0.13.0
 tag=0.13.0
-release_notes=This release contains:<br/><ul><li>Refactored Abort and Restart command as a longrunning command with updated base class version 18.1.</li></ul><br/>
+release_notes=This release contains:<br/><ul><li>Implement Timeout and ErrorPropagation for ReleaseAllResources command. Refactor Abort and Restart command.</li></ul><br/>
 
 
