@@ -5,6 +5,8 @@ actions during an observation.
 It also acts as a SDP contact point for Subarray Node for observation execution
 """
 
+from typing import List, Tuple
+
 # pylint: disable=attribute-defined-outside-init
 import tango
 from ska_control_model import HealthState
@@ -217,7 +219,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     @DebugIt()
     def AssignResources(self, argin: str) -> tuple:
         """
-        This command invokes the AssignResources() command on Csp Subarray.
+        This command invokes the AssignResources() command on Sdp Subarray.
         """
         handler = self.get_command_object("AssignResources")
         result_code, unique_id = handler(argin)
@@ -244,7 +246,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     @DebugIt()
     def Configure(self, argin: str) -> tuple:
         """
-        This command invokes the Configure() command on Csp Subarray.
+        This command invokes the Configure() command on Sdp Subarray.
         """
         handler = self.get_command_object("Configure")
         result_code, unique_id = handler(argin)
@@ -383,6 +385,61 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         return_code, unique_id = handler()
         return [return_code], [str(unique_id)]
 
+    def is_Abort_allowed(self) -> bool:
+        """
+        Checks whether Abort command is allowed to be run in current device
+        state
+
+        return:
+         True if Abort command is allowed to be run in current device state
+
+        rtype:
+            boolean
+
+        """
+        return self.component_manager.is_command_allowed("Abort")
+
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
+    @DebugIt()
+    def Abort(self) -> Tuple[List[ResultCode], List[str]]:
+        """
+        Invoke Abort command on Sdp Subarray.
+        """
+        handler = self.get_command_object("Abort")
+        result_code, unique_id = handler()
+        return ([result_code], [unique_id])
+
+    def is_Restart_allowed(self) -> bool:
+        """
+        Checks whether Restart command is allowed to be run in current device
+         state
+
+         return:
+             True if Restart command is allowed to be run in current device
+             state
+
+         rtype:
+             boolean
+
+        """
+        return self.component_manager.is_command_allowed("Restart")
+
+    @command(
+        dtype_out="DevVarLongStringArray",
+        doc_out="information-only string",
+    )
+    @DebugIt()
+    def Restart(self) -> Tuple[List[ResultCode], List[str]]:
+        """
+        Invoke Restart command on Sdp Subarray.
+        """
+        handler = self.get_command_object("Restart")
+        result_code, unique_id = handler()
+        return ([result_code], [unique_id])
+
     # default ska mid
     def create_component_manager(self):
         """Returns Sdp Subarray Leaf Node component manager object"""
@@ -419,6 +476,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             ("Scan", "scan"),
             ("EndScan", "end_scan"),
             ("End", "end"),
+            ("Restart", "restart"),
             ("ReleaseAllResources", "release_all_resources"),
         ]:
             self.register_command_object(
@@ -431,6 +489,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                     logger=None,
                 ),
             )
+        self.register_command_object(
+            "Abort",
+            self.AbortCommandsCommand(self.component_manager, self.logger),
+        )
 
 
 # ----------

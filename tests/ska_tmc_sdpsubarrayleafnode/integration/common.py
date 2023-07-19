@@ -66,20 +66,18 @@ def tear_down(dev_factory, sdp_subarray, sdpsal_node):
         sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
         logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
 
-    if sdp_subarray_obsstate.value == ObsState.SCANNING:
-        sdp_subarray.EndScan()
-        wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.READY)
-        sdp_subarray.End()
-        wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
-        sdp_subarray.ReleaseResources()
+    if sdp_subarray_obsstate.value in (
+        ObsState.RESOURCING,
+        ObsState.SCANNING,
+        ObsState.CONFIGURING,
+    ):
+        sdp_subarray.Abort()
+        wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.ABORTED)
+        sdp_subarray.Restart()
         wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.EMPTY)
         sdp_subarray.Off()
         sdp_subarray_obsstate = sdp_subarray.read_attribute("obsState")
         logger.info(f"SDP Subarray ObsState: {sdp_subarray_obsstate.value}")
-
-    if sdp_subarray_obsstate.value == ObsState.RESOURCING:
-        sdp_subarray.ReleaseAllResources()
-        wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.EMPTY)
 
 
 def wait_and_assert_sdp_subarray_obsstate(sdp_subarray_leaf_node, obs_state):
@@ -106,3 +104,10 @@ def wait_and_assert_sdp_subarray_obsstate(sdp_subarray_leaf_node, obs_state):
                      obsState to {obs_state}"
             )
     assert sdp_subarray_obsstate.value == obs_state
+
+
+def set_sdp_subarray_obsstate(dev_factory, obs_state, sdp_subarray):
+    logger.debug("Setting Obsstate to : %s", obs_state)
+    sdp_subarray.SetDirectObsState(obs_state)
+    time.sleep(0.1)
+    logger.debug("ObsState of sdp subarray: %s", sdp_subarray.ObsState)

@@ -22,6 +22,7 @@ from ska_tmc_common.lrcr_callback import LRCRCallback
 from ska_tmc_common.tmc_component_manager import TmcLeafNodeComponentManager
 from tango import DevState
 
+from ska_tmc_sdpsubarrayleafnode.commands.abort_command import Abort
 from ska_tmc_sdpsubarrayleafnode.commands.assign_resources_command import (
     AssignResources,
 )
@@ -33,6 +34,7 @@ from ska_tmc_sdpsubarrayleafnode.commands.on_command import On
 from ska_tmc_sdpsubarrayleafnode.commands.release_resources_command import (
     ReleaseAllResources,
 )
+from ska_tmc_sdpsubarrayleafnode.commands.restart_command import Restart
 from ska_tmc_sdpsubarrayleafnode.commands.scan_command import Scan
 from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
     SdpSLNEventReceiver,
@@ -349,6 +351,23 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             if self.get_device().obs_state != ObsState.SCANNING:
                 self.raise_invalid_obsstate_error(command_name)
 
+        if command_name == "Abort":
+            if self.get_device().obs_state not in [
+                ObsState.SCANNING,
+                ObsState.CONFIGURING,
+                ObsState.RESOURCING,
+                ObsState.IDLE,
+                ObsState.READY,
+            ]:
+                self.raise_invalid_obsstate_error(command_name)
+
+        elif command_name == "Restart":
+            if self.get_device().obs_state not in [
+                ObsState.FAULT,
+                ObsState.ABORTED,
+            ]:
+                self.raise_invalid_obsstate_error(command_name)
+
         return True
 
     def cmd_ended_cb(self, event):
@@ -510,7 +529,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         return task_status, response
 
-    def end_scan(self, task_callback=None) -> Tuple[TaskStatus, str]:
+    def end_scan(
+        self, task_callback: Optional[Callable] = None
+    ) -> Tuple[TaskStatus, str]:
         """Submits the EndScan command for execution.
 
         :rtype: tuple
@@ -523,6 +544,41 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         )
         self.logger.info(
             "TaskStatus: %s and Response: %s of EndScan command after queued\
+                 to execution",
+            task_status,
+            response,
+        )
+        return task_status, response
+
+    def abort_commands(self) -> Tuple[ResultCode, str]:
+        """
+        Invokes Abort command on Sdp Subarray
+        and changes the obsstate
+
+        :param task_callback: callback to be called whenever the status
+            of the task changes.
+        """
+        abort_command = Abort(
+            self,
+            logger=self.logger,
+        )
+        result_code, message = abort_command.do()
+        return result_code, message
+
+    def restart(self, task_callback: Optional[Callable] = None) -> tuple:
+        """
+        Submit the Restart command in queue.
+
+        :return: a result code and message
+        """
+        restart_command = Restart(self, logger=self.logger)
+        task_status, response = self.submit_task(
+            restart_command.restart,
+            args=[self.logger],
+            task_callback=task_callback,
+        )
+        self.logger.info(
+            "TaskStatus: %s and Response: %s of Restart command after queued\
                  to execution",
             task_status,
             response,

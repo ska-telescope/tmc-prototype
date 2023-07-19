@@ -44,7 +44,7 @@ class AssignResources(SdpSLNCommand):
         task_abort_event: Optional[threading.Event] = None,
     ) -> None:
         """This is a long running method for AssignResources command, it
-        executes do hook, invokes AssignResources command on CspSubarray.
+        executes do hook, invokes AssignResources command on Sdp Subarray.
 
         :param argin: Input JSON string
         :type argin : str

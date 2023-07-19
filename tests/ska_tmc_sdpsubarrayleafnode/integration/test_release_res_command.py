@@ -35,6 +35,7 @@ def release_resources(
             "longRunningCommandsInQueue"
         ].assert_change_event(
             None,
+            lookahead=2,
         )
         result, unique_id = sdp_subarray_ln_proxy.On()
         logger.info(f"Command ID: {unique_id} Returned result: {result}")
