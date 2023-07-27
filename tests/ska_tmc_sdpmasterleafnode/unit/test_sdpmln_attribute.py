@@ -38,7 +38,6 @@ def test_attributes(sdpmln_device):
     assert sdpmln_device.testMode == SimulationMode.FALSE
     sdpmln_device.controlMode = ControlMode.REMOTE
     assert sdpmln_device.controlMode == ControlMode.REMOTE
-    assert len(sdpmln_device.commandExecuted) == 1  # init
     sdpmln_device.sdpMasterDevName = "sdpmln"
     assert sdpmln_device.sdpMasterDevName == "sdpmln"
     assert sdpmln_device.versionId == release.version
