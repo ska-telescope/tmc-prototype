@@ -44,4 +44,4 @@ def test_attributes(sdpmln_device):
     assert sdpmln_device.buildState == (
         "{},{},{}".format(release.name, release.version, release.description)
     )
-    assert sdpmln_device.healthstate == HealthState.OK
+    assert sdpmln_device.healthState == HealthState.OK
