@@ -2,6 +2,7 @@
 SDP Master Leaf node acts as a SDP contact point for the Master Node and also
 monitors and issues commands to the SDP Master.
 """
+from ska_control_model import HealthState
 from ska_tango_base.base.base_device import SKABaseDevice
 from ska_tango_base.commands import ResultCode, SubmittedSlowCommand
 from ska_tmc_common.enum import LivelinessProbeType
@@ -72,6 +73,7 @@ class SdpMasterLeafNode(SKABaseDevice):
             device._build_state = (
                 f"{release.name},{release.version},{release.description}"
             )
+            device._health_state = HealthState.OK
             device._version_id = release.version
             device.set_change_event("healthState", True, False)
             device._issubsystemavailable = False
