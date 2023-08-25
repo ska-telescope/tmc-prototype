@@ -97,6 +97,22 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
                 )
                 self.update_availablity_callback(True)
 
+    def device_failed(
+        self, device_info, exception
+    ):  # pylint: disable=arguments-differ
+        """
+        Set a device to failed and call the relative callback if available
+
+        :param device_info: a device info
+        :type device_info: DeviceInfo
+        :param exception: an exception
+        :type: Exception"""
+        device_info.update_unresponsive(True, exception)
+
+        with self.lock:
+            if self.update_availablity_callback is not None:
+                self.update_availablity_callback(False)
+
     def _check_if_sdp_master_is_responsive(self) -> None:
         """Checks if SDP Master device is responsive."""
 
