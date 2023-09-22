@@ -20,10 +20,10 @@ Install minikube
 
 You will need to install `minikube` or equivalent k8s installation in order to set up your test environment. You can follow the instruction `here <https://gitlab.com/ska-telescope/sdi/deploy-minikube/>`__:
 ::
-git clone git@gitlab.com:ska-telescope/sdi/deploy-minikube.git
-cd deploy-minikube
-make all
-eval $(minikube docker-env)
+    git clone git@gitlab.com:ska-telescope/sdi/deploy-minikube.git
+    cd deploy-minikube
+    make all
+    eval $(minikube docker-env)
 
 *Please note that the command `eval $(minikube docker-env)` will point your local docker client at the docker-in-docker for minikube. Use this only for building the docker image and another shell for other work.*
 
@@ -32,15 +32,15 @@ How to Use
 
 Clone this repo:
 ::
-git clone https://gitlab.com/ska-telescope/ska-tmc-sdpleafnodes.git
-cd ska-tmc-sdpleafnodes
+    git clone https://gitlab.com/ska-telescope/ska-tmc-sdpleafnodes.git
+    cd ska-tmc-sdpleafnodes
 
 Install dependencies
 ::
-apt update
-apt install -y curl git build-essential libboost-python-dev libtango-dev 
-curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 -
-source $HOME/.poetry/env
+    apt update
+    apt install -y curl git build-essential libboost-python-dev libtango-dev 
+    curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 -
+    source $HOME/.poetry/env
 
 Please note that:
  * the `libtango-dev` will install an old version of the TANGO-controls framework (9.2.5);
@@ -51,61 +51,61 @@ Please note that:
 
 Install python requirements for linting and unit testing:
 ::
-$ poetry install
+    $ poetry install
 
 Activate the poetry environment:
 ::
-$ source $(poetry env info --path)/bin/activate
+    $ source $(poetry env info --path)/bin/activate
 
 Follow the steps till installation of dependencies then run below command:
 ::
-$ virtualenv cn_venv
-$ source cn_venv/bin/activate
-$ make requirements
+    $ virtualenv cn_venv
+    $ source cn_venv/bin/activate
+    $ make requirements
 
 Run python-test:
 ::
-$ make python-test
-PyTango 9.3.3 (9, 3, 3)
-PyTango compiled with:
-Python : 3.8.5
-Numpy  : 0.0.0 ## output generated from a WSL windows machine
-Tango  : 9.2.5
-Boost  : 1.71.0
+    $ make python-test
+    PyTango 9.3.3 (9, 3, 3)
+    PyTango compiled with:
+    Python : 3.8.5
+    Numpy  : 0.0.0 ## output generated from a WSL windows machine
+    Tango  : 9.2.5
+    Boost  : 1.71.0
 
-PyTango runtime is:
-Python : 3.8.5
-Numpy  : None
-Tango  : 9.2.5
+    PyTango runtime is:
+    Python : 3.8.5
+    Numpy  : None
+    Tango  : 9.2.5
 
-PyTango running on:
-uname_result(system='Linux', node='LAPTOP-5LBGJH83', release='4.19.128-microsoft-standard', version='#1 SMP Tue Jun 23 12:58:10 UTC 2020', machine='x86_64', processor='x86_64')
+    PyTango running on:
+    uname_result(system='Linux', node='LAPTOP-5LBGJH83', release='4.19.128-microsoft-standard', version='#1 SMP Tue Jun 23 12:58:10 UTC 2020', machine='x86_64', processor='x86_64')
 
-============================= test session starts ==============================
-platform linux -- Python 3.8.5, pytest-5.4.3, py-1.10.0, pluggy-0.13.1 -- /home/
-[....]
+    ============================= test session starts ==============================
+    platform linux -- Python 3.8.5, pytest-5.4.3, py-1.10.0, pluggy-0.13.1 -- /home/
+    [....]
 
---------------------------------- JSON report ----------------------------------
-JSON report written to: build/reports/report.json (165946 bytes)
+    --------------------------------- JSON report ----------------------------------
+    JSON report written to: build/reports/report.json (165946 bytes)
 
------------ coverage: platform linux, python 3.8.5-final-0 -----------
-Coverage HTML written to dir build/htmlcov
-Coverage XML written to file build/reports/code-coverage.xml
+    ----------- coverage: platform linux, python 3.8.5-final-0 -----------
+    Coverage HTML written to dir build/htmlcov
+    Coverage XML written to file build/reports/code-coverage.xml
 
-======================== 48 passed, 5 deselected in 42.42s ========================
+    ======================== 48 passed, 5 deselected in 42.42s ========================
 
 
 Formatting the code:
 ::
-$ make python-format
-[...]
---------------------------------------------------------------------
-Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)
+    $ make python-format
+    [...]
+    --------------------------------------------------------------------
+    Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)
 
 
 Python linting:
 ::
-$ make python-lint
-[...]
---------------------------------------------------------------------
-Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)
+    $ make python-lint
+    [...]
+    --------------------------------------------------------------------
+    Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)
