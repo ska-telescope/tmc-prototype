@@ -82,6 +82,8 @@ class ReleaseAllResources(SdpSLNCommand):
             self.task_callback(status=TaskStatus.COMPLETED, result=result)
         self.component_manager.command_in_progress = ""
 
+    #  pylint: enable=arguments-differ
+
     # pylint: disable=arguments-differ
     def do(self) -> Tuple[ResultCode, str]:
         """

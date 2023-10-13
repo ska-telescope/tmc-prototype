@@ -98,6 +98,4 @@ class SdpSLNEventReceiver(EventReceiver):
             return
         new_value = event.attr_value.value
         self._component_manager.update_device_pointing_calibrations(new_value)
-        self._logger.info(
-            f"Current Pointing Offsets are [dish_id,cross_el,el]: {new_value}"
-        )
+        self._logger.info(f"Updated Pointing Offsets are : {new_value}")

@@ -75,7 +75,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     )
 
     pointingCalibrations = attribute(
-        dtype=str,
+        dtype="DevString",
         access=AttrWriteType.READ,
     )
 
@@ -109,7 +109,9 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 "isSubsystemAvailable", self._issubsystemavailable
             )
 
-    def pointing_callback(self, pointing_calibrations: list) -> None:
+    def pointing_calibrations_callback(
+        self, pointing_calibrations: list
+    ) -> None:
         """Push an event for the pointingCalibrations attribute."""
         self.push_change_event(
             "pointingCalibrations", json.dumps(pointing_calibrations)
@@ -465,7 +467,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             logger=self.logger,
             communication_state_callback=None,
             component_state_callback=None,
-            pointing_callback=self.pointing_callback,
+            pointing_calibrations_callback=self.pointing_calibrations_callback,
             _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
             _event_receiver=True,
             _update_sdp_subarray_obs_state_callback=(

@@ -87,6 +87,8 @@ class Configure(SdpSLNCommand):
             self.task_callback(status=TaskStatus.COMPLETED, result=result)
         self.component_manager.command_in_progress = ""
 
+    # pylint: enable=arguments-differ
+
     def do(self, argin=None):
         """
         Method to invoke Configure command on SDP Subarray. \

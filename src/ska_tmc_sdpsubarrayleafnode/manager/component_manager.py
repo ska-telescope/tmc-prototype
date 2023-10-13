@@ -59,7 +59,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         logger=None,
         communication_state_callback=None,
         component_state_callback=None,
-        pointing_callback: Optional[Callable] = None,
+        pointing_calibrations_callback: Optional[Callable] = None,
         _liveliness_probe=None,
         _event_receiver=True,
         _update_sdp_subarray_obs_state_callback=None,
@@ -126,7 +126,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self.off_command = Off(self, self.logger)
         self.command_in_progress: str = ""
         self._pointing_calibrations = []
-        self.pointing_callback = pointing_callback
+        self.pointing_calibrations_callback = pointing_calibrations_callback
 
     @property
     def pointing_calibrations(self) -> list:
@@ -151,8 +151,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             cross_elevation_offset,
             elevation_offset,
         ]
-        if self.pointing_callback:
-            self.pointing_callback(self._pointing_calibrations)
+        if self.pointing_calibrations_callback:
+            self.pointing_calibrations_callback(self._pointing_calibrations)
 
     def stop(self):
         """
@@ -214,9 +214,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         """
         try:
             pointing_offsets_data = json.loads(pointing_offsets)
-            # we may need this so that the data of required dish
-            # only gets forwarded
-            # dish_id = pointing_offsets_data[0]
+            # The first field of the array is a dish label
+            # which can be used for validations pointing_offsets_data[0]
             cross_elevation_offset = pointing_offsets_data[5]
             elevation_offset = pointing_offsets_data[3]
             self.pointing_calibrations = [
