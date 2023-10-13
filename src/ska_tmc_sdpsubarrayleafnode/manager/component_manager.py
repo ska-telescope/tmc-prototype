@@ -135,14 +135,15 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
     @pointing_calibrations.setter
     def pointing_calibrations(self, pointing_calibrations: list) -> None:
-        """Update the actualPointing of the dish device.
+        """Update the pointing offsets of the dish device.
 
-        :param value: The list containing timestamp, RA and Dec values.
+        :param value: The list containing cross_elevation, elevation offsets
+          values.
         :value dtype: list
         """
         cross_elevation_offset, elevation_offset = pointing_calibrations
         self.logger.info(
-            "The updated actual pointing values are: %s, %s, %s",
+            "The updated pointing offsets values are: %s, %s",
             cross_elevation_offset,
             elevation_offset,
         )
