@@ -6,6 +6,7 @@ This module provided a reference implementation of a BaseComponentManager.
 It is provided for explanatory purposes, and to support testing of this
 package.
 """
+import json
 import time
 from typing import Callable, Optional, Tuple
 
@@ -57,9 +58,11 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         logger=None,
         communication_state_callback=None,
         component_state_callback=None,
+        pointing_callback: Optional[Callable] = None,
         _liveliness_probe=None,
         _event_receiver=True,
         _update_sdp_subarray_obs_state_callback=None,
+        _update_sdp_subarray_pointing_offset_callback=None,
         _update_lrcr_callback=None,
         max_workers=5,
         proxy_timeout=500,
@@ -112,11 +115,42 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             _update_sdp_subarray_obs_state_callback
         )
 
+        self._update_sdp_subarray_pointing_offset_callback = (
+            _update_sdp_subarray_pointing_offset_callback
+        )
+
         self.update_lrcr_callback = _update_lrcr_callback
         self._lrc_result = ("", "")
         self.on_command = On(self, self.logger)
         self.off_command = Off(self, self.logger)
         self.command_in_progress: str = ""
+        self._pointing_calibrations = []
+        self.pointing_callback = pointing_callback
+
+    @property
+    def pointing_calibrations(self) -> list:
+        """Gives the current pointing offsets informed by SDP subarray"""
+        return self._pointing_calibrations
+
+    @pointing_calibrations.setter
+    def pointing_calibrations(self, pointing_calibrations: list) -> None:
+        """Update the actualPointing of the dish device.
+
+        :param value: The list containing timestamp, RA and Dec values.
+        :value dtype: list
+        """
+        cross_elevation_offset, elevation_offset = pointing_calibrations
+        self.logger.info(
+            "The updated actual pointing values are: %s, %s, %s",
+            cross_elevation_offset,
+            elevation_offset,
+        )
+        self._pointing_calibrations = [
+            cross_elevation_offset,
+            elevation_offset,
+        ]
+        if self.pointing_callback:
+            self.pointing_callback(self._pointing_calibrations)
 
     def stop(self):
         """
@@ -167,6 +201,32 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             self.logger.info(f"Obs State value updated to {obs_state}")
             if self._update_sdp_subarray_obs_state_callback:
                 self._update_sdp_subarray_obs_state_callback(obs_state)
+
+    def update_device_pointing_calibrations(self, pointing_offsets: list):
+        """
+        Update the current pointing offsets,
+        and call the relative callbacks if available
+
+        :param pointing_offsets: pointing offsets given by SDP subarray device
+        :type obs_state: list
+        """
+        try:
+            pointing_offsets_data = json.loads(pointing_offsets)
+            # we may need this so that the data of required dish
+            # only gets forwarded
+            # dish_id = pointing_offsets_data[0]
+            cross_elevation_offset = pointing_offsets_data[5]
+            elevation_offset = pointing_offsets_data[3]
+            self.pointing_calibrations = [
+                cross_elevation_offset,
+                elevation_offset,
+            ]
+        except Exception as e:
+            self.logger.exception(
+                "Received pointing offsets : %s",
+                pointing_offsets,
+                e,
+            )
 
     def device_failed(
         self, device_info, exception

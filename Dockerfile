@@ -7,6 +7,7 @@ FROM $BASE_IMAGE
 # Install Poetry
 USER root
 ENV SETUPTOOLS_USE_DISTUTILS=stdlib
+RUN apt-get update && apt-get install git -y
 RUN curl -sSL https://install.python-poetry.org | python3 - && \
     poetry config virtualenvs.create false
 
@@ -22,4 +23,4 @@ RUN rm /usr/bin/python && ln -s /usr/bin/python3 /usr/bin/python
 USER tango
 
 # create ipython profile too so that itango doesn't fail if ipython hasn't run yet
-RUN ipython profile create
+#RUN ipython profile create

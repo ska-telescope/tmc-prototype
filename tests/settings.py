@@ -1,8 +1,10 @@
 """Common Settings for testing of SDP Leaf Node"""
 import logging
+import time
 from typing import List
 
 from ska_tmc_common.enum import LivelinessProbeType
+from tango import DeviceProxy
 
 from ska_tmc_sdpmasterleafnode.manager.component_manager import (
     SdpMLNComponentManager,
@@ -65,3 +67,13 @@ def event_remover(change_event_callbacks, attributes: List[str]) -> None:
                 node.drop()
         except KeyError:
             pass
+
+
+def wait_for_attribute_value(device: DeviceProxy, attribute_name: str) -> bool:
+    """Waits for attribute value to change on the given device."""
+    start_time = time.time()
+    while device.read_attribute(attribute_name).value == "[]":
+        time.sleep(0.5)
+        if time.time() - start_time >= 10:
+            return False
+    return True
