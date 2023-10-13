@@ -32,7 +32,7 @@ POINTING_OFFSETS = [
 
 
 @pytest.mark.post_deployment
-@pytest.mark.R1
+@pytest.mark.SKA_mid
 def test_pointing_offsets(tango_context, group_callback):
     dev_factory = DevFactory()
     sdp_leaf_node = dev_factory.get_device(SDP_SUBARRAY_LEAF_NODE_MID)
