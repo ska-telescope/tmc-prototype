@@ -70,6 +70,7 @@ class ReleaseAllResources(SdpSLNCommand):
                 lrcr_callback=lrcr_callback,
             )
 
+    #  pylint: disable=arguments-differ
     def update_task_status(self, result: ResultCode, message: str = ""):
         if result == ResultCode.FAILED:
             self.task_callback(

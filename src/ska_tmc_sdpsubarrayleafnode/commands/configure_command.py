@@ -75,6 +75,7 @@ class Configure(SdpSLNCommand):
                 lrcr_callback=self.component_manager.long_running_result_callback,
             )
 
+    # pylint: disable=arguments-differ
     def update_task_status(self, result: ResultCode, message: str = ""):
         if result == ResultCode.FAILED:
             self.task_callback(

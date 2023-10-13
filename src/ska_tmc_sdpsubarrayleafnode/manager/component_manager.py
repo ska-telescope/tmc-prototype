@@ -42,6 +42,7 @@ from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
 )
 
 
+# pylint: disable=too-many-instance-attributes
 class SdpSLNComponentManager(TmcLeafNodeComponentManager):
     """
     A component manager for The SDP Subarray Leaf Node component.
