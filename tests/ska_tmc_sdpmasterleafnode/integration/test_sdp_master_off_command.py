@@ -20,6 +20,11 @@ def off_command(tango_context, sdpmln_name, group_callback):
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
     )
 
+    availablity_value = sdpmln_node.read_attribute(
+        "isSubsystemAvailable"
+    ).value
+    assert availablity_value
+
     sdpmln_node.subscribe_event(
         "longRunningCommandsInQueue",
         tango.EventType.CHANGE_EVENT,

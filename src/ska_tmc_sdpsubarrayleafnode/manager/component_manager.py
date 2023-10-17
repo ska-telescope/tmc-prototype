@@ -10,6 +10,7 @@ import json
 import time
 from typing import Callable, Optional, Tuple
 
+import numpy
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tango_base.executor import TaskStatus
@@ -216,12 +217,16 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             pointing_offsets_data = json.loads(pointing_offsets)
             # The first field of the array is a dish label
             # which can be used for validations pointing_offsets_data[0]
-            cross_elevation_offset = pointing_offsets_data[5]
-            elevation_offset = pointing_offsets_data[3]
-            self.pointing_calibrations = [
-                cross_elevation_offset,
-                elevation_offset,
-            ]
+            if pointing_offsets:
+                cross_elevation_offset = pointing_offsets_data[5]
+                elevation_offset = pointing_offsets_data[3]
+                self.pointing_calibrations = [
+                    cross_elevation_offset,
+                    elevation_offset,
+                ]
+            else:
+                # Set inavlid data if pointing offsets unavailable
+                self.pointing_calibrations = [numpy.nan, numpy.nan]
         except Exception as e:
             self.logger.exception(
                 "Received pointing offsets : %s",

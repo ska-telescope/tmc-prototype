@@ -52,6 +52,7 @@ class Configure(SdpSLNCommand):
         :param task_abort_event: Check for abort, defaults to None
         :type task_abort_event: Event, optional
         """
+        abort_event = threading.Event()
         self.component_manager.command_in_progress = "Configure"
         self.task_callback = task_callback
         task_callback(status=TaskStatus.IN_PROGRESS)
@@ -66,10 +67,11 @@ class Configure(SdpSLNCommand):
             self.component_manager.stop_timer()
         else:
             self.start_tracker_thread(
-                self.component_manager.get_obs_state,
-                ObsState.READY,
-                self.timeout_id,
-                self.timeout_callback,
+                state_function=self.component_manager.get_obs_state,
+                expected_state=[ObsState.READY],
+                abort_event=abort_event,
+                timeout_id=self.timeout_id,
+                timeout_callback=self.timeout_callback,
                 command_id=self.component_manager.configure_id,
                 # pylint: disable=line-too-long
                 lrcr_callback=self.component_manager.long_running_result_callback,

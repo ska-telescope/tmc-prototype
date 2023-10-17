@@ -15,6 +15,12 @@ def disable_command(tango_context, sdpmln_name, group_callback):
     logger.info("%s", tango_context)
     dev_factory = DevFactory()
     sdpmln_node = dev_factory.get_device(sdpmln_name)
+
+    availablity_value = sdpmln_node.read_attribute(
+        "isSubsystemAvailable"
+    ).value
+    assert availablity_value
+
     event_remover(
         group_callback,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
@@ -28,10 +34,7 @@ def disable_command(tango_context, sdpmln_name, group_callback):
     group_callback["longRunningCommandsInQueue"].assert_change_event(
         None,
     )
-    availablity_value = sdpmln_node.read_attribute(
-        "isSubsystemAvailable"
-    ).value
-    assert availablity_value
+
     result, unique_id = sdpmln_node.On()
 
     group_callback["longRunningCommandsInQueue"].assert_change_event(

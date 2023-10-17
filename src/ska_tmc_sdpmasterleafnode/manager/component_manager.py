@@ -82,6 +82,16 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         """Sets the device name for SDP Master Device."""
         self._sdp_master_device_name = device_name
 
+    def get_device(self) -> DeviceInfo:
+        """
+        Return the device info our of the monitoring loop with name dev_name
+
+        :param None:
+        :return: a device info
+        :rtype: DeviceInfo
+        """
+        return DeviceInfo(self.sdp_master_device_name)
+
     def update_ping_info(self, ping: int, dev_name: str) -> None:
         """
         Update a device with the correct ping information.
