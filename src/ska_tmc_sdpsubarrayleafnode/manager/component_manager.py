@@ -63,7 +63,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         _liveliness_probe=None,
         _event_receiver=True,
         _update_sdp_subarray_obs_state_callback=None,
-        _update_sdp_subarray_pointing_offset_callback=None,
         _update_lrcr_callback=None,
         max_workers=5,
         proxy_timeout=500,
@@ -115,11 +114,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self._update_sdp_subarray_obs_state_callback = (
             _update_sdp_subarray_obs_state_callback
         )
-
-        self._update_sdp_subarray_pointing_offset_callback = (
-            _update_sdp_subarray_pointing_offset_callback
-        )
-
         self.update_lrcr_callback = _update_lrcr_callback
         self._lrc_result = ("", "")
         self.on_command = On(self, self.logger)

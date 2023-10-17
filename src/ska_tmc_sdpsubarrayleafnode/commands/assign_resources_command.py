@@ -55,7 +55,6 @@ class AssignResources(SdpSLNCommand):
         :param task_abort_event: Check for abort, defaults to None
         :type task_abort_event: Event, optional
         """
-        abort_event = threading.Event()
         self.component_manager.command_in_progress = "AssignResources"
         self.task_callback = task_callback
         task_callback(status=TaskStatus.IN_PROGRESS)
@@ -73,7 +72,7 @@ class AssignResources(SdpSLNCommand):
             self.start_tracker_thread(
                 state_function=self.component_manager.get_obs_state,
                 expected_state=[ObsState.IDLE],
-                abort_event=abort_event,
+                abort_event=task_abort_event,
                 timeout_id=self.timeout_id,
                 timeout_callback=self.timeout_callback,
                 command_id=self.component_manager.assign_id,

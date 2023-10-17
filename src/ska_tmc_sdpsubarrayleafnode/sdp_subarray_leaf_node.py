@@ -116,6 +116,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             "pointingCalibrations",
             json.dumps(self.component_manager.pointing_calibrations),
         )
+        self.logger.info(
+            "Pointing calibration offsets are : %s",
+            self.component_manager.pointing_calibrations,
+        )
 
     class InitCommand(
         SKABaseDevice.InitCommand

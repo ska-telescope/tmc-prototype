@@ -2,7 +2,7 @@
 import json
 import logging
 import time
-from typing import List, Union
+from typing import List
 
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
@@ -104,12 +104,17 @@ def event_remover(change_event_callbacks, attributes: List[str]) -> None:
 def wait_for_attribute_value(
     device: DeviceProxy,
     attribute_name: str,
-    attr_default_value: Union[str, List, None],
+    attribute_value,
 ) -> bool:
     """Waits for attribute value to change on the given device."""
     start_time = time.time()
-    while device.read_attribute(attribute_name).value == attr_default_value:
+    while device.read_attribute(attribute_name).value == attribute_value:
         time.sleep(0.5)
+
         if time.time() - start_time >= 10:
+            logger.info(
+                "The attribute value after time out is: %s",
+                device.read_attribute(attribute_name).value,
+            )
             return False
     return True
