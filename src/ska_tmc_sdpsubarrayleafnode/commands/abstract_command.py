@@ -85,7 +85,7 @@ class SdpSLNCommand(TmcLeafNodeCommand):
             self.task_callback(
                 status=status,
                 result=result,
-                message=message,
+                exception=message,
             )
         else:
             self.task_callback(status=TaskStatus.COMPLETED, result=result)
