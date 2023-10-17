@@ -45,7 +45,7 @@ def test_pointing_offsets(tango_context, group_callback):
 
     # Validation at SDP subarray side
     sdp_subarray.SetDirectPointingOffsets(json.dumps(POINTING_OFFSETS))
-    assert wait_for_attribute_value(sdp_subarray, "pointingOffsets")
+    assert wait_for_attribute_value(sdp_subarray, "pointingOffsets", [])
     sdp_subarray_pointing_offsets = sdp_subarray.read_attribute(
         "pointingOffsets"
     ).value
@@ -53,7 +53,7 @@ def test_pointing_offsets(tango_context, group_callback):
     assert sdp_subarray_pointing_offsets == json.dumps(POINTING_OFFSETS)
 
     # Validation at SDP SLN side
-    assert wait_for_attribute_value(sdp_leaf_node, "pointingCalibrations")
+    assert wait_for_attribute_value(sdp_leaf_node, "pointingCalibrations", [])
     sdpsln_pointing_offsets = sdp_leaf_node.read_attribute(
         "pointingCalibrations"
     ).value

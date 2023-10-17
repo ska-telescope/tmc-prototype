@@ -43,7 +43,6 @@ from ska_tmc_sdpsubarrayleafnode.manager.event_receiver import (
 )
 
 
-# pylint: disable=too-many-instance-attributes
 class SdpSLNComponentManager(TmcLeafNodeComponentManager):
     """
     A component manager for The SDP Subarray Leaf Node component.
@@ -136,11 +135,12 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
 
     @pointing_calibrations.setter
     def pointing_calibrations(self, pointing_calibrations: list) -> None:
-        """Update the pointing offsets of the dish device.
+        """Update the pointing calibration offset values of the dish device.
 
-        :param value: The list containing cross_elevation, elevation offsets
-          values.
-        :value dtype: list
+        :param pointing_calibrations: The list containing cross_elevation,
+        elevation offsets values.
+
+        :pointing_calibrations dtype: list
         """
         cross_elevation_offset, elevation_offset = pointing_calibrations
         self.logger.info(
@@ -153,7 +153,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             elevation_offset,
         ]
         if self.pointing_calibrations_callback:
-            self.pointing_calibrations_callback(self._pointing_calibrations)
+            self.pointing_calibrations_callback()
 
     def stop(self):
         """
@@ -216,13 +216,11 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         try:
             pointing_offsets_data = json.loads(pointing_offsets)
             # The first field of the array is a dish label
-            # which can be used for validations pointing_offsets_data[0]
+            # ie pointing_offsets_data[0] which can be used for validations
             if pointing_offsets:
-                cross_elevation_offset = pointing_offsets_data[5]
-                elevation_offset = pointing_offsets_data[3]
                 self.pointing_calibrations = [
-                    cross_elevation_offset,
-                    elevation_offset,
+                    pointing_offsets_data[5],  # Cross elevation offset
+                    pointing_offsets_data[3],  # Elevation offset
                 ]
             else:
                 # Set inavlid data if pointing offsets unavailable
@@ -234,9 +232,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 e,
             )
 
-    def device_failed(
-        self, device_info, exception
-    ):  # pylint: disable=arguments-differ
+    def device_failed(self, device_info, exception):
         """
         Set a device to failed and call the relative callback if available
 

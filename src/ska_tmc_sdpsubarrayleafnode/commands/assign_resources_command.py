@@ -67,7 +67,7 @@ class AssignResources(SdpSLNCommand):
         result_code, message = self.do(argin)
 
         if result_code == ResultCode.FAILED:
-            self.update_task_status(result_code, message)
+            self.update_task_status(result=result_code, message=message)
             self.component_manager.stop_timer()
         else:
             self.start_tracker_thread(
@@ -81,21 +81,6 @@ class AssignResources(SdpSLNCommand):
                 lrcr_callback=self.component_manager.long_running_result_callback,
             )
 
-    #  pylint: disable=arguments-differ
-    def update_task_status(self, result: ResultCode, message: str = ""):
-        if result == ResultCode.FAILED:
-            self.task_callback(
-                status=TaskStatus.COMPLETED,
-                result=result,
-                exception=message,
-            )
-        else:
-            self.task_callback(status=TaskStatus.COMPLETED, result=result)
-        self.component_manager.command_in_progress = ""
-
-    #  pylint: enable=arguments-differ
-
-    # pylint: disable=line-too-long
     def do(self, argin=None):
         """
         Method to invoke AssignResources command on SDP Subarray.

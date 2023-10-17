@@ -37,6 +37,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         self.set_change_event("longRunningCommandResult", True)
         self._issubsystemavailable = False
         self.set_change_event("isSubsystemAvailable", True, False)
+        self.set_change_event("pointingCalibrations", True, False)
 
     # -----------------
     # Device Properties
@@ -109,12 +110,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 "isSubsystemAvailable", self._issubsystemavailable
             )
 
-    def pointing_calibrations_callback(
-        self, pointing_calibrations: list
-    ) -> None:
+    def pointing_calibrations_callback(self) -> None:
         """Push an event for the pointingCalibrations attribute."""
         self.push_change_event(
-            "pointingCalibrations", json.dumps(pointing_calibrations)
+            "pointingCalibrations",
+            json.dumps(self.component_manager.pointing_calibrations),
         )
 
     class InitCommand(
@@ -162,6 +162,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         if hasattr(self, "component_manager"):
             self.component_manager.stop()
 
+    # ------------------
+    # Attributes methods
+    # ------------------
+
     def read_sdpSubarrayDevName(self):
         """Return the sdpsubarraydevname attribute."""
         return self.component_manager._sdp_subarray_dev_name
@@ -169,10 +173,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     def write_sdpSubarrayDevName(self, value):
         """Set the sdpsubarraydevname attribute."""
         self.component_manager._sdp_subarray_dev_name = value
-
-    # ------------------
-    # Attributes methods
-    # ------------------
 
     def read_isSubsystemAvailable(self):
         """Read method for issubsystemavailable"""
