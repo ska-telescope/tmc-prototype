@@ -10,7 +10,13 @@ from tests.conftest import (
     SDPSUBARRAYLEAFNODE_LOW,
     SDPSUBARRAYLEAFNODE_MID,
 )
-from tests.settings import event_remover, logger
+from tests.settings import (
+    ERROR_PROPAGATION_DEFECT,
+    RESET_DEFECT,
+    TIMEOUT_DEFECT,
+    event_remover,
+    logger,
+)
 from tests.ska_tmc_sdpsubarrayleafnode.integration.common import (
     tear_down,
     wait_and_assert_sdp_subarray_obsstate,
@@ -55,13 +61,13 @@ def release_all_resources_error_propagation(
     wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
 
     # Check error propagation
-    sdp_subarray.SetRaiseException(True)
+    sdp_subarray.SetDefective(ERROR_PROPAGATION_DEFECT)
     result, unique_id = sdpsal_node.ReleaseAllResources()
 
     logger.info(
         # pylint: disable=line-too-long
-        f"ReleaseAllResources Command ID: \
-            {unique_id} ResultCode received: {result}"
+        "ReleaseAllResources Command ID: "
+        + f"{unique_id} ResultCode received: {result}"
     )
 
     assert unique_id[0].endswith("ReleaseAllResources")
@@ -70,12 +76,13 @@ def release_all_resources_error_propagation(
     change_event_callbacks["longRunningCommandResult"].assert_change_event(
         (
             unique_id[0],
-            f"Exception occurred on device: {device}",
+            "ska_tmc_common.exceptions.CommandNotAllowed: Exception occured,"
+            + " command failed.\n",
         ),
         lookahead=6,
     )
 
-    sdp_subarray.SetRaiseException(False)
+    sdp_subarray.SetDefective(RESET_DEFECT)
     event_remover(
         change_event_callbacks,
         ["longRunningCommandResult", "longRunningCommandsInQueue"],
@@ -120,7 +127,7 @@ def release_all_resources_timeout(
     wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
 
     # Check timeout
-    sdp_subarray.SetDefective(True)
+    sdp_subarray.SetDefective(TIMEOUT_DEFECT)
     result, unique_id = sdpsal_node.ReleaseAllResources()
 
     logger.info(
@@ -139,7 +146,7 @@ def release_all_resources_timeout(
         ),
         lookahead=6,
     )
-    sdp_subarray.SetDefective(False)
+    sdp_subarray.SetDefective(RESET_DEFECT)
 
     event_remover(
         change_event_callbacks,

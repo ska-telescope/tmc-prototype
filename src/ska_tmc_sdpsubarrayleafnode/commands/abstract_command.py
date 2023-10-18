@@ -3,6 +3,7 @@
 """Abstract Command for SDP Subarray Leaf Node"""
 import time
 
+from ska_control_model.task_status import TaskStatus
 from ska_tango_base.commands import ResultCode
 from ska_tmc_common.adapters import AdapterType
 from ska_tmc_common.exceptions import CommandNotAllowed, DeviceUnresponsive
@@ -75,3 +76,17 @@ class SdpSLNCommand(TmcLeafNodeCommand):
                 message = f"Error in creating adapter for {device}: {e}"
                 return ResultCode.FAILED, message
         return (ResultCode.OK, "")
+
+    def update_task_status(self, **kwargs):
+        result = kwargs.get("result")
+        status = kwargs.get("status", TaskStatus.COMPLETED)
+        message = kwargs.get("message")
+        if result == ResultCode.FAILED:
+            self.task_callback(
+                status=status,
+                result=result,
+                exception=message,
+            )
+        else:
+            self.task_callback(status=TaskStatus.COMPLETED, result=result)
+        self.component_manager.command_in_progress = ""

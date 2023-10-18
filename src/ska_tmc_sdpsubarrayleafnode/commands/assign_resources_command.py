@@ -64,33 +64,22 @@ class AssignResources(SdpSLNCommand):
             self.timeout_callback,
         )
         result_code, message = self.do(argin)
-        self.logger.info(result_code)
+
         if result_code == ResultCode.FAILED:
-            self.update_task_status(result_code, message)
+            self.update_task_status(result=result_code, message=message)
             self.component_manager.stop_timer()
         else:
             self.start_tracker_thread(
-                self.component_manager.get_obs_state,
-                ObsState.IDLE,
-                self.timeout_id,
-                self.timeout_callback,
+                state_function=self.component_manager.get_obs_state,
+                expected_state=[ObsState.IDLE],
+                abort_event=task_abort_event,
+                timeout_id=self.timeout_id,
+                timeout_callback=self.timeout_callback,
                 command_id=self.component_manager.assign_id,
                 # pylint: disable=line-too-long
                 lrcr_callback=self.component_manager.long_running_result_callback,
             )
 
-    def update_task_status(self, result: ResultCode, message: str = ""):
-        if result == ResultCode.FAILED:
-            self.task_callback(
-                status=TaskStatus.COMPLETED,
-                result=result,
-                exception=message,
-            )
-        else:
-            self.task_callback(status=TaskStatus.COMPLETED, result=result)
-        self.component_manager.command_in_progress = ""
-
-    # pylint: disable=line-too-long
     def do(self, argin=None):
         """
         Method to invoke AssignResources command on SDP Subarray.

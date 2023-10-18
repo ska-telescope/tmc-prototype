@@ -1,8 +1,14 @@
 """Common Settings for testing of SDP Leaf Node"""
+import json
 import logging
+import time
 from typing import List
 
+from ska_tango_base.commands import ResultCode
+from ska_tango_base.control_model import ObsState
+from ska_tmc_common import FaultType
 from ska_tmc_common.enum import LivelinessProbeType
+from tango import DeviceProxy
 
 from ska_tmc_sdpmasterleafnode.manager.component_manager import (
     SdpMLNComponentManager,
@@ -24,6 +30,34 @@ SDP_SUBARRAY_LEAF_NODE_MID = "ska_mid/tm_leaf_node/sdp_subarray01"
 SDP_SUBARRAY_LEAF_NODE_LOW = "ska_low/tm_leaf_node/sdp_subarray01"
 SDP_MASTER_LEAF_DEVICE_MID = "ska_mid/tm_leaf_node/sdp_master"
 SDP_MASTER_LEAF_DEVICE_LOW = "ska_low/tm_leaf_node/sdp_master"
+
+TIMEOUT_DEFECT = json.dumps(
+    {
+        "enabled": True,
+        "fault_type": FaultType.STUCK_IN_INTERMEDIATE_STATE,
+        "error_message": "Command stuck in processing",
+        "result": ResultCode.FAILED,
+        "intermediate_state": ObsState.RESOURCING,
+    }
+)
+
+ERROR_PROPAGATION_DEFECT = json.dumps(
+    {
+        "enabled": True,
+        "fault_type": FaultType.COMMAND_NOT_ALLOWED,
+        "error_message": "Exception occured, command failed.",
+        "result": ResultCode.FAILED,
+    }
+)
+
+RESET_DEFECT = json.dumps(
+    {
+        "enabled": False,
+        "fault_type": FaultType.FAILED_RESULT,
+        "error_message": "Default exception.",
+        "result": ResultCode.FAILED,
+    }
+)
 
 
 def count_faulty_devices(cm):
@@ -65,3 +99,22 @@ def event_remover(change_event_callbacks, attributes: List[str]) -> None:
                 node.drop()
         except KeyError:
             pass
+
+
+def wait_for_attribute_value(
+    device: DeviceProxy,
+    attribute_name: str,
+    attribute_value,
+) -> bool:
+    """Waits for attribute value to change on the given device."""
+    start_time = time.time()
+    while device.read_attribute(attribute_name).value == attribute_value:
+        time.sleep(0.5)
+
+        if time.time() - start_time >= 10:
+            logger.info(
+                "The attribute value after time out is: %s",
+                device.read_attribute(attribute_name).value,
+            )
+            return False
+    return True

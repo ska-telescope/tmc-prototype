@@ -48,11 +48,11 @@ def assign_resources(
             tango.EventType.CHANGE_EVENT,
             change_event_callbacks["longRunningCommandResult"],
         )
-        change_event_callbacks["longRunningCommandResult"].assert_change_event(
-            (unique_id[0], str(ResultCode.OK.value)),
-            lookahead=2,
-        )
         wait_and_assert_sdp_subarray_obsstate(sdpsal_node, ObsState.IDLE)
+        change_event_callbacks["longRunningCommandResult"].assert_change_event(
+            (unique_id[0], str(int(ResultCode.OK))),
+            lookahead=4,
+        )
         event_remover(
             change_event_callbacks,
             ["longRunningCommandResult", "longRunningCommandsInQueue"],

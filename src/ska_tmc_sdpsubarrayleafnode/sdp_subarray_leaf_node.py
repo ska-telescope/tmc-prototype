@@ -5,6 +5,7 @@ actions during an observation.
 It also acts as a SDP contact point for Subarray Node for observation execution
 """
 
+import json
 from typing import List, Tuple
 
 # pylint: disable=attribute-defined-outside-init
@@ -36,6 +37,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         self.set_change_event("longRunningCommandResult", True)
         self._issubsystemavailable = False
         self.set_change_event("isSubsystemAvailable", True, False)
+        self.set_change_event("pointingCalibrations", True, False)
 
     # -----------------
     # Device Properties
@@ -73,6 +75,11 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         access=AttrWriteType.READ,
     )
 
+    pointingCalibrations = attribute(
+        dtype="DevString",
+        access=AttrWriteType.READ,
+    )
+
     # ---------------
     # General methods
     # ---------------
@@ -103,6 +110,17 @@ class SdpSubarrayLeafNode(SKABaseDevice):
                 "isSubsystemAvailable", self._issubsystemavailable
             )
 
+    def pointing_calibrations_callback(self) -> None:
+        """Push an event for the pointingCalibrations attribute."""
+        self.push_change_event(
+            "pointingCalibrations",
+            json.dumps(self.component_manager.pointing_calibrations),
+        )
+        self.logger.info(
+            "Pointing calibration offsets are : %s",
+            self.component_manager.pointing_calibrations,
+        )
+
     class InitCommand(
         SKABaseDevice.InitCommand
     ):  # pylint: disable=too-few-public-methods
@@ -131,6 +149,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             device._health_state = HealthState.OK
             device._version_id = release.version
             device.set_change_event("healthState", True, False)
+            device.set_change_event("pointingCalibrations", True, False)
             device._isSubsystemAvailable = False
             ApiUtil.instance().set_asynch_cb_sub_model(
                 tango.cb_sub_model.PUSH_CALLBACK
@@ -147,6 +166,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
         if hasattr(self, "component_manager"):
             self.component_manager.stop()
 
+    # ------------------
+    # Attributes methods
+    # ------------------
+
     def read_sdpSubarrayDevName(self):
         """Return the sdpsubarraydevname attribute."""
         return self.component_manager._sdp_subarray_dev_name
@@ -154,10 +177,6 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     def write_sdpSubarrayDevName(self, value):
         """Set the sdpsubarraydevname attribute."""
         self.component_manager._sdp_subarray_dev_name = value
-
-    # ------------------
-    # Attributes methods
-    # ------------------
 
     def read_isSubsystemAvailable(self):
         """Read method for issubsystemavailable"""
@@ -170,6 +189,10 @@ class SdpSubarrayLeafNode(SKABaseDevice):
     def read_sdpSubarrayObsState(self):
         """Reads the current observation state of the SDP subarray"""
         return self._sdp_subarray_obs_state
+
+    def read_pointingCalibrations(self) -> str:
+        """Returns the pointingCalibrations attribute value."""
+        return json.dumps(self.component_manager.pointing_calibrations)
 
     # --------
     # Commands
@@ -448,6 +471,7 @@ class SdpSubarrayLeafNode(SKABaseDevice):
             logger=self.logger,
             communication_state_callback=None,
             component_state_callback=None,
+            pointing_calibrations_callback=self.pointing_calibrations_callback,
             _liveliness_probe=LivelinessProbeType.SINGLE_DEVICE,
             _event_receiver=True,
             _update_sdp_subarray_obs_state_callback=(

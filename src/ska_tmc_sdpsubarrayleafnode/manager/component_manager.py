@@ -6,9 +6,11 @@ This module provided a reference implementation of a BaseComponentManager.
 It is provided for explanatory purposes, and to support testing of this
 package.
 """
+import json
 import time
 from typing import Callable, Optional, Tuple
 
+import numpy
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tango_base.executor import TaskStatus
@@ -57,6 +59,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         logger=None,
         communication_state_callback=None,
         component_state_callback=None,
+        pointing_calibrations_callback: Optional[Callable] = None,
         _liveliness_probe=None,
         _event_receiver=True,
         _update_sdp_subarray_obs_state_callback=None,
@@ -111,12 +114,40 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         self._update_sdp_subarray_obs_state_callback = (
             _update_sdp_subarray_obs_state_callback
         )
-
         self.update_lrcr_callback = _update_lrcr_callback
         self._lrc_result = ("", "")
         self.on_command = On(self, self.logger)
         self.off_command = Off(self, self.logger)
         self.command_in_progress: str = ""
+        self._pointing_calibrations = []
+        self.pointing_calibrations_callback = pointing_calibrations_callback
+
+    @property
+    def pointing_calibrations(self) -> list:
+        """Gives the current pointing offsets informed by SDP subarray"""
+        return self._pointing_calibrations
+
+    @pointing_calibrations.setter
+    def pointing_calibrations(self, pointing_calibrations: list) -> None:
+        """Update the pointing calibration offset values of the dish device.
+
+        :param pointing_calibrations: The list containing cross_elevation,
+        elevation offsets values.
+
+        :pointing_calibrations dtype: list
+        """
+        cross_elevation_offset, elevation_offset = pointing_calibrations
+        self.logger.info(
+            "The updated pointing offsets values are: %s, %s",
+            cross_elevation_offset,
+            elevation_offset,
+        )
+        self._pointing_calibrations = [
+            cross_elevation_offset,
+            elevation_offset,
+        ]
+        if self.pointing_calibrations_callback:
+            self.pointing_calibrations_callback()
 
     def stop(self):
         """
@@ -168,9 +199,34 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             if self._update_sdp_subarray_obs_state_callback:
                 self._update_sdp_subarray_obs_state_callback(obs_state)
 
-    def device_failed(
-        self, device_info, exception
-    ):  # pylint: disable=arguments-differ
+    def update_device_pointing_calibrations(self, pointing_offsets: list):
+        """
+        Update the current pointing offsets,
+        and call the relative callbacks if available
+
+        :param pointing_offsets: pointing offsets given by SDP subarray device
+        :type obs_state: list
+        """
+        try:
+            pointing_offsets_data = json.loads(pointing_offsets)
+            # The first field of the array is a dish label
+            # ie pointing_offsets_data[0] which can be used for validations
+            if pointing_offsets:
+                self.pointing_calibrations = [
+                    pointing_offsets_data[5],  # Cross elevation offset
+                    pointing_offsets_data[3],  # Elevation offset
+                ]
+            else:
+                # Set inavlid data if pointing offsets unavailable
+                self.pointing_calibrations = [numpy.nan, numpy.nan]
+        except Exception as e:
+            self.logger.exception(
+                "Received pointing offsets : %s",
+                pointing_offsets,
+                e,
+            )
+
+    def device_failed(self, device_info, exception):
         """
         Set a device to failed and call the relative callback if available
 

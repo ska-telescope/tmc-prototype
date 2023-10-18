@@ -15,6 +15,12 @@ def on_command(tango_context, sdpmln_name, group_callback):
     logger.info("%s", tango_context)
     dev_factory = DevFactory()
     sdpmln_node = dev_factory.get_device(sdpmln_name)
+
+    availablity_value = sdpmln_node.read_attribute(
+        "isSubsystemAvailable"
+    ).value
+    assert availablity_value
+
     sdpmln_node.subscribe_event(
         "longRunningCommandsInQueue",
         tango.EventType.CHANGE_EVENT,
@@ -23,10 +29,6 @@ def on_command(tango_context, sdpmln_name, group_callback):
     group_callback["longRunningCommandsInQueue"].assert_change_event(
         None,
     )
-    availablity_value = sdpmln_node.read_attribute(
-        "isSubsystemAvailable"
-    ).value
-    assert availablity_value
     result, unique_id = sdpmln_node.On()
     logger.info(result)
     logger.info(unique_id)
