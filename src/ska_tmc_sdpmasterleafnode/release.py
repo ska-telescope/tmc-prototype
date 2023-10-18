@@ -10,7 +10,7 @@
 """Release information for Python Package"""
 
 name = """ska_tmc_sdpmasterleafnode_mid"""
-version = "0.13.2"
+version = "0.14.0"
 version_info = version.split(".")
 description = """ The primary responsibility of the SDP Master
                   Leaf node is to monitor the SDP Master
