@@ -221,7 +221,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 self.pointing_calibrations = [numpy.nan, numpy.nan]
         except Exception as e:
             self.logger.exception(
-                "Received pointing offsets : %s",
+                "Received pointing offsets : %s, %s",
                 pointing_offsets,
                 e,
             )
