@@ -80,7 +80,9 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :param _component: allows setting of the component to be
             managed; for testing purposes only
         """
-        self._device = None
+        # self._device = None
+        self._sdp_subarray_dev_name = sdp_subarray_dev_name
+        self._device = SubArrayDeviceInfo(self._sdp_subarray_dev_name, False)
         self.update_availablity_callback = _update_availablity_callback
         super().__init__(
             logger,
@@ -93,8 +95,8 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             sleep_time=sleep_time,
         )
 
-        self._sdp_subarray_dev_name = sdp_subarray_dev_name
-        self._device = SubArrayDeviceInfo(self._sdp_subarray_dev_name, False)
+        # self._sdp_subarray_dev_name = sdp_subarray_dev_name
+        # self._device = SubArrayDeviceInfo(self._sdp_subarray_dev_name, False)
 
         if _event_receiver:
             self.event_receiver = SdpSLNEventReceiver(
@@ -211,7 +213,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             pointing_offsets_data = json.loads(pointing_offsets)
             # The first field of the array is a dish label
             # ie pointing_offsets_data[0] which can be used for validations
-            if pointing_offsets:
+            if pointing_offsets_data:
                 self.pointing_calibrations = [
                     pointing_offsets_data[5],  # Cross elevation offset
                     pointing_offsets_data[3],  # Elevation offset

@@ -44,7 +44,7 @@ class SdpSLNEventReceiver(EventReceiver):
                     executor.submit(self.subscribe_events, dev_info)
             sleep(self._sleep_time)
 
-    def subscribe_events(self, dev_info):
+    def subscribe_events(self, dev_info, attribute_dictionary=None):
         try:
             proxy = self._dev_factory.get_device(dev_info.dev_name)
             proxy.subscribe_event(
