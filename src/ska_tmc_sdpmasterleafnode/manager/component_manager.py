@@ -54,7 +54,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         responses. Default 500 milliseconds
         :param sleep_time: Optional. Sleep time between reties. Default 1 Sec
         """
-
+        self.sdp_master_device_name = sdp_master_device_name
         super().__init__(
             logger,
             _liveliness_probe=_liveliness_probe,
@@ -64,7 +64,7 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
             sleep_time=sleep_time,
         )
         self._device = DeviceInfo(sdp_master_device_name)
-        self.sdp_master_device_name = sdp_master_device_name
+
         self.timeout = timeout
         self.update_availablity_callback = _update_availablity_callback
         self.on_command = On(self, logger)
@@ -92,12 +92,20 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
         """
         return DeviceInfo(self.sdp_master_device_name)
 
-    def update_ping_info(self, ping: int, dev_name: str) -> None:
+    def start_liveliness_probe(self, lp: LivelinessProbeType) -> None:
+        """Need to override this method here because in super self._device
+        is setting to None so overriden here to set self._device
+        """
+        self._device = DeviceInfo(self.sdp_master_device_name)
+        super().start_liveliness_probe(lp)
+
+    def update_ping_info(self, ping: int, device_name: str) -> None:
         """
         Update a device with the correct ping information.
         :param ping: device response time
         :type ping: int
         """
+        self.logger.info("Updating ping info for device: %s", device_name)
         with self.lock:
             self._device.ping = ping
             self._device.update_unresponsive(False)
