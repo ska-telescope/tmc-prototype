@@ -95,6 +95,10 @@ class SdpMLNComponentManager(TmcLeafNodeComponentManager):
     def start_liveliness_probe(self, lp: LivelinessProbeType) -> None:
         """Need to override this method here because in super self._device
         is setting to None so overriden here to set self._device
+
+        :param lp : Specifes the type of the liveliness probe that is used for
+        single device or myltiple devices
+        :type lp: enum
         """
         self._device = DeviceInfo(self.sdp_master_device_name)
         super().start_liveliness_probe(lp)
