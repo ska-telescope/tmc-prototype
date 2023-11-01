@@ -252,7 +252,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :param ping: device response time
         :type ping: int
         """
-        self.logger.info("Updating ping info for device: %s", device_name)
+        self.logger.debug("Updating ping info for device: %s", device_name)
         with self.lock:
             self._device.ping = ping
             self._device.update_unresponsive(False)
