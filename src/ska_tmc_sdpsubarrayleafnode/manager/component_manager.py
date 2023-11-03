@@ -15,6 +15,7 @@ from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tango_base.executor import TaskStatus
 from ska_tmc_common.device_info import SubArrayDeviceInfo
+from ska_tmc_common.enum import LivelinessProbeType
 from ska_tmc_common.exceptions import (
     CommandNotAllowed,
     DeviceUnresponsive,
@@ -80,8 +81,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         :param _component: allows setting of the component to be
             managed; for testing purposes only
         """
-        self._device = None
-        self.update_availablity_callback = _update_availablity_callback
+        self._sdp_subarray_dev_name = sdp_subarray_dev_name
         super().__init__(
             logger,
             _liveliness_probe=_liveliness_probe,
@@ -92,8 +92,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             proxy_timeout=proxy_timeout,
             sleep_time=sleep_time,
         )
-
-        self._sdp_subarray_dev_name = sdp_subarray_dev_name
         self._device = SubArrayDeviceInfo(self._sdp_subarray_dev_name, False)
 
         if _event_receiver:
@@ -167,10 +165,16 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         """
         return self._device
 
-    def update_input_parameter(self):
-        """Update input parameter"""
-        with self.lock:
-            self.input_parameter.update(self)
+    def start_liveliness_probe(self, lp: LivelinessProbeType) -> None:
+        """Need to override this method here because in super self._device is
+        setting to None so overriden here to set self._device
+
+        :param lp : Specifes the type of the liveliness probe that is used for
+        single device or myltiple devices
+        :type lp: enum
+        """
+        self._device = SubArrayDeviceInfo(self._sdp_subarray_dev_name)
+        super().start_liveliness_probe(lp)
 
     def update_event_failure(self):
         """Update event failures"""
@@ -184,8 +188,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
         Update a monitored device obs state,
         and call the relative callbacks if available
 
-        :param dev_name: name of the device
-        :type dev_name: str
         :param obs_state: obs state of the device
         :type obs_state: ObsState
         """
@@ -211,7 +213,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             pointing_offsets_data = json.loads(pointing_offsets)
             # The first field of the array is a dish label
             # ie pointing_offsets_data[0] which can be used for validations
-            if pointing_offsets:
+            if pointing_offsets_data:
                 self.pointing_calibrations = [
                     pointing_offsets_data[5],  # Cross elevation offset
                     pointing_offsets_data[3],  # Elevation offset
@@ -221,7 +223,7 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
                 self.pointing_calibrations = [numpy.nan, numpy.nan]
         except Exception as e:
             self.logger.exception(
-                "Received pointing offsets : %s",
+                "Received pointing offsets : %s, %s",
                 pointing_offsets,
                 e,
             )
@@ -241,15 +243,16 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             if self._update_availablity_callback is not None:
                 self._update_availablity_callback(False)
 
-    def update_ping_info(self, ping: int, dev_name: str) -> None:
+    def update_ping_info(self, ping: int, device_name: str) -> None:
         """
         Update a device with the correct ping information.
 
-        :param dev_name: name of the device
-        :type dev_name: str
+        :param device_name: name of the device
+        :type device_name: str
         :param ping: device response time
         :type ping: int
         """
+        self.logger.debug("Updating ping info for device: %s", device_name)
         with self.lock:
             self._device.ping = ping
             self._device.update_unresponsive(False)
