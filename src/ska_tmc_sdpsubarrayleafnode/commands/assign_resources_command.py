@@ -69,6 +69,15 @@ class AssignResources(SdpSLNCommand):
             self.update_task_status(result=result_code, message=message)
             self.component_manager.stop_timer()
         else:
+            # Update SDP Subarray obsState variable to RESOURCING
+            with self.lock:
+                dev_info = self.component_manager.get_device()
+                dev_info.obs_state = ObsState.RESOURCING
+            self.logger.info(
+                "Device %s: obsstate: %s",
+                dev_info.dev_name,
+                dev_info.obs_state,
+            )
             self.start_tracker_thread(
                 state_function=self.component_manager.get_obs_state,
                 expected_state=[ObsState.RESOURCING, ObsState.IDLE],
