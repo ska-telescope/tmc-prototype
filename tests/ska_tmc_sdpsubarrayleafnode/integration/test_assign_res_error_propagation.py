@@ -56,7 +56,6 @@ def assign_resources_error_propagation(
         raise Exception(e)
 
 
-@pytest.mark.failing
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_assign_resources_error_propagation(

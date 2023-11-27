@@ -172,16 +172,6 @@ class AssignResources(SdpSLNCommand):
                 json.dumps(json_argument), self.component_manager.cmd_ended_cb
             )
 
-            # # Update SDP Subarray obsState variable to RESOURCING
-            # with self.lock:
-            #     dev_info = self.component_manager.get_device()
-            #     dev_info.obs_state = ObsState.RESOURCING
-            # self.logger.info(
-            #     "ObsState of device %s is %s",
-            #     dev_info.dev_name,
-            #     dev_info.obs_state,
-            # )
-
         except (AttributeError, ValueError, TypeError, DevFailed) as e:
             self.logger.exception("AssignResources Command failed: %s", e)
             return self.component_manager.generate_command_result(
