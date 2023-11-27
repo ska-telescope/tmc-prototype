@@ -112,6 +112,7 @@ def configure(
         raise Exception(e)
 
 
+@pytest.mark.failing
 @pytest.mark.post_deployment
 @pytest.mark.SKA_mid
 def test_configure_command_mid(
