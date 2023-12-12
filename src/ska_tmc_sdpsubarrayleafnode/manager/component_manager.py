@@ -6,11 +6,9 @@ This module provided a reference implementation of a BaseComponentManager.
 It is provided for explanatory purposes, and to support testing of this
 package.
 """
-import json
 import time
 from typing import Callable, Optional, Tuple
 
-import numpy
 from ska_tango_base.commands import ResultCode
 from ska_tango_base.control_model import ObsState
 from ska_tango_base.executor import TaskStatus
@@ -200,33 +198,6 @@ class SdpSLNComponentManager(TmcLeafNodeComponentManager):
             self.logger.info(f"Obs State value updated to {obs_state}")
             if self._update_sdp_subarray_obs_state_callback:
                 self._update_sdp_subarray_obs_state_callback(obs_state)
-
-    def update_device_pointing_calibrations(self, pointing_offsets: list):
-        """
-        Update the current pointing offsets,
-        and call the relative callbacks if available
-
-        :param pointing_offsets: pointing offsets given by SDP subarray device
-        :type obs_state: list
-        """
-        try:
-            pointing_offsets_data = json.loads(pointing_offsets)
-            # The first field of the array is a dish label
-            # ie pointing_offsets_data[0] which can be used for validations
-            if pointing_offsets_data:
-                self.pointing_calibrations = [
-                    pointing_offsets_data[5],  # Cross elevation offset
-                    pointing_offsets_data[3],  # Elevation offset
-                ]
-            else:
-                # Set inavlid data if pointing offsets unavailable
-                self.pointing_calibrations = [numpy.nan, numpy.nan]
-        except Exception as e:
-            self.logger.exception(
-                "Received pointing offsets : %s, %s",
-                pointing_offsets,
-                e,
-            )
 
     def device_failed(self, device_info, exception):
         """

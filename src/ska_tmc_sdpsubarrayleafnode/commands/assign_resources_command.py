@@ -109,7 +109,7 @@ class AssignResources(SdpSLNCommand):
                     DevVarStringArray
 
         Example:
-        "sdp":{"interface":"https://schema.skao.int/ska-sdp-assignres/0.4",
+        "{"interface":"https://schema.skao.int/ska-sdp-assignres/0.4",
         "execution_block": {"eb_id": "eb-mvp01-20200325-00001",
         "max_length": 100,"context":{},"beams":[{"beam_id": "vis0",
         "function":"visibilities"},{"beam_id": "pss1","search_beam_id": 1,
@@ -141,7 +141,7 @@ class AssignResources(SdpSLNCommand):
         ["sbi-mvp01-20200325-00001","sbi-mvp01-20200325-00002"],
         "script":{},"parameters": {},"dependencies":{}}],
         "resources":{"csp_links":[1,2,3,4], "receptors":["FS4","FS8"],
-        "receive_nodes":10}}}
+        "receive_nodes":10}}
 
         Note: Enter input without spaces
 
