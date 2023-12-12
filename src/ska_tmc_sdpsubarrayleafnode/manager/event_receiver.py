@@ -53,14 +53,6 @@ class SdpSLNEventReceiver(EventReceiver):
                 self.handle_obs_state_event,
                 stateless=True,
             )
-
-            proxy.subscribe_event(
-                "pointingOffsets",
-                tango.EventType.CHANGE_EVENT,
-                self.handle_pointing_offsets_event,
-                stateless=True,
-            )
-
         except (AttributeError, ValueError, TypeError, DevFailed) as e:
             self._logger.debug(
                 "Event not working for the device %s, %s", proxy.dev_name, e
